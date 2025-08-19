@@ -1,0 +1,48 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  --brand-alt-aqua: #00a19a;
+  --purple-main500: #231d45;
+  --purple-main0: #f9f9fd;
+  --gray-900: #101319;
+  --grays-white: #ffffff;
+  --separators-non-opaque: rgba(84, 84, 86, 0.34);
+}
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+@layer components {
+  .mobile-container {
+    @apply max-w-sm mx-auto min-h-screen relative;
+  }
+  
+  .gradient-bg {
+    background: linear-gradient(180deg, #231d45 0%, #09f0e6 100%);
+  }
+  
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-sm border border-white/20;
+  }
+  
+  .progress-segment {
+    @apply h-1 bg-white/20 rounded-full overflow-hidden;
+  }
+  
+  .progress-segment.filled {
+    @apply bg-white;
+  }
+  
+  .pagination-dot {
+    @apply w-2 h-2 rounded-full bg-white/40;
+  }
+  
+  .pagination-dot.active {
+    @apply w-6 bg-white shadow-lg shadow-white/40;
+  }
+}
