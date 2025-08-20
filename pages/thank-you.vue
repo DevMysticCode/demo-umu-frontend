@@ -59,7 +59,7 @@
       <div class="w-full space-y-4">
         <button
           @click="continueToQuestionnaire"
-          class="w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-17-medium rounded-xl transition-colors"
+          class="w-full h-12 bg-white/20 hover:bg-white/30 text-white font-17-medium rounded-xl transition-colors backdrop-blur-sm"
         >
           Continue building your profile
         </button>
