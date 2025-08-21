@@ -11,10 +11,13 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   title: string;
   description: string;
-}>();
+}>(), {
+  title: '',
+  description: ''
+});
 </script>
 <style scoped>
 .title-and-text {
