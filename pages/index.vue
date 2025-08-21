@@ -1,13 +1,29 @@
 <template>
   <div class="mobile-container backgound-image">
-    <ProgressBar :steps="7" :currentStep="2" />
+    <ProgressBar :steps="slides.length" :currentStep="counter" />
     <LogoAndSkip @onClick="onSkipClick" />
-    <TitleAndText title="Your data. Your money. Your move. Your way." description="Experience seamless service with our app! Each time you hire a verified tradesperson, you automatically accumulate reward points. Enjoy the benefits of your loyalty with every booking, making your home improvement projects even more rewarding." />
+    <TitleAndText :title="currentSlide?.title" :description="currentSlide?.description" />
   </div>
 </template>
 
 <script setup>
+import ProgressBar from '@/components/ProgressBar.vue';
 import LogoAndSkip from '@/components/LogoAndSkip.vue';
+import TitleAndText from '@/components/TitleAndText.vue';
+import { useWelcomePageData } from '@/composables/useWelcomePageData';
+
+const { slides } = useWelcomePageData();
+const counter = ref(0);
+const currentSlide = computed(() => slides.value[counter.value]);
+
+const INTERVAL_TIME = 5000;
+const intervalId = setInterval(() => {
+  counter.value = (counter.value + 1) % slides.value.length;
+}, INTERVAL_TIME);
+
+onUnmounted(() => {
+  clearInterval(intervalId);
+});
 
 const onSkipClick = () => {
   alert('skip');
