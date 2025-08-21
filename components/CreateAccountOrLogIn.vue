@@ -1,6 +1,5 @@
 <template>
   <footer class="create-account-or-login">
-
     <div class="create-account-or-login__buttons">
       <UButton
         @click="onCreateAccount" 
@@ -14,21 +13,23 @@
         Log in
       </UButton>
     </div>
-
   </footer>
 </template>
-<script lang="ts">
-const emit = defineEmits(['on-create-account', 'on-login'])
+
+<script setup>
+import { defineEmits } from 'vue'
+
+const emit = defineEmits(['onCreateAccount', 'onLogin'])
 
 const onCreateAccount = () => {
-  emit('on-create-account', 'create-account')
+  emit('onCreateAccount')
 }
 
 const onLogin = () => {
-  emit('on-login', 'login')
+  emit('onLogin')
 }
-
 </script>
+
 <style scoped>
 .create-account-or-login {
   @apply fixed bottom-0 max-w-md w-full px-7 pb-11;
@@ -47,6 +48,7 @@ const onLogin = () => {
     align-self: stretch;
     border-radius: 12px;
     color: white;
+    transition: background-color 0.15s ease;
   }
 
   &__button-create-account {
