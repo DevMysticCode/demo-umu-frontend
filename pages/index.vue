@@ -2,7 +2,7 @@
   <div class="mobile-container gradient-bg">
     <!-- Header -->
     <!-- Main Content -->
-    <main class="pt-6 pb-48">
+    <main class="pt-6">
       <div class="px-6 py-6">
         <!-- Progress Bar -->
         <div class="flex space-x-1 mb-6">
@@ -18,8 +18,8 @@
 
         <!-- Logo and Title -->
         <div class="mb-6">
-          <div class="w-14 h-12 mb-4 bg-white/20 rounded-lg flex items-center justify-center">
-            <Icon name="i-heroicons-home" class="w-8 h-8 text-white" />
+          <div class="w-14 h-12 mb-4 rounded-lg flex items-center justify-center">
+            <img src="/logo.png" alt="Logo" class="w-14 h-8" />
           </div>
           
           <div class="space-y-1">
@@ -40,10 +40,11 @@
 
       <!-- Feature Card -->
       <div class="px-6">
-        <UCard class="bg-brand-aqua border-none shadow-xl">
+        <UCard class="bg-brand-aqua border-none ring-0 shadow-xl">
           <div class="p-6 text-center space-y-6">
-            <div class="w-48 h-32 mx-auto bg-white/10 rounded-lg flex items-center justify-center">
-              <Icon name="i-heroicons-building-office-2" class="w-24 h-24 text-white" />
+            <div class="w-48 h-32 mx-auto  flex items-center justify-center">
+              <!-- <Icon name="i-heroicons-building-office-2" class="w-24 h-24 text-white" /> -->
+              <img src="/onboarding.png" alt="Logo" />
             </div>
             
             <p class="text-16-medium text-white transition-all duration-500">
@@ -66,12 +67,12 @@
     </main>
 
     <!-- Footer -->
-    <footer class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-sm">
-      <div class="bg-white/95 backdrop-blur-sm rounded-t-3xl p-6 space-y-4">
+    <footer class=" w-full max-w-sm mt-6">
+      <div class="backdrop-blur-sm p-6 space-y-4">
         <div class="space-y-3">
           <UButton 
             @click="handleCreateAccount"
-            class="w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 text-purple-main font-17-medium rounded-xl"
+            class="w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 text-purple-main font-17-medium rounded-xl flex items-center justify-center"
             :loading="isCreatingAccount"
           >
             Create Account
@@ -80,17 +81,17 @@
           <UButton 
             @click="handleLogin"
             variant="outline"
-            class="w-full h-12 border-brand-aqua text-gray-dark font-17-medium rounded-xl hover:bg-brand-aqua/5"
+            class="w-full h-12 bg-white border border-brand-aqua text-gray-dark font-17-medium rounded-xl flex items-center justify-center
+         hover:bg-brand-aqua/10"
             :loading="isLoggingIn"
           >
             Log in
           </UButton>
         </div>
         
-        <!-- Home Indicator -->
-        <div class="flex justify-center pt-2">
+        <!-- <div class="flex justify-center pt-2">
           <div class="w-32 h-1 bg-gray-300 rounded-full"></div>
-        </div>
+        </div> -->
       </div>
     </footer>
   </div>

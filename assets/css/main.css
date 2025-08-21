@@ -20,6 +20,7 @@
 @layer components {
   .mobile-container {
     @apply max-w-sm mx-auto min-h-screen relative;
+    margin: 0;
   }
   
   .gradient-bg {
