@@ -1,6 +1,6 @@
 <template>
   <div class="mobile-container backgound-image">
-    Hello world
+    <ProgressBar :steps="7" :currentStep="2" />
 
   </div>
 </template>
