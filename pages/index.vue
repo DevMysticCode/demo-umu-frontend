@@ -1,7 +1,8 @@
 <template>
-  <div class="mobile-container gradient-bg">
+  <div class="mobile-container gradient-bg backgound-image">
     <!-- Header -->
-    <!-- Main Content -->
+     <div class="relative z-10">
+      <!-- Main Content -->
     <main class="pt-6">
       <div class="px-6 py-6">
         <!-- Progress Bar -->
@@ -18,9 +19,21 @@
 
         <!-- Logo and Title -->
         <div class="mb-6">
-          <div class="w-14 h-12 rounded-lg flex items-center justify-center">
-            <img src="/public/logo.svg" alt="Logo" class="w-18 h-8" /> 
+          <div class="flex items-center justify-between">
+            <div class="w-14 h-12 rounded-lg flex items-center justify-center">
+              <img src="/public/logo.svg" alt="Logo" class="w-18 h-12" /> 
+            </div>
+
+          
+            <UButton
+                @click="goToSlide(slides.length - 1)"
+                class="bg-black text-white font-medium px-3 py-1 rounded-3xl hover:bg-brand-aqua"
+              >
+                Skip
+            </UButton>
+
           </div>
+          
           
           <div class="space-y-1">
             <h1 class="text-22-emphasized text-white">
@@ -36,14 +49,17 @@
         <h2 class="text-28-emphasized text-white leading-tight mb-8 transition-all duration-500">
           {{ currentSlideData.title.split('\n').join('\n') }}
         </h2>
+
+        <p class="text-16-medium text-white transition-all duration-500">
+              {{ currentSlideData.description }}
+            </p>
       </div>
 
       <!-- Feature Card -->
-      <div class="px-6">
+      <!-- <div class="px-6">
         <UCard class="bg-brand-aqua border-none ring-0 shadow-xl">
           <div class="p-6 text-center space-y-6">
             <div class="w-48 h-32 mx-auto  flex items-center justify-center">
-              <!-- <Icon name="i-heroicons-building-office-2" class="w-24 h-24 text-white" /> -->
               <img src="/onboarding.png" alt="Logo" />
             </div>
             
@@ -51,7 +67,6 @@
               {{ currentSlideData.description }}
             </p>
 
-            <!-- Pagination Dots -->
             <div class="flex justify-center space-x-2">
               <div 
                 v-for="(dot, index) in paginationDots" 
@@ -63,11 +78,11 @@
             </div>
           </div>
         </UCard>
-      </div>
+      </div> -->
     </main>
 
     <!-- Footer -->
-    <footer class=" w-full max-w-sm mt-6">
+    <footer class="fixed bottom-0 w-full max-w-sm mt-6">
       <div class="backdrop-blur-sm p-6 space-y-4">
         <div class="space-y-3">
           <UButton 
@@ -94,6 +109,8 @@
         </div> -->
       </div>
     </footer>
+     </div>
+    
   </div>
 </template>
 
@@ -126,8 +143,8 @@ const paginationDots = ref([
 const slides = ref([
   {
     id: 1,
-    title: "Your data.\nYour money.\nYour move.\nYour way.",
-    description: "Your complete property toolkit—track progress, store documents, and connect with trusted trades in one place.",
+    title: "Your data. Your money.\nYour move. Your way.",
+    description: "Experience seamless service with our app! Each time you hire a verified tradesperson, you automatically accumulate reward points. Enjoy the benefits of your loyalty with every booking, making your home improvement projects even more rewarding.",
   },
   {
     id: 2,
@@ -269,3 +286,15 @@ const handleLogin = async () => {
   }
 }
 </script>
+
+<style>
+.backgound-image{
+  background-image: url('/public/images/onboarding_background.jpg');
+  background-size: cover;
+  background-position: center;
+  /* opacity: 0.5; */
+   position: relative; 
+}
+
+
+</style>

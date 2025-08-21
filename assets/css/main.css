@@ -23,10 +23,39 @@
     margin: 0;
   }
   
-  .gradient-bg {
+  /* .gradient-bg {
     background: linear-gradient(180deg, #231d45 0%, #09f0e6 100%);
+  } */
+
+  .gradient-bg {
+     background: linear-gradient(to bottom, #595959 0%, #999999 100%);
+     position: relative;
   }
   
+  /* .gradient-element::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    filter: blur(12px);
+    mask: linear-gradient(to bottom, 
+      rgba(0, 0, 0, 0.5) 0%, 
+      rgba(0, 0, 0, 0) 100%);
+    transform: translateY(-10%) scale(1.1);
+    z-index: -1;
+  } */
+
+  .gradient-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none; 
+}
+
   .glass-card {
     @apply bg-white/10 backdrop-blur-sm border border-white/20;
   }
