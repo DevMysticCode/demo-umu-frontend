@@ -1,6 +1,6 @@
 // composables/useWelcomePageData.ts
 
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 
 export interface WelcomeSlide {
   id: number
@@ -47,6 +47,8 @@ export const useWelcomePageData = () => {
   const loadSlides = async () => {
     slides.value = SLIDES_DATA
   }
+
+  onMounted(loadSlides);
 
   return {
     slides,
