@@ -15,10 +15,27 @@ const onSkipClick = () => {
 </script>
 
 <style>
-.backgound-image{
+.backgound-image {
   background-image: url('/public/images/onboarding_background.jpg');
   background-size: cover;
   background-position: center;
-   position: relative; 
+  position: relative;
+}
+
+.backgound-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.backgound-image>* {
+  position: relative;
+  z-index: 2;
 }
 </style>
