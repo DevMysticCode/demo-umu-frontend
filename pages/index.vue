@@ -3,7 +3,7 @@
     <ProgressBar :steps="slides.length" :currentStep="currentSlideIndex" />
     <LogoAndSkip @onClick="onSkipClick" />
     <TitleAndText :title="currentSlide?.title" :description="currentSlide?.description" />
-    <CreateAccountOrLogin @on-create-account="onCreateAccount" @on-login="onLogin" />
+    <CreateAccountOrLogin @onCreateAccount="onCreateAccount" @onLogin="onLogin" />
   </div>
 </template>
 
@@ -16,12 +16,12 @@ import CreateAccountOrLogin from '@/components/CreateAccountOrLogIn.vue'
 
 const { slides, currentSlideIndex, currentSlide } = useWelcomePageData()
 
-const onCreateAccount = () => {
-  alert('create account')
+const onCreateAccount = async () => {
+  await navigateTo('/signup')
 }
 
-const onLogin = () => {
-  alert('login')
+const onLogin = async () => {
+  await navigateTo('/login')
 }
 
 const onSkipClick = () => {
