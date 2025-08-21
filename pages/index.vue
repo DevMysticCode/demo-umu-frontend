@@ -2,6 +2,7 @@
   <div class="mobile-container backgound-image">
     <ProgressBar :steps="7" :currentStep="2" />
     <LogoAndSkip @onClick="onSkipClick" />
+    <TitleAndText title="Your data. Your money. Your move. Your way." description="Experience seamless service with our app! Each time you hire a verified tradesperson, you automatically accumulate reward points. Enjoy the benefits of your loyalty with every booking, making your home improvement projects even more rewarding." />
   </div>
 </template>
 
