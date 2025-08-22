@@ -6,12 +6,7 @@
       <main class="pt-6 pb-8 px-6">
         <!-- Back Button -->
         <div class="mb-6">
-          <UButton
-            @click="$router.back()"
-            variant="ghost"
-            icon="i-heroicons-arrow-left"
-            class="text-white"
-          />
+          <BackButton />
         </div>
         <div class="space-y-6">
           <!-- Title -->
@@ -378,7 +373,7 @@ const isFormValid = computed(() => {
 // Add this onMounted hook to set the email after hydration
 onMounted(() => {
   if (route?.query?.email) {
-    form.value.email = route.query.email;
+    form.value.email = route.query.email
   }
 })
 

@@ -5,14 +5,15 @@
       <main class="pt-6 pb-8 px-6">
         <!-- Back Button -->
         <div class="mb-6">
-          <UButton
+          <!-- <UButton
             @click="$router.back()"
             variant="ghost"
             class="text-white flex items-center space-x-1 px-0 hover:bg-transparent"
           >
             <Icon name="i-heroicons-chevron-left" class="w-6 h-6" />
             <span class="text-base font-medium">Back</span>
-          </UButton>
+          </UButton> -->
+          <BackButton />
         </div>
         <div class="space-y-8">
           <!-- Logo and Welcome -->
