@@ -453,10 +453,12 @@ const acceptTerms = () => {
 
 const handleSubmit = async () => {
   console.log('Submitting form:', form.value)
-  showTermsModal.value = true
+  // showTermsModal.value = true
   // if (!isFormValid.value) return
 
-  // isLoading.value = true
+  isLoading.value = true
+
+  await navigateTo('/thank-you')
 
   // try {
   //   const { data } = await $fetch('/api/auth/register', {
