@@ -43,22 +43,86 @@
             <div class="relative">
               <!-- Slider Track -->
               <div class="w-full h-2 bg-white/20 rounded-full relative">
+                <!-- Selected Range Highlight -->
                 <div
-                  class="h-2 bg-white rounded-full"
-                  :style="{ width: budgetRange.percentage + '%' }"
+                  class="absolute h-2 bg-white rounded-full"
+                  :style="{
+                    left:
+                      ((budgetRange.min - minBudget) /
+                        (maxBudget - minBudget)) *
+                        100 +
+                      '%',
+                    width:
+                      ((budgetRange.max - budgetRange.min) /
+                        (maxBudget - minBudget)) *
+                        100 +
+                      '%',
+                  }"
                 ></div>
-                <!-- Slider Handle -->
+                <!-- Min Handle -->
+                <input
+                  type="range"
+                  :min="minBudget"
+                  :max="maxBudget"
+                  :step="step"
+                  v-model.number="budgetRange.min"
+                  :style="{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    background: 'transparent',
+                    pointerEvents: 'auto',
+                    zIndex: 2,
+                  }"
+                  @input="handleMinInput"
+                />
+                <!-- Max Handle -->
+                <input
+                  type="range"
+                  :min="minBudget"
+                  :max="maxBudget"
+                  :step="step"
+                  v-model.number="budgetRange.max"
+                  :style="{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    background: 'transparent',
+                    pointerEvents: 'auto',
+                    zIndex: 3,
+                  }"
+                  @input="handleMaxInput"
+                />
+                <!-- Handles (visual) -->
                 <div
                   class="absolute top-1/2 transform -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-lg cursor-pointer"
                   :style="{
-                    left: budgetRange.percentage + '%',
+                    left:
+                      ((budgetRange.min - minBudget) /
+                        (maxBudget - minBudget)) *
+                        100 +
+                      '%',
                     marginLeft: '-12px',
+                    zIndex: 4,
                   }"
-                  @mousedown="startDrag"
-                  @touchstart="startDrag"
+                ></div>
+                <div
+                  class="absolute top-1/2 transform -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-lg cursor-pointer"
+                  :style="{
+                    left:
+                      ((budgetRange.max - minBudget) /
+                        (maxBudget - minBudget)) *
+                        100 +
+                      '%',
+                    marginLeft: '-12px',
+                    zIndex: 4,
+                  }"
                 ></div>
               </div>
-
               <!-- Range Labels -->
               <div class="flex justify-between text-white/60 text-sm mt-2">
                 <span>£50k</span>
@@ -67,9 +131,19 @@
                 <span>£200k</span>
                 <span>£250k</span>
                 <span>£300k</span>
-                <span>£350k</span>
-                <span>£400k+</span>
+                <span>£350k+</span>
               </div>
+            </div>
+
+            <!-- Display Selected Range -->
+            <div class="text-center text-white mt-4">
+              <span class="font-semibold">
+                Between £{{ budgetRange.min }}k and £{{
+                  budgetRange.max === maxBudget
+                    ? budgetRange.max + 'k+'
+                    : budgetRange.max + 'k'
+                }}
+              </span>
             </div>
           </div>
 
@@ -90,9 +164,7 @@
                 :name="option.icon"
                 class="w-6 h-6 mr-4"
                 :class="
-                  selectedAnswer === option.value
-                    ? 'text-brand-aqua'
-                    : 'text-white'
+                  selectedAnswer === option.value ? 'text-black' : 'text-white'
                 "
               />
               <span
@@ -106,10 +178,7 @@
                 {{ option.label }}
               </span>
               <div v-if="selectedAnswer === option.value" class="ml-auto">
-                <Icon
-                  name="i-heroicons-check-circle"
-                  class="w-6 h-6 text-brand-aqua"
-                />
+                <Icon name="i-heroicons-check" class="w-6 h-6 text-black" />
               </div>
             </div>
           </div>
@@ -144,9 +213,12 @@ const totalQuestions = 8
 
 const selectedAnswer = ref(null)
 const budgetRange = ref({
-  percentage: 40,
-  label: 'Between £150k and £250k',
+  min: 100, // starting value in thousands
+  max: 200, // ending value in thousands
 })
+const minBudget = 50
+const maxBudget = 350
+const step = 50
 
 // Question data based on screenshots
 const questions = {
@@ -380,4 +452,13 @@ onMounted(() => {
     updateBudgetLabel(budgetRange.value.percentage)
   }
 })
+
+function handleMinInput() {
+  if (budgetRange.value.min > budgetRange.value.max - step)
+    budgetRange.value.min = budgetRange.value.max - step
+}
+function handleMaxInput() {
+  if (budgetRange.value.max < budgetRange.value.min + step)
+    budgetRange.value.max = budgetRange.value.min + step
+}
 </script>
