@@ -386,6 +386,7 @@ onMounted(() => {
 const searchAddress = async () => {
   if (!form.value.postcode) return
 
+  console.log('Searching address for:', form.value.postcode)
   searchingAddress.value = true
 
   try {
@@ -455,3 +456,20 @@ const handleSubmit = async () => {
   // }
 }
 </script>
+
+<style>
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+.modal-fade-enter-to,
+.modal-fade-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+</style>
