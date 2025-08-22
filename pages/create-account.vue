@@ -18,7 +18,7 @@
           </div>
 
           <!-- Form -->
-          <div class="space-y-4">
+          <div class="space-y-5">
             <!-- First Name -->
             <div>
               <label class="block text-white text-sm font-medium mb-2">
@@ -72,7 +72,7 @@
               </label>
               <input
                 v-model="form.dateOfBirth"
-                type="text"
+                type="date"
                 placeholder="10 October 1990"
                 class="w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua"
                 :disabled="isLoading"
@@ -84,20 +84,29 @@
               <label class="block text-white text-sm font-medium mb-2">
                 Postcode
               </label>
-              <div class="flex space-x-2">
+              <div class="relative">
                 <input
                   v-model="form.postcode"
                   type="text"
                   placeholder="LE2 7"
-                  class="flex-1 h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua"
+                  class="w-full h-12 bg-white text-gray-900 rounded-xl px-4 pr-28 border-0 focus:ring-2 focus:ring-brand-aqua"
                   :disabled="isLoading"
                 />
                 <button
                   @click="searchAddress"
-                  class="h-12 px-6 bg-gray-800 text-white rounded-xl hover:bg-gray-700 font-medium"
+                  class="absolute top-1/2 right-2 -translate-y-1/2 h-9 px-4 bg-gray-800 text-white rounded-lg hover:bg-gray-700 font-medium flex items-center space-x-2 transition-colors disabled:opacity-60"
                   :disabled="searchingAddress"
                 >
-                  Search
+                  <!-- <Icon
+                    name="i-heroicons-magnifying-glass"
+                    class="w-5 h-5 mr-1"
+                  /> -->
+                  <img
+                    src="/public/icons/searchButton.svg"
+                    alt="Search Icon"
+                    class="w-5 h-5 mr-1"
+                  />
+                  <span>Search</span>
                 </button>
               </div>
             </div>
