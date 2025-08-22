@@ -329,9 +329,14 @@ definePageMeta({
   title: 'Create Account - UmovingU',
 })
 
-// Get email from query params if available
+// Get email from query params if available (SSR-safe)
 const route = useRoute()
-const prefilledEmail = route.query.email || ''
+const prefilledEmail = computed(() => {
+  if (process.client) {
+    return route.query.email || ''
+  }
+  return ''
+})
 
 // Form data
 const form = ref({
@@ -343,7 +348,7 @@ const form = ref({
   gender: '',
   password: '',
   confirmPassword: '',
-  email: prefilledEmail,
+  email: '', // Initialize as empty, will be set in onMounted
 })
 
 const isLoading = ref(false)
@@ -368,6 +373,13 @@ const isFormValid = computed(() => {
     form.value.confirmPassword &&
     form.value.password === form.value.confirmPassword
   )
+})
+
+// Add this onMounted hook to set the email after hydration
+onMounted(() => {
+  if (route?.query?.email) {
+    form.value.email = route.query.email;
+  }
 })
 
 // Methods
