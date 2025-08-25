@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile-container">
+  <div class="mobile-container backgound-image">
     <!-- Header with Back Button -->
     <main class="mobile-container__content">
       <div class="mobile-container__back">
