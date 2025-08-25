@@ -1,17 +1,19 @@
 <template>
-  <div class="mobile-container gradient-bg">
+  <div class="mobile-container backgound-image">
     <!-- Header -->
-    <header class="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-sm z-50">
-      <div class="flex items-center justify-between px-4 py-3 bg-black/10 backdrop-blur-sm">
-        <UButton 
+    <header
+      class="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-sm z-50"
+    >
+      <div
+        class="flex items-center justify-between px-4 py-3 bg-black/10 backdrop-blur-sm"
+      >
+        <UButton
           @click="$router.back()"
-          variant="ghost" 
+          variant="ghost"
           icon="i-heroicons-arrow-left"
           class="text-white"
         />
-        <div class="text-white font-semibold text-17-medium">
-          Log In
-        </div>
+        <div class="text-white font-semibold text-17-medium">Log In</div>
         <div class="w-8"></div>
       </div>
     </header>
@@ -21,12 +23,8 @@
       <div class="space-y-8">
         <!-- Welcome Back -->
         <div class="text-center space-y-2">
-          <h1 class="text-28-emphasized text-white">
-            Welcome Back
-          </h1>
-          <p class="text-16-medium text-white/70">
-            Sign in to your account
-          </p>
+          <h1 class="text-28-emphasized text-white">Welcome Back</h1>
+          <p class="text-16-medium text-white/70">Sign in to your account</p>
         </div>
 
         <!-- Login Form -->
@@ -97,14 +95,14 @@
 
 <script setup>
 definePageMeta({
-  title: 'Login - UmovingU'
+  title: 'Login - UmovingU',
 })
 
 // Form data
 const form = ref({
   email: '',
   password: '',
-  rememberMe: false
+  rememberMe: false,
 })
 
 const isLoading = ref(false)
@@ -112,11 +110,11 @@ const isLoading = ref(false)
 // Methods
 const handleSubmit = async () => {
   isLoading.value = true
-  
+
   try {
     // Simulate login for demo
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
     // Handle successful login
     await navigateTo('/thank-you')
   } catch (error) {
