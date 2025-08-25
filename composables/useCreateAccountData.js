@@ -25,6 +25,12 @@ export const useCreateAccountData = () => {
 
   // Computed
   const isFormValid = computed(() => {
+    console.log(
+      'Validating form:',
+      form.value,
+      'Selected address:',
+      selectedAddress.value
+    )
     return (
       form.value.firstName &&
       form.value.lastName &&
@@ -39,8 +45,16 @@ export const useCreateAccountData = () => {
     )
   })
 
+  watch(
+    () => form.value.mobile,
+    (val) => {
+      console.log('Mobile changed:', val)
+    }
+  )
+
   // Methods
   const searchAddress = async () => {
+    console.log('Searching address for postcode:', form.value.postcode)
     if (!form.value.postcode) return
 
     searchingAddress.value = true

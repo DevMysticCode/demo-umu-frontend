@@ -2,10 +2,26 @@
   <div>
     <label v-if="label" class="form-label">{{ label }}</label>
     <div class="phone-input">
+      <!-- <VueTelInput
+        mode="international"
+        :model-value="modelValue"
+        @update:model-value="onInput"
+        :disabled="disabled"
+        :inputoptions="{
+          inputClasses:
+            'w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua',
+          showDialCode: true,
+          showDialCodeInSelection: true,
+        }"
+        class="w-full"
+        :wrapper-options="{ wrapperClasses: 'rounded-xl' }"
+        :placeholder="placeholder"
+      /> -->
+
       <VueTelInput
         mode="international"
         :model-value="modelValue"
-        @update:model-value="emit('update:modelValue', $event)"
+        @update:model-value="onInput"
         :disabled="disabled"
         :inputoptions="{
           inputClasses:
@@ -43,9 +59,13 @@ defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
-
-const handleInput = (event) => {
-  emit('update:modelValue', event.target.value)
+function onInput(val) {
+  // If val is an object, extract the number property
+  console.log('PhoneInput.vue - onInput - val:', val)
+  emit(
+    'update:modelValue',
+    typeof val === 'object' && val !== null ? val.number : val
+  )
 }
 </script>
 

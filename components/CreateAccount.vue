@@ -83,7 +83,7 @@
           <div class="mobile-container__submit">
             <button
               @click="handleSubmit"
-              class="w-full form-button form-button--primary font-17-medium"
+              class="w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-17-medium rounded-xl transition-colors"
               :class="{ 'form-button--disabled': !isFormValid || isLoading }"
               :disabled="!isFormValid || isLoading"
             >

@@ -8,7 +8,7 @@
         :type="showPassword ? 'text' : 'password'"
         :placeholder="placeholder"
         :disabled="disabled"
-        class="form-input pr-12"
+        class="form-input form-input-password pr-12"
         :class="{ 'form-input--disabled': disabled }"
       />
       <button
