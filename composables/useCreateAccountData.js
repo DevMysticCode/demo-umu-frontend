@@ -6,7 +6,7 @@ export const useCreateAccountData = () => {
   const form = ref({
     firstName: '',
     lastName: '',
-    mobile: '',
+    mobile: '+44 1233456789',
     dateOfBirth: '',
     postcode: '',
     gender: '',
@@ -28,8 +28,8 @@ export const useCreateAccountData = () => {
     console.log(
       'Validating form:',
       form.value,
-      'Selected address:',
-      selectedAddress.value
+      'Selected mobile:',
+      form.value.mobile
     )
     return (
       form.value.firstName &&
@@ -115,6 +115,7 @@ export const useCreateAccountData = () => {
         body: {
           ...form.value,
           address: selectedAddress.value,
+          action: 'create_account',
         },
       })
 
