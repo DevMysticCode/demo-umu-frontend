@@ -1,7 +1,11 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ['@nuxt/ui', '@pinia/nuxt'],
-  css: ['~/assets/css/main.css', 'vue3-tel-input/dist/vue3-tel-input.css'],
+  css: [
+    '~/assets/css/main.css',
+    'vue3-tel-input/dist/vue3-tel-input.css',
+    '~/styles/components.css',
+  ],
   app: {
     head: {
       title: 'UmovingU - Your Property Toolkit',
@@ -45,4 +49,5 @@ export default defineNuxtConfig({
       apiBase: '/api',
     },
   },
+  components: true,
 })
