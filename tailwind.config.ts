@@ -13,10 +13,12 @@ export default <Config>{
     extend: {
       colors: {
         'brand-aqua': '#00a19a',
-        'purple-main': 'var(--purple-main500)',
+        'purple-main': '#7C3AED',
         'purple-light': 'var(--purple-main0)',
         'gray-dark': 'var(--gray-900)',
         'white-pure': 'var(--grays-white)',
+        purplemain50: 'var(--purple-main500)',
+        purplemain0: 'var(--purple-main0)',
       },
       fontFamily: {
         jakarta: ['Plus Jakarta Sans', 'sans-serif'],

@@ -151,7 +151,7 @@
 }
 
 .budget-slider__labels {
-  @apply flex justify-between text-white/60 text-sm mt-2;
+  @apply flex justify-between text-white/60 text-sm mt-4;
 }
 
 .budget-slider__selected {
