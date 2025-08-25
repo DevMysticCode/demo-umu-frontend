@@ -2,22 +2,6 @@
   <div>
     <label v-if="label" class="form-label">{{ label }}</label>
     <div class="phone-input">
-      <!-- <VueTelInput
-        mode="international"
-        :model-value="modelValue"
-        @update:model-value="onInput"
-        :disabled="disabled"
-        :inputoptions="{
-          inputClasses:
-            'w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua',
-          showDialCode: true,
-          showDialCodeInSelection: true,
-        }"
-        class="w-full"
-        :wrapper-options="{ wrapperClasses: 'rounded-xl' }"
-        :placeholder="placeholder"
-      /> -->
-
       <VueTelInput
         mode="international"
         :model-value="modelValue"
@@ -28,6 +12,7 @@
             'w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua',
           showDialCode: true,
           showDialCodeInSelection: true,
+          returnType: 'string',
         }"
         class="w-full"
         :wrapper-options="{ wrapperClasses: 'rounded-xl' }"
@@ -39,7 +24,8 @@
 
 <script setup>
 import { VueTelInput } from 'vue3-tel-input'
-defineProps({
+const emit = defineEmits(['update:modelValue'])
+const props = defineProps({
   modelValue: {
     type: String,
     default: '',
@@ -58,14 +44,15 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue'])
 function onInput(val) {
-  // If val is an object, extract the number property
-  console.log('PhoneInput.vue - onInput - val:', val)
-  emit(
-    'update:modelValue',
-    typeof val === 'object' && val !== null ? val.number : val
-  )
+  console.log('PhoneInput.vue onInput val:', val)
+  let value = ''
+  if (typeof val === 'object' && val !== null) {
+    value = val.number || ''
+  } else if (typeof val === 'string') {
+    value = val
+  }
+  emit('update:modelValue', value || '')
 }
 </script>
 
