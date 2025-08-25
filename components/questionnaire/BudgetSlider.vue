@@ -21,47 +21,43 @@
           }"
         ></div>
 
-        <!-- Min Handle -->
+        <!-- Min Handle Input -->
         <input
           type="range"
           :min="minBudget"
           :max="maxBudget"
           :step="step"
-          v-model.number="budgetRange.min"
-          class="budget-slider__input"
-          style="z-index: 2"
+          :value="budgetRange.min"
+          class="budget-slider__input budget-slider__input--min"
           @input="handleMinInput"
         />
 
-        <!-- Max Handle -->
+        <!-- Max Handle Input -->
         <input
           type="range"
           :min="minBudget"
           :max="maxBudget"
           :step="step"
-          v-model.number="budgetRange.max"
-          class="budget-slider__input"
-          style="z-index: 3"
+          :value="budgetRange.max"
+          class="budget-slider__input budget-slider__input--max"
           @input="handleMaxInput"
         />
 
         <!-- Visual Handles -->
         <div
-          class="budget-slider__handle"
+          class="budget-slider__handle budget-slider__handle--min"
           :style="{
             left:
               ((budgetRange.min - minBudget) / (maxBudget - minBudget)) * 100 +
               '%',
-            zIndex: 4,
           }"
         ></div>
         <div
-          class="budget-slider__handle"
+          class="budget-slider__handle budget-slider__handle--max"
           :style="{
             left:
               ((budgetRange.max - minBudget) / (maxBudget - minBudget)) * 100 +
               '%',
-            zIndex: 4,
           }"
         ></div>
       </div>
@@ -113,23 +109,27 @@ const props = defineProps({
 
 const emit = defineEmits(['update:budgetRange'])
 
-const handleMinInput = () => {
-  if (props.budgetRange.min > props.budgetRange.max - props.step) {
-    const newRange = {
-      ...props.budgetRange,
-      min: props.budgetRange.max - props.step,
-    }
-    emit('update:budgetRange', newRange)
+const handleMinInput = (event) => {
+  const newMin = parseInt(event.target.value)
+  let updatedRange = { ...props.budgetRange, min: newMin }
+
+  // Ensure min doesn't exceed max minus step
+  if (newMin >= props.budgetRange.max) {
+    updatedRange.min = props.budgetRange.max - props.step
   }
+
+  emit('update:budgetRange', updatedRange)
 }
 
-const handleMaxInput = () => {
-  if (props.budgetRange.max < props.budgetRange.min + props.step) {
-    const newRange = {
-      ...props.budgetRange,
-      max: props.budgetRange.min + props.step,
-    }
-    emit('update:budgetRange', newRange)
+const handleMaxInput = (event) => {
+  const newMax = parseInt(event.target.value)
+  let updatedRange = { ...props.budgetRange, max: newMax }
+
+  // Ensure max doesn't go below min plus step
+  if (newMax <= props.budgetRange.min) {
+    updatedRange.max = props.budgetRange.min + props.step
   }
+
+  emit('update:budgetRange', updatedRange)
 }
 </script>

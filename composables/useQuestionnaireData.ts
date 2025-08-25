@@ -30,7 +30,7 @@ export const useQuestionnaireData = (currentQuestion: number) => {
   const budgetRange = ref<BudgetRange>({
     min: 100,
     max: 200,
-    label: 'Between £100k and £200k',
+    label: 'Between £150k and £250k',
   })
 
   const minBudget: number = 50
@@ -220,6 +220,13 @@ export const useQuestionnaireData = (currentQuestion: number) => {
 
   const updateBudgetRange = (newRange: Partial<BudgetRange>): void => {
     budgetRange.value = { ...budgetRange.value, ...newRange }
+
+    // Update the label when range changes
+    const min = budgetRange.value.min
+    const max = budgetRange.value.max
+    budgetRange.value.label = `Between £${min}k and £${
+      max === maxBudget ? max + 'k+' : max + 'k'
+    }`
   }
 
   return {
