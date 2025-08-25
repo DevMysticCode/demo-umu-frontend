@@ -4,7 +4,8 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css',
     'vue3-tel-input/dist/vue3-tel-input.css',
-    '~/styles/components.css',
+    '~/assets/css/components.css',
+    '~/assets/css/questionnaire.css',
   ],
   app: {
     head: {

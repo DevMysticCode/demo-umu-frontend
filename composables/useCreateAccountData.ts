@@ -1,9 +1,31 @@
+import { ref, computed, watch, Ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { navigateTo } from 'nuxt/app'
+
+interface Address {
+  id: number
+  line1: string
+  line2: string
+}
+
+interface FormData {
+  firstName: string
+  lastName: string
+  mobile: string
+  dateOfBirth: string
+  postcode: string
+  gender: string
+  password: string
+  confirmPassword: string
+  email: string
+}
+
 export const useCreateAccountData = () => {
   const route = useRoute()
-  const prefilledEmail = route.query.email || ''
+  const prefilledEmail = (route.query.email as string) || ''
 
   // Form data
-  const form = ref({
+  const form = ref<FormData>({
     firstName: '',
     lastName: '',
     mobile: '+44 1233456789',
@@ -20,28 +42,22 @@ export const useCreateAccountData = () => {
   const searchingAddress = ref(false)
   const showAddressModal = ref(false)
   const showTermsModal = ref(false)
-  const selectedAddress = ref(null)
-  const addressResults = ref([])
+  const selectedAddress = ref<Address | null>(null)
+  const addressResults = ref<Address[]>([])
 
   // Computed
-  const isFormValid = computed(() => {
-    console.log(
-      'Validating form:',
-      form.value,
-      'Selected mobile:',
-      form.value.mobile
-    )
+  const isFormValid = computed<boolean>(() => {
     return (
-      form.value.firstName &&
-      form.value.lastName &&
-      form.value.mobile &&
-      form.value.dateOfBirth &&
-      form.value.postcode &&
-      form.value.gender &&
-      form.value.password &&
-      form.value.confirmPassword &&
+      !!form.value.firstName &&
+      !!form.value.lastName &&
+      !!form.value.mobile &&
+      !!form.value.dateOfBirth &&
+      !!form.value.postcode &&
+      !!form.value.gender &&
+      !!form.value.password &&
+      !!form.value.confirmPassword &&
       form.value.password === form.value.confirmPassword &&
-      selectedAddress.value // Address must be selected
+      !!selectedAddress.value
     )
   })
 
@@ -53,8 +69,7 @@ export const useCreateAccountData = () => {
   )
 
   // Methods
-  const searchAddress = async () => {
-    console.log('Searching address for postcode:', form.value.postcode)
+  const searchAddress = async (): Promise<void> => {
     if (!form.value.postcode) return
 
     searchingAddress.value = true
@@ -84,33 +99,31 @@ export const useCreateAccountData = () => {
       showAddressModal.value = true
     } catch (error) {
       console.error('Address search failed:', error)
-      // Handle error - maybe show a toast notification
     } finally {
       searchingAddress.value = false
     }
   }
 
-  const selectAddress = (address) => {
+  const selectAddress = (address: Address): void => {
     selectedAddress.value = address
     showAddressModal.value = false
   }
 
-  const editAddress = () => {
+  const editAddress = (): void => {
     selectedAddress.value = null
   }
 
-  const acceptTerms = () => {
+  const acceptTerms = (): void => {
     showTermsModal.value = false
-    // You might want to set a flag here to track that terms were accepted
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!isFormValid.value) return
 
     isLoading.value = true
 
     try {
-      const response = await $fetch('/api/auth/register', {
+      await $fetch('/api/auth/register', {
         method: 'POST',
         body: {
           ...form.value,
@@ -119,21 +132,19 @@ export const useCreateAccountData = () => {
         },
       })
 
-      // Navigate to thank you page
       await navigateTo('/thank-you')
     } catch (error) {
       console.error('Registration failed:', error)
-      // Handle error - show error message to user
     } finally {
       isLoading.value = false
     }
   }
 
-  const closeAddressModal = () => {
+  const closeAddressModal = (): void => {
     showAddressModal.value = false
   }
 
-  const closeTermsModal = () => {
+  const closeTermsModal = (): void => {
     showTermsModal.value = false
   }
 
