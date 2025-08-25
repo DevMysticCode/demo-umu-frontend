@@ -63,7 +63,7 @@
       </div>
 
       <!-- Range Labels -->
-      <div class="budget-slider__labels">
+      <div class="budget-slider__labels mt-4">
         <span>£50k</span>
         <span>£100k</span>
         <span>£150k</span>
@@ -75,7 +75,7 @@
     </div>
 
     <!-- Display Selected Range -->
-    <div class="budget-slider__selected">
+    <!-- <div class="budget-slider__selected">
       <span class="budget-slider__selected-text">
         Between £{{ budgetRange.min }}k and £{{
           budgetRange.max === maxBudget
@@ -83,7 +83,7 @@
             : budgetRange.max + 'k'
         }}
       </span>
-    </div>
+    </div> -->
   </div>
 </template>
 

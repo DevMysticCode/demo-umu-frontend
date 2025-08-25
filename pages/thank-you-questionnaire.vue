@@ -84,10 +84,10 @@ definePageMeta({
 })
 
 const continueToApp = () => {
-  navigateTo('/dashboard')
+  navigateTo('/find-property')
 }
 
 const skipToApp = () => {
-  navigateTo('/dashboard')
+  navigateTo('/find-property')
 }
 </script>

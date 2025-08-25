@@ -147,5 +147,5 @@ const {
 </script>
 
 <style scoped>
-@import '../styles/components.css';
+@import '../assets/css/components.css';
 </style>
