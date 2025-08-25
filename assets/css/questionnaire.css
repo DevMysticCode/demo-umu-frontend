@@ -1,0 +1,165 @@
+/* Questionnaire Components CSS with BEM naming */
+
+/* Question Header */
+.question-header {
+  @apply flex items-center justify-between mb-6;
+}
+
+.question-header__skip {
+  @apply bg-black/50 text-white font-medium text-[17px] px-2 py-1 rounded-full transition-all duration-200 hover:bg-brand-aqua;
+}
+
+/* Question Content */
+.question-content {
+  @apply flex-1 flex flex-col justify-center;
+}
+
+.question-content__number {
+  @apply text-white/60 text-sm mb-4;
+}
+
+.question-content__title {
+  @apply text-28-emphasized text-white mb-12 leading-tight;
+}
+
+.question-content__subtitle {
+  @apply text-16-medium text-white/70 mb-8 -mt-8;
+}
+
+/* Question Options */
+.question-options {
+  @apply space-y-4;
+}
+
+.question-option {
+  @apply flex items-center p-4 rounded-xl cursor-pointer transition-all duration-200;
+}
+
+.question-option--selected {
+  @apply bg-white border-2 border-white;
+}
+
+.question-option--unselected {
+  @apply bg-white/10 border-2 border-transparent hover:bg-white/20;
+}
+
+.question-option__icon {
+  @apply w-6 h-6 mr-4;
+}
+
+.question-option__icon--selected {
+  @apply text-black;
+}
+
+.question-option__icon--unselected {
+  @apply text-white;
+}
+
+.question-option__label {
+  @apply font-medium;
+}
+
+.question-option__label--selected {
+  @apply text-gray-900;
+}
+
+.question-option__label--unselected {
+  @apply text-white;
+}
+
+.question-option__check {
+  @apply ml-auto w-6 h-6 text-black;
+}
+
+/* Budget Slider */
+.budget-slider {
+  @apply space-y-6;
+}
+
+.budget-slider__current {
+  @apply text-center text-white mb-8;
+}
+
+.budget-slider__current-label {
+  @apply text-lg;
+}
+
+.budget-slider__container {
+  @apply relative;
+}
+
+.budget-slider__track {
+  @apply w-full h-2 bg-white/20 rounded-full relative;
+}
+
+.budget-slider__range {
+  @apply absolute h-2 bg-white rounded-full;
+}
+
+.budget-slider__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
+.budget-slider__input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.budget-slider__input::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  border: none;
+}
+
+.budget-slider__handle {
+  @apply absolute top-1/2 transform -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-lg cursor-pointer;
+  margin-left: -12px;
+}
+
+.budget-slider__labels {
+  @apply flex justify-between text-white/60 text-sm mt-2;
+}
+
+.budget-slider__selected {
+  @apply text-center text-white mt-4;
+}
+
+.budget-slider__selected-text {
+  @apply font-semibold;
+}
+
+/* Continue Button */
+.continue-button {
+  @apply pt-8;
+}
+
+.continue-button__btn {
+  @apply w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 disabled:bg-white/20 disabled:text-white/50 text-white rounded-xl transition-colors flex items-center justify-center;
+}
+
+.continue-button__icon {
+  @apply w-5 h-5 ml-2;
+}
+
+.questionnaire-main {
+  @apply pt-6 pb-32 px-6 flex flex-col justify-between min-h-screen;
+}
