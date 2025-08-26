@@ -2,8 +2,14 @@
   <div class="mobile-container backgound-image">
     <ProgressBar :steps="slides.length" :currentStep="currentSlideIndex" />
     <LogoAndSkip @onClick="onSkipClick" />
-    <TitleAndText :title="currentSlide?.title" :description="currentSlide?.description" />
-    <CreateAccountOrLogin @onCreateAccount="onCreateAccount" @onLogin="onLogin" />
+    <TitleAndText
+      :title="currentSlide?.title"
+      :description="currentSlide?.description"
+    />
+    <CreateAccountOrLogin
+      @onCreateAccount="onCreateAccount"
+      @onLogin="onLogin"
+    />
   </div>
 </template>
 
@@ -21,7 +27,7 @@ const onCreateAccount = async () => {
 }
 
 const onLogin = async () => {
-  await navigateTo('/login')
+  await navigateTo('/signup')
 }
 
 const onSkipClick = () => {
@@ -49,7 +55,7 @@ const onSkipClick = () => {
   z-index: 1;
 }
 
-.backgound-image>* {
+.backgound-image > * {
   position: relative;
   z-index: 2;
 }
