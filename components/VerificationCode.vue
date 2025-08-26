@@ -97,7 +97,7 @@ const {
 }
 
 .verification-content__header {
-  @apply text-center mb-12;
+  @apply text-start mb-12;
 }
 
 .verification-content__title {

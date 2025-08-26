@@ -16,7 +16,7 @@
     <div class="relative z-10">
       <!-- Main Content -->
       <main
-        class="pt-6 pb-32 px-6 flex flex-col items-center justify-center min-h-screen text-center"
+        class="pt-6 pb-6 px-6 flex flex-col items-center justify-center min-h-screen text-center"
       >
         <!-- Back Button -->
         <div class="absolute top-6 left-6">
