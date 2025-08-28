@@ -3,7 +3,6 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui', '@pinia/nuxt'],
   css: [
     '~/assets/css/main.css',
-    'vue3-tel-input/dist/vue3-tel-input.css',
     '~/assets/css/components.css',
     '~/assets/css/questionnaire.css',
   ],

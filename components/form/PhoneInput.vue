@@ -2,7 +2,7 @@
   <div class="phone-input">
     <label v-if="label" class="phone-input__label">{{ label }}</label>
     <div class="phone-input__container">
-      <VueTelInput
+      <!-- <VueTelInput
         mode="international"
         :model-value="modelValue"
         @update:model-value="onInput"
@@ -17,13 +17,13 @@
         class="w-full"
         :wrapper-options="{ wrapperClasses: 'rounded-xl' }"
         :placeholder="placeholder"
-      />
+      /> -->
     </div>
   </div>
 </template>
 
 <script setup>
-import { VueTelInput } from 'vue3-tel-input'
+// import { VueTelInput } from 'vue3-tel-input'
 
 const props = defineProps({
   modelValue: {
