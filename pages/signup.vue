@@ -1,116 +1,58 @@
 <template>
-  <div class="mobile-container gradient-bg backgound-image">
-    <div class="relative z-10">
-      <!-- Main Content -->
-      <main class="pt-6 pb-8 px-6">
-        <!-- Back Button -->
-        <div class="mb-6">
-          <!-- <UButton
-            @click="$router.back()"
-            variant="ghost"
-            class="text-white flex items-center space-x-1 px-0 hover:bg-transparent"
-          >
-            <Icon name="i-heroicons-chevron-left" class="w-6 h-6" />
-            <span class="text-base font-medium">Back</span>
-          </UButton> -->
-          <BackButton />
-        </div>
-        <div class="space-y-8">
-          <!-- Logo and Welcome -->
-          <div class="space-y-4">
-            <div class="w-20 h-16 flex items-start justify-start mb-6">
-              <!-- <Icon name="i-heroicons-home" class="w-12 h-12 text-white" /> -->
-              <OPIcon name="logo" class="w-18 h-16 me-auto" />
-            </div>
+  <div class="mobile-container backgound-image">
 
-            <div class="space-y-2">
-              <h1 class="text-22-emphasized text-white">
-                Welcome to UmovingU, it's great to have you back!
-              </h1>
-              <p class="text-12-regular text-white/50">
-                Powered by Open Property
-              </p>
-            </div>
+    <!-- Main Content -->
+    <main class="content">
+
+      <!-- Logo and Welcome -->
+      <div class="logo-and-welcome">
+        <OPIcon name="logo" class="w-16 h-16" />
+        <h1 class="text-[34px] font-bold text-white">
+          Welcome to UmovingU, it's great to have you back!
+        </h1>
+      </div>
+
+      <div class=" login-options">
+
+        <div class="social-logins">
+          <UButton class="social-logins__button" @click="handleSocialLogin('apple')">
+            <OPIcon name="apple" class="w-5 h-5" />
+            Continue with Apple
+          </UButton>
+
+          <UButton class="social-logins__button" @click="handleSocialLogin('google')">
+            <OPIcon name="google" class="w-5 h-5" />
+            Continue with Google
+          </UButton>
+
+          <UButton class="social-logins__button" @click="handleSocialLogin('facebook')">
+            <OPIcon name="facebook" class="w-5 h-5" />
+            Continue with Facebook
+          </UButton>
+        </div>
+
+        <!-- Divider -->
+
+        <!-- Email Form -->
+
+        <form class="email-form">
+          <div class="email-form__divider">
+            <div class="flex-1 h-px bg-white/80"></div>
+            <span class="text-white/80 text-sm">or login with email</span>
+            <div class="flex-1 h-px bg-white/80"></div>
           </div>
 
-          <div
-            class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md px-4 pb-6"
-          >
-            <!-- Social Login Buttons -->
-            <div class="space-y-3 mt-4">
-              <button
-                @click="handleSocialLogin('apple')"
-                class="w-full h-12 bg-white text-gray-900 font-17-medium rounded-xl hover:bg-gray-50 flex items-center justify-center transition-colors"
-                :disabled="socialLoading.apple"
-              >
-                <img src="/public/icons/Apple.svg" class="w-5 h-5 mr-2" />
-                {{
-                  socialLoading.apple ? 'Connecting...' : 'Continue with Apple'
-                }}
-              </button>
+          <input v-model="email" type="email" placeholder="yourmail@email.com"
+            class="w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua"
+            :disabled="isLoading" />
 
-              <button
-                @click="handleSocialLogin('google')"
-                class="w-full h-12 bg-white text-gray-900 font-17-medium rounded-xl hover:bg-gray-50 flex items-center justify-center transition-colors"
-                :disabled="socialLoading.google"
-              >
-                <img src="/public/icons/Google.svg" class="w-5 h-5 mr-2" />
-                {{
-                  socialLoading.google
-                    ? 'Connecting...'
-                    : 'Continue with Google'
-                }}
-              </button>
+          <UButton class="email-form__button" @click="handleEmailContinue">
+            Log In
+          </UButton>
+        </form>
+      </div>
+    </main>
 
-              <button
-                @click="handleSocialLogin('facebook')"
-                class="w-full h-12 bg-white text-gray-900 font-17-medium rounded-xl hover:bg-gray-50 flex items-center justify-center transition-colors"
-                :disabled="socialLoading.facebook"
-              >
-                <img src="/public/icons/Facebook.svg" class="w-5 h-5 mr-2" />
-                {{
-                  socialLoading.facebook
-                    ? 'Connecting...'
-                    : 'Continue with Facebook'
-                }}
-              </button>
-            </div>
-
-            <!-- Divider -->
-            <div class="flex items-center space-x-4 mb-4 mt-6">
-              <div class="flex-1 h-px bg-white/20"></div>
-              <span class="text-white/70 text-sm">or login with email</span>
-              <div class="flex-1 h-px bg-white/20"></div>
-            </div>
-
-            <!-- Email Form -->
-            <div class="space-y-4">
-              <div>
-                <label class="block text-white text-sm font-medium mb-2">
-                  Account email
-                </label>
-                <input
-                  v-model="email"
-                  type="email"
-                  placeholder="yourmail@email.com"
-                  class="w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua"
-                  :disabled="isLoading"
-                />
-              </div>
-
-              <button
-                @click="handleEmailContinue"
-                class="w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-17-medium rounded-xl transition-colors flex items-center justify-center"
-                :disabled="!email || !isValidEmail || isLoading"
-              >
-                {{ isLoading ? 'Checking...' : 'Continue' }}
-                <Icon name="i-heroicons-arrow-right" class="w-5 h-5 ml-2" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
   </div>
 </template>
 
@@ -186,3 +128,40 @@ const handleEmailContinue = async () => {
   }
 }
 </script>
+
+<style scoped>
+.content {
+  @apply pt-6 px-4;
+  @apply flex flex-col justify-between;
+}
+
+.login-options {
+  @apply flex flex-col justify-between;
+}
+
+.email-form {
+  @apply space-y-4;
+
+  &__button {
+    @apply flex items-center justify-center;
+    @apply w-full h-[50px] rounded-xl shadow-lg transition-colors;
+    @apply bg-brand-aqua;
+    @apply text-white text-[17px];
+  }
+
+  &__divider {
+    @apply flex items-center space-x-4 mb-4 mt-6;
+  }
+}
+
+.social-logins {
+  @apply space-y-2 mt-4;
+
+  &__button {
+    @apply flex items-center justify-center;
+    @apply w-full h-[50px] rounded-xl shadow-lg transition-colors;
+    @apply bg-white;
+    @apply text-black text-[17px];
+  }
+}
+</style>
