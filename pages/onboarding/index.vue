@@ -23,11 +23,11 @@ import CreateAccountOrLogin from '@/components/CreateAccountOrLogIn.vue'
 const { slides, currentSlideIndex, currentSlide } = useWelcomePageData()
 
 const onCreateAccount = async () => {
-  await navigateTo('/signup')
+  await navigateTo('/onboarding/signup')
 }
 
 const onLogin = async () => {
-  await navigateTo('/signup')
+  await navigateTo('/onboarding/signup')
 }
 
 const onSkipClick = () => {
