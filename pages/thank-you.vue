@@ -59,7 +59,7 @@ definePageMeta({
 })
 
 const continueToQuestionnaire = () => {
-  navigateTo('/questionnaire/1')
+  navigateTo('/onboarding/questionnaire/1')
 }
 
 const skipToApp = () => {

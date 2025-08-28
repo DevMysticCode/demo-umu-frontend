@@ -41,12 +41,12 @@
 </template>
 
 <script setup>
-import { useQuestionnaireData } from '../../composables/useQuestionnaireData'
-import QuestionHeader from '../../components/questionnaire/QuestionHeader.vue'
-import QuestionContent from '../../components/questionnaire/QuestionContent.vue'
-import QuestionOptions from '../../components/questionnaire/QuestionOptions.vue'
-import BudgetSlider from '../../components/questionnaire/BudgetSlider.vue'
-import ContinueButton from '../../components/questionnaire/ContinueButton.vue'
+import { useQuestionnaireData } from '@/composables/useQuestionnaireData'
+import QuestionHeader from '@/components/questionnaire/QuestionHeader.vue'
+import QuestionContent from '@/components/questionnaire/QuestionContent.vue'
+import QuestionOptions from '@/components/questionnaire/QuestionOptions.vue'
+import BudgetSlider from '@/components/questionnaire/BudgetSlider.vue'
+import ContinueButton from '@/components/questionnaire/ContinueButton.vue'
 
 // For non-Nuxt environments, we'll use a simple approach
 const route = useRoute ? useRoute() : { params: { id: '1' } }
@@ -104,5 +104,5 @@ if (typeof definePageMeta === 'function') {
 </script>
 
 <style>
-@import '../../assets/css/questionnaire.css';
+@import '@/assets/css/questionnaire.css';
 </style>
