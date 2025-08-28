@@ -135,7 +135,7 @@ const handleEdit = () => {
 }
 
 .address-search__button {
-  @apply flex items-center gap-2 h-9 px-3 bg-teal-100 text-teal-600 rounded-full font-medium text-sm cursor-pointer transition-all duration-200;
+  @apply flex items-center gap-1 h-9 px-3 bg-teal-100 text-teal-600 rounded-full font-medium text-sm cursor-pointer transition-all duration-200;
 }
 
 .address-search__button:hover:not(:disabled) {
