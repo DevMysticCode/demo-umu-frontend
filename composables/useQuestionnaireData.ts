@@ -204,7 +204,7 @@ export const useQuestionnaireData = (currentQuestion: number) => {
 
   const getNextRoute = (): string => {
     if (currentQuestion < totalQuestions) {
-      return `/questionnaire/${currentQuestion + 1}`
+      return `/onboarding/questionnaire/${currentQuestion + 1}`
     } else {
       return '/thank-you-questionnaire'
     }
@@ -212,7 +212,7 @@ export const useQuestionnaireData = (currentQuestion: number) => {
 
   const goBack = (): string => {
     if (currentQuestion > 1) {
-      return `/questionnaire/${currentQuestion - 1}`
+      return `/onboarding/questionnaire/${currentQuestion - 1}`
     } else {
       return '/thank-you'
     }
