@@ -28,7 +28,7 @@ export const useCreateAccountData = () => {
   const form = ref<FormData>({
     firstName: '',
     lastName: '',
-    mobile: '+44 1233456789',
+    mobile: '',
     dateOfBirth: '',
     postcode: '',
     gender: '',

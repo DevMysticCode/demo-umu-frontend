@@ -46,10 +46,11 @@
           />
 
           <!-- Mobile Number -->
-          <PhoneInput
+          <FormInput
             v-model="form.mobile"
-            label="Mobile Number"
-            placeholder="(000) 000-0000"
+            label="UK Mobile Number (+44)"
+            type="tel"
+            placeholder="07123456789"
             :disabled="isLoading"
           />
 
@@ -125,10 +126,9 @@
 </template>
 
 <script setup>
-import { useCreateAccountData } from '../composables/useCreateAccountData'
+import { useCreateAccountData } from '@/composables/useCreateAccountData'
 import FormInput from './form/FormInput.vue'
 import PasswordInput from './form/PasswordInput.vue'
-import PhoneInput from './form/PhoneInput.vue'
 import GenderSelector from './form/GenderSelector.vue'
 import AddressSearch from './form/AddressSearch.vue'
 import AddressSearchModal from './modals/AddressSearchModal.vue'
