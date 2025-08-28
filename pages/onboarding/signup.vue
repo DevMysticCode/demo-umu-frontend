@@ -80,13 +80,10 @@ const handleSocialLogin = async (provider) => {
 
   try {
     // Simulate social login API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    // In a real app, you would handle OAuth flow here
-    console.log(`Logging in with ${provider}`)
+    // await new Promise((resolve) => setTimeout(resolve, 1500))
 
     // Navigate to thank you page
-    await navigateTo('/thank-you')
+    await navigateTo('/onboarding/create-account')
   } catch (error) {
     console.error(`${provider} login failed:`, error)
   } finally {
