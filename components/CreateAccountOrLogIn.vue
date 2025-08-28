@@ -32,7 +32,7 @@ const onLogin = () => {
 
 <style scoped>
 .create-account-or-login {
-  @apply fixed bottom-0 max-w-md w-full px-7 pb-11;
+  @apply fixed bottom-0 max-w-md w-full px-7 pb-6;
 
   &__buttons {
     @apply flex flex-col gap-3;
