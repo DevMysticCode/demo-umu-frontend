@@ -26,6 +26,9 @@ const iconPath = (() => {
     'check': '/op-icons/Check.svg',
     'home-search': '/op-icons/Home-Search.svg',
     'building-community': '/op-icons/Building-Community.svg',
+    'apple': '/op-icons/Apple.svg',
+    'google': '/op-icons/Google.svg',
+    'facebook': '/op-icons/Facebook.svg',
   };
   
   return iconMap[props.name] || '/op-icons/default.svg';
