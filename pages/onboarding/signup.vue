@@ -1,8 +1,6 @@
 <template>
   <div class="mobile-container backgound-image content">
 
-    <!-- Main Content -->
-
     <!-- Logo and Welcome -->
     <div class="logo-and-welcome">
       <OPIcon name="logo" class="w-16 h-16" />
@@ -14,40 +12,43 @@
     <div class="login-options">
 
       <div class="social-logins">
-        <UButton class="social-logins__button" @click="handleSocialLogin('apple')">
+        <button class="social-logins__button" @click="handleSocialLogin('apple')">
           <OPIcon name="apple" class="w-5 h-5" />
           Continue with Apple
-        </UButton>
+        </button>
 
-        <UButton class="social-logins__button" @click="handleSocialLogin('google')">
+        <button class="social-logins__button" @click="handleSocialLogin('google')">
           <OPIcon name="google" class="w-5 h-5" />
           Continue with Google
-        </UButton>
+        </button>
 
-        <UButton class="social-logins__button" @click="handleSocialLogin('facebook')">
+        <button class="social-logins__button" @click="handleSocialLogin('facebook')">
           <OPIcon name="facebook" class="w-5 h-5" />
           Continue with Facebook
-        </UButton>
+        </button>
       </div>
 
       <!-- Divider -->
 
       <!-- Email Form -->
 
-      <form class="email-form">
+      <form class="email-form" @submit.prevent="handleEmailContinue">
         <div class="email-form__divider">
           <div class="flex-1 h-px bg-white/80"></div>
           <span class="text-white/80 text-sm">or login with email</span>
           <div class="flex-1 h-px bg-white/80"></div>
         </div>
 
-        <input v-model="email" type="email" placeholder="yourmail@email.com"
+        <input
+          type="email" 
+          required
+          placeholder="your@email.com"
           class="w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua"
-          :disabled="isLoading" />
+        />
 
-        <UButton class="email-form__button" @click="handleEmailContinue">
+        <button class="email-form__button" type="submit">
           Log In
-        </UButton>
+        </button>
       </form>
     </div>
 
@@ -141,7 +142,7 @@ const handleEmailContinue = async () => {
   @apply space-y-2 mt-4;
 
   &__button {
-    @apply flex items-center justify-center;
+    @apply flex items-center justify-center gap-2;
     @apply w-full h-[50px] rounded-xl shadow-lg transition-colors;
     @apply bg-white;
     @apply text-black text-[17px];
