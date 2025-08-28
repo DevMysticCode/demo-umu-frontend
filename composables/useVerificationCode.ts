@@ -69,7 +69,7 @@ export const useVerificationCode = () => {
       console.log('Verification successful!')
       // Navigate to create account page
       setTimeout(() => {
-        window.location.href = '/create-account'
+        window.location.href = '/onboarding/create-account'
       }, 500)
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Verification failed'
