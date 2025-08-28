@@ -13,6 +13,6 @@ if (typeof definePageMeta === 'function') {
 }
 
 const verifyCode = async (provider) => {
-  await navigateTo('//create-account')
+  await navigateTo('/onboarding/create-account')
 }
 </script>
