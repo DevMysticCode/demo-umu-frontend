@@ -165,6 +165,12 @@ const goBack = () => {
   @apply min-h-screen bg-gray-50;
   max-width: 428px;
   margin: 0 auto;
+  background: linear-gradient(
+    180deg,
+    #f1f1f1 0%,
+    #eff3f3 74.35%,
+    #e6fbfa 99.53%
+  );
 }
 
 /* Main Content */
