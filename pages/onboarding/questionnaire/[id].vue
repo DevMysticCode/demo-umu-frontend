@@ -102,7 +102,3 @@ if (typeof definePageMeta === 'function') {
   })
 }
 </script>
-
-<style>
-@import '@/assets/css/questionnaire.css';
-</style>
