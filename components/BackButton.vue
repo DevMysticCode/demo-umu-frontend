@@ -2,7 +2,7 @@
   <UButton
     @click="handleBack"
     variant="ghost"
-    class="text-white flex items-center space-x-1 px-0 hover:bg-transparent"
+    class="text-white flex items-center space-x-1 px-0 hover:bg-transparent back_button"
   >
     <Icon name="i-heroicons-chevron-left" class="w-6 h-6" />
     <span class="text-base font-medium">Back</span>
