@@ -3,7 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import VerificationCode from '../components/VerificationCode.vue'
+import VerificationCode from '@/components/VerificationCode.vue'
+import { navigateTo } from 'nuxt/app'
 
 // Set page meta if available
 if (typeof definePageMeta === 'function') {
