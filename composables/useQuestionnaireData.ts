@@ -206,7 +206,7 @@ export const useQuestionnaireData = (currentQuestion: number) => {
     if (currentQuestion < totalQuestions) {
       return `/onboarding/questionnaire/${currentQuestion + 1}`
     } else {
-      return '/thank-you-questionnaire'
+      return '/onboarding/questionnaire/thank-you'
     }
   }
 
