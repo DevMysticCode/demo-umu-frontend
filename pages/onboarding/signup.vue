@@ -110,7 +110,7 @@ const handleEmailContinue = async () => {
       // Navigate to login with email pre-filled
       await navigateTo(`/login?email=${encodeURIComponent(email.value)}`)
     } else {
-      await navigateTo(`/verification`)
+      await navigateTo(`/onboarding/verification`)
       // Navigate to create account flow
       // await navigateTo(
       //   `/onboarding//create-account?email=${encodeURIComponent(email.value)}`
@@ -119,7 +119,7 @@ const handleEmailContinue = async () => {
   } catch (error) {
     console.error('Email check failed:', error)
     // For demo, just navigate to verification
-    await navigateTo(`/verification`)
+    await navigateTo(`/onboarding/verification`)
     // await navigateTo(`/onboarding//create-account?email=${encodeURIComponent(email.value)}`)
   } finally {
     isLoading.value = false
