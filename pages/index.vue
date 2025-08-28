@@ -17,9 +17,9 @@
     </div>
 
     <!-- Bottom Section -->
-    <div class="welcome-page__bottom">
+    <div class="welcome-page__actions">
       <!-- Begin Journey Button -->
-      <button @click="beginJourney" class="w-100 welcome-page__button">
+      <button @click="beginJourney" class="welcome-page__button">
         Begin your journey
       </button>
     </div>
@@ -63,13 +63,13 @@ const beginJourney = () => {
 }
 
 /* Bottom Section */
-.welcome-page__bottom {
+.welcome-page__actions {
 @apply fixed bottom-0 max-w-md w-full px-7 pb-6;
 }
 
 /* Begin Journey Button */
 .welcome-page__button {
-  @apply w-full h-14 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-semibold text-lg rounded-xl transition-colors shadow-lg;
+  @apply w-full h-14 bg-brand-aqua hover:bg-brand-aqua/90 rounded-xl transition-colors shadow-lg;
+  @apply text-white text-[17px];
 }
-
 </style>
