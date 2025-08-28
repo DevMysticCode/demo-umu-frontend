@@ -1,15 +1,11 @@
 <template>
   <div class="logo-and-skip">
-    <img class="logo-and-skip__logo" src="/public/logo.svg" alt="Logo" />
-    <UButton class="logo-and-skip__button" @click="onClick">
-      Skip
-    </UButton>
+    <OPIcon name="logo" class="w-10 h-10" />
   </div>
 </template>
 
-<script setup lang="ts">
-const emit = defineEmits(['onClick']);
-const onClick = () => emit('onClick');
+<script setup>
+import OPIcon from '@/components/OPIcon.vue';
 </script>
 
 <style scoped>
