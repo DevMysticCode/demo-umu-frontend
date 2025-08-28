@@ -14,7 +14,7 @@
         <!-- Logo -->
         <div class="w-24 h-20 mb-8 flex items-center justify-center relative">
           <!-- <Icon name="i-heroicons-home" class="w-14 h-14 text-white" /> -->
-          <img src="/public/logo_new.svg" alt="Logo" class="w-24 h-20" />
+          <OPIcon name="logo" class="w-24 h-20" />
         </div>
 
         <!-- Main Text -->

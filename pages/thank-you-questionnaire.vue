@@ -25,7 +25,7 @@
 
         <!-- Logo -->
         <div class="w-24 h-20 mb-8 flex items-center justify-center relative">
-          <img src="/public/logo_new.svg" alt="Logo" class="w-24 h-20" />
+          <OPIcon name="logo" class="w-24 h-20" />
           <!-- Sparkle effects around logo -->
           <div
             class="absolute -top-2 -right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"

@@ -20,11 +20,7 @@
           <div class="space-y-4">
             <div class="w-20 h-16 flex items-start justify-start mb-6">
               <!-- <Icon name="i-heroicons-home" class="w-12 h-12 text-white" /> -->
-              <img
-                src="/public/logo_new.svg"
-                alt="Logo"
-                class="w-18 h-16 me-auto"
-              />
+              <OPIcon name="logo" class="w-18 h-16 me-auto" />
             </div>
 
             <div class="space-y-2">
