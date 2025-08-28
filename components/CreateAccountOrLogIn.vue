@@ -1,15 +1,12 @@
 <template>
   <footer class="create-account-or-login">
     <div class="create-account-or-login__buttons">
-      <UButton
-        @click="onCreateAccount" 
+      <UButton @click="onCreateAccount"
         class="create-account-or-login__button create-account-or-login__button-create-account">
         Create Account
       </UButton>
 
-      <UButton
-        @click="onLogin"
-        class="create-account-or-login__button create-account-or-login__button--login">
+      <UButton @click="onLogin" class="create-account-or-login__button create-account-or-login__button--login">
         Log in
       </UButton>
     </div>
@@ -52,15 +49,17 @@ const onLogin = () => {
     font-size: 17px;
   }
 
-  &__button-create-account {
-    background-color: var(--brand-alt-aqua); /* TODO these should be themed */
+  &__button--login {
+    background-color: var(--brand-alt-aqua);
+
+    /* TODO these should be themed */
     &:hover {
       /* TODO: this is a hack to make the button look like it's active. Need input from designer */
       background-color: color-mix(in srgb, var(--brand-alt-aqua) 70%, white 30%);
     }
   }
 
-  &__button--login {
+  &__button-create-account {
     @apply bg-white;
     color: var(--brand-alt-aqua);
 
@@ -69,6 +68,6 @@ const onLogin = () => {
       background-color: color-mix(in srgb, var(--grays-white) 70%, var(--brand-alt-aqua) 30%);
     }
   }
-  
+
 }
 </style>

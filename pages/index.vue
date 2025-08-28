@@ -67,7 +67,8 @@ const beginJourney = () => {
   }
 
   &__button {
-    @apply w-full h-14 bg-brand-aqua hover:bg-brand-aqua/90 rounded-xl transition-colors shadow-lg;
+    @apply w-full h-[50px] rounded-xl shadow-lg transition-colors;
+    @apply bg-brand-aqua hover:bg-brand-aqua/90;
     @apply text-white text-[17px];
   }
 }
