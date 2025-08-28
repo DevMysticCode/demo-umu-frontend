@@ -63,7 +63,7 @@ const beginJourney = () => {
   }
 
   &__actions {
-    @apply fixed bottom-0 max-w-md w-full px-7 pb-6;
+    @apply fixed bottom-0 max-w-md w-full px-4 pb-6;
   }
 
   &__button {
