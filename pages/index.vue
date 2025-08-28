@@ -1,6 +1,6 @@
 <template>
   <div class="mobile-container welcome-page">
-    <video autoplay muted loop playsinline class="absolute w-full h-full object-cover z-0">
+    <video autoplay muted loop playsinline class="welcome-page__video">
       <source src="/public/welcome.mp4" type="video/mp4" />
     </video>
 
@@ -41,35 +41,34 @@ const beginJourney = () => {
 .welcome-page {
   @apply bg-black text-white flex flex-col relative z-10;
   background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
-}
 
-/* Main Content */
-.welcome-page__content {
-  @apply z-10 flex flex-col items-center justify-center pt-28 text-white;
-}
+  &__video {
+    @apply absolute w-full h-full object-cover z-0;
+  }
 
-/* Logo */
-.welcome-page__logo {
-  @apply mb-2;
-}
+  &__content {
+    @apply z-10 flex flex-col items-center justify-center pt-28 text-white;
+  }
 
-/* Text */
-.welcome-page__title {
-  @apply text-[28px] font-bold mb-1;
-}
+  &__logo {
+    @apply mb-2;
+  }
 
-.welcome-page__subtitle {
-  @apply text-[13px] opacity-50;
-}
+  &__title {
+    @apply text-[28px] font-bold mb-1;
+  }
 
-/* Bottom Section */
-.welcome-page__actions {
-@apply fixed bottom-0 max-w-md w-full px-7 pb-6;
-}
+  &__subtitle {
+    @apply text-[13px] opacity-50;
+  }
 
-/* Begin Journey Button */
-.welcome-page__button {
-  @apply w-full h-14 bg-brand-aqua hover:bg-brand-aqua/90 rounded-xl transition-colors shadow-lg;
-  @apply text-white text-[17px];
+  &__actions {
+    @apply fixed bottom-0 max-w-md w-full px-7 pb-6;
+  }
+
+  &__button {
+    @apply w-full h-14 bg-brand-aqua hover:bg-brand-aqua/90 rounded-xl transition-colors shadow-lg;
+    @apply text-white text-[17px];
+  }
 }
 </style>
