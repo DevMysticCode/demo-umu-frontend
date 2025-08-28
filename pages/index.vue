@@ -4,21 +4,16 @@
       <source src="/public/welcome.mp4" type="video/mp4" />
     </video>
 
-    <!-- Main Content -->
     <div class="welcome-page__content">
-      <!-- Logo -->
       <div class="welcome-page__logo">
         <OPIcon name="logo" class="w-16 h-16" />
       </div>
 
-      <!-- Welcome Text -->
       <h1 class="welcome-page__title">Welcome to UmovingU</h1>
       <p class="welcome-page__subtitle">Powered by Open Property</p>
     </div>
 
-    <!-- Bottom Section -->
     <div class="welcome-page__actions">
-      <!-- Begin Journey Button -->
       <button @click="beginJourney" class="welcome-page__button">
         Begin your journey
       </button>
