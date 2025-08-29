@@ -1,5 +1,5 @@
 <template>
-  <div class="create-account-container">
+  <div class="mobile-container create-account-container">
     <!-- Main Content -->
     <main class="create-account-main">
       <!-- Back Button -->
@@ -209,7 +209,7 @@ const goBack = () => {
 
 /* Content */
 .create-account-content {
-  @apply flex-1 px-6 pb-8;
+  @apply flex-1 px-4 pb-8;
 }
 
 /* Title */
@@ -243,5 +243,3 @@ const goBack = () => {
   @apply text-black;
 }
 </style>
-
-

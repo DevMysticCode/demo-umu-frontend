@@ -1,5 +1,5 @@
 <template>
-  <div class="questionnaire-page">
+  <div class="mobile-container questionnaire-page">
     <!-- Header with Back Button -->
     <div class="questionnaire-page__header">
       <BackButton />
@@ -219,6 +219,12 @@ if (typeof definePageMeta === 'function') {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(
+    180deg,
+    #f1f1f1 0%,
+    #eff3f3 74.35%,
+    #e6fbfa 99.53%
+  );
 }
 
 /* Status Bar */
