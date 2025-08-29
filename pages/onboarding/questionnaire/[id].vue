@@ -6,7 +6,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="questionnaire-page__content flex flex-col justify-center">
+    <div class="questionnaire-page__content">
       <!-- Question Title -->
       <h1 class="questionnaire-page__title">
         {{ displayedTitle
@@ -283,6 +283,7 @@ if (typeof definePageMeta === 'function') {
 
 /* Content */
 .questionnaire-page__content {
+  @apply flex flex-col justify-center;
   flex: 1;
   padding: 0 1.5rem;
 }

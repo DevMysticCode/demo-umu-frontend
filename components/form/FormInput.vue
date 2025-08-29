@@ -55,7 +55,7 @@ const handleInput = (event) => {
 }
 
 .form-input__field {
-  @apply w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all duration-200;
+  @apply w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all duration-200 text-[17px];
 }
 
 .form-input__field:focus {

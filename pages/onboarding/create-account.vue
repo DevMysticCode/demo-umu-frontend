@@ -10,11 +10,7 @@
       <!-- Hero Image -->
       <div class="create-account-hero">
         <div class="create-account-hero__image">
-          <img
-            src="/public/images/createaccount.png"
-            alt="Create account illustration"
-            class="create-account-hero__img"
-          />
+          <OPIcon name="create-account" class="w-48 h-48" />
         </div>
       </div>
 
@@ -134,6 +130,7 @@ import AddressSearch from '@/components/form/AddressSearch.vue'
 import AddressSearchModal from '@/components/modals/AddressSearchModal.vue'
 import TermsModal from '@/components/modals/TermsModal.vue'
 import BackButton from '@/components/BackButton.vue'
+import OPIcon from '@/components/OPIcon.vue'
 
 definePageMeta({
   title: 'Create Account - UmovingU',
@@ -214,7 +211,7 @@ const goBack = () => {
 
 /* Title */
 .create-account-title {
-  @apply text-center mb-8;
+  @apply text-center mb-6;
 }
 
 .create-account-title__main {
@@ -227,12 +224,12 @@ const goBack = () => {
 
 /* Form */
 .create-account-form {
-  @apply space-y-6;
+  @apply space-y-6 mt-12;
 }
 
 /* Submit */
 .create-account-submit {
-  @apply pt-4;
+  @apply py-5 mb-8;
 }
 
 .create-account-submit__btn {

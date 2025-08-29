@@ -1,8 +1,8 @@
 <template>
-  <img 
-    :src="iconPath" 
+  <img
+    :src="iconPath"
     class="op-icon"
-    :class="props.class" 
+    :class="props.class"
     :alt="`${name} icon`"
   />
 </template>
@@ -11,26 +11,27 @@
 // Naming things is hard! OPIcon - OpenPropertyIcon
 
 interface Props {
-  name: string;
-  class?: string;
+  name: string
+  class?: string
 }
 const defaultClasses = 'w-5 h-5'
 const props = withDefaults(defineProps<Props>(), {
-  class: defaultClasses
-});
+  class: defaultClasses,
+})
 
 const iconPath = (() => {
   const iconMap: Record<string, string> = {
-    'logo': '/op-icons/logo.svg',
+    logo: '/op-icons/logo.svg',
     'user-code': '/op-icons/User-Code.svg',
-    'check': '/op-icons/Check.svg',
+    check: '/op-icons/Check.svg',
     'home-search': '/op-icons/Home-Search.svg',
     'building-community': '/op-icons/Building-Community.svg',
-    'apple': '/op-icons/Apple.svg',
-    'google': '/op-icons/Google.svg',
-    'facebook': '/op-icons/Facebook.svg',
-  };
-  
-  return iconMap[props.name] || '/op-icons/default.svg';
-})();
-</script> 
+    apple: '/op-icons/Apple.svg',
+    google: '/op-icons/Google.svg',
+    facebook: '/op-icons/Facebook.svg',
+    'create-account': '/images/createAccount.svg',
+  }
+
+  return iconMap[props.name] || '/op-icons/default.svg'
+})()
+</script>
