@@ -1,9 +1,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ['@nuxt/ui', '@pinia/nuxt'],
-  css: [
-    '~/assets/css/main.css',
-  ],
+  css: ['~/assets/css/main.css'],
   app: {
     head: {
       title: 'UmovingU - Your Property Toolkit',
