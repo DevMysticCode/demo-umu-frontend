@@ -14,9 +14,9 @@
         subTitle="Enter your details to get started"
       />
 
-      <div class="create-account-content">
+      <div class="create-account-content" @submit.prevent="handleSubmit">
         <!-- Form -->
-        <div class="create-account-form">
+        <form class="create-account-form">
           <!-- First Name -->
           <FormInput
             v-model="form.firstName"
@@ -84,14 +84,14 @@
           <!-- Submit Button -->
           <div class="create-account-submit">
             <button
-              @click="handleSubmit"
+              type="submit"
               class="create-account-submit__btn"
               :disabled="!isFormValid || isLoading"
             >
               {{ isLoading ? 'Creating...' : 'Continue' }}
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </main>
 
@@ -146,10 +146,6 @@ const {
   closeAddressModal,
   closeTermsModal,
 } = useCreateAccountData()
-
-const goBack = () => {
-  window.history.back()
-}
 </script>
 
 <style scoped>
