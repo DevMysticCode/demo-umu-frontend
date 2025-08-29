@@ -1,5 +1,5 @@
 <template>
-  <div class="create-account-container">
+  <div class="mobile-container create-account-container">
     <!-- Main Content -->
     <main class="create-account-main">
       <!-- Back Button -->
@@ -162,8 +162,7 @@ const goBack = () => {
 <style scoped>
 /* Create Account Container */
 .create-account-container {
-  @apply min-h-screen bg-gray-50;
-  max-width: 428px;
+  @apply bg-gray-50;
   margin: 0 auto;
   background: linear-gradient(
     180deg,
