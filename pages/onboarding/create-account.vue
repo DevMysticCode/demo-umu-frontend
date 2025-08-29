@@ -7,22 +7,14 @@
         <BackButton />
       </div>
 
-      <!-- Hero Image -->
-      <div class="create-account-hero">
-        <div class="create-account-hero__image">
-          <OPIcon name="create-account" class="w-48 h-48" />
-        </div>
-      </div>
+      <HeroSection
+        iconName="create-account"
+        iconClass="w-32 h-32"
+        mainTitle="Create an account"
+        subTitle="Enter your details to get started"
+      />
 
       <div class="create-account-content">
-        <!-- Title -->
-        <div class="create-account-title">
-          <h1 class="create-account-title__main">Create an account</h1>
-          <p class="create-account-title__sub">
-            Enter your details to get started
-          </p>
-        </div>
-
         <!-- Form -->
         <div class="create-account-form">
           <!-- First Name -->
@@ -130,7 +122,7 @@ import AddressSearch from '@/components/form/AddressSearch.vue'
 import AddressSearchModal from '@/components/modals/AddressSearchModal.vue'
 import TermsModal from '@/components/modals/TermsModal.vue'
 import BackButton from '@/components/BackButton.vue'
-import OPIcon from '@/components/OPIcon.vue'
+import HeroSection from '@/components/HeroSection.vue'
 
 definePageMeta({
   title: 'Create Account - UmovingU',
@@ -188,43 +180,14 @@ const goBack = () => {
   @apply text-brand-aqua flex items-center hover:text-brand-aqua/80 transition-colors;
 }
 
-/* Hero Section */
-.create-account-hero {
-  @apply flex justify-center py-6;
-}
-
-.create-account-hero__image {
-  @apply w-24 h-24 relative;
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  background: #f3f4f6;
-}
-
-.create-account-hero__img {
-  @apply w-full h-full object-cover;
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-}
-
 /* Content */
 .create-account-content {
   @apply flex-1 px-4 pb-8;
 }
 
-/* Title */
-.create-account-title {
-  @apply text-center mb-6;
-}
-
-.create-account-title__main {
-  @apply text-[20px] font-bold text-gray-900 mb-0;
-}
-
-.create-account-title__sub {
-  @apply text-[15px] text-gray-600;
-}
-
 /* Form */
 .create-account-form {
-  @apply space-y-6 mt-12;
+  @apply space-y-6 mt-6;
 }
 
 /* Submit */
