@@ -16,7 +16,11 @@
 
       <div class="create-account-content" @submit.prevent="handleSubmit">
         <!-- Form -->
-        <form class="create-account-form">
+        <form
+          class="
+        "
+          0
+        >
           <!-- First Name -->
           <FormInput name="firstName" label="First Name" required />
 
@@ -142,6 +146,7 @@ const {
   editAddress,
   acceptTerms,
   handleSubmit,
+  openTermsModal,
   closeAddressModal,
   closeTermsModal,
 } = useCreateAccountData()

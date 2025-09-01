@@ -2,7 +2,7 @@
   <div class="mobile-container questionnaire-page">
     <!-- Header with Back Button -->
     <div class="questionnaire-page__header">
-      <BackButton />
+      <BackButton customClass="text-brand-aqua" />
     </div>
 
     <!-- Main Content -->
@@ -55,16 +55,18 @@
             </div>
             <div class="questionnaire-page__option-radio">
               <div
-                class="questionnaire-page__radio-button"
+                class="questionnaire-page__check-button"
                 :class="{
-                  'questionnaire-page__radio-button--selected':
+                  'questionnaire-page__check-button--selected':
                     selectedAnswer === option.value,
                 }"
               >
-                <div
+                <span
                   v-if="selectedAnswer === option.value"
-                  class="questionnaire-page__radio-dot"
-                ></div>
+                  class="questionnaire-page__check-mark"
+                >
+                  ✓
+                </span>
               </div>
             </div>
           </div>
@@ -438,9 +440,5 @@ if (typeof definePageMeta === 'function') {
   height: 0.25rem;
   background-color: #111827;
   border-radius: 0.125rem;
-}
-
-.back_button {
-  color: black !important;
 }
 </style>

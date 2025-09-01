@@ -128,7 +128,7 @@ export const useCreateAccountData = () => {
           action: 'create_account',
         },
       })
-      await navigateTo('/thank-you')
+      await navigateTo('/onboarding/thank-you')
     } catch (err) {
       console.error('Registration failed:', err)
     } finally {
