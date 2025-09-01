@@ -7,24 +7,13 @@
   >
     <div class="terms-content">
       <div class="space-y-4 text-[17px]">
-        <div>
-          <h4 class="font-semibold mb-2">1. Introduction</h4>
-          <p class="text-gray-600">
-            Welcome to OpenProperty and UmovingU. These Terms of Business
-            ("Terms") govern your use of our websites, mobile applications, and
-            related services (collectively, "Services"). By using our Services,
-            you agree to be bound by these Terms.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="font-semibold mb-2">2. Our Services</h4>
-          <p class="text-gray-600">
-            OpenProperty provides digital infrastructure and tools for managing,
-            sharing, and accessing property-related information. UmovingU is a
-            consumer-focused application that helps users prepare their property
-            data for transactions.
-          </p>
+        <div
+          v-for="section in termsSections"
+          :key="section.id"
+          class="term-section"
+        >
+          <h4 class="font-semibold mb-2">{{ section.title }}</h4>
+          <p class="text-gray-600">{{ section.content }}</p>
         </div>
       </div>
     </div>
@@ -39,6 +28,7 @@
 
 <script setup>
 import BaseModal from '../ui/BaseModal.vue'
+import { useTermsData } from '@/composables/useTermsData'
 
 defineProps({
   show: {
@@ -48,6 +38,8 @@ defineProps({
 })
 
 const emit = defineEmits(['update:show', 'accept', 'close'])
+
+const { termsSections } = useTermsData()
 
 const handleClose = () => {
   emit('update:show', false)
