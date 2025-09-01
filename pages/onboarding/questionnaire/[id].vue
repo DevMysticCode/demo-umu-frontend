@@ -85,9 +85,6 @@
       >
         Continue
       </button>
-
-      <!-- Home Indicator -->
-      <div class="questionnaire-page__home-indicator"></div>
     </div>
   </div>
 </template>
@@ -102,8 +99,8 @@ import ContinueButton from '@/components/questionnaire/ContinueButton.vue'
 import BackButton from '@/components/BackButton.vue'
 
 // For non-Nuxt environments, we'll use a simple approach
-const route = useRoute ? useRoute() : { params: { id: '1' } }
-const router = useRouter ? useRouter() : null
+const route = useRoute()
+const router = useRouter()
 
 const currentQuestion = parseInt(route.params.id) || 1
 
