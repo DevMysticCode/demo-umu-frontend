@@ -18,75 +18,71 @@
         <!-- Form -->
         <form class="create-account-form">
           <!-- First Name -->
-          <FormInput
-            v-model="form.firstName"
-            label="First Name"
-            placeholder=""
-            :disabled="isLoading"
-          />
+          <FormInput name="firstName" label="First Name" required />
 
           <!-- Last Name -->
-          <FormInput
-            v-model="form.lastName"
-            label="Last Name"
-            placeholder=""
-            :disabled="isLoading"
-          />
+          <FormInput name="lastName" label="Last Name" required />
 
-          <!-- Mobile Number -->
+          <!-- Mobile -->
           <FormInput
-            v-model="form.mobile"
-            label="UK Mobile Number (+44)"
+            name="mobile"
             type="tel"
+            label="UK Mobile Number (+44)"
             placeholder="07123456789"
-            :disabled="isLoading"
+            required
           />
 
-          <!-- Date of Birth -->
+          <!-- DOB -->
           <FormInput
-            v-model="form.dateOfBirth"
-            label="Date of Birth"
+            name="dateOfBirth"
             type="date"
-            placeholder=""
-            :disabled="isLoading"
+            label="Date of Birth"
+            required
           />
 
           <!-- Address Search -->
           <AddressSearch
-            v-model="form.postcode"
+            name="postcode"
             label="Postcode"
-            placeholder=""
-            :disabled="isLoading"
-            :is-searching="searchingAddress"
-            :selected-address="selectedAddress"
             @search="searchAddress"
+            :isSearching="searchingAddress"
+            :selectedAddress="selectedAddress"
             @edit="editAddress"
+            required
           />
 
           <!-- Gender Selection -->
-          <GenderSelector v-model="form.gender" label="Gender" />
+          <GenderSelector name="gender" label="Gender" required />
 
           <!-- Password Fields -->
+          <PasswordInput name="password" label="Password" required />
           <PasswordInput
-            v-model="form.password"
-            label="Password"
-            placeholder=""
-            :disabled="isLoading"
+            name="confirmPassword"
+            label="Confirm Password"
+            required
           />
 
-          <PasswordInput
-            v-model="form.confirmPassword"
-            label="Confirm Password"
-            placeholder=""
-            :disabled="isLoading"
-          />
+          <!-- Terms Checkbox -->
+          <div class="form-check">
+            <label>
+              <input
+                type="checkbox"
+                :checked="termsAccepted"
+                @change="handleTermsCheckbox"
+              />
+              I agree to the
+              <span class="link cursor-pointer" @click="openTermsModal"
+                >terms and conditions</span
+              >
+            </label>
+          </div>
 
           <!-- Submit Button -->
           <div class="create-account-submit">
             <button
               type="submit"
               class="create-account-submit__btn"
-              :disabled="!isFormValid || isLoading"
+              :disabled="isLoading"
             >
               {{ isLoading ? 'Creating...' : 'Continue' }}
             </button>
@@ -97,16 +93,18 @@
 
     <!-- Address Search Modal -->
     <AddressSearchModal
-      v-model="showAddressModal"
+      :show="showAddressModal"
       :postcode="form.postcode"
       :addresses="addressResults"
+      @update:show="showAddressModal = $event"
       @select="selectAddress"
       @close="closeAddressModal"
     />
 
     <!-- Terms Modal -->
     <TermsModal
-      v-model="showTermsModal"
+      :show="showTermsModal"
+      @update:show="showTermsModal = $event"
       @accept="acceptTerms"
       @close="closeTermsModal"
     />
@@ -137,7 +135,8 @@ const {
   showTermsModal,
   selectedAddress,
   addressResults,
-  isFormValid,
+  termsAccepted,
+  handleTermsCheckbox,
   searchAddress,
   selectAddress,
   editAddress,

@@ -1,10 +1,12 @@
 <template>
   <div class="address-search">
-    <label v-if="label" class="address-search__label">{{ label }}</label>
+    <label v-if="label" class="address-search__label" :for="name">{{
+      label
+    }}</label>
     <div class="address-search__container relative w-full">
       <input
-        :value="modelValue"
-        @input="handleInput"
+        :id="name"
+        :name="name"
         type="text"
         :placeholder="placeholder"
         :disabled="disabled"
@@ -59,9 +61,9 @@
 
 <script setup>
 defineProps({
-  modelValue: {
+  name: {
     type: String,
-    default: '',
+    required: true,
   },
   label: {
     type: String,
@@ -85,11 +87,7 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue', 'search', 'edit'])
-
-const handleInput = (event) => {
-  emit('update:modelValue', event.target.value)
-}
+const emit = defineEmits(['search', 'edit'])
 
 const handleSearch = () => {
   emit('search')

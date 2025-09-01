@@ -1,41 +1,38 @@
 <template>
   <BaseModal
-    :model-value="modelValue"
+    :model-value="show"
     @update:model-value="handleClose"
-    title="Terms and Conditions"
-    large
+    title="UMU Terms & Conditions"
+    subtitle="Last updated: 4th July 2025"
   >
-    <div class="space-y-4 text-sm">
-      <div>
-        <h4 class="font-semibold mb-2">Terms of Business</h4>
-        <p class="text-gray-600 mb-2">Last updated: 4th July 2025</p>
-      </div>
+    <div class="terms-content">
+      <div class="space-y-4 text-[17px]">
+        <div>
+          <h4 class="font-semibold mb-2">1. Introduction</h4>
+          <p class="text-gray-600">
+            Welcome to OpenProperty and UmovingU. These Terms of Business
+            ("Terms") govern your use of our websites, mobile applications, and
+            related services (collectively, "Services"). By using our Services,
+            you agree to be bound by these Terms.
+          </p>
+        </div>
 
-      <div>
-        <h4 class="font-semibold mb-2">1. Introduction</h4>
-        <p class="text-gray-600">
-          Welcome to OpenProperty and UmovingU. These Terms of Business
-          ("Terms") govern your use of our websites, mobile applications, and
-          related services (collectively, "Services"). By using our Services,
-          you agree to be bound by these Terms.
-        </p>
-      </div>
-
-      <div>
-        <h4 class="font-semibold mb-2">2. Our Services</h4>
-        <p class="text-gray-600">
-          OpenProperty provides digital infrastructure and tools for managing,
-          sharing, and accessing property-related information. UmovingU is a
-          consumer-focused application that helps users prepare their property
-          data for transactions.
-        </p>
+        <div>
+          <h4 class="font-semibold mb-2">2. Our Services</h4>
+          <p class="text-gray-600">
+            OpenProperty provides digital infrastructure and tools for managing,
+            sharing, and accessing property-related information. UmovingU is a
+            consumer-focused application that helps users prepare their property
+            data for transactions.
+          </p>
+        </div>
       </div>
     </div>
 
     <template #footer>
-      <button @click="acceptTerms" class="form-button form-button--primary">
-        I Agree
-      </button>
+      <div class="page__bottom">
+        <button @click="acceptTerms" class="w-100 page__button">I Agree</button>
+      </div>
     </template>
   </BaseModal>
 </template>
@@ -44,20 +41,74 @@
 import BaseModal from '../ui/BaseModal.vue'
 
 defineProps({
-  modelValue: {
+  show: {
     type: Boolean,
     default: false,
   },
 })
 
-const emit = defineEmits(['update:modelValue', 'accept', 'close'])
+const emit = defineEmits(['update:show', 'accept', 'close'])
 
 const handleClose = () => {
-  emit('update:modelValue', false)
+  emit('update:show', false)
   emit('close')
 }
 
 const acceptTerms = () => {
   emit('accept')
+  emit('update:show', false)
 }
 </script>
+
+<style scoped>
+.terms-content {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Button styles to match your design system */
+.modal-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.modal-button--primary {
+  background-color: #00a19a;
+  color: white;
+}
+
+.modal-button--primary:hover {
+  background-color: #00857f;
+}
+
+/* Scrollbar styling for terms content */
+.terms-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.terms-content::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.terms-content::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+.terms-content::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.page__bottom {
+  @apply w-full bottom-0;
+}
+
+.page__button {
+  @apply w-full h-14 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-semibold text-lg rounded-xl transition-colors shadow-lg;
+}
+</style>

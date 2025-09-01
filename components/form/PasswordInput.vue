@@ -1,10 +1,12 @@
 <template>
   <div class="password-input">
-    <label v-if="label" class="password-input__label">{{ label }}</label>
+    <label v-if="label" class="password-input__label" :for="name">{{
+      label
+    }}</label>
     <div class="password-input__container">
       <input
-        :value="modelValue"
-        @input="handleInput"
+        :id="name"
+        :name="name"
         :type="showPassword ? 'text' : 'password'"
         :placeholder="placeholder"
         :disabled="disabled"
@@ -60,9 +62,9 @@
 import { ref } from 'vue'
 
 const props = defineProps({
-  modelValue: {
+  name: {
     type: String,
-    default: '',
+    required: true,
   },
   label: {
     type: String,
@@ -78,13 +80,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue'])
-
 const showPassword = ref(false)
-
-const handleInput = (event) => {
-  emit('update:modelValue', event.target.value)
-}
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value

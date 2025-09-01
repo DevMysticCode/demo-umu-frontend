@@ -2,28 +2,35 @@
   <div class="gender-selector">
     <label v-if="label" class="gender-selector__label">{{ label }}</label>
     <div class="gender-selector__options">
-      <button
+      <label
         v-for="option in options"
         :key="option.value"
-        @click="selectGender(option.value)"
-        type="button"
         class="gender-selector__option"
         :class="{
-          'gender-selector__option--selected': modelValue === option.value,
-          'gender-selector__option--unselected': modelValue !== option.value,
+          'gender-selector__option--selected': selected === option.value,
+          'gender-selector__option--unselected': selected !== option.value,
         }"
       >
+        <input
+          type="radio"
+          :name="name"
+          :value="option.value"
+          v-model="selected"
+          class="hidden"
+        />
         {{ option.label }}
-      </button>
+      </label>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
-  modelValue: {
+import { ref } from 'vue'
+
+const props = defineProps({
+  name: {
     type: String,
-    default: '',
+    required: true,
   },
   label: {
     type: String,
@@ -31,17 +38,12 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue'])
-
+const selected = ref('')
 const options = [
   { value: 'female', label: 'Female' },
   { value: 'male', label: 'Male' },
   { value: 'other', label: 'Other' },
 ]
-
-const selectGender = (value) => {
-  emit('update:modelValue', value)
-}
 </script>
 
 <style scoped>
@@ -59,7 +61,7 @@ const selectGender = (value) => {
 }
 
 .gender-selector__option {
-  @apply h-12 bg-white border border-gray-200 rounded-xl text-base font-medium cursor-pointer transition-all duration-200;
+  @apply h-12 flex items-center justify-center bg-white border border-gray-200 rounded-xl text-base font-medium cursor-pointer transition-all duration-200 select-none;
 }
 
 .gender-selector__option--selected {
@@ -70,7 +72,7 @@ const selectGender = (value) => {
   @apply text-gray-600 hover:border-brand-aqua hover:text-brand-aqua;
 }
 
-.gender-selector__option:focus {
-  @apply outline-none ring-2 ring-brand-aqua/20;
+.gender-selector__option input {
+  display: none;
 }
 </style>

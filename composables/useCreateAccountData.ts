@@ -1,4 +1,4 @@
-import { ref, computed, watch, Ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 import { navigateTo } from 'nuxt/app'
 
@@ -8,97 +8,59 @@ interface Address {
   line2: string
 }
 
-interface FormData {
-  firstName: string
-  lastName: string
-  mobile: string
-  dateOfBirth: string
-  postcode: string
-  gender: string
-  password: string
-  confirmPassword: string
-  email: string
-}
-
 export const useCreateAccountData = () => {
   const route = useRoute()
   const prefilledEmail = (route.query.email as string) || ''
 
-  // Form data
-  const form = ref<FormData>({
+  // ✅ Form state
+  const form = reactive({
     firstName: '',
     lastName: '',
+    email: prefilledEmail,
     mobile: '',
     dateOfBirth: '',
-    postcode: '',
+    postcode: '', // <-- important
     gender: '',
     password: '',
     confirmPassword: '',
-    email: prefilledEmail,
   })
 
-  // UI state
+  // UI state only
   const isLoading = ref(false)
   const searchingAddress = ref(false)
   const showAddressModal = ref(false)
   const showTermsModal = ref(false)
   const selectedAddress = ref<Address | null>(null)
   const addressResults = ref<Address[]>([])
+  const termsAccepted = ref(false)
 
-  // Computed
-  const isFormValid = computed<boolean>(() => {
-    return (
-      !!form.value.firstName &&
-      !!form.value.lastName &&
-      !!form.value.mobile &&
-      !!form.value.dateOfBirth &&
-      !!form.value.postcode &&
-      !!form.value.gender &&
-      !!form.value.password &&
-      !!form.value.confirmPassword &&
-      form.value.password === form.value.confirmPassword &&
-      !!selectedAddress.value
-    )
-  })
-
-  watch(
-    () => form.value.mobile,
-    (val) => {
-      console.log('Mobile changed:', val)
-    }
-  )
-
-  // Methods
   const searchAddress = async (): Promise<void> => {
-    if (!form.value.postcode) return
-
     searchingAddress.value = true
-
     try {
-      // Mock address search - replace with real API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
+      await new Promise((resolve) => setTimeout(resolve, 1000)) // fake delay
       addressResults.value = [
         {
           id: 1,
-          line1: '244, St. Martins Street, Leicester LE2 7JD',
+          line1: '21 Rochester Road, Coventry, CV5 6AB',
           line2: 'Leicester, England',
         },
         {
           id: 2,
-          line1: '245, St. Martins Street, Leicester LE2 7JD',
+          line1: '23 Rochester Road, Coventry, CV5 6AB ',
           line2: 'Leicester, England',
         },
         {
           id: 3,
-          line1: '246, St. Martins Street, Leicester LE2 7JD',
+          line1: '25 Rochester Road, Coventry, CV5 6AB ',
+          line2: 'Leicester, England',
+        },
+        {
+          id: 4,
+          line1: '27 Rochester Road, Coventry, CV5 6AB ',
           line2: 'Leicester, England',
         },
       ]
-
       showAddressModal.value = true
-    } catch (error) {
-      console.error('Address search failed:', error)
     } finally {
       searchingAddress.value = false
     }
@@ -106,50 +68,76 @@ export const useCreateAccountData = () => {
 
   const selectAddress = (address: Address): void => {
     selectedAddress.value = address
+    form.postcode = address.line1
     showAddressModal.value = false
   }
 
   const editAddress = (): void => {
     selectedAddress.value = null
+    form.postcode = ''
+  }
+
+  const handleTermsCheckbox = (event: Event): void => {
+    const checkbox = event.target as HTMLInputElement
+    if (!checkbox.checked) {
+      termsAccepted.value = false
+    } else {
+      // Only open modal if not already accepted
+      if (!termsAccepted.value) {
+        openTermsModal()
+      }
+    }
   }
 
   const acceptTerms = (): void => {
+    termsAccepted.value = true
     showTermsModal.value = false
   }
 
-  const handleSubmit = async (): Promise<void> => {
-    if (!isFormValid.value) return
+  const openTermsModal = (): void => {
+    console.log('openTermsModal')
+    showTermsModal.value = true
+    console.log('showTermsModal.value', showTermsModal.value)
+  }
+  const handleSubmit = async (event: Event): Promise<void> => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    // Validation
+    if (form.password !== form.confirmPassword) {
+      console.error('Passwords do not match')
+      return
+    }
+    if (!selectedAddress.value) {
+      console.error('Address not selected')
+      return
+    }
+
+    if (!selectedAddress.value) {
+      console.error('You must agree to terms')
+      return
+    }
 
     isLoading.value = true
-
     try {
       await $fetch('/api/auth/register', {
         method: 'POST',
         body: {
-          ...form.value,
+          ...form,
           address: selectedAddress.value,
           action: 'create_account',
         },
       })
-
       await navigateTo('/thank-you')
-    } catch (error) {
-      console.error('Registration failed:', error)
+    } catch (err) {
+      console.error('Registration failed:', err)
     } finally {
       isLoading.value = false
     }
   }
 
-  const closeAddressModal = (): void => {
-    showAddressModal.value = false
-  }
-
-  const closeTermsModal = (): void => {
-    showTermsModal.value = false
-  }
-
   return {
-    // Form data
+    // Form
     form,
 
     // UI state
@@ -159,9 +147,7 @@ export const useCreateAccountData = () => {
     showTermsModal,
     selectedAddress,
     addressResults,
-
-    // Computed
-    isFormValid,
+    termsAccepted,
 
     // Methods
     searchAddress,
@@ -169,7 +155,9 @@ export const useCreateAccountData = () => {
     editAddress,
     acceptTerms,
     handleSubmit,
-    closeAddressModal,
-    closeTermsModal,
+    openTermsModal,
+    handleTermsCheckbox,
+    closeAddressModal: () => (showAddressModal.value = false),
+    closeTermsModal: () => (showTermsModal.value = false),
   }
 }

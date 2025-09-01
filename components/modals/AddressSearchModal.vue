@@ -1,5 +1,50 @@
+<script setup>
+import { ref } from 'vue'
+
+const props = defineProps({
+  show: {
+    type: Boolean,
+    default: false,
+  },
+  postcode: {
+    type: String,
+    default: '',
+  },
+  addresses: {
+    type: Array,
+    default: () => [],
+  },
+})
+
+const emit = defineEmits(['update:show', 'select', 'close', 'search'])
+
+const selectedAddressId = ref(null)
+const searchQuery = ref(props.postcode)
+
+const handleClose = () => {
+  emit('update:show', false)
+  emit('close')
+}
+
+const selectAddress = (address) => {
+  selectedAddressId.value = address.id
+  emit('select', address)
+  setTimeout(() => {
+    handleClose()
+  }, 300)
+}
+
+const handleSearchInput = (event) => {
+  searchQuery.value = event.target.value
+}
+
+const handleSearch = () => {
+  emit('search', searchQuery.value)
+}
+</script>
+
 <template>
-  <div v-if="modelValue" class="address-modal" @click.self="handleClose">
+  <div v-if="show" class="address-modal" @click.self="handleClose">
     <div class="address-modal__content">
       <!-- Header with illustration -->
       <div class="address-modal__header">
@@ -38,7 +83,7 @@
 
           <!-- Input -->
           <input
-            :value="postcode"
+            :value="searchQuery"
             @input="handleSearchInput"
             type="text"
             class="address-modal__search-input"
@@ -98,52 +143,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref, computed } from 'vue'
-
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-  postcode: {
-    type: String,
-    default: '',
-  },
-  addresses: {
-    type: Array,
-    default: () => [],
-  },
-})
-
-const emit = defineEmits(['update:modelValue', 'select', 'close', 'search'])
-
-const selectedAddressId = ref(null)
-const searchQuery = ref(props.postcode)
-
-const handleClose = () => {
-  emit('update:modelValue', false)
-  emit('close')
-}
-
-const selectAddress = (address) => {
-  selectedAddressId.value = address.id
-  emit('select', address)
-  // Auto close after selection
-  setTimeout(() => {
-    handleClose()
-  }, 300)
-}
-
-const handleSearchInput = (event) => {
-  searchQuery.value = event.target.value
-}
-
-const handleSearch = () => {
-  emit('search', searchQuery.value)
-}
-</script>
 
 <style scoped>
 /* Address Search Modal - BEM CSS */

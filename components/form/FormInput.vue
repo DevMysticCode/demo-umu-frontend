@@ -1,9 +1,11 @@
 <template>
   <div class="form-input">
-    <label v-if="label" class="form-input__label">{{ label }}</label>
+    <label v-if="label" class="form-input__label" :for="name">{{
+      label
+    }}</label>
     <input
-      :value="modelValue"
-      @input="handleInput"
+      :id="name"
+      :name="name"
       :type="type"
       :placeholder="placeholder"
       :disabled="disabled"
@@ -15,9 +17,9 @@
 
 <script setup>
 defineProps({
-  modelValue: {
+  name: {
     type: String,
-    default: '',
+    required: true,
   },
   label: {
     type: String,
@@ -36,12 +38,6 @@ defineProps({
     default: false,
   },
 })
-
-const emit = defineEmits(['update:modelValue'])
-
-const handleInput = (event) => {
-  emit('update:modelValue', event.target.value)
-}
 </script>
 
 <style scoped>
