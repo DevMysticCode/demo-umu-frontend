@@ -30,6 +30,7 @@ const iconPath = (() => {
     google: '/op-icons/Google.svg',
     facebook: '/op-icons/Facebook.svg',
     'create-account': '/images/createAccount.svg',
+    userRegistration: '/op-icons/userRegistration.svg',
   }
 
   return iconMap[props.name] || '/op-icons/default.svg'

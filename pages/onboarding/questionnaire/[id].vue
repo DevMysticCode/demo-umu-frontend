@@ -46,9 +46,9 @@
             }"
           >
             <div class="questionnaire-page__option-content">
-              <span class="questionnaire-page__option-icon">{{
-                getIconEmoji(option.icon)
-              }}</span>
+              <span class="questionnaire-page__option-icon">
+                <OPIcon :name="getIconEmoji(option.icon)" class="w-5 h-5" />
+              </span>
               <span class="questionnaire-page__option-label">{{
                 option.label
               }}</span>
@@ -99,6 +99,7 @@ import QuestionOptions from '@/components/questionnaire/QuestionOptions.vue'
 import BudgetSlider from '@/components/questionnaire/BudgetSlider.vue'
 import ContinueButton from '@/components/questionnaire/ContinueButton.vue'
 import BackButton from '@/components/BackButton.vue'
+import OPIcon from '@/components/OPIcon.vue'
 
 // For non-Nuxt environments, we'll use a simple approach
 const route = useRoute()
@@ -188,15 +189,15 @@ const handleContinue = () => {
 // Icon mapping
 const getIconEmoji = (iconName) => {
   const iconMap = {
-    'i-heroicons-user': '👤',
-    'i-heroicons-home': '🏠',
-    'i-heroicons-magnifying-glass': '🔍',
-    'i-heroicons-clock': '⏰',
-    'i-heroicons-calendar': '📅',
-    'i-heroicons-calendar-days': '📆',
-    'i-heroicons-building-office': '🏢',
-    'i-heroicons-map': '🗺️',
-    'i-heroicons-building-office-2': '🏬',
+    'i-heroicons-user': 'userRegistration',
+    'i-heroicons-home': 'userRegistration',
+    'i-heroicons-magnifying-glass': 'userRegistration',
+    'i-heroicons-clock': 'userRegistration',
+    'i-heroicons-calendar': 'userRegistration',
+    'i-heroicons-calendar-days': 'userRegistration',
+    'i-heroicons-building-office': 'userRegistration',
+    'i-heroicons-map': 'userRegistration',
+    'i-heroicons-building-office-2': 'userRegistration',
   }
   return iconMap[iconName] || '👤'
 }
