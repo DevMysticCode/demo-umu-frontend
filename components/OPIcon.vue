@@ -31,6 +31,21 @@ const iconPath = (() => {
     facebook: '/op-icons/Facebook.svg',
     'create-account': '/images/createAccount.svg',
     userRegistration: '/op-icons/userRegistration.svg',
+    house: '/op-icons/house.svg',
+    apartment: '/op-icons/apartment.svg',
+    land: '/op-icons/land.svg',
+    commercial: '/op-icons/commercial.svg',
+    semiDetached: '/op-icons/semiDetached.svg',
+    terrace: '/op-icons/terrace.svg',
+    singleFloorBungalow: '/op-icons/singleFloorBungalow.svg',
+    garden: '/op-icons/garden.svg',
+    publicTransport: '/op-icons/publicTransport.svg',
+    driveway: '/op-icons/driveway.svg',
+    mobileSignal: '/op-icons/mobileSignal.svg',
+    goodEnergy: '/op-icons/goodEnergy.svg',
+    closeToPublicPark: '/op-icons/closeToPublicPark.svg',
+    closeToSchool: '/op-icons/closeToSchool.svg',
+    homeOfficeSpace: '/op-icons/homeOfficeSpace.svg',
   }
 
   return iconMap[props.name] || '/op-icons/default.svg'
