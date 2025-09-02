@@ -47,7 +47,7 @@
           >
             <div class="questionnaire-page__option-content">
               <span class="questionnaire-page__option-icon">
-                <OPIcon :name="getIconEmoji(option.icon)" class="w-5 h-5" />
+                <OPIcon :name="option.icon" class="w-5 h-5" />
               </span>
               <span class="questionnaire-page__option-label">{{
                 option.label
@@ -171,35 +171,11 @@ const navigateToRoute = (route) => {
   }
 }
 
-// Event handlers
-const handleSkip = () => {
-  const nextRoute = skipQuestion()
-  if (nextRoute) {
-    navigateToRoute(nextRoute)
-  }
-}
-
 const handleContinue = () => {
   const nextRoute = continueToNext()
   if (nextRoute) {
     navigateToRoute(nextRoute)
   }
-}
-
-// Icon mapping
-const getIconEmoji = (iconName) => {
-  const iconMap = {
-    'i-heroicons-user': 'userRegistration',
-    'i-heroicons-home': 'userRegistration',
-    'i-heroicons-magnifying-glass': 'userRegistration',
-    'i-heroicons-clock': 'userRegistration',
-    'i-heroicons-calendar': 'userRegistration',
-    'i-heroicons-calendar-days': 'userRegistration',
-    'i-heroicons-building-office': 'userRegistration',
-    'i-heroicons-map': 'userRegistration',
-    'i-heroicons-building-office-2': 'userRegistration',
-  }
-  return iconMap[iconName] || '👤'
 }
 
 // Set page meta if available
