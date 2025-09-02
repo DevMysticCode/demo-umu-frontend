@@ -8,9 +8,9 @@
         class="pt-6 pb-32 px-6 flex flex-col items-center justify-center min-h-screen text-center relative"
       >
         <!-- Back Button -->
-        <div class="absolute top-6 left-6">
+        <!-- <div class="absolute top-6 left-6">
           <BackButton />
-        </div>
+        </div> -->
         <!-- Logo -->
         <div class="w-24 h-20 mb-8 flex items-center justify-center relative">
           <!-- <Icon name="i-heroicons-home" class="w-14 h-14 text-white" /> -->
