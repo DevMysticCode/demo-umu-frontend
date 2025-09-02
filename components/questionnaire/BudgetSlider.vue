@@ -2,7 +2,9 @@
   <div class="budget-slider">
     <div class="budget_helper_text mb-7">
       <p>Please use the slider to specify starting and ending range.</p>
-      <p class="text-brand-aqua">Between £150k and £250K</p>
+      <p class="text-brand-aqua">
+        Between £{{ budgetRange.min }}K and £{{ budgetRange.max }}K
+      </p>
     </div>
 
     <div>
@@ -48,8 +50,8 @@
               :key="index"
               class="budget-slider__scale-tick"
               :class="{
-                'budget-slider__scale-tick--major': index % 2 === 0,
-                'budget-slider__scale-tick--minor': index % 2 !== 0,
+                'budget-slider__scale-tick--major': index % 5 === 0,
+                'budget-slider__scale-tick--minor': index % 5 !== 0,
               }"
             ></div>
           </div>
@@ -133,7 +135,7 @@ const emit = defineEmits(['update:budgetRange'])
 // Generate scale ticks
 const scaleTicks = computed(() => {
   const ticks = []
-  for (let i = props.minBudget; i <= props.maxBudget; i += 10) {
+  for (let i = props.minBudget; i <= props.maxBudget; i += 5) {
     ticks.push(i)
   }
   return ticks
@@ -251,15 +253,21 @@ const handleMaxInput = (event) => {
 
 .budget-slider__scale-tick {
   width: 2px;
-  background-color: #d1d5db;
+  /* background-color: #d1d5db; */
 }
 
 .budget-slider__scale-tick--major {
-  height: 12px;
+  height: 22px;
+  background-color: #00a19a;
 }
 
 .budget-slider__scale-tick--minor {
-  height: 6px;
+  height: 19px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 161, 154, 0.1) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
 }
 
 .budget-slider__input {
@@ -314,7 +322,7 @@ const handleMaxInput = (event) => {
 
 .budget-slider__labels span {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #00a19a;
   font-weight: 500;
 }
 
