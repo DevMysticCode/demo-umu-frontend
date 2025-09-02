@@ -4,92 +4,103 @@
       <p>Please use the slider to specify starting and ending range.</p>
       <p class="text-brand-aqua">Between £150k and £250K</p>
     </div>
-    <!-- Value Displays -->
-    <div class="budget-slider__values">
-      <div class="budget-slider__value">
-        <span class="budget-slider__value-prefix">£</span>
-        <span class="budget-slider__value-amount">{{ budgetRange.min }}K</span>
-      </div>
-      <div class="budget-slider__value">
-        <span class="budget-slider__value-prefix">£</span>
-        <span class="budget-slider__value-amount">{{ budgetRange.max }}K</span>
-      </div>
-    </div>
 
-    <div class="budget-slider__container">
-      <!-- Slider Track -->
-      <div class="budget-slider__track">
-        <!-- Selected Range Highlight -->
-        <div
-          class="budget-slider__range"
-          :style="{
-            left:
-              ((budgetRange.min - minBudget) / (maxBudget - minBudget)) * 100 +
-              '%',
-            width:
-              ((budgetRange.max - budgetRange.min) / (maxBudget - minBudget)) *
-                100 +
-              '%',
-          }"
-        ></div>
+    <div>
+      <!-- Value Displays -->
+      <div class="budget-slider__values">
+        <div class="budget-slider__value">
+          <span class="budget-slider__value-prefix">£</span>
+          <span class="budget-slider__value-amount"
+            >{{ budgetRange.min }}K</span
+          >
+        </div>
+        <div class="budget-slider__value">
+          <span class="budget-slider__value-prefix">£</span>
+          <span class="budget-slider__value-amount"
+            >{{ budgetRange.max }}K</span
+          >
+        </div>
+      </div>
 
-        <!-- Scale Bars -->
-        <div class="budget-slider__scale">
+      <div class="budget-slider__container">
+        <!-- Slider Track -->
+        <div class="budget-slider__track">
+          <!-- Selected Range Highlight -->
           <div
-            v-for="(tick, index) in scaleTicks"
-            :key="index"
-            class="budget-slider__scale-tick"
-            :class="{
-              'budget-slider__scale-tick--major': index % 2 === 0,
-              'budget-slider__scale-tick--minor': index % 2 !== 0,
+            class="budget-slider__range"
+            :style="{
+              left:
+                ((budgetRange.min - minBudget) / (maxBudget - minBudget)) *
+                  100 +
+                '%',
+              width:
+                ((budgetRange.max - budgetRange.min) /
+                  (maxBudget - minBudget)) *
+                  100 +
+                '%',
+            }"
+          ></div>
+
+          <!-- Scale Bars -->
+          <div class="budget-slider__scale">
+            <div
+              v-for="(tick, index) in scaleTicks"
+              :key="index"
+              class="budget-slider__scale-tick"
+              :class="{
+                'budget-slider__scale-tick--major': index % 2 === 0,
+                'budget-slider__scale-tick--minor': index % 2 !== 0,
+              }"
+            ></div>
+          </div>
+
+          <!-- Min Handle Input -->
+          <input
+            type="range"
+            :min="minBudget"
+            :max="maxBudget"
+            :step="step"
+            :value="budgetRange.min"
+            class="budget-slider__input budget-slider__input--min"
+            @input="handleMinInput"
+          />
+
+          <!-- Max Handle Input -->
+          <input
+            type="range"
+            :min="minBudget"
+            :max="maxBudget"
+            :step="step"
+            :value="budgetRange.max"
+            class="budget-slider__input budget-slider__input--max"
+            @input="handleMaxInput"
+          />
+
+          <!-- Visual Handles -->
+          <div
+            class="budget-slider__handle budget-slider__handle--min"
+            :style="{
+              left:
+                ((budgetRange.min - minBudget) / (maxBudget - minBudget)) *
+                  100 +
+                '%',
+            }"
+          ></div>
+          <div
+            class="budget-slider__handle budget-slider__handle--max"
+            :style="{
+              left:
+                ((budgetRange.max - minBudget) / (maxBudget - minBudget)) *
+                  100 +
+                '%',
             }"
           ></div>
         </div>
 
-        <!-- Min Handle Input -->
-        <input
-          type="range"
-          :min="minBudget"
-          :max="maxBudget"
-          :step="step"
-          :value="budgetRange.min"
-          class="budget-slider__input budget-slider__input--min"
-          @input="handleMinInput"
-        />
-
-        <!-- Max Handle Input -->
-        <input
-          type="range"
-          :min="minBudget"
-          :max="maxBudget"
-          :step="step"
-          :value="budgetRange.max"
-          class="budget-slider__input budget-slider__input--max"
-          @input="handleMaxInput"
-        />
-
-        <!-- Visual Handles -->
-        <div
-          class="budget-slider__handle budget-slider__handle--min"
-          :style="{
-            left:
-              ((budgetRange.min - minBudget) / (maxBudget - minBudget)) * 100 +
-              '%',
-          }"
-        ></div>
-        <div
-          class="budget-slider__handle budget-slider__handle--max"
-          :style="{
-            left:
-              ((budgetRange.max - minBudget) / (maxBudget - minBudget)) * 100 +
-              '%',
-          }"
-        ></div>
-      </div>
-
-      <!-- Range Labels -->
-      <div class="budget-slider__labels">
-        <span v-for="(label, index) in labels" :key="index">{{ label }}</span>
+        <!-- Range Labels -->
+        <div class="budget-slider__labels">
+          <span v-for="(label, index) in labels" :key="index">{{ label }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -170,6 +181,14 @@ const handleMaxInput = (event) => {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 350px;
+}
+
+.budget_helper_text {
+  font-size: 17px;
 }
 
 .budget-slider__values {
