@@ -24,8 +24,8 @@
           </h1>
 
           <div class="space-y-1">
-            <p class="text-20-emphasized text-white">
-              Finally! You're in control. Stress less. Move better.
+            <p class="text-[20px] text-white">
+              Thank you for sharing your preferences they have been saved.
             </p>
           </div>
         </div>
@@ -37,14 +37,7 @@
               @click="continueToQuestionnaire"
               class="w-full h-12 font-17-medium rounded-xl bg-brand-aqua text-white hover:bg-brand-aqua/90 transition-colors backdrop-blur-sm"
             >
-              Tell us more about your search
-            </button>
-
-            <button
-              @click="skipToApp"
-              class="w-full h-12 bg-white hover:bg-white/30 text-brand-aqua hover:text-white font-17-medium rounded-xl transition-colors backdrop-blur-sm"
-            >
-              Skip
+              Start Browsing
             </button>
           </div>
         </div>

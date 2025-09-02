@@ -399,7 +399,7 @@ if (typeof definePageMeta === 'function') {
 
 .questionnaire-page__check-mark {
   color: white;
-  font-size: 0.575rem;
+  font-size: 0.475rem;
   font-weight: bold;
 }
 
