@@ -47,7 +47,7 @@
           >
             <div class="questionnaire-page__option-content">
               <span class="questionnaire-page__option-icon">
-                <OPIcon :name="option.icon" class="w-5 h-5" />
+                <OPIcon :name="option.icon" class="w-[15px] h-[15px]" />
               </span>
               <span class="questionnaire-page__option-label">{{
                 option.label
@@ -259,18 +259,21 @@ if (typeof definePageMeta === 'function') {
 
 /* Content */
 .questionnaire-page__content {
-  @apply flex flex-col justify-center;
+  @apply flex flex-col justify-start;
   flex: 1;
   padding: 0 1.5rem;
 }
 
 .questionnaire-page__title {
-  font-size: 1.75rem;
+  font-size: 34px;
   font-weight: 700;
   color: #00a19a;
-  line-height: 1.3;
   margin-bottom: 2rem;
+  margin-top: 2rem;
   min-height: 4.5rem; /* Reserve space for typewriter effect */
+  font-style: normal;
+  line-height: 41px;
+  letter-spacing: 0.4px;
 }
 
 /* Typewriter Cursor */
@@ -297,6 +300,7 @@ if (typeof definePageMeta === 'function') {
 
 /* Options */
 .questionnaire-page__options {
+  margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -347,9 +351,13 @@ if (typeof definePageMeta === 'function') {
 }
 
 .questionnaire-page__option-label {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 13px;
   color: #00a19a;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px; /* 138.462% */
+  letter-spacing: -0.08px;
 }
 
 /* Check Button */
@@ -358,8 +366,8 @@ if (typeof definePageMeta === 'function') {
 }
 
 .questionnaire-page__check-button {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1rem;
+  height: 1rem;
   border: 2px solid #00a19a;
   border-radius: 50%;
   display: flex;
