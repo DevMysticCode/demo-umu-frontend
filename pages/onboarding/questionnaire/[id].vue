@@ -41,12 +41,14 @@
             @click="selectOption(option)"
             class="questionnaire-page__option"
             :class="{
-              'questionnaire-page__option--selected':
-                selectedAnswer === option.value,
+              'questionnaire-page__option--selected': isOptionSelected(
+                option.value
+              ),
             }"
           >
             <div class="questionnaire-page__option-content">
-              <span class="questionnaire-page__option-icon">
+              <!-- Only show icon if it exists -->
+              <span v-if="option.icon" class="questionnaire-page__option-icon">
                 <OPIcon :name="option.icon" class="w-[15px] h-[15px]" />
               </span>
               <span class="questionnaire-page__option-label">{{
@@ -58,14 +60,21 @@
                 class="questionnaire-page__check-button"
                 :class="{
                   'questionnaire-page__check-button--selected':
-                    selectedAnswer === option.value,
+                    isOptionSelected(option.value),
+                  'questionnaire-page__check-button--multiple':
+                    isMultipleSelection,
                 }"
               >
+                <!-- Show checkmark for single selection, number for multiple -->
                 <span
-                  v-if="selectedAnswer === option.value"
+                  v-if="isOptionSelected(option.value)"
                   class="questionnaire-page__check-mark"
                 >
-                  ✓
+                  {{
+                    isMultipleSelection
+                      ? selectedAnswers.indexOf(option.value) + 1
+                      : '✓'
+                  }}
                 </span>
               </div>
             </div>
@@ -78,11 +87,10 @@
     <div class="questionnaire-page__footer">
       <button
         @click="handleContinue"
-        :disabled="!selectedAnswer && questionData.type !== 'budget'"
+        :disabled="!isQuestionAnswered"
         class="questionnaire-page__continue"
         :class="{
-          'questionnaire-page__continue--disabled':
-            !selectedAnswer && questionData.type !== 'budget',
+          'questionnaire-page__continue--disabled': !isQuestionAnswered,
         }"
       >
         Continue
@@ -93,11 +101,7 @@
 
 <script setup>
 import { useQuestionnaireData } from '@/composables/useQuestionnaireData'
-import QuestionHeader from '@/components/questionnaire/QuestionHeader.vue'
-import QuestionContent from '@/components/questionnaire/QuestionContent.vue'
-import QuestionOptions from '@/components/questionnaire/QuestionOptions.vue'
 import BudgetSlider from '@/components/questionnaire/BudgetSlider.vue'
-import ContinueButton from '@/components/questionnaire/ContinueButton.vue'
 import BackButton from '@/components/BackButton.vue'
 import OPIcon from '@/components/OPIcon.vue'
 
@@ -111,20 +115,35 @@ const currentQuestion = parseInt(route.params.id) || 1
 const displayedTitle = ref('')
 const showCursor = ref(true)
 const showOptions = ref(false)
+
 // Use the composable
 const {
   selectedAnswer,
+  selectedAnswers,
   budgetRange,
   totalQuestions,
   minBudget,
   maxBudget,
   step,
   questionData,
+  isMultipleSelection,
   selectOption,
+  isOptionSelected,
   skipQuestion,
   continueToNext,
   updateBudgetRange,
 } = useQuestionnaireData(currentQuestion)
+
+// Computed property to check if question is answered
+const isQuestionAnswered = computed(() => {
+  if (questionData.value.type === 'budget') {
+    return true // Budget questions are always considered answered
+  } else if (isMultipleSelection.value) {
+    return selectedAnswers.value.length > 0
+  } else {
+    return !!selectedAnswer.value
+  }
+})
 
 // Start typewriter effect on mount
 onMounted(() => {
@@ -384,7 +403,7 @@ if (typeof definePageMeta === 'function') {
 
 .questionnaire-page__check-mark {
   color: white;
-  font-size: 0.875rem;
+  font-size: 0.575rem;
   font-weight: bold;
 }
 
@@ -425,5 +444,22 @@ if (typeof definePageMeta === 'function') {
   height: 0.25rem;
   background-color: #111827;
   border-radius: 0.125rem;
+}
+
+/* Add styles for multiple selection */
+.questionnaire-page__check-button--multiple {
+  border-radius: 50%;
+}
+
+.questionnaire-page__check-button--multiple.questionnaire-page__check-button--selected {
+  background-color: #00a19a;
+  color: white;
+}
+
+/* Adjust option content when there's no icon */
+.questionnaire-page__option-content:has(
+    .questionnaire-page__option-icon:not(:defined)
+  ) {
+  margin-left: 0;
 }
 </style>

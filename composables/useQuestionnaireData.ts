@@ -4,14 +4,15 @@ import { ref, computed } from 'vue'
 interface QuestionOption {
   value: string
   label: string
-  icon: string
+  icon?: string // Make icon optional
 }
 
 interface QuestionData {
   title: string
   subtitle?: string
-  type: 'options' | 'budget'
+  type: 'options' | 'budget' | 'multiple-options' // Add multiple-options type
   options?: QuestionOption[]
+  allowMultiple?: boolean // Add flag for multiple selection
 }
 
 interface BudgetRange {
@@ -27,6 +28,7 @@ interface QuestionsMap {
 export const useQuestionnaireData = (currentQuestion: number) => {
   const totalQuestions = 8
   const selectedAnswer = ref<string | null>(null)
+  const selectedAnswers = ref<string[]>([]) // For multiple selection
   const budgetRange = ref<BudgetRange>({
     min: 100,
     max: 200,
@@ -63,22 +65,22 @@ export const useQuestionnaireData = (currentQuestion: number) => {
         {
           value: 'less-than-6-months',
           label: 'Less than 6 months',
-          icon: 'i-heroicons-clock',
+          // No icon property for this question
         },
         {
           value: '6-months-1-year',
           label: '6 months - 1 year',
-          icon: 'i-heroicons-calendar',
+          // No icon property for this question
         },
         {
           value: '1-3-years',
           label: '1 - 3 years',
-          icon: 'i-heroicons-calendar-days',
+          // No icon property for this question
         },
         {
           value: '3-years-plus',
           label: '3+ years from now',
-          icon: 'i-heroicons-calendar',
+          // No icon property for this question
         },
       ],
     },
@@ -90,17 +92,17 @@ export const useQuestionnaireData = (currentQuestion: number) => {
       title: 'What kind of property are you interested in?',
       type: 'options',
       options: [
-        { value: 'house', label: 'House', icon: 'i-heroicons-home' },
+        { value: 'house', label: 'House', icon: 'house' },
         {
           value: 'apartment-flat',
           label: 'Apartment or Flat',
-          icon: 'i-heroicons-building-office',
+          icon: 'apartment',
         },
-        { value: 'land', label: 'Land', icon: 'i-heroicons-map' },
+        { value: 'land', label: 'Land', icon: 'land' },
         {
           value: 'commercial',
           label: 'Commercial',
-          icon: 'i-heroicons-building-office-2',
+          icon: 'commercial',
         },
       ],
     },
@@ -108,35 +110,60 @@ export const useQuestionnaireData = (currentQuestion: number) => {
       title: 'What style of property are you looking for?',
       type: 'options',
       options: [
-        { value: 'detached', label: 'Detached', icon: 'i-heroicons-home' },
+        { value: 'detached', label: 'Detached', icon: 'house' },
         {
           value: 'semi-detached',
           label: 'Semi-detached',
-          icon: 'i-heroicons-home',
+          icon: 'semiDetached',
         },
-        { value: 'terrace', label: 'Terrace', icon: 'i-heroicons-home' },
+        { value: 'terrace', label: 'Terrace', icon: 'terrace' },
         {
           value: 'single-floor-bungalow',
           label: 'Single floor or bungalow',
-          icon: 'i-heroicons-home',
+          icon: 'singleFloorBungalow',
         },
       ],
     },
     6: {
-      title: 'What style of property are you looking for?',
-      type: 'options',
+      title: 'What features matter most in a property?',
+      type: 'multiple-options', // Changed to multiple-options
+      allowMultiple: true, // Enable multiple selection
       options: [
-        { value: 'detached', label: 'Detached', icon: 'i-heroicons-home' },
+        { value: 'garden', label: 'Garden', icon: 'garden' },
         {
-          value: 'semi-detached',
-          label: 'Semi-detached',
-          icon: 'i-heroicons-home',
+          value: 'public-transport',
+          label: 'Public transport',
+          icon: 'publicTransport',
         },
-        { value: 'terrace', label: 'Terrace', icon: 'i-heroicons-home' },
         {
-          value: 'single-floor-bungalow',
-          label: 'Single floor or bungalow',
-          icon: 'i-heroicons-home',
+          value: 'driveway-parking',
+          label: 'Driveway or parking garage',
+          icon: 'driveway',
+        },
+        {
+          value: 'broadband-signal',
+          label: 'Fast broadband & mobile signal',
+          icon: 'mobileSignal',
+        },
+        {
+          value: 'energy-efficiency',
+          label: 'Good energy-efficiency rating',
+          icon: 'goodEnergy',
+        },
+        {
+          value: 'close-to-parks',
+          label: 'Close to public parks',
+          icon: 'closeToPublicPark',
+        },
+        {
+          value: 'close-to-schools',
+          label: 'Close to schools',
+          icon: 'closeToSchool',
+        },
+        {
+          value: 'home-office',
+          label: 'Home office space',
+          icon: 'homeOfficeSpace',
         },
       ],
     },
@@ -148,22 +175,18 @@ export const useQuestionnaireData = (currentQuestion: number) => {
         {
           value: 'less-than-6-months',
           label: 'Less than 6 months',
-          icon: 'i-heroicons-clock',
         },
         {
           value: '6-months-1-year',
           label: '6 months - 1 year',
-          icon: 'i-heroicons-calendar',
         },
         {
           value: '1-3-years',
           label: '1 - 3 years',
-          icon: 'i-heroicons-calendar-days',
         },
         {
           value: '3-years-plus',
           label: '3+ years from now',
-          icon: 'i-heroicons-calendar',
         },
       ],
     },
@@ -179,9 +202,35 @@ export const useQuestionnaireData = (currentQuestion: number) => {
     return questions[currentQuestion] || questions[1]
   })
 
+  // Check if current question allows multiple selection
+  const isMultipleSelection = computed(() => {
+    return questionData.value.type === 'multiple-options'
+  })
+
   // Methods
   const selectOption = (option: QuestionOption): void => {
-    selectedAnswer.value = option.value
+    if (isMultipleSelection.value) {
+      // For multiple selection, toggle the option
+      const index = selectedAnswers.value.indexOf(option.value)
+      if (index > -1) {
+        // Remove if already selected
+        selectedAnswers.value.splice(index, 1)
+      } else {
+        // Add if not selected
+        selectedAnswers.value.push(option.value)
+      }
+    } else {
+      // For single selection, replace the value
+      selectedAnswer.value = option.value
+    }
+  }
+
+  const isOptionSelected = (optionValue: string): boolean => {
+    if (isMultipleSelection.value) {
+      return selectedAnswers.value.includes(optionValue)
+    } else {
+      return selectedAnswer.value === optionValue
+    }
   }
 
   const skipQuestion = (): string => {
@@ -190,13 +239,26 @@ export const useQuestionnaireData = (currentQuestion: number) => {
   }
 
   const continueToNext = (): string | null => {
-    if (!selectedAnswer.value && questionData.value.type !== 'budget')
-      return null
+    if (questionData.value.type === 'budget') {
+      // Budget questions are always valid
+    } else if (isMultipleSelection.value) {
+      // For multiple selection, check if at least one option is selected
+      if (selectedAnswers.value.length === 0) return null
+    } else {
+      // For single selection, check if an option is selected
+      if (!selectedAnswer.value) return null
+    }
 
     // Save answer
-    const answer =
-      selectedAnswer.value ||
-      `Budget: ${budgetRange.value.min}k-${budgetRange.value.max}k`
+    let answer: string
+    if (questionData.value.type === 'budget') {
+      answer = `Budget: ${budgetRange.value.min}k-${budgetRange.value.max}k`
+    } else if (isMultipleSelection.value) {
+      answer = `Multiple: ${selectedAnswers.value.join(', ')}`
+    } else {
+      answer = selectedAnswer.value || ''
+    }
+
     console.log(`Question ${currentQuestion}: ${answer}`)
 
     return getNextRoute()
@@ -232,6 +294,7 @@ export const useQuestionnaireData = (currentQuestion: number) => {
   return {
     // State
     selectedAnswer,
+    selectedAnswers,
     budgetRange,
     totalQuestions,
     minBudget,
@@ -240,9 +303,11 @@ export const useQuestionnaireData = (currentQuestion: number) => {
 
     // Computed
     questionData,
+    isMultipleSelection,
 
     // Methods
     selectOption,
+    isOptionSelected,
     skipQuestion,
     continueToNext,
     goBack,
