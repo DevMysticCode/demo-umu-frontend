@@ -37,7 +37,7 @@ const iconPath = (() => {
     commercial: '/op-icons/commercial.svg',
     semiDetached: '/op-icons/semiDetached.svg',
     terrace: '/op-icons/terrace.svg',
-    singleFloorBungalow: '/op-icons/singleFloorBungalow.svg',
+    singleFloorBungalow: '/op-icons/singleFloorBunglow.svg',
     garden: '/op-icons/garden.svg',
     publicTransport: '/op-icons/publicTransport.svg',
     driveway: '/op-icons/driveway.svg',
