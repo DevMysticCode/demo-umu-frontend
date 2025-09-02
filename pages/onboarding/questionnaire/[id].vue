@@ -70,11 +70,7 @@
                   v-if="isOptionSelected(option.value)"
                   class="questionnaire-page__check-mark"
                 >
-                  {{
-                    isMultipleSelection
-                      ? selectedAnswers.indexOf(option.value) + 1
-                      : '✓'
-                  }}
+                  ✓
                 </span>
               </div>
             </div>
