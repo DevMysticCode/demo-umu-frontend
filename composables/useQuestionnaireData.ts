@@ -46,13 +46,13 @@ export const useQuestionnaireData = (currentQuestion: number) => {
         {
           value: 'prospective-buyer',
           label: 'Prospective Buyer',
-          icon: 'i-heroicons-user',
+          icon: 'userRegistration',
         },
-        { value: 'homeowner', label: 'Homeowner', icon: 'i-heroicons-home' },
+        { value: 'homeowner', label: 'Homeowner', icon: 'userRegistration' },
         {
           value: 'exploring',
           label: 'Exploring',
-          icon: 'i-heroicons-magnifying-glass',
+          icon: 'userRegistration',
         },
       ],
     },
