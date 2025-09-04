@@ -4,7 +4,7 @@
   >
     <!-- Main Content -->
     <main
-      class="pt-6 pb-32 px-6 flex flex-col items-center justify-center min-h-screen text-center"
+      class="pt-[36px] pb-32 px-6 flex flex-col items-center justify-start min-h-screen text-center"
     >
       <div class="header">
         <BackButton />
