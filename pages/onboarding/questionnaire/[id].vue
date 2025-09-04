@@ -20,14 +20,19 @@
       <!-- Question Options -->
       <div class="questionnaire-page__options">
         <!-- Budget Range Slider (Questions 3 & 8) -->
-        <BudgetSlider
+        <div
           v-if="questionData.type === 'budget'"
-          :budget-range="budgetRange"
-          :min-budget="minBudget"
-          :max-budget="maxBudget"
-          :step="step"
-          @update:budget-range="updateBudgetRange"
-        />
+          class="questionnaire-page__option-list"
+          :class="{ 'budget-slider--visible': showOptions }"
+        >
+          <BudgetSlider
+            :budget-range="budgetRange"
+            :min-budget="minBudget"
+            :max-budget="maxBudget"
+            :step="step"
+            @update:budget-range="updateBudgetRange"
+          />
+        </div>
 
         <!-- Regular Options -->
         <div
@@ -331,6 +336,20 @@ if (typeof definePageMeta === 'function') {
 .questionnaire-page__option-list--visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Budget Slider Container */
+.budget-slider--visible {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .questionnaire-page__option {
