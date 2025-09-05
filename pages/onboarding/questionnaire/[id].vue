@@ -252,7 +252,7 @@ if (typeof definePageMeta === 'function') {
 
 /* Header */
 .questionnaire-page__header {
-  padding: 1rem 1.5rem;
+  padding: 11px 16px;
 }
 
 .questionnaire-page__back {
@@ -281,19 +281,20 @@ if (typeof definePageMeta === 'function') {
 .questionnaire-page__content {
   @apply flex flex-col justify-start;
   flex: 1;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
 }
 
 .questionnaire-page__title {
   font-size: 34px;
   font-weight: 700;
   color: #00a19a;
-  margin-bottom: 2rem;
-  margin-top: 2rem;
+  margin-bottom: 24px;
+  margin-top: 32px;
   min-height: 4.5rem; /* Reserve space for typewriter effect */
   font-style: normal;
   line-height: 41px;
   letter-spacing: 0.4px;
+  padding: 16px 20px 20px 20px;
 }
 
 /* Typewriter Cursor */

@@ -179,7 +179,7 @@ const handleMaxInput = (event) => {
 
 <style scoped>
 .budget-slider {
-  padding: 1.5rem 0.5rem;
+  padding: 0 8px;
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
