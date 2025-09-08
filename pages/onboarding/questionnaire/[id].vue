@@ -61,6 +61,23 @@
               }}</span>
             </div>
             <div class="questionnaire-page__option-radio">
+              <!-- <div
+                class="questionnaire-page__check-button"
+                :class="{
+                  'questionnaire-page__check-button--selected':
+                    isOptionSelected(option.value),
+                  'questionnaire-page__check-button--multiple':
+                    isMultipleSelection,
+                }"
+              >
+                <span
+                  v-if="isOptionSelected(option.value)"
+                  class="questionnaire-page__check-mark"
+                >
+                  ✓
+                </span>
+              </div> -->
+
               <div
                 class="questionnaire-page__check-button"
                 :class="{
@@ -70,13 +87,25 @@
                     isMultipleSelection,
                 }"
               >
-                <!-- Show checkmark for single selection, number for multiple -->
-                <span
-                  v-if="isOptionSelected(option.value)"
-                  class="questionnaire-page__check-mark"
-                >
-                  ✓
-                </span>
+                <!-- No selection icon -->
+                <OPIcon
+                  v-if="!isOptionSelected(option.value)"
+                  name="radioUnchecked"
+                  class="w-[18px] h-[18px] text-white"
+                />
+                <!-- Single selection icon -->
+                <OPIcon
+                  v-if="isOptionSelected(option.value) && !isMultipleSelection"
+                  name="radioChecked"
+                  class="w-[18px] h-[18px] text-white"
+                />
+
+                <!-- Multiple selection icon -->
+                <OPIcon
+                  v-if="isOptionSelected(option.value) && isMultipleSelection"
+                  name="radioChecked"
+                  class="w-[18px] h-[18px] text-white"
+                />
               </div>
             </div>
           </div>
@@ -401,8 +430,8 @@ if (typeof definePageMeta === 'function') {
 .questionnaire-page__check-button {
   width: 1rem;
   height: 1rem;
-  border: 2px solid #00a19a;
-  border-radius: 50%;
+  /* border: 2px solid #00a19a;
+  border-radius: 50%; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -411,8 +440,8 @@ if (typeof definePageMeta === 'function') {
 }
 
 .questionnaire-page__check-button--selected {
-  background-color: #00a19a;
-  border-color: #00a19a;
+  background-color: white;
+  /* border-color: #00a19a; */
 }
 
 .questionnaire-page__check-mark {
@@ -452,7 +481,7 @@ if (typeof definePageMeta === 'function') {
 }
 
 .questionnaire-page__check-button--multiple.questionnaire-page__check-button--selected {
-  background-color: #00a19a;
+  background-color: white;
   color: white;
 }
 

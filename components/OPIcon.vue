@@ -47,6 +47,8 @@ const iconPath = (() => {
     closeToPublicPark: '/op-icons/closeToPublicPark.svg',
     closeToSchool: '/op-icons/closeToSchool.svg',
     homeOfficeSpace: '/op-icons/homeOfficeSpace.svg',
+    radioUnchecked: '/op-icons/radioUnchecked.svg',
+    radioChecked: '/op-icons/radioChecked.svg',
   }
 
   return iconMap[props.name] || '/op-icons/default.svg'
