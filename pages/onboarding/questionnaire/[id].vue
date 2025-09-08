@@ -85,7 +85,10 @@
     </div>
 
     <!-- Continue Button -->
-    <div class="questionnaire-page__footer">
+    <div
+      class="questionnaire-page__footer"
+      :class="{ 'questionnaire-page__footer--visible': showOptions }"
+    >
       <ContinueButton
         :disabled="!isQuestionAnswered"
         @continue="handleContinue"
@@ -425,6 +428,14 @@ if (typeof definePageMeta === 'function') {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+
+.questionnaire-page__footer--visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Home Indicator */
