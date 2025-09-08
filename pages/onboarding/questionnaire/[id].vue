@@ -86,16 +86,10 @@
 
     <!-- Continue Button -->
     <div class="questionnaire-page__footer">
-      <button
-        @click="handleContinue"
+      <ContinueButton
         :disabled="!isQuestionAnswered"
-        class="questionnaire-page__continue"
-        :class="{
-          'questionnaire-page__continue--disabled': !isQuestionAnswered,
-        }"
-      >
-        Continue
-      </button>
+        @continue="handleContinue"
+      />
     </div>
   </div>
 </template>
@@ -105,6 +99,7 @@ import { useQuestionnaireData } from '@/composables/useQuestionnaireData'
 import BudgetSlider from '@/components/questionnaire/BudgetSlider.vue'
 import BackButton from '@/components/BackButton.vue'
 import OPIcon from '@/components/OPIcon.vue'
+import ContinueButton from '@/components/ContinueButton.vue'
 
 // For non-Nuxt environments, we'll use a simple approach
 const route = useRoute()
@@ -430,28 +425,6 @@ if (typeof definePageMeta === 'function') {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-}
-
-.questionnaire-page__continue {
-  width: 100%;
-  height: 3.5rem;
-  background-color: #00a19a;
-  color: white;
-  border: none;
-  border-radius: 1rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.questionnaire-page__continue:hover:not(:disabled) {
-  background-color: rgba(0, 161, 154, 0.9);
-}
-
-.questionnaire-page__continue--disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 /* Home Indicator */
