@@ -7,13 +7,15 @@
       customClass,
     ]"
   >
-    <Icon name="i-heroicons-chevron-left" class="w-6 h-6" />
+    <OPIcon name="leftChevron" class="w-[15px] h-[15px]" />
+    <!-- <Icon name="i-heroicons-chevron-left" class="w-6 h-6" /> -->
     <span class="text-base font-medium">Back</span>
   </UButton>
 </template>
 
 <script setup>
 import { defineProps, defineEmits } from 'vue'
+import OPIcon from '@/components/OPIcon.vue'
 const emit = defineEmits(['back'])
 
 const props = defineProps({

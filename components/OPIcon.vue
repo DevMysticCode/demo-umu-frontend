@@ -29,6 +29,7 @@ const iconPath = (() => {
     apple: '/op-icons/Apple.svg',
     google: '/op-icons/Google.svg',
     facebook: '/op-icons/Facebook.svg',
+    leftChevron: '/op-icons/backButtonIcon.svg',
     'create-account': '/images/createAccount.svg',
     userRegistration: '/op-icons/userRegistration.svg',
     house: '/op-icons/house.svg',
