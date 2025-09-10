@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import BaseModal from '../ui/BaseModal.vue'
+import BaseModal from '../ui/BaseDrawer.vue'
 import { useTermsData } from '@/composables/useTermsData'
 
 defineProps({
