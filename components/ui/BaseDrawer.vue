@@ -34,7 +34,7 @@
 
       <!-- Content -->
       <div class="drawer__content" :class="{ 'drawer__content--large': large }">
-        <slot />
+        <p>some text</p>
       </div>
 
       <!-- Footer -->
@@ -91,6 +91,7 @@ const handleClose = () => {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
+  @apply backdrop-blur-sm;
   z-index: 50;
   display: flex;
   align-items: flex-end;
