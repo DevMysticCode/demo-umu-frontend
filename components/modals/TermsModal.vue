@@ -5,14 +5,12 @@
     title="UMU Terms & Conditions"
     subtitle="Last updated: 4th July 2025"
   >
-    <!-- Illustration slot -->
-    <template #illustration>
-      <img
-        src="/public/images/addressSearch.png"
-        alt="Create account illustration"
-        class="create-account-hero__img w-32 h-32"
-      />
-    </template>
+    <HeroSection
+      iconName="create-account"
+      iconClass="w-32 h-32"
+      mainTitle="Terms and Conditions"
+      subTitle="Our terms of service and privacy policy"
+    />
 
     <!-- Content -->
     <div class="terms-content">
@@ -28,18 +26,16 @@
       </div>
     </div>
 
-    <!-- Footer slot -->
-    <template #footer>
-      <div class="page__bottom">
-        <button @click="acceptTerms" class="w-100 page__button">I Agree</button>
-      </div>
-    </template>
+    <div class="page__bottom">
+      <button @click="acceptTerms" class="w-100 page__button">I Agree</button>
+    </div>
   </BaseDrawer>
 </template>
 
 <script setup>
 import BaseDrawer from '../ui/BaseDrawer.vue'
 import { useTermsData } from '@/composables/useTermsData'
+import HeroSection from '@/components/HeroSection.vue'
 
 defineProps({
   show: {
@@ -65,7 +61,7 @@ const acceptTerms = () => {
 
 <style scoped>
 .terms-content {
-  max-height: 400px;
+  max-height: 90vh;
   overflow-y: auto;
 }
 
@@ -109,6 +105,11 @@ const acceptTerms = () => {
 
 .page__bottom {
   @apply w-full bottom-0;
+  padding: 1rem 1.5rem;
+  border-radius: 0 0 0.75rem 0.75rem;
+  position: fixed;
+  background: transparent;
+  left: 0;
 }
 
 .page__button {

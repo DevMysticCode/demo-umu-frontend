@@ -19,26 +19,18 @@
       </div>
 
       <!-- Illustration Section (now optional via slot) -->
-      <div v-if="$slots.illustration" class="drawer__illustration">
+      <!-- <div v-if="$slots.illustration" class="drawer__illustration">
         <div class="drawer__illustration-icon">
           <slot name="illustration"></slot>
         </div>
         <h4 v-if="title" class="drawer__illustration-title">{{ title }}</h4>
         <p v-if="subtitle" class="drawer__subtitle">{{ subtitle }}</p>
-      </div>
+      </div> -->
 
       <!-- Content -->
       <div class="drawer__content" :class="{ 'drawer__content--large': large }">
         <slot />
       </div>
-
-      <!-- Footer -->
-      <div v-if="$slots.footer" class="drawer__footer">
-        <slot name="footer" />
-      </div>
-
-      <!-- Home Indicator -->
-      <div class="drawer__home-indicator"></div>
     </div>
   </div>
 </template>
