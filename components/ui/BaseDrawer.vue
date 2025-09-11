@@ -3,12 +3,13 @@
     <div class="drawer" :class="{ 'drawer--open': modelValue }">
       <!-- Header -->
       <div class="drawer__header">
-        <button @click="handleClose" class="drawer__back">
+        <button v-if="showBackButton" @click="handleClose" class="drawer__back">
           <span class="drawer__back-icon"
             ><OPIcon name="leftChevron" class="w-[15px] h-[15px]"
           /></span>
           <span class="drawer__back-text">Back</span>
         </button>
+        <div v-else class="drawer__back-placeholder"></div>
 
         <h3 class="drawer__title">{{ title }}</h3>
 
@@ -17,18 +18,12 @@
         </button>
       </div>
 
-      <!-- Illustration Section -->
-      <div v-if="showIllustration" class="drawer__illustration">
+      <!-- Illustration Section (now optional via slot) -->
+      <div v-if="$slots.illustration" class="drawer__illustration">
         <div class="drawer__illustration-icon">
-          <slot name="illustration">
-            <img
-              src="/public/images/addressSearch.png"
-              alt="Create account illustration"
-              class="create-account-hero__img w-32 h-32"
-            />
-          </slot>
+          <slot name="illustration"></slot>
         </div>
-        <h4 class="drawer__illustration-title">{{ title }}</h4>
+        <h4 v-if="title" class="drawer__illustration-title">{{ title }}</h4>
         <p v-if="subtitle" class="drawer__subtitle">{{ subtitle }}</p>
       </div>
 
@@ -58,7 +53,7 @@ defineProps({
   },
   title: {
     type: String,
-    required: true,
+    default: '',
   },
   subtitle: {
     type: String,
@@ -68,7 +63,7 @@ defineProps({
     type: Boolean,
     default: false,
   },
-  showIllustration: {
+  showBackButton: {
     type: Boolean,
     default: true,
   },
@@ -102,7 +97,7 @@ const handleClose = () => {
   background-color: #f3f4f6;
   width: 100%;
   max-width: 428px;
-  max-height: 95vh;
+  max-height: 90vh; /* Changed from 95vh to prevent cutoff */
   border-radius: 1rem 1rem 0 0;
   display: flex;
   flex-direction: column;
@@ -123,6 +118,7 @@ const handleClose = () => {
   padding: 1rem 1.5rem 0.5rem;
   background-color: #f3f4f6;
   border-bottom: 1px solid #e5e7eb;
+  min-height: 3.5rem; /* Ensure consistent height */
 }
 
 .drawer__back {
@@ -142,6 +138,11 @@ const handleClose = () => {
   color: rgba(0, 161, 154, 0.8);
 }
 
+.drawer__back-placeholder {
+  width: 80px; /* Same approximate width as the back button */
+  visibility: hidden;
+}
+
 .drawer__back-icon {
   font-size: 1.25rem;
   margin-right: 0.5rem;
@@ -154,6 +155,7 @@ const handleClose = () => {
   text-align: center;
   flex: 1;
   margin: 0;
+  padding: 0 1rem; /* Add padding for better spacing */
 }
 
 .drawer__close {
@@ -190,13 +192,6 @@ const handleClose = () => {
   justify-content: center;
 }
 
-.drawer__illustration-img {
-  width: 5rem;
-  height: 5rem;
-  object-fit: contain;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-}
-
 .drawer__illustration-title {
   font-size: 1.25rem;
   font-weight: 600;
@@ -216,7 +211,6 @@ const handleClose = () => {
   flex: 1;
   overflow-y: auto;
   background-color: white;
-  /* margin: 0 1.5rem; */
   border-radius: 0.75rem 0.75rem 0 0;
   padding: 1.5rem;
   min-height: 200px;
@@ -230,7 +224,6 @@ const handleClose = () => {
 .drawer__footer {
   padding: 1rem 1.5rem;
   background-color: white;
-  margin: 0 1.5rem;
   border-radius: 0 0 0.75rem 0.75rem;
 }
 
@@ -267,6 +260,7 @@ const handleClose = () => {
   .drawer {
     max-width: 100%;
     margin: 0;
+    max-height: 85vh; /* Adjust for mobile */
   }
 
   .drawer__header {
@@ -278,60 +272,15 @@ const handleClose = () => {
   }
 
   .drawer__content {
-    margin: 0 1rem;
     padding: 1rem;
   }
 
   .drawer__footer {
-    margin: 0 1rem;
     padding: 0.75rem 1rem 1rem;
   }
-}
 
-/* Terms Content Specific Styles */
-.drawer__content .terms-content {
-  padding: 0;
-}
-
-.drawer__content .term-section {
-  margin-bottom: 1.5rem;
-}
-
-.drawer__content .term-section:last-child {
-  margin-bottom: 0;
-}
-
-.drawer__content .term-section h4 {
-  color: #111827;
-  font-size: 1.1rem;
-  margin-bottom: 0.75rem;
-}
-
-.drawer__content .term-section p {
-  color: #6b7280;
-  line-height: 1.6;
-  font-size: 1rem;
-}
-
-/* Footer Button Styles */
-.drawer__footer .page__button {
-  width: 100%;
-  height: 3rem;
-  background-color: #00a19a;
-  color: white;
-  border: none;
-  border-radius: 0.75rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.drawer__footer .page__button:hover {
-  background-color: rgba(0, 161, 154, 0.9);
-}
-
-.drawer__footer .w-100 {
-  width: 100%;
+  .drawer__back-placeholder {
+    width: 60px; /* Smaller placeholder on mobile */
+  }
 }
 </style>

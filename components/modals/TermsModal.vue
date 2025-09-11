@@ -1,10 +1,20 @@
 <template>
-  <BaseModal
+  <BaseDrawer
     :model-value="show"
     @update:model-value="handleClose"
     title="UMU Terms & Conditions"
     subtitle="Last updated: 4th July 2025"
   >
+    <!-- Illustration slot -->
+    <template #illustration>
+      <img
+        src="/public/images/addressSearch.png"
+        alt="Create account illustration"
+        class="create-account-hero__img w-32 h-32"
+      />
+    </template>
+
+    <!-- Content -->
     <div class="terms-content">
       <div class="space-y-4 text-[17px]">
         <div
@@ -18,16 +28,17 @@
       </div>
     </div>
 
+    <!-- Footer slot -->
     <template #footer>
       <div class="page__bottom">
         <button @click="acceptTerms" class="w-100 page__button">I Agree</button>
       </div>
     </template>
-  </BaseModal>
+  </BaseDrawer>
 </template>
 
 <script setup>
-import BaseModal from '../ui/BaseDrawer.vue'
+import BaseDrawer from '../ui/BaseDrawer.vue'
 import { useTermsData } from '@/composables/useTermsData'
 
 defineProps({
