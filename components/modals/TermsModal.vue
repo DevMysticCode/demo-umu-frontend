@@ -1,5 +1,5 @@
 <template>
-  <BaseModal
+  <BaseDrawer
     :model-value="show"
     @update:model-value="handleClose"
     title="UMU Terms & Conditions"
@@ -23,11 +23,11 @@
         <button @click="acceptTerms" class="w-100 page__button">I Agree</button>
       </div>
     </template>
-  </BaseModal>
+  </BaseDrawer>
 </template>
 
 <script setup>
-import BaseModal from '../ui/BaseDrawer.vue'
+import BaseDrawer from '../ui/BaseDrawerShaun.vue'
 import { useTermsData } from '@/composables/useTermsData'
 
 defineProps({
@@ -54,7 +54,7 @@ const acceptTerms = () => {
 
 <style scoped>
 .terms-content {
-  max-height: 400px;
+  max-height: 90vh;
   overflow-y: auto;
 }
 
