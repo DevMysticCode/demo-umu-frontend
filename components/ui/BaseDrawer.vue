@@ -31,6 +31,11 @@
       <div class="drawer__content" :class="{ 'drawer__content--large': large }">
         <slot />
       </div>
+
+      <!-- Footer -->
+      <div v-if="$slots.footer" class="drawer__footer">
+        <slot name="footer" />
+      </div>
     </div>
   </div>
 </template>
@@ -210,23 +215,6 @@ const handleClose = () => {
 
 .drawer__content--large {
   min-height: 300px;
-}
-
-/* Footer */
-.drawer__footer {
-  padding: 1rem 1.5rem;
-  background-color: white;
-  border-radius: 0 0 0.75rem 0.75rem;
-}
-
-/* Home Indicator */
-.drawer__home-indicator {
-  width: 8rem;
-  height: 0.25rem;
-  background-color: #111827;
-  border-radius: 0.125rem;
-  margin: 1rem auto;
-  flex-shrink: 0;
 }
 
 /* Scrollbar Styling */

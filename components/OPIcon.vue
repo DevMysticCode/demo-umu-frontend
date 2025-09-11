@@ -49,6 +49,7 @@ const iconPath = (() => {
     homeOfficeSpace: '/op-icons/homeOfficeSpace.svg',
     radioUnchecked: '/op-icons/radioUnchecked.svg',
     radioChecked: '/op-icons/radioChecked.svg',
+    addressSearch: '/images/addressSearch.png',
   }
 
   return iconMap[props.name] || '/op-icons/default.svg'
