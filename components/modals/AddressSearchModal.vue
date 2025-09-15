@@ -29,7 +29,6 @@ const handleClose = () => {
 
 const selectAddress = (address) => {
   selectedAddressId.value = address.id
-  emit('select', address) // keep selection emitted immediately
 }
 
 const handleSearchInput = (event) => {
@@ -44,6 +43,7 @@ const handleSearch = () => {
 const handleContinue = () => {
   if (selectedAddressId.value) {
     handleClose()
+    emit('select', address) // keep selection emitted immediately
   }
 }
 </script>
