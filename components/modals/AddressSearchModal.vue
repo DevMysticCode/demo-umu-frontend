@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import BaseDrawer from '@/components/ui/BaseDrawer.vue'
 import ContinueButton from '@/components/ContinueButton.vue'
+import { computed } from 'vue'
 
 const props = defineProps({
   show: { type: Boolean, default: false },
@@ -13,6 +14,10 @@ const emit = defineEmits(['update:show', 'select', 'close', 'search'])
 
 const selectedAddressId = ref(null)
 const searchQuery = ref(props.postcode)
+
+const getSelectedAddress = computed(() => {
+  return props.addresses.find((a) => a.id === selectedAddressId.value) || null
+})
 
 // sync searchQuery with prop
 watch(
@@ -40,10 +45,10 @@ const handleSearch = () => {
 }
 
 // ✅ new function for continue
-const handleContinue = () => {
+const handleContinue = (address) => {
   if (selectedAddressId.value) {
-    handleClose()
     emit('select', address) // keep selection emitted immediately
+    handleClose()
   }
 }
 </script>
@@ -130,12 +135,22 @@ const handleContinue = () => {
                 selectedAddressId === address.id,
             }"
           >
-            <div
-              v-if="selectedAddressId === address.id"
-              class="address-modal__radio-dot"
-            ></div>
+            <!-- No selection icon -->
+            <OPIcon
+              v-if="selectedAddressId !== address.id"
+              name="radioUnchecked"
+              class="w-[18px] h-[18px] text-white"
+            />
+
+            <!-- Selected icon -->
+            <OPIcon
+              v-else
+              name="radioChecked"
+              class="w-[18px] h-[18px] text-white"
+            />
           </div>
         </div>
+
         <div class="address-modal__address">
           <p class="address-modal__address-text">{{ address.line1 }}</p>
         </div>
@@ -145,7 +160,7 @@ const handleContinue = () => {
     <div class="continue_button_container">
       <ContinueButton
         :disabled="!selectedAddressId"
-        @continue="handleContinue"
+        @continue="handleContinue(getSelectedAddress)"
       />
     </div>
   </BaseDrawer>
@@ -294,7 +309,6 @@ const handleContinue = () => {
 .address-modal__radio-button {
   width: 1.25rem;
   height: 1.25rem;
-  border: 2px solid #d1d5db;
   border-radius: 50%;
   display: flex;
   align-items: center;
