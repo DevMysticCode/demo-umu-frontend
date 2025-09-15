@@ -113,7 +113,7 @@ const handleClose = () => {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem 0.5rem;
-  background-color: #f3f4f6;
+  background-color: #fff;
   border-bottom: 1px solid #e5e7eb;
   min-height: 3.5rem; /* Ensure consistent height */
 }
@@ -156,10 +156,9 @@ const handleClose = () => {
 }
 
 .drawer__close {
-  background: transparent;
+  background: rgba(127, 127, 127, 0.15);
   border: none;
-  color: #6b7280;
-  font-size: 1.25rem;
+  color: rgba(61, 61, 61, 0.5);
   cursor: pointer;
   padding: 0.25rem;
   transition: color 0.2s;
@@ -168,7 +167,11 @@ const handleClose = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.5rem;
+  border-radius: 50%;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 590;
+  line-height: 21px;
 }
 
 .drawer__close:hover {
@@ -209,7 +212,7 @@ const handleClose = () => {
   overflow-y: auto;
   background-color: white;
   border-radius: 0.75rem 0.75rem 0 0;
-  padding: 1.5rem;
+  padding: 16px;
   min-height: 200px;
 }
 
