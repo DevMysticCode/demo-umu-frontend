@@ -83,13 +83,11 @@
 
           <!-- Submit Button -->
           <div class="create-account-submit">
-            <button
+            <ContinueButton
               type="submit"
-              class="create-account-submit__btn"
               :disabled="isLoading"
-            >
-              {{ isLoading ? 'Creating...' : 'Continue' }}
-            </button>
+              :text="isLoading ? 'Creating...' : 'Continue'"
+            />
           </div>
         </form>
       </div>
@@ -125,6 +123,7 @@ import AddressSearchModal from '@/components/modals/AddressSearchModal.vue'
 import TermsModal from '@/components/modals/TermsModal.vue'
 import BackButton from '@/components/BackButton.vue'
 import HeroSection from '@/components/HeroSection.vue'
+import ContinueButton from '@/components/ContinueButton.vue'
 
 definePageMeta({
   title: 'Create Account - UmovingU',
