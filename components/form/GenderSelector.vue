@@ -49,11 +49,12 @@ const options = [
 <style scoped>
 /* Gender Selector Component - BEM CSS */
 .gender-selector {
-  @apply flex flex-col mb-4;
+  @apply flex flex-col mb-6;
 }
 
 .gender-selector__label {
-  @apply text-sm font-medium text-gray-600 mb-2;
+  @apply font-medium mb-2;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 .gender-selector__options {
@@ -61,7 +62,16 @@ const options = [
 }
 
 .gender-selector__option {
-  @apply h-12 flex items-center justify-center bg-white border border-gray-200 rounded-xl text-base font-medium cursor-pointer transition-all duration-200 select-none;
+  @apply flex items-center justify-center bg-white border text-base cursor-pointer transition-all duration-200 select-none;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 22px; /* 129.412% */
+  letter-spacing: -0.43px;
+  color: #353b45;
+  height: 56px;
+  min-height: 56px;
+  border-radius: 16px;
+  border: 0.33px solid rgba(60, 60, 67, 0.18);
 }
 
 .gender-selector__option--selected {
@@ -69,7 +79,8 @@ const options = [
 }
 
 .gender-selector__option--unselected {
-  @apply text-gray-600 hover:border-brand-aqua hover:text-brand-aqua;
+  @apply hover:border-brand-aqua hover:text-brand-aqua;
+  color: #353b45;
 }
 
 .gender-selector__option input {

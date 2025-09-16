@@ -50,6 +50,9 @@ const iconPath = (() => {
     radioUnchecked: '/op-icons/radioUnchecked.svg',
     radioChecked: '/op-icons/radioChecked.svg',
     addressSearch: '/images/addressSearch.png',
+    search: '/op-icons/search.svg',
+    passwordShow: '/op-icons/passwordShow.svg',
+    passwordHide: '/op-icons/passwordHide.svg',
   }
 
   return iconMap[props.name] || '/op-icons/default.svg'

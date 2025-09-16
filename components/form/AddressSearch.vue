@@ -19,19 +19,7 @@
         class="address-search__button absolute top-1/2 right-2 -translate-y-1/2"
         :disabled="isSearching || disabled"
       >
-        <svg
-          class="address-search__icon"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg>
+        <OPIcon name="search" class="w-[15px] h-[15px]" />
         <span>{{ isSearching ? 'Searching...' : 'Search' }}</span>
       </button>
     </div>
@@ -60,6 +48,7 @@
 </template>
 
 <script setup>
+import OPIcon from '@/components/OPIcon.vue'
 defineProps({
   name: {
     type: String,
@@ -101,11 +90,13 @@ const handleEdit = () => {
 <style scoped>
 /* Address Search Component - BEM CSS */
 .address-search {
-  @apply flex flex-col mb-4;
+  @apply flex flex-col mb-6;
 }
 
 .address-search__label {
-  @apply text-sm font-medium text-gray-600 mb-2;
+  @apply mb-2;
+  color: rgba(60, 60, 67, 0.6);
+  font-size: 16px;
 }
 
 .address-search__container {
@@ -114,9 +105,17 @@ const handleEdit = () => {
 }
 
 .address-search__input {
-  @apply w-full h-12 pl-4 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all duration-200;
-  font-size: 16px;
-  line-height: 1.5;
+  @apply w-full h-12 bg-white border placeholder-gray-400 transition-all duration-200;
+  border-radius: 16px;
+  border: 0.33px solid rgba(60, 60, 67, 0.18);
+  padding: 0 12px 0 16px;
+  height: 56px;
+  min-height: 56px;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: -0.43px;
+  color: #000;
 }
 
 .address-search__input:focus {
@@ -133,7 +132,11 @@ const handleEdit = () => {
 }
 
 .address-search__button {
-  @apply flex items-center gap-1 h-9 px-3 bg-teal-100 text-teal-600 rounded-full font-medium text-sm cursor-pointer transition-all duration-200;
+  @apply flex items-center gap-1 h-9 text-brand-aqua rounded-full cursor-pointer transition-all duration-200;
+  background-color: rgba(0, 161, 154, 0.1);
+  font-size: 15px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .address-search__button:hover:not(:disabled) {
