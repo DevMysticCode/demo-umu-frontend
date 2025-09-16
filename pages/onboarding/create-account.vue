@@ -4,7 +4,7 @@
     <main class="create-account-main">
       <!-- Back Button -->
       <div class="create-account-header">
-        <BackButton />
+        <BackButton color="brand-aqua" />
       </div>
 
       <HeroSection
