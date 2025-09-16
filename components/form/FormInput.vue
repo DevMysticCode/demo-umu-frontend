@@ -43,15 +43,26 @@ defineProps({
 <style scoped>
 /* Form Input Component - BEM CSS */
 .form-input {
-  @apply flex flex-col mb-4 p-0 border-0 bg-transparent;
+  @apply flex flex-col mb-6 p-0 border-0 bg-transparent;
 }
 
 .form-input__label {
-  @apply text-[16px] text-gray-600 mb-2;
+  @apply text-[16px] mb-2;
+  color: rgba(60, 60, 67, 0.6);
 }
 
 .form-input__field {
-  @apply w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all duration-200 text-[17px];
+  @apply w-full bg-white border placeholder-gray-400 transition-all duration-200 text-[17px];
+  border-radius: 16px;
+  padding: 16px;
+  height: 56px;
+  min-height: 56px;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: -0.43px;
+  color: #000;
+  border: 0.33px solid rgba(60, 60, 67, 0.18);
 }
 
 .form-input__field:focus {

@@ -19,40 +19,12 @@
         class="password-input__toggle"
         :disabled="disabled"
       >
-        <svg
+        <OPIcon
           v-if="showPassword"
-          class="password-input__icon"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.464 8.464M14.12 14.12l1.415 1.415M14.12 14.12L9.878 9.878m4.242 4.242L8.464 8.464"
-          />
-        </svg>
-        <svg
-          v-else
-          class="password-input__icon"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-          />
-        </svg>
+          name="passwordHide"
+          class="w-[17px] h-[17px]"
+        />
+        <OPIcon v-else name="passwordShow" class="w-[17px] h-[17px]" />
       </button>
     </div>
   </div>
@@ -90,11 +62,13 @@ const togglePassword = () => {
 <style scoped>
 /* Password Input Component - BEM CSS */
 .password-input {
-  @apply flex flex-col mb-4;
+  @apply flex flex-col mb-6;
 }
 
 .password-input__label {
-  @apply text-sm font-medium text-gray-600 mb-2;
+  @apply mb-2;
+  color: rgba(60, 60, 67, 0.6);
+  font-size: 16px;
 }
 
 .password-input__container {
@@ -102,9 +76,17 @@ const togglePassword = () => {
 }
 
 .password-input__field {
-  @apply w-full h-12 px-4 pr-12 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all duration-200;
-  font-size: 16px;
-  line-height: 1.5;
+  @apply w-full pr-12 bg-white border placeholder-gray-400 transition-all duration-200;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: -0.43px;
+  color: #353b45;
+  height: 56px;
+  min-height: 56px;
+  border-radius: 16px;
+  border: 0.33px solid rgba(60, 60, 67, 0.18);
+  padding: 0 12px 0 16px;
 }
 
 .password-input__field:focus {

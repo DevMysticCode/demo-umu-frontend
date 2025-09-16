@@ -67,7 +67,7 @@
           />
 
           <!-- Terms Checkbox -->
-          <div class="form-check">
+          <div class="form-check mb-6">
             <label>
               <input
                 type="checkbox"
@@ -183,6 +183,7 @@ const {
 /* Content */
 .create-account-content {
   @apply flex-1 px-4 pb-8;
+  padding-top: 24px;
 }
 
 /* Form */
