@@ -1,6 +1,7 @@
 <template>
   <button
     @click="$emit('continue')"
+    :type="type"
     :disabled="disabled"
     class="continue-button"
     :class="{
@@ -13,6 +14,10 @@
 
 <script setup>
 defineProps({
+  type: {
+    type: String,
+    default: 'button', // ✅ default won't affect other pages
+  },
   disabled: {
     type: Boolean,
     default: false,
