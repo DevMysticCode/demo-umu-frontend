@@ -27,7 +27,8 @@
     </div>
 
     <div class="page__bottom">
-      <button @click="acceptTerms" class="w-100 page__button">I Agree</button>
+      <!-- <button @click="acceptTerms" class="w-100 page__button">I Agree</button> -->
+      <ContinueButton text="I Agree" @continue="acceptTerms" />
     </div>
   </BaseDrawer>
 </template>
