@@ -62,7 +62,7 @@ const acceptTerms = () => {
 <style scoped>
 .terms-content {
   max-height: 90vh;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 /* Button styles to match your design system */
