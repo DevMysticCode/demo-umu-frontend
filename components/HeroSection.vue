@@ -45,6 +45,11 @@ defineProps({
 }
 
 .hero-title__sub {
-  @apply text-[15px] text-gray-600;
+  @apply text-[15px];
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.23px;
+  color: rgba(60, 60, 67, 0.6);
 }
 </style>
