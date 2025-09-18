@@ -9,12 +9,12 @@
       iconName="create-account"
       iconClass="w-32 h-32"
       mainTitle="Terms and Conditions"
-      subTitle="Our terms of service and privacy policy"
+      subTitle="Last updated: 4th July 2025"
     />
 
     <!-- Content -->
     <div class="terms-content">
-      <div class="space-y-4 text-[17px]">
+      <div class="space-y-4 text-[17px] pb-[90px]">
         <div
           v-for="section in termsSections"
           :key="section.id"

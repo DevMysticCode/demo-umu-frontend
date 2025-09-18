@@ -44,7 +44,7 @@
 import OPIcon from '../OPIcon.vue'
 import { watch, onUnmounted } from 'vue'
 
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false,
