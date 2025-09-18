@@ -42,6 +42,7 @@
 
 <script setup>
 import OPIcon from '../OPIcon.vue'
+import { watch, onUnmounted } from 'vue'
 
 defineProps({
   modelValue: {
@@ -72,6 +73,28 @@ const handleClose = () => {
   emit('update:modelValue', false)
   emit('close')
 }
+
+const lockScroll = (lock) => {
+  const container = document.querySelector('.mobile-container')
+  if (container) {
+    container.style.overflow = lock ? 'hidden' : ''
+  }
+}
+
+watch(
+  () => props.modelValue,
+  (isOpen) => {
+    if (typeof document !== 'undefined') {
+      lockScroll(isOpen)
+    }
+  }
+)
+
+onUnmounted(() => {
+  if (typeof document !== 'undefined') {
+    lockScroll(false)
+  }
+})
 </script>
 
 <style scoped>
