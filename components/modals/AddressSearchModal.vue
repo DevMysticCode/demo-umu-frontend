@@ -357,6 +357,12 @@ const handleContinue = (address) => {
 }
 
 .continue_button_container {
-  padding: 48px 0px 0px 0px;
+  bottom: 0px;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: 0 0 0.75rem 0.75rem;
+  position: fixed;
+  background: transparent;
+  left: 0;
 }
 </style>

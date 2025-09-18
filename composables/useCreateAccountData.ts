@@ -59,6 +59,26 @@ export const useCreateAccountData = () => {
           line1: '27 Rochester Road, Coventry, CV5 6AB ',
           line2: 'Leicester, England',
         },
+        {
+          id: 5,
+          line1: '29 Rochester Road, Coventry, CV5 6AB',
+          line2: 'Leicester, England',
+        },
+        {
+          id: 6,
+          line1: '31 Rochester Road, Coventry, CV5 6AB ',
+          line2: 'Leicester, England',
+        },
+        {
+          id: 7,
+          line1: '33 Rochester Road, Coventry, CV5 6AB ',
+          line2: 'Leicester, England',
+        },
+        {
+          id: 8,
+          line1: '35 Rochester Road, Coventry, CV5 6AB ',
+          line2: 'Leicester, England',
+        },
       ]
       showAddressModal.value = true
     } finally {

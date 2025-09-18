@@ -55,7 +55,7 @@ defineEmits(['continue'])
 }
 
 .continue-button--disabled {
-  opacity: 0.5;
+  /* opacity: 0.5; */
   cursor: not-allowed;
 }
 </style>
