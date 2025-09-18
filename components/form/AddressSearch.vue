@@ -173,10 +173,15 @@ const handleEdit = () => {
 }
 
 .address-search__display-edit {
-  @apply bg-transparent border-0 text-brand-aqua font-medium text-sm cursor-pointer p-1 transition-colors duration-200;
+  /* @apply bg-transparent border-0 text-brand-aqua font-medium text-sm cursor-pointer p-1 transition-colors duration-200; */
+  @apply flex items-center gap-1 h-9 text-brand-aqua rounded-full cursor-pointer transition-all duration-200;
+  background-color: rgba(0, 161, 154, 0.1);
+  font-size: 15px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .address-search__display-edit:hover {
-  @apply text-brand-aqua/80;
+  @apply bg-brand-aqua/90 text-white;
 }
 </style>
