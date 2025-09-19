@@ -53,6 +53,8 @@ const iconPath = (() => {
     search: '/op-icons/search.svg',
     passwordShow: '/op-icons/passwordShow.svg',
     passwordHide: '/op-icons/passwordHide.svg',
+    checkboxUnchecked: '/op-icons/checkboxUnchecked.svg',
+    checkboxChecked: '/op-icons/checkboxChecked.svg',
   }
 
   return iconMap[props.name] || '/op-icons/default.svg'

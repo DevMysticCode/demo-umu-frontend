@@ -87,23 +87,27 @@
                     isMultipleSelection,
                 }"
               >
-                <!-- No selection icon -->
+                <!-- Single choice (radio) -->
                 <OPIcon
-                  v-if="!isOptionSelected(option.value)"
+                  v-if="!isMultipleSelection && !isOptionSelected(option.value)"
                   name="radioUnchecked"
                   class="w-[18px] h-[18px] text-white"
                 />
-                <!-- Single selection icon -->
                 <OPIcon
-                  v-if="isOptionSelected(option.value) && !isMultipleSelection"
+                  v-if="!isMultipleSelection && isOptionSelected(option.value)"
                   name="radioChecked"
                   class="w-[18px] h-[18px] text-white"
                 />
 
-                <!-- Multiple selection icon -->
+                <!-- Multiple choice (checkbox) -->
                 <OPIcon
-                  v-if="isOptionSelected(option.value) && isMultipleSelection"
-                  name="radioChecked"
+                  v-if="isMultipleSelection && !isOptionSelected(option.value)"
+                  name="checkboxUnchecked"
+                  class="w-[18px] h-[18px] text-white"
+                />
+                <OPIcon
+                  v-if="isMultipleSelection && isOptionSelected(option.value)"
+                  name="checkboxChecked"
                   class="w-[18px] h-[18px] text-white"
                 />
               </div>
