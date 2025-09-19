@@ -43,7 +43,7 @@ export const useQuestionnaireData = (currentQuestion: number) => {
   const questions: QuestionsMap = {
     1: {
       title: 'What brings you here today?',
-      type: 'options',
+      type: 'multiple-options',
       options: [
         {
           value: 'prospective-buyer',
@@ -108,7 +108,7 @@ export const useQuestionnaireData = (currentQuestion: number) => {
     },
     5: {
       title: 'What style of property are you looking for?',
-      type: 'options',
+      type: 'multiple-options',
       options: [
         { value: 'detached', label: 'Detached', icon: 'house' },
         {
