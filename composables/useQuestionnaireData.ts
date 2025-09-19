@@ -30,14 +30,14 @@ export const useQuestionnaireData = (currentQuestion: number) => {
   const selectedAnswer = ref<string | null>(null)
   const selectedAnswers = ref<string[]>([]) // For multiple selection
   const budgetRange = ref<BudgetRange>({
-    min: 100,
-    max: 200,
+    min: 50,
+    max: 1200,
     label: 'Between £150k and £250k',
   })
 
   const minBudget: number = 50
-  const maxBudget: number = 350
-  const step: number = 50
+  const maxBudget: number = 2000
+  const step: number = 25
 
   // Question data
   const questions: QuestionsMap = {
