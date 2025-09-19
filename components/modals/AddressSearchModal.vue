@@ -280,6 +280,7 @@ const handleContinue = (address) => {
   border-radius: 0.75rem;
   border: 0;
   margin-top: 24px;
+  padding-bottom: 100px;
 }
 .address-modal__result {
   display: flex;
@@ -294,7 +295,7 @@ const handleContinue = (address) => {
   background: #fff;
 }
 .address-modal__result:last-child {
-  border-bottom: none;
+  /* border-bottom: none; */
 }
 .address-modal__result:hover {
   background-color: #f9fafb;
