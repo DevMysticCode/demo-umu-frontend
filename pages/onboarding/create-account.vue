@@ -14,21 +14,28 @@
         subTitle="Enter your details to get started"
       />
 
-      <div class="create-account-content" @submit.prevent="handleSubmit">
+      <div class="create-account-content">
         <!-- Form -->
-        <form
-          class="
-        "
-          0
-        >
+        <form @submit.prevent="handleSubmit">
           <!-- First Name -->
-          <FormInput name="firstName" label="First Name" required />
+          <FormInput
+            v-model="form.firstName"
+            name="firstName"
+            label="First Name"
+            required
+          />
 
           <!-- Last Name -->
-          <FormInput name="lastName" label="Last Name" required />
+          <FormInput
+            v-model="form.lastName"
+            name="lastName"
+            label="Last Name"
+            required
+          />
 
           <!-- Mobile -->
           <FormInput
+            v-model="form.mobile"
             name="mobile"
             type="tel"
             label="UK Mobile Number (+44)"
@@ -38,6 +45,7 @@
 
           <!-- DOB -->
           <FormInput
+            v-model="form.dateOfBirth"
             name="dateOfBirth"
             type="date"
             label="Date of Birth"
@@ -56,11 +64,22 @@
           />
 
           <!-- Gender Selection -->
-          <GenderSelector name="gender" label="Gender" required />
+          <GenderSelector
+            v-model="form.gender"
+            name="gender"
+            label="Gender"
+            required
+          />
 
           <!-- Password Fields -->
-          <PasswordInput name="password" label="Password" required />
           <PasswordInput
+            v-model="form.password"
+            name="password"
+            label="Password"
+            required
+          />
+          <PasswordInput
+            v-model="form.confirmPassword"
             name="confirmPassword"
             label="Confirm Password"
             required

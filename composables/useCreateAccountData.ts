@@ -119,21 +119,34 @@ export const useCreateAccountData = () => {
     showTermsModal.value = true
     console.log('showTermsModal.value', showTermsModal.value)
   }
+
   const handleSubmit = async (event: Event): Promise<void> => {
     event.preventDefault()
     event.stopPropagation()
 
-    // Validation
+    // Field-level validation
+    if (
+      !form.firstName ||
+      !form.lastName ||
+      !form.mobile ||
+      !form.dateOfBirth ||
+      !form.gender
+    ) {
+      console.error('Please fill in all required fields')
+      return
+    }
+
     if (form.password !== form.confirmPassword) {
       console.error('Passwords do not match')
       return
     }
+
     if (!selectedAddress.value) {
       console.error('Address not selected')
       return
     }
 
-    if (!selectedAddress.value) {
+    if (!termsAccepted.value) {
       console.error('You must agree to terms')
       return
     }
