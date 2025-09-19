@@ -122,11 +122,11 @@ const props = defineProps({
   },
   maxBudget: {
     type: Number,
-    default: 350,
+    default: 1200,
   },
   step: {
     type: Number,
-    default: 50,
+    default: 25,
   },
 })
 
