@@ -143,7 +143,7 @@ const scaleTicks = computed(() => {
 
 // Generate labels
 const labels = computed(() => {
-  return ['50K', '100K', '150K', '200K', '250K', '300K', '350K']
+  return ['50K', '375K', '700K', '1025K', '1350K', '1675K', '2000K']
 })
 
 const handleMinInput = (event) => {
