@@ -1,50 +1,40 @@
 <template>
-  <div
-    class="mobile-container from-purple-900 backgound-image min-h-screen relative overflow-hidden"
-  >
-    <!-- Main Content -->
-    <main
-      class="pt-[36px] pb-32 px-6 flex flex-col items-center justify-start min-h-screen text-center"
-    >
-      <div class="header">
-        <BackButton />
-      </div>
+  <div class="mobile-container thankyou-page">
+    <video autoplay muted loop playsinline class="thankyou-page__video">
+      <source src="/public/thankyou.mp4" type="video/mp4" />
+    </video>
 
+    <!-- Overlay -->
+    <div class="thankyou-page__overlay"></div>
+
+    <div class="thankyou-page__content">
       <!-- Logo -->
-      <div class="w-24 h-20 mb-8 flex items-center justify-center relative">
+      <div class="thankyou-page__logo">
         <OPIcon name="logo" class="w-24 h-24" />
       </div>
 
       <!-- Main Text -->
-      <div class="space-y-4 mb-12">
-        <h1 class="text-28-emphasized text-white leading-tight">
-          Welcome to UmovingU.
-        </h1>
-
-        <div class="space-y-2">
-          <p class="text-[20px] text-white">
-            Finally! You're in control. Stress less. Move better..
-          </p>
+      <div class="thankyou-page__text">
+        <h1 class="thankyou-page__title">Welcome to UmovingU.</h1>
+        <div class="thankyou-page__description">
+          <p>Congratulations — you’re officially part of the UMU community!</p>
         </div>
       </div>
 
       <!-- Action Buttons -->
-      <div class="w-full space-y-4 page-bottom">
+      <div class="thankyou-page__actions">
         <button
           @click="continueToQuestionnaire"
-          class="w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-17-medium rounded-xl transition-colors"
+          class="thankyou-page__button-primary"
         >
-          Tell us more about your search
+          Start Exploring
         </button>
 
-        <button
-          @click="skipToApp"
-          class="w-full h-12 bg-white hover:bg-white/30 text-brand-aqua font-17-medium rounded-xl transition-colors backdrop-blur-sm"
-        >
-          Skip
+        <button @click="skipToApp" class="thankyou-page__button-secondary">
+          Tell us more about your search
         </button>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
@@ -67,14 +57,60 @@ const skipToApp = () => {
 </script>
 
 <style scoped>
-.header {
-  @apply pt-4 px-6 pb-2;
-  position: absolute;
-  top: 20px;
-  left: 0;
-}
+.thankyou-page {
+  @apply min-h-screen bg-black text-white flex flex-col relative;
 
-.page-bottom {
-  @apply px-6 pb-8 w-full absolute bottom-0;
+  &__video {
+    @apply absolute w-full h-full object-cover z-0;
+  }
+
+  &__overlay {
+    @apply absolute w-full h-full bg-black opacity-50;
+  }
+
+  &__content {
+    @apply z-10 flex flex-col items-center justify-start min-h-screen text-center relative;
+    padding-top: 18px;
+    padding-bottom: 32px;
+  }
+
+  &__header {
+    @apply w-full px-6;
+    position: absolute;
+    top: 20px;
+    left: 0;
+  }
+
+  &__logo {
+    @apply w-24 h-20 mb-8 flex items-center justify-center relative mt-8;
+  }
+
+  &__text {
+    @apply space-y-4 mb-12 px-6;
+  }
+
+  &__title {
+    @apply text-28-emphasized text-white leading-tight;
+  }
+
+  &__description {
+    @apply space-y-2;
+  }
+
+  &__description p {
+    @apply text-[20px] text-white;
+  }
+
+  &__actions {
+    @apply w-full space-y-4 px-6 absolute bottom-8;
+  }
+
+  &__button-primary {
+    @apply w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 text-white rounded-xl transition-colors;
+  }
+
+  &__button-secondary {
+    @apply w-full h-12 bg-white hover:bg-white/30 text-brand-aqua rounded-xl transition-colors backdrop-blur-sm;
+  }
 }
 </style>
