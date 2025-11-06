@@ -38,7 +38,7 @@ definePageMeta({
 })
 
 const continueToQuestionnaire = () => {
-  navigateTo('/onboarding/questionnaire/1')
+  navigateTo('/dashboard')
 }
 </script>
 

@@ -118,7 +118,7 @@
         </p>
 
         <!-- Property Cards -->
-        <div class="space-y-4">
+        <div class="space-y-4" @click="viewProperty">
           <div
             class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
           >
@@ -368,5 +368,11 @@ const applyFilters = (filters) => {
   showFilters.value = false
   // Apply filters to search results
   console.log('Applying filters:', filters)
+}
+
+const router = useRouter()
+
+const viewProperty = () => {
+  router.push('/property/sample-property-123')
 }
 </script>
