@@ -10,6 +10,8 @@
         :type="showPassword ? 'text' : 'password'"
         :placeholder="placeholder"
         :disabled="disabled"
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
         class="password-input__field"
         :class="{ 'password-input__field--disabled': disabled }"
       />
@@ -34,6 +36,10 @@
 import { ref } from 'vue'
 
 const props = defineProps({
+  modelValue: {
+    type: [String, Number, Date],
+    default: '',
+  },
   name: {
     type: String,
     required: true,
@@ -51,6 +57,8 @@ const props = defineProps({
     default: false,
   },
 })
+
+defineEmits(['update:modelValue'])
 
 const showPassword = ref(false)
 

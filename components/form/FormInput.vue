@@ -9,6 +9,8 @@
       :type="type"
       :placeholder="placeholder"
       :disabled="disabled"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
       class="form-input__field"
       :class="{ 'form-input__field--disabled': disabled }"
     />
@@ -17,6 +19,10 @@
 
 <script setup>
 defineProps({
+  modelValue: {
+    type: [String, Number, Date],
+    default: '',
+  },
   name: {
     type: String,
     required: true,
@@ -38,6 +44,8 @@ defineProps({
     default: false,
   },
 })
+
+defineEmits(['update:modelValue'])
 </script>
 
 <style scoped>

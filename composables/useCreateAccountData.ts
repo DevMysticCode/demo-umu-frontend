@@ -123,6 +123,7 @@ export const useCreateAccountData = () => {
   const handleSubmit = async (event: Event): Promise<void> => {
     event.preventDefault()
     event.stopPropagation()
+    console.log('form submitted: ', form)
 
     // Field-level validation
     if (

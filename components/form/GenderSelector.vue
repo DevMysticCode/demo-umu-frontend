@@ -15,6 +15,8 @@
           type="radio"
           :name="name"
           :value="option.value"
+          :checked="modelValue === option.value"
+          @change="$emit('update:modelValue', option.value)"
           v-model="selected"
           class="hidden"
         />
@@ -28,6 +30,10 @@
 import { ref } from 'vue'
 
 const props = defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
   name: {
     type: String,
     required: true,
@@ -37,6 +43,8 @@ const props = defineProps({
     default: '',
   },
 })
+
+defineEmits(['update:modelValue'])
 
 const selected = ref('')
 const options = [
