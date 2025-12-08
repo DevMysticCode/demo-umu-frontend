@@ -1,10 +1,6 @@
 <template>
-  <div class="payment-page mobile-container">
-    <div class="header">
-      <button class="back-btn" @click="goBack">
-        <span class="back-arrow">←</span> Back
-      </button>
-    </div>
+  <div class="payment-page mobile-container bg-umu-gradient">
+    <AppHeader title="Payment" :showBack="true" right="profile" />
 
     <div class="content">
       <div class="payment-icon">
@@ -227,6 +223,7 @@
 </template>
 
 <script setup>
+import AppHeader from '@/components/core/AppHeader.vue'
 const route = useRoute()
 const router = useRouter()
 
@@ -236,7 +233,7 @@ const goBack = () => {
 
 const processPayment = () => {
   console.log('Processing payment...')
-  router.push(`/success/${route.params.id}`)
+  router.push(`/property/${route.params.id}`)
 }
 </script>
 

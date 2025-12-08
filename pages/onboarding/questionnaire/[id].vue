@@ -133,8 +133,8 @@
 <script setup>
 import { useQuestionnaireData } from '@/composables/useQuestionnaireData'
 import BudgetSlider from '@/components/questionnaire/BudgetSlider.vue'
-import BackButton from '@/components/BackButton.vue'
-import OPIcon from '@/components/OPIcon.vue'
+import BackButton from '~/components/core/BackButton.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 import ContinueButton from '@/components/ContinueButton.vue'
 
 // For non-Nuxt environments, we'll use a simple approach
@@ -242,7 +242,7 @@ if (typeof definePageMeta === 'function') {
 .questionnaire-page {
   min-height: 100vh;
   background-color: #f3f4f6;
-  max-width: 428px;
+  max-width: 28rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;

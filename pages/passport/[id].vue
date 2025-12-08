@@ -1,30 +1,12 @@
 <template>
-  <div class="passport-page mobile-container">
-    <div class="header">
-      <button class="back-btn" @click="goBack">
-        <span class="back-arrow">←</span> Back
-      </button>
-      <button class="close-btn">✕</button>
-    </div>
+  <div class="passport-page mobile-container bg-umu-gradient">
+    <AppHeader title="Passport" :showBack="true" right="profile" />
 
     <div class="content">
       <h1 class="title">Property Passport Available</h1>
       <p class="subtitle">12, Maple Road, Staines TW18 3BA</p>
 
-      <div class="passport-card">
-        <div class="passport-visual">
-          <div class="passport-book">
-            <div class="passport-cover">
-              <div class="passport-text">Property Passport</div>
-              <div class="house-icon">🏠</div>
-              <div class="passport-address">
-                <div class="address-line">21, Rochester Road</div>
-                <div class="address-line-small">Staines, TW18 3BA</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PassportCard line1="21, Rochester Road" line2="Staines, TW18 3BA" />
 
       <div class="completion-status">
         <p>
@@ -186,6 +168,8 @@
 </template>
 
 <script setup>
+import AppHeader from '@/components/core/AppHeader.vue'
+import PassportCard from '@/components/passport-view/PassportCard.vue'
 const route = useRoute()
 const router = useRouter()
 

@@ -1,19 +1,7 @@
 <template>
   <div class="mobile-container bg-white min-h-screen">
     <!-- Header -->
-    <header class="flex items-center justify-between px-4 py-3 bg-white">
-      <button @click="$emit('close')" class="text-brand-aqua font-medium">
-        Back
-      </button>
-      <h1 class="text-xl font-semibold text-gray-900">Explore</h1>
-      <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
-        <img
-          src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"
-          alt="Profile"
-          class="w-full h-full object-cover"
-        />
-      </div>
-    </header>
+    <AppHeader title="Explore" :showBack="true" right="profile" />
 
     <!-- Search Input -->
     <div class="px-4 mb-4">
@@ -79,6 +67,7 @@
           v-for="result in results"
           :key="result.id"
           class="bg-white rounded-xl border border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
+          @click="viewProperty"
         >
           <div class="flex items-center justify-between mb-2">
             <h3 class="font-semibold text-gray-900">{{ result.address }}</h3>
@@ -159,10 +148,16 @@
 </template>
 
 <script setup>
+import AppHeader from '~/components/core/AppHeader.vue'
 const props = defineProps({
   query: String,
   results: Array,
 })
 
 defineEmits(['close', 'show-filters'])
+
+const router = useRouter()
+const viewProperty = () => {
+  router.push('/property/sample-property-123')
+}
 </script>

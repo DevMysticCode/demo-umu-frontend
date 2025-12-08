@@ -1,11 +1,6 @@
 <template>
   <div class="contact-page">
-    <div class="header">
-      <button class="back-btn" @click="goBack">
-        <span class="back-arrow">←</span> <span>Back</span>
-      </button>
-      <button class="close-btn" @click="goHome">✕</button>
-    </div>
+    <AppHeader title="Owner" :showBack="true" right="profile" />
 
     <div class="content">
       <h1 class="title">Tap the Owner</h1>
@@ -87,6 +82,7 @@
 </template>
 
 <script setup>
+import AppHeader from '@/components/core/AppHeader.vue'
 const route = useRoute()
 const router = useRouter()
 
@@ -99,7 +95,7 @@ const goBack = () => {
 }
 
 const goHome = () => {
-  router.push('/')
+  router.push('/dashboard')
 }
 
 const togglePhone = () => {

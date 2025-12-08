@@ -140,7 +140,7 @@ import GenderSelector from '@/components/form/GenderSelector.vue'
 import AddressSearch from '@/components/form/AddressSearch.vue'
 import AddressSearchModal from '@/components/modals/AddressSearchModal.vue'
 import TermsModal from '@/components/modals/TermsModal.vue'
-import BackButton from '@/components/BackButton.vue'
+import BackButton from '~/components/core/BackButton.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import ContinueButton from '@/components/ContinueButton.vue'
 
@@ -174,7 +174,7 @@ const {
 /* Create Account Container */
 .create-account-container {
   @apply min-h-screen bg-gray-50;
-  max-width: 428px;
+  max-width: 28rem;
   margin: 0 auto;
   background: linear-gradient(
     180deg,

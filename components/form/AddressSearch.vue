@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import OPIcon from '@/components/OPIcon.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 defineProps({
   name: {
     type: String,

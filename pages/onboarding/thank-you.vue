@@ -39,8 +39,8 @@
 </template>
 
 <script setup>
-import OPIcon from '@/components/OPIcon.vue'
-import BackButton from '@/components/BackButton.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
+import BackButton from '~/components/core/BackButton.vue'
 import { navigateTo } from '#app'
 
 definePageMeta({

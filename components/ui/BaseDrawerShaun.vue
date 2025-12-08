@@ -1,7 +1,6 @@
 <template>
   <div v-if="modelValue" class="drawer-overlay" @click.self="handleClose">
     <div class="drawer" :class="{ 'drawer--open': modelValue }">
-
       <!-- Header -->
       <div class="drawer__header">
         <button @click="handleClose" class="drawer__back">
@@ -22,13 +21,12 @@
       <div class="drawer__content">
         <slot />
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
-import OPIcon from '../OPIcon.vue'
+import OPIcon from './OPIcon.vue'
 
 defineProps({
   modelValue: {
@@ -73,7 +71,7 @@ const handleClose = () => {
 .drawer {
   background-color: #f3f4f6;
   width: 100%;
-  max-width: 428px;
+  max-width: 28rem;
   min-height: 95vh;
   border-radius: 1rem 1rem 0 0;
   display: flex;
@@ -171,5 +169,4 @@ const handleClose = () => {
 .drawer__content::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
-
 </style>

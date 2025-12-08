@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import BackButton from '../BackButton.vue'
+import BackButton from '../core/BackButton.vue'
 
 defineEmits(['skip'])
 </script>

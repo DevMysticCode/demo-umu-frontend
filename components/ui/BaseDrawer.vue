@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import OPIcon from '../OPIcon.vue'
+import OPIcon from './OPIcon.vue'
 import { watch, onUnmounted } from 'vue'
 
 const props = defineProps({
@@ -116,7 +116,7 @@ onUnmounted(() => {
 .drawer {
   background-color: #f3f4f6;
   width: 100%;
-  max-width: 428px;
+  max-width: 28rem;
   max-height: 90vh; /* Changed from 95vh to prevent cutoff */
   border-radius: 1rem 1rem 0 0;
   display: flex;

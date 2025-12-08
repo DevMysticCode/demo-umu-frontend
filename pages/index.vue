@@ -19,17 +19,15 @@
       </button>
     </div>
   </div>
-
 </template>
 
 <script setup>
-import OPIcon from '@/components/OPIcon.vue'
-import { navigateTo } from 'nuxt/app';
+import OPIcon from '~/components/ui/OPIcon.vue'
+import { navigateTo } from 'nuxt/app'
 
 const beginJourney = () => {
   navigateTo('/onboarding')
 }
-
 </script>
 
 <style scoped>

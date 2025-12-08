@@ -1,16 +1,5 @@
 <template>
   <div class="w-full bg-white rounded-t-3xl max-h-[90vh] overflow-y-auto">
-    <!-- Header -->
-    <div class="flex items-center justify-between p-4 border-b border-gray-200">
-      <h2 class="text-xl font-semibold text-gray-900">All Filters</h2>
-      <button
-        @click="$emit('close')"
-        class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"
-      >
-        <Icon name="i-heroicons-x-mark" class="w-5 h-5 text-gray-600" />
-      </button>
-    </div>
-
     <div class="p-4">
       <!-- Explore Section -->
       <div class="flex items-center justify-between mb-6">

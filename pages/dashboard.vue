@@ -1,74 +1,29 @@
 <template>
-  <div class="mobile-container bg-white min-h-screen">
-    <!-- Header -->
-    <header class="flex items-center justify-between px-4 py-3 bg-white">
-      <h1 class="text-xl font-semibold text-gray-900">Explore</h1>
-      <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
-        <img
-          src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"
-          alt="Profile"
-          class="w-full h-full object-cover"
-        />
-      </div>
-    </header>
+  <div class="mobile-container min-h-screen bg-umu-gradient">
+    <!-- App Header -->
+    <AppHeader title="Explore" :showBack="false" right="profile" />
 
     <!-- Main Content -->
     <main class="px-4 pb-20">
       <!-- Search Section -->
       <div class="mb-8">
-        <!-- 3D House Icon -->
-        <div class="flex justify-center mb-6 mt-8">
-          <div class="relative">
-            <div
-              class="w-24 h-24 bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl flex items-center justify-center transform rotate-12"
-            >
-              <Icon name="i-heroicons-home" class="w-12 h-12 text-orange-600" />
-            </div>
-            <div
-              class="absolute -bottom-2 -right-2 w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center"
-            >
-              <Icon
-                name="i-heroicons-magnifying-glass"
-                class="w-5 h-5 text-white"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Title -->
-        <div class="text-center mb-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-2">Property Search</h2>
-          <p class="text-brand-aqua font-medium mb-1">
-            UMU search is powered by AI.
-          </p>
-          <p class="text-gray-500 text-sm">
-            Try searching for Property Passports that are detached
-          </p>
-        </div>
+        <HeroSection
+          iconName="propertySearch"
+          iconClass="w-[120px] h-[120px]"
+          mainTitle="Property Search"
+          subColored="UMU search is powered by AI."
+          subTitle="Try searching for Property Passports that are detached"
+          heroClass="w-[120px] h-[120px]"
+        />
 
         <!-- Search Input -->
-        <div class="relative mb-6">
-          <div class="flex items-center bg-gray-50 rounded-xl px-4 py-3">
-            <Icon
-              name="i-heroicons-magnifying-glass"
-              class="w-5 h-5 text-gray-400 mr-3"
-            />
-            <input
-              v-model="searchQuery"
-              @focus="showSearchSuggestions = true"
-              @input="handleSearchInput"
-              type="text"
-              placeholder="City, area or postcode"
-              class="flex-1 bg-transparent text-gray-900 placeholder-gray-500 outline-none"
-            />
-            <button
-              @click="handleSearch"
-              class="ml-3 px-4 py-2 bg-brand-aqua text-white rounded-lg font-medium"
-            >
-              Search
-            </button>
-          </div>
-        </div>
+        <UMUSearchInput
+          v-model="searchQuery"
+          placeholder="City, area or postcode"
+          :isSearching="searching"
+          @focus="openSearchSuggestions"
+          @search="performSearch"
+        />
       </div>
 
       <!-- Hubs Section -->
@@ -236,59 +191,38 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav
-      class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-sm bg-white border-t border-gray-200"
-    >
-      <div class="flex justify-around py-2">
-        <button class="flex flex-col items-center py-2 text-brand-aqua">
-          <Icon name="i-heroicons-magnifying-glass" class="w-6 h-6" />
-          <span class="text-xs mt-1">Explore</span>
-        </button>
-        <button class="flex flex-col items-center py-2 text-gray-400">
-          <Icon name="i-heroicons-document-text" class="w-6 h-6" />
-          <span class="text-xs mt-1">Passport</span>
-        </button>
-        <button class="flex flex-col items-center py-2 text-gray-400">
-          <Icon name="i-heroicons-building-storefront" class="w-6 h-6" />
-          <span class="text-xs mt-1">Marketplace</span>
-        </button>
-        <button class="flex flex-col items-center py-2 text-gray-400">
-          <Icon name="i-heroicons-trophy" class="w-6 h-6" />
-          <span class="text-xs mt-1">Rewards</span>
-        </button>
-        <button class="flex flex-col items-center py-2 text-gray-400">
-          <Icon name="i-heroicons-academic-cap" class="w-6 h-6" />
-          <span class="text-xs mt-1">Learn</span>
-        </button>
-      </div>
-    </nav>
+    <BottomNav active="explore" />
 
-    <!-- Search Overlay -->
-    <div v-if="showSearchSuggestions" class="fixed inset-0 bg-white z-50">
+    <!-- Search Suggestions -->
+    <div
+      v-if="showSearchSuggestions"
+      class="fixed inset-0 bg-white z-[40] overflow-auto"
+    >
       <SearchSuggestions
         :query="searchQuery"
         @close="showSearchSuggestions = false"
-        @search="handleSearchFromSuggestions"
+        @search="handleSuggestionSearch"
       />
     </div>
 
-    <!-- Search Results Overlay -->
-    <div v-if="showSearchResults" class="fixed inset-0 bg-white z-50">
+    <!-- Search Results -->
+
+    <div
+      v-if="showSearchResults"
+      class="fixed inset-0 bg-white z-[40] overflow-auto"
+    >
       <SearchResults
         :query="searchQuery"
         :results="searchResults"
         @close="showSearchResults = false"
-        @show-filters="showFilters = true"
+        @show-filters="showFilterPanel"
       />
     </div>
 
-    <!-- Filters Modal -->
-    <div
-      v-if="showFilters"
-      class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end"
-    >
+    <!-- Filters Drawer -->
+    <BaseDrawer v-model="showFilters" title="All Filters">
       <FiltersModal @close="showFilters = false" @apply="applyFilters" />
-    </div>
+    </BaseDrawer>
   </div>
 </template>
 
@@ -296,6 +230,15 @@
 definePageMeta({
   title: 'Explore - UmovingU',
 })
+
+import AppHeader from '~/components/core/AppHeader.vue'
+import BottomNav from '@/components/core/BottomNav.vue'
+import HeroSection from '@/components/HeroSection.vue'
+import UMUSearchInput from '@/components/core/UMUSearchInput.vue'
+import BaseDrawer from '@/components/ui/BaseDrawer.vue'
+import SearchSuggestions from '~/components/search/SearchSuggestions.vue'
+import SearchResults from '~/components/search/SearchResults.vue'
+import FiltersModal from '~/components/search/FiltersModal.vue'
 
 // State
 const searchQuery = ref('')
@@ -305,26 +248,22 @@ const showFilters = ref(false)
 const searchResults = ref([])
 
 // Methods
-const handleSearchInput = () => {
-  if (searchQuery.value.length > 0) {
-    showSearchSuggestions.value = true
-  }
+const openSearchSuggestions = () => {
+  console.log('Opening search suggestions')
+  showSearchResults.value = false
+  showSearchSuggestions.value = true
 }
 
-const handleSearch = () => {
-  if (searchQuery.value.trim()) {
-    performSearch(searchQuery.value)
-  }
-}
-
-const handleSearchFromSuggestions = (query) => {
+const handleSuggestionSearch = (query) => {
   searchQuery.value = query
+  showSearchSuggestions.value = false
   performSearch(query)
 }
 
 const performSearch = (query) => {
   showSearchSuggestions.value = false
   showSearchResults.value = true
+  searchQuery.value = query
 
   // Mock search results
   searchResults.value = [
@@ -374,5 +313,9 @@ const router = useRouter()
 
 const viewProperty = () => {
   router.push('/property/sample-property-123')
+}
+
+const showFilterPanel = () => {
+  showFilters.value = true
 }
 </script>

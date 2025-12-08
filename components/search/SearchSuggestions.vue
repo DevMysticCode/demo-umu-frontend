@@ -1,20 +1,6 @@
 <template>
   <div class="mobile-container bg-white min-h-screen">
-    <!-- Header -->
-    <header class="flex items-center justify-between px-4 py-3 bg-white">
-      <button @click="$emit('close')" class="text-brand-aqua font-medium">
-        Back
-      </button>
-      <h1 class="text-xl font-semibold text-gray-900">Explore</h1>
-      <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
-        <img
-          src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"
-          alt="Profile"
-          class="w-full h-full object-cover"
-        />
-      </div>
-    </header>
-
+    <AppHeader title="Explore" :showBack="true" right="profile" />
     <!-- Search Input -->
     <div class="px-4 mb-4">
       <div class="flex items-center bg-gray-50 rounded-xl px-4 py-3">
@@ -70,7 +56,7 @@
         <div
           v-for="suggestion in suggestions"
           :key="suggestion.id"
-          @click="$emit('search', suggestion.address)"
+          @click="handleSelect(suggestion.address)"
           class="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 cursor-pointer hover:bg-gray-50"
         >
           <div>
@@ -88,12 +74,15 @@
 </template>
 
 <script setup>
+import AppHeader from '~/components/core/AppHeader.vue'
 const props = defineProps({
   query: String,
 })
 
-const emit = defineEmits(['close', 'search'])
-
+const emit = defineEmits(['search', 'close'])
+const handleSelect = (value) => {
+  emit('search', value) // Then open SearchResults
+}
 const localQuery = ref(props.query)
 
 const suggestions = ref([

@@ -133,7 +133,7 @@ import GenderSelector from './form/GenderSelector.vue'
 import AddressSearch from './form/AddressSearch.vue'
 import AddressSearchModal from './modals/AddressSearchModal.vue'
 import TermsModal from './modals/TermsModal.vue'
-import BackButton from './BackButton.vue'
+import BackButton from './core/BackButton.vue'
 
 // Use the composable for all data and methods
 const {

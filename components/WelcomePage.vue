@@ -123,7 +123,7 @@ const beginJourney = () => {
 
 /* Mobile Container Override */
 .welcome-page {
-  max-width: 428px;
+  max-width: 28rem;
   margin: 0 auto;
   position: relative;
 }

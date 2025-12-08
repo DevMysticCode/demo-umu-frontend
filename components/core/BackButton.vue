@@ -17,7 +17,7 @@
 
 <script setup>
 import { defineProps, defineEmits, computed } from 'vue'
-import OPIcon from '@/components/OPIcon.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 const emit = defineEmits(['back'])
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="property-page mobile-container">
+  <div class="property-page mobile-container bg-umu-gradient">
     <div class="property-header">
       <img
         src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800"
@@ -182,7 +182,7 @@
       </div>
     </div>
 
-    <div class="bottom-nav">
+    <!-- <div class="bottom-nav">
       <button class="nav-item">
         <span class="nav-icon">🏠</span>
         <span class="nav-label">Explore</span>
@@ -199,17 +199,45 @@
         <span class="nav-icon">💬</span>
         <span class="nav-label">Chat</span>
       </button>
-    </div>
+    </div> -->
+
+    <PropertyActionBar
+      :actions="[
+        { icon: 'accessPassport', label: 'Access Passport' },
+        { icon: 'saveProperty', label: 'Save Property' },
+        { icon: 'registerInterest', label: 'Register Interest' },
+        { icon: 'tapOwner', label: 'Tap Owner' },
+      ]"
+      @action="handleAction"
+    />
   </div>
 </template>
 
 <script setup>
+import PropertyActionBar from '@/components/property/PropertyActionBar.vue'
 const route = useRoute()
 const router = useRouter()
 
-const navigateToPassport = () => {
-  router.push(`/passport/${route.params.id}`)
+const handleAction = (label) => {
+  if (label === 'Access Passport') {
+    router.push(`/passport/${route.params.id}`)
+  }
+
+  if (label === 'Save Property') {
+    console.log('Saving property...')
+  }
+
+  if (label === 'Register Interest') {
+    console.log('Opening register interest form...')
+  }
+
+  if (label === 'Tap Owner') {
+    router.push(`/owner/${route.params.id}`)
+  }
 }
+// const navigateToPassport = () => {
+//   router.push(`/passport/${route.params.id}`)
+// }
 </script>
 
 <style scoped>
