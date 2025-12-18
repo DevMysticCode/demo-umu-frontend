@@ -214,11 +214,23 @@
       </button>
     </div> -->
 
-    <RegisterInterestModal
+    <!-- <RegisterInterestModal
       v-model="showRegisterInterest"
       address="12, Maple Road, Staines TW18 3BA"
       @registered="onInterestRegistered"
-    />
+    /> -->
+
+    <BaseDrawer
+      v-model="showRegisterInterest"
+      title="Register Interest"
+      :showBackButton="true"
+      @close="showRegisterInterest = false"
+    >
+      <RegisterInterestContent
+        address="12, Maple Road, Staines TW18 3BA"
+        @submit="onInterestRegistered"
+      />
+    </BaseDrawer>
 
     <PropertyActionBar
       :actions="[
@@ -234,8 +246,9 @@
 
 <script setup>
 import PropertyActionBar from '@/components/property/PropertyActionBar.vue'
-import RegisterInterestModal from '@/components/property/RegisterInterestModal.vue'
+import RegisterInterestContent from '~/components/property/RegisterInterestContent.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
+import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 
 const route = useRoute()
 const router = useRouter()
