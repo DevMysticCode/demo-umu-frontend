@@ -18,8 +18,8 @@
 </template>
 
 <script setup>
-import { usePassportData } from '~/composables/usePassportSteps'
-const { steps } = usePassportData()
+import { usePassportSteps } from '~/composables/usePassportSteps'
+const { steps } = usePassportSteps()
 const route = useRoute()
 const router = useRouter()
 const passportId = route.params.id
