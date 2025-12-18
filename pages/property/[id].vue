@@ -1,21 +1,22 @@
 <template>
   <div class="property-page mobile-container bg-umu-gradient">
     <div class="property-header">
-      <img
+      <!-- <img
         src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800"
         alt="Property"
         class="property-image"
-      />
-      <div class="image-counter">1/5</div>
+      /> -->
+      <ImageSlider :images="propertyImages"> </ImageSlider>
+      <!-- <div class="image-counter">1/5</div> -->
       <div class="image_layover_icons">
-        <button class="icon-btn">
+        <button class="icon-btn" @click="goBack">
           <OPIcon name="leftChevronWhite" class="w-[18px] h-[18px]" />
         </button>
         <div>
-          <button class="icon-btn">
+          <button class="icon-btn" @click="handleWishlist">
             <OPIcon name="wishlist" class="w-[20px] h-[20px]" />
           </button>
-          <button class="icon-btn">
+          <button class="icon-btn" @click="showShare = true">
             <OPIcon name="share" class="w-[20px] h-[20px]" />
           </button>
         </div>
@@ -232,6 +233,38 @@
       />
     </BaseDrawer>
 
+    <BaseDrawer
+      v-model="showShare"
+      title="Share Property"
+      :showBackButton="true"
+      @close="showShare = false"
+    >
+      <ShareDrawer
+        :property-title="propertyTitle"
+        :property-address="propertyAddress"
+        :property-price="propertyPrice"
+        :property-image="propertyImages[0]"
+        @share="handleShare"
+      />
+    </BaseDrawer>
+
+    <!-- <ShareDrawer
+      v-model="showShare"
+      :property-title="propertyTitle"
+      :property-address="propertyAddress"
+      :property-price="propertyPrice"
+      :property-image="propertyImages[0]"
+      @share="handleShare"
+    /> -->
+    <Toast
+      :is-visible="toastState.isVisible"
+      :message="toastState.message"
+      :icon="toastState.icon"
+      :icon-emoji="toastState.iconEmoji"
+      :duration="toastState.duration"
+      @close="hideToast"
+    />
+
     <PropertyActionBar
       :actions="[
         { icon: 'accessPassport', label: 'Access Passport' },
@@ -249,14 +282,24 @@ import PropertyActionBar from '@/components/property/PropertyActionBar.vue'
 import RegisterInterestContent from '~/components/property/RegisterInterestContent.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
+import ImageSlider from '~/components/ui/ImageSlider.vue'
+import Toast from '~/components/ui/Toast.vue'
+import { useToast } from '~/composables/useToast'
+import ShareDrawer from '~/components/property/ShareContent.vue'
+import { ref } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
+
+const { toastState, showToast, hideToast } = useToast()
+const showMessageSent = ref(false)
+const showShare = ref(false)
 
 const showRegisterInterest = ref(false)
 const onInterestRegistered = (level) => {
   console.log('Interest registered:', level)
 }
+
 const handleAction = (label) => {
   if (label === 'Access Passport') {
     router.push(`/passport/${route.params.id}`)
@@ -277,6 +320,32 @@ const handleAction = (label) => {
 // const navigateToPassport = () => {
 //   router.push(`/passport/${route.params.id}`)
 // }
+const propertyImages = [
+  'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'https://images.pexels.com/photos/1643389/pexels-photo-1643389.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'https://images.pexels.com/photos/2249531/pexels-photo-2249531.jpeg?auto=compress&cs=tinysrgb&w=800',
+]
+const propertyTitle = '12, Maple Road'
+const propertyAddress = 'Staines-upon-Thames, TW18 3BA'
+const propertyPrice = '£250,000'
+
+const goBack = () => {
+  router.back()
+}
+
+const handleWishlist = () => {
+  showToast({
+    message: 'The Property has been saved to your collections',
+    icon: propertyImages[0],
+    duration: 2000,
+  })
+}
+
+const handleShare = (data) => {
+  console.log('Share:', data)
+}
 </script>
 
 <style scoped>

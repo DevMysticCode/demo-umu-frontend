@@ -101,6 +101,11 @@ const iconMap: Record<string, string> = {
   leftChevronWhite: '/icons/leftChevronWhite.svg',
   wishlist: '/icons/wishlist.svg',
   share: '/icons/share.svg',
+  messages: '/op-icons/property/messages.svg',
+  airdrop: '/op-icons/property/airdrop.svg',
+  instagram: '/op-icons/property/instagram.svg',
+  messagesLight: '/op-icons/property/messagesLight.svg',
+  whatsapp: '/op-icons/property/whatsapp.svg',
 }
 
 const iconPath = computed(() => {
