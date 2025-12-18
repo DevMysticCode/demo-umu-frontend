@@ -95,6 +95,9 @@ const iconMap: Record<string, string> = {
   info: '/op-icons/passportview/steps/info.svg',
   playIcon: '/op-icons/passportview/steps/play-icon.svg',
   rewardBox: '/op-icons/passportview/steps/rewardBox.svg',
+  appleNew: '/icons/AppleNewIcon.svg',
+  googleNew: '/icons/GoogleNewIcon.svg',
+  facebookNew: '/icons/FacebookNewIcon.svg',
 }
 
 const iconPath = computed(() => {
