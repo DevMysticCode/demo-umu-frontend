@@ -347,7 +347,7 @@ const handleSaveProperty = () => {
   showToast({
     message: 'The Property has been saved to your collections',
     icon: propertyImages[0],
-    duration: 20000000,
+    duration: 2000,
   })
 }
 
