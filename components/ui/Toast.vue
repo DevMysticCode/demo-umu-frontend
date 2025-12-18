@@ -69,7 +69,7 @@ watch(
 
 .toast {
   background: linear-gradient(135deg, #00b8a9 0%, #00d4c3 100%);
-  border-radius: 16px;
+  border-radius: 100px;
   padding: 16px 20px;
   display: flex;
   align-items: center;
@@ -83,7 +83,7 @@ watch(
 .toast-icon {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 50%;
   overflow: hidden;
   background: white;
   display: flex;

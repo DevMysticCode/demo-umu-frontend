@@ -239,7 +239,7 @@
       :showBackButton="true"
       @close="showShare = false"
     >
-      <ShareDrawer
+      <ShareContent
         :property-title="propertyTitle"
         :property-address="propertyAddress"
         :property-price="propertyPrice"
@@ -248,7 +248,7 @@
       />
     </BaseDrawer>
 
-    <!-- <ShareDrawer
+    <!-- <ShareContent
       v-model="showShare"
       :property-title="propertyTitle"
       :property-address="propertyAddress"
@@ -285,7 +285,7 @@ import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
 import { useToast } from '~/composables/useToast'
-import ShareDrawer from '~/components/property/ShareContent.vue'
+import ShareContent from '~/components/property/ShareContent.vue'
 import { ref } from 'vue'
 
 const route = useRoute()
@@ -306,7 +306,7 @@ const handleAction = (label) => {
   }
 
   if (label === 'Save Property') {
-    console.log('Saving property...')
+    handleSaveProperty()
   }
 
   if (label === 'Register Interest') {
@@ -337,9 +337,17 @@ const goBack = () => {
 
 const handleWishlist = () => {
   showToast({
-    message: 'The Property has been saved to your collections',
+    message: 'The Property has been added to your wishlist',
     icon: propertyImages[0],
     duration: 2000,
+  })
+}
+
+const handleSaveProperty = () => {
+  showToast({
+    message: 'The Property has been saved to your collections',
+    icon: propertyImages[0],
+    duration: 20000000,
   })
 }
 
