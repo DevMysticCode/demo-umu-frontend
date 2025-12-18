@@ -98,6 +98,9 @@ const iconMap: Record<string, string> = {
   appleNew: '/icons/AppleNewIcon.svg',
   googleNew: '/icons/GoogleNewIcon.svg',
   facebookNew: '/icons/FacebookNewIcon.svg',
+  leftChevronWhite: '/icons/leftChevronWhite.svg',
+  wishlist: '/icons/wishlist.svg',
+  share: '/icons/share.svg',
 }
 
 const iconPath = computed(() => {
