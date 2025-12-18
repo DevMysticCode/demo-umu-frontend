@@ -23,14 +23,14 @@
 
       <!-- Action Buttons -->
       <div class="thankyou-page__actions">
-        <button
-          @click="continueToQuestionnaire"
-          class="thankyou-page__button-primary"
-        >
+        <button @click="skipToApp" class="thankyou-page__button-primary">
           Start Exploring
         </button>
 
-        <button @click="skipToApp" class="thankyou-page__button-secondary">
+        <button
+          @click="continueToQuestionnaire"
+          class="thankyou-page__button-secondary"
+        >
           Tell us more about your search
         </button>
       </div>
