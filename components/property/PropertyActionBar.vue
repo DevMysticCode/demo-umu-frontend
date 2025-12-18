@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed bottom-6 left-1/2 -translate-x-1/2 max-w-sm w-[85%] rounded-[36px] py-4 px-6 flex justify-between shadow-[0_4px_20px_rgba(0,0,0,0.08)] bg-gradient-to-b from-white to-[#e9faf7] z-[999]"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 max-w-sm w-[85%] rounded-[36px] py-4 px-6 flex justify-between shadow-[0_4px_20px_rgba(0,0,0,0.08)] bg-gradient-to-b from-white to-[#e9faf7] z-[49]"
   >
     <button
       class="action-item"
