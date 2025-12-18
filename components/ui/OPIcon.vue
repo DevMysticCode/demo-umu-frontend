@@ -106,6 +106,7 @@ const iconMap: Record<string, string> = {
   instagram: '/op-icons/property/instagram.svg',
   messagesLight: '/op-icons/property/messagesLight.svg',
   whatsapp: '/op-icons/property/whatsapp.svg',
+  matchToBuyers: '/op-icons/passportview/matchToBuyers.svg',
 }
 
 const iconPath = computed(() => {

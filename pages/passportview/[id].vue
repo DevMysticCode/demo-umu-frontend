@@ -44,6 +44,16 @@
         </div>
       </div>
 
+      <div class="match_publish_container">
+        <button>
+          <OPIcon name="matchToBuyers" class="w-[17px] h-[17px]" /> Match to
+          Buyers
+        </button>
+        <button class="active">
+          <OPIcon name="share" class="w-[17px] h-[17px]" /> Publish
+        </button>
+      </div>
+
       <div class="collaborators-info">
         <div class="collaborators">
           <div class="collaborator-avatars">
@@ -279,7 +289,7 @@ const navigateToStep = (stepId) => {
   background: white;
   border-radius: 16px;
   padding: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 .info-header {
@@ -537,5 +547,33 @@ const navigateToStep = (stepId) => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.match_publish_container {
+  display: flex;
+}
+
+.match_publish_container button {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  margin: 10px 5px;
+  padding: 12px;
+  background: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.43px;
+  color: #00a19a;
+  cursor: pointer;
+}
+
+.match_publish_container button.active {
+  background: #00a19a;
+  color: #ffffff;
 }
 </style>
