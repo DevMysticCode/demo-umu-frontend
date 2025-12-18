@@ -9,10 +9,16 @@
       <div class="image-counter">1/5</div>
       <div class="image_layover_icons">
         <button class="icon-btn">
-          <OPIcon name="leftChevron" class="w-[15px] h-[15px]" />
+          <OPIcon name="leftChevronWhite" class="w-[18px] h-[18px]" />
         </button>
-        <button class="icon-btn">❤️</button>
-        <button class="icon-btn">📤</button>
+        <div>
+          <button class="icon-btn">
+            <OPIcon name="wishlist" class="w-[20px] h-[20px]" />
+          </button>
+          <button class="icon-btn">
+            <OPIcon name="share" class="w-[20px] h-[20px]" />
+          </button>
+        </div>
       </div>
     </div>
 
@@ -294,7 +300,13 @@ const handleAction = (label) => {
 .image_layover_icons {
   position: absolute;
   top: 16px;
-  right: 16px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.image_layover_icons div {
   display: flex;
   gap: 12px;
 }
@@ -303,6 +315,9 @@ const handleAction = (label) => {
   background: #00000080;
   border: #00000080;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .image_layover_icons .icon-btn:hover {
