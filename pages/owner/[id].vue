@@ -109,7 +109,7 @@ const toggleEmail = () => {
 const sendMessage = () => {
   if (message.value.trim()) {
     alert('Message sent successfully! The owner will respond within 4 hours.')
-    router.push('/')
+    window.history.back()
   }
 }
 </script>
