@@ -7,6 +7,13 @@
         class="property-image"
       />
       <div class="image-counter">1/5</div>
+      <div class="image_layover_icons">
+        <button class="icon-btn">
+          <OPIcon name="leftChevron" class="w-[15px] h-[15px]" />
+        </button>
+        <button class="icon-btn">❤️</button>
+        <button class="icon-btn">📤</button>
+      </div>
     </div>
 
     <div class="property-content">
@@ -201,6 +208,12 @@
       </button>
     </div> -->
 
+    <RegisterInterestModal
+      v-model="showRegisterInterest"
+      address="12, Maple Road, Staines TW18 3BA"
+      @registered="onInterestRegistered"
+    />
+
     <PropertyActionBar
       :actions="[
         { icon: 'accessPassport', label: 'Access Passport' },
@@ -215,9 +228,16 @@
 
 <script setup>
 import PropertyActionBar from '@/components/property/PropertyActionBar.vue'
+import RegisterInterestModal from '@/components/property/RegisterInterestModal.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
+
 const route = useRoute()
 const router = useRouter()
 
+const showRegisterInterest = ref(false)
+const onInterestRegistered = (level) => {
+  console.log('Interest registered:', level)
+}
 const handleAction = (label) => {
   if (label === 'Access Passport') {
     router.push(`/passport/${route.params.id}`)
@@ -228,7 +248,7 @@ const handleAction = (label) => {
   }
 
   if (label === 'Register Interest') {
-    console.log('Opening register interest form...')
+    showRegisterInterest.value = true
   }
 
   if (label === 'Tap Owner') {
@@ -269,6 +289,24 @@ const handleAction = (label) => {
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
+}
+
+.image_layover_icons {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 12px;
+}
+
+.image_layover_icons .icon-btn {
+  background: #00000080;
+  border: #00000080;
+  border-radius: 50%;
+}
+
+.image_layover_icons .icon-btn:hover {
+  background: #00000054;
 }
 
 .property-content {
