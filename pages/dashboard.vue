@@ -21,7 +21,6 @@
           v-model="searchQuery"
           placeholder="City, area or postcode"
           :isSearching="searching"
-          @focus="openSearchSuggestions"
           @search="performSearch"
         />
       </div>
@@ -261,6 +260,7 @@ const handleSuggestionSearch = (query) => {
 }
 
 const performSearch = (query) => {
+  console.log('Performing search for:', query)
   showSearchSuggestions.value = false
   showSearchResults.value = true
   searchQuery.value = query

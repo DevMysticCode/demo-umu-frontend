@@ -1,6 +1,12 @@
 <template>
   <div class="mobile-container bg-white min-h-screen">
-    <AppHeader title="Explore" :showBack="true" right="profile" />
+    <AppHeader
+      title="Explore"
+      :showBack="true"
+      right="profile"
+      isOverlay
+      @back="$emit('close')"
+    />
     <!-- Search Input -->
     <div class="px-4 mb-4">
       <div class="flex items-center bg-gray-50 rounded-xl px-4 py-3">

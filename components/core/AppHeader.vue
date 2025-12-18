@@ -4,7 +4,8 @@
   >
     <!-- Left Section: Back Button or Empty Space -->
     <div class="w-10 flex items-center justify-start">
-      <BackButton v-if="showBack" />
+      <ModalBackButton v-if="showBack && isOverlay" @close="emit('back')" />
+      <BackButton v-else-if="showBack" />
     </div>
 
     <!-- Center Section: Heading -->
@@ -43,7 +44,11 @@
 </template>
 
 <script setup>
+import { defineProps, defineEmits, computed } from 'vue'
 import BackButton from '~/components/core/BackButton.vue'
+import ModalBackButton from '~/components/core/ModalBackButton.vue'
+
+const emit = defineEmits(['back'])
 
 const props = defineProps({
   title: String, // Heading text
@@ -58,6 +63,7 @@ const props = defineProps({
     type: String,
     default: '/op-icons/temp/profilepic.png',
   },
+  isOverlay: { type: Boolean, default: false },
 })
 </script>
 
