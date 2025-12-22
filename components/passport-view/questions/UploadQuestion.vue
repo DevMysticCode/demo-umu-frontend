@@ -4,7 +4,10 @@
 
     <div class="upload-container">
       <div v-if="hasPending" class="pending-badge">
-        <span class="pending-icon">⚠</span> Pending
+        <span class="pending-icon"
+          ><OPIcon name="pending" class="w-[11px] h-[11px]"
+        /></span>
+        Pending
       </div>
 
       <p class="instruction-text">
@@ -16,12 +19,16 @@
 
       <div class="upload-options">
         <button class="upload-btn" @click="triggerFileUpload">
-          <span class="upload-icon">📁</span>
+          <span class="upload-icon"
+            ><OPIcon name="upload" class="w-[20px] h-[20px]"
+          /></span>
           <span>Upload from Files</span>
         </button>
-        <div class="separator">Or</div>
+        <!-- <div class="separator">Or</div> -->
         <button class="upload-btn camera">
-          <span class="upload-icon">📷</span>
+          <span class="upload-icon"
+            ><OPIcon name="scan" class="w-[20px] h-[20px]"
+          /></span>
           <span>Scan Using Camera</span>
         </button>
       </div>
@@ -51,6 +58,7 @@
 </template>
 
 <script setup>
+import OPIcon from '~/components/ui/OPIcon.vue'
 const props = defineProps({
   question: {
     type: Object,
@@ -118,15 +126,17 @@ const removeFile = (index) => {
 }
 
 .pending-badge {
-  position: absolute;
-  top: 16px;
-  right: 16px;
+  border-radius: 100px;
+  background-color: #ff3b301a;
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: 12px;
   color: #ff6b6b;
   font-weight: 600;
+  padding: 4px 8px;
+  width: fit-content;
+  margin-bottom: 4px;
 }
 
 .pending-icon {
@@ -143,7 +153,7 @@ const removeFile = (index) => {
 
 .upload-options {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 16px;
 }

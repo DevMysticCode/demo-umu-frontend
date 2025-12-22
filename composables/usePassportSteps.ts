@@ -173,7 +173,7 @@ export const usePassportSteps = () => {
                 'Have fences, walls, or hedges marking the boundary ever been moved from their original position?',
               description: 'Provide details if yes',
               points: 50,
-              type: 'radio',
+              type: 'upload',
               help: 'This helps identify if boundary markers have shifted over time.',
               options: [
                 { label: 'Yes', value: 'yes' },
