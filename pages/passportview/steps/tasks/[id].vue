@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile-container task-page bg-umu-gradient">
+  <div v-if="!showThankYou" class="mobile-container task-page bg-umu-gradient">
     <AppHeader :showBack="true" right="dots" />
 
     <div class="task-content">
@@ -88,7 +88,9 @@
         Save and go to next question
       </button>
     </div>
+  </div>
 
+  <div v-if="showThankYou">
     <ThankYouModal
       v-model="showThankYou"
       :points="earnedPoints"
@@ -106,6 +108,8 @@ import RadioQuestion from '~/components/passport-view/questions/RadioQuestion.vu
 import TextQuestion from '~/components/passport-view/questions/TextQuestion.vue'
 import CheckboxQuestion from '~/components/passport-view/questions/CheckboxQuestion.vue'
 import UploadQuestion from '~/components/passport-view/questions/UploadQuestion.vue'
+import NoteQuestion from '~/components/passport-view/questions/NoteQuestion.vue'
+import DateQuestion from '~/components/passport-view/questions/DateQuestion.vue'
 import AppHeader from '@/components/core/AppHeader.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
@@ -188,6 +192,33 @@ const isAnswerValid = computed(() => {
     return Array.isArray(answer) && answer.length > 0
   }
 
+  if (currentQuestion.value.type === 'note') {
+    const note = answer || {}
+    const buyers = note.buyers || ''
+    const sellers = note.sellers || ''
+    return (
+      (buyers && buyers.trim().length > 0) ||
+      (sellers && sellers.trim().length > 0)
+    )
+  }
+
+  if (currentQuestion.value.type === 'date') {
+    if (!answer) return false
+
+    if (typeof answer === 'string') {
+      return answer.trim().length > 0
+    }
+
+    if (typeof answer === 'object') {
+      // If the selected option requires a date, it will be stored in answer.date
+      if (answer.date) return ('' + answer.date).trim().length > 0
+      // Otherwise ensure a selected value exists
+      return ('' + (answer.value || '')).trim().length > 0
+    }
+
+    return false
+  }
+
   return true
 })
 
@@ -198,6 +229,8 @@ const getQuestionComponent = computed(() => {
     text: TextQuestion,
     checkbox: CheckboxQuestion,
     upload: UploadQuestion,
+    note: NoteQuestion,
+    date: DateQuestion,
   }
   return components[type] || TextQuestion
 })

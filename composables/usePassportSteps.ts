@@ -4,12 +4,30 @@ export interface PassportQuestion {
   description: string
   instructionText?: string
   points: number
-  type: 'text' | 'radio' | 'checkbox' | 'upload' | 'multipart'
+  type: 'text' | 'radio' | 'checkbox' | 'upload' | 'multipart' | 'note' | 'date'
   help?: string
-  options?: { label: string; value: string }[]
+  options?: {
+    label: string
+    value: string
+    hasDate?: boolean
+    dateFormat?: 'monthYear' | 'fullDate' | 'year'
+    datePlaceholder?: string
+  }[]
   placeholder?: string
   answer?: any
   completed?: boolean
+  // Optional prewritten templates for notes
+  prewritten?: {
+    buyers?: string
+    sellers?: string
+  }
+  dateFields?: Array<{
+    label?: string
+    placeholder?: string
+    format?: 'monthYear' | 'fullDate' | 'year'
+  }>
+  label?: string
+  format?: 'monthYear' | 'fullDate' | 'year'
 }
 
 export interface PassportTask {
@@ -97,10 +115,17 @@ export const usePassportSteps = () => {
               instructionText:
                 'Please indicate ownership by written instruction or by reference to a plan:',
               points: 0,
-              type: 'text',
-              answer: '',
+              // Notes type supports separate notes for buyers and sellers
+              type: 'note',
+              answer: { buyers: '', sellers: '' },
               completed: false,
               placeholder: 'Enter your notes here...',
+              prewritten: {
+                buyers:
+                  'If any alterations or improvements have been made since the property was last valued for council tax, the sale of the property may trigger a revaluation. This may mean that following completion of the sale, the property will be put into a higher council tax band. Further information about council tax valuation can be found at: http://www.gov.uk/government/organisations/valuation-office-agency',
+                sellers:
+                  'All relevant approvals and supporting paperwork referred to in this form, such as listed building consents, planning permissions, Building Regulations consents and completion certificates should be provided. If the seller has had works carried out the seller should produce the documentation authorising this. Copies may be obtained from the relevant local authority website. Competent Persons Certificates may be obtained from the contractor or the scheme provider (e.g. FENSA or Gas Safe Register). Further information about Competent Persons Certificates can be found at: https://www.gov.uk/guidance/competent-person-scheme-current-schemes-and-how-schemes-are-authorised',
+              },
             },
           ],
         },
@@ -127,6 +152,70 @@ export const usePassportSteps = () => {
                 { label: 'You', value: 'you' },
                 { label: 'Shared', value: 'shared' },
                 { label: 'Unknown', value: 'unknown' },
+              ],
+              answer: '',
+              completed: false,
+            },
+
+            {
+              id: 'q-2-2',
+              question:
+                'Building works (e.g. extension, loft or garage conversion, removal of internal walls)',
+              description: '',
+              points: 50,
+              type: 'date',
+              help: 'Select if building works were done and provide the completion date.',
+              options: [
+                {
+                  label: 'Yes, select year',
+                  value: 'yes',
+                  hasDate: true,
+                  dateFormat: 'year',
+                  datePlaceholder: 'Select year',
+                },
+                {
+                  label: 'No',
+                  value: 'no',
+                  hasDate: false,
+                },
+              ],
+              answer: '',
+              completed: false,
+            },
+            {
+              id: 'q-2-3',
+              question: 'When was the work completed?',
+              description: '',
+              points: 25,
+              type: 'date',
+              help: 'Provide the completion date for the building works.',
+              options: [
+                {
+                  label: 'Select month',
+                  value: 'selected',
+                  hasDate: true,
+                  dateFormat: 'monthYear',
+                  datePlaceholder: 'Select month',
+                },
+              ],
+              answer: '',
+              completed: false,
+            },
+            {
+              id: 'q-3-4',
+              question: 'When did you first notice the issue?',
+              description: '',
+              points: 25,
+              type: 'date',
+              help: 'Provide the exact date when you first noticed the issue.',
+              options: [
+                {
+                  label: 'Select date',
+                  value: 'selected',
+                  hasDate: true,
+                  dateFormat: 'fullDate',
+                  datePlaceholder: 'Select date',
+                },
               ],
               answer: '',
               completed: false,
