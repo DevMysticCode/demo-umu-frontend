@@ -79,6 +79,7 @@
               :is="getQuestionComponent"
               :question="currentQuestion"
               :answer="currentQuestion.answer"
+              :display="currentQuestion.display || currentQuestion.type"
               @update="updateAnswer"
             />
           </div>
@@ -105,9 +106,8 @@ import { usePassportSteps } from '~/composables/usePassportSteps'
 import PointsSection from '~/components/passport-view/PointsSection.vue'
 import ThankYouModal from '~/components/passport-view/ThankYouModal.vue'
 import RadioQuestion from '~/components/passport-view/questions/RadioQuestion.vue'
-import TextQuestion from '~/components/passport-view/questions/TextQuestion.vue'
+import TextUploadQuestion from '~/components/passport-view/questions/TextUploadQuestion.vue'
 import CheckboxQuestion from '~/components/passport-view/questions/CheckboxQuestion.vue'
-import UploadQuestion from '~/components/passport-view/questions/UploadQuestion.vue'
 import NoteQuestion from '~/components/passport-view/questions/NoteQuestion.vue'
 import DateQuestion from '~/components/passport-view/questions/DateQuestion.vue'
 import AppHeader from '@/components/core/AppHeader.vue'
@@ -226,13 +226,13 @@ const getQuestionComponent = computed(() => {
   const type = currentQuestion.value?.type
   const components = {
     radio: RadioQuestion,
-    text: TextQuestion,
+    text: TextUploadQuestion,
     checkbox: CheckboxQuestion,
-    upload: UploadQuestion,
+    upload: TextUploadQuestion,
     note: NoteQuestion,
     date: DateQuestion,
   }
-  return components[type] || TextQuestion
+  return components[type] || TextUploadQuestion
 })
 
 const updateAnswer = (answer) => {

@@ -14,6 +14,10 @@ export interface PassportQuestion {
     datePlaceholder?: string
   }[]
   placeholder?: string
+  display?: 'text' | 'upload' | 'both'
+  uploadInstruction?: string
+  allowUpload?: boolean
+  showBoth?: boolean
   answer?: any
   completed?: boolean
   // Optional prewritten templates for notes
@@ -81,6 +85,7 @@ export const usePassportSteps = () => {
                 'A Property Passport is a comprehensive document that contains all the information about a property.',
               points: 50,
               type: 'text',
+              display: 'text',
               help: 'This helps property owners and buyers understand the property better.',
               answer: '',
               completed: false,
@@ -263,12 +268,26 @@ export const usePassportSteps = () => {
               description: 'Provide details if yes',
               points: 50,
               type: 'upload',
+              // show both text and upload so users can describe and attach evidence
+              uploadInstruction:
+                'Attach any photos or documents that show the moved boundary.',
               help: 'This helps identify if boundary markers have shifted over time.',
               options: [
                 { label: 'Yes', value: 'yes' },
                 { label: 'No', value: 'no' },
               ],
               answer: '',
+              completed: false,
+            },
+            {
+              id: 'q-4-2',
+              question: 'Upload supporting documents (plans, photos, reports)',
+              description:
+                'Provide any files that support your answer about moved features',
+              points: 25,
+              type: 'upload',
+              help: 'Upload any supporting documents showing changes to boundary features.',
+              answer: [],
               completed: false,
             },
           ],

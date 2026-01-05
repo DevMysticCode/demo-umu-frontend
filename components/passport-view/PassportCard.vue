@@ -4,7 +4,9 @@
       <div class="passport-book">
         <div class="passport-cover">
           <div class="passport-text">Property Passport</div>
-          <div class="house-icon">🏠</div>
+          <div class="house-icon">
+            <OPIcon name="logo" class="w-[50px] h-[50px]" />
+          </div>
           <div class="passport-address">
             <div class="address-line">{{ line1 }}</div>
             <div class="address-line-small">{{ line2 }}</div>
@@ -16,6 +18,8 @@
 </template>
 
 <script setup>
+import OPIcon from '../ui/OPIcon.vue'
+
 defineProps({
   line1: {
     type: String,
@@ -87,7 +91,7 @@ defineProps({
 }
 
 .house-icon {
-  font-size: 64px;
+  width: 40%;
   margin: 20px 0;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
