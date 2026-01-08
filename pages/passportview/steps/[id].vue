@@ -55,6 +55,13 @@
         @nextTask="goToNextTask"
       />
 
+      <UnderReview
+        title="Your Expert Guidance"
+        :description="`You have 3 questions under review by an expert.`"
+        :minimum-time="'3 Days'"
+        @viewProfile="handleViewProfile"
+      />
+
       <div class="tasks-section">
         <div class="section-header">
           <h2 class="section-title">Your Tasks</h2>
@@ -106,6 +113,7 @@
 <script setup>
 import { usePassportSteps } from '~/composables/usePassportSteps'
 import PointsSection from '@/components/passport-view/PointsSection.vue'
+import UnderReview from '~/components/passport-view/UnderReview.vue'
 import AppHeader from '@/components/core/AppHeader.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import HeroSection from '@/components/HeroSection.vue'
