@@ -221,4 +221,12 @@ const {
 .back_button {
   @apply text-black;
 }
+
+.form-check label {
+  @apply text-gray-700;
+}
+
+.link {
+  @apply text-brand-aqua font-medium hover:text-brand-aqua/80 transition-colors;
+}
 </style>

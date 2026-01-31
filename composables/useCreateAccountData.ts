@@ -1,6 +1,8 @@
 import { ref, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 import { navigateTo } from 'nuxt/app'
+import { useAuth } from '~/composables/useAuth'
+import { useSession } from '~/composables/useSession'
 
 interface Address {
   id: number
@@ -9,14 +11,14 @@ interface Address {
 }
 
 export const useCreateAccountData = () => {
-  const route = useRoute()
-  const prefilledEmail = (route.query.email as string) || ''
+  const { register } = useAuth()
+  const { email } = useSession()
 
   // ✅ Form state
   const form = reactive({
     firstName: '',
     lastName: '',
-    email: prefilledEmail,
+    email: '',
     mobile: '',
     dateOfBirth: '',
     postcode: '', // <-- important
@@ -154,17 +156,22 @@ export const useCreateAccountData = () => {
 
     isLoading.value = true
     try {
-      await $fetch('/api/auth/register', {
-        method: 'POST',
-        body: {
-          ...form,
-          address: selectedAddress.value,
-          action: 'create_account',
-        },
+      const response = await register({
+        email: email.value,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phone: form.mobile,
+        dob: form.dateOfBirth,
+        postcode: form.postcode,
+        gender: form.gender,
+        password: form.password,
       })
+      console.log('Registration successful:', response)
       await navigateTo('/onboarding/thank-you')
     } catch (err) {
       console.error('Registration failed:', err)
+
+      alert(err?.data?.message || 'Registration failed')
     } finally {
       isLoading.value = false
     }

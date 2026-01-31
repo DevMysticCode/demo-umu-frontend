@@ -42,6 +42,7 @@
         </div>
 
         <input
+          v-model="emailInput"
           type="email"
           name="email"
           required
@@ -56,6 +57,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import { useAuth } from '~/composables/useAuth'
+import { useSession } from '~/composables/useSession'
 import { getDtaFromSubmitEvent } from '~/utils/form-helpres'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import BackButton from '~/components/core/BackButton.vue'
@@ -63,6 +67,11 @@ import BackButton from '~/components/core/BackButton.vue'
 definePageMeta({
   title: 'Sign Up - UmovingU',
 })
+
+const { requestOtp } = useAuth()
+const { email } = useSession()
+
+const emailInput = ref('')
 
 const handleSocialLogin = async (provider) => {
   console.log('handleSocialLogin', provider)
@@ -74,11 +83,18 @@ const handleSocialLogin = async (provider) => {
 const handleEmailContinue = async (event) => {
   event.preventDefault()
   event.stopPropagation()
+  try {
+    const response = await requestOtp(emailInput.value)
+    console.log('OTP sent to email:', emailInput.value, response)
+    // store email globally
+    email.value = emailInput.value
 
-  const formData = getDtaFromSubmitEvent(event)
-  // API call to log this person in. Login or Signup, its the same route
-
-  await navigateTo(`/onboarding/verification`)
+    // go to OTP screen
+    await navigateTo('/onboarding/verification')
+  } catch (err) {
+    console.error(err)
+    alert('Failed to send OTP')
+  }
 }
 </script>
 

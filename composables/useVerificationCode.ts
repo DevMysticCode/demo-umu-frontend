@@ -1,8 +1,11 @@
 import { ref, computed } from 'vue'
+import { useAuth } from '~/composables/useAuth'
+import { useSession } from '~/composables/useSession'
 
 export const useVerificationCode = () => {
   // Get email from query params or localStorage (mock implementation)
-  const email = ref<string>('john.smith@gmail.com')
+  const { verifyOtp, requestOtp } = useAuth()
+  const { email } = useSession()
 
   // Form state
   const verificationCode = ref<string>('')
@@ -43,36 +46,42 @@ export const useVerificationCode = () => {
 
   const handleCodeComplete = (code: string): void => {
     console.log('Code completed:', code)
+    verificationCode.value = code
     // Auto-verify when code is complete
     verifyCode()
   }
 
+  //  Verify OTP with backend
   const verifyCode = async (): Promise<void> => {
     if (!isCodeComplete.value) return
 
     isLoading.value = true
     error.value = ''
 
+    console.log(
+      'Email:',
+      email,
+      'Email:',
+      email.value,
+      'Verification Code:',
+      verificationCode.value,
+    )
     try {
-      // Mock API call - replace with real API
-      await new Promise<void>((resolve, reject) => {
-        setTimeout(() => {
-          // Simulate success/failure
-          if (verificationCode.value === '123456') {
-            resolve()
-          } else {
-            reject(new Error('Invalid verification code'))
-          }
-        }, 1500)
-      })
+      const response = await verifyOtp(email.value, verificationCode.value)
+      console.log('OTP verification response:', response)
 
-      console.log('Verification successful!')
+      await navigateTo('/onboarding/create-account')
+
       // Navigate to create account page
-      setTimeout(() => {
-        window.location.href = '/onboarding/create-account'
-      }, 500)
+      // setTimeout(() => {
+      //   window.location.href = '/onboarding/create-account'
+      // }, 500)
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Verification failed'
+      console.error(err)
+      error.value =
+        err?.data?.message ||
+        err?.response?._data?.message ||
+        'Verification Failed'
       // Clear the code on error
       verificationCode.value = ''
     } finally {
@@ -80,14 +89,12 @@ export const useVerificationCode = () => {
     }
   }
 
+  // Resend OTP code
   const resendCode = async (): Promise<void> => {
     if (!canResend.value) return
 
     try {
-      // Mock API call - replace with real API
-      await new Promise<void>((resolve) => setTimeout(resolve, 1000))
-
-      console.log('Code resent to:', email.value)
+      const response = await requestOtp(email.value)
 
       // Start cooldown timer (60 seconds)
       resendCooldown.value = 60

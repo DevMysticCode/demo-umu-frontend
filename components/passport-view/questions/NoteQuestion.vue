@@ -36,12 +36,23 @@
           <div v-if="prewritten?.buyers" class="template">
             <div class="template-body">{{ prewritten.buyers }}</div>
           </div>
+          <VisitLinkCard
+            :title="prewritten.buyers_link.title"
+            :url="prewritten.buyers_link.url"
+            @visitLink="handleVisitLink"
+          />
         </div>
 
         <div v-else>
           <div v-if="prewritten?.sellers" class="template">
             <div class="template-body">{{ prewritten.sellers }}</div>
           </div>
+          <VisitLinkCard
+            v-if="prewritten?.sellers_link"
+            :title="prewritten.sellers_link.title"
+            :url="prewritten.sellers_link.url"
+            @visitLink="handleVisitLink"
+          />
         </div>
       </div>
 
@@ -58,6 +69,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
+import VisitLinkCard from '~/components/passport-view/VisitLinkCard.vue'
 
 const props = defineProps({
   question: { type: Object, required: true },
@@ -98,6 +110,11 @@ const closeDrawer = () => {
 const save = () => {
   emit('update', { ...localAnswer.value })
   closeDrawer()
+}
+
+const handleVisitLink = () => {
+  // Handle visit link action - you can open the URL or emit an event
+  console.log('Visit link clicked')
 }
 
 const applyTemplate = (which: 'buyers' | 'sellers') => {
