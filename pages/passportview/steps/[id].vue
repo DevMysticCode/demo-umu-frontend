@@ -91,7 +91,7 @@
                 <span class="points-icon"
                   ><OPIcon name="default" class="w-[11px] h-[11px]"
                 /></span>
-                +{{ task.pointsReward }}pts
+                +0pts
               </div>
               <h3 class="task-title">{{ task.title }}</h3>
               <p class="task-description">{{ task.description }}</p>
@@ -111,7 +111,7 @@
 </template>
 
 <script setup>
-import { usePassportSteps } from '~/composables/usePassportSteps'
+import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import PointsSection from '@/components/passport-view/PointsSection.vue'
 import UnderReview from '~/components/passport-view/UnderReview.vue'
 import AppHeader from '@/components/core/AppHeader.vue'
@@ -121,51 +121,40 @@ import HeroSection from '@/components/HeroSection.vue'
 const route = useRoute()
 const router = useRouter()
 
-const {
-  steps,
-  setCurrentStep,
-  getCurrentStep,
-  calculateStepProgress,
-  updateStepProgress,
-} = usePassportSteps()
+const { currentStep, setCurrentStep } = usePassportRuntime()
 
 const stepId = route.params.id
 
-onMounted(() => {
-  setCurrentStep(stepId)
-  updateStepProgress(stepId)
-})
+// onMounted(() => {
+//   setCurrentStep(stepId)
+// })
 
-watch(
-  () => route.fullPath,
-  () => {
-    updateStepProgress(stepId)
-  },
-  { immediate: false }
-)
-
-const currentStep = computed(() => {
-  console.log('Current Step:', getCurrentStep())
-  return getCurrentStep()
+watchEffect(() => {
+  if (route.params.id) {
+    setCurrentStep(route.params.id)
+  }
 })
 
 const stepProgress = computed(() => {
-  const step = getCurrentStep()
-  if (!step) return 0
-  const completedTasks = step.tasks.filter((t) => t.completed).length
-  const totalTasks = step.tasks.length
-  return Math.round((completedTasks / totalTasks) * 100)
+  if (!currentStep.value) return 0
+  const completedTasks = currentStep.value.tasks.filter(
+    (t) => t.completed,
+  ).length
+  const totalTasks = currentStep.value.tasks.length
+  return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 })
 
-const totalStepPoints = computed(() => {
-  const step = getCurrentStep()
-  return step ? step.tasks.reduce((sum, task) => sum + task.pointsReward, 0) : 0
-})
+// const totalStepPoints = computed(() => {
+//   return currentStep.value
+//     ? currentStep.value.tasks.reduce((sum, task) => sum + task.pointsReward, 0)
+//     : 0
+// })
+
+const totalStepPoints = computed(() => 0)
 
 const hasNextTask = computed(() => {
-  const step = getCurrentStep()
-  if (!step) return false
-  const incompleteTasks = step.tasks.filter((t) => !t.completed)
+  if (!currentStep.value) return false
+  const incompleteTasks = currentStep.value.tasks.filter((t) => !t.completed)
   return incompleteTasks.length > 0
 })
 
@@ -175,8 +164,7 @@ const getTaskIcon = (task) => {
 
 const getTaskStatus = (task) => {
   if (task.completed) return 'completed'
-  const completedQuestions = task.questions.filter((q) => q.completed).length
-  if (completedQuestions > 0) return 'in-progress'
+  if (task.answeredQuestions > 0) return 'in-progress'
   return 'pending'
 }
 
@@ -186,18 +174,21 @@ const getCompletedDate = () => {
 
 const navigateToTask = (taskId) => {
   router.push(
-    `/passportview/steps/tasks/${taskId}?stepId=${stepId}&propertyId=${route.query.propertyId}`
+    `/passportview/steps/tasks/${taskId}?stepId=${stepId}&propertyId=${route.query.propertyId}`,
   )
 }
 
 const goToNextTask = () => {
-  const step = getCurrentStep()
-  if (step) {
-    const nextTask = step.tasks.find((t) => !t.completed)
+  if (currentStep.value) {
+    const nextTask = currentStep.value.tasks.find((t) => !t.completed)
     if (nextTask) {
       navigateToTask(nextTask.id)
     }
   }
+}
+
+const handleViewProfile = () => {
+  // Handle view profile action
 }
 
 const goBack = () => {

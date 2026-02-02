@@ -82,7 +82,7 @@
         >
           <div class="step-icon-container">
             <div class="step-icon-bg">
-              <OPIcon :name="step.icon" class="w-[80px] h-[80px]" />
+              <OPIcon :name="step.key" class="w-[80px] h-[80px]" />
             </div>
           </div>
           <div class="step-info">
@@ -112,17 +112,24 @@
 </template>
 
 <script setup>
-import { usePassportSteps } from '~/composables/usePassportSteps'
+// import { usePassportSteps } from '~/composables/usePassportSteps'
 import PassportMapView from '@/components/passport-view/PassportMapView.vue'
 import AppHeader from '@/components/core/AppHeader.vue'
 import PassportCard from '@/components/passport-view/PassportCard.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import SegmentedSwitch from '@/components/core/SegmentedSwitch.vue'
+import { usePassportRuntime } from '~/composables/usePassportRuntime'
+import { onMounted } from 'vue'
 
+const { steps, loadPassport } = usePassportRuntime()
 const route = useRoute()
 const router = useRouter()
-const { steps } = usePassportSteps()
 
+onMounted(() => {
+  loadPassport(route.params.id)
+})
+
+// const { steps } = usePassportSteps()
 const selectedRole = ref('seller')
 
 const roleOptions = [
@@ -139,11 +146,11 @@ const viewOptions = [
 const overallProgress = computed(() => {
   const totalTasks = steps.value.reduce(
     (sum, step) => sum + step.tasks.length,
-    0
+    0,
   )
   const completedTasks = steps.value.reduce(
     (sum, step) => sum + step.tasks.filter((t) => t.completed).length,
-    0
+    0,
   )
   return Math.round((completedTasks / totalTasks) * 100) || 0
 })

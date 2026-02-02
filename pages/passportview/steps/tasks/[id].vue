@@ -49,9 +49,9 @@
 
       <div class="question-header">
         <h2 class="question-number">
-          Question {{ currentQuestionIndex + 1 }}
+          Question {{ currentQuestionIndexRef + 1 }}
           <div class="total">
-            {{ currentQuestionIndex + 1 }} of {{ totalQuestions }} in this
+            {{ currentQuestionIndexRef + 1 }} of {{ totalQuestions }} in this
             section
           </div>
         </h2>
@@ -102,7 +102,7 @@
 </template>
 
 <script setup>
-import { usePassportSteps } from '~/composables/usePassportSteps'
+import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import PointsSection from '~/components/passport-view/PointsSection.vue'
 import ThankYouModal from '~/components/passport-view/ThankYouModal.vue'
 import RadioQuestion from '~/components/passport-view/questions/RadioQuestion.vue'
@@ -116,59 +116,57 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 
 const route = useRoute()
 const router = useRouter()
-
+const currentQuestionIndexRef = currentQuestionIndex
 const {
-  steps,
+  currentStep,
+  currentTask,
+  currentQuestions,
+  currentQuestionIndex,
+  getCurrentQuestion,
   setCurrentStep,
   setCurrentTask,
-  getCurrentStep,
-  getCurrentTask,
-  getCurrentQuestion,
-  updateQuestionAnswer,
+  loadQuestions,
+  saveAnswer: apiSaveAnswer,
+  completeTask,
   moveToNextQuestion,
-  moveToNextTask,
-  updateStepProgress,
-} = usePassportSteps()
+} = usePassportRuntime()
 
 const showThankYou = ref(false)
 const earnedPoints = ref(0)
+const isSaving = ref(false)
 
 const stepId = route.query.stepId
 const taskId = route.params.id
 
-onMounted(() => {
+onMounted(async () => {
   setCurrentStep(stepId)
   setCurrentTask(taskId)
+  await loadQuestions(taskId)
 })
 
-const currentStep = computed(() => getCurrentStep())
-const currentTask = computed(() => getCurrentTask())
-const currentQuestion = computed(() => getCurrentQuestion())
+const currentQuestion = computed(() => {
+  return currentQuestions.value[currentQuestionIndex.value]
+})
 
 const calculateEarnedPoints = () => {
-  const step = getCurrentStep()
-  if (!step) return 0
-  return step.tasks
+  if (!currentStep.value) return 0
+  return currentStep.value.tasks
     .filter((t) => t.completed)
     .reduce((sum, t) => sum + t.pointsReward, 0)
 }
 
-const currentQuestionIndex = computed(
-  () => currentTask.value?.currentQuestionIndex || 0
-)
-const totalQuestions = computed(() => currentTask.value?.questions.length || 0)
+const currentQuestionIdx = computed(() => currentQuestionIndex.value)
+const totalQuestions = computed(() => currentQuestions.value.length || 0)
 
 const taskProgress = computed(() => {
-  if (!currentTask.value) return 0
-  const completed = currentTask.value.questions.filter(
-    (q) => q.completed
-  ).length
-  return Math.round((completed / currentTask.value.questions.length) * 100)
+  if (!currentTask.value || totalQuestions.value === 0) return 0
+  const completed = currentQuestions.value.filter((q) => q.completed).length
+  return Math.round((completed / totalQuestions.value) * 100)
 })
 
 const remainingQuestions = computed(() => {
   if (!currentTask.value) return 0
-  return currentTask.value.questions.filter((q) => !q.completed).length
+  return currentQuestions.value.filter((q) => !q.completed).length
 })
 
 const isAnswerValid = computed(() => {
@@ -210,9 +208,7 @@ const isAnswerValid = computed(() => {
     }
 
     if (typeof answer === 'object') {
-      // If the selected option requires a date, it will be stored in answer.date
       if (answer.date) return ('' + answer.date).trim().length > 0
-      // Otherwise ensure a selected value exists
       return ('' + (answer.value || '')).trim().length > 0
     }
 
@@ -236,26 +232,36 @@ const getQuestionComponent = computed(() => {
 })
 
 const updateAnswer = (answer) => {
-  updateQuestionAnswer(answer)
+  if (currentQuestion.value) {
+    currentQuestion.value.answer = answer
+  }
 }
 
-const saveAnswer = () => {
-  if (!isAnswerValid.value) return
+const saveAnswer = async () => {
+  if (!isAnswerValid.value || !currentQuestion.value) return
 
-  const hasMoreQuestions = !moveToNextQuestion()
+  isSaving.value = true
+  try {
+    // Save answer to backend
+    await apiSaveAnswer(currentQuestion.value.id, currentQuestion.value.answer)
 
-  if (!hasMoreQuestions) {
-    const hasMoreTasks = !moveToNextTask()
-    updateStepProgress(stepId)
+    // Move to next question
+    const hasMoreQuestions = moveToNextQuestion()
 
-    if (!hasMoreTasks) {
+    if (!hasMoreQuestions) {
+      // No more questions, complete the task
+      await completeTask(taskId)
+      if (currentTask.value) {
+        currentTask.value.completed = true
+      }
       earnedPoints.value = calculateEarnedPoints()
       showThankYou.value = true
-    } else {
-      router.push(
-        `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`
-      )
     }
+  } catch (error) {
+    console.error('Error saving answer:', error)
+    // Handle error - show toast or error message
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -271,7 +277,7 @@ const handleNextQuestion = () => {
 
 const handleContinue = () => {
   router.push(
-    `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`
+    `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
   )
 }
 
