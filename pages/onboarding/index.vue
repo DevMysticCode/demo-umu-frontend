@@ -27,7 +27,7 @@ const onCreateAccount = async () => {
 }
 
 const onLogin = async () => {
-  await navigateTo('/onboarding/signup')
+  await navigateTo('/onboarding/signin')
 }
 
 const onSkipClick = () => {

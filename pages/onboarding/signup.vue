@@ -37,7 +37,7 @@
         <!-- Divider -->
         <div class="email-form__divider">
           <div class="flex-1 h-px bg-white/80"></div>
-          <span class="text-white/80 text-sm">or login with email</span>
+          <span class="text-white/80 text-sm">or enter your email below</span>
           <div class="flex-1 h-px bg-white/80"></div>
         </div>
 
@@ -50,7 +50,7 @@
           class="w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua"
         />
 
-        <button class="email-form__button" type="submit">Log In</button>
+        <button class="email-form__button" type="submit">Continue</button>
       </form>
     </div>
   </div>

@@ -228,6 +228,7 @@
 <script setup>
 definePageMeta({
   title: 'Explore - UmovingU',
+  middleware: 'auth',
 })
 
 import AppHeader from '~/components/core/AppHeader.vue'

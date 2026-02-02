@@ -2,6 +2,12 @@ export const useAuth = () => {
   const config = useRuntimeConfig()
   const base = config.public.apiBase
 
+  const getHeaders = () => {
+    const token = localStorage.getItem('token')
+
+    return token ? { Authorization: `Bearer ${token}` } : {}
+  }
+
   const requestOtp = (email: string) => {
     return $fetch(`${base}/auth/request-otp`, {
       method: 'POST',
@@ -32,9 +38,17 @@ export const useAuth = () => {
     })
   }
 
+  const login = (email: string, password: string) => {
+    return $fetch(`${base}/auth/login`, {
+      method: 'POST',
+      body: { email, password },
+    })
+  }
+
   return {
     requestOtp,
     verifyOtp,
     register,
+    login,
   }
 }
