@@ -49,9 +49,9 @@
 
       <div class="question-header">
         <h2 class="question-number">
-          Question {{ currentQuestionIndexRef + 1 }}
+          Question {{ currentQuestionIndex + 1 }}
           <div class="total">
-            {{ currentQuestionIndexRef + 1 }} of {{ totalQuestions }} in this
+            {{ currentQuestionIndex + 1 }} of {{ totalQuestions }} in this
             section
           </div>
         </h2>
@@ -116,15 +116,17 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 
 const route = useRoute()
 const router = useRouter()
-const currentQuestionIndexRef = currentQuestionIndex
+
 const {
+  steps,
   currentStep,
   currentTask,
   currentQuestions,
   currentQuestionIndex,
-  getCurrentQuestion,
+  currentQuestion,
   setCurrentStep,
   setCurrentTask,
+  loadPassport,
   loadQuestions,
   saveAnswer: apiSaveAnswer,
   completeTask,
@@ -139,23 +141,22 @@ const stepId = route.query.stepId
 const taskId = route.params.id
 
 onMounted(async () => {
+  if (!steps.value.length) {
+    await loadPassport(route.query.propertyId)
+  }
+
   setCurrentStep(stepId)
   setCurrentTask(taskId)
   await loadQuestions(taskId)
-})
-
-const currentQuestion = computed(() => {
-  return currentQuestions.value[currentQuestionIndex.value]
 })
 
 const calculateEarnedPoints = () => {
   if (!currentStep.value) return 0
   return currentStep.value.tasks
     .filter((t) => t.completed)
-    .reduce((sum, t) => sum + t.pointsReward, 0)
+    .reduce((sum, t) => sum + (t.pointsReward || 0), 0)
 }
 
-const currentQuestionIdx = computed(() => currentQuestionIndex.value)
 const totalQuestions = computed(() => currentQuestions.value.length || 0)
 
 const taskProgress = computed(() => {
@@ -165,7 +166,6 @@ const taskProgress = computed(() => {
 })
 
 const remainingQuestions = computed(() => {
-  if (!currentTask.value) return 0
   return currentQuestions.value.filter((q) => !q.completed).length
 })
 
@@ -173,24 +173,25 @@ const isAnswerValid = computed(() => {
   if (!currentQuestion.value) return false
 
   const answer = currentQuestion.value.answer
+  const type = currentQuestion.value.type
 
-  if (currentQuestion.value.type === 'text') {
+  if (type === 'text') {
     return answer && answer.trim().length > 0
   }
 
-  if (currentQuestion.value.type === 'radio') {
+  if (type === 'radio') {
     return answer !== '' && answer !== undefined
   }
 
-  if (currentQuestion.value.type === 'checkbox') {
+  if (type === 'checkbox') {
     return Array.isArray(answer) && answer.length > 0
   }
 
-  if (currentQuestion.value.type === 'upload') {
+  if (type === 'upload') {
     return Array.isArray(answer) && answer.length > 0
   }
 
-  if (currentQuestion.value.type === 'note') {
+  if (type === 'note') {
     const note = answer || {}
     const buyers = note.buyers || ''
     const sellers = note.sellers || ''
@@ -200,18 +201,15 @@ const isAnswerValid = computed(() => {
     )
   }
 
-  if (currentQuestion.value.type === 'date') {
+  if (type === 'date') {
     if (!answer) return false
-
     if (typeof answer === 'string') {
       return answer.trim().length > 0
     }
-
     if (typeof answer === 'object') {
       if (answer.date) return ('' + answer.date).trim().length > 0
       return ('' + (answer.value || '')).trim().length > 0
     }
-
     return false
   }
 
@@ -245,21 +243,17 @@ const saveAnswer = async () => {
     // Save answer to backend
     await apiSaveAnswer(currentQuestion.value.id, currentQuestion.value.answer)
 
-    // Move to next question
+    // Try to move to next question
     const hasMoreQuestions = moveToNextQuestion()
 
     if (!hasMoreQuestions) {
-      // No more questions, complete the task
+      // Last question answered, complete the task
       await completeTask(taskId)
-      if (currentTask.value) {
-        currentTask.value.completed = true
-      }
       earnedPoints.value = calculateEarnedPoints()
       showThankYou.value = true
     }
   } catch (error) {
     console.error('Error saving answer:', error)
-    // Handle error - show toast or error message
   } finally {
     isSaving.value = false
   }
@@ -279,10 +273,6 @@ const handleContinue = () => {
   router.push(
     `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
   )
-}
-
-const goBack = () => {
-  router.back()
 }
 </script>
 
