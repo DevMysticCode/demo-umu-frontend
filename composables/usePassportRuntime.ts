@@ -1,6 +1,21 @@
 import { ref, computed } from 'vue'
 import { usePassportApi } from './usePassportApi'
 
+/* =====================================================
+   SHARED SINGLETON STATE
+===================================================== */
+
+const steps = ref<any[]>([])
+const loading = ref(false)
+const currentStep = ref<any>(null)
+const currentTask = ref<any>(null)
+const currentQuestions = ref<any[]>([])
+const currentQuestionIndex = ref(0)
+
+/* =====================================================
+   COMPOSABLE
+===================================================== */
+
 export const usePassportRuntime = () => {
   const {
     getSections,
@@ -9,13 +24,9 @@ export const usePassportRuntime = () => {
     completeTask: apiCompleteTask,
   } = usePassportApi()
 
-  const steps = ref<any[]>([])
-  const loading = ref(false)
-  const currentStep = ref<any>(null)
-  const currentTask = ref<any>(null)
-  const currentQuestions = ref<any[]>([])
-  const currentQuestionIndex = ref(0)
-
+  /* --------------------------------
+     LOAD PASSPORT SECTIONS
+  -------------------------------- */
   const loadPassport = async (passportId: string) => {
     loading.value = true
     try {
@@ -25,40 +36,46 @@ export const usePassportRuntime = () => {
     }
   }
 
+  /* --------------------------------
+     SET CURRENT STEP
+  -------------------------------- */
   const setCurrentStep = (stepId: string) => {
     currentStep.value = steps.value.find((s: any) => s.id === stepId) || null
   }
 
+  /* --------------------------------
+     SET CURRENT TASK
+  -------------------------------- */
   const setCurrentTask = (taskId: string) => {
-    if (currentStep.value && currentStep.value.tasks) {
-      currentTask.value =
-        currentStep.value.tasks.find((t: any) => t.id === taskId) || null
-    }
+    if (!currentStep.value) return
+    currentTask.value =
+      currentStep.value.tasks.find((t: any) => t.id === taskId) || null
   }
 
+  /* --------------------------------
+     LOAD QUESTIONS FOR TASK
+  -------------------------------- */
   const loadQuestions = async (taskId: string) => {
     try {
       const result = (await getQuestions(taskId)) as any[]
       currentQuestions.value = result
       currentQuestionIndex.value = 0
-      if (currentTask.value) {
-        currentTask.value.questions = result
-      }
     } catch (error) {
       console.error('Error loading questions:', error)
+      throw error
     }
   }
 
+  /* --------------------------------
+     SAVE ANSWER
+  -------------------------------- */
   const saveAnswer = async (questionId: string, value: any) => {
     try {
       await answerQuestion(questionId, value)
-      // Mark question as answered
-      const question = currentQuestions.value.find(
-        (q: any) => q.id === questionId,
-      )
-      if (question) {
-        question.completed = true
-        question.answer = value
+      const q = currentQuestions.value.find((q: any) => q.id === questionId)
+      if (q) {
+        q.completed = true
+        q.answer = value
       }
     } catch (error) {
       console.error('Error saving answer:', error)
@@ -66,6 +83,9 @@ export const usePassportRuntime = () => {
     }
   }
 
+  /* --------------------------------
+     MOVE TO NEXT QUESTION
+  -------------------------------- */
   const moveToNextQuestion = () => {
     if (currentQuestionIndex.value < currentQuestions.value.length - 1) {
       currentQuestionIndex.value++
@@ -74,6 +94,9 @@ export const usePassportRuntime = () => {
     return false
   }
 
+  /* --------------------------------
+     COMPLETE TASK
+  -------------------------------- */
   const completeTask = async (taskId: string) => {
     try {
       await apiCompleteTask(taskId)
@@ -86,18 +109,26 @@ export const usePassportRuntime = () => {
     }
   }
 
-  const getCurrentQuestion = computed(() => {
-    return currentQuestions.value[currentQuestionIndex.value]
+  /* --------------------------------
+     CURRENT QUESTION COMPUTED
+  -------------------------------- */
+  const currentQuestion = computed(() => {
+    return currentQuestions.value[currentQuestionIndex.value] || null
   })
 
   return {
+    // state refs
     steps,
     loading,
     currentStep,
     currentTask,
     currentQuestions,
     currentQuestionIndex,
-    getCurrentQuestion,
+
+    // computed
+    currentQuestion,
+
+    // methods
     loadPassport,
     setCurrentStep,
     setCurrentTask,
