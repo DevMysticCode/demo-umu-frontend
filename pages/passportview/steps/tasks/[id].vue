@@ -118,7 +118,6 @@ const route = useRoute()
 const router = useRouter()
 
 const {
-  steps,
   currentStep,
   currentTask,
   currentQuestions,
@@ -141,7 +140,7 @@ const stepId = route.query.stepId
 const taskId = route.params.id
 
 onMounted(async () => {
-  if (!steps.value.length) {
+  if (!currentStep.value) {
     await loadPassport(route.query.propertyId)
   }
 
