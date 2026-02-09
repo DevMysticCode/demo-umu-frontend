@@ -68,13 +68,24 @@
       <div class="collaborators-info">
         <div class="collaborators">
           <div class="collaborator-avatars">
-            <div class="avatar" v-for="i in 2" :key="i">
-              <div class="avatar-circle"></div>
+            <div
+              class="avatar"
+              v-for="collaborator in displayCollaborators"
+              :key="collaborator.id"
+            >
+              <div class="avatar-circle">
+                {{ getInitials(collaborator.firstName, collaborator.lastName) }}
+              </div>
             </div>
-            <button class="add-collaborator">+</button>
+            <button class="add-collaborator" @click="openCollaboratorModal">
+              +
+            </button>
           </div>
-          <span class="collaborators-label">2 Collaborators</span>
-          <button class="add-icon">
+          <span class="collaborators-label"
+            >{{ collaborators.length }}
+            {{ collaborators.length === 1 ? 'Collaborator' : 'Collaborators' }}</span
+          >
+          <button class="add-icon" @click="openCollaboratorModal">
             <OPIcon name="addCollaborator" class="w-[28px] h-[28px]" />
           </button>
         </div>
@@ -119,6 +130,14 @@
 
       <PassportMapView v-else />
     </div>
+
+    <!-- Add Collaborator Modal -->
+    <AddCollaboratorModal
+      v-model:show="showCollaboratorModal"
+      :passport-id="route.params.id"
+      @added="handleCollaboratorAdded"
+      @removed="handleCollaboratorRemoved"
+    />
   </div>
 </template>
 
@@ -129,20 +148,63 @@ import AppHeader from '@/components/core/AppHeader.vue'
 import PassportCard from '@/components/passport-view/PassportCard.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import SegmentedSwitch from '@/components/core/SegmentedSwitch.vue'
+import AddCollaboratorModal from '@/components/modals/AddCollaboratorModal.vue'
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
-import { onMounted } from 'vue'
+import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
+import { onMounted, ref, computed } from 'vue'
 
 definePageMeta({
   middleware: 'auth',
 })
 
 const { steps, loadPassport } = usePassportRuntime()
+const { getCollaborators } = usePassportCollaborators()
 const route = useRoute()
 const router = useRouter()
 
-onMounted(() => {
+// Collaborator state
+const collaborators = ref([])
+const showCollaboratorModal = ref(false)
+
+onMounted(async () => {
   loadPassport(route.params.id)
+  await loadCollaborators()
 })
+
+const loadCollaborators = async () => {
+  try {
+    collaborators.value = await getCollaborators(route.params.id)
+  } catch (err) {
+    console.error('Failed to load collaborators:', err)
+  }
+}
+
+const openCollaboratorModal = () => {
+  showCollaboratorModal.value = true
+}
+
+const handleCollaboratorAdded = (collaborator) => {
+  console.log('Collaborator added:', collaborator)
+  // Collaborators list will be reloaded by the modal
+  loadCollaborators()
+}
+
+const handleCollaboratorRemoved = (collaboratorId) => {
+  console.log('Collaborator removed:', collaboratorId)
+  // Collaborators list will be reloaded by the modal
+  loadCollaborators()
+}
+
+const displayCollaborators = computed(() => {
+  // Show max 3 collaborators in the avatars
+  return collaborators.value.slice(0, 3)
+})
+
+const getInitials = (firstName, lastName) => {
+  const first = firstName ? firstName.charAt(0).toUpperCase() : ''
+  const last = lastName ? lastName.charAt(0).toUpperCase() : ''
+  return `${first}${last}` || '?'
+}
 
 const safeProgress = computed(() =>
   Math.min(Math.max(overallProgress.value, 5), 95),
@@ -465,6 +527,12 @@ const navigateToStep = (stepId) => {
   border-radius: 50%;
   background: #00b8a9;
   border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .add-collaborator {

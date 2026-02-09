@@ -89,7 +89,7 @@
             <div class="task-info">
               <div class="task-points">
                 <span class="points-icon"
-                  ><OPIcon name="default" class="w-[11px] h-[11px]"
+                  ><OPIcon name="giftIcon" class="w-[11px] h-[11px]"
                 /></span>
                 +0pts
               </div>
