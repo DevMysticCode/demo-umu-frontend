@@ -40,7 +40,12 @@
           <p class="text-sm text-gray-600 mb-3">
             Click start to begin your sellers journey
           </p>
-          <button class="text-brand-aqua font-medium text-sm" @click="navigateToSellersHub">Start</button>
+          <button
+            class="text-brand-aqua font-medium text-sm"
+            @click="navigateToSellersHub"
+          >
+            Start
+          </button>
         </div>
 
         <!-- Buyers Hub -->
@@ -313,7 +318,7 @@ const applyFilters = (filters) => {
 const router = useRouter()
 
 const navigateToSellersHub = () => {
-  router.push('/passportview/67a743e2-39e1-4bfa-b2d7-fd762f9fffef')
+  router.push('/passportview/77f535a9-527d-4c30-a502-0f72dcd97289')
 }
 
 const viewProperty = () => {
