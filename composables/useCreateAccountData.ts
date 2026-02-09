@@ -167,6 +167,12 @@ export const useCreateAccountData = () => {
         password: form.password,
       })
       console.log('Registration successful:', response)
+
+      // Store token in localStorage for automatic login
+      if (response.token) {
+        localStorage.setItem('token', response.token)
+      }
+
       await navigateTo('/onboarding/thank-you')
     } catch (err) {
       console.error('Registration failed:', err)

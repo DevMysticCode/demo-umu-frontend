@@ -132,6 +132,10 @@ import SegmentedSwitch from '@/components/core/SegmentedSwitch.vue'
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import { onMounted } from 'vue'
 
+definePageMeta({
+  middleware: 'auth',
+})
+
 const { steps, loadPassport } = usePassportRuntime()
 const route = useRoute()
 const router = useRouter()

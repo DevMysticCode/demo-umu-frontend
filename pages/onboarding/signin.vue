@@ -96,7 +96,14 @@ const handleLogin = async () => {
     // store JWT
     localStorage.setItem('token', response.token)
 
-    await navigateTo('/dashboard')
+    // Check for redirect path
+    const redirectPath = localStorage.getItem('redirectAfterLogin')
+    if (redirectPath) {
+      localStorage.removeItem('redirectAfterLogin')
+      await navigateTo(redirectPath)
+    } else {
+      await navigateTo('/dashboard')
+    }
   } catch (err) {
     console.error(err)
     alert('Invalid email or password')

@@ -233,6 +233,7 @@ const handleContinue = () => {
 if (typeof definePageMeta === 'function') {
   definePageMeta({
     title: 'Questionnaire - UmovingU',
+    middleware: 'auth',
   })
 }
 </script>
