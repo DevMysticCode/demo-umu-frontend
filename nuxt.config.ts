@@ -39,10 +39,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     // Private keys (only available on server-side)
-    apiSecret: '123',
+    apiSecret: process.env.API_SECRET || '123',
     // Public keys (exposed to client-side)
     public: {
-      apiBase: 'http://localhost:3002',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3002',
     },
   },
   components: true,
