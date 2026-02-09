@@ -30,11 +30,22 @@
 
         <div class="progress-section">
           <div class="progress-container">
-            <div class="progress-bar">
+            <!-- <div class="progress-bar">
               <div
                 class="progress-fill"
                 :style="{ width: overallProgress + '%' }"
               ></div>
+            </div> -->
+
+            <div class="progress-bar">
+              <!-- Completed progress -->
+              <div class="progress-fill" :style="{ width: safeProgress + '%' }">
+                <!-- Man icon at end of progress -->
+                <OPIcon name="progressMan" class="progress-man" />
+              </div>
+
+              <!-- Dotted remaining track -->
+              <div class="progress-dotted"></div>
             </div>
           </div>
           <div class="progress-info">
@@ -128,6 +139,10 @@ const router = useRouter()
 onMounted(() => {
   loadPassport(route.params.id)
 })
+
+const safeProgress = computed(() =>
+  Math.min(Math.max(overallProgress.value, 5), 95),
+)
 
 // const { steps } = usePassportSteps()
 const selectedRole = ref('seller')
@@ -354,17 +369,49 @@ const navigateToStep = (stepId) => {
 }
 
 .progress-bar {
+  position: relative;
   flex: 1;
   height: 16px;
-  background: #e0e0e0;
+  background: #00a19a33;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .progress-fill {
+  position: relative;
   height: 100%;
   background: linear-gradient(90deg, #00b8a9 0%, #00d4c3 100%);
   transition: width 0.3s ease;
+  border-radius: 8px;
+  z-index: 2;
+}
+
+/* Dotted remaining part */
+.progress-dotted {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background-image: repeating-linear-gradient(
+    to right,
+    #3c3c432e 0,
+    #3c3c432e 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  z-index: 1;
+}
+
+.progress-man {
+  position: absolute;
+  right: -5px;
+  top: -35%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
 }
 
 .progress-percentage {

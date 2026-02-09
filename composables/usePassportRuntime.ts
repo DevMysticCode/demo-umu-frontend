@@ -85,10 +85,11 @@ const moveToNextQuestion = () => {
 }
 
 const completeTask = async (taskId) => {
-  await getApi().completeTask(taskId)
+  const result = await getApi().completeTask(taskId)
   if (currentTask.value) {
     currentTask.value.completed = true
   }
+  return result
 }
 
 const currentQuestion = computed(() => {

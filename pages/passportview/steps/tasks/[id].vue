@@ -59,22 +59,55 @@
       </div>
       <div class="question-section">
         <div v-if="currentQuestion" class="question-content">
-          <p class="question-text">{{ currentQuestion.question }}</p>
+          <!-- <p class="question-text">{{ currentQuestion.question }}</p> -->
+          <p class="question-text">
+            {{ displayedQuestion }}
+            <span v-if="showQuestionCursor" class="typing-cursor">|</span>
+          </p>
 
-          <div v-if="currentQuestion.description" class="question-description">
+          <!-- <div v-if="currentQuestion.description" class="question-description">
             {{ currentQuestion.description }}
+          </div> -->
+
+          <div v-if="displayedDescription" class="question-description">
+            {{ displayedDescription }}
+            <span
+              v-if="showDescriptionCursor"
+              class="typing-cursor typing-cursor--small"
+              >|</span
+            >
           </div>
 
-          <div v-if="currentQuestion.help" class="help-section">
+          <!-- <div v-if="currentQuestion.help" class="help-section">
             <div class="help-content">
               <h4 class="help-title">
                 <span class="help-icon">💡</span>What is this?
               </h4>
               <p class="help-text">{{ currentQuestion.help }}</p>
             </div>
+          </div> -->
+
+          <div v-if="displayedHelp" class="help-section">
+            <div class="help-content">
+              <h4 class="help-title">
+                <span class="help-icon">💡</span>What is this?
+              </h4>
+              <p class="help-text">
+                {{ displayedHelp }}
+                <span
+                  v-if="showHelpCursor"
+                  class="typing-cursor typing-cursor--small"
+                  >|</span
+                >
+              </p>
+            </div>
           </div>
 
-          <div class="answer-section">
+          <div
+            class="answer-section"
+            v-show="showOptions"
+            :class="{ 'answer-section--visible': showOptions }"
+          >
             <component
               :is="getQuestionComponent"
               :question="currentQuestion"
@@ -82,6 +115,17 @@
               :display="currentQuestion.display || currentQuestion.type"
               @update="updateAnswer"
             />
+
+            <div v-if="showUpload" class="upload-after-radio">
+              <TextUploadQuestion
+                :question="{
+                  description: 'Upload/Scan Any Supporting Document(s)',
+                }"
+                :answer="uploadFiles"
+                display="upload"
+                @update="updateUploadFiles"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -135,9 +179,30 @@ const {
 const showThankYou = ref(false)
 const earnedPoints = ref(0)
 const isSaving = ref(false)
+const uploadFiles = ref([])
+// const showUpload = ref(false)
 
 const stepId = route.query.stepId
 const taskId = route.params.id
+
+const displayedQuestion = ref('')
+const displayedDescription = ref('')
+const displayedHelp = ref('')
+
+const showQuestionCursor = ref(false)
+const showDescriptionCursor = ref(false)
+const showHelpCursor = ref(false)
+
+const showOptions = ref(false)
+
+let typingInterval = null
+
+onBeforeUnmount(() => {
+  if (typingInterval) {
+    clearInterval(typingInterval)
+    typingInterval = null
+  }
+})
 
 onMounted(async () => {
   if (!currentStep.value) {
@@ -148,6 +213,102 @@ onMounted(async () => {
   setCurrentTask(taskId)
   await loadQuestions(taskId)
 })
+
+const typeText = (targetRef, cursorRef, text, speed = 30) => {
+  return new Promise((resolve) => {
+    // clear any previous typing
+    if (typingInterval) {
+      clearInterval(typingInterval)
+      typingInterval = null
+    }
+
+    targetRef.value = ''
+    cursorRef.value = true
+
+    let index = 0
+
+    typingInterval = setInterval(() => {
+      if (index < text.length) {
+        targetRef.value += text.charAt(index)
+        index++
+      } else {
+        clearInterval(typingInterval)
+        typingInterval = null
+        cursorRef.value = false
+        resolve()
+      }
+    }, speed)
+  })
+}
+
+const runQuestionAnimation = async (q) => {
+  if (!q) return
+
+  // reset everything
+  displayedQuestion.value = ''
+  displayedDescription.value = ''
+  displayedHelp.value = ''
+  showOptions.value = false
+
+  showQuestionCursor.value = false
+  showDescriptionCursor.value = false
+  showHelpCursor.value = false
+
+  // 1️⃣ Question (always)
+  await typeText(displayedQuestion, showQuestionCursor, q.question, 35)
+
+  // 2️⃣ Description (optional)
+  if (q.description) {
+    await typeText(
+      displayedDescription,
+      showDescriptionCursor,
+      q.description,
+      25,
+    )
+  }
+
+  // 3️⃣ Help text (optional)
+  if (q.help) {
+    await typeText(displayedHelp, showHelpCursor, q.help, 20)
+  }
+
+  // 4️⃣ Finally show options
+  showOptions.value = true
+}
+
+const typewriterEffect = (text) => {
+  // ⛔ Stop any previous typing
+  if (typingInterval) {
+    clearInterval(typingInterval)
+    typingInterval = null
+  }
+
+  displayedQuestion.value = ''
+  showCursor.value = true
+  showOptions.value = false
+
+  let index = 0
+
+  typingInterval = setInterval(() => {
+    if (index < text.length) {
+      displayedQuestion.value += text.charAt(index)
+      index++
+    } else {
+      clearInterval(typingInterval)
+      typingInterval = null
+      showCursor.value = false
+      showOptions.value = true
+    }
+  }, 35)
+}
+
+watch(
+  () => currentQuestion.value,
+  (q) => {
+    if (q) runQuestionAnimation(q)
+  },
+  { immediate: true },
+)
 
 const calculateEarnedPoints = () => {
   if (!currentStep.value) return 0
@@ -228,10 +389,67 @@ const getQuestionComponent = computed(() => {
   return components[type] || TextUploadQuestion
 })
 
-const updateAnswer = (answer) => {
-  if (currentQuestion.value) {
-    currentQuestion.value.answer = answer
+const isYesNoRadio = (question) => {
+  if (!question || question.type !== 'radio') return false
+  let options = question.options
+  if (typeof options === 'string') {
+    try {
+      options = JSON.parse(options)
+    } catch {
+      return false
+    }
   }
+  if (!Array.isArray(options) || options.length !== 2) return false
+  const values = options.map((o) =>
+    String(o.value || o.label || '').toLowerCase(),
+  )
+  return values.includes('yes') && values.includes('no')
+}
+
+const showUpload = computed(() => {
+  if (!currentQuestion.value) return false
+  if (!isYesNoRadio(currentQuestion.value)) return false
+  return currentQuestion.value.answer === 'yes'
+})
+
+// watch(
+//   currentQuestion,
+//   (q) => {
+//     if (!q) {
+//       showUpload.value = false
+//       uploadFiles.value = []
+//       return
+//     }
+//     // Hydrate combined answers from previously saved yes+upload data
+//     if (
+//       q.type === 'radio' &&
+//       q.answer &&
+//       typeof q.answer === 'object' &&
+//       q.answer.radioAnswer
+//     ) {
+//       uploadFiles.value = q.answer.uploadedFiles || []
+//       q.answer = q.answer.radioAnswer
+//     } else {
+//       uploadFiles.value = []
+//     }
+//     showUpload.value = isYesNoRadio(q) && q.answer === 'yes'
+//   },
+//   { immediate: true },
+// )
+
+const updateAnswer = (answer) => {
+  if (!currentQuestion.value) return
+
+  currentQuestion.value.answer = answer
+
+  // If switched away from "yes", clear uploaded files
+  if (answer !== 'yes') {
+    uploadFiles.value = []
+  }
+}
+
+const updateUploadFiles = (files) => {
+  uploadFiles.value = files
 }
 
 const saveAnswer = async () => {
@@ -239,17 +457,41 @@ const saveAnswer = async () => {
 
   isSaving.value = true
   try {
+    let answerValue = currentQuestion.value.answer
+
+    // For yes/no questions with "yes" selected and files uploaded, combine into object
+    if (
+      currentQuestion.value.type === 'radio' &&
+      isYesNoRadio(currentQuestion.value) &&
+      answerValue === 'yes' &&
+      uploadFiles.value.length > 0
+    ) {
+      answerValue = {
+        radioAnswer: 'yes',
+        uploadedFiles: uploadFiles.value,
+      }
+    }
+
     // Save answer to backend
-    await apiSaveAnswer(currentQuestion.value.id, currentQuestion.value.answer)
+    await apiSaveAnswer(currentQuestion.value.id, answerValue)
 
     // Try to move to next question
     const hasMoreQuestions = moveToNextQuestion()
 
     if (!hasMoreQuestions) {
       // Last question answered, complete the task
-      await completeTask(taskId)
-      earnedPoints.value = calculateEarnedPoints()
-      showThankYou.value = true
+      const result = await completeTask(taskId)
+
+      if (result?.sectionCompleted) {
+        // All tasks in section done — show thank-you
+        earnedPoints.value = calculateEarnedPoints()
+        showThankYou.value = true
+      } else {
+        // More tasks remain in section — go back to task list
+        router.push(
+          `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
+        )
+      }
     }
   } catch (error) {
     console.error('Error saving answer:', error)
@@ -523,6 +765,12 @@ const handleContinue = () => {
   margin: 8px 0;
 }
 
+.upload-after-radio {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
 .submit-btn {
   width: 100%;
   padding: 14px 20px;
@@ -546,5 +794,33 @@ const handleContinue = () => {
 .submit-btn:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+.typing-cursor {
+  margin-left: 2px;
+  color: #00a19a;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.answer-section {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: all 0.4s ease;
+}
+
+.answer-section--visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

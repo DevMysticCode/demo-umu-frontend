@@ -113,6 +113,7 @@ const iconMap: Record<string, string> = {
   underReview: '/op-icons/passportview/steps/underReview.svg',
   infoCircle: '/op-icons/passportview/steps/infoCircle.svg',
   expertIcon: '/op-icons/passportview/steps/expertIcon.svg',
+  progressMan: '/op-icons/passportview/progressMan.svg',
 }
 
 const iconPath = computed(() => {
