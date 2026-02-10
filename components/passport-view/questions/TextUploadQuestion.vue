@@ -97,7 +97,7 @@
 <script setup>
 import OPIcon from '~/components/ui/OPIcon.vue'
 const props = defineProps({
-  question: { type: Object, required: true },
+  question: { type: Object, default: 'Test Question' },
   answer: { type: [String, Array, Object], default: '' },
   display: { type: String, default: '' }, // 'text' | 'upload' | 'both' - optional override
 })
@@ -134,14 +134,6 @@ const displayMode = computed(() => {
 const textValue = ref('')
 const uploadedFiles = ref([])
 
-watch(
-  () => props.answer,
-  (val) => {
-    syncFromAnswer(val)
-  },
-  { immediate: true }
-)
-
 const syncFromAnswer = (val) => {
   if (displayMode.value === 'text') {
     textValue.value = typeof val === 'string' ? val : ''
@@ -166,6 +158,14 @@ const syncFromAnswer = (val) => {
     }
   }
 }
+
+watch(
+  () => props.answer,
+  (val) => {
+    syncFromAnswer(val)
+  },
+  { immediate: true },
+)
 
 const onTextInput = (event) => {
   const value = event.target.value
@@ -213,6 +213,13 @@ const isDev =
 
 // Dev-only diagnostics
 onMounted(() => {
+  console.log('TextUploadQuestion debug:', {
+    displayMode: displayMode.value,
+    question: props.question,
+    answerProp: props.answer,
+    textValue: textValue.value,
+    uploadedFiles: uploadedFiles.value,
+  })
   try {
     if (isDev) {
       console.log('TextUploadQuestion debug:', {

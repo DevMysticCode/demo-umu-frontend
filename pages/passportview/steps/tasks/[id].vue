@@ -57,9 +57,6 @@
         </h2>
         <button class="skip-btn" @click="skipQuestion">Skip</button>
       </div>
-
-      <p style="color: red">mainAnswer: {{ mainAnswer }}</p>
-      <p style="color: blue">showAdditionalInfo: {{ showAdditionalInfo }}</p>
       <div class="question-section">
         <div v-if="currentQuestion" class="question-content">
           <!-- <p class="question-text">{{ currentQuestion.question }}</p> -->
@@ -113,15 +110,14 @@
             <component
               :is="getQuestionComponent"
               :question="currentQuestion"
-              :answer="mainAnswer"
+              :answer="currentQuestion.answer"
               :display="
                 currentQuestion.display || currentQuestion.type?.toLowerCase()
               "
               @update="updateAnswer"
             />
 
-            <p v-if="showAdditionalInfo">DEBUG: additional info visible</p>
-            <div v-if="showAdditionalInfo" class="upload-after-radio">
+            <div v-if="!hasAdditionalInfo" class="upload-after-radio">
               <TextUploadQuestion
                 :question="{
                   description:
@@ -204,8 +200,6 @@ const showHelpCursor = ref(false)
 const showOptions = ref(false)
 
 let typingInterval = null
-
-const mainAnswer = ref(null)
 
 onBeforeUnmount(() => {
   if (typingInterval) {
@@ -302,22 +296,33 @@ const runQuestionAnimation = async (q) => {
   // 4️⃣ Finally show options
   showOptions.value = true
   console.log('Options should now be visible, showOptions:', showOptions.value)
-  console.log('Current Question:', currentQuestion.value.additionalInfoType)
-  console.log('Additional Info:', hasAdditionalInfo.value)
-  console.log('Show Info:', showAdditionalInfo.value)
+  console.log(' hasAdditionalInfo:', hasAdditionalInfo.value)
 }
 
 watch(
   () => currentQuestion.value,
   (q) => {
-    if (!q) return
+    if (!q) {
+      additionalInfoAnswer.value = null
+      return
+    }
 
-    // ONLY hydrate additional info for existing saved answers
-    if (q.answer && typeof q.answer === 'object') {
-      mainAnswer.value = q.answer.mainAnswer ?? null
-      additionalInfoAnswer.value = q.answer.additionalInfo ?? null
+    console.log('Question changed:', q)
+    console.log('Question type:', q.type)
+    console.log('Additional info type:', q.additionalInfoType)
+
+    // Hydrate additional info from saved combined answers before animation
+    if (q.answer && typeof q.answer === 'object' && !Array.isArray(q.answer)) {
+      if (q.answer.additionalInfo !== undefined) {
+        additionalInfoAnswer.value = q.answer.additionalInfo
+        q.answer = q.answer.mainAnswer
+      } else if (q.answer.radioAnswer !== undefined) {
+        additionalInfoAnswer.value = q.answer.uploadedFiles || null
+        q.answer = q.answer.radioAnswer
+      } else {
+        additionalInfoAnswer.value = null
+      }
     } else {
-      mainAnswer.value = null
       additionalInfoAnswer.value = null
     }
 
@@ -348,7 +353,7 @@ const remainingQuestions = computed(() => {
 const isAnswerValid = computed(() => {
   if (!currentQuestion.value) return false
 
-  const answer = mainAnswer.value
+  const answer = currentQuestion.value.answer
   const type = currentQuestion.value.type?.toLowerCase()
 
   if (type === 'text') {
@@ -396,27 +401,22 @@ const getQuestionComponent = computed(() => {
   const type = currentQuestion.value?.type?.toLowerCase() // This will convert "RADIO" to "radio"
   const components = {
     radio: RadioQuestion,
+    text: TextUploadQuestion,
     checkbox: CheckboxQuestion,
+    upload: TextUploadQuestion,
     note: NoteQuestion,
     date: DateQuestion,
   }
-  return components[type] || null
+  return components[type] || TextUploadQuestion
 })
 
 const hasAdditionalInfo = computed(() => {
-  const q = currentQuestion.value
-  if (!q?.additionalInfoType) return false
+  if (!currentQuestion.value?.additionalInfoType) return false
 
-  // Only wait for answer if question is choice-based
-  if (['radio', 'checkbox'].includes(q.type?.toLowerCase())) {
-    return q.answer !== null && q.answer !== undefined && q.answer !== ''
-  }
-
-  return true
-})
-
-const showAdditionalInfo = computed(() => {
-  return Boolean(currentQuestion.value?.additionalInfoType)
+  // Only show additional info section after the user has answered the main question
+  const answer = currentQuestion.value.answer
+  console.log('Checking additional info visibility. Answer:', answer)
+  return answer !== null && answer !== undefined && answer !== ''
 })
 
 // const additionalInfoDisplay = computed(() => {
@@ -440,7 +440,8 @@ const additionalInfoDisplay = computed(() => {
 })
 
 const updateAnswer = (answer) => {
-  mainAnswer.value = answer
+  if (!currentQuestion.value) return
+  currentQuestion.value.answer = answer
 }
 
 const updateAdditionalInfo = (data) => {
@@ -452,12 +453,15 @@ const saveAnswer = async () => {
 
   isSaving.value = true
   try {
-    let answerValue = mainAnswer.value
+    let answerValue = currentQuestion.value.answer
 
     // If this question has additional info, combine both into a single object
-    if (currentQuestion.value.additionalInfoType) {
+    if (
+      currentQuestion.value.additionalInfoType &&
+      additionalInfoAnswer.value
+    ) {
       answerValue = {
-        mainAnswer: mainAnswer.value,
+        mainAnswer: currentQuestion.value.answer,
         additionalInfo: additionalInfoAnswer.value,
       }
     }
