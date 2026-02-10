@@ -57,6 +57,9 @@
         </h2>
         <button class="skip-btn" @click="skipQuestion">Skip</button>
       </div>
+
+      <p style="color: red">mainAnswer: {{ mainAnswer }}</p>
+      <p style="color: blue">showAdditionalInfo: {{ showAdditionalInfo }}</p>
       <div class="question-section">
         <div v-if="currentQuestion" class="question-content">
           <!-- <p class="question-text">{{ currentQuestion.question }}</p> -->
@@ -104,26 +107,32 @@
           </div>
 
           <div
-            class="answer-section"
-            v-show="showOptions"
-            :class="{ 'answer-section--visible': showOptions }"
+            v-if="showOptions"
+            class="answer-section answer-section--visible"
           >
             <component
               :is="getQuestionComponent"
               :question="currentQuestion"
-              :answer="currentQuestion.answer"
-              :display="currentQuestion.display || currentQuestion.type"
+              :answer="mainAnswer"
+              :display="
+                currentQuestion.display || currentQuestion.type?.toLowerCase()
+              "
               @update="updateAnswer"
             />
 
-            <div v-if="showUpload" class="upload-after-radio">
+            <p v-if="showAdditionalInfo">DEBUG: additional info visible</p>
+            <div v-if="showAdditionalInfo" class="upload-after-radio">
               <TextUploadQuestion
                 :question="{
-                  description: 'Upload/Scan Any Supporting Document(s)',
+                  description:
+                    'Please provide additional supporting information',
+                  uploadInstruction: currentQuestion.uploadInstruction,
+                  instructionText: currentQuestion.instructionText,
+                  placeholder: currentQuestion.placeholder,
                 }"
-                :answer="uploadFiles"
-                display="upload"
-                @update="updateUploadFiles"
+                :answer="additionalInfoAnswer"
+                :display="additionalInfoDisplay"
+                @update="updateAdditionalInfo"
               />
             </div>
           </div>
@@ -179,8 +188,7 @@ const {
 const showThankYou = ref(false)
 const earnedPoints = ref(0)
 const isSaving = ref(false)
-const uploadFiles = ref([])
-// const showUpload = ref(false)
+const additionalInfoAnswer = ref(null)
 
 const stepId = route.query.stepId
 const taskId = route.params.id
@@ -196,6 +204,8 @@ const showHelpCursor = ref(false)
 const showOptions = ref(false)
 
 let typingInterval = null
+
+const mainAnswer = ref(null)
 
 onBeforeUnmount(() => {
   if (typingInterval) {
@@ -241,8 +251,22 @@ const typeText = (targetRef, cursorRef, text, speed = 30) => {
   })
 }
 
+// const runQuestionAnimation = async (q) => {
+//   if (!q) return
+
+//   // Set all text immediately
+//   displayedQuestion.value = q.question
+//   displayedDescription.value = q.description || ''
+//   displayedHelp.value = q.help || ''
+
+//   // Show options immediately
+//   showOptions.value = true
+// }
+
 const runQuestionAnimation = async (q) => {
   if (!q) return
+
+  console.log('Starting animation for question:', q.question)
 
   // reset everything
   displayedQuestion.value = ''
@@ -256,6 +280,7 @@ const runQuestionAnimation = async (q) => {
 
   // 1️⃣ Question (always)
   await typeText(displayedQuestion, showQuestionCursor, q.question, 35)
+  console.log('Question typed')
 
   // 2️⃣ Description (optional)
   if (q.description) {
@@ -265,47 +290,38 @@ const runQuestionAnimation = async (q) => {
       q.description,
       25,
     )
+    console.log('Description typed')
   }
 
   // 3️⃣ Help text (optional)
   if (q.help) {
     await typeText(displayedHelp, showHelpCursor, q.help, 20)
+    console.log('Help typed')
   }
 
   // 4️⃣ Finally show options
   showOptions.value = true
-}
-
-const typewriterEffect = (text) => {
-  // ⛔ Stop any previous typing
-  if (typingInterval) {
-    clearInterval(typingInterval)
-    typingInterval = null
-  }
-
-  displayedQuestion.value = ''
-  showCursor.value = true
-  showOptions.value = false
-
-  let index = 0
-
-  typingInterval = setInterval(() => {
-    if (index < text.length) {
-      displayedQuestion.value += text.charAt(index)
-      index++
-    } else {
-      clearInterval(typingInterval)
-      typingInterval = null
-      showCursor.value = false
-      showOptions.value = true
-    }
-  }, 35)
+  console.log('Options should now be visible, showOptions:', showOptions.value)
+  console.log('Current Question:', currentQuestion.value.additionalInfoType)
+  console.log('Additional Info:', hasAdditionalInfo.value)
+  console.log('Show Info:', showAdditionalInfo.value)
 }
 
 watch(
   () => currentQuestion.value,
   (q) => {
-    if (q) runQuestionAnimation(q)
+    if (!q) return
+
+    // ONLY hydrate additional info for existing saved answers
+    if (q.answer && typeof q.answer === 'object') {
+      mainAnswer.value = q.answer.mainAnswer ?? null
+      additionalInfoAnswer.value = q.answer.additionalInfo ?? null
+    } else {
+      mainAnswer.value = null
+      additionalInfoAnswer.value = null
+    }
+
+    runQuestionAnimation(q)
   },
   { immediate: true },
 )
@@ -332,15 +348,15 @@ const remainingQuestions = computed(() => {
 const isAnswerValid = computed(() => {
   if (!currentQuestion.value) return false
 
-  const answer = currentQuestion.value.answer
-  const type = currentQuestion.value.type
+  const answer = mainAnswer.value
+  const type = currentQuestion.value.type?.toLowerCase()
 
   if (type === 'text') {
     return answer && answer.trim().length > 0
   }
 
   if (type === 'radio') {
-    return answer !== '' && answer !== undefined
+    return answer !== '' && answer !== undefined && answer !== null
   }
 
   if (type === 'checkbox') {
@@ -377,79 +393,58 @@ const isAnswerValid = computed(() => {
 })
 
 const getQuestionComponent = computed(() => {
-  const type = currentQuestion.value?.type
+  const type = currentQuestion.value?.type?.toLowerCase() // This will convert "RADIO" to "radio"
   const components = {
     radio: RadioQuestion,
-    text: TextUploadQuestion,
     checkbox: CheckboxQuestion,
-    upload: TextUploadQuestion,
     note: NoteQuestion,
     date: DateQuestion,
   }
-  return components[type] || TextUploadQuestion
+  return components[type] || null
 })
 
-const isYesNoRadio = (question) => {
-  if (!question || question.type !== 'radio') return false
-  let options = question.options
-  if (typeof options === 'string') {
-    try {
-      options = JSON.parse(options)
-    } catch {
-      return false
-    }
+const hasAdditionalInfo = computed(() => {
+  const q = currentQuestion.value
+  if (!q?.additionalInfoType) return false
+
+  // Only wait for answer if question is choice-based
+  if (['radio', 'checkbox'].includes(q.type?.toLowerCase())) {
+    return q.answer !== null && q.answer !== undefined && q.answer !== ''
   }
-  if (!Array.isArray(options) || options.length !== 2) return false
-  const values = options.map((o) =>
-    String(o.value || o.label || '').toLowerCase(),
-  )
-  return values.includes('yes') && values.includes('no')
-}
 
-const showUpload = computed(() => {
-  if (!currentQuestion.value) return false
-  if (!isYesNoRadio(currentQuestion.value)) return false
-  return currentQuestion.value.answer === 'yes'
+  return true
 })
 
-// watch(
-//   currentQuestion,
-//   (q) => {
-//     if (!q) {
-//       showUpload.value = false
-//       uploadFiles.value = []
-//       return
-//     }
-//     // Hydrate combined answers from previously saved yes+upload data
-//     if (
-//       q.type === 'radio' &&
-//       q.answer &&
-//       typeof q.answer === 'object' &&
-//       q.answer.radioAnswer
-//     ) {
-//       uploadFiles.value = q.answer.uploadedFiles || []
-//       q.answer = q.answer.radioAnswer
-//     } else {
-//       uploadFiles.value = []
-//     }
-//     showUpload.value = isYesNoRadio(q) && q.answer === 'yes'
-//   },
-//   { immediate: true },
-// )
+const showAdditionalInfo = computed(() => {
+  return Boolean(currentQuestion.value?.additionalInfoType)
+})
+
+// const additionalInfoDisplay = computed(() => {
+//   const type = currentQuestion.value?.additionalInfoType
+//   if (type === 'upload') return 'upload'
+//   if (type === 'writeInstruction') return 'text'
+//   if (type === 'uploadAndWriteInstruction') return 'both'
+//   return null
+// })
+
+const additionalInfoDisplay = computed(() => {
+  const type = currentQuestion.value?.additionalInfoType
+  if (type) {
+    const lowerType = type.toLowerCase()
+    if (lowerType.includes('upload') && lowerType.includes('write'))
+      return 'both'
+    if (lowerType.includes('upload')) return 'upload'
+    if (lowerType.includes('write')) return 'text'
+  }
+  return null
+})
 
 const updateAnswer = (answer) => {
-  if (!currentQuestion.value) return
-
-  currentQuestion.value.answer = answer
-
-  // If switched away from "yes", clear uploaded files
-  if (answer !== 'yes') {
-    uploadFiles.value = []
-  }
+  mainAnswer.value = answer
 }
 
-const updateUploadFiles = (files) => {
-  uploadFiles.value = files
+const updateAdditionalInfo = (data) => {
+  additionalInfoAnswer.value = data
 }
 
 const saveAnswer = async () => {
@@ -457,18 +452,13 @@ const saveAnswer = async () => {
 
   isSaving.value = true
   try {
-    let answerValue = currentQuestion.value.answer
+    let answerValue = mainAnswer.value
 
-    // For yes/no questions with "yes" selected and files uploaded, combine into object
-    if (
-      currentQuestion.value.type === 'radio' &&
-      isYesNoRadio(currentQuestion.value) &&
-      answerValue === 'yes' &&
-      uploadFiles.value.length > 0
-    ) {
+    // If this question has additional info, combine both into a single object
+    if (currentQuestion.value.additionalInfoType) {
       answerValue = {
-        radioAnswer: 'yes',
-        uploadedFiles: uploadFiles.value,
+        mainAnswer: mainAnswer.value,
+        additionalInfo: additionalInfoAnswer.value,
       }
     }
 
