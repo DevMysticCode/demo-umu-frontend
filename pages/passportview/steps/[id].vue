@@ -77,7 +77,11 @@
             @click="navigateToTask(task.id)"
           >
             <div class="task-status">
-              <div class="status-circle" :class="getTaskStatus(task)">
+              <div
+                class="status-circle"
+                :class="getTaskStatus(task)"
+                :style="getTaskProgressStyle(task)"
+              >
                 <span v-if="task.completed" class="check-icon">✓</span>
               </div>
             </div>
@@ -166,6 +170,20 @@ const getTaskStatus = (task) => {
   if (task.completed) return 'completed'
   if (task.answeredQuestions > 0) return 'in-progress'
   return 'pending'
+}
+
+const getTaskProgressStyle = (task) => {
+  if (
+    !task.completed &&
+    task.answeredQuestions > 0 &&
+    task.totalQuestions > 0
+  ) {
+    const progress = Math.round(
+      (task.answeredQuestions / task.totalQuestions) * 100,
+    )
+    return { '--progress': `${progress}` }
+  }
+  return {}
 }
 
 const getCompletedDate = () => {
@@ -403,14 +421,15 @@ const goBack = () => {
 }
 
 .status-circle {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 3px solid #e0e0e0;
+  border: 6px solid #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: white;
+  position: relative;
 }
 
 .status-circle.completed {
@@ -419,8 +438,19 @@ const goBack = () => {
 }
 
 .status-circle.in-progress {
-  border-color: #00b8a9;
-  background: linear-gradient(90deg, #00b8a9 50%, white 50%);
+  border: none;
+  background: conic-gradient(
+    #00b8a9 0% calc(var(--progress, 50) * 1%),
+    #e0e0e0 calc(var(--progress, 50) * 1%) 100%
+  );
+}
+
+.status-circle.in-progress::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: white;
 }
 
 .status-circle.pending {

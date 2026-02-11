@@ -73,6 +73,7 @@ const iconMap: Record<string, string> = {
   map: '/op-icons/passportview/map.svg',
   caretRight: '/op-icons/passportview/caretRight.svg',
   instructions: '/op-icons/passportview/instructions.svg',
+  ownershipProfile: '/op-icons/passportview/instructions.svg',
   boundaries: '/op-icons/passportview/boundaries.svg',
   disputesAndComplaints: '/op-icons/passportview/disputes-and-complaints.svg',
   noticesAndProposals: '/op-icons/passportview/notices-and-proposals.svg',
