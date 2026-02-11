@@ -83,7 +83,9 @@
           </div>
           <span class="collaborators-label"
             >{{ collaborators.length }}
-            {{ collaborators.length === 1 ? 'Collaborator' : 'Collaborators' }}</span
+            {{
+              collaborators.length === 1 ? 'Collaborator' : 'Collaborators'
+            }}</span
           >
           <button class="add-icon" @click="openCollaboratorModal">
             <OPIcon name="addCollaborator" class="w-[28px] h-[28px]" />
