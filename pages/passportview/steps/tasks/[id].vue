@@ -28,9 +28,9 @@
 
       <div class="action-buttons">
         <button class="help-btn">
-          <span class="btn-icon"
+          <!-- <span class="btn-icon"
             ><OPIcon name="info" class="w-[15px] h-[15px]"
-          /></span>
+          /></span> -->
           Help
         </button>
         <button class="video-btn">
@@ -59,50 +59,6 @@
       </div>
       <div class="question-section">
         <div v-if="currentQuestion" class="question-content">
-          <!-- <p class="question-text">{{ currentQuestion.question }}</p> -->
-          <p class="question-text">
-            {{ displayedQuestion }}
-            <span v-if="showQuestionCursor" class="typing-cursor">|</span>
-          </p>
-
-          <!-- <div v-if="currentQuestion.description" class="question-description">
-            {{ currentQuestion.description }}
-          </div> -->
-
-          <div v-if="displayedDescription" class="question-description">
-            {{ displayedDescription }}
-            <span
-              v-if="showDescriptionCursor"
-              class="typing-cursor typing-cursor--small"
-              >|</span
-            >
-          </div>
-
-          <!-- <div v-if="currentQuestion.help" class="help-section">
-            <div class="help-content">
-              <h4 class="help-title">
-                <span class="help-icon">💡</span>What is this?
-              </h4>
-              <p class="help-text">{{ currentQuestion.help }}</p>
-            </div>
-          </div> -->
-
-          <div v-if="displayedHelp" class="help-section">
-            <div class="help-content">
-              <h4 class="help-title">
-                <span class="help-icon">💡</span>What is this?
-              </h4>
-              <p class="help-text">
-                {{ displayedHelp }}
-                <span
-                  v-if="showHelpCursor"
-                  class="typing-cursor typing-cursor--small"
-                  >|</span
-                >
-              </p>
-            </div>
-          </div>
-
           <div
             v-if="showOptions"
             class="answer-section answer-section--visible"
@@ -114,10 +70,17 @@
               :display="
                 currentQuestion.display || currentQuestion.type?.toLowerCase()
               "
+              :passport-id="route.query.propertyId || ''"
+              :displayed-question="displayedQuestion"
+              :show-question-cursor="showQuestionCursor"
+              :displayed-description="displayedDescription"
+              :show-description-cursor="showDescriptionCursor"
+              :displayed-help="displayedHelp"
+              :show-help-cursor="showHelpCursor"
               @update="updateAnswer"
             />
 
-            <div v-if="!hasAdditionalInfo" class="upload-after-radio">
+            <div v-if="hasAdditionalInfo" class="upload-after-radio">
               <TextUploadQuestion
                 :question="{
                   description:
@@ -159,6 +122,10 @@ import TextUploadQuestion from '~/components/passport-view/questions/TextUploadQ
 import CheckboxQuestion from '~/components/passport-view/questions/CheckboxQuestion.vue'
 import NoteQuestion from '~/components/passport-view/questions/NoteQuestion.vue'
 import DateQuestion from '~/components/passport-view/questions/DateQuestion.vue'
+import ScaleQuestion from '~/components/passport-view/questions/ScaleQuestion.vue'
+import MultipartQuestion from '~/components/passport-view/questions/MultipartQuestion.vue'
+import MultiTextInputQuestion from '@/components/passport-view/questions/MultiTextInputQuestion.vue'
+import MultiFieldFormQuestion from '@/components/passport-view/questions/MultiFieldFormQuestion.vue'
 import AppHeader from '@/components/core/AppHeader.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
@@ -311,6 +278,13 @@ watch(
     console.log('Question type:', q.type)
     console.log('Additional info type:', q.additionalInfoType)
 
+    // Multipart questions store their answer as an object keyed by partKey — skip additionalInfo extraction
+    if (q.type === 'multipart') {
+      additionalInfoAnswer.value = null
+      runQuestionAnimation(q)
+      return
+    }
+
     // Hydrate additional info from saved combined answers before animation
     if (q.answer && typeof q.answer === 'object' && !Array.isArray(q.answer)) {
       if (q.answer.additionalInfo !== undefined) {
@@ -394,6 +368,100 @@ const isAnswerValid = computed(() => {
     return false
   }
 
+  if (type === 'scale') {
+    return answer !== undefined && answer !== null && answer !== ''
+  }
+
+  if (type === 'multitextinput') {
+    return Array.isArray(answer) && answer.length > 0
+  }
+
+  if (type === 'multifieldform') {
+    // For repeatable: answer is array of objects
+    if (currentQuestion.value.repeatable && Array.isArray(answer)) {
+      return (
+        answer.length > 0 &&
+        answer.every((form) => {
+          return Object.values(form).some((val) => val && val.trim().length > 0)
+        })
+      )
+    }
+    // For non-repeatable: answer is single object
+    if (
+      !currentQuestion.value.repeatable &&
+      typeof answer === 'object' &&
+      !Array.isArray(answer)
+    ) {
+      return Object.values(answer).some((val) => val && val.trim().length > 0)
+    }
+    return false
+  }
+
+  if (type === 'multipart') {
+    if (!answer || typeof answer !== 'object' || Array.isArray(answer))
+      return false
+    const parts = currentQuestion.value.parts
+    if (!parts || !Array.isArray(parts)) return false
+
+    return parts.every((part) => {
+      const partAnswer = answer[part.partKey]
+      if (partAnswer === undefined || partAnswer === null || partAnswer === '')
+        return false
+
+      if (part.type === 'checkbox')
+        return Array.isArray(partAnswer) && partAnswer.length > 0
+      if (part.type === 'upload')
+        return Array.isArray(partAnswer) && partAnswer.length > 0
+      if (part.type === 'multitextinput')
+        return Array.isArray(partAnswer) && partAnswer.length > 0
+      if (part.type === 'multifieldform') {
+        // For repeatable: partAnswer is array of objects
+        if (part.repeatable && Array.isArray(partAnswer)) {
+          return (
+            partAnswer.length > 0 &&
+            partAnswer.every((form) => {
+              return Object.values(form).some(
+                (val) => val && ('' + val).trim().length > 0,
+              )
+            })
+          )
+        }
+        // For non-repeatable: partAnswer is single object
+        if (
+          !part.repeatable &&
+          typeof partAnswer === 'object' &&
+          !Array.isArray(partAnswer)
+        ) {
+          return Object.values(partAnswer).some(
+            (val) => val && ('' + val).trim().length > 0,
+          )
+        }
+        return false
+      }
+      if (part.type === 'date') {
+        if (typeof partAnswer === 'object' && partAnswer !== null) {
+          return (
+            (partAnswer.date && ('' + partAnswer.date).trim().length > 0) ||
+            ('' + (partAnswer.value || '')).trim().length > 0
+          )
+        }
+        return ('' + partAnswer).trim().length > 0
+      }
+      if (part.type === 'text') {
+        return typeof partAnswer === 'string'
+          ? partAnswer.trim().length > 0
+          : !!partAnswer
+      }
+      if (part.type === 'radio') {
+        return (
+          partAnswer !== '' && partAnswer !== undefined && partAnswer !== null
+        )
+      }
+
+      return !!partAnswer
+    })
+  }
+
   return true
 })
 
@@ -406,6 +474,10 @@ const getQuestionComponent = computed(() => {
     upload: TextUploadQuestion,
     note: NoteQuestion,
     date: DateQuestion,
+    scale: ScaleQuestion,
+    multipart: MultipartQuestion,
+    multitextinput: MultiTextInputQuestion,
+    multifieldform: MultiFieldFormQuestion,
   }
   return components[type] || TextUploadQuestion
 })
@@ -738,6 +810,8 @@ const handleContinue = () => {
 }
 
 .help-title {
+  display: flex;
+  align-items: center;
   margin: 0 0 8px;
   color: #00a19a;
   font-weight: 590;

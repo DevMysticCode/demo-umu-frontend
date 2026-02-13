@@ -1,10 +1,56 @@
+export interface QuestionPart {
+  partKey: string
+  type:
+    | 'text'
+    | 'radio'
+    | 'checkbox'
+    | 'upload'
+    | 'date'
+    | 'chips'
+    | 'address'
+    | 'collaborators'
+    | 'scale'
+    | 'number'
+  title: string
+  description?: string
+  options?: {
+    label: string
+    value: string
+    hasDate?: boolean
+    dateFormat?: 'monthYear' | 'fullDate' | 'year'
+    datePlaceholder?: string
+  }[]
+  placeholder?: string
+  uploadInstruction?: string
+  min?: number
+  max?: number
+  step?: number
+  inputType?: 'text' | 'number'
+  prefix?: string
+  suffix?: string
+  dateFields?: Array<{
+    label?: string
+    placeholder?: string
+    format?: 'monthYear' | 'fullDate' | 'year'
+  }>
+  order: number
+}
+
 export interface PassportQuestion {
   id: string
   question: string
   description: string
   instructionText?: string
   points: number
-  type: 'text' | 'radio' | 'checkbox' | 'upload' | 'multipart' | 'note' | 'date'
+  type:
+    | 'text'
+    | 'radio'
+    | 'checkbox'
+    | 'upload'
+    | 'multipart'
+    | 'note'
+    | 'date'
+    | 'address'
   help?: string
   options?: {
     label: string
@@ -32,6 +78,7 @@ export interface PassportQuestion {
   }>
   label?: string
   format?: 'monthYear' | 'fullDate' | 'year'
+  parts?: QuestionPart[]
 }
 
 export interface PassportTask {
@@ -88,6 +135,415 @@ export const usePassportSteps = () => {
               display: 'text',
               help: 'This helps property owners and buyers understand the property better.',
               answer: '',
+              completed: false,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'ownershipProfile',
+      title: 'Ownership Profile',
+      subtitle: 'Set out the ownership structure for this property',
+      description: 'Complete all sections about property ownership',
+      icon: 'ownershipProfile',
+      order: 1,
+      completed: false,
+      progress: 0,
+      tasks: [
+        {
+          id: 'ownership-notes',
+          title: 'About this form',
+          description: 'Read important notes before starting',
+          icon: '📝',
+          pointsReward: 0,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-notes',
+              question: 'Important Notes',
+              description: 'You must read notes before starting.',
+              points: 0,
+              type: 'note',
+              answer: { buyers: '', sellers: '' },
+              completed: false,
+              prewritten: {
+                buyers:
+                  'If the seller gives you, separately from this form, any information concerning the property (in writing or in conversation, whether through an estate agent or solicitor or directly to you) on which you wish to rely when buying the property, you should tell your solicitor. You are entitled to rely on the replies given to enquiries but in relation to the physical condition of the property, the replies should not be treated as a substitute for undertaking your own survey or making your own independent enquiries, which you are recommended to do.',
+                sellers:
+                  "The answers should be prepared by the person or persons who are named as owner on the deeds or Land Registry title or by the owner's legal representative(s) if selling under a power of attorney or grant of probate or representation. If there is more than one seller, you should prepare the answers together or, if only one seller prepares the form, the other(s) should check the answers given and all sellers should sign the form.",
+              },
+            },
+          ],
+        },
+        {
+          id: 'ownership-seller-details',
+          title: 'Seller details',
+          description: 'Provide names and residential address',
+          icon: '👤',
+          pointsReward: 100,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-names',
+              question: 'Full names of the seller(s)',
+              description:
+                'State the full names of everyone who is named as owner on the HM Land Registry title or on the deeds.',
+              points: 50,
+              type: 'text',
+              help: 'If you are completing on behalf of the seller, provide their names along with your capacity.',
+              answer: '',
+              completed: false,
+            },
+            {
+              id: 'ownership-q-address',
+              question: 'Residential address of the seller(s)',
+              description: 'Provide the address where sellers currently live.',
+              points: 50,
+              type: 'address',
+              placeholder: '12, Example Road, AB1 2CD',
+              help: 'This is the current residential address.',
+              answer: '',
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-capacity',
+          title: 'Legal capacity',
+          description: 'Specify your capacity in completing this form',
+          icon: '📋',
+          pointsReward: 100,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-capacity',
+              question: 'Are you completing this form on behalf of the seller?',
+              description:
+                'Please state the capacity in which you are providing the information.',
+              points: 100,
+              type: 'radio',
+              help: 'Select the option that applies - either as the seller or in a specific legal capacity.',
+              options: [
+                {
+                  label: 'Will / Grant of Probate',
+                  value: 'will_grant_of_probate',
+                },
+                { label: 'Trustee', value: 'trustee' },
+                { label: 'Representative', value: 'representative' },
+                { label: 'Power of Attorney', value: 'power_of_attorney' },
+                { label: 'Limited Company', value: 'limited_company' },
+                { label: 'No - I am the seller', value: 'no_seller' },
+              ],
+              answer: '',
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-solicitor',
+          title: 'Solicitor details',
+          description: 'Provide solicitor firm information',
+          icon: '⚖️',
+          pointsReward: 50,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-solicitor',
+              question: "Please provide details of solicitor's firm",
+              description:
+                'If you have a solicitor handling the sale, provide their contact details.',
+              points: 50,
+              type: 'radio',
+              help: 'You can provide the solicitor information if applicable.',
+              options: [
+                { label: 'Yes', value: 'yes' },
+                { label: 'No', value: 'no' },
+              ],
+              answer: '',
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-photos',
+          title: 'Property photos',
+          description: 'Great photos help buyers connect emotionally',
+          icon: '📸',
+          pointsReward: 100,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-photos',
+              question: 'Great photos help buyers connect emotionally',
+              description:
+                'Add photos of your property to help buyers visualize it.',
+              points: 100,
+              type: 'upload',
+              uploadInstruction: 'Upload up to 6 photos of the property',
+              answer: [],
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-council-tax',
+          title: 'Council tax band',
+          description: 'Specify the current council tax band',
+          icon: '📊',
+          pointsReward: 50,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-council-tax',
+              question: 'What is your council tax band?',
+              description:
+                'State the council tax band for the property. Find this on your latest bill or GOV.UK website.',
+              points: 50,
+              type: 'radio',
+              help: 'The council tax band determines your annual council tax charge.',
+              options: [
+                { label: 'Band A', value: 'band_a' },
+                { label: 'Band B', value: 'band_b' },
+                { label: 'Band C', value: 'band_c' },
+                { label: 'Band D', value: 'band_d' },
+                { label: 'Band E', value: 'band_e' },
+                { label: 'Band F', value: 'band_f' },
+                { label: 'Band G', value: 'band_g' },
+                { label: 'Band H', value: 'band_h' },
+              ],
+              answer: '',
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-asking-price',
+          title: 'Asking price',
+          description: 'Specify your asking price for the property',
+          icon: '💷',
+          pointsReward: 50,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-asking-price',
+              question: 'What is your asking price for the property?',
+              description:
+                'State the asking price of the property. You can use a slider or enter the actual selling price.',
+              points: 50,
+              type: 'radio',
+              help: 'Provide the asking price in pounds.',
+              options: [
+                { label: 'Under £250,000', value: 'under_250k' },
+                { label: '£250,000 - £500,000', value: '250k_500k' },
+                { label: '£500,000 - £750,000', value: '500k_750k' },
+                { label: '£750,000 - £1,000,000', value: '750k_1m' },
+                { label: 'Over £1,000,000', value: 'over_1m' },
+              ],
+              answer: '',
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-tenure',
+          title: 'Type of ownership',
+          description: 'Specify the tenure type',
+          icon: '🏠',
+          pointsReward: 100,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-tenure',
+              question: 'What is the type of the ownership?',
+              description:
+                "National Trading Standard's guidance includes non-traditional tenure categories (park homes and riverboats).",
+              points: 100,
+              type: 'radio',
+              help: 'Select the ownership structure that applies to this property.',
+              options: [
+                { label: 'Freehold', value: 'freehold' },
+                { label: 'Share of Freehold', value: 'share_of_freehold' },
+                { label: 'Leasehold', value: 'leasehold' },
+                { label: 'Commonhold', value: 'commonhold' },
+                { label: 'Shared Ownership', value: 'shared_ownership' },
+                { label: 'Flying Freehold', value: 'flying_freehold' },
+              ],
+              answer: '',
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-shared-ownership',
+          title: 'Shared ownership',
+          description: 'Enter shared ownership percentage and rent',
+          icon: '%',
+          pointsReward: 75,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-shared-ownership',
+              question:
+                'Please enter the percentage of shared ownership and the annual rent',
+              description:
+                "State how much you own and the rent paid for the share you don't own.",
+              points: 75,
+              type: 'text',
+              help: 'For shared ownership properties, provide both % owned and annual rent amount.',
+              answer: '',
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-lease',
+          title: 'Lease details',
+          description: 'Provide lease expiry date and length',
+          icon: '📅',
+          pointsReward: 100,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-lease-expiry',
+              question: 'Please enter the expiry date of your lease',
+              description:
+                'You should be able to find this information on your title deeds.',
+              points: 50,
+              type: 'date',
+              options: [
+                {
+                  label: 'Select expiry date',
+                  value: 'yes',
+                  hasDate: true,
+                  dateFormat: 'fullDate',
+                  datePlaceholder: 'Select expiry date',
+                },
+              ],
+              answer: '',
+              completed: false,
+            },
+            {
+              id: 'ownership-q-lease-length',
+              question: 'Please enter the length of your lease',
+              description: 'How many years remain on the lease?',
+              points: 50,
+              type: 'text',
+              help: 'Provide the length in years.',
+              answer: '',
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-service-charges',
+          title: 'Service charges',
+          description: 'Provide service charge information',
+          icon: '💰',
+          pointsReward: 75,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-service-charge-freq',
+              question:
+                'If your lease includes a service charge, what is the frequency and amount?',
+              description:
+                'Service charges are usually for the maintenance and upkeep of the property.',
+              points: 75,
+              type: 'radio',
+              help: 'Select how often you pay service charges and provide the annual amount.',
+              options: [
+                { label: 'Annual', value: 'annual' },
+                { label: 'Quarterly', value: 'quarterly' },
+                { label: 'Monthly', value: 'monthly' },
+                { label: 'No service charge', value: 'no_service_charge' },
+              ],
+              answer: '',
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-property-type',
+          title: 'Property type',
+          description: 'Select the property type(s)',
+          icon: '🏘️',
+          pointsReward: 50,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-property-type',
+              question: 'What is the type of the property?',
+              description: 'Select all that apply to describe your property.',
+              points: 50,
+              type: 'checkbox',
+              help: 'Choose the property type(s) that match your home.',
+              options: [
+                { label: 'Detached', value: 'detached' },
+                { label: 'Semi-Detached', value: 'semi_detached' },
+                { label: 'Terraced', value: 'terraced' },
+                { label: 'Flat', value: 'flat' },
+                { label: 'Maisonette', value: 'maisonette' },
+                { label: 'Bungalow', value: 'bungalow' },
+                { label: 'Dormer Bungalow', value: 'dormer_bungalow' },
+                { label: 'Mobile Home', value: 'mobile_home' },
+                { label: 'Boat', value: 'boat' },
+                { label: 'Land', value: 'land' },
+              ],
+              answer: [],
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 'ownership-features',
+          title: 'What we love',
+          description: 'Share what makes your home special',
+          icon: '❤️',
+          pointsReward: 50,
+          completed: false,
+          currentQuestionIndex: 0,
+          questions: [
+            {
+              id: 'ownership-q-features',
+              question: 'What do we love about our home?',
+              description:
+                'Select the features that make your home special. This helps attract the right buyers.',
+              points: 50,
+              type: 'checkbox',
+              help: 'Choose features that appeal to potential buyers.',
+              options: [
+                {
+                  label: 'Morning light in the kitchen',
+                  value: 'morning_light_kitchen',
+                },
+                {
+                  label: 'Kids can walk to school in 6 mins',
+                  value: 'kids_walk_to_school',
+                },
+                {
+                  label: 'Neighbors are friendly but not intrusive',
+                  value: 'friendly_neighbors',
+                },
+                { label: 'Large garden', value: 'large_garden' },
+                { label: 'Great transport links', value: 'transport_links' },
+                { label: 'Close to amenities', value: 'close_amenities' },
+                { label: 'Quiet neighbourhood', value: 'quiet_area' },
+                { label: 'Good schools nearby', value: 'good_schools' },
+              ],
+              answer: [],
               completed: false,
             },
           ],
@@ -999,7 +1455,7 @@ export const usePassportSteps = () => {
     if (!step) return false
 
     const currentTaskIndex = step.tasks.findIndex(
-      (t) => t.id === currentTaskId.value
+      (t) => t.id === currentTaskId.value,
     )
 
     if (currentTaskIndex < step.tasks.length - 1) {
@@ -1014,7 +1470,7 @@ export const usePassportSteps = () => {
 
   const moveToNextStep = () => {
     const currentStepIndex = steps.value.findIndex(
-      (s) => s.id === currentStepId.value
+      (s) => s.id === currentStepId.value,
     )
 
     if (currentStepIndex < steps.value.length - 1) {

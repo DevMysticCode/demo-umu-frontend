@@ -3,7 +3,9 @@
     <div class="points-header">
       <div class="points-content">
         <div class="points-value">
-          <div class="points-icon">🔒</div>
+          <div class="points-icon">
+            <OPIcon name="pointsLock" class="w-[24px] h-[24px]" />
+          </div>
           {{ points }}pts
         </div>
         <div class="points-label">{{ label }}</div>
@@ -84,6 +86,8 @@ defineEmits(['nextTask'])
 }
 
 .points-value {
+  display: flex;
+  align-items: center;
   font-size: 22px;
   font-weight: 700;
   color: #1a1a1a;

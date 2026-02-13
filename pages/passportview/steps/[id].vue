@@ -33,9 +33,7 @@
 
       <div class="action-buttons">
         <button class="help-btn">
-          <span class="btn-icon"
-            ><OPIcon name="info" class="w-[15px] h-[15px]"
-          /></span>
+          <span class="btn-icon">?</span>
           Help
         </button>
         <button class="video-btn">

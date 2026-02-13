@@ -118,6 +118,9 @@ const iconMap: Record<string, string> = {
   roadLeftToRight: '/op-icons/passportview/roadLeftToRight.svg',
   roadRightToLeft: '/op-icons/passportview/roadRightToLeft.svg',
   giftIcon: '/op-icons/passportview/giftIcon.svg',
+  mapBackgroundTile: '/op-icons/passportview/mapBackgroundTile.svg',
+  pointsLock: '/op-icons/passportview/pointsLock.svg',
+  lightBulb: '/op-icons/passportview/lightBulb.svg',
 }
 
 const iconPath = computed(() => {

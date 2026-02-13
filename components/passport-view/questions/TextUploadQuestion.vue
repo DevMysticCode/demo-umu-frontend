@@ -1,40 +1,60 @@
 <template>
   <div class="combined-input-wrapper">
-    <h3 v-if="question.description" class="section-title">
-      {{ question.description }}
-    </h3>
+    <!-- Question Display (skip if hideQuestionDisplay is true) -->
+    <template v-if="!hideQuestionDisplay">
+      <!-- Text area (top) -->
+      <div
+        v-if="displayMode === 'text' || displayMode === 'both'"
+        class="input-container"
+      >
+        <div v-if="!textValue || textValue.length === 0" class="pending-badge">
+          <span class="pending-icon">⚠</span> Pending
+        </div>
+        <!-- Question Display -->
+        <p v-if="question.instructionText" class="question-text">
+          {{ question.instructionText }}
+          <span v-if="showQuestionCursor" class="typing-cursor">|</span>
+        </p>
 
-    <!-- Visible debug banner (dev only) to ensure UI elements render -->
-    <div v-if="isDev" class="debug-banner">
-      DEBUG MODE — Mode: {{ displayMode }} · type: {{ question.type }} ·
-      question.display: {{ question.display }}
-    </div>
+        <!-- Description Display -->
+        <div v-if="question.description" class="question-description">
+          {{ question.description }}
+          <span
+            v-if="showDescriptionCursor"
+            class="typing-cursor typing-cursor--small"
+            >|</span
+          >
+        </div>
 
-    <!-- Text area (top) -->
-    <div
-      v-if="displayMode === 'text' || displayMode === 'both'"
-      class="input-container"
-    >
-      <div v-if="!textValue || textValue.length === 0" class="pending-badge">
-        <span class="pending-icon">⚠</span> Pending
+        <!-- Help Display -->
+        <div v-if="displayedHelp" class="help-section">
+          <div class="help-content">
+            <h4 class="help-title">
+              <span class="help-icon">💡</span>What is this?
+            </h4>
+            <p class="help-text">
+              {{ displayedHelp }}
+              <span
+                v-if="showHelpCursor"
+                class="typing-cursor typing-cursor--small"
+                >|</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <textarea
+          :value="textValue"
+          @input="onTextInput"
+          :placeholder="
+            question.placeholder ||
+            'E.g., Back fence in the garden has been moved back 2 yards...'
+          "
+          class="text-input"
+          rows="6"
+        ></textarea>
       </div>
-      <p class="input-instruction">
-        {{
-          question.instructionText ||
-          'Please provide written instruction for your answer above:'
-        }}
-      </p>
-      <textarea
-        :value="textValue"
-        @input="onTextInput"
-        :placeholder="
-          question.placeholder ||
-          'E.g., Back fence in the garden has been moved back 2 yards...'
-        "
-        class="text-input"
-        rows="6"
-      ></textarea>
-    </div>
+    </template>
 
     <!-- Upload section (bottom) -->
     <div
@@ -99,7 +119,35 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 const props = defineProps({
   question: { type: Object, default: 'Test Question' },
   answer: { type: [String, Array, Object], default: '' },
-  display: { type: String, default: '' }, // 'text' | 'upload' | 'both' - optional override
+  display: { type: String, default: '' },
+  displayedQuestion: {
+    type: String,
+    default: '',
+  },
+  showQuestionCursor: {
+    type: Boolean,
+    default: false,
+  },
+  displayedDescription: {
+    type: String,
+    default: '',
+  },
+  showDescriptionCursor: {
+    type: Boolean,
+    default: false,
+  },
+  displayedHelp: {
+    type: String,
+    default: '',
+  },
+  showHelpCursor: {
+    type: Boolean,
+    default: false,
+  },
+  hideQuestionDisplay: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update'])
@@ -237,6 +285,82 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.question-text {
+  color: #000000;
+  margin: 0 0 20px 0;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.23px;
+}
+
+.question-description {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.23px;
+  color: #3c3c4399;
+  margin-bottom: 20px;
+}
+
+.help-section {
+  display: flex;
+  gap: 2px;
+  padding: 12px;
+  background: #00a19a1a;
+  border-radius: 12px;
+  border: 2px solid #e6f9f7;
+  margin-bottom: 20px;
+}
+
+.help-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.help-content {
+  flex: 1;
+}
+
+.help-title {
+  margin: 0 0 8px;
+  color: #00a19a;
+  font-weight: 590;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+}
+
+.help-text {
+  color: #3c3c4399;
+  margin: 0;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+}
+
+.typing-cursor {
+  margin-left: 2px;
+  color: #00a19a;
+  animation: blink 1s infinite;
+}
+
+.typing-cursor--small {
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
 .combined-input-wrapper {
   display: flex;
   flex-direction: column;

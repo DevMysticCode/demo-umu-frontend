@@ -1,53 +1,90 @@
 <template>
-  <div class="date-options">
-    <div
-      v-for="(option, index) in question.options"
-      :key="option.value"
-      class="date-option"
-      :class="{
-        selected: getSelectedValue() === option.value,
-        'single-option': question.options.length === 1,
-      }"
-      @click="selectOption(option.value)"
-    >
-      <div
-        v-if="question.options.length > 1"
-        class="radio-btn"
-        :class="{ checked: getSelectedValue() === option.value }"
-      >
-        <span v-if="getSelectedValue() === option.value" class="check-icon"
-          >✓</span
+  <div>
+    <!-- Question Display (skip if hideQuestionDisplay is true) -->
+    <template v-if="!hideQuestionDisplay">
+      <p v-if="displayedQuestion" class="question-text">
+        {{ displayedQuestion }}
+        <span v-if="showQuestionCursor" class="typing-cursor">|</span>
+      </p>
+
+      <!-- Description Display -->
+      <div v-if="displayedDescription" class="question-description">
+        {{ displayedDescription }}
+        <span
+          v-if="showDescriptionCursor"
+          class="typing-cursor typing-cursor--small"
+          >|</span
         >
       </div>
-      <span class="option-label">{{ option.label }}</span>
 
+      <!-- Help Display -->
+      <div v-if="displayedHelp" class="help-section">
+        <div class="help-content">
+          <h4 class="help-title">
+            <span class="help-icon">💡</span>What is this?
+          </h4>
+          <p class="help-text">
+            {{ displayedHelp }}
+            <span
+              v-if="showHelpCursor"
+              class="typing-cursor typing-cursor--small"
+              >|</span
+            >
+          </p>
+        </div>
+      </div>
+    </template>
+
+    <div class="date-options">
       <div
-        v-if="
-          option.hasDate &&
-          (getSelectedValue() === option.value || question.options.length === 1)
-        "
-        class="date-badge"
+        v-for="(option, index) in question.options"
+        :key="option.value"
+        class="date-option"
+        :class="{
+          selected: getSelectedValue() === option.value,
+          'single-option': question.options.length === 1,
+        }"
+        @click="selectOption(option.value)"
       >
-        <span v-if="getDateValue()" class="date-text">
-          {{ formatDate(getDateValue(), option.dateFormat) }}
-        </span>
-        <span v-else class="date-placeholder">
-          {{ option.datePlaceholder || 'Select date' }}
-        </span>
+        <div
+          v-if="question.options.length > 1"
+          class="radio-btn"
+          :class="{ checked: getSelectedValue() === option.value }"
+        >
+          <span v-if="getSelectedValue() === option.value" class="check-icon"
+            >✓</span
+          >
+        </div>
+        <span class="option-label">{{ option.label }}</span>
 
-        <input
-          :ref="(el) => setDateInputRef(el, index)"
-          :type="getInputType(option)"
-          :value="getInputValue(option)"
-          @change="(e) => updateDate(e, option)"
-          @click.stop
-          class="date-input-overlay"
-        />
+        <div
+          v-if="
+            option.hasDate &&
+            (getSelectedValue() === option.value ||
+              question.options.length === 1)
+          "
+          class="date-badge"
+        >
+          <span v-if="getDateValue()" class="date-text">
+            {{ formatDate(getDateValue(), option.dateFormat) }}
+          </span>
+          <span v-else class="date-placeholder">
+            {{ option.datePlaceholder || 'Select date' }}
+          </span>
+
+          <input
+            :ref="(el) => setDateInputRef(el, index)"
+            :type="getInputType(option)"
+            :value="getInputValue(option)"
+            @change="(e) => updateDate(e, option)"
+            @click.stop
+            class="date-input-overlay"
+          />
+        </div>
       </div>
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 
@@ -59,6 +96,34 @@ const props = defineProps({
   answer: {
     type: [String, Object],
     default: '',
+  },
+  displayedQuestion: {
+    type: String,
+    default: '',
+  },
+  showQuestionCursor: {
+    type: Boolean,
+    default: false,
+  },
+  displayedDescription: {
+    type: String,
+    default: '',
+  },
+  showDescriptionCursor: {
+    type: Boolean,
+    default: false,
+  },
+  displayedHelp: {
+    type: String,
+    default: '',
+  },
+  showHelpCursor: {
+    type: Boolean,
+    default: false,
+  },
+  hideQuestionDisplay: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -94,7 +159,7 @@ const getDateValue = () => {
 
 const selectOption = (value) => {
   const selectedOption = props.question.options.find(
-    (opt) => opt.value === value
+    (opt) => opt.value === value,
   )
 
   if (selectedOption?.hasDate) {
@@ -151,7 +216,10 @@ const formatDate = (dateString, format) => {
   if (currentFormat === 'monthYear') {
     const [year, month] = dateString.split('-')
     const date = new Date(year, month - 1)
-    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    })
   }
 
   if (currentFormat === 'fullDate') {
@@ -168,6 +236,82 @@ const formatDate = (dateString, format) => {
 </script>
 
 <style scoped>
+.question-text {
+  color: #000000;
+  margin: 0 0 20px 0;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.23px;
+}
+
+.question-description {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.23px;
+  color: #3c3c4399;
+  margin-bottom: 20px;
+}
+
+.help-section {
+  display: flex;
+  gap: 2px;
+  padding: 12px;
+  background: #00a19a1a;
+  border-radius: 12px;
+  border: 2px solid #e6f9f7;
+  margin-bottom: 20px;
+}
+
+.help-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.help-content {
+  flex: 1;
+}
+
+.help-title {
+  margin: 0 0 8px;
+  color: #00a19a;
+  font-weight: 590;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+}
+
+.help-text {
+  color: #3c3c4399;
+  margin: 0;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+}
+
+.typing-cursor {
+  margin-left: 2px;
+  color: #00a19a;
+  animation: blink 1s infinite;
+}
+
+.typing-cursor--small {
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
 .date-options {
   display: flex;
   flex-direction: column;

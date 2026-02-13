@@ -1,13 +1,36 @@
 <template>
   <div class="text-input-wrapper">
-    <h3 v-if="question.description" class="section-title">
-      {{ question.description }}
-    </h3>
-    <div class="input-container">
+    <!-- Question Display Section (skip if hideQuestionDisplay is true) -->
+    <template v-if="!hideQuestionDisplay">
       <div v-if="!answer || answer.length === 0" class="pending-badge">
         <span class="pending-icon">⚠</span> Pending
       </div>
-      <p class="input-instruction">
+      <p v-if="displayedQuestion" class="question-text">
+        {{ displayedQuestion }}
+        <span v-if="showQuestionCursor" class="typing-cursor">|</span>
+      </p>
+
+      <!-- Description Display Section -->
+      <p v-if="displayedDescription" class="question-description">
+        {{ displayedDescription }}
+        <span v-if="showDescriptionCursor" class="typing-cursor">|</span>
+      </p>
+
+      <!-- Help Display Section -->
+      <div v-if="displayedHelp" class="help-section">
+        <span class="help-icon">ⓘ</span>
+        <span class="help-text">
+          {{ displayedHelp }}
+          <span v-if="showHelpCursor" class="typing-cursor">|</span>
+        </span>
+      </div>
+    </template>
+
+    <!-- <h3 v-if="question.description" class="section-title">
+      {{ question.description }}
+    </h3> -->
+    <div class="input-container">
+      <p v-if="!hideQuestionDisplay" class="input-instruction">
         {{
           question.instructionText ||
           'Please provide written instruction for your answer above:'
@@ -36,6 +59,34 @@ const props = defineProps({
   answer: {
     type: String,
     default: '',
+  },
+  displayedQuestion: {
+    type: String,
+    default: '',
+  },
+  showQuestionCursor: {
+    type: Boolean,
+    default: false,
+  },
+  displayedDescription: {
+    type: String,
+    default: '',
+  },
+  showDescriptionCursor: {
+    type: Boolean,
+    default: false,
+  },
+  displayedHelp: {
+    type: String,
+    default: '',
+  },
+  showHelpCursor: {
+    type: Boolean,
+    default: false,
+  },
+  hideQuestionDisplay: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -117,5 +168,59 @@ const updateAnswer = (event) => {
 .text-input::placeholder {
   color: #999;
   font-style: italic;
+}
+
+.question-text {
+  color: #000000;
+  margin: 0;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.23px;
+}
+
+.question-description {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.23px;
+  color: #3c3c4399;
+}
+
+.help-section {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background-color: #00a19a1a;
+  border-radius: 12px;
+  margin: 0 0 20px 0;
+  font-size: 13px;
+  color: #3c3c43;
+}
+
+.help-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+  color: #00a19a;
+}
+
+.help-text {
+  line-height: 1.4;
+}
+
+.typing-cursor {
+  display: inline-block;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
 </style>

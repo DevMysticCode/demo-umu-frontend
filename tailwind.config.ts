@@ -22,6 +22,22 @@ export default <Config>{
       },
       fontFamily: {
         jakarta: ['Plus Jakarta Sans', 'sans-serif'],
+        'sf-pro': [
+          'SF Pro Display',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'sans-serif',
+        ],
+      },
+      defaultFontFamily: {
+        sans: [
+          'SF Pro Display',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'sans-serif',
+        ],
       },
       fontSize: {
         '12-regular': ['12px', { lineHeight: '15px', fontWeight: '400' }],
