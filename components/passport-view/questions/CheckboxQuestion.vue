@@ -96,7 +96,7 @@ const props = defineProps({
 const emit = defineEmits(['update'])
 
 const isSelected = (value) => {
-  return props.answer.includes(value)
+  return Array.isArray(props.answer) && props.answer.includes(value)
 }
 
 const toggleOption = (value) => {

@@ -41,13 +41,14 @@
         :key="option.value"
         class="date-option"
         :class="{
-          selected: getSelectedValue() === option.value,
+          selected: !isMultiInputMode && getSelectedValue() === option.value,
           'single-option': question.options.length === 1,
+          'multi-input-option': isMultiInputMode,
         }"
-        @click="selectOption(option.value)"
+        @click="handleOptionClick(option.value)"
       >
         <div
-          v-if="question.options.length > 1"
+          v-if="question.options.length > 1 && !isMultiInputMode"
           class="radio-btn"
           :class="{ checked: getSelectedValue() === option.value }"
         >
@@ -55,18 +56,20 @@
             >✓</span
           >
         </div>
+
         <span class="option-label">{{ option.label }}</span>
 
         <div
           v-if="
             option.hasDate &&
-            (getSelectedValue() === option.value ||
+            (isMultiInputMode ||
+              getSelectedValue() === option.value ||
               question.options.length === 1)
           "
           class="date-badge"
         >
-          <span v-if="getDateValue()" class="date-text">
-            {{ formatDate(getDateValue(), option.dateFormat) }}
+          <span v-if="getDateValue(option)" class="date-text">
+            {{ formatValue(getDateValue(option), option) }}
           </span>
           <span v-else class="date-placeholder">
             {{ option.datePlaceholder || 'Select date' }}
@@ -75,8 +78,9 @@
           <input
             :ref="(el) => setDateInputRef(el, index)"
             :type="getInputType(option)"
+            :inputmode="getInputMode(option)"
             :value="getInputValue(option)"
-            @change="(e) => updateDate(e, option)"
+            @input="(e) => updateDate(e, option)"
             @click.stop
             class="date-input-overlay"
           />
@@ -86,7 +90,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const props = defineProps({
   question: {
@@ -137,8 +141,21 @@ const setDateInputRef = (el, index) => {
   }
 }
 
+const isMultiInputMode = computed(() => {
+  if (!props.question?.options || props.question.options.length < 2)
+    return false
+  return (
+    props.question.options.every((opt) => opt.hasDate) &&
+    props.question.options.some((opt) => opt.inputType)
+  )
+})
+
 onMounted(() => {
-  if (props.question.options.length === 1 && !getSelectedValue()) {
+  if (
+    !isMultiInputMode.value &&
+    props.question.options.length === 1 &&
+    !getSelectedValue()
+  ) {
     selectOption(props.question.options[0].value)
   }
 })
@@ -150,7 +167,13 @@ const getSelectedValue = () => {
   return props.answer
 }
 
-const getDateValue = () => {
+const getDateValue = (option) => {
+  if (isMultiInputMode.value) {
+    if (typeof props.answer === 'object' && props.answer !== null) {
+      return props.answer[option.value] || ''
+    }
+    return ''
+  }
   if (typeof props.answer === 'object' && props.answer !== null) {
     return props.answer.date || ''
   }
@@ -169,21 +192,39 @@ const selectOption = (value) => {
   }
 }
 
-const getInputType = (option) => {
-  if (!option.dateFormat) return 'month'
+const handleOptionClick = (value) => {
+  if (isMultiInputMode.value) return
+  selectOption(value)
+}
 
-  if (option.dateFormat === 'year') return 'date'
-  if (option.dateFormat === 'monthYear') return 'month'
-  if (option.dateFormat === 'fullDate') return 'date'
+const getOptionFormat = (option) => {
+  return option.inputType || option.dateFormat || 'monthYear'
+}
+
+const isNumericInput = (option) => {
+  const format = getOptionFormat(option)
+  return ['percentage', 'currency', 'number', 'years', 'units'].includes(format)
+}
+
+const getInputType = (option) => {
+  const format = getOptionFormat(option)
+
+  if (isNumericInput(option)) return 'text'
+  if (format === 'year') return 'date'
+  if (format === 'monthYear' || format === 'month') return 'month'
+  if (format === 'fullDate') return 'date'
 
   return 'month'
 }
 
 const getInputValue = (option) => {
-  const dateValue = getDateValue()
+  const dateValue = getDateValue(option)
   if (!dateValue) return ''
 
-  if (option.dateFormat === 'year') {
+  const format = getOptionFormat(option)
+  if (isNumericInput(option)) return dateValue
+
+  if (format === 'year') {
     return `${dateValue}-01-01`
   }
 
@@ -191,39 +232,89 @@ const getInputValue = (option) => {
 }
 
 const updateDate = (event, option) => {
-  let newDate = event.target.value
+  let newValue = event.target.value
+  const format = getOptionFormat(option)
 
-  if (option.dateFormat === 'year') {
-    const year = newDate.split('-')[0]
-    newDate = year
+  if (format === 'year') {
+    const year = newValue.split('-')[0]
+    newValue = year
+  }
+
+  if (isMultiInputMode.value) {
+    const current =
+      typeof props.answer === 'object' && props.answer !== null
+        ? { ...props.answer }
+        : {}
+    current[option.value] = newValue
+    emit('update', current)
+    return
+  }
+
+  if (isNumericInput(option)) {
+    emit('update', {
+      value: getSelectedValue(),
+      date: newValue,
+    })
+    return
   }
 
   emit('update', {
     value: getSelectedValue(),
-    date: newDate,
+    date: newValue,
   })
 }
 
-const formatDate = (dateString, format) => {
-  if (!dateString) return ''
+const getInputMode = (option) => {
+  const format = getOptionFormat(option)
+  if (format === 'percentage' || format === 'currency') return 'decimal'
+  if (format === 'number' || format === 'years' || format === 'units')
+    return 'numeric'
+  return undefined
+}
 
-  const currentFormat = format || 'monthYear'
+const formatValue = (rawValue, option) => {
+  if (!rawValue) return ''
 
-  if (currentFormat === 'year') {
-    return dateString
+  const format = getOptionFormat(option)
+
+  if (format === 'percentage') {
+    return `${rawValue}%`
   }
 
-  if (currentFormat === 'monthYear') {
-    const [year, month] = dateString.split('-')
+  if (format === 'currency') {
+    return `£ ${rawValue}`
+  }
+
+  if (format === 'years') {
+    return `${rawValue} years`
+  }
+
+  if (format === 'units') {
+    return `${rawValue} units`
+  }
+
+  if (format === 'number') {
+    return `${rawValue}`
+  }
+
+  if (format === 'year') {
+    return rawValue
+  }
+
+  if (format === 'month' || format === 'monthYear') {
+    const [year, month] = rawValue.split('-')
     const date = new Date(year, month - 1)
+    if (format === 'month') {
+      return date.toLocaleDateString('en-US', { month: 'long' })
+    }
     return date.toLocaleDateString('en-US', {
       month: 'long',
       year: 'numeric',
     })
   }
 
-  if (currentFormat === 'fullDate') {
-    const date = new Date(dateString)
+  if (format === 'fullDate') {
+    const date = new Date(rawValue)
     return date.toLocaleDateString('en-US', {
       day: 'numeric',
       month: 'long',
@@ -231,7 +322,7 @@ const formatDate = (dateString, format) => {
     })
   }
 
-  return dateString
+  return rawValue
 }
 </script>
 

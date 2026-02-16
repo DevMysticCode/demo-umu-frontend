@@ -30,10 +30,13 @@ const loadPassport = async (passportId) => {
     steps.value = raw.map((section) => {
       const tasks = section.tasks.map((task) => ({
         ...task,
-        completed: task.totalQuestions > 0 && task.answeredQuestions === task.totalQuestions,
+        completed:
+          task.totalQuestions > 0 &&
+          task.answeredQuestions === task.totalQuestions,
       }))
       const completedTasks = tasks.filter((t) => t.completed).length
-      const progress = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0
+      const progress =
+        tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0
       return {
         ...section,
         icon: section.imageKey || section.key,
@@ -47,13 +50,13 @@ const loadPassport = async (passportId) => {
 }
 
 const setCurrentStep = (stepId) => {
-  currentStep.value = steps.value.find(s => s.id === stepId) || null
+  currentStep.value = steps.value.find((s) => s.id === stepId) || null
 }
 
 const setCurrentTask = (taskId) => {
   if (!currentStep.value) return
   currentTask.value =
-    currentStep.value.tasks.find(t => t.id === taskId) || null
+    currentStep.value.tasks.find((t) => t.id === taskId) || null
 }
 
 const loadQuestions = async (taskId) => {
@@ -69,7 +72,7 @@ const loadQuestions = async (taskId) => {
 const saveAnswer = async (questionId, value) => {
   await getApi().answerQuestion(questionId, value)
 
-  const q = currentQuestions.value.find(q => q.id === questionId)
+  const q = currentQuestions.value.find((q) => q.id === questionId)
   if (q) {
     q.completed = true
     q.answer = value
@@ -79,6 +82,14 @@ const saveAnswer = async (questionId, value) => {
 const moveToNextQuestion = () => {
   if (currentQuestionIndex.value < currentQuestions.value.length - 1) {
     currentQuestionIndex.value++
+    return true
+  }
+  return false
+}
+
+const moveToPreviousQuestion = () => {
+  if (currentQuestionIndex.value > 0) {
+    currentQuestionIndex.value--
     return true
   }
   return false
@@ -114,6 +125,7 @@ export const usePassportRuntime = () => {
     loadQuestions,
     saveAnswer,
     moveToNextQuestion,
+    moveToPreviousQuestion,
     completeTask,
   }
 }

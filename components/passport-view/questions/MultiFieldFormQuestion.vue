@@ -25,6 +25,11 @@
 
     <!-- Forms Container -->
     <div class="forms-container">
+      <!-- Form title (shown inside container for multifieldform in multipart) -->
+      <p v-if="question.title && hideQuestionDisplay" class="form-title">
+        {{ question.title }}
+      </p>
+
       <!-- Each form instance -->
       <div
         v-for="(formInstance, formIndex) in formInstances"
@@ -66,7 +71,9 @@
 
     <!-- Add More Button (if repeatable) -->
     <button v-if="repeatable" class="add-form-btn" @click="addForm">
-      <span class="add-icon">+</span>
+      <span class="add-icon"
+        ><OPIcon name="addMoreButton" class="w-[15px] h-[15px]"
+      /></span>
       {{ question.buttonText || 'Add More' }}
     </button>
   </div>
@@ -74,7 +81,7 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-
+import OPIcon from '~/components/ui/OPIcon.vue'
 const props = defineProps({
   question: {
     type: Object,
@@ -252,19 +259,28 @@ const emitUpdate = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  /* padding: 16px; */
+  /* background: #f9f9f9; */
+  /* border: 1px solid #e0e0e0; */
+  /* border-radius: 12px; */
+  transition: border-color 0.2s;
+}
+
+.forms-container:hover {
+  border-color: #00a19a;
+}
+
+.form-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #3c3c43;
+  margin: 0;
+  letter-spacing: -0.23px;
+  line-height: 1.5;
 }
 
 .form-instance {
   position: relative;
-  padding: 16px;
-  background: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  transition: border-color 0.2s;
-}
-
-.form-instance:hover {
-  border-color: #00a19a;
 }
 
 .form-instance.has-remove {
@@ -334,12 +350,14 @@ const emitUpdate = () => {
 }
 
 .add-form-btn {
-  padding: 12px 24px;
-  background: #e8f5f3;
-  border: none;
-  border-radius: 20px;
+  font-weight: 400;
   font-size: 14px;
-  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+  padding: 16px 12px;
+  background: #eafffc;
+  border: none;
+  border-radius: 16px;
   color: #00a19a;
   cursor: pointer;
   display: flex;
@@ -349,6 +367,7 @@ const emitUpdate = () => {
   transition: background-color 0.2s;
   align-self: center;
   white-space: nowrap;
+  width: 100%;
 }
 
 .add-form-btn:hover {

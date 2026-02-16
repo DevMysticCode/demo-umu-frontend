@@ -116,9 +116,9 @@ const updateAnswer = (event) => {
 
 .input-container {
   background: white;
-  border: 2px solid #e0e0e0;
+  /* border: 2px solid #e0e0e0; */
   border-radius: 12px;
-  padding: 16px;
+  /* padding: 16px; */
   position: relative;
 }
 
