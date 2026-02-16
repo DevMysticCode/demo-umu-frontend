@@ -35,7 +35,7 @@
 
     <div v-for="part in sortedParts" :key="part.partKey" class="part-section">
       <!-- Part-specific text display -->
-      <p v-if="part.title" class="part-text">
+      <p v-if="part.title && part.type !== 'multifieldform'" class="part-text">
         {{ part.title }}
         <span v-if="false" class="typing-cursor">|</span>
       </p>
@@ -44,13 +44,17 @@
         {{ part.description }}
       </p>
 
-      <div v-if="part.helpText" class="part-help-section">
-        <span class="help-icon">ℹ</span>
-        <span class="help-text">{{ part.helpText }}</span>
+      <div v-if="part.helpText" class="help-section part-help-section">
+        <div class="help-content">
+          <h4 class="help-title">
+            <span class="help-icon">💡</span>What is this?
+          </h4>
+          <p class="help-text">{{ part.helpText }}</p>
+        </div>
       </div>
 
       <component
-        :is="getPartComponent(part.type)"
+        :is="getPartComponent(part)"
         :question="buildPartQuestion(part)"
         :answer="getPartAnswer(part)"
         :display="getPartDisplay(part)"
@@ -108,7 +112,12 @@ const sortedParts = computed(() => {
   return [...props.question.parts].sort((a, b) => a.order - b.order)
 })
 
-const getPartComponent = (type) => {
+const getPartComponent = (part) => {
+  const type = part?.type?.toLowerCase?.()
+  const display = part?.display?.toLowerCase?.()
+  if (type === 'text' && (display === 'upload' || display === 'both')) {
+    return TextUploadQuestion
+  }
   const map = {
     radio: RadioQuestion,
     date: DateQuestion,
@@ -127,13 +136,14 @@ const getPartComponent = (type) => {
 }
 
 const buildPartQuestion = (part) => {
+  const normalizedType = part.type?.toLowerCase?.()
   return {
     title: part.title,
     description: part.description || '',
     options: part.options || [],
     placeholder: part.placeholder || '',
-    type: part.type,
-    display: part.type === 'upload' ? 'upload' : part.display || 'text',
+    type: normalizedType,
+    display: normalizedType === 'upload' ? 'upload' : part.display || 'text',
     instructionText: part.instructionText || part.title,
     dateFields: part.dateFields,
     uploadInstruction: part.uploadInstruction || '',
@@ -151,18 +161,24 @@ const buildPartQuestion = (part) => {
 }
 
 const getPartDisplay = (part) => {
-  if (part.type === 'upload') return 'upload'
-  if (part.type === 'text') return 'text'
-  return part.type
+  const display = part.display?.toLowerCase?.()
+  if (display === 'text' || display === 'upload' || display === 'both') {
+    return display
+  }
+  const type = part.type?.toLowerCase?.()
+  if (type === 'upload') return 'upload'
+  if (type === 'text') return 'text'
+  return type
 }
 
 const getPartAnswer = (part) => {
   const val = localAnswers.value[part.partKey]
   if (val !== undefined && val !== null) return val
   // Return appropriate default based on type
-  if (part.type === 'checkbox') return []
-  if (part.type === 'upload') return []
-  if (part.type === 'multifieldform') {
+  const type = part.type?.toLowerCase?.()
+  if (type === 'checkbox') return []
+  if (type === 'upload') return []
+  if (type === 'multifieldform') {
     return part.repeatable ? [] : {}
   }
   return ''
@@ -284,10 +300,10 @@ const updatePartAnswer = (partKey, value) => {
 }
 
 .part-section {
-  /* padding: 16px; */
-  background: #fafafa;
-  /* border: 0.33px solid #e0e0e0; */
-  /* border-radius: 12px; */
+  background: #ffffff;
+  border: 0.33px solid #3c3c432e;
+  border-radius: 16px;
+  padding: 12px 16px;
 }
 
 .part-header {
@@ -326,24 +342,7 @@ const updatePartAnswer = (partKey, value) => {
 }
 
 .part-help-section {
-  display: flex;
-  gap: 8px;
-  padding: 12px;
-  background-color: #00a19a1a;
-  border-radius: 12px;
   margin: 0 0 16px 0;
-  font-size: 13px;
-  color: #3c3c43;
-}
-
-.help-icon {
-  flex-shrink: 0;
-  font-size: 16px;
-  color: #00a19a;
-}
-
-.help-text {
-  line-height: 1.4;
 }
 
 .pending-badge {

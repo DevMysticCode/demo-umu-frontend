@@ -1,16 +1,16 @@
 <template>
   <div class="combined-input-wrapper">
-    <!-- Question Display (skip if hideQuestionDisplay is true) -->
-    <template v-if="!hideQuestionDisplay">
-      <!-- Text area (top) -->
-      <div
-        v-if="displayMode === 'text' || displayMode === 'both'"
-        class="input-container"
-      >
-        <div v-if="!textValue || textValue.length === 0" class="pending-badge">
-          <span class="pending-icon">⚠</span> Pending
-        </div>
-        <!-- Question Display -->
+    <!-- Text area (top) -->
+    <div
+      v-if="displayMode === 'text' || displayMode === 'both'"
+      class="input-container"
+    >
+      <div v-if="!textValue || textValue.length === 0" class="pending-badge">
+        <span class="pending-icon">⚠</span> Pending
+      </div>
+
+      <!-- Question Display (skip if hideQuestionDisplay is true) -->
+      <template v-if="!hideQuestionDisplay">
         <p v-if="question.instructionText" class="question-text">
           {{ question.instructionText }}
           <span v-if="showQuestionCursor" class="typing-cursor">|</span>
@@ -42,19 +42,19 @@
             </p>
           </div>
         </div>
+      </template>
 
-        <textarea
-          :value="textValue"
-          @input="onTextInput"
-          :placeholder="
-            question.placeholder ||
-            'E.g., Back fence in the garden has been moved back 2 yards...'
-          "
-          class="text-input"
-          rows="6"
-        ></textarea>
-      </div>
-    </template>
+      <textarea
+        :value="textValue"
+        @input="onTextInput"
+        :placeholder="
+          question.placeholder ||
+          'E.g., Back fence in the garden has been moved back 2 yards...'
+        "
+        class="text-input"
+        rows="6"
+      ></textarea>
+    </div>
 
     <!-- Upload section (bottom) -->
     <div
@@ -376,10 +376,10 @@ onMounted(() => {
 
 .input-container {
   background: white;
-  border: 2px solid #e0e0e0;
+  /* border: 2px solid #e0e0e0; */
   border-radius: 12px;
   padding: 16px;
-  position: relative;
+  /* position: relative; */
   min-height: 120px; /* Make container visible even when empty */
 }
 

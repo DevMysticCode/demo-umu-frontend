@@ -55,7 +55,16 @@
             section
           </div>
         </h2>
-        <button class="skip-btn" @click="skipQuestion">Skip</button>
+        <div class="question-actions">
+          <button
+            class="prev-btn"
+            :disabled="currentQuestionIndex === 0"
+            @click="goToPreviousQuestion"
+          >
+            Previous
+          </button>
+          <button class="skip-btn" @click="skipQuestion">Skip</button>
+        </div>
       </div>
       <div class="question-section">
         <div v-if="currentQuestion" class="question-content">
@@ -63,7 +72,29 @@
             v-if="showOptions"
             class="answer-section answer-section--visible"
           >
+            <div
+              v-if="currentQuestion.type?.toLowerCase() !== 'multipart'"
+              class="question-card"
+            >
+              <component
+                :is="getQuestionComponent"
+                :question="currentQuestion"
+                :answer="currentQuestion.answer"
+                :display="
+                  currentQuestion.display || currentQuestion.type?.toLowerCase()
+                "
+                :passport-id="route.query.propertyId || ''"
+                :displayed-question="displayedQuestion"
+                :show-question-cursor="showQuestionCursor"
+                :displayed-description="displayedDescription"
+                :show-description-cursor="showDescriptionCursor"
+                :displayed-help="displayedHelp"
+                :show-help-cursor="showHelpCursor"
+                @update="updateAnswer"
+              />
+            </div>
             <component
+              v-else
               :is="getQuestionComponent"
               :question="currentQuestion"
               :answer="currentQuestion.answer"
@@ -80,7 +111,7 @@
               @update="updateAnswer"
             />
 
-            <div v-if="hasAdditionalInfo" class="upload-after-radio">
+            <div v-if="hasAdditionalInfo" class="question-card">
               <TextUploadQuestion
                 :question="{
                   description:
@@ -120,6 +151,7 @@ import ThankYouModal from '~/components/passport-view/ThankYouModal.vue'
 import RadioQuestion from '~/components/passport-view/questions/RadioQuestion.vue'
 import TextUploadQuestion from '~/components/passport-view/questions/TextUploadQuestion.vue'
 import CheckboxQuestion from '~/components/passport-view/questions/CheckboxQuestion.vue'
+import ChipsQuestion from '~/components/passport-view/questions/ChipsQuestion.vue'
 import NoteQuestion from '~/components/passport-view/questions/NoteQuestion.vue'
 import DateQuestion from '~/components/passport-view/questions/DateQuestion.vue'
 import ScaleQuestion from '~/components/passport-view/questions/ScaleQuestion.vue'
@@ -146,6 +178,7 @@ const {
   saveAnswer: apiSaveAnswer,
   completeTask,
   moveToNextQuestion,
+  moveToPreviousQuestion,
 } = usePassportRuntime()
 
 const showThankYou = ref(false)
@@ -342,6 +375,10 @@ const isAnswerValid = computed(() => {
     return Array.isArray(answer) && answer.length > 0
   }
 
+  if (type === 'chips') {
+    return Array.isArray(answer) && answer.length > 0
+  }
+
   if (type === 'upload') {
     return Array.isArray(answer) && answer.length > 0
   }
@@ -363,7 +400,11 @@ const isAnswerValid = computed(() => {
     }
     if (typeof answer === 'object') {
       if (answer.date) return ('' + answer.date).trim().length > 0
-      return ('' + (answer.value || '')).trim().length > 0
+      if (answer.value) return ('' + (answer.value || '')).trim().length > 0
+      return Object.values(answer).some(
+        (val) =>
+          val !== undefined && val !== null && ('' + val).trim().length > 0,
+      )
     }
     return false
   }
@@ -408,13 +449,15 @@ const isAnswerValid = computed(() => {
       if (partAnswer === undefined || partAnswer === null || partAnswer === '')
         return false
 
-      if (part.type === 'checkbox')
+      const partType = part.type?.toLowerCase?.()
+
+      if (partType === 'checkbox')
         return Array.isArray(partAnswer) && partAnswer.length > 0
-      if (part.type === 'upload')
+      if (partType === 'upload')
         return Array.isArray(partAnswer) && partAnswer.length > 0
-      if (part.type === 'multitextinput')
+      if (partType === 'multitextinput')
         return Array.isArray(partAnswer) && partAnswer.length > 0
-      if (part.type === 'multifieldform') {
+      if (partType === 'multifieldform') {
         // For repeatable: partAnswer is array of objects
         if (part.repeatable && Array.isArray(partAnswer)) {
           return (
@@ -438,21 +481,27 @@ const isAnswerValid = computed(() => {
         }
         return false
       }
-      if (part.type === 'date') {
+      if (partType === 'date') {
         if (typeof partAnswer === 'object' && partAnswer !== null) {
           return (
             (partAnswer.date && ('' + partAnswer.date).trim().length > 0) ||
-            ('' + (partAnswer.value || '')).trim().length > 0
+            ('' + (partAnswer.value || '')).trim().length > 0 ||
+            Object.values(partAnswer).some(
+              (val) =>
+                val !== undefined &&
+                val !== null &&
+                ('' + val).trim().length > 0,
+            )
           )
         }
         return ('' + partAnswer).trim().length > 0
       }
-      if (part.type === 'text') {
+      if (partType === 'text') {
         return typeof partAnswer === 'string'
           ? partAnswer.trim().length > 0
           : !!partAnswer
       }
-      if (part.type === 'radio') {
+      if (partType === 'radio') {
         return (
           partAnswer !== '' && partAnswer !== undefined && partAnswer !== null
         )
@@ -471,6 +520,7 @@ const getQuestionComponent = computed(() => {
     radio: RadioQuestion,
     text: TextUploadQuestion,
     checkbox: CheckboxQuestion,
+    chips: ChipsQuestion,
     upload: TextUploadQuestion,
     note: NoteQuestion,
     date: DateQuestion,
@@ -568,6 +618,10 @@ const saveAnswer = async () => {
 
 const skipQuestion = () => {
   moveToNextQuestion()
+}
+
+const goToPreviousQuestion = () => {
+  moveToPreviousQuestion()
 }
 
 const handleNextQuestion = () => {
@@ -730,11 +784,10 @@ const handleContinue = () => {
 }
 
 .question-section {
-  background: white;
-  border-radius: 16px;
-  padding: 12px 16px;
   margin-top: 4px;
-  border: 0.33px solid #3c3c432e;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 .question-header {
@@ -742,6 +795,28 @@ const handleContinue = () => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+}
+
+.question-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.prev-btn {
+  background: white;
+  border: 0.33px solid #3c3c432e;
+  border-radius: 40px;
+  color: #00a19a;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.prev-btn:disabled {
+  color: #999;
+  cursor: not-allowed;
 }
 
 .question-number {
@@ -835,8 +910,17 @@ const handleContinue = () => {
 
 .upload-after-radio {
   margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #e0e0e0;
+}
+
+.question-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 12px 16px;
+  border: 0.33px solid #3c3c432e;
+}
+
+.question-card + .question-card {
+  margin-top: 16px;
 }
 
 .submit-btn {
