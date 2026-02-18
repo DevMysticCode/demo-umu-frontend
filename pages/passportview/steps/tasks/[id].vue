@@ -176,6 +176,7 @@ const {
   setCurrentTask,
   loadPassport,
   loadQuestions,
+  loadSectionQuestions,
   saveAnswer: apiSaveAnswer,
   completeTask,
   moveToNextQuestion,
@@ -216,7 +217,8 @@ onMounted(async () => {
 
   setCurrentStep(stepId)
   setCurrentTask(taskId)
-  await loadQuestions(taskId)
+  // Load all questions from the entire section, not just this task
+  await loadSectionQuestions(stepId)
 })
 
 const typeText = (targetRef, cursorRef, text, speed = 30) => {
@@ -445,8 +447,32 @@ const isAnswerValid = computed(() => {
     const parts = currentQuestion.value.parts
     if (!parts || !Array.isArray(parts)) return false
 
+    // Helper function to check if a part is visible (not hidden by conditional logic)
+    const isPartVisible = (part) => {
+      if (!part.conditionalOn) return true
+      const dependentPartAnswer = answer[part.conditionalOn]
+      if (dependentPartAnswer === undefined || dependentPartAnswer === null)
+        return false
+      if (!part.showOnValues || !Array.isArray(part.showOnValues)) return false
+      return part.showOnValues.includes(dependentPartAnswer)
+    }
+
     return parts.every((part) => {
+      // Skip validation for hidden parts
+      if (!isPartVisible(part)) return true
+
+      // For visible parts, validate based on whether they are required
       const partAnswer = answer[part.partKey]
+
+      // If part is not required and has no answer, that's OK
+      if (
+        !part.required &&
+        (partAnswer === undefined || partAnswer === null || partAnswer === '')
+      ) {
+        return true
+      }
+
+      // If part is required or has an answer, validate it
       if (partAnswer === undefined || partAnswer === null || partAnswer === '')
         return false
 
@@ -562,9 +588,72 @@ const additionalInfoDisplay = computed(() => {
   return null
 })
 
-const updateAnswer = (answer) => {
+const updateAnswer = async (answer) => {
   if (!currentQuestion.value) return
   currentQuestion.value.answer = answer
+
+  // Check if this is a multipart question with auto-save
+  if (
+    currentQuestion.value.type?.toLowerCase() === 'multipart' &&
+    currentQuestion.value.autoSaveOn
+  ) {
+    const { partKey, value } = currentQuestion.value.autoSaveOn
+    let triggerPartAnswer = answer[partKey]
+
+    // Debug: log what we're checking
+    console.log('AutoSave Check:', {
+      partKey,
+      expectedValue: value,
+      actualValue: triggerPartAnswer,
+      allAnswers: answer,
+      questionParts: currentQuestion.value.parts?.map((p) => p.partKey),
+    })
+
+    // If the partKey doesn't exist, try to find the first radio part as fallback
+    if (triggerPartAnswer === undefined) {
+      const firstRadioPart = currentQuestion.value.parts?.find(
+        (p) => p.type?.toLowerCase() === 'radio',
+      )
+      if (firstRadioPart) {
+        triggerPartAnswer = answer[firstRadioPart.partKey]
+        console.log(
+          'PartKey not found, using first radio part:',
+          firstRadioPart.partKey,
+          triggerPartAnswer,
+        )
+      }
+    }
+
+    // If trigger part is answered with the auto-save value, save immediately
+    if (triggerPartAnswer === value) {
+      console.log('✅ Auto-save triggered! Saving question...')
+      isSaving.value = true
+      try {
+        await apiSaveAnswer(currentQuestion.value.id, answer)
+
+        // Move to next question
+        const hasMoreQuestions = moveToNextQuestion()
+
+        if (!hasMoreQuestions) {
+          // Last question answered, complete the task
+          const result = await completeTask(taskId)
+
+          if (result?.sectionCompleted) {
+            earnedPoints.value = calculateEarnedPoints()
+            showThankYou.value = true
+          } else {
+            router.push(
+              `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
+            )
+          }
+        }
+      } catch (error) {
+        console.error('Error auto-saving answer:', error)
+      } finally {
+        isSaving.value = false
+      }
+    }
+  }
 }
 
 const updateAdditionalInfo = (data) => {
@@ -950,7 +1039,7 @@ const handleContinue = () => {
 }
 
 .submit-btn:disabled {
-  color:#00A19A;
+  color: #00a19a;
   background: #00a19a1a;
   cursor: not-allowed;
 }

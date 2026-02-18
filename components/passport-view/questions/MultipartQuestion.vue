@@ -33,7 +33,7 @@
       </div>
     </template> -->
 
-    <div v-for="part in sortedParts" :key="part.partKey" class="part-section">
+    <div v-for="part in visibleParts" :key="part.partKey" class="part-section">
       <!-- Part-specific text display -->
       <p v-if="part.title && part.type !== 'multifieldform'" class="part-text">
         {{ part.title }}
@@ -110,6 +110,25 @@ watch(
 const sortedParts = computed(() => {
   if (!props.question?.parts) return []
   return [...props.question.parts].sort((a, b) => a.order - b.order)
+})
+
+const isPartVisible = (part) => {
+  // If no conditional, always show
+  if (!part.conditionalOn) return true
+  
+  // Find the answer for the part we're dependent on
+  const dependentPartAnswer = localAnswers.value[part.conditionalOn]
+  
+  // If answer doesn't exist, don't show
+  if (dependentPartAnswer === undefined || dependentPartAnswer === null) return false
+  
+  // Check if the answer is in showOnValues
+  if (!part.showOnValues || !Array.isArray(part.showOnValues)) return false
+  return part.showOnValues.includes(dependentPartAnswer)
+}
+
+const visibleParts = computed(() => {
+  return sortedParts.value.filter(part => isPartVisible(part))
 })
 
 const getPartComponent = (part) => {
