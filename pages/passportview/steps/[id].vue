@@ -33,7 +33,7 @@
 
       <div class="action-buttons">
         <button class="help-btn">
-          <span class="btn-icon">?</span>
+          <!-- <span class="btn-icon">?</span> -->
           Help
         </button>
         <button class="video-btn">
@@ -352,6 +352,11 @@ const goBack = () => {
   background: #00b8a9;
   color: white;
   border-color: #00b8a9;
+}
+
+.help-btn {
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .play-icon {

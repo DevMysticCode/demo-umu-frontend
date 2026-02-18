@@ -8,7 +8,7 @@
         iconClass="w-[176px] h-[176px]"
         heroClass="w-[176px] h-[176x]"
         :mainTitle="currentStep?.title"
-        :subTitle="currentStep?.subtitle"
+        :subTitle="currentTask?.title"
       />
 
       <div class="progress-section">
@@ -779,6 +779,11 @@ const handleContinue = () => {
   border-color: #00b8a9;
 }
 
+.help-btn {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 .play-icon {
   font-size: 12px;
 }
@@ -944,7 +949,8 @@ const handleContinue = () => {
 }
 
 .submit-btn:disabled {
-  background: #ccc;
+  color:#00A19A;
+  background: #00a19a1a;
   cursor: not-allowed;
 }
 
