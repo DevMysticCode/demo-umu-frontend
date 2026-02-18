@@ -1,17 +1,22 @@
 <template>
-  <div>
-    <!-- Hero Image -->
-    <div class="hero">
-      <div class="hero__image" :class="heroClass">
-        <OPIcon :name="iconName" :class="iconClass" />
+  <div class="hero-section">
+    <OPIcon name="backgroundImage" class="hero__bg" />
+    <div class="hero-content">
+      <!-- Hero Image -->
+      <div class="hero">
+        <div class="hero__image" :class="heroClass">
+          <OPIcon :name="iconName" :class="iconClass" />
+        </div>
       </div>
-    </div>
 
-    <!-- Title -->
-    <div class="hero-title">
-      <h1 class="hero-title__main">{{ mainTitle }}</h1>
-      <h1 v-if="subColored" class="hero-title__subColored">{{ subColored }}</h1>
-      <p class="hero-title__sub">{{ subTitle }}</p>
+      <!-- Title -->
+      <div class="hero-title">
+        <h1 class="hero-title__main">{{ mainTitle }}</h1>
+        <h1 v-if="subColored" class="hero-title__subColored">
+          {{ subColored }}
+        </h1>
+        <p class="hero-title__sub">{{ subTitle }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -32,6 +37,23 @@ defineProps({
 </script>
 
 <style scoped>
+.hero-section {
+  position: relative;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
 .hero {
   @apply flex justify-center pt-6 pb-0;
 }

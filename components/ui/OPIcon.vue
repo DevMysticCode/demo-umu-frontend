@@ -122,6 +122,7 @@ const iconMap: Record<string, string> = {
   pointsLock: '/op-icons/passportview/pointsLock.svg',
   lightBulb: '/op-icons/passportview/lightBulb.svg',
   addMoreButton: '/op-icons/passportview/addMoreButton.svg',
+  backgroundImage: '/op-icons/backgroundImage.jpeg',
 }
 
 const iconPath = computed(() => {
