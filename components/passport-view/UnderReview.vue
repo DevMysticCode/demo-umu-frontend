@@ -104,7 +104,7 @@ defineEmits(['viewProfile'])
   color: #000000;
   margin: 8px 0 0 0;
   font-weight: 400;
-
+  color: #00a19a;
   font-size: 11px;
   line-height: 13px;
   letter-spacing: 0.06px;
