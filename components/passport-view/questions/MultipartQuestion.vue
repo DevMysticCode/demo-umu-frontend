@@ -255,7 +255,7 @@ const updatePartAnswer = (partKey, value) => {
 }
 
 .help-title {
-  margin: 0 0 8px;
+  margin: 0px 0 8px -5px;
   color: #00a19a;
   font-weight: 590;
   font-size: 13px;
