@@ -749,7 +749,7 @@ const handleContinue = () => {
 
 .action-buttons {
   display: flex;
-  gap: 12px;
+  gap: 4px;
   margin-bottom: 24px;
   justify-content: end;
 }
