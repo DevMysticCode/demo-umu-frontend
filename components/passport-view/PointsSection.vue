@@ -96,7 +96,7 @@ defineEmits(['nextTask'])
 
 .points-label {
   font-size: 15px;
-  color: #000000;
+  color: #00a19a;
   margin-top: 8px;
   line-height: 20px;
   letter-spacing: -0.23px;
