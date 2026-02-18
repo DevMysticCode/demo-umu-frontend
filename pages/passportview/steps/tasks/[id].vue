@@ -57,6 +57,7 @@
         </h2>
         <div class="question-actions">
           <button
+            v-if="currentQuestionIndex != 0"
             class="prev-btn"
             :disabled="currentQuestionIndex === 0"
             @click="goToPreviousQuestion"
