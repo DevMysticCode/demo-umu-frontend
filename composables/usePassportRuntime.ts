@@ -73,7 +73,7 @@ const loadQuestions = async (taskId) => {
   currentQuestionIndex.value = firstUnanswered >= 0 ? firstUnanswered : 0
 }
 
-const loadSectionQuestions = async (stepId) => {
+const loadSectionQuestions = async (stepId, startAtTaskId = null) => {
   // Load all questions from all tasks in a section
   if (!currentStep.value) return
 
@@ -105,15 +105,38 @@ const loadSectionQuestions = async (stepId) => {
   questionTaskMap.value = taskMap
   currentQuestions.value = flattened
 
-  // Start at first unanswered question
-  const firstUnanswered = flattened.findIndex((q) => !q.completed)
-  currentQuestionIndex.value = firstUnanswered >= 0 ? firstUnanswered : 0
+  // If startAtTaskId is provided, start at the first question of that task
+  if (startAtTaskId) {
+    const taskQuestionIndex = flattened.findIndex(
+      (q) => q._taskId === startAtTaskId,
+    )
+    if (taskQuestionIndex >= 0) {
+      // Find first unanswered in this task, or start at task's first question
+      const taskQuestions = flattened.filter((q) => q._taskId === startAtTaskId)
+      const firstUnansweredInTask = taskQuestions.findIndex((q) => !q.completed)
+      if (firstUnansweredInTask >= 0) {
+        currentQuestionIndex.value = flattened.indexOf(
+          taskQuestions[firstUnansweredInTask],
+        )
+      } else {
+        currentQuestionIndex.value = taskQuestionIndex
+      }
+    } else {
+      // Fallback: first unanswered in entire section
+      const firstUnanswered = flattened.findIndex((q) => !q.completed)
+      currentQuestionIndex.value = firstUnanswered >= 0 ? firstUnanswered : 0
+    }
+  } else {
+    // Start at first unanswered question in entire section
+    const firstUnanswered = flattened.findIndex((q) => !q.completed)
+    currentQuestionIndex.value = firstUnanswered >= 0 ? firstUnanswered : 0
+  }
 
-  // Set currentTask to the task of the first question
-  if (flattened.length > 0) {
-    const taskId = flattened[0]._taskId
+  // Set currentTask to the task of the current question
+  if (flattened.length > 0 && currentQuestionIndex.value < flattened.length) {
+    const currentQ = flattened[currentQuestionIndex.value]
     currentTask.value =
-      currentStep.value.tasks.find((t) => t.id === taskId) || null
+      currentStep.value.tasks.find((t) => t.id === currentQ._taskId) || null
   }
 }
 

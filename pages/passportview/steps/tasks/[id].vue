@@ -217,8 +217,8 @@ onMounted(async () => {
 
   setCurrentStep(stepId)
   setCurrentTask(taskId)
-  // Load all questions from the entire section, not just this task
-  await loadSectionQuestions(stepId)
+  // Load all questions from the entire section, starting at the clicked task
+  await loadSectionQuestions(stepId, taskId)
 })
 
 const typeText = (targetRef, cursorRef, text, speed = 30) => {
@@ -635,13 +635,15 @@ const updateAnswer = async (answer) => {
         const hasMoreQuestions = moveToNextQuestion()
 
         if (!hasMoreQuestions) {
-          // Last question answered, complete the task
-          const result = await completeTask(taskId)
+          // Last question in section - check if all questions are completed
+          const allCompleted = currentQuestions.value.every((q) => q.completed)
 
-          if (result?.sectionCompleted) {
+          if (allCompleted) {
+            // All questions in section done — show thank-you
             earnedPoints.value = calculateEarnedPoints()
             showThankYou.value = true
           } else {
+            // More unanswered questions remain — go back to task list
             router.push(
               `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
             )
@@ -685,15 +687,15 @@ const saveAnswer = async () => {
     const hasMoreQuestions = moveToNextQuestion()
 
     if (!hasMoreQuestions) {
-      // Last question answered, complete the task
-      const result = await completeTask(taskId)
+      // Last question in section - check if all questions are completed
+      const allCompleted = currentQuestions.value.every((q) => q.completed)
 
-      if (result?.sectionCompleted) {
-        // All tasks in section done — show thank-you
+      if (allCompleted) {
+        // All questions in section done — show thank-you
         earnedPoints.value = calculateEarnedPoints()
         showThankYou.value = true
       } else {
-        // More tasks remain in section — go back to task list
+        // More unanswered questions remain — go back to task list
         router.push(
           `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
         )
