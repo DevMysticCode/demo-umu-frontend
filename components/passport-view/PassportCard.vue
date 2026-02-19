@@ -1,10 +1,10 @@
 <template>
   <div class="passport-card">
-    <div class="passport-container w-64">
+    <div class="passport-container">
       <img
         src="/op-icons/passportview/umu-passport.png"
         alt="Passport Background"
-        class="h-full object-cover rounded-lg"
+        class="passport-image h-full object-cover rounded-lg"
       />
       <div class="passport-address">
         <div class="address-line">{{ line1 }}</div>
@@ -55,6 +55,15 @@ defineProps({
 
 .passport-container {
   position: relative;
+  width: 100%;
+  max-width: 360px;
+}
+
+.passport-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 /* .passport-visual {
   transform: rotateY(-15deg);

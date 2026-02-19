@@ -34,8 +34,11 @@
         </div>
       </div>
 
-      <!-- Instruction Text -->
-      <p class="input-instruction">
+      <!-- Instruction Text (only if explicit or if additional info will follow) -->
+      <p
+        v-if="question.instructionText || question.additionalInfoType"
+        class="input-instruction"
+      >
         {{
           question.instructionText ||
           'Please provide written instruction for your answer above:'
