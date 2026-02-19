@@ -391,6 +391,7 @@ const emitUpdate = () => {
   transition: all 0.2s;
   padding: 8px;
   min-height: 30px;
+  max-height: 100%;
   position: relative;
 }
 
@@ -431,12 +432,12 @@ const emitUpdate = () => {
 
 .front-side {
   grid-column: 2;
-  grid-row: 1;
+  grid-row: 3;
 }
 
 .rear-side {
   grid-column: 2;
-  grid-row: 3;
+  grid-row: 1;
 }
 
 .property-center {
