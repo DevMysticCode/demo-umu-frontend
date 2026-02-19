@@ -62,25 +62,7 @@
 
         <!-- Center Property Image -->
         <div class="property-center">
-          <svg
-            viewBox="0 0 200 200"
-            class="property-image"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <!-- Simple property outline -->
-            <rect
-              x="30"
-              y="30"
-              width="140"
-              height="140"
-              fill="white"
-              stroke="#ccc"
-              stroke-width="2"
-            />
-            <rect x="50" y="50" width="40" height="40" fill="#e8f4f0" />
-            <rect x="110" y="50" width="40" height="40" fill="#e8f4f0" />
-            <circle cx="100" cy="120" r="8" fill="#999" />
-          </svg>
+          <OPIcon name="boundariesMap" class="w-[175px] h-[175px]" />
         </div>
 
         <!-- Rear Side (Bottom) -->
@@ -197,6 +179,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 type SideKey = 'left' | 'right' | 'rear' | 'front'
 
