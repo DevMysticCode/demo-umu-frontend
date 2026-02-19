@@ -1,69 +1,10 @@
 <template>
   <div class="combined-input-wrapper">
-    <!-- Text area (top) -->
-    <div
-      v-if="displayMode === 'text' || displayMode === 'both'"
-      class="input-container"
-    >
+    <!-- For 'both' mode: show instruction text at top, then textarea, then upload options below with Or divider -->
+    <template v-if="displayMode === 'both'">
       <div v-if="!textValue || textValue.length === 0" class="pending-badge">
-        <span class="pending-icon">⚠</span> Pending
-      </div>
-
-      <!-- Question Display (skip if hideQuestionDisplay is true) -->
-      <template v-if="!hideQuestionDisplay">
-        <p v-if="question.instructionText" class="question-text">
-          {{ question.instructionText }}
-          <span v-if="showQuestionCursor" class="typing-cursor">|</span>
-        </p>
-
-        <!-- Description Display -->
-        <div v-if="question.description" class="question-description">
-          {{ question.description }}
-          <span
-            v-if="showDescriptionCursor"
-            class="typing-cursor typing-cursor--small"
-            >|</span
-          >
-        </div>
-
-        <!-- Help Display -->
-        <div v-if="displayedHelp" class="help-section">
-          <div class="help-content">
-            <h4 class="help-title">
-              <span class="help-icon">💡</span>What is this?
-            </h4>
-            <p class="help-text">
-              {{ displayedHelp }}
-              <span
-                v-if="showHelpCursor"
-                class="typing-cursor typing-cursor--small"
-                >|</span
-              >
-            </p>
-          </div>
-        </div>
-      </template>
-
-      <textarea
-        :value="textValue"
-        @input="onTextInput"
-        :placeholder="
-          question.placeholder ||
-          'E.g., Back fence in the garden has been moved back 2 yards...'
-        "
-        class="text-input"
-        rows="6"
-      ></textarea>
-    </div>
-
-    <!-- Upload section (bottom) -->
-    <div
-      v-if="displayMode === 'upload' || displayMode === 'both'"
-      class="upload-container"
-    >
-      <div v-if="hasPending" class="pending-badge">
         <span class="pending-icon"
-          ><OPIcon name="pending" class="w-[11px] h-[11px]"
+          ><OPIcon name="pendingCircle" class="w-[11px] h-[11px]"
         /></span>
         Pending
       </div>
@@ -74,6 +15,19 @@
           'Please indicate ownership by written instruction or by reference to a plan:'
         }}
       </p>
+
+      <textarea
+        :value="textValue"
+        @input="onTextInput"
+        :placeholder="
+          question.placeholder ||
+          'E.g., The irregular boundary near the stream at the rear of the property is owned by...'
+        "
+        class="text-input"
+        rows="6"
+      ></textarea>
+
+      <div class="or-divider"></div>
 
       <div class="upload-options">
         <button class="upload-btn" @click="triggerFileUpload">
@@ -110,7 +64,122 @@
           <button class="remove-btn" @click="removeFile(index)">✕</button>
         </div>
       </div>
-    </div>
+    </template>
+
+    <!-- Text area only mode -->
+    <template v-else-if="displayMode === 'text'">
+      <div class="input-container">
+        <div v-if="!textValue || textValue.length === 0" class="pending-badge">
+          <span class="pending-icon"
+            ><OPIcon name="pendingCircle" class="w-[11px] h-[11px]"
+          /></span>
+          Pending
+        </div>
+
+        <!-- Question Display (skip if hideQuestionDisplay is true) -->
+        <template v-if="!hideQuestionDisplay">
+          <p v-if="question.instructionText" class="question-text">
+            {{ question.instructionText }}
+            <span v-if="showQuestionCursor" class="typing-cursor">|</span>
+          </p>
+
+          <!-- Description Display -->
+          <div v-if="question.description" class="question-description">
+            {{ question.description }}
+            <span
+              v-if="showDescriptionCursor"
+              class="typing-cursor typing-cursor--small"
+              >|</span
+            >
+          </div>
+
+          <!-- Help Display -->
+          <div v-if="displayedHelp" class="help-section">
+            <div class="help-content">
+              <h4 class="help-title">
+                <span class="help-icon">💡</span>What is this?
+              </h4>
+              <p class="help-text">
+                {{ displayedHelp }}
+                <span
+                  v-if="showHelpCursor"
+                  class="typing-cursor typing-cursor--small"
+                  >|</span
+                >
+              </p>
+            </div>
+          </div>
+        </template>
+
+        <textarea
+          :value="textValue"
+          @input="onTextInput"
+          :placeholder="
+            question.placeholder ||
+            'E.g., Back fence in the garden has been moved back 2 yards...'
+          "
+          class="text-input"
+          rows="6"
+        ></textarea>
+      </div>
+    </template>
+
+    <!-- Upload only mode -->
+    <template v-else-if="displayMode === 'upload'">
+      <div class="upload-container">
+        <div v-if="hasPending" class="pending-badge">
+          <span class="pending-icon"
+            ><OPIcon name="pendingCircle" class="w-[11px] h-[11px]"
+          /></span>
+          Pending
+        </div>
+
+        <p class="instruction-text">
+          {{
+            question.uploadInstruction ||
+            'Please indicate ownership by written instruction or by reference to a plan:'
+          }}
+        </p>
+
+        <div class="upload-options">
+          <button class="upload-btn" @click="triggerFileUpload">
+            <span class="upload-icon"
+              ><OPIcon name="upload" class="w-[20px] h-[20px]"
+            /></span>
+            <span>Upload from Files</span>
+          </button>
+          <button class="upload-btn camera">
+            <span class="upload-icon"
+              ><OPIcon name="scan" class="w-[20px] h-[20px]"
+            /></span>
+            <span>Scan Using Camera</span>
+          </button>
+        </div>
+
+        <input
+          ref="fileInput"
+          type="file"
+          multiple
+          @change="handleFileSelect"
+          style="display: none"
+        />
+
+        <div v-if="uploadedFiles.length > 0" class="uploaded-files">
+          <h4 class="files-title">
+            Uploaded Files ({{ uploadedFiles.length }})
+          </h4>
+          <div
+            v-for="(file, index) in uploadedFiles"
+            :key="index"
+            class="file-item"
+          >
+            <span class="file-icon">📄</span>
+            <span class="file-name">{{ file.name }}</span>
+            <button class="remove-btn" @click="removeFile(index)">✕</button>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -387,15 +456,50 @@ onMounted(() => {
   min-height: 120px; /* Make upload container more obvious */
 }
 
+.or-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 400;
+  color: #000000;
+  margin: 12px 0;
+  height: 20px;
+  position: relative;
+}
+
+.or-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 0.33px;
+  background-color: #3c3c432e;
+  z-index: 0;
+}
+
+.or-divider::after {
+  content: 'Or';
+  position: relative;
+  z-index: 1;
+  background: white;
+  padding: 0 12px;
+}
+
 .pending-badge {
+  background-color: #ff3b301a;
+  border-radius: 100px;
   top: 16px;
   right: 16px;
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
-  color: #ff6b6b;
+  font-size: 11px;
+  color: #ff3b30;
   font-weight: 600;
+  padding: 4px 8px;
+  width: fit-content;
 }
 
 .input-instruction {
@@ -403,6 +507,14 @@ onMounted(() => {
   color: #1a1a1a;
   margin: 0 0 12px 0;
   font-weight: 500;
+}
+
+.instruction-text {
+  font-size: 14px;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 .text-input {
@@ -427,18 +539,9 @@ onMounted(() => {
 
 .upload-container {
   background: white;
-  border: 2px solid #e0e0e0;
   border-radius: 12px;
   padding: 16px;
   position: relative;
-}
-
-.instruction-text {
-  font-size: 14px;
-  color: #1a1a1a;
-  margin: 0 0 16px 0;
-  font-weight: 500;
-  line-height: 1.5;
 }
 
 .upload-options {

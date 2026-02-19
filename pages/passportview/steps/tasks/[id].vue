@@ -1,6 +1,6 @@
 <template>
   <div v-if="!showThankYou" class="mobile-container task-page bg-umu-gradient">
-    <AppHeader :showBack="true" right="dots" />
+    <AppHeader :showBack="true" :backTo="backToStepsUrl" right="dots" />
 
     <div class="task-content">
       <HeroSection
@@ -159,6 +159,7 @@ import ScaleQuestion from '~/components/passport-view/questions/ScaleQuestion.vu
 import MultipartQuestion from '~/components/passport-view/questions/MultipartQuestion.vue'
 import MultiTextInputQuestion from '@/components/passport-view/questions/MultiTextInputQuestion.vue'
 import MultiFieldFormQuestion from '@/components/passport-view/questions/MultiFieldFormQuestion.vue'
+import BoundaryResponsibilityQuestion from '~/components/passport-view/questions/BoundaryResponsibilityQuestion.vue'
 import AppHeader from '@/components/core/AppHeader.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
@@ -191,6 +192,10 @@ const additionalInfoAnswer = ref(null)
 const stepId = route.query.stepId
 const taskId = route.params.id
 
+const backToStepsUrl = computed(() => {
+  return `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`
+})
+
 const displayedQuestion = ref('')
 const displayedDescription = ref('')
 const displayedHelp = ref('')
@@ -201,14 +206,15 @@ const showHelpCursor = ref(false)
 
 const showOptions = ref(false)
 
-let typingInterval = null
+// Animation removed - no longer needed
+// let typingInterval = null
 
-onBeforeUnmount(() => {
-  if (typingInterval) {
-    clearInterval(typingInterval)
-    typingInterval = null
-  }
-})
+// onBeforeUnmount(() => {
+//   if (typingInterval) {
+//     clearInterval(typingInterval)
+//     typingInterval = null
+//   }
+// })
 
 onMounted(async () => {
   if (!currentStep.value) {
@@ -221,32 +227,33 @@ onMounted(async () => {
   await loadSectionQuestions(stepId, taskId)
 })
 
-const typeText = (targetRef, cursorRef, text, speed = 30) => {
-  return new Promise((resolve) => {
-    // clear any previous typing
-    if (typingInterval) {
-      clearInterval(typingInterval)
-      typingInterval = null
-    }
-
-    targetRef.value = ''
-    cursorRef.value = true
-
-    let index = 0
-
-    typingInterval = setInterval(() => {
-      if (index < text.length) {
-        targetRef.value += text.charAt(index)
-        index++
-      } else {
-        clearInterval(typingInterval)
-        typingInterval = null
-        cursorRef.value = false
-        resolve()
-      }
-    }, speed)
-  })
-}
+// Typing animation removed - display questions immediately
+// const typeText = (targetRef, cursorRef, text, speed = 30) => {
+//   return new Promise((resolve) => {
+//     // clear any previous typing
+//     if (typingInterval) {
+//       clearInterval(typingInterval)
+//       typingInterval = null
+//     }
+//
+//     targetRef.value = ''
+//     cursorRef.value = true
+//
+//     let index = 0
+//
+//     typingInterval = setInterval(() => {
+//       if (index < text.length) {
+//         targetRef.value += text.charAt(index)
+//         index++
+//       } else {
+//         clearInterval(typingInterval)
+//         typingInterval = null
+//         cursorRef.value = false
+//         resolve()
+//       }
+//     }, speed)
+//   })
+// }
 
 // const runQuestionAnimation = async (q) => {
 //   if (!q) return
@@ -260,46 +267,16 @@ const typeText = (targetRef, cursorRef, text, speed = 30) => {
 //   showOptions.value = true
 // }
 
-const runQuestionAnimation = async (q) => {
+const runQuestionAnimation = (q) => {
   if (!q) return
 
-  console.log('Starting animation for question:', q.question)
+  // Display all text immediately without animation
+  displayedQuestion.value = q.question
+  displayedDescription.value = q.description || ''
+  displayedHelp.value = q.help || ''
 
-  // reset everything
-  displayedQuestion.value = ''
-  displayedDescription.value = ''
-  displayedHelp.value = ''
-  showOptions.value = false
-
-  showQuestionCursor.value = false
-  showDescriptionCursor.value = false
-  showHelpCursor.value = false
-
-  // 1️⃣ Question (always)
-  await typeText(displayedQuestion, showQuestionCursor, q.question, 35)
-  console.log('Question typed')
-
-  // 2️⃣ Description (optional)
-  if (q.description) {
-    await typeText(
-      displayedDescription,
-      showDescriptionCursor,
-      q.description,
-      25,
-    )
-    console.log('Description typed')
-  }
-
-  // 3️⃣ Help text (optional)
-  if (q.help) {
-    await typeText(displayedHelp, showHelpCursor, q.help, 20)
-    console.log('Help typed')
-  }
-
-  // 4️⃣ Finally show options
+  // Show options immediately
   showOptions.value = true
-  console.log('Options should now be visible, showOptions:', showOptions.value)
-  console.log(' hasAdditionalInfo:', hasAdditionalInfo.value)
 }
 
 watch(
@@ -372,6 +349,11 @@ const isAnswerValid = computed(() => {
 
   if (type === 'radio') {
     return answer !== '' && answer !== undefined && answer !== null
+  }
+
+  // Check if this is a boundary responsibility question
+  if (type === 'boundary') {
+    return answer && answer.left && answer.right && answer.rear && answer.front
   }
 
   if (type === 'checkbox') {
@@ -542,7 +524,8 @@ const isAnswerValid = computed(() => {
 })
 
 const getQuestionComponent = computed(() => {
-  const type = currentQuestion.value?.type?.toLowerCase() // This will convert "RADIO" to "radio"
+  const type = currentQuestion.value?.type?.toLowerCase() // This will convert "BOUNDARY" to "boundary"
+
   const components = {
     radio: RadioQuestion,
     text: TextUploadQuestion,
@@ -552,7 +535,7 @@ const getQuestionComponent = computed(() => {
     note: NoteQuestion,
     date: DateQuestion,
     scale: ScaleQuestion,
-    multipart: MultipartQuestion,
+    boundary: BoundaryResponsibilityQuestion,
     multitextinput: MultiTextInputQuestion,
     multifieldform: MultiFieldFormQuestion,
   }
@@ -591,6 +574,40 @@ const additionalInfoDisplay = computed(() => {
 const updateAnswer = async (answer) => {
   if (!currentQuestion.value) return
   currentQuestion.value.answer = answer
+
+  // Check if this is a NOTE question being completed
+  if (currentQuestion.value.type?.toLowerCase() === 'note' && answer === true) {
+    console.log('✅ NOTE question completed! Auto-saving...')
+    isSaving.value = true
+    try {
+      // Save the note as completed
+      await apiSaveAnswer(currentQuestion.value.id, answer)
+
+      // Move to next question
+      const hasMoreQuestions = moveToNextQuestion()
+
+      if (!hasMoreQuestions) {
+        // Last question in section - check if all questions are completed
+        const allCompleted = currentQuestions.value.every((q) => q.completed)
+
+        if (allCompleted) {
+          // All questions in section done — show thank-you
+          earnedPoints.value = calculateEarnedPoints()
+          showThankYou.value = true
+        } else {
+          // More unanswered questions remain — go back to task list
+          router.push(
+            `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
+          )
+        }
+      }
+    } catch (error) {
+      console.error('Error completing NOTE question:', error)
+    } finally {
+      isSaving.value = false
+    }
+    return
+  }
 
   // Check if this is a multipart question with auto-save
   if (

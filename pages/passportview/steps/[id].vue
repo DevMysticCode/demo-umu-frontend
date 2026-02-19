@@ -7,7 +7,7 @@
       <button class="menu-btn">⋯</button>
     </div> -->
 
-    <AppHeader :showBack="true" right="dots" />
+    <AppHeader :showBack="true" :backTo="backToPassportUrl" right="dots" />
 
     <div class="step-content">
       <HeroSection
@@ -81,6 +81,12 @@
                 :style="getTaskProgressStyle(task)"
               >
                 <span v-if="task.completed" class="check-icon">✓</span>
+                <span
+                  v-else-if="getTaskStatus(task) === 'in-progress'"
+                  class="progress-percentage"
+                >
+                  {{ getTaskProgress(task) }}%
+                </span>
               </div>
             </div>
 
@@ -126,6 +132,10 @@ const router = useRouter()
 const { currentStep, setCurrentStep } = usePassportRuntime()
 
 const stepId = route.params.id
+
+const backToPassportUrl = computed(() => {
+  return `/passportview/${route.query.propertyId}`
+})
 
 // onMounted(() => {
 //   setCurrentStep(stepId)
@@ -182,6 +192,13 @@ const getTaskProgressStyle = (task) => {
     return { '--progress': `${progress}` }
   }
   return {}
+}
+
+const getTaskProgress = (task) => {
+  if (task.totalQuestions > 0) {
+    return Math.round((task.answeredQuestions / task.totalQuestions) * 100)
+  }
+  return 0
 }
 
 const getCompletedDate = () => {
@@ -464,6 +481,14 @@ const goBack = () => {
   color: white;
   font-size: 16px;
   font-weight: 700;
+}
+
+.progress-percentage {
+  color: #00a19a;
+  font-size: 9px;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
 }
 
 .task-icon {
