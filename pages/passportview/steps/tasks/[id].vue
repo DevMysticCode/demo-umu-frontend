@@ -129,7 +129,12 @@
           </div>
         </div>
       </div>
-      <button class="submit-btn" @click="saveAnswer" :disabled="!isAnswerValid">
+      <button
+        v-if="currentQuestion?.type?.toLowerCase() !== 'radio'"
+        class="submit-btn"
+        @click="saveAnswer"
+        :disabled="!isAnswerValid"
+      >
         Save and go to next question
       </button>
     </div>
@@ -620,6 +625,35 @@ const updateAnswer = async (answer) => {
       }
     } catch (error) {
       console.error('Error completing NOTE question:', error)
+    } finally {
+      isSaving.value = false
+    }
+    return
+  }
+
+  // Auto-save plain RADIO questions immediately on selection
+  if (currentQuestion.value.type?.toLowerCase() === 'radio') {
+    console.log('✅ RADIO question selected! Auto-saving...')
+    isSaving.value = true
+    try {
+      await apiSaveAnswer(currentQuestion.value.id, answer)
+
+      const hasMoreQuestions = moveToNextQuestion()
+
+      if (!hasMoreQuestions) {
+        const allCompleted = currentQuestions.value.every((q) => q.completed)
+
+        if (allCompleted) {
+          earnedPoints.value = calculateEarnedPoints()
+          showThankYou.value = true
+        } else {
+          router.push(
+            `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
+          )
+        }
+      }
+    } catch (error) {
+      console.error('Error auto-saving RADIO answer:', error)
     } finally {
       isSaving.value = false
     }
