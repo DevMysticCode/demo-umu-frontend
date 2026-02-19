@@ -374,7 +374,7 @@ const emitUpdate = () => {
   grid-template-rows: 30px 1fr 30px;
   gap: 12px;
   padding: 12px;
-  background: #f9fafb;
+  background-color: #f3f0f0;
   border-radius: 12px;
 }
 
@@ -442,9 +442,9 @@ const emitUpdate = () => {
 .property-center {
   grid-column: 2;
   grid-row: 2;
-  background: white;
+  background: transparent;
   border-radius: 8px;
-  border: 2px solid #e0e0e0;
+  /* border: 2px solid #e0e0e0; */
   display: flex;
   align-items: center;
   justify-content: center;
