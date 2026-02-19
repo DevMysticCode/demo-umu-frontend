@@ -74,7 +74,7 @@
             class="answer-section answer-section--visible"
           >
             <div
-              v-if="currentQuestion.type?.toLowerCase() !== 'multipart'"
+              v-if="currentQuestionType !== 'multipart'"
               class="question-card"
             >
               <component
@@ -337,17 +337,31 @@ const remainingQuestions = computed(() => {
   return currentQuestions.value.filter((q) => !q.completed).length
 })
 
+const normalizeQuestionType = (question) => {
+  return (question?.type || '')
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/-/g, '_')
+}
+
+const currentQuestionType = computed(() =>
+  normalizeQuestionType(currentQuestion.value),
+)
+
 const isAnswerValid = computed(() => {
   if (!currentQuestion.value) return false
 
   const answer = currentQuestion.value.answer
-  const type = currentQuestion.value.type?.toLowerCase()
+  const type = currentQuestionType.value
+  const isRadioType = type === 'radio' || type === 'single_choice'
+  const isCheckboxType = type === 'checkbox' || type === 'multiple_choice'
 
   if (type === 'text') {
     return answer && answer.trim().length > 0
   }
 
-  if (type === 'radio') {
+  if (isRadioType) {
     return answer !== '' && answer !== undefined && answer !== null
   }
 
@@ -356,7 +370,7 @@ const isAnswerValid = computed(() => {
     return answer && answer.left && answer.right && answer.rear && answer.front
   }
 
-  if (type === 'checkbox') {
+  if (isCheckboxType) {
     return Array.isArray(answer) && answer.length > 0
   }
 
@@ -524,17 +538,20 @@ const isAnswerValid = computed(() => {
 })
 
 const getQuestionComponent = computed(() => {
-  const type = currentQuestion.value?.type?.toLowerCase() // This will convert "BOUNDARY" to "boundary"
+  const type = currentQuestionType.value
 
   const components = {
     radio: RadioQuestion,
+    single_choice: RadioQuestion,
     text: TextUploadQuestion,
     checkbox: CheckboxQuestion,
+    multiple_choice: CheckboxQuestion,
     chips: ChipsQuestion,
     upload: TextUploadQuestion,
     note: NoteQuestion,
     date: DateQuestion,
     scale: ScaleQuestion,
+    multipart: MultipartQuestion,
     boundary: BoundaryResponsibilityQuestion,
     multitextinput: MultiTextInputQuestion,
     multifieldform: MultiFieldFormQuestion,
