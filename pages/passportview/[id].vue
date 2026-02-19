@@ -239,9 +239,17 @@ const overallProgress = computed(() => {
 })
 
 const getStepPoints = (step) => {
+  if (!step?.tasks || !Array.isArray(step.tasks)) {
+    return 0
+  }
   return step.tasks
     .filter((t) => t.completed)
-    .reduce((sum, t) => sum + t.pointsReward, 0)
+    .reduce((sum, t) => {
+      // Support multiple property names: pointsReward, points, pointsAward, reward
+      const points =
+        t.pointsReward || t.points || t.pointsAward || t.reward || 0
+      return sum + (Number(points) || 0)
+    }, 0)
 }
 
 const navigateToStep = (stepId) => {

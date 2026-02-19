@@ -35,14 +35,28 @@
 
     <div v-for="part in visibleParts" :key="part.partKey" class="part-section">
       <!-- Part-specific text display -->
-      <p v-if="part.title && part.type !== 'multifieldform'" class="part-text">
-        {{ part.title }}
-        <span v-if="false" class="typing-cursor">|</span>
-      </p>
+      <!-- Skip title/description for TextUploadQuestion as it displays its own instruction text -->
+      <template
+        v-if="
+          !(
+            part.type?.toLowerCase?.() === 'text' &&
+            (part.display?.toLowerCase?.() === 'upload' ||
+              part.display?.toLowerCase?.() === 'both')
+          )
+        "
+      >
+        <p
+          v-if="part.title && part.type !== 'multifieldform'"
+          class="part-text"
+        >
+          {{ part.title }}
+          <span v-if="false" class="typing-cursor">|</span>
+        </p>
 
-      <p v-if="part.description" class="part-description">
-        {{ part.description }}
-      </p>
+        <p v-if="part.description" class="part-description">
+          {{ part.description }}
+        </p>
+      </template>
 
       <div v-if="part.helpText" class="help-section part-help-section">
         <div class="help-content">
@@ -115,20 +129,21 @@ const sortedParts = computed(() => {
 const isPartVisible = (part) => {
   // If no conditional, always show
   if (!part.conditionalOn) return true
-  
+
   // Find the answer for the part we're dependent on
   const dependentPartAnswer = localAnswers.value[part.conditionalOn]
-  
+
   // If answer doesn't exist, don't show
-  if (dependentPartAnswer === undefined || dependentPartAnswer === null) return false
-  
+  if (dependentPartAnswer === undefined || dependentPartAnswer === null)
+    return false
+
   // Check if the answer is in showOnValues
   if (!part.showOnValues || !Array.isArray(part.showOnValues)) return false
   return part.showOnValues.includes(dependentPartAnswer)
 }
 
 const visibleParts = computed(() => {
-  return sortedParts.value.filter(part => isPartVisible(part))
+  return sortedParts.value.filter((part) => isPartVisible(part))
 })
 
 const getPartComponent = (part) => {
@@ -232,6 +247,11 @@ const isPartAnswered = (partKey) => {
 const updatePartAnswer = (partKey, value) => {
   localAnswers.value[partKey] = value
   emit('update', { ...localAnswers.value })
+}
+
+// Expose method for parent to check if a part is visible
+const getVisibleParts = () => {
+  return visibleParts.value
 }
 </script>
 

@@ -1,6 +1,14 @@
 <template>
-  <div v-if="modelValue" class="drawer-overlay" @click.self="handleClose">
-    <div class="drawer" :class="{ 'drawer--open': modelValue }">
+  <div
+    v-if="modelValue"
+    class="drawer-overlay"
+    :class="{ 'drawer-overlay--fullscreen': fullscreen }"
+    @click.self="handleClose"
+  >
+    <div
+      class="drawer"
+      :class="{ 'drawer--open': modelValue, 'drawer--fullscreen': fullscreen }"
+    >
       <!-- Header -->
       <div class="drawer__header">
         <button v-if="showBackButton" @click="handleClose" class="drawer__back">
@@ -65,6 +73,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  fullscreen: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'close'])
@@ -87,7 +99,7 @@ watch(
     if (typeof document !== 'undefined') {
       lockScroll(isOpen)
     }
-  }
+  },
 )
 
 onUnmounted(() => {
@@ -101,8 +113,9 @@ onUnmounted(() => {
 /* Drawer Overlay */
 .drawer-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 20px;
+  left: 50%;
+  max-width: 28rem;
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
@@ -110,6 +123,13 @@ onUnmounted(() => {
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  transform: translateX(-50%);
+}
+
+.drawer-overlay--fullscreen {
+  align-items: stretch;
+  justify-content: stretch;
+  background-color: rgba(0, 0, 0, 0.9);
 }
 
 /* Drawer Container */
@@ -117,13 +137,22 @@ onUnmounted(() => {
   background-color: #f3f4f6;
   width: 100%;
   max-width: 28rem;
-  max-height: 90vh; /* Changed from 95vh to prevent cutoff */
+  max-height: 90vh;
   border-radius: 1rem 1rem 0 0;
   display: flex;
   flex-direction: column;
   transform: translateY(100%);
   transition: transform 0.3s ease-out;
   overflow: hidden;
+}
+
+.drawer--fullscreen {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  transform: translateY(0) !important;
 }
 
 .drawer--open {

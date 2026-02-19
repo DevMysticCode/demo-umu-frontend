@@ -5,7 +5,7 @@
     <!-- Left Section: Back Button or Empty Space -->
     <div class="w-10 flex items-center justify-start">
       <ModalBackButton v-if="showBack && isOverlay" @close="emit('back')" />
-      <BackButton v-else-if="showBack" />
+      <BackButton v-else-if="showBack" :to="backTo" />
     </div>
 
     <!-- Center Section: Heading -->
@@ -53,6 +53,11 @@ const emit = defineEmits(['back'])
 const props = defineProps({
   title: String, // Heading text
   showBack: { type: Boolean, default: false },
+  backTo: {
+    // optional navigation target for back button
+    type: String,
+    default: null,
+  },
   right: {
     // 'profile', 'dots', or null
     type: String,
