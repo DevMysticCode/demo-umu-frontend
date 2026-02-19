@@ -421,7 +421,7 @@ const emitUpdate = () => {
   grid-column: 1;
   grid-row: 2;
   writing-mode: vertical-lr;
-  transform: rotate(180deg);
+  /* transform: rotate(180deg); */
 }
 
 .right-side {
