@@ -124,6 +124,7 @@ const iconMap: Record<string, string> = {
   addMoreButton: '/op-icons/passportview/addMoreButton.svg',
   backgroundImage: '/op-icons/backgroundImage.jpeg',
   pendingCircle: '/op-icons/passportview/pendingCircle.svg',
+  boundariesMap: '/op-icons/passportview/boundariesMap.svg',
 }
 
 const iconPath = computed(() => {
