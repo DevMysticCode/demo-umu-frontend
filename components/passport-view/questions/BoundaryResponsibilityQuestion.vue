@@ -62,7 +62,7 @@
 
         <!-- Center Property Image -->
         <div class="property-center">
-          <OPIcon name="boundariesMap" class="w-[175px] h-[175px]" />
+          <OPIcon name="boundariesMap" class="w-[200px] h-[200px]" />
         </div>
 
         <!-- Rear Side (Bottom) -->
@@ -91,58 +91,71 @@
 
     <!-- Your Selections Section -->
     <div class="selections-summary">
-      <h3 class="summary-title">Your Selections</h3>
-      <div class="summary-items">
-        <div class="summary-item">
-          <span class="summary-label">To the Left:</span>
-          <span
-            class="summary-value"
-            :class="{ 'not-selected': !selections.left }"
-          >
-            {{
-              selections.left ? formatLabel(selections.left) : 'Not Selected'
-            }}
-          </span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">On the Right:</span>
-          <span
-            class="summary-value"
-            :class="{ 'not-selected': !selections.right }"
-          >
-            {{
-              selections.right ? formatLabel(selections.right) : 'Not Selected'
-            }}
-          </span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">On the Rear:</span>
-          <span
-            class="summary-value"
-            :class="{ 'not-selected': !selections.rear }"
-          >
-            {{
-              selections.rear ? formatLabel(selections.rear) : 'Not Selected'
-            }}
-          </span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">On the Front:</span>
-          <span
-            class="summary-value"
-            :class="{ 'not-selected': !selections.front }"
-          >
-            {{
-              selections.front ? formatLabel(selections.front) : 'Not Selected'
-            }}
-          </span>
-        </div>
+      <div class="pending-badge">
+        <span class="pending-icon"
+          ><OPIcon name="pendingCircle" class="w-[11px] h-[11px]"
+        /></span>
+        Pending
       </div>
 
-      <button class="reset-btn" @click="resetSelections">
-        <span class="reset-icon">↻</span>
-        Reset All Selections
-      </button>
+      <h3 class="summary-title">Your Selections</h3>
+      <div class="summary-content">
+        <div class="summary-items">
+          <div class="summary-item">
+            <span class="summary-label">To the Left:</span>
+            <span
+              class="summary-value"
+              :class="{ 'not-selected': !selections.left }"
+            >
+              {{
+                selections.left ? formatLabel(selections.left) : 'Not Selected'
+              }}
+            </span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">On the Right:</span>
+            <span
+              class="summary-value"
+              :class="{ 'not-selected': !selections.right }"
+            >
+              {{
+                selections.right
+                  ? formatLabel(selections.right)
+                  : 'Not Selected'
+              }}
+            </span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">On the Rear:</span>
+            <span
+              class="summary-value"
+              :class="{ 'not-selected': !selections.rear }"
+            >
+              {{
+                selections.rear ? formatLabel(selections.rear) : 'Not Selected'
+              }}
+            </span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">On the Front:</span>
+            <span
+              class="summary-value"
+              :class="{ 'not-selected': !selections.front }"
+            >
+              {{
+                selections.front
+                  ? formatLabel(selections.front)
+                  : 'Not Selected'
+              }}
+            </span>
+          </div>
+        </div>
+
+        <button class="reset-btn" @click="resetSelections">
+          <!-- <span class="reset-icon">↻</span> -->
+          Reset All Selections
+        </button>
+      </div>
     </div>
 
     <!-- Selection Modal/Dropdown -->
@@ -370,16 +383,16 @@ const emitUpdate = () => {
 
 .layout-container {
   display: grid;
-  grid-template-columns: 30px 1fr 30px;
-  grid-template-rows: 30px 1fr 30px;
+  grid-template-columns: 25px 1fr 25px;
+  grid-template-rows: 25px 1fr 25px;
   gap: 12px;
-  padding: 12px;
+  padding: 30px 45px;
   background-color: #f3f0f0;
   border-radius: 12px;
 }
 
 .side {
-  background: #00a19a;
+  background: #b6c8c7fb;
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -387,22 +400,24 @@ const emitUpdate = () => {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  color: white;
+  color: #00a19a;
   transition: all 0.2s;
   padding: 8px;
-  min-height: 30px;
+  min-height: 25px;
   max-height: 100%;
   position: relative;
 }
 
 .side:hover {
   background: #00b8a9;
+  color: white;
   transform: scale(1.05);
 }
 
 .side.selected {
-  background: #00d4c3;
+  background: #00a19a;
   box-shadow: 0 0 0 3px #00a19a33;
+  color: white;
 }
 
 .side-label {
@@ -449,7 +464,7 @@ const emitUpdate = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 5px;
 }
 
 .property-image {
@@ -462,16 +477,40 @@ const emitUpdate = () => {
 /* Selections Summary */
 .selections-summary {
   background: white;
-  border-radius: 12px;
-  padding: 16px;
+  padding: 20px;
   margin-top: 24px;
+}
+
+.summary-content {
+  padding: 10px 15px;
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
 }
 
-.summary-title {
-  margin: 0 0 16px;
-  font-size: 16px;
+.pending-badge {
+  background-color: #ff3b301a;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #ff3b30;
   font-weight: 600;
+  padding: 4px 8px;
+  width: fit-content;
+  margin-bottom: 16px;
+}
+
+.pending-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.summary-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 400;
   color: #000;
 }
 
@@ -483,46 +522,51 @@ const emitUpdate = () => {
 }
 
 .summary-item {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 120px 1fr;
   align-items: center;
-  padding: 12px;
-  background: #f9fafb;
-  border-radius: 8px;
+  column-gap: 12px;
+  /* padding: 12px 0; */
+  /* border-bottom: 1px solid #f0f0f0; */
+}
+
+.summary-item:last-child {
+  border-bottom: none;
 }
 
 .summary-label {
   font-size: 13px;
   font-weight: 400;
-  color: #6b7280;
+  color: #9ca3af;
 }
 
 .summary-value {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: #00a19a;
 }
 
 .summary-value.not-selected {
-  color: #9ca3af;
+  color: #d1d5db;
   font-weight: 400;
 }
 
 .reset-btn {
   width: 100%;
-  padding: 12px;
+  padding: 5px;
   background: white;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 100px;
   color: #00a19a;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 400;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   transition: all 0.2s;
+  /* margin: 12px; */
 }
 
 .reset-btn:hover {
