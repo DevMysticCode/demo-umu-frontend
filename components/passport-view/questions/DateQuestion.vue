@@ -413,7 +413,7 @@ const formatValue = (rawValue, option) => {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px;
+  padding: 8px 12px;
   background: white;
   border: 2px solid #e0e0e0;
   border-radius: 12px;
