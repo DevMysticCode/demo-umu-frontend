@@ -66,6 +66,29 @@
         :fullscreen="true"
         @close="handleDrawerClose"
       >
+        <!-- Conditional info card (only shown when infoCard data exists) -->
+        <div v-if="infoCard" class="info-card">
+          <div class="info-card__header">
+            <div class="info-card__text">
+              <h3 class="info-card__title">{{ infoCard.title }}</h3>
+              <p class="info-card__description">{{ infoCard.description }}</p>
+              <span
+                v-if="infoCard.sections?.length"
+                class="info-card__link"
+              >{{ infoCard.sections[0].title }}</span>
+            </div>
+            <OPIcon v-if="infoCard.icon" :name="infoCard.icon" class="w-[48px] h-[48px]" />
+          </div>
+          <div
+            v-for="section in infoCard.sections"
+            :key="section.title"
+            class="info-card__section"
+          >
+            <h4 class="info-card__section-title">{{ section.title }}</h4>
+            <p class="info-card__section-content">{{ section.content }}</p>
+          </div>
+        </div>
+
         <!-- Show tabs only if there are multiple sections (not generic template) -->
         <div v-if="hasMultipleSections && !isGenericTemplate" class="tabs">
           <button
@@ -86,20 +109,41 @@
           <!-- Generic template: just show the content -->
           <div v-if="isGenericTemplate">
             <div class="template">
-              <div class="template-body">{{ genericContent }}</div>
+              <div class="template-body">
+                <template v-if="Array.isArray(genericContent)">
+                  <ul class="note-list">
+                    <li v-for="(item, i) in genericContent" :key="i">{{ item }}</li>
+                  </ul>
+                </template>
+                <template v-else>{{ genericContent }}</template>
+              </div>
             </div>
           </div>
 
           <!-- Buyers/Sellers template: show tabbed content -->
           <div v-if="activeTab === 'buyers' && hasBuyers">
             <div class="template">
-              <div class="template-body">{{ prewritten.buyers }}</div>
+              <div class="template-body">
+                <template v-if="Array.isArray(prewritten.buyers)">
+                  <ul class="note-list">
+                    <li v-for="(item, i) in prewritten.buyers" :key="i">{{ item }}</li>
+                  </ul>
+                </template>
+                <template v-else>{{ prewritten.buyers }}</template>
+              </div>
             </div>
           </div>
 
           <div v-if="activeTab === 'sellers' && hasSellers">
             <div class="template">
-              <div class="template-body">{{ prewritten.sellers }}</div>
+              <div class="template-body">
+                <template v-if="Array.isArray(prewritten.sellers)">
+                  <ul class="note-list">
+                    <li v-for="(item, i) in prewritten.sellers" :key="i">{{ item }}</li>
+                  </ul>
+                </template>
+                <template v-else>{{ prewritten.sellers }}</template>
+              </div>
             </div>
           </div>
         </div>
@@ -109,9 +153,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, watch, computed } from 'vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
-import VisitLinkCard from '~/components/passport-view/VisitLinkCard.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 const props = defineProps({
   question: { type: Object, required: true },
@@ -138,18 +182,30 @@ const prewritten = computed(() => {
   return question.prewritten || question.prewrittenTemplates || {}
 })
 
+// Info card is optional — only shown when present in the data
+const infoCard = computed(() => prewritten.value?.infoCard || null)
+
 const shortBuyersNote = computed(() => {
-  const text = prewritten.value?.buyers || 'Click to view buyers notes'
+  const value = prewritten.value?.buyers
+  const text = Array.isArray(value)
+    ? value[0] || 'Click to view buyers notes'
+    : value || 'Click to view buyers notes'
   return text.length > 50 ? text.slice(0, 50) + '...' : text
 })
 
 const shortSellersNote = computed(() => {
-  const text = prewritten.value?.sellers || 'Click to view sellers notes'
+  const value = prewritten.value?.sellers
+  const text = Array.isArray(value)
+    ? value[0] || 'Click to view sellers notes'
+    : value || 'Click to view sellers notes'
   return text.length > 50 ? text.slice(0, 50) + '...' : text
 })
 
 const shortGenericContent = computed(() => {
-  const text = genericContent.value || 'Click to view details'
+  const value = genericContent.value
+  const text = Array.isArray(value)
+    ? value[0] || 'Click to view details'
+    : value || 'Click to view details'
   return text.length > 50 ? text.slice(0, 50) + '...' : text
 })
 
@@ -163,9 +219,18 @@ const genericContent = computed(() => {
 })
 
 // Check which sections are available
-const hasBuyers = computed(() => !!prewritten.value?.buyers)
-const hasSellers = computed(() => !!prewritten.value?.sellers)
-const hasContent = computed(() => !!genericContent.value)
+const hasBuyers = computed(() => {
+  const v = prewritten.value?.buyers
+  return Array.isArray(v) ? v.length > 0 : !!v
+})
+const hasSellers = computed(() => {
+  const v = prewritten.value?.sellers
+  return Array.isArray(v) ? v.length > 0 : !!v
+})
+const hasContent = computed(() => {
+  const v = genericContent.value
+  return Array.isArray(v) ? v.length > 0 : !!v
+})
 const isGenericTemplate = computed(
   () => hasContent.value && !hasBuyers.value && !hasSellers.value,
 )
@@ -221,9 +286,6 @@ const handleDrawerClose = () => {
   emit('update', true)
 }
 
-const handleVisitLink = () => {
-  console.log('Visit link clicked')
-}
 </script>
 
 <style scoped>
@@ -398,5 +460,86 @@ const handleVisitLink = () => {
   font-size: 16px;
   line-height: 23px;
   letter-spacing: 0px;
+}
+
+/* Bullet list for array content */
+.note-list {
+  margin: 0;
+  padding-left: 18px;
+  list-style: disc;
+}
+
+.note-list li {
+  margin-bottom: 14px;
+  color: #4b5563;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 23px;
+}
+
+.note-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Conditional info card */
+.info-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+}
+
+.info-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.info-card__text {
+  flex: 1;
+}
+
+.info-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 6px;
+}
+
+.info-card__description {
+  font-size: 13px;
+  color: #00a19a;
+  margin: 0 0 4px;
+  line-height: 18px;
+}
+
+.info-card__link {
+  font-size: 12px;
+  color: #00a19a;
+  text-decoration: underline;
+}
+
+
+.info-card__section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.info-card__section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 6px;
+}
+
+.info-card__section-content {
+  font-size: 13px;
+  color: #00a19a;
+  margin: 0;
+  line-height: 18px;
 }
 </style>

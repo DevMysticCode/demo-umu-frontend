@@ -17,6 +17,30 @@
         >
       </div>
 
+      <!-- External Link -->
+      <a
+        v-if="question.externalLink"
+        :href="question.externalLink.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="external-link"
+      >
+        <svg
+          class="external-link__icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+        </svg>
+        {{ question.externalLink.label }}
+      </a>
+
       <!-- Help Display -->
       <div v-if="displayedHelp" class="help-section">
         <div class="help-content">
@@ -414,6 +438,27 @@ const emitValue = () => {
   letter-spacing: -0.23px;
   color: #3c3c4399;
   margin-bottom: 20px;
+}
+
+.external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #00a19a;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+
+.external-link:active {
+  opacity: 0.7;
+}
+
+.external-link__icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .help-section {

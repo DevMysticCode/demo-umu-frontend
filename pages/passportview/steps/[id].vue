@@ -46,7 +46,7 @@
 
       <PointsSection
         :points="totalStepPoints"
-        label="Next: Boundary Responsibilities"
+        :label="nextStepLabel"
         :description="`A total of ${totalStepPoints}points are available in this section.`"
         :show-rewards-link="true"
         :show-next-task="hasNextTask"
@@ -129,7 +129,8 @@ import HeroSection from '@/components/HeroSection.vue'
 const route = useRoute()
 const router = useRouter()
 
-const { currentStep, setCurrentStep } = usePassportRuntime()
+const { currentStep, steps, setCurrentStep, loadPassport } =
+  usePassportRuntime()
 
 const stepId = route.params.id
 
@@ -141,8 +142,14 @@ const backToPassportUrl = computed(() => {
 //   setCurrentStep(stepId)
 // })
 
+onMounted(async () => {
+  if (steps.value.length === 0 && route.query.propertyId) {
+    await loadPassport(route.query.propertyId)
+  }
+})
+
 watchEffect(() => {
-  if (route.params.id) {
+  if (route.params.id && steps.value.length > 0) {
     setCurrentStep(route.params.id)
   }
 })
@@ -163,6 +170,25 @@ const stepProgress = computed(() => {
 // })
 
 const totalStepPoints = computed(() => 0)
+
+const orderedSteps = computed(() => {
+  const list = [...steps.value]
+  const hasOrder = list.some((step) => typeof step.order === 'number')
+  if (hasOrder) {
+    return list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+  }
+  return list
+})
+
+const nextStepLabel = computed(() => {
+  if (!currentStep.value) return 'Next: '
+  const currentIndex = orderedSteps.value.findIndex(
+    (step) => step.id === currentStep.value.id,
+  )
+  const nextStep =
+    currentIndex >= 0 ? orderedSteps.value[currentIndex + 1] : null
+  return nextStep?.title ? `Next: ${nextStep.title}` : 'Next: '
+})
 
 const hasNextTask = computed(() => {
   if (!currentStep.value) return false
