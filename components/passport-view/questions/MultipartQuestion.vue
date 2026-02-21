@@ -35,16 +35,17 @@
 
     <div v-for="part in visibleParts" :key="part.partKey" class="part-section">
       <!-- Part-specific text display -->
-      <!-- Skip title/description for TextUploadQuestion as it displays its own instruction text -->
       <template
         v-if="
-          !(
-            part.type?.toLowerCase?.() === 'text' &&
-            (part.display?.toLowerCase?.() === 'upload' ||
-              part.display?.toLowerCase?.() === 'both')
-          )
+          part.type?.toLowerCase?.() === 'text' &&
+          (part.display?.toLowerCase?.() === 'upload' ||
+            part.display?.toLowerCase?.() === 'both')
         "
       >
+        <!-- Teal section header for upload/both parts (disabled for now) -->
+        <!-- <h3 class="section-title">Upload/ Scan Any Supporting Document(s)</h3> -->
+      </template>
+      <template v-else>
         <p
           v-if="part.title && part.type !== 'multifieldform'"
           class="part-text"
@@ -171,6 +172,13 @@ const getPartComponent = (part) => {
 
 const buildPartQuestion = (part) => {
   const normalizedType = part.type?.toLowerCase?.()
+  const display = part.display?.toLowerCase?.()
+
+  // For text/upload fields, use title as uploadInstruction if not explicitly set
+  const uploadInstruction =
+    part.uploadInstruction ||
+    (display === 'both' || display === 'upload' ? part.title : '')
+
   return {
     title: part.title,
     description: part.description || '',
@@ -180,7 +188,7 @@ const buildPartQuestion = (part) => {
     display: normalizedType === 'upload' ? 'upload' : part.display || 'text',
     instructionText: part.instructionText || part.title,
     dateFields: part.dateFields,
-    uploadInstruction: part.uploadInstruction || '',
+    uploadInstruction: uploadInstruction,
     // scale / number metadata
     min: part.min,
     max: part.max,
@@ -336,6 +344,13 @@ const getVisibleParts = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #00b8a9;
+  margin: 0;
 }
 
 .part-section {

@@ -791,9 +791,7 @@ const handleNextQuestion = () => {
 }
 
 const handleContinue = () => {
-  router.push(
-    `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
-  )
+  router.push(`/passportview/${route.query.propertyId}`)
 }
 </script>
 

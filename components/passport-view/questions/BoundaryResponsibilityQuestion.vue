@@ -35,6 +35,11 @@
       </div>
     </template>
 
+    <!-- Tap Instruction -->
+    <p v-if="question.instructionText" class="tap-instruction">
+      {{ question.instructionText }}
+    </p>
+
     <!-- Property Layout with Clickable Areas -->
     <div class="property-layout">
       <div class="layout-container">
@@ -300,6 +305,15 @@ const emitUpdate = () => {
   width: 100%;
 }
 
+.tap-instruction {
+  color: #00b8a9;
+  font-weight: 700;
+  font-size: 15px;
+  text-align: start;
+  margin: 0 0 16px;
+  line-height: 20px;
+}
+
 .question-text {
   color: #000000;
   margin: 0 0 20px 0;
@@ -477,7 +491,7 @@ const emitUpdate = () => {
 /* Selections Summary */
 .selections-summary {
   background: white;
-  padding: 20px;
+  /* padding: 20px; */
   margin-top: 24px;
 }
 
