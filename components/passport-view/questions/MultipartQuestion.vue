@@ -33,50 +33,132 @@
       </div>
     </template> -->
 
-    <div v-for="part in visibleParts" :key="part.partKey" class="part-section">
-      <!-- Part-specific text display -->
-      <template
-        v-if="
-          part.type?.toLowerCase?.() === 'text' &&
-          (part.display?.toLowerCase?.() === 'upload' ||
-            part.display?.toLowerCase?.() === 'both')
-        "
-      >
-        <!-- Teal section header for upload/both parts (disabled for now) -->
-        <!-- <h3 class="section-title">Upload/ Scan Any Supporting Document(s)</h3> -->
-      </template>
-      <template v-else>
-        <p
-          v-if="part.title && part.type !== 'multifieldform'"
-          class="part-text"
+    <div
+      v-for="section in groupedSections"
+      :key="section.groupKey || section.parts[0].partKey"
+      class="part-section"
+    >
+      <div v-for="part in section.parts" :key="part.partKey" class="group-part">
+        <!-- Part-specific text display -->
+        <template
+          v-if="
+            part.type?.toLowerCase?.() === 'text' &&
+            (part.display?.toLowerCase?.() === 'upload' ||
+              part.display?.toLowerCase?.() === 'both')
+          "
         >
-          {{ part.title }}
-          <span v-if="false" class="typing-cursor">|</span>
-        </p>
+          <!-- Teal section header for upload/both parts (disabled for now) -->
+          <!-- <h3 class="section-title">Upload/ Scan Any Supporting Document(s)</h3> -->
+        </template>
+        <template v-else>
+          <p
+            v-if="part.title && part.type !== 'multifieldform' && part.type?.toLowerCase?.() !== 'upload'"
+            class="part-text"
+          >
+            {{ part.title }}
+            <span v-if="false" class="typing-cursor">|</span>
+          </p>
 
-        <p v-if="part.description" class="part-description">
-          {{ part.description }}
-        </p>
-      </template>
+          <p v-if="part.description" class="part-description">
+            {{ part.description }}
+          </p>
 
-      <div v-if="part.helpText" class="help-section part-help-section">
-        <div class="help-content">
-          <h4 class="help-title">
-            <span class="help-icon">💡</span>What is this?
-          </h4>
-          <p class="help-text">{{ part.helpText }}</p>
+          <!-- Part-level external link -->
+          <a
+            v-if="part.externalLink"
+            :href="part.externalLink.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="part-external-link"
+          >
+            <svg
+              class="part-external-link__icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+              />
+              <path
+                d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+              />
+            </svg>
+            {{ part.externalLink.label }}
+          </a>
+        </template>
+
+        <div v-if="part.helpText" class="help-section part-help-section">
+          <div class="help-content">
+            <h4 class="help-title">
+              <span class="help-icon">💡</span>What is this?
+            </h4>
+            <p class="help-text">{{ part.helpText }}</p>
+          </div>
+        </div>
+
+        <!-- Date input badge row (shown above the component when showDateInput is true) -->
+        <div v-if="part.showDateInput" class="number-input-row date-input-above">
+          <span class="number-input-label">{{ part.dateInputLabel || 'Date' }}</span>
+          <div class="date-badge-wrap">
+            <span v-if="localAnswers[part.partKey + '_date']" class="date-badge-value">
+              {{ formatDateForDisplay(localAnswers[part.partKey + '_date']) }}
+            </span>
+            <span v-else class="date-badge-placeholder">Select date</span>
+            <input
+              type="date"
+              class="date-badge-input"
+              :value="localAnswers[part.partKey + '_date'] || ''"
+              @input="(e) => updateDatePartInput(part.partKey, e.target.value)"
+            />
+          </div>
+        </div>
+
+        <component
+          :is="getPartComponent(part)"
+          :question="buildPartQuestion(part)"
+          :answer="getPartAnswer(part)"
+          :display="getPartDisplay(part)"
+          :passport-id="part.passportId || ''"
+          :hide-question-display="true"
+          @update="(val) => updatePartAnswer(part.partKey, val)"
+        />
+
+        <!-- Synced number input for chips parts that request it -->
+        <div
+          v-if="part.type?.toLowerCase?.() === 'chips' && part.showNumberInput"
+          class="number-input-row"
+        >
+          <span class="number-input-label">{{ part.numberInputLabel }}</span>
+          <input
+            class="number-input"
+            type="number"
+            min="0"
+            :value="getChipsNumberValue(part.partKey)"
+            @change="(e) => setChipsFromNumber(part.partKey, e.target.value)"
+          />
+        </div>
+
+        <!-- Currency input row (always visible, for parts with showCurrencyInput) -->
+        <div
+          v-if="part.showCurrencyInput"
+          class="number-input-row"
+        >
+          <span class="number-input-label">{{ part.currencyInputLabel || 'Enter Amount' }}</span>
+          <input
+            class="number-input currency-input"
+            type="text"
+            inputmode="decimal"
+            placeholder="£ 0000"
+            :value="localAnswers[part.partKey + '_amount'] || ''"
+            @input="(e) => updateCurrencyPartInput(part.partKey, e.target.value)"
+          />
         </div>
       </div>
-
-      <component
-        :is="getPartComponent(part)"
-        :question="buildPartQuestion(part)"
-        :answer="getPartAnswer(part)"
-        :display="getPartDisplay(part)"
-        :passport-id="part.passportId || ''"
-        :hide-question-display="true"
-        @update="(val) => updatePartAnswer(part.partKey, val)"
-      />
     </div>
   </div>
 </template>
@@ -147,6 +229,25 @@ const visibleParts = computed(() => {
   return sortedParts.value.filter((part) => isPartVisible(part))
 })
 
+const groupedSections = computed(() => {
+  const sections = []
+  const groupMap = new Map()
+  for (const part of visibleParts.value) {
+    const gk = part.groupKey
+    if (gk) {
+      if (!groupMap.has(gk)) {
+        const group = { groupKey: gk, parts: [] }
+        groupMap.set(gk, group)
+        sections.push(group)
+      }
+      groupMap.get(gk).parts.push(part)
+    } else {
+      sections.push({ groupKey: null, parts: [part] })
+    }
+  }
+  return sections
+})
+
 const getPartComponent = (part) => {
   const type = part?.type?.toLowerCase?.()
   const display = part?.display?.toLowerCase?.()
@@ -190,9 +291,17 @@ const buildPartQuestion = (part) => {
     dateFields: part.dateFields,
     uploadInstruction: uploadInstruction,
     // scale / number metadata
-    min: part.min,
-    max: part.max,
-    step: part.step,
+    min: part.min ?? part.scaleMin,
+    max: part.max ?? part.scaleMax,
+    step: part.step ?? part.scaleStep,
+    scaleMin: part.scaleMin,
+    scaleMax: part.scaleMax,
+    scaleStep: part.scaleStep,
+    scaleMinLabel: part.scaleMinLabel,
+    scaleMaxLabel: part.scaleMaxLabel,
+    scaleFormat: part.scaleFormat,
+    // chips single-select
+    singleSelect: part.singleSelect || false,
     // pass passportId through when rendering (used by collaborators part)
     passportId: part.passportId || '',
     // multifieldform metadata
@@ -250,6 +359,45 @@ const isPartAnswered = (partKey) => {
     )
   }
   return true
+}
+
+const getChipsNumberValue = (partKey) => {
+  const val = localAnswers.value[partKey]
+  if (!Array.isArray(val) || val.length === 0) return ''
+  const num = val.find(
+    (v) => typeof v === 'string' && v !== '' && !isNaN(Number(v)),
+  )
+  return num ?? ''
+}
+
+const setChipsFromNumber = (partKey, numStr) => {
+  const trimmed = String(numStr).trim()
+  if (trimmed === '') {
+    updatePartAnswer(partKey, [])
+    return
+  }
+  updatePartAnswer(partKey, [trimmed])
+}
+
+const updateCurrencyPartInput = (partKey, value) => {
+  localAnswers.value[partKey + '_amount'] = value
+  emit('update', { ...localAnswers.value })
+}
+
+const updateDatePartInput = (partKey, value) => {
+  localAnswers.value[partKey + '_date'] = value
+  emit('update', { ...localAnswers.value })
+}
+
+const formatDateForDisplay = (isoDate) => {
+  if (!isoDate) return ''
+  try {
+    const [y, m, d] = isoDate.split('-').map(Number)
+    const date = new Date(y, m - 1, d)
+    return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  } catch {
+    return isoDate
+  }
 }
 
 const updatePartAnswer = (partKey, value) => {
@@ -395,6 +543,32 @@ const getVisibleParts = () => {
   letter-spacing: -0.08px;
 }
 
+.part-external-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #00a19a;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 12px;
+  padding: 14px 20px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 50px;
+  background: #fff;
+}
+
+.part-external-link:active {
+  opacity: 0.7;
+}
+
+.part-external-link__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 .part-help-section {
   margin: 0 0 16px 0;
 }
@@ -412,5 +586,114 @@ const getVisibleParts = () => {
 
 .pending-icon {
   font-size: 11px;
+}
+
+.group-part + .group-part {
+  margin-top: 16px;
+  padding-top: 16px;
+  /* border-top: 0.33px solid #3c3c432e; */
+}
+
+.number-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+}
+
+.number-input-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+  flex: 1;
+}
+
+.number-input {
+  padding: 8px 16px;
+  background: #e6f9f7;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #00b8a9;
+  text-align: center;
+  width: 80px;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.number-input::-webkit-outer-spin-button,
+.number-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-input:focus {
+  background: #d1f5f1;
+}
+
+.currency-input {
+  width: 110px;
+}
+
+.date-badge-wrap {
+  position: relative;
+  padding: 8px 16px;
+  background: #e6f9f7;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  min-width: 110px;
+  text-align: center;
+}
+
+.date-badge-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #00b8a9;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.date-badge-placeholder {
+  font-size: 14px;
+  color: #999;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.date-badge-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.date-badge-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.date-input-above {
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 </style>

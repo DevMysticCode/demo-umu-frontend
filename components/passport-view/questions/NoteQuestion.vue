@@ -44,13 +44,13 @@
           </div>
         </template>
         <template v-else>
-          <div v-if="hasBuyers" class="summary-section">
-            <div class="summary-title">For Buyers</div>
-            <div class="summary-line">{{ shortBuyersNote }}</div>
-          </div>
           <div v-if="hasSellers" class="summary-section">
             <div class="summary-title">For Sellers</div>
             <div class="summary-line">{{ shortSellersNote }}</div>
+          </div>
+          <div v-if="hasBuyers" class="summary-section">
+            <div class="summary-title">For Buyers</div>
+            <div class="summary-line">{{ shortBuyersNote }}</div>
           </div>
         </template>
       </div>
@@ -92,16 +92,16 @@
         <!-- Show tabs only if there are multiple sections (not generic template) -->
         <div v-if="hasMultipleSections && !isGenericTemplate" class="tabs">
           <button
-            :class="['tab', { active: activeTab === 'buyers' }]"
-            @click="activeTab = 'buyers'"
-          >
-            Notes for Buyers
-          </button>
-          <button
             :class="['tab', { active: activeTab === 'sellers' }]"
             @click="activeTab = 'sellers'"
           >
             Notes for Sellers
+          </button>
+          <button
+            :class="['tab', { active: activeTab === 'buyers' }]"
+            @click="activeTab = 'buyers'"
+          >
+            Notes for Buyers
           </button>
         </div>
 
@@ -172,7 +172,7 @@ const props = defineProps({
 const emit = defineEmits(['update'])
 
 const open = ref(false)
-const activeTab = ref<'buyers' | 'sellers'>('buyers')
+const activeTab = ref<'buyers' | 'sellers'>('sellers')
 let hasAutoOpened = false
 
 // Prefer prewritten values from the question if available
@@ -240,10 +240,10 @@ const hasMultipleSections = computed(() => hasBuyers.value && hasSellers.value)
 watch(
   () => [hasBuyers.value, hasSellers.value],
   () => {
-    if (hasBuyers.value) {
-      activeTab.value = 'buyers'
-    } else if (hasSellers.value) {
+    if (hasSellers.value) {
       activeTab.value = 'sellers'
+    } else if (hasBuyers.value) {
+      activeTab.value = 'buyers'
     }
   },
   { immediate: true },

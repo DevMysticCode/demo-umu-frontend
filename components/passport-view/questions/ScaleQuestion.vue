@@ -17,7 +17,7 @@
         >
       </div>
 
-      <!-- External Link -->
+      <!-- External Link (pill style) -->
       <a
         v-if="question.externalLink"
         :href="question.externalLink.url"
@@ -35,11 +35,29 @@
           stroke-linecap="round"
           stroke-linejoin="round"
         >
-          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          <path
+            d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+          />
+          <path
+            d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+          />
         </svg>
         {{ question.externalLink.label }}
       </a>
+
+      <!-- Currency Input Box (only for currency scale) -->
+      <div v-if="question.scaleFormat === 'currency'" class="currency-box">
+        <span class="currency-box__label">Enter Asking Price</span>
+        <input
+          class="currency-box__value"
+          type="text"
+          inputmode="numeric"
+          :value="currencyInputText"
+          @focus="handleCurrencyFocus"
+          @input="handleCurrencyInput"
+          @blur="handleCurrencyBlur"
+        />
+      </div>
 
       <!-- Help Display -->
       <div v-if="displayedHelp" class="help-section">
@@ -140,17 +158,21 @@ const emit = defineEmits(['update'])
 
 // Determine if scale is alphabetic or numeric
 const isAlphabetic = computed(() => {
-  return props.question.scaleType === 'alphabet'
+  return String(props.question.scaleType || '')?.toLowerCase() === 'alphabet'
 })
 
 // Handle numeric values
 const minValue = computed(() => {
-  if (isAlphabetic.value) return 0
+  if (isAlphabetic.value) {
+    return props.question.scaleMin ?? props.question.min ?? 0
+  }
   return props.question.scaleMin ?? props.question.min ?? 0
 })
 
 const maxValue = computed(() => {
-  if (isAlphabetic.value) return 25 // A-Z = 0-25
+  if (isAlphabetic.value) {
+    return props.question.scaleMax ?? props.question.max ?? 25
+  }
   return props.question.scaleMax ?? props.question.max ?? 10
 })
 
@@ -165,15 +187,20 @@ const localValue = ref(
     : minValue.value,
 )
 
+function clampToScaleBounds(value) {
+  return Math.min(Math.max(value, minValue.value), maxValue.value)
+}
+
 function convertAnswerToSliderValue(answer) {
   if (isAlphabetic.value) {
     // Convert letter to index (A=0, B=1, ..., Z=25)
     if (typeof answer === 'string') {
-      return answer.toUpperCase().charCodeAt(0) - 65
+      const index = answer.toUpperCase().charCodeAt(0) - 65
+      return clampToScaleBounds(index)
     }
-    return answer ?? 0
+    return clampToScaleBounds(Number(answer ?? minValue.value))
   }
-  return Number(answer) ?? minValue.value
+  return clampToScaleBounds(Number(answer ?? minValue.value))
 }
 
 function convertSliderValueToAnswer(value) {
@@ -210,6 +237,10 @@ watch(
   },
 )
 
+watch([minValue, maxValue], () => {
+  localValue.value = clampToScaleBounds(localValue.value)
+})
+
 const rangePercent = computed(() => {
   if (maxValue.value === minValue.value) return 0
   return (
@@ -230,6 +261,14 @@ const scaleTicks = computed(() => {
 })
 
 const bottomLabels = computed(() => {
+  // When custom min/max text labels are set, show only those two at the extremes
+  if (props.question.scaleMinLabel || props.question.scaleMaxLabel) {
+    return [
+      props.question.scaleMinLabel || minValue.value,
+      props.question.scaleMaxLabel || maxValue.value,
+    ]
+  }
+
   if (isAlphabetic.value) {
     const start = minValue.value
     const end = maxValue.value
@@ -255,7 +294,7 @@ const bottomLabels = computed(() => {
     return roundedValue
   })
 
-  // Add + sign to last label if specified
+  // Override last label if specified
   if (props.question.scaleMaxLabel) {
     labels[labels.length - 1] = props.question.scaleMaxLabel
   }
@@ -265,11 +304,59 @@ const bottomLabels = computed(() => {
 
 const handleInput = (event) => {
   localValue.value = Number(event.target.value)
+  // Sync currency input text when slider moves
+  if (props.question.scaleFormat === 'currency' && !currencyInputFocused.value) {
+    currencyInputText.value = formatCurrencyFull(localValue.value)
+  }
   emitValue()
 }
 
 const emitValue = () => {
   emit('update', convertSliderValueToAnswer(localValue.value))
+}
+
+// ─── Currency Input ─────────────────────────────────────────────────────────
+
+function formatCurrencyFull(kValue) {
+  return '£' + (kValue * 1000).toLocaleString('en-GB')
+}
+
+const currencyInputFocused = ref(false)
+const currencyInputText = ref(
+  props.question.scaleFormat === 'currency'
+    ? formatCurrencyFull(localValue.value)
+    : '',
+)
+
+// Keep input text in sync when slider changes externally (e.g. answer prop)
+watch(localValue, (newVal) => {
+  if (props.question.scaleFormat === 'currency' && !currencyInputFocused.value) {
+    currencyInputText.value = formatCurrencyFull(newVal)
+  }
+})
+
+const handleCurrencyFocus = () => {
+  currencyInputFocused.value = true
+}
+
+const handleCurrencyInput = (event) => {
+  // Allow free typing; only sync to slider on blur
+  currencyInputText.value = event.target.value
+}
+
+const handleCurrencyBlur = (event) => {
+  currencyInputFocused.value = false
+  const raw = event.target.value.replace(/[£,\s]/g, '')
+  const parsed = parseInt(raw, 10)
+  if (!isNaN(parsed) && parsed > 0) {
+    // Convert full amount to K, snap to nearest step
+    const inK = parsed / 1000
+    const stepped = Math.round(inK / step.value) * step.value
+    localValue.value = clampToScaleBounds(stepped)
+    emitValue()
+  }
+  // Always reformat to match the slider value
+  currencyInputText.value = formatCurrencyFull(localValue.value)
 }
 </script>
 
@@ -440,15 +527,21 @@ const emitValue = () => {
   margin-bottom: 20px;
 }
 
+/* External Link — pill style matching Figma */
 .external-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
   color: #00a19a;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   text-decoration: none;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  padding: 14px 20px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 50px;
+  background: #fff;
 }
 
 .external-link:active {
@@ -456,9 +549,46 @@ const emitValue = () => {
 }
 
 .external-link__icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
+}
+
+/* Currency Input Box */
+.currency-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fff;
+  margin-bottom: 8px;
+}
+
+.currency-box__label {
+  font-size: 15px;
+  font-weight: 400;
+  color: #3c3c43;
+  flex: 1;
+}
+
+.currency-box__value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #00a19a;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  text-align: right;
+  width: 120px;
+  outline: none;
+}
+
+.currency-box__value:focus {
+  background: #e6f9f7;
 }
 
 .help-section {
