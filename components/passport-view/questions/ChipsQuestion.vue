@@ -55,6 +55,11 @@ const isSelected = (value) =>
   Array.isArray(props.answer) ? props.answer.includes(value) : false
 
 const toggle = (value) => {
+  if (props.question.singleSelect) {
+    const already = Array.isArray(props.answer) && props.answer.includes(value)
+    emit('update', already ? [] : [value])
+    return
+  }
   const arr = Array.isArray(props.answer) ? [...props.answer] : []
   const idx = arr.indexOf(value)
   if (idx > -1) arr.splice(idx, 1)

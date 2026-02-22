@@ -203,7 +203,7 @@ const getOptionFormat = (option) => {
 
 const isNumericInput = (option) => {
   const format = getOptionFormat(option)
-  return ['percentage', 'currency', 'number', 'years', 'units'].includes(format)
+  return ['percentage', 'currency', 'number', 'years', 'units', 'text'].includes(format)
 }
 
 const getInputType = (option) => {
@@ -269,6 +269,7 @@ const getInputMode = (option) => {
   if (format === 'percentage' || format === 'currency') return 'decimal'
   if (format === 'number' || format === 'years' || format === 'units')
     return 'numeric'
+  if (format === 'text') return 'text'
   return undefined
 }
 
@@ -295,6 +296,10 @@ const formatValue = (rawValue, option) => {
 
   if (format === 'number') {
     return `${rawValue}`
+  }
+
+  if (format === 'text') {
+    return rawValue
   }
 
   if (format === 'year') {
@@ -432,7 +437,7 @@ const formatValue = (rawValue, option) => {
 }
 
 .date-option.single-option {
-  padding: 16px 20px;
+  padding: 8px 12px;
 }
 
 .radio-btn {
