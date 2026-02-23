@@ -52,7 +52,11 @@
         </template>
         <template v-else>
           <p
-            v-if="part.title && part.type !== 'multifieldform' && part.type?.toLowerCase?.() !== 'upload'"
+            v-if="
+              part.title &&
+              part.type !== 'multifieldform' &&
+              part.type?.toLowerCase?.() !== 'upload'
+            "
             class="part-text"
           >
             {{ part.title }}
@@ -101,11 +105,26 @@
           </div>
         </div>
 
+        <!-- Voice + text input for chips parts that have showVoiceInput -->
+        <VoiceTextInput
+          v-if="part.showVoiceInput"
+          :value="localAnswers[part.partKey + '_text'] || ''"
+          @update="(val) => updateVoiceText(part.partKey, val)"
+        />
+
         <!-- Date input badge row (shown above the component when showDateInput is true) -->
-        <div v-if="part.showDateInput" class="number-input-row date-input-above">
-          <span class="number-input-label">{{ part.dateInputLabel || 'Date' }}</span>
+        <div
+          v-if="part.showDateInput"
+          class="number-input-row date-input-above"
+        >
+          <span class="number-input-label">{{
+            part.dateInputLabel || 'Date'
+          }}</span>
           <div class="date-badge-wrap">
-            <span v-if="localAnswers[part.partKey + '_date']" class="date-badge-value">
+            <span
+              v-if="localAnswers[part.partKey + '_date']"
+              class="date-badge-value"
+            >
               {{ formatDateForDisplay(localAnswers[part.partKey + '_date']) }}
             </span>
             <span v-else class="date-badge-placeholder">Select date</span>
@@ -144,18 +163,19 @@
         </div>
 
         <!-- Currency input row (always visible, for parts with showCurrencyInput) -->
-        <div
-          v-if="part.showCurrencyInput"
-          class="number-input-row"
-        >
-          <span class="number-input-label">{{ part.currencyInputLabel || 'Enter Amount' }}</span>
+        <div v-if="part.showCurrencyInput" class="number-input-row">
+          <span class="number-input-label">{{
+            part.currencyInputLabel || 'Enter Amount'
+          }}</span>
           <input
             class="number-input currency-input"
             type="text"
             inputmode="decimal"
             placeholder="£ 0000"
             :value="localAnswers[part.partKey + '_amount'] || ''"
-            @input="(e) => updateCurrencyPartInput(part.partKey, e.target.value)"
+            @input="
+              (e) => updateCurrencyPartInput(part.partKey, e.target.value)
+            "
           />
         </div>
       </div>
@@ -176,6 +196,7 @@ import AddressQuestion from './AddressQuestion.vue'
 import CollaboratorsQuestion from './CollaboratorsQuestion.vue'
 import MultiTextInputQuestion from './MultiTextInputQuestion.vue'
 import MultiFieldFormQuestion from './MultiFieldFormQuestion.vue'
+import VoiceTextInput from './VoiceTextInput.vue'
 
 const props = defineProps({
   question: { type: Object, required: true },
@@ -302,6 +323,8 @@ const buildPartQuestion = (part) => {
     scaleFormat: part.scaleFormat,
     // chips single-select
     singleSelect: part.singleSelect || false,
+    // text rows
+    rows: part.rows,
     // pass passportId through when rendering (used by collaborators part)
     passportId: part.passportId || '',
     // multifieldform metadata
@@ -384,6 +407,11 @@ const updateCurrencyPartInput = (partKey, value) => {
   emit('update', { ...localAnswers.value })
 }
 
+const updateVoiceText = (partKey, value) => {
+  localAnswers.value[partKey + '_text'] = value
+  emit('update', { ...localAnswers.value })
+}
+
 const updateDatePartInput = (partKey, value) => {
   localAnswers.value[partKey + '_date'] = value
   emit('update', { ...localAnswers.value })
@@ -394,7 +422,11 @@ const formatDateForDisplay = (isoDate) => {
   try {
     const [y, m, d] = isoDate.split('-').map(Number)
     const date = new Date(y, m - 1, d)
-    return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+    return date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
   } catch {
     return isoDate
   }
@@ -552,11 +584,13 @@ const getVisibleParts = () => {
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
+  margin: auto;
   margin-bottom: 12px;
-  padding: 14px 20px;
+  padding: 7px 14px;
   border: 1.5px solid #e0e0e0;
   border-radius: 50px;
   background: #fff;
+  width: fit-content;
 }
 
 .part-external-link:active {
@@ -621,7 +655,7 @@ const getVisibleParts = () => {
   font-weight: 600;
   color: #00b8a9;
   text-align: center;
-  width: 80px;
+  width: 60px;
   outline: none;
   -moz-appearance: textfield;
 }

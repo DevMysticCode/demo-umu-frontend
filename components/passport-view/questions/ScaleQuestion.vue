@@ -305,7 +305,10 @@ const bottomLabels = computed(() => {
 const handleInput = (event) => {
   localValue.value = Number(event.target.value)
   // Sync currency input text when slider moves
-  if (props.question.scaleFormat === 'currency' && !currencyInputFocused.value) {
+  if (
+    props.question.scaleFormat === 'currency' &&
+    !currencyInputFocused.value
+  ) {
     currencyInputText.value = formatCurrencyFull(localValue.value)
   }
   emitValue()
@@ -330,7 +333,10 @@ const currencyInputText = ref(
 
 // Keep input text in sync when slider changes externally (e.g. answer prop)
 watch(localValue, (newVal) => {
-  if (props.question.scaleFormat === 'currency' && !currencyInputFocused.value) {
+  if (
+    props.question.scaleFormat === 'currency' &&
+    !currencyInputFocused.value
+  ) {
     currencyInputText.value = formatCurrencyFull(newVal)
   }
 })
@@ -537,11 +543,13 @@ const handleCurrencyBlur = (event) => {
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
+  margin: auto;
   margin-bottom: 24px;
-  padding: 14px 20px;
-  border: 1.5px solid #e0e0e0;
+  padding: 4px 14px;
+  border: 0.33px solid #e0e0e0;
   border-radius: 50px;
   background: #fff;
+  width: fit-content;
 }
 
 .external-link:active {
