@@ -44,7 +44,7 @@
           'E.g., Back fence in the garden has been moved back 2 yards...'
         "
         class="text-input"
-        rows="6"
+        :rows="question.rows || 6"
       ></textarea>
     </div>
   </div>

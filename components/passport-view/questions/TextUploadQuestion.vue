@@ -78,6 +78,11 @@
 
         <!-- Question Display (skip if hideQuestionDisplay is true) -->
         <template v-if="!hideQuestionDisplay">
+          <p v-if="question.question" class="question-text">
+            {{ displayedQuestion || question.question }}
+            <span v-if="showQuestionCursor" class="typing-cursor">|</span>
+          </p>
+
           <p v-if="question.instructionText" class="question-text">
             {{ question.instructionText }}
             <span v-if="showQuestionCursor" class="typing-cursor">|</span>
@@ -133,6 +138,10 @@
           /></span>
           Pending
         </div>
+
+        <p v-if="!hideQuestionDisplay && question.question" class="question-text">
+          {{ question.question }}
+        </p>
 
         <p class="instruction-text">
           {{
