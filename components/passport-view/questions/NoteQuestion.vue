@@ -72,12 +72,15 @@
             <div class="info-card__text">
               <h3 class="info-card__title">{{ infoCard.title }}</h3>
               <p class="info-card__description">{{ infoCard.description }}</p>
-              <span
-                v-if="infoCard.sections?.length"
-                class="info-card__link"
-              >{{ infoCard.sections[0].title }}</span>
+              <span v-if="infoCard.sections?.length" class="info-card__link">{{
+                infoCard.sections[0].title
+              }}</span>
             </div>
-            <OPIcon v-if="infoCard.icon" :name="infoCard.icon" class="w-[48px] h-[48px]" />
+            <OPIcon
+              v-if="infoCard.icon"
+              :name="infoCard.icon"
+              class="w-[48px] h-[48px]"
+            />
           </div>
           <div
             v-for="section in infoCard.sections"
@@ -86,6 +89,36 @@
           >
             <h4 class="info-card__section-title">{{ section.title }}</h4>
             <p class="info-card__section-content">{{ section.content }}</p>
+          </div>
+        </div>
+
+        <!-- Visit link cards (only shown when links array exists) -->
+        <div v-if="links.length > 0" class="link-cards">
+          <div v-for="(link, i) in links" :key="i" class="link-card">
+            <div class="link-card__header">
+              <div class="link-card__text">
+                <p class="link-card__title">{{ link.title }}</p>
+                <a
+                  :href="link.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link-card__url"
+                >{{ link.url }}</a>
+              </div>
+              <OPIcon
+                v-if="link.icon"
+                :name="link.icon"
+                class="w-[48px] h-[48px] link-card__icon"
+              />
+            </div>
+            <a
+              :href="link.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link-card__btn"
+              ><OPIcon name="visitLink" class="w-[15px] h-[15px]" /> Visit
+              Link</a
+            >
           </div>
         </div>
 
@@ -112,7 +145,9 @@
               <div class="template-body">
                 <template v-if="Array.isArray(genericContent)">
                   <ul class="note-list">
-                    <li v-for="(item, i) in genericContent" :key="i">{{ item }}</li>
+                    <li v-for="(item, i) in genericContent" :key="i">
+                      {{ item }}
+                    </li>
                   </ul>
                 </template>
                 <template v-else>{{ genericContent }}</template>
@@ -126,7 +161,9 @@
               <div class="template-body">
                 <template v-if="Array.isArray(prewritten.buyers)">
                   <ul class="note-list">
-                    <li v-for="(item, i) in prewritten.buyers" :key="i">{{ item }}</li>
+                    <li v-for="(item, i) in prewritten.buyers" :key="i">
+                      {{ item }}
+                    </li>
                   </ul>
                 </template>
                 <template v-else>{{ prewritten.buyers }}</template>
@@ -139,7 +176,9 @@
               <div class="template-body">
                 <template v-if="Array.isArray(prewritten.sellers)">
                   <ul class="note-list">
-                    <li v-for="(item, i) in prewritten.sellers" :key="i">{{ item }}</li>
+                    <li v-for="(item, i) in prewritten.sellers" :key="i">
+                      {{ item }}
+                    </li>
                   </ul>
                 </template>
                 <template v-else>{{ prewritten.sellers }}</template>
@@ -184,6 +223,9 @@ const prewritten = computed(() => {
 
 // Info card is optional — only shown when present in the data
 const infoCard = computed(() => prewritten.value?.infoCard || null)
+
+// Link cards — optional array of { title, url } objects
+const links = computed(() => prewritten.value?.links || [])
 
 const shortBuyersNote = computed(() => {
   const value = prewritten.value?.buyers
@@ -285,7 +327,6 @@ const handleDrawerClose = () => {
   // When drawer closes, emit update to mark question as completed
   emit('update', true)
 }
-
 </script>
 
 <style scoped>
@@ -522,7 +563,6 @@ const handleDrawerClose = () => {
   text-decoration: underline;
 }
 
-
 .info-card__section {
   margin-top: 12px;
   padding-top: 12px;
@@ -541,5 +581,76 @@ const handleDrawerClose = () => {
   color: #00a19a;
   margin: 0;
   line-height: 18px;
+}
+
+/* Visit link cards */
+.link-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.link-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+}
+
+.link-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.link-card__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.link-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.link-card__url {
+  font-size: 12px;
+  color: #00a19a;
+  text-decoration: none;
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.link-card__icon {
+  flex-shrink: 0;
+}
+
+.link-card__btn {
+  display: flex;
+  padding: 10px 16px;
+  background: #00a19a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  text-align: center;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-left: auto;
+  align-items: center;
+  gap: 4px;
+  border-radius: 100px;
 }
 </style>

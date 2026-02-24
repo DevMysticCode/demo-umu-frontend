@@ -50,17 +50,29 @@
         <span class="option-label">{{ option.label }}</span>
       </div>
     </div>
+
+    <!-- Other text input (only shown when otherPlaceholder is set and 'other' is selected) -->
+    <textarea
+      v-if="showOtherTextarea"
+      :value="otherText"
+      @input="onOtherTextInput"
+      :placeholder="question.otherPlaceholder"
+      class="other-text-input"
+      rows="3"
+    ></textarea>
   </div>
 </template>
 
 <script setup>
+import { ref, computed, watch } from 'vue'
+
 const props = defineProps({
   question: {
     type: Object,
     required: true,
   },
   answer: {
-    type: Array,
+    type: [Array, Object],
     default: () => [],
   },
   displayedQuestion: {
@@ -95,21 +107,55 @@ const props = defineProps({
 
 const emit = defineEmits(['update'])
 
-const isSelected = (value) => {
-  return Array.isArray(props.answer) && props.answer.includes(value)
+const otherText = ref('')
+
+// Support both plain array answers and {values, otherText} object answers
+const selectedValues = computed(() => {
+  if (Array.isArray(props.answer)) return props.answer
+  if (props.answer && typeof props.answer === 'object' && Array.isArray(props.answer.values)) {
+    return props.answer.values
+  }
+  return []
+})
+
+watch(
+  () => props.answer,
+  (val) => {
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+      otherText.value = val.otherText || ''
+    }
+  },
+  { immediate: true },
+)
+
+const isSelected = (value) => selectedValues.value.includes(value)
+
+const emitAnswer = (values) => {
+  if (props.question?.otherPlaceholder) {
+    emit('update', { values, otherText: otherText.value })
+  } else {
+    emit('update', values)
+  }
 }
 
 const toggleOption = (value) => {
-  const newAnswer = Array.isArray(props.answer) ? [...props.answer] : []
-  const index = newAnswer.indexOf(value)
+  const newValues = [...selectedValues.value]
+  const index = newValues.indexOf(value)
 
   if (index > -1) {
-    newAnswer.splice(index, 1)
+    newValues.splice(index, 1)
   } else {
-    newAnswer.push(value)
+    newValues.push(value)
   }
 
-  emit('update', newAnswer)
+  emitAnswer(newValues)
+}
+
+const showOtherTextarea = computed(() => !!props.question?.otherPlaceholder)
+
+const onOtherTextInput = (event) => {
+  otherText.value = event.target.value
+  emitAnswer(selectedValues.value)
 }
 </script>
 
@@ -245,5 +291,26 @@ const toggleOption = (value) => {
   font-size: 16px;
   font-weight: 500;
   color: #1a1a1a;
+}
+
+.other-text-input {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+  background: #f9f9f9;
+  box-sizing: border-box;
+  color: #666;
+  transition: border-color 0.2s;
+}
+
+.other-text-input:focus {
+  outline: none;
+  border-color: #00b8a9;
+  background: white;
 }
 </style>
