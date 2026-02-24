@@ -33,8 +33,7 @@
 
       <div class="action-buttons">
         <button class="help-btn">
-          <!-- <span class="btn-icon">?</span> -->
-          Help
+          <OPIcon name="helpIcon" class="w-[15px] h-[15px]" />Help
         </button>
         <button class="video-btn">
           <span class="play-icon"
@@ -143,7 +142,7 @@ const backToPassportUrl = computed(() => {
 // })
 
 onMounted(async () => {
-  if (steps.value.length === 0 && route.query.propertyId) {
+  if (route.query.propertyId) {
     await loadPassport(route.query.propertyId)
   }
 })

@@ -139,9 +139,29 @@
           Pending
         </div>
 
-        <p v-if="!hideQuestionDisplay && question.question" class="question-text">
-          {{ question.question }}
-        </p>
+        <template v-if="!hideQuestionDisplay">
+          <p v-if="question.question" class="question-text">
+            {{ displayedQuestion || question.question }}
+            <span v-if="showQuestionCursor" class="typing-cursor">|</span>
+          </p>
+
+          <!-- Help Display -->
+          <div v-if="displayedHelp" class="help-section">
+            <div class="help-content">
+              <h4 class="help-title">
+                <span class="help-icon">💡</span>What is this?
+              </h4>
+              <p class="help-text">
+                {{ displayedHelp }}
+                <span
+                  v-if="showHelpCursor"
+                  class="typing-cursor typing-cursor--small"
+                  >|</span
+                >
+              </p>
+            </div>
+          </div>
+        </template>
 
         <p class="instruction-text">
           {{

@@ -610,7 +610,11 @@ const updateAnswer = async (answer) => {
 
       if (!hasMoreQuestions) {
         // Last question in section - check if all questions are completed
-        const allCompleted = currentQuestions.value.every((q) => q.completed)
+        // Include the just-saved question (not yet marked completed locally)
+        const currentId = currentQuestion.value.id
+        const allCompleted = currentQuestions.value.every(
+          (q) => q.completed || q.id === currentId,
+        )
 
         if (allCompleted) {
           // All questions in section done — show thank-you
@@ -641,7 +645,10 @@ const updateAnswer = async (answer) => {
       const hasMoreQuestions = moveToNextQuestion()
 
       if (!hasMoreQuestions) {
-        const allCompleted = currentQuestions.value.every((q) => q.completed)
+        const currentId = currentQuestion.value.id
+        const allCompleted = currentQuestions.value.every(
+          (q) => q.completed || q.id === currentId,
+        )
 
         if (allCompleted) {
           earnedPoints.value = calculateEarnedPoints()
@@ -704,7 +711,10 @@ const updateAnswer = async (answer) => {
 
         if (!hasMoreQuestions) {
           // Last question in section - check if all questions are completed
-          const allCompleted = currentQuestions.value.every((q) => q.completed)
+          const currentId = currentQuestion.value.id
+          const allCompleted = currentQuestions.value.every(
+            (q) => q.completed || q.id === currentId,
+          )
 
           if (allCompleted) {
             // All questions in section done — show thank-you
@@ -756,7 +766,11 @@ const saveAnswer = async () => {
 
     if (!hasMoreQuestions) {
       // Last question in section - check if all questions are completed
-      const allCompleted = currentQuestions.value.every((q) => q.completed)
+      // Include the just-saved question (not yet marked completed locally)
+      const currentId = currentQuestion.value.id
+      const allCompleted = currentQuestions.value.every(
+        (q) => q.completed || q.id === currentId,
+      )
 
       if (allCompleted) {
         // All questions in section done — show thank-you

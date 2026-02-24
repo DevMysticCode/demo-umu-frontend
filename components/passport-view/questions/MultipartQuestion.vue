@@ -52,11 +52,7 @@
         </template>
         <template v-else>
           <p
-            v-if="
-              part.title &&
-              part.type !== 'multifieldform' &&
-              part.type?.toLowerCase?.() !== 'upload'
-            "
+            v-if="part.title && part.type !== 'multifieldform'"
             class="part-text"
           >
             {{ part.title }}
@@ -180,6 +176,45 @@
         </div>
       </div>
     </div>
+
+    <!-- Question-level link cards (from prewritten.links) -->
+    <div v-if="questionLinks.length > 0" class="question-link-cards">
+      <div
+        v-for="(link, i) in questionLinks"
+        :key="i"
+        class="question-link-card"
+      >
+        <div class="question-link-card__card">
+          <div class="question-link-card__body">
+            <!-- description is the card's main heading -->
+            <p v-if="link.description" class="question-link-card__description">
+              {{ link.description }}
+            </p>
+            <p class="question-link-card__title">{{ link.title }}</p>
+            <a
+              :href="link.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="question-link-card__url"
+              >{{ link.url }}</a
+            >
+            <a
+              :href="link.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="question-link-card__btn"
+              ><OPIcon name="visitLink" class="w-[15px] h-[15px]" /> Visit
+              Link</a
+            >
+          </div>
+          <OPIcon
+            v-if="link.icon"
+            :name="link.icon"
+            class="w-[48px] h-[48px]"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -197,6 +232,7 @@ import CollaboratorsQuestion from './CollaboratorsQuestion.vue'
 import MultiTextInputQuestion from './MultiTextInputQuestion.vue'
 import MultiFieldFormQuestion from './MultiFieldFormQuestion.vue'
 import VoiceTextInput from './VoiceTextInput.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 const props = defineProps({
   question: { type: Object, required: true },
@@ -229,6 +265,9 @@ const sortedParts = computed(() => {
   if (!props.question?.parts) return []
   return [...props.question.parts].sort((a, b) => a.order - b.order)
 })
+
+// Link cards from prewritten.links (rendered after all parts)
+const questionLinks = computed(() => props.question?.prewritten?.links || [])
 
 const isPartVisible = (part) => {
   // If no conditional, always show
@@ -323,6 +362,8 @@ const buildPartQuestion = (part) => {
     scaleFormat: part.scaleFormat,
     // chips single-select
     singleSelect: part.singleSelect || false,
+    // checkbox "other" text field
+    otherPlaceholder: part.otherPlaceholder || '',
     // text rows
     rows: part.rows,
     // pass passportId through when rendering (used by collaborators part)
@@ -729,5 +770,75 @@ const getVisibleParts = () => {
 .date-input-above {
   margin-top: 0;
   margin-bottom: 10px;
+}
+
+/* Question-level link cards */
+.question-link-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.question-link-card__card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  margin-bottom: 12px;
+}
+
+.question-link-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.question-link-card__description {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.5;
+  margin: 0 0 8px 0;
+}
+
+.question-link-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.question-link-card__url {
+  font-size: 13px;
+  color: #00a19a;
+  text-decoration: none;
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.question-link-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #00a19a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 100px;
+  text-decoration: none;
+  width: 100%;
+  justify-content: center;
+  margin-left: left;
+  float: right;
+  width: fit-content;
 }
 </style>
