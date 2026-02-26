@@ -92,36 +92,6 @@
           </div>
         </div>
 
-        <!-- Visit link cards (only shown when links array exists) -->
-        <div v-if="links.length > 0" class="link-cards">
-          <div v-for="(link, i) in links" :key="i" class="link-card">
-            <div class="link-card__header">
-              <div class="link-card__text">
-                <p class="link-card__title">{{ link.title }}</p>
-                <a
-                  :href="link.url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link-card__url"
-                >{{ link.url }}</a>
-              </div>
-              <OPIcon
-                v-if="link.icon"
-                :name="link.icon"
-                class="w-[48px] h-[48px] link-card__icon"
-              />
-            </div>
-            <a
-              :href="link.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="link-card__btn"
-              ><OPIcon name="visitLink" class="w-[15px] h-[15px]" /> Visit
-              Link</a
-            >
-          </div>
-        </div>
-
         <!-- Show tabs only if there are multiple sections (not generic template) -->
         <div v-if="hasMultipleSections && !isGenericTemplate" class="tabs">
           <button
@@ -143,7 +113,25 @@
           <div v-if="isGenericTemplate">
             <div class="template">
               <div class="template-body">
-                <template v-if="Array.isArray(genericContent)">
+                <!-- Typed block content (array of {type, text, items} objects) -->
+                <template v-if="isBlockContent">
+                  <template v-for="(block, i) in genericContent" :key="i">
+                    <h3 v-if="block.type === 'heading'" class="note-heading">{{ block.text }}</h3>
+                    <p v-else-if="block.type === 'paragraph'" class="note-paragraph">{{ block.text }}</p>
+                    <p v-else-if="block.type === 'bold'" class="note-bold-paragraph">{{ block.text }}</p>
+                    <div v-else-if="block.type === 'callout'" class="note-callout">
+                      <span class="note-callout__icon">ⓘ</span>
+                      <span class="note-callout__text">{{ block.text }}</span>
+                    </div>
+                    <ul v-else-if="block.type === 'bullets'" class="note-list">
+                      <li v-for="(item, j) in block.items" :key="j">
+                        <strong v-if="item.bold">{{ item.bold }}</strong>{{ item.text }}
+                      </li>
+                    </ul>
+                  </template>
+                </template>
+                <!-- Simple string array (original bullets) -->
+                <template v-else-if="Array.isArray(genericContent)">
                   <ul class="note-list">
                     <li v-for="(item, i) in genericContent" :key="i">
                       {{ item }}
@@ -151,6 +139,37 @@
                   </ul>
                 </template>
                 <template v-else>{{ genericContent }}</template>
+
+                <!-- Visit link cards (only shown when links array exists) -->
+                <div v-if="links.length > 0" class="link-cards mt-4">
+                  <div v-for="(link, i) in links" :key="i" class="link-card">
+                    <div class="link-card__header">
+                      <div class="link-card__text">
+                        <p class="link-card__title">{{ link.title }}</p>
+                        <a
+                          :href="link.url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="link-card__url"
+                          >{{ link.url }}</a
+                        >
+                      </div>
+                      <OPIcon
+                        v-if="link.icon"
+                        :name="link.icon"
+                        class="w-[80px] h-[80px] link-card__icon"
+                      />
+                    </div>
+                    <a
+                      :href="link.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="link-card__btn"
+                      ><OPIcon name="visitLink" class="w-[15px] h-[15px]" />
+                      Visit Link</a
+                    >
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -257,6 +276,18 @@ const genericContent = computed(() => {
     prewritten.value?.text ||
     prewritten.value?.body ||
     ''
+  )
+})
+
+// True when content is an array of typed block objects {type, text, items}
+const isBlockContent = computed(() => {
+  const v = genericContent.value
+  return (
+    Array.isArray(v) &&
+    v.length > 0 &&
+    typeof v[0] === 'object' &&
+    v[0] !== null &&
+    'type' in v[0]
   )
 })
 
@@ -491,7 +522,7 @@ const handleDrawerClose = () => {
   border-radius: 8px;
   margin-bottom: 0;
   min-height: 400px;
-  max-height: 60vh;
+  /* max-height: 60vh; */
   overflow-y: auto;
 }
 
@@ -505,13 +536,13 @@ const handleDrawerClose = () => {
 
 /* Bullet list for array content */
 .note-list {
-  margin: 0;
+  margin: 0 0 14px 0;
   padding-left: 18px;
   list-style: disc;
 }
 
 .note-list li {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   color: #4b5563;
   font-weight: 400;
   font-size: 16px;
@@ -520,6 +551,59 @@ const handleDrawerClose = () => {
 
 .note-list li:last-child {
   margin-bottom: 0;
+}
+
+/* Typed block content styles */
+.note-heading {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+  margin: 16px 0 8px 0;
+  line-height: 1.4;
+}
+
+.note-heading:first-child {
+  margin-top: 0;
+}
+
+.note-paragraph {
+  font-size: 15px;
+  color: #4b5563;
+  font-weight: 400;
+  line-height: 22px;
+  margin: 0 0 14px 0;
+}
+
+.note-bold-paragraph {
+  font-size: 15px;
+  color: #111827;
+  font-weight: 700;
+  line-height: 22px;
+  margin: 14px 0 8px 0;
+}
+
+.note-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #e6f9f7;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 14px 0;
+}
+
+.note-callout__icon {
+  font-size: 18px;
+  color: #00a19a;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+.note-callout__text {
+  font-size: 15px;
+  color: #00a19a;
+  font-weight: 500;
+  line-height: 22px;
 }
 
 /* Conditional info card */
@@ -589,6 +673,8 @@ const handleDrawerClose = () => {
   flex-direction: column;
   gap: 12px;
   margin-bottom: 16px;
+  background: #f9fafb;
+  margin-top: 16px;
 }
 
 .link-card {

@@ -59,15 +59,7 @@
 
         <span class="option-label">{{ option.label }}</span>
 
-        <div
-          v-if="
-            option.hasDate &&
-            (isMultiInputMode ||
-              getSelectedValue() === option.value ||
-              question.options.length === 1)
-          "
-          class="date-badge"
-        >
+        <div v-if="option.hasDate" class="date-badge">
           <span v-if="getDateValue(option)" class="date-text">
             {{ formatValue(getDateValue(option), option) }}
           </span>
@@ -203,7 +195,14 @@ const getOptionFormat = (option) => {
 
 const isNumericInput = (option) => {
   const format = getOptionFormat(option)
-  return ['percentage', 'currency', 'number', 'years', 'units', 'text'].includes(format)
+  return [
+    'percentage',
+    'currency',
+    'number',
+    'years',
+    'units',
+    'text',
+  ].includes(format)
 }
 
 const getInputType = (option) => {
@@ -252,14 +251,14 @@ const updateDate = (event, option) => {
 
   if (isNumericInput(option)) {
     emit('update', {
-      value: getSelectedValue(),
+      value: option.value,
       date: newValue,
     })
     return
   }
 
   emit('update', {
-    value: getSelectedValue(),
+    value: option.value,
     date: newValue,
   })
 }

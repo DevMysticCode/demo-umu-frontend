@@ -133,7 +133,30 @@
           </div>
         </div>
 
+        <!-- Counter part (type: counter) — rendered inline, no sub-component -->
+        <div
+          v-if="part.type?.toLowerCase?.() === 'counter'"
+          class="number-input-row counter-row"
+        >
+          <span class="number-input-label">{{ part.label || part.title }}</span>
+          <div class="counter-controls">
+            <span class="counter-value">{{ localAnswers[part.partKey] ?? 0 }}</span>
+            <div class="counter-buttons">
+              <button
+                class="counter-btn"
+                @click.prevent="decrementCounter(part.partKey)"
+              >—</button>
+              <span class="counter-divider">|</span>
+              <button
+                class="counter-btn"
+                @click.prevent="incrementCounter(part.partKey)"
+              >+</button>
+            </div>
+          </div>
+        </div>
+
         <component
+          v-else
           :is="getPartComponent(part)"
           :question="buildPartQuestion(part)"
           :answer="getPartAnswer(part)"
@@ -190,28 +213,37 @@
             <p v-if="link.description" class="question-link-card__description">
               {{ link.description }}
             </p>
-            <p class="question-link-card__title">{{ link.title }}</p>
-            <a
-              :href="link.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="question-link-card__url"
-              >{{ link.url }}</a
-            >
-            <a
-              :href="link.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="question-link-card__btn"
-              ><OPIcon name="visitLink" class="w-[15px] h-[15px]" /> Visit
-              Link</a
-            >
+            <div class="infoCard">
+              <div class="d-flex">
+                <div>
+                  <p class="question-link-card__title">{{ link.title }}</p>
+                  <a
+                    :href="link.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="question-link-card__url"
+                    >{{ link.url }}</a
+                  >
+                </div>
+                <div>
+                  <OPIcon
+                    v-if="link.icon"
+                    :name="link.icon"
+                    class="w-[80px] h-[80px]"
+                  />
+                </div>
+              </div>
+
+              <a
+                :href="link.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="question-link-card__btn"
+                ><OPIcon name="visitLink" class="w-[15px] h-[15px]" /> Visit
+                Link</a
+              >
+            </div>
           </div>
-          <OPIcon
-            v-if="link.icon"
-            :name="link.icon"
-            class="w-[48px] h-[48px]"
-          />
         </div>
       </div>
     </div>
@@ -274,11 +306,16 @@ const isPartVisible = (part) => {
   if (!part.conditionalOn) return true
 
   // Find the answer for the part we're dependent on
-  const dependentPartAnswer = localAnswers.value[part.conditionalOn]
+  const rawAnswer = localAnswers.value[part.conditionalOn]
 
   // If answer doesn't exist, don't show
-  if (dependentPartAnswer === undefined || dependentPartAnswer === null)
-    return false
+  if (rawAnswer === undefined || rawAnswer === null) return false
+
+  // DATE questions emit { value, date } — extract the scalar value for comparison
+  const dependentPartAnswer =
+    rawAnswer !== null && typeof rawAnswer === 'object' && 'value' in rawAnswer
+      ? rawAnswer.value
+      : rawAnswer
 
   // Check if the answer is in showOnValues
   if (!part.showOnValues || !Array.isArray(part.showOnValues)) return false
@@ -335,10 +372,8 @@ const buildPartQuestion = (part) => {
   const normalizedType = part.type?.toLowerCase?.()
   const display = part.display?.toLowerCase?.()
 
-  // For text/upload fields, use title as uploadInstruction if not explicitly set
-  const uploadInstruction =
-    part.uploadInstruction ||
-    (display === 'both' || display === 'upload' ? part.title : '')
+  // Only use explicitly set uploadInstruction (MultipartQuestion already renders part.title)
+  const uploadInstruction = part.uploadInstruction || ''
 
   return {
     title: part.title,
@@ -396,7 +431,18 @@ const getPartAnswer = (part) => {
   if (type === 'multifieldform') {
     return part.repeatable ? [] : {}
   }
+  if (type === 'counter') return 0
   return ''
+}
+
+const decrementCounter = (partKey) => {
+  const current = Number(localAnswers.value[partKey] ?? 0)
+  updatePartAnswer(partKey, Math.max(0, current - 1))
+}
+
+const incrementCounter = (partKey) => {
+  const current = Number(localAnswers.value[partKey] ?? 0)
+  updatePartAnswer(partKey, current + 1)
 }
 
 const isPartAnswered = (partKey) => {
@@ -485,6 +531,11 @@ const getVisibleParts = () => {
 </script>
 
 <style scoped>
+
+.infoCard .d-flex{
+  display: flex; 
+}
+
 .question-text {
   color: #000000;
   margin: 0 0 20px 0;
@@ -614,6 +665,7 @@ const getVisibleParts = () => {
   margin: 0 0 12px 0;
   line-height: 18px;
   letter-spacing: -0.08px;
+  white-space: pre-line;
 }
 
 .part-external-link {
@@ -715,6 +767,59 @@ const getVisibleParts = () => {
   width: 110px;
 }
 
+.counter-row {
+  padding: 12px 16px;
+}
+
+.counter-controls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.counter-value {
+  padding: 8px 16px;
+  background: #e6f9f7;
+  border-radius: 8px 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #00b8a9;
+  min-width: 52px;
+  text-align: center;
+}
+
+.counter-buttons {
+  display: flex;
+  align-items: center;
+  background: #f0f0f0;
+  border-radius: 0 8px 8px 0;
+  overflow: hidden;
+}
+
+.counter-btn {
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: 500;
+  color: #3c3c43;
+  cursor: pointer;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.counter-btn:active {
+  background: #e0e0e0;
+}
+
+.counter-divider {
+  color: #c0c0c0;
+  font-size: 18px;
+  line-height: 1;
+  pointer-events: none;
+}
+
 .date-badge-wrap {
   position: relative;
   padding: 8px 16px;
@@ -814,6 +919,7 @@ const getVisibleParts = () => {
   color: #1a1a1a;
   margin: 0;
   line-height: 1.4;
+  margin-top: 16px;
 }
 
 .question-link-card__url {
@@ -837,7 +943,8 @@ const getVisibleParts = () => {
   text-decoration: none;
   width: 100%;
   justify-content: center;
-  margin-left: left;
+  margin-left: auto;
+  margin-top: 8px;
   float: right;
   width: fit-content;
 }
