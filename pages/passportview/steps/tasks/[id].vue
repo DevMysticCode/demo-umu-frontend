@@ -64,7 +64,13 @@
           >
             Previous
           </button>
-          <button class="skip-btn" @click="skipQuestion">Skip</button>
+          <button
+            v-if="currentQuestionIndex < totalQuestions - 1"
+            class="skip-btn"
+            @click="skipQuestion"
+          >
+            Skip
+          </button>
         </div>
       </div>
       <div class="question-section">
@@ -74,10 +80,11 @@
             class="answer-section answer-section--visible"
           >
             <div
-              v-if="currentQuestionType !== 'multipart'"
+              v-if="currentQuestionType !== 'multipart' || currentQuestion?.repeatable"
               class="question-card"
             >
               <component
+                :key="currentQuestion?.id"
                 :is="getQuestionComponent"
                 :question="currentQuestion"
                 :answer="currentQuestion.answer"
@@ -96,6 +103,7 @@
             </div>
             <component
               v-else
+              :key="currentQuestion?.id"
               :is="getQuestionComponent"
               :question="currentQuestion"
               :answer="currentQuestion.answer"
@@ -162,6 +170,7 @@ import NoteQuestion from '~/components/passport-view/questions/NoteQuestion.vue'
 import DateQuestion from '~/components/passport-view/questions/DateQuestion.vue'
 import ScaleQuestion from '~/components/passport-view/questions/ScaleQuestion.vue'
 import MultipartQuestion from '~/components/passport-view/questions/MultipartQuestion.vue'
+import RepeatableItemQuestion from '~/components/passport-view/questions/RepeatableItemQuestion.vue'
 import MultiTextInputQuestion from '@/components/passport-view/questions/MultiTextInputQuestion.vue'
 import MultiFieldFormQuestion from '@/components/passport-view/questions/MultiFieldFormQuestion.vue'
 import BoundaryResponsibilityQuestion from '~/components/passport-view/questions/BoundaryResponsibilityQuestion.vue'
@@ -376,6 +385,10 @@ const isAnswerValid = computed(() => {
   }
 
   if (isCheckboxType) {
+    // When otherPlaceholder is set, CheckboxQuestion emits {values, otherText}
+    if (answer && typeof answer === 'object' && !Array.isArray(answer) && Array.isArray(answer.values)) {
+      return answer.values.length > 0
+    }
     return Array.isArray(answer) && answer.length > 0
   }
 
@@ -443,6 +456,10 @@ const isAnswerValid = computed(() => {
   }
 
   if (type === 'multipart') {
+    // Repeatable multipart (custom item list): answer is an array — always valid (0 items is OK)
+    if (currentQuestion.value?.repeatable) {
+      return Array.isArray(answer) || answer === null || answer === undefined
+    }
     if (!answer || typeof answer !== 'object' || Array.isArray(answer))
       return false
     const parts = currentQuestion.value.parts
@@ -478,6 +495,9 @@ const isAnswerValid = computed(() => {
         return false
 
       const partType = part.type?.toLowerCase?.()
+
+      // Counter is always valid (0 is a valid numeric answer)
+      if (partType === 'counter') return true
 
       if (partType === 'checkbox')
         return Array.isArray(partAnswer) && partAnswer.length > 0
@@ -545,6 +565,11 @@ const isAnswerValid = computed(() => {
 const getQuestionComponent = computed(() => {
   const type = currentQuestionType.value
 
+  // Repeatable multipart → custom item list UI
+  if (type === 'multipart' && currentQuestion.value?.repeatable) {
+    return RepeatableItemQuestion
+  }
+
   const components = {
     radio: RadioQuestion,
     single_choice: RadioQuestion,
@@ -605,23 +630,20 @@ const updateAnswer = async (answer) => {
       // Save the note as completed
       await apiSaveAnswer(currentQuestion.value.id, answer)
 
-      // Move to next question
-      const hasMoreQuestions = moveToNextQuestion()
+      // Check if this was the last incomplete question (before advancing)
+      const currentId = currentQuestion.value.id
+      const allCompleted = currentQuestions.value.every(
+        (q) => q.completed || q.id === currentId,
+      )
 
-      if (!hasMoreQuestions) {
-        // Last question in section - check if all questions are completed
-        // Include the just-saved question (not yet marked completed locally)
-        const currentId = currentQuestion.value.id
-        const allCompleted = currentQuestions.value.every(
-          (q) => q.completed || q.id === currentId,
-        )
-
-        if (allCompleted) {
-          // All questions in section done — show thank-you
-          earnedPoints.value = calculateEarnedPoints()
-          showThankYou.value = true
-        } else {
-          // More unanswered questions remain — go back to task list
+      if (allCompleted) {
+        // All questions in section done — show thank-you
+        earnedPoints.value = calculateEarnedPoints()
+        showThankYou.value = true
+      } else {
+        // More questions remain — move to next
+        const hasMoreQuestions = moveToNextQuestion()
+        if (!hasMoreQuestions) {
           router.push(
             `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
           )
@@ -642,18 +664,17 @@ const updateAnswer = async (answer) => {
     try {
       await apiSaveAnswer(currentQuestion.value.id, answer)
 
-      const hasMoreQuestions = moveToNextQuestion()
+      const currentId = currentQuestion.value.id
+      const allCompleted = currentQuestions.value.every(
+        (q) => q.completed || q.id === currentId,
+      )
 
-      if (!hasMoreQuestions) {
-        const currentId = currentQuestion.value.id
-        const allCompleted = currentQuestions.value.every(
-          (q) => q.completed || q.id === currentId,
-        )
-
-        if (allCompleted) {
-          earnedPoints.value = calculateEarnedPoints()
-          showThankYou.value = true
-        } else {
+      if (allCompleted) {
+        earnedPoints.value = calculateEarnedPoints()
+        showThankYou.value = true
+      } else {
+        const hasMoreQuestions = moveToNextQuestion()
+        if (!hasMoreQuestions) {
           router.push(
             `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
           )
@@ -673,7 +694,12 @@ const updateAnswer = async (answer) => {
     currentQuestion.value.autoSaveOn
   ) {
     const { partKey, value } = currentQuestion.value.autoSaveOn
-    let triggerPartAnswer = answer[partKey]
+    const rawTrigger = answer[partKey]
+    // DATE parts emit { value, date } — extract scalar for comparison
+    let triggerPartAnswer =
+      rawTrigger !== null && typeof rawTrigger === 'object' && 'value' in rawTrigger
+        ? rawTrigger.value
+        : rawTrigger
 
     // Debug: log what we're checking
     console.log('AutoSave Check:', {
@@ -706,22 +732,19 @@ const updateAnswer = async (answer) => {
       try {
         await apiSaveAnswer(currentQuestion.value.id, answer)
 
-        // Move to next question
-        const hasMoreQuestions = moveToNextQuestion()
+        const currentId = currentQuestion.value.id
+        const allCompleted = currentQuestions.value.every(
+          (q) => q.completed || q.id === currentId,
+        )
 
-        if (!hasMoreQuestions) {
-          // Last question in section - check if all questions are completed
-          const currentId = currentQuestion.value.id
-          const allCompleted = currentQuestions.value.every(
-            (q) => q.completed || q.id === currentId,
-          )
-
-          if (allCompleted) {
-            // All questions in section done — show thank-you
-            earnedPoints.value = calculateEarnedPoints()
-            showThankYou.value = true
-          } else {
-            // More unanswered questions remain — go back to task list
+        if (allCompleted) {
+          // All questions in section done — show thank-you
+          earnedPoints.value = calculateEarnedPoints()
+          showThankYou.value = true
+        } else {
+          // More questions remain — move to next
+          const hasMoreQuestions = moveToNextQuestion()
+          if (!hasMoreQuestions) {
             router.push(
               `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
             )
@@ -761,23 +784,20 @@ const saveAnswer = async () => {
     // Save answer to backend
     await apiSaveAnswer(currentQuestion.value.id, answerValue)
 
-    // Try to move to next question
-    const hasMoreQuestions = moveToNextQuestion()
+    // Check if this was the last incomplete question (before advancing)
+    const currentId = currentQuestion.value.id
+    const allCompleted = currentQuestions.value.every(
+      (q) => q.completed || q.id === currentId,
+    )
 
-    if (!hasMoreQuestions) {
-      // Last question in section - check if all questions are completed
-      // Include the just-saved question (not yet marked completed locally)
-      const currentId = currentQuestion.value.id
-      const allCompleted = currentQuestions.value.every(
-        (q) => q.completed || q.id === currentId,
-      )
-
-      if (allCompleted) {
-        // All questions in section done — show thank-you
-        earnedPoints.value = calculateEarnedPoints()
-        showThankYou.value = true
-      } else {
-        // More unanswered questions remain — go back to task list
+    if (allCompleted) {
+      // All questions in section done — show thank-you
+      earnedPoints.value = calculateEarnedPoints()
+      showThankYou.value = true
+    } else {
+      // More questions remain — move to next
+      const hasMoreQuestions = moveToNextQuestion()
+      if (!hasMoreQuestions) {
         router.push(
           `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
         )
