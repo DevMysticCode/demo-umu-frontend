@@ -129,6 +129,13 @@ const iconMap: Record<string, string> = {
   visitLink: '/op-icons/passportview/visitLink.svg',
   helpIcon: '/op-icons/passportview/steps/helpIcon.svg',
   environmentalNotes: '/op-icons/passportview/steps/environmentalNotes.svg',
+  dog: '/op-icons/passportview/map/dog.svg',
+  lampPost: '/op-icons/passportview/map/lampPost.svg',
+  orangeDog: '/op-icons/passportview/map/orangeDog.svg',
+  post: '/op-icons/passportview/map/post.svg',
+  postInverted: '/op-icons/passportview/map/postInverted.svg',
+  tree: '/op-icons/passportview/map/tree.svg',
+  walkingLady: '/op-icons/passportview/map/walkingLady.svg',
 }
 
 const iconPath = computed(() => {
