@@ -5,9 +5,9 @@
         <div class="isometric-map">
           <div
             v-for="(decoration, index) in decorativeObjects"
-            :key="`decoration-${index}`"
+            :key="`decoration-${index}-${decoration.icon}`"
             class="map-decoration"
-            :style="getDecorationPosition(index)"
+            :style="getDecorationStyle(decoration)"
           >
             <OPIcon :name="decoration.icon" class="decoration-icon" />
           </div>
@@ -67,29 +67,28 @@ const mapLayout = {
 }
 
 const decorativeObjects = [
-  { icon: 'tree' },
-  { icon: 'lampPost' },
-  { icon: 'dog' },
-  { icon: 'post' },
-  { icon: 'tree' },
-  { icon: 'orangeDog' },
-  { icon: 'postInverted' },
-  { icon: 'lampPost' },
-  { icon: 'tree' },
-  { icon: 'dog' },
-]
-
-const decorationAnchors = [
-  { x: 18, y: 96 },
-  { x: 252, y: 202 },
-  { x: 26, y: 324 },
-  { x: 252, y: 426 },
-  { x: 16, y: 548 },
-  { x: 252, y: 650 },
-  { x: 24, y: 772 },
-  { x: 252, y: 874 },
-  { x: 18, y: 996 },
-  { x: 252, y: 1098 },
+  { icon: 'tree', x: 18, y: 90 },
+  { icon: 'lampPost', x: 198, y: 294 },
+  { icon: 'dog', x: 22, y: 300 },
+  { icon: 'post', x: 124, y: 391, z: 7 },
+  { icon: 'tree', x: 195, y: 506 },
+  { icon: 'orangeDog', x: 169, y: 531 },
+  { icon: 'tree', x: 111, y: 629, z: 7 },
+  { icon: 'lampPost', x: 254, y: 626 },
+  { icon: 'post', x: 150, y: 745, z: 7 },
+  { icon: 'tree', x: 110, y: 850 },
+  // { icon: 'dog', x: 248, y: 844 },
+  { icon: 'postInverted', x: 113, y: 1056, z: 7 },
+  // { icon: 'tree', x: 20, y: 1130 },
+  { icon: 'lampPost', x: 135, y: 1237 },
+  { icon: 'tree', x: 189, y: 1367, z: 7 },
+  // { icon: 'orangeDog', x: 22, y: 1460 },
+  // { icon: 'tree', x: 250, y: 1565 },
+  { icon: 'postInverted', x: 152, y: 1586, z: 7 },
+  { icon: 'lampPost', x: 56, y: 1673 },
+  // { icon: 'dog', x: 250, y: 1870 },
+  { icon: 'tree', x: 174, y: 1777 },
+  // { icon: 'post', x: 150, y: 2065, z: 7 },
 ]
 
 const getStepPosition = (index) => {
@@ -178,14 +177,12 @@ const getRoadClass = (index) => {
   return 'road-left-to-right'
 }
 
-const getDecorationPosition = (index) => {
-  const anchor = decorationAnchors[index % decorationAnchors.length]
-  const cycle = Math.floor(index / decorationAnchors.length)
-  const verticalShift = cycle * 1200
-
+const getDecorationStyle = (decoration) => {
   return {
-    left: `${anchor.x}px`,
-    top: `${anchor.y + verticalShift}px`,
+    left: `${decoration.x}px`,
+    top: `${decoration.y}px`,
+    '--decoration-size': `${decoration.size || 48}px`,
+    '--decoration-z': `${decoration.z || 12}`,
   }
 }
 
@@ -281,20 +278,20 @@ const navigateToStep = (stepId) => {
 
 .map-decoration {
   position: absolute;
-  width: 48px;
-  height: 48px;
+  width: var(--decoration-size, 48px);
+  height: var(--decoration-size, 48px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 12;
+  z-index: var(--decoration-z, 12);
   opacity: 0.92;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.12));
   pointer-events: none;
 }
 
 .decoration-icon {
-  width: 48px;
-  height: 48px;
+  width: 100%;
+  height: 100%;
 }
 
 .moving-lady {
