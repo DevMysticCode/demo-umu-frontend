@@ -36,19 +36,73 @@
     </template>
 
     <div class="date-options">
+      <!-- Inline multi-input row (e.g. percentage / year) -->
+      <div v-if="isMultiInputMode" class="date-option multi-input-row">
+        <div class="multi-inputs">
+          <template
+            v-for="(option, index) in question.options"
+            :key="option.value"
+          >
+            <!-- Label before badge (all options except last) -->
+            <span
+              v-if="index < question.options.length - 1"
+              class="mi-label"
+            >{{ option.label }}</span>
+
+            <!-- Badge / input -->
+            <div v-if="option.hasDate" class="date-badge">
+              <span v-if="getDateValue(option)" class="date-text">
+                {{ formatValue(getDateValue(option), option) }}
+              </span>
+              <span v-else class="date-placeholder">
+                {{ option.datePlaceholder || '—' }}
+              </span>
+              <input
+                :ref="(el) => setDateInputRef(el, index)"
+                :type="getInputType(option)"
+                :inputmode="getInputMode(option)"
+                :value="getInputValue(option)"
+                @input="(e) => updateDate(e, option)"
+                @click.stop
+                class="date-input-overlay"
+              />
+            </div>
+
+            <!-- Separator between options -->
+            <span
+              v-if="index < question.options.length - 1"
+              class="mi-sep"
+            >/</span>
+
+            <!-- Label after badge (last option only) -->
+            <span
+              v-if="index === question.options.length - 1"
+              class="mi-label"
+            >{{ option.label }}</span>
+          </template>
+        </div>
+
+        <!-- Your Selection summary -->
+        <div v-if="selectionSummary" class="selection-row">
+          <span class="selection-label">Your Selection</span>
+          <span class="selection-value">{{ selectionSummary }}</span>
+        </div>
+      </div>
+
+      <!-- Regular single / multi-select mode -->
       <div
+        v-else
         v-for="(option, index) in question.options"
         :key="option.value"
         class="date-option"
         :class="{
-          selected: !isMultiInputMode && getSelectedValue() === option.value,
+          selected: getSelectedValue() === option.value,
           'single-option': question.options.length === 1,
-          'multi-input-option': isMultiInputMode,
         }"
         @click="handleOptionClick(option.value)"
       >
         <div
-          v-if="question.options.length > 1 && !isMultiInputMode"
+          v-if="question.options.length > 1"
           class="radio-btn"
           :class="{ checked: getSelectedValue() === option.value }"
         >
@@ -66,7 +120,6 @@
           <span v-else class="date-placeholder">
             {{ option.datePlaceholder || 'Select date' }}
           </span>
-
           <input
             :ref="(el) => setDateInputRef(el, index)"
             :type="getInputType(option)"
@@ -140,6 +193,35 @@ const isMultiInputMode = computed(() => {
     props.question.options.every((opt) => opt.hasDate) &&
     props.question.options.some((opt) => opt.inputType)
   )
+})
+
+// "Your Selection" summary shown below the inline multi-input row
+const selectionSummary = computed(() => {
+  if (!isMultiInputMode.value) return ''
+  if (typeof props.answer !== 'object' || props.answer === null) return ''
+
+  const opts = props.question?.options || []
+  const pctOpt = opts.find((o) => o.inputType === 'percentage')
+  const yrOpt = opts.find((o) => o.value === 'years' || o.inputType === 'number')
+
+  if (pctOpt && yrOpt) {
+    const pct = props.answer[pctOpt.value]
+    const yr = props.answer[yrOpt.value]
+    if (!pct && !yr) return ''
+    const parts = []
+    if (pct) parts.push(`${pct}%`)
+    if (yr) parts.push(`every ${yr} ${yr === '1' ? 'year' : 'years'}`)
+    return parts.join(' ')
+  }
+
+  // Generic fallback: join all non-empty formatted values
+  const values = opts
+    .map((o) => {
+      const v = props.answer[o.value]
+      return v ? formatValue(v, o) : null
+    })
+    .filter(Boolean)
+  return values.join(' / ')
 })
 
 onMounted(() => {
@@ -523,5 +605,53 @@ const formatValue = (rawValue, option) => {
   padding: 0;
   cursor: pointer;
   opacity: 0;
+}
+
+/* ── Inline multi-input row (percentage / year) ───────────────── */
+.multi-input-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 12px 16px;
+  cursor: default;
+}
+.multi-input-row:active { transform: none; }
+
+.multi-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mi-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.mi-sep {
+  font-size: 18px;
+  font-weight: 400;
+  color: #3c3c4399;
+}
+
+/* Selection summary row */
+.selection-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+}
+.selection-label {
+  font-size: 14px;
+  color: #3c3c4399;
+}
+.selection-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #00b8a9;
 }
 </style>
