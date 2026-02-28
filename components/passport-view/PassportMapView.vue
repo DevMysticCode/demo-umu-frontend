@@ -213,6 +213,13 @@ const ladyPosition = computed(() => {
   const stepTop = index * mapLayout.stepGapY
   const stepLeft = isRight ? mapLayout.rightOffsetX : mapLayout.leftOffsetX
 
+  if (index === 0) {
+    return {
+      left: `${stepLeft + 46}px`,
+      top: `${stepTop + 58}px`,
+    }
+  }
+
   return {
     left: `${isRight ? stepLeft - 12 : stepLeft + 104}px`,
     top: `${stepTop - 26}px`,
@@ -380,20 +387,21 @@ const navigateToStep = (stepId) => {
 }
 
 .step-platform.status-active .map-shadow-tile {
-  filter: drop-shadow(0 8px 14px rgba(37, 99, 235, 0.5))
-    drop-shadow(0 0 10px rgba(59, 130, 246, 0.45));
+  filter: drop-shadow(0 8px 14px rgba(245, 158, 11, 0.55))
+    drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
 }
 
 .step-platform.status-active .map-background-tile {
-  filter: saturate(1.05);
+  filter: saturate(1.08);
 }
 
 .step-platform.status-pending .map-shadow-tile {
-  filter: drop-shadow(0 8px 12px rgba(107, 114, 128, 0.3));
+  filter: drop-shadow(0 8px 12px rgba(239, 68, 68, 0.55))
+    drop-shadow(0 0 10px rgba(248, 113, 113, 0.5));
 }
 
 .step-platform.status-pending .map-background-tile {
-  filter: grayscale(0.15) brightness(0.96);
+  filter: saturate(1.02) brightness(0.98);
 }
 
 /* Road connector styling */

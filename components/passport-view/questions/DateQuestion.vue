@@ -36,14 +36,14 @@
     </template>
 
     <div class="date-options">
-      <!-- Inline multi-input row (e.g. percentage / year) -->
-      <div v-if="isMultiInputMode" class="date-option multi-input-row">
+      <!-- ① Inline percentage / year layout (only when question has a percentage + year option) -->
+      <div v-if="isPercentageYearInline" class="date-option multi-input-row">
         <div class="multi-inputs">
           <template
             v-for="(option, index) in question.options"
             :key="option.value"
           >
-            <!-- Label before badge (all options except last) -->
+            <!-- Label before badge for all options except the last -->
             <span
               v-if="index < question.options.length - 1"
               class="mi-label"
@@ -74,7 +74,7 @@
               class="mi-sep"
             >/</span>
 
-            <!-- Label after badge (last option only) -->
+            <!-- Label after badge for the last option -->
             <span
               v-if="index === question.options.length - 1"
               class="mi-label"
@@ -89,20 +89,21 @@
         </div>
       </div>
 
-      <!-- Regular single / multi-select mode -->
+      <!-- ② Original multi-input / single-select mode (all other questions unchanged) -->
       <div
         v-else
         v-for="(option, index) in question.options"
         :key="option.value"
         class="date-option"
         :class="{
-          selected: getSelectedValue() === option.value,
+          selected: !isMultiInputMode && getSelectedValue() === option.value,
           'single-option': question.options.length === 1,
+          'multi-input-option': isMultiInputMode,
         }"
         @click="handleOptionClick(option.value)"
       >
         <div
-          v-if="question.options.length > 1"
+          v-if="question.options.length > 1 && !isMultiInputMode"
           class="radio-btn"
           :class="{ checked: getSelectedValue() === option.value }"
         >
@@ -192,6 +193,16 @@ const isMultiInputMode = computed(() => {
   return (
     props.question.options.every((opt) => opt.hasDate) &&
     props.question.options.some((opt) => opt.inputType)
+  )
+})
+
+// Only true for the specific percentage + year inline layout question
+const isPercentageYearInline = computed(() => {
+  if (!isMultiInputMode.value) return false
+  const opts = props.question?.options || []
+  return (
+    opts.some((o) => o.inputType === 'percentage') &&
+    opts.some((o) => o.value === 'years' || o.inputType === 'number')
   )
 })
 
