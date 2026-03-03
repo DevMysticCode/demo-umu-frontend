@@ -9,11 +9,8 @@
         Pending
       </div>
 
-      <p class="instruction-text">
-        {{
-          question.uploadInstruction ||
-          'Please indicate ownership by written instruction or by reference to a plan:'
-        }}
+      <p v-if="question.uploadInstruction" class="instruction-text">
+        {{ question.uploadInstruction }}
       </p>
 
       <textarea
@@ -163,11 +160,8 @@
           </div>
         </template>
 
-        <p class="instruction-text">
-          {{
-            question.uploadInstruction ||
-            'Please indicate ownership by written instruction or by reference to a plan:'
-          }}
+        <p v-if="question.uploadInstruction" class="instruction-text">
+          {{ question.uploadInstruction }}
         </p>
 
         <div class="upload-options">

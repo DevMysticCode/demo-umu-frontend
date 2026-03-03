@@ -1,226 +1,207 @@
 <template>
   <div class="property-page mobile-container bg-umu-gradient">
-    <div class="property-header">
-      <!-- <img
-        src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800"
-        alt="Property"
-        class="property-image"
-      /> -->
-      <ImageSlider :images="propertyImages"> </ImageSlider>
-      <!-- <div class="image-counter">1/5</div> -->
-      <div class="image_layover_icons">
-        <button class="icon-btn" @click="goBack">
-          <OPIcon name="leftChevronWhite" class="w-[18px] h-[18px]" />
-        </button>
-        <div>
-          <button class="icon-btn" @click="handleWishlist">
-            <OPIcon name="wishlist" class="w-[20px] h-[20px]" />
-          </button>
-          <button class="icon-btn" @click="showShare = true">
-            <OPIcon name="share" class="w-[20px] h-[20px]" />
-          </button>
-        </div>
-      </div>
+    <!-- Loading State -->
+    <div v-if="pageLoading" class="property-loading">
+      <div class="property-loading__spinner" />
+      <p>Loading property...</p>
     </div>
 
-    <div class="property-content">
-      <div class="property-title">
-        <h1>12, Maple Road</h1>
-        <p class="address">Staines-upon-Thames, TW18 3BA</p>
-        <p class="price">
-          £250,000 <span class="estimated">Estimated Value</span>
-        </p>
-      </div>
-
-      <div class="property-badges">
-        <span class="badge">Sale</span>
-        <span class="badge">Detached</span>
-        <span class="badge price-badge">£2,300 sqft</span>
-      </div>
-
-      <div class="section">
-        <h2>Property Details</h2>
-        <div class="details-grid">
-          <div class="detail-item">
-            <div class="detail-icon">🏠</div>
-            <div class="detail-info">
-              <div class="detail-label">Property type</div>
-              <div class="detail-value">Detached</div>
-            </div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-icon">#</div>
-            <div class="detail-info">
-              <div class="detail-label">Title number</div>
-              <div class="detail-value">WK146253</div>
-            </div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-icon">📏</div>
-            <div class="detail-info">
-              <div class="detail-label">Area sqft</div>
-              <div class="detail-value">2,100 sqft</div>
-            </div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-icon">⚡</div>
-            <div class="detail-info">
-              <div class="detail-label">EPC Rating</div>
-              <div class="detail-value">B+</div>
-            </div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-icon">🏛️</div>
-            <div class="detail-info">
-              <div class="detail-label">Tenure</div>
-              <div class="detail-value">Leasehold</div>
-            </div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-icon">📅</div>
-            <div class="detail-info">
-              <div class="detail-label">Year Built</div>
-              <div class="detail-value">2004</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="action-icons">
-          <button class="icon-btn">🔗</button>
-          <button class="icon-btn">📍</button>
-          <button class="icon-btn">⚡</button>
-          <button class="icon-btn">👥</button>
-          <button class="icon-btn">🏠</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <h2>Floor Plan</h2>
-        <div class="floor-plan">
-          <img
-            src="https://images.pexels.com/photos/280221/pexels-photo-280221.jpeg?auto=compress&cs=tinysrgb&w=600"
-            alt="Floor Plan"
-            class="floor-plan-img"
-          />
-          <button class="view-360-btn">360°</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <h2>Location and Nearby</h2>
-        <div class="map-container">
-          <div class="map-placeholder">
-            <div class="map-pin">📍</div>
-          </div>
-          <button class="street-view-btn">Open Street View</button>
-        </div>
-
-        <div class="nearby-section">
-          <button class="nearby-btn active">🚂 Train Stations</button>
-          <button class="nearby-btn">🏪</button>
-          <button class="nearby-btn">🏫</button>
-          <button class="nearby-btn">🚌</button>
-        </div>
-
-        <div class="station-list">
-          <div class="station-item">
-            <div class="station-icon">🚂</div>
-            <div class="station-info">
-              <div class="station-name">Denham Railway Station</div>
-              <div class="station-distance">📍 0.3 Miles</div>
-            </div>
-          </div>
-          <div class="station-item">
-            <div class="station-icon">🚂</div>
-            <div class="station-info">
-              <div class="station-name">Denham Downs Railway Station</div>
-              <div class="station-distance">📍 0.3 Miles</div>
-            </div>
-          </div>
-          <div class="station-item">
-            <div class="station-icon">Ⓜ️</div>
-            <div class="station-info">
-              <div class="station-name">Gerald Station</div>
-              <div class="station-distance">📍 1.2 Miles</div>
-            </div>
-          </div>
-          <div class="station-item">
-            <div class="station-icon">🚂</div>
-            <div class="station-info">
-              <div class="station-name">Uxbridge Cross South</div>
-              <div class="station-distance">📍 1.3 Miles</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <h2>EPC Rating</h2>
-        <div class="epc-chart">
-          <div class="epc-header">
-            <span>Score</span>
-            <span>Energy Rating</span>
-            <span>Current</span>
-            <span>Potential</span>
-          </div>
-          <div class="epc-bar epc-a">
-            <span>92+</span>
-            <div class="bar">A</div>
-          </div>
-          <div class="epc-bar epc-b">
-            <span>81-91</span>
-            <div class="bar">B</div>
-          </div>
-          <div class="epc-bar epc-c current">
-            <span>69-80</span>
-            <div class="bar">C</div>
-            <div class="marker">72</div>
-          </div>
-          <div class="epc-bar epc-d">
-            <span>55-68</span>
-            <div class="bar">D</div>
-          </div>
-          <div class="epc-bar epc-e">
-            <span>39-54</span>
-            <div class="bar">E</div>
-          </div>
-          <div class="epc-bar epc-f">
-            <span>21-38</span>
-            <div class="bar">F</div>
-          </div>
-          <div class="epc-bar epc-g">
-            <span>1-20</span>
-            <div class="bar">G</div>
-          </div>
-        </div>
-      </div>
+    <!-- Error State -->
+    <div v-else-if="loadError" class="property-error">
+      <p>{{ loadError }}</p>
+      <button class="btn-back" @click="goBack">Go Back</button>
     </div>
 
-    <!-- <div class="bottom-nav">
-      <button class="nav-item">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Explore</span>
-      </button>
-      <button class="nav-item" @click="navigateToPassport">
-        <span class="nav-icon">📋</span>
-        <span class="nav-label">Passport</span>
-      </button>
-      <button class="nav-item">
-        <span class="nav-icon">📝</span>
-        <span class="nav-label">Register Interest</span>
-      </button>
-      <button class="nav-item">
-        <span class="nav-icon">💬</span>
-        <span class="nav-label">Chat</span>
-      </button>
-    </div> -->
+    <!-- Property Content -->
+    <template v-else-if="property">
+      <div class="property-header">
+        <ImageSlider :images="propertyImages" />
+        <div class="image_layover_icons">
+          <button class="icon-btn" @click="goBack">
+            <OPIcon name="leftChevronWhite" class="w-[18px] h-[18px]" />
+          </button>
+          <div>
+            <button class="icon-btn" @click="handleWishlist">
+              <OPIcon name="wishlist" class="w-[20px] h-[20px]" />
+            </button>
+            <button class="icon-btn" @click="showShare = true">
+              <OPIcon name="share" class="w-[20px] h-[20px]" />
+            </button>
+          </div>
+        </div>
+      </div>
 
-    <!-- <RegisterInterestModal
-      v-model="showRegisterInterest"
-      address="12, Maple Road, Staines TW18 3BA"
-      @registered="onInterestRegistered"
-    /> -->
+      <div class="property-content">
+        <div class="property-title">
+          <h1>{{ property.addressLine1 }}</h1>
+          <p class="address">
+            {{ [property.city, property.county].filter(Boolean).join(', ') }},
+            {{ property.postcode }}
+          </p>
+          <p class="price">
+            {{ formatPrice(property.estimatedPrice) }}
+            <span class="estimated">Estimated Value</span>
+          </p>
+        </div>
 
+        <div class="property-badges">
+          <span class="badge">{{ property.tenure ?? 'Freehold' }}</span>
+          <span class="badge">{{ property.propertyType ?? 'Residential' }}</span>
+          <span
+            v-if="property.estimatedPrice && property.sqft"
+            class="badge price-badge"
+          >
+            £{{ Math.round(property.estimatedPrice / property.sqft).toLocaleString() }} /sqft
+          </span>
+        </div>
+
+        <div class="section">
+          <h2>Property Details</h2>
+          <div class="details-grid">
+            <div class="detail-item">
+              <div class="detail-icon">🏠</div>
+              <div class="detail-info">
+                <div class="detail-label">Property type</div>
+                <div class="detail-value">{{ property.propertyType ?? '—' }}</div>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">#</div>
+              <div class="detail-info">
+                <div class="detail-label">Title number</div>
+                <div class="detail-value">{{ property.titleNumber ?? '—' }}</div>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">📏</div>
+              <div class="detail-info">
+                <div class="detail-label">Area sqft</div>
+                <div class="detail-value">
+                  {{
+                    property.sqft
+                      ? `${property.sqft.toLocaleString()} sqft`
+                      : '—'
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">⚡</div>
+              <div class="detail-info">
+                <div class="detail-label">EPC Rating</div>
+                <div class="detail-value">{{ property.epcRating ?? '—' }}</div>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">🏛️</div>
+              <div class="detail-info">
+                <div class="detail-label">Tenure</div>
+                <div class="detail-value">{{ property.tenure ?? '—' }}</div>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">📅</div>
+              <div class="detail-info">
+                <div class="detail-label">Year Built</div>
+                <div class="detail-value">{{ property.yearBuilt ?? '—' }}</div>
+              </div>
+            </div>
+            <div v-if="property.bedrooms" class="detail-item">
+              <div class="detail-icon">🛏</div>
+              <div class="detail-info">
+                <div class="detail-label">Bedrooms</div>
+                <div class="detail-value">{{ property.bedrooms }}</div>
+              </div>
+            </div>
+            <div v-if="property.bathrooms" class="detail-item">
+              <div class="detail-icon">🚿</div>
+              <div class="detail-info">
+                <div class="detail-label">Bathrooms</div>
+                <div class="detail-value">{{ property.bathrooms }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Floor Plan</h2>
+          <div class="floor-plan">
+            <img
+              src="https://images.pexels.com/photos/280221/pexels-photo-280221.jpeg?auto=compress&cs=tinysrgb&w=600"
+              alt="Floor Plan"
+              class="floor-plan-img"
+            />
+            <button class="view-360-btn">360°</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Location and Nearby</h2>
+          <div class="map-container">
+            <div class="map-placeholder">
+              <div class="map-pin">📍</div>
+            </div>
+            <button class="street-view-btn">Open Street View</button>
+          </div>
+
+          <div class="nearby-section">
+            <button class="nearby-btn active">🚂 Train Stations</button>
+            <button class="nearby-btn">🏪</button>
+            <button class="nearby-btn">🏫</button>
+            <button class="nearby-btn">🚌</button>
+          </div>
+
+          <div class="station-list">
+            <div class="station-item">
+              <div class="station-icon">🚂</div>
+              <div class="station-info">
+                <div class="station-name">Local Railway Station</div>
+                <div class="station-distance">📍 0.5 Miles</div>
+              </div>
+            </div>
+            <div class="station-item">
+              <div class="station-icon">🚂</div>
+              <div class="station-info">
+                <div class="station-name">Town Centre Station</div>
+                <div class="station-distance">📍 1.1 Miles</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="property.epcRating" class="section">
+          <h2>EPC Rating</h2>
+          <div class="epc-chart">
+            <div class="epc-header">
+              <span>Score</span>
+              <span>Energy Rating</span>
+              <span>Current</span>
+              <span>Potential</span>
+            </div>
+            <div
+              v-for="band in epcBands"
+              :key="band.label"
+              class="epc-bar"
+              :class="[
+                `epc-${band.label.toLowerCase()}`,
+                { current: band.label === property.epcRating },
+              ]"
+            >
+              <span>{{ band.range }}</span>
+              <div class="bar">{{ band.label }}</div>
+              <div
+                v-if="band.label === property.epcRating"
+                class="marker"
+              >
+                {{ band.score }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Drawers -->
     <BaseDrawer
       v-model="showRegisterInterest"
       title="Register Interest"
@@ -228,7 +209,7 @@
       @close="showRegisterInterest = false"
     >
       <RegisterInterestContent
-        address="12, Maple Road, Staines TW18 3BA"
+        :address="`${property?.addressLine1}, ${property?.postcode}`"
         @submit="onInterestRegistered"
       />
     </BaseDrawer>
@@ -240,22 +221,14 @@
       @close="showShare = false"
     >
       <ShareContent
-        :property-title="propertyTitle"
-        :property-address="propertyAddress"
-        :property-price="propertyPrice"
+        :property-title="property?.addressLine1 ?? ''"
+        :property-address="`${property?.city ?? ''}, ${property?.postcode ?? ''}`"
+        :property-price="formatPrice(property?.estimatedPrice)"
         :property-image="propertyImages[0]"
         @share="handleShare"
       />
     </BaseDrawer>
 
-    <!-- <ShareContent
-      v-model="showShare"
-      :property-title="propertyTitle"
-      :property-address="propertyAddress"
-      :property-price="propertyPrice"
-      :property-image="propertyImages[0]"
-      @share="handleShare"
-    /> -->
     <Toast
       :is-visible="toastState.isVisible"
       :message="toastState.message"
@@ -266,93 +239,147 @@
     />
 
     <PropertyActionBar
-      :actions="[
-        { icon: 'accessPassport', label: 'Access Passport' },
-        { icon: 'saveProperty', label: 'Save Property' },
-        { icon: 'registerInterest', label: 'Register Interest' },
-        { icon: 'tapOwner', label: 'Tap Owner' },
-      ]"
+      v-if="property && !pageLoading"
+      :actions="actionBarItems"
       @action="handleAction"
     />
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PropertyActionBar from '@/components/property/PropertyActionBar.vue'
 import RegisterInterestContent from '~/components/property/RegisterInterestContent.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
-import { useToast } from '~/composables/useToast'
 import ShareContent from '~/components/property/ShareContent.vue'
-import { ref } from 'vue'
+import { useToast } from '~/composables/useToast'
+import { usePropertySearch } from '~/composables/usePropertySearch'
+import { usePassportClaim } from '~/composables/usePassportClaim'
+
+definePageMeta({ middleware: 'auth' })
 
 const route = useRoute()
 const router = useRouter()
+const propertyId = route.params.id as string
 
+const { getPropertyDetails, formatPrice } = usePropertySearch()
+const { getPassportStatus } = usePassportClaim()
 const { toastState, showToast, hideToast } = useToast()
-const showMessageSent = ref(false)
+
+const property = ref<any>(null)
+const passportStatus = ref<{
+  hasPassport: boolean
+  passportId: string | null
+  isOwner: boolean
+  isCollaborator: boolean
+  canAccess?: boolean
+} | null>(null)
+const pageLoading = ref(true)
+const loadError = ref('')
+const showRegisterInterest = ref(false)
 const showShare = ref(false)
 
-const showRegisterInterest = ref(false)
-const onInterestRegistered = (level) => {
-  console.log('Interest registered:', level)
-}
-
-const handleAction = (label) => {
-  if (label === 'Access Passport') {
-    router.push(`/passport/${route.params.id}`)
-  }
-
-  if (label === 'Save Property') {
-    handleSaveProperty()
-  }
-
-  if (label === 'Register Interest') {
-    showRegisterInterest.value = true
-  }
-
-  if (label === 'Tap Owner') {
-    router.push(`/owner/${route.params.id}`)
-  }
-}
-// const navigateToPassport = () => {
-//   router.push(`/passport/${route.params.id}`)
-// }
-const propertyImages = [
-  'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800',
+const FALLBACK_IMAGES = [
   'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800',
   'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
   'https://images.pexels.com/photos/1643389/pexels-photo-1643389.jpeg?auto=compress&cs=tinysrgb&w=800',
   'https://images.pexels.com/photos/2249531/pexels-photo-2249531.jpeg?auto=compress&cs=tinysrgb&w=800',
 ]
-const propertyTitle = '12, Maple Road'
-const propertyAddress = 'Staines-upon-Thames, TW18 3BA'
-const propertyPrice = '£250,000'
 
-const goBack = () => {
-  router.back()
+const propertyImages = computed(() => {
+  const main =
+    property.value?.imageUrl ||
+    'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800'
+  return [main, ...FALLBACK_IMAGES]
+})
+
+const actionBarItems = computed(() => {
+  const canAccess =
+    passportStatus.value?.hasPassport && passportStatus.value?.canAccess
+  return [
+    {
+      icon: 'accessPassport',
+      label: canAccess ? 'Access Passport' : 'Claim Passport',
+    },
+    { icon: 'saveProperty', label: 'Save Property' },
+    { icon: 'registerInterest', label: 'Register Interest' },
+    { icon: 'tapOwner', label: 'Tap Owner' },
+  ]
+})
+
+const epcBands = [
+  { label: 'A', range: '92+', score: 95 },
+  { label: 'B', range: '81-91', score: 86 },
+  { label: 'C', range: '69-80', score: 74 },
+  { label: 'D', range: '55-68', score: 62 },
+  { label: 'E', range: '39-54', score: 46 },
+  { label: 'F', range: '21-38', score: 30 },
+  { label: 'G', range: '1-20', score: 10 },
+]
+
+onMounted(async () => {
+  try {
+    const [propData, statusData] = await Promise.all([
+      getPropertyDetails(propertyId),
+      getPassportStatus(propertyId),
+    ])
+    if (!propData) {
+      loadError.value = 'Property not found.'
+    } else {
+      property.value = propData
+    }
+    passportStatus.value = statusData
+  } catch (err) {
+    loadError.value = 'Failed to load property details.'
+    console.error(err)
+  } finally {
+    pageLoading.value = false
+  }
+})
+
+function handleAction(label: string) {
+  if (label === 'Claim Passport') {
+    router.push(`/passport/${propertyId}`)
+  } else if (label === 'Access Passport') {
+    if (passportStatus.value?.passportId) {
+      router.push(`/passportview/${passportStatus.value.passportId}`)
+    }
+  } else if (label === 'Save Property') {
+    handleSaveProperty()
+  } else if (label === 'Register Interest') {
+    showRegisterInterest.value = true
+  } else if (label === 'Tap Owner') {
+    router.push(`/owner/${propertyId}`)
+  }
 }
 
-const handleWishlist = () => {
+function goBack() { router.back() }
+
+function handleWishlist() {
   showToast({
-    message: 'The Property has been added to your wishlist',
-    icon: propertyImages[0],
+    message: 'Property added to your wishlist',
+    icon: propertyImages.value[0],
     duration: 2000,
   })
 }
 
-const handleSaveProperty = () => {
+function handleSaveProperty() {
   showToast({
-    message: 'The Property has been saved to your collections',
-    icon: propertyImages[0],
+    message: 'Property saved to your collections',
+    icon: propertyImages.value[0],
     duration: 2000,
   })
 }
 
-const handleShare = (data) => {
-  console.log('Share:', data)
+function onInterestRegistered() {
+  showRegisterInterest.value = false
+  showToast({ message: 'Interest registered!', duration: 2000 })
+}
+
+function handleShare() {
+  console.log('Share triggered')
 }
 </script>
 
@@ -361,30 +388,47 @@ const handleShare = (data) => {
   min-height: 100vh;
   background: #f5f5f5;
   padding-bottom: 80px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.property-loading,
+.property-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+  color: #666;
+  font-size: 15px;
+}
+
+.property-loading__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #00b8a9;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.btn-back {
+  background: #00b8a9;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 24px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .property-header {
   position: relative;
   width: 100%;
   height: 300px;
-}
-
-.property-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.image-counter {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
 }
 
 .image_layover_icons {
@@ -410,8 +454,15 @@ const handleShare = (data) => {
   justify-content: center;
 }
 
-.image_layover_icons .icon-btn:hover {
-  background: #00000054;
+.icon-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .property-content {
@@ -424,14 +475,14 @@ const handleShare = (data) => {
 .property-title h1 {
   font-size: 24px;
   font-weight: 700;
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
   color: #1a1a1a;
 }
 
 .address {
   color: #666;
   font-size: 14px;
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
 }
 
 .price {
@@ -451,6 +502,7 @@ const handleShare = (data) => {
   display: flex;
   gap: 8px;
   margin: 16px 0;
+  flex-wrap: wrap;
 }
 
 .badge {
@@ -462,13 +514,9 @@ const handleShare = (data) => {
   font-weight: 500;
 }
 
-.price-badge {
-  background: #00b8a9;
-}
+.price-badge { background: #00b8a9; }
 
-.section {
-  margin: 32px 0;
-}
+.section { margin: 32px 0; }
 
 .section h2 {
   font-size: 18px;
@@ -490,45 +538,9 @@ const handleShare = (data) => {
   align-items: flex-start;
 }
 
-.detail-icon {
-  font-size: 24px;
-  color: #00b8a9;
-}
-
-.detail-label {
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 4px;
-}
-
-.detail-value {
-  font-size: 15px;
-  font-weight: 600;
-  color: #1a1a1a;
-}
-
-.action-icons {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-start;
-  margin-top: 16px;
-}
-
-.icon-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  border: 1px solid #e0e0e0;
-  background: white;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.icon-btn:hover {
-  background: #f5f5f5;
-  transform: scale(1.05);
-}
+.detail-icon { font-size: 24px; color: #00b8a9; }
+.detail-label { font-size: 12px; color: #999; margin-bottom: 4px; }
+.detail-value { font-size: 15px; font-weight: 600; color: #1a1a1a; }
 
 .floor-plan {
   position: relative;
@@ -538,11 +550,7 @@ const handleShare = (data) => {
   height: 200px;
 }
 
-.floor-plan-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.floor-plan-img { width: 100%; height: 100%; object-fit: cover; }
 
 .view-360-btn {
   position: absolute;
@@ -570,7 +578,6 @@ const handleShare = (data) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
 
 .map-pin {
@@ -579,13 +586,8 @@ const handleShare = (data) => {
 }
 
 @keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .street-view-btn {
@@ -626,11 +628,7 @@ const handleShare = (data) => {
   border-color: #00b8a9;
 }
 
-.station-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.station-list { display: flex; flex-direction: column; gap: 12px; }
 
 .station-item {
   display: flex;
@@ -640,9 +638,7 @@ const handleShare = (data) => {
   border-radius: 8px;
 }
 
-.station-icon {
-  font-size: 24px;
-}
+.station-icon { font-size: 24px; }
 
 .station-name {
   font-size: 15px;
@@ -651,10 +647,7 @@ const handleShare = (data) => {
   margin-bottom: 4px;
 }
 
-.station-distance {
-  font-size: 12px;
-  color: #666;
-}
+.station-distance { font-size: 12px; color: #666; }
 
 .epc-chart {
   background: white;
@@ -681,10 +674,7 @@ const handleShare = (data) => {
   position: relative;
 }
 
-.epc-bar span:first-child {
-  font-size: 12px;
-  color: #666;
-}
+.epc-bar span:first-child { font-size: 12px; color: #666; }
 
 .epc-bar .bar {
   height: 32px;
@@ -698,34 +688,13 @@ const handleShare = (data) => {
   font-size: 14px;
 }
 
-.epc-a .bar {
-  background: #00a758;
-  width: 95%;
-}
-.epc-b .bar {
-  background: #4db848;
-  width: 85%;
-}
-.epc-c .bar {
-  background: #b8c832;
-  width: 75%;
-}
-.epc-d .bar {
-  background: #ffd732;
-  width: 65%;
-}
-.epc-e .bar {
-  background: #ffa632;
-  width: 55%;
-}
-.epc-f .bar {
-  background: #ff7832;
-  width: 45%;
-}
-.epc-g .bar {
-  background: #ff3232;
-  width: 35%;
-}
+.epc-a .bar { background: #00a758; width: 95%; }
+.epc-b .bar { background: #4db848; width: 85%; }
+.epc-c .bar { background: #b8c832; width: 75%; }
+.epc-d .bar { background: #ffd732; width: 65%; }
+.epc-e .bar { background: #ffa632; width: 55%; }
+.epc-f .bar { background: #ff7832; width: 45%; }
+.epc-g .bar { background: #ff3232; width: 35%; }
 
 .epc-bar.current .marker {
   position: absolute;
@@ -737,45 +706,5 @@ const handleShare = (data) => {
   font-size: 12px;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  display: flex;
-  justify-content: space-around;
-  padding: 12px 0 20px 0;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  max-width: inherit;
-  margin: auto;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.nav-item:hover {
-  transform: scale(1.1);
-}
-
-.nav-icon {
-  font-size: 24px;
-}
-
-.nav-label {
-  font-size: 11px;
-  color: #666;
-  font-weight: 500;
 }
 </style>

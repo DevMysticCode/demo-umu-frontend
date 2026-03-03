@@ -1,7 +1,7 @@
 <template>
   <div class="multipart-question">
-    <!-- Question Display (only for first part) -->
-    <!-- <template v-if="sortedParts[0]">
+    <!-- Question Display (task-level title/description/help shown above parts) -->
+    <template v-if="displayedQuestion || displayedDescription || displayedHelp">
       <p v-if="displayedQuestion" class="question-text">
         {{ displayedQuestion }}
         <span v-if="showQuestionCursor" class="typing-cursor">|</span>
@@ -31,7 +31,7 @@
           </p>
         </div>
       </div>
-    </template> -->
+    </template>
 
     <div
       v-for="section in groupedSections"
@@ -59,9 +59,23 @@
             <span v-if="false" class="typing-cursor">|</span>
           </p>
 
-          <p v-if="part.description" class="part-description">
-            {{ part.description }}
-          </p>
+          <template v-if="part.description">
+            <ul
+              v-if="part.description.includes('\n•') || part.description.startsWith('•')"
+              class="part-description-bullets"
+            >
+              <li
+                v-for="(line, i) in part.description.split('\n').filter(l => l.trim())"
+                :key="i"
+                class="part-description-bullet-item"
+              >
+                {{ line.replace(/^•\s*/, '') }}
+              </li>
+            </ul>
+            <p v-else class="part-description">
+              {{ part.description }}
+            </p>
+          </template>
 
           <!-- Part-level external link -->
           <a
@@ -666,6 +680,30 @@ const getVisibleParts = () => {
   line-height: 18px;
   letter-spacing: -0.08px;
   white-space: pre-line;
+}
+
+.part-description-bullets {
+  margin: 0 0 12px 0;
+  padding-left: 16px;
+  list-style: none;
+}
+
+.part-description-bullet-item {
+  font-size: 13px;
+  color: #3c3c4399;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+  padding-left: 8px;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.part-description-bullet-item::before {
+  content: '•';
+  position: absolute;
+  left: -8px;
+  color: #3c3c4399;
+  font-size: 13px;
 }
 
 .part-external-link {

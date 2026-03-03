@@ -4,9 +4,9 @@
 
     <div class="content">
       <h1 class="title">Property Passport Available</h1>
-      <p class="subtitle">12, Maple Road, Staines TW18 3BA</p>
+      <p class="subtitle">{{ property?.addressLine1 }}, {{ property?.postcode }}</p>
 
-      <PassportCard line1="21, Rochester Road" line2="Staines, TW18 3BA" />
+      <PassportCard :line1="property?.addressLine1 ?? ''" :line2="[property?.city, property?.postcode].filter(Boolean).join(', ')" />
 
       <div class="completion-status">
         <p>
@@ -54,7 +54,10 @@
         </div>
       </div>
 
-      <button class="unlock-btn" @click="navigateToPayment">Unlock Now</button>
+      <p v-if="claimError" class="claim-error">{{ claimError }}</p>
+      <button class="unlock-btn" :disabled="claiming" @click="navigateToPayment">
+        {{ claiming ? 'Creating Passport...' : 'Unlock Now' }}
+      </button>
 
       <div class="pricing-section">
         <h3 class="pricing-title">One-time access fee: £6</h3>
@@ -160,8 +163,8 @@
         </div>
       </div>
 
-      <button class="bottom-unlock-btn" @click="navigateToPayment">
-        Unlock Complete Passport - £6
+      <button class="bottom-unlock-btn" :disabled="claiming" @click="navigateToPayment">
+        {{ claiming ? 'Creating Passport...' : 'Unlock Complete Passport - £6' }}
       </button>
     </div>
   </div>
@@ -170,15 +173,46 @@
 <script setup>
 import AppHeader from '@/components/core/AppHeader.vue'
 import PassportCard from '@/components/passport-view/PassportCard.vue'
+import { usePassportClaim } from '~/composables/usePassportClaim'
+
 const route = useRoute()
 const router = useRouter()
+const config = useRuntimeConfig()
+
+const { claimPassport } = usePassportClaim()
+const property = ref(null)
+const claiming = ref(false)
+const claimError = ref('')
+
+onMounted(async () => {
+  try {
+    property.value = await $fetch(`${config.public.apiBase}/property/${route.params.id}`)
+  } catch (e) {
+    console.error('Failed to load property', e)
+  }
+})
 
 const goBack = () => {
   router.back()
 }
 
-const navigateToPayment = () => {
-  router.push(`/payment/${route.params.id}`)
+const navigateToPayment = async () => {
+  if (!property.value || claiming.value) return
+  claiming.value = true
+  claimError.value = ''
+  try {
+    const result = await claimPassport(
+      route.params.id,
+      property.value.addressLine1,
+      property.value.postcode,
+    )
+    router.push(`/passportview/${result.passportId}`)
+  } catch (err) {
+    claimError.value =
+      err?.data?.message || err?.message || 'Failed to claim passport. Please try again.'
+  } finally {
+    claiming.value = false
+  }
 }
 </script>
 
@@ -389,6 +423,13 @@ const navigateToPayment = () => {
   font-size: 15px;
   color: #00b8a9;
   font-weight: 500;
+}
+
+.claim-error {
+  font-size: 13px;
+  color: #e53e3e;
+  text-align: center;
+  margin: 0 0 8px;
 }
 
 .unlock-btn {
