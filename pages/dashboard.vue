@@ -4,25 +4,21 @@
     <AppHeader title="Explore" :showBack="false" right="profile" />
 
     <!-- Main Content -->
-    <main class="px-4 pb-20">
-      <!-- Hero Section with New UI -->
-      <div class="mb-8 mt-4">
-        <!-- Hero Title -->
-        <div class="mb-6">
-          <h1 class="text-3xl font-bold text-gray-900 mb-2">
-            Stop searching like it's 1999.
-          </h1>
-          <p class="text-xl text-gray-600 font-medium">
-            Search for a life, not just a house.
-          </p>
-        </div>
-
-        <!-- Tagline -->
-        <p class="text-sm text-gray-500 mb-4">UMU search is powered by AI</p>
+    <main class="pb-20">
+      <!-- Hero Section -->
+      <div class="px-4">
+        <HeroSection
+          iconName="propertySearch"
+          iconClass="w-full h-full"
+          heroClass="w-40 h-40"
+          mainTitle="Stop searching like it's 1999. Search for a life, not just a house."
+          subColored="UMU search is powered by AI"
+          subTitle="Tell us how you live. We'll find the homes that fit."
+        />
       </div>
 
-      <!-- Enhanced Search Input with Voice -->
-      <div class="mb-6">
+      <!-- Enhanced Search Input -->
+      <div class="px-4 mb-6">
         <EnhancedSearchInput
           v-model="searchQuery"
           placeholder="Describe your ideal home."
@@ -32,219 +28,208 @@
         />
       </div>
 
-      <!-- Search Options -->
-      <div class="flex gap-2 mb-8 overflow-x-auto pb-2">
-        <button
-          @click="useCurrentLocation"
-          class="flex items-center gap-2 px-4 py-2 bg-brand-aqua text-white rounded-full text-sm font-medium whitespace-nowrap hover:bg-brand-aqua/90 transition"
-        >
-          <Icon name="i-heroicons-map-pin" class="w-4 h-4" />
-          Current Location
-        </button>
-        <button
-          class="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-gray-200 transition"
-        >
-          <Icon name="i-heroicons-pencil" class="w-4 h-4" />
-          Draw on Maps
-        </button>
-        <button
-          class="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-gray-200 transition"
-        >
-          Property
-        </button>
-      </div>
-
       <!-- For You Section -->
       <div class="mb-8">
-        <div class="flex items-center gap-2 mb-4">
-          <Icon name="i-heroicons-sparkles" class="w-5 h-5 text-gray-400" />
+        <div class="px-4 mb-3">
           <h2 class="text-lg font-semibold text-gray-900">For You</h2>
+          <p class="text-sm text-gray-500 mt-0.5">
+            Here are some top picks exclusively matched from your Home Profile
+          </p>
         </div>
-        <p class="text-sm text-gray-600 mb-4">
-          Here are some top picks exclusively selected for you based on your
-          profile.
-        </p>
 
-        <!-- Property Cards Carousel -->
-        <div class="space-y-4">
+        <!-- Horizontal property carousel — JS translateX, one card at a time -->
+        <div
+          ref="carouselRef"
+          class="relative overflow-hidden"
+          @touchstart="onTouchStart"
+          @touchend="onTouchEnd"
+        >
           <div
-            v-for="property in recommendedProperties"
+            class="flex transition-transform duration-300 ease-in-out"
+            :style="{ transform: `translateX(-${currentSlide * slideWidth}px)` }"
+          >
+          <div
+            v-for="(property, index) in recommendedProperties"
             :key="property.id"
             @click="viewProperty(property.id)"
-            class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition"
+            class="flex-none px-4 pb-4"
+            :style="{ width: slideWidth + 'px' }"
           >
-            <img
-              :src="property.image"
-              :alt="property.address"
-              class="w-full h-48 object-cover"
-            />
-            <div class="p-4">
-              <div class="flex items-center justify-between mb-2">
-                <h4 class="font-semibold text-gray-900">
-                  {{ property.address }}
-                </h4>
-                <div
-                  class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-red-50 transition"
-                >
-                  <Icon
-                    name="i-heroicons-heart"
-                    class="w-5 h-5 text-gray-400 hover:text-red-500"
-                  />
-                </div>
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer">
+            <!-- Property Image with overlays -->
+            <div class="relative h-48 overflow-hidden bg-gray-200">
+              <img
+                :src="property.image"
+                :alt="property.address"
+                class="w-full h-full object-cover"
+              />
+              <!-- Match badge -->
+              <div class="absolute top-3 left-3 flex items-center gap-1 bg-red-500 text-white px-2.5 py-1 rounded-full text-xs font-bold">
+                <span>⚙️</span>
+                <span>{{ mockMatch(index) }}% Match</span>
               </div>
-              <p class="text-sm text-gray-600 mb-2">{{ property.area }}</p>
+              <!-- Thumbs -->
+              <div class="absolute top-3 right-3 flex gap-2">
+                <button
+                  @click.stop
+                  class="w-8 h-8 bg-white rounded-full shadow flex items-center justify-center"
+                >
+                  <Icon name="i-heroicons-hand-thumb-up" class="w-4 h-4 text-gray-500" />
+                </button>
+                <button
+                  @click.stop
+                  class="w-8 h-8 bg-white rounded-full shadow flex items-center justify-center"
+                >
+                  <Icon name="i-heroicons-hand-thumb-down" class="w-4 h-4 text-gray-500" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-4">
+              <h4 class="font-semibold text-gray-900 text-base leading-snug mb-0.5">
+                {{ property.address }}
+              </h4>
+              <p class="text-sm text-gray-500 mb-1">{{ property.area }}</p>
               <p class="text-xl font-bold text-gray-900 mb-3">
                 {{ property.priceDisplay }}
               </p>
 
+              <!-- Feature badges -->
               <div class="flex items-center flex-wrap gap-2 mb-2">
                 <div
-                  v-if="property.passport !== null"
+                  v-if="property.passport !== null && property.passport !== undefined"
                   class="flex items-center gap-1"
                 >
-                  <div
-                    class="w-6 h-6 bg-brand-aqua rounded flex items-center justify-center"
-                  >
-                    <Icon name="i-heroicons-check" class="w-4 h-4 text-white" />
+                  <div class="w-5 h-5 bg-brand-aqua rounded flex items-center justify-center">
+                    <Icon name="i-heroicons-check" class="w-3 h-3 text-white" />
                   </div>
-                  <span
-                    class="bg-brand-aqua text-white px-2 py-1 rounded text-xs font-medium"
-                  >
+                  <span class="bg-brand-aqua text-white px-2 py-0.5 rounded text-xs font-semibold">
                     {{ property.passport }}%
                   </span>
                 </div>
-
                 <div class="flex items-center gap-1 text-brand-aqua">
                   <Icon name="i-heroicons-building-office" class="w-4 h-4" />
-                  <span class="text-sm">{{ property.bedrooms }}</span>
+                  <span class="text-xs font-medium">{{ property.bedrooms }}</span>
                 </div>
-
                 <div class="flex items-center gap-1 text-brand-aqua">
                   <Icon name="i-heroicons-home" class="w-4 h-4" />
-                  <span class="text-sm">{{ property.bathrooms }}</span>
+                  <span class="text-xs font-medium">{{ property.bathrooms }}</span>
                 </div>
-
-                <span
-                  class="bg-brand-aqua text-white px-2 py-1 rounded text-xs"
-                >
+                <span class="bg-brand-aqua text-white px-2 py-0.5 rounded-full text-xs font-medium">
                   {{ property.type }}
                 </span>
               </div>
 
-              <div class="flex items-center text-brand-aqua text-sm">
-                <Icon name="i-heroicons-squares-2x2" class="w-4 h-4 mr-1" />
-                <span>{{ property.sqftDisplay }}</span>
+              <!-- sqft + status -->
+              <div class="flex items-center gap-2 mb-3">
+                <div class="flex items-center gap-1 text-brand-aqua">
+                  <Icon name="i-heroicons-squares-2x2" class="w-4 h-4" />
+                  <span class="text-xs font-medium">{{ property.sqftDisplay }}</span>
+                </div>
+                <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">Move-in Ready</span>
+              </div>
+
+              <!-- Lifestyle tags -->
+              <div class="flex flex-wrap gap-1.5">
+                <span
+                  v-for="tag in mockTags(index)"
+                  :key="tag"
+                  class="bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded text-xs"
+                >
+                  {{ tag }}
+                </span>
               </div>
             </div>
+          </div><!-- inner card -->
+          </div><!-- slide wrapper -->
+          </div><!-- flex -->
+
+          <!-- Dot indicators -->
+          <div v-if="recommendedProperties.length > 1" class="flex justify-center gap-2 mt-2 pb-1">
+            <button
+              v-for="(_, i) in recommendedProperties"
+              :key="i"
+              @click.stop="currentSlide = i"
+              class="w-2 h-2 rounded-full transition-colors duration-200"
+              :class="i === currentSlide ? 'bg-brand-aqua' : 'bg-gray-300'"
+            />
           </div>
-        </div>
+
+          <!-- Empty state -->
+          <div
+            v-if="recommendedProperties.length === 0"
+            class="px-4 pb-4"
+          >
+            <div class="h-48 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 text-sm">
+              No properties found
+            </div>
+          </div>
+        </div><!-- carousel container -->
       </div>
 
       <!-- Your Journey Section -->
       <div class="mb-8">
-        <div class="flex items-center gap-2 mb-4">
-          <Icon name="i-heroicons-map" class="w-5 h-5 text-gray-400" />
+        <div class="px-4 mb-3">
           <h2 class="text-lg font-semibold text-gray-900">Your Journey</h2>
+          <p class="text-sm text-gray-500 mt-0.5">
+            Here are some top picks exclusively selected for you based on your profile.
+          </p>
         </div>
-        <p class="text-sm text-gray-600 mb-4">
-          Here are some top picks exclusively selected for you based on your
-          profile.
-        </p>
 
-        <div class="grid grid-cols-2 gap-4">
-          <!-- Find Trusted Traders -->
-          <div
-            class="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition cursor-pointer"
-          >
-            <div class="w-12 h-12 mb-3">
-              <div
-                class="w-full h-full bg-blue-100 rounded-lg flex items-center justify-center"
-              >
-                <Icon
-                  name="i-heroicons-wrench-screwdriver"
-                  class="w-6 h-6 text-blue-600"
-                />
-              </div>
+        <!-- Horizontal journey carousel -->
+        <div class="flex gap-4 overflow-x-auto pb-4 px-4 scrollbar-hide">
+          <div class="flex-shrink-0 w-44 bg-gray-50 rounded-2xl p-4 cursor-pointer hover:bg-gray-100 transition">
+            <div class="w-14 h-14 mb-3 bg-blue-100 rounded-xl flex items-center justify-center">
+              <Icon name="i-heroicons-wrench-screwdriver" class="w-7 h-7 text-blue-600" />
             </div>
-            <h3 class="font-semibold text-gray-900 mb-1 text-sm">
-              Find Trusted Traders
-            </h3>
-            <p class="text-xs text-gray-600 mb-3 line-clamp-2">
-              Connect with vetted professionals for all your property
-              maintenance needs
+            <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-snug">Find Trusted Traders</h3>
+            <p class="text-xs text-gray-500 mb-3 leading-snug line-clamp-3">
+              Connect with vetted professionals for all your property maintenance and improvement needs
             </p>
-            <button class="text-brand-aqua font-medium text-xs hover:underline">
+            <button class="text-brand-aqua font-semibold text-xs border border-brand-aqua rounded-full px-3 py-1">
               Marketplace
             </button>
           </div>
 
-          <!-- Property Experts -->
-          <div
-            class="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition cursor-pointer"
-          >
-            <div class="w-12 h-12 mb-3">
-              <div
-                class="w-full h-full bg-purple-100 rounded-lg flex items-center justify-center"
-              >
-                <Icon
-                  name="i-heroicons-academic-cap"
-                  class="w-6 h-6 text-purple-600"
-                />
-              </div>
+          <div class="flex-shrink-0 w-44 bg-gray-50 rounded-2xl p-4 cursor-pointer hover:bg-gray-100 transition">
+            <div class="w-14 h-14 mb-3 bg-purple-100 rounded-xl flex items-center justify-center">
+              <Icon name="i-heroicons-academic-cap" class="w-7 h-7 text-purple-600" />
             </div>
-            <h3 class="font-semibold text-gray-900 mb-1 text-sm">
-              Property Experts
-            </h3>
-            <p class="text-xs text-gray-600 mb-3 line-clamp-2">
+            <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-snug">Property Experts</h3>
+            <p class="text-xs text-gray-500 mb-3 leading-snug line-clamp-3">
               Master the buying process with our expert guides
             </p>
-            <button class="text-brand-aqua font-medium text-xs hover:underline">
+            <button class="text-brand-aqua font-semibold text-xs border border-brand-aqua rounded-full px-3 py-1">
               Learn
             </button>
           </div>
 
-          <!-- Sellers Hub -->
           <div
             @click="navigateToSellersHub"
-            class="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition cursor-pointer"
+            class="flex-shrink-0 w-44 bg-gray-50 rounded-2xl p-4 cursor-pointer hover:bg-gray-100 transition"
           >
-            <div class="w-12 h-12 mb-3">
-              <div
-                class="w-full h-full bg-green-100 rounded-lg flex items-center justify-center"
-              >
-                <Icon name="i-heroicons-home" class="w-6 h-6 text-green-600" />
-              </div>
+            <div class="w-14 h-14 mb-3 bg-green-100 rounded-xl flex items-center justify-center">
+              <Icon name="i-heroicons-home" class="w-7 h-7 text-green-600" />
             </div>
-            <h3 class="font-semibold text-gray-900 mb-1 text-sm">
-              Sellers Hub
-            </h3>
-            <p class="text-xs text-gray-600 mb-3 line-clamp-2">
+            <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-snug">Sellers Hub</h3>
+            <p class="text-xs text-gray-500 mb-3 leading-snug line-clamp-3">
               Click start to begin your sellers journey
             </p>
-            <button class="text-brand-aqua font-medium text-xs hover:underline">
+            <button class="text-brand-aqua font-semibold text-xs border border-brand-aqua rounded-full px-3 py-1">
               Start
             </button>
           </div>
 
-          <!-- Buyers Hub -->
-          <div
-            class="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition cursor-pointer"
-          >
-            <div class="w-12 h-12 mb-3">
-              <div
-                class="w-full h-full bg-orange-100 rounded-lg flex items-center justify-center"
-              >
-                <Icon
-                  name="i-heroicons-building-office"
-                  class="w-6 h-6 text-orange-600"
-                />
-              </div>
+          <div class="flex-shrink-0 w-44 bg-gray-50 rounded-2xl p-4 cursor-pointer hover:bg-gray-100 transition">
+            <div class="w-14 h-14 mb-3 bg-orange-100 rounded-xl flex items-center justify-center">
+              <Icon name="i-heroicons-building-office" class="w-7 h-7 text-orange-600" />
             </div>
-            <h3 class="font-semibold text-gray-900 mb-1 text-sm">Buyers Hub</h3>
-            <p class="text-xs text-gray-600 mb-3 line-clamp-2">
+            <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-snug">Buyers Hub</h3>
+            <p class="text-xs text-gray-500 mb-3 leading-snug line-clamp-3">
               Click start to begin your buyers journey
             </p>
-            <button class="text-brand-aqua font-medium text-xs hover:underline">
+            <button class="text-brand-aqua font-semibold text-xs border border-brand-aqua rounded-full px-3 py-1">
               Start
             </button>
           </div>
@@ -288,10 +273,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import AppHeader from '~/components/core/AppHeader.vue'
 import BottomNav from '@/components/core/BottomNav.vue'
 import BaseDrawer from '@/components/ui/BaseDrawer.vue'
+import HeroSection from '~/components/HeroSection.vue'
 import SearchSuggestions from '~/components/search/SearchSuggestions.vue'
 import SearchResults from '~/components/search/SearchResults.vue'
 import FiltersModal from '~/components/search/FiltersModal.vue'
@@ -313,14 +299,44 @@ const showFilters = ref(false)
 const searching = ref(false)
 const searchResults = ref<any[]>([])
 const recommendedProperties = ref<any[]>([])
+const currentSlide = ref(0)
+const carouselRef = ref<HTMLElement | null>(null)
+const slideWidth = ref(0)
 
-// Load "For You" properties from the backend on mount (default seed area)
+let touchStartX = 0
+const onTouchStart = (e: TouchEvent) => {
+  touchStartX = e.changedTouches[0].screenX
+}
+const onTouchEnd = (e: TouchEvent) => {
+  const diff = touchStartX - e.changedTouches[0].screenX
+  if (Math.abs(diff) > 40) {
+    if (diff > 0 && currentSlide.value < recommendedProperties.value.length - 1) {
+      currentSlide.value++
+    } else if (diff < 0 && currentSlide.value > 0) {
+      currentSlide.value--
+    }
+  }
+}
+
+const MATCH_SCORES = [98.2, 82.4, 91.7]
+const TAG_SETS = [
+  ['Breakfast kitchen', 'Good Primary within 800m', 'Low Crime', 'Family Street', 'Pool Potential'],
+  ['Garden', 'Fast Broadband', 'Parking', 'Near Stations', 'EPC Rated B'],
+  ['Home Office', 'Close to Parks', 'Low Traffic', 'Energy Efficient', 'Period Features'],
+]
+
+const mockMatch = (index: number) => MATCH_SCORES[index % MATCH_SCORES.length]
+const mockTags = (index: number) => TAG_SETS[index % TAG_SETS.length]
+
 onMounted(async () => {
+  await nextTick()
+  slideWidth.value = carouselRef.value?.offsetWidth ?? 0
+
   try {
     const results = await searchProperties('TW18')
     recommendedProperties.value = results.slice(0, 3)
   } catch {
-    // Backend unreachable — section stays empty; UI handles this gracefully
+    // Backend unreachable — stays empty
   }
 })
 
@@ -355,24 +371,10 @@ const applyFilters = (filters: any) => {
   console.log('Applying filters:', filters)
 }
 
-const useCurrentLocation = () => {
-  if ('geolocation' in navigator) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        console.log('Location:', position.coords)
-      },
-      (error) => {
-        console.error('Error getting location:', error)
-      },
-    )
-  }
-}
-
 const navigateToSellersHub = () => {
   router.push('/passportview/77f535a9-527d-4c30-a502-0f72dcd97289')
 }
 
-// IDs are now UUIDs (strings) from the backend
 const viewProperty = (id: string) => {
   router.push(`/property/${id}`)
 }
@@ -383,9 +385,16 @@ const showFilterPanel = () => {
 </script>
 
 <style scoped>
-.line-clamp-2 {
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.line-clamp-3 {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
