@@ -222,8 +222,8 @@ const navigateToRoute = (route) => {
   }
 }
 
-const handleContinue = () => {
-  const nextRoute = continueToNext()
+const handleContinue = async () => {
+  const nextRoute = await continueToNext()
   if (nextRoute) {
     navigateToRoute(nextRoute)
   }

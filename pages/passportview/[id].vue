@@ -8,7 +8,7 @@
 
     <div class="passport-content">
       <div class="passport-cards-carousel">
-        <PassportCard line1="21, Rochester Road" line2="Staines, TW18 3BA" />
+        <PassportCard :line1="passportAddress.line1" :line2="passportAddress.line2" />
       </div>
 
       <div class="property-info">
@@ -18,8 +18,8 @@
               ><OPIcon name="pin" class="w-[24px] h-[24px]"
             /></span>
             <div class="property-address-small">
-              21, Rochester Road<br /><span class="property-address-small-sub"
-                >Coventry, CV5 6AB</span
+              {{ passportAddress.line1 }}<br /><span class="property-address-small-sub"
+                >{{ passportAddress.line2 }}</span
               >
             </div>
             <button class="dropdown-btn">
@@ -163,14 +163,29 @@ const { steps, loadPassport } = usePassportRuntime()
 const { getCollaborators } = usePassportCollaborators()
 const route = useRoute()
 const router = useRouter()
+const config = useRuntimeConfig()
 
 // Collaborator state
 const collaborators = ref([])
 const showCollaboratorModal = ref(false)
 
+const passportAddress = ref({ line1: '', line2: '' })
+
 onMounted(async () => {
   loadPassport(route.params.id)
   await loadCollaborators()
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const passport = await $fetch(`${config.public.apiBase}/passport/${route.params.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    passportAddress.value = {
+      line1: passport.addressLine1 ?? '',
+      line2: passport.postcode ?? '',
+    }
+  } catch (e) {
+    console.error('Failed to load passport address', e)
+  }
 })
 
 const loadCollaborators = async () => {
