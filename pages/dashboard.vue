@@ -1,43 +1,153 @@
 <template>
-  <div class="mobile-container min-h-screen bg-white">
-    <!-- App Header -->
+  <div class="mobile-container min-h-screen bg-umu-gradient">
     <AppHeader title="Explore" :showBack="false" right="profile" />
 
-    <!-- Main Content -->
-    <main class="pb-20">
-      <!-- Hero Section -->
+    <main class="pb-24">
+      <!-- Hero -->
       <div class="px-4">
         <HeroSection
           iconName="propertySearch"
           iconClass="w-full h-full"
-          heroClass="w-40 h-40"
-          mainTitle="Stop searching like it's 1999. Search for a life, not just a house."
-          subColored="UMU search is powered by AI"
-          subTitle="Tell us how you live. We'll find the homes that fit."
+          heroClass="w-36 h-36"
+          mainTitle="Property Search"
+          subColored="UMU search is powered by AI."
+          subTitle="Try searching for Property Passports that are detached"
         />
       </div>
 
-      <!-- Enhanced Search Input -->
-      <div class="px-4 mb-6">
-        <EnhancedSearchInput
-          v-model="searchQuery"
-          placeholder="Describe your ideal home."
-          :isSearching="searching"
-          @search="performSearch"
-          @focus="openSearchSuggestions"
-        />
+      <!-- Search bar (tap to open drawer) -->
+      <div class="px-4 mb-5" @click="showSearchDrawer = true">
+        <div
+          class="flex items-center bg-white rounded-full border border-gray-200 shadow-sm gap-3 cursor-pointer search-bar"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            class="flex-shrink-0"
+          >
+            <circle cx="11" cy="11" r="7" stroke="#aaa" stroke-width="2" />
+            <path
+              d="M16.5 16.5L21 21"
+              stroke="#aaa"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span class="flex-1 text-sm text-gray-400"
+            >City, area or postcode</span
+          >
+          <span class="text-brand-aqua text-sm umu_btn">Search</span>
+        </div>
+      </div>
+
+      <!-- Action cards -->
+      <div class="px-4 flex flex-col gap-4 mb-7">
+        <!-- Card 1: Find your Home Score -->
+        <div class="action-card">
+          <!-- Circular gauge -->
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 100 100" width="100" height="100">
+              <!-- Track -->
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                fill="none"
+                stroke="#d6f5f3"
+                stroke-width="10"
+                stroke-dasharray="251.3"
+                stroke-dashoffset="0"
+                stroke-linecap="round"
+                transform="rotate(-90 50 50)"
+              />
+              <!-- Progress (85%) -->
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                fill="none"
+                stroke="#00a19a"
+                stroke-width="10"
+                :stroke-dasharray="`${251.3 * 0.85} ${251.3 * 0.15}`"
+                stroke-linecap="round"
+                transform="rotate(-90 50 50)"
+              />
+              <text
+                x="50"
+                y="47"
+                text-anchor="middle"
+                font-size="22"
+                font-weight="700"
+                fill="#00a19a"
+                font-family="sans-serif"
+              >
+                85
+              </text>
+              <text
+                x="50"
+                y="61"
+                text-anchor="middle"
+                font-size="10"
+                fill="#999"
+                font-family="sans-serif"
+              >
+                Good
+              </text>
+            </svg>
+          </div>
+
+          <div class="action-card-body">
+            <h3 class="action-card-title">Find your Home Score</h3>
+            <p class="action-card-sub">
+              Click here to find out how energy efficient your home is.
+            </p>
+            <div class="flex justify-end mt-2">
+              <button class="action-btn">Start</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Property Passport -->
+        <div
+          class="action-card cursor-pointer"
+          @click="router.push('/passport/collections')"
+        >
+          <!-- Passport thumbnail -->
+          <div class="passport-thumb-wrap">
+            <div class="passport-thumb-inner">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                class="passport-thumb-img"
+                alt=""
+              />
+            </div>
+          </div>
+
+          <div class="action-card-body">
+            <h3 class="action-card-title">Property Passport</h3>
+            <p class="action-card-sub">
+              Click here to start your property passport journey.
+            </p>
+            <div class="flex justify-end mt-2">
+              <button class="action-btn">Start</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- For You Section -->
       <div class="mb-8">
         <div class="px-4 mb-3">
-          <h2 class="text-lg font-semibold text-gray-900">For You</h2>
-          <p class="text-sm text-gray-500 mt-0.5">
-            Here are some top picks exclusively matched from your Home Profile
+          <h2 class="section-title">For You</h2>
+          <p class="section-subtitle">
+            Here are some top picks exclusively selected for you based on your
+            profile.
           </p>
         </div>
 
-        <!-- Horizontal property carousel — JS translateX, one card at a time -->
+        <!-- Carousel — 88% width per slide, overflow-hidden for peeking -->
         <div
           ref="carouselRef"
           class="relative overflow-hidden"
@@ -46,229 +156,189 @@
         >
           <div
             class="flex transition-transform duration-300 ease-in-out"
-            :style="{ transform: `translateX(-${currentSlide * slideWidth}px)` }"
+            :style="{
+              transform: `translateX(-${currentSlide * slideWidth}px)`,
+            }"
           >
-          <div
-            v-for="(property, index) in recommendedProperties"
-            :key="property.id"
-            @click="viewProperty(property.id)"
-            class="flex-none px-4 pb-4"
-            :style="{ width: slideWidth + 'px' }"
-          >
-          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer">
-            <!-- Property Image with overlays -->
-            <div class="relative h-48 overflow-hidden bg-gray-200">
-              <img
-                :src="property.image"
-                :alt="property.address"
-                class="w-full h-full object-cover"
-              />
-              <!-- Match badge -->
-              <div class="absolute top-3 left-3 flex items-center gap-1 bg-red-500 text-white px-2.5 py-1 rounded-full text-xs font-bold">
-                <span>⚙️</span>
-                <span>{{ mockMatch(index) }}% Match</span>
-              </div>
-              <!-- Thumbs -->
-              <div class="absolute top-3 right-3 flex gap-2">
-                <button
-                  @click.stop
-                  class="w-8 h-8 bg-white rounded-full shadow flex items-center justify-center"
-                >
-                  <Icon name="i-heroicons-hand-thumb-up" class="w-4 h-4 text-gray-500" />
-                </button>
-                <button
-                  @click.stop
-                  class="w-8 h-8 bg-white rounded-full shadow flex items-center justify-center"
-                >
-                  <Icon name="i-heroicons-hand-thumb-down" class="w-4 h-4 text-gray-500" />
-                </button>
-              </div>
-            </div>
+            <div
+              v-for="(property, index) in recommendedProperties"
+              :key="property.id"
+              @click="viewProperty(property.id)"
+              class="flex-none pl-4 pr-2 pb-2 cursor-pointer"
+              :style="{ width: slideWidth + 'px' }"
+            >
+              <div
+                class="rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100"
+              >
+                <!-- Image -->
+                <div class="relative h-48 bg-gray-200 overflow-hidden">
+                  <img
+                    :src="property.image"
+                    :alt="property.address"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
 
-            <!-- Card Body -->
-            <div class="p-4">
-              <h4 class="font-semibold text-gray-900 text-base leading-snug mb-0.5">
-                {{ property.address }}
-              </h4>
-              <p class="text-sm text-gray-500 mb-1">{{ property.area }}</p>
-              <p class="text-xl font-bold text-gray-900 mb-3">
-                {{ property.priceDisplay }}
-              </p>
-
-              <!-- Feature badges -->
-              <div class="flex items-center flex-wrap gap-2 mb-2">
-                <div
-                  v-if="property.passport !== null && property.passport !== undefined"
-                  class="flex items-center gap-1"
-                >
-                  <div class="w-5 h-5 bg-brand-aqua rounded flex items-center justify-center">
-                    <Icon name="i-heroicons-check" class="w-3 h-3 text-white" />
+                <!-- Details -->
+                <div class="px-3 pt-3 pb-3">
+                  <!-- Address + thumbs -->
+                  <div class="flex items-start justify-between gap-2 mb-0.5">
+                    <span class="property_address">{{ property.address }}</span>
+                    <div class="flex gap-1.5 flex-shrink-0 mt-0.5">
+                      <button
+                        @click.stop
+                        class="flex items-center justify-center"
+                      >
+                        <OPIcon name="like" class="w-[15px] h-[15px]" />
+                      </button>
+                      <button
+                        @click.stop
+                        class="flex items-center justify-center"
+                      >
+                        <OPIcon name="dislike" class="w-[15px] h-[15px]" />
+                      </button>
+                    </div>
                   </div>
-                  <span class="bg-brand-aqua text-white px-2 py-0.5 rounded text-xs font-semibold">
-                    {{ property.passport }}%
-                  </span>
-                </div>
-                <div class="flex items-center gap-1 text-brand-aqua">
-                  <Icon name="i-heroicons-building-office" class="w-4 h-4" />
-                  <span class="text-xs font-medium">{{ property.bedrooms }}</span>
-                </div>
-                <div class="flex items-center gap-1 text-brand-aqua">
-                  <Icon name="i-heroicons-home" class="w-4 h-4" />
-                  <span class="text-xs font-medium">{{ property.bathrooms }}</span>
-                </div>
-                <span class="bg-brand-aqua text-white px-2 py-0.5 rounded-full text-xs font-medium">
-                  {{ property.type }}
-                </span>
-              </div>
 
-              <!-- sqft + status -->
-              <div class="flex items-center gap-2 mb-3">
-                <div class="flex items-center gap-1 text-brand-aqua">
-                  <Icon name="i-heroicons-squares-2x2" class="w-4 h-4" />
-                  <span class="text-xs font-medium">{{ property.sqftDisplay }}</span>
-                </div>
-                <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">Move-in Ready</span>
-              </div>
+                  <p class="mb-1.5 property_area">
+                    {{ property.area }}
+                  </p>
+                  <p class="mb-2 property_price">
+                    {{ property.priceDisplay }}
+                  </p>
 
-              <!-- Lifestyle tags -->
-              <div class="flex flex-wrap gap-1.5">
-                <span
-                  v-for="tag in mockTags(index)"
-                  :key="tag"
-                  class="bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded text-xs"
-                >
-                  {{ tag }}
-                </span>
+                  <!-- Badges -->
+                  <div class="flex items-center flex-wrap gap-1.5 mb-1.5">
+                    <div
+                      class="w-5 h-5 bg-brand-aqua rounded flex items-center justify-center"
+                    >
+                      <OPIcon name="verified" class="w-[11px] h-[11px]" />
+                    </div>
+                    <span
+                      class="bg-[#00A19A] text-white px-2 py-0.5 rounded text-[11px]"
+                    >
+                      {{ mockMatch(index) }}%
+                    </span>
+                    <div
+                      class="flex items-center gap-1 text-gray-600 text-[11px] bg-brand-aqua/10 text-brand-aqua px-2 py-0.5 rounded-[4px]"
+                    >
+                      <OPIcon name="bedroom" class="w-[11px] h-[11px]" />
+                      <span>{{ property.bedrooms }}</span>
+                    </div>
+                    <div
+                      class="flex items-center gap-1 text-gray-600 text-[11px] bg-brand-aqua/10 text-brand-aqua px-2 py-0.5 rounded-[4px]"
+                    >
+                      <OPIcon name="bathroom" class="w-[11px] h-[11px]" />
+                      <span>{{ property.bathrooms }}</span>
+                    </div>
+                    <span
+                      class="bg-brand-aqua/10 text-brand-aqua px-2 py-0.5 rounded-[4px] text-[11px] font-medium"
+                    >
+                      {{ property.type }}
+                    </span>
+                  </div>
+
+                  <!-- sqft -->
+                  <div
+                    class="flex items-center gap-1 text-gray-600 text-[11px] bg-brand-aqua/10 text-brand-aqua px-2 py-0.5 rounded-[4px] sqft-badge"
+                  >
+                    <OPIcon name="sqft" class="w-[11px] h-[11px]" />
+                    <span>{{ property.sqftDisplay }}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div><!-- inner card -->
-          </div><!-- slide wrapper -->
-          </div><!-- flex -->
-
-          <!-- Dot indicators -->
-          <div v-if="recommendedProperties.length > 1" class="flex justify-center gap-2 mt-2 pb-1">
-            <button
-              v-for="(_, i) in recommendedProperties"
-              :key="i"
-              @click.stop="currentSlide = i"
-              class="w-2 h-2 rounded-full transition-colors duration-200"
-              :class="i === currentSlide ? 'bg-brand-aqua' : 'bg-gray-300'"
-            />
           </div>
 
           <!-- Empty state -->
-          <div
-            v-if="recommendedProperties.length === 0"
-            class="px-4 pb-4"
-          >
-            <div class="h-48 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 text-sm">
+          <div v-if="recommendedProperties.length === 0" class="px-4">
+            <div
+              class="h-44 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 text-sm"
+            >
               No properties found
             </div>
           </div>
-        </div><!-- carousel container -->
+        </div>
+
+        <!-- Dots below carousel -->
+        <div
+          v-if="recommendedProperties.length > 1"
+          class="flex justify-center gap-1.5 mt-3"
+        >
+          <span
+            v-for="(_, i) in recommendedProperties"
+            :key="i"
+            class="rounded-full transition-all duration-200 cursor-pointer"
+            :class="
+              i === currentSlide
+                ? 'w-4 h-1.5 bg-brand-aqua'
+                : 'w-1.5 h-1.5 bg-gray-300'
+            "
+            @click="currentSlide = i"
+          />
+        </div>
       </div>
 
-      <!-- Your Journey Section -->
+      <!-- Your Journey -->
       <div class="mb-8">
         <div class="px-4 mb-3">
-          <h2 class="text-lg font-semibold text-gray-900">Your Journey</h2>
-          <p class="text-sm text-gray-500 mt-0.5">
-            Here are some top picks exclusively selected for you based on your profile.
+          <h2 class="section-title">Your Journey</h2>
+          <p class="section-subtitle">
+            Here are some top picks exclusively selected for you based on your
+            profile.
           </p>
         </div>
 
-        <!-- Horizontal journey carousel -->
         <div class="flex gap-4 overflow-x-auto pb-4 px-4 scrollbar-hide">
-          <div class="flex-shrink-0 w-44 bg-gray-50 rounded-2xl p-4 cursor-pointer hover:bg-gray-100 transition">
-            <div class="w-14 h-14 mb-3 bg-blue-100 rounded-xl flex items-center justify-center">
-              <Icon name="i-heroicons-wrench-screwdriver" class="w-7 h-7 text-blue-600" />
-            </div>
-            <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-snug">Find Trusted Traders</h3>
-            <p class="text-xs text-gray-500 mb-3 leading-snug line-clamp-3">
-              Connect with vetted professionals for all your property maintenance and improvement needs
+          <div class="journey-card flex-shrink-0">
+            <img
+              src="/op-icons/passportview/seller.svg"
+              class="journey-illustration"
+              alt=""
+            />
+            <h3 class="journey-title">Find Trusted Traders</h3>
+            <p class="journey-desc">
+              Connect with vetted professionals for all your property
+              maintenance and improvement needs
             </p>
-            <button class="text-brand-aqua font-semibold text-xs border border-brand-aqua rounded-full px-3 py-1">
-              Marketplace
-            </button>
+            <button class="journey-btn">Marketplace</button>
           </div>
 
-          <div class="flex-shrink-0 w-44 bg-gray-50 rounded-2xl p-4 cursor-pointer hover:bg-gray-100 transition">
-            <div class="w-14 h-14 mb-3 bg-purple-100 rounded-xl flex items-center justify-center">
-              <Icon name="i-heroicons-academic-cap" class="w-7 h-7 text-purple-600" />
-            </div>
-            <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-snug">Property Experts</h3>
-            <p class="text-xs text-gray-500 mb-3 leading-snug line-clamp-3">
-              Master the buying process with our expert guides
+          <div class="journey-card flex-shrink-0">
+            <img
+              src="/op-icons/passportview/buyer.svg"
+              class="journey-illustration"
+              alt=""
+            />
+            <h3 class="journey-title">Property Bible</h3>
+            <p class="journey-desc">
+              Master the buying process with our expert guides and resources
             </p>
-            <button class="text-brand-aqua font-semibold text-xs border border-brand-aqua rounded-full px-3 py-1">
-              Learn
-            </button>
+            <button class="journey-btn">Learn</button>
           </div>
 
           <div
-            @click="navigateToSellersHub"
-            class="flex-shrink-0 w-44 bg-gray-50 rounded-2xl p-4 cursor-pointer hover:bg-gray-100 transition"
+            class="journey-card flex-shrink-0"
+            @click="router.push('/passport/collections')"
           >
-            <div class="w-14 h-14 mb-3 bg-green-100 rounded-xl flex items-center justify-center">
-              <Icon name="i-heroicons-home" class="w-7 h-7 text-green-600" />
-            </div>
-            <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-snug">Sellers Hub</h3>
-            <p class="text-xs text-gray-500 mb-3 leading-snug line-clamp-3">
-              Click start to begin your sellers journey
+            <img
+              src="/op-icons/passportview/umu-passport.png"
+              class="journey-illustration"
+              alt=""
+            />
+            <h3 class="journey-title">Sellers Hub</h3>
+            <p class="journey-desc">
+              Access and manage all your property passports in one place
             </p>
-            <button class="text-brand-aqua font-semibold text-xs border border-brand-aqua rounded-full px-3 py-1">
-              Start
-            </button>
-          </div>
-
-          <div class="flex-shrink-0 w-44 bg-gray-50 rounded-2xl p-4 cursor-pointer hover:bg-gray-100 transition">
-            <div class="w-14 h-14 mb-3 bg-orange-100 rounded-xl flex items-center justify-center">
-              <Icon name="i-heroicons-building-office" class="w-7 h-7 text-orange-600" />
-            </div>
-            <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-snug">Buyers Hub</h3>
-            <p class="text-xs text-gray-500 mb-3 leading-snug line-clamp-3">
-              Click start to begin your buyers journey
-            </p>
-            <button class="text-brand-aqua font-semibold text-xs border border-brand-aqua rounded-full px-3 py-1">
-              Start
-            </button>
+            <button class="journey-btn">Start</button>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- Bottom Navigation -->
     <BottomNav active="explore" />
 
-    <!-- Search Suggestions -->
-    <div
-      v-if="showSearchSuggestions"
-      class="fixed inset-0 bg-white z-[40] overflow-auto"
-    >
-      <SearchSuggestions
-        :query="searchQuery"
-        @close="showSearchSuggestions = false"
-        @search="handleSuggestionSearch"
-      />
-    </div>
-
-    <!-- Search Results -->
-    <div
-      v-if="showSearchResults"
-      class="fixed inset-0 bg-white z-[40] overflow-auto"
-    >
-      <SearchResults
-        :query="searchQuery"
-        :results="searchResults"
-        @close="showSearchResults = false"
-        @show-filters="showFilterPanel"
-      />
-    </div>
-
-    <!-- Filters Drawer -->
-    <BaseDrawer v-model="showFilters" title="All Filters">
-      <FiltersModal @close="showFilters = false" @apply="applyFilters" />
-    </BaseDrawer>
+    <SearchDrawer :show="showSearchDrawer" @close="showSearchDrawer = false" />
   </div>
 </template>
 
@@ -276,13 +346,10 @@
 import { ref, onMounted, nextTick } from 'vue'
 import AppHeader from '~/components/core/AppHeader.vue'
 import BottomNav from '@/components/core/BottomNav.vue'
-import BaseDrawer from '@/components/ui/BaseDrawer.vue'
 import HeroSection from '~/components/HeroSection.vue'
-import SearchSuggestions from '~/components/search/SearchSuggestions.vue'
-import SearchResults from '~/components/search/SearchResults.vue'
-import FiltersModal from '~/components/search/FiltersModal.vue'
-import EnhancedSearchInput from '~/components/find-property/EnhancedSearchInput.vue'
+import SearchDrawer from '~/components/search/SearchDrawer.vue'
 import { usePropertySearch } from '~/composables/usePropertySearch'
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 definePageMeta({
   title: 'Explore - UmovingU',
@@ -292,13 +359,9 @@ definePageMeta({
 const { searchProperties } = usePropertySearch()
 const router = useRouter()
 
-const searchQuery = ref('')
-const showSearchSuggestions = ref(false)
-const showSearchResults = ref(false)
-const showFilters = ref(false)
-const searching = ref(false)
-const searchResults = ref<any[]>([])
+const showSearchDrawer = ref(false)
 const recommendedProperties = ref<any[]>([])
+
 const currentSlide = ref(0)
 const carouselRef = ref<HTMLElement | null>(null)
 const slideWidth = ref(0)
@@ -310,7 +373,10 @@ const onTouchStart = (e: TouchEvent) => {
 const onTouchEnd = (e: TouchEvent) => {
   const diff = touchStartX - e.changedTouches[0].screenX
   if (Math.abs(diff) > 40) {
-    if (diff > 0 && currentSlide.value < recommendedProperties.value.length - 1) {
+    if (
+      diff > 0 &&
+      currentSlide.value < recommendedProperties.value.length - 1
+    ) {
       currentSlide.value++
     } else if (diff < 0 && currentSlide.value > 0) {
       currentSlide.value--
@@ -318,73 +384,205 @@ const onTouchEnd = (e: TouchEvent) => {
   }
 }
 
-const MATCH_SCORES = [98.2, 82.4, 91.7]
-const TAG_SETS = [
-  ['Breakfast kitchen', 'Good Primary within 800m', 'Low Crime', 'Family Street', 'Pool Potential'],
-  ['Garden', 'Fast Broadband', 'Parking', 'Near Stations', 'EPC Rated B'],
-  ['Home Office', 'Close to Parks', 'Low Traffic', 'Energy Efficient', 'Period Features'],
-]
-
+const MATCH_SCORES = [64, 82, 91]
 const mockMatch = (index: number) => MATCH_SCORES[index % MATCH_SCORES.length]
-const mockTags = (index: number) => TAG_SETS[index % TAG_SETS.length]
 
 onMounted(async () => {
   await nextTick()
-  slideWidth.value = carouselRef.value?.offsetWidth ?? 0
+  // 88% width so next card peeks 12% on the right
+  slideWidth.value = (carouselRef.value?.offsetWidth ?? 0) * 0.88
 
   try {
     const results = await searchProperties('TW18')
     recommendedProperties.value = results.slice(0, 3)
   } catch {
-    // Backend unreachable — stays empty
+    // Backend unreachable
   }
 })
-
-const openSearchSuggestions = () => {
-  showSearchResults.value = false
-  showSearchSuggestions.value = true
-}
-
-const handleSuggestionSearch = (query: string) => {
-  searchQuery.value = query
-  showSearchSuggestions.value = false
-  performSearch()
-}
-
-const performSearch = async () => {
-  if (!searchQuery.value.trim()) return
-  searching.value = true
-  showSearchSuggestions.value = false
-  try {
-    const results = await searchProperties(searchQuery.value)
-    searchResults.value = results
-    showSearchResults.value = true
-  } catch (error) {
-    console.error('Search error:', error)
-  } finally {
-    searching.value = false
-  }
-}
-
-const applyFilters = (filters: any) => {
-  showFilters.value = false
-  console.log('Applying filters:', filters)
-}
-
-const navigateToSellersHub = () => {
-  router.push('/passportview/77f535a9-527d-4c30-a502-0f72dcd97289')
-}
 
 const viewProperty = (id: string) => {
   router.push(`/property/${id}`)
 }
-
-const showFilterPanel = () => {
-  showFilters.value = true
-}
 </script>
 
 <style scoped>
+.property_address {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  color: #000000;
+  letter-spacing: -0.23px;
+  vertical-align: middle;
+}
+.property_area {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+  vertical-align: middle;
+  color: #3c3c4399;
+}
+
+.property_price {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+  vertical-align: middle;
+  color: #00a19a;
+}
+
+.sqft-badge {
+  width: fit-content;
+}
+
+.section-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 2px;
+}
+
+.section-subtitle {
+  font-size: 13px;
+  color: #8e8e93;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.search-bar {
+  padding: 7px 6px 7px 16px;
+}
+
+/* Action cards */
+.action-card {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  border: 1px solid #f0f0f0;
+}
+
+.action-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.action-card-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+
+.action-card-sub {
+  font-size: 12px;
+  color: #00a19a;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.action-btn {
+  padding: 7px 20px;
+  color: #00a19a;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  background: #00a19a1a;
+  padding: 6px 12px;
+  border-radius: 50px;
+}
+
+/* Gauge */
+.gauge-wrap {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+}
+
+/* Passport thumbnail in action card */
+.passport-thumb-wrap {
+  width: 68px;
+  height: 100px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 6px;
+  position: relative;
+}
+
+.passport-thumb-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 360px;
+  transform: scale(0.178);
+  transform-origin: top left;
+}
+
+.passport-thumb-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Journey cards */
+.journey-card {
+  width: 180px;
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.journey-illustration {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+.journey-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.journey-desc {
+  font-size: 11px;
+  color: #00a19a;
+  line-height: 1.4;
+  margin: 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.journey-btn {
+  margin-top: 8px;
+  padding: 7px 18px;
+  border: 1.5px solid #00a19a;
+  border-radius: 20px;
+  background: transparent;
+  color: #00a19a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -392,10 +590,10 @@ const showFilterPanel = () => {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+
+.umu_btn {
+  background: #00a19a1a;
+  padding: 6px 12px;
+  border-radius: 50px;
 }
 </style>

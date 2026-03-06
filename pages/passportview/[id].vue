@@ -22,7 +22,7 @@
                 >{{ passportAddress.line2 }}</span
               >
             </div>
-            <button class="dropdown-btn">
+            <button class="dropdown-btn" @click="showPropertiesModal = true">
               <OPIcon name="caretDown" class="w-[24px] h-[24px]" />
             </button>
           </div>
@@ -140,6 +140,14 @@
       @added="handleCollaboratorAdded"
       @removed="handleCollaboratorRemoved"
     />
+
+    <!-- Your Properties Modal -->
+    <YourPropertiesModal
+      :show="showPropertiesModal"
+      :current-id="route.params.id"
+      @close="showPropertiesModal = false"
+      @select="switchPassport"
+    />
   </div>
 </template>
 
@@ -151,6 +159,7 @@ import PassportCard from '@/components/passport-view/PassportCard.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import SegmentedSwitch from '@/components/core/SegmentedSwitch.vue'
 import AddCollaboratorModal from '@/components/modals/AddCollaboratorModal.vue'
+import YourPropertiesModal from '@/components/modals/YourPropertiesModal.vue'
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
 import { onMounted, ref, computed } from 'vue'
@@ -168,6 +177,7 @@ const config = useRuntimeConfig()
 // Collaborator state
 const collaborators = ref([])
 const showCollaboratorModal = ref(false)
+const showPropertiesModal = ref(false)
 
 const passportAddress = ref({ line1: '', line2: '' })
 
@@ -269,6 +279,10 @@ const getStepPoints = (step) => {
 
 const navigateToStep = (stepId) => {
   router.push(`/passportview/steps/${stepId}?propertyId=${route.params.id}`)
+}
+
+const switchPassport = (passportId) => {
+  router.push(`/passportview/${passportId}`)
 }
 </script>
 
