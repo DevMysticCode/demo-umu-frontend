@@ -1,6 +1,6 @@
 <template>
   <div class="budget-slider">
-    <div class="budget_helper_text mb-7">
+    <div v-if="showHelperText" class="budget_helper_text mb-7">
       <p>Please use the slider to specify starting and ending range.</p>
       <p class="text-brand-aqua">
         Between £{{ budgetRange.min }}K and £{{ budgetRange.max }}K
@@ -9,7 +9,7 @@
 
     <div>
       <!-- Value Displays -->
-      <div class="budget-slider__values">
+      <div v-if="showValues" class="budget-slider__values">
         <div class="budget-slider__value">
           <span class="budget-slider__value-prefix">£</span>
           <span class="budget-slider__value-amount"
@@ -128,6 +128,18 @@ const props = defineProps({
     type: Number,
     default: 25,
   },
+  labels: {
+    type: Array,
+    default: () => ['50K', '375K', '700K', '1025K', '1350K', '1675K', '2000K'],
+  },
+  showHelperText: {
+    type: Boolean,
+    default: true,
+  },
+  showValues: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmits(['update:budgetRange'])
@@ -141,10 +153,8 @@ const scaleTicks = computed(() => {
   return ticks
 })
 
-// Generate labels
-const labels = computed(() => {
-  return ['50K', '375K', '700K', '1025K', '1350K', '1675K', '2000K']
-})
+// Generate labels (use prop if provided, else default)
+const labels = computed(() => props.labels)
 
 const handleMinInput = (event) => {
   const newMin = parseInt(event.target.value)

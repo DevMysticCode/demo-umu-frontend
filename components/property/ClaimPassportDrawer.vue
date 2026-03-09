@@ -1,7 +1,7 @@
 <template>
   <BaseDrawer
     :model-value="modelValue"
-    title="Claim Property Passport"
+    :title="isBuyerMode ? 'Access Property Passport' : 'Claim Property Passport'"
     :show-back-button="true"
     @update:model-value="$emit('update:modelValue', $event)"
     @close="$emit('update:modelValue', false)"
@@ -34,12 +34,14 @@
       <div class="claim-drawer__info">
         <div class="claim-drawer__info-icon">🏠</div>
         <div>
-          <h4 class="claim-drawer__info-title">What is a Property Passport?</h4>
+          <h4 class="claim-drawer__info-title">
+            {{ isBuyerMode ? 'What will you see?' : 'What is a Property Passport?' }}
+          </h4>
           <p class="claim-drawer__info-body">
-            A Property Passport is your property's digital identity — storing
-            ownership details, planning history, warranties, and more in one
-            secure place. Unlock transparency for buyers and protect your
-            investment.
+            {{ isBuyerMode
+              ? 'Get full read-only access to the property passport — including fittings, official records, ownership history and more. Verified by the property owner.'
+              : 'A Property Passport is your property\'s digital identity — storing ownership details, planning history, warranties, and more in one secure place. Unlock transparency for buyers and protect your investment.'
+            }}
           </p>
         </div>
       </div>
@@ -94,6 +96,7 @@ interface PropertyDisplay {
 const props = defineProps<{
   modelValue: boolean
   property: PropertyDisplay | null
+  existingPassportId?: string
 }>()
 
 const emit = defineEmits<{
@@ -101,17 +104,29 @@ const emit = defineEmits<{
   claimed: [passportId: string]
 }>()
 
-const { claimPassport } = usePassportClaim()
+const { claimPassport, unlockPassport } = usePassportClaim()
 const loading = ref(false)
 const errorMsg = ref('')
 
-const features = [
-  'Secure digital ownership record',
-  'Planning & building history',
-  'Certificates, guarantees & warranties',
-  'Boundary & title information',
-  'Trusted by solicitors & estate agents',
-]
+const isBuyerMode = computed(() => !!props.existingPassportId)
+
+const features = computed(() =>
+  isBuyerMode.value
+    ? [
+        'Fittings & Contents (TA10) records',
+        'Title Register & Title Plan access',
+        'Planning & building history',
+        'Boundaries & ownership details',
+        'Certificates and warranties',
+      ]
+    : [
+        'Secure digital ownership record',
+        'Planning & building history',
+        'Certificates, guarantees & warranties',
+        'Boundary & title information',
+        'Trusted by solicitors & estate agents',
+      ]
+)
 
 async function handleClaim() {
   if (!props.property) return
@@ -119,18 +134,25 @@ async function handleClaim() {
   errorMsg.value = ''
 
   try {
-    const result = await claimPassport(
-      props.property.id,
-      props.property.addressLine1,
-      props.property.postcode,
-    )
+    let result: { passportId: string }
+
+    if (isBuyerMode.value && props.existingPassportId) {
+      result = await unlockPassport(props.existingPassportId)
+    } else {
+      result = await claimPassport(
+        props.property.id,
+        props.property.addressLine1,
+        props.property.postcode,
+      )
+    }
+
     emit('claimed', result.passportId)
     emit('update:modelValue', false)
   } catch (err: any) {
     errorMsg.value =
       err?.data?.message ||
       err?.message ||
-      'Failed to claim passport. Please try again.'
+      'Failed to unlock passport. Please try again.'
   } finally {
     loading.value = false
   }

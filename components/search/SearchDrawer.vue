@@ -143,104 +143,24 @@
                 <p class="sd-result-price">{{ r.priceDisplay }}</p>
                 <div class="sd-result-badges">
                   <div class="badge-check">
-                    <svg viewBox="0 0 12 12" fill="none" width="9" height="9">
-                      <path
-                        d="M2 6l3 3 5-5"
-                        stroke="white"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      />
-                    </svg>
+                    <OPIcon name="verified" class="w-[11px] h-[11px]" />
                   </div>
-                  <span class="badge-pct">{{ mockMatch(r.id) }}%</span>
+                  <span class="badge-pct flex gap-1.5 items-center"
+                    ><OPIcon name="matchPercentage" class="w-[11px] h-[11px]" />
+                    {{ mockMatch(r.id) }}%</span
+                  >
                   <span class="badge-pill">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      width="11"
-                      height="11"
-                      style="vertical-align: -1px"
-                    >
-                      <path
-                        d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                        stroke="#555"
-                        stroke-width="1.5"
-                      />
-                      <path
-                        d="M9 22V12h6v10"
-                        stroke="#555"
-                        stroke-width="1.5"
-                      />
-                    </svg>
+                    <OPIcon name="bedroom" class="w-[11px] h-[11px]" />
                     {{ r.bedrooms ?? '–' }}
                   </span>
                   <span class="badge-pill">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      width="11"
-                      height="11"
-                      style="vertical-align: -1px"
-                    >
-                      <path
-                        d="M5 12h14M5 12V7a3 3 0 016 0v5"
-                        stroke="#555"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      />
-                      <rect
-                        x="2"
-                        y="12"
-                        width="20"
-                        height="4"
-                        rx="2"
-                        stroke="#555"
-                        stroke-width="1.5"
-                      />
-                    </svg>
+                    <OPIcon name="bathroom" class="w-[11px] h-[11px]" />
                     {{ r.bathrooms ?? '–' }}
                   </span>
                   <span class="badge-pill">{{ r.type }}</span>
                 </div>
                 <div class="sd-result-sqft badge-pill">
-                  <svg viewBox="0 0 24 24" fill="none" width="12" height="12">
-                    <rect
-                      x="3"
-                      y="3"
-                      width="7"
-                      height="7"
-                      rx="1"
-                      stroke="#00a19a"
-                      stroke-width="1.5"
-                    />
-                    <rect
-                      x="14"
-                      y="3"
-                      width="7"
-                      height="7"
-                      rx="1"
-                      stroke="#00a19a"
-                      stroke-width="1.5"
-                    />
-                    <rect
-                      x="3"
-                      y="14"
-                      width="7"
-                      height="7"
-                      rx="1"
-                      stroke="#00a19a"
-                      stroke-width="1.5"
-                    />
-                    <rect
-                      x="14"
-                      y="14"
-                      width="7"
-                      height="7"
-                      rx="1"
-                      stroke="#00a19a"
-                      stroke-width="1.5"
-                    />
-                  </svg>
+                  <OPIcon name="sqft" class="w-[11px] h-[11px]" />
                   {{ r.sqftDisplay }}
                 </div>
               </div>
@@ -361,8 +281,28 @@ const mapEl = ref<HTMLElement | null>(null)
 const query = ref('')
 const view = ref<'suggestions' | 'results' | 'map'>('suggestions')
 const searching = ref(false)
-const results = ref<any[]>([])
+const rawResults = ref<any[]>([])
 const showFilters = ref(false)
+const activeFilters = ref({
+  exploreType: 'ready-to-sell',
+  priceRange: { min: 50, max: 350 },
+  propertyTypes: ['Any'],
+})
+
+const results = computed(() => {
+  let list = rawResults.value
+  const { priceRange, propertyTypes } = activeFilters.value
+  if (priceRange.min > 50 || priceRange.max < 350) {
+    list = list.filter(r => {
+      const pK = (r.estimatedPrice ?? 0) / 1000
+      return pK >= priceRange.min && pK <= priceRange.max
+    })
+  }
+  if (!propertyTypes.includes('Any')) {
+    list = list.filter(r => propertyTypes.includes(r.propertyType ?? ''))
+  }
+  return list
+})
 
 let leafletMap: any = null
 
@@ -433,7 +373,7 @@ const onInput = () => {
 const clearSearch = () => {
   query.value = ''
   view.value = 'suggestions'
-  results.value = []
+  rawResults.value = []
 }
 
 const selectSuggestion = (val: string) => {
@@ -447,9 +387,9 @@ const doSearch = async () => {
   view.value = 'results'
   searching.value = true
   try {
-    results.value = await searchProperties(q)
+    rawResults.value = await searchProperties(q)
   } catch {
-    results.value = []
+    rawResults.value = []
   } finally {
     searching.value = false
   }
@@ -460,7 +400,8 @@ const selectProperty = (id: string) => {
   router.push(`/property/${id}`)
 }
 
-const applyFilters = () => {
+const applyFilters = (filters: any) => {
+  activeFilters.value = filters
   showFilters.value = false
 }
 
@@ -536,7 +477,7 @@ watch(
     if (v) {
       query.value = ''
       view.value = 'suggestions'
-      results.value = []
+      rawResults.value = []
       showFilters.value = false
       await nextTick()
       inputRef.value?.focus()
@@ -796,7 +737,7 @@ watch(
   width: 18px;
   height: 18px;
   background: #00a19a;
-  border-radius: 50%;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -805,8 +746,8 @@ watch(
 
 .badge-pct {
   font-size: 11px;
-  font-weight: 700;
-  background: #ff6b35;
+  font-weight: 400;
+  background: #00a19a;
   color: white;
   padding: 2px 6px;
   border-radius: 4px;
@@ -924,6 +865,10 @@ watch(
   padding-top: 12px;
   max-height: 90vh;
   overflow-y: auto;
+  scrollbar-width: none;
+}
+.sd-filters-sheet::-webkit-scrollbar {
+  display: none;
 }
 
 .sd-filters-handle {

@@ -1,147 +1,144 @@
 <template>
-  <div class="w-full bg-white rounded-t-3xl max-h-[90vh] overflow-y-auto">
-    <div class="p-4">
-      <!-- Explore Section -->
-      <div class="flex items-center justify-between mb-6">
-        <div class="flex items-center">
-          <Icon name="i-heroicons-map-pin" class="w-5 h-5 text-gray-400 mr-2" />
-          <span class="text-gray-600">Explore</span>
-        </div>
-        <button class="text-brand-aqua font-medium">RESET</button>
-      </div>
+  <div class="fm-wrap">
+    <!-- Header -->
+    <div class="fm-header">
+      <h2 class="fm-title">All Filters</h2>
+      <button class="fm-close-btn" @click="$emit('close')">
+        <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+          <path
+            d="M18 6L6 18M6 6l12 12"
+            stroke="#555"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
 
-      <!-- Ready to sell / Published Passports -->
-      <div class="flex space-x-3 mb-8">
-        <button
-          :class="
-            selectedExploreType === 'ready-to-sell'
-              ? 'bg-brand-aqua text-white'
-              : 'bg-gray-100 text-gray-700'
-          "
-          @click="selectedExploreType = 'ready-to-sell'"
-          class="px-6 py-3 rounded-xl font-medium"
-        >
-          Ready to sell
-        </button>
-        <button
-          :class="
-            selectedExploreType === 'published-passports'
-              ? 'bg-brand-aqua text-white'
-              : 'bg-gray-100 text-gray-700'
-          "
-          @click="selectedExploreType = 'published-passports'"
-          class="px-6 py-3 rounded-xl font-medium"
-        >
-          Published Passports
-        </button>
-      </div>
-
-      <!-- Price Range -->
-      <div class="mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center">
-            <Icon
-              name="i-heroicons-banknotes"
-              class="w-5 h-5 text-gray-400 mr-2"
-            />
-            <span class="text-gray-600">Price Range</span>
+    <div class="fm-body">
+      <!-- ── Explore ────────────────────────────────────────────── -->
+      <div class="fm-section">
+        <div class="fm-section-head">
+          <div class="fm-section-label">
+            <OPIcon name="filterExplore" class="w-[15px] h-[15px]" />
+            <span>Explore</span>
           </div>
-          <button class="text-brand-aqua font-medium">RESET</button>
-        </div>
-
-        <!-- Price Tags -->
-        <div class="flex space-x-2 mb-4">
-          <span
-            class="bg-brand-aqua bg-opacity-20 text-brand-aqua px-3 py-1 rounded-full text-sm"
-            >£100K</span
-          >
-          <span
-            class="bg-brand-aqua bg-opacity-20 text-brand-aqua px-3 py-1 rounded-full text-sm"
-            >£200K</span
-          >
-        </div>
-
-        <!-- Price Slider -->
-        <div class="relative mb-4">
-          <div class="w-full h-2 bg-gray-200 rounded-full">
-            <div
-              class="h-2 bg-brand-aqua rounded-full"
-              :style="{ width: priceRangeWidth + '%' }"
-            ></div>
-          </div>
-          <div class="flex justify-between mt-2 text-sm text-gray-600">
-            <span>50K</span>
-            <span>100K</span>
-            <span>150K</span>
-            <span>200K</span>
-            <span>250K</span>
-            <span>300K</span>
-            <span>350K+</span>
-          </div>
-        </div>
-
-        <!-- Min/Max Inputs -->
-        <div class="grid grid-cols-2 gap-4">
-          <div class="bg-gray-50 rounded-xl p-3 text-center">
-            <span class="text-brand-aqua font-medium">Min</span>
-          </div>
-          <div class="bg-gray-50 rounded-xl p-3 text-center">
-            <span class="text-brand-aqua font-medium">Max</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Property Type -->
-      <div class="mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center">
-            <Icon
-              name="i-heroicons-building-office"
-              class="w-5 h-5 text-gray-400 mr-2"
-            />
-            <span class="text-gray-600">Property Type</span>
-          </div>
-          <button class="text-brand-aqua font-medium">RESET</button>
-        </div>
-
-        <!-- Property Type Options -->
-        <div class="grid grid-cols-3 gap-2">
-          <button
-            v-for="type in propertyTypes"
-            :key="type"
-            :class="
-              selectedPropertyTypes.includes(type)
-                ? 'bg-brand-aqua text-white'
-                : 'bg-gray-100 text-gray-700'
-            "
-            @click="togglePropertyType(type)"
-            class="px-4 py-3 rounded-xl font-medium text-sm"
-          >
-            {{ type }}
+          <button class="fm-reset" @click="exploreType = 'ready-to-sell'">
+            RESET
           </button>
+        </div>
+        <SegmentedSwitch
+          :options="[
+            { label: 'Ready to sell', value: 'ready-to-sell' },
+            { label: 'Published Passports', value: 'published-passports' },
+          ]"
+          v-model="exploreType"
+        />
+      </div>
+
+      <!-- ── Price Range ────────────────────────────────────────── -->
+      <div class="fm-section">
+        <div class="fm-section-head">
+          <div class="fm-section-label">
+            <OPIcon name="filterPriceRange" class="w-[15px] h-[15px]" />
+            <span>Price Range</span>
+          </div>
+          <button class="fm-reset" @click="resetPriceRange">RESET</button>
+        </div>
+        <div class="fm-card">
+          <!-- Tags -->
+          <div class="fm-price-tags">
+            <span class="fm-price-tag">£{{ priceRange.min }}K</span>
+            <span class="fm-price-tag">£{{ priceRange.max }}K</span>
+          </div>
+
+          <!-- Slider -->
+          <BudgetSlider
+            :budget-range="priceRange"
+            :min-budget="50"
+            :max-budget="350"
+            :step="25"
+            :labels="['50K', '100K', '150K', '200K', '250K', '300K', '350K+']"
+            :show-helper-text="false"
+            :show-values="false"
+            @update:budget-range="
+              (v) => {
+                priceRange = v
+              }
+            "
+          />
+
+          <!-- Min / Max inputs -->
+          <div class="fm-minmax-row">
+            <div class="fm-minmax-box">
+              <input
+                class="fm-minmax-input"
+                type="number"
+                :value="priceRange.min"
+                placeholder="Min"
+                @change="setMin($event.target.value)"
+              />
+            </div>
+            <div class="fm-minmax-sep" />
+            <div class="fm-minmax-box">
+              <input
+                class="fm-minmax-input"
+                type="number"
+                :value="priceRange.max"
+                placeholder="Max"
+                @change="setMax($event.target.value)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Property Type ──────────────────────────────────────── -->
+      <div class="fm-section">
+        <div class="fm-section-head">
+          <div class="fm-section-label">
+            <OPIcon name="filterPropertyType" class="w-[15px] h-[15px]" />
+            <span>Property Type</span>
+          </div>
+          <button class="fm-reset" @click="selectedTypes = ['Any']">
+            RESET
+          </button>
+        </div>
+        <div class="fm-card">
+          <div class="fm-chips-wrap">
+            <button
+              v-for="type in propertyTypes"
+              :key="type"
+              :class="['fm-chip', { active: selectedTypes.includes(type) }]"
+              @click="toggleType(type)"
+            >
+              {{ type }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Apply Button -->
-    <div class="p-4 border-t border-gray-200">
-      <button
-        @click="applyFilters"
-        class="w-full bg-brand-aqua text-white py-4 rounded-xl font-medium text-lg"
-      >
-        Apply Filters
-      </button>
+    <!-- Apply button -->
+    <div class="fm-footer">
+      <button class="fm-apply-btn" @click="apply">Apply Filters</button>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { ref } from 'vue'
+import BudgetSlider from '~/components/questionnaire/BudgetSlider.vue'
+import SegmentedSwitch from '~/components/core/SegmentedSwitch.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
+
 const emit = defineEmits(['close', 'apply'])
 
-// State
-const selectedExploreType = ref('ready-to-sell')
-const priceRangeWidth = ref(40)
-const selectedPropertyTypes = ref(['Any'])
+const exploreType = ref<'ready-to-sell' | 'published-passports'>(
+  'ready-to-sell',
+)
+const priceRange = ref({ min: 100, max: 200 })
+const selectedTypes = ref<string[]>(['Any'])
 
 const propertyTypes = [
   'Any',
@@ -157,33 +154,238 @@ const propertyTypes = [
   'Land',
 ]
 
-// Methods
-const togglePropertyType = (type) => {
-  if (type === 'Any') {
-    selectedPropertyTypes.value = ['Any']
-  } else {
-    const index = selectedPropertyTypes.value.indexOf(type)
-    if (index > -1) {
-      selectedPropertyTypes.value.splice(index, 1)
-    } else {
-      selectedPropertyTypes.value = selectedPropertyTypes.value.filter(
-        (t) => t !== 'Any'
-      )
-      selectedPropertyTypes.value.push(type)
-    }
+const resetPriceRange = () => {
+  priceRange.value = { min: 50, max: 350 }
+}
 
-    if (selectedPropertyTypes.value.length === 0) {
-      selectedPropertyTypes.value = ['Any']
-    }
+const setMin = (v: string) => {
+  const n = parseInt(v)
+  if (!isNaN(n) && n >= 50 && n < priceRange.value.max) {
+    priceRange.value = { ...priceRange.value, min: n }
   }
 }
 
-const applyFilters = () => {
-  const filters = {
-    exploreType: selectedExploreType.value,
-    propertyTypes: selectedPropertyTypes.value,
-    priceRange: priceRangeWidth.value,
+const setMax = (v: string) => {
+  const n = parseInt(v)
+  if (!isNaN(n) && n > priceRange.value.min && n <= 350) {
+    priceRange.value = { ...priceRange.value, max: n }
   }
-  emit('apply', filters)
+}
+
+const toggleType = (type: string) => {
+  if (type === 'Any') {
+    selectedTypes.value = ['Any']
+    return
+  }
+  const arr = selectedTypes.value.filter((t) => t !== 'Any')
+  const idx = arr.indexOf(type)
+  if (idx > -1) arr.splice(idx, 1)
+  else arr.push(type)
+  selectedTypes.value = arr.length ? arr : ['Any']
+}
+
+const apply = () => {
+  emit('apply', {
+    exploreType: exploreType.value,
+    priceRange: { ...priceRange.value },
+    propertyTypes: [...selectedTypes.value],
+  })
 }
 </script>
+
+<style scoped>
+.fm-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f2f6f6;
+}
+
+/* Header */
+.fm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 16px 16px;
+  flex-shrink: 0;
+  background: white;
+}
+
+.fm-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.fm-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e8e8ee;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scrollable body */
+.fm-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 0 16px 16px;
+}
+.fm-body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Section */
+.fm-section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.fm-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.fm-section-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #8e8e93;
+}
+
+.fm-reset {
+  font-size: 13px;
+  font-weight: 700;
+  color: #00a19a;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Card */
+.fm-card {
+  background: white;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+/* Price tags */
+.fm-price-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.fm-price-tag {
+  background: rgba(0, 161, 154, 0.12);
+  color: #00a19a;
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Override BudgetSlider min-height when used in filter */
+:deep(.budget-slider) {
+  min-height: unset;
+  padding: 0;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Min/Max row */
+.fm-minmax-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.fm-minmax-box {
+  flex: 1;
+  background: #f2f6f6;
+  border-radius: 12px;
+  padding: 11px 14px;
+}
+
+.fm-minmax-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #00a19a;
+  text-align: center;
+}
+.fm-minmax-input::placeholder {
+  color: #00a19a;
+  opacity: 0.6;
+}
+.fm-minmax-input::-webkit-inner-spin-button,
+.fm-minmax-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.fm-minmax-sep {
+  width: 20px;
+  height: 1.5px;
+  background: #d0d0d5;
+  flex-shrink: 0;
+}
+
+/* Property type chips */
+.fm-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fm-chip {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1.5px solid rgba(0, 161, 154, 0.2);
+  background: white;
+  color: #00a19a;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.fm-chip.active {
+  background: #00a19a;
+  border-color: #00a19a;
+  color: white;
+}
+
+/* Footer */
+.fm-footer {
+  padding: 12px 16px 20px;
+  flex-shrink: 0;
+  background: #f2f6f6;
+}
+
+.fm-apply-btn {
+  width: 100%;
+  background: #00a19a;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+</style>

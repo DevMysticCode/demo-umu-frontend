@@ -215,8 +215,12 @@
                       <OPIcon name="verified" class="w-[11px] h-[11px]" />
                     </div>
                     <span
-                      class="bg-[#00A19A] text-white px-2 py-0.5 rounded text-[11px]"
+                      class="bg-[#00A19A] flex gap-1.5 items-center text-white px-2 py-0.5 rounded text-[11px]"
                     >
+                      <OPIcon
+                        name="matchPercentage"
+                        class="w-[11px] h-[11px]"
+                      />
                       {{ mockMatch(index) }}%
                     </span>
                     <div

@@ -17,6 +17,7 @@ export const usePassportClaim = () => {
     passportStatus?: string
     isOwner: boolean
     isCollaborator: boolean
+    isBuyer?: boolean
     canAccess?: boolean
   }
 
@@ -50,5 +51,12 @@ export const usePassportClaim = () => {
     })
   }
 
-  return { getPassportStatus, claimPassport }
+  const unlockPassport = async (passportId: string): Promise<{ passportId: string }> => {
+    return $fetch<{ passportId: string }>(`${base}/passport/${passportId}/buyer-unlock`, {
+      method: 'POST',
+      headers: headers(),
+    })
+  }
+
+  return { getPassportStatus, claimPassport, unlockPassport }
 }

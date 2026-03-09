@@ -236,19 +236,19 @@
           <!-- Quick action icons -->
           <div class="prop-quick-actions">
             <button class="prop-quick-btn">
-              <OPIcon name="share" class="w-[18px] h-[18px]" />
+              <OPIcon name="exploreExternalLink" class="w-[15px] h-[15px]" />
             </button>
             <button class="prop-quick-btn">
-              <OPIcon name="pin" class="w-[18px] h-[18px]" />
+              <OPIcon name="locationFilled" class="w-[15px] h-[15px]" />
             </button>
             <button class="prop-quick-btn">
-              <OPIcon name="goodEnergy" class="w-[18px] h-[18px]" />
+              <OPIcon name="goodEnergy" class="w-[15px] h-[15px]" />
             </button>
             <button class="prop-quick-btn">
-              <OPIcon name="publicTransport" class="w-[18px] h-[18px]" />
+              <OPIcon name="train" class="w-[15px] h-[15px]" />
             </button>
             <button class="prop-quick-btn">
-              <OPIcon name="closeToSchool" class="w-[18px] h-[18px]" />
+              <OPIcon name="closeToSchool" class="w-[15px] h-[15px]" />
             </button>
           </div>
         </div>
@@ -330,10 +330,7 @@
             >
               <div class="prop-station-icon">
                 <OPIcon
-                  :name="
-                    nearbyTabOptions.find((t) => t.value === nearbyTab)?.icon ??
-                    'publicTransport'
-                  "
+                  :name="s.icon ?? 'publicTransport'"
                   class="w-[18px] h-[18px]"
                 />
               </div>
@@ -341,7 +338,7 @@
                 <p class="prop-station-name">{{ s.name }}</p>
                 <p class="prop-station-dist">
                   <OPIcon
-                    name="pin"
+                    name="currentLocation"
                     class="w-[11px] h-[11px]"
                     style="
                       display: inline;
@@ -431,6 +428,21 @@
       />
     </BaseDrawer>
 
+    <ClaimPassportDrawer
+      v-model="showClaimDrawer"
+      :property="property ? {
+        id: property.id,
+        addressLine1: property.addressLine1,
+        area: property.area,
+        postcode: property.postcode,
+        priceDisplay: property.priceDisplay,
+        image: property.image,
+      } : null"
+      :existing-passport-id="buyerModePassportId"
+      @close="showClaimDrawer = false"
+      @claimed="handleClaimed"
+    />
+
     <Toast
       :is-visible="toastState.isVisible"
       :message="toastState.message"
@@ -452,6 +464,7 @@
 import { ref, computed, onMounted, nextTick } from 'vue'
 import PropertyActionBar from '@/components/property/PropertyActionBar.vue'
 import RegisterInterestContent from '~/components/property/RegisterInterestContent.vue'
+import ClaimPassportDrawer from '~/components/property/ClaimPassportDrawer.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
@@ -477,6 +490,7 @@ const pageLoading = ref(true)
 const loadError = ref('')
 const showRegisterInterest = ref(false)
 const showShare = ref(false)
+const showClaimDrawer = ref(false)
 const scoreTab = ref('home')
 const nearbyTab = ref('train')
 const mapEl = ref<HTMLElement | null>(null)
@@ -485,12 +499,24 @@ const nearbyTabOptions = [
   {
     value: 'train',
     label: 'Train Stations',
-    icon: 'publicTransport',
+    icon: 'trainWhite',
     items: [
-      { name: 'Denham Railway Station', distance: '0.3 Miles' },
-      { name: 'Denham Downs Railway Station', distance: '0.3 Miles' },
-      { name: 'Gerald Station', distance: '1.2 Miles' },
-      { name: 'Uxbridge Cross South', distance: '1.3 Miles' },
+      {
+        name: 'Denham Railway Station',
+        distance: '0.3 Miles',
+        icon: 'nationalRailLogo',
+      },
+      {
+        name: 'Denham Downs Railway Station',
+        distance: '0.3 Miles',
+        icon: 'nationalRailLogo',
+      },
+      { name: 'Gerald Station', distance: '1.2 Miles', icon: 'mrtLogo' },
+      {
+        name: 'Uxbridge Cross South',
+        distance: '1.3 Miles',
+        icon: 'nationalRailLogo',
+      },
     ],
   },
   {
@@ -498,8 +524,16 @@ const nearbyTabOptions = [
     label: 'Schools',
     icon: 'closeToSchool',
     items: [
-      { name: 'Denham Village Primary School', distance: '0.4 Miles' },
-      { name: 'Tatling End Primary School', distance: '0.8 Miles' },
+      {
+        name: 'Denham Village Primary School',
+        distance: '0.4 Miles',
+        icon: 'closeToSchool',
+      },
+      {
+        name: 'Tatling End Primary School',
+        distance: '0.8 Miles',
+        icon: 'closeToSchool',
+      },
     ],
   },
   {
@@ -507,8 +541,16 @@ const nearbyTabOptions = [
     label: 'Energy',
     icon: 'goodEnergy',
     items: [
-      { name: 'EDF Energy Substation', distance: '0.6 Miles' },
-      { name: 'Solar Farm Colne Valley', distance: '1.1 Miles' },
+      {
+        name: 'EDF Energy Substation',
+        distance: '0.6 Miles',
+        icon: 'goodEnergy',
+      },
+      {
+        name: 'Solar Farm Colne Valley',
+        distance: '1.1 Miles',
+        icon: 'goodEnergy',
+      },
     ],
   },
   {
@@ -516,8 +558,16 @@ const nearbyTabOptions = [
     label: 'Parks',
     icon: 'closeToPublicPark',
     items: [
-      { name: 'Denham Country Park', distance: '0.5 Miles' },
-      { name: 'Colne Valley Regional Park', distance: '0.9 Miles' },
+      {
+        name: 'Denham Country Park',
+        distance: '0.5 Miles',
+        icon: 'closeToPublicPark',
+      },
+      {
+        name: 'Colne Valley Regional Park',
+        distance: '0.9 Miles',
+        icon: 'closeToPublicPark',
+      },
     ],
   },
 ]
@@ -543,12 +593,11 @@ const potentialEpc = computed(() => {
 })
 
 const actionBarItems = computed(() => {
-  const canAccess =
-    passportStatus.value?.hasPassport && passportStatus.value?.canAccess
+  const hasPassport = passportStatus.value?.hasPassport
   return [
     {
       icon: 'accessPassport',
-      label: canAccess ? 'Access Passport' : 'Claim Passport',
+      label: hasPassport ? 'Access Passport' : 'Claim Passport',
     },
     { icon: 'saveProperty', label: 'Save Property' },
     { icon: 'registerInterest', label: 'Register Interest' },
@@ -636,10 +685,19 @@ onMounted(async () => {
 
 function handleAction(label: string) {
   if (label === 'Claim Passport') {
-    router.push(`/passport/${propertyId}`)
+    // Owner verification flow
+    router.push(`/verify-ownership/${propertyId}`)
   } else if (label === 'Access Passport') {
-    if (passportStatus.value?.passportId) {
-      router.push(`/passportview/${passportStatus.value.passportId}`)
+    const status = passportStatus.value
+    if (status?.isOwner || status?.isCollaborator) {
+      // Owner / collaborator → full passport edit view
+      router.push(`/passportview/${status.passportId}`)
+    } else if (status?.isBuyer && status?.passportId) {
+      // Already unlocked buyer → buyer read-only view
+      router.push(`/buyer-passport/${status.passportId}`)
+    } else {
+      // Non-owner, not yet unlocked → show unlock drawer
+      showClaimDrawer.value = true
     }
   } else if (label === 'Save Property') {
     handleSaveProperty()
@@ -677,6 +735,25 @@ function onInterestRegistered() {
 
 function handleShare() {
   console.log('Share triggered')
+}
+
+// Pass existing passportId to drawer when property already has a passport but user can't access it
+const buyerModePassportId = computed(() => {
+  const status = passportStatus.value
+  if (status?.hasPassport && !status?.canAccess && status?.passportId) {
+    return status.passportId
+  }
+  return undefined
+})
+
+function handleClaimed(passportId: string) {
+  // If buyer mode (unlocking existing passport) → buyer passport view
+  // If owner mode (creating new passport) → owner passport view
+  if (buyerModePassportId.value) {
+    router.push(`/buyer-passport/${passportId}`)
+  } else {
+    router.push(`/passportview/${passportId}`)
+  }
 }
 </script>
 
@@ -828,9 +905,12 @@ function handleShare() {
 
 .prop-section-title {
   font-size: 17px;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-weight: 400;
+  color: #000000;
   margin: 0 0 14px;
+  line-height: 22px;
+  letter-spacing: -0.43px;
+  vertical-align: middle;
 }
 
 /* ── Score tabs ──────────────────────────────────────────────────────────── */
@@ -912,7 +992,7 @@ function handleShare() {
 .prop-details-card {
   background: #f8f8fa;
   border-radius: 16px;
-  padding: 16px;
+  padding: 8px 16px;
 }
 
 .prop-details-grid {
@@ -940,37 +1020,43 @@ function handleShare() {
 }
 
 .prop-detail-label {
+  font-weight: 400;
+  font-style: Regular;
   font-size: 11px;
-  color: #8e8e93;
-  margin: 0 0 3px;
+  line-height: 13px;
+  letter-spacing: 0.06px;
+  color: #3c3c4399;
 }
 
 .prop-detail-value {
-  font-size: 13px;
-  font-weight: 600;
   color: #00a19a;
-  margin: 0;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.23px;
 }
 
 /* Quick action icons */
 .prop-quick-actions {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 8px;
   padding-top: 16px;
   border-top: 1px solid #eeeeee;
 }
 
 .prop-quick-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: 50px;
+  height: 32px;
+  border-radius: 100px;
   background: white;
-  border: 1px solid #e8e8ee;
+  border: 0.33px solid #e8e8ee;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  padding: 6px 16px;
 }
 
 /* ── Floor plan ──────────────────────────────────────────────────────────── */
@@ -978,7 +1064,8 @@ function handleShare() {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  background: #f0f0f0;
+  background: #ffffff;
+  padding: 12px 16px;
 }
 
 .prop-floor-img {
@@ -1036,8 +1123,20 @@ function handleShare() {
 .prop-nearby-tabs {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
   margin-bottom: 14px;
+  width: 100%;
+  padding: 2px 4px;
+  border: 0.33px solid #3c3c432e;
+  border-radius: 100px;
+}
+
+.prop-nearby-tabs > :first-child {
+  border-radius: 24px 4px 4px 24px;
+}
+
+.prop-nearby-tabs > :last-child {
+  border-radius: 4px 24px 24px 4px;
 }
 
 .prop-nearby-full {
@@ -1045,7 +1144,7 @@ function handleShare() {
   align-items: center;
   gap: 7px;
   padding: 10px 16px;
-  border-radius: 24px;
+  flex: 1;
   border: none;
   background: #e8f7f6;
   color: #00a19a;
@@ -1053,6 +1152,7 @@ function handleShare() {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  border-radius: 4px;
 }
 
 .prop-nearby-full.active {
@@ -1061,16 +1161,17 @@ function handleShare() {
 }
 
 .prop-nearby-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1.5px solid #e0e0e0;
-  background: white;
+  width: 48px;
+  height: 36px;
+  /* border: 1.5px solid #e0e0e0; */
+  background: #00a19a1a;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+  margin-left: -1.5px;
+  border-radius: 4px;
 }
 
 .prop-nearby-icon.active {
@@ -1083,6 +1184,9 @@ function handleShare() {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border-radius: 16px;
+  background: white;
+  padding: 12px 16px;
 }
 
 .prop-station-row {
@@ -1090,7 +1194,7 @@ function handleShare() {
   align-items: center;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #f0f0f5;
+  /* border-bottom: 1px solid #f0f0f5; */
 }
 
 .prop-station-row:last-child {
@@ -1116,9 +1220,12 @@ function handleShare() {
 }
 
 .prop-station-dist {
-  font-size: 12px;
-  color: #8e8e93;
+  font-size: 11px;
+  color: #00a19a;
   margin: 0;
+  width: fit-content;
+  background: #00a19a1a;
+  border-radius: 4px;
 }
 
 /* ── EPC ─────────────────────────────────────────────────────────────────── */
