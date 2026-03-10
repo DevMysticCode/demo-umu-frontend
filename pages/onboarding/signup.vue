@@ -17,11 +17,9 @@
           <OPIcon name="appleNew" class="w-[20px] h-[20px]" />
         </button>
 
-        <button
-          class="social-logins__button"
-          @click="handleSocialLogin('google')"
-        >
+        <button class="social-logins__button social-logins__button--google">
           <OPIcon name="googleNew" class="w-[20px] h-[20px]" />
+          <div id="google-btn-overlay"></div>
         </button>
 
         <button
@@ -57,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import { useSession } from '~/composables/useSession'
 import { getDtaFromSubmitEvent } from '~/utils/form-helpres'
@@ -68,17 +66,41 @@ definePageMeta({
   title: 'Sign Up - UmovingU',
 })
 
-const { requestOtp } = useAuth()
+const config = useRuntimeConfig()
+const { requestOtp, googleLogin } = useAuth()
 const { email } = useSession()
 
 const emailInput = ref('')
 
-const handleSocialLogin = async (provider) => {
-  console.log('handleSocialLogin', provider)
-
-  // Navigate to thank you page
-  await navigateTo('/onboarding/create-account')
+const handleGoogleCredential = async (response) => {
+  try {
+    const result = await googleLogin(response.credential)
+    localStorage.setItem('token', result.token)
+    await navigateTo('/dashboard')
+  } catch (err) {
+    console.error(err)
+    alert('Google sign-up failed. Please try again.')
+  }
 }
+
+onMounted(() => {
+  const script = document.createElement('script')
+  script.src = 'https://accounts.google.com/gsi/client'
+  script.async = true
+  script.defer = true
+  script.onload = () => {
+    window.google.accounts.id.initialize({
+      client_id: config.public.googleClientId,
+      callback: handleGoogleCredential,
+      use_fedcm_for_prompt: false,
+    })
+    window.google.accounts.id.renderButton(
+      document.getElementById('google-btn-overlay'),
+      { theme: 'outline', size: 'large', width: '100%' },
+    )
+  }
+  document.head.appendChild(script)
+})
 
 const handleEmailContinue = async (event) => {
   event.preventDefault()
@@ -124,6 +146,22 @@ const handleEmailContinue = async (event) => {
     @apply w-full h-[50px] rounded-xl shadow-lg transition-colors;
     @apply bg-white;
     @apply text-black text-[17px];
+
+    &--google {
+      @apply relative overflow-hidden;
+    }
+  }
+}
+
+#google-btn-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0.001;
+  overflow: hidden;
+
+  :deep(iframe) {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
 

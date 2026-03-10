@@ -43,6 +43,7 @@ export default defineNuxtConfig({
     // Public keys (exposed to client-side)
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3002',
+      googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID || '869780740735-rlucf6t174rb3dljniqfj3ri2r0kg9cj.apps.googleusercontent.com',
     },
   },
   components: true,

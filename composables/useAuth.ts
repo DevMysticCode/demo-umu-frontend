@@ -45,10 +45,18 @@ export const useAuth = () => {
     })
   }
 
+  const googleLogin = (credential: string) => {
+    return $fetch(`${base}/auth/google`, {
+      method: 'POST',
+      body: { credential },
+    })
+  }
+
   return {
     requestOtp,
     verifyOtp,
     register,
     login,
+    googleLogin,
   }
 }
