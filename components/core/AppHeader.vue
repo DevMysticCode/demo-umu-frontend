@@ -23,11 +23,13 @@
       <!-- Use slot override if provided -->
       <slot name="right">
         <template v-if="right === 'profile'">
-          <img
-            :src="profileSrc"
-            alt="Profile"
-            class="w-8 h-8 rounded-full object-cover border"
-          />
+          <button type="button" @click="navigateTo('/profile')" aria-label="My Profile">
+            <img
+              :src="profileSrc"
+              alt="Profile"
+              class="w-8 h-8 rounded-full object-cover border"
+            />
+          </button>
         </template>
 
         <template v-else-if="right === 'dots'">
