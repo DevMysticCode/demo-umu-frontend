@@ -62,36 +62,64 @@
           <h3
             class="text-[15px]-emphasized leading-[20px] font-semibold text-[#000000] tracking-[-0.23px]"
           >
-            Contact Information
+            Find User
           </h3>
 
-          <div class="mt-3 space-y-3">
-            <label
-              class="h-14 rounded-2xl bg-white px-4 flex items-center gap-3"
-            >
-              <Icon
-                name="i-heroicons-user-circle"
-                class="w-6 h-6 text-gray-400"
-              />
+          <div class="mt-3 space-y-3 relative">
+            <label class="h-14 rounded-2xl bg-white px-4 flex items-center gap-3">
+              <Icon name="i-heroicons-magnifying-glass" class="w-6 h-6 text-gray-400" />
               <input
-                v-model="fullName"
+                v-model="searchQuery"
                 type="text"
-                placeholder="Enter Full Name"
+                placeholder="Search by name or email"
                 class="w-full bg-transparent outline-none text-[17px] leading-[22px] text-[#101319] placeholder:text-[#8f9094]"
+                @input="onSearchInput"
               />
+              <Icon v-if="searching" name="i-heroicons-arrow-path" class="w-5 h-5 text-gray-400 animate-spin" />
             </label>
 
-            <label
-              class="h-14 rounded-2xl bg-white px-4 flex items-center gap-3"
+            <div
+              v-if="searchResults.length > 0 && !selectedUser"
+              class="rounded-2xl bg-white overflow-hidden shadow-md"
             >
-              <Icon name="i-heroicons-envelope" class="w-6 h-6 text-gray-400" />
-              <input
-                v-model="email"
-                type="email"
-                placeholder="Enter Email Address"
-                class="w-full bg-transparent outline-none text-[17px] leading-[22px] text-[#101319] placeholder:text-[#8f9094]"
-              />
-            </label>
+              <button
+                v-for="result in searchResults"
+                :key="result.id"
+                type="button"
+                class="w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-50 text-left border-b border-gray-100 last:border-0"
+                @click="selectUser(result)"
+              >
+                <div class="w-10 h-10 rounded-full bg-brand-aqua/10 flex items-center justify-center shrink-0">
+                  <img v-if="result.avatarUrl" :src="result.avatarUrl" :alt="result.name" class="w-full h-full rounded-full object-cover" />
+                  <Icon v-else name="i-heroicons-user" class="w-5 h-5 text-brand-aqua" />
+                </div>
+                <div class="min-w-0">
+                  <p class="text-[15px] leading-[20px] text-[#101319] font-medium truncate">{{ result.name }}</p>
+                  <p class="text-[13px] leading-[18px] text-[#8f9094] truncate">{{ result.email }}</p>
+                </div>
+              </button>
+            </div>
+
+            <div
+              v-if="selectedUser"
+              class="h-14 rounded-2xl bg-brand-aqua/10 border border-brand-aqua px-4 flex items-center gap-3"
+            >
+              <div class="w-9 h-9 rounded-full bg-brand-aqua/20 flex items-center justify-center shrink-0">
+                <img v-if="selectedUser.avatarUrl" :src="selectedUser.avatarUrl" :alt="selectedUser.name" class="w-full h-full rounded-full object-cover" />
+                <Icon v-else name="i-heroicons-user" class="w-5 h-5 text-brand-aqua" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[15px] leading-[20px] text-[#101319] font-medium truncate">{{ selectedUser.name }}</p>
+                <p class="text-[12px] leading-[16px] text-[#8f9094] truncate">{{ selectedUser.email }}</p>
+              </div>
+              <button type="button" @click="clearUser">
+                <Icon name="i-heroicons-x-mark" class="w-5 h-5 text-gray-400" />
+              </button>
+            </div>
+
+            <p v-if="searchQuery.length >= 2 && !searching && searchResults.length === 0 && !selectedUser" class="text-[13px] text-[#8f9094] px-2">
+              No registered users found for "{{ searchQuery }}"
+            </p>
           </div>
         </div>
 
@@ -282,11 +310,16 @@
 
         <button
           type="button"
-          class="w-full h-[50px] rounded-2xl bg-brand-aqua text-white text-[17px]-regular leading-[22px] tracking-[-0.43px] font-medium"
-          @click="openSaveModal"
+          class="w-full h-[50px] rounded-2xl text-white text-[17px]-regular leading-[22px] tracking-[-0.43px] font-medium transition-colors"
+          :class="selectedUser ? 'bg-brand-aqua' : 'bg-gray-300'"
+          :disabled="!selectedUser || saving"
+          @click="save"
         >
-          Save
+          <span v-if="saving">Adding...</span>
+          <span v-else>Save</span>
         </button>
+
+        <p v-if="saveError" class="text-center text-red-500 text-[13px]">{{ saveError }}</p>
       </section>
     </main>
 
@@ -518,8 +551,49 @@ definePageMeta({
   title: "Add Collaborator - UmovingU",
 });
 
-const fullName = ref("");
-const email = ref("");
+const { searchUsers, addCollaborator } = useProfile();
+
+// User search
+const searchQuery = ref("");
+const searchResults = ref([]);
+const searching = ref(false);
+const selectedUser = ref(null);
+let searchTimer = null;
+
+const onSearchInput = () => {
+  if (selectedUser.value) return;
+  clearTimeout(searchTimer);
+  if (searchQuery.value.trim().length < 2) {
+    searchResults.value = [];
+    return;
+  }
+  searching.value = true;
+  searchTimer = setTimeout(async () => {
+    try {
+      searchResults.value = await searchUsers(searchQuery.value);
+    } catch {
+      searchResults.value = [];
+    } finally {
+      searching.value = false;
+    }
+  }, 350);
+};
+
+const selectUser = (user) => {
+  selectedUser.value = user;
+  searchQuery.value = user.name;
+  searchResults.value = [];
+};
+
+const clearUser = () => {
+  selectedUser.value = null;
+  searchQuery.value = "";
+  searchResults.value = [];
+};
+
+// Collaborator type (set from previous page via query param, or default)
+const route = useRoute();
+const collaboratorRole = ref(route.query.type || "partner");
 
 const permission = ref("all");
 const accessDuration = ref("permanent");
@@ -527,6 +601,8 @@ const clientAccess = ref("shared");
 const allowCommunications = ref(true);
 const showPropertyModal = ref(false);
 const showSaveModal = ref(false);
+const saving = ref(false);
+const saveError = ref("");
 const propertySearch = ref("");
 
 const properties = ref([
@@ -614,13 +690,30 @@ const continuePropertySelection = () => {
   showPropertyModal.value = false;
 };
 
-const openSaveModal = () => {
-  showSaveModal.value = true;
+const save = async () => {
+  if (!selectedUser.value) return;
+  saving.value = true;
+  saveError.value = "";
+  try {
+    await addCollaborator({
+      collaboratorId: selectedUser.value.id,
+      role: collaboratorRole.value,
+      permission: permission.value,
+      accessDuration: accessDuration.value,
+      clientAccess: clientAccess.value,
+      allowComms: allowCommunications.value,
+    });
+    showSaveModal.value = true;
+  } catch (e) {
+    saveError.value = e?.data?.message || "Failed to add collaborator";
+  } finally {
+    saving.value = false;
+  }
 };
 
 const closeSaveModal = () => {
   showSaveModal.value = false;
-  navigateTo("/profile/collabarot-information");
+  navigateTo("/profile/collaborator-information");
 };
 
 const copyShareLink = async () => {
@@ -635,7 +728,7 @@ const goBack = () => {
     return;
   }
 
-  navigateTo("/profile/collabarot-information");
+  navigateTo("/profile/collaborator-information");
 };
 </script>
 

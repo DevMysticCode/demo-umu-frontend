@@ -302,40 +302,34 @@
 <script setup>
 definePageMeta({
   title: "Collaborators - UmovingU",
-  path: "/profile/collabarot-information",
-  alias: [
-    "/profile/collabarat-information",
-    "/profile/collaborator-information",
-    "/profile/collaborators-information",
-  ],
 });
 
-const { fetchCollaborators } = useProfile();
+const { fetchCollaborators, removeCollaborator } = useProfile();
 
 const searchText = ref("");
 const collaborators = ref([]);
 
-onMounted(async () => {
+const loadCollaborators = async () => {
   try {
     const data = await fetchCollaborators();
     collaborators.value = data.map((c) => ({
       id: c.id,
       name: c.name,
       email: c.email,
-      role: "Collaborator",
-      type: "partner",
+      role: c.role || "Collaborator",
+      type: c.role || "partner",
       properties: 0,
       sharedClients: 0,
-      accessLevel: "Access",
+      accessLevel: c.permission === "all" ? "Full Access" : "Limited",
       status: "active",
       avatar: c.avatarUrl || null,
-      passportAddress: c.passportAddress,
-      passportId: c.passportId,
     }));
   } catch {
-    // no passports yet — list stays empty
+    // list stays empty
   }
-});
+};
+
+onMounted(loadCollaborators);
 
 const ownerName = computed(() => "You");
 
@@ -344,7 +338,7 @@ const partnerCount = computed(
 );
 
 const clientCount = computed(
-  () => collaborators.value.filter((p) => p.status === "client").length,
+  () => collaborators.value.filter((p) => p.type === "client").length,
 );
 
 const pendingCount = computed(
@@ -403,7 +397,7 @@ const closeCollaboratorTypeModal = () => {
 
 const continueCollaboratorType = () => {
   showCollaboratorTypeModal.value = false;
-  navigateTo("/profile/add-collaborator");
+  navigateTo(`/profile/add-collaborator?type=${selectedCollaboratorType.value}`);
 };
 
 const goBack = () => {

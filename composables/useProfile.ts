@@ -51,15 +51,36 @@ export interface UserProfile {
   solicitors: UserSolicitor[];
 }
 
+export interface UserSearchResult {
+  id: string;
+  email: string;
+  name: string;
+  avatarUrl?: string;
+}
+
 export interface Collaborator {
   id: string;
-  userId: string;
+  collaboratorId: string;
   name: string;
   email: string;
   avatarUrl?: string;
-  passportAddress: string;
-  passportId: string;
+  role?: string;
+  permission?: string;
+  accessDuration?: string;
+  expiresAt?: string;
+  clientAccess?: string;
+  allowComms: boolean;
   addedAt: string;
+}
+
+export interface AddCollaboratorPayload {
+  collaboratorId: string;
+  role?: string;
+  permission?: string;
+  accessDuration?: string;
+  expiresAt?: string;
+  clientAccess?: string;
+  allowComms?: boolean;
 }
 
 export function useProfile() {
@@ -208,8 +229,30 @@ export function useProfile() {
 
   // ─── Collaborators ──────────────────────────────────────────────────────
 
+  async function searchUsers(query: string): Promise<UserSearchResult[]> {
+    if (!query || query.trim().length < 2) return [];
+    return $fetch<UserSearchResult[]>(`${BASE_URL}/profile/users/search?q=${encodeURIComponent(query)}`, {
+      headers: getAuthHeaders(),
+    });
+  }
+
   async function fetchCollaborators(): Promise<Collaborator[]> {
     return $fetch<Collaborator[]>(`${BASE_URL}/profile/collaborators`, {
+      headers: getAuthHeaders(),
+    });
+  }
+
+  async function addCollaborator(payload: AddCollaboratorPayload): Promise<Collaborator> {
+    return $fetch<Collaborator>(`${BASE_URL}/profile/collaborators`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: payload,
+    });
+  }
+
+  async function removeCollaborator(id: string): Promise<void> {
+    await $fetch(`${BASE_URL}/profile/collaborators/${id}`, {
+      method: 'DELETE',
       headers: getAuthHeaders(),
     });
   }
@@ -241,6 +284,9 @@ export function useProfile() {
     createSolicitor,
     updateSolicitor,
     deleteSolicitor,
+    searchUsers,
     fetchCollaborators,
+    addCollaborator,
+    removeCollaborator,
   };
 }
