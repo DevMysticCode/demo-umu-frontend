@@ -282,3 +282,5 @@ watch(finalTranscript, (newTranscript) => {
   opacity: 0;
 }
 </style>
+
+

@@ -11,3 +11,5 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return navigateTo('/onboarding/signin')
   }
 })
+
+

@@ -179,6 +179,17 @@ const iconMap: Record<string, string> = {
   verifiedFilled: '/op-icons/verifyOwnership/verifiedFilled.svg',
   successfulProcess: '/op-icons/verifyOwnership/successfulProcess.svg',
   verifiedDocument: '/op-icons/verifyOwnership/verifiedDocument.svg',
+  personalInformation: '/op-icons/profile/personalInformation.svg',
+  collaborators: '/op-icons/profile/collaborators.svg',
+  yourDocuments: '/op-icons/profile/yourDocuments.svg',
+  snapshots: '/op-icons/profile/snapshots.svg',
+  savedProperties: '/op-icons/profile/savedProperties.svg',
+  billingPaymentHistory: '/op-icons/profile/billingPaymentHistory.svg',
+  settings: '/op-icons/profile/settings.svg',
+  helpSupport: '/op-icons/profile/helpSupport.svg',
+  calendar: '/op-icons/profile/calendar.svg',
+  learnAskAI: '/op-icons/profile/learnAskAI.svg',
+  proMemberIcon: '/op-icons/profile/proMemberIcon.svg',
 }
 
 const iconPath = computed(() => {

@@ -56,3 +56,5 @@ const onInput = () => emit('update', text.value)
   color: #111;
 }
 </style>
+
+

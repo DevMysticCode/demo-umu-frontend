@@ -142,10 +142,12 @@
         </p>
 
         <div class="mt-4 space-y-4">
-          <article
+          <button
             v-for="person in filteredCollaborators"
-            :key="person.name"
-            class="bg-white rounded-3xl p-4"
+            :key="person.id"
+            type="button"
+            class="w-full bg-white rounded-3xl p-4 text-left"
+            @click="navigateTo(`/profile/collaborator-detail?id=${person.id}`)"
           >
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-start gap-3 min-w-0">
@@ -158,7 +160,7 @@
                     :alt="person.name"
                     class="w-14 h-14 object-cover"
                   />
-                  <span v-else class="text-2xl">{{ person.emoji }}</span>
+                  <Icon v-else name="i-heroicons-user" class="w-7 h-7 text-gray-400" />
                 </div>
 
                 <div class="min-w-0">
@@ -170,42 +172,33 @@
                   <p
                     class="mt-1 text-[13px]-regular leading-[18px] text-gray-400"
                   >
-                    {{ person.role }}
+                    {{ person.roleLabel }}
                   </p>
 
                   <div class="mt-3 flex flex-wrap gap-2">
                     <span
-                      class="h-6 px-3 rounded-lg bg-brand-aqua text-white inline-flex items-center justify-center gap-2 text-[32px]-regular leading-[22px]"
+                      class="h-6 px-3 rounded-lg bg-brand-aqua text-white inline-flex items-center justify-center gap-1 text-[11px] leading-[13px]"
                     >
-                      <Icon
-                        name="i-heroicons-check-badge"
-                        class="text-[11px] leading-[13px]"
-                      />
+                      <Icon name="i-heroicons-check-badge" class="w-3 h-3" />
+                      Active
                     </span>
 
                     <span
-                      class="h-7 px-3 rounded-lg bg-brand-aqua/10 text-brand-aqua inline-flex items-center gap-2 text-[11px]-regular leading-[13px]"
+                      class="h-7 px-3 rounded-lg bg-brand-aqua/10 text-brand-aqua inline-flex items-center gap-1 text-[11px] leading-[13px]"
                     >
-                      <Icon
-                        name="i-heroicons-home"
-                        class="text-[11px] leading-[13px]"
-                      />
-                      {{ person.properties }} Properties
+                      <Icon name="i-heroicons-home" class="w-3 h-3" />
+                      {{ person.propertyCount }} {{ person.propertyCount === 1 ? 'Property' : 'Properties' }}
                     </span>
 
                     <span
-                      class="h-7 px-3 rounded-lg bg-brand-aqua/10 text-brand-aqua inline-flex items-center gap-2 text-[11px]-regular leading-[13px]"
+                      class="h-7 px-3 rounded-lg bg-brand-aqua/10 text-brand-aqua inline-flex items-center gap-1 text-[11px] leading-[13px]"
                     >
-                      <Icon
-                        name="i-heroicons-user-group"
-                        class="text-[11px] leading-[13px]"
-                      />
-                      {{ person.sharedClients }} Shared
-                      {{ person.sharedClients === 1 ? "Client" : "Clients" }}
+                      <Icon name="i-heroicons-user-group" class="w-3 h-3" />
+                      {{ person.clientAccessLabel }}
                     </span>
 
                     <span
-                      class="h-7 px-3 rounded-lg bg-brand-aqua/10 text-brand-aqua inline-flex items-center text-[11px]-regular leading-[13px]"
+                      class="h-7 px-3 rounded-lg bg-brand-aqua/10 text-brand-aqua inline-flex items-center text-[11px] leading-[13px]"
                     >
                       {{ person.accessLevel }}
                     </span>
@@ -213,93 +206,72 @@
                 </div>
               </div>
 
-              <button
-                type="button"
-                class="w-25px h-25px shrink-0 self-center text-gray-300 inline-flex items-center justify-center"
-                :aria-label="`Open ${person.name}`"
-              >
-                <Icon
-                  name="i-heroicons-chevron-right"
-                  class="w-5 h-5 text-[#3C3C434D]"
-                />
-              </button>
+              <Icon
+                name="i-heroicons-chevron-right"
+                class="w-5 h-5 text-[#3C3C434D] shrink-0 self-center"
+              />
             </div>
-          </article>
+          </button>
         </div>
       </section>
     </main>
 
-    <div
-      v-if="showCollaboratorTypeModal"
-      class="fixed inset-0 z-50 bg-black/30 flex items-end"
-      @click.self="closeCollaboratorTypeModal"
+    <BaseDrawer
+      v-model="showCollaboratorTypeModal"
+      title="Collaborator Type"
+      :show-back-button="false"
+      @close="closeCollaboratorTypeModal"
     >
-      <div class="w-full rounded-t-[34px] bg-[#f2f2f7] px-4 pt-3 pb-6">
-        <div class="w-[72px] h-[6px] rounded-full bg-[#3c3c43]/30 mx-auto" />
+      <p class="mb-5 text-[15px]-regular leading-[20px] text-[#3c3c43]/60">
+        Assign type of partnership to this account...
+      </p>
 
-        <div class="mt-4 flex justify-end">
-          <button
-            type="button"
-            class="w-12 h-12 rounded-full bg-black/10 inline-flex items-center justify-center"
-            @click="closeCollaboratorTypeModal"
-            aria-label="Close"
-          >
-            <Icon name="i-heroicons-x-mark" class="w-7 h-7 text-black/40" />
-          </button>
-        </div>
-
-        <h3
-          class="mt-2 text-[18px]-semibold leading-[24px] font-Plus Jakarta Sans text-[#171717]"
+      <div class="grid grid-cols-2 gap-3">
+        <button
+          v-for="option in collaboratorTypeOptions"
+          :key="option.key"
+          type="button"
+          class="rounded-3xl bg-white px-4 py-6 min-h-[170px] border text-center"
+          :class="
+            selectedCollaboratorType === option.key
+              ? 'border-brand-aqua border-[3px]'
+              : 'border-[#d1d1d6]'
+          "
+          @click="selectedCollaboratorType = option.key"
         >
-          Collaborator Type
-        </h3>
-        <p class="mt-2 text-[15px]-regular leading-[20px] text-[#3c3c43]/60">
-          Assign type of partnership to this account...
-        </p>
-
-        <div class="mt-7 grid grid-cols-2 gap-3">
-          <button
-            v-for="option in collaboratorTypeOptions"
-            :key="option.key"
-            type="button"
-            class="rounded-3xl bg-white px-4 py-6 min-h-[170px] border text-center"
-            :class="
-              selectedCollaboratorType === option.key
-                ? 'border-brand-aqua border-[3px]'
-                : 'border-[#d1d1d6]'
-            "
-            @click="selectedCollaboratorType = option.key"
+          <Icon
+            name="i-heroicons-user-group"
+            class="w-[15px] h-[20px] mx-auto text-[#3C3C43]/60"
+          />
+          <p
+            class="mt-3 text-[17px]-regular leading-[22px] font-semibold text-[#3C3C43]/60 tracking-[-0.43px]"
           >
-            <Icon
-              name="i-heroicons-user-group"
-              class="w-[15px] h-[20px] mx-auto text-[#3C3C43]/60"
-            />
-            <p
-              class="mt-3 text-[17px]-regular leading-[22px] font-semibold text-[#3C3C43]/60 tracking-[-0.43px]"
-            >
-              {{ option.title }}
-            </p>
-            <p
-              class="mt-2 text-[13px]-regular leading-[18px] text-[#3C3C43]/60 tracking-[-0.08px]"
-            >
-              {{ option.description }}
-            </p>
-          </button>
-        </div>
+            {{ option.title }}
+          </p>
+          <p
+            class="mt-2 text-[13px]-regular leading-[18px] text-[#3C3C43]/60 tracking-[-0.08px]"
+          >
+            {{ option.description }}
+          </p>
+        </button>
+      </div>
 
+      <template #footer>
         <button
           type="button"
-          class="mt-8 w-full h-14 rounded-2xl bg-brand-aqua text-white text-[20px] leading-[24px] font-medium"
+          class="w-full h-14 rounded-2xl bg-brand-aqua text-white text-[20px] leading-[24px] font-medium"
           @click="continueCollaboratorType"
         >
           Continue
         </button>
-      </div>
-    </div>
+      </template>
+    </BaseDrawer>
   </div>
 </template>
 
 <script setup>
+import BaseDrawer from '@/components/ui/BaseDrawer.vue'
+
 definePageMeta({
   title: "Collaborators - UmovingU",
 });
@@ -309,6 +281,19 @@ const { fetchCollaborators, removeCollaborator } = useProfile();
 const searchText = ref("");
 const collaborators = ref([]);
 
+const roleLabels = {
+  partner: "Partner",
+  solicitor: "Solicitor",
+  "estate-agent": "Estate Agent",
+  "mortgage-broker": "Mortgage Broker",
+};
+
+const clientAccessLabels = {
+  shared: "Shared Clients",
+  all: "All Clients",
+  none: "No Clients",
+};
+
 const loadCollaborators = async () => {
   try {
     const data = await fetchCollaborators();
@@ -316,11 +301,12 @@ const loadCollaborators = async () => {
       id: c.id,
       name: c.name,
       email: c.email,
-      role: c.role || "Collaborator",
+      role: c.role || "partner",
+      roleLabel: roleLabels[c.role] || c.role || "Collaborator",
       type: c.role || "partner",
-      properties: 0,
-      sharedClients: 0,
-      accessLevel: c.permission === "all" ? "Full Access" : "Limited",
+      propertyCount: c.propertyCount ?? 0,
+      clientAccessLabel: clientAccessLabels[c.clientAccess] || "Shared Clients",
+      accessLevel: c.permission === "all" ? "All Properties" : c.permission === "specific" ? "Specific Properties" : "Assign Later",
       status: "active",
       avatar: c.avatarUrl || null,
     }));

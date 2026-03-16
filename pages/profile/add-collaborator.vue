@@ -58,6 +58,7 @@
       <div class="h-px bg-gray-200 mt-8" />
 
       <section class="px-4 mt-6 space-y-6">
+        <!-- Find User -->
         <div>
           <h3
             class="text-[15px]-emphasized leading-[20px] font-semibold text-[#000000] tracking-[-0.23px]"
@@ -123,6 +124,7 @@
           </div>
         </div>
 
+        <!-- Permissions -->
         <div>
           <h3
             class="text-[15px]-emphasized leading-[20px] font-semibold text-[#000000] tracking-[-0.23px]"
@@ -136,6 +138,7 @@
           </p>
 
           <div class="mt-3 space-y-3">
+            <!-- All Properties -->
             <button
               type="button"
               class="option-row"
@@ -151,21 +154,28 @@
               <span class="option-text">All Properties</span>
             </button>
 
+            <!-- Specific Properties -->
             <button
               type="button"
               class="option-row"
-              @click="permission = 'specific'"
+              @click="onSpecificPropertiesClick"
             >
-              <span :class="radioClass(permission === 'specific')" />
+              <span :class="radioClass(permission === 'specific')">
+                <Icon
+                  v-if="permission === 'specific'"
+                  name="i-heroicons-check"
+                  class="w-4 h-4 text-white"
+                />
+              </span>
               <span class="option-text">Specific Properties</span>
               <span
-                @click.stop="openPropertyModal"
-                class="ml-auto h-10 px-4 rounded-[14px] bg-[#f2f2f7] text-brand-aqua inline-flex items-center text-[17px] leading-[22px] cursor-pointer"
+                class="ml-auto h-10 px-4 rounded-[14px] bg-[#f2f2f7] text-brand-aqua inline-flex items-center text-[17px] leading-[22px] shrink-0"
               >
-                Select
+                {{ selectedPropertyCount > 0 ? `${selectedPropertyCount} selected` : 'Select' }}
               </span>
             </button>
 
+            <!-- Assign Later -->
             <button
               type="button"
               class="option-row"
@@ -183,6 +193,7 @@
           </div>
         </div>
 
+        <!-- Access Duration -->
         <div>
           <h3
             class="text-[15px]-emphasized leading-[20px] font-semibold text-[#000000] tracking-[-0.23px]"
@@ -196,6 +207,7 @@
           </p>
 
           <div class="mt-3 space-y-3">
+            <!-- Permanent -->
             <button
               type="button"
               class="option-row"
@@ -208,27 +220,43 @@
                   class="w-4 h-4 text-white"
                 />
               </span>
-              <span class="option-text"
-                >Permanent Access - Until Cancelled</span
-              >
+              <span class="option-text">Permanent Access - Until Cancelled</span>
             </button>
 
+            <!-- Set Expiration Date -->
             <button
               type="button"
               class="option-row"
               @click="accessDuration = 'expiry'"
             >
-              <span :class="radioClass(accessDuration === 'expiry')" />
-              <span class="option-text">Set Expiration Date</span>
-              <span
-                class="ml-auto h-10 px-4 rounded-[14px] bg-[#f2f2f7] text-brand-aqua inline-flex items-center text-[17px] leading-[22px]"
-              >
-                March 2026
+              <span :class="radioClass(accessDuration === 'expiry')">
+                <Icon
+                  v-if="accessDuration === 'expiry'"
+                  name="i-heroicons-check"
+                  class="w-4 h-4 text-white"
+                />
               </span>
+              <span class="option-text">Set Expiration Date</span>
+              <label
+                class="ml-auto h-10 px-4 rounded-[14px] bg-[#f2f2f7] text-brand-aqua inline-flex items-center text-[15px] leading-[22px] shrink-0 cursor-pointer relative"
+                @click.stop
+              >
+                {{ expiryDateLabel }}
+                <input
+                  ref="dateInputRef"
+                  type="date"
+                  :min="minDate"
+                  :value="expiresAt"
+                  class="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                  @change="onDateChange"
+                  @click.stop
+                />
+              </label>
             </button>
           </div>
         </div>
 
+        <!-- Additional Preferences -->
         <div>
           <h3
             class="text-[15px]-emphasized leading-[20px] font-semibold text-[#000000] tracking-[-0.23px]"
@@ -262,7 +290,13 @@
               class="option-row"
               @click="clientAccess = 'all'"
             >
-              <span :class="radioClass(clientAccess === 'all')" />
+              <span :class="radioClass(clientAccess === 'all')">
+                <Icon
+                  v-if="clientAccess === 'all'"
+                  name="i-heroicons-check"
+                  class="w-4 h-4 text-white"
+                />
+              </span>
               <span class="option-text">All Clients</span>
             </button>
 
@@ -271,12 +305,19 @@
               class="option-row"
               @click="clientAccess = 'none'"
             >
-              <span :class="radioClass(clientAccess === 'none')" />
+              <span :class="radioClass(clientAccess === 'none')">
+                <Icon
+                  v-if="clientAccess === 'none'"
+                  name="i-heroicons-check"
+                  class="w-4 h-4 text-white"
+                />
+              </span>
               <span class="option-text">No Client Access</span>
             </button>
           </div>
         </div>
 
+        <!-- Communications -->
         <div>
           <h3
             class="text-[15px]-emphasized leading-[20px] font-semibold text-[#000000] tracking-[-0.23px]"
@@ -323,6 +364,7 @@
       </section>
     </main>
 
+    <!-- Property Selection Modal -->
     <div
       v-if="showPropertyModal"
       class="fixed inset-0 z-50 bg-black/25 flex items-end"
@@ -370,17 +412,17 @@
               class="w-full bg-transparent outline-none text-[17px]-regular leading-[22px] tracking-[-0.43px] text-[#1f2024] placeholder:text-[#8f9094]"
             />
           </div>
-
-          <button
-            type="button"
-            class="w-14 h-14 rounded-2xl bg-brand-aqua text-white flex items-center justify-center"
-            aria-label="Filter properties"
-          >
-            <Icon name="i-heroicons-adjustments-horizontal" class="w-6 h-6" />
-          </button>
         </div>
 
-        <div class="mt-6 space-y-3 flex-1 overflow-auto pb-4">
+        <div v-if="passportsLoading" class="flex-1 flex items-center justify-center">
+          <Icon name="i-heroicons-arrow-path" class="w-8 h-8 text-brand-aqua animate-spin" />
+        </div>
+
+        <div v-else-if="properties.length === 0" class="flex-1 flex items-center justify-center">
+          <p class="text-[15px] text-[#8f9094] text-center px-4">You don't have any property passports yet.</p>
+        </div>
+
+        <div v-else class="mt-6 space-y-3 flex-1 overflow-auto pb-4">
           <button
             v-for="property in filteredProperties"
             :key="property.id"
@@ -417,8 +459,7 @@
         </div>
 
         <p class="mt-2 text-center text-brand-aqua text-[17px] leading-[22px]">
-          {{ selectedPropertyCount }} of {{ properties.length }} Properties
-          Selected
+          {{ selectedPropertyCount }} of {{ properties.length }} Properties Selected
         </p>
 
         <button
@@ -431,6 +472,7 @@
       </div>
     </div>
 
+    <!-- Success Modal -->
     <div
       v-if="showSaveModal"
       class="fixed inset-0 z-[60] bg-black/35 flex items-end"
@@ -455,13 +497,12 @@
         <h3
           class="mt-2 text-center text-[17px]-regular leading-[22px] tracking-[-0.43px] font-semibold text-[#171717]"
         >
-          Partner Added
+          Collaborator Added
         </h3>
         <p
           class="mt-3 text-center text-[15px]-regular leading-[20px] tracking-[-0.23px] text-[#3C3C43]/60 px-6"
         >
-          Partner added successfully! They'll receive an invitation email
-          shortly.
+          {{ selectedUser?.name }} has been added successfully! They'll receive an invitation email shortly.
         </p>
 
         <div class="mt-6 flex items-center justify-center">
@@ -470,18 +511,14 @@
           >
             <img
               src="/op-icons/temp/profilepic.png"
-              alt="Partner avatar"
+              alt="Owner avatar"
               class="w-full h-full object-cover"
             />
           </div>
           <div
-            class="w-[97px] h-[97px] rounded-full border-[8px] border-white bg-[#f2f2f7] -ml-6 flex items-center justify-center"
+            class="w-[97px] h-[97px] rounded-full border-[8px] border-white bg-[#f2f2f7] -ml-6 flex items-center justify-center text-brand-aqua"
           >
-            <img
-              src="/op-icons/temp/paul.svg"
-              alt="Partner avatar"
-              class="w-full h-full object-cover"
-            />
+            <Icon name="i-heroicons-user" class="w-12 h-12" />
           </div>
         </div>
 
@@ -551,7 +588,7 @@ definePageMeta({
   title: "Add Collaborator - UmovingU",
 });
 
-const { searchUsers, addCollaborator } = useProfile();
+const { fetchUserPassports, searchUsers, addCollaborator } = useProfile();
 
 // User search
 const searchQuery = ref("");
@@ -591,12 +628,14 @@ const clearUser = () => {
   searchResults.value = [];
 };
 
-// Collaborator type (set from previous page via query param, or default)
+// Collaborator type (from route query)
 const route = useRoute();
 const collaboratorRole = ref(route.query.type || "partner");
 
+// Permission
 const permission = ref("all");
 const accessDuration = ref("permanent");
+const expiresAt = ref("");
 const clientAccess = ref("shared");
 const allowCommunications = ref(true);
 const showPropertyModal = ref(false);
@@ -604,69 +643,88 @@ const showSaveModal = ref(false);
 const saving = ref(false);
 const saveError = ref("");
 const propertySearch = ref("");
+const passportsLoading = ref(false);
 
-const properties = ref([
-  {
-    id: 1,
-    title: "21 Kingston Road",
-    address: "Leacroft, Staines-Upon-Thames",
-    postcode: "TW18 4NJ",
-    selected: true,
-  },
-  {
-    id: 2,
-    title: "134, The Summit",
-    address: "University Road, Leicester",
-    postcode: "LE2 7WT",
-    selected: true,
-  },
-  {
-    id: 3,
-    title: "21, Rochester",
-    address: "Earlsdon, C",
-    postcode: "CV5 6AB",
-    selected: false,
-  },
-]);
+// Properties loaded from backend
+const properties = ref([]);
 
+const loadPassports = async () => {
+  passportsLoading.value = true;
+  try {
+    const passports = await fetchUserPassports();
+    properties.value = passports.map((p) => ({
+      id: p.id,
+      title: p.addressLine1,
+      address: p.address,
+      postcode: p.postcode,
+      selected: false,
+    }));
+  } catch {
+    properties.value = [];
+  } finally {
+    passportsLoading.value = false;
+  }
+};
+
+// Date picker
+const minDate = computed(() => new Date().toISOString().split("T")[0]);
+
+const expiryDateLabel = computed(() => {
+  if (!expiresAt.value) return "Pick date";
+  const d = new Date(expiresAt.value);
+  return d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+});
+
+const onDateChange = (e) => {
+  expiresAt.value = e.target.value;
+  accessDuration.value = "expiry";
+};
+
+// Radio helpers
 const radioClass = (selected) => {
   if (selected) {
-    return "w-8 h-8 rounded-full bg-brand-aqua inline-flex items-center justify-center";
+    return "w-8 h-8 rounded-full bg-brand-aqua inline-flex items-center justify-center shrink-0";
   }
-
-  return "w-8 h-8 rounded-full border-[3px] border-brand-aqua inline-flex items-center justify-center";
+  return "w-8 h-8 rounded-full border-[3px] border-brand-aqua inline-flex items-center justify-center shrink-0";
 };
 
 const propertyRadioClass = (selected) => {
   if (selected) {
     return "w-8 h-8 rounded-full bg-brand-aqua inline-flex items-center justify-center shrink-0";
   }
-
   return "w-8 h-8 rounded-full border-[5px] border-[#8e8e93] inline-flex items-center justify-center shrink-0";
 };
 
+// Property selection
 const filteredProperties = computed(() => {
-  if (!propertySearch.value.trim()) {
-    return properties.value;
-  }
-
+  if (!propertySearch.value.trim()) return properties.value;
   const query = propertySearch.value.toLowerCase();
-  return properties.value.filter((property) => {
-    return (
-      property.title.toLowerCase().includes(query) ||
-      property.address.toLowerCase().includes(query) ||
-      property.postcode.toLowerCase().includes(query)
-    );
-  });
+  return properties.value.filter(
+    (p) =>
+      p.title.toLowerCase().includes(query) ||
+      p.address.toLowerCase().includes(query) ||
+      p.postcode.toLowerCase().includes(query),
+  );
 });
 
 const selectedPropertyCount = computed(
-  () => properties.value.filter((property) => property.selected).length,
+  () => properties.value.filter((p) => p.selected).length,
 );
 
-const openPropertyModal = () => {
+const selectedPropertyIds = computed(() =>
+  properties.value.filter((p) => p.selected).map((p) => p.id),
+);
+
+const onSpecificPropertiesClick = () => {
   permission.value = "specific";
+  openPropertyModal();
+};
+
+const openPropertyModal = async () => {
   showPropertyModal.value = true;
+  if (properties.value.length === 0) {
+    await loadPassports();
+  }
 };
 
 const closePropertyModal = () => {
@@ -674,35 +732,39 @@ const closePropertyModal = () => {
 };
 
 const toggleProperty = (propertyId) => {
-  properties.value = properties.value.map((property) => {
-    if (property.id === propertyId) {
-      return {
-        ...property,
-        selected: !property.selected,
-      };
-    }
-
-    return property;
-  });
+  properties.value = properties.value.map((p) =>
+    p.id === propertyId ? { ...p, selected: !p.selected } : p,
+  );
 };
 
 const continuePropertySelection = () => {
   showPropertyModal.value = false;
 };
 
+// Save
 const save = async () => {
   if (!selectedUser.value) return;
   saving.value = true;
   saveError.value = "";
   try {
-    await addCollaborator({
+    const payload = {
       collaboratorId: selectedUser.value.id,
       role: collaboratorRole.value,
       permission: permission.value,
       accessDuration: accessDuration.value,
       clientAccess: clientAccess.value,
       allowComms: allowCommunications.value,
-    });
+    };
+
+    if (permission.value === "specific") {
+      payload.propertyIds = selectedPropertyIds.value;
+    }
+
+    if (accessDuration.value === "expiry" && expiresAt.value) {
+      payload.expiresAt = expiresAt.value;
+    }
+
+    await addCollaborator(payload);
     showSaveModal.value = true;
   } catch (e) {
     saveError.value = e?.data?.message || "Failed to add collaborator";
@@ -727,7 +789,6 @@ const goBack = () => {
     window.history.back();
     return;
   }
-
   navigateTo("/profile/collaborator-information");
 };
 </script>

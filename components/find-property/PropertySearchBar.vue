@@ -126,3 +126,5 @@ const handleSearch = () => {
   @apply absolute right-2 h-8 px-4 bg-purple-main text-white rounded-lg font-medium text-sm hover:bg-purple-main/90 transition-colors;
 }
 </style>
+
+

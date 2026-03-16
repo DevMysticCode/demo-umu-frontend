@@ -113,9 +113,10 @@ onUnmounted(() => {
 /* Drawer Overlay */
 .drawer-overlay {
   position: fixed;
-  top: 20px;
+  top: 0;
   left: 50%;
-  max-width: 28rem;
+  min-width: 28rem;
+  max-width: 100%;
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
@@ -319,6 +320,7 @@ onUnmounted(() => {
 
   .drawer__footer {
     padding: 0.75rem 1rem 1rem;
+    margin: 16px;
   }
 
   .drawer__back-placeholder {

@@ -11,10 +11,11 @@
     <div class="login-options">
       <div class="social-logins">
         <button
-          class="social-logins__button"
-          @click="handleSocialLogin('apple')"
+          class="social-logins__button relative"
+          @click="handleAppleLogin"
         >
           <OPIcon name="appleNew" class="w-[20px] h-[20px]" />
+          <span v-if="isDev" class="absolute -top-1.5 -right-1.5 text-[9px] bg-yellow-400 text-black rounded px-1 font-bold leading-tight">DEV</span>
         </button>
 
         <button class="social-logins__button social-logins__button--google">
@@ -67,14 +68,64 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
-const { requestOtp, googleLogin } = useAuth()
+const { requestOtp, googleLogin, appleLogin, appleLoginMock } = useAuth()
+const isDev = process.dev
 const { email } = useSession()
 
 const emailInput = ref('')
 
+// ── Apple ─────────────────────────────────────────────────────────────────
+
+const loadAppleSdk = () =>
+  new Promise<void>((resolve) => {
+    if (window.AppleID) { resolve(); return }
+    const s = document.createElement('script')
+    s.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js'
+    s.async = true
+    s.onload = () => resolve()
+    document.head.appendChild(s)
+  })
+
+const handleAppleLogin = async () => {
+  if (isDev) {
+    try {
+      const result: any = await appleLoginMock()
+      localStorage.setItem('token', result.token)
+      await navigateTo('/dashboard')
+    } catch (err) {
+      console.error('Apple mock error', err)
+      alert('Apple mock sign-up failed.')
+    }
+    return
+  }
+
+  try {
+    await loadAppleSdk()
+    window.AppleID.auth.init({
+      clientId: config.public.appleClientId,
+      scope: 'name email',
+      redirectURI: config.public.appleRedirectUri,
+      usePopup: true,
+    })
+    const data = await window.AppleID.auth.signIn()
+    const idToken: string = data.authorization.id_token
+    const firstName: string | undefined = data.user?.name?.firstName
+    const lastName: string | undefined = data.user?.name?.lastName
+    const result: any = await appleLogin(idToken, firstName, lastName)
+    localStorage.setItem('token', result.token)
+    await navigateTo('/dashboard')
+  } catch (err: any) {
+    if (err?.error === 'popup_closed_by_user') return
+    console.error('Apple sign-up error', err)
+    alert('Apple sign-up failed. Please try again.')
+  }
+}
+
+// ── Google ────────────────────────────────────────────────────────────────
+
 const handleGoogleCredential = async (response) => {
   try {
-    const result = await googleLogin(response.credential)
+    const result: any = await googleLogin(response.credential)
     localStorage.setItem('token', result.token)
     await navigateTo('/dashboard')
   } catch (err) {

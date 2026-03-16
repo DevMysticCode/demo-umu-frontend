@@ -34,3 +34,5 @@ defineEmits(['action'])
   @apply flex flex-col items-center gap-1;
 }
 </style>
+
+

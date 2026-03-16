@@ -392,3 +392,5 @@ const getInitials = (firstName, lastName) => {
   cursor: not-allowed;
 }
 </style>
+
+

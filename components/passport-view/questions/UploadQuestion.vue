@@ -244,3 +244,5 @@ const removeFile = (index) => {
   font-weight: 600;
 }
 </style>
+
+

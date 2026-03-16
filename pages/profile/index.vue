@@ -56,7 +56,7 @@
 
         <button
           type="button"
-          class="mt-6 h-14 px-8 rounded-full border border-brand-aqua text-brand-aqua inline-flex items-center justify-center font-sf-pro text-[15px] leading-[20px] tracking-[-0.4px] font-[590] border-color-[#00A19A] text-[#00A19A]"
+          class="mt-6 py-2 px-4 rounded-full border border-brand-aqua text-brand-aqua inline-flex items-center justify-center font-sf-pro text-[15px] leading-[20px] tracking-[-0.4px] font-[590] border-color-[#00A19A] text-[#00A19A]"
         >
           Member since {{ memberSince }}
         </button>
@@ -127,123 +127,127 @@
 </template>
 
 <script setup>
-import OPIcon from "~/components/ui/OPIcon.vue";
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 definePageMeta({
-  title: "My Profile - UmovingU",
-});
+  title: 'My Profile - UmovingU',
+})
 
-const { profile, fullName, memberSince, fetchProfile } = useProfile();
+const { profile, fullName, memberSince, fetchProfile } = useProfile()
 
-onMounted(fetchProfile);
+onMounted(fetchProfile)
 
-const searchQuery = ref("");
+const searchQuery = ref('')
 
 const profileItems = [
   {
-    title: "Your Personal Information",
-    description: "Manage how we know and communicate with you.",
-    icon: "personalInformation",
-    route: "/profile/personal-information",
+    title: 'Your Personal Information',
+    description: 'Manage how we know and communicate with you.',
+    icon: 'personalInformation',
+    route: '/profile/personal-information',
   },
   {
-    title: "Collaborators",
+    title: 'Collaborators',
     description:
-      "Invite, manage, and control who you work with across your property journey.",
-    icon: "collaborators",
-    route: "/profile/collaborator-information",
+      'Invite, manage, and control who you work with across your property journey.',
+    icon: 'collaborators',
+    route: '/profile/collaborator-information',
   },
   {
-    title: "Your Documents",
-    description: "View and manage your essential property documents.",
-    icon: "yourDocuments",
+    title: 'Your Documents',
+    description: 'View and manage your essential property documents.',
+    icon: 'yourDocuments',
+    route: '/profile/document',
   },
   {
-    title: "Downloaded Snapshots",
+    title: 'Downloaded Snapshots',
     description:
-      "Easily export all your downloaded snapshots into formats such as PDF.",
-    icon: "Snapshots",
+      'Easily export all your downloaded snapshots into formats such as PDF.',
+    icon: 'snapshots',
+    route: '/profile/snapshot',
   },
   {
-    title: "Saved Properties",
-    description: "All your saved and recently viewed properties, organized.",
-    icon: "SavedProperties",
+    title: 'Saved Properties',
+    description: 'All your saved and recently viewed properties, organized.',
+    icon: 'savedProperties',
+    route: '/profile/saved-properties',
   },
   {
-    title: "Billing & Payment History",
-    description: "Manage your subscription, invoices, and payment methods.",
-    icon: "BillingPaymentHistory",
+    title: 'Billing & Payment History',
+    description: 'Manage your subscription, invoices, and payment methods.',
+    icon: 'billingPaymentHistory',
+    route: '/profile/subscription-plan',
   },
   {
-    title: "Settings",
-    description: "Customize your experience, privacy, and account security.",
-    icon: "Settings",
+    title: 'Settings',
+    description: 'Customize your experience, privacy, and account security.',
+    icon: 'settings',
   },
   {
-    title: "Help & Support",
-    description: "Need help? Browse FAQs or speak to support.",
-    icon: "HelpSupport",
+    title: 'Help & Support',
+    description: 'Need help? Browse FAQs or speak to support.',
+    icon: 'helpSupport',
   },
   {
-    title: "Calendar",
-    description: "Stay on top of viewings, deadlines, and reminders.",
-    icon: "Calendar",
+    title: 'Calendar',
+    description: 'Stay on top of viewings, deadlines, and reminders.',
+    icon: 'calendar',
   },
   {
-    title: "Learn & Ask AI",
-    description: "Get expert guidance and answers at any step.",
-    icon: "learnAskAI",
+    title: 'Learn & Ask AI',
+    description: 'Get expert guidance and answers at any step.',
+    icon: 'learnAskAI',
   },
-];
+]
 
 const filteredItems = computed(() => {
   if (!searchQuery.value.trim()) {
-    return profileItems;
+    return profileItems
   }
 
-  const query = searchQuery.value.toLowerCase().trim();
+  const query = searchQuery.value.toLowerCase().trim()
   return profileItems.filter(
     (item) =>
       item.title.toLowerCase().includes(query) ||
       item.description.toLowerCase().includes(query),
-  );
-});
+  )
+})
 
 const getPreferenceItemClass = (item) => {
-  if (item.title === "Your Personal Information") {
-    return "w-full h-[84px] bg-[#f6f6f7] rounded-[16px] border border-[0.33px] border-[#d9dae0] pt-[14px] pr-[12px] pb-[14px] pl-[20px] flex items-center gap-[8px] line-height-[20px]";
+  if (item.title === 'Your Personal Information') {
+    return 'w-full h-[84px] bg-[#f6f6f7] rounded-[16px] border border-[0.33px] border-[#d9dae0] pt-[14px] pr-[12px] pb-[14px] pl-[20px] flex items-center gap-[8px] line-height-[20px]'
   }
 
-  return "w-full bg-[#f6f6f7] rounded-3xl px-5 py-4 flex items-center gap-4 text-left";
-};
+  return 'w-full h-[84px] bg-[#f6f6f7] rounded-[16px] border border-[0.33px] border-[#d9dae0] pt-[14px] pr-[12px] pb-[14px] pl-[20px] flex items-center gap-[8px] line-height-[20px]'
+}
 
 const getPreferenceTitleClass = (item) => {
-  if (item.title === "Your Personal Information") {
-    return "font-sf-pro text-start text-[15px] leading-[20px] tracking-[-0.23px] font-normal text-[#1f2024] align-middle";
+  if (item.title === 'Your Personal Information') {
+    return 'font-sf-pro text-start text-[15px] leading-[20px] tracking-[-0.23px] font-normal text-[#1f2024] align-middle'
   }
 
-  return "font-sf-pro text-start text-[15px] leading-[20px] tracking-[-0.23px] font-normal text-[#1f2024] align-middle";
-};
+  return 'font-sf-pro text-start text-[15px] leading-[20px] tracking-[-0.23px] font-normal text-[#1f2024] align-middle'
+}
 
 const goBack = () => {
-  if (typeof window !== "undefined" && window.history.length > 1) {
-    window.history.back();
-    return;
+  if (typeof window !== 'undefined' && window.history.length > 1) {
+    window.history.back()
+    return
   }
 
-  navigateTo("/dashboard");
-};
+  navigateTo('/dashboard')
+}
 
 const onPreferenceClick = async (item) => {
   if (item.route) {
-    await navigateTo(item.route);
+    await navigateTo(item.route)
   }
-};
+}
 
 const logout = async () => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("token");
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('token')
   }
-  await navigateTo("/onboarding/signin");
-};
+  await navigateTo('/onboarding/signin')
+}
 </script>

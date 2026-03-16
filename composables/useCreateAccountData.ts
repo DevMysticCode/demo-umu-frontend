@@ -208,3 +208,5 @@ export const useCreateAccountData = () => {
     closeTermsModal: () => (showTermsModal.value = false),
   }
 }
+
+

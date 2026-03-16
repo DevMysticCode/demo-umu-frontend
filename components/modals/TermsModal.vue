@@ -117,3 +117,5 @@ const acceptTerms = () => {
   @apply w-full h-14 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-semibold text-lg rounded-xl transition-colors shadow-lg;
 }
 </style>
+
+

@@ -1,38 +1,37 @@
 interface ToastOptions {
-  message: string
-  icon?: string
-  iconEmoji?: string
-  duration?: number
+  message: string;
+  icon?: string;
+  iconEmoji?: string;
+  duration?: number;
 }
 
-const toastState = reactive({
-  isVisible: false,
-  message: '',
-  icon: '',
-  iconEmoji: '',
-  duration: 2000,
-})
+interface ToastState extends ToastOptions {
+  isVisible: boolean;
+}
 
-export const useToast = () => {
-  const showToast = (options: ToastOptions) => {
-    toastState.message = options.message
-    toastState.icon = options.icon || ''
-    toastState.iconEmoji = options.iconEmoji || '🏠'
-    toastState.duration = options.duration || 2000
-    toastState.isVisible = true
+export function useToast() {
+  const toastState = ref<ToastState>({
+    isVisible: false,
+    message: '',
+    icon: undefined,
+    iconEmoji: undefined,
+    duration: 2500,
+  });
 
-    setTimeout(() => {
-      toastState.isVisible = false
-    }, toastState.duration)
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
+  function showToast(options: ToastOptions) {
+    if (timer) clearTimeout(timer);
+    toastState.value = { isVisible: true, duration: 2500, ...options };
+    timer = setTimeout(() => {
+      toastState.value.isVisible = false;
+    }, toastState.value.duration);
   }
 
-  const hideToast = () => {
-    toastState.isVisible = false
+  function hideToast() {
+    if (timer) clearTimeout(timer);
+    toastState.value.isVisible = false;
   }
 
-  return {
-    toastState: readonly(toastState),
-    showToast,
-    hideToast,
-  }
+  return { toastState, showToast, hideToast };
 }

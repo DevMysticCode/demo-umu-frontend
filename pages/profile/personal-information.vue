@@ -29,11 +29,21 @@
 
     <main class="px-4 pb-8">
       <section class="pt-6 text-center">
-        <img
-          :src="profile?.avatarUrl || '/op-icons/temp/profilepic.png'"
-          alt="Profile avatar"
-          class="w-24 h-24 rounded-full object-cover mx-auto"
-        />
+        <button
+          type="button"
+          class="relative w-24 h-24 mx-auto block"
+          aria-label="Edit profile picture"
+          @click="isAvatarDrawerOpen = true"
+        >
+          <img
+            :src="avatarPreview || profile?.avatarUrl || '/op-icons/temp/profilepic.png'"
+            alt="Profile avatar"
+            class="w-24 h-24 rounded-full object-cover"
+          />
+          <span class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-brand-aqua border-2 border-white flex items-center justify-center">
+            <Icon name="i-heroicons-camera" class="w-4 h-4 text-white" />
+          </span>
+        </button>
 
         <h2 class="mt-8 text-22-emphasized text-center text-[#000000]">
           {{ fullName || 'Your Profile' }}
@@ -45,10 +55,10 @@
         </p>
 
         <div
-          class="mt-5 inline-flex items-center gap-2 px-4 h-11 rounded-full border border-brand-aqua text-brand-aqua text-xl font-medium"
+          class="mt-6 py-2 px-4 rounded-full border border-brand-aqua text-brand-aqua inline-flex items-center justify-center font-sf-pro text-[15px] leading-[20px] tracking-[-0.4px] font-[590] border-color-[#00A19A] text-[#00A19A]"
         >
-          <Icon name="i-heroicons-star" class="w-4 h-4" />
-          <span>PRO · Member since {{ memberSince }}</span>
+          <OPIcon name="proMemberIcon" class="w-[14px] h-[14px]" />
+          <span class="ml-2">PRO · Member since {{ memberSince }}</span>
         </div>
       </section>
 
@@ -162,7 +172,9 @@
               @click="openAddressEditor(null)"
             >
               <Icon name="i-heroicons-plus-circle" class="w-5 h-5" />
-              <span class="text-[15px] leading-[20px] font-medium">Add Address</span>
+              <span class="text-[15px] leading-[20px] font-medium"
+                >Add Address</span
+              >
             </button>
           </div>
         </section>
@@ -183,10 +195,14 @@
             >
               <div class="flex items-start justify-between gap-3">
                 <div>
-                  <p class="text-[15px] leading-[20px] font-semibold text-[#000000]">
+                  <p
+                    class="text-[15px] leading-[20px] font-semibold text-[#000000]"
+                  >
                     {{ company.name }}
                   </p>
-                  <p class="text-[13px] leading-[18px] text-[#3C3C43] mt-2 whitespace-pre-line">
+                  <p
+                    class="text-[13px] leading-[18px] text-[#3C3C43] mt-2 whitespace-pre-line"
+                  >
                     {{ company.address }}
                   </p>
                   <div class="mt-3 text-[13px] leading-[18px] text-[#3C3C43]">
@@ -195,7 +211,8 @@
                       {{ company.companyNumber }}
                     </p>
                     <p v-if="company.director">
-                      <span class="inline-block w-12">Director:</span> {{ company.director }}
+                      <span class="inline-block w-12">Director:</span>
+                      {{ company.director }}
                     </p>
                   </div>
                 </div>
@@ -225,7 +242,9 @@
               @click="openCompanyEditor(null)"
             >
               <Icon name="i-heroicons-plus-circle" class="w-5 h-5" />
-              <span class="text-[15px] leading-[20px] font-medium">Add Company</span>
+              <span class="text-[15px] leading-[20px] font-medium"
+                >Add Company</span
+              >
             </button>
           </div>
         </section>
@@ -246,24 +265,32 @@
             >
               <div class="flex items-start justify-between gap-3">
                 <div>
-                  <p class="text-[15px] leading-[20px] font-semibold text-[#000000]">
+                  <p
+                    class="text-[15px] leading-[20px] font-semibold text-[#000000]"
+                  >
                     {{ sol.name }}
                   </p>
-                  <p class="text-[13px] leading-[18px] text-[#3C3C43] mt-2 whitespace-pre-line">
+                  <p
+                    class="text-[13px] leading-[18px] text-[#3C3C43] mt-2 whitespace-pre-line"
+                  >
                     {{ sol.address }}
                   </p>
                   <div class="mt-3 text-[13px] leading-[18px] text-[#3C3C43]">
                     <p v-if="sol.contactName">
-                      <span class="inline-block w-18">Contact Name:</span> {{ sol.contactName }}
+                      <span class="inline-block w-18">Contact Name:</span>
+                      {{ sol.contactName }}
                     </p>
                     <p v-if="sol.email">
-                      <span class="inline-block w-12">Email:</span> {{ sol.email }}
+                      <span class="inline-block w-12">Email:</span>
+                      {{ sol.email }}
                     </p>
                     <p v-if="sol.phone">
-                      <span class="inline-block w-12">Phone:</span> {{ sol.phone }}
+                      <span class="inline-block w-12">Phone:</span>
+                      {{ sol.phone }}
                     </p>
                     <p v-if="sol.reference">
-                      <span class="inline-block w-12">Reference:</span> {{ sol.reference }}
+                      <span class="inline-block w-12">Reference:</span>
+                      {{ sol.reference }}
                     </p>
                   </div>
                 </div>
@@ -293,7 +320,9 @@
               @click="openSolicitorEditor(null)"
             >
               <Icon name="i-heroicons-plus-circle" class="w-5 h-5" />
-              <span class="text-[15px] leading-[20px] font-medium">Add Solicitor</span>
+              <span class="text-[15px] leading-[20px] font-medium"
+                >Add Solicitor</span
+              >
             </button>
           </div>
         </section>
@@ -483,6 +512,87 @@
       </template>
     </BaseDrawer>
 
+    <!-- Avatar Edit Drawer -->
+    <BaseDrawer
+      v-model="isAvatarDrawerOpen"
+      title="Edit Profile Picture"
+      :show-back-button="false"
+    >
+      <p class="text-[15px] leading-[24px] text-[#7f8084] mb-6">
+        The changes will reflect immediately.
+      </p>
+
+      <!-- Preview -->
+      <div v-if="avatarPreview" class="mb-6 flex justify-center">
+        <img
+          :src="avatarPreview"
+          alt="Preview"
+          class="w-24 h-24 rounded-full object-cover border-4 border-brand-aqua"
+        />
+      </div>
+
+      <div class="space-y-3">
+        <label class="w-full h-[72px] rounded-2xl bg-white border border-[#e5e5ea] px-5 flex items-center justify-between cursor-pointer">
+          <div class="flex items-center gap-4">
+            <Icon name="i-heroicons-camera" class="w-6 h-6 text-[#1f2024]" />
+            <span class="text-[17px] leading-[22px] text-[#1f2024]">Take Picture</span>
+          </div>
+          <Icon name="i-heroicons-chevron-right" class="w-5 h-5 text-[#3C3C434D]" />
+          <input
+            ref="cameraInputRef"
+            type="file"
+            accept="image/*"
+            capture="camera"
+            class="sr-only"
+            @change="onFileSelected"
+          />
+        </label>
+
+        <label class="w-full h-[72px] rounded-2xl bg-white border border-[#e5e5ea] px-5 flex items-center justify-between cursor-pointer">
+          <div class="flex items-center gap-4">
+            <Icon name="i-heroicons-photo" class="w-6 h-6 text-[#1f2024]" />
+            <span class="text-[17px] leading-[22px] text-[#1f2024]">Upload from Gallery</span>
+          </div>
+          <Icon name="i-heroicons-chevron-right" class="w-5 h-5 text-[#3C3C434D]" />
+          <input
+            type="file"
+            accept="image/*"
+            class="sr-only"
+            @change="onFileSelected"
+          />
+        </label>
+
+        <label class="w-full h-[72px] rounded-2xl bg-white border border-[#e5e5ea] px-5 flex items-center justify-between cursor-pointer">
+          <div class="flex items-center gap-4">
+            <Icon name="i-heroicons-folder-open" class="w-6 h-6 text-[#1f2024]" />
+            <span class="text-[17px] leading-[22px] text-[#1f2024]">Browse Files</span>
+          </div>
+          <Icon name="i-heroicons-chevron-right" class="w-5 h-5 text-[#3C3C434D]" />
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            class="sr-only"
+            @change="onFileSelected"
+          />
+        </label>
+      </div>
+
+      <p v-if="avatarError" class="mt-4 text-center text-red-500 text-[13px]">{{ avatarError }}</p>
+
+      <template #footer>
+        <button
+          v-if="avatarFile"
+          type="button"
+          class="w-full h-14 rounded-[16px] bg-brand-aqua text-white inline-flex items-center justify-center gap-2 text-[20px] leading-[24px] font-medium"
+          :disabled="avatarUploading"
+          @click="saveAvatar"
+        >
+          <Icon name="i-heroicons-check" class="w-6 h-6" />
+          <span>{{ avatarUploading ? 'Uploading…' : 'Save Picture' }}</span>
+        </button>
+      </template>
+    </BaseDrawer>
+
     <!-- Solicitor Edit Drawer -->
     <BaseDrawer
       v-model="isSolicitorDrawerOpen"
@@ -519,16 +629,18 @@
 </template>
 
 <script setup>
-import BaseDrawer from "@/components/ui/BaseDrawer.vue";
+import BaseDrawer from '@/components/ui/BaseDrawer.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 definePageMeta({
-  title: "Personal Information - UmovingU",
-});
+  title: 'Personal Information - UmovingU',
+})
 
 const {
   profile,
   fullName,
   memberSince,
+  uploadAvatar,
   fetchProfile,
   updateProfile,
   createAddress,
@@ -540,220 +652,258 @@ const {
   createSolicitor,
   updateSolicitor,
   deleteSolicitor,
-} = useProfile();
+} = useProfile()
 
-onMounted(fetchProfile);
+onMounted(fetchProfile)
 
-const saving = ref(false);
+const saving = ref(false)
+
+// ─── Avatar ───────────────────────────────────────────────────────────────
+
+const isAvatarDrawerOpen = ref(false)
+const avatarFile = ref(null)
+const avatarPreview = ref('')
+const avatarUploading = ref(false)
+const avatarError = ref('')
+
+const onFileSelected = (e) => {
+  const file = e.target.files?.[0]
+  if (!file) return
+  avatarFile.value = file
+  avatarError.value = ''
+  const reader = new FileReader()
+  reader.onload = (ev) => { avatarPreview.value = ev.target.result }
+  reader.readAsDataURL(file)
+  // reset input so the same file can be selected again if needed
+  e.target.value = ''
+}
+
+const saveAvatar = async () => {
+  if (!avatarFile.value) return
+  avatarUploading.value = true
+  avatarError.value = ''
+  try {
+    await uploadAvatar(avatarFile.value)
+    isAvatarDrawerOpen.value = false
+    avatarFile.value = null
+    avatarPreview.value = ''
+  } catch (err) {
+    avatarError.value = err?.data?.message || 'Upload failed. Please try again.'
+  } finally {
+    avatarUploading.value = false
+  }
+}
 
 // ─── Contact Details ──────────────────────────────────────────────────────
 
 const contactDetails = computed(() => [
-  { label: "Name", value: fullName.value, key: "name" },
-  { label: "Email Address", value: profile.value?.email ?? "", key: "email" },
-  { label: "Phone Number", value: profile.value?.phone ?? "", key: "phone" },
-]);
+  { label: 'Name', value: fullName.value, key: 'name' },
+  { label: 'Email Address', value: profile.value?.email ?? '', key: 'email' },
+  { label: 'Phone Number', value: profile.value?.phone ?? '', key: 'phone' },
+])
 
-const contactVisible = computed(() => profile.value?.contactVisible ?? true);
+const contactVisible = computed(() => profile.value?.contactVisible ?? true)
 
 const toggleContactVisible = async () => {
-  if (!profile.value) return;
-  await updateProfile({ contactVisible: !profile.value.contactVisible });
-};
+  if (!profile.value) return
+  await updateProfile({ contactVisible: !profile.value.contactVisible })
+}
 
-const isContactDrawerOpen = ref(false);
-const activeContactIndex = ref(null);
-const contactEditValue = ref("");
+const isContactDrawerOpen = ref(false)
+const activeContactIndex = ref(null)
+const contactEditValue = ref('')
 
 const contactEditLabel = computed(() => {
-  if (activeContactIndex.value === null) return "Value";
-  return contactDetails.value[activeContactIndex.value]?.label ?? "Value";
-});
+  if (activeContactIndex.value === null) return 'Value'
+  return contactDetails.value[activeContactIndex.value]?.label ?? 'Value'
+})
 
 const contactEditInputType = computed(() => {
-  const label = contactEditLabel.value.toLowerCase();
-  if (label.includes("email")) return "email";
-  if (label.includes("phone")) return "tel";
-  return "text";
-});
+  const label = contactEditLabel.value.toLowerCase()
+  if (label.includes('email')) return 'email'
+  if (label.includes('phone')) return 'tel'
+  return 'text'
+})
 
 const openContactEditor = (index) => {
-  activeContactIndex.value = index;
-  contactEditValue.value = contactDetails.value[index]?.value ?? "";
-  isContactDrawerOpen.value = true;
-};
+  activeContactIndex.value = index
+  contactEditValue.value = contactDetails.value[index]?.value ?? ''
+  isContactDrawerOpen.value = true
+}
 
 const saveContactEdit = async () => {
-  if (activeContactIndex.value === null) return;
-  saving.value = true;
+  if (activeContactIndex.value === null) return
+  saving.value = true
 
   try {
-    const key = contactDetails.value[activeContactIndex.value]?.key;
-    if (key === "name") {
-      const parts = contactEditValue.value.trim().split(/\s+/);
+    const key = contactDetails.value[activeContactIndex.value]?.key
+    if (key === 'name') {
+      const parts = contactEditValue.value.trim().split(/\s+/)
       await updateProfile({
-        firstName: parts[0] ?? "",
-        lastName: parts.slice(1).join(" ") || undefined,
-      });
-    } else if (key === "phone") {
-      await updateProfile({ phone: contactEditValue.value });
+        firstName: parts[0] ?? '',
+        lastName: parts.slice(1).join(' ') || undefined,
+      })
+    } else if (key === 'phone') {
+      await updateProfile({ phone: contactEditValue.value })
     }
     // email edits are intentionally skipped (auth concern)
-    isContactDrawerOpen.value = false;
+    isContactDrawerOpen.value = false
   } finally {
-    saving.value = false;
+    saving.value = false
   }
-};
+}
 
 // ─── Communication Preferences ────────────────────────────────────────────
 
 const communicationPreferences = computed(() => [
   {
-    key: "pushNotifications",
-    label: "In-App Push Notifications",
-    icon: "i-heroicons-bell",
+    key: 'pushNotifications',
+    label: 'In-App Push Notifications',
+    icon: 'i-heroicons-bell',
     value: profile.value?.pushNotifications ?? true,
   },
   {
-    key: "emailNewsletter",
-    label: "Email Newsletter",
-    icon: "i-heroicons-envelope",
+    key: 'emailNewsletter',
+    label: 'Email Newsletter',
+    icon: 'i-heroicons-envelope',
     value: profile.value?.emailNewsletter ?? true,
   },
   {
-    key: "smsNotifications",
-    label: "SMS",
-    icon: "i-heroicons-chat-bubble-left",
+    key: 'smsNotifications',
+    label: 'SMS',
+    icon: 'i-heroicons-chat-bubble-left',
     value: profile.value?.smsNotifications ?? false,
   },
-]);
+])
 
 const toggleCommsPreference = async (key) => {
-  if (!profile.value) return;
-  await updateProfile({ [key]: !profile.value[key] });
-};
+  if (!profile.value) return
+  await updateProfile({ [key]: !profile.value[key] })
+}
 
 // ─── Address ─────────────────────────────────────────────────────────────
 
-const isAddressDrawerOpen = ref(false);
-const editingAddress = ref({});
+const isAddressDrawerOpen = ref(false)
+const editingAddress = ref({})
 
 const addressFields = [
-  { key: "label", label: "Label (e.g. Current Address)" },
-  { key: "line1", label: "Address Line 1" },
-  { key: "line2", label: "Address Line 2 (optional)" },
-  { key: "city", label: "City" },
-  { key: "county", label: "County" },
-  { key: "postcode", label: "Postcode" },
-];
+  { key: 'label', label: 'Label (e.g. Current Address)' },
+  { key: 'line1', label: 'Address Line 1' },
+  { key: 'line2', label: 'Address Line 2 (optional)' },
+  { key: 'city', label: 'City' },
+  { key: 'county', label: 'County' },
+  { key: 'postcode', label: 'Postcode' },
+]
 
 const formatAddress = (addr) =>
   [addr.line1, addr.line2, addr.city, addr.county, addr.postcode]
     .filter(Boolean)
-    .join("\n");
+    .join('\n')
 
 const openAddressEditor = (addr) => {
-  editingAddress.value = addr ? { ...addr } : { label: "", line1: "", postcode: "" };
-  isAddressDrawerOpen.value = true;
-};
+  editingAddress.value = addr
+    ? { ...addr }
+    : { label: '', line1: '', postcode: '' }
+  isAddressDrawerOpen.value = true
+}
 
 const saveAddress = async () => {
-  saving.value = true;
+  saving.value = true
   try {
     if (editingAddress.value.id) {
-      await updateAddress(editingAddress.value.id, editingAddress.value);
+      await updateAddress(editingAddress.value.id, editingAddress.value)
     } else {
-      await createAddress(editingAddress.value);
+      await createAddress(editingAddress.value)
     }
-    isAddressDrawerOpen.value = false;
+    isAddressDrawerOpen.value = false
   } finally {
-    saving.value = false;
+    saving.value = false
   }
-};
+}
 
 const handleDeleteAddress = async (id) => {
-  await deleteAddress(id);
-};
+  await deleteAddress(id)
+}
 
 // ─── Company ─────────────────────────────────────────────────────────────
 
-const isCompanyDrawerOpen = ref(false);
-const editingCompany = ref({});
+const isCompanyDrawerOpen = ref(false)
+const editingCompany = ref({})
 
 const companyFields = [
-  { key: "name", label: "Company Name" },
-  { key: "address", label: "Address" },
-  { key: "companyNumber", label: "Company Number" },
-  { key: "director", label: "Director" },
-];
+  { key: 'name', label: 'Company Name' },
+  { key: 'address', label: 'Address' },
+  { key: 'companyNumber', label: 'Company Number' },
+  { key: 'director', label: 'Director' },
+]
 
 const openCompanyEditor = (company) => {
-  editingCompany.value = company ? { ...company } : { name: "" };
-  isCompanyDrawerOpen.value = true;
-};
+  editingCompany.value = company ? { ...company } : { name: '' }
+  isCompanyDrawerOpen.value = true
+}
 
 const saveCompany = async () => {
-  saving.value = true;
+  saving.value = true
   try {
     if (editingCompany.value.id) {
-      await updateCompany(editingCompany.value.id, editingCompany.value);
+      await updateCompany(editingCompany.value.id, editingCompany.value)
     } else {
-      await createCompany(editingCompany.value);
+      await createCompany(editingCompany.value)
     }
-    isCompanyDrawerOpen.value = false;
+    isCompanyDrawerOpen.value = false
   } finally {
-    saving.value = false;
+    saving.value = false
   }
-};
+}
 
 const handleDeleteCompany = async (id) => {
-  await deleteCompany(id);
-};
+  await deleteCompany(id)
+}
 
 // ─── Solicitor ───────────────────────────────────────────────────────────
 
-const isSolicitorDrawerOpen = ref(false);
-const editingSolicitor = ref({});
+const isSolicitorDrawerOpen = ref(false)
+const editingSolicitor = ref({})
 
 const solicitorFields = [
-  { key: "name", label: "Firm Name" },
-  { key: "address", label: "Address" },
-  { key: "contactName", label: "Contact Name" },
-  { key: "email", label: "Email" },
-  { key: "phone", label: "Phone" },
-  { key: "reference", label: "Reference" },
-];
+  { key: 'name', label: 'Firm Name' },
+  { key: 'address', label: 'Address' },
+  { key: 'contactName', label: 'Contact Name' },
+  { key: 'email', label: 'Email' },
+  { key: 'phone', label: 'Phone' },
+  { key: 'reference', label: 'Reference' },
+]
 
 const openSolicitorEditor = (sol) => {
-  editingSolicitor.value = sol ? { ...sol } : { name: "" };
-  isSolicitorDrawerOpen.value = true;
-};
+  editingSolicitor.value = sol ? { ...sol } : { name: '' }
+  isSolicitorDrawerOpen.value = true
+}
 
 const saveSolicitor = async () => {
-  saving.value = true;
+  saving.value = true
   try {
     if (editingSolicitor.value.id) {
-      await updateSolicitor(editingSolicitor.value.id, editingSolicitor.value);
+      await updateSolicitor(editingSolicitor.value.id, editingSolicitor.value)
     } else {
-      await createSolicitor(editingSolicitor.value);
+      await createSolicitor(editingSolicitor.value)
     }
-    isSolicitorDrawerOpen.value = false;
+    isSolicitorDrawerOpen.value = false
   } finally {
-    saving.value = false;
+    saving.value = false
   }
-};
+}
 
 const handleDeleteSolicitor = async (id) => {
-  await deleteSolicitor(id);
-};
+  await deleteSolicitor(id)
+}
 
 // ─── Navigation ───────────────────────────────────────────────────────────
 
 const goBack = () => {
-  if (typeof window !== "undefined" && window.history.length > 1) {
-    window.history.back();
-    return;
+  if (typeof window !== 'undefined' && window.history.length > 1) {
+    window.history.back()
+    return
   }
-  navigateTo("/profile");
-};
+  navigateTo('/profile')
+}
 </script>

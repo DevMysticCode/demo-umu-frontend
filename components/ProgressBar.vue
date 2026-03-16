@@ -38,3 +38,4 @@ const segments = computed(() =>
   @apply bg-white;
 }
 </style>
+

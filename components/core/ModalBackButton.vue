@@ -35,3 +35,5 @@ const props = defineProps({
 // ✅ build Tailwind text class dynamically
 const colorClass = computed(() => `text-${props.color}`)
 </script>
+
+

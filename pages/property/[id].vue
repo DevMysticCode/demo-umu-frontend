@@ -22,7 +22,7 @@
             <OPIcon name="leftChevronWhite" class="w-[16px] h-[16px]" />
           </button>
           <div class="flex gap-3">
-            <button class="hero-btn" @click="handleWishlist">
+            <button class="hero-btn" :class="{ 'hero-btn--wishlisted': wishlisted }" @click="handleWishlist">
               <OPIcon name="wishlist" class="w-[18px] h-[18px]" />
             </button>
             <button class="hero-btn" @click="showShare = true">
@@ -473,6 +473,7 @@ import ShareContent from '~/components/property/ShareContent.vue'
 import { useToast } from '~/composables/useToast'
 import { usePropertySearch } from '~/composables/usePropertySearch'
 import { usePassportClaim } from '~/composables/usePassportClaim'
+import { usePropertyActions } from '~/composables/usePropertyActions'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -483,6 +484,7 @@ const propertyId = route.params.id as string
 const { getPropertyDetails, formatPrice } = usePropertySearch()
 const { getPassportStatus } = usePassportClaim()
 const { toastState, showToast, hideToast } = useToast()
+const { wishlisted, saved, toggleWishlist, toggleSave, fetchActions } = usePropertyActions()
 
 const property = ref<any>(null)
 const passportStatus = ref<any>(null)
@@ -599,7 +601,7 @@ const actionBarItems = computed(() => {
       icon: 'accessPassport',
       label: hasPassport ? 'Access Passport' : 'Claim Passport',
     },
-    { icon: 'saveProperty', label: 'Save Property' },
+    { icon: 'saveProperty', label: saved.value ? 'Saved Property' : 'Save Property' },
     { icon: 'registerInterest', label: 'Register Interest' },
     { icon: 'tapOwner', label: 'Tap Owner' },
   ]
@@ -666,6 +668,7 @@ onMounted(async () => {
     const [propData, statusData] = await Promise.all([
       getPropertyDetails(propertyId),
       getPassportStatus(propertyId),
+      fetchActions(propertyId),
     ])
     if (!propData) {
       loadError.value = 'Property not found.'
@@ -699,7 +702,7 @@ function handleAction(label: string) {
       // Non-owner, not yet unlocked → show unlock drawer
       showClaimDrawer.value = true
     }
-  } else if (label === 'Save Property') {
+  } else if (label === 'Save Property' || label === 'Saved Property') {
     handleSaveProperty()
   } else if (label === 'Register Interest') {
     showRegisterInterest.value = true
@@ -712,20 +715,22 @@ function goBack() {
   router.back()
 }
 
-function handleWishlist() {
-  showToast({
-    message: 'Property added to your wishlist',
-    icon: propertyImages.value[0],
-    duration: 2000,
-  })
+async function handleWishlist() {
+  const result = await toggleWishlist(propertyId)
+  let message = ''
+  if (result === 'unauthenticated') message = 'Please log in to wishlist properties'
+  else if (result === 'error') message = 'Something went wrong, please try again'
+  else message = result.wishlisted ? 'Added to your wishlist' : 'Removed from wishlist'
+  showToast({ message, icon: propertyImages.value[0], duration: 2000 })
 }
 
-function handleSaveProperty() {
-  showToast({
-    message: 'Property saved to your collections',
-    icon: propertyImages.value[0],
-    duration: 2000,
-  })
+async function handleSaveProperty() {
+  const result = await toggleSave(propertyId)
+  let message = ''
+  if (result === 'unauthenticated') message = 'Please log in to save properties'
+  else if (result === 'error') message = 'Something went wrong, please try again'
+  else message = result.saved ? 'Property saved to your collections' : 'Removed from saved properties'
+  showToast({ message, icon: propertyImages.value[0], duration: 2000 })
 }
 
 function onInterestRegistered() {
@@ -831,6 +836,10 @@ function handleClaimed(passportId: string) {
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(4px);
+  transition: background 0.2s;
+}
+.hero-btn--wishlisted {
+  background: rgba(231, 76, 60, 0.75);
 }
 
 /* ── Card ────────────────────────────────────────────────────────────────── */

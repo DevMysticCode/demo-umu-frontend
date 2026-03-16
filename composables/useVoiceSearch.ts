@@ -106,3 +106,5 @@ export const useVoiceSearch = () => {
     isSupported: !!recognition,
   }
 }
+
+

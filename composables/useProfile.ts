@@ -1,5 +1,11 @@
 const BASE_URL = 'http://localhost:3002';
 
+function resolveAvatarUrl(url?: string | null): string | undefined {
+  if (!url) return undefined;
+  if (url.startsWith('/uploads/')) return `${BASE_URL}${url}`;
+  return url;
+}
+
 function getAuthHeaders() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -66,6 +72,8 @@ export interface Collaborator {
   avatarUrl?: string;
   role?: string;
   permission?: string;
+  propertyIds?: string[];
+  propertyCount?: number;
   accessDuration?: string;
   expiresAt?: string;
   clientAccess?: string;
@@ -73,20 +81,54 @@ export interface Collaborator {
   addedAt: string;
 }
 
+export interface SharedPassport {
+  id: string;
+  addressLine1: string;
+  postcode: string;
+  address: string;
+}
+
+export interface CollaboratorDetail extends Collaborator {
+  joinedAt: string;
+  sharedPassports: SharedPassport[];
+}
+
 export interface AddCollaboratorPayload {
   collaboratorId: string;
   role?: string;
   permission?: string;
+  propertyIds?: string[];
   accessDuration?: string;
   expiresAt?: string;
   clientAccess?: string;
   allowComms?: boolean;
 }
 
+export interface UserPassport {
+  id: string;
+  addressLine1: string;
+  postcode: string;
+  address: string;
+}
+
 export function useProfile() {
   const profile = useState<UserProfile | null>('profile', () => null);
   const loading = ref(false);
   const error = ref<string | null>(null);
+
+  async function uploadAvatar(file: File): Promise<{ avatarUrl: string }> {
+    const form = new FormData();
+    form.append('file', file);
+    const data = await $fetch<{ avatarUrl: string }>(`${BASE_URL}/profile/avatar`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: form,
+    });
+    if (profile.value) {
+      profile.value = { ...profile.value, avatarUrl: resolveAvatarUrl(data.avatarUrl) };
+    }
+    return data;
+  }
 
   async function fetchProfile() {
     loading.value = true;
@@ -95,7 +137,7 @@ export function useProfile() {
       const data = await $fetch<UserProfile>(`${BASE_URL}/profile/me`, {
         headers: getAuthHeaders(),
       });
-      profile.value = data;
+      profile.value = { ...data, avatarUrl: resolveAvatarUrl(data.avatarUrl) };
     } catch (e: any) {
       error.value = e?.data?.message || 'Failed to load profile';
     } finally {
@@ -112,7 +154,7 @@ export function useProfile() {
         headers: getAuthHeaders(),
         body: payload,
       });
-      profile.value = data;
+      profile.value = { ...data, avatarUrl: resolveAvatarUrl(data.avatarUrl) };
       return data;
     } catch (e: any) {
       error.value = e?.data?.message || 'Failed to update profile';
@@ -229,6 +271,12 @@ export function useProfile() {
 
   // ─── Collaborators ──────────────────────────────────────────────────────
 
+  async function fetchUserPassports(): Promise<UserPassport[]> {
+    return $fetch<UserPassport[]>(`${BASE_URL}/profile/passports`, {
+      headers: getAuthHeaders(),
+    });
+  }
+
   async function searchUsers(query: string): Promise<UserSearchResult[]> {
     if (!query || query.trim().length < 2) return [];
     return $fetch<UserSearchResult[]>(`${BASE_URL}/profile/users/search?q=${encodeURIComponent(query)}`, {
@@ -238,6 +286,12 @@ export function useProfile() {
 
   async function fetchCollaborators(): Promise<Collaborator[]> {
     return $fetch<Collaborator[]>(`${BASE_URL}/profile/collaborators`, {
+      headers: getAuthHeaders(),
+    });
+  }
+
+  async function fetchCollaborator(id: string): Promise<CollaboratorDetail> {
+    return $fetch<CollaboratorDetail>(`${BASE_URL}/profile/collaborators/${id}`, {
       headers: getAuthHeaders(),
     });
   }
@@ -273,6 +327,7 @@ export function useProfile() {
     error,
     fullName,
     memberSince,
+    uploadAvatar,
     fetchProfile,
     updateProfile,
     createAddress,
@@ -284,9 +339,13 @@ export function useProfile() {
     createSolicitor,
     updateSolicitor,
     deleteSolicitor,
+    fetchUserPassports,
     searchUsers,
     fetchCollaborators,
+    fetchCollaborator,
     addCollaborator,
     removeCollaborator,
   };
 }
+
+
