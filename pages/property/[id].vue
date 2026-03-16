@@ -470,7 +470,7 @@ import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
 import ShareContent from '~/components/property/ShareContent.vue'
-import { useToast } from '~/composables/useToast'
+import { useAppToast } from '~/composables/useCustomToast'
 import { usePropertySearch } from '~/composables/usePropertySearch'
 import { usePassportClaim } from '~/composables/usePassportClaim'
 import { usePropertyActions } from '~/composables/usePropertyActions'
@@ -483,7 +483,7 @@ const propertyId = route.params.id as string
 
 const { getPropertyDetails, formatPrice } = usePropertySearch()
 const { getPassportStatus } = usePassportClaim()
-const { toastState, showToast, hideToast } = useToast()
+const { toastState, showToast, hideToast } = useAppToast()
 const { wishlisted, saved, toggleWishlist, toggleSave, fetchActions } = usePropertyActions()
 
 const property = ref<any>(null)

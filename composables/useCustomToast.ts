@@ -13,7 +13,7 @@ const toastState = reactive({
   duration: 2000,
 })
 
-export const useToast = () => {
+export const useAppToast = () => {
   const showToast = (options: ToastOptions) => {
     toastState.message = options.message
     toastState.icon = options.icon || ''
