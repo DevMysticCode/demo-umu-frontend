@@ -47,7 +47,7 @@ export default defineNuxtConfig({
         process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID ||
         '869780740735-rlucf6t174rb3dljniqfj3ri2r0kg9cj.apps.googleusercontent.com',
       appleClientId:
-        process.env.NUXT_PUBLIC_APPLE_CLIENT_ID || 'io.umovingu.app',
+        process.env.NUXT_PUBLIC_APPLE_CLIENT_ID || 'io.umovingu.webapp',
       appleRedirectUri:
         process.env.NUXT_PUBLIC_APPLE_REDIRECT_URI ||
         'https://demo-umu-frontend.vercel.app/auth/apple/callback',
