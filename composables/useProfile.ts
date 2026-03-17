@@ -1,166 +1,182 @@
-const BASE_URL = 'http://localhost:3002';
-
-function resolveAvatarUrl(url?: string | null): string | undefined {
-  if (!url) return undefined;
-  if (url.startsWith('/uploads/')) return `${BASE_URL}${url}`;
-  return url;
+function resolveAvatarUrl(
+  url?: string | null,
+  baseUrl?: string,
+): string | undefined {
+  if (!url) return undefined
+  if (url.startsWith('/uploads/')) return `${baseUrl}${url}`
+  return url
 }
 
 function getAuthHeaders() {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
 export interface UserAddress {
-  id: string;
-  label: string;
-  line1: string;
-  line2?: string;
-  city?: string;
-  county?: string;
-  postcode: string;
-  isCurrent: boolean;
+  id: string
+  label: string
+  line1: string
+  line2?: string
+  city?: string
+  county?: string
+  postcode: string
+  isCurrent: boolean
 }
 
 export interface UserCompany {
-  id: string;
-  name: string;
-  address?: string;
-  companyNumber?: string;
-  director?: string;
+  id: string
+  name: string
+  address?: string
+  companyNumber?: string
+  director?: string
 }
 
 export interface UserSolicitor {
-  id: string;
-  name: string;
-  address?: string;
-  contactName?: string;
-  email?: string;
-  phone?: string;
-  reference?: string;
+  id: string
+  name: string
+  address?: string
+  contactName?: string
+  email?: string
+  phone?: string
+  reference?: string
 }
 
 export interface UserProfile {
-  id: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  avatarUrl?: string;
-  contactVisible: boolean;
-  pushNotifications: boolean;
-  emailNewsletter: boolean;
-  smsNotifications: boolean;
-  createdAt: string;
-  addresses: UserAddress[];
-  companies: UserCompany[];
-  solicitors: UserSolicitor[];
+  id: string
+  email: string
+  firstName?: string
+  lastName?: string
+  phone?: string
+  avatarUrl?: string
+  contactVisible: boolean
+  pushNotifications: boolean
+  emailNewsletter: boolean
+  smsNotifications: boolean
+  createdAt: string
+  addresses: UserAddress[]
+  companies: UserCompany[]
+  solicitors: UserSolicitor[]
 }
 
 export interface UserSearchResult {
-  id: string;
-  email: string;
-  name: string;
-  avatarUrl?: string;
+  id: string
+  email: string
+  name: string
+  avatarUrl?: string
 }
 
 export interface Collaborator {
-  id: string;
-  collaboratorId: string;
-  name: string;
-  email: string;
-  avatarUrl?: string;
-  role?: string;
-  permission?: string;
-  propertyIds?: string[];
-  propertyCount?: number;
-  accessDuration?: string;
-  expiresAt?: string;
-  clientAccess?: string;
-  allowComms: boolean;
-  addedAt: string;
+  id: string
+  collaboratorId: string
+  name: string
+  email: string
+  avatarUrl?: string
+  role?: string
+  permission?: string
+  propertyIds?: string[]
+  propertyCount?: number
+  accessDuration?: string
+  expiresAt?: string
+  clientAccess?: string
+  allowComms: boolean
+  addedAt: string
 }
 
 export interface SharedPassport {
-  id: string;
-  addressLine1: string;
-  postcode: string;
-  address: string;
+  id: string
+  addressLine1: string
+  postcode: string
+  address: string
 }
 
 export interface CollaboratorDetail extends Collaborator {
-  joinedAt: string;
-  sharedPassports: SharedPassport[];
+  joinedAt: string
+  sharedPassports: SharedPassport[]
 }
 
 export interface AddCollaboratorPayload {
-  collaboratorId: string;
-  role?: string;
-  permission?: string;
-  propertyIds?: string[];
-  accessDuration?: string;
-  expiresAt?: string;
-  clientAccess?: string;
-  allowComms?: boolean;
+  collaboratorId: string
+  role?: string
+  permission?: string
+  propertyIds?: string[]
+  accessDuration?: string
+  expiresAt?: string
+  clientAccess?: string
+  allowComms?: boolean
 }
 
 export interface UserPassport {
-  id: string;
-  addressLine1: string;
-  postcode: string;
-  address: string;
+  id: string
+  addressLine1: string
+  postcode: string
+  address: string
 }
 
 export function useProfile() {
-  const profile = useState<UserProfile | null>('profile', () => null);
-  const loading = ref(false);
-  const error = ref<string | null>(null);
+  const config = useRuntimeConfig()
+  const BASE_URL = config.public.apiBase
+  const profile = useState<UserProfile | null>('profile', () => null)
+  const loading = ref(false)
+  const error = ref<string | null>(null)
 
   async function uploadAvatar(file: File): Promise<{ avatarUrl: string }> {
-    const form = new FormData();
-    form.append('file', file);
-    const data = await $fetch<{ avatarUrl: string }>(`${BASE_URL}/profile/avatar`, {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: form,
-    });
+    const form = new FormData()
+    form.append('file', file)
+    const data = await $fetch<{ avatarUrl: string }>(
+      `${BASE_URL}/profile/avatar`,
+      {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: form,
+      },
+    )
     if (profile.value) {
-      profile.value = { ...profile.value, avatarUrl: resolveAvatarUrl(data.avatarUrl) };
+      profile.value = {
+        ...profile.value,
+        avatarUrl: resolveAvatarUrl(data.avatarUrl, BASE_URL),
+      }
     }
-    return data;
+    return data
   }
 
   async function fetchProfile() {
-    loading.value = true;
-    error.value = null;
+    loading.value = true
+    error.value = null
     try {
       const data = await $fetch<UserProfile>(`${BASE_URL}/profile/me`, {
         headers: getAuthHeaders(),
-      });
-      profile.value = { ...data, avatarUrl: resolveAvatarUrl(data.avatarUrl) };
+      })
+      profile.value = {
+        ...data,
+        avatarUrl: resolveAvatarUrl(data.avatarUrl, BASE_URL),
+      }
     } catch (e: any) {
-      error.value = e?.data?.message || 'Failed to load profile';
+      error.value = e?.data?.message || 'Failed to load profile'
     } finally {
-      loading.value = false;
+      loading.value = false
     }
   }
 
   async function updateProfile(payload: Partial<UserProfile>) {
-    loading.value = true;
-    error.value = null;
+    loading.value = true
+    error.value = null
     try {
       const data = await $fetch<UserProfile>(`${BASE_URL}/profile/me`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
         body: payload,
-      });
-      profile.value = { ...data, avatarUrl: resolveAvatarUrl(data.avatarUrl) };
-      return data;
+      })
+      profile.value = {
+        ...data,
+        avatarUrl: resolveAvatarUrl(data.avatarUrl, BASE_URL),
+      }
+      return data
     } catch (e: any) {
-      error.value = e?.data?.message || 'Failed to update profile';
-      throw e;
+      error.value = e?.data?.message || 'Failed to update profile'
+      throw e
     } finally {
-      loading.value = false;
+      loading.value = false
     }
   }
 
@@ -171,31 +187,36 @@ export function useProfile() {
       method: 'POST',
       headers: getAuthHeaders(),
       body: payload,
-    });
-    profile.value?.addresses.push(data);
-    return data;
+    })
+    profile.value?.addresses.push(data)
+    return data
   }
 
   async function updateAddress(id: string, payload: Partial<UserAddress>) {
-    const data = await $fetch<UserAddress>(`${BASE_URL}/profile/address/${id}`, {
-      method: 'PATCH',
-      headers: getAuthHeaders(),
-      body: payload,
-    });
+    const data = await $fetch<UserAddress>(
+      `${BASE_URL}/profile/address/${id}`,
+      {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: payload,
+      },
+    )
     if (profile.value) {
-      const idx = profile.value.addresses.findIndex((a) => a.id === id);
-      if (idx !== -1) profile.value.addresses[idx] = data;
+      const idx = profile.value.addresses.findIndex((a) => a.id === id)
+      if (idx !== -1) profile.value.addresses[idx] = data
     }
-    return data;
+    return data
   }
 
   async function deleteAddress(id: string) {
     await $fetch(`${BASE_URL}/profile/address/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
-    });
+    })
     if (profile.value) {
-      profile.value.addresses = profile.value.addresses.filter((a) => a.id !== id);
+      profile.value.addresses = profile.value.addresses.filter(
+        (a) => a.id !== id,
+      )
     }
   }
 
@@ -206,31 +227,36 @@ export function useProfile() {
       method: 'POST',
       headers: getAuthHeaders(),
       body: payload,
-    });
-    profile.value?.companies.push(data);
-    return data;
+    })
+    profile.value?.companies.push(data)
+    return data
   }
 
   async function updateCompany(id: string, payload: Partial<UserCompany>) {
-    const data = await $fetch<UserCompany>(`${BASE_URL}/profile/company/${id}`, {
-      method: 'PATCH',
-      headers: getAuthHeaders(),
-      body: payload,
-    });
+    const data = await $fetch<UserCompany>(
+      `${BASE_URL}/profile/company/${id}`,
+      {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: payload,
+      },
+    )
     if (profile.value) {
-      const idx = profile.value.companies.findIndex((c) => c.id === id);
-      if (idx !== -1) profile.value.companies[idx] = data;
+      const idx = profile.value.companies.findIndex((c) => c.id === id)
+      if (idx !== -1) profile.value.companies[idx] = data
     }
-    return data;
+    return data
   }
 
   async function deleteCompany(id: string) {
     await $fetch(`${BASE_URL}/profile/company/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
-    });
+    })
     if (profile.value) {
-      profile.value.companies = profile.value.companies.filter((c) => c.id !== id);
+      profile.value.companies = profile.value.companies.filter(
+        (c) => c.id !== id,
+      )
     }
   }
 
@@ -241,31 +267,36 @@ export function useProfile() {
       method: 'POST',
       headers: getAuthHeaders(),
       body: payload,
-    });
-    profile.value?.solicitors.push(data);
-    return data;
+    })
+    profile.value?.solicitors.push(data)
+    return data
   }
 
   async function updateSolicitor(id: string, payload: Partial<UserSolicitor>) {
-    const data = await $fetch<UserSolicitor>(`${BASE_URL}/profile/solicitor/${id}`, {
-      method: 'PATCH',
-      headers: getAuthHeaders(),
-      body: payload,
-    });
+    const data = await $fetch<UserSolicitor>(
+      `${BASE_URL}/profile/solicitor/${id}`,
+      {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: payload,
+      },
+    )
     if (profile.value) {
-      const idx = profile.value.solicitors.findIndex((s) => s.id === id);
-      if (idx !== -1) profile.value.solicitors[idx] = data;
+      const idx = profile.value.solicitors.findIndex((s) => s.id === id)
+      if (idx !== -1) profile.value.solicitors[idx] = data
     }
-    return data;
+    return data
   }
 
   async function deleteSolicitor(id: string) {
     await $fetch(`${BASE_URL}/profile/solicitor/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
-    });
+    })
     if (profile.value) {
-      profile.value.solicitors = profile.value.solicitors.filter((s) => s.id !== id);
+      profile.value.solicitors = profile.value.solicitors.filter(
+        (s) => s.id !== id,
+      )
     }
   }
 
@@ -274,52 +305,64 @@ export function useProfile() {
   async function fetchUserPassports(): Promise<UserPassport[]> {
     return $fetch<UserPassport[]>(`${BASE_URL}/profile/passports`, {
       headers: getAuthHeaders(),
-    });
+    })
   }
 
   async function searchUsers(query: string): Promise<UserSearchResult[]> {
-    if (!query || query.trim().length < 2) return [];
-    return $fetch<UserSearchResult[]>(`${BASE_URL}/profile/users/search?q=${encodeURIComponent(query)}`, {
-      headers: getAuthHeaders(),
-    });
+    if (!query || query.trim().length < 2) return []
+    return $fetch<UserSearchResult[]>(
+      `${BASE_URL}/profile/users/search?q=${encodeURIComponent(query)}`,
+      {
+        headers: getAuthHeaders(),
+      },
+    )
   }
 
   async function fetchCollaborators(): Promise<Collaborator[]> {
     return $fetch<Collaborator[]>(`${BASE_URL}/profile/collaborators`, {
       headers: getAuthHeaders(),
-    });
+    })
   }
 
   async function fetchCollaborator(id: string): Promise<CollaboratorDetail> {
-    return $fetch<CollaboratorDetail>(`${BASE_URL}/profile/collaborators/${id}`, {
-      headers: getAuthHeaders(),
-    });
+    return $fetch<CollaboratorDetail>(
+      `${BASE_URL}/profile/collaborators/${id}`,
+      {
+        headers: getAuthHeaders(),
+      },
+    )
   }
 
-  async function addCollaborator(payload: AddCollaboratorPayload): Promise<Collaborator> {
+  async function addCollaborator(
+    payload: AddCollaboratorPayload,
+  ): Promise<Collaborator> {
     return $fetch<Collaborator>(`${BASE_URL}/profile/collaborators`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: payload,
-    });
+    })
   }
 
   async function removeCollaborator(id: string): Promise<void> {
     await $fetch(`${BASE_URL}/profile/collaborators/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
-    });
+    })
   }
 
   const fullName = computed(() => {
-    if (!profile.value) return '';
-    return [profile.value.firstName, profile.value.lastName].filter(Boolean).join(' ') || profile.value.email;
-  });
+    if (!profile.value) return ''
+    return (
+      [profile.value.firstName, profile.value.lastName]
+        .filter(Boolean)
+        .join(' ') || profile.value.email
+    )
+  })
 
   const memberSince = computed(() => {
-    if (!profile.value) return '';
-    return new Date(profile.value.createdAt).getFullYear().toString();
-  });
+    if (!profile.value) return ''
+    return new Date(profile.value.createdAt).getFullYear().toString()
+  })
 
   return {
     profile,
@@ -345,7 +388,5 @@ export function useProfile() {
     fetchCollaborator,
     addCollaborator,
     removeCollaborator,
-  };
+  }
 }
-
-

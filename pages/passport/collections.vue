@@ -14,15 +14,23 @@
         </svg>
         <span>Back</span>
       </button>
-      <div class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-        <img src="/op-icons/temp/profilepic.png" class="w-full h-full object-cover" alt="" />
+      <div
+        class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 flex-shrink-0"
+      >
+        <img
+          src="/op-icons/temp/profilepic.png"
+          class="w-full h-full object-cover"
+          alt=""
+        />
       </div>
     </div>
 
     <!-- Title block -->
     <div class="coll-title-block">
       <h1 class="coll-title">Property Passports</h1>
-      <p class="coll-subtitle-colored">Legally-backed details, instantly accessible.</p>
+      <p class="coll-subtitle-colored">
+        Legally-backed details, instantly accessible.
+      </p>
       <p class="coll-subtitle">
         Access every document, detail, and verification for your property
       </p>
@@ -33,9 +41,18 @@
       <div class="coll-search">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
           <circle cx="11" cy="11" r="7" stroke="#aaa" stroke-width="2" />
-          <path d="M16.5 16.5L21 21" stroke="#aaa" stroke-width="2" stroke-linecap="round" />
+          <path
+            d="M16.5 16.5L21 21"
+            stroke="#aaa"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
         </svg>
-        <input v-model="query" class="coll-search-input" placeholder="Search Passport..." />
+        <input
+          v-model="query"
+          class="coll-search-input"
+          placeholder="Search Passport..."
+        />
         <button class="coll-search-btn">Search</button>
       </div>
     </div>
@@ -44,9 +61,26 @@
     <div class="controls-row px-4 mb-4">
       <button class="sort-btn" @click="toggleSort">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M3 6h18M7 12h10M11 18h2" stroke="#555" stroke-width="2" stroke-linecap="round" />
-          <path d="M17 4v16M7 4v16" stroke="#555" stroke-width="1.5" stroke-linecap="round" opacity="0.5" />
-          <path d="M14 7l3-3 3 3M10 17l-3 3-3-3" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path
+            d="M3 6h18M7 12h10M11 18h2"
+            stroke="#555"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M17 4v16M7 4v16"
+            stroke="#555"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            opacity="0.5"
+          />
+          <path
+            d="M14 7l3-3 3 3M10 17l-3 3-3-3"
+            stroke="#555"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </button>
       <button class="create-collection-btn" @click="showCreateModal = true">
@@ -56,7 +90,9 @@
 
     <!-- Loading -->
     <div v-if="loading" class="flex justify-center py-10">
-      <div class="w-8 h-8 border-2 border-brand-aqua border-t-transparent rounded-full animate-spin" />
+      <div
+        class="w-8 h-8 border-2 border-brand-aqua border-t-transparent rounded-full animate-spin"
+      />
     </div>
 
     <!-- Grid -->
@@ -77,7 +113,11 @@
           >
             <div
               class="passport-book-card"
-              :style="item.passport.property?.imageUrl ? `background-image: url(${item.passport.property.imageUrl})` : ''"
+              :style="
+                item.passport.property?.imageUrl
+                  ? `background-image: url(${item.passport.property.imageUrl})`
+                  : ''
+              "
             >
               <div class="book-overlay" />
               <div class="book-brand">Property Passport</div>
@@ -111,7 +151,11 @@
           <div class="stacked-book">
             <div
               class="passport-book-card"
-              :style="passport.property?.imageUrl ? `background-image: url(${passport.property.imageUrl})` : ''"
+              :style="
+                passport.property?.imageUrl
+                  ? `background-image: url(${passport.property.imageUrl})`
+                  : ''
+              "
             >
               <div class="book-overlay" />
               <div class="book-brand">Property Passport</div>
@@ -124,10 +168,33 @@
                 title="Delete passport"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                  <polyline points="3,6 5,6 21,6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M10 11v6M14 11v6" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline
+                    points="3,6 5,6 21,6"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M10 11v6M14 11v6"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
               </button>
             </div>
@@ -167,27 +234,63 @@
 
     <!-- Delete confirmation modal -->
     <Teleport to="body">
-      <div v-if="showDeleteModal" class="delete-overlay" @click.self="showDeleteModal = false">
+      <div
+        v-if="showDeleteModal"
+        class="delete-overlay"
+        @click.self="showDeleteModal = false"
+      >
         <div class="delete-modal">
           <div class="delete-modal-icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-              <polyline points="3,6 5,6 21,6" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M10 11v6M14 11v6" stroke="#e53e3e" stroke-width="2" stroke-linecap="round"/>
-              <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline
+                points="3,6 5,6 21,6"
+                stroke="#e53e3e"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+                stroke="#e53e3e"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M10 11v6M14 11v6"
+                stroke="#e53e3e"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <path
+                d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"
+                stroke="#e53e3e"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
           </div>
           <h3 class="delete-modal-title">Delete Passport?</h3>
           <p class="delete-modal-body">
             Are you sure you want to delete
-            <strong>{{ passportToDelete?.addressLine1 }}</strong>?
-            This action cannot be undone and all passport data will be permanently removed.
+            <strong>{{ passportToDelete?.addressLine1 }}</strong
+            >? This action cannot be undone and all passport data will be
+            permanently removed.
           </p>
           <div class="delete-modal-actions">
-            <button class="delete-btn-cancel" @click="showDeleteModal = false" :disabled="deleting">
+            <button
+              class="delete-btn-cancel"
+              @click="showDeleteModal = false"
+              :disabled="deleting"
+            >
               Cancel
             </button>
-            <button class="delete-btn-confirm" @click="executeDelete" :disabled="deleting">
+            <button
+              class="delete-btn-confirm"
+              @click="executeDelete"
+              :disabled="deleting"
+            >
               <span v-if="deleting" class="delete-spinner" />
               <span v-else>Delete</span>
             </button>
@@ -305,10 +408,13 @@ const executeDelete = async () => {
   deleting.value = true
   try {
     const token = localStorage.getItem('token')
-    await $fetch(`${config.public.apiBase}/passport/${passportToDelete.value.id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    await $fetch(
+      `${config.public.apiBase}/passport/${passportToDelete.value.id}`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
     showDeleteModal.value = false
     passportToDelete.value = null
     await load()
@@ -504,11 +610,7 @@ const executeDelete = async () => {
 .book-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgb(80 158 98 / 25%) 0%,
-    rgb(128 233 153 / 55%) 100%
-  );
+  background: rgb(0 161 154 / 20%);
   z-index: 1;
 }
 
@@ -563,7 +665,9 @@ const executeDelete = async () => {
   cursor: pointer;
   opacity: 0;
   transform: scale(0.8);
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
   backdrop-filter: blur(4px);
 }
 
@@ -636,8 +740,14 @@ const executeDelete = async () => {
 }
 
 @keyframes pop-in {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .delete-modal-icon {
@@ -725,6 +835,8 @@ const executeDelete = async () => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
