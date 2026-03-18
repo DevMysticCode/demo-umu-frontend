@@ -192,6 +192,7 @@ const profileItems = [
     title: 'Calendar',
     description: 'Stay on top of viewings, deadlines, and reminders.',
     icon: 'calendar',
+    route: '/profile/calendar',
   },
   {
     title: 'Learn & Ask AI',
