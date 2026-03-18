@@ -197,6 +197,7 @@ const profileItems = [
     title: 'Learn & Ask AI',
     description: 'Get expert guidance and answers at any step.',
     icon: 'learnAskAI',
+    route: '/profile/chat',
   },
 ]
 
