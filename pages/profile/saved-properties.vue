@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile-container saved-properties-page">
+  <div class="mobile-container saved-properties-page bg-umu-gradient">
     <AppHeader :showBack="true" :backTo="'/profile'" right="dots" />
 
     <section class="saved-properties-hero">

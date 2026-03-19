@@ -6,6 +6,7 @@
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('explore')"
+        @click="router.push('/dashboard')"
       >
         <OPIcon name="explore" :class="iconSize" />
         <span class="text-xs mt-1">Explore</span>
@@ -14,6 +15,7 @@
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('passport')"
+        @click="router.push('/passport/collections')"
       >
         <OPIcon name="passport" :class="iconSize" />
         <span class="text-xs mt-1">Passport</span>
@@ -29,15 +31,17 @@
 
       <button
         class="flex flex-col items-center py-2"
-        :class="isActive('rewards')"
+        :class="isActive('ai')"
+        @click="router.push('/profile/chat')"
       >
-        <OPIcon name="rewards" :class="iconSize" />
-        <span class="text-xs mt-1">Rewards</span>
+        <OPIcon name="learnAskAI" :class="iconSize" />
+        <span class="text-xs mt-1">AI</span>
       </button>
 
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('learn')"
+        @click="router.push('/profile/learn')"
       >
         <OPIcon name="learn" :class="iconSize" />
         <span class="text-xs mt-1">Learn</span>
@@ -47,18 +51,19 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+import OPIcon from '@/components/ui/OPIcon.vue'
+
 const props = defineProps({
   active: {
     type: String,
     default: 'explore',
   },
 })
-import OPIcon from '@/components/ui/OPIcon.vue'
 
+const router = useRouter()
 const iconSize = 'w-[18px] h-[18px]'
 const isActive = (key) => {
   return props.active === key ? 'text-brand-aqua' : 'text-gray-400'
 }
 </script>
-
-

@@ -1,5 +1,7 @@
 <template>
-  <div class="mobile-container min-h-screen bg-[#f2f2f7] flex flex-col">
+  <div
+    class="mobile-container min-h-screen bg-[#f2f2f7] flex flex-col bg-umu-gradient"
+  >
     <!-- Header -->
     <header
       class="flex items-center justify-between px-4 pt-5 pb-3 bg-[#f2f2f7]"

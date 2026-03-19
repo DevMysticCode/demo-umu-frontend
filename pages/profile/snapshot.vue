@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile-container snapshot-page">
+  <div class="mobile-container snapshot-page bg-umu-gradient">
     <section class="snapshot-hero">
       <div class="snapshot-header">
         <button class="snapshot-back-btn" aria-label="Go back" @click="goBack">

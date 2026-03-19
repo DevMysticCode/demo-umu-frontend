@@ -187,6 +187,7 @@ const profileItems = [
     title: 'Help & Support',
     description: 'Need help? Browse FAQs or speak to support.',
     icon: 'helpSupport',
+    route: '/profile/support',
   },
   {
     title: 'Calendar',
@@ -198,7 +199,7 @@ const profileItems = [
     title: 'Learn & Ask AI',
     description: 'Get expert guidance and answers at any step.',
     icon: 'learnAskAI',
-    route: '/profile/chat',
+    route: '/profile/learn',
   },
 ]
 
@@ -232,10 +233,10 @@ const getPreferenceTitleClass = (item) => {
 }
 
 const goBack = () => {
-  if (typeof window !== 'undefined' && window.history.length > 1) {
-    window.history.back()
-    return
-  }
+  // if (typeof window !== 'undefined' && window.history.length > 1) {
+  //   window.history.back()
+  //   return
+  // }
 
   navigateTo('/dashboard')
 }
