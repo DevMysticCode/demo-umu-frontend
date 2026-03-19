@@ -31,20 +31,20 @@
 
       <button
         class="flex flex-col items-center py-2"
+        :class="isActive('calendar')"
+        @click="router.push('/profile/calendar')"
+      >
+        <OPIcon name="calendar" :class="iconSize" />
+        <span class="text-xs mt-1">Calendar</span>
+      </button>
+
+      <button
+        class="flex flex-col items-center py-2"
         :class="isActive('ai')"
         @click="router.push('/profile/chat')"
       >
         <OPIcon name="learnAskAI" :class="iconSize" />
         <span class="text-xs mt-1">AI</span>
-      </button>
-
-      <button
-        class="flex flex-col items-center py-2"
-        :class="isActive('learn')"
-        @click="router.push('/profile/learn')"
-      >
-        <OPIcon name="learn" :class="iconSize" />
-        <span class="text-xs mt-1">Learn</span>
       </button>
     </div>
   </nav>
