@@ -1,14 +1,21 @@
 <template>
   <div class="mobile-container passport-page bg-umu-gradient">
     <div class="passport-header">
-      <AppHeader title="Passport" :showBack="false" right="profile" />
+      <AppHeader title="Passport" :showBack="true" right="profile" />
 
-      <SegmentedSwitch v-model="selectedRole" :options="roleOptions" />
+      <SegmentedSwitch
+        v-model="selectedRole"
+        :options="roleOptions"
+        @update:modelValue="onRoleSwitch"
+      />
     </div>
 
     <div class="passport-content">
       <div class="passport-cards-carousel">
-        <PassportCard :line1="passportAddress.line1" :line2="passportAddress.line2" />
+        <PassportCard
+          :line1="passportAddress.line1"
+          :line2="passportAddress.line2"
+        />
       </div>
 
       <div class="property-info">
@@ -18,7 +25,8 @@
               ><OPIcon name="pin" class="w-[24px] h-[24px]"
             /></span>
             <div class="property-address-small">
-              {{ passportAddress.line1 }}<br /><span class="property-address-small-sub"
+              {{ passportAddress.line1 }}<br /><span
+                class="property-address-small-sub"
                 >{{ passportAddress.line2 }}</span
               >
             </div>
@@ -185,10 +193,14 @@ onMounted(async () => {
   loadPassport(route.params.id)
   await loadCollaborators()
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    const passport = await $fetch(`${config.public.apiBase}/passport/${route.params.id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const passport = await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
     passportAddress.value = {
       line1: passport.addressLine1 ?? '',
       line2: passport.postcode ?? '',
@@ -283,6 +295,12 @@ const navigateToStep = (stepId) => {
 
 const switchPassport = (passportId) => {
   router.push(`/passportview/${passportId}`)
+}
+
+const onRoleSwitch = (role) => {
+  if (role === 'buyer') {
+    router.push(`/buyer-passport/${route.params.id}`)
+  }
 }
 </script>
 

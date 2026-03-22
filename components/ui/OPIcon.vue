@@ -190,6 +190,12 @@ const iconMap: Record<string, string> = {
   calendar: '/op-icons/profile/calendar.svg',
   learnAskAI: '/op-icons/profile/learnAskAI.svg',
   proMemberIcon: '/op-icons/profile/proMemberIcon.svg',
+  buyerPropertyType: '/op-icons/buyer-passport/propertyType.svg',
+  buyerAreaSqft: '/op-icons/buyer-passport/areaSqft.svg',
+  buyerEpcRating: '/op-icons/buyer-passport/epcRating.svg',
+  buyerTenure: '/op-icons/buyer-passport/tenure.svg',
+  buyerYearBuilt: '/op-icons/buyer-passport/yearBuilt.svg',
+  buyerTitleNumber: '/op-icons/buyer-passport/titleNumber.svg',
 }
 
 const iconPath = computed(() => {

@@ -15,11 +15,7 @@
     <template v-else-if="data">
       <!-- Hero Image -->
       <div class="buyer-hero">
-        <img
-          :src="propertyImage"
-          alt="Property"
-          class="buyer-hero__image"
-        />
+        <img :src="propertyImage" alt="Property" class="buyer-hero__image" />
         <!-- Passport badge overlay -->
         <div class="buyer-hero__badge">
           <OPIcon name="umuLogo" class="w-[32px] h-[32px]" />
@@ -28,9 +24,22 @@
         <!-- Image count -->
         <div class="buyer-hero__count">
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5" fill="white"/>
-            <path d="M21 15l-5-5L5 21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <rect
+              x="3"
+              y="3"
+              width="18"
+              height="18"
+              rx="2"
+              stroke="white"
+              stroke-width="2"
+            />
+            <circle cx="8.5" cy="8.5" r="1.5" fill="white" />
+            <path
+              d="M21 15l-5-5L5 21"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
           </svg>
           12 Images
         </div>
@@ -86,61 +95,79 @@
         <!-- Property Details -->
         <div class="buyer-section">
           <h2 class="buyer-section-title">Property Details</h2>
-          <p class="buyer-section-sub">Key characteristics that define this property.</p>
+          <p class="buyer-section-sub">
+            Key characteristics that define this property.
+          </p>
           <div class="buyer-details-card" v-if="data.property">
             <div class="buyer-details-grid">
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="propertyTypeIcon" class="w-[28px] h-[28px]" />
+                  <OPIcon name="buyerPropertyType" class="w-[20px] h-[20px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Property type</p>
-                  <p class="buyer-detail-value">{{ data.property.propertyType || '—' }}</p>
+                  <p class="buyer-detail-value">
+                    {{ data.property.propertyType || '—' }}
+                  </p>
                 </div>
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="titleNumberIcon" class="w-[28px] h-[28px]" />
+                  <OPIcon name="buyerTitleNumber" class="w-[20px] h-[20px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Title number</p>
-                  <p class="buyer-detail-value">{{ data.property.titleNumber || '—' }}</p>
+                  <p class="buyer-detail-value">
+                    {{ data.property.titleNumber || '—' }}
+                  </p>
                 </div>
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="sqftIcon" class="w-[28px] h-[28px]" />
+                  <OPIcon name="buyerAreaSqft" class="w-[20px] h-[20px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Area sqft</p>
-                  <p class="buyer-detail-value">{{ data.property.sqft ? data.property.sqft.toLocaleString() + ' sqft' : '—' }}</p>
+                  <p class="buyer-detail-value">
+                    {{
+                      data.property.sqft
+                        ? data.property.sqft.toLocaleString() + ' sqft'
+                        : '—'
+                    }}
+                  </p>
                 </div>
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="epcIcon" class="w-[28px] h-[28px]" />
+                  <OPIcon name="buyerEpcRating" class="w-[20px] h-[20px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">EPC Rating</p>
-                  <p class="buyer-detail-value">{{ data.property.epcRating || '—' }}</p>
+                  <p class="buyer-detail-value">
+                    {{ data.property.epcRating || '—' }}
+                  </p>
                 </div>
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="tenureIcon" class="w-[28px] h-[28px]" />
+                  <OPIcon name="buyerTenure" class="w-[20px] h-[20px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Tenure</p>
-                  <p class="buyer-detail-value">{{ data.property.tenure || '—' }}</p>
+                  <p class="buyer-detail-value">
+                    {{ data.property.tenure || '—' }}
+                  </p>
                 </div>
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="yearBuiltIcon" class="w-[28px] h-[28px]" />
+                  <OPIcon name="buyerYearBuilt" class="w-[20px] h-[20px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Year Built</p>
-                  <p class="buyer-detail-value">{{ data.property.yearBuilt || '—' }}</p>
+                  <p class="buyer-detail-value">
+                    {{ data.property.yearBuilt || '—' }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -150,20 +177,43 @@
         <!-- Official Records -->
         <div class="buyer-section">
           <h2 class="buyer-section-title">Official Records</h2>
-          <p class="buyer-section-sub">Verified documents that define the legal and structural status of the property.</p>
+          <p class="buyer-section-sub">
+            Verified documents that define the legal and structural status of
+            the property.
+          </p>
 
           <!-- Search -->
           <div class="buyer-search-row">
             <div class="buyer-search-input">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" class="buyer-search-icon">
-                <circle cx="11" cy="11" r="8" stroke="#999" stroke-width="2"/>
-                <path d="M21 21l-4.35-4.35" stroke="#999" stroke-width="2" stroke-linecap="round"/>
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                viewBox="0 0 24 24"
+                class="buyer-search-icon"
+              >
+                <circle cx="11" cy="11" r="8" stroke="#999" stroke-width="2" />
+                <path
+                  d="M21 21l-4.35-4.35"
+                  stroke="#999"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
               </svg>
-              <input v-model="searchQuery" type="text" placeholder="Search Records..." />
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Search Records..."
+              />
             </div>
             <button class="buyer-sort-btn">
               <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-                <path d="M3 6h18M6 12h12M9 18h6" stroke="#00a19a" stroke-width="2" stroke-linecap="round"/>
+                <path
+                  d="M3 6h18M6 12h12M9 18h6"
+                  stroke="#00a19a"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
               </svg>
             </button>
           </div>
@@ -177,11 +227,18 @@
               @click="goToSection(section.id)"
             >
               <div class="buyer-record-icon">
-                <OPIcon :name="section.imageKey || 'fittingsContents'" class="w-[52px] h-[52px]" />
+                <OPIcon
+                  :name="section.imageKey || 'fittingsContents'"
+                  class="w-[52px] h-[52px]"
+                />
               </div>
               <div class="buyer-record-info">
                 <h3 class="buyer-record-title">{{ section.title }}</h3>
-                <p class="buyer-record-sub">{{ section.subtitle || section.description || 'View details' }}</p>
+                <p class="buyer-record-sub">
+                  {{
+                    section.subtitle || section.description || 'View details'
+                  }}
+                </p>
               </div>
               <button class="buyer-record-arrow">
                 <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
@@ -211,10 +268,14 @@ const searchQuery = ref('')
 
 onMounted(async () => {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    data.value = await $fetch(`${config.public.apiBase}/passport/${passportId}/buyer-view`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    data.value = await $fetch(
+      `${config.public.apiBase}/passport/${passportId}/buyer-view`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
   } catch (e: any) {
     error.value = e?.data?.message || 'Failed to load passport.'
   } finally {
@@ -239,8 +300,10 @@ const filteredSections = computed(() => {
   if (!data.value?.sections) return []
   const q = searchQuery.value.toLowerCase()
   if (!q) return data.value.sections
-  return data.value.sections.filter((s: any) =>
-    s.title.toLowerCase().includes(q) || (s.subtitle || '').toLowerCase().includes(q)
+  return data.value.sections.filter(
+    (s: any) =>
+      s.title.toLowerCase().includes(q) ||
+      (s.subtitle || '').toLowerCase().includes(q),
   )
 })
 
@@ -284,7 +347,9 @@ function goToSection(sectionId: string) {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Hero */
