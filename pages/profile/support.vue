@@ -192,7 +192,7 @@
           class="absolute inset-0 bg-black/40"
           @click="showSupportDrawer = false"
         />
-        <div class="relative bg-white rounded-t-3xl px-5 pt-4 pb-10 z-10">
+        <div class="relative w-full bg-white rounded-t-3xl px-5 pt-4 pb-10 z-10">
           <div class="w-10 h-1 bg-[#d9dae0] rounded-full mx-auto mb-5" />
           <div class="flex items-center justify-between mb-5">
             <h2 class="font-sf-pro text-[17px] font-semibold text-[#1f2024]">

@@ -113,18 +113,12 @@ onUnmounted(() => {
 /* Drawer Overlay */
 .drawer-overlay {
   position: fixed;
-  top: 0;
-  left: 50%;
-  min-width: 28rem;
-  max-width: 100%;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 50;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  transform: translateX(-50%);
 }
 
 .drawer-overlay--fullscreen {
@@ -143,8 +137,10 @@ onUnmounted(() => {
 /* Drawer Container */
 .drawer {
   background-color: #f3f4f6;
-  width: 100%;
-  max-width: 28rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   max-height: 90vh;
   border-radius: 1rem 1rem 0 0;
   display: flex;

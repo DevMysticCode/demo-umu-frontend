@@ -851,14 +851,13 @@ watch(
   z-index: 1200;
   background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(8px);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
 }
 
 .sd-filters-sheet {
-  width: 100%;
-  max-width: 448px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   border-radius: 28px 28px 0 0;
   overflow: hidden;
   background: white;

@@ -155,21 +155,17 @@ const registerInterest = () => {
 <style scoped>
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
   z-index: 1000;
 }
 
 .modal-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: linear-gradient(to bottom, #f5f5f5 0%, #ffffff 200px);
-  max-width: 430px;
-  width: 100%;
   max-height: 90vh;
   border-radius: 24px 24px 0 0;
   overflow-y: auto;

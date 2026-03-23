@@ -206,7 +206,7 @@
         class="fixed inset-0 z-50 flex flex-col justify-end"
       >
         <div class="absolute inset-0 bg-black/40" @click="closeDrawer" />
-        <div class="relative bg-white rounded-t-3xl px-5 pt-4 pb-10 z-10">
+        <div class="relative w-full bg-white rounded-t-3xl px-5 pt-4 pb-10 z-10">
           <!-- Handle -->
           <div class="w-10 h-1 bg-[#d9dae0] rounded-full mx-auto mb-5" />
 
