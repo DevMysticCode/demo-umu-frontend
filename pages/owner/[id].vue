@@ -7,11 +7,7 @@
       <p class="subtitle">12, Maple Road, Staines TW18 3BA</p>
 
       <div class="house-illustration">
-        <img
-          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180'%3E%3C!-- Base --%3E%3Cellipse cx='100' cy='160' rx='80' ry='15' fill='%2390c850' opacity='0.3'/%3E%3C!-- House base --%3E%3Crect x='60' y='90' width='80' height='70' fill='%23f5deb3'/%3E%3C!-- Roof --%3E%3Cpath d='M 50 90 L 100 50 L 150 90 Z' fill='%23c85050'/%3E%3Crect x='95' y='50' width='10' height='15' fill='%238b4513'/%3E%3Crect x='98' y='48' width='20' height='3' fill='%23654321'/%3E%3C!-- Door --%3E%3Crect x='85' y='120' width='30' height='40' rx='15' ry='15' fill='%238b4513'/%3E%3Ccircle cx='108' cy='140' r='2' fill='%23ffd700'/%3E%3C!-- Windows --%3E%3Crect x='68' y='100' width='15' height='15' fill='%2387ceeb' opacity='0.7'/%3E%3Crect x='117' y='100' width='15' height='15' fill='%2387ceeb' opacity='0.7'/%3E%3Cline x1='75.5' y1='100' x2='75.5' y2='115' stroke='%23654321' stroke-width='1'/%3E%3Cline x1='68' y1='107.5' x2='83' y2='107.5' stroke='%23654321' stroke-width='1'/%3E%3Cline x1='124.5' y1='100' x2='124.5' y2='115' stroke='%23654321' stroke-width='1'/%3E%3Cline x1='117' y1='107.5' x2='132' y2='107.5' stroke='%23654321' stroke-width='1'/%3E%3C!-- Trees --%3E%3Crect x='25' y='130' width='8' height='30' fill='%238b4513'/%3E%3Ccircle cx='29' cy='125' r='15' fill='%2354a854'/%3E%3Ccircle cx='25' cy='120' r='12' fill='%2354a854'/%3E%3Ccircle cx='33' cy='120' r='12' fill='%2354a854'/%3E%3Crect x='167' y='130' width='8' height='30' fill='%238b4513'/%3E%3Ccircle cx='171' cy='125' r='15' fill='%2354a854'/%3E%3Ccircle cx='167' cy='120' r='12' fill='%2354a854'/%3E%3Ccircle cx='175' cy='120' r='12' fill='%2354a854'/%3E%3C!-- Person 1 (left of door) --%3E%3Ccircle cx='75' cy='135' r='5' fill='%23ffdbac'/%3E%3Crect x='72' y='140' width='6' height='12' fill='%234169e1'/%3E%3Crect x='70' y='142' width='3' height='8' fill='%234169e1'/%3E%3Crect x='77' y='142' width='3' height='8' fill='%234169e1'/%3E%3C!-- Person 2 (right of door) --%3E%3Ccircle cx='125' cy='135' r='5' fill='%23ffdbac'/%3E%3Crect x='122' y='140' width='6' height='12' fill='%23ff69b4'/%3E%3Crect x='120' y='142' width='3' height='8' fill='%23ff69b4'/%3E%3Crect x='127' y='142' width='3' height='8' fill='%23ff69b4'/%3E%3C/svg%3E"
-          alt="House with owners"
-          class="house-img"
-        />
+        <OPIcon name="tapTheOwner" class="w-[144px] h-[144px]" />
       </div>
 
       <p class="description">
@@ -83,6 +79,7 @@
 
 <script setup>
 import AppHeader from '@/components/core/AppHeader.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 const route = useRoute()
 const router = useRouter()
 
@@ -118,7 +115,8 @@ const sendMessage = () => {
 .contact-page {
   min-height: 100vh;
   background: linear-gradient(to bottom, #f5f5f5 0%, #ffffff 200px);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding-bottom: 40px;
 }
 
