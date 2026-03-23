@@ -1,15 +1,12 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware((to) => {
   if (process.server) return
 
   const token = localStorage.getItem('token')
 
   if (!token) {
-    // Store the intended destination for redirect after login
     if (to.fullPath !== '/onboarding/signin') {
       localStorage.setItem('redirectAfterLogin', to.fullPath)
     }
-    return navigateTo('/onboarding/signin')
+    return navigateTo('/onboarding/signin?reason=session')
   }
 })
-
-

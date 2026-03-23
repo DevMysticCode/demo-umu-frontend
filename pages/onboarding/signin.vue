@@ -1,6 +1,23 @@
 <template>
   <div class="mobile-container backgound-image content">
     <BackButton />
+
+    <!-- Session / logout banner -->
+    <div
+      v-if="bannerMessage"
+      class="mx-4 mt-4 mb-2 rounded-2xl px-4 py-3 flex items-center gap-3"
+      :class="bannerReason === 'logout' ? 'bg-brand-aqua/15 border border-brand-aqua/30' : 'bg-yellow-400/20 border border-yellow-400/40'"
+    >
+      <Icon
+        :name="bannerReason === 'logout' ? 'i-heroicons-check-circle' : 'i-heroicons-lock-closed'"
+        class="w-5 h-5 flex-shrink-0"
+        :class="bannerReason === 'logout' ? 'text-brand-aqua' : 'text-yellow-500'"
+      />
+      <p class="font-sf-pro text-[13px] font-medium" :class="bannerReason === 'logout' ? 'text-brand-aqua' : 'text-yellow-700'">
+        {{ bannerMessage }}
+      </p>
+    </div>
+
     <!-- Logo and Welcome -->
     <div class="logo-and-welcome">
       <OPIcon name="logo" class="w-16 h-16" />
@@ -79,6 +96,15 @@ definePageMeta({
 const config = useRuntimeConfig()
 const { login, googleLogin, appleLogin, appleLoginMock } = useAuth()
 const isDev = process.dev
+const route = useRoute()
+
+// Banner shown when redirected after logout or session expiry
+const bannerReason = computed(() => route.query.reason as string | undefined)
+const bannerMessage = computed(() => {
+  if (bannerReason.value === 'logout') return 'You have been logged out successfully.'
+  if (bannerReason.value === 'session') return 'Your session has expired. Please sign in again.'
+  return ''
+})
 
 const emailInput = ref('')
 const passwordInput = ref('')

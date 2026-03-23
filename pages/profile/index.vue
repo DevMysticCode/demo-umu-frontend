@@ -118,11 +118,44 @@
       <button
         type="button"
         class="mt-8 w-full h-[50px] rounded-[12px] pt-[14px] pr-[20px] pb-[14px] pl-[20px] bg-brand-aqua text-white inline-flex items-center justify-center gap-[4px] text-[17px] leading-[38px] font-medium"
-        @click="logout"
+        @click="showLogoutModal = true"
       >
         Log Out
       </button>
     </main>
+
+    <!-- Logout confirmation modal -->
+    <Teleport to="body">
+      <div v-if="showLogoutModal" class="fixed inset-0 z-[70] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-black/50" @click="showLogoutModal = false" />
+        <div class="relative bg-white rounded-3xl px-6 py-8 w-full max-w-[340px] text-center shadow-2xl">
+          <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+            <Icon name="i-heroicons-arrow-right-on-rectangle" class="w-8 h-8 text-red-400" />
+          </div>
+          <h3 class="font-sf-pro text-[19px] font-semibold text-[#1f2024] mb-2">Log Out?</h3>
+          <p class="font-sf-pro text-[14px] text-[#8f9094] mb-6">
+            Are you sure you want to log out of your account?
+          </p>
+          <div class="flex gap-3">
+            <button
+              type="button"
+              class="flex-1 h-[48px] rounded-2xl border border-[#e5e5ea] bg-[#f6f6f7] font-sf-pro text-[16px] font-medium text-[#1f2024]"
+              @click="showLogoutModal = false"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="flex-1 h-[48px] rounded-2xl bg-red-500 font-sf-pro text-[16px] font-medium text-white disabled:opacity-60"
+              :disabled="isLoggingOut"
+              @click="logout"
+            >
+              {{ isLoggingOut ? 'Logging out…' : 'Log Out' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -247,10 +280,28 @@ const onPreferenceClick = async (item) => {
   }
 }
 
+const showLogoutModal = ref(false)
+const isLoggingOut = ref(false)
+const config = useRuntimeConfig()
+
 const logout = async () => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('token')
+  isLoggingOut.value = true
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    if (token) {
+      await $fetch(`${config.public.apiBase}/auth/logout`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {}) // ignore network errors — still log out locally
+    }
+  } finally {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token')
+      localStorage.removeItem('redirectAfterLogin')
+    }
+    showLogoutModal.value = false
+    isLoggingOut.value = false
+    await navigateTo('/onboarding/signin?reason=logout')
   }
-  await navigateTo('/onboarding/signin')
 }
 </script>
