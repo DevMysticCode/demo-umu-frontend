@@ -301,7 +301,7 @@ const logout = async () => {
     }
     showLogoutModal.value = false
     isLoggingOut.value = false
-    await navigateTo('/onboarding/signin?reason=logout')
+    await navigateTo('/onboarding/signin?reason=logout', { replace: true })
   }
 }
 </script>

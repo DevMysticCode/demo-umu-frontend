@@ -5,11 +5,7 @@
       <p class="subtitle">12, Maple Road, Staines TW18 3BA</p>
 
       <div class="greenhouse-illustration">
-        <img
-          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180'%3E%3C!-- Base platform --%3E%3Cellipse cx='100' cy='160' rx='80' ry='15' fill='%2390c850' opacity='0.3'/%3E%3Crect x='40' y='140' width='120' height='20' fill='%238b7355' rx='2'/%3E%3C!-- Greenhouse structure --%3E%3Cpath d='M 60 140 L 60 100 Q 60 90 70 90 L 130 90 Q 140 90 140 100 L 140 140 Z' fill='%23d0f0f0' opacity='0.6' stroke='%2386c8c8' stroke-width='2'/%3E%3Cline x1='100' y1='90' x2='100' y2='140' stroke='%2386c8c8' stroke-width='2'/%3E%3Cpath d='M 60 100 Q 100 80 140 100' stroke='%2386c8c8' stroke-width='2' fill='none'/%3E%3C!-- Door --%3E%3Crect x='90' y='115' width='20' height='25' fill='%238b7355'/%3E%3Ccircle cx='107' cy='127' r='1.5' fill='%23ffd700'/%3E%3C!-- Plants inside --%3E%3Cellipse cx='75' cy='130' rx='8' ry='12' fill='%2354a854'/%3E%3Cellipse cx='85' cy='125' rx='6' ry='10' fill='%2354a854'/%3E%3Cellipse cx='115' cy='128' rx='7' ry='11' fill='%2354a854'/%3E%3Cellipse cx='125' cy='132' rx='8' ry='13' fill='%2354a854'/%3E%3C!-- Person watering --%3E%3Ccircle cx='135' cy='110' r='6' fill='%23ffdbac'/%3E%3Crect x='132' y='116' width='6' height='14' fill='%23ff6b6b'/%3E%3Cline x1='132' y1='120' x2='125' y2='118' stroke='%23ffdbac' stroke-width='2'/%3E%3Cline x1='138' y1='120' x2='145' y2='125' stroke='%23ffdbac' stroke-width='2'/%3E%3Ccircle cx='148' cy='127' r='2' fill='%234169e1'/%3E%3Cpath d='M 148 129 Q 150 132 148 135' stroke='%234169e1' stroke-width='1' fill='none'/%3E%3C!-- Plants outside --%3E%3Ccircle cx='50' cy='145' r='6' fill='%2354a854'/%3E%3Crect x='49' y='145' width='2' height='8' fill='%238b4513'/%3E%3Ccircle cx='155' cy='147' r='7' fill='%2354a854'/%3E%3Crect x='154' y='147' width='2' height='10' fill='%238b4513'/%3E%3C!-- Heart/Love indicator --%3E%3Cpath d='M 138 95 Q 138 90 142 90 Q 145 90 145 93 Q 145 90 148 90 Q 152 90 152 95 Q 152 100 145 105 Q 138 100 138 95 Z' fill='%23ff69b4'/%3E%3C/svg%3E"
-          alt="Greenhouse with person"
-          class="greenhouse-img"
-        />
+         <OPIcon name="registerInterestDrawer" class="w-[144px] h-[144px]" />
       </div>
 
       <p class="description">
@@ -107,6 +103,7 @@
 </template>
 
 <script setup>
+import OPIcon from '~/components/ui/OPIcon.vue'
 const props = defineProps({
   modelValue: {
     type: Boolean,

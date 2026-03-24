@@ -40,16 +40,33 @@
           <div class="flex-1 h-px bg-white/80"></div>
         </div>
 
-        <input
-          v-model="emailInput"
-          type="email"
-          name="email"
-          required
-          placeholder="your@email.com"
-          class="w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 focus:ring-brand-aqua"
-        />
+        <div class="relative">
+          <input
+            v-model="emailInput"
+            type="email"
+            name="email"
+            required
+            placeholder="your@email.com"
+            :class="[
+              'w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 transition-all',
+              emailError ? 'ring-2 ring-red-400' : 'focus:ring-brand-aqua',
+            ]"
+            @input="emailError = ''"
+          />
+        </div>
 
-        <button class="email-form__button" type="submit">Continue</button>
+        <!-- Inline error -->
+        <div v-if="emailError" class="email-form__error">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ emailError }}</span>
+          <NuxtLink to="/onboarding/signin" class="email-form__error-link">Sign in instead →</NuxtLink>
+        </div>
+
+        <button class="email-form__button" type="submit" :disabled="isChecking">
+          {{ isChecking ? 'Checking...' : 'Continue' }}
+        </button>
       </form>
     </div>
   </div>
@@ -73,6 +90,8 @@ const isDev = process.dev
 const { email } = useSession()
 
 const emailInput = ref('')
+const emailError = ref('')
+const isChecking = ref(false)
 
 // ── Apple ─────────────────────────────────────────────────────────────────
 
@@ -156,17 +175,29 @@ onMounted(() => {
 const handleEmailContinue = async (event) => {
   event.preventDefault()
   event.stopPropagation()
-  try {
-    const response = await requestOtp(emailInput.value)
-    console.log('OTP sent to email:', emailInput.value, response)
-    // store email globally
-    email.value = emailInput.value
+  emailError.value = ''
+  isChecking.value = true
 
-    // go to OTP screen
+  try {
+    // 1. Check if this email already has an account
+    const { exists } = await $fetch<{ exists: boolean }>(
+      `${config.public.apiBase}/auth/check-email`,
+      { method: 'POST', body: { email: emailInput.value } },
+    )
+
+    if (exists) {
+      emailError.value = 'An account with this email already exists.'
+      return
+    }
+
+    // 2. Send OTP
+    await requestOtp(emailInput.value)
+    email.value = emailInput.value
     await navigateTo('/onboarding/verification')
-  } catch (err) {
-    console.error(err)
-    alert('Failed to send OTP')
+  } catch (err: any) {
+    emailError.value = err?.data?.message || 'Something went wrong. Please try again.'
+  } finally {
+    isChecking.value = false
   }
 }
 </script>
@@ -222,8 +253,16 @@ const handleEmailContinue = async (event) => {
   &__button {
     @apply flex items-center justify-center;
     @apply w-full h-[50px] rounded-xl shadow-lg transition-colors;
-    @apply bg-brand-aqua;
+    @apply bg-brand-aqua disabled:opacity-60;
     @apply text-white text-[17px] absolute bottom-0;
+  }
+
+  &__error {
+    @apply flex items-start gap-2 text-red-200 text-[13px] leading-snug mt-1;
+  }
+
+  &__error-link {
+    @apply text-white underline font-semibold whitespace-nowrap ml-1;
   }
 
   &__divider {

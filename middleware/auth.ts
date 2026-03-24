@@ -7,6 +7,6 @@ export default defineNuxtRouteMiddleware((to) => {
     if (to.fullPath !== '/onboarding/signin') {
       localStorage.setItem('redirectAfterLogin', to.fullPath)
     }
-    return navigateTo('/onboarding/signin?reason=session')
+    return navigateTo('/onboarding/signin?reason=session', { replace: true })
   }
 })
