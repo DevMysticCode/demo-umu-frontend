@@ -53,7 +53,7 @@ export default defineNuxtConfig({
         'https://demo-umu-frontend.vercel.app/auth/apple/callback',
       stripeKey:
         process.env.NUXT_PUBLIC_STRIPE_KEY ||
-        'pk_live_51RvzhDLi5JZfbaFPW7vjPyQH8VsY2wANWFOJcojb4dcMGs0A5uk3hGACdeWbkIkvc1JAlV6J18ukyHBa0IEhOCXy00EWNADq8i',
+        'pk_test_51RvzhKLR3oJsnvMf4gRG09EZsz4uX4VYt89aqLXTTAdFnphlHHVyfzHlkLyR6I5U0TSi8Su5H3gTaT0Yasza7t6K00h9dldDgB',
     },
   },
   components: true,
