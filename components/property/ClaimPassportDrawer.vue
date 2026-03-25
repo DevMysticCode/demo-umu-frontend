@@ -4,7 +4,7 @@
     :title="isBuyerMode ? 'Access Property Passport' : 'Claim Property Passport'"
     :show-back-button="true"
     @update:model-value="$emit('update:modelValue', $event)"
-    @close="$emit('update:modelValue', false)"
+    @close="handleClose"
   >
     <div class="claim-drawer">
       <!-- Property Preview -->
@@ -16,12 +16,9 @@
           class="claim-drawer__image"
         />
         <div class="claim-drawer__address">
-          <h3 class="claim-drawer__address-line1">
-            {{ property?.addressLine1 }}
-          </h3>
+          <h3 class="claim-drawer__address-line1">{{ property?.addressLine1 }}</h3>
           <p class="claim-drawer__address-area">
-            {{ property?.area }}
-            <span v-if="property?.postcode">, {{ property?.postcode }}</span>
+            {{ property?.area }}<span v-if="property?.postcode">, {{ property?.postcode }}</span>
           </p>
           <p class="claim-drawer__price">
             {{ property?.priceDisplay }}
@@ -40,7 +37,7 @@
           <p class="claim-drawer__info-body">
             {{ isBuyerMode
               ? 'Get full read-only access to the property passport — including fittings, official records, ownership history and more. Verified by the property owner.'
-              : 'A Property Passport is your property\'s digital identity — storing ownership details, planning history, warranties, and more in one secure place. Unlock transparency for buyers and protect your investment.'
+              : 'A Property Passport is your property\'s digital identity — storing ownership details, planning history, warranties, and more in one secure place.'
             }}
           </p>
         </div>
@@ -54,33 +51,52 @@
         </li>
       </ul>
 
-      <!-- Simulated Price -->
+      <!-- Price Box -->
       <div class="claim-drawer__price-box">
-        <span class="claim-drawer__price-amount">£49</span>
-        <span class="claim-drawer__price-period">one-time unlock</span>
+        <div class="flex items-baseline gap-2">
+          <span class="claim-drawer__price-amount">£49</span>
+          <span class="claim-drawer__price-period">one-time unlock</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-[11px] text-gray-400 mt-1">
+          <Icon name="i-heroicons-lock-closed" class="w-3 h-3" />
+          Secured by Stripe
+        </div>
+      </div>
+
+      <!-- ── Payment form ─────────────────────────────────────────────── -->
+      <div v-if="showCardForm" class="stripe-section">
+        <p class="stripe-section__label">Card details</p>
+        <div id="stripe-card-element" class="stripe-card-box"></div>
+        <p v-if="stripeError" class="stripe-error">{{ stripeError }}</p>
       </div>
 
       <!-- Error -->
       <p v-if="errorMsg" class="claim-drawer__error">{{ errorMsg }}</p>
 
-      <!-- CTA Button -->
+      <!-- CTA -->
       <button
         class="claim-drawer__cta"
-        :disabled="loading"
-        @click="handleClaim"
+        :disabled="loading || (showCardForm && !cardReady)"
+        @click="showCardForm ? handlePayment() : handleShowCardForm()"
       >
         <span v-if="loading" class="claim-drawer__spinner" />
-        <span v-else>Unlock Passport</span>
+        <template v-else>
+          <Icon v-if="showCardForm" name="i-heroicons-lock-closed" class="w-4 h-4" />
+          <span>{{ showCardForm ? 'Pay £49 securely' : 'Unlock Passport' }}</span>
+        </template>
       </button>
 
       <p class="claim-drawer__disclaimer">
-        Simulated payment — real payment integration coming soon.
+        <Icon name="i-heroicons-shield-check" class="w-3 h-3 inline mr-1" />
+        Payments are processed securely by Stripe. We never store your card details.
       </p>
     </div>
   </BaseDrawer>
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onUnmounted, nextTick } from 'vue'
+import type { Stripe, StripeCardElement } from '@stripe/stripe-js'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import { usePassportClaim } from '~/composables/usePassportClaim'
 
@@ -104,9 +120,17 @@ const emit = defineEmits<{
   claimed: [passportId: string]
 }>()
 
+const config = useRuntimeConfig()
 const { claimPassport, unlockPassport } = usePassportClaim()
+
 const loading = ref(false)
 const errorMsg = ref('')
+const showCardForm = ref(false)
+const stripeError = ref('')
+const cardReady = ref(false)
+
+let stripeInstance: Stripe | null = null
+let cardElement: StripeCardElement | null = null
 
 const isBuyerMode = computed(() => !!props.existingPassportId)
 
@@ -125,17 +149,79 @@ const features = computed(() =>
         'Certificates, guarantees & warranties',
         'Boundary & title information',
         'Trusted by solicitors & estate agents',
-      ]
+      ],
 )
 
-async function handleClaim() {
-  if (!props.property) return
+const handleShowCardForm = async () => {
+  showCardForm.value = true
+  await nextTick()
+  await mountStripe()
+}
+
+const mountStripe = async () => {
+  if (stripeInstance) return
+  const { loadStripe } = await import('@stripe/stripe-js')
+  stripeInstance = await loadStripe(config.public.stripeKey as string)
+  if (!stripeInstance) return
+
+  const elements = stripeInstance.elements()
+  cardElement = elements.create('card', {
+    hidePostalCode: true,
+    style: {
+      base: {
+        fontSize: '16px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+        color: '#1a1a1a',
+        '::placeholder': { color: '#aab7c4' },
+      },
+      invalid: { color: '#e53e3e' },
+    },
+  })
+
+  const mountEl = document.getElementById('stripe-card-element')
+  if (mountEl) {
+    cardElement.mount(mountEl)
+    cardElement.on('change', (e) => {
+      stripeError.value = e.error?.message ?? ''
+      cardReady.value = e.complete
+    })
+  }
+}
+
+const handlePayment = async () => {
+  if (!props.property || !stripeInstance || !cardElement) return
   loading.value = true
   errorMsg.value = ''
+  stripeError.value = ''
 
   try {
-    let result: { passportId: string }
+    // 1. Create PaymentIntent on backend
+    const token = localStorage.getItem('token')
+    const { clientSecret } = await $fetch<{ clientSecret: string }>(
+      `${config.public.apiBase}/payment/create-intent`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
 
+    // 2. Confirm the card payment via Stripe
+    const { error, paymentIntent } = await stripeInstance.confirmCardPayment(clientSecret, {
+      payment_method: { card: cardElement },
+    })
+
+    if (error) {
+      stripeError.value = error.message ?? 'Payment failed. Please try again.'
+      return
+    }
+
+    if (paymentIntent?.status !== 'succeeded') {
+      stripeError.value = 'Payment not completed. Please try again.'
+      return
+    }
+
+    // 3. Payment succeeded — create / unlock passport
+    let result: { passportId: string }
     if (isBuyerMode.value && props.existingPassportId) {
       result = await unlockPassport(props.existingPassportId)
     } else {
@@ -150,13 +236,22 @@ async function handleClaim() {
     emit('update:modelValue', false)
   } catch (err: any) {
     errorMsg.value =
-      err?.data?.message ||
-      err?.message ||
-      'Failed to unlock passport. Please try again.'
+      err?.data?.message ?? err?.message ?? 'Payment failed. Please try again.'
   } finally {
     loading.value = false
   }
 }
+
+const handleClose = () => {
+  showCardForm.value = false
+  errorMsg.value = ''
+  stripeError.value = ''
+  emit('update:modelValue', false)
+}
+
+onUnmounted(() => {
+  cardElement?.destroy()
+})
 </script>
 
 <style scoped>
@@ -270,9 +365,6 @@ async function handleClaim() {
 }
 
 .claim-drawer__price-box {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
   background: #f8f8f8;
   border-radius: 14px;
   padding: 14px 18px;
@@ -288,6 +380,41 @@ async function handleClaim() {
   font-size: 14px;
   color: #888;
 }
+
+/* ── Stripe ────────────────────────────────────────────────────────────── */
+
+.stripe-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stripe-section__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+}
+
+.stripe-card-box {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+
+.stripe-card-box:focus-within {
+  border-color: #00b8a9;
+}
+
+.stripe-error {
+  font-size: 13px;
+  color: #e53e3e;
+  margin: 0;
+}
+
+/* ── Shared ────────────────────────────────────────────────────────────── */
 
 .claim-drawer__error {
   font-size: 13px;
@@ -329,17 +456,14 @@ async function handleClaim() {
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .claim-drawer__disclaimer {
   font-size: 11px;
-  color: #bbb;
+  color: #aaa;
   text-align: center;
   margin: 0;
+  line-height: 1.5;
 }
 </style>
-
-

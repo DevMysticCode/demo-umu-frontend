@@ -51,6 +51,9 @@ export default defineNuxtConfig({
       appleRedirectUri:
         process.env.NUXT_PUBLIC_APPLE_REDIRECT_URI ||
         'https://demo-umu-frontend.vercel.app/auth/apple/callback',
+      stripeKey:
+        process.env.NUXT_PUBLIC_STRIPE_KEY ||
+        'pk_live_51RvzhDLi5JZfbaFPW7vjPyQH8VsY2wANWFOJcojb4dcMGs0A5uk3hGACdeWbkIkvc1JAlV6J18ukyHBa0IEhOCXy00EWNADq8i',
     },
   },
   components: true,
