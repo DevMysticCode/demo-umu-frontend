@@ -230,6 +230,15 @@
                   </p>
                 </div>
               </div>
+              <div v-if="enrichment?.floodRisk" class="prop-detail-item">
+                <div class="prop-detail-icon-wrap">
+                  <OPIcon name="goodEnergy" class="w-[15px] h-[15px]" />
+                </div>
+                <div>
+                  <p class="prop-detail-label">Flood Risk</p>
+                  <p class="prop-detail-value">{{ enrichment.floodRisk }}</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -281,21 +290,23 @@
           <h2 class="prop-section-title">Location and Nearby</h2>
           <div class="prop-map-wrap">
             <div ref="mapEl" class="prop-map" />
-            <button class="prop-street-btn">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                width="14"
-                height="14"
-                style="display: inline; margin-right: 6px; vertical-align: -2px"
-              >
-                <path
-                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
-                  fill="white"
-                  opacity="0.9"
-                />
+            <a
+              v-if="streetViewUrl"
+              :href="`https://www.google.com/maps?q=${property?.latitude},${property?.longitude}&layer=c&cbll=${property?.latitude},${property?.longitude}`"
+              target="_blank"
+              rel="noopener"
+              class="prop-street-btn"
+            >
+              <svg viewBox="0 0 24 24" fill="none" width="14" height="14" style="display:inline;margin-right:6px;vertical-align:-2px">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="white" opacity="0.9"/>
               </svg>
               Open Street View
+            </a>
+            <button v-else class="prop-street-btn" disabled style="opacity:0.5">
+              <svg viewBox="0 0 24 24" fill="none" width="14" height="14" style="display:inline;margin-right:6px;vertical-align:-2px">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="white" opacity="0.9"/>
+              </svg>
+              Street View
             </button>
           </div>
 
@@ -461,7 +472,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick, onBeforeUnmount } from 'vue'
 import PropertyActionBar from '@/components/property/PropertyActionBar.vue'
 import RegisterInterestContent from '~/components/property/RegisterInterestContent.vue'
 import ClaimPassportDrawer from '~/components/property/ClaimPassportDrawer.vue'
@@ -486,8 +497,10 @@ const { getPassportStatus } = usePassportClaim()
 const { toastState, showToast, hideToast } = useAppToast()
 const { wishlisted, saved, toggleWishlist, toggleSave, fetchActions } = usePropertyActions()
 
+const config = useRuntimeConfig()
 const property = ref<any>(null)
 const passportStatus = ref<any>(null)
+const enrichment = ref<any>(null)
 const pageLoading = ref(true)
 const loadError = ref('')
 const showRegisterInterest = ref(false)
@@ -496,83 +509,40 @@ const showClaimDrawer = ref(false)
 const scoreTab = ref('home')
 const nearbyTab = ref('train')
 const mapEl = ref<HTMLElement | null>(null)
+let mapInstance: any = null
 
-const nearbyTabOptions = [
-  {
-    value: 'train',
-    label: 'Train Stations',
-    icon: 'trainWhite',
-    items: [
-      {
-        name: 'Denham Railway Station',
-        distance: '0.3 Miles',
-        icon: 'nationalRailLogo',
-      },
-      {
-        name: 'Denham Downs Railway Station',
-        distance: '0.3 Miles',
-        icon: 'nationalRailLogo',
-      },
-      { name: 'Gerald Station', distance: '1.2 Miles', icon: 'mrtLogo' },
-      {
-        name: 'Uxbridge Cross South',
-        distance: '1.3 Miles',
-        icon: 'nationalRailLogo',
-      },
-    ],
-  },
-  {
-    value: 'school',
-    label: 'Schools',
-    icon: 'closeToSchool',
-    items: [
-      {
-        name: 'Denham Village Primary School',
-        distance: '0.4 Miles',
-        icon: 'closeToSchool',
-      },
-      {
-        name: 'Tatling End Primary School',
-        distance: '0.8 Miles',
-        icon: 'closeToSchool',
-      },
-    ],
-  },
-  {
-    value: 'energy',
-    label: 'Energy',
-    icon: 'goodEnergy',
-    items: [
-      {
-        name: 'EDF Energy Substation',
-        distance: '0.6 Miles',
-        icon: 'goodEnergy',
-      },
-      {
-        name: 'Solar Farm Colne Valley',
-        distance: '1.1 Miles',
-        icon: 'goodEnergy',
-      },
-    ],
-  },
-  {
-    value: 'park',
-    label: 'Parks',
-    icon: 'closeToPublicPark',
-    items: [
-      {
-        name: 'Denham Country Park',
-        distance: '0.5 Miles',
-        icon: 'closeToPublicPark',
-      },
-      {
-        name: 'Colne Valley Regional Park',
-        distance: '0.9 Miles',
-        icon: 'closeToPublicPark',
-      },
-    ],
-  },
-]
+const nearbyTabOptions = computed(() => {
+  const nearby = enrichment.value?.nearby ?? {}
+
+  const mapPlace = (p: any, icon: string) => ({
+    name: p.name,
+    distance: p.vicinity ?? '',
+    icon,
+  })
+
+  return [
+    {
+      value: 'train',
+      label: 'Train Stations',
+      icon: 'trainWhite',
+      items: (nearby.trains ?? []).map((p: any) => mapPlace(p, 'nationalRailLogo')),
+    },
+    {
+      value: 'school',
+      label: 'Schools',
+      icon: 'closeToSchool',
+      items: (nearby.schools ?? []).map((p: any) => mapPlace(p, 'closeToSchool')),
+    },
+    {
+      value: 'park',
+      label: 'Parks',
+      icon: 'closeToPublicPark',
+      items: (nearby.parks ?? []).map((p: any) => mapPlace(p, 'closeToPublicPark')),
+    },
+  ]
+})
+
+const streetViewUrl = computed(() => enrichment.value?.streetViewUrl ?? null)
 
 const FALLBACK_IMAGES = [
   'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -582,10 +552,28 @@ const FALLBACK_IMAGES = [
 ]
 
 const propertyImages = computed(() => {
+  const images: string[] = []
+
+  // 1. Google Street View as the first image (real photo of the property exterior)
+  const lat = property.value?.latitude
+  const lon = property.value?.longitude
+  const googleKey = config.public.googleApiKey as string
+  if (lat && lon && googleKey) {
+    images.push(
+      `https://maps.googleapis.com/maps/api/streetview?size=800x500&location=${lat},${lon}&key=${googleKey}&fov=90&pitch=10&return_error_codes=true`,
+    )
+  }
+
+  // 2. Property image from EPC/pexels
   const main =
     property.value?.imageUrl ||
     'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800'
-  return [main, ...FALLBACK_IMAGES]
+  images.push(main)
+
+  // 3. Fallback variety images
+  images.push(...FALLBACK_IMAGES)
+
+  return images
 })
 
 const potentialEpc = computed(() => {
@@ -617,53 +605,53 @@ const epcBands = [
   { label: 'G', range: '1-20', color: '#ff3232', width: '35%' },
 ]
 
-// Leaflet map
-const loadLeaflet = (): Promise<any> =>
-  new Promise((resolve) => {
-    if ((window as any).L) return resolve((window as any).L)
-    if (!document.querySelector('link[href*="leaflet"]')) {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
-      document.head.appendChild(link)
-    }
-    const script = document.createElement('script')
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-    script.onload = () => resolve((window as any).L)
-    document.head.appendChild(script)
-  })
-
+// Mapbox GL map
 const initMap = async () => {
   if (!mapEl.value || !property.value) return
   const lat = property.value.latitude
   const lng = property.value.longitude
   if (!lat || !lng) return
 
-  const L = await loadLeaflet()
-  const map = L.map(mapEl.value, {
-    zoomControl: false,
-    scrollWheelZoom: false,
-  }).setView([lat, lng], 15)
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
-    maxZoom: 19,
-  }).addTo(map)
+  const token = config.public.mapboxToken as string
+  if (!token) return
 
-  const icon = L.divIcon({
-    className: '',
-    html: `<div style="width:40px;height:40px;border-radius:50%;background:#00a19a;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,161,154,0.5);border:3px solid white;">
-      <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="white" stroke-width="2" fill="rgba(255,255,255,0.2)"/>
-        <path d="M9 22V12h6v10" stroke="white" stroke-width="2"/>
-      </svg>
-    </div>`,
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
+  const mapboxgl = (await import('mapbox-gl')).default
+  // inject CSS once
+  if (!document.querySelector('link[href*="mapbox-gl"]')) {
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css'
+    document.head.appendChild(link)
+  }
+
+  mapboxgl.accessToken = token
+  const map = new mapboxgl.Map({
+    container: mapEl.value,
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [lng, lat],
+    zoom: 15,
+    interactive: true,
   })
-  L.marker([lat, lng], { icon }).addTo(map)
+
+  mapInstance = map
+
+  // Custom marker
+  const el = document.createElement('div')
+  el.style.cssText = 'width:40px;height:40px;border-radius:50%;background:#00a19a;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,161,154,0.5);border:3px solid white;'
+  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="white" stroke-width="2" fill="rgba(255,255,255,0.2)"/><path d="M9 22V12h6v10" stroke="white" stroke-width="2"/></svg>`
+
+  new mapboxgl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map)
 }
 
+onBeforeUnmount(() => {
+  if (mapInstance) {
+    mapInstance.remove()
+    mapInstance = null
+  }
+})
+
 onMounted(async () => {
+  const apiBase = config.public.apiBase as string
   try {
     const [propData, statusData] = await Promise.all([
       getPropertyDetails(propertyId),
@@ -684,6 +672,15 @@ onMounted(async () => {
     await nextTick()
     initMap()
   }
+
+  // Fetch enrichment data in background (non-blocking)
+  try {
+    const token = localStorage.getItem('token')
+    const res = await fetch(`${apiBase}/property/${propertyId}/enrichment`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+    if (res.ok) enrichment.value = await res.json()
+  } catch { /* non-critical */ }
 })
 
 function handleAction(label: string) {

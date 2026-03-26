@@ -11,7 +11,12 @@
         :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
       >
         <div v-for="(image, index) in images" :key="index" class="slide">
-          <img :src="image" :alt="`Image ${index + 1}`" class="slide-image" />
+          <img
+            :src="image"
+            :alt="`Image ${index + 1}`"
+            class="slide-image"
+            @error="onImgError($event, index)"
+          />
         </div>
       </div>
 
@@ -35,6 +40,8 @@
 </template>
 
 <script setup>
+const FALLBACK = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800'
+
 const props = defineProps({
   images: {
     type: Array,
@@ -55,6 +62,12 @@ const emit = defineEmits(['slideChange'])
 const currentIndex = ref(0)
 const touchStartX = ref(0)
 const touchEndX = ref(0)
+
+const onImgError = (event, index) => {
+  const img = event.target
+  // Avoid infinite loop if fallback itself fails
+  if (img.src !== FALLBACK) img.src = FALLBACK
+}
 
 const goToSlide = (index) => {
   if (index >= 0 && index < props.images.length) {

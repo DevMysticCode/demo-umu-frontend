@@ -128,7 +128,7 @@
           <template v-else>
             <p class="sd-results-label">
               <OPIcon name="searchResults" class="w-[15px] h-[15px]" />
-              {{ results.length }} Search Results
+              {{ results.length }} of {{ totalCount }} Results
             </p>
 
             <div
@@ -182,6 +182,18 @@
 
             <div v-if="results.length === 0" class="sd-empty-msg">
               No results found. Try a different postcode or area.
+            </div>
+
+            <!-- Load More -->
+            <div v-if="hasMore" class="sd-load-more">
+              <button
+                class="sd-load-more-btn"
+                :disabled="loadingMore"
+                @click="loadMoreResults"
+              >
+                <span v-if="loadingMore" class="sd-spinner-sm" />
+                <span v-else>Load more ({{ totalCount - results.length }} remaining)</span>
+              </button>
             </div>
           </template>
         </div>
@@ -272,7 +284,7 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 const props = defineProps({ show: Boolean })
 const emit = defineEmits(['close'])
 
-const { searchProperties } = usePropertySearch()
+const { searchProperties, loadMore, loadingMore, totalCount, hasMore } = usePropertySearch()
 const router = useRouter()
 
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -282,6 +294,8 @@ const query = ref('')
 const view = ref<'suggestions' | 'results' | 'map'>('suggestions')
 const searching = ref(false)
 const rawResults = ref<any[]>([])
+
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
 const showFilters = ref(false)
 const activeFilters = ref({
   exploreType: 'ready-to-sell',
@@ -367,13 +381,22 @@ const mockMatch = (id: string) => {
 }
 
 const onInput = () => {
-  if (view.value !== 'suggestions') view.value = 'suggestions'
+  const q = query.value.trim()
+  if (q.length < 2) {
+    view.value = 'suggestions'
+    rawResults.value = []
+    return
+  }
+  // Live search: debounce 350ms after each keystroke
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => doSearch(), 350)
 }
 
 const clearSearch = () => {
   query.value = ''
   view.value = 'suggestions'
   rawResults.value = []
+  if (debounceTimer) clearTimeout(debounceTimer)
 }
 
 const selectSuggestion = (val: string) => {
@@ -383,7 +406,7 @@ const selectSuggestion = (val: string) => {
 
 const doSearch = async () => {
   const q = query.value.trim()
-  if (!q) return
+  if (!q || q.length < 2) return
   view.value = 'results'
   searching.value = true
   try {
@@ -393,6 +416,13 @@ const doSearch = async () => {
   } finally {
     searching.value = false
   }
+}
+
+const loadMoreResults = async () => {
+  const q = query.value.trim()
+  if (!q) return
+  const more = await loadMore(q)
+  rawResults.value = [...rawResults.value, ...more]
 }
 
 const selectProperty = (id: string) => {
@@ -485,6 +515,10 @@ watch(
       if (leafletMap) {
         leafletMap.remove()
         leafletMap = null
+      }
+      if (debounceTimer) {
+        clearTimeout(debounceTimer)
+        debounceTimer = null
       }
     }
   },
@@ -906,6 +940,46 @@ watch(
 .sd-filters-enter-from .sd-filters-sheet,
 .sd-filters-leave-to .sd-filters-sheet {
   transform: translateY(100%);
+}
+
+/* ── Load More ────────────────────────────────────────────────────────────── */
+.sd-load-more {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+}
+.sd-load-more-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 24px;
+  border: 1.5px solid #00a19a;
+  background: white;
+  color: #00a19a;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sd-load-more-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.sd-load-more-btn:not(:disabled):hover {
+  background: #f0fafa;
+}
+.sd-spinner-sm {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #d0eeec;
+  border-top-color: #00a19a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>
 
