@@ -189,13 +189,12 @@
                   <OPIcon name="sqft" class="w-[15px] h-[15px]" />
                 </div>
                 <div>
-                  <p class="prop-detail-label">Area sqft</p>
+                  <p class="prop-detail-label">Floor Area</p>
                   <p class="prop-detail-value">
-                    {{
-                      property.sqft
-                        ? `${property.sqft.toLocaleString()} sqft`
-                        : '—'
-                    }}
+                    {{ property.sqft ? `${property.sqft.toLocaleString()} sqft` : '—' }}
+                  </p>
+                  <p v-if="property.floorAreaSqm" class="prop-detail-sub">
+                    {{ Math.round(property.floorAreaSqm) }} m²
                   </p>
                 </div>
               </div>
@@ -366,7 +365,16 @@
 
         <!-- EPC Rating -->
         <div v-if="property.epcRating" class="prop-section">
-          <h2 class="prop-section-title">EPC Rating</h2>
+          <div class="prop-section-title-row">
+            <h2 class="prop-section-title">EPC Rating</h2>
+            <a
+              v-if="enrichment?.epcCert?.certUrl"
+              :href="enrichment.epcCert.certUrl"
+              target="_blank"
+              rel="noopener"
+              class="prop-epc-cert-link"
+            >View Certificate</a>
+          </div>
           <div class="prop-epc-card">
             <div class="prop-epc-header">
               <span>Score</span>
@@ -404,6 +412,221 @@
                 <div v-else class="prop-epc-dot" />
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Sales History -->
+        <div v-if="enrichment?.salesHistory?.length" class="prop-section">
+          <h2 class="prop-section-title">Sales History</h2>
+          <div class="prop-price-history">
+            <div
+              v-for="(sale, i) in enrichment.salesHistory"
+              :key="i"
+              class="prop-sale-row"
+            >
+              <div class="prop-sale-left">
+                <p class="prop-sale-price">{{ formatPrice(sale.price) }}</p>
+                <p class="prop-sale-meta">
+                  {{ [sale.propertyType, sale.tenure, sale.newBuild ? 'New Build' : null].filter(Boolean).join(' · ') || '—' }}
+                </p>
+              </div>
+              <div class="prop-sale-right">
+                <p class="prop-sale-address">{{ sale.address ?? 'Nearby property' }}</p>
+                <p class="prop-sale-date">{{ formatSaleDate(sale.date) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Broadband Connectivity -->
+        <div v-if="enrichment?.broadband" class="prop-section">
+          <h2 class="prop-section-title">Broadband Connectivity</h2>
+          <div class="prop-broadband-card">
+            <div class="prop-bb-speeds">
+              <div class="prop-bb-speed-item">
+                <span class="prop-bb-speed-val">{{ enrichment.broadband.maxDownload ?? '—' }}</span>
+                <span class="prop-bb-speed-unit">Mbps</span>
+                <span class="prop-bb-speed-label">Max Download</span>
+              </div>
+              <div class="prop-bb-divider" />
+              <div class="prop-bb-speed-item">
+                <span class="prop-bb-speed-val">{{ enrichment.broadband.maxUpload ?? '—' }}</span>
+                <span class="prop-bb-speed-unit">Mbps</span>
+                <span class="prop-bb-speed-label">Max Upload</span>
+              </div>
+            </div>
+            <div class="prop-bb-types">
+              <span class="prop-bb-type" :class="{ 'prop-bb-type--on': enrichment.broadband.ultrafast }">Ultrafast</span>
+              <span class="prop-bb-type" :class="{ 'prop-bb-type--on': enrichment.broadband.superfast }">Superfast</span>
+              <span class="prop-bb-type" :class="{ 'prop-bb-type--on': enrichment.broadband.fttp }">FTTP</span>
+              <span class="prop-bb-type" :class="{ 'prop-bb-type--on': enrichment.broadband.fttc }">FTTC</span>
+              <span class="prop-bb-type" :class="{ 'prop-bb-type--on': enrichment.broadband.cable }">Cable</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flood Risk Detail -->
+        <div v-if="enrichment?.floodRisk" class="prop-section">
+          <h2 class="prop-section-title">Flood Risk</h2>
+          <div class="prop-flood-card">
+            <div class="prop-flood-header">
+              <div
+                class="prop-flood-badge"
+                :class="`prop-flood-badge--${(enrichment.floodRisk ?? 'very-low').toLowerCase().replace(/\s/g, '-')}`"
+              >
+                {{ enrichment.floodRisk }}
+              </div>
+              <p class="prop-flood-desc">
+                Risk level based on Environment Agency flood monitoring data.
+              </p>
+            </div>
+            <div v-if="enrichment.floodZones?.length" class="prop-flood-zones">
+              <div
+                v-for="(zone, i) in enrichment.floodZones"
+                :key="i"
+                class="prop-flood-zone-row"
+              >
+                <OPIcon name="goodEnergy" class="w-[14px] h-[14px] shrink-0 mt-0.5 text-teal-600" />
+                <div class="flex-1 min-w-0">
+                  <p class="prop-flood-zone-name">{{ zone.name }}</p>
+                  <p class="prop-flood-zone-sev">
+                    {{ zone.severity }}
+                    <span v-if="zone.riverSea"> · {{ zone.riverSea }}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Listed Buildings Nearby -->
+        <div v-if="enrichment?.listedBuildings?.length" class="prop-section">
+          <h2 class="prop-section-title">Listed Buildings Nearby</h2>
+          <div class="prop-listed-list">
+            <div
+              v-for="(b, i) in enrichment.listedBuildings"
+              :key="i"
+              class="prop-listed-row"
+            >
+              <div class="prop-listed-grade">{{ b.grade ?? 'LB' }}</div>
+              <div class="flex-1 min-w-0">
+                <p class="prop-listed-name">{{ b.name }}</p>
+                <p v-if="b.location" class="prop-listed-loc">{{ b.location }}</p>
+              </div>
+              <a
+                v-if="b.link"
+                :href="b.link"
+                target="_blank"
+                rel="noopener"
+                class="prop-listed-link"
+              >View</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Council Tax -->
+        <div class="prop-section">
+          <h2 class="prop-section-title">Council Tax</h2>
+          <div class="prop-ct-card">
+            <div v-if="enrichment?.councilTax?.band" class="prop-ct-main">
+              <div class="prop-ct-band">{{ enrichment.councilTax.band }}</div>
+              <div class="prop-ct-info">
+                <p class="prop-ct-label">Band {{ enrichment.councilTax.band }}</p>
+                <p v-if="enrichment.councilTax.annualEstimate" class="prop-ct-amount">
+                  ~£{{ enrichment.councilTax.annualEstimate.toLocaleString() }} / year
+                </p>
+                <p v-if="enrichment.councilTax.councilName" class="prop-ct-council">
+                  {{ enrichment.councilTax.councilName }}
+                </p>
+              </div>
+            </div>
+            <div v-else class="prop-ct-unknown">
+              <p class="prop-ct-unknown-label">Band not available</p>
+            </div>
+            <a
+              :href="enrichment?.councilTax?.checkUrl ?? 'https://www.gov.uk/council-tax-bands'"
+              target="_blank"
+              rel="noopener"
+              class="prop-ct-link"
+            >Check on GOV.UK</a>
+          </div>
+        </div>
+
+        <!-- Planning -->
+        <div class="prop-section">
+          <h2 class="prop-section-title">Planning</h2>
+          <div class="prop-planning-card">
+
+            <!-- Constraints by category -->
+            <template v-if="enrichment?.planningHistory?.constraints?.length">
+              <div class="prop-planning-label">Constraints</div>
+              <template v-for="cat in planningCategories" :key="cat.id">
+                <div v-if="planningByCategory(cat.id).length" class="prop-planning-category">
+                  <div class="prop-planning-cat-header">
+                    <span class="prop-planning-cat-dot" :style="{ background: cat.color }" />
+                    {{ cat.label }}
+                  </div>
+                  <div class="prop-planning-list">
+                    <div
+                      v-for="(c, i) in planningByCategory(cat.id)"
+                      :key="i"
+                      class="prop-planning-row"
+                    >
+                      <div class="prop-planning-type-badge" :style="{ background: cat.bg, color: cat.color }">
+                        {{ c.type }}
+                      </div>
+                      <p class="prop-planning-name">{{ c.name }}</p>
+                      <p v-if="c.reference" class="prop-planning-ref">Ref: {{ c.reference }}</p>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </template>
+            <p v-else-if="enrichment && !enrichment.planningHistory?.constraints?.length" class="prop-planning-none">
+              No planning constraints recorded for this location.
+            </p>
+
+            <!-- Planning Applications -->
+            <template v-if="enrichment?.planningHistory?.applications?.length">
+              <div class="prop-planning-label" :style="{ marginTop: enrichment?.planningHistory?.constraints?.length ? '16px' : '0' }">
+                Planning Applications
+              </div>
+              <div class="prop-planning-apps">
+                <div
+                  v-for="(app, i) in enrichment.planningHistory.applications"
+                  :key="i"
+                  class="prop-planning-app-row"
+                >
+                  <div class="prop-planning-app-top">
+                    <span class="prop-planning-ref">{{ app.reference ?? 'No ref' }}</span>
+                    <span
+                      v-if="app.decision"
+                      class="prop-planning-decision"
+                      :class="planningDecisionClass(app.decision)"
+                    >{{ app.decision }}</span>
+                    <span v-else-if="app.status" class="prop-planning-decision prop-planning-decision--pending">
+                      {{ app.status }}
+                    </span>
+                  </div>
+                  <p v-if="app.description" class="prop-planning-app-desc">{{ app.description }}</p>
+                  <div class="prop-planning-app-meta">
+                    <span v-if="app.applicationType" class="prop-planning-app-type">{{ app.applicationType }}</span>
+                    <span v-if="app.decisionDate" class="prop-planning-app-date">{{ formatSaleDate(app.decisionDate) }}</span>
+                  </div>
+                  <a v-if="app.docUrl" :href="app.docUrl" target="_blank" rel="noopener" class="prop-planning-app-link">
+                    View documents
+                  </a>
+                </div>
+              </div>
+            </template>
+
+            <a
+              href="https://www.planning.data.gov.uk/"
+              target="_blank"
+              rel="noopener"
+              class="prop-ct-link"
+              style="margin-top: 14px; display: inline-block;"
+            >planning.data.gov.uk</a>
           </div>
         </div>
 
@@ -577,6 +800,9 @@ const propertyImages = computed(() => {
 })
 
 const potentialEpc = computed(() => {
+  // Use real potential rating from EPC API if available
+  if (enrichment.value?.epcPotentialRating) return enrichment.value.epcPotentialRating
+  // Fallback: one band better than current (rough estimate before enrichment loads)
   const bands = ['G', 'F', 'E', 'D', 'C', 'B', 'A']
   const idx = bands.indexOf(property.value?.epcRating ?? 'D')
   return bands[Math.min(idx + 1, bands.length - 1)]
@@ -747,6 +973,29 @@ const buyerModePassportId = computed(() => {
   }
   return undefined
 })
+
+const planningCategories = [
+  { id: 'heritage',     label: 'Heritage',     color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
+  { id: 'environment',  label: 'Environment',  color: '#16a34a', bg: 'rgba(22,163,74,0.1)'  },
+  { id: 'development',  label: 'Development',  color: '#ea580c', bg: 'rgba(234,88,12,0.1)'  },
+]
+
+function planningByCategory(category: string) {
+  return (enrichment.value?.planningHistory?.constraints ?? []).filter((c: any) => c.category === category)
+}
+
+function planningDecisionClass(decision: string) {
+  const d = (decision ?? '').toLowerCase()
+  if (d.includes('grant') || d.includes('approv') || d.includes('permit')) return 'prop-planning-decision--approved'
+  if (d.includes('refus') || d.includes('reject')) return 'prop-planning-decision--refused'
+  return 'prop-planning-decision--pending'
+}
+
+function formatSaleDate(dateStr: string): string {
+  if (!dateStr) return '—'
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
+}
 
 function handleClaimed(passportId: string) {
   // If buyer mode (unlocking existing passport) → buyer passport view
@@ -1311,5 +1560,453 @@ function handleClaimed(passportId: string) {
 
 .prop-bottom-pad {
   height: 20px;
+}
+
+/* ── Detail sub-label (m² under sqft) ───────────────────────────────────── */
+.prop-detail-sub {
+  font-size: 11px;
+  color: #8e8e93;
+  margin-top: 1px;
+}
+
+/* ── EPC cert link ───────────────────────────────────────────────────────── */
+.prop-section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.prop-section-title-row .prop-section-title {
+  margin-bottom: 0;
+}
+.prop-epc-cert-link {
+  font-size: 12px;
+  color: #00a19a;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid #00a19a;
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+/* ── Price History ───────────────────────────────────────────────────────── */
+.prop-price-history {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f8f8fa;
+}
+.prop-sale-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eeeeee;
+  gap: 12px;
+}
+.prop-sale-row:last-child {
+  border-bottom: none;
+}
+.prop-sale-left {
+  flex: 0 0 auto;
+}
+.prop-sale-right {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+}
+.prop-sale-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: #00a19a;
+}
+.prop-sale-meta {
+  font-size: 11px;
+  color: #8e8e93;
+  margin-top: 2px;
+}
+.prop-sale-address {
+  font-size: 12px;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  margin-left: auto;
+}
+.prop-sale-date {
+  font-size: 11px;
+  color: #8e8e93;
+  margin-top: 2px;
+}
+
+/* ── Broadband ───────────────────────────────────────────────────────────── */
+.prop-broadband-card {
+  background: #f8f8fa;
+  border-radius: 16px;
+  padding: 16px;
+}
+.prop-bb-speeds {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+.prop-bb-speed-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.prop-bb-speed-val {
+  font-size: 28px;
+  font-weight: 700;
+  color: #00a19a;
+  line-height: 1;
+}
+.prop-bb-speed-unit {
+  font-size: 11px;
+  color: #00a19a;
+  font-weight: 500;
+}
+.prop-bb-speed-label {
+  font-size: 11px;
+  color: #8e8e93;
+  margin-top: 2px;
+}
+.prop-bb-divider {
+  width: 1px;
+  height: 40px;
+  background: #e0e0e0;
+}
+.prop-bb-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.prop-bb-type {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #e8e8ed;
+  color: #8e8e93;
+}
+.prop-bb-type--on {
+  background: rgba(0, 161, 154, 0.1);
+  color: #00a19a;
+}
+
+/* ── Flood Risk ──────────────────────────────────────────────────────────── */
+.prop-flood-card {
+  background: #f8f8fa;
+  border-radius: 16px;
+  padding: 16px;
+}
+.prop-flood-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.prop-flood-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.prop-flood-badge--very-low,
+.prop-flood-badge--low { background: #d4edda; color: #155724; }
+.prop-flood-badge--medium { background: #fff3cd; color: #856404; }
+.prop-flood-badge--high { background: #f8d7da; color: #721c24; }
+.prop-flood-badge--severe { background: #c82333; color: white; }
+.prop-flood-desc {
+  font-size: 12px;
+  color: #8e8e93;
+  line-height: 1.4;
+}
+.prop-flood-zones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid #eeeeee;
+  padding-top: 12px;
+}
+.prop-flood-zone-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.prop-flood-zone-name {
+  font-size: 13px;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+.prop-flood-zone-sev {
+  font-size: 11px;
+  color: #8e8e93;
+  margin-top: 2px;
+}
+
+/* ── Listed Buildings ────────────────────────────────────────────────────── */
+.prop-listed-list {
+  background: #f8f8fa;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.prop-listed-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eeeeee;
+}
+.prop-listed-row:last-child {
+  border-bottom: none;
+}
+.prop-listed-grade {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(0, 161, 154, 0.1);
+  color: #00a19a;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.prop-listed-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+.prop-listed-loc {
+  font-size: 11px;
+  color: #8e8e93;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prop-listed-link {
+  font-size: 12px;
+  color: #00a19a;
+  font-weight: 500;
+  text-decoration: none;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* ── Council Tax ─────────────────────────────────────────────────────────── */
+.prop-ct-card {
+  background: #f8f8fa;
+  border-radius: 16px;
+  padding: 16px;
+}
+.prop-ct-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.prop-ct-band {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #00a19a, #007a74);
+  color: white;
+  font-size: 28px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.prop-ct-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.prop-ct-amount {
+  font-size: 13px;
+  color: #00a19a;
+  margin-top: 2px;
+  font-weight: 500;
+}
+.prop-ct-council {
+  font-size: 11px;
+  color: #8e8e93;
+  margin-top: 3px;
+}
+.prop-ct-unknown {
+  margin-bottom: 14px;
+}
+.prop-ct-unknown-label {
+  font-size: 13px;
+  color: #8e8e93;
+}
+.prop-ct-link {
+  font-size: 12px;
+  color: #00a19a;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid #00a19a;
+  border-radius: 20px;
+  padding: 6px 16px;
+  display: inline-block;
+}
+
+/* ── Planning ────────────────────────────────────────────────────────────── */
+.prop-planning-card {
+  background: #f8f8fa;
+  border-radius: 16px;
+  padding: 16px;
+}
+.prop-planning-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8e8e93;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.prop-planning-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.prop-planning-row {
+  background: white;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.prop-planning-type-badge {
+  display: inline-block;
+  background: rgba(0, 161, 154, 0.1);
+  color: #00a19a;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  margin-bottom: 4px;
+}
+.prop-planning-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+.prop-planning-ref {
+  font-size: 11px;
+  color: #8e8e93;
+  margin-top: 2px;
+}
+.prop-planning-none {
+  font-size: 13px;
+  color: #8e8e93;
+  margin-bottom: 4px;
+}
+
+/* Category grouping */
+.prop-planning-category {
+  margin-bottom: 10px;
+}
+.prop-planning-cat-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3c3c43;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.prop-planning-cat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Planning applications */
+.prop-planning-apps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.prop-planning-app-row {
+  background: white;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.prop-planning-app-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.prop-planning-app-desc {
+  font-size: 12px;
+  color: #1a1a1a;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.prop-planning-app-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.prop-planning-app-type {
+  font-size: 10px;
+  color: #8e8e93;
+  background: #f0f0f5;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.prop-planning-app-date {
+  font-size: 10px;
+  color: #8e8e93;
+}
+.prop-planning-app-link {
+  font-size: 11px;
+  color: #00a19a;
+  text-decoration: none;
+  font-weight: 500;
+}
+.prop-planning-decision {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  text-transform: capitalize;
+}
+.prop-planning-decision--approved {
+  background: rgba(22, 163, 74, 0.12);
+  color: #16a34a;
+}
+.prop-planning-decision--refused {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+.prop-planning-decision--pending {
+  background: rgba(234, 88, 12, 0.1);
+  color: #ea580c;
 }
 </style>
