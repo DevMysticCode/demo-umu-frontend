@@ -235,34 +235,29 @@
                 </div>
                 <div>
                   <p class="prop-detail-label">Flood Risk</p>
-                  <p class="prop-detail-value">{{ enrichment.floodRisk }}</p>
+                  <p class="prop-detail-value">{{ enrichment?.floodRisk }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Quick action icons -->
+          <!-- Quick action strip -->
           <div class="prop-quick-actions">
-            <button class="prop-quick-btn">
-              <OPIcon name="exploreExternalLink" class="w-[15px] h-[15px]" />
-            </button>
-            <button class="prop-quick-btn">
-              <OPIcon name="locationFilled" class="w-[15px] h-[15px]" />
-            </button>
-            <button class="prop-quick-btn">
-              <OPIcon name="goodEnergy" class="w-[15px] h-[15px]" />
-            </button>
-            <button class="prop-quick-btn">
-              <OPIcon name="train" class="w-[15px] h-[15px]" />
-            </button>
-            <button class="prop-quick-btn">
-              <OPIcon name="closeToSchool" class="w-[15px] h-[15px]" />
+            <button
+              v-for="s in quickSections"
+              :key="s.id"
+              class="prop-quick-btn"
+              :class="{ active: activeSection === s.id }"
+              @click="toggleSection(s.id)"
+            >
+              <OPIcon :name="s.icon" class="w-[18px] h-[18px]" />
+              <span class="prop-quick-label">{{ s.label }}</span>
             </button>
           </div>
         </div>
 
         <!-- Floor Plan -->
-        <div class="prop-section">
+        <div v-show="activeSection === 'floor-plan'" id="section-floor-plan" class="prop-section">
           <h2 class="prop-section-title">Floor Plan</h2>
           <div class="prop-floor-card">
             <img
@@ -285,7 +280,7 @@
         </div>
 
         <!-- Location and Nearby -->
-        <div class="prop-section">
+        <div v-show="activeSection === 'location'" id="section-location" class="prop-section">
           <h2 class="prop-section-title">Location and Nearby</h2>
           <div class="prop-map-wrap">
             <div ref="mapEl" class="prop-map" />
@@ -309,62 +304,76 @@
             </button>
           </div>
 
-          <!-- Nearby tabs (active tab = full button, others = icon circles) -->
-          <div class="prop-nearby-tabs">
-            <template v-for="tab in nearbyTabOptions" :key="tab.value">
-              <button
-                v-if="nearbyTab === tab.value"
-                class="prop-nearby-full active"
-                @click="nearbyTab = tab.value"
-              >
-                <OPIcon :name="tab.icon" class="w-[15px] h-[15px]" />
-                {{ tab.label }}
-              </button>
-              <button
-                v-else
-                class="prop-nearby-icon"
-                @click="nearbyTab = tab.value"
-              >
-                <OPIcon :name="tab.icon" class="w-[18px] h-[18px]" />
-              </button>
-            </template>
-          </div>
+        </div>
 
-          <!-- Content for active nearby tab -->
+        <!-- Train Stations -->
+        <div v-show="activeSection === 'trains'" id="section-trains" class="prop-section">
+          <h2 class="prop-section-title">Train Stations Nearby</h2>
           <div class="prop-station-list">
-            <div
-              v-for="s in nearbyTabOptions.find((t) => t.value === nearbyTab)
-                ?.items ?? []"
-              :key="s.name"
-              class="prop-station-row"
-            >
-              <div class="prop-station-icon">
-                <OPIcon
-                  :name="s.icon ?? 'publicTransport'"
-                  class="w-[18px] h-[18px]"
-                />
+            <template v-if="enrichment?.nearby?.trains?.length">
+              <div v-for="s in enrichment.nearby.trains" :key="s.name" class="prop-station-row">
+                <div class="prop-station-icon">
+                  <OPIcon name="nationalRailLogo" class="w-[18px] h-[18px]" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="prop-station-name">{{ s.name }}</p>
+                  <p class="prop-station-dist">
+                    <OPIcon name="currentLocation" class="w-[11px] h-[11px]" style="display:inline;vertical-align:-1px;margin-right:3px;" />
+                    {{ s.vicinity }}
+                  </p>
+                </div>
               </div>
-              <div class="flex-1 min-w-0">
-                <p class="prop-station-name">{{ s.name }}</p>
-                <p class="prop-station-dist">
-                  <OPIcon
-                    name="currentLocation"
-                    class="w-[11px] h-[11px]"
-                    style="
-                      display: inline;
-                      vertical-align: -1px;
-                      margin-right: 3px;
-                    "
-                  />
-                  {{ s.distance }}
-                </p>
+            </template>
+            <p v-else class="prop-nearby-empty">No train stations found nearby.</p>
+          </div>
+        </div>
+
+        <!-- Schools -->
+        <div v-show="activeSection === 'schools'" id="section-schools" class="prop-section">
+          <h2 class="prop-section-title">Schools Nearby</h2>
+          <div class="prop-station-list">
+            <template v-if="enrichment?.nearby?.schools?.length">
+              <div v-for="s in enrichment.nearby.schools" :key="s.name" class="prop-station-row">
+                <div class="prop-station-icon">
+                  <OPIcon name="closeToSchool" class="w-[18px] h-[18px]" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="prop-station-name">{{ s.name }}</p>
+                  <p class="prop-station-dist">
+                    <OPIcon name="currentLocation" class="w-[11px] h-[11px]" style="display:inline;vertical-align:-1px;margin-right:3px;" />
+                    {{ s.vicinity }}
+                  </p>
+                </div>
               </div>
-            </div>
+            </template>
+            <p v-else class="prop-nearby-empty">No schools found nearby.</p>
+          </div>
+        </div>
+
+        <!-- Parks -->
+        <div v-show="activeSection === 'parks'" id="section-parks" class="prop-section">
+          <h2 class="prop-section-title">Parks Nearby</h2>
+          <div class="prop-station-list">
+            <template v-if="enrichment?.nearby?.parks?.length">
+              <div v-for="s in enrichment.nearby.parks" :key="s.name" class="prop-station-row">
+                <div class="prop-station-icon">
+                  <OPIcon name="closeToPublicPark" class="w-[18px] h-[18px]" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="prop-station-name">{{ s.name }}</p>
+                  <p class="prop-station-dist">
+                    <OPIcon name="currentLocation" class="w-[11px] h-[11px]" style="display:inline;vertical-align:-1px;margin-right:3px;" />
+                    {{ s.vicinity }}
+                  </p>
+                </div>
+              </div>
+            </template>
+            <p v-else class="prop-nearby-empty">No parks found nearby.</p>
           </div>
         </div>
 
         <!-- EPC Rating -->
-        <div v-if="property.epcRating" class="prop-section">
+        <div v-show="activeSection === 'epc'" id="section-epc" class="prop-section">
           <div class="prop-section-title-row">
             <h2 class="prop-section-title">EPC Rating</h2>
             <a
@@ -416,32 +425,102 @@
         </div>
 
         <!-- Sales History -->
-        <div v-if="enrichment?.salesHistory?.length" class="prop-section">
+        <div v-show="activeSection === 'sales'" id="section-sales" class="prop-section">
           <h2 class="prop-section-title">Sales History</h2>
-          <div class="prop-price-history">
-            <div
-              v-for="(sale, i) in enrichment.salesHistory"
-              :key="i"
-              class="prop-sale-row"
-            >
-              <div class="prop-sale-left">
-                <p class="prop-sale-price">{{ formatPrice(sale.price) }}</p>
-                <p class="prop-sale-meta">
-                  {{ [sale.propertyType, sale.tenure, sale.newBuild ? 'New Build' : null].filter(Boolean).join(' · ') || '—' }}
-                </p>
+
+          <!-- Tabs -->
+          <div class="prop-cov-tabs" style="margin-bottom:12px">
+            <button :class="['prop-cov-tab', { active: salesTab === 'property' }]" @click="salesTab = 'property'">
+              This Property
+              <span v-if="enrichment?.salesHistory?.thisProperty?.length" class="prop-sales-tab-count">
+                {{ enrichment.salesHistory.thisProperty.length }}
+              </span>
+            </button>
+            <button :class="['prop-cov-tab', { active: salesTab === 'nearby' }]" @click="salesTab = 'nearby'">
+              Nearby Sales
+              <span v-if="enrichment?.salesHistory?.nearbySales?.length" class="prop-sales-tab-count">
+                {{ enrichment.salesHistory.nearbySales.length }}
+              </span>
+            </button>
+          </div>
+
+          <!-- This Property tab -->
+          <div v-if="salesTab === 'property'">
+            <template v-if="enrichment?.salesHistory?.thisProperty?.length">
+              <div class="prop-sales-timeline">
+                <div
+                  v-for="(sale, i) in enrichment.salesHistory.thisProperty"
+                  :key="i"
+                  class="prop-sale-card"
+                >
+                  <div class="prop-sale-card-dot prop-sale-card-dot--primary"></div>
+                  <div class="prop-sale-card-body">
+                    <div class="prop-sale-card-top">
+                      <span class="prop-sale-card-price">{{ formatPrice(sale.price) }}</span>
+                      <span class="prop-sale-card-date">{{ formatSaleDate(sale.date) }}</span>
+                    </div>
+                    <div class="prop-sale-card-tags">
+                      <span v-if="sale.propertyType" class="prop-sale-tag">{{ sale.propertyType }}</span>
+                      <span v-if="sale.tenure" class="prop-sale-tag">{{ sale.tenure }}</span>
+                      <span v-if="sale.newBuild" class="prop-sale-tag prop-sale-tag--new">New Build</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="prop-sale-right">
-                <p class="prop-sale-address">{{ sale.address ?? 'Nearby property' }}</p>
-                <p class="prop-sale-date">{{ formatSaleDate(sale.date) }}</p>
-              </div>
+            </template>
+            <div v-else class="prop-sales-empty">
+              <p>No sales recorded for this address.</p>
+              <p class="prop-sales-empty-sub">Either this property hasn't been sold since 1995, or the address could not be matched.</p>
             </div>
           </div>
+
+          <!-- Nearby Sales tab -->
+          <div v-if="salesTab === 'nearby'">
+            <template v-if="enrichment?.salesHistory?.nearbySales?.length">
+              <div class="prop-sales-timeline">
+                <div
+                  v-for="(sale, i) in enrichment.salesHistory.nearbySales"
+                  :key="i"
+                  class="prop-sale-card"
+                >
+                  <div class="prop-sale-card-dot"></div>
+                  <div class="prop-sale-card-body">
+                    <div class="prop-sale-card-top">
+                      <span class="prop-sale-card-price">{{ formatPrice(sale.price) }}</span>
+                      <span class="prop-sale-card-date">{{ formatSaleDate(sale.date) }}</span>
+                    </div>
+                    <p v-if="sale.address" class="prop-sale-card-addr">{{ sale.address }}<span v-if="sale.town">, {{ sale.town }}</span></p>
+                    <div class="prop-sale-card-tags">
+                      <span v-if="sale.propertyType" class="prop-sale-tag">{{ sale.propertyType }}</span>
+                      <span v-if="sale.tenure" class="prop-sale-tag">{{ sale.tenure }}</span>
+                      <span v-if="sale.newBuild" class="prop-sale-tag prop-sale-tag--new">New Build</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="prop-sales-nearby-note">Showing most recent sales within the same postcode.</p>
+            </template>
+            <div v-else class="prop-sales-empty">
+              <p>No nearby sales in the last 3 years.</p>
+            </div>
+          </div>
+
+          <p class="prop-sales-source">Source: HM Land Registry Price Paid Data</p>
         </div>
 
-        <!-- Broadband Connectivity -->
-        <div v-if="enrichment?.broadband" class="prop-section">
-          <h2 class="prop-section-title">Broadband Connectivity</h2>
-          <div class="prop-broadband-card">
+        <!-- Coverage: Broadband, Mobile, Cable/TV -->
+        <div v-show="activeSection === 'coverage'" id="section-coverage" class="prop-section">
+          <h2 class="prop-section-title">Coverage</h2>
+
+          <!-- Coverage sub-tabs -->
+          <div class="prop-cov-tabs">
+            <button :class="['prop-cov-tab', { active: coverageTab === 'broadband' }]" @click="coverageTab = 'broadband'">Broadband</button>
+            <button :class="['prop-cov-tab', { active: coverageTab === 'mobile' }]" @click="coverageTab = 'mobile'">Mobile</button>
+            <button :class="['prop-cov-tab', { active: coverageTab === 'tv' }]" @click="coverageTab = 'tv'">TV / Cable</button>
+          </div>
+
+          <!-- Broadband tab -->
+          <div v-if="coverageTab === 'broadband' && enrichment?.broadband" class="prop-broadband-card">
             <div class="prop-bb-speeds">
               <div class="prop-bb-speed-item">
                 <span class="prop-bb-speed-val">{{ enrichment.broadband.maxDownload ?? '—' }}</span>
@@ -462,13 +541,92 @@
               <span class="prop-bb-type" :class="{ 'prop-bb-type--on': enrichment.broadband.fttc }">FTTC</span>
               <span class="prop-bb-type" :class="{ 'prop-bb-type--on': enrichment.broadband.cable }">Cable</span>
             </div>
+            <p class="prop-cov-source">Source: Ofcom Connected Nations</p>
+          </div>
+          <div v-else-if="coverageTab === 'broadband'" class="prop-cov-unavailable">
+            Broadband data not available for this postcode.
+          </div>
+
+          <!-- Mobile tab -->
+          <div v-if="coverageTab === 'mobile'" class="prop-mobile-card">
+            <template v-if="enrichment?.mobileSignal">
+              <div
+                v-for="op in mobileOperators"
+                :key="op.key"
+                class="prop-mobile-row"
+              >
+                <div class="prop-mobile-op">{{ op.label }}</div>
+                <div class="prop-mobile-signals">
+                  <div class="prop-mobile-signal-item">
+                    <span
+                      class="prop-mobile-dot"
+                      :class="signalClass(enrichment.mobileSignal[op.key]?.data4g)"
+                    />
+                    <span class="prop-mobile-sig-label">4G</span>
+                  </div>
+                  <div class="prop-mobile-signal-item">
+                    <span
+                      class="prop-mobile-dot"
+                      :class="signalClass(enrichment.mobileSignal[op.key]?.data5g)"
+                    />
+                    <span class="prop-mobile-sig-label">5G</span>
+                  </div>
+                  <div class="prop-mobile-signal-item">
+                    <span
+                      class="prop-mobile-dot"
+                      :class="signalClass(enrichment.mobileSignal[op.key]?.indoor4g)"
+                    />
+                    <span class="prop-mobile-sig-label">Indoor</span>
+                  </div>
+                </div>
+              </div>
+              <div class="prop-mobile-legend">
+                <span class="prop-mobile-dot prop-mobile-dot--good" /> Good &nbsp;
+                <span class="prop-mobile-dot prop-mobile-dot--limited" /> Limited &nbsp;
+                <span class="prop-mobile-dot prop-mobile-dot--none" /> None
+              </div>
+              <p class="prop-cov-source">Source: Ofcom Connected Nations</p>
+            </template>
+            <div v-else class="prop-cov-unavailable">
+              Mobile signal data not available.
+              <a href="https://checker.ofcom.org.uk/en-gb/mobile-coverage" target="_blank" rel="noopener" class="prop-cov-link">Check on Ofcom</a>
+            </div>
+          </div>
+
+          <!-- TV / Cable tab -->
+          <div v-if="coverageTab === 'tv'" class="prop-tv-card">
+            <div class="prop-tv-row">
+              <span class="prop-tv-label">Satellite TV (Sky / Freesat)</span>
+              <span class="prop-tv-badge prop-tv-badge--yes">Available</span>
+            </div>
+            <div class="prop-tv-row">
+              <span class="prop-tv-label">Freeview (Digital Aerial)</span>
+              <span class="prop-tv-badge prop-tv-badge--yes">Available</span>
+            </div>
+            <div class="prop-tv-row">
+              <span class="prop-tv-label">Cable TV (Virgin Media)</span>
+              <span
+                class="prop-tv-badge"
+                :class="enrichment?.broadband?.cable ? 'prop-tv-badge--yes' : 'prop-tv-badge--check'"
+              >{{ enrichment?.broadband?.cable ? 'Likely Available' : 'Check Availability' }}</span>
+            </div>
+            <a
+              v-if="!enrichment?.broadband?.cable"
+              href="https://store.virginmedia.com/check-postcode.html"
+              target="_blank"
+              rel="noopener"
+              class="prop-cov-link"
+              style="margin-top: 10px; display: block;"
+            >Check Virgin Media postcode</a>
           </div>
         </div>
 
         <!-- Flood Risk Detail -->
-        <div v-if="enrichment?.floodRisk" class="prop-section">
+        <div v-show="activeSection === 'flood'" id="section-flood" class="prop-section">
           <h2 class="prop-section-title">Flood Risk</h2>
-          <div class="prop-flood-card">
+          <p v-if="!enrichment" class="prop-nearby-empty">Loading flood risk data...</p>
+          <p v-else-if="!enrichment.floodRisk" class="prop-nearby-empty">No flood risk data available for this location.</p>
+          <div v-if="enrichment?.floodRisk" class="prop-flood-card">
             <div class="prop-flood-header">
               <div
                 class="prop-flood-badge"
@@ -500,11 +658,11 @@
         </div>
 
         <!-- Listed Buildings Nearby -->
-        <div v-if="enrichment?.listedBuildings?.length" class="prop-section">
+        <div v-show="activeSection === 'heritage'" id="section-heritage" class="prop-section">
           <h2 class="prop-section-title">Listed Buildings Nearby</h2>
           <div class="prop-listed-list">
             <div
-              v-for="(b, i) in enrichment.listedBuildings"
+              v-for="(b, i) in enrichment?.listedBuildings ?? []"
               :key="i"
               class="prop-listed-row"
             >
@@ -524,10 +682,74 @@
           </div>
         </div>
 
+        <!-- Stamp Duty Calculator -->
+        <div v-show="activeSection === 'stamp-duty'" id="section-stamp-duty" class="prop-section">
+          <h2 class="prop-section-title">Stamp Duty Calculator</h2>
+          <div class="prop-sdlt-card">
+            <div class="prop-sdlt-input-row">
+              <span class="prop-sdlt-currency">£</span>
+              <input
+                v-model="sdltPriceRaw"
+                type="text"
+                inputmode="numeric"
+                placeholder="Enter property price"
+                class="prop-sdlt-input"
+                @input="onSdltInput"
+              />
+            </div>
+            <div class="prop-sdlt-options">
+              <button
+                :class="['prop-sdlt-opt', { active: sdltBuyerType === 'standard' }]"
+                @click="sdltBuyerType = 'standard'"
+              >Standard</button>
+              <button
+                :class="['prop-sdlt-opt', { active: sdltBuyerType === 'firsttime' }]"
+                @click="sdltBuyerType = 'firsttime'"
+              >First-Time Buyer</button>
+              <button
+                :class="['prop-sdlt-opt', { active: sdltBuyerType === 'additional' }]"
+                @click="sdltBuyerType = 'additional'"
+              >Additional Property</button>
+            </div>
+            <div class="prop-sdlt-breakdown">
+              <div
+                v-for="band in sdltBreakdown.bands"
+                :key="band.label"
+                class="prop-sdlt-band-row"
+              >
+                <span class="prop-sdlt-band-range">{{ band.label }}</span>
+                <span class="prop-sdlt-band-rate">{{ band.rate }}%</span>
+                <span class="prop-sdlt-band-tax">{{ formatPrice(band.tax) }}</span>
+              </div>
+            </div>
+            <div class="prop-sdlt-total-row">
+              <span class="prop-sdlt-total-label">Total Stamp Duty</span>
+              <span class="prop-sdlt-total-val">{{ formatPrice(sdltBreakdown.total) }}</span>
+            </div>
+            <p class="prop-sdlt-note">
+              England &amp; Northern Ireland rates ({{ new Date().getFullYear() }}).
+              <a href="https://www.gov.uk/stamp-duty-land-tax/residential-property-rates" target="_blank" rel="noopener" class="prop-cov-link">Full details on GOV.UK</a>
+            </p>
+          </div>
+        </div>
+
         <!-- Council Tax -->
-        <div class="prop-section">
+        <div v-show="activeSection === 'council-tax'" id="section-council-tax" class="prop-section">
           <h2 class="prop-section-title">Council Tax</h2>
-          <div class="prop-ct-card">
+
+          <!-- Sub-tabs -->
+          <div class="prop-cov-tabs" style="margin-bottom:12px">
+            <button :class="['prop-cov-tab', { active: ctTab === 'property' }]" @click="ctTab = 'property'">This Property</button>
+            <button :class="['prop-cov-tab', { active: ctTab === 'bands' }]"    @click="ctTab = 'bands'">All Bands</button>
+            <button :class="['prop-cov-tab', { active: ctTab === 'nearby' }]"   @click="ctTab = 'nearby'">Nearby</button>
+          </div>
+
+          <!-- This Property tab -->
+          <div v-if="ctTab === 'property'" class="prop-ct-card">
+            <p class="prop-ct-explainer">
+              Council tax is charged by local authorities and varies by property band.
+              Bands are based on estimated property values from April 1991.
+            </p>
             <div v-if="enrichment?.councilTax?.band" class="prop-ct-main">
               <div class="prop-ct-band">{{ enrichment.councilTax.band }}</div>
               <div class="prop-ct-info">
@@ -538,22 +760,56 @@
                 <p v-if="enrichment.councilTax.councilName" class="prop-ct-council">
                   {{ enrichment.councilTax.councilName }}
                 </p>
+                <p class="prop-ct-approx-note">Estimate based on England average. Actual amount varies by council.</p>
               </div>
             </div>
             <div v-else class="prop-ct-unknown">
-              <p class="prop-ct-unknown-label">Band not available</p>
+              <p class="prop-ct-unknown-label">Band not available for this property.</p>
+              <p class="prop-ct-approx-note">The band may be available once the property has an EPC certificate.</p>
             </div>
-            <a
-              :href="enrichment?.councilTax?.checkUrl ?? 'https://www.gov.uk/council-tax-bands'"
-              target="_blank"
-              rel="noopener"
-              class="prop-ct-link"
-            >Check on GOV.UK</a>
+            <a href="https://www.gov.uk/council-tax-bands" target="_blank" rel="noopener" class="prop-ct-link">
+              Check exact amount on GOV.UK
+            </a>
+          </div>
+
+          <!-- All Bands reference tab -->
+          <div v-if="ctTab === 'bands'" class="prop-ct-bands-table">
+            <div v-for="b in ctBandReference" :key="b.band" class="prop-ct-bands-row"
+              :class="{ 'prop-ct-bands-row--active': enrichment?.councilTax?.band === b.band }">
+              <div class="prop-ct-bands-letter" :class="{ active: enrichment?.councilTax?.band === b.band }">
+                {{ b.band }}
+              </div>
+              <div class="prop-ct-bands-range">{{ b.range }}</div>
+              <div class="prop-ct-bands-est">~£{{ b.estimate.toLocaleString() }}/yr</div>
+            </div>
+            <p class="prop-ct-approx-note" style="margin-top:10px;padding:0 4px">
+              Ranges are 1991 valuations used to assign bands. Annual estimates are England averages for 2024/25.
+            </p>
+          </div>
+
+          <!-- Nearby tab -->
+          <div v-if="ctTab === 'nearby'">
+            <template v-if="enrichment?.councilTax?.nearby?.length">
+              <div class="prop-ct-nearby-list">
+                <div v-for="(p, i) in enrichment.councilTax.nearby" :key="i" class="prop-ct-nearby-row">
+                  <div class="prop-ct-nearby-addr">{{ p.address }}</div>
+                  <div class="prop-ct-nearby-right">
+                    <span class="prop-ct-nearby-band">Band {{ p.band }}</span>
+                    <span v-if="p.annualEstimate" class="prop-ct-nearby-est">
+                      ~£{{ p.annualEstimate.toLocaleString() }} pa
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </template>
+            <div v-else class="prop-cov-unavailable">
+              No nearby council tax data available from EPC records.
+            </div>
           </div>
         </div>
 
         <!-- Planning -->
-        <div class="prop-section">
+        <div v-show="activeSection === 'planning'" id="section-planning" class="prop-section">
           <h2 class="prop-section-title">Planning</h2>
           <div class="prop-planning-card">
 
@@ -695,7 +951,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue'
 import PropertyActionBar from '@/components/property/PropertyActionBar.vue'
 import RegisterInterestContent from '~/components/property/RegisterInterestContent.vue'
 import ClaimPassportDrawer from '~/components/property/ClaimPassportDrawer.vue'
@@ -731,6 +987,57 @@ const showShare = ref(false)
 const showClaimDrawer = ref(false)
 const scoreTab = ref('home')
 const nearbyTab = ref('train')
+const coverageTab = ref('broadband')
+
+// ── Section navigation ────────────────────────────────────────────────────────
+const activeSection = ref<string>('location')
+
+const quickSections = [
+  { id: 'location',     label: 'Location',     icon: 'locationFilled' },
+  { id: 'trains',       label: 'Trains',       icon: 'train' },
+  { id: 'schools',      label: 'Schools',      icon: 'closeToSchool' },
+  { id: 'parks',        label: 'Parks',        icon: 'closeToPublicPark' },
+  { id: 'floor-plan',   label: 'Floor Plan',   icon: 'floorPlan' },
+  { id: 'epc',          label: 'EPC',          icon: 'epcRating' },
+  { id: 'sales',        label: 'Sales',        icon: 'transactionInformation' },
+  { id: 'coverage',     label: 'Coverage',     icon: 'mobileSignal' },
+  { id: 'flood',        label: 'Flood Risk',   icon: 'environmental' },
+  { id: 'council-tax',  label: 'Council Tax',  icon: 'insurance' },
+  { id: 'planning',     label: 'Planning',     icon: 'alterationsAndPlanning' },
+  { id: 'stamp-duty',   label: 'Stamp Duty',   icon: 'otherCharges' },
+  { id: 'heritage',     label: 'Heritage',     icon: 'boundaries' },
+]
+
+let mapInitialised = false
+function toggleSection(id: string) {
+  if (activeSection.value === id) {
+    return // don't collapse — always keep one open
+  }
+  activeSection.value = id
+  nextTick(() => {
+    document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (id === 'location' && !mapInitialised) {
+      mapInitialised = true
+      initMap()
+    }
+  })
+}
+const salesTab = ref('property')
+const ctTab = ref('property')
+
+const ctBandReference = [
+  { band: 'A', range: 'Up to £40,000',                    estimate: 1377 },
+  { band: 'B', range: 'More than £40,000 up to £52,000',  estimate: 1606 },
+  { band: 'C', range: 'More than £52,000 up to £68,000',  estimate: 1835 },
+  { band: 'D', range: 'More than £68,000 up to £88,000',  estimate: 2065 },
+  { band: 'E', range: 'More than £88,000 up to £120,000', estimate: 2523 },
+  { band: 'F', range: 'More than £120,000 up to £160,000',estimate: 2982 },
+  { band: 'G', range: 'More than £160,000 up to £320,000',estimate: 3440 },
+  { band: 'H', range: 'More than £320,000',               estimate: 4130 },
+]
+const sdltBuyerType = ref<'standard' | 'firsttime' | 'additional'>('standard')
+const sdltPriceInput = ref(0)
+const sdltPriceRaw = ref('')
 const mapEl = ref<HTMLElement | null>(null)
 let mapInstance: any = null
 
@@ -831,7 +1138,7 @@ const epcBands = [
   { label: 'G', range: '1-20', color: '#ff3232', width: '35%' },
 ]
 
-// Mapbox GL map
+// Mapbox GL map (falls back to OpenStreetMap iframe if no token)
 const initMap = async () => {
   if (!mapEl.value || !property.value) return
   const lat = property.value.latitude
@@ -839,7 +1146,17 @@ const initMap = async () => {
   if (!lat || !lng) return
 
   const token = config.public.mapboxToken as string
-  if (!token) return
+
+  if (!token) {
+    // OSM iframe fallback — no API key needed
+    const bbox = `${lng - 0.005},${lat - 0.003},${lng + 0.005},${lat + 0.003}`
+    mapEl.value.innerHTML = `<iframe
+      width="100%" height="100%" style="border:0;border-radius:16px;"
+      loading="lazy"
+      src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}"
+    ></iframe>`
+    return
+  }
 
   const mapboxgl = (await import('mapbox-gl')).default
   // inject CSS once
@@ -896,7 +1213,11 @@ onMounted(async () => {
   } finally {
     pageLoading.value = false
     await nextTick()
-    initMap()
+    // Init map immediately since location section is open by default
+    if (!mapInitialised) {
+      mapInitialised = true
+      initMap()
+    }
   }
 
   // Fetch enrichment data in background (non-blocking)
@@ -982,6 +1303,91 @@ const planningCategories = [
 
 function planningByCategory(category: string) {
   return (enrichment.value?.planningHistory?.constraints ?? []).filter((c: any) => c.category === category)
+}
+
+// ── Coverage helpers ────────────────────────────────────────────────────────
+const mobileOperators = [
+  { key: 'EE',       label: 'EE' },
+  { key: 'O2',       label: 'O2' },
+  { key: 'Three',    label: 'Three' },
+  { key: 'Vodafone', label: 'Vodafone' },
+]
+
+function signalClass(val: any) {
+  if (val === null || val === undefined) return 'prop-mobile-dot--none'
+  const n = typeof val === 'boolean' ? (val ? 4 : 0) : Number(val)
+  if (n >= 3) return 'prop-mobile-dot--good'
+  if (n >= 1) return 'prop-mobile-dot--limited'
+  return 'prop-mobile-dot--none'
+}
+
+// ── SDLT calculator ─────────────────────────────────────────────────────────
+
+// Pre-fill from property estimated price once loaded
+watch(() => property.value?.estimatedPrice, (p) => {
+  if (p && sdltPriceInput.value === 0) {
+    sdltPriceInput.value = Math.round(p)
+    sdltPriceRaw.value = Math.round(p).toLocaleString('en-GB')
+  }
+}, { immediate: true })
+
+function onSdltInput(e: Event) {
+  const raw = (e.target as HTMLInputElement).value.replace(/[^0-9]/g, '')
+  sdltPriceInput.value = raw ? parseInt(raw, 10) : 0
+  sdltPriceRaw.value = sdltPriceInput.value ? sdltPriceInput.value.toLocaleString('en-GB') : ''
+}
+
+interface SdltBand { label: string; rate: number; tax: number }
+
+const sdltBreakdown = computed((): { bands: SdltBand[]; total: number } => {
+  const price = sdltPriceInput.value
+  const type = sdltBuyerType.value
+
+  // England & Northern Ireland SDLT rates (from Oct 2024)
+  let rawBands: { from: number; to: number; rate: number }[]
+
+  if (type === 'firsttime') {
+    if (price > 625000) {
+      // Above £625k: standard rates apply (no FTB relief)
+      rawBands = standardBands()
+    } else {
+      rawBands = [
+        { from: 0,      to: 425000, rate: 0 },
+        { from: 425000, to: 625000, rate: 5 },
+      ]
+    }
+  } else if (type === 'additional') {
+    // Standard + 5% surcharge on every band
+    rawBands = standardBands().map(b => ({ ...b, rate: b.rate + 5 }))
+  } else {
+    rawBands = standardBands()
+  }
+
+  let total = 0
+  const bands: SdltBand[] = []
+  for (const b of rawBands) {
+    if (price <= b.from) break
+    const taxable = Math.min(price, b.to) - b.from
+    const tax = Math.round(taxable * b.rate / 100)
+    total += tax
+    if (taxable > 0) {
+      bands.push({
+        label: `£${(b.from / 1000).toFixed(0)}k – ${b.to === Infinity ? 'above' : '£' + (b.to / 1000).toFixed(0) + 'k'}`,
+        rate: b.rate,
+        tax,
+      })
+    }
+  }
+  return { bands, total }
+})
+
+function standardBands() {
+  return [
+    { from: 0,       to: 250000,   rate: 0  },
+    { from: 250000,  to: 925000,   rate: 5  },
+    { from: 925000,  to: 1500000,  rate: 10 },
+    { from: 1500000, to: Infinity, rate: 12 },
+  ]
 }
 
 function planningDecisionClass(decision: string) {
@@ -1291,27 +1697,47 @@ function handleClaimed(passportId: string) {
   letter-spacing: -0.23px;
 }
 
-/* Quick action icons */
+/* Quick action strip */
 .prop-quick-actions {
   display: flex;
-  justify-content: center;
   gap: 8px;
-  padding-top: 16px;
+  padding: 16px 0 4px;
   border-top: 1px solid #eeeeee;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.prop-quick-actions::-webkit-scrollbar {
+  display: none;
 }
 
 .prop-quick-btn {
-  width: 50px;
-  height: 32px;
-  border-radius: 100px;
-  background: white;
-  border: 0.33px solid #e8e8ee;
+  flex-shrink: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 5px;
+  padding: 10px 12px 8px;
+  border-radius: 14px;
+  background: #f7f7f9;
+  border: 1.5px solid #eeeeee;
   cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-  padding: 6px 16px;
+  transition: background 0.15s, border-color 0.15s;
+  min-width: 64px;
+}
+.prop-quick-btn.active {
+  background: #e8f8f7;
+  border-color: #00a19a;
+}
+.prop-quick-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: #636366;
+  white-space: nowrap;
+  line-height: 1;
+}
+.prop-quick-btn.active .prop-quick-label {
+  color: #00a19a;
 }
 
 /* ── Floor plan ──────────────────────────────────────────────────────────── */
@@ -1483,6 +1909,13 @@ function handleClaimed(passportId: string) {
   border-radius: 4px;
 }
 
+.prop-nearby-empty {
+  font-size: 13px;
+  color: #aeaeb2;
+  text-align: center;
+  padding: 20px 0;
+}
+
 /* ── EPC ─────────────────────────────────────────────────────────────────── */
 .prop-epc-card {
   background: #f8f8fa;
@@ -1589,57 +2022,389 @@ function handleClaimed(passportId: string) {
   padding: 4px 12px;
 }
 
-/* ── Price History ───────────────────────────────────────────────────────── */
-.prop-price-history {
+/* ── Sales History ───────────────────────────────────────────────────────── */
+.prop-section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.prop-section-header-row .prop-section-title {
+  margin-bottom: 0;
+}
+.prop-sales-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #00a19a;
+  background: #e8f8f7;
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+.prop-sales-timeline {
   display: flex;
   flex-direction: column;
   gap: 0;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #f8f8fa;
+  position: relative;
+  padding-left: 20px;
 }
-.prop-sale-row {
+.prop-sales-timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: #e5e5ea;
+}
+.prop-sale-card {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  padding: 12px 16px;
-  border-bottom: 1px solid #eeeeee;
   gap: 12px;
+  position: relative;
+  padding: 12px 0 12px 4px;
+  border-bottom: 1px solid #f0f0f0;
 }
-.prop-sale-row:last-child {
+.prop-sale-card:last-child {
   border-bottom: none;
 }
-.prop-sale-left {
-  flex: 0 0 auto;
+.prop-sale-card-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #c7c7cc;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px #e5e5ea;
+  flex-shrink: 0;
+  margin-top: 3px;
+  position: relative;
+  z-index: 1;
+  margin-left: -22px;
 }
-.prop-sale-right {
+.prop-sale-card-dot--primary {
+  background: #00a19a;
+  box-shadow: 0 0 0 2px #b2e5e3;
+}
+.prop-sale-card-body {
   flex: 1;
   min-width: 0;
+}
+.prop-sale-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.prop-sale-card-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.prop-sale-card-date {
+  font-size: 12px;
+  color: #8e8e93;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.prop-sale-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.prop-sale-tag {
+  font-size: 11px;
+  color: #636366;
+  background: #f2f2f7;
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+.prop-sale-tag--new {
+  color: #34c759;
+  background: #edfaf1;
+}
+.prop-sale-tag--addr {
+  color: #8e8e93;
+}
+.prop-sales-source {
+  font-size: 11px;
+  color: #aeaeb2;
+  margin-top: 10px;
   text-align: right;
 }
-.prop-sale-price {
-  font-size: 15px;
+.prop-sales-empty {
+  text-align: center;
+  padding: 24px 0 8px;
+  color: #636366;
+  font-size: 14px;
+}
+.prop-sales-empty-sub {
+  font-size: 11px;
+  color: #aeaeb2;
+  margin-top: 4px;
+}
+.prop-sales-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #00a19a;
+  color: #fff;
+  font-size: 10px;
   font-weight: 700;
+  border-radius: 10px;
+  min-width: 18px;
+  height: 16px;
+  padding: 0 4px;
+  margin-left: 4px;
+  line-height: 1;
+}
+.prop-cov-tab.active .prop-sales-tab-count {
+  background: #fff;
   color: #00a19a;
 }
-.prop-sale-meta {
-  font-size: 11px;
-  color: #8e8e93;
-  margin-top: 2px;
-}
-.prop-sale-address {
+.prop-sale-card-addr {
   font-size: 12px;
-  color: #1a1a1a;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 180px;
-  margin-left: auto;
+  color: #636366;
+  margin: 2px 0 4px;
 }
-.prop-sale-date {
+.prop-sales-nearby-note {
+  font-size: 11px;
+  color: #aeaeb2;
+  margin-top: 10px;
+}
+
+/* ── Coverage tabs ───────────────────────────────────────────────────────── */
+.prop-cov-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.prop-cov-tab {
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: 10px;
+  border: 1.5px solid #e0e0e0;
+  background: white;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8e8e93;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.prop-cov-tab.active {
+  border-color: #00a19a;
+  color: #00a19a;
+  background: rgba(0, 161, 154, 0.06);
+}
+.prop-cov-source {
+  font-size: 10px;
+  color: #b0b0b8;
+  margin-top: 10px;
+  text-align: right;
+}
+.prop-cov-unavailable {
+  background: #f8f8fa;
+  border-radius: 14px;
+  padding: 20px 16px;
+  font-size: 13px;
+  color: #8e8e93;
+  text-align: center;
+}
+.prop-cov-link {
+  color: #00a19a;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+/* ── Mobile signal ───────────────────────────────────────────────────────── */
+.prop-mobile-card {
+  background: #f8f8fa;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.prop-mobile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+.prop-mobile-row:last-of-type { border-bottom: none; }
+.prop-mobile-op {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  width: 80px;
+}
+.prop-mobile-signals {
+  display: flex;
+  gap: 20px;
+}
+.prop-mobile-signal-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.prop-mobile-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+.prop-mobile-dot--good    { background: #16a34a; }
+.prop-mobile-dot--limited { background: #f59e0b; }
+.prop-mobile-dot--none    { background: #d1d1d6; }
+.prop-mobile-sig-label {
+  font-size: 10px;
+  color: #8e8e93;
+}
+.prop-mobile-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 11px;
   color: #8e8e93;
-  margin-top: 2px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #eeeeee;
+}
+
+/* ── TV / Cable ──────────────────────────────────────────────────────────── */
+.prop-tv-card {
+  background: #f8f8fa;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.prop-tv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+.prop-tv-row:last-of-type { border-bottom: none; }
+.prop-tv-label {
+  font-size: 13px;
+  color: #1a1a1a;
+}
+.prop-tv-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.prop-tv-badge--yes   { background: rgba(22,163,74,0.1);  color: #16a34a; }
+.prop-tv-badge--check { background: rgba(234,88,12,0.1);  color: #ea580c; }
+
+/* ── Stamp Duty Calculator ───────────────────────────────────────────────── */
+.prop-sdlt-card {
+  background: #f8f8fa;
+  border-radius: 16px;
+  padding: 16px;
+}
+.prop-sdlt-input-row {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 0 14px;
+  margin-bottom: 14px;
+  transition: border-color 0.15s;
+}
+.prop-sdlt-input-row:focus-within {
+  border-color: #00a19a;
+}
+.prop-sdlt-currency {
+  font-size: 18px;
+  font-weight: 600;
+  color: #00a19a;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+.prop-sdlt-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  padding: 13px 0;
+  background: transparent;
+  min-width: 0;
+}
+.prop-sdlt-input::placeholder {
+  color: #c7c7cc;
+  font-weight: 400;
+  font-size: 15px;
+}
+.prop-sdlt-options {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.prop-sdlt-opt {
+  flex: 1;
+  min-width: 80px;
+  padding: 7px 6px;
+  border-radius: 10px;
+  border: 1.5px solid #e0e0e0;
+  background: white;
+  font-size: 11px;
+  font-weight: 500;
+  color: #8e8e93;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.prop-sdlt-opt.active {
+  border-color: #00a19a;
+  color: #00a19a;
+  background: rgba(0,161,154,0.06);
+}
+.prop-sdlt-breakdown {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.prop-sdlt-band-row {
+  display: grid;
+  grid-template-columns: 1fr 40px 80px;
+  align-items: center;
+  padding: 9px 12px;
+  border-bottom: 1px solid #f0f0f5;
+  font-size: 12px;
+  gap: 4px;
+}
+.prop-sdlt-band-row:last-child { border-bottom: none; }
+.prop-sdlt-band-range { color: #555; }
+.prop-sdlt-band-rate  { color: #8e8e93; text-align: center; }
+.prop-sdlt-band-tax   { color: #1a1a1a; font-weight: 600; text-align: right; }
+.prop-sdlt-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0 4px;
+  border-top: 2px solid #e8f7f6;
+  margin-top: 4px;
+}
+.prop-sdlt-total-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.prop-sdlt-total-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: #00a19a;
+}
+.prop-sdlt-note {
+  font-size: 11px;
+  color: #b0b0b8;
+  margin-top: 10px;
+  line-height: 1.5;
 }
 
 /* ── Broadband ───────────────────────────────────────────────────────────── */
@@ -1848,9 +2613,23 @@ function handleClaimed(passportId: string) {
 .prop-ct-unknown {
   margin-bottom: 14px;
 }
+.prop-ct-explainer {
+  font-size: 12px;
+  color: #8e8e93;
+  line-height: 1.5;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #eeeeee;
+}
 .prop-ct-unknown-label {
   font-size: 13px;
   color: #8e8e93;
+}
+.prop-ct-approx-note {
+  font-size: 10px;
+  color: #b0b0b8;
+  margin-top: 4px;
+  line-height: 1.4;
 }
 .prop-ct-link {
   font-size: 12px;
@@ -1861,6 +2640,90 @@ function handleClaimed(passportId: string) {
   border-radius: 20px;
   padding: 6px 16px;
   display: inline-block;
+}
+
+/* ── Council Tax bands reference ─────────────────────────────────────────── */
+.prop-ct-bands-table {
+  background: #f8f8fa;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.prop-ct-bands-row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eeeeee;
+}
+.prop-ct-bands-row:last-of-type { border-bottom: none; }
+.prop-ct-bands-row--active { background: rgba(0,161,154,0.06); }
+.prop-ct-bands-letter {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #e8e8ed;
+  color: #8e8e93;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.prop-ct-bands-letter.active {
+  background: linear-gradient(135deg, #00a19a, #007a74);
+  color: white;
+}
+.prop-ct-bands-range {
+  font-size: 12px;
+  color: #3c3c43;
+}
+.prop-ct-bands-est {
+  font-size: 12px;
+  font-weight: 600;
+  color: #00a19a;
+  white-space: nowrap;
+}
+
+/* ── Council Tax nearby ──────────────────────────────────────────────────── */
+.prop-ct-nearby-list {
+  background: #f8f8fa;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.prop-ct-nearby-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid #eeeeee;
+}
+.prop-ct-nearby-row:last-child { border-bottom: none; }
+.prop-ct-nearby-addr {
+  font-size: 12px;
+  color: #1a1a1a;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prop-ct-nearby-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  gap: 2px;
+}
+.prop-ct-nearby-band {
+  font-size: 12px;
+  font-weight: 700;
+  color: #00a19a;
+}
+.prop-ct-nearby-est {
+  font-size: 10px;
+  color: #8e8e93;
 }
 
 /* ── Planning ────────────────────────────────────────────────────────────── */
