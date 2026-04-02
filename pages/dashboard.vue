@@ -45,7 +45,7 @@
       <!-- Action cards -->
       <div class="px-4 flex flex-col gap-4 mb-7">
         <!-- Card 1: Find your Home Score -->
-        <div class="action-card">
+        <div class="action-card cursor-pointer" @click="router.push('/homescore')">
           <!-- Circular gauge -->
           <div class="gauge-wrap">
             <svg viewBox="0 0 100 100" width="100" height="100">
@@ -104,7 +104,7 @@
               Click here to find out how energy efficient your home is.
             </p>
             <div class="flex justify-end mt-2">
-              <button class="action-btn">Start</button>
+              <button class="action-btn" @click.stop="router.push('/homescore')">Start</button>
             </div>
           </div>
         </div>

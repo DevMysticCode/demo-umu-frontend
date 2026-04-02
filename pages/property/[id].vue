@@ -66,95 +66,38 @@
           </span>
         </div>
 
-        <!-- Score toggle -->
-        <div class="prop-section">
-          <div class="score-tabs">
-            <button
-              :class="['score-tab', { active: scoreTab === 'home' }]"
-              @click="scoreTab = 'home'"
-            >
-              Home Score
-            </button>
-            <button
-              :class="['score-tab', { active: scoreTab === 'move' }]"
-              @click="scoreTab = 'move'"
-            >
-              Move Ready Score
-            </button>
-          </div>
-        </div>
-
-        <!-- Score gauge -->
+        <!-- Score section -->
         <div class="prop-score-block">
-          <svg
-            viewBox="0 0 200 200"
-            width="180"
-            height="180"
-            class="prop-gauge-svg"
-          >
-            <!-- Track -->
-            <circle
-              cx="100"
-              cy="100"
-              r="80"
-              fill="none"
-              stroke="#d6f5f3"
-              stroke-width="16"
-              stroke-dasharray="502.65"
-              stroke-dashoffset="125.66"
-              stroke-linecap="round"
-              transform="rotate(135 100 100)"
-            />
-            <!-- Progress (74%) -->
-            <circle
-              cx="100"
-              cy="100"
-              r="80"
-              fill="none"
-              stroke="#00a19a"
-              stroke-width="16"
-              :stroke-dasharray="`${502.65 * 0.74 * 0.75} ${502.65}`"
-              stroke-linecap="round"
-              transform="rotate(135 100 100)"
-            />
-            <!-- Score text -->
-            <text
-              x="100"
-              y="94"
-              text-anchor="middle"
-              font-size="42"
-              font-weight="700"
-              fill="#00a19a"
-              font-family="sans-serif"
-            >
-              74
-            </text>
-            <text
-              x="100"
-              y="116"
-              text-anchor="middle"
-              font-size="14"
-              fill="#999"
-              font-family="sans-serif"
-            >
-              Good
-            </text>
-          </svg>
-          <!-- <div class="prop-score-ticks">
-            <span class="prop-tick-label" style="left: 0">0</span>
-            <span class="prop-tick-label" style="right: 0">100</span>
-          </div> -->
-          <div class="prop-score-avg-pill">
-            Street Average: 82 &nbsp;|&nbsp; Postcode Average: 72
-          </div>
-          <p class="prop-score-note">
-            <OPIcon
-              name="infoCircle"
-              class="w-[13px] h-[13px]"
-              style="display: inline; vertical-align: -2px; margin-right: 4px"
-            />
-            Based on verified property data and partial Passport completion.
-          </p>
+          <template v-if="homeScore">
+            <!-- Score gauge -->
+            <svg viewBox="0 0 200 200" width="170" height="170" class="prop-gauge-svg">
+              <circle cx="100" cy="100" r="80" fill="none" stroke="#e8e8ee" stroke-width="16" stroke-dasharray="376.99" stroke-dashoffset="94.25" stroke-linecap="round" transform="rotate(135 100 100)" />
+              <circle cx="100" cy="100" r="80" fill="none" :stroke="homeScoreColor" stroke-width="16" :stroke-dasharray="`${(homeScore.total / 100) * 376.99 * 0.75} 376.99`" stroke-linecap="round" transform="rotate(135 100 100)" />
+              <text x="100" y="93" text-anchor="middle" font-size="44" font-weight="800" :fill="homeScoreColor" font-family="sans-serif">{{ homeScore.total }}</text>
+              <text x="100" y="115" text-anchor="middle" font-size="13" fill="#8e8e93" font-family="sans-serif">{{ homeScore.rating }}</text>
+            </svg>
+            <div v-if="homeScoreIsAuto" class="prop-score-auto-pill">
+              Estimated · Based on public EPC data
+            </div>
+            <div v-else class="prop-score-avg-pill">
+              Heating: {{ homeScore.heating }} &nbsp;|&nbsp; Structure: {{ homeScore.structure }} &nbsp;|&nbsp; Efficiency: {{ homeScore.efficiency }}
+            </div>
+            <button class="prop-score-cta" @click="navigateTo(`/homescore/${property?.id}`)">
+              {{ homeScoreIsAuto ? 'Improve Accuracy' : 'Update Score' }}
+            </button>
+          </template>
+          <template v-else>
+            <!-- No score, no EPC data either -->
+            <svg viewBox="0 0 200 200" width="170" height="170" class="prop-gauge-svg">
+              <circle cx="100" cy="100" r="80" fill="none" stroke="#e8e8ee" stroke-width="16" stroke-dasharray="376.99" stroke-dashoffset="94.25" stroke-linecap="round" transform="rotate(135 100 100)" />
+              <text x="100" y="100" text-anchor="middle" font-size="38" font-weight="800" fill="#d1d5db" font-family="sans-serif">?</text>
+              <text x="100" y="122" text-anchor="middle" font-size="13" fill="#aeaeb2" font-family="sans-serif">Not calculated</text>
+            </svg>
+            <p class="prop-score-note">Answer 11 quick questions to get your property's Home Score.</p>
+            <button class="prop-score-cta" @click="navigateTo(`/homescore/${property?.id}`)">
+              Calculate Home Score
+            </button>
+          </template>
         </div>
 
         <!-- Property Details -->
@@ -986,6 +929,19 @@ const showRegisterInterest = ref(false)
 const showShare = ref(false)
 const showClaimDrawer = ref(false)
 const scoreTab = ref('home')
+
+// HomeScore from localStorage / backend / auto-generated
+const homeScore = ref<{ total: number; rating: string; heating: number; structure: number; efficiency: number; electrics: number; plumbing: number } | null>(null)
+const homeScoreIsAuto = ref(false) // true when score is estimated from public data, not user-answered
+
+const homeScoreColor = computed(() => {
+  const t = homeScore.value?.total ?? 0
+  if (t >= 85) return '#00c896'
+  if (t >= 70) return '#00a19a'
+  if (t >= 50) return '#f59e0b'
+  return '#ef4444'
+})
+
 const nearbyTab = ref('train')
 const coverageTab = ref('broadband')
 
@@ -1227,6 +1183,44 @@ onMounted(async () => {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
     if (res.ok) enrichment.value = await res.json()
+  } catch { /* non-critical */ }
+
+  // Load HomeScore — try backend first (if logged in), then fall back to localStorage
+  try {
+    const token = localStorage.getItem('token')
+    if (token) {
+      const hsRes = await fetch(`${apiBase}/property/${propertyId}/homescore`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (hsRes.ok) {
+        const hs = await hsRes.json()
+        if (hs) {
+          homeScore.value = hs
+        }
+      }
+    }
+    if (!homeScore.value) {
+      const saved = localStorage.getItem(`homescore_answers_${propertyId}`)
+      if (saved) {
+        const { answers } = JSON.parse(saved)
+        if (answers && Object.keys(answers).length === 11) {
+          const { calculateScore } = await import('~/utils/homescoreScoring')
+          const base = calculateScore(answers)
+          homeScore.value = { ...base.breakdown, total: base.total, rating: base.rating }
+        }
+      }
+    }
+    // Always auto-generate an estimated score if none exists yet
+    if (!homeScore.value) {
+      const { getPrefillFromProperty, getUnsureDefaults, calculateScore } = await import('~/utils/homescoreScoring')
+      // Start with "unsure" baseline for every question, then override with EPC-inferred answers
+      const unsure = getUnsureDefaults()
+      const epcPrefill = property.value ? getPrefillFromProperty(property.value) : {}
+      const merged = { ...unsure, ...epcPrefill }
+      const base = calculateScore(merged)
+      homeScore.value = { ...base.breakdown, total: base.total, rating: base.rating }
+      homeScoreIsAuto.value = true
+    }
   } catch { /* non-critical */ }
 })
 
@@ -1641,12 +1635,36 @@ function handleClaimed(passportId: string) {
   border: 1px solid #e8f7f6;
 }
 
+.prop-score-auto-pill {
+  background: #f5f5f8;
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 11px;
+  color: #8e8e93;
+  font-weight: 500;
+  text-align: center;
+  margin: 10px 0 8px;
+  border: 1px solid #e8e8ee;
+}
+
 .prop-score-note {
   font-size: 11px;
   color: #aaa;
   text-align: center;
   line-height: 1.4;
   max-width: 280px;
+}
+
+.prop-score-cta {
+  background: #00a19a;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
 }
 
 /* ── Details card ────────────────────────────────────────────────────────── */
