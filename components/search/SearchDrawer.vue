@@ -112,11 +112,14 @@
             </div>
           </div>
 
+          <div v-if="suggestionsLoading" class="sd-loading">
+            <div class="sd-spinner" />
+          </div>
           <div
-            v-if="filteredSuggestions.length === 0 && query"
+            v-else-if="filteredSuggestions.length === 0 && query.length >= 2"
             class="sd-empty-msg"
           >
-            No suggestions for "{{ query }}"
+            No postcodes found for "{{ query }}"
           </div>
         </div>
 
@@ -330,49 +333,34 @@ const handleViewSwitch = (val: string) => {
   else view.value = 'results'
 }
 
-const MOCK_SUGGESTIONS = [
-  {
-    address: '22, Elm Road',
-    area: 'Teddington, Middlesex',
-    postcode: 'TW11 8EA',
-  },
-  {
-    address: '14, Maple Avenue',
-    area: 'Twickenham, London',
-    postcode: 'TW1 4AL',
-  },
-  {
-    address: '78, Station Road',
-    area: 'Staines-upon-Thames, Surrey',
-    postcode: 'TW18 4HW',
-  },
-  {
-    address: '45, High Street',
-    area: 'Kingston-upon-Thames, Surrey',
-    postcode: 'KT1 1AT',
-  },
-  {
-    address: '102, Church Lane',
-    area: 'Walton-on-Thames, Surrey',
-    postcode: 'KT12 1QN',
-  },
-  {
-    address: '56, Park Avenue',
-    area: 'Richmond, London',
-    postcode: 'TW10 6RD',
-  },
-]
+const liveSuggestions = ref<{ address: string; area: string; postcode: string }[]>([])
+const suggestionsLoading = ref(false)
 
-const filteredSuggestions = computed(() => {
-  if (!query.value) return MOCK_SUGGESTIONS
-  const q = query.value.toLowerCase()
-  return MOCK_SUGGESTIONS.filter(
-    (s) =>
-      s.address.toLowerCase().includes(q) ||
-      s.area.toLowerCase().includes(q) ||
-      s.postcode.toLowerCase().includes(q),
-  )
-})
+let suggestionTimer: ReturnType<typeof setTimeout> | null = null
+
+async function fetchSuggestions(q: string) {
+  if (!q || q.length < 2) {
+    liveSuggestions.value = []
+    return
+  }
+  suggestionsLoading.value = true
+  try {
+    const res = await fetch(`https://api.postcodes.io/postcodes?q=${encodeURIComponent(q)}&limit=6`)
+    if (!res.ok) return
+    const data = await res.json()
+    liveSuggestions.value = (data.result ?? []).map((r: any) => ({
+      address: [r.admin_ward, r.admin_district].filter(Boolean).join(', ') || r.postcode,
+      area: [r.admin_district, r.admin_county || r.region].filter(Boolean).join(', '),
+      postcode: r.postcode,
+    }))
+  } catch {
+    liveSuggestions.value = []
+  } finally {
+    suggestionsLoading.value = false
+  }
+}
+
+const filteredSuggestions = computed(() => liveSuggestions.value)
 
 const MATCH_SCORES: Record<string, number> = {}
 const mockMatch = (id: string) => {
@@ -385,11 +373,16 @@ const onInput = () => {
   if (q.length < 2) {
     view.value = 'suggestions'
     rawResults.value = []
+    liveSuggestions.value = []
     return
   }
-  // Live search: debounce 350ms after each keystroke
+  // Show live postcode suggestions while typing
+  view.value = 'suggestions'
+  if (suggestionTimer) clearTimeout(suggestionTimer)
+  suggestionTimer = setTimeout(() => fetchSuggestions(q), 250)
+  // Also debounce full property search
   if (debounceTimer) clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => doSearch(), 350)
+  debounceTimer = setTimeout(() => doSearch(), 600)
 }
 
 const clearSearch = () => {

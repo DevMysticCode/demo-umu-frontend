@@ -56,6 +56,7 @@ export default defineNuxtConfig({
         'pk_test_51RvzhKLR3oJsnvMf4gRG09EZsz4uX4VYt89aqLXTTAdFnphlHHVyfzHlkLyR6I5U0TSi8Su5H3gTaT0Yasza7t6K00h9dldDgB',
       mapboxToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN || '',
       googleApiKey: process.env.NUXT_PUBLIC_GOOGLE_API_KEY || '',
+      osApiKey: process.env.NUXT_PUBLIC_OS_API_KEY || '',
     },
   },
   components: true,

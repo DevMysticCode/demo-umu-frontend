@@ -164,6 +164,7 @@ const iconMap: Record<string, string> = {
   externalLink: '/op-icons/property/externalLink.svg',
   locationFilled: '/op-icons/property/locationFilled.svg',
   train: '/op-icons/property/train.svg',
+  airport: '/op-icons/property/airport.svg',
   filterExplore: '/op-icons/filter/explore.svg',
   filterPriceRange: '/op-icons/filter/priceRange.svg',
   filterPropertyType: '/op-icons/filter/propertyType.svg',

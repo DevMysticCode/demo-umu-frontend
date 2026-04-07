@@ -1,9 +1,5 @@
 <template>
   <div class="mobile-container welcome-page">
-    <video autoplay muted loop playsinline class="welcome-page__video">
-      <source src="/public/welcome.mp4" type="video/mp4" />
-    </video>
-
     <div class="welcome-page__content">
       <div class="welcome-page__logo">
         <OPIcon name="logo" class="w-16 h-16" />
@@ -32,12 +28,8 @@ const beginJourney = () => {
 
 <style scoped>
 .welcome-page {
-  @apply bg-black text-white flex flex-col relative z-10;
-  background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
-
-  &__video {
-    @apply absolute w-full h-full object-cover z-0;
-  }
+  @apply text-white flex flex-col relative;
+  background-color: #000000;
 
   &__content {
     @apply z-10 flex flex-col items-center justify-center pt-28 text-white;

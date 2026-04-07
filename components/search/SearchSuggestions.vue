@@ -23,7 +23,9 @@
           @input="updateQuery"
           type="text"
           placeholder="City, area or postcode"
-          class="flex-1 bg-transparent text-gray-900 placeholder-gray-500 outline-none"
+          class="flex-1 bg-transparent text-gray-900 placeholder-gray-500 outline-none" />
+        <span v-if="searching" class="text-xs text-gray-400 mr-2">Searching...</span>
+        <input style="display:none"
         />
         <!-- Voice Search Button -->
         <button
@@ -111,7 +113,7 @@
         <button
           v-for="search in recentSearches"
           :key="search"
-          @click="handleSelect(search)"
+          @click="handleRecentSelect(search)"
           class="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition"
         >
           <Icon
@@ -128,7 +130,7 @@
       <div class="flex items-center mb-4">
         <Icon name="i-heroicons-sparkles" class="w-5 h-5 text-gray-400 mr-2" />
         <h2 class="text-lg font-semibold text-gray-900">
-          {{ localQuery ? 'Search Results' : 'Popular Postcodes' }}
+          Properties Found
         </h2>
       </div>
 
@@ -136,7 +138,7 @@
         <div
           v-for="(suggestion, index) in suggestions"
           :key="index"
-          @click="handleSelect(suggestion.postcode)"
+          @click="handleSelect(suggestion)"
           class="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 hover:border-brand-aqua hover:shadow-md cursor-pointer transition"
         >
           <div class="flex-1">
@@ -180,123 +182,62 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import AppHeader from '~/components/core/AppHeader.vue'
 import { useVoiceSearch } from '~/composables/useVoiceSearch'
+import { useRuntimeConfig, useRouter } from '#app'
 
-const props = defineProps({
-  query: String,
-})
-
+const props = defineProps({ query: String })
 const emit = defineEmits(['search', 'close'])
+const config = useRuntimeConfig()
+const router = useRouter()
 
-const {
-  isListening: isVoiceListening,
-  finalTranscript,
-  startListening,
-  stopListening,
-  resetTranscript,
-  isSupported: isVoiceSupported,
-} = useVoiceSearch()
+const { isListening: isVoiceListening, finalTranscript, startListening, stopListening, resetTranscript, isSupported: isVoiceSupported } = useVoiceSearch()
 
 const localQuery = ref(props.query || '')
 const filterType = ref('all')
-const recentSearches = ref([
-  'Kingston upon Thames',
-  'Twickenham',
-  'Walton on Thames',
-])
+const searching = ref(false)
+const suggestions = ref([])
+const recentSearches = ref(JSON.parse(typeof localStorage !== 'undefined' ? localStorage.getItem('op_recent_searches') || '[]' : '[]'))
 
-// Mock UK postcode suggestions
-const mockSuggestions = ref([
-  {
-    id: 1,
-    address: '22, Elm Road',
-    area: 'Teddington, Middlesex',
-    postcode: 'TW11 8EA',
-  },
-  {
-    id: 2,
-    address: '14, Maple Avenue',
-    area: 'Twickenham, London',
-    postcode: 'TW1 4AL',
-  },
-  {
-    id: 3,
-    address: '78, Station Road',
-    area: 'Staines-upon-Thames, Surrey',
-    postcode: 'TW18 4HW',
-  },
-  {
-    id: 4,
-    address: '45, High Street',
-    area: 'Kingston-upon-Thames, Surrey',
-    postcode: 'KT1 1AT',
-  },
-  {
-    id: 5,
-    address: '102, Church Lane',
-    area: 'Walton-on-Thames, Surrey',
-    postcode: 'KT12 1QN',
-  },
-  {
-    id: 6,
-    address: '56, Park Avenue',
-    area: 'Richmond, London',
-    postcode: 'TW10 6RD',
-  },
-])
+let debounceTimer = null
 
-// Filter suggestions based on query
-const suggestions = computed(() => {
-  if (!localQuery.value) {
-    return mockSuggestions.value
-  }
-
-  const query = localQuery.value.toLowerCase()
-  return mockSuggestions.value.filter(
-    (s) =>
-      s.address.toLowerCase().includes(query) ||
-      s.area.toLowerCase().includes(query) ||
-      s.postcode.toLowerCase().includes(query),
-  )
-})
-
-const updateQuery = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  localQuery.value = target.value
-}
-
-const handleSelect = (value: string) => {
-  // Add to recent searches
-  if (!recentSearches.value.includes(value)) {
-    recentSearches.value.unshift(value)
-    if (recentSearches.value.length > 5) {
-      recentSearches.value.pop()
+async function doSearch(q) {
+  if (q.trim().length < 2) { suggestions.value = []; return }
+  searching.value = true
+  try {
+    const res = await fetch(config.public.apiBase + '/property/search?q=' + encodeURIComponent(q.trim()) + '&limit=8')
+    if (res.ok) {
+      const data = await res.json()
+      suggestions.value = (data.items || []).map(p => ({ id: p.id, address: p.addressLine1, area: [p.city, p.county].filter(Boolean).join(', '), postcode: p.postcode, epcRating: p.epcRating }))
     }
-  }
-  emit('search', value)
+  } catch(e) { suggestions.value = [] }
+  finally { searching.value = false }
 }
 
-const clearRecent = () => {
-  recentSearches.value = []
+const updateQuery = (e) => {
+  localQuery.value = e.target.value
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => doSearch(localQuery.value), 350)
 }
 
-const toggleVoiceSearch = () => {
-  if (isVoiceListening.value) {
-    stopListening()
-  } else {
-    resetTranscript()
-    startListening()
+const handleSelect = (property) => {
+  const label = property.address + ', ' + property.postcode
+  if (!recentSearches.value.includes(label)) {
+    recentSearches.value.unshift(label)
+    if (recentSearches.value.length > 5) recentSearches.value.pop()
+    try { localStorage.setItem('op_recent_searches', JSON.stringify(recentSearches.value)) } catch(e) {}
   }
+  emit('close')
+  router.push('/property/' + property.id)
 }
 
-// Watch voice transcript and update query
-watch(finalTranscript, (newTranscript) => {
-  if (newTranscript) {
-    localQuery.value = newTranscript
-  }
-})
+const handleRecentSelect = (term) => { localQuery.value = term; doSearch(term) }
+const clearRecent = () => { recentSearches.value = []; try { localStorage.removeItem('op_recent_searches') } catch(e) {} }
+const toggleVoiceSearch = () => { if (isVoiceListening.value) { stopListening() } else { resetTranscript(); startListening() } }
+const epcColor = (r) => { const m = { A:'#00b050',B:'#33b800',C:'#92d050',D:'#d4e800',E:'#ffbf00',F:'#ff6600',G:'#ff0000' }; return m[(r||'').toUpperCase()] || '#8e8e93' }
+
+watch(finalTranscript, (t) => { if (t) { localQuery.value = t; doSearch(t) } })
 </script>
 
 <style scoped>

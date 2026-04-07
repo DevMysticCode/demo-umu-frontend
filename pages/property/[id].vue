@@ -224,7 +224,8 @@
 
         <!-- Location and Nearby -->
         <div v-show="activeSection === 'location'" id="section-location" class="prop-section">
-          <h2 class="prop-section-title">Location and Nearby</h2>
+          <h2 class="prop-section-title">Location &amp; Map</h2>
+          <p class="prop-nearby-source">Map: Ordnance Survey · Boundary: OS NGD Building Footprint</p>
           <div class="prop-map-wrap">
             <div ref="mapEl" class="prop-map" />
             <a
@@ -246,27 +247,47 @@
               Street View
             </button>
           </div>
-
+          <!-- Map legend — only shown once enrichment loads -->
+          <div v-if="enrichment?.nearby" class="prop-map-legend">
+            <span class="prop-map-legend-item"><span class="prop-map-dot" style="background:#00a19a;" />Property</span>
+            <span class="prop-map-legend-item"><span class="prop-map-dot" style="background:#3b82f6;" />Schools</span>
+            <span class="prop-map-legend-item"><span class="prop-map-dot" style="background:#8b5cf6;" />Trains</span>
+            <span class="prop-map-legend-item"><span class="prop-map-dot" style="background:#f59e0b;" />Bus</span>
+            <span class="prop-map-legend-item"><span class="prop-map-dot" style="background:#10b981;" />Parks</span>
+            <span class="prop-map-legend-item"><span class="prop-map-dot" style="background:#ec4899;" />Airport</span>
+          </div>
+          <!-- Building footprint from OS NGD -->
+          <div v-if="enrichment?.titleBoundary?.areaM2" class="prop-footprint-row">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14" style="display:inline;margin-right:5px;vertical-align:-2px">
+              <rect x="3" y="3" width="18" height="18" rx="2" stroke="#00a19a" stroke-width="1.8" fill="rgba(0,161,154,0.1)" stroke-dasharray="4 2"/>
+            </svg>
+            Building footprint: <strong>{{ Math.round(enrichment.titleBoundary.areaM2) }} m²</strong>
+            <span class="prop-footprint-src"> · OS NGD</span>
+          </div>
         </div>
 
         <!-- Train Stations -->
         <div v-show="activeSection === 'trains'" id="section-trains" class="prop-section">
           <h2 class="prop-section-title">Train Stations Nearby</h2>
+          <p class="prop-nearby-source">Source: OpenStreetMap / Overpass</p>
           <div class="prop-station-list">
             <template v-if="enrichment?.nearby?.trains?.length">
               <div v-for="s in enrichment.nearby.trains" :key="s.name" class="prop-station-row">
-                <div class="prop-station-icon">
+                <div class="prop-station-icon" style="background:#f5f3ff;">
                   <OPIcon name="nationalRailLogo" class="w-[18px] h-[18px]" />
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="prop-station-name">{{ s.name }}</p>
                   <p class="prop-station-dist">
                     <OPIcon name="currentLocation" class="w-[11px] h-[11px]" style="display:inline;vertical-align:-1px;margin-right:3px;" />
-                    {{ s.vicinity }}
+                    {{ s.distanceKm }} km
+                    <span v-if="s.operator" class="prop-station-op"> · {{ s.operator }}</span>
                   </p>
                 </div>
+                <span class="prop-dist-pill">{{ s.distanceKm }} km</span>
               </div>
             </template>
+            <p v-else-if="!enrichment" class="prop-nearby-empty">Loading train data...</p>
             <p v-else class="prop-nearby-empty">No train stations found nearby.</p>
           </div>
         </div>
@@ -274,21 +295,26 @@
         <!-- Schools -->
         <div v-show="activeSection === 'schools'" id="section-schools" class="prop-section">
           <h2 class="prop-section-title">Schools Nearby</h2>
+          <p class="prop-nearby-source">Source: Ordnance Survey NGD</p>
           <div class="prop-station-list">
             <template v-if="enrichment?.nearby?.schools?.length">
               <div v-for="s in enrichment.nearby.schools" :key="s.name" class="prop-station-row">
-                <div class="prop-station-icon">
+                <div class="prop-station-icon" style="background:#eff6ff;">
                   <OPIcon name="closeToSchool" class="w-[18px] h-[18px]" />
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="prop-station-name">{{ s.name }}</p>
-                  <p class="prop-station-dist">
-                    <OPIcon name="currentLocation" class="w-[11px] h-[11px]" style="display:inline;vertical-align:-1px;margin-right:3px;" />
-                    {{ s.vicinity }}
-                  </p>
+                  <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                    <span class="prop-school-cat-badge">{{ s.category }}</span>
+                    <p class="prop-station-dist" style="margin:0">
+                      <OPIcon name="currentLocation" class="w-[11px] h-[11px]" style="display:inline;vertical-align:-1px;margin-right:3px;" />
+                      {{ s.distanceKm }} km
+                    </p>
+                  </div>
                 </div>
               </div>
             </template>
+            <p v-else-if="!enrichment" class="prop-nearby-empty">Loading schools data...</p>
             <p v-else class="prop-nearby-empty">No schools found nearby.</p>
           </div>
         </div>
@@ -296,22 +322,84 @@
         <!-- Parks -->
         <div v-show="activeSection === 'parks'" id="section-parks" class="prop-section">
           <h2 class="prop-section-title">Parks Nearby</h2>
+          <p class="prop-nearby-source">Source: OpenStreetMap / Overpass</p>
           <div class="prop-station-list">
             <template v-if="enrichment?.nearby?.parks?.length">
               <div v-for="s in enrichment.nearby.parks" :key="s.name" class="prop-station-row">
-                <div class="prop-station-icon">
+                <div class="prop-station-icon" style="background:#ecfdf5;">
                   <OPIcon name="closeToPublicPark" class="w-[18px] h-[18px]" />
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="prop-station-name">{{ s.name }}</p>
                   <p class="prop-station-dist">
                     <OPIcon name="currentLocation" class="w-[11px] h-[11px]" style="display:inline;vertical-align:-1px;margin-right:3px;" />
-                    {{ s.vicinity }}
+                    {{ s.distanceKm }} km
                   </p>
                 </div>
+                <span class="prop-dist-pill">{{ s.distanceKm }} km</span>
               </div>
             </template>
+            <p v-else-if="!enrichment" class="prop-nearby-empty">Loading parks data...</p>
             <p v-else class="prop-nearby-empty">No parks found nearby.</p>
+          </div>
+        </div>
+
+        <!-- Bus Stops -->
+        <div v-show="activeSection === 'bus-stops'" id="section-bus-stops" class="prop-section">
+          <h2 class="prop-section-title">Bus Stops Nearby</h2>
+          <p class="prop-nearby-source">Source: OpenStreetMap / Overpass</p>
+          <div class="prop-station-list">
+            <template v-if="enrichment?.nearby?.busStops?.length">
+              <div v-for="b in enrichment.nearby.busStops" :key="b.name + b.distanceKm" class="prop-station-row">
+                <div class="prop-station-icon" style="background:#fffbeb;">
+                  <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                    <rect x="3" y="3" width="18" height="14" rx="2" stroke="#f59e0b" stroke-width="2" fill="none"/>
+                    <path d="M3 8h18" stroke="#f59e0b" stroke-width="1.5"/>
+                    <circle cx="7" cy="19" r="2" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
+                    <circle cx="17" cy="19" r="2" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
+                    <path d="M7 17v-3M17 17v-3" stroke="#f59e0b" stroke-width="1.5"/>
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="prop-station-name">{{ b.name }}</p>
+                  <p class="prop-station-dist">
+                    <OPIcon name="currentLocation" class="w-[11px] h-[11px]" style="display:inline;vertical-align:-1px;margin-right:3px;" />
+                    {{ b.distanceKm }} km<span v-if="b.ref" class="prop-station-op"> · Stop {{ b.ref }}</span>
+                  </p>
+                </div>
+                <span class="prop-dist-pill">{{ b.distanceKm }} km</span>
+              </div>
+            </template>
+            <p v-else-if="!enrichment" class="prop-nearby-empty">Loading bus stop data...</p>
+            <p v-else class="prop-nearby-empty">No bus stops found within 700m.</p>
+          </div>
+        </div>
+
+        <!-- Airports -->
+        <div v-show="activeSection === 'airports'" id="section-airports" class="prop-section">
+          <h2 class="prop-section-title">Airports Nearby</h2>
+          <p class="prop-nearby-source">Source: OpenStreetMap / Overpass</p>
+          <div class="prop-station-list">
+            <template v-if="enrichment?.nearby?.airports?.length">
+              <div v-for="a in enrichment.nearby.airports" :key="a.name" class="prop-station-row">
+                <div class="prop-station-icon" style="background:#fdf2f8;">
+                  <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                    <path d="M21 15l-9-4-2.5-7L2 9l4 3-1 4 4-1 4 6 3-3-1-5 5-3z" stroke="#ec4899" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="prop-station-name">{{ a.name }}</p>
+                  <p class="prop-station-dist">
+                    <OPIcon name="currentLocation" class="w-[11px] h-[11px]" style="display:inline;vertical-align:-1px;margin-right:3px;" />
+                    {{ a.distanceKm }} km
+                    <span v-if="a.iata" class="prop-station-op"> · {{ a.iata }}</span>
+                  </p>
+                </div>
+                <span class="prop-dist-pill prop-dist-pill--airport">{{ a.distanceKm }} km</span>
+              </div>
+            </template>
+            <p v-else-if="!enrichment" class="prop-nearby-empty">Loading airport data...</p>
+            <p v-else class="prop-nearby-empty">No airports found within 50km.</p>
           </div>
         </div>
 
@@ -597,12 +685,24 @@
                 </div>
               </div>
             </div>
+
+            <!-- Flood risk map -->
+            <div class="prop-flood-map-wrap">
+              <div ref="floodMapEl" class="prop-flood-map" />
+              <div class="prop-flood-map-legend">
+                <span class="prop-flood-legend-item"><span class="prop-flood-dot" style="background:#dc2626" /> Severe / Warning</span>
+                <span class="prop-flood-legend-item"><span class="prop-flood-dot" style="background:#f59e0b" /> Alert / Medium</span>
+                <span class="prop-flood-legend-item"><span class="prop-flood-dot" style="background:#3b82f6" /> Flood Zone</span>
+              </div>
+              <p class="prop-flood-map-src">Source: Environment Agency Flood Monitoring API</p>
+            </div>
           </div>
         </div>
 
         <!-- Listed Buildings Nearby -->
         <div v-show="activeSection === 'heritage'" id="section-heritage" class="prop-section">
-          <h2 class="prop-section-title">Listed Buildings Nearby</h2>
+          <h2 class="prop-section-title">Heritage &amp; Historic Sites</h2>
+          <p class="prop-nearby-source">Source: OpenStreetMap heritage data · 800m radius</p>
           <div class="prop-listed-list">
             <div
               v-for="(b, i) in enrichment?.listedBuildings ?? []"
@@ -622,6 +722,10 @@
                 class="prop-listed-link"
               >View</a>
             </div>
+            <p v-if="enrichment && !enrichment.listedBuildings?.length" class="prop-nearby-empty">
+              No heritage sites recorded within 800m.
+            </p>
+            <p v-else-if="!enrichment" class="prop-nearby-empty">Loading heritage data...</p>
           </div>
         </div>
 
@@ -703,7 +807,9 @@
                 <p v-if="enrichment.councilTax.councilName" class="prop-ct-council">
                   {{ enrichment.councilTax.councilName }}
                 </p>
-                <p class="prop-ct-approx-note">Estimate based on England average. Actual amount varies by council.</p>
+                <p class="prop-ct-approx-note">
+                  {{ enrichment.councilTax.dataSource ?? 'England average 2024/25' }}
+                </p>
               </div>
             </div>
             <div v-else class="prop-ct-unknown">
@@ -949,9 +1055,11 @@ const coverageTab = ref('broadband')
 const activeSection = ref<string>('location')
 
 const quickSections = [
-  { id: 'location',     label: 'Location',     icon: 'locationFilled' },
+  { id: 'location',     label: 'Map',          icon: 'locationFilled' },
   { id: 'trains',       label: 'Trains',       icon: 'train' },
   { id: 'schools',      label: 'Schools',      icon: 'closeToSchool' },
+  { id: 'bus-stops',    label: 'Bus Stops',    icon: 'publicTransport' },
+  { id: 'airports',     label: 'Airports',     icon: 'airport' },
   { id: 'parks',        label: 'Parks',        icon: 'closeToPublicPark' },
   { id: 'floor-plan',   label: 'Floor Plan',   icon: 'floorPlan' },
   { id: 'epc',          label: 'EPC',          icon: 'epcRating' },
@@ -976,6 +1084,10 @@ function toggleSection(id: string) {
       mapInitialised = true
       initMap()
     }
+    if (id === 'flood' && !floodMapInitialised) {
+      floodMapInitialised = true
+      initFloodMap()
+    }
   })
 }
 const salesTab = ref('property')
@@ -995,6 +1107,9 @@ const sdltBuyerType = ref<'standard' | 'firsttime' | 'additional'>('standard')
 const sdltPriceInput = ref(0)
 const sdltPriceRaw = ref('')
 const mapEl = ref<HTMLElement | null>(null)
+const floodMapEl = ref<HTMLElement | null>(null)
+let floodMapInstance: any = null
+let floodMapInitialised = false
 let mapInstance: any = null
 
 const nearbyTabOptions = computed(() => {
@@ -1002,8 +1117,9 @@ const nearbyTabOptions = computed(() => {
 
   const mapPlace = (p: any, icon: string) => ({
     name: p.name,
-    distance: p.vicinity ?? '',
+    distance: p.distanceKm ? `${p.distanceKm} km` : (p.vicinity ?? ''),
     icon,
+    category: p.category ?? null,
   })
 
   return [
@@ -1024,6 +1140,18 @@ const nearbyTabOptions = computed(() => {
       label: 'Parks',
       icon: 'closeToPublicPark',
       items: (nearby.parks ?? []).map((p: any) => mapPlace(p, 'closeToPublicPark')),
+    },
+    {
+      value: 'bus',
+      label: 'Bus Stops',
+      icon: 'currentLocation',
+      items: (nearby.busStops ?? []).map((p: any) => mapPlace(p, 'currentLocation')),
+    },
+    {
+      value: 'airport',
+      label: 'Airports',
+      icon: 'locationFilled',
+      items: (nearby.airports ?? []).map((p: any) => mapPlace(p, 'locationFilled')),
     },
   ]
 })
@@ -1094,7 +1222,7 @@ const epcBands = [
   { label: 'G', range: '1-20', color: '#ff3232', width: '35%' },
 ]
 
-// Mapbox GL map (falls back to OpenStreetMap iframe if no token)
+// OS Raster Maps via Mapbox GL (falls back to OSM iframe)
 const initMap = async () => {
   if (!mapEl.value || !property.value) return
   const lat = property.value.latitude
@@ -1102,9 +1230,10 @@ const initMap = async () => {
   if (!lat || !lng) return
 
   const token = config.public.mapboxToken as string
+  const osKey = config.public.osApiKey as string
 
-  if (!token) {
-    // OSM iframe fallback — no API key needed
+  if (!token && !osKey) {
+    // OSM iframe fallback
     const bbox = `${lng - 0.005},${lat - 0.003},${lng + 0.005},${lat + 0.003}`
     mapEl.value.innerHTML = `<iframe
       width="100%" height="100%" style="border:0;border-radius:16px;"
@@ -1115,7 +1244,6 @@ const initMap = async () => {
   }
 
   const mapboxgl = (await import('mapbox-gl')).default
-  // inject CSS once
   if (!document.querySelector('link[href*="mapbox-gl"]')) {
     const link = document.createElement('link')
     link.rel = 'stylesheet'
@@ -1123,10 +1251,25 @@ const initMap = async () => {
     document.head.appendChild(link)
   }
 
-  mapboxgl.accessToken = token
+  mapboxgl.accessToken = token || ''
+
+  // Use OS Raster tiles (Light_3857 = clean minimal UK map)
+  const mapStyle: any = osKey ? {
+    version: 8,
+    sources: {
+      'os-raster': {
+        type: 'raster',
+        tiles: [`https://api.os.uk/maps/raster/v1/zxy/Light_3857/{z}/{x}/{y}.png?key=${osKey}`],
+        tileSize: 256,
+        attribution: '© Crown copyright and database rights 2024 Ordnance Survey',
+      },
+    },
+    layers: [{ id: 'os-raster', type: 'raster', source: 'os-raster', minzoom: 0, maxzoom: 20 }],
+  } : 'mapbox://styles/mapbox/streets-v12'
+
   const map = new mapboxgl.Map({
     container: mapEl.value,
-    style: 'mapbox://styles/mapbox/streets-v12',
+    style: mapStyle,
     center: [lng, lat],
     zoom: 15,
     interactive: true,
@@ -1134,18 +1277,236 @@ const initMap = async () => {
 
   mapInstance = map
 
-  // Custom marker
+  // Property marker (teal house pin)
   const el = document.createElement('div')
-  el.style.cssText = 'width:40px;height:40px;border-radius:50%;background:#00a19a;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,161,154,0.5);border:3px solid white;'
-  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="white" stroke-width="2" fill="rgba(255,255,255,0.2)"/><path d="M9 22V12h6v10" stroke="white" stroke-width="2"/></svg>`
-
+  el.style.cssText = 'width:42px;height:42px;border-radius:50%;background:#00a19a;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,161,154,0.6);border:3px solid white;cursor:pointer;'
+  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="white" stroke-width="2" fill="rgba(255,255,255,0.25)"/><path d="M9 22V12h6v10" stroke="white" stroke-width="2"/></svg>`
   new mapboxgl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map)
+
+  // Add INSPIRE title boundary (registered land parcel) once enrichment loads
+  const addTitleBoundary = (loadedMap: any) => {
+    const boundary = enrichment.value?.titleBoundary
+    if (!boundary?.geometry) return
+    try {
+      if (loadedMap.getSource('title-boundary')) return // already added
+      loadedMap.addSource('title-boundary', {
+        type: 'geojson',
+        data: boundary.geoJson,
+      })
+      loadedMap.addLayer({
+        id: 'title-boundary-fill',
+        type: 'fill',
+        source: 'title-boundary',
+        paint: { 'fill-color': '#00a19a', 'fill-opacity': 0.12 },
+      })
+      loadedMap.addLayer({
+        id: 'title-boundary-line',
+        type: 'line',
+        source: 'title-boundary',
+        paint: { 'line-color': '#00a19a', 'line-width': 2, 'line-dasharray': [3, 2] },
+      })
+    } catch { /* non-critical */ }
+  }
+
+  // Add nearby POI markers once enrichment loads
+  const addPoiMarkers = () => {
+    if (!enrichment.value?.nearby) return
+    const nearby = enrichment.value.nearby
+
+    function makeMarker(color: string, emoji: string) {
+      const d = document.createElement('div')
+      d.style.cssText = `width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size:13px;`
+      d.textContent = emoji
+      return d
+    }
+
+    // Schools
+    for (const s of (nearby.schools ?? [])) {
+      if (!s.lat || !s.lon) continue
+      new mapboxgl.Marker({ element: makeMarker('#3b82f6', '🎓') })
+        .setLngLat([s.lon, s.lat])
+        .setPopup(new mapboxgl.Popup({ offset: 12 }).setText(`${s.name} · ${s.distanceKm}km`))
+        .addTo(map)
+    }
+    // Train stations
+    for (const t of (nearby.trains ?? [])) {
+      if (!t.lat || !t.lon) continue
+      new mapboxgl.Marker({ element: makeMarker('#8b5cf6', '🚆') })
+        .setLngLat([t.lon, t.lat])
+        .setPopup(new mapboxgl.Popup({ offset: 12 }).setText(`${t.name} · ${t.distanceKm}km`))
+        .addTo(map)
+    }
+    // Bus stops
+    for (const b of (nearby.busStops ?? [])) {
+      if (!b.lat || !b.lon) continue
+      new mapboxgl.Marker({ element: makeMarker('#f59e0b', '🚌') })
+        .setLngLat([b.lon, b.lat])
+        .setPopup(new mapboxgl.Popup({ offset: 12 }).setText(`${b.name} · ${b.distanceKm}km`))
+        .addTo(map)
+    }
+    // Parks
+    for (const p of (nearby.parks ?? [])) {
+      if (!p.lat || !p.lon) continue
+      new mapboxgl.Marker({ element: makeMarker('#10b981', '🌳') })
+        .setLngLat([p.lon, p.lat])
+        .setPopup(new mapboxgl.Popup({ offset: 12 }).setText(`${p.name} · ${p.distanceKm}km`))
+        .addTo(map)
+    }
+    // Airports
+    for (const a of (nearby.airports ?? [])) {
+      if (!a.lat || !a.lon) continue
+      new mapboxgl.Marker({ element: makeMarker('#ec4899', '✈️') })
+        .setLngLat([a.lon, a.lat])
+        .setPopup(new mapboxgl.Popup({ offset: 12 }).setText(`${a.name} · ${a.distanceKm}km`))
+        .addTo(map)
+    }
+  }
+
+  const applyEnrichmentToMap = () => {
+    addPoiMarkers()
+    if (map.loaded()) addTitleBoundary(map)
+    else map.on('load', () => addTitleBoundary(map))
+  }
+
+  // If enrichment already loaded, apply immediately; otherwise watch
+  if (enrichment.value?.nearby || enrichment.value?.titleBoundary) {
+    map.on('load', applyEnrichmentToMap)
+  } else {
+    const stop = watch(enrichment, (v) => {
+      if (v) {
+        if (map.loaded()) applyEnrichmentToMap()
+        else map.on('load', applyEnrichmentToMap)
+        stop()
+      }
+    })
+  }
+}
+
+const initFloodMap = async () => {
+  const zones = enrichment.value?.floodZones ?? []
+  const hasPolygons = zones.some((z: any) => z.polygon)
+
+  // Wait for enrichment if not yet loaded
+  if (!enrichment.value) {
+    const stop = watch(enrichment, async (v) => {
+      if (v) { stop(); await nextTick(); initFloodMap() }
+    })
+    return
+  }
+
+  if (!floodMapEl.value || !property.value) return
+  const lat = property.value.latitude
+  const lng = property.value.longitude
+  if (!lat || !lng) return
+
+  const token = config.public.mapboxToken as string
+  const osKey = config.public.osApiKey as string
+
+  const mapboxgl = (await import('mapbox-gl')).default
+  if (!document.querySelector('link[href*="mapbox-gl"]')) {
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css'
+    document.head.appendChild(link)
+  }
+
+  mapboxgl.accessToken = token || ''
+
+  const mapStyle: any = osKey ? {
+    version: 8,
+    sources: {
+      'os-raster': {
+        type: 'raster',
+        tiles: [`https://api.os.uk/maps/raster/v1/zxy/Light_3857/{z}/{x}/{y}.png?key=${osKey}`],
+        tileSize: 256,
+        attribution: '© Crown copyright and database rights 2024 Ordnance Survey',
+      },
+    },
+    layers: [{ id: 'os-raster', type: 'raster', source: 'os-raster', minzoom: 0, maxzoom: 20 }],
+  } : 'mapbox://styles/mapbox/streets-v12'
+
+  const fmap = new mapboxgl.Map({
+    container: floodMapEl.value,
+    style: mapStyle,
+    center: [lng, lat],
+    zoom: 12,
+    interactive: true,
+    attributionControl: false,
+  })
+  floodMapInstance = fmap
+
+  // Property pin
+  const pin = document.createElement('div')
+  pin.style.cssText = 'width:14px;height:14px;border-radius:50%;background:#00a19a;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4);'
+  new mapboxgl.Marker({ element: pin }).setLngLat([lng, lat]).addTo(fmap)
+
+  // Zone colours: high risk = red, medium = orange, low = yellow, default = blue
+  const zoneColour = (zone: any) => {
+    const sev = (zone.severity ?? '').toLowerCase()
+    if (sev.includes('severe') || sev.includes('warning')) return '#dc2626'
+    if (sev.includes('alert') || sev.includes('high')) return '#ea580c'
+    if (sev.includes('medium')) return '#f59e0b'
+    return '#3b82f6'
+  }
+
+  fmap.on('load', () => {
+    const currentZones = enrichment.value?.floodZones ?? []
+    currentZones.forEach((zone: any, idx: number) => {
+      if (!zone.polygon) return
+      const sourceId = `flood-zone-${idx}`
+      const colour = zoneColour(zone)
+      try {
+        fmap.addSource(sourceId, { type: 'geojson', data: zone.polygon })
+        fmap.addLayer({
+          id: `${sourceId}-fill`,
+          type: 'fill',
+          source: sourceId,
+          paint: { 'fill-color': colour, 'fill-opacity': 0.25 },
+        })
+        fmap.addLayer({
+          id: `${sourceId}-line`,
+          type: 'line',
+          source: sourceId,
+          paint: { 'line-color': colour, 'line-width': 1.5 },
+        })
+      } catch { /* non-critical */ }
+    })
+
+    if (!currentZones.some((z: any) => z.polygon)) {
+      // No polygon data — show a soft radius circle to indicate general area
+      fmap.addSource('flood-radius', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [lng, lat] },
+          properties: {},
+        },
+      })
+      fmap.addLayer({
+        id: 'flood-radius-circle',
+        type: 'circle',
+        source: 'flood-radius',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 40, 14, 200],
+          'circle-color': '#3b82f6',
+          'circle-opacity': 0.15,
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#3b82f6',
+          'circle-stroke-opacity': 0.4,
+        },
+      })
+    }
+  })
 }
 
 onBeforeUnmount(() => {
   if (mapInstance) {
     mapInstance.remove()
     mapInstance = null
+  }
+  if (floodMapInstance) {
+    floodMapInstance.remove()
+    floodMapInstance = null
   }
 })
 
@@ -1194,9 +1555,7 @@ onMounted(async () => {
       })
       if (hsRes.ok) {
         const hs = await hsRes.json()
-        if (hs) {
-          homeScore.value = hs
-        }
+        if (hs?.total) homeScore.value = hs
       }
     }
     if (!homeScore.value) {
@@ -1210,18 +1569,20 @@ onMounted(async () => {
         }
       }
     }
-    // Always auto-generate an estimated score if none exists yet
-    if (!homeScore.value) {
+  } catch { /* non-critical */ }
+
+  // Always auto-generate from public EPC data if still no score — runs regardless of above errors
+  if (!homeScore.value) {
+    try {
       const { getPrefillFromProperty, getUnsureDefaults, calculateScore } = await import('~/utils/homescoreScoring')
-      // Start with "unsure" baseline for every question, then override with EPC-inferred answers
       const unsure = getUnsureDefaults()
       const epcPrefill = property.value ? getPrefillFromProperty(property.value) : {}
       const merged = { ...unsure, ...epcPrefill }
       const base = calculateScore(merged)
       homeScore.value = { ...base.breakdown, total: base.total, rating: base.rating }
       homeScoreIsAuto.value = true
-    }
-  } catch { /* non-critical */ }
+    } catch { /* non-critical */ }
+  }
 })
 
 function handleAction(label: string) {
@@ -1934,6 +2295,84 @@ function handleClaimed(passportId: string) {
   padding: 20px 0;
 }
 
+.prop-nearby-source {
+  font-size: 10px;
+  color: #b0b0b8;
+  margin: -6px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.prop-school-cat-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: #3b82f6;
+  background: #eff6ff;
+  border-radius: 4px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+.prop-dist-pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: #00a19a;
+  background: #00a19a1a;
+  border-radius: 10px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &--airport {
+    color: #ec4899;
+    background: #fdf2f8;
+  }
+}
+
+.prop-station-op {
+  color: #b0b0b8;
+}
+
+.prop-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 10px;
+  padding: 8px 0 4px;
+}
+
+.prop-map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #555;
+}
+
+.prop-map-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.prop-footprint-row {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #555;
+  background: rgba(0,161,154,0.06);
+  border-radius: 8px;
+  padding: 7px 10px;
+}
+
+.prop-footprint-src {
+  color: #b0b0b8;
+  font-size: 11px;
+}
+
 /* ── EPC ─────────────────────────────────────────────────────────────────── */
 .prop-epc-card {
   background: #f8f8fa;
@@ -2534,6 +2973,41 @@ function handleClaimed(passportId: string) {
   font-size: 11px;
   color: #8e8e93;
   margin-top: 2px;
+}
+.prop-flood-map-wrap {
+  margin-top: 16px;
+}
+.prop-flood-map {
+  width: 100%;
+  height: 240px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #e8f4f8;
+}
+.prop-flood-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+.prop-flood-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #555;
+}
+.prop-flood-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.prop-flood-map-src {
+  font-size: 10px;
+  color: #aaa;
+  margin-top: 6px;
 }
 
 /* ── Listed Buildings ────────────────────────────────────────────────────── */
