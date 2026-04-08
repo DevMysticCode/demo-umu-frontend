@@ -85,7 +85,7 @@
           />
           <div>
             <h2 class="text-lg font-semibold text-gray-900">
-              {{ results.length }} Results Found
+              {{ filteredResults.length }} Results Found
             </h2>
             <p class="text-xs text-gray-500">for "{{ query }}"</p>
           </div>
@@ -109,9 +109,9 @@
 
     <!-- Results List -->
     <div v-if="viewMode === 'list'" class="px-4 pb-28">
-      <div v-if="results.length > 0" class="space-y-4">
+      <div v-if="filteredResults.length > 0" class="space-y-4">
         <div
-          v-for="(result, index) in results"
+          v-for="(result, index) in filteredResults"
           :key="result.id || index"
           class="bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-brand-aqua hover:shadow-lg cursor-pointer transition"
           @click="viewProperty(result.id)"
@@ -162,22 +162,14 @@
 
             <!-- Features Row -->
             <div class="flex items-center flex-wrap gap-2 mb-3">
-              <!-- Passport -->
-              <div
-                v-if="result.passport !== null && result.passport !== undefined"
-                class="flex items-center gap-1"
+              <!-- Passport Available badge -->
+              <span
+                v-if="result.hasPassport"
+                class="flex items-center gap-1 bg-brand-aqua text-white px-2 py-1 rounded text-xs font-semibold"
               >
-                <div
-                  class="w-6 h-6 bg-brand-aqua rounded flex items-center justify-center"
-                >
-                  <Icon name="i-heroicons-check" class="w-4 h-4 text-white" />
-                </div>
-                <span
-                  class="bg-brand-aqua text-white px-2 py-1 rounded text-xs font-semibold"
-                >
-                  {{ result.passport }}%
-                </span>
-              </div>
+                <Icon name="i-heroicons-check-circle" class="w-3.5 h-3.5" />
+                Passport
+              </span>
 
               <!-- Bedroom -->
               <div class="flex items-center gap-1 text-brand-aqua">
@@ -287,7 +279,7 @@ interface PropertyResult {
   postcode?: string
   price?: number
   priceDisplay: string
-  passport?: number | null
+  hasPassport?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
   type: string
@@ -308,6 +300,12 @@ defineEmits(['close', 'show-filters'])
 const router = useRouter()
 const viewMode = ref<'list' | 'map'>('list')
 const activeFilter = ref('location')
+
+const filteredResults = computed(() =>
+  activeFilter.value === 'passport'
+    ? props.results.filter(r => r.hasPassport)
+    : props.results,
+)
 
 const viewProperty = (id: string) => {
   router.push(`/property/${id}`)

@@ -158,6 +158,7 @@ const iconMap: Record<string, string> = {
   sqftWhite: '/op-icons/property/sqftWhite.svg',
   floorPlan: '/op-icons/property/floorPlan.png',
   titleNumber: '/op-icons/property/titleNumber.svg',
+  uprn: '/op-icons/property/titleNumber.svg',
   epcRating: '/op-icons/property/epcRating.svg',
   tenure: '/op-icons/property/tenure.svg',
   yearBuilt: '/op-icons/property/yearBuilt.svg',
