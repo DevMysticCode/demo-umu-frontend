@@ -1929,7 +1929,7 @@ const propertyImages = computed(() => {
   const googleKey = config.public.googleApiKey as string
   if (lat && lon && googleKey) {
     images.push(
-      `https://maps.googleapis.com/maps/api/streetview?size=800x500&location=${lat},${lon}&key=${googleKey}&fov=90&pitch=10&return_error_codes=true`,
+      `https://maps.googleapis.com/maps/api/streetview?size=800x500&location=${lat},${lon}&key=${googleKey}&fov=90&pitch=10&radius=200&source=outdoor&return_error_codes=true`,
     )
   }
 
