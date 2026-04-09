@@ -40,9 +40,11 @@
             <span v-if="isDev" class="absolute -top-1.5 -right-1.5 text-[9px] bg-yellow-400 text-black rounded px-1 font-bold leading-tight">DEV</span>
           </button>
 
+          <!-- Google button: our icon is visible; the GIS button sits on top (opacity near 0)
+               and handles the redirect when tapped. ux_mode=redirect means no popup. -->
           <button class="social-logins__button social-logins__button--google">
             <OPIcon name="googleNew" class="w-[20px] h-[20px]" />
-            <div id="google-btn-overlay"></div>
+            <div id="google-gis-btn"></div>
           </button>
 
           <button class="social-logins__button" @click="handleSocialLogin('facebook')">
@@ -297,7 +299,8 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
-const { login, googleLogin, appleLogin, appleLoginMock } = useAuth()
+const { login, appleLogin, googleLogin, appleLoginMock } = useAuth()
+const { isNative, nativeAppleSignIn, nativeGoogleSignIn } = useNativeAuth()
 const isDev = process.dev
 const route = useRoute()
 
@@ -330,7 +333,7 @@ const redirectAfterAuth = async () => {
 
 const loadAppleSdk = () =>
   new Promise<void>((resolve) => {
-    if (window.AppleID) { resolve(); return }
+    if ((window as any).AppleID) { resolve(); return }
     const s = document.createElement('script')
     s.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js'
     s.async = true
@@ -351,21 +354,52 @@ const handleAppleLogin = async () => {
     return
   }
 
+  // Native Capacitor — use the iOS Sign In with Apple plugin
+  if (await isNative()) {
+    try {
+      const { idToken, firstName, lastName } = await nativeAppleSignIn()
+      const result: any = await appleLogin(idToken, firstName, lastName)
+      localStorage.setItem('token', result.token)
+      await redirectAfterAuth()
+    } catch (err: any) {
+      if (err?.code === 'AS_AUTHORIZATION_ERROR_CODE_CANCELED') return
+      console.error('Native Apple sign-in error', err)
+      alert('Apple sign-in failed. Please try again.')
+    }
+    return
+  }
+
   try {
     await loadAppleSdk()
-    window.AppleID.auth.init({
+
+    // Popups are blocked in: standalone PWA, WKWebView (native app wrapper).
+    // Detect all restricted environments and use redirect flow instead.
+    const isWKWebView = !!(window as any).webkit?.messageHandlers
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      !!(navigator as any).standalone ||
+      isWKWebView
+
+    const appleAuth = (window as any).AppleID.auth
+    appleAuth.init({
       clientId: config.public.appleClientId,
       scope: 'name email',
       redirectURI: config.public.appleRedirectUri,
-      usePopup: true,
+      usePopup: !isStandalone,
     })
-    const data = await window.AppleID.auth.signIn()
-    const idToken: string = data.authorization.id_token
-    const firstName: string | undefined = data.user?.name?.firstName
-    const lastName: string | undefined = data.user?.name?.lastName
-    const result: any = await appleLogin(idToken, firstName, lastName)
-    localStorage.setItem('token', result.token)
-    await redirectAfterAuth()
+
+    if (!isStandalone) {
+      // Popup flow — SDK resolves the promise directly
+      const data = await appleAuth.signIn()
+      const idToken: string = data.authorization.id_token
+      const firstName: string | undefined = data.user?.name?.firstName
+      const lastName: string | undefined = data.user?.name?.lastName
+      const result: any = await appleLogin(idToken, firstName, lastName)
+      localStorage.setItem('token', result.token)
+      await redirectAfterAuth()
+    }
+    // Redirect flow: Apple will POST to redirectURI — handled by
+    // /server/routes/auth/apple/callback.post.ts — no further action here.
   } catch (err: any) {
     if (err?.error === 'popup_closed_by_user') return
     console.error('Apple sign-in error', err)
@@ -374,16 +408,64 @@ const handleAppleLogin = async () => {
 }
 
 // ── Google ─────────────────────────────────────────────────────────────────
+// Uses ux_mode='redirect' so Google does a full-page redirect instead of
+// opening a popup — works in iOS Safari, standalone PWA, and WKWebView.
+// The GIS library POSTs the credential to /auth/google/gis-callback (Nuxt
+// server route) which forwards it to the backend and redirects to /auth/google/callback.
 
-const handleGoogleCredential = async (response: any) => {
-  try {
-    const result: any = await googleLogin(response.credential)
-    localStorage.setItem('token', result.token)
-    await redirectAfterAuth()
-  } catch (err) {
-    console.error(err)
-    alert('Google sign-in failed. Please try again.')
+let googleInitialised = false
+
+const initGoogleGis = () => {
+  const w = window as any
+  if (googleInitialised || !w.google) return
+  googleInitialised = true
+
+  const loginUri = `${window.location.origin}/auth/google/gis-callback`
+
+  // ux_mode: 'redirect' — button click does a full-page redirect instead of
+  // opening a popup. Works in iOS Safari, standalone PWA mode, and WKWebViews.
+  w.google.accounts.id.initialize({
+    client_id: config.public.googleClientId as string,
+    ux_mode: 'redirect',
+    login_uri: loginUri,
+    use_fedcm_for_prompt: false,
+  })
+
+  // Render GIS button into the overlay div. With ux_mode=redirect the GIS
+  // button triggers a full redirect — no popup needed.
+  const container = document.getElementById('google-gis-btn')
+  if (container) {
+    w.google.accounts.id.renderButton(container, {
+      theme: 'outline',
+      size: 'large',
+      width: '100%',
+    })
   }
+}
+
+const handleGoogleLogin = async () => {
+  // Native Capacitor — uses Google Sign In SDK via SFSafariViewController (Google-approved)
+  if (await isNative()) {
+    try {
+      const idToken = await nativeGoogleSignIn()
+      const result: any = await googleLogin(idToken)
+      localStorage.setItem('token', result.token)
+      await redirectAfterAuth()
+    } catch (err) {
+      console.error('Native Google sign-in error', err)
+      alert('Google sign-in failed. Please try again.')
+    }
+    return
+  }
+
+  // Web fallback — GIS redirect flow (works in Safari and PWA)
+  const w = window as any
+  if (!w.google) {
+    alert('Google sign-in is not available yet. Please try again.')
+    return
+  }
+  initGoogleGis()
+  w.google.accounts.id.prompt()
 }
 
 onMounted(() => {
@@ -391,17 +473,7 @@ onMounted(() => {
   script.src = 'https://accounts.google.com/gsi/client'
   script.async = true
   script.defer = true
-  script.onload = () => {
-    window.google.accounts.id.initialize({
-      client_id: config.public.googleClientId,
-      callback: handleGoogleCredential,
-      use_fedcm_for_prompt: false,
-    })
-    window.google.accounts.id.renderButton(
-      document.getElementById('google-btn-overlay'),
-      { theme: 'outline', size: 'large', width: '100%' },
-    )
-  }
+  script.onload = () => initGoogleGis()
   document.head.appendChild(script)
 })
 
@@ -631,13 +703,14 @@ const handleSocialLogin = (_provider: string) => {}
   }
 }
 
-#google-btn-overlay {
+#google-gis-btn {
   position: absolute;
   inset: 0;
   opacity: 0.001;
   overflow: hidden;
 
-  :deep(iframe) {
+  :deep(iframe),
+  :deep(div) {
     width: 100% !important;
     height: 100% !important;
   }

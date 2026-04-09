@@ -68,7 +68,7 @@
           </button>
           <button
             v-if="view === 'results' || view === 'map'"
-            class="sd-chip sd-chip-active"
+            class="sd-chip"
           >
             Passport Available
             <OPIcon name="passportAvailable" class="w-[15px] h-[15px]" />

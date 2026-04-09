@@ -10,6 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@capacitor-community/apple-sign-in": "^7.1.0",
+    "@capacitor/core": "^8.3.0",
+    "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "@nuxt/ui": "^2.18.7",
     "@pinia/nuxt": "^0.5.5",
     "@stripe/stripe-js": "^8.11.0",
