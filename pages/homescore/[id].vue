@@ -8,7 +8,7 @@
         </svg>
       </button>
       <div class="hs-header-center">
-        <p class="hs-header-title">Home Score</p>
+        <p class="hs-header-title">Homehealth Score</p>
         <p v-if="mode === 'questions'" class="hs-header-sub">Question {{ step + 1 }} of {{ QUESTIONS.length }}</p>
         <p v-else-if="mode === 'auto'" class="hs-header-sub">From public data</p>
         <p v-else class="hs-header-sub">Your result</p>

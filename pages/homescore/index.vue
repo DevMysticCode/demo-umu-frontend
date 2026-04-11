@@ -1,7 +1,7 @@
 <template>
   <div class="hs-search-page">
     <!-- Header -->
-    <AppHeader title="Home Score" :showBack="true" />
+    <AppHeader title="Homehealth Score" :showBack="true" />
 
     <main class="hs-search-main">
       <!-- Hero -->
@@ -14,8 +14,8 @@
             <text x="60" y="71" text-anchor="middle" font-size="10" fill="#8e8e93" font-family="sans-serif">Score</text>
           </svg>
         </div>
-        <h1 class="hs-hero-title">Home Score</h1>
-        <p class="hs-hero-sub">Search any UK property to instantly generate its Home Score using EPC and public data — no questions required to start.</p>
+        <h1 class="hs-hero-title">Homehealth Score</h1>
+        <p class="hs-hero-sub">Search any UK property to instantly generate its Homehealth Score using EPC and public data — no questions required to start.</p>
       </div>
 
       <!-- Search bar -->

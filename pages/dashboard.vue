@@ -44,7 +44,7 @@
 
       <!-- Action cards -->
       <div class="px-4 flex flex-col gap-4 mb-7">
-        <!-- Card 1: Find your Home Score -->
+        <!-- Card 1: Find your Homehealth Score -->
         <div
           class="action-card cursor-pointer"
           @click="router.push('/homescore')"
@@ -102,7 +102,7 @@
           </div>
 
           <div class="action-card-body">
-            <h3 class="action-card-title">Find your Home Score</h3>
+            <h3 class="action-card-title">Find your Homehealth Score</h3>
             <p class="action-card-sub">
               Find out how much your home is costing you - and how to fix it.
             </p>
@@ -120,7 +120,7 @@
         <!-- Card 2: Property Passport -->
         <div
           class="action-card cursor-pointer"
-          @click="router.push('/passport/collections')"
+          @click="showSearchDrawer = true"
         >
           <!-- Passport thumbnail -->
           <div class="passport-thumb-wrap">
@@ -134,9 +134,9 @@
           </div>
 
           <div class="action-card-body">
-            <h3 class="action-card-title">Property Passport</h3>
+            <h3 class="action-card-title">Claim my Property Passport</h3>
             <p class="action-card-sub">
-              Click here to start your property passport journey.
+              Stop your sale falling through before it starts.
             </p>
             <div class="flex justify-end mt-2">
               <button class="action-btn">Start Here</button>
@@ -518,7 +518,7 @@ const viewProperty = (id: string) => {
 
 /* Passport thumbnail in action card */
 .passport-thumb-wrap {
-  width: 68px;
+  width: 100px;
   height: 100px;
   flex-shrink: 0;
   overflow: hidden;

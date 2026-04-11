@@ -183,13 +183,13 @@
               </text>
             </svg>
             <p class="prop-score-note">
-              Answer 11 quick questions to get your property's Home Score.
+              Answer 11 quick questions to get your property's Homehealth Score.
             </p>
             <button
               class="prop-score-cta"
               @click="navigateTo(`/homescore/${property?.id}`)"
             >
-              Calculate Home Score
+              Calculate Homehealth Score
             </button>
           </template>
         </div>
