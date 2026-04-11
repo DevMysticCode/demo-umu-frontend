@@ -10,7 +10,7 @@
           iconClass="w-full h-full"
           heroClass="w-36 h-36"
           mainTitle="Property Search"
-          subColored="UMU search is powered by AI."
+          subColored=""
           subTitle="Try searching for Property Passports that are detached"
         />
       </div>
@@ -45,7 +45,10 @@
       <!-- Action cards -->
       <div class="px-4 flex flex-col gap-4 mb-7">
         <!-- Card 1: Find your Home Score -->
-        <div class="action-card cursor-pointer" @click="router.push('/homescore')">
+        <div
+          class="action-card cursor-pointer"
+          @click="router.push('/homescore')"
+        >
           <!-- Circular gauge -->
           <div class="gauge-wrap">
             <svg viewBox="0 0 100 100" width="100" height="100">
@@ -101,10 +104,15 @@
           <div class="action-card-body">
             <h3 class="action-card-title">Find your Home Score</h3>
             <p class="action-card-sub">
-              Click here to find out how energy efficient your home is.
+              Find out how much your home is costing you - and how to fix it.
             </p>
             <div class="flex justify-end mt-2">
-              <button class="action-btn" @click.stop="router.push('/homescore')">Start</button>
+              <button
+                class="action-btn"
+                @click.stop="router.push('/homescore')"
+              >
+                Start Here
+              </button>
             </div>
           </div>
         </div>
@@ -131,7 +139,7 @@
               Click here to start your property passport journey.
             </p>
             <div class="flex justify-end mt-2">
-              <button class="action-btn">Start</button>
+              <button class="action-btn">Start Here</button>
             </div>
           </div>
         </div>
