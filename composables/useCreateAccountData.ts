@@ -8,9 +8,11 @@ interface Address {
   id: number
   line1: string
   line2: string
+  postcode?: string
 }
 
 export const useCreateAccountData = () => {
+  const config = useRuntimeConfig()
   const { register } = useAuth()
   const { email } = useSession()
 
@@ -36,53 +38,32 @@ export const useCreateAccountData = () => {
   const addressResults = ref<Address[]>([])
   const termsAccepted = ref(false)
 
-  const searchAddress = async (): Promise<void> => {
+  const searchAddress = async (postcode?: string): Promise<void> => {
+    const query = (postcode ?? form.postcode ?? '').trim()
+    if (!query || query.length < 2) return
+
+    const base = config.public.apiBase
     searchingAddress.value = true
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000)) // fake delay
-      addressResults.value = [
-        {
-          id: 1,
-          line1: '21 Rochester Road, Coventry, CV5 6AB',
-          line2: 'Leicester, England',
-        },
-        {
-          id: 2,
-          line1: '23 Rochester Road, Coventry, CV5 6AB ',
-          line2: 'Leicester, England',
-        },
-        {
-          id: 3,
-          line1: '25 Rochester Road, Coventry, CV5 6AB ',
-          line2: 'Leicester, England',
-        },
-        {
-          id: 4,
-          line1: '27 Rochester Road, Coventry, CV5 6AB ',
-          line2: 'Leicester, England',
-        },
-        {
-          id: 5,
-          line1: '29 Rochester Road, Coventry, CV5 6AB',
-          line2: 'Leicester, England',
-        },
-        {
-          id: 6,
-          line1: '31 Rochester Road, Coventry, CV5 6AB ',
-          line2: 'Leicester, England',
-        },
-        {
-          id: 7,
-          line1: '33 Rochester Road, Coventry, CV5 6AB ',
-          line2: 'Leicester, England',
-        },
-        {
-          id: 8,
-          line1: '35 Rochester Road, Coventry, CV5 6AB ',
-          line2: 'Leicester, England',
-        },
-      ]
+      const res = await $fetch<{ items: any[]; total: number }>(
+        `${base}/property/search?q=${encodeURIComponent(query)}&offset=0&limit=25`,
+      )
+      if (!res.items?.length) {
+        addressResults.value = []
+        showAddressModal.value = true
+        return
+      }
+      addressResults.value = res.items.map((p, i) => ({
+        id: i + 1,
+        line1: p.addressLine1,
+        line2: [p.city, p.postcode].filter(Boolean).join(', '),
+        postcode: p.postcode,
+      }))
+      // Store last searched postcode on the form so the modal title is correct
+      form.postcode = query
       showAddressModal.value = true
+    } catch (err) {
+      console.error('Address search error:', err)
     } finally {
       searchingAddress.value = false
     }
@@ -90,7 +71,8 @@ export const useCreateAccountData = () => {
 
   const selectAddress = (address: Address): void => {
     selectedAddress.value = address
-    form.postcode = address.line1
+    // Store the actual postcode (from real API data) so it's submitted to the register endpoint
+    form.postcode = address.postcode ?? address.line1
     showAddressModal.value = false
   }
 

@@ -7,11 +7,13 @@
       <input
         :id="name"
         :name="name"
+        v-model="localPostcode"
         type="text"
-        :placeholder="placeholder"
+        :placeholder="placeholder || 'Enter postcode e.g. SW1A 1AA'"
         :disabled="disabled"
         class="address-search__input pr-28"
         :class="{ 'address-search__input--disabled': disabled }"
+        @keydown.enter.prevent="handleSearch"
       />
       <button
         @click="handleSearch"
@@ -48,7 +50,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
+
 defineProps({
   name: {
     type: String,
@@ -78,11 +82,14 @@ defineProps({
 
 const emit = defineEmits(['search', 'edit'])
 
+const localPostcode = ref('')
+
 const handleSearch = () => {
-  emit('search')
+  emit('search', localPostcode.value)
 }
 
 const handleEdit = () => {
+  localPostcode.value = ''
   emit('edit')
 }
 </script>

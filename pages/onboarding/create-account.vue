@@ -119,6 +119,7 @@
       :addresses="addressResults"
       @update:show="showAddressModal = $event"
       @select="selectAddress"
+      @search="searchAddress"
       @close="closeAddressModal"
     />
 

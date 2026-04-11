@@ -46,8 +46,8 @@
             {{ property.postcode }}
           </p>
           <p class="prop-price">
-            {{ formatPrice(property.estimatedPrice) }}
-            <span class="prop-estimated">Estimated Value</span>
+            {{ formatPrice(displayEstimatedPrice) }}
+            <span class="prop-estimated">{{ estimatedPriceSource }}</span>
           </p>
         </div>
 
@@ -1655,7 +1655,7 @@
       <ShareContent
         :property-title="property?.addressLine1 ?? ''"
         :property-address="`${property?.city ?? ''}, ${property?.postcode ?? ''}`"
-        :property-price="formatPrice(property?.estimatedPrice)"
+        :property-price="formatPrice(displayEstimatedPrice)"
         :property-image="propertyImages[0]"
         @share="handleShare"
       />
@@ -1762,6 +1762,16 @@ const property = ref<any>(null)
 const passportStatus = ref<any>(null)
 const showUnpublishedModal = ref(false)
 const enrichment = ref<any>(null)
+
+// Use Land Registry HPI-adjusted estimate when available, fall back to DB value
+const displayEstimatedPrice = computed(() =>
+  enrichment.value?.landRegistryEstimate ?? property.value?.estimatedPrice ?? null
+)
+const estimatedPriceSource = computed(() =>
+  enrichment.value?.landRegistryEstimate
+    ? enrichment.value.landRegistrySource ?? 'Land Registry, HPI adjusted'
+    : 'Estimated'
+)
 
 // Merge DB property with live EPC data from enrichment for OS properties missing EPC fields
 const prop = computed(() => {
@@ -2604,9 +2614,9 @@ function signalClass(val: any) {
 
 // ── SDLT calculator ─────────────────────────────────────────────────────────
 
-// Pre-fill from property estimated price once loaded
+// Pre-fill from best available estimated price once loaded
 watch(
-  () => property.value?.estimatedPrice,
+  displayEstimatedPrice,
   (p) => {
     if (p && sdltPriceInput.value === 0) {
       sdltPriceInput.value = Math.round(p)
