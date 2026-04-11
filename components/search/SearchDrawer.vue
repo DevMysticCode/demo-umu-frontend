@@ -62,9 +62,17 @@
 
         <!-- Filter chips -->
         <div class="sd-chips-row">
-          <button class="sd-chip">
-            Current Location
-            <OPIcon name="currentLocation" class="w-[15px] h-[15px]" />
+          <button
+            class="sd-chip"
+            :class="{ 'sd-chip-loading': locationLoading }"
+            :disabled="locationLoading"
+            @click="useCurrentLocation"
+          >
+            <span v-if="locationLoading" class="sd-loc-spinner" />
+            <template v-else>
+              Current Location
+              <OPIcon name="currentLocation" class="w-[15px] h-[15px]" />
+            </template>
           </button>
           <!-- <button
             v-if="view === 'results' || view === 'map'"
@@ -89,6 +97,9 @@
             </svg>
           </button> -->
         </div>
+
+        <!-- Location error -->
+        <p v-if="locationError" class="sd-loc-error">{{ locationError }}</p>
 
         <!-- ── SUGGESTIONS ── -->
         <div v-if="view === 'suggestions'" class="sd-scroll">
@@ -145,12 +156,12 @@
                 <p class="sd-result-loc">{{ r.area || r.postcode }}</p>
                 <p class="sd-result-price">{{ r.priceDisplay }}</p>
                 <div class="sd-result-badges">
-                  <div class="badge-check">
+                  <div v-if="r.hasPassport" class="badge-check">
                     <OPIcon name="verified" class="w-[11px] h-[11px]" />
                   </div>
-                  <span class="badge-pct flex gap-1.5 items-center"
+                  <span v-if="r.passportPublished" class="badge-pct flex gap-1.5 items-center"
                     ><OPIcon name="matchPercentage" class="w-[11px] h-[11px]" />
-                    {{ mockMatch(r.id) }}%</span
+                    {{ r.passportCompletion ?? mockMatch(r.id) }}%</span
                   >
                   <span class="badge-pill">
                     <OPIcon name="bedroom" class="w-[11px] h-[11px]" />
@@ -300,6 +311,8 @@ const query = ref('')
 const view = ref<'suggestions' | 'results' | 'map'>('suggestions')
 const searching = ref(false)
 const rawResults = ref<any[]>([])
+const locationLoading = ref(false)
+const locationError = ref('')
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 const showFilters = ref(false)
@@ -377,6 +390,40 @@ const MATCH_SCORES: Record<string, number> = {}
 const mockMatch = (id: string) => {
   if (!MATCH_SCORES[id]) MATCH_SCORES[id] = 50 + Math.floor(Math.random() * 45)
   return MATCH_SCORES[id]
+}
+
+async function useCurrentLocation() {
+  if (!navigator.geolocation) {
+    locationError.value = 'Geolocation is not supported by your browser.'
+    return
+  }
+  locationLoading.value = true
+  locationError.value = ''
+  try {
+    const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        timeout: 10000,
+        maximumAge: 60000,
+      })
+    )
+    const { latitude, longitude } = pos.coords
+    const res = await fetch(
+      `https://api.postcodes.io/postcodes?lat=${latitude}&lon=${longitude}&limit=1`
+    )
+    if (!res.ok) throw new Error('Postcode lookup failed')
+    const data = await res.json()
+    const postcode: string = data.result?.[0]?.postcode
+    if (!postcode) throw new Error('No postcode found for your location')
+    query.value = postcode
+    doSearch()
+  } catch (err: any) {
+    locationError.value =
+      err?.code === 1
+        ? 'Location access denied. Please allow location in your browser settings.'
+        : 'Could not determine your location. Try typing a postcode.'
+  } finally {
+    locationLoading.value = false
+  }
 }
 
 const onInput = () => {
@@ -986,5 +1033,26 @@ watch(
   to {
     transform: rotate(360deg);
   }
+}
+.sd-chip-loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.sd-loc-spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid #b3ecea;
+  border-top-color: #00a19a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.sd-loc-error {
+  font-size: 12px;
+  color: #ef4444;
+  padding: 4px 16px 0;
+  margin: 0;
 }
 </style>

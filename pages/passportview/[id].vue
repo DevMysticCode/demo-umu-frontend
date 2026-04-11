@@ -68,8 +68,13 @@
           <OPIcon name="matchToBuyers" class="w-[17px] h-[17px]" /> Match to
           Buyers
         </button>
-        <button class="active">
-          <OPIcon name="share" class="w-[17px] h-[17px]" /> Publish
+        <button
+          :class="['active', { 'publish-loading': publishLoading }]"
+          @click="togglePublish"
+          :disabled="publishLoading"
+        >
+          <OPIcon name="share" class="w-[17px] h-[17px]" />
+          {{ publishLoading ? '...' : isPublished ? 'Unpublish' : 'Publish' }}
         </button>
       </div>
 
@@ -188,6 +193,8 @@ const showCollaboratorModal = ref(false)
 const showPropertiesModal = ref(false)
 
 const passportAddress = ref({ line1: '', line2: '' })
+const isPublished = ref(false)
+const publishLoading = ref(false)
 
 onMounted(async () => {
   loadPassport(route.params.id)
@@ -205,10 +212,30 @@ onMounted(async () => {
       line1: passport.addressLine1 ?? '',
       line2: passport.postcode ?? '',
     }
+    isPublished.value = passport.status === 'PUBLISHED'
   } catch (e) {
     console.error('Failed to load passport address', e)
   }
 })
+
+async function togglePublish() {
+  if (publishLoading.value) return
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  publishLoading.value = true
+  try {
+    const endpoint = isPublished.value ? 'unpublish' : 'publish'
+    await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}/${endpoint}`,
+      { method: 'PUT', headers: { Authorization: `Bearer ${token}` } },
+    )
+    isPublished.value = !isPublished.value
+  } catch (e) {
+    console.error('Failed to toggle publish state', e)
+  } finally {
+    publishLoading.value = false
+  }
+}
 
 const loadCollaborators = async () => {
   try {

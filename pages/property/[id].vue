@@ -1694,6 +1694,39 @@
       :actions="actionBarItems"
       @action="handleAction"
     />
+
+    <!-- Unpublished passport modal -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="showUnpublishedModal" class="unpub-overlay" @click.self="showUnpublishedModal = false">
+          <div class="unpub-modal">
+            <div class="unpub-icon">
+              <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00a19a" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M12 8v4m0 4h.01" stroke="#00a19a" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="unpub-title">Passport Not Yet Available</h3>
+            <p class="unpub-body">
+              The owner of this property has not yet made their Property Passport publicly available. You can register your interest to be notified when it's published, or tap the owner directly to request access.
+            </p>
+            <div class="unpub-actions">
+              <button class="unpub-btn-secondary" @click="showUnpublishedModal = false; showRegisterInterest = true">
+                Register Interest
+              </button>
+              <button class="unpub-btn-primary" @click="showUnpublishedModal = false; router.push(`/owner/${propertyId}`)">
+                Tap Owner
+              </button>
+            </div>
+            <button class="unpub-close" @click="showUnpublishedModal = false">
+              <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                <path d="M18 6L6 18M6 6l12 12" stroke="#8e8e93" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -1727,6 +1760,7 @@ const { wishlisted, saved, toggleWishlist, toggleSave, fetchActions } =
 const config = useRuntimeConfig()
 const property = ref<any>(null)
 const passportStatus = ref<any>(null)
+const showUnpublishedModal = ref(false)
 const enrichment = ref<any>(null)
 
 // Merge DB property with live EPC data from enrichment for OS properties missing EPC fields
@@ -1967,11 +2001,19 @@ const potentialEpc = computed(() => {
 })
 
 const actionBarItems = computed(() => {
-  const hasPassport = passportStatus.value?.hasPassport
+  const status = passportStatus.value
+  const hasPassport = status?.hasPassport
+  // Passport is claimed but owner hasn't published it yet, and current user is not the owner/collaborator
+  const isUnpublished =
+    hasPassport &&
+    !status?.isPublished &&
+    !status?.isOwner &&
+    !status?.isCollaborator
   return [
     {
       icon: 'accessPassport',
       label: hasPassport ? 'Access Passport' : 'Claim Passport',
+      disabled: isUnpublished,
     },
     {
       icon: 'saveProperty',
@@ -2449,6 +2491,9 @@ function handleAction(label: string) {
     if (status?.isOwner || status?.isCollaborator) {
       // Owner / collaborator → full passport edit view
       router.push(`/passportview/${status.passportId}`)
+    } else if (!status?.isPublished) {
+      // Passport claimed but not published — show informational modal
+      showUnpublishedModal.value = true
     } else if (status?.isBuyer && status?.passportId) {
       // Already unlocked buyer → buyer read-only view
       router.push(`/buyer-passport/${status.passportId}`)
@@ -4343,4 +4388,92 @@ function handleClaimed(passportId: string) {
   background: rgba(234, 88, 12, 0.1);
   color: #ea580c;
 }
+
+/* ── Unpublished passport modal ─────────────────────────── */
+.unpub-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 env(safe-area-inset-bottom);
+}
+.unpub-modal {
+  background: white;
+  border-radius: 24px 24px 0 0;
+  padding: 28px 24px 32px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.unpub-icon {
+  width: 52px;
+  height: 52px;
+  background: #e8f8f7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.unpub-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1c1c1e;
+  margin: 0;
+}
+.unpub-body {
+  font-size: 14px;
+  color: #636366;
+  line-height: 1.55;
+  margin: 0;
+}
+.unpub-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.unpub-btn-secondary {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1.5px solid #00a19a;
+  background: transparent;
+  color: #00a19a;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.unpub-btn-primary {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #00a19a;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.unpub-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #f2f2f7;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

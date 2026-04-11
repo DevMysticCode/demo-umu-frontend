@@ -6,6 +6,8 @@ export interface Property {
   udprn?: string | null
   uprn?: string | null
   hasPassport?: boolean
+  passportPublished?: boolean
+  passportCompletion?: number | null
   addressLine1: string
   addressLine2?: string | null
   city?: string | null
@@ -64,6 +66,8 @@ export const usePropertySearch = () => {
       p.imageUrl ||
       'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400',
     hasPassport: p.hasPassport ?? false,
+    passportPublished: p.passportPublished ?? false,
+    passportCompletion: p.passportCompletion ?? null,
   })
 
   const searchProperties = async (query: string) => {
