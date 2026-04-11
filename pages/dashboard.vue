@@ -519,7 +519,7 @@ const viewProperty = (id: string) => {
 /* Passport thumbnail in action card */
 .passport-thumb-wrap {
   width: 100px;
-  height: 100px;
+  height: 90px;
   flex-shrink: 0;
   overflow: hidden;
   border-radius: 6px;
@@ -529,9 +529,9 @@ const viewProperty = (id: string) => {
 .passport-thumb-inner {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
   width: 360px;
-  transform: scale(0.178);
+  transform: scale(0.178) translateX(-50%);
   transform-origin: top left;
 }
 
