@@ -66,18 +66,18 @@
             Current Location
             <OPIcon name="currentLocation" class="w-[15px] h-[15px]" />
           </button>
-          <button
+          <!-- <button
             v-if="view === 'results' || view === 'map'"
             class="sd-chip"
           >
             Passport Available
             <OPIcon name="passportAvailable" class="w-[15px] h-[15px]" />
-          </button>
-          <button class="sd-chip">
+          </button> -->
+          <!-- <button class="sd-chip">
             Draw on Maps
             <OPIcon name="drawOnMaps" class="w-[15px] h-[15px]" />
-          </button>
-          <button v-if="view === 'suggestions'" class="sd-chip">
+          </button> -->
+          <!-- <button v-if="view === 'suggestions'" class="sd-chip">
             Property
             <svg viewBox="0 0 24 24" fill="none" width="11" height="11">
               <path
@@ -87,7 +87,7 @@
                 stroke-linecap="round"
               />
             </svg>
-          </button>
+          </button> -->
         </div>
 
         <!-- ── SUGGESTIONS ── -->
@@ -195,7 +195,9 @@
                 @click="loadMoreResults"
               >
                 <span v-if="loadingMore" class="sd-spinner-sm" />
-                <span v-else>Load more ({{ totalCount - results.length }} remaining)</span>
+                <span v-else
+                  >Load more ({{ totalCount - results.length }} remaining)</span
+                >
               </button>
             </div>
           </template>
@@ -287,7 +289,8 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 const props = defineProps({ show: Boolean })
 const emit = defineEmits(['close'])
 
-const { searchProperties, loadMore, loadingMore, totalCount, hasMore } = usePropertySearch()
+const { searchProperties, loadMore, loadingMore, totalCount, hasMore } =
+  usePropertySearch()
 const router = useRouter()
 
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -310,13 +313,13 @@ const results = computed(() => {
   let list = rawResults.value
   const { priceRange, propertyTypes } = activeFilters.value
   if (priceRange.min > 50 || priceRange.max < 350) {
-    list = list.filter(r => {
+    list = list.filter((r) => {
       const pK = (r.estimatedPrice ?? 0) / 1000
       return pK >= priceRange.min && pK <= priceRange.max
     })
   }
   if (!propertyTypes.includes('Any')) {
-    list = list.filter(r => propertyTypes.includes(r.propertyType ?? ''))
+    list = list.filter((r) => propertyTypes.includes(r.propertyType ?? ''))
   }
   return list
 })
@@ -333,7 +336,9 @@ const handleViewSwitch = (val: string) => {
   else view.value = 'results'
 }
 
-const liveSuggestions = ref<{ address: string; area: string; postcode: string }[]>([])
+const liveSuggestions = ref<
+  { address: string; area: string; postcode: string }[]
+>([])
 const suggestionsLoading = ref(false)
 
 let suggestionTimer: ReturnType<typeof setTimeout> | null = null
@@ -345,12 +350,18 @@ async function fetchSuggestions(q: string) {
   }
   suggestionsLoading.value = true
   try {
-    const res = await fetch(`https://api.postcodes.io/postcodes?q=${encodeURIComponent(q)}&limit=6`)
+    const res = await fetch(
+      `https://api.postcodes.io/postcodes?q=${encodeURIComponent(q)}&limit=6`,
+    )
     if (!res.ok) return
     const data = await res.json()
     liveSuggestions.value = (data.result ?? []).map((r: any) => ({
-      address: [r.admin_ward, r.admin_district].filter(Boolean).join(', ') || r.postcode,
-      area: [r.admin_district, r.admin_county || r.region].filter(Boolean).join(', '),
+      address:
+        [r.admin_ward, r.admin_district].filter(Boolean).join(', ') ||
+        r.postcode,
+      area: [r.admin_district, r.admin_county || r.region]
+        .filter(Boolean)
+        .join(', '),
       postcode: r.postcode,
     }))
   } catch {
@@ -972,8 +983,8 @@ watch(
   display: inline-block;
 }
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
-
-
