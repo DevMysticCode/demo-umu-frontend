@@ -201,11 +201,11 @@ const scrollContainer = ref<HTMLElement | null>(null)
 const scrollAnchor = ref<HTMLElement | null>(null)
 
 const suggestedQuestions = [
-  'How do I find my exact boundary lines?',
-  "What if my neighbour's fence is on my land?",
-  'Do I need a survey before selling?',
+  'Am I ready to sell my house?',
+  "What documents am I missing?",
+  'What happens after an offer is accepted?',
   'What is a property passport?',
-  'How long does conveyancing take?',
+  'Why do house sales fall through?',
 ]
 
 const handleSend = async () => {
