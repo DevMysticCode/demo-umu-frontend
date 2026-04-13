@@ -40,9 +40,9 @@
       <div class="prop-card">
         <!-- Address / Price -->
         <div class="prop-title-block">
-          <h1 class="prop-address">{{ property.addressLine1 }}</h1>
+          <h1 class="prop-address">{{ displayAddress }}</h1>
           <p class="prop-city">
-            {{ [property.city, property.county].filter(Boolean).join(', ') }},
+            {{ displayCity }},
             {{ property.postcode }}
           </p>
           <p class="prop-price">
@@ -1744,6 +1744,7 @@ import { useAppToast } from '~/composables/useCustomToast'
 import { usePropertySearch } from '~/composables/usePropertySearch'
 import { usePassportClaim } from '~/composables/usePassportClaim'
 import { usePropertyActions } from '~/composables/usePropertyActions'
+import { toTitleCase } from '~/utils/form-helpres'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -1762,6 +1763,15 @@ const property = ref<any>(null)
 const passportStatus = ref<any>(null)
 const showUnpublishedModal = ref(false)
 const enrichment = ref<any>(null)
+
+// Title-cased display fields — defensive frontend normalisation on top of backend fix
+const displayAddress = computed(() => toTitleCase(property.value?.addressLine1) || property.value?.addressLine1 || '')
+const displayCity = computed(() =>
+  [property.value?.city, property.value?.county]
+    .filter(Boolean)
+    .map(toTitleCase)
+    .join(', ')
+)
 
 // Use Land Registry HPI-adjusted estimate when available, fall back to DB value
 const displayEstimatedPrice = computed(() =>
@@ -1948,20 +1958,6 @@ const satelliteUrl = computed(() => {
   return `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/${lng},${lat},16,0/800x300@2x?access_token=${token}`
 })
 
-// Pool of varied UK-style property photos
-const PROPERTY_IMAGE_POOL = [
-  'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/1643387/pexels-photo-1643387.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/1643389/pexels-photo-1643389.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/2249531/pexels-photo-2249531.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://images.pexels.com/photos/1568605/pexels-photo-1568605.jpeg?auto=compress&cs=tinysrgb&w=800',
-]
-
 const propertyImages = computed(() => {
   const images: string[] = []
   const isStreetView = (url: string) =>
@@ -1977,24 +1973,13 @@ const propertyImages = computed(() => {
     )
   }
 
-  // 2. property.imageUrl only if it's not a duplicate Street View URL
+  // 2. property.imageUrl only if it's a real image (not a duplicate Street View)
   const imgUrl = property.value?.imageUrl
   if (imgUrl && !isStreetView(imgUrl)) {
     images.push(imgUrl)
   }
 
-  // 3. Pick 3 varied images from the pool, seeded by property id so they're stable per property
-  const id = property.value?.id ?? ''
-  const seed = id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
-  const pool = [...PROPERTY_IMAGE_POOL]
-  // Remove any already-added image from pool to avoid duplicates
-  const used = new Set(images)
-  const available = pool.filter((u) => !used.has(u))
-  for (let i = 0; i < 3 && available.length > 0; i++) {
-    const idx = (seed + i * 3) % available.length
-    images.push(available.splice(idx, 1)[0])
-  }
-
+  // If no real images are available, return empty — ImageSlider will show the UMU placeholder
   return images
 })
 

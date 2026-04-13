@@ -328,6 +328,13 @@ const {
   deleteReminder,
 } = useCalendar()
 
+const {
+  permissionGranted,
+  requestPermission,
+  scheduleReminder,
+  cancelReminder,
+} = useLocalNotifications()
+
 // ─── Calendar state ────────────────────────────────────────────────────────
 const today = new Date()
 const viewYear = ref(today.getFullYear())
@@ -475,6 +482,8 @@ const getCardTextMuted = (type: string) =>
 // ─── Delete ────────────────────────────────────────────────────────────────
 const confirmDelete = async (id: string) => {
   if (confirm('Delete this reminder?')) {
+    // Cancel the scheduled notification before removing from DB
+    await cancelReminder(id)
     await deleteReminder(id)
   }
 }
@@ -512,7 +521,7 @@ const saveReminder = async () => {
   if (!form.value.title.trim() || !form.value.date) return
   isSaving.value = true
   try {
-    await createReminder({
+    const created = await createReminder({
       title: form.value.title.trim(),
       date: form.value.date,
       time: form.value.time || undefined,
@@ -520,6 +529,16 @@ const saveReminder = async () => {
       notes: form.value.notes || undefined,
       type: 'manual',
     })
+    // Schedule a local device notification for the saved reminder
+    if (created) {
+      await scheduleReminder({
+        id: created.id,
+        title: created.title,
+        date: created.date.slice(0, 10),
+        time: created.time ?? undefined,
+        notes: created.notes ?? undefined,
+      })
+    }
     closeDrawer()
   } finally {
     isSaving.value = false
@@ -535,7 +554,11 @@ const goBack = () => {
   navigateTo('/profile')
 }
 
-onMounted(() => fetchReminders(viewYear.value, viewMonth.value))
+onMounted(async () => {
+  // Request notification permission on first open (iOS/Android only — no-op on web)
+  await requestPermission()
+  await fetchReminders(viewYear.value, viewMonth.value)
+})
 </script>
 
 <style scoped>

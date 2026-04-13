@@ -1,5 +1,15 @@
 // Form helper utilities
 
+/**
+ * Convert a string to Title Case, matching the backend convention.
+ * "14 WOODFIELD ROAD" → "14 Woodfield Road"
+ * Safe for null/undefined inputs.
+ */
+export const toTitleCase = (str: string | null | undefined): string => {
+  if (!str) return ''
+  return str.toLowerCase().replace(/\b([a-z])/g, (c) => c.toUpperCase())
+}
+
 type HTMLDataElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
 export const getDtaFromSubmitEvent = (event: SubmitEvent): Record<string, any> => {

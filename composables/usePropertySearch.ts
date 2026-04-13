@@ -1,5 +1,6 @@
 // Composable for UK Property Search — backed by our own API
 import { ref, readonly } from 'vue'
+import { toTitleCase } from '~/utils/form-helpres'
 
 export interface Property {
   id: string
@@ -60,11 +61,9 @@ export const usePropertySearch = () => {
     priceDisplay: formatPrice(p.estimatedPrice),
     sqftDisplay: p.sqft ? `${p.sqft.toLocaleString()} sqft` : p.floorAreaSqm ? `${Math.round(p.floorAreaSqm * 10.764).toLocaleString()} sqft` : 'N/A',
     type: p.propertyType ?? 'Residential',
-    area: [p.city, p.county].filter(Boolean).join(', '),
-    address: p.addressLine1,
-    image:
-      p.imageUrl ||
-      'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400',
+    area: [p.city, p.county].filter(Boolean).map(toTitleCase).join(', '),
+    address: toTitleCase(p.addressLine1),
+    image: p.imageUrl || null,
     hasPassport: p.hasPassport ?? false,
     passportPublished: p.passportPublished ?? false,
     passportCompletion: p.passportCompletion ?? null,

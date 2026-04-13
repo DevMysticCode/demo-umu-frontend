@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router'
 import { navigateTo } from 'nuxt/app'
 import { useAuth } from '~/composables/useAuth'
 import { useSession } from '~/composables/useSession'
+import { toTitleCase } from '~/utils/form-helpres'
 
 interface Address {
   id: number
@@ -55,8 +56,8 @@ export const useCreateAccountData = () => {
       }
       addressResults.value = res.items.map((p, i) => ({
         id: i + 1,
-        line1: p.addressLine1,
-        line2: [p.city, p.postcode].filter(Boolean).join(', '),
+        line1: toTitleCase(p.addressLine1),
+        line2: [p.city, p.postcode].filter(Boolean).map(toTitleCase).join(', '),
         postcode: p.postcode,
       }))
       // Store last searched postcode on the form so the modal title is correct
