@@ -117,10 +117,7 @@
         >
           <div class="snapshot-card-content">
             <h3 class="snapshot-card-title">{{ item.addressLine1 }}</h3>
-            <p class="snapshot-card-city">{{ item.city }}</p>
-            <p class="snapshot-card-region" v-if="item.county">
-              {{ item.county }}
-            </p>
+            <p class="snapshot-card-city">{{ item.city || item.county }}</p>
             <p class="snapshot-card-postcode">{{ item.postcode }}</p>
             <p class="snapshot-card-date">
               Added: {{ formatDate(item.wishlistedAt) }}

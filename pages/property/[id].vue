@@ -41,9 +41,9 @@
         <!-- Address / Price -->
         <div class="prop-title-block">
           <h1 class="prop-address">{{ displayAddress }}</h1>
+          <p v-if="displayArea" class="prop-area">{{ displayArea }}</p>
           <p class="prop-city">
-            {{ displayCity }},
-            {{ property.postcode }}
+            {{ displayCity }}<span v-if="displayCity">, </span>{{ property.postcode }}
           </p>
           <p class="prop-price">
             {{ formatPrice(displayEstimatedPrice) }}
@@ -306,8 +306,8 @@
           </div>
         </div>
 
-        <!-- Floor Plan -->
-        <div
+        <!-- Floor Plan — temporarily hidden -->
+        <!-- <div
           v-show="activeSection === 'floor-plan'"
           id="section-floor-plan"
           class="prop-section"
@@ -331,7 +331,7 @@
               </svg>
             </button>
           </div>
-        </div>
+        </div> -->
 
         <!-- Location and Nearby -->
         <div
@@ -341,10 +341,10 @@
         >
           <h2 class="prop-section-title">Location &amp; Map</h2>
           <p class="prop-nearby-source">
-            Map: Ordnance Survey · Boundary: OS NGD Building Footprint
+            Map: OpenStreetMap contributors
           </p>
 
-          <!-- Map 1: OS Interactive Map -->
+          <!-- Map 1: Interactive Map -->
           <p class="prop-map-label">Map</p>
           <div class="prop-map-wrap">
             <div ref="mapEl" class="prop-map" />
@@ -775,14 +775,14 @@
         >
           <div class="prop-section-title-row">
             <h2 class="prop-section-title">EPC Rating</h2>
-            <a
+            <button
               v-if="enrichment?.epcCert?.certUrl"
-              :href="enrichment.epcCert.certUrl"
-              target="_blank"
-              rel="noopener"
               class="prop-epc-cert-link"
-              >View Certificate</a
+              :disabled="epcDownloading"
+              @click="downloadEpc"
             >
+              {{ epcDownloading ? 'Downloading...' : 'Download EPC' }}
+            </button>
           </div>
           <div class="prop-epc-card">
             <div class="prop-epc-header">
@@ -1508,65 +1508,11 @@
           id="section-planning"
           class="prop-section"
         >
-          <h2 class="prop-section-title">Planning</h2>
+          <h2 class="prop-section-title">Planning History</h2>
           <div class="prop-planning-card">
-            <!-- Constraints by category -->
-            <template v-if="enrichment?.planningHistory?.constraints?.length">
-              <div class="prop-planning-label">Constraints</div>
-              <template v-for="cat in planningCategories" :key="cat.id">
-                <div
-                  v-if="planningByCategory(cat.id).length"
-                  class="prop-planning-category"
-                >
-                  <div class="prop-planning-cat-header">
-                    <span
-                      class="prop-planning-cat-dot"
-                      :style="{ background: cat.color }"
-                    />
-                    {{ cat.label }}
-                  </div>
-                  <div class="prop-planning-list">
-                    <div
-                      v-for="(c, i) in planningByCategory(cat.id)"
-                      :key="i"
-                      class="prop-planning-row"
-                    >
-                      <div
-                        class="prop-planning-type-badge"
-                        :style="{ background: cat.bg, color: cat.color }"
-                      >
-                        {{ c.type }}
-                      </div>
-                      <p class="prop-planning-name">{{ c.name }}</p>
-                      <p v-if="c.reference" class="prop-planning-ref">
-                        Ref: {{ c.reference }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </template>
-            <p
-              v-else-if="
-                enrichment && !enrichment.planningHistory?.constraints?.length
-              "
-              class="prop-planning-none"
-            >
-              No planning constraints recorded for this location.
-            </p>
-
-            <!-- Planning Applications -->
+            <!-- Planning Applications (UPRN-based, property-specific) -->
             <template v-if="enrichment?.planningHistory?.applications?.length">
-              <div
-                class="prop-planning-label"
-                :style="{
-                  marginTop: enrichment?.planningHistory?.constraints?.length
-                    ? '16px'
-                    : '0',
-                }"
-              >
-                Planning Applications
-              </div>
+              <div class="prop-planning-label">Planning Applications</div>
               <div class="prop-planning-apps">
                 <div
                   v-for="(app, i) in enrichment.planningHistory.applications"
@@ -1618,6 +1564,13 @@
               </div>
             </template>
 
+            <p
+              v-if="enrichment && !enrichment.planningHistory?.applications?.length"
+              class="prop-planning-none"
+            >
+              No planning applications on record for this property.
+            </p>
+
             <a
               href="https://www.planning.data.gov.uk/"
               target="_blank"
@@ -1641,7 +1594,8 @@
       @close="showRegisterInterest = false"
     >
       <RegisterInterestContent
-        :address="`${property?.addressLine1}, ${property?.postcode}`"
+        :property-id="propertyId"
+        :address="`${property?.addressLine1}, ${property?.city || property?.postcode}`"
         @submit="onInterestRegistered"
       />
     </BaseDrawer>
@@ -1766,12 +1720,8 @@ const enrichment = ref<any>(null)
 
 // Title-cased display fields — defensive frontend normalisation on top of backend fix
 const displayAddress = computed(() => toTitleCase(property.value?.addressLine1) || property.value?.addressLine1 || '')
-const displayCity = computed(() =>
-  [property.value?.city, property.value?.county]
-    .filter(Boolean)
-    .map(toTitleCase)
-    .join(', ')
-)
+const displayArea = computed(() => toTitleCase(property.value?.addressLine2) || '')
+const displayCity = computed(() => toTitleCase(property.value?.city) || toTitleCase(property.value?.county) || '')
 
 // Use Land Registry HPI-adjusted estimate when available, fall back to DB value
 const displayEstimatedPrice = computed(() =>
@@ -1841,7 +1791,7 @@ const quickSections = [
   { id: 'bus-stops', label: 'Bus Stops', icon: 'publicTransport' },
   { id: 'airports', label: 'Airports', icon: 'airport' },
   { id: 'parks', label: 'Parks', icon: 'closeToPublicPark' },
-  { id: 'floor-plan', label: 'Floor Plan', icon: 'floorPlan' },
+  // { id: 'floor-plan', label: 'Floor Plan', icon: 'floorPlan' }, // temporarily hidden
   { id: 'epc', label: 'EPC', icon: 'epcRating' },
   { id: 'sales', label: 'Sales', icon: 'transactionInformation' },
   { id: 'coverage', label: 'Coverage', icon: 'mobileSignal' },
@@ -2029,202 +1979,126 @@ const epcBands = [
   { label: 'G', range: '1-20', color: '#ff3232', width: '35%' },
 ]
 
-// OS Raster Maps via Mapbox GL (falls back to OSM iframe)
+// Leaflet map — same library as SearchDrawer
+const loadLeaflet = (): Promise<any> =>
+  new Promise((resolve) => {
+    if ((window as any).L) return resolve((window as any).L)
+    if (!document.querySelector('link[href*="leaflet"]')) {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+      document.head.appendChild(link)
+    }
+    const script = document.createElement('script')
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+    script.onload = () => resolve((window as any).L)
+    document.head.appendChild(script)
+  })
+
 const initMap = async () => {
   if (!mapEl.value || !property.value) return
   const lat = property.value.latitude
   const lng = property.value.longitude
   if (!lat || !lng) return
 
-  const token = config.public.mapboxToken as string
-  const osKey = config.public.osApiKey as string
+  const L = await loadLeaflet()
 
-  if (!token && !osKey) {
-    // OSM iframe fallback
-    const bbox = `${lng - 0.005},${lat - 0.003},${lng + 0.005},${lat + 0.003}`
-    mapEl.value.innerHTML = `<iframe
-      width="100%" height="100%" style="border:0;border-radius:16px;"
-      loading="lazy"
-      src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}"
-    ></iframe>`
-    return
+  if (mapInstance) {
+    mapInstance.remove()
+    mapInstance = null
   }
 
-  const mapboxgl = (await import('mapbox-gl')).default
-  if (!document.querySelector('link[href*="mapbox-gl"]')) {
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css'
-    document.head.appendChild(link)
-  }
-
-  mapboxgl.accessToken = token || ''
-
-  // Use OS Raster tiles (Light_3857 = clean minimal UK map)
-  const mapStyle: any = osKey
-    ? {
-        version: 8,
-        sources: {
-          'os-raster': {
-            type: 'raster',
-            tiles: [
-              `https://api.os.uk/maps/raster/v1/zxy/Light_3857/{z}/{x}/{y}.png?key=${osKey}`,
-            ],
-            tileSize: 256,
-            attribution:
-              '© Crown copyright and database rights 2024 Ordnance Survey',
-          },
-        },
-        layers: [
-          {
-            id: 'os-raster',
-            type: 'raster',
-            source: 'os-raster',
-            minzoom: 0,
-            maxzoom: 20,
-          },
-        ],
-      }
-    : 'mapbox://styles/mapbox/streets-v12'
-
-  const map = new mapboxgl.Map({
-    container: mapEl.value,
-    style: mapStyle,
-    center: [lng, lat],
-    zoom: 15,
-    interactive: true,
-  })
+  const map = L.map(mapEl.value, { zoomControl: false }).setView([lat, lng], 15)
+  L.control.zoom({ position: 'bottomright' }).addTo(map)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19,
+  }).addTo(map)
 
   mapInstance = map
 
-  // Property marker (teal house pin)
-  const el = document.createElement('div')
-  el.style.cssText =
-    'width:42px;height:42px;border-radius:50%;background:#00a19a;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,161,154,0.6);border:3px solid white;cursor:pointer;'
-  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="white" stroke-width="2" fill="rgba(255,255,255,0.25)"/><path d="M9 22V12h6v10" stroke="white" stroke-width="2"/></svg>`
-  new mapboxgl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map)
+  // Property marker (same teal house pin as SearchDrawer)
+  const markerIcon = L.divIcon({
+    className: '',
+    html: `<div style="width:42px;height:42px;border-radius:50%;background:#00a19a;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,161,154,0.6);border:3px solid white;">
+      <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="white" stroke-width="2" fill="rgba(255,255,255,0.25)"/>
+        <path d="M9 22V12h6v10" stroke="white" stroke-width="2"/>
+      </svg>
+    </div>`,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21],
+  })
+  L.marker([lat, lng], { icon: markerIcon }).addTo(map)
 
-  // Add INSPIRE title boundary (registered land parcel) once enrichment loads
-  const addTitleBoundary = (loadedMap: any) => {
+  // POI marker helper
+  function makeDivIcon(color: string, emoji: string) {
+    return L.divIcon({
+      className: '',
+      html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size:13px;">${emoji}</div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+    })
+  }
+
+  // Add title boundary as GeoJSON overlay
+  const addTitleBoundary = () => {
     const boundary = enrichment.value?.titleBoundary
     if (!boundary?.geometry) return
     try {
-      if (loadedMap.getSource('title-boundary')) return // already added
-      loadedMap.addSource('title-boundary', {
-        type: 'geojson',
-        data: boundary.geoJson,
-      })
-      loadedMap.addLayer({
-        id: 'title-boundary-fill',
-        type: 'fill',
-        source: 'title-boundary',
-        paint: { 'fill-color': '#00a19a', 'fill-opacity': 0.12 },
-      })
-      loadedMap.addLayer({
-        id: 'title-boundary-line',
-        type: 'line',
-        source: 'title-boundary',
-        paint: {
-          'line-color': '#00a19a',
-          'line-width': 2,
-          'line-dasharray': [3, 2],
+      L.geoJSON(boundary.geoJson, {
+        style: {
+          color: '#00a19a',
+          weight: 2,
+          dashArray: '6 4',
+          fillColor: '#00a19a',
+          fillOpacity: 0.12,
         },
-      })
-    } catch {
-      /* non-critical */
-    }
+      }).addTo(map)
+    } catch { /* non-critical */ }
   }
 
-  // Add nearby POI markers once enrichment loads
+  // Add nearby POI markers with popups
   const addPoiMarkers = () => {
     if (!enrichment.value?.nearby) return
     const nearby = enrichment.value.nearby
-
-    function makeMarker(color: string, emoji: string) {
-      const d = document.createElement('div')
-      d.style.cssText = `width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size:13px;`
-      d.textContent = emoji
-      return d
-    }
-
-    // Schools
     for (const s of nearby.schools ?? []) {
       if (!s.lat || !s.lon) continue
-      new mapboxgl.Marker({ element: makeMarker('#3b82f6', '🎓') })
-        .setLngLat([s.lon, s.lat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 12 }).setText(
-            `${s.name} · ${s.distanceKm}km`,
-          ),
-        )
-        .addTo(map)
+      L.marker([s.lat, s.lon], { icon: makeDivIcon('#3b82f6', '🎓') })
+        .bindPopup(`${s.name} · ${s.distanceKm}km`).addTo(map)
     }
-    // Train stations
     for (const t of nearby.trains ?? []) {
       if (!t.lat || !t.lon) continue
-      new mapboxgl.Marker({ element: makeMarker('#8b5cf6', '🚆') })
-        .setLngLat([t.lon, t.lat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 12 }).setText(
-            `${t.name} · ${t.distanceKm}km`,
-          ),
-        )
-        .addTo(map)
+      L.marker([t.lat, t.lon], { icon: makeDivIcon('#8b5cf6', '🚆') })
+        .bindPopup(`${t.name} · ${t.distanceKm}km`).addTo(map)
     }
-    // Bus stops
     for (const b of nearby.busStops ?? []) {
       if (!b.lat || !b.lon) continue
-      new mapboxgl.Marker({ element: makeMarker('#f59e0b', '🚌') })
-        .setLngLat([b.lon, b.lat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 12 }).setText(
-            `${b.name} · ${b.distanceKm}km`,
-          ),
-        )
-        .addTo(map)
+      L.marker([b.lat, b.lon], { icon: makeDivIcon('#f59e0b', '🚌') })
+        .bindPopup(`${b.name} · ${b.distanceKm}km`).addTo(map)
     }
-    // Parks
     for (const p of nearby.parks ?? []) {
       if (!p.lat || !p.lon) continue
-      new mapboxgl.Marker({ element: makeMarker('#10b981', '🌳') })
-        .setLngLat([p.lon, p.lat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 12 }).setText(
-            `${p.name} · ${p.distanceKm}km`,
-          ),
-        )
-        .addTo(map)
+      L.marker([p.lat, p.lon], { icon: makeDivIcon('#10b981', '🌳') })
+        .bindPopup(`${p.name} · ${p.distanceKm}km`).addTo(map)
     }
-    // Airports
     for (const a of nearby.airports ?? []) {
       if (!a.lat || !a.lon) continue
-      new mapboxgl.Marker({ element: makeMarker('#ec4899', '✈️') })
-        .setLngLat([a.lon, a.lat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 12 }).setText(
-            `${a.name} · ${a.distanceKm}km`,
-          ),
-        )
-        .addTo(map)
+      L.marker([a.lat, a.lon], { icon: makeDivIcon('#ec4899', '✈️') })
+        .bindPopup(`${a.name} · ${a.distanceKm}km`).addTo(map)
     }
   }
 
   const applyEnrichmentToMap = () => {
     addPoiMarkers()
-    if (map.loaded()) addTitleBoundary(map)
-    else map.on('load', () => addTitleBoundary(map))
+    addTitleBoundary()
   }
 
-  // If enrichment already loaded, apply immediately; otherwise watch
   if (enrichment.value?.nearby || enrichment.value?.titleBoundary) {
-    map.on('load', applyEnrichmentToMap)
+    applyEnrichmentToMap()
   } else {
     const stop = watch(enrichment, (v) => {
-      if (v) {
-        if (map.loaded()) applyEnrichmentToMap()
-        else map.on('load', applyEnrichmentToMap)
-        stop()
-      }
+      if (v) { applyEnrichmentToMap(); stop() }
     })
   }
 }
@@ -2543,6 +2417,31 @@ function onInterestRegistered() {
 
 function handleShare() {
   console.log('Share triggered')
+}
+
+// EPC Certificate download
+const epcDownloading = ref(false)
+async function downloadEpc() {
+  if (epcDownloading.value) return
+  epcDownloading.value = true
+  try {
+    const apiBase = config.public.apiBase as string
+    const res = await fetch(`${apiBase}/property/${propertyId}/epc-download`)
+    if (!res.ok) throw new Error('Download failed')
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `epc-certificate-${propertyId}.pdf`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  } catch {
+    showToast({ message: 'Could not download EPC certificate. Please try again.', duration: 3000 })
+  } finally {
+    epcDownloading.value = false
+  }
 }
 
 // Pass existing passportId to drawer when property already has a passport but user can't access it

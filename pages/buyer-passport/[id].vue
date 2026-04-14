@@ -293,7 +293,7 @@ const propertyImage = computed(() => {
 const cityLine = computed(() => {
   const p = data.value?.property
   if (!p) return data.value?.passport?.postcode || ''
-  return [p.city, p.county, p.postcode].filter(Boolean).join(', ')
+  return [p.city || p.county, p.postcode].filter(Boolean).join(', ')
 })
 
 const filteredSections = computed(() => {

@@ -96,10 +96,7 @@
         >
           <div class="saved-properties-card-content">
             <h3 class="saved-properties-card-title">{{ item.addressLine1 }}</h3>
-            <p class="saved-properties-card-city">{{ item.city }}</p>
-            <p class="saved-properties-card-region" v-if="item.county">
-              {{ item.county }}
-            </p>
+            <p class="saved-properties-card-city">{{ item.city || item.county }}</p>
             <p class="saved-properties-card-postcode">{{ item.postcode }}</p>
             <p class="saved-properties-card-date">
               Added: {{ formatDate(item.savedAt) }}

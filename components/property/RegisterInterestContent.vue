@@ -2,202 +2,145 @@
   <div class="modal-container" @click.stop>
     <div class="modal-content">
       <h1 class="title">Register Your Interest</h1>
-      <p class="subtitle">12, Maple Road, Staines TW18 3BA</p>
+      <p class="subtitle">{{ address }}</p>
 
       <div class="greenhouse-illustration">
-         <OPIcon name="registerInterestDrawer" class="w-[144px] h-[144px]" />
+        <OPIcon name="registerInterestDrawer" class="w-[144px] h-[144px]" />
       </div>
 
-      <p class="description">
-        Help the owner understand your level of interest in this property
-      </p>
+      <!-- Success state -->
+      <div v-if="submitted" class="success-state">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">Interest Registered!</h2>
+        <p class="success-desc">The property owner has been notified of your interest. They may reach out to you directly.</p>
+        <button class="register-btn" @click="emit('submit')">Done</button>
+      </div>
 
-      <div class="interest-section">
-        <h2 class="section-title">How Keen are you?</h2>
+      <template v-else>
+        <p class="description">
+          Help the owner understand your level of interest in this property
+        </p>
 
-        <div class="interest-options">
-          <div
-            class="interest-card"
-            :class="{ selected: selectedInterest === 'dream' }"
-            @click="selectedInterest = 'dream'"
-          >
-            <div class="interest-icon">🏡</div>
-            <div class="interest-content">
-              <h3 class="interest-name">Dream Home</h3>
-              <p class="interest-desc">This is exactly what I'm looking for</p>
-            </div>
+        <div class="interest-section">
+          <h2 class="section-title">How Keen are you?</h2>
+
+          <div class="interest-options">
             <div
-              class="radio-btn"
-              :class="{ checked: selectedInterest === 'dream' }"
+              class="interest-card"
+              :class="{ selected: selectedInterest === 'dream' }"
+              @click="selectedInterest = 'dream'"
             >
-              <div v-if="selectedInterest === 'dream'" class="radio-dot"></div>
+              <div class="interest-icon">🏡</div>
+              <div class="interest-content">
+                <h3 class="interest-name">Dream Home</h3>
+                <p class="interest-desc">This is exactly what I'm looking for</p>
+              </div>
+              <div class="radio-btn" :class="{ checked: selectedInterest === 'dream' }">
+                <div v-if="selectedInterest === 'dream'" class="radio-dot"></div>
+              </div>
             </div>
-          </div>
 
-          <div
-            class="interest-card"
-            :class="{ selected: selectedInterest === 'super' }"
-            @click="selectedInterest = 'super'"
-          >
-            <div class="interest-icon">🛋️</div>
-            <div class="interest-content">
-              <h3 class="interest-name">Super Keen</h3>
-              <p class="interest-desc">
-                Very interested and ready to move quickly
-              </p>
-            </div>
             <div
-              class="radio-btn"
-              :class="{ checked: selectedInterest === 'super' }"
+              class="interest-card"
+              :class="{ selected: selectedInterest === 'super' }"
+              @click="selectedInterest = 'super'"
             >
-              <div v-if="selectedInterest === 'super'" class="radio-dot"></div>
+              <div class="interest-icon">🛋️</div>
+              <div class="interest-content">
+                <h3 class="interest-name">Super Keen</h3>
+                <p class="interest-desc">Very interested and ready to move quickly</p>
+              </div>
+              <div class="radio-btn" :class="{ checked: selectedInterest === 'super' }">
+                <div v-if="selectedInterest === 'super'" class="radio-dot"></div>
+              </div>
             </div>
-          </div>
 
-          <div
-            class="interest-card"
-            :class="{ selected: selectedInterest === 'browsing' }"
-            @click="selectedInterest = 'browsing'"
-          >
-            <div class="interest-icon">🌳</div>
-            <div class="interest-content">
-              <h3 class="interest-name">Just Browsing</h3>
-              <p class="interest-desc">
-                Interested but still exploring options
-              </p>
-            </div>
             <div
-              class="radio-btn"
-              :class="{ checked: selectedInterest === 'browsing' }"
+              class="interest-card"
+              :class="{ selected: selectedInterest === 'browsing' }"
+              @click="selectedInterest = 'browsing'"
             >
-              <div
-                v-if="selectedInterest === 'browsing'"
-                class="radio-dot"
-              ></div>
+              <div class="interest-icon">🌳</div>
+              <div class="interest-content">
+                <h3 class="interest-name">Just Browsing</h3>
+                <p class="interest-desc">Interested but still exploring options</p>
+              </div>
+              <div class="radio-btn" :class="{ checked: selectedInterest === 'browsing' }">
+                <div v-if="selectedInterest === 'browsing'" class="radio-dot"></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="info-section">
-        <h2 class="section-title">Why does this help?</h2>
-        <div class="info-card">
-          <ul class="info-list">
-            <li>Owners prioritize serious buyers</li>
-            <li>Helps schedule appropriate viewing times</li>
-            <li>Sets realistic expectations for both parties</li>
-            <li>Increases your chances of getting a response</li>
-          </ul>
+        <div class="info-section">
+          <h2 class="section-title">Why does this help?</h2>
+          <div class="info-card">
+            <ul class="info-list">
+              <li>Owners prioritize serious buyers</li>
+              <li>Helps schedule appropriate viewing times</li>
+              <li>Sets realistic expectations for both parties</li>
+              <li>Increases your chances of getting a response</li>
+            </ul>
+          </div>
         </div>
-      </div>
 
-      <button
-        class="register-btn"
-        @click="registerInterest"
-        :disabled="!selectedInterest"
-      >
-        Register Interest
-      </button>
+        <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
+
+        <button
+          class="register-btn"
+          :disabled="!selectedInterest || isSubmitting"
+          @click="registerInterest"
+        >
+          {{ isSubmitting ? 'Sending...' : 'Register Interest' }}
+        </button>
+      </template>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import OPIcon from '~/components/ui/OPIcon.vue'
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-})
 
-const emit = defineEmits(['update:modelValue', 'registered', 'close'])
+const props = defineProps<{
+  address: string
+  propertyId: string
+}>()
 
+const emit = defineEmits(['submit'])
+
+const config = useRuntimeConfig()
 const selectedInterest = ref('')
+const isSubmitting = ref(false)
+const submitted = ref(false)
+const errorMsg = ref('')
 
-const closeModal = () => {
-  emit('update:modelValue', false)
-}
-
-const registerInterest = () => {
-  if (selectedInterest.value) {
-    emit('registered', selectedInterest.value)
-    selectedInterest.value = ''
-    closeModal()
+const registerInterest = async () => {
+  if (!selectedInterest.value || isSubmitting.value) return
+  isSubmitting.value = true
+  errorMsg.value = ''
+  try {
+    const token = localStorage.getItem('token')
+    await $fetch(`${config.public.apiBase}/property/${props.propertyId}/register-interest`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { interestLevel: selectedInterest.value },
+    })
+    submitted.value = true
+  } catch {
+    errorMsg.value = 'Something went wrong. Please try again.'
+  } finally {
+    isSubmitting.value = false
   }
-  emit('update:modelValue', false)
-  emit('close')
 }
 </script>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* background: rgba(0, 0, 0, 0.5); */
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  z-index: 1000;
-}
-
 .modal-container {
-  /* background: linear-gradient(to bottom, #f5f5f5 0%, #ffffff 200px); */
   max-width: 430px;
   width: 100%;
   max-height: 90vh;
   border-radius: 24px 24px 0 0;
   overflow-y: auto;
-  animation: slideUp 0.3s ease-out;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  background: transparent;
-}
-
-.back-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: #00b8a9;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 500;
-  padding: 8px;
-}
-
-.back-arrow {
-  font-size: 20px;
-}
-
-.close-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #e0e0e0;
-  border: none;
-  font-size: 18px;
-  color: #666;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .modal-content {
@@ -223,12 +166,6 @@ const registerInterest = () => {
   display: flex;
   justify-content: center;
   margin: 32px 0;
-}
-
-.greenhouse-img {
-  width: 200px;
-  height: 180px;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
 }
 
 .description {
@@ -365,6 +302,13 @@ const registerInterest = () => {
   font-size: 16px;
 }
 
+.error-msg {
+  font-size: 14px;
+  color: #ef4444;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
 .register-btn {
   width: 100%;
   padding: 18px;
@@ -388,15 +332,36 @@ const registerInterest = () => {
   cursor: not-allowed;
 }
 
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
+/* Success state */
+.success-state {
+  text-align: center;
+  padding: 20px 0 8px;
 }
 
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: #00b8a9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: white;
+  margin: 0 auto 20px;
+}
+
+.success-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+}
+
+.success-desc {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0 0 32px;
 }
 </style>
-
-

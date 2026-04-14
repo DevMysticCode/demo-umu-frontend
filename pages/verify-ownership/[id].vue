@@ -21,7 +21,18 @@
           your full Property Passport.
         </p> -->
 
+        <div v-if="buildError" class="build-error-box">
+          <p class="build-error-msg">{{ buildError }}</p>
+          <button
+            v-if="buildError.toLowerCase().includes('phone')"
+            class="btn-primary mt-3"
+            @click="router.push('/profile/personal-information')"
+          >
+            Add Phone Number
+          </button>
+        </div>
         <button
+          v-else
           class="btn-primary mt-8"
           @click="buildPassport"
           :disabled="building"
@@ -319,6 +330,7 @@ const verificationState = ref<'idle' | 'submitted' | 'inProgress' | 'verified'>(
 const progressValue = ref(0)
 const emailNotifications = ref(true)
 const building = ref(false)
+const buildError = ref('')
 
 const propertyAddress = computed(() => {
   if (!property.value) return ''
@@ -384,6 +396,7 @@ async function startVerification() {
 
 async function buildPassport() {
   building.value = true
+  buildError.value = ''
   try {
     const result = await $fetch<{ passportId: string }>(
       `${base}/property/${propertyId}/complete-verification`,
@@ -395,7 +408,13 @@ async function buildPassport() {
     if (result?.passportId) {
       router.push(`/passportview/${result.passportId}`)
     }
-  } catch (err) {
+  } catch (err: any) {
+    const msg = err?.data?.message ?? err?.message ?? ''
+    if (msg.toLowerCase().includes('phone')) {
+      buildError.value = msg
+    } else {
+      buildError.value = 'Something went wrong. Please try again.'
+    }
     console.error('Complete verification error:', err)
   } finally {
     building.value = false
@@ -427,6 +446,20 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.build-error-box {
+  margin-top: 24px;
+  background: #fff3cd;
+  border: 1.5px solid #ffc107;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+.build-error-msg {
+  font-size: 14px;
+  color: #856404;
+  margin: 0;
+  line-height: 1.5;
+}
 .progress-card-header-info {
   margin-bottom: 20px;
 }

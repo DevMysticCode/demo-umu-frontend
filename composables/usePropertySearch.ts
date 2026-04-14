@@ -61,7 +61,7 @@ export const usePropertySearch = () => {
     priceDisplay: formatPrice(p.estimatedPrice),
     sqftDisplay: p.sqft ? `${p.sqft.toLocaleString()} sqft` : p.floorAreaSqm ? `${Math.round(p.floorAreaSqm * 10.764).toLocaleString()} sqft` : 'N/A',
     type: p.propertyType ?? 'Residential',
-    area: [p.city, p.county].filter(Boolean).map(toTitleCase).join(', '),
+    area: p.city ? toTitleCase(p.city) : (p.county ? toTitleCase(p.county) : ''),
     address: toTitleCase(p.addressLine1),
     image: p.imageUrl || null,
     hasPassport: p.hasPassport ?? false,

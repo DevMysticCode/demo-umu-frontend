@@ -209,7 +209,7 @@ async function doSearch(q) {
     const res = await fetch(config.public.apiBase + '/property/search?q=' + encodeURIComponent(q.trim()) + '&limit=8')
     if (res.ok) {
       const data = await res.json()
-      suggestions.value = (data.items || []).map(p => ({ id: p.id, address: p.addressLine1, area: [p.city, p.county].filter(Boolean).join(', '), postcode: p.postcode, epcRating: p.epcRating }))
+      suggestions.value = (data.items || []).map(p => ({ id: p.id, address: p.addressLine1, area: p.city || p.county || '', postcode: p.postcode, epcRating: p.epcRating }))
     }
   } catch(e) { suggestions.value = [] }
   finally { searching.value = false }
