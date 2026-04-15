@@ -26,14 +26,14 @@
         </div>
       </div>
 
-      <div class="action-buttons">
-        <button class="help-btn" @click="showHelp = true">
+      <div v-if="currentQuestion?.helpContent || currentQuestion?.helpVideoUrl" class="action-buttons">
+        <button v-if="currentQuestion?.helpContent" class="help-btn" @click="showHelp = true">
           <span class="btn-icon"
             ><OPIcon name="helpIcon" class="w-[15px] h-[15px]"
           /></span>
           Help
         </button>
-        <button class="video-btn" @click="showVideo = true">
+        <button v-if="currentQuestion?.helpVideoUrl" class="video-btn" @click="showVideo = true">
           <span class="play-icon"
             ><OPIcon name="playIcon" class="w-[15px] h-[15px]"
           /></span>

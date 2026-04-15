@@ -414,7 +414,16 @@
           The changes will reflect immediately.
         </p>
 
-        <label class="mt-6 block">
+        <!-- Phone gets a dedicated country-code picker -->
+        <div v-if="contactDetails[activeContactIndex]?.key === 'phone'" class="mt-6">
+          <PhoneInput v-model="contactEditValue" />
+          <p class="mt-2 text-[13px] text-[#8e8e93]">
+            Select your country code, then enter your number without the leading 0.
+          </p>
+        </div>
+
+        <!-- All other fields use the plain input -->
+        <label v-else class="mt-6 block">
           <span class="sr-only">Edit value</span>
           <div
             class="h-16 rounded-[20px] border border-[#e2e2e7] bg-[#f4f4f5] flex items-center gap-3 px-5"
@@ -631,6 +640,7 @@
 <script setup>
 import BaseDrawer from '@/components/ui/BaseDrawer.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
+import PhoneInput from '@/components/form/PhoneInput.vue'
 
 definePageMeta({
   title: 'Personal Information - UmovingU',

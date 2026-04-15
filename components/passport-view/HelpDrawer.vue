@@ -26,57 +26,28 @@
           <!-- Scrollable body -->
           <div class="help-drawer-body">
             <!-- No content fallback -->
-            <div v-if="!content" class="help-empty">
+            <div v-if="!guidanceText" class="help-empty">
               <p>No additional help is available for this question.</p>
             </div>
 
             <template v-else>
-              <!-- Main explanation -->
-              <div class="help-section">
-                <p
-                  v-for="(paragraph, i) in paragraphs"
-                  :key="i"
-                  class="help-paragraph"
-                  v-html="formatLine(paragraph)"
-                />
+              <!-- Audience label -->
+              <div v-if="mode" class="help-audience-label" :class="`help-audience-label--${mode}`">
+                <svg v-if="mode === 'seller'" width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <svg v-else width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                  <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                {{ mode === 'seller' ? 'For Sellers' : 'For Buyers' }}
               </div>
 
-              <!-- Key Points -->
-              <div v-if="content.keyPoints?.length" class="help-section">
-                <h3 class="help-section-title">Key Points</h3>
-                <ul class="help-key-points">
-                  <li v-for="(point, i) in content.keyPoints" :key="i">
-                    <span class="help-bullet">•</span>
-                    <span>{{ point }}</span>
-                  </li>
-                </ul>
-              </div>
-
-              <!-- Seller Guidance — shown only in seller/passport view -->
-              <div v-if="content.sellerGuidance && mode !== 'buyer'" class="help-guidance help-guidance--seller">
-                <div class="help-guidance-label">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#00a19a" stroke-width="2"/>
-                  </svg>
-                  For Sellers
-                </div>
-                <p class="help-guidance-text">{{ content.sellerGuidance }}</p>
-              </div>
-
-              <!-- Buyer Guidance — shown only in buyer view -->
-              <div v-if="content.buyerGuidance && mode !== 'seller'" class="help-guidance help-guidance--buyer">
-                <div class="help-guidance-label">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="7" r="4" stroke="#00a19a" stroke-width="2"/>
-                    <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" stroke="#00a19a" stroke-width="2"/>
-                  </svg>
-                  For Buyers
-                </div>
-                <p class="help-guidance-text">{{ content.buyerGuidance }}</p>
-              </div>
+              <!-- Guidance text — preserves \n\n paragraph breaks and bullet lines -->
+              <p class="help-guidance-text">{{ guidanceText }}</p>
 
               <!-- Disclaimer -->
-              <p v-if="content.disclaimer" class="help-disclaimer">
+              <p v-if="content?.disclaimer" class="help-disclaimer">
                 {{ content.disclaimer }}
               </p>
             </template>
@@ -91,8 +62,6 @@
 import { computed } from 'vue'
 
 interface HelpContent {
-  mainExplanation?: string
-  keyPoints?: string[]
   sellerGuidance?: string
   buyerGuidance?: string
   disclaimer?: string
@@ -106,23 +75,13 @@ const props = defineProps<{
 
 defineEmits<{ close: [] }>()
 
-const paragraphs = computed(() => {
-  if (!props.content?.mainExplanation) return []
-  return props.content.mainExplanation
-    .split('\n')
-    .map((l) => l.trim())
-    .filter(Boolean)
+const guidanceText = computed(() => {
+  if (!props.content) return null
+  if (props.mode === 'buyer') return props.content.buyerGuidance || null
+  if (props.mode === 'seller') return props.content.sellerGuidance || null
+  // No mode: show seller guidance first, fall back to buyer
+  return props.content.sellerGuidance || props.content.buyerGuidance || null
 })
-
-// Bold any text that starts with a bullet or is a heading-like line
-function formatLine(line: string): string {
-  // Lines starting with • are already bullet-ish — keep as-is
-  // Lines that look like "Section Title:" — bold them
-  if (/^[A-Z][^a-z]{2,}:/.test(line)) {
-    return `<strong>${line}</strong>`
-  }
-  return line
-}
 </script>
 
 <style scoped>
@@ -208,91 +167,37 @@ function formatLine(line: string): string {
   padding: 20px 0;
 }
 
-.help-section {
-  margin-bottom: 20px;
-}
-
-.help-section-title {
-  font-size: 13px;
+.help-audience-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
   font-weight: 700;
-  color: #00a19a;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0 0 10px;
-}
-
-.help-paragraph {
-  font-size: 14px;
-  color: #2c2c2c;
-  line-height: 1.65;
-  margin: 0 0 10px;
-}
-
-.help-key-points {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.help-key-points li {
-  display: flex;
-  gap: 8px;
-  font-size: 14px;
-  color: #2c2c2c;
-  line-height: 1.5;
-}
-
-.help-bullet {
-  color: #00a19a;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.help-guidance {
-  border-radius: 12px;
-  padding: 14px 16px;
+  padding: 4px 10px;
+  border-radius: 20px;
   margin-bottom: 14px;
 }
 
-.help-guidance--seller {
+.help-audience-label--seller {
   background: #f0faf9;
+  color: #00a19a;
   border: 1px solid #b2e4e1;
 }
 
-.help-guidance--buyer {
+.help-audience-label--buyer {
   background: #f5f0ff;
+  color: #7c3aed;
   border: 1px solid #d4b8f8;
 }
 
-.help-guidance-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #00a19a;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-
-.help-guidance--buyer .help-guidance-label {
-  color: #7c3aed;
-}
-
-.help-guidance--buyer .help-guidance-label svg path,
-.help-guidance--buyer .help-guidance-label svg circle {
-  stroke: #7c3aed;
-}
-
 .help-guidance-text {
-  font-size: 13px;
-  color: #333;
-  line-height: 1.6;
-  margin: 0;
+  font-size: 14px;
+  color: #2c2c2c;
+  line-height: 1.7;
+  margin: 0 0 16px;
+  white-space: pre-line;
 }
 
 .help-disclaimer {

@@ -244,7 +244,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update'])
 
+const config = useRuntimeConfig()
 const fileInput = ref(null)
+const uploading = ref(false)
 
 const displayMode = computed(() => {
   // Build a raw candidate for the display mode from props or question metadata
@@ -319,16 +321,34 @@ const triggerFileUpload = () => {
   fileInput.value?.click()
 }
 
-const handleFileSelect = (event) => {
+const handleFileSelect = async (event) => {
   const files = Array.from(event.target.files || [])
-  const newFiles = files.map((file) => ({
-    name: file.name,
-    size: file.size,
-    type: file.type,
-  }))
-  uploadedFiles.value = [...(uploadedFiles.value || []), ...newFiles]
-  emitUpdate()
   event.target.value = ''
+  if (!files.length) return
+
+  const questionId = props.question?.id
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+
+  uploading.value = true
+  const results = []
+  for (const file of files) {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await $fetch(`${config.public.apiBase}/questions/${questionId}/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      })
+      results.push({ name: res.name || file.name, url: res.url, size: file.size, type: file.type })
+    } catch {
+      results.push({ name: file.name, size: file.size, type: file.type, url: '' })
+    }
+  }
+  uploading.value = false
+
+  uploadedFiles.value = [...(uploadedFiles.value || []), ...results]
+  emitUpdate()
 }
 
 const removeFile = (index) => {

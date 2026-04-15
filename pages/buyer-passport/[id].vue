@@ -174,6 +174,22 @@
           </div>
         </div>
 
+        <!-- PDF Download -->
+        <div class="buyer-pdf-row">
+          <div class="buyer-pdf-info">
+            <p class="buyer-pdf-title">Full Property Report</p>
+            <p class="buyer-pdf-sub">All questions &amp; answers — share with solicitors</p>
+          </div>
+          <button class="buyer-pdf-btn" :disabled="generatingPdf" @click="downloadPdf">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            {{ generatingPdf ? 'Opening…' : 'Download PDF' }}
+          </button>
+        </div>
+
         <!-- Official Records -->
         <div class="buyer-section">
           <h2 class="buyer-section-title">Official Records</h2>
@@ -261,10 +277,13 @@ const router = useRouter()
 const config = useRuntimeConfig()
 const passportId = route.params.id as string
 
+const { generatePdf } = usePassportPdf()
+
 const data = ref<any>(null)
 const loading = ref(true)
 const error = ref('')
 const searchQuery = ref('')
+const generatingPdf = ref(false)
 
 onMounted(async () => {
   try {
@@ -309,6 +328,17 @@ const filteredSections = computed(() => {
 
 function formatPrice(price: number) {
   return '£' + price.toLocaleString('en-GB')
+}
+
+function downloadPdf() {
+  if (!data.value) return
+  generatingPdf.value = true
+  try {
+    generatePdf(data.value)
+  } finally {
+    // Brief delay so the button resets after the window opens
+    setTimeout(() => { generatingPdf.value = false }, 800)
+  }
 }
 
 function goBack() {
@@ -670,5 +700,62 @@ function goToSection(sectionId: string) {
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+}
+
+/* PDF download row */
+.buyer-pdf-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #f0fffe;
+  border: 1.5px solid #b2e4e1;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+}
+
+.buyer-pdf-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.buyer-pdf-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 2px;
+}
+
+.buyer-pdf-sub {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+.buyer-pdf-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #00a19a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.buyer-pdf-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.buyer-pdf-btn:active:not(:disabled) {
+  background: #00877f;
 }
 </style>
