@@ -27,13 +27,13 @@
       </div>
 
       <div class="action-buttons">
-        <button class="help-btn">
+        <button class="help-btn" @click="showHelp = true">
           <span class="btn-icon"
             ><OPIcon name="helpIcon" class="w-[15px] h-[15px]"
           /></span>
           Help
         </button>
-        <button class="video-btn">
+        <button class="video-btn" @click="showVideo = true">
           <span class="play-icon"
             ><OPIcon name="playIcon" class="w-[15px] h-[15px]"
           /></span>
@@ -156,6 +156,19 @@
       @continue="handleContinue"
     />
   </div>
+
+  <HelpDrawer
+    :show="showHelp"
+    :content="currentQuestion?.helpContent ?? null"
+    mode="seller"
+    @close="showHelp = false"
+  />
+
+  <VideoModal
+    :show="showVideo"
+    :video-url="currentQuestion?.helpVideoUrl ?? null"
+    @close="showVideo = false"
+  />
 </template>
 
 <script setup>
@@ -177,6 +190,8 @@ import BoundaryResponsibilityQuestion from '~/components/passport-view/questions
 import AppHeader from '@/components/core/AppHeader.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
+import HelpDrawer from '~/components/passport-view/HelpDrawer.vue'
+import VideoModal from '~/components/passport-view/VideoModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -202,6 +217,9 @@ const showThankYou = ref(false)
 const earnedPoints = ref(0)
 const isSaving = ref(false)
 const additionalInfoAnswer = ref(null)
+
+const showHelp = ref(false)
+const showVideo = ref(false)
 
 const stepId = route.query.stepId
 const taskId = route.params.id
