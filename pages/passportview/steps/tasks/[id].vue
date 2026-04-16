@@ -47,6 +47,80 @@
         @nextTask="handleNextQuestion"
       />
 
+      <!-- Property photos upload — only for "What we love about our home?" task -->
+      <div
+        v-if="currentTask?.key === 'give_your_home_a_story'"
+        class="property-photos-section"
+      >
+        <h3 class="property-photos-title">Property Photos</h3>
+        <p class="property-photos-sub">
+          Upload photos of your property. These will appear in your listing and
+          buyer passport.
+        </p>
+
+        <div v-if="propertyImages.length > 0" class="property-photos-grid">
+          <div
+            v-for="(img, index) in propertyImages"
+            :key="index"
+            class="property-photo-item"
+          >
+            <img
+              :src="img"
+              :alt="`Photo ${index + 1}`"
+              class="property-photo-thumb"
+            />
+            <button
+              class="property-photo-delete"
+              @click="removePropertyImage(index)"
+              title="Remove photo"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <line
+                  x1="18"
+                  y1="6"
+                  x2="6"
+                  y2="18"
+                  stroke="white"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                />
+                <line
+                  x1="6"
+                  y1="6"
+                  x2="18"
+                  y2="18"
+                  stroke="white"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="property-photos-actions">
+          <label class="add-photos-btn" :class="{ disabled: uploadingImages }">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 5v14M5 12h14"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            {{ uploadingImages ? 'Uploading...' : 'Add Photos' }}
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              class="hidden-file-input"
+              :disabled="uploadingImages"
+              @change="handlePropertyImageUpload"
+            />
+          </label>
+        </div>
+      </div>
+
       <div class="question-header">
         <h2 class="question-number">
           Question {{ currentQuestionIndex + 1 }}
@@ -80,7 +154,10 @@
             class="answer-section answer-section--visible"
           >
             <div
-              v-if="currentQuestionType !== 'multipart' || currentQuestion?.repeatable"
+              v-if="
+                currentQuestionType !== 'multipart' ||
+                currentQuestion?.repeatable
+              "
               class="question-card"
             >
               <component
@@ -222,17 +299,27 @@ const showHelp = ref(false)
 const showVideo = ref(false)
 
 // Use question-level content if available, fall back to step (section) level
-const activeHelpContent = computed(() =>
-  currentQuestion.value?.helpContent ?? currentStep.value?.helpContent ?? null
+const activeHelpContent = computed(
+  () =>
+    currentQuestion.value?.helpContent ??
+    currentStep.value?.helpContent ??
+    null,
 )
-const activeVideoUrl = computed(() =>
-  currentQuestion.value?.helpVideoUrl ?? currentStep.value?.helpVideoUrl ?? null
+const activeVideoUrl = computed(
+  () =>
+    currentQuestion.value?.helpVideoUrl ??
+    currentStep.value?.helpVideoUrl ??
+    null,
 )
 const hasHelp = computed(() => !!activeHelpContent.value)
 const hasVideo = computed(() => !!activeVideoUrl.value)
 
-function openHelp() { showHelp.value = true }
-function openVideo() { showVideo.value = true }
+function openHelp() {
+  showHelp.value = true
+}
+function openVideo() {
+  showVideo.value = true
+}
 
 const stepId = route.query.stepId
 const taskId = route.params.id
@@ -250,6 +337,58 @@ const showDescriptionCursor = ref(false)
 const showHelpCursor = ref(false)
 
 const showOptions = ref(false)
+
+// ── Property image upload (give_your_home_a_story task) ────────────────────
+const { getPropertyImages, updatePropertyImages, uploadPropertyImage } =
+  usePassportApi()
+const propertyImages = ref([])
+const uploadingImages = ref(false)
+
+async function loadPropertyImages() {
+  const passportId = route.query.propertyId
+  if (!passportId) return
+  try {
+    const res = await getPropertyImages(passportId)
+    propertyImages.value = res.images ?? []
+  } catch {
+    // ignore — not critical
+  }
+}
+
+async function handlePropertyImageUpload(event) {
+  const files = Array.from(event.target.files ?? [])
+  if (!files.length) return
+  const passportId = route.query.propertyId
+  if (!passportId) return
+
+  uploadingImages.value = true
+  try {
+    const uploaded = await Promise.all(
+      files.map((file) => uploadPropertyImage(passportId, file)),
+    )
+    const newImages = [...propertyImages.value, ...uploaded.map((r) => r.url)]
+    propertyImages.value = newImages
+    await updatePropertyImages(passportId, newImages)
+  } catch (err) {
+    console.error('Failed to upload property images:', err)
+  } finally {
+    uploadingImages.value = false
+    event.target.value = ''
+  }
+}
+
+async function removePropertyImage(index) {
+  const passportId = route.query.propertyId
+  if (!passportId) return
+  const updated = propertyImages.value.filter((_, i) => i !== index)
+  propertyImages.value = updated
+  try {
+    await updatePropertyImages(passportId, updated)
+  } catch (err) {
+    console.error('Failed to update property images:', err)
+  }
+}
+// ──────────────────────────────────────────────────────────────────────────
 
 // Animation removed - no longer needed
 // let typingInterval = null
@@ -270,6 +409,9 @@ onMounted(async () => {
   setCurrentTask(taskId)
   // Load all questions from the entire section, starting at the clicked task
   await loadSectionQuestions(stepId, taskId)
+
+  // Load property images for the home story task
+  await loadPropertyImages()
 })
 
 // Typing animation removed - display questions immediately
@@ -417,7 +559,12 @@ const isAnswerValid = computed(() => {
 
   if (isCheckboxType) {
     // When otherPlaceholder is set, CheckboxQuestion emits {values, otherText}
-    if (answer && typeof answer === 'object' && !Array.isArray(answer) && Array.isArray(answer.values)) {
+    if (
+      answer &&
+      typeof answer === 'object' &&
+      !Array.isArray(answer) &&
+      Array.isArray(answer.values)
+    ) {
       return answer.values.length > 0
     }
     return Array.isArray(answer) && answer.length > 0
@@ -728,7 +875,9 @@ const updateAnswer = async (answer) => {
     const rawTrigger = answer[partKey]
     // DATE parts emit { value, date } — extract scalar for comparison
     let triggerPartAnswer =
-      rawTrigger !== null && typeof rawTrigger === 'object' && 'value' in rawTrigger
+      rawTrigger !== null &&
+      typeof rawTrigger === 'object' &&
+      'value' in rawTrigger
         ? rawTrigger.value
         : rawTrigger
 
@@ -1204,4 +1353,91 @@ const handleContinue = () => {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ── Property Photos Upload ───────────────────────────────────────────────── */
+.property-photos-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.property-photos-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a2e2b;
+  margin: 0 0 6px;
+}
+
+.property-photos-sub {
+  font-size: 13px;
+  color: #6b7c78;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.property-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.property-photo-item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.property-photo-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.property-photo-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.property-photos-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.add-photos-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #00a19a;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+.add-photos-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.hidden-file-input {
+  display: none;
+}
+/* ─────────────────────────────────────────────────────────────────────────── */
 </style>

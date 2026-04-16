@@ -178,13 +178,39 @@
         <div class="buyer-pdf-row">
           <div class="buyer-pdf-info">
             <p class="buyer-pdf-title">Full Property Report</p>
-            <p class="buyer-pdf-sub">All questions &amp; answers — share with solicitors</p>
+            <p class="buyer-pdf-sub">
+              All questions &amp; answers — share with solicitors
+            </p>
           </div>
-          <button class="buyer-pdf-btn" :disabled="generatingPdf" @click="downloadPdf">
+          <button
+            class="buyer-pdf-btn"
+            :disabled="generatingPdf"
+            @click="downloadPdf"
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path
+                d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <polyline
+                points="7,10 12,15 17,10"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <line
+                x1="12"
+                y1="15"
+                x2="12"
+                y2="3"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
             </svg>
             {{ generatingPdf ? 'Opening…' : 'Download PDF' }}
           </button>
@@ -194,31 +220,99 @@
         <div class="buyer-pdf-row buyer-ta6-row">
           <div class="buyer-pdf-info">
             <p class="buyer-pdf-title">TA6 Property Information Form</p>
-            <p class="buyer-pdf-sub">Law Society 6th edition — pre-filled with passport data</p>
+            <p class="buyer-pdf-sub">
+              Law Society 6th edition — pre-filled with passport data
+            </p>
           </div>
-          <button class="buyer-pdf-btn buyer-ta6-btn" :disabled="generatingTA6" @click="downloadTA6">
+          <button
+            class="buyer-pdf-btn buyer-ta6-btn"
+            :disabled="generatingTA6"
+            @click="downloadTA6"
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <polyline points="9,15 12,18 15,15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path
+                d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <polyline
+                points="14,2 14,8 20,8"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <line
+                x1="12"
+                y1="18"
+                x2="12"
+                y2="12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <polyline
+                points="9,15 12,18 15,15"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             {{ generatingTA6 ? 'Opening…' : 'Download TA6' }}
           </button>
         </div>
 
         <!-- TA7 Form — leasehold only -->
-        <div v-if="data?.property?.isLeasehold" class="buyer-pdf-row buyer-ta7-row">
+        <div
+          v-if="data?.property?.isLeasehold"
+          class="buyer-pdf-row buyer-ta7-row"
+        >
           <div class="buyer-pdf-info">
             <p class="buyer-pdf-title">TA7 Leasehold Information Form</p>
-            <p class="buyer-pdf-sub">Law Society 5th edition — lease, ground rent &amp; service charge details</p>
+            <p class="buyer-pdf-sub">
+              Law Society 5th edition — lease, ground rent &amp; service charge
+              details
+            </p>
           </div>
-          <button class="buyer-pdf-btn buyer-ta7-btn" :disabled="generatingTA7" @click="downloadTA7">
+          <button
+            class="buyer-pdf-btn buyer-ta7-btn"
+            :disabled="generatingTA7"
+            @click="downloadTA7"
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <polyline points="9,15 12,18 15,15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path
+                d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <polyline
+                points="14,2 14,8 20,8"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <line
+                x1="12"
+                y1="18"
+                x2="12"
+                y2="12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <polyline
+                points="9,15 12,18 15,15"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             {{ generatingTA7 ? 'Opening…' : 'Download TA7' }}
           </button>
@@ -228,14 +322,46 @@
         <div class="buyer-pdf-row buyer-ta10-row">
           <div class="buyer-pdf-info">
             <p class="buyer-pdf-title">TA10 Fixtures &amp; Fittings Form</p>
-            <p class="buyer-pdf-sub">What stays, what goes — pre-filled from seller's passport</p>
+            <p class="buyer-pdf-sub">
+              What stays, what goes — pre-filled from seller's passport
+            </p>
           </div>
-          <button class="buyer-pdf-btn buyer-ta10-btn" :disabled="generatingTA10" @click="downloadTA10">
+          <button
+            class="buyer-pdf-btn buyer-ta10-btn"
+            :disabled="generatingTA10"
+            @click="downloadTA10"
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <polyline points="9,15 12,18 15,15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path
+                d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <polyline
+                points="14,2 14,8 20,8"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <line
+                x1="12"
+                y1="18"
+                x2="12"
+                y2="12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <polyline
+                points="9,15 12,18 15,15"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             {{ generatingTA10 ? 'Opening…' : 'Download TA10' }}
           </button>
@@ -360,6 +486,8 @@ onMounted(async () => {
 })
 
 const propertyImage = computed(() => {
+  const uploaded = data.value?.property?.images as string[] | null
+  if (uploaded?.length) return uploaded[0]
   return (
     data.value?.property?.imageUrl ||
     'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800'
@@ -394,7 +522,9 @@ function downloadPdf() {
     generatePdf(data.value)
   } finally {
     // Brief delay so the button resets after the window opens
-    setTimeout(() => { generatingPdf.value = false }, 800)
+    setTimeout(() => {
+      generatingPdf.value = false
+    }, 800)
   }
 }
 
@@ -404,7 +534,9 @@ function downloadTA6() {
   try {
     generateTA6(data.value)
   } finally {
-    setTimeout(() => { generatingTA6.value = false }, 800)
+    setTimeout(() => {
+      generatingTA6.value = false
+    }, 800)
   }
 }
 
@@ -414,7 +546,9 @@ function downloadTA7() {
   try {
     generateTA7(data.value)
   } finally {
-    setTimeout(() => { generatingTA7.value = false }, 800)
+    setTimeout(() => {
+      generatingTA7.value = false
+    }, 800)
   }
 }
 
@@ -424,7 +558,9 @@ function downloadTA10() {
   try {
     generateFixturesFittings(data.value)
   } finally {
-    setTimeout(() => { generatingTA10.value = false }, 800)
+    setTimeout(() => {
+      generatingTA10.value = false
+    }, 800)
   }
 }
 
@@ -834,7 +970,9 @@ function goToSection(sectionId: string) {
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background 0.15s, opacity 0.15s;
+  transition:
+    background 0.15s,
+    opacity 0.15s;
 }
 
 .buyer-pdf-btn:disabled {

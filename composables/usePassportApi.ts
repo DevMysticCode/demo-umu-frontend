@@ -31,12 +31,43 @@ export const usePassportApi = () => {
       headers: headers(),
     })
 
+  const getPropertyImages = (passportId: string) =>
+    $fetch<{ images: string[] }>(
+      `${base}/passport/${passportId}/property-images`,
+      {
+        headers: headers(),
+      },
+    )
+
+  const updatePropertyImages = (passportId: string, images: string[]) =>
+    $fetch(`${base}/passport/${passportId}/property-images`, {
+      method: 'PUT',
+      headers: { ...headers(), 'Content-Type': 'application/json' },
+      body: { images },
+    })
+
+  const uploadPropertyImage = (passportId: string, file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return $fetch<{
+      url: string
+      name: string
+      mimeType: string
+      size: number
+    }>(`${base}/passport/${passportId}/upload-image`, {
+      method: 'POST',
+      headers: headers(),
+      body: formData,
+    })
+  }
+
   return {
     getSections,
     getQuestions,
     answerQuestion,
     completeTask,
+    getPropertyImages,
+    updatePropertyImages,
+    uploadPropertyImage,
   }
 }
-
-

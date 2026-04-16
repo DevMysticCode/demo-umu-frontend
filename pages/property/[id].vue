@@ -43,7 +43,8 @@
           <h1 class="prop-address">{{ displayAddress }}</h1>
           <p v-if="displayArea" class="prop-area">{{ displayArea }}</p>
           <p class="prop-city">
-            {{ displayCity }}<span v-if="displayCity">, </span>{{ property.postcode }}
+            {{ displayCity }}<span v-if="displayCity">, </span
+            >{{ property.postcode }}
           </p>
           <p class="prop-price">
             {{ formatPrice(displayEstimatedPrice) }}
@@ -340,9 +341,7 @@
           class="prop-section"
         >
           <h2 class="prop-section-title">Location &amp; Map</h2>
-          <p class="prop-nearby-source">
-            Map: OpenStreetMap contributors
-          </p>
+          <p class="prop-nearby-source">Map: OpenStreetMap contributors</p>
 
           <!-- Map 1: Interactive Map -->
           <p class="prop-map-label">Map</p>
@@ -1565,7 +1564,9 @@
             </template>
 
             <p
-              v-if="enrichment && !enrichment.planningHistory?.applications?.length"
+              v-if="
+                enrichment && !enrichment.planningHistory?.applications?.length
+              "
               class="prop-planning-none"
             >
               No planning applications on record for this property.
@@ -1652,29 +1653,51 @@
     <!-- Unpublished passport modal -->
     <Teleport to="body">
       <Transition name="fade">
-        <div v-if="showUnpublishedModal" class="unpub-overlay" @click.self="showUnpublishedModal = false">
+        <div
+          v-if="showUnpublishedModal"
+          class="unpub-overlay"
+          @click.self="showUnpublishedModal = false"
+        >
           <div class="unpub-modal">
             <div class="unpub-icon">
               <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00a19a" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M12 8v4m0 4h.01" stroke="#00a19a" stroke-width="2" stroke-linecap="round"/>
+                <path
+                  d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                  stroke="#00a19a"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 8v4m0 4h.01"
+                  stroke="#00a19a"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
               </svg>
             </div>
             <h3 class="unpub-title">Passport Not Yet Available</h3>
             <p class="unpub-body">
-              The owner of this property has not yet made their Property Passport publicly available. You can register your interest to be notified when it's published, or tap the owner directly to request access.
+              The owner of this property has not yet made their Property
+              Passport publicly available. You can register your interest to be
+              notified when it's published, or tap the owner directly to request
+              access.
             </p>
             <div class="unpub-actions">
-              <button class="unpub-btn-secondary" @click="showUnpublishedModal = false; showRegisterInterest = true">
+              <button class="unpub-btn-secondary" @click="openRegisterInterest">
                 Register Interest
               </button>
-              <button class="unpub-btn-primary" @click="showUnpublishedModal = false; router.push(`/owner/${propertyId}`)">
+              <button class="unpub-btn-primary" @click="tapOwner">
                 Tap Owner
               </button>
             </div>
             <button class="unpub-close" @click="showUnpublishedModal = false">
               <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-                <path d="M18 6L6 18M6 6l12 12" stroke="#8e8e93" stroke-width="2" stroke-linecap="round"/>
+                <path
+                  d="M18 6L6 18M6 6l12 12"
+                  stroke="#8e8e93"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
               </svg>
             </button>
           </div>
@@ -1719,18 +1742,33 @@ const showUnpublishedModal = ref(false)
 const enrichment = ref<any>(null)
 
 // Title-cased display fields — defensive frontend normalisation on top of backend fix
-const displayAddress = computed(() => toTitleCase(property.value?.addressLine1) || property.value?.addressLine1 || '')
-const displayArea = computed(() => toTitleCase(property.value?.addressLine2) || '')
-const displayCity = computed(() => toTitleCase(property.value?.city) || toTitleCase(property.value?.county) || '')
+const displayAddress = computed(
+  () =>
+    toTitleCase(property.value?.addressLine1) ||
+    property.value?.addressLine1 ||
+    '',
+)
+const displayArea = computed(
+  () => toTitleCase(property.value?.addressLine2) || '',
+)
+const displayCity = computed(
+  () =>
+    toTitleCase(property.value?.city) ||
+    toTitleCase(property.value?.county) ||
+    '',
+)
 
 // Use Land Registry HPI-adjusted estimate when available, fall back to DB value
-const displayEstimatedPrice = computed(() =>
-  enrichment.value?.landRegistryEstimate ?? property.value?.estimatedPrice ?? null
+const displayEstimatedPrice = computed(
+  () =>
+    enrichment.value?.landRegistryEstimate ??
+    property.value?.estimatedPrice ??
+    null,
 )
 const estimatedPriceSource = computed(() =>
   enrichment.value?.landRegistryEstimate
-    ? enrichment.value.landRegistrySource ?? 'Land Registry, HPI adjusted'
-    : 'Estimated'
+    ? (enrichment.value.landRegistrySource ?? 'Land Registry, HPI adjusted')
+    : 'Estimated',
 )
 
 // Merge DB property with live EPC data from enrichment for OS properties missing EPC fields
@@ -1754,6 +1792,16 @@ const prop = computed(() => {
 const pageLoading = ref(true)
 const loadError = ref('')
 const showRegisterInterest = ref(false)
+
+function openRegisterInterest() {
+  showUnpublishedModal.value = false
+  showRegisterInterest.value = true
+}
+
+function tapOwner() {
+  showUnpublishedModal.value = false
+  router.push(`/owner/${propertyId}`)
+}
 const showShare = ref(false)
 const showClaimDrawer = ref(false)
 const scoreTab = ref('home')
@@ -1913,19 +1961,25 @@ const propertyImages = computed(() => {
   const isStreetView = (url: string) =>
     url.includes('maps.googleapis.com/maps/api/streetview')
 
-  // 1. Google Street View as first slide (real exterior photo)
-  const lat = property.value?.latitude
-  const lon = property.value?.longitude
-  const googleKey = config.public.googleApiKey as string
-  if (lat && lon && googleKey) {
-    images.push(
-      `https://maps.googleapis.com/maps/api/streetview?size=800x500&location=${lat},${lon}&key=${googleKey}&fov=90&pitch=10&radius=200&source=outdoor&return_error_codes=true`,
-    )
+  // 1. Seller-uploaded property photos (highest priority)
+  const uploaded = (property.value?.images as string[] | null) ?? []
+  images.push(...uploaded)
+
+  // 2. Google Street View only if no seller photos
+  if (uploaded.length === 0) {
+    const lat = property.value?.latitude
+    const lon = property.value?.longitude
+    const googleKey = config.public.googleApiKey as string
+    if (lat && lon && googleKey) {
+      images.push(
+        `https://maps.googleapis.com/maps/api/streetview?size=800x500&location=${lat},${lon}&key=${googleKey}&fov=90&pitch=10&radius=200&source=outdoor&return_error_codes=true`,
+      )
+    }
   }
 
-  // 2. property.imageUrl only if it's a real image (not a duplicate Street View)
+  // 3. property.imageUrl only if it's a real image and not already included
   const imgUrl = property.value?.imageUrl
-  if (imgUrl && !isStreetView(imgUrl)) {
+  if (imgUrl && !isStreetView(imgUrl) && !images.includes(imgUrl)) {
     images.push(imgUrl)
   }
 
@@ -1958,9 +2012,9 @@ const actionBarItems = computed(() => {
     {
       icon: 'accessPassport',
       label: hasPassport
-        ? (status?.isOwner || status?.isCollaborator || status?.isBuyer
+        ? status?.isOwner || status?.isCollaborator || status?.isBuyer
           ? 'Access Passport'
-          : 'Buy Passport Access')
+          : 'Buy Passport Access'
         : 'Claim Passport',
       disabled: isUnpublished,
     },
@@ -2015,7 +2069,8 @@ const initMap = async () => {
   const map = L.map(mapEl.value, { zoomControl: false }).setView([lat, lng], 15)
   L.control.zoom({ position: 'bottomright' }).addTo(map)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    attribution:
+      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19,
   }).addTo(map)
 
@@ -2059,7 +2114,9 @@ const initMap = async () => {
           fillOpacity: 0.12,
         },
       }).addTo(map)
-    } catch { /* non-critical */ }
+    } catch {
+      /* non-critical */
+    }
   }
 
   // Add nearby POI markers with popups
@@ -2069,27 +2126,32 @@ const initMap = async () => {
     for (const s of nearby.schools ?? []) {
       if (!s.lat || !s.lon) continue
       L.marker([s.lat, s.lon], { icon: makeDivIcon('#3b82f6', '🎓') })
-        .bindPopup(`${s.name} · ${s.distanceKm}km`).addTo(map)
+        .bindPopup(`${s.name} · ${s.distanceKm}km`)
+        .addTo(map)
     }
     for (const t of nearby.trains ?? []) {
       if (!t.lat || !t.lon) continue
       L.marker([t.lat, t.lon], { icon: makeDivIcon('#8b5cf6', '🚆') })
-        .bindPopup(`${t.name} · ${t.distanceKm}km`).addTo(map)
+        .bindPopup(`${t.name} · ${t.distanceKm}km`)
+        .addTo(map)
     }
     for (const b of nearby.busStops ?? []) {
       if (!b.lat || !b.lon) continue
       L.marker([b.lat, b.lon], { icon: makeDivIcon('#f59e0b', '🚌') })
-        .bindPopup(`${b.name} · ${b.distanceKm}km`).addTo(map)
+        .bindPopup(`${b.name} · ${b.distanceKm}km`)
+        .addTo(map)
     }
     for (const p of nearby.parks ?? []) {
       if (!p.lat || !p.lon) continue
       L.marker([p.lat, p.lon], { icon: makeDivIcon('#10b981', '🌳') })
-        .bindPopup(`${p.name} · ${p.distanceKm}km`).addTo(map)
+        .bindPopup(`${p.name} · ${p.distanceKm}km`)
+        .addTo(map)
     }
     for (const a of nearby.airports ?? []) {
       if (!a.lat || !a.lon) continue
       L.marker([a.lat, a.lon], { icon: makeDivIcon('#ec4899', '✈️') })
-        .bindPopup(`${a.name} · ${a.distanceKm}km`).addTo(map)
+        .bindPopup(`${a.name} · ${a.distanceKm}km`)
+        .addTo(map)
     }
   }
 
@@ -2102,7 +2164,10 @@ const initMap = async () => {
     applyEnrichmentToMap()
   } else {
     const stop = watch(enrichment, (v) => {
-      if (v) { applyEnrichmentToMap(); stop() }
+      if (v) {
+        applyEnrichmentToMap()
+        stop()
+      }
     })
   }
 }
@@ -2445,7 +2510,10 @@ async function downloadEpc() {
     a.remove()
     URL.revokeObjectURL(url)
   } catch {
-    showToast({ message: 'Could not download EPC certificate. Please try again.', duration: 3000 })
+    showToast({
+      message: 'Could not download EPC certificate. Please try again.',
+      duration: 3000,
+    })
   } finally {
     epcDownloading.value = false
   }
@@ -4300,7 +4368,7 @@ function handleClaimed(passportId: string) {
 .unpub-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: flex;
   align-items: flex-end;
@@ -4381,6 +4449,12 @@ function handleClaimed(passportId: string) {
   justify-content: center;
   cursor: pointer;
 }
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>
