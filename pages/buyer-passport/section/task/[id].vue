@@ -17,21 +17,9 @@
           <p class="task-hero-sub">{{ task.description || section?.description || 'Official property record' }}</p>
         </div>
 
-        <!-- Search -->
-        <div class="task-search-row">
-          <div class="task-search-input">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" class="task-search-icon">
-              <circle cx="11" cy="11" r="8" stroke="#999" stroke-width="2"/>
-              <path d="M21 21l-4.35-4.35" stroke="#999" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <input v-model="searchQuery" type="text" placeholder="Search questions..." />
-          </div>
-          <button class="task-search-btn">Search</button>
-        </div>
-
-        <!-- Section-level Help + Video — between search and question list -->
-        <div v-if="section?.helpContent || section?.helpVideoUrl" class="task-help-strip">
-          <button v-if="section.helpContent" class="task-help-btn task-help-btn--help" @click="openSectionHelp">
+        <!-- Section-level Help + Video — always shown, left aligned -->
+        <div class="task-help-strip">
+          <button class="task-help-btn task-help-btn--help" @click="openSectionHelp">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
               <path d="M12 17v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -39,7 +27,7 @@
             </svg>
             Help
           </button>
-          <button v-if="section.helpVideoUrl" class="task-help-btn task-help-btn--video" @click="openSectionVideo">
+          <button class="task-help-btn task-help-btn--video" @click="openSectionVideo">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
               <path d="M10 8l6 4-6 4V8z" fill="currentColor"/>
@@ -48,10 +36,30 @@
           </button>
         </div>
 
-        <!-- Question cards — always expanded -->
+        <!-- Question navigation header -->
+        <div class="question-nav">
+          <div class="question-nav-counter">
+            <h2 class="question-nav-num">Question {{ activeIndex + 1 }}</h2>
+            <div class="question-nav-sub">{{ activeIndex + 1 }} of {{ visibleQuestions.length }} in this section</div>
+          </div>
+          <div class="question-nav-actions">
+            <button
+              class="nav-btn nav-btn--prev"
+              :disabled="activeIndex === 0"
+              @click="activeIndex--"
+            >Previous</button>
+            <button
+              class="nav-btn nav-btn--next"
+              :disabled="activeIndex >= visibleQuestions.length - 1"
+              @click="activeIndex++"
+            >Next</button>
+          </div>
+        </div>
+
+        <!-- Single active question card -->
         <div class="task-items">
           <div
-            v-for="q in filteredQuestions"
+            v-for="q in [activeQuestion].filter(Boolean)"
             :key="q.id"
             class="task-item"
           >
@@ -162,7 +170,7 @@
                         <template v-if="Array.isArray(getPartValue(q, part.partKey))">
                           <div v-for="(entry, ei) in getPartValue(q, part.partKey)" :key="ei" class="detail-field-entry">
                             <div v-for="(val, key) in entry" :key="key" class="detail-field-row">
-                              <span class="detail-field-key">{{ fieldLabel(part, key) }}</span>
+                              <span class="detail-field-key">{{ fieldLabel(part, String(key)) }}</span>
                               <span class="detail-field-val">{{ val }}</span>
                             </div>
                           </div>
@@ -170,7 +178,7 @@
                         <template v-else>
                           <div class="detail-field-entry">
                             <div v-for="(val, key) in getPartValue(q, part.partKey)" :key="key" class="detail-field-row">
-                              <span class="detail-field-key">{{ fieldLabel(part, key) }}</span>
+                              <span class="detail-field-key">{{ fieldLabel(part, String(key)) }}</span>
                               <span class="detail-field-val">{{ val }}</span>
                             </div>
                           </div>
@@ -188,7 +196,7 @@
               <!-- ── RADIO — show only the selected option label ── -->
               <template v-else-if="q.type === 'RADIO'">
                 <div v-if="getSimpleAnswer(q)" class="detail-answer-pill">
-                  {{ getSelectedOptionLabel(q.options, getSimpleAnswer(q)) }}
+                  {{ getSelectedOptionLabel(q.options, getSimpleAnswer(q) ?? '') }}
                 </div>
                 <p v-else class="detail-no-answer">Not yet answered by seller</p>
               </template>
@@ -343,8 +351,8 @@
             </div>
           </div>
 
-          <div v-if="filteredQuestions.length === 0" class="task-empty">
-            <p>No questions found.</p>
+          <div v-if="visibleQuestions.length === 0" class="task-empty">
+            <p>No questions in this task.</p>
           </div>
         </div>
       </div>
@@ -372,7 +380,7 @@ const sectionId = route.query.sectionId as string
 
 const allData = ref<any>(null)
 const loading = ref(true)
-const searchQuery = ref('')
+const activeIndex = ref(0)
 const showHelp = ref(false)
 const showVideo = ref(false)
 const activeHelpContent = ref<any>(null)
@@ -384,6 +392,8 @@ onMounted(async () => {
     allData.value = await $fetch(`${config.public.apiBase}/passport/${passportId}/buyer-view`, {
       headers: { Authorization: `Bearer ${token}` },
     })
+    // Start at the first question belonging to the current task
+    activeIndex.value = taskStartIndex.value
   } catch (e) {
     console.error('Failed to load buyer view', e)
   } finally {
@@ -406,13 +416,32 @@ const task = computed(() => {
 
 const isFixturesSection = computed(() => section.value?.key === 'fixturesAndFittings')
 
-// NOTE questions are seller-internal — hide from buyer entirely
-const visibleQuestions = computed(() =>
-  (task.value?.questions ?? []).filter((q: any) => q.type !== 'NOTE')
-)
+// All visible questions across ALL tasks in the section (not just the current task)
+const visibleQuestions = computed(() => {
+  if (!section.value) return []
+  const qs: any[] = []
+  for (const t of section.value.tasks ?? []) {
+    for (const q of (t.questions ?? []).filter((q: any) => q.type !== 'NOTE')) {
+      qs.push(q)
+    }
+  }
+  return qs
+})
+
+// Index of the first question that belongs to the current task
+const taskStartIndex = computed(() => {
+  if (!section.value) return 0
+  let idx = 0
+  for (const t of section.value.tasks ?? []) {
+    const qs = (t.questions ?? []).filter((q: any) => q.type !== 'NOTE')
+    if (t.id === taskId) return idx
+    idx += qs.length
+  }
+  return 0
+})
 
 const firstQuestionLabel = computed(() => {
-  const q = visibleQuestions.value[0]
+  const q = visibleQuestions.value[taskStartIndex.value] ?? visibleQuestions.value[0]
   if (!q) return ''
   if (q.question) return q.question
   if (Array.isArray(q.parts) && q.parts[0]?.title) return q.parts[0].title
@@ -423,14 +452,7 @@ const backUrl = computed(() =>
   `/buyer-passport/section/${sectionId}?passportId=${passportId}`
 )
 
-const filteredQuestions = computed(() => {
-  const q = searchQuery.value.toLowerCase().trim()
-  if (!q) return visibleQuestions.value
-  return visibleQuestions.value.filter((item: any) =>
-    getCardTitle(item).toLowerCase().includes(q) ||
-    (item.description || '').toLowerCase().includes(q)
-  )
-})
+const activeQuestion = computed(() => visibleQuestions.value[activeIndex.value] ?? null)
 
 // ─── Card helpers ─────────────────────────────────────────────────────────
 
@@ -842,23 +864,26 @@ function downloadFile(url: string, name: string) {
 .task-hero-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; line-height: 1.2; }
 .task-hero-sub { font-size: 13px; color: #3c3c4399; margin: 0 auto; line-height: 1.5; max-width: 280px; }
 
-/* Search */
-.task-search-row {
-  display: flex; gap: 8px; margin-bottom: 16px; align-items: center;
-  background: white; border-radius: 24px; border: 1px solid #e0e0e0;
-  padding: 2px 2px 2px 14px;
+/* Question navigation header */
+.question-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
 }
-.task-search-input { flex: 1; display: flex; align-items: center; gap: 8px; }
-.task-search-input input {
-  flex: 1; border: none; outline: none; font-size: 14px;
-  color: #333; background: transparent; padding: 8px 0;
+.question-nav-counter {}
+.question-nav-num {
+  font-size: 18px; font-weight: 590; color: #000; margin: 0;
 }
-.task-search-input input::placeholder { color: #999; }
-.task-search-icon { flex-shrink: 0; }
-.task-search-btn {
-  background: #00a19a; color: white; border: none;
-  border-radius: 20px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer;
+.question-nav-sub {
+  font-size: 13px; color: #999; font-weight: 500; margin-top: 1px;
 }
+.question-nav-actions { display: flex; gap: 8px; }
+.nav-btn {
+  background: white; border: 0.33px solid #3c3c432e;
+  border-radius: 40px; color: #00a19a;
+  font-size: 13px; font-weight: 400; cursor: pointer;
+  padding: 4px 12px;
+}
+.nav-btn:disabled { color: #ccc; cursor: not-allowed; }
 
 /* Card list */
 .task-items {

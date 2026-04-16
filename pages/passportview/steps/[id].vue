@@ -263,7 +263,7 @@ const goToNextTask = () => {
 }
 
 const handleViewProfile = () => {
-  // Handle view profile action
+  router.push(`/passportview/expert?propertyId=${route.query.propertyId}&stepId=${route.params.id}`)
 }
 
 const goBack = () => {

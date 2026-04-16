@@ -16,24 +16,25 @@
           <h1 class="section-hero-title">{{ section.title }}</h1>
           <p class="section-hero-sub">{{ section.subtitle || section.description || 'Official property record' }}</p>
 
-          <!-- Help + Video buttons (section level) -->
-          <div v-if="section.helpContent || section.helpVideoUrl" class="section-action-btns">
-            <button v-if="section.helpContent" class="action-btn action-btn--help" @click="showHelp = true">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                <path d="M12 17v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="12" cy="8" r="1" fill="currentColor"/>
-              </svg>
-              Help
-            </button>
-            <button v-if="section.helpVideoUrl" class="action-btn action-btn--video" @click="showVideo = true">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                <path d="M10 8l6 4-6 4V8z" fill="currentColor"/>
-              </svg>
-              Play Video
-            </button>
-          </div>
+        </div>
+
+        <!-- Help + Video buttons — left aligned, always shown -->
+        <div class="section-help-strip">
+          <button class="action-btn action-btn--help" @click="showHelp = true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 17v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="12" cy="8" r="1" fill="currentColor"/>
+            </svg>
+            Help
+          </button>
+          <button class="action-btn action-btn--video" @click="showVideo = true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M10 8l6 4-6 4V8z" fill="currentColor"/>
+            </svg>
+            Play Video
+          </button>
         </div>
 
         <!-- Fixtures & Fittings: Included / Excluded / Offered stats + file buttons -->
@@ -177,6 +178,23 @@
               <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- Expert guidance card -->
+      <div class="expert-card" @click="goToExpert">
+        <div class="expert-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" stroke="#00a19a" stroke-width="1.5"/>
+            <path d="M4 20c0-4 3.58-7 8-7s8 3 8 7" stroke="#00a19a" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="expert-card-info">
+          <p class="expert-card-title">Need expert guidance?</p>
+          <p class="expert-card-sub">Get help from a property specialist</p>
+        </div>
+        <div class="expert-card-arrow">
+          <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
         </div>
       </div>
     </template>
@@ -467,6 +485,10 @@ function goToTask(taskId: string) {
   router.push(`/buyer-passport/section/task/${taskId}?passportId=${passportId}&sectionId=${sectionId}`)
 }
 
+function goToExpert() {
+  router.push(`/passportview/expert?passportId=${passportId}&sectionId=${sectionId}`)
+}
+
 // File helpers
 function extractFilename(url: string): string {
   try {
@@ -560,12 +582,12 @@ function downloadAllFiles() {
   margin: 0 auto;
 }
 
-/* Help / Video buttons */
-.section-action-btns {
+/* Help / Video strip — left aligned below hero */
+.section-help-strip {
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 14px;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .action-btn {
@@ -966,6 +988,45 @@ function downloadAllFiles() {
   padding: 4px 10px;
   font-weight: 500;
   white-space: nowrap;
+}
+
+/* Expert guidance card */
+.expert-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: white;
+  border: 1.5px solid #e6f7f6;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.expert-card:active { background: #f0fffe; }
+.expert-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #f0fffe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.expert-card-info { flex: 1; min-width: 0; }
+.expert-card-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0 0 2px; }
+.expert-card-sub { font-size: 12px; color: #888; margin: 0; }
+.expert-card-arrow {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f9f9fd;
+  border: 0.5px solid #d2d1e4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* Sheet transition */

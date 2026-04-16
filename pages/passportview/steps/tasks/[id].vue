@@ -26,14 +26,14 @@
         </div>
       </div>
 
-      <div v-if="currentQuestion?.helpContent || currentQuestion?.helpVideoUrl" class="action-buttons">
-        <button v-if="currentQuestion?.helpContent" class="help-btn" @click="showHelp = true">
+      <div class="action-buttons">
+        <button class="help-btn" @click="openHelp">
           <span class="btn-icon"
             ><OPIcon name="helpIcon" class="w-[15px] h-[15px]"
           /></span>
           Help
         </button>
-        <button v-if="currentQuestion?.helpVideoUrl" class="video-btn" @click="showVideo = true">
+        <button class="video-btn" @click="openVideo">
           <span class="play-icon"
             ><OPIcon name="playIcon" class="w-[15px] h-[15px]"
           /></span>
@@ -159,14 +159,14 @@
 
   <HelpDrawer
     :show="showHelp"
-    :content="currentQuestion?.helpContent ?? null"
+    :content="activeHelpContent"
     mode="seller"
     @close="showHelp = false"
   />
 
   <VideoModal
     :show="showVideo"
-    :video-url="currentQuestion?.helpVideoUrl ?? null"
+    :video-url="activeVideoUrl"
     @close="showVideo = false"
   />
 </template>
@@ -220,6 +220,19 @@ const additionalInfoAnswer = ref(null)
 
 const showHelp = ref(false)
 const showVideo = ref(false)
+
+// Use question-level content if available, fall back to step (section) level
+const activeHelpContent = computed(() =>
+  currentQuestion.value?.helpContent ?? currentStep.value?.helpContent ?? null
+)
+const activeVideoUrl = computed(() =>
+  currentQuestion.value?.helpVideoUrl ?? currentStep.value?.helpVideoUrl ?? null
+)
+const hasHelp = computed(() => !!activeHelpContent.value)
+const hasVideo = computed(() => !!activeVideoUrl.value)
+
+function openHelp() { showHelp.value = true }
+function openVideo() { showVideo.value = true }
 
 const stepId = route.query.stepId
 const taskId = route.params.id

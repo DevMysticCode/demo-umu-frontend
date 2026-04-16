@@ -190,6 +190,23 @@
           </button>
         </div>
 
+        <!-- TA6 Form Download -->
+        <div class="buyer-pdf-row buyer-ta6-row">
+          <div class="buyer-pdf-info">
+            <p class="buyer-pdf-title">TA6 Property Information Form</p>
+            <p class="buyer-pdf-sub">Law Society 6th edition — pre-filled with passport data</p>
+          </div>
+          <button class="buyer-pdf-btn buyer-ta6-btn" :disabled="generatingTA6" @click="downloadTA6">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <polyline points="9,15 12,18 15,15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{ generatingTA6 ? 'Opening…' : 'Download TA6' }}
+          </button>
+        </div>
+
         <!-- Official Records -->
         <div class="buyer-section">
           <h2 class="buyer-section-title">Official Records</h2>
@@ -278,12 +295,14 @@ const config = useRuntimeConfig()
 const passportId = route.params.id as string
 
 const { generatePdf } = usePassportPdf()
+const { generateTA6 } = useTA6Pdf()
 
 const data = ref<any>(null)
 const loading = ref(true)
 const error = ref('')
 const searchQuery = ref('')
 const generatingPdf = ref(false)
+const generatingTA6 = ref(false)
 
 onMounted(async () => {
   try {
@@ -338,6 +357,16 @@ function downloadPdf() {
   } finally {
     // Brief delay so the button resets after the window opens
     setTimeout(() => { generatingPdf.value = false }, 800)
+  }
+}
+
+function downloadTA6() {
+  if (!data.value) return
+  generatingTA6.value = true
+  try {
+    generateTA6(data.value)
+  } finally {
+    setTimeout(() => { generatingTA6.value = false }, 800)
   }
 }
 
@@ -757,5 +786,19 @@ function goToSection(sectionId: string) {
 
 .buyer-pdf-btn:active:not(:disabled) {
   background: #00877f;
+}
+
+.buyer-ta6-row {
+  background: #f4f0ff;
+  border-color: #c4b5e8;
+  margin-top: -12px;
+}
+
+.buyer-ta6-btn {
+  background: #5a54d6;
+}
+
+.buyer-ta6-btn:active:not(:disabled) {
+  background: #4740c0;
 }
 </style>
