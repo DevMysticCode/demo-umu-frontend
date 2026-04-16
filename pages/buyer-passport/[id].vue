@@ -207,6 +207,40 @@
           </button>
         </div>
 
+        <!-- TA7 Form — leasehold only -->
+        <div v-if="data?.property?.isLeasehold" class="buyer-pdf-row buyer-ta7-row">
+          <div class="buyer-pdf-info">
+            <p class="buyer-pdf-title">TA7 Leasehold Information Form</p>
+            <p class="buyer-pdf-sub">Law Society 5th edition — lease, ground rent &amp; service charge details</p>
+          </div>
+          <button class="buyer-pdf-btn buyer-ta7-btn" :disabled="generatingTA7" @click="downloadTA7">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <polyline points="9,15 12,18 15,15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{ generatingTA7 ? 'Opening…' : 'Download TA7' }}
+          </button>
+        </div>
+
+        <!-- TA10 Fixtures & Fittings Form -->
+        <div class="buyer-pdf-row buyer-ta10-row">
+          <div class="buyer-pdf-info">
+            <p class="buyer-pdf-title">TA10 Fixtures &amp; Fittings Form</p>
+            <p class="buyer-pdf-sub">What stays, what goes — pre-filled from seller's passport</p>
+          </div>
+          <button class="buyer-pdf-btn buyer-ta10-btn" :disabled="generatingTA10" @click="downloadTA10">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <polyline points="9,15 12,18 15,15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{ generatingTA10 ? 'Opening…' : 'Download TA10' }}
+          </button>
+        </div>
+
         <!-- Official Records -->
         <div class="buyer-section">
           <h2 class="buyer-section-title">Official Records</h2>
@@ -296,6 +330,8 @@ const passportId = route.params.id as string
 
 const { generatePdf } = usePassportPdf()
 const { generateTA6 } = useTA6Pdf()
+const { generateTA7 } = useTA7Pdf()
+const { generateFixturesFittings } = useFixturesFittingsPdf()
 
 const data = ref<any>(null)
 const loading = ref(true)
@@ -303,6 +339,8 @@ const error = ref('')
 const searchQuery = ref('')
 const generatingPdf = ref(false)
 const generatingTA6 = ref(false)
+const generatingTA7 = ref(false)
+const generatingTA10 = ref(false)
 
 onMounted(async () => {
   try {
@@ -367,6 +405,26 @@ function downloadTA6() {
     generateTA6(data.value)
   } finally {
     setTimeout(() => { generatingTA6.value = false }, 800)
+  }
+}
+
+function downloadTA7() {
+  if (!data.value) return
+  generatingTA7.value = true
+  try {
+    generateTA7(data.value)
+  } finally {
+    setTimeout(() => { generatingTA7.value = false }, 800)
+  }
+}
+
+function downloadTA10() {
+  if (!data.value) return
+  generatingTA10.value = true
+  try {
+    generateFixturesFittings(data.value)
+  } finally {
+    setTimeout(() => { generatingTA10.value = false }, 800)
   }
 }
 
@@ -800,5 +858,33 @@ function goToSection(sectionId: string) {
 
 .buyer-ta6-btn:active:not(:disabled) {
   background: #4740c0;
+}
+
+.buyer-ta7-row {
+  background: #fff8ed;
+  border-color: #f5c96a;
+  margin-top: -12px;
+}
+
+.buyer-ta7-btn {
+  background: #d97706;
+}
+
+.buyer-ta7-btn:active:not(:disabled) {
+  background: #b45309;
+}
+
+.buyer-ta10-row {
+  background: #eef4ff;
+  border-color: #b8cfee;
+  margin-top: -12px;
+}
+
+.buyer-ta10-btn {
+  background: #2563eb;
+}
+
+.buyer-ta10-btn:active:not(:disabled) {
+  background: #1d4ed8;
 }
 </style>

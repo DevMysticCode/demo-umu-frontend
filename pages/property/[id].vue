@@ -1957,7 +1957,11 @@ const actionBarItems = computed(() => {
   return [
     {
       icon: 'accessPassport',
-      label: hasPassport ? 'Access Passport' : 'Claim Passport',
+      label: hasPassport
+        ? (status?.isOwner || status?.isCollaborator || status?.isBuyer
+          ? 'Access Passport'
+          : 'Buy Passport Access')
+        : 'Claim Passport',
       disabled: isUnpublished,
     },
     {
@@ -2353,21 +2357,24 @@ onMounted(async () => {
 
 function handleAction(label: string) {
   if (label === 'Claim Passport') {
-    // Owner verification flow
+    // No passport yet — start ownership verification
     router.push(`/verify-ownership/${propertyId}`)
   } else if (label === 'Access Passport') {
     const status = passportStatus.value
     if (status?.isOwner || status?.isCollaborator) {
       // Owner / collaborator → full passport edit view
       router.push(`/passportview/${status.passportId}`)
-    } else if (!status?.isPublished) {
-      // Passport claimed but not published — show informational modal
-      showUnpublishedModal.value = true
     } else if (status?.isBuyer && status?.passportId) {
-      // Already unlocked buyer → buyer read-only view
+      // Already purchased access → buyer read-only view
       router.push(`/buyer-passport/${status.passportId}`)
+    }
+  } else if (label === 'Buy Passport Access') {
+    const status = passportStatus.value
+    if (!status?.isPublished) {
+      // Passport exists but not published yet — inform user
+      showUnpublishedModal.value = true
     } else {
-      // Non-owner, not yet unlocked → show unlock drawer
+      // Published passport, user hasn't paid yet → payment drawer
       showClaimDrawer.value = true
     }
   } else if (label === 'Save Property' || label === 'Saved Property') {
@@ -2444,10 +2451,16 @@ async function downloadEpc() {
   }
 }
 
-// Pass existing passportId to drawer when property already has a passport but user can't access it
+// Pass existing passportId to drawer when property has a passport the user hasn't purchased access to yet
 const buyerModePassportId = computed(() => {
   const status = passportStatus.value
-  if (status?.hasPassport && !status?.canAccess && status?.passportId) {
+  if (
+    status?.hasPassport &&
+    status?.passportId &&
+    !status?.isOwner &&
+    !status?.isCollaborator &&
+    !status?.isBuyer
+  ) {
     return status.passportId
   }
   return undefined

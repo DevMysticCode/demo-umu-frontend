@@ -17,21 +17,13 @@
           <p class="task-hero-sub">{{ task.description || section?.description || 'Official property record' }}</p>
         </div>
 
-        <!-- Section-level Help + Video — always shown, left aligned -->
+        <!-- Section-level Help + Video — right aligned, seller style -->
         <div class="task-help-strip">
           <button class="task-help-btn task-help-btn--help" @click="openSectionHelp">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 17v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="12" cy="8" r="1" fill="currentColor"/>
-            </svg>
-            Help
+            <OPIcon name="helpIcon" class="w-[15px] h-[15px]" />Help
           </button>
           <button class="task-help-btn task-help-btn--video" @click="openSectionVideo">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-              <path d="M10 8l6 4-6 4V8z" fill="currentColor"/>
-            </svg>
+            <span class="task-play-icon"><OPIcon name="playIcon" class="w-[15px] h-[15px]" /></span>
             Play Video
           </button>
         </div>
@@ -731,7 +723,8 @@ function getNote(q: any): string | null {
   return null
 }
 
-// Files: direct fileUrl + all JSON formats (array, uploadedFiles, additionalInfo.files)
+// Files: direct fileUrl + all JSON formats (array, url object, files, uploadedFiles, additionalInfo.files)
+// Entries with no URL are filtered out — prevents "Pending upload" for failed/in-progress uploads
 function getFiles(q: any): Array<{ url: string; name: string }> {
   if (!q.answer) return []
   const files: Array<{ url: string; name: string }> = []
@@ -748,7 +741,19 @@ function getFiles(q: any): Array<{ url: string; name: string }> {
         if (n) files.push(n)
       }
     } else {
-      // 3. { uploadedFiles: [...] }
+      // 3. { url: '...' } — single file object
+      if (typeof (json as any).url === 'string' && (json as any).url) {
+        files.push({ url: (json as any).url, name: (json as any).name || extractFilename((json as any).url) })
+      }
+      // 4. { files: [...] } — TextUploadQuestion "both" mode emits { text, files }
+      const filesArr = (json as any).files
+      if (Array.isArray(filesArr)) {
+        for (const f of filesArr) {
+          const n = normaliseFileEntry(f)
+          if (n) files.push(n)
+        }
+      }
+      // 5. { uploadedFiles: [...] }
       const uploaded = (json as any).uploadedFiles
       if (Array.isArray(uploaded)) {
         for (const f of uploaded) {
@@ -756,7 +761,7 @@ function getFiles(q: any): Array<{ url: string; name: string }> {
           if (n) files.push(n)
         }
       }
-      // 4. { additionalInfo: { files: [...] } }
+      // 6. { additionalInfo: { files: [...] } }
       const ai = (json as any).additionalInfo
       if (ai && typeof ai === 'object' && Array.isArray(ai.files)) {
         for (const f of ai.files) {
@@ -766,7 +771,8 @@ function getFiles(q: any): Array<{ url: string; name: string }> {
       }
     }
   }
-  return files
+  // Strip entries with no URL (failed uploads stored with empty url)
+  return files.filter(f => !!f.url)
 }
 
 // ─── Field label helpers ──────────────────────────────────────────────────
@@ -924,17 +930,21 @@ function downloadFile(url: string, name: string) {
 .status--answered { background: #eef2ff; color: #4f46e5; }
 .status--unanswered { background: #f9fafb; color: #d1d5db; }
 
-/* Section help/video strip — between search and question list */
+/* Section help/video strip — right aligned, seller style */
 .task-help-strip {
-  display: flex; gap: 8px; margin-bottom: 14px;
+  display: flex; gap: 4px; margin-bottom: 14px; justify-content: end;
 }
 .task-help-btn {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 9px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
-  border: none; cursor: pointer;
+  padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600;
+  cursor: pointer;
 }
-.task-help-btn--help { background: white; color: #00a19a; border: 1.5px solid #b2e4e1; }
-.task-help-btn--video { background: white; color: #7c3aed; border: 1.5px solid #d4b8f8; }
+.task-help-btn--help {
+  background: white; color: #00b8a9; border: 2px solid #e0e0e0;
+  padding-left: 20px; padding-right: 20px;
+}
+.task-help-btn--video { background: #00b8a9; color: white; border: 2px solid #00b8a9; }
+.task-play-icon { font-size: 12px; }
 
 /* Answer area — always visible, no expand */
 .task-item-detail { padding: 0 16px 16px; }

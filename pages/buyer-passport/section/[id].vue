@@ -18,21 +18,13 @@
 
         </div>
 
-        <!-- Help + Video buttons — left aligned, always shown -->
+        <!-- Help + Video buttons — right aligned, seller style -->
         <div class="section-help-strip">
           <button class="action-btn action-btn--help" @click="showHelp = true">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 17v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="12" cy="8" r="1" fill="currentColor"/>
-            </svg>
-            Help
+            <OPIcon name="helpIcon" class="w-[15px] h-[15px]" />Help
           </button>
           <button class="action-btn action-btn--video" @click="showVideo = true">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-              <path d="M10 8l6 4-6 4V8z" fill="currentColor"/>
-            </svg>
+            <span class="action-btn-play"><OPIcon name="playIcon" class="w-[15px] h-[15px]" /></span>
             Play Video
           </button>
         </div>
@@ -145,12 +137,6 @@
             </p>
           </div>
         </template>
-
-        <!-- Form Details header -->
-        <div class="section-details-header" @click="showFormDetails = !showFormDetails">
-          <span class="section-details-label">Form Details</span>
-          <OPIcon :name="showFormDetails ? 'caretDown' : 'caretRight'" class="w-[16px] h-[16px]" />
-        </div>
 
         <!-- Tasks list -->
         <div class="section-tasks">
@@ -279,7 +265,6 @@ const passportId = route.query.passportId as string
 
 const allData = ref<any>(null)
 const loading = ref(true)
-const showFormDetails = ref(false)
 const showFilesSheet = ref(false)
 const showHelp = ref(false)
 const showVideo = ref(false)
@@ -582,11 +567,11 @@ function downloadAllFiles() {
   margin: 0 auto;
 }
 
-/* Help / Video strip — left aligned below hero */
+/* Help / Video strip — right aligned below hero */
 .section-help-strip {
   display: flex;
-  justify-content: flex-start;
-  gap: 8px;
+  justify-content: end;
+  gap: 4px;
   margin-bottom: 16px;
 }
 
@@ -603,15 +588,21 @@ function downloadAllFiles() {
 }
 
 .action-btn--help {
-  background: #f0faf9;
-  color: #00a19a;
-  border: 1px solid #b2e4e1;
+  background: white;
+  color: #00b8a9;
+  border: 2px solid #e0e0e0;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .action-btn--video {
-  background: #f5f0ff;
-  color: #7c3aed;
-  border: 1px solid #d4b8f8;
+  background: #00b8a9;
+  color: white;
+  border: 2px solid #00b8a9;
+}
+
+.action-btn-play {
+  font-size: 12px;
 }
 
 /* Preview / Download row */

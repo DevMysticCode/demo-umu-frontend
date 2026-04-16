@@ -146,9 +146,8 @@ export function useTA6Pdf() {
       .passport-data { padding: 6px 8px; background: #f0fffe; border-top: 0.5px solid #b2e4e1; font-size: 7.5pt; color: #00534f; }
 
       /* ── Signature block ── */
-      .sig-block { border: 1px solid #ccc; padding: 12px; margin-top: 8px; }
-      .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
-      .sig-field { border-bottom: 1px solid #555; padding-bottom: 24px; margin-bottom: 4px; }
+      .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 4px; }
+      .sig-field { border-bottom: 1px solid #555; padding-bottom: 20px; margin-bottom: 4px; min-height: 24px; }
       .sig-label { font-size: 7.5pt; color: #888; }
 
       /* ── Footer ── */
@@ -165,7 +164,6 @@ export function useTA6Pdf() {
     const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
     const addr = passport.addressLine1 || ''
     const cityLine = [property?.city || property?.county, property?.postcode || passport.postcode].filter(Boolean).join(', ')
-    const fullAddress = [addr, cityLine].filter(Boolean).join(', ')
     const tenure = property?.tenure || findAnswer(sections, 'propertyOwnership', 'tenure') || ''
     const titleNum = property?.titleNumber || ''
 
@@ -180,15 +178,32 @@ export function useTA6Pdf() {
     const rights = getSectionAnswers(sections, 'rightsInformal')
     const transaction = getSectionAnswers(sections, 'transactionInfo')
 
-    function passportRow(items: Array<{ q: string; a: string }>, maxRows = 99): string {
+    // Helper: Render passport answers as a teal data block
+    function passportBlock(items: Array<{ q: string; a: string }>, maxRows = 99): string {
       if (!items.length) return ''
+      const rows = items.slice(0, maxRows)
+        .map(i => `<tr>
+          <td style="padding:3px 8px;font-size:7.5pt;color:#555;width:45%">${esc(i.q)}</td>
+          <td style="padding:3px 8px;font-size:7.5pt">${i.a ? `<span class="filled">${esc(i.a)}</span>` : '<em style="color:#bbb">not answered</em>'}</td>
+        </tr>`).join('')
       return `<div class="passport-data">
-        <strong>From Property Passport:</strong><br>
-        ${items.slice(0, maxRows).map(i => `<span style="display:inline-block;margin-right:16px;margin-top:2px">
-          <strong>${esc(i.q)}:</strong> ${i.a ? `<span class="filled">${esc(i.a)}</span>` : '<em style="color:#aaa">not answered</em>'}
-        </span>`).join('')}
+        <div style="font-size:7pt;font-weight:700;color:#00534f;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px">&#9998; Pre-filled from Property Passport</div>
+        <table style="width:100%;border-collapse:collapse">${rows}</table>
       </div>`
     }
+
+    // Helper: checkbox row (question takes full width, answer below)
+    function envRow(num: string, label: string, answerVal = ''): string {
+      return `<div class="row">
+        <div class="row-num">${esc(num)}</div>
+        <div class="row-q">${esc(label)}</div>
+        <div class="row-a">${yesNo(answerVal)}</div>
+      </div>`
+    }
+
+    const tenureDisplay = tenure
+      ? `<span class="filled">${esc(tenure)}</span>`
+      : `${checkbox(false,'Freehold')}&nbsp;&nbsp;${checkbox(false,'Leasehold')}&nbsp;&nbsp;${checkbox(false,'Commonhold')}`
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -203,12 +218,12 @@ export function useTA6Pdf() {
 <div class="doc-header">
   <div>
     <div class="law-title">TA6 &mdash; Property Information Form</div>
-    <div class="law-subtitle">6th edition (2025) &mdash; Law Society of England and Wales</div>
+    <div class="law-subtitle">6th edition (2025) &bull; Law Society of England and Wales</div>
   </div>
   <div class="doc-meta">
     <div><strong>Generated:</strong> ${esc(date)}</div>
-    <div><strong>Passport ID:</strong> ${esc(passport.id)}</div>
-    <div style="margin-top:4px;font-size:6.5pt;color:#bbb">Pre-filled from umu Property Passport</div>
+    ${passport.id ? `<div><strong>Passport ref:</strong> ${esc(passport.id.slice(0, 8).toUpperCase())}</div>` : ''}
+    <div style="margin-top:3px;font-size:6pt;color:#ccc">Pre-filled from umu Property Passport</div>
   </div>
 </div>
 
@@ -216,12 +231,12 @@ export function useTA6Pdf() {
 <div class="property-box">
   <div class="property-box-title">Property address</div>
   <div class="property-address">${esc(addr)}</div>
-  <div class="property-sub">${esc(cityLine)}${titleNum ? ' &nbsp;|&nbsp; Title No: <strong>' + esc(titleNum) + '</strong>' : ''}</div>
+  ${cityLine ? `<div class="property-sub">${esc(cityLine)}${titleNum ? `&nbsp;&nbsp;|&nbsp;&nbsp;Title No:&nbsp;<strong>${esc(titleNum)}</strong>` : ''}</div>` : ''}
 </div>
 
 <!-- ══ IMPORTANT NOTICE ════════════════════════════════════════════════════ -->
 <div class="notice-box">
-  <strong>Important:</strong> This form is completed by the seller. The seller should complete it carefully and accurately to the best of their knowledge. Where a question is not applicable, state N/A. The seller must promptly inform their solicitor of any change to the information given. Fields highlighted in <span style="color:#00534f;font-weight:700">green</span> have been pre-filled from the umu Property Passport. Blank lines require manual completion.
+  <strong>Important:</strong> This form must be completed by the seller to the best of their knowledge. Where a question is not applicable, write N/A. The seller must promptly notify their solicitor of any change. <span style="color:#00534f;font-weight:700">Green text</span> indicates data pre-filled from the umu Property Passport — verify before signing. Blank lines require manual completion.
 </div>
 
 <!-- ══ SECTION 1: SELLER DETAILS ══════════════════════════════════════════ -->
@@ -235,18 +250,38 @@ export function useTA6Pdf() {
     </div>
     <div class="row">
       <div class="row-num">1.2</div>
-      <div class="row-q">Correspondence address (if different from property)</div>
+      <div class="row-q">Correspondence address (if different from property address)</div>
       <div class="row-a row-a--wide">${blank('240px')}</div>
     </div>
     <div class="row">
       <div class="row-num">1.3</div>
-      <div class="row-q">Tenure</div>
-      <div class="row-a row-a--wide">${filled(tenure, '')}&nbsp;${!tenure ? checkbox(false,'Freehold')+'&nbsp;'+checkbox(false,'Leasehold')+'&nbsp;'+checkbox(false,'Commonhold') : ''}</div>
+      <div class="row-q">Tenure of the property</div>
+      <div class="row-a row-a--wide">${tenureDisplay}</div>
     </div>
     <div class="row">
       <div class="row-num">1.4</div>
-      <div class="row-q">What is the council tax band?</div>
-      <div class="row-a">${blank()}</div>
+      <div class="row-q">Council tax band</div>
+      <div class="row-a">${blank('100px')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">1.5</div>
+      <div class="row-q">Property type</div>
+      <div class="row-a">${property?.propertyType ? `<span class="filled">${esc(property.propertyType)}</span>` : blank('120px')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">1.6</div>
+      <div class="row-q">Number of bedrooms &nbsp;/&nbsp; bathrooms</div>
+      <div class="row-a">${(property?.bedrooms || property?.bathrooms) ? `<span class="filled">${property?.bedrooms ?? '—'} bed / ${property?.bathrooms ?? '—'} bath</span>` : blank('140px')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">1.7</div>
+      <div class="row-q">Approximate year built</div>
+      <div class="row-a">${property?.yearBuilt ? `<span class="filled">${esc(property.yearBuilt)}</span>` : blank('100px')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">1.8</div>
+      <div class="row-q">Floor area (if known)</div>
+      <div class="row-a">${property?.sqft ? `<span class="filled">${property.sqft.toLocaleString()} sqft</span>` : blank('120px')}</div>
     </div>
   </div>
 </div>
@@ -257,15 +292,18 @@ export function useTA6Pdf() {
   <div class="section-body">
     <div class="row">
       <div class="row-num">2.1</div>
-      <div class="row-q">Looking towards the property from the road, who is responsible for maintaining the boundary on the:<br>
-        <div style="margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:8pt">
-          <div><strong>Left:</strong> ${blank('80px')}</div>
-          <div><strong>Right:</strong> ${blank('80px')}</div>
-          <div><strong>Front:</strong> ${blank('80px')}</div>
-          <div><strong>Rear:</strong> ${blank('80px')}</div>
+      <div class="row-q">
+        Looking at the property from the road, who is responsible for maintaining the following boundaries?
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-top:8px;font-size:8pt">
+          <div><strong>Left:</strong>&nbsp;${blank('90px')}</div>
+          <div><strong>Right:</strong>&nbsp;${blank('90px')}</div>
+          <div><strong>Front:</strong>&nbsp;${blank('90px')}</div>
+          <div><strong>Rear:</strong>&nbsp;${blank('90px')}</div>
         </div>
       </div>
-      <div class="row-a" style="flex-direction:column;gap:4px"></div>
+      <div class="row-a" style="min-width:0;padding:5px 8px;font-size:7.5pt;color:#999;align-items:flex-start">
+        S&nbsp;=&nbsp;Seller<br>N&nbsp;=&nbsp;Neighbour<br>S+N&nbsp;=&nbsp;Shared<br>?&nbsp;=&nbsp;Not known
+      </div>
     </div>
     <div class="row">
       <div class="row-num">2.2</div>
@@ -274,10 +312,10 @@ export function useTA6Pdf() {
     </div>
     <div class="row">
       <div class="row-num">2.3</div>
-      <div class="row-q">Is the seller aware of any current or recent disputes regarding the boundaries, shared drives, rights of way or other arrangements with neighbouring properties?</div>
-      <div class="row-a">${yesNo('')}</div>
+      <div class="row-q">Has the seller been involved in any disputes or complaints with a neighbour about the boundary, or about anything overhanging or encroaching on the property?</div>
+      <div class="row-a">${yesNo(boundaries[0]?.a || '')}</div>
     </div>
-    ${boundaries.length ? passportRow(boundaries) : ''}
+    ${boundaries.length ? passportBlock(boundaries) : ''}
   </div>
 </div>
 
@@ -287,15 +325,20 @@ export function useTA6Pdf() {
   <div class="section-body">
     <div class="row">
       <div class="row-num">3.1</div>
-      <div class="row-q">Is the seller aware of any disputes, complaints or correspondence with any neighbour or local authority which affects the property?</div>
+      <div class="row-q">Is the seller aware of any disputes or anything likely to lead to a dispute about the property or a neighbour's property?</div>
       <div class="row-a">${yesNo(disputes[0]?.a || '')}</div>
     </div>
     <div class="row">
       <div class="row-num">3.2</div>
-      <div class="row-q">Has the seller received any complaints about anything they have done or not done as owner of the property?</div>
+      <div class="row-q">Has the seller, or to their knowledge anyone else, ever complained to the local authority about the condition of any neighbouring property?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
-    ${disputes.length ? passportRow(disputes) : ''}
+    <div class="row">
+      <div class="row-num">3.3</div>
+      <div class="row-q">Has the seller received any complaints about anything they have, or have not, done as owner of the property?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    ${disputes.length ? passportBlock(disputes) : ''}
   </div>
 </div>
 
@@ -305,15 +348,15 @@ export function useTA6Pdf() {
   <div class="section-body">
     <div class="row">
       <div class="row-num">4.1</div>
-      <div class="row-q">Has the seller received any formal or informal notices or correspondence that may affect the property (other than in relation to planning)?</div>
+      <div class="row-q">Has the seller received any formal or informal notices or correspondence that may affect the property, or which require, or have required, action by the seller (other than in relation to planning)?</div>
       <div class="row-a">${yesNo(notices[0]?.a || '')}</div>
     </div>
     <div class="row">
       <div class="row-num">4.2</div>
-      <div class="row-q">Has the seller been given notice of any proposed local development, compulsory purchase or similar?</div>
+      <div class="row-q">Has the seller been notified of any proposals by any local or other authority that could affect the property?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
-    ${notices.length ? passportRow(notices) : ''}
+    ${notices.length ? passportBlock(notices) : ''}
   </div>
 </div>
 
@@ -323,15 +366,20 @@ export function useTA6Pdf() {
   <div class="section-body">
     <div class="row">
       <div class="row-num">5.1</div>
-      <div class="row-q">Are there any guarantees, warranties or indemnity policies relating to the property or its contents that will be passed on to the buyer?</div>
+      <div class="row-q">Is the seller aware of any guarantees, warranties or indemnity policies (other than for the National House Building Council or similar new build warranty)?</div>
       <div class="row-a">${yesNo(guarantees[0]?.a || '')}</div>
     </div>
     <div class="row">
       <div class="row-num">5.2</div>
-      <div class="row-q">Has the property been treated for damp, timber infestation or any structural issue?</div>
+      <div class="row-q">Has the property been treated for damp, rot or infestation, or has any structural work been done?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
-    ${guarantees.length ? passportRow(guarantees) : ''}
+    <div class="row">
+      <div class="row-num">5.3</div>
+      <div class="row-q">Are there any guarantees or warranties relating to double glazing or other home improvements?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    ${guarantees.length ? passportBlock(guarantees) : ''}
   </div>
 </div>
 
@@ -341,17 +389,17 @@ export function useTA6Pdf() {
   <div class="section-body">
     <div class="row">
       <div class="row-num">6.1</div>
-      <div class="row-q">Buildings insurer</div>
+      <div class="row-q">Buildings insurer name</div>
       <div class="row-a row-a--wide">${blank('220px')}</div>
     </div>
     <div class="row">
       <div class="row-num">6.2</div>
-      <div class="row-q">Has any insurer ever refused to insure the property or imposed special conditions?</div>
+      <div class="row-q">Has any buildings insurer ever cancelled or refused to renew a policy on the property, or imposed special conditions?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
     <div class="row">
       <div class="row-num">6.3</div>
-      <div class="row-q">Have any claims been made on the buildings insurance?</div>
+      <div class="row-q">Have there been any buildings insurance claims in the last five years?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
   </div>
@@ -363,27 +411,48 @@ export function useTA6Pdf() {
   <div class="section-body">
     <div class="row">
       <div class="row-num">7.1</div>
-      <div class="row-q">Is the seller aware of any of the following affecting the property?</div>
-      <div class="row-a" style="flex-direction:column;font-size:8pt;gap:4px;padding:6px 8px">
-        <div>${checkbox(false,'Flooding')}</div>
-        <div>${checkbox(false,'Subsidence or settlement')}</div>
-        <div>${checkbox(false,'Contamination')}</div>
-        <div>${checkbox(false,'Japanese knotweed')}</div>
-        <div>${checkbox(false,'Mining activities')}</div>
-        <div>${checkbox(false,'Radon gas')}</div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-num">7.2</div>
-      <div class="row-q">Has the property been flooded in the last five years?</div>
+      <div class="row-q">Has the property been flooded in the past?</div>
       <div class="row-a">${yesNo(findAnswer(sections, 'environmentalMatters', 'flood'))}</div>
     </div>
     <div class="row">
+      <div class="row-num">7.2</div>
+      <div class="row-q">Is the property at risk of flooding?<br><span style="font-size:7.5pt;color:#777">Tick all that apply:</span><br>
+        <div style="display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:4px;font-size:8pt">
+          ${checkbox(false,'River/sea flood')}
+          ${checkbox(false,'Surface water')}
+          ${checkbox(false,'Groundwater')}
+          ${checkbox(false,'Sewer')}
+          ${checkbox(false,'Not known')}
+        </div>
+      </div>
+      <div class="row-a" style="min-width:0"></div>
+    </div>
+    <div class="row">
       <div class="row-num">7.3</div>
-      <div class="row-q">Is Japanese knotweed present or has it been present in the last 10 years?</div>
+      <div class="row-q">Is the property in a radon-affected area?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">7.4</div>
+      <div class="row-q">Is the seller aware of any presence (past or present) of Japanese knotweed at or near the property?</div>
       <div class="row-a">${yesNo(findAnswer(sections, 'environmentalMatters', 'knotweed'))}</div>
     </div>
-    ${environmental.length ? passportRow(environmental) : ''}
+    <div class="row">
+      <div class="row-num">7.5</div>
+      <div class="row-q">Is the seller aware of any ground subsidence, heave, landslip or other settlement at the property?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">7.6</div>
+      <div class="row-q">Is the seller aware of any contaminated land notice or environmental designation affecting the property?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">7.7</div>
+      <div class="row-q">Is the property in a coal mining area or otherwise affected by mining?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    ${environmental.length ? passportBlock(environmental) : ''}
   </div>
 </div>
 
@@ -393,20 +462,25 @@ export function useTA6Pdf() {
   <div class="section-body">
     <div class="row">
       <div class="row-num">8.1</div>
-      <div class="row-q">Does anyone other than the seller have a right to use any part of the property (e.g. right of way, shared access)?</div>
+      <div class="row-q">Does anyone other than the seller have any right over the property? (e.g. right of way, right to use a path or driveway, right to light, or a restrictive covenant)</div>
       <div class="row-a">${yesNo(rights[0]?.a || '')}</div>
     </div>
     <div class="row">
       <div class="row-num">8.2</div>
-      <div class="row-q">Does the seller need to use any part of a neighbouring property (e.g. access across it)?</div>
+      <div class="row-q">Does the seller have any right over a neighbouring property?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
     <div class="row">
       <div class="row-num">8.3</div>
-      <div class="row-q">Are there any formal or informal arrangements in place between neighbours that affect the property?</div>
+      <div class="row-q">Are there any informal arrangements which allow someone to use part of the property (e.g. access across it)?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
-    ${rights.length ? passportRow(rights) : ''}
+    <div class="row">
+      <div class="row-num">8.4</div>
+      <div class="row-q">Is there a public right of way, footpath or bridleway over or adjacent to the property?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    ${rights.length ? passportBlock(rights) : ''}
   </div>
 </div>
 
@@ -416,12 +490,22 @@ export function useTA6Pdf() {
   <div class="section-body">
     <div class="row">
       <div class="row-num">9.1</div>
-      <div class="row-q">Which services are connected to the property?</div>
-      <div class="row-a" style="flex-direction:column;font-size:8pt;gap:3px;padding:6px 8px">
-        <div>${checkbox(false,'Mains gas')} ${checkbox(false,'Mains electricity')}</div>
-        <div>${checkbox(false,'Mains water')} ${checkbox(false,'Mains drainage')}</div>
-        <div>${checkbox(false,'Oil')} ${checkbox(false,'LPG')} ${checkbox(false,'Solar panels')}</div>
+      <div class="row-q">
+        Which services are connected to the property? <em style="font-size:7.5pt;color:#777">(tick all that apply)</em>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;margin-top:7px;font-size:8pt">
+          <div>${checkbox(false,'Mains gas')}</div>
+          <div>${checkbox(false,'Mains electricity')}</div>
+          <div>${checkbox(false,'Mains water')}</div>
+          <div>${checkbox(false,'Mains drainage / sewerage')}</div>
+          <div>${checkbox(false,'Oil')}</div>
+          <div>${checkbox(false,'LPG / bottled gas')}</div>
+          <div>${checkbox(false,'Solar panels (PV)')}</div>
+          <div>${checkbox(false,'Solar thermal')}</div>
+          <div>${checkbox(false,'Heat pump (air / ground)')}</div>
+          <div>${checkbox(false,'Septic tank')}</div>
+        </div>
       </div>
+      <div class="row-a" style="min-width:0"></div>
     </div>
     <div class="row">
       <div class="row-num">9.2</div>
@@ -430,10 +514,15 @@ export function useTA6Pdf() {
     </div>
     <div class="row">
       <div class="row-num">9.3</div>
-      <div class="row-q">Does any service pipe or cable serving the property cross a neighbour's land, or vice versa?</div>
+      <div class="row-q">Does any service pipe, cable or drain serving the property pass through a neighbour's land, or vice versa?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
-    ${services.length ? passportRow(services) : ''}
+    <div class="row">
+      <div class="row-num">9.4</div>
+      <div class="row-q">Has the boiler been serviced in the last 12 months?</div>
+      <div class="row-a">${yesNo(findAnswer(sections, 'services', 'boiler', 'service'))}</div>
+    </div>
+    ${services.length ? passportBlock(services) : ''}
   </div>
 </div>
 
@@ -443,142 +532,143 @@ export function useTA6Pdf() {
   <div class="section-body">
     <div class="row">
       <div class="row-num">10.1</div>
-      <div class="row-q">Has any work been done to the property (including extensions, conversions, alterations, additions) since it was built?</div>
+      <div class="row-q">Has any building work (extensions, conversions, alterations, or additions) been carried out at the property since it was built?</div>
       <div class="row-a">${yesNo(planning[0]?.a || '')}</div>
     </div>
     <div class="row">
       <div class="row-num">10.2</div>
-      <div class="row-q">If yes, was planning permission obtained for all such work?</div>
+      <div class="row-q">Where required, was planning permission obtained?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
     <div class="row">
       <div class="row-num">10.3</div>
-      <div class="row-q">Was building regulations approval obtained and a completion certificate issued?</div>
+      <div class="row-q">Were building regulations approval and a completion certificate obtained?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
     <div class="row">
       <div class="row-num">10.4</div>
-      <div class="row-q">Are there any outstanding planning applications or planning conditions affecting the property?</div>
+      <div class="row-q">Is the property or any part of it listed or in a conservation area?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">10.5</div>
+      <div class="row-q">Are there any outstanding planning applications or unimplemented planning permissions affecting the property?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
     ${property?.epcRating ? `<div class="row">
-      <div class="row-num"></div>
-      <div class="row-q">EPC Rating (from property records)</div>
+      <div class="row-num">10.6</div>
+      <div class="row-q">Energy Performance Certificate (EPC) rating</div>
       <div class="row-a"><span class="filled">${esc(property.epcRating)}</span></div>
     </div>` : ''}
-    ${planning.length ? passportRow(planning) : ''}
+    ${planning.length ? passportBlock(planning) : ''}
   </div>
 </div>
 
-<!-- ══ SECTION 11: TRANSACTION INFORMATION ════════════════════════════════ -->
+<!-- ══ SECTION 11: COMPLETION INFORMATION AND OTHER MATTERS ═══════════════ -->
 <div class="section page-break">
-  <div class="section-header"><span class="section-num">11</span><span class="section-title">Transaction Information</span></div>
+  <div class="section-header"><span class="section-num">11</span><span class="section-title">Completion Information and Other Matters</span></div>
   <div class="section-body">
     <div class="row">
       <div class="row-num">11.1</div>
-      <div class="row-q">What is the asking price (if known)?</div>
-      <div class="row-a">${property?.estimatedPrice ? filled('£' + Number(property.estimatedPrice).toLocaleString('en-GB')) : blank()}</div>
+      <div class="row-q">Does anyone aged 17 or over live at the property (other than the seller)?</div>
+      <div class="row-a">${yesNo('')}</div>
     </div>
     <div class="row">
       <div class="row-num">11.2</div>
-      <div class="row-q">Is the property vacant or occupied?</div>
-      <div class="row-a">${checkbox(false,'Vacant')} ${checkbox(false,'Occupied')}</div>
+      <div class="row-q">If yes, please give their name(s) and date(s) of birth</div>
+      <div class="row-a row-a--wide">${blank('220px')}</div>
     </div>
     <div class="row">
       <div class="row-num">11.3</div>
-      <div class="row-q">Is a mortgage required to be redeemed on completion?</div>
+      <div class="row-q">Will any occupier(s) be required to sign a release of any interest they may have?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
     <div class="row">
       <div class="row-num">11.4</div>
-      <div class="row-q">If there is a mortgage, name of lender</div>
-      <div class="row-a row-a--wide">${blank('220px')}</div>
+      <div class="row-q">How many sets of keys will be available on completion?</div>
+      <div class="row-a">${blank('80px')}</div>
     </div>
     <div class="row">
       <div class="row-num">11.5</div>
-      <div class="row-q">Target completion date (if known)</div>
-      <div class="row-a">${blank()}</div>
+      <div class="row-q">Will the gas, electricity and water meters be read on completion?</div>
+      <div class="row-a">${yesNo('')}</div>
     </div>
-    ${transaction.length ? passportRow(transaction) : ''}
+    <div class="row">
+      <div class="row-num">11.6</div>
+      <div class="row-q">Is there a parking space, garage or outbuilding included?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">11.7</div>
+      <div class="row-q">Are there any shared facilities with other properties? (e.g. communal areas, shared access road, bin store)</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
   </div>
 </div>
 
-<!-- ══ SECTION 12: OCCUPIERS ══════════════════════════════════════════════ -->
+<!-- ══ SECTION 12: TRANSACTION INFORMATION ════════════════════════════════ -->
 <div class="section">
-  <div class="section-header"><span class="section-num">12</span><span class="section-title">Occupiers</span></div>
+  <div class="section-header"><span class="section-num">12</span><span class="section-title">Transaction Information</span></div>
   <div class="section-body">
     <div class="row">
       <div class="row-num">12.1</div>
-      <div class="row-q">Does anyone aged 17 or over currently live at the property (other than the seller)?</div>
-      <div class="row-a">${yesNo('')}</div>
+      <div class="row-q">Asking / agreed price</div>
+      <div class="row-a">${property?.estimatedPrice ? `<span class="filled">£${Number(property.estimatedPrice).toLocaleString('en-GB')}</span>` : blank()}</div>
     </div>
     <div class="row">
       <div class="row-num">12.2</div>
-      <div class="row-q">If yes, please give their name(s)</div>
-      <div class="row-a row-a--wide">${blank('220px')}</div>
+      <div class="row-q">Is the property currently vacant or occupied?</div>
+      <div class="row-a">${checkbox(false,'Vacant')}&nbsp;&nbsp;${checkbox(false,'Occupied')}</div>
     </div>
     <div class="row">
       <div class="row-num">12.3</div>
-      <div class="row-q">Will any occupier(s) be required to sign a release of any rights they may have?</div>
+      <div class="row-q">Is a mortgage to be redeemed on completion?</div>
       <div class="row-a">${yesNo('')}</div>
     </div>
+    <div class="row">
+      <div class="row-num">12.4</div>
+      <div class="row-q">If yes, name of mortgage lender</div>
+      <div class="row-a row-a--wide">${blank('220px')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">12.5</div>
+      <div class="row-q">Is there a related purchase?</div>
+      <div class="row-a">${yesNo('')}</div>
+    </div>
+    <div class="row">
+      <div class="row-num">12.6</div>
+      <div class="row-q">Target / required completion date (if known)</div>
+      <div class="row-a">${blank('140px')}</div>
+    </div>
+    ${transaction.length ? passportBlock(transaction) : ''}
   </div>
 </div>
 
-<!-- ══ SECTION 13: MATERIAL INFORMATION ══════════════════════════════════ -->
+<!-- ══ SECTION 13: SELLER'S DECLARATION ══════════════════════════════════ -->
 <div class="section">
-  <div class="section-header"><span class="section-num">13</span><span class="section-title">Material Information (Consumer Protection)</span></div>
-  <div class="section-body">
-    <div class="row">
-      <div class="row-num">13.1</div>
-      <div class="row-q">Property type</div>
-      <div class="row-a">${filled(property?.propertyType)}</div>
-    </div>
-    <div class="row">
-      <div class="row-num">13.2</div>
-      <div class="row-q">Number of bedrooms / bathrooms</div>
-      <div class="row-a">${property?.bedrooms || property?.bathrooms ? filled(`${property?.bedrooms ?? '—'} bed / ${property?.bathrooms ?? '—'} bath`) : blank()}</div>
-    </div>
-    <div class="row">
-      <div class="row-num">13.3</div>
-      <div class="row-q">Floor area</div>
-      <div class="row-a">${property?.sqft ? filled(property.sqft.toLocaleString() + ' sqft') : blank()}</div>
-    </div>
-    <div class="row">
-      <div class="row-num">13.4</div>
-      <div class="row-q">Year built (approximate)</div>
-      <div class="row-a">${filled(property?.yearBuilt)}</div>
-    </div>
-    <div class="row">
-      <div class="row-num">13.5</div>
-      <div class="row-q">Is the property in a flood risk zone?</div>
-      <div class="row-a">${yesNo('')}</div>
-    </div>
-    <div class="row">
-      <div class="row-num">13.6</div>
-      <div class="row-q">Is the property in a coalfield area?</div>
-      <div class="row-a">${yesNo('')}</div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SIGNATURE BLOCK ════════════════════════════════════════════════════ -->
-<div class="section">
-  <div class="section-header"><span class="section-num">14</span><span class="section-title">Seller's Declaration</span></div>
-  <div class="section-body" style="padding:12px">
-    <p style="font-size:8.5pt;color:#333;line-height:1.6;margin-bottom:12px">
-      I/We confirm that the information provided in this form is true, to the best of my/our knowledge and belief. I/We understand that the buyer may rely on this information when deciding to buy the property and that providing false information could result in legal action.
+  <div class="section-header"><span class="section-num">13</span><span class="section-title">Seller's Declaration</span></div>
+  <div class="section-body" style="padding:12px 14px">
+    <p style="font-size:8.5pt;color:#333;line-height:1.65;margin-bottom:14px">
+      I/We confirm that the information provided in this form is true and accurate to the best of my/our knowledge and belief as at the date signed below. I/We understand that the buyer and the buyer's solicitors will rely on this information and that it is my/our duty to inform my/our solicitor of any change to the information given.
     </p>
     <div class="sig-grid">
       <div>
         <div class="sig-field"></div>
-        <div class="sig-label">Seller 1 signature</div>
-        <div style="margin-top:8px;font-size:8pt">Date: ${blank('80px')}</div>
+        <div class="sig-label">Seller 1 — full name (print)</div>
+        <div style="margin-top:10px">
+          <div class="sig-field" style="padding-bottom:32px"></div>
+          <div class="sig-label">Seller 1 signature</div>
+        </div>
+        <div style="margin-top:10px;font-size:8pt">Date: ${blank('90px')}</div>
       </div>
       <div>
         <div class="sig-field"></div>
-        <div class="sig-label">Seller 2 signature (if applicable)</div>
-        <div style="margin-top:8px;font-size:8pt">Date: ${blank('80px')}</div>
+        <div class="sig-label">Seller 2 — full name (print) &nbsp;<em style="color:#aaa">(if applicable)</em></div>
+        <div style="margin-top:10px">
+          <div class="sig-field" style="padding-bottom:32px"></div>
+          <div class="sig-label">Seller 2 signature &nbsp;<em style="color:#aaa">(if applicable)</em></div>
+        </div>
+        <div style="margin-top:10px;font-size:8pt">Date: ${blank('90px')}</div>
       </div>
     </div>
   </div>
@@ -586,7 +676,7 @@ export function useTA6Pdf() {
 
 <!-- ══ FOOTER ════════════════════════════════════════════════════════════ -->
 <div class="doc-footer">
-  <span>TA6 &mdash; Law Society Property Information Form 6th Edition (2025)</span>
+  <span>TA6 &mdash; Law Society Property Information Form &bull; 6th Edition 2025</span>
   <span>Pre-filled via umu Property Passport &middot; ${esc(date)}</span>
 </div>
 
