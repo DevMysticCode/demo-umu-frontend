@@ -1,266 +1,431 @@
-import type { Answers, PillarBreakdown, ScoreResult, Question } from '~/types/homescore'
+import type { Question, Answers, PillarBreakdown, ScoreResult, TopWin, Opportunity } from '~/types/homescore'
+
+export const BASE_SCORE = 37
+export const CARBON_BASELINE = 2900
 
 export const QUESTIONS: Question[] = [
+  // ── YOUR HOME ──────────────────────────────────────────────────────
+  {
+    id: 'propertyType',
+    cat: 'YOUR HOME',
+    title: 'What type of property is it?',
+    options: [
+      { label: 'Detached house',       value: 'detached',   delta: 0,  carbonDelta: 0,    category: 'structure', narr: 'Detached homes have the most exposed wall area.' },
+      { label: 'Semi-detached house',  value: 'semi',       delta: +2, carbonDelta: -200, category: 'structure', narr: 'One shared wall reduces heat loss.' },
+      { label: 'Mid-terrace house',    value: 'terrace',    delta: +4, carbonDelta: -400, category: 'structure', narr: 'Two shared walls — naturally more efficient.' },
+      { label: 'Flat / apartment',     value: 'flat',       delta: +5, carbonDelta: -500, category: 'structure', narr: 'Shared floors and ceilings help efficiency.' },
+      { label: 'Bungalow',             value: 'bungalow',   delta: -1, carbonDelta: +100, category: 'structure', narr: 'Large roof area relative to floor space.' },
+    ],
+  },
+  {
+    id: 'yearBuilt',
+    cat: 'YOUR HOME',
+    title: 'Roughly when was the property built?',
+    options: [
+      { label: 'Before 1930',   value: 'pre1930',  delta: -6, carbonDelta: +800,  category: 'structure', narr: 'Pre-1930 homes typically have solid walls and no cavity — hardest to insulate.' },
+      { label: '1930–1966',     value: 'y1930',    delta: -3, carbonDelta: +500,  category: 'structure', narr: 'Cavity walls present but often unfilled.' },
+      { label: '1967–1990',     value: 'y1967',    delta: +1, carbonDelta: +200,  category: 'structure', narr: 'Basic insulation standards introduced.' },
+      { label: '1991–2006',     value: 'y1991',    delta: +3, carbonDelta: 0,     category: 'structure', narr: 'Improved building regs — better baseline.' },
+      { label: '2007–2015',     value: 'y2007',    delta: +5, carbonDelta: -300,  category: 'structure', narr: 'Modern standards — well insulated by design.' },
+      { label: '2016 or newer', value: 'y2016',    delta: +8, carbonDelta: -600,  category: 'structure', narr: 'Built to current Part L standards — high efficiency.' },
+    ],
+  },
+
+  // ── HEATING ────────────────────────────────────────────────────────
   {
     id: 'heatingType',
-    pillar: 'heating',
-    category: 'Heating',
-    question: 'What type of heating system does the property have?',
+    cat: 'HEATING',
+    title: 'What is the main heating system?',
     options: [
-      { label: 'Heat Pump', value: 'heat_pump', points: 15 },
-      { label: 'Modern Gas Boiler (< 10 yrs)', value: 'modern_gas', points: 12 },
-      { label: 'Gas Boiler (10–20 yrs)', value: 'mid_gas', points: 8 },
-      { label: 'Old Gas Boiler (> 20 yrs)', value: 'old_gas', points: 4 },
-      { label: 'Electric Heating', value: 'electric', points: 6 },
-      { label: 'No Central Heating', value: 'none', points: 0 },
-      { label: 'Not Sure', value: 'unsure', points: 6 },
+      { label: 'Air source heat pump',          value: 'ashp',       delta: +12, carbonDelta: -2200, category: 'heating', narr: 'Heat pumps run on electricity and produce ~3× the heat per unit of energy.' },
+      { label: 'Ground source heat pump',       value: 'gshp',       delta: +14, carbonDelta: -2600, category: 'heating', narr: 'The most efficient heating system available.' },
+      { label: 'Modern gas boiler (< 10 yrs)',  value: 'modern_gas', delta: +6,  carbonDelta: -200,  category: 'heating', narr: 'Modern boilers are ~94% efficient.' },
+      { label: 'Gas boiler (10–20 yrs)',        value: 'mid_gas',    delta: +2,  carbonDelta: +300,  category: 'heating', narr: 'Efficiency falling — nearing end of life.' },
+      { label: 'Old gas boiler (> 20 yrs)',     value: 'old_gas',    delta: -4,  carbonDelta: +900,  category: 'heating', narr: 'Older boilers can drop to 60% efficiency — a major carbon emitter.' },
+      { label: 'Oil boiler',                    value: 'oil',        delta: -3,  carbonDelta: +1400, category: 'heating', narr: 'Oil has a higher carbon intensity than gas.' },
+      { label: 'Electric storage heaters',      value: 'electric',   delta: -2,  carbonDelta: +200,  category: 'heating', narr: 'Carbon depends on the grid — improving as renewables grow.' },
+      { label: 'No central heating',            value: 'none_heat',  delta: -8,  carbonDelta: +600,  category: 'heating', narr: 'Biggest single score impact.' },
+    ],
+  },
+  {
+    id: 'hotWater',
+    cat: 'HEATING',
+    title: 'How is hot water heated?',
+    options: [
+      { label: 'Combi boiler (same as heating)',    value: 'combi',     delta: +3, carbonDelta: -100, category: 'heating', narr: 'Efficient — heats on demand, no cylinder losses.' },
+      { label: 'Solar thermal + cylinder',          value: 'solar_hw',  delta: +8, carbonDelta: -700, category: 'heating', narr: 'Solar thermal covers 50–70% of hot water needs.' },
+      { label: 'Heat pump hot water cylinder',      value: 'hp_hw',     delta: +7, carbonDelta: -600, category: 'heating', narr: 'Highly efficient — extracts heat from air.' },
+      { label: 'Gas cylinder (separate)',           value: 'gas_cyl',   delta: +1, carbonDelta: 0,    category: 'heating', narr: 'Less efficient than combi due to standing losses.' },
+      { label: 'Immersion heater (electric)',       value: 'immersion', delta: -2, carbonDelta: +400, category: 'heating', narr: 'Direct electric heating is expensive and carbon-heavy.' },
     ],
   },
   {
     id: 'lastServiced',
-    pillar: 'heating',
-    category: 'Heating',
-    question: 'When was the boiler or heating last serviced?',
+    cat: 'HEATING',
+    title: 'When was the boiler or heating last serviced?',
     options: [
-      { label: 'Within the last year', value: 'recent', points: 5 },
-      { label: '1–3 years ago', value: 'moderate', points: 3 },
-      { label: 'Over 3 years ago', value: 'old', points: 1 },
-      { label: 'Never / Not Sure', value: 'never', points: 0 },
+      { label: 'Within the last year', value: 'recent',   delta: +4, carbonDelta: -150, category: 'heating', narr: 'A serviced boiler runs at peak efficiency.' },
+      { label: '1–3 years ago',        value: 'moderate', delta: +1, carbonDelta: 0,    category: 'heating' },
+      { label: 'Over 3 years ago',     value: 'old',      delta: -2, carbonDelta: +200, category: 'heating' },
+      { label: 'Never / not sure',     value: 'never',    delta: -4, carbonDelta: +400, category: 'heating', narr: 'An unserviced boiler can waste 15%+ of energy.' },
     ],
   },
   {
-    id: 'roofCondition',
-    pillar: 'structure',
-    category: 'Structure',
-    question: 'What is the condition of the roof?',
+    id: 'secondaryHeating',
+    cat: 'HEATING',
+    title: 'Is there a secondary heating source?',
     options: [
-      { label: 'Good (less than 10 years old)', value: 'good', points: 8 },
-      { label: 'Ageing (10–30 years)', value: 'ageing', points: 5 },
-      { label: 'Poor / Needs repair', value: 'poor', points: 2 },
-      { label: 'Not Sure', value: 'unsure', points: 5 },
+      { label: 'Wood-burning stove (certified)', value: 'stove',    delta: +2, carbonDelta: -100, category: 'heating', narr: 'DEFRA-approved stoves are relatively clean.' },
+      { label: 'Open fireplace',                 value: 'fireplace',delta: -2, carbonDelta: +500, category: 'heating', narr: 'Open fires are very inefficient — most heat goes up the chimney.' },
+      { label: 'Electric panel heaters',         value: 'elec_pan', delta: -1, carbonDelta: +200, category: 'heating' },
+      { label: 'No secondary heating',           value: 'none_sec', delta: 0,  carbonDelta: 0,    category: 'heating' },
     ],
   },
+
+  // ── INSULATION ─────────────────────────────────────────────────────
   {
     id: 'wallType',
-    pillar: 'structure',
-    category: 'Structure',
-    question: 'What type are the external walls?',
+    cat: 'INSULATION',
+    title: 'What are the external walls made of?',
     options: [
-      { label: 'Cavity wall (insulated)', value: 'cavity_insulated', points: 10 },
-      { label: 'Solid wall (insulated)', value: 'solid_insulated', points: 8 },
-      { label: 'Cavity wall (uninsulated)', value: 'cavity_uninsulated', points: 5 },
-      { label: 'Solid wall (uninsulated)', value: 'solid_uninsulated', points: 3 },
-      { label: 'Not Sure', value: 'unsure', points: 6 },
-    ],
-  },
-  {
-    id: 'windows',
-    pillar: 'structure',
-    category: 'Structure',
-    question: 'What type of glazing do the windows have?',
-    options: [
-      { label: 'Double glazed (less than 10 yrs)', value: 'new_double', points: 7 },
-      { label: 'Double glazed (over 10 yrs)', value: 'old_double', points: 5 },
-      { label: 'Triple glazed', value: 'triple', points: 7 },
-      { label: 'Single glazed', value: 'single', points: 2 },
-      { label: 'Not Sure', value: 'unsure', points: 4 },
+      { label: 'Cavity wall — insulated',                          value: 'cavity_ins',   delta: +7, carbonDelta: -500, category: 'structure', narr: 'Insulated cavity walls are one of the best upgrades.' },
+      { label: 'Solid wall — insulated (internal or external)',    value: 'solid_ins',    delta: +5, carbonDelta: -400, category: 'structure' },
+      { label: 'Cavity wall — uninsulated',                       value: 'cavity_unins', delta: -3, carbonDelta: +500, category: 'structure', narr: 'Cavity fill is cheap and quick — biggest bang for buck.' },
+      { label: 'Solid wall — uninsulated',                        value: 'solid_unins',  delta: -6, carbonDelta: +900, category: 'structure', narr: 'Biggest source of heat loss in older homes.' },
+      { label: 'Timber frame / modern panel',                     value: 'timber',       delta: +6, carbonDelta: -400, category: 'structure' },
     ],
   },
   {
     id: 'loftInsulation',
-    pillar: 'efficiency',
-    category: 'Efficiency',
-    question: 'How well insulated is the loft?',
+    cat: 'INSULATION',
+    title: 'How well insulated is the loft or roof?',
     options: [
-      { label: 'Well insulated (270mm+)', value: 'well', points: 12 },
-      { label: 'Some insulation (100–270mm)', value: 'some', points: 8 },
-      { label: 'Minimal (less than 100mm)', value: 'minimal', points: 3 },
-      { label: 'No loft / top floor flat', value: 'no_loft', points: 8 },
-      { label: 'Not Sure', value: 'unsure', points: 6 },
+      { label: 'Well insulated (270mm+)',      value: 'well',     delta: +6, carbonDelta: -500, category: 'efficiency' },
+      { label: 'Partial (100–270mm)',          value: 'partial',  delta: +2, carbonDelta: -100, category: 'efficiency' },
+      { label: 'Minimal (under 100mm)',        value: 'minimal',  delta: -4, carbonDelta: +500, category: 'efficiency', narr: '25% of heat escapes through the roof. Topping up to 270mm costs ~£300 and saves ~£320/yr.' },
+      { label: 'No loft (flat/room-in-roof)',  value: 'no_loft',  delta: 0,  carbonDelta: 0,    category: 'efficiency' },
     ],
   },
+  {
+    id: 'floorInsulation',
+    cat: 'INSULATION',
+    title: 'Is the ground floor insulated?',
+    options: [
+      { label: 'Yes — suspended floor insulated',  value: 'floor_ins',  delta: +4, carbonDelta: -300, category: 'efficiency' },
+      { label: 'Solid concrete floor',             value: 'concrete',   delta: +1, carbonDelta: 0,    category: 'efficiency', narr: 'Solid floors lose less heat than uninsulated suspended floors.' },
+      { label: 'Suspended floor — not insulated',  value: 'floor_unins',delta: -3, carbonDelta: +400, category: 'efficiency', narr: 'Up to 15% of heat lost through the floor.' },
+      { label: 'Not sure',                         value: 'unsure',     delta: 0,  carbonDelta: +100, category: 'efficiency' },
+    ],
+  },
+  {
+    id: 'windows',
+    cat: 'INSULATION',
+    title: 'What glazing do the windows have?',
+    options: [
+      { label: 'Triple glazed',             value: 'triple',      delta: +7, carbonDelta: -400, category: 'structure' },
+      { label: 'Double glazed (< 10 yrs)',  value: 'new_double',  delta: +5, carbonDelta: -200, category: 'structure' },
+      { label: 'Double glazed (10+ yrs)',   value: 'old_double',  delta: +2, carbonDelta: 0,    category: 'structure' },
+      { label: 'Mix of single and double',  value: 'mix',         delta: -2, carbonDelta: +300, category: 'structure' },
+      { label: 'Single glazed throughout',  value: 'single',      delta: -5, carbonDelta: +600, category: 'structure', narr: 'Single glazing is the biggest quick win for many homes.' },
+    ],
+  },
+
+  // ── GREEN ENERGY ───────────────────────────────────────────────────
   {
     id: 'renewables',
-    pillar: 'efficiency',
-    category: 'Efficiency',
-    question: 'What green or renewable features are installed?',
+    cat: 'GREEN ENERGY',
+    title: 'Any renewable energy sources installed?',
     options: [
-      { label: 'Solar panels', value: 'solar', points: 8 },
-      { label: 'Heat pump (as renewable)', value: 'heat_pump', points: 6 },
-      { label: 'Both solar + heat pump', value: 'both', points: 8 },
-      { label: 'None', value: 'none', points: 0 },
-      { label: 'Not Sure', value: 'unsure', points: 3 },
+      { label: 'Solar PV + battery storage', value: 'solar_battery', delta: +12, carbonDelta: -1800, category: 'efficiency', narr: 'Generates and stores your own clean electricity.' },
+      { label: 'Solar PV panels only',       value: 'solar',         delta: +7,  carbonDelta: -1200, category: 'efficiency', narr: 'Generates ~3,500 kWh/yr on a typical roof.' },
+      { label: 'Solar thermal (hot water)',  value: 'solar_thermal', delta: +4,  carbonDelta: -500,  category: 'efficiency' },
+      { label: 'None',                       value: 'none',          delta: 0,   carbonDelta: 0,     category: 'efficiency' },
     ],
   },
+  {
+    id: 'energyTariff',
+    cat: 'GREEN ENERGY',
+    title: 'What energy tariff are you on?',
+    options: [
+      { label: '100% renewable / green tariff', value: 'green',     delta: +5, carbonDelta: -1500, category: 'efficiency', narr: 'Your grid electricity is matched with renewable generation.' },
+      { label: 'Standard tariff',               value: 'standard',  delta: 0,  carbonDelta: 0,     category: 'efficiency' },
+      { label: 'Economy 7 (off-peak electric)', value: 'economy7',  delta: +1, carbonDelta: -200,  category: 'efficiency' },
+      { label: 'Not sure',                      value: 'unsure',    delta: 0,  carbonDelta: +100,  category: 'efficiency' },
+    ],
+  },
+  {
+    id: 'ev',
+    cat: 'GREEN ENERGY',
+    title: 'Do you have an EV or plan to?',
+    options: [
+      { label: 'EV + home charger installed', value: 'ev_charger', delta: +4, carbonDelta: -600, category: 'electrics', narr: 'Home charging on renewable electricity is near-zero carbon transport.' },
+      { label: 'EV but no home charger',      value: 'ev_no_ch',  delta: +1, carbonDelta: -300, category: 'electrics' },
+      { label: 'Planning to get an EV',       value: 'planning',  delta: +1, carbonDelta: -100, category: 'electrics' },
+      { label: 'No / not applicable',         value: 'none',      delta: 0,  carbonDelta: 0,    category: 'electrics' },
+    ],
+  },
+
+  // ── LIGHTING & CONTROLS ────────────────────────────────────────────
+  {
+    id: 'lighting',
+    cat: 'LIGHTING',
+    title: 'What type of lighting is fitted?',
+    options: [
+      { label: 'All LED throughout',           value: 'all_led',  delta: +4, carbonDelta: -300, category: 'efficiency', narr: 'LEDs use 90% less energy than incandescent bulbs.' },
+      { label: 'Mostly LED, some older bulbs', value: 'most_led', delta: +2, carbonDelta: -150, category: 'efficiency' },
+      { label: 'Mix of LED and halogen',       value: 'mix',      delta: 0,  carbonDelta: 0,    category: 'efficiency' },
+      { label: 'Mostly halogen or older',      value: 'halogen',  delta: -2, carbonDelta: +300, category: 'efficiency', narr: 'Lighting accounts for ~15% of a typical energy bill.' },
+    ],
+  },
+  {
+    id: 'controls',
+    cat: 'LIGHTING',
+    title: 'What heating controls does the property have?',
+    options: [
+      { label: 'Smart thermostat (Hive, Nest etc.)',  value: 'smart',       delta: +4, carbonDelta: -300, category: 'efficiency', narr: 'Smart thermostats save ~£130/yr on average.' },
+      { label: 'Programmable thermostat + TRVs',      value: 'prog_trvs',   delta: +2, carbonDelta: -150, category: 'efficiency' },
+      { label: 'Basic thermostat only',               value: 'basic',       delta: 0,  carbonDelta: 0,    category: 'efficiency' },
+      { label: 'No thermostat / manual',              value: 'none',        delta: -3, carbonDelta: +300, category: 'efficiency', narr: 'No control means heating runs when it doesn\'t need to.' },
+    ],
+  },
+  {
+    id: 'ventilation',
+    cat: 'LIGHTING',
+    title: 'How is the property ventilated?',
+    options: [
+      { label: 'MVHR (mechanical ventilation with heat recovery)', value: 'mvhr',    delta: +6, carbonDelta: -400, category: 'efficiency', narr: 'MVHR recovers 90% of heat from outgoing air.' },
+      { label: 'Positive input ventilation (PIV)',                 value: 'piv',     delta: +2, carbonDelta: -100, category: 'efficiency' },
+      { label: 'Extractor fans + natural ventilation',             value: 'extract', delta: 0,  carbonDelta: 0,    category: 'efficiency' },
+      { label: 'Natural only (windows / vents)',                   value: 'natural', delta: -1, carbonDelta: +100, category: 'efficiency', narr: 'Draughty homes lose significant heat.' },
+    ],
+  },
+
+  // ── ELECTRICS ──────────────────────────────────────────────────────
   {
     id: 'consumerUnit',
-    pillar: 'electrics',
-    category: 'Electrics',
-    question: 'How old is the consumer unit (fuse box)?',
+    cat: 'ELECTRICS',
+    title: 'How old is the consumer unit (fuse box)?',
     options: [
-      { label: 'Modern RCBO board (less than 10 yrs)', value: 'modern', points: 14 },
-      { label: 'Standard modern (10–20 yrs)', value: 'standard', points: 10 },
-      { label: 'Old fusebox (over 20 yrs)', value: 'old', points: 5 },
-      { label: 'Very old / needs rewire', value: 'very_old', points: 2 },
-      { label: 'Not Sure', value: 'unsure', points: 8 },
+      { label: 'Modern RCBO board (< 10 yrs)', value: 'modern',   delta: +4, carbonDelta: 0,    category: 'electrics' },
+      { label: 'Standard modern (10–20 yrs)',  value: 'standard', delta: +1, carbonDelta: 0,    category: 'electrics' },
+      { label: 'Old fuse box (> 20 yrs)',      value: 'old',      delta: -3, carbonDelta: 0,    category: 'electrics', narr: 'Older boards may fail EICR — a requirement for lettings.' },
+      { label: 'Very old / needs rewire',      value: 'very_old', delta: -6, carbonDelta: 0,    category: 'electrics' },
     ],
   },
-  {
-    id: 'smartFeatures',
-    pillar: 'electrics',
-    category: 'Electrics',
-    question: 'What smart or modern electrical features are installed?',
-    options: [
-      { label: 'Smart meter + EV charger', value: 'both', points: 6 },
-      { label: 'Smart meter only', value: 'smart_meter', points: 4 },
-      { label: 'EV charger only', value: 'ev_charger', points: 3 },
-      { label: 'None', value: 'none', points: 0 },
-      { label: 'Not Sure', value: 'unsure', points: 2 },
-    ],
-  },
+
+  // ── PLUMBING ───────────────────────────────────────────────────────
   {
     id: 'pipes',
-    pillar: 'plumbing',
-    category: 'Plumbing',
-    question: 'What is the condition of the water pipes?',
+    cat: 'PLUMBING',
+    title: 'What condition are the water pipes in?',
     options: [
-      { label: 'Modern copper or plastic', value: 'modern', points: 10 },
-      { label: 'Older but serviceable', value: 'serviceable', points: 7 },
-      { label: 'Old (lead or galvanised)', value: 'old', points: 2 },
-      { label: 'Not Sure', value: 'unsure', points: 6 },
+      { label: 'Modern copper or plastic',     value: 'modern',      delta: +4, carbonDelta: 0, category: 'plumbing' },
+      { label: 'Older but serviceable',        value: 'serviceable', delta: 0,  carbonDelta: 0, category: 'plumbing' },
+      { label: 'Old lead or galvanised pipes', value: 'old',         delta: -5, carbonDelta: 0, category: 'plumbing', narr: 'Lead pipes are a health and legal concern for buyers.' },
     ],
   },
   {
     id: 'waterPressure',
-    pillar: 'plumbing',
-    category: 'Plumbing',
-    question: 'How would you rate the water pressure?',
+    cat: 'PLUMBING',
+    title: 'How would you rate the water pressure?',
     options: [
-      { label: 'Excellent', value: 'excellent', points: 5 },
-      { label: 'Good', value: 'good', points: 4 },
-      { label: 'Low', value: 'low', points: 2 },
-      { label: 'Very low or problematic', value: 'very_low', points: 0 },
-      { label: 'Not Sure', value: 'unsure', points: 3 },
+      { label: 'Excellent',                 value: 'excellent', delta: +3, carbonDelta: 0, category: 'plumbing' },
+      { label: 'Good',                      value: 'good',      delta: +1, carbonDelta: 0, category: 'plumbing' },
+      { label: 'Low',                       value: 'low',       delta: -2, carbonDelta: 0, category: 'plumbing' },
+      { label: 'Very low or problematic',   value: 'very_low',  delta: -4, carbonDelta: 0, category: 'plumbing' },
     ],
   },
 ]
 
-const PILLAR_MAX: PillarBreakdown = {
-  heating: 20,
-  structure: 25,
-  efficiency: 20,
-  electrics: 20,
-  plumbing: 15,
+// ─────────────────────────────────────────────────────────────────────────────
+// Scoring
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PILLAR_BASE: Record<string, number> = {
+  heating: 6, structure: 10, efficiency: 6, electrics: 8, plumbing: 9,
+}
+const PILLAR_MAX: Record<string, number> = {
+  heating: 20, structure: 25, efficiency: 20, electrics: 15, plumbing: 20,
 }
 
 function getRating(total: number): { rating: string; ratingColor: string } {
-  if (total >= 85) return { rating: 'Excellent', ratingColor: '#00c896' }
-  if (total >= 70) return { rating: 'Good', ratingColor: '#00a19a' }
-  if (total >= 50) return { rating: 'Needs Attention', ratingColor: '#f59e0b' }
-  return { rating: 'Significant Issues', ratingColor: '#ef4444' }
+  if (total >= 80) return { rating: 'Excellent',         ratingColor: '#16a34a' }
+  if (total >= 65) return { rating: 'Good',              ratingColor: '#0d9488' }
+  if (total >= 45) return { rating: 'Needs Attention',   ratingColor: '#f59e0b' }
+  return               { rating: 'Significant Issues',  ratingColor: '#dc2626' }
 }
 
-/**
- * Returns a map of question_id → the "unsure/unknown" option value for each question.
- * Used to generate a baseline score when no user answers or EPC data are available.
- */
-export function getUnsureDefaults(): Partial<Answers> {
-  const defaults: Partial<Answers> = {}
-  for (const q of QUESTIONS) {
-    const unsureOpt = q.options.find(o => o.value === 'unsure') ?? q.options.find(o => o.value === 'never')
-    if (unsureOpt) defaults[q.id] = unsureOpt.value
-  }
-  return defaults
-}
-
-export function calculateScore(answers: Partial<Answers>): Omit<ScoreResult, 'flags' | 'actions'> {
-  const raw: PillarBreakdown = { heating: 0, structure: 0, efficiency: 0, electrics: 0, plumbing: 0 }
+export function calculateScore(answers: Partial<Answers>): ScoreResult {
+  let totalDelta = 0
+  const pillarDeltas: Record<string, number> = { heating: 0, structure: 0, efficiency: 0, electrics: 0, plumbing: 0 }
+  let carbonDelta = 0
+  let answeredCount = 0
 
   for (const q of QUESTIONS) {
-    const value = answers[q.id]
-    if (!value) continue
-    const opt = q.options.find(o => o.value === value)
-    if (opt) raw[q.pillar] = Math.min(raw[q.pillar] + opt.points, PILLAR_MAX[q.pillar])
+    const val = answers[q.id]
+    if (!val) continue
+    const opt = q.options.find(o => o.value === val)
+    if (!opt) continue
+    totalDelta += opt.delta
+    pillarDeltas[opt.category] += opt.delta
+    carbonDelta += opt.carbonDelta
+    answeredCount++
   }
 
-  const total = Math.min(
-    raw.heating + raw.structure + raw.efficiency + raw.electrics + raw.plumbing,
-    100
-  )
+  const total = Math.max(0, Math.min(100, Math.round(BASE_SCORE + totalDelta)))
+  const carbonKg = Math.max(400, Math.min(6000, CARBON_BASELINE + carbonDelta))
 
-  // Confidence: percentage of answered questions that are NOT 'unsure'
-  const answered = QUESTIONS.filter(q => answers[q.id])
-  const confident = answered.filter(q => answers[q.id] !== 'unsure')
-  const confidenceScore = answered.length === 0 ? 0 : Math.round((confident.length / QUESTIONS.length) * 100)
+  const breakdown: PillarBreakdown = {
+    heating:    Math.max(0, Math.min(PILLAR_MAX.heating,    PILLAR_BASE.heating    + pillarDeltas.heating)),
+    structure:  Math.max(0, Math.min(PILLAR_MAX.structure,  PILLAR_BASE.structure  + pillarDeltas.structure)),
+    efficiency: Math.max(0, Math.min(PILLAR_MAX.efficiency, PILLAR_BASE.efficiency + pillarDeltas.efficiency)),
+    electrics:  Math.max(0, Math.min(PILLAR_MAX.electrics,  PILLAR_BASE.electrics  + pillarDeltas.electrics)),
+    plumbing:   Math.max(0, Math.min(PILLAR_MAX.plumbing,   PILLAR_BASE.plumbing   + pillarDeltas.plumbing)),
+  }
 
-  return { total, breakdown: raw, confidenceScore, ...getRating(total) }
+  const confidenceScore = Math.round(20 + (answeredCount / QUESTIONS.length) * 35)
+
+  return { total, carbonKg, breakdown, confidenceScore, ...getRating(total) }
 }
+
+export function getPillarMax(pillar: string): number {
+  return PILLAR_MAX[pillar] ?? 20
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EPC Prefill
+// ─────────────────────────────────────────────────────────────────────────────
 
 export function getPrefillFromProperty(property: {
   epcRating?: string | null
   yearBuilt?: number | null
   heatingType?: string | null
 }): Partial<Answers> {
-  const prefill: Partial<Answers> = {}
+  const p: Partial<Answers> = {}
 
-  // Infer insulation quality from EPC rating
   if (property.epcRating) {
     const r = property.epcRating.toUpperCase()
     if (['A', 'B'].includes(r)) {
-      prefill.loftInsulation = 'well'
-      prefill.wallType = 'cavity_insulated'
+      p.loftInsulation = 'well'; p.wallType = 'cavity_ins'
     } else if (r === 'C') {
-      prefill.loftInsulation = 'some'
-      prefill.wallType = 'cavity_uninsulated'
+      p.loftInsulation = 'partial'; p.wallType = 'cavity_unins'
     } else if (['D', 'E'].includes(r)) {
-      prefill.loftInsulation = 'minimal'
-      prefill.wallType = 'solid_uninsulated'
+      p.loftInsulation = 'minimal'; p.wallType = 'solid_unins'
     } else {
-      // F or G
-      prefill.loftInsulation = 'minimal'
-      prefill.wallType = 'solid_uninsulated'
+      p.loftInsulation = 'minimal'; p.wallType = 'solid_unins'
     }
   }
 
-  // Infer glazing + consumer unit age from year built
   if (property.yearBuilt) {
     const age = new Date().getFullYear() - property.yearBuilt
     if (age < 10) {
-      prefill.windows = 'new_double'
-      prefill.consumerUnit = 'modern'
+      p.windows = 'new_double'; p.consumerUnit = 'modern'; p.yearBuilt = 'y2016'
     } else if (age < 20) {
-      prefill.windows = 'old_double'
-      prefill.consumerUnit = 'standard'
+      p.windows = 'old_double'; p.consumerUnit = 'standard'; p.yearBuilt = 'y2007'
     } else if (age < 40) {
-      prefill.windows = 'old_double'
-      prefill.consumerUnit = 'old'
+      p.windows = 'old_double'; p.consumerUnit = 'old'; p.yearBuilt = 'y1991'
+    } else if (age < 60) {
+      p.windows = 'mix'; p.consumerUnit = 'old'; p.yearBuilt = 'y1967'
     } else {
-      prefill.windows = 'single'
-      prefill.consumerUnit = 'old'
+      p.windows = 'single'; p.consumerUnit = 'old'; p.yearBuilt = 'pre1930'
     }
   }
 
-  // Map EPC/DB heatingType string to scoring option
   if (property.heatingType) {
     const h = property.heatingType.toLowerCase()
-    if (h.includes('heat pump') || h.includes('heatpump') || h.includes('ground source') || h.includes('air source')) {
-      prefill.heatingType = 'heat_pump'
-    } else if (h.includes('electric storage') || h.includes('electric panel') || h.includes('electric') && !h.includes('gas')) {
-      prefill.heatingType = 'electric'
+    if (h.includes('heat pump') || h.includes('air source') || h.includes('ground source')) {
+      p.heatingType = h.includes('ground') ? 'gshp' : 'ashp'
     } else if (h.includes('gas') || h.includes('boiler')) {
-      // Try to determine age from yearBuilt if available
-      if (property.yearBuilt) {
-        const age = new Date().getFullYear() - property.yearBuilt
-        if (age < 10) prefill.heatingType = 'modern_gas'
-        else if (age < 20) prefill.heatingType = 'mid_gas'
-        else prefill.heatingType = 'old_gas'
-      } else {
-        prefill.heatingType = 'mid_gas' // reasonable default
-      }
-    } else if (h.includes('none') || h.includes('no central')) {
-      prefill.heatingType = 'none'
+      const age = property.yearBuilt ? new Date().getFullYear() - property.yearBuilt : 15
+      p.heatingType = age < 10 ? 'modern_gas' : age < 20 ? 'mid_gas' : 'old_gas'
+    } else if (h.includes('electric') || h.includes('storage')) {
+      p.heatingType = 'electric'
+    } else if (h.includes('oil')) {
+      p.heatingType = 'oil'
     }
   }
 
-  return prefill
+  return p
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Top wins — improvements ranked by potential saving
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface WinCandidate {
+  title: string
+  sub: string
+  savingPerYear: number
+  points: number
+}
+
+const WIN_MAP: Record<string, (optValue: string) => WinCandidate | null> = {
+  loftInsulation: (v) => {
+    if (v === 'minimal') return { title: 'Top up loft insulation to 270mm', sub: 'Up to 25% of heat escapes through the roof', savingPerYear: 320, points: 5 }
+    if (v === 'partial') return { title: 'Increase loft insulation to 270mm+', sub: 'Completing to full depth saves up to £200/yr', savingPerYear: 200, points: 3 }
+    return null
+  },
+  wallType: (v) => {
+    if (v === 'solid_unins') return { title: 'Solid wall insulation', sub: 'The biggest source of heat loss in older homes', savingPerYear: 280, points: 6 }
+    if (v === 'cavity_unins') return { title: 'Cavity wall insulation', sub: 'Cheap and quick — biggest bang for buck', savingPerYear: 220, points: 5 }
+    return null
+  },
+  windows: (v) => {
+    if (v === 'single') return { title: 'Upgrade to double glazing', sub: 'Single glazing causes significant heat loss', savingPerYear: 180, points: 7 }
+    if (v === 'mix') return { title: 'Replace remaining single-glazed windows', sub: 'Completing to full double glazing saves heating costs', savingPerYear: 100, points: 4 }
+    return null
+  },
+  heatingType: (v) => {
+    if (v === 'old_gas') return { title: 'Replace old gas boiler', sub: 'Older boilers run at ~60% efficiency vs 94% modern', savingPerYear: 210, points: 8 }
+    if (v === 'oil') return { title: 'Switch from oil to gas or heat pump', sub: 'Oil has a higher carbon intensity and running cost', savingPerYear: 350, points: 9 }
+    return null
+  },
+  lastServiced: (v) => {
+    if (v === 'never' || v === 'old') return { title: 'Book a boiler service', sub: 'An unserviced boiler can waste 15%+ of energy', savingPerYear: 90, points: 4 }
+    return null
+  },
+  renewables: (v) => {
+    if (v === 'none') return { title: 'Install solar PV panels', sub: 'Generates ~3,500 kWh/yr and earns export payments', savingPerYear: 450, points: 7 }
+    return null
+  },
+  controls: (v) => {
+    if (v === 'none' || v === 'basic') return { title: 'Fit a smart thermostat', sub: 'Smart controls save ~£130/yr on average', savingPerYear: 130, points: 4 }
+    return null
+  },
+  lighting: (v) => {
+    if (v === 'halogen') return { title: 'Switch all bulbs to LED', sub: 'LEDs use 90% less energy — quick payback', savingPerYear: 70, points: 3 }
+    return null
+  },
+  floorInsulation: (v) => {
+    if (v === 'floor_unins') return { title: 'Insulate suspended ground floor', sub: 'Up to 15% of heat lost through the floor', savingPerYear: 120, points: 3 }
+    return null
+  },
+}
+
+export function getTopWins(answers: Partial<Answers>): TopWin[] {
+  const wins: WinCandidate[] = []
+  for (const [qId, fn] of Object.entries(WIN_MAP)) {
+    const val = answers[qId]
+    if (!val) continue
+    const w = fn(val)
+    if (w) wins.push(w)
+  }
+  wins.sort((a, b) => b.savingPerYear - a.savingPerYear)
+  return wins.slice(0, 3)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Opportunities (risk flags as "spotted" items)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function getOpportunities(answers: Partial<Answers>): Opportunity[] {
+  const opps: Opportunity[] = []
+  if (answers.windows === 'single') opps.push({ icon: '🪟', title: 'Single glazed windows', sub: 'Replacing would lift your score and cut winter bills.' })
+  if (answers.loftInsulation === 'minimal') opps.push({ icon: '🏠', title: 'Poor loft insulation', sub: 'One of the most cost-effective fixes available.' })
+  if (answers.lastServiced === 'never') opps.push({ icon: '🔥', title: 'Boiler never serviced', sub: 'A service certificate can instantly verify efficiency.' })
+  if (answers.heatingType === 'old_gas') opps.push({ icon: '⚙️', title: 'Ageing gas boiler (> 20 yrs)', sub: 'Running at reduced efficiency — consider replacement.' })
+  if (answers.wallType === 'solid_unins') opps.push({ icon: '🧱', title: 'Uninsulated solid walls', sub: 'Major heat loss — insulation would significantly cut bills.' })
+  if (answers.controls === 'none') opps.push({ icon: '🌡️', title: 'No heating controls', sub: 'A thermostat is a low-cost, high-impact upgrade.' })
+  if (answers.pipes === 'old') opps.push({ icon: '🚰', title: 'Old lead / galvanised pipes', sub: 'Health concern and mortgage risk — survey recommended.' })
+  return opps.slice(0, 4)
 }

@@ -644,6 +644,7 @@ import PhoneInput from '@/components/form/PhoneInput.vue'
 
 definePageMeta({
   title: 'Personal Information - UmovingU',
+  middleware: 'auth',
 })
 
 const {

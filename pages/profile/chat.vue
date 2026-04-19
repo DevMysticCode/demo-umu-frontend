@@ -192,6 +192,7 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'MoveMate AI - UmovingU',
+  middleware: 'auth',
 })
 
 const { messages, isLoading, error, sendMessage, clearChat } = useChat()

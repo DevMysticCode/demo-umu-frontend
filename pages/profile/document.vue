@@ -411,7 +411,7 @@
 <script setup>
 import BaseDrawer from '@/components/ui/BaseDrawer.vue'
 
-definePageMeta({ title: 'Your Documents - UmovingU' })
+definePageMeta({ title: 'Your Documents - UmovingU', middleware: 'auth' })
 
 const { documents, loading, fetchDocuments, uploadDocument, deleteDocument } = useDocuments()
 

@@ -70,9 +70,9 @@
               <template v-if="q.type === 'MULTIPART' && Array.isArray(q.parts) && q.parts.length">
                 <div v-for="part in answerParts(q)" :key="part.partKey">
 
-                  <!-- Radio part → show only the selected answer label -->
+                  <!-- Radio part → show only the selected answer label (suppressed for fixtures — badge already shows status) -->
                   <template v-if="isRadioPart(part)">
-                    <div v-if="getPartValue(q, part.partKey)" class="detail-answer-pill">
+                    <div v-if="!isFixturesSection && getPartValue(q, part.partKey)" class="detail-answer-pill">
                       {{ getSelectedOptionLabel(part.options, getPartValue(q, part.partKey)) }}
                     </div>
                     <!-- Currency sub-value (fixtures only) -->
@@ -638,19 +638,33 @@ function getPartValue(q: any, partKey: string): any {
   return null
 }
 
-// Currency for fixtures: find sibling part with inputType currency
+// Currency for fixtures: find sibling part with inputType currency.
+// DateQuestion stores currency inputs as { value: 'selling_amount', date: '500' } under the partKey.
+// Fall back to partKey_amount for any legacy data using the showCurrencyInput path.
 function getCurrencyValue(q: any, radioPart: any): string | null {
   if (!isFixturesSection.value) return null
   if (!q.answer?.answerJson || typeof q.answer.answerJson !== 'object') return null
   if (!Array.isArray(q.parts)) return null
+  const json = q.answer.answerJson as Record<string, any>
   for (const p of q.parts) {
     if (p.partKey === radioPart.partKey) continue
-    if (Array.isArray(p.options)) {
-      for (const opt of p.options) {
-        if (opt.inputType === 'currency') {
-          const val = getPartValue(q, p.partKey)
-          if (val != null && val !== '') return `£${Number(val).toLocaleString('en-GB')}`
-        }
+    if (Array.isArray(p.options) && p.options.some((o: any) => o.inputType === 'currency')) {
+      const raw = json[p.partKey]
+      let amount: string | null = null
+      if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+        // DateQuestion emits { value: 'selling_amount', date: '500' }
+        amount = String(raw.date ?? '').trim() || null
+      } else if (raw != null && raw !== '') {
+        amount = String(raw).trim() || null
+      }
+      // Legacy: showCurrencyInput path stores as partKey_amount
+      if (!amount) {
+        const fallback = json[p.partKey + '_amount']
+        if (fallback != null && fallback !== '') amount = String(fallback).trim()
+      }
+      if (amount) {
+        const num = Number(amount.replace(/[^0-9.]/g, ''))
+        if (!isNaN(num) && num > 0) return `£${num.toLocaleString('en-GB')}`
       }
     }
   }

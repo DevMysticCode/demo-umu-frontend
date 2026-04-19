@@ -229,6 +229,7 @@
 <script setup>
 definePageMeta({
   title: "Collaborator Detail - UmovingU",
+  middleware: 'auth',
 });
 
 const { fetchCollaborator, removeCollaborator } = useProfile();

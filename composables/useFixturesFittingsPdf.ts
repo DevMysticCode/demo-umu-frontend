@@ -40,7 +40,7 @@ export function useFixturesFittingsPdf() {
 
   function statusCells(val: string, note = ''): string {
     const s = getStatus(val)
-    const cell = (label: string, key: typeof s) =>
+    const cell = (_label: string, key: typeof s) =>
       `<td style="text-align:center">${s === key ? '<span class="tick">&#10003;</span>' : ''}</td>`
     return `
       ${cell('Included', 'included')}
@@ -69,18 +69,42 @@ export function useFixturesFittingsPdf() {
     </tr>`
   }
 
-  // Pull all questions from fixturesAndFittings, build a map of title → answer
+  // Pull all questions from fixturesAndFittings, build a map of item title → answer
   function buildFixturesMap(sections: any[]): Map<string, { answer: string; note: string }> {
     const map = new Map<string, { answer: string; note: string }>()
     const sec = sections.find((s: any) => s.key === 'fixturesAndFittings')
     if (!sec) return map
+
     for (const task of sec.tasks ?? []) {
       for (const q of task.questions ?? []) {
+        const parts: any[] = q.parts ?? []
+        const json = tryParseJson(q.answer?.answerJson)
+
+        if (parts.length && typeof json === 'object' && json !== null) {
+          // MULTIPART: each RADIO part is one item. Index by its title.
+          const comment = typeof json['photos'] === 'string' ? json['photos'] : ''
+          for (const part of parts) {
+            if (
+              part.type === 'RADIO' &&
+              part.partKey &&
+              part.title?.trim()
+            ) {
+              const rawVal = String(json[part.partKey] ?? '').trim()
+              if (rawVal) {
+                map.set(part.title.trim().toLowerCase(), { answer: rawVal, note: comment })
+              }
+            }
+          }
+        }
+
+        // Also index by top-level question title for simple (non-MULTIPART) questions
         const title = (q.question || '').trim()
-        const raw = extractAnswer(q.answer)
-        const parsed = tryParseJson(q.answer?.answerJson)
-        const note = (typeof parsed === 'object' && parsed?.note) || ''
-        map.set(title.toLowerCase(), { answer: raw, note })
+        if (title && q.answer) {
+          const raw = extractAnswer(q.answer)
+          const parsed = tryParseJson(q.answer?.answerJson)
+          const note = (typeof parsed === 'object' && parsed?.note) || ''
+          map.set(title.toLowerCase(), { answer: raw, note })
+        }
       }
     }
     return map
@@ -128,6 +152,7 @@ export function useFixturesFittingsPdf() {
 
     const address = prop.addressLine1 || passport.addressLine1 || ''
     const postcode = prop.postcode || passport.postcode || ''
+    const sellerName = passport.ownerName || ''
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -158,7 +183,7 @@ export function useFixturesFittingsPdf() {
     </tr>
     <tr>
       <td class="info-label">Seller name(s)</td>
-      <td colspan="3"><span class="blank"></span></td>
+      <td colspan="3">${sellerName ? `<span class="filled">${esc(sellerName)}</span>` : '<span class="blank"></span>'}</td>
     </tr>
     <tr>
       <td class="info-label">Date</td>
@@ -185,17 +210,15 @@ export function useFixturesFittingsPdf() {
     ${itemRow('Integrated dishwasher', g('dishwasher').answer)}
     ${itemRow('Integrated fridge', g('fridge').answer)}
     ${itemRow('Integrated freezer', g('freezer').answer)}
-    ${itemRow('Integrated washing machine', g('washing machine').answer)}
-    ${itemRow('Integrated tumble dryer', g('tumble dryer', 'dryer').answer)}
+    ${itemRow('Integrated washing machine', g('washing').answer || g('washing machine').answer)}
+    ${itemRow('Integrated tumble dryer', g('tumble dryer').answer || g('dryer').answer)}
     ${sectionHeader('Freestanding appliances')}
-    ${itemRow('Freestanding fridge/freezer', g('freestanding', 'fridge').answer)}
-    ${itemRow('Freestanding washing machine', g('freestanding', 'washing').answer)}
+    ${itemRow('Freestanding fridge/freezer', g('freestanding').answer)}
     ${itemRow('Microwave', g('microwave').answer)}
     ${sectionHeader('Fixtures')}
-    ${itemRow('Kitchen units (fitted)', g('kitchen unit').answer)}
+    ${itemRow('Kitchen units (fitted)', g('kitchen unit').answer || g('kitchen').answer)}
     ${itemRow('Worktops', g('worktop').answer)}
-    ${itemRow('Sink and taps', g('sink').answer || g('kitchen', 'tap').answer)}
-    ${itemRow('Bin storage/waste unit', g('bin').answer)}
+    ${itemRow('Sink and taps', g('sink').answer)}
   </table>
 
   <!-- Bathrooms -->
@@ -206,9 +229,9 @@ export function useFixturesFittingsPdf() {
     ${itemRow('Shower unit(s)', g('shower').answer)}
     ${itemRow('Shower screen(s)', g('shower screen').answer)}
     ${itemRow('Toilet(s)', g('toilet').answer || g('wc').answer)}
-    ${itemRow('Basin(s)/sink(s)', g('basin').answer || g('bathroom', 'sink').answer)}
-    ${itemRow('Bathroom cabinet(s)', g('bathroom cabinet').answer)}
-    ${itemRow('Heated towel rail(s)', g('towel rail').answer)}
+    ${itemRow('Basin(s)/sink(s)', g('basin').answer)}
+    ${itemRow('Bathroom cabinet(s)', g('bathroom cabinet').answer || g('cabinet').answer)}
+    ${itemRow('Heated towel rail(s)', g('towel rail').answer || g('towel').answer)}
     ${itemRow('Mirror(s)', g('mirror').answer)}
   </table>
 
@@ -216,32 +239,31 @@ export function useFixturesFittingsPdf() {
   <h2>3. Heating and Hot Water</h2>
   <table>
     ${tableHeader()}
-    ${itemRow('Boiler', g('boiler').answer)}
-    ${itemRow('Radiators', g('radiator').answer)}
-    ${itemRow('Underfloor heating (mats/pipes)', g('underfloor heating').answer)}
-    ${itemRow('Hot water tank/cylinder', g('hot water', 'tank').answer || g('cylinder').answer)}
+    ${itemRow('Boiler / Immersion Heater', g('boiler').answer || g('immersion').answer)}
+    ${itemRow('Radiators / Wall Heaters', g('radiator').answer || g('wall heater').answer)}
+    ${itemRow('Night-Storage Heaters', g('night-storage').answer || g('storage heater').answer)}
+    ${itemRow('Free-Standing Heaters', g('free-standing').answer || g('standing heater').answer)}
+    ${itemRow('Underfloor heating', g('underfloor').answer)}
     ${itemRow('Solar thermal panels', g('solar thermal').answer)}
-    ${itemRow('Thermostats/smart controls', g('thermostat').answer || g('smart', 'heating').answer)}
-    ${itemRow('Electric storage heater(s)', g('storage heater').answer)}
+    ${itemRow('Thermostats / smart controls', g('thermostat').answer)}
   </table>
 
   <!-- Fireplaces & Flues -->
   <h2>4. Fireplaces and Flues</h2>
   <table>
     ${tableHeader()}
-    ${itemRow('Fireplace(s)/fire surround(s)', g('fireplace').answer || g('fire surround').answer)}
+    ${itemRow('Gas fire(s) with surround', g('gasfire').answer || g('gas fire').answer || g('gas fires').answer)}
+    ${itemRow('Electric fire(s) with surround', g('electric fire').answer || g('electric fires').answer)}
     ${itemRow('Wood-burning / multi-fuel stove', g('stove').answer || g('wood burning').answer)}
-    ${itemRow('Gas fire(s)', g('gas fire').answer)}
-    ${itemRow('Electric fire(s)', g('electric fire').answer)}
+    ${itemRow('Open fireplace', g('open fireplace').answer || g('fireplace').answer)}
   </table>
 
   <!-- Fitted carpets & flooring -->
   <h2>5. Fitted Carpets and Flooring</h2>
   <table>
     ${tableHeader()}
-    ${itemRow('Fitted carpets (all rooms)', g('carpet').answer)}
-    ${itemRow('Fitted flooring / laminate', g('laminate').answer || g('vinyl').answer || g('fitted floor').answer)}
-    ${itemRow('Fitted matting', g('matting').answer)}
+    ${itemRow('Fitted carpets', g('carpet').answer)}
+    ${itemRow('Fitted flooring / laminate', g('laminate').answer || g('vinyl').answer || g('floor').answer)}
   </table>
 
   <!-- Window fittings -->
@@ -249,20 +271,19 @@ export function useFixturesFittingsPdf() {
   <table>
     ${tableHeader()}
     ${itemRow('Curtains', g('curtain').answer)}
-    ${itemRow('Curtain rails/poles', g('curtain rail').answer || g('curtain pole').answer)}
-    ${itemRow('Pelmets', g('pelmet').answer)}
+    ${itemRow('Curtain rails / poles', g('curtain rail').answer || g('curtain pole').answer)}
     ${itemRow('Blinds', g('blind').answer)}
     ${itemRow('Shutters', g('shutter').answer)}
+    ${itemRow('Window Fittings (other)', g('window fitting').answer)}
   </table>
 
   <!-- Light fittings -->
   <h2>7. Light Fittings</h2>
   <table>
     ${tableHeader()}
-    ${itemRow('Light fittings/ceiling roses', g('light fitting').answer || g('ceiling rose').answer)}
+    ${itemRow('Light fittings / ceiling roses', g('light fitting').answer || g('ceiling').answer)}
+    ${itemRow('Light switches', g('light switch').answer || g('switch').answer)}
     ${itemRow('Wall lights', g('wall light').answer)}
-    ${itemRow('Chandelier(s)', g('chandelier').answer)}
-    ${itemRow('Downlights/spotlights (fitted)', g('spotlight').answer || g('downlight').answer)}
   </table>
 
   <!-- Fitted furniture -->
@@ -270,31 +291,25 @@ export function useFixturesFittingsPdf() {
   <table>
     ${tableHeader()}
     ${itemRow('Fitted wardrobes', g('wardrobe').answer)}
-    ${itemRow('Fitted shelving/bookcase', g('shelving').answer || g('bookcase').answer)}
-    ${itemRow('Fitted desk(s)', g('fitted desk').answer || g('study', 'fitted').answer)}
-    ${itemRow('Fitted bedroom furniture', g('bedroom furniture').answer || g('fitted bedroom').answer)}
+    ${itemRow('Fitted shelving / bookcase', g('shelving').answer || g('bookcase').answer)}
+    ${itemRow('Other fitted furniture', g('fitted furniture').answer || g('other basic fittings').answer)}
   </table>
 
-  <!-- TV/Aerial -->
+  <!-- TV/Aerial/Other -->
   <h2>9. TV, Aerial, Satellite and Other</h2>
   <table>
     ${tableHeader()}
     ${itemRow('TV aerial(s)', g('aerial').answer || g('tv aerial').answer)}
     ${itemRow('Satellite dish', g('satellite').answer)}
-    ${itemRow('Cable/fibre connection points', g('cable').answer || g('fibre').answer)}
-    ${itemRow('Broadband router/equipment', g('broadband', 'router').answer || g('broadband').answer)}
+    ${itemRow('Broadband router / equipment', g('broadband').answer)}
     ${itemRow('Doorbell / video doorbell', g('doorbell').answer)}
-    ${itemRow('Security alarm system', g('alarm').answer || g('security system').answer)}
+    ${itemRow('Security alarm system', g('alarm').answer || g('security').answer)}
     ${itemRow('CCTV system', g('cctv').answer)}
-    ${itemRow('Smart home hub/equipment', g('smart home').answer || g('home hub').answer)}
     ${itemRow('Garden shed(s)', g('shed').answer)}
     ${itemRow('Greenhouse', g('greenhouse').answer)}
-    ${itemRow('Summerhouse / garden office', g('summerhouse').answer || g('garden office').answer)}
-    ${itemRow('Outdoor / garden furniture', g('garden furniture').answer || g('outdoor furniture').answer)}
-    ${itemRow('Garden ornaments', g('garden ornament').answer)}
-    ${itemRow('Built-in barbecue', g('barbecue').answer || g('bbq').answer)}
+    ${itemRow('Garden / outdoor furniture', g('garden furniture').answer || g('outdoor').answer)}
     ${itemRow('Solar panels (PV)', g('solar panel').answer || g('solar pv').answer)}
-    ${itemRow('EV charging point', g('ev charge').answer || g('electric vehicle').answer || g('charging point').answer)}
+    ${itemRow('EV charging point', g('ev').answer || g('charging point').answer)}
     ${itemRow('Swimming pool / hot tub', g('swimming pool').answer || g('hot tub').answer)}
   </table>
 

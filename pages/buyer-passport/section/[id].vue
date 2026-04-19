@@ -725,9 +725,24 @@ const stats = computed(() => {
           l.includes('exclud') ||
           l.includes('taken') ||
           l.includes('remov')
-        )
-          excluded++
-        else if (l.includes('offer') || l.includes('extra')) offered++
+        ) {
+          // Excluded items with a selling price = "offered"
+          // DateQuestion stores currency as { value: 'selling_amount', date: '500' } under the partKey
+          // Legacy path stores under partKey_amount
+          const json = q.answer.answerJson
+          let hasPrice = false
+          if (typeof json === 'object' && json !== null) {
+            for (const [k, v] of Object.entries(json as object)) {
+              if (k.endsWith('_amount') && v && String(v).trim()) { hasPrice = true; break }
+              if (v && typeof v === 'object' && !Array.isArray(v)) {
+                const d = (v as any).date
+                if (d && String(d).trim()) { hasPrice = true; break }
+              }
+            }
+          }
+          if (hasPrice) offered++
+          else excluded++
+        } else if (l.includes('offer') || l.includes('extra')) offered++
         else included++
       } else if (q.answer.answerText || q.answer.answerJson) {
         included++

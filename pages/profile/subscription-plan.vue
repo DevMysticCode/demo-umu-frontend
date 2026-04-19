@@ -444,6 +444,7 @@
 <script setup>
 definePageMeta({
   title: "Subscription Plan - UmovingU",
+  middleware: 'auth',
 });
 
 const paymentMethods = [

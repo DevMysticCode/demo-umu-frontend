@@ -21,6 +21,8 @@
 import OPIcon from '~/components/ui/OPIcon.vue'
 import { navigateTo } from 'nuxt/app'
 
+definePageMeta({ middleware: 'guest' })
+
 const beginJourney = () => {
   navigateTo('/onboarding')
 }

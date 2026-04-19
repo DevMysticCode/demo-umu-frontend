@@ -64,9 +64,9 @@
       </div>
 
       <div class="match_publish_container">
-        <button>
+        <button @click="setTab('buyers')">
           <OPIcon name="matchToBuyers" class="w-[17px] h-[17px]" /> Match to
-          Buyers
+          Buyers<span v-if="matchedBuyers.length" class="pp-match-badge">{{ matchedBuyers.length }}</span>
         </button>
         <button
           :class="['active', { 'publish-loading': publishLoading }]"
@@ -106,44 +106,148 @@
         </div>
       </div>
 
-      <div class="view-toggle">
-        <SegmentedSwitch v-model="viewMode" :options="viewOptions" />
+      <!-- Tab bar -->
+      <div class="pp-tab-bar">
+        <button :class="['pp-tab', activeTab === 'sections' ? 'active' : '']" @click="setTab('sections')">
+          <span class="pp-tab-icon">📋</span>
+          <span class="pp-tab-label">Sections</span>
+        </button>
+        <button :class="['pp-tab', activeTab === 'street' ? 'active' : '']" @click="setTab('street')">
+          <span class="pp-tab-icon">🗺</span>
+          <span class="pp-tab-label">Street</span>
+        </button>
+        <button :class="['pp-tab', activeTab === 'buyers' ? 'active' : '']" @click="setTab('buyers')">
+          <span class="pp-tab-icon">👥</span>
+          <span class="pp-tab-label">Buyers</span>
+          <span v-if="matchedBuyers.length" class="pp-tab-badge">{{ matchedBuyers.length }}</span>
+        </button>
       </div>
 
-      <div v-if="viewMode === 'list'" class="steps-list">
-        <div
-          v-for="step in steps"
-          :key="step.id"
-          class="step-card"
-          @click="navigateToStep(step.id)"
-        >
-          <div class="step-icon-container">
-            <div class="step-icon-bg">
-              <OPIcon :name="step.key" class="w-[80px] h-[80px]" />
-            </div>
-          </div>
-          <div class="step-info">
-            <h3 class="step-title">{{ step.title }}</h3>
-            <p class="step-points">
-              {{ getStepPoints(step) }} points earned so far
-            </p>
-            <div class="step-progress">
-              <div class="progress-bar small">
-                <div
-                  class="progress-fill"
-                  :style="{ width: step.progress + '%' }"
-                ></div>
-              </div>
-              <span class="progress-percentage">{{ step.progress }}%</span>
-            </div>
-          </div>
-          <button class="step-arrow">
-            <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
-          </button>
+      <!-- Sections tab -->
+      <div v-if="activeTab === 'sections'">
+        <!-- List / Map sub-toggle -->
+        <div class="view-toggle">
+          <SegmentedSwitch v-model="viewMode" :options="viewOptions" />
         </div>
+
+        <div v-if="viewMode === 'list'" class="steps-list">
+          <div
+            v-for="step in steps"
+            :key="step.id"
+            class="step-card"
+            @click="navigateToStep(step.id)"
+          >
+            <div class="step-icon-container">
+              <div class="step-icon-bg">
+                <OPIcon :name="step.key" class="w-[80px] h-[80px]" />
+              </div>
+            </div>
+            <div class="step-info">
+              <h3 class="step-title">{{ step.title }}</h3>
+              <p class="step-points">
+                {{ getStepPoints(step) }} points earned so far
+              </p>
+              <div class="step-progress">
+                <div class="progress-bar small">
+                  <div
+                    class="progress-fill"
+                    :style="{ width: step.progress + '%' }"
+                  ></div>
+                </div>
+                <span class="progress-percentage">{{ step.progress }}%</span>
+              </div>
+            </div>
+            <button class="step-arrow">
+              <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
+            </button>
+          </div>
+        </div>
+
+        <PassportMapView v-else />
       </div>
 
-      <PassportMapView v-else />
+      <!-- Street tab -->
+      <div v-if="activeTab === 'street'" class="pp-tab-content">
+        <p class="pp-vm-header">See who else on your street has started a Property Passport.</p>
+
+        <div v-if="streetProperties.length" class="pp-street-list">
+          <div v-for="sp in streetProperties" :key="sp.id" class="pp-street-row" @click="navigateToProperty(sp.id)">
+            <div class="pp-street-icon" :style="{ color: sp.isPublished ? '#0d9488' : sp.hasPassport ? '#f59e0b' : '#94a3b8' }">🏠</div>
+            <div style="flex:1;min-width:0;">
+              <div class="pp-street-addr">{{ sp.addressLine1 }}</div>
+              <div class="pp-street-meta">
+                <span v-if="sp.propertyType">{{ sp.propertyType }}</span>
+                <span v-if="sp.bedrooms"> · {{ sp.bedrooms }} bed</span>
+                <span v-if="sp.epcRating" class="pp-street-epc" :style="{ background: epcColor(sp.epcRating) }">EPC {{ sp.epcRating }}</span>
+              </div>
+            </div>
+            <span v-if="sp.isPublished" class="pp-street-badge published">✓ Published</span>
+            <span v-else-if="sp.hasPassport" class="pp-street-badge started">In progress</span>
+            <span v-else class="pp-street-badge none">Not started</span>
+          </div>
+        </div>
+        <div v-else class="pp-empty">
+          <div style="font-size:32px;margin-bottom:8px;">🏘</div>
+          <p>No other properties found on this street yet.</p>
+        </div>
+
+        <div v-if="streetStats" class="pp-street-stats">
+          <div class="pp-stats-title">{{ passportAddress.line2 }} — Street Overview</div>
+          <div class="pp-stats-grid">
+            <div class="pp-stat brand">
+              <div class="pp-stat-val">{{ streetStats.published }}</div>
+              <div class="pp-stat-lbl">Passports published</div>
+            </div>
+            <div class="pp-stat green">
+              <div class="pp-stat-val">{{ streetStats.notStarted }}</div>
+              <div class="pp-stat-lbl">Not yet started</div>
+            </div>
+            <div v-if="streetStats.avgEpc" class="pp-stat amber">
+              <div class="pp-stat-val">{{ streetStats.avgEpc }}</div>
+              <div class="pp-stat-lbl">Average EPC rating</div>
+            </div>
+            <div v-if="streetStats.avgPrice" class="pp-stat grey">
+              <div class="pp-stat-val">£{{ Math.round(streetStats.avgPrice / 1000) }}k</div>
+              <div class="pp-stat-lbl">Avg. estimated value</div>
+            </div>
+          </div>
+          <div class="pp-street-tip">
+            💡 <strong>You're ahead of your street.</strong> Sellers with a passport typically accept offers <strong>18 days faster</strong>.
+          </div>
+        </div>
+        <div style="height:80px"/>
+      </div>
+
+      <!-- Buyers tab -->
+      <div v-if="activeTab === 'buyers'" class="pp-tab-content">
+        <div class="pp-buyers-intro">
+          <div class="pp-buyers-count">{{ buyersTotal || matchedBuyers.length }} buyers searching in your area</div>
+          <div class="pp-buyers-sub">Tap any buyer to see how well they match your property.</div>
+        </div>
+
+        <div v-if="matchedBuyers.length" class="pp-buyer-list">
+          <div v-for="buyer in matchedBuyers" :key="buyer.name" class="pp-buyer-card">
+            <div class="pp-buyer-avatar" :style="{ background: buyer.matchScore >= 75 ? '#dcfce7' : buyer.matchScore >= 55 ? '#fef3c7' : '#f1f5f9', color: buyer.matchScore >= 75 ? '#16a34a' : buyer.matchScore >= 55 ? '#92400e' : '#64748b' }">
+              {{ buyer.name[0] }}
+            </div>
+            <div class="pp-buyer-info">
+              <div class="pp-buyer-name">{{ buyer.name }}</div>
+              <div class="pp-buyer-criteria">{{ buyer.area }} · {{ buyer.budget }} · {{ buyer.timeline }}</div>
+              <div class="pp-buyer-tags">
+                <span v-for="tag in buyer.tags" :key="tag" class="pp-buyer-tag" :class="tag === 'Strong match' ? 'match' : tag === 'Good match' ? 'partial' : ''">{{ tag }}</span>
+              </div>
+            </div>
+            <div class="pp-buyer-score" :style="{ color: buyer.matchScore >= 75 ? '#16a34a' : buyer.matchScore >= 55 ? '#d97706' : '#94a3b8' }">
+              {{ buyer.matchScore }}%
+            </div>
+          </div>
+        </div>
+        <div v-else class="pp-empty">
+          <div style="font-size:32px;margin-bottom:8px;">👥</div>
+          <p>{{ propertyId ? 'Loading matched buyers…' : 'Property not linked — no buyer data available.' }}</p>
+        </div>
+        <div style="height:80px"/>
+      </div>
     </div>
 
     <!-- Add Collaborator Modal -->
@@ -196,6 +300,23 @@ const passportAddress = ref({ line1: '', line2: '' })
 const isPublished = ref(false)
 const publishLoading = ref(false)
 
+// Tab state
+const activeTab = ref('sections')
+const viewMode = ref('list')
+const viewOptions = [
+  { label: 'List', value: 'list', icon: 'list' },
+  { label: 'Map', value: 'map', icon: 'map' },
+]
+const propertyId = ref(null)
+
+// Street data
+const streetProperties = ref([])
+const streetStats = ref(null)
+
+// Buyer data
+const matchedBuyers = ref([])
+const buyersTotal = ref(0)
+
 onMounted(async () => {
   loadPassport(route.params.id)
   await loadCollaborators()
@@ -213,10 +334,51 @@ onMounted(async () => {
       line2: passport.postcode ?? '',
     }
     isPublished.value = passport.status === 'PUBLISHED'
+    propertyId.value = passport.propertyId ?? null
+    // Pre-fetch street + buyer data in background
+    if (passport.propertyId) {
+      fetchStreetData(passport.propertyId)
+      fetchBuyerData(passport.propertyId)
+    }
   } catch (e) {
     console.error('Failed to load passport address', e)
   }
 })
+
+async function fetchStreetData(pid) {
+  try {
+    const data = await $fetch(`${config.public.apiBase}/property/${pid}/street`)
+    streetProperties.value = data.properties ?? []
+    streetStats.value = data.stats ?? null
+  } catch {}
+}
+
+async function fetchBuyerData(pid) {
+  try {
+    const data = await $fetch(`${config.public.apiBase}/property/${pid}/matched-buyers`)
+    matchedBuyers.value = data.buyers ?? []
+    buyersTotal.value = data.total ?? 0
+  } catch {}
+}
+
+function setTab(tab) {
+  activeTab.value = tab
+  if (tab === 'street' && propertyId.value && streetProperties.value.length === 0) {
+    fetchStreetData(propertyId.value)
+  }
+  if (tab === 'buyers' && propertyId.value && matchedBuyers.value.length === 0) {
+    fetchBuyerData(propertyId.value)
+  }
+}
+
+function navigateToProperty(pid) {
+  router.push(`/property/${pid}`)
+}
+
+function epcColor(rating) {
+  const map = { A: '#00b050', B: '#33b800', C: '#92d050', D: '#d4e800', E: '#ffbf00', F: '#ff6600', G: '#ff0000' }
+  return map[rating?.toUpperCase()] ?? '#8e8e93'
+}
 
 async function togglePublish() {
   if (publishLoading.value) return
@@ -284,11 +446,6 @@ const roleOptions = [
   { label: 'Seller', value: 'seller', icon: 'seller' },
 ]
 
-const viewMode = ref('list')
-const viewOptions = [
-  { label: 'List', value: 'list', icon: 'list' },
-  { label: 'Map', value: 'map', icon: 'map' },
-]
 
 const overallProgress = computed(() => {
   const totalTasks = steps.value.reduce(
@@ -786,4 +943,111 @@ const onRoleSwitch = (role) => {
   background: #00a19a;
   color: #ffffff;
 }
+
+.pp-match-badge {
+  background: #fff;
+  color: #00a19a;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 999px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* ── Tab bar ─────────────────────────────────────────── */
+.pp-tab-bar {
+  display: flex;
+  gap: 6px;
+  background: #f1f5f9;
+  border-radius: 14px;
+  padding: 4px;
+  margin: 4px 0 16px;
+}
+.pp-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  position: relative;
+}
+.pp-tab.active {
+  background: white;
+  color: #0d9488;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.10), 0 0 0 1px rgba(15,23,42,0.04);
+}
+.pp-tab-icon { font-size: 14px; line-height: 1; }
+.pp-tab-label { font-size: 12px; }
+.pp-tab-badge {
+  background: #0d9488;
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 999px;
+  line-height: 1.5;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+.pp-tab-content { padding-top: 0; }
+
+
+/* ── Street tab ──────────────────────────────────────── */
+.pp-vm-header { font-size: 12.5px; color: #475569; line-height: 1.5; margin: 0 0 12px; }
+.pp-street-list { background: white; border-radius: 16px; overflow: hidden; margin-bottom: 14px; border: 1px solid #e2e8e8; }
+.pp-street-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+.pp-street-row:last-child { border-bottom: none; }
+.pp-street-row:active { background: #f0fdfa; }
+.pp-street-icon { font-size: 20px; flex-shrink: 0; }
+.pp-street-addr { font-size: 13px; font-weight: 600; color: #0f172a; }
+.pp-street-meta { font-size: 11px; color: #64748b; margin-top: 2px; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.pp-street-epc { font-size: 10px; font-weight: 800; color: #fff; padding: 1px 5px; border-radius: 4px; margin-left: 4px; }
+.pp-street-badge { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+.pp-street-badge.published { background: #dcfce7; color: #166534; }
+.pp-street-badge.started { background: #fef3c7; color: #92400e; }
+.pp-street-badge.none { background: #f1f5f9; color: #64748b; }
+.pp-empty { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: #64748b; font-size: 13px; text-align: center; }
+.pp-street-stats { background: white; border-radius: 16px; padding: 16px; margin-bottom: 14px; border: 1px solid #e2e8e8; }
+.pp-stats-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+.pp-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.pp-stat { border-radius: 10px; padding: 10px 12px; }
+.pp-stat.brand { background: #f0fdfa; }
+.pp-stat.green { background: #f0fdf4; }
+.pp-stat.amber { background: #fef3c7; }
+.pp-stat.grey { background: #f8fafc; }
+.pp-stat-val { font-size: 22px; font-weight: 800; color: #0f172a; }
+.pp-stat.brand .pp-stat-val { color: #0d9488; }
+.pp-stat.green .pp-stat-val { color: #16a34a; }
+.pp-stat.amber .pp-stat-val { color: #92400e; }
+.pp-stat-lbl { font-size: 11px; color: #64748b; margin-top: 1px; }
+.pp-street-tip { font-size: 12px; color: #475569; line-height: 1.5; padding: 10px; background: #f8fafc; border-radius: 8px; }
+
+/* ── Buyers tab ──────────────────────────────────────── */
+.pp-buyers-intro { background: #f0fdfa; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+.pp-buyers-count { font-size: 13px; color: #0f172a; font-weight: 600; margin-bottom: 2px; }
+.pp-buyers-sub { font-size: 12px; color: #64748b; }
+.pp-buyer-list { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8e8; margin-bottom: 14px; }
+.pp-buyer-card { display: flex; align-items: flex-start; gap: 12px; padding: 13px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+.pp-buyer-card:last-child { border-bottom: none; }
+.pp-buyer-card:active { background: #f0fdfa; }
+.pp-buyer-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; flex-shrink: 0; }
+.pp-buyer-info { flex: 1; min-width: 0; }
+.pp-buyer-name { font-size: 13.5px; font-weight: 700; color: #0f172a; }
+.pp-buyer-criteria { font-size: 11.5px; color: #475569; margin-top: 2px; line-height: 1.4; }
+.pp-buyer-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.pp-buyer-tag { font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: #f1f5f9; color: #475569; }
+.pp-buyer-tag.match { background: #dcfce7; color: #166534; }
+.pp-buyer-tag.partial { background: #fef3c7; color: #92400e; }
+.pp-buyer-score { font-size: 16px; font-weight: 800; flex-shrink: 0; min-width: 38px; text-align: right; }
 </style>

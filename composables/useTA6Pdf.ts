@@ -163,20 +163,21 @@ export function useTA6Pdf() {
   function buildHtml(passport: any, property: any, sections: any[]): string {
     const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
     const addr = passport.addressLine1 || ''
+    const sellerName = passport.ownerName || ''
     const cityLine = [property?.city || property?.county, property?.postcode || passport.postcode].filter(Boolean).join(', ')
-    const tenure = property?.tenure || findAnswer(sections, 'propertyOwnership', 'tenure') || ''
+    const tenure = property?.tenure || findAnswer(sections, 'ownershipProfile', 'tenure') || ''
     const titleNum = property?.titleNumber || ''
 
-    // Pull answers from passport sections
+    // Pull answers from passport sections (keys match seed.ts)
     const boundaries = getSectionAnswers(sections, 'boundaries')
-    const disputes = getSectionAnswers(sections, 'disputesComplaints')
-    const notices = getSectionAnswers(sections, 'noticesProposals')
-    const guarantees = getSectionAnswers(sections, 'guaranteesWarranties')
-    const environmental = getSectionAnswers(sections, 'environmentalMatters')
-    const planning = getSectionAnswers(sections, 'planningBuildingControl')
+    const disputes = getSectionAnswers(sections, 'disputesAndComplaints')
+    const notices = getSectionAnswers(sections, 'noticesAndProposals')
+    const guarantees = getSectionAnswers(sections, 'guaranteesAndWarranties')
+    const environmental = getSectionAnswers(sections, 'environmental')
+    const planning = getSectionAnswers(sections, 'alterationsAndPlanning')
     const services = getSectionAnswers(sections, 'services')
-    const rights = getSectionAnswers(sections, 'rightsInformal')
-    const transaction = getSectionAnswers(sections, 'transactionInfo')
+    const rights = getSectionAnswers(sections, 'rightsAndInformalArrangements')
+    const transaction = getSectionAnswers(sections, 'transactionInformation')
 
     // Helper: Render passport answers as a teal data block
     function passportBlock(items: Array<{ q: string; a: string }>, maxRows = 99): string {
@@ -187,7 +188,6 @@ export function useTA6Pdf() {
           <td style="padding:3px 8px;font-size:7.5pt">${i.a ? `<span class="filled">${esc(i.a)}</span>` : '<em style="color:#bbb">not answered</em>'}</td>
         </tr>`).join('')
       return `<div class="passport-data">
-        <div style="font-size:7pt;font-weight:700;color:#00534f;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px">&#9998; Pre-filled from Property Passport</div>
         <table style="width:100%;border-collapse:collapse">${rows}</table>
       </div>`
     }
@@ -246,7 +246,7 @@ export function useTA6Pdf() {
     <div class="row">
       <div class="row-num">1.1</div>
       <div class="row-q">Full name(s) of seller(s)</div>
-      <div class="row-a row-a--wide">${blank('240px')}</div>
+      <div class="row-a row-a--wide">${sellerName ? `<span class="filled">${esc(sellerName)}</span>` : blank('240px')}</div>
     </div>
     <div class="row">
       <div class="row-num">1.2</div>
@@ -412,7 +412,7 @@ export function useTA6Pdf() {
     <div class="row">
       <div class="row-num">7.1</div>
       <div class="row-q">Has the property been flooded in the past?</div>
-      <div class="row-a">${yesNo(findAnswer(sections, 'environmentalMatters', 'flood'))}</div>
+      <div class="row-a">${yesNo(findAnswer(sections, 'environmental', 'flood'))}</div>
     </div>
     <div class="row">
       <div class="row-num">7.2</div>
@@ -435,7 +435,7 @@ export function useTA6Pdf() {
     <div class="row">
       <div class="row-num">7.4</div>
       <div class="row-q">Is the seller aware of any presence (past or present) of Japanese knotweed at or near the property?</div>
-      <div class="row-a">${yesNo(findAnswer(sections, 'environmentalMatters', 'knotweed'))}</div>
+      <div class="row-a">${yesNo(findAnswer(sections, 'environmental', 'knotweed'))}</div>
     </div>
     <div class="row">
       <div class="row-num">7.5</div>
@@ -520,7 +520,7 @@ export function useTA6Pdf() {
     <div class="row">
       <div class="row-num">9.4</div>
       <div class="row-q">Has the boiler been serviced in the last 12 months?</div>
-      <div class="row-a">${yesNo(findAnswer(sections, 'services', 'boiler', 'service'))}</div>
+      <div class="row-a">${yesNo(findAnswer(sections, 'services', 'boiler'))}</div>
     </div>
     ${services.length ? passportBlock(services) : ''}
   </div>

@@ -274,6 +274,7 @@ import BaseDrawer from '@/components/ui/BaseDrawer.vue'
 
 definePageMeta({
   title: "Collaborators - UmovingU",
+  middleware: 'auth',
 });
 
 const { fetchCollaborators, removeCollaborator } = useProfile();

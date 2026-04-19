@@ -147,6 +147,7 @@ import ContinueButton from '@/components/ContinueButton.vue'
 
 definePageMeta({
   title: 'Create Account - UmovingU',
+  middleware: 'guest',
 })
 
 // Use the composable for all data and methods

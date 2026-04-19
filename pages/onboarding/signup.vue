@@ -82,6 +82,7 @@ import BackButton from '~/components/core/BackButton.vue'
 
 definePageMeta({
   title: 'Sign Up - UmovingU',
+  middleware: 'guest',
 })
 
 const config = useRuntimeConfig()

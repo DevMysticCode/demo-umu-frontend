@@ -164,6 +164,7 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 
 definePageMeta({
   title: 'My Profile - UmovingU',
+  middleware: 'auth',
 })
 
 const { profile, fullName, memberSince, fetchProfile } = useProfile()

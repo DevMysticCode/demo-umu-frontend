@@ -316,7 +316,7 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ title: 'Calendar - UmovingU' })
+definePageMeta({ title: 'Calendar - UmovingU', middleware: 'auth' })
 
 const {
   reminders,

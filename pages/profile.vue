@@ -126,6 +126,7 @@
 definePageMeta({
   title: "My Profile - UmovingU",
   alias: "/profile-main",
+  middleware: 'auth',
 });
 
 const searchQuery = ref("");

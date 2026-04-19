@@ -586,6 +586,7 @@
 <script setup>
 definePageMeta({
   title: "Add Collaborator - UmovingU",
+  middleware: 'auth',
 });
 
 const { fetchUserPassports, searchUsers, addCollaborator } = useProfile();
