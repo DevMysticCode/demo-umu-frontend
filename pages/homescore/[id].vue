@@ -54,6 +54,15 @@
     <!-- ── LANDING / AUTO SCORE ─────────────────────────────────── -->
     <template v-else-if="screen === 'landing'">
       <div class="hs-scroll">
+        <!-- Address strip -->
+        <div class="hs-addr-strip">
+          <div class="hs-addr-dot" />
+          <div>
+            <div class="hs-addr-text">{{ property.addressLine1 }}</div>
+            <div class="hs-addr-tiny">{{ property.postcode }}</div>
+          </div>
+        </div>
+
         <!-- Money hook -->
         <div class="hs-money-hook">
           <div class="hs-money-hook-label">You could be overpaying</div>
@@ -137,18 +146,20 @@
             20% confidence · EPC data only
           </div>
           <p class="hs-epc-note">
-            This number is modelled from {{ epcDataAge }} EPC data. Your real score could be anywhere from {{ epcRangeLow }} to {{ epcRangeHigh }}.
+            This number is modelled from {{ epcDataAge }} EPC data. Your real
+            score could be anywhere from {{ epcRangeLow }} to
+            {{ epcRangeHigh }}.
+          </p>
+
+          <!-- CTA -->
+          <button class="hs-cta-primary mt-4" @click="startQuestions">
+            Get your real score in 2 minutes
+            <span class="hs-cta-chev">›</span>
+          </button>
+          <p class="hs-cta-sub mb-0">
+            {{ QUESTIONS.length }} quick questions · No signup needed
           </p>
         </div>
-
-        <!-- CTA -->
-        <button class="hs-cta-primary" @click="startQuestions">
-          Get your real score in 2 minutes
-          <span class="hs-cta-chev">›</span>
-        </button>
-        <p class="hs-cta-sub">
-          {{ QUESTIONS.length }} quick questions · No signup needed
-        </p>
 
         <!-- Score breakdown -->
         <div class="hs-breakdown-card">
