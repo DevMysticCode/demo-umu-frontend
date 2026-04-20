@@ -15,19 +15,29 @@ interface Address {
 export const useCreateAccountData = () => {
   const config = useRuntimeConfig()
   const { register } = useAuth()
-  const { email } = useSession()
+  const { email, pendingSignup } = useSession()
 
-  // ✅ Form state
+  // Pre-split fullName from signup into firstName / lastName
+  const splitName = (fullName: string) => {
+    const parts = fullName.trim().split(/\s+/)
+    return { firstName: parts[0] ?? '', lastName: parts.slice(1).join(' ') }
+  }
+
+  const { firstName: preFirstName, lastName: preLastName } = pendingSignup.value
+    ? splitName(pendingSignup.value.fullName)
+    : { firstName: '', lastName: '' }
+
+  // ✅ Form state — pre-populated from signup page where available
   const form = reactive({
-    firstName: '',
-    lastName: '',
+    firstName: preFirstName,
+    lastName: preLastName,
     email: '',
-    mobile: '',
+    mobile: pendingSignup.value?.phone ?? '',
     dateOfBirth: '',
-    postcode: '', // <-- important
+    postcode: '',
     gender: '',
-    password: '',
-    confirmPassword: '',
+    password: pendingSignup.value?.password ?? '',
+    confirmPassword: pendingSignup.value?.password ?? '',
   })
 
   // UI state only
@@ -151,10 +161,10 @@ export const useCreateAccountData = () => {
       })
       console.log('Registration successful:', response)
 
-      // Store token in localStorage for automatic login
       if (response.token) {
         localStorage.setItem('token', response.token)
       }
+      pendingSignup.value = null
 
       await navigateTo('/onboarding/thank-you')
     } catch (err) {

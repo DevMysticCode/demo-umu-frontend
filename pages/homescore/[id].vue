@@ -369,9 +369,9 @@
               </div>
               <div class="hs-journey-col">
                 <div class="hs-journey-num" style="color: #16a34a">
-                  {{ completeScore }}
+                  {{ completeScore }} %
                 </div>
-                <div class="hs-journey-label">Complete</div>
+                <div class="hs-journey-label">Passport Complete</div>
                 <div class="hs-journey-sub">Overall</div>
               </div>
             </div>

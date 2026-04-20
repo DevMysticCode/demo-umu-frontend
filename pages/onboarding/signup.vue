@@ -1,273 +1,455 @@
 <template>
-  <div class="mobile-container backgound-image content">
-    <BackButton />
-    <!-- Logo and Welcome -->
-    <div class="logo-and-welcome">
-      <OPIcon name="logo" class="w-16 h-16" />
-      <h1>Welcome to UmovingU. Your journey starts here.</h1>
-      <h5 class="text-white mt-2">Sign up using Social</h5>
+  <div class="mobile-container" style="background: #fff; display: flex; flex-direction: column; min-height: 100dvh;">
+
+    <!-- Navy gradient header -->
+    <div class="auth-header">
+      <div class="header-glow"></div>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; position: relative; z-index: 1;">
+        <button @click="$router.back()" class="header-back-btn">‹</button>
+        <span style="font-size: 15px; font-weight: 700; color: #fff;">Create account</span>
+      </div>
+      <div style="position: relative; z-index: 1;">
+        <h1 style="font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 4px; letter-spacing: -0.02em;">Tell us who you are</h1>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5;">Your details stay with us — we never share them with third parties.</p>
+      </div>
     </div>
 
-    <div class="login-options">
-      <div class="social-logins">
-        <button
-          class="social-logins__button relative"
-          @click="handleAppleLogin"
-        >
-          <OPIcon name="appleNew" class="w-[20px] h-[20px]" />
-          <span v-if="isDev" class="absolute -top-1.5 -right-1.5 text-[9px] bg-yellow-400 text-black rounded px-1 font-bold leading-tight">DEV</span>
-        </button>
+    <!-- Scrollable form -->
+    <div style="flex: 1; overflow-y: auto; padding: 22px 20px 40px;">
 
-        <button class="social-logins__button social-logins__button--google">
-          <OPIcon name="googleNew" class="w-[20px] h-[20px]" />
-          <div id="google-btn-overlay"></div>
-        </button>
+      <div v-if="formError" class="error-banner">{{ formError }}</div>
 
-        <button
-          class="social-logins__button"
-          @click="handleSocialLogin('facebook')"
-        >
-          <OPIcon name="facebookNew" class="w-[20px] h-[20px]" />
-        </button>
+      <!-- First Name -->
+      <div class="field-wrap">
+        <label class="field-label">First Name</label>
+        <input v-model="form.firstName" type="text" placeholder="Jane" class="field-input" autocomplete="given-name" />
       </div>
 
-      <!-- Email Form -->
-      <form class="email-form" @submit.prevent="handleEmailContinue">
-        <!-- Divider -->
-        <div class="email-form__divider">
-          <div class="flex-1 h-px bg-white/80"></div>
-          <span class="text-white/80 text-sm">or enter your email below</span>
-          <div class="flex-1 h-px bg-white/80"></div>
-        </div>
+      <!-- Last Name -->
+      <div class="field-wrap">
+        <label class="field-label">Last Name</label>
+        <input v-model="form.lastName" type="text" placeholder="Smith" class="field-input" autocomplete="family-name" />
+      </div>
 
-        <div class="relative">
-          <input
-            v-model="emailInput"
-            type="email"
-            name="email"
-            required
-            placeholder="your@email.com"
-            :class="[
-              'w-full h-12 bg-white text-gray-900 rounded-xl px-4 border-0 focus:ring-2 transition-all',
-              emailError ? 'ring-2 ring-red-400' : 'focus:ring-brand-aqua',
-            ]"
-            @input="emailError = ''"
-          />
-        </div>
+      <!-- Email -->
+      <div class="field-wrap">
+        <label class="field-label">Email address</label>
+        <input v-model="form.email" type="email" placeholder="you@example.com" class="field-input" autocomplete="email" />
+      </div>
 
-        <!-- Inline error -->
-        <div v-if="emailError" class="email-form__error">
-          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{{ emailError }}</span>
-          <NuxtLink to="/onboarding/signin" class="email-form__error-link">Sign in instead →</NuxtLink>
-        </div>
+      <!-- Mobile -->
+      <div class="field-wrap">
+        <label class="field-label">UK Mobile Number (+44) <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
+        <input v-model="form.mobile" type="tel" placeholder="07123456789" class="field-input" autocomplete="tel" />
+      </div>
 
-        <button class="email-form__button" type="submit" :disabled="isChecking">
-          {{ isChecking ? 'Checking...' : 'Continue' }}
-        </button>
-      </form>
+      <!-- Date of Birth -->
+      <div class="field-wrap">
+        <label class="field-label">Date of Birth</label>
+        <input v-model="form.dateOfBirth" type="date" class="field-input" />
+      </div>
+
+      <!-- Postcode / Address -->
+      <AddressSearch
+        name="postcode"
+        label="Postcode"
+        @search="searchAddress"
+        :isSearching="searchingAddress"
+        :selectedAddress="selectedAddress"
+        @edit="editAddress"
+      />
+
+      <!-- Gender -->
+      <div class="field-wrap">
+        <label class="field-label">Gender</label>
+        <select v-model="form.gender" class="field-input gender-select">
+          <option value="" disabled>Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="non-binary">Non-binary</option>
+          <option value="prefer-not-to-say">Prefer not to say</option>
+        </select>
+      </div>
+
+      <!-- Password -->
+      <div class="field-wrap">
+        <label class="field-label">Password</label>
+        <div style="position: relative;">
+          <input v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="At least 8 characters" class="field-input" style="padding-right: 46px;" autocomplete="new-password" />
+          <button type="button" @click="showPassword = !showPassword" class="pw-toggle">
+            <svg v-if="showPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="field-wrap">
+        <label class="field-label">Confirm Password</label>
+        <div style="position: relative;">
+          <input v-model="form.confirmPassword" :type="showConfirm ? 'text' : 'password'" placeholder="Repeat your password" class="field-input" style="padding-right: 46px;" autocomplete="new-password" />
+          <button type="button" @click="showConfirm = !showConfirm" class="pw-toggle">
+            <svg v-if="showConfirm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px;">
+        <input
+          id="terms"
+          :checked="termsAccepted"
+          type="checkbox"
+          style="width: 18px; height: 18px; margin-top: 2px; accent-color: #00A19A; flex-shrink: 0; cursor: pointer;"
+          @change="handleTermsCheckbox"
+        />
+        <label for="terms" style="font-size: 13px; color: #4a5568; line-height: 1.55; cursor: pointer;">
+          I agree to the
+          <span style="color: #00A19A; font-weight: 600; cursor: pointer;" @click="openTermsModal">Terms of Service</span>
+          and
+          <span style="color: #00A19A; font-weight: 600; cursor: pointer;" @click="openTermsModal">Privacy Policy</span>
+        </label>
+      </div>
+
+      <!-- Submit -->
+      <button @click="handleSubmit" :disabled="isLoading" class="submit-btn" style="margin-bottom: 14px;">
+        <span v-if="isLoading" class="spinner"></span>
+        {{ isLoading ? 'Creating account…' : 'Create account' }}
+      </button>
+
+      <!-- Sign in link -->
+      <div style="text-align: center;">
+        <span style="font-size: 13px; color: #94a3b8;">Already have an account? </span>
+        <NuxtLink to="/onboarding/signin" style="font-size: 13px; font-weight: 700; color: #00A19A; text-decoration: none;">Sign in</NuxtLink>
+      </div>
     </div>
+
+    <!-- Address Search Modal -->
+    <AddressSearchModal
+      :show="showAddressModal"
+      :postcode="form.postcode"
+      :addresses="addressResults"
+      @update:show="showAddressModal = $event"
+      @select="selectAddress"
+      @search="searchAddress"
+      @close="showAddressModal = false"
+    />
+
+    <!-- Terms Modal -->
+    <TermsModal
+      :show="showTermsModal"
+      @update:show="showTermsModal = $event"
+      @accept="acceptTerms"
+      @close="showTermsModal = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import { useSession } from '~/composables/useSession'
-import { getDtaFromSubmitEvent } from '~/utils/form-helpres'
-import OPIcon from '~/components/ui/OPIcon.vue'
-import BackButton from '~/components/core/BackButton.vue'
+import { toTitleCase } from '~/utils/form-helpres'
+import AddressSearch from '~/components/form/AddressSearch.vue'
+import AddressSearchModal from '~/components/modals/AddressSearchModal.vue'
+import TermsModal from '~/components/modals/TermsModal.vue'
 
 definePageMeta({
-  title: 'Sign Up - UmovingU',
+  title: 'Create Account - UmovingU',
   middleware: 'guest',
 })
 
 const config = useRuntimeConfig()
-const { requestOtp, googleLogin, appleLogin, appleLoginMock } = useAuth()
-const isDev = process.dev
-const { email } = useSession()
+const { requestOtp } = useAuth()
+const { email, pendingSignup } = useSession()
 
-const emailInput = ref('')
-const emailError = ref('')
-const isChecking = ref(false)
+const form = reactive({
+  firstName: '',
+  lastName: '',
+  email: '',
+  mobile: '',
+  dateOfBirth: '',
+  postcode: '',
+  gender: '',
+  password: '',
+  confirmPassword: '',
+})
 
-// ── Apple ─────────────────────────────────────────────────────────────────
+const showPassword = ref(false)
+const showConfirm = ref(false)
+const termsAccepted = ref(false)
+const formError = ref('')
+const isLoading = ref(false)
 
-const loadAppleSdk = () =>
-  new Promise<void>((resolve) => {
-    if (window.AppleID) { resolve(); return }
-    const s = document.createElement('script')
-    s.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js'
-    s.async = true
-    s.onload = () => resolve()
-    document.head.appendChild(s)
-  })
+// ── Address search ────────────────────────────────────────────────────────
+const searchingAddress = ref(false)
+const showAddressModal = ref(false)
+const selectedAddress = ref<{ id: number; line1: string; line2: string; postcode?: string } | null>(null)
+const addressResults = ref<{ id: number; line1: string; line2: string; postcode?: string }[]>([])
 
-const handleAppleLogin = async () => {
-  if (isDev) {
-    try {
-      const result: any = await appleLoginMock()
-      localStorage.setItem('token', result.token)
-      await navigateTo('/dashboard')
-    } catch (err) {
-      console.error('Apple mock error', err)
-      alert('Apple mock sign-up failed.')
-    }
+const searchAddress = async (postcode?: string) => {
+  const query = (postcode ?? form.postcode ?? '').trim()
+  if (!query || query.length < 2) return
+  form.postcode = query
+  searchingAddress.value = true
+  try {
+    const res = await $fetch<{ items: any[]; total: number }>(
+      `${config.public.apiBase}/property/search?q=${encodeURIComponent(query)}&offset=0&limit=25`,
+    )
+    addressResults.value = (res.items ?? []).map((p, i) => ({
+      id: i + 1,
+      line1: toTitleCase(p.addressLine1),
+      line2: [p.city, p.postcode].filter(Boolean).map(toTitleCase).join(', '),
+      postcode: p.postcode,
+    }))
+    showAddressModal.value = true
+  } catch (err) {
+    console.error('Address search error:', err)
+  } finally {
+    searchingAddress.value = false
+  }
+}
+
+const selectAddress = (address: { id: number; line1: string; line2: string; postcode?: string }) => {
+  selectedAddress.value = address
+  form.postcode = address.postcode ?? address.line1
+  showAddressModal.value = false
+}
+
+const editAddress = () => {
+  selectedAddress.value = null
+  form.postcode = ''
+}
+
+// ── Terms modal ───────────────────────────────────────────────────────────
+const showTermsModal = ref(false)
+
+const openTermsModal = () => {
+  showTermsModal.value = true
+}
+
+const handleTermsCheckbox = (event: Event) => {
+  const checked = (event.target as HTMLInputElement).checked
+  if (!checked) {
+    termsAccepted.value = false
+  } else if (!termsAccepted.value) {
+    openTermsModal()
+  }
+}
+
+const acceptTerms = () => {
+  termsAccepted.value = true
+  showTermsModal.value = false
+}
+
+const handleSubmit = async () => {
+  formError.value = ''
+
+  if (!form.firstName.trim() || !form.lastName.trim()) {
+    formError.value = 'Please enter your first and last name.'
+    return
+  }
+  if (!form.email.trim()) {
+    formError.value = 'Please enter your email address.'
+    return
+  }
+  if (!form.dateOfBirth) {
+    formError.value = 'Please enter your date of birth.'
+    return
+  }
+  if (!form.gender) {
+    formError.value = 'Please select your gender.'
+    return
+  }
+  if (form.password.length < 8) {
+    formError.value = 'Password must be at least 8 characters.'
+    return
+  }
+  if (form.password !== form.confirmPassword) {
+    formError.value = 'Passwords do not match.'
+    return
+  }
+  if (!termsAccepted.value) {
+    formError.value = 'You must agree to the terms and conditions.'
     return
   }
 
+  isLoading.value = true
   try {
-    await loadAppleSdk()
-    window.AppleID.auth.init({
-      clientId: config.public.appleClientId,
-      scope: 'name email',
-      redirectURI: config.public.appleRedirectUri,
-      usePopup: true,
-    })
-    const data = await window.AppleID.auth.signIn()
-    const idToken: string = data.authorization.id_token
-    const firstName: string | undefined = data.user?.name?.firstName
-    const lastName: string | undefined = data.user?.name?.lastName
-    const result: any = await appleLogin(idToken, firstName, lastName)
-    localStorage.setItem('token', result.token)
-    await navigateTo('/dashboard')
-  } catch (err: any) {
-    if (err?.error === 'popup_closed_by_user') return
-    console.error('Apple sign-up error', err)
-    alert('Apple sign-up failed. Please try again.')
-  }
-}
-
-// ── Google ────────────────────────────────────────────────────────────────
-
-const handleGoogleCredential = async (response) => {
-  try {
-    const result: any = await googleLogin(response.credential)
-    localStorage.setItem('token', result.token)
-    await navigateTo('/dashboard')
-  } catch (err) {
-    console.error(err)
-    alert('Google sign-up failed. Please try again.')
-  }
-}
-
-onMounted(() => {
-  const script = document.createElement('script')
-  script.src = 'https://accounts.google.com/gsi/client'
-  script.async = true
-  script.defer = true
-  script.onload = () => {
-    window.google.accounts.id.initialize({
-      client_id: config.public.googleClientId,
-      callback: handleGoogleCredential,
-      use_fedcm_for_prompt: false,
-    })
-    window.google.accounts.id.renderButton(
-      document.getElementById('google-btn-overlay'),
-      { theme: 'outline', size: 'large', width: '100%' },
-    )
-  }
-  document.head.appendChild(script)
-})
-
-const handleEmailContinue = async (event) => {
-  event.preventDefault()
-  event.stopPropagation()
-  emailError.value = ''
-  isChecking.value = true
-
-  try {
-    // 1. Check if this email already has an account
     const { exists } = await $fetch<{ exists: boolean }>(
       `${config.public.apiBase}/auth/check-email`,
-      { method: 'POST', body: { email: emailInput.value } },
+      { method: 'POST', body: { email: form.email } },
     )
 
     if (exists) {
-      emailError.value = 'An account with this email already exists.'
+      formError.value = 'An account with this email already exists.'
       return
     }
 
-    // 2. Send OTP
-    await requestOtp(emailInput.value)
-    email.value = emailInput.value
+    pendingSignup.value = {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      phone: form.mobile,
+      dob: form.dateOfBirth,
+      postcode: form.postcode,
+      gender: form.gender,
+      password: form.password,
+    }
+
+    email.value = form.email
+    await requestOtp(form.email)
     await navigateTo('/onboarding/verification')
   } catch (err: any) {
-    emailError.value = err?.data?.message || 'Something went wrong. Please try again.'
+    formError.value = err?.data?.message || 'Something went wrong. Please try again.'
   } finally {
-    isChecking.value = false
+    isLoading.value = false
   }
 }
 </script>
 
 <style scoped>
-.content {
-  @apply pt-6 px-4;
-  @apply flex flex-col;
-  @apply min-h-dvh;
-}
-
-.logo-and-welcome {
-  @apply mt-3;
-  h1 {
-    @apply text-[34px] font-bold text-white;
-  }
-}
-
-.login-options {
-  @apply flex flex-col h-full mb-6 flex-1 relative;
-}
-
-.social-logins {
-  @apply flex items-center justify-center gap-2 mt-4;
-
-  &__button {
-    @apply flex items-center justify-center gap-2;
-    @apply w-full h-[50px] rounded-xl shadow-lg transition-colors;
-    @apply bg-white;
-    @apply text-black text-[17px];
-
-    &--google {
-      @apply relative overflow-hidden;
-    }
-  }
-}
-
-#google-btn-overlay {
-  position: absolute;
-  inset: 0;
-  opacity: 0.001;
+.auth-header {
+  background: linear-gradient(135deg, #231d45, #2d2560);
+  padding: 18px 20px 24px;
+  flex-shrink: 0;
+  position: relative;
   overflow: hidden;
-
-  :deep(iframe) {
-    width: 100% !important;
-    height: 100% !important;
-  }
 }
 
-.email-form {
-  @apply space-y-4;
+.header-glow {
+  position: absolute;
+  right: -20px;
+  bottom: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.25), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
 
-  &__button {
-    @apply flex items-center justify-center;
-    @apply w-full h-[50px] rounded-xl shadow-lg transition-colors;
-    @apply bg-brand-aqua disabled:opacity-60;
-    @apply text-white text-[17px] absolute bottom-0;
-  }
+.header-back-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  font-size: 20px;
+  color: #fff;
+  font-weight: 600;
+  flex-shrink: 0;
+  line-height: 1;
+}
 
-  &__error {
-    @apply flex items-start gap-2 text-red-200 text-[13px] leading-snug mt-1;
-  }
+.field-wrap {
+  margin-bottom: 14px;
+}
 
-  &__error-link {
-    @apply text-white underline font-semibold whitespace-nowrap ml-1;
-  }
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4a5568;
+  margin-bottom: 5px;
+  letter-spacing: 0.02em;
+}
 
-  &__divider {
-    @apply flex items-center space-x-4 mb-4 mt-6;
-  }
+.field-input {
+  width: 100%;
+  padding: 13px 14px;
+  font-size: 15px;
+  border: 1.5px solid #eef0f6;
+  border-radius: 12px;
+  background: #fff;
+  color: #231d45;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+}
+
+.field-input:focus {
+  border-color: #00A19A;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
+}
+
+.field-input::placeholder {
+  color: #94a3b8;
+}
+
+.gender-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+}
+
+.pw-toggle {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.submit-btn {
+  width: 100%;
+  border: none;
+  padding: 15px 18px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #00A19A;
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(0, 161, 154, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  transition: transform 0.1s, opacity 0.15s;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+}
+
+.error-banner {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 12px;
+  color: #dc2626;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>

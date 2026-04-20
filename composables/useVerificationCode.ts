@@ -3,13 +3,12 @@ import { useAuth } from '~/composables/useAuth'
 import { useSession } from '~/composables/useSession'
 
 export const useVerificationCode = () => {
-  const { verifyOtp, requestOtp } = useAuth()
-  const { email } = useSession()
+  const { verifyOtp, requestOtp, register } = useAuth()
+  const { email, pendingSignup } = useSession()
 
-  // Form state
   const verificationCode = ref<string>('')
   const isLoading = ref<boolean>(false)
-  const resendCooldown = ref<number>(60) // start counting down immediately
+  const resendCooldown = ref<number>(60)
   const error = ref<string>('')
 
   let cooldownTimer: ReturnType<typeof setInterval> | null = null
@@ -29,31 +28,20 @@ export const useVerificationCode = () => {
   onMounted(() => startCooldown(60))
   onUnmounted(() => { if (cooldownTimer) clearInterval(cooldownTimer) })
 
-  // Computed
-  const isCodeComplete = computed<boolean>(() => {
-    return verificationCode.value.length === 6
-  })
-
-  const canResend = computed<boolean>(() => {
-    return resendCooldown.value === 0
-  })
+  const isCodeComplete = computed<boolean>(() => verificationCode.value.length === 6)
+  const canResend = computed<boolean>(() => resendCooldown.value === 0)
 
   const resendText = computed<string>(() => {
     if (resendCooldown.value > 0) {
       const minutes = Math.floor(resendCooldown.value / 60)
       const seconds = resendCooldown.value % 60
-      return `Resend code in ${minutes.toString().padStart(2, '0')}:${seconds
-        .toString()
-        .padStart(2, '0')}`
+      return `Resend code in ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
     }
     return 'Resend code'
   })
 
-  // Methods
   const handleNumberInput = (number: string): void => {
-    if (verificationCode.value.length < 6) {
-      verificationCode.value += number
-    }
+    if (verificationCode.value.length < 6) verificationCode.value += number
   }
 
   const handleBackspace = (): void => {
@@ -61,54 +49,51 @@ export const useVerificationCode = () => {
   }
 
   const handleCodeComplete = (code: string): void => {
-    console.log('Code completed:', code)
     verificationCode.value = code
-    // Auto-verify when code is complete
     verifyCode()
   }
 
-  //  Verify OTP with backend
   const verifyCode = async (): Promise<void> => {
     if (!isCodeComplete.value) return
 
     isLoading.value = true
     error.value = ''
 
-    console.log(
-      'Email:',
-      email,
-      'Email:',
-      email.value,
-      'Verification Code:',
-      verificationCode.value,
-    )
     try {
-      const response = await verifyOtp(email.value, verificationCode.value)
-      console.log('OTP verification response:', response)
+      await verifyOtp(email.value, verificationCode.value)
 
-      await navigateTo('/onboarding/create-account')
-
-      // Navigate to create account page
-      // setTimeout(() => {
-      //   window.location.href = '/onboarding/create-account'
-      // }, 500)
-    } catch (err) {
-      console.error(err)
+      if (pendingSignup.value) {
+        const { firstName, lastName, phone, dob, postcode, gender, password } = pendingSignup.value
+        const regRes: any = await register({
+          email: email.value,
+          firstName,
+          ...(lastName ? { lastName } : {}),
+          ...(phone ? { phone } : {}),
+          ...(dob ? { dob } : {}),
+          ...(postcode ? { postcode } : {}),
+          ...(gender ? { gender } : {}),
+          password,
+        })
+        localStorage.setItem('token', regRes.token)
+        pendingSignup.value = null
+        await navigateTo('/onboarding/thank-you')
+      } else {
+        // No pending data — user landed on verify directly; fall back to create-account
+        await navigateTo('/onboarding/create-account')
+      }
+    } catch (err: any) {
       error.value =
         err?.data?.message ||
         err?.response?._data?.message ||
-        'Verification Failed'
-      // Clear the code on error
+        'Verification failed. Please check your code and try again.'
       verificationCode.value = ''
     } finally {
       isLoading.value = false
     }
   }
 
-  // Resend OTP code
   const resendCode = async (): Promise<void> => {
     if (!canResend.value) return
-
     try {
       await requestOtp(email.value)
       verificationCode.value = ''
@@ -120,28 +105,22 @@ export const useVerificationCode = () => {
   }
 
   const goBack = (): void => {
-    // Navigate back to previous page
     window.history.back()
   }
 
   return {
-    // State
     email,
     verificationCode,
     isLoading,
     error,
-
-    // Computed
     isCodeComplete,
     canResend,
     resendText,
-
-    // Methods
+    handleNumberInput,
+    handleBackspace,
     handleCodeComplete,
     verifyCode,
     resendCode,
     goBack,
   }
 }
-
-
