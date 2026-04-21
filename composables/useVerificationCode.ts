@@ -63,15 +63,13 @@ export const useVerificationCode = () => {
       await verifyOtp(email.value, verificationCode.value)
 
       if (pendingSignup.value) {
-        const { firstName, lastName, phone, dob, postcode, gender, password } = pendingSignup.value
+        const { firstName, lastName, phone, postcode, password } = pendingSignup.value
         const regRes: any = await register({
           email: email.value,
           firstName,
           ...(lastName ? { lastName } : {}),
           ...(phone ? { phone } : {}),
-          ...(dob ? { dob } : {}),
           ...(postcode ? { postcode } : {}),
-          ...(gender ? { gender } : {}),
           password,
         })
         localStorage.setItem('token', regRes.token)

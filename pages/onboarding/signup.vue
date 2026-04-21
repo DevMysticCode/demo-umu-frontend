@@ -19,16 +19,10 @@
 
       <div v-if="formError" class="error-banner">{{ formError }}</div>
 
-      <!-- First Name -->
+      <!-- Full Name -->
       <div class="field-wrap">
-        <label class="field-label">First Name</label>
-        <input v-model="form.firstName" type="text" placeholder="Jane" class="field-input" autocomplete="given-name" />
-      </div>
-
-      <!-- Last Name -->
-      <div class="field-wrap">
-        <label class="field-label">Last Name</label>
-        <input v-model="form.lastName" type="text" placeholder="Smith" class="field-input" autocomplete="family-name" />
+        <label class="field-label">Full Name</label>
+        <input v-model="form.fullName" type="text" placeholder="Jane Smith" class="field-input" autocomplete="name" />
       </div>
 
       <!-- Email -->
@@ -37,16 +31,10 @@
         <input v-model="form.email" type="email" placeholder="you@example.com" class="field-input" autocomplete="email" />
       </div>
 
-      <!-- Mobile -->
+      <!-- Mobile with country code -->
       <div class="field-wrap">
-        <label class="field-label">UK Mobile Number (+44) <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
-        <input v-model="form.mobile" type="tel" placeholder="07123456789" class="field-input" autocomplete="tel" />
-      </div>
-
-      <!-- Date of Birth -->
-      <div class="field-wrap">
-        <label class="field-label">Date of Birth</label>
-        <input v-model="form.dateOfBirth" type="date" class="field-input" />
+        <label class="field-label">Mobile Number <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
+        <PhoneInput v-model="form.mobile" />
       </div>
 
       <!-- Postcode / Address -->
@@ -58,18 +46,6 @@
         :selectedAddress="selectedAddress"
         @edit="editAddress"
       />
-
-      <!-- Gender -->
-      <div class="field-wrap">
-        <label class="field-label">Gender</label>
-        <select v-model="form.gender" class="field-input gender-select">
-          <option value="" disabled>Select gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="non-binary">Non-binary</option>
-          <option value="prefer-not-to-say">Prefer not to say</option>
-        </select>
-      </div>
 
       <!-- Password -->
       <div class="field-wrap">
@@ -95,31 +71,22 @@
         </div>
       </div>
 
-      <!-- Terms -->
-      <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px;">
-        <input
-          id="terms"
-          :checked="termsAccepted"
-          type="checkbox"
-          style="width: 18px; height: 18px; margin-top: 2px; accent-color: #00A19A; flex-shrink: 0; cursor: pointer;"
-          @change="handleTermsCheckbox"
-        />
-        <label for="terms" style="font-size: 13px; color: #4a5568; line-height: 1.55; cursor: pointer;">
-          I agree to the
-          <span style="color: #00A19A; font-weight: 600; cursor: pointer;" @click="openTermsModal">Terms of Service</span>
-          and
-          <span style="color: #00A19A; font-weight: 600; cursor: pointer;" @click="openTermsModal">Privacy Policy</span>
-        </label>
-      </div>
-
       <!-- Submit -->
-      <button @click="handleSubmit" :disabled="isLoading" class="submit-btn" style="margin-bottom: 14px;">
+      <button @click="handleSubmit" :disabled="isLoading" class="submit-btn" style="margin-bottom: 12px;">
         <span v-if="isLoading" class="spinner"></span>
         {{ isLoading ? 'Creating account…' : 'Create account' }}
       </button>
 
+      <!-- Terms disclaimer -->
+      <p class="terms-disclaimer">
+        By continuing you agree to our
+        <span class="terms-link" @click="showTermsModal = true">Terms of Service</span>
+        and
+        <span class="terms-link" @click="showTermsModal = true">Privacy Policy</span>
+      </p>
+
       <!-- Sign in link -->
-      <div style="text-align: center;">
+      <div style="text-align: center; margin-top: 18px;">
         <span style="font-size: 13px; color: #94a3b8;">Already have an account? </span>
         <NuxtLink to="/onboarding/signin" style="font-size: 13px; font-weight: 700; color: #00A19A; text-decoration: none;">Sign in</NuxtLink>
       </div>
@@ -140,7 +107,7 @@
     <TermsModal
       :show="showTermsModal"
       @update:show="showTermsModal = $event"
-      @accept="acceptTerms"
+      @accept="showTermsModal = false"
       @close="showTermsModal = false"
     />
   </div>
@@ -151,6 +118,7 @@ import { ref, reactive } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import { useSession } from '~/composables/useSession'
 import { toTitleCase } from '~/utils/form-helpres'
+import PhoneInput from '~/components/form/PhoneInput.vue'
 import AddressSearch from '~/components/form/AddressSearch.vue'
 import AddressSearchModal from '~/components/modals/AddressSearchModal.vue'
 import TermsModal from '~/components/modals/TermsModal.vue'
@@ -165,22 +133,19 @@ const { requestOtp } = useAuth()
 const { email, pendingSignup } = useSession()
 
 const form = reactive({
-  firstName: '',
-  lastName: '',
+  fullName: '',
   email: '',
   mobile: '',
-  dateOfBirth: '',
   postcode: '',
-  gender: '',
   password: '',
   confirmPassword: '',
 })
 
 const showPassword = ref(false)
 const showConfirm = ref(false)
-const termsAccepted = ref(false)
 const formError = ref('')
 const isLoading = ref(false)
+const showTermsModal = ref(false)
 
 // ── Address search ────────────────────────────────────────────────────────
 const searchingAddress = ref(false)
@@ -222,44 +187,15 @@ const editAddress = () => {
   form.postcode = ''
 }
 
-// ── Terms modal ───────────────────────────────────────────────────────────
-const showTermsModal = ref(false)
-
-const openTermsModal = () => {
-  showTermsModal.value = true
-}
-
-const handleTermsCheckbox = (event: Event) => {
-  const checked = (event.target as HTMLInputElement).checked
-  if (!checked) {
-    termsAccepted.value = false
-  } else if (!termsAccepted.value) {
-    openTermsModal()
-  }
-}
-
-const acceptTerms = () => {
-  termsAccepted.value = true
-  showTermsModal.value = false
-}
-
 const handleSubmit = async () => {
   formError.value = ''
 
-  if (!form.firstName.trim() || !form.lastName.trim()) {
-    formError.value = 'Please enter your first and last name.'
+  if (!form.fullName.trim()) {
+    formError.value = 'Please enter your full name.'
     return
   }
   if (!form.email.trim()) {
     formError.value = 'Please enter your email address.'
-    return
-  }
-  if (!form.dateOfBirth) {
-    formError.value = 'Please enter your date of birth.'
-    return
-  }
-  if (!form.gender) {
-    formError.value = 'Please select your gender.'
     return
   }
   if (form.password.length < 8) {
@@ -270,10 +206,11 @@ const handleSubmit = async () => {
     formError.value = 'Passwords do not match.'
     return
   }
-  if (!termsAccepted.value) {
-    formError.value = 'You must agree to the terms and conditions.'
-    return
-  }
+
+  // Split full name into first / last
+  const parts = form.fullName.trim().split(/\s+/)
+  const firstName = parts[0] ?? ''
+  const lastName = parts.slice(1).join(' ')
 
   isLoading.value = true
   try {
@@ -288,12 +225,10 @@ const handleSubmit = async () => {
     }
 
     pendingSignup.value = {
-      firstName: form.firstName,
-      lastName: form.lastName,
+      firstName,
+      lastName,
       phone: form.mobile,
-      dob: form.dateOfBirth,
       postcode: form.postcode,
-      gender: form.gender,
       password: form.password,
     }
 
@@ -379,12 +314,26 @@ const handleSubmit = async () => {
   color: #94a3b8;
 }
 
-.gender-select {
-  appearance: none;
-  -webkit-appearance: none;
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 40px;
+/* Make PhoneInput match the rest of the form */
+:deep(.phone-field) {
+  background: #fff;
+  border: 1.5px solid #eef0f6;
+  border-radius: 12px;
+  height: 50px;
+}
+
+:deep(.phone-field--focused) {
+  border-color: #00A19A;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
+}
+
+:deep(.number-input) {
+  font-size: 15px;
+  color: #231d45;
+}
+
+:deep(.country-dial) {
+  color: #231d45;
 }
 
 .pw-toggle {
@@ -426,6 +375,20 @@ const handleSubmit = async () => {
 
 .submit-btn:active {
   transform: scale(0.98);
+}
+
+.terms-disclaimer {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.terms-link {
+  color: #00A19A;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .error-banner {
