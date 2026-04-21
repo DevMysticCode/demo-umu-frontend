@@ -132,6 +132,14 @@ const {
 }
 
 .verification-content__continue-button {
-  @apply w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 disabled:bg-white/30 text-white font-medium text-base rounded-full flex items-center justify-center transition-colors;
+  @apply w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-medium text-base rounded-full flex items-center justify-center transition-colors;
+  box-shadow: 0 4px 18px rgba(0, 161, 154, 0.3);
+}
+
+.verification-content__continue-button:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+  box-shadow: none;
+  cursor: not-allowed;
 }
 </style>

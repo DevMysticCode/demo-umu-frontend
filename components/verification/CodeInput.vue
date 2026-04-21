@@ -49,7 +49,7 @@ watch(
         .concat(Array(props.length).fill(''))
         .slice(0, props.length)
     }
-  }
+  },
 )
 
 const handleInput = (index: number, event: Event) => {
@@ -124,12 +124,19 @@ const updateModelValue = () => {
 }
 
 .code-input__field {
-  @apply w-12 h-12 bg-white rounded-xl text-center text-xl font-semibold text-gray-900 border-0 focus:ring-2 focus:ring-white/50 transition-all;
+  @apply w-12 h-12 rounded-xl text-center text-xl font-semibold text-gray-900 transition-all outline-none;
+  background: #f8f7fc;
+  border: 2px solid #b3b3b3;
+}
+
+.code-input__field:focus {
+  border-color: #00a19a;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
+  background: #fff;
 }
 
 .code-input__field--filled {
-  @apply bg-white;
+  background: #fff;
+  border-color: #00a19a;
 }
 </style>
-
-
