@@ -148,11 +148,29 @@
       <!-- For You Section -->
       <div class="mb-8">
         <div class="px-4 mb-3">
-          <h2 class="section-title">For You</h2>
+          <div class="flex items-center justify-between">
+            <h2 class="section-title">For You</h2>
+            <button
+              v-if="!hasPreferences"
+              @click="router.push('/onboarding/preferences')"
+              class="personalise-btn"
+            >Personalise</button>
+          </div>
           <p class="section-subtitle">
             Here are some top picks exclusively selected for you based on your
             profile.
           </p>
+        </div>
+
+        <!-- Personalise banner when no preferences set -->
+        <div v-if="!hasPreferences" class="px-4 mb-4">
+          <div class="personalise-banner" @click="router.push('/onboarding/preferences')">
+            <div>
+              <p class="personalise-banner-title">Make it yours</p>
+              <p class="personalise-banner-sub">Tell us what you're looking for and we'll find the best matches.</p>
+            </div>
+            <span class="personalise-arrow">→</span>
+          </div>
         </div>
 
         <!-- Carousel — 88% width per slide, overflow-hidden for peeking -->
@@ -381,6 +399,7 @@ const config = useRuntimeConfig()
 
 const showSearchDrawer = ref(false)
 const recommendedProperties = ref<any[]>([])
+const hasPreferences = ref(false)
 
 const currentSlide = ref(0)
 const carouselRef = ref<HTMLElement | null>(null)
@@ -412,10 +431,19 @@ onMounted(async () => {
   try {
     const token = localStorage.getItem('token')
     if (!token) return
-    const result = await $fetch<{ items: any[]; total: number }>(
-      `${config.public.apiBase}/property/for-you`,
-      { headers: { Authorization: `Bearer ${token}` } },
-    )
+
+    const [result, prefs] = await Promise.all([
+      $fetch<{ items: any[]; total: number }>(
+        `${config.public.apiBase}/property/for-you`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      ),
+      $fetch<any>(`${config.public.apiBase}/profile/preferences`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => null),
+    ])
+
+    hasPreferences.value = !!(prefs && (prefs.purpose || prefs.buyingTimeline))
+
     recommendedProperties.value = (result.items ?? []).map((p: any) => ({
       ...p,
       address: [p.addressLine1, p.city].filter(Boolean).join(', '),
@@ -470,6 +498,49 @@ const viewProperty = (id: string) => {
 
 .sqft-badge {
   width: fit-content;
+}
+
+.personalise-btn {
+  font-size: 12px;
+  font-weight: 700;
+  color: #00A19A;
+  background: rgba(0,161,154,0.1);
+  border: none;
+  border-radius: 50px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.personalise-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(0,161,154,0.08), rgba(35,29,69,0.06));
+  border: 1.5px solid rgba(0,161,154,0.2);
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.personalise-banner-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #231d45;
+  margin: 0 0 2px;
+}
+
+.personalise-banner-sub {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.personalise-arrow {
+  font-size: 18px;
+  color: #00A19A;
+  flex-shrink: 0;
+  margin-left: 12px;
 }
 
 /* Property image placeholder — matches ImageSlider.vue */
