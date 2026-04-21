@@ -67,8 +67,8 @@ export const useCreateAccountData = () => {
       addressResults.value = res.items.map((p, i) => ({
         id: i + 1,
         line1: toTitleCase(p.addressLine1),
-        line2: [p.city, p.postcode].filter(Boolean).map(toTitleCase).join(', '),
-        postcode: p.postcode,
+        line2: [p.city ? toTitleCase(p.city) : null, p.postcode?.toUpperCase()].filter(Boolean).join(', '),
+        postcode: p.postcode?.toUpperCase(),
       }))
       // Store last searched postcode on the form so the modal title is correct
       form.postcode = query

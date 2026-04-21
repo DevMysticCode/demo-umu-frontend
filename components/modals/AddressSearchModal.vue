@@ -127,32 +127,20 @@ const handleContinue = (address) => {
           'address-modal__result--selected': selectedAddressId === address.id,
         }"
       >
+        <!-- Radio icon -->
         <div class="address-modal__radio">
-          <div
-            class="address-modal__radio-button"
-            :class="{
-              'address-modal__radio-button--selected':
-                selectedAddressId === address.id,
-            }"
-          >
-            <!-- No selection icon -->
-            <OPIcon
-              v-if="selectedAddressId !== address.id"
-              name="radioUnchecked"
-              class="w-[18px] h-[18px] text-white"
-            />
-
-            <!-- Selected icon -->
-            <OPIcon
-              v-else
-              name="radioChecked"
-              class="w-[18px] h-[18px] text-white"
-            />
-          </div>
+          <svg v-if="selectedAddressId !== address.id" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="9" stroke="#d1d5db" stroke-width="1.5"/>
+          </svg>
+          <svg v-else width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="10" fill="#00A19A"/>
+            <path d="M6 10l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
 
         <div class="address-modal__address">
           <p class="address-modal__address-text">{{ address.line1 }}</p>
+          <p v-if="address.line2" class="address-modal__address-sub">{{ address.line2 }}</p>
         </div>
       </div>
     </div>
@@ -301,42 +289,32 @@ const handleContinue = (address) => {
   background-color: #f9fafb;
 }
 .address-modal__result--selected {
-  background-color: #f0f9ff;
+  background-color: rgba(0, 161, 154, 0.06);
+  border-color: #00A19A !important;
 } /* Radio Button */
 .address-modal__radio {
   margin-right: 0.75rem;
   flex-shrink: 0;
-}
-.address-modal__radio-button {
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: border-color 0.2s;
-}
-.address-modal__radio-button--selected {
-  border-color: #06b6d4;
-}
-.address-modal__radio-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  background-color: #06b6d4;
-  border-radius: 50%;
 } /* Address Text */
 .address-modal__address {
   flex: 1;
+  min-width: 0;
 }
 .address-modal__address-text {
   font-size: 13px;
   color: #000;
   margin: 0;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 18px;
   letter-spacing: -0.08px;
+}
+.address-modal__address-sub {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 2px 0 0;
+  line-height: 16px;
 } /* Scrollbar Styling */
 .address-modal__results::-webkit-scrollbar {
   width: 4px;
