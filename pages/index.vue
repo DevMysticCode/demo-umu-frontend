@@ -168,6 +168,7 @@
                   <div
                     class="pc-stat"
                     :class="{ 'stat-landed': statLanded[i] }"
+                    :style="card.statColor ? { color: card.statColor } : {}"
                   >{{ displayStats[i] }}</div>
                   <div class="pc-unit">{{ card.unit }}</div>
                 </div>
@@ -275,6 +276,7 @@ const cards = [
     frontGradient: 'linear-gradient(150deg, #131129, #1e1842)',
     shadow: '0 8px 28px rgba(0,0,0,0.4)',
     glowColor: 'radial-gradient(circle,rgba(0,200,190,0.35),transparent 70%)',
+    statColor: '#f87171',
     target: 179, prefix: '', suffix: '',
     unit: '→ 14 days',
     label: '12× slower',
@@ -399,7 +401,7 @@ onMounted(() => {
   opacity: 0;
   transform: translateY(24px);
   min-height: 130px;
-  /* Must propagate the 3D context so backface-visibility works on child faces */
+  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
 }
 
@@ -415,12 +417,15 @@ onMounted(() => {
   position: relative;
   width: 100%;
   min-height: 130px;
+  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 18px;
+  will-change: transform;
 }
 
 .card-inner.flipped {
+  -webkit-transform: rotateY(180deg);
   transform: rotateY(180deg);
 }
 
@@ -438,10 +443,18 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* iOS Safari requires an explicit rotateY(0) on the front face —
+   without it, backface-visibility: hidden is ignored and the front
+   bleeds through as reversed text when the card is flipped. */
+.card-front {
+  -webkit-transform: rotateY(0deg);
+  transform: rotateY(0deg);
 }
 
 /* Corner radial glow (replaces ::before) */
@@ -473,6 +486,7 @@ onMounted(() => {
 }
 
 .card-back {
+  -webkit-transform: rotateY(180deg);
   transform: rotateY(180deg);
   background: linear-gradient(150deg, #008c86, #00b5ad);
   box-shadow: 0 8px 28px rgba(0, 161, 154, 0.4);
