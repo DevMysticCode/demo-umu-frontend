@@ -399,6 +399,8 @@ onMounted(() => {
   opacity: 0;
   transform: translateY(24px);
   min-height: 130px;
+  /* Must propagate the 3D context so backface-visibility works on child faces */
+  transform-style: preserve-3d;
 }
 
 .card-wrap.entered {

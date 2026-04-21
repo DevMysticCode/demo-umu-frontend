@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile-container gradient-bg backgound-image">
+  <div class="mobile-container" style="background: #fff;">
     <div class="relative z-10 flex flex-col min-h-screen">
       <!-- Header -->
       <div class="verification-header">
@@ -72,12 +72,9 @@ const {
   isCodeComplete,
   canResend,
   resendText,
-  handleNumberInput,
-  handleBackspace,
   handleCodeComplete,
   verifyCode,
   resendCode,
-  goBack,
 } = useVerificationCode()
 </script>
 
@@ -101,11 +98,13 @@ const {
 }
 
 .verification-content__title {
-  @apply text-28-emphasized text-white mb-4;
+  @apply text-28-emphasized mb-4;
+  color: #231d45;
 }
 
 .verification-content__subtitle {
-  @apply text-16-medium text-white/70 leading-relaxed;
+  @apply text-16-medium leading-relaxed;
+  color: #4a5568;
 }
 
 .verification-content__code {
@@ -113,7 +112,7 @@ const {
 }
 
 .verification-content__error {
-  @apply text-red-300 text-center text-sm mb-4;
+  @apply text-red-500 text-center text-sm mb-4;
 }
 
 .verification-content__resend {
@@ -125,7 +124,7 @@ const {
 }
 
 .verification-content__resend-button--disabled {
-  @apply text-white/50 cursor-not-allowed hover:text-white/50;
+  @apply text-gray-400 cursor-not-allowed hover:text-gray-400;
 }
 
 .verification-content__continue {
