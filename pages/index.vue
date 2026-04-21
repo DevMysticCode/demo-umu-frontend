@@ -129,6 +129,7 @@
 
         <!-- 2-column flip card grid -->
         <div
+          id="card-grid"
           style="
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -139,92 +140,51 @@
           <div
             v-for="(card, i) in cards"
             :key="i"
-            style="cursor: pointer; min-height: 130px"
+            class="card-wrap"
+            :class="{ entered: entered[i] }"
             @click="flipCard(i)"
           >
-            <div class="card-inner" :class="{ flipped: flippedCards.has(i) }">
+            <div
+              class="card-inner"
+              :class="{
+                flipped: flippedCards.has(i),
+                'pulse-first': i === 0,
+              }"
+            >
               <!-- Front face -->
               <div
                 class="card-face card-front"
-                :style="{
-                  background: card.frontGradient,
-                  boxShadow: card.shadow,
-                }"
+                :style="{ background: card.frontGradient, boxShadow: card.shadow }"
               >
-                <div>
+                <!-- Corner radial glow -->
+                <div
+                  class="card-glow"
+                  :style="{ background: card.glowColor }"
+                ></div>
+                <!-- Bottom shimmer line -->
+                <div class="card-shine"></div>
+
+                <div class="pc-top">
                   <div
-                    style="
-                      font-size: 26px;
-                      font-weight: 800;
-                      letter-spacing: -1px;
-                      line-height: 1;
-                      color: #fff;
-                      margin-bottom: 3px;
-                    "
-                  >
-                    {{ card.stat }}
-                  </div>
-                  <div
-                    style="
-                      font-size: 9.5px;
-                      font-weight: 700;
-                      color: rgba(255, 255, 255, 0.45);
-                      text-transform: uppercase;
-                      letter-spacing: 0.08em;
-                    "
-                  >
-                    {{ card.unit }}
-                  </div>
+                    class="pc-stat"
+                    :class="{ 'stat-landed': statLanded[i] }"
+                  >{{ displayStats[i] }}</div>
+                  <div class="pc-unit">{{ card.unit }}</div>
                 </div>
-                <div>
-                  <div
-                    style="
-                      font-size: 12.5px;
-                      font-weight: 700;
-                      color: #fff;
-                      line-height: 1.25;
-                      margin-bottom: 3px;
-                    "
-                  >
-                    {{ card.label }}
-                  </div>
-                  <div
-                    style="
-                      font-size: 10px;
-                      color: rgba(255, 255, 255, 0.5);
-                      line-height: 1.45;
-                    "
-                  >
-                    {{ card.sub }}
-                  </div>
+                <div class="pc-bot">
+                  <div class="pc-label">{{ card.label }}</div>
+                  <div class="pc-sub">{{ card.sub }}</div>
                 </div>
               </div>
 
               <!-- Back face -->
               <div class="card-face card-back">
-                <div style="font-size: 26px; margin-bottom: 7px">
+                <div class="card-glow" style="background: radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%)"></div>
+                <div style="font-size: 26px; margin-bottom: 7px; position: relative; z-index: 1;">
                   {{ card.backIcon }}
                 </div>
-                <div
-                  style="
-                    font-size: 13px;
-                    font-weight: 800;
-                    color: #fff;
-                    line-height: 1.3;
-                    margin-bottom: 5px;
-                  "
-                >
-                  {{ card.backTitle }}
-                </div>
-                <div
-                  style="
-                    font-size: 10px;
-                    color: rgba(255, 255, 255, 0.72);
-                    line-height: 1.45;
-                  "
-                >
-                  {{ card.backSub }}
-                </div>
+                <div class="back-title">{{ card.backTitle }}</div>
+                <div class="back-sub">{{ card.backSub }}</div>
               </div>
             </div>
           </div>
@@ -232,6 +192,8 @@
 
         <!-- Tap hint -->
         <div
+          class="tap-hint"
+          :class="{ visible: tapHintVisible }"
           style="
             font-size: 10px;
             color: #94a3b8;
@@ -283,12 +245,16 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 
 definePageMeta({ middleware: 'guest' })
 
 const flippedCards = reactive(new Set())
+const entered = reactive([])
+const statLanded = reactive([])
+const displayStats = reactive([])
+const tapHintVisible = ref(false)
 
 const flipCard = (index) => {
   if (flippedCards.has(index)) {
@@ -308,19 +274,20 @@ const cards = [
   {
     frontGradient: 'linear-gradient(150deg, #131129, #1e1842)',
     shadow: '0 8px 28px rgba(0,0,0,0.4)',
-    stat: '179',
+    glowColor: 'radial-gradient(circle,rgba(0,200,190,0.35),transparent 70%)',
+    target: 179, prefix: '', suffix: '',
     unit: '→ 14 days',
     label: '12× slower',
     sub: 'UK avg. vs. with Passport',
     backIcon: '⚡',
     backTitle: 'We cut it to 14 days',
-    backSub:
-      'Your Passport is pre-verified. Solicitors get everything in one tap.',
+    backSub: 'Your Passport is pre-verified. Solicitors get everything in one tap.',
   },
   {
     frontGradient: 'linear-gradient(150deg, #00504e, #007a74)',
     shadow: '0 8px 28px rgba(0,80,78,0.5)',
-    stat: '33%',
+    glowColor: 'radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%)',
+    target: 33, prefix: '', suffix: '%',
     unit: 'sales collapse',
     label: 'No safety net',
     sub: 'Fees lost, nothing to show',
@@ -331,7 +298,8 @@ const cards = [
   {
     frontGradient: 'linear-gradient(150deg, #1e1650, #2d2268)',
     shadow: '0 8px 28px rgba(30,22,80,0.5)',
-    stat: '£2,700',
+    glowColor: 'radial-gradient(circle,rgba(0,180,170,0.3),transparent 70%)',
+    target: 2700, prefix: '£', suffix: '',
     unit: 'lost per consumer',
     label: 'Per fall-through',
     sub: 'Legal & survey fees gone',
@@ -342,7 +310,8 @@ const cards = [
   {
     frontGradient: 'linear-gradient(150deg, #003836, #005f5b)',
     shadow: '0 8px 28px rgba(0,56,54,0.5)',
-    stat: '30%',
+    glowColor: 'radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%)',
+    target: 30, prefix: '', suffix: '%',
     unit: 'of buyers',
     label: 'Gazumped',
     sub: 'Offer accepted, then stolen',
@@ -353,7 +322,8 @@ const cards = [
   {
     frontGradient: 'linear-gradient(150deg, #0d0b1e, #231d45)',
     shadow: '0 8px 28px rgba(13,11,30,0.6)',
-    stat: '60%',
+    glowColor: 'radial-gradient(circle,rgba(0,161,154,0.28),transparent 70%)',
+    target: 60, prefix: '', suffix: '%',
     unit: 'of surveys',
     label: 'Hidden defects',
     sub: 'Found too late to act',
@@ -364,7 +334,8 @@ const cards = [
   {
     frontGradient: 'linear-gradient(150deg, #008c86, #00b5ad)',
     shadow: '0 8px 28px rgba(0,140,134,0.4)',
-    stat: '£900m',
+    glowColor: 'radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%)',
+    target: 900, prefix: '£', suffix: 'm',
     unit: 'lost by consumers',
     label: 'Every year',
     sub: 'On aborted transactions',
@@ -373,9 +344,71 @@ const cards = [
     backSub: 'Every Passport in the system means one less aborted sale.',
   },
 ]
+
+// Initialise display stats to "0" with correct prefix/suffix
+cards.forEach((c, i) => { displayStats[i] = c.prefix + '0' + c.suffix })
+
+function runCountUp(i) {
+  const { target, prefix, suffix } = cards[i]
+  const STEPS = 28
+  const DURATION = 900
+  const interval = DURATION / STEPS
+  let step = 0
+  const easeOut = (t) => 1 - Math.pow(1 - t, 3)
+  const fmt = (n) => target >= 1000 ? n.toLocaleString('en-GB') : String(n)
+  const timer = setInterval(() => {
+    step++
+    const current = Math.round(easeOut(step / STEPS) * target)
+    displayStats[i] = prefix + fmt(current) + suffix
+    if (step >= STEPS) {
+      clearInterval(timer)
+      displayStats[i] = prefix + fmt(target) + suffix
+      statLanded[i] = true
+    }
+  }, interval)
+}
+
+onMounted(() => {
+  // Stagger card entrance — 600ms base + 110ms per card
+  cards.forEach((_, i) => {
+    setTimeout(() => {
+      entered[i] = true
+      runCountUp(i)
+    }, 600 + i * 110)
+  })
+
+  // Tap hint fades in after cards have appeared
+  setTimeout(() => {
+    tapHintVisible.value = true
+  }, 1600)
+
+  // Auto-flip first card as a teaser, then flip back
+  setTimeout(() => {
+    flippedCards.add(0)
+    setTimeout(() => {
+      flippedCards.delete(0)
+    }, 2200)
+  }, 2800)
+})
 </script>
 
 <style scoped>
+/* ── Card wrapper (starts invisible, slides up on enter) ── */
+.card-wrap {
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(24px);
+  min-height: 130px;
+}
+
+.card-wrap.entered {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── 3D flip inner ── */
 .card-inner {
   position: relative;
   width: 100%;
@@ -389,6 +422,12 @@ const cards = [
   transform: rotateY(180deg);
 }
 
+/* Pulse glow on first card (red-ish ring, matches prototype) */
+.pulse-first {
+  animation: pulseGlow 2.8s ease-in-out 2.5s infinite;
+}
+
+/* ── Card faces ── */
 .card-face {
   position: absolute;
   inset: 0;
@@ -403,6 +442,34 @@ const cards = [
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Corner radial glow (replaces ::before) */
+.card-glow {
+  position: absolute;
+  right: -28px;
+  top: -28px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Bottom shimmer line (replaces ::after) */
+.card-shine {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  pointer-events: none;
+}
+
 .card-back {
   transform: rotateY(180deg);
   background: linear-gradient(150deg, #008c86, #00b5ad);
@@ -412,6 +479,72 @@ const cards = [
   text-align: center;
 }
 
+/* ── Card text elements ── */
+.pc-top,
+.pc-bot {
+  position: relative;
+  z-index: 1;
+}
+
+.pc-stat {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 3px;
+}
+
+.pc-unit {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pc-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 3px;
+}
+
+.pc-sub {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.45;
+}
+
+.back-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.back-sub {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.45;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Tap hint ── */
+.tap-hint {
+  opacity: 0;
+}
+
+.tap-hint.visible {
+  animation: fadeUpIn 0.5s ease 0s forwards;
+}
+
+/* ── CTA bar ── */
 .cta-bar {
   position: fixed;
   bottom: 0;
@@ -445,5 +578,46 @@ const cards = [
 
 .cta-btn:active {
   transform: scale(0.98);
+}
+
+/* ── Keyframes ── */
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4),
+      0 0 0 4px rgba(248, 113, 113, 0.22);
+  }
+}
+
+@keyframes statLand {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.stat-landed {
+  animation: statLand 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fadeUpIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
