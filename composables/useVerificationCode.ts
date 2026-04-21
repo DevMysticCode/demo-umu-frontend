@@ -53,19 +53,44 @@ export const useVerificationCode = () => {
     verifyCode()
   }
 
+  // useState persists across SPA navigations; sessionStorage covers page refreshes
+  const resolveEmail = (): string => {
+    if (email.value) return email.value
+    if (typeof sessionStorage !== 'undefined') {
+      const stored = sessionStorage.getItem('umu-pending-email')
+      if (stored) {
+        email.value = stored
+        return stored
+      }
+    }
+    return ''
+  }
+
+  const parseApiError = (err: any): string => {
+    const msg = err?.data?.message ?? err?.response?._data?.message
+    if (Array.isArray(msg)) return msg.join('. ')
+    return msg || 'Verification failed. Please check your code and try again.'
+  }
+
   const verifyCode = async (): Promise<void> => {
     if (!isCodeComplete.value) return
+
+    const resolvedEmail = resolveEmail()
+    if (!resolvedEmail) {
+      error.value = 'Session expired. Please go back and enter your email again.'
+      return
+    }
 
     isLoading.value = true
     error.value = ''
 
     try {
-      await verifyOtp(email.value, verificationCode.value)
+      await verifyOtp(resolvedEmail, verificationCode.value)
 
       if (pendingSignup.value) {
         const { firstName, lastName, phone, postcode, password } = pendingSignup.value
         const regRes: any = await register({
-          email: email.value,
+          email: resolvedEmail,
           firstName,
           ...(lastName ? { lastName } : {}),
           ...(phone ? { phone } : {}),
@@ -73,17 +98,14 @@ export const useVerificationCode = () => {
           password,
         })
         localStorage.setItem('token', regRes.token)
+        sessionStorage.removeItem('umu-pending-email')
         pendingSignup.value = null
         await navigateTo('/onboarding/thank-you')
       } else {
-        // No pending data — user landed on verify directly; fall back to create-account
         await navigateTo('/onboarding/create-account')
       }
     } catch (err: any) {
-      error.value =
-        err?.data?.message ||
-        err?.response?._data?.message ||
-        'Verification failed. Please check your code and try again.'
+      error.value = parseApiError(err)
       verificationCode.value = ''
     } finally {
       isLoading.value = false
@@ -92,8 +114,9 @@ export const useVerificationCode = () => {
 
   const resendCode = async (): Promise<void> => {
     if (!canResend.value) return
+    const resolvedEmail = resolveEmail()
     try {
-      await requestOtp(email.value)
+      await requestOtp(resolvedEmail)
       verificationCode.value = ''
       error.value = ''
       startCooldown(60)

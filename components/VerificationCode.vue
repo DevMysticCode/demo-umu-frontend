@@ -9,9 +9,9 @@
       <!-- Main Content -->
       <div class="verification-content">
         <div class="verification-content__header">
-          <h1 class="verification-content__title">Enter code</h1>
+          <h1 class="verification-content__title">Check your email</h1>
           <p class="verification-content__subtitle">
-            We sent a verification code to your email<br />
+            We sent a 6-digit verification code to your email<br />
             <span class="font-medium">{{ email }}</span>
           </p>
         </div>
@@ -29,6 +29,18 @@
           {{ error }}
         </div>
 
+        <!-- Continue Button -->
+        <div class="verification-content__continue">
+          <button
+            @click="verifyCode"
+            :disabled="!isCodeComplete || isLoading"
+            class="verification-content__continue-button"
+          >
+            {{ isLoading ? 'Verifying...' : 'Confirm & continue' }}
+            <span class="ml-2">→</span>
+          </button>
+        </div>
+
         <!-- Resend Code -->
         <div class="verification-content__resend">
           <button
@@ -40,18 +52,6 @@
             }"
           >
             {{ resendText }}
-          </button>
-        </div>
-
-        <!-- Continue Button -->
-        <div class="verification-content__continue">
-          <button
-            @click="verifyCode"
-            :disabled="!isCodeComplete || isLoading"
-            class="verification-content__continue-button"
-          >
-            {{ isLoading ? 'Verifying...' : 'Continue' }}
-            <span class="ml-2">→</span>
           </button>
         </div>
       </div>
@@ -97,7 +97,7 @@ const {
 }
 
 .verification-content__header {
-  @apply text-start mb-12;
+  @apply text-center mb-12;
 }
 
 .verification-content__title {
@@ -136,5 +136,3 @@ const {
   @apply w-full h-12 bg-brand-aqua hover:bg-brand-aqua/90 disabled:bg-white/30 text-white font-medium text-base rounded-full flex items-center justify-center transition-colors;
 }
 </style>
-
-

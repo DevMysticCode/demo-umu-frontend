@@ -187,15 +187,28 @@ const editAddress = () => {
   form.postcode = ''
 }
 
+const parseApiError = (err: any): string => {
+  const msg = err?.data?.message
+  if (Array.isArray(msg)) return msg.join('. ')
+  return msg || 'Something went wrong. Please try again.'
+}
+
 const handleSubmit = async () => {
   formError.value = ''
+
+  const cleanEmail = form.email.trim().toLowerCase()
 
   if (!form.fullName.trim()) {
     formError.value = 'Please enter your full name.'
     return
   }
-  if (!form.email.trim()) {
+  if (!cleanEmail) {
     formError.value = 'Please enter your email address.'
+    return
+  }
+  // Basic email format check before hitting the backend
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    formError.value = 'Please enter a valid email address.'
     return
   }
   if (form.password.length < 8) {
@@ -216,7 +229,7 @@ const handleSubmit = async () => {
   try {
     const { exists } = await $fetch<{ exists: boolean }>(
       `${config.public.apiBase}/auth/check-email`,
-      { method: 'POST', body: { email: form.email } },
+      { method: 'POST', body: { email: cleanEmail } },
     )
 
     if (exists) {
@@ -232,11 +245,17 @@ const handleSubmit = async () => {
       password: form.password,
     }
 
-    email.value = form.email
-    await requestOtp(form.email)
+    // Store in both useState and sessionStorage so a page refresh on
+    // the verification page doesn't lose the email (SSR resets useState).
+    email.value = cleanEmail
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('umu-pending-email', cleanEmail)
+    }
+
+    await requestOtp(cleanEmail)
     await navigateTo('/onboarding/verification')
   } catch (err: any) {
-    formError.value = err?.data?.message || 'Something went wrong. Please try again.'
+    formError.value = parseApiError(err)
   } finally {
     isLoading.value = false
   }
