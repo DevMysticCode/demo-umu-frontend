@@ -159,6 +159,12 @@
           <p class="hs-cta-sub mb-0">
             {{ QUESTIONS.length }} quick questions · No signup needed
           </p>
+
+          <!-- Non-owner notice -->
+          <div v-if="!isPropertyOwner" class="hs-owner-notice">
+            <span style="font-size:14px;flex-shrink:0;">💡</span>
+            <span>Claim this property's passport to save your score permanently.</span>
+          </div>
         </div>
 
         <!-- Score breakdown -->
@@ -1284,6 +1290,7 @@ const streetStats = ref<any>(null)
 const matchedBuyers = ref<any[]>([])
 const buyersTotal = ref(0)
 const passportClaimLoading = ref(false)
+const isPropertyOwner = ref(false)
 
 const {
   step,
@@ -1787,6 +1794,8 @@ function goBack() {
 }
 
 async function saveToBackend() {
+  // Only save to DB if this user is the verified property owner
+  if (!isPropertyOwner.value) return
   const token =
     typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) return
@@ -1814,6 +1823,7 @@ async function saveToBackend() {
 // ── Lifecycle ─────────────────────────────────────────────────
 
 onMounted(async () => {
+  // Load property data
   try {
     const res = await fetch(`${config.public.apiBase}/property/${propertyId}`)
     if (res.ok) {
@@ -1821,6 +1831,34 @@ onMounted(async () => {
       prefill(property.value)
     }
   } catch {}
+
+  // Check ownership and load saved score from backend if owner
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (token) {
+    try {
+      const { getPassportStatus } = usePassportClaim()
+      const status = await getPassportStatus(propertyId)
+      isPropertyOwner.value = status.isOwner ?? false
+
+      if (isPropertyOwner.value) {
+        const scoreRes = await fetch(`${config.public.apiBase}/property/${propertyId}/homescore`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        if (scoreRes.ok) {
+          const existing = await scoreRes.json()
+          if (existing?.answers && Object.keys(existing.answers).length > 0) {
+            // Owner has a saved score — load it (backend is source of truth)
+            answers.value = existing.answers
+            if (Object.keys(existing.answers).length >= QUESTIONS.length) {
+              screen.value = 'results'
+              return
+            }
+          }
+        }
+      }
+    } catch {}
+  }
+
   const answeredCount = Object.keys(answers.value).length
   screen.value = answeredCount >= QUESTIONS.length ? 'results' : 'landing'
 })
@@ -2091,6 +2129,19 @@ watch(screen, (s) => {
   font-size: 11.5px;
   color: #94a3b8;
   margin: 0 0 14px;
+}
+.hs-owner-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #92400e;
+  line-height: 1.45;
+  margin-top: 4px;
 }
 
 /* ── Breakdown ────────────────────────────────────────── */

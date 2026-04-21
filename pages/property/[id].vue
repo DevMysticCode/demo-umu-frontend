@@ -2366,30 +2366,43 @@ onMounted(async () => {
     /* non-critical */
   }
 
-  // Load HomeScore — try backend first (if logged in), then fall back to localStorage
+  // Load HomeScore — public owner score first, then user's own, then localStorage, then EPC auto
   try {
+    // 1. Public endpoint — returns owner's saved score (no auth needed)
+    const pubRes = await fetch(`${apiBase}/property/${propertyId}/homescore/public`)
+    if (pubRes.ok) {
+      const hs = await pubRes.json()
+      if (hs?.total) {
+        homeScore.value = hs
+        homeScoreIsAuto.value = false
+      }
+    }
+
+    // 2. If the logged-in user has their own score, prefer it (could be more recent)
     const token = localStorage.getItem('token')
-    if (token) {
+    if (token && !homeScore.value) {
       const hsRes = await fetch(`${apiBase}/property/${propertyId}/homescore`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       if (hsRes.ok) {
         const hs = await hsRes.json()
-        if (hs?.total) homeScore.value = hs
+        if (hs?.total) {
+          homeScore.value = hs
+          homeScoreIsAuto.value = false
+        }
       }
     }
+
+    // 3. LocalStorage fallback (user answered but not logged in / not owner)
     if (!homeScore.value) {
       const saved = localStorage.getItem(`homescore_answers_${propertyId}`)
       if (saved) {
         const { answers } = JSON.parse(saved)
-        if (answers && Object.keys(answers).length === 11) {
+        if (answers && Object.keys(answers).length > 0) {
           const { calculateScore } = await import('~/utils/homescoreScoring')
           const base = calculateScore(answers)
-          homeScore.value = {
-            ...base.breakdown,
-            total: base.total,
-            rating: base.rating,
-          }
+          homeScore.value = { ...base.breakdown, total: base.total, rating: base.rating }
+          homeScoreIsAuto.value = Object.keys(answers).length < 11
         }
       }
     }
@@ -2397,22 +2410,13 @@ onMounted(async () => {
     /* non-critical */
   }
 
-  // Always auto-generate from public EPC data if still no score — runs regardless of above errors
+  // 4. Always fall back to EPC auto-score — never show "Not calculated"
   if (!homeScore.value) {
     try {
-      const { getPrefillFromProperty, getUnsureDefaults, calculateScore } =
-        await import('~/utils/homescoreScoring')
-      const unsure = getUnsureDefaults()
-      const epcPrefill = property.value
-        ? getPrefillFromProperty(property.value)
-        : {}
-      const merged = { ...unsure, ...epcPrefill }
-      const base = calculateScore(merged)
-      homeScore.value = {
-        ...base.breakdown,
-        total: base.total,
-        rating: base.rating,
-      }
+      const { getPrefillFromProperty, calculateScore } = await import('~/utils/homescoreScoring')
+      const epcPrefill = property.value ? getPrefillFromProperty(property.value) : {}
+      const base = calculateScore(epcPrefill)
+      homeScore.value = { ...base.breakdown, total: base.total, rating: base.rating }
       homeScoreIsAuto.value = true
     } catch {
       /* non-critical */

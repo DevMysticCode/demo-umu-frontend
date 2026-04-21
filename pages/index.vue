@@ -18,10 +18,10 @@
 
         <!-- Headline -->
         <div style="margin-bottom: 18px;">
-          <h1 style="font-size: 28px; font-weight: 900; color: #231d45; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 10px;">
+          <h1 style="font-size: 34px; font-weight: 900; color: #231d45; line-height: 1.15; margin-bottom: 10px;">
             Move home<br>in <span style="color: #00A19A;">14 days.</span><br>Not 179.
           </h1>
-          <p style="font-size: 14px; color: #4a5568; line-height: 1.6;">The UK's property system is broken. We built the fix — free for buyers and sellers.</p>
+          <p style="font-size: 16px; color: #4a5568; line-height: 1.6;">The UK's property system is broken. We built the fix — free for buyers and sellers.</p>
         </div>
 
         <!-- Stat pills -->
@@ -34,7 +34,7 @@
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#008c86" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
-            <span style="font-size: 11px; font-weight: 700; color: #008c86;">{{ stat }}</span>
+            <span style="font-size: 13px; font-weight: 700; color: #008c86;">{{ stat }}</span>
           </div>
         </div>
       </div>

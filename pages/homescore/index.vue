@@ -1,101 +1,118 @@
 <template>
-  <div class="hs-search-page">
+  <div class="hs-idx-page">
     <!-- Header -->
-    <AppHeader title="Homehealth Score" :showBack="true" />
+    <div class="hs-idx-header">
+      <button class="hs-idx-back" @click="router.back()" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+          <path d="M15 18l-6-6 6-6" stroke="#475569" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="hs-idx-header-center">
+        <p class="hs-idx-header-title">HomeScore</p>
+        <p class="hs-idx-header-sub">Search any UK property</p>
+      </div>
+      <div style="width:32px;flex-shrink:0;"/>
+    </div>
 
-    <main class="hs-search-main">
-      <!-- Hero -->
-      <div class="hs-hero">
-        <div class="hs-hero-ring">
-          <svg viewBox="0 0 120 120" width="96" height="96">
-            <circle cx="60" cy="60" r="48" fill="#f0fafa" stroke="#00a19a" stroke-width="2" stroke-dasharray="4 6" />
-            <circle cx="60" cy="60" r="36" fill="white" stroke="#e8f8f7" stroke-width="1" />
-            <text x="60" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#00a19a" font-family="sans-serif">HS</text>
-            <text x="60" y="71" text-anchor="middle" font-size="10" fill="#8e8e93" font-family="sans-serif">Score</text>
+    <div class="hs-idx-scroll">
+      <!-- Hero card -->
+      <div class="hs-idx-hero">
+        <div class="hs-idx-hero-gauge">
+          <svg viewBox="0 0 200 112" width="180">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="14"
+              stroke-dasharray="251 503" transform="rotate(180,100,100)" stroke-linecap="round"/>
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#5eead4" stroke-width="14"
+              stroke-dasharray="163 503" transform="rotate(180,100,100)" stroke-linecap="round"/>
+            <text x="100" y="94" text-anchor="middle" font-size="42" font-weight="800" fill="#fff" font-family="sans-serif">65</text>
+            <text x="100" y="110" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.7)" font-family="sans-serif">Average UK score</text>
           </svg>
         </div>
-        <h1 class="hs-hero-title">Homehealth Score</h1>
-        <p class="hs-hero-sub">Search any UK property to instantly generate its Homehealth Score using EPC and public data — no questions required to start.</p>
+        <h1 class="hs-idx-hero-title">How green is your home?</h1>
+        <p class="hs-idx-hero-sub">Instantly score any UK property using EPC &amp; public data. Refine it with 2-minute quiz to get your real number.</p>
       </div>
 
       <!-- Search bar -->
-      <div class="hs-search-wrap">
-        <div class="hs-search-box" :class="{ focused: inputFocused }">
-          <svg viewBox="0 0 24 24" fill="none" width="18" height="18" class="hs-search-icon">
-            <circle cx="11" cy="11" r="7" stroke="#aaa" stroke-width="2" />
-            <path d="M16.5 16.5L21 21" stroke="#aaa" stroke-width="2" stroke-linecap="round" />
+      <div class="hs-idx-search-wrap">
+        <div class="hs-idx-search-box" :class="{ focused: inputFocused }">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18" style="flex-shrink:0;">
+            <circle cx="11" cy="11" r="7" stroke="#94a3b8" stroke-width="2"/>
+            <path d="M16.5 16.5L21 21" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
           </svg>
           <input
             ref="inputEl"
             v-model="query"
-            class="hs-search-input"
-            placeholder="Postcode or address..."
+            class="hs-idx-search-input"
+            placeholder="Postcode or address…"
             @focus="inputFocused = true"
             @blur="inputFocused = false"
             @keydown.enter="doSearch"
           />
-          <button v-if="query" class="hs-search-clear" @click="query = ''; results = []">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-              <path d="M18 6L6 18M6 6l12 12" stroke="#aaa" stroke-width="2" stroke-linecap="round" />
+          <button v-if="query" class="hs-idx-search-clear" @click="query = ''; results = []; searched = false">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15">
+              <path d="M18 6L6 18M6 6l12 12" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </button>
         </div>
-        <button class="hs-search-btn" :class="{ loading }" @click="doSearch" :disabled="loading || query.length < 2">
-          {{ loading ? '...' : 'Search' }}
+        <button class="hs-idx-search-btn" @click="doSearch" :disabled="loading || query.length < 2">
+          {{ loading ? '…' : 'Search' }}
         </button>
       </div>
 
-      <!-- Info chips -->
-      <div v-if="!results.length && !loading" class="hs-chips">
-        <div class="hs-chip">
-          <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="#00a19a" stroke-width="2"/></svg>
-          Auto-scored from EPC data
+      <!-- Feature pills -->
+      <div v-if="!results.length && !loading && !searched" class="hs-idx-pills">
+        <div class="hs-idx-pill">
+          <span class="hs-idx-pill-icon">⚡</span>
+          <div>
+            <div class="hs-idx-pill-title">Auto-scored instantly</div>
+            <div class="hs-idx-pill-sub">From public EPC &amp; register data</div>
+          </div>
         </div>
-        <div class="hs-chip">
-          <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00a19a" stroke-width="2"/></svg>
-          Improve with your answers
+        <div class="hs-idx-pill">
+          <span class="hs-idx-pill-icon">🎯</span>
+          <div>
+            <div class="hs-idx-pill-title">Refine with your answers</div>
+            <div class="hs-idx-pill-sub">11 questions · under 2 minutes</div>
+          </div>
         </div>
-        <div class="hs-chip">
-          <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><circle cx="12" cy="12" r="10" stroke="#00a19a" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#00a19a" stroke-width="2" stroke-linecap="round"/></svg>
-          Takes under 2 minutes
+        <div class="hs-idx-pill">
+          <span class="hs-idx-pill-icon">💷</span>
+          <div>
+            <div class="hs-idx-pill-title">See your savings potential</div>
+            <div class="hs-idx-pill-sub">Real £/yr energy cost breakdown</div>
+          </div>
         </div>
       </div>
 
-      <!-- Loading skeleton -->
-      <div v-if="loading" class="hs-results-list">
-        <div v-for="i in 4" :key="i" class="hs-result-skeleton">
-          <div class="hs-skel-line wide"></div>
-          <div class="hs-skel-line narrow"></div>
+      <!-- Loading skeletons -->
+      <div v-if="loading" class="hs-idx-results-list">
+        <div v-for="i in 4" :key="i" class="hs-idx-skeleton">
+          <div class="hs-idx-skel-icon"/>
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px;">
+            <div class="hs-idx-skel-line" style="width:65%;"/>
+            <div class="hs-idx-skel-line" style="width:40%;"/>
+          </div>
         </div>
       </div>
 
       <!-- Results -->
-      <div v-else-if="results.length" class="hs-results-section">
-        <p class="hs-results-label">{{ results.length }} propert{{ results.length === 1 ? 'y' : 'ies' }} found</p>
-        <div class="hs-results-list">
+      <div v-else-if="results.length" class="hs-idx-results-section">
+        <p class="hs-idx-results-label">{{ results.length }} propert{{ results.length === 1 ? 'y' : 'ies' }} found</p>
+        <div class="hs-idx-results-list">
           <button
             v-for="prop in results"
             :key="prop.id"
-            class="hs-result-item"
+            class="hs-idx-result-item"
             @click="goToScore(prop.id)"
           >
-            <div class="hs-result-left">
-              <div class="hs-result-icon">
-                <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-                  <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" stroke="#00a19a" stroke-width="2" stroke-linejoin="round" />
-                </svg>
-              </div>
-              <div class="hs-result-info">
-                <p class="hs-result-address">{{ prop.addressLine1 }}</p>
-                <p class="hs-result-sub">{{ prop.postcode }}{{ prop.city ? ' · ' + prop.city : '' }}</p>
-              </div>
+            <div class="hs-idx-result-icon">🏠</div>
+            <div class="hs-idx-result-info">
+              <p class="hs-idx-result-addr">{{ prop.addressLine1 }}</p>
+              <p class="hs-idx-result-sub">{{ prop.postcode }}{{ prop.city ? ' · ' + prop.city : '' }}{{ prop.propertyType ? ' · ' + prop.propertyType : '' }}</p>
             </div>
-            <div class="hs-result-right">
-              <div v-if="prop.epcRating" class="hs-epc-badge" :style="{ background: epcColor(prop.epcRating) }">
-                EPC {{ prop.epcRating }}
-              </div>
-              <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-                <path d="M9 18l6-6-6-6" stroke="#c7c7cc" stroke-width="2" stroke-linecap="round" />
+            <div class="hs-idx-result-right">
+              <span v-if="prop.epcRating" class="hs-idx-epc-badge" :style="{ background: epcColor(prop.epcRating) }">EPC {{ prop.epcRating }}</span>
+              <svg viewBox="0 0 24 24" fill="none" width="16" height="16" style="flex-shrink:0;">
+                <path d="M9 18l6-6-6-6" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
               </svg>
             </div>
           </button>
@@ -103,16 +120,14 @@
       </div>
 
       <!-- No results -->
-      <div v-else-if="searched && !loading" class="hs-empty">
-        <svg viewBox="0 0 64 64" fill="none" width="56" height="56">
-          <circle cx="32" cy="32" r="28" fill="#f5f5f8" />
-          <circle cx="28" cy="28" r="14" stroke="#d1d5db" stroke-width="2.5" />
-          <path d="M38 38l10 10" stroke="#d1d5db" stroke-width="2.5" stroke-linecap="round" />
-        </svg>
-        <p class="hs-empty-title">No properties found</p>
-        <p class="hs-empty-sub">Try a different postcode or address</p>
+      <div v-else-if="searched && !loading" class="hs-idx-empty">
+        <div style="font-size:40px;margin-bottom:10px;">🔍</div>
+        <p class="hs-idx-empty-title">No properties found</p>
+        <p class="hs-idx-empty-sub">Try a different postcode or full address</p>
       </div>
-    </main>
+
+      <div style="height:40px"/>
+    </div>
   </div>
 </template>
 
@@ -120,7 +135,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRuntimeConfig } from '#app'
-import AppHeader from '~/components/core/AppHeader.vue'
 
 const router = useRouter()
 const config = useRuntimeConfig()
@@ -157,99 +171,133 @@ function goToScore(id: string) {
 function epcColor(rating: string): string {
   const map: Record<string, string> = {
     A: '#00b050', B: '#33b800', C: '#92d050',
-    D: '#ffff00', E: '#ffbf00', F: '#ff6600', G: '#ff0000',
+    D: '#d4e800', E: '#ffbf00', F: '#ff6600', G: '#ff0000',
   }
   return map[rating?.toUpperCase()] ?? '#8e8e93'
 }
 </script>
 
 <style scoped>
-.hs-search-page {
-  min-height: 100vh;
-  background: #f5f5f8;
-  max-width: 480px;
+/* ── Page ─────────────────────────────────────────────── */
+.hs-idx-page {
+  min-height: 100dvh;
+  background: #f0f4f4;
+  color: #0f172a;
+  max-width: 28rem;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-.hs-search-main {
+/* ── Header ───────────────────────────────────────────── */
+.hs-idx-header {
+  background: #f0f4f4;
+  display: flex;
+  align-items: center;
+  padding: 14px 18px 10px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+}
+.hs-idx-back {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #fff; border: 1px solid #e2e8e8;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+}
+.hs-idx-back:active { background: #e8f0f0; }
+.hs-idx-header-center { flex: 1; text-align: center; }
+.hs-idx-header-title { font-size: 15px; font-weight: 600; color: #0f172a; margin: 0; }
+.hs-idx-header-sub { font-size: 11px; color: #94a3b8; margin: 1px 0 0; }
+
+/* ── Scroll ───────────────────────────────────────────── */
+.hs-idx-scroll {
   flex: 1;
-  padding: 24px 20px 40px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 6px 18px 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
-/* Hero */
-.hs-hero {
+/* ── Hero card ────────────────────────────────────────── */
+.hs-idx-hero {
+  background: linear-gradient(135deg, #0d9488, #0f766e);
+  border-radius: 24px;
+  padding: 28px 24px 24px;
+  color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 8px 0 4px;
+  position: relative;
+  overflow: hidden;
 }
-.hs-hero-ring {
-  margin-bottom: 14px;
+.hs-idx-hero::before {
+  content: '';
+  position: absolute;
+  right: -50px; top: -50px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
 }
-.hs-hero-title {
+.hs-idx-hero-gauge { margin-bottom: 16px; }
+.hs-idx-hero-title {
   font-size: 22px;
   font-weight: 800;
-  color: #1a1a2e;
   margin: 0 0 8px;
+  line-height: 1.2;
 }
-.hs-hero-sub {
-  font-size: 14px;
-  color: #8e8e93;
+.hs-idx-hero-sub {
+  font-size: 13px;
+  opacity: 0.85;
   line-height: 1.5;
+  margin: 0;
   max-width: 280px;
-  margin: 0 auto;
 }
 
-/* Search */
-.hs-search-wrap {
+/* ── Search ───────────────────────────────────────────── */
+.hs-idx-search-wrap {
   display: flex;
   gap: 10px;
   align-items: center;
 }
-.hs-search-box {
+.hs-idx-search-box {
   flex: 1;
   display: flex;
   align-items: center;
   background: white;
   border-radius: 14px;
-  border: 1.5px solid #e8e8ee;
+  border: 1.5px solid #e2e8e8;
   padding: 0 12px;
   height: 50px;
   gap: 8px;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
-.hs-search-box.focused {
-  border-color: #00a19a;
-  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
+.hs-idx-search-box.focused {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
 }
-.hs-search-icon { flex-shrink: 0; }
-.hs-search-input {
+.hs-idx-search-input {
   flex: 1;
   border: none;
   outline: none;
   font-size: 15px;
   background: transparent;
-  color: #1a1a1a;
+  color: #0f172a;
+  min-width: 0;
 }
-.hs-search-input::placeholder { color: #aeaeb2; }
-.hs-search-clear {
-  background: none;
-  border: none;
-  padding: 2px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
+.hs-idx-search-input::placeholder { color: #94a3b8; }
+.hs-idx-search-clear {
+  background: none; border: none; padding: 2px;
+  cursor: pointer; display: flex; align-items: center;
 }
-.hs-search-btn {
-  padding: 0 20px;
+.hs-idx-search-btn {
   height: 50px;
-  background: #231d45;
+  padding: 0 22px;
+  background: #0d9488;
   color: white;
   border: none;
   border-radius: 14px;
@@ -257,145 +305,121 @@ function epcColor(rating: string): string {
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity 0.15s;
   flex-shrink: 0;
+  transition: opacity 0.15s;
 }
-.hs-search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.hs-search-btn.loading { opacity: 0.7; }
+.hs-idx-search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.hs-idx-search-btn:active { opacity: 0.85; }
 
-/* Info chips */
-.hs-chips {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.hs-chip {
+/* ── Feature pills ────────────────────────────────────── */
+.hs-idx-pills { display: flex; flex-direction: column; gap: 8px; }
+.hs-idx-pill {
+  background: white;
+  border-radius: 16px;
+  padding: 14px 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: white;
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-size: 13px;
-  color: #3c3c43;
-  font-weight: 500;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.05);
+  border: 1px solid rgba(15,23,42,0.04);
 }
+.hs-idx-pill-icon { font-size: 22px; flex-shrink: 0; }
+.hs-idx-pill-title { font-size: 13.5px; font-weight: 600; color: #0f172a; margin-bottom: 2px; }
+.hs-idx-pill-sub { font-size: 11.5px; color: #64748b; }
 
-/* Results */
-.hs-results-section { display: flex; flex-direction: column; gap: 10px; }
-.hs-results-label {
-  font-size: 12px;
-  color: #8e8e93;
+/* ── Results ──────────────────────────────────────────── */
+.hs-idx-results-section { display: flex; flex-direction: column; gap: 8px; }
+.hs-idx-results-label {
+  font-size: 11.5px;
+  color: #94a3b8;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
   padding: 0 2px;
+  margin: 0;
 }
-.hs-results-list { display: flex; flex-direction: column; gap: 2px; }
-.hs-result-item {
+.hs-idx-results-list { display: flex; flex-direction: column; gap: 2px; }
+.hs-idx-result-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
   background: white;
   border-radius: 16px;
   padding: 14px 16px;
   border: none;
   text-align: left;
   cursor: pointer;
-  gap: 12px;
-  transition: background 0.12s;
   width: 100%;
+  transition: background 0.12s;
 }
-.hs-result-item:active { background: #f2f2f7; }
-.hs-result-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-  min-width: 0;
-}
-.hs-result-icon {
-  width: 38px;
-  height: 38px;
-  background: #e8f8f7;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.hs-idx-result-item:active { background: #f0fdfa; }
+.hs-idx-result-icon {
+  width: 40px; height: 40px;
+  background: #f0fdfa;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
   flex-shrink: 0;
 }
-.hs-result-info { flex: 1; min-width: 0; }
-.hs-result-address {
+.hs-idx-result-info { flex: 1; min-width: 0; }
+.hs-idx-result-addr {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #0f172a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 0 0 2px;
 }
-.hs-result-sub {
-  font-size: 12px;
-  color: #8e8e93;
-  margin: 0;
+.hs-idx-result-sub { font-size: 12px; color: #64748b; margin: 0; }
+.hs-idx-result-right {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
 }
-.hs-result-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-.hs-epc-badge {
+.hs-idx-epc-badge {
   font-size: 10px;
   font-weight: 800;
   color: white;
   padding: 2px 7px;
   border-radius: 6px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-/* Skeleton */
-.hs-result-skeleton {
+/* ── Skeleton ─────────────────────────────────────────── */
+.hs-idx-skeleton {
   background: white;
   border-radius: 16px;
-  padding: 16px;
+  padding: 14px 16px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
 }
-.hs-skel-line {
-  height: 12px;
-  background: linear-gradient(90deg, #f2f2f7 25%, #e8e8ee 50%, #f2f2f7 75%);
+.hs-idx-skel-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  flex-shrink: 0;
+}
+.hs-idx-skel-line {
+  height: 11px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
   background-size: 200% 100%;
   border-radius: 6px;
-  animation: shimmer 1.2s infinite;
+  animation: hs-shimmer 1.2s infinite;
 }
-.hs-skel-line.wide { width: 70%; }
-.hs-skel-line.narrow { width: 45%; }
-@keyframes shimmer {
+@keyframes hs-shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
-/* Empty */
-.hs-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 8px;
-  padding: 32px 0;
+/* ── Empty ────────────────────────────────────────────── */
+.hs-idx-empty {
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  padding: 40px 0;
 }
-.hs-empty-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #3c3c43;
-  margin: 0;
+.hs-idx-empty-title {
+  font-size: 16px; font-weight: 700;
+  color: #0f172a; margin: 0 0 4px;
 }
-.hs-empty-sub {
-  font-size: 13px;
-  color: #8e8e93;
-  margin: 0;
-}
+.hs-idx-empty-sub { font-size: 13px; color: #64748b; margin: 0; }
 </style>
