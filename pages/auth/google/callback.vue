@@ -40,7 +40,7 @@ onMounted(async () => {
       localStorage.removeItem('redirectAfterLogin')
       await navigateTo(redirectPath)
     } else {
-      await navigateTo('/dashboard')
+      await navigateTo('/explore')
     }
   } catch (e) {
     console.error('Google callback error', e)

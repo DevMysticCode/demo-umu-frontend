@@ -100,7 +100,7 @@ export const useVerificationCode = () => {
         localStorage.setItem('token', regRes.token)
         sessionStorage.removeItem('umu-pending-email')
         pendingSignup.value = null
-        await navigateTo('/onboarding/thank-you')
+        await navigateTo('/onboarding/preferences?new=true')
       } else {
         await navigateTo('/onboarding/create-account')
       }

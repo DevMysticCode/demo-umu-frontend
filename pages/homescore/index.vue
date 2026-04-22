@@ -31,31 +31,14 @@
         <p class="hs-idx-hero-sub">Instantly score any UK property using EPC &amp; public data. Refine it with 2-minute quiz to get your real number.</p>
       </div>
 
-      <!-- Search bar -->
-      <div class="hs-idx-search-wrap">
-        <div class="hs-idx-search-box" :class="{ focused: inputFocused }">
-          <svg viewBox="0 0 24 24" fill="none" width="18" height="18" style="flex-shrink:0;">
-            <circle cx="11" cy="11" r="7" stroke="#94a3b8" stroke-width="2"/>
-            <path d="M16.5 16.5L21 21" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <input
-            ref="inputEl"
-            v-model="query"
-            class="hs-idx-search-input"
-            placeholder="Postcode or address…"
-            @focus="inputFocused = true"
-            @blur="inputFocused = false"
-            @keydown.enter="doSearch"
-          />
-          <button v-if="query" class="hs-idx-search-clear" @click="query = ''; results = []; searched = false">
-            <svg viewBox="0 0 24 24" fill="none" width="15" height="15">
-              <path d="M18 6L6 18M6 6l12 12" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-        </div>
-        <button class="hs-idx-search-btn" @click="doSearch" :disabled="loading || query.length < 2">
-          {{ loading ? '…' : 'Search' }}
-        </button>
+      <!-- Live search dropdown -->
+      <div class="hs-idx-search-wrap-v2">
+        <PropertySearchInput
+          placeholder="Postcode or address…"
+          variant="light"
+          @select="goToScore($event.id)"
+          @enter="onSearchEnter"
+        />
       </div>
 
       <!-- Feature pills -->
@@ -135,6 +118,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRuntimeConfig } from '#app'
+import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 
 const router = useRouter()
 const config = useRuntimeConfig()
@@ -166,6 +150,12 @@ async function doSearch() {
 
 function goToScore(id: string) {
   router.push(`/homescore/${id}`)
+}
+
+function onSearchEnter(q: string) {
+  // fallback when user hits enter without picking from dropdown
+  query.value = q
+  doSearch()
 }
 
 function epcColor(rating: string): string {

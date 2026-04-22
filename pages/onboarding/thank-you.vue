@@ -52,7 +52,7 @@ const continueToPreferences = () => {
 }
 
 const skipToApp = () => {
-  return navigateTo('/dashboard')
+  return navigateTo('/explore')
 }
 </script>
 

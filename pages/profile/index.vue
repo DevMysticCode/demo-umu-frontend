@@ -63,7 +63,37 @@
         </button>
       </section>
 
-      <div class="mt-8 flex gap-3 items-center">
+      <!-- Role Switcher -->
+      <section class="mt-8">
+        <p
+          class="font-sf-pro text-[13px] font-semibold text-[#8f9094] uppercase tracking-wider mb-3"
+        >
+          Your Role
+        </p>
+        <div class="flex gap-2 flex-wrap">
+          <button
+            v-for="r in roleOptions"
+            :key="r.key"
+            type="button"
+            :class="[
+              'px-4 py-2 rounded-full text-[14px] font-medium font-sf-pro border transition',
+              currentRole === r.key
+                ? 'bg-[#00A19A] text-white border-[#00A19A]'
+                : 'bg-white text-[#1f2024] border-[#d9dae0]',
+            ]"
+            :disabled="savingRole"
+            @click="setRole(r.key)"
+          >
+            {{ r.label }}
+          </button>
+        </div>
+        <p v-if="roleSaved" class="mt-2 text-[13px] text-[#059669] font-sf-pro">
+          ✓ Role updated
+        </p>
+        <p v-if="roleError" class="mt-2 text-[13px] text-red-500 font-sf-pro">{{ roleError }}</p>
+      </section>
+
+      <div class="mt-6 flex gap-3 items-center">
         <div class="flex-1 bg-white rounded-2xl h-14 px-4 flex items-center">
           <Icon
             name="i-heroicons-magnifying-glass"
@@ -135,13 +165,28 @@
 
     <!-- Logout confirmation modal -->
     <Teleport to="body">
-      <div v-if="showLogoutModal" class="fixed inset-0 z-[70] flex items-center justify-center px-6">
-        <div class="absolute inset-0 bg-black/50" @click="showLogoutModal = false" />
-        <div class="relative bg-white rounded-3xl px-6 py-8 w-full max-w-[340px] text-center shadow-2xl">
-          <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
-            <Icon name="i-heroicons-arrow-right-on-rectangle" class="w-8 h-8 text-red-400" />
+      <div
+        v-if="showLogoutModal"
+        class="fixed inset-0 z-[70] flex items-center justify-center px-6"
+      >
+        <div
+          class="absolute inset-0 bg-black/50"
+          @click="showLogoutModal = false"
+        />
+        <div
+          class="relative bg-white rounded-3xl px-6 py-8 w-full max-w-[340px] text-center shadow-2xl"
+        >
+          <div
+            class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4"
+          >
+            <Icon
+              name="i-heroicons-arrow-right-on-rectangle"
+              class="w-8 h-8 text-red-400"
+            />
           </div>
-          <h3 class="font-sf-pro text-[19px] font-semibold text-[#1f2024] mb-2">Log Out?</h3>
+          <h3 class="font-sf-pro text-[19px] font-semibold text-[#1f2024] mb-2">
+            Log Out?
+          </h3>
           <p class="font-sf-pro text-[14px] text-[#8f9094] mb-6">
             Are you sure you want to log out of your account?
           </p>
@@ -168,15 +213,30 @@
 
     <!-- Delete account confirmation modal -->
     <Teleport to="body">
-      <div v-if="showDeleteModal" class="fixed inset-0 z-[70] flex items-center justify-center px-6">
-        <div class="absolute inset-0 bg-black/50" @click="showDeleteModal = false" />
-        <div class="relative bg-white rounded-3xl px-6 py-8 w-full max-w-[340px] text-center shadow-2xl">
-          <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+      <div
+        v-if="showDeleteModal"
+        class="fixed inset-0 z-[70] flex items-center justify-center px-6"
+      >
+        <div
+          class="absolute inset-0 bg-black/50"
+          @click="showDeleteModal = false"
+        />
+        <div
+          class="relative bg-white rounded-3xl px-6 py-8 w-full max-w-[340px] text-center shadow-2xl"
+        >
+          <div
+            class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4"
+          >
             <Icon name="i-heroicons-trash" class="w-8 h-8 text-red-500" />
           </div>
-          <h3 class="font-sf-pro text-[19px] font-semibold text-[#1f2024] mb-2">Delete Account?</h3>
-          <p class="font-sf-pro text-[14px] text-[#8f9094] mb-6 leading-relaxed">
-            This will permanently delete your account, all your passports, documents, and data.
+          <h3 class="font-sf-pro text-[19px] font-semibold text-[#1f2024] mb-2">
+            Delete Account?
+          </h3>
+          <p
+            class="font-sf-pro text-[14px] text-[#8f9094] mb-6 leading-relaxed"
+          >
+            This will permanently delete your account, all your passports,
+            documents, and data.
             <strong class="text-red-500">This cannot be undone.</strong>
           </p>
           <div class="flex gap-3">
@@ -212,10 +272,67 @@ definePageMeta({
 })
 
 const { profile, fullName, memberSince, fetchProfile } = useProfile()
-
-onMounted(fetchProfile)
+const config = useRuntimeConfig()
 
 const searchQuery = ref('')
+
+const roleOptions = [
+  { key: 'buy', label: '🏠 Buying' },
+  { key: 'sell', label: '🏷️ Selling' },
+  { key: 'landlord', label: '🔑 Landlord' },
+  { key: 'both', label: '↔️ Both' },
+]
+const currentRole = ref('buy')
+const savingRole = ref(false)
+const roleSaved = ref(false)
+const roleError = ref('')
+
+onMounted(async () => {
+  fetchProfile()
+  // Read cached role immediately so the correct pill shows without waiting for API
+  if (typeof window !== 'undefined') {
+    const cached = localStorage.getItem('umu_role')
+    if (cached) currentRole.value = cached
+  }
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    if (token) {
+      const prefs = await $fetch(`${config.public.apiBase}/profile/preferences`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const role = prefs?.purpose?.[0] ?? 'buy'
+      currentRole.value = role
+      if (typeof window !== 'undefined') localStorage.setItem('umu_role', role)
+    }
+  } catch {}
+})
+
+async function setRole(key) {
+  if (savingRole.value || currentRole.value === key) return
+  savingRole.value = true
+  roleSaved.value = false
+  roleError.value = ''
+  const prevRole = currentRole.value
+  currentRole.value = key  // optimistic update
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const result = await $fetch(`${config.public.apiBase}/profile/preferences`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { purpose: [key] },
+    })
+    console.log('[setRole] saved:', result)
+    if (typeof window !== 'undefined') localStorage.setItem('umu_role', key)
+    roleSaved.value = true
+    setTimeout(() => { roleSaved.value = false }, 2500)
+  } catch (err) {
+    console.error('[setRole] failed:', err)
+    roleError.value = 'Failed to save — ' + (err?.data?.message || err?.message || 'unknown error')
+    currentRole.value = prevRole  // revert on error
+  } finally {
+    savingRole.value = false
+  }
+}
 
 const profileItems = [
   {
@@ -316,7 +433,7 @@ const goBack = () => {
   //   return
   // }
 
-  navigateTo('/dashboard')
+  navigateTo('/explore')
 }
 
 const onPreferenceClick = async (item) => {
@@ -329,12 +446,12 @@ const showLogoutModal = ref(false)
 const isLoggingOut = ref(false)
 const showDeleteModal = ref(false)
 const isDeletingAccount = ref(false)
-const config = useRuntimeConfig()
 
 const logout = async () => {
   isLoggingOut.value = true
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null
     if (token) {
       await $fetch(`${config.public.apiBase}/auth/logout`, {
         method: 'POST',
@@ -355,7 +472,8 @@ const logout = async () => {
 const deleteAccount = async () => {
   isDeletingAccount.value = true
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null
     if (token) {
       await $fetch(`${config.public.apiBase}/profile/me`, {
         method: 'DELETE',

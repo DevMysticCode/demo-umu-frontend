@@ -54,7 +54,7 @@
       <!-- Price Box -->
       <div class="claim-drawer__price-box">
         <div class="flex items-baseline gap-2">
-          <span class="claim-drawer__price-amount">£49</span>
+          <span class="claim-drawer__price-amount">£99</span>
           <span class="claim-drawer__price-period">one-time unlock</span>
         </div>
         <div class="flex items-center gap-1.5 text-[11px] text-gray-400 mt-1">
@@ -82,7 +82,7 @@
         <span v-if="loading" class="claim-drawer__spinner" />
         <template v-else>
           <Icon v-if="showCardForm" name="i-heroicons-lock-closed" class="w-4 h-4" />
-          <span>{{ showCardForm ? 'Pay £49 securely' : 'Unlock Passport' }}</span>
+          <span>{{ showCardForm ? 'Pay £99 securely' : 'Unlock Passport' }}</span>
         </template>
       </button>
 

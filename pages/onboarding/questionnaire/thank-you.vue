@@ -38,7 +38,7 @@ definePageMeta({
 })
 
 const continueToQuestionnaire = () => {
-  navigateTo('/dashboard')
+  navigateTo('/explore')
 }
 </script>
 

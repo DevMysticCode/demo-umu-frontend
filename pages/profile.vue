@@ -211,7 +211,7 @@ const goBack = () => {
     return;
   }
 
-  navigateTo("/dashboard");
+  navigateTo("/explore");
 };
 
 const onPreferenceClick = async (item) => {

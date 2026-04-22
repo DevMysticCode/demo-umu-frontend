@@ -204,7 +204,7 @@
       </div>
 
       <!-- Add New -->
-      <div class="grid-cell" @click="router.push('/dashboard')">
+      <div class="grid-cell" @click="router.push('/explore')">
         <div class="add-new-box">
           <span class="add-new-plus">+</span>
         </div>

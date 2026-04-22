@@ -52,16 +52,23 @@
             required
           />
 
-          <!-- Address Search -->
-          <AddressSearch
-            name="postcode"
-            label="Postcode"
-            @search="searchAddress"
-            :isSearching="searchingAddress"
-            :selectedAddress="selectedAddress"
-            @edit="editAddress"
-            required
-          />
+          <!-- Address Search — inline PropertySearchInput dropdown -->
+          <div class="address-search-block">
+            <label class="address-search-label">Address <span class="req">*</span></label>
+            <div v-if="selectedAddress" class="address-selected-row">
+              <div class="address-selected-body">
+                <div class="address-selected-line1">{{ selectedAddress.line1 }}</div>
+                <div class="address-selected-line2">{{ selectedAddress.line2 }}</div>
+              </div>
+              <button type="button" class="address-edit-btn" @click="editAddress">Edit</button>
+            </div>
+            <PropertySearchInput
+              v-else
+              placeholder="Enter postcode or address"
+              variant="light"
+              @select="onAddressSelect"
+            />
+          </div>
 
           <!-- Gender Selection -->
           <GenderSelector
@@ -112,17 +119,6 @@
       </div>
     </main>
 
-    <!-- Address Search Modal -->
-    <AddressSearchModal
-      :show="showAddressModal"
-      :postcode="form.postcode"
-      :addresses="addressResults"
-      @update:show="showAddressModal = $event"
-      @select="selectAddress"
-      @search="searchAddress"
-      @close="closeAddressModal"
-    />
-
     <!-- Terms Modal -->
     <TermsModal
       :show="showTermsModal"
@@ -133,17 +129,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useCreateAccountData } from '@/composables/useCreateAccountData'
 import FormInput from '@/components/form/FormInput.vue'
 import PasswordInput from '@/components/form/PasswordInput.vue'
 import GenderSelector from '@/components/form/GenderSelector.vue'
-import AddressSearch from '@/components/form/AddressSearch.vue'
-import AddressSearchModal from '@/components/modals/AddressSearchModal.vue'
 import TermsModal from '@/components/modals/TermsModal.vue'
 import BackButton from '~/components/core/BackButton.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import ContinueButton from '@/components/ContinueButton.vue'
+import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
+import { toTitleCase } from '~/utils/form-helpres'
 
 definePageMeta({
   title: 'Create Account - UmovingU',
@@ -154,22 +150,28 @@ definePageMeta({
 const {
   form,
   isLoading,
-  searchingAddress,
-  showAddressModal,
   showTermsModal,
   selectedAddress,
-  addressResults,
   termsAccepted,
   handleTermsCheckbox,
-  searchAddress,
   selectAddress,
   editAddress,
   acceptTerms,
   handleSubmit,
   openTermsModal,
-  closeAddressModal,
   closeTermsModal,
 } = useCreateAccountData()
+
+function onAddressSelect(property: any) {
+  selectAddress({
+    id: 1,
+    line1: toTitleCase(property.addressLine1 ?? ''),
+    line2: [property.city ? toTitleCase(property.city) : null, property.postcode?.toUpperCase()]
+      .filter(Boolean)
+      .join(', '),
+    postcode: property.postcode?.toUpperCase(),
+  })
+}
 </script>
 
 <style scoped>
@@ -209,6 +211,57 @@ const {
 /* Form */
 .create-account-form {
   @apply space-y-6 mt-6;
+}
+
+/* Address inline search */
+.address-search-block {
+  margin-bottom: 18px;
+}
+.address-search-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2024;
+  margin-bottom: 6px;
+}
+.address-search-label .req {
+  color: #ef4444;
+}
+.address-selected-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #eafaf9;
+  border: 1.5px solid #b2e8e6;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.address-selected-body {
+  flex: 1;
+  min-width: 0;
+}
+.address-selected-line1 {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #231d45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.address-selected-line2 {
+  font-size: 11.5px;
+  color: #4a5568;
+  margin-top: 2px;
+}
+.address-edit-btn {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: #00a19a;
+  cursor: pointer;
+  padding: 4px 8px;
+  flex-shrink: 0;
 }
 
 /* Submit */

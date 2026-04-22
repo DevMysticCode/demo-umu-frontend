@@ -166,7 +166,7 @@ export const useCreateAccountData = () => {
       }
       pendingSignup.value = null
 
-      await navigateTo('/onboarding/thank-you')
+      await navigateTo('/onboarding/preferences?new=true')
     } catch (err) {
       console.error('Registration failed:', err)
 

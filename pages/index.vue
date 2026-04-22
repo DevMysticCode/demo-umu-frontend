@@ -31,7 +31,7 @@
                 color: #231d45;
                 letter-spacing: -0.02em;
               "
-              >UmovingU</span
+              >umovingu</span
             >
           </div>
           <div
