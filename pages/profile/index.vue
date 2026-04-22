@@ -32,10 +32,11 @@
     <main class="px-5 pb-8">
       <section class="pt-6 text-center">
         <div class="relative w-fit mx-auto">
-          <img
-            :src="profile?.avatarUrl || '/op-icons/temp/profilepic.png'"
-            alt="Profile avatar"
-            class="w-28 h-28 rounded-full object-cover"
+          <UserAvatar
+            :src="profile?.avatarUrl"
+            :firstName="profile?.firstName"
+            :lastName="profile?.lastName"
+            :size="112"
           />
           <span
             class="absolute left-1/2 -translate-x-1/2 -bottom-3 bg-brand-aqua text-white text-sm font-semibold rounded-full px-3 py-1 flex items-center gap-1"
@@ -203,6 +204,7 @@
 
 <script setup>
 import OPIcon from '~/components/ui/OPIcon.vue'
+import UserAvatar from '~/components/ui/UserAvatar.vue'
 
 definePageMeta({
   title: 'My Profile - UmovingU',

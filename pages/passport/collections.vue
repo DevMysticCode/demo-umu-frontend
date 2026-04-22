@@ -14,13 +14,12 @@
         </svg>
         <span>Back</span>
       </button>
-      <div
-        class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 flex-shrink-0"
-      >
-        <img
-          src="/op-icons/temp/profilepic.png"
-          class="w-full h-full object-cover"
-          alt=""
+      <div class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 cursor-pointer" @click="navigateTo('/profile')">
+        <UserAvatar
+          :src="profile?.avatarUrl"
+          :firstName="profile?.firstName"
+          :lastName="profile?.lastName"
+          :size="36"
         />
       </div>
     </div>
@@ -305,6 +304,9 @@
 import { ref, computed, onMounted } from 'vue'
 import CreateCollectionModal from '@/components/modals/CreateCollectionModal.vue'
 import CollectionDetailModal from '@/components/modals/CollectionDetailModal.vue'
+import UserAvatar from '~/components/ui/UserAvatar.vue'
+
+const { profile } = useProfile()
 
 definePageMeta({ middleware: 'auth' })
 

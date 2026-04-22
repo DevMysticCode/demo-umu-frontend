@@ -26,10 +26,11 @@
     <main class="px-4 pb-10">
       <section class="pt-5 text-center">
         <div class="relative w-fit mx-auto">
-          <img
-            src="/op-icons/temp/profilepic.png"
-            alt="Profile avatar"
-            class="w-[97px] h-[97px] rounded-full object-cover"
+          <UserAvatar
+            :src="profile?.avatarUrl"
+            :firstName="profile?.firstName"
+            :lastName="profile?.lastName"
+            :size="97"
           />
           <span
             class="absolute left-1/2 -translate-x-1/2 -bottom-2.5 h-6 px-3 rounded-full bg-brand-aqua text-white text-[11px] leading-[13px] font-semibold inline-flex items-center gap-1"
@@ -442,10 +443,15 @@
 </template>
 
 <script setup>
+import UserAvatar from '~/components/ui/UserAvatar.vue'
+
 definePageMeta({
   title: "Subscription Plan - UmovingU",
   middleware: 'auth',
-});
+})
+
+const { profile, fetchProfile } = useProfile()
+onMounted(fetchProfile)
 
 const paymentMethods = [
   {

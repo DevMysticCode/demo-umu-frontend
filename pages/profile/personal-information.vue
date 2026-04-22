@@ -36,9 +36,17 @@
           @click="isAvatarDrawerOpen = true"
         >
           <img
-            :src="avatarPreview || profile?.avatarUrl || '/op-icons/temp/profilepic.png'"
+            v-if="avatarPreview"
+            :src="avatarPreview"
             alt="Profile avatar"
             class="w-24 h-24 rounded-full object-cover"
+          />
+          <UserAvatar
+            v-else
+            :src="profile?.avatarUrl"
+            :firstName="profile?.firstName"
+            :lastName="profile?.lastName"
+            :size="96"
           />
           <span class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-brand-aqua border-2 border-white flex items-center justify-center">
             <Icon name="i-heroicons-camera" class="w-4 h-4 text-white" />
@@ -641,6 +649,7 @@
 import BaseDrawer from '@/components/ui/BaseDrawer.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import PhoneInput from '@/components/form/PhoneInput.vue'
+import UserAvatar from '~/components/ui/UserAvatar.vue'
 
 definePageMeta({
   title: 'Personal Information - UmovingU',

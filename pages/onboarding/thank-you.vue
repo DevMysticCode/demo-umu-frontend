@@ -48,7 +48,7 @@ definePageMeta({
 })
 
 const continueToPreferences = () => {
-  return navigateTo('/onboarding/preferences')
+  return navigateTo('/onboarding/preferences?new=true')
 }
 
 const skipToApp = () => {

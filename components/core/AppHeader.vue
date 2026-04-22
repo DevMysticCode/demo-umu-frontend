@@ -24,10 +24,11 @@
       <slot name="right">
         <template v-if="right === 'profile'">
           <button type="button" @click="navigateTo('/profile')" aria-label="My Profile">
-            <img
-              :src="profileSrc"
-              alt="Profile"
-              class="w-8 h-8 rounded-full object-cover border"
+            <UserAvatar
+              :src="profile?.avatarUrl"
+              :firstName="profile?.firstName"
+              :lastName="profile?.lastName"
+              :size="32"
             />
           </button>
         </template>
@@ -49,6 +50,9 @@
 import { defineProps, defineEmits, computed } from 'vue'
 import BackButton from '~/components/core/BackButton.vue'
 import ModalBackButton from '~/components/core/ModalBackButton.vue'
+import UserAvatar from '~/components/ui/UserAvatar.vue'
+
+const { profile } = useProfile()
 
 const emit = defineEmits(['back'])
 
