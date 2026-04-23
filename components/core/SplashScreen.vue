@@ -67,58 +67,8 @@
       <div class="splash-powered-by">
         <div class="splash-powered-label">Powered by</div>
         <div class="splash-powered-row">
-          <svg
-            width="26"
-            height="26"
-            viewBox="0 0 480 480"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="240" cy="240" r="240" fill="#00a19a" />
-            <circle
-              cx="168"
-              cy="210"
-              r="72"
-              fill="none"
-              stroke="#fff"
-              stroke-width="42"
-            />
-            <rect
-              x="222"
-              y="148"
-              width="44"
-              height="260"
-              rx="22"
-              fill="#231d45"
-            />
-            <rect
-              x="222"
-              y="358"
-              width="72"
-              height="34"
-              rx="14"
-              fill="#231d45"
-            />
-            <rect
-              x="222"
-              y="390"
-              width="52"
-              height="34"
-              rx="14"
-              fill="#231d45"
-            />
-            <circle
-              cx="298"
-              cy="196"
-              r="68"
-              fill="none"
-              stroke="#231d45"
-              stroke-width="42"
-            />
-            <rect x="272" y="170" width="20" height="20" rx="4" fill="#fff" />
-            <rect x="300" y="170" width="20" height="20" rx="4" fill="#fff" />
-            <rect x="272" y="198" width="20" height="20" rx="4" fill="#fff" />
-            <rect x="300" y="198" width="20" height="20" rx="4" fill="#fff" />
-          </svg>
+          <!-- <OPIcon name="opLogo" class="w-10 h-10" /> -->
+          <OPIcon name="opLogo" width="16" height="16" />
           <span class="splash-powered-name">OpenProperty</span>
         </div>
       </div>
@@ -128,6 +78,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 interface Props {
   /** Minimum time the splash stays fully visible before fading (ms) */

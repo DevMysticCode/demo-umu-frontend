@@ -200,6 +200,7 @@ const iconMap: Record<string, string> = {
   buyerTitleNumber: '/op-icons/buyer-passport/titleNumber.svg',
   tapTheOwner: '/op-icons/property/tapTheOwner.svg',
   registerInterestDrawer: '/op-icons/explore/registerInterest.svg',
+  opLogo: '/op-icons/opLogo.png',
 }
 
 const iconPath = computed(() => {
