@@ -912,6 +912,7 @@ onMounted(() => {
 <style scoped>
 .welcome_text {
   color: #ffffff;
+  font-size: 20px;
 }
 
 .pref-root {

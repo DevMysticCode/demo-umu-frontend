@@ -2451,6 +2451,7 @@ import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
 import ShareContent from '~/components/property/ShareContent.vue'
+import BottomNav from '~/components/core/BottomNav.vue'
 import { useAppToast } from '~/composables/useCustomToast'
 import { usePropertySearch } from '~/composables/usePropertySearch'
 import { usePassportClaim } from '~/composables/usePassportClaim'
@@ -3628,7 +3629,7 @@ onMounted(async () => {
 function handlePassportAction() {
   const s = passportStatus.value
   if (!s?.hasPassport) {
-    router.push(`/verify-ownership/${propertyId}`)
+    router.push(`/claim/${propertyId}`)
   } else if (s.isOwner || s.isCollaborator) {
     router.push(`/passportview/${s.passportId}`)
   } else if (s.isBuyer && s.passportId) {

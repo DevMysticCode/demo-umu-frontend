@@ -974,8 +974,10 @@
               You've started something real.<br />Let's take it to 100%.
             </h3>
             <p class="hs-pp-body">
-              Three documents would take your score from <b>estimated</b> to
-              <b>verified</b> — unlocking buyer trust.
+              You've just built the foundation of a Property Passport for
+              <b>{{ property?.addressLine1 || 'your property' }}</b
+              >. Three documents would take your score from <b>estimated</b> to
+              <b>verified</b>.
             </p>
             <div class="hs-pp-progress">
               <div class="hs-pp-progress-labels">
@@ -1036,7 +1038,17 @@
                 </div>
               </div>
               <div class="hs-pp-unlock-row">
-                <span class="hs-pp-unlock-icon">📈</span>
+                <span class="hs-pp-unlock-icon">⚡</span>
+                <div>
+                  <div class="hs-pp-unlock-name">14-day completion</div>
+                  <div class="hs-pp-unlock-sub">
+                    vs the UK average of 179 days — verified sellers close
+                    faster.
+                  </div>
+                </div>
+              </div>
+              <div class="hs-pp-unlock-row">
+                <span class="hs-pp-unlock-icon">📊</span>
                 <div>
                   <div class="hs-pp-unlock-name">
                     Live running cost tracking
@@ -1708,7 +1720,7 @@ async function claimOrAccessPassport() {
 
   passportClaimLoading.value = true
   try {
-    const { getPassportStatus, claimPassport } = usePassportClaim()
+    const { getPassportStatus } = usePassportClaim()
     const status = await getPassportStatus(propertyId)
 
     if (status.hasPassport && status.passportId) {
@@ -1724,13 +1736,8 @@ async function claimOrAccessPassport() {
         router.push(`/property/${propertyId}`)
       }
     } else {
-      // No passport yet — claim it
-      const res = await claimPassport(
-        propertyId,
-        property.value?.addressLine1 ?? '',
-        property.value?.postcode ?? '',
-      )
-      router.push(`/passportview/${res.passportId}`)
+      // No passport yet — send through the new claim + KYC flow
+      router.push(`/claim/${propertyId}`)
     }
   } catch {
     router.push(`/property/${propertyId}`)
@@ -1790,7 +1797,13 @@ function goBack() {
     screen.value = 'landing'
     return
   }
-  router.push(`/property/${propertyId}`)
+  // Landing screen — step back in history so we return to wherever we came
+  // from (property page, explore, etc.) without pushing a new entry.
+  if (typeof window !== 'undefined' && window.history.length > 1) {
+    router.back()
+  } else {
+    router.push(`/property/${propertyId}`)
+  }
 }
 
 async function saveToBackend() {
@@ -3127,7 +3140,7 @@ watch(screen, (s) => {
 
 /* ── Passport bridge ──────────────────────────────────── */
 .hs-pp-card {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
+  background: linear-gradient(135deg, #131129, #1e1842);
   color: #fff;
   border-radius: 20px;
   padding: 24px;
@@ -3148,6 +3161,7 @@ watch(screen, (s) => {
     transparent 70%
   );
 }
+.hs-pp-card > * { position: relative; z-index: 1; }
 .hs-pp-badge {
   display: inline-block;
   background: rgba(20, 184, 166, 0.2);

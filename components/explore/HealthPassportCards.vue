@@ -110,8 +110,8 @@ function onPassportEnter(_q: string) {
   color: #00a19a;
 }
 .badge-free {
-  background: #eafaf9;
-  color: #008c86;
+  background: #008c86;
+  color: #eafaf9;
   font-size: 10px;
   font-weight: 700;
   padding: 4px 10px;
