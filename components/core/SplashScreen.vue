@@ -137,7 +137,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  duration: 240000,
+  duration: 2400,
   everyLoad: false,
 })
 
@@ -157,7 +157,7 @@ onMounted(() => {
     hiding.value = true
     setTimeout(() => {
       visible.value = false
-    }, 6000000)
+    }, 600)
   }, props.duration)
 })
 </script>
@@ -178,7 +178,7 @@ onMounted(() => {
 .splash-logo-wrap {
   display: grid;
   place-items: center;
-  margin-bottom: -40px;
+  margin-bottom: 10px;
   opacity: 0;
   animation: splashLogoIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
 }
