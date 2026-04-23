@@ -581,7 +581,7 @@
                 </div>
                 <p class="pp-costs-note">
                   Based on EPC assumptions. Actual costs vary by usage and
-                  tariff.
+                  tariff. Improvements could reduce this significantly.
                 </p>
               </div>
             </div>
@@ -3183,9 +3183,7 @@ const propertyImages = computed(() => {
     }
   }
   const imgUrl = property.value?.imageUrl
-  const isStreetView = (url: string) =>
-    url.includes('maps.googleapis.com/maps/api/streetview')
-  if (imgUrl && !isStreetView(imgUrl) && !images.includes(imgUrl))
+  if (imgUrl && !images.includes(imgUrl))
     images.push(imgUrl)
   return images
 })

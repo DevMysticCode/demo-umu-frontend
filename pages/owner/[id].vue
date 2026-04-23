@@ -1,122 +1,142 @@
 <template>
-  <div class="contact-page">
-    <AppHeader title="Tap the Owner" :showBack="true" right="profile" />
+  <div class="to-page">
+    <!-- Sticky header -->
+    <div class="to-header">
+      <button class="to-back" @click="router.back()" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <div class="to-header__text">
+        <div class="to-header__title">Tap the Owner</div>
+        <div class="to-header__subtitle">{{ propertyAddress || 'Property' }}</div>
+      </div>
+      <div class="to-header__chip">Anonymous</div>
+    </div>
 
-    <div class="content">
+    <div class="to-content">
       <!-- Loading -->
-      <div v-if="pageLoading" class="loading-state">
-        <div class="spinner" />
+      <div v-if="pageLoading" class="to-loading">
+        <div class="to-spinner" />
         <p>Loading...</p>
       </div>
 
-      <!-- No phone blocker — user must add phone first -->
-      <div v-else-if="!userHasPhone" class="blocker-state">
-        <div class="blocker-icon">📱</div>
-        <h2 class="blocker-title">Phone Number Required</h2>
-        <p class="blocker-desc">
+      <!-- Phone blocker -->
+      <div v-else-if="!userHasPhone" class="to-blocker">
+        <div class="to-blocker__icon">📱</div>
+        <h2 class="to-blocker__title">Phone Number Required</h2>
+        <p class="to-blocker__desc">
           To contact a property owner, you need a phone number on your profile.
           This lets the owner respond to you via WhatsApp or call.
         </p>
-        <button class="send-btn" @click="router.push('/profile/personal-information')">
+        <button class="to-cta" @click="router.push('/profile/personal-information')">
           Add Phone Number
         </button>
       </div>
 
-      <!-- Success state -->
-      <div v-else-if="submitted" class="success-state">
-        <div class="house-illustration">
-          <OPIcon name="tapTheOwner" class="w-[144px] h-[144px]" />
+      <!-- Sent state -->
+      <div v-else-if="submitted" class="to-sent">
+        <div class="to-sent__circle">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 2 11 13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          </svg>
         </div>
-        <h2 class="success-title">Message Sent!</h2>
-        <p class="success-desc">
-          Your message has been sent to the property owner{{ !ownerHasPassport ? ' and our team' : '' }}.
-          You'll hear back soon.
-        </p>
+        <div class="to-sent__title">Message sent!</div>
+        <div class="to-sent__desc">
+          Your message has been delivered privately to the owner. We'll notify you if they respond — usually within a few days.
+        </div>
 
-        <!-- WhatsApp option — only if owner has a phone -->
-        <div v-if="ownerPhone" class="whatsapp-section">
-          <p class="whatsapp-label">Want to reach them instantly?</p>
-          <a
-            :href="whatsappUrl"
-            target="_blank"
-            rel="noopener"
-            class="whatsapp-btn"
-          >
-            <svg viewBox="0 0 24 24" fill="none" width="22" height="22" style="margin-right:8px">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="#25D366"/>
+        <div class="to-sent__card">
+          <div class="to-sent__label">Your message</div>
+          <div class="to-sent__preview">{{ message }}</div>
+        </div>
+
+        <!-- WhatsApp option — only if owner has phone -->
+        <div v-if="ownerPhone" class="to-whatsapp">
+          <div class="to-whatsapp__label">Want to reach them instantly?</div>
+          <a :href="whatsappUrl" target="_blank" rel="noopener" class="to-whatsapp__btn">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="#25D366" />
             </svg>
-            Message on WhatsApp
+            <span>Message on WhatsApp</span>
           </a>
-          <p class="whatsapp-note">Opens WhatsApp with a pre-written message</p>
         </div>
 
-        <button class="done-btn" @click="router.back()">Done</button>
+        <button class="to-done" @click="router.back()">Done</button>
       </div>
 
-      <!-- Main form -->
-      <template v-else>
-        <h1 class="title">Tap the Owner</h1>
-        <p class="subtitle">{{ propertyAddress }}</p>
-
-        <div class="house-illustration">
-          <OPIcon name="tapTheOwner" class="w-[144px] h-[144px]" />
+      <!-- Compose -->
+      <div v-else class="to-compose">
+        <!-- Hero -->
+        <div class="to-hero">
+          <div class="to-hero__blob" />
+          <div class="to-hero__emoji">💡</div>
+          <div class="to-hero__title">Reach the owner directly</div>
+          <div class="to-hero__desc">
+            Sometimes the best deals happen before a property is listed. Send a message — we'll deliver it privately. Your identity stays hidden unless they respond.
+          </div>
         </div>
 
-        <p class="description">
-          Send a message or request to speak with the property owner directly
-        </p>
+        <!-- Preset messages -->
+        <div class="to-section-title">Choose a message</div>
+        <div class="to-msg-list">
+          <div
+            v-for="(preset, i) in presetMessages"
+            :key="i"
+            class="to-msg-option"
+            :class="{ 'to-msg-option--selected': selectedPreset === i }"
+            @click="selectPreset(i)"
+          >
+            💬 "{{ preset.short }}"
+          </div>
+        </div>
 
-        <div class="message-section">
-          <h2 class="section-title">Enter your message</h2>
+        <!-- Custom -->
+        <div class="to-custom">
+          <div class="to-custom__label">Or write your own</div>
           <textarea
             v-model="message"
-            class="message-input"
-            placeholder="e.g. Who did your rendering? I'm very interested in this property..."
-            rows="6"
-          ></textarea>
+            class="to-custom__input"
+            placeholder="Write a personal message to the owner…"
+            rows="4"
+            @input="onCustomInput"
+          />
         </div>
 
-        <div class="options-section">
-          <div class="option-item" @click="sharePhone = !sharePhone">
-            <span class="option-text">Share my phone number with owner</span>
-            <div class="checkbox" :class="{ checked: sharePhone }">
-              <span v-if="sharePhone" class="check-icon">✓</span>
-            </div>
+        <!-- Privacy -->
+        <div class="to-privacy">
+          <span class="to-privacy__emoji">🔒</span>
+          <div>
+            <div class="to-privacy__title">Your identity is anonymous</div>
+            <div class="to-privacy__desc">The owner sees your message but not your name or contact details. Only shared if they reply and you both agree.</div>
           </div>
         </div>
 
-        <div class="info-section">
-          <h2 class="section-title">Safety information</h2>
-          <div class="info-card">
-            <div class="info-icon">🔒</div>
-            <div class="info-content">
-              <h3 class="info-title">Safe Messaging</h3>
-              <ul class="info-list">
-                <li>All messages are monitored for safety</li>
-                <li>Personal details kept private until you choose to share</li>
-                <li>Report inappropriate behavior anytime</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
+        <p v-if="errorMsg" class="to-error">{{ errorMsg }}</p>
 
         <button
-          class="send-btn"
-          :disabled="!message.trim() || isSending"
+          class="to-send"
+          :disabled="!canSend || isSending"
           @click="sendMessage"
         >
-          {{ isSending ? 'Sending...' : 'Send Message' }}
+          <span v-if="isSending" class="to-spinner to-spinner--small" />
+          <template v-else>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2 11 13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+            <span>Send message</span>
+          </template>
         </button>
-      </template>
+        <div class="to-foot-note">Delivered via uMU · Anonymous until mutual agreement</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import AppHeader from '@/components/core/AppHeader.vue'
-import OPIcon from '~/components/ui/OPIcon.vue'
+import { ref, computed, onMounted } from 'vue'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -125,34 +145,68 @@ const router = useRouter()
 const config = useRuntimeConfig()
 const propertyId = route.params.id as string
 
+const presetMessages = [
+  {
+    short: "I'm genuinely interested in your property and would love to arrange a viewing.",
+    full: "I'm genuinely interested in your property and would love to arrange a viewing at your convenience.",
+  },
+  {
+    short: "Your home is exactly what I'm looking for. Would you consider a private sale?",
+    full: "I've been searching this area for a while and your home is exactly what I'm looking for. Would you consider a private sale?",
+  },
+  {
+    short: "Are you planning to sell in the next 6–12 months? I'm happy to wait.",
+    full: "I'd love to know if you're planning to sell in the next 6-12 months. Happy to wait for the right property.",
+  },
+]
+
 const message = ref('')
-const sharePhone = ref(true)
+const selectedPreset = ref<number | null>(null)
 const isSending = ref(false)
 const submitted = ref(false)
 const errorMsg = ref('')
 const pageLoading = ref(true)
-const userHasPhone = ref(true) // optimistic default — only block if fetch explicitly shows no phone
+const userHasPhone = ref(true)
 const propertyAddress = ref('')
 const ownerPhone = ref<string | null>(null)
 const ownerHasPassport = ref(false)
+
+const canSend = computed(() => !!message.value.trim())
 
 const whatsappUrl = computed(() => {
   if (!ownerPhone.value) return ''
   const phone = ownerPhone.value.replace(/[^0-9+]/g, '').replace(/^\+/, '')
   const text = encodeURIComponent(
-    `Hi, I sent you a message through UMovingU about your property at ${propertyAddress.value}. Looking forward to hearing from you!`
+    `Hi, I sent you a message through UMovingU about your property at ${propertyAddress.value}. Looking forward to hearing from you!`,
   )
   return `https://wa.me/${phone}?text=${text}`
 })
 
+const selectPreset = (i: number) => {
+  selectedPreset.value = i
+  message.value = presetMessages[i].full
+}
+
+const onCustomInput = () => {
+  // Deselect preset if user edits freely
+  if (selectedPreset.value !== null) {
+    const preset = presetMessages[selectedPreset.value]
+    if (message.value !== preset.full) {
+      selectedPreset.value = null
+    }
+  }
+}
+
 onMounted(async () => {
   try {
     const token = localStorage.getItem('token')
-    if (!token) { router.push('/auth/login'); return }
+    if (!token) {
+      router.push('/auth/login')
+      return
+    }
 
     const headers = { Authorization: `Bearer ${token}` }
 
-    // Load user profile and property details in parallel
     const [profileRes, propertyRes] = await Promise.all([
       fetch(`${config.public.apiBase}/profile/me`, { headers }),
       fetch(`${config.public.apiBase}/property/${propertyId}`),
@@ -160,17 +214,16 @@ onMounted(async () => {
 
     if (profileRes.ok) {
       const profile = await profileRes.json()
-      // Only block if we KNOW the phone is absent
       if (!profile.phone || !profile.phone.trim()) {
         userHasPhone.value = false
       }
     }
-    // If fetch fails, userHasPhone stays true — backend will validate on submit
 
     if (propertyRes.ok) {
       const prop = await propertyRes.json()
       propertyAddress.value = [prop.addressLine1, prop.city || prop.county, prop.postcode]
-        .filter(Boolean).join(', ')
+        .filter(Boolean)
+        .join(', ')
     }
   } catch {
     // non-critical
@@ -180,7 +233,7 @@ onMounted(async () => {
 })
 
 const sendMessage = async () => {
-  if (!message.value.trim() || isSending.value) return
+  if (!canSend.value || isSending.value) return
   isSending.value = true
   errorMsg.value = ''
   try {
@@ -190,8 +243,8 @@ const sendMessage = async () => {
       {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
-        body: { message: message.value, sharePhone: sharePhone.value },
-      }
+        body: { message: message.value, sharePhone: true },
+      },
     )
     ownerPhone.value = res.ownerPhone
     ownerHasPassport.value = !!res.ownerPhone
@@ -210,335 +263,439 @@ const sendMessage = async () => {
 </script>
 
 <style scoped>
-.contact-page {
+.to-page {
+  --navy: #0f0d3d;
+  --brand: #00b8a9;
+  --brand-pale: #e6fbfa;
+  --brand-soft: #b6ece6;
+  --ink: #1a1a1a;
+  --ink-soft: #4b5563;
+  --ink-faint: #9ca3af;
+  --line: #e5e7eb;
+
   min-height: 100vh;
-  background: linear-gradient(to bottom, #f5f5f5 0%, #ffffff 200px);
+  background: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink);
   padding-bottom: 40px;
 }
 
-.content {
-  padding: 0 20px;
+/* Header */
+.to-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.to-back {
+  border: none;
+  background: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--navy);
+  display: grid;
+  place-items: center;
+}
+
+.to-header__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.to-header__title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.to-header__subtitle {
+  font-size: 11px;
+  color: var(--ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.to-header__chip {
+  background: var(--brand-pale);
+  border: 1px solid var(--brand-soft);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--brand);
+  flex-shrink: 0;
+}
+
+/* Content */
+.to-content {
+  padding: 20px;
   max-width: 430px;
   margin: 0 auto;
 }
 
-.loading-state {
+/* Loading */
+.to-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 60px 0;
   gap: 16px;
-  color: #666;
+  color: var(--ink-soft);
 }
 
-.spinner {
+.to-spinner {
   width: 36px;
   height: 36px;
-  border: 3px solid #e5e5ea;
-  border-top-color: #00b8a9;
+  border: 3px solid var(--line);
+  border-top-color: var(--brand);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: to-spin 0.8s linear infinite;
 }
 
-@keyframes spin {
+.to-spinner--small {
+  width: 18px;
+  height: 18px;
+  border-width: 2.5px;
+  border-top-color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+}
+
+@keyframes to-spin {
   to { transform: rotate(360deg); }
 }
 
-/* Blocker state */
-.blocker-state {
+/* Blocker */
+.to-blocker {
   text-align: center;
   padding: 40px 0;
 }
 
-.blocker-icon {
+.to-blocker__icon {
   font-size: 64px;
   margin-bottom: 20px;
 }
 
-.blocker-title {
+.to-blocker__title {
   font-size: 22px;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-weight: 800;
+  color: var(--navy);
   margin: 0 0 12px;
 }
 
-.blocker-desc {
-  font-size: 15px;
-  color: #666;
-  line-height: 1.5;
-  margin: 0 0 32px;
-}
-
-/* Success state */
-.success-state {
-  text-align: center;
-  padding: 32px 0;
-}
-
-.success-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 16px 0 8px;
-}
-
-.success-desc {
-  font-size: 15px;
-  color: #666;
-  line-height: 1.5;
-  margin: 0 0 32px;
-}
-
-.whatsapp-section {
-  background: #f0fff4;
-  border: 1.5px solid #bbf7d0;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 24px;
-}
-
-.whatsapp-label {
+.to-blocker__desc {
   font-size: 14px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 12px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0 0 32px;
 }
 
-.whatsapp-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.to-cta {
   width: 100%;
-  padding: 14px;
-  background: #25D366;
-  color: white;
+  padding: 15px;
+  background: var(--brand);
+  color: #fff;
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-  transition: all 0.2s;
-}
-
-.whatsapp-btn:active {
-  transform: scale(0.98);
-}
-
-.whatsapp-note {
-  font-size: 12px;
-  color: #666;
-  margin: 8px 0 0;
-  text-align: center;
-}
-
-.done-btn {
-  width: 100%;
-  padding: 16px;
-  background: white;
-  color: #00b8a9;
-  border: 2px solid #00b8a9;
-  border-radius: 16px;
-  font-size: 16px;
-  font-weight: 700;
-  transition: all 0.2s;
-}
-
-/* Form */
-.title {
-  font-size: 28px;
-  font-weight: 700;
-  text-align: center;
-  margin: 0 0 8px;
-  color: #1a1a1a;
-}
-
-.subtitle {
-  font-size: 14px;
-  color: #666;
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.house-illustration {
-  display: flex;
-  justify-content: center;
-  margin: 32px 0;
-}
-
-.description {
-  font-size: 16px;
-  color: #00b8a9;
-  text-align: center;
-  margin-bottom: 32px;
-  font-weight: 500;
-  line-height: 1.5;
-}
-
-.message-section {
-  margin-bottom: 24px;
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #1a1a1a;
-}
-
-.message-input {
-  width: 100%;
-  padding: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 16px;
+  border-radius: 14px;
   font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
   font-family: inherit;
-  resize: none;
-  background: white;
-  transition: border-color 0.2s;
-  box-sizing: border-box;
 }
 
-.message-input:focus {
-  outline: none;
-  border-color: #00b8a9;
+/* Hero */
+.to-hero {
+  background: linear-gradient(135deg, var(--navy), #1e1b4b);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
 }
 
-.message-input::placeholder {
-  color: #999;
+.to-hero__blob {
+  position: absolute;
+  right: -15px;
+  top: -15px;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
 }
 
-.options-section {
+.to-hero__emoji {
+  font-size: 18px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.to-hero__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.to-hero__desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  position: relative;
+}
+
+/* Section */
+.to-section-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.to-msg-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.option-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  background: white;
-  border: 2px solid #e0e0e0;
-  border-radius: 16px;
+.to-msg-option {
+  padding: 14px 16px;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.5;
+  transition: all 0.15s;
 }
 
-.option-text {
-  font-size: 15px;
-  color: #1a1a1a;
-  font-weight: 500;
-  flex: 1;
+.to-msg-option:active {
+  transform: scale(0.99);
 }
 
-.checkbox {
-  width: 28px;
-  height: 28px;
-  border: 2px solid #ccc;
-  border-radius: 50%;
+.to-msg-option--selected {
+  border-color: var(--brand);
+  background: var(--brand-pale);
+}
+
+/* Custom */
+.to-custom {
+  margin-bottom: 20px;
+}
+
+.to-custom__label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.to-custom__input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  color: var(--ink);
+  background: #fff;
+  line-height: 1.6;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.to-custom__input:focus {
+  border-color: var(--brand);
+}
+
+/* Privacy */
+.to-privacy {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.to-privacy__emoji {
+  font-size: 16px;
   flex-shrink: 0;
 }
 
-.checkbox.checked {
-  background: #00b8a9;
-  border-color: #00b8a9;
-}
-
-.check-icon {
-  color: white;
-  font-size: 16px;
+.to-privacy__title {
+  font-size: 12px;
   font-weight: 700;
+  color: #15803d;
+  margin-bottom: 2px;
 }
 
-.info-section {
-  margin-bottom: 24px;
+.to-privacy__desc {
+  font-size: 11.5px;
+  color: #166534;
+  line-height: 1.55;
 }
 
-.info-card {
-  display: flex;
-  gap: 16px;
-  padding: 20px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 2px solid #e6f9f7;
-}
-
-.info-icon {
-  font-size: 32px;
-  flex-shrink: 0;
-}
-
-.info-content {
-  flex: 1;
-}
-
-.info-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1a1a1a;
+.to-error {
+  font-size: 13px;
+  color: #ef4444;
+  text-align: center;
   margin: 0 0 12px;
 }
 
-.info-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.info-list li {
-  font-size: 14px;
-  color: #00b8a9;
-  padding: 4px 0;
-  padding-left: 20px;
-  position: relative;
-  line-height: 1.5;
-}
-
-.info-list li::before {
-  content: '•';
-  position: absolute;
-  left: 0;
-  color: #00b8a9;
-  font-weight: 700;
-}
-
-.error-msg {
-  font-size: 14px;
-  color: #ef4444;
-  text-align: center;
-  margin-bottom: 12px;
-}
-
-.send-btn {
+/* Send btn */
+.to-send {
   width: 100%;
-  padding: 18px;
-  background: #00b8a9;
-  color: white;
   border: none;
-  border-radius: 16px;
-  font-size: 16px;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(0, 184, 169, 0.3);
+  padding: 15px;
+  border-radius: 14px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
   transition: all 0.2s;
-  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.send-btn:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-.send-btn:disabled {
-  background: #ccc;
-  box-shadow: none;
+.to-send:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
   cursor: not-allowed;
+}
+
+.to-foot-note {
+  text-align: center;
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-top: 8px;
+}
+
+/* Sent state */
+.to-sent {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.to-sent__circle {
+  width: 80px;
+  height: 80px;
+  background: var(--brand-pale);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin: 30px auto 16px;
+  color: var(--brand);
+}
+
+.to-sent__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 8px;
+  letter-spacing: -0.03em;
+}
+
+.to-sent__desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+.to-sent__card {
+  background: var(--brand-pale);
+  border: 1.5px solid var(--brand-soft);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.to-sent__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.to-sent__preview {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* WhatsApp */
+.to-whatsapp {
+  background: #f0fff4;
+  border: 1.5px solid #bbf7d0;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.to-whatsapp__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.to-whatsapp__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background: #25d366;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.to-whatsapp__btn:active {
+  opacity: 0.9;
+}
+
+.to-done {
+  width: 100%;
+  border: none;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
 }
 </style>

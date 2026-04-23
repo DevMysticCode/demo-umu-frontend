@@ -942,10 +942,11 @@ onMounted(() => {
 .header-nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   margin-bottom: 14px;
   position: relative;
   z-index: 1;
+  gap: 16px;
 }
 .back-btn {
   width: 34px;
@@ -987,7 +988,7 @@ onMounted(() => {
   margin: 0 0 4px;
 }
 .header-sub {
-  font-size: 13px;
+  font-size: 15px;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.5;
   margin: 0;
@@ -1012,7 +1013,7 @@ onMounted(() => {
 .pref-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 20px 120px;
+  padding: 20px 20px 220px;
 }
 
 /* ── Radio option (role cards) ────────────────────────────────────────── */
@@ -1079,7 +1080,7 @@ onMounted(() => {
   color: #1f2024;
 }
 .radio-desc {
-  font-size: 12px;
+  font-size: 14px;
   color: #94a3b8;
   margin-top: 2px;
 }
@@ -1121,7 +1122,7 @@ onMounted(() => {
   margin-bottom: 3px;
 }
 .trust-sub {
-  font-size: 10.5px;
+  font-size: 11.5px;
   color: #94a3b8;
   line-height: 1.4;
 }
@@ -1248,12 +1249,13 @@ onMounted(() => {
 
 /* ── CTA bar ──────────────────────────────────────────────────────────── */
 .cta-bar {
-  position: sticky;
+  position: fixed;
   bottom: 0;
   padding: 10px 20px 28px;
   background: #fff;
   border-top: 1px solid #eef0f6;
   z-index: 10;
+  min-width: 28rem;
 }
 .cta-meta {
   display: flex;
