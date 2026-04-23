@@ -137,7 +137,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  duration: 2400,
+  duration: 240000,
   everyLoad: false,
 })
 
@@ -151,7 +151,7 @@ onMounted(() => {
   if (!props.everyLoad && sessionStorage.getItem(SESSION_KEY) === '1') return
 
   visible.value = true
-  sessionStorage.setItem(SESSION_KEY, '1')
+  // sessionStorage.setItem(SESSION_KEY, '1')
 
   setTimeout(() => {
     hiding.value = true
@@ -178,7 +178,7 @@ onMounted(() => {
 .splash-logo-wrap {
   display: grid;
   place-items: center;
-  margin-bottom: 10px;
+  margin-bottom: -40px;
   opacity: 0;
   animation: splashLogoIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
 }
