@@ -97,17 +97,25 @@
         <template v-else-if="searchProperties.length > 0">
           <div v-for="prop in searchProperties" :key="prop.id" class="prop-card" @click="navigateTo('/property/' + prop.id)">
             <div class="prop-img-wrap" :style="{ background: prop.imgGradient || 'linear-gradient(135deg,#dff4f0,#c8ebe6)' }">
-              <img v-if="prop.image" :src="prop.image" :alt="prop.address" class="prop-img" />
+              <img v-if="prop.imageUrl || prop.image" :src="prop.imageUrl || prop.image" :alt="prop.addressLine1 || prop.address" class="prop-img" />
               <div v-else class="prop-emoji">{{ prop.emoji || '🏡' }}</div>
               <div v-if="prop.hasPassport" class="prop-badge-pp">📘 Passport</div>
-              <div class="prop-price-tag">{{ prop.priceDisplay || 'POA' }}</div>
+              <div class="prop-price-tag">{{ prop.estimatedPrice ? '£' + Math.round(prop.estimatedPrice).toLocaleString() : prop.priceDisplay || 'POA' }}</div>
             </div>
             <div class="prop-body">
-              <div class="prop-address">{{ prop.address || prop.addressLine1 }}</div>
-              <div class="prop-area">{{ prop.area || prop.postcode || '' }}</div>
+              <div class="prop-row-top">
+                <div class="prop-title-col">
+                  <div class="prop-address">{{ prop.addressLine1 || prop.address }}</div>
+                  <div class="prop-area">{{ prop.city ? prop.city + ', ' + prop.postcode : (prop.area || prop.postcode || '') }}</div>
+                </div>
+                <div v-if="prop.epcRating" class="epc-badge" :style="{ background: epcColor(prop.epcRating) }">
+                  <div class="epc-badge-label">EPC</div>
+                  <div class="epc-badge-rating">{{ prop.epcRating }}</div>
+                </div>
+              </div>
               <div class="prop-pills">
-                <span v-if="prop.bedrooms" class="pill-grey">🛏 {{ prop.bedrooms }}</span>
-                <span v-if="prop.type" class="pill-grey">{{ prop.type }}</span>
+                <span v-if="prop.bedrooms" class="pill-grey">🛏 {{ prop.bedrooms }} bed</span>
+                <span v-if="prop.propertyType || prop.type" class="pill-grey">{{ prop.propertyType || prop.type }}</span>
                 <span v-if="prop.tenure" class="pill-grey">{{ prop.tenure }}</span>
               </div>
               <div class="prop-footer">
@@ -928,6 +936,14 @@ function clearSearch() {
   showDropdown.value = false
   searchMode.value = false
   searchProperties.value = []
+}
+
+function epcColor(rating: string): string {
+  const map: Record<string, string> = {
+    A: '#00b050', B: '#33b800', C: '#92d050',
+    D: '#d4e800', E: '#ffbf00', F: '#ff6600', G: '#ff0000',
+  }
+  return map[(rating ?? '').toUpperCase()] ?? '#8e8e93'
 }
 
 function buildSearchUrl(offset: number): string {
@@ -2446,6 +2462,41 @@ onMounted(async () => {
   border-radius: 12px;
   cursor: pointer;
   font-family: inherit;
+}
+
+/* ── EPC badge on search result card ── */
+.prop-row-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.prop-title-col {
+  flex: 1;
+  min-width: 0;
+}
+.epc-badge {
+  min-width: 44px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  color: #fff;
+  text-align: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+.epc-badge-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+  line-height: 1;
+}
+.epc-badge-rating {
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-top: 1px;
 }
 
 /* ── Load more (infinite scroll) ── */

@@ -50,6 +50,10 @@
               <span v-if="r.hasPassport" class="psi-drop-pp">📘 Passport</span>
             </div>
           </div>
+          <div v-if="r.epcRating" class="psi-drop-epc" :style="{ background: epcColor(r.epcRating) }">
+            <div class="psi-drop-epc-label">EPC</div>
+            <div class="psi-drop-epc-rating">{{ r.epcRating }}</div>
+          </div>
           <div class="psi-drop-chev">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
               <polyline points="9 18 15 12 9 6" />
@@ -200,6 +204,14 @@ function clearQuery() {
   showDropdown.value = false
 }
 
+function epcColor(rating: string): string {
+  const map: Record<string, string> = {
+    A: '#00b050', B: '#33b800', C: '#92d050',
+    D: '#d4e800', E: '#ffbf00', F: '#ff6600', G: '#ff0000',
+  }
+  return map[(rating ?? '').toUpperCase()] ?? '#8e8e93'
+}
+
 defineExpose({ clearQuery })
 </script>
 
@@ -344,6 +356,29 @@ defineExpose({ clearQuery })
   border-radius: 999px;
 }
 .psi-drop-chev { color: #cbd5e1; flex-shrink: 0; }
+
+.psi-drop-epc {
+  min-width: 36px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  color: #fff;
+  text-align: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+.psi-drop-epc-label {
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+  line-height: 1;
+}
+.psi-drop-epc-rating {
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-top: 1px;
+}
 
 .psi-drop-loading {
   display: flex;

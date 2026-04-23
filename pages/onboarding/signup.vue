@@ -37,15 +37,23 @@
         <PhoneInput v-model="form.mobile" />
       </div>
 
-      <!-- Postcode / Address -->
-      <AddressSearch
-        name="postcode"
-        label="Postcode"
-        @search="searchAddress"
-        :isSearching="searchingAddress"
-        :selectedAddress="selectedAddress"
-        @edit="editAddress"
-      />
+      <!-- Postcode / Address — inline live dropdown -->
+      <div class="field-wrap">
+        <label class="field-label">Postcode</label>
+        <div v-if="selectedAddress" class="address-selected-row">
+          <div class="address-selected-body">
+            <div class="address-selected-line1">{{ selectedAddress.line1 }}</div>
+            <div class="address-selected-line2">{{ selectedAddress.line2 }}</div>
+          </div>
+          <button type="button" class="address-edit-btn" @click="editAddress">Edit</button>
+        </div>
+        <PropertySearchInput
+          v-else
+          placeholder="Enter postcode or address"
+          variant="light"
+          @select="onAddressSelect"
+        />
+      </div>
 
       <!-- Password -->
       <div class="field-wrap">
@@ -92,17 +100,6 @@
       </div>
     </div>
 
-    <!-- Address Search Modal -->
-    <AddressSearchModal
-      :show="showAddressModal"
-      :postcode="form.postcode"
-      :addresses="addressResults"
-      @update:show="showAddressModal = $event"
-      @select="selectAddress"
-      @search="searchAddress"
-      @close="showAddressModal = false"
-    />
-
     <!-- Terms Modal -->
     <TermsModal
       :show="showTermsModal"
@@ -119,8 +116,7 @@ import { useAuth } from '~/composables/useAuth'
 import { useSession } from '~/composables/useSession'
 import { toTitleCase } from '~/utils/form-helpres'
 import PhoneInput from '~/components/form/PhoneInput.vue'
-import AddressSearch from '~/components/form/AddressSearch.vue'
-import AddressSearchModal from '~/components/modals/AddressSearchModal.vue'
+import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 import TermsModal from '~/components/modals/TermsModal.vue'
 
 definePageMeta({
@@ -147,39 +143,19 @@ const formError = ref('')
 const isLoading = ref(false)
 const showTermsModal = ref(false)
 
-// ── Address search ────────────────────────────────────────────────────────
-const searchingAddress = ref(false)
-const showAddressModal = ref(false)
+// ── Address search (live dropdown) ────────────────────────────────────────
 const selectedAddress = ref<{ id: number; line1: string; line2: string; postcode?: string } | null>(null)
-const addressResults = ref<{ id: number; line1: string; line2: string; postcode?: string }[]>([])
 
-const searchAddress = async (postcode?: string) => {
-  const query = (postcode ?? form.postcode ?? '').trim()
-  if (!query || query.length < 2) return
-  form.postcode = query
-  searchingAddress.value = true
-  try {
-    const res = await $fetch<{ items: any[]; total: number }>(
-      `${config.public.apiBase}/property/search?q=${encodeURIComponent(query)}&offset=0&limit=25`,
-    )
-    addressResults.value = (res.items ?? []).map((p, i) => ({
-      id: i + 1,
-      line1: toTitleCase(p.addressLine1),
-      line2: [p.city ? toTitleCase(p.city) : null, p.postcode?.toUpperCase()].filter(Boolean).join(', '),
-      postcode: p.postcode?.toUpperCase(),
-    }))
-    showAddressModal.value = true
-  } catch (err) {
-    console.error('Address search error:', err)
-  } finally {
-    searchingAddress.value = false
+const onAddressSelect = (property: any) => {
+  selectedAddress.value = {
+    id: 1,
+    line1: toTitleCase(property.addressLine1 ?? ''),
+    line2: [property.city ? toTitleCase(property.city) : null, property.postcode?.toUpperCase()]
+      .filter(Boolean)
+      .join(', '),
+    postcode: property.postcode?.toUpperCase(),
   }
-}
-
-const selectAddress = (address: { id: number; line1: string; line2: string; postcode?: string }) => {
-  selectedAddress.value = address
-  form.postcode = address.postcode ?? address.line1
-  showAddressModal.value = false
+  form.postcode = selectedAddress.value.postcode ?? selectedAddress.value.line1
 }
 
 const editAddress = () => {
@@ -408,6 +384,43 @@ const handleSubmit = async () => {
   color: #00A19A;
   font-weight: 600;
   cursor: pointer;
+}
+
+.address-selected-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #eafaf9;
+  border: 1.5px solid #b2e8e6;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.address-selected-body {
+  flex: 1;
+  min-width: 0;
+}
+.address-selected-line1 {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #231d45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.address-selected-line2 {
+  font-size: 11.5px;
+  color: #4a5568;
+  margin-top: 2px;
+}
+.address-edit-btn {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: #00a19a;
+  cursor: pointer;
+  padding: 4px 8px;
+  flex-shrink: 0;
 }
 
 .error-banner {

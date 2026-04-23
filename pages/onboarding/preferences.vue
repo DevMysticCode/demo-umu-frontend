@@ -5,7 +5,7 @@
       <div class="pref-header">
         <div class="header-glow" />
         <div v-if="phase === 'detail'"></div>
-        <div v-else>🎉 Welcome to umovingu</div>
+        <div v-else class="welcome_text">🎉 Welcome to umovingu</div>
         <div class="header-nav">
           <button
             v-if="phase === 'detail'"
@@ -910,6 +910,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.welcome_text {
+  color: #ffffff;
+}
+
 .pref-root {
   min-height: 100dvh;
   background: #fff;
