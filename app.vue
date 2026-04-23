@@ -1,10 +1,13 @@
 <template>
   <div class="app">
+    <SplashScreen />
     <NuxtPage />
   </div>
 </template>
 
 <script setup>
+import SplashScreen from '~/components/core/SplashScreen.vue'
+
 // Global app configuration
 useHead({
   htmlAttrs: {
