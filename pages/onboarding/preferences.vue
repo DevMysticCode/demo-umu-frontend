@@ -1256,7 +1256,8 @@ onMounted(() => {
   background: #fff;
   border-top: 1px solid #eef0f6;
   z-index: 10;
-  min-width: 28rem;
+  width: 100%;
+  max-width: 28rem;
 }
 .cta-meta {
   display: flex;

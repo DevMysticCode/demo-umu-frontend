@@ -302,7 +302,7 @@
                 </div>
               </div>
               <button class="btn-claim" @click="startClaimFlow">
-                Search your property to claim
+                Claim your Property Passport
               </button>
             </div>
           </div>
@@ -1337,7 +1337,7 @@
                 <div
                   class="portfolio-prop-row"
                   style="justify-content: center; padding: 16px 0"
-                  @click="navigateTo('/explore')"
+                  @click="startClaimFlow"
                 >
                   <div style="text-align: center">
                     <div
@@ -1387,7 +1387,7 @@
             <div class="pro-dark-badge">Book</div>
           </div>
 
-          <div class="add-property-card" @click="navigateTo('/explore')">
+          <div class="add-property-card" @click="startClaimFlow">
             <div style="font-size: 22px; flex-shrink: 0">➕</div>
             <div style="flex: 1">
               <div
@@ -1847,19 +1847,9 @@ function applyFilters() {
   if (searchQuery.value.trim()) doSearch()
 }
 
-// Prompt user to search for their property — they'll claim from the property page.
+// Take the user into the Claim flow (search → confirm → KYC → issue passport).
 function startClaimFlow() {
-  if (typeof document !== 'undefined') {
-    const input = document.querySelector<HTMLInputElement>(
-      '.explore-hero input[type="text"]',
-    )
-    if (input) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      setTimeout(() => input.focus(), 300)
-      return
-    }
-  }
-  navigateTo('/explore')
+  navigateTo('/claim')
 }
 
 onBeforeUnmount(() => {
