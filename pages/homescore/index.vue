@@ -36,6 +36,7 @@
         <PropertySearchInput
           placeholder="Postcode or address…"
           variant="light"
+          :show-passport-status="true"
           @select="goToScore($event.id)"
           @enter="onSearchEnter"
         />

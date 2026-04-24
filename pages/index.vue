@@ -117,7 +117,7 @@
             "
           ></div>
 
-          <!-- Left: label + address + badges + CTA -->
+          <!-- Left: label + headline + CTA pill -->
           <div style="position: relative; z-index: 1; flex: 1; min-width: 0">
             <div
               style="
@@ -129,66 +129,35 @@
                 margin-bottom: 8px;
               "
             >
-              Healthscore&#x2122; preview
+              HealthScore&#x2122; &middot; Free
             </div>
             <div
               style="
-                font-size: 15px;
-                font-weight: 700;
+                font-size: 17px;
+                font-weight: 800;
                 color: #fff;
-                margin-bottom: 6px;
+                line-height: 1.2;
+                margin-bottom: 10px;
+                letter-spacing: -0.02em;
               "
             >
-              14 Hazel Grove
+              Every property has a story.<br />The HealthScore tells it —<br />in
+              60 seconds.
             </div>
             <div
               style="
-                display: flex;
+                display: inline-flex;
                 align-items: center;
-                gap: 6px;
-                flex-wrap: wrap;
+                gap: 5px;
+                background: rgba(94, 234, 212, 0.15);
+                border: 1px solid rgba(94, 234, 212, 0.3);
+                border-radius: 999px;
+                padding: 4px 11px;
               "
             >
-              <div
-                style="
-                  display: inline-flex;
-                  align-items: center;
-                  gap: 4px;
-                  background: rgba(255, 255, 255, 0.12);
-                  border: 1px solid rgba(255, 255, 255, 0.22);
-                  border-radius: 999px;
-                  padding: 3px 10px;
-                "
+              <span style="font-size: 10px; font-weight: 700; color: #5eead4"
+                >Tap to check your property &#x2192;</span
               >
-                <span style="font-size: 10px; font-weight: 700; color: #5eead4"
-                  >&#x25CF; Low risk</span
-                >
-              </div>
-              <div
-                style="
-                  display: inline-flex;
-                  align-items: center;
-                  gap: 4px;
-                  background: rgba(255, 255, 255, 0.12);
-                  border: 1px solid rgba(255, 255, 255, 0.22);
-                  border-radius: 999px;
-                  padding: 3px 10px;
-                "
-              >
-                <span style="font-size: 10px; font-weight: 700; color: #5eead4"
-                  >&#x2713; Property Passport</span
-                >
-              </div>
-            </div>
-            <div
-              style="
-                margin-top: 10px;
-                font-size: 11px;
-                font-weight: 600;
-                color: rgba(255, 255, 255, 0.6);
-              "
-            >
-              Tap to check any property free &#x2192;
             </div>
           </div>
 

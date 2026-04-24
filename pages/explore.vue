@@ -773,6 +773,21 @@
 
           <HealthPassportCards />
 
+          <!-- My Passport (Buyer Passport) entry card -->
+          <div
+            class="my-passport-card"
+            @click="navigateTo('/my-passport')"
+          >
+            <div class="my-passport-ic">👤</div>
+            <div class="my-passport-body">
+              <div class="my-passport-title">My Buyer Passport</div>
+              <div class="my-passport-sub">
+                Prove you're a verified buyer — share with any agent or seller
+              </div>
+            </div>
+            <div class="my-passport-arrow">→</div>
+          </div>
+
           <div class="market-pulse-card">
             <div
               style="
@@ -3002,6 +3017,55 @@ onMounted(async () => {
   border-radius: 16px;
   padding: 14px 16px;
   margin-bottom: 14px;
+}
+
+/* My Buyer Passport entry card (buy role) */
+.my-passport-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.my-passport-card:active {
+  background: #f0fdfa;
+}
+.my-passport-ic {
+  width: 40px;
+  height: 40px;
+  background: #f0fdfa;
+  border: 1.5px solid #99f6e4;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.my-passport-body {
+  flex: 1;
+  min-width: 0;
+}
+.my-passport-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #231d45;
+}
+.my-passport-sub {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.my-passport-arrow {
+  font-size: 16px;
+  color: #00a19a;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 .pulse-grid {

@@ -20,7 +20,13 @@
               ? 'Your HomeScore'
               : screen === 'passport'
                 ? 'Property Passport'
-                : 'HomeScore'
+                : screen === 'buyer-results'
+                  ? 'Property Report'
+                  : screen === 'quick-wins'
+                    ? 'Boost your score'
+                    : screen === 'move-ready'
+                      ? 'Get move ready'
+                      : 'HomeScore'
           }}
         </p>
         <p class="hs-header-sub">{{ headerSub }}</p>
@@ -54,6 +60,66 @@
     <!-- ── LANDING / AUTO SCORE ─────────────────────────────────── -->
     <template v-else-if="screen === 'landing'">
       <div class="hs-scroll">
+        <!-- Passport state banner — differs for "published" vs "in progress" -->
+        <div v-if="passportState === 'published'" class="hs-pp-banner hs-pp-banner--published">
+          <span class="hs-pp-banner-ic">📘</span>
+          <div class="hs-pp-banner-body">
+            <div class="hs-pp-banner-title">This property has a published Passport</div>
+            <div class="hs-pp-banner-sub">
+              Verified documents, confirmed ownership and a full HealthScore are
+              available.
+            </div>
+          </div>
+          <button
+            class="hs-pp-banner-cta hs-pp-banner-cta--mint"
+            @click="router.push(`/property/${propertyId}`)"
+          >
+            View →
+          </button>
+        </div>
+
+        <div v-else-if="passportState === 'inProgress'" class="hs-pp-inprogress">
+          <div class="hs-pp-inprogress-head">
+            <span class="hs-pp-inprogress-ic">📘</span>
+            <div>
+              <div class="hs-pp-inprogress-title">
+                The owner has started a Passport — not yet published
+              </div>
+              <div class="hs-pp-inprogress-sub">
+                The seller is building their record. You're seeing public EPC
+                data only for now. Once they publish, you'll see their verified
+                score, documents and history.
+              </div>
+            </div>
+          </div>
+          <div class="hs-pp-inprogress-box">
+            <div class="hs-pp-inprogress-box-title">📊 What you can see now</div>
+            <div class="hs-pp-inprogress-box-body">
+              Public EPC data only · Estimated HealthScore based on energy
+              rating
+            </div>
+          </div>
+          <div class="hs-pp-inprogress-box">
+            <div class="hs-pp-inprogress-box-title">
+              🔒 What's being prepared (not yet visible)
+            </div>
+            <div class="hs-pp-inprogress-box-body">
+              Verified ownership · Documents vault · Full HealthScore · Planning
+              history
+            </div>
+          </div>
+          <button
+            v-if="!notifiedOfPublish"
+            class="hs-pp-inprogress-cta"
+            @click="notifyWhenPublished"
+          >
+            🔔 Notify me when it's published
+          </button>
+          <div v-else class="hs-pp-inprogress-done">
+            ✓ We'll alert you as soon as it goes live
+          </div>
+        </div>
+
         <!-- Address strip -->
         <div class="hs-addr-strip">
           <div class="hs-addr-dot" />
@@ -151,25 +217,67 @@
             {{ epcRangeHigh }}.
           </p>
 
-          <!-- CTA -->
-          <button class="hs-cta-primary mt-4" @click="startQuestions">
-            Get your real score in 2 minutes
-            <span class="hs-cta-chev">›</span>
-          </button>
-          <p class="hs-cta-sub mb-0">
-            {{ QUESTIONS.length }} quick questions · No signup needed
-          </p>
+          <!-- Interest selector (owner vs buyer) — hidden in read-only mode -->
+          <template v-if="!readOnlyMode">
+            <div class="hs-interest-label">What's your interest in this property?</div>
+            <div class="hs-interest-stack">
+              <button class="hs-interest-btn primary" @click="startQuestions">
+                <div class="hs-interest-ic primary">🏠</div>
+                <div class="hs-interest-body">
+                  <div class="hs-interest-title">This is my home</div>
+                  <div class="hs-interest-sub primary-sub">
+                    Get my real score in 2 mins · {{ QUESTIONS.length }} quick
+                    questions
+                  </div>
+                </div>
+                <div class="hs-interest-chev primary">›</div>
+              </button>
+              <button
+                class="hs-interest-btn outline"
+                @click="screen = 'buyer-results'"
+              >
+                <div class="hs-interest-ic soft">🔍</div>
+                <div class="hs-interest-body">
+                  <div class="hs-interest-title">I'm considering buying this</div>
+                  <div class="hs-interest-sub">
+                    See running costs, risks &amp; what to ask the seller
+                  </div>
+                </div>
+                <div class="hs-interest-chev">›</div>
+              </button>
+            </div>
 
-          <!-- Non-owner notice -->
-          <div v-if="!isPropertyOwner" class="hs-owner-notice">
-            <span style="font-size:14px;flex-shrink:0;">💡</span>
-            <span>Claim this property's passport to save your score permanently.</span>
+            <!-- Non-owner notice -->
+            <div v-if="!isPropertyOwner" class="hs-owner-notice">
+              <span style="font-size:14px;flex-shrink:0;">💡</span>
+              <span>Claim this property's passport to save your score permanently.</span>
+            </div>
+          </template>
+
+          <!-- Published passport: CTA to view / unlock the full passport -->
+          <button
+            v-if="passportState === 'published'"
+            class="hs-readonly-cta"
+            @click="router.push(`/property/${propertyId}`)"
+          >
+            <span>See the full Passport</span>
+            <span class="hs-readonly-cta-arrow">→</span>
+          </button>
+          <div v-if="passportState === 'published'" class="hs-readonly-subnote">
+            Score, breakdown and risks below are the verified owner's data.
+          </div>
+          <!-- In progress: subtle note that we'll update when they publish -->
+          <div v-else-if="passportState === 'inProgress'" class="hs-readonly-subnote">
+            Estimated from public records. We'll refresh when the owner
+            publishes.
           </div>
         </div>
 
         <!-- Score breakdown -->
         <div class="hs-breakdown-card">
-          <p class="hs-breakdown-title">Score breakdown (estimated)</p>
+          <p class="hs-breakdown-title">
+            {{ passportState === 'published' ? "Owner's verified breakdown" : 'Score breakdown (estimated)' }}
+          </p>
           <div class="hs-pillar-list">
             <div
               v-for="bar in pillarBars(autoBreakdown)"
@@ -200,68 +308,75 @@
 
     <!-- ── QUESTIONS ─────────────────────────────────────────────── -->
     <template v-else-if="screen === 'questions'">
-      <!-- Progress bar -->
-      <div class="hs-progress-wrap">
-        <div class="hs-progress-track">
-          <div class="hs-progress-fill" :style="{ width: `${progress}%` }" />
+      <!-- Dark navy header -->
+      <div class="hsq-header">
+        <div class="hsq-header-glow" />
+        <div class="hsq-header-row">
+          <button class="hsq-back" @click="prev" aria-label="Back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <polyline
+                points="15 18 9 12 15 6"
+                stroke="#fff"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <div class="hsq-count">
+            Question {{ step + 1 }} of {{ QUESTIONS.length }}
+          </div>
+          <div class="hsq-spacer" />
         </div>
-        <p class="hs-progress-label">
-          {{ step + 1 }} of {{ QUESTIONS.length }}
-        </p>
+        <div class="hsq-progress-track">
+          <div class="hsq-progress-fill" :style="{ width: `${progress}%` }" />
+        </div>
+        <div class="hsq-cat-wrap">
+          <span class="hsq-cat-chip">{{ currentQuestion?.cat || '' }}</span>
+        </div>
       </div>
 
-      <div class="hs-q-scroll">
-        <!-- Live score card with flying delta -->
-        <div class="hs-live-card">
-          <div class="hs-live-mini-wrap">
+      <div class="hs-q-scroll hsq-body">
+        <!-- Live score widget -->
+        <div class="hsq-live">
+          <div class="hsq-live-gauge">
             <svg
-              width="42"
-              height="42"
-              viewBox="0 0 42 42"
-              style="position: absolute; inset: 0"
+              viewBox="0 0 44 44"
+              width="44"
+              height="44"
+              style="position: absolute; inset: 0; transform: rotate(-90deg)"
             >
               <circle
-                cx="21"
-                cy="21"
-                r="17"
+                cx="22"
+                cy="22"
+                r="18"
                 fill="none"
-                stroke="#e5e7eb"
+                stroke="#e2e8f0"
                 stroke-width="4"
               />
               <circle
-                cx="21"
-                cy="21"
-                r="17"
+                cx="22"
+                cy="22"
+                r="18"
                 fill="none"
                 :stroke="scoreColor(liveScore)"
                 stroke-width="4"
-                :stroke-dasharray="`${(liveScore / 100) * 106.8} 106.8`"
-                transform="rotate(-90, 21, 21)"
                 stroke-linecap="round"
-                style="transition: all 0.7s ease"
+                stroke-dasharray="113.1"
+                :stroke-dashoffset="113.1 - (liveScore / 100) * 113.1"
+                style="transition: stroke-dashoffset 0.6s ease, stroke 0.4s"
               />
             </svg>
-            <span
-              class="hs-live-num"
-              :style="{ color: scoreColor(liveScore) }"
-              >{{ liveScore }}</span
-            >
+            <div class="hsq-live-num">{{ liveScore }}</div>
           </div>
-          <div class="hs-live-info">
-            <div class="hs-live-lbl">Live score</div>
-            <div class="hs-live-hint">{{ liveHint }}</div>
+          <div class="hsq-live-info">
+            <div class="hsq-live-lbl">Live score</div>
+            <div class="hsq-live-hint">{{ liveHint }}</div>
           </div>
-          <div
-            class="hs-live-conf"
-            :class="confidence >= 55 ? 'high' : confidence >= 40 ? 'mid' : ''"
-          >
-            {{ confidence }}%
-          </div>
-          <!-- Flying delta -->
-          <Transition name="hs-float">
+          <Transition name="hsq-delta">
             <div
               v-if="deltaInfo.show"
-              class="hs-delta-float"
+              class="hsq-delta"
               :class="deltaInfo.val > 0 ? 'pos' : 'neg'"
             >
               {{ deltaInfo.val > 0 ? '+' : '' }}{{ deltaInfo.val }}
@@ -270,49 +385,46 @@
         </div>
 
         <Transition name="hs-slide" mode="out-in">
-          <div :key="step" class="hs-question-card">
-            <div class="hs-cat-chip">{{ currentQuestion?.cat }}</div>
-            <h2 class="hs-q-title">{{ currentQuestion?.title }}</h2>
-            <div class="hs-options-list">
+          <div :key="step" class="hsq-card">
+            <h2 class="hsq-title">{{ currentQuestion?.title }}</h2>
+            <div v-if="selectedNarr" class="hsq-hint">{{ selectedNarr }}</div>
+            <div class="hsq-options">
               <button
                 v-for="opt in currentQuestion?.options"
                 :key="opt.value"
-                class="hs-option-btn"
+                class="hsq-opt"
                 :class="{ selected: currentAnswer === opt.value }"
                 @click="handleAnswer(currentQuestion!.id, opt.value)"
               >
-                <div
-                  class="hs-option-radio"
-                  :class="{ selected: currentAnswer === opt.value }"
-                >
-                  <div
-                    v-if="currentAnswer === opt.value"
-                    class="hs-option-radio-dot"
-                  />
-                </div>
-                <span class="hs-option-label">{{ opt.label }}</span>
+                <span class="hsq-opt-label">{{ opt.label }}</span>
               </button>
             </div>
-            <p v-if="currentAnswer && selectedNarr" class="hs-narr-hint">
-              {{ selectedNarr }}
-            </p>
           </div>
         </Transition>
 
-        <div class="hs-nav">
+        <div class="hsq-nav">
           <button
-            class="hs-btn-secondary"
+            class="hsq-nav-back"
             @click="prev"
-            :style="{ visibility: step > 0 ? 'visible' : 'hidden' }"
+            :disabled="step === 0"
+            aria-label="Back"
           >
-            ‹ Back
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <polyline
+                points="15 18 9 12 15 6"
+                stroke="#64748b"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </button>
           <button
-            class="hs-btn-primary"
+            class="hsq-nav-next"
             :disabled="!canNext"
             @click="nextQuestion"
           >
-            {{ isLastStep ? 'See my score ›' : 'Next ›' }}
+            {{ isLastStep ? 'See my score →' : 'Next →' }}
           </button>
         </div>
 
@@ -328,7 +440,14 @@
           <div class="hs-addr-dot" />
           <div>
             <div class="hs-addr-text">{{ property.addressLine1 }}</div>
-            <div class="hs-addr-tiny">{{ property.postcode }}</div>
+            <div class="hs-addr-tiny">
+              {{ property.postcode
+              }}<template v-if="property.propertyType">
+                &middot; {{ property.propertyType }}</template
+              ><template v-if="property.bedrooms">
+                &middot; {{ property.bedrooms }} bed</template
+              >
+            </div>
           </div>
         </div>
 
@@ -337,7 +456,10 @@
           <div class="hs-savings-eyebrow">Your savings potential</div>
           <div class="hs-savings-row">
             <div class="hs-savings-amount">
-              £{{ totalSaving.toLocaleString() }} / year
+              <template v-if="yearlyPotential > 0"
+                >£{{ yearlyPotential.toLocaleString() }} / year</template
+              >
+              <template v-else>Save money with verified upgrades</template>
             </div>
             <div class="hs-savings-pill">Score {{ result.total }}</div>
           </div>
@@ -348,37 +470,41 @@
         </div>
 
         <!-- Property Journey card -->
-        <div class="hs-journey-card">
+        <div class="hs-journey-card" @click="screen = 'passport'">
           <div class="hs-journey-inner">
-            <div class="hs-journey-eyebrow">Your Property Journey</div>
+            <div class="hs-journey-head">
+              <div class="hs-journey-eyebrow">Your Property Journey</div>
+              <div class="hs-journey-link">What's this? →</div>
+            </div>
             <div class="hs-journey-grid">
               <div
                 class="hs-journey-col"
-                style="border-right: 1px solid #e5e7eb"
+                style="border-right: 1px solid var(--line, #e5e7eb)"
               >
-                <div
-                  class="hs-journey-num"
-                  :style="{ color: scoreColor(result.total) }"
-                >
-                  {{ result.total }}
+                <div class="hs-journey-num-wrap">
+                  <div
+                    class="hs-journey-num"
+                    :style="{ color: scoreColor(result.total) }"
+                  >
+                    {{ result.total }}
+                  </div>
+                  <div class="hs-journey-num-small">/100</div>
                 </div>
-                <div class="hs-journey-label">HomeScore</div>
-                <div class="hs-journey-sub">How green</div>
+                <div class="hs-journey-label">HomeScore™</div>
+                <div class="hs-journey-sub">Energy score</div>
               </div>
               <div
                 class="hs-journey-col"
-                style="border-right: 1px solid #e5e7eb"
+                style="border-right: 1px solid var(--line, #e5e7eb)"
               >
-                <div class="hs-journey-num" style="color: #f59e0b">20</div>
-                <div class="hs-journey-label">Move-ready</div>
+                <div class="hs-journey-num hs-journey-num-muted">0%</div>
+                <div class="hs-journey-label">Move Ready</div>
                 <div class="hs-journey-sub">Docs &amp; certs</div>
               </div>
               <div class="hs-journey-col">
-                <div class="hs-journey-num" style="color: #16a34a">
-                  {{ completeScore }} %
-                </div>
-                <div class="hs-journey-label">Passport Complete</div>
-                <div class="hs-journey-sub">Overall</div>
+                <div class="hs-journey-num hs-journey-num-muted">0%</div>
+                <div class="hs-journey-label">Passport</div>
+                <div class="hs-journey-sub">Ownership verified</div>
               </div>
             </div>
             <div class="hs-journey-bar-track">
@@ -388,92 +514,29 @@
               />
             </div>
             <div class="hs-journey-bar-label">
-              Upload your documents to move further along the street
+              Upload documents and verify your home to start your journey
             </div>
           </div>
-          <!-- Street scene SVG -->
+          <!-- Walking lady street scene SVG -->
           <div class="hs-street">
-            <svg
-              viewBox="0 0 354 90"
-              width="100%"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg viewBox="0 0 354 90" width="100%" style="display: block">
               <rect x="0" y="0" width="354" height="62" fill="#f0f9ff" />
               <g opacity="0.55">
-                <rect
-                  x="14"
-                  y="38"
-                  width="38"
-                  height="22"
-                  rx="2"
-                  fill="#cbd5e1"
-                />
+                <rect x="14" y="38" width="38" height="22" rx="2" fill="#cbd5e1" />
                 <polygon points="14,38 33,22 52,38" fill="#94a3b8" />
-                <rect
-                  x="26"
-                  y="46"
-                  width="10"
-                  height="14"
-                  rx="1"
-                  fill="#64748b"
-                />
+                <rect x="26" y="46" width="10" height="14" rx="1" fill="#64748b" />
               </g>
               <g opacity="0.55">
-                <rect
-                  x="68"
-                  y="34"
-                  width="42"
-                  height="26"
-                  rx="2"
-                  fill="#cbd5e1"
-                />
+                <rect x="68" y="34" width="42" height="26" rx="2" fill="#cbd5e1" />
                 <polygon points="68,34 89,16 110,34" fill="#94a3b8" />
-                <rect
-                  x="82"
-                  y="44"
-                  width="10"
-                  height="16"
-                  rx="1"
-                  fill="#64748b"
-                />
-                <rect
-                  x="96"
-                  y="42"
-                  width="9"
-                  height="9"
-                  rx="1"
-                  fill="#93c5fd"
-                />
+                <rect x="82" y="44" width="10" height="16" rx="1" fill="#64748b" />
+                <rect x="96" y="42" width="9" height="9" rx="1" fill="#93c5fd" />
               </g>
               <g>
-                <rect
-                  x="140"
-                  y="32"
-                  width="46"
-                  height="28"
-                  rx="2"
-                  fill="#ccfbf1"
-                />
-                <polygon
-                  points="140,32 163,12 186,32"
-                  :fill="result.total >= 70 ? '#16a34a' : '#0d9488'"
-                />
-                <rect
-                  x="155"
-                  y="44"
-                  width="11"
-                  height="16"
-                  rx="1"
-                  fill="#0f766e"
-                />
-                <rect
-                  x="143"
-                  y="40"
-                  width="9"
-                  height="10"
-                  rx="1"
-                  fill="#99f6e4"
-                />
+                <rect x="140" y="32" width="46" height="28" rx="2" fill="#ccfbf1" />
+                <polygon points="140,32 163,12 186,32" fill="#0d9488" />
+                <rect x="155" y="44" width="11" height="16" rx="1" fill="#0f766e" />
+                <rect x="143" y="40" width="9" height="10" rx="1" fill="#99f6e4" />
                 <text
                   x="163"
                   y="9"
@@ -486,42 +549,14 @@
                 </text>
               </g>
               <g opacity="0.55">
-                <rect
-                  x="212"
-                  y="36"
-                  width="40"
-                  height="24"
-                  rx="2"
-                  fill="#cbd5e1"
-                />
+                <rect x="212" y="36" width="40" height="24" rx="2" fill="#cbd5e1" />
                 <polygon points="212,36 232,20 252,36" fill="#94a3b8" />
-                <rect
-                  x="224"
-                  y="46"
-                  width="10"
-                  height="14"
-                  rx="1"
-                  fill="#64748b"
-                />
+                <rect x="224" y="46" width="10" height="14" rx="1" fill="#64748b" />
               </g>
               <g opacity="0.55">
-                <rect
-                  x="272"
-                  y="34"
-                  width="38"
-                  height="26"
-                  rx="2"
-                  fill="#cbd5e1"
-                />
+                <rect x="272" y="34" width="38" height="26" rx="2" fill="#cbd5e1" />
                 <polygon points="272,34 291,18 310,34" fill="#94a3b8" />
-                <rect
-                  x="284"
-                  y="44"
-                  width="10"
-                  height="16"
-                  rx="1"
-                  fill="#64748b"
-                />
+                <rect x="284" y="44" width="10" height="16" rx="1" fill="#64748b" />
               </g>
               <text x="340" y="56" font-size="16" text-anchor="middle">🏡</text>
               <text
@@ -549,67 +584,14 @@
                 :transform="`translate(${Math.round(18 + (completeScore / 100) * 300)}, 62)`"
               >
                 <ellipse cx="0" cy="2" rx="8" ry="2.5" fill="rgba(0,0,0,0.1)" />
-                <line
-                  x1="0"
-                  y1="-4"
-                  x2="0"
-                  y2="-16"
-                  stroke="#0d9488"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                />
+                <line x1="0" y1="-4" x2="0" y2="-16" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
                 <circle cx="0" cy="-19" r="4" fill="#0d9488" />
-                <path
-                  d="M-3.5,-22 Q0,-25 3.5,-22"
-                  stroke="#065f46"
-                  stroke-width="1.5"
-                  fill="none"
-                  stroke-linecap="round"
-                />
-                <line
-                  x1="0"
-                  y1="-14"
-                  x2="-5"
-                  y2="-9"
-                  stroke="#0d9488"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-                <line
-                  x1="0"
-                  y1="-14"
-                  x2="5"
-                  y2="-10"
-                  stroke="#0d9488"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-                <line
-                  x1="0"
-                  y1="-4"
-                  x2="4"
-                  y2="2"
-                  stroke="#0d9488"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                />
-                <line
-                  x1="0"
-                  y1="-4"
-                  x2="-3"
-                  y2="2"
-                  stroke="#0d9488"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                />
-                <rect
-                  x="-13"
-                  y="-32"
-                  width="26"
-                  height="11"
-                  rx="5"
-                  fill="#0d9488"
-                />
+                <path d="M-3.5,-22 Q0,-25 3.5,-22" stroke="#065f46" stroke-width="1.5" fill="none" stroke-linecap="round" />
+                <line x1="0" y1="-14" x2="-5" y2="-9" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
+                <line x1="0" y1="-14" x2="5" y2="-10" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
+                <line x1="0" y1="-4" x2="4" y2="2" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="0" y1="-4" x2="-3" y2="2" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
+                <rect x="-13" y="-32" width="26" height="11" rx="5" fill="#0d9488" />
                 <text
                   x="0"
                   y="-23.5"
@@ -668,32 +650,17 @@
             </div>
             <div class="hs-carbon-drivers">
               <div
-                v-if="carbonDrivers.length"
-                v-for="d in carbonDrivers"
+                v-for="d in pillarCarbonDrivers"
                 :key="d.label"
                 class="hs-carbon-driver-row"
               >
-                <div
-                  class="hs-carbon-driver-icon"
-                  :style="{
-                    background: d.bad
-                      ? 'rgba(239,68,68,0.25)'
-                      : 'rgba(16,185,129,0.25)',
-                  }"
-                >
-                  {{ d.icon }}
+                <div class="hs-carbon-driver-label">
+                  {{ d.icon }} {{ d.label }} ({{ d.value }}/{{ d.max }})
                 </div>
-                <div class="hs-carbon-driver-label">{{ d.label }}</div>
-                <div
-                  class="hs-carbon-driver-val"
-                  :style="{ color: d.bad ? '#fca5a5' : '#6ee7b7' }"
-                >
-                  {{ d.bad ? '+' : '' }}{{ d.delta.toLocaleString() }} kg
+                <div class="hs-carbon-driver-val">
+                  {{ d.pct }}% under average
                 </div>
               </div>
-              <p v-else style="opacity: 0.7; font-size: 12px; margin: 0">
-                Complete the quiz to see your full carbon breakdown.
-              </p>
             </div>
           </div>
           <div class="hs-carbon-upgrade-bar">
@@ -702,64 +669,18 @@
             </div>
             <div class="hs-carbon-upgrade-row">
               <div class="hs-carbon-upgrade-text">
-                You could cut emissions by ~{{ carbonPct }}%
+                You could cut emissions by ~40%
               </div>
               <div class="hs-carbon-save-pill">
-                Save ~{{ carbonSaving.toLocaleString() }} kg/yr
+                Save ~{{ Math.round(carbonKg * 0.4).toLocaleString() }} kg/yr
               </div>
             </div>
           </div>
         </div>
 
-        <!-- How trusted is this score -->
-        <div class="hs-trust-card">
-          <div class="hs-trust-inner">
-            <div class="hs-trust-title">How trusted is this score?</div>
-            <div class="hs-trust-steps">
-              <div class="hs-trust-col">
-                <div class="hs-trust-dot done">✓</div>
-                <div class="hs-trust-step-label done">ESTIMATED</div>
-                <div class="hs-trust-step-sub">From public<br />EPC data</div>
-              </div>
-              <div class="hs-trust-connector done" />
-              <div class="hs-trust-col">
-                <div class="hs-trust-dot done">✓</div>
-                <div class="hs-trust-step-label done">ANSWERED</div>
-                <div class="hs-trust-step-sub">
-                  Refined by<br />your answers
-                </div>
-              </div>
-              <div class="hs-trust-connector" />
-              <div class="hs-trust-col">
-                <div class="hs-trust-dot pending">3</div>
-                <div class="hs-trust-step-label pending">VERIFIED</div>
-                <div class="hs-trust-step-sub">Backed by<br />documents</div>
-              </div>
-            </div>
-          </div>
-          <div class="hs-trust-explain">
-            Your public EPC gave us a starting estimate of
-            <b>{{ autoScoreVal }}</b
-            >. Your answers have refined that to <b>{{ result.total }}</b>
-            <span style="color: #6b7280; font-size: 11.5px">(±7)</span> — this
-            is now a much more accurate picture of your home.
-          </div>
-          <div class="hs-trust-nudge" @click="screen = 'passport'">
-            <div style="font-size: 20px">📎</div>
-            <div style="flex: 1">
-              <div class="hs-trust-nudge-title">
-                Add documents to get fully verified
-              </div>
-              <div class="hs-trust-nudge-sub">
-                Buyers, lenders and solicitors trust a verified score far more
-                than an estimate.
-              </div>
-            </div>
-            <div style="font-size: 16px; color: #0d9488">›</div>
-          </div>
-          <div class="hs-breakdown-title" style="margin: 14px 0 10px">
-            Detailed Breakdown
-          </div>
+        <!-- Score breakdown -->
+        <div class="hs-breakdown-card">
+          <p class="hs-breakdown-title">Score breakdown</p>
           <div class="hs-pillar-list">
             <div
               v-for="bar in pillarBars(result.breakdown)"
@@ -772,24 +693,38 @@
                   class="hs-pillar-fill"
                   :style="{
                     width: `${(bar.value / bar.max) * 100}%`,
-                    background: bar.color,
+                    background: pillarBarColor(bar.value, bar.max),
                   }"
                 />
               </div>
               <span class="hs-pillar-val">{{ bar.value }}/{{ bar.max }}</span>
             </div>
           </div>
+          <div class="hs-breakdown-explain">
+            <template v-if="allAnswered">
+              Your public EPC gave us a starting estimate of
+              <b>{{ autoScoreVal }}</b
+              >. Your answers refined that to <b>{{ result.total }}</b
+              >.
+            </template>
+            <template v-else>
+              This is based on public EPC data only. Answer quick questions to
+              refine.
+            </template>
+          </div>
         </div>
 
-        <!-- Top ways to save money -->
+        <!-- Top 3 savings -->
         <div class="hs-wins-card">
-          <p class="hs-wins-title">
-            Top {{ displayWins.length }} ways to save money
-          </p>
+          <p class="hs-wins-title">Top 3 ways to save money</p>
           <p class="hs-wins-sub">
             Ranked by annual saving — pounds back in your pocket.
           </p>
-          <div v-for="(win, i) in displayWins" :key="i" class="hs-win-item">
+          <div
+            v-for="(win, i) in displayWins.slice(0, 3)"
+            :key="i"
+            class="hs-win-item"
+          >
             <div class="hs-win-rank">{{ i + 1 }}</div>
             <div class="hs-win-body">
               <p class="hs-win-name">{{ win.title }}</p>
@@ -802,27 +737,14 @@
           </div>
         </div>
 
-        <!-- Opportunities we've spotted -->
-        <div class="hs-opps-card">
-          <p class="hs-opps-title">Opportunities we've spotted</p>
-          <div v-for="opp in displayOpps" :key="opp.title" class="hs-opp-item">
-            <span class="hs-opp-icon">{{ opp.icon }}</span>
-            <div>
-              <p class="hs-opp-name">{{ opp.title }}</p>
-              <p class="hs-opp-sub">{{ opp.sub }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Neighbourhood comparison -->
-        <div class="hs-nb-card">
+        <!-- Neighbour comparison -->
+        <div v-if="neighbourhood.length" class="hs-nb-card">
           <div class="hs-nb-header">
             <div class="hs-nb-title">Your street, ranked by energy cost</div>
             <div class="hs-nb-rank">{{ nbRank }} of 12</div>
           </div>
           <p class="hs-nb-body">
-            Based on EPC data and local energy records. Properties at the top
-            are paying less — here's why.
+            Based on EPC data and local energy records.
           </p>
           <div class="hs-nb-list">
             <div
@@ -845,78 +767,31 @@
               </div>
             </div>
           </div>
-          <div v-if="nbGap > 0" class="hs-nb-gap-card">
-            <div class="hs-nb-gap-title">
-              Why you're paying £{{ nbGap.toLocaleString() }}/yr more than your
-              best neighbour
-            </div>
-            <div class="hs-nb-gap-reasons">
-              <div
-                v-for="reason in nbGapReasons"
-                :key="reason.icon"
-                class="hs-nb-gap-reason"
-              >
-                <span style="font-size: 15px; flex-shrink: 0">{{
-                  reason.icon
-                }}</span>
-                <div>
-                  <b>{{ reason.title }}</b> — {{ reason.body }}
-                </div>
-              </div>
-            </div>
-            <div class="hs-nb-gap-footer">
-              Fix all three and you could save
-              <b>~£{{ Math.round(nbGap * 0.7).toLocaleString() }}/yr</b> and
-              move up the street.
-            </div>
-          </div>
-          <div class="hs-nb-nudge" @click="screen = 'passport'">
-            <div style="font-size: 20px">📋</div>
-            <div style="flex: 1">
-              <div class="hs-nb-nudge-title">
-                Upload your documents to verify this
-              </div>
-              <div class="hs-nb-nudge-sub">
-                A boiler service cert and EPC would confirm your exact position.
-              </div>
-            </div>
-            <div style="font-size: 18px; color: #0d9488; margin-left: auto">
-              ›
-            </div>
-          </div>
         </div>
 
-        <!-- Final CTA -->
-        <button class="hs-cta-primary" @click="screen = 'passport'">
-          See how to get to 100% verified ›
-        </button>
-        <p class="hs-cta-sub">
-          Turn your HomeScore into a full Property Passport
-        </p>
-        <button class="hs-retake-btn" @click="doRetake">
+        <div style="height: 108px" />
+      </div>
+
+      <!-- Sticky CTA bar -->
+      <div class="hs-sticky-cta">
+        <button class="hs-sticky-cta-btn" @click="screen = 'quick-wins'">
           <svg
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="none"
-            width="15"
-            height="15"
-            style="display: inline; margin-right: 6px; vertical-align: -2px"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
           >
-            <path
-              d="M1 4v6h6M23 20v-6h-6"
-              stroke="#636366"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-            <path
-              d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"
-              stroke="#636366"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
+            <polyline points="12 19 12 5" />
+            <polyline points="5 12 12 5 19 12" />
           </svg>
-          Retake Assessment
+          <span>Boost your score</span>
         </button>
-        <div style="height: 40px" />
+        <div class="hs-sticky-cta-sub">
+          Upload certs &amp; earn points instantly
+        </div>
       </div>
     </template>
 
@@ -1273,14 +1148,602 @@
         </div>
       </div>
     </template>
+
+    <!-- ── BUYER RESULTS ─────────────────────────────────────────── -->
+    <template v-else-if="screen === 'buyer-results'">
+      <div class="hs-scroll">
+        <!-- Address strip -->
+        <div v-if="property" class="hs-addr-strip">
+          <div class="hs-addr-dot" />
+          <div>
+            <div class="hs-addr-text">
+              {{ property.addressLine1 || 'This property' }}
+            </div>
+            <div class="hs-addr-tiny">
+              <template v-if="property.city">{{ property.city }}</template
+              ><template v-if="property.postcode"
+                >, {{ property.postcode }}</template
+              ><template v-if="property.propertyType">
+                · {{ property.propertyType }}</template
+              ><template v-if="property.bedrooms">
+                · {{ property.bedrooms }} bed</template
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Running cost hero -->
+        <div class="hs-buyer-hero">
+          <div class="hs-buyer-hero-eyebrow">
+            Estimated annual running cost
+          </div>
+          <div class="hs-buyer-hero-amount">
+            ~£{{ buyerAnnualCost.toLocaleString() }} / year
+          </div>
+          <div class="hs-buyer-hero-sub">
+            Based on EPC data. The best homes on this street cost
+            <b style="color: #7dd3fc">£680/yr</b> — there's potential to
+            negotiate or factor in upgrade costs.
+          </div>
+          <div class="hs-buyer-hero-stats">
+            <div class="hs-buyer-hero-stat">
+              <div class="hs-buyer-hero-stat-num">
+                {{ property?.epcScore ?? result.total }}
+              </div>
+              <div class="hs-buyer-hero-stat-lbl">EPC Score</div>
+            </div>
+            <div class="hs-buyer-hero-stat">
+              <div class="hs-buyer-hero-stat-num">
+                {{ buyerEpcGrade }}
+              </div>
+              <div class="hs-buyer-hero-stat-lbl">EPC Grade</div>
+            </div>
+            <div class="hs-buyer-hero-stat">
+              <div class="hs-buyer-hero-stat-num">4th</div>
+              <div class="hs-buyer-hero-stat-lbl">of 12 on street</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buyer risk summary -->
+        <div class="hs-buyer-risk-card">
+          <div class="hs-buyer-risk-title">⚠ Buyer risk summary</div>
+          <div class="hs-buyer-risk-list">
+            <div
+              v-for="r in buyerRisks"
+              :key="r.key"
+              class="hs-buyer-risk-row"
+              :class="r.tone"
+            >
+              <div class="hs-buyer-risk-ic">{{ r.icon }}</div>
+              <div>
+                <div class="hs-buyer-risk-head">{{ r.title }}</div>
+                <div class="hs-buyer-risk-body">{{ r.body }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Score breakdown (EPC estimated) -->
+        <div class="hs-breakdown-card">
+          <p class="hs-breakdown-title">Score breakdown</p>
+          <p class="hs-buyer-bd-sub">
+            Based on public EPC data only — the seller could improve this with
+            a full HealthScore™.
+          </p>
+          <div class="hs-pillar-list">
+            <div
+              v-for="bar in pillarBars(autoBreakdown)"
+              :key="bar.key"
+              class="hs-pillar-row"
+            >
+              <span class="hs-pillar-name">{{ bar.label }}</span>
+              <div class="hs-pillar-track">
+                <div
+                  class="hs-pillar-fill"
+                  :style="{
+                    width: `${(bar.value / bar.max) * 100}%`,
+                    background: pillarBarColor(bar.value, bar.max),
+                  }"
+                />
+              </div>
+              <span
+                class="hs-pillar-val"
+                :style="{ color: pillarBarColor(bar.value, bar.max) }"
+                >{{ bar.value }}/{{ bar.max }}</span
+              >
+            </div>
+          </div>
+          <div class="hs-buyer-bd-note">
+            This is based on public EPC data only. Ask the seller to run a
+            full HealthScore™ to get a verified picture.
+          </div>
+        </div>
+
+        <!-- Carbon card -->
+        <div class="hs-carbon-card" :style="{ background: carbonGradient }">
+          <div class="hs-carbon-top">
+            <div class="hs-carbon-eyebrow">
+              🌍 Environmental Impact Rating
+            </div>
+            <div class="hs-carbon-main-row">
+              <div>
+                <div class="hs-carbon-kg">
+                  {{ carbonKg.toLocaleString() }}
+                </div>
+                <div class="hs-carbon-kg-label">kg CO₂ per year</div>
+              </div>
+              <div style="flex: 1">
+                <div class="hs-carbon-grade-pill">
+                  <div
+                    class="hs-carbon-grade-letter"
+                    :style="{ background: carbonGradeInfo.col }"
+                  >
+                    {{ carbonGradeInfo.grade }}
+                  </div>
+                  <div class="hs-carbon-grade-label">
+                    {{ carbonGradeInfo.label }}
+                  </div>
+                </div>
+                <div class="hs-carbon-vs-avg">{{ carbonVsAvg }}</div>
+              </div>
+            </div>
+            <div class="hs-carbon-bars">
+              <div
+                v-for="cb in carbonBarChart"
+                :key="cb.letter"
+                class="hs-carbon-bar-col"
+                :style="{
+                  background: cb.color,
+                  height: `${cb.h}px`,
+                  opacity: cb.active ? '1' : '0.35',
+                }"
+              />
+            </div>
+            <div class="hs-carbon-bar-labels">
+              <span>A — very low</span><span>D — avg</span
+              ><span>G — very high</span>
+            </div>
+          </div>
+          <div class="hs-buyer-carbon-note">
+            🏦 Note: mortgage lenders are beginning to price in EPC ratings. A
+            D-rated home may face stricter lending criteria from 2027.
+          </div>
+        </div>
+
+        <!-- Street ranking (static placeholder) -->
+        <div class="hs-nb-card">
+          <div class="hs-nb-header">
+            <div class="hs-nb-title">This street, ranked by energy cost</div>
+            <div class="hs-nb-rank">4th of 12</div>
+          </div>
+          <p class="hs-nb-body">
+            Based on EPC data — gives you context on this property vs its
+            neighbours.
+          </p>
+          <div class="hs-nb-list">
+            <div class="hs-nb-row">
+              <div class="hs-nb-pos">1</div>
+              <div style="flex: 1; min-width: 0">
+                <div class="hs-nb-addr">Best on street</div>
+                <div class="hs-nb-detail">Heat pump · solar · EPC A</div>
+              </div>
+              <div class="hs-nb-cost" style="color: #16a34a">£680</div>
+            </div>
+            <div class="hs-nb-row">
+              <div class="hs-nb-pos">2</div>
+              <div style="flex: 1; min-width: 0">
+                <div class="hs-nb-addr">Nearby upgraded home</div>
+                <div class="hs-nb-detail">
+                  New boiler · full loft insulation · EPC B
+                </div>
+              </div>
+              <div class="hs-nb-cost" style="color: #16a34a">£890</div>
+            </div>
+            <div class="hs-nb-row mine">
+              <div class="hs-nb-pos mine">4</div>
+              <div style="flex: 1; min-width: 0">
+                <div class="hs-nb-addr mine">
+                  {{ property?.addressLine1 || 'This property' }}
+                </div>
+                <div class="hs-nb-detail">Old boiler · no insulation</div>
+              </div>
+              <div class="hs-nb-cost" style="color: #dc2626">
+                £{{ buyerAnnualCost.toLocaleString() }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Questions to ask seller -->
+        <div class="hs-buyer-qa-card">
+          <div class="hs-buyer-qa-title">Questions to ask the seller</div>
+          <p class="hs-buyer-qa-sub">
+            Based on what the EPC data flags for this property.
+          </p>
+          <div class="hs-buyer-qa-list">
+            <div class="hs-buyer-qa-row">
+              <div class="hs-buyer-qa-ic">🔥</div>
+              <div>
+                <div class="hs-buyer-qa-head">
+                  When was the boiler last serviced?
+                </div>
+                <div class="hs-buyer-qa-body">
+                  Heating scores low — ask for the service record or Gas Safe
+                  certificate.
+                </div>
+              </div>
+            </div>
+            <div class="hs-buyer-qa-row">
+              <div class="hs-buyer-qa-ic">🧱</div>
+              <div>
+                <div class="hs-buyer-qa-head">
+                  Is there cavity wall or loft insulation?
+                </div>
+                <div class="hs-buyer-qa-body">
+                  The biggest cost driver at this score. Ask for any installer
+                  guarantees.
+                </div>
+              </div>
+            </div>
+            <div class="hs-buyer-qa-row">
+              <div class="hs-buyer-qa-ic">📄</div>
+              <div>
+                <div class="hs-buyer-qa-head">
+                  Can you share the full EPC report?
+                </div>
+                <div class="hs-buyer-qa-body">
+                  The public register only shows the grade — the full document
+                  lists every item.
+                </div>
+              </div>
+            </div>
+            <div class="hs-buyer-qa-row">
+              <div class="hs-buyer-qa-ic">⚡</div>
+              <div>
+                <div class="hs-buyer-qa-head">
+                  Do you have an EICR certificate?
+                </div>
+                <div class="hs-buyer-qa-body">
+                  Electrical Installation Condition Report — not legally
+                  required for sales, but worth asking.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save to buyer passport CTA -->
+        <div class="hs-buyer-save-cta" @click="saveToBuyerPassport">
+          <div class="hs-buyer-save-ic">📘</div>
+          <div class="hs-buyer-save-body">
+            <div class="hs-buyer-save-title">
+              Save to your Buyer Passport
+            </div>
+            <div class="hs-buyer-save-sub">
+              Track this property, compare with others, share with your
+              solicitor.
+            </div>
+          </div>
+          <div class="hs-buyer-save-arrow">Save →</div>
+        </div>
+
+        <button class="hs-btn-ghost" @click="screen = 'landing'">
+          ← Back to score
+        </button>
+        <div style="height: 40px" />
+      </div>
+    </template>
+
+    <!-- ── QUICK WINS / BOOST SCORE ─────────────────────────────── -->
+    <template v-else-if="screen === 'quick-wins'">
+      <div class="hs-scroll">
+        <!-- Property Journey widget (mirrors results) -->
+        <div class="hs-journey-card" style="cursor: default">
+          <div class="hs-journey-inner">
+            <div class="hs-journey-head">
+              <div class="hs-journey-eyebrow">Your Property Journey</div>
+              <div class="hs-journey-link">Updates as you add docs</div>
+            </div>
+            <div class="hs-journey-grid">
+              <div
+                class="hs-journey-col"
+                style="border-right: 1px solid var(--line, #e5e7eb)"
+              >
+                <div class="hs-journey-num-wrap">
+                  <div
+                    class="hs-journey-num"
+                    :style="{ color: scoreColor(qwScore) }"
+                  >
+                    {{ qwScore }}
+                  </div>
+                  <div class="hs-journey-num-small">/100</div>
+                </div>
+                <div class="hs-journey-label">HomeScore™</div>
+                <div class="hs-journey-sub">Energy score</div>
+              </div>
+              <div
+                class="hs-journey-col"
+                style="border-right: 1px solid var(--line, #e5e7eb)"
+              >
+                <div
+                  class="hs-journey-num"
+                  :class="qwMoveReady > 0 ? '' : 'hs-journey-num-muted'"
+                >
+                  {{ qwMoveReady }}%
+                </div>
+                <div class="hs-journey-label">Move Ready</div>
+                <div class="hs-journey-sub">Docs &amp; certs</div>
+              </div>
+              <div class="hs-journey-col">
+                <div class="hs-journey-num hs-journey-num-muted">0%</div>
+                <div class="hs-journey-label">Passport</div>
+                <div class="hs-journey-sub">Ownership verified</div>
+              </div>
+            </div>
+            <div class="hs-journey-bar-track">
+              <div
+                class="hs-journey-bar-fill"
+                :style="{ width: `${qwProgress}%` }"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload documents -->
+        <div class="hs-qw-section-label">📎 Upload a document</div>
+        <div class="hs-qw-list">
+          <div
+            v-for="doc in qwDocs"
+            :key="doc.key"
+            class="hs-qw-doc-row"
+            :class="{ uploaded: uploadedDocs[doc.key] }"
+            @click="triggerDocUpload(doc.key)"
+          >
+            <div
+              class="hs-qw-doc-ic"
+              :style="{ background: doc.bg }"
+            >
+              {{ doc.icon }}
+            </div>
+            <div class="hs-qw-doc-body">
+              <div class="hs-qw-doc-name">{{ doc.label }}</div>
+              <div class="hs-qw-doc-sub">{{ doc.sub }}</div>
+            </div>
+            <div class="hs-qw-doc-right">
+              <div
+                v-if="uploadedDocs[doc.key]"
+                class="hs-qw-doc-done"
+                aria-label="Uploaded"
+              >
+                ✓
+              </div>
+              <div v-else class="hs-qw-doc-pts">+{{ doc.pts }} pts</div>
+            </div>
+          </div>
+        </div>
+
+        <input
+          ref="docFileInput"
+          type="file"
+          accept=".pdf,image/*"
+          style="display: none"
+          @change="onDocFilePicked"
+        />
+
+        <!-- Book a pro -->
+        <div class="hs-qw-section-label">🔧 Book a professional</div>
+        <div class="hs-qw-list">
+          <div
+            v-for="pro in qwPros"
+            :key="pro.key"
+            class="hs-qw-pro-row"
+            @click="openMarketplace"
+          >
+            <div
+              class="hs-qw-doc-ic"
+              :style="{ background: pro.bg }"
+            >
+              {{ pro.icon }}
+            </div>
+            <div class="hs-qw-doc-body">
+              <div class="hs-qw-doc-name">{{ pro.label }}</div>
+              <div class="hs-qw-doc-sub">{{ pro.sub }}</div>
+            </div>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#94a3b8"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Get move ready CTA -->
+        <div class="hs-qw-mr-cta">
+          <div class="hs-qw-mr-glow" />
+          <div class="hs-qw-mr-inner">
+            <div class="hs-qw-mr-eyebrow">Next step on your journey</div>
+            <div class="hs-qw-mr-title">
+              You've scored {{ qwScore }}. Now make it count.
+            </div>
+            <div class="hs-qw-mr-body">
+              Your Move Ready and Passport scores are waiting to be unlocked.
+              Each document you add brings them up — verify your home to lock
+              in everything you've built.
+            </div>
+            <button
+              class="hs-qw-mr-btn"
+              @click="screen = 'move-ready'"
+            >
+              Get move ready
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#042f2e"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button class="hs-btn-ghost" @click="screen = 'results'">
+          ← Back to my score
+        </button>
+        <div style="height: 40px" />
+      </div>
+    </template>
+
+    <!-- ── MOVE READY ────────────────────────────────────────────── -->
+    <template v-else-if="screen === 'move-ready'">
+      <div class="hs-scroll">
+        <!-- Hero -->
+        <div class="hs-mr-hero">
+          <div class="hs-mr-hero-glow" />
+          <div class="hs-mr-hero-inner">
+            <div class="hs-mr-hero-eyebrow">Move-ready status</div>
+            <div class="hs-mr-hero-title">
+              90% of sales fall through<br />because of missing paperwork.
+            </div>
+            <div class="hs-mr-hero-body">
+              Move-ready means your ownership is verified, your documents are
+              in order, and a buyer's solicitor can start work the same day
+              they make an offer.
+            </div>
+            <div class="hs-mr-compare-grid">
+              <div class="hs-mr-compare-col red">
+                <div class="hs-mr-compare-head red">Not verified</div>
+                <div class="hs-mr-compare-list">
+                  <div>❌ Score is estimated</div>
+                  <div>❌ Buyers can't verify</div>
+                  <div>❌ Delays at exchange</div>
+                  <div>❌ 179 day average</div>
+                </div>
+              </div>
+              <div class="hs-mr-compare-col teal">
+                <div class="hs-mr-compare-head teal">Move ready ✓</div>
+                <div class="hs-mr-compare-list ok">
+                  <div>✓ Score is verified</div>
+                  <div>✓ Buyers can trust it</div>
+                  <div>✓ No nasty surprises</div>
+                  <div>✓ 14 day completion</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <div class="hs-qw-section-label">What happens next — 3 steps</div>
+        <div class="hs-mr-steps">
+          <div class="hs-mr-step">
+            <div class="hs-mr-step-ic">1</div>
+            <div>
+              <div class="hs-mr-step-title">Verify your property</div>
+              <div class="hs-mr-step-body">
+                Enter your address and we confirm it against HM Land Registry.
+                Takes 60 seconds.
+              </div>
+            </div>
+          </div>
+          <div class="hs-mr-step">
+            <div class="hs-mr-step-ic">2</div>
+            <div>
+              <div class="hs-mr-step-title">Confirm your identity</div>
+              <div class="hs-mr-step-body">
+                Quick ID check — photo of your passport or driving licence
+                plus a selfie. Powered by Onfido.
+              </div>
+            </div>
+          </div>
+          <div class="hs-mr-step">
+            <div class="hs-mr-step-ic teal">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <div>
+              <div class="hs-mr-step-title">
+                Your score becomes verified
+              </div>
+              <div class="hs-mr-step-body">
+                Your HealthScore™ is upgraded from estimated to verified — and
+                your Property Passport is live.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats grid -->
+        <div class="hs-mr-stats">
+          <div class="hs-mr-stat">
+            <div class="hs-mr-stat-num">12x</div>
+            <div class="hs-mr-stat-lbl">faster to exchange</div>
+          </div>
+          <div class="hs-mr-stat">
+            <div class="hs-mr-stat-num">3x</div>
+            <div class="hs-mr-stat-lbl">fewer fall-throughs</div>
+          </div>
+          <div class="hs-mr-stat">
+            <div class="hs-mr-stat-num">£0</div>
+            <div class="hs-mr-stat-lbl">to get started</div>
+          </div>
+        </div>
+
+        <!-- Claim CTA -->
+        <button class="hs-mr-claim-btn" @click="claimFromMoveReady">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#fff"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </svg>
+          Claim your Property Passport →
+        </button>
+        <div class="hs-mr-claim-sub">
+          Free to start · Takes 5 mins · Your data stays yours
+        </div>
+        <button class="hs-btn-ghost" @click="screen = 'quick-wins'">
+          ← Back
+        </button>
+        <div style="height: 40px" />
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, nextTick, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useHomeScore } from '~/composables/useHomeScore'
 import { usePassportClaim } from '~/composables/usePassportClaim'
+import { usePropertyActions } from '~/composables/usePropertyActions'
+import { useAppToast } from '~/composables/useCustomToast'
 import type { TopWin, Opportunity } from '~/types/homescore'
 import { QUESTIONS } from '~/utils/homescoreScoring'
 
@@ -1291,7 +1754,15 @@ const propertyId = route.params.id as string
 
 const property = ref<any>(null)
 
-type Screen = 'loading' | 'landing' | 'questions' | 'results' | 'passport'
+type Screen =
+  | 'loading'
+  | 'landing'
+  | 'questions'
+  | 'results'
+  | 'passport'
+  | 'buyer-results'
+  | 'quick-wins'
+  | 'move-ready'
 const screen = ref<Screen>('loading')
 
 type PassportTab = 'sections' | 'street' | 'buyers'
@@ -1303,6 +1774,40 @@ const matchedBuyers = ref<any[]>([])
 const buyersTotal = ref(0)
 const passportClaimLoading = ref(false)
 const isPropertyOwner = ref(false)
+
+// Read-only mode: property has a passport claimed by someone else.
+// The current user can't run the quiz or modify the score — they see
+// the owner's published HomeScore (if available).
+const hasOtherOwnerPassport = ref(false)
+const isPassportCollaborator = ref(false)
+const isOtherPassportPublished = ref(false)
+const publicOwnerScore = ref<any>(null)
+const notifiedOfPublish = ref(false)
+
+const readOnlyMode = computed(
+  () =>
+    hasOtherOwnerPassport.value &&
+    !isPropertyOwner.value &&
+    !isPassportCollaborator.value,
+)
+
+// Three mutually exclusive states for the banner on the landing screen:
+// - 'published': owner has published their passport → show navy "View →" banner
+// - 'inProgress': owner has claimed but not published yet → show amber "Notify me" banner
+// - null: no third-party passport → no banner
+const passportState = computed<'published' | 'inProgress' | null>(() => {
+  if (!readOnlyMode.value) return null
+  return isOtherPassportPublished.value ? 'published' : 'inProgress'
+})
+
+function notifyWhenPublished() {
+  // Record locally so the button shows "already notified" across reloads.
+  if (typeof localStorage !== 'undefined') {
+    const key = `hs_notify_publish_${propertyId}`
+    localStorage.setItem(key, String(Date.now()))
+  }
+  notifiedOfPublish.value = true
+}
 
 const {
   step,
@@ -1433,12 +1938,57 @@ const totalSaving = computed(() =>
   displayWins.value.reduce((s, w) => s + w.savingPerYear, 0),
 )
 
+// Yearly potential — sum of top wins (what the savings hero shows)
+const yearlyPotential = computed(() =>
+  topWins.value.reduce((s, w) => s + w.savingPerYear, 0),
+)
+
+const allAnswered = computed(
+  () => Object.keys(answers.value).length >= QUESTIONS.length,
+)
+
+// Carbon drivers based on the two worst-scoring pillars
+const pillarCarbonDrivers = computed(() => {
+  const rows = PILLAR_DEFS.map((d) => {
+    const value = (result.value.breakdown as any)?.[d.key] ?? 0
+    const pct = Math.round(100 - (value / d.max) * 100)
+    const iconMap: Record<string, string> = {
+      heating: '🔥',
+      structure: '🧱',
+      efficiency: '💡',
+      electrics: '⚡',
+      plumbing: '🚰',
+    }
+    return {
+      key: d.key,
+      label: d.label,
+      icon: iconMap[d.key] ?? '▫',
+      value,
+      max: d.max,
+      pct: Math.max(0, pct),
+      gap: d.max - value,
+    }
+  })
+  rows.sort((a, b) => b.gap - a.gap)
+  return rows.slice(0, 2)
+})
+
+function pillarBarColor(value: number, max: number): string {
+  const pct = (value / max) * 100
+  if (pct >= 60) return '#16a34a'
+  if (pct >= 40) return '#f59e0b'
+  return '#dc2626'
+}
+
 const headerSub = computed(() => {
   if (screen.value === 'questions')
     return `Question ${step.value + 1} of ${QUESTIONS.length}`
   if (screen.value === 'landing') return 'Based on public records'
   if (screen.value === 'results') return 'Refined with your answers'
   if (screen.value === 'passport') return 'Continue your journey'
+  if (screen.value === 'buyer-results') return 'Based on public EPC data'
+  if (screen.value === 'quick-wins') return 'Every document adds real value'
+  if (screen.value === 'move-ready') return 'What it means for you'
   return ''
 })
 
@@ -1451,6 +2001,12 @@ const selectedNarr = computed(() => {
 })
 
 const liveHint = computed(() => {
+  if (deltaInfo.value.show) {
+    if (deltaInfo.value.val > 0)
+      return "You're boosting your energy score!"
+    if (deltaInfo.value.val < 0)
+      return 'Your score dipped — try another option.'
+  }
   if (selectedNarr.value) return selectedNarr.value
   if (!currentAnswer.value) return 'Updating as you answer…'
   const answered = Object.keys(answers.value).length
@@ -1688,6 +2244,11 @@ const nbGapReasons = computed(() => {
 // ── Actions ───────────────────────────────────────────────────
 
 function startQuestions() {
+  // Read-only mode: don't let non-owners run the quiz
+  if (readOnlyMode.value) {
+    router.push(`/property/${propertyId}`)
+    return
+  }
   const firstUnanswered = QUESTIONS.findIndex(
     (q) => !(answers.value as Record<string, string>)[q.id],
   )
@@ -1784,9 +2345,285 @@ function goToPassport() {
   router.push(`/property/${propertyId}`)
 }
 
+// ── Buyer results helpers ─────────────────────────────────────
+
+const buyerAnnualCost = computed(() => {
+  const cert = property.value?.epcCert
+  const heating = Number(cert?.heatingCostCurrent ?? 0)
+  const hotWater = Number(cert?.hotWaterCostCurrent ?? 0)
+  const lighting = Number(cert?.lightingCostCurrent ?? 0)
+  const sum = Math.round(heating + hotWater + lighting)
+  if (sum > 0) return sum
+  return 1347
+})
+
+const buyerEpcGrade = computed(() => {
+  const rating = property.value?.epcRating
+  if (rating) return String(rating).toUpperCase()
+  const score = autoScoreVal.value
+  if (score >= 92) return 'A'
+  if (score >= 81) return 'B'
+  if (score >= 69) return 'C'
+  if (score >= 55) return 'D'
+  if (score >= 39) return 'E'
+  if (score >= 21) return 'F'
+  return 'G'
+})
+
+const buyerRisks = computed(() => {
+  type Row = {
+    key: string
+    icon: string
+    title: string
+    body: string
+    tone: 'warn' | 'ok'
+  }
+  const bd = autoBreakdown.value as any
+  const pct = (v: number, m: number) => (m > 0 ? (v / m) * 100 : 0)
+
+  const heatingPct = pct(bd?.heating ?? 0, 20)
+  const structurePct = pct(bd?.structure ?? 0, 25)
+  const electricsPct = pct(bd?.electrics ?? 0, 15)
+  const plumbingPct = pct(bd?.plumbing ?? 0, 20)
+  const efficiencyPct = pct(bd?.efficiency ?? 0, 20)
+
+  const all: Row[] = []
+
+  // Heating
+  if (heatingPct < 60) {
+    all.push({
+      key: 'heating',
+      icon: '🔥',
+      title: 'Heating — needs attention',
+      body: 'EPC flags old heating system. Boiler replacement could cost £2,500–£4,000.',
+      tone: 'warn',
+    })
+  } else {
+    all.push({
+      key: 'heating',
+      icon: '🔥',
+      title: 'Heating — looks reasonable',
+      body: 'Heating efficiency is in line with similar homes. Worth asking for the latest service record.',
+      tone: 'ok',
+    })
+  }
+
+  // Structure / insulation
+  if (structurePct < 60) {
+    all.push({
+      key: 'structure',
+      icon: '🧱',
+      title: 'Insulation — below average',
+      body: 'Likely no cavity wall insulation. Adds ~£400/yr vs best-in-street.',
+      tone: 'warn',
+    })
+  } else {
+    all.push({
+      key: 'structure',
+      icon: '🧱',
+      title: 'Insulation — looks reasonable',
+      body: 'Insulation appears adequate for the property age. Confirm any guarantees with the seller.',
+      tone: 'ok',
+    })
+  }
+
+  // Electrics
+  if (electricsPct >= 60) {
+    all.push({
+      key: 'electrics',
+      icon: '⚡',
+      title: 'Electrics — looks reasonable',
+      body: 'Average for a property of this age. Worth confirming EICR.',
+      tone: 'ok',
+    })
+  } else {
+    all.push({
+      key: 'electrics',
+      icon: '⚡',
+      title: 'Electrics — worth checking',
+      body: 'Ask for a recent EICR certificate to rule out rewiring costs.',
+      tone: 'warn',
+    })
+  }
+
+  // Ensure at least one green row if any pillar > 60%
+  const anyOk =
+    heatingPct >= 60 ||
+    structurePct >= 60 ||
+    electricsPct >= 60 ||
+    plumbingPct >= 60 ||
+    efficiencyPct >= 60
+  if (anyOk && !all.some((r) => r.tone === 'ok')) {
+    all.push({
+      key: 'other',
+      icon: '✓',
+      title: 'Other systems — look reasonable',
+      body: 'Several EPC pillars are average-or-better. Confirm documentation with the seller.',
+      tone: 'ok',
+    })
+  }
+
+  return all.slice(0, 3)
+})
+
+const { toggleSave } = usePropertyActions()
+const { showToast } = useAppToast()
+
+async function saveToBuyerPassport() {
+  // The "Save to Buyer Passport" CTAs now direct the user to the new
+  // Buyer Passport flow (/my-passport) where they build/share their own
+  // verified buyer profile. Keeping `toggleSave` available elsewhere for
+  // the wishlist feature — this button is the funnel into the passport build.
+  router.push('/my-passport')
+}
+
+// ── Quick wins / boost score ──────────────────────────────────
+
+const qwDocs = [
+  {
+    key: 'epc',
+    label: 'EPC Certificate',
+    sub: 'Energy rating — required for any sale',
+    pts: 8,
+    icon: '⚡',
+    bg: '#fef3c7',
+  },
+  {
+    key: 'gas',
+    label: 'Gas Safety Certificate',
+    sub: 'Annual boiler service — Gas Safe registered',
+    pts: 10,
+    icon: '🔥',
+    bg: '#fff0f0',
+  },
+  {
+    key: 'eicr',
+    label: 'EICR Report',
+    sub: 'Electrical check removes a major buyer red flag',
+    pts: 7,
+    icon: '🔌',
+    bg: '#eff6ff',
+  },
+  {
+    key: 'planning',
+    label: 'Planning Permission',
+    sub: 'Extensions, conversions or permitted development',
+    pts: 5,
+    icon: '📋',
+    bg: '#f0fdf4',
+  },
+  {
+    key: 'fensa',
+    label: 'FENSA Certificate',
+    sub: 'Window installation compliance certificate',
+    pts: 4,
+    icon: '🪟',
+    bg: '#fdf4ff',
+  },
+  {
+    key: 'buildregs',
+    label: 'Building Regulations cert',
+    sub: 'Covers any structural or significant works',
+    pts: 5,
+    icon: '🏗️',
+    bg: '#fff7ed',
+  },
+]
+
+const qwPros = [
+  {
+    key: 'gassafe',
+    label: 'Book a Gas Safe engineer',
+    sub: 'Service your boiler · cert auto-lands in your score',
+    icon: '🛠️',
+    bg: '#fef3c7',
+  },
+  {
+    key: 'electrician',
+    label: 'Book an electrician (EICR)',
+    sub: 'Electrical check · from £150',
+    icon: '⚡',
+    bg: '#eff6ff',
+  },
+  {
+    key: 'epcassess',
+    label: 'New EPC assessment',
+    sub: 'From £60 · required if yours is 10+ years old',
+    icon: '🏡',
+    bg: '#f0fdf4',
+  },
+]
+
+const uploadedDocs = reactive<Record<string, boolean>>({})
+const docFileInput = ref<HTMLInputElement | null>(null)
+const pendingDocKey = ref<string | null>(null)
+
+function triggerDocUpload(docKey: string) {
+  if (uploadedDocs[docKey]) return
+  pendingDocKey.value = docKey
+  docFileInput.value?.click()
+}
+
+function onDocFilePicked(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (file && pendingDocKey.value) {
+    uploadedDocs[pendingDocKey.value] = true
+    const doc = qwDocs.find((d) => d.key === pendingDocKey.value)
+    showToast({
+      message: `${doc?.label ?? 'Document'} uploaded`,
+      iconEmoji: '✓',
+    })
+  }
+  pendingDocKey.value = null
+  if (input) input.value = ''
+}
+
+function openMarketplace() {
+  showToast({
+    message: 'Marketplace coming soon',
+    iconEmoji: '🔧',
+  })
+}
+
+const qwUploadedCount = computed(
+  () => Object.values(uploadedDocs).filter(Boolean).length,
+)
+const qwUploadedPoints = computed(() =>
+  qwDocs.reduce(
+    (sum, d) => (uploadedDocs[d.key] ? sum + d.pts : sum),
+    0,
+  ),
+)
+const qwScore = computed(() =>
+  Math.min(100, result.value.total + qwUploadedPoints.value),
+)
+const qwMoveReady = computed(() =>
+  Math.min(100, Math.round((qwUploadedCount.value / qwDocs.length) * 100)),
+)
+const qwProgress = computed(() =>
+  Math.min(100, Math.round((qwScore.value + qwMoveReady.value) / 2)),
+)
+
+async function claimFromMoveReady() {
+  router.push(`/claim/${propertyId}`)
+}
+
 function goBack() {
   if (screen.value === 'passport') {
     screen.value = 'results'
+    return
+  }
+  if (screen.value === 'buyer-results') {
+    screen.value = 'landing'
+    return
+  }
+  if (screen.value === 'quick-wins') {
+    screen.value = 'results'
+    return
+  }
+  if (screen.value === 'move-ready') {
+    screen.value = 'quick-wins'
     return
   }
   if (screen.value === 'results') {
@@ -1847,12 +2684,45 @@ onMounted(async () => {
 
   // Check ownership and load saved score from backend if owner
   const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+
+  // Passport status check — also drives read-only mode for non-owners
+  try {
+    const { getPassportStatus } = usePassportClaim()
+    const status = await getPassportStatus(propertyId)
+    isPropertyOwner.value = status.isOwner ?? false
+    isPassportCollaborator.value = status.isCollaborator ?? false
+    hasOtherOwnerPassport.value =
+      !!status.hasPassport && !status.isOwner && !status.isCollaborator
+    isOtherPassportPublished.value =
+      !!(status.hasPassport && status.isPublished)
+
+    // Restore "already notified" state from localStorage
+    if (typeof localStorage !== 'undefined') {
+      notifiedOfPublish.value = !!localStorage.getItem(
+        `hs_notify_publish_${propertyId}`,
+      )
+    }
+
+    // Read-only mode: fetch the owner's published HomeScore from the public endpoint
+    if (readOnlyMode.value) {
+      try {
+        const scoreRes = await fetch(
+          `${config.public.apiBase}/property/${propertyId}/homescore/public`,
+        )
+        if (scoreRes.ok) {
+          publicOwnerScore.value = await scoreRes.json()
+          if (publicOwnerScore.value?.answers) {
+            answers.value = publicOwnerScore.value.answers
+          }
+        }
+      } catch {}
+      screen.value = 'landing'
+      return
+    }
+  } catch {}
+
   if (token) {
     try {
-      const { getPassportStatus } = usePassportClaim()
-      const status = await getPassportStatus(propertyId)
-      isPropertyOwner.value = status.isOwner ?? false
-
       if (isPropertyOwner.value) {
         const scoreRes = await fetch(`${config.public.apiBase}/property/${propertyId}/homescore`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -2498,6 +3368,162 @@ watch(screen, (s) => {
 .hs-slide-leave-to {
   opacity: 0;
   transform: translateX(-22px);
+}
+
+/* ── Read-only banner (non-owner viewing verified owner's score) ── */
+/* ── Published passport banner (navy) ─────────────────────── */
+.hs-pp-banner--published {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #1a1640, #231d45);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.hs-pp-banner-ic {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.hs-pp-banner-body {
+  flex: 1;
+  min-width: 0;
+}
+.hs-pp-banner-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.hs-pp-banner-sub {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.45;
+}
+.hs-pp-banner-cta--mint {
+  flex-shrink: 0;
+  border: none;
+  background: #5eead4;
+  color: #042f2e;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: transform 0.15s ease;
+}
+.hs-pp-banner-cta--mint:active {
+  transform: scale(0.96);
+}
+
+/* ── In-progress passport banner (amber) ─────────────────── */
+.hs-pp-inprogress {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.hs-pp-inprogress-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.hs-pp-inprogress-ic {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.hs-pp-inprogress-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #92400e;
+}
+.hs-pp-inprogress-sub {
+  font-size: 11.5px;
+  color: #78350f;
+  margin-top: 2px;
+  line-height: 1.5;
+}
+.hs-pp-inprogress-box {
+  background: #fff;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.hs-pp-inprogress-box:last-of-type {
+  margin-bottom: 10px;
+}
+.hs-pp-inprogress-box-title {
+  font-size: 11.5px;
+  color: #92400e;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.hs-pp-inprogress-box-body {
+  font-size: 11px;
+  color: #78350f;
+  line-height: 1.4;
+}
+.hs-pp-inprogress-cta {
+  width: 100%;
+  border: none;
+  padding: 11px;
+  border-radius: 11px;
+  background: #f59e0b;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+.hs-pp-inprogress-cta:active {
+  background: #d97706;
+}
+.hs-pp-inprogress-done {
+  text-align: center;
+  font-size: 12px;
+  color: #15803d;
+  font-weight: 600;
+  padding: 10px 0 2px;
+}
+.hs-readonly-cta {
+  width: 100%;
+  margin-top: 14px;
+  border: none;
+  background: #231d45;
+  color: #fff;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.hs-readonly-cta:active {
+  background: #1a163a;
+}
+.hs-readonly-cta-arrow {
+  font-size: 16px;
+  font-weight: 700;
+}
+.hs-readonly-subnote {
+  text-align: center;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 8px;
+  line-height: 1.5;
 }
 
 /* ── Results ──────────────────────────────────────────── */
@@ -3602,4 +4628,1055 @@ watch(screen, (s) => {
   align-items: center;
   padding: 40px 20px;
 }
+
+/* ── Question screen (hsq-*) ───────────────────────────────── */
+.hsq-header {
+  background: linear-gradient(150deg, #1a1640 0%, #231d45 60%, #2a2158 100%);
+  padding: 16px 20px 20px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.hsq-header-glow {
+  position: absolute;
+  right: -20px;
+  top: -20px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(
+    circle,
+    rgba(0, 161, 154, 0.2),
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hsq-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+.hsq-back {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.hsq-back:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+.hsq-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+.hsq-spacer {
+  width: 36px;
+}
+.hsq-progress-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+.hsq-progress-fill {
+  height: 4px;
+  background: linear-gradient(90deg, #0d9488, #5eead4);
+  border-radius: 999px;
+  transition: width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.hsq-cat-wrap {
+  position: relative;
+  z-index: 1;
+}
+.hsq-cat-chip {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 161, 154, 0.2);
+  border: 1px solid rgba(0, 161, 154, 0.35);
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #5eead4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hsq-body {
+  padding: 12px 16px 24px;
+  gap: 14px;
+}
+
+/* Live score widget */
+.hsq-live {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: 0 2px 8px rgba(35, 29, 69, 0.08);
+  border: 1.5px solid #e2e8e8;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.3s, border-color 0.3s;
+}
+.hsq-live-gauge {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+.hsq-live-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 900;
+  color: #231d45;
+  line-height: 1;
+  transition: transform 0.2s, color 0.2s;
+}
+.hsq-live-info {
+  flex: 1;
+  min-width: 0;
+}
+.hsq-live-lbl {
+  font-size: 9px;
+  color: #94a3b8;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+.hsq-live-hint {
+  font-size: 12px;
+  font-weight: 700;
+  color: #231d45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hsq-delta {
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.hsq-delta.pos {
+  color: #16a34a;
+}
+.hsq-delta.neg {
+  color: #dc2626;
+}
+.hsq-delta-enter-active,
+.hsq-delta-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.hsq-delta-enter-from,
+.hsq-delta-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* Question card */
+.hsq-card {
+  margin-bottom: 4px;
+}
+.hsq-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #231d45;
+  line-height: 1.3;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+.hsq-hint {
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.6;
+  padding: 12px 14px;
+  background: #eafaf9;
+  border-radius: 12px;
+  border: 1.5px solid #b2e8e6;
+  margin-bottom: 14px;
+}
+.hsq-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hsq-opt {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #e2e8e8;
+  background: #fff;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 14px;
+  color: #0f172a;
+  text-align: left;
+  font-family: inherit;
+}
+.hsq-opt:hover {
+  background: #eafaf9;
+  border-color: #b2e8e6;
+}
+.hsq-opt.selected {
+  background: #0d9488;
+  border-color: #0d9488;
+  color: #fff;
+  font-weight: 600;
+}
+.hsq-opt-label {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* Navigation */
+.hsq-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.hsq-nav-back {
+  flex: 0 0 48px;
+  height: 48px;
+  border: 1.5px solid #e2e8e8;
+  background: #fff;
+  border-radius: 14px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.hsq-nav-back:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.hsq-nav-next {
+  flex: 1;
+  height: 48px;
+  border: none;
+  background: #0d9488;
+  color: #fff;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+.hsq-nav-next:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Results: updated journey card / breakdown explain / sticky CTA ── */
+.hs-journey-card {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.hs-journey-card:active {
+  transform: scale(0.995);
+}
+.hs-journey-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.hs-journey-link {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0d9488;
+}
+.hs-journey-num-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+}
+.hs-journey-num-small {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+.hs-journey-num-muted {
+  color: #94a3b8;
+}
+.hs-breakdown-explain {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: #0f172a;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+.hs-sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 28rem;
+  padding: 12px 18px calc(18px + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1px solid #e2e8e8;
+  box-shadow: 0 -4px 16px rgba(35, 29, 69, 0.06);
+  z-index: 20;
+}
+.hs-sticky-cta-btn {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 14px;
+  background: #0d9488;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+  font-family: inherit;
+}
+.hs-sticky-cta-btn:active {
+  transform: scale(0.99);
+}
+.hs-sticky-cta-sub {
+  text-align: center;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 6px;
+}
+
+/* ── Landing interest selector ─────────────────────────── */
+.hs-interest-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-align: center;
+  margin: 16px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.hs-interest-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hs-interest-btn {
+  width: 100%;
+  border: none;
+  border-radius: 13px;
+  padding: 13px 16px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: inherit;
+}
+.hs-interest-btn.primary {
+  background: #0d9488;
+  color: #fff;
+}
+.hs-interest-btn.outline {
+  background: #fff;
+  border: 1.5px solid #e2e8e8;
+  color: #0f172a;
+}
+.hs-interest-ic {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-size: 17px;
+}
+.hs-interest-ic.primary {
+  background: rgba(255, 255, 255, 0.2);
+}
+.hs-interest-ic.soft {
+  background: #ccfbf1;
+}
+.hs-interest-body {
+  flex: 1;
+}
+.hs-interest-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+.hs-interest-sub {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 1px;
+}
+.hs-interest-sub.primary-sub {
+  color: rgba(255, 255, 255, 0.85);
+}
+.hs-interest-chev {
+  font-size: 18px;
+  color: #cbd5e1;
+}
+.hs-interest-chev.primary {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Buyer results ─────────────────────────────────────── */
+.hs-buyer-hero {
+  background: linear-gradient(135deg, #1e3a5f, #1e4976);
+  color: #fff;
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.hs-buyer-hero::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.12),
+    transparent 70%
+  );
+  border-radius: 50%;
+}
+.hs-buyer-hero-eyebrow {
+  font-size: 11px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.hs-buyer-hero-amount {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 6px 0 4px;
+}
+.hs-buyer-hero-sub {
+  font-size: 13px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+.hs-buyer-hero-stats {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  position: relative;
+  z-index: 1;
+}
+.hs-buyer-hero-stat {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 8px 10px;
+  text-align: center;
+  flex: 1;
+}
+.hs-buyer-hero-stat-num {
+  font-size: 18px;
+  font-weight: 800;
+}
+.hs-buyer-hero-stat-lbl {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+.hs-buyer-risk-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
+}
+.hs-buyer-risk-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+.hs-buyer-risk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hs-buyer-risk-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 11px;
+}
+.hs-buyer-risk-row.warn {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+}
+.hs-buyer-risk-row.ok {
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+}
+.hs-buyer-risk-ic {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.hs-buyer-risk-row.warn .hs-buyer-risk-head {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #92400e;
+}
+.hs-buyer-risk-row.warn .hs-buyer-risk-body {
+  font-size: 11.5px;
+  color: #78350f;
+  margin-top: 1px;
+}
+.hs-buyer-risk-row.ok .hs-buyer-risk-head {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #14532d;
+}
+.hs-buyer-risk-row.ok .hs-buyer-risk-body {
+  font-size: 11.5px;
+  color: #166534;
+  margin-top: 1px;
+}
+.hs-buyer-bd-sub {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 12px;
+}
+.hs-buyer-bd-note {
+  background: #fef3c7;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #78350f;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+.hs-buyer-carbon-note {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11.5px;
+  opacity: 0.85;
+  line-height: 1.5;
+  color: #fff;
+}
+.hs-buyer-qa-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
+}
+.hs-buyer-qa-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+.hs-buyer-qa-sub {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 0 0 12px;
+}
+.hs-buyer-qa-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hs-buyer-qa-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 11px;
+}
+.hs-buyer-qa-ic {
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.hs-buyer-qa-head {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+}
+.hs-buyer-qa-body {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 2px;
+}
+.hs-buyer-save-cta {
+  background: #ccfbf1;
+  border: 1.5px solid #99f6e4;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.hs-buyer-save-ic {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.hs-buyer-save-body {
+  flex: 1;
+}
+.hs-buyer-save-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.hs-buyer-save-sub {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 2px;
+}
+.hs-buyer-save-arrow {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0d9488;
+  white-space: nowrap;
+}
+
+/* ── Neighbourhood re-use (buyer) ──────────────────────── */
+.hs-nb-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
+}
+.hs-nb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.hs-nb-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.hs-nb-rank {
+  font-size: 11px;
+  font-weight: 600;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.hs-nb-body {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 0 0 12px;
+}
+.hs-nb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hs-nb-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  padding: 5px 4px;
+  border-radius: 8px;
+}
+.hs-nb-row.mine {
+  background: #ccfbf1;
+  border: 1.5px solid #99f6e4;
+  padding: 7px 8px;
+}
+.hs-nb-pos {
+  width: 20px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 11px;
+  color: #94a3b8;
+}
+.hs-nb-pos.mine {
+  color: #065f46;
+}
+.hs-nb-addr {
+  font-size: 13px;
+  color: #0f172a;
+  font-weight: 500;
+}
+.hs-nb-addr.mine {
+  color: #065f46;
+  font-weight: 700;
+}
+.hs-nb-detail {
+  font-size: 11px;
+  color: #94a3b8;
+}
+.hs-nb-cost {
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* ── Quick wins ────────────────────────────────────────── */
+.hs-qw-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin: 20px 0 10px;
+}
+.hs-qw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hs-qw-doc-row,
+.hs-qw-pro-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  background: #fff;
+  border: 1.5px solid #e2e8e8;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hs-qw-doc-row:active,
+.hs-qw-pro-row:active {
+  transform: scale(0.99);
+}
+.hs-qw-doc-row.uploaded {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.hs-qw-doc-ic {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+.hs-qw-doc-body {
+  flex: 1;
+  min-width: 0;
+}
+.hs-qw-doc-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.hs-qw-doc-sub {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 1px;
+}
+.hs-qw-doc-right {
+  flex-shrink: 0;
+}
+.hs-qw-doc-pts {
+  font-size: 11px;
+  font-weight: 700;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+.hs-qw-doc-done {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+
+/* Get move ready CTA */
+.hs-qw-mr-cta {
+  background: linear-gradient(135deg, #131129, #1e1842);
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.hs-qw-mr-glow {
+  position: absolute;
+  right: -20px;
+  top: -20px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(
+    circle,
+    rgba(20, 184, 166, 0.25),
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hs-qw-mr-inner {
+  position: relative;
+  z-index: 1;
+}
+.hs-qw-mr-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 6px;
+}
+.hs-qw-mr-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.hs-qw-mr-body {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+.hs-qw-mr-btn {
+  width: 100%;
+  border: none;
+  padding: 15px;
+  border-radius: 13px;
+  background: #14b8a6;
+  color: #042f2e;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ── Move Ready ────────────────────────────────────────── */
+.hs-mr-hero {
+  background: linear-gradient(
+    150deg,
+    #1a1640 0%,
+    #231d45 60%,
+    #2a2158 100%
+  );
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.hs-mr-hero-glow {
+  position: absolute;
+  right: -20px;
+  top: -20px;
+  width: 130px;
+  height: 130px;
+  background: radial-gradient(
+    circle,
+    rgba(0, 161, 154, 0.2),
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hs-mr-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+.hs-mr-hero-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 10px;
+}
+.hs-mr-hero-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.hs-mr-hero-body {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.hs-mr-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.hs-mr-compare-col {
+  border-radius: 12px;
+  padding: 12px;
+}
+.hs-mr-compare-col.red {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+.hs-mr-compare-col.teal {
+  background: rgba(20, 184, 166, 0.15);
+  border: 1px solid rgba(20, 184, 166, 0.3);
+}
+.hs-mr-compare-head {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.hs-mr-compare-head.red {
+  color: #fca5a5;
+}
+.hs-mr-compare-head.teal {
+  color: #5eead4;
+}
+.hs-mr-compare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+.hs-mr-compare-list.ok {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.hs-mr-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.hs-mr-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px;
+  background: #fff;
+  border: 1.5px solid #e2e8e8;
+  border-radius: 14px;
+}
+.hs-mr-step-ic {
+  width: 32px;
+  height: 32px;
+  background: #231d45;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+}
+.hs-mr-step-ic.teal {
+  background: #0d9488;
+}
+.hs-mr-step-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 3px;
+}
+.hs-mr-step-body {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+}
+.hs-mr-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.hs-mr-stat {
+  background: #ccfbf1;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+.hs-mr-stat-num {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0d9488;
+}
+.hs-mr-stat-lbl {
+  font-size: 10px;
+  color: #64748b;
+  margin-top: 2px;
+  line-height: 1.3;
+}
+.hs-mr-claim-btn {
+  width: 100%;
+  border: none;
+  padding: 16px;
+  border-radius: 14px;
+  background: #231d45;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.hs-mr-claim-sub {
+  text-align: center;
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
 </style>

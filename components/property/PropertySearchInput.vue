@@ -54,7 +54,30 @@
               <div class="psi-drop-epc-label">EPC</div>
               <div class="psi-drop-epc-rating">{{ r.epcRating }}</div>
             </div>
-            <div v-if="r.hasPassport" class="psi-drop-pp-ic" aria-label="Passport available" :title="r.passportPublished ? 'Passport published' : 'Passport available'">
+            <!-- Labelled passport status pill (when opted in via showPassportStatus) -->
+            <template v-if="showPassportStatus && r.hasPassport">
+              <div
+                v-if="r.passportPublished"
+                class="psi-drop-pp-pill psi-drop-pp-pill--published"
+                aria-label="Passport published"
+              >
+                📘 Published
+              </div>
+              <div
+                v-else
+                class="psi-drop-pp-pill psi-drop-pp-pill--progress"
+                aria-label="Passport in progress"
+              >
+                📘 In progress
+              </div>
+            </template>
+            <!-- Fallback tiny icon for callers that don't opt into the pill -->
+            <div
+              v-else-if="r.hasPassport"
+              class="psi-drop-pp-ic"
+              aria-label="Passport available"
+              :title="r.passportPublished ? 'Passport published' : 'Passport available'"
+            >
               <svg width="14" height="14" viewBox="0 0 877.69 877.69" xmlns="http://www.w3.org/2000/svg">
                 <circle fill="#231d45" cx="438.85" cy="438.85" r="438.85"/>
                 <path fill="#fff" d="m573.6,497.11v21.8h-39.28l-.22-20.26c0-34.14-14.14-48.26-38.03-48.26s-38.03,14.12-38.03,48.26v41.36h-39.01v-42.9c0-52.88,28.77-82.14,77.29-82.14s77.29,29.26,77.29,82.14Z"/>
@@ -87,12 +110,15 @@ interface Props {
   variant?: 'light' | 'dark'
   /** Sort properties with published passports to the top of the dropdown */
   preferPassport?: boolean
+  /** Show a labelled "Published" / "In progress" pill instead of the tiny circular icon */
+  showPassportStatus?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   placeholder: 'Enter postcode or address',
   variant: 'light',
   preferPassport: false,
+  showPassportStatus: false,
 })
 
 const emit = defineEmits<{
@@ -395,6 +421,25 @@ defineExpose({ clearQuery })
   overflow: hidden;
 }
 .psi-drop-pp-ic svg { display: block; }
+
+/* Labelled passport status pills (opt-in via showPassportStatus prop) */
+.psi-drop-pp-pill {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+.psi-drop-pp-pill--published {
+  background: #231d45;
+  color: #fff;
+}
+.psi-drop-pp-pill--progress {
+  background: #fef3c7;
+  color: #92400e;
+}
 
 .psi-drop-loading {
   display: flex;
