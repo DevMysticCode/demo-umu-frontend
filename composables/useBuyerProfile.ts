@@ -1,8 +1,8 @@
-// Composable for the user's own Buyer Passport (the BUYER's verified profile
+// Composable for the user's own Buyer Profile (the BUYER's verified profile
 // they share with sellers, agents, solicitors). Not to be confused with
 // /buyer-passport/[id] which is a buyer's PURCHASED access to a seller's passport.
 
-export interface BuyerPassport {
+export interface BuyerProfile {
   id: string
   userId: string
   idDocumentType: string | null
@@ -22,9 +22,9 @@ export interface BuyerPassport {
   updatedAt: string
 }
 
-export type BuyerPassportUpdate = Partial<
+export type BuyerProfileUpdate = Partial<
   Pick<
-    BuyerPassport,
+    BuyerProfile,
     | 'idDocumentType'
     | 'idDocumentUrl'
     | 'fundsType'
@@ -38,7 +38,7 @@ export type BuyerPassportUpdate = Partial<
   >
 >
 
-export const useBuyerPassport = () => {
+export const useBuyerProfile = () => {
   const config = useRuntimeConfig()
   const base = config.public.apiBase
 
@@ -50,9 +50,9 @@ export const useBuyerPassport = () => {
     'Content-Type': 'application/json',
   })
 
-  const getBuyerPassport = async (): Promise<BuyerPassport | null> => {
+  const getBuyerProfile = async (): Promise<BuyerProfile | null> => {
     try {
-      return await $fetch<BuyerPassport | null>(`${base}/buyer-passport`, {
+      return await $fetch<BuyerProfile | null>(`${base}/buyer-profile`, {
         headers: headers(),
       })
     } catch {
@@ -60,34 +60,37 @@ export const useBuyerPassport = () => {
     }
   }
 
-  const updateBuyerPassport = async (
-    partial: BuyerPassportUpdate,
-  ): Promise<BuyerPassport> => {
-    return $fetch<BuyerPassport>(`${base}/buyer-passport`, {
+  const updateBuyerProfile = async (
+    partial: BuyerProfileUpdate,
+  ): Promise<BuyerProfile> => {
+    return $fetch<BuyerProfile>(`${base}/buyer-profile`, {
       method: 'PATCH',
       headers: headers(),
       body: partial,
     })
   }
 
-  const publishBuyerPassport = async (): Promise<BuyerPassport> => {
-    return $fetch<BuyerPassport>(`${base}/buyer-passport/publish`, {
+  const publishBuyerProfile = async (
+    fullPayload?: BuyerProfileUpdate,
+  ): Promise<BuyerProfile> => {
+    return $fetch<BuyerProfile>(`${base}/buyer-profile/publish`, {
       method: 'POST',
       headers: headers(),
+      body: fullPayload ?? {},
     })
   }
 
-  const deleteBuyerPassport = async (): Promise<{ message: string }> => {
-    return $fetch<{ message: string }>(`${base}/buyer-passport`, {
+  const deleteBuyerProfile = async (): Promise<{ message: string }> => {
+    return $fetch<{ message: string }>(`${base}/buyer-profile`, {
       method: 'DELETE',
       headers: headers(),
     })
   }
 
   return {
-    getBuyerPassport,
-    updateBuyerPassport,
-    publishBuyerPassport,
-    deleteBuyerPassport,
+    getBuyerProfile,
+    updateBuyerProfile,
+    publishBuyerProfile,
+    deleteBuyerProfile,
   }
 }

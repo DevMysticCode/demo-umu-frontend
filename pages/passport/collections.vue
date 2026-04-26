@@ -213,6 +213,38 @@
       </div>
     </div>
 
+    <!-- Watching list — published passports the user has purchased access to -->
+    <div v-if="watchingList.length > 0" class="watching-section">
+      <div class="watching-header">
+        <span class="watching-title">Watching</span>
+        <span class="watching-count">{{ watchingList.length }}</span>
+      </div>
+      <div class="watching-list">
+        <div
+          v-for="w in watchingList"
+          :key="w.id"
+          class="watching-card"
+          @click="router.push(`/buyer-passport/${w.passportId}`)"
+        >
+          <div class="watching-card-ic">📘</div>
+          <div class="watching-card-body">
+            <div class="watching-card-addr">{{ w.addressLine1 }}</div>
+            <div class="watching-card-sub">
+              {{ w.postcode }}<template v-if="w.property?.epcRating">
+              · EPC {{ w.property.epcRating }}</template>
+            </div>
+            <div class="watching-card-meta">
+              <span class="watching-pill watching-pill-published">📘 Published</span>
+              <span class="watching-purchased">
+                Unlocked {{ formatPurchasedAt(w.purchasedAt) }}
+              </span>
+            </div>
+          </div>
+          <div class="watching-card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Create collection modal -->
     <CreateCollectionModal
       :show="showCreateModal"
@@ -316,6 +348,7 @@ const config = useRuntimeConfig()
 const loading = ref(true)
 const collections = ref([])
 const uncollectedPassports = ref([])
+const watchingList = ref([])
 const query = ref('')
 const showCreateModal = ref(false)
 const showDetailModal = ref(false)
@@ -352,15 +385,30 @@ const load = async () => {
   loading.value = true
   try {
     const token = localStorage.getItem('token')
-    const data = await $fetch(`${config.public.apiBase}/collection/my`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const headers = { Authorization: `Bearer ${token}` }
+    const [data, watching] = await Promise.all([
+      $fetch(`${config.public.apiBase}/collection/my`, { headers }),
+      $fetch(`${config.public.apiBase}/passport/buyer-access`, { headers }).catch(
+        () => [],
+      ),
+    ])
     collections.value = data.collections
     uncollectedPassports.value = data.uncollectedPassports
+    watchingList.value = Array.isArray(watching) ? watching : []
   } catch (e) {
     console.error('Failed to load collections', e)
   } finally {
     loading.value = false
+  }
+}
+
+const formatPurchasedAt = (iso) => {
+  if (!iso) return ''
+  try {
+    const d = new Date(iso)
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+  } catch {
+    return ''
   }
 }
 
@@ -840,5 +888,106 @@ const executeDelete = async () => {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Watching section — buyer's purchased Passport access cards */
+.watching-section {
+  padding: 0 16px 80px;
+  margin-top: -8px;
+}
+.watching-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+}
+.watching-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1f2024;
+  letter-spacing: -0.01em;
+}
+.watching-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: #231d45;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.watching-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.watching-card {
+  background: #fff;
+  border: 1.5px solid #99f6e4;
+  border-radius: 14px;
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.watching-card:active {
+  transform: scale(0.985);
+}
+.watching-card-ic {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: #f0fdfa;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.watching-card-body {
+  flex: 1;
+  min-width: 0;
+}
+.watching-card-addr {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1f2024;
+  line-height: 1.25;
+}
+.watching-card-sub {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 1px;
+}
+.watching-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.watching-pill {
+  font-size: 9.5px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.watching-pill-published {
+  background: #231d45;
+  color: #fff;
+}
+.watching-purchased {
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+.watching-card-arrow {
+  font-size: 18px;
+  color: #00a19a;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 </style>

@@ -773,14 +773,29 @@
 
           <HealthPassportCards />
 
-          <!-- My Passport (Buyer Passport) entry card -->
+          <!-- Published Buyer Profile quick-access card -->
           <div
+            v-if="buyerProfilePublished"
+            class="my-passport-card my-passport-card--published"
+            @click="navigateTo('/buyer-profile/view')"
+          >
+            <div class="my-passport-ic">✓</div>
+            <div class="my-passport-body">
+              <div class="my-passport-title">Buyer Profile · Published</div>
+              <div class="my-passport-sub">Tap to view or share with sellers</div>
+            </div>
+            <div class="my-passport-arrow">→</div>
+          </div>
+
+          <!-- My Buyer Profile entry card (build) -->
+          <div
+            v-else
             class="my-passport-card"
-            @click="navigateTo('/my-passport')"
+            @click="navigateTo('/buyer-profile')"
           >
             <div class="my-passport-ic">👤</div>
             <div class="my-passport-body">
-              <div class="my-passport-title">My Buyer Passport</div>
+              <div class="my-passport-title">My Buyer Profile</div>
               <div class="my-passport-sub">
                 Prove you're a verified buyer — share with any agent or seller
               </div>
@@ -1582,6 +1597,10 @@ const verifiedPassportProperties = ref<any[]>([])
 const loadingVerifiedPassports = ref(true)
 const needsPostcode = ref(false)
 
+// Whether the current user has a published Buyer Profile — drives the
+// "✓ Buyer Profile · Published" quick-access card in the buy view.
+const buyerProfilePublished = ref(false)
+
 // Always initialize to 'buy' so SSR and client match — updated in onMounted
 const role = ref<string>('buy')
 
@@ -1884,7 +1903,7 @@ onMounted(async () => {
   const cachedRole = localStorage.getItem('umu_role')
   if (cachedRole) role.value = cachedRole
 
-  const [prefResult, passportResult, propResult, verifiedResult] =
+  const [prefResult, passportResult, propResult, verifiedResult, buyerProfileResult] =
     await Promise.allSettled([
       $fetch<any>(`${config.public.apiBase}/profile/preferences`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -1898,7 +1917,14 @@ onMounted(async () => {
       $fetch<{ items: any[] }>(
         `${config.public.apiBase}/property/verified-passports?limit=12`,
       ),
+      $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
     ])
+
+  if (buyerProfileResult.status === 'fulfilled') {
+    buyerProfilePublished.value = !!buyerProfileResult.value?.published
+  }
 
   if (prefResult.status === 'fulfilled') {
     preferences.value = prefResult.value
@@ -3019,7 +3045,7 @@ onMounted(async () => {
   margin-bottom: 14px;
 }
 
-/* My Buyer Passport entry card (buy role) */
+/* My Buyer Profile entry card (buy role) */
 .my-passport-card {
   display: flex;
   align-items: center;
@@ -3034,6 +3060,16 @@ onMounted(async () => {
 }
 .my-passport-card:active {
   background: #f0fdfa;
+}
+.my-passport-card--published {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+  border-color: #5eead4;
+}
+.my-passport-card--published .my-passport-ic {
+  background: #00a19a;
+  color: #fff;
+  border-color: #00a19a;
+  font-weight: 800;
 }
 .my-passport-ic {
   width: 40px;

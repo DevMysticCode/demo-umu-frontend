@@ -342,6 +342,13 @@ const profileItems = [
     route: '/profile/personal-information',
   },
   {
+    title: 'Your Buyer Profile',
+    description:
+      'Verified ID, proof of funds and chain position — share with sellers, agents and solicitors.',
+    icon: 'personalInformation',
+    route: '/buyer-profile',
+  },
+  {
     title: 'Collaborators',
     description:
       'Invite, manage, and control who you work with across your property journey.',

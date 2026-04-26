@@ -60,6 +60,33 @@
     <!-- ── LANDING / AUTO SCORE ─────────────────────────────────── -->
     <template v-else-if="screen === 'landing'">
       <div class="hs-scroll">
+        <!-- People searched this address card — shown in states B/C -->
+        <div
+          v-if="passportState && searchStats && searchStats.thisMonth > 0"
+          class="hs-searched-card"
+          :class="{
+            'hs-searched-card--published': passportState === 'published',
+            'hs-searched-card--inprogress': passportState === 'inProgress',
+          }"
+        >
+          <div class="hs-searched-num">{{ searchStats.thisMonth }}</div>
+          <div class="hs-searched-divider" />
+          <div class="hs-searched-body">
+            <div class="hs-searched-title">
+              People searched this address this month
+            </div>
+            <div class="hs-searched-sub">
+              <template v-if="passportState === 'published'">
+                The verified Passport was visible to every one of them. 📘
+              </template>
+              <template v-else>
+                None found a verified Passport — the owner is still building
+                theirs.
+              </template>
+            </div>
+          </div>
+        </div>
+
         <!-- Passport state banner — differs for "published" vs "in progress" -->
         <div v-if="passportState === 'published'" class="hs-pp-banner hs-pp-banner--published">
           <span class="hs-pp-banner-ic">📘</span>
@@ -217,38 +244,50 @@
             {{ epcRangeHigh }}.
           </p>
 
-          <!-- Interest selector (owner vs buyer) — hidden in read-only mode -->
-          <template v-if="!readOnlyMode">
-            <div class="hs-interest-label">What's your interest in this property?</div>
-            <div class="hs-interest-stack">
-              <button class="hs-interest-btn primary" @click="startQuestions">
-                <div class="hs-interest-ic primary">🏠</div>
-                <div class="hs-interest-body">
-                  <div class="hs-interest-title">This is my home</div>
-                  <div class="hs-interest-sub primary-sub">
-                    Get my real score in 2 mins · {{ QUESTIONS.length }} quick
-                    questions
-                  </div>
+          <!-- Interest selector — "This is my home" hides when a passport
+               already exists (states B/C). "I'm interested in buying" is
+               always available, including for guests on claimed/published
+               properties. -->
+          <div class="hs-interest-label">What's your interest in this property?</div>
+          <div class="hs-interest-stack">
+            <!-- "This is my home" — only when no passport exists yet -->
+            <button
+              v-if="passportState === null"
+              class="hs-interest-btn primary"
+              @click="startQuestions"
+            >
+              <div class="hs-interest-ic primary">🏠</div>
+              <div class="hs-interest-body">
+                <div class="hs-interest-title">This is my home</div>
+                <div class="hs-interest-sub primary-sub">
+                  Get my real score in 2 mins · {{ QUESTIONS.length }} quick
+                  questions
                 </div>
-                <div class="hs-interest-chev primary">›</div>
-              </button>
-              <button
-                class="hs-interest-btn outline"
-                @click="screen = 'buyer-results'"
-              >
-                <div class="hs-interest-ic soft">🔍</div>
-                <div class="hs-interest-body">
-                  <div class="hs-interest-title">I'm considering buying this</div>
-                  <div class="hs-interest-sub">
-                    See running costs, risks &amp; what to ask the seller
-                  </div>
+              </div>
+              <div class="hs-interest-chev primary">›</div>
+            </button>
+            <button
+              class="hs-interest-btn outline"
+              @click="onInterestedInBuying"
+            >
+              <div class="hs-interest-ic soft">🔍</div>
+              <div class="hs-interest-body">
+                <div class="hs-interest-title">I'm interested in buying</div>
+                <div class="hs-interest-sub">
+                  See running costs, risks &amp; what to ask the seller
                 </div>
-                <div class="hs-interest-chev">›</div>
-              </button>
-            </div>
+              </div>
+              <div class="hs-interest-chev">›</div>
+            </button>
+          </div>
 
-            <!-- Non-owner notice -->
-            <div v-if="!isPropertyOwner" class="hs-owner-notice">
+          <template v-if="!readOnlyMode">
+
+            <!-- Non-owner notice — only shown when no passport exists yet -->
+            <div
+              v-if="!isPropertyOwner && passportState === null"
+              class="hs-owner-notice"
+            >
               <span style="font-size:14px;flex-shrink:0;">💡</span>
               <span>Claim this property's passport to save your score permanently.</span>
             </div>
@@ -1413,12 +1452,12 @@
           </div>
         </div>
 
-        <!-- Save to buyer passport CTA -->
-        <div class="hs-buyer-save-cta" @click="saveToBuyerPassport">
+        <!-- Save to Buyer Profile CTA -->
+        <div class="hs-buyer-save-cta" @click="saveToBuyerProfile">
           <div class="hs-buyer-save-ic">📘</div>
           <div class="hs-buyer-save-body">
             <div class="hs-buyer-save-title">
-              Save to your Buyer Passport
+              Save to your Buyer Profile
             </div>
             <div class="hs-buyer-save-sub">
               Track this property, compare with others, share with your
@@ -1734,6 +1773,29 @@
         <div style="height: 40px" />
       </div>
     </template>
+
+    <!-- Auth gate modal — shown when a guest taps "I'm interested in buying"
+         or "Save to Buyer Profile". Returns user to this property after login. -->
+    <div
+      v-if="showAuthGate"
+      class="hs-authgate-overlay"
+      @click.self="showAuthGate = false"
+    >
+      <div class="hs-authgate-card">
+        <div class="hs-authgate-ic">🔒</div>
+        <div class="hs-authgate-title">Log in to continue</div>
+        <div class="hs-authgate-sub">
+          Save this property, see your full Buyer Report and build your Buyer
+          Profile to share with sellers.
+        </div>
+        <button class="hs-authgate-primary" @click="goToSignIn">
+          Log in or Create account
+        </button>
+        <button class="hs-authgate-ghost" @click="showAuthGate = false">
+          Not now
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1784,12 +1846,25 @@ const isOtherPassportPublished = ref(false)
 const publicOwnerScore = ref<any>(null)
 const notifiedOfPublish = ref(false)
 
+// Auth gate (shown when guest taps "I'm interested in buying" or "Save")
+const showAuthGate = ref(false)
+
+// Search-stats card ("People searched this address this month")
+const searchStats = ref<{ thisMonth: number; allTime: number; distinctVisitors: number } | null>(null)
+
 const readOnlyMode = computed(
   () =>
     hasOtherOwnerPassport.value &&
     !isPropertyOwner.value &&
     !isPassportCollaborator.value,
 )
+
+// True when no token in localStorage — used to gate "I'm interested" CTAs and
+// to hide owner-only options (the "This is my home" button) for guest viewers.
+const isGuest = computed(() => {
+  if (typeof localStorage === 'undefined') return true
+  return !localStorage.getItem('token')
+})
 
 // Three mutually exclusive states for the banner on the landing screen:
 // - 'published': owner has published their passport → show navy "View →" banner
@@ -1801,12 +1876,66 @@ const passportState = computed<'published' | 'inProgress' | null>(() => {
 })
 
 function notifyWhenPublished() {
+  // Guests need to sign in before we can notify them — gate it.
+  if (isGuest.value) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/homescore/${propertyId}`,
+      )
+    }
+    showAuthGate.value = true
+    return
+  }
   // Record locally so the button shows "already notified" across reloads.
   if (typeof localStorage !== 'undefined') {
     const key = `hs_notify_publish_${propertyId}`
     localStorage.setItem(key, String(Date.now()))
   }
   notifiedOfPublish.value = true
+}
+
+// Tap handler for the "I'm interested in buying" button — gates guests.
+function onInterestedInBuying() {
+  if (isGuest.value) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/homescore/${propertyId}`,
+      )
+    }
+    showAuthGate.value = true
+    return
+  }
+  screen.value = 'buyer-results'
+}
+
+function goToSignIn() {
+  // redirectAfterLogin is set by callers; the auth middleware respects it.
+  if (typeof localStorage !== 'undefined') {
+    if (!localStorage.getItem('redirectAfterLogin')) {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/homescore/${propertyId}`,
+      )
+    }
+  }
+  router.push('/onboarding/signin')
+}
+
+// Stable per-browser session id used for guest dedup on /property/:id/log-search.
+function getOrCreateSessionId(): string | null {
+  if (typeof localStorage === 'undefined') return null
+  const KEY = 'umu_session_id'
+  let sid = localStorage.getItem(KEY)
+  if (!sid) {
+    sid =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `sess-${Date.now()}-${Math.random().toString(36).slice(2)}`
+    localStorage.setItem(KEY, sid)
+  }
+  return sid
 }
 
 const {
@@ -2469,12 +2598,22 @@ const buyerRisks = computed(() => {
 const { toggleSave } = usePropertyActions()
 const { showToast } = useAppToast()
 
-async function saveToBuyerPassport() {
-  // The "Save to Buyer Passport" CTAs now direct the user to the new
-  // Buyer Passport flow (/my-passport) where they build/share their own
+async function saveToBuyerProfile() {
+  // The "Save to Buyer Profile" CTAs now direct the user to the new
+  // Buyer Profile flow (/buyer-profile) where they build/share their own
   // verified buyer profile. Keeping `toggleSave` available elsewhere for
-  // the wishlist feature — this button is the funnel into the passport build.
-  router.push('/my-passport')
+  // the wishlist feature — this button is the funnel into the profile build.
+  // Auth-gate: if guest, send to sign-in with redirect-back.
+  const tk =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!tk) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('redirectAfterLogin', '/buyer-profile')
+    }
+    showAuthGate.value = true
+    return
+  }
+  router.push('/buyer-profile')
 }
 
 // ── Quick wins / boost score ──────────────────────────────────
@@ -2673,28 +2812,59 @@ async function saveToBackend() {
 // ── Lifecycle ─────────────────────────────────────────────────
 
 onMounted(async () => {
-  // Load property data
+  // Load property data — also returns hasPassport / passportPublished for guests.
   try {
     const res = await fetch(`${config.public.apiBase}/property/${propertyId}`)
     if (res.ok) {
       property.value = await res.json()
       prefill(property.value)
+      // Seed passport state from public endpoint (used for guests).
+      const p: any = property.value
+      if (p?.hasPassport) {
+        hasOtherOwnerPassport.value = true
+        isOtherPassportPublished.value = !!p.passportPublished
+      }
     }
+  } catch {}
+
+  // Fire-and-forget: log this view + fetch search stats so we can render
+  // the "People searched this address this month" card.
+  try {
+    const sid = getOrCreateSessionId()
+    fetch(`${config.public.apiBase}/property/${propertyId}/log-search`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(localStorage.getItem('token')
+          ? { Authorization: `Bearer ${localStorage.getItem('token')}` }
+          : {}),
+      },
+      body: JSON.stringify({ sessionId: sid }),
+    }).catch(() => {})
+    fetch(`${config.public.apiBase}/property/${propertyId}/search-stats`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (j) searchStats.value = j
+      })
+      .catch(() => {})
   } catch {}
 
   // Check ownership and load saved score from backend if owner
   const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
 
-  // Passport status check — also drives read-only mode for non-owners
+  // Passport status check — also drives read-only mode for non-owners.
+  // For guests (no token) we use the public passport state seeded from /property/:id above.
   try {
-    const { getPassportStatus } = usePassportClaim()
-    const status = await getPassportStatus(propertyId)
-    isPropertyOwner.value = status.isOwner ?? false
-    isPassportCollaborator.value = status.isCollaborator ?? false
-    hasOtherOwnerPassport.value =
-      !!status.hasPassport && !status.isOwner && !status.isCollaborator
-    isOtherPassportPublished.value =
-      !!(status.hasPassport && status.isPublished)
+    if (token) {
+      const { getPassportStatus } = usePassportClaim()
+      const status = await getPassportStatus(propertyId)
+      isPropertyOwner.value = status.isOwner ?? false
+      isPassportCollaborator.value = status.isCollaborator ?? false
+      hasOtherOwnerPassport.value =
+        !!status.hasPassport && !status.isOwner && !status.isCollaborator
+      isOtherPassportPublished.value =
+        !!(status.hasPassport && status.isPublished)
+    }
 
     // Restore "already notified" state from localStorage
     if (typeof localStorage !== 'undefined') {
@@ -5677,6 +5847,129 @@ watch(screen, (s) => {
   font-size: 11.5px;
   color: #94a3b8;
   margin-bottom: 8px;
+}
+
+/* "People searched this address this month" card (states B/C) */
+.hs-searched-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.hs-searched-card--published {
+  background: linear-gradient(135deg, #0d9488, #0f766e);
+  color: #fff;
+}
+.hs-searched-card--inprogress {
+  background: linear-gradient(135deg, #1a1640, #231d45);
+  color: #fff;
+}
+.hs-searched-num {
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -2px;
+  flex-shrink: 0;
+}
+.hs-searched-card--published .hs-searched-num {
+  color: #fff;
+}
+.hs-searched-card--inprogress .hs-searched-num {
+  color: #fbbf24;
+}
+.hs-searched-divider {
+  width: 1px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+.hs-searched-body {
+  flex: 1;
+  min-width: 0;
+}
+.hs-searched-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+.hs-searched-sub {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Auth-gate modal */
+.hs-authgate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.hs-authgate-card {
+  width: 100%;
+  max-width: 24rem;
+  background: #fff;
+  border-radius: 18px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+.hs-authgate-ic {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #f0fdfa;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 14px;
+  font-size: 26px;
+}
+.hs-authgate-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1f2024;
+  margin-bottom: 6px;
+}
+.hs-authgate-sub {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+.hs-authgate-primary {
+  width: 100%;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  background: #00a19a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  margin-bottom: 8px;
+}
+.hs-authgate-ghost {
+  width: 100%;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 </style>

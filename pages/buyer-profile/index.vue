@@ -12,7 +12,7 @@
           />
         </svg>
       </button>
-      <div class="mp-header-title">Buyer Passport</div>
+      <div class="mp-header-title">Buyer Profile</div>
       <div class="mp-free-pill">Free</div>
     </div>
 
@@ -27,7 +27,7 @@
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
         </div>
-        <div class="mp-hero-eyebrow">Buyer Passport</div>
+        <div class="mp-hero-eyebrow">Buyer Profile</div>
         <div class="mp-hero-title">Prove you're the<br />buyer they want</div>
         <div class="mp-hero-body">
           One verified document. Share with any agent, seller or solicitor. Skip
@@ -105,7 +105,7 @@
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
         </svg>
-        <span>{{ hasProgress ? 'Continue my Passport' : 'Build my Buyer Passport' }}</span>
+        <span>{{ hasProgress ? 'Continue my Profile' : 'Build my Buyer Profile' }}</span>
       </button>
       <div class="mp-cta-sub">Free · Takes about 5 minutes · Share instantly</div>
 
@@ -117,10 +117,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useBuyerPassport } from '~/composables/useBuyerPassport'
+import { useBuyerProfile } from '~/composables/useBuyerProfile'
 
 const router = useRouter()
-const { getBuyerPassport } = useBuyerPassport()
+const { getBuyerProfile } = useBuyerProfile()
 
 const existing = ref<any>(null)
 const loading = ref(true)
@@ -147,16 +147,16 @@ function goBack() {
 }
 
 function goToBuild() {
-  router.push('/my-passport/build')
+  router.push('/buyer-profile/build')
 }
 
 onMounted(async () => {
   try {
-    const data = await getBuyerPassport()
+    const data = await getBuyerProfile()
     existing.value = data
     // If already published, jump straight to the view
     if (data?.published) {
-      router.replace('/my-passport/view')
+      router.replace('/buyer-profile/view')
       return
     }
   } catch {

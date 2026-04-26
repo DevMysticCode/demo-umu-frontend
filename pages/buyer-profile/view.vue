@@ -2,7 +2,7 @@
   <div class="bpv-page">
     <!-- Sticky header -->
     <div class="bpv-header">
-      <div class="bpv-header-title">Your Buyer Passport</div>
+      <div class="bpv-header-title">Your Buyer Profile</div>
       <button class="bpv-share-btn" @click="shareCopy">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
           <circle cx="18" cy="5" r="3" />
@@ -21,8 +21,8 @@
       <div v-else-if="!passport" class="bpv-empty">
         <div class="bpv-empty-ic">📘</div>
         <div class="bpv-empty-title">No Passport yet</div>
-        <div class="bpv-empty-sub">Build your Buyer Passport to share with sellers and agents.</div>
-        <button class="bpv-empty-cta" @click="router.push('/my-passport')">
+        <div class="bpv-empty-sub">Build your Buyer Profile to share with sellers and agents.</div>
+        <button class="bpv-empty-cta" @click="router.push('/buyer-profile')">
           Build my Passport
         </button>
       </div>
@@ -35,7 +35,7 @@
 
           <!-- Top row: uMU mark + verified chip -->
           <div class="bpv-card-top">
-            <div class="bpv-card-eyebrow">uMovingU · Buyer Passport</div>
+            <div class="bpv-card-eyebrow">uMovingU · Buyer Profile</div>
             <div class="bpv-verified-chip">✓ Verified</div>
           </div>
 
@@ -92,12 +92,12 @@
               </svg>
             </div>
             <div class="bpv-share-body">
-              <div class="bpv-share-title">Copy secure link</div>
-              <div class="bpv-share-sub">Share with any agent or seller — view only</div>
+              <div class="bpv-share-title">Share secure link</div>
+              <div class="bpv-share-sub">Open the share sheet or copy the link</div>
             </div>
             <div class="bpv-share-chev">›</div>
           </div>
-          <div class="bpv-share-row" @click="downloadPdfStub">
+          <div class="bpv-share-row" @click="downloadPdf">
             <div class="bpv-share-ic bpv-share-ic-amber">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -112,7 +112,7 @@
             </div>
             <div class="bpv-share-chev">›</div>
           </div>
-          <div class="bpv-share-row" @click="emailStub">
+          <div class="bpv-share-row" @click="emailToAgent">
             <div class="bpv-share-ic bpv-share-ic-purple">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -152,7 +152,7 @@
           </svg>
           Back to searching
         </button>
-        <button class="bpv-edit" @click="router.push('/my-passport/build')">
+        <button class="bpv-edit" @click="router.push('/buyer-profile/build')">
           Edit my Passport
         </button>
       </template>
@@ -163,12 +163,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useBuyerPassport, type BuyerPassport } from '~/composables/useBuyerPassport'
+import { useBuyerProfile, type BuyerProfile } from '~/composables/useBuyerProfile'
 import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 
 const router = useRouter()
-const { getBuyerPassport } = useBuyerPassport()
+const { getBuyerProfile } = useBuyerProfile()
 const { fetchProfile, profile } = useProfile()
 const { showToast } = useAppToast()
 
@@ -239,29 +239,253 @@ const timelineDisplay = computed(() => {
   }
 })
 
+// ── Share secure link ────────────────────────────────────────────────────
+const shareLink = computed(() =>
+  passport.value
+    ? `${window.location.origin}/shared-buyer/${passport.value.id}`
+    : '',
+)
+
 async function shareCopy() {
   if (!passport.value) return
-  const link = `${window.location.origin}/shared-buyer/${passport.value.id}`
+  const link = shareLink.value
+  const shareData = {
+    title: `${displayName.value} — Buyer Profile`,
+    text: `Verified buyer profile via uMovingU. ${financeDisplay.value} · ${chainDisplay.value} · ${budgetDisplay.value}`,
+    url: link,
+  }
+  // Prefer native share sheet on mobile; fall back to clipboard on desktop
+  try {
+    if (typeof navigator !== 'undefined' && (navigator as any).share) {
+      await (navigator as any).share(shareData)
+      return
+    }
+  } catch (err: any) {
+    // User cancelled the share sheet — silently no-op
+    if (err?.name === 'AbortError') return
+  }
   try {
     await navigator.clipboard.writeText(link)
-    showToast({ message: 'Copied secure link', iconEmoji: '🔗' })
+    showToast({ message: 'Secure link copied to clipboard', iconEmoji: '🔗' })
   } catch {
-    showToast({ message: link, iconEmoji: '🔗' })
+    // Last-resort: a temporary input + execCommand for legacy browsers
+    const ta = document.createElement('textarea')
+    ta.value = link
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    try {
+      document.execCommand('copy')
+      showToast({ message: 'Secure link copied', iconEmoji: '🔗' })
+    } catch {
+      showToast({ message: link, iconEmoji: '🔗' })
+    }
+    document.body.removeChild(ta)
   }
 }
 
-function downloadPdfStub() {
-  showToast({ message: 'PDF generation coming soon', iconEmoji: '📄' })
+// ── Generate a print-ready PDF document in a new window ─────────────────
+function buildPdfHtml(): string {
+  const esc = (v: any) =>
+    v == null
+      ? ''
+      : String(v)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+
+  const pp = passport.value!
+  const name = esc(displayName.value)
+  const link = shareLink.value
+  const issued = new Date().toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+  const memberSince = memberYear.value
+
+  // Verification badges
+  const badges: string[] = []
+  if (pp.idDocumentType) badges.push('🪪 ID verified')
+  if (pp.fundsType) badges.push('🏦 Funds verified')
+  if (pp.solicitorStatus === 'yes') badges.push('⚖️ Solicitor instructed')
+  badges.push('✓ uMU verified profile')
+
+  const statementBlock = pp.statement
+    ? `<div class="card">
+         <div class="card-label">Buyer statement</div>
+         <p class="statement">${esc(pp.statement)}</p>
+       </div>`
+    : ''
+
+  const optionalRows: string[] = []
+  if (pp.solicitorStatus) {
+    const map: Record<string, string> = {
+      yes: 'Solicitor instructed',
+      looking: 'Currently looking',
+      notsure: 'Not yet',
+    }
+    optionalRows.push(
+      `<tr><td>Solicitor</td><td>${esc(map[pp.solicitorStatus] ?? pp.solicitorStatus)}</td></tr>`,
+    )
+  }
+  if (pp.idDocumentType) {
+    const map: Record<string, string> = {
+      passport: 'Passport',
+      drivingLicence: 'UK driving licence',
+      nationalId: 'EU/EEA national ID card',
+    }
+    optionalRows.push(
+      `<tr><td>ID type</td><td>${esc(map[pp.idDocumentType] ?? pp.idDocumentType)}</td></tr>`,
+    )
+  }
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>${name} — Buyer Profile · uMovingU</title>
+<style>
+  *,*::before,*::after { box-sizing: border-box; }
+  @page { size: A4; margin: 18mm 15mm; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif; color: #1a1a2e; margin: 0; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .wrap { max-width: 800px; margin: 0 auto; padding: 28px 32px 40px; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid #e8e8f0; margin-bottom: 28px; }
+  .brand { font-size: 13px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #00a19a; }
+  .issued { font-size: 11px; color: #6b7280; }
+  .hero { background: linear-gradient(135deg, #231d45 0%, #1e1b4b 60%, #312e81 100%); color: #fff; border-radius: 18px; padding: 28px 28px 24px; position: relative; overflow: hidden; margin-bottom: 28px; }
+  .hero-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+  .hero-title { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+  .hero-name { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
+  .hero-sub { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .hero-verified { background: rgba(94,234,212,0.15); border: 1px solid rgba(94,234,212,0.3); border-radius: 999px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: #5eead4; white-space: nowrap; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tile { background: rgba(255,255,255,0.07); border-radius: 12px; padding: 14px 16px; }
+  .tile-l { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .tile-v { font-size: 17px; font-weight: 800; color: #fff; }
+  .tile-v.mint { color: #5eead4; }
+  .badges { margin-top: 18px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge { background: rgba(94,234,212,0.12); border: 1px solid rgba(94,234,212,0.25); border-radius: 999px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: #5eead4; }
+  .card { background: #f8f7fc; border: 1px solid #e8e8f0; border-radius: 14px; padding: 18px 20px; margin-bottom: 18px; }
+  .card-label { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+  table.facts { width: 100%; border-collapse: collapse; }
+  table.facts td { padding: 10px 0; font-size: 13px; vertical-align: top; }
+  table.facts td:first-child { color: #6b7280; width: 38%; }
+  table.facts td:last-child { color: #1a1a2e; font-weight: 600; }
+  table.facts tr:not(:last-child) td { border-bottom: 1px solid #ebebf2; }
+  .statement { font-size: 13px; line-height: 1.65; color: #1a1a2e; margin: 0; white-space: pre-wrap; font-style: italic; }
+  .footer { margin-top: 32px; padding-top: 18px; border-top: 1px solid #e8e8f0; font-size: 10.5px; color: #6b7280; line-height: 1.55; }
+  .footer .link { color: #00a19a; word-break: break-all; }
+  .actions { position: fixed; top: 14px; right: 14px; display: flex; gap: 8px; z-index: 100; }
+  .actions button { font: inherit; cursor: pointer; padding: 9px 14px; border-radius: 10px; border: 1px solid #e8e8f0; background: #fff; color: #1a1a2e; font-size: 13px; font-weight: 700; box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+  .actions button.primary { background: #00a19a; color: #fff; border-color: #00a19a; }
+  @media print { .actions { display: none; } body { background: #fff; } }
+</style>
+</head>
+<body>
+  <div class="actions">
+    <button onclick="window.print()" class="primary">Save as PDF</button>
+    <button onclick="window.close()">Close</button>
+  </div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">uMovingU · Buyer Profile</div>
+      <div class="issued">Issued ${issued}</div>
+    </div>
+    <div class="hero">
+      <div class="hero-eyebrow">Verified Buyer</div>
+      <div class="hero-title">
+        <div>
+          <div class="hero-name">${name}</div>
+          <div class="hero-sub">uMU member since ${memberSince}</div>
+        </div>
+        <div class="hero-verified">✓ Verified</div>
+      </div>
+      <div class="grid">
+        <div class="tile">
+          <div class="tile-l">Budget</div>
+          <div class="tile-v">${esc(budgetDisplay.value)}</div>
+        </div>
+        <div class="tile">
+          <div class="tile-l">Finance</div>
+          <div class="tile-v mint">${esc(financeDisplay.value)}</div>
+        </div>
+        <div class="tile">
+          <div class="tile-l">Chain</div>
+          <div class="tile-v mint">${esc(chainDisplay.value)}</div>
+        </div>
+        <div class="tile">
+          <div class="tile-l">Timeline</div>
+          <div class="tile-v">${esc(timelineDisplay.value)}</div>
+        </div>
+      </div>
+      <div class="badges">${badges.map((b) => `<span class="badge">${esc(b)}</span>`).join('')}</div>
+    </div>
+
+    ${
+      optionalRows.length
+        ? `<div class="card">
+             <div class="card-label">Verification details</div>
+             <table class="facts"><tbody>${optionalRows.join('')}</tbody></table>
+           </div>`
+        : ''
+    }
+    ${statementBlock}
+
+    <div class="footer">
+      <strong>About this Profile.</strong> This Buyer Profile was generated by uMovingU on ${issued}.
+      It confirms the holder has provided verified identity documents, proof of funds and
+      chain position via the uMovingU platform. To verify authenticity in real time visit:
+      <span class="link">${esc(link)}</span>.<br /><br />
+      © uMovingU · Verified buyer information for the UK property market.
+    </div>
+  </div>
+  <script>setTimeout(function(){ try { window.print(); } catch(e){} }, 350);<\/script>
+</body>
+</html>`
 }
 
-function emailStub() {
-  showToast({ message: 'Email integration coming soon', iconEmoji: '✉️' })
+function downloadPdf() {
+  if (!passport.value) return
+  const html = buildPdfHtml()
+  const w = window.open('', '_blank', 'width=900,height=1100')
+  if (!w) {
+    showToast({
+      message: 'Pop-ups blocked — allow pop-ups and try again',
+      iconEmoji: '⚠️',
+    })
+    return
+  }
+  w.document.open()
+  w.document.write(html)
+  w.document.close()
+  showToast({ message: 'Opening printable Profile…', iconEmoji: '📄' })
+}
+
+function emailToAgent() {
+  if (!passport.value) return
+  const subject = encodeURIComponent(
+    `${displayName.value} — verified Buyer Profile`,
+  )
+  const body = encodeURIComponent(
+    `Hi,\n\nPlease find my verified Buyer Profile from uMovingU below.\n\n` +
+      `Name: ${displayName.value}\n` +
+      `Budget: ${budgetDisplay.value}\n` +
+      `Finance: ${financeDisplay.value}\n` +
+      `Chain: ${chainDisplay.value}\n` +
+      `Timeline: ${timelineDisplay.value}\n\n` +
+      `Verify in real time: ${shareLink.value}\n\n` +
+      `Best,\n${displayName.value}`,
+  )
+  window.location.href = `mailto:?subject=${subject}&body=${body}`
 }
 
 onMounted(async () => {
   try {
     await Promise.all([
-      getBuyerPassport().then((pp) => {
+      getBuyerProfile().then((pp) => {
         passport.value = pp
       }),
       fetchProfile().catch(() => null),
@@ -269,7 +493,7 @@ onMounted(async () => {
     profileData.value = profile.value
     if (!passport.value) {
       // Nothing built yet — send them to the intro
-      router.replace('/my-passport')
+      router.replace('/buyer-profile')
       return
     }
   } finally {

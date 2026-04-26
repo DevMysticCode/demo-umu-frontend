@@ -234,12 +234,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useBuyerPassport } from '~/composables/useBuyerPassport'
+import { useBuyerProfile } from '~/composables/useBuyerProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 
 const router = useRouter()
-const { getBuyerPassport, updateBuyerPassport, publishBuyerPassport } =
-  useBuyerPassport()
+const { getBuyerProfile, updateBuyerProfile, publishBuyerProfile } =
+  useBuyerProfile()
 const { showToast } = useAppToast()
 
 const step = ref<1 | 2 | 3 | 4 | 5>(1)
@@ -316,10 +316,10 @@ function goBack() {
     step.value = (step.value - 1) as any
     return
   }
-  router.push('/my-passport')
+  router.push('/buyer-profile')
 }
 
-async function saveCurrentStep() {
+async function saveCurrentStep(): Promise<boolean> {
   saving.value = true
   try {
     const patch: any = { completedSteps: Math.max(step.value, 1) }
@@ -334,9 +334,12 @@ async function saveCurrentStep() {
       patch.timeline = timeline.value
     }
     if (step.value === 5) patch.statement = statement.value
-    await updateBuyerPassport(patch)
-  } catch {
-    showToast({ message: 'Could not save — check your connection', iconEmoji: '⚠️' })
+    await updateBuyerProfile(patch)
+    return true
+  } catch (err: any) {
+    const msg = err?.data?.message || err?.message || 'Could not save — check your connection'
+    showToast({ message: msg, iconEmoji: '⚠️' })
+    return false
   } finally {
     saving.value = false
   }
@@ -344,7 +347,8 @@ async function saveCurrentStep() {
 
 async function goNext() {
   if (!canContinue.value) return
-  await saveCurrentStep()
+  const ok = await saveCurrentStep()
+  if (!ok) return // stay on this step so the user can retry
   if (step.value < 5) {
     step.value = (step.value + 1) as any
   }
@@ -353,16 +357,23 @@ async function goNext() {
 async function submit() {
   publishing.value = true
   try {
-    // Save the statement (step 5) first
-    await updateBuyerPassport({
+    // Single self-healing call — the publish endpoint upserts everything we
+    // send, then publishes. So even if earlier per-step PATCHes failed
+    // silently, this one request makes the wizard correct.
+    await publishBuyerProfile({
+      idDocumentType: idDocumentType.value,
+      fundsType: fundsType.value,
+      fundsAmount: fundsAmount.value,
+      chainPosition: chainPosition.value,
+      solicitorStatus: solicitorStatus.value,
+      timeline: timeline.value,
       statement: statement.value,
       completedSteps: 5,
     })
-    await publishBuyerPassport()
-    showToast({ message: 'Passport published', iconEmoji: '✅' })
-    router.replace('/my-passport/view')
+    showToast({ message: 'Profile published', iconEmoji: '✅' })
+    router.replace('/buyer-profile/view')
   } catch (err: any) {
-    const msg = err?.data?.message || err?.message || 'Could not publish passport'
+    const msg = err?.data?.message || err?.message || 'Could not publish profile'
     showToast({ message: msg, iconEmoji: '⚠️' })
   } finally {
     publishing.value = false
@@ -371,7 +382,7 @@ async function submit() {
 
 onMounted(async () => {
   try {
-    const data = await getBuyerPassport()
+    const data = await getBuyerProfile()
     if (data) {
       idDocumentType.value = data.idDocumentType ?? null
       fundsType.value = data.fundsType ?? null
