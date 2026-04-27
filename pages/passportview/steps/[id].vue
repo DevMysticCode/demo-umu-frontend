@@ -12,7 +12,9 @@
     <div class="step-content">
       <!-- Hero — matches prototype (teal-pale gradient + ring meta) but uses our icon -->
       <section class="hero">
-        <span class="hero-badge"><span class="dot"></span> Low risk · Verified</span>
+        <span class="hero-badge"
+          ><span class="dot"></span> Low risk · Verified</span
+        >
         <div class="hero-illustration" aria-hidden="true">
           <OPIcon
             v-if="currentStep?.icon"
@@ -122,18 +124,41 @@
               <p class="task-description">{{ task.description }}</p>
               <div class="task-meta">
                 <span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    width="11"
+                    height="11"
+                  >
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
                   ~{{ getTaskMinutes(task) }} min
                 </span>
                 <span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    width="11"
+                    height="11"
+                  >
+                    <path
+                      d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                    />
                     <polyline points="14 2 14 8 20 8" />
                   </svg>
-                  {{ task.totalQuestions ?? 0 }} {{ (task.totalQuestions ?? 0) === 1 ? 'question' : 'questions' }}
+                  {{ task.totalQuestions ?? 0 }}
+                  {{
+                    (task.totalQuestions ?? 0) === 1 ? 'question' : 'questions'
+                  }}
                 </span>
               </div>
               <div v-if="task.completed" class="task-completed-info">
@@ -298,7 +323,9 @@ const goToNextTask = () => {
 }
 
 const handleViewProfile = () => {
-  router.push(`/passportview/expert?propertyId=${route.query.propertyId}&stepId=${route.params.id}`)
+  router.push(
+    `/passportview/expert?propertyId=${route.query.propertyId}&stepId=${route.params.id}`,
+  )
 }
 
 const goBack = () => {
@@ -356,7 +383,7 @@ const goBack = () => {
 .hero {
   margin: 8px 0 16px;
   border-radius: 24px;
-  background: linear-gradient(160deg, #e6fbf6 0%, #ccfbf1 60%, #b8f2e6 100%);
+  background: linear-gradient(160deg, #ffffff 0%, #ccfbf1 60%, #d1e8e3 100%);
   padding: 22px 22px 24px;
   position: relative;
   overflow: hidden;
@@ -566,7 +593,9 @@ const goBack = () => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
   color: #0f766e;
 }
 
