@@ -66,11 +66,52 @@
           class="addr-item"
           @mousedown.prevent="selectAddress(addr)"
         >
-          <div class="addr-line1">
-            {{ addr.addressLine1 || addr.line1 || addr.address }}
+          <div class="addr-top">
+            <div class="addr-ic">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+            </div>
+            <div class="addr-body">
+              <div class="addr-line1">
+                {{ addr.addressLine1 || addr.line1 || addr.address }}
+              </div>
+              <div class="addr-line2">
+                <span v-if="addr.city">{{ addr.city }} · </span>{{ addr.postcode || addr.addressLine2 || addr.line2 || '' }}
+              </div>
+            </div>
+            <div
+              v-if="(addr.homeScore ?? addr.epcScore) != null"
+              class="addr-hs"
+              :style="{ color: hsDropColor(addr.homeScore ?? addr.epcScore) }"
+            >
+              HS™ {{ addr.homeScore ?? addr.epcScore }}
+            </div>
           </div>
-          <div class="addr-line2">
-            {{ addr.addressLine2 || addr.line2 || addr.postcode || '' }}
+          <div
+            v-if="addr.epcRating || addr.hasPassport"
+            class="addr-badges"
+          >
+            <span
+              v-if="addr.epcRating"
+              class="addr-badge"
+              :style="{ background: epcDropColor(addr.epcRating) }"
+            >
+              ⚡ EPC {{ addr.epcRating }}
+            </span>
+            <span
+              v-if="addr.hasPassport && addr.passportPublished"
+              class="addr-badge addr-badge--pub"
+            >
+              📘 Published
+            </span>
+            <span
+              v-else-if="addr.hasPassport"
+              class="addr-badge addr-badge--prog"
+            >
+              📘 In progress
+            </span>
           </div>
         </div>
       </div>
@@ -1769,6 +1810,19 @@ function epcColor(rating: string): string {
   return map[(rating ?? '').toUpperCase()] ?? '#8e8e93'
 }
 
+function epcDropColor(rating: string): string {
+  return epcColor(rating)
+}
+
+function hsDropColor(score: number | null | undefined): string {
+  if (score == null) return '#8e8e93'
+  if (score >= 75) return '#0d9488'
+  if (score >= 60) return '#65a30d'
+  if (score >= 45) return '#ca8a04'
+  if (score >= 30) return '#d97706'
+  return '#dc2626'
+}
+
 function buildSearchUrl(offset: number): string {
   const params = new URLSearchParams({
     q: searchQuery.value.trim(),
@@ -2825,30 +2879,92 @@ onMounted(async () => {
 }
 
 .addr-item {
-  padding: 12px 14px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 11px 14px;
+  border-bottom: 1px solid #f1f5f9;
   cursor: pointer;
-  transition: background 0.1s;
+  transition: background 0.12s;
 }
 
 .addr-item:last-child {
   border-bottom: none;
 }
 
-.addr-item:hover {
-  background: #f8f7fc;
+.addr-item:hover,
+.addr-item:active {
+  background: #f0fdfa;
+}
+
+.addr-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.addr-ic {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: #f0fdfa;
+  color: #00a19a;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.addr-body {
+  flex: 1;
+  min-width: 0;
 }
 
 .addr-line1 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1f2024;
+  font-size: 13px;
+  font-weight: 700;
+  color: #231d45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .addr-line2 {
-  font-size: 12px;
+  font-size: 11px;
   color: #94a3b8;
   margin-top: 1px;
+}
+
+.addr-hs {
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.addr-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 5px;
+  padding-left: 42px;
+}
+
+.addr-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  line-height: 1.4;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+.addr-badge--pub {
+  background: #231d45;
+  color: #fff;
+}
+
+.addr-badge--prog {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .selected-addr-pill {

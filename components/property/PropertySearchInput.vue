@@ -60,8 +60,11 @@
             </div>
           </div>
 
-          <!-- Bottom badge strip: EPC + Passport state + HS™ pill -->
-          <div class="psi-drop-badges">
+          <!-- Bottom badge strip: EPC + Passport state -->
+          <div
+            v-if="r.epcRating || r.hasPassport"
+            class="psi-drop-badges"
+          >
             <span
               v-if="r.epcRating"
               class="psi-drop-badge"
@@ -80,12 +83,6 @@
               class="psi-drop-badge psi-drop-badge--prog"
             >
               📘 In progress
-            </span>
-            <span
-              v-if="(r.homeScore ?? r.epcScore) != null"
-              class="psi-drop-badge psi-drop-badge--hs"
-            >
-              HS™ {{ r.homeScore ?? r.epcScore }}
             </span>
           </div>
         </div>
