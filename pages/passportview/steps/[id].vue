@@ -10,26 +10,32 @@
     <AppHeader :showBack="true" :backTo="backToPassportUrl" right="dots" />
 
     <div class="step-content">
-      <HeroSection
-        :iconName="currentStep?.icon"
-        iconClass="w-[176px] h-[176px]"
-        heroClass="w-[176px] h-[176x]"
-        :mainTitle="currentStep?.title"
-        :subTitle="currentStep?.subtitle"
-      />
-
-      <div class="progress-section">
-        <div class="progress-bar">
-          <div
-            class="progress-fill"
-            :style="{ width: stepProgress + '%' }"
-          ></div>
+      <!-- Hero — matches prototype (teal-pale gradient + ring meta) but uses our icon -->
+      <section class="hero">
+        <span class="hero-badge"><span class="dot"></span> Low risk · Verified</span>
+        <div class="hero-illustration" aria-hidden="true">
+          <OPIcon
+            v-if="currentStep?.icon"
+            :name="currentStep.icon"
+            class="w-[120px] h-[120px]"
+          />
         </div>
-        <div class="progress-info">
-          <span class="progress-label">OVERALL PROGRESS</span>
-          <span class="progress-value">{{ stepProgress }}%</span>
+        <h1 class="hero-title">{{ currentStep?.title || '' }}</h1>
+        <p class="hero-sub">{{ currentStep?.subtitle || '' }}</p>
+        <div class="hero-meta">
+          <div class="ring" :style="{ '--p': stepProgress }">
+            <span>{{ stepProgress }}%</span>
+          </div>
+          <div class="meta-text">
+            <small>Overall Progress</small>
+            <strong>
+              {{ completedTaskCount }} of {{ totalTaskCount }}
+              {{ totalTaskCount === 1 ? 'task' : 'tasks' }}
+              <em>· {{ totalStepPoints }}pts earned</em>
+            </strong>
+          </div>
         </div>
-      </div>
+      </section>
 
       <div class="action-buttons">
         <button class="help-btn" @click="showHelp = true">
@@ -114,6 +120,22 @@
               </div>
               <h3 class="task-title">{{ task.title }}</h3>
               <p class="task-description">{{ task.description }}</p>
+              <div class="task-meta">
+                <span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  ~{{ getTaskMinutes(task) }} min
+                </span>
+                <span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  {{ task.totalQuestions ?? 0 }} {{ (task.totalQuestions ?? 0) === 1 ? 'question' : 'questions' }}
+                </span>
+              </div>
               <div v-if="task.completed" class="task-completed-info">
                 Completed • {{ getCompletedDate() }}
               </div>
@@ -169,6 +191,12 @@ watchEffect(() => {
     setCurrentStep(route.params.id)
   }
 })
+
+const completedTaskCount = computed(() => {
+  if (!currentStep.value) return 0
+  return currentStep.value.tasks.filter((t) => t.completed).length
+})
+const totalTaskCount = computed(() => currentStep.value?.tasks?.length ?? 0)
 
 const stepProgress = computed(() => {
   if (!currentStep.value) return 0
@@ -243,6 +271,13 @@ const getTaskProgress = (task) => {
   return 0
 }
 
+// Approx minutes to complete — ~1 min per question, minimum 2.
+const getTaskMinutes = (task) => {
+  const q = Number(task?.totalQuestions ?? 0)
+  if (!q) return 2
+  return Math.max(2, Math.round(q * 1))
+}
+
 const getCompletedDate = () => {
   return '10 February 2025'
 }
@@ -314,7 +349,137 @@ const goBack = () => {
 }
 
 .step-content {
-  padding: 0 20px;
+  padding: 0 16px 20px;
+}
+
+/* ── Hero (matches prototype disputes.html) ───────────── */
+.hero {
+  margin: 8px 0 16px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, #e6fbf6 0%, #ccfbf1 60%, #b8f2e6 100%);
+  padding: 22px 22px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: -40% -20% auto auto;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.7),
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(15, 118, 110, 0.15);
+  color: #0f766e;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 999px;
+  position: relative;
+  z-index: 1;
+}
+.hero-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+.hero-illustration {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 8px;
+  position: relative;
+  z-index: 1;
+}
+.hero-title {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #0a0f2c;
+  margin: 4px 0 4px;
+  position: relative;
+  z-index: 1;
+}
+.hero-sub {
+  color: #115e59;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 16px;
+  position: relative;
+  z-index: 1;
+}
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+.ring {
+  --p: 0;
+  --size: 56px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: conic-gradient(
+    #0d9488 calc(var(--p) * 1%),
+    rgba(15, 118, 110, 0.15) 0
+  );
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.ring::after {
+  content: '';
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  border-radius: 50%;
+  grid-area: 1 / 1;
+}
+.ring span {
+  grid-area: 1 / 1;
+  z-index: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0a0f2c;
+  line-height: 1;
+}
+.meta-text small {
+  display: block;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #115e59;
+  margin-bottom: 4px;
+}
+.meta-text strong {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #0a0f2c;
+}
+.meta-text strong em {
+  font-style: normal;
+  color: #64748b;
+  font-weight: 500;
 }
 
 .step-illustration {
@@ -383,39 +548,38 @@ const goBack = () => {
 
 .action-buttons {
   display: flex;
-  gap: 4px;
+  gap: 10px;
   margin-bottom: 24px;
-  justify-content: end;
 }
 
 .help-btn,
 .video-btn {
   flex: 1;
-  padding: 8px;
-  border: 2px solid #e0e0e0;
+  padding: 13px 14px;
+  border: 1px solid #e5e7eb;
   background: white;
-  border-radius: 50px;
+  border-radius: 999px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.2s;
-  color: #00b8a9;
-  max-width: fit-content;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  color: #0f766e;
+}
+
+.help-btn:active,
+.video-btn:active {
+  transform: scale(0.98);
 }
 
 .video-btn {
-  background: #00b8a9;
+  background: #0d9488;
   color: white;
-  border-color: #00b8a9;
-}
-
-.help-btn {
-  padding-left: 20px;
-  padding-right: 20px;
+  border-color: #0d9488;
+  box-shadow: 0 8px 20px -8px rgba(13, 148, 136, 0.6);
 }
 
 .play-icon {
@@ -567,7 +731,27 @@ const goBack = () => {
   margin: 0 0 6px;
 }
 
+.task-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+}
+.task-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.task-meta svg {
+  width: 11px;
+  height: 11px;
+}
+
 .task-completed-info {
+  margin-top: 8px;
   font-size: 12px;
   color: #00b8a9;
   font-weight: 600;

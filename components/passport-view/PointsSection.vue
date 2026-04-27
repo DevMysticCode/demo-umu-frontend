@@ -1,31 +1,27 @@
 <template>
-  <div class="points-section">
-    <div class="points-header">
-      <div class="points-content">
-        <div class="points-value">
-          <div class="points-icon">
-            <OPIcon name="pointsLock" class="w-[24px] h-[24px]" />
-          </div>
-          {{ points }}pts
-        </div>
-        <div class="points-label">{{ label }}</div>
-        <p v-if="description" class="points-description">{{ description }}</p>
-        <button v-if="showRewardsLink" class="rewards-link">
-          See rewards you can claim →
-        </button>
-      </div>
-      <div class="reward-icon">
-        <OPIcon name="rewardBox" class="w-[80px] h-[80px]" />
-      </div>
+  <div class="reward">
+    <div class="reward-top">
+      <span class="reward-lock">
+        <OPIcon name="pointsLock" class="w-[14px] h-[14px]" />
+      </span>
+      <div class="reward-pts">{{ points }} pts <em>locked</em></div>
     </div>
-
-    <div class="next-step-container">
+    <h3 class="reward-h3">Next: {{ label }}</h3>
+    <p class="reward-p">
+      {{ description || `A total of ${points} points are available in this section.` }}
+      Complete tasks to unlock rewards and move to the next section.
+    </p>
+    <div class="reward-actions">
+      <a v-if="showRewardsLink" href="#" class="reward-link" @click.prevent>
+        See rewards you can claim
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
       <button
         v-if="showNextTask"
-        class="next-task-btn"
+        class="reward-cta"
         @click="$emit('nextTask')"
       >
-        Go To Next Task
+        Go to Next Task
       </button>
     </div>
   </div>
@@ -61,109 +57,107 @@ defineEmits(['nextTask'])
 </script>
 
 <style scoped>
-.points-section {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
+.reward {
   margin-bottom: 24px;
-  border: 2px solid #e6f9f7;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #0a0f2c, #131a3a);
+  color: #fff;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
 }
-
-.points-header {
+.reward::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.35), transparent 60%);
+  pointer-events: none;
+}
+.reward-top {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
 }
-
-.points-icon {
-  display: inline;
-  font-size: 20px;
+.reward-lock {
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: #99f6e4;
   flex-shrink: 0;
 }
-
-.points-content {
-  flex: 1;
-}
-
-.points-value {
-  display: flex;
-  align-items: center;
+.reward-pts {
   font-size: 22px;
-  font-weight: 700;
-  color: #1a1a1a;
-  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
-
-.points-label {
-  font-size: 15px;
-  color: #00a19a;
-  margin-top: 8px;
-  line-height: 20px;
-  letter-spacing: -0.23px;
+.reward-pts em {
+  font-style: normal;
+  color: #99f6e4;
+  font-weight: 600;
+  font-size: 14px;
+  margin-left: 4px;
 }
-
-.reward-icon {
-  font-size: 36px;
-  flex-shrink: 0;
-  animation: bounce 2s infinite;
+.reward-h3 {
+  margin: 8px 0 2px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #99f6e4;
+  position: relative;
+  z-index: 1;
 }
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
+.reward-p {
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+  position: relative;
+  z-index: 1;
 }
-
-.points-description {
-  font-size: 11px;
-  line-height: 13px;
-  color: #666;
-  margin: 4px 0 0 0;
-  letter-spacing: -0.06px;
+.reward-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
-
-.rewards-link {
-  background: none;
-  border: none;
-  color: #00a19a;
-  font-size: 13px;
-  font-weight: 590;
-  cursor: pointer;
-  padding: 0;
-  margin-top: 4px;
+.reward-link {
+  color: #99f6e4;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  line-height: 13px;
-  letter-spacing: -0.06px;
-}
-
-.next-step-container {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.next-task-btn {
-  width: 127px;
-  padding: 8px 12px;
-  background: #ffffff;
-  color: #00a19a;
-  border: 0.33px solid #3c3c432e;
-  border-radius: 50px;
-  font-size: 13px;
-  font-weight: 400;
   cursor: pointer;
-  margin-top: 16px;
-  transition: all 0.2s;
-  margin-left: auto;
 }
-
-.next-task-btn:active {
-  transform: scale(0.98);
+.reward-cta {
+  margin-left: auto;
+  background: #14b8a6;
+  color: #0a0f2c;
+  border: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.12s ease;
+}
+.reward-cta:active {
+  transform: scale(0.97);
 }
 </style>
 

@@ -1,31 +1,59 @@
 <template>
-  <div class="review-section">
-    <div class="review-status">
-      <span class="status-badge"
-        ><OPIcon name="infoCircle" class="w-[11px] h-[11px]" /> Under
-        Review</span
+  <div class="expert">
+    <span class="ribbon"><span class="pulse"></span> Under Review</span>
+    <div class="expert-row">
+      <div class="expert-content">
+        <h3 class="expert-h3">{{ title }}</h3>
+        <p class="qcount">{{ description }}</p>
+        <span class="meta">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="12"
+            height="12"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          Minimum time: {{ minimumTime }}
+        </span>
+      </div>
+      <div class="expert-avatar" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="30"
+          height="30"
+        >
+          <path
+            d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM9 5h6v2H9V5z"
+          />
+        </svg>
+      </div>
+    </div>
+    <button class="expert-cta" @click="$emit('viewProfile')">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="14"
+        height="14"
       >
-    </div>
-
-    <div class="review-header">
-      <div class="review-content">
-        <h3 class="review-title">{{ title }}</h3>
-        <p class="review-description">{{ description }}</p>
-        <p class="review-time">Minimum Time: {{ minimumTime }}</p>
-      </div>
-      <div class="review-icon">
-        <OPIcon name="underReview" class="w-[80px] h-[80px]" />
-      </div>
-    </div>
-
-    <div class="review-footer">
-      <button class="view-profile-btn" @click="$emit('viewProfile')">
-        <span class="btn-icon"
-          ><OPIcon name="expertIcon" class="w-[20px] h-[20px]"
-        /></span>
-        View Expert Profile
-      </button>
-    </div>
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+      View Expert Profile
+    </button>
   </div>
 </template>
 
@@ -51,119 +79,105 @@ defineEmits(['viewProfile'])
 </script>
 
 <style scoped>
-.review-section {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
+.expert {
   margin-bottom: 24px;
-  border: 2px solid #e6f9f7;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
 }
-
-.review-status {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.status-badge {
+.ribbon {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #e6f9f7;
-  color: #00a19a;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-weight: 400;
+  background: #f0fdfa;
+  color: #0f766e;
+  padding: 5px 10px;
+  border-radius: 999px;
   font-size: 11px;
-  line-height: 13px;
-  letter-spacing: 0.06px;
+  font-weight: 600;
+  margin-bottom: 12px;
 }
-
-.review-header {
+.pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #14b8a6;
+  box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.6);
+  animation: pulse 1.6s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(20, 184, 166, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+}
+.expert-row {
   display: flex;
+  gap: 14px;
   align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 4px;
 }
-
-.review-content {
+.expert-content {
   flex: 1;
+  min-width: 0;
 }
-
-.review-title {
-  color: #1a1a1a;
-  margin: 0;
-  line-height: 1.3;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 18px;
-  letter-spacing: -0.08px;
+.expert-h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0a0f2c;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
-
-.review-description {
-  color: #000000;
-  margin: 8px 0 0 0;
-  font-weight: 400;
-  color: #00a19a;
-  font-size: 11px;
-  line-height: 13px;
-  letter-spacing: 0.06px;
+.qcount {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #0f766e;
+  margin: 0 0 8px;
 }
-
-.review-time {
-  color: #666;
-  margin: 8px 0 0 0;
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 13px;
-  letter-spacing: 0.06px;
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 6px 10px;
+  border-radius: 999px;
 }
-
-.review-icon {
+.expert-avatar {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(145deg, #ccfbf1, #99f6e4);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
-  animation: bounce 2s infinite;
+  color: #0f766e;
 }
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.review-footer {
-  display: flex;
-  justify-content: center;
-}
-
-.view-profile-btn {
-  /* width: 127px; */
+.expert-cta {
+  margin-top: 14px;
   display: flex;
   align-items: center;
-  justify-self: center;
-  gap: 4px;
-  padding: 8px 12px;
-  background: #00a19a;
-  color: #ffffff;
-  border: 0.33px solid #3c3c432e;
-  border-radius: 50px;
+  width: 100%;
+  background: #0d9488;
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 4px;
-  transition: all 0.2s;
-  margin-left: auto;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  transition: transform 0.12s ease;
 }
-
-.view-profile-btn:active {
+.expert-cta:active {
   transform: scale(0.98);
-}
-
-.btn-icon {
-  font-size: 16px;
 }
 </style>
 
