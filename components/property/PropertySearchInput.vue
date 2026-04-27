@@ -37,56 +37,56 @@
           class="psi-drop-item"
           @mousedown.prevent="select(r)"
         >
-          <div class="psi-drop-ic">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
-          </div>
-          <div class="psi-drop-body">
-            <div class="psi-drop-title">{{ r.addressLine1 || r.address || '—' }}</div>
-            <div class="psi-drop-sub">
-              <span v-if="r.city">{{ r.city }} · </span>{{ r.postcode || '' }}
-            </div>
-          </div>
-          <div class="psi-drop-meta">
-            <div v-if="r.epcRating" class="psi-drop-epc" :style="{ background: epcColor(r.epcRating) }">
-              <div class="psi-drop-epc-label">EPC</div>
-              <div class="psi-drop-epc-rating">{{ r.epcRating }}</div>
-            </div>
-            <!-- Labelled passport status pill (when opted in via showPassportStatus) -->
-            <template v-if="showPassportStatus && r.hasPassport">
-              <div
-                v-if="r.passportPublished"
-                class="psi-drop-pp-pill psi-drop-pp-pill--published"
-                aria-label="Passport published"
-              >
-                📘 Published
-              </div>
-              <div
-                v-else
-                class="psi-drop-pp-pill psi-drop-pp-pill--progress"
-                aria-label="Passport in progress"
-              >
-                📘 In progress
-              </div>
-            </template>
-            <!-- Fallback tiny icon for callers that don't opt into the pill -->
-            <div
-              v-else-if="r.hasPassport"
-              class="psi-drop-pp-ic"
-              aria-label="Passport available"
-              :title="r.passportPublished ? 'Passport published' : 'Passport available'"
-            >
-              <svg width="14" height="14" viewBox="0 0 877.69 877.69" xmlns="http://www.w3.org/2000/svg">
-                <circle fill="#231d45" cx="438.85" cy="438.85" r="438.85"/>
-                <path fill="#fff" d="m573.6,497.11v21.8h-39.28l-.22-20.26c0-34.14-14.14-48.26-38.03-48.26s-38.03,14.12-38.03,48.26v41.36h-39.01v-42.9c0-52.88,28.77-82.14,77.29-82.14s77.29,29.26,77.29,82.14Z"/>
-                <path fill="#fff" d="m379.84,415.26c48.52,0,77.29,29.26,77.29,82.14v42.9s-39.01,0-39.01,0v-41.36c0-34.14-13.9-48.26-38.03-48.26-23.89,0-38.03,14.12-38.03,48.26l-.15,20.26h-39.24s-.1-21.8-.1-21.8c0-52.88,28.77-82.14,77.29-82.14Z"/>
-                <path fill="#5eead4" d="m689.16,439c-.03-11.46-8.86-20.75-19.76-20.75s-19.76,9.32-19.76,20.81h.04v92.38c0,34.14-14.14,48.26-38.03,48.26s-38.03-14.12-38.03-48.26v-12.54h-39.32v14.08c0,52.88,29.07,82.14,77.59,82.14s77.28-29.26,77.28-82.14v-93.98h-.02Z"/>
-                <path fill="#5eead4" d="m187.37,439c.03-11.46,8.86-20.75,19.76-20.75,10.91,0,19.76,9.32,19.76,20.81h-.04v92.38c0,34.14,14.14,48.26,38.03,48.26,24.14,0,37.79-14.12,37.79-48.26v-12.54s39.25,0,39.25,0v14.08c0,52.88-28.77,82.14-77.29,82.14-48.52,0-77.28-29.26-77.28-82.14v-93.98s.02,0,.02,0Z"/>
-                <path fill="#5eead4" d="m677.57,352.22l-226.28-134.71c-3.1-1.81-6.69-2.82-10.34-2.91h-.57l-.39-1.48h-.54c-3.68.1-7.26,1.11-10.38,2.93l-157.5,93.76v-16.4c0-10.74-9.3-19.48-20.72-19.48s-20.72,8.74-20.72,19.48v41.08l-27.33,16.27c-9.7,5.67-12.68,17.71-6.64,26.83,6.03,9.12,18.84,11.92,28.55,6.24l215.48-128.28,215.49,128.29c3.33,1.95,7.08,2.95,10.91,2.95,1.58,0,3.17-.17,4.74-.51,5.39-1.18,9.97-4.26,12.9-8.68,6.03-9.12,3.05-21.15-6.64-26.82Z"/>
+          <!-- Top row: house ic, address + postcode, optional HS score on the right -->
+          <div class="psi-drop-top">
+            <div class="psi-drop-ic">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
               </svg>
             </div>
+            <div class="psi-drop-body">
+              <div class="psi-drop-title">{{ r.addressLine1 || r.address || '—' }}</div>
+              <div class="psi-drop-sub">
+                <span v-if="r.city">{{ r.city }} · </span>{{ r.postcode || '' }}
+              </div>
+            </div>
+            <div
+              v-if="(r.homeScore ?? r.epcScore) != null"
+              class="psi-drop-hs"
+              :style="{ color: hsColor(r.homeScore ?? r.epcScore) }"
+            >
+              HS™ {{ r.homeScore ?? r.epcScore }}
+            </div>
+          </div>
+
+          <!-- Bottom badge strip: EPC + Passport state + HS™ pill -->
+          <div class="psi-drop-badges">
+            <span
+              v-if="r.epcRating"
+              class="psi-drop-badge"
+              :style="{ background: epcColor(r.epcRating) }"
+            >
+              ⚡ EPC {{ r.epcRating }}
+            </span>
+            <span
+              v-if="r.hasPassport && r.passportPublished"
+              class="psi-drop-badge psi-drop-badge--pub"
+            >
+              📘 Published
+            </span>
+            <span
+              v-else-if="r.hasPassport"
+              class="psi-drop-badge psi-drop-badge--prog"
+            >
+              📘 In progress
+            </span>
+            <span
+              v-if="(r.homeScore ?? r.epcScore) != null"
+              class="psi-drop-badge psi-drop-badge--hs"
+            >
+              HS™ {{ r.homeScore ?? r.epcScore }}
+            </span>
           </div>
         </div>
         <!-- Loading more indicator -->
@@ -244,6 +244,15 @@ function epcColor(rating: string): string {
   return map[(rating ?? '').toUpperCase()] ?? '#8e8e93'
 }
 
+function hsColor(score: number | null | undefined): string {
+  if (score == null) return '#8e8e93'
+  if (score >= 75) return '#0d9488'
+  if (score >= 60) return '#65a30d'
+  if (score >= 45) return '#ca8a04'
+  if (score >= 30) return '#d97706'
+  return '#dc2626'
+}
+
 defineExpose({ clearQuery })
 </script>
 
@@ -338,22 +347,26 @@ defineExpose({ clearQuery })
 }
 
 .psi-drop-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px 12px 14px;
+  display: block;
+  padding: 11px 14px;
   cursor: pointer;
   border-bottom: 1px solid #f1f5f9;
   transition: background 0.12s;
 }
 .psi-drop-item:last-child { border-bottom: none; }
 .psi-drop-item:hover,
-.psi-drop-item:active { background: #f8f7fc; }
+.psi-drop-item:active { background: #f0fdfa; }
+
+.psi-drop-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
 .psi-drop-ic {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: 9px;
   background: #f0fdfa;
   color: #00a19a;
   display: grid;
@@ -372,73 +385,47 @@ defineExpose({ clearQuery })
 }
 .psi-drop-sub {
   font-size: 11px;
-  color: #64748b;
-  margin-top: 2px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-/* Right-side meta column: EPC badge stacked above the passport icon */
-.psi-drop-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  margin-right: 2px;
-}
-
-.psi-drop-epc {
-  min-width: 28px;
-  padding: 3px 5px;
-  border-radius: 5px;
-  color: #fff;
-  text-align: center;
-  flex-shrink: 0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
-}
-.psi-drop-epc-label {
-  font-size: 6.5px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  opacity: 0.85;
-  line-height: 1;
-}
-.psi-drop-epc-rating {
-  font-size: 11px;
-  font-weight: 900;
-  line-height: 1.1;
+  color: #94a3b8;
   margin-top: 1px;
 }
 
-.psi-drop-pp-ic {
-  width: 18px;
-  height: 18px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  overflow: hidden;
+.psi-drop-hs {
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
-.psi-drop-pp-ic svg { display: block; }
 
-/* Labelled passport status pills (opt-in via showPassportStatus prop) */
-.psi-drop-pp-pill {
+/* Bottom badge strip: EPC + Passport state + HS */
+.psi-drop-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 5px;
+  padding-left: 42px;
+}
+.psi-drop-badge {
   font-size: 9.5px;
   font-weight: 700;
-  padding: 3px 7px;
+  padding: 2px 7px;
   border-radius: 999px;
   white-space: nowrap;
+  line-height: 1.4;
+  color: #fff;
   letter-spacing: 0.01em;
-  line-height: 1.1;
 }
-.psi-drop-pp-pill--published {
+.psi-drop-badge--pub {
   background: #231d45;
   color: #fff;
 }
-.psi-drop-pp-pill--progress {
+.psi-drop-badge--prog {
   background: #fef3c7;
   color: #92400e;
+}
+.psi-drop-badge--hs {
+  background: #f0fdfa;
+  color: #0d9488;
+  border: 1px solid #ccfbf1;
 }
 
 .psi-drop-loading {
