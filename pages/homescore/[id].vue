@@ -813,7 +813,7 @@
 
       <!-- Sticky CTA bar -->
       <div class="hs-sticky-cta">
-        <button class="hs-sticky-cta-btn" @click="screen = 'quick-wins'">
+        <button class="hs-sticky-cta-btn" @click="onBoostScore">
           <svg
             width="18"
             height="18"
@@ -1908,6 +1908,22 @@ function onInterestedInBuying() {
     return
   }
   screen.value = 'buyer-results'
+}
+
+// Tap handler for "Boost your score" CTA — gate guests up-front before they
+// invest time in the quick-wins flow.
+function onBoostScore() {
+  if (isGuest.value) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/homescore/${propertyId}`,
+      )
+    }
+    showAuthGate.value = true
+    return
+  }
+  screen.value = 'quick-wins'
 }
 
 function goToSignIn() {
