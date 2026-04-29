@@ -66,7 +66,12 @@
           <div class="hs-addr-body">
             <div class="hs-addr-text">{{ property.addressLine1 }}</div>
             <div class="hs-addr-tiny">
-              {{ property.postcode }}<template v-if="property.propertyType"> · {{ property.propertyType }}</template><template v-if="property.bedrooms"> · {{ property.bedrooms }} bed</template>
+              {{ property.postcode
+              }}<template v-if="property.propertyType">
+                · {{ property.propertyType }}</template
+              ><template v-if="property.bedrooms">
+                · {{ property.bedrooms }} bed</template
+              >
             </div>
           </div>
           <div class="hs-addr-badges">
@@ -81,14 +86,22 @@
               v-if="passportState === 'published'"
               class="hs-addr-badge hs-addr-badge--pub"
             >
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="hs-addr-badge-ic" />
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="hs-addr-badge-ic"
+              />
               Published
             </span>
             <span
               v-else-if="passportState === 'inProgress'"
               class="hs-addr-badge hs-addr-badge--prog"
             >
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="hs-addr-badge-ic" />
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="hs-addr-badge-ic"
+              />
               In progress
             </span>
             <span
@@ -96,31 +109,74 @@
               class="hs-addr-badge hs-addr-badge--unclaimed"
               @click="goToClaim"
             >
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="hs-addr-badge-ic" />
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="hs-addr-badge-ic"
+              />
               Unclaimed · Claim yours? →
             </span>
           </div>
         </div>
 
-        <!-- 2. Passport state banner — differs for "published" vs "in progress" -->
-        <div v-if="passportState === 'published'" class="hs-pp-banner hs-pp-banner--published">
-          <span class="hs-pp-banner-ic">📘</span>
-          <div class="hs-pp-banner-body">
-            <div class="hs-pp-banner-title">This property has a published Passport</div>
-            <div class="hs-pp-banner-sub">
-              Verified documents, confirmed ownership and a full HealthScore are
-              available.
+        <!-- 2. Passport state banner — published variant matches prototype -->
+        <div v-if="passportState === 'published'" class="hs-pp-pub">
+          <div class="hs-pp-pub-glow" />
+          <div class="hs-pp-pub-inner">
+            <div class="hs-pp-pub-eyebrow">
+              📘 Property Passport — published
             </div>
+            <div class="hs-pp-pub-title">
+              The owner's verified record is live.
+            </div>
+            <div class="hs-pp-pub-body">
+              A
+              <strong>Property Passport</strong>
+              bundles a home's title, documents, condition and history —
+              verified, in one place. Unlock this one to see everything before
+              you offer.
+            </div>
+            <div class="hs-pp-pub-explainer">
+              <div class="hs-pp-pub-explainer-title">
+                📘 What you'll unlock
+              </div>
+              <div class="hs-pp-pub-explainer-row">
+                <span class="hs-pp-pub-check">✓</span>
+                Title verified by HM Land Registry
+              </div>
+              <div class="hs-pp-pub-explainer-row">
+                <span class="hs-pp-pub-check">✓</span>
+                Owner identity confirmed (KYC)
+              </div>
+              <div class="hs-pp-pub-explainer-row">
+                <span class="hs-pp-pub-check">✓</span>
+                Documents, condition &amp; history
+              </div>
+              <div class="hs-pp-pub-explainer-row">
+                <span class="hs-pp-pub-check">✓</span>
+                Real HealthScore — not just EPC
+              </div>
+            </div>
+            <button
+              class="hs-pp-pub-unlock"
+              @click="router.push(`/property/${propertyId}`)"
+            >
+              🔓 Unlock full Passport · £99
+            </button>
+            <button
+              v-if="isGuest"
+              class="hs-pp-owner-cta hs-pp-owner-cta--published"
+              @click="goToSignIn"
+            >
+              📘 Already own this property? Sign in to manage →
+            </button>
           </div>
-          <button
-            class="hs-pp-banner-cta hs-pp-banner-cta--mint"
-            @click="router.push(`/property/${propertyId}`)"
-          >
-            View →
-          </button>
         </div>
 
-        <div v-else-if="passportState === 'inProgress'" class="hs-pp-inprogress">
+        <div
+          v-else-if="passportState === 'inProgress'"
+          class="hs-pp-inprogress"
+        >
           <div class="hs-pp-inprogress-head">
             <span class="hs-pp-inprogress-ic">📘</span>
             <div>
@@ -135,7 +191,9 @@
             </div>
           </div>
           <div class="hs-pp-inprogress-box">
-            <div class="hs-pp-inprogress-box-title">📊 What you can see now</div>
+            <div class="hs-pp-inprogress-box-title">
+              📊 What you can see now
+            </div>
             <div class="hs-pp-inprogress-box-body">
               Public EPC data only · Estimated HealthScore based on energy
               rating
@@ -160,6 +218,13 @@
           <div v-else class="hs-pp-inprogress-done">
             ✓ We'll alert you as soon as it goes live
           </div>
+          <button
+            v-if="isGuest"
+            class="hs-pp-owner-cta hs-pp-owner-cta--inprogress"
+            @click="goToSignIn"
+          >
+            📘 Building this Passport? Sign in to continue →
+          </button>
         </div>
 
         <!-- 3. People searched this address card — shown for ALL properties -->
@@ -187,10 +252,7 @@
               </div>
             </template>
             <template v-else-if="passportState === 'inProgress'">
-              <div
-                v-if="searchedTodayCount > 0"
-                class="hs-searched-live"
-              >
+              <div v-if="searchedTodayCount > 0" class="hs-searched-live">
                 <span class="hs-searched-pulse" />
                 {{ searchedTodayCount }} searched today
               </div>
@@ -202,10 +264,7 @@
               </div>
             </template>
             <template v-else>
-              <div
-                v-if="searchedTodayCount > 0"
-                class="hs-searched-live"
-              >
+              <div v-if="searchedTodayCount > 0" class="hs-searched-live">
                 <span class="hs-searched-pulse" />
                 {{ searchedTodayCount }} searched today
               </div>
@@ -285,22 +344,20 @@
               </text>
             </svg>
           </div>
-          <div class="hs-conf-pill">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              width="11"
-              height="11"
-              style="display: inline; margin-right: 4px; vertical-align: -1px"
-            >
-              <path
-                d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
-                stroke="#92400e"
-                stroke-width="2"
-              />
-            </svg>
-            20% confidence · EPC data only
+          <div
+            class="hs-conf-pill"
+            :class="`hs-conf-pill--${epcExplain.confTone}`"
+          >
+            <span class="hs-conf-pill-ic">{{ epcExplain.confIcon }}</span>
+            {{ epcExplain.confText }}
           </div>
+
+          <!-- EPC-based positive-framing explainer -->
+          <div class="hs-epc-explain">
+            <div class="hs-epc-explain-label">{{ epcExplain.label }}</div>
+            <div class="hs-epc-explain-body" v-html="epcExplain.body" />
+          </div>
+
           <p class="hs-epc-note">
             This number is modelled from {{ epcDataAge }} EPC data. Your real
             score could be anywhere from {{ epcRangeLow }} to
@@ -311,7 +368,9 @@
                already exists (states B/C). "I'm interested in buying" is
                always available, including for guests on claimed/published
                properties. -->
-          <div class="hs-interest-label">What's your interest in this property?</div>
+          <div class="hs-interest-label">
+            What's your interest in this property?
+          </div>
           <div class="hs-interest-stack">
             <!-- "This is my home" — only when no passport exists yet -->
             <button
@@ -321,7 +380,7 @@
             >
               <div class="hs-interest-ic primary">🏠</div>
               <div class="hs-interest-body">
-                <div class="hs-interest-title">This is my home</div>
+                <div class="hs-interest-title">I own this property</div>
                 <div class="hs-interest-sub primary-sub">
                   Get my real score in 2 mins · {{ QUESTIONS.length }} quick
                   questions
@@ -345,14 +404,16 @@
           </div>
 
           <template v-if="!readOnlyMode">
-
             <!-- Non-owner notice — only shown when no passport exists yet -->
             <div
               v-if="!isPropertyOwner && passportState === null"
               class="hs-owner-notice"
             >
-              <span style="font-size:14px;flex-shrink:0;">💡</span>
-              <span>Claim this property's passport to save your score permanently.</span>
+              <span style="font-size: 14px; flex-shrink: 0">💡</span>
+              <span
+                >Claim this property's passport to save your score
+                permanently.</span
+              >
             </div>
           </template>
 
@@ -369,7 +430,10 @@
             Score, breakdown and risks below are the verified owner's data.
           </div>
           <!-- In progress: subtle note that we'll update when they publish -->
-          <div v-else-if="passportState === 'inProgress'" class="hs-readonly-subnote">
+          <div
+            v-else-if="passportState === 'inProgress'"
+            class="hs-readonly-subnote"
+          >
             Estimated from public records. We'll refresh when the owner
             publishes.
           </div>
@@ -378,7 +442,11 @@
         <!-- Score breakdown -->
         <div class="hs-breakdown-card">
           <p class="hs-breakdown-title">
-            {{ passportState === 'published' ? "Owner's verified breakdown" : 'Score breakdown (estimated)' }}
+            {{
+              passportState === 'published'
+                ? "Owner's verified breakdown"
+                : 'Score breakdown (estimated)'
+            }}
           </p>
           <div class="hs-pillar-list">
             <div
@@ -466,7 +534,11 @@
                 stroke-linecap="round"
                 stroke-dasharray="113.1"
                 :stroke-dashoffset="113.1 - (liveScore / 100) * 113.1"
-                style="transition: stroke-dashoffset 0.6s ease, stroke 0.4s"
+                style="
+                  transition:
+                    stroke-dashoffset 0.6s ease,
+                    stroke 0.4s;
+                "
               />
             </svg>
             <div class="hsq-live-num">{{ liveScore }}</div>
@@ -624,21 +696,77 @@
             <svg viewBox="0 0 354 90" width="100%" style="display: block">
               <rect x="0" y="0" width="354" height="62" fill="#f0f9ff" />
               <g opacity="0.55">
-                <rect x="14" y="38" width="38" height="22" rx="2" fill="#cbd5e1" />
+                <rect
+                  x="14"
+                  y="38"
+                  width="38"
+                  height="22"
+                  rx="2"
+                  fill="#cbd5e1"
+                />
                 <polygon points="14,38 33,22 52,38" fill="#94a3b8" />
-                <rect x="26" y="46" width="10" height="14" rx="1" fill="#64748b" />
+                <rect
+                  x="26"
+                  y="46"
+                  width="10"
+                  height="14"
+                  rx="1"
+                  fill="#64748b"
+                />
               </g>
               <g opacity="0.55">
-                <rect x="68" y="34" width="42" height="26" rx="2" fill="#cbd5e1" />
+                <rect
+                  x="68"
+                  y="34"
+                  width="42"
+                  height="26"
+                  rx="2"
+                  fill="#cbd5e1"
+                />
                 <polygon points="68,34 89,16 110,34" fill="#94a3b8" />
-                <rect x="82" y="44" width="10" height="16" rx="1" fill="#64748b" />
-                <rect x="96" y="42" width="9" height="9" rx="1" fill="#93c5fd" />
+                <rect
+                  x="82"
+                  y="44"
+                  width="10"
+                  height="16"
+                  rx="1"
+                  fill="#64748b"
+                />
+                <rect
+                  x="96"
+                  y="42"
+                  width="9"
+                  height="9"
+                  rx="1"
+                  fill="#93c5fd"
+                />
               </g>
               <g>
-                <rect x="140" y="32" width="46" height="28" rx="2" fill="#ccfbf1" />
+                <rect
+                  x="140"
+                  y="32"
+                  width="46"
+                  height="28"
+                  rx="2"
+                  fill="#ccfbf1"
+                />
                 <polygon points="140,32 163,12 186,32" fill="#0d9488" />
-                <rect x="155" y="44" width="11" height="16" rx="1" fill="#0f766e" />
-                <rect x="143" y="40" width="9" height="10" rx="1" fill="#99f6e4" />
+                <rect
+                  x="155"
+                  y="44"
+                  width="11"
+                  height="16"
+                  rx="1"
+                  fill="#0f766e"
+                />
+                <rect
+                  x="143"
+                  y="40"
+                  width="9"
+                  height="10"
+                  rx="1"
+                  fill="#99f6e4"
+                />
                 <text
                   x="163"
                   y="9"
@@ -651,14 +779,42 @@
                 </text>
               </g>
               <g opacity="0.55">
-                <rect x="212" y="36" width="40" height="24" rx="2" fill="#cbd5e1" />
+                <rect
+                  x="212"
+                  y="36"
+                  width="40"
+                  height="24"
+                  rx="2"
+                  fill="#cbd5e1"
+                />
                 <polygon points="212,36 232,20 252,36" fill="#94a3b8" />
-                <rect x="224" y="46" width="10" height="14" rx="1" fill="#64748b" />
+                <rect
+                  x="224"
+                  y="46"
+                  width="10"
+                  height="14"
+                  rx="1"
+                  fill="#64748b"
+                />
               </g>
               <g opacity="0.55">
-                <rect x="272" y="34" width="38" height="26" rx="2" fill="#cbd5e1" />
+                <rect
+                  x="272"
+                  y="34"
+                  width="38"
+                  height="26"
+                  rx="2"
+                  fill="#cbd5e1"
+                />
                 <polygon points="272,34 291,18 310,34" fill="#94a3b8" />
-                <rect x="284" y="44" width="10" height="16" rx="1" fill="#64748b" />
+                <rect
+                  x="284"
+                  y="44"
+                  width="10"
+                  height="16"
+                  rx="1"
+                  fill="#64748b"
+                />
               </g>
               <text x="340" y="56" font-size="16" text-anchor="middle">🏡</text>
               <text
@@ -686,14 +842,67 @@
                 :transform="`translate(${Math.round(18 + (completeScore / 100) * 300)}, 62)`"
               >
                 <ellipse cx="0" cy="2" rx="8" ry="2.5" fill="rgba(0,0,0,0.1)" />
-                <line x1="0" y1="-4" x2="0" y2="-16" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
+                <line
+                  x1="0"
+                  y1="-4"
+                  x2="0"
+                  y2="-16"
+                  stroke="#0d9488"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                />
                 <circle cx="0" cy="-19" r="4" fill="#0d9488" />
-                <path d="M-3.5,-22 Q0,-25 3.5,-22" stroke="#065f46" stroke-width="1.5" fill="none" stroke-linecap="round" />
-                <line x1="0" y1="-14" x2="-5" y2="-9" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
-                <line x1="0" y1="-14" x2="5" y2="-10" stroke="#0d9488" stroke-width="2" stroke-linecap="round" />
-                <line x1="0" y1="-4" x2="4" y2="2" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
-                <line x1="0" y1="-4" x2="-3" y2="2" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" />
-                <rect x="-13" y="-32" width="26" height="11" rx="5" fill="#0d9488" />
+                <path
+                  d="M-3.5,-22 Q0,-25 3.5,-22"
+                  stroke="#065f46"
+                  stroke-width="1.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <line
+                  x1="0"
+                  y1="-14"
+                  x2="-5"
+                  y2="-9"
+                  stroke="#0d9488"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <line
+                  x1="0"
+                  y1="-14"
+                  x2="5"
+                  y2="-10"
+                  stroke="#0d9488"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <line
+                  x1="0"
+                  y1="-4"
+                  x2="4"
+                  y2="2"
+                  stroke="#0d9488"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                />
+                <line
+                  x1="0"
+                  y1="-4"
+                  x2="-3"
+                  y2="2"
+                  stroke="#0d9488"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                />
+                <rect
+                  x="-13"
+                  y="-32"
+                  width="26"
+                  height="11"
+                  rx="5"
+                  fill="#0d9488"
+                />
                 <text
                   x="0"
                   y="-23.5"
@@ -845,9 +1054,7 @@
             <div class="hs-nb-title">Your street, ranked by energy cost</div>
             <div class="hs-nb-rank">{{ nbRank }} of 12</div>
           </div>
-          <p class="hs-nb-body">
-            Based on EPC data and local energy records.
-          </p>
+          <p class="hs-nb-body">Based on EPC data and local energy records.</p>
           <div class="hs-nb-list">
             <div
               v-for="n in neighbourhood"
@@ -1276,9 +1483,7 @@
 
         <!-- Running cost hero -->
         <div class="hs-buyer-hero">
-          <div class="hs-buyer-hero-eyebrow">
-            Estimated annual running cost
-          </div>
+          <div class="hs-buyer-hero-eyebrow">Estimated annual running cost</div>
           <div class="hs-buyer-hero-amount">
             ~£{{ buyerAnnualCost.toLocaleString() }} / year
           </div>
@@ -1330,8 +1535,8 @@
         <div class="hs-breakdown-card">
           <p class="hs-breakdown-title">Score breakdown</p>
           <p class="hs-buyer-bd-sub">
-            Based on public EPC data only — the seller could improve this with
-            a full HealthScore™.
+            Based on public EPC data only — the seller could improve this with a
+            full HealthScore™.
           </p>
           <div class="hs-pillar-list">
             <div
@@ -1357,17 +1562,15 @@
             </div>
           </div>
           <div class="hs-buyer-bd-note">
-            This is based on public EPC data only. Ask the seller to run a
-            full HealthScore™ to get a verified picture.
+            This is based on public EPC data only. Ask the seller to run a full
+            HealthScore™ to get a verified picture.
           </div>
         </div>
 
         <!-- Carbon card -->
         <div class="hs-carbon-card" :style="{ background: carbonGradient }">
           <div class="hs-carbon-top">
-            <div class="hs-carbon-eyebrow">
-              🌍 Environmental Impact Rating
-            </div>
+            <div class="hs-carbon-eyebrow">🌍 Environmental Impact Rating</div>
             <div class="hs-carbon-main-row">
               <div>
                 <div class="hs-carbon-kg">
@@ -1519,9 +1722,7 @@
         <div class="hs-buyer-save-cta" @click="saveToBuyerProfile">
           <div class="hs-buyer-save-ic">📘</div>
           <div class="hs-buyer-save-body">
-            <div class="hs-buyer-save-title">
-              Save to your Buyer Profile
-            </div>
+            <div class="hs-buyer-save-title">Save to your Buyer Profile</div>
             <div class="hs-buyer-save-sub">
               Track this property, compare with others, share with your
               solicitor.
@@ -1602,10 +1803,7 @@
             :class="{ uploaded: uploadedDocs[doc.key] }"
             @click="triggerDocUpload(doc.key)"
           >
-            <div
-              class="hs-qw-doc-ic"
-              :style="{ background: doc.bg }"
-            >
+            <div class="hs-qw-doc-ic" :style="{ background: doc.bg }">
               {{ doc.icon }}
             </div>
             <div class="hs-qw-doc-body">
@@ -1642,10 +1840,7 @@
             class="hs-qw-pro-row"
             @click="openMarketplace"
           >
-            <div
-              class="hs-qw-doc-ic"
-              :style="{ background: pro.bg }"
-            >
+            <div class="hs-qw-doc-ic" :style="{ background: pro.bg }">
               {{ pro.icon }}
             </div>
             <div class="hs-qw-doc-body">
@@ -1676,13 +1871,10 @@
             </div>
             <div class="hs-qw-mr-body">
               Your Move Ready and Passport scores are waiting to be unlocked.
-              Each document you add brings them up — verify your home to lock
-              in everything you've built.
+              Each document you add brings them up — verify your home to lock in
+              everything you've built.
             </div>
-            <button
-              class="hs-qw-mr-btn"
-              @click="screen = 'move-ready'"
-            >
+            <button class="hs-qw-mr-btn" @click="screen = 'move-ready'">
               Get move ready
               <svg
                 width="18"
@@ -1719,9 +1911,9 @@
               90% of sales fall through<br />because of missing paperwork.
             </div>
             <div class="hs-mr-hero-body">
-              Move-ready means your ownership is verified, your documents are
-              in order, and a buyer's solicitor can start work the same day
-              they make an offer.
+              Move-ready means your ownership is verified, your documents are in
+              order, and a buyer's solicitor can start work the same day they
+              make an offer.
             </div>
             <div class="hs-mr-compare-grid">
               <div class="hs-mr-compare-col red">
@@ -1764,8 +1956,8 @@
             <div>
               <div class="hs-mr-step-title">Confirm your identity</div>
               <div class="hs-mr-step-body">
-                Quick ID check — photo of your passport or driving licence
-                plus a selfie. Powered by Onfido.
+                Quick ID check — photo of your passport or driving licence plus
+                a selfie. Powered by Onfido.
               </div>
             </div>
           </div>
@@ -1784,9 +1976,7 @@
               </svg>
             </div>
             <div>
-              <div class="hs-mr-step-title">
-                Your score becomes verified
-              </div>
+              <div class="hs-mr-step-title">Your score becomes verified</div>
               <div class="hs-mr-step-body">
                 Your HealthScore™ is upgraded from estimated to verified — and
                 your Property Passport is live.
@@ -1913,7 +2103,12 @@ const notifiedOfPublish = ref(false)
 const showAuthGate = ref(false)
 
 // Search-stats card ("People searched this address this month")
-const searchStats = ref<{ today: number; thisMonth: number; allTime: number; distinctVisitors: number } | null>(null)
+const searchStats = ref<{
+  today: number
+  thisMonth: number
+  allTime: number
+  distinctVisitors: number
+} | null>(null)
 
 // Deterministic fallback so the card still renders for properties with no
 // logged searches yet — mirrors the prototype's hsGetViewCount: 8–26 base,
@@ -1923,7 +2118,8 @@ const derivedMonthCount = computed(() => {
   const p: any = property.value
   const seedSrc = (p?.id || p?.addressLine1 || propertyId || '') as string
   let h = 0
-  for (let i = 0; i < seedSrc.length; i++) h = (h * 31 + seedSrc.charCodeAt(i)) >>> 0
+  for (let i = 0; i < seedSrc.length; i++)
+    h = (h * 31 + seedSrc.charCodeAt(i)) >>> 0
   const epc = typeof p?.epcScore === 'number' ? p.epcScore : 55
   let count = 8 + (h % 19)
   if (epc < 50) count += 6
@@ -1967,10 +2163,7 @@ function notifyWhenPublished() {
   // Guests need to sign in before we can notify them — gate it.
   if (isGuest.value) {
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(
-        'redirectAfterLogin',
-        `/homescore/${propertyId}`,
-      )
+      localStorage.setItem('redirectAfterLogin', `/homescore/${propertyId}`)
     }
     showAuthGate.value = true
     return
@@ -2018,10 +2211,7 @@ function goToSignIn() {
   // redirectAfterLogin is set by callers; the auth middleware respects it.
   if (typeof localStorage !== 'undefined') {
     if (!localStorage.getItem('redirectAfterLogin')) {
-      localStorage.setItem(
-        'redirectAfterLogin',
-        `/homescore/${propertyId}`,
-      )
+      localStorage.setItem('redirectAfterLogin', `/homescore/${propertyId}`)
     }
   }
   router.push('/onboarding/signin')
@@ -2099,6 +2289,60 @@ const autoRating = computed(
 
 const epcRangeLow = computed(() => Math.max(0, autoScoreVal.value - 7))
 const epcRangeHigh = computed(() => Math.min(100, autoScoreVal.value + 25))
+
+// EPC-based positive-framing explainer for the Starter Score card.
+// Mirrors the prototype's hsRenderEpcCard(): score band → label, body copy,
+// and adaptive confidence pill tone (good / ok / warn).
+const epcExplain = computed(() => {
+  const s = autoScoreVal.value ?? 55
+  let label: string
+  let body: string
+  let confTone: 'good' | 'ok' | 'warn'
+  if (s >= 92) {
+    label = 'Exceptional'
+    body =
+      'Among the <b>most efficient homes</b> in the UK — less than 3% of properties achieve this rating. Modern construction, low running costs.'
+    confTone = 'good'
+  } else if (s >= 81) {
+    label = 'Highly efficient'
+    body =
+      'In the <b>top 20% of UK homes</b>. Strong insulation and modern systems keep running costs well below average.'
+    confTone = 'good'
+  } else if (s >= 69) {
+    label = 'Above average'
+    body =
+      'Better than most UK homes — the UK average is around <b>60–65</b>. Small upgrades could lift this to a B.'
+    confTone = 'ok'
+  } else if (s >= 55) {
+    label = 'Typical UK home'
+    body =
+      'In line with the <b>average British home</b>. Real upside available — cavity wall, glazing or boiler upgrades can lift this to a C or B.'
+    confTone = 'ok'
+  } else if (s >= 39) {
+    label = 'Period property'
+    body =
+      'Often older or solid-wall homes. Targeted improvements can transform efficiency <b>without losing character</b>.'
+    confTone = 'warn'
+  } else if (s >= 21) {
+    label = 'Upgrade potential'
+    body =
+      'These homes have the <b>most savings potential</b>. Typical upgrades cut running costs by £200–600 a year.'
+    confTone = 'warn'
+  } else {
+    label = 'Renovation potential'
+    body =
+      'Less than <b>1% of UK homes</b> rate this low. Strong negotiating position for buyers; biggest improvement journey for owners.'
+    confTone = 'warn'
+  }
+  const confText =
+    confTone === 'good'
+      ? '✓ Public EPC · recently assessed'
+      : confTone === 'ok'
+        ? 'Modelled from public EPC data'
+        : 'Public EPC · improvements not yet reflected'
+  const confIcon = confTone === 'good' ? '✓' : 'ⓘ'
+  return { label, body, confTone, confText, confIcon }
+})
 
 const epcDataAge = computed(() => {
   const date = property.value?.lodgementDate
@@ -2235,8 +2479,7 @@ const selectedNarr = computed(() => {
 
 const liveHint = computed(() => {
   if (deltaInfo.value.show) {
-    if (deltaInfo.value.val > 0)
-      return "You're boosting your energy score!"
+    if (deltaInfo.value.val > 0) return "You're boosting your energy score!"
     if (deltaInfo.value.val < 0)
       return 'Your score dipped — try another option.'
   }
@@ -2844,10 +3087,7 @@ const qwUploadedCount = computed(
   () => Object.values(uploadedDocs).filter(Boolean).length,
 )
 const qwUploadedPoints = computed(() =>
-  qwDocs.reduce(
-    (sum, d) => (uploadedDocs[d.key] ? sum + d.pts : sum),
-    0,
-  ),
+  qwDocs.reduce((sum, d) => (uploadedDocs[d.key] ? sum + d.pts : sum), 0),
 )
 const qwScore = computed(() =>
   Math.min(100, result.value.total + qwUploadedPoints.value),
@@ -2969,7 +3209,8 @@ onMounted(async () => {
   } catch {}
 
   // Check ownership and load saved score from backend if owner
-  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
 
   // Passport status check — also drives read-only mode for non-owners.
   // For guests (no token) we use the public passport state seeded from /property/:id above.
@@ -2981,8 +3222,9 @@ onMounted(async () => {
       isPassportCollaborator.value = status.isCollaborator ?? false
       hasOtherOwnerPassport.value =
         !!status.hasPassport && !status.isOwner && !status.isCollaborator
-      isOtherPassportPublished.value =
-        !!(status.hasPassport && status.isPublished)
+      isOtherPassportPublished.value = !!(
+        status.hasPassport && status.isPublished
+      )
     }
 
     // Restore "already notified" state from localStorage
@@ -3013,9 +3255,12 @@ onMounted(async () => {
   if (token) {
     try {
       if (isPropertyOwner.value) {
-        const scoreRes = await fetch(`${config.public.apiBase}/property/${propertyId}/homescore`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        const scoreRes = await fetch(
+          `${config.public.apiBase}/property/${propertyId}/homescore`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
         if (scoreRes.ok) {
           const existing = await scoreRes.json()
           if (existing?.answers && Object.keys(existing.answers).length > 0) {
@@ -3038,7 +3283,14 @@ onMounted(async () => {
   // the page they were trying to reach (e.g. buyer-results, questions,
   // quick-wins) rather than the landing screen.
   const requested = (route.query?.screen as string | undefined)?.trim()
-  const allowed: Screen[] = ['buyer-results', 'questions', 'quick-wins', 'move-ready', 'results', 'passport']
+  const allowed: Screen[] = [
+    'buyer-results',
+    'questions',
+    'quick-wins',
+    'move-ready',
+    'results',
+    'passport',
+  ]
   if (token && requested && (allowed as string[]).includes(requested)) {
     if (requested === 'questions') {
       const firstUnanswered = QUESTIONS.findIndex(
@@ -3271,14 +3523,60 @@ watch(screen, (s) => {
 .hs-gauge-svg {
   display: block;
 }
-.hs-conf-pill {
-  margin-top: 12px;
+/* EPC-based positive-framing block — sits above the confidence pill */
+.hs-epc-explain {
+  margin-top: 14px;
+  background: #f8fafc;
+  border: 1px solid #eef0f6;
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-align: left;
+}
+.hs-epc-explain-label {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #008c86;
+  margin-bottom: 6px;
+}
+.hs-epc-explain-body {
+  font-size: 12.5px;
+  color: #4a5568;
+  line-height: 1.55;
+}
+.hs-epc-explain-body :deep(b) {
+  color: #231d45;
+  font-weight: 700;
+}
+
+.hs-conf-pill {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
   background: #fef3c7;
   color: #92400e;
   border-radius: 999px;
   padding: 5px 12px;
+}
+.hs-conf-pill-ic {
+  font-size: 11px;
+  line-height: 1;
+}
+.hs-conf-pill--good {
+  background: #d1fae5;
+  color: #065f46;
+}
+.hs-conf-pill--ok {
+  background: #eafaf9;
+  color: #008c86;
+}
+.hs-conf-pill--warn {
+  background: #fef3c7;
+  color: #92400e;
 }
 .hs-epc-note {
   font-size: 12px;
@@ -3723,6 +4021,148 @@ watch(screen, (s) => {
 }
 .hs-pp-banner-cta--mint:active {
   transform: scale(0.96);
+}
+
+/* ── Published Passport banner (rich, prototype-matching) ── */
+.hs-pp-pub {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1640, #231d45);
+  border: 1.5px solid #231d45;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.hs-pp-pub-glow {
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(
+    circle,
+    rgba(0, 161, 154, 0.28),
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hs-pp-pub-inner {
+  position: relative;
+  z-index: 1;
+}
+.hs-pp-pub-eyebrow {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5eead4;
+  margin-bottom: 6px;
+}
+.hs-pp-pub-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.hs-pp-pub-body {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.hs-pp-pub-body strong {
+  color: #fff;
+  font-weight: 700;
+}
+.hs-pp-pub-explainer {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hs-pp-pub-explainer-title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5eead4;
+  margin-bottom: 6px;
+}
+.hs-pp-pub-explainer-row {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.45;
+  display: flex;
+  gap: 6px;
+}
+.hs-pp-pub-check {
+  color: #5eead4;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.hs-pp-pub-unlock {
+  width: 100%;
+  border: none;
+  background: #5eead4;
+  color: #042f2e;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 11px;
+  border-radius: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  margin-bottom: 8px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.hs-pp-pub-unlock:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(94, 234, 212, 0.28);
+}
+
+/* Owner sign-in CTA — sits below the published / in-progress banner */
+.hs-pp-owner-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  font-size: 12.5px;
+  font-weight: 800;
+  padding: 10px;
+  border-radius: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  margin: -6px 0 14px;
+  transition: background 0.15s ease;
+}
+.hs-pp-owner-cta--published {
+  border: 1.5px solid rgba(94, 234, 212, 0.5);
+  background: rgba(94, 234, 212, 0.08);
+  color: #5eead4;
+  margin: 0;
+  padding: 10px;
+}
+.hs-pp-owner-cta--published:hover,
+.hs-pp-owner-cta--published:active {
+  background: rgba(94, 234, 212, 0.16);
+}
+.hs-pp-owner-cta--inprogress {
+  border: 1.5px solid #92400e;
+  background: #fff;
+  color: #92400e;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+.hs-pp-owner-cta--inprogress:hover,
+.hs-pp-owner-cta--inprogress:active {
+  background: #fef3c7;
 }
 
 /* ── In-progress passport banner (amber) ─────────────────── */
@@ -4546,7 +4986,10 @@ watch(screen, (s) => {
     transparent 70%
   );
 }
-.hs-pp-card > * { position: relative; z-index: 1; }
+.hs-pp-card > * {
+  position: relative;
+  z-index: 1;
+}
 .hs-pp-badge {
   display: inline-block;
   background: rgba(20, 184, 166, 0.2);
@@ -5002,11 +5445,7 @@ watch(screen, (s) => {
   top: -20px;
   width: 120px;
   height: 120px;
-  background: radial-gradient(
-    circle,
-    rgba(0, 161, 154, 0.2),
-    transparent 70%
-  );
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.2), transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -5089,7 +5528,9 @@ watch(screen, (s) => {
   border: 1.5px solid #e2e8e8;
   position: relative;
   flex-shrink: 0;
-  transition: background 0.3s, border-color 0.3s;
+  transition:
+    background 0.3s,
+    border-color 0.3s;
 }
 .hsq-live-gauge {
   position: relative;
@@ -5107,7 +5548,9 @@ watch(screen, (s) => {
   font-weight: 900;
   color: #231d45;
   line-height: 1;
-  transition: transform 0.2s, color 0.2s;
+  transition:
+    transform 0.2s,
+    color 0.2s;
 }
 .hsq-live-info {
   flex: 1;
@@ -5143,7 +5586,9 @@ watch(screen, (s) => {
 }
 .hsq-delta-enter-active,
 .hsq-delta-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 .hsq-delta-enter-from,
 .hsq-delta-leave-to {
@@ -5342,6 +5787,8 @@ watch(screen, (s) => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  margin-bottom: 8px;
 }
 .hs-interest-btn {
   width: 100%;
@@ -5856,12 +6303,7 @@ watch(screen, (s) => {
 
 /* ── Move Ready ────────────────────────────────────────── */
 .hs-mr-hero {
-  background: linear-gradient(
-    150deg,
-    #1a1640 0%,
-    #231d45 60%,
-    #2a2158 100%
-  );
+  background: linear-gradient(150deg, #1a1640 0%, #231d45 60%, #2a2158 100%);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 16px;
@@ -5874,11 +6316,7 @@ watch(screen, (s) => {
   top: -20px;
   width: 130px;
   height: 130px;
-  background: radial-gradient(
-    circle,
-    rgba(0, 161, 154, 0.2),
-    transparent 70%
-  );
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.2), transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -6123,7 +6561,9 @@ watch(screen, (s) => {
   color: #fbbf24;
   margin-bottom: 4px;
 }
-.hs-searched-live--soft { color: #008c86; }
+.hs-searched-live--soft {
+  color: #008c86;
+}
 .hs-searched-pulse {
   width: 7px;
   height: 7px;
@@ -6139,12 +6579,22 @@ watch(screen, (s) => {
   animation-name: hs-pulse-brand;
 }
 @keyframes hs-pulse-amber {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-  50% { box-shadow: 0 0 0 5px rgba(245, 158, 11, 0); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0);
+  }
 }
 @keyframes hs-pulse-brand {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.4); }
-  50% { box-shadow: 0 0 0 5px rgba(0, 161, 154, 0); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(0, 161, 154, 0);
+  }
 }
 .hs-searched-title {
   font-size: 13px;
@@ -6234,5 +6684,4 @@ watch(screen, (s) => {
   cursor: pointer;
   font-family: inherit;
 }
-
 </style>
