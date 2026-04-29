@@ -223,7 +223,7 @@ const roles = [
     icon: '🏠',
     iconBg: '#eafaf9',
     label: "I'm selling my home",
-    desc: 'Build your Passport, get verified, move faster',
+    desc: 'Build your Profile, get verified, move faster',
   },
   {
     key: 'landlord',
