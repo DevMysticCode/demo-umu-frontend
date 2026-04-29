@@ -89,6 +89,61 @@
             />
           </div>
 
+          <!-- Locations: chip-autocomplete (postcodes / cities / areas) -->
+          <div v-else-if="q.type === 'locations'" class="q-section">
+            <div class="q-label">{{ q.label }}</div>
+            <div v-if="q.hint" class="q-hint">{{ q.hint }}</div>
+            <div class="loc-chips">
+              <span
+                v-for="(loc, i) in (a as any)[q.id] as string[]"
+                :key="`${q.id}-${loc}-${i}`"
+                class="loc-chip"
+              >
+                <span class="loc-chip-ic">📍</span>
+                {{ loc }}
+                <button
+                  type="button"
+                  class="loc-chip-x"
+                  aria-label="Remove"
+                  @click="removeLocation(q.id, i)"
+                >
+                  ×
+                </button>
+              </span>
+            </div>
+            <div class="loc-input-wrap">
+              <input
+                :value="locInputs[q.id] || ''"
+                @input="(e: any) => onLocInput(q.id, e.target.value)"
+                @keydown.enter.prevent="commitLocFreeText(q.id)"
+                @keydown.backspace="onLocBackspace(q.id, $event)"
+                type="text"
+                :placeholder="q.placeholder"
+                class="text-input"
+                autocomplete="off"
+              />
+              <div
+                v-if="locOpen[q.id] && locSuggestions[q.id]?.length"
+                class="loc-drop"
+              >
+                <div
+                  v-for="(s, idx) in locSuggestions[q.id]"
+                  :key="`${s.kind}-${s.value}-${idx}`"
+                  class="loc-drop-item"
+                  @mousedown.prevent="addLocation(q.id, s.value)"
+                >
+                  <span class="loc-drop-ic">{{
+                    s.kind === 'postcode' ? '📮' : '🏙️'
+                  }}</span>
+                  <span class="loc-drop-text">
+                    <strong>{{ s.value }}</strong>
+                    <span v-if="s.sub" class="loc-drop-sub">{{ s.sub }}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Chips -->
           <div v-else-if="q.type === 'chips'" class="q-section">
             <div class="q-label">
@@ -172,11 +227,103 @@ const isLoading = ref(false)
 const phase = ref<'role' | 'detail'>('role')
 const selectedRole = ref('')
 
+// ── Location chip autocomplete ───────────────────────────────────────────
+type LocSuggestion = { kind: 'postcode' | 'place'; value: string; sub?: string }
+const locInputs = reactive<Record<string, string>>({})
+const locSuggestions = reactive<Record<string, LocSuggestion[]>>({})
+const locOpen = reactive<Record<string, boolean>>({})
+const locTimers: Record<string, ReturnType<typeof setTimeout> | null> = {}
+
+function onLocInput(qid: string, val: string) {
+  locInputs[qid] = val
+  if (locTimers[qid]) clearTimeout(locTimers[qid] as ReturnType<typeof setTimeout>)
+  const trimmed = val.trim()
+  if (trimmed.length < 2) {
+    locSuggestions[qid] = []
+    locOpen[qid] = false
+    return
+  }
+  locTimers[qid] = setTimeout(() => fetchLocSuggestions(qid, trimmed), 250)
+}
+
+async function fetchLocSuggestions(qid: string, q: string) {
+  // Hit postcodes.io for postcode prefix completions and place lookups.
+  // Postcodes.io is free, no auth, supports CORS.
+  const looksLikePostcode = /^[A-Za-z]{1,2}\d/.test(q)
+  const out: LocSuggestion[] = []
+  try {
+    if (looksLikePostcode) {
+      const r: any = await $fetch(
+        `https://api.postcodes.io/postcodes/${encodeURIComponent(q)}/autocomplete`,
+      )
+      const list: string[] = r?.result ?? []
+      for (const pc of list.slice(0, 6)) {
+        out.push({ kind: 'postcode', value: pc.toUpperCase() })
+      }
+    }
+    // Always also try place suggestions (cities / towns / areas)
+    const places: any = await $fetch(
+      `https://api.postcodes.io/places?q=${encodeURIComponent(q)}&limit=6`,
+    )
+    const placeList: any[] = places?.result ?? []
+    for (const p of placeList) {
+      const name = p?.name_1 || p?.name
+      if (!name) continue
+      const sub = p?.county_unitary || p?.region || p?.country || ''
+      out.push({ kind: 'place', value: name, sub: sub || undefined })
+    }
+  } catch {
+    // Network errors → just leave whatever we collected.
+  }
+  // Dedup by value
+  const seen = new Set<string>()
+  locSuggestions[qid] = out.filter((s) => {
+    const k = s.value.toLowerCase()
+    if (seen.has(k)) return false
+    seen.add(k)
+    return true
+  }).slice(0, 8)
+  locOpen[qid] = (locSuggestions[qid]?.length ?? 0) > 0
+}
+
+function addLocation(qid: string, value: string) {
+  const arr = (a as any)[qid] as string[]
+  const v = value.trim()
+  if (!v) return
+  if (!arr.some((x) => x.toLowerCase() === v.toLowerCase())) arr.push(v)
+  locInputs[qid] = ''
+  locSuggestions[qid] = []
+  locOpen[qid] = false
+}
+
+function removeLocation(qid: string, idx: number) {
+  const arr = (a as any)[qid] as string[]
+  arr.splice(idx, 1)
+}
+
+function commitLocFreeText(qid: string) {
+  const v = (locInputs[qid] || '').trim()
+  if (!v) return
+  // Prefer the first suggestion if the user pressed Enter while the dropdown
+  // is open — feels more responsive than committing the raw text.
+  const first = locSuggestions[qid]?.[0]?.value
+  addLocation(qid, first || v)
+}
+
+function onLocBackspace(qid: string, e: KeyboardEvent) {
+  // If the input is empty and the user backspaces, drop the last chip.
+  if ((locInputs[qid] || '').length > 0) return
+  const arr = (a as any)[qid] as string[]
+  if (arr.length === 0) return
+  e.preventDefault()
+  arr.pop()
+}
+
 // ── Answers ───────────────────────────────────────────────────────────────
 
 const a = reactive<Record<string, any>>({
   // Buy
-  buyLocation: '',
+  buyLocation: [] as string[],
   buyBudget: '',
   buyBedrooms: '',
   buyPropertyType: '',
@@ -186,7 +333,7 @@ const a = reactive<Record<string, any>>({
   energyImportance: '',
   passportRequired: '',
   // Sell
-  sellLocation: '',
+  sellLocation: [] as string[],
   sellPropertyType: '',
   sellBedrooms: '',
   sellTenure: '',
@@ -256,7 +403,7 @@ interface Opt {
 }
 interface Question {
   id: string
-  type: 'heading' | 'text' | 'chips'
+  type: 'heading' | 'text' | 'chips' | 'locations'
   label?: string
   hint?: string
   multiSelect?: boolean
@@ -274,9 +421,10 @@ const H = (label: string): Question => ({
 const buyQuestions: Question[] = [
   {
     id: 'buyLocation',
-    type: 'text',
+    type: 'locations',
     label: 'WHERE ARE YOU LOOKING?',
-    placeholder: 'City, area or postcode',
+    placeholder: 'Add a city, area or postcode…',
+    hint: 'Add as many as you like — we\'ll search all of them.',
   },
   {
     id: 'buyBudget',
@@ -405,9 +553,10 @@ const passportQuestion: Question = {
 const sellQuestions: Question[] = [
   {
     id: 'sellLocation',
-    type: 'text',
+    type: 'locations',
     label: 'WHERE IS IT?',
-    placeholder: 'Town, city or postcode',
+    placeholder: 'Add the town, city or postcode…',
+    hint: 'You can add a postcode and the town it sits in.',
   },
   {
     id: 'sellPropertyType',
@@ -803,6 +952,7 @@ async function save() {
                 ? a.buyMustHaves
                 : undefined,
               buyingTimeline: a.buyBedrooms || undefined,
+              targetAreas: a.buyLocation?.length ? a.buyLocation : undefined,
             }
           : {}),
         ...(isSeller
@@ -812,6 +962,7 @@ async function save() {
               propertyStyles: a.sellPropertyType
                 ? [a.sellPropertyType]
                 : undefined,
+              targetAreas: a.sellLocation?.length ? a.sellLocation : undefined,
             }
           : {}),
         ...(isLandlord
@@ -1196,6 +1347,99 @@ onMounted(() => {
 }
 .text-input::placeholder {
   color: #94a3b8;
+}
+
+/* ── Location chip-autocomplete ──────────────────────────────────────── */
+.loc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.loc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 7px 5px 10px;
+  background: #eafaf9;
+  color: #008c86;
+  border: 1px solid #b2e8e6;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.loc-chip-ic {
+  font-size: 11px;
+}
+.loc-chip-x {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 140, 134, 0.15);
+  color: #008c86;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-family: inherit;
+}
+.loc-chip-x:hover {
+  background: rgba(0, 140, 134, 0.28);
+}
+.loc-input-wrap {
+  position: relative;
+}
+.loc-drop {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1.5px solid #b2e8e6;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(35, 29, 69, 0.12);
+  z-index: 30;
+  overflow: hidden;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.loc-drop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.12s;
+}
+.loc-drop-item:last-child {
+  border-bottom: none;
+}
+.loc-drop-item:hover {
+  background: #eafaf9;
+}
+.loc-drop-ic {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.loc-drop-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.loc-drop-text strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: #231d45;
+}
+.loc-drop-sub {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 1px;
 }
 
 /* ── Chips ────────────────────────────────────────────────────────────── */
