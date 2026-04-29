@@ -21,6 +21,12 @@
             'property-result--selected': selectedPropertyId === property.id,
           }"
         >
+          <div class="property-result__ic">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
           <span class="property-result__address">{{ property.address }}</span>
           <span
             v-if="selectedPropertyId === property.id"
@@ -117,15 +123,22 @@ const handleContinue = () => {
 
 /* Property Result Item */
 .property-result {
-  @apply p-3 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors flex items-center justify-between;
+  @apply p-3 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors flex items-center gap-3;
 }
 
 .property-result--selected {
   @apply bg-brand-aqua/10 border-brand-aqua/20;
 }
 
+.property-result__ic {
+  color: #00a19a;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
 .property-result__address {
-  @apply text-gray-900 font-medium;
+  @apply text-gray-900 font-medium flex-1;
 }
 
 .property-result--selected .property-result__address {

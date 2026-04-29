@@ -114,6 +114,12 @@
             class="sd-sug-row"
             @click="selectSuggestion(s.postcode)"
           >
+            <div class="sd-sug-ic">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </div>
             <div class="sd-sug-body">
               <span class="sd-sug-addr">{{ s.address }}</span>
               <span class="sd-sug-sub">{{ s.area }} {{ s.postcode }}</span>
@@ -721,12 +727,20 @@ watch(
 .sd-sug-row {
   display: flex;
   align-items: center;
+  gap: 12px;
   background: white;
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 8px;
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sd-sug-ic {
+  color: #00a19a;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
 }
 
 .sd-sug-body {

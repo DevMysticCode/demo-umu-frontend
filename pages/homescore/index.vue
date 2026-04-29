@@ -3,8 +3,16 @@
     <!-- ── Top bar ──────────────────────────────────────── -->
     <div class="hs-idx-topbar">
       <button class="hs-idx-back" @click="router.back()" aria-label="Back">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <polyline points="15 18 9 12 15 6"/>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        >
+          <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
       <div class="hs-idx-topbar-spacer"></div>
@@ -17,9 +25,12 @@
         <span class="hs-idx-pulse"></span>HealthScore™
       </div>
 
-      <div class="hs-idx-headline">How energy efficient is any UK property?</div>
+      <div class="hs-idx-headline">
+        How energy efficient is any UK property?
+      </div>
       <div class="hs-idx-subhead">
-        Instantly scored from public EPC data. If it's your home, a 2-minute quiz refines it into your real number.
+        Instantly scored from public EPC data. If it's your home, a 2-minute
+        quiz refines it into your real number.
       </div>
 
       <div class="hs-idx-search-block">
@@ -45,8 +56,17 @@
 
       <div class="hs-idx-source-badge">
         <div class="hs-idx-source-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 22 L22 22 M4 22 L4 11 M20 22 L20 11 M8 22 L8 11 M16 22 L16 11 M12 22 L12 11 M2 11 L22 11 L12 4 Z"/>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M2 22 L22 22 M4 22 L4 11 M20 22 L20 11 M8 22 L8 11 M16 22 L16 11 M12 22 L12 11 M2 11 L22 11 L12 4 Z"
+            />
           </svg>
         </div>
         <div class="hs-idx-source-text">
@@ -61,21 +81,27 @@
           <div class="hs-idx-step-num">1</div>
           <div class="hs-idx-step-body">
             <div class="hs-idx-step-title">Search any UK address</div>
-            <div class="hs-idx-step-meta">Type a postcode and we'll match it to the right property</div>
+            <div class="hs-idx-step-meta">
+              Type a postcode and we'll match it to the right property
+            </div>
           </div>
         </div>
         <div class="hs-idx-step">
           <div class="hs-idx-step-num">2</div>
           <div class="hs-idx-step-body">
             <div class="hs-idx-step-title">Get your real number</div>
-            <div class="hs-idx-step-meta">Owners can refine it with a 2-minute quiz</div>
+            <div class="hs-idx-step-meta">
+              Owners can refine it with a 2-minute quiz
+            </div>
           </div>
         </div>
         <div class="hs-idx-step">
           <div class="hs-idx-step-num">3</div>
           <div class="hs-idx-step-body">
             <div class="hs-idx-step-title">See running costs &amp; risks</div>
-            <div class="hs-idx-step-meta">£/year breakdown · flood, mining, planning</div>
+            <div class="hs-idx-step-meta">
+              £/year breakdown · flood, mining, planning
+            </div>
           </div>
         </div>
       </div>
@@ -119,7 +145,6 @@ function onCheckClick() {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -146,7 +171,9 @@ function onCheckClick() {
   font-weight: 600;
   cursor: pointer;
 }
-.hs-idx-topbar-spacer { width: 32px; }
+.hs-idx-topbar-spacer {
+  width: 32px;
+}
 
 .hs-idx-screen {
   flex: 1;
@@ -217,15 +244,21 @@ function onCheckClick() {
   justify-content: center;
   gap: 8px;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.28);
-  transition: transform 0.12s, box-shadow 0.15s;
+  transition:
+    transform 0.12s,
+    box-shadow 0.15s;
   margin-bottom: 14px;
 }
 .hs-idx-cta:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 22px rgba(0, 161, 154, 0.34);
 }
-.hs-idx-cta:active { transform: translateY(0); }
-.hs-idx-cta-arrow { font-size: 16px; }
+.hs-idx-cta:active {
+  transform: translateY(0);
+}
+.hs-idx-cta-arrow {
+  font-size: 16px;
+}
 
 /* Trust pills */
 .hs-idx-trust-row {
@@ -247,7 +280,9 @@ function onCheckClick() {
   content: '·';
   color: #94a3b8;
 }
-.hs-idx-trust-row span:first-child::before { display: none; }
+.hs-idx-trust-row span:first-child::before {
+  display: none;
+}
 
 /* Source badge */
 .hs-idx-source-badge {
@@ -330,7 +365,9 @@ function onCheckClick() {
   font-size: 11px;
   font-weight: 800;
 }
-.hs-idx-step-body { flex: 1; }
+.hs-idx-step-body {
+  flex: 1;
+}
 .hs-idx-step-title {
   font-size: 13px;
   font-weight: 700;

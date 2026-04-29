@@ -68,9 +68,9 @@
         >
           <div class="addr-top">
             <div class="addr-ic">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
+                <circle cx="12" cy="10" r="3" />
               </svg>
             </div>
             <div class="addr-body">
@@ -2907,10 +2907,6 @@ onMounted(async () => {
 }
 
 .addr-ic {
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  background: #f0fdfa;
   color: #00a19a;
   display: grid;
   place-items: center;
