@@ -52,7 +52,12 @@ const continueToPreferences = () => {
 }
 
 const skipToApp = () => {
-  return navigateTo('/explore')
+  let redirectPath = null
+  if (typeof localStorage !== 'undefined') {
+    redirectPath = localStorage.getItem('redirectAfterLogin')
+    if (redirectPath) localStorage.removeItem('redirectAfterLogin')
+  }
+  return navigateTo(redirectPath || '/explore')
 }
 </script>
 

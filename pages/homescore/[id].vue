@@ -1989,7 +1989,7 @@ function onInterestedInBuying() {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(
         'redirectAfterLogin',
-        `/homescore/${propertyId}`,
+        `/homescore/${propertyId}?screen=buyer-results`,
       )
     }
     showAuthGate.value = true
@@ -2005,7 +2005,7 @@ function onBoostScore() {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(
         'redirectAfterLogin',
-        `/homescore/${propertyId}`,
+        `/homescore/${propertyId}?screen=quick-wins`,
       )
     }
     showAuthGate.value = true
@@ -2480,6 +2480,17 @@ function startQuestions() {
   // Read-only mode: don't let non-owners run the quiz
   if (readOnlyMode.value) {
     router.push(`/property/${propertyId}`)
+    return
+  }
+  // Gate guests — they need an account to save the quiz score.
+  if (isGuest.value) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/homescore/${propertyId}?screen=questions`,
+      )
+    }
+    showAuthGate.value = true
     return
   }
   const firstUnanswered = QUESTIONS.findIndex(
@@ -3022,6 +3033,23 @@ onMounted(async () => {
 
   const answeredCount = Object.keys(answers.value).length
   screen.value = answeredCount >= QUESTIONS.length ? 'results' : 'landing'
+
+  // Honour ?screen=… so users returning here after sign-in / signup land on
+  // the page they were trying to reach (e.g. buyer-results, questions,
+  // quick-wins) rather than the landing screen.
+  const requested = (route.query?.screen as string | undefined)?.trim()
+  const allowed: Screen[] = ['buyer-results', 'questions', 'quick-wins', 'move-ready', 'results', 'passport']
+  if (token && requested && (allowed as string[]).includes(requested)) {
+    if (requested === 'questions') {
+      const firstUnanswered = QUESTIONS.findIndex(
+        (q) => !(answers.value as Record<string, string>)[q.id],
+      )
+      step.value = firstUnanswered >= 0 ? firstUnanswered : 0
+    }
+    screen.value = requested as Screen
+    // Strip the query so back-nav / refresh doesn't re-trigger
+    router.replace({ path: route.path }).catch(() => {})
+  }
 })
 
 watch(showResult, (shown) => {

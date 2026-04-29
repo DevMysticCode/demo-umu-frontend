@@ -830,7 +830,14 @@ async function save() {
     isLoading.value = false
     const isBuyerRole =
       selectedRole.value === 'buy' || selectedRole.value === 'both'
-    await navigateTo('/explore')
+    // Honor a pending redirect (e.g. user was sent to signup from a
+    // HealthScore property page via "I'm interested" / "I'm the owner")
+    let redirectPath: string | null = null
+    if (typeof localStorage !== 'undefined') {
+      redirectPath = localStorage.getItem('redirectAfterLogin')
+      if (redirectPath) localStorage.removeItem('redirectAfterLogin')
+    }
+    await navigateTo(redirectPath || '/explore')
   }
 }
 
