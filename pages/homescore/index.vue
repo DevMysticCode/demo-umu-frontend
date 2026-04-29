@@ -1,38 +1,27 @@
 <template>
   <div class="hs-idx-page">
-    <!-- ── Teal hero with gauge ──────────────────────────── -->
-    <div class="hs-idx-hero">
-      <div class="hs-idx-hero-glow"></div>
-      <div class="hs-idx-topbar">
-        <button class="hs-idx-back" @click="router.back()" aria-label="Back">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
-        </button>
-        <div class="hs-idx-topbar-title">HealthScore™</div>
-        <div class="hs-idx-topbar-spacer"></div>
-      </div>
-      <div class="hs-idx-gauge-wrap">
-        <div class="hs-idx-gauge">
-          <svg viewBox="0 0 160 100" width="160" height="100">
-            <path d="M 16 90 A 64 64 0 0 1 144 90" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="10" stroke-linecap="round"/>
-            <path d="M 16 90 A 64 64 0 0 1 144 90" fill="none" stroke="#5eead4" stroke-width="10" stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="70.4"/>
-          </svg>
-          <div class="hs-idx-gauge-overlay">
-            <div class="hs-idx-gauge-num">65</div>
-            <div class="hs-idx-gauge-sub">Average UK score</div>
-          </div>
-        </div>
-      </div>
-      <div class="hs-idx-hero-headline">
-        <div class="hs-idx-hero-title">How energy efficient<br />is any UK property?</div>
-        <div class="hs-idx-hero-sub">Instantly scored from public EPC data. If it's your home, a 2-minute quiz refines it into your real number.</div>
-      </div>
+    <!-- ── Top bar ──────────────────────────────────────── -->
+    <div class="hs-idx-topbar">
+      <button class="hs-idx-back" @click="router.back()" aria-label="Back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <div class="hs-idx-topbar-spacer"></div>
+      <div class="hs-idx-topbar-spacer"></div>
     </div>
 
-    <!-- ── Body ──────────────────────────────────────────── -->
-    <div class="hs-idx-body">
-      <!-- Search input — uses live dropdown that already shows passport pills + EPC -->
+    <!-- ── Body ─────────────────────────────────────────── -->
+    <div class="hs-idx-screen">
+      <div class="hs-idx-brand-pill">
+        <span class="hs-idx-pulse"></span>HealthScore™
+      </div>
+
+      <div class="hs-idx-headline">How energy efficient is any UK property?</div>
+      <div class="hs-idx-subhead">
+        Instantly scored from public EPC data. If it's your home, a 2-minute quiz refines it into your real number.
+      </div>
+
       <div class="hs-idx-search-block">
         <PropertySearchInput
           placeholder="Postcode or address…"
@@ -42,35 +31,56 @@
           @enter="onSearchEnter"
         />
       </div>
-      <button class="hs-idx-cta" @click="onCheckClick">Check HealthScore™ →</button>
-      <div class="hs-idx-cta-note">Free · Instant · No account needed</div>
 
-      <!-- Feature rows -->
-      <div class="hs-idx-feat-list">
-        <div class="hs-idx-feat-row">
-          <div class="hs-idx-feat-ic hs-idx-feat-ic--brand">⚡</div>
-          <div>
-            <div class="hs-idx-feat-title">Auto-scored instantly</div>
-            <div class="hs-idx-feat-sub">From public EPC &amp; Land Registry data</div>
+      <button class="hs-idx-cta" @click="onCheckClick">
+        Check HealthScore™
+        <span class="hs-idx-cta-arrow">→</span>
+      </button>
+
+      <div class="hs-idx-trust-row">
+        <span>Free</span>
+        <span>Instant</span>
+        <span>No account needed</span>
+      </div>
+
+      <div class="hs-idx-source-badge">
+        <div class="hs-idx-source-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 22 L22 22 M4 22 L4 11 M20 22 L20 11 M8 22 L8 11 M16 22 L16 11 M12 22 L12 11 M2 11 L22 11 L12 4 Z"/>
+          </svg>
+        </div>
+        <div class="hs-idx-source-text">
+          <span class="hs-idx-source-lbl">Powered by</span>
+          <strong>EPC</strong> &amp; <strong>HM Land Registry</strong>
+        </div>
+      </div>
+
+      <div class="hs-idx-how">
+        <div class="hs-idx-how-label">How it works</div>
+        <div class="hs-idx-step">
+          <div class="hs-idx-step-num">1</div>
+          <div class="hs-idx-step-body">
+            <div class="hs-idx-step-title">Search any UK address</div>
+            <div class="hs-idx-step-meta">Type a postcode and we'll match it to the right property</div>
           </div>
         </div>
-        <div class="hs-idx-feat-row">
-          <div class="hs-idx-feat-ic hs-idx-feat-ic--amber">📋</div>
-          <div>
-            <div class="hs-idx-feat-title">Own it? Get your real score</div>
-            <div class="hs-idx-feat-sub">2-minute quiz refines EPC data into your actual number</div>
+        <div class="hs-idx-step">
+          <div class="hs-idx-step-num">2</div>
+          <div class="hs-idx-step-body">
+            <div class="hs-idx-step-title">Get your real number</div>
+            <div class="hs-idx-step-meta">Owners can refine it with a 2-minute quiz</div>
           </div>
         </div>
-        <div class="hs-idx-feat-row">
-          <div class="hs-idx-feat-ic hs-idx-feat-ic--green">💰</div>
-          <div>
-            <div class="hs-idx-feat-title">See your savings potential</div>
-            <div class="hs-idx-feat-sub">Real £/yr energy cost breakdown</div>
+        <div class="hs-idx-step">
+          <div class="hs-idx-step-num">3</div>
+          <div class="hs-idx-step-body">
+            <div class="hs-idx-step-title">See running costs &amp; risks</div>
+            <div class="hs-idx-step-meta">£/year breakdown · flood, mining, planning</div>
           </div>
         </div>
       </div>
 
-      <div style="height: 40px" />
+      <div style="height: 32px" />
     </div>
   </div>
 </template>
@@ -89,14 +99,9 @@ function goToScore(id: string) {
 
 function onSearchEnter(q: string) {
   lastQuery.value = q
-  // Pressing enter with no dropdown selection — keep the user on this page;
-  // the live dropdown already shows results as they type.
 }
 
 function onCheckClick() {
-  // The PropertySearchInput is the source of truth for the entered text.
-  // If the user typed nothing, focus it; otherwise nothing to do — they pick
-  // a property from the dropdown.
   const input = document.querySelector<HTMLInputElement>(
     '.hs-idx-search-block input',
   )
@@ -105,205 +110,236 @@ function onCheckClick() {
 </script>
 
 <style scoped>
-/* ── Page ─────────────────────────────────────────────── */
 .hs-idx-page {
   min-height: 100dvh;
   background: #fff;
-  color: #1a1a2e;
+  color: #231d45;
   max-width: 28rem;
   width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui,
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-/* ── Teal hero ───────────────────────────────────────── */
-.hs-idx-hero {
-  background: linear-gradient(160deg, #00a19a 0%, #008c86 55%, #006b66 100%);
-  padding: 20px 20px 28px;
-  padding-top: calc(20px + env(safe-area-inset-top));
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-.hs-idx-hero-glow {
-  position: absolute;
-  right: -40px;
-  top: -40px;
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.12),
-    transparent 70%
-  );
-  border-radius: 50%;
-  pointer-events: none;
-}
 .hs-idx-topbar {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
-  position: relative;
-  z-index: 1;
+  justify-content: space-between;
+  padding: 14px 20px 8px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+  flex-shrink: 0;
+  background: #fff;
 }
 .hs-idx-back {
   width: 32px;
   height: 32px;
-  border: none;
-  background: rgba(255, 255, 255, 0.15);
   border-radius: 50%;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
   display: grid;
   place-items: center;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-.hs-idx-back:active {
-  background: rgba(255, 255, 255, 0.25);
-}
-.hs-idx-topbar-title {
-  flex: 1;
-  text-align: center;
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
-}
-.hs-idx-topbar-spacer {
-  width: 32px;
-}
-
-.hs-idx-gauge-wrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 14px;
-  position: relative;
-  z-index: 1;
-}
-.hs-idx-gauge {
-  position: relative;
-  width: 160px;
-  height: 100px;
-}
-.hs-idx-gauge-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 4px;
-}
-.hs-idx-gauge-num {
-  font-size: 42px;
-  font-weight: 900;
-  color: #fff;
-  line-height: 1;
-  letter-spacing: -2px;
-}
-.hs-idx-gauge-sub {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.65);
+  color: #008c86;
+  font-size: 14px;
   font-weight: 600;
-  margin-top: 2px;
+  cursor: pointer;
 }
-.hs-idx-hero-headline {
-  text-align: center;
-  position: relative;
-  z-index: 1;
-}
-.hs-idx-hero-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.2;
-  margin-bottom: 6px;
-  letter-spacing: -0.02em;
-}
-.hs-idx-hero-sub {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.55;
+.hs-idx-topbar-spacer { width: 32px; }
+
+.hs-idx-screen {
+  flex: 1;
+  padding: 20px 24px 24px;
+  background: #fff;
 }
 
-/* ── Body ─────────────────────────────────────────────── */
-.hs-idx-body {
-  flex: 1;
-  padding: 20px 20px 0;
-}
-.hs-idx-search-block {
-  margin-bottom: 14px;
-}
-.hs-idx-cta {
-  width: 100%;
-  border: none;
-  background: #00a19a;
-  color: #fff;
-  font-size: 15px;
+/* Brand pill */
+.hs-idx-brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 10.5px;
   font-weight: 800;
-  padding: 15px;
-  border-radius: 14px;
-  cursor: pointer;
-  font-family: inherit;
-  letter-spacing: -0.01em;
-  margin-bottom: 6px;
-  transition: background 0.15s ease;
-}
-.hs-idx-cta:active {
-  background: #008c86;
-}
-.hs-idx-cta-note {
-  text-align: center;
-  font-size: 11.5px;
-  color: #94a3b8;
+  letter-spacing: 0.06em;
+  color: #008c86;
+  text-transform: uppercase;
   margin-bottom: 24px;
 }
-
-/* ── Feature rows ─────────────────────────────────────── */
-.hs-idx-feat-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.hs-idx-pulse {
+  width: 6px;
+  height: 6px;
+  background: #00a19a;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #b2e8e6;
 }
-.hs-idx-feat-row {
+
+/* Headline */
+.hs-idx-headline {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: #231d45;
+  margin-bottom: 14px;
+}
+.hs-idx-subhead {
+  font-size: 14px;
+  color: #4a5568;
+  line-height: 1.55;
+  margin-bottom: 28px;
+  max-width: 320px;
+}
+
+/* Search */
+.hs-idx-search-block {
+  margin-bottom: 12px;
+}
+
+/* Primary CTA */
+.hs-idx-cta {
+  width: 100%;
+  background: #00a19a;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  background: #fff;
-  border: 1.5px solid #e8e8f0;
-  border-radius: 14px;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(0, 161, 154, 0.28);
+  transition: transform 0.12s, box-shadow 0.15s;
+  margin-bottom: 14px;
 }
-.hs-idx-feat-ic {
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
+.hs-idx-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(0, 161, 154, 0.34);
+}
+.hs-idx-cta:active { transform: translateY(0); }
+.hs-idx-cta-arrow { font-size: 16px; }
+
+/* Trust pills */
+.hs-idx-trust-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.hs-idx-trust-row span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.hs-idx-trust-row span::before {
+  content: '·';
+  color: #94a3b8;
+}
+.hs-idx-trust-row span:first-child::before { display: none; }
+
+/* Source badge */
+.hs-idx-source-badge {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-size: 13px;
+  color: #231d45;
+  margin-bottom: 32px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  box-shadow: 0 1px 2px rgba(0, 140, 134, 0.04);
+}
+.hs-idx-source-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #00b5ad, #008c86);
+  color: #fff;
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  font-size: 20px;
+  box-shadow: 0 2px 6px rgba(0, 140, 134, 0.32);
 }
-.hs-idx-feat-ic--brand {
-  background: #f0fdfa;
+.hs-idx-source-icon svg {
+  width: 15px;
+  height: 15px;
 }
-.hs-idx-feat-ic--amber {
-  background: #fef3c7;
+.hs-idx-source-text {
+  flex: 1;
+  line-height: 1.35;
 }
-.hs-idx-feat-ic--green {
-  background: #f0fdf4;
+.hs-idx-source-lbl {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #008c86;
+  display: block;
+  margin-bottom: 1px;
 }
-.hs-idx-feat-title {
-  font-size: 13.5px;
+.hs-idx-source-text strong {
+  color: #231d45;
+  font-weight: 800;
+}
+
+/* How it works */
+.hs-idx-how {
+  padding-top: 20px;
+  border-top: 1px solid #eef0f6;
+}
+.hs-idx-how-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 14px;
+}
+.hs-idx-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 10px 0;
+}
+.hs-idx-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
+  color: #008c86;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 800;
+}
+.hs-idx-step-body { flex: 1; }
+.hs-idx-step-title {
+  font-size: 13px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #231d45;
 }
-.hs-idx-feat-sub {
-  font-size: 12px;
-  color: #4a4a6a;
+.hs-idx-step-meta {
+  font-size: 11.5px;
+  color: #94a3b8;
   margin-top: 2px;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 </style>

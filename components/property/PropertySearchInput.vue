@@ -76,13 +76,13 @@
               v-if="r.hasPassport && r.passportPublished"
               class="psi-drop-badge psi-drop-badge--pub"
             >
-              📘 Published
+              Passport Published
             </span>
             <span
               v-else-if="r.hasPassport"
               class="psi-drop-badge psi-drop-badge--prog"
             >
-              📘 In progress
+              Passport In Progress
             </span>
           </div>
         </div>
@@ -236,7 +236,7 @@ function clearQuery() {
 function epcColor(rating: string): string {
   const map: Record<string, string> = {
     A: '#00b050', B: '#33b800', C: '#92d050',
-    D: '#d4e800', E: '#ffbf00', F: '#ff6600', G: '#ff0000',
+    D: '#a39200', E: '#e08a00', F: '#ff6600', G: '#ff0000',
   }
   return map[(rating ?? '').toUpperCase()] ?? '#8e8e93'
 }

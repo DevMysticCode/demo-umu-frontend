@@ -104,13 +104,13 @@
               v-if="addr.hasPassport && addr.passportPublished"
               class="addr-badge addr-badge--pub"
             >
-              📘 Published
+              Passport Published
             </span>
             <span
               v-else-if="addr.hasPassport"
               class="addr-badge addr-badge--prog"
             >
-              📘 In progress
+              Passport In Progress
             </span>
           </div>
         </div>
@@ -1802,8 +1802,8 @@ function epcColor(rating: string): string {
     A: '#00b050',
     B: '#33b800',
     C: '#92d050',
-    D: '#d4e800',
-    E: '#ffbf00',
+    D: '#a39200',
+    E: '#e08a00',
     F: '#ff6600',
     G: '#ff0000',
   }
