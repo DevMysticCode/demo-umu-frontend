@@ -61,10 +61,7 @@
           </div>
 
           <!-- Bottom badge strip: EPC + Passport state -->
-          <div
-            v-if="r.epcRating || r.hasPassport"
-            class="psi-drop-badges"
-          >
+          <div class="psi-drop-badges">
             <span
               v-if="r.epcRating"
               class="psi-drop-badge"
@@ -76,13 +73,22 @@
               v-if="r.hasPassport && r.passportPublished"
               class="psi-drop-badge psi-drop-badge--pub"
             >
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="psi-drop-badge-ic" />
               Passport Published
             </span>
             <span
               v-else-if="r.hasPassport"
               class="psi-drop-badge psi-drop-badge--prog"
             >
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="psi-drop-badge-ic" />
               Passport In Progress
+            </span>
+            <span
+              v-else
+              class="psi-drop-badge psi-drop-badge--unclaimed"
+            >
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="psi-drop-badge-ic" />
+              Unclaimed · Claim yours? →
             </span>
           </div>
         </div>
@@ -402,6 +408,9 @@ defineExpose({ clearQuery })
   padding-left: 42px;
 }
 .psi-drop-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 9.5px;
   font-weight: 700;
   padding: 2px 7px;
@@ -411,6 +420,12 @@ defineExpose({ clearQuery })
   color: #fff;
   letter-spacing: 0.01em;
 }
+.psi-drop-badge-ic {
+  width: 10px;
+  height: 10px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 .psi-drop-badge--pub {
   background: #231d45;
   color: #fff;
@@ -418,6 +433,11 @@ defineExpose({ clearQuery })
 .psi-drop-badge--prog {
   background: #fef3c7;
   color: #92400e;
+}
+.psi-drop-badge--unclaimed {
+  background: #f0fdfa;
+  color: #008c86;
+  border: 1px solid #b2e8e6;
 }
 .psi-drop-badge--hs {
   background: #f0fdfa;

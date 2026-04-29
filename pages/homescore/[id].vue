@@ -81,13 +81,23 @@
               v-if="passportState === 'published'"
               class="hs-addr-badge hs-addr-badge--pub"
             >
-              📘 Published
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="hs-addr-badge-ic" />
+              Published
             </span>
             <span
               v-else-if="passportState === 'inProgress'"
               class="hs-addr-badge hs-addr-badge--prog"
             >
-              📘 In progress
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="hs-addr-badge-ic" />
+              In progress
+            </span>
+            <span
+              v-else
+              class="hs-addr-badge hs-addr-badge--unclaimed"
+              @click="goToClaim"
+            >
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="hs-addr-badge-ic" />
+              Unclaimed · Claim yours? →
             </span>
           </div>
         </div>
@@ -194,17 +204,16 @@
             <template v-else>
               <div
                 v-if="searchedTodayCount > 0"
-                class="hs-searched-live hs-searched-live--soft"
+                class="hs-searched-live"
               >
-                <span class="hs-searched-pulse hs-searched-pulse--brand" />
+                <span class="hs-searched-pulse" />
                 {{ searchedTodayCount }} searched today
               </div>
               <div class="hs-searched-title">
-                People searched this address this month
+                None found a verified Passport.
               </div>
               <div class="hs-searched-sub">
-                If this is your home, claiming a Passport will let buyers see
-                a verified record. 📘
+                If this is your home, claim it to be the first on this street.
               </div>
             </template>
           </div>
@@ -2843,6 +2852,10 @@ async function claimFromMoveReady() {
   router.push(`/claim/${propertyId}`)
 }
 
+function goToClaim() {
+  router.push(`/claim/${propertyId}`)
+}
+
 function goBack() {
   if (screen.value === 'passport') {
     screen.value = 'results'
@@ -3831,6 +3844,9 @@ watch(screen, (s) => {
   flex-shrink: 0;
 }
 .hs-addr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 10px;
   font-weight: 800;
   color: #fff;
@@ -3840,6 +3856,12 @@ watch(screen, (s) => {
   white-space: nowrap;
   line-height: 1.4;
 }
+.hs-addr-badge-ic {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 .hs-addr-badge--pub {
   background: #231d45;
   color: #fff;
@@ -3847,6 +3869,17 @@ watch(screen, (s) => {
 .hs-addr-badge--prog {
   background: #fef3c7;
   color: #92400e;
+}
+.hs-addr-badge--unclaimed {
+  background: #f0fdfa;
+  color: #008c86;
+  border: 1px solid #b2e8e6;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.hs-addr-badge--unclaimed:hover,
+.hs-addr-badge--unclaimed:active {
+  background: #ccfbf1;
 }
 
 .hs-savings-hero {
@@ -5988,18 +6021,11 @@ watch(screen, (s) => {
   position: relative;
   overflow: hidden;
 }
-.hs-searched-card--published {
-  background: linear-gradient(135deg, #0d9488, #0f766e);
-  color: #fff;
-}
-.hs-searched-card--inprogress {
+.hs-searched-card--published,
+.hs-searched-card--inprogress,
+.hs-searched-card--unclaimed {
   background: linear-gradient(135deg, #1a1640, #231d45);
   color: #fff;
-}
-.hs-searched-card--unclaimed {
-  background: linear-gradient(135deg, #eafaf9, #d3f3f0);
-  color: #231d45;
-  border: 1px solid #b2e8e6;
 }
 .hs-searched-glow {
   position: absolute;
@@ -6009,13 +6035,7 @@ watch(screen, (s) => {
   height: 80px;
   border-radius: 50%;
   pointer-events: none;
-  background: rgba(255, 255, 255, 0.08);
-}
-.hs-searched-card--inprogress .hs-searched-glow {
   background: rgba(251, 191, 36, 0.1);
-}
-.hs-searched-card--unclaimed .hs-searched-glow {
-  background: rgba(0, 161, 154, 0.1);
 }
 .hs-searched-numwrap {
   text-align: center;
@@ -6029,9 +6049,11 @@ watch(screen, (s) => {
   line-height: 1;
   letter-spacing: -1.5px;
 }
-.hs-searched-card--published .hs-searched-num { color: #fff; }
-.hs-searched-card--inprogress .hs-searched-num { color: #fbbf24; }
-.hs-searched-card--unclaimed .hs-searched-num { color: #008c86; }
+.hs-searched-card--published .hs-searched-num,
+.hs-searched-card--inprogress .hs-searched-num,
+.hs-searched-card--unclaimed .hs-searched-num {
+  color: #fbbf24;
+}
 .hs-searched-numlbl {
   font-size: 9px;
   font-weight: 700;
@@ -6039,9 +6061,11 @@ watch(screen, (s) => {
   letter-spacing: 0.08em;
   margin-top: 1px;
 }
-.hs-searched-card--published .hs-searched-numlbl { color: rgba(255, 255, 255, 0.6); }
-.hs-searched-card--inprogress .hs-searched-numlbl { color: rgba(255, 255, 255, 0.45); }
-.hs-searched-card--unclaimed .hs-searched-numlbl { color: #008c86; }
+.hs-searched-card--published .hs-searched-numlbl,
+.hs-searched-card--inprogress .hs-searched-numlbl,
+.hs-searched-card--unclaimed .hs-searched-numlbl {
+  color: rgba(255, 255, 255, 0.45);
+}
 .hs-searched-divider {
   width: 1px;
   height: 44px;
@@ -6049,9 +6073,11 @@ watch(screen, (s) => {
   position: relative;
   z-index: 1;
 }
-.hs-searched-card--published .hs-searched-divider { background: rgba(255, 255, 255, 0.2); }
-.hs-searched-card--inprogress .hs-searched-divider { background: rgba(255, 255, 255, 0.1); }
-.hs-searched-card--unclaimed .hs-searched-divider { background: rgba(0, 140, 134, 0.18); }
+.hs-searched-card--published .hs-searched-divider,
+.hs-searched-card--inprogress .hs-searched-divider,
+.hs-searched-card--unclaimed .hs-searched-divider {
+  background: rgba(255, 255, 255, 0.1);
+}
 .hs-searched-body {
   flex: 1;
   min-width: 0;
@@ -6098,16 +6124,20 @@ watch(screen, (s) => {
   line-height: 1.3;
 }
 .hs-searched-card--published .hs-searched-title,
-.hs-searched-card--inprogress .hs-searched-title { color: #fff; }
-.hs-searched-card--unclaimed .hs-searched-title { color: #231d45; }
+.hs-searched-card--inprogress .hs-searched-title,
+.hs-searched-card--unclaimed .hs-searched-title {
+  color: #fff;
+}
 .hs-searched-sub {
   font-size: 11.5px;
   margin-top: 4px;
   line-height: 1.4;
 }
-.hs-searched-card--published .hs-searched-sub { color: rgba(255, 255, 255, 0.75); }
-.hs-searched-card--inprogress .hs-searched-sub { color: rgba(255, 255, 255, 0.55); }
-.hs-searched-card--unclaimed .hs-searched-sub { color: #4a5568; }
+.hs-searched-card--published .hs-searched-sub,
+.hs-searched-card--inprogress .hs-searched-sub,
+.hs-searched-card--unclaimed .hs-searched-sub {
+  color: rgba(255, 255, 255, 0.55);
+}
 
 /* Auth-gate modal */
 .hs-authgate-overlay {

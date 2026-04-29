@@ -89,10 +89,7 @@
               HS™ {{ addr.homeScore ?? addr.epcScore }}
             </div>
           </div>
-          <div
-            v-if="addr.epcRating || addr.hasPassport"
-            class="addr-badges"
-          >
+          <div class="addr-badges">
             <span
               v-if="addr.epcRating"
               class="addr-badge"
@@ -104,13 +101,22 @@
               v-if="addr.hasPassport && addr.passportPublished"
               class="addr-badge addr-badge--pub"
             >
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
               Passport Published
             </span>
             <span
               v-else-if="addr.hasPassport"
               class="addr-badge addr-badge--prog"
             >
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
               Passport In Progress
+            </span>
+            <span
+              v-else
+              class="addr-badge addr-badge--unclaimed"
+            >
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
+              Unclaimed · Claim yours? →
             </span>
           </div>
         </div>
@@ -2947,6 +2953,9 @@ onMounted(async () => {
 }
 
 .addr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 9.5px;
   font-weight: 700;
   padding: 2px 7px;
@@ -2957,6 +2966,13 @@ onMounted(async () => {
   letter-spacing: 0.01em;
 }
 
+.addr-badge-ic {
+  width: 10px;
+  height: 10px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .addr-badge--pub {
   background: #231d45;
   color: #fff;
@@ -2965,6 +2981,12 @@ onMounted(async () => {
 .addr-badge--prog {
   background: #fef3c7;
   color: #92400e;
+}
+
+.addr-badge--unclaimed {
+  background: #f0fdfa;
+  color: #008c86;
+  border: 1px solid #b2e8e6;
 }
 
 .selected-addr-pill {
