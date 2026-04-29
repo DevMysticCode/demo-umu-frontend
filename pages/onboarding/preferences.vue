@@ -381,7 +381,7 @@ const buyQuestions: Question[] = [
     id: 'energyImportance',
     type: 'chips',
     label: 'HOW IMPORTANT IS ENERGY EFFICIENCY?',
-    hint: 'Affects HomeScore™ weighting and running cost estimates',
+    hint: 'Affects HealthScore™ weighting and running cost estimates',
     opts: [
       { v: 'Very — low bills matter' },
       { v: 'Somewhat' },

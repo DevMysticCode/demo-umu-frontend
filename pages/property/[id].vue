@@ -2577,8 +2577,8 @@ const gaugeRatingText = computed(() => {
   const s = gaugeScore.value ?? 0
   if (s >= 80) return 'Excellent condition'
   if (s >= 60) return 'Good condition'
-  if (s >= 40) return 'Room to grow'
-  return 'Needs attention'
+  if (s >= 40) return 'Room to improve'
+  return 'Plenty of opportunities'
 })
 
 const gaugeDesc = computed(() => {

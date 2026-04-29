@@ -507,7 +507,7 @@ const cards = [
     sub: 'Found too late to act',
     backIcon: '🔍',
     backTitle: 'See it before you offer',
-    backSub: 'HomeScore™ surfaces defects upfront — not months in.',
+    backSub: 'HealthScore™ surfaces defects upfront — not months in.',
   },
   {
     frontGradient: 'linear-gradient(150deg, #008c86, #00b5ad)',

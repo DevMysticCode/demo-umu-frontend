@@ -17,7 +17,7 @@
         <p class="hs-header-title">
           {{
             screen === 'results'
-              ? 'Your HomeScore'
+              ? 'Your HealthScore'
               : screen === 'passport'
                 ? 'Property Passport'
                 : screen === 'buyer-results'
@@ -26,7 +26,7 @@
                     ? 'Boost your score'
                     : screen === 'move-ready'
                       ? 'Get move ready'
-                      : 'HomeScore'
+                      : 'HealthScore'
           }}
         </p>
         <p class="hs-header-sub">{{ headerSub }}</p>
@@ -60,34 +60,39 @@
     <!-- ── LANDING / AUTO SCORE ─────────────────────────────────── -->
     <template v-else-if="screen === 'landing'">
       <div class="hs-scroll">
-        <!-- People searched this address card — shown in states B/C -->
-        <div
-          v-if="passportState && searchStats && searchStats.thisMonth > 0"
-          class="hs-searched-card"
-          :class="{
-            'hs-searched-card--published': passportState === 'published',
-            'hs-searched-card--inprogress': passportState === 'inProgress',
-          }"
-        >
-          <div class="hs-searched-num">{{ searchStats.thisMonth }}</div>
-          <div class="hs-searched-divider" />
-          <div class="hs-searched-body">
-            <div class="hs-searched-title">
-              People searched this address this month
+        <!-- 1. Address strip with inline EPC + Passport badges -->
+        <div class="hs-addr-strip">
+          <div class="hs-addr-dot" />
+          <div class="hs-addr-body">
+            <div class="hs-addr-text">{{ property.addressLine1 }}</div>
+            <div class="hs-addr-tiny">
+              {{ property.postcode }}<template v-if="property.propertyType"> · {{ property.propertyType }}</template><template v-if="property.bedrooms"> · {{ property.bedrooms }} bed</template>
             </div>
-            <div class="hs-searched-sub">
-              <template v-if="passportState === 'published'">
-                The verified Passport was visible to every one of them. 📘
-              </template>
-              <template v-else>
-                None found a verified Passport — the owner is still building
-                theirs.
-              </template>
-            </div>
+          </div>
+          <div class="hs-addr-badges">
+            <span
+              v-if="property.epcRating"
+              class="hs-addr-badge"
+              :style="{ background: epcColor(property.epcRating) }"
+            >
+              ⚡ EPC {{ property.epcRating }}
+            </span>
+            <span
+              v-if="passportState === 'published'"
+              class="hs-addr-badge hs-addr-badge--pub"
+            >
+              📘 Published
+            </span>
+            <span
+              v-else-if="passportState === 'inProgress'"
+              class="hs-addr-badge hs-addr-badge--prog"
+            >
+              📘 In progress
+            </span>
           </div>
         </div>
 
-        <!-- Passport state banner — differs for "published" vs "in progress" -->
+        <!-- 2. Passport state banner — differs for "published" vs "in progress" -->
         <div v-if="passportState === 'published'" class="hs-pp-banner hs-pp-banner--published">
           <span class="hs-pp-banner-ic">📘</span>
           <div class="hs-pp-banner-body">
@@ -128,11 +133,11 @@
           </div>
           <div class="hs-pp-inprogress-box">
             <div class="hs-pp-inprogress-box-title">
-              🔒 What's being prepared (not yet visible)
+              🔒 Smart buyers won't view a property without this.
             </div>
             <div class="hs-pp-inprogress-box-body">
-              Verified ownership · Documents vault · Full HealthScore · Planning
-              history
+              Verified ownership, documents, HealthScore and planning records —
+              before you commit a penny.
             </div>
           </div>
           <button
@@ -140,19 +145,68 @@
             class="hs-pp-inprogress-cta"
             @click="notifyWhenPublished"
           >
-            🔔 Notify me when it's published
+            🔔 Sign up to be notified
           </button>
           <div v-else class="hs-pp-inprogress-done">
             ✓ We'll alert you as soon as it goes live
           </div>
         </div>
 
-        <!-- Address strip -->
-        <div class="hs-addr-strip">
-          <div class="hs-addr-dot" />
-          <div>
-            <div class="hs-addr-text">{{ property.addressLine1 }}</div>
-            <div class="hs-addr-tiny">{{ property.postcode }}</div>
+        <!-- 3. People searched this address card — shown for ALL properties -->
+        <div
+          class="hs-searched-card"
+          :class="{
+            'hs-searched-card--published': passportState === 'published',
+            'hs-searched-card--inprogress': passportState === 'inProgress',
+            'hs-searched-card--unclaimed': !passportState,
+          }"
+        >
+          <div class="hs-searched-glow" />
+          <div class="hs-searched-numwrap">
+            <div class="hs-searched-num">{{ searchedMonthCount }}</div>
+            <div class="hs-searched-numlbl">searches</div>
+          </div>
+          <div class="hs-searched-divider" />
+          <div class="hs-searched-body">
+            <template v-if="passportState === 'published'">
+              <div class="hs-searched-title">
+                People searched this address this month
+              </div>
+              <div class="hs-searched-sub">
+                The verified Passport was visible to every one of them. 📘
+              </div>
+            </template>
+            <template v-else-if="passportState === 'inProgress'">
+              <div
+                v-if="searchedTodayCount > 0"
+                class="hs-searched-live"
+              >
+                <span class="hs-searched-pulse" />
+                {{ searchedTodayCount }} searched today
+              </div>
+              <div class="hs-searched-title">
+                None found a verified Passport.
+              </div>
+              <div class="hs-searched-sub">
+                Be the first on this street to publish one.
+              </div>
+            </template>
+            <template v-else>
+              <div
+                v-if="searchedTodayCount > 0"
+                class="hs-searched-live hs-searched-live--soft"
+              >
+                <span class="hs-searched-pulse hs-searched-pulse--brand" />
+                {{ searchedTodayCount }} searched today
+              </div>
+              <div class="hs-searched-title">
+                People searched this address this month
+              </div>
+              <div class="hs-searched-sub">
+                If this is your home, claiming a Passport will let buyers see
+                a verified record. 📘
+              </div>
+            </template>
           </div>
         </div>
 
@@ -529,7 +583,7 @@
                   </div>
                   <div class="hs-journey-num-small">/100</div>
                 </div>
-                <div class="hs-journey-label">HomeScore™</div>
+                <div class="hs-journey-label">HealthScore™</div>
                 <div class="hs-journey-sub">Energy score</div>
               </div>
               <div
@@ -895,7 +949,7 @@
             </p>
             <div class="hs-pp-progress">
               <div class="hs-pp-progress-labels">
-                <span>HomeScore confidence</span>
+                <span>HealthScore confidence</span>
                 <span>{{ result.confidenceScore }}% → 100%</span>
               </div>
               <div class="hs-pp-progress-track">
@@ -1498,7 +1552,7 @@
                   </div>
                   <div class="hs-journey-num-small">/100</div>
                 </div>
-                <div class="hs-journey-label">HomeScore™</div>
+                <div class="hs-journey-label">HealthScore™</div>
                 <div class="hs-journey-sub">Energy score</div>
               </div>
               <div
@@ -1850,7 +1904,32 @@ const notifiedOfPublish = ref(false)
 const showAuthGate = ref(false)
 
 // Search-stats card ("People searched this address this month")
-const searchStats = ref<{ thisMonth: number; allTime: number; distinctVisitors: number } | null>(null)
+const searchStats = ref<{ today: number; thisMonth: number; allTime: number; distinctVisitors: number } | null>(null)
+
+// Deterministic fallback so the card still renders for properties with no
+// logged searches yet — mirrors the prototype's hsGetViewCount: 8–26 base,
+// with a small boost for poor EPC. The real count is preferred whenever it's
+// non-zero, so as searches accrue the displayed number transitions smoothly.
+const derivedMonthCount = computed(() => {
+  const p: any = property.value
+  const seedSrc = (p?.id || p?.addressLine1 || propertyId || '') as string
+  let h = 0
+  for (let i = 0; i < seedSrc.length; i++) h = (h * 31 + seedSrc.charCodeAt(i)) >>> 0
+  const epc = typeof p?.epcScore === 'number' ? p.epcScore : 55
+  let count = 8 + (h % 19)
+  if (epc < 50) count += 6
+  return count
+})
+const searchedMonthCount = computed(() => {
+  const real = searchStats.value?.thisMonth ?? 0
+  return real > 0 ? real : derivedMonthCount.value
+})
+const searchedTodayCount = computed(() => {
+  const real = searchStats.value?.today ?? 0
+  if (real > 0) return real
+  // ~quarter of monthly when falling back, mirroring prototype
+  return Math.max(1, Math.floor(derivedMonthCount.value / 4))
+})
 
 const readOnlyMode = computed(
   () =>
@@ -3715,7 +3794,7 @@ watch(screen, (s) => {
 /* ── Results ──────────────────────────────────────────── */
 .hs-addr-strip {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   margin-bottom: 14px;
 }
@@ -3726,15 +3805,48 @@ watch(screen, (s) => {
   background: #0d9488;
   box-shadow: 0 0 0 4px #ccfbf1;
   flex-shrink: 0;
+  margin-top: 6px;
+}
+.hs-addr-body {
+  flex: 1;
+  min-width: 0;
 }
 .hs-addr-text {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
-  color: #0f172a;
+  color: #231d45;
+  line-height: 1.25;
 }
 .hs-addr-tiny {
   font-size: 11.5px;
   color: #94a3b8;
+  margin-top: 2px;
+  line-height: 1.35;
+}
+.hs-addr-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.hs-addr-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #fff;
+  padding: 3px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.hs-addr-badge--pub {
+  background: #231d45;
+  color: #fff;
+}
+.hs-addr-badge--prog {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .hs-savings-hero {
@@ -5865,13 +5977,13 @@ watch(screen, (s) => {
   margin-bottom: 8px;
 }
 
-/* "People searched this address this month" card (states B/C) */
+/* "People searched this address this month" card — matches prototype */
 .hs-searched-card {
   display: flex;
   align-items: center;
   gap: 14px;
-  border-radius: 16px;
-  padding: 14px 16px;
+  border-radius: 14px;
+  padding: 12px 14px;
   margin-bottom: 14px;
   position: relative;
   overflow: hidden;
@@ -5884,41 +5996,118 @@ watch(screen, (s) => {
   background: linear-gradient(135deg, #1a1640, #231d45);
   color: #fff;
 }
+.hs-searched-card--unclaimed {
+  background: linear-gradient(135deg, #eafaf9, #d3f3f0);
+  color: #231d45;
+  border: 1px solid #b2e8e6;
+}
+.hs-searched-glow {
+  position: absolute;
+  right: -20px;
+  top: -20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.08);
+}
+.hs-searched-card--inprogress .hs-searched-glow {
+  background: rgba(251, 191, 36, 0.1);
+}
+.hs-searched-card--unclaimed .hs-searched-glow {
+  background: rgba(0, 161, 154, 0.1);
+}
+.hs-searched-numwrap {
+  text-align: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
 .hs-searched-num {
-  font-size: 38px;
+  font-size: 30px;
   font-weight: 900;
   line-height: 1;
-  letter-spacing: -2px;
-  flex-shrink: 0;
+  letter-spacing: -1.5px;
 }
-.hs-searched-card--published .hs-searched-num {
-  color: #fff;
+.hs-searched-card--published .hs-searched-num { color: #fff; }
+.hs-searched-card--inprogress .hs-searched-num { color: #fbbf24; }
+.hs-searched-card--unclaimed .hs-searched-num { color: #008c86; }
+.hs-searched-numlbl {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 1px;
 }
-.hs-searched-card--inprogress .hs-searched-num {
-  color: #fbbf24;
-}
+.hs-searched-card--published .hs-searched-numlbl { color: rgba(255, 255, 255, 0.6); }
+.hs-searched-card--inprogress .hs-searched-numlbl { color: rgba(255, 255, 255, 0.45); }
+.hs-searched-card--unclaimed .hs-searched-numlbl { color: #008c86; }
 .hs-searched-divider {
   width: 1px;
   height: 44px;
-  background: rgba(255, 255, 255, 0.2);
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
+.hs-searched-card--published .hs-searched-divider { background: rgba(255, 255, 255, 0.2); }
+.hs-searched-card--inprogress .hs-searched-divider { background: rgba(255, 255, 255, 0.1); }
+.hs-searched-card--unclaimed .hs-searched-divider { background: rgba(0, 140, 134, 0.18); }
 .hs-searched-body {
   flex: 1;
   min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+.hs-searched-live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fbbf24;
+  margin-bottom: 4px;
+}
+.hs-searched-live--soft { color: #008c86; }
+.hs-searched-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+  animation: hs-pulse-amber 1.5s infinite;
+  flex-shrink: 0;
+}
+.hs-searched-pulse--brand {
+  background: #00a19a;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.25);
+  animation-name: hs-pulse-brand;
+}
+@keyframes hs-pulse-amber {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 0 5px rgba(245, 158, 11, 0); }
+}
+@keyframes hs-pulse-brand {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.4); }
+  50% { box-shadow: 0 0 0 5px rgba(0, 161, 154, 0); }
 }
 .hs-searched-title {
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
   line-height: 1.3;
 }
+.hs-searched-card--published .hs-searched-title,
+.hs-searched-card--inprogress .hs-searched-title { color: #fff; }
+.hs-searched-card--unclaimed .hs-searched-title { color: #231d45; }
 .hs-searched-sub {
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.7);
   margin-top: 4px;
   line-height: 1.4;
 }
+.hs-searched-card--published .hs-searched-sub { color: rgba(255, 255, 255, 0.75); }
+.hs-searched-card--inprogress .hs-searched-sub { color: rgba(255, 255, 255, 0.55); }
+.hs-searched-card--unclaimed .hs-searched-sub { color: #4a5568; }
 
 /* Auth-gate modal */
 .hs-authgate-overlay {

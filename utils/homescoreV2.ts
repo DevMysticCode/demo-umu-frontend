@@ -190,8 +190,8 @@ function renewableBonus(p: EpcV2Property): number {
 function getRating(total: number): { rating: string; ratingColor: string } {
   if (total >= 85) return { rating: 'Excellent', ratingColor: '#00c896' }
   if (total >= 70) return { rating: 'Good', ratingColor: '#00a19a' }
-  if (total >= 50) return { rating: 'Needs Attention', ratingColor: '#f59e0b' }
-  return { rating: 'Significant Issues', ratingColor: '#ef4444' }
+  if (total >= 50) return { rating: 'Room to improve', ratingColor: '#f59e0b' }
+  return { rating: 'Plenty of opportunities', ratingColor: '#ef4444' }
 }
 
 // ── Main V2 scorer ────────────────────────────────────────────────────────────

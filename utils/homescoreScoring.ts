@@ -861,8 +861,8 @@ const PILLAR_MAX: Record<string, number> = {
 function getRating(total: number): { rating: string; ratingColor: string } {
   if (total >= 80) return { rating: 'Excellent', ratingColor: '#16a34a' }
   if (total >= 65) return { rating: 'Good', ratingColor: '#0d9488' }
-  if (total >= 45) return { rating: 'Needs Attention', ratingColor: '#f59e0b' }
-  return { rating: 'Significant Issues', ratingColor: '#dc2626' }
+  if (total >= 45) return { rating: 'Room to improve', ratingColor: '#f59e0b' }
+  return { rating: 'Plenty of opportunities', ratingColor: '#dc2626' }
 }
 
 export function calculateScore(answers: Partial<Answers>): ScoreResult {
