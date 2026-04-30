@@ -122,24 +122,42 @@ defineProps({
 } */
 
 .passport-address {
-  margin-top: auto;
-  text-align: center;
   position: absolute;
-  bottom: 20%;
+  bottom: 18%;
   left: 50%;
   transform: translateX(-50%);
+  width: 76%;
+  max-width: 76%;
+  text-align: center;
+  color: #fff;
+  line-height: 1.15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 .address-line {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 4px;
+  font-size: 8px;
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .address-line-small {
-  font-size: 11px;
+  font-size: 9.5px;
+  font-weight: 600;
   opacity: 0.9;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 </style>
-
-

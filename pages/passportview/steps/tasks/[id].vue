@@ -26,7 +26,8 @@
             <small>Task Progress</small>
             <strong>
               {{ remainingQuestions }}
-              {{ remainingQuestions === 1 ? 'question' : 'questions' }} remaining
+              {{ remainingQuestions === 1 ? 'question' : 'questions' }}
+              remaining
               <em>· ~{{ estimatedMinutesLeft }} min left</em>
             </strong>
           </div>
@@ -35,11 +36,26 @@
 
       <div class="action-buttons">
         <button class="qpill ghost" @click="openHelp">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
           Help
         </button>
         <button class="qpill primary" @click="openVideo">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="6 4 20 12 6 20 6 4" />
+          </svg>
           Play Video
         </button>
       </div>
@@ -128,7 +144,8 @@
         <div>
           <h2 class="qheader-h2">Question {{ currentQuestionIndex + 1 }}</h2>
           <div class="qheader-sub">
-            {{ currentQuestionIndex + 1 }} of {{ totalQuestions }} in this section
+            {{ currentQuestionIndex + 1 }} of {{ totalQuestions }} in this
+            section
           </div>
         </div>
         <div class="qnav">
@@ -166,7 +183,22 @@
       <!-- "What is this?" tip — kept on aqua per request -->
       <div v-if="currentQuestion?.helpContent" class="qtip">
         <div class="qtip-ic">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2v1.3h6v-1.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/></svg>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 18h6" />
+            <path d="M10 22h4" />
+            <path
+              d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2v1.3h6v-1.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"
+            />
+          </svg>
         </div>
         <div class="qtip-body">
           <strong>What is this?</strong>
@@ -546,8 +578,10 @@ const taskProgress = computed(() => {
   return Math.round((completed / totalQuestions.value) * 100)
 })
 
-const taskAnsweredCount = computed(() =>
-  currentQuestions.value.filter((q) => q.answer != null && q.answer !== '').length,
+const taskAnsweredCount = computed(
+  () =>
+    currentQuestions.value.filter((q) => q.answer != null && q.answer !== '')
+      .length,
 )
 const estimatedMinutesLeft = computed(() => {
   const r = remainingQuestions.value || 0
@@ -1067,7 +1101,7 @@ const handleContinue = () => {
 .qhero {
   margin: 8px 0 16px;
   border-radius: 24px;
-  background: linear-gradient(160deg, #e6fbf6 0%, #ccfbf1 60%, #b8f2e6 100%);
+  background: linear-gradient(160deg, #e6fbf6 0%, #def7f1 60%, #b8f2e6 100%);
   padding: 22px 22px;
   position: relative;
   overflow: hidden;
@@ -1078,7 +1112,11 @@ const handleContinue = () => {
   inset: -40% -20% auto auto;
   width: 220px;
   height: 220px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.7), transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.7),
+    transparent 65%
+  );
   pointer-events: none;
 }
 .qhero-badge {
@@ -1144,7 +1182,10 @@ const handleContinue = () => {
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
-  background: conic-gradient(#0d9488 calc(var(--p) * 1%), rgba(15, 118, 110, 0.15) 0);
+  background: conic-gradient(
+    #0d9488 calc(var(--p) * 1%),
+    rgba(15, 118, 110, 0.15) 0
+  );
   display: grid;
   place-items: center;
   flex-shrink: 0;

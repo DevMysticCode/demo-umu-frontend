@@ -42,7 +42,9 @@
               <div
                 class="pp-hero-dash-fill"
                 :style="{ width: safeProgress + '%' }"
-              />
+              >
+                <OPIcon name="progressMan" class="pp-hero-dash-man" />
+              </div>
             </div>
             <div class="pp-hero-dash-issued">
               <span class="pp-hero-dash-dot" />
@@ -138,33 +140,36 @@
           <SegmentedSwitch v-model="viewMode" :options="viewOptions" />
         </div>
 
-        <div v-if="viewMode === 'list'" class="pp-sections-list">
+        <div v-if="viewMode === 'list'" class="steps-list">
           <div
             v-for="step in steps"
             :key="step.id"
-            class="pp-section-card"
+            class="step-card"
             @click="navigateToStep(step.id)"
           >
-            <div class="pp-section-row">
-              <div class="pp-section-icon">
-                <OPIcon :name="step.key" class="w-[24px] h-[24px]" />
+            <div class="step-icon-container">
+              <div class="step-icon-bg">
+                <OPIcon :name="step.key" class="w-[80px] h-[80px]" />
               </div>
-              <div class="pp-section-body">
-                <div class="pp-section-name">{{ step.title }}</div>
-                <div class="pp-section-meta">
-                  {{ getStepPoints(step) }} points earned so far
-                </div>
-              </div>
-              <div class="pp-section-progress">
-                <span
-                  class="pp-section-pct"
-                  :class="{ zero: step.progress === 0, full: step.progress === 100 }"
-                >
-                  {{ step.progress }}%
-                </span>
-              </div>
-              <span class="pp-section-chev">›</span>
             </div>
+            <div class="step-info">
+              <h3 class="step-title">{{ step.title }}</h3>
+              <p class="step-points">
+                {{ getStepPoints(step) }} points earned so far
+              </p>
+              <div class="step-progress">
+                <div class="progress-bar small">
+                  <div
+                    class="progress-fill"
+                    :style="{ width: step.progress + '%' }"
+                  ></div>
+                </div>
+                <span class="progress-percentage">{{ step.progress }}%</span>
+              </div>
+            </div>
+            <button class="step-arrow">
+              <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
+            </button>
           </div>
         </div>
 
@@ -1188,13 +1193,24 @@ const onRoleSwitch = (role) => {
   height: 6px;
   background: #eef0f6;
   border-radius: 999px;
-  overflow: hidden;
+  position: relative;
+  overflow: visible;
 }
 .pp-hero-dash-fill {
   height: 100%;
   background: linear-gradient(90deg, #008c86, #00b5ad);
   border-radius: 999px;
   transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+}
+.pp-hero-dash-man {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px !important;
+  height: 22px !important;
+  pointer-events: none;
 }
 .pp-hero-dash-issued {
   display: flex;

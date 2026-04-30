@@ -383,7 +383,7 @@ const goBack = () => {
 .hero {
   margin: 8px 0 16px;
   border-radius: 24px;
-  background: linear-gradient(160deg, #ffffff 0%, #ccfbf1 60%, #d1e8e3 100%);
+  background: linear-gradient(160deg, #ffffff 0%, #def7f1 60%, #d1e8e3 100%);
   padding: 22px 22px 24px;
   position: relative;
   overflow: hidden;
