@@ -11,115 +11,123 @@
     </div>
 
     <div class="passport-content">
-      <div class="passport-cards-carousel">
-        <PassportCard
-          :line1="passportAddress.line1"
-          :line2="passportAddress.line2"
-        />
-      </div>
-
-      <div class="property-info">
-        <div class="info-header">
-          <div class="address-row">
-            <span class="pin-icon"
-              ><OPIcon name="pin" class="w-[24px] h-[24px]"
-            /></span>
-            <div class="property-address-small">
-              {{ passportAddress.line1 }}<br /><span
-                class="property-address-small-sub"
-                >{{ passportAddress.line2 }}</span
-              >
+      <!-- ── Premium Passport hero — book on left, dashboard on right ── -->
+      <div class="pp-hero">
+        <div class="pp-hero-glow" />
+        <div class="pp-hero-book">
+          <PassportCard
+            :line1="passportAddress.line1"
+            :line2="passportAddress.line2"
+          />
+        </div>
+        <div class="pp-hero-info">
+          <div class="pp-hero-eyebrow">Property Passport</div>
+          <div class="pp-hero-addr-row">
+            <div class="pp-hero-addr-text">
+              <div class="pp-hero-addr-l1">{{ passportAddress.line1 }}</div>
+              <div class="pp-hero-addr-l2">{{ passportAddress.line2 }}</div>
             </div>
-            <button class="dropdown-btn" @click="showPropertiesModal = true">
-              <OPIcon name="caretDown" class="w-[24px] h-[24px]" />
+            <button class="pp-hero-switch" @click="showPropertiesModal = true">
+              <OPIcon name="caretDown" class="w-[16px] h-[16px]" />
             </button>
           </div>
-        </div>
-
-        <div class="progress-section">
-          <div class="progress-container">
-            <!-- <div class="progress-bar">
-              <div
-                class="progress-fill"
-                :style="{ width: overallProgress + '%' }"
-              ></div>
-            </div> -->
-
-            <div class="progress-bar">
-              <!-- Completed progress -->
-              <div class="progress-fill" :style="{ width: safeProgress + '%' }">
-                <!-- Man icon at end of progress -->
-                <OPIcon name="progressMan" class="progress-man" />
-              </div>
-
-              <!-- Dotted remaining track -->
-              <div class="progress-dotted"></div>
+          <div class="pp-hero-dash">
+            <div class="pp-hero-dash-row">
+              <span class="pp-hero-dash-label">
+                {{ steps.length }} sections · {{ overallProgress }}%
+              </span>
+              <span class="pp-hero-dash-pct">{{ overallProgress }}%</span>
             </div>
-          </div>
-          <div class="progress-info">
-            <p class="progress-label">PASSPORT PROGRESS</p>
-            <span class="progress-percentage">{{ overallProgress }}%</span>
+            <div class="pp-hero-dash-bar">
+              <div
+                class="pp-hero-dash-fill"
+                :style="{ width: safeProgress + '%' }"
+              />
+            </div>
+            <div class="pp-hero-dash-issued">
+              <span class="pp-hero-dash-dot" />
+              Passport issued
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="match_publish_container">
-        <button @click="setTab('buyers')">
-          <OPIcon name="matchToBuyers" class="w-[17px] h-[17px]" /> Match to
-          Buyers<span v-if="matchedBuyers.length" class="pp-match-badge">{{ matchedBuyers.length }}</span>
+      <!-- ── Action row — Match to Buyers / Publish ── -->
+      <div class="pp-action-row">
+        <button class="pp-action-btn pp-action-outline" @click="setTab('buyers')">
+          <OPIcon name="matchToBuyers" class="w-[15px] h-[15px]" />
+          Match to Buyers
+          <span v-if="matchedBuyers.length" class="pp-action-badge">{{ matchedBuyers.length }}</span>
         </button>
         <button
-          :class="['active', { 'publish-loading': publishLoading }]"
-          @click="togglePublish"
+          class="pp-action-btn pp-action-primary"
+          :class="{ 'pp-action-loading': publishLoading }"
           :disabled="publishLoading"
+          @click="togglePublish"
         >
-          <OPIcon name="share" class="w-[17px] h-[17px]" />
+          <OPIcon name="share" class="w-[15px] h-[15px]" />
           {{ publishLoading ? '...' : isPublished ? 'Unpublish' : 'Publish' }}
         </button>
       </div>
 
-      <div class="collaborators-info">
-        <div class="collaborators">
-          <div class="collaborator-avatars">
-            <div
-              class="avatar"
-              v-for="collaborator in displayCollaborators"
-              :key="collaborator.id"
-            >
-              <div class="avatar-circle">
-                {{ getInitials(collaborator.firstName, collaborator.lastName) }}
-              </div>
-            </div>
-            <button class="add-collaborator" @click="openCollaboratorModal">
-              +
-            </button>
-          </div>
-          <span class="collaborators-label"
-            >{{ collaborators.length }}
-            {{
-              collaborators.length === 1 ? 'Collaborator' : 'Collaborators'
-            }}</span
+      <!-- ── Collaborators row ── -->
+      <div class="pp-collab-row" @click="openCollaboratorModal">
+        <button class="pp-collab-add" type="button">+</button>
+        <div class="pp-collab-stack">
+          <div
+            v-for="collaborator in displayCollaborators"
+            :key="collaborator.id"
+            class="pp-collab-avatar"
           >
-          <button class="add-icon" @click="openCollaboratorModal">
-            <OPIcon name="addCollaborator" class="w-[28px] h-[28px]" />
-          </button>
+            {{ getInitials(collaborator.firstName, collaborator.lastName) }}
+          </div>
         </div>
+        <div class="pp-collab-text">
+          {{ collaborators.length }}
+          {{ collaborators.length === 1 ? 'Collaborator' : 'Collaborators' }}
+        </div>
+        <span class="pp-collab-chev">›</span>
       </div>
 
-      <!-- Tab bar -->
-      <div class="pp-tab-bar">
-        <button :class="['pp-tab', activeTab === 'sections' ? 'active' : '']" @click="setTab('sections')">
-          <span class="pp-tab-icon">📋</span>
-          <span class="pp-tab-label">Sections</span>
+      <!-- ── Sub-tabs ── -->
+      <div class="pp-subtabs">
+        <button
+          :class="['pp-subtab', activeTab === 'sections' ? 'active' : '']"
+          @click="setTab('sections')"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <line x1="8" y1="6" x2="21" y2="6" />
+            <line x1="8" y1="12" x2="21" y2="12" />
+            <line x1="8" y1="18" x2="21" y2="18" />
+            <line x1="3" y1="6" x2="3.01" y2="6" />
+            <line x1="3" y1="12" x2="3.01" y2="12" />
+            <line x1="3" y1="18" x2="3.01" y2="18" />
+          </svg>
+          Sections
         </button>
-        <button :class="['pp-tab', activeTab === 'street' ? 'active' : '']" @click="setTab('street')">
-          <span class="pp-tab-icon">🗺</span>
-          <span class="pp-tab-label">Street</span>
+        <button
+          :class="['pp-subtab', activeTab === 'street' ? 'active' : '']"
+          @click="setTab('street')"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="1 6 9 2 15 6 23 2 23 18 15 22 9 18 1 22 1 6" />
+            <line x1="9" y1="2" x2="9" y2="18" />
+            <line x1="15" y1="6" x2="15" y2="22" />
+          </svg>
+          Street
         </button>
-        <button :class="['pp-tab', activeTab === 'buyers' ? 'active' : '']" @click="setTab('buyers')">
-          <span class="pp-tab-icon">👥</span>
-          <span class="pp-tab-label">Buyers</span>
-          <span v-if="matchedBuyers.length" class="pp-tab-badge">{{ matchedBuyers.length }}</span>
+        <button
+          :class="['pp-subtab', activeTab === 'buyers' ? 'active' : '']"
+          @click="setTab('buyers')"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Buyers
+          <span v-if="matchedBuyers.length" class="pp-subtab-badge">{{ matchedBuyers.length }}</span>
         </button>
       </div>
 
@@ -130,36 +138,33 @@
           <SegmentedSwitch v-model="viewMode" :options="viewOptions" />
         </div>
 
-        <div v-if="viewMode === 'list'" class="steps-list">
+        <div v-if="viewMode === 'list'" class="pp-sections-list">
           <div
             v-for="step in steps"
             :key="step.id"
-            class="step-card"
+            class="pp-section-card"
             @click="navigateToStep(step.id)"
           >
-            <div class="step-icon-container">
-              <div class="step-icon-bg">
-                <OPIcon :name="step.key" class="w-[80px] h-[80px]" />
+            <div class="pp-section-row">
+              <div class="pp-section-icon">
+                <OPIcon :name="step.key" class="w-[24px] h-[24px]" />
               </div>
-            </div>
-            <div class="step-info">
-              <h3 class="step-title">{{ step.title }}</h3>
-              <p class="step-points">
-                {{ getStepPoints(step) }} points earned so far
-              </p>
-              <div class="step-progress">
-                <div class="progress-bar small">
-                  <div
-                    class="progress-fill"
-                    :style="{ width: step.progress + '%' }"
-                  ></div>
+              <div class="pp-section-body">
+                <div class="pp-section-name">{{ step.title }}</div>
+                <div class="pp-section-meta">
+                  {{ getStepPoints(step) }} points earned so far
                 </div>
-                <span class="progress-percentage">{{ step.progress }}%</span>
               </div>
+              <div class="pp-section-progress">
+                <span
+                  class="pp-section-pct"
+                  :class="{ zero: step.progress === 0, full: step.progress === 100 }"
+                >
+                  {{ step.progress }}%
+                </span>
+              </div>
+              <span class="pp-section-chev">›</span>
             </div>
-            <button class="step-arrow">
-              <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
-            </button>
           </div>
         </div>
 
@@ -491,12 +496,20 @@ const onRoleSwitch = (role) => {
 <style scoped>
 .passport-page {
   min-height: 100vh;
+  background: #fff;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+  color: #231d45;
 }
 
 .passport-header {
-  background: white;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e0e0e0;
+  background: #fff;
+  padding: 14px 20px 12px;
+  border-bottom: 1px solid #eef0f6;
+}
+
+.passport-content {
+  padding: 16px 20px 80px !important;
 }
 
 .header-top {
@@ -1050,4 +1063,403 @@ const onRoleSwitch = (role) => {
 .pp-buyer-tag.match { background: #dcfce7; color: #166534; }
 .pp-buyer-tag.partial { background: #fef3c7; color: #92400e; }
 .pp-buyer-score { font-size: 16px; font-weight: 800; flex-shrink: 0; min-width: 38px; text-align: right; }
+
+/* ── Premium Passport hero (prototype-matching) ───────────────────── */
+.pp-hero {
+  background:
+    radial-gradient(circle at 18% 30%, rgba(0, 161, 154, 0.08), transparent 50%),
+    radial-gradient(circle at 90% 90%, rgba(35, 29, 69, 0.04), transparent 50%),
+    linear-gradient(180deg, #f4fbfa 0%, #fff 100%);
+  border: 1px solid #b2e8e6;
+  border-radius: 18px;
+  padding: 18px 16px 16px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.pp-hero-glow {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.18), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.pp-hero-book {
+  width: 104px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  filter: drop-shadow(0 8px 18px rgba(0, 140, 134, 0.28));
+}
+.pp-hero-book :deep(.passport-card) {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+}
+.pp-hero-book :deep(.passport-container) {
+  width: 100%;
+  height: 140px;
+}
+.pp-hero-book :deep(.passport-image) {
+  width: 100%;
+  height: 100%;
+}
+.pp-hero-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+.pp-hero-eyebrow {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #00a19a;
+  margin-bottom: 4px;
+}
+.pp-hero-addr-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.pp-hero-addr-text {
+  flex: 1;
+  min-width: 0;
+}
+.pp-hero-addr-l1 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.pp-hero-addr-l2 {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+.pp-hero-switch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
+  color: #008c86;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.pp-hero-dash {
+  margin-top: 12px;
+}
+.pp-hero-dash-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.pp-hero-dash-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #4a5568;
+}
+.pp-hero-dash-pct {
+  color: #00a19a;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+}
+.pp-hero-dash-bar {
+  height: 6px;
+  background: #eef0f6;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.pp-hero-dash-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #008c86, #00b5ad);
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.pp-hero-dash-issued {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-top: 7px;
+  letter-spacing: 0.02em;
+}
+.pp-hero-dash-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #00a19a;
+  box-shadow: 0 0 0 2.5px #eafaf9;
+}
+
+/* ── Action row (Match to Buyers + Publish) ────────────────────── */
+.pp-action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.pp-action-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 11px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.1s, box-shadow 0.15s;
+}
+.pp-action-btn:active {
+  transform: scale(0.98);
+}
+.pp-action-outline {
+  background: #fff;
+  color: #231d45;
+  border: 1.5px solid #eef0f6;
+}
+.pp-action-outline:hover {
+  border-color: #b2e8e6;
+}
+.pp-action-primary {
+  background: #00a19a;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.28);
+}
+.pp-action-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.pp-action-loading {
+  opacity: 0.85;
+}
+.pp-action-badge {
+  background: #00a19a;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 999px;
+  margin-left: 2px;
+}
+
+/* ── Collaborators row ─────────────────────────────────────────── */
+.pp-collab-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #eef0f6;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.pp-collab-row:hover {
+  border-color: #b2e8e6;
+}
+.pp-collab-add {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
+  display: grid;
+  place-items: center;
+  color: #008c86;
+  font-size: 16px;
+  font-weight: 600;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  line-height: 1;
+}
+.pp-collab-stack {
+  display: flex;
+  margin-left: -4px;
+}
+.pp-collab-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00b5ad, #008c86);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+  margin-left: -8px;
+}
+.pp-collab-text {
+  font-size: 12.5px;
+  color: #4a5568;
+  font-weight: 600;
+  flex: 1;
+}
+.pp-collab-chev {
+  color: #94a3b8;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* ── Sub-tabs ──────────────────────────────────────────────────── */
+.pp-subtabs {
+  display: flex;
+  background: #fff;
+  border: 1px solid #eef0f6;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 12px;
+}
+.pp-subtab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 9px 8px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.pp-subtab.active {
+  background: #00a19a;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 161, 154, 0.28);
+}
+.pp-subtab-badge {
+  background: #fff;
+  color: #00a19a;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 999px;
+  margin-left: 2px;
+}
+.pp-subtab:not(.active) .pp-subtab-badge {
+  background: #00a19a;
+  color: #fff;
+}
+
+/* ── Section cards ─────────────────────────────────────────────── */
+.pp-sections-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pp-section-card {
+  background: #fff;
+  border: 1px solid #eef0f6;
+  border-radius: 14px;
+  padding: 0 14px;
+  box-shadow:
+    0 1px 3px rgba(35, 29, 69, 0.06),
+    0 2px 8px rgba(35, 29, 69, 0.04);
+  transition: border-color 0.15s, transform 0.1s;
+  cursor: pointer;
+}
+.pp-section-card:hover {
+  border-color: #b2e8e6;
+}
+.pp-section-card:active {
+  transform: scale(0.99);
+}
+.pp-section-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+}
+.pp-section-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
+  border: 1px solid #b2e8e6;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #008c86;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.pp-section-body {
+  flex: 1;
+  min-width: 0;
+}
+.pp-section-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #231d45;
+}
+.pp-section-meta {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+.pp-section-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.pp-section-pct {
+  font-size: 11px;
+  font-weight: 800;
+  background: #eafaf9;
+  color: #008c86;
+  border: 1px solid #b2e8e6;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.pp-section-pct.zero {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border-color: #eef0f6;
+}
+.pp-section-pct.full {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+.pp-section-chev {
+  color: #94a3b8;
+  font-size: 18px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
 </style>
