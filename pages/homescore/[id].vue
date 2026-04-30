@@ -119,115 +119,7 @@
           </div>
         </div>
 
-        <!-- 2. Passport state banner — published variant matches prototype -->
-        <div v-if="passportState === 'published'" class="hs-pp-pub">
-          <div class="hs-pp-pub-glow" />
-          <div class="hs-pp-pub-inner">
-            <div class="hs-pp-pub-eyebrow">
-              📘 Property Passport — published
-            </div>
-            <div class="hs-pp-pub-title">
-              The owner's verified record is live.
-            </div>
-            <div class="hs-pp-pub-body">
-              A
-              <strong>Property Passport</strong>
-              bundles a home's title, documents, condition and history —
-              verified, in one place. Unlock this one to see everything before
-              you offer.
-            </div>
-            <div class="hs-pp-pub-explainer">
-              <div class="hs-pp-pub-explainer-title">
-                📘 What you'll unlock
-              </div>
-              <div class="hs-pp-pub-explainer-row">
-                <span class="hs-pp-pub-check">✓</span>
-                Title verified by HM Land Registry
-              </div>
-              <div class="hs-pp-pub-explainer-row">
-                <span class="hs-pp-pub-check">✓</span>
-                Owner identity confirmed (KYC)
-              </div>
-              <div class="hs-pp-pub-explainer-row">
-                <span class="hs-pp-pub-check">✓</span>
-                Documents, condition &amp; history
-              </div>
-              <div class="hs-pp-pub-explainer-row">
-                <span class="hs-pp-pub-check">✓</span>
-                Real HealthScore — not just EPC
-              </div>
-            </div>
-            <button
-              class="hs-pp-pub-unlock"
-              @click="router.push(`/property/${propertyId}`)"
-            >
-              🔓 Unlock full Passport · £99
-            </button>
-            <button
-              v-if="isGuest"
-              class="hs-pp-owner-cta hs-pp-owner-cta--published"
-              @click="goToSignIn"
-            >
-              📘 Already own this property? Sign in to manage →
-            </button>
-          </div>
-        </div>
-
-        <div
-          v-else-if="passportState === 'inProgress'"
-          class="hs-pp-inprogress"
-        >
-          <div class="hs-pp-inprogress-head">
-            <span class="hs-pp-inprogress-ic">📘</span>
-            <div>
-              <div class="hs-pp-inprogress-title">
-                The owner has started a Passport — not yet published
-              </div>
-              <div class="hs-pp-inprogress-sub">
-                The seller is building their record. You're seeing public EPC
-                data only for now. Once they publish, you'll see their verified
-                score, documents and history.
-              </div>
-            </div>
-          </div>
-          <div class="hs-pp-inprogress-box">
-            <div class="hs-pp-inprogress-box-title">
-              📊 What you can see now
-            </div>
-            <div class="hs-pp-inprogress-box-body">
-              Public EPC data only · Estimated HealthScore based on energy
-              rating
-            </div>
-          </div>
-          <div class="hs-pp-inprogress-box">
-            <div class="hs-pp-inprogress-box-title">
-              🔒 Smart buyers won't view a property without this.
-            </div>
-            <div class="hs-pp-inprogress-box-body">
-              Verified ownership, documents, HealthScore and planning records —
-              before you commit a penny.
-            </div>
-          </div>
-          <button
-            v-if="!notifiedOfPublish"
-            class="hs-pp-inprogress-cta"
-            @click="notifyWhenPublished"
-          >
-            🔔 Sign up to be notified
-          </button>
-          <div v-else class="hs-pp-inprogress-done">
-            ✓ We'll alert you as soon as it goes live
-          </div>
-          <button
-            v-if="isGuest"
-            class="hs-pp-owner-cta hs-pp-owner-cta--inprogress"
-            @click="goToSignIn"
-          >
-            📘 Building this Passport? Sign in to continue →
-          </button>
-        </div>
-
-        <!-- 3. People searched this address card — shown for ALL properties -->
+        <!-- People searched this address card — shown for ALL properties -->
         <div
           class="hs-searched-card"
           :class="{
@@ -248,7 +140,12 @@
                 People searched this address this month
               </div>
               <div class="hs-searched-sub">
-                The verified Passport was visible to every one of them. 📘
+                The verified Passport was visible to every one of them.
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="hs-searched-sub-ic"
+                />
               </div>
             </template>
             <template v-else-if="passportState === 'inProgress'">
@@ -437,6 +334,165 @@
             Estimated from public records. We'll refresh when the owner
             publishes.
           </div>
+        </div>
+
+        <!-- Passport state banner — relocated below score card per prototype -->
+        <div v-if="passportState === 'published'" class="hs-pp-pub">
+          <div class="hs-pp-pub-glow" />
+          <div class="hs-pp-pub-inner">
+            <div class="hs-pp-pub-eyebrow">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="hs-pp-eyebrow-ic"
+              />
+              Property Passport — published
+            </div>
+            <div class="hs-pp-pub-title">
+              The owner's verified record is live.
+            </div>
+            <div class="hs-pp-pub-body">
+              A
+              <strong>Property Passport</strong>
+              bundles a home's title, documents, condition and history —
+              verified, in one place. Unlock this one to see everything before
+              you offer.
+            </div>
+            <div class="hs-pp-pub-explainer">
+              <div class="hs-pp-pub-explainer-title">
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="hs-pp-eyebrow-ic"
+                />
+                What you'll unlock
+              </div>
+              <div class="hs-pp-pub-explainer-row">
+                <span class="hs-pp-pub-check">✓</span>
+                Title verified by HM Land Registry
+              </div>
+              <div class="hs-pp-pub-explainer-row">
+                <span class="hs-pp-pub-check">✓</span>
+                Owner identity confirmed (KYC)
+              </div>
+              <div class="hs-pp-pub-explainer-row">
+                <span class="hs-pp-pub-check">✓</span>
+                Documents, condition &amp; history
+              </div>
+              <div class="hs-pp-pub-explainer-row">
+                <span class="hs-pp-pub-check">✓</span>
+                Real HealthScore — not just EPC
+              </div>
+            </div>
+            <button
+              class="hs-pp-pub-unlock"
+              @click="router.push(`/property/${propertyId}`)"
+            >
+              🔓 Unlock full Passport · £99
+            </button>
+            <button
+              v-if="isGuest"
+              class="hs-pp-owner-cta hs-pp-owner-cta--published"
+              @click="goToSignIn"
+            >
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="hs-pp-owner-cta-ic"
+              />
+              Already own this property? Sign in to manage →
+            </button>
+          </div>
+        </div>
+
+        <div v-else-if="passportState === 'inProgress'" class="hs-pp-claimed">
+          <div class="hs-pp-claimed-eyebrow">
+            <img
+              src="/op-icons/passportview/umu-passport.png"
+              alt=""
+              class="hs-pp-eyebrow-ic"
+            />
+            The owner has started a Passport — not yet published
+          </div>
+          <!-- <div class="hs-pp-claimed-title">
+            The owner is preparing a verified record of this home.
+          </div> -->
+          <div class="hs-pp-claimed-body">
+            The seller is building their record. You're seeing public EPC data
+            only for now.
+          </div>
+          <div class="hs-pp-claimed-explainer-amber">
+            <div class="hs-pp-claimed-explainer-title-amber">
+              📊 What you can see now
+            </div>
+            <div style="font-size: 11px; color: #78350f">
+              Public EPC data only · Estimated HealthScore based on energy
+              rating
+            </div>
+          </div>
+          <div class="hs-pp-claimed-explainer-amber">
+            <div class="hs-pp-claimed-explainer-title-amber">
+              🔒 Smart buyers won't view a property without this.
+            </div>
+            <div style="font-size: 11px; color: #78350f">
+              Verified ownership, documents, HealthScore and planning records —
+              before you commit a penny.
+            </div>
+          </div>
+
+          <div class="hs-pp-claimed-explainer">
+            <div class="hs-pp-claimed-explainer-title">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="hs-pp-eyebrow-ic"
+              />
+              What you'll see when published
+            </div>
+            <div class="hs-pp-claimed-explainer-row">
+              <span class="hs-pp-claimed-check">✓</span>
+              Title verified by HM Land Registry
+            </div>
+            <div class="hs-pp-claimed-explainer-row">
+              <span class="hs-pp-claimed-check">✓</span>
+              Owner identity confirmed (KYC)
+            </div>
+            <div class="hs-pp-claimed-explainer-row">
+              <span class="hs-pp-claimed-check">✓</span>
+              Documents, condition &amp; history
+            </div>
+            <div class="hs-pp-claimed-explainer-row">
+              <span class="hs-pp-claimed-check">✓</span>
+              Real HealthScore — not just EPC
+            </div>
+          </div>
+          <button
+            v-if="!notifiedOfPublish"
+            class="hs-pp-claimed-cta"
+            @click="notifyWhenPublished"
+          >
+            🔔
+            {{
+              isGuest
+                ? 'Sign up to be notified'
+                : "Notify me when it's published"
+            }}
+          </button>
+          <div v-else class="hs-pp-claimed-done">
+            ✓ We'll alert you as soon as it goes live
+          </div>
+          <button
+            v-if="isGuest"
+            class="hs-pp-owner-cta hs-pp-owner-cta--inprogress"
+            @click="goToSignIn"
+          >
+            <img
+              src="/op-icons/passportview/umu-passport.png"
+              alt=""
+              class="hs-pp-owner-cta-ic"
+            />
+            Building this Passport? Sign in to continue →
+          </button>
         </div>
 
         <!-- Score breakdown -->
@@ -1720,7 +1776,13 @@
 
         <!-- Save to Buyer Profile CTA -->
         <div class="hs-buyer-save-cta" @click="saveToBuyerProfile">
-          <div class="hs-buyer-save-ic">📘</div>
+          <div class="hs-buyer-save-ic">
+            <img
+              src="/op-icons/passportview/umu-passport.png"
+              alt=""
+              class="hs-buyer-save-ic-img"
+            />
+          </div>
           <div class="hs-buyer-save-body">
             <div class="hs-buyer-save-title">Save to your Buyer Profile</div>
             <div class="hs-buyer-save-sub">
@@ -4039,11 +4101,7 @@ watch(screen, (s) => {
   bottom: -30px;
   width: 140px;
   height: 140px;
-  background: radial-gradient(
-    circle,
-    rgba(0, 161, 154, 0.28),
-    transparent 70%
-  );
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.28), transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -4052,12 +4110,40 @@ watch(screen, (s) => {
   z-index: 1;
 }
 .hs-pp-pub-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 9.5px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #5eead4;
   margin-bottom: 6px;
+}
+.hs-pp-eyebrow-ic {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.hs-searched-sub-ic {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  object-fit: contain;
+  vertical-align: -2px;
+  margin-left: 2px;
+}
+.hs-buyer-save-ic-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+.hs-pp-owner-cta-ic {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .hs-pp-pub-title {
   font-size: 14px;
@@ -4088,6 +4174,9 @@ watch(screen, (s) => {
   gap: 4px;
 }
 .hs-pp-pub-explainer-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -4119,11 +4208,135 @@ watch(screen, (s) => {
   cursor: pointer;
   font-family: inherit;
   margin-bottom: 8px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 .hs-pp-pub-unlock:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(94, 234, 212, 0.28);
+}
+
+/* ── In-progress passport banner (warm amber, prototype-matching) ── */
+.hs-pp-claimed {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.hs-pp-claimed-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #92400e;
+  margin-bottom: 6px;
+}
+.hs-pp-claimed-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #78350f;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.hs-pp-claimed-body {
+  font-size: 12px;
+  color: #78350f;
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.hs-pp-claimed-body strong {
+  color: #92400e;
+  font-weight: 700;
+}
+.hs-pp-claimed-explainer {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hs-pp-claimed-explainer-amber {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hs-pp-claimed-explainer-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #008c86;
+  margin-bottom: 6px;
+}
+.hs-pp-claimed-explainer-title-amber {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #92400e;
+  margin-bottom: 6px;
+}
+.hs-pp-claimed-explainer-row {
+  font-size: 11px;
+  color: #4a5568;
+  line-height: 1.45;
+  display: flex;
+  gap: 6px;
+}
+.hs-pp-claimed-check {
+  color: #00a19a;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.hs-pp-claimed-cta {
+  width: 100%;
+  border: none;
+  background: #f59e0b;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 11px;
+  border-radius: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  margin-bottom: 8px;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.hs-pp-claimed-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.28);
+}
+.hs-pp-claimed-done {
+  text-align: center;
+  font-size: 12px;
+  color: #15803d;
+  font-weight: 600;
+  padding: 8px 0;
+  margin-bottom: 4px;
 }
 
 /* Owner sign-in CTA — sits below the published / in-progress banner */

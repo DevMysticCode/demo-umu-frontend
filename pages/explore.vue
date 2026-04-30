@@ -229,7 +229,12 @@
               />
               <div v-else class="prop-emoji">{{ prop.emoji || '🏡' }}</div>
               <div v-if="prop.hasPassport" class="prop-badge-pp">
-                📘 Passport
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="pp-emoji-ic"
+                />
+                Passport
               </div>
               <div class="prop-price-tag">
                 {{
@@ -464,7 +469,12 @@
                 />
                 <div v-else class="prop-emoji">🏡</div>
                 <div class="prop-badge-pp">
-                  📘 Passport · {{ prop.passportCompletion ?? 0 }}%
+                  <img
+                    src="/op-icons/passportview/umu-passport.png"
+                    alt=""
+                    class="pp-emoji-ic"
+                  />
+                  Passport · {{ prop.passportCompletion ?? 0 }}%
                 </div>
                 <div class="prop-price-tag">
                   {{
@@ -509,7 +519,13 @@
             </div>
           </div>
           <div v-else class="verified-empty">
-            <div class="verified-empty-ic">📘</div>
+            <div class="verified-empty-ic">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="pp-emoji-big"
+              />
+            </div>
             <div class="verified-empty-title">Be among the first</div>
             <div class="verified-empty-sub">
               No verified passports nearby yet — claim yours and help shape a
@@ -563,7 +579,12 @@
                 />
                 <div v-else class="prop-emoji">🏡</div>
                 <div class="prop-badge-pp">
-                  📘 Passport · {{ prop.passportCompletion ?? 0 }}%
+                  <img
+                    src="/op-icons/passportview/umu-passport.png"
+                    alt=""
+                    class="pp-emoji-ic"
+                  />
+                  Passport · {{ prop.passportCompletion ?? 0 }}%
                 </div>
                 <div class="prop-price-tag">
                   {{
@@ -608,7 +629,13 @@
             </div>
           </div>
           <div v-else class="verified-empty">
-            <div class="verified-empty-ic">📘</div>
+            <div class="verified-empty-ic">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="pp-emoji-big"
+              />
+            </div>
             <div class="verified-empty-title">Be among the first</div>
             <div class="verified-empty-sub">
               No verified passports nearby yet — claim yours and help shape a
@@ -905,7 +932,12 @@
                 />
                 <div v-else class="prop-emoji">🏡</div>
                 <div v-if="prop.hasPassport" class="prop-badge-pp">
-                  📘 Passport
+                  <img
+                    src="/op-icons/passportview/umu-passport.png"
+                    alt=""
+                    class="pp-emoji-ic"
+                  />
+                  Passport
                 </div>
                 <div class="prop-price-tag">
                   {{
@@ -1188,7 +1220,12 @@
                 />
                 <div v-else class="prop-emoji">🏡</div>
                 <div v-if="prop.hasPassport" class="prop-badge-pp">
-                  📘 Passport
+                  <img
+                    src="/op-icons/passportview/umu-passport.png"
+                    alt=""
+                    class="pp-emoji-ic"
+                  />
+                  Passport
                 </div>
                 <div class="prop-price-tag">
                   {{
@@ -2396,6 +2433,23 @@ onMounted(async () => {
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pp-emoji-ic {
+  width: 11px;
+  height: 11px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: -1px;
+}
+.pp-emoji-big {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
 }
 
 .prop-badge-risk {

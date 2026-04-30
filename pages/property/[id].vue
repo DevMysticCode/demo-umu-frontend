@@ -375,9 +375,17 @@
 
         <!-- Bottom badges -->
         <div class="pp-hero-badges">
-          <span v-if="passportStatus?.hasPassport" class="pp-badge-passport"
-            >📘 Passport available</span
+          <span
+            v-if="passportStatus?.hasPassport"
+            class="pp-badge-passport"
           >
+            <img
+              src="/op-icons/passportview/umu-passport.png"
+              alt=""
+              class="pp-emoji-ic"
+            />
+            Passport available
+          </span>
           <span class="pp-badge-flood" :class="floodRiskClass"
             >{{ floodRiskLabel }} risk</span
           >
@@ -2256,7 +2264,14 @@
             @click="showClaimDrawer = true"
           >
             <div class="pp-unlock-shine"></div>
-            <div class="pp-unlock-eyebrow">📘 Property Passport</div>
+            <div class="pp-unlock-eyebrow">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="pp-emoji-ic"
+              />
+              Property Passport
+            </div>
             <div class="pp-unlock-price-row">
               <span class="pp-unlock-price">£99</span>
               <span class="pp-unlock-price-note">one-time access</span>
@@ -2314,7 +2329,14 @@
                 <span class="pp-unlock-check">✓</span>
               </div>
             </div>
-            <button class="pp-unlock-btn">📘 Open the Passport — £99 →</button>
+            <button class="pp-unlock-btn">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="pp-emoji-ic"
+              />
+              Open the Passport — £99 →
+            </button>
             <p class="pp-unlock-note">
               Secure payment · Instant access · No subscription
             </p>
@@ -3799,6 +3821,18 @@ function formatSaleDate(dateStr: string): string {
   padding: 4px 11px;
   border-radius: 999px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pp-emoji-ic {
+  width: 11px;
+  height: 11px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: -1px;
 }
 .pp-badge-flood {
   background: rgba(255, 255, 255, 0.95);

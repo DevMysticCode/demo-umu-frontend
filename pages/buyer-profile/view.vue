@@ -4,7 +4,15 @@
     <div class="bpv-header">
       <div class="bpv-header-title">Your Buyer Profile</div>
       <button class="bpv-share-btn" @click="shareCopy">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        >
           <circle cx="18" cy="5" r="3" />
           <circle cx="6" cy="12" r="3" />
           <circle cx="18" cy="19" r="3" />
@@ -21,7 +29,9 @@
       <div v-else-if="!passport" class="bpv-empty">
         <div class="bpv-empty-ic">📘</div>
         <div class="bpv-empty-title">No Passport yet</div>
-        <div class="bpv-empty-sub">Build your Buyer Profile to share with sellers and agents.</div>
+        <div class="bpv-empty-sub">
+          Build your Buyer Profile to share with sellers and agents.
+        </div>
         <button class="bpv-empty-cta" @click="router.push('/buyer-profile')">
           Build my Passport
         </button>
@@ -44,7 +54,9 @@
             <div class="bpv-avatar">{{ avatarInitial }}</div>
             <div>
               <div class="bpv-name">{{ displayName }}</div>
-              <div class="bpv-meta">Verified buyer · uMU member since {{ memberYear }}</div>
+              <div class="bpv-meta">
+                Verified buyer · umovingu member since {{ memberYear }}
+              </div>
             </div>
           </div>
 
@@ -56,11 +68,15 @@
             </div>
             <div class="bpv-fact">
               <div class="bpv-fact-label">Finance</div>
-              <div class="bpv-fact-val bpv-fact-val-teal">{{ financeDisplay }}</div>
+              <div class="bpv-fact-val bpv-fact-val-teal">
+                {{ financeDisplay }}
+              </div>
             </div>
             <div class="bpv-fact">
               <div class="bpv-fact-label">Chain</div>
-              <div class="bpv-fact-val bpv-fact-val-teal">{{ chainDisplay }}</div>
+              <div class="bpv-fact-val bpv-fact-val-teal">
+                {{ chainDisplay }}
+              </div>
             </div>
             <div class="bpv-fact">
               <div class="bpv-fact-label">Timeline</div>
@@ -70,8 +86,12 @@
 
           <!-- Verified badges -->
           <div class="bpv-badges">
-            <div v-if="passport.idDocumentType" class="bpv-badge">🪪 ID verified</div>
-            <div v-if="passport.fundsType" class="bpv-badge">🏦 Funds verified</div>
+            <div v-if="passport.idDocumentType" class="bpv-badge">
+              🪪 ID verified
+            </div>
+            <div v-if="passport.fundsType" class="bpv-badge">
+              🏦 Funds verified
+            </div>
             <div v-if="passport.solicitorStatus === 'yes'" class="bpv-badge">
               ⚖️ Solicitor instructed
             </div>
@@ -79,11 +99,19 @@
         </div>
 
         <!-- ── Share options ── -->
-        <div class="bpv-section-title">Share your Passport</div>
+        <div class="bpv-section-title">Share your Profile</div>
         <div class="bpv-share-list">
           <div class="bpv-share-row" @click="shareCopy">
             <div class="bpv-share-ic bpv-share-ic-teal">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#00a19a"
+                stroke-width="2.2"
+                stroke-linecap="round"
+              >
                 <circle cx="18" cy="5" r="3" />
                 <circle cx="6" cy="12" r="3" />
                 <circle cx="18" cy="19" r="3" />
@@ -93,14 +121,26 @@
             </div>
             <div class="bpv-share-body">
               <div class="bpv-share-title">Share secure link</div>
-              <div class="bpv-share-sub">Open the share sheet or copy the link</div>
+              <div class="bpv-share-sub">
+                Open the share sheet or copy the link
+              </div>
             </div>
             <div class="bpv-share-chev">›</div>
           </div>
           <div class="bpv-share-row" @click="downloadPdf">
             <div class="bpv-share-ic bpv-share-ic-amber">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#d97706"
+                stroke-width="2.2"
+                stroke-linecap="round"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                />
                 <polyline points="14 2 14 8 20 8" />
                 <line x1="12" y1="18" x2="12" y2="12" />
                 <line x1="9" y1="15" x2="15" y2="15" />
@@ -108,14 +148,26 @@
             </div>
             <div class="bpv-share-body">
               <div class="bpv-share-title">Download as PDF</div>
-              <div class="bpv-share-sub">Attach to offer letters and emails</div>
+              <div class="bpv-share-sub">
+                Attach to offer letters and emails
+              </div>
             </div>
             <div class="bpv-share-chev">›</div>
           </div>
           <div class="bpv-share-row" @click="emailToAgent">
             <div class="bpv-share-ic bpv-share-ic-purple">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#7c3aed"
+                stroke-width="2.2"
+                stroke-linecap="round"
+              >
+                <path
+                  d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                />
                 <polyline points="22 6 12 13 2 6" />
               </svg>
             </div>
@@ -132,28 +184,45 @@
           <div class="bpv-whatnow-title">What happens now</div>
           <div class="bpv-whatnow-row">
             <div class="bpv-whatnow-dot" />
-            <span>Your Passport is automatically attached when you register interest in a property</span>
+            <span
+              >Your Profile is automatically attached when you register interest
+              in a property</span
+            >
           </div>
           <div class="bpv-whatnow-row">
             <div class="bpv-whatnow-dot" />
-            <span>When you tap an owner, they can request to see your Passport before replying</span>
+            <span
+              >When you tap an owner, they can request to see your Profile
+              before replying</span
+            >
           </div>
           <div class="bpv-whatnow-row">
             <div class="bpv-whatnow-dot" />
-            <span>Solicitors and agents can verify your details directly — no repeat document requests</span>
+            <span
+              >Solicitors and agents can verify your details directly — no
+              repeat document requests</span
+            >
           </div>
         </div>
 
         <!-- ── Edit / CTAs ── -->
         <button class="bpv-cta" @click="router.push('/explore')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           Back to searching
         </button>
         <button class="bpv-edit" @click="router.push('/buyer-profile/build')">
-          Edit my Passport
+          Edit my Profile
         </button>
       </template>
     </div>
@@ -163,7 +232,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useBuyerProfile, type BuyerProfile } from '~/composables/useBuyerProfile'
+import {
+  useBuyerProfile,
+  type BuyerProfile,
+} from '~/composables/useBuyerProfile'
 import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 
@@ -178,12 +250,16 @@ const profileData = ref<any>(null)
 
 const displayName = computed(() => {
   if (profileData.value?.firstName || profileData.value?.lastName) {
-    return [profileData.value.firstName, profileData.value.lastName].filter(Boolean).join(' ')
+    return [profileData.value.firstName, profileData.value.lastName]
+      .filter(Boolean)
+      .join(' ')
   }
-  return profileData.value?.email ? profileData.value.email.split('@')[0] : 'Buyer'
+  return profileData.value?.email
+    ? profileData.value.email.split('@')[0]
+    : 'Buyer'
 })
-const avatarInitial = computed(
-  () => (displayName.value[0] || 'B').toUpperCase(),
+const avatarInitial = computed(() =>
+  (displayName.value[0] || 'B').toUpperCase(),
 )
 const memberYear = computed(() => {
   const c = profileData.value?.createdAt
@@ -512,7 +588,8 @@ onMounted(async () => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
