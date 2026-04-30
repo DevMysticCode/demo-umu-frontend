@@ -21,7 +21,16 @@
       <div class="mp-hero">
         <div class="mp-hero-circle" />
         <div class="mp-hero-ic">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#5eead4"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
@@ -36,7 +45,7 @@
       </div>
 
       <!-- What's inside -->
-      <div class="mp-section-title">What goes in your Passport</div>
+      <div class="mp-section-title">What goes in your Profile</div>
       <div class="mp-list-card">
         <div class="mp-list-row">
           <div class="mp-list-ic mp-ic-teal">🪪</div>
@@ -50,7 +59,9 @@
           <div class="mp-list-ic mp-ic-green">🏦</div>
           <div class="mp-list-body">
             <div class="mp-list-title">Proof of funds</div>
-            <div class="mp-list-sub">Mortgage in principle or bank statement</div>
+            <div class="mp-list-sub">
+              Mortgage in principle or bank statement
+            </div>
           </div>
           <div class="mp-pill mp-pill-green">Required</div>
         </div>
@@ -58,7 +69,9 @@
           <div class="mp-list-ic mp-ic-amber">🔗</div>
           <div class="mp-list-body">
             <div class="mp-list-title">Chain position</div>
-            <div class="mp-list-sub">First time buyer, chain-free, or selling</div>
+            <div class="mp-list-sub">
+              First time buyer, chain-free, or selling
+            </div>
           </div>
           <div class="mp-pill mp-pill-amber">Required</div>
         </div>
@@ -82,32 +95,56 @@
 
       <!-- Why it works -->
       <div class="mp-why-card">
-        <div class="mp-why-title">Why agents and sellers prefer verified buyers</div>
+        <div class="mp-why-title">
+          Why agents and sellers prefer verified buyers
+        </div>
         <div class="mp-why-bullets">
           <div class="mp-why-row">
             <div class="mp-why-dot" />
-            <span>Agents spend less time chasing documents — your offer moves faster</span>
+            <span
+              >Agents spend less time chasing documents — your offer moves
+              faster</span
+            >
           </div>
           <div class="mp-why-row">
             <div class="mp-why-dot" />
-            <span>Sellers choose buyers they trust — a Passport builds that trust before you meet</span>
+            <span
+              >Sellers choose buyers they trust — a Profile builds that trust
+              before you meet</span
+            >
           </div>
           <div class="mp-why-row">
             <div class="mp-why-dot" />
-            <span>In sealed bids, a verified buyer with proof of funds stands out immediately</span>
+            <span
+              >In sealed bids, a verified buyer with proof of funds stands out
+              immediately</span
+            >
           </div>
         </div>
       </div>
 
       <!-- CTA -->
       <button class="mp-cta" @click="goToBuild">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
         </svg>
-        <span>{{ hasProgress ? 'Continue my Profile' : 'Build my Buyer Profile' }}</span>
+        <span>{{
+          hasProgress ? 'Continue my Profile' : 'Build my Buyer Profile'
+        }}</span>
       </button>
-      <div class="mp-cta-sub">Free · Takes about 5 minutes · Share instantly</div>
+      <div class="mp-cta-sub">
+        Free · Takes about 5 minutes · Share instantly
+      </div>
 
       <div style="height: 32px" />
     </div>
@@ -177,7 +214,8 @@ onMounted(async () => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 

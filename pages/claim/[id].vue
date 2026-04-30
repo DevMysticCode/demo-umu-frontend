@@ -1,5 +1,5 @@
 <template>
-  <div class="claim-root">
+  <div class="claim-root  mobile-container min-h-screen">
     <!-- ── Sticky topbar + progress (not shown on fullscreen steps) ── -->
     <div
       v-if="!isFullscreenStep"
