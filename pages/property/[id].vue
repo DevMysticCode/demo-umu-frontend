@@ -2412,48 +2412,37 @@
             @click.self="showUnpublishedModal = false"
           >
             <div class="unpub-modal">
-              <div class="unpub-icon">
-                <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
-                  <path
-                    d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-                    stroke="#00a19a"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M12 8v4m0 4h.01"
-                    stroke="#00a19a"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </div>
-              <h3 class="unpub-title">Passport Not Yet Available</h3>
-              <p class="unpub-body">
-                The owner has not yet made their Property Passport publicly
-                available. Register your interest to be notified, or tap the
-                owner to request access.
-              </p>
-              <div class="unpub-actions">
-                <button
-                  class="unpub-btn-secondary"
-                  @click="openRegisterInterest"
-                >
-                  Register Interest
-                </button>
-                <button class="unpub-btn-primary" @click="tapOwner">
-                  Tap Owner
-                </button>
-              </div>
               <button class="unpub-close" @click="showUnpublishedModal = false">
-                <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-                  <path
-                    d="M18 6L6 18M6 6l12 12"
-                    stroke="#8e8e93"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
+              </button>
+
+              <div class="unpub-icon">
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="unpub-icon-img"
+                />
+              </div>
+
+              <div class="unpub-eyebrow">
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="unpub-eyebrow-ic"
+                />
+                Property Passport — In Progress
+              </div>
+              <h3 class="unpub-title">This home's Passport is being built</h3>
+              <p class="unpub-body">
+                You're seeing public EPC data for now — we'll alert you when
+                the full record is published.
+              </p>
+
+              <button class="unpub-cta" @click="openRegisterInterest">
+                🔔 Notify me when it's published
               </button>
             </div>
           </div>
@@ -5285,83 +5274,121 @@ function formatSaleDate(dateStr: string): string {
 .unpub-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(35, 29, 69, 0.5);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
 }
 .unpub-modal {
   background: #fff;
-  border-radius: 20px;
-  padding: 28px 24px;
+  border-radius: 18px;
+  padding: 28px 32px 26px;
   width: 100%;
   max-width: 480px;
   position: relative;
+  box-shadow:
+    0 24px 60px rgba(35, 29, 69, 0.22),
+    0 4px 14px rgba(35, 29, 69, 0.08);
 }
 .unpub-icon {
-  width: 52px;
-  height: 52px;
-  background: #f0fdf9;
-  border-radius: 16px;
+  width: 60px;
+  height: 60px;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
+  border-radius: 14px;
   display: grid;
   place-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+}
+.unpub-icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.unpub-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #00a19a;
+  margin-bottom: 8px;
+}
+.unpub-eyebrow-ic {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .unpub-title {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 800;
-  color: var(--navy);
-  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: #231d45;
+  margin: 0 0 12px;
 }
 .unpub-body {
   font-size: 14px;
-  color: var(--ink-soft);
+  color: #4a5568;
   line-height: 1.6;
-  margin: 0 0 20px;
+  margin: 0 0 22px;
+  max-width: 480px;
 }
-.unpub-actions {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 4px;
+.unpub-body strong {
+  color: #231d45;
 }
-.unpub-btn-secondary {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
-  border: 1.5px solid var(--line);
-  background: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--ink);
-  cursor: pointer;
-  font-family: inherit;
-}
-.unpub-btn-primary {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
+.unpub-cta {
+  width: 100%;
   border: none;
-  background: var(--brand);
-  font-size: 14px;
-  font-weight: 700;
+  background: #00a19a;
   color: #fff;
-  cursor: pointer;
+  padding: 14px 18px;
+  border-radius: 13px;
   font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(0, 161, 154, 0.28);
+  transition:
+    transform 0.12s,
+    box-shadow 0.15s;
+}
+.unpub-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0, 161, 154, 0.34);
 }
 .unpub-close {
   position: absolute;
   top: 16px;
   right: 16px;
-  background: #f4f4f8;
+  background: #f8f7fc;
   border: none;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   display: grid;
   place-items: center;
   cursor: pointer;
+  color: #4a5568;
+  transition: background 0.15s, color 0.15s;
+}
+.unpub-close:hover {
+  background: #eef0f6;
+  color: #231d45;
+}
+.unpub-close svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* ── Transitions ── */
