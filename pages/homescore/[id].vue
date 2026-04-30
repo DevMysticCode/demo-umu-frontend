@@ -261,26 +261,33 @@
             {{ epcRangeHigh }}.
           </p>
 
-          <!-- Interest selector — "This is my home" hides when a passport
-               already exists (states B/C). "I'm interested in buying" is
-               always available, including for guests on claimed/published
-               properties. -->
+          <!-- Interest selector — primary CTA adapts to passport state:
+               unclaimed → "I own this property" runs the quiz
+               in-progress → "Sign in to continue your Passport"
+               published → "Sign in to manage your Passport"
+               "I'm interested in buying" is always available below. -->
           <div class="hs-interest-label">
             What's your interest in this property?
           </div>
           <div class="hs-interest-stack">
-            <!-- "This is my home" — only when no passport exists yet -->
             <button
-              v-if="passportState === null"
               class="hs-interest-btn primary"
-              @click="startQuestions"
+              @click="onPrimaryCtaClick"
             >
-              <div class="hs-interest-ic primary">🏠</div>
+              <div class="hs-interest-ic primary">
+                <template v-if="passportState">
+                  <img
+                    src="/op-icons/passportview/umu-passport.png"
+                    alt=""
+                    class="hs-interest-ic-img"
+                  />
+                </template>
+                <template v-else>🏠</template>
+              </div>
               <div class="hs-interest-body">
-                <div class="hs-interest-title">I own this property</div>
+                <div class="hs-interest-title">{{ primaryCta.title }}</div>
                 <div class="hs-interest-sub primary-sub">
-                  Get my real score in 2 mins · {{ QUESTIONS.length }} quick
-                  questions
+                  {{ primaryCta.sub }}
                 </div>
               </div>
               <div class="hs-interest-chev primary">›</div>
@@ -390,18 +397,6 @@
             >
               🔓 Unlock full Passport · £99
             </button>
-            <button
-              v-if="isGuest"
-              class="hs-pp-owner-cta hs-pp-owner-cta--published"
-              @click="goToSignIn"
-            >
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="hs-pp-owner-cta-ic"
-              />
-              Already own this property? Sign in to manage →
-            </button>
           </div>
         </div>
 
@@ -481,18 +476,53 @@
           <div v-else class="hs-pp-claimed-done">
             ✓ We'll alert you as soon as it goes live
           </div>
-          <button
-            v-if="isGuest"
-            class="hs-pp-owner-cta hs-pp-owner-cta--inprogress"
-            @click="goToSignIn"
-          >
+        </div>
+
+        <!-- No passport — neutral grey card defining what a Passport is -->
+        <div v-else class="hs-pp-none">
+          <div class="hs-pp-none-eyebrow">
             <img
               src="/op-icons/passportview/umu-passport.png"
               alt=""
-              class="hs-pp-owner-cta-ic"
+              class="hs-pp-eyebrow-ic"
             />
-            Building this Passport? Sign in to continue →
-          </button>
+            No Property Passport yet
+          </div>
+          <div class="hs-pp-none-title">
+            This home doesn't have a verified record yet.
+          </div>
+          <div class="hs-pp-none-body">
+            A
+            <strong>Property Passport</strong>
+            bundles a home's title, documents, condition and history —
+            verified, in one place — for the owner to share with buyers.
+          </div>
+          <div class="hs-pp-none-explainer">
+            <div class="hs-pp-none-explainer-title">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                class="hs-pp-eyebrow-ic"
+              />
+              What's in a Passport
+            </div>
+            <div class="hs-pp-none-explainer-row">
+              <span class="hs-pp-none-check">✓</span>
+              Title verified by HM Land Registry
+            </div>
+            <div class="hs-pp-none-explainer-row">
+              <span class="hs-pp-none-check">✓</span>
+              Owner identity confirmed (KYC)
+            </div>
+            <div class="hs-pp-none-explainer-row">
+              <span class="hs-pp-none-check">✓</span>
+              Documents, condition &amp; history
+            </div>
+            <div class="hs-pp-none-explainer-row">
+              <span class="hs-pp-none-check">✓</span>
+              Real HealthScore — not just EPC
+            </div>
+          </div>
         </div>
 
         <!-- Score breakdown -->
@@ -2277,6 +2307,34 @@ function goToSignIn() {
     }
   }
   router.push('/onboarding/signin')
+}
+
+// Primary CTA above "I'm interested in buying" — adapts to passport state.
+const primaryCta = computed(() => {
+  if (passportState.value === 'published') {
+    return {
+      title: 'Sign in to manage your Passport',
+      sub: 'Already own this property? Manage your record',
+    }
+  }
+  if (passportState.value === 'inProgress') {
+    return {
+      title: 'Sign in to continue your Passport',
+      sub: "Building this property's Passport? Pick up where you left off",
+    }
+  }
+  return {
+    title: 'I own this property',
+    sub: `Get my real score in 2 mins · ${QUESTIONS.length} quick questions`,
+  }
+})
+
+function onPrimaryCtaClick() {
+  if (passportState.value === 'published' || passportState.value === 'inProgress') {
+    goToSignIn()
+    return
+  }
+  startQuestions()
 }
 
 // Stable per-browser session id used for guest dedup on /property/:id/log-search.
@@ -4339,6 +4397,76 @@ watch(screen, (s) => {
   margin-bottom: 4px;
 }
 
+/* ── No-passport banner (neutral grey, prototype-matching) ── */
+.hs-pp-none {
+  background: #f8f7fc;
+  border: 1.5px solid #eef0f6;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.hs-pp-none-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+.hs-pp-none-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.hs-pp-none-body {
+  font-size: 12px;
+  color: #4a5568;
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.hs-pp-none-body strong {
+  color: #231d45;
+  font-weight: 700;
+}
+.hs-pp-none-explainer {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hs-pp-none-explainer-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #008c86;
+  margin-bottom: 6px;
+}
+.hs-pp-none-explainer-row {
+  font-size: 11px;
+  color: #4a5568;
+  line-height: 1.45;
+  display: flex;
+  gap: 6px;
+}
+.hs-pp-none-check {
+  color: #00a19a;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
 /* Owner sign-in CTA — sits below the published / in-progress banner */
 .hs-pp-owner-cta {
   display: flex;
@@ -6038,6 +6166,11 @@ watch(screen, (s) => {
 }
 .hs-interest-ic.soft {
   background: #ccfbf1;
+}
+.hs-interest-ic-img {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
 }
 .hs-interest-body {
   flex: 1;
