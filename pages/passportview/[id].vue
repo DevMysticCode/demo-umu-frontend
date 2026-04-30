@@ -31,11 +31,29 @@
               <OPIcon name="caretDown" class="w-[16px] h-[16px]" />
             </button>
           </div>
+          <div class="pp-hero-stats">
+            <div class="pp-hero-stat">
+              <div class="pp-hero-stat-val">{{ heroHsScore }}</div>
+              <div class="pp-hero-stat-lbl">HS™</div>
+            </div>
+            <div class="pp-hero-stat">
+              <div class="pp-hero-stat-val">{{ heroDocsCount }}</div>
+              <div class="pp-hero-stat-lbl">Docs</div>
+            </div>
+            <div class="pp-hero-stat">
+              <div class="pp-hero-stat-val">{{ heroSectionsLabel }}</div>
+              <div class="pp-hero-stat-lbl">Sections</div>
+            </div>
+            <div class="pp-hero-stat">
+              <div class="pp-hero-stat-val pp-hero-stat-val--ready">
+                {{ heroReadyPct }}
+              </div>
+              <div class="pp-hero-stat-lbl">Ready</div>
+            </div>
+          </div>
           <div class="pp-hero-dash">
             <div class="pp-hero-dash-row">
-              <span class="pp-hero-dash-label">
-                {{ steps.length }} sections · {{ overallProgress }}%
-              </span>
+              <span class="pp-hero-dash-label">Passport progress</span>
               <span class="pp-hero-dash-pct">{{ overallProgress }}%</span>
             </div>
             <div class="pp-hero-dash-bar">
@@ -157,6 +175,26 @@
               <p class="step-points">
                 {{ getStepPoints(step) }} points earned so far
               </p>
+              <div class="step-counts">
+                <span class="step-count-pill step-count-docs">
+                  📎
+                  {{ getStepDocs(step).done }}/{{ getStepDocs(step).total }} docs
+                </span>
+                <span class="step-count-pill step-count-q">
+                  ❓
+                  {{ getStepQuestions(step).done }}/{{
+                    getStepQuestions(step).total
+                  }}
+                  questions
+                </span>
+              </div>
+              <div
+                v-if="getStepExpiringDoc(step)"
+                class="step-expiry"
+                @click.stop="navigateToStep(step.id)"
+              >
+                ⚠ {{ getStepExpiringDoc(step).label }}
+              </div>
               <div class="step-progress">
                 <div class="progress-bar small">
                   <div
@@ -309,6 +347,7 @@ const showPropertiesModal = ref(false)
 const passportAddress = ref({ line1: '', line2: '' })
 const isPublished = ref(false)
 const publishLoading = ref(false)
+const propertyHomeScore = ref(null)
 
 // Tab state
 const activeTab = ref('sections')
@@ -349,11 +388,20 @@ onMounted(async () => {
     if (passport.propertyId) {
       fetchStreetData(passport.propertyId)
       fetchBuyerData(passport.propertyId)
+      fetchPropertyHomeScore(passport.propertyId)
     }
   } catch (e) {
     console.error('Failed to load passport address', e)
   }
 })
+
+async function fetchPropertyHomeScore(pid) {
+  try {
+    const r = await $fetch(`${config.public.apiBase}/property/${pid}`)
+    const score = r?.homeScore ?? r?.epcScore ?? null
+    if (typeof score === 'number') propertyHomeScore.value = score
+  } catch {}
+}
 
 async function fetchStreetData(pid) {
   try {
@@ -468,6 +516,87 @@ const overallProgress = computed(() => {
   )
   return Math.round((completedTasks / totalTasks) * 100) || 0
 })
+
+// ── Hero stat strip (HS / Docs / Sections / Ready) ───────────────
+const heroHsScore = computed(() =>
+  typeof propertyHomeScore.value === 'number' ? propertyHomeScore.value : '—',
+)
+const heroDocsCount = computed(() =>
+  steps.value.reduce(
+    (sum, step) => sum + step.tasks.filter((t) => t.completed).length,
+    0,
+  ),
+)
+const heroSectionsLabel = computed(() => {
+  const total = steps.value.length
+  const started = steps.value.filter(
+    (s) => (s.progress ?? 0) > 0,
+  ).length
+  return `${started}/${total}`
+})
+const heroReadyPct = computed(() => `${overallProgress.value}%`)
+
+// Identify whether a task is an upload (doc) or a regular question.
+// Falls back to the task `type` field; treats UPLOAD/MULTIPART as docs.
+function isUploadTask(t) {
+  const type = String(t?.type || '').toUpperCase()
+  return type === 'UPLOAD' || type === 'MULTIPART'
+}
+
+const getStepDocs = (step) => {
+  const tasks = (step?.tasks ?? []).filter(isUploadTask)
+  return {
+    done: tasks.filter((t) => t.completed).length,
+    total: tasks.length,
+  }
+}
+
+const getStepQuestions = (step) => {
+  const tasks = (step?.tasks ?? []).filter((t) => !isUploadTask(t))
+  return {
+    done: tasks.filter((t) => t.completed).length,
+    total: tasks.length,
+  }
+}
+
+// Detect any uploaded doc that's expiring within 30 days. The runtime task
+// model exposes the upload metadata under `answer` / `attachments`; we look
+// for any `expiresAt` / `expiryDate` / `validUntil` field on completed
+// upload tasks.
+const getStepExpiringDoc = (step) => {
+  const now = Date.now()
+  const SOON_MS = 30 * 24 * 60 * 60 * 1000
+  for (const t of step?.tasks ?? []) {
+    if (!t?.completed || !isUploadTask(t)) continue
+    const candidates = [
+      t.expiresAt,
+      t.expiryDate,
+      t.validUntil,
+      t.answer?.expiresAt,
+      t.answer?.expiryDate,
+      t.answer?.validUntil,
+      ...(t.attachments ?? []).map(
+        (a) => a?.expiresAt ?? a?.expiryDate ?? a?.validUntil,
+      ),
+    ].filter(Boolean)
+    for (const raw of candidates) {
+      const ts = new Date(raw).getTime()
+      if (!Number.isFinite(ts)) continue
+      const diff = ts - now
+      if (diff < 0) {
+        return { expired: true, label: `${t.title || 'A document'} has expired — please re-upload` }
+      }
+      if (diff <= SOON_MS) {
+        const days = Math.max(1, Math.ceil(diff / (24 * 60 * 60 * 1000)))
+        return {
+          expired: false,
+          label: `${t.title || 'A document'} expires in ${days} day${days === 1 ? '' : 's'}`,
+        }
+      }
+    }
+  }
+  return null
+}
 
 const getStepPoints = (step) => {
   if (!step?.tasks || !Array.isArray(step.tasks)) {
@@ -908,6 +1037,52 @@ const onRoleSwitch = (role) => {
   font-weight: 400;
 }
 
+.step-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.step-count-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.step-count-docs {
+  background: #eafaf9;
+  color: #008c86;
+  border: 1px solid #b2e8e6;
+}
+.step-count-q {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+.step-expiry {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  padding: 3px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.step-expiry:hover {
+  background: #fde68a;
+}
+
 .step-progress {
   display: flex;
   align-items: center;
@@ -1167,8 +1342,40 @@ const onRoleSwitch = (role) => {
   cursor: pointer;
   flex-shrink: 0;
 }
+.pp-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 10px;
+}
+.pp-hero-stat {
+  text-align: center;
+  padding: 0 4px;
+}
+.pp-hero-stat + .pp-hero-stat {
+  border-left: 1px solid rgba(35, 29, 69, 0.08);
+}
+.pp-hero-stat-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: #231d45;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.pp-hero-stat-val--ready {
+  color: #00a19a;
+}
+.pp-hero-stat-lbl {
+  font-size: 7.5px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 3px;
+  font-weight: 700;
+}
+
 .pp-hero-dash {
-  margin-top: 12px;
+  margin-top: 10px;
 }
 .pp-hero-dash-row {
   display: flex;
