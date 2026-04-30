@@ -154,10 +154,11 @@
                 {{ searchedTodayCount }} searched today
               </div>
               <div class="hs-searched-title">
-                None found a verified Passport.
+                Owner is preparing a Passport for this property
               </div>
               <div class="hs-searched-sub">
-                Be the first on this street to publish one.
+                Verified record coming soon — you're seeing public EPC data
+                only for now.
               </div>
             </template>
             <template v-else>
@@ -166,10 +167,10 @@
                 {{ searchedTodayCount }} searched today
               </div>
               <div class="hs-searched-title">
-                None found a verified Passport.
+                Active buyer interest in this property
               </div>
               <div class="hs-searched-sub">
-                If this is your home, claim it to be the first on this street.
+                No verified Passport on this address yet — see below.
               </div>
             </template>
           </div>
@@ -6827,13 +6828,16 @@ watch(screen, (s) => {
   display: flex;
   align-items: center;
   gap: 14px;
-  border-radius: 14px;
-  padding: 12px 14px;
+  border-radius: 16px;
+  padding: 14px 16px;
   margin-bottom: 14px;
   position: relative;
   overflow: hidden;
 }
-.hs-searched-card--published,
+.hs-searched-card--published {
+  background: linear-gradient(135deg, #0d9488, #0f766e);
+  color: #fff;
+}
 .hs-searched-card--inprogress,
 .hs-searched-card--unclaimed {
   background: linear-gradient(135deg, #1a1640, #231d45);
@@ -6847,7 +6851,13 @@ watch(screen, (s) => {
   height: 80px;
   border-radius: 50%;
   pointer-events: none;
-  background: rgba(251, 191, 36, 0.1);
+}
+.hs-searched-card--published .hs-searched-glow {
+  background: rgba(255, 255, 255, 0.08);
+}
+.hs-searched-card--inprogress .hs-searched-glow,
+.hs-searched-card--unclaimed .hs-searched-glow {
+  background: rgba(94, 234, 212, 0.08);
 }
 .hs-searched-numwrap {
   text-align: center;
@@ -6856,15 +6866,17 @@ watch(screen, (s) => {
   z-index: 1;
 }
 .hs-searched-num {
-  font-size: 30px;
+  font-size: 38px;
   font-weight: 900;
   line-height: 1;
-  letter-spacing: -1.5px;
+  letter-spacing: -2px;
 }
-.hs-searched-card--published .hs-searched-num,
+.hs-searched-card--published .hs-searched-num {
+  color: #fff;
+}
 .hs-searched-card--inprogress .hs-searched-num,
 .hs-searched-card--unclaimed .hs-searched-num {
-  color: #fbbf24;
+  color: #5eead4;
 }
 .hs-searched-numlbl {
   font-size: 9px;
@@ -6873,7 +6885,9 @@ watch(screen, (s) => {
   letter-spacing: 0.08em;
   margin-top: 1px;
 }
-.hs-searched-card--published .hs-searched-numlbl,
+.hs-searched-card--published .hs-searched-numlbl {
+  color: rgba(255, 255, 255, 0.6);
+}
 .hs-searched-card--inprogress .hs-searched-numlbl,
 .hs-searched-card--unclaimed .hs-searched-numlbl {
   color: rgba(255, 255, 255, 0.45);
@@ -6885,7 +6899,9 @@ watch(screen, (s) => {
   position: relative;
   z-index: 1;
 }
-.hs-searched-card--published .hs-searched-divider,
+.hs-searched-card--published .hs-searched-divider {
+  background: rgba(255, 255, 255, 0.2);
+}
 .hs-searched-card--inprogress .hs-searched-divider,
 .hs-searched-card--unclaimed .hs-searched-divider {
   background: rgba(255, 255, 255, 0.1);
@@ -6904,42 +6920,25 @@ watch(screen, (s) => {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #fbbf24;
+  color: #5eead4;
   margin-bottom: 4px;
-}
-.hs-searched-live--soft {
-  color: #008c86;
 }
 .hs-searched-pulse {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
-  animation: hs-pulse-amber 1.5s infinite;
+  background: #5eead4;
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.25);
+  animation: hs-pulse-mint 1.5s infinite;
   flex-shrink: 0;
 }
-.hs-searched-pulse--brand {
-  background: #00a19a;
-  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.25);
-  animation-name: hs-pulse-brand;
-}
-@keyframes hs-pulse-amber {
+@keyframes hs-pulse-mint {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0);
-  }
-}
-@keyframes hs-pulse-brand {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 5px rgba(0, 161, 154, 0);
+    box-shadow: 0 0 0 5px rgba(94, 234, 212, 0);
   }
 }
 .hs-searched-title {
@@ -6957,10 +6956,17 @@ watch(screen, (s) => {
   margin-top: 4px;
   line-height: 1.4;
 }
-.hs-searched-card--published .hs-searched-sub,
+.hs-searched-card--published .hs-searched-sub {
+  color: rgba(255, 255, 255, 0.75);
+}
 .hs-searched-card--inprogress .hs-searched-sub,
 .hs-searched-card--unclaimed .hs-searched-sub {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.6);
+}
+.hs-searched-card--inprogress .hs-searched-title,
+.hs-searched-card--unclaimed .hs-searched-title {
+  font-size: 12.5px;
+  line-height: 1.35;
 }
 
 /* Auth-gate modal */
