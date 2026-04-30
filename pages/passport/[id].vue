@@ -54,7 +54,16 @@
         </div>
       </div>
 
-      <p v-if="claimError" class="claim-error">{{ claimError }}</p>
+      <div v-if="claimError" class="claim-error">
+        <p>{{ claimError }}</p>
+        <NuxtLink
+          v-if="claimError.toLowerCase().includes('phone')"
+          to="/profile/personal-information"
+          class="claim-error-link"
+        >
+          Add phone number →
+        </NuxtLink>
+      </div>
       <button class="unlock-btn" :disabled="claiming" @click="navigateToPayment">
         {{ claiming ? 'Creating Passport...' : 'Unlock Now' }}
       </button>
@@ -430,6 +439,21 @@ const navigateToPayment = async () => {
   color: #e53e3e;
   text-align: center;
   margin: 0 0 8px;
+}
+
+.claim-error-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #00a19a;
+  text-decoration: none;
+  border-bottom: 1.5px solid #b2e8e6;
+  padding-bottom: 1px;
+}
+.claim-error-link:hover {
+  color: #008c86;
+  border-bottom-color: #00a19a;
 }
 
 .unlock-btn {

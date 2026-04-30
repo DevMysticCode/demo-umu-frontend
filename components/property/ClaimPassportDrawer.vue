@@ -85,7 +85,16 @@
           <p v-if="stripeError" class="cp__error">{{ stripeError }}</p>
         </div>
 
-        <p v-if="errorMsg" class="cp__error cp__error--centered">{{ errorMsg }}</p>
+        <div v-if="errorMsg" class="cp__error cp__error--centered">
+          <p>{{ errorMsg }}</p>
+          <NuxtLink
+            v-if="errorMsg.toLowerCase().includes('phone')"
+            to="/profile/personal-information"
+            class="cp__error-link"
+          >
+            Add phone number →
+          </NuxtLink>
+        </div>
 
         <button
           class="cp__cta"
@@ -527,6 +536,21 @@ onUnmounted(() => {
 .cp__error--centered {
   text-align: center;
   margin: 0 0 12px;
+}
+
+.cp__error-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #00a19a;
+  text-decoration: none;
+  border-bottom: 1.5px solid #b2e8e6;
+  padding-bottom: 1px;
+}
+.cp__error-link:hover {
+  color: #008c86;
+  border-bottom-color: #00a19a;
 }
 
 /* CTA */

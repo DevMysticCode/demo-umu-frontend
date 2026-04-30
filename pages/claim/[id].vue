@@ -418,8 +418,15 @@
       </div>
 
       <div v-if="issueError" class="cl-err-banner">
-        {{ issueError }}
-        <button class="cl-err-retry" @click="issuePassport">Retry</button>
+        <span>{{ issueError }}</span>
+        <NuxtLink
+          v-if="issueError.toLowerCase().includes('phone')"
+          to="/profile/personal-information"
+          class="cl-err-link"
+        >
+          Add phone number →
+        </NuxtLink>
+        <button v-else class="cl-err-retry" @click="issuePassport">Retry</button>
       </div>
     </div>
 
@@ -1471,6 +1478,20 @@ async function issuePassport() {
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+}
+.cl-err-link {
+  background: #00a19a;
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.cl-err-link:hover {
+  background: #008c86;
 }
 
 /* ── Bottom CTA bar ──────────────────────────────── */

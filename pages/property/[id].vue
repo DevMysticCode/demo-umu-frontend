@@ -2804,11 +2804,11 @@ const floodRiskDescription = computed(() => {
 // ── Passport button ────────────────────────────────────────────────────────────
 const passportBtnLabel = computed(() => {
   const s = passportStatus.value
-  if (!s?.hasPassport) return 'Claim'
-  if (s.isOwner || s.isCollaborator) return 'Open'
-  if (s.isBuyer) return 'View'
-  if (s.isPublished) return 'Unlock'
-  return 'Info'
+  if (!s?.hasPassport) return 'Claim Passport'
+  if (s.isOwner || s.isCollaborator) return 'Open Passport'
+  if (s.isBuyer) return 'View Passport'
+  if (s.isPublished) return 'Access Passport'
+  return 'Passport Info'
 })
 
 const showPassportCta = computed(() => {
