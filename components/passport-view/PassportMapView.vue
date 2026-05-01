@@ -87,10 +87,36 @@
                 <OPIcon :name="step.icon || step.key" class="step-icon-art" />
               </div>
 
-              <!-- Completion badge — % ring or ✓ when done -->
-              <div class="map-step-badge" :class="getStepBadgeClass(step)">
-                <template v-if="getStepCompletion(step) >= 100"> ✓ </template>
-                <template v-else> {{ getStepCompletion(step) }}% </template>
+              <!-- Completion ring (prototype-matching): white circle with
+                   teal stroke arc + % text or ✓ in the centre -->
+              <div class="map-step-ring">
+                <svg viewBox="0 0 30 30">
+                  <circle class="map-step-ring-bg" cx="15" cy="15" r="12" />
+                  <circle
+                    class="map-step-ring-fg"
+                    :class="{
+                      'map-step-ring-fg--done':
+                        getStepCompletion(step) >= 100,
+                    }"
+                    cx="15"
+                    cy="15"
+                    r="12"
+                    stroke-dasharray="75.4"
+                    :stroke-dashoffset="
+                      75.4 - (Math.min(100, getStepCompletion(step)) / 100) * 75.4
+                    "
+                  />
+                </svg>
+                <div
+                  class="map-step-ring-text"
+                  :class="{
+                    'map-step-ring-text--done':
+                      getStepCompletion(step) >= 100,
+                  }"
+                >
+                  <template v-if="getStepCompletion(step) >= 100">✓</template>
+                  <template v-else>{{ getStepCompletion(step) }}%</template>
+                </div>
               </div>
             </div>
           </div>
@@ -98,89 +124,103 @@
       </div>
     </div>
 
-    <!-- Bottom drawer — appears when a step is tapped, lists its tasks -->
+    <!-- Bottom drawer — prototype "sheet" design -->
     <Teleport to="body">
-      <div
-        v-if="drawerStep"
-        class="map-drawer-overlay"
-        @click.self="drawerStep = null"
-      >
-        <div class="map-drawer">
-          <div class="map-drawer-handle" />
-          <div class="map-drawer-head">
-            <div class="map-drawer-icon">
-              <OPIcon
-                :name="drawerStep.icon || drawerStep.key"
-                class="w-[28px] h-[28px]"
-              />
-            </div>
-            <div class="map-drawer-titles">
-              <div class="map-drawer-title">{{ drawerStep.title }}</div>
-              <div class="map-drawer-sub">
-                {{ getStepCompletion(drawerStep) }}% complete ·
-                {{ drawerStep.tasks?.length ?? 0 }} tasks
+      <Transition name="sheet">
+        <div
+          v-if="drawerStep"
+          class="sheet-backdrop"
+          @click.self="drawerStep = null"
+        >
+          <div class="sheet" @click.stop>
+            <div class="grabber" />
+            <div class="sheet-head">
+              <div class="sheet-icon-wrap">
+                <div class="sheet-icon">
+                  <OPIcon
+                    :name="drawerStep.icon || drawerStep.key"
+                    class="w-[28px] h-[28px]"
+                  />
+                </div>
+              </div>
+              <div class="sheet-meta">
+                <div class="sheet-title">{{ drawerStep.title }}</div>
+                <div class="sheet-sub">
+                  {{ drawerStep.subtitle || drawerStep.description || '' }}
+                </div>
+                <span
+                  v-if="drawerStepMaxPoints > 0"
+                  class="sheet-points"
+                >
+                  ⭐ Up to {{ drawerStepMaxPoints }} points
+                </span>
               </div>
             </div>
-            <button
-              class="map-drawer-close"
-              aria-label="Close"
-              @click="drawerStep = null"
-            >
-              ×
-            </button>
-          </div>
-          <div class="map-drawer-bar">
-            <div
-              class="map-drawer-bar-fill"
-              :style="{ width: getStepCompletion(drawerStep) + '%' }"
-            />
-          </div>
-          <div class="map-drawer-tasks">
+
+            <div class="sheet-progress">
+              <div class="pgr-bar">
+                <div
+                  class="pgr-fill"
+                  :style="{ width: getStepCompletion(drawerStep) + '%' }"
+                />
+              </div>
+              <div class="pgr-text">
+                {{ drawerStepCompletedTasks }} of
+                {{ drawerStep.tasks?.length ?? 0 }} tasks done
+              </div>
+            </div>
+
+            <div class="task-list-head">
+              <div class="lbl">Your tasks</div>
+              <div class="sort">Sort ⌄</div>
+            </div>
+
             <button
               v-for="task in drawerStep.tasks ?? []"
               :key="task.id"
-              class="map-drawer-task"
-              :class="{
-                'map-drawer-task--done': task.completed,
-                'map-drawer-task--progress':
-                  !task.completed && Number(task.answeredQuestions) > 0,
-              }"
+              class="task-row"
+              :class="{ done: task.completed }"
               @click="goToTask(drawerStep, task)"
             >
-              <div class="map-drawer-task-status">
-                <template v-if="task.completed">✓</template>
-                <template v-else-if="Number(task.answeredQuestions) > 0">
-                  {{ task.answeredQuestions }}/{{ task.totalQuestions || '?' }}
+              <div class="task-status">
+                <template v-if="!task.completed && Number(task.answeredQuestions) > 0">
+                  {{ task.answeredQuestions }}
                 </template>
-                <template v-else>○</template>
               </div>
-              <div class="map-drawer-task-body">
-                <div class="map-drawer-task-title">{{ task.title }}</div>
-                <div
-                  v-if="task.completed"
-                  class="map-drawer-task-meta map-drawer-task-meta--done"
-                >
-                  Done
+              <div class="task-info">
+                <div class="task-title">{{ task.title }}</div>
+                <div class="task-meta">
+                  <span
+                    v-if="getTaskPoints(task)"
+                    class="points"
+                  >
+                    +{{ getTaskPoints(task) }} points
+                  </span>
+                  <span class="task-meta-mins">
+                    ~{{ getTaskMinutes(task) }} min
+                  </span>
+                  <span class="task-meta-q">
+                    {{ getTaskQuestionCount(task) }}
+                    {{
+                      getTaskQuestionCount(task) === 1
+                        ? 'question'
+                        : 'questions'
+                    }}
+                  </span>
                 </div>
-                <div
-                  v-else-if="Number(task.answeredQuestions) > 0"
-                  class="map-drawer-task-meta map-drawer-task-meta--progress"
-                >
-                  In progress
-                </div>
-                <div v-else class="map-drawer-task-meta">To do</div>
               </div>
-              <span class="map-drawer-task-chev">›</span>
+              <span class="task-arrow">›</span>
             </button>
+
             <div
               v-if="!(drawerStep.tasks ?? []).length"
-              class="map-drawer-empty"
+              class="sheet-empty"
             >
               No tasks in this section yet.
             </div>
           </div>
         </div>
-      </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -235,16 +275,57 @@ const currentStepCompletedTasks = computed(
   () => currentStep.value?.tasks?.filter((t) => t.completed).length ?? 0,
 )
 
-// Pin badge tone — done = green, in-progress = brand, todo = grey
-function getStepBadgeClass(step) {
-  const c = getStepCompletion(step)
-  if (c >= 100) return 'map-step-badge--done'
-  if (c > 0) return 'map-step-badge--progress'
-  return 'map-step-badge--todo'
-}
-
 // ── Bottom drawer ──────────────────────────────────────────────
 const drawerStep = ref(null)
+const drawerStepCompletedTasks = computed(
+  () => drawerStep.value?.tasks?.filter((t) => t.completed).length ?? 0,
+)
+const drawerStepPoints = computed(() => {
+  const tasks = drawerStep.value?.tasks ?? []
+  return tasks
+    .filter((t) => t.completed)
+    .reduce(
+      (sum, t) =>
+        sum + Number(t.points || t.pointsReward || t.pointsAward || 0),
+      0,
+    )
+})
+
+// Maximum points available across the whole section — used in the head pill.
+const drawerStepMaxPoints = computed(() => {
+  const tasks = drawerStep.value?.tasks ?? []
+  return tasks.reduce(
+    (sum, t) => sum + Number(getTaskPoints(t) || 0),
+    0,
+  )
+})
+
+function getTaskPoints(task) {
+  return Number(
+    task?.points || task?.pointsReward || task?.pointsAward || 0,
+  )
+}
+
+function getTaskQuestionCount(task) {
+  if (Number.isFinite(Number(task?.totalQuestions))) {
+    return Number(task.totalQuestions)
+  }
+  if (Array.isArray(task?.questions)) return task.questions.length
+  if (Array.isArray(task?.passportQuestions)) {
+    return task.passportQuestions.length
+  }
+  return 1
+}
+
+function getTaskMinutes(task) {
+  // Allow a server-provided estimate; otherwise budget ~1 min per question.
+  const estimated =
+    Number(task?.estimatedMinutes) ||
+    Number(task?.minimumMinutes) ||
+    Number(task?.minutes)
+  if (estimated > 0) return estimated
+  return Math.max(1, getTaskQuestionCount(task))
+}
 function onStepClick(step) {
   currentStepId.value = step.id
   drawerStep.value = step
@@ -759,210 +840,307 @@ const navigateToStep = (stepId) => {
 .map-step-active .step-platform {
   filter: drop-shadow(0 6px 14px rgba(0, 161, 154, 0.35));
 }
-.map-step-badge {
+/* Prototype-matching progress ring on each pin */
+.map-step-ring {
   position: absolute;
-  top: 60px;
-  right: 12px;
-  min-width: 26px;
-  height: 26px;
-  padding: 0 6px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 800;
-  color: #fff;
-  display: grid;
-  place-items: center;
-  border: 2px solid #fff;
-  box-shadow: 0 2px 6px rgba(35, 29, 69, 0.18);
+  top: 56px;
+  right: 6px;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 5;
   pointer-events: none;
 }
-.map-step-badge--done {
-  background: #16a34a;
+.map-step-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  display: block;
 }
-.map-step-badge--progress {
-  background: #00a19a;
+.map-step-ring-bg {
+  fill: #fff;
+  stroke: #eef0f6;
+  stroke-width: 3;
 }
-.map-step-badge--todo {
-  background: #94a3b8;
+.map-step-ring-fg {
+  fill: none;
+  stroke: #00a19a;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+.map-step-ring-fg--done {
+  stroke: #16a34a;
+}
+.map-step-ring-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #008c86;
+}
+.map-step-ring-text--done {
+  color: #16a34a;
+  font-size: 14px;
 }
 
-/* ── Bottom drawer ───────────────────────────────────────────── */
-.map-drawer-overlay {
+/* ── Sheet drawer (prototype-matching) ─────────────────────── */
+.sheet-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(35, 29, 69, 0.45);
+  background: rgba(14, 40, 64, 0.4);
   z-index: 1100;
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
-.map-drawer {
+.sheet {
   width: 100%;
   max-width: 28rem;
   background: #fff;
   border-radius: 24px 24px 0 0;
-  padding: 14px 20px 24px;
-  max-height: 75vh;
+  padding: 14px 18px 18px;
+  max-height: 85%;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  box-shadow: 0 -8px 32px rgba(35, 29, 69, 0.2);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
-  color: #231d45;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+  color: #0e2840;
 }
-.map-drawer::-webkit-scrollbar {
+.sheet::-webkit-scrollbar {
   display: none;
 }
-.map-drawer-handle {
-  width: 36px;
+.grabber {
+  width: 40px;
   height: 4px;
-  background: #eef0f6;
-  border-radius: 999px;
-  margin: 0 auto 14px;
+  background: #e5ede9;
+  border-radius: 4px;
+  margin: 0 auto 10px;
 }
-.map-drawer-head {
+.sheet-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-bottom: 10px;
+}
+.sheet-icon-wrap {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+.sheet-icon {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(165deg, #f4fbf7, #e2f1ea);
+  border-radius: 14px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.map-drawer-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
+  justify-content: center;
   color: #008c86;
 }
-.map-drawer-titles {
+.sheet-meta {
   flex: 1;
   min-width: 0;
 }
-.map-drawer-title {
-  font-size: 16px;
+.sheet-title {
   font-weight: 800;
-  color: #231d45;
+  font-size: 17px;
+  color: #0e2840;
   letter-spacing: -0.01em;
 }
-.map-drawer-sub {
+.sheet-sub {
   font-size: 11.5px;
-  color: #94a3b8;
+  color: #6b7c8e;
   margin-top: 2px;
 }
-.map-drawer-close {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #f8f7fc;
-  border: none;
-  font-size: 18px;
-  color: #4a5568;
-  cursor: pointer;
-  flex-shrink: 0;
+.sheet-points {
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(61, 189, 163, 0.12);
+  color: #008c86;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 100px;
+  letter-spacing: 0.4px;
 }
-.map-drawer-bar {
-  height: 5px;
-  background: #eef0f6;
-  border-radius: 999px;
-  overflow: hidden;
-  margin-bottom: 14px;
-}
-.map-drawer-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #008c86, #00b5ad);
-  border-radius: 999px;
-  transition: width 0.3s ease;
-}
-.map-drawer-tasks {
+
+.sheet-progress {
+  background: linear-gradient(135deg, #f4fbf7, #eafaf9);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 4px 0 12px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
 }
-.map-drawer-task {
+.sheet-progress .pgr-bar {
+  flex: 1;
+  height: 6px;
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sheet-progress .pgr-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00a19a, #008c86);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+.sheet-progress .pgr-text {
+  font-size: 11px;
+  font-weight: 800;
+  color: #008c86;
+  white-space: nowrap;
+}
+
+.task-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.task-list-head .lbl {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #6b7c8e;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.task-list-head .sort {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7c8e;
+}
+
+.task-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #fff;
-  border: 1.5px solid #eef0f6;
+  padding: 10px 12px;
+  background: #f8faf9;
   border-radius: 12px;
-  padding: 11px 12px;
+  margin-bottom: 8px;
   cursor: pointer;
-  font-family: inherit;
-  text-align: left;
+  transition: all 0.2s;
+  border: 1px solid transparent;
   width: 100%;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
+  text-align: left;
 }
-.map-drawer-task:hover {
+.task-row:hover {
+  background: #f0f7f3;
   border-color: #b2e8e6;
-  background: #f8fafc;
 }
-.map-drawer-task--done {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+.task-row.done {
+  cursor: default;
 }
-.map-drawer-task--progress {
-  background: #fffbeb;
-  border-color: #fde68a;
+.task-row.done:hover {
+  background: #f8faf9;
+  border-color: transparent;
 }
-.map-drawer-task-status {
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  background: #f1f5f9;
-  color: #475569;
-  font-size: 11px;
-  font-weight: 800;
-  display: grid;
-  place-items: center;
+.task-status {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #d5e0da;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  color: #008c86;
+  transition: all 0.3s;
 }
-.map-drawer-task--done .map-drawer-task-status {
-  background: #16a34a;
+.task-row.done .task-status {
+  background: #00a19a;
+  border-color: #00a19a;
   color: #fff;
 }
-.map-drawer-task--progress .map-drawer-task-status {
-  background: #fef3c7;
-  color: #92400e;
+.task-row.done .task-status::before {
+  content: '✓';
+  font-size: 12px;
 }
-.map-drawer-task-body {
+.task-info {
   flex: 1;
   min-width: 0;
 }
-.map-drawer-task-title {
-  font-size: 13.5px;
+.task-title {
+  font-size: 13px;
   font-weight: 700;
-  color: #231d45;
-  letter-spacing: -0.01em;
+  color: #0e2840;
 }
-.map-drawer-task-meta {
-  font-size: 11px;
+.task-row.done .task-title {
+  color: #6b7c8e;
+  text-decoration: line-through;
+}
+.task-meta {
+  font-size: 11.5px;
+  color: #6b7c8e;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.task-meta > * + *::before {
+  content: '·';
+  margin-right: 6px;
+  color: #c1cad3;
+}
+.task-meta .points {
+  color: #00a19a;
+  font-weight: 800;
+}
+.task-meta-mins,
+.task-meta-q {
+  color: #6b7c8e;
+  font-weight: 500;
+}
+.task-row.done .task-meta {
   color: #94a3b8;
-  margin-top: 2px;
 }
-.map-drawer-task-meta--done {
-  color: #16a34a;
-  font-weight: 700;
-}
-.map-drawer-task-meta--progress {
-  color: #92400e;
-  font-weight: 700;
-}
-.map-drawer-task-chev {
+.task-row.done .task-meta .points {
   color: #94a3b8;
-  font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
+}
+.task-arrow {
+  color: #6b7c8e;
+  font-size: 16px;
   flex-shrink: 0;
 }
-.map-drawer-empty {
+
+.sheet-empty {
   padding: 24px 0;
   text-align: center;
   font-size: 13px;
   color: #94a3b8;
+}
+
+/* Sheet enter/leave animation */
+.sheet-enter-active .sheet,
+.sheet-leave-active .sheet {
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.sheet-enter-from .sheet,
+.sheet-leave-to .sheet {
+  transform: translateY(100%);
+}
+.sheet-enter-active.sheet-backdrop,
+.sheet-leave-active.sheet-backdrop {
+  transition: opacity 0.3s ease;
+}
+.sheet-enter-from.sheet-backdrop,
+.sheet-leave-to.sheet-backdrop {
+  opacity: 0;
 }
 </style>

@@ -961,7 +961,6 @@ onMounted(async () => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
