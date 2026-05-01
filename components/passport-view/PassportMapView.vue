@@ -843,10 +843,10 @@ const navigateToStep = (stepId) => {
 /* Prototype-matching progress ring on each pin */
 .map-step-ring {
   position: absolute;
-  top: 56px;
-  right: 6px;
-  width: 36px;
-  height: 36px;
+  top: 50px;
+  right: -25px;
+  width: 41px;
+  height: 41px;
   background: #fff;
   border-radius: 50%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
