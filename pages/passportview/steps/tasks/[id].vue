@@ -181,7 +181,7 @@
       </div>
 
       <!-- "What is this?" tip — kept on aqua per request -->
-      <div v-if="currentQuestion?.helpContent" class="qtip">
+      <div v-if="tipBody" class="qtip">
         <div class="qtip-ic">
           <svg
             width="14"
@@ -202,7 +202,7 @@
         </div>
         <div class="qtip-body">
           <strong>What is this?</strong>
-          <p>{{ extractTipBody(currentQuestion.helpContent) }}</p>
+          <p>{{ tipBody }}</p>
         </div>
       </div>
       <div class="question-section">
@@ -470,7 +470,29 @@ onMounted(async () => {
 
   // Load property images for the home story task
   await loadPropertyImages()
+
+  // Track this task as the user's last visited so the "Pick up where you
+  // left off" CTA on the passport view routes them straight back here.
+  recordLastVisited()
 })
+
+async function recordLastVisited() {
+  const passportId = route.query.propertyId
+  if (!passportId || !taskId) return
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  const cfg = useRuntimeConfig()
+  try {
+    await $fetch(`${cfg.public.apiBase}/passport/${passportId}/last-visited`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { taskId },
+    })
+  } catch {
+    /* non-critical — silent */
+  }
+}
 
 // Typing animation removed - display questions immediately
 // const typeText = (targetRef, cursorRef, text, speed = 30) => {
@@ -601,6 +623,23 @@ function extractTipBody(content) {
     ''
   )
 }
+
+// Resolve the tip body with fallbacks so "What is this?" always shows when
+// any contextual help is available — question helpContent → step helpContent
+// → question hint / description / placeholder.
+const tipBody = computed(() => {
+  const q = currentQuestion.value
+  const s = currentStep.value
+  return (
+    extractTipBody(q?.helpContent) ||
+    extractTipBody(s?.helpContent) ||
+    q?.hint ||
+    q?.description ||
+    q?.subtitle ||
+    q?.placeholder ||
+    ''
+  )
+})
 
 const remainingQuestions = computed(() => {
   return currentQuestions.value.filter((q) => !q.completed).length

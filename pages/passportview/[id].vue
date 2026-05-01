@@ -44,12 +44,12 @@
               <div class="pp-hero-stat-val">{{ heroSectionsLabel }}</div>
               <div class="pp-hero-stat-lbl">Sections</div>
             </div>
-            <div class="pp-hero-stat">
+            <!-- <div class="pp-hero-stat">
               <div class="pp-hero-stat-val pp-hero-stat-val--ready">
                 {{ heroReadyPct }}
               </div>
               <div class="pp-hero-stat-lbl">Ready</div>
-            </div>
+            </div> -->
           </div>
           <div class="pp-hero-dash">
             <div class="pp-hero-dash-row">
@@ -74,10 +74,15 @@
 
       <!-- ── Action row — Match to Buyers / Publish ── -->
       <div class="pp-action-row">
-        <button class="pp-action-btn pp-action-outline" @click="setTab('buyers')">
+        <button
+          class="pp-action-btn pp-action-outline"
+          @click="setTab('buyers')"
+        >
           <OPIcon name="matchToBuyers" class="w-[15px] h-[15px]" />
           Match to Buyers
-          <span v-if="matchedBuyers.length" class="pp-action-badge">{{ matchedBuyers.length }}</span>
+          <span v-if="matchedBuyers.length" class="pp-action-badge">{{
+            matchedBuyers.length
+          }}</span>
         </button>
         <button
           class="pp-action-btn pp-action-primary"
@@ -115,7 +120,15 @@
           :class="['pp-subtab', activeTab === 'sections' ? 'active' : '']"
           @click="setTab('sections')"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+          >
             <line x1="8" y1="6" x2="21" y2="6" />
             <line x1="8" y1="12" x2="21" y2="12" />
             <line x1="8" y1="18" x2="21" y2="18" />
@@ -129,7 +142,16 @@
           :class="['pp-subtab', activeTab === 'street' ? 'active' : '']"
           @click="setTab('street')"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polygon points="1 6 9 2 15 6 23 2 23 18 15 22 9 18 1 22 1 6" />
             <line x1="9" y1="2" x2="9" y2="18" />
             <line x1="15" y1="6" x2="15" y2="22" />
@@ -140,14 +162,25 @@
           :class="['pp-subtab', activeTab === 'buyers' ? 'active' : '']"
           @click="setTab('buyers')"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
             <circle cx="9" cy="7" r="4" />
             <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
           Buyers
-          <span v-if="matchedBuyers.length" class="pp-subtab-badge">{{ matchedBuyers.length }}</span>
+          <span v-if="matchedBuyers.length" class="pp-subtab-badge">{{
+            matchedBuyers.length
+          }}</span>
         </button>
       </div>
 
@@ -157,6 +190,20 @@
         <div class="view-toggle">
           <SegmentedSwitch v-model="viewMode" :options="viewOptions" />
         </div>
+
+        <!-- Pick up where you left off — works for both list and map view -->
+        <button
+          v-if="resumeTarget"
+          class="pp-resume-cta"
+          @click="goToResume"
+        >
+          <span class="pp-resume-ic">↪</span>
+          <span class="pp-resume-text">
+            <span class="pp-resume-title">Pick up where you left off</span>
+            <span class="pp-resume-sub">{{ resumeSubtitle }}</span>
+          </span>
+          <span class="pp-resume-chev">›</span>
+        </button>
 
         <div v-if="viewMode === 'list'" class="steps-list">
           <div
@@ -178,7 +225,8 @@
               <div class="step-counts">
                 <span class="step-count-pill step-count-docs">
                   📎
-                  {{ getStepDocs(step).done }}/{{ getStepDocs(step).total }} docs
+                  {{ getStepDocs(step).done }}/{{ getStepDocs(step).total }}
+                  docs
                 </span>
                 <span class="step-count-pill step-count-q">
                   ❓
@@ -216,31 +264,60 @@
 
       <!-- Street tab -->
       <div v-if="activeTab === 'street'" class="pp-tab-content">
-        <p class="pp-vm-header">See who else on your street has started a Property Passport.</p>
+        <p class="pp-vm-header">
+          See who else on your street has started a Property Passport.
+        </p>
 
         <div v-if="streetProperties.length" class="pp-street-list">
-          <div v-for="sp in streetProperties" :key="sp.id" class="pp-street-row" @click="navigateToProperty(sp.id)">
-            <div class="pp-street-icon" :style="{ color: sp.isPublished ? '#0d9488' : sp.hasPassport ? '#f59e0b' : '#94a3b8' }">🏠</div>
-            <div style="flex:1;min-width:0;">
+          <div
+            v-for="sp in streetProperties"
+            :key="sp.id"
+            class="pp-street-row"
+            @click="navigateToProperty(sp.id)"
+          >
+            <div
+              class="pp-street-icon"
+              :style="{
+                color: sp.isPublished
+                  ? '#0d9488'
+                  : sp.hasPassport
+                    ? '#f59e0b'
+                    : '#94a3b8',
+              }"
+            >
+              🏠
+            </div>
+            <div style="flex: 1; min-width: 0">
               <div class="pp-street-addr">{{ sp.addressLine1 }}</div>
               <div class="pp-street-meta">
                 <span v-if="sp.propertyType">{{ sp.propertyType }}</span>
                 <span v-if="sp.bedrooms"> · {{ sp.bedrooms }} bed</span>
-                <span v-if="sp.epcRating" class="pp-street-epc" :style="{ background: epcColor(sp.epcRating) }">EPC {{ sp.epcRating }}</span>
+                <span
+                  v-if="sp.epcRating"
+                  class="pp-street-epc"
+                  :style="{ background: epcColor(sp.epcRating) }"
+                  >EPC {{ sp.epcRating }}</span
+                >
               </div>
             </div>
-            <span v-if="sp.isPublished" class="pp-street-badge published">✓ Published</span>
-            <span v-else-if="sp.hasPassport" class="pp-street-badge started">In progress</span>
+            <span v-if="sp.isPublished" class="pp-street-badge published"
+              >✓ Published</span
+            >
+            <span v-else-if="sp.hasPassport" class="pp-street-badge started"
+              >In progress</span
+            >
             <span v-else class="pp-street-badge none">Not started</span>
           </div>
         </div>
         <div v-else class="pp-empty">
-          <div style="font-size:32px;margin-bottom:8px;">🏘</div>
+          <div style="font-size: 32px; margin-bottom: 8px">🏘</div>
           <p>No other properties found on this street yet.</p>
         </div>
 
         <div v-if="streetStats" class="pp-street-stats">
-          <div class="pp-stats-title">{{ passportAddress.line2 }} — Street Overview</div>
+          <div class="pp-stats-title">
+            {{ passportAddress.line2 }} — Street Overview
+          </div>
           <div class="pp-stats-grid">
             <div class="pp-stat brand">
               <div class="pp-stat-val">{{ streetStats.published }}</div>
@@ -255,46 +332,104 @@
               <div class="pp-stat-lbl">Average EPC rating</div>
             </div>
             <div v-if="streetStats.avgPrice" class="pp-stat grey">
-              <div class="pp-stat-val">£{{ Math.round(streetStats.avgPrice / 1000) }}k</div>
+              <div class="pp-stat-val">
+                £{{ Math.round(streetStats.avgPrice / 1000) }}k
+              </div>
               <div class="pp-stat-lbl">Avg. estimated value</div>
             </div>
           </div>
           <div class="pp-street-tip">
-            💡 <strong>You're ahead of your street.</strong> Sellers with a passport typically accept offers <strong>18 days faster</strong>.
+            💡 <strong>You're ahead of your street.</strong> Sellers with a
+            passport typically accept offers <strong>18 days faster</strong>.
           </div>
         </div>
-        <div style="height:80px"/>
+        <div style="height: 80px" />
       </div>
 
       <!-- Buyers tab -->
       <div v-if="activeTab === 'buyers'" class="pp-tab-content">
         <div class="pp-buyers-intro">
-          <div class="pp-buyers-count">{{ buyersTotal || matchedBuyers.length }} buyers searching in your area</div>
-          <div class="pp-buyers-sub">Tap any buyer to see how well they match your property.</div>
+          <div class="pp-buyers-count">
+            {{ buyersTotal || matchedBuyers.length }} buyers searching in your
+            area
+          </div>
+          <div class="pp-buyers-sub">
+            Tap any buyer to see how well they match your property.
+          </div>
         </div>
 
         <div v-if="matchedBuyers.length" class="pp-buyer-list">
-          <div v-for="buyer in matchedBuyers" :key="buyer.name" class="pp-buyer-card">
-            <div class="pp-buyer-avatar" :style="{ background: buyer.matchScore >= 75 ? '#dcfce7' : buyer.matchScore >= 55 ? '#fef3c7' : '#f1f5f9', color: buyer.matchScore >= 75 ? '#16a34a' : buyer.matchScore >= 55 ? '#92400e' : '#64748b' }">
+          <div
+            v-for="buyer in matchedBuyers"
+            :key="buyer.name"
+            class="pp-buyer-card"
+          >
+            <div
+              class="pp-buyer-avatar"
+              :style="{
+                background:
+                  buyer.matchScore >= 75
+                    ? '#dcfce7'
+                    : buyer.matchScore >= 55
+                      ? '#fef3c7'
+                      : '#f1f5f9',
+                color:
+                  buyer.matchScore >= 75
+                    ? '#16a34a'
+                    : buyer.matchScore >= 55
+                      ? '#92400e'
+                      : '#64748b',
+              }"
+            >
               {{ buyer.name[0] }}
             </div>
             <div class="pp-buyer-info">
               <div class="pp-buyer-name">{{ buyer.name }}</div>
-              <div class="pp-buyer-criteria">{{ buyer.area }} · {{ buyer.budget }} · {{ buyer.timeline }}</div>
+              <div class="pp-buyer-criteria">
+                {{ buyer.area }} · {{ buyer.budget }} · {{ buyer.timeline }}
+              </div>
               <div class="pp-buyer-tags">
-                <span v-for="tag in buyer.tags" :key="tag" class="pp-buyer-tag" :class="tag === 'Strong match' ? 'match' : tag === 'Good match' ? 'partial' : ''">{{ tag }}</span>
+                <span
+                  v-for="tag in buyer.tags"
+                  :key="tag"
+                  class="pp-buyer-tag"
+                  :class="
+                    tag === 'Strong match'
+                      ? 'match'
+                      : tag === 'Good match'
+                        ? 'partial'
+                        : ''
+                  "
+                  >{{ tag }}</span
+                >
               </div>
             </div>
-            <div class="pp-buyer-score" :style="{ color: buyer.matchScore >= 75 ? '#16a34a' : buyer.matchScore >= 55 ? '#d97706' : '#94a3b8' }">
+            <div
+              class="pp-buyer-score"
+              :style="{
+                color:
+                  buyer.matchScore >= 75
+                    ? '#16a34a'
+                    : buyer.matchScore >= 55
+                      ? '#d97706'
+                      : '#94a3b8',
+              }"
+            >
               {{ buyer.matchScore }}%
             </div>
           </div>
         </div>
         <div v-else class="pp-empty">
-          <div style="font-size:32px;margin-bottom:8px;">👥</div>
-          <p>{{ propertyId ? 'Loading matched buyers…' : 'Property not linked — no buyer data available.' }}</p>
+          <div style="font-size: 32px; margin-bottom: 8px">👥</div>
+          <p>
+            {{
+              propertyId
+                ? 'Loading matched buyers…'
+                : 'Property not linked — no buyer data available.'
+            }}
+          </p>
         </div>
-        <div style="height:80px"/>
+        <div style="height: 80px" />
       </div>
     </div>
 
@@ -349,6 +484,12 @@ const isPublished = ref(false)
 const publishLoading = ref(false)
 const propertyHomeScore = ref(null)
 
+// Resume state — populated by GET /passport/:id/resume on mount and after
+// every save / publish toggle so the "Pick up where you left off" CTA stays
+// in sync with backend completion state.
+const resumeTarget = ref(null)
+const resumeTaskTitle = ref('')
+
 // Tab state
 const activeTab = ref('sections')
 const viewMode = ref('list')
@@ -390,10 +531,54 @@ onMounted(async () => {
       fetchBuyerData(passport.propertyId)
       fetchPropertyHomeScore(passport.propertyId)
     }
+    fetchResumeTarget()
   } catch (e) {
     console.error('Failed to load passport address', e)
   }
 })
+
+async function fetchResumeTarget() {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  try {
+    const r = await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}/resume`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+    resumeTarget.value = r?.target ?? null
+    if (resumeTarget.value) {
+      // Look up the task title from local steps so the subtitle is friendly.
+      for (const s of steps.value) {
+        const t = s.tasks?.find((x) => x.id === resumeTarget.value.taskId)
+        if (t) {
+          resumeTaskTitle.value = `${s.title} · ${t.title || 'Continue'}`
+          break
+        }
+      }
+    } else {
+      resumeTaskTitle.value = ''
+    }
+  } catch {
+    resumeTarget.value = null
+  }
+}
+
+const resumeSubtitle = computed(() => {
+  if (!resumeTarget.value) return ''
+  if (resumeTaskTitle.value) return resumeTaskTitle.value
+  if (resumeTarget.value.reason === 'last-visited') return 'Continue your last task'
+  if (resumeTarget.value.reason === 'next-in-section') return 'Next task in this section'
+  if (resumeTarget.value.reason === 'next-section') return 'Move on to the next section'
+  return 'Start your first task'
+})
+
+function goToResume() {
+  if (!resumeTarget.value) return
+  router.push(
+    `/passportview/steps/tasks/${resumeTarget.value.taskId}?stepId=${resumeTarget.value.sectionId}&propertyId=${route.params.id}`,
+  )
+}
 
 async function fetchPropertyHomeScore(pid) {
   try {
@@ -413,7 +598,9 @@ async function fetchStreetData(pid) {
 
 async function fetchBuyerData(pid) {
   try {
-    const data = await $fetch(`${config.public.apiBase}/property/${pid}/matched-buyers`)
+    const data = await $fetch(
+      `${config.public.apiBase}/property/${pid}/matched-buyers`,
+    )
     matchedBuyers.value = data.buyers ?? []
     buyersTotal.value = data.total ?? 0
   } catch {}
@@ -421,10 +608,18 @@ async function fetchBuyerData(pid) {
 
 function setTab(tab) {
   activeTab.value = tab
-  if (tab === 'street' && propertyId.value && streetProperties.value.length === 0) {
+  if (
+    tab === 'street' &&
+    propertyId.value &&
+    streetProperties.value.length === 0
+  ) {
     fetchStreetData(propertyId.value)
   }
-  if (tab === 'buyers' && propertyId.value && matchedBuyers.value.length === 0) {
+  if (
+    tab === 'buyers' &&
+    propertyId.value &&
+    matchedBuyers.value.length === 0
+  ) {
     fetchBuyerData(propertyId.value)
   }
 }
@@ -434,13 +629,22 @@ function navigateToProperty(pid) {
 }
 
 function epcColor(rating) {
-  const map = { A: '#00b050', B: '#33b800', C: '#92d050', D: '#d4e800', E: '#ffbf00', F: '#ff6600', G: '#ff0000' }
+  const map = {
+    A: '#00b050',
+    B: '#33b800',
+    C: '#92d050',
+    D: '#d4e800',
+    E: '#ffbf00',
+    F: '#ff6600',
+    G: '#ff0000',
+  }
   return map[rating?.toUpperCase()] ?? '#8e8e93'
 }
 
 async function togglePublish() {
   if (publishLoading.value) return
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) return
   publishLoading.value = true
   try {
@@ -504,7 +708,6 @@ const roleOptions = [
   { label: 'Seller', value: 'seller', icon: 'seller' },
 ]
 
-
 const overallProgress = computed(() => {
   const totalTasks = steps.value.reduce(
     (sum, step) => sum + step.tasks.length,
@@ -529,9 +732,7 @@ const heroDocsCount = computed(() =>
 )
 const heroSectionsLabel = computed(() => {
   const total = steps.value.length
-  const started = steps.value.filter(
-    (s) => (s.progress ?? 0) > 0,
-  ).length
+  const started = steps.value.filter((s) => (s.progress ?? 0) > 0).length
   return `${started}/${total}`
 })
 const heroReadyPct = computed(() => `${overallProgress.value}%`)
@@ -584,7 +785,10 @@ const getStepExpiringDoc = (step) => {
       if (!Number.isFinite(ts)) continue
       const diff = ts - now
       if (diff < 0) {
-        return { expired: true, label: `${t.title || 'A document'} has expired — please re-upload` }
+        return {
+          expired: true,
+          label: `${t.title || 'A document'} has expired — please re-upload`,
+        }
       }
       if (diff <= SOON_MS) {
         const days = Math.max(1, Math.ceil(diff / (24 * 60 * 60 * 1000)))
@@ -631,8 +835,6 @@ const onRoleSwitch = (role) => {
 .passport-page {
   min-height: 100vh;
   background: #fff;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
   color: #231d45;
 }
 
@@ -1171,16 +1373,26 @@ const onRoleSwitch = (role) => {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    box-shadow 0.18s;
   position: relative;
 }
 .pp-tab.active {
   background: white;
   color: #0d9488;
-  box-shadow: 0 1px 4px rgba(15,23,42,0.10), 0 0 0 1px rgba(15,23,42,0.04);
+  box-shadow:
+    0 1px 4px rgba(15, 23, 42, 0.1),
+    0 0 0 1px rgba(15, 23, 42, 0.04);
 }
-.pp-tab-icon { font-size: 14px; line-height: 1; }
-.pp-tab-label { font-size: 12px; }
+.pp-tab-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+.pp-tab-label {
+  font-size: 12px;
+}
 .pp-tab-badge {
   background: #0d9488;
   color: white;
@@ -1193,61 +1405,317 @@ const onRoleSwitch = (role) => {
   top: 4px;
   right: 4px;
 }
-.pp-tab-content { padding-top: 0; }
-
+.pp-tab-content {
+  padding-top: 0;
+}
 
 /* ── Street tab ──────────────────────────────────────── */
-.pp-vm-header { font-size: 12.5px; color: #475569; line-height: 1.5; margin: 0 0 12px; }
-.pp-street-list { background: white; border-radius: 16px; overflow: hidden; margin-bottom: 14px; border: 1px solid #e2e8e8; }
-.pp-street-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
-.pp-street-row:last-child { border-bottom: none; }
-.pp-street-row:active { background: #f0fdfa; }
-.pp-street-icon { font-size: 20px; flex-shrink: 0; }
-.pp-street-addr { font-size: 13px; font-weight: 600; color: #0f172a; }
-.pp-street-meta { font-size: 11px; color: #64748b; margin-top: 2px; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-.pp-street-epc { font-size: 10px; font-weight: 800; color: #fff; padding: 1px 5px; border-radius: 4px; margin-left: 4px; }
-.pp-street-badge { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
-.pp-street-badge.published { background: #dcfce7; color: #166534; }
-.pp-street-badge.started { background: #fef3c7; color: #92400e; }
-.pp-street-badge.none { background: #f1f5f9; color: #64748b; }
-.pp-empty { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: #64748b; font-size: 13px; text-align: center; }
-.pp-street-stats { background: white; border-radius: 16px; padding: 16px; margin-bottom: 14px; border: 1px solid #e2e8e8; }
-.pp-stats-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
-.pp-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-.pp-stat { border-radius: 10px; padding: 10px 12px; }
-.pp-stat.brand { background: #f0fdfa; }
-.pp-stat.green { background: #f0fdf4; }
-.pp-stat.amber { background: #fef3c7; }
-.pp-stat.grey { background: #f8fafc; }
-.pp-stat-val { font-size: 22px; font-weight: 800; color: #0f172a; }
-.pp-stat.brand .pp-stat-val { color: #0d9488; }
-.pp-stat.green .pp-stat-val { color: #16a34a; }
-.pp-stat.amber .pp-stat-val { color: #92400e; }
-.pp-stat-lbl { font-size: 11px; color: #64748b; margin-top: 1px; }
-.pp-street-tip { font-size: 12px; color: #475569; line-height: 1.5; padding: 10px; background: #f8fafc; border-radius: 8px; }
+.pp-vm-header {
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+.pp-street-list {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  border: 1px solid #e2e8e8;
+}
+.pp-street-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+}
+.pp-street-row:last-child {
+  border-bottom: none;
+}
+.pp-street-row:active {
+  background: #f0fdfa;
+}
+.pp-street-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.pp-street-addr {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+.pp-street-meta {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pp-street-epc {
+  font-size: 10px;
+  font-weight: 800;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+.pp-street-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.pp-street-badge.published {
+  background: #dcfce7;
+  color: #166534;
+}
+.pp-street-badge.started {
+  background: #fef3c7;
+  color: #92400e;
+}
+.pp-street-badge.none {
+  background: #f1f5f9;
+  color: #64748b;
+}
+.pp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+}
+.pp-street-stats {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid #e2e8e8;
+}
+.pp-stats-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+.pp-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.pp-stat {
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.pp-stat.brand {
+  background: #f0fdfa;
+}
+.pp-stat.green {
+  background: #f0fdf4;
+}
+.pp-stat.amber {
+  background: #fef3c7;
+}
+.pp-stat.grey {
+  background: #f8fafc;
+}
+.pp-stat-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.pp-stat.brand .pp-stat-val {
+  color: #0d9488;
+}
+.pp-stat.green .pp-stat-val {
+  color: #16a34a;
+}
+.pp-stat.amber .pp-stat-val {
+  color: #92400e;
+}
+.pp-stat-lbl {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 1px;
+}
+.pp-street-tip {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.5;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
 
 /* ── Buyers tab ──────────────────────────────────────── */
-.pp-buyers-intro { background: #f0fdfa; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
-.pp-buyers-count { font-size: 13px; color: #0f172a; font-weight: 600; margin-bottom: 2px; }
-.pp-buyers-sub { font-size: 12px; color: #64748b; }
-.pp-buyer-list { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8e8; margin-bottom: 14px; }
-.pp-buyer-card { display: flex; align-items: flex-start; gap: 12px; padding: 13px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
-.pp-buyer-card:last-child { border-bottom: none; }
-.pp-buyer-card:active { background: #f0fdfa; }
-.pp-buyer-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; flex-shrink: 0; }
-.pp-buyer-info { flex: 1; min-width: 0; }
-.pp-buyer-name { font-size: 13.5px; font-weight: 700; color: #0f172a; }
-.pp-buyer-criteria { font-size: 11.5px; color: #475569; margin-top: 2px; line-height: 1.4; }
-.pp-buyer-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-.pp-buyer-tag { font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: #f1f5f9; color: #475569; }
-.pp-buyer-tag.match { background: #dcfce7; color: #166534; }
-.pp-buyer-tag.partial { background: #fef3c7; color: #92400e; }
-.pp-buyer-score { font-size: 16px; font-weight: 800; flex-shrink: 0; min-width: 38px; text-align: right; }
+.pp-buyers-intro {
+  background: #f0fdfa;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.pp-buyers-count {
+  font-size: 13px;
+  color: #0f172a;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.pp-buyers-sub {
+  font-size: 12px;
+  color: #64748b;
+}
+.pp-buyer-list {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8e8;
+  margin-bottom: 14px;
+}
+.pp-buyer-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+}
+.pp-buyer-card:last-child {
+  border-bottom: none;
+}
+.pp-buyer-card:active {
+  background: #f0fdfa;
+}
+.pp-buyer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.pp-buyer-info {
+  flex: 1;
+  min-width: 0;
+}
+.pp-buyer-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.pp-buyer-criteria {
+  font-size: 11.5px;
+  color: #475569;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.pp-buyer-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.pp-buyer-tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+}
+.pp-buyer-tag.match {
+  background: #dcfce7;
+  color: #166534;
+}
+.pp-buyer-tag.partial {
+  background: #fef3c7;
+  color: #92400e;
+}
+.pp-buyer-score {
+  font-size: 16px;
+  font-weight: 800;
+  flex-shrink: 0;
+  min-width: 38px;
+  text-align: right;
+}
+
+/* ── Pick up where you left off — resume CTA ──────────────────────── */
+.pp-resume-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: linear-gradient(135deg, #00a19a, #008c86);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.28);
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+.pp-resume-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(0, 161, 154, 0.34);
+}
+.pp-resume-ic {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.2);
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.pp-resume-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.pp-resume-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.pp-resume-sub {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pp-resume-chev {
+  font-size: 20px;
+  font-weight: 600;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
 
 /* ── Premium Passport hero (prototype-matching) ───────────────────── */
 .pp-hero {
   background:
-    radial-gradient(circle at 18% 30%, rgba(0, 161, 154, 0.08), transparent 50%),
+    radial-gradient(
+      circle at 18% 30%,
+      rgba(0, 161, 154, 0.08),
+      transparent 50%
+    ),
     radial-gradient(circle at 90% 90%, rgba(35, 29, 69, 0.04), transparent 50%),
     linear-gradient(180deg, #f4fbfa 0%, #fff 100%);
   border: 1px solid #b2e8e6;
@@ -1344,7 +1812,7 @@ const onRoleSwitch = (role) => {
 }
 .pp-hero-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0;
   margin-top: 10px;
 }
@@ -1456,7 +1924,9 @@ const onRoleSwitch = (role) => {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: transform 0.1s, box-shadow 0.15s;
+  transition:
+    transform 0.1s,
+    box-shadow 0.15s;
 }
 .pp-action-btn:active {
   transform: scale(0.98);
@@ -1577,7 +2047,9 @@ const onRoleSwitch = (role) => {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 .pp-subtab.active {
   background: #00a19a;
@@ -1612,7 +2084,9 @@ const onRoleSwitch = (role) => {
   box-shadow:
     0 1px 3px rgba(35, 29, 69, 0.06),
     0 2px 8px rgba(35, 29, 69, 0.04);
-  transition: border-color 0.15s, transform 0.1s;
+  transition:
+    border-color 0.15s,
+    transform 0.1s;
   cursor: pointer;
 }
 .pp-section-card:hover {

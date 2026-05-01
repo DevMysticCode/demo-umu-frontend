@@ -1,5 +1,45 @@
 <template>
   <div class="map-view">
+    <!-- Filter tabs — All / In Progress / Done / To Do -->
+    <div class="map-filter-tabs">
+      <button
+        v-for="f in filters"
+        :key="f.value"
+        class="map-filter-tab"
+        :class="{ active: activeFilter === f.value }"
+        @click="activeFilter = f.value"
+      >
+        {{ f.label }}
+        <span class="map-filter-count">{{ f.count }}</span>
+      </button>
+    </div>
+
+    <!-- Currently viewing card — reflects the last step the user tapped
+         (or the next incomplete one by default) -->
+    <div class="map-now-card" v-if="currentStep">
+      <div class="map-now-eyebrow">Currently viewing</div>
+      <div class="map-now-row">
+        <div class="map-now-icon">
+          <OPIcon
+            :name="currentStep.icon || currentStep.key"
+            class="w-[24px] h-[24px]"
+          />
+        </div>
+        <div class="map-now-body">
+          <div class="map-now-title">{{ currentStep.title }}</div>
+          <div class="map-now-meta">
+            {{ currentStepCompletedTasks }}/{{
+              currentStep.tasks?.length ?? 0
+            }}
+            tasks · {{ getStepCompletion(currentStep) }}% complete
+          </div>
+        </div>
+        <button class="map-now-cta" @click="openStepDrawer(currentStep)">
+          View tasks
+        </button>
+      </div>
+    </div>
+
     <div class="map-content">
       <div class="map-placeholder">
         <div class="isometric-map">
@@ -20,6 +60,10 @@
             v-for="(step, index) in steps"
             :key="step.id"
             class="map-step"
+            :class="{
+              'map-step-dim': !matchesFilter(step),
+              'map-step-active': currentStepId === step.id,
+            }"
             :style="getStepPosition(index)"
           >
             <!-- Road connector above the step -->
@@ -35,23 +79,114 @@
             <div
               class="step-platform"
               :class="getStepStatusClass(step)"
-              @click="navigateToStep(step.id)"
+              @click="onStepClick(step)"
             >
               <OPIcon name="mapBackgroundTile" class="map-shadow-tile" />
               <OPIcon name="mapBackgroundTile" class="map-background-tile" />
               <div class="step-illustration">
                 <OPIcon :name="step.icon || step.key" class="step-icon-art" />
               </div>
+
+              <!-- Completion badge — % ring or ✓ when done -->
+              <div class="map-step-badge" :class="getStepBadgeClass(step)">
+                <template v-if="getStepCompletion(step) >= 100"> ✓ </template>
+                <template v-else> {{ getStepCompletion(step) }}% </template>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Bottom drawer — appears when a step is tapped, lists its tasks -->
+    <Teleport to="body">
+      <div
+        v-if="drawerStep"
+        class="map-drawer-overlay"
+        @click.self="drawerStep = null"
+      >
+        <div class="map-drawer">
+          <div class="map-drawer-handle" />
+          <div class="map-drawer-head">
+            <div class="map-drawer-icon">
+              <OPIcon
+                :name="drawerStep.icon || drawerStep.key"
+                class="w-[28px] h-[28px]"
+              />
+            </div>
+            <div class="map-drawer-titles">
+              <div class="map-drawer-title">{{ drawerStep.title }}</div>
+              <div class="map-drawer-sub">
+                {{ getStepCompletion(drawerStep) }}% complete ·
+                {{ drawerStep.tasks?.length ?? 0 }} tasks
+              </div>
+            </div>
+            <button
+              class="map-drawer-close"
+              aria-label="Close"
+              @click="drawerStep = null"
+            >
+              ×
+            </button>
+          </div>
+          <div class="map-drawer-bar">
+            <div
+              class="map-drawer-bar-fill"
+              :style="{ width: getStepCompletion(drawerStep) + '%' }"
+            />
+          </div>
+          <div class="map-drawer-tasks">
+            <button
+              v-for="task in drawerStep.tasks ?? []"
+              :key="task.id"
+              class="map-drawer-task"
+              :class="{
+                'map-drawer-task--done': task.completed,
+                'map-drawer-task--progress':
+                  !task.completed && Number(task.answeredQuestions) > 0,
+              }"
+              @click="goToTask(drawerStep, task)"
+            >
+              <div class="map-drawer-task-status">
+                <template v-if="task.completed">✓</template>
+                <template v-else-if="Number(task.answeredQuestions) > 0">
+                  {{ task.answeredQuestions }}/{{ task.totalQuestions || '?' }}
+                </template>
+                <template v-else>○</template>
+              </div>
+              <div class="map-drawer-task-body">
+                <div class="map-drawer-task-title">{{ task.title }}</div>
+                <div
+                  v-if="task.completed"
+                  class="map-drawer-task-meta map-drawer-task-meta--done"
+                >
+                  Done
+                </div>
+                <div
+                  v-else-if="Number(task.answeredQuestions) > 0"
+                  class="map-drawer-task-meta map-drawer-task-meta--progress"
+                >
+                  In progress
+                </div>
+                <div v-else class="map-drawer-task-meta">To do</div>
+              </div>
+              <span class="map-drawer-task-chev">›</span>
+            </button>
+            <div
+              v-if="!(drawerStep.tasks ?? []).length"
+              class="map-drawer-empty"
+            >
+              No tasks in this section yet.
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -60,10 +195,82 @@ const { steps } = usePassportRuntime()
 const route = useRoute()
 const router = useRouter()
 
+// ── Filter tabs ─────────────────────────────────────────────────
+const activeFilter = ref('all')
+const filters = computed(() => {
+  const inProgress = steps.value.filter((s) => {
+    const c = getStepCompletion(s)
+    return c > 0 && c < 100
+  }).length
+  const done = steps.value.filter((s) => getStepCompletion(s) >= 100).length
+  const todo = steps.value.filter((s) => getStepCompletion(s) === 0).length
+  return [
+    { value: 'all', label: 'All', count: steps.value.length },
+    { value: 'in-progress', label: 'In Progress', count: inProgress },
+    { value: 'done', label: 'Done', count: done },
+    { value: 'todo', label: 'To Do', count: todo },
+  ]
+})
+function matchesFilter(step) {
+  const c = getStepCompletion(step)
+  if (activeFilter.value === 'in-progress') return c > 0 && c < 100
+  if (activeFilter.value === 'done') return c >= 100
+  if (activeFilter.value === 'todo') return c === 0
+  return true
+}
+
+// ── Currently viewing — defaults to first incomplete step ───────
+const currentStepId = ref(null)
+const currentStep = computed(() => {
+  if (currentStepId.value) {
+    return steps.value.find((s) => s.id === currentStepId.value) || null
+  }
+  return (
+    steps.value.find((s) => getStepCompletion(s) < 100) ||
+    steps.value[0] ||
+    null
+  )
+})
+const currentStepCompletedTasks = computed(
+  () => currentStep.value?.tasks?.filter((t) => t.completed).length ?? 0,
+)
+
+// Pin badge tone — done = green, in-progress = brand, todo = grey
+function getStepBadgeClass(step) {
+  const c = getStepCompletion(step)
+  if (c >= 100) return 'map-step-badge--done'
+  if (c > 0) return 'map-step-badge--progress'
+  return 'map-step-badge--todo'
+}
+
+// ── Bottom drawer ──────────────────────────────────────────────
+const drawerStep = ref(null)
+function onStepClick(step) {
+  currentStepId.value = step.id
+  drawerStep.value = step
+}
+function openStepDrawer(step) {
+  drawerStep.value = step
+}
+function goToTask(step, task) {
+  const propertyId = route.params.id
+  if (!propertyId || !task?.id) return
+  router.push(
+    `/passportview/steps/tasks/${task.id}?stepId=${step.id}&propertyId=${propertyId}`,
+  )
+}
+
+watch(steps, (next) => {
+  // Keep currentStepId valid as data refreshes
+  if (currentStepId.value && !next.find((s) => s.id === currentStepId.value)) {
+    currentStepId.value = null
+  }
+})
+
 const mapLayout = {
   rightOffsetX: 185,
   leftOffsetX: 0,
-  stepGapY: 105,
+  stepGapY: '-31',
 }
 
 const decorativeObjects = [
@@ -426,6 +633,336 @@ const navigateToStep = (stepId) => {
   height: 80px;
   object-fit: contain;
 }
+
+/* ── Filter tabs (All / In Progress / Done / To Do) ──────────── */
+.map-filter-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 8px 0 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.map-filter-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1.5px solid #eef0f6;
+  background: #fff;
+  color: #4a5568;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.map-filter-tab:hover {
+  border-color: #b2e8e6;
+}
+.map-filter-tab.active {
+  background: #00a19a;
+  color: #fff;
+  border-color: #00a19a;
+  box-shadow: 0 2px 8px rgba(0, 161, 154, 0.28);
+}
+.map-filter-count {
+  font-size: 10.5px;
+  font-weight: 800;
+  background: rgba(0, 161, 154, 0.12);
+  color: #008c86;
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+.map-filter-tab.active .map-filter-count {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+/* ── Currently viewing card ──────────────────────────────────── */
+.map-now-card {
+  background: linear-gradient(135deg, #f4fbfa, #fff);
+  border: 1px solid #b2e8e6;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(35, 29, 69, 0.06);
+}
+.map-now-eyebrow {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #008c86;
+  margin-bottom: 6px;
+}
+.map-now-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.map-now-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #008c86;
+}
+.map-now-body {
+  flex: 1;
+  min-width: 0;
+}
+.map-now-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.map-now-meta {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+.map-now-cta {
+  border: none;
+  background: #00a19a;
+  color: #fff;
+  border-radius: 9px;
+  padding: 7px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 161, 154, 0.28);
+}
+
+/* ── Step pin badge (% / ✓) ──────────────────────────────────── */
+.map-step {
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+.map-step-dim {
+  opacity: 0.32;
+  pointer-events: none;
+}
+.map-step-active .step-platform {
+  filter: drop-shadow(0 6px 14px rgba(0, 161, 154, 0.35));
+}
+.map-step-badge {
+  position: absolute;
+  top: 60px;
+  right: 12px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(35, 29, 69, 0.18);
+  z-index: 5;
+  pointer-events: none;
+}
+.map-step-badge--done {
+  background: #16a34a;
+}
+.map-step-badge--progress {
+  background: #00a19a;
+}
+.map-step-badge--todo {
+  background: #94a3b8;
+}
+
+/* ── Bottom drawer ───────────────────────────────────────────── */
+.map-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(35, 29, 69, 0.45);
+  z-index: 1100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.map-drawer {
+  width: 100%;
+  max-width: 28rem;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 14px 20px 24px;
+  max-height: 75vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  box-shadow: 0 -8px 32px rgba(35, 29, 69, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+  color: #231d45;
+}
+.map-drawer::-webkit-scrollbar {
+  display: none;
+}
+.map-drawer-handle {
+  width: 36px;
+  height: 4px;
+  background: #eef0f6;
+  border-radius: 999px;
+  margin: 0 auto 14px;
+}
+.map-drawer-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.map-drawer-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #008c86;
+}
+.map-drawer-titles {
+  flex: 1;
+  min-width: 0;
+}
+.map-drawer-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
+}
+.map-drawer-sub {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+.map-drawer-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f8f7fc;
+  border: none;
+  font-size: 18px;
+  color: #4a5568;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.map-drawer-bar {
+  height: 5px;
+  background: #eef0f6;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.map-drawer-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #008c86, #00b5ad);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+.map-drawer-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.map-drawer-task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1.5px solid #eef0f6;
+  border-radius: 12px;
+  padding: 11px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.map-drawer-task:hover {
+  border-color: #b2e8e6;
+  background: #f8fafc;
+}
+.map-drawer-task--done {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.map-drawer-task--progress {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+.map-drawer-task-status {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.map-drawer-task--done .map-drawer-task-status {
+  background: #16a34a;
+  color: #fff;
+}
+.map-drawer-task--progress .map-drawer-task-status {
+  background: #fef3c7;
+  color: #92400e;
+}
+.map-drawer-task-body {
+  flex: 1;
+  min-width: 0;
+}
+.map-drawer-task-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #231d45;
+  letter-spacing: -0.01em;
+}
+.map-drawer-task-meta {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+.map-drawer-task-meta--done {
+  color: #16a34a;
+  font-weight: 700;
+}
+.map-drawer-task-meta--progress {
+  color: #92400e;
+  font-weight: 700;
+}
+.map-drawer-task-chev {
+  color: #94a3b8;
+  font-size: 18px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.map-drawer-empty {
+  padding: 24px 0;
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+}
 </style>
-
-

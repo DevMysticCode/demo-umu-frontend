@@ -151,8 +151,8 @@ defineProps({
 }
 
 .address-line-small {
-  font-size: 9.5px;
-  font-weight: 600;
+  font-size: 8px;
+  font-weight: 400;
   opacity: 0.9;
   letter-spacing: 0.04em;
   white-space: nowrap;
