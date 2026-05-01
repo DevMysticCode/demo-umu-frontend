@@ -95,23 +95,22 @@
                   <circle
                     class="map-step-ring-fg"
                     :class="{
-                      'map-step-ring-fg--done':
-                        getStepCompletion(step) >= 100,
+                      'map-step-ring-fg--done': getStepCompletion(step) >= 100,
                     }"
                     cx="15"
                     cy="15"
                     r="12"
                     stroke-dasharray="75.4"
                     :stroke-dashoffset="
-                      75.4 - (Math.min(100, getStepCompletion(step)) / 100) * 75.4
+                      75.4 -
+                      (Math.min(100, getStepCompletion(step)) / 100) * 75.4
                     "
                   />
                 </svg>
                 <div
                   class="map-step-ring-text"
                   :class="{
-                    'map-step-ring-text--done':
-                      getStepCompletion(step) >= 100,
+                    'map-step-ring-text--done': getStepCompletion(step) >= 100,
                   }"
                 >
                   <template v-if="getStepCompletion(step) >= 100">✓</template>
@@ -139,7 +138,7 @@
                 <div class="sheet-icon">
                   <OPIcon
                     :name="drawerStep.icon || drawerStep.key"
-                    class="w-[28px] h-[28px]"
+                    class="w-[50px] h-[50px]"
                   />
                 </div>
               </div>
@@ -148,10 +147,7 @@
                 <div class="sheet-sub">
                   {{ drawerStep.subtitle || drawerStep.description || '' }}
                 </div>
-                <span
-                  v-if="drawerStepMaxPoints > 0"
-                  class="sheet-points"
-                >
+                <span v-if="drawerStepMaxPoints > 0" class="sheet-points">
                   ⭐ Up to {{ drawerStepMaxPoints }} points
                 </span>
               </div>
@@ -183,17 +179,22 @@
               @click="goToTask(drawerStep, task)"
             >
               <div class="task-status">
-                <template v-if="!task.completed && Number(task.answeredQuestions) > 0">
+                <template
+                  v-if="!task.completed && Number(task.answeredQuestions) > 0"
+                >
                   {{ task.answeredQuestions }}
                 </template>
               </div>
               <div class="task-info">
                 <div class="task-title">{{ task.title }}</div>
+                <p
+                  v-if="task.description"
+                  class="task-description"
+                >
+                  {{ task.description }}
+                </p>
                 <div class="task-meta">
-                  <span
-                    v-if="getTaskPoints(task)"
-                    class="points"
-                  >
+                  <span v-if="getTaskPoints(task)" class="points">
                     +{{ getTaskPoints(task) }} points
                   </span>
                   <span class="task-meta-mins">
@@ -212,10 +213,7 @@
               <span class="task-arrow">›</span>
             </button>
 
-            <div
-              v-if="!(drawerStep.tasks ?? []).length"
-              class="sheet-empty"
-            >
+            <div v-if="!(drawerStep.tasks ?? []).length" class="sheet-empty">
               No tasks in this section yet.
             </div>
           </div>
@@ -294,16 +292,11 @@ const drawerStepPoints = computed(() => {
 // Maximum points available across the whole section — used in the head pill.
 const drawerStepMaxPoints = computed(() => {
   const tasks = drawerStep.value?.tasks ?? []
-  return tasks.reduce(
-    (sum, t) => sum + Number(getTaskPoints(t) || 0),
-    0,
-  )
+  return tasks.reduce((sum, t) => sum + Number(getTaskPoints(t) || 0), 0)
 })
 
 function getTaskPoints(task) {
-  return Number(
-    task?.points || task?.pointsReward || task?.pointsAward || 0,
-  )
+  return Number(task?.points || task?.pointsReward || task?.pointsAward || 0)
 }
 
 function getTaskQuestionCount(task) {
@@ -349,8 +342,8 @@ watch(steps, (next) => {
 })
 
 const mapLayout = {
-  rightOffsetX: 185,
-  leftOffsetX: 0,
+  rightOffsetX: 165,
+  leftOffsetX: '-20',
   stepGapY: '-31',
 }
 
@@ -930,8 +923,8 @@ const navigateToStep = (stepId) => {
 }
 .sheet-icon-wrap {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
   flex-shrink: 0;
 }
 .sheet-icon {
@@ -1078,6 +1071,15 @@ const navigateToStep = (stepId) => {
   font-size: 13px;
   font-weight: 700;
   color: #0e2840;
+}
+.task-description {
+  font-size: 11.5px;
+  color: #6b7c8e;
+  line-height: 1.45;
+  margin: 3px 0 0;
+}
+.task-row.done .task-description {
+  color: #94a3b8;
 }
 .task-row.done .task-title {
   color: #6b7c8e;

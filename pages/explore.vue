@@ -21,6 +21,14 @@
               Returning
             </div>
           </div>
+          <button
+            class="explore-tour-btn"
+            aria-label="Take a quick tour"
+            data-tour="tour-btn"
+            @click="exploreTourRef?.start?.()"
+          >
+            ?
+          </button>
           <div class="hero-avatar" @click="navigateTo('/profile')">
             <UserAvatar
               :src="profile?.avatarUrl"
@@ -1535,6 +1543,13 @@
 
     <BottomNav />
 
+    <!-- First-visit guided tour — replays from the "?" button in the hero -->
+    <OnboardingTour
+      ref="exploreTourRef"
+      :steps="exploreTourSteps"
+      storage-key="umu_tour_explore_v1"
+    />
+
     <!-- Filters Bottom Sheet -->
     <Transition name="sheet-fade">
       <div
@@ -1625,6 +1640,33 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
+import OnboardingTour from '~/components/ui/OnboardingTour.vue'
+
+// Guided tour wiring — replays via the "?" button in the hero, auto-runs
+// once per browser via storageKey on the OnboardingTour component.
+const exploreTourRef = ref<any>(null)
+const exploreTourSteps = [
+  {
+    selector: '.search-wrap',
+    title: 'Search any UK property',
+    body: 'Type a postcode, address or area. Properties with a verified Passport surface to the top.',
+  },
+  {
+    selector: '.toggle-track',
+    title: 'New vs Returning view',
+    body: 'Switch between curated discovery and your saved / recently viewed properties.',
+  },
+  {
+    selector: '.prop-card',
+    title: 'Tap any property',
+    body: 'You\'ll see EPC, HealthScore™ and — for verified ones — the full Property Passport.',
+  },
+  {
+    selector: '[data-tour="tour-btn"]',
+    title: 'Replay this tour anytime',
+    body: 'Tap the "?" button up here to walk through this again.',
+  },
+]
 import HealthPassportCards from '~/components/explore/HealthPassportCards.vue'
 
 definePageMeta({ title: 'Explore - UmovingU', middleware: 'auth' })
@@ -2097,6 +2139,26 @@ onMounted(async () => {
 .hero-avatar {
   cursor: pointer;
   flex-shrink: 0;
+}
+
+.explore-tour-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #eafaf9;
+  border: 1px solid #b2e8e6;
+  color: #008c86;
+  font-size: 14px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+.explore-tour-btn:hover,
+.explore-tour-btn:active {
+  background: #ccfbf1;
 }
 
 /* ── Toggle ── */

@@ -32,6 +32,13 @@
                 <OPIcon name="leftChevronWhite" class="w-[16px] h-[16px]" />
               </button>
               <div class="flex gap-3">
+                <button
+                  class="hero-btn"
+                  aria-label="Take a quick tour"
+                  @click="buyerTourRef?.start?.()"
+                >
+                  <span style="font-weight:800;font-size:13px">?</span>
+                </button>
                 <button class="hero-btn">
                   <OPIcon name="wishlist" class="w-[18px] h-[18px]" />
                 </button>
@@ -731,12 +738,40 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Guided tour — auto-runs once per browser, replays from "?" in hero -->
+    <OnboardingTour
+      ref="buyerTourRef"
+      :steps="buyerTourSteps"
+      storage-key="umu_tour_buyer_passport_v1"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import OPIcon from '~/components/ui/OPIcon.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
+import OnboardingTour from '~/components/ui/OnboardingTour.vue'
+
+// Guided tour for buyers — surfaces the things they care about most.
+const buyerTourRef = ref<any>(null)
+const buyerTourSteps = [
+  {
+    selector: '.buyer-title-block',
+    title: 'Verified property record',
+    body: 'Address, estimated value and key facts — all confirmed against HM Land Registry.',
+  },
+  {
+    selector: '.buyer-card',
+    title: 'Everything in one place',
+    body: 'Documents, surveys, the seller\'s answers and the property history — no more chasing for paperwork.',
+  },
+  {
+    selector: '.hero-btn',
+    title: 'Save & share',
+    body: 'Heart it to save to your Buyer Profile, or share the verified link with your solicitor.',
+  },
+]
 import UnderReview from '~/components/passport-view/UnderReview.vue'
 
 definePageMeta({ middleware: 'auth' })

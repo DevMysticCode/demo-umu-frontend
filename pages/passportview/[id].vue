@@ -1,7 +1,13 @@
 <template>
   <div class="mobile-container passport-page bg-umu-gradient">
     <div class="passport-header">
-      <AppHeader title="Passport" :showBack="true" right="profile" />
+      <AppHeader
+        title="Passport"
+        :showBack="true"
+        right="profile"
+        :show-tour="true"
+        @tour="passportTourRef?.start?.()"
+      />
 
       <SegmentedSwitch
         v-model="selectedRole"
@@ -448,6 +454,13 @@
       @close="showPropertiesModal = false"
       @select="switchPassport"
     />
+
+    <!-- Guided tour — auto-runs once, replays from the "?" in AppHeader -->
+    <OnboardingTour
+      ref="passportTourRef"
+      :steps="passportTourSteps"
+      storage-key="umu_tour_passportview_v1"
+    />
   </div>
 </template>
 
@@ -460,6 +473,37 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 import SegmentedSwitch from '@/components/core/SegmentedSwitch.vue'
 import AddCollaboratorModal from '@/components/modals/AddCollaboratorModal.vue'
 import YourPropertiesModal from '@/components/modals/YourPropertiesModal.vue'
+import OnboardingTour from '~/components/ui/OnboardingTour.vue'
+
+// Guided tour — auto-runs once per browser, replays from the "?" button.
+const passportTourRef = ref(null)
+const passportTourSteps = [
+  {
+    selector: '.pp-hero',
+    title: 'Your Property Passport',
+    body: 'This card shows your address, the live HealthScore, document count and overall progress at a glance.',
+  },
+  {
+    selector: '.pp-resume-cta',
+    title: 'Pick up where you left off',
+    body: 'Tap here anytime to jump straight back to the next task waiting for you.',
+  },
+  {
+    selector: '.pp-action-row',
+    title: 'Match buyers or publish',
+    body: 'When you\'re ready, match to verified buyers or publish so anyone can view your verified record.',
+  },
+  {
+    selector: '.pp-subtabs',
+    title: 'Sections, Street, Buyers',
+    body: 'Three tabs: complete your sections, see how you compare to your street, and review matched buyers.',
+  },
+  {
+    selector: '.view-toggle',
+    title: 'List or Map view',
+    body: 'Tap the map view for an isometric tour through every section of your Passport.',
+  },
+]
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
 import { onMounted, ref, computed } from 'vue'
