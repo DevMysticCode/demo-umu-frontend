@@ -480,44 +480,61 @@
             </button>
           </div>
 
-          <!-- Records List -->
+          <!-- Records List — passportview-style section cards -->
           <div class="buyer-records-list">
             <div
               v-for="section in filteredSections"
               :key="section.id"
               class="buyer-record-row"
+              :class="'state-' + sectionCompletion(section)"
               @click="goToSection(section.id)"
             >
               <div class="buyer-record-icon">
                 <OPIcon
                   :name="section.imageKey || 'fittingsContents'"
-                  class="w-[52px] h-[52px]"
+                  class="w-[60px] h-[60px]"
                 />
               </div>
               <div class="buyer-record-info">
                 <h3 class="buyer-record-title">{{ section.title }}</h3>
-                <p class="buyer-record-sub">
-                  {{
-                    section.subtitle || section.description || 'View details'
-                  }}
+                <p
+                  v-if="section.subtitle || section.description"
+                  class="buyer-record-sub"
+                >
+                  {{ section.subtitle || section.description }}
                 </p>
+                <div class="buyer-record-meta">
+                  <span
+                    class="buyer-record-pill"
+                    :class="'pill--' + sectionCompletion(section)"
+                  >
+                    <template v-if="sectionCompletion(section) === 'complete'">
+                      ✓ Fully answered
+                    </template>
+                    <template
+                      v-else-if="sectionCompletion(section) === 'partial'"
+                    >
+                      ⏳ Partially answered
+                    </template>
+                    <template v-else>○ Not started</template>
+                  </span>
+                </div>
+                <div class="buyer-record-progress">
+                  <div class="buyer-record-track">
+                    <div
+                      class="buyer-record-fill"
+                      :class="'fill--' + sectionCompletion(section)"
+                      :style="{ width: sectionPct(section) + '%' }"
+                    />
+                  </div>
+                  <span class="buyer-record-pct">
+                    {{ sectionPct(section) }}%
+                  </span>
+                </div>
               </div>
-              <div class="buyer-record-right">
-                <span
-                  class="buyer-completion-dot"
-                  :class="'dot--' + sectionCompletion(section)"
-                  :title="
-                    sectionCompletion(section) === 'complete'
-                      ? 'Fully answered'
-                      : sectionCompletion(section) === 'partial'
-                        ? 'Partially answered'
-                        : 'Not started'
-                  "
-                />
-                <button class="buyer-record-arrow">
-                  <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
-                </button>
-              </div>
+              <button class="buyer-record-arrow">
+                <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
+              </button>
             </div>
           </div>
         </div>
@@ -933,6 +950,20 @@ function sectionCompletion(section: any): 'complete' | 'partial' | 'empty' {
   return 'partial'
 }
 
+// Percentage answered, used by the section card's progress bar.
+function sectionPct(section: any): number {
+  let total = 0
+  let answered = 0
+  for (const task of section.tasks || []) {
+    for (const q of task.questions || []) {
+      total++
+      if (q.answer) answered++
+    }
+  }
+  if (!total) return 0
+  return Math.round((answered / total) * 100)
+}
+
 const filteredSections = computed(() => {
   if (!data.value?.sections) return []
   const q = searchQuery.value.toLowerCase()
@@ -1242,131 +1273,139 @@ async function deleteNote(noteId: string) {
   backdrop-filter: blur(4px);
 }
 
-/* Card */
+/* ── Card / page surface — matches passportview theme ─────── */
 .buyer-card {
   position: relative;
-  padding: 24px 16px 0;
-  background: white;
+  padding: 22px 20px 0;
+  background: #fff;
+  color: #231d45;
 }
 
-/* Title */
+/* Title block */
 .buyer-title-block {
   margin-bottom: 14px;
 }
-
 .buyer-address {
-  color: #000;
-  font-weight: 590;
-  font-size: 17px;
-  line-height: 22px;
-  letter-spacing: -0.43px;
-  margin: 0 0 2px;
+  color: #231d45;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
 }
-
 .buyer-city {
-  color: #3c3c4399;
-  font-weight: 400;
-  font-size: 17px;
-  line-height: 22px;
-  letter-spacing: -0.43px;
-  margin: 0 0 2px;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
 }
-
 .buyer-price {
   color: #00a19a;
-  font-weight: 400;
-  font-size: 17px;
-  line-height: 22px;
-  letter-spacing: -0.43px;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.01em;
   margin: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
 }
-
 .buyer-estimated {
-  font-size: 12px;
-  font-weight: 400;
-  color: #999;
-  margin-left: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-/* Badges */
+/* Badges — pale brand pills (matches passportview's section-pct pill) */
 .buyer-badges {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.buyer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #eafaf9;
+  color: #008c86;
+  border: 1px solid #b2e8e6;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Section heading — passportview typography */
+.buyer-section {
   margin-bottom: 24px;
 }
-
-.buyer-badge {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  background: #00a19a;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 11px;
-}
-
-/* Section */
-.buyer-section {
-  margin-bottom: 28px;
-}
-
 .buyer-section-title {
-  font-size: 17px;
-  font-weight: 590;
-  color: #000;
+  font-size: 16px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
   margin: 0 0 4px;
-  line-height: 22px;
+  line-height: 1.3;
 }
-
 .buyer-section-sub {
-  font-size: 13px;
-  color: #3c3c4399;
-  margin: 0 0 14px;
+  font-size: 12.5px;
+  color: #94a3b8;
+  margin: 0 0 12px;
+  line-height: 1.45;
 }
 
-/* Details card */
+/* Details card — brand-pale gradient with brand-soft border */
 .buyer-details-card {
-  background: #f8f8fa;
-  border-radius: 16px;
-  padding: 8px 16px;
+  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
+  border: 1px solid #b2e8e6;
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow:
+    0 1px 3px rgba(35, 29, 69, 0.06),
+    0 2px 8px rgba(35, 29, 69, 0.04);
 }
-
 .buyer-details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  padding: 12px 0;
+  gap: 16px 14px;
+  padding: 4px 0;
 }
-
 .buyer-detail-item {
   display: flex;
   gap: 10px;
   align-items: flex-start;
 }
-
 .buyer-detail-icon-wrap {
   width: 36px;
   height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 11px;
+  background: #fff;
+  border: 1px solid #b2e8e6;
+  color: #008c86;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
-
 .buyer-detail-label {
-  font-size: 11px;
-  color: #3c3c4399;
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   margin: 0 0 2px;
   line-height: 1.3;
 }
-
 .buyer-detail-value {
-  font-size: 14px;
-  font-weight: 590;
-  color: #00a19a;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #231d45;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 /* Search */
@@ -1416,45 +1455,54 @@ async function deleteNote(noteId: string) {
   cursor: pointer;
 }
 
-/* Records list */
+/* Records list — passportview-style cards with description + progress */
 .buyer-records-list {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid #f0f0f0;
-  background: white;
+  gap: 10px;
+  background: transparent;
+  border: none;
 }
 
 .buyer-record-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
-  padding: 14px 16px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 14px 14px 12px;
+  background: #fff;
+  border: 1px solid #eef0f6;
+  border-radius: 14px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition:
+    border-color 0.18s,
+    background 0.18s,
+    transform 0.1s;
+  box-shadow:
+    0 1px 3px rgba(35, 29, 69, 0.06),
+    0 2px 8px rgba(35, 29, 69, 0.04);
 }
-
-.buyer-record-row:last-child {
-  border-bottom: none;
+.buyer-record-row:hover {
+  border-color: #b2e8e6;
 }
-
 .buyer-record-row:active {
-  background: #f8f8f8;
+  transform: scale(0.99);
+}
+.buyer-record-row.state-complete {
+  border-color: #b2e8e6;
 }
 
 .buyer-record-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  background: #f5f5f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
+  border: 1px solid #b2e8e6;
+  color: #008c86;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
   overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .buyer-record-info {
@@ -1464,32 +1512,105 @@ async function deleteNote(noteId: string) {
 
 .buyer-record-title {
   font-size: 15px;
-  font-weight: 590;
-  color: #000;
-  margin: 0 0 2px;
-  line-height: 20px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 0 0 3px;
 }
 
 .buyer-record-sub {
   font-size: 12px;
-  color: #3c3c4399;
-  margin: 0;
+  color: #94a3b8;
+  margin: 0 0 8px;
+  line-height: 1.45;
+}
+
+/* Status pill — sits above the progress bar */
+.buyer-record-meta {
+  margin-bottom: 6px;
+}
+.buyer-record-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
   white-space: nowrap;
+  line-height: 1.4;
+}
+.pill--complete {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+.pill--partial {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+.pill--empty {
+  background: #f1f5f9;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+/* Thin progress bar matching passportview's section-progress */
+.buyer-record-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.buyer-record-track {
+  flex: 1;
+  height: 5px;
+  background: #eef0f6;
+  border-radius: 999px;
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+.buyer-record-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+.fill--complete {
+  background: linear-gradient(90deg, #16a34a, #34d399);
+}
+.fill--partial {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+.fill--empty {
+  background: #e2e8f0;
+}
+.buyer-record-pct {
+  font-size: 11px;
+  font-weight: 800;
+  color: #4a5568;
+  min-width: 32px;
+  text-align: right;
+  letter-spacing: -0.01em;
 }
 
 .buyer-record-arrow {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: #f9f9fd;
-  border: 0.5px solid #d2d1e4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #f8f7fc;
+  border: 1px solid #eef0f6;
+  display: grid;
+  place-items: center;
   cursor: pointer;
   flex-shrink: 0;
+  color: #94a3b8;
+  margin-top: 18px;
+}
+.buyer-record-row:hover .buyer-record-arrow {
+  background: #eafaf9;
+  border-color: #b2e8e6;
+  color: #008c86;
 }
 
 /* PDF download row */
@@ -1595,11 +1716,14 @@ async function deleteNote(noteId: string) {
 
 /* ── Progress ─────────────────────────────────────────────────────────── */
 .buyer-progress-card {
-  background: #f8fffe;
-  border: 1.5px solid #b2e4e1;
+  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
+  border: 1px solid #b2e8e6;
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 16px;
+  box-shadow:
+    0 1px 3px rgba(35, 29, 69, 0.06),
+    0 2px 8px rgba(35, 29, 69, 0.04);
 }
 
 .buyer-progress-header {
@@ -1611,44 +1735,50 @@ async function deleteNote(noteId: string) {
 
 .buyer-progress-label {
   font-size: 13px;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
 }
 
 .buyer-progress-pct {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   color: #00a19a;
+  letter-spacing: -0.01em;
 }
 
 .buyer-progress-track {
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
+  height: 6px;
+  background: #d5ece8;
+  border-radius: 999px;
   overflow: hidden;
   margin-bottom: 6px;
 }
 
 .buyer-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00a19a, #34d399);
-  border-radius: 4px;
+  background: linear-gradient(90deg, #008c86, #00b5ad);
+  border-radius: 999px;
   transition: width 0.6s ease;
 }
 
 .buyer-progress-hint {
-  font-size: 11px;
-  color: #666;
+  font-size: 11.5px;
+  color: #94a3b8;
   margin: 0;
+  line-height: 1.45;
 }
 
 /* ── Red Flags ────────────────────────────────────────────────────────── */
 .buyer-redflags-card {
-  background: #fff5f5;
-  border: 1.5px solid #fca5a5;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 16px;
+  box-shadow:
+    0 1px 3px rgba(35, 29, 69, 0.06),
+    0 2px 8px rgba(35, 29, 69, 0.04);
 }
 
 .buyer-redflags-header {
@@ -1656,8 +1786,9 @@ async function deleteNote(noteId: string) {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  font-weight: 600;
-  color: #dc2626;
+  font-weight: 800;
+  color: #92400e;
+  letter-spacing: -0.01em;
   margin-bottom: 10px;
 }
 
@@ -1671,7 +1802,7 @@ async function deleteNote(noteId: string) {
 
 .buyer-redflags-list li {
   font-size: 12px;
-  color: #7f1d1d;
+  color: #78350f;
   line-height: 1.5;
 }
 
@@ -1703,12 +1834,15 @@ async function deleteNote(noteId: string) {
   border: 1.5px solid #9ca3af;
 }
 
-/* ── Comparables ──────────────────────────────────────────────────────── */
+/* ── Comparables — passportview-themed list ──────────────────────────── */
 .buyer-comparables-list {
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid #f0f0f0;
-  background: white;
+  border: 1px solid #eef0f6;
+  background: #fff;
+  box-shadow:
+    0 1px 3px rgba(35, 29, 69, 0.06),
+    0 2px 8px rgba(35, 29, 69, 0.04);
 }
 
 .buyer-comp-row {
@@ -1716,22 +1850,27 @@ async function deleteNote(noteId: string) {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.12s;
 }
-
+.buyer-comp-row:hover {
+  background: #f0fdfa;
+}
 .buyer-comp-row:last-child {
   border-bottom: none;
 }
 
 .buyer-comp-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #e6f9f7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
+  border: 1px solid #b2e8e6;
+  color: #008c86;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .buyer-comp-info {
@@ -1740,9 +1879,10 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-comp-address {
-  font-size: 13px;
-  font-weight: 590;
-  color: #1a1a1a;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
   margin: 0 0 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -1750,15 +1890,16 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-comp-meta {
-  font-size: 11px;
-  color: #999;
+  font-size: 11.5px;
+  color: #94a3b8;
   margin: 0;
 }
 
 .buyer-comp-price {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   color: #00a19a;
+  letter-spacing: -0.01em;
   flex-shrink: 0;
 }
 

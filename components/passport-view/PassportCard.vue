@@ -123,7 +123,7 @@ defineProps({
 
 .passport-address {
   position: absolute;
-  bottom: 18%;
+  bottom: 0%;
   left: 50%;
   transform: translateX(-50%);
   width: 76%;

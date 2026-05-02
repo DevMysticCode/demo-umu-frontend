@@ -8,14 +8,40 @@
       <AppHeader :showBack="true" :backTo="backUrl" right="dots" />
 
       <div class="task-content">
-        <!-- Hero -->
-        <div class="task-hero">
-          <div class="task-hero-icon">
-            <OPIcon :name="section?.imageKey || 'fittingsContents'" class="w-[120px] h-[120px]" />
+        <!-- Hero — mirrors passportview/steps/tasks/[id].vue qhero -->
+        <section class="qhero">
+          <span class="qhero-badge">
+            <span class="qhero-dot" />
+            {{ section?.title || '' }}
+          </span>
+          <div class="qhero-illustration" aria-hidden="true">
+            <OPIcon
+              :name="section?.imageKey || 'fittingsContents'"
+              class="w-[120px] h-[120px]"
+            />
           </div>
-          <h1 class="task-hero-title">{{ task.title || firstQuestionLabel }}</h1>
-          <p class="task-hero-sub">{{ task.description || section?.description || 'Official property record' }}</p>
-        </div>
+          <h1 class="qhero-title">
+            {{ task.title || firstQuestionLabel }}
+          </h1>
+          <p class="qhero-sub">
+            {{
+              task.description || section?.description || 'Official property record'
+            }}
+          </p>
+          <div class="qhero-meta">
+            <div class="qring" :style="{ '--p': taskProgressPct }">
+              <span>{{ taskAnsweredCount }}/{{ taskTotalQuestions }}</span>
+            </div>
+            <div class="qmeta-text">
+              <small>Task answered</small>
+              <strong>
+                {{ taskRemainingQuestions }}
+                {{ taskRemainingQuestions === 1 ? 'question' : 'questions' }}
+                remaining
+              </strong>
+            </div>
+          </div>
+        </section>
 
         <!-- Section-level Help + Video — right aligned, seller style -->
         <div class="task-help-strip">
@@ -439,6 +465,27 @@ const firstQuestionLabel = computed(() => {
   if (Array.isArray(q.parts) && q.parts[0]?.title) return q.parts[0].title
   return ''
 })
+
+// Hero progress for the qhero ring — limited to the current task only
+// so it mirrors the seller's qhero behaviour.
+const currentTaskQuestions = computed(() =>
+  (task.value?.questions ?? []).filter((q: any) => q.type !== 'NOTE'),
+)
+const taskTotalQuestions = computed(() => currentTaskQuestions.value.length)
+const taskAnsweredCount = computed(() =>
+  currentTaskQuestions.value.filter(
+    (q: any) =>
+      q.answer && (q.answer.answerText || q.answer.answerJson || q.answer.fileUrl),
+  ).length,
+)
+const taskRemainingQuestions = computed(
+  () => Math.max(0, taskTotalQuestions.value - taskAnsweredCount.value),
+)
+const taskProgressPct = computed(() =>
+  taskTotalQuestions.value
+    ? Math.round((taskAnsweredCount.value / taskTotalQuestions.value) * 100)
+    : 0,
+)
 
 const backUrl = computed(() =>
   `/buyer-passport/section/${sectionId}?passportId=${passportId}`
@@ -879,10 +926,135 @@ function downloadFile(url: string, name: string) {
 .task-content { padding: 0 20px 40px; }
 
 /* Hero */
-.task-hero { text-align: center; padding: 20px 0 20px; }
-.task-hero-icon { display: flex; justify-content: center; margin-bottom: 16px; }
-.task-hero-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; line-height: 1.2; }
-.task-hero-sub { font-size: 13px; color: #3c3c4399; margin: 0 auto; line-height: 1.5; max-width: 280px; }
+/* Hero — mirrors passportview/steps/tasks/[id].vue qhero */
+.qhero {
+  margin: 8px 0 14px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, #ffffff 0%, #def7f1 60%, #d1e8e3 100%);
+  padding: 22px 22px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.qhero::before {
+  content: '';
+  position: absolute;
+  inset: -40% -20% auto auto;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.7),
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.qhero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(15, 118, 110, 0.15);
+  color: #0f766e;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 999px;
+  position: relative;
+  z-index: 1;
+}
+.qhero-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+.qhero-illustration {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 8px;
+  position: relative;
+  z-index: 1;
+}
+.qhero-title {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #0a0f2c;
+  margin: 4px 0 4px;
+  position: relative;
+  z-index: 1;
+}
+.qhero-sub {
+  color: #115e59;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 16px;
+  position: relative;
+  z-index: 1;
+}
+.qhero-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+.qring {
+  --p: 0;
+  --size: 56px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: conic-gradient(
+    #0d9488 calc(var(--p) * 1%),
+    rgba(15, 118, 110, 0.15) 0
+  );
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.qring::after {
+  content: '';
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  border-radius: 50%;
+  grid-area: 1 / 1;
+}
+.qring span {
+  grid-area: 1 / 1;
+  z-index: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0a0f2c;
+  line-height: 1;
+}
+.qmeta-text small {
+  display: block;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #115e59;
+  margin-bottom: 4px;
+}
+.qmeta-text strong {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #0a0f2c;
+}
+.qmeta-text strong em {
+  font-style: normal;
+  color: #64748b;
+  font-weight: 500;
+}
 
 /* Question navigation header */
 .question-nav {

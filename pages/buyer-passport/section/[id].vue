@@ -12,23 +12,43 @@
       />
 
       <div class="section-content">
-        <!-- Hero -->
-        <div class="section-hero">
-          <div class="section-hero-icon">
+        <!-- Hero — mirrors passportview/steps/[id].vue (teal-pale gradient + ring meta) -->
+        <section class="hero">
+          <span class="hero-badge">
+            <span class="dot" />
+            {{ section.title }}
+          </span>
+          <div class="hero-illustration" aria-hidden="true">
             <OPIcon
               :name="section.imageKey || 'fittingsContents'"
               class="w-[120px] h-[120px]"
             />
           </div>
-          <h1 class="section-hero-title">{{ section.title }}</h1>
-          <p class="section-hero-sub">
+          <h1 class="hero-title">{{ section.title }}</h1>
+          <p class="hero-sub">
             {{
               section.subtitle ||
               section.description ||
               'Official property record'
             }}
           </p>
-        </div>
+          <div class="hero-meta">
+            <div class="ring" :style="{ '--p': sectionProgressPct }">
+              <span>{{ sectionProgressPct }}%</span>
+            </div>
+            <div class="meta-text">
+              <small>Section answered</small>
+              <strong>
+                {{ sectionAnsweredCount }} of {{ sectionTotalQuestions }}
+                {{ sectionTotalQuestions === 1 ? 'question' : 'questions' }}
+                <em v-if="sectionTaskCount">
+                  · {{ sectionTaskCount }}
+                  {{ sectionTaskCount === 1 ? 'task' : 'tasks' }}</em
+                >
+              </strong>
+            </div>
+          </div>
+        </section>
 
         <!-- Help + Video + AI buttons -->
         <div class="section-help-strip">
@@ -631,6 +651,30 @@ function visibleQuestions(task: any): any[] {
   return (task.questions ?? []).filter((q: any) => q.type !== 'NOTE')
 }
 
+// Hero progress — counts visible questions that have a real answer.
+const sectionTotalQuestions = computed(() => {
+  let n = 0
+  for (const t of section.value?.tasks ?? []) n += visibleQuestions(t).length
+  return n
+})
+const sectionAnsweredCount = computed(() => {
+  let n = 0
+  for (const t of section.value?.tasks ?? []) {
+    for (const q of visibleQuestions(t)) {
+      if (q.answer && (q.answer.answerText || q.answer.answerJson || q.answer.fileUrl)) {
+        n++
+      }
+    }
+  }
+  return n
+})
+const sectionProgressPct = computed(() =>
+  sectionTotalQuestions.value
+    ? Math.round((sectionAnsweredCount.value / sectionTotalQuestions.value) * 100)
+    : 0,
+)
+const sectionTaskCount = computed(() => section.value?.tasks?.length ?? 0)
+
 function firstVisibleQuestion(task: any): string {
   const q = visibleQuestions(task)[0]
   if (!q) return ''
@@ -964,32 +1008,134 @@ function downloadAllFiles() {
   padding: 0 20px 40px;
 }
 
-/* Hero */
-.section-hero {
-  text-align: center;
-  padding: 24px 0 20px;
+/* Hero — mirrors passportview/steps/[id].vue */
+.hero {
+  margin: 8px 0 16px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, #ffffff 0%, #def7f1 60%, #d1e8e3 100%);
+  padding: 22px 22px 24px;
+  position: relative;
+  overflow: hidden;
 }
-
-.section-hero-icon {
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: -40% -20% auto auto;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.7),
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(15, 118, 110, 0.15);
+  color: #0f766e;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 999px;
+  position: relative;
+  z-index: 1;
+}
+.hero-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+.hero-illustration {
   display: flex;
   justify-content: center;
-  margin-bottom: 16px;
+  margin: 4px 0 8px;
+  position: relative;
+  z-index: 1;
 }
-
-.section-hero-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 6px;
-  line-height: 1.2;
+.hero-title {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #0a0f2c;
+  margin: 4px 0 4px;
+  position: relative;
+  z-index: 1;
 }
-
-.section-hero-sub {
+.hero-sub {
+  color: #115e59;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 16px;
+  position: relative;
+  z-index: 1;
+}
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+.ring {
+  --p: 0;
+  --size: 56px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: conic-gradient(
+    #0d9488 calc(var(--p) * 1%),
+    rgba(15, 118, 110, 0.15) 0
+  );
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.ring::after {
+  content: '';
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  border-radius: 50%;
+  grid-area: 1 / 1;
+}
+.ring span {
+  grid-area: 1 / 1;
+  z-index: 1;
   font-size: 13px;
-  color: #3c3c4399;
-  line-height: 1.5;
-  max-width: 280px;
-  margin: 0 auto;
+  font-weight: 700;
+  color: #0a0f2c;
+  line-height: 1;
+}
+.meta-text small {
+  display: block;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #115e59;
+  margin-bottom: 4px;
+}
+.meta-text strong {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #0a0f2c;
+}
+.meta-text strong em {
+  font-style: normal;
+  color: #64748b;
+  font-weight: 500;
 }
 
 /* Help / Video strip — right aligned below hero */
