@@ -131,11 +131,19 @@ interface PropertyDisplay {
   image?: string
 }
 
-const props = defineProps<{
-  modelValue: boolean
-  property: PropertyDisplay | null
-  existingPassportId?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean
+    property: PropertyDisplay | null
+    existingPassportId?: string
+    passportType?: 'seller' | 'landlord'
+    isHmo?: boolean
+  }>(),
+  {
+    passportType: 'seller',
+    isHmo: false,
+  },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
@@ -261,6 +269,7 @@ const handlePayment = async () => {
         props.property.id,
         props.property.addressLine1,
         props.property.postcode,
+        { type: props.passportType, isHmo: props.isHmo },
       )
     }
 

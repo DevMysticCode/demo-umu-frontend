@@ -43,11 +43,18 @@ export const usePassportClaim = () => {
     propertyId: string,
     addressLine1: string,
     postcode: string,
+    opts: { type?: 'seller' | 'landlord'; isHmo?: boolean } = {},
   ): Promise<{ passportId: string }> => {
     return $fetch<{ passportId: string }>(`${base}/passport/create`, {
       method: 'POST',
       headers: headers(),
-      body: { propertyId, addressLine1, postcode },
+      body: {
+        propertyId,
+        addressLine1,
+        postcode,
+        type: opts.type ?? 'seller',
+        ...(opts.isHmo ? { isHmo: true } : {}),
+      },
     })
   }
 
@@ -58,7 +65,17 @@ export const usePassportClaim = () => {
     })
   }
 
-  return { getPassportStatus, claimPassport, unlockPassport }
+  const convertLandlordToSeller = async (
+    landlordPassportId: string,
+  ): Promise<{ passportId: string; transferredSectionKeys: string[] }> => {
+    return $fetch(`${base}/passport/${landlordPassportId}/convert-to-seller`, {
+      method: 'POST',
+      headers: headers(),
+      body: { acknowledged: true },
+    })
+  }
+
+  return { getPassportStatus, claimPassport, unlockPassport, convertLandlordToSeller }
 }
 
 

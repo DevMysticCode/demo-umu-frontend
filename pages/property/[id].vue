@@ -2261,7 +2261,7 @@
           <div
             v-if="showPassportCta"
             class="pp-unlock-card pp-unlock-card--v2"
-            @click="showClaimDrawer = true"
+            @click="onClaimCtaClick"
           >
             <div class="pp-unlock-shine"></div>
             <div class="pp-unlock-eyebrow">
@@ -2375,6 +2375,11 @@
         />
       </BaseDrawer>
 
+      <ClaimPassportTypeDrawer
+        v-model="showClaimTypeDrawer"
+        @confirm="onPassportTypeChosen"
+      />
+
       <ClaimPassportDrawer
         v-model="showClaimDrawer"
         :property="
@@ -2390,6 +2395,8 @@
             : null
         "
         :existing-passport-id="buyerModePassportId"
+        :passport-type="claimPassportType"
+        :is-hmo="claimIsHmo"
         @close="showClaimDrawer = false"
         @claimed="handleClaimed"
       />
@@ -2458,6 +2465,7 @@
 import { ref, computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue'
 import RegisterInterestContent from '~/components/property/RegisterInterestContent.vue'
 import ClaimPassportDrawer from '~/components/property/ClaimPassportDrawer.vue'
+import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDrawer.vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
@@ -2489,6 +2497,16 @@ const loadError = ref('')
 const showRegisterInterest = ref(false)
 const showShare = ref(false)
 const showClaimDrawer = ref(false)
+const showClaimTypeDrawer = ref(false)
+const claimPassportType = ref<'seller' | 'landlord'>('seller')
+const claimIsHmo = ref(false)
+
+const onPassportTypeChosen = (payload: { type: 'seller' | 'landlord'; isHmo: boolean }) => {
+  claimPassportType.value = payload.type
+  claimIsHmo.value = payload.isHmo
+  showClaimTypeDrawer.value = false
+  showClaimDrawer.value = true
+}
 const showUnpublishedModal = ref(false)
 type LocTab =
   | 'map'
@@ -3648,8 +3666,15 @@ function handlePassportAction() {
   } else if (!s.isPublished) {
     showUnpublishedModal.value = true
   } else {
-    showClaimDrawer.value = true
+    showClaimTypeDrawer.value = true
   }
+}
+
+// Inline claim CTA on the property page now opens the type picker first.
+// The chosen type / HMO flag flows through onPassportTypeChosen and is
+// passed to ClaimPassportDrawer, which forwards them to claimPassport().
+function onClaimCtaClick() {
+  showClaimTypeDrawer.value = true
 }
 
 function goBack() {
