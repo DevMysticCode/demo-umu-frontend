@@ -1,484 +1,450 @@
 <template>
-  <div
-    class="mobile-container min-h-screen bg-[#efeff4] flex flex-col bg-umu-gradient"
-  >
-    <AppHeader title="Help & Support" :showBack="true" backTo="/profile" />
-
-    <!-- Segmented Switch -->
-    <div class="px-4 pt-4 pb-2">
-      <SegmentedSwitch :options="tabOptions" v-model="activeTab" />
+  <div class="hs-page mobile-container">
+    <!-- Nav bar -->
+    <div class="hs-nav-bar">
+      <button class="hs-nav-icon-btn" aria-label="Back" @click="$router.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <div class="hs-nav-title">Help &amp; Support</div>
+      <div style="width: 38px" />
     </div>
 
-    <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28">
-      <!-- FAQs tab -->
-      <div v-if="activeTab === 'faqs'">
-        <section class="mb-8">
-          <h2 class="mb-2 text-[22px] font-semibold text-[#1A1A1A]">
-            Common Issues
-          </h2>
-          <div class="border-b border-[#cfd1d8]">
-            <div
-              v-for="(faq, index) in commonIssues"
-              :key="index"
-              class="border-t border-[#cfd1d8]"
-            >
-              <button
-                @click="toggleFAQ(index)"
-                class="flex w-full items-center justify-between py-3 text-left"
-              >
-                <span class="pr-4 text-[14px] leading-[1.25] text-[#191a1f]">{{
-                  faq.question
-                }}</span>
-                <Icon
-                  name="mdi:chevron-down"
-                  :class="[
-                    'shrink-0 text-[#9a9da8] transition-transform',
-                    expandedFAQ === index ? 'rotate-180' : '',
-                  ]"
-                  size="22"
-                />
-              </button>
-              <transition name="expand">
-                <div
-                  v-if="expandedFAQ === index"
-                  class="pb-3 pr-7 text-[13px] leading-[1.35] text-[#5e6069]"
-                >
-                  {{ faq.answer }}
-                </div>
-              </transition>
-            </div>
-          </div>
-        </section>
+    <main class="hs-body">
+      <div class="atm-bg warm" />
 
-        <section class="mb-8">
-          <h2 class="mb-2 text-[22px] font-semibold text-[#1A1A1A]">
-            Category name two
-          </h2>
-          <div class="border-b border-[#cfd1d8]">
-            <div
-              v-for="(category, index) in categoryIssues"
-              :key="index"
-              class="border-t border-[#cfd1d8]"
-            >
-              <button
-                @click="toggleCategory(index)"
-                class="flex w-full items-center justify-between py-3 text-left"
-              >
-                <span class="pr-4 text-[14px] leading-[1.25] text-[#191a1f]">{{
-                  category.question
-                }}</span>
-                <Icon
-                  name="mdi:chevron-down"
-                  :class="[
-                    'shrink-0 text-[#9a9da8] transition-transform',
-                    expandedCategory === index ? 'rotate-180' : '',
-                  ]"
-                  size="22"
-                />
-              </button>
-              <transition name="expand">
-                <div
-                  v-if="expandedCategory === index"
-                  class="pb-3 pr-7 text-[13px] leading-[1.35] text-[#5e6069]"
-                >
-                  {{ category.answer }}
-                </div>
-              </transition>
-            </div>
-          </div>
-        </section>
-
-        <button
-          @click="showSupportDrawer = true"
-          class="mb-4 w-full rounded-[16px] border border-[#d0d2d9] bg-[#f6f6f7] px-5 py-5 shadow-[0_1px_2px_rgba(17,24,39,0.08)]"
-        >
-          <div class="mb-2 flex justify-center">
-            <img
-              src="/op-icons/temp/request.svg"
-              alt="Request"
-              class="h-[36px] w-[36px]"
-            />
-          </div>
-          <div
-            class="mx-auto mb-2 w-full max-w-[320px] rounded-full bg-[#00A19A] py-2.5 text-center text-[16px] font-medium text-white"
-          >
-            Send us a support request
-          </div>
-          <div class="text-center text-[13px] text-[#33353d]">
-            We&rsquo;ll get back to you as soon as we can
-          </div>
-        </button>
-
-        <!-- <button
-          @click="showSupportDrawer = true"
-          class="mb-6 w-full rounded-[16px] border border-[#d0d2d9] bg-[#f6f6f7] px-5 py-5 shadow-[0_1px_2px_rgba(17,24,39,0.08)]"
-        >
-          <div class="mb-2 flex justify-center">
-            <img
-              src="/op-icons/temp/library.svg"
-              alt="Library"
-              class="h-[36px] w-[36px]"
-            />
-          </div>
-          <div
-            class="mx-auto mb-2 w-full max-w-[320px] rounded-full bg-[#403D91] py-2.5 text-center text-[16px] font-medium text-white"
-          >
-            Search our learn library
-          </div>
-          <div class="text-center text-[13px] text-[#33353d]">
-            For tips on app features and more
-          </div>
-        </button> -->
+      <!-- Hero -->
+      <div class="hs-hero">
+        <div class="hs-h1">How can we help?</div>
       </div>
 
-      <!-- Feedback tab -->
-      <div v-if="activeTab === 'feedback'" class="space-y-4">
-        <div class="rounded-2xl border border-[#d7d9e1] bg-white p-5 shadow-sm">
-          <label class="mb-3 block text-sm font-semibold text-gray-900">
-            What can we improve?
-          </label>
-          <textarea
-            v-model="feedbackForm.message"
-            placeholder="Share your feedback with us..."
-            class="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-[#403D91] focus:ring-2 focus:ring-[#403D91]/20"
-            rows="5"
-          ></textarea>
+      <!-- Online status card -->
+      <div class="hs-section">
+        <div class="hs-status-card">
+          <div class="hs-status-pulse" />
+          <div class="hs-status-body">
+            <div class="hs-status-headline">Support team is online</div>
+            <div class="hs-status-sub">
+              Online during UK business hours · Mon–Fri 9am–6pm
+            </div>
+          </div>
+          <button class="hs-status-cta" @click="openChat">Chat</button>
         </div>
-
-        <div class="rounded-2xl border border-[#d7d9e1] bg-white p-5 shadow-sm">
-          <label class="mb-3 block text-sm font-semibold text-gray-900">
-            Category
-          </label>
-          <select
-            v-model="feedbackForm.category"
-            class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-[#403D91] focus:ring-2 focus:ring-[#403D91]/20"
-          >
-            <option value="">Select a category</option>
-            <option value="bug">Bug Report</option>
-            <option value="feature">Feature Request</option>
-            <option value="performance">Performance Issue</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div class="rounded-2xl border border-[#d7d9e1] bg-white p-5 shadow-sm">
-          <label class="mb-3 block text-sm font-semibold text-gray-900">
-            Email Address
-          </label>
-          <input
-            v-model="feedbackForm.email"
-            type="email"
-            placeholder="your@email.com"
-            class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-[#403D91] focus:ring-2 focus:ring-[#403D91]/20"
-          />
-        </div>
-
-        <button
-          @click="submitFeedback"
-          class="w-full rounded-full bg-[#12a7aa] py-3 text-base font-semibold text-white shadow-md transition hover:bg-[#0f999c]"
-        >
-          Submit Feedback
-        </button>
       </div>
-    </div>
 
-    <!-- Support Request Drawer -->
-    <Teleport to="body">
-      <div
-        v-if="showSupportDrawer"
-        class="fixed inset-0 z-50 flex flex-col justify-end"
-      >
-        <div
-          class="absolute inset-0 bg-black/40"
-          @click="showSupportDrawer = false"
-        />
-        <div class="relative w-full bg-white rounded-t-3xl px-5 pt-4 pb-10 z-10">
-          <div class="w-10 h-1 bg-[#d9dae0] rounded-full mx-auto mb-5" />
-          <div class="flex items-center justify-between mb-5">
-            <h2 class="font-sf-pro text-[17px] font-semibold text-[#1f2024]">
-              Support Request
-            </h2>
-            <button type="button" @click="showSupportDrawer = false">
-              <Icon name="i-heroicons-x-mark" class="w-5 h-5 text-[#8f9094]" />
+      <!-- Get in touch -->
+      <div class="hs-section-heading">Get in touch</div>
+      <div class="hs-section">
+        <div class="hs-group">
+          <button class="hs-row" @click="openChat">
+            <div class="hs-row-icon hs-row-icon--brand">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </div>
+            <div class="hs-row-content">
+              <div class="hs-row-label">Live chat</div>
+              <div class="hs-row-meta">Average reply time: 4 minutes</div>
+            </div>
+            <span class="hs-row-chev">›</span>
+          </button>
+
+          <a class="hs-row" href="mailto:support@umovingu.com">
+            <div class="hs-row-icon hs-row-icon--neutral">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+            </div>
+            <div class="hs-row-content">
+              <div class="hs-row-label">Email</div>
+              <div class="hs-row-meta">support@umovingu.com</div>
+            </div>
+            <span class="hs-row-chev">›</span>
+          </a>
+
+          <button class="hs-row" @click="navigateTo('/profile/calendar')">
+            <div class="hs-row-icon hs-row-icon--neutral">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+            </div>
+            <div class="hs-row-content">
+              <div class="hs-row-label">Schedule a call</div>
+              <div class="hs-row-meta">15 min slot with a specialist</div>
+            </div>
+            <span class="hs-row-chev">›</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="hs-section-heading">
+        Frequently asked
+        <span class="hs-sh-action">Browse all</span>
+      </div>
+      <div class="hs-section">
+        <div class="hs-group">
+          <div
+            v-for="(faq, i) in faqs"
+            :key="faq.q"
+            class="hs-faq"
+            :class="{ open: openFaq === i }"
+          >
+            <button class="hs-faq-q" @click="openFaq = openFaq === i ? -1 : i">
+              <span>{{ faq.q }}</span>
+              <span class="hs-faq-chev">{{ openFaq === i ? '−' : '+' }}</span>
             </button>
+            <div v-if="openFaq === i" class="hs-faq-a">{{ faq.a }}</div>
           </div>
-          <div class="mb-4">
-            <label
-              class="font-sf-pro text-[13px] font-medium text-[#8f9094] mb-1 block"
-              >Your name</label
-            >
-            <input
-              v-model="supportForm.name"
-              type="text"
-              placeholder="John Smith"
-              class="w-full border border-[#e5e5ea] rounded-xl px-4 py-3 font-sf-pro text-[15px] text-[#1f2024] outline-none focus:border-brand-aqua"
-            />
-          </div>
-          <div class="mb-4">
-            <label
-              class="font-sf-pro text-[13px] font-medium text-[#8f9094] mb-1 block"
-              >Email address</label
-            >
-            <input
-              v-model="supportForm.email"
-              type="email"
-              placeholder="you@example.com"
-              class="w-full border border-[#e5e5ea] rounded-xl px-4 py-3 font-sf-pro text-[15px] text-[#1f2024] outline-none focus:border-brand-aqua"
-            />
-          </div>
-          <div class="mb-4">
-            <label
-              class="font-sf-pro text-[13px] font-medium text-[#8f9094] mb-1 block"
-              >Subject</label
-            >
-            <input
-              v-model="supportForm.subject"
-              type="text"
-              placeholder="Briefly describe your issue"
-              class="w-full border border-[#e5e5ea] rounded-xl px-4 py-3 font-sf-pro text-[15px] text-[#1f2024] outline-none focus:border-brand-aqua"
-            />
-          </div>
-          <div class="mb-6">
-            <label
-              class="font-sf-pro text-[13px] font-medium text-[#8f9094] mb-1 block"
-              >Message</label
-            >
-            <textarea
-              v-model="supportForm.message"
-              rows="4"
-              placeholder="Tell us what's happening and we'll get back to you as soon as possible."
-              class="w-full border border-[#e5e5ea] rounded-xl px-4 py-3 font-sf-pro text-[15px] text-[#1f2024] outline-none focus:border-brand-aqua resize-none"
-            />
-          </div>
-          <button
-            type="button"
-            class="w-full h-[50px] rounded-2xl bg-brand-aqua text-white font-sf-pro text-[17px] font-medium disabled:opacity-50"
-            :disabled="
-              !supportForm.name.trim() ||
-              !supportForm.email.trim() ||
-              !supportForm.subject.trim() ||
-              !supportForm.message.trim() ||
-              isSubmitting
-            "
-            @click="submitSupportRequest"
-          >
-            {{ isSubmitting ? 'Sending...' : 'Send request' }}
-          </button>
         </div>
       </div>
-    </Teleport>
 
-    <!-- Success popup -->
-    <Teleport to="body">
-      <div
-        v-if="showSuccessPopup"
-        class="fixed inset-0 z-[60] flex items-center justify-center px-6"
-      >
-        <div
-          class="absolute inset-0 bg-black/50"
-          @click="showSuccessPopup = false"
-        />
-        <div
-          class="relative bg-white rounded-3xl px-6 py-8 w-full max-w-[340px] text-center shadow-2xl"
-        >
-          <div
-            class="w-16 h-16 rounded-full bg-brand-aqua/10 flex items-center justify-center mx-auto mb-4"
-          >
-            <Icon
-              name="i-heroicons-check-circle"
-              class="w-9 h-9 text-brand-aqua"
-            />
+      <!-- Status -->
+      <div class="hs-section-heading">
+        Status
+        <span class="hs-sh-action hs-sh-status">● All systems</span>
+      </div>
+      <div class="hs-section">
+        <div class="hs-group">
+          <div v-for="s in services" :key="s.name" class="hs-service">
+            <div class="hs-service-dot" />
+            <div class="hs-service-name">{{ s.name }}</div>
+            <div class="hs-service-state">Operational</div>
           </div>
-          <h3 class="font-sf-pro text-[19px] font-semibold text-[#1f2024] mb-2">
-            Request Received
-          </h3>
-          <p class="font-sf-pro text-[14px] text-[#8f9094] mb-4">
-            We'll get back to you as soon as we can.
-          </p>
-          <div class="bg-[#f6f6f7] rounded-2xl px-4 py-3 mb-6">
-            <p class="font-sf-pro text-[12px] text-[#8f9094] mb-1">
-              Your ticket number
-            </p>
-            <p
-              class="font-sf-pro text-[20px] font-bold text-brand-aqua tracking-wide"
-            >
-              {{ ticketNumber }}
-            </p>
-          </div>
-          <button
-            type="button"
-            class="w-full h-[48px] rounded-2xl bg-brand-aqua text-white font-sf-pro text-[16px] font-medium"
-            @click="showSuccessPopup = false"
-          >
-            Done
-          </button>
         </div>
       </div>
-    </Teleport>
-
-    <BottomNav active="explore" />
+    </main>
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import AppHeader from '~/components/core/AppHeader.vue'
-import SegmentedSwitch from '~/components/core/SegmentedSwitch.vue'
-import BottomNav from '~/components/core/BottomNav.vue'
-import { useSupportRequest } from '~/composables/useSupportRequest'
+<script setup lang="ts">
+definePageMeta({ title: 'Help & Support - UmovingU', middleware: 'auth' })
 
-const { isSubmitting, submitRequest } = useSupportRequest()
+const openFaq = ref(-1)
 
-const showSupportDrawer = ref(false)
-const showSuccessPopup = ref(false)
-const ticketNumber = ref('')
-
-const supportForm = ref({
-  name: '',
-  email: '',
-  subject: '',
-  message: '',
-})
-
-const submitSupportRequest = async () => {
-  try {
-    const result = await submitRequest(supportForm.value)
-    ticketNumber.value = result.ticketNumber
-    showSupportDrawer.value = false
-    showSuccessPopup.value = true
-    supportForm.value = { name: '', email: '', subject: '', message: '' }
-  } catch {
-    alert('Failed to send request. Please try again.')
-  }
-}
-
-const activeTab = ref('faqs')
-const expandedFAQ = ref(null)
-const expandedCategory = ref(null)
-
-const tabOptions = [
-  { label: 'FAQs & Support', value: 'faqs' },
-  { label: 'Send feedback', value: 'feedback' },
-]
-
-const feedbackForm = ref({
-  message: '',
-  category: '',
-  email: '',
-})
-
-const commonIssues = [
+const faqs = [
   {
-    question: 'How can I reset my password?',
-    answer:
-      'Go to the login page and click "Forgot Password". Enter your email address and follow the instructions sent to your email to reset your password.',
+    q: 'How do I claim my Property Passport?',
+    a: 'Find your property in HealthScore search, tap "I own this property", and we\'ll verify ownership via HM Land Registry. Once confirmed, your Passport is created and you can start completing sections.',
   },
   {
-    question: 'Why am I not seeing any properties in my search results?',
-    answer:
-      'This could happen if your search filters are too restrictive. Try expanding your location, price range, or property type filters. You can also clear all filters and try again.',
+    q: 'What\'s the difference between the HealthScore and a Passport?',
+    a: 'HealthScore is a public estimate based on EPC data — anyone can see it. The Passport is your verified record: ID-confirmed, document-backed, owner-controlled. Buyers pay to unlock it.',
   },
   {
-    question: 'How can I tell if a property is still available?',
-    answer:
-      'Each property listing shows its availability status. Active listings show recent updates and available tags. Contact the property owner directly for the most current status.',
+    q: 'Can I share my Buyer Profile with someone outside UMU?',
+    a: 'Yes — open Buyer Profile → Share. We generate a secure link that anyone can open in a browser, with a verified badge so sellers know it\'s genuine.',
   },
   {
-    question: 'How do I save a property?',
-    answer:
-      'You can save properties by tapping the heart icon on any property card. Your saved properties will be added to your collection for easy access later.',
+    q: 'How does the £49 Passport unlock work?',
+    a: 'Buyers pay £49 to access an owner\'s verified Passport. The fee covers the lifetime cost of access; you can revisit the Passport any time from "Watching" in your collections.',
   },
   {
-    question: 'Where can I find my saved properties?',
-    answer:
-      'Navigate to "My Home" in the bottom menu and select "Saved Properties". Here you can view, organize, and manage all your saved properties.',
+    q: 'Who can see my contact details?',
+    a: 'Nobody by default. Contact visibility is off — sellers and agents only see your details after you message them. Toggle this in Settings → Privacy & data.',
   },
   {
-    question: 'Can I favourite properties without creating an account?',
-    answer:
-      'You need to create an account or log in to save properties. This helps us personalize your experience and send you relevant property updates.',
+    q: 'How do I add a collaborator (solicitor, agent)?',
+    a: 'Profile → Collaborators → +. Enter their email; they\'ll get an invite. You control which properties they see and what they can edit.',
+  },
+  {
+    q: 'What happens to my Passport when I sell?',
+    a: 'It transfers to the new owner. Their name replaces yours on the title block; the verified history (documents, surveys, prior owners) stays with the property forever.',
+  },
+  {
+    q: 'Can I delete my account?',
+    a: 'Yes — Settings → Privacy & data → Delete account. We permanently wipe your profile, passports, documents and notes. This cannot be undone.',
   },
 ]
 
-const categoryIssues = [
-  {
-    question: 'How do I update my notification preferences?',
-    answer:
-      'Go to Settings in your profile and scroll to Notifications. You can toggle notifications on/off for property updates, messages, and other alerts.',
-  },
-  {
-    question: 'Can I use the app offline?',
-    answer:
-      'Some features work offline, but you need an internet connection to browse properties, send messages, and make updates.',
-  },
-  {
-    question: 'The app is crashing-what can I do?',
-    answer:
-      'Try clearing the app cache, updating to the latest version, or reinstalling the app. If the issue persists, contact our support team.',
-  },
-  {
-    question: "I'm seeing an error message. What should I do?",
-    answer:
-      'Note the error message and contact our support team with details. Screenshot the error if possible to help us troubleshoot faster.',
-  },
-  {
-    question: 'How can I report a bug or issue?',
-    answer:
-      'Use the "Send us a support request" button below or go to the Feedback tab to report any bugs or issues you encounter.',
-  },
-  {
-    question: 'There is an issue with listed data.',
-    answer:
-      'If you notice incorrect information in a property listing, please use the report feature on that property card or contact our support team with details.',
-  },
+const services = [
+  { name: 'App & website' },
+  { name: 'Passport platform' },
+  { name: 'HealthScore engine' },
+  { name: 'Payments (Stripe)' },
+  { name: 'Email & notifications' },
 ]
 
-const toggleFAQ = (index) => {
-  expandedFAQ.value = expandedFAQ.value === index ? null : index
-}
-
-const toggleCategory = (index) => {
-  expandedCategory.value = expandedCategory.value === index ? null : index
-}
-
-const openSupportModal = () => {
-  console.log('Open support modal')
-}
-
-const openLearnLibrary = () => {
-  console.log('Open learn library')
-}
-
-const submitFeedback = () => {
-  if (
-    !feedbackForm.value.message ||
-    !feedbackForm.value.category ||
-    !feedbackForm.value.email
-  ) {
-    alert('Please fill in all fields')
-    return
-  }
-  console.log('Feedback submitted:', feedbackForm.value)
-  alert('Thank you for your feedback!')
-  feedbackForm.value = { message: '', category: '', email: '' }
+function openChat() {
+  navigateTo('/profile/chat')
 }
 </script>
 
 <style scoped>
-.expand-enter-active,
-.expand-leave-active {
-  transition: all 0.3s ease;
+.hs-page {
+  min-height: 100dvh;
+  background: #fafaf8;
+  color: #0e2840;
+  position: relative;
+  padding-bottom: 32px;
 }
 
-.expand-enter-from,
-.expand-leave-to {
-  opacity: 0;
-  max-height: 0;
+.hs-nav-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 22px 8px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+.hs-nav-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #0e2840;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.hs-nav-icon-btn:hover { background: #f0f2f1; }
+.hs-nav-icon-btn svg { width: 18px; height: 18px; }
+.hs-nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.4px;
 }
 
-.expand-enter-to,
-.expand-leave-from {
-  opacity: 1;
-  max-height: 500px;
+.hs-body { position: relative; }
+.atm-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  pointer-events: none;
+  z-index: 0;
+}
+.atm-bg.warm {
+  background:
+    radial-gradient(ellipse 70% 100% at 30% 30%, rgba(245, 196, 76, 0.1), transparent 70%),
+    radial-gradient(ellipse 70% 80% at 90% 0%, rgba(61, 189, 163, 0.1), transparent 60%);
+}
+
+.hs-hero { padding: 8px 22px 14px; position: relative; z-index: 1; }
+.hs-h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -1.2px;
+  line-height: 1;
+}
+
+.hs-section-heading {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #8a95a0;
+  padding: 22px 22px 8px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hs-sh-action {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 800;
+  color: #1f7a66;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  text-transform: none;
+}
+.hs-sh-status { cursor: default; color: #1f7a66; }
+
+.hs-section { padding: 0 22px; position: relative; z-index: 1; }
+.hs-group {
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+/* Status card */
+.hs-status-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #f1f9f4, #e2f1ea);
+  border: 1px solid rgba(61, 189, 163, 0.25);
+  border-radius: 16px;
+  margin-bottom: 14px;
+}
+.hs-status-pulse {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3dbda3;
+  box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.25);
+  animation: hs-pulse 1.6s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes hs-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(61, 189, 163, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(61, 189, 163, 0); }
+}
+.hs-status-body { flex: 1; min-width: 0; }
+.hs-status-headline {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.2px;
+}
+.hs-status-sub {
+  font-size: 11.5px;
+  color: #4a5868;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.hs-status-cta {
+  background: #3dbda3;
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(61, 189, 163, 0.32);
+}
+.hs-status-cta:hover { background: #2a9484; }
+
+/* Row pattern */
+.hs-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid #f0f2f1;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  text-decoration: none;
+  color: inherit;
+}
+.hs-row:last-child { border-bottom: none; }
+.hs-row:hover { background: #f5f4f0; }
+.hs-row-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.hs-row-icon svg { width: 16px; height: 16px; }
+.hs-row-icon--brand { background: #f1f9f4; color: #1f7a66; }
+.hs-row-icon--neutral { background: #f5f4f0; color: #4a5868; }
+.hs-row-content { flex: 1; min-width: 0; }
+.hs-row-label {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.2px;
+  line-height: 1.3;
+}
+.hs-row-meta {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #4a5868;
+  margin-top: 2px;
+  line-height: 1.3;
+}
+.hs-row-chev {
+  color: #8a95a0;
+  font-size: 18px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* FAQ accordion */
+.hs-faq { border-bottom: 1px solid #f0f2f1; }
+.hs-faq:last-child { border-bottom: none; }
+.hs-faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0e2840;
+  text-align: left;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  line-height: 1.3;
+  transition: background 0.15s;
+}
+.hs-faq-q:hover { background: #f5f4f0; }
+.hs-faq-q > span:first-child { flex: 1; }
+.hs-faq-chev {
+  color: #1f7a66;
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.hs-faq-a {
+  padding: 0 16px 13px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4a5868;
+  line-height: 1.5;
+}
+
+/* Service status */
+.hs-service {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border-bottom: 1px solid #f0f2f1;
+}
+.hs-service:last-child { border-bottom: none; }
+.hs-service-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3dbda3;
+  flex-shrink: 0;
+}
+.hs-service-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0e2840;
+  letter-spacing: -0.1px;
+}
+.hs-service-state {
+  font-size: 11px;
+  font-weight: 800;
+  color: #1f7a66;
+  letter-spacing: -0.1px;
+  text-transform: uppercase;
 }
 </style>

@@ -53,6 +53,48 @@
 
       <!-- White content card -->
       <div class="buyer-card">
+        <!-- Premium hero — passport book + identity + 3-cell stat strip -->
+        <div class="buyer-hero-card" data-tour="hero">
+          <div class="buyer-hero-glow" />
+          <div class="buyer-hero-book">
+            <PassportCard
+              :line1="data.passport.addressLine1"
+              :line2="data.passport.postcode"
+            />
+          </div>
+          <div class="buyer-hero-info">
+            <div class="buyer-hero-eyebrow">Verified Property Passport</div>
+            <div class="buyer-hero-addr">{{ data.passport.addressLine1 }}</div>
+            <div class="buyer-hero-sub">{{ cityLine }}</div>
+            <div class="buyer-hero-stats">
+              <div class="buyer-hero-stat">
+                <div
+                  class="buyer-hero-stat-val"
+                  :class="{
+                    'buyer-hero-stat-val--brand':
+                      typeof heroHsScore === 'number',
+                  }"
+                >
+                  {{ heroHsScore }}
+                </div>
+                <div class="buyer-hero-stat-lbl">HS™</div>
+              </div>
+              <div class="buyer-hero-stat">
+                <div class="buyer-hero-stat-val">{{ heroDocsCount }}</div>
+                <div class="buyer-hero-stat-lbl">Docs</div>
+              </div>
+              <div class="buyer-hero-stat">
+                <div
+                  class="buyer-hero-stat-val buyer-hero-stat-val--ready"
+                >
+                  {{ overallProgressPct }}%
+                </div>
+                <div class="buyer-hero-stat-lbl">Answered</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Address / Price -->
         <div class="buyer-title-block">
           <h1 class="buyer-address">{{ data.passport.addressLine1 }}</h1>
@@ -63,7 +105,38 @@
             {{ formatPrice(data.property.estimatedPrice) }}
             <span class="buyer-estimated">Estimated Value</span>
           </p>
+
+          <!-- Confidence / red-flag inline pill — anchors to the red-flags
+               card lower down on tap -->
+          <button
+            class="buyer-risk-pill"
+            :class="riskPillClass"
+            @click="scrollToRedFlags"
+          >
+            <template v-if="redFlags.length === 0">
+              ✓ {{ overallProgressPct }}% complete · 0 red flags
+            </template>
+            <template v-else>
+              ⚠ {{ redFlags.length }} attention
+              {{ redFlags.length === 1 ? 'item' : 'items' }} ·
+              {{ overallProgressPct }}% complete
+            </template>
+          </button>
         </div>
+
+        <!-- Resume — last viewed buyer section, persisted per-passport -->
+        <button
+          v-if="resumeSection"
+          class="buyer-resume"
+          @click="goToResumeSection"
+        >
+          <div class="buyer-resume-ic">↪</div>
+          <div class="buyer-resume-body">
+            <div class="buyer-resume-eyebrow">Pick up where you left off</div>
+            <div class="buyer-resume-title">{{ resumeSection.title }}</div>
+          </div>
+          <div class="buyer-resume-chev">›</div>
+        </button>
 
         <!-- Badges -->
         <div class="buyer-badges" v-if="data.property">
@@ -395,7 +468,11 @@
         </div>
 
         <!-- Red Flags -->
-        <div v-if="redFlags.length" class="buyer-redflags-card">
+        <div
+          v-if="redFlags.length"
+          class="buyer-redflags-card"
+          data-tour="redflags"
+        >
           <div class="buyer-redflags-header">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path
@@ -478,6 +555,38 @@
                 />
               </svg>
             </button>
+          </div>
+
+          <!-- Section completion summary — sets expectation for the list below -->
+          <div
+            v-if="data.sections?.length"
+            class="buyer-summary-card"
+            data-tour="records"
+          >
+            <div class="buyer-summary-row">
+              <div class="buyer-summary-stat">
+                <div class="buyer-summary-num buyer-summary-num--done">
+                  {{ summaryStats.done }}
+                </div>
+                <div class="buyer-summary-lbl">Fully answered</div>
+              </div>
+              <div class="buyer-summary-stat">
+                <div class="buyer-summary-num buyer-summary-num--partial">
+                  {{ summaryStats.partial }}
+                </div>
+                <div class="buyer-summary-lbl">Partially</div>
+              </div>
+              <div class="buyer-summary-stat">
+                <div class="buyer-summary-num buyer-summary-num--empty">
+                  {{ summaryStats.empty }}
+                </div>
+                <div class="buyer-summary-lbl">Not yet shared</div>
+              </div>
+            </div>
+            <p class="buyer-summary-hint">
+              Sellers earn the most from completing every section. Tap any
+              below to see what's been shared so far.
+            </p>
           </div>
 
           <!-- Records List — passportview-style section cards -->
@@ -756,6 +865,27 @@
       </div>
     </Teleport>
 
+    <!-- Sticky bottom action bar — Save / Ask seller — shown only when
+         data is loaded so it doesn't blink during the spinner state. -->
+    <Transition name="buyer-toast">
+      <div v-if="saveToast" class="buyer-save-toast">{{ saveToast }}</div>
+    </Transition>
+    <div v-if="data" class="buyer-action-bar">
+      <button
+        class="buyer-action-save"
+        :class="{ 'is-saved': isSavedToProfile }"
+        @click="toggleSaveToProfile"
+      >
+        <span class="buyer-action-heart">
+          {{ isSavedToProfile ? '♥' : '♡' }}
+        </span>
+        {{ isSavedToProfile ? 'Saved' : 'Save to Profile' }}
+      </button>
+      <button class="buyer-action-ask" data-tour="ask" @click="askSeller">
+        💬 Ask the seller
+      </button>
+    </div>
+
     <!-- Guided tour — auto-runs once per browser, replays from "?" in hero -->
     <OnboardingTour
       ref="buyerTourRef"
@@ -769,14 +899,15 @@
 import OPIcon from '~/components/ui/OPIcon.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
+import PassportCard from '~/components/passport-view/PassportCard.vue'
 
 // Guided tour for buyers — surfaces the things they care about most.
 const buyerTourRef = ref<any>(null)
 const buyerTourSteps = [
   {
-    selector: '.buyer-title-block',
+    selector: '[data-tour="hero"]',
     title: 'Verified property record',
-    body: 'Address, estimated value and key facts — all confirmed against HM Land Registry.',
+    body: 'Address, HealthScore™, document count and how much of the seller\'s record has been completed.',
   },
   {
     selector: '.buyer-card',
@@ -784,9 +915,19 @@ const buyerTourSteps = [
     body: 'Documents, surveys, the seller\'s answers and the property history — no more chasing for paperwork.',
   },
   {
-    selector: '.hero-btn',
-    title: 'Save & share',
-    body: 'Heart it to save to your Buyer Profile, or share the verified link with your solicitor.',
+    selector: '[data-tour="records"]',
+    title: 'Tap any section',
+    body: 'See exactly what the seller has shared. Green means fully answered, amber is partial.',
+  },
+  {
+    selector: '[data-tour="redflags"]',
+    title: 'Red flags surface here',
+    body: 'If anything needs attention you\'ll see it called out in amber so it doesn\'t catch you off guard.',
+  },
+  {
+    selector: '[data-tour="ask"]',
+    title: 'Ask the seller',
+    body: 'Open a pre-filled chat with anything you want to clarify before you offer.',
   },
 ]
 import UnderReview from '~/components/passport-view/UnderReview.vue'
@@ -837,6 +978,7 @@ onMounted(async () => {
       { headers: { Authorization: `Bearer ${tok}` } },
     )
     await Promise.all([loadComparables(), loadNotes()])
+    loadResumeSection()
   } catch (e: any) {
     error.value = e?.data?.message || 'Failed to load passport.'
   } finally {
@@ -899,6 +1041,116 @@ const passportProgress = computed(() => {
   }
   return total === 0 ? 0 : Math.round((answered / total) * 100)
 })
+
+// ── Premium hero stat strip ──────────────────────────────────────
+const overallProgressPct = computed(() => passportProgress.value)
+const heroHsScore = computed(() => {
+  const score =
+    data.value?.property?.homeScore ?? data.value?.property?.epcScore
+  return typeof score === 'number' ? score : '—'
+})
+const heroDocsCount = computed(() => {
+  if (!data.value?.sections) return 0
+  let n = 0
+  for (const s of data.value.sections) {
+    for (const t of s.tasks || []) {
+      for (const q of t.questions || []) {
+        if (q.answer?.fileUrl) n++
+      }
+    }
+  }
+  return n
+})
+
+// ── Risk pill (next to price) — anchors to red-flags card ────────
+const riskPillClass = computed(() =>
+  // declared lazily — `redFlags` is defined further down in the script
+  // but Vue's reactivity resolves at render time, so this is fine.
+  // eslint-disable-next-line
+  (typeof redFlags !== 'undefined' && redFlags.value?.length)
+    ? 'risk-pill--warn'
+    : 'risk-pill--ok',
+)
+function scrollToRedFlags() {
+  if (typeof document === 'undefined') return
+  const el = document.querySelector('.buyer-redflags-card')
+  if (el && 'scrollIntoView' in el) {
+    ;(el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+}
+
+// ── Section completion summary stats ─────────────────────────────
+const summaryStats = computed(() => {
+  const stats = { done: 0, partial: 0, empty: 0 }
+  for (const s of data.value?.sections ?? []) {
+    let total = 0
+    let answered = 0
+    for (const t of s.tasks || []) {
+      for (const q of t.questions || []) {
+        if (q.type === 'NOTE') continue
+        total++
+        if (q.answer && (q.answer.answerText || q.answer.answerJson || q.answer.fileUrl)) {
+          answered++
+        }
+      }
+    }
+    if (total === 0 || answered === 0) stats.empty++
+    else if (answered === total) stats.done++
+    else stats.partial++
+  }
+  return stats
+})
+
+// ── Resume section — last viewed by this buyer (per-passport key) ──
+const resumeSectionId = ref<string | null>(null)
+const resumeSection = computed(() => {
+  if (!resumeSectionId.value) return null
+  return (
+    data.value?.sections?.find((s: any) => s.id === resumeSectionId.value) ?? null
+  )
+})
+function rememberSectionVisit(sectionId: string) {
+  if (typeof localStorage === 'undefined') return
+  try {
+    localStorage.setItem(`umu_buyer_resume_${passportId}`, sectionId)
+  } catch {
+    /* no-op */
+  }
+}
+function loadResumeSection() {
+  if (typeof localStorage === 'undefined') return
+  try {
+    resumeSectionId.value = localStorage.getItem(
+      `umu_buyer_resume_${passportId}`,
+    )
+  } catch {
+    resumeSectionId.value = null
+  }
+}
+function goToResumeSection() {
+  if (resumeSection.value?.id) {
+    router.push(
+      `/buyer-passport/section/${resumeSection.value.id}?passportId=${passportId}`,
+    )
+  }
+}
+
+// ── Sticky bottom action bar ─────────────────────────────────────
+const isSavedToProfile = ref(false)
+const saveToast = ref('')
+function toggleSaveToProfile() {
+  // Optimistic UX — flips the heart and shows a quick toast.
+  isSavedToProfile.value = !isSavedToProfile.value
+  saveToast.value = isSavedToProfile.value
+    ? 'Saved to your Buyer Profile'
+    : 'Removed from your Buyer Profile'
+  setTimeout(() => (saveToast.value = ''), 2200)
+  // The real save endpoint can hook in here later.
+}
+function askSeller() {
+  const url = `/contact/${data.value?.passport?.id ?? passportId}?prefill=I've reviewed the Passport — I'd like to ask about…`
+  router.push(url)
+}
 
 // Red flag patterns scanned from all answer text
 const RED_FLAG_PATTERNS = [
@@ -1041,6 +1293,7 @@ function goBack() {
 }
 
 function goToSection(sectionId: string) {
+  rememberSectionVisit(sectionId)
   router.push(`/buyer-passport/section/${sectionId}?passportId=${passportId}`)
 }
 
@@ -2185,5 +2438,347 @@ async function deleteNote(noteId: string) {
 
 .share-copy-btn:active {
   background: #00877f;
+}
+
+/* ── Premium hero card — passport book + identity + stats strip ── */
+.buyer-hero-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 14px;
+  margin: 4px 0 18px;
+  background: linear-gradient(135deg, #f4fbfa, #eafaf9);
+  border: 1px solid #b2e8e6;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 140, 134, 0.1);
+}
+.buyer-hero-glow {
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(
+    circle,
+    rgba(0, 161, 154, 0.18),
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+.buyer-hero-book {
+  width: 84px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 6px 14px rgba(0, 140, 134, 0.28));
+  position: relative;
+  z-index: 1;
+}
+.buyer-hero-book :deep(.passport-card) {
+  margin: 0;
+  padding: 0;
+}
+.buyer-hero-book :deep(.passport-container) {
+  width: 100%;
+  height: 110px;
+}
+.buyer-hero-info {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+.buyer-hero-eyebrow {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #008c86;
+  margin-bottom: 4px;
+}
+.buyer-hero-addr {
+  font-size: 16px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.buyer-hero-sub {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin: 2px 0 10px;
+}
+.buyer-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 140, 134, 0.1);
+}
+.buyer-hero-stat {
+  text-align: center;
+  padding: 0 4px;
+}
+.buyer-hero-stat + .buyer-hero-stat {
+  border-left: 1px solid rgba(0, 140, 134, 0.08);
+}
+.buyer-hero-stat-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: #231d45;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.buyer-hero-stat-val--brand {
+  color: #008c86;
+}
+.buyer-hero-stat-val--ready {
+  color: #00a19a;
+}
+.buyer-hero-stat-lbl {
+  font-size: 8.5px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 3px;
+  font-weight: 700;
+}
+
+/* ── Risk pill in title block ──────────────────────────────────── */
+.buyer-risk-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  padding: 5px 11px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  letter-spacing: -0.01em;
+  font-family: inherit;
+}
+.risk-pill--ok {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+.risk-pill--ok:hover {
+  background: #a7f3d0;
+}
+.risk-pill--warn {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+.risk-pill--warn:hover {
+  background: #fde68a;
+}
+
+/* ── Resume card ───────────────────────────────────────────────── */
+.buyer-resume {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 12px 0 18px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #00a19a, #008c86);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.28);
+  transition: transform 0.15s ease;
+  font-family: inherit;
+}
+.buyer-resume:hover {
+  transform: translateY(-1px);
+}
+.buyer-resume-ic {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.2);
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.buyer-resume-body {
+  flex: 1;
+  min-width: 0;
+}
+.buyer-resume-eyebrow {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+.buyer-resume-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  margin-top: 2px;
+  letter-spacing: -0.01em;
+}
+.buyer-resume-chev {
+  font-size: 22px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ── Section completion summary ───────────────────────────────── */
+.buyer-summary-card {
+  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
+  border: 1px solid #b2e8e6;
+  border-radius: 14px;
+  padding: 14px 14px 12px;
+  margin-bottom: 12px;
+  box-shadow:
+    0 1px 3px rgba(35, 29, 69, 0.06),
+    0 2px 8px rgba(35, 29, 69, 0.04);
+}
+.buyer-summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.buyer-summary-stat {
+  text-align: center;
+  padding: 0 4px;
+}
+.buyer-summary-stat + .buyer-summary-stat {
+  border-left: 1px solid rgba(0, 140, 134, 0.12);
+}
+.buyer-summary-num {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.buyer-summary-num--done {
+  color: #16a34a;
+}
+.buyer-summary-num--partial {
+  color: #d97706;
+}
+.buyer-summary-num--empty {
+  color: #94a3b8;
+}
+.buyer-summary-lbl {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+.buyer-summary-hint {
+  font-size: 11.5px;
+  color: #4a5568;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Sticky bottom action bar ─────────────────────────────────── */
+.buyer-action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid #eef0f6;
+  box-shadow: 0 -4px 20px rgba(35, 29, 69, 0.08);
+}
+.buyer-action-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #eef0f6;
+  color: #4a5568;
+  font-weight: 700;
+  font-size: 12.5px;
+  padding: 11px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.buyer-action-save:hover {
+  border-color: #b2e8e6;
+}
+.buyer-action-save.is-saved {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
+}
+.buyer-action-heart {
+  font-size: 14px;
+  line-height: 1;
+}
+.buyer-action-ask {
+  background: linear-gradient(135deg, #00a19a, #008c86);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 16px;
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.28);
+  font-family: inherit;
+  transition: transform 0.12s, box-shadow 0.15s;
+}
+.buyer-action-ask:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(0, 161, 154, 0.34);
+}
+
+/* Pad the bottom of the scrollable card so content isn't hidden under
+   the sticky bar. */
+.buyer-card {
+  padding-bottom: 88px;
+}
+
+/* Save toast — slides down from the top */
+.buyer-save-toast {
+  position: fixed;
+  left: 50%;
+  top: 90px;
+  transform: translateX(-50%);
+  z-index: 40;
+  background: #231d45;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 999px;
+  box-shadow: 0 8px 22px rgba(35, 29, 69, 0.32);
+  letter-spacing: -0.01em;
+}
+.buyer-toast-enter-active,
+.buyer-toast-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.buyer-toast-enter-from,
+.buyer-toast-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-12px);
 }
 </style>

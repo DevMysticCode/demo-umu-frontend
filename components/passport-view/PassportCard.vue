@@ -57,6 +57,11 @@ defineProps({
   position: relative;
   width: 100%;
   max-width: 360px;
+  /* Become a size container so the address text below can scale with the
+     rendered card width (cqi = 1% of container's inline size). This means
+     a 76 px tile in the resume card and a 150 px tile in the grid both
+     get proportionally legible address typography. */
+  container-type: inline-size;
 }
 
 .passport-image {
@@ -123,7 +128,7 @@ defineProps({
 
 .passport-address {
   position: absolute;
-  bottom: 0%;
+  bottom: 14%;
   left: 50%;
   transform: translateX(-50%);
   width: 76%;
@@ -137,9 +142,12 @@ defineProps({
   gap: 2px;
 }
 
+/* Address typography scales with the card's container width via cqi.
+   clamp() pins it between sensible min/max so a tiny resume tile stays
+   readable and a large grid tile doesn't blow up. */
 .address-line {
-  font-size: 8px;
-  font-weight: 400;
+  font-size: clamp(8px, 7.5cqi, 14px);
+  font-weight: 700;
   margin: 0;
   letter-spacing: -0.01em;
   word-break: break-word;
@@ -151,13 +159,24 @@ defineProps({
 }
 
 .address-line-small {
-  font-size: 8px;
-  font-weight: 400;
+  font-size: clamp(7px, 5.5cqi, 11px);
+  font-weight: 600;
   opacity: 0.9;
   letter-spacing: 0.04em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+/* Browsers without container-query support fall back to a small fixed
+   size — not perfect, but never broken. */
+@supports not (container-type: inline-size) {
+  .address-line {
+    font-size: 11px;
+  }
+  .address-line-small {
+    font-size: 9px;
+  }
 }
 </style>

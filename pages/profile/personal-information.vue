@@ -1,37 +1,30 @@
 <template>
-  <div class="mobile-container min-h-screen bg-umu-gradient pb-8">
-    <header class="flex items-center justify-between px-4 pt-5">
-      <button
-        type="button"
-        class="w-10 h-10 flex items-center justify-center"
-        @click="goBack"
-      >
-        <Icon name="i-heroicons-chevron-left" class="w-6 h-6 text-black" />
+  <div class="pi-page mobile-container">
+    <!-- Nav bar -->
+    <div class="pi-nav-bar">
+      <button class="pi-nav-icon-btn" aria-label="Back" @click="goBack">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
       </button>
+      <div class="pi-nav-title">Personal Information</div>
+      <div style="width: 38px" />
+    </div>
 
-      <h1
-        class="font-sf-pro text-[17px] leading-[22px] tracking-[-0.43px] font-[590] text-black text-center"
-      >
-        Personal Information
-      </h1>
+    <main class="pi-body">
+      <div class="atm-bg warm" />
 
-      <button
-        type="button"
-        class="w-8 h-8 rounded-full bg-[#403d91] flex items-center justify-center"
-        aria-label="More"
-      >
-        <Icon
-          name="i-heroicons-ellipsis-horizontal"
-          class="w-5 h-5 text-white"
-        />
-      </button>
-    </header>
-
-    <main class="px-4 pb-8">
-      <section class="pt-6 text-center">
+      <!-- Hero -->
+      <div class="pi-hero">
         <button
           type="button"
-          class="relative w-24 h-24 mx-auto block"
+          class="pi-avatar"
           aria-label="Edit profile picture"
           @click="isAvatarDrawerOpen = true"
         >
@@ -39,375 +32,422 @@
             v-if="avatarPreview"
             :src="avatarPreview"
             alt="Profile avatar"
-            class="w-24 h-24 rounded-full object-cover"
+            class="pi-avatar-img"
           />
-          <UserAvatar
-            v-else
-            :src="profile?.avatarUrl"
-            :firstName="profile?.firstName"
-            :lastName="profile?.lastName"
-            :size="96"
-          />
-          <span class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-brand-aqua border-2 border-white flex items-center justify-center">
-            <Icon name="i-heroicons-camera" class="w-4 h-4 text-white" />
-          </span>
-        </button>
-
-        <h2 class="mt-8 text-22-emphasized text-center text-[#000000]">
-          {{ fullName || 'Your Profile' }}
-        </h2>
-        <p
-          class="mt-1 font-sf-pro text-[15px] leading-[20px] tracking-[-0.23px] font-normal text-center text-[#3C3C43] opacity-60%"
-        >
-          {{ profile?.email || '' }}
-        </p>
-
-        <div
-          class="mt-6 py-2 px-4 rounded-full border border-brand-aqua text-brand-aqua inline-flex items-center justify-center font-sf-pro text-[15px] leading-[20px] tracking-[-0.4px] font-[590] border-color-[#00A19A] text-[#00A19A]"
-        >
-          <OPIcon name="proMemberIcon" class="w-[14px] h-[14px]" />
-          <span class="ml-2">PRO · Member since {{ memberSince }}</span>
-        </div>
-      </section>
-
-      <div class="mt-8 space-y-6">
-        <!-- Name and Contact Details -->
-        <section>
-          <h3
-            class="font-sf-pro text-[15px] leading-[20px] tracking-[-0.23px] font-[590] align-middle text-[#101319] mb-3"
-          >
-            Name and Contact Details
-          </h3>
-
-          <div class="space-y-3">
-            <div
-              v-for="(item, index) in contactDetails"
-              :key="item.label"
-              class="bg-[#ffffff] rounded-3xl p-4 flex items-start justify-between gap-3"
+          <span v-else>{{ initials }}</span>
+          <div class="avatar-camera-mini">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
-              <div>
-                <p class="text-[15px] leading-[20px] text-[#000000]">
-                  {{ item.label }}
-                </p>
-                <p class="text-[13px] leading-[18px] text-[#3C3C4399]">
-                  {{ item.value || '—' }}
-                </p>
-              </div>
-              <button
-                type="button"
-                class="w-9 h-9 rounded-full border border-[#d9dae0] text-[#1f2024] flex items-center justify-center mt-1"
-                @click="openContactEditor(index)"
-              >
-                <Icon name="i-heroicons-pencil" class="w-4 h-4" />
-              </button>
-            </div>
-
-            <!-- Contact Visibility toggle -->
-            <div
-              class="bg-[#ffffff] rounded-3xl p-4 flex items-center justify-between"
-            >
-              <p class="text-[15px] leading-[20px] text-[#000000]">
-                Contact Visibility
-              </p>
-              <button
-                type="button"
-                class="relative w-12 h-7 rounded-full transition-colors"
-                :class="contactVisible ? 'bg-brand-aqua' : 'bg-[#d9dae0]'"
-                @click="toggleContactVisible"
-              >
-                <span
-                  class="absolute top-0.5 w-6 h-6 rounded-full bg-white transition-transform"
-                  :class="
-                    contactVisible
-                      ? 'translate-x-[-2px]'
-                      : 'translate-x-[-20px]'
-                  "
-                />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Address / Location Details -->
-        <section>
-          <h3
-            class="text-[15px] leading-[20px] text-[#000000] font-semibold mb-3"
-          >
-            Address / Location Details
-          </h3>
-
-          <div class="space-y-3">
-            <div
-              v-for="addr in profile?.addresses ?? []"
-              :key="addr.id"
-              class="bg-[#ffffff] rounded-3xl p-4"
-            >
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <p class="text-[15px] leading-[20px] text-[#000000]">
-                    {{ addr.label }}
-                  </p>
-                  <p
-                    class="text-[13px] leading-[18px] text-[#3C3C43] mt-2 whitespace-pre-line"
-                  >
-                    {{ formatAddress(addr) }}
-                  </p>
-                </div>
-
-                <div class="flex items-center gap-2 mt-1">
-                  <button
-                    type="button"
-                    class="w-9 h-9 rounded-full border border-[#d9dae0] text-[#1f2024] flex items-center justify-center"
-                    @click="openAddressEditor(addr)"
-                  >
-                    <Icon name="i-heroicons-pencil" class="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    class="w-9 h-9 rounded-full bg-brand-aqua text-white flex items-center justify-center"
-                    @click="handleDeleteAddress(addr.id)"
-                  >
-                    <Icon name="i-heroicons-trash" class="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Add Address button -->
-            <button
-              type="button"
-              class="w-full bg-[#ffffff] rounded-3xl p-4 flex items-center gap-3 text-brand-aqua"
-              @click="openAddressEditor(null)"
-            >
-              <Icon name="i-heroicons-plus-circle" class="w-5 h-5" />
-              <span class="text-[15px] leading-[20px] font-medium"
-                >Add Address</span
-              >
-            </button>
-          </div>
-        </section>
-
-        <!-- Registered Company Details -->
-        <section>
-          <h3
-            class="text-[15px] leading-[20px] font-semibold text-[#000000] mb-3"
-          >
-            Registered Company Details
-          </h3>
-
-          <div class="space-y-3">
-            <div
-              v-for="company in profile?.companies ?? []"
-              :key="company.id"
-              class="bg-[#ffffff] rounded-3xl p-4"
-            >
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <p
-                    class="text-[15px] leading-[20px] font-semibold text-[#000000]"
-                  >
-                    {{ company.name }}
-                  </p>
-                  <p
-                    class="text-[13px] leading-[18px] text-[#3C3C43] mt-2 whitespace-pre-line"
-                  >
-                    {{ company.address }}
-                  </p>
-                  <div class="mt-3 text-[13px] leading-[18px] text-[#3C3C43]">
-                    <p v-if="company.companyNumber">
-                      <span class="inline-block w-18">Company Number:</span>
-                      {{ company.companyNumber }}
-                    </p>
-                    <p v-if="company.director">
-                      <span class="inline-block w-12">Director:</span>
-                      {{ company.director }}
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-2 mt-1">
-                  <button
-                    type="button"
-                    class="w-9 h-9 rounded-full border border-[#d9dae0] text-[#1f2024] flex items-center justify-center"
-                    @click="openCompanyEditor(company)"
-                  >
-                    <Icon name="i-heroicons-pencil" class="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    class="w-9 h-9 rounded-full bg-brand-aqua text-white flex items-center justify-center"
-                    @click="handleDeleteCompany(company.id)"
-                  >
-                    <Icon name="i-heroicons-trash" class="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              class="w-full bg-[#ffffff] rounded-3xl p-4 flex items-center gap-3 text-brand-aqua"
-              @click="openCompanyEditor(null)"
-            >
-              <Icon name="i-heroicons-plus-circle" class="w-5 h-5" />
-              <span class="text-[15px] leading-[20px] font-medium"
-                >Add Company</span
-              >
-            </button>
-          </div>
-        </section>
-
-        <!-- Seller / Solicitor -->
-        <section>
-          <h3
-            class="text-[15px] leading-[20px] font-semibold text-[#000000] mb-3"
-          >
-            Seller / Solicitor
-          </h3>
-
-          <div class="space-y-3">
-            <div
-              v-for="sol in profile?.solicitors ?? []"
-              :key="sol.id"
-              class="bg-[#ffffff] rounded-3xl p-4"
-            >
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <p
-                    class="text-[15px] leading-[20px] font-semibold text-[#000000]"
-                  >
-                    {{ sol.name }}
-                  </p>
-                  <p
-                    class="text-[13px] leading-[18px] text-[#3C3C43] mt-2 whitespace-pre-line"
-                  >
-                    {{ sol.address }}
-                  </p>
-                  <div class="mt-3 text-[13px] leading-[18px] text-[#3C3C43]">
-                    <p v-if="sol.contactName">
-                      <span class="inline-block w-18">Contact Name:</span>
-                      {{ sol.contactName }}
-                    </p>
-                    <p v-if="sol.email">
-                      <span class="inline-block w-12">Email:</span>
-                      {{ sol.email }}
-                    </p>
-                    <p v-if="sol.phone">
-                      <span class="inline-block w-12">Phone:</span>
-                      {{ sol.phone }}
-                    </p>
-                    <p v-if="sol.reference">
-                      <span class="inline-block w-12">Reference:</span>
-                      {{ sol.reference }}
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-2 mt-1">
-                  <button
-                    type="button"
-                    class="w-9 h-9 rounded-full border border-[#d9dae0] text-[#1f2024] flex items-center justify-center"
-                    @click="openSolicitorEditor(sol)"
-                  >
-                    <Icon name="i-heroicons-pencil" class="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    class="w-9 h-9 rounded-full bg-brand-aqua text-white flex items-center justify-center"
-                    @click="handleDeleteSolicitor(sol.id)"
-                  >
-                    <Icon name="i-heroicons-trash" class="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              class="w-full bg-[#ffffff] rounded-3xl p-4 flex items-center gap-3 text-brand-aqua"
-              @click="openSolicitorEditor(null)"
-            >
-              <Icon name="i-heroicons-plus-circle" class="w-5 h-5" />
-              <span class="text-[15px] leading-[20px] font-medium"
-                >Add Solicitor</span
-              >
-            </button>
-          </div>
-        </section>
-
-        <!-- Communication Preferences -->
-        <section>
-          <h3
-            class="text-[15px] leading-[20px] font-semibold text-[#000000] mb-3"
-          >
-            Communication Preferences
-          </h3>
-          <div class="space-y-3">
-            <div
-              v-for="item in communicationPreferences"
-              :key="item.key"
-              class="bg-[#ffffff] rounded-3xl p-4 flex items-center justify-between"
-            >
-              <div class="flex items-center gap-3">
-                <Icon :name="item.icon" class="w-5 h-5 text-[#1f2024]" />
-                <p class="text-[15px] leading-[20px] text-[#000000]">
-                  {{ item.label }}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                class="relative w-12 h-7 rounded-full transition-colors"
-                :class="item.value ? 'bg-brand-aqua' : 'bg-[#d9dae0]'"
-                @click="toggleCommsPreference(item.key)"
-              >
-                <span
-                  class="absolute top-0.5 w-6 h-6 rounded-full bg-white transition-transform"
-                  :class="
-                    item.value ? 'translate-x-[-2px]' : 'translate-x-[-20px]'
-                  "
-                />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Identity Verification -->
-        <section>
-          <h3
-            class="text-[15px] leading-[20px] font-semibold text-[#000000] mb-3"
-          >
-            Identity Verification
-          </h3>
-
-          <div
-            class="bg-[#ffffff] rounded-3xl p-4 flex items-center justify-between"
-          >
-            <div class="flex items-center gap-3">
-              <Icon
-                name="i-heroicons-check-badge"
-                class="w-6 h-6 text-brand-aqua"
+              <path
+                d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
               />
-              <div>
-                <p class="text-[15px] leading-[20px] text-[#000000]">
-                  Verification Status
-                </p>
-                <p
-                  class="text-base text-[12px] leading-[15px] text-[#3C3C43] uppercase tracking-wide"
-                >
-                  {{ profile?.isVerified ? 'Verified' : 'Not Verified' }}
-                </p>
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+          </div>
+        </button>
+        <div class="pi-name">{{ fullName || 'Your Profile' }}</div>
+        <div class="pi-meta">{{ profile?.email || '' }}</div>
+        <div class="pi-completion">
+          <span>Profile</span>
+          <div class="pic-track">
+            <div class="pic-fill" :style="{ width: profileCompletion + '%' }" />
+          </div>
+          <span class="pic-pct">{{ profileCompletion }}%</span>
+        </div>
+      </div>
+
+      <!-- Name & contact -->
+      <div class="section-heading">Name &amp; contact</div>
+      <div class="pi-section">
+        <div class="pi-group">
+          <button
+            v-for="(item, index) in contactDetails"
+            :key="item.key"
+            class="pi-row"
+            type="button"
+            @click="openContactEditor(index)"
+          >
+            <div class="pir-content">
+              <div class="pir-label">{{ item.label }}</div>
+              <div class="pir-value" :class="{ empty: !item.value }">
+                {{ item.value || `Add ${item.label.toLowerCase()}` }}
               </div>
             </div>
+            <div class="pir-edit">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z" />
+              </svg>
+            </div>
+          </button>
 
+          <div class="pi-row">
+            <div class="pir-content">
+              <div class="pir-label">Contact visibility</div>
+              <div class="pir-hint">
+                Sellers see your details only when you message them
+              </div>
+            </div>
             <button
               type="button"
-              class="h-10 px-4 rounded-full border border-[#cfd1d8] text-[#3C3C43] font-jakarta font-semibold text-[13px] leading-[16px] tracking-[0px] text-center align-middle inline-flex items-center justify-center"
+              class="pir-toggle"
+              :class="{ on: contactVisible }"
+              @click="toggleContactVisible"
+              :aria-label="
+                contactVisible
+                  ? 'Disable contact visibility'
+                  : 'Enable contact visibility'
+              "
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="section-heading">
+        Address
+        <span class="sh-action" @click="openAddressEditor(null)">+ Add</span>
+      </div>
+      <div class="pi-section">
+        <div v-if="(profile?.addresses ?? []).length === 0" class="pi-group">
+          <button class="pi-row" type="button" @click="openAddressEditor(null)">
+            <div class="pir-content">
+              <div class="pir-label">Current address</div>
+              <div class="pir-value empty">Add your address</div>
+            </div>
+            <div class="pir-edit">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        <div v-else class="pi-group">
+          <div
+            v-for="addr in profile?.addresses ?? []"
+            :key="addr.id"
+            class="pi-row"
+          >
+            <div class="pir-content">
+              <div class="pir-label">{{ addr.label || 'Address' }}</div>
+              <div class="pir-value">{{ formatAddress(addr) }}</div>
+            </div>
+            <button
+              class="pir-edit"
+              type="button"
+              aria-label="Edit address"
+              @click="openAddressEditor(addr)"
             >
-              Reverify
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z" />
+              </svg>
+            </button>
+            <button
+              class="pir-edit pir-delete"
+              type="button"
+              aria-label="Delete address"
+              @click="handleDeleteAddress(addr.id)"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" />
+              </svg>
             </button>
           </div>
-        </section>
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div class="section-heading">
+        Company
+        <span class="sh-action" @click="openCompanyEditor(null)">+ Add</span>
+      </div>
+      <div class="pi-section">
+        <div v-if="(profile?.companies ?? []).length === 0" class="pi-group">
+          <button class="pi-row" type="button" @click="openCompanyEditor(null)">
+            <div class="pir-content">
+              <div class="pir-label">Registered company</div>
+              <div class="pir-value empty">Add company details</div>
+            </div>
+            <div class="pir-edit">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        <div v-else class="pi-group">
+          <div
+            v-for="company in profile?.companies ?? []"
+            :key="company.id"
+            class="pi-row"
+          >
+            <div class="pir-content">
+              <div class="pir-label">{{ company.name }}</div>
+              <div v-if="company.address" class="pir-value">
+                {{ company.address }}
+              </div>
+              <div
+                v-if="company.companyNumber || company.director"
+                class="pir-hint"
+              >
+                <span v-if="company.companyNumber"
+                  >No. {{ company.companyNumber }}</span
+                >
+                <span v-if="company.companyNumber && company.director">
+                  ·
+                </span>
+                <span v-if="company.director">{{ company.director }}</span>
+              </div>
+            </div>
+            <button
+              class="pir-edit"
+              type="button"
+              aria-label="Edit company"
+              @click="openCompanyEditor(company)"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z" />
+              </svg>
+            </button>
+            <button
+              class="pir-edit pir-delete"
+              type="button"
+              aria-label="Delete company"
+              @click="handleDeleteCompany(company.id)"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Solicitor -->
+      <div class="section-heading">
+        Solicitor
+        <span class="sh-action" @click="openSolicitorEditor(null)">+ Add</span>
+      </div>
+      <div class="pi-section">
+        <div v-if="(profile?.solicitors ?? []).length === 0" class="pi-group">
+          <button
+            class="pi-row"
+            type="button"
+            @click="openSolicitorEditor(null)"
+          >
+            <div class="pir-content">
+              <div class="pir-label">Solicitor</div>
+              <div class="pir-value empty">Add your solicitor</div>
+            </div>
+            <div class="pir-edit">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        <div v-else class="pi-group">
+          <div
+            v-for="sol in profile?.solicitors ?? []"
+            :key="sol.id"
+            class="pi-row"
+          >
+            <div class="pir-content">
+              <div class="pir-label">{{ sol.name }}</div>
+              <div v-if="sol.contactName || sol.email" class="pir-value">
+                <span v-if="sol.contactName">{{ sol.contactName }}</span>
+                <span v-if="sol.contactName && sol.email"> · </span>
+                <span v-if="sol.email">{{ sol.email }}</span>
+              </div>
+              <div v-if="sol.phone || sol.reference" class="pir-hint">
+                <span v-if="sol.phone">{{ sol.phone }}</span>
+                <span v-if="sol.phone && sol.reference"> · </span>
+                <span v-if="sol.reference">Ref {{ sol.reference }}</span>
+              </div>
+            </div>
+            <button
+              class="pir-edit"
+              type="button"
+              aria-label="Edit solicitor"
+              @click="openSolicitorEditor(sol)"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z" />
+              </svg>
+            </button>
+            <button
+              class="pir-edit pir-delete"
+              type="button"
+              aria-label="Delete solicitor"
+              @click="handleDeleteSolicitor(sol.id)"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Communication preferences -->
+      <div class="section-heading">Communication preferences</div>
+      <div class="pi-section">
+        <div class="pi-group">
+          <div
+            v-for="item in communicationPreferences"
+            :key="item.key"
+            class="pi-row"
+          >
+            <div class="pir-content">
+              <div class="pir-label">{{ item.label }}</div>
+              <div class="pir-hint">{{ item.hint }}</div>
+            </div>
+            <button
+              type="button"
+              class="pir-toggle"
+              :class="{ on: item.value }"
+              :aria-label="item.label"
+              @click="toggleCommsPreference(item.key)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Identity verification -->
+      <div class="section-heading">Identity verification</div>
+      <div class="pi-section">
+        <div class="pi-group">
+          <div class="pi-row" :class="{ 'verified-row': profile?.isVerified }">
+            <div v-if="profile?.isVerified" class="pir-verified-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <div class="pir-content">
+              <div
+                class="pir-label"
+                :class="{ 'verified-label': profile?.isVerified }"
+              >
+                {{ profile?.isVerified ? 'Verified' : 'Not verified yet' }}
+              </div>
+              <div class="pir-value" :class="{ empty: !profile?.isVerified }">
+                {{
+                  profile?.isVerified
+                    ? 'By Onfido · verified profile'
+                    : 'Complete ID verification to be trusted'
+                }}
+              </div>
+            </div>
+            <div class="pir-edit">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -421,18 +461,17 @@
         <p class="text-[15px] leading-[24px] text-[#7f8084]">
           The changes will reflect immediately.
         </p>
-
-        <!-- Phone gets a dedicated country-code picker -->
-        <div v-if="contactDetails[activeContactIndex]?.key === 'phone'" class="mt-6">
+        <div
+          v-if="contactDetails[activeContactIndex]?.key === 'phone'"
+          class="mt-6"
+        >
           <PhoneInput v-model="contactEditValue" />
           <p class="mt-2 text-[13px] text-[#8e8e93]">
-            Select your country code, then enter your number without the leading 0.
+            Select your country code, then enter your number without the leading
+            0.
           </p>
         </div>
-
-        <!-- All other fields use the plain input -->
         <label v-else class="mt-6 block">
-          <span class="sr-only">Edit value</span>
           <div
             class="h-16 rounded-[20px] border border-[#e2e2e7] bg-[#f4f4f5] flex items-center gap-3 px-5"
           >
@@ -443,21 +482,20 @@
             <input
               v-model="contactEditValue"
               :type="contactEditInputType"
-              :placeholder="`Enter New ${contactEditLabel}`"
+              :placeholder="`Enter new ${contactEditLabel}`"
               class="w-full bg-transparent outline-none text-[16px] leading-[22px] text-[#1f2024] placeholder:text-[#8e8e93]"
             />
           </div>
         </label>
       </div>
-
       <template #footer>
         <button
           type="button"
-          class="w-full h-14 rounded-[16px] bg-brand-aqua text-white inline-flex items-center justify-center gap-2 text-[20px] leading-[24px] font-medium"
+          class="drawer-cta"
           :disabled="saving"
           @click="saveContactEdit"
         >
-          <Icon name="i-heroicons-check" class="w-6 h-6" />
+          <Icon name="i-heroicons-check" class="w-5 h-5" />
           <span>{{ saving ? 'Saving…' : 'Save Changes' }}</span>
         </button>
       </template>
@@ -466,32 +504,31 @@
     <!-- Address Edit Drawer -->
     <BaseDrawer
       v-model="isAddressDrawerOpen"
-      :title="editingAddress?.id ? 'Edit Address' : 'Add Address'"
+      :title="editingAddress?.id ? 'Edit address' : 'Add address'"
       :show-back-button="false"
     >
-      <div class="pt-1 pb-2 space-y-4">
+      <div class="pt-1 pb-2 space-y-3">
         <div
           v-for="field in addressFields"
           :key="field.key"
-          class="h-16 rounded-[20px] border border-[#e2e2e7] bg-[#f4f4f5] flex items-center gap-3 px-5"
+          class="h-14 rounded-[16px] border border-[#e8eceb] bg-white flex items-center gap-3 px-4"
         >
           <input
             v-model="editingAddress[field.key]"
             :placeholder="field.label"
-            class="w-full bg-transparent outline-none text-[16px] leading-[22px] text-[#1f2024] placeholder:text-[#8e8e93]"
+            class="w-full bg-transparent outline-none text-[15px] leading-[22px] text-[#0e2840] placeholder:text-[#8a95a0] font-semibold"
           />
         </div>
       </div>
-
       <template #footer>
         <button
           type="button"
-          class="w-full h-14 rounded-[16px] bg-brand-aqua text-white inline-flex items-center justify-center gap-2 text-[20px] leading-[24px] font-medium"
+          class="drawer-cta"
           :disabled="saving"
           @click="saveAddress"
         >
-          <Icon name="i-heroicons-check" class="w-6 h-6" />
-          <span>{{ saving ? 'Saving…' : 'Save Address' }}</span>
+          <Icon name="i-heroicons-check" class="w-5 h-5" />
+          <span>{{ saving ? 'Saving…' : 'Save address' }}</span>
         </button>
       </template>
     </BaseDrawer>
@@ -499,32 +536,31 @@
     <!-- Company Edit Drawer -->
     <BaseDrawer
       v-model="isCompanyDrawerOpen"
-      :title="editingCompany?.id ? 'Edit Company' : 'Add Company'"
+      :title="editingCompany?.id ? 'Edit company' : 'Add company'"
       :show-back-button="false"
     >
-      <div class="pt-1 pb-2 space-y-4">
+      <div class="pt-1 pb-2 space-y-3">
         <div
           v-for="field in companyFields"
           :key="field.key"
-          class="h-16 rounded-[20px] border border-[#e2e2e7] bg-[#f4f4f5] flex items-center gap-3 px-5"
+          class="h-14 rounded-[16px] border border-[#e8eceb] bg-white flex items-center gap-3 px-4"
         >
           <input
             v-model="editingCompany[field.key]"
             :placeholder="field.label"
-            class="w-full bg-transparent outline-none text-[16px] leading-[22px] text-[#1f2024] placeholder:text-[#8e8e93]"
+            class="w-full bg-transparent outline-none text-[15px] leading-[22px] text-[#0e2840] placeholder:text-[#8a95a0] font-semibold"
           />
         </div>
       </div>
-
       <template #footer>
         <button
           type="button"
-          class="w-full h-14 rounded-[16px] bg-brand-aqua text-white inline-flex items-center justify-center gap-2 text-[20px] leading-[24px] font-medium"
+          class="drawer-cta"
           :disabled="saving"
           @click="saveCompany"
         >
-          <Icon name="i-heroicons-check" class="w-6 h-6" />
-          <span>{{ saving ? 'Saving…' : 'Save Company' }}</span>
+          <Icon name="i-heroicons-check" class="w-5 h-5" />
+          <span>{{ saving ? 'Saving…' : 'Save company' }}</span>
         </button>
       </template>
     </BaseDrawer>
@@ -532,29 +568,29 @@
     <!-- Avatar Edit Drawer -->
     <BaseDrawer
       v-model="isAvatarDrawerOpen"
-      title="Edit Profile Picture"
+      title="Edit profile picture"
       :show-back-button="false"
     >
       <p class="text-[15px] leading-[24px] text-[#7f8084] mb-6">
         The changes will reflect immediately.
       </p>
-
-      <!-- Preview -->
       <div v-if="avatarPreview" class="mb-6 flex justify-center">
         <img
           :src="avatarPreview"
           alt="Preview"
-          class="w-24 h-24 rounded-full object-cover border-4 border-brand-aqua"
+          class="w-24 h-24 rounded-full object-cover border-4 border-[#3dbda3]"
         />
       </div>
-
       <div class="space-y-3">
-        <label class="w-full h-[72px] rounded-2xl bg-white border border-[#e5e5ea] px-5 flex items-center justify-between cursor-pointer">
-          <div class="flex items-center gap-4">
-            <Icon name="i-heroicons-camera" class="w-6 h-6 text-[#1f2024]" />
-            <span class="text-[17px] leading-[22px] text-[#1f2024]">Take Picture</span>
+        <label class="avatar-pick-row">
+          <div class="apr-content">
+            <Icon name="i-heroicons-camera" class="w-5 h-5 text-[#0e2840]" />
+            <span>Take picture</span>
           </div>
-          <Icon name="i-heroicons-chevron-right" class="w-5 h-5 text-[#3C3C434D]" />
+          <Icon
+            name="i-heroicons-chevron-right"
+            class="w-4 h-4 text-[#8a95a0]"
+          />
           <input
             ref="cameraInputRef"
             type="file"
@@ -564,13 +600,15 @@
             @change="onFileSelected"
           />
         </label>
-
-        <label class="w-full h-[72px] rounded-2xl bg-white border border-[#e5e5ea] px-5 flex items-center justify-between cursor-pointer">
-          <div class="flex items-center gap-4">
-            <Icon name="i-heroicons-photo" class="w-6 h-6 text-[#1f2024]" />
-            <span class="text-[17px] leading-[22px] text-[#1f2024]">Upload from Gallery</span>
+        <label class="avatar-pick-row">
+          <div class="apr-content">
+            <Icon name="i-heroicons-photo" class="w-5 h-5 text-[#0e2840]" />
+            <span>Upload from gallery</span>
           </div>
-          <Icon name="i-heroicons-chevron-right" class="w-5 h-5 text-[#3C3C434D]" />
+          <Icon
+            name="i-heroicons-chevron-right"
+            class="w-4 h-4 text-[#8a95a0]"
+          />
           <input
             type="file"
             accept="image/*"
@@ -578,13 +616,18 @@
             @change="onFileSelected"
           />
         </label>
-
-        <label class="w-full h-[72px] rounded-2xl bg-white border border-[#e5e5ea] px-5 flex items-center justify-between cursor-pointer">
-          <div class="flex items-center gap-4">
-            <Icon name="i-heroicons-folder-open" class="w-6 h-6 text-[#1f2024]" />
-            <span class="text-[17px] leading-[22px] text-[#1f2024]">Browse Files</span>
+        <label class="avatar-pick-row">
+          <div class="apr-content">
+            <Icon
+              name="i-heroicons-folder-open"
+              class="w-5 h-5 text-[#0e2840]"
+            />
+            <span>Browse files</span>
           </div>
-          <Icon name="i-heroicons-chevron-right" class="w-5 h-5 text-[#3C3C434D]" />
+          <Icon
+            name="i-heroicons-chevron-right"
+            class="w-4 h-4 text-[#8a95a0]"
+          />
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp,image/gif"
@@ -593,19 +636,19 @@
           />
         </label>
       </div>
-
-      <p v-if="avatarError" class="mt-4 text-center text-red-500 text-[13px]">{{ avatarError }}</p>
-
+      <p v-if="avatarError" class="mt-4 text-center text-red-500 text-[13px]">
+        {{ avatarError }}
+      </p>
       <template #footer>
         <button
           v-if="avatarFile"
           type="button"
-          class="w-full h-14 rounded-[16px] bg-brand-aqua text-white inline-flex items-center justify-center gap-2 text-[20px] leading-[24px] font-medium"
+          class="drawer-cta"
           :disabled="avatarUploading"
           @click="saveAvatar"
         >
-          <Icon name="i-heroicons-check" class="w-6 h-6" />
-          <span>{{ avatarUploading ? 'Uploading…' : 'Save Picture' }}</span>
+          <Icon name="i-heroicons-check" class="w-5 h-5" />
+          <span>{{ avatarUploading ? 'Uploading…' : 'Save picture' }}</span>
         </button>
       </template>
     </BaseDrawer>
@@ -613,32 +656,31 @@
     <!-- Solicitor Edit Drawer -->
     <BaseDrawer
       v-model="isSolicitorDrawerOpen"
-      :title="editingSolicitor?.id ? 'Edit Solicitor' : 'Add Solicitor'"
+      :title="editingSolicitor?.id ? 'Edit solicitor' : 'Add solicitor'"
       :show-back-button="false"
     >
-      <div class="pt-1 pb-2 space-y-4">
+      <div class="pt-1 pb-2 space-y-3">
         <div
           v-for="field in solicitorFields"
           :key="field.key"
-          class="h-16 rounded-[20px] border border-[#e2e2e7] bg-[#f4f4f5] flex items-center gap-3 px-5"
+          class="h-14 rounded-[16px] border border-[#e8eceb] bg-white flex items-center gap-3 px-4"
         >
           <input
             v-model="editingSolicitor[field.key]"
             :placeholder="field.label"
-            class="w-full bg-transparent outline-none text-[16px] leading-[22px] text-[#1f2024] placeholder:text-[#8e8e93]"
+            class="w-full bg-transparent outline-none text-[15px] leading-[22px] text-[#0e2840] placeholder:text-[#8a95a0] font-semibold"
           />
         </div>
       </div>
-
       <template #footer>
         <button
           type="button"
-          class="w-full h-14 rounded-[16px] bg-brand-aqua text-white inline-flex items-center justify-center gap-2 text-[20px] leading-[24px] font-medium"
+          class="drawer-cta"
           :disabled="saving"
           @click="saveSolicitor"
         >
-          <Icon name="i-heroicons-check" class="w-6 h-6" />
-          <span>{{ saving ? 'Saving…' : 'Save Solicitor' }}</span>
+          <Icon name="i-heroicons-check" class="w-5 h-5" />
+          <span>{{ saving ? 'Saving…' : 'Save solicitor' }}</span>
         </button>
       </template>
     </BaseDrawer>
@@ -647,19 +689,13 @@
 
 <script setup>
 import BaseDrawer from '@/components/ui/BaseDrawer.vue'
-import OPIcon from '~/components/ui/OPIcon.vue'
 import PhoneInput from '@/components/form/PhoneInput.vue'
-import UserAvatar from '~/components/ui/UserAvatar.vue'
 
-definePageMeta({
-  title: 'Personal Information - UmovingU',
-  middleware: 'auth',
-})
+definePageMeta({ title: 'Personal Information - UmovingU', middleware: 'auth' })
 
 const {
   profile,
   fullName,
-  memberSince,
   uploadAvatar,
   fetchProfile,
   updateProfile,
@@ -678,8 +714,7 @@ onMounted(fetchProfile)
 
 const saving = ref(false)
 
-// ─── Avatar ───────────────────────────────────────────────────────────────
-
+// ── Avatar ─────────────────────────────────────────────────────
 const isAvatarDrawerOpen = ref(false)
 const avatarFile = ref(null)
 const avatarPreview = ref('')
@@ -692,9 +727,10 @@ const onFileSelected = (e) => {
   avatarFile.value = file
   avatarError.value = ''
   const reader = new FileReader()
-  reader.onload = (ev) => { avatarPreview.value = ev.target.result }
+  reader.onload = (ev) => {
+    avatarPreview.value = ev.target.result
+  }
   reader.readAsDataURL(file)
-  // reset input so the same file can be selected again if needed
   e.target.value = ''
 }
 
@@ -714,16 +750,14 @@ const saveAvatar = async () => {
   }
 }
 
-// ─── Contact Details ──────────────────────────────────────────────────────
-
+// ── Contact ─────────────────────────────────────────────────────
 const contactDetails = computed(() => [
-  { label: 'Name', value: fullName.value, key: 'name' },
-  { label: 'Email Address', value: profile.value?.email ?? '', key: 'email' },
-  { label: 'Phone Number', value: profile.value?.phone ?? '', key: 'phone' },
+  { label: 'Full name', value: fullName.value, key: 'name' },
+  { label: 'Email', value: profile.value?.email ?? '', key: 'email' },
+  { label: 'Phone', value: profile.value?.phone ?? '', key: 'phone' },
 ])
 
 const contactVisible = computed(() => profile.value?.contactVisible ?? true)
-
 const toggleContactVisible = async () => {
   if (!profile.value) return
   await updateProfile({ contactVisible: !profile.value.contactVisible })
@@ -737,11 +771,10 @@ const contactEditLabel = computed(() => {
   if (activeContactIndex.value === null) return 'Value'
   return contactDetails.value[activeContactIndex.value]?.label ?? 'Value'
 })
-
 const contactEditInputType = computed(() => {
-  const label = contactEditLabel.value.toLowerCase()
-  if (label.includes('email')) return 'email'
-  if (label.includes('phone')) return 'tel'
+  const k = contactDetails.value[activeContactIndex.value ?? -1]?.key
+  if (k === 'email') return 'email'
+  if (k === 'phone') return 'tel'
   return 'text'
 })
 
@@ -754,7 +787,6 @@ const openContactEditor = (index) => {
 const saveContactEdit = async () => {
   if (activeContactIndex.value === null) return
   saving.value = true
-
   try {
     const key = contactDetails.value[activeContactIndex.value]?.key
     if (key === 'name') {
@@ -766,59 +798,52 @@ const saveContactEdit = async () => {
     } else if (key === 'phone') {
       await updateProfile({ phone: contactEditValue.value })
     }
-    // email edits are intentionally skipped (auth concern)
     isContactDrawerOpen.value = false
   } finally {
     saving.value = false
   }
 }
 
-// ─── Communication Preferences ────────────────────────────────────────────
-
+// ── Comms preferences ───────────────────────────────────────────
 const communicationPreferences = computed(() => [
   {
     key: 'pushNotifications',
-    label: 'In-App Push Notifications',
-    icon: 'i-heroicons-bell',
+    label: 'In-app push',
+    hint: 'Viewing reminders & messages',
     value: profile.value?.pushNotifications ?? true,
   },
   {
     key: 'emailNewsletter',
-    label: 'Email Newsletter',
-    icon: 'i-heroicons-envelope',
+    label: 'Email newsletter',
+    hint: 'Weekly market & saved property updates',
     value: profile.value?.emailNewsletter ?? true,
   },
   {
     key: 'smsNotifications',
     label: 'SMS',
-    icon: 'i-heroicons-chat-bubble-left',
+    hint: 'Time-sensitive alerts only',
     value: profile.value?.smsNotifications ?? false,
   },
 ])
-
 const toggleCommsPreference = async (key) => {
   if (!profile.value) return
   await updateProfile({ [key]: !profile.value[key] })
 }
 
-// ─── Address ─────────────────────────────────────────────────────────────
-
+// ── Address ─────────────────────────────────────────────────────
 const isAddressDrawerOpen = ref(false)
 const editingAddress = ref({})
-
 const addressFields = [
-  { key: 'label', label: 'Label (e.g. Current Address)' },
-  { key: 'line1', label: 'Address Line 1' },
-  { key: 'line2', label: 'Address Line 2 (optional)' },
+  { key: 'label', label: 'Label (e.g. Current address)' },
+  { key: 'line1', label: 'Address line 1' },
+  { key: 'line2', label: 'Address line 2 (optional)' },
   { key: 'city', label: 'City' },
   { key: 'county', label: 'County' },
   { key: 'postcode', label: 'Postcode' },
 ]
 
-const formatAddress = (addr) =>
-  [addr.line1, addr.line2, addr.city, addr.county, addr.postcode]
-    .filter(Boolean)
-    .join('\n')
+const formatAddress = (a) =>
+  [a.line1, a.line2, a.city, a.county, a.postcode].filter(Boolean).join(', ')
 
 const openAddressEditor = (addr) => {
   editingAddress.value = addr
@@ -830,100 +855,492 @@ const openAddressEditor = (addr) => {
 const saveAddress = async () => {
   saving.value = true
   try {
-    if (editingAddress.value.id) {
+    if (editingAddress.value.id)
       await updateAddress(editingAddress.value.id, editingAddress.value)
-    } else {
-      await createAddress(editingAddress.value)
-    }
+    else await createAddress(editingAddress.value)
     isAddressDrawerOpen.value = false
   } finally {
     saving.value = false
   }
 }
-
 const handleDeleteAddress = async (id) => {
   await deleteAddress(id)
 }
 
-// ─── Company ─────────────────────────────────────────────────────────────
-
+// ── Company ─────────────────────────────────────────────────────
 const isCompanyDrawerOpen = ref(false)
 const editingCompany = ref({})
-
 const companyFields = [
-  { key: 'name', label: 'Company Name' },
+  { key: 'name', label: 'Company name' },
   { key: 'address', label: 'Address' },
-  { key: 'companyNumber', label: 'Company Number' },
+  { key: 'companyNumber', label: 'Company number' },
   { key: 'director', label: 'Director' },
 ]
 
-const openCompanyEditor = (company) => {
-  editingCompany.value = company ? { ...company } : { name: '' }
+const openCompanyEditor = (c) => {
+  editingCompany.value = c ? { ...c } : { name: '' }
   isCompanyDrawerOpen.value = true
 }
-
 const saveCompany = async () => {
   saving.value = true
   try {
-    if (editingCompany.value.id) {
+    if (editingCompany.value.id)
       await updateCompany(editingCompany.value.id, editingCompany.value)
-    } else {
-      await createCompany(editingCompany.value)
-    }
+    else await createCompany(editingCompany.value)
     isCompanyDrawerOpen.value = false
   } finally {
     saving.value = false
   }
 }
-
 const handleDeleteCompany = async (id) => {
   await deleteCompany(id)
 }
 
-// ─── Solicitor ───────────────────────────────────────────────────────────
-
+// ── Solicitor ───────────────────────────────────────────────────
 const isSolicitorDrawerOpen = ref(false)
 const editingSolicitor = ref({})
-
 const solicitorFields = [
-  { key: 'name', label: 'Firm Name' },
+  { key: 'name', label: 'Firm name' },
   { key: 'address', label: 'Address' },
-  { key: 'contactName', label: 'Contact Name' },
+  { key: 'contactName', label: 'Contact name' },
   { key: 'email', label: 'Email' },
   { key: 'phone', label: 'Phone' },
   { key: 'reference', label: 'Reference' },
 ]
 
-const openSolicitorEditor = (sol) => {
-  editingSolicitor.value = sol ? { ...sol } : { name: '' }
+const openSolicitorEditor = (s) => {
+  editingSolicitor.value = s ? { ...s } : { name: '' }
   isSolicitorDrawerOpen.value = true
 }
-
 const saveSolicitor = async () => {
   saving.value = true
   try {
-    if (editingSolicitor.value.id) {
+    if (editingSolicitor.value.id)
       await updateSolicitor(editingSolicitor.value.id, editingSolicitor.value)
-    } else {
-      await createSolicitor(editingSolicitor.value)
-    }
+    else await createSolicitor(editingSolicitor.value)
     isSolicitorDrawerOpen.value = false
   } finally {
     saving.value = false
   }
 }
-
 const handleDeleteSolicitor = async (id) => {
   await deleteSolicitor(id)
 }
 
-// ─── Navigation ───────────────────────────────────────────────────────────
+// ── Hero ────────────────────────────────────────────────────────
+const initials = computed(() => {
+  const f = profile.value?.firstName?.[0] ?? ''
+  const l = profile.value?.lastName?.[0] ?? ''
+  return (
+    (f + l).toUpperCase() || (profile.value?.email?.[0] ?? '?').toUpperCase()
+  )
+})
+const profileCompletion = computed(() => {
+  const checks = [
+    profile.value?.firstName,
+    profile.value?.lastName,
+    profile.value?.email,
+    profile.value?.phone,
+    profile.value?.addresses?.length,
+    profile.value?.companies?.length,
+  ]
+  return Math.round((checks.filter(Boolean).length / checks.length) * 100)
+})
 
 const goBack = () => {
-  if (typeof window !== 'undefined' && window.history.length > 1) {
+  if (typeof window !== 'undefined' && window.history.length > 1)
     window.history.back()
-    return
-  }
-  navigateTo('/profile')
+  else navigateTo('/profile')
 }
 </script>
+
+<style scoped>
+.pi-page {
+  min-height: 100dvh;
+  background: #fafaf8;
+  color: #0e2840;
+  position: relative;
+  padding-bottom: 32px;
+}
+
+.pi-nav-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 22px 8px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+.pi-nav-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #0e2840;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.pi-nav-icon-btn:hover {
+  background: #f0f2f1;
+}
+.pi-nav-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+.pi-nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.4px;
+}
+
+.pi-body {
+  position: relative;
+}
+.atm-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  pointer-events: none;
+  z-index: 0;
+}
+.atm-bg.warm {
+  background:
+    radial-gradient(
+      ellipse 70% 100% at 30% 30%,
+      rgba(245, 196, 76, 0.1),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 70% 80% at 90% 0%,
+      rgba(61, 189, 163, 0.1),
+      transparent 60%
+    );
+}
+
+/* Hero */
+.pi-hero {
+  padding: 10px 22px 14px;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+.pi-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(155deg, #2a9484 0%, #143f58 60%, #0e2840 100%);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  box-shadow:
+    0 6px 18px rgba(14, 40, 64, 0.3),
+    inset 0 0 0 3px rgba(255, 255, 255, 0.06);
+  margin-bottom: 12px;
+  position: relative;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  /* overflow: hidden; */
+}
+.pi-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.avatar-camera-mini {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #3dbda3;
+  color: #fff;
+  border: 2.5px solid #fafaf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar-camera-mini svg {
+  width: 11px;
+  height: 11px;
+}
+.pi-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.6px;
+  margin-bottom: 2px;
+}
+.pi-meta {
+  font-size: 12px;
+  color: #4a5868;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.pi-completion {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 100px;
+  padding: 6px 12px 6px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4a5868;
+}
+.pic-track {
+  width: 60px;
+  height: 5px;
+  background: #e8eceb;
+  border-radius: 100px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.pic-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3dbda3, #1f7a66);
+  border-radius: 100px;
+  transition: width 0.3s ease;
+}
+.pic-pct {
+  color: #1f7a66;
+  font-weight: 800;
+  font-feature-settings: 'tnum';
+}
+
+/* Section heading */
+.section-heading {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #8a95a0;
+  padding: 8px 22px 8px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sh-action {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 800;
+  color: #1f7a66;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  text-transform: none;
+}
+
+/* Section / group / row */
+.pi-section {
+  padding: 0 22px;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 1;
+}
+.pi-group {
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.pi-row {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #f0f2f1;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  color: inherit;
+}
+.pi-row:last-child {
+  border-bottom: none;
+}
+.pi-row:hover {
+  background: #fafaf8;
+}
+.pi-row.verified-row {
+  background: linear-gradient(90deg, #f1f9f4, transparent);
+  cursor: default;
+}
+.pi-row.verified-row:hover {
+  background: linear-gradient(90deg, #f1f9f4, transparent);
+}
+
+.pir-content {
+  flex: 1;
+  min-width: 0;
+}
+.pir-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #8a95a0;
+  margin-bottom: 2px;
+}
+.pir-label.verified-label {
+  color: #1f7a66;
+}
+.pir-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0e2840;
+  letter-spacing: -0.2px;
+  word-break: break-word;
+}
+.pir-value.empty {
+  color: #1f7a66;
+  font-weight: 700;
+}
+.pir-hint {
+  font-size: 11.5px;
+  color: #4a5868;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.pir-edit {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: none;
+  background: #f1f9f4;
+  color: #1f7a66;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+.pir-edit:hover {
+  background: #e2f1ea;
+}
+.pir-edit svg {
+  width: 14px;
+  height: 14px;
+}
+.pir-delete {
+  background: #ffe9dd;
+  color: #b85b36;
+}
+.pir-delete:hover {
+  background: #ffd4bd;
+}
+
+.pir-toggle {
+  width: 40px;
+  height: 22px;
+  border-radius: 100px;
+  background: #e8eceb;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.pir-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s;
+}
+.pir-toggle.on {
+  background: #3dbda3;
+}
+.pir-toggle.on::after {
+  transform: translateX(18px);
+}
+
+.pir-verified-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1f7a66;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pir-verified-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Drawer CTA */
+.drawer-cta {
+  width: 100%;
+  height: 50px;
+  border-radius: 14px;
+  background: #3dbda3;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+.drawer-cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.avatar-pick-row {
+  width: 100%;
+  height: 64px;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 14px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.apr-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0e2840;
+  letter-spacing: -0.2px;
+}
+</style>

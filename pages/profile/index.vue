@@ -90,60 +90,48 @@
         <p v-if="roleSaved" class="mt-2 text-[13px] text-[#059669] font-sf-pro">
           ✓ Role updated
         </p>
-        <p v-if="roleError" class="mt-2 text-[13px] text-red-500 font-sf-pro">{{ roleError }}</p>
+        <p v-if="roleError" class="mt-2 text-[13px] text-red-500 font-sf-pro">
+          {{ roleError }}
+        </p>
       </section>
 
-      <div class="mt-6 flex gap-3 items-center">
-        <div class="flex-1 bg-white rounded-2xl h-14 px-4 flex items-center">
+      <div class="mt-6">
+        <div class="bg-white rounded-2xl h-11 px-4 flex items-center">
           <Icon
             name="i-heroicons-magnifying-glass"
-            class="w-6 h-6 text-gray-400"
+            class="w-4 h-4 text-gray-400"
           />
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Search Preferences"
+            placeholder="Find a setting"
             class="ml-2 w-full bg-transparent outline-none text-lg placeholder:text-[#8f9094]"
           />
+          <button
+            v-if="searchQuery"
+            type="button"
+            class="w-4 h-4 rounded-full bg-[#f0f2f1] text-[#4a5868] flex items-center justify-center shrink-0"
+            aria-label="Clear search"
+            @click="searchQuery = ''"
+          >
+            <Icon name="i-heroicons-x-mark" class="w-4 h-4" />
+          </button>
         </div>
-
-        <button
-          type="button"
-          class="w-14 h-14 rounded-2xl bg-brand-aqua text-white flex items-center justify-center"
-          aria-label="Search filters"
-        >
-          <Icon name="i-heroicons-adjustments-horizontal" class="w-6 h-6" />
-        </button>
       </div>
 
-      <div class="mt-8 space-y-3">
-        <button
+      <ProfileSectionHead label="Account" />
+      <div class="profile-row-list">
+        <ProfileRow
           v-for="item in filteredItems"
           :key="item.title"
-          type="button"
-          :class="getPreferenceItemClass(item)"
+          :title="item.title"
+          :meta="item.description"
           @click="onPreferenceClick(item)"
         >
-          <div class="w-7 h-7 flex items-center justify-center text-[#1f2024]">
-            <OPIcon :name="item.icon" class="w-[15px] h-[15px]" />
-          </div>
-
-          <div class="flex-1 min-w-0">
-            <p :class="getPreferenceTitleClass(item)">
-              {{ item.title }}
-            </p>
-            <p
-              class="mt-1 font-sf-pro text-[13px] leading-[18px] tracking-[-0.08px] font-normal text-[#7f8084] align-middle text-start"
-            >
-              {{ item.description }}
-            </p>
-          </div>
-
-          <Icon
-            name="i-heroicons-chevron-right"
-            class="w-6 h-6 text-[#b4b5b8]"
-          />
-        </button>
+          <template #icon>
+            <OPIcon :name="item.icon" class="w-[18px] h-[18px]" />
+          </template>
+        </ProfileRow>
       </div>
 
       <button
@@ -265,6 +253,8 @@
 <script setup>
 import OPIcon from '~/components/ui/OPIcon.vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
+import ProfileRow from '~/components/profile/ProfileRow.vue'
+import ProfileSectionHead from '~/components/profile/ProfileSectionHead.vue'
 
 definePageMeta({
   title: 'My Profile - UmovingU',
@@ -295,11 +285,15 @@ onMounted(async () => {
     if (cached) currentRole.value = cached
   }
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null
     if (token) {
-      const prefs = await $fetch(`${config.public.apiBase}/profile/preferences`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const prefs = await $fetch(
+        `${config.public.apiBase}/profile/preferences`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
       const role = prefs?.purpose?.[0] ?? 'buy'
       currentRole.value = role
       if (typeof window !== 'undefined') localStorage.setItem('umu_role', role)
@@ -313,22 +307,30 @@ async function setRole(key) {
   roleSaved.value = false
   roleError.value = ''
   const prevRole = currentRole.value
-  currentRole.value = key  // optimistic update
+  currentRole.value = key // optimistic update
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    const result = await $fetch(`${config.public.apiBase}/profile/preferences`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: { purpose: [key] },
-    })
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const result = await $fetch(
+      `${config.public.apiBase}/profile/preferences`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: { purpose: [key] },
+      },
+    )
     console.log('[setRole] saved:', result)
     if (typeof window !== 'undefined') localStorage.setItem('umu_role', key)
     roleSaved.value = true
-    setTimeout(() => { roleSaved.value = false }, 2500)
+    setTimeout(() => {
+      roleSaved.value = false
+    }, 2500)
   } catch (err) {
     console.error('[setRole] failed:', err)
-    roleError.value = 'Failed to save — ' + (err?.data?.message || err?.message || 'unknown error')
-    currentRole.value = prevRole  // revert on error
+    roleError.value =
+      'Failed to save — ' +
+      (err?.data?.message || err?.message || 'unknown error')
+    currentRole.value = prevRole // revert on error
   } finally {
     savingRole.value = false
   }
@@ -384,6 +386,7 @@ const profileItems = [
     title: 'Settings',
     description: 'Customize your experience, privacy, and account security.',
     icon: 'settings',
+    route: '/profile/settings',
   },
   {
     title: 'Help & Support',
@@ -501,3 +504,12 @@ const deleteAccount = async () => {
   }
 }
 </script>
+
+<style scoped>
+.profile-row-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 4px;
+}
+</style>

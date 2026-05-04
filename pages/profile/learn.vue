@@ -1,7 +1,53 @@
 <template>
   <div
-    class="mobile-container min-h-screen page-bg text-[#101319] overflow-x-hidden bg-umu-gradient"
+    class="mobile-container min-h-screen page-bg text-[#101319] overflow-x-hidden bg-umu-gradient learn-page"
   >
+    <!-- Nav bar -->
+    <div class="ln-nav-bar">
+      <button class="ln-nav-icon-btn" aria-label="Back" @click="$router.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <div class="ln-nav-title">Learn &amp; Ask AI</div>
+      <div style="width: 38px" />
+    </div>
+
+    <!-- AI Orb hero -->
+    <div class="ln-ai-hero">
+      <button class="ln-orb" @click="openAi">
+        <span class="ln-orb-pulse" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L13.9 8.26H20.5L15.3 12.14L17.18 18.4L12 14.52L6.82 18.4L8.7 12.14L3.5 8.26H10.1L12 2Z" />
+        </svg>
+      </button>
+      <div class="ln-ai-title">Ask UMU AI</div>
+      <div class="ln-ai-sub">
+        Property questions, anytime — answered with your portfolio's context.
+      </div>
+    </div>
+
+    <!-- Try asking -->
+    <div class="ln-section-heading">Try asking</div>
+    <div class="ln-section">
+      <button
+        v-for="p in prompts"
+        :key="p"
+        class="ln-prompt"
+        @click="openAi(p)"
+      >
+        <span class="ln-prompt-mark">&ldquo;</span>
+        <span>{{ p }}</span>
+        <span class="ln-prompt-arrow">→</span>
+      </button>
+    </div>
+
+    <!-- Library section heading -->
+    <div class="ln-section-heading">
+      Library
+      <span class="ln-sh-action">{{ allVideos.length }} videos</span>
+    </div>
+
     <main class="pb-24">
       <!-- Hero: swipeable video carousel -->
       <section
@@ -715,9 +761,180 @@ onUnmounted(() => {
   stopProgressInterval()
   if (playerRef.value) playerRef.value.pause()
 })
+
+// ── Try-asking prompts + AI launcher ────────────────────────────
+const prompts = [
+  'What are the running costs for my home?',
+  'Should I publish my Passport before viewing offers?',
+  'How does the £49 Passport unlock work for buyers?',
+  'What documents do I need to sell?',
+]
+
+function openAi(prefill?: any) {
+  const q = typeof prefill === 'string' ? prefill : ''
+  if (q) {
+    navigateTo(`/profile/chat?prefill=${encodeURIComponent(q)}`)
+  } else {
+    navigateTo('/profile/chat')
+  }
+}
 </script>
 
 <style scoped>
+.learn-page { background: #fafaf8; color: #0e2840; }
+
+/* Nav bar */
+.ln-nav-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 22px 8px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+.ln-nav-icon-btn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #0e2840;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.ln-nav-icon-btn:hover { background: #f0f2f1; }
+.ln-nav-icon-btn svg { width: 18px; height: 18px; }
+.ln-nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.4px;
+}
+
+/* AI hero with breathing orb */
+.ln-ai-hero {
+  text-align: center;
+  padding: 24px 22px 20px;
+  position: relative;
+  z-index: 1;
+  background: radial-gradient(ellipse 70% 100% at 50% 0%, rgba(157, 123, 255, 0.12), transparent 65%);
+}
+.ln-orb {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: linear-gradient(155deg, #9d7bff, #6b4e9f);
+  color: #fff;
+  border: none;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 14px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 12px 36px rgba(107, 78, 159, 0.4);
+  animation: ln-breath 3.6s ease-in-out infinite;
+}
+@keyframes ln-breath {
+  0%, 100% { transform: scale(1); box-shadow: 0 12px 36px rgba(107, 78, 159, 0.4); }
+  50% { transform: scale(1.04); box-shadow: 0 16px 44px rgba(107, 78, 159, 0.55); }
+}
+.ln-orb svg { width: 36px; height: 36px; }
+.ln-orb-pulse {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 2px solid rgba(157, 123, 255, 0.35);
+  animation: ln-ring 2.4s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes ln-ring {
+  0% { transform: scale(0.85); opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+.ln-ai-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.6px;
+  margin-bottom: 4px;
+}
+.ln-ai-sub {
+  font-size: 12.5px;
+  color: #4a5868;
+  font-weight: 600;
+  line-height: 1.4;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+/* Section heading */
+.ln-section-heading {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #8a95a0;
+  padding: 22px 22px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ln-sh-action {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 800;
+  color: #1f7a66;
+  letter-spacing: -0.1px;
+  text-transform: none;
+}
+
+/* Try-asking prompts */
+.ln-section { padding: 0 22px 8px; display: flex; flex-direction: column; gap: 8px; }
+.ln-prompt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 14px;
+  padding: 13px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0e2840;
+  letter-spacing: -0.1px;
+  line-height: 1.3;
+  transition: all 0.15s;
+}
+.ln-prompt:hover {
+  border-color: #c8b6ff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 78, 159, 0.08);
+}
+.ln-prompt > span:nth-child(2) { flex: 1; }
+.ln-prompt-mark {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  color: #9d7bff;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.ln-prompt-arrow {
+  color: #9d7bff;
+  font-size: 16px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
 header {
   border-bottom: none !important;
 }

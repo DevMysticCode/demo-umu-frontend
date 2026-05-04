@@ -1,220 +1,121 @@
 <template>
-  <div class="mobile-container min-h-screen bg-umu-gradient pb-8">
-    <header class="flex items-center justify-between px-4 pt-5">
-      <button
-        type="button"
-        class="w-10 h-10 flex items-center justify-center"
-        @click="goBack"
-      >
-        <Icon name="i-heroicons-chevron-left" class="w-6 h-6 text-gray-900" />
+  <div class="cl-page mobile-container">
+    <!-- Nav bar — matches prototype -->
+    <div class="cl-nav-bar">
+      <button class="cl-nav-icon-btn" aria-label="Back" @click="goBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
       </button>
-
-      <h1
-        class="font-sf-pro text-[17px]-emphasized leading-[22px] tracking-[-0.43px] font-[590] text-[#000000] text-center"
-      >
-        Collaborators
-      </h1>
-
-      <button
-        type="button"
-        class="w-9 h-9 rounded-full bg-[#403D91] text-white flex items-center justify-center"
-        aria-label="More"
-      >
-        <Icon
-          name="i-heroicons-ellipsis-horizontal"
-          class="w-5 h-5 text-white"
-        />
+      <div class="cl-nav-title">Collaborators</div>
+      <button class="cl-nav-icon-btn" aria-label="Search" @click="openSearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="16.5" y1="16.5" x2="21" y2="21" />
+        </svg>
       </button>
-    </header>
+    </div>
 
-    <main class="px-4 pb-6">
-      <section class="pt-7 text-center">
-        <div class="avatar-stack">
-          <div
-            v-for="person in summaryCollaborators"
-            :key="person.name"
-            class="summary-avatar"
-          >
-            <img
-              v-if="person.avatar"
-              :src="person.avatar"
-              :alt="person.name"
-              class="w-full h-full rounded-full object-cover"
-            />
-            <span v-else class="text-[26px]">{{ person.emoji }}</span>
-          </div>
+    <main class="cl-body">
+      <div class="atm-bg teal" />
+
+      <!-- Hero -->
+      <div class="cl-hero">
+        <div class="hero-greeting">Your team</div>
+        <div class="cl-h1">
+          People you work with<span class="cl-h1-count">{{ collaborators.length }}</span>
         </div>
-
-        <h2
-          class="mt-4 text-[20px] leading-[25px] font-semibold text-[#000000]"
-        >
-          {{ collaborators.length }} Collaborators
-        </h2>
-
-        <p
-          class="inline-flex mt-2 rounded-full bg-[#7878801F] opacity-12 px-4 h-8 items-center text-brand-aqua font-semibold text-[11px] leading-[13px]"
-        >
-          OWNER: {{ ownerName }}
-        </p>
-
-        <p
-          class="mt-3 text-[15px] leading-[20px] tracking-[-0.23px] text-[#3C3C4399] opacity-60%"
-        >
-          Team Members: {{ collaborators.length }} • Partners:
-          {{ partnerCount }} • Clients: {{ clientCount }} • Pending:
-          {{ pendingCount }}
-        </p>
-      </section>
-
-      <section class="mt-6 flex items-center gap-2">
-        <div
-          class="h-14 rounded-2xl bg-white/90 border border-gray-200 px-4 flex items-center gap-3 flex-1"
-        >
-          <Icon
-            name="i-heroicons-magnifying-glass"
-            class="w-6 h-6 text-gray-400"
-          />
-          <input
-            v-model="searchText"
-            type="text"
-            placeholder="Search collaborators"
-            class="w-full bg-transparent outline-none text-[17px]-regular leading-[22px] tracking-[-0.43px] text-[#3C3C4399] opacity-90 placeholder:text-gray-400"
-          />
+        <div class="hero-stats">
+          <span><span class="stat-num">{{ collaborators.length }}</span>collaborators</span>
+          <span class="stat-sep" />
+          <span><span class="stat-num">{{ propertyCount }}</span>properties</span>
+          <span class="stat-sep" />
+          <span><span class="stat-num teal">{{ partnerCount }}</span>partners</span>
         </div>
+      </div>
 
+      <!-- Filter chips -->
+      <div class="cl-filter-row">
         <button
-          type="button"
-          class="w-14 h-14 rounded-2xl bg-brand-aqua text-white flex items-center justify-center"
-          aria-label="Open filters"
+          v-for="chip in filterChips"
+          :key="chip.value"
+          class="cl-chip"
+          :class="{ active: activeFilter === chip.value }"
+          @click="activeFilter = chip.value"
         >
-          <Icon
-            name="i-heroicons-adjustments-horizontal"
-            class="text-[15px] leading-[20px]"
-          />
+          {{ chip.label }}
+          <span class="cl-chip-num">{{ chip.count }}</span>
         </button>
-      </section>
+      </div>
 
-      <div class="h-px w-[calc(100%+2rem)] -ml-4 bg-gray-200" />
-
-      <section class="mt-8">
-        <button
-          type="button"
-          class="w-full bg-white rounded-3xl p-5 text-left flex items-center justify-between"
-          @click="openCollaboratorTypeModal"
-        >
-          <div class="flex items-center gap-3 min-w-0">
-            <span
-              class="w-[16px] h-[22px] rounded-full bg-brand-aqua/10 text-brand-aqua inline-flex items-center justify-center"
-            >
-              <Icon name="i-heroicons-user-plus" class="w-5 h-5" />
+      <!-- Collaborator cards -->
+      <div
+        v-for="person in filteredCollaborators"
+        :key="person.id"
+        class="collaborator-card"
+        @click="navigateTo(`/profile/collaborator-detail?id=${person.id}`)"
+      >
+        <div class="collab-avatar" :class="`collab-avatar--${avatarTone(person)}`">
+          {{ collabInitials(person) }}
+        </div>
+        <div class="collab-content">
+          <div class="collab-name">{{ person.name }}</div>
+          <div class="collab-role">{{ person.roleLabel }}</div>
+          <div v-if="person.organization || person.email" class="collab-org">
+            {{ person.organization || person.email }}
+          </div>
+          <div class="collab-properties">
+            <span class="collab-prop-tag global" v-if="person.accessLevel === 'Owner' || person.propertyCount > 1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              {{ person.propertyCount > 1 ? `${person.propertyCount} properties` : 'All properties' }}
             </span>
-            <div>
-              <p
-                class="text-brand-aqua text-[15px]-regular w-400 leading-[20px] tracking-[-0.23px] font-medium"
-              >
-                Add Collaborators
-              </p>
-              <p
-                class="mt-1 text-brand-aqua text-[13px]-regular leading-[18px] tracking-[-0.08px] w-400 font-normal"
-              >
-                Add agents, brokers, assistants, or partners
-              </p>
-            </div>
+            <span v-else class="collab-prop-tag">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              </svg>
+              {{ person.propertyCount }} {{ person.propertyCount === 1 ? 'property' : 'properties' }}
+            </span>
           </div>
-
-          <Icon
-            name="i-heroicons-chevron-right"
-            class="w-5 h-5 text-[#3C3C434D]"
-          />
-        </button>
-      </section>
-
-      <section class="mt-7">
-        <h3
-          class="text-[15px]-emphasized leading-[20px] font-sf pro text-[#000000] font-[590] tracking-[-0.23px ]"
-        >
-          Collaborators
-        </h3>
-        <p
-          class="mt-1 text-[13px]-regular leading-[18px] tracking-[-0.08px] text-[#3C3C4399] opacity-60%"
-        >
-          All Team Members
-        </p>
-
-        <div class="mt-4 space-y-4">
-          <button
-            v-for="person in filteredCollaborators"
-            :key="person.id"
-            type="button"
-            class="w-full bg-white rounded-3xl p-4 text-left"
-            @click="navigateTo(`/profile/collaborator-detail?id=${person.id}`)"
-          >
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex items-start gap-3 min-w-0">
-                <div
-                  class="w-14 h-14 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shrink-0 self-center"
-                >
-                  <img
-                    v-if="person.avatar"
-                    :src="person.avatar"
-                    :alt="person.name"
-                    class="w-14 h-14 object-cover"
-                  />
-                  <Icon v-else name="i-heroicons-user" class="w-7 h-7 text-gray-400" />
-                </div>
-
-                <div class="min-w-0">
-                  <p
-                    class="text-[14px]-regular leading-[20px] text-[#000000] tracking-[-0.23px] w-400 font-medium truncate"
-                  >
-                    {{ person.name }}
-                  </p>
-                  <p
-                    class="mt-1 text-[13px]-regular leading-[18px] text-gray-400"
-                  >
-                    {{ person.roleLabel }}
-                  </p>
-
-                  <div class="mt-3 flex flex-wrap gap-2">
-                    <span
-                      class="h-6 px-3 rounded-lg bg-brand-aqua text-white inline-flex items-center justify-center gap-1 text-[11px] leading-[13px]"
-                    >
-                      <Icon name="i-heroicons-check-badge" class="w-3 h-3" />
-                      Active
-                    </span>
-
-                    <span
-                      class="h-7 px-3 rounded-lg bg-brand-aqua/10 text-brand-aqua inline-flex items-center gap-1 text-[11px] leading-[13px]"
-                    >
-                      <Icon name="i-heroicons-home" class="w-3 h-3" />
-                      {{ person.propertyCount }} {{ person.propertyCount === 1 ? 'Property' : 'Properties' }}
-                    </span>
-
-                    <span
-                      class="h-7 px-3 rounded-lg bg-brand-aqua/10 text-brand-aqua inline-flex items-center gap-1 text-[11px] leading-[13px]"
-                    >
-                      <Icon name="i-heroicons-user-group" class="w-3 h-3" />
-                      {{ person.clientAccessLabel }}
-                    </span>
-
-                    <span
-                      class="h-7 px-3 rounded-lg bg-brand-aqua/10 text-brand-aqua inline-flex items-center text-[11px] leading-[13px]"
-                    >
-                      {{ person.accessLevel }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <Icon
-                name="i-heroicons-chevron-right"
-                class="w-5 h-5 text-[#3C3C434D] shrink-0 self-center"
-              />
-            </div>
+        </div>
+        <div class="collab-actions">
+          <button class="collab-action-btn" @click.stop>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
           </button>
         </div>
-      </section>
+      </div>
+
+      <!-- Empty-state suggestion -->
+      <div v-if="!filteredCollaborators.length" class="empty-state">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </div>
+        <div class="empty-state-title">No collaborators yet</div>
+        <div class="empty-state-sub">
+          Invite an agent, broker or partner to share your property journey.
+        </div>
+        <button class="btn-secondary" @click="openCollaboratorTypeModal">
+          + Add collaborator
+        </button>
+      </div>
     </main>
+
+    <!-- Floating add button -->
+    <button class="fab" aria-label="Add collaborator" @click="openCollaboratorTypeModal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+    </button>
 
     <BaseDrawer
       v-model="showCollaboratorTypeModal"
@@ -271,6 +172,7 @@
 
 <script setup>
 import BaseDrawer from '@/components/ui/BaseDrawer.vue'
+import ProfilePageTitle from '~/components/profile/ProfilePageTitle.vue'
 
 definePageMeta({
   title: "Collaborators - UmovingU",
@@ -332,15 +234,77 @@ const pendingCount = computed(
   () => collaborators.value.filter((p) => p.status === "pending").length,
 );
 
+const activeFilter = ref('all');
+
+const filterChips = computed(() => [
+  { value: 'all', label: 'Everyone', count: collaborators.value.length },
+  {
+    value: 'solicitor',
+    label: 'Solicitors',
+    count: collaborators.value.filter((p) =>
+      /solicitor/i.test(p.role || p.roleLabel || '')
+    ).length,
+  },
+  {
+    value: 'agent',
+    label: 'Agents',
+    count: collaborators.value.filter((p) =>
+      /agent|estate agent/i.test(p.role || p.roleLabel || '')
+    ).length,
+  },
+  {
+    value: 'partner',
+    label: 'Partners',
+    count: collaborators.value.filter((p) =>
+      /partner|owner|co-owner/i.test(p.role || p.roleLabel || '')
+    ).length,
+  },
+]);
+
+const propertyCount = computed(() => {
+  const ids = new Set();
+  for (const p of collaborators.value) {
+    for (const pid of p.propertyIds || []) ids.add(pid);
+  }
+  return ids.size || collaborators.value.length;
+});
+
 const filteredCollaborators = computed(() => {
-  if (!searchText.value.trim()) return collaborators.value;
+  let list = collaborators.value;
+  if (activeFilter.value === 'solicitor') {
+    list = list.filter((p) => /solicitor/i.test(p.role || p.roleLabel || ''));
+  } else if (activeFilter.value === 'agent') {
+    list = list.filter((p) => /agent|estate agent/i.test(p.role || p.roleLabel || ''));
+  } else if (activeFilter.value === 'partner') {
+    list = list.filter((p) => /partner|owner|co-owner/i.test(p.role || p.roleLabel || ''));
+  }
+  if (!searchText.value.trim()) return list;
   const query = searchText.value.toLowerCase();
-  return collaborators.value.filter(
+  return list.filter(
     (p) =>
       p.name.toLowerCase().includes(query) ||
-      p.role.toLowerCase().includes(query),
+      (p.role || '').toLowerCase().includes(query)
   );
 });
+
+function avatarTone(person) {
+  const r = (person.role || person.roleLabel || '').toLowerCase();
+  if (r.includes('solicitor')) return 'solicitor';
+  if (r.includes('agent')) return 'agent';
+  if (r.includes('partner') || r.includes('owner')) return 'partner';
+  if (r.includes('broker')) return 'broker';
+  return 'solicitor';
+}
+function collabInitials(person) {
+  const parts = (person.name || '').trim().split(/\s+/);
+  return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || '?';
+}
+function openSearch() {
+  // Lightweight inline search prompt. The chips above already filter the
+  // list; this just exposes the text filter.
+  const q = window.prompt('Search collaborators', searchText.value || '');
+  if (q !== null) searchText.value = q.trim();
+}
 
 const summaryCollaborators = computed(() => collaborators.value.slice(0, 4));
 
@@ -397,6 +361,326 @@ const goBack = () => {
 </script>
 
 <style scoped>
+/* Page surface */
+.cl-page {
+  min-height: 100dvh;
+  background: #fafaf8;
+  color: #0e2840;
+  position: relative;
+  padding-bottom: 96px;
+}
+
+/* Nav bar */
+.cl-nav-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 22px 8px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+.cl-nav-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #0e2840;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.cl-nav-icon-btn:hover { background: #f0f2f1; }
+.cl-nav-icon-btn svg { width: 18px; height: 18px; }
+.cl-nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.4px;
+}
+
+.cl-body { position: relative; }
+
+.atm-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 280px;
+  pointer-events: none;
+  z-index: 0;
+}
+.atm-bg.teal {
+  background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(61,189,163,0.14), transparent 65%);
+}
+
+/* Hero */
+.cl-hero { padding: 8px 22px 14px; position: relative; z-index: 1; }
+.hero-greeting {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #1f7a66;
+  margin-bottom: 6px;
+}
+.cl-h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -1.2px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.cl-h1-count {
+  display: inline-block;
+  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 400;
+  color: #3dbda3;
+  vertical-align: 8px;
+  margin-left: 6px;
+  letter-spacing: -0.5px;
+}
+.hero-stats {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #4a5868;
+  letter-spacing: -0.2px;
+  flex-wrap: wrap;
+}
+.hero-stats .stat-num { color: #0e2840; font-weight: 800; font-feature-settings: 'tnum'; margin-right: 4px; }
+.hero-stats .stat-num.teal { color: #1f7a66; }
+.hero-stats .stat-sep { width: 3px; height: 3px; border-radius: 50%; background: #b5bdc4; margin: 0 8px; display: inline-block; }
+
+/* Filter chips */
+.cl-filter-row {
+  display: flex;
+  gap: 6px;
+  padding: 4px 22px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: relative;
+  z-index: 1;
+}
+.cl-filter-row::-webkit-scrollbar { display: none; }
+.cl-chip {
+  background: #fff;
+  color: #4a5868;
+  border: 1px solid #e8eceb;
+  border-radius: 100px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  letter-spacing: -0.1px;
+}
+.cl-chip.active {
+  background: #0e2840;
+  color: #fff;
+  border-color: #0e2840;
+}
+.cl-chip-num {
+  font-size: 10px;
+  font-weight: 800;
+  color: #8a95a0;
+  font-feature-settings: 'tnum';
+}
+.cl-chip.active .cl-chip-num { color: rgba(255, 255, 255, 0.7); }
+
+/* Collaborator card */
+.collaborator-card {
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 0 22px 10px;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.collaborator-card:hover {
+  border-color: #e2f1ea;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 40, 64, 0.06);
+}
+.collab-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+.collab-avatar--solicitor { background: linear-gradient(155deg, #2c5f56, #143f38); }
+.collab-avatar--agent { background: linear-gradient(155deg, #c18a38, #8a5f1f); }
+.collab-avatar--partner { background: linear-gradient(155deg, #c5664a, #8a3f26); }
+.collab-avatar--broker { background: linear-gradient(155deg, #6b4e9f, #3f2870); }
+
+.collab-content { flex: 1; min-width: 0; }
+.collab-name {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.collab-role {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1f7a66;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+.collab-org {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #4a5868;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+.collab-properties {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.collab-prop-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #f1f9f4;
+  color: #1f7a66;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px 3px 6px;
+  border-radius: 100px;
+}
+.collab-prop-tag svg { width: 9px; height: 9px; opacity: 0.7; }
+.collab-prop-tag.global { background: #f5f4f0; color: #4a5868; }
+.collab-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.collab-action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f0f2f1;
+  color: #4a5868;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.collab-action-btn:hover { background: #f1f9f4; color: #1f7a66; }
+.collab-action-btn svg { width: 13px; height: 13px; }
+
+/* Empty state */
+.empty-state {
+  margin: 16px 22px;
+  padding: 24px 18px;
+  background: #f5f4f0;
+  border: 1px dashed #b5bdc4;
+  border-radius: 16px;
+  text-align: center;
+}
+.empty-state-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1f7a66;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(14, 40, 64, 0.06);
+}
+.empty-state-icon svg { width: 22px; height: 22px; }
+.empty-state-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0e2840;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+.empty-state-sub {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a5868;
+  margin-bottom: 14px;
+  line-height: 1.4;
+  max-width: 240px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  color: #0e2840;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-secondary:hover { border-color: #3dbda3; color: #1f7a66; }
+
+/* Floating add button */
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 20;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #3dbda3;
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(61, 189, 163, 0.4);
+  transition: all 0.18s;
+}
+.fab:hover {
+  background: #2a9484;
+  transform: translateY(-2px) scale(1.05);
+}
+.fab svg { width: 22px; height: 22px; }
+
 .avatar-stack {
   display: flex;
   align-items: center;

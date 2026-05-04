@@ -15,6 +15,46 @@
         <span>Back</span>
       </button>
       <div class="coll-header-right">
+        <!-- Compact search — expands to a full-width input when toggled -->
+        <div class="coll-nav-search" :class="{ open: searchOpen }">
+          <button
+            class="coll-nav-search-btn"
+            aria-label="Search Passports"
+            data-tour="search-btn"
+            @click="onToggleSearch"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="M16.5 16.5L21 21" />
+            </svg>
+          </button>
+          <input
+            v-if="searchOpen"
+            ref="searchInputRef"
+            v-model="query"
+            class="coll-nav-search-input"
+            placeholder="Search Passports…"
+            @keyup.escape="searchOpen = false"
+            @blur="onSearchBlur"
+          />
+          <button
+            v-if="searchOpen && query"
+            class="coll-nav-search-clear"
+            aria-label="Clear search"
+            @click="query = ''"
+          >
+            ×
+          </button>
+        </div>
+
         <button
           class="coll-tour-btn"
           aria-label="Take a quick tour"
@@ -103,32 +143,44 @@
       <div class="coll-resume-cta">→</div>
     </button>
 
-    <!-- Search -->
-    <div class="px-4 mb-4">
-      <div class="coll-search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="7" stroke="#aaa" stroke-width="2" />
-          <path
-            d="M16.5 16.5L21 21"
-            stroke="#aaa"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-        <input
-          v-model="query"
-          class="coll-search-input"
-          placeholder="Search Passport..."
-        />
-        <button class="coll-search-btn">Search</button>
+    <!-- Watching list — published passports the user has bought access to -->
+    <div v-if="watchingList.length > 0" class="watching-section">
+      <div class="watching-header">
+        <span class="watching-title">Watching</span>
+        <span class="watching-count">{{ watchingList.length }}</span>
+      </div>
+      <div class="watching-list">
+        <div
+          v-for="w in watchingList"
+          :key="w.id"
+          class="watching-card"
+          @click="router.push(`/buyer-passport/${w.passportId}`)"
+        >
+          <div class="watching-card-ic">📘</div>
+          <div class="watching-card-body">
+            <div class="watching-card-addr">{{ w.addressLine1 }}</div>
+            <div class="watching-card-sub">
+              {{ w.postcode
+              }}<template v-if="w.property?.epcRating">
+                · EPC {{ w.property.epcRating }}</template
+              >
+            </div>
+            <div class="watching-card-meta">
+              <span class="watching-pill watching-pill-published"
+                >📘 Published</span
+              >
+              <span class="watching-purchased">
+                Unlocked {{ formatPurchasedAt(w.purchasedAt) }}
+              </span>
+            </div>
+          </div>
+          <div class="watching-card-arrow">→</div>
+        </div>
       </div>
     </div>
 
     <!-- Location chips — derived from each passport's city/town -->
-    <div
-      v-if="cityChips.length > 1"
-      class="coll-cities"
-    >
+    <div v-if="cityChips.length > 1" class="coll-cities">
       <button
         v-for="chip in cityChips"
         :key="chip.value"
@@ -185,25 +237,28 @@
             class="stacked-book"
             :style="stackStyle(bi, collection.items.length)"
           >
+            <!-- With property image: photo background + brand overlay -->
             <div
+              v-if="item.passport.property?.imageUrl"
               class="passport-book-card"
-              :style="
-                item.passport.property?.imageUrl
-                  ? `background-image: url(${item.passport.property.imageUrl})`
-                  : ''
-              "
+              :style="`background-image: url(${item.passport.property.imageUrl})`"
             >
               <div class="book-overlay" />
               <div class="book-brand">Property Passport</div>
               <img src="/op-icons/logo.svg" class="book-logo" alt="" />
               <div class="book-addr">{{ item.passport.addressLine1 }}</div>
             </div>
+            <!-- No image: fall back to the real Property Passport book -->
+            <div v-else class="passport-book-fallback">
+              <PassportCard
+                :line1="item.passport.addressLine1"
+                :line2="item.passport.postcode"
+              />
+            </div>
           </div>
           <div v-if="collection.items.length === 0" class="stacked-book">
-            <div class="passport-book-card empty-book">
-              <div class="book-overlay" />
-              <div class="book-brand">Property Passport</div>
-              <img src="/op-icons/logo.svg" class="book-logo" alt="" />
+            <div class="passport-book-fallback">
+              <PassportCard line1="Empty collection" line2="Add a passport" />
             </div>
           </div>
         </div>
@@ -223,13 +278,11 @@
       >
         <div class="book-stack">
           <div class="stacked-book">
+            <!-- With property image: photo background + brand overlay -->
             <div
+              v-if="passport.property?.imageUrl"
               class="passport-book-card"
-              :style="
-                passport.property?.imageUrl
-                  ? `background-image: url(${passport.property.imageUrl})`
-                  : ''
-              "
+              :style="`background-image: url(${passport.property.imageUrl})`"
             >
               <div class="book-overlay" />
               <div class="book-brand">Property Passport</div>
@@ -272,6 +325,41 @@
                 </svg>
               </button>
             </div>
+            <!-- No image: fall back to the real Property Passport book -->
+            <div v-else class="passport-book-fallback">
+              <PassportCard
+                :line1="passport.addressLine1"
+                :line2="passport.postcode"
+              />
+              <button
+                class="book-trash-btn book-trash-btn--fallback"
+                @click.stop="confirmDelete(passport)"
+                title="Delete passport"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <polyline
+                    points="3,6 5,6 21,6"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M10 11v6M14 11v6"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
         <p class="cell-name">{{ shortAddress(passport.addressLine1) }}</p>
@@ -285,42 +373,6 @@
         </div>
         <p class="cell-name add-name">Add New</p>
         <p class="cell-sub">Add Passport</p>
-      </div>
-    </div>
-
-    <!-- Watching list — published passports the user has purchased access to -->
-    <div v-if="watchingList.length > 0" class="watching-section">
-      <div class="watching-header">
-        <span class="watching-title">Watching</span>
-        <span class="watching-count">{{ watchingList.length }}</span>
-      </div>
-      <div class="watching-list">
-        <div
-          v-for="w in watchingList"
-          :key="w.id"
-          class="watching-card"
-          @click="router.push(`/buyer-passport/${w.passportId}`)"
-        >
-          <div class="watching-card-ic">📘</div>
-          <div class="watching-card-body">
-            <div class="watching-card-addr">{{ w.addressLine1 }}</div>
-            <div class="watching-card-sub">
-              {{ w.postcode
-              }}<template v-if="w.property?.epcRating">
-                · EPC {{ w.property.epcRating }}</template
-              >
-            </div>
-            <div class="watching-card-meta">
-              <span class="watching-pill watching-pill-published"
-                >📘 Published</span
-              >
-              <span class="watching-purchased">
-                Unlocked {{ formatPurchasedAt(w.purchasedAt) }}
-              </span>
-            </div>
-          </div>
-          <div class="watching-card-arrow">→</div>
-        </div>
       </div>
     </div>
 
@@ -419,7 +471,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import CreateCollectionModal from '@/components/modals/CreateCollectionModal.vue'
 import CollectionDetailModal from '@/components/modals/CollectionDetailModal.vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
@@ -443,6 +495,25 @@ const showDetailModal = ref(false)
 const activeCollection = ref(null)
 const sortAsc = ref(true)
 const cityFilter = ref('all')
+
+// Compact navbar search toggle — only shown when the user taps the magnifier
+// in the header. Closes on blur (unless there's an active query) and on Esc.
+const searchOpen = ref(false)
+const searchInputRef = ref(null)
+
+async function onToggleSearch() {
+  searchOpen.value = !searchOpen.value
+  if (searchOpen.value) {
+    await nextTick()
+    searchInputRef.value?.focus?.()
+  }
+}
+
+function onSearchBlur() {
+  // Keep the input open when there's a query so the user can see it driving
+  // results. Close it when the user blurs an empty input.
+  if (!query.value.trim()) searchOpen.value = false
+}
 
 // Pull a sensible "place" label from any passport — prefers city, falls
 // back to the postcode area (the letters before the first digit, e.g. "CV5"
@@ -794,8 +865,80 @@ const executeDelete = async () => {
 .coll-header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
+
+/* Compact search lives in the navbar — collapses to a 32 px circular
+   button, expands to a pill-shaped input that pushes the avatar/help
+   buttons out of frame on tap. */
+.coll-nav-search {
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1.5px solid #eef0f6;
+  border-radius: 999px;
+  height: 32px;
+  overflow: hidden;
+  transition:
+    width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.18s,
+    background 0.18s;
+  width: 32px;
+}
+.coll-nav-search.open {
+  width: 220px;
+  background: #fff;
+  border-color: #b2e8e6;
+  box-shadow: 0 2px 8px rgba(0, 161, 154, 0.12);
+}
+.coll-nav-search-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: #4a5568;
+  flex-shrink: 0;
+}
+.coll-nav-search.open .coll-nav-search-btn {
+  color: #008c86;
+}
+.coll-nav-search-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  color: #231d45;
+  padding: 0 6px 0 0;
+  font-family: inherit;
+}
+.coll-nav-search-input::placeholder {
+  color: #94a3b8;
+}
+.coll-nav-search-clear {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+.coll-nav-search-clear:hover {
+  background: #eef0f6;
+  color: #231d45;
+}
+
 .coll-tour-btn {
   width: 32px;
   height: 32px;
@@ -916,8 +1059,8 @@ const executeDelete = async () => {
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.01em;
-  text-decoration: underline;
-  text-decoration-color: rgba(13, 148, 136, 0.4);
+  /* text-decoration: underline;
+  text-decoration-color: rgba(13, 148, 136, 0.4); */
   text-underline-offset: 3px;
   margin-bottom: 4px;
 }
@@ -1217,9 +1360,44 @@ const executeDelete = async () => {
   backdrop-filter: blur(4px);
 }
 
-.passport-book-card:hover .book-trash-btn {
+.passport-book-card:hover .book-trash-btn,
+.passport-book-fallback:hover .book-trash-btn {
   opacity: 1;
   transform: scale(1);
+}
+
+/* When there's no property image, use the real Property Passport book.
+   The PassportCard component renders the full umu-passport.png with the
+   address overlaid; we just need to size + position it inside the cell. */
+.passport-book-fallback {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+.passport-book-fallback :deep(.passport-card) {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+.passport-book-fallback :deep(.passport-container) {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+.passport-book-fallback :deep(.passport-image) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.book-trash-btn--fallback {
+  bottom: 8px;
+  right: 8px;
 }
 
 /* Cell labels */
