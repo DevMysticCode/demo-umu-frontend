@@ -3,7 +3,13 @@
     <!-- Nav bar -->
     <div class="st-nav-bar">
       <button class="st-nav-icon-btn" aria-label="Back" @click="$router.back()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
@@ -16,6 +22,7 @@
 
       <!-- Hero h1 -->
       <div class="st-hero">
+        <div class="hero-greeting">Make UMU yours</div>
         <div class="st-h1">Settings</div>
       </div>
 
@@ -24,7 +31,14 @@
         <div class="st-strength-card">
           <div class="st-strength-row">
             <div class="st-strength-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5l-8-3z" />
                 <path d="M9 12l2 2 4-4" />
               </svg>
@@ -37,7 +51,10 @@
             </div>
           </div>
           <div class="st-strength-bar">
-            <div class="st-strength-fill" :style="{ width: securityScore + '%' }" />
+            <div
+              class="st-strength-fill"
+              :style="{ width: securityScore + '%' }"
+            />
           </div>
           <div class="st-strength-meter">
             <span class="st-strength-pct">{{ securityScore }}%</span>
@@ -50,7 +67,10 @@
       <div class="st-section-heading">Account &amp; security</div>
       <div class="st-section">
         <div class="st-group">
-          <button class="st-row" @click="navigateTo('/profile/personal-information')">
+          <button
+            class="st-row"
+            @click="navigateTo('/profile/personal-information')"
+          >
             <div class="st-row-content">
               <div class="st-row-label">Personal information</div>
               <div class="st-row-meta">Name, email, phone, address</div>
@@ -99,7 +119,9 @@
           <div class="st-row">
             <div class="st-row-content">
               <div class="st-row-label">Email newsletter</div>
-              <div class="st-row-meta">Weekly market &amp; saved property updates</div>
+              <div class="st-row-meta">
+                Weekly market &amp; saved property updates
+              </div>
             </div>
             <div
               class="st-toggle"
@@ -318,7 +340,8 @@ const securityLabel = computed(() => {
   z-index: 2;
 }
 .st-nav-icon-btn {
-  width: 38px; height: 38px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: none;
   background: transparent;
@@ -330,8 +353,13 @@ const securityLabel = computed(() => {
   flex-shrink: 0;
   transition: background 0.2s;
 }
-.st-nav-icon-btn:hover { background: #f0f2f1; }
-.st-nav-icon-btn svg { width: 18px; height: 18px; }
+.st-nav-icon-btn:hover {
+  background: #f0f2f1;
+}
+.st-nav-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
 .st-nav-title {
   flex: 1;
   text-align: center;
@@ -341,20 +369,42 @@ const securityLabel = computed(() => {
   letter-spacing: -0.4px;
 }
 
-.st-body { position: relative; }
+.st-body {
+  position: relative;
+}
 .atm-bg {
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 280px;
   pointer-events: none;
   z-index: 0;
 }
 .atm-bg.teal {
-  background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(61, 189, 163, 0.14), transparent 65%);
+  background: radial-gradient(
+    ellipse 60% 80% at 50% 0%,
+    rgba(61, 189, 163, 0.14),
+    transparent 65%
+  );
 }
 
 /* Hero */
-.st-hero { padding: 8px 22px 14px; position: relative; z-index: 1; }
+.st-hero {
+  padding: 8px 22px 14px;
+  position: relative;
+  z-index: 1;
+}
+.hero-greeting {
+  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+  color: #1f7a66;
+  margin-bottom: 4px;
+  text-transform: none;
+}
 .st-h1 {
   font-size: 32px;
   font-weight: 800;
@@ -376,7 +426,11 @@ const securityLabel = computed(() => {
 }
 
 /* Group / row */
-.st-section { padding: 0 22px; position: relative; z-index: 1; }
+.st-section {
+  padding: 0 22px;
+  position: relative;
+  z-index: 1;
+}
 .st-group {
   background: #fff;
   border: 1px solid #e8eceb;
@@ -400,10 +454,19 @@ const securityLabel = computed(() => {
   text-decoration: none;
   color: inherit;
 }
-.st-row:last-child { border-bottom: none; }
-.st-row:hover { background: #f5f4f0; }
-.st-row.danger .st-row-label { color: #b85b36; }
-.st-row-content { flex: 1; min-width: 0; }
+.st-row:last-child {
+  border-bottom: none;
+}
+.st-row:hover {
+  background: #f5f4f0;
+}
+.st-row.danger .st-row-label {
+  color: #b85b36;
+}
+.st-row-content {
+  flex: 1;
+  min-width: 0;
+}
 .st-row-label {
   font-size: 13.5px;
   font-weight: 700;
@@ -448,8 +511,12 @@ const securityLabel = computed(() => {
   transition: transform 0.2s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-.st-toggle.on { background: #3dbda3; }
-.st-toggle.on::after { transform: translateX(16px); }
+.st-toggle.on {
+  background: #3dbda3;
+}
+.st-toggle.on::after {
+  transform: translateX(16px);
+}
 
 /* Theme segmented */
 .st-segment {
@@ -499,8 +566,14 @@ const securityLabel = computed(() => {
   display: grid;
   place-items: center;
 }
-.st-strength-icon svg { width: 18px; height: 18px; }
-.st-strength-body { flex: 1; min-width: 0; }
+.st-strength-icon svg {
+  width: 18px;
+  height: 18px;
+}
+.st-strength-body {
+  flex: 1;
+  min-width: 0;
+}
 .st-strength-title {
   font-size: 14px;
   font-weight: 800;
@@ -556,7 +629,9 @@ const securityLabel = computed(() => {
 }
 .st-toast-enter-active,
 .st-toast-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 .st-toast-enter-from,
 .st-toast-leave-to {

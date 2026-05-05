@@ -3,7 +3,13 @@
     <!-- Nav bar -->
     <div class="ac-nav-bar">
       <button class="ac-nav-icon-btn" aria-label="Back" @click="goBack">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
@@ -42,7 +48,13 @@
       <div class="ac-section">
         <div class="ac-search">
           <span class="ac-search-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+            >
               <circle cx="11" cy="11" r="7" />
               <line x1="16.5" y1="16.5" x2="21" y2="21" />
             </svg>
@@ -57,7 +69,10 @@
           <span v-if="searching" class="ac-search-spin" />
         </div>
 
-        <div v-if="searchResults.length > 0 && !selectedUser" class="ac-results">
+        <div
+          v-if="searchResults.length > 0 && !selectedUser"
+          class="ac-results"
+        >
           <button
             v-for="result in searchResults"
             :key="result.id"
@@ -66,7 +81,11 @@
             @click="selectUser(result)"
           >
             <div class="ac-result-avatar" :style="avatarStyle(result.name)">
-              <img v-if="result.avatarUrl" :src="result.avatarUrl" :alt="result.name" />
+              <img
+                v-if="result.avatarUrl"
+                :src="result.avatarUrl"
+                :alt="result.name"
+              />
               <span v-else>{{ initials(result.name) }}</span>
             </div>
             <div class="ac-result-info">
@@ -78,17 +97,36 @@
 
         <div v-if="selectedUser" class="ac-existing-row active">
           <div class="ac-result-avatar" :style="avatarStyle(selectedUser.name)">
-            <img v-if="selectedUser.avatarUrl" :src="selectedUser.avatarUrl" :alt="selectedUser.name" />
+            <img
+              v-if="selectedUser.avatarUrl"
+              :src="selectedUser.avatarUrl"
+              :alt="selectedUser.name"
+            />
             <span v-else>{{ initials(selectedUser.name) }}</span>
           </div>
           <div class="ac-result-info">
             <div class="ac-result-name">{{ selectedUser.name }}</div>
             <div class="ac-result-email">{{ selectedUser.email }}</div>
           </div>
-          <button class="ac-result-clear" type="button" aria-label="Clear" @click="clearUser">×</button>
+          <button
+            class="ac-result-clear"
+            type="button"
+            aria-label="Clear"
+            @click="clearUser"
+          >
+            ×
+          </button>
         </div>
 
-        <p v-if="searchQuery.length >= 2 && !searching && searchResults.length === 0 && !selectedUser" class="ac-no-results">
+        <p
+          v-if="
+            searchQuery.length >= 2 &&
+            !searching &&
+            searchResults.length === 0 &&
+            !selectedUser
+          "
+          class="ac-no-results"
+        >
           No registered users found for "{{ searchQuery }}"
         </p>
       </div>
@@ -116,18 +154,25 @@
           class="mform-input"
           placeholder="Email address"
         />
-        <p class="ac-hint">If you can't find them in UMU, we'll send an invite to join.</p>
+        <p class="ac-hint">
+          If you can't find them in UMU, we'll send an invite to join.
+        </p>
       </div>
 
       <!-- Attach to properties -->
       <div class="section-heading">
         Attach to properties
-        <span class="sh-action" @click="setAllProperties(true)">Select all</span>
+        <span class="sh-action" @click="setAllProperties(true)"
+          >Select all</span
+        >
       </div>
       <div class="ac-section">
-        <div v-if="passportsLoading" class="ac-loading">Loading your properties…</div>
+        <div v-if="passportsLoading" class="ac-loading">
+          Loading your properties…
+        </div>
         <div v-else-if="properties.length === 0" class="ac-empty">
-          You don't have any property passports yet. They'll have access to your account.
+          You don't have any property passports yet. They'll have access to your
+          account.
         </div>
         <div v-else class="ac-property-list">
           <button
@@ -139,16 +184,35 @@
             @click="toggleProperty(p.id)"
           >
             <div class="ac-property-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z" />
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"
+                />
               </svg>
             </div>
             <div class="ac-property-text">
               <div class="ac-property-title">{{ p.title }}</div>
-              <div v-if="p.postcode" class="ac-property-meta">{{ p.postcode }}</div>
+              <div v-if="p.postcode" class="ac-property-meta">
+                {{ p.postcode }}
+              </div>
             </div>
             <div class="ac-property-check">
-              <svg v-if="p.selected" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                v-if="p.selected"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </div>
@@ -174,14 +238,23 @@
       <p v-if="saveError" class="ac-error">{{ saveError }}</p>
 
       <div class="ac-actions">
-        <button class="btn-secondary" type="button" @click="goBack">Cancel</button>
+        <button class="btn-secondary" type="button" @click="goBack">
+          Cancel
+        </button>
         <button
           class="btn-primary"
           type="button"
           :disabled="!canSave || saving"
           @click="save"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
@@ -221,7 +294,12 @@ const roles = [
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
   },
 ]
-const collaboratorRole = ref(typeof route.query.type === 'string' && roles.find((r) => r.value === route.query.type) ? route.query.type : 'solicitor')
+const collaboratorRole = ref(
+  typeof route.query.type === 'string' &&
+    roles.find((r) => r.value === route.query.type)
+    ? route.query.type
+    : 'solicitor',
+)
 
 // User search
 const searchQuery = ref('')
@@ -296,14 +374,18 @@ const loadPassports = async () => {
 
 const toggleProperty = (id) => {
   properties.value = properties.value.map((p) =>
-    p.id === id ? { ...p, selected: !p.selected } : p
+    p.id === id ? { ...p, selected: !p.selected } : p,
   )
 }
 const setAllProperties = (val) => {
   properties.value = properties.value.map((p) => ({ ...p, selected: val }))
 }
-const selectedPropertyCount = computed(() => properties.value.filter((p) => p.selected).length)
-const selectedPropertyIds = computed(() => properties.value.filter((p) => p.selected).map((p) => p.id))
+const selectedPropertyCount = computed(
+  () => properties.value.filter((p) => p.selected).length,
+)
+const selectedPropertyIds = computed(() =>
+  properties.value.filter((p) => p.selected).map((p) => p.id),
+)
 
 // Comms
 const allowCommunications = ref(true)
@@ -312,14 +394,18 @@ const allowCommunications = ref(true)
 const saving = ref(false)
 const saveError = ref('')
 
-const inviteValid = computed(() =>
-  inviteName.value.trim().length >= 2 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inviteEmail.value.trim())
+const inviteValid = computed(
+  () =>
+    inviteName.value.trim().length >= 2 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inviteEmail.value.trim()),
 )
 const canSave = computed(() => !!selectedUser.value || inviteValid.value)
 
 const addLabel = computed(() => {
-  if (selectedUser.value) return `Add ${selectedUser.value.name?.split(' ')[0] || 'collaborator'}`
-  if (inviteValid.value) return `Invite ${inviteName.value.trim().split(/\s+/)[0]}`
+  if (selectedUser.value)
+    return `Add ${selectedUser.value.name?.split(' ')[0] || 'collaborator'}`
+  if (inviteValid.value)
+    return `Invite ${inviteName.value.trim().split(/\s+/)[0]}`
   return 'Add collaborator'
 })
 
@@ -366,7 +452,13 @@ const goBack = () => {
 // Avatar helpers
 const initials = (name) => {
   if (!name) return '?'
-  return name.trim().split(/\s+/).map((p) => p[0]).slice(0, 2).join('').toUpperCase()
+  return name
+    .trim()
+    .split(/\s+/)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
 }
 const avatarStyle = (name) => {
   const palettes = [
@@ -401,7 +493,8 @@ onMounted(loadPassports)
   z-index: 2;
 }
 .ac-nav-icon-btn {
-  width: 38px; height: 38px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: none;
   background: transparent;
@@ -413,28 +506,48 @@ onMounted(loadPassports)
   flex-shrink: 0;
   transition: background 0.2s;
 }
-.ac-nav-icon-btn:hover { background: #f0f2f1; }
-.ac-nav-icon-btn svg { width: 18px; height: 18px; }
+.ac-nav-icon-btn:hover {
+  background: #f0f2f1;
+}
+.ac-nav-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
 .ac-nav-title {
-  flex: 1; text-align: center;
-  font-size: 16px; font-weight: 800;
-  color: #0e2840; letter-spacing: -0.4px;
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.4px;
 }
 
-.ac-body { position: relative; }
+.ac-body {
+  position: relative;
+}
 .atm-bg {
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 280px;
   pointer-events: none;
   z-index: 0;
 }
 .atm-bg.teal {
-  background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(61, 189, 163, 0.14), transparent 65%);
+  background: radial-gradient(
+    ellipse 60% 80% at 50% 0%,
+    rgba(61, 189, 163, 0.14),
+    transparent 65%
+  );
 }
 
 /* Hero */
-.ac-hero { padding: 8px 22px 14px; position: relative; z-index: 1; }
+.ac-hero {
+  padding: 8px 22px 14px;
+  position: relative;
+  z-index: 1;
+}
 .ac-greeting {
   font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   font-style: italic;
@@ -443,7 +556,7 @@ onMounted(loadPassports)
   margin-bottom: 4px;
 }
 .ac-h1 {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -1px;
@@ -473,11 +586,19 @@ onMounted(loadPassports)
   letter-spacing: -0.1px;
 }
 
-.ac-section { padding: 0 22px 4px; position: relative; z-index: 1; }
-.ac-spacer { height: 6px; }
+.ac-section {
+  padding: 0 22px 4px;
+  position: relative;
+  z-index: 1;
+}
+.ac-spacer {
+  height: 6px;
+}
 
 /* Search */
-.ac-search { position: relative; }
+.ac-search {
+  position: relative;
+}
 .ac-search-input {
   width: 100%;
   background: #fff;
@@ -491,26 +612,42 @@ onMounted(loadPassports)
   outline: none;
   transition: all 0.18s;
 }
-.ac-search-input::placeholder { color: #8a95a0; font-weight: 500; }
-.ac-search-input:focus { border-color: #3dbda3; box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18); }
+.ac-search-input::placeholder {
+  color: #8a95a0;
+  font-weight: 500;
+}
+.ac-search-input:focus {
+  border-color: #3dbda3;
+  box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18);
+}
 .ac-search-icon {
   position: absolute;
-  left: 13px; top: 50%;
+  left: 13px;
+  top: 50%;
   transform: translateY(-50%);
   color: #8a95a0;
 }
-.ac-search-icon svg { width: 14px; height: 14px; }
+.ac-search-icon svg {
+  width: 14px;
+  height: 14px;
+}
 .ac-search-spin {
   position: absolute;
-  right: 12px; top: 50%;
-  width: 14px; height: 14px;
+  right: 12px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
   margin-top: -7px;
   border: 2px solid #3dbda3;
   border-right-color: transparent;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 .ac-results {
   margin-top: 6px;
@@ -533,8 +670,12 @@ onMounted(loadPassports)
   text-align: left;
   color: inherit;
 }
-.ac-result:last-child { border-bottom: none; }
-.ac-result:hover { background: #fafaf8; }
+.ac-result:last-child {
+  border-bottom: none;
+}
+.ac-result:hover {
+  background: #fafaf8;
+}
 
 .ac-existing-row {
   margin-top: 6px;
@@ -546,10 +687,13 @@ onMounted(loadPassports)
   align-items: center;
   gap: 10px;
 }
-.ac-existing-row.active { background: linear-gradient(135deg, #f1f9f4, #e2f1ea); }
+.ac-existing-row.active {
+  background: linear-gradient(135deg, #f1f9f4, #e2f1ea);
+}
 
 .ac-result-avatar {
-  width: 38px; height: 38px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -561,17 +705,30 @@ onMounted(loadPassports)
   flex-shrink: 0;
   overflow: hidden;
 }
-.ac-result-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.ac-result-info { flex: 1; min-width: 0; }
+.ac-result-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ac-result-info {
+  flex: 1;
+  min-width: 0;
+}
 .ac-result-name {
   font-size: 13px;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
 }
-.ac-result-email { font-size: 11px; font-weight: 600; color: #4a5868; margin-top: 1px; }
+.ac-result-email {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4a5868;
+  margin-top: 1px;
+}
 .ac-result-clear {
-  width: 28px; height: 28px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: none;
   background: #f0f2f1;
@@ -612,8 +769,14 @@ onMounted(loadPassports)
   outline: none;
   transition: all 0.18s;
 }
-.mform-input:focus { border-color: #3dbda3; box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18); }
-.mform-input::placeholder { color: #8a95a0; font-weight: 500; }
+.mform-input:focus {
+  border-color: #3dbda3;
+  box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18);
+}
+.mform-input::placeholder {
+  color: #8a95a0;
+  font-weight: 500;
+}
 
 .mform-radio-group {
   display: grid;
@@ -636,17 +799,48 @@ onMounted(loadPassports)
   transition: all 0.18s;
   text-align: left;
 }
-.mform-radio:hover { border-color: #d9dee2; }
-.mform-radio.solicitor.active { border-color: #2c5f56; background: #e2f1ea; color: #143f38; }
-.mform-radio.solicitor.active .mfr-icon { background: #2c5f56; color: #fff; }
-.mform-radio.agent.active { border-color: #d4a659; background: #fdf4dc; color: #6f4d14; }
-.mform-radio.agent.active .mfr-icon { background: #f5c44c; color: #6f4d14; }
-.mform-radio.broker.active { border-color: #9d7bff; background: #ede5ff; color: #6b4e9f; }
-.mform-radio.broker.active .mfr-icon { background: #9d7bff; color: #fff; }
-.mform-radio.partner.active { border-color: #ff8b5a; background: #ffe9dd; color: #b85b36; }
-.mform-radio.partner.active .mfr-icon { background: #ff8b5a; color: #fff; }
+.mform-radio:hover {
+  border-color: #d9dee2;
+}
+.mform-radio.solicitor.active {
+  border-color: #2c5f56;
+  background: #e2f1ea;
+  color: #143f38;
+}
+.mform-radio.solicitor.active .mfr-icon {
+  background: #2c5f56;
+  color: #fff;
+}
+.mform-radio.agent.active {
+  border-color: #d4a659;
+  background: #fdf4dc;
+  color: #6f4d14;
+}
+.mform-radio.agent.active .mfr-icon {
+  background: #f5c44c;
+  color: #6f4d14;
+}
+.mform-radio.broker.active {
+  border-color: #9d7bff;
+  background: #ede5ff;
+  color: #6b4e9f;
+}
+.mform-radio.broker.active .mfr-icon {
+  background: #9d7bff;
+  color: #fff;
+}
+.mform-radio.partner.active {
+  border-color: #ff8b5a;
+  background: #ffe9dd;
+  color: #b85b36;
+}
+.mform-radio.partner.active .mfr-icon {
+  background: #ff8b5a;
+  color: #fff;
+}
 .mfr-icon {
-  width: 26px; height: 26px;
+  width: 26px;
+  height: 26px;
   border-radius: 8px;
   background: #f1f9f4;
   color: #1f7a66;
@@ -655,10 +849,17 @@ onMounted(loadPassports)
   justify-content: center;
   flex-shrink: 0;
 }
-.mfr-icon svg { width: 13px; height: 13px; }
+.mfr-icon svg {
+  width: 13px;
+  height: 13px;
+}
 
 /* Property list */
-.ac-property-list { display: flex; flex-direction: column; gap: 6px; }
+.ac-property-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 .ac-property {
   width: 100%;
   background: #fff;
@@ -673,13 +874,16 @@ onMounted(loadPassports)
   text-align: left;
   transition: all 0.18s;
 }
-.ac-property:hover { border-color: #d9dee2; }
+.ac-property:hover {
+  border-color: #d9dee2;
+}
 .ac-property.selected {
   border-color: #3dbda3;
   background: #f1f9f4;
 }
 .ac-property-icon {
-  width: 32px; height: 32px;
+  width: 32px;
+  height: 32px;
   border-radius: 9px;
   background: #f1f9f4;
   color: #1f7a66;
@@ -688,9 +892,18 @@ onMounted(loadPassports)
   justify-content: center;
   flex-shrink: 0;
 }
-.ac-property.selected .ac-property-icon { background: #3dbda3; color: #fff; }
-.ac-property-icon svg { width: 14px; height: 14px; }
-.ac-property-text { flex: 1; min-width: 0; }
+.ac-property.selected .ac-property-icon {
+  background: #3dbda3;
+  color: #fff;
+}
+.ac-property-icon svg {
+  width: 14px;
+  height: 14px;
+}
+.ac-property-text {
+  flex: 1;
+  min-width: 0;
+}
 .ac-property-title {
   font-size: 12.5px;
   font-weight: 800;
@@ -700,9 +913,15 @@ onMounted(loadPassports)
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.ac-property-meta { font-size: 10.5px; font-weight: 600; color: #8a95a0; margin-top: 1px; }
+.ac-property-meta {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #8a95a0;
+  margin-top: 1px;
+}
 .ac-property-check {
-  width: 22px; height: 22px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 2px solid #d9dee2;
   background: #fff;
@@ -716,7 +935,10 @@ onMounted(loadPassports)
   background: #3dbda3;
   border-color: #3dbda3;
 }
-.ac-property-check svg { width: 12px; height: 12px; }
+.ac-property-check svg {
+  width: 12px;
+  height: 12px;
+}
 
 .ac-loading,
 .ac-empty {
@@ -747,7 +969,8 @@ onMounted(loadPassports)
   letter-spacing: -0.2px;
 }
 .pir-toggle {
-  width: 40px; height: 22px;
+  width: 40px;
+  height: 22px;
   border-radius: 100px;
   background: #e8eceb;
   border: none;
@@ -759,15 +982,21 @@ onMounted(loadPassports)
 .pir-toggle::after {
   content: '';
   position: absolute;
-  top: 2px; left: 2px;
-  width: 18px; height: 18px;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   transition: transform 0.2s;
 }
-.pir-toggle.on { background: #3dbda3; }
-.pir-toggle.on::after { transform: translateX(18px); }
+.pir-toggle.on {
+  background: #3dbda3;
+}
+.pir-toggle.on::after {
+  transform: translateX(18px);
+}
 
 .ac-error {
   text-align: center;
@@ -798,7 +1027,9 @@ onMounted(loadPassports)
   letter-spacing: -0.2px;
   cursor: pointer;
 }
-.btn-secondary:hover { background: #e8eceb; }
+.btn-secondary:hover {
+  background: #e8eceb;
+}
 .btn-primary {
   flex: 2;
   background: #3dbda3;
@@ -817,7 +1048,16 @@ onMounted(loadPassports)
   gap: 6px;
   box-shadow: 0 4px 12px rgba(61, 189, 163, 0.32);
 }
-.btn-primary:hover { background: #2a9484; }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
-.btn-primary svg { width: 14px; height: 14px; }
+.btn-primary:hover {
+  background: #2a9484;
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.btn-primary svg {
+  width: 14px;
+  height: 14px;
+}
 </style>

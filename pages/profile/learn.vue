@@ -1,790 +1,169 @@
 <template>
-  <div
-    class="mobile-container min-h-screen page-bg text-[#101319] overflow-x-hidden bg-umu-gradient learn-page"
-  >
+  <div class="ai-page mobile-container">
     <!-- Nav bar -->
-    <div class="ln-nav-bar">
-      <button class="ln-nav-icon-btn" aria-label="Back" @click="$router.back()">
+    <div class="ai-nav-bar">
+      <button class="ai-nav-icon-btn" aria-label="Back" @click="goBack">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
-      <div class="ln-nav-title">Learn &amp; Ask AI</div>
-      <div style="width: 38px" />
-    </div>
-
-    <!-- AI Orb hero -->
-    <div class="ln-ai-hero">
-      <button class="ln-orb" @click="openAi">
-        <span class="ln-orb-pulse" />
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2L13.9 8.26H20.5L15.3 12.14L17.18 18.4L12 14.52L6.82 18.4L8.7 12.14L3.5 8.26H10.1L12 2Z" />
+      <div class="ai-nav-title">Learn &amp; Ask AI</div>
+      <button class="ai-nav-icon-btn" aria-label="Chat history" @click="navigateTo('/profile/chat')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
         </svg>
       </button>
-      <div class="ln-ai-title">Ask UMU AI</div>
-      <div class="ln-ai-sub">
-        Property questions, anytime — answered with your portfolio's context.
+    </div>
+
+    <main class="ai-body">
+      <div class="atm-bg teal-deep" />
+
+      <!-- Hero with breathing AI orb -->
+      <div class="ai-hero">
+        <div class="ai-orb" />
+        <div class="ai-greeting">Hi {{ firstName || 'there' }}</div>
+        <div class="ai-headline">
+          Ask me <span class="ai-headline-italic">anything</span> about your property journey.
+        </div>
+        <div class="ai-sub">
+          From legal jargon to chain timelines. I know UMU and the UK property market inside out.
+        </div>
       </div>
-    </div>
 
-    <!-- Try asking -->
-    <div class="ln-section-heading">Try asking</div>
-    <div class="ln-section">
-      <button
-        v-for="p in prompts"
-        :key="p"
-        class="ln-prompt"
-        @click="openAi(p)"
-      >
-        <span class="ln-prompt-mark">&ldquo;</span>
-        <span>{{ p }}</span>
-        <span class="ln-prompt-arrow">→</span>
-      </button>
-    </div>
+      <!-- Input -->
+      <form class="ai-input-wrap" @submit.prevent="askWith(question)">
+        <input
+          v-model="question"
+          type="text"
+          placeholder="Ask a question…"
+          @keydown.enter.prevent="askWith(question)"
+        />
+        <button type="button" class="ai-input-btn" aria-label="Voice (coming soon)" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="3" width="6" height="12" rx="3" />
+            <path d="M5 11a7 7 0 0 0 14 0" />
+            <line x1="12" y1="19" x2="12" y2="22" />
+          </svg>
+        </button>
+        <button type="submit" class="ai-send" aria-label="Send" :disabled="!question.trim()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5" />
+            <polyline points="5 12 12 5 19 12" />
+          </svg>
+        </button>
+      </form>
 
-    <!-- Library section heading -->
-    <div class="ln-section-heading">
-      Library
-      <span class="ln-sh-action">{{ allVideos.length }} videos</span>
-    </div>
-
-    <main class="pb-24">
-      <!-- Hero: swipeable video carousel -->
-      <section
-        class="relative h-[570px] overflow-hidden"
-        @touchstart="onHeroTouchStart"
-        @touchend="onHeroTouchEnd"
-      >
-        <!-- Video slides -->
-        <div
-          class="flex h-full transition-transform duration-300 ease-in-out"
-          :style="{
-            transform: `translateX(-${featuredVideos.length ? heroIndex * (100 / featuredVideos.length) : 0}%)`,
-            width: `${featuredVideos.length * 100}%`,
-          }"
+      <!-- Suggested prompts -->
+      <div class="section-heading">Try asking</div>
+      <div class="ai-prompts">
+        <button
+          v-for="p in prompts"
+          :key="p.text"
+          type="button"
+          class="ai-prompt"
+          @click="askWith(p.text)"
         >
-          <div
-            v-for="(video, i) in featuredVideos"
-            :key="video.id"
-            class="relative flex-none h-full"
-            :style="{ width: `${100 / featuredVideos.length}%` }"
-          >
-            <!-- Background video (paused, shows first frame) -->
-            <video
-              :ref="(el) => setHeroVideoRef(el, i)"
-              :src="video.url"
-              class="absolute inset-0 h-full w-full object-cover"
-              preload="metadata"
-              playsinline
-              muted
-            />
-            <div class="absolute inset-0 hero-overlay" />
+          <div class="ai-prompt-icon" v-html="p.icon" />
+          <div class="ai-prompt-text">{{ p.text }}</div>
+          <div class="ai-prompt-arrow">›</div>
+        </button>
+      </div>
+
+      <!-- Library -->
+      <div class="section-heading">
+        Library <span class="sh-action">Coming soon</span>
+      </div>
+
+      <div class="article-card coming-soon">
+        <div class="article-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </svg>
+        </div>
+        <div class="article-info">
+          <div class="article-title">
+            Articles
+            <span class="pill-tag gold">Soon</span>
           </div>
+          <div class="article-meta">In-depth guides on every step</div>
         </div>
+      </div>
 
-        <!-- Header overlay -->
-        <div
-          class="absolute top-0 left-0 right-0 px-5 pt-5 flex items-center justify-between z-10"
-        >
-          <AppHeader
-            title=""
-            :showBack="true"
-            backTo="/profile"
-            class="flex-1"
-          />
+      <div class="article-card coming-soon">
+        <div class="article-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7" />
+            <rect x="1" y="5" width="15" height="14" rx="2" />
+          </svg>
         </div>
-
-        <!-- Bottom content overlay -->
-        <div
-          class="absolute bottom-0 left-0 right-0 px-5 pb-5 z-10 text-center text-white"
-        >
-          <span
-            class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full pill-text bg-black/45 backdrop-blur-[2px]"
-          >
-            <Icon name="i-heroicons-trophy" class="w-4 h-4" />
-            {{ currentFeaturedVideo?.points ?? 15 }} Points
-          </span>
-
-          <h1 class="mt-5 hero-title font-semibold px-4">
-            {{ currentFeaturedVideo?.title ?? 'Featured Video' }}
-          </h1>
-          <p class="mt-2 hero-meta font-normal text-white/95">
-            {{
-              currentFeaturedVideo
-                ? formatDuration(currentFeaturedVideo.durationSec)
-                : ''
-            }}
-            · {{ currentFeaturedVideo?.category ?? 'Property' }}
-          </p>
-
-          <button
-            type="button"
-            class="mt-5 px-14 rounded-full bg-[#00A19A] text-white play-label font-normal"
-            @click="openPlayer(currentFeaturedVideo)"
-          >
-            Play
-          </button>
-
-          <!-- Dots -->
-          <div class="mt-4 flex justify-center gap-2.5">
-            <span
-              v-for="(_, i) in featuredVideos"
-              :key="i"
-              class="rounded-full transition-all duration-200 cursor-pointer"
-              :class="
-                i === heroIndex
-                  ? 'h-2.5 w-4 bg-white/90'
-                  : 'h-2.5 w-2.5 bg-white/40'
-              "
-              @click="heroIndex = i"
-            />
+        <div class="article-info">
+          <div class="article-title">
+            Video walk-throughs
+            <span class="pill-tag gold">Soon</span>
           </div>
+          <div class="article-meta">5-min explainers on each topic</div>
         </div>
-      </section>
-
-      <!-- Continue Watching -->
-      <section class="bg-white px-5 pt-6 pb-8">
-        <h2 class="section-title">Continue Watching</h2>
-
-        <div v-if="isLoadingContinue" class="mt-4 text-sm text-[#8f9094]">
-          Loading...
-        </div>
-
-        <div
-          v-else-if="continueWatching.length === 0"
-          class="mt-4 text-sm text-[#8f9094]"
-        >
-          No videos in progress yet. Start watching below!
-        </div>
-
-        <div v-else class="mt-4 flex gap-4 overflow-x-auto pb-2 content-scroll">
-          <article
-            v-for="item in continueWatching"
-            :key="item.id"
-            class="w-[325px] shrink-0 cursor-pointer"
-            @click="openPlayer(item)"
-          >
-            <div class="relative h-[176px] rounded-[18px] overflow-hidden">
-              <video
-                :src="item.url"
-                class="h-full w-full object-cover"
-                preload="metadata"
-                playsinline
-                muted
-              />
-              <div class="absolute inset-0 card-overlay" />
-
-              <div
-                class="absolute left-4 bottom-9 text-white card-caption uppercase font-normal"
-              >
-                {{ formatRemaining(item.remainingSecs) }}
-              </div>
-
-              <div
-                class="absolute right-4 bottom-8 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/45 text-white pill-text font-[590]"
-              >
-                <Icon name="i-heroicons-trophy" class="w-4 h-4" />
-                {{ item.points }} Points
-              </div>
-
-              <div
-                class="absolute left-4 right-4 bottom-3 h-1 rounded-full bg-white/35"
-              >
-                <div
-                  class="h-[6px] rounded-full bg-white"
-                  :style="{ width: item.progressPercent + '%' }"
-                />
-              </div>
-            </div>
-
-            <h3 class="mt-3 card-title font-normal text-[#17181A]">
-              {{ item.title }}
-            </h3>
-            <p class="mt-1 card-meta text-[#6D727A]">
-              {{ formatDuration(item.durationSec) }}
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <!-- Start with the basics -->
-      <section class="section-soft px-5 pt-7 pb-8 border-y border-[#e5eaec]">
-        <h2 class="section-title">Start with the basics courses</h2>
-        <p class="section-sub mt-2">
-          Learn how to evaluate a property, understand market trends, and avoid
-          common mistakes.
-        </p>
-
-        <div class="mt-5 flex gap-4 overflow-x-auto pb-2 content-scroll">
-          <article
-            v-for="item in allVideos"
-            :key="item.id"
-            class="w-[325px] shrink-0 cursor-pointer"
-            @click="openPlayer(item)"
-          >
-            <div class="relative h-[176px] rounded-[18px] overflow-hidden">
-              <video
-                :src="item.url"
-                class="h-full w-full object-cover"
-                preload="metadata"
-                playsinline
-                muted
-              />
-              <div class="absolute inset-0 card-overlay" />
-
-              <div
-                class="absolute left-4 bottom-8 text-white card-caption uppercase font-normal"
-              >
-                {{ formatDuration(item.durationSec) }}
-              </div>
-
-              <div
-                class="absolute right-4 bottom-8 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/45 text-white pill-text font-[590]"
-              >
-                <Icon name="i-heroicons-trophy" class="w-4 h-4" />
-                {{ item.points }} Points
-              </div>
-            </div>
-
-            <h3 class="mt-3 card-title font-normal text-[#17181A]">
-              {{ item.title }}
-            </h3>
-            <p class="mt-1 card-meta text-[#6D727A]">{{ item.category }}</p>
-          </article>
-        </div>
-      </section>
-
-      <!-- Curated playlists -->
-      <section
-        class="bg-white px-5 pt-7 pb-8 border-b border-[#e5eaec] overflow-hidden"
-      >
-        <h2 class="section-title">Learn with curated playlists</h2>
-        <p class="section-sub mt-2">
-          Complete learning paths designed by property experts to guide you
-          through each step.
-        </p>
-
-        <div class="mt-5 flex flex-col gap-3">
-          <div
-            v-for="row in playlistRows"
-            :key="row.left.number"
-            class="grid grid-cols-[1fr_44px_1fr] gap-x-4 items-start"
-          >
-            <div class="flex items-start gap-3 min-w-0">
-              <span
-                class="mt-0.5 text-[#a8adb4] text-[22px] h-[28px] leading-none tracking-[-0.26px] font-semibold text-center"
-              >
-                {{ row.left.number }}
-              </span>
-              <div class="min-w-0">
-                <h3 class="playlist-title line-clamp-1">
-                  {{ row.left.title }}
-                </h3>
-                <p class="playlist-sub line-clamp-2">{{ row.left.subtitle }}</p>
-              </div>
-            </div>
-            <div class="pt-1 flex justify-center">
-              <button
-                type="button"
-                aria-label="Play playlist"
-                class="w-[20px] h-[20px] rounded-full border border-[#d9dee3] bg-white text-[#00A19A] flex items-center justify-center"
-              >
-                <Icon name="i-heroicons-play-solid" class="w-4 h-4 ml-0.5" />
-              </button>
-            </div>
-            <div class="flex items-start gap-3 min-w-0">
-              <span
-                class="mt-0.5 text-[#a8adb4] text-[22px] h-[28px] leading-none tracking-[-0.26px] font-semibold text-center"
-              >
-                {{ row.right.number }}
-              </span>
-              <div class="min-w-0">
-                <h3 class="playlist-title line-clamp-1">
-                  {{ row.right.title }}
-                </h3>
-                <p class="playlist-sub line-clamp-2">
-                  {{ row.right.subtitle }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Expert insights -->
-      <section class="section-soft px-5 pt-7 pb-12">
-        <h2 class="section-title">Go deeper with expert insights</h2>
-        <p class="section-sub mt-2">
-          Advanced content covering legal steps, renovation ROI, negotiation
-          tactics, and more.
-        </p>
-
-        <div class="mt-5 flex gap-4 overflow-x-auto pb-2 content-scroll">
-          <article
-            v-for="item in experts"
-            :key="item.title"
-            class="w-[325px] shrink-0"
-          >
-            <div
-              class="relative h-[176px] rounded-[18px] overflow-hidden bg-[#788088]"
-            >
-              <img
-                :src="item.image"
-                :alt="item.title"
-                class="h-full w-full object-cover grayscale"
-              />
-              <div class="absolute inset-0 premium-overlay" />
-              <div
-                class="absolute left-1/2 -translate-x-1/2 top-[86px] inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/55 text-white pill-second font-[590] whitespace-nowrap"
-              >
-                <Icon name="i-heroicons-lock-closed" class="w-4 h-4" />
-                UNLOCK PREMIUM
-              </div>
-            </div>
-            <h3 class="mt-3 card-title font-normal text-[#17181A]">
-              {{ item.title }}
-            </h3>
-            <p class="mt-1 card-meta text-[#6D727A]">{{ item.meta }}</p>
-          </article>
-        </div>
-      </section>
+      </div>
     </main>
-
-    <BottomNav active="learn" />
-
-    <!-- Fullscreen Player -->
-    <section
-      v-if="isPlayerOpen"
-      class="fixed inset-0 z-[60] bg-black text-white"
-    >
-      <video
-        ref="playerRef"
-        :src="activeVideo?.url"
-        class="absolute inset-0 h-full w-full object-cover"
-        playsinline
-        @timeupdate="onTimeUpdate"
-        @ended="onEnded"
-        @play="isPlaying = true"
-        @pause="isPlaying = false"
-        @loadedmetadata="onMetadataLoaded"
-      />
-      <div class="absolute inset-0 player-overlay" />
-
-      <div class="relative h-full flex flex-col px-6 pt-6 pb-8">
-        <!-- Top bar -->
-        <div class="flex items-center justify-between">
-          <div
-            class="inline-flex items-center gap-2 bg-black/45 rounded-full px-2 py-1"
-          >
-            <button
-              type="button"
-              class="w-8 h-8 rounded-full bg-[#2f3c45]/90 flex items-center justify-center"
-              @click="closePlayer"
-            >
-              <Icon name="i-heroicons-x-mark" class="w-5 h-5 text-white" />
-            </button>
-            <button
-              type="button"
-              class="w-8 h-8 rounded-full bg-[#2f3c45]/90 flex items-center justify-center"
-            >
-              <Icon
-                name="i-heroicons-rectangle-stack"
-                class="w-4 h-4 text-white"
-              />
-            </button>
-            <button
-              type="button"
-              class="w-8 h-8 rounded-full bg-[#2f3c45]/90 flex items-center justify-center"
-              @click="toggleMute"
-            >
-              <Icon
-                :name="
-                  isMuted
-                    ? 'i-heroicons-speaker-x-mark'
-                    : 'i-heroicons-musical-note'
-                "
-                class="w-4 h-4 text-white"
-              />
-            </button>
-            <button
-              type="button"
-              class="w-8 h-8 rounded-full bg-[#2f3c45]/90 flex items-center justify-center"
-            >
-              <Icon
-                name="i-heroicons-arrow-up-tray"
-                class="w-4 h-4 text-white"
-              />
-            </button>
-          </div>
-
-          <div class="inline-flex items-center gap-2">
-            <button
-              type="button"
-              class="w-10 h-10 rounded-full bg-[#2f3c45]/90 flex items-center justify-center"
-            >
-              <Icon name="i-heroicons-heart" class="w-5 h-5 text-white" />
-            </button>
-            <button
-              type="button"
-              class="w-10 h-10 rounded-full bg-[#2f3c45]/90 flex items-center justify-center"
-              @click="toggleMute"
-            >
-              <Icon
-                :name="
-                  isMuted
-                    ? 'i-heroicons-speaker-x-mark'
-                    : 'i-heroicons-speaker-wave'
-                "
-                class="w-5 h-5 text-white"
-              />
-            </button>
-          </div>
-        </div>
-
-        <!-- Play controls in middle -->
-        <div class="mt-auto mb-32 flex items-center justify-center gap-4">
-          <button
-            type="button"
-            class="w-[50px] h-[50px] rounded-full bg-black/45 flex items-center justify-center"
-            @click="skip(-10)"
-          >
-            <Icon
-              name="i-heroicons-arrow-uturn-left"
-              class="w-6 h-6 text-white"
-            />
-          </button>
-          <button
-            type="button"
-            class="w-[50px] h-[50px] rounded-full bg-black/45 flex items-center justify-center"
-            @click="togglePlay"
-          >
-            <Icon
-              :name="
-                isPlaying ? 'i-heroicons-pause-solid' : 'i-heroicons-play-solid'
-              "
-              class="w-10 h-10 text-white ml-0.5"
-            />
-          </button>
-          <button
-            type="button"
-            class="w-[50px] h-[50px] rounded-full bg-black/45 flex items-center justify-center"
-            @click="skip(10)"
-          >
-            <Icon
-              name="i-heroicons-arrow-uturn-right"
-              class="w-6 h-6 text-white"
-            />
-          </button>
-        </div>
-
-        <!-- Bottom info + progress -->
-        <div class="mb-2">
-          <span
-            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/45 text-[15px] leading-[17px] tracking-[-0.08px] font-[590]"
-          >
-            <Icon name="i-heroicons-trophy" class="w-3.5 h-3.5" />
-            {{ activeVideo?.points }} Points
-          </span>
-
-          <h2
-            class="mt-3 text-[20px] leading-[25px] tracking-[-0.43px] font-semibold text-white"
-          >
-            {{ activeVideo?.title }}
-          </h2>
-          <p
-            class="mt-1 text-[13px] leading-[18px] tracking-[-0.23px] text-white/95"
-          >
-            {{ formatDuration(activeVideo?.durationSec ?? 0) }} ·
-            {{ activeVideo?.category }}
-          </p>
-
-          <div class="mt-4">
-            <!-- Seekable progress bar -->
-            <div
-              class="h-3 w-full rounded-full bg-black/45 overflow-hidden cursor-pointer"
-              @click="seekTo"
-            >
-              <div
-                class="h-3 bg-white rounded-full transition-none"
-                :style="{ width: progressPercent + '%' }"
-              />
-            </div>
-            <div
-              class="mt-2 flex items-center justify-between text-[12px] leading-[16px] tracking-[-0.23px] text-white/95"
-            >
-              <span>{{ formatTime(currentTimeSecs) }}</span>
-              <span
-                >-{{
-                  formatTime((activeVideo?.durationSec ?? 0) - currentTimeSecs)
-                }}</span
-              >
-            </div>
-          </div>
-
-          <div class="mt-4 flex items-center gap-3">
-            <button
-              type="button"
-              class="px-5 h-9 rounded-full bg-black/45 text-[14px]"
-            >
-              Related Videos
-            </button>
-            <button
-              type="button"
-              class="px-5 h-9 rounded-full bg-black/45 text-[14px]"
-            >
-              Links
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import AppHeader from '~/components/core/AppHeader.vue'
-import BottomNav from '~/components/core/BottomNav.vue'
-import { useLearn } from '~/composables/useLearn'
+definePageMeta({ title: 'Learn & Ask AI - UmovingU', middleware: 'auth' })
 
-const {
-  videos,
-  continueWatching,
-  isLoadingContinue,
-  fetchVideos,
-  fetchContinueWatching,
-  updateProgress,
-  formatDuration,
-  formatRemaining,
-} = useLearn()
+const { profile, fetchProfile } = useProfile()
 
-// ── Hero carousel ──────────────────────────────────────────────────────────
-const heroIndex = ref(0)
-const heroVideoRefs = ref<(HTMLVideoElement | null)[]>([])
-
-const setHeroVideoRef = (el: any, index: number) => {
-  heroVideoRefs.value[index] = el as HTMLVideoElement | null
-}
-
-const featuredVideos = computed(() => videos.value.filter((v) => v.featured))
-const allVideos = computed(() => videos.value)
-const currentFeaturedVideo = computed(
-  () => featuredVideos.value[heroIndex.value] ?? null,
-)
-
-let heroTouchStartX = 0
-const onHeroTouchStart = (e: TouchEvent) => {
-  heroTouchStartX = e.changedTouches[0].screenX
-}
-const onHeroTouchEnd = (e: TouchEvent) => {
-  const diff = heroTouchStartX - e.changedTouches[0].screenX
-  if (Math.abs(diff) > 40) {
-    if (diff > 0 && heroIndex.value < featuredVideos.value.length - 1)
-      heroIndex.value++
-    else if (diff < 0 && heroIndex.value > 0) heroIndex.value--
-  }
-}
-
-// ── Player ─────────────────────────────────────────────────────────────────
-const isPlayerOpen = ref(false)
-const activeVideo = ref<any>(null)
-const playerRef = ref<HTMLVideoElement | null>(null)
-const isPlaying = ref(false)
-const isMuted = ref(false)
-const currentTimeSecs = ref(0)
-const videoDuration = ref(0)
-
-const progressPercent = computed(() => {
-  if (!videoDuration.value) return 0
-  return Math.min(100, (currentTimeSecs.value / videoDuration.value) * 100)
+onMounted(() => {
+  if (!profile.value) fetchProfile().catch(() => null)
 })
 
-const openPlayer = async (video: any) => {
-  if (!video) return
-  activeVideo.value = video
-  isPlayerOpen.value = true
-  currentTimeSecs.value = 0
-  isPlaying.value = false
-  await nextTick()
-  if (playerRef.value) {
-    playerRef.value.currentTime = 0
-    playerRef.value.play().catch(() => {})
-  }
-}
+const firstName = computed(() => profile.value?.firstName ?? '')
 
-const closePlayer = () => {
-  if (playerRef.value) {
-    saveProgress()
-    playerRef.value.pause()
-  }
-  isPlayerOpen.value = false
-  activeVideo.value = null
-  isPlaying.value = false
-}
+const question = ref('')
 
-const togglePlay = () => {
-  if (!playerRef.value) return
-  if (isPlaying.value) playerRef.value.pause()
-  else playerRef.value.play().catch(() => {})
-}
-
-const toggleMute = () => {
-  if (!playerRef.value) return
-  isMuted.value = !isMuted.value
-  playerRef.value.muted = isMuted.value
-}
-
-const skip = (seconds: number) => {
-  if (!playerRef.value) return
-  playerRef.value.currentTime = Math.max(
-    0,
-    Math.min(playerRef.value.duration, playerRef.value.currentTime + seconds),
-  )
-}
-
-const seekTo = (event: MouseEvent) => {
-  if (!playerRef.value || !videoDuration.value) return
-  const bar = event.currentTarget as HTMLElement
-  const rect = bar.getBoundingClientRect()
-  const ratio = (event.clientX - rect.left) / rect.width
-  playerRef.value.currentTime = ratio * videoDuration.value
-}
-
-const onTimeUpdate = () => {
-  if (playerRef.value)
-    currentTimeSecs.value = Math.floor(playerRef.value.currentTime)
-}
-
-const onMetadataLoaded = () => {
-  if (playerRef.value) videoDuration.value = playerRef.value.duration
-}
-
-const onEnded = () => {
-  isPlaying.value = false
-  saveProgress(true)
-  fetchContinueWatching()
-}
-
-const saveProgress = (completed = false) => {
-  if (!activeVideo.value || !playerRef.value) return
-  updateProgress(
-    activeVideo.value.id,
-    Math.floor(playerRef.value.currentTime),
-    completed,
-  )
-}
-
-// Auto-save progress every 5 seconds
-let progressInterval: ReturnType<typeof setInterval> | null = null
-const startProgressInterval = () => {
-  progressInterval = setInterval(() => {
-    if (isPlaying.value) saveProgress()
-  }, 5000)
-}
-const stopProgressInterval = () => {
-  if (progressInterval) {
-    clearInterval(progressInterval)
-    progressInterval = null
-  }
-}
-
-const formatTime = (secs: number) => {
-  const s = Math.max(0, Math.floor(secs))
-  const m = Math.floor(s / 60)
-  const ss = s % 60
-  return `${m}:${String(ss).padStart(2, '0')}`
-}
-
-// ── Static data ────────────────────────────────────────────────────────────
-const playlistRows = [
-  {
-    left: {
-      number: 1,
-      title: 'First-Time Buyer Bootcamp',
-      subtitle: 'Complete guide from search to keys',
-    },
-    right: {
-      number: 4,
-      title: 'Legal Checklist for Buyers',
-      subtitle: 'Navigate legal documents and milestones without stress',
-    },
-  },
-  {
-    left: {
-      number: 2,
-      title: 'Property Investment Mastery',
-      subtitle:
-        'Build wealth through property - from single buy-to-let to full portfolio',
-    },
-    right: {
-      number: 5,
-      title: 'Market Timing Strategies',
-      subtitle: 'Learn when to buy, sell, and hold with confidence',
-    },
-  },
-  {
-    left: {
-      number: 3,
-      title: 'Selling Your Home Successfully',
-      subtitle:
-        'Maximize your sale price with expert staging, pricing, and negotiation',
-    },
-    right: {
-      number: 6,
-      title: 'Professional Offer Tactics',
-      subtitle: 'Make stronger offers and close deals faster',
-    },
-  },
-]
-
-const experts = [
-  {
-    title: 'Legal & Paperwork Explained',
-    meta: '2 Chapters · 14 Lessons',
-    image: '/op-icons/temp/unlock.png',
-  },
-  {
-    title: 'Offer, Negotiate and Win',
-    meta: '2 Chapters · 12 Lessons',
-    image: '/op-icons/temp/property.svg',
-  },
-]
-
-// ── Init ───────────────────────────────────────────────────────────────────
-onMounted(async () => {
-  await fetchVideos()
-  await fetchContinueWatching()
-  startProgressInterval()
-})
-
-onUnmounted(() => {
-  stopProgressInterval()
-  if (playerRef.value) playerRef.value.pause()
-})
-
-// ── Try-asking prompts + AI launcher ────────────────────────────
 const prompts = [
-  'What are the running costs for my home?',
-  'Should I publish my Passport before viewing offers?',
-  'How does the £49 Passport unlock work for buyers?',
-  'What documents do I need to sell?',
+  {
+    text: "What's an EICR and do I need one?",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 4 14 12 14 11 22 20 10 12 10 13 2"/></svg>',
+  },
+  {
+    text: 'How long does conveyancing usually take?',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  },
+  {
+    text: 'What stamp duty will I pay on a £450k home?',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 7c0-2-1.6-3.5-4.5-3.5S9 5 9 7c0 4 9 4 9 8 0 2-1.6 3.5-4.5 3.5S9 17 9 15"/><line x1="13.5" y1="2" x2="13.5" y2="22"/></svg>',
+  },
+  {
+    text: 'Should I get a homebuyer survey?',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>',
+  },
 ]
 
-function openAi(prefill?: any) {
-  const q = typeof prefill === 'string' ? prefill : ''
-  if (q) {
-    navigateTo(`/profile/chat?prefill=${encodeURIComponent(q)}`)
-  } else {
-    navigateTo('/profile/chat')
-  }
+function askWith(text: string) {
+  const q = text.trim()
+  if (!q) return
+  navigateTo(`/profile/chat?prefill=${encodeURIComponent(q)}`)
+}
+
+function goBack() {
+  if (typeof window !== 'undefined' && window.history.length > 1) window.history.back()
+  else navigateTo('/profile')
 }
 </script>
 
 <style scoped>
-.learn-page { background: #fafaf8; color: #0e2840; }
+.ai-page {
+  min-height: 100dvh;
+  background: #fafaf8;
+  color: #0e2840;
+  position: relative;
+  padding-bottom: 32px;
+}
 
-/* Nav bar */
-.ln-nav-bar {
+.ai-nav-bar {
   display: flex;
   align-items: center;
   padding: 10px 22px 8px;
@@ -793,7 +172,7 @@ function openAi(prefill?: any) {
   position: relative;
   z-index: 2;
 }
-.ln-nav-icon-btn {
+.ai-nav-icon-btn {
   width: 38px; height: 38px;
   border-radius: 50%;
   border: none;
@@ -805,258 +184,301 @@ function openAi(prefill?: any) {
   color: #0e2840;
   flex-shrink: 0;
   transition: background 0.2s;
+  font-family: inherit;
 }
-.ln-nav-icon-btn:hover { background: #f0f2f1; }
-.ln-nav-icon-btn svg { width: 18px; height: 18px; }
-.ln-nav-title {
-  flex: 1;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 800;
-  color: #0e2840;
-  letter-spacing: -0.4px;
+.ai-nav-icon-btn:hover { background: #f0f2f1; }
+.ai-nav-icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ai-nav-icon-btn svg { width: 18px; height: 18px; }
+.ai-nav-title {
+  flex: 1; text-align: center;
+  font-size: 16px; font-weight: 800;
+  color: #0e2840; letter-spacing: -0.4px;
 }
 
-/* AI hero with breathing orb */
-.ln-ai-hero {
-  text-align: center;
-  padding: 24px 22px 20px;
+.ai-body { position: relative; }
+.atm-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 320px;
+  pointer-events: none;
+  z-index: 0;
+}
+.atm-bg.teal-deep {
+  background:
+    radial-gradient(ellipse 90% 100% at 50% 0%, rgba(0, 161, 154, 0.18), transparent 70%),
+    radial-gradient(ellipse 70% 80% at 90% 30%, rgba(61, 189, 163, 0.12), transparent 60%);
+}
+
+/* Hero */
+.ai-hero {
+  padding: 16px 22px 18px;
   position: relative;
   z-index: 1;
-  background: radial-gradient(ellipse 70% 100% at 50% 0%, rgba(157, 123, 255, 0.12), transparent 65%);
+  text-align: center;
 }
-.ln-orb {
-  width: 78px;
-  height: 78px;
+.ai-orb {
+  width: 72px; height: 72px;
   border-radius: 50%;
-  background: linear-gradient(155deg, #9d7bff, #6b4e9f);
-  color: #fff;
-  border: none;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 14px;
-  cursor: pointer;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.4), transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(245, 196, 76, 0.5), transparent 60%),
+    linear-gradient(135deg, #00a19a 0%, #1f7a66 50%, #3dbda3 100%);
+  margin: 0 auto 12px;
   position: relative;
-  box-shadow: 0 12px 36px rgba(107, 78, 159, 0.4);
-  animation: ln-breath 3.6s ease-in-out infinite;
+  box-shadow:
+    0 8px 28px rgba(61, 189, 163, 0.45),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+  animation: orbBreathe 4s ease-in-out infinite;
 }
-@keyframes ln-breath {
-  0%, 100% { transform: scale(1); box-shadow: 0 12px 36px rgba(107, 78, 159, 0.4); }
-  50% { transform: scale(1.04); box-shadow: 0 16px 44px rgba(107, 78, 159, 0.55); }
+@keyframes orbBreathe {
+  0%, 100% {
+    box-shadow: 0 8px 28px rgba(61, 189, 163, 0.45), inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 8px 36px rgba(61, 189, 163, 0.6),
+      0 0 50px rgba(61, 189, 163, 0.18),
+      inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+  }
 }
-.ln-orb svg { width: 36px; height: 36px; }
-.ln-orb-pulse {
+.ai-orb::before {
+  content: '✨';
   position: absolute;
-  inset: -10px;
-  border-radius: 50%;
-  border: 2px solid rgba(157, 123, 255, 0.35);
-  animation: ln-ring 2.4s ease-out infinite;
-  pointer-events: none;
+  top: -2px; right: -2px;
+  font-size: 14px;
+  filter: drop-shadow(0 2px 4px rgba(61, 189, 163, 0.4));
 }
-@keyframes ln-ring {
-  0% { transform: scale(0.85); opacity: 1; }
-  100% { transform: scale(1.4); opacity: 0; }
-}
-.ln-ai-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #0e2840;
-  letter-spacing: -0.6px;
+
+.ai-greeting {
+  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #1f7a66;
   margin-bottom: 4px;
 }
-.ln-ai-sub {
+.ai-headline {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0e2840;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.ai-headline-italic {
+  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: #1f7a66;
+}
+.ai-sub {
   font-size: 12.5px;
-  color: #4a5868;
   font-weight: 600;
-  line-height: 1.4;
+  color: #4a5868;
+  line-height: 1.45;
   max-width: 280px;
   margin: 0 auto;
 }
 
+/* Input */
+.ai-input-wrap {
+  margin: 16px 22px 0;
+  background: #fff;
+  border: 1.5px solid #e8eceb;
+  border-radius: 18px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 8px 24px rgba(61, 189, 163, 0.12);
+  transition: all 0.18s;
+  position: relative;
+  z-index: 1;
+}
+.ai-input-wrap:focus-within {
+  border-color: #3dbda3;
+  box-shadow:
+    0 0 0 3px rgba(61, 189, 163, 0.18),
+    0 8px 24px rgba(61, 189, 163, 0.18);
+}
+.ai-input-wrap input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0e2840;
+  min-width: 0;
+}
+.ai-input-wrap input::placeholder {
+  color: #8a95a0;
+  font-weight: 500;
+}
+.ai-input-btn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #0e2840;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+.ai-input-btn:hover { background: #f0f2f1; }
+.ai-input-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ai-input-btn svg { width: 16px; height: 16px; }
+
+.ai-send {
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3dbda3, #1f7a66);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(31, 122, 102, 0.42);
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.ai-send:hover { transform: translateX(1px); }
+.ai-send:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+.ai-send svg { width: 14px; height: 14px; }
+
 /* Section heading */
-.ln-section-heading {
+.section-heading {
   font-size: 10.5px;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
   color: #8a95a0;
-  padding: 22px 22px 8px;
+  padding: 16px 22px 8px;
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.ln-sh-action {
+.sh-action {
   margin-left: auto;
   font-size: 11px;
   font-weight: 800;
   color: #1f7a66;
-  letter-spacing: -0.1px;
   text-transform: none;
+  letter-spacing: -0.1px;
 }
 
-/* Try-asking prompts */
-.ln-section { padding: 0 22px 8px; display: flex; flex-direction: column; gap: 8px; }
-.ln-prompt {
+/* Suggested prompts */
+.ai-prompts {
+  padding: 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
+.ai-prompt {
+  background: #e2f1ea;
+  border: 1px solid rgba(61, 189, 163, 0.22);
+  border-radius: 12px;
+  padding: 11px 13px;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #fff;
-  border: 1px solid #e8eceb;
-  border-radius: 14px;
-  padding: 13px 14px;
   cursor: pointer;
-  font-family: inherit;
+  transition: all 0.15s;
   text-align: left;
-  font-size: 13px;
+  font-family: inherit;
+  width: 100%;
+}
+.ai-prompt:hover {
+  background: #c5e3d4;
+  transform: translateX(2px);
+  border-color: rgba(61, 189, 163, 0.4);
+}
+.ai-prompt-icon {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f7a66;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(31, 122, 102, 0.18);
+}
+.ai-prompt-icon svg { width: 13px; height: 13px; }
+.ai-prompt-text {
+  font-size: 12.5px;
   font-weight: 700;
   color: #0e2840;
   letter-spacing: -0.1px;
   line-height: 1.3;
+  flex: 1;
+}
+.ai-prompt-arrow { color: #1f7a66; font-size: 14px; flex-shrink: 0; }
+
+/* Article card */
+.article-card {
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 14px;
+  padding: 14px;
+  margin: 0 22px 8px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
   transition: all 0.15s;
+  position: relative;
+  z-index: 1;
 }
-.ln-prompt:hover {
-  border-color: #c8b6ff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(107, 78, 159, 0.08);
-}
-.ln-prompt > span:nth-child(2) { flex: 1; }
-.ln-prompt-mark {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-style: italic;
-  font-size: 22px;
-  color: #9d7bff;
+.article-card.coming-soon { opacity: 0.7; }
+.article-icon {
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e2f1ea, #c5e3d4);
+  color: #1f7a66;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  line-height: 1;
 }
-.ln-prompt-arrow {
-  color: #9d7bff;
-  font-size: 16px;
+.article-icon svg { width: 16px; height: 16px; }
+.article-info { flex: 1; min-width: 0; }
+.article-title {
+  font-size: 13.5px;
   font-weight: 800;
-  flex-shrink: 0;
+  color: #0e2840;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
-
-header {
-  border-bottom: none !important;
-}
-
-.page-bg {
-  background: linear-gradient(180deg, #ffffff 0%, #eff4f4 68%, #dff3f1 100%);
-}
-.hero-overlay {
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 36%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.66) 100%);
-}
-.section-soft {
-  background: linear-gradient(180deg, #f1f5f6 0%, #e7f3f2 100%);
-}
-.section-title {
-  font-size: 17px;
-  line-height: 22px;
-  letter-spacing: -0.43px;
-  font-weight: 590;
-  color: #000000;
-  font-family: 'SF Pro', sans-serif;
-}
-.section-sub {
-  color: #6f757d;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 18px;
-  font-family: 'SF Pro', sans-serif;
-  letter-spacing: -0.08px;
-}
-.playlist-title {
-  color: #00a19a;
-  font-size: 9px;
-  font-family: 'SF Pro', sans-serif;
-  line-height: 16px;
-  letter-spacing: -0.08px;
-  font-weight: 590;
-}
-.playlist-sub {
-  color: #797f87;
-  font-size: 10px;
-  letter-spacing: -0.06px;
-  font-weight: 400;
-  font-family: 'SF Pro', sans-serif;
-}
-.hero-title {
-  font-size: 20px;
-  line-height: 25px;
-  letter-spacing: -0.45px;
-  font-weight: 590;
-  font-family: 'SF Pro', sans-serif;
-}
-.hero-meta {
-  font-size: 13px;
-  line-height: 18px;
-  letter-spacing: -0.08px;
-  font-weight: 590;
-  font-family: 'SF Pro', sans-serif;
-}
-.play-label {
-  width: 160px;
-  height: 34px;
-  font-weight: 590;
-  font-family: 'SF Pro', sans-serif;
-  font-size: 15px;
-  line-height: 20px;
-}
-.pill-text {
+.article-meta {
   font-size: 11px;
-  padding: 4px 8px;
+  font-weight: 600;
+  color: #8a95a0;
+  margin-top: 2px;
 }
-.pill-second {
+.pill-tag {
   font-size: 9px;
-  padding: 4px 8px;
-  font-family: 'SF Pro', sans-serif;
-  min-height: 21px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 100px;
 }
-.card-caption {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 590;
-  font-family: 'SF Pro', sans-serif;
-}
-.card-title {
-  font-size: 15px;
-  line-height: 20px;
-  letter-spacing: -0.23px;
-  font-weight: 400;
-  font-family: 'SF Pro', sans-serif;
-}
-.card-meta {
-  font-size: 11px;
-  line-height: 13px;
-  letter-spacing: -0.06px;
-  font-weight: 400;
-  font-family: 'SF Pro', sans-serif;
-}
-.card-overlay {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.04) 40%,
-    rgba(0, 0, 0, 0.66) 100%
-  );
-}
-.premium-overlay {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.25) 35%,
-    rgba(0, 0, 0, 0.68) 100%
-  );
-}
-.content-scroll {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.content-scroll::-webkit-scrollbar {
-  display: none;
-}
-.player-overlay {
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.14) 35%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0) 58%, rgba(0, 0, 0, 0.66) 100%);
+.pill-tag.gold {
+  background: #fdf4dc;
+  color: #6f4d14;
 }
 </style>

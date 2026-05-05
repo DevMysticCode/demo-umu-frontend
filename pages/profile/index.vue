@@ -363,13 +363,15 @@ const profileItems = [
     icon: 'yourDocuments',
     route: '/profile/document',
   },
-  {
-    title: 'Downloaded Snapshots',
-    description:
-      'Easily export all your downloaded snapshots into formats such as PDF.',
-    icon: 'snapshots',
-    route: '/profile/snapshot',
-  },
+  // Downloaded Snapshots — hidden for now; route still exists at
+  // /profile/snapshot if we re-introduce it later.
+  // {
+  //   title: 'Downloaded Snapshots',
+  //   description:
+  //     'Easily export all your downloaded snapshots into formats such as PDF.',
+  //   icon: 'snapshots',
+  //   route: '/profile/snapshot',
+  // },
   {
     title: 'Saved Properties',
     description: 'All your saved and recently viewed properties, organized.',

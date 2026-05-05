@@ -369,12 +369,14 @@ const filteredProperties = computed(() => {
   z-index: 1;
 }
 .hero-greeting {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  text-transform: none;
   color: #1f7a66;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .sp-h1 {
   font-size: 32px;

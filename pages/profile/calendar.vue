@@ -948,12 +948,30 @@ onMounted(async () => {
 .mform-input::placeholder { color: #8a95a0; font-weight: 500; }
 .mform-when-row {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 6px;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 .mform-when-row--bottom {
   grid-template-columns: 1fr 1fr;
-  margin-top: 6px;
+  margin-top: 8px;
+}
+.mform-when-row > .mform-input,
+.mform-when-row > select.mform-input {
+  min-width: 0;            /* allow grid children to actually shrink */
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: left;
+}
+/* Make the radio-styled "+ Repeat yearly" button match the input height
+   so it lines up with the duration select on the same row. */
+.mform-when-row > .mform-radio {
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .mform-radio-group {
   display: grid;
