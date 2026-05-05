@@ -441,6 +441,11 @@
         {{ ctaLabel }}
       </button>
     </div>
+
+    <ClaimPassportTypeDrawer
+      v-model="showTypeDrawer"
+      @confirm="onPassportTypeConfirmed"
+    />
   </div>
 </template>
 
@@ -462,9 +467,28 @@ type ClaimStep =
   | 'lr-searching'
   | 'lr-found'
 
+import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDrawer.vue'
+
 const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
+
+// Passport-type gate. Always shown before the actual claim happens, even if
+// the user's role preference suggests one or the other.
+const showTypeDrawer = ref(false)
+const chosenPassportType = ref<'seller' | 'landlord' | null>(null)
+const chosenIsHmo = ref(false)
+function onPassportTypeConfirmed(payload: { type: 'seller' | 'landlord'; isHmo: boolean }) {
+  chosenPassportType.value = payload.type
+  chosenIsHmo.value = payload.isHmo
+  showTypeDrawer.value = false
+  // Resume the claim only if the user is already at the final step. When the
+  // drawer is shown at mount-time (the common case), the user still needs to
+  // walk through search → confirm → KYC; their choice is just persisted.
+  if (step.value === 'lr-found') {
+    issuePassport()
+  }
+}
 const base = config.public.apiBase as string
 
 const propertyId = route.params.id as string
@@ -531,6 +555,10 @@ async function loadProfile() {
 }
 
 onMounted(async () => {
+  // First thing: ask the user which type of passport they're claiming.
+  // Always shown — even if their profile role suggests one — so they can
+  // override per-property (a landlord might still claim a seller passport).
+  showTypeDrawer.value = true
   await Promise.all([loadProperty(), loadProfile()])
 })
 
@@ -785,23 +813,33 @@ async function issuePassport() {
       // Non-fatal: still try to claim; backend may tolerate without
     }
 
-    // 2) claimPassport
-    const { claimPassport, getPassportStatus } = usePassportClaim()
-    const existing = await getPassportStatus(pId)
-    let passportId = existing?.passportId || null
-    if (!passportId) {
-      const res = await claimPassport(
-        pId,
-        selectedProperty.value?.addressLine1 ?? '',
-        selectedProperty.value?.postcode ?? '',
-      )
-      passportId = res.passportId
+    // 2) Gate the claim on the user's passport-type pick.
+    // We deliberately do NOT short-circuit on getPassportStatus() here:
+    // that endpoint only returns SELLER passports (it's buyer-facing), so
+    // reusing its id would land a landlord claim on a seller passport.
+    // The backend's createPassport dedupes per (owner, property, type)
+    // and returns the existing same-type passport if one already exists.
+    if (!chosenPassportType.value) {
+      issueLoading.value = false
+      showTypeDrawer.value = true
+      return
     }
-
+    const { claimPassport } = usePassportClaim()
+    const res = await claimPassport(
+      pId,
+      selectedProperty.value?.addressLine1 ?? '',
+      selectedProperty.value?.postcode ?? '',
+      { type: chosenPassportType.value, isHmo: chosenIsHmo.value },
+    )
+    const passportId = res.passportId
     if (!passportId) throw new Error('Passport could not be created')
 
-    // 3) Route to passport view
-    router.push(`/passportview/${passportId}`)
+    // 3) Route to the right passport view (landlord lives at a different URL)
+    if (chosenPassportType.value === 'landlord') {
+      router.push(`/passportview/landlord/${passportId}`)
+    } else {
+      router.push(`/passportview/${passportId}`)
+    }
   } catch (e: any) {
     issueError.value =
       e?.data?.message ||

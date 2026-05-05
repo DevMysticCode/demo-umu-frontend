@@ -552,6 +552,24 @@ const matchedBuyers = ref([])
 const buyersTotal = ref(0)
 
 onMounted(async () => {
+  // Quickly probe the passport type so we can hand landlord passports off
+  // to the dedicated landlord view before we kick off the heavy seller-side
+  // data loaders below.
+  try {
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const probe = await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+    if (probe?.type === 'LANDLORD') {
+      navigateTo(`/passportview/landlord/${route.params.id}`, { replace: true })
+      return
+    }
+  } catch {
+    /* fall through to normal seller load */
+  }
+
   loadPassport(route.params.id)
   await loadCollaborators()
   try {
