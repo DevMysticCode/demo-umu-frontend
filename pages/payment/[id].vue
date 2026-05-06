@@ -253,7 +253,7 @@ const processPayment = () => {
   background: none;
   border: none;
   font-size: 16px;
-  color: #00b8a9;
+  color: #00a19a;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -299,7 +299,7 @@ const processPayment = () => {
 
 .fee {
   font-size: 16px;
-  color: #00b8a9;
+  color: #00a19a;
   text-align: center;
   font-weight: 600;
   margin-bottom: 32px;
@@ -353,7 +353,7 @@ const processPayment = () => {
 
 .summary-benefits li {
   font-size: 14px;
-  color: #00b8a9;
+  color: #00a19a;
   padding: 6px 0;
   padding-left: 20px;
   position: relative;
@@ -363,7 +363,7 @@ const processPayment = () => {
   content: '•';
   position: absolute;
   left: 0;
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 700;
 }
 
@@ -385,7 +385,7 @@ const processPayment = () => {
 .total-value {
   font-size: 20px;
   font-weight: 700;
-  color: #00b8a9;
+  color: #00a19a;
 }
 
 .payment-method-group {
@@ -413,12 +413,12 @@ const processPayment = () => {
 }
 
 .payment-method:hover {
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: #f9fffe;
 }
 
 .payment-method.selected {
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: #f0fffe;
 }
 
@@ -426,7 +426,7 @@ const processPayment = () => {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: #00b8a9;
+  accent-color: #00a19a;
 }
 
 .method-info {
@@ -467,7 +467,7 @@ const processPayment = () => {
 
 .credits-balance {
   font-size: 13px;
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 600;
   margin-bottom: 4px;
 }
@@ -480,7 +480,7 @@ const processPayment = () => {
 .check-mark {
   width: 28px;
   height: 28px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -501,9 +501,9 @@ const processPayment = () => {
   width: 100%;
   padding: 14px;
   background: white;
-  border: 2px dashed #00b8a9;
+  border: 2px dashed #00a19a;
   border-radius: 12px;
-  color: #00b8a9;
+  color: #00a19a;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -543,7 +543,7 @@ const processPayment = () => {
 .saved-address-badge {
   display: inline-block;
   background: #e6f9f7;
-  color: #00b8a9;
+  color: #00a19a;
   padding: 6px 16px;
   border-radius: 20px;
   font-size: 12px;
@@ -562,7 +562,7 @@ const processPayment = () => {
 }
 
 .address-card.selected-address {
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: #f0fffe;
 }
 
@@ -582,7 +582,7 @@ const processPayment = () => {
 .edit-address-btn {
   background: none;
   border: none;
-  color: #00b8a9;
+  color: #00a19a;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -608,7 +608,7 @@ const processPayment = () => {
 }
 
 .add-address-btn:hover {
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: #f9fffe;
 }
 
@@ -654,7 +654,7 @@ const processPayment = () => {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: #00b8a9;
+  accent-color: #00a19a;
 }
 
 .terms-content {
@@ -675,7 +675,7 @@ const processPayment = () => {
 .guarantee-icon {
   width: 28px;
   height: 28px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -689,7 +689,7 @@ const processPayment = () => {
 .guarantee-title {
   font-size: 15px;
   font-weight: 700;
-  color: #00b8a9;
+  color: #00a19a;
   margin-bottom: 6px;
 }
 
@@ -702,7 +702,7 @@ const processPayment = () => {
 .continue-btn {
   width: 100%;
   padding: 18px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
   border-radius: 12px;

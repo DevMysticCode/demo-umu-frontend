@@ -46,7 +46,7 @@ const onInput = () => emit('update', text.value)
 .btn {
   padding: 8px 12px;
   border-radius: 8px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
 }

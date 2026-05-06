@@ -193,7 +193,7 @@ const registerInterest = () => {
   background: none;
   border: none;
   font-size: 16px;
-  color: #00b8a9;
+  color: #00a19a;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -251,7 +251,7 @@ const registerInterest = () => {
 
 .description {
   font-size: 16px;
-  color: #00b8a9;
+  color: #00a19a;
   text-align: center;
   margin-bottom: 32px;
   font-weight: 500;
@@ -292,7 +292,7 @@ const registerInterest = () => {
 }
 
 .interest-card.selected {
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: #f0fffe;
 }
 
@@ -337,13 +337,13 @@ const registerInterest = () => {
 }
 
 .radio-btn.checked {
-  border-color: #00b8a9;
+  border-color: #00a19a;
 }
 
 .radio-dot {
   width: 12px;
   height: 12px;
-  background: #00b8a9;
+  background: #00a19a;
   border-radius: 50%;
 }
 
@@ -367,7 +367,7 @@ const registerInterest = () => {
 
 .info-list li {
   font-size: 14px;
-  color: #00b8a9;
+  color: #00a19a;
   padding: 6px 0;
   padding-left: 20px;
   position: relative;
@@ -378,7 +378,7 @@ const registerInterest = () => {
   content: '•';
   position: absolute;
   left: 0;
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 700;
   font-size: 16px;
 }
@@ -386,7 +386,7 @@ const registerInterest = () => {
 .register-btn {
   width: 100%;
   padding: 18px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
   border-radius: 16px;

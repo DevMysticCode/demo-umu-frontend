@@ -1963,27 +1963,21 @@ const propertyImages = computed(() => {
 
   // 1. Seller-uploaded property photos (highest priority)
   const uploaded = (property.value?.images as string[] | null) ?? []
-  images.push(...uploaded)
+  images.push(
+    ...uploaded.filter(
+      (u) => typeof u === 'string' && u.trim() && !isStreetView(u),
+    ),
+  )
 
-  // 2. Google Street View only if no seller photos
-  if (uploaded.length === 0) {
-    const lat = property.value?.latitude
-    const lon = property.value?.longitude
-    const googleKey = config.public.googleApiKey as string
-    if (lat && lon && googleKey) {
-      images.push(
-        `https://maps.googleapis.com/maps/api/streetview?size=800x500&location=${lat},${lon}&key=${googleKey}&fov=90&pitch=10&radius=200&source=outdoor&return_error_codes=true`,
-      )
-    }
-  }
-
-  // 3. property.imageUrl only if it's a real image and not already included
+  // 2. property.imageUrl only if it's a real image and not already included
   const imgUrl = property.value?.imageUrl
-  if (imgUrl && !isStreetView(imgUrl) && !images.includes(imgUrl)) {
+  if (imgUrl && imgUrl.trim() && !isStreetView(imgUrl) && !images.includes(imgUrl)) {
     images.push(imgUrl)
   }
 
-  // If no real images are available, return empty — ImageSlider will show the UMU placeholder
+  // No Street View fallback — when there are no real owner-uploaded
+  // photos, return [] so ImageSlider shows the branded UMU "No image
+  // available" placeholder instead of a stock satellite shot.
   return images
 })
 

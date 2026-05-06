@@ -1160,16 +1160,16 @@ function downloadAllFiles() {
 
 .action-btn--help {
   background: white;
-  color: #00b8a9;
+  color: #00a19a;
   border: 2px solid #e0e0e0;
   padding-left: 20px;
   padding-right: 20px;
 }
 
 .action-btn--video {
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
-  border: 2px solid #00b8a9;
+  border: 2px solid #00a19a;
 }
 
 .action-btn-play {

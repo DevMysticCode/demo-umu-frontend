@@ -237,7 +237,7 @@ const handleShare = (option) => {
 .property-price {
   font-size: 15px;
   font-weight: 700;
-  color: #00b8a9;
+  color: #00a19a;
   margin: 0;
 }
 

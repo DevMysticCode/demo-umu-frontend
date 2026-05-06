@@ -351,7 +351,7 @@ const goBack = () => {
   background: none;
   border: none;
   font-size: 16px;
-  color: #00b8a9;
+  color: #00a19a;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -549,7 +549,7 @@ const goBack = () => {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00b8a9 0%, #00d4c3 100%);
+  background: linear-gradient(90deg, #00a19a 0%, #00d4c3 100%);
   transition: width 0.3s ease;
 }
 
@@ -688,14 +688,14 @@ const goBack = () => {
 }
 
 .status-circle.completed {
-  background: #00b8a9;
-  border-color: #00b8a9;
+  background: #00a19a;
+  border-color: #00a19a;
 }
 
 .status-circle.in-progress {
   border: none;
   background: conic-gradient(
-    #00b8a9 0% calc(var(--progress, 50) * 1%),
+    #00a19a 0% calc(var(--progress, 50) * 1%),
     #e0e0e0 calc(var(--progress, 50) * 1%) 100%
   );
 }
@@ -782,7 +782,7 @@ const goBack = () => {
 .task-completed-info {
   margin-top: 8px;
   font-size: 12px;
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 600;
 }
 

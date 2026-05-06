@@ -306,7 +306,7 @@ const emitUpdate = () => {
 }
 
 .tap-instruction {
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 700;
   font-size: 15px;
   text-align: start;
@@ -423,7 +423,7 @@ const emitUpdate = () => {
 }
 
 .side:hover {
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   transform: scale(1.05);
 }

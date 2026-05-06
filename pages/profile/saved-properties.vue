@@ -89,18 +89,12 @@
           @click="navigateTo(`/property/${item.id}`)"
         >
           <div class="sp-photo">
-            <img
-              v-if="item.imageUrl"
+            <PropertyImage
               :src="item.imageUrl"
               :alt="item.addressLine1"
-              class="sp-photo-img"
+              :show-caption="false"
+              class="sp-photo-img-wrap"
             />
-            <div v-else class="sp-photo-fallback">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-            </div>
 
             <div class="sp-heart" @click.stop="onUnsave(item)">
               <svg viewBox="0 0 24 24" fill="currentColor">
@@ -153,6 +147,7 @@
 
 <script setup lang="ts">
 import { usePropertyActions } from '~/composables/usePropertyActions'
+import PropertyImage from '~/components/property/PropertyImage.vue'
 
 definePageMeta({ middleware: 'auth' })
 

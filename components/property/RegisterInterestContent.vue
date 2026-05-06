@@ -176,7 +176,7 @@ const registerInterest = async () => {
 <style scoped>
 .ri-container {
   --navy: #0f0d3d;
-  --brand: #00b8a9;
+  --brand: #00a19a;
   --brand-pale: #e6fbfa;
   --brand-soft: #b6ece6;
   --ink: #1a1a1a;

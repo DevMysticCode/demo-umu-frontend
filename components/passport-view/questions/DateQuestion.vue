@@ -524,7 +524,7 @@ const formatValue = (rawValue, option) => {
 }
 
 .date-option.selected {
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: #f0fffe;
 }
 
@@ -546,8 +546,8 @@ const formatValue = (rawValue, option) => {
 }
 
 .radio-btn.checked {
-  background: #00b8a9;
-  border-color: #00b8a9;
+  background: #00a19a;
+  border-color: #00a19a;
 }
 
 .check-icon {
@@ -581,7 +581,7 @@ const formatValue = (rawValue, option) => {
 .date-text {
   font-size: 16px;
   font-weight: 600;
-  color: #00b8a9;
+  color: #00a19a;
   position: relative;
   z-index: 1;
   pointer-events: none;
@@ -663,7 +663,7 @@ const formatValue = (rawValue, option) => {
 .selection-value {
   font-size: 14px;
   font-weight: 600;
-  color: #00b8a9;
+  color: #00a19a;
 }
 </style>
 

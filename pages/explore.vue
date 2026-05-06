@@ -229,13 +229,12 @@
                   prop.imgGradient || 'linear-gradient(135deg,#dff4f0,#c8ebe6)',
               }"
             >
-              <img
-                v-if="prop.imageUrl || prop.image"
+              <PropertyImage
                 :src="prop.imageUrl || prop.image"
                 :alt="prop.addressLine1 || prop.address"
+                :show-caption="false"
                 class="prop-img"
               />
-              <div v-else class="prop-emoji">{{ prop.emoji || '🏡' }}</div>
               <div v-if="prop.hasPassport" class="prop-badge-pp">
                 <img
                   src="/op-icons/passportview/umu-passport.png"
@@ -469,13 +468,12 @@
                     'linear-gradient(135deg,#dff4f0,#c8ebe6)',
                 }"
               >
-                <img
-                  v-if="prop.imageUrl"
+                <PropertyImage
                   :src="prop.imageUrl"
                   :alt="prop.addressLine1"
+                  :show-caption="false"
                   class="prop-img"
                 />
-                <div v-else class="prop-emoji">🏡</div>
                 <div class="prop-badge-pp">
                   <img
                     src="/op-icons/passportview/umu-passport.png"
@@ -579,13 +577,12 @@
                   background: 'linear-gradient(135deg,#dff4f0,#c8ebe6)',
                 }"
               >
-                <img
-                  v-if="prop.imageUrl"
+                <PropertyImage
                   :src="prop.imageUrl"
                   :alt="prop.addressLine1"
+                  :show-caption="false"
                   class="prop-img"
                 />
-                <div v-else class="prop-emoji">🏡</div>
                 <div class="prop-badge-pp">
                   <img
                     src="/op-icons/passportview/umu-passport.png"
@@ -932,13 +929,12 @@
                   background: 'linear-gradient(135deg,#dff4f0,#c8ebe6)',
                 }"
               >
-                <img
-                  v-if="prop.imageUrl || prop.image"
+                <PropertyImage
                   :src="prop.imageUrl || prop.image"
                   :alt="prop.addressLine1 || prop.address"
+                  :show-caption="false"
                   class="prop-img"
                 />
-                <div v-else class="prop-emoji">🏡</div>
                 <div v-if="prop.hasPassport" class="prop-badge-pp">
                   <img
                     src="/op-icons/passportview/umu-passport.png"
@@ -1220,13 +1216,12 @@
                   background: 'linear-gradient(135deg,#dff4f0,#c8ebe6)',
                 }"
               >
-                <img
-                  v-if="prop.imageUrl || prop.image"
+                <PropertyImage
                   :src="prop.imageUrl || prop.image"
                   :alt="prop.addressLine1 || prop.address"
+                  :show-caption="false"
                   class="prop-img"
                 />
-                <div v-else class="prop-emoji">🏡</div>
                 <div v-if="prop.hasPassport" class="prop-badge-pp">
                   <img
                     src="/op-icons/passportview/umu-passport.png"
@@ -1668,6 +1663,7 @@ const exploreTourSteps = [
   },
 ]
 import HealthPassportCards from '~/components/explore/HealthPassportCards.vue'
+import PropertyImage from '~/components/property/PropertyImage.vue'
 
 definePageMeta({ title: 'Explore - UmovingU', middleware: 'auth' })
 

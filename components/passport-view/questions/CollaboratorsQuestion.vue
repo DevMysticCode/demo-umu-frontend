@@ -74,7 +74,7 @@ const getInitials = (f, l) => ((f ? f[0] : '?') + (l ? l[0] : '')).toUpperCase()
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   display: flex;
   align-items: center;
@@ -84,7 +84,7 @@ const getInitials = (f, l) => ((f ? f[0] : '?') + (l ? l[0] : '')).toUpperCase()
 .btn-add {
   padding: 10px 14px;
   border-radius: 8px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
 }

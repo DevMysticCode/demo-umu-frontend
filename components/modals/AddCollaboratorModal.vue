@@ -243,7 +243,7 @@ const getInitials = (firstName, lastName) => {
 
 .form-input:focus {
   outline: none;
-  border-color: #00b8a9;
+  border-color: #00a19a;
 }
 
 .form-input:disabled {
@@ -264,9 +264,9 @@ const getInitials = (firstName, lastName) => {
 .success-message {
   padding: 12px 16px;
   background-color: #e6f7f6;
-  border: 1px solid #00b8a9;
+  border: 1px solid #00a19a;
   border-radius: 8px;
-  color: #00b8a9;
+  color: #00a19a;
   font-size: 14px;
   margin-bottom: 16px;
 }
@@ -305,7 +305,7 @@ const getInitials = (firstName, lastName) => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #00b8a9;
+  background-color: #00a19a;
   color: white;
   display: flex;
   align-items: center;
@@ -379,7 +379,7 @@ const getInitials = (firstName, lastName) => {
 }
 
 .btn-primary {
-  background-color: #00b8a9;
+  background-color: #00a19a;
   color: white;
 }
 

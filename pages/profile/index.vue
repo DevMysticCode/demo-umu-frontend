@@ -38,12 +38,6 @@
             :lastName="profile?.lastName"
             :size="112"
           />
-          <span
-            class="absolute left-1/2 -translate-x-1/2 -bottom-3 bg-brand-aqua text-white text-sm font-semibold rounded-full px-3 py-1 flex items-center gap-1"
-          >
-            <Icon name="i-heroicons-star" class="w-3 h-3" />
-            PRO
-          </span>
         </div>
 
         <h2 class="mt-8 text-22-emphasized text-center text-[#000000]">
@@ -378,12 +372,14 @@ const profileItems = [
     icon: 'savedProperties',
     route: '/profile/saved-properties',
   },
-  {
-    title: 'Billing & Payment History',
-    description: 'Manage your subscription, invoices, and payment methods.',
-    icon: 'billingPaymentHistory',
-    route: '/profile/subscription-plan',
-  },
+  // Billing & Payment History — hidden for now; route still exists at
+  // /profile/subscription-plan if we re-introduce it later.
+  // {
+  //   title: 'Billing & Payment History',
+  //   description: 'Manage your subscription, invoices, and payment methods.',
+  //   icon: 'billingPaymentHistory',
+  //   route: '/profile/subscription-plan',
+  // },
   {
     title: 'Settings',
     description: 'Customize your experience, privacy, and account security.',

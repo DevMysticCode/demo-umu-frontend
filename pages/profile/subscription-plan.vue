@@ -68,12 +68,6 @@
             :lastName="profile?.lastName"
             :size="97"
           />
-          <span
-            class="absolute left-1/2 -translate-x-1/2 -bottom-2.5 h-6 px-3 rounded-full bg-brand-aqua text-white text-[11px] leading-[13px] font-semibold inline-flex items-center gap-1"
-          >
-            <Icon name="i-heroicons-star" class="w-3 h-3" />
-            PRO
-          </span>
         </div>
 
         <h1

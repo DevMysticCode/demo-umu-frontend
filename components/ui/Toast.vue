@@ -68,7 +68,7 @@ watch(
 }
 
 .toast {
-  background: linear-gradient(135deg, #00b8a9 0%, #00d4c3 100%);
+  background: linear-gradient(135deg, #00a19a 0%, #00d4c3 100%);
   border-radius: 100px;
   padding: 16px 20px;
   display: flex;
@@ -123,7 +123,7 @@ watch(
 }
 
 .check-icon {
-  color: #00b8a9;
+  color: #00a19a;
   font-size: 20px;
   font-weight: 700;
 }

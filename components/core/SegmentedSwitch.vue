@@ -69,7 +69,7 @@ const selectOption = (value) => emit('update:modelValue', value)
 
 /* Active Button Matches Your Teal Filled State */
 .switch-btn.active {
-  background: #00b8a9;
+  background: #00a19a;
   color: #ffffff;
 }
 

@@ -1421,7 +1421,7 @@ const handleContinue = () => {
   background: none;
   border: none;
   font-size: 16px;
-  color: #00b8a9;
+  color: #00a19a;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1489,7 +1489,7 @@ const handleContinue = () => {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00b8a9 0%, #00d4c3 100%);
+  background: linear-gradient(90deg, #00a19a 0%, #00d4c3 100%);
   transition: width 0.3s ease;
 }
 
@@ -1535,14 +1535,14 @@ const handleContinue = () => {
   justify-content: center;
   gap: 8px;
   transition: all 0.2s;
-  color: #00b8a9;
+  color: #00a19a;
   max-width: fit-content;
 }
 
 .video-btn {
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
-  border-color: #00b8a9;
+  border-color: #00a19a;
 }
 
 .help-btn {

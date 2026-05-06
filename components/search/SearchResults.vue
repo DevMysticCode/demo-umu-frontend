@@ -117,15 +117,8 @@
           @click="viewProperty(result.id)"
         >
           <!-- Property Image -->
-          <div
-            v-if="result.image"
-            class="relative overflow-hidden bg-gray-200 h-40"
-          >
-            <img
-              :src="result.image"
-              :alt="result.address"
-              class="w-full h-full object-cover hover:scale-105 transition duration-300"
-            />
+          <div class="relative overflow-hidden bg-gray-200 h-40">
+            <PropertyImage :src="result.image" :alt="result.address" />
             <!-- Save Button -->
             <button
               class="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition"
@@ -271,6 +264,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import AppHeader from '~/components/core/AppHeader.vue'
+import PropertyImage from '~/components/property/PropertyImage.vue'
 
 interface PropertyResult {
   id: string

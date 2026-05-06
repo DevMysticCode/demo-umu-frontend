@@ -98,7 +98,7 @@ const removeFile = (index) => {
 
 <style scoped>
 .upload-section { display: flex; flex-direction: column; gap: 16px; }
-.section-title { font-size: 16px; font-weight: 700; color: #00b8a9; margin: 0; }
+.section-title { font-size: 16px; font-weight: 700; color: #00a19a; margin: 0; }
 .upload-container { background: white; border: 2px solid #e0e0e0; border-radius: 12px; padding: 16px; }
 .instruction-text { font-size: 14px; color: #1a1a1a; margin: 0 0 16px; font-weight: 500; line-height: 1.5; }
 .upload-options { display: flex; flex-direction: row; align-items: center; gap: 16px; }
@@ -108,7 +108,7 @@ const removeFile = (index) => {
   cursor: pointer; transition: all 0.2s; font-size: 13px; font-weight: 600; color: #1a1a1a;
 }
 .upload-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.upload-btn:active:not(:disabled) { transform: scale(0.98); border-color: #00b8a9; background: #f0fffe; }
+.upload-btn:active:not(:disabled) { transform: scale(0.98); border-color: #00a19a; background: #f0fffe; }
 .upload-icon { font-size: 32px; }
 .upload-error { font-size: 13px; color: #e53e3e; margin: 8px 0 0; }
 .uploaded-files { display: flex; flex-direction: column; gap: 8px; padding: 16px; background: #f9f9f9; border-radius: 12px; margin-top: 16px; }

@@ -222,7 +222,7 @@ const selectOption = (value) => {
 }
 
 .radio-option.selected {
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: #f0fffe;
 }
 
@@ -240,8 +240,8 @@ const selectOption = (value) => {
 }
 
 .radio-btn.checked {
-  background: #00b8a9;
-  border-color: #00b8a9;
+  background: #00a19a;
+  border-color: #00a19a;
 }
 
 .check-icon {

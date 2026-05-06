@@ -1126,10 +1126,10 @@ function downloadFile(url: string, name: string) {
   cursor: pointer;
 }
 .task-help-btn--help {
-  background: white; color: #00b8a9; border: 2px solid #e0e0e0;
+  background: white; color: #00a19a; border: 2px solid #e0e0e0;
   padding-left: 20px; padding-right: 20px;
 }
-.task-help-btn--video { background: #00b8a9; color: white; border: 2px solid #00b8a9; }
+.task-help-btn--video { background: #00a19a; color: white; border: 2px solid #00a19a; }
 .task-play-icon { font-size: 12px; }
 
 /* Answer area — always visible, no expand */

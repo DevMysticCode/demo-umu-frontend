@@ -35,12 +35,6 @@
             alt="Profile avatar"
             class="w-28 h-28 rounded-full object-cover"
           />
-          <span
-            class="absolute left-1/2 -translate-x-1/2 -bottom-3 bg-brand-aqua text-white text-sm font-semibold rounded-full px-3 py-1 flex items-center gap-1"
-          >
-            <Icon name="i-heroicons-star" class="w-3 h-3" />
-            PRO
-          </span>
         </div>
 
         <h2

@@ -243,7 +243,7 @@ const navigateToPayment = async () => {
   background: none;
   border: none;
   font-size: 16px;
-  color: #00b8a9;
+  color: #00a19a;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -315,7 +315,7 @@ const navigateToPayment = async () => {
 .passport-cover {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #00b8a9 0%, #00a89a 100%);
+  background: linear-gradient(135deg, #00a19a 0%, #00a89a 100%);
   border-radius: 8px;
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.3),
     inset 2px 2px 8px rgba(255, 255, 255, 0.2);
@@ -381,7 +381,7 @@ const navigateToPayment = async () => {
 }
 
 .percentage {
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 700;
   font-size: 16px;
 }
@@ -430,7 +430,7 @@ const navigateToPayment = async () => {
 
 .benefit-text {
   font-size: 15px;
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 500;
 }
 
@@ -459,7 +459,7 @@ const navigateToPayment = async () => {
 .unlock-btn {
   width: 100%;
   padding: 16px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
   border-radius: 28px;
@@ -507,7 +507,7 @@ const navigateToPayment = async () => {
 .check-icon {
   width: 24px;
   height: 24px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -520,7 +520,7 @@ const navigateToPayment = async () => {
 
 .feature-text {
   font-size: 14px;
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 500;
 }
 
@@ -548,7 +548,7 @@ const navigateToPayment = async () => {
 }
 
 .header-col.highlight {
-  color: #00b8a9;
+  color: #00a19a;
 }
 
 .header-subtitle {
@@ -563,7 +563,7 @@ const navigateToPayment = async () => {
   display: block;
   font-size: 10px;
   font-weight: 600;
-  color: #00b8a9;
+  color: #00a19a;
   margin-top: 4px;
 }
 
@@ -596,7 +596,7 @@ const navigateToPayment = async () => {
 }
 
 .check {
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 700;
 }
 
@@ -608,7 +608,7 @@ const navigateToPayment = async () => {
 .bottom-unlock-btn {
   width: 100%;
   padding: 18px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
   border-radius: 12px;

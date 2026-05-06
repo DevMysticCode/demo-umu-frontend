@@ -88,7 +88,7 @@ defineProps({
 .passport-cover {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #00b8a9 0%, #00a89a 100%);
+  background: linear-gradient(135deg, #00a19a 0%, #00a89a 100%);
   border-radius: 8px;
   box-shadow:
     8px 8px 20px rgba(0, 0, 0, 0.3),

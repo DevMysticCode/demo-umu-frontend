@@ -961,9 +961,9 @@ const onRoleSwitch = (role) => {
 }
 
 .role-btn.seller-btn.active {
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
-  border-color: #00b8a9;
+  border-color: #00a19a;
 }
 
 .btn-icon {
@@ -981,7 +981,7 @@ const onRoleSwitch = (role) => {
 }
 
 .passport-card {
-  /* background: linear-gradient(135deg, #00b8a9 0%, #00d4c3 100%); */
+  /* background: linear-gradient(135deg, #00a19a 0%, #00d4c3 100%); */
   /* border-radius: 20px; */
   padding: 24px 24px;
   color: white;
@@ -1098,7 +1098,7 @@ const onRoleSwitch = (role) => {
 .progress-fill {
   position: relative;
   height: 100%;
-  background: linear-gradient(90deg, #00b8a9 0%, #00d4c3 100%);
+  background: linear-gradient(90deg, #00a19a 0%, #00d4c3 100%);
   transition: width 0.3s ease;
   border-radius: 8px;
   z-index: 2;
@@ -1134,7 +1134,7 @@ const onRoleSwitch = (role) => {
 
 .progress-percentage {
   font-size: 11px;
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 700;
   min-width: 35px;
   text-align: right;
@@ -1177,7 +1177,7 @@ const onRoleSwitch = (role) => {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: #00b8a9;
+  background: #00a19a;
   border: 2px solid white;
   display: flex;
   align-items: center;
@@ -1215,7 +1215,7 @@ const onRoleSwitch = (role) => {
   background: none;
   border: none;
   font-size: 24px;
-  color: #00b8a9;
+  color: #00a19a;
   cursor: pointer;
 }
 
@@ -1243,9 +1243,9 @@ const onRoleSwitch = (role) => {
 }
 
 .toggle-btn.active {
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
-  border-color: #00b8a9;
+  border-color: #00a19a;
 }
 
 .steps-list {

@@ -635,7 +635,7 @@ const getVisibleParts = () => {
 .section-title {
   font-size: 16px;
   font-weight: 700;
-  color: #00b8a9;
+  color: #00a19a;
   margin: 0;
 }
 
@@ -784,7 +784,7 @@ const getVisibleParts = () => {
   border: none;
   font-size: 16px;
   font-weight: 600;
-  color: #00b8a9;
+  color: #00a19a;
   text-align: center;
   width: 60px;
   outline: none;
@@ -822,7 +822,7 @@ const getVisibleParts = () => {
   border-radius: 8px 0 0 8px;
   font-size: 16px;
   font-weight: 600;
-  color: #00b8a9;
+  color: #00a19a;
   min-width: 52px;
   text-align: center;
 }
@@ -872,7 +872,7 @@ const getVisibleParts = () => {
 .date-badge-value {
   font-size: 15px;
   font-weight: 600;
-  color: #00b8a9;
+  color: #00a19a;
   position: relative;
   z-index: 1;
   pointer-events: none;

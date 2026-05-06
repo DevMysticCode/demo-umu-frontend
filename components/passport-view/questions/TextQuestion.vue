@@ -110,7 +110,7 @@ const updateAnswer = (event) => {
 .section-title {
   font-size: 16px;
   font-weight: 700;
-  color: #00b8a9;
+  color: #00a19a;
   margin: 0;
 }
 
@@ -161,7 +161,7 @@ const updateAnswer = (event) => {
 
 .text-input:focus {
   outline: none;
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: white;
 }
 

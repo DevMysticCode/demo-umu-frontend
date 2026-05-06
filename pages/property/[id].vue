@@ -3198,23 +3198,19 @@ const sdltBreakdown = computed((): { bands: SdltBand[]; total: number } => {
 })
 
 // ── Images ─────────────────────────────────────────────────────────────────────
+// Only show real photos the owner has uploaded (or a property.imageUrl set
+// elsewhere in the system). When none are available, return [] so the
+// ImageSlider falls through to its branded UMU "No image available"
+// placeholder. We deliberately don't fall back to a Google Street View
+// snapshot — that gave the impression of a stock image and confused users.
 const propertyImages = computed(() => {
   const images: string[] = []
   const uploaded = (property.value?.images as string[] | null) ?? []
-  images.push(...uploaded)
-  if (uploaded.length === 0) {
-    const lat = property.value?.latitude
-    const lon = property.value?.longitude
-    const googleKey = config.public.googleApiKey as string
-    if (lat && lon && googleKey) {
-      images.push(
-        `https://maps.googleapis.com/maps/api/streetview?size=800x500&location=${lat},${lon}&key=${googleKey}&fov=90&pitch=10&radius=200&source=outdoor&return_error_codes=true`,
-      )
-    }
-  }
+  images.push(...uploaded.filter((u) => typeof u === 'string' && u.trim()))
   const imgUrl = property.value?.imageUrl
-  if (imgUrl && !images.includes(imgUrl))
+  if (imgUrl && imgUrl.trim() && !images.includes(imgUrl)) {
     images.push(imgUrl)
+  }
   return images
 })
 

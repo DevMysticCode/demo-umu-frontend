@@ -9,8 +9,8 @@
                 <svg viewBox="0 0 100 80" width="100" height="80">
                   <path
                     d="M 10 40 L 50 10 L 90 40 L 90 70 L 10 70 Z"
-                    fill="#00b8a9"
-                    stroke="#00b8a9"
+                    fill="#00a19a"
+                    stroke="#00a19a"
                     stroke-width="3"
                   />
                   <rect x="40" y="45" width="20" height="25" fill="#fff" />
@@ -19,11 +19,11 @@
                     y1="10"
                     x2="50"
                     y2="30"
-                    stroke="#00b8a9"
+                    stroke="#00a19a"
                     stroke-width="6"
                     stroke-linecap="round"
                   />
-                  <circle cx="50" cy="5" r="5" fill="#00b8a9" />
+                  <circle cx="50" cy="5" r="5" fill="#00a19a" />
                 </svg>
               </div>
             </div>
@@ -150,7 +150,7 @@ const closeModal = () => {
 .finish-btn {
   width: 100%;
   padding: 18px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
   border-radius: 16px;

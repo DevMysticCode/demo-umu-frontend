@@ -260,7 +260,7 @@ const onOtherTextInput = (event) => {
 }
 
 .checkbox-option.selected {
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: #f0fffe;
 }
 
@@ -277,8 +277,8 @@ const onOtherTextInput = (event) => {
 }
 
 .checkbox-option.selected .checkbox {
-  border-color: #00b8a9;
-  background: #00b8a9;
+  border-color: #00a19a;
+  background: #00a19a;
 }
 
 .check-mark {
@@ -310,7 +310,7 @@ const onOtherTextInput = (event) => {
 
 .other-text-input:focus {
   outline: none;
-  border-color: #00b8a9;
+  border-color: #00a19a;
   background: white;
 }
 </style>

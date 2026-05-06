@@ -138,7 +138,7 @@ const sendMessage = () => {
   background: none;
   border: none;
   font-size: 16px;
-  color: #00b8a9;
+  color: #00a19a;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -198,7 +198,7 @@ const sendMessage = () => {
 
 .description {
   font-size: 16px;
-  color: #00b8a9;
+  color: #00a19a;
   text-align: center;
   margin-bottom: 32px;
   font-weight: 500;
@@ -231,7 +231,7 @@ const sendMessage = () => {
 
 .message-input:focus {
   outline: none;
-  border-color: #00b8a9;
+  border-color: #00a19a;
 }
 
 .message-input::placeholder {
@@ -259,7 +259,7 @@ const sendMessage = () => {
 
 .option-item:active {
   transform: scale(0.98);
-  border-color: #00b8a9;
+  border-color: #00a19a;
 }
 
 .option-text {
@@ -282,8 +282,8 @@ const sendMessage = () => {
 }
 
 .checkbox.checked {
-  background: #00b8a9;
-  border-color: #00b8a9;
+  background: #00a19a;
+  border-color: #00a19a;
 }
 
 .check-icon {
@@ -330,7 +330,7 @@ const sendMessage = () => {
 
 .info-list li {
   font-size: 14px;
-  color: #00b8a9;
+  color: #00a19a;
   padding: 4px 0;
   padding-left: 20px;
   position: relative;
@@ -341,14 +341,14 @@ const sendMessage = () => {
   content: '•';
   position: absolute;
   left: 0;
-  color: #00b8a9;
+  color: #00a19a;
   font-weight: 700;
 }
 
 .send-btn {
   width: 100%;
   padding: 18px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
   border-radius: 16px;

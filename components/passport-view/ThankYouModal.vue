@@ -262,7 +262,7 @@ const handleContinue = () => {
 .finish-btn {
   width: 100%;
   padding: 18px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
   border-radius: 12px;

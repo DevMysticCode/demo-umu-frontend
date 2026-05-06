@@ -68,7 +68,7 @@
           <div class="modal-sheet__hero">
             <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect width="80" height="80" rx="16" fill="#e6f9f7"/>
-              <path d="M55 30H48V23a3 3 0 0 0-3-3H35a3 3 0 0 0-3 3v7H25a5 5 0 0 0-5 5v20a5 5 0 0 0 5 5h30a5 5 0 0 0 5-5V35a5 5 0 0 0-5-5zm-18-7h6v7h-6v-7zm-2 20h14a1 1 0 0 1 0 2H35a1 1 0 0 1 0-2zm0 6h10a1 1 0 0 1 0 2H35a1 1 0 0 1 0-2z" fill="#00b8a9"/>
+              <path d="M55 30H48V23a3 3 0 0 0-3-3H35a3 3 0 0 0-3 3v7H25a5 5 0 0 0-5 5v20a5 5 0 0 0 5 5h30a5 5 0 0 0 5-5V35a5 5 0 0 0-5-5zm-18-7h6v7h-6v-7zm-2 20h14a1 1 0 0 1 0 2H35a1 1 0 0 1 0-2zm0 6h10a1 1 0 0 1 0 2H35a1 1 0 0 1 0-2z" fill="#00a19a"/>
             </svg>
           </div>
           <h2 class="modal-sheet__title">{{ editIndex >= 0 ? 'Edit Item' : 'Add Custom Item' }}</h2>
@@ -317,10 +317,10 @@ const itemSubtext = (item) => {
   gap: 8px;
   width: 100%;
   padding: 16px;
-  border: 2px dashed #00b8a9;
+  border: 2px dashed #00a19a;
   border-radius: 12px;
   background: transparent;
-  color: #00b8a9;
+  color: #00a19a;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -334,7 +334,7 @@ const itemSubtext = (item) => {
 .items-list__heading {
   font-size: 15px;
   font-weight: 600;
-  color: #00b8a9;
+  color: #00a19a;
   margin: 0 0 12px;
 }
 .item-card {
@@ -349,7 +349,7 @@ const itemSubtext = (item) => {
 }
 .item-card__info { display: flex; flex-direction: column; gap: 2px; }
 .item-card__name { font-size: 15px; font-weight: 500; color: #1a1a1a; }
-.item-card__sub { font-size: 13px; color: #00b8a9; font-weight: 500; }
+.item-card__sub { font-size: 13px; color: #00a19a; font-weight: 500; }
 .item-card__actions { display: flex; gap: 10px; }
 .item-card__edit {
   width: 32px; height: 32px;
@@ -459,7 +459,7 @@ const itemSubtext = (item) => {
   box-sizing: border-box;
   outline: none;
 }
-.form-input:focus { border-color: #00b8a9; }
+.form-input:focus { border-color: #00a19a; }
 .form-textarea {
   width: 100%;
   padding: 12px 14px;
@@ -474,7 +474,7 @@ const itemSubtext = (item) => {
   outline: none;
   font-family: inherit;
 }
-.form-textarea:focus { border-color: #00b8a9; }
+.form-textarea:focus { border-color: #00a19a; }
 
 /* Radio Options */
 .radio-opt {
@@ -488,7 +488,7 @@ const itemSubtext = (item) => {
   cursor: pointer;
   transition: all 0.15s;
 }
-.radio-opt--selected { border-color: #00b8a9; background: #f0fffe; }
+.radio-opt--selected { border-color: #00a19a; background: #f0fffe; }
 .radio-circle {
   width: 26px; height: 26px;
   border: 2px solid #ccc;
@@ -497,7 +497,7 @@ const itemSubtext = (item) => {
   flex-shrink: 0;
   background: white;
 }
-.radio-circle--checked { background: #00b8a9; border-color: #00b8a9; }
+.radio-circle--checked { background: #00a19a; border-color: #00a19a; }
 .radio-check { color: white; font-size: 16px; font-weight: 700; line-height: 1; }
 .radio-label { font-size: 15px; font-weight: 500; color: #1a1a1a; }
 
@@ -521,7 +521,7 @@ const itemSubtext = (item) => {
   min-width: 80px;
   text-align: center;
 }
-.currency-value { font-size: 15px; font-weight: 600; color: #00b8a9; position: relative; z-index: 1; pointer-events: none; }
+.currency-value { font-size: 15px; font-weight: 600; color: #00a19a; position: relative; z-index: 1; pointer-events: none; }
 .currency-placeholder { font-size: 13px; color: #999; position: relative; z-index: 1; pointer-events: none; }
 .currency-overlay {
   position: absolute;
@@ -538,7 +538,7 @@ const itemSubtext = (item) => {
 .save-btn {
   width: 100%;
   padding: 16px;
-  background: #00b8a9;
+  background: #00a19a;
   color: white;
   border: none;
   border-radius: 14px;
