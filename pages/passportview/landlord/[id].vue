@@ -901,10 +901,7 @@ async function copyTenantShare() {
   }
 }
 
-function goBack() {
-  if (typeof window !== 'undefined' && window.history.length > 1) window.history.back()
-  else navigateTo('/profile')
-}
+const goBack = useGoBack('/profile')
 
 onMounted(loadPassport)
 
@@ -1310,9 +1307,9 @@ const SectionCard = defineComponent({
   width: calc(100% - 44px);
   margin: 4px 22px 16px;
   background:
-    radial-gradient(ellipse 70% 70% at 30% 30%, rgba(212, 166, 89, 0.12), transparent 60%),
-    linear-gradient(135deg, #143f38, #0f4a3e);
-  border: 1px dashed rgba(212, 166, 89, 0.5);
+    radial-gradient(ellipse 70% 70% at 30% 30%, rgba(255, 255, 255, 0.18), transparent 60%),
+    linear-gradient(135deg, #00a19a, #1f7a66);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 16px;
   padding: 14px 16px;
   display: flex;
@@ -1324,17 +1321,19 @@ const SectionCard = defineComponent({
   position: relative;
   z-index: 1;
   color: #fff;
+  box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
 }
 .lp-convert-card--linked {
   background: linear-gradient(135deg, #f1f9f4, #e2f1ea);
   border: 1px solid rgba(31, 122, 102, 0.3);
   color: #0e2840;
+  box-shadow: none;
 }
 .lp-convert-icon {
   width: 38px; height: 38px;
   border-radius: 11px;
-  background: rgba(255, 255, 255, 0.15);
-  color: #d4a659;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;

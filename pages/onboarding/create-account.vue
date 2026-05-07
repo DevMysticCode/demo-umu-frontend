@@ -231,8 +231,8 @@ function onAddressSelect(property: any) {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #eafaf9;
-  border: 1.5px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1.5px solid #e2f1ea;
   border-radius: 12px;
   padding: 12px 14px;
 }

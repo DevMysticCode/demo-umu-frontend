@@ -533,10 +533,7 @@ function emailToAgent() {
 }
 
 function goEdit() { router.push('/buyer-profile/build') }
-function goBack() {
-  if (typeof window !== 'undefined' && window.history.length > 1) window.history.back()
-  else router.push('/profile')
-}
+const goBack = useGoBack('/profile')
 </script>
 
 <style scoped>
@@ -844,9 +841,9 @@ function goBack() {
   width: calc(100% - 44px);
   margin: 0 22px 14px;
   background:
-    radial-gradient(ellipse 60% 60% at 30% 30%, rgba(212, 166, 89, 0.18), transparent 60%),
-    linear-gradient(135deg, #143f38, #0f4a3e);
-  border: 1px solid rgba(212, 166, 89, 0.4);
+    radial-gradient(ellipse 60% 60% at 30% 30%, rgba(255, 255, 255, 0.2), transparent 60%),
+    linear-gradient(135deg, #00a19a, #1f7a66);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 18px;
   padding: 18px 18px 14px;
   position: relative;
@@ -856,13 +853,14 @@ function goBack() {
   font-family: inherit;
   color: #fff;
   overflow: hidden;
+  box-shadow: 0 8px 22px rgba(0, 161, 154, 0.32);
 }
 .share-card-label {
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
-  color: #d4a659;
+  color: rgba(255, 255, 255, 0.85);
   margin-bottom: 12px;
 }
 .share-card-title {
@@ -888,9 +886,9 @@ function goBack() {
   margin-bottom: 14px;
 }
 .sct {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(212, 166, 89, 0.5);
-  color: #f5c44c;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #fff;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.3px;
@@ -902,11 +900,11 @@ function goBack() {
   align-items: center;
   justify-content: space-between;
   padding-top: 12px;
-  border-top: 1px solid rgba(212, 166, 89, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
   font-size: 11.5px;
   font-weight: 800;
   letter-spacing: -0.2px;
-  color: #d4a659;
+  color: #fff;
 }
 
 /* Action rows */

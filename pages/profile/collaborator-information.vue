@@ -434,13 +434,7 @@ const continueCollaboratorType = () => {
   navigateTo(`/profile/add-collaborator?type=${selectedCollaboratorType.value}`)
 }
 
-const goBack = () => {
-  if (typeof window !== 'undefined' && window.history.length > 1) {
-    window.history.back()
-    return
-  }
-  navigateTo('/profile')
-}
+const goBack = useGoBack('/profile')
 </script>
 
 <style scoped>

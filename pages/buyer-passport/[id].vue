@@ -1582,9 +1582,9 @@ async function deleteNote(noteId: string) {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: #eafaf9;
-  color: #008c86;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  color: #00a19a;
+  border: 1px solid #e2f1ea;
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 11px;
@@ -1613,8 +1613,8 @@ async function deleteNote(noteId: string) {
 
 /* Details card — brand-pale gradient with brand-soft border */
 .buyer-details-card {
-  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
-  border: 1px solid #b2e8e6;
+  background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
+  border: 1px solid #e2f1ea;
   border-radius: 14px;
   padding: 12px 14px;
   box-shadow:
@@ -1637,8 +1637,8 @@ async function deleteNote(noteId: string) {
   height: 36px;
   border-radius: 11px;
   background: #fff;
-  border: 1px solid #b2e8e6;
-  color: #008c86;
+  border: 1px solid #e2f1ea;
+  color: #00a19a;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -1735,22 +1735,22 @@ async function deleteNote(noteId: string) {
     0 2px 8px rgba(35, 29, 69, 0.04);
 }
 .buyer-record-row:hover {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .buyer-record-row:active {
   transform: scale(0.99);
 }
 .buyer-record-row.state-complete {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 
 .buyer-record-icon {
   width: 64px;
   height: 64px;
   border-radius: 14px;
-  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
-  border: 1px solid #b2e8e6;
-  color: #008c86;
+  background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
+  border: 1px solid #e2f1ea;
+  color: #00a19a;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -1797,13 +1797,13 @@ async function deleteNote(noteId: string) {
 }
 .pill--complete {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
   border: 1px solid #a7f3d0;
 }
 .pill--partial {
   background: #fef3c7;
   color: #92400e;
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
 }
 .pill--empty {
   background: #f1f5f9;
@@ -1833,7 +1833,7 @@ async function deleteNote(noteId: string) {
   background: linear-gradient(90deg, #16a34a, #34d399);
 }
 .fill--partial {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  background: linear-gradient(90deg, #f59e0b, #f5c44c);
 }
 .fill--empty {
   background: #e2e8f0;
@@ -1861,9 +1861,9 @@ async function deleteNote(noteId: string) {
   margin-top: 18px;
 }
 .buyer-record-row:hover .buyer-record-arrow {
-  background: #eafaf9;
-  border-color: #b2e8e6;
-  color: #008c86;
+  background: #f1f9f4;
+  border-color: #e2f1ea;
+  color: #00a19a;
 }
 
 /* PDF download row */
@@ -1946,11 +1946,11 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-ta7-btn {
-  background: #d97706;
+  background: #92400e;
 }
 
 .buyer-ta7-btn:active:not(:disabled) {
-  background: #b45309;
+  background: #92400e;
 }
 
 .buyer-ta10-row {
@@ -1969,8 +1969,8 @@ async function deleteNote(noteId: string) {
 
 /* ── Progress ─────────────────────────────────────────────────────────── */
 .buyer-progress-card {
-  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
-  border: 1px solid #b2e8e6;
+  background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
+  border: 1px solid #e2f1ea;
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 16px;
@@ -2010,7 +2010,7 @@ async function deleteNote(noteId: string) {
 
 .buyer-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #008c86, #00b5ad);
+  background: linear-gradient(90deg, #00a19a, #00b5ad);
   border-radius: 999px;
   transition: width 0.6s ease;
 }
@@ -2025,7 +2025,7 @@ async function deleteNote(noteId: string) {
 /* ── Red Flags ────────────────────────────────────────────────────────── */
 .buyer-redflags-card {
   background: #fffbeb;
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 16px;
@@ -2117,9 +2117,9 @@ async function deleteNote(noteId: string) {
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
-  border: 1px solid #b2e8e6;
-  color: #008c86;
+  background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
+  border: 1px solid #e2f1ea;
+  color: #00a19a;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -2448,8 +2448,8 @@ async function deleteNote(noteId: string) {
   gap: 14px;
   padding: 14px;
   margin: 4px 0 18px;
-  background: linear-gradient(135deg, #f4fbfa, #eafaf9);
-  border: 1px solid #b2e8e6;
+  background: linear-gradient(135deg, #f4fbfa, #f1f9f4);
+  border: 1px solid #e2f1ea;
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 4px 14px rgba(0, 140, 134, 0.1);
@@ -2494,7 +2494,7 @@ async function deleteNote(noteId: string) {
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #008c86;
+  color: #00a19a;
   margin-bottom: 4px;
 }
 .buyer-hero-addr {
@@ -2531,7 +2531,7 @@ async function deleteNote(noteId: string) {
   letter-spacing: -0.01em;
 }
 .buyer-hero-stat-val--brand {
-  color: #008c86;
+  color: #00a19a;
 }
 .buyer-hero-stat-val--ready {
   color: #00a19a;
@@ -2562,7 +2562,7 @@ async function deleteNote(noteId: string) {
 }
 .risk-pill--ok {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
   border-color: #a7f3d0;
 }
 .risk-pill--ok:hover {
@@ -2571,10 +2571,10 @@ async function deleteNote(noteId: string) {
 .risk-pill--warn {
   background: #fef3c7;
   color: #92400e;
-  border-color: #fde68a;
+  border-color: #fef3c7;
 }
 .risk-pill--warn:hover {
-  background: #fde68a;
+  background: #fef3c7;
 }
 
 /* ── Resume card ───────────────────────────────────────────────── */
@@ -2585,7 +2585,7 @@ async function deleteNote(noteId: string) {
   width: 100%;
   margin: 12px 0 18px;
   padding: 12px 14px;
-  background: linear-gradient(135deg, #00a19a, #008c86);
+  background: linear-gradient(135deg, #00a19a, #00a19a);
   color: #fff;
   border: none;
   border-radius: 14px;
@@ -2634,8 +2634,8 @@ async function deleteNote(noteId: string) {
 
 /* ── Section completion summary ───────────────────────────────── */
 .buyer-summary-card {
-  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
-  border: 1px solid #b2e8e6;
+  background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
+  border: 1px solid #e2f1ea;
   border-radius: 14px;
   padding: 14px 14px 12px;
   margin-bottom: 12px;
@@ -2666,7 +2666,7 @@ async function deleteNote(noteId: string) {
   color: #16a34a;
 }
 .buyer-summary-num--partial {
-  color: #d97706;
+  color: #92400e;
 }
 .buyer-summary-num--empty {
   color: #94a3b8;
@@ -2720,7 +2720,7 @@ async function deleteNote(noteId: string) {
   transition: all 0.15s;
 }
 .buyer-action-save:hover {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .buyer-action-save.is-saved {
   background: #fff1f2;
@@ -2732,7 +2732,7 @@ async function deleteNote(noteId: string) {
   line-height: 1;
 }
 .buyer-action-ask {
-  background: linear-gradient(135deg, #00a19a, #008c86);
+  background: linear-gradient(135deg, #00a19a, #00a19a);
   color: #fff;
   border: none;
   border-radius: 999px;

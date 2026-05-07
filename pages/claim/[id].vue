@@ -146,10 +146,49 @@
           <div>
             <div class="cl-pale-t">Usually under 2 minutes</div>
             <div class="cl-pale-s">
-              Powered by Onfido — used by major UK banks.
+              Powered by Persona — used by major UK fintechs.
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Polling state — shown after the user opens the Persona hosted flow -->
+      <div v-if="personaPolling || personaInquiryId" class="cl-info-pale" style="margin-top: 14px;">
+        <div class="cl-info-ic">{{ personaPolling ? '⏳' : '👋' }}</div>
+        <div class="cl-info-body">
+          <template v-if="personaPolling">
+            Verification is open in a new tab. We'll continue automatically as
+            soon as Persona finishes.
+          </template>
+          <template v-else>
+            Finished in the verification tab? Tap <strong>Check now</strong>.
+          </template>
+          <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <button
+              type="button"
+              class="cl-err-retry"
+              :disabled="personaCheckingNow"
+              @click="checkPersonaNow"
+            >
+              {{ personaCheckingNow ? 'Checking…' : 'Check now' }}
+            </button>
+            <button
+              v-if="!personaPolling"
+              type="button"
+              class="cl-err-retry"
+              style="background: transparent; color: #1f7a66;"
+              @click="runPolling"
+            >
+              Resume auto-check
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Persona error banner -->
+      <div v-if="personaError" class="cl-err-banner" style="margin-top: 12px;">
+        {{ personaError }}
+        <button class="cl-err-retry" @click="startPersonaKyc">Retry</button>
       </div>
     </div>
 
@@ -450,7 +489,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 
@@ -684,7 +723,7 @@ const ctaLabel = computed(() => {
     case 'confirm':
       return verifyLoading.value ? 'Starting…' : 'Yes, this is my property →'
     case 'kyc-explainer':
-      return 'Start identity check →'
+      return personaPolling.value ? 'Verifying…' : 'Start identity check →'
     case 'kyc-id':
       return 'Continue →'
     case 'kyc-liveness':
@@ -700,7 +739,12 @@ const ctaLabel = computed(() => {
   }
 })
 const ctaDisabled = computed(() => {
-  if (verifyLoading.value || livenessAnalysing.value || issueLoading.value)
+  if (
+    verifyLoading.value ||
+    livenessAnalysing.value ||
+    issueLoading.value ||
+    personaPolling.value
+  )
     return true
   switch (step.value) {
     case 'search':
@@ -712,7 +756,11 @@ const ctaDisabled = computed(() => {
   }
 })
 const ctaLoading = computed(
-  () => verifyLoading.value || livenessAnalysing.value || issueLoading.value,
+  () =>
+    verifyLoading.value ||
+    livenessAnalysing.value ||
+    issueLoading.value ||
+    personaPolling.value,
 )
 
 function onPrimary() {
@@ -724,14 +772,11 @@ function onPrimary() {
       confirmProperty()
       return
     case 'kyc-explainer':
-      step.value = 'kyc-id'
+      // Real Persona flow — opens hosted page in a new tab and polls for completion.
+      startPersonaKyc()
       return
-    case 'kyc-id':
-      step.value = 'kyc-liveness'
-      return
+    case 'kyc-id':       // Legacy simulated screens — unreachable when Persona is wired.
     case 'kyc-liveness':
-      doLiveness()
-      return
     case 'kyc-aml':
       step.value = 'kyc-verified'
       return
@@ -744,7 +789,7 @@ function onPrimary() {
   }
 }
 
-// ── confirm → start-verification → kyc-explainer ─────────────
+// ── confirm → start-verification → kyc-explainer (or skip if already verified) ─────────────
 async function confirmProperty() {
   verificationError.value = ''
   if (!selectedProperty.value?.id) {
@@ -757,6 +802,20 @@ async function confirmProperty() {
       `${base}/property/${selectedProperty.value.id}/start-verification`,
       { method: 'POST', headers: authHeaders() },
     )
+
+    // Per-user KYC: if the user has already passed Persona on a previous
+    // claim, jump straight past identity verification.
+    try {
+      const { getKycStatus } = useKyc()
+      const r = await getKycStatus()
+      if (r.status === 'approved') {
+        step.value = 'kyc-verified'
+        return
+      }
+    } catch {
+      // If status lookup fails, fall through to the explainer screen.
+    }
+
     step.value = 'kyc-explainer'
   } catch (e: any) {
     verificationError.value =
@@ -765,6 +824,113 @@ async function confirmProperty() {
     verifyLoading.value = false
   }
 }
+
+// ── Persona KYC: open hosted flow + poll until settled ──────────
+const personaError = ref('')
+const personaPolling = ref(false)
+const personaInquiryId = ref<string | null>(null)
+const personaCheckingNow = ref(false)
+let personaAbort: AbortController | null = null
+
+async function startPersonaKyc() {
+  personaError.value = ''
+  personaPolling.value = true
+  const { startKyc } = useKyc()
+  try {
+    const start = await startKyc()
+    if (start.alreadyVerified || start.status === 'approved') {
+      step.value = 'kyc-verified'
+      return
+    }
+    if (!start.hostedUrl) {
+      personaError.value = 'Could not open the verification page.'
+      personaPolling.value = false
+      return
+    }
+    personaInquiryId.value = start.inquiryId
+    // Open the hosted flow in a new tab. Persona handles ID upload,
+    // liveness + AML inside their UI; we just wait for the result.
+    const w = window.open(start.hostedUrl, '_blank', 'noopener')
+    if (!w) {
+      personaError.value =
+        'Pop-ups blocked — allow pop-ups for this site and try again.'
+      personaPolling.value = false
+      return
+    }
+    runPolling()
+  } catch (e: any) {
+    personaError.value =
+      e?.data?.message || e?.message || 'Verification could not start.'
+    personaPolling.value = false
+  }
+}
+
+async function runPolling() {
+  const { pollUntilSettled } = useKyc()
+  personaError.value = ''
+  personaPolling.value = true
+  personaAbort?.abort()
+  personaAbort = new AbortController()
+  try {
+    const finalStatus = await pollUntilSettled({
+      intervalMs: 3000,
+      maxAttempts: 100, // ≈ 5 minutes at 3s each
+      signal: personaAbort.signal,
+    })
+    if (finalStatus === 'approved') {
+      step.value = 'kyc-verified'
+      personaError.value = ''
+    } else if (finalStatus === 'declined' || finalStatus === 'failed') {
+      personaError.value =
+        'Identity verification failed. Please retry or contact support.'
+    } else if (finalStatus === 'needs_review') {
+      personaError.value =
+        "Your details need a manual review — we'll email you when it's done."
+    }
+  } catch (e: any) {
+    if (e?.message === 'timeout') {
+      personaError.value =
+        "We're still waiting for the verification result. If you've finished, tap \"Check now\"."
+    } else if (e?.message !== 'Polling aborted') {
+      personaError.value =
+        e?.data?.message || e?.message || 'Could not check status.'
+    }
+  } finally {
+    personaPolling.value = false
+  }
+}
+
+// Manual "I'm done — check now" button. Hits /kyc/status once and acts on it.
+async function checkPersonaNow() {
+  if (personaCheckingNow.value) return
+  personaCheckingNow.value = true
+  personaError.value = ''
+  try {
+    const { getKycStatus } = useKyc()
+    const r = await getKycStatus()
+    if (r.status === 'approved') {
+      personaAbort?.abort()
+      step.value = 'kyc-verified'
+    } else if (r.status === 'declined' || r.status === 'failed') {
+      personaError.value =
+        'Identity verification failed. Please retry or contact support.'
+    } else if (r.status === 'needs_review') {
+      personaError.value =
+        "Your details need a manual review — we'll email you when it's done."
+    } else if (r.status === 'pending') {
+      personaError.value =
+        "We can't see your result yet — Persona usually takes a few seconds. Try again in a moment."
+    } else {
+      personaError.value = "We haven't received a verification result yet."
+    }
+  } catch (e: any) {
+    personaError.value = e?.data?.message || e?.message || 'Could not check status.'
+  } finally {
+    personaCheckingNow.value = false
+  }
+}
+
+onBeforeUnmount(() => personaAbort?.abort())
 
 // ── Liveness simulated delay ──────────────────────────────────
 async function doLiveness() {
@@ -834,11 +1000,12 @@ async function issuePassport() {
     const passportId = res.passportId
     if (!passportId) throw new Error('Passport could not be created')
 
-    // 3) Route to the right passport view (landlord lives at a different URL)
+    // 3) Route to the right passport view (landlord lives at a different URL).
+    // Use replace() so the user's back button doesn't drop them mid-KYC.
     if (chosenPassportType.value === 'landlord') {
-      router.push(`/passportview/landlord/${passportId}`)
+      router.replace(`/passportview/landlord/${passportId}`)
     } else {
-      router.push(`/passportview/${passportId}`)
+      router.replace(`/passportview/${passportId}`)
     }
   } catch (e: any) {
     issueError.value =
@@ -908,7 +1075,7 @@ async function issuePassport() {
 .cl-prog-strip span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #00a19a, #5eead4);
+  background: linear-gradient(90deg, #00a19a, #3dbda3);
   transition: width 0.35s ease;
 }
 
@@ -936,7 +1103,7 @@ async function issuePassport() {
 .cl-icon-square {
   width: 64px;
   height: 64px;
-  background: #eafaf9;
+  background: #f1f9f4;
   border: 2px solid #cff4f2;
   border-radius: 20px;
   display: grid;
@@ -993,7 +1160,7 @@ async function issuePassport() {
 
 /* ── Selected address card ─────────────────────────── */
 .cl-sel-card {
-  background: #eafaf9;
+  background: #f1f9f4;
   border: 1.5px solid #cff4f2;
   border-radius: 14px;
   padding: 12px 16px;
@@ -1002,7 +1169,7 @@ async function issuePassport() {
 .cl-sel-eyebrow {
   font-size: 10px;
   font-weight: 700;
-  color: #0d9488;
+  color: #1f7a66;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 4px;
@@ -1030,7 +1197,7 @@ async function issuePassport() {
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
-  background: #eafaf9;
+  background: #f1f9f4;
   border: 1px solid #cff4f2;
   border-radius: 12px;
 }
@@ -1106,7 +1273,7 @@ async function issuePassport() {
 
 /* ── Info pale ─────────────────────────────────────── */
 .cl-info-pale {
-  background: #eafaf9;
+  background: #f1f9f4;
   border: 1.5px solid #cff4f2;
   border-radius: 14px;
   padding: 13px 16px;
@@ -1141,7 +1308,7 @@ async function issuePassport() {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 .cl-card-pale {
-  background: #eafaf9;
+  background: #f1f9f4;
   border: 1.5px solid #cff4f2;
   border-radius: 14px;
   padding: 14px;
@@ -1170,7 +1337,7 @@ async function issuePassport() {
 .cl-step-ic {
   width: 40px;
   height: 40px;
-  background: #eafaf9;
+  background: #f1f9f4;
   border-radius: 12px;
   display: grid;
   place-items: center;
@@ -1232,7 +1399,7 @@ async function issuePassport() {
 }
 .cl-slot-front {
   border: 2px dashed #cff4f2;
-  background: #eafaf9;
+  background: #f1f9f4;
 }
 .cl-slot-back {
   border: 2px dashed #e5e7eb;
@@ -1247,7 +1414,7 @@ async function issuePassport() {
 .cl-slot-text {
   font-size: 13px;
   font-weight: 600;
-  color: #0d9488;
+  color: #1f7a66;
 }
 .cl-slot-text-muted { color: #94a3b8; }
 .cl-slot-thumb {
@@ -1261,7 +1428,7 @@ async function issuePassport() {
   right: 8px;
   width: 26px;
   height: 26px;
-  background: #10b981;
+  background: #00a19a;
   color: #fff;
   border-radius: 50%;
   display: grid;
@@ -1317,7 +1484,7 @@ async function issuePassport() {
 .cl-live-inner {
   position: absolute;
   inset: 12px;
-  background: #eafaf9;
+  background: #f1f9f4;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -1360,7 +1527,7 @@ async function issuePassport() {
 .cl-big-check {
   width: 90px;
   height: 90px;
-  background: linear-gradient(135deg, #0d9488, #00a19a);
+  background: linear-gradient(135deg, #1f7a66, #00a19a);
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -1385,7 +1552,7 @@ async function issuePassport() {
 .cl-lr-pulse {
   position: absolute;
   inset: 0;
-  background: #eafaf9;
+  background: #f1f9f4;
   border-radius: 50%;
   animation: clLrPulse 1.5s ease-out infinite;
 }
@@ -1440,7 +1607,7 @@ async function issuePassport() {
   align-items: center;
   gap: 12px;
   padding: 14px;
-  background: linear-gradient(135deg, #0d9488, #00a19a);
+  background: linear-gradient(135deg, #1f7a66, #00a19a);
   border-radius: 16px;
   margin-bottom: 18px;
   color: #fff;
@@ -1529,7 +1696,7 @@ async function issuePassport() {
   flex-shrink: 0;
 }
 .cl-err-link:hover {
-  background: #008c86;
+  background: #00a19a;
 }
 
 /* ── Bottom CTA bar ──────────────────────────────── */

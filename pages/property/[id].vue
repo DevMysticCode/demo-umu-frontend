@@ -1054,7 +1054,7 @@
                   >Bus
                 </div>
                 <div class="pp-legend-item">
-                  <span class="pp-legend-dot" style="background: #10b981"></span
+                  <span class="pp-legend-dot" style="background: #00a19a"></span
                   >Parks
                 </div>
               </div>
@@ -2591,9 +2591,9 @@ const gaugeScore = computed(
 
 const gaugeColor = computed(() => {
   const s = gaugeScore.value ?? 0
-  if (s >= 80) return '#059669'
+  if (s >= 80) return '#1f7a66'
   if (s >= 60) return '#00a19a'
-  if (s >= 40) return '#d97706'
+  if (s >= 40) return '#92400e'
   return '#dc2626'
 })
 
@@ -2633,7 +2633,7 @@ const gaugeBadgeStyle = computed(() => {
   const s = gaugeScore.value ?? 0
   if (s >= 80) return 'background:#f0fdf4;border-color:#bbf7d0;'
   if (s >= 60) return 'background:#f0fdfb;border-color:#99f6e4;'
-  if (s >= 40) return 'background:#fef9f0;border-color:#fde68a;'
+  if (s >= 40) return 'background:#fef9f0;border-color:#fef3c7;'
   return 'background:#fef2f2;border-color:#fecaca;'
 })
 
@@ -2651,9 +2651,9 @@ function effToPercent(eff: string | null | undefined): number {
 }
 
 function effToColor(pct: number): string {
-  if (pct >= 72) return '#059669'
+  if (pct >= 72) return '#1f7a66'
   if (pct >= 50) return '#00a19a'
-  if (pct >= 28) return '#d97706'
+  if (pct >= 28) return '#92400e'
   return '#dc2626'
 }
 
@@ -2725,9 +2725,9 @@ function formatCost(val: number | null): string {
 // ── EPC rating color ───────────────────────────────────────────────────────────
 const epcRatingColor = computed(() => {
   const r = prop.value?.epcRating ?? ''
-  if (r === 'A' || r === 'B') return '#059669'
+  if (r === 'A' || r === 'B') return '#1f7a66'
   if (r === 'C') return '#00a19a'
-  if (r === 'D') return '#d97706'
+  if (r === 'D') return '#92400e'
   if (r === 'E') return '#ea580c'
   return '#dc2626'
 })
@@ -2738,10 +2738,10 @@ const floodRiskData = computed(() => {
   if (!zones.length)
     return {
       label: 'Low',
-      color: '#059669',
+      color: '#1f7a66',
       class: 'pp-badge-flood--low',
       zone: 'Zone 1',
-      pill: 'background:#d1fae5;color:#065f46;',
+      pill: 'background:#d1fae5;color:#1f7a66;',
       badgeClass: 'pp-badge-flood--low',
     }
   const sevs = zones.map((z: any) => (z.severity ?? '').toLowerCase())
@@ -2760,15 +2760,15 @@ const floodRiskData = computed(() => {
       color: '#ea580c',
       class: 'pp-badge-flood--med',
       zone: 'Zone 2',
-      pill: 'background:#ffedd5;color:#9a3412;',
+      pill: 'background:#fef3c7;color:#92400e;',
       badgeClass: 'pp-badge-flood--med',
     }
   return {
     label: 'Low',
-    color: '#059669',
+    color: '#1f7a66',
     class: 'pp-badge-flood--low',
     zone: 'Zone 1',
-    pill: 'background:#d1fae5;color:#065f46;',
+    pill: 'background:#d1fae5;color:#1f7a66;',
     badgeClass: 'pp-badge-flood--low',
   }
 })
@@ -2994,10 +2994,10 @@ const nearbyKeyPlaces = computed(() => {
 // ── EPC/Flood tile colours ─────────────────────────────────────────────────────
 const epcLetterChipStyle = computed(() => {
   const r = prop.value?.epcRating ?? ''
-  if (r === 'A' || r === 'B') return 'background:#d1fae5;color:#065f46;'
+  if (r === 'A' || r === 'B') return 'background:#d1fae5;color:#1f7a66;'
   if (r === 'C') return 'background:#ccfbf1;color:#115e59;'
   if (r === 'D') return 'background:#fef3c7;color:#92400e;'
-  if (r === 'E') return 'background:#fed7aa;color:#9a3412;'
+  if (r === 'E') return 'background:#fed7aa;color:#92400e;'
   if (r === 'F' || r === 'G') return 'background:#fee2e2;color:#991b1b;'
   return 'background:#f1f5f9;color:#64748b;'
 })
@@ -3317,7 +3317,7 @@ async function initMap() {
     }
     for (const p of n.parks ?? []) {
       if (p.lat && p.lon)
-        L.marker([p.lat, p.lon], { icon: makeDivIcon('#10b981', '🌳') })
+        L.marker([p.lat, p.lon], { icon: makeDivIcon('#00a19a', '🌳') })
           .bindPopup(p.name)
           .addTo(map)
     }
@@ -3733,8 +3733,8 @@ function formatSaleDate(dateStr: string): string {
   --ink-soft: #4a4a6a;
   --ink-faint: #9090a8;
   --line: #e8e8f0;
-  --good: #059669;
-  --warn: #d97706;
+  --good: #1f7a66;
+  --warn: #92400e;
   min-height: 100vh;
   background: #f4f6f9;
   padding-bottom: 80px;
@@ -3853,7 +3853,7 @@ function formatSaleDate(dateStr: string): string {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 .pp-badge-flood--low {
-  color: #059669;
+  color: #1f7a66;
   border: 1px solid #d1fae5;
 }
 .pp-badge-flood--med {
@@ -4297,7 +4297,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pp-sold-badge--current {
   background: var(--brand-pale);
-  color: #065f46;
+  color: #1f7a66;
   border: 1px solid var(--brand-soft);
 }
 
@@ -4457,7 +4457,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pp-ofsted--outstanding {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
 }
 .pp-ofsted--good {
   background: #fef3c7;
@@ -4680,7 +4680,7 @@ function formatSaleDate(dateStr: string): string {
   display: inline-block;
 }
 .pp-mobile-dot--good {
-  background: #059669;
+  background: #1f7a66;
 }
 .pp-mobile-dot--limited {
   background: #f59e0b;
@@ -4730,7 +4730,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pp-tv-badge--yes {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
 }
 .pp-tv-badge--check {
   background: #fef3c7;
@@ -4772,7 +4772,7 @@ function formatSaleDate(dateStr: string): string {
 .pp-flood-badge--very-low,
 .pp-flood-badge--low {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
 }
 .pp-flood-badge--medium {
   background: #fef3c7;
@@ -5036,7 +5036,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pp-planning-decision--approved {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
 }
 .pp-planning-decision--refused {
   background: #fee2e2;
@@ -5263,7 +5263,7 @@ function formatSaleDate(dateStr: string): string {
   color: rgba(255, 255, 255, 0.5);
 }
 .pp-unlock-check {
-  color: #5eead4;
+  color: #3dbda3;
   font-size: 11px;
   font-weight: 700;
 }
@@ -5275,7 +5275,7 @@ function formatSaleDate(dateStr: string): string {
   font-size: 15px;
   font-weight: 800;
   cursor: pointer;
-  background: #5eead4;
+  background: #3dbda3;
   color: #231d45;
   letter-spacing: -0.01em;
   font-family: inherit;
@@ -5316,8 +5316,8 @@ function formatSaleDate(dateStr: string): string {
 .unpub-icon {
   width: 60px;
   height: 60px;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
   border-radius: 14px;
   display: grid;
   place-items: center;
@@ -5476,11 +5476,11 @@ function formatSaleDate(dateStr: string): string {
 }
 .pp-tile-badge--amber {
   background: #fef3c7;
-  color: #d97706;
+  color: #92400e;
 }
 .pp-tile-badge--green {
   background: #d1fae5;
-  color: #059669;
+  color: #1f7a66;
 }
 .pp-tile--wide .pp-tile-badge {
   margin-bottom: 0;
@@ -5581,7 +5581,7 @@ function formatSaleDate(dateStr: string): string {
   letter-spacing: -0.01em;
 }
 .pp-ph-cagr-val--up {
-  color: #059669;
+  color: #1f7a66;
 }
 .pp-ph-cagr-val--down {
   color: #dc2626;
@@ -5684,7 +5684,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pp-ph-delta--up {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
 }
 .pp-ph-delta--down {
   background: #fee2e2;
@@ -5977,7 +5977,7 @@ function formatSaleDate(dateStr: string): string {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #10b981;
+  background: #00a19a;
 }
 .pp-place-meta {
   font-size: 11.5px;
@@ -6172,7 +6172,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pp-bb-chip--on {
   background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-  color: #065f46;
+  color: #1f7a66;
   border-color: #6ee7b7;
 }
 
@@ -6240,7 +6240,7 @@ function formatSaleDate(dateStr: string): string {
   height: 14px;
 }
 .pp-mop-bars.pp-signal--good .pp-mop-bar {
-  background: #059669;
+  background: #1f7a66;
 }
 .pp-mop-bars.pp-signal--ok .pp-mop-bar--1,
 .pp-mop-bars.pp-signal--ok .pp-mop-bar--2 {
@@ -6266,7 +6266,7 @@ function formatSaleDate(dateStr: string): string {
   margin-right: 4px;
 }
 .pp-mop-dot--good {
-  background: #059669;
+  background: #1f7a66;
 }
 .pp-mop-dot--ok {
   background: #f59e0b;
@@ -6337,7 +6337,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pp-tv-status--yes {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
 }
 .pp-tv-status--check {
   background: #fef3c7;
@@ -6357,10 +6357,10 @@ function formatSaleDate(dateStr: string): string {
   overflow: hidden;
 }
 .pp-flood-hero--low .pp-flood-hero-top {
-  background: linear-gradient(135deg, #059669, #10b981);
+  background: linear-gradient(135deg, #1f7a66, #00a19a);
 }
 .pp-flood-hero--medium .pp-flood-hero-top {
-  background: linear-gradient(135deg, #d97706, #f59e0b);
+  background: linear-gradient(135deg, #92400e, #f59e0b);
 }
 .pp-flood-hero--high .pp-flood-hero-top {
   background: linear-gradient(135deg, #dc2626, #ef4444);
@@ -6510,7 +6510,7 @@ function formatSaleDate(dateStr: string): string {
   transition: all 0.3s ease;
 }
 .pp-ct-ladder-cell--on {
-  background: linear-gradient(180deg, var(--brand), #0d9488);
+  background: linear-gradient(180deg, var(--brand), #1f7a66);
   color: #fff;
   height: 46px;
   margin-top: -6px;
@@ -6670,7 +6670,7 @@ function formatSaleDate(dateStr: string): string {
   flex-shrink: 0;
 }
 .pp-plan-card--approved .pp-plan-accent {
-  background: #059669;
+  background: #1f7a66;
 }
 .pp-plan-card--refused .pp-plan-accent {
   background: #dc2626;

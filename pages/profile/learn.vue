@@ -148,10 +148,7 @@ function askWith(text: string) {
   navigateTo(`/profile/chat?prefill=${encodeURIComponent(q)}`)
 }
 
-function goBack() {
-  if (typeof window !== 'undefined' && window.history.length > 1) window.history.back()
-  else navigateTo('/profile')
-}
+const goBack = useGoBack('/profile')
 </script>
 
 <style scoped>

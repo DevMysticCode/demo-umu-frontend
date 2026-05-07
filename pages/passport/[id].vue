@@ -448,11 +448,11 @@ const navigateToPayment = async () => {
   font-weight: 700;
   color: #00a19a;
   text-decoration: none;
-  border-bottom: 1.5px solid #b2e8e6;
+  border-bottom: 1.5px solid #e2f1ea;
   padding-bottom: 1px;
 }
 .claim-error-link:hover {
-  color: #008c86;
+  color: #00a19a;
   border-bottom-color: #00a19a;
 }
 

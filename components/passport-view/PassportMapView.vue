@@ -734,7 +734,7 @@ const navigateToStep = (stepId) => {
   transition: all 0.15s;
 }
 .map-filter-tab:hover {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .map-filter-tab.active {
   background: #00a19a;
@@ -746,7 +746,7 @@ const navigateToStep = (stepId) => {
   font-size: 10.5px;
   font-weight: 800;
   background: rgba(0, 161, 154, 0.12);
-  color: #008c86;
+  color: #00a19a;
   padding: 1px 7px;
   border-radius: 999px;
 }
@@ -758,7 +758,7 @@ const navigateToStep = (stepId) => {
 /* ── Currently viewing card ──────────────────────────────────── */
 .map-now-card {
   background: linear-gradient(135deg, #f4fbfa, #fff);
-  border: 1px solid #b2e8e6;
+  border: 1px solid #e2f1ea;
   border-radius: 14px;
   padding: 12px 14px;
   margin-bottom: 12px;
@@ -769,7 +769,7 @@ const navigateToStep = (stepId) => {
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #008c86;
+  color: #00a19a;
   margin-bottom: 6px;
 }
 .map-now-row {
@@ -781,12 +781,12 @@ const navigateToStep = (stepId) => {
   width: 40px;
   height: 40px;
   border-radius: 11px;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #008c86;
+  color: #00a19a;
 }
 .map-now-body {
   flex: 1;
@@ -875,7 +875,7 @@ const navigateToStep = (stepId) => {
   justify-content: center;
   font-size: 9.5px;
   font-weight: 800;
-  color: #008c86;
+  color: #00a19a;
 }
 .map-step-ring-text--done {
   color: #16a34a;
@@ -935,7 +935,7 @@ const navigateToStep = (stepId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #008c86;
+  color: #00a19a;
 }
 .sheet-meta {
   flex: 1;
@@ -958,7 +958,7 @@ const navigateToStep = (stepId) => {
   align-items: center;
   gap: 4px;
   background: rgba(61, 189, 163, 0.12);
-  color: #008c86;
+  color: #00a19a;
   font-size: 10px;
   font-weight: 800;
   padding: 2px 8px;
@@ -967,7 +967,7 @@ const navigateToStep = (stepId) => {
 }
 
 .sheet-progress {
-  background: linear-gradient(135deg, #f4fbf7, #eafaf9);
+  background: linear-gradient(135deg, #f4fbf7, #f1f9f4);
   border-radius: 12px;
   padding: 10px 12px;
   margin: 4px 0 12px;
@@ -984,14 +984,14 @@ const navigateToStep = (stepId) => {
 }
 .sheet-progress .pgr-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00a19a, #008c86);
+  background: linear-gradient(90deg, #00a19a, #00a19a);
   border-radius: 4px;
   transition: width 0.6s ease;
 }
 .sheet-progress .pgr-text {
   font-size: 11px;
   font-weight: 800;
-  color: #008c86;
+  color: #00a19a;
   white-space: nowrap;
 }
 
@@ -1030,7 +1030,7 @@ const navigateToStep = (stepId) => {
 }
 .task-row:hover {
   background: #f0f7f3;
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .task-row.done {
   cursor: default;
@@ -1051,7 +1051,7 @@ const navigateToStep = (stepId) => {
   background: #fff;
   font-size: 10px;
   font-weight: 800;
-  color: #008c86;
+  color: #00a19a;
   transition: all 0.3s;
 }
 .task-row.done .task-status {

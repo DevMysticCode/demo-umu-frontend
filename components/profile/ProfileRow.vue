@@ -66,7 +66,7 @@ function onClick(e) {
   color: inherit;
 }
 .prow:hover {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .prow:active {
   transform: scale(0.99);
@@ -76,9 +76,9 @@ function onClick(e) {
   width: 40px;
   height: 40px;
   border-radius: 11px;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
-  color: #008c86;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
+  color: #00a19a;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -86,13 +86,13 @@ function onClick(e) {
 }
 .prow-icon--warn {
   background: #fef3c7;
-  border-color: #fde68a;
+  border-color: #fef3c7;
   color: #92400e;
 }
 .prow-icon--good {
   background: #d1fae5;
   border-color: #a7f3d0;
-  color: #065f46;
+  color: #1f7a66;
 }
 .prow-icon--neutral {
   background: #f1f5f9;

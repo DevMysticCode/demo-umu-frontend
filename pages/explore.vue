@@ -685,15 +685,15 @@
                       d="m379.84,415.26c48.52,0,77.29,29.26,77.29,82.14v42.9s-39.01,0-39.01,0v-41.36c0-34.14-13.9-48.26-38.03-48.26-23.89,0-38.03,14.12-38.03,48.26l-.15,20.26h-39.24s-.1-21.8-.1-21.8c0-52.88,28.77-82.14,77.29-82.14Z"
                     />
                     <path
-                      fill="#5eead4"
+                      fill="#3dbda3"
                       d="m689.16,439c-.03-11.46-8.86-20.75-19.76-20.75s-19.76,9.32-19.76,20.81h.04v92.38c0,34.14-14.14,48.26-38.03,48.26s-38.03-14.12-38.03-48.26v-12.54h-39.32v14.08c0,52.88,29.07,82.14,77.59,82.14s77.28-29.26,77.28-82.14v-93.98h-.02Z"
                     />
                     <path
-                      fill="#5eead4"
+                      fill="#3dbda3"
                       d="m187.37,439c.03-11.46,8.86-20.75,19.76-20.75,10.91,0,19.76,9.32,19.76,20.81h-.04v92.38c0,34.14,14.14,48.26,38.03,48.26,24.14,0,37.79-14.12,37.79-48.26v-12.54s39.25,0,39.25,0v14.08c0,52.88-28.77,82.14-77.29,82.14-48.52,0-77.28-29.26-77.28-82.14v-93.98s.02,0,.02,0Z"
                     />
                     <path
-                      fill="#5eead4"
+                      fill="#3dbda3"
                       d="m677.57,352.22l-226.28-134.71c-3.1-1.81-6.69-2.82-10.34-2.91h-.57l-.39-1.48h-.54c-3.68.1-7.26,1.11-10.38,2.93l-157.5,93.76v-16.4c0-10.74-9.3-19.48-20.72-19.48s-20.72,8.74-20.72,19.48v41.08l-27.33,16.27c-9.7,5.67-12.68,17.71-6.64,26.83,6.03,9.12,18.84,11.92,28.55,6.24l215.48-128.28,215.49,128.29c3.33,1.95,7.08,2.95,10.91,2.95,1.58,0,3.17-.17,4.74-.51,5.39-1.18,9.97-4.26,12.9-8.68,6.03-9.12,3.05-21.15-6.64-26.82Z"
                     />
                   </svg>
@@ -718,7 +718,7 @@
                   <path
                     d="M 7 34 A 24 24 0 0 1 51 34"
                     fill="none"
-                    stroke="#5eead4"
+                    stroke="#3dbda3"
                     stroke-width="4"
                     stroke-linecap="round"
                     stroke-dasharray="75.4"
@@ -899,7 +899,7 @@
                 <div class="pulse-lbl">avg days to sell</div>
               </div>
               <div class="pulse-cell">
-                <div class="pulse-val" style="color: #059669">+4%</div>
+                <div class="pulse-val" style="color: #1f7a66">+4%</div>
                 <div class="pulse-lbl">price change YoY</div>
               </div>
               <div class="pulse-cell">
@@ -1046,15 +1046,15 @@
                       d="m379.84,415.26c48.52,0,77.29,29.26,77.29,82.14v42.9s-39.01,0-39.01,0v-41.36c0-34.14-13.9-48.26-38.03-48.26-23.89,0-38.03,14.12-38.03,48.26l-.15,20.26h-39.24s-.1-21.8-.1-21.8c0-52.88,28.77-82.14,77.29-82.14Z"
                     />
                     <path
-                      fill="#5eead4"
+                      fill="#3dbda3"
                       d="m689.16,439c-.03-11.46-8.86-20.75-19.76-20.75s-19.76,9.32-19.76,20.81h.04v92.38c0,34.14-14.14,48.26-38.03,48.26s-38.03-14.12-38.03-48.26v-12.54h-39.32v14.08c0,52.88,29.07,82.14,77.59,82.14s77.28-29.26,77.28-82.14v-93.98h-.02Z"
                     />
                     <path
-                      fill="#5eead4"
+                      fill="#3dbda3"
                       d="m187.37,439c.03-11.46,8.86-20.75,19.76-20.75,10.91,0,19.76,9.32,19.76,20.81h-.04v92.38c0,34.14,14.14,48.26,38.03,48.26,24.14,0,37.79-14.12,37.79-48.26v-12.54s39.25,0,39.25,0v14.08c0,52.88-28.77,82.14-77.29,82.14-48.52,0-77.28-29.26-77.28-82.14v-93.98s.02,0,.02,0Z"
                     />
                     <path
-                      fill="#5eead4"
+                      fill="#3dbda3"
                       d="m677.57,352.22l-226.28-134.71c-3.1-1.81-6.69-2.82-10.34-2.91h-.57l-.39-1.48h-.54c-3.68.1-7.26,1.11-10.38,2.93l-157.5,93.76v-16.4c0-10.74-9.3-19.48-20.72-19.48s-20.72,8.74-20.72,19.48v41.08l-27.33,16.27c-9.7,5.67-12.68,17.71-6.64,26.83,6.03,9.12,18.84,11.92,28.55,6.24l215.48-128.28,215.49,128.29c3.33,1.95,7.08,2.95,10.91,2.95,1.58,0,3.17-.17,4.74-.51,5.39-1.18,9.97-4.26,12.9-8.68,6.03-9.12,3.05-21.15-6.64-26.82Z"
                     />
                   </svg>
@@ -1079,7 +1079,7 @@
                   <path
                     d="M 7 34 A 24 24 0 0 1 51 34"
                     fill="none"
-                    stroke="#5eead4"
+                    stroke="#3dbda3"
                     stroke-width="4"
                     stroke-linecap="round"
                     stroke-dasharray="75.4"
@@ -1382,7 +1382,7 @@
                   style="
                     font-size: 11px;
                     font-weight: 700;
-                    color: #fbbf24;
+                    color: #f5c44c;
                     flex-shrink: 0;
                     cursor: pointer;
                   "
@@ -1897,10 +1897,10 @@ function epcDropColor(rating: string): string {
 
 function hsDropColor(score: number | null | undefined): string {
   if (score == null) return '#8e8e93'
-  if (score >= 75) return '#0d9488'
+  if (score >= 75) return '#1f7a66'
   if (score >= 60) return '#65a30d'
   if (score >= 45) return '#ca8a04'
-  if (score >= 30) return '#d97706'
+  if (score >= 30) return '#92400e'
   return '#dc2626'
 }
 
@@ -2093,9 +2093,9 @@ onMounted(async () => {
 :root {
   --navy: #231d45;
   --brand: #00a19a;
-  --brand-dark: #008c86;
-  --brand-pale: #eafaf9;
-  --brand-soft: #b2e8e6;
+  --brand-dark: #00a19a;
+  --brand-pale: #f1f9f4;
+  --brand-soft: #e2f1ea;
   --ink: #1f2024;
   --ink-soft: #4a5568;
   --ink-faint: #94a3b8;
@@ -2141,9 +2141,9 @@ onMounted(async () => {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
-  color: #008c86;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
+  color: #00a19a;
   font-size: 14px;
   font-weight: 800;
   display: grid;
@@ -2240,8 +2240,8 @@ onMounted(async () => {
 
 /* ── Healthscore free card ── */
 .hs-free-card {
-  background: #eafaf9;
-  border: 1.5px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1.5px solid #e2f1ea;
   border-radius: 18px;
   padding: 20px;
   margin-bottom: 12px;
@@ -2262,7 +2262,7 @@ onMounted(async () => {
 }
 
 .eyebrow-label.teal {
-  color: #008c86;
+  color: #00a19a;
 }
 
 .badge-free {
@@ -2278,7 +2278,7 @@ onMounted(async () => {
   font-size: 10px;
   font-weight: 700;
   background: rgba(255, 255, 255, 0.12);
-  color: #5eead4;
+  color: #3dbda3;
   border: 1px solid rgba(94, 234, 212, 0.3);
   border-radius: 999px;
   padding: 3px 10px;
@@ -2340,7 +2340,7 @@ onMounted(async () => {
   width: 100%;
   padding: 12px 12px 12px 36px;
   border-radius: 12px;
-  border: 1.5px solid #b2e8e6;
+  border: 1.5px solid #e2f1ea;
   background: #fff;
   font-size: 13px;
   color: #1f2024;
@@ -2386,7 +2386,7 @@ onMounted(async () => {
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  background: #5eead4;
+  background: #3dbda3;
   color: #231d45;
   letter-spacing: -0.01em;
   font-family: inherit;
@@ -2527,7 +2527,7 @@ onMounted(async () => {
 }
 .risk-med {
   color: #92400e;
-  border-color: #fde68a;
+  border-color: #fef3c7;
 }
 
 .prop-price-tag {
@@ -2626,7 +2626,7 @@ onMounted(async () => {
 
 /* ── Returning user: Passport status card ── */
 .passport-status-card {
-  background: linear-gradient(135deg, #008c86, #00a19a);
+  background: linear-gradient(135deg, #00a19a, #00a19a);
   border-radius: 18px;
   padding: 16px 18px;
   margin-bottom: 14px;
@@ -2749,7 +2749,7 @@ onMounted(async () => {
 .psc-view-cta {
   font-size: 11px;
   font-weight: 700;
-  color: #5eead4;
+  color: #3dbda3;
 }
 
 /* No passport state */
@@ -2792,7 +2792,7 @@ onMounted(async () => {
 /* ── Next action nudge ── */
 .next-action-card {
   background: #fffbeb;
-  border: 1.5px solid #fde68a;
+  border: 1.5px solid #fef3c7;
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 14px;
@@ -2821,20 +2821,20 @@ onMounted(async () => {
 }
 .na-sub {
   font-size: 11.5px;
-  color: #b45309;
+  color: #92400e;
   line-height: 1.4;
 }
 .na-cta {
   font-size: 12px;
   font-weight: 700;
-  color: #d97706;
+  color: #92400e;
   flex-shrink: 0;
 }
 
 /* ── Healthscore quick card ── */
 .hs-quick-card {
-  background: #eafaf9;
-  border: 1.5px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1.5px solid #e2f1ea;
   border-radius: 14px;
   padding: 13px 16px;
   margin-bottom: 14px;
@@ -2915,7 +2915,7 @@ onMounted(async () => {
   padding: 4px 10px;
   font-size: 11px;
   font-weight: 700;
-  color: #5eead4;
+  color: #3dbda3;
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -2980,7 +2980,7 @@ onMounted(async () => {
 
 .addr-drop {
   background: #fff;
-  border: 1.5px solid #b2e8e6;
+  border: 1.5px solid #e2f1ea;
   border-radius: 14px;
   box-shadow: 0 8px 24px rgba(35, 29, 69, 0.12);
   overflow: hidden;
@@ -3093,16 +3093,16 @@ onMounted(async () => {
 
 .addr-badge--unclaimed {
   background: #f0fdfa;
-  color: #008c86;
-  border: 1px solid #b2e8e6;
+  color: #00a19a;
+  border: 1px solid #e2f1ea;
 }
 
 .selected-addr-pill {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
   border-radius: 12px;
   padding: 10px 14px;
   margin-bottom: 10px;
@@ -3183,7 +3183,7 @@ onMounted(async () => {
 .claim-stat-val {
   font-size: 15px;
   font-weight: 800;
-  color: #5eead4;
+  color: #3dbda3;
 }
 
 .claim-stat-lbl {
@@ -3201,7 +3201,7 @@ onMounted(async () => {
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  background: #5eead4;
+  background: #3dbda3;
   color: #231d45;
   font-family: inherit;
 }
@@ -3232,8 +3232,8 @@ onMounted(async () => {
 }
 
 .saved-search-card {
-  background: #eafaf9;
-  border: 1.5px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1.5px solid #e2f1ea;
   border-radius: 16px;
   padding: 14px 16px;
   margin-bottom: 14px;
@@ -3258,9 +3258,9 @@ onMounted(async () => {
 }
 
 .pill-brand {
-  background: #eafaf9;
-  color: #008c86;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  color: #00a19a;
+  border: 1px solid #e2f1ea;
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 11px;
@@ -3309,7 +3309,7 @@ onMounted(async () => {
 }
 .my-passport-card--published {
   background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
-  border-color: #5eead4;
+  border-color: #3dbda3;
 }
 .my-passport-card--published .my-passport-ic {
   background: #00a19a;
@@ -3439,8 +3439,8 @@ onMounted(async () => {
 }
 
 .add-property-card {
-  background: #eafaf9;
-  border: 1.5px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1.5px solid #e2f1ea;
   border-radius: 14px;
   padding: 13px 16px;
   display: flex;

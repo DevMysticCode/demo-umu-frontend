@@ -221,13 +221,7 @@ const handleSuggestedQuestion = async (q: string) => {
   await sendMessage(q)
 }
 
-const goBack = () => {
-  if (typeof window !== 'undefined' && window.history.length > 1) {
-    window.history.back()
-    return
-  }
-  navigateTo('/profile')
-}
+const goBack = useGoBack('/profile')
 
 // Auto-scroll to bottom on new messages
 watch(

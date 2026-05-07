@@ -969,7 +969,7 @@ function downloadFile(url: string, name: string) {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #10b981;
+  background: #00a19a;
 }
 .qhero-illustration {
   display: flex;
@@ -1012,7 +1012,7 @@ function downloadFile(url: string, name: string) {
   height: var(--size);
   border-radius: 50%;
   background: conic-gradient(
-    #0d9488 calc(var(--p) * 1%),
+    #1f7a66 calc(var(--p) * 1%),
     rgba(15, 118, 110, 0.15) 0
   );
   display: grid;
@@ -1147,7 +1147,7 @@ function downloadFile(url: string, name: string) {
 .detail-currency {
   display: flex; align-items: center; justify-content: space-between;
   margin-top: 8px; padding: 8px 12px;
-  background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a;
+  background: #fffbeb; border-radius: 8px; border: 1px solid #fef3c7;
 }
 .detail-currency-label { font-size: 12px; color: #92400e; }
 .detail-currency-value { font-size: 15px; font-weight: 700; color: #92400e; }

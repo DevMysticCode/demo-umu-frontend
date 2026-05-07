@@ -422,7 +422,7 @@ const goBack = () => {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #10b981;
+  background: #00a19a;
 }
 .hero-illustration {
   display: flex;
@@ -465,7 +465,7 @@ const goBack = () => {
   height: var(--size);
   border-radius: 50%;
   background: conic-gradient(
-    #0d9488 calc(var(--p) * 1%),
+    #1f7a66 calc(var(--p) * 1%),
     rgba(15, 118, 110, 0.15) 0
   );
   display: grid;
@@ -605,9 +605,9 @@ const goBack = () => {
 }
 
 .video-btn {
-  background: #0d9488;
+  background: #1f7a66;
   color: white;
-  border-color: #0d9488;
+  border-color: #1f7a66;
   box-shadow: 0 8px 20px -8px rgba(13, 148, 136, 0.6);
 }
 

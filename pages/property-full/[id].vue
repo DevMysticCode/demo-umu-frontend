@@ -447,7 +447,7 @@
             <span class="prop-map-legend-item"
               ><span
                 class="prop-map-dot"
-                style="background: #10b981"
+                style="background: #00a19a"
               />Parks</span
             >
             <span class="prop-map-legend-item"
@@ -2137,7 +2137,7 @@ const initMap = async () => {
     }
     for (const p of nearby.parks ?? []) {
       if (!p.lat || !p.lon) continue
-      L.marker([p.lat, p.lon], { icon: makeDivIcon('#10b981', '🌳') })
+      L.marker([p.lat, p.lon], { icon: makeDivIcon('#00a19a', '🌳') })
         .bindPopup(`${p.name} · ${p.distanceKm}km`)
         .addTo(map)
     }

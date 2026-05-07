@@ -72,7 +72,7 @@
               style="
                 width: 32px;
                 height: 32px;
-                background: #eafaf9;
+                background: #f1f9f4;
                 border-radius: 9px;
                 display: grid;
                 place-items: center;
@@ -306,10 +306,10 @@ function epcColor(rating: string): string {
 
 function hsColor(score: number | null | undefined): string {
   if (score == null) return '#8e8e93'
-  if (score >= 75) return '#0d9488'
+  if (score >= 75) return '#1f7a66'
   if (score >= 60) return '#65a30d'
   if (score >= 45) return '#ca8a04'
-  if (score >= 30) return '#d97706'
+  if (score >= 30) return '#92400e'
   return '#dc2626'
 }
 
@@ -370,7 +370,7 @@ defineExpose({ clearQuery })
   stroke: rgba(255, 255, 255, 0.5);
 }
 .psi-wrap--dark .psi-input:focus {
-  border-color: #5eead4;
+  border-color: #3dbda3;
   background: rgba(255, 255, 255, 0.12);
 }
 .psi-wrap--dark .psi-input::placeholder {
@@ -516,12 +516,12 @@ defineExpose({ clearQuery })
 }
 .psi-drop-badge--unclaimed {
   background: #f0fdfa;
-  color: #008c86;
-  border: 1px solid #b2e8e6;
+  color: #00a19a;
+  border: 1px solid #e2f1ea;
 }
 .psi-drop-badge--hs {
   background: #f0fdfa;
-  color: #0d9488;
+  color: #1f7a66;
   border: 1px solid #ccfbf1;
 }
 

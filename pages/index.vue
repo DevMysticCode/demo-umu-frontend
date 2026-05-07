@@ -38,9 +38,9 @@
             style="
               font-size: 10px;
               font-weight: 700;
-              color: #008c86;
-              background: #eafaf9;
-              border: 1px solid #b2e8e6;
+              color: #00a19a;
+              background: #f1f9f4;
+              border: 1px solid #e2f1ea;
               padding: 5px 11px;
               border-radius: 999px;
               letter-spacing: 0.05em;
@@ -155,7 +155,7 @@
                 padding: 4px 11px;
               "
             >
-              <span style="font-size: 10px; font-weight: 700; color: #5eead4"
+              <span style="font-size: 10px; font-weight: 700; color: #3dbda3"
                 >Tap to check your property &#x2192;</span
               >
             </div>
@@ -187,7 +187,7 @@
               <path
                 d="M 10 56 A 38 38 0 0 1 86 56"
                 fill="none"
-                stroke="#5eead4"
+                stroke="#3dbda3"
                 stroke-width="7"
                 stroke-linecap="round"
                 stroke-dasharray="119.4"
@@ -230,8 +230,8 @@
               display: flex;
               align-items: center;
               gap: 5px;
-              background: #eafaf9;
-              border: 1px solid #b2e8e6;
+              background: #f1f9f4;
+              border: 1px solid #e2f1ea;
               border-radius: 999px;
               padding: 5px 10px;
             "
@@ -241,14 +241,14 @@
               height="11"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#008c86"
+              stroke="#00a19a"
               stroke-width="2.5"
               stroke-linecap="round"
               stroke-linejoin="round"
             >
               <polyline points="20 6 9 17 4 12" />
             </svg>
-            <span style="font-size: 11px; font-weight: 700; color: #008c86">{{
+            <span style="font-size: 11px; font-weight: 700; color: #00a19a">{{
               stat
             }}</span>
           </div>
@@ -510,7 +510,7 @@ const cards = [
     backSub: 'HealthScore™ surfaces defects upfront — not months in.',
   },
   {
-    frontGradient: 'linear-gradient(150deg, #008c86, #00b5ad)',
+    frontGradient: 'linear-gradient(150deg, #00a19a, #00b5ad)',
     shadow: '0 8px 28px rgba(0,140,134,0.4)',
     glowColor: 'radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%)',
     target: 900,
@@ -712,7 +712,7 @@ onMounted(() => {
 .card-back {
   -webkit-transform: rotateY(180deg);
   transform: rotateY(180deg);
-  background: linear-gradient(150deg, #008c86, #00b5ad);
+  background: linear-gradient(150deg, #00a19a, #00b5ad);
   box-shadow: 0 8px 28px rgba(0, 161, 154, 0.4);
   align-items: center;
   justify-content: center;

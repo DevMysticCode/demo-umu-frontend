@@ -549,14 +549,7 @@ const securitySwitches = ref([
   { label: "Payment notifications via SMS", enabled: true },
 ]);
 
-const goBack = () => {
-  if (typeof window !== "undefined" && window.history.length > 1) {
-    window.history.back();
-    return;
-  }
-
-  navigateTo("/profile");
-};
+const goBack = useGoBack('/profile');
 
 // Open the Stripe customer portal in a new tab. Until the backend wires
 // up `/payment/portal-session`, this is a friendly placeholder.

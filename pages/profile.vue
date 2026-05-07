@@ -30,27 +30,29 @@
     <main class="px-5 pb-8">
       <section class="pt-6 text-center">
         <div class="relative w-fit mx-auto">
-          <img
-            src="/op-icons/temp/profilepic.png"
-            alt="Profile avatar"
-            class="w-28 h-28 rounded-full object-cover"
+          <UserAvatar
+            :src="profile?.avatarUrl"
+            :firstName="profile?.firstName"
+            :lastName="profile?.lastName"
+            :size="112"
           />
         </div>
 
         <h2
           class="mt-8 text-[44px] leading-[52px] font-semibold text-[#101319]"
         >
-          Maxine Wilson
+          {{ fullName || 'Your Profile' }}
         </h2>
         <p class="text-[20px] leading-[24px] text-[#7f8084] mt-1">
-          maxinewilson@yahoo.com
+          {{ profile?.email || '' }}
         </p>
 
         <button
+          v-if="memberSince"
           type="button"
           class="mt-6 h-14 px-8 rounded-full border border-brand-aqua text-brand-aqua text-xl leading-6 font-medium"
         >
-          Member since 2023
+          Member since {{ memberSince }}
         </button>
       </section>
 
@@ -117,11 +119,16 @@
 </template>
 
 <script setup>
+import UserAvatar from '~/components/ui/UserAvatar.vue'
+
 definePageMeta({
   title: "My Profile - UmovingU",
   alias: "/profile-main",
   middleware: 'auth',
 });
+
+const { profile, fullName, memberSince, fetchProfile } = useProfile()
+onMounted(() => { if (!profile.value) fetchProfile().catch(() => null) })
 
 const searchQuery = ref("");
 const route = useRoute();
@@ -199,14 +206,7 @@ const filteredItems = computed(() => {
   );
 });
 
-const goBack = () => {
-  if (typeof window !== "undefined" && window.history.length > 1) {
-    window.history.back();
-    return;
-  }
-
-  navigateTo("/explore");
-};
+const goBack = useGoBack('/explore');
 
 const onPreferenceClick = async (item) => {
   if (item.route) {

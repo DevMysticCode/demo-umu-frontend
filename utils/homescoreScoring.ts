@@ -860,7 +860,7 @@ const PILLAR_MAX: Record<string, number> = {
 
 function getRating(total: number): { rating: string; ratingColor: string } {
   if (total >= 80) return { rating: 'Excellent', ratingColor: '#16a34a' }
-  if (total >= 65) return { rating: 'Good', ratingColor: '#0d9488' }
+  if (total >= 65) return { rating: 'Good', ratingColor: '#1f7a66' }
   if (total >= 45) return { rating: 'Room to improve', ratingColor: '#f59e0b' }
   return { rating: 'Plenty of opportunities', ratingColor: '#dc2626' }
 }

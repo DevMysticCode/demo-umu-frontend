@@ -26,7 +26,7 @@
             height="28"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#5eead4"
+            stroke="#3dbda3"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -175,13 +175,7 @@ const hasProgress = computed(() => {
   )
 })
 
-function goBack() {
-  if (typeof window !== 'undefined' && window.history.length > 1) {
-    router.back()
-  } else {
-    router.push('/explore')
-  }
-}
+const goBack = useGoBack('/explore')
 
 function goToBuild() {
   router.push('/buyer-profile/build')
@@ -394,7 +388,7 @@ onMounted(async () => {
   background: #f0fdf4;
 }
 .mp-pill-amber {
-  color: #d97706;
+  color: #92400e;
   background: #fef9f0;
 }
 .mp-pill-purple {
@@ -457,7 +451,7 @@ onMounted(async () => {
   letter-spacing: -0.01em;
 }
 .mp-cta:active {
-  background: #008c86;
+  background: #00a19a;
 }
 .mp-cta-sub {
   text-align: center;

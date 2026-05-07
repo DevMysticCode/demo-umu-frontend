@@ -286,7 +286,7 @@ const registerInterest = async () => {
 .ri-hero__dot {
   width: 6px;
   height: 6px;
-  background: #5eead4;
+  background: #3dbda3;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -340,7 +340,7 @@ const registerInterest = async () => {
 
 .ri-row__icon--amber {
   background: #fef9f0;
-  color: #d97706;
+  color: #92400e;
 }
 
 .ri-row__text {
@@ -380,7 +380,7 @@ const registerInterest = async () => {
 
 .ri-chip--amber {
   background: #fef9f0;
-  color: #d97706;
+  color: #92400e;
 }
 
 /* Privacy */

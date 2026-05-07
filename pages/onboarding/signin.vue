@@ -393,13 +393,13 @@ const strengthBg = computed(() => {
   if (passwordStrength.value <= 1) return '#ef4444'
   if (passwordStrength.value === 2) return '#f59e0b'
   if (passwordStrength.value === 3) return '#3b82f6'
-  return '#10b981'
+  return '#00a19a'
 })
 const strengthColor = computed(() => {
   if (passwordStrength.value <= 1) return '#ef4444'
   if (passwordStrength.value === 2) return '#f59e0b'
   if (passwordStrength.value === 3) return '#3b82f6'
-  return '#10b981'
+  return '#00a19a'
 })
 const strengthLabel = computed(() => {
   if (passwordStrength.value <= 1) return 'Weak'
@@ -552,7 +552,7 @@ const handleResetPassword = async () => {
 .info-banner--teal {
   background: rgba(0, 161, 154, 0.1);
   border: 1px solid rgba(0, 161, 154, 0.25);
-  color: #008c86;
+  color: #00a19a;
 }
 
 .info-banner--yellow {

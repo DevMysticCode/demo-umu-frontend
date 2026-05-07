@@ -888,7 +888,7 @@ const executeDelete = async () => {
 .coll-nav-search.open {
   width: 220px;
   background: #fff;
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
   box-shadow: 0 2px 8px rgba(0, 161, 154, 0.12);
 }
 .coll-nav-search-btn {
@@ -903,7 +903,7 @@ const executeDelete = async () => {
   flex-shrink: 0;
 }
 .coll-nav-search.open .coll-nav-search-btn {
-  color: #008c86;
+  color: #00a19a;
 }
 .coll-nav-search-input {
   flex: 1;
@@ -966,7 +966,7 @@ const executeDelete = async () => {
 .coll-hero-eyebrow {
   font-size: 17px;
   font-style: italic;
-  color: #0d9488;
+  color: #1f7a66;
   letter-spacing: 0.01em;
   margin-bottom: 6px;
   font-family: Georgia, 'Times New Roman', serif;
@@ -1013,8 +1013,8 @@ const executeDelete = async () => {
   width: calc(100% - 32px);
   margin: 8px 16px 16px;
   padding: 14px;
-  background: linear-gradient(135deg, #f4fbfa, #eafaf9);
-  border: 1px solid #b2e8e6;
+  background: linear-gradient(135deg, #f4fbfa, #f1f9f4);
+  border: 1px solid #e2f1ea;
   border-radius: 18px;
   cursor: pointer;
   text-align: left;
@@ -1051,7 +1051,7 @@ const executeDelete = async () => {
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #008c86;
+  color: #00a19a;
   margin-bottom: 4px;
 }
 .coll-resume-name {
@@ -1071,7 +1071,7 @@ const executeDelete = async () => {
   line-height: 1.4;
 }
 .coll-resume-meta b {
-  color: #008c86;
+  color: #00a19a;
   font-weight: 700;
 }
 .coll-resume-progress {
@@ -1088,14 +1088,14 @@ const executeDelete = async () => {
 }
 .coll-resume-fill {
   height: 100%;
-  background: linear-gradient(90deg, #008c86, #00b5ad);
+  background: linear-gradient(90deg, #00a19a, #00b5ad);
   border-radius: 999px;
   transition: width 0.5s ease;
 }
 .coll-resume-pct {
   font-size: 12.5px;
   font-weight: 800;
-  color: #008c86;
+  color: #00a19a;
   flex-shrink: 0;
 }
 .coll-resume-cta {
@@ -1103,7 +1103,7 @@ const executeDelete = async () => {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #00a19a, #008c86);
+  background: linear-gradient(135deg, #00a19a, #00a19a);
   color: #fff;
   display: grid;
   place-items: center;
@@ -1186,8 +1186,8 @@ const executeDelete = async () => {
   font-family: inherit;
 }
 .coll-city-chip:hover {
-  border-color: #b2e8e6;
-  color: #008c86;
+  border-color: #e2f1ea;
+  color: #00a19a;
 }
 .coll-city-chip.active {
   background: #00a19a;
@@ -1199,7 +1199,7 @@ const executeDelete = async () => {
   font-size: 10.5px;
   font-weight: 800;
   background: rgba(0, 161, 154, 0.12);
-  color: #008c86;
+  color: #00a19a;
   padding: 1px 7px;
   border-radius: 999px;
 }

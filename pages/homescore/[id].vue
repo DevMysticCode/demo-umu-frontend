@@ -837,7 +837,7 @@
                   rx="2"
                   fill="#ccfbf1"
                 />
-                <polygon points="140,32 163,12 186,32" fill="#0d9488" />
+                <polygon points="140,32 163,12 186,32" fill="#1f7a66" />
                 <rect
                   x="155"
                   y="44"
@@ -859,7 +859,7 @@
                   y="9"
                   text-anchor="middle"
                   font-size="8"
-                  fill="#0d9488"
+                  fill="#1f7a66"
                   font-weight="700"
                 >
                   YOU
@@ -908,7 +908,7 @@
                 x="340"
                 y="66"
                 font-size="7"
-                fill="#0d9488"
+                fill="#1f7a66"
                 font-weight="600"
                 text-anchor="middle"
               >
@@ -934,14 +934,14 @@
                   y1="-4"
                   x2="0"
                   y2="-16"
-                  stroke="#0d9488"
+                  stroke="#1f7a66"
                   stroke-width="2.5"
                   stroke-linecap="round"
                 />
-                <circle cx="0" cy="-19" r="4" fill="#0d9488" />
+                <circle cx="0" cy="-19" r="4" fill="#1f7a66" />
                 <path
                   d="M-3.5,-22 Q0,-25 3.5,-22"
-                  stroke="#065f46"
+                  stroke="#1f7a66"
                   stroke-width="1.5"
                   fill="none"
                   stroke-linecap="round"
@@ -951,7 +951,7 @@
                   y1="-14"
                   x2="-5"
                   y2="-9"
-                  stroke="#0d9488"
+                  stroke="#1f7a66"
                   stroke-width="2"
                   stroke-linecap="round"
                 />
@@ -960,7 +960,7 @@
                   y1="-14"
                   x2="5"
                   y2="-10"
-                  stroke="#0d9488"
+                  stroke="#1f7a66"
                   stroke-width="2"
                   stroke-linecap="round"
                 />
@@ -969,7 +969,7 @@
                   y1="-4"
                   x2="4"
                   y2="2"
-                  stroke="#0d9488"
+                  stroke="#1f7a66"
                   stroke-width="2.5"
                   stroke-linecap="round"
                 />
@@ -978,7 +978,7 @@
                   y1="-4"
                   x2="-3"
                   y2="2"
-                  stroke="#0d9488"
+                  stroke="#1f7a66"
                   stroke-width="2.5"
                   stroke-linecap="round"
                 />
@@ -988,7 +988,7 @@
                   width="26"
                   height="11"
                   rx="5"
-                  fill="#0d9488"
+                  fill="#1f7a66"
                 />
                 <text
                   x="0"
@@ -1366,7 +1366,7 @@
                 class="hs-street-house-icon"
                 :style="{
                   color: sp.isPublished
-                    ? '#0d9488'
+                    ? '#1f7a66'
                     : sp.hasPassport
                       ? '#f59e0b'
                       : '#94a3b8',
@@ -1514,7 +1514,7 @@
                     buyer.matchScore >= 75
                       ? '#16a34a'
                       : buyer.matchScore >= 55
-                        ? '#d97706'
+                        ? '#92400e'
                         : '#94a3b8',
                 }"
               >
@@ -2613,7 +2613,7 @@ const liveHint = computed(() => {
 // ── Score helpers ─────────────────────────────────────────────
 
 function scoreColor(score: number): string {
-  if (score >= 75) return '#059669'
+  if (score >= 75) return '#1f7a66'
   if (score >= 60) return '#16a34a'
   if (score >= 40) return '#f59e0b'
   return '#dc2626'
@@ -2658,7 +2658,7 @@ const carbonGradeInfo = computed(() => {
   if (kg < 800) return { grade: 'A', label: 'Excellent', col: '#16a34a' }
   if (kg < 1400) return { grade: 'B', label: 'Good', col: '#65a30d' }
   if (kg < 2000) return { grade: 'C', label: 'Average', col: '#ca8a04' }
-  if (kg < 2800) return { grade: 'D', label: 'Below avg', col: '#d97706' }
+  if (kg < 2800) return { grade: 'D', label: 'Below avg', col: '#92400e' }
   if (kg < 3800) return { grade: 'E', label: 'Poor', col: '#ea580c' }
   if (kg < 4800) return { grade: 'F', label: 'Very poor', col: '#dc2626' }
   return { grade: 'G', label: 'Critical', col: '#7f1d1d' }
@@ -2671,7 +2671,7 @@ const carbonGradient = computed(() => {
     B: 'linear-gradient(135deg,#365314,#3f6212)',
     C: 'linear-gradient(135deg,#713f12,#854d0e)',
     D: 'linear-gradient(135deg,#78350f,#92400e)',
-    E: 'linear-gradient(135deg,#7c2d12,#9a3412)',
+    E: 'linear-gradient(135deg,#7c2d12,#92400e)',
     F: 'linear-gradient(135deg,#7f1d1d,#991b1b)',
     G: 'linear-gradient(135deg,#450a0a,#7f1d1d)',
   }
@@ -2692,7 +2692,7 @@ const carbonBarChart = computed(() => {
     { letter: 'A', color: '#16a34a', h: 8 },
     { letter: 'B', color: '#65a30d', h: 12 },
     { letter: 'C', color: '#ca8a04', h: 16 },
-    { letter: 'D', color: '#d97706', h: 20 },
+    { letter: 'D', color: '#92400e', h: 20 },
     { letter: 'E', color: '#ea580c', h: 16 },
     { letter: 'F', color: '#dc2626', h: 12 },
     { letter: 'G', color: '#7f1d1d', h: 8 },
@@ -2793,7 +2793,7 @@ const neighbourhood = computed(() => {
       rank: i + 1,
       cost: scoreToCost(r.score),
       costColor:
-        r.score >= 70 ? '#16a34a' : r.score >= 55 ? '#d97706' : '#dc2626',
+        r.score >= 70 ? '#16a34a' : r.score >= 55 ? '#92400e' : '#dc2626',
     }))
 })
 
@@ -3254,12 +3254,13 @@ function goBack() {
     return
   }
   // Landing screen — step back in history so we return to wherever we came
-  // from (property page, explore, etc.) without pushing a new entry.
-  if (typeof window !== 'undefined' && window.history.length > 1) {
-    router.back()
-  } else {
-    router.push(`/property/${propertyId}`)
-  }
+  // from (property page, explore, etc.) without pushing a new entry. Falls
+  // back to the property page if the user landed here directly.
+  const hasInAppPrev =
+    typeof window !== 'undefined' &&
+    typeof (router.options.history as any)?.state?.back === 'string'
+  if (hasInAppPrev) router.back()
+  else router.replace(`/property/${propertyId}`)
 }
 
 async function saveToBackend() {
@@ -3515,7 +3516,7 @@ watch(screen, (s) => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #0d9488;
+  background: #1f7a66;
   box-shadow: 0 0 0 4px #ccfbf1;
   flex-shrink: 0;
 }
@@ -3559,7 +3560,7 @@ watch(screen, (s) => {
   width: 44px;
   height: 44px;
   border: 4px solid #e2e8e8;
-  border-top-color: #0d9488;
+  border-top-color: #1f7a66;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -3632,7 +3633,7 @@ watch(screen, (s) => {
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #0d9488;
+  color: #1f7a66;
   font-weight: 600;
   margin-bottom: 6px;
   align-self: flex-start;
@@ -3658,7 +3659,7 @@ watch(screen, (s) => {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #008c86;
+  color: #00a19a;
   margin-bottom: 6px;
 }
 .hs-epc-explain-body {
@@ -3689,11 +3690,11 @@ watch(screen, (s) => {
 }
 .hs-conf-pill--good {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
 }
 .hs-conf-pill--ok {
-  background: #eafaf9;
-  color: #008c86;
+  background: #f1f9f4;
+  color: #00a19a;
 }
 .hs-conf-pill--warn {
   background: #fef3c7;
@@ -3743,7 +3744,7 @@ watch(screen, (s) => {
   align-items: flex-start;
   gap: 8px;
   background: #fef3c7;
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 12px;
@@ -3829,7 +3830,7 @@ watch(screen, (s) => {
 }
 .hs-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #0d9488, #2dd4bf);
+  background: linear-gradient(90deg, #1f7a66, #2dd4bf);
   border-radius: 4px;
   transition: width 0.45s ease;
 }
@@ -3961,7 +3962,7 @@ watch(screen, (s) => {
 .hs-cat-chip {
   font-size: 11px;
   font-weight: 600;
-  color: #0d9488;
+  color: #1f7a66;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -3997,7 +3998,7 @@ watch(screen, (s) => {
   border-color: #94a3b8;
 }
 .hs-option-btn.selected {
-  border-color: #0d9488;
+  border-color: #1f7a66;
   background: #f0fdfa;
   color: #0f766e;
   font-weight: 600;
@@ -4013,8 +4014,8 @@ watch(screen, (s) => {
   transition: border-color 0.15s ease;
 }
 .hs-option-btn.selected .hs-option-radio {
-  border-color: #0d9488;
-  background: #0d9488;
+  border-color: #1f7a66;
+  background: #1f7a66;
 }
 .hs-option-radio-dot {
   width: 8px;
@@ -4036,7 +4037,7 @@ watch(screen, (s) => {
   font-style: italic;
   margin: 12px 0 0;
   line-height: 1.45;
-  border-left: 3px solid #0d9488;
+  border-left: 3px solid #1f7a66;
   padding-left: 10px;
 }
 
@@ -4057,7 +4058,7 @@ watch(screen, (s) => {
 }
 .hs-btn-primary {
   flex: 1;
-  background: #0d9488;
+  background: #1f7a66;
   color: #fff;
   border: none;
   padding: 14px 18px;
@@ -4129,7 +4130,7 @@ watch(screen, (s) => {
 .hs-pp-banner-cta--mint {
   flex-shrink: 0;
   border: none;
-  background: #5eead4;
+  background: #3dbda3;
   color: #042f2e;
   font-size: 11px;
   font-weight: 700;
@@ -4176,7 +4177,7 @@ watch(screen, (s) => {
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #5eead4;
+  color: #3dbda3;
   margin-bottom: 6px;
 }
 .hs-pp-eyebrow-ic {
@@ -4240,7 +4241,7 @@ watch(screen, (s) => {
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #5eead4;
+  color: #3dbda3;
   margin-bottom: 6px;
 }
 .hs-pp-pub-explainer-row {
@@ -4251,14 +4252,14 @@ watch(screen, (s) => {
   gap: 6px;
 }
 .hs-pp-pub-check {
-  color: #5eead4;
+  color: #3dbda3;
   font-weight: 800;
   flex-shrink: 0;
 }
 .hs-pp-pub-unlock {
   width: 100%;
   border: none;
-  background: #5eead4;
+  background: #3dbda3;
   color: #042f2e;
   font-size: 13px;
   font-weight: 800;
@@ -4279,7 +4280,7 @@ watch(screen, (s) => {
 /* ── In-progress passport banner (warm amber, prototype-matching) ── */
 .hs-pp-claimed {
   background: #fffbeb;
-  border: 1.5px solid #fde68a;
+  border: 1.5px solid #fef3c7;
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 14px;
@@ -4326,7 +4327,7 @@ watch(screen, (s) => {
 
 .hs-pp-claimed-explainer-amber {
   background: rgba(255, 255, 255, 0.7);
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
   border-radius: 10px;
   padding: 10px 12px;
   margin-bottom: 10px;
@@ -4343,7 +4344,7 @@ watch(screen, (s) => {
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #008c86;
+  color: #00a19a;
   margin-bottom: 6px;
 }
 .hs-pp-claimed-explainer-title-amber {
@@ -4452,7 +4453,7 @@ watch(screen, (s) => {
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #008c86;
+  color: #00a19a;
   margin-bottom: 6px;
 }
 .hs-pp-none-explainer-row {
@@ -4487,7 +4488,7 @@ watch(screen, (s) => {
 .hs-pp-owner-cta--published {
   border: 1.5px solid rgba(94, 234, 212, 0.5);
   background: rgba(94, 234, 212, 0.08);
-  color: #5eead4;
+  color: #3dbda3;
   margin: 0;
   padding: 10px;
 }
@@ -4510,7 +4511,7 @@ watch(screen, (s) => {
 /* ── In-progress passport banner (amber) ─────────────────── */
 .hs-pp-inprogress {
   background: #fffbeb;
-  border: 1.5px solid #fde68a;
+  border: 1.5px solid #fef3c7;
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 14px;
@@ -4540,7 +4541,7 @@ watch(screen, (s) => {
 }
 .hs-pp-inprogress-box {
   background: #fff;
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
   border-radius: 10px;
   padding: 10px 12px;
   margin-bottom: 8px;
@@ -4573,7 +4574,7 @@ watch(screen, (s) => {
   transition: background 0.15s ease;
 }
 .hs-pp-inprogress-cta:active {
-  background: #d97706;
+  background: #92400e;
 }
 .hs-pp-inprogress-done {
   text-align: center;
@@ -4625,7 +4626,7 @@ watch(screen, (s) => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #0d9488;
+  background: #1f7a66;
   box-shadow: 0 0 0 4px #ccfbf1;
   flex-shrink: 0;
   margin-top: 6px;
@@ -4682,8 +4683,8 @@ watch(screen, (s) => {
 }
 .hs-addr-badge--unclaimed {
   background: #f0fdfa;
-  color: #008c86;
-  border: 1px solid #b2e8e6;
+  color: #00a19a;
+  border: 1px solid #e2f1ea;
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -4693,7 +4694,7 @@ watch(screen, (s) => {
 }
 
 .hs-savings-hero {
-  background: linear-gradient(135deg, #065f46, #10b981);
+  background: linear-gradient(135deg, #1f7a66, #00a19a);
   color: #fff;
   border-radius: 20px;
   padding: 22px;
@@ -4786,7 +4787,7 @@ watch(screen, (s) => {
 }
 .hs-journey-bar-fill {
   height: 8px;
-  background: linear-gradient(90deg, #0d9488, #16a34a);
+  background: linear-gradient(90deg, #1f7a66, #16a34a);
   border-radius: 4px;
   transition: width 0.8s ease;
 }
@@ -4929,7 +4930,7 @@ watch(screen, (s) => {
 }
 .hs-carbon-save-pill {
   margin-left: auto;
-  background: #10b981;
+  background: #00a19a;
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 11px;
@@ -5107,7 +5108,7 @@ watch(screen, (s) => {
   margin: 0;
 }
 .hs-win-pts {
-  color: #0d9488;
+  color: #1f7a66;
   font-weight: 700;
   font-size: 11.5px;
   margin: 0;
@@ -5115,7 +5116,7 @@ watch(screen, (s) => {
 
 .hs-opps-card {
   background: #fffbeb;
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
   border-radius: 20px;
   padding: 20px;
   margin-bottom: 14px;
@@ -5132,7 +5133,7 @@ watch(screen, (s) => {
   gap: 12px;
   padding: 12px 14px;
   background: #fffbeb;
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
   border-radius: 12px;
   margin-bottom: 8px;
   align-items: flex-start;
@@ -5335,7 +5336,7 @@ watch(screen, (s) => {
 .hs-pp-badge {
   display: inline-block;
   background: rgba(20, 184, 166, 0.2);
-  color: #5eead4;
+  color: #3dbda3;
   font-size: 10.5px;
   font-weight: 700;
   padding: 5px 10px;
@@ -5377,7 +5378,7 @@ watch(screen, (s) => {
 }
 .hs-pp-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #14b8a6, #5eead4);
+  background: linear-gradient(90deg, #14b8a6, #3dbda3);
   border-radius: 999px;
   transition: width 0.6s ease;
 }
@@ -5403,7 +5404,7 @@ watch(screen, (s) => {
   flex: 1;
 }
 .hs-pp-doc-gain {
-  color: #5eead4;
+  color: #3dbda3;
   font-weight: 600;
   font-size: 11.5px;
 }
@@ -5496,11 +5497,11 @@ watch(screen, (s) => {
     border-color 0.15s;
 }
 .hs-vault-tab.active {
-  color: #0d9488;
-  border-bottom-color: #0d9488;
+  color: #1f7a66;
+  border-bottom-color: #1f7a66;
 }
 .hs-tab-badge {
-  background: #0d9488;
+  background: #1f7a66;
   color: white;
   font-size: 10px;
   font-weight: 700;
@@ -5529,11 +5530,11 @@ watch(screen, (s) => {
 }
 .hs-pa-btn.outline {
   background: #f0fdfa;
-  color: #0d9488;
+  color: #1f7a66;
   border: 1.5px solid #99f6e4;
 }
 .hs-pa-btn.solid {
-  background: #0d9488;
+  background: #1f7a66;
   color: #fff;
 }
 .hs-pa-btn:disabled {
@@ -5661,7 +5662,7 @@ watch(screen, (s) => {
   color: #0f172a;
 }
 .hs-stat-box.brand .hs-stat-val {
-  color: #0d9488;
+  color: #1f7a66;
 }
 .hs-stat-box.green .hs-stat-val {
   color: #16a34a;
@@ -5831,7 +5832,7 @@ watch(screen, (s) => {
 }
 .hsq-progress-fill {
   height: 4px;
-  background: linear-gradient(90deg, #0d9488, #5eead4);
+  background: linear-gradient(90deg, #1f7a66, #3dbda3);
   border-radius: 999px;
   transition: width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -5848,7 +5849,7 @@ watch(screen, (s) => {
   padding: 4px 11px;
   font-size: 10px;
   font-weight: 700;
-  color: #5eead4;
+  color: #3dbda3;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -5955,9 +5956,9 @@ watch(screen, (s) => {
   color: #475569;
   line-height: 1.6;
   padding: 12px 14px;
-  background: #eafaf9;
+  background: #f1f9f4;
   border-radius: 12px;
-  border: 1.5px solid #b2e8e6;
+  border: 1.5px solid #e2f1ea;
   margin-bottom: 14px;
 }
 .hsq-options {
@@ -5981,12 +5982,12 @@ watch(screen, (s) => {
   font-family: inherit;
 }
 .hsq-opt:hover {
-  background: #eafaf9;
-  border-color: #b2e8e6;
+  background: #f1f9f4;
+  border-color: #e2f1ea;
 }
 .hsq-opt.selected {
-  background: #0d9488;
-  border-color: #0d9488;
+  background: #1f7a66;
+  border-color: #1f7a66;
   color: #fff;
   font-weight: 600;
 }
@@ -6019,7 +6020,7 @@ watch(screen, (s) => {
   flex: 1;
   height: 48px;
   border: none;
-  background: #0d9488;
+  background: #1f7a66;
   color: #fff;
   border-radius: 14px;
   font-size: 15px;
@@ -6050,7 +6051,7 @@ watch(screen, (s) => {
 .hs-journey-link {
   font-size: 11px;
   font-weight: 600;
-  color: #0d9488;
+  color: #1f7a66;
 }
 .hs-journey-num-wrap {
   display: flex;
@@ -6093,7 +6094,7 @@ watch(screen, (s) => {
   height: 50px;
   border: none;
   border-radius: 14px;
-  background: #0d9488;
+  background: #1f7a66;
   color: #fff;
   font-size: 15px;
   font-weight: 700;
@@ -6145,7 +6146,7 @@ watch(screen, (s) => {
   font-family: inherit;
 }
 .hs-interest-btn.primary {
-  background: #0d9488;
+  background: #1f7a66;
   color: #fff;
 }
 .hs-interest-btn.outline {
@@ -6288,7 +6289,7 @@ watch(screen, (s) => {
 }
 .hs-buyer-risk-row.warn {
   background: #fef3c7;
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
 }
 .hs-buyer-risk-row.ok {
   background: #dcfce7;
@@ -6418,7 +6419,7 @@ watch(screen, (s) => {
 .hs-buyer-save-arrow {
   font-size: 13px;
   font-weight: 700;
-  color: #0d9488;
+  color: #1f7a66;
   white-space: nowrap;
 }
 
@@ -6480,7 +6481,7 @@ watch(screen, (s) => {
   color: #94a3b8;
 }
 .hs-nb-pos.mine {
-  color: #065f46;
+  color: #1f7a66;
 }
 .hs-nb-addr {
   font-size: 13px;
@@ -6488,7 +6489,7 @@ watch(screen, (s) => {
   font-weight: 500;
 }
 .hs-nb-addr.mine {
-  color: #065f46;
+  color: #1f7a66;
   font-weight: 700;
 }
 .hs-nb-detail {
@@ -6721,7 +6722,7 @@ watch(screen, (s) => {
   color: #fca5a5;
 }
 .hs-mr-compare-head.teal {
-  color: #5eead4;
+  color: #3dbda3;
 }
 .hs-mr-compare-list {
   display: flex;
@@ -6762,7 +6763,7 @@ watch(screen, (s) => {
   font-weight: 800;
 }
 .hs-mr-step-ic.teal {
-  background: #0d9488;
+  background: #1f7a66;
 }
 .hs-mr-step-title {
   font-size: 13px;
@@ -6790,7 +6791,7 @@ watch(screen, (s) => {
 .hs-mr-stat-num {
   font-size: 20px;
   font-weight: 800;
-  color: #0d9488;
+  color: #1f7a66;
 }
 .hs-mr-stat-lbl {
   font-size: 10px;
@@ -6835,7 +6836,7 @@ watch(screen, (s) => {
   overflow: hidden;
 }
 .hs-searched-card--published {
-  background: linear-gradient(135deg, #0d9488, #0f766e);
+  background: linear-gradient(135deg, #1f7a66, #0f766e);
   color: #fff;
 }
 .hs-searched-card--inprogress,
@@ -6876,7 +6877,7 @@ watch(screen, (s) => {
 }
 .hs-searched-card--inprogress .hs-searched-num,
 .hs-searched-card--unclaimed .hs-searched-num {
-  color: #5eead4;
+  color: #3dbda3;
 }
 .hs-searched-numlbl {
   font-size: 9px;
@@ -6920,14 +6921,14 @@ watch(screen, (s) => {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #5eead4;
+  color: #3dbda3;
   margin-bottom: 4px;
 }
 .hs-searched-pulse {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #5eead4;
+  background: #3dbda3;
   box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.25);
   animation: hs-pulse-mint 1.5s infinite;
   flex-shrink: 0;

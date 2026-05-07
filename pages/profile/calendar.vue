@@ -529,13 +529,7 @@ const saveReminder = async () => {
 }
 
 // ─── Init ──────────────────────────────────────────────────────────────────
-const goBack = () => {
-  if (typeof window !== 'undefined' && window.history.length > 1) {
-    window.history.back()
-    return
-  }
-  navigateTo('/profile')
-}
+const goBack = useGoBack('/profile')
 
 onMounted(async () => {
   // Request notification permission on first open (iOS/Android only — no-op on web)

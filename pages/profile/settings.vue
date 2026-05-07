@@ -46,7 +46,7 @@
             <div class="st-strength-body">
               <div class="st-strength-title">Account secured</div>
               <div class="st-strength-sub">
-                Strong password · 2FA recommended
+                Strong password · keep email up to date
               </div>
             </div>
           </div>
@@ -77,24 +77,10 @@
             </div>
             <span class="st-row-chev">›</span>
           </button>
-          <button class="st-row">
+          <button class="st-row" @click="openChangePassword">
             <div class="st-row-content">
               <div class="st-row-label">Change password</div>
-              <div class="st-row-meta">Last changed 24 days ago</div>
-            </div>
-            <span class="st-row-chev">›</span>
-          </button>
-          <button class="st-row">
-            <div class="st-row-content">
-              <div class="st-row-label">Two-factor authentication</div>
-              <div class="st-row-meta">Off · Recommended</div>
-            </div>
-            <span class="st-row-chev">›</span>
-          </button>
-          <button class="st-row">
-            <div class="st-row-content">
-              <div class="st-row-label">Active sessions</div>
-              <div class="st-row-meta">2 devices signed in</div>
+              <div class="st-row-meta">Update the password on your account</div>
             </div>
             <span class="st-row-chev">›</span>
           </button>
@@ -244,6 +230,59 @@
         <div v-if="toast" class="st-toast">{{ toast }}</div>
       </Transition>
     </main>
+
+    <!-- Change password drawer -->
+    <Teleport to="body">
+      <div v-if="showChangePassword" class="st-overlay" @click.self="closeChangePassword">
+        <div class="st-modal">
+          <div class="st-modal-handle" />
+          <div class="st-modal-header">
+            <div class="st-modal-title">Change password</div>
+            <button class="st-modal-close" type="button" aria-label="Close" @click="closeChangePassword">×</button>
+          </div>
+          <div class="st-modal-body">
+            <p class="st-modal-intro">
+              For your security, enter your current password before choosing a new one.
+            </p>
+            <div class="st-field">
+              <label class="st-field-label">Current password</label>
+              <input
+                v-model="cpForm.current"
+                type="password"
+                class="st-field-input"
+                autocomplete="current-password"
+              />
+            </div>
+            <div class="st-field">
+              <label class="st-field-label">New password</label>
+              <input
+                v-model="cpForm.next"
+                type="password"
+                class="st-field-input"
+                autocomplete="new-password"
+                placeholder="At least 8 characters"
+              />
+            </div>
+            <div class="st-field">
+              <label class="st-field-label">Confirm new password</label>
+              <input
+                v-model="cpForm.confirm"
+                type="password"
+                class="st-field-input"
+                autocomplete="new-password"
+              />
+            </div>
+            <p v-if="cpError" class="st-modal-error">{{ cpError }}</p>
+          </div>
+          <div class="st-modal-footer">
+            <button class="st-btn-secondary" type="button" :disabled="cpSaving" @click="closeChangePassword">Cancel</button>
+            <button class="st-btn-primary" type="button" :disabled="cpSaving || !cpReady" @click="submitChangePassword">
+              {{ cpSaving ? 'Saving…' : 'Update password' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -269,6 +308,59 @@ const prefs = reactive({
   contactVisible: true,
 })
 const toast = ref('')
+
+// ── Change password ───────────────────────────────────────────
+const showChangePassword = ref(false)
+const cpForm = reactive({ current: '', next: '', confirm: '' })
+const cpError = ref('')
+const cpSaving = ref(false)
+
+const cpReady = computed(
+  () =>
+    cpForm.current.length > 0 &&
+    cpForm.next.length >= 8 &&
+    cpForm.next === cpForm.confirm,
+)
+
+function openChangePassword() {
+  cpForm.current = ''
+  cpForm.next = ''
+  cpForm.confirm = ''
+  cpError.value = ''
+  showChangePassword.value = true
+}
+function closeChangePassword() {
+  if (cpSaving.value) return
+  showChangePassword.value = false
+}
+
+async function submitChangePassword() {
+  cpError.value = ''
+  if (cpForm.next.length < 8) {
+    cpError.value = 'New password must be at least 8 characters.'
+    return
+  }
+  if (cpForm.next !== cpForm.confirm) {
+    cpError.value = 'New password and confirmation do not match.'
+    return
+  }
+  cpSaving.value = true
+  try {
+    const tok = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    if (!tok) throw new Error('Not signed in')
+    await $fetch(`${config.public.apiBase}/auth/change-password`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${tok}` },
+      body: { currentPassword: cpForm.current, newPassword: cpForm.next },
+    })
+    showChangePassword.value = false
+    showToast('Password updated')
+  } catch (err: any) {
+    cpError.value = err?.data?.message ?? err?.message ?? 'Could not change password'
+  } finally {
+    cpSaving.value = false
+  }
+}
 
 onMounted(async () => {
   await fetchProfile()
@@ -638,4 +730,121 @@ const securityLabel = computed(() => {
   opacity: 0;
   transform: translateX(-50%) translateY(8px);
 }
+
+/* ── Change password modal ─────────────────────────────────── */
+.st-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 40, 64, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 70;
+}
+.st-modal {
+  width: 100%;
+  max-width: 28rem;
+  background: #fafaf8;
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+  overflow: hidden;
+  animation: st-up 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes st-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.st-modal-handle { width: 36px; height: 4px; background: #d9dae0; border-radius: 100px; margin: 8px auto 0; }
+.st-modal-header { display: flex; align-items: center; padding: 12px 18px 10px; }
+.st-modal-title { flex: 1; font-size: 16px; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
+.st-modal-close {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #f0f2f1;
+  color: #4a5868;
+  font-size: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.st-modal-body { flex: 1; overflow-y: auto; padding: 6px 18px 14px; }
+.st-modal-footer {
+  padding: 12px 18px calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid #e8eceb;
+  background: #fafaf8;
+  display: flex;
+  gap: 8px;
+}
+.st-modal-intro {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4a5868;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.st-modal-error {
+  color: #b85b36;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 4px;
+}
+.st-field { margin-bottom: 12px; }
+.st-field-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #8a95a0;
+  margin-bottom: 6px;
+}
+.st-field-input {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #0e2840;
+  outline: none;
+  transition: all 0.18s;
+}
+.st-field-input:focus {
+  border-color: #00a19a;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.18);
+}
+.st-btn-secondary {
+  flex: 1;
+  background: #f0f2f1;
+  color: #0e2840;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+}
+.st-btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+.st-btn-primary {
+  flex: 2;
+  background: #00a19a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 161, 154, 0.32);
+}
+.st-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 </style>

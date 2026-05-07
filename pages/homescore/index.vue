@@ -162,11 +162,11 @@ function onCheckClick() {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
   display: grid;
   place-items: center;
-  color: #008c86;
+  color: #00a19a;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -186,14 +186,14 @@ function onCheckClick() {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
   padding: 5px 11px;
   border-radius: 999px;
   font-size: 10.5px;
   font-weight: 800;
   letter-spacing: 0.06em;
-  color: #008c86;
+  color: #00a19a;
   text-transform: uppercase;
   margin-bottom: 24px;
 }
@@ -202,7 +202,7 @@ function onCheckClick() {
   height: 6px;
   background: #00a19a;
   border-radius: 50%;
-  box-shadow: 0 0 0 3px #b2e8e6;
+  box-shadow: 0 0 0 3px #e2f1ea;
 }
 
 /* Headline */
@@ -289,8 +289,8 @@ function onCheckClick() {
   display: flex;
   align-items: center;
   gap: 11px;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
   border-radius: 12px;
   padding: 11px 14px;
   font-size: 13px;
@@ -304,7 +304,7 @@ function onCheckClick() {
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #00b5ad, #008c86);
+  background: linear-gradient(135deg, #00b5ad, #00a19a);
   color: #fff;
   display: grid;
   place-items: center;
@@ -324,7 +324,7 @@ function onCheckClick() {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #008c86;
+  color: #00a19a;
   display: block;
   margin-bottom: 1px;
 }
@@ -356,9 +356,9 @@ function onCheckClick() {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
-  color: #008c86;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
+  color: #00a19a;
   display: grid;
   place-items: center;
   flex-shrink: 0;

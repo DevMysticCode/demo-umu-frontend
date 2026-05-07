@@ -947,11 +947,7 @@ const profileCompletion = computed(() => {
   return Math.round((checks.filter(Boolean).length / checks.length) * 100)
 })
 
-const goBack = () => {
-  if (typeof window !== 'undefined' && window.history.length > 1)
-    window.history.back()
-  else navigateTo('/profile')
-}
+const goBack = useGoBack('/profile')
 </script>
 
 <style scoped>

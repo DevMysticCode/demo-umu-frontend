@@ -361,14 +361,14 @@ const roles = [
   {
     key: 'buy',
     icon: '🔍',
-    iconBg: '#eafaf9',
+    iconBg: '#f1f9f4',
     label: "I'm looking to buy",
     desc: 'Search properties, check risks, find your home',
   },
   {
     key: 'sell',
     icon: '🏠',
-    iconBg: '#eafaf9',
+    iconBg: '#f1f9f4',
     label: "I'm selling my home",
     desc: 'Build your Profile, get verified, move faster',
   },
@@ -382,7 +382,7 @@ const roles = [
   {
     key: 'both',
     icon: '🔄',
-    iconBg: '#eafaf9',
+    iconBg: '#f1f9f4',
     label: 'Selling and buying',
     desc: "We'll set up both sides of your move",
   },
@@ -1009,8 +1009,8 @@ function runConfetti() {
     '#231d45',
     '#00b5ad',
     '#ffffff',
-    '#b2e8e6',
-    '#008c86',
+    '#e2f1ea',
+    '#00a19a',
   ]
   const pieces = Array.from({ length: 120 }, () => ({
     x: Math.random() * canvas.width,
@@ -1163,7 +1163,7 @@ onMounted(() => {
 .prog-fill {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #00a19a, #008c86);
+  background: linear-gradient(90deg, #00a19a, #00a19a);
   border-radius: 3px;
   transition: width 0.4s ease;
 }
@@ -1193,13 +1193,13 @@ onMounted(() => {
   color: #1f2024;
 }
 .radio-opt:hover {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .radio-opt.sel {
   border-color: #00a19a;
-  background: #eafaf9;
+  background: #f1f9f4;
   font-weight: 600;
-  color: #008c86;
+  color: #00a19a;
 }
 .radio-dot {
   width: 20px;
@@ -1247,8 +1247,8 @@ onMounted(() => {
 /* ── Info card ────────────────────────────────────────────────────────── */
 .info-card {
   padding: 12px 14px;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
   border-radius: 12px;
   margin-bottom: 16px;
   font-size: 12px;
@@ -1361,9 +1361,9 @@ onMounted(() => {
   align-items: center;
   gap: 5px;
   padding: 5px 7px 5px 10px;
-  background: #eafaf9;
-  color: #008c86;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  color: #00a19a;
+  border: 1px solid #e2f1ea;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
@@ -1378,7 +1378,7 @@ onMounted(() => {
   border-radius: 50%;
   border: none;
   background: rgba(0, 140, 134, 0.15);
-  color: #008c86;
+  color: #00a19a;
   font-size: 14px;
   line-height: 1;
   cursor: pointer;
@@ -1399,7 +1399,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   background: #fff;
-  border: 1.5px solid #b2e8e6;
+  border: 1.5px solid #e2f1ea;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(35, 29, 69, 0.12);
   z-index: 30;
@@ -1420,7 +1420,7 @@ onMounted(() => {
   border-bottom: none;
 }
 .loc-drop-item:hover {
-  background: #eafaf9;
+  background: #f1f9f4;
 }
 .loc-drop-ic {
   font-size: 14px;
@@ -1467,25 +1467,25 @@ onMounted(() => {
   white-space: nowrap;
 }
 .chip:hover {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .chip.sel {
   border-color: #00a19a;
-  background: #eafaf9;
-  color: #008c86;
+  background: #f1f9f4;
+  color: #00a19a;
 }
 .chip-expander {
   border-style: dashed;
   color: #94a3b8;
 }
 .chip-expanded {
-  border-color: #b2e8e6;
-  background: #eafaf9;
+  border-color: #e2f1ea;
+  background: #f1f9f4;
   animation: fadeIn 0.25s ease;
 }
 .chip-expanded.sel {
   border-color: #00a19a;
-  color: #008c86;
+  color: #00a19a;
 }
 
 @keyframes fadeIn {

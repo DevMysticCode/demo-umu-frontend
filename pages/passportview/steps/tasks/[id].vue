@@ -1222,7 +1222,7 @@ const handleContinue = () => {
   height: var(--size);
   border-radius: 50%;
   background: conic-gradient(
-    #0d9488 calc(var(--p) * 1%),
+    #1f7a66 calc(var(--p) * 1%),
     rgba(15, 118, 110, 0.15) 0
   );
   display: grid;
@@ -1291,7 +1291,7 @@ const handleContinue = () => {
   color: #0f766e;
 }
 .qpill.primary {
-  background: #0d9488;
+  background: #1f7a66;
   color: #fff;
   box-shadow: 0 8px 20px -8px rgba(13, 148, 136, 0.6);
 }
@@ -1371,7 +1371,7 @@ const handleContinue = () => {
 /* ── "What is this?" tip — kept on aqua per request ─────────── */
 .qtip {
   background: #e6f9f7;
-  border: 1px solid #b2e8e6;
+  border: 1px solid #e2f1ea;
   border-radius: 14px;
   padding: 12px 14px;
   margin-bottom: 16px;
@@ -1384,7 +1384,7 @@ const handleContinue = () => {
   height: 28px;
   border-radius: 8px;
   flex-shrink: 0;
-  background: #b2e8e6;
+  background: #e2f1ea;
   color: #00756f;
   display: grid;
   place-items: center;

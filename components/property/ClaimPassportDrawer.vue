@@ -342,7 +342,7 @@ onUnmounted(() => {
 
 .cp__price-chip {
   background: #fef3c7;
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 10px;
@@ -554,11 +554,11 @@ onUnmounted(() => {
   font-weight: 700;
   color: #00a19a;
   text-decoration: none;
-  border-bottom: 1.5px solid #b2e8e6;
+  border-bottom: 1.5px solid #e2f1ea;
   padding-bottom: 1px;
 }
 .cp__error-link:hover {
-  color: #008c86;
+  color: #00a19a;
   border-bottom-color: #00a19a;
 }
 

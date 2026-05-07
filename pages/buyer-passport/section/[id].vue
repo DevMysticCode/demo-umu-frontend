@@ -1051,7 +1051,7 @@ function downloadAllFiles() {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #10b981;
+  background: #00a19a;
 }
 .hero-illustration {
   display: flex;
@@ -1094,7 +1094,7 @@ function downloadAllFiles() {
   height: var(--size);
   border-radius: 50%;
   background: conic-gradient(
-    #0d9488 calc(var(--p) * 1%),
+    #1f7a66 calc(var(--p) * 1%),
     rgba(15, 118, 110, 0.15) 0
   );
   display: grid;
@@ -1575,8 +1575,8 @@ function downloadAllFiles() {
 /* AI button */
 .action-btn--ai {
   background: #fff8e6;
-  color: #b45309;
-  border: 2px solid #fcd34d;
+  color: #92400e;
+  border: 2px solid #f5c44c;
 }
 
 .action-btn--ai:disabled {
@@ -1587,7 +1587,7 @@ function downloadAllFiles() {
 /* AI Summary card */
 .ai-summary-card {
   background: #fffbeb;
-  border: 1.5px solid #fcd34d;
+  border: 1.5px solid #f5c44c;
   border-radius: 14px;
   padding: 14px 16px;
   margin: 0 20px 16px;
@@ -1599,7 +1599,7 @@ function downloadAllFiles() {
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: #b45309;
+  color: #92400e;
   margin-bottom: 8px;
 }
 

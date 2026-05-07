@@ -285,7 +285,7 @@
               class="pp-street-icon"
               :style="{
                 color: sp.isPublished
-                  ? '#0d9488'
+                  ? '#1f7a66'
                   : sp.hasPassport
                     ? '#f59e0b'
                     : '#94a3b8',
@@ -417,7 +417,7 @@
                   buyer.matchScore >= 75
                     ? '#16a34a'
                     : buyer.matchScore >= 55
-                      ? '#d97706'
+                      ? '#92400e'
                       : '#94a3b8',
               }"
             >
@@ -1320,9 +1320,9 @@ const onRoleSwitch = (role) => {
   line-height: 1.4;
 }
 .step-count-docs {
-  background: #eafaf9;
-  color: #008c86;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  color: #00a19a;
+  border: 1px solid #e2f1ea;
 }
 .step-count-q {
   background: #f1f5f9;
@@ -1338,13 +1338,13 @@ const onRoleSwitch = (role) => {
   font-weight: 700;
   background: #fef3c7;
   color: #92400e;
-  border: 1px solid #fde68a;
+  border: 1px solid #fef3c7;
   padding: 3px 8px;
   border-radius: 999px;
   cursor: pointer;
 }
 .step-expiry:hover {
-  background: #fde68a;
+  background: #fef3c7;
 }
 
 .step-progress {
@@ -1443,7 +1443,7 @@ const onRoleSwitch = (role) => {
 }
 .pp-tab.active {
   background: white;
-  color: #0d9488;
+  color: #1f7a66;
   box-shadow:
     0 1px 4px rgba(15, 23, 42, 0.1),
     0 0 0 1px rgba(15, 23, 42, 0.04);
@@ -1456,7 +1456,7 @@ const onRoleSwitch = (role) => {
   font-size: 12px;
 }
 .pp-tab-badge {
-  background: #0d9488;
+  background: #1f7a66;
   color: white;
   font-size: 9px;
   font-weight: 800;
@@ -1595,7 +1595,7 @@ const onRoleSwitch = (role) => {
   color: #0f172a;
 }
 .pp-stat.brand .pp-stat-val {
-  color: #0d9488;
+  color: #1f7a66;
 }
 .pp-stat.green .pp-stat-val {
   color: #16a34a;
@@ -1717,7 +1717,7 @@ const onRoleSwitch = (role) => {
   align-items: center;
   gap: 12px;
   width: 100%;
-  background: linear-gradient(135deg, #00a19a, #008c86);
+  background: linear-gradient(135deg, #00a19a, #00a19a);
   color: #fff;
   border: none;
   border-radius: 14px;
@@ -1780,7 +1780,7 @@ const onRoleSwitch = (role) => {
     ),
     radial-gradient(circle at 90% 90%, rgba(35, 29, 69, 0.04), transparent 50%),
     linear-gradient(180deg, #f4fbfa 0%, #fff 100%);
-  border: 1px solid #b2e8e6;
+  border: 1px solid #e2f1ea;
   border-radius: 18px;
   padding: 18px 16px 16px;
   margin-bottom: 14px;
@@ -1864,9 +1864,9 @@ const onRoleSwitch = (role) => {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
-  color: #008c86;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
+  color: #00a19a;
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -1935,7 +1935,7 @@ const onRoleSwitch = (role) => {
 }
 .pp-hero-dash-fill {
   height: 100%;
-  background: linear-gradient(90deg, #008c86, #00b5ad);
+  background: linear-gradient(90deg, #00a19a, #00b5ad);
   border-radius: 999px;
   transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
@@ -1964,7 +1964,7 @@ const onRoleSwitch = (role) => {
   height: 5px;
   border-radius: 50%;
   background: #00a19a;
-  box-shadow: 0 0 0 2.5px #eafaf9;
+  box-shadow: 0 0 0 2.5px #f1f9f4;
 }
 
 /* ── Action row (Match to Buyers + Publish) ────────────────────── */
@@ -1999,7 +1999,7 @@ const onRoleSwitch = (role) => {
   border: 1.5px solid #eef0f6;
 }
 .pp-action-outline:hover {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .pp-action-primary {
   background: #00a19a;
@@ -2037,17 +2037,17 @@ const onRoleSwitch = (role) => {
   transition: border-color 0.15s;
 }
 .pp-collab-row:hover {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .pp-collab-add {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
   display: grid;
   place-items: center;
-  color: #008c86;
+  color: #00a19a;
   font-size: 16px;
   font-weight: 600;
   flex-shrink: 0;
@@ -2064,7 +2064,7 @@ const onRoleSwitch = (role) => {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #00b5ad, #008c86);
+  background: linear-gradient(135deg, #00b5ad, #00a19a);
   color: #fff;
   font-size: 10px;
   font-weight: 800;
@@ -2152,7 +2152,7 @@ const onRoleSwitch = (role) => {
   cursor: pointer;
 }
 .pp-section-card:hover {
-  border-color: #b2e8e6;
+  border-color: #e2f1ea;
 }
 .pp-section-card:active {
   transform: scale(0.99);
@@ -2167,12 +2167,12 @@ const onRoleSwitch = (role) => {
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: linear-gradient(140deg, #f3fbfa 0%, #eafaf9 100%);
-  border: 1px solid #b2e8e6;
+  background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
+  border: 1px solid #e2f1ea;
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #008c86;
+  color: #00a19a;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 .pp-section-body {
@@ -2199,9 +2199,9 @@ const onRoleSwitch = (role) => {
 .pp-section-pct {
   font-size: 11px;
   font-weight: 800;
-  background: #eafaf9;
-  color: #008c86;
-  border: 1px solid #b2e8e6;
+  background: #f1f9f4;
+  color: #00a19a;
+  border: 1px solid #e2f1ea;
   padding: 3px 9px;
   border-radius: 999px;
 }
@@ -2212,7 +2212,7 @@ const onRoleSwitch = (role) => {
 }
 .pp-section-pct.full {
   background: #d1fae5;
-  color: #065f46;
+  color: #1f7a66;
   border-color: #a7f3d0;
 }
 .pp-section-chev {

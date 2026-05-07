@@ -331,11 +331,5 @@ const removeCollab = async () => {
   }
 };
 
-const goBack = () => {
-  if (typeof window !== "undefined" && window.history.length > 1) {
-    window.history.back();
-    return;
-  }
-  navigateTo("/profile/collaborator-information");
-};
+const goBack = useGoBack('/profile/collaborator-information');
 </script>

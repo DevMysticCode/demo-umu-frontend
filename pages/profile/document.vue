@@ -517,13 +517,7 @@ const submitDocument = async () => {
   }
 }
 
-const goBack = () => {
-  if (typeof window !== 'undefined' && window.history.length > 1) {
-    window.history.back()
-    return
-  }
-  navigateTo('/profile')
-}
+const goBack = useGoBack('/profile')
 </script>
 
 <style scoped>
@@ -768,7 +762,7 @@ const goBack = () => {
   position: relative;
 }
 .dc-doc-icon.pdf { background: linear-gradient(135deg, #ffe0dc, #ffc4bd); color: #b85b36; }
-.dc-doc-icon.img { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #047857; }
+.dc-doc-icon.img { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #1f7a66; }
 .dc-doc-icon::after {
   content: '';
   position: absolute;

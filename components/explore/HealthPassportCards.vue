@@ -110,8 +110,8 @@ function onPassportEnter(_q: string) {
   color: #00a19a;
 }
 .badge-free {
-  background: #008c86;
-  color: #eafaf9;
+  background: #00a19a;
+  color: #f1f9f4;
   font-size: 10px;
   font-weight: 700;
   padding: 4px 10px;
@@ -119,7 +119,7 @@ function onPassportEnter(_q: string) {
 }
 .badge-pp-price {
   background: rgba(94, 234, 212, 0.15);
-  color: #5eead4;
+  color: #3dbda3;
   font-size: 10px;
   font-weight: 700;
   padding: 4px 10px;
@@ -154,11 +154,11 @@ function onPassportEnter(_q: string) {
   font-family: inherit;
 }
 .btn-brand-full:active {
-  background: #008c86;
+  background: #00a19a;
 }
 .btn-teal-dark {
   width: 100%;
-  background: #5eead4;
+  background: #3dbda3;
   color: #231d45;
   border: none;
   font-size: 14px;

@@ -108,9 +108,9 @@ const props = defineProps({
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #eafaf9;
-  border: 1px solid #b2e8e6;
-  color: #008c86;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
+  color: #00a19a;
   font-size: 13px;
   font-weight: 800;
   display: grid;

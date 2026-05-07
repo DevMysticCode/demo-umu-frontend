@@ -71,7 +71,7 @@ function onBack() {
 .pn-action-text {
   font-size: 13px;
   font-weight: 700;
-  color: #008c86;
+  color: #00a19a;
   cursor: pointer;
   letter-spacing: -0.1px;
 }
