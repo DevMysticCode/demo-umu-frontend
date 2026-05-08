@@ -121,7 +121,7 @@
       </button>
     </div>
 
-    <!-- ── Steps list ── -->
+    <!-- ── Steps list — sample shows 4 curated sections + "more" hint ── -->
     <div class="steps-list">
       <div v-for="step in steps" :key="step.id" class="step-card">
         <div class="step-icon-container">
@@ -147,6 +147,11 @@
           <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
         </button>
       </div>
+
+      <div class="sec-more">
+        <div class="sec-more-text">+ 13 more sections</div>
+        <div class="sec-more-meta">Occupiers · Services · Disputes · Insurance · Environmental · Parking · …</div>
+      </div>
     </div>
   </div>
 </template>
@@ -155,25 +160,14 @@
 import OPIcon from '~/components/ui/OPIcon.vue'
 import PassportCard from '~/components/passport-view/PassportCard.vue'
 
-// Hard-coded sample data — mirrors the seed templates in seed.ts.
+// Sample shows 4 curated sections — keeps the demo scannable while the
+// surrounding chrome (hero, dashboard, action row, collaborators, subtabs)
+// stays faithful to the real /passportview/[id] page.
 const steps = [
-  { id: 1, key: 'ownershipProfile', title: 'Ownership Profile', points: 100, docs: '2/2', questions: '4/4', progress: 100 },
-  { id: 2, key: 'boundaries', title: 'Boundaries', points: 80, docs: '1/1', questions: '3/3', progress: 100 },
-  { id: 3, key: 'disputesAndComplaints', title: 'Disputes and Complaints', points: 60, docs: '0/0', questions: '2/2', progress: 100 },
-  { id: 4, key: 'noticesAndProposals', title: 'Notices and Proposals', points: 60, docs: '0/0', questions: '2/2', progress: 100 },
-  { id: 5, key: 'alterationsAndPlanning', title: 'Alterations and Planning', points: 120, docs: '4/4', questions: '5/5', progress: 100 },
-  { id: 6, key: 'guaranteesAndWarranties', title: 'Guarantees and Warranties', points: 100, docs: '3/3', questions: '3/3', progress: 100 },
-  { id: 7, key: 'insurance', title: 'Insurance', points: 80, docs: '1/1', questions: '3/3', progress: 100 },
-  { id: 8, key: 'environmental', title: 'Environmental', points: 90, docs: '1/1', questions: '4/4', progress: 100 },
-  { id: 9, key: 'rightsAndInformalArrangements', title: 'Rights and Informal Arrangements', points: 70, docs: '1/1', questions: '3/3', progress: 100 },
-  { id: 10, key: 'parking', title: 'Parking', points: 60, docs: '0/0', questions: '3/3', progress: 100 },
-  { id: 11, key: 'otherCharges', title: 'Other Charges', points: 60, docs: '0/0', questions: '2/2', progress: 100 },
-  { id: 12, key: 'occupiers', title: 'Occupiers', points: 60, docs: '0/0', questions: '2/2', progress: 100 },
-  { id: 13, key: 'services', title: 'Services', points: 80, docs: '2/2', questions: '4/4', progress: 100 },
-  { id: 14, key: 'transactionInformation', title: 'Transaction Information', points: 70, docs: '1/1', questions: '3/3', progress: 100 },
-  { id: 15, key: 'fixturesAndFittings', title: 'Fixtures and Fittings', points: 100, docs: '24/24', questions: '6/6', progress: 100 },
-  { id: 16, key: 'titleDeedsAndPlan', title: 'Title Deeds and Plan', points: 100, docs: '2/2', questions: '3/3', progress: 100 },
-  { id: 17, key: 'searches', title: 'Searches', points: 90, docs: '3/3', questions: '4/4', progress: 100 },
+  { id: 1, key: 'titleDeedsAndPlan', title: 'Title Deeds and Plan', points: 100, docs: '2/2', questions: '3/3', progress: 100 },
+  { id: 2, key: 'searches', title: 'Searches', points: 90, docs: '3/3', questions: '4/4', progress: 100 },
+  { id: 3, key: 'fixturesAndFittings', title: 'Fixtures and Fittings', points: 100, docs: '24/24', questions: '6/6', progress: 100 },
+  { id: 4, key: 'boundaries', title: 'Boundaries', points: 80, docs: '1/1', questions: '3/3', progress: 100 },
 ]
 </script>
 
@@ -433,5 +427,27 @@ const steps = [
   cursor: pointer; padding: 4px;
   display: flex; align-items: center; justify-content: center;
   color: #94a3b8;
+}
+
+/* "+ N more sections" footer hint — sample only */
+.sec-more {
+  margin-top: 4px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #f4fbfa, #fff);
+  border: 1px dashed #b2e4e1;
+  border-radius: 14px;
+  text-align: center;
+}
+.sec-more-text {
+  font-size: 13px; font-weight: 800;
+  color: #00a19a;
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+}
+.sec-more-meta {
+  font-size: 11.5px; font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: -0.05px;
+  line-height: 1.45;
 }
 </style>

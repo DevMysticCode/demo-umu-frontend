@@ -545,98 +545,12 @@
         </button>
       </div>
 
-      <!-- Seller sample uses the actual passportview visuals (book, hero stats,
-           progress, action row, collaborators, subtabs, list view, step cards
-           with real OPIcons) — identical to the real /passportview/[id] page. -->
+      <!-- Real-app-faithful sample passports — each component mirrors its
+           live page (hero, dashboard, action row, collaborators, subtabs)
+           but lists only 4 curated sections + a "+ N more" hint. -->
       <SellerSampleView v-if="sampleType === 'seller'" />
-      <!-- Landlord sample mirrors /passportview/landlord/[id] — Compliance/Vault/
-           Tenancy tabs, prototype-style icon-tile section cards, status pills,
-           Convert-to-selling CTA. -->
       <LandlordSampleView v-else-if="sampleType === 'landlord'" />
-      <!-- Buyer sample mirrors /buyer-passport/[id] — verified passport hero,
-           property details, official records list with progress bars, PDF
-           download rows for full report + TA6/TA10. -->
       <BuyerSampleView v-else-if="sampleType === 'buyer'" />
-
-      <template v-if="false">
-      <div class="passport-header" :class="`tone-${sampleType}`">
-        <div class="ph-book">
-          <div class="ph-book-spine" />
-          <div class="ph-book-label-top">{{ currentSample.bookLabel }}</div>
-          <div class="ph-book-logo">
-            <OPIcon name="logo" class="w-[40px] h-[40px]" style="filter: brightness(0) invert(1);" />
-          </div>
-          <div class="ph-book-addr" v-html="currentSample.bookAddress" />
-        </div>
-        <div class="ph-info">
-          <div class="ph-eyebrow">{{ currentSample.eyebrow }}</div>
-          <div class="ph-addr">{{ currentSample.addr }}</div>
-          <div class="ph-postcode">{{ currentSample.postcode }}</div>
-          <div class="ph-stats">
-            <template v-for="(s, i) in currentSample.stats" :key="s.label">
-              <div class="ph-stat">
-                <div class="phs-num">
-                  {{ s.num }}<span v-if="s.suffix" class="phs-pct">{{ s.suffix }}</span>
-                </div>
-                <div class="phs-label">{{ s.label }}</div>
-              </div>
-              <div v-if="i < currentSample.stats.length - 1" class="ph-stat-divider" />
-            </template>
-          </div>
-        </div>
-      </div>
-
-      <div class="addr-block">
-        <div class="addr-h">{{ currentSample.addr }}</div>
-        <div class="addr-sub">{{ currentSample.postcode }}</div>
-        <div class="addr-row">
-          <div class="addr-value">{{ currentSample.value }}</div>
-          <div class="addr-value-label">{{ currentSample.valueLabel }}</div>
-          <div class="addr-status">
-            <svg width="12" height="12" viewBox="0 0 12 12">
-              <polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            {{ currentSample.completion }}
-          </div>
-        </div>
-        <div class="addr-pills">
-          <div v-for="p in currentSample.pills" :key="p" class="addr-pill">{{ p }}</div>
-        </div>
-      </div>
-
-      <div class="or-header">
-        <div class="or-h">{{ currentSample.recordsHeading }}</div>
-        <div class="or-sub">{{ currentSample.recordsSub }}</div>
-      </div>
-
-      <div class="or-stats">
-        <div v-for="s in currentSample.recordStats" :key="s.label" class="or-stat" :class="s.tone">
-          <div class="ors-num">{{ s.num }}</div>
-          <div class="ors-label" v-html="s.label" />
-        </div>
-      </div>
-
-      <div class="section-cards">
-        <div v-for="sec in currentSample.sections" :key="sec.name" class="sec-card">
-          <div class="sec-illus" :style="{ background: sec.illusBg }">{{ sec.icon }}</div>
-          <div class="sec-info">
-            <div class="sec-name">{{ sec.name }}</div>
-            <div class="sec-sub">{{ sec.sub }}</div>
-            <div class="sec-status-pill" :class="sec.statusTone">{{ sec.status }}</div>
-          </div>
-          <div class="sec-progress-col">
-            <div class="sec-bar"><div class="sec-bar-fill" :style="{ width: sec.pct + '%' }" /></div>
-            <div class="sec-pct">{{ sec.pct }}%</div>
-          </div>
-          <div class="sec-arrow">›</div>
-        </div>
-        <div v-if="currentSample.moreText" class="sec-more">
-          <div class="sec-more-text">{{ currentSample.moreText }}</div>
-          <div class="sec-more-meta">{{ currentSample.moreMeta }}</div>
-        </div>
-      </div>
-
-      </template>
 
       <!-- CTA bar — shown for every sample type (seller, landlord, buyer) -->
       <div v-if="currentSample.isBuyerView" class="sample-cta-bar buyer">
@@ -701,6 +615,16 @@ type SampleType = 'seller' | 'landlord' | 'buyer'
 const screen = ref<Screen>('landing')
 const sampleType = ref<SampleType>('seller')
 
+// Allow deep-linking to the sample sub-screen via /?sample=seller|landlord|buyer
+const route = useRoute()
+onMounted(() => {
+  const s = route.query.sample
+  if (s === 'seller' || s === 'landlord' || s === 'buyer') {
+    sampleType.value = s
+    screen.value = 'sample'
+  }
+})
+
 const cards = [
   { id: 'healthscore', peekLabel: 'HealthScore', peekPill: 'Free', cta: 'Check your home' },
   { id: 'passport', peekLabel: 'Property Passport', peekPill: 'Solicitor-grade', cta: 'See a sample' },
@@ -741,25 +665,17 @@ const SELLER_PROPERTY = {
   pills: ['🏠 4 bed', 'House', '📐 1,406 sqft'],
 }
 
+// Curated 4 sections — sample stays scannable (full live passport has 17).
 const SELLER_SECTIONS = [
-  { name: 'Ownership Profile', sub: '2 owners · joint tenants · since 2014', icon: '👤', illusBg: 'linear-gradient(135deg,#fff,#f5f4f0)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Title Deeds & Plan', sub: 'HM Land Registry · CV722359 · freehold', icon: '📜', illusBg: 'linear-gradient(135deg,#fff,#f5f4f0)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Searches', sub: 'Local authority · drainage · environmental', icon: '🔍', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Boundaries', sub: 'Identified and confirmed · north hedge maintained', icon: '📐', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Disputes & Complaints', sub: 'None reported in last 10 years', icon: '🤝', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Notices & Proposals', sub: 'No formal notices on the property', icon: '📨', illusBg: 'linear-gradient(135deg,#fff,#f5f4f0)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Alterations & Planning', sub: 'Loft conversion 2019 · cert of lawful dev', icon: '🏗️', illusBg: 'linear-gradient(135deg,#fdf4dc,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Guarantees & Warranties', sub: 'Boiler · roof · damp-proofing on file', icon: '🛡️', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Insurance', sub: 'Buildings · NFU · cover £450k · valid 2026', icon: '🏠', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Environmental', sub: 'EPC C · low flood risk · no contamination', icon: '🌿', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Rights & Informal Arrangements', sub: 'Shared driveway · written agreement on file', icon: '🚪', illusBg: 'linear-gradient(135deg,#fff,#f5f4f0)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Parking', sub: 'Off-street · 2 spaces · garage', icon: '🚗', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Other Charges', sub: 'Council tax band D · no service charge', icon: '£', illusBg: 'linear-gradient(135deg,#fdf4dc,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Occupiers', sub: 'Owner-occupied · no tenants', icon: '🪑', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Services', sub: 'Mains gas · electric · water · sewer connected', icon: '💡', illusBg: 'linear-gradient(135deg,#fdf4dc,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Transaction Information', sub: 'Onward purchase identified · no chain risk', icon: '🤝', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
-  { name: 'Fixtures & Fittings', sub: 'TA10 · 24 items declared (incl. log burner)', icon: '🛋️', illusBg: 'linear-gradient(135deg,#fdf4dc,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
+  { name: 'Title Deeds & Plan', sub: 'HM Land Registry · CV722359', icon: '📜', illusBg: 'linear-gradient(135deg,#fff,#f5f4f0)', status: 'Verified', statusTone: 'done', pct: 100 },
+  { name: 'Searches', sub: 'Local authority · Drainage · Environmental', icon: '🔍', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
+  { name: 'Fixtures & Fittings', sub: 'TA10 · 24 items declared', icon: '🛋️', illusBg: 'linear-gradient(135deg,#fdf4dc,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
+  { name: 'Boundaries', sub: 'Identified and confirmed', icon: '📐', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: 'Verified', statusTone: 'done', pct: 100 },
 ]
+const SELLER_MORE = {
+  moreText: '+ 13 more sections',
+  moreMeta: 'Occupiers · Services · Disputes · Insurance · Environmental · Parking · ...',
+}
 
 const samples: Record<SampleType, any> = {
   seller: {
@@ -785,6 +701,8 @@ const samples: Record<SampleType, any> = {
       { tone: 'grey', num: '0', label: 'Not yet<br/>shared' },
     ],
     sections: SELLER_SECTIONS,
+    moreText: SELLER_MORE.moreText,
+    moreMeta: SELLER_MORE.moreMeta,
     ctaSub: 'Solicitor-grade documentation, ready before your first viewing.',
     ctaLabel: 'Start a Property Passport',
   },
@@ -813,17 +731,11 @@ const samples: Record<SampleType, any> = {
     sections: [
       { name: 'Gas Safety (CP12)', sub: 'Annual · renewing in 30 days', icon: '🔥', illusBg: 'linear-gradient(135deg,#fef3c7,#fff)', status: '⚠ Renew soon', statusTone: 'warn', pct: 80 },
       { name: 'Electrical Safety (EICR)', sub: '5-yearly · valid to Apr 2028', icon: '⚡', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Satisfactory', statusTone: 'done', pct: 100 },
-      { name: 'Energy Performance (EPC)', sub: 'Rating C · valid to 2031', icon: '🌿', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Rating C', statusTone: 'done', pct: 100 },
-      { name: 'Smoke & CO Alarms', sub: 'Tested · all working at tenancy start', icon: '🔔', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Tested', statusTone: 'done', pct: 100 },
-      { name: 'Legionella Risk Assessment', sub: 'Assessed Mar 2024 · low risk', icon: '💧', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Low risk', statusTone: 'done', pct: 100 },
-      { name: 'Landlord Insurance', sub: 'Direct Line · cover £350k · valid 2026', icon: '🛡️', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Active', statusTone: 'done', pct: 100 },
       { name: 'Tenancy Agreement (AST)', sub: 'Signed · J. Smith · 12-month term', icon: '📜', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Active', statusTone: 'done', pct: 100 },
-      { name: 'Deposit Protection', sub: 'DPS · £1,200 protected · ref DPS-44219', icon: '£', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Protected', statusTone: 'done', pct: 100 },
-      { name: 'Right to Rent', sub: 'Tenant ID verified · British citizen', icon: '🪪', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Verified', statusTone: 'done', pct: 100 },
-      { name: 'How to Rent Guide', sub: 'Latest version served · Jan 2025', icon: '📘', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Served', statusTone: 'done', pct: 100 },
-      { name: 'Inventory & Schedule', sub: 'Move-in baseline · 38 photos', icon: '📋', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Filed', statusTone: 'done', pct: 100 },
-      { name: 'PAT Testing', sub: 'HMO best-practice · pending', icon: '🔌', illusBg: 'linear-gradient(135deg,#f5f5f7,#fff)', status: 'To upload', statusTone: 'grey', pct: 0 },
+      { name: 'Deposit Protection', sub: 'DPS · £1,200 protected', icon: '£', illusBg: 'linear-gradient(135deg,#e2f1ea,#fff)', status: '✓ Protected', statusTone: 'done', pct: 100 },
     ],
+    moreText: '+ 8 more sections',
+    moreMeta: 'EPC · Smoke & CO · Legionella · Insurance · Right to Rent · Inventory · ...',
     ctaSub: 'Stay compliant. Share with your tenant in one tap.',
     ctaLabel: 'Start a Landlord Passport',
   },
@@ -850,6 +762,8 @@ const samples: Record<SampleType, any> = {
       { tone: 'grey', num: '0', label: 'Not yet<br/>shared' },
     ],
     sections: SELLER_SECTIONS,
+    moreText: SELLER_MORE.moreText,
+    moreMeta: SELLER_MORE.moreMeta,
     ctaSub: 'Save this property, message the owner, or download the full report to share with your solicitor.',
     ctaLabel: 'Save & message owner',
     isBuyerView: true,

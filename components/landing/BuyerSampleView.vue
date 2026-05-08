@@ -238,7 +238,7 @@
           </p>
         </div>
 
-        <!-- Records List -->
+        <!-- Records List — sample shows 4 curated sections + "more" hint -->
         <div class="buyer-records-list">
           <div
             v-for="section in sections"
@@ -270,6 +270,11 @@
               <OPIcon name="caretRight" class="w-[13px] h-[13px]" />
             </button>
           </div>
+
+          <div class="sec-more">
+            <div class="sec-more-text">+ 13 more sections</div>
+            <div class="sec-more-meta">Occupiers · Services · Disputes · Insurance · Environmental · Parking · …</div>
+          </div>
         </div>
       </div>
     </div>
@@ -280,25 +285,14 @@
 import OPIcon from '~/components/ui/OPIcon.vue'
 import PassportCard from '~/components/passport-view/PassportCard.vue'
 
-// Hard-coded sample sections — mirrors the buyer view of a complete seller passport.
+// Sample shows 4 curated sections — surrounding chrome (verified hero,
+// property details, summary card, PDF rows) stays faithful to the real
+// /buyer-passport/[id] page.
 const sections = [
-  { id: 1, key: 'ownershipProfile', title: 'Ownership Profile', sub: 'Title, owners and registered proprietors.' },
-  { id: 2, key: 'boundaries', title: 'Boundaries', sub: 'Fences, walls and boundary responsibilities.' },
-  { id: 3, key: 'disputesAndComplaints', title: 'Disputes and Complaints', sub: 'Past or ongoing disputes affecting the property.' },
-  { id: 4, key: 'noticesAndProposals', title: 'Notices and Proposals', sub: 'Planning, statutory and neighbour notices.' },
-  { id: 5, key: 'alterationsAndPlanning', title: 'Alterations and Planning', sub: 'Permissions, certificates and building works.' },
-  { id: 6, key: 'guaranteesAndWarranties', title: 'Guarantees and Warranties', sub: 'NHBC, damp-proofing and trade guarantees.' },
-  { id: 7, key: 'insurance', title: 'Insurance', sub: 'Buildings cover and historic claims.' },
-  { id: 8, key: 'environmental', title: 'Environmental', sub: 'Flood risk, radon and contaminated land.' },
-  { id: 9, key: 'rightsAndInformalArrangements', title: 'Rights and Informal Arrangements', sub: 'Easements, rights of way and shared access.' },
-  { id: 10, key: 'parking', title: 'Parking', sub: 'Driveway, permits and shared parking.' },
-  { id: 11, key: 'otherCharges', title: 'Other Charges', sub: 'Service charges, estate fees and rentcharges.' },
-  { id: 12, key: 'occupiers', title: 'Occupiers', sub: 'Adults living at the property.' },
-  { id: 13, key: 'services', title: 'Services', sub: 'Gas, electric, water, drainage and broadband.' },
-  { id: 14, key: 'transactionInformation', title: 'Transaction Information', sub: 'Reason for sale and chain status.' },
-  { id: 15, key: 'fixturesAndFittings', title: 'Fixtures and Fittings', sub: 'What stays and what goes (TA10).' },
-  { id: 16, key: 'titleDeedsAndPlan', title: 'Title Deeds and Plan', sub: 'Official copies and title plan.' },
-  { id: 17, key: 'searches', title: 'Searches', sub: 'Local authority, water and environmental searches.' },
+  { id: 1, key: 'titleDeedsAndPlan', title: 'Title Deeds and Plan', sub: 'Official copies and title plan.' },
+  { id: 2, key: 'searches', title: 'Searches', sub: 'Local authority, water and environmental searches.' },
+  { id: 3, key: 'fixturesAndFittings', title: 'Fixtures and Fittings', sub: 'What stays and what goes (TA10).' },
+  { id: 4, key: 'boundaries', title: 'Boundaries', sub: 'Fences, walls and boundary responsibilities.' },
 ]
 </script>
 
@@ -836,5 +830,29 @@ const sections = [
   color: #4a5568;
   margin: 0;
   line-height: 1.5;
+}
+
+/* "+ N more sections" footer hint — sample only */
+.sec-more {
+  margin-top: 4px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #f4fbfa, #fff);
+  border: 1px dashed #b2e4e1;
+  border-radius: 14px;
+  text-align: center;
+}
+.sec-more-text {
+  font-size: 13px;
+  font-weight: 800;
+  color: #00a19a;
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+}
+.sec-more-meta {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: -0.05px;
+  line-height: 1.45;
 }
 </style>

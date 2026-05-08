@@ -156,6 +156,12 @@
         <div v-if="section.tone === 'good'" class="lp-sec-pct lp-sec-pct--good">100%</div>
       </div>
     </div>
+
+    <!-- "+ N more sections" footer hint — sample only -->
+    <div class="sec-more">
+      <div class="sec-more-text">+ 8 more sections</div>
+      <div class="sec-more-meta">EPC · Smoke &amp; CO · Legionella · Deposit · Right to Rent · Inventory · …</div>
+    </div>
   </div>
 </template>
 
@@ -173,25 +179,19 @@ interface SampleSection {
   actionBy?: string
 }
 
+// Sample shows 4 curated sections — surrounding chrome (hero, dashboard,
+// tabs, group headings) stays faithful to the real landlord-passport view.
 const safetyGroup: SampleSection[] = [
   { name: 'Gas Safety Certificate (CP12)', subtitle: 'Annual · renewing in 30 days', icon: '🔥', tone: 'warn', statusLabel: '⚠ Renew soon', docs: '1/1', pct: 80, actionBy: 'Action by 30 May' },
   { name: 'Electrical Safety (EICR)', subtitle: '5-yearly · valid to Apr 2028', icon: '⚡', tone: 'good', statusLabel: '✓ Satisfactory', docs: '1/1', pct: 100 },
-  { name: 'Energy Performance (EPC)', subtitle: 'Rating C · valid to 2031 · MEES compliant', icon: '🌿', tone: 'good', statusLabel: '✓ Rating C', docs: '1/1', pct: 100 },
-  { name: 'Smoke & CO Alarms', subtitle: 'Tested at tenancy start · all working', icon: '🔔', tone: 'good', statusLabel: '✓ Compliant', docs: '1/1', pct: 100 },
-  { name: 'Legionella Risk Assessment', subtitle: 'Assessed Mar 2024 · low risk', icon: '💧', tone: 'good', statusLabel: '✓ Low risk', docs: '1/1', pct: 100 },
 ]
 
 const tenancyGroup: SampleSection[] = [
   { name: 'Tenancy Agreement (AST)', subtitle: 'Signed · J. Smith · 12-month term', icon: '📜', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
-  { name: 'Deposit Protection', subtitle: 'DPS · £1,200 protected · ref DPS-44219', icon: '£', tone: 'good', statusLabel: '✓ Protected', docs: '1/1', pct: 100 },
-  { name: 'Right to Rent', subtitle: 'Tenant ID verified · British citizen', icon: '🪪', tone: 'good', statusLabel: '✓ Verified', docs: '1/1', pct: 100 },
-  { name: 'How to Rent Guide', subtitle: 'Latest version served · Jan 2025', icon: '📘', tone: 'good', statusLabel: '✓ Served', docs: '1/1', pct: 100 },
-  { name: 'Inventory & Schedule of Condition', subtitle: 'Move-in baseline · 38 photos', icon: '📋', tone: 'good', statusLabel: '✓ Filed', docs: '1/1', pct: 100 },
 ]
 
 const insuranceGroup: SampleSection[] = [
   { name: 'Landlord Insurance', subtitle: 'Direct Line · cover £350k · valid 2026', icon: '🛡️', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
-  { name: 'PAT Testing', subtitle: 'HMO best-practice · pending', icon: '🔌', tone: 'pending', statusLabel: 'To upload', docs: '0/1', pct: 0 },
 ]
 </script>
 
@@ -452,4 +452,26 @@ const insuranceGroup: SampleSection[] = [
   letter-spacing: -0.1px;
 }
 .lp-sec-chev { color: #8a95a0; font-size: 22px; flex-shrink: 0; line-height: 1; padding-top: 2px; }
+
+/* "+ N more sections" footer hint — sample only */
+.sec-more {
+  margin: 14px 16px 0;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #f4fbfa, #fff);
+  border: 1px dashed #b2e4e1;
+  border-radius: 14px;
+  text-align: center;
+}
+.sec-more-text {
+  font-size: 13px; font-weight: 800;
+  color: #00a19a;
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+}
+.sec-more-meta {
+  font-size: 11.5px; font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: -0.05px;
+  line-height: 1.45;
+}
 </style>
