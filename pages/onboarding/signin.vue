@@ -1,206 +1,270 @@
 <template>
-  <div class="mobile-container" style="background: #fff; display: flex; flex-direction: column; min-height: 100dvh;">
+  <div class="mobile-container auth-screen">
 
-    <!-- ── Navy gradient header ── -->
-    <div class="auth-header">
-      <div style="position: absolute; right: -20px; bottom: -40px; width: 140px; height: 140px; background: radial-gradient(circle, rgba(0,161,154,0.25), transparent 70%); border-radius: 50%; pointer-events: none;"></div>
-
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; position: relative; z-index: 1;">
-        <button @click="handleBack" class="header-back-btn">‹</button>
-        <span style="font-size: 15px; font-weight: 700; color: #fff;">
-          {{ resetStep === 'idle' ? 'Sign in' : resetStepTitle }}
-        </span>
-      </div>
-
-      <div style="position: relative; z-index: 1;">
-        <h1 style="font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 4px; letter-spacing: -0.02em;">
-          {{ resetStep === 'idle' ? 'Welcome back' : resetStepHeading }}
-        </h1>
-        <p style="font-size: 13px; color: rgba(255,255,255,0.65);">
-          {{ resetStep === 'idle' ? 'Good to see you again.' : resetStepSubtitle }}
-        </p>
+    <!-- Topbar -->
+    <div class="auth-topbar">
+      <button class="auth-back-btn" @click="handleBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <div class="auth-spacer" />
+      <div class="auth-brand-mini">
+        <OPIcon name="logo" class="w-[26px] h-[26px]" />
       </div>
     </div>
 
-    <!-- ── Scrollable body ── -->
-    <div style="flex: 1; overflow-y: auto; padding: 22px 20px 40px;">
+    <!-- ── Sign-in / forgot-password (entry) / verify code / new password ── -->
+    <template v-if="resetStep !== 'sent' && resetStep !== 'success'">
+      <div class="auth-hero">
+        <div class="auth-hero-eyebrow">{{ heroEyebrow }}</div>
+        <div class="auth-hero-title">{{ heroTitle }}</div>
+        <div class="auth-hero-sub">{{ heroSub }}</div>
+      </div>
 
-      <!-- Session / logout banner (sign-in state only) -->
+      <!-- Logout / session toast -->
       <div
         v-if="bannerMessage && resetStep === 'idle'"
-        class="info-banner"
-        :class="bannerReason === 'logout' ? 'info-banner--teal' : 'info-banner--yellow'"
+        class="logged-out-toast"
+        :class="bannerReason === 'logout' ? 'logged-out-toast--teal' : 'logged-out-toast--yellow'"
       >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
         {{ bannerMessage }}
       </div>
 
-      <!-- ── Sign In form ── -->
-      <template v-if="resetStep === 'idle'">
-        <div class="field-wrap">
-          <label class="field-label">Email address</label>
-          <input v-model="emailInput" type="email" placeholder="you@example.com" class="field-input" autocomplete="email" />
-        </div>
+      <form class="auth-form" @submit.prevent="onPrimary">
 
-        <div class="field-wrap">
-          <label class="field-label">Password</label>
-          <div style="position: relative;">
-            <input
-              v-model="passwordInput"
-              :type="showPassword ? 'text' : 'password'"
-              placeholder="Your password"
-              class="field-input"
-              style="padding-right: 46px;"
-              autocomplete="current-password"
-              @keyup.enter="handleLogin"
-            />
-            <button type="button" @click="showPassword = !showPassword" class="pw-toggle">
-              <svg v-if="showPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                <line x1="1" y1="1" x2="23" y2="23"/>
-              </svg>
-              <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-            </button>
+        <!-- ── Sign in ── -->
+        <template v-if="resetStep === 'idle'">
+          <div class="form-field">
+            <label class="form-label">Email address</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </span>
+              <input v-model="emailInput" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email" />
+            </div>
           </div>
-        </div>
 
-        <div v-if="loginError" class="error-banner">{{ loginError }}</div>
+          <div class="form-field">
+            <label class="form-label">Password</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </span>
+              <input
+                v-model="passwordInput"
+                :type="showPassword ? 'text' : 'password'"
+                placeholder="Your password"
+                class="form-input with-icon with-action"
+                autocomplete="current-password"
+              />
+              <button type="button" class="form-input-action" @click="showPassword = !showPassword">
+                <svg v-if="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+                <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+          </div>
 
-        <button @click="handleLogin" :disabled="loginLoading" class="submit-btn" style="margin-bottom: 12px;">
-          <span v-if="loginLoading" class="spinner"></span>
-          {{ loginLoading ? 'Signing in…' : 'Sign in' }}
-        </button>
+          <div v-if="loginError" class="error-banner">{{ loginError }}</div>
 
-        <div style="text-align: center; margin-bottom: 16px;">
-          <button type="button" @click="startForgotPassword" style="font-size: 13px; font-weight: 600; color: #00A19A; background: none; border: none; cursor: pointer;">
-            Forgot password?
+          <button type="submit" class="btn-primary" :disabled="loginLoading">
+            <span v-if="loginLoading" class="spinner" />
+            {{ loginLoading ? 'Signing in…' : 'Sign in' }}
           </button>
-        </div>
 
-        <div style="text-align: center;">
-          <span style="font-size: 13px; color: #94a3b8;">Don't have an account? </span>
-          <NuxtLink to="/onboarding/signup" style="font-size: 13px; font-weight: 700; color: #00A19A; text-decoration: none;">Create an account</NuxtLink>
-        </div>
-      </template>
+          <button type="button" class="btn-text" @click="startForgotPassword">Forgot password?</button>
+        </template>
 
-      <!-- ── Forgot password: enter email ── -->
-      <template v-else-if="resetStep === 'email'">
-        <div class="field-wrap">
-          <label class="field-label">Email address</label>
-          <input v-model="resetEmail" type="email" placeholder="you@example.com" class="field-input" autocomplete="email" @keyup.enter="handleForgotPassword" />
-        </div>
+        <!-- ── Forgot password: enter email ── -->
+        <template v-else-if="resetStep === 'email'">
+          <div class="form-field">
+            <label class="form-label">Email address</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </span>
+              <input v-model="resetEmail" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email" />
+            </div>
+          </div>
 
-        <div v-if="resetError" class="error-banner">{{ resetError }}</div>
+          <div v-if="resetError" class="error-banner">{{ resetError }}</div>
 
-        <button @click="handleForgotPassword" :disabled="resetLoading" class="submit-btn">
-          <span v-if="resetLoading" class="spinner"></span>
-          {{ resetLoading ? 'Sending…' : 'Send reset code' }}
-        </button>
-      </template>
+          <button type="submit" class="btn-primary" :disabled="resetLoading">
+            <span v-if="resetLoading" class="spinner" />
+            {{ resetLoading ? 'Sending…' : 'Send reset code' }}
+          </button>
 
-      <!-- ── Forgot password: enter OTP ── -->
-      <template v-else-if="resetStep === 'otp'">
-        <p style="font-size: 14px; color: #4a5568; margin-bottom: 24px; line-height: 1.6;">
-          We sent a 6-digit code to<br>
-          <strong style="color: #231d45;">{{ resetEmail }}</strong>
-        </p>
+          <button type="button" class="btn-text" @click="resetStep = 'idle'">Back to sign in</button>
+        </template>
 
-        <!-- OTP boxes -->
-        <div class="otp-boxes" style="margin-bottom: 24px;">
-          <input
-            v-for="(_, i) in otpDigits"
-            :key="i"
-            :ref="el => { if (el) otpRefs[i] = el as HTMLInputElement }"
-            v-model="otpDigits[i]"
-            type="text"
-            inputmode="numeric"
-            maxlength="1"
-            class="otp-box"
-            @input="onOtpInput(i)"
-            @keydown.backspace="onOtpBackspace(i)"
-            @paste.prevent="onOtpPaste($event)"
-          />
-        </div>
+        <!-- ── Forgot password: verify code ── -->
+        <template v-else-if="resetStep === 'otp'">
+          <p class="reset-helper-text">
+            We sent a 6-digit code to<br>
+            <strong>{{ resetEmail }}</strong>
+          </p>
 
-        <div v-if="resetError" class="error-banner">{{ resetError }}</div>
+          <div class="otp-boxes">
+            <input
+              v-for="(_, i) in otpDigits"
+              :key="i"
+              :ref="el => { if (el) otpRefs[i] = el as HTMLInputElement }"
+              v-model="otpDigits[i]"
+              type="text"
+              inputmode="numeric"
+              maxlength="1"
+              class="otp-box"
+              @input="onOtpInput(i)"
+              @keydown.backspace="onOtpBackspace(i)"
+              @paste.prevent="onOtpPaste($event)"
+            />
+          </div>
 
-        <button @click="handleVerifyResetOtp" :disabled="resetLoading || otpValue.length < 6" class="submit-btn" style="margin-bottom: 14px;">
-          <span v-if="resetLoading" class="spinner"></span>
-          {{ resetLoading ? 'Verifying…' : 'Verify code' }}
-        </button>
+          <div v-if="resetError" class="error-banner">{{ resetError }}</div>
 
-        <div style="text-align: center;">
-          <button v-if="resendCountdown > 0" type="button" disabled style="font-size: 13px; color: #94a3b8; background: none; border: none;">
+          <button type="submit" class="btn-primary" :disabled="resetLoading || otpValue.length < 6">
+            <span v-if="resetLoading" class="spinner" />
+            {{ resetLoading ? 'Verifying…' : 'Verify code' }}
+          </button>
+
+          <button v-if="resendCountdown > 0" type="button" class="btn-text" disabled>
             Resend code in {{ resendCountdown }}s
           </button>
-          <button v-else type="button" @click="handleForgotPassword" style="font-size: 13px; font-weight: 600; color: #00A19A; background: none; border: none; cursor: pointer; text-decoration: underline;">
-            Resend code
+          <button v-else type="button" class="btn-text" @click="handleForgotPassword">Resend code</button>
+        </template>
+
+        <!-- ── Forgot password: new password ── -->
+        <template v-else-if="resetStep === 'newPassword'">
+          <div class="form-field">
+            <label class="form-label">New password</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </span>
+              <input
+                v-model="newPassword"
+                :type="showNewPassword ? 'text' : 'password'"
+                placeholder="New password"
+                class="form-input with-icon with-action"
+              />
+              <button type="button" class="form-input-action" @click="showNewPassword = !showNewPassword">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">Confirm new password</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </span>
+              <input
+                v-model="confirmPassword"
+                :type="showConfirmPassword ? 'text' : 'password'"
+                placeholder="Confirm new password"
+                class="form-input with-icon with-action"
+              />
+              <button type="button" class="form-input-action" @click="showConfirmPassword = !showConfirmPassword">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div v-if="newPassword" class="password-strength">
+            <div class="strength-bars">
+              <div v-for="n in 4" :key="n" class="strength-bar" :style="{ background: n <= passwordStrength ? strengthBg : '#eef0f6' }" />
+            </div>
+            <p :style="{ color: strengthColor }">{{ strengthLabel }}</p>
+          </div>
+
+          <div v-if="resetError" class="error-banner">{{ resetError }}</div>
+
+          <button type="submit" class="btn-primary" :disabled="resetLoading || !passwordsMatch">
+            <span v-if="resetLoading" class="spinner" />
+            {{ resetLoading ? 'Updating…' : 'Update password' }}
           </button>
+        </template>
+      </form>
+
+      <div v-if="resetStep === 'idle'" class="auth-footer">
+        Don't have an account? <NuxtLink to="/onboarding/signup">Create one</NuxtLink>
+      </div>
+    </template>
+
+    <!-- ── Reset code sent — confirmation panel (prototype "forgot-sent") ── -->
+    <template v-else-if="resetStep === 'sent'">
+      <div class="confirm-state">
+        <div class="confirm-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
         </div>
-      </template>
-
-      <!-- ── Forgot password: new password ── -->
-      <template v-else-if="resetStep === 'newPassword'">
-        <div class="field-wrap">
-          <label class="field-label">New password</label>
-          <div style="position: relative;">
-            <input v-model="newPassword" :type="showNewPassword ? 'text' : 'password'" placeholder="New password" class="field-input" style="padding-right: 46px;" />
-            <button type="button" @click="showNewPassword = !showNewPassword" class="pw-toggle">
-              <svg v-if="showNewPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-              <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            </button>
-          </div>
+        <div class="confirm-h">Check your email</div>
+        <div class="confirm-sub">
+          We've sent a password reset code to<br><strong>{{ resetEmail }}</strong>.<br><br>
+          It should arrive in a minute or two. Check your spam folder if you can't see it.
         </div>
+        <button class="btn-primary" @click="resetStep = 'otp'">Enter the code</button>
+        <button type="button" class="btn-text" @click="handleForgotPassword">Didn't get it? Resend</button>
+      </div>
+    </template>
 
-        <div class="field-wrap">
-          <label class="field-label">Confirm new password</label>
-          <div style="position: relative;">
-            <input v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm new password" class="field-input" style="padding-right: 46px;" />
-            <button type="button" @click="showConfirmPassword = !showConfirmPassword" class="pw-toggle">
-              <svg v-if="showConfirmPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-              <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            </button>
-          </div>
+    <!-- ── Reset success ── -->
+    <template v-else-if="resetStep === 'success'">
+      <div class="confirm-state">
+        <div class="confirm-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
         </div>
-
-        <!-- Password strength -->
-        <div v-if="newPassword" style="margin-bottom: 14px;">
-          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
-            <div v-for="n in 4" :key="n" style="height: 4px; flex: 1; border-radius: 999px; transition: background 0.2s;" :style="{ background: n <= passwordStrength ? strengthBg : '#eef0f6' }"></div>
-          </div>
-          <p style="font-size: 12px;" :style="{ color: strengthColor }">{{ strengthLabel }}</p>
+        <div class="confirm-h">Password updated!</div>
+        <div class="confirm-sub">
+          Your password has been changed successfully.<br>
+          You can now sign in with your new password.
         </div>
-
-        <div v-if="resetError" class="error-banner">{{ resetError }}</div>
-
-        <button @click="handleResetPassword" :disabled="resetLoading || !passwordsMatch" class="submit-btn">
-          <span v-if="resetLoading" class="spinner"></span>
-          {{ resetLoading ? 'Updating…' : 'Update password' }}
-        </button>
-      </template>
-
-      <!-- ── Forgot password: success ── -->
-      <template v-else-if="resetStep === 'success'">
-        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 20px;">
-          <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(0,161,154,0.12); border: 2px solid rgba(0,161,154,0.4); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00A19A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <h2 style="font-size: 20px; font-weight: 800; color: #231d45; margin-bottom: 8px;">Password updated!</h2>
-          <p style="font-size: 14px; color: #4a5568; line-height: 1.6; margin-bottom: 28px;">Your password has been changed successfully. You can now sign in with your new password.</p>
-          <button @click="resetStep = 'idle'" class="submit-btn">Back to sign in</button>
-        </div>
-      </template>
-
-    </div>
+        <button class="btn-primary" @click="resetStep = 'idle'">Back to sign in</button>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuth } from '~/composables/useAuth'
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 definePageMeta({
   title: 'Sign In - UmovingU',
@@ -211,15 +275,41 @@ const config = useRuntimeConfig()
 const { login } = useAuth()
 const route = useRoute()
 
-// ── Banner ─────────────────────────────────────────────────────────────────
+// ── Hero copy depending on step
+type ResetStep = 'idle' | 'email' | 'sent' | 'otp' | 'newPassword' | 'success'
+const resetStep = ref<ResetStep>('idle')
+
+const heroEyebrow = computed(() => {
+  if (resetStep.value === 'idle') return 'Sign in'
+  if (resetStep.value === 'email') return 'Reset your password'
+  if (resetStep.value === 'otp') return 'Verify the code'
+  if (resetStep.value === 'newPassword') return 'Set a new password'
+  return ''
+})
+const heroTitle = computed(() => {
+  if (resetStep.value === 'idle') return 'Welcome back.'
+  if (resetStep.value === 'email') return 'No worries.'
+  if (resetStep.value === 'otp') return 'Check your email.'
+  if (resetStep.value === 'newPassword') return 'Choose a strong one.'
+  return ''
+})
+const heroSub = computed(() => {
+  if (resetStep.value === 'idle') return 'Good to see you again.'
+  if (resetStep.value === 'email') return "Enter your email and we'll send you a code to set a new password."
+  if (resetStep.value === 'otp') return 'Enter the 6-digit code we just sent you.'
+  if (resetStep.value === 'newPassword') return 'At least 8 characters. Mix in a number for extra strength.'
+  return ''
+})
+
+// Banner from query
 const bannerReason = computed(() => route.query.reason as string | undefined)
 const bannerMessage = computed(() => {
-  if (bannerReason.value === 'logout') return 'You have been logged out successfully.'
+  if (bannerReason.value === 'logout') return "You've been signed out."
   if (bannerReason.value === 'session') return 'Your session has expired. Please sign in again.'
   return ''
 })
 
-// ── Sign In ────────────────────────────────────────────────────────────────
+// Sign in
 const emailInput = ref('')
 const passwordInput = ref('')
 const showPassword = ref(false)
@@ -250,46 +340,20 @@ const handleLogin = async () => {
   }
 }
 
-// ── Password Reset ─────────────────────────────────────────────────────────
-type ResetStep = 'idle' | 'email' | 'otp' | 'newPassword' | 'success'
-const resetStep = ref<ResetStep>('idle')
+// Forgot password
 const resetEmail = ref('')
 const resetToken = ref('')
 const resetError = ref('')
 const resetLoading = ref(false)
 
-const resetStepTitle = computed(() => {
-  if (resetStep.value === 'email') return 'Forgot password'
-  if (resetStep.value === 'otp') return 'Verify code'
-  if (resetStep.value === 'newPassword') return 'New password'
-  return ''
-})
-const resetStepHeading = computed(() => {
-  if (resetStep.value === 'email') return 'Forgot your password?'
-  if (resetStep.value === 'otp') return 'Check your email'
-  if (resetStep.value === 'newPassword') return 'Set new password'
-  return ''
-})
-const resetStepSubtitle = computed(() => {
-  if (resetStep.value === 'email') return "Enter your email and we'll send a reset code."
-  if (resetStep.value === 'otp') return 'Enter the 6-digit code we sent you.'
-  if (resetStep.value === 'newPassword') return 'Choose a strong password.'
-  return ''
-})
-
 const handleBack = () => {
   resetError.value = ''
-  if (resetStep.value === 'idle') {
-    navigateTo('/')
-  } else if (resetStep.value === 'email') {
-    resetStep.value = 'idle'
-  } else if (resetStep.value === 'otp') {
-    resetStep.value = 'email'
-  } else if (resetStep.value === 'newPassword') {
-    resetStep.value = 'otp'
-  } else {
-    resetStep.value = 'idle'
-  }
+  if (resetStep.value === 'idle') return navigateTo('/')
+  if (resetStep.value === 'email') resetStep.value = 'idle'
+  else if (resetStep.value === 'sent') resetStep.value = 'email'
+  else if (resetStep.value === 'otp') resetStep.value = 'sent'
+  else if (resetStep.value === 'newPassword') resetStep.value = 'otp'
+  else resetStep.value = 'idle'
 }
 
 const startForgotPassword = () => {
@@ -298,7 +362,7 @@ const startForgotPassword = () => {
   resetStep.value = 'email'
 }
 
-// OTP boxes
+// OTP
 const otpDigits = ref<string[]>(['', '', '', '', '', ''])
 const otpRefs = ref<HTMLInputElement[]>([])
 const otpValue = computed(() => otpDigits.value.join(''))
@@ -342,9 +406,8 @@ const handleForgotPassword = async () => {
       body: { email: resetEmail.value },
     })
     otpDigits.value = ['', '', '', '', '', '']
-    resetStep.value = 'otp'
+    resetStep.value = 'sent'
     startResendCountdown()
-    setTimeout(() => otpRefs.value[0]?.focus(), 100)
   } catch {
     resetError.value = 'Something went wrong. Please try again.'
   } finally {
@@ -395,12 +458,7 @@ const strengthBg = computed(() => {
   if (passwordStrength.value === 3) return '#3b82f6'
   return '#00a19a'
 })
-const strengthColor = computed(() => {
-  if (passwordStrength.value <= 1) return '#ef4444'
-  if (passwordStrength.value === 2) return '#f59e0b'
-  if (passwordStrength.value === 3) return '#3b82f6'
-  return '#00a19a'
-})
+const strengthColor = strengthBg
 const strengthLabel = computed(() => {
   if (passwordStrength.value <= 1) return 'Weak'
   if (passwordStrength.value === 2) return 'Fair'
@@ -427,108 +485,314 @@ const handleResetPassword = async () => {
     resetLoading.value = false
   }
 }
+
+// Single submit handler — dispatches based on step
+const onPrimary = () => {
+  if (resetStep.value === 'idle') return handleLogin()
+  if (resetStep.value === 'email') return handleForgotPassword()
+  if (resetStep.value === 'otp') return handleVerifyResetOtp()
+  if (resetStep.value === 'newPassword') return handleResetPassword()
+}
 </script>
 
 <style scoped>
-.auth-header {
-  background: linear-gradient(135deg, #231d45, #2d2560);
-  padding: 18px 20px 24px;
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.header-back-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  cursor: pointer;
-  font-size: 20px;
-  color: #fff;
-  font-weight: 600;
-  flex-shrink: 0;
-  line-height: 1;
-}
-
-.field-wrap {
-  margin-bottom: 14px;
-}
-
-.field-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  color: #4a5568;
-  margin-bottom: 5px;
-  letter-spacing: 0.02em;
-}
-
-.field-input {
-  width: 100%;
-  padding: 13px 14px;
-  font-size: 15px;
-  border: 1.5px solid #eef0f6;
-  border-radius: 12px;
+.auth-screen {
   background: #fff;
-  color: #231d45;
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  font-family: inherit;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
-.field-input:focus {
-  border-color: #00A19A;
-  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
-}
-
-.field-input::placeholder {
-  color: #94a3b8;
-}
-
-.pw-toggle {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #94a3b8;
+/* Topbar */
+.auth-topbar {
   display: flex;
   align-items: center;
-  padding: 0;
+  padding: 16px 22px 4px;
+  gap: 10px;
+}
+.auth-back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fafafa;
+  color: #231d45;
+  border: 1px solid #ececef;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.auth-back-btn svg { width: 14px; height: 14px; }
+.auth-spacer { flex: 1; }
+.auth-brand-mini {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.submit-btn {
-  width: 100%;
-  border: none;
-  padding: 15px 18px;
-  border-radius: 14px;
-  font-size: 15px;
+/* Hero */
+.auth-hero { padding: 18px 24px 4px; }
+.auth-hero-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: #007e78;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.auth-hero-title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+.auth-hero-sub {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #6b6783;
+  line-height: 1.55;
+  letter-spacing: -0.05px;
+}
+
+/* Logged-out / session toast */
+.logged-out-toast {
+  margin: 6px 24px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logged-out-toast svg { width: 14px; height: 14px; flex-shrink: 0; }
+.logged-out-toast--teal {
+  background: #f2faf8;
+  border: 1px solid #e5f4f2;
+  color: #007e78;
+}
+.logged-out-toast--yellow {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #92400e;
+}
+
+/* Form */
+.auth-form { padding: 22px 24px 18px; }
+.form-field { margin-bottom: 14px; }
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.1px;
+  margin-bottom: 6px;
+}
+.form-input-wrap { position: relative; }
+.form-input {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #ececef;
+  border-radius: 12px;
+  padding: 13px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #231d45;
+  letter-spacing: -0.1px;
+  transition: all 0.15s;
+  box-sizing: border-box;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #00a19a;
+  box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.10);
+}
+.form-input::placeholder { color: #9c98ad; font-weight: 500; }
+.form-input.with-icon { padding-left: 40px; }
+.form-input.with-action { padding-right: 44px; }
+.form-input-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9c98ad;
+  pointer-events: none;
+}
+.form-input-icon svg { width: 16px; height: 16px; display: block; }
+.form-input-action {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: #9c98ad;
   cursor: pointer;
-  background: #00A19A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-input-action svg { width: 16px; height: 16px; }
+
+/* Reset helper text above OTP */
+.reset-helper-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b6783;
+  margin: 0 0 18px;
+  line-height: 1.55;
+  text-align: center;
+}
+.reset-helper-text strong { color: #231d45; font-weight: 800; }
+
+/* OTP */
+.otp-boxes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.otp-box {
+  width: 46px;
+  height: 54px;
+  border: 1.5px solid #ececef;
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: #231d45;
+  background: #fff;
+  outline: none;
+  font-family: inherit;
+}
+.otp-box:focus {
+  border-color: #00a19a;
+  box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.10);
+}
+
+/* Password strength */
+.password-strength { margin-bottom: 14px; }
+.strength-bars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.strength-bar {
+  height: 4px;
+  flex: 1;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+.password-strength p {
+  font-size: 12px;
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Buttons */
+.btn-primary {
+  width: 100%;
+  background: #00a19a;
   color: #fff;
-  box-shadow: 0 4px 18px rgba(0, 161, 154, 0.3);
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 14px 18px;
+  border-radius: 100px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  letter-spacing: -0.2px;
+  transition: all 0.18s;
+  margin-top: 8px;
+}
+.btn-primary:hover { background: #00b6ae; }
+.btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+.btn-text {
+  background: transparent;
+  border: none;
   font-family: inherit;
-  transition: transform 0.1s, opacity 0.15s;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b6783;
+  cursor: pointer;
+  padding: 10px;
+  margin: 8px auto 0;
+  display: block;
+  letter-spacing: -0.05px;
 }
+.btn-text:hover { color: #231d45; }
+.btn-text:disabled { opacity: 0.65; cursor: not-allowed; }
 
-.submit-btn:disabled {
-  opacity: 0.5;
+/* Confirm state — used for "sent" and "success" */
+.confirm-state {
+  padding: 28px 24px;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  background: #f2faf8;
+  border: 1px solid #e5f4f2;
+  border-radius: 50%;
+  margin: 8px auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00a19a;
+}
+.confirm-icon svg { width: 28px; height: 28px; }
+.confirm-h {
+  font-size: 22px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+.confirm-sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b6783;
+  line-height: 1.55;
+  margin-bottom: 22px;
+  letter-spacing: -0.05px;
+}
+.confirm-sub strong { color: #231d45; font-weight: 800; }
+.confirm-state .btn-primary { max-width: 280px; }
 
-.submit-btn:active {
-  transform: scale(0.98);
+/* Footer */
+.auth-footer {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b6783;
+  text-align: center;
+  padding: 16px 24px 24px;
+  letter-spacing: -0.05px;
 }
+.auth-footer a {
+  color: #8a5f1f;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+}
+.auth-footer a:hover { color: #c18a38; }
 
 .error-banner {
   margin-bottom: 14px;
@@ -541,52 +805,6 @@ const handleResetPassword = async () => {
   line-height: 1.5;
 }
 
-.info-banner {
-  margin-bottom: 16px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.info-banner--teal {
-  background: rgba(0, 161, 154, 0.1);
-  border: 1px solid rgba(0, 161, 154, 0.25);
-  color: #00a19a;
-}
-
-.info-banner--yellow {
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  color: #92400e;
-}
-
-.otp-boxes {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.otp-box {
-  width: 46px;
-  height: 54px;
-  border: 1.5px solid #eef0f6;
-  border-radius: 12px;
-  font-size: 22px;
-  font-weight: 700;
-  text-align: center;
-  color: #231d45;
-  background: #fff;
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  font-family: inherit;
-}
-
-.otp-box:focus {
-  border-color: #00A19A;
-  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
-}
-
 .spinner {
   width: 16px;
   height: 16px;
@@ -596,8 +814,5 @@ const handleResetPassword = async () => {
   display: inline-block;
   animation: spin 0.7s linear infinite;
 }
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>

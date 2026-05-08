@@ -1,45 +1,98 @@
 <template>
-  <div class="mobile-container" style="background: #fff; display: flex; flex-direction: column; min-height: 100dvh;">
+  <div class="mobile-container auth-screen">
 
-    <!-- Navy gradient header -->
-    <div class="auth-header">
-      <div class="header-glow"></div>
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; position: relative; z-index: 1;">
-        <button @click="$router.back()" class="header-back-btn">‹</button>
-        <span style="font-size: 15px; font-weight: 700; color: #fff;">Create account</span>
-      </div>
-      <div style="position: relative; z-index: 1;">
-        <h1 style="font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 4px; letter-spacing: -0.02em;">Tell us who you are</h1>
-        <p style="font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5;">Your details stay with us — we never share them with third parties.</p>
+    <!-- Topbar — back button + brand mini -->
+    <div class="auth-topbar">
+      <button class="auth-back-btn" @click="$router.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <div class="auth-spacer" />
+      <div class="auth-brand-mini">
+        <OPIcon name="logo" class="w-[26px] h-[26px]" />
       </div>
     </div>
 
-    <!-- Scrollable form -->
-    <div style="flex: 1; overflow-y: auto; padding: 22px 20px 40px;">
+    <!-- Hero -->
+    <div class="auth-hero">
+      <div class="auth-hero-eyebrow">Create your account</div>
+      <div class="auth-hero-title">Start with your home.</div>
+      <div class="auth-hero-sub">A few details and you're in. Your details stay with us — we never share them with third parties.</div>
+    </div>
+
+    <form class="auth-form" @submit.prevent="handleSubmit">
 
       <div v-if="formError" class="error-banner">{{ formError }}</div>
 
-      <!-- Full Name -->
-      <div class="field-wrap">
-        <label class="field-label">Full Name</label>
-        <input v-model="form.fullName" type="text" placeholder="Jane Smith" class="field-input" autocomplete="name" />
-      </div>
-
       <!-- Email -->
-      <div class="field-wrap">
-        <label class="field-label">Email address</label>
-        <input v-model="form.email" type="email" placeholder="you@example.com" class="field-input" autocomplete="email" />
+      <div class="form-field">
+        <label class="form-label">Email address</label>
+        <div class="form-input-wrap">
+          <span class="form-input-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+          </span>
+          <input v-model="form.email" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email" />
+        </div>
       </div>
 
-      <!-- Mobile with country code -->
-      <div class="field-wrap">
-        <label class="field-label">Mobile Number <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
+      <!-- Password -->
+      <div class="form-field">
+        <label class="form-label">Password</label>
+        <div class="form-input-wrap">
+          <span class="form-input-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+          </span>
+          <input v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="At least 8 characters" class="form-input with-icon with-action" autocomplete="new-password" />
+          <button type="button" class="form-input-action" @click="showPassword = !showPassword">
+            <svg v-if="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+              <line x1="1" y1="1" x2="23" y2="23" />
+            </svg>
+            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Full name -->
+      <div class="form-field">
+        <label class="form-label">Full name</label>
+        <div class="form-input-wrap">
+          <span class="form-input-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </span>
+          <input v-model="form.fullName" type="text" placeholder="Jane Smith" class="form-input with-icon" autocomplete="name" />
+        </div>
+      </div>
+
+      <!-- Mobile (optional) -->
+      <div class="form-field optional">
+        <label class="form-label">Mobile number <span class="opt">optional</span></label>
         <PhoneInput v-model="form.mobile" />
+        <div class="form-help">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          <span>We only text you about <strong>your Passport</strong> — never marketing.</span>
+        </div>
       </div>
 
-      <!-- Postcode / Address — inline live dropdown -->
-      <div class="field-wrap">
-        <label class="field-label">Postcode</label>
+      <!-- Postcode (optional) -->
+      <div class="form-field optional">
+        <label class="form-label">Postcode <span class="opt">optional</span></label>
         <div v-if="selectedAddress" class="address-selected-row">
           <div class="address-selected-body">
             <div class="address-selected-line1">{{ selectedAddress.line1 }}</div>
@@ -49,58 +102,41 @@
         </div>
         <PropertySearchInput
           v-else
-          placeholder="Enter postcode or address"
+          placeholder="CV5 6AJ"
           variant="light"
           @select="onAddressSelect"
         />
-      </div>
-
-      <!-- Password -->
-      <div class="field-wrap">
-        <label class="field-label">Password</label>
-        <div style="position: relative;">
-          <input v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="At least 8 characters" class="field-input" style="padding-right: 46px;" autocomplete="new-password" />
-          <button type="button" @click="showPassword = !showPassword" class="pw-toggle">
-            <svg v-if="showPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-            <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+        <div class="postcode-prompt">
+          <div class="postcode-prompt-h">See your home's HealthScore the moment you sign in</div>
+          <div class="postcode-prompt-text">Add your postcode and we'll show you what your home tells us — bills, value, comparisons. You can skip this and add it later.</div>
         </div>
       </div>
 
-      <!-- Confirm Password -->
-      <div class="field-wrap">
-        <label class="field-label">Confirm Password</label>
-        <div style="position: relative;">
-          <input v-model="form.confirmPassword" :type="showConfirm ? 'text' : 'password'" placeholder="Repeat your password" class="field-input" style="padding-right: 46px;" autocomplete="new-password" />
-          <button type="button" @click="showConfirm = !showConfirm" class="pw-toggle">
-            <svg v-if="showConfirm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-            <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-      </div>
+      <!-- Marketing opt-in -->
+      <label class="checkbox-row">
+        <span class="checkbox-box" :class="{ checked: form.marketingOptIn }">
+          <input v-model="form.marketingOptIn" type="checkbox" hidden />
+        </span>
+        <span class="checkbox-text">Email me occasional product updates and tips. We won't spam you — and you can unsubscribe in one tap.</span>
+      </label>
 
-      <!-- Submit -->
-      <button @click="handleSubmit" :disabled="isLoading" class="submit-btn" style="margin-bottom: 12px;">
-        <span v-if="isLoading" class="spinner"></span>
+      <button type="submit" class="btn-primary" :disabled="isLoading">
+        <span v-if="isLoading" class="spinner" />
         {{ isLoading ? 'Creating account…' : 'Create account' }}
       </button>
 
-      <!-- Terms disclaimer -->
-      <p class="terms-disclaimer">
+      <div class="terms-text">
         By continuing you agree to our
-        <span class="terms-link" @click="showTermsModal = true">Terms of Service</span>
+        <a @click="showTermsModal = true">Terms of Service</a>
         and
-        <span class="terms-link" @click="showTermsModal = true">Privacy Policy</span>
-      </p>
-
-      <!-- Sign in link -->
-      <div style="text-align: center; margin-top: 18px;">
-        <span style="font-size: 13px; color: #94a3b8;">Already have an account? </span>
-        <NuxtLink to="/onboarding/signin" style="font-size: 13px; font-weight: 700; color: #00A19A; text-decoration: none;">Sign in</NuxtLink>
+        <a @click="showTermsModal = true">Privacy Policy</a>.
       </div>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <NuxtLink to="/onboarding/signin">Sign in</NuxtLink>
     </div>
 
-    <!-- Terms Modal -->
     <TermsModal
       :show="showTermsModal"
       @update:show="showTermsModal = $event"
@@ -118,6 +154,7 @@ import { toTitleCase } from '~/utils/form-helpres'
 import PhoneInput from '~/components/form/PhoneInput.vue'
 import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 import TermsModal from '~/components/modals/TermsModal.vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
 
 definePageMeta({
   title: 'Create Account - UmovingU',
@@ -134,16 +171,14 @@ const form = reactive({
   mobile: '',
   postcode: '',
   password: '',
-  confirmPassword: '',
+  marketingOptIn: false,
 })
 
 const showPassword = ref(false)
-const showConfirm = ref(false)
 const formError = ref('')
 const isLoading = ref(false)
 const showTermsModal = ref(false)
 
-// ── Address search (live dropdown) ────────────────────────────────────────
 const selectedAddress = ref<{ id: number; line1: string; line2: string; postcode?: string } | null>(null)
 
 const onAddressSelect = (property: any) => {
@@ -182,7 +217,6 @@ const handleSubmit = async () => {
     formError.value = 'Please enter your email address.'
     return
   }
-  // Basic email format check before hitting the backend
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
     formError.value = 'Please enter a valid email address.'
     return
@@ -191,12 +225,7 @@ const handleSubmit = async () => {
     formError.value = 'Password must be at least 8 characters.'
     return
   }
-  if (form.password !== form.confirmPassword) {
-    formError.value = 'Passwords do not match.'
-    return
-  }
 
-  // Split full name into first / last
   const parts = form.fullName.trim().split(/\s+/)
   const firstName = parts[0] ?? ''
   const lastName = parts.slice(1).join(' ')
@@ -221,8 +250,6 @@ const handleSubmit = async () => {
       password: form.password,
     }
 
-    // Store in both useState and sessionStorage so a page refresh on
-    // the verification page doesn't lose the email (SSR resets useState).
     email.value = cleanEmail
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.setItem('umu-pending-email', cleanEmail)
@@ -239,153 +266,203 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped>
-.auth-header {
-  background: linear-gradient(135deg, #231d45, #2d2560);
-  padding: 18px 20px 24px;
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.header-glow {
-  position: absolute;
-  right: -20px;
-  bottom: -40px;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle, rgba(0, 161, 154, 0.25), transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.header-back-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  cursor: pointer;
-  font-size: 20px;
-  color: #fff;
-  font-weight: 600;
-  flex-shrink: 0;
-  line-height: 1;
-}
-
-.field-wrap {
-  margin-bottom: 14px;
-}
-
-.field-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  color: #4a5568;
-  margin-bottom: 5px;
-  letter-spacing: 0.02em;
-}
-
-.field-input {
-  width: 100%;
-  padding: 13px 14px;
-  font-size: 15px;
-  border: 1.5px solid #eef0f6;
-  border-radius: 12px;
+.auth-screen {
   background: #fff;
-  color: #231d45;
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  font-family: inherit;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
-.field-input:focus {
-  border-color: #00A19A;
-  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
-}
-
-.field-input::placeholder {
-  color: #94a3b8;
-}
-
-/* Make PhoneInput match the rest of the form */
-:deep(.phone-field) {
-  background: #fff;
-  border: 1.5px solid #eef0f6;
-  border-radius: 12px;
-  height: 50px;
-}
-
-:deep(.phone-field--focused) {
-  border-color: #00A19A;
-  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
-}
-
-:deep(.number-input) {
-  font-size: 15px;
-  color: #231d45;
-}
-
-:deep(.country-dial) {
-  color: #231d45;
-}
-
-.pw-toggle {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #94a3b8;
+/* Topbar */
+.auth-topbar {
   display: flex;
   align-items: center;
-  padding: 0;
+  padding: 16px 22px 4px;
+  gap: 10px;
 }
-
-.submit-btn {
-  width: 100%;
-  border: none;
-  padding: 15px 18px;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 700;
+.auth-back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fafafa;
+  color: #231d45;
+  border: 1px solid #ececef;
   cursor: pointer;
-  background: #00A19A;
-  color: #fff;
-  box-shadow: 0 4px 18px rgba(0, 161, 154, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-family: inherit;
-  transition: transform 0.1s, opacity 0.15s;
+  flex-shrink: 0;
+}
+.auth-back-btn svg { width: 14px; height: 14px; }
+.auth-spacer { flex: 1; }
+.auth-brand-mini {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.submit-btn:disabled {
-  opacity: 0.6;
+/* Hero */
+.auth-hero {
+  padding: 18px 24px 4px;
+}
+.auth-hero-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: #007e78;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.auth-hero-title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+.auth-hero-sub {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #6b6783;
+  line-height: 1.55;
+  letter-spacing: -0.05px;
 }
 
-.submit-btn:active {
-  transform: scale(0.98);
-}
+/* Form */
+.auth-form { padding: 22px 24px 18px; }
+.form-field { margin-bottom: 14px; }
+.form-field.optional .form-label { color: #6b6783; }
 
-.terms-disclaimer {
-  text-align: center;
+.form-label {
+  display: block;
   font-size: 12px;
-  color: #94a3b8;
-  line-height: 1.6;
-  margin: 0;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.1px;
+  margin-bottom: 6px;
 }
-
-.terms-link {
-  color: #00A19A;
+.form-label .opt {
+  font-size: 11px;
   font-weight: 600;
-  cursor: pointer;
+  color: #9c98ad;
+  margin-left: 4px;
+  letter-spacing: 0;
 }
 
+.form-input-wrap { position: relative; }
+.form-input {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #ececef;
+  border-radius: 12px;
+  padding: 13px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #231d45;
+  letter-spacing: -0.1px;
+  transition: all 0.15s;
+  box-sizing: border-box;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #00a19a;
+  box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.10);
+}
+.form-input::placeholder { color: #9c98ad; font-weight: 500; }
+.form-input.with-icon { padding-left: 40px; }
+.form-input.with-action { padding-right: 44px; }
+
+.form-input-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9c98ad;
+  pointer-events: none;
+}
+.form-input-icon svg { width: 16px; height: 16px; display: block; }
+
+.form-input-action {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: #9c98ad;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-input-action:hover { color: #007e78; }
+.form-input-action svg { width: 16px; height: 16px; }
+
+.form-help {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9c98ad;
+  margin-top: 6px;
+  line-height: 1.45;
+  letter-spacing: -0.05px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.form-help svg {
+  width: 12px;
+  height: 12px;
+  color: #00a19a;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.form-help strong { color: #6b6783; font-weight: 800; }
+
+/* PhoneInput visual alignment */
+:deep(.phone-field) {
+  background: #fff;
+  border: 1.5px solid #ececef;
+  border-radius: 12px;
+  height: 50px;
+}
+:deep(.phone-field--focused) {
+  border-color: #00a19a;
+  box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.10);
+}
+:deep(.number-input) { font-size: 14px; color: #231d45; font-weight: 600; }
+:deep(.country-dial) { color: #231d45; }
+
+/* Postcode prompt callout */
+.postcode-prompt {
+  background: #f2faf8;
+  border: 1px solid #e5f4f2;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 8px;
+}
+.postcode-prompt-h {
+  font-size: 11px;
+  font-weight: 800;
+  color: #007e78;
+  margin-bottom: 4px;
+  letter-spacing: -0.05px;
+}
+.postcode-prompt-text {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #231d45;
+  line-height: 1.45;
+  letter-spacing: -0.05px;
+}
+
+/* Selected address pill */
 .address-selected-row {
   display: flex;
   align-items: center;
@@ -395,10 +472,7 @@ const handleSubmit = async () => {
   border-radius: 12px;
   padding: 12px 14px;
 }
-.address-selected-body {
-  flex: 1;
-  min-width: 0;
-}
+.address-selected-body { flex: 1; min-width: 0; }
 .address-selected-line1 {
   font-size: 13.5px;
   font-weight: 700;
@@ -423,6 +497,104 @@ const handleSubmit = async () => {
   flex-shrink: 0;
 }
 
+/* Marketing checkbox */
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 0 4px;
+  cursor: pointer;
+}
+.checkbox-box {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #ececef;
+  border-radius: 5px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  position: relative;
+  transition: all 0.15s;
+}
+.checkbox-box.checked {
+  background: #00a19a;
+  border-color: #00a19a;
+}
+.checkbox-box.checked::after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+.checkbox-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b6783;
+  line-height: 1.45;
+  letter-spacing: -0.05px;
+}
+
+/* Primary button — teal pill */
+.btn-primary {
+  width: 100%;
+  background: #00a19a;
+  color: #fff;
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 14px 18px;
+  border-radius: 100px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.2px;
+  transition: all 0.18s;
+  margin-top: 14px;
+}
+.btn-primary:hover { background: #00b6ae; }
+.btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+
+.terms-text {
+  font-size: 11px;
+  font-weight: 500;
+  color: #9c98ad;
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 14px;
+  padding: 0 8px;
+  letter-spacing: -0.05px;
+}
+.terms-text a {
+  color: #007e78;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-footer {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b6783;
+  text-align: center;
+  padding: 16px 24px 24px;
+  letter-spacing: -0.05px;
+}
+.auth-footer a {
+  color: #8a5f1f;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+}
+.auth-footer a:hover { color: #c18a38; }
+
 .error-banner {
   margin-bottom: 14px;
   padding: 12px 14px;
@@ -443,8 +615,5 @@ const handleSubmit = async () => {
   display: inline-block;
   animation: spin 0.7s linear infinite;
 }
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>

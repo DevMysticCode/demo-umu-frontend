@@ -983,12 +983,9 @@ async function save() {
       selectedRole.value === 'buy' || selectedRole.value === 'both'
     // Honor a pending redirect (e.g. user was sent to signup from a
     // HealthScore property page via "I'm interested" / "I'm the owner")
-    let redirectPath: string | null = null
-    if (typeof localStorage !== 'undefined') {
-      redirectPath = localStorage.getItem('redirectAfterLogin')
-      if (redirectPath) localStorage.removeItem('redirectAfterLogin')
-    }
-    await navigateTo(redirectPath || '/explore')
+    // Welcome screen consumes any pending redirectAfterLogin when the user
+    // taps "Let's start exploring", so leave it in storage here.
+    await navigateTo('/onboarding/welcome')
   }
 }
 
