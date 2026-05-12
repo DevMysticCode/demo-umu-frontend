@@ -475,23 +475,26 @@ defineExpose({ clearQuery })
 
 .psi-drop-hs {
   flex-shrink: 0;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   white-space: nowrap;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.4px;
+  text-align: right;
 }
 .psi-drop-hs-num {
   font-size: 22px;
   font-weight: 800;
   line-height: 1;
+  font-feature-settings: 'tnum';
 }
 .psi-drop-hs-lbl {
   font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  color: #9c98ad;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  opacity: 0.7;
+  margin-top: 2px;
 }
 
 /* Bottom badge strip: EPC + Passport state + HS */

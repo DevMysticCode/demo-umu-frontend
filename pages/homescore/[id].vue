@@ -31,8 +31,18 @@
         </p>
         <p class="hs-header-sub">{{ headerSub }}</p>
       </div>
-      <div class="hs-header-spacer" />
+      <button
+        v-if="screen === 'landing' || screen === 'results' || screen === 'buyer-results'"
+        class="hs-tour-btn"
+        type="button"
+        title="How does this work?"
+        @click="resultTour.restart()"
+      >?</button>
+      <div v-else class="hs-header-spacer" />
     </div>
+
+    <!-- Tour overlay (renders only when active) -->
+    <TourCoach :tour="resultTour" />
 
     <!-- Property strip -->
     <!-- <div v-if="property" class="hs-prop-strip">
@@ -57,510 +67,20 @@
       </div>
     </template>
 
-    <!-- ── LANDING / AUTO SCORE ─────────────────────────────────── -->
+    <!-- ── LANDING / AUTO SCORE — prototype-aligned (3a/3b/3c) ──── -->
     <template v-else-if="screen === 'landing'">
-      <div class="hs-scroll">
-        <!-- 1. Address strip with inline EPC + Passport badges -->
-        <div class="hs-addr-strip">
-          <div class="hs-addr-dot" />
-          <div class="hs-addr-body">
-            <div class="hs-addr-text">{{ property.addressLine1 }}</div>
-            <div class="hs-addr-tiny">
-              {{ property.postcode
-              }}<template v-if="property.propertyType">
-                · {{ property.propertyType }}</template
-              ><template v-if="property.bedrooms">
-                · {{ property.bedrooms }} bed</template
-              >
-            </div>
-          </div>
-          <div class="hs-addr-badges">
-            <span
-              v-if="property.epcRating"
-              class="hs-addr-badge"
-              :style="{ background: epcColor(property.epcRating) }"
-            >
-              ⚡ EPC {{ property.epcRating }}
-            </span>
-            <span
-              v-if="passportState === 'published'"
-              class="hs-addr-badge hs-addr-badge--pub"
-            >
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="hs-addr-badge-ic"
-              />
-              Published
-            </span>
-            <span
-              v-else-if="passportState === 'inProgress'"
-              class="hs-addr-badge hs-addr-badge--prog"
-            >
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="hs-addr-badge-ic"
-              />
-              In progress
-            </span>
-            <span
-              v-else
-              class="hs-addr-badge hs-addr-badge--unclaimed"
-              @click="goToClaim"
-            >
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="hs-addr-badge-ic"
-              />
-              Unclaimed · Claim yours? →
-            </span>
-          </div>
-        </div>
-
-        <!-- People searched this address card — shown for ALL properties -->
-        <div
-          class="hs-searched-card"
-          :class="{
-            'hs-searched-card--published': passportState === 'published',
-            'hs-searched-card--inprogress': passportState === 'inProgress',
-            'hs-searched-card--unclaimed': !passportState,
-          }"
-        >
-          <div class="hs-searched-glow" />
-          <div class="hs-searched-numwrap">
-            <div class="hs-searched-num">{{ searchedMonthCount }}</div>
-            <div class="hs-searched-numlbl">searches</div>
-          </div>
-          <div class="hs-searched-divider" />
-          <div class="hs-searched-body">
-            <template v-if="passportState === 'published'">
-              <div class="hs-searched-title">
-                People searched this address this month
-              </div>
-              <div class="hs-searched-sub">
-                The verified Passport was visible to every one of them.
-                <img
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt=""
-                  class="hs-searched-sub-ic"
-                />
-              </div>
-            </template>
-            <template v-else-if="passportState === 'inProgress'">
-              <div v-if="searchedTodayCount > 0" class="hs-searched-live">
-                <span class="hs-searched-pulse" />
-                {{ searchedTodayCount }} searched today
-              </div>
-              <div class="hs-searched-title">
-                Owner is preparing a Passport for this property
-              </div>
-              <div class="hs-searched-sub">
-                Verified record coming soon — you're seeing public EPC data
-                only for now.
-              </div>
-            </template>
-            <template v-else>
-              <div v-if="searchedTodayCount > 0" class="hs-searched-live">
-                <span class="hs-searched-pulse" />
-                {{ searchedTodayCount }} searched today
-              </div>
-              <div class="hs-searched-title">
-                Active buyer interest in this property
-              </div>
-              <div class="hs-searched-sub">
-                No verified Passport on this address yet — see below.
-              </div>
-            </template>
-          </div>
-        </div>
-
-        <!-- Money hook -->
-        <div class="hs-money-hook">
-          <div class="hs-money-hook-label">You could be overpaying</div>
-          <div class="hs-money-hook-amount">
-            £{{ potentialSaving.toLocaleString() }} / year
-          </div>
-          <div class="hs-money-hook-sub">
-            vs similar homes on your street. Let's find out if this is real — or
-            just outdated data.
-          </div>
-        </div>
-
-        <!-- Starter score card -->
-        <div class="hs-gauge-card">
-          <div class="hs-gauge-card-eyebrow">Starter Score</div>
-          <div class="hs-gauge-wrap">
-            <svg viewBox="0 0 200 112" width="220" class="hs-gauge-svg">
-              <circle
-                cx="100"
-                cy="100"
-                r="80"
-                fill="none"
-                stroke="#e5e7eb"
-                stroke-width="14"
-                stroke-dasharray="251 503"
-                transform="rotate(180,100,100)"
-                stroke-linecap="round"
-              />
-              <circle
-                cx="100"
-                cy="100"
-                r="80"
-                fill="none"
-                :stroke="scoreColor(autoScoreVal)"
-                stroke-width="14"
-                :stroke-dasharray="`${(autoScoreVal / 100) * 251} 503`"
-                transform="rotate(180,100,100)"
-                stroke-linecap="round"
-                style="
-                  transition: stroke-dasharray 0.8s
-                    cubic-bezier(0.2, 0.8, 0.2, 1);
-                "
-              />
-              <text
-                x="100"
-                y="94"
-                text-anchor="middle"
-                font-size="44"
-                font-weight="700"
-                :fill="scoreColor(autoScoreVal)"
-                font-family="sans-serif"
-              >
-                {{ autoScoreVal }}
-              </text>
-              <text
-                x="100"
-                y="110"
-                text-anchor="middle"
-                font-size="13"
-                fill="#6b7280"
-                font-family="sans-serif"
-              >
-                {{ autoRating }}
-              </text>
-            </svg>
-          </div>
-          <div
-            class="hs-conf-pill"
-            :class="`hs-conf-pill--${epcExplain.confTone}`"
-          >
-            <span class="hs-conf-pill-ic">{{ epcExplain.confIcon }}</span>
-            {{ epcExplain.confText }}
-          </div>
-
-          <!-- EPC-based positive-framing explainer -->
-          <div class="hs-epc-explain">
-            <div class="hs-epc-explain-label">{{ epcExplain.label }}</div>
-            <div class="hs-epc-explain-body" v-html="epcExplain.body" />
-          </div>
-
-          <p class="hs-epc-note">
-            This number is modelled from {{ epcDataAge }} EPC data. Your real
-            score could be anywhere from {{ epcRangeLow }} to
-            {{ epcRangeHigh }}.
-          </p>
-
-          <!-- Interest selector — primary CTA adapts to passport state:
-               unclaimed → "I own this property" runs the quiz
-               in-progress → "Sign in to continue your Passport"
-               published → "Sign in to manage your Passport"
-               "I'm interested in buying" is always available below. -->
-          <div class="hs-interest-label">
-            What's your interest in this property?
-          </div>
-          <div class="hs-interest-stack">
-            <button
-              class="hs-interest-btn primary"
-              @click="onPrimaryCtaClick"
-            >
-              <div class="hs-interest-ic primary">
-                <template v-if="passportState">
-                  <img
-                    src="/op-icons/passportview/umu-passport.png"
-                    alt=""
-                    class="hs-interest-ic-img"
-                  />
-                </template>
-                <template v-else>🏠</template>
-              </div>
-              <div class="hs-interest-body">
-                <div class="hs-interest-title">{{ primaryCta.title }}</div>
-                <div class="hs-interest-sub primary-sub">
-                  {{ primaryCta.sub }}
-                </div>
-              </div>
-              <div class="hs-interest-chev primary">›</div>
-            </button>
-            <button
-              class="hs-interest-btn outline"
-              @click="onInterestedInBuying"
-            >
-              <div class="hs-interest-ic soft">🔍</div>
-              <div class="hs-interest-body">
-                <div class="hs-interest-title">I'm interested in buying</div>
-                <div class="hs-interest-sub">
-                  See running costs, risks &amp; what to ask the seller
-                </div>
-              </div>
-              <div class="hs-interest-chev">›</div>
-            </button>
-          </div>
-
-          <template v-if="!readOnlyMode">
-            <!-- Non-owner notice — only shown when no passport exists yet -->
-            <div
-              v-if="!isPropertyOwner && passportState === null"
-              class="hs-owner-notice"
-            >
-              <span style="font-size: 14px; flex-shrink: 0">💡</span>
-              <span
-                >Claim this property's passport to save your score
-                permanently.</span
-              >
-            </div>
-          </template>
-
-          <!-- Published passport: CTA to view / unlock the full passport -->
-          <button
-            v-if="passportState === 'published'"
-            class="hs-readonly-cta"
-            @click="router.push(`/property/${propertyId}`)"
-          >
-            <span>See the full Passport</span>
-            <span class="hs-readonly-cta-arrow">→</span>
-          </button>
-          <div v-if="passportState === 'published'" class="hs-readonly-subnote">
-            Score, breakdown and risks below are the verified owner's data.
-          </div>
-          <!-- In progress: subtle note that we'll update when they publish -->
-          <div
-            v-else-if="passportState === 'inProgress'"
-            class="hs-readonly-subnote"
-          >
-            Estimated from public records. We'll refresh when the owner
-            publishes.
-          </div>
-        </div>
-
-        <!-- Passport state banner — relocated below score card per prototype -->
-        <div v-if="passportState === 'published'" class="hs-pp-pub">
-          <div class="hs-pp-pub-glow" />
-          <div class="hs-pp-pub-inner">
-            <div class="hs-pp-pub-eyebrow">
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="hs-pp-eyebrow-ic"
-              />
-              Property Passport — published
-            </div>
-            <div class="hs-pp-pub-title">
-              The owner's verified record is live.
-            </div>
-            <div class="hs-pp-pub-body">
-              A
-              <strong>Property Passport</strong>
-              bundles a home's title, documents, condition and history —
-              verified, in one place. Unlock this one to see everything before
-              you offer.
-            </div>
-            <div class="hs-pp-pub-explainer">
-              <div class="hs-pp-pub-explainer-title">
-                <img
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt=""
-                  class="hs-pp-eyebrow-ic"
-                />
-                What you'll unlock
-              </div>
-              <div class="hs-pp-pub-explainer-row">
-                <span class="hs-pp-pub-check">✓</span>
-                Title verified by HM Land Registry
-              </div>
-              <div class="hs-pp-pub-explainer-row">
-                <span class="hs-pp-pub-check">✓</span>
-                Owner identity confirmed (KYC)
-              </div>
-              <div class="hs-pp-pub-explainer-row">
-                <span class="hs-pp-pub-check">✓</span>
-                Documents, condition &amp; history
-              </div>
-              <div class="hs-pp-pub-explainer-row">
-                <span class="hs-pp-pub-check">✓</span>
-                Real HomeScore — not just EPC
-              </div>
-            </div>
-            <button
-              class="hs-pp-pub-unlock"
-              @click="router.push(`/property/${propertyId}`)"
-            >
-              🔓 Unlock full Passport · £99
-            </button>
-          </div>
-        </div>
-
-        <div v-else-if="passportState === 'inProgress'" class="hs-pp-claimed">
-          <div class="hs-pp-claimed-eyebrow">
-            <img
-              src="/op-icons/passportview/umu-passport.png"
-              alt=""
-              class="hs-pp-eyebrow-ic"
-            />
-            The owner has started a Passport — not yet published
-          </div>
-          <!-- <div class="hs-pp-claimed-title">
-            The owner is preparing a verified record of this home.
-          </div> -->
-          <div class="hs-pp-claimed-body">
-            The seller is building their record. You're seeing public EPC data
-            only for now.
-          </div>
-          <div class="hs-pp-claimed-explainer-amber">
-            <div class="hs-pp-claimed-explainer-title-amber">
-              📊 What you can see now
-            </div>
-            <div style="font-size: 11px; color: #78350f">
-              Public EPC data only · Estimated HomeScore based on energy
-              rating
-            </div>
-          </div>
-          <div class="hs-pp-claimed-explainer-amber">
-            <div class="hs-pp-claimed-explainer-title-amber">
-              🔒 Smart buyers won't view a property without this.
-            </div>
-            <div style="font-size: 11px; color: #78350f">
-              Verified ownership, documents, HomeScore and planning records —
-              before you commit a penny.
-            </div>
-          </div>
-
-          <div class="hs-pp-claimed-explainer">
-            <div class="hs-pp-claimed-explainer-title">
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="hs-pp-eyebrow-ic"
-              />
-              What you'll see when published
-            </div>
-            <div class="hs-pp-claimed-explainer-row">
-              <span class="hs-pp-claimed-check">✓</span>
-              Title verified by HM Land Registry
-            </div>
-            <div class="hs-pp-claimed-explainer-row">
-              <span class="hs-pp-claimed-check">✓</span>
-              Owner identity confirmed (KYC)
-            </div>
-            <div class="hs-pp-claimed-explainer-row">
-              <span class="hs-pp-claimed-check">✓</span>
-              Documents, condition &amp; history
-            </div>
-            <div class="hs-pp-claimed-explainer-row">
-              <span class="hs-pp-claimed-check">✓</span>
-              Real HomeScore — not just EPC
-            </div>
-          </div>
-          <button
-            v-if="!notifiedOfPublish"
-            class="hs-pp-claimed-cta"
-            @click="notifyWhenPublished"
-          >
-            🔔
-            {{
-              isGuest
-                ? 'Sign up to be notified'
-                : "Notify me when it's published"
-            }}
-          </button>
-          <div v-else class="hs-pp-claimed-done">
-            ✓ We'll alert you as soon as it goes live
-          </div>
-        </div>
-
-        <!-- No passport — neutral grey card defining what a Passport is -->
-        <div v-else class="hs-pp-none">
-          <div class="hs-pp-none-eyebrow">
-            <img
-              src="/op-icons/passportview/umu-passport.png"
-              alt=""
-              class="hs-pp-eyebrow-ic"
-            />
-            No Property Passport yet
-          </div>
-          <div class="hs-pp-none-title">
-            This home doesn't have a verified record yet.
-          </div>
-          <div class="hs-pp-none-body">
-            A
-            <strong>Property Passport</strong>
-            bundles a home's title, documents, condition and history —
-            verified, in one place — for the owner to share with buyers.
-          </div>
-          <div class="hs-pp-none-explainer">
-            <div class="hs-pp-none-explainer-title">
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="hs-pp-eyebrow-ic"
-              />
-              What's in a Passport
-            </div>
-            <div class="hs-pp-none-explainer-row">
-              <span class="hs-pp-none-check">✓</span>
-              Title verified by HM Land Registry
-            </div>
-            <div class="hs-pp-none-explainer-row">
-              <span class="hs-pp-none-check">✓</span>
-              Owner identity confirmed (KYC)
-            </div>
-            <div class="hs-pp-none-explainer-row">
-              <span class="hs-pp-none-check">✓</span>
-              Documents, condition &amp; history
-            </div>
-            <div class="hs-pp-none-explainer-row">
-              <span class="hs-pp-none-check">✓</span>
-              Real HomeScore — not just EPC
-            </div>
-          </div>
-        </div>
-
-        <!-- Score breakdown -->
-        <div class="hs-breakdown-card">
-          <p class="hs-breakdown-title">
-            {{
-              passportState === 'published'
-                ? "Owner's verified breakdown"
-                : 'Score breakdown (estimated)'
-            }}
-          </p>
-          <div class="hs-pillar-list">
-            <div
-              v-for="bar in pillarBars(autoBreakdown)"
-              :key="bar.key"
-              class="hs-pillar-row"
-            >
-              <span class="hs-pillar-name">{{ bar.label }}</span>
-              <div class="hs-pillar-track">
-                <div
-                  class="hs-pillar-fill"
-                  :style="{
-                    width: `${(bar.value / bar.max) * 100}%`,
-                    background: bar.color,
-                  }"
-                />
-              </div>
-              <span class="hs-pillar-val">{{ bar.value }}/{{ bar.max }}</span>
-            </div>
-          </div>
-          <p class="hs-breakdown-note">
-            Each section improves as you add real data.
-          </p>
-        </div>
-
-        <div style="height: 32px" />
-      </div>
+      <ResultDetail
+        :property="property"
+        :score="autoScoreVal"
+        :epc-rating="property?.epcRating ?? null"
+        :state="resolvedPassportState"
+        :estimated-annual-cost="resolvedAnnualCost"
+        :street-avg-cost="1673"
+        :epc-year="resolvedEpcYear"
+        @claim="claimOrAccessPassport"
+        @owner-dashboard="claimOrAccessPassport"
+        @interested="goToBuyerView"
+      />
     </template>
 
     <!-- ── QUESTIONS — prototype-style: teal address card + live gauge ── -->
@@ -2147,6 +1667,7 @@ import { useHomeScore } from '~/composables/useHomeScore'
 import { usePassportClaim } from '~/composables/usePassportClaim'
 import { usePropertyActions } from '~/composables/usePropertyActions'
 import { useAppToast } from '~/composables/useCustomToast'
+import ResultDetail from '~/components/homescore/ResultDetail.vue'
 import type { TopWin, Opportunity } from '~/types/homescore'
 import { QUESTIONS } from '~/utils/homescoreScoring'
 
@@ -2246,6 +1767,34 @@ const passportState = computed<'published' | 'inProgress' | null>(() => {
   if (!readOnlyMode.value) return null
   return isOtherPassportPublished.value ? 'published' : 'inProgress'
 })
+
+// ── ResultDetail (prototype-aligned 3a/3b/3c view) props ──
+const resolvedPassportState = computed<'unclaimed' | 'inProgress' | 'published'>(() => {
+  if (passportState.value === 'published') return 'published'
+  if (passportState.value === 'inProgress') return 'inProgress'
+  return 'unclaimed'
+})
+
+const resolvedAnnualCost = computed<number>(() => {
+  const cert: any = (property.value as any)?.epcCert
+  if (cert?.energyCostCurrent) return Math.round(Number(cert.energyCostCurrent))
+  const map: Record<string, number> = { A: 980, B: 1100, C: 1300, D: 1592, E: 1823, F: 2200, G: 2600 }
+  const r = (property.value?.epcRating || '').toUpperCase()
+  if (map[r]) return map[r]
+  return 1592
+})
+
+const resolvedEpcYear = computed<number | null>(() => {
+  const cert: any = (property.value as any)?.epcCert
+  const lodged = cert?.lodgementDate || (property.value as any)?.epcLodgementDate
+  if (!lodged) return null
+  const y = new Date(lodged).getFullYear()
+  return Number.isFinite(y) ? y : null
+})
+
+function goToBuyerView() {
+  router.push(`/property/${propertyId}`)
+}
 
 function notifyWhenPublished() {
   // Guests need to sign in before we can notify them — gate it.

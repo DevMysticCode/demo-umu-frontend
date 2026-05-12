@@ -221,7 +221,7 @@
             v-for="prop in searchProperties"
             :key="prop.id"
             class="prop-card"
-            @click="navigateTo('/property/' + prop.id)"
+            @click="navigateTo('/homescore/street/' + prop.id)"
           >
             <div
               class="prop-img-wrap"
@@ -1863,6 +1863,13 @@ async function handleSearchInput(val: string) {
 }
 
 async function selectAddress(addr: any) {
+  // Picking a property from the dropdown jumps straight into the HomeScore
+  // flow: StreetCompare first, then "See full HomeScore" → detail page.
+  if (addr?.id) {
+    await navigateTo(`/homescore/street/${addr.id}`)
+    return
+  }
+  // Fallback (no id): set the input and run a list search like before.
   selectedAddress.value = addr
   searchQuery.value = addr.addressLine1 || addr.address || addr.line1 || ''
   showDropdown.value = false
@@ -3048,23 +3055,26 @@ onMounted(async () => {
 
 .addr-hs {
   flex-shrink: 0;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   white-space: nowrap;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.4px;
+  text-align: right;
 }
 .addr-hs-num {
   font-size: 22px;
   font-weight: 800;
   line-height: 1;
+  font-feature-settings: 'tnum';
 }
 .addr-hs-lbl {
   font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  color: #9c98ad;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  opacity: 0.7;
+  margin-top: 2px;
 }
 
 .addr-badges {

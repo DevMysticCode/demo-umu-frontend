@@ -133,7 +133,7 @@ const router = useRouter()
 function onResultSelect(property: any) {
   // After picking a property, go to the street comparison view first.
   // From there, the "Stop overpaying" CTA continues to the score detail page.
-  router.push(`/homescore/${property.id}/street`)
+  router.push(`/homescore/street/${property.id}`)
 }
 
 function onSearchEnter(_q: string) {
@@ -264,6 +264,17 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   border-radius: 14px;
   padding: 4px 4px 4px 10px;
   transition: all 0.15s;
+}
+/* Make the dropdown span the full width of the outer search shell, not just
+   the inner input's narrower column. We do this by making .psi-wrap
+   non-positioned so the dropdown's `position: absolute` resolves against
+   .hs-search-wrap instead. */
+.hs-search-wrap :deep(.psi-wrap) { position: static !important; }
+.hs-search-wrap :deep(.psi-drop) {
+  left: 0;
+  right: 0;
+  width: auto;
+  top: calc(100% + 8px);
 }
 .hs-search-wrap:focus-within {
   border-color: #00a19a;
