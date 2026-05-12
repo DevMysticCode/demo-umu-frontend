@@ -57,15 +57,17 @@
       </div>
     </div>
 
-    <!-- ── Trust line ──────────────────────────────────────────────── -->
-    <div class="hs-trust">
-      <div class="hs-trust-eyebrow">Powered by</div>
-      <div class="hs-trust-line">
-        <span class="src">GOV.UK</span>
-        <span class="sep">·</span>
-        <span class="src">EPC Register</span>
-        <span class="sep">·</span>
-        <span class="src">HM Land Registry</span>
+    <!-- ── Real story card ─────────────────────────────────────────── -->
+    <div class="hs-real-story">
+      <div class="hs-real-story-bar" />
+      <div class="hs-real-story-body">
+        <div class="hs-real-story-eyebrow">Real story</div>
+        <div class="hs-real-story-quote">
+          "My neighbour was being charged £150 a month extra — her supplier thought she had a swimming pool."
+        </div>
+        <div class="hs-real-story-text">
+          Energy suppliers estimate usage based on assumptions. Those assumptions are sometimes very wrong. HomeScore shows you what your home should actually cost — and flags when something doesn't add up.
+        </div>
       </div>
     </div>
 
@@ -104,6 +106,18 @@
           <div class="hs-step-sub">{{ step.sub }}</div>
         </div>
       </div>
+    </div>
+
+    <!-- ── Powered by OpenProperty ─────────────────────────────────── -->
+    <div class="hs-powered-by">
+      <div class="hs-powered-eyebrow">Powered by</div>
+      <img
+        src="/op-icons/opLogo.png"
+        alt="OpenProperty"
+        class="hs-powered-logo"
+      />
+      <div class="hs-powered-name">OpenProperty</div>
+      <div class="hs-powered-tag">Property data infrastructure</div>
     </div>
 
     <div style="height: 24px;" />
@@ -265,7 +279,9 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   border: none !important;
   background: transparent !important;
   box-shadow: none !important;
-  padding: 11px 4px !important;
+  /* Keep ~38px left padding so the absolutely-positioned .psi-icon at left:14px
+     doesn't overlap the typed text. */
+  padding: 11px 4px 11px 38px !important;
   font-size: 14px;
   font-weight: 600;
   color: #231d45;
@@ -315,26 +331,88 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   color: #00a19a;
 }
 
-/* ── Trust ────────────────────────────────────────────────────────── */
-.hs-trust {
-  padding: 16px 24px 0;
-  text-align: center;
+/* ── Real story card ──────────────────────────────────────────── */
+.hs-real-story {
+  margin: 16px 22px 0;
+  background: #fff;
+  border: 1.5px solid #f5f5f7;
+  border-radius: 16px;
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  gap: 10px;
 }
-.hs-trust-eyebrow {
-  font-size: 9.5px;
+.hs-real-story-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #00a19a;
+  border-radius: 4px 0 0 4px;
+}
+.hs-real-story-body {
+  padding-left: 10px;
+  flex: 1;
+}
+.hs-real-story-eyebrow {
+  font-size: 9px;
   font-weight: 800;
+  color: #007e78;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #94a3b8;
   margin-bottom: 6px;
 }
-.hs-trust-line {
-  font-size: 12px;
-  font-weight: 700;
-  color: #4a4566;
-  letter-spacing: -0.05px;
+.hs-real-story-quote {
+  font-size: 13px;
+  font-weight: 800;
+  color: #231d45;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  letter-spacing: -0.1px;
 }
-.hs-trust-line .sep { color: #c8c6d3; margin: 0 6px; }
+.hs-real-story-text {
+  font-size: 11px;
+  color: #6b6783;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* ── Powered by OpenProperty (footer) ─────────────────────────── */
+.hs-powered-by {
+  text-align: center;
+  padding: 36px 22px 20px;
+}
+.hs-powered-eyebrow {
+  font-size: 9px;
+  font-weight: 800;
+  color: #9c98ad;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hs-powered-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 8px;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.20);
+  object-fit: cover;
+}
+.hs-powered-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.2px;
+}
+.hs-powered-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b6783;
+  margin-top: 2px;
+}
 
 /* ── Live row ─────────────────────────────────────────────────────── */
 .hs-live-row {
