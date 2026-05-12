@@ -1668,6 +1668,8 @@ import { usePassportClaim } from '~/composables/usePassportClaim'
 import { usePropertyActions } from '~/composables/usePropertyActions'
 import { useAppToast } from '~/composables/useCustomToast'
 import ResultDetail from '~/components/homescore/ResultDetail.vue'
+import TourCoach from '~/components/homescore/TourCoach.vue'
+import { useHomescoreTour } from '~/composables/useHomescoreTour'
 import type { TopWin, Opportunity } from '~/types/homescore'
 import { QUESTIONS } from '~/utils/homescoreScoring'
 
@@ -1677,6 +1679,39 @@ const config = useRuntimeConfig()
 const propertyId = route.params.id as string
 
 const property = ref<any>(null)
+
+// ── Coach-mark tour for the detail screens (auto-starts on first visit) ──
+const resultTour = useHomescoreTour({
+  storageKey: `umu-tour-result-${propertyId}`,
+  autoStart: true,
+  steps: [
+    {
+      sel: '[data-tour="addr"]',
+      title: 'Your property',
+      body: 'This shows the address, EPC rating and current Passport status. The live signal shows how many people have searched this property recently.',
+    },
+    {
+      sel: '[data-tour="overpay"]',
+      title: 'You could be overpaying',
+      body: 'This compares your estimated running costs against similar homes on your street, based on public EPC data which may be out of date.',
+    },
+    {
+      sel: '[data-tour="score"]',
+      title: 'Your HomeScore',
+      body: 'A score from 0–100 showing how energy efficient this property is. The higher the score, the lower the likely running costs.',
+    },
+    {
+      sel: '[data-tour="breakdown"]',
+      title: 'Score breakdown',
+      body: 'Each category contributes to the overall score. Shorter bars mean more room to improve — and more potential savings.',
+    },
+    {
+      sel: '[data-tour="intent"]',
+      title: 'What brings you here?',
+      body: "Own this property? Take a quick quiz to get your real score. Just interested? Save it and view running costs.",
+    },
+  ],
+})
 
 type Screen =
   | 'loading'
@@ -3007,8 +3042,6 @@ watch(screen, (s) => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -3054,6 +3087,27 @@ watch(screen, (s) => {
 .hs-header-spacer {
   width: 32px;
   flex-shrink: 0;
+}
+.hs-tour-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
+  color: #00a19a;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.hs-tour-btn:hover {
+  background: #f2faf8;
+  border-color: #b2e4e1;
+  color: #007e78;
 }
 
 /* ── Property strip ───────────────────────────────────── */

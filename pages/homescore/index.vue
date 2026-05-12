@@ -327,7 +327,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   gap: 14px;
   flex-wrap: wrap;
   font-size: 11.5px;
-  color: #94a3b8;
+  color: #9c98ad;
   font-weight: 600;
   margin: 12px 0 6px;
 }

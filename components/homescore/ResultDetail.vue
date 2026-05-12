@@ -334,14 +334,14 @@ const epcColor = computed(() => {
   const map: Record<string, string> = {
     A: '#00B050', B: '#33B800', C: '#92D050', D: '#FFD700', E: '#FF9933', F: '#FF6600', G: '#E64A19',
   }
-  return map[(props.epcRating || '').toUpperCase()] || '#94a3b8'
+  return map[(props.epcRating || '').toUpperCase()] || '#9c98ad'
 })
 
 const gaugeColor = computed(() => {
-  if (props.score >= 75) return '#1f7a66'
-  if (props.score >= 60) return '#16a34a'
-  if (props.score >= 40) return '#f59e0b'
-  return '#dc2626'
+  if (props.score >= 75) return '#00514d'
+  if (props.score >= 60) return '#2EAB55'
+  if (props.score >= 40) return '#E6A23C'
+  return '#C73E36'
 })
 const scoreTone = computed(() => {
   if (props.score >= 75) return 'high'
@@ -505,9 +505,9 @@ function formatNum(n: number): string {
   border: 1.5px solid rgba(255, 255, 255, 0.45);
   animation: rd-pulse 1.6s ease-out infinite;
 }
-.rd-pulse-green { background: #5eead4; }
+.rd-pulse-green { background: #6BD4CD; }
 .rd-pulse-green::after { border-color: rgba(94, 234, 212, 0.5); }
-.rd-pulse-amber { background: #fbbf24; }
+.rd-pulse-amber { background: #E6A23C; }
 .rd-pulse-amber::after { border-color: rgba(251, 191, 36, 0.5); }
 @keyframes rd-pulse {
   0% { transform: scale(0.6); opacity: 1; }
@@ -516,7 +516,7 @@ function formatNum(n: number): string {
 
 /* ── Overpay hero ──────────────────────────────────────────── */
 .rd-overpay {
-  background: linear-gradient(135deg, #1f7a66 0%, #00514d 100%);
+  background: linear-gradient(135deg, #00514d 0%, #00514d 100%);
   color: #fff;
   border-radius: 18px;
   padding: 16px 18px;
@@ -635,11 +635,11 @@ function formatNum(n: number): string {
   border-color: #00a19a;
 }
 .rd-score-card.mid {
-  background: linear-gradient(180deg, #fff8ec 0%, #fff 60%);
+  background: linear-gradient(180deg, #FBEFD9 0%, #fff 60%);
   border-color: #f5dba8;
 }
 .rd-score-card.low {
-  background: linear-gradient(180deg, #fdebe9 0%, #fff 60%);
+  background: linear-gradient(180deg, #FCEBEA 0%, #fff 60%);
   border-color: #f5b8b1;
 }
 
@@ -882,7 +882,7 @@ function formatNum(n: number): string {
 .rd-env-meta--teal { color: #007e78; font-weight: 700; }
 .rd-env-arrow {
   font-size: 14px;
-  color: #94a3b8;
+  color: #9c98ad;
   align-self: center;
 }
 .rd-env-bar {
