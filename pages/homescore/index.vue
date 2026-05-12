@@ -1,16 +1,20 @@
 <template>
   <div class="hs-page">
-
     <!-- ── Top nav: back · eyebrow pill · tour ──────────────────────── -->
     <div class="hs-topnav">
       <button class="hs-back" @click="router.back()" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
-      <div class="hs-eyebrow-pill">
-        <span class="hs-pulse" />HomeScore
-      </div>
+      <div class="hs-eyebrow-pill"><span class="hs-pulse" />HomeScore</div>
       <div class="hs-topnav-spacer" />
     </div>
 
@@ -18,7 +22,8 @@
     <div class="hs-hero">
       <div class="hs-hero-title">How energy efficient is any UK property?</div>
       <div class="hs-hero-sub">
-        Instantly scored from public EPC data — for any address, anyone. See how a property compares to its street in seconds.
+        Instantly scored from public EPC data — for any address, anyone. See how
+        a property compares to its street in seconds.
       </div>
     </div>
 
@@ -34,7 +39,16 @@
         />
         <button class="hs-search-go" type="button" @click="onCheckClick">
           Check
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="5" y1="12" x2="19" y2="12" />
             <polyline points="13 5 19 12 13 19" />
           </svg>
@@ -43,15 +57,42 @@
 
       <div class="hs-meta-row">
         <span class="hs-meta-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
           Free
         </span>
         <span class="hs-meta-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
           Instant
         </span>
         <span class="hs-meta-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
           No account needed
         </span>
       </div>
@@ -63,10 +104,13 @@
       <div class="hs-real-story-body">
         <div class="hs-real-story-eyebrow">Real story</div>
         <div class="hs-real-story-quote">
-          "My neighbour was being charged £150 a month extra — her supplier thought she had a swimming pool."
+          "My neighbour was being charged £150 a month extra — her supplier
+          thought she had a swimming pool."
         </div>
         <div class="hs-real-story-text">
-          Energy suppliers estimate usage based on assumptions. Those assumptions are sometimes very wrong. HomeScore shows you what your home should actually cost — and flags when something doesn't add up.
+          Energy suppliers estimate usage based on assumptions. Those
+          assumptions are sometimes very wrong. HomeScore shows you what your
+          home should actually cost — and flags when something doesn't add up.
         </div>
       </div>
     </div>
@@ -95,11 +139,7 @@
     </div>
 
     <div class="hs-steps-list">
-      <div
-        v-for="(step, i) in currentHowSteps"
-        :key="i"
-        class="hs-step-row"
-      >
+      <div v-for="(step, i) in currentHowSteps" :key="i" class="hs-step-row">
         <div class="hs-step-num">{{ i + 1 }}</div>
         <div class="hs-step-body">
           <div class="hs-step-title">{{ step.title }}</div>
@@ -120,7 +160,7 @@
       <div class="hs-powered-tag">Property data infrastructure</div>
     </div>
 
-    <div style="height: 24px;" />
+    <div style="height: 24px" />
   </div>
 </template>
 
@@ -141,7 +181,9 @@ function onSearchEnter(_q: string) {
 }
 
 function onCheckClick() {
-  const input = document.querySelector<HTMLInputElement>('.hs-search-wrap input')
+  const input = document.querySelector<HTMLInputElement>(
+    '.hs-search-wrap input',
+  )
   input?.focus()
 }
 
@@ -157,19 +199,46 @@ const howTabs: { id: HowId; label: string }[] = [
 
 const howCopy: Record<HowId, { title: string; sub: string }[]> = {
   buyers: [
-    { title: 'Search any UK address', sub: 'Type a postcode or street and see how it scores against its neighbours.' },
-    { title: 'See running costs & risks', sub: 'Energy costs, sold history, flood risk — everything public records can tell you before you make an offer.' },
-    { title: 'Know what to ask before you view', sub: 'Get a list of questions based on what the EPC data flags — walk in already informed.' },
+    {
+      title: 'Search any UK address',
+      sub: 'Type a postcode or street and see how it scores against its neighbours.',
+    },
+    {
+      title: 'See running costs & risks',
+      sub: 'Energy costs, sold history, flood risk — everything public records can tell you before you make an offer.',
+    },
+    {
+      title: 'Know what to ask before you view',
+      sub: 'Get a list of questions based on what the EPC data flags — walk in already informed.',
+    },
   ],
   owners: [
-    { title: 'Search your address', sub: "See your property's estimated score from public EPC data — takes 5 seconds." },
-    { title: 'See how you compare to your street', sub: 'Find out if this property is costing more to run than similar homes nearby — and why.' },
-    { title: 'Upload bills to get your real number', sub: 'Public EPC data can be years out of date. Your actual bills tell the real story — and start building your Property Passport.' },
+    {
+      title: 'Search your address',
+      sub: "See your property's estimated score from public EPC data — takes 5 seconds.",
+    },
+    {
+      title: 'See how you compare to your street',
+      sub: 'Find out if this property is costing more to run than similar homes nearby — and why.',
+    },
+    {
+      title: 'Upload bills to get your real number',
+      sub: 'Public EPC data can be years out of date. Your actual bills tell the real story — and start building your Property Passport.',
+    },
   ],
   curious: [
-    { title: "Search any address — yours or anyone's", sub: 'No account, no commitment. Just type a postcode and see what the data says.' },
-    { title: 'See what your street is paying', sub: 'Compare running costs across nearby homes — renting or owning, the data is the same for everyone.' },
-    { title: 'Find out if you could be paying less', sub: 'If this property is costing more than its neighbours, the HomeScore shows you exactly why — and what could change it.' },
+    {
+      title: "Search any address — yours or anyone's",
+      sub: 'No account, no commitment. Just type a postcode and see what the data says.',
+    },
+    {
+      title: 'See what your street is paying',
+      sub: 'Compare running costs across nearby homes — renting or owning, the data is the same for everyone.',
+    },
+    {
+      title: 'Find out if you could be paying less',
+      sub: 'If this property is costing more than its neighbours, the HomeScore shows you exactly why — and what could change it.',
+    },
   ],
 }
 const currentHowSteps = computed(() => howCopy[activeHow.value])
@@ -206,8 +275,13 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   color: #00a19a;
   cursor: pointer;
 }
-.hs-back svg { width: 14px; height: 14px; }
-.hs-topnav-spacer { width: 32px; }
+.hs-back svg {
+  width: 14px;
+  height: 14px;
+}
+.hs-topnav-spacer {
+  width: 32px;
+}
 
 .hs-eyebrow-pill {
   display: inline-flex;
@@ -252,7 +326,9 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
 }
 
 /* ── Search ───────────────────────────────────────────────────────── */
-.hs-search-block { padding: 8px 24px 0; }
+.hs-search-block {
+  padding: 8px 24px 0;
+}
 
 .hs-search-wrap {
   position: relative;
@@ -269,7 +345,9 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
    the inner input's narrower column. We do this by making .psi-wrap
    non-positioned so the dropdown's `position: absolute` resolves against
    .hs-search-wrap instead. */
-.hs-search-wrap :deep(.psi-wrap) { position: static !important; }
+.hs-search-wrap :deep(.psi-wrap) {
+  position: static !important;
+}
 .hs-search-wrap :deep(.psi-drop) {
   left: 0;
   right: 0;
@@ -278,7 +356,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
 }
 .hs-search-wrap:focus-within {
   border-color: #00a19a;
-  box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.10);
+  box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.1);
 }
 /* Make the embedded PropertySearchInput visually flat — the outer wrap is the shell */
 .hs-search-wrap :deep(> div),
@@ -319,7 +397,9 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   flex-shrink: 0;
   transition: background 0.15s;
 }
-.hs-search-go:hover { background: #00b6ae; }
+.hs-search-go:hover {
+  background: #00b6ae;
+}
 
 .hs-meta-row {
   display: flex;
@@ -409,7 +489,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   border-radius: 50%;
   display: block;
   margin: 0 auto 8px;
-  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.20);
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.2);
   object-fit: cover;
 }
 .hs-powered-name {
@@ -461,8 +541,14 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   animation: hs-live-pulse 1.6s ease-out infinite;
 }
 @keyframes hs-live-pulse {
-  0% { transform: scale(0.6); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 /* ── How it works ─────────────────────────────────────────────────── */
@@ -477,72 +563,99 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   text-transform: uppercase;
 }
 
+/* Tabs: inline-flex segmented pill (prototype-exact) */
 .hs-how-tabs {
-  display: flex;
-  gap: 6px;
-  padding: 0 24px;
-  margin-bottom: 14px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  display: inline-flex;
+  background: #fafafa;
+  border: 1px solid #ececef;
+  border-radius: 100px;
+  padding: 4px;
+  gap: 2px;
+  margin: 0 22px 14px;
+  width: calc(100% - 28px);
+  justify-content: space-evenly;
 }
-.hs-how-tabs::-webkit-scrollbar { display: none; }
 .hs-how-tab {
-  flex: 1;
-  min-width: 0;
   white-space: nowrap;
-  border: 1.5px solid #ececef;
-  background: #fff;
+  border: none;
+  background: transparent;
   color: #6b6783;
   font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 9px 10px;
-  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 100px;
   cursor: pointer;
   letter-spacing: -0.05px;
   transition: all 0.15s;
 }
+.hs-how-tab:hover {
+  color: #231d45;
+}
 .hs-how-tab.active {
-  background: #231d45;
-  color: #fff;
-  border-color: #231d45;
+  background: #fff;
+  color: #231d45;
+  box-shadow: 0 2px 6px rgba(35, 29, 69, 0.08);
 }
 
+/* Steps — generous spacing + connecting vertical line between numbers */
 .hs-steps-list {
-  padding: 0 24px;
+  padding: 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 .hs-step-row {
   display: flex;
   gap: 14px;
   align-items: flex-start;
-  padding: 10px 0;
+  position: relative;
+  z-index: 1;
+}
+.hs-step-row:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 28px;
+  width: 1.5px;
+  height: calc(100% + 22px - 6px);
+  background: #e5f4f2;
+  z-index: 0;
 }
 .hs-step-num {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #f1f9f4;
-  border: 1px solid #e2f1ea;
-  color: #00a19a;
-  display: grid;
-  place-items: center;
-  font-size: 11.5px;
+  background: #fff;
+  border: 1.5px solid #e5f4f2;
+  color: #007e78;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
   font-weight: 800;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
-.hs-step-body { flex: 1; }
+.hs-step-body {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+}
 .hs-step-title {
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 800;
   color: #231d45;
-  letter-spacing: -0.1px;
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+  line-height: 1.2;
 }
 .hs-step-sub {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: #6b6783;
-  margin-top: 3px;
-  line-height: 1.45;
+  line-height: 1.5;
   letter-spacing: -0.05px;
 }
 </style>

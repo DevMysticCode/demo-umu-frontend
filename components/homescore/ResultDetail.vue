@@ -667,14 +667,28 @@ function formatNum(n: number): string {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
+/* "HOMESCORE" eyebrow — uppercase, teal-dark, with a green rounded
+   gradient square to the left of the text (prototype-exact). */
 .rd-score-eyebrow .left {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
-  color: #9c98ad;
-  letter-spacing: 0.1em;
+  letter-spacing: 1.4px;
   text-transform: uppercase;
+  color: #007e78;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.rd-score-eyebrow .left::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #00b6ae, #007e78);
+  display: inline-block;
+  flex-shrink: 0;
 }
 .rd-score-eyebrow .right {
   font-size: 10px;
@@ -693,12 +707,12 @@ function formatNum(n: number): string {
 .rd-score-gauge-wrap {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 22px;
   margin-bottom: 14px;
 }
 .rd-gauge {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   position: relative;
   flex-shrink: 0;
 }
@@ -717,10 +731,10 @@ function formatNum(n: number): string {
   justify-content: center;
 }
 .rd-g-num .gn-big {
-  font-size: 42px;
+  font-size: 50px;
   font-weight: 800;
   color: #231d45;
-  letter-spacing: -1.4px;
+  letter-spacing: -1.6px;
   line-height: 1;
   font-feature-settings: 'tnum';
 }
@@ -774,14 +788,20 @@ function formatNum(n: number): string {
 }
 .rd-data-note :deep(b) { color: #231d45; font-weight: 800; }
 
-/* ── EPC / breakdown card ──────────────────────────────────── */
+/* ── EPC / breakdown card (prototype-exact: 2px amber border + gradient) ── */
 .rd-breakdown {
-  background: #fff;
-  border: 1.5px solid #ececef;
-  border-radius: 18px;
-  padding: 16px 18px;
+  background: linear-gradient(180deg, rgba(251, 239, 217, 0.6) 0%, #fff 50%);
+  border: 2px solid #E6A23C;
+  border-radius: 16px;
+  padding: 18px;
   margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(230, 162, 60, 0.10);
+  transition: all 0.18s;
   animation: rd-fadeSlideUp 0.45s 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.rd-breakdown:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(230, 162, 60, 0.16);
 }
 .rd-epc-row {
   display: flex;

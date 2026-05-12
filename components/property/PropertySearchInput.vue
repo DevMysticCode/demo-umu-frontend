@@ -90,43 +90,43 @@
               <span v-if="r.city">{{ r.city }} · </span>{{ r.postcode || '' }}
             </div>
             <div class="psi-drop-badges">
-            <span
-              v-if="r.epcRating"
-              class="psi-drop-badge"
-              :style="{ background: epcColor(r.epcRating) }"
-            >
-              ⚡ EPC {{ r.epcRating }}
-            </span>
-            <span
-              v-if="r.hasPassport && r.passportPublished"
-              class="psi-drop-badge psi-drop-badge--pub"
-            >
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="psi-drop-badge-ic"
-              />
-              Passport Published
-            </span>
-            <span
-              v-else-if="r.hasPassport"
-              class="psi-drop-badge psi-drop-badge--prog"
-            >
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="psi-drop-badge-ic"
-              />
-              Passport In Progress
-            </span>
-            <span v-else class="psi-drop-badge psi-drop-badge--unclaimed">
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                class="psi-drop-badge-ic"
-              />
-              Unclaimed · Claim yours? →
-            </span>
+              <span
+                v-if="r.epcRating"
+                class="psi-drop-badge"
+                :style="{ background: epcColor(r.epcRating) }"
+              >
+                ⚡ EPC {{ r.epcRating }}
+              </span>
+              <span
+                v-if="r.hasPassport && r.passportPublished"
+                class="psi-drop-badge psi-drop-badge--pub"
+              >
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="psi-drop-badge-ic"
+                />
+                Passport Published
+              </span>
+              <span
+                v-else-if="r.hasPassport"
+                class="psi-drop-badge psi-drop-badge--prog"
+              >
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="psi-drop-badge-ic"
+                />
+                Passport In Progress
+              </span>
+              <span v-else class="psi-drop-badge psi-drop-badge--unclaimed">
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="psi-drop-badge-ic"
+                />
+                Unclaimed · Claim yours? →
+              </span>
             </div>
           </div>
           <!-- HS score — vertically centered with the entire row -->
@@ -305,7 +305,7 @@ function epcColor(rating: string): string {
 
 function hsColor(score: number | null | undefined): string {
   if (score == null) return '#8e8e93'
-  if (score >= 75) return '#1f7a66'
+  if (score >= 75) return '#00a19a'
   if (score >= 60) return '#65a30d'
   if (score >= 45) return '#ca8a04'
   if (score >= 30) return '#92400e'

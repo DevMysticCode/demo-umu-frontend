@@ -1804,9 +1804,17 @@ const passportState = computed<'published' | 'inProgress' | null>(() => {
 })
 
 // ── ResultDetail (prototype-aligned 3a/3b/3c view) props ──
+// Reflect the property's TRUE Passport state — independent of who is viewing.
+// `passportState` (above) gates on `readOnlyMode` and is `null` for the owner;
+// for the result UI we want the real status (published / in-progress / unclaimed)
+// no matter whether the viewer is the owner, a buyer, or a guest.
 const resolvedPassportState = computed<'unclaimed' | 'inProgress' | 'published'>(() => {
-  if (passportState.value === 'published') return 'published'
-  if (passportState.value === 'inProgress') return 'inProgress'
+  const p: any = property.value
+  // Server payload may expose these directly OR via the loaded score-state.
+  if (p?.passportPublished) return 'published'
+  if (isOtherPassportPublished.value) return 'published'
+  if (p?.hasPassport) return 'inProgress'
+  if (hasOtherOwnerPassport.value) return 'inProgress'
   return 'unclaimed'
 })
 

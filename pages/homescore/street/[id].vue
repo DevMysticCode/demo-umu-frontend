@@ -1,15 +1,28 @@
 <template>
   <div class="hs-street-screen">
-
     <!-- ── Top nav ──────────────────────────────────────────────── -->
     <div class="hs-topnav">
       <button class="back-btn" @click="router.back()" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
       <div class="eyebrow-pill"><span class="dot" />HomeScore</div>
-      <button class="tour-btn" type="button" @click="tour.restart()" title="How does this work?">?</button>
+      <button
+        class="tour-btn"
+        type="button"
+        @click="tour.restart()"
+        title="How does this work?"
+      >
+        ?
+      </button>
     </div>
 
     <!-- ── Address card — amber gradient ─────────────────────────── -->
@@ -22,17 +35,23 @@
           </div>
           <div class="hs-addr-meta">
             {{ property?.postcode || '—' }}
-            <template v-if="property?.propertyType"> · {{ property.propertyType }}</template>
-            <template v-if="property?.bedrooms"> · {{ property.bedrooms }} bed</template>
+            <template v-if="property?.propertyType">
+              · {{ property.propertyType }}</template
+            >
+            <template v-if="property?.bedrooms">
+              · {{ property.bedrooms }} bed</template
+            >
           </div>
         </div>
       </div>
       <div class="hs-addr-stats">
         <div class="hs-addr-stat-row">
           <span class="pulse-dot" />
-          <span class="hs-addr-stat-count">{{ searchesToday }} searches today</span>
+          <span class="hs-addr-stat-count"
+            >{{ searchesToday }} searches today</span
+          >
           <span class="hs-addr-stat-sep">·</span>
-          <span>No verified Passport yet</span>
+          <span>{{ passportStatusLine }}</span>
         </div>
       </div>
     </div>
@@ -43,20 +62,27 @@
         <div ref="heroTitleEl" class="hs-hero-title">
           <span class="cursor" />
         </div>
-        <div class="hs-hero-sub">Based on EPC data from {{ comparedCount }} similar homes on this street.</div>
+        <div class="hs-hero-sub">
+          Based on EPC data from {{ comparedCount }} similar homes on this
+          street.
+        </div>
       </div>
 
       <div ref="saveWrapEl" class="hs-save-wrap">
         <div class="hs-save-eyebrow">
-          {{ savingDirection === 'more'
-            ? '✦ Potential annual saving on this property'
-            : '✓ Below the street average by' }}
+          {{
+            savingDirection === 'more'
+              ? '✦ Potential annual saving on this property'
+              : '✓ Below the street average by'
+          }}
         </div>
         <div ref="saveNumEl" class="hs-save-num">£0</div>
         <div class="hs-save-foot">
-          {{ savingDirection === 'more'
-            ? 'per year · if this property matched the street average'
-            : 'per year · cheaper than the typical home on this street' }}
+          {{
+            savingDirection === 'more'
+              ? 'per year · if this property matched the street average'
+              : 'per year · cheaper than the typical home on this street'
+          }}
         </div>
       </div>
 
@@ -78,9 +104,13 @@
     <div class="street-card fomo expanded" data-tour="street">
       <div class="street-card-top">
         <div class="street-card-text">
-          <div class="street-card-title">Your street, ranked by energy cost</div>
+          <div class="street-card-title">
+            Your street, ranked by energy cost
+          </div>
           <div class="street-card-sub">
-            This property ranks <b>{{ rankOrdinal(youRank) }} of {{ ranked.length }}</b> on this street by estimated energy cost.
+            This property ranks
+            <b>{{ rankOrdinal(youRank) }} of {{ ranked.length }}</b> on this
+            street by estimated energy cost.
           </div>
         </div>
       </div>
@@ -88,9 +118,13 @@
       <div class="street-rank-list">
         <div class="street-rank-header">
           <span>{{ streetName }} · energy cost</span>
-          <span class="street-rank-badge">{{ rankOrdinal(youRank) }} of {{ ranked.length }}</span>
+          <span class="street-rank-badge"
+            >{{ rankOrdinal(youRank) }} of {{ ranked.length }}</span
+          >
         </div>
-        <div class="street-rank-sub">Estimated from EPC data · updated quarterly</div>
+        <div class="street-rank-sub">
+          Estimated from EPC data · updated quarterly
+        </div>
         <div class="street-rank-rows">
           <div
             v-for="(r, i) in ranked"
@@ -98,23 +132,38 @@
             class="street-rank-row"
             :class="{ you: r.you }"
           >
-            <div class="street-rank-pos" :class="{ you: r.you }">{{ i + 1 }}</div>
+            <div class="street-rank-pos" :class="{ you: r.you }">
+              {{ i + 1 }}
+            </div>
             <div class="street-rank-body">
               <div class="street-rank-addr">
                 {{ r.addr }}<template v-if="r.you"> — this property</template>
               </div>
               <div class="street-rank-meta">{{ r.meta }}</div>
             </div>
-            <div class="street-rank-cost" :class="r.tone">£{{ formatNum(r.cost) }}</div>
+            <div class="street-rank-cost" :class="r.tone">
+              £{{ formatNum(r.cost) }}
+            </div>
           </div>
         </div>
       </div>
 
       <div class="street-illust">
         <div class="street-legend">
-          <span class="street-legend-item"><span class="street-legend-dot" style="background:#00a19a;" />Under £1,500/yr</span>
-          <span class="street-legend-item"><span class="street-legend-dot" style="background:#E6A23C;" />£1,500–£2,000</span>
-          <span class="street-legend-item"><span class="street-legend-dot" style="background:#C73E36;" />Over £2,000/yr</span>
+          <span class="street-legend-item"
+            ><span class="street-legend-dot" style="background: #00a19a" />Under
+            £1,500/yr</span
+          >
+          <span class="street-legend-item"
+            ><span
+              class="street-legend-dot"
+              style="background: #e6a23c"
+            />£1,500–£2,000</span
+          >
+          <span class="street-legend-item"
+            ><span class="street-legend-dot" style="background: #c73e36" />Over
+            £2,000/yr</span
+          >
         </div>
       </div>
     </div>
@@ -132,12 +181,15 @@
     <div class="renters-note">
       <div class="renters-icon">🏠</div>
       <div class="renters-text">
-        <b>Renting?</b> You can still check your street and challenge your supplier. You don't need to own the property — just know your address.
+        <b>Renting?</b> You can still check your street and challenge your
+        supplier. You don't need to own the property — just know your address.
       </div>
     </div>
 
-    <button class="back-link" type="button" @click="router.back()">← Back to results</button>
-    <div style="height: 24px;" />
+    <button class="back-link" type="button" @click="router.back()">
+      ← Back to results
+    </button>
+    <div style="height: 24px" />
 
     <!-- ── Tour overlay ────────────────────────────────────────── -->
     <TourCoach :tour="tour" />
@@ -159,7 +211,15 @@ const property = ref<any>(null)
 // ── Cost figures (best-effort from property, sample fallback) ──
 const youCost = computed<number>(() => {
   const p = property.value
-  const map: Record<string, number> = { A: 980, B: 1100, C: 1300, D: 1592, E: 1823, F: 2200, G: 2600 }
+  const map: Record<string, number> = {
+    A: 980,
+    B: 1100,
+    C: 1300,
+    D: 1592,
+    E: 1823,
+    F: 2200,
+    G: 2600,
+  }
   if (p?.epcRating && map[p.epcRating]) return map[p.epcRating]
   return 1823
 })
@@ -175,25 +235,67 @@ const savingDirection = computed<'more' | 'less'>(() =>
 const streetName = computed<string>(() => {
   const addr: string = property.value?.addressLine1 || ''
   const m = addr.match(/^\d+[a-z]?,?\s*(.+)$/i)
-  return m ? m[1] : (addr || 'this street')
+  return m ? m[1] : addr || 'this street'
 })
 
 // ── Ranked list ──
 const ranked = computed(() => {
   const youAddr = property.value?.addressLine1 || 'This property'
   const youCostVal = youCost.value
-  const youTone: 'low' | 'mid' | 'high' = youCostVal < 1500 ? 'low' : youCostVal < 2000 ? 'mid' : 'high'
+  const youTone: 'low' | 'mid' | 'high' =
+    youCostVal < 1500 ? 'low' : youCostVal < 2000 ? 'mid' : 'high'
   const base = [
-    { addr: `7 ${streetName.value}`, meta: 'Filled cavity · TRVs · EPC D (61) · 103m²', cost: 1301, tone: 'low' as const, you: false },
-    { addr: `1 ${streetName.value}`, meta: 'Solar PV · filled cavity · EPC B (84) · 175m²', cost: 1330, tone: 'low' as const, you: false },
-    { addr: `5 ${streetName.value}`, meta: 'Smart meter · high-perf glazing · EPC C (72) · 142m²', cost: 1592, tone: 'mid' as const, you: false },
-    { addr: `9 ${streetName.value}`, meta: 'No insulation · no thermostat · EPC F (29) · 118m²', cost: 2467, tone: 'high' as const, you: false },
+    {
+      addr: `7 ${streetName.value}`,
+      meta: 'Filled cavity · TRVs · EPC D (61) · 103m²',
+      cost: 1301,
+      tone: 'low' as const,
+      you: false,
+    },
+    {
+      addr: `1 ${streetName.value}`,
+      meta: 'Solar PV · filled cavity · EPC B (84) · 175m²',
+      cost: 1330,
+      tone: 'low' as const,
+      you: false,
+    },
+    {
+      addr: `5 ${streetName.value}`,
+      meta: 'Smart meter · high-perf glazing · EPC C (72) · 142m²',
+      cost: 1592,
+      tone: 'mid' as const,
+      you: false,
+    },
+    {
+      addr: `9 ${streetName.value}`,
+      meta: 'No insulation · no thermostat · EPC F (29) · 118m²',
+      cost: 2467,
+      tone: 'high' as const,
+      you: false,
+    },
   ]
-  const youRow = { addr: youAddr, meta: 'Uninsulated cavity · 75mm loft · EPC E (52) · 116m²', cost: youCostVal, tone: youTone, you: true }
+  const youRow = {
+    addr: youAddr,
+    meta: 'Uninsulated cavity · 75mm loft · EPC E (52) · 116m²',
+    cost: youCostVal,
+    tone: youTone,
+    you: true,
+  }
   return [...base, youRow].sort((a, b) => a.cost - b.cost)
 })
 const youRank = computed<number>(() => ranked.value.findIndex((r) => r.you) + 1)
-const searchesToday = computed<number>(() => 3 + ((propertyId.charCodeAt(0) || 1) % 7))
+const searchesToday = computed<number>(
+  () => 3 + ((propertyId.charCodeAt(0) || 1) % 7),
+)
+
+// Reflect the property's real Passport state in the stats line so we don't
+// say "No verified Passport yet" for a property that already has one.
+const passportStatusLine = computed<string>(() => {
+  const p = property.value
+  if (p?.hasPassport && p?.passportPublished) return '✓ Verified Passport live'
+  if (p?.hasPassport) return 'Owner is building a Passport'
+  return 'No verified Passport yet'
+})
 
 function rankOrdinal(n: number): string {
   const s = ['th', 'st', 'nd', 'rd']
@@ -266,7 +368,8 @@ function typewriterWithNumberSpan(
       const step = (now: number): void => {
         const p = Math.min((now - t0) / countUpDur, 1)
         const ease = 1 - Math.pow(1 - p, 3)
-        numSpan.textContent = '£' + Math.round(ease * numTarget).toLocaleString('en-GB')
+        numSpan.textContent =
+          '£' + Math.round(ease * numTarget).toLocaleString('en-GB')
         if (p < 1) requestAnimationFrame(step)
         else {
           let j = 0
@@ -317,7 +420,8 @@ function runAnimations(): void {
   if (addrLineEl.value) {
     const el = addrLineEl.value
     Array.from(el.childNodes).forEach((n) => {
-      if (!(n instanceof HTMLElement) || !n.classList.contains('cursor')) el.removeChild(n)
+      if (!(n instanceof HTMLElement) || !n.classList.contains('cursor'))
+        el.removeChild(n)
     })
     if (!el.querySelector('.cursor')) {
       const c = document.createElement('span')
@@ -332,7 +436,8 @@ function runAnimations(): void {
   if (heroTitleEl.value) {
     const el = heroTitleEl.value
     Array.from(el.childNodes).forEach((n) => {
-      if (!(n instanceof HTMLElement) || !n.classList.contains('cursor')) el.removeChild(n)
+      if (!(n instanceof HTMLElement) || !n.classList.contains('cursor'))
+        el.removeChild(n)
     })
     if (!el.querySelector('.cursor')) {
       const c = document.createElement('span')
@@ -344,7 +449,7 @@ function runAnimations(): void {
     setTimeout(() => {
       typewriterWithNumberSpan(
         el,
-        `${addr} could cost `,
+        `This property could cost `,
         diff,
         'hs-hero-num-inline',
         ` ${dir} to run than the street average.`,
@@ -383,10 +488,26 @@ const tour = useHomescoreTour({
   storageKey: `umu-tour-street-${propertyId}`,
   autoStart: true,
   steps: [
-    { sel: '[data-tour="addr"]', title: 'Your property', body: 'This shows the address, postcode and current Passport status. The live signal shows how many people have searched this property recently.' },
-    { sel: '[data-tour="hero"]', title: 'Street comparison', body: 'We compare your estimated running costs against similar homes on your street, based on public EPC data.' },
-    { sel: '[data-tour="street"]', title: 'Your street, ranked', body: 'Every neighbour ranked by their estimated energy cost. Tap any row for context.' },
-    { sel: '[data-tour="cta"]', title: 'See your full HomeScore', body: 'Continue to the full score detail, including category breakdown and what could improve it.' },
+    {
+      sel: '[data-tour="addr"]',
+      title: 'Your property',
+      body: 'This shows the address, postcode and current Passport status. The live signal shows how many people have searched this property recently.',
+    },
+    {
+      sel: '[data-tour="hero"]',
+      title: 'Street comparison',
+      body: 'We compare your estimated running costs against similar homes on your street, based on public EPC data.',
+    },
+    {
+      sel: '[data-tour="street"]',
+      title: 'Your street, ranked',
+      body: 'Every neighbour ranked by their estimated energy cost. Tap any row for context.',
+    },
+    {
+      sel: '[data-tour="cta"]',
+      title: 'See your full HomeScore',
+      body: 'Continue to the full score detail, including category breakdown and what could improve it.',
+    },
   ],
 })
 </script>
@@ -412,7 +533,8 @@ const tour = useHomescoreTour({
   padding: 14px 22px 8px;
   padding-top: calc(14px + env(safe-area-inset-top));
 }
-.back-btn, .tour-btn {
+.back-btn,
+.tour-btn {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -426,12 +548,16 @@ const tour = useHomescoreTour({
   font-size: 16px;
   font-weight: 800;
 }
-.back-btn:hover, .tour-btn:hover {
+.back-btn:hover,
+.tour-btn:hover {
   background: #f2faf8;
   border-color: #b2e4e1;
   color: #007e78;
 }
-.back-btn svg { width: 14px; height: 14px; }
+.back-btn svg {
+  width: 14px;
+  height: 14px;
+}
 .eyebrow-pill {
   display: inline-flex;
   align-items: center;
@@ -458,10 +584,10 @@ const tour = useHomescoreTour({
 .hs-addr-card {
   margin: 16px 22px 0;
   padding: 22px 22px 18px;
-  background: linear-gradient(135deg, #F0A030 0%, #C67C18 50%, #8B4E0A 100%);
+  background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
   border-radius: 22px;
   box-shadow:
-    0 12px 32px -8px rgba(180, 100, 20, 0.40),
+    0 12px 32px -8px rgba(180, 100, 20, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
   color: #fff;
   position: relative;
@@ -476,10 +602,17 @@ const tour = useHomescoreTour({
   width: 240px;
   height: 240px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
-.hs-addr-card > * { position: relative; z-index: 1; }
+.hs-addr-card > * {
+  position: relative;
+  z-index: 1;
+}
 .hs-addr-top {
   display: flex;
   align-items: flex-start;
@@ -491,11 +624,14 @@ const tour = useHomescoreTour({
   height: 10px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.30);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
   flex-shrink: 0;
   margin-top: 8px;
 }
-.hs-addr-block { flex: 1; min-width: 0; }
+.hs-addr-block {
+  flex: 1;
+  min-width: 0;
+}
 .hs-addr-line {
   font-size: 19px;
   font-weight: 800;
@@ -531,10 +667,15 @@ const tour = useHomescoreTour({
   align-items: center;
   gap: 6px;
   font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.80);
+  color: rgba(255, 255, 255, 0.8);
 }
-.hs-addr-stat-count { color: #fff; font-weight: 800; }
-.hs-addr-stat-sep { color: rgba(255, 255, 255, 0.40); }
+.hs-addr-stat-count {
+  color: #fff;
+  font-weight: 800;
+}
+.hs-addr-stat-sep {
+  color: rgba(255, 255, 255, 0.4);
+}
 .pulse-dot {
   width: 7px;
   height: 7px;
@@ -554,20 +695,43 @@ const tour = useHomescoreTour({
 }
 
 @keyframes pulse {
-  0% { transform: scale(0.6); opacity: 0.5; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
 @keyframes cursorBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 @keyframes fadeSlideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Saving hero — white card with mint border, gradient save section */
@@ -577,7 +741,7 @@ const tour = useHomescoreTour({
   border: 2px solid #e5f4f2;
   border-radius: 20px;
   overflow: hidden;
-  animation: fadeSlideUp 0.45s 0.10s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: fadeSlideUp 0.45s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .hs-saving-head {
   padding: 16px 18px 12px;
@@ -643,24 +807,50 @@ const tour = useHomescoreTour({
 }
 
 @keyframes savePulse {
-  0%   { transform: scale(1);    text-shadow: 0 0 0 rgba(0, 161, 154, 0); }
-  40%  { transform: scale(1.06); text-shadow: 0 0 24px rgba(0, 161, 154, 0.55); }
-  70%  { transform: scale(0.98); text-shadow: 0 0 8px rgba(0, 161, 154, 0.25); }
-  100% { transform: scale(1);    text-shadow: 0 0 0 rgba(0, 161, 154, 0); }
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 0 rgba(0, 161, 154, 0);
+  }
+  40% {
+    transform: scale(1.06);
+    text-shadow: 0 0 24px rgba(0, 161, 154, 0.55);
+  }
+  70% {
+    transform: scale(0.98);
+    text-shadow: 0 0 8px rgba(0, 161, 154, 0.25);
+  }
+  100% {
+    transform: scale(1);
+    text-shadow: 0 0 0 rgba(0, 161, 154, 0);
+  }
 }
 @keyframes saveGlow {
-  0%, 100% { box-shadow: 0 0 0 rgba(0, 161, 154, 0); }
-  50%      { box-shadow: 0 0 32px rgba(0, 161, 154, 0.30); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(0, 161, 154, 0);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(0, 161, 154, 0.3);
+  }
 }
-.save-pulse { animation: savePulse 1.6s ease-in-out infinite; display: inline-block; }
-.save-glow  { animation: saveGlow 1.6s ease-in-out infinite; }
+.save-pulse {
+  animation: savePulse 1.6s ease-in-out infinite;
+  display: inline-block;
+}
+.save-glow {
+  animation: saveGlow 1.6s ease-in-out infinite;
+}
 
-.hs-save-split { display: flex; }
+.hs-save-split {
+  display: flex;
+}
 .hs-save-cell {
   flex: 1;
   padding: 12px 16px;
 }
-.hs-save-cell + .hs-save-cell { border-left: 1px solid #f5f5f7; }
+.hs-save-cell + .hs-save-cell {
+  border-left: 1px solid #f5f5f7;
+}
 .hs-save-cell-eyebrow {
   font-size: 9px;
   font-weight: 800;
@@ -674,8 +864,12 @@ const tour = useHomescoreTour({
   font-weight: 800;
   letter-spacing: -0.5px;
 }
-.hs-save-cell--you .hs-save-cell-num { color: #C73E36; }
-.hs-save-cell--avg .hs-save-cell-num { color: #E6A23C; }
+.hs-save-cell--you .hs-save-cell-num {
+  color: #c73e36;
+}
+.hs-save-cell--avg .hs-save-cell-num {
+  color: #e6a23c;
+}
 .hs-save-cell-meta {
   font-size: 10px;
   color: #6b6783;
@@ -691,7 +885,9 @@ const tour = useHomescoreTour({
   overflow: hidden;
   animation: fadeSlideUp 0.45s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.street-card-top { padding: 16px 18px 12px; }
+.street-card-top {
+  padding: 16px 18px 12px;
+}
 .street-card-title {
   font-size: 16px;
   font-weight: 800;
@@ -706,7 +902,9 @@ const tour = useHomescoreTour({
   margin-top: 6px;
   line-height: 1.45;
 }
-.street-rank-list { padding: 0 18px; }
+.street-rank-list {
+  padding: 0 18px;
+}
 .street-rank-header {
   display: flex;
   align-items: center;
@@ -769,7 +967,10 @@ const tour = useHomescoreTour({
   background: #00a19a;
   color: #fff;
 }
-.street-rank-body { flex: 1; min-width: 0; }
+.street-rank-body {
+  flex: 1;
+  min-width: 0;
+}
 .street-rank-addr {
   font-size: 12.5px;
   font-weight: 800;
@@ -791,11 +992,19 @@ const tour = useHomescoreTour({
   letter-spacing: -0.2px;
   flex-shrink: 0;
 }
-.street-rank-cost.low { color: #00a19a; }
-.street-rank-cost.mid { color: #E6A23C; }
-.street-rank-cost.high { color: #C73E36; }
+.street-rank-cost.low {
+  color: #00a19a;
+}
+.street-rank-cost.mid {
+  color: #e6a23c;
+}
+.street-rank-cost.high {
+  color: #c73e36;
+}
 
-.street-illust { border-top: 1px dashed #ececef; }
+.street-illust {
+  border-top: 1px dashed #ececef;
+}
 .street-legend {
   display: flex;
   justify-content: center;
@@ -811,7 +1020,11 @@ const tour = useHomescoreTour({
   font-weight: 700;
   color: #6b6783;
 }
-.street-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.street-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
 
 /* CTA */
 .cta-wrap {
@@ -835,9 +1048,19 @@ const tour = useHomescoreTour({
   gap: 3px;
   transition: all 0.15s;
 }
-.cta-stop:hover { transform: translateY(-1px); background: #00b6ae; }
-.cta-head { font-size: 16px; font-weight: 800; }
-.cta-sub { font-size: 12px; font-weight: 600; opacity: 0.85; }
+.cta-stop:hover {
+  transform: translateY(-1px);
+  background: #00b6ae;
+}
+.cta-head {
+  font-size: 16px;
+  font-weight: 800;
+}
+.cta-sub {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.85;
+}
 .cta-foot {
   text-align: center;
   margin-top: 7px;
@@ -856,11 +1079,22 @@ const tour = useHomescoreTour({
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  animation: fadeSlideUp 0.45s 0.40s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: fadeSlideUp 0.45s 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.renters-icon { font-size: 18px; line-height: 1; }
-.renters-text { flex: 1; font-size: 12px; font-weight: 500; color: #4a3a1a; line-height: 1.5; }
-.renters-text b { color: #231d45; }
+.renters-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+.renters-text {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4a3a1a;
+  line-height: 1.5;
+}
+.renters-text b {
+  color: #231d45;
+}
 
 .back-link {
   display: block;
@@ -877,5 +1111,7 @@ const tour = useHomescoreTour({
   text-align: left;
   width: calc(100% - 32px);
 }
-.back-link:hover { background: #fafafa; }
+.back-link:hover {
+  background: #fafafa;
+}
 </style>
