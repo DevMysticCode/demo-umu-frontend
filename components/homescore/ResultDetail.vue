@@ -110,7 +110,7 @@
         <div class="right" :class="{ 'right--verified': state === 'published' }">
           <template v-if="state === 'published'">✓ Verified data</template>
           <template v-else-if="state === 'inProgress'">Public EPC</template>
-          <template v-else>EPC data{{ epcYear ? ` · ${epcYear}` : '' }}</template>
+          <template v-else>EPC data · {{ displayEpcYear }}</template>
         </div>
       </div>
       <div class="rd-score-gauge-wrap">
@@ -297,6 +297,11 @@ const overpayDiff = computed(() =>
   props.streetAvgCost ? Math.max(0, props.estimatedAnnualCost - props.streetAvgCost) : 0,
 )
 
+// EPC year shown in the score-card eyebrow. Prototype hard-codes "2014" when
+// data is missing — we mirror that fallback so the chip never shows just
+// "EPC data" with nothing after.
+const displayEpcYear = computed<number>(() => props.epcYear ?? 2014)
+
 const epcCurrentSap = computed(() => props.score)
 const epcPotentialSap = computed(() => Math.min(100, Math.max(props.score + 18, 75)))
 const epcPotentialLetter = computed(() => {
@@ -386,16 +391,19 @@ function formatNum(n: number): string {
   padding: 12px 16px 0;
 }
 
-/* ── Teal address card ───────────────────────────────────────── */
+/* ── Amber address card (prototype-exact) ──────────────────────── */
 .rd-addr-card {
-  border-radius: 18px;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #00a19a 0%, #007e78 100%);
+  border-radius: 22px;
+  padding: 22px 22px 18px;
+  background: linear-gradient(135deg, #F0A030 0%, #C67C18 50%, #8B4E0A 100%);
   color: #fff;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 161, 154, 0.25);
+  box-shadow:
+    0 12px 32px -8px rgba(180, 100, 20, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
   margin-bottom: 12px;
+  animation: rd-fadeSlideDown 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .rd-addr-card::after {
   content: '';
@@ -516,14 +524,19 @@ function formatNum(n: number): string {
 
 /* ── Overpay hero ──────────────────────────────────────────── */
 .rd-overpay {
-  background: linear-gradient(135deg, #00514d 0%, #00514d 100%);
+  background: linear-gradient(135deg, #007e78 0%, #00514d 100%);
   color: #fff;
   border-radius: 18px;
   padding: 16px 18px;
   margin-bottom: 12px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 81, 77, 0.22);
+  box-shadow:
+    0 12px 32px -10px rgba(0, 161, 154, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  animation:
+    rd-fadeSlideUp 0.45s 0.10s cubic-bezier(0.22, 1, 0.36, 1) both,
+    rd-overpayPulse 2.2s 1.2s ease-in-out 2;
 }
 .rd-overpay-eyebrow {
   display: flex;
@@ -622,26 +635,33 @@ function formatNum(n: number): string {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* ── HomeScore card ────────────────────────────────────────── */
+/* ── HomeScore card (prototype-exact: 2px teal border, soft teal gradient) ── */
 .rd-score-card {
   background: #fff;
-  border: 1.5px solid #e5f4f2;
+  border: 2px solid #00a19a;
   border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 22px 18px 18px;
+  margin: 0 0 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 161, 154, 0.10);
+  transition: all 0.18s;
+  animation:
+    rd-fadeSlideUp 0.45s 0.20s cubic-bezier(0.22, 1, 0.36, 1) both,
+    rd-borderGlow 1.8s 1.0s ease-in-out 1;
 }
-.rd-score-card.high {
-  background: linear-gradient(180deg, #f2faf8 0%, #fff 55%);
+.rd-score-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 161, 154, 0.16);
+}
+/* All score tones share the teal border + soft teal-paler gradient. */
+.rd-score-card.high,
+.rd-score-card.mid,
+.rd-score-card.low {
+  background: linear-gradient(180deg, #f2faf8 0%, #fff 60%);
   border-color: #00a19a;
 }
-.rd-score-card.mid {
-  background: linear-gradient(180deg, #FBEFD9 0%, #fff 60%);
-  border-color: #f5dba8;
-}
-.rd-score-card.low {
-  background: linear-gradient(180deg, #FCEBEA 0%, #fff 60%);
-  border-color: #f5b8b1;
-}
+.rd-score-card .gn-big { color: #007e78; }
 
 .rd-score-eyebrow {
   display: flex;
@@ -673,11 +693,12 @@ function formatNum(n: number): string {
 .rd-score-gauge-wrap {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
+  margin-bottom: 14px;
 }
 .rd-gauge {
-  width: 96px;
-  height: 96px;
+  width: 120px;
+  height: 120px;
   position: relative;
   flex-shrink: 0;
 }
@@ -686,7 +707,7 @@ function formatNum(n: number): string {
   height: 100%;
   transform: rotate(-90deg);
 }
-.rd-gauge .g-bg { stroke: #eef0f6; }
+.rd-gauge .g-bg { stroke: #ECECEF; }
 .rd-g-num {
   position: absolute;
   inset: 0;
@@ -696,27 +717,33 @@ function formatNum(n: number): string {
   justify-content: center;
 }
 .rd-g-num .gn-big {
-  font-size: 28px;
+  font-size: 42px;
   font-weight: 800;
   color: #231d45;
-  letter-spacing: -0.8px;
+  letter-spacing: -1.4px;
   line-height: 1;
+  font-feature-settings: 'tnum';
 }
 .rd-g-num .gn-small {
   font-size: 9px;
   font-weight: 800;
   color: #9c98ad;
-  letter-spacing: 0.06em;
-  margin-top: 2px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-top: 4px;
 }
 .rd-score-summary { flex: 1; min-width: 0; }
 .rd-score-band {
   font-size: 14px;
   font-weight: 800;
   color: #231d45;
-  letter-spacing: -0.2px;
-  line-height: 1.2;
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
 }
+/* Score-band tone — mirrors prototype's `.score-card.low/.mid/.high .score-band`. */
+.rd-score-card.low  .rd-score-band { color: #C73E36; }
+.rd-score-card.mid  .rd-score-band { color: #E6A23C; }
+.rd-score-card.high .rd-score-band { color: #007e78; }
 .rd-score-explainer {
   font-size: 12px;
   font-weight: 500;
@@ -754,6 +781,7 @@ function formatNum(n: number): string {
   border-radius: 18px;
   padding: 16px 18px;
   margin-bottom: 12px;
+  animation: rd-fadeSlideUp 0.45s 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .rd-epc-row {
   display: flex;
@@ -783,15 +811,15 @@ function formatNum(n: number): string {
   gap: 8px;
 }
 .rd-epc-letter-big {
-  display: inline-grid;
-  place-items: center;
-  min-width: 28px;
-  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
   color: #fff;
   font-size: 13px;
   font-weight: 800;
-  padding: 0 6px;
+  padding: 3px 10px;
+  line-height: 1;
 }
 .rd-epc-text {
   font-size: 11.5px;
@@ -912,6 +940,27 @@ function formatNum(n: number): string {
   border-radius: 18px;
   padding: 16px;
   margin-bottom: 12px;
+  animation: rd-fadeSlideUp 0.45s 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Prototype-exact cascade animations ──────────────────────── */
+@keyframes rd-fadeSlideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rd-fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rd-overpayPulse {
+  0%   { box-shadow: 0 12px 32px -10px rgba(0, 161, 154, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18); }
+  50%  { box-shadow: 0 16px 48px -8px rgba(0, 161, 154, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.18); }
+  100% { box-shadow: 0 12px 32px -10px rgba(0, 161, 154, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18); }
+}
+@keyframes rd-borderGlow {
+  0%   { box-shadow: 0 4px 12px rgba(35, 29, 69, 0.04); }
+  50%  { box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.25), 0 8px 24px rgba(0, 161, 154, 0.15); }
+  100% { box-shadow: 0 4px 12px rgba(35, 29, 69, 0.04); }
 }
 .rd-intent-eyebrow {
   font-size: 14px;

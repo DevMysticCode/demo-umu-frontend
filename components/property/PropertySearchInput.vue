@@ -65,43 +65,31 @@
           class="psi-drop-item"
           @mousedown.prevent="select(r)"
         >
-          <!-- Top row: house ic, address + postcode, optional HS score on the right -->
-          <div class="psi-drop-top">
-            <div
-              class="psi-drop-ic"
-              style="
-                width: 32px;
-                height: 32px;
-                background: #f1f9f4;
-                border-radius: 9px;
-                display: grid;
-                place-items: center;
-                flex-shrink: 0;
-                font-size: 14px;
-              "
-            >
-              🏠
-            </div>
-            <div class="psi-drop-body">
-              <div class="psi-drop-title">
-                {{ r.addressLine1 || r.address || '—' }}
-              </div>
-              <div class="psi-drop-sub">
-                <span v-if="r.city">{{ r.city }} · </span>{{ r.postcode || '' }}
-              </div>
-            </div>
-            <div
-              v-if="(r.homeScore ?? r.epcScore) != null"
-              class="psi-drop-hs"
-              :style="{ color: hsColor(r.homeScore ?? r.epcScore) }"
-            >
-              <span class="psi-drop-hs-num">{{ r.homeScore ?? r.epcScore }}</span>
-              <span class="psi-drop-hs-lbl">HS</span>
-            </div>
+          <!-- Leading icon -->
+          <div
+            class="psi-drop-ic"
+            style="
+              width: 32px;
+              height: 32px;
+              background: #f1f9f4;
+              border-radius: 9px;
+              display: grid;
+              place-items: center;
+              flex-shrink: 0;
+              font-size: 14px;
+            "
+          >
+            🏠
           </div>
-
-          <!-- Bottom badge strip: EPC + Passport state -->
-          <div class="psi-drop-badges">
+          <!-- Body column: title + sub + badges -->
+          <div class="psi-drop-body">
+            <div class="psi-drop-title">
+              {{ r.addressLine1 || r.address || '—' }}
+            </div>
+            <div class="psi-drop-sub">
+              <span v-if="r.city">{{ r.city }} · </span>{{ r.postcode || '' }}
+            </div>
+            <div class="psi-drop-badges">
             <span
               v-if="r.epcRating"
               class="psi-drop-badge"
@@ -139,6 +127,16 @@
               />
               Unclaimed · Claim yours? →
             </span>
+            </div>
+          </div>
+          <!-- HS score — vertically centered with the entire row -->
+          <div
+            v-if="(r.homeScore ?? r.epcScore) != null"
+            class="psi-drop-hs"
+            :style="{ color: hsColor(r.homeScore ?? r.epcScore) }"
+          >
+            <span class="psi-drop-hs-num">{{ r.homeScore ?? r.epcScore }}</span>
+            <span class="psi-drop-hs-lbl">HS</span>
           </div>
         </div>
         <!-- Loading more indicator -->
@@ -442,7 +440,10 @@ defineExpose({ clearQuery })
   background: #f0fdfa;
 }
 
-.psi-drop-top {
+/* The dropdown item itself is now the horizontal flex row, so the HS score
+   sits next to the entire body column (title + sub + badges) and is
+   therefore vertically centered with all of it. */
+.psi-drop-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -477,10 +478,12 @@ defineExpose({ clearQuery })
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   white-space: nowrap;
   letter-spacing: -0.4px;
-  text-align: right;
+  text-align: center;
+  min-width: 40px;
 }
 .psi-drop-hs-num {
   font-size: 22px;
@@ -497,13 +500,12 @@ defineExpose({ clearQuery })
   margin-top: 2px;
 }
 
-/* Bottom badge strip: EPC + Passport state + HS */
+/* Badge strip — now inside .psi-drop-body so no left-padding needed. */
 .psi-drop-badges {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
   margin-top: 5px;
-  padding-left: 42px;
 }
 .psi-drop-badge {
   display: inline-flex;

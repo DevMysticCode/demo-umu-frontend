@@ -47,9 +47,17 @@
       </div>
 
       <div ref="saveWrapEl" class="hs-save-wrap">
-        <div class="hs-save-eyebrow">✦ Potential annual saving on this property</div>
+        <div class="hs-save-eyebrow">
+          {{ savingDirection === 'more'
+            ? '✦ Potential annual saving on this property'
+            : '✓ Below the street average by' }}
+        </div>
         <div ref="saveNumEl" class="hs-save-num">£0</div>
-        <div class="hs-save-foot">per year · if this property matched the street average</div>
+        <div class="hs-save-foot">
+          {{ savingDirection === 'more'
+            ? 'per year · if this property matched the street average'
+            : 'per year · cheaper than the typical home on this street' }}
+        </div>
       </div>
 
       <div class="hs-save-split">
@@ -157,7 +165,12 @@ const youCost = computed<number>(() => {
 })
 const avgCost = 1673
 const comparedCount = 11
-const saving = computed<number>(() => Math.max(0, youCost.value - avgCost))
+// Always show the meaningful difference (above OR below the street average).
+// The direction ("more" / "less") is handled by the hero title copy.
+const saving = computed<number>(() => Math.abs(youCost.value - avgCost))
+const savingDirection = computed<'more' | 'less'>(() =>
+  youCost.value >= avgCost ? 'more' : 'less',
+)
 
 const streetName = computed<string>(() => {
   const addr: string = property.value?.addressLine1 || ''

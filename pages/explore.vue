@@ -74,59 +74,57 @@
           class="addr-item"
           @mousedown.prevent="selectAddress(addr)"
         >
-          <div class="addr-top">
-            <div class="addr-ic">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
+          <div class="addr-ic">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
+          <div class="addr-body">
+            <div class="addr-line1">
+              {{ addr.addressLine1 || addr.line1 || addr.address }}
             </div>
-            <div class="addr-body">
-              <div class="addr-line1">
-                {{ addr.addressLine1 || addr.line1 || addr.address }}
-              </div>
-              <div class="addr-line2">
-                <span v-if="addr.city">{{ addr.city }} · </span>{{ addr.postcode || addr.addressLine2 || addr.line2 || '' }}
-              </div>
+            <div class="addr-line2">
+              <span v-if="addr.city">{{ addr.city }} · </span>{{ addr.postcode || addr.addressLine2 || addr.line2 || '' }}
             </div>
-            <div
-              v-if="(addr.homeScore ?? addr.epcScore) != null"
-              class="addr-hs"
-              :style="{ color: hsDropColor(addr.homeScore ?? addr.epcScore) }"
-            >
-              <span class="addr-hs-num">{{ addr.homeScore ?? addr.epcScore }}</span>
-              <span class="addr-hs-lbl">HS</span>
+            <div class="addr-badges">
+              <span
+                v-if="addr.epcRating"
+                class="addr-badge"
+                :style="{ background: epcDropColor(addr.epcRating) }"
+              >
+                ⚡ EPC {{ addr.epcRating }}
+              </span>
+              <span
+                v-if="addr.hasPassport && addr.passportPublished"
+                class="addr-badge addr-badge--pub"
+              >
+                <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
+                Passport Published
+              </span>
+              <span
+                v-else-if="addr.hasPassport"
+                class="addr-badge addr-badge--prog"
+              >
+                <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
+                Passport In Progress
+              </span>
+              <span
+                v-else
+                class="addr-badge addr-badge--unclaimed"
+              >
+                <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
+                Unclaimed · Claim yours? →
+              </span>
             </div>
           </div>
-          <div class="addr-badges">
-            <span
-              v-if="addr.epcRating"
-              class="addr-badge"
-              :style="{ background: epcDropColor(addr.epcRating) }"
-            >
-              ⚡ EPC {{ addr.epcRating }}
-            </span>
-            <span
-              v-if="addr.hasPassport && addr.passportPublished"
-              class="addr-badge addr-badge--pub"
-            >
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
-              Passport Published
-            </span>
-            <span
-              v-else-if="addr.hasPassport"
-              class="addr-badge addr-badge--prog"
-            >
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
-              Passport In Progress
-            </span>
-            <span
-              v-else
-              class="addr-badge addr-badge--unclaimed"
-            >
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
-              Unclaimed · Claim yours? →
-            </span>
+          <div
+            v-if="(addr.homeScore ?? addr.epcScore) != null"
+            class="addr-hs"
+            :style="{ color: hsDropColor(addr.homeScore ?? addr.epcScore) }"
+          >
+            <span class="addr-hs-num">{{ addr.homeScore ?? addr.epcScore }}</span>
+            <span class="addr-hs-lbl">HS</span>
           </div>
         </div>
       </div>
@@ -3005,6 +3003,9 @@ onMounted(async () => {
 }
 
 .addr-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 11px 14px;
   border-bottom: 1px solid #f1f5f9;
   cursor: pointer;
@@ -3018,12 +3019,6 @@ onMounted(async () => {
 .addr-item:hover,
 .addr-item:active {
   background: #f0fdfa;
-}
-
-.addr-top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .addr-ic {
@@ -3057,10 +3052,12 @@ onMounted(async () => {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   white-space: nowrap;
   letter-spacing: -0.4px;
-  text-align: right;
+  text-align: center;
+  min-width: 40px;
 }
 .addr-hs-num {
   font-size: 22px;
@@ -3082,7 +3079,6 @@ onMounted(async () => {
   gap: 4px;
   flex-wrap: wrap;
   margin-top: 5px;
-  padding-left: 42px;
 }
 
 .addr-badge {
