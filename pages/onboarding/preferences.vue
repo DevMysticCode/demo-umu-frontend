@@ -529,7 +529,7 @@ const buyQuestions: Question[] = [
     id: 'energyImportance',
     type: 'chips',
     label: 'HOW IMPORTANT IS ENERGY EFFICIENCY?',
-    hint: 'Affects HealthScore™ weighting and running cost estimates',
+    hint: 'Affects HomeScore weighting and running cost estimates',
     opts: [
       { v: 'Very — low bills matter' },
       { v: 'Somewhat' },
@@ -982,7 +982,7 @@ async function save() {
     const isBuyerRole =
       selectedRole.value === 'buy' || selectedRole.value === 'both'
     // Honor a pending redirect (e.g. user was sent to signup from a
-    // HealthScore property page via "I'm interested" / "I'm the owner")
+    // HomeScore property page via "I'm interested" / "I'm the owner")
     // Welcome screen consumes any pending redirectAfterLogin when the user
     // taps "Let's start exploring", so leave it in storage here.
     await navigateTo('/onboarding/welcome')

@@ -1,7 +1,7 @@
 <template>
   <div class="hs-page">
-    <!-- Header -->
-    <div class="hs-header">
+    <!-- Global header — hidden during the quiz, which has its own top nav -->
+    <div v-if="screen !== 'questions'" class="hs-header">
       <button class="hs-back-btn" @click="goBack" aria-label="Back">
         <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
           <path
@@ -17,7 +17,7 @@
         <p class="hs-header-title">
           {{
             screen === 'results'
-              ? 'Your HealthScore'
+              ? 'Your HomeScore'
               : screen === 'passport'
                 ? 'Property Passport'
                 : screen === 'buyer-results'
@@ -26,7 +26,7 @@
                     ? 'Boost your score'
                     : screen === 'move-ready'
                       ? 'Get move ready'
-                      : 'HealthScore'
+                      : 'HomeScore'
           }}
         </p>
         <p class="hs-header-sub">{{ headerSub }}</p>
@@ -389,7 +389,7 @@
               </div>
               <div class="hs-pp-pub-explainer-row">
                 <span class="hs-pp-pub-check">✓</span>
-                Real HealthScore — not just EPC
+                Real HomeScore — not just EPC
               </div>
             </div>
             <button
@@ -422,7 +422,7 @@
               📊 What you can see now
             </div>
             <div style="font-size: 11px; color: #78350f">
-              Public EPC data only · Estimated HealthScore based on energy
+              Public EPC data only · Estimated HomeScore based on energy
               rating
             </div>
           </div>
@@ -431,7 +431,7 @@
               🔒 Smart buyers won't view a property without this.
             </div>
             <div style="font-size: 11px; color: #78350f">
-              Verified ownership, documents, HealthScore and planning records —
+              Verified ownership, documents, HomeScore and planning records —
               before you commit a penny.
             </div>
           </div>
@@ -459,7 +459,7 @@
             </div>
             <div class="hs-pp-claimed-explainer-row">
               <span class="hs-pp-claimed-check">✓</span>
-              Real HealthScore — not just EPC
+              Real HomeScore — not just EPC
             </div>
           </div>
           <button
@@ -521,7 +521,7 @@
             </div>
             <div class="hs-pp-none-explainer-row">
               <span class="hs-pp-none-check">✓</span>
-              Real HealthScore — not just EPC
+              Real HomeScore — not just EPC
             </div>
           </div>
         </div>
@@ -563,125 +563,120 @@
       </div>
     </template>
 
-    <!-- ── QUESTIONS ─────────────────────────────────────────────── -->
+    <!-- ── QUESTIONS — prototype-style: teal address card + live gauge ── -->
     <template v-else-if="screen === 'questions'">
-      <!-- Dark navy header -->
-      <div class="hsq-header">
-        <div class="hsq-header-glow" />
-        <div class="hsq-header-row">
-          <button class="hsq-back" @click="prev" aria-label="Back">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <polyline
-                points="15 18 9 12 15 6"
-                stroke="#fff"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
+      <div class="hs-q-shell">
+        <!-- Top nav -->
+        <div class="hsq2-topnav">
+          <button class="hsq2-back" @click="prev" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
-          <div class="hsq-count">
-            Question {{ step + 1 }} of {{ QUESTIONS.length }}
-          </div>
-          <div class="hsq-spacer" />
+          <div class="hs-eyebrow-pill"><span class="hs-pulse" />HomeScore</div>
+          <div style="width: 32px;" />
         </div>
-        <div class="hsq-progress-track">
-          <div class="hsq-progress-fill" :style="{ width: `${progress}%` }" />
-        </div>
-        <div class="hsq-cat-wrap">
-          <span class="hsq-cat-chip">{{ currentQuestion?.cat || '' }}</span>
-        </div>
-      </div>
 
-      <div class="hs-q-scroll hsq-body">
-        <!-- Live score widget -->
-        <div class="hsq-live">
-          <div class="hsq-live-gauge">
-            <svg
-              viewBox="0 0 44 44"
-              width="44"
-              height="44"
-              style="position: absolute; inset: 0; transform: rotate(-90deg)"
-            >
-              <circle
-                cx="22"
-                cy="22"
-                r="18"
-                fill="none"
-                stroke="#e2e8f0"
-                stroke-width="4"
-              />
-              <circle
-                cx="22"
-                cy="22"
-                r="18"
-                fill="none"
-                :stroke="scoreColor(liveScore)"
-                stroke-width="4"
-                stroke-linecap="round"
-                stroke-dasharray="113.1"
-                :stroke-dashoffset="113.1 - (liveScore / 100) * 113.1"
-                style="
-                  transition:
-                    stroke-dashoffset 0.6s ease,
-                    stroke 0.4s;
-                "
-              />
-            </svg>
-            <div class="hsq-live-num">{{ liveScore }}</div>
-          </div>
-          <div class="hsq-live-info">
-            <div class="hsq-live-lbl">Live score</div>
-            <div class="hsq-live-hint">{{ liveHint }}</div>
-          </div>
-          <Transition name="hsq-delta">
-            <div
-              v-if="deltaInfo.show"
-              class="hsq-delta"
-              :class="deltaInfo.val > 0 ? 'pos' : 'neg'"
-            >
-              {{ deltaInfo.val > 0 ? '+' : '' }}{{ deltaInfo.val }}
+        <!-- Teal address card with progress + Q counter inside -->
+        <div class="hsq2-addr-card">
+          <div class="hsq2-addr-top">
+            <div class="hsq2-addr-pin" />
+            <div class="hsq2-addr-block">
+              <div class="hsq2-addr-line">{{ property?.addressLine1 || 'Your property' }}</div>
+              <div class="hsq2-addr-meta">
+                {{ property?.postcode || '' }}
+                <template v-if="property?.propertyType"> · {{ property.propertyType }}</template>
+                <template v-if="property?.bedrooms"> · {{ property.bedrooms }} bed</template>
+              </div>
             </div>
-          </Transition>
+          </div>
+          <div class="hsq2-progress-row">
+            <div class="hsq2-cat-pill">{{ currentQuestion?.cat || 'Your home' }}</div>
+            <div class="hsq2-progress-track">
+              <div class="hsq2-progress-fill" :style="{ width: `${progress}%` }" />
+            </div>
+            <div class="hsq2-q-label">{{ step + 1 }} of {{ QUESTIONS.length }}</div>
+          </div>
         </div>
 
+        <!-- Live score gauge card -->
+        <div class="hsq2-score-card">
+          <div class="hsq2-score-eyebrow">
+            <span class="left">Live Score</span>
+            <span class="right">Updates as you answer</span>
+          </div>
+          <div class="hsq2-score-gauge-wrap">
+            <div class="hsq2-gauge">
+              <svg viewBox="0 0 120 120">
+                <circle class="g-bg" cx="60" cy="60" r="50" fill="none" stroke-width="9" />
+                <circle
+                  class="g-fill"
+                  cx="60"
+                  cy="60"
+                  r="50"
+                  fill="none"
+                  :stroke="scoreColor(liveScore)"
+                  stroke-width="9"
+                  stroke-linecap="round"
+                  stroke-dasharray="314.16"
+                  :stroke-dashoffset="314.16 - (liveScore / 100) * 314.16"
+                  style="transition: stroke-dashoffset 0.6s ease, stroke 0.4s;"
+                />
+              </svg>
+              <div class="hsq2-g-num">
+                <div class="gn-big">{{ liveScore }}</div>
+                <div class="gn-small">/ 100</div>
+              </div>
+            </div>
+            <div class="hsq2-score-summary">
+              <div class="hsq2-band">{{ scoreBand }}</div>
+              <div class="hsq2-explainer">{{ liveHint }}</div>
+            </div>
+            <Transition name="hsq-delta">
+              <div
+                v-if="deltaInfo.show"
+                class="hsq-delta"
+                :class="deltaInfo.val > 0 ? 'pos' : 'neg'"
+              >
+                {{ deltaInfo.val > 0 ? '+' : '' }}{{ deltaInfo.val }}
+              </div>
+            </Transition>
+          </div>
+        </div>
+
+        <!-- Question text + options -->
         <Transition name="hs-slide" mode="out-in">
-          <div :key="step" class="hsq-card">
-            <h2 class="hsq-title">{{ currentQuestion?.title }}</h2>
-            <div v-if="selectedNarr" class="hsq-hint">{{ selectedNarr }}</div>
-            <div class="hsq-options">
+          <div :key="step" class="hsq2-q-block">
+            <div class="hsq2-q-text">{{ currentQuestion?.title }}</div>
+            <div v-if="selectedNarr" class="hsq2-context">{{ selectedNarr }}</div>
+            <div class="hsq2-options">
               <button
                 v-for="opt in currentQuestion?.options"
                 :key="opt.value"
-                class="hsq-opt"
+                class="hsq2-option"
                 :class="{ selected: currentAnswer === opt.value }"
                 @click="handleAnswer(currentQuestion!.id, opt.value)"
               >
-                <span class="hsq-opt-label">{{ opt.label }}</span>
+                {{ opt.label }}
               </button>
             </div>
           </div>
         </Transition>
 
-        <div class="hsq-nav">
+        <!-- Back / Next nav -->
+        <div class="hsq2-nav">
           <button
-            class="hsq-nav-back"
+            class="hsq2-nav-back"
             @click="prev"
             :disabled="step === 0"
             aria-label="Back"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <polyline
-                points="15 18 9 12 15 6"
-                stroke="#64748b"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
           <button
-            class="hsq-nav-next"
+            class="hsq2-nav-next"
             :disabled="!canNext"
             @click="nextQuestion"
           >
@@ -689,7 +684,7 @@
           </button>
         </div>
 
-        <div style="height: 24px" />
+        <div style="height: 24px;" />
       </div>
     </template>
 
@@ -751,7 +746,7 @@
                   </div>
                   <div class="hs-journey-num-small">/100</div>
                 </div>
-                <div class="hs-journey-label">HealthScore™</div>
+                <div class="hs-journey-label">HomeScore</div>
                 <div class="hs-journey-sub">Energy score</div>
               </div>
               <div
@@ -1252,7 +1247,7 @@
             </p>
             <div class="hs-pp-progress">
               <div class="hs-pp-progress-labels">
-                <span>HealthScore confidence</span>
+                <span>HomeScore confidence</span>
                 <span>{{ result.confidenceScore }}% → 100%</span>
               </div>
               <div class="hs-pp-progress-track">
@@ -1623,7 +1618,7 @@
           <p class="hs-breakdown-title">Score breakdown</p>
           <p class="hs-buyer-bd-sub">
             Based on public EPC data only — the seller could improve this with a
-            full HealthScore™.
+            full HomeScore.
           </p>
           <div class="hs-pillar-list">
             <div
@@ -1650,7 +1645,7 @@
           </div>
           <div class="hs-buyer-bd-note">
             This is based on public EPC data only. Ask the seller to run a full
-            HealthScore™ to get a verified picture.
+            HomeScore to get a verified picture.
           </div>
         </div>
 
@@ -1855,7 +1850,7 @@
                   </div>
                   <div class="hs-journey-num-small">/100</div>
                 </div>
-                <div class="hs-journey-label">HealthScore™</div>
+                <div class="hs-journey-label">HomeScore</div>
                 <div class="hs-journey-sub">Energy score</div>
               </div>
               <div
@@ -2071,7 +2066,7 @@
             <div>
               <div class="hs-mr-step-title">Your score becomes verified</div>
               <div class="hs-mr-step-body">
-                Your HealthScore™ is upgraded from estimated to verified — and
+                Your HomeScore is upgraded from estimated to verified — and
                 your Property Passport is live.
               </div>
             </div>
@@ -2605,9 +2600,18 @@ const liveHint = computed(() => {
       return 'Your score dipped — try another option.'
   }
   if (selectedNarr.value) return selectedNarr.value
-  if (!currentAnswer.value) return 'Updating as you answer…'
+  if (!currentAnswer.value) return 'Each answer refines your real score in real time.'
   const answered = Object.keys(answers.value).length
   return `${answered} of ${QUESTIONS.length} answered`
+})
+
+const scoreBand = computed(() => {
+  const s = liveScore.value
+  if (s >= 80) return 'Excellent — top of the market'
+  if (s >= 65) return 'Strong — better than most'
+  if (s >= 50) return 'Average — room to improve'
+  if (s >= 35) return 'Below average — fixable'
+  return 'Plenty of opportunities'
 })
 
 // ── Score helpers ─────────────────────────────────────────────
@@ -5775,6 +5779,319 @@ watch(screen, (s) => {
 }
 
 /* ── Question screen (hsq-*) ───────────────────────────────── */
+/* ── Prototype-style quiz UI (hsq2) ─────────────────────────── */
+.hs-q-shell {
+  padding: 0;
+  background: #fff;
+}
+.hsq2-topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 8px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+}
+.hsq2-back {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
+  display: grid;
+  place-items: center;
+  color: #00a19a;
+  cursor: pointer;
+}
+.hsq2-back svg { width: 14px; height: 14px; }
+.hs-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f9f4;
+  border: 1px solid #e2f1ea;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #00a19a;
+  text-transform: uppercase;
+}
+.hs-pulse {
+  width: 6px;
+  height: 6px;
+  background: #00a19a;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #e2f1ea;
+}
+
+/* Teal address card with progress + Q counter */
+.hsq2-addr-card {
+  margin: 10px 16px 0;
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #00a19a 0%, #007e78 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 161, 154, 0.25);
+}
+.hsq2-addr-card::after {
+  content: '';
+  position: absolute;
+  inset: -40% -20% auto auto;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hsq2-addr-card > * { position: relative; z-index: 1; }
+.hsq2-addr-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.hsq2-addr-pin {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.30);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.hsq2-addr-block { flex: 1; min-width: 0; }
+.hsq2-addr-line {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.hsq2-addr-meta {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: 2px;
+}
+.hsq2-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+.hsq2-cat-pill {
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.hsq2-progress-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.20);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.hsq2-progress-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 100px;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hsq2-q-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Live score card */
+.hsq2-score-card {
+  margin: 12px 16px 0;
+  padding: 16px;
+  background: #fff;
+  border: 1.5px solid #ececef;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(35, 29, 69, 0.06);
+}
+.hsq2-score-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.hsq2-score-eyebrow .left {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #9c98ad;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.hsq2-score-eyebrow .right {
+  font-size: 10px;
+  font-weight: 700;
+  color: #007e78;
+  background: #f2faf8;
+  border: 1px solid #e5f4f2;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.hsq2-score-gauge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+.hsq2-gauge {
+  width: 88px;
+  height: 88px;
+  position: relative;
+  flex-shrink: 0;
+}
+.hsq2-gauge svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.hsq2-gauge .g-bg { stroke: #eef0f6; }
+.hsq2-g-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.hsq2-g-num .gn-big {
+  font-size: 26px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.8px;
+  line-height: 1;
+}
+.hsq2-g-num .gn-small {
+  font-size: 9px;
+  font-weight: 800;
+  color: #9c98ad;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+.hsq2-score-summary {
+  flex: 1;
+  min-width: 0;
+}
+.hsq2-band {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+}
+.hsq2-explainer {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #6b6783;
+  margin-top: 4px;
+  line-height: 1.4;
+  letter-spacing: -0.05px;
+}
+
+/* Question block */
+.hsq2-q-block {
+  padding: 16px 22px 0;
+}
+.hsq2-q-text {
+  font-size: 19px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.4px;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+.hsq2-context {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6b6783;
+  background: #f8f9fb;
+  border: 1px solid #ececef;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  line-height: 1.45;
+}
+.hsq2-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hsq2-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1.5px solid #ececef;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #231d45;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  transition: all 0.15s;
+}
+.hsq2-option:hover {
+  border-color: #b2e4e1;
+  background: #f2faf8;
+}
+.hsq2-option.selected {
+  border-color: #00a19a;
+  background: #f2faf8;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
+  color: #007e78;
+}
+
+/* Back / Next nav */
+.hsq2-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 22px 0;
+}
+.hsq2-nav-back {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #ececef;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.hsq2-nav-back:disabled { opacity: 0.4; cursor: not-allowed; }
+.hsq2-nav-next {
+  flex: 1;
+  background: #00a19a;
+  color: #fff;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 13px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  transition: background 0.15s;
+}
+.hsq2-nav-next:hover:not(:disabled) { background: #00b6ae; }
+.hsq2-nav-next:disabled { opacity: 0.5; cursor: not-allowed; }
+
 .hsq-header {
   background: linear-gradient(150deg, #1a1640 0%, #231d45 60%, #2a2158 100%);
   padding: 16px 20px 20px;

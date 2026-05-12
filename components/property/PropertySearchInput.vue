@@ -95,7 +95,8 @@
               class="psi-drop-hs"
               :style="{ color: hsColor(r.homeScore ?? r.epcScore) }"
             >
-              HS™ {{ r.homeScore ?? r.epcScore }}
+              <span class="psi-drop-hs-num">{{ r.homeScore ?? r.epcScore }}</span>
+              <span class="psi-drop-hs-lbl">HS</span>
             </div>
           </div>
 
@@ -473,10 +474,24 @@ defineExpose({ clearQuery })
 }
 
 .psi-drop-hs {
-  font-size: 11px;
-  font-weight: 700;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
   white-space: nowrap;
+  letter-spacing: -0.5px;
+}
+.psi-drop-hs-num {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+.psi-drop-hs-lbl {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
 }
 
 /* Bottom badge strip: EPC + Passport state + HS */

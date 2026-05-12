@@ -42,8 +42,8 @@
             <div class="dc-pill">{{ card.peekPill }}</div>
           </div>
 
-          <!-- HealthScore body -->
-          <div v-if="card.id === 'healthscore'" class="dc-content">
+          <!-- HomeScore body -->
+          <div v-if="card.id === 'HomeScore'" class="dc-content">
             <div class="dc-headline">How does your<br />home compare?</div>
             <div class="dc-sub">
               Bills vs. street. Value vs. neighbours. Where you could save. In 60 seconds.
@@ -357,7 +357,7 @@
       <!-- CTA -->
       <div class="market-final-cta">
         <div class="mfc-eyebrow">This is what UMU is for</div>
-        <div class="mfc-headline">Start with a free HealthScore.</div>
+        <div class="mfc-headline">Start with a free HomeScore.</div>
         <div class="mfc-sub">
           No card needed. See what your home tells you in 60 seconds. Upgrade to a Passport
           when you're ready to sell.
@@ -491,7 +491,7 @@
         <div class="afc-eyebrow-pill">Ready when you are</div>
         <div class="afc-headline">Sell like Aisha did.</div>
         <div class="afc-sub">
-          Start with a free HealthScore. Upgrade to a Passport when you're ready to list.
+          Start with a free HomeScore. Upgrade to a Passport when you're ready to list.
         </div>
         <button class="afc-btn" type="button" @click="navigateTo('/onboarding/signup')">
           Start a Property Passport
@@ -626,7 +626,7 @@ onMounted(() => {
 })
 
 const cards = [
-  { id: 'healthscore', peekLabel: 'HealthScore', peekPill: 'Free', cta: 'Check your home' },
+  { id: 'HomeScore', peekLabel: 'HomeScore', peekPill: 'Free', cta: 'Check your home' },
   { id: 'passport', peekLabel: 'Property Passport', peekPill: 'Solicitor-grade', cta: 'See a sample' },
   { id: 'aisha', peekLabel: 'A real story', peekPill: '5 min read', cta: 'Read her story' },
   { id: 'market', peekLabel: 'The market today', peekPill: 'Why we built it', cta: 'Read the case' },
@@ -642,7 +642,7 @@ function bringToFront(id: string) {
   stack.value = [id, ...stack.value.filter((x) => x !== id)]
 }
 function onCardCta(id: string) {
-  if (id === 'healthscore') navigateTo('/homescore')
+  if (id === 'HomeScore') navigateTo('/homescore')
   else if (id === 'passport') screen.value = 'sample'
   else if (id === 'aisha') screen.value = 'aisha'
   else if (id === 'market') screen.value = 'market'
@@ -685,7 +685,7 @@ const samples: Record<SampleType, any> = {
     addr: SELLER_PROPERTY.addr,
     postcode: SELLER_PROPERTY.postcode,
     stats: [
-      { num: '74', label: 'HS™' },
+      { num: '74', label: 'HS' },
       { num: '17', label: 'Sections' },
       { num: '100', suffix: '%', label: 'Complete' },
     ],
@@ -746,7 +746,7 @@ const samples: Record<SampleType, any> = {
     addr: SELLER_PROPERTY.addr,
     postcode: SELLER_PROPERTY.postcode,
     stats: [
-      { num: '74', label: 'HS™' },
+      { num: '74', label: 'HS' },
       { num: '17', label: 'Sections' },
       { num: '100', suffix: '%', label: 'Complete' },
     ],
@@ -829,7 +829,7 @@ const currentSample = computed(() => samples[sampleType.value])
     0 4px 8px rgba(0, 0, 0, 0.06),
     inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
-.deck-card.healthscore { background: #00a19a; }
+.deck-card.HomeScore { background: #00a19a; }
 .deck-card.passport { background: #231d45; }
 .deck-card.aisha { background: #c18a38; }
 .deck-card.market { background: #1a1535; }

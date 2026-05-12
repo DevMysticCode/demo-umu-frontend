@@ -77,7 +77,7 @@
                 >
                   {{ heroHsScore }}
                 </div>
-                <div class="buyer-hero-stat-lbl">HS™</div>
+                <div class="buyer-hero-stat-lbl">HS</div>
               </div>
               <div class="buyer-hero-stat">
                 <div class="buyer-hero-stat-val">{{ heroDocsCount }}</div>
@@ -907,7 +907,7 @@ const buyerTourSteps = [
   {
     selector: '[data-tour="hero"]',
     title: 'Verified property record',
-    body: 'Address, HealthScore™, document count and how much of the seller\'s record has been completed.',
+    body: 'Address, HomeScore, document count and how much of the seller\'s record has been completed.',
   },
   {
     selector: '.buyer-card',

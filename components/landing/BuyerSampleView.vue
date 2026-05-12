@@ -16,7 +16,7 @@
           <div class="buyer-hero-stats">
             <div class="buyer-hero-stat">
               <div class="buyer-hero-stat-val buyer-hero-stat-val--brand">74</div>
-              <div class="buyer-hero-stat-lbl">HS™</div>
+              <div class="buyer-hero-stat-lbl">HS</div>
             </div>
             <div class="buyer-hero-stat">
               <div class="buyer-hero-stat-val">38</div>

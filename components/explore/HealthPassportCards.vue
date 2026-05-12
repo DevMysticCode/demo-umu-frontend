@@ -1,11 +1,11 @@
 <template>
   <div class="feature-stack">
-    <!-- ── HealthScore card — soft teal ── -->
-    <div class="feat-card healthscore" @click="$router.push('/homescore')">
+    <!-- ── HomeScore card — soft teal ── -->
+    <div class="feat-card homescore" @click="$router.push('/homescore')">
       <div class="feat-top">
         <div class="feat-id">
           <div class="feat-id-tile">HS</div>
-          <div class="feat-eyebrow">HealthScore</div>
+          <div class="feat-eyebrow">HomeScore</div>
         </div>
         <span class="feat-pill">Free</span>
       </div>
@@ -48,7 +48,7 @@
       </div>
 
       <button class="feat-cta" @click.stop="$router.push('/homescore')">
-        Run a HealthScore
+        Run a HomeScore
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12" />
           <polyline points="12 5 19 12 12 19" />
@@ -150,11 +150,11 @@ function goToPassportSample() {
 }
 .feat-card:hover { transform: translateY(-2px); }
 
-.feat-card.healthscore {
+.feat-card.homescore {
   background: linear-gradient(180deg, #f2faf8 0%, #fff 70%);
   border-color: #6bd4cd;
 }
-.feat-card.healthscore:hover {
+.feat-card.homescore:hover {
   border-color: #00a19a;
   box-shadow: 0 10px 26px -8px rgba(0, 161, 154, 0.28);
 }
@@ -177,7 +177,7 @@ function goToPassportSample() {
   border-radius: 50%;
   pointer-events: none;
 }
-.feat-card.healthscore::after {
+.feat-card.homescore::after {
   background: radial-gradient(circle, rgba(107, 212, 205, 0.30) 0%, transparent 65%);
 }
 .feat-card.passport::after {
@@ -212,7 +212,7 @@ function goToPassportSample() {
   position: relative;
   overflow: hidden;
 }
-.feat-card.healthscore .feat-id-tile {
+.feat-card.homescore .feat-id-tile {
   background: linear-gradient(135deg, #00b6ae 0%, #007e78 100%);
   box-shadow: 0 3px 10px rgba(0, 161, 154, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.20);
 }
@@ -299,7 +299,7 @@ function goToPassportSample() {
   letter-spacing: 1.4px;
   text-transform: uppercase;
 }
-.feat-card.healthscore .feat-eyebrow { color: #007e78; }
+.feat-card.homescore .feat-eyebrow { color: #007e78; }
 .feat-card.passport .feat-eyebrow { color: #231d45; }
 
 .feat-pill {
@@ -311,7 +311,7 @@ function goToPassportSample() {
   text-transform: uppercase;
   border: 1px solid;
 }
-.feat-card.healthscore .feat-pill {
+.feat-card.homescore .feat-pill {
   background: #00a19a;
   color: #fff;
   border-color: #00a19a;
@@ -356,7 +356,7 @@ function goToPassportSample() {
   position: relative;
   z-index: 2;
 }
-.feat-card.healthscore .feat-mid { border-color: #e5f4f2; }
+.feat-card.homescore .feat-mid { border-color: #e5f4f2; }
 .feat-card.passport .feat-mid { border-color: rgba(35, 29, 69, 0.10); }
 
 /* Mini gauge */
@@ -576,11 +576,11 @@ function goToPassportSample() {
   z-index: 2;
   color: #fff;
 }
-.feat-card.healthscore .feat-cta {
+.feat-card.homescore .feat-cta {
   background: #00a19a;
   box-shadow: 0 3px 10px rgba(0, 161, 154, 0.28);
 }
-.feat-card.healthscore .feat-cta:hover { background: #00b6ae; }
+.feat-card.homescore .feat-cta:hover { background: #00b6ae; }
 .feat-card.passport .feat-cta {
   background: #231d45;
   box-shadow: 0 3px 10px rgba(35, 29, 69, 0.28);

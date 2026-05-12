@@ -484,9 +484,9 @@
         </div>
 
         <div class="pp-content-pad">
-          <!-- ── HealthScore ── -->
+          <!-- ── HomeScore ── -->
           <div class="pp-section-hdr">
-            <span>HealthScore™</span>
+            <span>HomeScore</span>
             <span class="pp-section-sub">{{
               homeScoreIsAuto ? 'Public EPC · estimated' : 'Calculated score'
             }}</span>
@@ -602,7 +602,7 @@
               <div>
                 <div class="pp-hs-cta-title">Want the full picture?</div>
                 <div class="pp-hs-cta-sub">
-                  Run a free HealthScore on this address
+                  Run a free HomeScore on this address
                 </div>
               </div>
               <button class="pp-hs-cta-btn">Free →</button>
@@ -2298,7 +2298,7 @@
                 <div class="pp-unlock-feat-ic">🔍</div>
                 <div class="pp-unlock-feat-body">
                   <div class="pp-unlock-feat-title">
-                    Full HealthScore™ breakdown
+                    Full HomeScore breakdown
                   </div>
                   <div class="pp-unlock-feat-sub">
                     Risk categories, planning history, legal
@@ -2584,7 +2584,7 @@ const prop = computed(() => {
   }
 })
 
-// ── HealthScore gauge ──────────────────────────────────────────────────────────
+// ── HomeScore gauge ──────────────────────────────────────────────────────────
 const gaugeScore = computed(
   () => homeScore.value?.total ?? prop.value?.epcScore ?? null,
 )
@@ -3987,7 +3987,7 @@ function formatSaleDate(dateStr: string): string {
   cursor: pointer;
 }
 
-/* ── HealthScore card ── */
+/* ── HomeScore card ── */
 .pp-hs-card {
   background: #fff;
   border: 1.5px solid var(--line);

@@ -94,7 +94,8 @@
               class="addr-hs"
               :style="{ color: hsDropColor(addr.homeScore ?? addr.epcScore) }"
             >
-              HS™ {{ addr.homeScore ?? addr.epcScore }}
+              <span class="addr-hs-num">{{ addr.homeScore ?? addr.epcScore }}</span>
+              <span class="addr-hs-lbl">HS</span>
             </div>
           </div>
           <div class="addr-badges">
@@ -286,15 +287,15 @@
                 }}</span>
               </div>
               <div class="prop-footer">
-                <div class="prop-score-row" v-if="prop.healthScore">
-                  <span class="prop-score-lbl">Healthscore</span>
+                <div class="prop-score-row" v-if="prop.HomeScore">
+                  <span class="prop-score-lbl">HomeScore</span>
                   <div class="prop-score-bar">
                     <div
                       class="prop-score-fill"
-                      :style="{ width: prop.healthScore + '%' }"
+                      :style="{ width: prop.HomeScore + '%' }"
                     ></div>
                   </div>
-                  <span class="prop-score-num">{{ prop.healthScore }}</span>
+                  <span class="prop-score-num">{{ prop.HomeScore }}</span>
                 </div>
                 <span class="prop-passport-btn">View →</span>
               </div>
@@ -1654,7 +1655,7 @@ const exploreTourSteps = [
   {
     selector: '.prop-card',
     title: 'Tap any property',
-    body: 'You\'ll see EPC, HealthScore™ and — for verified ones — the full Property Passport.',
+    body: 'You\'ll see EPC, HomeScore and — for verified ones — the full Property Passport.',
   },
   {
     selector: '[data-tour="tour-btn"]',
@@ -2238,7 +2239,7 @@ onMounted(async () => {
   background: #f8f7fc;
 }
 
-/* ── Healthscore free card ── */
+/* ── HomeScore free card ── */
 .hs-free-card {
   background: #f1f9f4;
   border: 1.5px solid #e2f1ea;
@@ -2831,7 +2832,7 @@ onMounted(async () => {
   flex-shrink: 0;
 }
 
-/* ── Healthscore quick card ── */
+/* ── HomeScore quick card ── */
 .hs-quick-card {
   background: #f1f9f4;
   border: 1.5px solid #e2f1ea;
@@ -3046,10 +3047,24 @@ onMounted(async () => {
 }
 
 .addr-hs {
-  font-size: 11px;
-  font-weight: 700;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
   white-space: nowrap;
+  letter-spacing: -0.5px;
+}
+.addr-hs-num {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+.addr-hs-lbl {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
 }
 
 .addr-badges {

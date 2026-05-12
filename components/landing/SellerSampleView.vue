@@ -23,7 +23,7 @@
         <div class="pp-hero-stats">
           <div class="pp-hero-stat">
             <div class="pp-hero-stat-val">74</div>
-            <div class="pp-hero-stat-lbl">HS™</div>
+            <div class="pp-hero-stat-lbl">HS</div>
           </div>
           <div class="pp-hero-stat">
             <div class="pp-hero-stat-val">38</div>

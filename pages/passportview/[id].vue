@@ -40,7 +40,7 @@
           <div class="pp-hero-stats">
             <div class="pp-hero-stat">
               <div class="pp-hero-stat-val">{{ heroHsScore }}</div>
-              <div class="pp-hero-stat-lbl">HS™</div>
+              <div class="pp-hero-stat-lbl">HS</div>
             </div>
             <div class="pp-hero-stat">
               <div class="pp-hero-stat-val">{{ heroDocsCount }}</div>
@@ -481,7 +481,7 @@ const passportTourSteps = [
   {
     selector: '.pp-hero',
     title: 'Your Property Passport',
-    body: 'This card shows your address, the live HealthScore, document count and overall progress at a glance.',
+    body: 'This card shows your address, the live HomeScore, document count and overall progress at a glance.',
   },
   {
     selector: '.pp-resume-cta',

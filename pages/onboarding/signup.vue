@@ -107,7 +107,7 @@
           @select="onAddressSelect"
         />
         <div class="postcode-prompt">
-          <div class="postcode-prompt-h">See your home's HealthScore the moment you sign in</div>
+          <div class="postcode-prompt-h">See your home's HomeScore the moment you sign in</div>
           <div class="postcode-prompt-text">Add your postcode and we'll show you what your home tells us — bills, value, comparisons. You can skip this and add it later.</div>
         </div>
       </div>
