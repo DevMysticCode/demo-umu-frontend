@@ -60,50 +60,7 @@
       </div>
     </div>
 
-    <!-- ── Overpay hero ───────────────────────────────────────── -->
-    <div class="rd-overpay" data-tour="overpay">
-      <div class="rd-overpay-eyebrow">
-        <span class="rd-dot" />Estimated annual running cost · EPC data
-      </div>
-      <div class="rd-overpay-num">£{{ formatNum(estimatedAnnualCost) }}<span class="rd-unit"> / year</span></div>
-      <div class="rd-overpay-sub">
-        <template v-if="overpayDiff > 0">£{{ formatNum(overpayDiff) }} above the street average. Tap below to see the full breakdown.</template>
-        <template v-else>About the same as the street average. Open the breakdown to see where the money goes.</template>
-      </div>
-      <button class="rd-rc-toggle" type="button" @click="showRC = !showRC">
-        <span>📊 See full running costs</span>
-        <span class="rd-rc-chev" :class="{ open: showRC }">▸</span>
-      </button>
-      <div v-if="showRC" class="rd-rc-body">
-        <div class="rd-rc-row">
-          <div class="rd-rc-cell">
-            <div class="rd-rc-eyebrow">Heating</div>
-            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.54)) }}</div>
-            <div class="rd-rc-meta">per year</div>
-          </div>
-          <div class="rd-rc-cell">
-            <div class="rd-rc-eyebrow">Electricity</div>
-            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.34)) }}</div>
-            <div class="rd-rc-meta">per year</div>
-          </div>
-        </div>
-        <div class="rd-rc-row">
-          <div class="rd-rc-cell">
-            <div class="rd-rc-eyebrow">Hot water</div>
-            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.08)) }}</div>
-            <div class="rd-rc-meta">per year</div>
-          </div>
-          <div class="rd-rc-cell">
-            <div class="rd-rc-eyebrow">Other</div>
-            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.04)) }}</div>
-            <div class="rd-rc-meta">per year</div>
-          </div>
-        </div>
-        <div class="rd-rc-note">EPC estimated · upload a bill to get your real figure</div>
-      </div>
-    </div>
-
-    <!-- ── HomeScore card ─────────────────────────────────────── -->
+    <!-- ── HomeScore card (moved ABOVE running cost — it's the page's focus) ── -->
     <div class="rd-score-card" :class="scoreTone" data-tour="score">
       <div class="rd-score-eyebrow">
         <div class="left">HomeScore</div>
@@ -147,6 +104,54 @@
           <circle cx="12" cy="7.5" r="0.9" fill="currentColor" />
         </svg>
         <div v-html="dataNote" />
+      </div>
+    </div>
+
+    <!-- ── Overpay / running cost hero ───────────────────────── -->
+    <div class="rd-overpay" data-tour="overpay">
+      <div class="rd-overpay-eyebrow">
+        <span class="rd-dot" />Estimated annual running cost · EPC data
+      </div>
+      <div class="rd-overpay-num">£{{ formatNum(estimatedAnnualCost) }}<span class="rd-unit"> / year</span></div>
+      <div class="rd-overpay-sub">
+        <template v-if="overpayDiff > 0">£{{ formatNum(overpayDiff) }} above the street average. Tap below to see the full breakdown.</template>
+        <template v-else>About the same as the street average. Open the breakdown to see where the money goes.</template>
+      </div>
+      <!-- See street comparison — links to the full street view -->
+      <button class="rd-rc-toggle rd-rc-toggle--street" type="button" @click="$emit('see-street')">
+        <span>📍 See street comparison</span>
+        <span class="rd-rc-arrow">→</span>
+      </button>
+      <button class="rd-rc-toggle" type="button" @click="showRC = !showRC">
+        <span>📊 See full running costs</span>
+        <span class="rd-rc-chev" :class="{ open: showRC }">▸</span>
+      </button>
+      <div v-if="showRC" class="rd-rc-body">
+        <div class="rd-rc-row">
+          <div class="rd-rc-cell">
+            <div class="rd-rc-eyebrow">Heating</div>
+            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.54)) }}</div>
+            <div class="rd-rc-meta">per year</div>
+          </div>
+          <div class="rd-rc-cell">
+            <div class="rd-rc-eyebrow">Electricity</div>
+            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.34)) }}</div>
+            <div class="rd-rc-meta">per year</div>
+          </div>
+        </div>
+        <div class="rd-rc-row">
+          <div class="rd-rc-cell">
+            <div class="rd-rc-eyebrow">Hot water</div>
+            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.08)) }}</div>
+            <div class="rd-rc-meta">per year</div>
+          </div>
+          <div class="rd-rc-cell">
+            <div class="rd-rc-eyebrow">Other</div>
+            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.04)) }}</div>
+            <div class="rd-rc-meta">per year</div>
+          </div>
+        </div>
+        <div class="rd-rc-note">EPC estimated · upload a bill to get your real figure</div>
       </div>
     </div>
 
@@ -288,6 +293,7 @@ defineEmits<{
   (e: 'claim'): void
   (e: 'owner-dashboard'): void
   (e: 'interested'): void
+  (e: 'see-street'): void
 }>()
 
 const showRC = ref(false)
@@ -523,21 +529,42 @@ function formatNum(n: number): string {
 }
 
 /* ── Overpay hero ──────────────────────────────────────────── */
+/* Overpay hero — prototype-exact vibrant 3-stop teal gradient. */
 .rd-overpay {
-  background: linear-gradient(135deg, #007e78 0%, #00514d 100%);
+  background: linear-gradient(140deg, #00b6ae 0%, #00a19a 50%, #00514d 100%);
   color: #fff;
-  border-radius: 18px;
-  padding: 16px 18px;
+  border-radius: 20px;
+  padding: 22px 22px 20px;
   margin-bottom: 12px;
   position: relative;
   overflow: hidden;
   box-shadow:
     0 12px 32px -10px rgba(0, 161, 154, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform 0.18s, box-shadow 0.18s;
   animation:
-    rd-fadeSlideUp 0.45s 0.10s cubic-bezier(0.22, 1, 0.36, 1) both,
+    rd-fadeSlideUp 0.45s 0.20s cubic-bezier(0.22, 1, 0.36, 1) both,
     rd-overpayPulse 2.2s 1.2s ease-in-out 2;
 }
+.rd-overpay:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 40px -10px rgba(0, 161, 154, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+/* Decorative blob in top-right (prototype-exact) */
+.rd-overpay::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 65%);
+  pointer-events: none;
+}
+.rd-overpay > * { position: relative; z-index: 1; }
 .rd-overpay-eyebrow {
   display: flex;
   align-items: center;
@@ -557,22 +584,25 @@ function formatNum(n: number): string {
   box-shadow: 0 0 0 3px rgba(107, 212, 205, 0.25);
 }
 .rd-overpay-num {
-  font-size: 36px;
+  font-size: 44px;
   font-weight: 800;
-  letter-spacing: -1.2px;
+  letter-spacing: -1.6px;
   line-height: 1;
+  margin-bottom: 4px;
+  font-feature-settings: 'tnum';
 }
 .rd-overpay-num .rd-unit {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: 700;
-  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: -0.5px;
   margin-left: 2px;
 }
 .rd-overpay-sub {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.78);
-  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
   margin-top: 8px;
 }
 .rd-rc-toggle {
@@ -597,6 +627,21 @@ function formatNum(n: number): string {
   font-size: 14px;
 }
 .rd-rc-chev.open { transform: rotate(90deg); }
+.rd-rc-toggle--street {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.40);
+  margin-top: 12px;
+  transition: background 0.15s, transform 0.12s;
+}
+.rd-rc-toggle--street:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+.rd-rc-toggle--street:active { transform: scale(0.99); }
+.rd-rc-arrow {
+  font-size: 14px;
+  transition: transform 0.18s;
+}
+.rd-rc-toggle--street:hover .rd-rc-arrow { transform: translateX(2px); }
 .rd-rc-body {
   margin-top: 10px;
   background: rgba(255, 255, 255, 0.12);
@@ -647,7 +692,7 @@ function formatNum(n: number): string {
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.10);
   transition: all 0.18s;
   animation:
-    rd-fadeSlideUp 0.45s 0.20s cubic-bezier(0.22, 1, 0.36, 1) both,
+    rd-fadeSlideUp 0.45s 0.10s cubic-bezier(0.22, 1, 0.36, 1) both,
     rd-borderGlow 1.8s 1.0s ease-in-out 1;
 }
 .rd-score-card:hover {

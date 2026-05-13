@@ -219,7 +219,7 @@
             v-for="prop in searchProperties"
             :key="prop.id"
             class="prop-card"
-            @click="navigateTo('/homescore/street/' + prop.id)"
+            @click="navigateTo('/homescore/' + prop.id)"
           >
             <div
               class="prop-img-wrap"
@@ -1861,10 +1861,10 @@ async function handleSearchInput(val: string) {
 }
 
 async function selectAddress(addr: any) {
-  // Picking a property from the dropdown jumps straight into the HomeScore
-  // flow: StreetCompare first, then "See full HomeScore" → detail page.
+  // Picking a property from the dropdown opens its HomeScore detail page
+  // directly. Street compare is a side-trip from there, not the entry point.
   if (addr?.id) {
-    await navigateTo(`/homescore/street/${addr.id}`)
+    await navigateTo(`/homescore/${addr.id}`)
     return
   }
   // Fallback (no id): set the input and run a list search like before.

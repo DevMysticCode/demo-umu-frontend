@@ -171,9 +171,10 @@ import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 const router = useRouter()
 
 function onResultSelect(property: any) {
-  // After picking a property, go to the street comparison view first.
-  // From there, the "Stop overpaying" CTA continues to the score detail page.
-  router.push(`/homescore/street/${property.id}`)
+  // HomeScore detail is the page's main purpose — go there directly.
+  // Street compare is reachable from the "See street comparison" button on
+  // the detail page itself.
+  router.push(`/homescore/${property.id}`)
 }
 
 function onSearchEnter(_q: string) {

@@ -80,6 +80,7 @@
         @claim="claimOrAccessPassport"
         @owner-dashboard="claimOrAccessPassport"
         @interested="goToBuyerView"
+        @see-street="goToStreetCompare"
       />
     </template>
 
@@ -1837,6 +1838,10 @@ const resolvedEpcYear = computed<number | null>(() => {
 
 function goToBuyerView() {
   router.push(`/property/${propertyId}`)
+}
+
+function goToStreetCompare() {
+  router.push(`/homescore/street/${propertyId}`)
 }
 
 function notifyWhenPublished() {
