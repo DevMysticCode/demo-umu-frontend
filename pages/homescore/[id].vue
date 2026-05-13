@@ -82,132 +82,336 @@
         @interested="goToBuyerView"
         @see-street="goToStreetCompare"
         @see-running-costs="goToRunningCosts"
+        @refine-score="onRefineScore"
       />
     </template>
 
     <!-- ── QUESTIONS — prototype-style: teal address card + live gauge ── -->
     <template v-else-if="screen === 'questions'">
-      <div class="hs-q-shell">
+      <div class="sim-root">
         <!-- Top nav -->
-        <div class="hsq2-topnav">
-          <button class="hsq2-back" @click="prev" aria-label="Back">
+        <div class="sim-topnav">
+          <button class="sim-back-btn" @click="screen = 'landing'" aria-label="Back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
-          <div class="hs-eyebrow-pill"><span class="hs-pulse" />HomeScore</div>
+          <div class="sim-eyebrow-pill"><span class="dot" />HomeScore</div>
           <div style="width: 32px;" />
         </div>
 
-        <!-- Teal address card with progress + Q counter inside -->
-        <div class="hsq2-addr-card">
-          <div class="hsq2-addr-top">
-            <div class="hsq2-addr-pin" />
-            <div class="hsq2-addr-block">
-              <div class="hsq2-addr-line">{{ property?.addressLine1 || 'Your property' }}</div>
-              <div class="hsq2-addr-meta">
-                {{ property?.postcode || '' }}
-                <template v-if="property?.propertyType"> · {{ property.propertyType }}</template>
-                <template v-if="property?.bedrooms"> · {{ property.bedrooms }} bed</template>
+        <!-- Amber address card — consistent with ResultDetail -->
+        <div v-if="property" class="sim-addr-card">
+          <div class="sim-addr-top">
+            <div class="sim-addr-pin" />
+            <div class="sim-addr-block">
+              <div class="sim-addr-line">{{ property.addressLine1 || 'Your property' }}</div>
+              <div class="sim-addr-meta">
+                {{ property.postcode || '' }}
+                <template v-if="property.propertyType"> · {{ property.propertyType }}</template>
+                <template v-if="property.bedrooms"> · {{ property.bedrooms }} bed</template>
               </div>
             </div>
           </div>
-          <div class="hsq2-progress-row">
-            <div class="hsq2-cat-pill">{{ currentQuestion?.cat || 'Your home' }}</div>
-            <div class="hsq2-progress-track">
-              <div class="hsq2-progress-fill" :style="{ width: `${progress}%` }" />
-            </div>
-            <div class="hsq2-q-label">{{ step + 1 }} of {{ QUESTIONS.length }}</div>
-          </div>
         </div>
 
-        <!-- Live score gauge card -->
-        <div class="hsq2-score-card">
-          <div class="hsq2-score-eyebrow">
-            <span class="left">Live Score</span>
-            <span class="right">Updates as you answer</span>
+        <!-- Hero -->
+        <div class="sim-hero">
+          <div class="sim-hero-eyebrow">🎯 Your HomeScore accuracy check</div>
+          <div class="sim-hero-body">
+            Your EPC is from <b>{{ simEpcYear }}</b>. A lot may have changed. Tell
+            us what's been done — we'll give you a score based on reality, not
+            old assumptions. This also makes your street comparison more accurate.
           </div>
-          <div class="hsq2-score-gauge-wrap">
-            <div class="hsq2-gauge">
-              <svg viewBox="0 0 120 120">
-                <circle class="g-bg" cx="60" cy="60" r="50" fill="none" stroke-width="9" />
+          <div class="sim-score-row">
+            <div class="sim-score-dial">
+              <svg viewBox="0 0 80 80">
+                <circle class="dial-bg" cx="40" cy="40" r="32" stroke-width="7" />
                 <circle
-                  class="g-fill"
-                  cx="60"
-                  cy="60"
-                  r="50"
-                  fill="none"
-                  :stroke="scoreColor(liveScore)"
-                  stroke-width="9"
-                  stroke-linecap="round"
-                  stroke-dasharray="314.16"
-                  :stroke-dashoffset="314.16 - (liveScore / 100) * 314.16"
-                  style="transition: stroke-dashoffset 0.6s ease, stroke 0.4s;"
+                  class="dial-fill"
+                  cx="40"
+                  cy="40"
+                  r="32"
+                  stroke-width="7"
+                  :stroke="simScoreColor"
+                  stroke-dasharray="201.06"
+                  :stroke-dashoffset="201.06 - (simScore / 100) * 201.06"
                 />
               </svg>
-              <div class="hsq2-g-num">
-                <div class="gn-big">{{ liveScore }}</div>
-                <div class="gn-small">/ 100</div>
+              <div class="sim-score-label">
+                <div class="sim-score-num">{{ simScore }}</div>
+                <div class="sim-score-denom">/ 100</div>
               </div>
             </div>
-            <div class="hsq2-score-summary">
-              <div class="hsq2-band">{{ scoreBand }}</div>
-              <div class="hsq2-explainer">{{ liveHint }}</div>
+            <div class="sim-score-info">
+              <div class="sim-score-band">{{ simScoreBand }}</div>
+              <div class="sim-score-grade">
+                {{
+                  simAnsweredCount === 0
+                    ? 'Answer the questions below to update'
+                    : `${simAnsweredCount} of ${simSteps.length} answered`
+                }}
+              </div>
             </div>
-            <Transition name="hsq-delta">
+          </div>
+          <div class="sim-stats-row">
+            <div class="sim-stat">
+              <div class="sim-stat-label">Est. bills</div>
+              <div class="sim-stat-val" :class="{ improved: simBillsDelta > 0 }">
+                £{{ simBills.toLocaleString() }}
+              </div>
+              <div class="sim-stat-delta">
+                <template v-if="simBillsDelta > 0"
+                  >−£{{ simBillsDelta.toLocaleString() }}/yr</template
+                >
+              </div>
+            </div>
+            <div class="sim-stat">
+              <div class="sim-stat-label">CO₂/yr</div>
+              <div class="sim-stat-val" :class="{ improved: simCo2Delta > 0 }">
+                {{ simCo2.toFixed(1) }}t
+              </div>
+              <div class="sim-stat-delta">
+                <template v-if="simCo2Delta > 0"
+                  >−{{ simCo2Delta.toFixed(1) }}t</template
+                >
+              </div>
+            </div>
+            <div class="sim-stat">
+              <div class="sim-stat-label">vs neighbours</div>
               <div
-                v-if="deltaInfo.show"
-                class="hsq-delta"
-                :class="deltaInfo.val > 0 ? 'pos' : 'neg'"
+                class="sim-stat-val"
+                :style="{
+                  fontSize: '12px',
+                  color: simVsNeighbours > 0 ? '#C73E36' : '#00a19a',
+                }"
               >
-                {{ deltaInfo.val > 0 ? '+' : '' }}{{ deltaInfo.val }}
+                <template v-if="simVsNeighbours > 0"
+                  >£{{ simVsNeighbours }} more</template
+                >
+                <template v-else-if="simVsNeighbours < 0"
+                  >£{{ Math.abs(simVsNeighbours) }} less</template
+                >
+                <template v-else>At average</template>
               </div>
-            </Transition>
+              <div class="sim-stat-delta">vs street avg</div>
+            </div>
           </div>
         </div>
 
-        <!-- Question text + options -->
-        <Transition name="hs-slide" mode="out-in">
-          <div :key="step" class="hsq2-q-block">
-            <div class="hsq2-q-text">{{ currentQuestion?.title }}</div>
-            <div v-if="selectedNarr" class="hsq2-context">{{ selectedNarr }}</div>
-            <div class="hsq2-options">
-              <button
-                v-for="opt in currentQuestion?.options"
-                :key="opt.value"
-                class="hsq2-option"
-                :class="{ selected: currentAnswer === opt.value }"
-                @click="handleAnswer(currentQuestion!.id, opt.value)"
-              >
-                {{ opt.label }}
-              </button>
+        <!-- Two paths — quiz vs bill upload -->
+        <div class="sim-paths">
+          <div class="sim-paths-eyebrow">Two ways to update your score</div>
+          <div class="sim-paths-row">
+            <div
+              class="sim-path"
+              :class="{ active: simPath === 'quiz' }"
+              @click="simSelectPath('quiz')"
+            >
+              <div class="sim-path-icon">📋</div>
+              <div class="sim-path-title">Answer questions</div>
+              <div class="sim-path-sub">Work through the list below</div>
+            </div>
+            <div class="sim-paths-or">or</div>
+            <div
+              class="sim-path bill"
+              :class="{ active: simPath === 'bill' }"
+              @click="simSelectPath('bill')"
+            >
+              <div class="sim-path-icon">💡</div>
+              <div class="sim-path-title">Upload a bill</div>
+              <div class="sim-path-sub">Skip the questions</div>
             </div>
           </div>
-        </Transition>
+        </div>
 
-        <!-- Back / Next nav -->
-        <div class="hsq2-nav">
-          <button
-            class="hsq2-nav-back"
-            @click="prev"
-            :disabled="step === 0"
-            aria-label="Back"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
+        <!-- Progress + step cards (collapsed when bill path is selected) -->
+        <div v-show="simPath !== 'bill'" class="sim-questions-block">
+          <div class="sim-progress-row">
+            <div class="sim-progress-label">
+              Has your home had these improvements?
+            </div>
+            <div class="sim-progress-count">
+              {{ simAnsweredCount }} of {{ simSteps.length }} answered
+            </div>
+          </div>
+          <div class="sim-progress-track">
+            <div
+              class="sim-progress-fill"
+              :style="{ width: `${simProgressPct}%` }"
+            />
+          </div>
+
+          <div class="sim-steps">
+            <div
+              v-for="(s, idx) in simSteps"
+              :key="s.id"
+              class="sim-step"
+              :class="[s.status, { open: openStepId === s.id }]"
+              @click="simToggleStep(s.id)"
+            >
+              <div class="sim-step-top">
+                <div class="sim-step-num">{{ idx + 1 }}</div>
+                <div class="sim-step-body">
+                  <div class="sim-step-title">{{ s.title }}</div>
+                  <div class="sim-step-meta">{{ s.meta }}</div>
+                </div>
+                <div class="sim-step-badge">{{ simBadge(s.status) }}</div>
+              </div>
+              <div class="sim-step-expand">
+                <div class="sim-step-desc">{{ s.desc }}</div>
+                <div class="sim-step-impact">✦ {{ s.impact }}</div>
+                <div class="sim-step-question">{{ s.question }}</div>
+                <div class="sim-step-btns">
+                  <button
+                    type="button"
+                    class="sim-step-btn done"
+                    @click.stop="simAnswer(s.id, 'done')"
+                  >
+                    ✅ {{ s.doneLabel || 'Yes — done' }}
+                  </button>
+                  <button
+                    type="button"
+                    class="sim-step-btn diff"
+                    @click.stop="simOpenDiff(s.id)"
+                  >
+                    🔄 Done something different
+                  </button>
+                  <button
+                    type="button"
+                    class="sim-step-btn todo"
+                    @click.stop="simAnswer(s.id, 'todo')"
+                  >
+                    📋 Not yet
+                  </button>
+                  <button
+                    type="button"
+                    class="sim-step-btn skip"
+                    @click.stop="simAnswer(s.id, 'skip')"
+                  >
+                    ⊘ Not applicable
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bill-upload confirmation — visible after bill path picked -->
+        <div v-if="simPath === 'bill' && simBillUploaded" class="sim-bill-confirm">
+          <div class="sim-bill-emoji">✅</div>
+          <div>
+            <div class="sim-bill-title">Bill uploaded — score updated</div>
+            <div class="sim-bill-sub">
+              Your actual energy spend is now feeding your HomeScore. Tap below
+              to see your result.
+            </div>
+          </div>
+        </div>
+        <!-- Bill-upload picker — shown if bill path selected but no bill uploaded yet -->
+        <div
+          v-else-if="simPath === 'bill'"
+          class="sim-bill-picker"
+          @click="simBillUploaded = true"
+        >
+          <div class="sim-bill-emoji">📄</div>
+          <div>
+            <div class="sim-bill-title">Tap to upload a recent energy bill</div>
+            <div class="sim-bill-sub">
+              We'll read the total spend and update your HomeScore — no manual
+              entry needed.
+            </div>
+          </div>
+        </div>
+
+        <!-- Publish prompt — shown after enough answers -->
+        <div v-if="simShowPublishPrompt" class="sim-publish">
+          <div class="sim-publish-title">🏠 Ready to publish this data?</div>
+          <div class="sim-publish-sub">
+            Publishing updates your property's data and makes energy cost
+            estimates more accurate for everyone nearby. You'll need to verify
+            ownership first.
+          </div>
+          <div class="sim-publish-btns">
+            <button type="button" class="sim-publish-go" @click="simSubmit">
+              🏠 Claim &amp; publish →
+            </button>
+            <button
+              type="button"
+              class="sim-publish-skip"
+              @click="simShowPublishPrompt = false"
+            >
+              Not now
+            </button>
+          </div>
+        </div>
+
+        <!-- EPC nudge — dynamic copy based on state -->
+        <div class="sim-epc-nudge">
+          <div class="sim-epc-nudge-icon">🏷️</div>
+          <div style="flex: 1;">
+            <div class="sim-epc-nudge-title">{{ simEpcNudge.title }}</div>
+            <div class="sim-epc-nudge-body">{{ simEpcNudge.body }}</div>
+          </div>
+        </div>
+
+        <!-- CTA + reset -->
+        <div class="sim-cta">
+          <button type="button" class="sim-cta-btn" @click="simSubmit">
+            🏠 Get my real HomeScore
           </button>
-          <button
-            class="hsq2-nav-next"
-            :disabled="!canNext"
-            @click="nextQuestion"
-          >
-            {{ isLastStep ? 'See my score →' : 'Next →' }}
+          <button type="button" class="sim-reset-btn" @click="simReset">
+            ↺ Start again
           </button>
         </div>
 
         <div style="height: 24px;" />
       </div>
+
+      <!-- "Done something different" modal -->
+      <Transition name="sim-modal">
+        <div v-if="simDiffOpen" class="sim-diff-modal" @click="simCloseDiff">
+          <div class="sim-diff-card" @click.stop>
+            <div class="sim-diff-handle" />
+            <div class="sim-diff-title">What did you do instead?</div>
+            <div class="sim-diff-body">
+              Tell us what improvement you made — even if it's not on the EPC
+              list. This updates your score and helps your neighbours compare
+              their options.
+            </div>
+            <textarea
+              v-model="simDiffText"
+              class="sim-diff-textarea"
+              placeholder="e.g. Replaced hot water cylinder completely, installed underfloor heating, added a heat pump..."
+            />
+            <div class="sim-diff-tip">
+              <span class="sim-diff-tip-icon">💡</span>
+              <div class="sim-diff-tip-text">
+                <b>This won't show on your EPC</b> until it's reassessed. A new
+                EPC costs around <b>£50</b> and could move your rating from F to
+                C — improving your score, your property's value, and your
+                street's data for everyone.
+              </div>
+            </div>
+            <div class="sim-diff-actions">
+              <button
+                type="button"
+                class="sim-diff-save"
+                @click="simConfirmDiff"
+              >
+                Save my answer
+              </button>
+              <button
+                type="button"
+                class="sim-diff-cancel"
+                @click="simCloseDiff"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
     </template>
 
     <!-- ── RESULTS ───────────────────────────────────────────────── -->
@@ -1064,287 +1268,255 @@
 
     <!-- ── BUYER RESULTS ─────────────────────────────────────────── -->
     <template v-else-if="screen === 'buyer-results'">
-      <div class="hs-scroll">
-        <!-- Address strip -->
-        <div v-if="property" class="hs-addr-strip">
-          <div class="hs-addr-dot" />
-          <div>
-            <div class="hs-addr-text">
-              {{ property.addressLine1 || 'This property' }}
-            </div>
-            <div class="hs-addr-tiny">
-              <template v-if="property.city">{{ property.city }}</template
-              ><template v-if="property.postcode"
-                >, {{ property.postcode }}</template
-              ><template v-if="property.propertyType">
-                · {{ property.propertyType }}</template
-              ><template v-if="property.bedrooms">
-                · {{ property.bedrooms }} bed</template
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Running cost hero -->
-        <div class="hs-buyer-hero">
-          <div class="hs-buyer-hero-eyebrow">Estimated annual running cost</div>
-          <div class="hs-buyer-hero-amount">
-            ~£{{ buyerAnnualCost.toLocaleString() }} / year
-          </div>
-          <div class="hs-buyer-hero-sub">
-            Based on EPC data. The best homes on this street cost
-            <b style="color: #7dd3fc">£680/yr</b> — there's potential to
-            negotiate or factor in upgrade costs.
-          </div>
-          <div class="hs-buyer-hero-stats">
-            <div class="hs-buyer-hero-stat">
-              <div class="hs-buyer-hero-stat-num">
-                {{ property?.epcScore ?? result.total }}
+      <div class="hs-scroll bv-root">
+        <!-- ── Address card (consistent with ResultDetail) ─────── -->
+        <div v-if="property" class="bv-addr-card">
+          <div class="bv-addr-top">
+            <div class="bv-addr-pin" />
+            <div class="bv-addr-block">
+              <div class="bv-addr-line">
+                {{ property.addressLine1 || 'This property' }}
               </div>
-              <div class="hs-buyer-hero-stat-lbl">EPC Score</div>
-            </div>
-            <div class="hs-buyer-hero-stat">
-              <div class="hs-buyer-hero-stat-num">
-                {{ buyerEpcGrade }}
+              <div class="bv-addr-meta">
+                {{ property.postcode || '' }}
+                <template v-if="property.propertyType">
+                  · {{ property.propertyType }}</template
+                ><template v-if="property.bedrooms">
+                  · {{ property.bedrooms }} bed</template
+                >
               </div>
-              <div class="hs-buyer-hero-stat-lbl">EPC Grade</div>
-            </div>
-            <div class="hs-buyer-hero-stat">
-              <div class="hs-buyer-hero-stat-num">4th</div>
-              <div class="hs-buyer-hero-stat-lbl">of 12 on street</div>
             </div>
           </div>
-        </div>
-
-        <!-- Buyer risk summary -->
-        <div class="hs-buyer-risk-card">
-          <div class="hs-buyer-risk-title">⚠ Buyer risk summary</div>
-          <div class="hs-buyer-risk-list">
-            <div
-              v-for="r in buyerRisks"
-              :key="r.key"
-              class="hs-buyer-risk-row"
-              :class="r.tone"
+          <div class="bv-addr-pills">
+            <span v-if="property.epcRating" class="bv-addr-pill epc">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
+                <path d="M13 2 L4 14 L11 14 L9 22 L20 9 L13 9 Z" />
+              </svg>
+              <span class="bv-epc-letter" :style="{ background: bvEpcColor }">{{
+                property.epcRating
+              }}</span>
+              EPC
+            </span>
+            <span
+              v-if="bvPassportState === 'unclaimed'"
+              class="bv-addr-pill bv-state-unclaimed"
+              >Unclaimed</span
             >
-              <div class="hs-buyer-risk-ic">{{ r.icon }}</div>
-              <div>
-                <div class="hs-buyer-risk-head">{{ r.title }}</div>
-                <div class="hs-buyer-risk-body">{{ r.body }}</div>
-              </div>
+            <span
+              v-else-if="bvPassportState === 'inProgress'"
+              class="bv-addr-pill bv-state-progress"
+              >In progress</span
+            >
+            <span v-else class="bv-addr-pill bv-state-published"
+              >✓ Published</span
+            >
+          </div>
+          <div class="bv-addr-stats">
+            <div v-if="bvPassportState === 'unclaimed'" class="bv-stat-row">
+              <span class="bv-pulse-dot" />
+              <span class="bv-stat-count">{{ bvSearches }} searches today</span>
+              <span class="bv-sep">·</span>
+              <span>No verified Passport yet</span>
+            </div>
+            <div
+              v-else-if="bvPassportState === 'inProgress'"
+              class="bv-stat-row"
+            >
+              <span class="bv-pulse-dot" />
+              <span class="bv-stat-count"
+                >{{ bvSearches + 1 }} searches today</span
+              >
+              <span class="bv-sep">·</span>
+              <span>Passport in progress</span>
+            </div>
+            <div v-else class="bv-stat-row">
+              <span class="bv-pulse-dot bv-pulse-green" />
+              <span class="bv-stat-count"
+                >{{ bvSearches * 6 }} searches this month</span
+              >
+              <span class="bv-sep">·</span>
+              <span>Verified Passport live</span>
             </div>
           </div>
         </div>
 
-        <!-- Score breakdown (EPC estimated) -->
-        <div class="hs-breakdown-card">
-          <p class="hs-breakdown-title">Score breakdown</p>
-          <p class="hs-buyer-bd-sub">
-            Based on public EPC data only — the seller could improve this with a
-            full HomeScore.
-          </p>
-          <div class="hs-pillar-list">
+        <!-- ── Running cost hero (navy gradient) ───────────────── -->
+        <div class="bv-cost-hero">
+          <div class="bv-cost-eyebrow">Estimated annual running cost</div>
+          <div class="bv-cost-num">
+            ~£{{ buyerAnnualCost.toLocaleString()
+            }}<span class="bv-cost-unit"> / year</span>
+          </div>
+          <div class="bv-cost-sub">
+            Based on EPC data. The best homes on this street cost
+            <b>£{{ bvStreetBest.toLocaleString() }}/yr</b> — there's potential
+            to negotiate or factor in upgrade costs.
+          </div>
+          <div class="bv-cost-stats">
+            <div class="bv-cost-stat">
+              <div class="bv-cost-stat-num">{{ result.total }}</div>
+              <div class="bv-cost-stat-label">HomeScore</div>
+            </div>
+            <div class="bv-cost-stat-div" />
+            <div class="bv-cost-stat">
+              <div class="bv-cost-stat-num">{{ buyerEpcGrade }}</div>
+              <div class="bv-cost-stat-label">EPC Grade</div>
+            </div>
+            <div class="bv-cost-stat-div" />
+            <div class="bv-cost-stat">
+              <div class="bv-cost-stat-num">4th</div>
+              <div class="bv-cost-stat-label">of 12 on street</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Buyer risk summary ──────────────────────────────── -->
+        <div class="bv-section-h">
+          <div class="bv-section-h-icon warn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <line x1="12" y1="8" x2="12" y2="13" />
+              <circle cx="12" cy="16.5" r="0.9" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="bv-section-h-text">
+            <div class="bv-section-h-title">Buyer risk summary</div>
+            <div class="bv-section-h-sub">
+              What the EPC data suggests you look into
+            </div>
+          </div>
+        </div>
+        <div class="bv-risks-card">
+          <div
+            v-for="r in buyerRisks"
+            :key="r.key"
+            class="bv-risk-row"
+            :class="r.tone === 'ok' ? 'green' : 'amber'"
+          >
+            <span class="bv-risk-icon">{{ r.icon }}</span>
+            <div class="bv-risk-body">
+              <div class="bv-risk-title">{{ r.title }}</div>
+              <div class="bv-risk-sub">{{ r.body }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Score breakdown ─────────────────────────────────── -->
+        <div class="bv-section-h">
+          <div class="bv-section-h-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+              <path d="M12 2l2 6 6 1-4.5 4 1.5 7-5-3-5 3 1.5-7L4 9l6-1z" />
+            </svg>
+          </div>
+          <div class="bv-section-h-text">
+            <div class="bv-section-h-title">Score breakdown</div>
+            <div class="bv-section-h-sub">Based on public EPC data only</div>
+          </div>
+        </div>
+        <div class="bv-breakdown-card">
+          <div class="bv-breakdown-sub">
+            The owner could improve this with a full HomeScore.
+          </div>
+          <div class="bv-breakdown-rows">
             <div
               v-for="bar in pillarBars(autoBreakdown)"
               :key="bar.key"
-              class="hs-pillar-row"
+              class="bv-breakdown-row"
             >
-              <span class="hs-pillar-name">{{ bar.label }}</span>
-              <div class="hs-pillar-track">
+              <div class="bv-bd-label">{{ bar.label }}</div>
+              <div class="bv-bd-bar-wrap">
                 <div
-                  class="hs-pillar-fill"
+                  class="bv-bd-bar"
                   :style="{
                     width: `${(bar.value / bar.max) * 100}%`,
                     background: pillarBarColor(bar.value, bar.max),
                   }"
                 />
               </div>
-              <span
-                class="hs-pillar-val"
+              <div
+                class="bv-bd-val"
                 :style="{ color: pillarBarColor(bar.value, bar.max) }"
-                >{{ bar.value }}/{{ bar.max }}</span
               >
+                {{ bar.value }}/{{ bar.max }}
+              </div>
             </div>
           </div>
-          <div class="hs-buyer-bd-note">
-            This is based on public EPC data only. Ask the seller to run a full
+          <div class="bv-bd-note">
+            This is based on public EPC data only. Ask the owner to run a full
             HomeScore to get a verified picture.
           </div>
         </div>
 
-        <!-- Carbon card -->
-        <div class="hs-carbon-card" :style="{ background: carbonGradient }">
-          <div class="hs-carbon-top">
-            <div class="hs-carbon-eyebrow">🌍 Environmental Impact Rating</div>
-            <div class="hs-carbon-main-row">
-              <div>
-                <div class="hs-carbon-kg">
-                  {{ carbonKg.toLocaleString() }}
-                </div>
-                <div class="hs-carbon-kg-label">kg CO₂ per year</div>
-              </div>
-              <div style="flex: 1">
-                <div class="hs-carbon-grade-pill">
-                  <div
-                    class="hs-carbon-grade-letter"
-                    :style="{ background: carbonGradeInfo.col }"
-                  >
-                    {{ carbonGradeInfo.grade }}
-                  </div>
-                  <div class="hs-carbon-grade-label">
-                    {{ carbonGradeInfo.label }}
-                  </div>
-                </div>
-                <div class="hs-carbon-vs-avg">{{ carbonVsAvg }}</div>
-              </div>
-            </div>
-            <div class="hs-carbon-bars">
-              <div
-                v-for="cb in carbonBarChart"
-                :key="cb.letter"
-                class="hs-carbon-bar-col"
-                :style="{
-                  background: cb.color,
-                  height: `${cb.h}px`,
-                  opacity: cb.active ? '1' : '0.35',
-                }"
-              />
-            </div>
-            <div class="hs-carbon-bar-labels">
-              <span>A — very low</span><span>D — avg</span
-              ><span>G — very high</span>
-            </div>
+        <!-- ── Questions to ask the owner ──────────────────────── -->
+        <div class="bv-section-h">
+          <div class="bv-section-h-icon save">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <line x1="12" y1="11" x2="12" y2="17" />
+              <circle cx="12" cy="7.5" r="0.9" fill="currentColor" />
+            </svg>
           </div>
-          <div class="hs-buyer-carbon-note">
-            🏦 Note: mortgage lenders are beginning to price in EPC ratings. A
-            D-rated home may face stricter lending criteria from 2027.
+          <div class="bv-section-h-text">
+            <div class="bv-section-h-title">Questions to ask the owner</div>
+            <div class="bv-section-h-sub">
+              Based on what the EPC data flags for this property
+            </div>
           </div>
         </div>
-
-        <!-- Street ranking (static placeholder) -->
-        <div class="hs-nb-card">
-          <div class="hs-nb-header">
-            <div class="hs-nb-title">This street, ranked by energy cost</div>
-            <div class="hs-nb-rank">4th of 12</div>
-          </div>
-          <p class="hs-nb-body">
-            Based on EPC data — gives you context on this property vs its
-            neighbours.
-          </p>
-          <div class="hs-nb-list">
-            <div class="hs-nb-row">
-              <div class="hs-nb-pos">1</div>
-              <div style="flex: 1; min-width: 0">
-                <div class="hs-nb-addr">Best on street</div>
-                <div class="hs-nb-detail">Heat pump · solar · EPC A</div>
-              </div>
-              <div class="hs-nb-cost" style="color: #16a34a">£680</div>
-            </div>
-            <div class="hs-nb-row">
-              <div class="hs-nb-pos">2</div>
-              <div style="flex: 1; min-width: 0">
-                <div class="hs-nb-addr">Nearby upgraded home</div>
-                <div class="hs-nb-detail">
-                  New boiler · full loft insulation · EPC B
-                </div>
-              </div>
-              <div class="hs-nb-cost" style="color: #16a34a">£890</div>
-            </div>
-            <div class="hs-nb-row mine">
-              <div class="hs-nb-pos mine">4</div>
-              <div style="flex: 1; min-width: 0">
-                <div class="hs-nb-addr mine">
-                  {{ property?.addressLine1 || 'This property' }}
-                </div>
-                <div class="hs-nb-detail">Old boiler · no insulation</div>
-              </div>
-              <div class="hs-nb-cost" style="color: #dc2626">
-                £{{ buyerAnnualCost.toLocaleString() }}
-              </div>
+        <div class="bv-questions-card">
+          <div
+            v-for="q in bvQuestions"
+            :key="q.title"
+            class="bv-q-row"
+          >
+            <span class="bv-q-icon">{{ q.icon }}</span>
+            <div class="bv-q-body">
+              <div class="bv-q-title">{{ q.title }}</div>
+              <div class="bv-q-sub">{{ q.sub }}</div>
             </div>
           </div>
         </div>
 
-        <!-- Questions to ask seller -->
-        <div class="hs-buyer-qa-card">
-          <div class="hs-buyer-qa-title">Questions to ask the seller</div>
-          <p class="hs-buyer-qa-sub">
-            Based on what the EPC data flags for this property.
-          </p>
-          <div class="hs-buyer-qa-list">
-            <div class="hs-buyer-qa-row">
-              <div class="hs-buyer-qa-ic">🔥</div>
-              <div>
-                <div class="hs-buyer-qa-head">
-                  When was the boiler last serviced?
-                </div>
-                <div class="hs-buyer-qa-body">
-                  Heating scores low — ask for the service record or Gas Safe
-                  certificate.
-                </div>
-              </div>
-            </div>
-            <div class="hs-buyer-qa-row">
-              <div class="hs-buyer-qa-ic">🧱</div>
-              <div>
-                <div class="hs-buyer-qa-head">
-                  Is there cavity wall or loft insulation?
-                </div>
-                <div class="hs-buyer-qa-body">
-                  The biggest cost driver at this score. Ask for any installer
-                  guarantees.
-                </div>
-              </div>
-            </div>
-            <div class="hs-buyer-qa-row">
-              <div class="hs-buyer-qa-ic">📄</div>
-              <div>
-                <div class="hs-buyer-qa-head">
-                  Can you share the full EPC report?
-                </div>
-                <div class="hs-buyer-qa-body">
-                  The public register only shows the grade — the full document
-                  lists every item.
-                </div>
-              </div>
-            </div>
-            <div class="hs-buyer-qa-row">
-              <div class="hs-buyer-qa-ic">⚡</div>
-              <div>
-                <div class="hs-buyer-qa-head">
-                  Do you have an EICR certificate?
-                </div>
-                <div class="hs-buyer-qa-body">
-                  Electrical Installation Condition Report — not legally
-                  required for sales, but worth asking.
-                </div>
-              </div>
-            </div>
+        <!-- ── Save to Buyer Profile CTA ───────────────────────── -->
+        <div class="bv-save-card" @click="saveToBuyerProfile">
+          <div class="bv-save-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+            </svg>
           </div>
-        </div>
-
-        <!-- Save to Buyer Profile CTA -->
-        <div class="hs-buyer-save-cta" @click="saveToBuyerProfile">
-          <div class="hs-buyer-save-ic">
-            <img
-              src="/op-icons/passportview/umu-passport.png"
-              alt=""
-              class="hs-buyer-save-ic-img"
-            />
-          </div>
-          <div class="hs-buyer-save-body">
-            <div class="hs-buyer-save-title">Save to your Buyer Profile</div>
-            <div class="hs-buyer-save-sub">
+          <div class="bv-save-body">
+            <div class="bv-save-title">Save to your Buyer Profile</div>
+            <div class="bv-save-sub">
               Track this property, compare with others, share with your
               solicitor.
             </div>
           </div>
-          <div class="hs-buyer-save-arrow">Save →</div>
+          <div class="bv-save-cta">Save →</div>
         </div>
 
-        <button class="hs-btn-ghost" @click="screen = 'landing'">
-          ← Back to score
+        <button class="bv-back" @click="screen = 'landing'">
+          ← Back to HomeScore
         </button>
-        <div style="height: 40px" />
+        <div style="height: 24px" />
       </div>
     </template>
 
@@ -1929,6 +2101,15 @@ function onPrimaryCtaClick() {
   startQuestions()
 }
 
+// Triggered when an existing-passport owner taps "Refine my HomeScore".
+// Clear any prior answers so the quiz is a genuine retake, then jump in.
+// startQuestions() handles the guest auth-gate (redirects to sign-in with
+// ?screen=questions) and the read-only-mode bail-out internally.
+function onRefineScore() {
+  retakeHS()
+  startQuestions()
+}
+
 // Stable per-browser session id used for guest dedup on /property/:id/log-search.
 function getOrCreateSessionId(): string | null {
   if (typeof localStorage === 'undefined') return null
@@ -2464,6 +2645,307 @@ function startQuestions() {
   screen.value = 'questions'
 }
 
+// ── HomeScore Accuracy Simulator (replaces the old quiz UI) ────
+// Mirrors `homescore-v2_13.html` simulator: 6 improvement steps with
+// per-step score / £ / CO₂ deltas. We keep our existing useHomeScore
+// composable available, but the simulator manages its own state and
+// posts the final score via `saveSimulatorResult()`.
+
+type SimStatus = 'idle' | 'done' | 'diff' | 'todo' | 'skip'
+interface SimStep {
+  id: string
+  title: string
+  meta: string
+  desc: string
+  impact: string
+  question: string
+  doneLabel?: string
+  scoreDelta: number  // pts added to starting score when status === 'done' (or 'diff')
+  costSaving: number  // £/yr knocked off bills
+  co2Delta: number    // tonnes/yr knocked off CO₂
+  status: SimStatus
+  diffNote?: string
+}
+
+const SIM_STEP_DEFS: Omit<SimStep, 'status'>[] = [
+  {
+    id: 'loft',
+    title: 'Increase loft insulation to 270mm',
+    meta: 'Currently 75mm · EPC: Average',
+    desc: 'Your EPC records 75mm of loft insulation — the recommended level is 270mm. Topping this up is one of the cheapest and most effective improvements available.',
+    impact: 'Score +2 pts · saves ~£40/yr · cost £100–£350',
+    question: 'Has this been done since the last EPC?',
+    scoreDelta: 2,
+    costSaving: 40,
+    co2Delta: 0.2,
+  },
+  {
+    id: 'cavity',
+    title: 'Cavity wall insulation',
+    meta: 'Uninsulated cavity · EPC: Poor',
+    desc: 'The biggest single saving available. Part of the cavity wall is uninsulated — filling it stops heat escaping through the walls. ECO4 or Warm Homes grants may cover the full cost.',
+    impact: 'Score +7 pts · saves ~£224/yr · cost £500–£1,500 · ECO4 grant may apply',
+    question: 'Has cavity wall insulation been filled since the last EPC?',
+    scoreDelta: 7,
+    costSaving: 224,
+    co2Delta: 1.0,
+  },
+  {
+    id: 'floor',
+    title: 'Floor insulation',
+    meta: 'Suspended floor, no insulation · EPC: N/A',
+    desc: 'The suspended timber floor has no insulation — cold air from below makes rooms harder to heat. Insulating this improves both comfort and efficiency.',
+    impact: 'Score +3 pts · saves ~£97/yr · cost £800–£1,200',
+    question: 'Has floor insulation been added since the last EPC?',
+    scoreDelta: 3,
+    costSaving: 97,
+    co2Delta: 0.4,
+  },
+  {
+    id: 'led',
+    title: 'Low energy lighting throughout',
+    meta: '15% low energy lighting · EPC: Poor',
+    desc: 'Only 15% of fixed lighting outlets use low energy bulbs. Switching all to LED is quick, cheap and immediate — no installer required.',
+    impact: 'Score +2 pts · saves ~£45/yr · cost just £110',
+    question: 'Have you switched to LED lighting since the last EPC?',
+    doneLabel: 'Yes — mostly LED now',
+    scoreDelta: 2,
+    costSaving: 45,
+    co2Delta: 0.1,
+  },
+  {
+    id: 'solar-thermal',
+    title: 'Solar water heating',
+    meta: 'No solar thermal on EPC',
+    desc: 'Solar thermal panels use the sun to heat your water, reducing how hard your boiler works.',
+    impact: 'Score +1 pt · saves ~£40/yr · cost £4,000–£6,000',
+    question: 'Has solar water heating been installed since the last EPC?',
+    doneLabel: 'Yes — fitted',
+    scoreDelta: 1,
+    costSaving: 40,
+    co2Delta: 0.1,
+  },
+  {
+    id: 'solar-pv',
+    title: 'Solar photovoltaic panels',
+    meta: 'No solar PV on EPC · recommended',
+    desc: 'Solar PV generates electricity from sunlight — cutting your electricity bill and earning Smart Export Guarantee payments for surplus energy.',
+    impact: 'Score +8 pts · saves ~£248/yr · Smart Export Guarantee payments too',
+    question: 'Have solar panels been installed since the last EPC?',
+    doneLabel: 'Yes — panels fitted',
+    scoreDelta: 8,
+    costSaving: 248,
+    co2Delta: 1.0,
+  },
+]
+
+const simSteps = ref<SimStep[]>(
+  SIM_STEP_DEFS.map((d) => ({ ...d, status: 'idle' as SimStatus })),
+)
+const openStepId = ref<string | null>(null)
+const simPath = ref<'quiz' | 'bill' | null>('quiz')
+const simBillUploaded = ref(false)
+const simDiffOpen = ref(false)
+const simDiffStepId = ref<string | null>(null)
+const simDiffText = ref('')
+
+// EPC year for the hero copy ("Your EPC is from <year>").
+const simEpcYear = computed<string>(() => {
+  const y =
+    (property.value as any)?.epcYear ??
+    (property.value as any)?.lodgementDate?.toString().slice(0, 4) ??
+    new Date().getFullYear() - 8
+  return String(y)
+})
+
+// Starting figures — use the EPC-only auto score as the baseline.
+const simStartingScore = computed(() => autoScoreVal.value || 52)
+const simBaseBills = computed(() => {
+  const cert = (property.value as any)?.epcCert
+  const total =
+    Number(cert?.heatingCostCurrent ?? 0) +
+    Number(cert?.hotWaterCostCurrent ?? 0) +
+    Number(cert?.lightingCostCurrent ?? 0)
+  return total > 0 ? Math.round(total) : 1823
+})
+const simBaseCo2 = computed(() => {
+  // Carbon kg returned by useHomeScore; convert to tonnes.
+  const t = (carbonKg.value || 6400) / 1000
+  return Math.round(t * 10) / 10
+})
+
+// Accumulated improvements from steps with status 'done' or 'diff'.
+const simAcceptedSteps = computed(() =>
+  simSteps.value.filter((s) => s.status === 'done' || s.status === 'diff'),
+)
+const simScoreDeltaTotal = computed(() =>
+  simAcceptedSteps.value.reduce((sum, s) => sum + s.scoreDelta, 0),
+)
+const simBillsDelta = computed(() =>
+  simAcceptedSteps.value.reduce((sum, s) => sum + s.costSaving, 0),
+)
+const simCo2Delta = computed(
+  () =>
+    Math.round(
+      simAcceptedSteps.value.reduce((sum, s) => sum + s.co2Delta, 0) * 10,
+    ) / 10,
+)
+
+const simScore = computed(() =>
+  Math.min(100, simStartingScore.value + simScoreDeltaTotal.value),
+)
+const simBills = computed(() =>
+  Math.max(0, simBaseBills.value - simBillsDelta.value),
+)
+const simCo2 = computed(() =>
+  Math.max(0, +(simBaseCo2.value - simCo2Delta.value).toFixed(1)),
+)
+const simVsNeighbours = computed(() => simBills.value - 1673)
+
+const simAnsweredCount = computed(
+  () => simSteps.value.filter((s) => s.status !== 'idle').length,
+)
+const simProgressPct = computed(
+  () => (simAnsweredCount.value / simSteps.value.length) * 100,
+)
+
+const simScoreColor = computed(() => {
+  const s = simScore.value
+  if (s >= 75) return '#00514d'
+  if (s >= 60) return '#2EAB55'
+  if (s >= 40) return '#E6A23C'
+  return '#C73E36'
+})
+
+const simScoreBand = computed(() => {
+  const s = simScore.value
+  const grade =
+    s >= 92 ? 'A · Exceptional'
+    : s >= 81 ? 'B · Highly efficient'
+    : s >= 69 ? 'C · Above average'
+    : s >= 55 ? 'D · Average'
+    : s >= 39 ? 'E · Poor'
+    : s >= 21 ? 'F · Very poor'
+    : 'G · Critical'
+  return `EPC ${grade}`
+})
+
+const simShowPublishPrompt = ref(false)
+watch(simAnsweredCount, (n) => {
+  if (n >= 3 && simPath.value === 'quiz') simShowPublishPrompt.value = true
+})
+
+const simEpcNudge = computed(() => {
+  if (simAnsweredCount.value === 0) {
+    return {
+      title: 'EPC from ' + simEpcYear.value + ' — out of date?',
+      body: 'Tell us what\'s changed and we\'ll refine your HomeScore. If a lot has changed, a fresh EPC (~£50) locks in the improvements officially.',
+    }
+  }
+  if (simAcceptedSteps.value.length >= 2) {
+    return {
+      title: 'Big improvements logged — get a new EPC?',
+      body: "You've told us about several upgrades since your last EPC. A new assessment (~£50) could move your official rating up and add real value at sale.",
+    }
+  }
+  return {
+    title: 'Keep going — every answer sharpens your score',
+    body: 'The more you tell us, the more accurate your HomeScore and street comparison become.',
+  }
+})
+
+function simBadge(status: SimStatus): string {
+  if (status === 'done') return '✅'
+  if (status === 'diff') return '🔄'
+  if (status === 'todo') return '📋'
+  if (status === 'skip') return '⊘'
+  return ''
+}
+
+function simToggleStep(id: string) {
+  openStepId.value = openStepId.value === id ? null : id
+}
+
+function simAnswer(id: string, status: SimStatus) {
+  const step = simSteps.value.find((s) => s.id === id)
+  if (!step) return
+  step.status = status
+  // Collapse the step after a choice.
+  openStepId.value = null
+}
+
+function simOpenDiff(id: string) {
+  simDiffStepId.value = id
+  simDiffText.value =
+    simSteps.value.find((s) => s.id === id)?.diffNote || ''
+  simDiffOpen.value = true
+}
+
+function simCloseDiff() {
+  simDiffOpen.value = false
+  simDiffStepId.value = null
+  simDiffText.value = ''
+}
+
+function simConfirmDiff() {
+  const step = simSteps.value.find((s) => s.id === simDiffStepId.value)
+  if (step) {
+    step.status = 'diff'
+    step.diffNote = simDiffText.value.trim() || undefined
+    openStepId.value = null
+  }
+  simCloseDiff()
+}
+
+function simSelectPath(p: 'quiz' | 'bill') {
+  simPath.value = p
+  if (p === 'bill') openStepId.value = null
+}
+
+function simReset() {
+  simSteps.value = SIM_STEP_DEFS.map((d) => ({
+    ...d,
+    status: 'idle' as SimStatus,
+  }))
+  openStepId.value = null
+  simPath.value = 'quiz'
+  simBillUploaded.value = false
+  simShowPublishPrompt.value = false
+  simDiffText.value = ''
+}
+
+async function saveSimulatorResult() {
+  if (!isPropertyOwner.value) return
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  const answersMap: Record<string, string> = {}
+  for (const s of simSteps.value) {
+    answersMap[`sim_${s.id}`] = s.status
+    if (s.diffNote) answersMap[`sim_${s.id}_note`] = s.diffNote
+  }
+  try {
+    await fetch(`${config.public.apiBase}/property/${propertyId}/homescore`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        total: simScore.value,
+        rating: simScoreBand.value,
+        answers: answersMap,
+      }),
+    })
+  } catch {}
+}
+
+function simSubmit() {
+  saveSimulatorResult()
+  screen.value = 'results'
+  showResult.value = true
+}
+
 function nextQuestion() {
   if (isLastStep.value) {
     screen.value = 'results'
@@ -2564,6 +3046,65 @@ const buyerAnnualCost = computed(() => {
   if (sum > 0) return sum
   return 1347
 })
+
+// ── Buyer-results (watch screen) helpers ─────────────────────
+const bvStreetBest = computed(() => {
+  // Cheapest a home on this street could plausibly run — anchor to the same
+  // street-average proxy the running-costs service uses.
+  const own = buyerAnnualCost.value
+  return Math.max(680, Math.round(own * 0.78))
+})
+
+const bvEpcColor = computed(() => {
+  const map: Record<string, string> = {
+    A: '#00B050',
+    B: '#33B800',
+    C: '#92D050',
+    D: '#FFD700',
+    E: '#FF9933',
+    F: '#FF6600',
+    G: '#E64A19',
+  }
+  return map[(property.value?.epcRating || '').toUpperCase()] || '#9c98ad'
+})
+
+const bvPassportState = computed<'unclaimed' | 'inProgress' | 'published'>(
+  () => {
+    const p: any = property.value
+    if (!p) return 'unclaimed'
+    if (p.passportPublished) return 'published'
+    if (p.hasPassport) return 'inProgress'
+    return 'unclaimed'
+  },
+)
+
+const bvSearches = computed<number>(() => {
+  const id = property.value?.id || ''
+  return 3 + ((id.charCodeAt(0) || 1) % 7)
+})
+
+const bvQuestions = [
+  {
+    icon: '🔥',
+    title: 'When was the boiler last serviced?',
+    sub: 'Heating scores low — ask for the service record or Gas Safe certificate.',
+  },
+  {
+    icon: '🧱',
+    title: 'Is there cavity wall or loft insulation?',
+    sub: 'The biggest cost driver at this score. Ask for any installer guarantees.',
+  },
+  {
+    icon: '📄',
+    title: 'Can you share the full EPC report?',
+    sub: 'The public register only shows the grade — the full document lists every item.',
+  },
+  {
+    icon: '⚡',
+    title: 'Do you have an EICR certificate?',
+    sub: 'Electrical Installation Condition Report — not legally required for sales, but worth asking.',
+  },
+]
 
 const buyerEpcGrade = computed(() => {
   const rating = property.value?.epcRating
@@ -6968,5 +7509,1416 @@ watch(screen, (s) => {
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   BUYER-RESULTS (watch) — matches homescore-v2_13.html prototype
+   ────────────────────────────────────────────────────────────── */
+.bv-root {
+  --bv-navy: #231d45;
+  --bv-navy-soft: #4a4566;
+  --bv-teal: #00a19a;
+  --bv-teal-bright: #00b6ae;
+  --bv-teal-dark: #007e78;
+  --bv-teal-deep: #00514d;
+  --bv-teal-pale: #e5f4f2;
+  --bv-teal-paler: #f2faf8;
+  --bv-amber: #e6a23c;
+  --bv-amber-pale: #fbefd9;
+  --bv-red: #c73e36;
+  --bv-bg: #fafafa;
+  --bv-text-soft: #6b6783;
+  --bv-text-faint: #9c98ad;
+  --bv-line: #ececef;
+  --bv-line-soft: #f5f5f7;
+  --bv-success: #2eab55;
+  background: var(--bv-bg);
+}
+
+/* ── Address card (consistent with ResultDetail) ────────────── */
+.bv-addr-card {
+  margin: 16px 22px 0;
+  border-radius: 22px;
+  padding: 22px 22px 18px;
+  background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 12px 32px -8px rgba(180, 100, 20, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.bv-addr-card::after {
+  content: '';
+  position: absolute;
+  top: -45%;
+  right: -15%;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.bv-addr-card > * {
+  position: relative;
+  z-index: 1;
+}
+.bv-addr-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.bv-addr-pin {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.bv-addr-block {
+  flex: 1;
+  min-width: 0;
+}
+.bv-addr-line {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.bv-addr-meta {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: 2px;
+}
+.bv-addr-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+.bv-addr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.05px;
+}
+.bv-addr-pill.epc {
+  padding-left: 6px;
+}
+.bv-epc-letter {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+}
+.bv-state-unclaimed,
+.bv-state-progress {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(255, 255, 255, 0.94);
+  color: #7a3a05;
+}
+.bv-state-published {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(255, 255, 255, 0.94);
+  color: var(--bv-teal-deep);
+}
+.bv-addr-stats {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+.bv-stat-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+}
+.bv-stat-count {
+  font-weight: 800;
+}
+.bv-sep {
+  opacity: 0.5;
+}
+.bv-pulse-dot {
+  width: 7px;
+  height: 7px;
+  background: #fff;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+.bv-pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  animation: bv-pulse 1.6s ease-out infinite;
+}
+.bv-pulse-green {
+  background: #6bd4cd;
+}
+.bv-pulse-green::after {
+  border-color: rgba(94, 234, 212, 0.5);
+}
+@keyframes bv-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* ── Running cost hero (navy gradient) ─────────────────────── */
+.bv-cost-hero {
+  margin: 12px 22px 0;
+  padding: 22px 20px 20px;
+  background: linear-gradient(
+    135deg,
+    var(--bv-navy-soft) 0%,
+    var(--bv-navy) 60%,
+    #0d1a3a 100%
+  );
+  border-radius: 20px;
+  color: #fff;
+  box-shadow: 0 12px 32px -8px rgba(35, 29, 69, 0.45);
+}
+.bv-cost-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.bv-cost-num {
+  font-size: 38px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1.2px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.bv-cost-unit {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+}
+.bv-cost-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.bv-cost-sub b {
+  color: #6bd4cd;
+  font-weight: 800;
+}
+.bv-cost-stats {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.bv-cost-stat {
+  flex: 1;
+  padding: 10px 8px;
+  text-align: center;
+}
+.bv-cost-stat-num {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+.bv-cost-stat-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: 2px;
+}
+.bv-cost-stat-div {
+  width: 1px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+/* ── Section header (mirrors costs page) ───────────────────── */
+.bv-section-h {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 22px 10px;
+}
+.bv-section-h-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    var(--bv-teal-bright),
+    var(--bv-teal-dark)
+  );
+  box-shadow: 0 3px 10px rgba(0, 161, 154, 0.3);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.bv-section-h-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.bv-section-h-icon.warn {
+  background: linear-gradient(135deg, #f0b656, #c18a38);
+  box-shadow: 0 3px 10px rgba(230, 162, 60, 0.3);
+}
+.bv-section-h-icon.save {
+  background: linear-gradient(135deg, var(--bv-navy-soft), var(--bv-navy));
+  box-shadow: 0 3px 10px rgba(35, 29, 69, 0.3);
+}
+.bv-section-h-text {
+  flex: 1;
+  min-width: 0;
+}
+.bv-section-h-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--bv-navy);
+  letter-spacing: -0.2px;
+  line-height: 1.1;
+}
+.bv-section-h-sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--bv-text-soft);
+  letter-spacing: -0.05px;
+  margin-top: 2px;
+}
+
+/* ── Buyer risk summary card (amber outer + pastel inner rows) ── */
+.bv-risks-card {
+  margin: 0 22px;
+  background: #fff;
+  border: 2px solid var(--bv-amber);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 4px 16px rgba(230, 162, 60, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bv-risk-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid;
+}
+.bv-risk-row.green {
+  background: #f0fbf4;
+  border-color: #b8e8c8;
+}
+.bv-risk-row.amber {
+  background: #fffbf0;
+  border-color: rgba(230, 162, 60, 0.4);
+}
+.bv-risk-row.red {
+  background: #fef0ef;
+  border-color: rgba(199, 62, 54, 0.3);
+}
+.bv-risk-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.bv-risk-body {
+  flex: 1;
+  min-width: 0;
+}
+.bv-risk-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.15px;
+  margin-bottom: 2px;
+}
+.bv-risk-row.green .bv-risk-title {
+  color: #2e7d4f;
+}
+.bv-risk-row.amber .bv-risk-title {
+  color: var(--bv-amber);
+}
+.bv-risk-row.red .bv-risk-title {
+  color: var(--bv-red);
+}
+.bv-risk-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--bv-text-soft);
+  line-height: 1.4;
+}
+
+/* ── Score breakdown card (teal border) ────────────────────── */
+.bv-breakdown-card {
+  margin: 0 22px;
+  background: #fff;
+  border: 2px solid var(--bv-teal);
+  border-radius: 16px;
+  padding: 16px 16px 14px;
+  box-shadow: 0 4px 16px rgba(0, 161, 154, 0.08);
+}
+.bv-breakdown-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--bv-text-soft);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.bv-breakdown-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.bv-breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bv-bd-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--bv-navy);
+  width: 62px;
+  flex-shrink: 0;
+}
+.bv-bd-bar-wrap {
+  flex: 1;
+  height: 7px;
+  background: var(--bv-line-soft);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.bv-bd-bar {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bv-bd-val {
+  font-size: 11.5px;
+  font-weight: 800;
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.bv-bd-note {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #8b6b00;
+  background: #fffbe6;
+  border: 1px solid #f0dc80;
+  border-radius: 8px;
+  padding: 9px 11px;
+  line-height: 1.5;
+}
+
+/* ── Questions to ask (navy outer + teal-pale inner rows) ──── */
+.bv-questions-card {
+  margin: 0 22px;
+  background: #fff;
+  border: 2px solid var(--bv-navy);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 4px 16px rgba(35, 29, 69, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bv-q-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 2px solid var(--bv-teal-pale);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.bv-q-row:hover {
+  border-color: var(--bv-teal);
+  background: var(--bv-teal-paler);
+}
+.bv-q-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.bv-q-body {
+  flex: 1;
+  min-width: 0;
+}
+.bv-q-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--bv-navy);
+  letter-spacing: -0.15px;
+  margin-bottom: 3px;
+}
+.bv-q-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--bv-text-soft);
+  line-height: 1.4;
+}
+
+/* ── Save to Buyer Profile card ────────────────────────────── */
+.bv-save-card {
+  margin: 16px 22px 0;
+  padding: 16px 18px;
+  background: var(--bv-teal-paler);
+  border: 2px solid var(--bv-teal-pale);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.bv-save-card:hover {
+  border-color: var(--bv-teal);
+  transform: translateY(-1px);
+}
+.bv-save-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--bv-teal);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+.bv-save-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.bv-save-body {
+  flex: 1;
+  min-width: 0;
+}
+.bv-save-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--bv-navy);
+  letter-spacing: -0.2px;
+  margin-bottom: 2px;
+}
+.bv-save-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--bv-text-soft);
+  line-height: 1.4;
+}
+.bv-save-cta {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--bv-teal-dark);
+  flex-shrink: 0;
+}
+
+/* ── Back link ─────────────────────────────────────────────── */
+.bv-back {
+  display: block;
+  margin: 14px auto 0;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--bv-text-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 14px;
+}
+.bv-back:hover {
+  color: var(--bv-navy);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   SIMULATOR — replaces the old quiz; matches homescore-v2_13.html
+   ────────────────────────────────────────────────────────────── */
+.sim-root {
+  --sim-navy: #231d45;
+  --sim-navy-soft: #4a4566;
+  --sim-teal: #00a19a;
+  --sim-teal-bright: #00b6ae;
+  --sim-teal-dark: #007e78;
+  --sim-teal-deep: #00514d;
+  --sim-teal-pale: #e5f4f2;
+  --sim-teal-paler: #f2faf8;
+  --sim-amber: #e6a23c;
+  --sim-amber-pale: #fbefd9;
+  --sim-red: #c73e36;
+  --sim-bg: #fafafa;
+  --sim-text-soft: #6b6783;
+  --sim-text-faint: #9c98ad;
+  --sim-line: #ececef;
+  --sim-line-soft: #f5f5f7;
+
+  background: var(--sim-bg);
+  min-height: 100dvh;
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 24px;
+  color: var(--sim-navy);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Top nav */
+.sim-topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 8px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+}
+.sim-back-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--sim-teal-paler);
+  border: 1px solid var(--sim-teal-pale);
+  color: var(--sim-teal);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-family: inherit;
+}
+.sim-back-btn svg {
+  width: 14px;
+  height: 14px;
+}
+.sim-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--sim-teal-paler);
+  border: 1px solid var(--sim-teal-pale);
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--sim-teal);
+  text-transform: uppercase;
+}
+.sim-eyebrow-pill .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--sim-teal);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--sim-teal-pale);
+}
+
+/* Address card — amber, ResultDetail-consistent */
+.sim-addr-card {
+  margin: 8px 16px 0;
+  border-radius: 22px;
+  padding: 22px 22px 18px;
+  background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 12px 32px -8px rgba(180, 100, 20, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.sim-addr-card::after {
+  content: '';
+  position: absolute;
+  top: -45%;
+  right: -15%;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.sim-addr-card > * {
+  position: relative;
+  z-index: 1;
+}
+.sim-addr-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.sim-addr-pin {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.sim-addr-block {
+  flex: 1;
+  min-width: 0;
+}
+.sim-addr-line {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.sim-addr-meta {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: 2px;
+}
+
+/* Hero */
+.sim-hero {
+  margin: 12px 16px 0;
+  background: #fff;
+  border: 2px solid var(--sim-teal-pale);
+  box-shadow: 0 4px 20px rgba(0, 161, 154, 0.08);
+  border-radius: 20px;
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.sim-hero::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 161, 154, 0.06) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+.sim-hero > * {
+  position: relative;
+  z-index: 1;
+}
+.sim-hero-eyebrow {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--sim-teal-dark);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.sim-hero-body {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sim-text-soft);
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+.sim-hero-body b {
+  color: var(--sim-navy);
+}
+.sim-score-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.sim-score-dial {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+.sim-score-dial svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.sim-score-dial .dial-bg {
+  stroke: var(--sim-line-soft);
+  fill: none;
+}
+.sim-score-dial .dial-fill {
+  fill: none;
+  stroke-linecap: round;
+  transition:
+    stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    stroke 0.4s;
+}
+.sim-score-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.sim-score-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  line-height: 1;
+}
+.sim-score-denom {
+  font-size: 10px;
+  color: var(--sim-text-faint);
+}
+.sim-score-info {
+  flex: 1;
+}
+.sim-score-band {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  margin-bottom: 3px;
+}
+.sim-score-grade {
+  font-size: 12px;
+  color: var(--sim-text-soft);
+}
+.sim-stats-row {
+  display: flex;
+  gap: 0;
+  background: var(--sim-teal-paler);
+  border: 1.5px solid var(--sim-teal-pale);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.sim-stat {
+  flex: 1;
+  padding: 10px 12px;
+  border-right: 1px solid var(--sim-teal-pale);
+}
+.sim-stat:last-child {
+  border-right: none;
+}
+.sim-stat-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--sim-teal-dark);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.sim-stat-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  letter-spacing: -0.3px;
+  transition: color 0.3s;
+}
+.sim-stat-val.improved {
+  color: var(--sim-teal);
+}
+.sim-stat-delta {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--sim-teal);
+  margin-top: 1px;
+  min-height: 14px;
+}
+
+/* Two paths */
+.sim-paths {
+  margin: 14px 16px 0;
+  background: var(--sim-teal-paler);
+  border: 1.5px solid var(--sim-teal-pale);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.sim-paths-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--sim-teal-dark);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.sim-paths-row {
+  display: flex;
+  gap: 8px;
+}
+.sim-path {
+  flex: 1;
+  background: #fff;
+  border: 1.5px solid var(--sim-teal-pale);
+  border-radius: 12px;
+  padding: 10px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform 0.15s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+}
+.sim-path:hover {
+  border-color: var(--sim-teal);
+  transform: translateY(-1px);
+}
+.sim-path.active {
+  border-color: var(--sim-teal);
+  background: var(--sim-teal-paler);
+  box-shadow: 0 4px 12px rgba(0, 161, 154, 0.18);
+}
+.sim-path.bill {
+  border-width: 2px;
+}
+.sim-path-icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.sim-path-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  margin-bottom: 3px;
+}
+.sim-path.bill .sim-path-title {
+  color: var(--sim-teal-dark);
+}
+.sim-path-sub {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--sim-text-soft);
+  line-height: 1.4;
+}
+.sim-paths-or {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--sim-text-faint);
+}
+
+/* Progress + steps block */
+.sim-questions-block {
+  transition:
+    opacity 0.5s ease,
+    max-height 0.6s ease;
+}
+.sim-progress-row {
+  margin: 12px 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sim-progress-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--sim-text-soft);
+}
+.sim-progress-count {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--sim-teal);
+}
+.sim-progress-track {
+  margin: 6px 16px 0;
+  height: 4px;
+  background: var(--sim-line-soft);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.sim-progress-fill {
+  height: 100%;
+  background: var(--sim-teal);
+  border-radius: 100px;
+  transition: width 0.4s;
+}
+
+/* Step cards */
+.sim-steps {
+  margin: 12px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sim-step {
+  background: #fff;
+  border: 2px solid var(--sim-line-soft);
+  border-radius: 14px;
+  overflow: hidden;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+  cursor: pointer;
+}
+.sim-step.idle:hover {
+  border-color: var(--sim-teal);
+  box-shadow: 0 6px 20px rgba(0, 161, 154, 0.15);
+  transform: translateY(-2px);
+}
+.sim-step.done {
+  border-color: var(--sim-teal);
+  background: linear-gradient(135deg, var(--sim-teal-paler) 0%, white 60%);
+}
+.sim-step.todo {
+  border-color: var(--sim-navy);
+  background: linear-gradient(135deg, #eeedf6 0%, white 60%);
+}
+.sim-step.skip {
+  opacity: 0.55;
+}
+.sim-step.diff {
+  border-color: #3b4fcc;
+  background: linear-gradient(135deg, #f0f4ff 0%, white 60%);
+}
+.sim-step-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+}
+.sim-step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--sim-line-soft);
+  color: var(--sim-text-faint);
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.sim-step.done .sim-step-num {
+  background: var(--sim-teal);
+  color: #fff;
+}
+.sim-step.todo .sim-step-num {
+  background: var(--sim-navy);
+  color: #fff;
+}
+.sim-step.skip .sim-step-num {
+  background: var(--sim-text-faint);
+  color: #fff;
+}
+.sim-step.diff .sim-step-num {
+  background: #3b4fcc;
+  color: #fff;
+}
+.sim-step-body {
+  flex: 1;
+  min-width: 0;
+}
+.sim-step-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  margin-bottom: 1px;
+}
+.sim-step-meta {
+  font-size: 10px;
+  color: var(--sim-text-soft);
+}
+.sim-step-badge {
+  font-size: 16px;
+  flex-shrink: 0;
+  min-width: 20px;
+  text-align: center;
+}
+.sim-step-expand {
+  display: none;
+  padding: 0 14px 14px;
+  border-top: 1px solid var(--sim-line-soft);
+}
+.sim-step.open .sim-step-expand {
+  display: block;
+}
+.sim-step-desc {
+  font-size: 11px;
+  color: var(--sim-text-soft);
+  line-height: 1.5;
+  margin: 10px 0 8px;
+}
+.sim-step-impact {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--sim-teal-dark);
+  background: var(--sim-teal-paler);
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.sim-step-question {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  margin-bottom: 8px;
+}
+.sim-step-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sim-step-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1.5px solid;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.sim-step-btn.done {
+  background: var(--sim-teal-paler);
+  color: var(--sim-teal-dark);
+  border-color: var(--sim-teal-pale);
+}
+.sim-step-btn.done:hover {
+  background: var(--sim-teal-pale);
+}
+.sim-step-btn.diff {
+  background: #f0f4ff;
+  color: #3b4fcc;
+  border-color: #c5ceff;
+}
+.sim-step-btn.diff:hover {
+  background: #e0e7ff;
+  border-color: #3b4fcc;
+  transform: translateX(3px);
+}
+.sim-step-btn.todo {
+  background: #eeedf6;
+  color: var(--sim-navy);
+  border-color: #c8c5e0;
+}
+.sim-step-btn.todo:hover {
+  background: #dddbe8;
+}
+.sim-step-btn.skip {
+  background: var(--sim-bg);
+  color: var(--sim-text-faint);
+  border-color: var(--sim-line-soft);
+}
+
+/* Bill-path placeholder/confirm cards */
+.sim-bill-picker,
+.sim-bill-confirm {
+  margin: 10px 16px 0;
+  background: linear-gradient(135deg, var(--sim-teal-paler), #d4f0ed);
+  border: 2px solid var(--sim-teal-pale);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sim-bill-picker:hover {
+  border-color: var(--sim-teal);
+}
+.sim-bill-emoji {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.sim-bill-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  margin-bottom: 3px;
+}
+.sim-bill-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--sim-text-soft);
+  line-height: 1.5;
+}
+
+/* Publish prompt */
+.sim-publish {
+  margin: 14px 16px 0;
+  background: linear-gradient(135deg, var(--sim-teal-paler), #d4f0ed);
+  border: 2px solid var(--sim-teal-pale);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+.sim-publish-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  margin-bottom: 4px;
+}
+.sim-publish-sub {
+  font-size: 11px;
+  color: var(--sim-text-soft);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.sim-publish-btns {
+  display: flex;
+  gap: 8px;
+}
+.sim-publish-go {
+  flex: 1;
+  padding: 10px;
+  background: var(--sim-teal);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.sim-publish-skip {
+  padding: 10px 14px;
+  background: #fff;
+  border: 1.5px solid var(--sim-teal-pale);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sim-text-soft);
+  cursor: pointer;
+}
+
+/* EPC nudge */
+.sim-epc-nudge {
+  margin: 10px 16px 0;
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: var(--sim-amber-pale);
+  border: 1.5px solid rgba(230, 162, 60, 0.4);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+}
+.sim-epc-nudge-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.sim-epc-nudge-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  margin-bottom: 3px;
+}
+.sim-epc-nudge-body {
+  font-size: 11px;
+  color: var(--sim-text-soft);
+  line-height: 1.5;
+}
+
+/* Bottom CTA */
+.sim-cta {
+  margin: 14px 16px 0;
+}
+.sim-cta-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--sim-teal);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 161, 154, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+.sim-cta-btn:hover {
+  background: var(--sim-teal-bright);
+}
+.sim-reset-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  background: none;
+  border: 1.5px solid var(--sim-line-soft);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sim-text-soft);
+  cursor: pointer;
+}
+
+/* "Done something different" modal */
+.sim-diff-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.sim-diff-card {
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px 36px;
+  width: 100%;
+  max-width: 28rem;
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.18);
+}
+.sim-diff-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--sim-line-soft);
+  border-radius: 100px;
+  margin: 0 auto 20px;
+}
+.sim-diff-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--sim-navy);
+  margin-bottom: 6px;
+}
+.sim-diff-body {
+  font-size: 12px;
+  color: var(--sim-text-soft);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.sim-diff-textarea {
+  width: 100%;
+  border: 2px solid var(--sim-teal-pale);
+  border-radius: 12px;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--sim-navy);
+  resize: none;
+  height: 90px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.sim-diff-textarea:focus {
+  border-color: var(--sim-teal);
+}
+.sim-diff-tip {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: #fff8ec;
+  border: 1.5px solid var(--sim-amber-pale);
+  border-radius: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.sim-diff-tip-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.sim-diff-tip-text {
+  font-size: 11px;
+  color: var(--sim-navy);
+  line-height: 1.5;
+}
+.sim-diff-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.sim-diff-save {
+  flex: 1;
+  padding: 13px;
+  background: var(--sim-teal);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.sim-diff-cancel {
+  padding: 13px 16px;
+  background: var(--sim-bg);
+  border: 1.5px solid var(--sim-line-soft);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sim-text-soft);
+  cursor: pointer;
+}
+
+/* Sheet-up transition */
+.sim-modal-enter-active,
+.sim-modal-leave-active {
+  transition: opacity 0.25s ease;
+}
+.sim-modal-enter-active .sim-diff-card,
+.sim-modal-leave-active .sim-diff-card {
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sim-modal-enter-from,
+.sim-modal-leave-to {
+  opacity: 0;
+}
+.sim-modal-enter-from .sim-diff-card,
+.sim-modal-leave-to .sim-diff-card {
+  transform: translateY(20px);
 }
 </style>
