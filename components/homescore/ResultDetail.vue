@@ -117,14 +117,23 @@
         <template v-if="overpayDiff > 0">£{{ formatNum(overpayDiff) }} above the street average. Tap below to see the full breakdown.</template>
         <template v-else>About the same as the street average. Open the breakdown to see where the money goes.</template>
       </div>
-      <!-- See street comparison — links to the full street view -->
-      <button class="rd-rc-toggle rd-rc-toggle--street" type="button" @click="$emit('see-street')">
-        <span>📍 See street comparison</span>
-        <span class="rd-rc-arrow">→</span>
+      <!-- Primary: See full running costs (white pill, teal-dark text) -->
+      <button class="rd-cta-btn rd-cta-btn--primary" type="button" @click="showRC = !showRC">
+        <span class="rd-cta-emoji">📊</span>
+        <span class="rd-cta-label">See full running costs</span>
+        <svg class="rd-cta-arrow" :class="{ open: showRC }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
       </button>
-      <button class="rd-rc-toggle" type="button" @click="showRC = !showRC">
-        <span>📊 See full running costs</span>
-        <span class="rd-rc-chev" :class="{ open: showRC }">▸</span>
+      <!-- Secondary: See your street comparison (translucent-on-teal) -->
+      <button class="rd-cta-btn rd-cta-btn--ghost" type="button" @click="$emit('see-street')">
+        <span class="rd-cta-emoji">🏘️</span>
+        <span class="rd-cta-label">See your street comparison</span>
+        <svg class="rd-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
       </button>
       <div v-if="showRC" class="rd-rc-body">
         <div class="rd-rc-row">
@@ -394,11 +403,14 @@ function formatNum(n: number): string {
 <style scoped>
 .rd-page {
   background: #fafafa;
-  padding: 12px 16px 0;
+  /* No horizontal padding here — each card sets its own 22px side margin
+     to match the prototype's per-card spacing rhythm. */
+  padding: 4px 0 0;
 }
 
-/* ── Amber address card (prototype-exact) ──────────────────────── */
+/* ── Amber address card (prototype-exact: margins, pin size, spacing) ── */
 .rd-addr-card {
+  margin: 16px 22px 12px;
   border-radius: 22px;
   padding: 22px 22px 18px;
   background: linear-gradient(135deg, #F0A030 0%, #C67C18 50%, #8B4E0A 100%);
@@ -408,29 +420,35 @@ function formatNum(n: number): string {
   box-shadow:
     0 12px 32px -8px rgba(180, 100, 20, 0.40),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  margin-bottom: 12px;
   animation: rd-fadeSlideDown 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .rd-addr-card::after {
   content: '';
   position: absolute;
-  inset: -40% -20% auto auto;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 70%);
+  top: -45%;
+  right: -15%;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
 .rd-addr-card > * { position: relative; z-index: 1; }
-.rd-addr-top { display: flex; align-items: flex-start; gap: 10px; }
+.rd-addr-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
 .rd-addr-pin {
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.30);
   flex-shrink: 0;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 .rd-addr-block { flex: 1; min-width: 0; }
 .rd-addr-line { font-size: 19px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
@@ -439,8 +457,8 @@ function formatNum(n: number): string {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
 }
 .rd-addr-pill {
@@ -535,7 +553,7 @@ function formatNum(n: number): string {
   color: #fff;
   border-radius: 20px;
   padding: 22px 22px 20px;
-  margin-bottom: 12px;
+  margin: 0 22px 12px;
   position: relative;
   overflow: hidden;
   box-shadow:
@@ -605,43 +623,52 @@ function formatNum(n: number): string {
   line-height: 1.5;
   margin-top: 8px;
 }
-.rd-rc-toggle {
+/* CTA buttons (prototype-exact): white "running costs" + translucent
+   "street comparison". Both: emoji left, label center-grows, arrow right. */
+.rd-cta-btn {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 12px;
-  padding: 11px 14px;
-  margin-top: 12px;
+  gap: 10px;
+  border-radius: 14px;
+  padding: 14px 18px;
   font-family: inherit;
-  cursor: pointer;
-  color: #fff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
-  letter-spacing: -0.05px;
+  letter-spacing: -0.1px;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.15s, background 0.15s;
 }
-.rd-rc-chev {
+.rd-cta-btn--primary {
+  background: #fff;
+  border: none;
+  color: #007e78;
+  margin-top: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+.rd-cta-btn--primary:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18); }
+.rd-cta-btn--ghost {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.30);
+  color: #fff;
+  padding: 13px 18px;
+  margin-top: 10px;
+}
+.rd-cta-btn--ghost:hover { background: rgba(255, 255, 255, 0.22); }
+.rd-cta-btn:active { transform: scale(0.99); }
+.rd-cta-emoji { font-size: 16px; line-height: 1; flex-shrink: 0; }
+.rd-cta-label { flex: 1; text-align: left; }
+.rd-cta-arrow {
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+  flex-shrink: 0;
   transition: transform 0.2s;
-  font-size: 14px;
 }
-.rd-rc-chev.open { transform: rotate(90deg); }
-.rd-rc-toggle--street {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.40);
-  margin-top: 12px;
-  transition: background 0.15s, transform 0.12s;
-}
-.rd-rc-toggle--street:hover {
-  background: rgba(255, 255, 255, 0.32);
-}
-.rd-rc-toggle--street:active { transform: scale(0.99); }
-.rd-rc-arrow {
-  font-size: 14px;
-  transition: transform 0.18s;
-}
-.rd-rc-toggle--street:hover .rd-rc-arrow { transform: translateX(2px); }
+.rd-cta-btn--ghost .rd-cta-arrow { opacity: 0.75; }
+.rd-cta-btn:hover .rd-cta-arrow { transform: translateX(2px); }
+.rd-cta-arrow.open { transform: rotate(90deg); }
+.rd-cta-btn:hover .rd-cta-arrow.open { transform: rotate(90deg) translateX(0); }
 .rd-rc-body {
   margin-top: 10px;
   background: rgba(255, 255, 255, 0.12);
@@ -686,7 +713,7 @@ function formatNum(n: number): string {
   border: 2px solid #00a19a;
   border-radius: 18px;
   padding: 22px 18px 18px;
-  margin: 0 0 12px;
+  margin: 0 22px 12px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.10);
@@ -839,7 +866,7 @@ function formatNum(n: number): string {
   border: 2px solid #E6A23C;
   border-radius: 16px;
   padding: 18px;
-  margin-bottom: 12px;
+  margin: 0 22px 12px;
   box-shadow: 0 4px 16px rgba(230, 162, 60, 0.10);
   transition: all 0.18s;
   animation: rd-fadeSlideUp 0.45s 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -1004,7 +1031,7 @@ function formatNum(n: number): string {
   border: 1.5px solid #ececef;
   border-radius: 18px;
   padding: 16px;
-  margin-bottom: 12px;
+  margin: 0 22px 12px;
   animation: rd-fadeSlideUp 0.45s 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
