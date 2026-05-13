@@ -10,6 +10,15 @@ const config: CapacitorConfig = {
     cleartext: false,
   },
   plugins: {
+    SplashScreen: {
+      // Disable the native Capacitor splash on iOS/Android — show the app
+      // immediately instead of the launchscreen image.
+      launchShowDuration: 0,
+      launchAutoHide: true,
+      showSpinner: false,
+      splashFullScreen: false,
+      splashImmersive: false,
+    },
     GoogleAuth: {
       // iOS Client ID from Google Cloud Console (Credentials → iOS OAuth client)
       iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
