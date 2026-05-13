@@ -37,25 +37,31 @@
         <span v-else-if="state === 'published'" class="rd-addr-pill rd-state-published">✓ Published</span>
       </div>
 
-      <!-- FOMO stats row -->
+      <!-- FOMO stats row — 3 segments per state, matches prototype copy -->
       <div class="rd-addr-stats">
         <div v-if="state === 'unclaimed'" class="rd-stat-row">
           <span class="rd-pulse-dot" />
           <span class="rd-stat-count">{{ randomSearches }} searches today</span>
           <span class="rd-sep">·</span>
           <span>No verified Passport on this address yet</span>
+          <span class="rd-sep">·</span>
+          <span>Public EPC data only</span>
         </div>
         <div v-else-if="state === 'inProgress'" class="rd-stat-row">
           <span class="rd-pulse-dot" />
           <span class="rd-stat-count">{{ randomSearches + 1 }} searches today</span>
           <span class="rd-sep">·</span>
           <span>Owner is building a Passport</span>
+          <span class="rd-sep">·</span>
+          <span>Public EPC data only for now</span>
         </div>
         <div v-else class="rd-stat-row">
           <span class="rd-pulse-dot rd-pulse-green" />
           <span class="rd-stat-count">{{ randomSearches * 6 }} searches this month</span>
           <span class="rd-sep">·</span>
           <span>Verified Passport live</span>
+          <span class="rd-sep">·</span>
+          <span>Owner's real data</span>
         </div>
       </div>
     </div>
@@ -117,11 +123,11 @@
         <template v-if="overpayDiff > 0">£{{ formatNum(overpayDiff) }} above the street average. Tap below to see the full breakdown.</template>
         <template v-else>About the same as the street average. Open the breakdown to see where the money goes.</template>
       </div>
-      <!-- Primary: See full running costs (white pill, teal-dark text) -->
-      <button class="rd-cta-btn rd-cta-btn--primary" type="button" @click="showRC = !showRC">
+      <!-- Primary: See full running costs (white pill, teal-dark text) — navigates to the dedicated page -->
+      <button class="rd-cta-btn rd-cta-btn--primary" type="button" @click="$emit('see-running-costs')">
         <span class="rd-cta-emoji">📊</span>
         <span class="rd-cta-label">See full running costs</span>
-        <svg class="rd-cta-arrow" :class="{ open: showRC }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="rd-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12" />
           <polyline points="12 5 19 12 12 19" />
         </svg>
@@ -135,33 +141,6 @@
           <polyline points="12 5 19 12 12 19" />
         </svg>
       </button>
-      <div v-if="showRC" class="rd-rc-body">
-        <div class="rd-rc-row">
-          <div class="rd-rc-cell">
-            <div class="rd-rc-eyebrow">Heating</div>
-            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.54)) }}</div>
-            <div class="rd-rc-meta">per year</div>
-          </div>
-          <div class="rd-rc-cell">
-            <div class="rd-rc-eyebrow">Electricity</div>
-            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.34)) }}</div>
-            <div class="rd-rc-meta">per year</div>
-          </div>
-        </div>
-        <div class="rd-rc-row">
-          <div class="rd-rc-cell">
-            <div class="rd-rc-eyebrow">Hot water</div>
-            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.08)) }}</div>
-            <div class="rd-rc-meta">per year</div>
-          </div>
-          <div class="rd-rc-cell">
-            <div class="rd-rc-eyebrow">Other</div>
-            <div class="rd-rc-num">£{{ formatNum(Math.round(estimatedAnnualCost * 0.04)) }}</div>
-            <div class="rd-rc-meta">per year</div>
-          </div>
-        </div>
-        <div class="rd-rc-note">EPC estimated · upload a bill to get your real figure</div>
-      </div>
     </div>
 
     <!-- ── EPC & breakdown card ───────────────────────────────── -->
@@ -303,9 +282,8 @@ defineEmits<{
   (e: 'owner-dashboard'): void
   (e: 'interested'): void
   (e: 'see-street'): void
+  (e: 'see-running-costs'): void
 }>()
-
-const showRC = ref(false)
 
 // ── Derived numbers ──
 const overpayDiff = computed(() =>
@@ -667,45 +645,6 @@ function formatNum(n: number): string {
 }
 .rd-cta-btn--ghost .rd-cta-arrow { opacity: 0.75; }
 .rd-cta-btn:hover .rd-cta-arrow { transform: translateX(2px); }
-.rd-cta-arrow.open { transform: rotate(90deg); }
-.rd-cta-btn:hover .rd-cta-arrow.open { transform: rotate(90deg) translateX(0); }
-.rd-rc-body {
-  margin-top: 10px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  overflow: hidden;
-}
-.rd-rc-row { display: flex; }
-.rd-rc-row + .rd-rc-row { border-top: 1px solid rgba(255, 255, 255, 0.15); }
-.rd-rc-cell {
-  flex: 1;
-  padding: 12px 14px;
-}
-.rd-rc-cell + .rd-rc-cell { border-left: 1px solid rgba(255, 255, 255, 0.15); }
-.rd-rc-eyebrow {
-  font-size: 9px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.65);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 3px;
-}
-.rd-rc-num {
-  font-size: 18px;
-  font-weight: 800;
-  color: #fff;
-}
-.rd-rc-meta {
-  font-size: 9px;
-  color: rgba(255, 255, 255, 0.6);
-  margin-top: 1px;
-}
-.rd-rc-note {
-  padding: 10px 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.6);
-}
 
 /* ── HomeScore card (prototype-exact: 2px teal border, soft teal gradient) ── */
 .rd-score-card {
@@ -1026,13 +965,22 @@ function formatNum(n: number): string {
 }
 
 /* ── Intent picker ─────────────────────────────────────────── */
+/* Intent card — 2px navy border, soft navy-tinted gradient (prototype-exact). */
 .rd-intent {
-  background: #fff;
-  border: 1.5px solid #ececef;
-  border-radius: 18px;
-  padding: 16px;
+  background:
+    radial-gradient(circle at bottom right, rgba(35, 29, 69, 0.06) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(35, 29, 69, 0.05) 0%, #fff 70%);
+  border: 2px solid #231d45;
+  border-radius: 16px;
+  padding: 18px;
   margin: 0 22px 12px;
+  box-shadow: 0 4px 16px rgba(35, 29, 69, 0.10);
+  transition: all 0.18s;
   animation: rd-fadeSlideUp 0.45s 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.rd-intent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(35, 29, 69, 0.16);
 }
 
 /* ── Prototype-exact cascade animations ──────────────────────── */
@@ -1054,12 +1002,15 @@ function formatNum(n: number): string {
   50%  { box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.25), 0 8px 24px rgba(0, 161, 154, 0.15); }
   100% { box-shadow: 0 4px 12px rgba(35, 29, 69, 0.04); }
 }
+/* Eyebrow: centered, uppercase, letter-spaced (prototype-exact). */
 .rd-intent-eyebrow {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 800;
-  color: #231d45;
-  letter-spacing: -0.2px;
-  margin-bottom: 12px;
+  color: #6b6783;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 14px;
 }
 .rd-intent-opts {
   display: flex;
@@ -1070,28 +1021,50 @@ function formatNum(n: number): string {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 14px;
+  padding: 12px 14px;
   background: #fff;
   border: 1.5px solid #ececef;
-  border-radius: 14px;
+  border-radius: 12px;
   font-family: inherit;
   cursor: pointer;
   text-align: left;
   transition: all 0.15s;
+  width: 100%;
 }
+.rd-intent-opt:hover { transform: translateY(-1px); }
 .rd-intent-opt.primary {
-  background: linear-gradient(135deg, #00a19a, #007e78);
-  border-color: #007e78;
+  background: #00a19a;
+  border-color: #00a19a;
   color: #fff;
+  box-shadow: 0 3px 10px rgba(0, 161, 154, 0.30);
+}
+.rd-intent-opt.primary:hover {
+  background: #00b6ae;
+  border-color: #00b6ae;
+}
+.rd-intent-opt.outline {
+  border-color: #ECECEF;
+  color: #231d45;
 }
 .rd-intent-opt.outline:hover {
-  border-color: #b2e4e1;
-  background: #f2faf8;
+  border-color: #6e6985;
 }
+/* Icon now sits in a rounded 36x36 tile, prototype-exact. */
 .rd-intent-icon {
-  font-size: 22px;
-  line-height: 1;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  font-size: 18px;
+  line-height: 1;
+}
+.rd-intent-opt.outline .rd-intent-icon {
+  background: #F2FAF8;
+  color: #007e78;
 }
 .rd-intent-body {
   flex: 1;
@@ -1099,16 +1072,17 @@ function formatNum(n: number): string {
 }
 .rd-intent-title {
   display: block;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 800;
-  letter-spacing: -0.1px;
+  letter-spacing: -0.2px;
+  margin-bottom: 1px;
 }
 .rd-intent-sub {
   display: block;
   font-size: 11.5px;
   font-weight: 500;
-  line-height: 1.4;
-  margin-top: 3px;
+  letter-spacing: -0.05px;
+  line-height: 1.35;
   opacity: 0.85;
 }
 .rd-intent-opt.primary .rd-intent-title { color: #fff; }

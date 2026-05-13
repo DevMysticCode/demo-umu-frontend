@@ -81,6 +81,7 @@
         @owner-dashboard="claimOrAccessPassport"
         @interested="goToBuyerView"
         @see-street="goToStreetCompare"
+        @see-running-costs="goToRunningCosts"
       />
     </template>
 
@@ -1837,11 +1838,20 @@ const resolvedEpcYear = computed<number | null>(() => {
 })
 
 function goToBuyerView() {
-  router.push(`/property/${propertyId}`)
+  // "I'm interested in buying" — let guests through to the buyer view so
+  // they can browse the running costs, comparison, etc. The auth gate
+  // only fires when they later tap "Boost your score" (which is gated in
+  // `onBoostScore`). Owners and signed-in users also land on the same
+  // in-page screen.
+  screen.value = 'buyer-results'
 }
 
 function goToStreetCompare() {
   router.push(`/homescore/street/${propertyId}`)
+}
+
+function goToRunningCosts() {
+  router.push(`/homescore/costs/${propertyId}`)
 }
 
 function notifyWhenPublished() {
@@ -1861,20 +1871,9 @@ function notifyWhenPublished() {
   notifiedOfPublish.value = true
 }
 
-// Tap handler for the "I'm interested in buying" button — gates guests.
-function onInterestedInBuying() {
-  if (isGuest.value) {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(
-        'redirectAfterLogin',
-        `/homescore/${propertyId}?screen=buyer-results`,
-      )
-    }
-    showAuthGate.value = true
-    return
-  }
-  screen.value = 'buyer-results'
-}
+// (Legacy `onInterestedInBuying` removed — the "I'm interested" button now
+// fires via ResultDetail's `interested` event → `goToBuyerView()`, which
+// lets guests through to the buyer view without an immediate auth gate.)
 
 // Tap handler for "Boost your score" CTA — gate guests up-front before they
 // invest time in the quick-wins flow.
