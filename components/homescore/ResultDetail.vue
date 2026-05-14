@@ -174,7 +174,13 @@
         @click="$emit('see-running-costs')"
       >
         <span class="rd-cta-emoji">📊</span>
-        <span class="rd-cta-label">See full running costs</span>
+        <span class="rd-cta-text">
+          <span class="rd-cta-label">See full running costs</span>
+          <span class="rd-cta-sub"
+            >Heating, hot water &amp; lighting — monthly and annual
+            breakdowns</span
+          >
+        </span>
         <svg
           class="rd-cta-arrow"
           viewBox="0 0 24 24"
@@ -195,7 +201,13 @@
         @click="$emit('see-street')"
       >
         <span class="rd-cta-emoji">🏘️</span>
-        <span class="rd-cta-label">See your street comparison</span>
+        <span class="rd-cta-text">
+          <span class="rd-cta-label">See your street comparison</span>
+          <span class="rd-cta-sub"
+            >How this home's costs and score stack up against nearby
+            properties</span
+          >
+        </span>
         <svg
           class="rd-cta-arrow"
           viewBox="0 0 24 24"
@@ -818,19 +830,17 @@ function formatNum(n: number): string {
   margin-top: 8px;
 }
 /* CTA buttons (prototype-exact): white "running costs" + translucent
-   "street comparison". Both: emoji left, label center-grows, arrow right. */
+   "street comparison". Both: emoji left, 2-line text center-grows, arrow right. */
 .rd-cta-btn {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   border-radius: 14px;
-  padding: 14px 18px;
+  padding: 16px 18px;
   font-family: inherit;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: -0.1px;
   cursor: pointer;
+  text-align: left;
   transition:
     transform 0.12s,
     box-shadow 0.15s,
@@ -851,7 +861,6 @@ function formatNum(n: number): string {
   background: rgba(255, 255, 255, 0.15);
   border: 1.5px solid rgba(255, 255, 255, 0.3);
   color: #fff;
-  padding: 13px 18px;
   margin-top: 10px;
 }
 .rd-cta-btn--ghost:hover {
@@ -861,23 +870,43 @@ function formatNum(n: number): string {
   transform: scale(0.99);
 }
 .rd-cta-emoji {
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1;
   flex-shrink: 0;
 }
-.rd-cta-label {
+.rd-cta-text {
   flex: 1;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.rd-cta-label {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.1px;
+  line-height: 1.2;
+}
+.rd-cta-sub {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.rd-cta-btn--primary .rd-cta-sub {
+  color: #7a9e9b;
+}
+.rd-cta-btn--ghost .rd-cta-sub {
+  color: rgba(255, 255, 255, 0.65);
 }
 .rd-cta-arrow {
   width: 16px;
   height: 16px;
-  opacity: 0.6;
   flex-shrink: 0;
+  opacity: 0.5;
   transition: transform 0.2s;
 }
 .rd-cta-btn--ghost .rd-cta-arrow {
-  opacity: 0.75;
+  opacity: 0.6;
 }
 .rd-cta-btn:hover .rd-cta-arrow {
   transform: translateX(2px);

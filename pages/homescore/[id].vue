@@ -77,7 +77,7 @@
         :estimated-annual-cost="resolvedAnnualCost"
         :street-avg-cost="1673"
         :epc-year="resolvedEpcYear"
-        @claim="claimOrAccessPassport"
+        @claim="startQuestions"
         @owner-dashboard="claimOrAccessPassport"
         @interested="goToBuyerView"
         @see-street="goToStreetCompare"
@@ -2627,17 +2627,8 @@ function startQuestions() {
     router.push(`/property/${propertyId}`)
     return
   }
-  // Gate guests — they need an account to save the quiz score.
-  if (isGuest.value) {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(
-        'redirectAfterLogin',
-        `/homescore/${propertyId}?screen=questions`,
-      )
-    }
-    showAuthGate.value = true
-    return
-  }
+  // Guests are allowed into the simulator — auth is gated later in the
+  // funnel (at "Publish to <address>" / KYC), matching the prototype flow.
   const firstUnanswered = QUESTIONS.findIndex(
     (q) => !(answers.value as Record<string, string>)[q.id],
   )
