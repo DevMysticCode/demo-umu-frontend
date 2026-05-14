@@ -52,11 +52,13 @@
         >
       </div>
 
-      <!-- FOMO stats row — 3 segments per state, matches prototype copy -->
-      <div class="rd-addr-stats">
+      <!-- FOMO stats row — counts pulled live from PropertySearchLog -->
+      <div v-if="todaySearches > 0 || monthSearches > 0" class="rd-addr-stats">
         <div v-if="state === 'unclaimed'" class="rd-stat-row">
           <span class="rd-pulse-dot" />
-          <span class="rd-stat-count">{{ randomSearches }} searches today</span>
+          <span class="rd-stat-count"
+            >{{ todaySearches }} {{ todaySearches === 1 ? 'search' : 'searches' }} today</span
+          >
           <span class="rd-sep">·</span>
           <span>No verified Passport on this address yet</span>
           <span class="rd-sep">·</span>
@@ -65,7 +67,7 @@
         <div v-else-if="state === 'inProgress'" class="rd-stat-row">
           <span class="rd-pulse-dot" />
           <span class="rd-stat-count"
-            >{{ randomSearches + 1 }} searches today</span
+            >{{ todaySearches }} {{ todaySearches === 1 ? 'search' : 'searches' }} today</span
           >
           <span class="rd-sep">·</span>
           <span>Owner is building a Passport</span>
@@ -75,7 +77,7 @@
         <div v-else class="rd-stat-row">
           <span class="rd-pulse-dot rd-pulse-green" />
           <span class="rd-stat-count"
-            >{{ randomSearches * 6 }} searches this month</span
+            >{{ monthSearches }} {{ monthSearches === 1 ? 'search' : 'searches' }} this month</span
           >
           <span class="rd-sep">·</span>
           <span>Verified Passport live</span>
@@ -428,6 +430,12 @@ const props = defineProps<{
   streetAvgCost?: number
   /** Year the EPC was lodged (shown in score eyebrow). */
   epcYear?: number | null
+  /** Real `today` / `thisMonth` counts from /property/:id/search-stats. */
+  searchStats?: {
+    today?: number
+    thisMonth?: number
+    distinctVisitors?: number
+  } | null
 }>()
 
 defineEmits<{
@@ -451,11 +459,56 @@ const overpayDiff = computed(() =>
 // "EPC data" with nothing after.
 const displayEpcYear = computed<number>(() => props.epcYear ?? 2014)
 
-const epcCurrentSap = computed(() => props.score)
-const epcPotentialSap = computed(() =>
-  Math.min(100, Math.max(props.score + 18, 75)),
+// ── EPC numbers — prefer real fields enriched onto the property row from the
+// EPC Register; fall back to per-rating heuristics only when those fields
+// are still null (property hasn't been enriched yet).
+
+// Gas/electricity tariffs used to convert £ → kWh for the breakdown rows.
+// Mirrors the Ofgem Q1 2025 cap-adjacent values in running-costs.service.ts.
+const GAS_TARIFF = 0.0548
+const ELEC_TARIFF = 0.245
+
+const realEpcScore = computed<number | null>(
+  () => numOrNull(props.property?.epcScore),
+)
+const realEpcScorePotential = computed<number | null>(
+  () => numOrNull(props.property?.epcScorePotential),
+)
+const realEpcRatingPotential = computed<string | null>(() => {
+  const v = props.property?.epcRatingPotential
+  return v ? String(v).toUpperCase() : null
+})
+const realCo2Current = computed<number | null>(
+  () => numOrNull(props.property?.co2Emissions),
+)
+const realCo2Potential = computed<number | null>(
+  () => numOrNull(props.property?.co2EmissionsPotential),
+)
+const realHeatingCost = computed<number | null>(
+  () => numOrNull(props.property?.heatingCostCurrent),
+)
+const realHotWaterCost = computed<number | null>(
+  () => numOrNull(props.property?.hotWaterCostCurrent),
+)
+const realLightingCost = computed<number | null>(
+  () => numOrNull(props.property?.lightingCostCurrent),
+)
+const realEnergyTotalPotential = computed<number | null>(() => {
+  const h = numOrNull(props.property?.heatingCostPotential)
+  const w = numOrNull(props.property?.hotWaterCostPotential)
+  const l = numOrNull(props.property?.lightingCostPotential)
+  if (h == null && w == null && l == null) return null
+  return (h ?? 0) + (w ?? 0) + (l ?? 0)
+})
+
+const epcCurrentSap = computed(() => realEpcScore.value ?? props.score)
+const epcPotentialSap = computed(
+  () =>
+    realEpcScorePotential.value ??
+    Math.min(100, Math.max(props.score + 18, 75)),
 )
 const epcPotentialLetter = computed(() => {
+  if (realEpcRatingPotential.value) return realEpcRatingPotential.value
   const s = epcPotentialSap.value
   if (s >= 92) return 'A'
   if (s >= 81) return 'B'
@@ -466,15 +519,38 @@ const epcPotentialLetter = computed(() => {
   return 'G'
 })
 
+// Real annual saving = current total - EPC potential total when available.
 const potentialSaving = computed(() => {
+  if (realEnergyTotalPotential.value != null) {
+    return Math.max(
+      0,
+      Math.round(props.estimatedAnnualCost - realEnergyTotalPotential.value),
+    )
+  }
   const factor = (epcPotentialSap.value - epcCurrentSap.value) * 0.014
   return Math.max(100, Math.round(props.estimatedAnnualCost * factor))
 })
 
-const heatingKwh = computed(() => Math.round(props.estimatedAnnualCost * 12))
-const hotWaterKwh = computed(() => Math.round(props.estimatedAnnualCost * 2.5))
+// Reverse-engineer kWh from EPC £ figures via tariff. Heating + hot water
+// are gas-dominant in UK stock so we apply the gas tariff to both.
+const heatingKwh = computed(() => {
+  if (realHeatingCost.value != null && realHeatingCost.value > 0) {
+    return Math.round(realHeatingCost.value / GAS_TARIFF)
+  }
+  // Fallback (no EPC): rough proxy from total annual cost.
+  return Math.round(props.estimatedAnnualCost * 12)
+})
+const hotWaterKwh = computed(() => {
+  if (realHotWaterCost.value != null && realHotWaterCost.value > 0) {
+    return Math.round(realHotWaterCost.value / GAS_TARIFF)
+  }
+  return Math.round(props.estimatedAnnualCost * 2.5)
+})
 
 const co2Now = computed(() => {
+  if (realCo2Current.value != null && realCo2Current.value > 0) {
+    return Math.round(realCo2Current.value * 10) / 10
+  }
   if (props.epcRating === 'A') return 1.8
   if (props.epcRating === 'B') return 2.6
   if (props.epcRating === 'C') return 3.4
@@ -483,13 +559,25 @@ const co2Now = computed(() => {
   if (props.epcRating === 'F') return 8.2
   return 10.5
 })
-const co2Potential = computed(() =>
-  Math.max(1.4, +(co2Now.value * 0.53).toFixed(1)),
+const co2Potential = computed(() => {
+  if (realCo2Potential.value != null && realCo2Potential.value > 0) {
+    return Math.round(realCo2Potential.value * 10) / 10
+  }
+  return Math.max(1.4, +(co2Now.value * 0.53).toFixed(1))
+})
+const co2ReductionPct = computed(() =>
+  co2Now.value > 0
+    ? +(((co2Now.value - co2Potential.value) / co2Now.value) * 100).toFixed(1)
+    : 0,
 )
-const co2ReductionPct = computed(
-  () =>
-    +(((co2Now.value - co2Potential.value) / co2Now.value) * 100).toFixed(1),
-)
+
+/** Coerce any numeric-looking field to number, else null. Prisma decimal /
+ *  string columns serialise as strings over JSON in some setups. */
+function numOrNull(v: any): number | null {
+  if (v == null || v === '') return null
+  const n = typeof v === 'number' ? v : Number(v)
+  return Number.isFinite(n) ? n : null
+}
 
 const epcColor = computed(() => {
   const map: Record<string, string> = {
@@ -543,9 +631,17 @@ const dataNote = computed(() => {
   return 'Based on public EPC data. The real score may be higher if improvements have been made since the EPC was lodged.'
 })
 
-const randomSearches = computed<number>(() => {
-  const id = props.property?.id || ''
-  return 3 + ((id.charCodeAt(0) || 1) % 7)
+// Real "today" search count from PropertySearchLog (via /search-stats).
+// Falls back to a per-property pseudo-random when stats haven't loaded yet.
+const todaySearches = computed<number>(() => {
+  const t = props.searchStats?.today
+  if (typeof t === 'number' && t > 0) return t
+  return 0
+})
+const monthSearches = computed<number>(() => {
+  const m = props.searchStats?.thisMonth
+  if (typeof m === 'number' && m > 0) return m
+  return 0
 })
 
 function formatNum(n: number): string {

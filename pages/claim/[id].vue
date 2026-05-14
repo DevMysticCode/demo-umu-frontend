@@ -1000,8 +1000,20 @@ async function issuePassport() {
     const passportId = res.passportId
     if (!passportId) throw new Error('Passport could not be created')
 
-    // 3) Route to the right passport view (landlord lives at a different URL).
-    // Use replace() so the user's back button doesn't drop them mid-KYC.
+    // 3) Where to send the user next?
+    //
+    //   - If a `?next=…` was passed (e.g. they entered the claim chain from
+    //     "Publish to your street" or "Boost your score" on /homescore), honour
+    //     it so the user lands back on that screen, now as a verified owner.
+    //   - Otherwise fall through to the canonical passport view for the type
+    //     of passport that was issued.
+    //
+    // Use replace() either way so the back button doesn't drop the user mid-KYC.
+    const nextParam = (route.query?.next as string | undefined)?.trim()
+    if (nextParam && nextParam.startsWith('/')) {
+      router.replace(nextParam)
+      return
+    }
     if (chosenPassportType.value === 'landlord') {
       router.replace(`/passportview/landlord/${passportId}`)
     } else {

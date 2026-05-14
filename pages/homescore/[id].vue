@@ -89,6 +89,7 @@
         :estimated-annual-cost="resolvedAnnualCost"
         :street-avg-cost="1673"
         :epc-year="resolvedEpcYear"
+        :search-stats="searchStats"
         @claim="startQuestions"
         @owner-dashboard="claimOrAccessPassport"
         @interested="goToBuyerView"
@@ -313,18 +314,33 @@
         <div v-if="simPath === 'bill' && simBillUploaded" class="sim-bill-confirm">
           <div class="sim-bill-emoji">✅</div>
           <div>
-            <div class="sim-bill-title">Bill uploaded — score updated</div>
+            <div class="sim-bill-title">
+              <template
+                v-if="simParsedBill?.annualSpend && simParsedBill.annualSpend > 0"
+              >
+                Bill read — £{{ simParsedBill.annualSpend.toLocaleString() }}/yr
+              </template>
+              <template v-else>Bill uploaded — score updated</template>
+            </div>
             <div class="sim-bill-sub">
-              Your actual energy spend is now feeding your HomeScore. Tap below
-              to see your result.
+              <template v-if="simParsedBill?.supplier">
+                Supplier: <b>{{ simParsedBill.supplier }}</b
+                ><template v-if="simParsedBill.annualSpend">
+                  · your actual spend is now feeding your HomeScore.</template
+                >
+              </template>
+              <template v-else>
+                Your actual energy spend is now feeding your HomeScore. Tap
+                below to see your result.
+              </template>
             </div>
           </div>
         </div>
-        <!-- Bill-upload picker — shown if bill path selected but no bill uploaded yet -->
+        <!-- Bill-upload picker — opens the bottom drawer when tapped -->
         <div
           v-else-if="simPath === 'bill'"
           class="sim-bill-picker"
-          @click="simBillUploaded = true"
+          @click="openSimBillDrawer"
         >
           <div class="sim-bill-emoji">📄</div>
           <div>
@@ -471,10 +487,12 @@
             </span>
             <span class="pq-addr-pill pq-state-done">✓ Quiz complete</span>
           </div>
-          <div class="pq-addr-stats">
+          <div v-if="pqSearches > 0" class="pq-addr-stats">
             <div class="pq-stat-row">
               <span class="pq-pulse-dot pq-pulse-green" />
-              <span class="pq-stat-count">{{ pqSearches }} searches today</span>
+              <span class="pq-stat-count"
+                >{{ pqSearches }} {{ pqSearches === 1 ? 'search' : 'searches' }} today</span
+              >
               <span class="pq-sep">·</span>
               <span>Score refined with your answers</span>
             </div>
@@ -1504,10 +1522,15 @@
               >✓ Published</span
             >
           </div>
-          <div class="bv-addr-stats">
+          <div
+            v-if="bvSearches > 0 || bvMonthSearches > 0"
+            class="bv-addr-stats"
+          >
             <div v-if="bvPassportState === 'unclaimed'" class="bv-stat-row">
               <span class="bv-pulse-dot" />
-              <span class="bv-stat-count">{{ bvSearches }} searches today</span>
+              <span class="bv-stat-count"
+                >{{ bvSearches }} {{ bvSearches === 1 ? 'search' : 'searches' }} today</span
+              >
               <span class="bv-sep">·</span>
               <span>No verified Passport yet</span>
             </div>
@@ -1517,7 +1540,7 @@
             >
               <span class="bv-pulse-dot" />
               <span class="bv-stat-count"
-                >{{ bvSearches + 1 }} searches today</span
+                >{{ bvSearches }} {{ bvSearches === 1 ? 'search' : 'searches' }} today</span
               >
               <span class="bv-sep">·</span>
               <span>Passport in progress</span>
@@ -1525,7 +1548,7 @@
             <div v-else class="bv-stat-row">
               <span class="bv-pulse-dot bv-pulse-green" />
               <span class="bv-stat-count"
-                >{{ bvSearches * 6 }} searches this month</span
+                >{{ bvMonthSearches }} {{ bvMonthSearches === 1 ? 'search' : 'searches' }} this month</span
               >
               <span class="bv-sep">·</span>
               <span>Verified Passport live</span>
@@ -1555,10 +1578,10 @@
               <div class="bv-cost-stat-num">{{ buyerEpcGrade }}</div>
               <div class="bv-cost-stat-label">EPC Grade</div>
             </div>
-            <div class="bv-cost-stat-div" />
-            <div class="bv-cost-stat">
-              <div class="bv-cost-stat-num">4th</div>
-              <div class="bv-cost-stat-label">of 12 on street</div>
+            <div v-if="bvStreetRankLabel" class="bv-cost-stat-div" />
+            <div v-if="bvStreetRankLabel" class="bv-cost-stat">
+              <div class="bv-cost-stat-num">{{ bvStreetRankLabel }}</div>
+              <div class="bv-cost-stat-label">of {{ streetEnergyRank?.total }} on street</div>
             </div>
           </div>
         </div>
@@ -1994,6 +2017,241 @@
         </button>
       </div>
     </div>
+
+    <!-- ── Global document-upload drawer ──────────────────────────
+         Bottom-sheet upload used by Boost Score and (eventually) any
+         doc-upload entry point on this page. Teleported to <body> so
+         it's positioned correctly regardless of which screen template
+         is rendering. Driven by `qwDrawerOpen` / `qwDrawerDocKey`.       -->
+    <Teleport to="body">
+      <div
+        v-if="qwDrawerOpen"
+        class="qw-overlay"
+        @click.self="closeDrawer"
+      >
+        <div class="qw-modal">
+          <div class="qw-modal-handle" />
+          <div class="qw-modal-header">
+            <div class="qw-modal-title">
+              {{ qwDrawerDoc?.label || 'Upload document' }}
+            </div>
+            <button
+              type="button"
+              class="qw-modal-close"
+              aria-label="Close"
+              @click="closeDrawer"
+            >
+              ×
+            </button>
+          </div>
+
+          <div class="qw-modal-body">
+            <p class="qw-modal-intro">{{ qwDrawerDoc?.sub }}</p>
+
+            <!-- Already-saved file preview -->
+            <div v-if="qwDrawerExistingEntry" class="qw-doc-preview">
+              <div class="qw-doc-preview-icon">📄</div>
+              <div class="qw-doc-preview-info">
+                <div class="qw-doc-preview-name">
+                  {{ qwDrawerExistingEntry.fileName }}
+                </div>
+                <div class="qw-doc-preview-meta">
+                  {{ formatFileSize(qwDrawerExistingEntry.fileSize) }} · saved
+                </div>
+              </div>
+              <button
+                type="button"
+                class="qw-doc-preview-btn"
+                @click="removeDrawerDoc"
+              >
+                Remove
+              </button>
+            </div>
+
+            <!-- Newly picked file (pending save) -->
+            <div
+              v-if="qwDrawerFile"
+              class="qw-doc-preview qw-doc-preview--pending"
+            >
+              <div class="qw-doc-preview-icon">📄</div>
+              <div class="qw-doc-preview-info">
+                <div class="qw-doc-preview-name">{{ qwDrawerFile.name }}</div>
+                <div class="qw-doc-preview-meta">
+                  {{ formatFileSize(qwDrawerFile.size) }} · ready to save
+                </div>
+              </div>
+              <button
+                type="button"
+                class="qw-doc-preview-btn"
+                @click="qwDrawerFile = null"
+              >
+                Change
+              </button>
+            </div>
+
+            <!-- File picker (only shown when nothing pending) -->
+            <label v-if="!qwDrawerFile" class="qw-upload-row">
+              <input
+                type="file"
+                accept=".pdf,image/*"
+                class="qw-upload-input"
+                @change="onDrawerFilePicked"
+              />
+              <span class="qw-upload-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+              </span>
+              <span class="qw-upload-text">
+                {{
+                  qwDrawerExistingEntry
+                    ? 'Replace document'
+                    : 'Upload document'
+                }}
+                <small>PDF, JPG, PNG up to 20MB</small>
+              </span>
+            </label>
+
+            <p v-if="qwDrawerError" class="qw-modal-error">
+              {{ qwDrawerError }}
+            </p>
+          </div>
+
+          <div class="qw-modal-footer">
+            <button
+              type="button"
+              class="qw-btn-secondary"
+              @click="closeDrawer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="qw-btn-primary"
+              :disabled="!qwDrawerFile"
+              @click="saveDrawerDoc"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- ── Simulator: Upload-a-bill drawer ─────────────────────────
+         Bottom-sheet for the "Upload a bill" path on the simulator
+         screen. Reuses the qw-* drawer skin so both drawers feel the
+         same. Opening this drawer marks `simBillUploaded = true` once
+         the user confirms — feeding the EPC nudge into the `bill` state.   -->
+    <Teleport to="body">
+      <div
+        v-if="simBillDrawerOpen"
+        class="qw-overlay"
+        @click.self="closeSimBillDrawer"
+      >
+        <div class="qw-modal">
+          <div class="qw-modal-handle" />
+          <div class="qw-modal-header">
+            <div class="qw-modal-title">Upload an energy bill</div>
+            <button
+              type="button"
+              class="qw-modal-close"
+              aria-label="Close"
+              @click="closeSimBillDrawer"
+            >
+              ×
+            </button>
+          </div>
+
+          <div class="qw-modal-body">
+            <p class="qw-modal-intro">
+              We'll read the total spend from your bill and refine your
+              HomeScore — more accurate than EPC estimates alone.
+            </p>
+
+            <!-- Pending file preview -->
+            <div
+              v-if="simBillFile"
+              class="qw-doc-preview qw-doc-preview--pending"
+            >
+              <div class="qw-doc-preview-icon">📄</div>
+              <div class="qw-doc-preview-info">
+                <div class="qw-doc-preview-name">{{ simBillFile.name }}</div>
+                <div class="qw-doc-preview-meta">
+                  {{ formatFileSize(simBillFile.size) }} · ready to save
+                </div>
+              </div>
+              <button
+                type="button"
+                class="qw-doc-preview-btn"
+                @click="simBillFile = null"
+              >
+                Change
+              </button>
+            </div>
+
+            <!-- File picker -->
+            <label v-if="!simBillFile" class="qw-upload-row">
+              <input
+                type="file"
+                accept=".pdf,image/*"
+                class="qw-upload-input"
+                @change="onSimBillFilePicked"
+              />
+              <span class="qw-upload-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+              </span>
+              <span class="qw-upload-text">
+                Upload your energy bill
+                <small>PDF, JPG, PNG up to 20MB</small>
+              </span>
+            </label>
+
+            <p v-if="simBillError" class="qw-modal-error">
+              {{ simBillError }}
+            </p>
+          </div>
+
+          <div class="qw-modal-footer">
+            <button
+              type="button"
+              class="qw-btn-secondary"
+              @click="closeSimBillDrawer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="qw-btn-primary"
+              :disabled="!simBillFile"
+              @click="saveSimBill"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -2217,17 +2475,51 @@ function notifyWhenPublished() {
 // Tap handler for "Boost your score" CTA — gate guests up-front before they
 // invest time in the quick-wins flow.
 function onBoostScore() {
+  gateOwnerAction('quick-wins')
+}
+
+/**
+ * Funnel any "owner-only" action through the right chain:
+ *
+ *   guest        → save redirect, show auth gate (signin → bounces back)
+ *   not-owner    → /claim/<id>?next=<homescore screen=…>  — runs the standard
+ *                  claim flow (login → KYC → Land Registry → Passport claim)
+ *                  and on completion lands the user back here on the
+ *                  originally requested screen
+ *   verified owner → set screen directly
+ *
+ * Used by "Publish to your street" (gates → `publish`) and "Boost your score"
+ * (gates → `quick-wins`). After the claim flow finishes the user lands on
+ * the publish screen / boost-score screen with full ownership unlocked.
+ */
+function gateOwnerAction(target: 'publish' | 'quick-wins') {
+  const targetPath = `/homescore/${propertyId}?screen=${target}`
+
+  // Property claimed by someone else — never let the current user act on it.
+  if (readOnlyMode.value) {
+    router.push(`/property/${propertyId}`)
+    return
+  }
+
   if (isGuest.value) {
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(
-        'redirectAfterLogin',
-        `/homescore/${propertyId}?screen=quick-wins`,
-      )
+      localStorage.setItem('redirectAfterLogin', targetPath)
     }
     showAuthGate.value = true
     return
   }
-  screen.value = 'quick-wins'
+
+  // Logged in but hasn't claimed this property yet — route through the
+  // standard claim chain (KYC + Land Registry + passport issue). The claim
+  // page honours `?next=` and replaces its default `/passportview/<id>`
+  // redirect with our deep-link back here.
+  if (!isPropertyOwner.value) {
+    router.push(`/claim/${propertyId}?next=${encodeURIComponent(targetPath)}`)
+    return
+  }
+
+  // Verified owner — proceed straight to the requested screen.
+  screen.value = target
 }
 
 function goToSignIn() {
@@ -2897,15 +3189,278 @@ const SIM_STEP_DEFS: Omit<SimStep, 'status'>[] = [
   },
 ]
 
-const simSteps = ref<SimStep[]>(
-  SIM_STEP_DEFS.map((d) => ({ ...d, status: 'idle' as SimStatus })),
-)
+/**
+ * Build the "meta" line shown under each simulator step's title using REAL
+ * EPC fields from the property when available. Falls back to the static
+ * hardcoded string only when no relevant EPC data is on file.
+ *
+ * The lookup keys on the title/id of the step:
+ *   - loft / roof         → roofEnergyEff (+ roof-description if rich text)
+ *   - cavity / wall       → wallsEnergyEff
+ *   - floor               → floorEnergyEff (+ floorDescription)
+ *   - glazing / windows   → windowsEnergyEff
+ *   - lighting / LED      → lowEnergyLighting % + lightingEnergyEff
+ *   - boiler / main heat  → mainheatEnergyEff
+ *   - solar water / thermal → solarWaterHeatingFlag (Y/N)
+ *   - solar PV / panel    → photoSupply (kW)
+ */
+function buildStepMeta(
+  hint: string,
+  property: any,
+  fallback?: string,
+): string {
+  const p = property || {}
+  const h = (hint || '').toLowerCase()
+  const eff = (s: string | null | undefined) =>
+    s && String(s).trim() ? `EPC: ${s}` : 'EPC: N/A'
+
+  // Solar PV first (more specific than just "solar")
+  if (/solar.*(pv|panel|photovolt)|photovoltaic/.test(h)) {
+    const kw = Number(p.photoSupply) || 0
+    return kw > 0
+      ? `${kw} kW solar PV installed`
+      : 'No solar PV on EPC · recommended'
+  }
+  if (/solar.*(water|hot|thermal)|thermal\s+panel/.test(h)) {
+    const has = p.solarWaterHeatingFlag === 'Y'
+    return has ? 'Solar thermal: Yes' : 'No solar thermal on EPC'
+  }
+  // Loft / roof — prefer the EPC free-text description (often contains the
+  // current insulation depth, e.g. "Pitched, 100 mm loft insulation"),
+  // then append the rating.
+  if (/loft|roof/.test(h)) {
+    return joinDescAndEff(p.roofDescription, p.roofEnergyEff)
+  }
+  // Cavity / external walls — EPC description usually says "Cavity wall, as
+  // built, no insulation (assumed)" or "Cavity wall, filled, …".
+  if (/cavity|external\s+wall|\bwall/.test(h)) {
+    return joinDescAndEff(p.wallsDescription, p.wallsEnergyEff)
+  }
+  // Floor — already had description, now use the same join helper.
+  if (/floor/.test(h)) {
+    return joinDescAndEff(p.floorDescription, p.floorEnergyEff)
+  }
+  // Glazing / windows — description is typically "Single glazed",
+  // "Fully double glazed", etc.
+  if (/glaz|window/.test(h)) {
+    return joinDescAndEff(p.windowsDescription, p.windowsEnergyEff)
+  }
+  if (/light|led|lamp|bulb/.test(h)) {
+    if (typeof p.lowEnergyLighting === 'number') {
+      const pct = Math.round(p.lowEnergyLighting)
+      const tail = p.lightingEnergyEff ? ` · ${eff(p.lightingEnergyEff)}` : ''
+      return `${pct}% low energy lighting${tail}`
+    }
+    return eff(p.lightingEnergyEff)
+  }
+  // Boiler / main heating — description is typically
+  // "Boiler and radiators, mains gas" or "Heat pump, …".
+  if (/boiler|main\s+heat|heating\s+system/.test(h) && !/water/.test(h)) {
+    return joinDescAndEff(p.mainheatDescription, p.mainheatEnergyEff)
+  }
+  // Nothing matched — return the caller's fallback if provided.
+  return fallback ?? 'EPC recommendation'
+}
+
+/**
+ * Format "<EPC description> · EPC: <rating>" where both halves are
+ * present, falling back gracefully if either is missing.
+ *   - both:   "100 mm loft insulation · EPC: Average"
+ *   - desc only: "Cavity wall, as built, no insulation"
+ *   - rating only: "EPC: Poor"
+ *   - neither: "EPC: N/A"
+ */
+function joinDescAndEff(
+  desc: string | null | undefined,
+  eff: string | null | undefined,
+): string {
+  const d = (desc || '').trim()
+  const e = (eff || '').trim()
+  if (d && e) return `${d} · EPC: ${e}`
+  if (d) return d
+  if (e) return `EPC: ${e}`
+  return 'EPC: N/A'
+}
+
+/**
+ * The simulator card list. When the property has real EPC recommendations
+ * (from `/api/v1/domestic/recommendations`) we render those instead of the
+ * hardcoded `SIM_STEP_DEFS` fallback. Each user answer is kept in
+ * `simStepStatuses` (keyed by step id) so a re-derivation of the list (e.g.
+ * when EPC data lazily lands) doesn't wipe their progress.
+ */
+const simStepStatuses = ref<Record<string, SimStatus>>({})
+const simStepDiffNotes = ref<Record<string, string>>({})
+
+const simSteps = computed<SimStep[]>(() => {
+  const recs = (property.value as any)?.epcRecommendations
+  const p = property.value
+  const base: Omit<SimStep, 'status' | 'diffNote'>[] =
+    Array.isArray(recs) && recs.length > 0
+      ? recs.slice(0, 6).map((r: any) => epcRecToSimStepBase(r, p))
+      : SIM_STEP_DEFS.map((d) => ({
+          ...d,
+          // Rebuild the meta from real EPC fields on the property — falls
+          // back to the static SIM_STEP_DEFS string when no relevant field
+          // is on file (e.g. property hasn't been EPC-enriched yet).
+          meta: buildStepMeta(d.id, p, d.meta),
+        }))
+  return base.map((b) => ({
+    ...b,
+    status: simStepStatuses.value[b.id] ?? ('idle' as SimStatus),
+    diffNote: simStepDiffNotes.value[b.id],
+  }))
+})
+
+/**
+ * Convert one EPC recommendation row → the static fields a SimStep needs.
+ * The `typicalSaving` is real £/yr from EPC; cost ranges are real strings.
+ * The `scoreDelta` is heuristically derived from the saving (anchored so a
+ * £40/yr save ≈ +2pts, £200 ≈ +5pts, £400+ ≈ +8pts) — the EPC
+ * "resulting SAP" isn't a per-recommendation delta, so this is the cleanest
+ * way to feed the gauge without misleading numbers.
+ */
+function epcRecToSimStepBase(
+  r: any,
+  property: any,
+): Omit<SimStep, 'status' | 'diffNote'> {
+  const saving = Number(r?.typicalSaving) || 0
+  const scoreDelta = saving >= 400
+    ? 8
+    : saving >= 200
+      ? 5
+      : saving >= 80
+        ? 3
+        : 2
+  // Rough kg-CO₂ proxy: heating-dominant improvements emit ~0.18 kg CO₂ per £
+  // of typical-saving (UK gas grid factor). Caps at 1.2t to stay realistic.
+  const co2Delta = Math.min(1.2, Math.round(saving * 0.18) / 1000 * 1000) || 0
+  const cost = String(r?.costRange ?? '').trim()
+  const impactParts = [
+    `Score +${scoreDelta} pts`,
+    saving > 0 ? `saves ~£${saving}/yr` : null,
+    cost ? `cost ${cost}` : null,
+  ].filter(Boolean)
+  // Build the meta from real property EPC fields where we can match the
+  // recommendation title to an efficiency field. Falls back to the EPC's
+  // cost range if no field matched.
+  const recTitle = String(r?.title ?? '').trim() || 'Energy improvement'
+  const fallbackMeta = cost ? `EPC recommendation · ${cost}` : 'EPC recommendation'
+  return {
+    id: String(r?.id ?? ''),
+    title: recTitle,
+    meta: buildStepMeta(recTitle, property, fallbackMeta),
+    desc: String(r?.description ?? '').trim() || 'Recommended on your EPC.',
+    impact: impactParts.join(' · '),
+    question: 'Has this been done since the last EPC?',
+    scoreDelta,
+    costSaving: saving,
+    co2Delta: Math.round(co2Delta * 10) / 10,
+  }
+}
 const openStepId = ref<string | null>(null)
 const simPath = ref<'quiz' | 'bill' | null>('quiz')
 const simBillUploaded = ref(false)
 const simDiffOpen = ref(false)
 const simDiffStepId = ref<string | null>(null)
 const simDiffText = ref('')
+
+// ── Bill-upload drawer state ─────────────────────────────────
+// When the user picks the "Upload a bill" path, we open a bottom-sheet
+// drawer with a file picker + preview, similar to the Boost Score drawer.
+const simBillDrawerOpen = ref(false)
+const simBillFile = ref<File | null>(null)
+const simBillError = ref('')
+const simBillSavedFileName = ref<string | null>(null)
+
+function openSimBillDrawer() {
+  simBillError.value = ''
+  simBillFile.value = null
+  simBillDrawerOpen.value = true
+}
+function closeSimBillDrawer() {
+  simBillDrawerOpen.value = false
+  simBillError.value = ''
+  simBillFile.value = null
+}
+function onSimBillFilePicked(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  if (file.size > 20 * 1024 * 1024) {
+    simBillError.value = 'File too large. Max 20MB.'
+    if (input) input.value = ''
+    return
+  }
+  simBillError.value = ''
+  simBillFile.value = file
+  if (input) input.value = ''
+}
+// Parsed-bill result (from POST /property/:id/bill-parse). Surfaces the OCR'd
+// figures back into the EPC-nudge copy + the cost summary line. Available only
+// to verified owners (the endpoint is JWT-gated).
+const simParsedBill = ref<{
+  annualSpend: number | null
+  gasSpend: number | null
+  electricitySpend: number | null
+  supplier: string | null
+  period: 'annual' | 'quarterly' | 'monthly' | 'unknown'
+} | null>(null)
+const simBillUploading = ref(false)
+
+async function saveSimBill() {
+  if (!simBillFile.value) {
+    simBillError.value = 'Pick a file first.'
+    return
+  }
+  if (simBillUploading.value) return
+  simBillUploading.value = true
+  simBillError.value = ''
+  try {
+    const token =
+      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    // Guests / non-owners: keep the local-only UX (just flip the flag so the
+    // EPC nudge advances). The OCR endpoint is JWT-gated.
+    if (!token) {
+      simBillSavedFileName.value = simBillFile.value.name
+      simBillUploaded.value = true
+      showToast({ message: 'Bill uploaded', iconEmoji: '✓' })
+      closeSimBillDrawer()
+      return
+    }
+    const form = new FormData()
+    form.append('file', simBillFile.value)
+    const res = await fetch(
+      `${config.public.apiBase}/property/${propertyId}/bill-parse`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+      },
+    )
+    if (!res.ok) {
+      simBillError.value =
+        'Could not read the bill. Try a clearer photo or PDF.'
+      return
+    }
+    const parsed = await res.json()
+    simParsedBill.value = parsed
+    simBillSavedFileName.value = simBillFile.value.name
+    simBillUploaded.value = true
+    // Toast adapts to what we extracted: if we parsed an annual figure,
+    // surface it; otherwise generic success.
+    const msg =
+      typeof parsed?.annualSpend === 'number' && parsed.annualSpend > 0
+        ? `Bill read · £${parsed.annualSpend.toLocaleString()}/yr`
+        : 'Bill uploaded'
+    showToast({ message: msg, iconEmoji: '✓' })
+    closeSimBillDrawer()
+  } catch (e) {
+    simBillError.value = 'Upload failed — please try again.'
+  } finally {
+    simBillUploading.value = false
+  }
+}
 
 // EPC year for the hero copy ("Your EPC is from <year>").
 const simEpcYear = computed<string>(() => {
@@ -3051,17 +3606,15 @@ function simToggleStep(id: string) {
 }
 
 function simAnswer(id: string, status: SimStatus) {
-  const step = simSteps.value.find((s) => s.id === id)
-  if (!step) return
-  step.status = status
+  if (!simSteps.value.some((s) => s.id === id)) return
+  simStepStatuses.value = { ...simStepStatuses.value, [id]: status }
   // Collapse the step after a choice.
   openStepId.value = null
 }
 
 function simOpenDiff(id: string) {
   simDiffStepId.value = id
-  simDiffText.value =
-    simSteps.value.find((s) => s.id === id)?.diffNote || ''
+  simDiffText.value = simStepDiffNotes.value[id] || ''
   simDiffOpen.value = true
 }
 
@@ -3072,10 +3625,13 @@ function simCloseDiff() {
 }
 
 function simConfirmDiff() {
-  const step = simSteps.value.find((s) => s.id === simDiffStepId.value)
-  if (step) {
-    step.status = 'diff'
-    step.diffNote = simDiffText.value.trim() || undefined
+  const id = simDiffStepId.value
+  if (id && simSteps.value.some((s) => s.id === id)) {
+    simStepStatuses.value = { ...simStepStatuses.value, [id]: 'diff' }
+    const trimmed = simDiffText.value.trim()
+    if (trimmed) {
+      simStepDiffNotes.value = { ...simStepDiffNotes.value, [id]: trimmed }
+    }
     openStepId.value = null
   }
   simCloseDiff()
@@ -3087,10 +3643,10 @@ function simSelectPath(p: 'quiz' | 'bill') {
 }
 
 function simReset() {
-  simSteps.value = SIM_STEP_DEFS.map((d) => ({
-    ...d,
-    status: 'idle' as SimStatus,
-  }))
+  // simSteps is a computed (derived from property.epcRecommendations or
+  // SIM_STEP_DEFS); resetting means clearing all per-step status/diff state.
+  simStepStatuses.value = {}
+  simStepDiffNotes.value = {}
   openStepId.value = null
   simPath.value = 'quiz'
   simBillUploaded.value = false
@@ -3133,11 +3689,9 @@ function simSubmit() {
 // ── Post-Quiz screen helpers (refined results) ───────────────
 // Refined bills figure shown in the hero — already computed from sim deltas.
 const pqRefinedBills = computed(() => simBills.value)
-// Random-feeling FOMO count per property (stable across renders).
-const pqSearches = computed<number>(() => {
-  const id = (property.value as any)?.id || ''
-  return 3 + ((id.charCodeAt(0) || 1) % 7)
-})
+// Live "today" search count from PropertySearchLog (via /search-stats).
+// Returns 0 when stats haven't loaded yet — the row hides via v-if.
+const pqSearches = computed<number>(() => searchStats.value?.today ?? 0)
 
 const pqScoreColor = computed(() => simScoreColor.value)
 const pqScoreTone = computed<'low' | 'mid' | 'high'>(() => {
@@ -3201,9 +3755,10 @@ const refinedBreakdownBars = computed(() => {
   ]
 })
 
-// Move to the publish funnel.
+// Move to the publish funnel — gated so only verified owners reach the
+// publish preview. See `gateOwnerAction()` for the chain.
 function goToPublish() {
-  screen.value = 'publish'
+  gateOwnerAction('publish')
 }
 
 // ── Publish screen helpers ───────────────────────────────────
@@ -3271,6 +3826,7 @@ async function loadStreetPublishStats() {
 // (e.g. after the user just published — the count should now include them).
 watch(screen, (s) => {
   if (s === 'publish' || s === 'published') void loadStreetPublishStats()
+  if (s === 'buyer-results') void loadStreetEnergyRank()
 })
 const pubMilestones = [
   { target: 1, label: 'Pioneer 🏅' },
@@ -3279,19 +3835,28 @@ const pubMilestones = [
   { target: 25, label: 'Homes' },
 ]
 
-// "Publish to <street>" CTA — auth-gates guests, then routes to KYC.
-function onPublishToStreet() {
-  if (isGuest.value) {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(
-        'redirectAfterLogin',
-        `/homescore/${propertyId}?screen=kyc`,
-      )
-    }
-    showAuthGate.value = true
+/**
+ * "Publish to <street>" CTA on the publish-preview screen.
+ *
+ * By the time the user is on this screen we've already routed them through
+ * `gateOwnerAction('publish')`, so in the happy path they're a verified
+ * owner with a claimed passport. We can publish directly — no KYC sub-flow,
+ * just call `confirmPublish()` and land on the published screen.
+ *
+ * Defensive: if the user somehow arrived here without going through the gate
+ * (deep-linked URL, browser back-button shenanigans), re-run the gate which
+ * will send them through login + /claim before bouncing back here.
+ */
+async function onPublishToStreet() {
+  if (readOnlyMode.value) {
+    router.push(`/property/${propertyId}`)
     return
   }
-  screen.value = 'kyc'
+  if (isGuest.value || !isPropertyOwner.value) {
+    gateOwnerAction('publish')
+    return
+  }
+  await confirmPublish()
 }
 
 // User picked a KYC verification method. Records the intent via
@@ -3461,11 +4026,53 @@ const buyerAnnualCost = computed(() => {
 })
 
 // ── Buyer-results (watch screen) helpers ─────────────────────
+
+// Live street-energy rank from /property/:id/street-energy-rank. Hydrated
+// once per page load and lazily refreshed when entering buyer-results.
+const streetEnergyRank = ref<{
+  rank: number | null
+  total: number
+  bestCost: number | null
+  averageCost: number | null
+  yourCost: number | null
+} | null>(null)
+
+async function loadStreetEnergyRank() {
+  try {
+    const res = await fetch(
+      `${config.public.apiBase}/property/${propertyId}/street-energy-rank`,
+    )
+    if (!res.ok) return
+    const data = await res.json()
+    streetEnergyRank.value = data
+  } catch {
+    /* keep null — UI falls back gracefully */
+  }
+}
+
+// Real cheapest-on-street figure when ≥3 neighbours are enriched, else
+// falls back to a heuristic so the line still renders.
 const bvStreetBest = computed(() => {
-  // Cheapest a home on this street could plausibly run — anchor to the same
-  // street-average proxy the running-costs service uses.
+  const real = streetEnergyRank.value?.bestCost
+  if (typeof real === 'number' && real > 0) return real
   const own = buyerAnnualCost.value
   return Math.max(680, Math.round(own * 0.78))
+})
+
+// "Nth" label (1st, 2nd, 3rd, 4th, …) for the cost-hero stats row.
+// Returns null when we don't have enough comparable data for a rank yet,
+// so the template can hide the slot entirely (see v-if on the stat).
+const bvStreetRankLabel = computed<string | null>(() => {
+  const r = streetEnergyRank.value?.rank
+  if (typeof r !== 'number' || r < 1) return null
+  const lastTwo = r % 100
+  if (lastTwo >= 11 && lastTwo <= 13) return `${r}th`
+  switch (r % 10) {
+    case 1: return `${r}st`
+    case 2: return `${r}nd`
+    case 3: return `${r}rd`
+    default: return `${r}th`
+  }
 })
 
 const bvEpcColor = computed(() => {
@@ -3491,10 +4098,9 @@ const bvPassportState = computed<'unclaimed' | 'inProgress' | 'published'>(
   },
 )
 
-const bvSearches = computed<number>(() => {
-  const id = property.value?.id || ''
-  return 3 + ((id.charCodeAt(0) || 1) % 7)
-})
+// Live "today" search count from PropertySearchLog (via /search-stats).
+const bvSearches = computed<number>(() => searchStats.value?.today ?? 0)
+const bvMonthSearches = computed<number>(() => searchStats.value?.thisMonth ?? 0)
 
 const bvQuestions = [
   {
@@ -4059,9 +4665,17 @@ onMounted(async () => {
       )
       step.value = firstUnanswered >= 0 ? firstUnanswered : 0
     }
-    screen.value = requested as Screen
-    // Strip the query so back-nav / refresh doesn't re-trigger
+    // Strip the query so back-nav / refresh doesn't re-trigger.
     router.replace({ path: route.path }).catch(() => {})
+
+    // Owner-only screens (publish + boost-your-score) re-run the gate so
+    // a freshly-signed-in user who hasn't claimed the property yet is sent
+    // through /claim instead of dropped onto a screen they shouldn't see.
+    if (requested === 'publish' || requested === 'quick-wins') {
+      gateOwnerAction(requested)
+    } else {
+      screen.value = requested as Screen
+    }
   }
 })
 
@@ -9342,33 +9956,35 @@ watch(screen, (s) => {
   max-width: 28rem;
   box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.18);
 }
+/* Modal lives outside .sim-root (it's a sibling of the sim screen), so the
+   sim-* CSS variables don't cascade — use literal palette here. */
 .sim-diff-handle {
   width: 40px;
   height: 4px;
-  background: var(--sim-line-soft);
+  background: #f5f5f7;
   border-radius: 100px;
   margin: 0 auto 20px;
 }
 .sim-diff-title {
   font-size: 15px;
   font-weight: 800;
-  color: var(--sim-navy);
+  color: #231d45;
   margin-bottom: 6px;
 }
 .sim-diff-body {
   font-size: 12px;
-  color: var(--sim-text-soft);
+  color: #6b6783;
   margin-bottom: 16px;
   line-height: 1.5;
 }
 .sim-diff-textarea {
   width: 100%;
-  border: 2px solid var(--sim-teal-pale);
+  border: 2px solid #e5f4f2;
   border-radius: 12px;
   padding: 12px;
   font-family: inherit;
   font-size: 13px;
-  color: var(--sim-navy);
+  color: #231d45;
   resize: none;
   height: 90px;
   box-sizing: border-box;
@@ -9376,13 +9992,13 @@ watch(screen, (s) => {
   transition: border-color 0.15s;
 }
 .sim-diff-textarea:focus {
-  border-color: var(--sim-teal);
+  border-color: #00a19a;
 }
 .sim-diff-tip {
   margin-top: 10px;
   padding: 12px 14px;
   background: #fff8ec;
-  border: 1.5px solid var(--sim-amber-pale);
+  border: 1.5px solid #fbefd9;
   border-radius: 12px;
   display: flex;
   gap: 10px;
@@ -9394,7 +10010,7 @@ watch(screen, (s) => {
 }
 .sim-diff-tip-text {
   font-size: 11px;
-  color: var(--sim-navy);
+  color: #231d45;
   line-height: 1.5;
 }
 .sim-diff-actions {
@@ -9405,7 +10021,7 @@ watch(screen, (s) => {
 .sim-diff-save {
   flex: 1;
   padding: 13px;
-  background: var(--sim-teal);
+  background: #00a19a;
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -9413,18 +10029,21 @@ watch(screen, (s) => {
   font-size: 13px;
   font-weight: 800;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
 }
+.sim-diff-save:hover { background: #00b6ae; }
 .sim-diff-cancel {
   padding: 13px 16px;
-  background: var(--sim-bg);
-  border: 1.5px solid var(--sim-line-soft);
+  background: #fafafa;
+  border: 1.5px solid #f5f5f7;
   border-radius: 12px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
-  color: var(--sim-text-soft);
+  color: #6b6783;
   cursor: pointer;
 }
+.sim-diff-cancel:hover { color: #231d45; border-color: #c8c5e0; }
 
 /* Sheet-up transition */
 .sim-modal-enter-active,
