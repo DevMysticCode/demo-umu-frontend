@@ -9,7 +9,8 @@
         screen !== 'publish' &&
         screen !== 'kyc' &&
         screen !== 'kyc-pending' &&
-        screen !== 'published'
+        screen !== 'published' &&
+        screen !== 'quick-wins'
       "
       class="hs-header"
     >
@@ -1712,282 +1713,134 @@
       </div>
     </template>
 
-    <!-- ── QUICK WINS / BOOST SCORE ─────────────────────────────── -->
+    <!-- ── BOOST YOUR SCORE — matches prototype `boost` screen ───── -->
     <template v-else-if="screen === 'quick-wins'">
-      <div class="hs-scroll">
-        <!-- Property Journey widget (mirrors results) -->
-        <div class="hs-journey-card" style="cursor: default">
-          <div class="hs-journey-inner">
-            <div class="hs-journey-head">
-              <div class="hs-journey-eyebrow">Your Property Journey</div>
-              <div class="hs-journey-link">Updates as you add docs</div>
-            </div>
-            <div class="hs-journey-grid">
+      <div class="boost-root">
+        <!-- Top nav -->
+        <div class="boost-topnav">
+          <button class="boost-back-btn" @click="screen = 'results'" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div class="boost-topnav-centre">
+            <div class="boost-topnav-title">Boost your score</div>
+            <div class="boost-topnav-sub">Every document adds real value</div>
+          </div>
+          <div style="width: 32px;" />
+        </div>
+
+        <!-- Property Journey card -->
+        <div class="boost-journey-card">
+          <div class="boost-journey-header">
+            <div class="boost-journey-eyebrow">YOUR PROPERTY JOURNEY</div>
+            <div class="boost-journey-right">Updates as you add docs</div>
+          </div>
+          <div class="boost-journey-stats">
+            <div class="boost-stat">
               <div
-                class="hs-journey-col"
-                style="border-right: 1px solid var(--line, #e5e7eb)"
-              >
-                <div class="hs-journey-num-wrap">
-                  <div
-                    class="hs-journey-num"
-                    :style="{ color: scoreColor(qwScore) }"
-                  >
-                    {{ qwScore }}
-                  </div>
-                  <div class="hs-journey-num-small">/100</div>
-                </div>
-                <div class="hs-journey-label">HomeScore</div>
-                <div class="hs-journey-sub">Energy score</div>
-              </div>
-              <div
-                class="hs-journey-col"
-                style="border-right: 1px solid var(--line, #e5e7eb)"
-              >
-                <div
-                  class="hs-journey-num"
-                  :class="qwMoveReady > 0 ? '' : 'hs-journey-num-muted'"
-                >
-                  {{ qwMoveReady }}%
-                </div>
-                <div class="hs-journey-label">Move Ready</div>
-                <div class="hs-journey-sub">Docs &amp; certs</div>
-              </div>
-              <div class="hs-journey-col">
-                <div class="hs-journey-num hs-journey-num-muted">0%</div>
-                <div class="hs-journey-label">Passport</div>
-                <div class="hs-journey-sub">Ownership verified</div>
-              </div>
+                class="boost-stat-num"
+                :class="{ amber: qwScore < 40 }"
+                :style="{ color: scoreColor(qwScore) }"
+              >{{ qwScore }}</div>
+              <div class="boost-stat-label">HOMESCORE</div>
+              <div class="boost-stat-sub">Energy score</div>
             </div>
-            <div class="hs-journey-bar-track">
+            <div class="boost-stat-div" />
+            <div class="boost-stat">
               <div
-                class="hs-journey-bar-fill"
-                :style="{ width: `${qwProgress}%` }"
-              />
+                class="boost-stat-num"
+                :class="{ muted: qwMoveReady === 0 }"
+              >{{ qwMoveReady }}%</div>
+              <div class="boost-stat-label">MOVE READY</div>
+              <div class="boost-stat-sub">Docs &amp; certs</div>
             </div>
+            <div class="boost-stat-div" />
+            <div class="boost-stat">
+              <div class="boost-stat-num muted">0%</div>
+              <div class="boost-stat-label">PASSPORT</div>
+              <div class="boost-stat-sub">Ownership verified</div>
+            </div>
+          </div>
+          <div class="boost-progress-bar">
+            <div
+              class="boost-progress-fill"
+              :style="{ width: `${qwProgress}%` }"
+            />
           </div>
         </div>
 
-        <!-- Upload documents -->
-        <div class="hs-qw-section-label">📎 Upload a document</div>
-        <div class="hs-qw-list">
+        <!-- Upload a document section -->
+        <div class="boost-section-label">📎 UPLOAD A DOCUMENT</div>
+        <div class="boost-cards">
           <div
-            v-for="doc in qwDocs"
+            v-for="(doc, idx) in qwDocs"
+            v-show="idx === 0 || boostUnlocked >= idx"
             :key="doc.key"
-            class="hs-qw-doc-row"
-            :class="{ uploaded: !!uploadedDocs[doc.key] }"
+            class="boost-doc-card"
+            :class="{ uploaded: !!uploadedDocs[doc.key], 'boost-doc-card--unlocking': idx === boostUnlocked && !uploadedDocs[doc.key] }"
             @click="triggerDocUpload(doc.key)"
           >
-            <div class="hs-qw-doc-ic" :style="{ background: doc.bg }">
+            <div class="boost-doc-icon" :style="{ background: doc.bg }">
               {{ doc.icon }}
             </div>
-            <div class="hs-qw-doc-body">
-              <div class="hs-qw-doc-name">{{ doc.label }}</div>
-              <div class="hs-qw-doc-sub">{{ doc.sub }}</div>
+            <div class="boost-doc-body">
+              <div class="boost-doc-title">{{ doc.label }}</div>
+              <div class="boost-doc-sub">{{ doc.sub }}</div>
             </div>
-            <div class="hs-qw-doc-right">
-              <div
-                v-if="!!uploadedDocs[doc.key]"
-                class="hs-qw-doc-done"
-                aria-label="Uploaded"
-              >
-                ✓
-              </div>
-              <div v-else class="hs-qw-doc-pts">+{{ doc.pts }} pts</div>
+            <div v-if="!!uploadedDocs[doc.key]" class="boost-pts">
+              ✓ +{{ doc.pts }} pts
             </div>
+            <button
+              v-else
+              class="boost-add-btn"
+              type="button"
+              aria-label="Upload"
+              @click.stop="triggerDocUpload(doc.key)"
+            >+</button>
           </div>
         </div>
 
-        <!-- Doc upload drawer — opens when tapping a Boost row -->
-        <Teleport to="body">
-          <div
-            v-if="qwDrawerOpen"
-            class="qw-overlay"
-            @click.self="closeDrawer"
-          >
-            <div class="qw-modal">
-              <div class="qw-modal-handle" />
-              <div class="qw-modal-header">
-                <div class="qw-modal-title">
-                  {{ qwDrawerDoc?.label || 'Upload document' }}
-                </div>
-                <button
-                  type="button"
-                  class="qw-modal-close"
-                  aria-label="Close"
-                  @click="closeDrawer"
-                >
-                  ×
-                </button>
-              </div>
-
-              <div class="qw-modal-body">
-                <p class="qw-modal-intro">{{ qwDrawerDoc?.sub }}</p>
-
-                <!-- Already-saved file preview -->
-                <div v-if="qwDrawerExistingEntry" class="qw-doc-preview">
-                  <div class="qw-doc-preview-icon">📄</div>
-                  <div class="qw-doc-preview-info">
-                    <div class="qw-doc-preview-name">
-                      {{ qwDrawerExistingEntry.fileName }}
-                    </div>
-                    <div class="qw-doc-preview-meta">
-                      {{ formatFileSize(qwDrawerExistingEntry.fileSize) }} ·
-                      saved
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    class="qw-doc-preview-btn"
-                    @click="removeDrawerDoc"
-                  >
-                    Remove
-                  </button>
-                </div>
-
-                <!-- Newly picked file (pending save) -->
-                <div
-                  v-if="qwDrawerFile"
-                  class="qw-doc-preview qw-doc-preview--pending"
-                >
-                  <div class="qw-doc-preview-icon">📄</div>
-                  <div class="qw-doc-preview-info">
-                    <div class="qw-doc-preview-name">{{ qwDrawerFile.name }}</div>
-                    <div class="qw-doc-preview-meta">
-                      {{ formatFileSize(qwDrawerFile.size) }} · ready to save
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    class="qw-doc-preview-btn"
-                    @click="qwDrawerFile = null"
-                  >
-                    Change
-                  </button>
-                </div>
-
-                <!-- File picker (only shown when nothing pending) -->
-                <label v-if="!qwDrawerFile" class="qw-upload-row">
-                  <input
-                    type="file"
-                    accept=".pdf,image/*"
-                    class="qw-upload-input"
-                    @change="onDrawerFilePicked"
-                  />
-                  <span class="qw-upload-icon">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="17 8 12 3 7 8" />
-                      <line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
-                  </span>
-                  <span class="qw-upload-text">
-                    {{
-                      qwDrawerExistingEntry
-                        ? 'Replace document'
-                        : 'Upload document'
-                    }}
-                    <small>PDF, JPG, PNG up to 20MB</small>
-                  </span>
-                </label>
-
-                <p v-if="qwDrawerError" class="qw-modal-error">
-                  {{ qwDrawerError }}
-                </p>
-              </div>
-
-              <div class="qw-modal-footer">
-                <button
-                  type="button"
-                  class="qw-btn-secondary"
-                  @click="closeDrawer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  class="qw-btn-primary"
-                  :disabled="!qwDrawerFile"
-                  @click="saveDrawerDoc"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        </Teleport>
-
-        <!-- Book a pro -->
-        <div class="hs-qw-section-label">🔧 Book a professional</div>
-        <div class="hs-qw-list">
+        <!-- Book a professional section -->
+        <div class="boost-section-label">🔧 BOOK A PROFESSIONAL</div>
+        <div class="boost-cards">
           <div
             v-for="pro in qwPros"
             :key="pro.key"
-            class="hs-qw-pro-row"
+            class="boost-doc-card"
             @click="openMarketplace"
           >
-            <div class="hs-qw-doc-ic" :style="{ background: pro.bg }">
+            <div class="boost-doc-icon" :style="{ background: pro.bg }">
               {{ pro.icon }}
             </div>
-            <div class="hs-qw-doc-body">
-              <div class="hs-qw-doc-name">{{ pro.label }}</div>
-              <div class="hs-qw-doc-sub">{{ pro.sub }}</div>
+            <div class="boost-doc-body">
+              <div class="boost-doc-title">{{ pro.label }}</div>
+              <div class="boost-doc-sub">{{ pro.sub }}</div>
             </div>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#94a3b8"
-              stroke-width="2"
-              stroke-linecap="round"
-            >
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
+            <div class="boost-chev">›</div>
           </div>
         </div>
 
-        <!-- Get move ready CTA -->
-        <div class="hs-qw-mr-cta">
-          <div class="hs-qw-mr-glow" />
-          <div class="hs-qw-mr-inner">
-            <div class="hs-qw-mr-eyebrow">Next step on your journey</div>
-            <div class="hs-qw-mr-title">
-              You've scored {{ qwScore }}. Now make it count.
-            </div>
-            <div class="hs-qw-mr-body">
-              Your Move Ready and Passport scores are waiting to be unlocked.
-              Each document you add brings them up — verify your home to lock in
-              everything you've built.
-            </div>
-            <button class="hs-qw-mr-btn" @click="screen = 'move-ready'">
-              Get move ready
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#042f2e"
-                stroke-width="2.5"
-                stroke-linecap="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </button>
+        <!-- Now make it count CTA -->
+        <div class="pj-cta-card">
+          <div class="pj-cta-eyebrow">Next step on your journey</div>
+          <div class="pj-cta-title">
+            Score: <span>{{ qwScore }}</span>. Your Passport is taking shape.
           </div>
+          <div class="pj-cta-sub">
+            Each document you add is a verified layer of your Property
+            Passport. Keep uploading to reach Move Ready status and lock in
+            everything you've built.
+          </div>
+          <button class="pj-cta-btn" type="button" @click="claimOrAccessPassport">
+            Start my Property Passport →
+          </button>
         </div>
 
-        <button class="hs-btn-ghost" @click="screen = 'results'">
+        <button class="boost-back-link" type="button" @click="screen = 'results'">
           ← Back to my score
         </button>
-        <div style="height: 40px" />
+        <div style="height: 24px;" />
       </div>
     </template>
 
@@ -3798,30 +3651,49 @@ async function saveToBuyerProfile() {
 
 // ── Quick wins / boost score ──────────────────────────────────
 
+// Order mirrors the prototype's progressive unlock: utility bills first (the
+// "hook"), then heating cert, then gas safety, then EPC/EICR/Planning. Each
+// upload unlocks the next card so the user always has one new "next step".
 const qwDocs = [
   {
-    key: 'epc',
-    label: 'EPC Certificate',
-    sub: 'Energy rating — required for any sale',
-    pts: 8,
-    icon: '⚡',
-    bg: '#fef3c7',
+    key: 'utility-bills',
+    label: 'Utility Bills',
+    sub: 'See your actual spend vs your EPC estimate — most impactful first step',
+    pts: 12,
+    icon: '💡',
+    bg: '#FFFBEB',
+  },
+  {
+    key: 'heating-cert',
+    label: 'Heating System Certificate',
+    sub: 'Upgraded boiler or system not yet reflected on your EPC',
+    pts: 9,
+    icon: '🔥',
+    bg: '#FEF2F2',
   },
   {
     key: 'gas',
     label: 'Gas Safety Certificate',
-    sub: 'Annual boiler service — Gas Safe registered',
+    sub: 'Annual boiler service — Gas Safe registered engineer',
     pts: 10,
-    icon: '🔥',
-    bg: '#fff0f0',
+    icon: '🔧',
+    bg: '#FFF7ED',
+  },
+  {
+    key: 'epc',
+    label: 'EPC Certificate',
+    sub: 'Energy rating — required for any sale or rental',
+    pts: 8,
+    icon: '⚡',
+    bg: '#FFFBEB',
   },
   {
     key: 'eicr',
     label: 'EICR Report',
-    sub: 'Electrical check removes a major buyer red flag',
+    sub: 'Electrical check — removes a major buyer concern',
     pts: 7,
     icon: '🔌',
-    bg: '#eff6ff',
+    bg: '#EEF2FF',
   },
   {
     key: 'planning',
@@ -3829,25 +3701,13 @@ const qwDocs = [
     sub: 'Extensions, conversions or permitted development',
     pts: 5,
     icon: '📋',
-    bg: '#f0fdf4',
-  },
-  {
-    key: 'fensa',
-    label: 'FENSA Certificate',
-    sub: 'Window installation compliance certificate',
-    pts: 4,
-    icon: '🪟',
-    bg: '#fdf4ff',
-  },
-  {
-    key: 'buildregs',
-    label: 'Building Regulations cert',
-    sub: 'Covers any structural or significant works',
-    pts: 5,
-    icon: '🏗️',
-    bg: '#fff7ed',
+    bg: '#F0FDF4',
   },
 ]
+
+// Sequential-unlock index: how many cards past the first are visible.
+// Each successful upload bumps this so the next card slides into view.
+const boostUnlocked = ref(0)
 
 const qwPros = [
   {
@@ -3934,6 +3794,11 @@ function saveDrawerDoc() {
     fileSize: file.size,
     fileType: file.type || 'application/octet-stream',
     uploadedAt: Date.now(),
+  }
+  // Advance the sequential unlock so the next card slides in.
+  const idx = qwDocs.findIndex((d) => d.key === key)
+  if (idx >= 0 && idx >= boostUnlocked.value) {
+    boostUnlocked.value = Math.min(qwDocs.length - 1, idx + 1)
   }
   const doc = qwDocs.find((d) => d.key === key)
   showToast({
@@ -11275,4 +11140,319 @@ watch(screen, (s) => {
   box-shadow: none;
   cursor: not-allowed;
 }
+
+/* ──────────────────────────────────────────────────────────────
+   BOOST YOUR SCORE — matches homescore-v2_13.html `boost` screen
+   ────────────────────────────────────────────────────────────── */
+.boost-root {
+  --b-navy: #231d45;
+  --b-teal: #00a19a;
+  --b-teal-bright: #00b6ae;
+  --b-teal-dark: #007e78;
+  --b-teal-pale: #e5f4f2;
+  --b-teal-paler: #f2faf8;
+  --b-amber: #e6a23c;
+  --b-success: #2eab55;
+  --b-text-soft: #6b6783;
+  --b-text-faint: #9c98ad;
+  --b-line: #ececef;
+  --b-line-soft: #f5f5f7;
+  --b-bg: #f2f4f7;
+
+  min-height: 100dvh;
+  background: var(--b-bg);
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 24px;
+  color: var(--b-navy);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Top nav */
+.boost-topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 8px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+}
+.boost-back-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--b-teal-paler);
+  border: 1px solid var(--b-teal-pale);
+  color: var(--b-teal);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-family: inherit;
+}
+.boost-back-btn svg { width: 14px; height: 14px; }
+.boost-topnav-centre { text-align: center; }
+.boost-topnav-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--b-navy);
+  letter-spacing: -0.2px;
+}
+.boost-topnav-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--b-text-soft);
+  margin-top: 1px;
+}
+
+/* Property Journey card */
+.boost-journey-card {
+  margin: 12px 16px 0;
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  border: 2px solid var(--b-teal-pale);
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.08);
+}
+.boost-journey-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.boost-journey-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--b-text-faint);
+  letter-spacing: 1px;
+}
+.boost-journey-right {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--b-teal-dark);
+}
+.boost-journey-stats {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.boost-stat {
+  flex: 1;
+  text-align: center;
+}
+.boost-stat-num {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--b-text-soft);
+  letter-spacing: -0.8px;
+  line-height: 1;
+  margin-bottom: 4px;
+  font-feature-settings: 'tnum';
+}
+.boost-stat-num.amber { color: var(--b-amber); }
+.boost-stat-num.muted { color: var(--b-text-faint); }
+.boost-stat-label {
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--b-text-faint);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.boost-stat-sub {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--b-text-soft);
+}
+.boost-stat-div {
+  width: 1px;
+  height: 48px;
+  background: var(--b-line);
+  flex-shrink: 0;
+}
+.boost-progress-bar {
+  height: 6px;
+  background: var(--b-line);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.boost-progress-fill {
+  height: 100%;
+  background: var(--b-teal);
+  border-radius: 100px;
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Section labels */
+.boost-section-label {
+  padding: 18px 16px 8px;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--b-text-soft);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* Card rows */
+.boost-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 16px;
+}
+.boost-doc-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  border: 2px solid var(--b-teal-pale);
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 8px rgba(0, 161, 154, 0.06);
+}
+.boost-doc-card:hover {
+  border-color: var(--b-teal);
+  box-shadow: 0 4px 16px rgba(0, 161, 154, 0.12);
+}
+.boost-doc-card.uploaded {
+  background: linear-gradient(135deg, #f0fbf4 0%, #fff 60%);
+  border-color: #b8e8c8;
+}
+.boost-doc-card--unlocking {
+  animation: boost-unlock 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes boost-unlock {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.boost-doc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.boost-doc-body {
+  flex: 1;
+  min-width: 0;
+}
+.boost-doc-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--b-navy);
+  letter-spacing: -0.1px;
+  margin-bottom: 3px;
+}
+.boost-doc-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--b-text-soft);
+  line-height: 1.4;
+}
+.boost-pts {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--b-success);
+  background: #f0fbf4;
+  border: 1.5px solid #b8e8c8;
+  padding: 5px 10px;
+  border-radius: 100px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.boost-add-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--b-teal);
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(0, 161, 154, 0.3);
+  line-height: 1;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.boost-add-btn:hover {
+  background: var(--b-teal-bright);
+  transform: scale(1.1);
+}
+.boost-chev {
+  font-size: 18px;
+  color: var(--b-line);
+  flex-shrink: 0;
+}
+
+/* "Now make it count" CTA */
+.pj-cta-card {
+  margin: 16px 16px 0;
+  background: linear-gradient(135deg, var(--b-navy) 0%, #1a1640 100%);
+  border-radius: 20px;
+  padding: 22px 20px 20px;
+  box-shadow: 0 8px 28px rgba(35, 29, 69, 0.3);
+}
+.pj-cta-eyebrow {
+  font-size: 9px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.pj-cta-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.pj-cta-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.pj-cta-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--b-teal);
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  transition: background 0.15s;
+}
+.pj-cta-btn:hover { background: var(--b-teal-bright); }
+
+/* Back link at the bottom */
+.boost-back-link {
+  display: block;
+  margin: 14px auto 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--b-text-soft);
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.boost-back-link:hover { color: var(--b-navy); }
 </style>
