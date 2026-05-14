@@ -1,7 +1,18 @@
 <template>
   <div class="hs-page">
-    <!-- Global header — hidden during the quiz, which has its own top nav -->
-    <div v-if="screen !== 'questions'" class="hs-header">
+    <!-- Global header — hidden during quiz + post-quiz funnel screens, which
+         each render their own top nav and amber address card. -->
+    <div
+      v-if="
+        screen !== 'questions' &&
+        screen !== 'results' &&
+        screen !== 'publish' &&
+        screen !== 'kyc' &&
+        screen !== 'kyc-pending' &&
+        screen !== 'published'
+      "
+      class="hs-header"
+    >
       <button class="hs-back-btn" @click="goBack" aria-label="Back">
         <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
           <path
@@ -347,11 +358,16 @@
         </div>
 
         <!-- EPC nudge — dynamic copy based on state -->
-        <div class="sim-epc-nudge">
-          <div class="sim-epc-nudge-icon">🏷️</div>
+        <div class="sim-epc-nudge" :class="`sim-epc-nudge--${simEpcNudge.variant}`">
+          <div class="sim-epc-nudge-icon">{{ simEpcNudge.icon }}</div>
           <div style="flex: 1;">
             <div class="sim-epc-nudge-title">{{ simEpcNudge.title }}</div>
             <div class="sim-epc-nudge-body">{{ simEpcNudge.body }}</div>
+            <div v-if="simEpcNudge.ctaLabel" style="margin-top: 10px;">
+              <button type="button" class="sim-epc-nudge-cta">
+                {{ simEpcNudge.ctaLabel }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -414,501 +430,677 @@
       </Transition>
     </template>
 
-    <!-- ── RESULTS ───────────────────────────────────────────────── -->
+    <!-- ── POST-QUIZ (refined results) ───────────────────────────── -->
     <template v-else-if="screen === 'results'">
-      <div class="hs-scroll">
-        <!-- Address strip -->
-        <div v-if="property" class="hs-addr-strip">
-          <div class="hs-addr-dot" />
-          <div>
-            <div class="hs-addr-text">{{ property.addressLine1 }}</div>
-            <div class="hs-addr-tiny">
-              {{ property.postcode
-              }}<template v-if="property.propertyType">
-                &middot; {{ property.propertyType }}</template
-              ><template v-if="property.bedrooms">
-                &middot; {{ property.bedrooms }} bed</template
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Savings hero -->
-        <div class="hs-savings-hero">
-          <div class="hs-savings-eyebrow">Your savings potential</div>
-          <div class="hs-savings-row">
-            <div class="hs-savings-amount">
-              <template v-if="yearlyPotential > 0"
-                >£{{ yearlyPotential.toLocaleString() }} / year</template
-              >
-              <template v-else>Save money with verified upgrades</template>
-            </div>
-            <div class="hs-savings-pill">Score {{ result.total }}</div>
-          </div>
-          <div class="hs-savings-sub">
-            Biggest wins are in heating and insulation — upgrades below could
-            recover most of this.
-          </div>
-        </div>
-
-        <!-- Property Journey card -->
-        <div class="hs-journey-card" @click="screen = 'passport'">
-          <div class="hs-journey-inner">
-            <div class="hs-journey-head">
-              <div class="hs-journey-eyebrow">Your Property Journey</div>
-              <div class="hs-journey-link">What's this? →</div>
-            </div>
-            <div class="hs-journey-grid">
-              <div
-                class="hs-journey-col"
-                style="border-right: 1px solid var(--line, #e5e7eb)"
-              >
-                <div class="hs-journey-num-wrap">
-                  <div
-                    class="hs-journey-num"
-                    :style="{ color: scoreColor(result.total) }"
-                  >
-                    {{ result.total }}
-                  </div>
-                  <div class="hs-journey-num-small">/100</div>
-                </div>
-                <div class="hs-journey-label">HomeScore</div>
-                <div class="hs-journey-sub">Energy score</div>
-              </div>
-              <div
-                class="hs-journey-col"
-                style="border-right: 1px solid var(--line, #e5e7eb)"
-              >
-                <div class="hs-journey-num hs-journey-num-muted">0%</div>
-                <div class="hs-journey-label">Move Ready</div>
-                <div class="hs-journey-sub">Docs &amp; certs</div>
-              </div>
-              <div class="hs-journey-col">
-                <div class="hs-journey-num hs-journey-num-muted">0%</div>
-                <div class="hs-journey-label">Passport</div>
-                <div class="hs-journey-sub">Ownership verified</div>
-              </div>
-            </div>
-            <div class="hs-journey-bar-track">
-              <div
-                class="hs-journey-bar-fill"
-                :style="{ width: `${completeScore}%` }"
-              />
-            </div>
-            <div class="hs-journey-bar-label">
-              Upload documents and verify your home to start your journey
-            </div>
-          </div>
-          <!-- Walking lady street scene SVG -->
-          <div class="hs-street">
-            <svg viewBox="0 0 354 90" width="100%" style="display: block">
-              <rect x="0" y="0" width="354" height="62" fill="#f0f9ff" />
-              <g opacity="0.55">
-                <rect
-                  x="14"
-                  y="38"
-                  width="38"
-                  height="22"
-                  rx="2"
-                  fill="#cbd5e1"
-                />
-                <polygon points="14,38 33,22 52,38" fill="#94a3b8" />
-                <rect
-                  x="26"
-                  y="46"
-                  width="10"
-                  height="14"
-                  rx="1"
-                  fill="#64748b"
-                />
-              </g>
-              <g opacity="0.55">
-                <rect
-                  x="68"
-                  y="34"
-                  width="42"
-                  height="26"
-                  rx="2"
-                  fill="#cbd5e1"
-                />
-                <polygon points="68,34 89,16 110,34" fill="#94a3b8" />
-                <rect
-                  x="82"
-                  y="44"
-                  width="10"
-                  height="16"
-                  rx="1"
-                  fill="#64748b"
-                />
-                <rect
-                  x="96"
-                  y="42"
-                  width="9"
-                  height="9"
-                  rx="1"
-                  fill="#93c5fd"
-                />
-              </g>
-              <g>
-                <rect
-                  x="140"
-                  y="32"
-                  width="46"
-                  height="28"
-                  rx="2"
-                  fill="#ccfbf1"
-                />
-                <polygon points="140,32 163,12 186,32" fill="#1f7a66" />
-                <rect
-                  x="155"
-                  y="44"
-                  width="11"
-                  height="16"
-                  rx="1"
-                  fill="#0f766e"
-                />
-                <rect
-                  x="143"
-                  y="40"
-                  width="9"
-                  height="10"
-                  rx="1"
-                  fill="#99f6e4"
-                />
-                <text
-                  x="163"
-                  y="9"
-                  text-anchor="middle"
-                  font-size="8"
-                  fill="#1f7a66"
-                  font-weight="700"
-                >
-                  YOU
-                </text>
-              </g>
-              <g opacity="0.55">
-                <rect
-                  x="212"
-                  y="36"
-                  width="40"
-                  height="24"
-                  rx="2"
-                  fill="#cbd5e1"
-                />
-                <polygon points="212,36 232,20 252,36" fill="#94a3b8" />
-                <rect
-                  x="224"
-                  y="46"
-                  width="10"
-                  height="14"
-                  rx="1"
-                  fill="#64748b"
-                />
-              </g>
-              <g opacity="0.55">
-                <rect
-                  x="272"
-                  y="34"
-                  width="38"
-                  height="26"
-                  rx="2"
-                  fill="#cbd5e1"
-                />
-                <polygon points="272,34 291,18 310,34" fill="#94a3b8" />
-                <rect
-                  x="284"
-                  y="44"
-                  width="10"
-                  height="16"
-                  rx="1"
-                  fill="#64748b"
-                />
-              </g>
-              <text x="340" y="56" font-size="16" text-anchor="middle">🏡</text>
-              <text
-                x="340"
-                y="66"
-                font-size="7"
-                fill="#1f7a66"
-                font-weight="600"
-                text-anchor="middle"
-              >
-                SOLD
-              </text>
-              <rect x="0" y="62" width="354" height="20" fill="#e2e8f0" />
-              <line
-                x1="0"
-                y1="72"
-                x2="354"
-                y2="72"
-                stroke="#fff"
-                stroke-width="1.5"
-                stroke-dasharray="14,10"
-              />
-              <rect x="0" y="82" width="354" height="8" fill="#f1f5f9" />
-              <g
-                :transform="`translate(${Math.round(18 + (completeScore / 100) * 300)}, 62)`"
-              >
-                <ellipse cx="0" cy="2" rx="8" ry="2.5" fill="rgba(0,0,0,0.1)" />
-                <line
-                  x1="0"
-                  y1="-4"
-                  x2="0"
-                  y2="-16"
-                  stroke="#1f7a66"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                />
-                <circle cx="0" cy="-19" r="4" fill="#1f7a66" />
-                <path
-                  d="M-3.5,-22 Q0,-25 3.5,-22"
-                  stroke="#1f7a66"
-                  stroke-width="1.5"
-                  fill="none"
-                  stroke-linecap="round"
-                />
-                <line
-                  x1="0"
-                  y1="-14"
-                  x2="-5"
-                  y2="-9"
-                  stroke="#1f7a66"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-                <line
-                  x1="0"
-                  y1="-14"
-                  x2="5"
-                  y2="-10"
-                  stroke="#1f7a66"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-                <line
-                  x1="0"
-                  y1="-4"
-                  x2="4"
-                  y2="2"
-                  stroke="#1f7a66"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                />
-                <line
-                  x1="0"
-                  y1="-4"
-                  x2="-3"
-                  y2="2"
-                  stroke="#1f7a66"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                />
-                <rect
-                  x="-13"
-                  y="-32"
-                  width="26"
-                  height="11"
-                  rx="5"
-                  fill="#1f7a66"
-                />
-                <text
-                  x="0"
-                  y="-23.5"
-                  text-anchor="middle"
-                  font-size="7.5"
-                  font-weight="700"
-                  fill="#fff"
-                >
-                  {{ completeScore }}%
-                </text>
-              </g>
+      <div class="pq-root">
+        <!-- Top nav -->
+        <div class="pq-topnav">
+          <button class="pq-back-btn" @click="screen = 'landing'" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
             </svg>
+          </button>
+          <div class="pq-topnav-centre">
+            <div class="pq-topnav-title">Your HomeScore</div>
+            <div class="pq-topnav-sub">{{ property?.addressLine1 || 'Your property' }}</div>
           </div>
+          <div style="width: 32px;" />
         </div>
 
-        <!-- Carbon footprint card -->
-        <div class="hs-carbon-card" :style="{ background: carbonGradient }">
-          <div class="hs-carbon-top">
-            <div class="hs-carbon-eyebrow">🌍 Environmental Impact Rating</div>
-            <div class="hs-carbon-main-row">
-              <div>
-                <div class="hs-carbon-kg">{{ carbonKg.toLocaleString() }}</div>
-                <div class="hs-carbon-kg-label">kg CO₂ per year</div>
-              </div>
-              <div style="flex: 1">
-                <div class="hs-carbon-grade-pill">
-                  <div
-                    class="hs-carbon-grade-letter"
-                    :style="{ background: carbonGradeInfo.col }"
-                  >
-                    {{ carbonGradeInfo.grade }}
-                  </div>
-                  <div class="hs-carbon-grade-label">
-                    {{ carbonGradeInfo.label }}
-                  </div>
-                </div>
-                <div class="hs-carbon-vs-avg">{{ carbonVsAvg }}</div>
-              </div>
-            </div>
-            <div class="hs-carbon-bars">
-              <div
-                v-for="cb in carbonBarChart"
-                :key="cb.letter"
-                class="hs-carbon-bar-col"
-                :style="{
-                  background: cb.color,
-                  height: `${cb.h}px`,
-                  opacity: cb.active ? '1' : '0.35',
-                  boxShadow: cb.active ? `0 0 10px ${cb.color}99` : 'none',
-                }"
-              />
-            </div>
-            <div class="hs-carbon-bar-labels">
-              <span>A — very low</span><span>D — avg</span
-              ><span>G — very high</span>
-            </div>
-            <div class="hs-carbon-drivers">
-              <div
-                v-for="d in pillarCarbonDrivers"
-                :key="d.label"
-                class="hs-carbon-driver-row"
-              >
-                <div class="hs-carbon-driver-label">
-                  {{ d.icon }} {{ d.label }} ({{ d.value }}/{{ d.max }})
-                </div>
-                <div class="hs-carbon-driver-val">
-                  {{ d.pct }}% under average
-                </div>
+        <!-- Amber address card with ✓ Quiz complete pill + 1 stat row -->
+        <div v-if="property" class="pq-addr-card">
+          <div class="pq-addr-top">
+            <div class="pq-addr-pin" />
+            <div class="pq-addr-block">
+              <div class="pq-addr-line">{{ property.addressLine1 || 'Your property' }}</div>
+              <div class="pq-addr-meta">
+                {{ property.postcode || '' }}
+                <template v-if="property.propertyType"> · {{ property.propertyType }}</template>
+                <template v-if="property.bedrooms"> · {{ property.bedrooms }} bed</template>
               </div>
             </div>
           </div>
-          <div class="hs-carbon-upgrade-bar">
-            <div class="hs-carbon-upgrade-title">
-              If you made the top improvements:
-            </div>
-            <div class="hs-carbon-upgrade-row">
-              <div class="hs-carbon-upgrade-text">
-                You could cut emissions by ~40%
-              </div>
-              <div class="hs-carbon-save-pill">
-                Save ~{{ Math.round(carbonKg * 0.4).toLocaleString() }} kg/yr
-              </div>
+          <div class="pq-addr-pills">
+            <span v-if="property.epcRating" class="pq-addr-pill epc">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
+                <path d="M13 2 L4 14 L11 14 L9 22 L20 9 L13 9 Z" />
+              </svg>
+              <span class="pq-epc-letter" :style="{ background: epcColor(property.epcRating) }">{{ property.epcRating }}</span>
+              EPC
+            </span>
+            <span class="pq-addr-pill pq-state-done">✓ Quiz complete</span>
+          </div>
+          <div class="pq-addr-stats">
+            <div class="pq-stat-row">
+              <span class="pq-pulse-dot pq-pulse-green" />
+              <span class="pq-stat-count">{{ pqSearches }} searches today</span>
+              <span class="pq-sep">·</span>
+              <span>Score refined with your answers</span>
             </div>
           </div>
         </div>
 
-        <!-- Score breakdown -->
-        <div class="hs-breakdown-card">
-          <p class="hs-breakdown-title">Score breakdown</p>
-          <div class="hs-pillar-list">
-            <div
-              v-for="bar in pillarBars(result.breakdown)"
-              :key="bar.key"
-              class="hs-pillar-row"
+        <!-- Refined savings hero (teal gradient) -->
+        <div class="pq-overpay-hero">
+          <div class="pq-overpay-eyebrow"><span class="dot" />Your refined savings potential</div>
+          <div class="pq-overpay-num">£{{ pqRefinedBills.toLocaleString() }}<span class="unit"> / year</span></div>
+          <div class="pq-overpay-sub">
+            Based on your quiz answers — a more accurate picture than public EPC data alone.
+          </div>
+          <button
+            type="button"
+            class="pq-hero-btn pq-hero-btn--primary"
+            @click="goToRunningCosts"
+          >
+            <span class="pq-hero-btn-emoji">📊</span>
+            <span class="pq-hero-btn-label">See full running costs</span>
+            <svg
+              class="pq-hero-btn-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
-              <span class="hs-pillar-name">{{ bar.label }}</span>
-              <div class="hs-pillar-track">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="pq-hero-btn pq-hero-btn--ghost"
+            @click="goToPublish"
+          >
+            <span class="pq-hero-btn-emoji">🏘️</span>
+            <span class="pq-hero-btn-label">Publish to your street</span>
+            <svg
+              class="pq-hero-btn-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Refined score card -->
+        <div class="pq-score-card" :class="`tone-${pqScoreTone}`">
+          <div class="pq-score-eyebrow">
+            <div class="left">HomeScore</div>
+            <div class="right">✓ Refined with your answers</div>
+          </div>
+          <div class="pq-score-gauge-wrap">
+            <div class="pq-gauge">
+              <svg viewBox="0 0 120 120">
+                <circle class="g-bg" cx="60" cy="60" r="50" fill="none" stroke-width="9" />
+                <circle
+                  class="g-fill"
+                  cx="60"
+                  cy="60"
+                  r="50"
+                  fill="none"
+                  :stroke="pqScoreColor"
+                  stroke-width="9"
+                  stroke-linecap="round"
+                  stroke-dasharray="314.16"
+                  :stroke-dashoffset="314.16 - (simScore / 100) * 314.16"
+                />
+              </svg>
+              <div class="pq-g-num">
+                <div class="gn-big">{{ simScore }}</div>
+                <div class="gn-small">/ 100</div>
+              </div>
+            </div>
+            <div class="pq-score-summary">
+              <div class="pq-score-band">{{ pqScoreBandLabel }}</div>
+              <div class="pq-score-explainer">{{ pqScoreExplainer }}</div>
+            </div>
+          </div>
+          <div class="pq-score-data-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="9" />
+              <line x1="12" y1="11" x2="12" y2="17" />
+              <circle cx="12" cy="7.5" r="0.9" fill="currentColor" />
+            </svg>
+            <div>Refined using your quiz answers. Upload certificates to increase this further.</div>
+          </div>
+        </div>
+
+        <!-- Refined breakdown -->
+        <div class="pq-breakdown-card">
+          <div class="pq-breakdown-title">Your refined breakdown</div>
+          <div class="pq-breakdown-sub">
+            Based on your quiz answers. Upload certificates to verify and improve each category.
+          </div>
+          <div class="pq-breakdown-rows">
+            <div
+              v-for="bar in refinedBreakdownBars"
+              :key="bar.key"
+              class="pq-breakdown-row"
+            >
+              <div class="pq-breakdown-label">{{ bar.label }}</div>
+              <div class="pq-breakdown-bar-wrap">
                 <div
-                  class="hs-pillar-fill"
+                  class="pq-breakdown-bar"
                   :style="{
                     width: `${(bar.value / bar.max) * 100}%`,
                     background: pillarBarColor(bar.value, bar.max),
                   }"
                 />
               </div>
-              <span class="hs-pillar-val">{{ bar.value }}/{{ bar.max }}</span>
+              <div
+                class="pq-breakdown-value"
+                :style="{ color: pillarBarColor(bar.value, bar.max) }"
+              >
+                {{ bar.value }}/{{ bar.max }}
+              </div>
             </div>
           </div>
-          <div class="hs-breakdown-explain">
-            <template v-if="allAnswered">
-              Your public EPC gave us a starting estimate of
-              <b>{{ autoScoreVal }}</b
-              >. Your answers refined that to <b>{{ result.total }}</b
-              >.
+        </div>
+
+        <!-- Next step card -->
+        <div class="pq-interest-card">
+          <div class="pq-interest-eyebrow">Your next step</div>
+          <div class="pq-interest-opts">
+            <button
+              class="pq-interest-opt primary"
+              type="button"
+              @click="onBoostScore"
+            >
+              <span class="pq-interest-opt-icon">📎</span>
+              <span class="pq-interest-opt-body">
+                <span class="pq-interest-opt-title">Boost your score</span>
+                <span class="pq-interest-opt-sub"
+                  >Upload documents to verify your home and increase your Move
+                  Ready score</span
+                >
+              </span>
+              <span class="pq-interest-opt-chev">›</span>
+            </button>
+            <button
+              class="pq-interest-opt outline"
+              type="button"
+              @click="screen = 'landing'"
+            >
+              <span class="pq-interest-opt-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </span>
+              <span class="pq-interest-opt-body">
+                <span class="pq-interest-opt-title">Back to HomeScore</span>
+                <span class="pq-interest-opt-sub"
+                  >View your full score, running costs and street data</span
+                >
+              </span>
+              <span class="pq-interest-opt-chev">›</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="height: 24px;" />
+      </div>
+    </template>
+
+    <!-- ── PUBLISH (publish HomeScore to street) ─────────────────── -->
+    <template v-else-if="screen === 'publish'">
+      <div class="pub-root">
+        <!-- Top nav with back to results -->
+        <div class="pub-topnav">
+          <button class="pub-back-btn" @click="screen = 'results'" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div class="pub-topnav-centre">
+            <div class="pub-topnav-title">Publish to your street</div>
+            <div class="pub-topnav-sub">{{ property?.addressLine1 || 'Your property' }}</div>
+          </div>
+          <div style="width: 32px;" />
+        </div>
+
+        <!-- Address card -->
+        <div v-if="property" class="pub-addr-card">
+          <div class="pub-addr-top">
+            <div class="pub-addr-pin" />
+            <div class="pub-addr-block">
+              <div class="pub-addr-line">{{ property.addressLine1 || 'Your property' }}</div>
+              <div class="pub-addr-meta">
+                {{ property.postcode || '' }}
+                <template v-if="property.propertyType"> · {{ property.propertyType }}</template>
+                <template v-if="property.bedrooms"> · {{ property.bedrooms }} bed</template>
+              </div>
+            </div>
+          </div>
+          <div class="pub-addr-pills">
+            <span v-if="property.epcRating" class="pub-addr-pill epc">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
+                <path d="M13 2 L4 14 L11 14 L9 22 L20 9 L13 9 Z" />
+              </svg>
+              <span class="pub-epc-letter" :style="{ background: epcColor(property.epcRating) }">{{ property.epcRating }}</span>
+              EPC
+            </span>
+            <span class="pub-addr-pill pub-state-done">✓ Accuracy checker complete</span>
+          </div>
+        </div>
+
+        <!-- Hero (teal gradient) -->
+        <div class="pub-hero">
+          <div class="pub-hero-eyebrow"><span class="dot" />Improve your street's data</div>
+          <div class="pub-hero-title">
+            Make energy costs more accurate for everyone nearby
+          </div>
+          <div class="pub-hero-sub">
+            Publishing updates your property's data anonymously. The more owners
+            on a street do this, the more accurate the energy cost estimates
+            become for everyone in the area.
+          </div>
+        </div>
+
+        <!-- What you're contributing -->
+        <div class="pub-contrib-card">
+          <div class="pub-contrib-eyebrow">What you're adding to the data</div>
+          <div class="pub-contrib-list">
+            <div class="pub-contrib-row">
+              <div class="pub-contrib-head">
+                <div class="pub-contrib-label">
+                  <span class="pub-contrib-icon">💷</span>
+                  <span>Annual energy saving</span>
+                </div>
+                <span class="pub-contrib-val">~£{{ pubSavingAmount }}/yr</span>
+              </div>
+              <div class="pub-contrib-bar">
+                <div
+                  class="pub-contrib-bar-fill teal"
+                  :style="{ width: pubSavingPct + '%' }"
+                />
+              </div>
+              <div class="pub-contrib-note">
+                Better than {{ pubSavingPct }}% of similar homes on your street
+              </div>
+            </div>
+            <div class="pub-contrib-row">
+              <div class="pub-contrib-head">
+                <div class="pub-contrib-label">
+                  <span class="pub-contrib-icon">🌱</span>
+                  <span>Carbon saved</span>
+                </div>
+                <span class="pub-contrib-val">{{ pubCarbonSaved }}t CO₂/yr</span>
+              </div>
+              <div class="pub-contrib-bar">
+                <div
+                  class="pub-contrib-bar-fill success"
+                  :style="{ width: pubCarbonPct + '%' }"
+                />
+              </div>
+              <div class="pub-contrib-note">
+                Lower than average for a similar home in {{ pubOutcode }}
+              </div>
+            </div>
+            <div class="pub-contrib-row">
+              <div class="pub-contrib-head">
+                <div class="pub-contrib-label">
+                  <span class="pub-contrib-icon">🏠</span>
+                  <span>HomeScore accuracy</span>
+                </div>
+                <span class="pub-contrib-val">{{ simScore }} / 100</span>
+              </div>
+              <div class="pub-contrib-bar">
+                <div
+                  class="pub-contrib-bar-fill gold"
+                  :style="{ width: simScore + '%' }"
+                />
+              </div>
+              <div class="pub-contrib-note">
+                Up from {{ pubScoreBefore }} before you answered these questions
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Anonymous notice -->
+        <div class="pub-anon">
+          <div class="pub-anon-icon">🔒</div>
+          <div>
+            <b>Published anonymously</b> — only the data above is shared, never
+            your name or personal details.
+          </div>
+        </div>
+
+        <!-- Street impact — gamified progress -->
+        <div class="pub-street-card">
+          <div class="pub-street-head">
+            <div class="pub-street-eyebrow">Street data accuracy</div>
+            <div class="pub-street-count">
+              {{ pubStreetPublished }} of {{ pubStreetTotal }} homes
+            </div>
+          </div>
+          <div class="pub-street-bar">
+            <div
+              class="pub-street-bar-fill"
+              :style="{ width: pubStreetPct + '%' }"
+            />
+          </div>
+          <div class="pub-street-note">
+            <template v-if="pubStreetPublished === 1">
+              You're the first to publish. Each home that follows makes everyone's
+              bill estimates sharper.
             </template>
             <template v-else>
-              This is based on public EPC data only. Answer quick questions to
-              refine.
+              {{ pubStreetPublished }} owners on this street have published. Each
+              extra home sharpens everyone's bill estimates.
+            </template>
+          </div>
+          <div class="pub-milestones">
+            <div
+              v-for="m in pubMilestones"
+              :key="m.target"
+              class="pub-milestone"
+              :class="{ active: pubStreetPublished >= m.target }"
+            >
+              <div class="pub-milestone-num">
+                {{ m.target === 1 ? '1st' : m.target }}
+              </div>
+              <div class="pub-milestone-label">{{ m.label }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Publish CTA -->
+        <div class="pub-cta">
+          <button
+            type="button"
+            class="pub-cta-btn"
+            @click="onPublishToStreet"
+          >
+            🏘️ Publish to {{ pubStreetName }}
+          </button>
+          <button
+            type="button"
+            class="pub-cta-skip"
+            @click="screen = 'results'"
+          >
+            Not now — maybe later
+          </button>
+        </div>
+
+        <div style="height: 24px;" />
+      </div>
+    </template>
+
+    <!-- ── KYC (verify ownership: choose method) ─────────────────── -->
+    <template v-else-if="screen === 'kyc'">
+      <div class="kyc-root">
+        <!-- Top nav -->
+        <div class="kyc-topnav">
+          <button class="kyc-back-btn" @click="screen = 'publish'" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div class="kyc-topnav-centre">
+            <div class="kyc-topnav-title">Verify ownership</div>
+            <div class="kyc-topnav-sub">{{ property?.addressLine1 || 'Your property' }}</div>
+          </div>
+          <div style="width: 32px;" />
+        </div>
+
+        <!-- 3-step progress -->
+        <div class="kyc-steps">
+          <div class="kyc-step active">
+            <div class="kyc-step-num">1</div>
+            <div class="kyc-step-label">Verify</div>
+          </div>
+          <div class="kyc-step-line" />
+          <div class="kyc-step">
+            <div class="kyc-step-num">2</div>
+            <div class="kyc-step-label">Publish</div>
+          </div>
+          <div class="kyc-step-line" />
+          <div class="kyc-step">
+            <div class="kyc-step-num">3</div>
+            <div class="kyc-step-label">Passport</div>
+          </div>
+        </div>
+
+        <!-- Navy gradient hero -->
+        <div class="kyc-hero">
+          <div class="kyc-hero-emoji">🔐</div>
+          <div class="kyc-hero-title">Prove you own this property</div>
+          <div class="kyc-hero-sub">
+            We use a quick identity check so only the real owner can publish and
+            manage data for this address.
+          </div>
+        </div>
+
+        <!-- 3 verification method choices -->
+        <div class="kyc-methods">
+          <div
+            class="kyc-method"
+            @click="verifyWith('photo-id')"
+          >
+            <div class="kyc-method-icon" :style="{ background: 'var(--kyc-teal-paler)' }">🪪</div>
+            <div class="kyc-method-body">
+              <div class="kyc-method-title">Photo ID</div>
+              <div class="kyc-method-sub">Passport or driving licence · 2 min</div>
+            </div>
+            <div class="kyc-method-chev">›</div>
+          </div>
+          <div
+            class="kyc-method"
+            @click="verifyWith('mortgage')"
+          >
+            <div class="kyc-method-icon" :style="{ background: '#FFFBEB' }">📄</div>
+            <div class="kyc-method-body">
+              <div class="kyc-method-title">Mortgage or title document</div>
+              <div class="kyc-method-sub">Confirms legal ownership · 3 min</div>
+            </div>
+            <div class="kyc-method-chev">›</div>
+          </div>
+          <div
+            class="kyc-method"
+            @click="verifyWith('open-banking')"
+          >
+            <div class="kyc-method-icon" :style="{ background: '#F0F9FF' }">🏦</div>
+            <div class="kyc-method-body">
+              <div class="kyc-method-title">Open Banking</div>
+              <div class="kyc-method-sub">Matches your address on file · instant</div>
+            </div>
+            <div class="kyc-method-chev">›</div>
+          </div>
+        </div>
+
+        <!-- Privacy note -->
+        <div class="kyc-privacy">
+          🔒 Your documents are verified by our KYC partner and never stored by
+          UMU HomeScore.
+        </div>
+        <div style="height: 32px;" />
+      </div>
+    </template>
+
+    <!-- ── KYC PENDING (verified, ready to publish) ──────────────── -->
+    <template v-else-if="screen === 'kyc-pending'">
+      <div class="kyc-root">
+        <!-- Top nav -->
+        <div class="kyc-topnav">
+          <button class="kyc-back-btn" @click="screen = 'kyc'" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div class="kyc-topnav-centre">
+            <div class="kyc-topnav-title">Verifying ownership</div>
+            <div class="kyc-topnav-sub">{{ property?.addressLine1 || 'Your property' }}</div>
+          </div>
+          <div style="width: 32px;" />
+        </div>
+
+        <!-- 3-step progress — step 1 done, step 2 active -->
+        <div class="kyc-steps">
+          <div class="kyc-step verified">
+            <div class="kyc-step-num">✓</div>
+            <div class="kyc-step-label">Verified</div>
+          </div>
+          <div class="kyc-step-line filled" />
+          <div class="kyc-step active">
+            <div class="kyc-step-num">2</div>
+            <div class="kyc-step-label">Publish</div>
+          </div>
+          <div class="kyc-step-line" />
+          <div class="kyc-step">
+            <div class="kyc-step-num">3</div>
+            <div class="kyc-step-label">Passport</div>
+          </div>
+        </div>
+
+        <!-- Success hero (green gradient) -->
+        <div class="kyc-hero kyc-hero--success">
+          <div class="kyc-hero-emoji" style="font-size: 44px;">✅</div>
+          <div class="kyc-hero-title">Ownership verified</div>
+          <div class="kyc-hero-sub">
+            {{ property?.addressLine1 || 'Your property' }} is now linked to your
+            account. You can publish your data and start building your Property
+            Passport.
+          </div>
+        </div>
+
+        <!-- Now unlocked -->
+        <div class="kyc-unlocked">
+          <div class="kyc-unlocked-eyebrow">Now unlocked for you</div>
+          <div class="kyc-unlocked-list">
+            <div class="kyc-unlocked-row">
+              <span class="kyc-unlocked-icon">📡</span>
+              <div>Publish your score to {{ pubStreetName }}</div>
+            </div>
+            <div class="kyc-unlocked-row">
+              <span class="kyc-unlocked-icon">📎</span>
+              <div>Upload documents to improve accuracy</div>
+            </div>
+            <div class="kyc-unlocked-row">
+              <span class="kyc-unlocked-icon">🏠</span>
+              <div>Start your Property Passport</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTAs -->
+        <div class="kyc-ctas">
+          <button type="button" class="kyc-cta-primary" @click="confirmPublish">
+            📡 Publish to {{ pubStreetName }}
+          </button>
+          <button type="button" class="kyc-cta-outline" @click="claimOrAccessPassport">
+            🏠 Start my Property Passport
+          </button>
+        </div>
+        <div style="height: 32px;" />
+      </div>
+    </template>
+
+    <!-- ── PUBLISHED (success confirmation) ──────────────────────── -->
+    <template v-else-if="screen === 'published'">
+      <div class="kyc-root">
+        <!-- Top nav -->
+        <div class="kyc-topnav">
+          <button class="kyc-back-btn" @click="screen = 'results'" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div class="kyc-topnav-centre">
+            <div class="kyc-topnav-title">Published</div>
+            <div class="kyc-topnav-sub">{{ property?.addressLine1 || 'Your property' }}</div>
+          </div>
+          <div style="width: 32px;" />
+        </div>
+
+        <!-- Amber address card -->
+        <div v-if="property" class="pub-addr-card">
+          <div class="pub-addr-top">
+            <div class="pub-addr-pin" />
+            <div class="pub-addr-block">
+              <div class="pub-addr-line">{{ property.addressLine1 || 'Your property' }}</div>
+              <div class="pub-addr-meta">
+                {{ property.postcode || '' }}
+                <template v-if="property.propertyType"> · {{ property.propertyType }}</template>
+                <template v-if="property.bedrooms"> · {{ property.bedrooms }} bed</template>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Big success hero (teal gradient) -->
+        <div class="kyc-success-hero">
+          <div class="kyc-success-emoji">✅</div>
+          <div class="kyc-success-title">Published to {{ pubStreetName }}</div>
+          <div class="kyc-success-sub">
+            Your property data is now more accurate. Anyone on
+            {{ pubStreetName }} will get better energy cost estimates because of
+            it.
+          </div>
+        </div>
+
+        <!-- What's now updated for your street -->
+        <div class="kyc-updates-card">
+          <div class="kyc-updates-eyebrow">What's now updated for your street</div>
+          <div class="kyc-updates-list">
+            <div class="kyc-updates-row">
+              <span class="kyc-updates-icon">📊</span>
+              <div>
+                <b>Your HomeScore</b> — reflects actual property data, not EPC
+                estimates
+              </div>
+            </div>
+            <div class="kyc-updates-row">
+              <span class="kyc-updates-icon">💡</span>
+              <div>
+                <b>Energy cost benchmarks</b> — more accurate for similar homes
+                nearby
+              </div>
+            </div>
+            <div class="kyc-updates-row">
+              <span class="kyc-updates-icon">🏘️</span>
+              <div>
+                <b>Street-level data pool</b> — every owner who publishes
+                improves it further
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Street impact pill -->
+        <div class="kyc-street-impact">
+          <div class="kyc-street-impact-icon">🏘️</div>
+          <div>
+            <template v-if="pubStreetPublished <= 1">
+              You're the first owner to publish on {{ pubStreetName }}. The more
+              people do this, the more accurate everyone's energy costs become.
+            </template>
+            <template v-else>
+              {{ pubStreetPublished }} owners on {{ pubStreetName }} have now
+              published. The more people do this, the more accurate everyone's
+              energy costs become.
             </template>
           </div>
         </div>
 
-        <!-- Top 3 savings -->
-        <div class="hs-wins-card">
-          <p class="hs-wins-title">Top 3 ways to save money</p>
-          <p class="hs-wins-sub">
-            Ranked by annual saving — pounds back in your pocket.
-          </p>
-          <div
-            v-for="(win, i) in displayWins.slice(0, 3)"
-            :key="i"
-            class="hs-win-item"
-          >
-            <div class="hs-win-rank">{{ i + 1 }}</div>
-            <div class="hs-win-body">
-              <p class="hs-win-name">{{ win.title }}</p>
-              <p class="hs-win-sub">{{ win.sub }}</p>
-            </div>
-            <div class="hs-win-right">
-              <p class="hs-win-saving">~£{{ win.savingPerYear }}/yr</p>
-              <p class="hs-win-pts">+{{ win.points }} pts</p>
-            </div>
-          </div>
+        <!-- Next step -->
+        <div class="kyc-next-step">
+          <div class="kyc-next-step-eyebrow">Your next step</div>
+          <button type="button" class="kyc-cta-primary" @click="onBoostScore">
+            📎 Boost your score with documents
+          </button>
+          <button type="button" class="kyc-cta-skip" @click="screen = 'results'">
+            ← Back to my HomeScore
+          </button>
         </div>
-
-        <!-- Neighbour comparison -->
-        <div v-if="neighbourhood.length" class="hs-nb-card">
-          <div class="hs-nb-header">
-            <div class="hs-nb-title">Your street, ranked by energy cost</div>
-            <div class="hs-nb-rank">{{ nbRank }} of 12</div>
-          </div>
-          <p class="hs-nb-body">Based on EPC data and local energy records.</p>
-          <div class="hs-nb-list">
-            <div
-              v-for="n in neighbourhood"
-              :key="n.label"
-              class="hs-nb-row"
-              :class="{ mine: n.isYou }"
-            >
-              <div class="hs-nb-pos" :class="{ mine: n.isYou }">
-                {{ n.rank }}
-              </div>
-              <div style="flex: 1; min-width: 0">
-                <div class="hs-nb-addr" :class="{ mine: n.isYou }">
-                  {{ n.label }}
-                </div>
-                <div class="hs-nb-detail">{{ n.detail }}</div>
-              </div>
-              <div class="hs-nb-cost" :style="{ color: n.costColor }">
-                £{{ n.cost.toLocaleString() }}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style="height: 108px" />
-      </div>
-
-      <!-- Sticky CTA bar -->
-      <div class="hs-sticky-cta">
-        <button class="hs-sticky-cta-btn" @click="onBoostScore">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-          >
-            <polyline points="12 19 12 5" />
-            <polyline points="5 12 12 5 19 12" />
-          </svg>
-          <span>Boost your score</span>
-        </button>
-        <div class="hs-sticky-cta-sub">
-          Upload certs &amp; earn points instantly
-        </div>
+        <div style="height: 40px;" />
       </div>
     </template>
 
@@ -1582,7 +1774,7 @@
             v-for="doc in qwDocs"
             :key="doc.key"
             class="hs-qw-doc-row"
-            :class="{ uploaded: uploadedDocs[doc.key] }"
+            :class="{ uploaded: !!uploadedDocs[doc.key] }"
             @click="triggerDocUpload(doc.key)"
           >
             <div class="hs-qw-doc-ic" :style="{ background: doc.bg }">
@@ -1594,7 +1786,7 @@
             </div>
             <div class="hs-qw-doc-right">
               <div
-                v-if="uploadedDocs[doc.key]"
+                v-if="!!uploadedDocs[doc.key]"
                 class="hs-qw-doc-done"
                 aria-label="Uploaded"
               >
@@ -1605,13 +1797,131 @@
           </div>
         </div>
 
-        <input
-          ref="docFileInput"
-          type="file"
-          accept=".pdf,image/*"
-          style="display: none"
-          @change="onDocFilePicked"
-        />
+        <!-- Doc upload drawer — opens when tapping a Boost row -->
+        <Teleport to="body">
+          <div
+            v-if="qwDrawerOpen"
+            class="qw-overlay"
+            @click.self="closeDrawer"
+          >
+            <div class="qw-modal">
+              <div class="qw-modal-handle" />
+              <div class="qw-modal-header">
+                <div class="qw-modal-title">
+                  {{ qwDrawerDoc?.label || 'Upload document' }}
+                </div>
+                <button
+                  type="button"
+                  class="qw-modal-close"
+                  aria-label="Close"
+                  @click="closeDrawer"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div class="qw-modal-body">
+                <p class="qw-modal-intro">{{ qwDrawerDoc?.sub }}</p>
+
+                <!-- Already-saved file preview -->
+                <div v-if="qwDrawerExistingEntry" class="qw-doc-preview">
+                  <div class="qw-doc-preview-icon">📄</div>
+                  <div class="qw-doc-preview-info">
+                    <div class="qw-doc-preview-name">
+                      {{ qwDrawerExistingEntry.fileName }}
+                    </div>
+                    <div class="qw-doc-preview-meta">
+                      {{ formatFileSize(qwDrawerExistingEntry.fileSize) }} ·
+                      saved
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="qw-doc-preview-btn"
+                    @click="removeDrawerDoc"
+                  >
+                    Remove
+                  </button>
+                </div>
+
+                <!-- Newly picked file (pending save) -->
+                <div
+                  v-if="qwDrawerFile"
+                  class="qw-doc-preview qw-doc-preview--pending"
+                >
+                  <div class="qw-doc-preview-icon">📄</div>
+                  <div class="qw-doc-preview-info">
+                    <div class="qw-doc-preview-name">{{ qwDrawerFile.name }}</div>
+                    <div class="qw-doc-preview-meta">
+                      {{ formatFileSize(qwDrawerFile.size) }} · ready to save
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="qw-doc-preview-btn"
+                    @click="qwDrawerFile = null"
+                  >
+                    Change
+                  </button>
+                </div>
+
+                <!-- File picker (only shown when nothing pending) -->
+                <label v-if="!qwDrawerFile" class="qw-upload-row">
+                  <input
+                    type="file"
+                    accept=".pdf,image/*"
+                    class="qw-upload-input"
+                    @change="onDrawerFilePicked"
+                  />
+                  <span class="qw-upload-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                  </span>
+                  <span class="qw-upload-text">
+                    {{
+                      qwDrawerExistingEntry
+                        ? 'Replace document'
+                        : 'Upload document'
+                    }}
+                    <small>PDF, JPG, PNG up to 20MB</small>
+                  </span>
+                </label>
+
+                <p v-if="qwDrawerError" class="qw-modal-error">
+                  {{ qwDrawerError }}
+                </p>
+              </div>
+
+              <div class="qw-modal-footer">
+                <button
+                  type="button"
+                  class="qw-btn-secondary"
+                  @click="closeDrawer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="qw-btn-primary"
+                  :disabled="!qwDrawerFile"
+                  @click="saveDrawerDoc"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </Teleport>
 
         <!-- Book a pro -->
         <div class="hs-qw-section-label">🔧 Book a professional</div>
@@ -1892,6 +2202,10 @@ type Screen =
   | 'landing'
   | 'questions'
   | 'results'
+  | 'publish'
+  | 'kyc'
+  | 'kyc-pending'
+  | 'published'
   | 'passport'
   | 'buyer-results'
   | 'quick-wins'
@@ -2826,22 +3140,48 @@ watch(simAnsweredCount, (n) => {
   if (n >= 3 && simPath.value === 'quiz') simShowPublishPrompt.value = true
 })
 
-const simEpcNudge = computed(() => {
-  if (simAnsweredCount.value === 0) {
+// Mirrors the prototype's 4-state `simUpdateEpcNudge()`. State priority:
+//   1. bill      — the user uploaded an actual energy bill
+//   2. good      — refined score ≥ 69 (EPC A–C equivalent)
+//   3. improved  — 3+ answers AND a meaningful £ saving (≥ £60/yr)
+//   4. neutral   — early / few answers
+const simEpcNudge = computed<{
+  icon: string
+  title: string
+  body: string
+  variant: 'bill' | 'good' | 'improved' | 'neutral'
+  ctaLabel?: string
+}>(() => {
+  if (simBillUploaded.value) {
     return {
-      title: 'EPC from ' + simEpcYear.value + ' — out of date?',
-      body: 'Tell us what\'s changed and we\'ll refine your HomeScore. If a lot has changed, a fresh EPC (~£50) locks in the improvements officially.',
+      variant: 'bill',
+      icon: '💡',
+      title: 'Your actual spend is feeding your score',
+      body: `Your utility bill is more accurate than any EPC estimate. Your HomeScore, bills figure and carbon footprint now reflect what you're really paying — not what a ${simEpcYear.value} survey guessed.`,
     }
   }
-  if (simAcceptedSteps.value.length >= 2) {
+  if (simScore.value >= 69) {
     return {
-      title: 'Big improvements logged — get a new EPC?',
-      body: "You've told us about several upgrades since your last EPC. A new assessment (~£50) could move your official rating up and add real value at sale.",
+      variant: 'good',
+      icon: '✅',
+      title: 'Your home is already performing well',
+      body: "Your updated score reflects the improvements you've made. You're in a strong position — no urgent action needed on your EPC right now.",
+    }
+  }
+  if (simAnsweredCount.value >= 3 && simBillsDelta.value >= 60) {
+    return {
+      variant: 'improved',
+      icon: '📋',
+      title: "Your HomeScore is updated — your official EPC isn't",
+      body: "The changes you've added are now reflected in your HomeScore, bills estimate and carbon footprint. Your official EPC won't change until you commission a new assessment — worth considering if you're thinking of selling.",
+      ctaLabel: 'Get a new EPC — from £50 →',
     }
   }
   return {
-    title: 'Keep going — every answer sharpens your score',
-    body: 'The more you tell us, the more accurate your HomeScore and street comparison become.',
+    variant: 'neutral',
+    icon: '🏷️',
+    title: 'Every improvement counts',
+    body: `As you answer the questions above, your bills estimate, carbon footprint and HomeScore update in real time — based on what's actually been done, not just your ${simEpcYear.value} EPC.`,
   }
 })
 
@@ -2935,6 +3275,235 @@ function simSubmit() {
   saveSimulatorResult()
   screen.value = 'results'
   showResult.value = true
+}
+
+// ── Post-Quiz screen helpers (refined results) ───────────────
+// Refined bills figure shown in the hero — already computed from sim deltas.
+const pqRefinedBills = computed(() => simBills.value)
+// Random-feeling FOMO count per property (stable across renders).
+const pqSearches = computed<number>(() => {
+  const id = (property.value as any)?.id || ''
+  return 3 + ((id.charCodeAt(0) || 1) % 7)
+})
+
+const pqScoreColor = computed(() => simScoreColor.value)
+const pqScoreTone = computed<'low' | 'mid' | 'high'>(() => {
+  const s = simScore.value
+  if (s >= 75) return 'high'
+  if (s >= 50) return 'mid'
+  return 'low'
+})
+const pqScoreBandLabel = computed<string>(() => {
+  const s = simScore.value
+  if (s >= 80) return 'Highly efficient'
+  if (s >= 65) return 'Above average'
+  if (s >= 50) return 'Average'
+  if (s >= 35) return 'Below average'
+  return 'Plenty of opportunities'
+})
+const pqScoreExplainer = computed<string>(() => {
+  const s = simScore.value
+  if (s >= 80)
+    return 'In the top 20% of UK homes. Strong insulation and modern systems keep running costs well below average.'
+  if (s >= 60)
+    return 'Better than most UK homes. A few targeted upgrades could push this into the top tier.'
+  if (s >= 40)
+    return 'Plenty of room to improve. Targeted upgrades could meaningfully cut your bills.'
+  return 'Your answers refined this from the public EPC estimate. Upload documents to push it further.'
+})
+
+// Refined per-pillar breakdown: take the EPC-derived baseline and credit
+// each accepted simulator improvement to the pillar it belongs to.
+const refinedBreakdownBars = computed(() => {
+  const base = (autoBreakdown.value ?? {}) as Record<string, number>
+  const pillar: Record<string, number> = {
+    heating: base.heating ?? 0,
+    structure: base.structure ?? 0,
+    efficiency: base.efficiency ?? 0,
+    electrics: base.electrics ?? 0,
+    plumbing: base.plumbing ?? 0,
+  }
+  for (const step of simAcceptedSteps.value) {
+    switch (step.id) {
+      case 'loft':
+      case 'cavity':
+      case 'floor':
+        pillar.structure += step.scoreDelta
+        break
+      case 'led':
+      case 'solar-thermal':
+        pillar.efficiency += step.scoreDelta
+        break
+      case 'solar-pv':
+        pillar.electrics += step.scoreDelta
+        break
+    }
+  }
+  return [
+    { key: 'heating', label: 'Heating', max: 20, value: Math.min(20, pillar.heating) },
+    { key: 'structure', label: 'Structure', max: 25, value: Math.min(25, pillar.structure) },
+    { key: 'efficiency', label: 'Efficiency', max: 20, value: Math.min(20, pillar.efficiency) },
+    { key: 'electrics', label: 'Electrics', max: 15, value: Math.min(15, pillar.electrics) },
+    { key: 'plumbing', label: 'Plumbing', max: 20, value: Math.min(20, pillar.plumbing) },
+  ]
+})
+
+// Move to the publish funnel.
+function goToPublish() {
+  screen.value = 'publish'
+}
+
+// ── Publish screen helpers ───────────────────────────────────
+// Annual energy saving the owner is contributing.
+const pubSavingAmount = computed(() => simBillsDelta.value || 0)
+// Carbon saved (tonnes/yr) the owner is contributing.
+const pubCarbonSaved = computed(() =>
+  simCo2Delta.value > 0 ? simCo2Delta.value.toFixed(1) : '0.0',
+)
+// Score before the quiz (EPC-derived starting score).
+const pubScoreBefore = computed(() => simStartingScore.value)
+// % bar widths for the contribution rows. Saving and carbon are normalised
+// against generous caps so even modest gains look meaningful on the bar.
+const pubSavingPct = computed(() => {
+  const v = pubSavingAmount.value
+  // Cap at 500/yr — anything above maxes the bar.
+  return Math.max(8, Math.min(95, Math.round((v / 500) * 100)))
+})
+const pubCarbonPct = computed(() => {
+  const v = simCo2Delta.value
+  // Cap at 2 tonnes/yr.
+  return Math.max(8, Math.min(95, Math.round((v / 2) * 100)))
+})
+
+// Street name = address line minus the leading house number.
+const pubStreetName = computed<string>(() => {
+  const line = ((property.value as any)?.addressLine1 || '').trim()
+  if (!line) return 'your street'
+  const match = line.match(/^\d+\s*[a-zA-Z]?\s*[,.]?\s*(.+)$/)
+  return match?.[1] || line
+})
+const pubOutcode = computed<string>(() => {
+  const pc = ((property.value as any)?.postcode || '').trim()
+  return pc.split(' ')[0] || 'this area'
+})
+
+// Street accuracy progress — fetched from GET /property/:id/street-publish-stats.
+// Falls back to a sensible default while loading or if the endpoint errors.
+const pubStreetTotal = ref(38)
+const pubStreetPublished = ref(1)
+const pubStreetPct = computed(() => {
+  if (pubStreetTotal.value <= 0) return 0
+  return Math.round((pubStreetPublished.value / pubStreetTotal.value) * 100)
+})
+
+async function loadStreetPublishStats() {
+  try {
+    const res = await fetch(
+      `${config.public.apiBase}/property/${propertyId}/street-publish-stats`,
+    )
+    if (!res.ok) return
+    const data = await res.json()
+    if (typeof data?.totalHomes === 'number' && data.totalHomes > 0) {
+      pubStreetTotal.value = data.totalHomes
+    }
+    if (typeof data?.publishedHomes === 'number') {
+      pubStreetPublished.value = data.publishedHomes
+    }
+  } catch {
+    /* keep defaults */
+  }
+}
+
+// Refresh stats whenever we land on publish/published so the UI is fresh
+// (e.g. after the user just published — the count should now include them).
+watch(screen, (s) => {
+  if (s === 'publish' || s === 'published') void loadStreetPublishStats()
+})
+const pubMilestones = [
+  { target: 1, label: 'Pioneer 🏅' },
+  { target: 5, label: 'Homes' },
+  { target: 10, label: 'Homes' },
+  { target: 25, label: 'Homes' },
+]
+
+// "Publish to <street>" CTA — auth-gates guests, then routes to KYC.
+function onPublishToStreet() {
+  if (isGuest.value) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/homescore/${propertyId}?screen=kyc`,
+      )
+    }
+    showAuthGate.value = true
+    return
+  }
+  screen.value = 'kyc'
+}
+
+// User picked a KYC verification method. Records the intent via
+// POST /property/:id/kyc/submit (server upserts an OwnershipVerification
+// in SUBMITTED state); a worker will eventually flip it to VERIFIED via
+// the real partner round-trip (Onfido / mortgage parser / Open Banking).
+// We optimistically advance to kyc-pending — the kyc-pending screen could
+// later poll /kyc/status if we want a strict gate before publishing.
+type VerifyMethod = 'photo-id' | 'mortgage' | 'open-banking'
+const kycMethod = ref<VerifyMethod | null>(null)
+const kycSubmitting = ref(false)
+async function verifyWith(method: VerifyMethod) {
+  if (kycSubmitting.value) return
+  kycMethod.value = method
+  kycSubmitting.value = true
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  try {
+    if (token) {
+      await fetch(`${config.public.apiBase}/property/${propertyId}/kyc/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ method }),
+      })
+    }
+  } catch {
+    // Non-fatal — proceed to the verified-state UI even if the network
+    // hiccupped. A retry happens implicitly the next time the user re-enters
+    // this screen.
+  } finally {
+    kycSubmitting.value = false
+    screen.value = 'kyc-pending'
+  }
+}
+
+// "Publish to <street>" — saves the latest simulator result if not yet
+// saved, then calls POST /property/:id/homescore/publish to mark it
+// published. Lands on the success screen on completion.
+const publishLoading = ref(false)
+async function confirmPublish() {
+  if (publishLoading.value) return
+  publishLoading.value = true
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  try {
+    // Ensure the user's HomeScoreResult exists server-side first.
+    await saveSimulatorResult()
+    if (token) {
+      await fetch(
+        `${config.public.apiBase}/property/${propertyId}/homescore/publish`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+    }
+  } catch {
+    // swallow — the UI still advances, retry handled on next publish click
+  } finally {
+    publishLoading.value = false
+    screen.value = 'published'
+  }
 }
 
 function nextQuestion() {
@@ -3304,29 +3873,98 @@ const qwPros = [
   },
 ]
 
-const uploadedDocs = reactive<Record<string, boolean>>({})
-const docFileInput = ref<HTMLInputElement | null>(null)
-const pendingDocKey = ref<string | null>(null)
+// Tracks the saved file for each doc key (after the drawer is confirmed).
+// Stores name + size so the row can show "View" / file meta afterwards.
+interface UploadedDocEntry {
+  fileName: string
+  fileSize: number
+  fileType: string
+  uploadedAt: number
+}
+const uploadedDocs = reactive<Record<string, UploadedDocEntry | true>>({})
+
+// Drawer state — opened by tapping a Boost Score row. Lets the user pick a
+// file, preview the pending file, then Save to commit. Mirrors the landlord
+// passport drawer (`lp-overlay` / `lp-modal`) for consistency.
+const qwDrawerOpen = ref(false)
+const qwDrawerDocKey = ref<string | null>(null)
+const qwDrawerFile = ref<File | null>(null)
+const qwDrawerError = ref('')
+
+const qwDrawerDoc = computed(() =>
+  qwDocs.find((d) => d.key === qwDrawerDocKey.value),
+)
+const qwDrawerExistingEntry = computed<UploadedDocEntry | null>(() => {
+  const v = qwDrawerDocKey.value
+    ? uploadedDocs[qwDrawerDocKey.value]
+    : undefined
+  return v && typeof v === 'object' ? (v as UploadedDocEntry) : null
+})
 
 function triggerDocUpload(docKey: string) {
-  if (uploadedDocs[docKey]) return
-  pendingDocKey.value = docKey
-  docFileInput.value?.click()
+  qwDrawerDocKey.value = docKey
+  qwDrawerFile.value = null
+  qwDrawerError.value = ''
+  qwDrawerOpen.value = true
 }
 
-function onDocFilePicked(e: Event) {
+function onDrawerFilePicked(e: Event) {
   const input = e.target as HTMLInputElement
   const file = input.files?.[0]
-  if (file && pendingDocKey.value) {
-    uploadedDocs[pendingDocKey.value] = true
-    const doc = qwDocs.find((d) => d.key === pendingDocKey.value)
-    showToast({
-      message: `${doc?.label ?? 'Document'} uploaded`,
-      iconEmoji: '✓',
-    })
+  if (!file) return
+  if (file.size > 20 * 1024 * 1024) {
+    qwDrawerError.value = 'File too large. Max 20MB.'
+    if (input) input.value = ''
+    return
   }
-  pendingDocKey.value = null
+  qwDrawerError.value = ''
+  qwDrawerFile.value = file
   if (input) input.value = ''
+}
+
+function saveDrawerDoc() {
+  const key = qwDrawerDocKey.value
+  const file = qwDrawerFile.value
+  if (!key || !file) {
+    qwDrawerError.value = 'Pick a file first.'
+    return
+  }
+  uploadedDocs[key] = {
+    fileName: file.name,
+    fileSize: file.size,
+    fileType: file.type || 'application/octet-stream',
+    uploadedAt: Date.now(),
+  }
+  const doc = qwDocs.find((d) => d.key === key)
+  showToast({
+    message: `${doc?.label ?? 'Document'} saved`,
+    iconEmoji: '✓',
+  })
+  qwDrawerOpen.value = false
+  qwDrawerDocKey.value = null
+  qwDrawerFile.value = null
+}
+
+function removeDrawerDoc() {
+  const key = qwDrawerDocKey.value
+  if (!key) return
+  delete uploadedDocs[key]
+  qwDrawerFile.value = null
+  qwDrawerError.value = ''
+  showToast({ message: 'Document removed', iconEmoji: '🗑️' })
+}
+
+function closeDrawer() {
+  qwDrawerOpen.value = false
+  qwDrawerDocKey.value = null
+  qwDrawerFile.value = null
+  qwDrawerError.value = ''
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 function openMarketplace() {
@@ -3544,6 +4182,10 @@ onMounted(async () => {
     'move-ready',
     'results',
     'passport',
+    'publish',
+    'kyc',
+    'kyc-pending',
+    'published',
   ]
   if (token && requested && (allowed as string[]).includes(requested)) {
     if (requested === 'questions') {
@@ -8726,17 +9368,30 @@ watch(screen, (s) => {
   cursor: pointer;
 }
 
-/* EPC nudge */
+/* EPC nudge — variant-driven, matches prototype simUpdateEpcNudge() */
 .sim-epc-nudge {
   margin: 10px 16px 0;
   border-radius: 16px;
   padding: 14px 16px;
-  background: var(--sim-amber-pale);
-  border: 1.5px solid rgba(230, 162, 60, 0.4);
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  transition: all 0.3s ease;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+.sim-epc-nudge--neutral {
+  background: #fff;
+  border: 2px solid var(--sim-line-soft);
+}
+.sim-epc-nudge--improved {
+  background: #fff;
+  border: 2px solid var(--sim-amber-pale);
+}
+.sim-epc-nudge--good,
+.sim-epc-nudge--bill {
+  background: var(--sim-teal-paler);
+  border: 2px solid var(--sim-teal-pale);
 }
 .sim-epc-nudge-icon {
   font-size: 22px;
@@ -8752,6 +9407,17 @@ watch(screen, (s) => {
   font-size: 11px;
   color: var(--sim-text-soft);
   line-height: 1.5;
+}
+.sim-epc-nudge-cta {
+  padding: 8px 14px;
+  background: var(--sim-amber);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 /* Bottom CTA */
@@ -8911,5 +9577,1702 @@ watch(screen, (s) => {
 .sim-modal-enter-from .sim-diff-card,
 .sim-modal-leave-to .sim-diff-card {
   transform: translateY(20px);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   POST-QUIZ (refined results) — matches homescore-v2_13.html postquiz
+   ────────────────────────────────────────────────────────────── */
+.pq-root {
+  --pq-navy: #231d45;
+  --pq-teal: #00a19a;
+  --pq-teal-bright: #00b6ae;
+  --pq-teal-dark: #007e78;
+  --pq-teal-deep: #00514d;
+  --pq-teal-pale: #e5f4f2;
+  --pq-teal-paler: #f2faf8;
+  --pq-text-soft: #6b6783;
+  --pq-text-faint: #9c98ad;
+  --pq-line: #ececef;
+  --pq-line-soft: #f5f5f7;
+  --pq-success: #2eab55;
+  --pq-bg: #fafafa;
+
+  background: var(--pq-bg);
+  min-height: 100dvh;
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 24px;
+  color: var(--pq-navy);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Top nav */
+.pq-topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px 8px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+}
+.pq-back-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--pq-teal-paler);
+  border: 1px solid var(--pq-teal-pale);
+  color: var(--pq-teal);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-family: inherit;
+}
+.pq-back-btn svg {
+  width: 14px;
+  height: 14px;
+}
+.pq-topnav-centre {
+  text-align: center;
+}
+.pq-topnav-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--pq-navy);
+  letter-spacing: -0.2px;
+}
+.pq-topnav-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pq-text-soft);
+  margin-top: 1px;
+}
+
+/* Amber address card — consistent with ResultDetail */
+.pq-addr-card {
+  margin: 8px 22px 0;
+  border-radius: 22px;
+  padding: 22px 22px 18px;
+  background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 12px 32px -8px rgba(180, 100, 20, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.pq-addr-card::after {
+  content: '';
+  position: absolute;
+  top: -45%;
+  right: -15%;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.pq-addr-card > * {
+  position: relative;
+  z-index: 1;
+}
+.pq-addr-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.pq-addr-pin {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.pq-addr-block { flex: 1; min-width: 0; }
+.pq-addr-line { font-size: 19px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
+.pq-addr-meta {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: 2px;
+}
+.pq-addr-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+.pq-addr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.05px;
+}
+.pq-addr-pill.epc { padding-left: 6px; }
+.pq-epc-letter {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+}
+.pq-state-done {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(255, 255, 255, 0.94);
+  color: var(--pq-success);
+}
+.pq-addr-stats {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+.pq-stat-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+}
+.pq-stat-count { font-weight: 800; }
+.pq-sep { opacity: 0.5; }
+.pq-pulse-dot {
+  width: 7px;
+  height: 7px;
+  background: #fff;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+.pq-pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  animation: pq-pulse 1.6s ease-out infinite;
+}
+.pq-pulse-green { background: #6bd4cd; }
+.pq-pulse-green::after { border-color: rgba(94, 234, 212, 0.5); }
+@keyframes pq-pulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+/* Overpay hero (teal gradient) */
+.pq-overpay-hero {
+  margin: 12px 22px 0;
+  padding: 22px 22px 20px;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(
+    140deg,
+    var(--pq-teal-bright) 0%,
+    var(--pq-teal) 50%,
+    var(--pq-teal-deep) 100%
+  );
+  box-shadow:
+    0 12px 32px -10px rgba(0, 161, 154, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.pq-overpay-hero::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.16) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.pq-overpay-hero > * { position: relative; z-index: 1; }
+.pq-overpay-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.pq-overpay-eyebrow .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+}
+.pq-overpay-num {
+  font-size: 44px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1.6px;
+  line-height: 1;
+  margin-bottom: 4px;
+  font-feature-settings: 'tnum';
+}
+.pq-overpay-num .unit {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-left: 2px;
+}
+.pq-overpay-sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+/* Hero buttons (white primary, translucent ghost) */
+.pq-hero-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.1px;
+  cursor: pointer;
+  transition:
+    transform 0.12s,
+    box-shadow 0.15s,
+    background 0.15s;
+}
+.pq-hero-btn--primary {
+  background: #fff;
+  border: none;
+  color: var(--pq-teal-dark);
+  margin-top: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+.pq-hero-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+}
+.pq-hero-btn--ghost {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 13px 18px;
+  margin-top: 10px;
+}
+.pq-hero-btn--ghost:hover { background: rgba(255, 255, 255, 0.22); }
+.pq-hero-btn-emoji { font-size: 16px; line-height: 1; flex-shrink: 0; }
+.pq-hero-btn-label {
+  flex: 1;
+  text-align: center;
+}
+.pq-hero-btn-arrow {
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.pq-hero-btn--ghost .pq-hero-btn-arrow { opacity: 0.7; }
+.pq-hero-btn:hover .pq-hero-btn-arrow { transform: translateX(2px); }
+
+/* Refined score card */
+.pq-score-card {
+  margin: 14px 22px 0;
+  background: #fff;
+  border: 2px solid var(--pq-teal);
+  border-radius: 20px;
+  padding: 18px 20px 16px;
+  box-shadow: 0 4px 16px rgba(0, 161, 154, 0.08);
+}
+.pq-score-card.tone-high {
+  background: linear-gradient(180deg, #f0fbf5 0%, white 60%);
+  border-color: var(--pq-success);
+}
+.pq-score-card.tone-mid {
+  background: linear-gradient(180deg, var(--pq-teal-paler) 0%, white 60%);
+}
+.pq-score-card.tone-low {
+  background: linear-gradient(180deg, var(--pq-teal-paler) 0%, white 60%);
+}
+.pq-score-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.pq-score-eyebrow .left {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: var(--pq-teal-dark);
+  text-transform: uppercase;
+}
+.pq-score-eyebrow .right {
+  background: #E8F5EA;
+  border: 1px solid #B8E8C8;
+  color: var(--pq-success);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 999px;
+  letter-spacing: -0.05px;
+}
+.pq-score-gauge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.pq-gauge {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+}
+.pq-gauge svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.pq-gauge .g-bg { stroke: var(--pq-line-soft); }
+.pq-gauge .g-fill {
+  transition:
+    stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    stroke 0.4s;
+}
+.pq-g-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.pq-g-num .gn-big {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--pq-navy);
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.pq-g-num .gn-small {
+  font-size: 11px;
+  color: var(--pq-text-faint);
+  font-weight: 700;
+}
+.pq-score-summary { flex: 1; min-width: 0; }
+.pq-score-band {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--pq-navy);
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+}
+.pq-score-explainer {
+  font-size: 11.5px;
+  color: var(--pq-text-soft);
+  line-height: 1.5;
+}
+.pq-score-data-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 12px;
+  padding: 8px 10px;
+  background: var(--pq-teal-paler);
+  border: 1px solid var(--pq-teal-pale);
+  border-radius: 9px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--pq-teal-dark);
+  line-height: 1.45;
+}
+.pq-score-data-note svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Refined breakdown — amber-tinted cream card per prototype */
+.pq-breakdown-card {
+  margin: 12px 22px 0;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(251, 239, 217, 0.6) 0%, white 50%);
+  border: 2px solid #e6a23c;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(230, 162, 60, 0.10);
+  transition: all 0.18s;
+}
+.pq-breakdown-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(230, 162, 60, 0.16);
+}
+.pq-breakdown-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--pq-navy);
+  letter-spacing: -0.2px;
+  margin-bottom: 3px;
+}
+.pq-breakdown-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--pq-text-soft);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.pq-breakdown-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pq-breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pq-breakdown-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--pq-navy);
+  width: 72px;
+  flex-shrink: 0;
+}
+.pq-breakdown-bar-wrap {
+  flex: 1;
+  height: 7px;
+  background: var(--pq-line-soft);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.pq-breakdown-bar {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pq-breakdown-value {
+  font-size: 11.5px;
+  font-weight: 800;
+  width: 42px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Next step / interest card — navy bordered with subtle gradient */
+.pq-interest-card {
+  margin: 12px 22px 0;
+  padding: 18px;
+  background:
+    radial-gradient(circle at bottom right, rgba(35, 29, 69, 0.06) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(35, 29, 69, 0.05) 0%, white 70%);
+  border: 2px solid var(--pq-navy);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(35, 29, 69, 0.10);
+  transition: all 0.18s;
+}
+.pq-interest-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(35, 29, 69, 0.16);
+}
+.pq-interest-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--pq-text-faint);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.pq-interest-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pq-interest-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: all 0.15s;
+}
+.pq-interest-opt.primary {
+  background: var(--pq-teal);
+  border: none;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+}
+.pq-interest-opt.primary:hover {
+  background: var(--pq-teal-bright);
+  transform: translateY(-1px);
+}
+.pq-interest-opt.outline {
+  background: #fff;
+  border: 1.5px solid var(--pq-line);
+  color: var(--pq-navy);
+}
+.pq-interest-opt.outline:hover {
+  border-color: var(--pq-teal-pale);
+  background: var(--pq-teal-paler);
+}
+.pq-interest-opt-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+.pq-interest-opt-icon svg {
+  width: 14px;
+  height: 14px;
+}
+.pq-interest-opt.outline .pq-interest-opt-icon { color: var(--pq-teal-dark); }
+.pq-interest-opt-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pq-interest-opt-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.1px;
+}
+.pq-interest-opt-sub {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+.pq-interest-opt.outline .pq-interest-opt-sub { color: var(--pq-text-soft); opacity: 1; }
+.pq-interest-opt-chev {
+  font-size: 18px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* Publish placeholder */
+.pq-placeholder {
+  margin: 22px 22px 0;
+  background: #fff;
+  border: 2px dashed var(--pq-teal-pale);
+  border-radius: 16px;
+  padding: 28px 22px;
+  text-align: center;
+}
+.pq-placeholder-emoji { font-size: 40px; margin-bottom: 10px; }
+.pq-placeholder-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--pq-navy);
+  margin-bottom: 8px;
+}
+.pq-placeholder-sub {
+  font-size: 12px;
+  color: var(--pq-text-soft);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.pq-placeholder-back {
+  background: none;
+  border: 1.5px solid var(--pq-line);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--pq-text-soft);
+  cursor: pointer;
+}
+.pq-placeholder-back:hover {
+  color: var(--pq-navy);
+  border-color: var(--pq-teal-pale);
+  background: var(--pq-teal-paler);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   PUBLISH — matches homescore-v2_13.html publish screen
+   ────────────────────────────────────────────────────────────── */
+.pub-root {
+  --pub-navy: #231d45;
+  --pub-teal: #00a19a;
+  --pub-teal-bright: #00b6ae;
+  --pub-teal-dark: #007e78;
+  --pub-teal-deep: #00514d;
+  --pub-teal-pale: #e5f4f2;
+  --pub-teal-paler: #f2faf8;
+  --pub-success: #2eab55;
+  --pub-gold: #e6b41d;
+  --pub-text-soft: #6b6783;
+  --pub-text-faint: #9c98ad;
+  --pub-line: #ececef;
+  --pub-line-soft: #f5f5f7;
+  --pub-bg: #fafafa;
+
+  background: var(--pub-bg);
+  min-height: 100dvh;
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 24px;
+  color: var(--pub-navy);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Amber address card */
+.pub-addr-card {
+  margin: 16px 22px 0;
+  border-radius: 22px;
+  padding: 22px 22px 18px;
+  background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 12px 32px -8px rgba(180, 100, 20, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.pub-addr-card::after {
+  content: '';
+  position: absolute;
+  top: -45%;
+  right: -15%;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+.pub-addr-card > * { position: relative; z-index: 1; }
+.pub-addr-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.pub-addr-pin {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.pub-addr-block { flex: 1; min-width: 0; }
+.pub-addr-line { font-size: 19px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
+.pub-addr-meta {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: 2px;
+}
+.pub-addr-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+.pub-addr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+}
+/* Publish-specific: EPC pill uses white bg (not the translucent-on-amber
+   variant used on the other screens) — matches the prototype behaviour. */
+.pub-addr-pill.epc {
+  padding-left: 6px;
+  background: #fff;
+  border-color: #fff;
+  color: var(--pub-navy);
+}
+.pub-epc-letter {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+}
+.pub-state-done {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(255, 255, 255, 0.94);
+  color: var(--pub-success);
+}
+
+/* Top nav (back button + title) */
+.pub-topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px 8px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+}
+.pub-back-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--pub-teal-paler);
+  border: 1px solid var(--pub-teal-pale);
+  color: var(--pub-teal);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-family: inherit;
+}
+.pub-back-btn svg { width: 14px; height: 14px; }
+.pub-topnav-centre { text-align: center; }
+.pub-topnav-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--pub-navy);
+  letter-spacing: -0.2px;
+}
+.pub-topnav-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pub-text-soft);
+  margin-top: 1px;
+}
+
+/* Hero (teal gradient) */
+.pub-hero {
+  margin: 12px 22px 0;
+  padding: 22px 22px 20px;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(
+    140deg,
+    var(--pub-teal-bright) 0%,
+    var(--pub-teal) 50%,
+    var(--pub-teal-deep) 100%
+  );
+  box-shadow:
+    0 12px 32px -10px rgba(0, 161, 154, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.pub-hero::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 65%);
+  pointer-events: none;
+}
+.pub-hero > * { position: relative; z-index: 1; }
+.pub-hero-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.pub-hero-eyebrow .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+}
+.pub-hero-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  margin: 6px 0 10px;
+}
+.pub-hero-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+/* Contribution card */
+.pub-contrib-card {
+  margin: 12px 22px 0;
+  background: #fff;
+  border: 1.5px solid var(--pub-line);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+.pub-contrib-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--pub-text-faint);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.pub-contrib-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pub-contrib-row { display: flex; flex-direction: column; }
+.pub-contrib-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.pub-contrib-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pub-navy);
+}
+.pub-contrib-icon { font-size: 13px; }
+.pub-contrib-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--pub-teal-dark);
+  font-feature-settings: 'tnum';
+}
+.pub-contrib-bar {
+  height: 6px;
+  background: var(--pub-line-soft);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.pub-contrib-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pub-contrib-bar-fill.teal { background: var(--pub-teal); }
+.pub-contrib-bar-fill.success { background: var(--pub-success); }
+.pub-contrib-bar-fill.gold { background: var(--pub-gold); }
+.pub-contrib-note {
+  font-size: 10px;
+  color: var(--pub-text-faint);
+  margin-top: 3px;
+}
+
+/* Anonymous notice */
+.pub-anon {
+  margin: 10px 22px 0;
+  padding: 12px 14px;
+  background: var(--pub-teal-paler);
+  border: 1px solid var(--pub-teal-pale);
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pub-teal-dark);
+  line-height: 1.5;
+}
+.pub-anon-icon { font-size: 16px; flex-shrink: 0; }
+.pub-anon b { font-weight: 800; }
+
+/* Street impact card */
+.pub-street-card {
+  margin: 12px 22px 0;
+  background: #fff;
+  border: 1.5px solid var(--pub-line);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+.pub-street-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.pub-street-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--pub-text-faint);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.pub-street-count {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--pub-teal-dark);
+}
+.pub-street-bar {
+  height: 8px;
+  background: var(--pub-line-soft);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.pub-street-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pub-teal), var(--pub-teal-bright));
+  border-radius: 100px;
+  transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pub-street-note {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pub-text-soft);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.pub-milestones {
+  display: flex;
+  gap: 6px;
+}
+.pub-milestone {
+  flex: 1;
+  text-align: center;
+  padding: 8px 4px;
+  background: var(--pub-line-soft);
+  border: 1.5px solid var(--pub-line);
+  border-radius: 9px;
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+.pub-milestone.active {
+  background: var(--pub-teal-paler);
+  border-color: var(--pub-teal);
+  opacity: 1;
+}
+.pub-milestone-num {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--pub-text-soft);
+}
+.pub-milestone.active .pub-milestone-num { color: var(--pub-teal-dark); }
+.pub-milestone-label {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--pub-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+.pub-milestone.active .pub-milestone-label { color: var(--pub-teal-dark); }
+
+/* Publish CTA */
+.pub-cta { margin: 14px 22px 0; }
+.pub-cta-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--pub-teal);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 20px rgba(0, 161, 154, 0.35);
+  transition: background 0.15s;
+}
+.pub-cta-btn:hover { background: var(--pub-teal-bright); }
+.pub-cta-skip {
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pub-text-soft);
+  cursor: pointer;
+  margin-top: 6px;
+}
+.pub-cta-skip:hover { color: var(--pub-navy); }
+
+/* KYC placeholder */
+.pub-placeholder {
+  margin: 22px 22px 0;
+  background: #fff;
+  border: 2px dashed var(--pub-teal-pale);
+  border-radius: 16px;
+  padding: 28px 22px;
+  text-align: center;
+}
+.pub-placeholder-emoji { font-size: 40px; margin-bottom: 10px; }
+.pub-placeholder-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--pub-navy);
+  margin-bottom: 8px;
+}
+.pub-placeholder-sub {
+  font-size: 12px;
+  color: var(--pub-text-soft);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.pub-placeholder-back {
+  background: none;
+  border: 1.5px solid var(--pub-line);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--pub-text-soft);
+  cursor: pointer;
+}
+.pub-placeholder-back:hover {
+  color: var(--pub-navy);
+  border-color: var(--pub-teal-pale);
+  background: var(--pub-teal-paler);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   KYC + KYC-PENDING + PUBLISHED — matches homescore-v2_13.html
+   ────────────────────────────────────────────────────────────── */
+.kyc-root {
+  --kyc-navy: #231d45;
+  --kyc-navy-soft: #4a4566;
+  --kyc-teal: #00a19a;
+  --kyc-teal-bright: #00b6ae;
+  --kyc-teal-dark: #007e78;
+  --kyc-teal-pale: #e5f4f2;
+  --kyc-teal-paler: #f2faf8;
+  --kyc-success: #2eab55;
+  --kyc-text-soft: #6b6783;
+  --kyc-text-faint: #9c98ad;
+  --kyc-line: #ececef;
+  --kyc-line-soft: #f5f5f7;
+  --kyc-bg: #fafafa;
+
+  background: var(--kyc-bg);
+  min-height: 100dvh;
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 24px;
+  color: var(--kyc-navy);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Top nav */
+.kyc-topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px 8px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+}
+.kyc-back-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--kyc-teal-paler);
+  border: 1px solid var(--kyc-teal-pale);
+  color: var(--kyc-teal);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-family: inherit;
+}
+.kyc-back-btn svg { width: 14px; height: 14px; }
+.kyc-topnav-centre { text-align: center; }
+.kyc-topnav-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--kyc-navy);
+  letter-spacing: -0.2px;
+}
+.kyc-topnav-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--kyc-text-soft);
+  margin-top: 1px;
+}
+
+/* 3-step progress */
+.kyc-steps {
+  margin: 16px 22px 0;
+  display: flex;
+  align-items: center;
+}
+.kyc-step {
+  flex: 1;
+  text-align: center;
+}
+.kyc-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--kyc-line);
+  color: var(--kyc-text-faint);
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 4px;
+  transition: background 0.3s, color 0.3s;
+}
+.kyc-step.active .kyc-step-num {
+  background: var(--kyc-teal);
+  color: #fff;
+}
+.kyc-step.verified .kyc-step-num {
+  background: var(--kyc-success);
+  color: #fff;
+  font-size: 14px;
+}
+.kyc-step-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--kyc-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.kyc-step.active .kyc-step-label { color: var(--kyc-teal-dark); }
+.kyc-step.verified .kyc-step-label { color: var(--kyc-success); }
+.kyc-step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--kyc-line);
+  margin-bottom: 16px;
+  transition: background 0.3s;
+}
+.kyc-step-line.filled { background: var(--kyc-teal); }
+
+/* Hero (navy gradient by default; success variant uses green) */
+.kyc-hero {
+  margin: 16px 22px 0;
+  background: linear-gradient(135deg, var(--kyc-navy) 0%, #0d1a3a 100%);
+  border-radius: 20px;
+  padding: 24px 20px;
+  text-align: center;
+  color: #fff;
+}
+.kyc-hero--success {
+  background: linear-gradient(135deg, var(--kyc-success) 0%, #1e8c40 100%);
+  padding: 28px 20px;
+}
+.kyc-hero-emoji { font-size: 40px; margin-bottom: 12px; }
+.kyc-hero-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.kyc-hero--success .kyc-hero-title { font-size: 20px; }
+.kyc-hero-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.55;
+}
+.kyc-hero--success .kyc-hero-sub { color: rgba(255, 255, 255, 0.8); }
+
+/* Verification method choices */
+.kyc-methods {
+  margin: 14px 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.kyc-method {
+  background: #fff;
+  border: 1.5px solid var(--kyc-line-soft);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.kyc-method:hover {
+  border-color: var(--kyc-teal-pale);
+  background: var(--kyc-teal-paler);
+  transform: translateY(-1px);
+}
+.kyc-method-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.kyc-method-body { flex: 1; }
+.kyc-method-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--kyc-navy);
+}
+.kyc-method-sub {
+  font-size: 11px;
+  color: var(--kyc-text-soft);
+  margin-top: 1px;
+}
+.kyc-method-chev {
+  font-size: 18px;
+  color: var(--kyc-line);
+}
+
+.kyc-privacy {
+  margin: 14px 22px 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--kyc-text-faint);
+  line-height: 1.5;
+}
+
+/* "Now unlocked for you" card (kyc-pending) */
+.kyc-unlocked {
+  margin: 12px 22px 0;
+  background: #fff;
+  border: 1.5px solid var(--kyc-line-soft);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+.kyc-unlocked-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--kyc-text-faint);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.kyc-unlocked-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.kyc-unlocked-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--kyc-navy);
+}
+.kyc-unlocked-icon { font-size: 15px; flex-shrink: 0; }
+
+/* Bottom CTAs */
+.kyc-ctas {
+  margin: 14px 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.kyc-cta-primary {
+  width: 100%;
+  padding: 15px;
+  background: var(--kyc-teal);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 161, 154, 0.3);
+  transition: background 0.15s;
+}
+.kyc-cta-primary:hover { background: var(--kyc-teal-bright); }
+.kyc-cta-outline {
+  width: 100%;
+  padding: 15px;
+  background: #fff;
+  border: 2px solid var(--kyc-teal);
+  color: var(--kyc-teal-dark);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.kyc-cta-outline:hover { background: var(--kyc-teal-paler); }
+.kyc-cta-skip {
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--kyc-text-soft);
+  cursor: pointer;
+  margin-top: 6px;
+}
+.kyc-cta-skip:hover { color: var(--kyc-navy); }
+
+/* Published success hero (big teal gradient) */
+.kyc-success-hero {
+  margin: 12px 22px 0;
+  background: linear-gradient(
+    135deg,
+    var(--kyc-teal-bright) 0%,
+    var(--kyc-teal) 60%,
+    var(--kyc-teal-dark) 100%
+  );
+  border-radius: 20px;
+  padding: 32px 22px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 12px 32px -10px rgba(0, 161, 154, 0.45);
+}
+.kyc-success-emoji {
+  font-size: 52px;
+  margin-bottom: 16px;
+}
+.kyc-success-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.kyc-success-sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+/* "What's now updated" card */
+.kyc-updates-card {
+  margin: 12px 22px 0;
+  background: #fff;
+  border: 1.5px solid var(--kyc-line-soft);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+.kyc-updates-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--kyc-text-faint);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.kyc-updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.kyc-updates-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--kyc-navy);
+  line-height: 1.45;
+}
+.kyc-updates-row b { font-weight: 800; }
+.kyc-updates-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+/* Street impact pill */
+.kyc-street-impact {
+  margin: 10px 22px 0;
+  padding: 12px 14px;
+  background: var(--kyc-teal-paler);
+  border: 1px solid var(--kyc-teal-pale);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--kyc-teal-dark);
+  line-height: 1.5;
+}
+.kyc-street-impact-icon { font-size: 20px; flex-shrink: 0; }
+
+/* Next step */
+.kyc-next-step {
+  margin: 14px 22px 0;
+}
+.kyc-next-step-eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--kyc-text-faint);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   QUICK-WINS BOOST-SCORE UPLOAD DRAWER — bottom sheet, matches the
+   landlord passport upload UX (Teleport target = <body>).
+   ────────────────────────────────────────────────────────────── */
+.qw-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.qw-modal {
+  width: 100%;
+  max-width: 28rem;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.18);
+  padding: 16px 20px 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  max-height: 86vh;
+  animation: qw-slide-up 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes qw-slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.qw-modal-handle {
+  width: 40px;
+  height: 4px;
+  background: #f5f5f7;
+  border-radius: 100px;
+  margin: 0 auto 14px;
+}
+.qw-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.qw-modal-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.2px;
+}
+.qw-modal-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f5f7;
+  color: #6b6783;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-family: inherit;
+}
+.qw-modal-close:hover { background: #ececef; }
+.qw-modal-body {
+  overflow-y: auto;
+  margin-bottom: 14px;
+}
+.qw-modal-intro {
+  font-size: 12px;
+  color: #6b6783;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+/* Doc preview row (existing saved file OR pending new file) */
+.qw-doc-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #fafafa;
+  border: 1.5px solid #ececef;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.qw-doc-preview--pending {
+  background: #f2faf8;
+  border-color: #e5f4f2;
+}
+.qw-doc-preview-icon { font-size: 22px; flex-shrink: 0; }
+.qw-doc-preview-info { flex: 1; min-width: 0; }
+.qw-doc-preview-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qw-doc-preview-meta {
+  font-size: 11px;
+  color: #6b6783;
+  margin-top: 2px;
+}
+.qw-doc-preview-btn {
+  background: #fff;
+  border: 1.5px solid #ececef;
+  border-radius: 8px;
+  padding: 7px 11px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b6783;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.qw-doc-preview-btn:hover { color: #231d45; border-color: #c8c5e0; }
+
+/* File picker row */
+.qw-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 2px dashed #e5f4f2;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #f2faf8;
+}
+.qw-upload-row:hover {
+  border-color: #00a19a;
+  background: #e5f4f2;
+}
+.qw-upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.qw-upload-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  color: #00a19a;
+  border: 1.5px solid #e5f4f2;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.qw-upload-icon svg { width: 16px; height: 16px; }
+.qw-upload-text {
+  font-size: 13px;
+  font-weight: 800;
+  color: #231d45;
+  display: flex;
+  flex-direction: column;
+}
+.qw-upload-text small {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b6783;
+  margin-top: 2px;
+}
+
+.qw-modal-error {
+  font-size: 11.5px;
+  color: #c73e36;
+  background: #fef2f2;
+  border: 1px solid rgba(199, 62, 54, 0.2);
+  border-radius: 9px;
+  padding: 8px 11px;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+/* Footer with Cancel + Save */
+.qw-modal-footer {
+  display: flex;
+  gap: 8px;
+  padding-top: 6px;
+}
+.qw-btn-secondary,
+.qw-btn-primary {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.qw-btn-secondary {
+  background: #fafafa;
+  border: 1.5px solid #ececef;
+  color: #6b6783;
+}
+.qw-btn-secondary:hover { color: #231d45; border-color: #c8c5e0; }
+.qw-btn-primary {
+  background: #00a19a;
+  border: none;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+}
+.qw-btn-primary:hover:not(:disabled) { background: #00b6ae; }
+.qw-btn-primary:disabled {
+  background: #ececef;
+  color: #9c98ad;
+  box-shadow: none;
+  cursor: not-allowed;
 }
 </style>

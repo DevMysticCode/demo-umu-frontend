@@ -790,9 +790,15 @@ function riskPillClass(level: RiskLevel): string {
 }
 
 function onUpload() {
-  router.push(
-    `/onboarding/signin?reason=upload-bill&redirect=/homescore/${propertyId}`,
-  )
+  // Capture where to bounce back to so signin / signup → welcome reliably
+  // returns the user here (and not /explore) after auth.
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(
+      'redirectAfterLogin',
+      `/homescore/costs/${propertyId}`,
+    )
+  }
+  router.push('/onboarding/signin?reason=upload-bill')
 }
 </script>
 

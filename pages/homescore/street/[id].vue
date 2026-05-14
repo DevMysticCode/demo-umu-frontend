@@ -168,15 +168,6 @@
       </div>
     </div>
 
-    <!-- ── CTA ─────────────────────────────────────────────────── -->
-    <div class="cta-wrap" data-tour="cta">
-      <button class="cta-stop" type="button" @click="goToResult">
-        <span class="cta-head">Stop overpaying</span>
-        <span class="cta-sub">See your full HomeScore →</span>
-      </button>
-      <div class="cta-foot">2 minutes · no account needed</div>
-    </div>
-
     <!-- ── Renters note ────────────────────────────────────────── -->
     <div class="renters-note">
       <div class="renters-icon">🏠</div>
