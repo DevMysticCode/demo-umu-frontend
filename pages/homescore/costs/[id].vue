@@ -1,252 +1,630 @@
 <template>
-  <div class="pq-screen">
-
+  <div class="rc-screen">
     <!-- Top nav -->
-    <div class="pq-topnav">
-      <button class="pq-back-btn" @click="router.back()" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <div class="rc-topnav">
+      <button class="rc-back" @click="router.back()" aria-label="Back">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
-      <div class="pq-eyebrow-pill"><span class="dot" />HomeScore</div>
-      <div style="width: 32px;" />
+      <div class="rc-eyebrow-pill"><span class="dot" />HomeScore</div>
+      <div style="width: 32px" />
     </div>
 
-    <!-- ── Amber address card — same as ResultDetail (pills + state + stats) ── -->
-    <div v-if="property" class="pq-addr-card">
-      <div class="pq-addr-top">
-        <div class="pq-addr-pin" />
-        <div class="pq-addr-block">
-          <div class="pq-addr-line">{{ property.addressLine1 || 'This property' }}</div>
-          <div class="pq-addr-meta">
+    <!-- Amber address card — consistent with ResultDetail -->
+    <div v-if="property" class="rc-addr-card">
+      <div class="rc-addr-top">
+        <div class="rc-addr-pin" />
+        <div class="rc-addr-block">
+          <div class="rc-addr-line">
+            {{ property.addressLine1 || 'This property' }}
+          </div>
+          <div class="rc-addr-meta">
             {{ property.postcode || '' }}
-            <template v-if="property.propertyType"> · {{ property.propertyType }}</template>
-            <template v-if="property.bedrooms"> · {{ property.bedrooms }} bed</template>
+            <template v-if="property.propertyType">
+              · {{ property.propertyType }}</template
+            >
+            <template v-if="property.bedrooms">
+              · {{ property.bedrooms }} bed</template
+            >
           </div>
         </div>
       </div>
-
-      <div class="pq-addr-pills">
-        <span v-if="property.epcRating" class="pq-addr-pill epc">
+      <div class="rc-addr-pills">
+        <span v-if="property.epcRating" class="rc-addr-pill epc">
           <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11">
             <path d="M13 2 L4 14 L11 14 L9 22 L20 9 L13 9 Z" />
           </svg>
-          <span class="pq-epc-letter" :style="{ background: epcColor }">{{ property.epcRating }}</span>
+          <span class="rc-epc-letter" :style="{ background: epcColor }">{{
+            property.epcRating
+          }}</span>
           EPC
         </span>
-        <span v-if="passportState === 'unclaimed'" class="pq-addr-pill pq-state-unclaimed">Unclaimed</span>
-        <span v-else-if="passportState === 'inProgress'" class="pq-addr-pill pq-state-progress">In progress</span>
-        <span v-else class="pq-addr-pill pq-state-published">✓ Published</span>
+        <span
+          v-if="passportState === 'unclaimed'"
+          class="rc-addr-pill rc-state-unclaimed"
+          >Unclaimed</span
+        >
+        <span
+          v-else-if="passportState === 'inProgress'"
+          class="rc-addr-pill rc-state-progress"
+          >In progress</span
+        >
+        <span v-else class="rc-addr-pill rc-state-published">✓ Published</span>
       </div>
-
-      <div class="pq-addr-stats">
-        <div v-if="passportState === 'unclaimed'" class="pq-stat-row">
-          <span class="pq-pulse-dot" />
-          <span class="pq-stat-count">{{ randomSearches }} searches today</span>
-          <span class="pq-sep">·</span>
-          <span>No verified Passport yet</span>
+      <div class="rc-addr-stats">
+        <div v-if="passportState === 'unclaimed'" class="rc-stat-row">
+          <span class="rc-pulse-dot" />
+          <span class="rc-stat-count">{{ randomSearches }} searches today</span>
+          <span class="rc-sep">·</span>
+          <span>No verified Passport on this address yet</span>
+          <span class="rc-sep">·</span>
+          <span>Public EPC data only</span>
         </div>
-        <div v-else-if="passportState === 'inProgress'" class="pq-stat-row">
-          <span class="pq-pulse-dot" />
-          <span class="pq-stat-count">{{ randomSearches + 1 }} searches today</span>
-          <span class="pq-sep">·</span>
-          <span>Passport in progress</span>
+        <div v-else-if="passportState === 'inProgress'" class="rc-stat-row">
+          <span class="rc-pulse-dot" />
+          <span class="rc-stat-count"
+            >{{ randomSearches + 1 }} searches today</span
+          >
+          <span class="rc-sep">·</span>
+          <span>Owner is building a Passport</span>
+          <span class="rc-sep">·</span>
+          <span>Public EPC data only for now</span>
         </div>
-        <div v-else class="pq-stat-row">
-          <span class="pq-pulse-dot pq-pulse-green" />
-          <span class="pq-stat-count">{{ randomSearches * 6 }} searches this month</span>
-          <span class="pq-sep">·</span>
+        <div v-else class="rc-stat-row">
+          <span class="rc-pulse-dot rc-pulse-green" />
+          <span class="rc-stat-count"
+            >{{ randomSearches * 6 }} searches this month</span
+          >
+          <span class="rc-sep">·</span>
           <span>Verified Passport live</span>
+          <span class="rc-sep">·</span>
+          <span>Owner's real data</span>
         </div>
       </div>
     </div>
 
     <!-- Page title -->
-    <div v-if="data" class="pq-costs-title-block">
-      <div class="pq-costs-title">Your running costs</div>
-      <div class="pq-costs-sub">Refined with your quiz answers — more accurate than public EPC data alone.</div>
+    <div v-if="data" class="rc-title-block">
+      <div class="rc-title">Full running costs</div>
+      <div class="rc-sub">
+        Everything it costs to run
+        {{ property?.addressLine1 || 'this property' }} — energy from the
+        <template v-if="data.epcYear">{{ data.epcYear }} EPC</template>
+        <template v-else>EPC data</template>, other costs estimated for
+        {{ property?.postcode?.split(' ')[0] || 'this area' }}.
+      </div>
     </div>
 
     <!-- Loading / error states -->
-    <div v-if="loading" class="pq-loading">Loading running costs…</div>
-    <div v-else-if="error" class="pq-error">{{ error }}</div>
+    <div v-if="loading" class="rc-loading">Loading running costs…</div>
+    <div v-else-if="error" class="rc-error">{{ error }}</div>
 
     <template v-else-if="data">
-      <!-- ── Total cost hero ──────────────────────────────────── -->
-      <div class="pq-cost-hero">
-        <div class="pq-cost-hero-eyebrow"><span class="dot" />Refined total per year</div>
-        <div class="pq-cost-hero-num">£{{ fmt(data.totalAnnual) }}<span class="unit"> / year</span></div>
-        <div class="pq-cost-hero-monthly">
-          That's about <b>£{{ fmt(data.totalMonthly) }} / month</b> — based on your quiz answers.
+      <!-- ═══ HERO ═══ -->
+      <div class="cost-hero">
+        <div class="cost-hero-eyebrow">
+          <span class="dot" />Estimated total per year
         </div>
-        <div class="pq-cost-compare">
-          <span class="pq-cost-compare-num">£{{ fmt(diffAmount) }}</span>
-          <span class="pq-cost-compare-label">
-            {{ diffDirection }} the {{ streetName }} street average
-          </span>
+        <div class="cost-hero-num">
+          £{{ fmt(data.totalAnnual) }}<span class="unit"> / year</span>
+        </div>
+        <div class="cost-hero-monthly">
+          That's about <b>£{{ fmt(data.totalMonthly) }} / month</b> across
+          energy, water and council tax.
+        </div>
+        <div class="cost-compare">
+          <div class="cost-compare-bar">
+            <div class="you" />
+            <div class="avg" :style="{ width: avgBarPct + '%' }" />
+          </div>
+          <div class="cost-compare-text">
+            <b>£{{ fmt(diff) }} {{ diffDirection }}</b> than street avg in
+            energy costs
+          </div>
         </div>
       </div>
 
-      <!-- ── Energy & utilities ───────────────────────────────── -->
-      <div class="pq-section-h">
-        <div class="pq-section-h-icon">
+      <!-- ═══ ENERGY ═══ -->
+      <div class="costs-section-h">
+        <div class="costs-section-h-icon">
           <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
             <path d="M13 2 L4 14 L11 14 L9 22 L20 9 L13 9 Z" />
           </svg>
         </div>
-        <div class="pq-section-h-text">
-          <div class="pq-section-h-title">Energy &amp; utilities</div>
-          <div class="pq-section-h-sub">Based on your quiz answers and EPC data</div>
+        <div class="costs-section-h-text">
+          <div class="costs-section-h-title">Energy</div>
+          <div class="costs-section-h-sub">
+            <template v-if="data.epcYear"
+              >From {{ data.epcYear }} EPC ·
+            </template>
+            {{ data.tariffs.source }} tariffs · total £{{
+              fmt(data.energy.total)
+            }}/yr
+          </div>
         </div>
       </div>
-      <div class="pq-cost-card pq-card-teal-tint">
-        <div class="pq-cost-row">
-          <div class="pq-cost-row-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-              <path d="M12 22s-7-4-7-11c0-4 3-7 5-9 0 3 2 5 4 6 2 1 5 3 5 8 0 4-3 6-7 6z" />
+      <div class="cost-card cost-card--energy">
+        <div class="cost-row">
+          <div class="cost-row-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12 22s-7-4-7-11c0-4 3-7 5-9 0 3 2 5 4 6 2 1 5 3 5 8 0 4-3 6-7 6z"
+              />
             </svg>
           </div>
-          <div class="pq-cost-row-body">
-            <div class="pq-cost-row-title">Gas &amp; heating</div>
-            <div class="pq-cost-row-meta">
-              <template v-if="gasKwh">{{ fmt(gasKwh) }} kWh/yr · </template>
-              gas {{ (data.tariffs.gas * 100).toFixed(2) }}p
+          <div class="cost-row-body">
+            <div class="cost-row-title">Heating</div>
+            <div class="cost-row-meta">
+              <template v-if="data.energy.heating.kwh"
+                >{{ fmt(data.energy.heating.kwh) }} kWh/yr ·
+              </template>
+              {{ data.energy.heating.label }} ·
+              {{ (data.energy.heating.tariff * 100).toFixed(2) }}p/kWh
             </div>
           </div>
-          <div class="pq-cost-row-val">£{{ fmt(gasCost) }}<span class="unit">/yr</span></div>
-        </div>
-        <div class="pq-cost-row">
-          <div class="pq-cost-row-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M13 2 L4 14 L11 14 L9 22 L20 9 L13 9 Z" />
-            </svg>
-          </div>
-          <div class="pq-cost-row-body">
-            <div class="pq-cost-row-title">Electricity</div>
-            <div class="pq-cost-row-meta">
-              <template v-if="data.energy.electricity.kwh">~{{ fmt(data.energy.electricity.kwh) }} kWh/yr · </template>
-              elec {{ (data.tariffs.electricity * 100).toFixed(1) }}p
+          <div class="cost-row-num">
+            <div class="cost-row-num-big">
+              £{{ fmt(data.energy.heating.cost) }}
             </div>
+            <div class="cost-row-num-unit">/ year</div>
           </div>
-          <div class="pq-cost-row-val">£{{ fmt(data.energy.electricity.cost) }}<span class="unit">/yr</span></div>
         </div>
-        <div class="pq-cost-row">
-          <div class="pq-cost-row-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+        <div class="cost-row">
+          <div class="cost-row-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            >
               <path d="M12 3 Q5 12 5 16 a7 7 0 0 0 14 0 Q19 12 12 3z" />
             </svg>
           </div>
-          <div class="pq-cost-row-body">
-            <div class="pq-cost-row-title">Water</div>
-            <div class="pq-cost-row-meta">{{ shortWaterLabel }}</div>
+          <div class="cost-row-body">
+            <div class="cost-row-title">Hot water</div>
+            <div class="cost-row-meta">
+              <template v-if="data.energy.hotWater.kwh"
+                >{{ fmt(data.energy.hotWater.kwh) }} kWh/yr ·
+              </template>
+              {{ data.energy.hotWater.label }}
+            </div>
           </div>
-          <div class="pq-cost-row-val">£{{ fmt(data.water.cost) }}<span class="unit">/yr</span></div>
+          <div class="cost-row-num">
+            <div class="cost-row-num-big">
+              £{{ fmt(data.energy.hotWater.cost) }}
+            </div>
+            <div class="cost-row-num-unit">/ year</div>
+          </div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-row-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="9" y1="3" x2="9" y2="8" />
+              <line x1="15" y1="3" x2="15" y2="8" />
+              <path d="M6 8h12v3a6 6 0 0 1-12 0z" />
+              <line x1="12" y1="17" x2="12" y2="22" />
+            </svg>
+          </div>
+          <div class="cost-row-body">
+            <div class="cost-row-title">Electricity &amp; lighting</div>
+            <div class="cost-row-meta">
+              <template v-if="data.energy.electricity.kwh"
+                >Est. ~{{ fmt(data.energy.electricity.kwh) }} kWh/yr ·
+              </template>
+              {{ (data.energy.electricity.tariff * 100).toFixed(1) }}p/kWh ·
+              {{ data.energy.electricity.label }}
+            </div>
+          </div>
+          <div class="cost-row-num">
+            <div class="cost-row-num-big">
+              £{{ fmt(data.energy.electricity.cost) }}
+            </div>
+            <div class="cost-row-num-unit">/ year</div>
+          </div>
+        </div>
+
+        <div class="cost-card-foot">
+          <div>EPC energy total</div>
+          <div>£{{ fmt(data.energy.total) }} / yr</div>
+        </div>
+        <div class="cost-card-foot-note">
+          With all improvements: could fall to £{{
+            fmt(data.energy.potentialTotal)
+          }}/yr — saving £{{ fmt(data.energy.potentialSaving) }}
         </div>
       </div>
 
-      <!-- ── Confidence note ──────────────────────────────────── -->
-      <div class="pq-confidence">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <circle cx="12" cy="12" r="9" />
-          <line x1="12" y1="11" x2="12" y2="17" />
-          <circle cx="12" cy="7.5" r="0.9" fill="currentColor" />
-        </svg>
-        <div>
-          These figures are
-          <b>refined using your quiz answers</b>
-          — more accurate than public EPC estimates alone.
-        </div>
-      </div>
-
-      <!-- ── Environmental impact ─────────────────────────────── -->
-      <div class="pq-section-h">
-        <div class="pq-section-h-icon pq-icon-env">🌍</div>
-        <div class="pq-section-h-text">
-          <div class="pq-section-h-title">Environmental impact</div>
-          <div class="pq-section-h-sub">Based on your quiz answers and UK grid emissions</div>
-        </div>
-      </div>
-      <div class="pq-cost-card pq-env-card">
-        <div class="pq-env-top">
-          <div class="pq-env-co2">
-            <div class="pq-env-co2-num">{{ fmt(data.environmentalImpact.co2NowKg) }}</div>
-            <div class="pq-env-co2-unit">kg CO₂ per year</div>
-          </div>
-          <div class="pq-env-rating">
-            <div class="pq-env-rating-letter">{{ data.environmentalImpact.ratingCurrent }}</div>
-            <div class="pq-env-rating-label">{{ data.environmentalImpact.ratingLabel }}</div>
-          </div>
-        </div>
-        <div class="pq-env-context">
-          <template v-if="co2DiffKg > 0">
-            <b>{{ fmt(co2DiffKg) }} kg above</b> the UK average of {{ fmt(data.environmentalImpact.ukAverageKg) }} kg per year
-          </template>
-          <template v-else-if="co2DiffKg < 0">
-            <b>{{ fmt(Math.abs(co2DiffKg)) }} kg below</b> the UK average of {{ fmt(data.environmentalImpact.ukAverageKg) }} kg per year
-          </template>
-          <template v-else>
-            <b>About average</b> · UK household: {{ fmt(data.environmentalImpact.ukAverageKg) }} kg per year
-          </template>
-        </div>
-        <div class="pq-env-scale">
-          <div class="pq-env-scale-bars">
-            <div
-              v-for="(b, i) in envBars"
-              :key="i"
-              class="pq-env-bar"
-              :class="{ active: b.active }"
-              :style="{ background: b.color }"
-            />
-          </div>
-          <div class="pq-env-scale-labels">
-            <span>A — very low</span>
-            <span>D — avg</span>
-            <span>G — very high</span>
-          </div>
-        </div>
-        <div class="pq-env-divider" />
-        <div class="pq-env-improvement">
-          <div>
-            <div class="pq-env-improvement-label">If you made the top improvements</div>
-            <div class="pq-env-improvement-sub">You could cut emissions by ~{{ Math.round(data.environmentalImpact.reductionPct) }}%</div>
-          </div>
-          <div class="pq-env-improvement-saving">Save ~{{ fmt(data.environmentalImpact.savingKg) }} kg/yr</div>
-        </div>
-      </div>
-
-      <!-- ── Top 3 ways to save money ─────────────────────────── -->
-      <div class="pq-section-h">
-        <div class="pq-section-h-icon pq-icon-save">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-            <path d="M12 2l2 6 6 1-4.5 4 1.5 7-5-3-5 3 1.5-7L4 9l6-1z" />
+      <!-- ═══ WATER ═══ -->
+      <div class="costs-section-h">
+        <div class="costs-section-h-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"
+          >
+            <path d="M12 3 Q5 12 5 16 a7 7 0 0 0 14 0 Q19 12 12 3z" />
           </svg>
         </div>
-        <div class="pq-section-h-text">
-          <div class="pq-section-h-title">Top 3 ways to save money</div>
-          <div class="pq-section-h-sub">Ranked by annual saving — based on your quiz answers</div>
+        <div class="costs-section-h-text">
+          <div class="costs-section-h-title">Water &amp; sewerage</div>
+          <div class="costs-section-h-sub">{{ data.water.label }}</div>
         </div>
       </div>
-      <div class="pq-cost-card pq-savings-card">
-        <div
-          v-for="(s, idx) in data.savings"
-          :key="idx"
-          class="pq-savings-row"
-          :class="{ 'pq-savings-row--last': idx === data.savings.length - 1 }"
-        >
-          <div class="pq-savings-num">{{ idx + 1 }}</div>
-          <div class="pq-savings-body">
-            <div class="pq-savings-title">{{ s.title }}</div>
-            <div class="pq-savings-sub">{{ s.sub }}</div>
+      <div class="cost-card">
+        <div class="cost-row">
+          <div class="cost-row-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            >
+              <path d="M12 3 Q5 12 5 16 a7 7 0 0 0 14 0 Q19 12 12 3z" />
+            </svg>
           </div>
-          <div class="pq-savings-val">
-            <div class="pq-savings-amount">~£{{ fmt(s.amount) }}/yr</div>
-            <div class="pq-savings-pts">+{{ s.points }} pts</div>
+          <div class="cost-row-body">
+            <div class="cost-row-title">Water &amp; sewerage</div>
+            <div class="cost-row-meta">
+              Estimated · installing a meter could reduce this
+            </div>
+          </div>
+          <div class="cost-row-num">
+            <div class="cost-row-num-big">£{{ fmt(data.water.cost) }}</div>
+            <div class="cost-row-num-unit">/ year</div>
           </div>
         </div>
       </div>
 
-      <button class="pq-back-link" @click="router.back()">← Back to your score</button>
-      <div style="height: 24px;" />
+      <!-- ═══ COUNCIL TAX ═══ -->
+      <div class="costs-section-h">
+        <div class="costs-section-h-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"
+          >
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          </svg>
+        </div>
+        <div class="costs-section-h-text">
+          <div class="costs-section-h-title">Council tax</div>
+          <div class="costs-section-h-sub">
+            {{ data.councilTax.council }} 2024/25 · not affected by energy
+            improvements
+          </div>
+        </div>
+      </div>
+      <div class="cost-card">
+        <div class="cost-row">
+          <div class="cost-row-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <div class="cost-row-body">
+            <div class="cost-row-title">Council tax</div>
+            <div class="cost-row-meta">
+              Band {{ data.councilTax.band }} · {{ data.councilTax.council }} ·
+              fixed regardless of energy improvements
+            </div>
+          </div>
+          <div class="cost-row-num">
+            <div class="cost-row-num-big">£{{ fmt(data.councilTax.cost) }}</div>
+            <div class="cost-row-num-unit">/ year</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ENERGY DETAIL ═══ -->
+      <div class="costs-section-h">
+        <div class="costs-section-h-icon costs-section-h-icon--teal-tint">
+          📋
+        </div>
+        <div class="costs-section-h-text">
+          <div class="costs-section-h-title">Energy detail</div>
+          <div class="costs-section-h-sub">
+            <template v-if="data.epcYear">{{ data.epcYear }} EPC · </template>
+            {{ property?.addressLine1 || 'this property' }}
+            <template v-if="property?.propertyType">
+              · {{ property.propertyType.toLowerCase() }}</template
+            >
+            <template v-if="data.energyDetail.floorAreaSqm">
+              · {{ data.energyDetail.floorAreaSqm }} m²</template
+            >
+          </div>
+        </div>
+      </div>
+      <div class="cost-card cost-card--pad">
+        <div class="rc-detail-list">
+          <div class="rc-detail-row">
+            <div class="rc-detail-label">Gas consumption</div>
+            <div class="rc-detail-val">
+              <div class="rc-detail-big">
+                <template v-if="data.energyDetail.gasKwh"
+                  >{{ fmt(data.energyDetail.gasKwh) }} kWh/yr</template
+                >
+                <template v-else>—</template>
+              </div>
+              <div class="rc-detail-meta">heating + hot water</div>
+            </div>
+          </div>
+          <div class="rc-detail-row">
+            <div class="rc-detail-label">Electricity consumption</div>
+            <div class="rc-detail-val">
+              <div class="rc-detail-big">
+                <template v-if="data.energyDetail.electricityKwh"
+                  >~{{ fmt(data.energyDetail.electricityKwh) }} kWh/yr</template
+                >
+                <template v-else>—</template>
+              </div>
+              <div class="rc-detail-meta">estimated · no smart meter</div>
+            </div>
+          </div>
+          <div class="rc-detail-row">
+            <div class="rc-detail-label">Energy efficiency</div>
+            <div class="rc-detail-val">
+              <div class="rc-detail-big rc-detail-big--amber">
+                EPC {{ data.energyDetail.epcRating }} ·
+                {{ data.energyDetail.sapCurrent }} SAP
+              </div>
+              <div class="rc-detail-meta">UK average EPC D · 60 SAP</div>
+            </div>
+          </div>
+          <div class="rc-detail-row">
+            <div class="rc-detail-label">Primary energy use</div>
+            <div class="rc-detail-val">
+              <div class="rc-detail-big">
+                <template v-if="data.energyDetail.primaryEnergyUse"
+                  >{{
+                    fmt(data.energyDetail.primaryEnergyUse)
+                  }}
+                  kWh/m²/yr</template
+                >
+                <template v-else>—</template>
+              </div>
+              <div class="rc-detail-meta">
+                target under
+                {{ data.energyDetail.primaryEnergyTarget }} kWh/m²/yr
+              </div>
+            </div>
+          </div>
+          <div class="rc-detail-row rc-detail-row--last">
+            <div class="rc-detail-label">Tariffs used</div>
+            <div class="rc-detail-val">
+              <div class="rc-detail-big">{{ data.tariffs.source }}</div>
+              <div class="rc-detail-meta">
+                Gas {{ (data.tariffs.gas * 100).toFixed(2) }}p · Elec
+                {{ (data.tariffs.electricity * 100).toFixed(1) }}p per kWh
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confidence banner -->
+      <div class="rc-confidence">
+        <template v-if="data.confidence === 'epc'">
+          Based on
+          <template v-if="data.epcYear">{{ data.epcYear }} </template>
+          EPC data · {{ data.tariffs.source }} tariffs · estimates only
+        </template>
+        <template v-else>
+          Based on EPC rating averages · {{ data.tariffs.source }} tariffs ·
+          estimates only
+        </template>
+      </div>
+
+      <!-- Upload bill CTA -->
+      <!-- <div class="rc-upload">
+        <div class="rc-upload-emoji">📄</div>
+        <div class="rc-upload-body">
+          <div class="rc-upload-title">Are these numbers accurate?</div>
+          <div class="rc-upload-sub">Upload an actual bill and we'll replace these estimates with your real figures.</div>
+        </div>
+        <button type="button" class="rc-upload-btn" @click="onUpload">Upload →</button>
+      </div> -->
+
+      <!-- ═══ RISKS ═══ -->
+      <div class="costs-section-h">
+        <div class="costs-section-h-icon costs-section-h-icon--red">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+            />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </div>
+        <div class="costs-section-h-text">
+          <div class="costs-section-h-title">Risks</div>
+          <div class="costs-section-h-sub">
+            Property-level risk flags from public data
+          </div>
+        </div>
+      </div>
+      <div class="cost-card">
+        <div class="cost-row">
+          <div
+            class="cost-row-icon"
+            :class="riskIconClass(data.risks.flood.level)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            >
+              <path d="M12 3 Q5 12 5 16 a7 7 0 0 0 14 0 Q19 12 12 3z" />
+            </svg>
+          </div>
+          <div class="cost-row-body">
+            <div class="cost-row-title">Flood risk</div>
+            <div
+              class="cost-row-meta"
+              :class="riskMetaClass(data.risks.flood.level)"
+            >
+              {{ data.risks.flood.label }}
+            </div>
+          </div>
+          <div
+            class="cost-row-pill"
+            :class="riskPillClass(data.risks.flood.level)"
+          >
+            {{ data.risks.flood.pill }}
+          </div>
+        </div>
+        <div class="cost-row">
+          <div
+            class="cost-row-icon"
+            :class="riskIconClass(data.risks.mining.level)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <div class="cost-row-body">
+            <div class="cost-row-title">Mining subsidence</div>
+            <div class="cost-row-meta">{{ data.risks.mining.label }}</div>
+          </div>
+          <div
+            class="cost-row-pill"
+            :class="riskPillClass(data.risks.mining.level)"
+          >
+            {{ data.risks.mining.pill }}
+          </div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-row-icon cost-row-icon--amber">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <div class="cost-row-body">
+            <div class="cost-row-title">Planning applications</div>
+            <div class="cost-row-meta">{{ data.risks.planning.label }}</div>
+          </div>
+          <div class="cost-row-pill cost-row-pill--amber">
+            {{ data.risks.planning.pill }}
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ENVIRONMENTAL IMPACT ═══ -->
+      <div class="costs-section-h">
+        <div class="costs-section-h-icon costs-section-h-icon--teal-tint">
+          🌍
+        </div>
+        <div class="costs-section-h-text">
+          <div class="costs-section-h-title">Environmental impact</div>
+          <div class="costs-section-h-sub">
+            Based on
+            <template v-if="data.epcYear">{{ data.epcYear }} </template>
+            EPC · current vs potential
+          </div>
+        </div>
+      </div>
+      <div class="cost-card cost-card--pad">
+        <div class="rc-env-top">
+          <div class="rc-env-col">
+            <div class="rc-env-eyebrow">CO₂ now</div>
+            <div class="rc-env-big">{{ data.environmentalImpact.co2Now }}t</div>
+            <div class="rc-env-meta">tonnes per year</div>
+          </div>
+          <div class="rc-env-arrow">→</div>
+          <div class="rc-env-col rc-env-col--right">
+            <div class="rc-env-eyebrow rc-env-eyebrow--teal">Potential</div>
+            <div class="rc-env-big rc-env-big--teal">
+              {{ data.environmentalImpact.co2Potential }}t
+            </div>
+            <div class="rc-env-meta rc-env-meta--teal">
+              with all improvements
+            </div>
+          </div>
+        </div>
+        <div class="rc-env-bar">
+          <div
+            class="rc-env-bar-fill"
+            :style="{ width: data.environmentalImpact.reductionPct + '%' }"
+          />
+        </div>
+        <div class="rc-env-foot">
+          <div>
+            UK average household: {{ data.environmentalImpact.ukAverage }}t/yr
+          </div>
+          <div class="rc-env-foot--teal">
+            {{ data.environmentalImpact.reductionPct }}% reduction possible
+          </div>
+        </div>
+        <div class="rc-env-rating">
+          <div class="rc-env-rating-line">
+            Environmental impact rating:
+            {{ data.environmentalImpact.ratingCurrent }}
+          </div>
+          <div class="rc-env-rating-sub">
+            Potential rating with improvements:
+            {{ data.environmentalImpact.ratingPotential }}
+          </div>
+        </div>
+      </div>
+
+      <div style="height: 24px" />
     </template>
   </div>
 </template>
@@ -257,26 +635,58 @@ import { ref, computed, onMounted } from 'vue'
 interface RunningCosts {
   energy: {
     heating: { cost: number; kwh: number | null; tariff: number; label: string }
-    hotWater: { cost: number; kwh: number | null; tariff: number; label: string }
-    electricity: { cost: number; kwh: number | null; tariff: number; label: string }
+    hotWater: {
+      cost: number
+      kwh: number | null
+      tariff: number
+      label: string
+    }
+    electricity: {
+      cost: number
+      kwh: number | null
+      tariff: number
+      label: string
+    }
     total: number
     potentialTotal: number
     potentialSaving: number
+  }
+  energyDetail: {
+    gasKwh: number | null
+    electricityKwh: number | null
+    sapCurrent: number
+    sapTarget: number
+    epcRating: string
+    epcTarget: string
+    primaryEnergyUse: number | null
+    primaryEnergyTarget: number
+    floorAreaSqm: number | null
+  }
+  risks: {
+    flood: {
+      level: 'low' | 'medium' | 'high' | 'clear'
+      label: string
+      pill: string
+    }
+    mining: {
+      level: 'low' | 'medium' | 'high' | 'clear'
+      label: string
+      pill: string
+    }
+    planning: {
+      level: 'low' | 'medium' | 'high' | 'clear'
+      label: string
+      pill: string
+    }
   }
   environmentalImpact: {
     co2Now: number
     co2Potential: number
     reductionPct: number
     ukAverage: number
-    co2NowKg: number
-    co2PotentialKg: number
-    ukAverageKg: number
-    savingKg: number
     ratingCurrent: string
     ratingPotential: string
-    ratingLabel: string
   }
-  savings: Array<{ title: string; sub: string; amount: number; points: number }>
   water: { cost: number; label: string }
   councilTax: { band: string; cost: number; council: string }
   totalAnnual: number
@@ -319,60 +729,17 @@ onMounted(async () => {
   }
 })
 
-// Combine heating + hot water into a single "Gas & heating" row to match the
-// prototype's simpler 3-row breakdown.
-const gasCost = computed(
-  () => (data.value?.energy.heating.cost ?? 0) + (data.value?.energy.hotWater.cost ?? 0),
-)
-const gasKwh = computed(() => {
-  const h = data.value?.energy.heating.kwh ?? 0
-  const w = data.value?.energy.hotWater.kwh ?? 0
-  const total = h + w
-  return total > 0 ? total : null
-})
-
 const youCost = computed(() => data.value?.energy.total ?? 0)
 const avgCost = computed(() => data.value?.streetAverageEnergy ?? 0)
-const diffAmount = computed(() => Math.abs(youCost.value - avgCost.value))
-const diffDirection = computed(() => {
-  if (diffAmount.value === 0) return 'at'
-  return youCost.value > avgCost.value ? 'above' : 'below'
-})
-
-const streetName = computed(() => {
-  const line = (property.value?.addressLine1 || '').trim()
-  if (!line) return 'street'
-  // Strip the leading house number, leave the road name.
-  const match = line.match(/^\d+\s*[a-zA-Z]?\s*[,.]?\s*(.+)$/)
-  return match?.[1] || line
-})
-
-const shortWaterLabel = computed(() => {
-  const label = data.value?.water?.label || ''
-  // "Severn Trent · unmetered household" → "Severn Trent · CV5 estimate"
-  const supplier = label.split('·')[0]?.trim() || 'Regional supplier'
-  const outcode = (property.value?.postcode || '').split(' ')[0]
-  return outcode ? `${supplier} · ${outcode} estimate` : `${supplier} · area estimate`
-})
-
-const co2DiffKg = computed(() => {
-  if (!data.value) return 0
-  return data.value.environmentalImpact.co2NowKg - data.value.environmentalImpact.ukAverageKg
-})
-
-// EPC-style 6-bar A–G scale with the current band highlighted.
-const envBars = computed(() => {
-  const order = ['A', 'B', 'C', 'D', 'E', 'F']
-  // Use 6 bars (the prototype shows A-F + G stripe pattern; we map A→F to the
-  // 6 colored bars and treat G as "very high" via the highest red).
-  const colors = ['#4A8C3F', '#7AB040', '#C8A020', '#D86F4A', '#C73E36', '#8B1A1A']
-  const current = (data.value?.environmentalImpact.ratingCurrent || 'D').toUpperCase()
-  const idx = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].indexOf(current)
-  const activeIdx = Math.min(5, Math.max(0, idx))
-  return order.map((_, i) => ({
-    color: colors[i],
-    active: i === activeIdx,
-  }))
+const diff = computed(() => Math.abs(youCost.value - avgCost.value))
+const diffDirection = computed(() =>
+  youCost.value >= avgCost.value ? 'more' : 'less',
+)
+// Avg vertical marker as a % of the "you" bar (clamped 5–95).
+const avgBarPct = computed(() => {
+  if (!youCost.value) return 50
+  const pct = (avgCost.value / youCost.value) * 100
+  return Math.max(5, Math.min(95, Math.round(pct)))
 })
 
 const passportState = computed<'unclaimed' | 'inProgress' | 'published'>(() => {
@@ -405,29 +772,49 @@ function fmt(n: number | null | undefined): string {
   if (n == null) return '0'
   return new Intl.NumberFormat('en-GB').format(Math.round(n))
 }
+
+type RiskLevel = 'clear' | 'low' | 'medium' | 'high'
+function riskIconClass(level: RiskLevel): string {
+  if (level === 'high' || level === 'medium') return 'cost-row-icon--red'
+  if (level === 'low') return 'cost-row-icon--amber'
+  return 'cost-row-icon--success'
+}
+function riskMetaClass(level: RiskLevel): string {
+  if (level === 'high' || level === 'medium') return 'cost-row-meta--red'
+  return ''
+}
+function riskPillClass(level: RiskLevel): string {
+  if (level === 'high' || level === 'medium') return 'cost-row-pill--red'
+  if (level === 'low') return 'cost-row-pill--amber'
+  return 'cost-row-pill--success'
+}
+
+function onUpload() {
+  router.push(
+    `/onboarding/signin?reason=upload-bill&redirect=/homescore/${propertyId}`,
+  )
+}
 </script>
 
 <style scoped>
-/* ── Design tokens (mirrors prototype palette) ─────────────── */
-.pq-screen {
+.rc-screen {
   --navy: #231d45;
-  --navy-soft: #4a4566;
   --teal: #00a19a;
   --teal-bright: #00b6ae;
   --teal-dark: #007e78;
   --teal-deep: #00514d;
-  --teal-pale: #E5F4F2;
-  --teal-paler: #F2FAF8;
-  --amber: #E6A23C;
-  --amber-pale: #FBEFD9;
-  --red: #C73E36;
-  --red-pale: #FCEBEA;
+  --teal-pale: #e5f4f2;
+  --teal-paler: #f2faf8;
+  --amber: #e6a23c;
+  --amber-pale: #fbefd9;
+  --red: #c73e36;
+  --red-pale: #fef2f2;
+  --success: #2eab55;
   --bg: #fafafa;
   --text-soft: #6b6783;
   --text-faint: #9c98ad;
-  --line: #ECECEF;
-  --line-soft: #F5F5F7;
-  --success: #2EAB55;
+  --line: #ececef;
+  --line-soft: #f5f5f7;
 
   min-height: 100dvh;
   background: var(--bg);
@@ -441,14 +828,14 @@ function fmt(n: number | null | undefined): string {
 }
 
 /* ── Top nav ───────────────────────────────────────────────── */
-.pq-topnav {
+.rc-topnav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 22px 8px;
   padding-top: calc(14px + env(safe-area-inset-top));
 }
-.pq-back-btn {
+.rc-back {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -460,8 +847,11 @@ function fmt(n: number | null | undefined): string {
   cursor: pointer;
   font-family: inherit;
 }
-.pq-back-btn svg { width: 14px; height: 14px; }
-.pq-eyebrow-pill {
+.rc-back svg {
+  width: 14px;
+  height: 14px;
+}
+.rc-eyebrow-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -475,7 +865,7 @@ function fmt(n: number | null | undefined): string {
   color: var(--teal);
   text-transform: uppercase;
 }
-.pq-eyebrow-pill .dot {
+.rc-eyebrow-pill .dot {
   width: 6px;
   height: 6px;
   background: var(--teal);
@@ -484,17 +874,19 @@ function fmt(n: number | null | undefined): string {
 }
 
 /* ── Amber address card (consistent with ResultDetail) ────── */
-.pq-addr-card {
+.rc-addr-card {
   margin: 16px 22px 0;
   border-radius: 22px;
   padding: 22px 22px 18px;
-  background: linear-gradient(135deg, #F0A030 0%, #C67C18 50%, #8B4E0A 100%);
+  background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
   color: #fff;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 12px 32px -8px rgba(180, 100, 20, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 12px 32px -8px rgba(180, 100, 20, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
-.pq-addr-card::after {
+.rc-addr-card::after {
   content: '';
   position: absolute;
   top: -45%;
@@ -502,25 +894,50 @@ function fmt(n: number | null | undefined): string {
   width: 240px;
   height: 240px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
-.pq-addr-card > * { position: relative; z-index: 1; }
-.pq-addr-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-.pq-addr-pin {
+.rc-addr-card > * {
+  position: relative;
+  z-index: 1;
+}
+.rc-addr-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.rc-addr-pin {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.30);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
   flex-shrink: 0;
   margin-top: 6px;
 }
-.pq-addr-block { flex: 1; min-width: 0; }
-.pq-addr-line { font-size: 19px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
-.pq-addr-meta { font-size: 12.5px; font-weight: 600; color: rgba(255, 255, 255, 0.78); margin-top: 2px; }
+.rc-addr-block {
+  flex: 1;
+  min-width: 0;
+}
+.rc-addr-line {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.rc-addr-meta {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: 2px;
+}
 
-.pq-addr-pills {
+.rc-addr-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -528,7 +945,7 @@ function fmt(n: number | null | undefined): string {
   padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
 }
-.pq-addr-pill {
+.rc-addr-pill {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -541,8 +958,10 @@ function fmt(n: number | null | undefined): string {
   font-weight: 800;
   letter-spacing: -0.05px;
 }
-.pq-addr-pill.epc { padding-left: 6px; }
-.pq-epc-letter {
+.rc-addr-pill.epc {
+  padding-left: 6px;
+}
+.rc-epc-letter {
   display: inline-grid;
   place-items: center;
   width: 18px;
@@ -552,23 +971,23 @@ function fmt(n: number | null | undefined): string {
   font-size: 10px;
   font-weight: 800;
 }
-.pq-state-unclaimed,
-.pq-state-progress {
+.rc-state-unclaimed,
+.rc-state-progress {
   background: rgba(255, 255, 255, 0.94);
   border-color: rgba(255, 255, 255, 0.94);
   color: #7a3a05;
 }
-.pq-state-published {
+.rc-state-published {
   background: rgba(255, 255, 255, 0.94);
   border-color: rgba(255, 255, 255, 0.94);
   color: var(--teal-deep);
 }
-.pq-addr-stats {
+.rc-addr-stats {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
 }
-.pq-stat-row {
+.rc-stat-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -577,9 +996,13 @@ function fmt(n: number | null | undefined): string {
   font-weight: 700;
   color: rgba(255, 255, 255, 0.92);
 }
-.pq-stat-count { font-weight: 800; }
-.pq-sep { opacity: 0.5; }
-.pq-pulse-dot {
+.rc-stat-count {
+  font-weight: 800;
+}
+.rc-sep {
+  opacity: 0.5;
+}
+.rc-pulse-dot {
   width: 7px;
   height: 7px;
   background: #fff;
@@ -587,32 +1010,44 @@ function fmt(n: number | null | undefined): string {
   position: relative;
   flex-shrink: 0;
 }
-.pq-pulse-dot::after {
+.rc-pulse-dot::after {
   content: '';
   position: absolute;
   inset: -3px;
   border-radius: 50%;
   border: 1.5px solid rgba(255, 255, 255, 0.45);
-  animation: pq-pulse 1.6s ease-out infinite;
+  animation: rc-pulse 1.6s ease-out infinite;
 }
-.pq-pulse-green { background: #6bd4cd; }
-.pq-pulse-green::after { border-color: rgba(94, 234, 212, 0.5); }
-@keyframes pq-pulse {
-  0% { transform: scale(0.6); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
+.rc-pulse-green {
+  background: #6bd4cd;
+}
+.rc-pulse-green::after {
+  border-color: rgba(94, 234, 212, 0.5);
+}
+@keyframes rc-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 /* ── Page title ───────────────────────────────────────────── */
-.pq-costs-title-block { padding: 18px 22px 0; }
-.pq-costs-title {
-  font-size: 17px;
+.rc-title-block {
+  padding: 18px 22px 0;
+}
+.rc-title {
+  font-size: 22px;
   font-weight: 800;
   color: var(--navy);
-  letter-spacing: -0.4px;
+  letter-spacing: -0.6px;
   line-height: 1.15;
   margin-bottom: 4px;
 }
-.pq-costs-sub {
+.rc-sub {
   font-size: 13px;
   font-weight: 500;
   color: var(--text-soft);
@@ -621,28 +1056,36 @@ function fmt(n: number | null | undefined): string {
 }
 
 /* ── Loading / error ──────────────────────────────────────── */
-.pq-loading, .pq-error {
+.rc-loading,
+.rc-error {
   padding: 24px 22px;
   font-size: 13px;
   color: var(--text-soft);
   text-align: center;
 }
-.pq-error { color: var(--red); }
+.rc-error {
+  color: var(--red);
+}
 
-/* ── Cost hero (teal gradient) ────────────────────────────── */
-.pq-cost-hero {
+/* ── Hero (teal gradient, prototype-exact) ────────────────── */
+.cost-hero {
   margin: 14px 22px 0;
   padding: 22px 22px 20px;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
   color: #fff;
-  background: linear-gradient(140deg, var(--teal-bright) 0%, var(--teal) 50%, var(--teal-deep) 100%);
+  background: linear-gradient(
+    140deg,
+    var(--teal-bright) 0%,
+    var(--teal) 50%,
+    var(--teal-deep) 100%
+  );
   box-shadow:
     0 12px 32px -10px rgba(0, 161, 154, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
-.pq-cost-hero::after {
+.cost-hero::after {
   content: '';
   position: absolute;
   top: -40%;
@@ -650,92 +1093,119 @@ function fmt(n: number | null | undefined): string {
   width: 280px;
   height: 280px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.16) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
-.pq-cost-hero-eyebrow {
+.cost-hero > * {
+  position: relative;
+  z-index: 1;
+}
+.cost-hero-eyebrow {
   font-size: 10px;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.78);
   letter-spacing: 1.6px;
   text-transform: uppercase;
   margin-bottom: 8px;
-  position: relative;
-  z-index: 1;
   display: inline-flex;
   align-items: center;
   gap: 7px;
 }
-.pq-cost-hero-eyebrow .dot {
+.cost-hero-eyebrow .dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.85);
 }
-.pq-cost-hero-num {
-  font-size: 34px;
+.cost-hero-num {
+  font-size: 44px;
   font-weight: 800;
   color: #fff;
-  letter-spacing: -1px;
+  letter-spacing: -1.6px;
   line-height: 1;
   margin-bottom: 4px;
-  position: relative;
-  z-index: 1;
+  font-feature-settings: 'tnum';
 }
-.pq-cost-hero-num .unit {
+.cost-hero-num .unit {
   font-size: 22px;
   color: rgba(255, 255, 255, 0.78);
   font-weight: 700;
   letter-spacing: -0.5px;
   margin-left: 2px;
 }
-.pq-cost-hero-monthly {
+.cost-hero-monthly {
   font-size: 13px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: -0.05px;
   margin-bottom: 14px;
-  position: relative;
-  z-index: 1;
 }
-.pq-cost-hero-monthly b { color: #fff; font-weight: 800; }
-.pq-cost-compare {
-  background: rgba(255, 255, 255, 0.10);
+.cost-hero-monthly b {
+  color: #fff;
+  font-weight: 800;
+}
+.cost-compare {
+  background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  position: relative;
-  z-index: 1;
+  gap: 12px;
 }
-.pq-cost-compare-num {
-  font-size: 13px;
-  font-weight: 800;
-  color: #fff;
+.cost-compare-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+.cost-compare-bar .you {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: 100px;
+}
+.cost-compare-bar .avg {
+  position: absolute;
+  left: 0;
+  top: -3px;
+  bottom: -3px;
+  border-right: 2px solid rgba(255, 255, 255, 0.65);
+}
+.cost-compare-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.05px;
   white-space: nowrap;
 }
-.pq-cost-compare-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 1.3;
+.cost-compare-text b {
+  color: #fff;
+  font-weight: 800;
 }
 
 /* ── Section headers ──────────────────────────────────────── */
-.pq-section-h {
+.costs-section-h {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 20px 22px 10px;
 }
-.pq-section-h-icon {
+.costs-section-h-icon {
   width: 34px;
   height: 34px;
   border-radius: 10px;
   background: linear-gradient(135deg, var(--teal-bright), var(--teal-dark));
-  box-shadow: 0 3px 10px rgba(0, 161, 154, 0.30);
+  box-shadow: 0 3px 10px rgba(0, 161, 154, 0.3);
   color: #fff;
   display: flex;
   align-items: center;
@@ -743,24 +1213,32 @@ function fmt(n: number | null | undefined): string {
   flex-shrink: 0;
   font-size: 16px;
 }
-.pq-section-h-icon svg { width: 16px; height: 16px; }
-.pq-icon-env {
-  background: linear-gradient(135deg, #C45C2A, #8B2E0A);
-  box-shadow: 0 3px 10px rgba(196, 92, 42, 0.30);
+.costs-section-h-icon svg {
+  width: 16px;
+  height: 16px;
 }
-.pq-icon-save {
-  background: linear-gradient(135deg, var(--navy-soft), var(--navy));
-  box-shadow: 0 3px 10px rgba(35, 29, 69, 0.30);
+.costs-section-h-icon--teal-tint {
+  background: var(--teal-paler);
+  color: var(--teal-dark);
+  box-shadow: none;
 }
-.pq-section-h-text { flex: 1; min-width: 0; }
-.pq-section-h-title {
+.costs-section-h-icon--red {
+  background: var(--red-pale);
+  color: var(--red);
+  box-shadow: none;
+}
+.costs-section-h-text {
+  flex: 1;
+  min-width: 0;
+}
+.costs-section-h-title {
   font-size: 14px;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.2px;
   line-height: 1.1;
 }
-.pq-section-h-sub {
+.costs-section-h-sub {
   font-size: 11.5px;
   font-weight: 600;
   color: var(--text-soft);
@@ -768,8 +1246,8 @@ function fmt(n: number | null | undefined): string {
   margin-top: 2px;
 }
 
-/* ── Cost card (teal border) + rows ───────────────────────── */
-.pq-cost-card {
+/* ── Cost card + rows ─────────────────────────────────────── */
+.cost-card {
   margin: 0 22px;
   background: #fff;
   border: 2px solid var(--teal);
@@ -777,10 +1255,13 @@ function fmt(n: number | null | undefined): string {
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.08);
 }
-.pq-card-teal-tint {
+.cost-card--energy {
   background: linear-gradient(180deg, var(--teal-paler) 0%, white 40%);
 }
-.pq-cost-row {
+.cost-card--pad {
+  padding: 14px 18px;
+}
+.cost-row {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -788,9 +1269,13 @@ function fmt(n: number | null | undefined): string {
   border-bottom: 1px solid var(--line-soft);
   transition: background 0.15s;
 }
-.pq-cost-row:last-child { border-bottom: none; }
-.pq-cost-row:hover { background: var(--bg); }
-.pq-cost-row-icon {
+.cost-row:last-child {
+  border-bottom: none;
+}
+.cost-row:hover {
+  background: var(--bg);
+}
+.cost-row-icon {
   width: 32px;
   height: 32px;
   border-radius: 9px;
@@ -801,257 +1286,290 @@ function fmt(n: number | null | undefined): string {
   justify-content: center;
   flex-shrink: 0;
 }
-.pq-cost-row-icon svg { width: 15px; height: 15px; }
-.pq-cost-row-body { flex: 1; min-width: 0; }
-.pq-cost-row-title {
+.cost-row-icon svg {
+  width: 15px;
+  height: 15px;
+}
+.cost-row-icon--red {
+  background: var(--red-pale);
+  color: var(--red);
+}
+.cost-row-icon--amber {
+  background: var(--amber-pale);
+  color: var(--amber);
+}
+.cost-row-icon--success {
+  background: #e8f5ea;
+  color: var(--success);
+}
+.cost-row-body {
+  flex: 1;
+  min-width: 0;
+}
+.cost-row-title {
   font-size: 13.5px;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.2px;
   margin-bottom: 1px;
 }
-.pq-cost-row-meta {
+.cost-row-meta {
   font-size: 11px;
   font-weight: 600;
   color: var(--text-soft);
   letter-spacing: -0.05px;
-}
-.pq-cost-row-val {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--navy);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.pq-cost-row-val .unit {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-soft);
-  margin-left: 1px;
-}
-
-/* ── Confidence note ──────────────────────────────────────── */
-.pq-confidence {
-  margin: 14px 22px 0;
-  padding: 12px 14px;
-  background: linear-gradient(180deg, rgba(35, 29, 69, 0.04) 0%, white 100%);
-  border: 1.5px solid rgba(35, 29, 69, 0.15);
-  border-radius: 12px;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--text-soft);
-  letter-spacing: -0.05px;
-  line-height: 1.5;
-}
-.pq-confidence svg {
-  width: 13px;
-  height: 13px;
-  color: var(--text-faint);
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.pq-confidence b { color: var(--navy); font-weight: 800; }
-
-/* ── Environmental impact card ────────────────────────────── */
-.pq-env-card {
-  padding: 18px;
-  border-color: #C45C2A !important;
-  box-shadow: 0 4px 16px rgba(196, 92, 42, 0.12) !important;
-  background: linear-gradient(180deg, rgba(252, 235, 225, 0.5) 0%, white 55%) !important;
-}
-.pq-env-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-.pq-env-co2-num {
-  font-size: 38px;
-  font-weight: 800;
-  color: var(--navy);
-  letter-spacing: -1.2px;
-  line-height: 1;
-}
-.pq-env-co2-unit {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-soft);
-  margin-top: 4px;
-}
-.pq-env-rating {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #FEF0E8;
-  border: 1.5px solid #F4C4A0;
-  padding: 7px 12px;
-  border-radius: 100px;
-  flex-shrink: 0;
-}
-.pq-env-rating-letter {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #D86F4A;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.pq-env-rating-label {
-  font-size: 13px;
-  font-weight: 800;
-  color: #A84020;
-}
-.pq-env-context {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--text-soft);
-  line-height: 1.5;
-  margin-bottom: 14px;
-}
-.pq-env-context b { color: var(--navy); }
-.pq-env-scale-bars {
-  display: flex;
-  height: 8px;
-  border-radius: 6px;
-  overflow: hidden;
-  gap: 2px;
-  margin-bottom: 5px;
-}
-.pq-env-bar {
-  flex: 1;
-  border-radius: 2px;
-}
-.pq-env-bar.active {
-  flex: 1.3;
-  outline: 2px solid var(--navy);
-  outline-offset: 1px;
-  border-radius: 2px;
-}
-.pq-env-scale-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 9.5px;
-  font-weight: 700;
-  color: var(--text-faint);
-}
-.pq-env-divider {
-  height: 1px;
-  background: var(--line-soft);
-  margin: 14px 0;
-}
-.pq-env-improvement {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-.pq-env-improvement-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 2px;
-}
-.pq-env-improvement-sub {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--navy);
-}
-.pq-env-improvement-saving {
-  background: var(--teal);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  padding: 7px 11px;
-  border-radius: 100px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(0, 161, 154, 0.30);
-}
-
-/* ── Top 3 savings card (navy border) ─────────────────────── */
-.pq-savings-card {
-  padding: 0;
-  border-color: var(--navy);
-  box-shadow: 0 4px 16px rgba(35, 29, 69, 0.10);
-}
-.pq-savings-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--line-soft);
-  transition: background 0.15s;
-}
-.pq-savings-row--last { border-bottom: none; }
-.pq-savings-row:hover { background: var(--bg); }
-.pq-savings-num {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--teal-paler);
-  color: var(--teal-dark);
-  font-size: 12px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.pq-savings-body { flex: 1; min-width: 0; }
-.pq-savings-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--navy);
-  letter-spacing: -0.15px;
-  margin-bottom: 2px;
-}
-.pq-savings-sub {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-soft);
   line-height: 1.4;
 }
-.pq-savings-val {
+.cost-row-meta--red {
+  color: var(--red);
+  font-weight: 700;
+}
+.cost-row-num {
   text-align: right;
   flex-shrink: 0;
 }
-.pq-savings-amount {
-  font-size: 13px;
+.cost-row-num-big {
+  font-size: 14px;
   font-weight: 800;
-  color: var(--teal-dark);
-  letter-spacing: -0.2px;
+  color: var(--navy);
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+  font-feature-settings: 'tnum';
 }
-.pq-savings-pts {
-  font-size: 10.5px;
+.cost-row-num-unit {
+  font-size: 10px;
   font-weight: 700;
-  color: var(--teal);
+  color: var(--text-faint);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
   margin-top: 1px;
 }
+.cost-row-pill {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.1px;
+  flex-shrink: 0;
+}
+.cost-row-pill--red {
+  color: var(--red);
+}
+.cost-row-pill--amber {
+  color: var(--amber);
+}
+.cost-row-pill--success {
+  color: var(--success);
+}
 
-/* Back link */
-.pq-back-link {
-  display: block;
-  width: calc(100% - 44px);
-  margin: 18px 22px 0;
-  padding: 12px;
-  background: none;
-  border: none;
-  font-family: inherit;
-  font-size: 12.5px;
+/* Energy card footer total */
+.cost-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 14px 4px;
+  padding: 10px 12px;
+  background: var(--teal-paler);
+  border: 1.5px solid var(--teal-pale);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--teal-dark);
+}
+.cost-card-foot > :last-child {
+  font-size: 15px;
+}
+.cost-card-foot-note {
+  margin: 6px 14px 10px;
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+/* ── Energy detail table ──────────────────────────────────── */
+.rc-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rc-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-soft);
+  gap: 12px;
+}
+.rc-detail-row--last {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.rc-detail-label {
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-soft);
-  cursor: pointer;
-  text-align: center;
 }
-.pq-back-link:hover { color: var(--teal-dark); }
+.rc-detail-val {
+  text-align: right;
+}
+.rc-detail-big {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.2px;
+}
+.rc-detail-big--amber {
+  color: var(--amber);
+}
+.rc-detail-meta {
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-top: 2px;
+}
+
+/* ── Environmental impact ─────────────────────────────────── */
+.rc-env-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 8px;
+}
+.rc-env-col {
+  flex: 1;
+  min-width: 0;
+}
+.rc-env-col--right {
+  text-align: right;
+}
+.rc-env-eyebrow {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--text-faint);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.rc-env-eyebrow--teal {
+  color: var(--teal-dark);
+}
+.rc-env-big {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.rc-env-big--teal {
+  color: var(--teal-dark);
+}
+.rc-env-meta {
+  font-size: 10px;
+  color: var(--text-soft);
+  margin-top: 4px;
+}
+.rc-env-meta--teal {
+  color: var(--teal-dark);
+  font-weight: 700;
+}
+.rc-env-arrow {
+  font-size: 24px;
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+.rc-env-bar {
+  height: 8px;
+  background: var(--line-soft);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.rc-env-bar-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 100px;
+  transition: width 0.6s ease;
+}
+.rc-env-foot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-soft);
+}
+.rc-env-foot--teal {
+  color: var(--teal-dark);
+  font-weight: 700;
+}
+.rc-env-rating {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--red-pale);
+  border-radius: 10px;
+}
+.rc-env-rating-line {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--red);
+}
+.rc-env-rating-sub {
+  font-size: 10px;
+  color: var(--text-soft);
+  margin-top: 2px;
+}
+
+/* Confidence banner */
+.rc-confidence {
+  margin: 8px 22px 0;
+  padding: 10px 14px;
+  background: var(--teal-paler);
+  border: 1px solid var(--teal-pale);
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--teal-dark);
+}
+
+/* Upload bill CTA */
+.rc-upload {
+  margin: 12px 22px 0;
+  padding: 16px 18px;
+  background: var(--teal-paler);
+  border: 2px solid var(--teal-pale);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.rc-upload-emoji {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.rc-upload-body {
+  flex: 1;
+  min-width: 0;
+}
+.rc-upload-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 3px;
+}
+.rc-upload-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+.rc-upload-btn {
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.rc-upload-btn:hover {
+  background: var(--teal-bright);
+}
 </style>
