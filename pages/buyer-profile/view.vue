@@ -25,6 +25,25 @@
     </div>
 
     <template v-else>
+      <!-- Pending access request banner (OPDA verifier flow) -->
+      <button
+        v-for="r in pendingRequests"
+        :key="r.id"
+        class="bp-access-banner"
+        @click="goAccessRequest(r.id)"
+      >
+        <div class="bp-access-banner-ic">{{ r.org.logoEmoji || '🏦' }}</div>
+        <div class="bp-access-banner-text">
+          <div class="bp-access-banner-title">
+            New access request · {{ r.org.name }}
+          </div>
+          <div class="bp-access-banner-sub">
+            {{ r.requestedScopes.length }} scope{{ r.requestedScopes.length === 1 ? '' : 's' }} requested · tap to review
+          </div>
+        </div>
+        <span class="bp-access-banner-chev">→</span>
+      </button>
+
       <!-- Eyebrow pill with pulse -->
       <div class="bp-eyebrow-wrap">
         <div class="eyebrow-pill">
@@ -363,6 +382,10 @@ import {
   useBuyerProfile,
   type BuyerProfile,
 } from '~/composables/useBuyerProfile'
+import {
+  useVerifierAccess,
+  type AccessRequest,
+} from '~/composables/useVerifierAccess'
 import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 import TierUpgradeDrawer from '~/components/buyer-profile/TierUpgradeDrawer.vue'
@@ -371,17 +394,29 @@ definePageMeta({ title: 'Buyer Profile — UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile } = useBuyerProfile()
+const { listRequests } = useVerifierAccess()
 const { fetchProfile, profile } = useProfile()
 const { showToast } = useAppToast()
 
 const passport = ref<BuyerProfile | null>(null)
 const loading = ref(true)
 const tierDrawerOpen = ref(false)
+const accessRequests = ref<AccessRequest[]>([])
+const pendingRequests = computed(() =>
+  accessRequests.value.filter((r) => r.status === 'PENDING'),
+)
+function goAccessRequest(id: string) {
+  router.push(`/buyer-profile/access-request/${id}`)
+}
 
 const goBack = useGoBack('/buyer-profile')
 
 onMounted(async () => {
   fetchProfile?.().catch(() => {})
+  // Verifier requests load in parallel — never blocks the badge.
+  listRequests()
+    .then((rs) => { accessRequests.value = rs })
+    .catch(() => { /* silent */ })
   try {
     const data = await getBuyerProfile()
     passport.value = data
@@ -577,6 +612,40 @@ function goEdit() { router.push('/buyer-profile/build') }
 .bp-empty-sub {
   font-size: 13px; color: #6b6783; line-height: 1.55;
   max-width: 22rem; margin: 0 auto 18px;
+}
+
+/* ── Pending access request banner ── */
+.bp-access-banner {
+  margin: 8px 22px 0;
+  width: calc(100% - 44px);
+  background: linear-gradient(135deg, #fef3c7, #fffaf0);
+  border: 1.5px solid #f0b460;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer; text-align: left;
+  font-family: inherit;
+  animation: bp-pulse-glow 2s ease-in-out infinite;
+}
+.bp-access-banner-ic {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: #fff; display: flex; align-items: center;
+  justify-content: center; font-size: 18px; flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(212, 130, 42, 0.18);
+}
+.bp-access-banner-text { flex: 1; min-width: 0; }
+.bp-access-banner-title {
+  font-size: 12.5px; font-weight: 800; color: #231d45;
+}
+.bp-access-banner-sub {
+  font-size: 11px; color: #6b6783; margin-top: 1px;
+}
+.bp-access-banner-chev {
+  font-size: 16px; font-weight: 800; color: #c4821a;
+}
+@keyframes bp-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 180, 96, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(240, 180, 96, 0); }
 }
 
 /* ── Eyebrow pill with pulse ── */
