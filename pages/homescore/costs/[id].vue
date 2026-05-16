@@ -114,10 +114,10 @@
           <span class="dot" />Estimated total per year
         </div>
         <div class="cost-hero-num">
-          £{{ fmt(data.totalAnnual) }}<span class="unit"> / year</span>
+          £{{ fmt(tween(data.totalAnnual)) }}<span class="unit"> / year</span>
         </div>
         <div class="cost-hero-monthly">
-          That's about <b>£{{ fmt(data.totalMonthly) }} / month</b> across
+          That's about <b>£{{ fmt(tween(data.totalMonthly)) }} / month</b> across
           energy, water and council tax.
         </div>
         <div class="cost-compare">
@@ -126,7 +126,7 @@
             <div class="avg" :style="{ width: avgBarPct + '%' }" />
           </div>
           <div class="cost-compare-text">
-            <b>£{{ fmt(diff) }} {{ diffDirection }}</b> than street avg in
+            <b>£{{ fmt(tween(diff)) }} {{ diffDirection }}</b> than street avg in
             energy costs
           </div>
         </div>
@@ -146,7 +146,7 @@
               >From {{ data.epcYear }} EPC ·
             </template>
             {{ data.tariffs.source }} tariffs · total £{{
-              fmt(data.energy.total)
+              fmt(tween(data.energy.total))
             }}/yr
           </div>
         </div>
@@ -178,7 +178,7 @@
           </div>
           <div class="cost-row-num">
             <div class="cost-row-num-big">
-              £{{ fmt(data.energy.heating.cost) }}
+              £{{ fmt(tween(data.energy.heating.cost)) }}
             </div>
             <div class="cost-row-num-unit">/ year</div>
           </div>
@@ -206,7 +206,7 @@
           </div>
           <div class="cost-row-num">
             <div class="cost-row-num-big">
-              £{{ fmt(data.energy.hotWater.cost) }}
+              £{{ fmt(tween(data.energy.hotWater.cost)) }}
             </div>
             <div class="cost-row-num-unit">/ year</div>
           </div>
@@ -239,7 +239,7 @@
           </div>
           <div class="cost-row-num">
             <div class="cost-row-num-big">
-              £{{ fmt(data.energy.electricity.cost) }}
+              £{{ fmt(tween(data.energy.electricity.cost)) }}
             </div>
             <div class="cost-row-num-unit">/ year</div>
           </div>
@@ -247,12 +247,12 @@
 
         <div class="cost-card-foot">
           <div>EPC energy total</div>
-          <div>£{{ fmt(data.energy.total) }} / yr</div>
+          <div>£{{ fmt(tween(data.energy.total)) }} / yr</div>
         </div>
         <div class="cost-card-foot-note">
           With all improvements: could fall to £{{
-            fmt(data.energy.potentialTotal)
-          }}/yr — saving £{{ fmt(data.energy.potentialSaving) }}
+            fmt(tween(data.energy.potentialTotal))
+          }}/yr — saving £{{ fmt(tween(data.energy.potentialSaving)) }}
         </div>
       </div>
 
@@ -294,7 +294,7 @@
             </div>
           </div>
           <div class="cost-row-num">
-            <div class="cost-row-num-big">£{{ fmt(data.water.cost) }}</div>
+            <div class="cost-row-num-big">£{{ fmt(tween(data.water.cost)) }}</div>
             <div class="cost-row-num-unit">/ year</div>
           </div>
         </div>
@@ -342,7 +342,7 @@
             </div>
           </div>
           <div class="cost-row-num">
-            <div class="cost-row-num-big">£{{ fmt(data.councilTax.cost) }}</div>
+            <div class="cost-row-num-big">£{{ fmt(tween(data.councilTax.cost)) }}</div>
             <div class="cost-row-num-unit">/ year</div>
           </div>
         </div>
@@ -630,7 +630,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 
 interface RunningCosts {
   energy: {
@@ -772,6 +772,31 @@ function fmt(n: number | null | undefined): string {
   if (n == null) return '0'
   return new Intl.NumberFormat('en-GB').format(Math.round(n))
 }
+
+// ── Count-up animation: applies a single eased factor to every displayed
+// figure. animFactor goes 0 → 1 over ~900ms once data resolves, then stays at 1.
+const animFactor = ref(0)
+let animRaf = 0
+function startCostAnim() {
+  const reduce =
+    typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduce) { animFactor.value = 1; return }
+  cancelAnimationFrame(animRaf)
+  const start = performance.now()
+  const dur = 900
+  const tick = (now: number) => {
+    const t = Math.min(1, (now - start) / dur)
+    animFactor.value = 1 - Math.pow(1 - t, 3) // easeOutCubic
+    if (t < 1) animRaf = requestAnimationFrame(tick)
+  }
+  animRaf = requestAnimationFrame(tick)
+}
+function tween(n: number | null | undefined): number {
+  return Math.round((Number(n) || 0) * animFactor.value)
+}
+watch(data, (v) => { if (v) startCostAnim() }, { immediate: false })
 
 type RiskLevel = 'clear' | 'low' | 'medium' | 'high'
 function riskIconClass(level: RiskLevel): string {

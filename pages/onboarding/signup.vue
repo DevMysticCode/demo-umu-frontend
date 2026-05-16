@@ -588,12 +588,12 @@ const handleSubmit = async () => {
   letter-spacing: -0.05px;
 }
 .auth-footer a {
-  color: #8a5f1f;
+  color: #00a19a;
   font-weight: 800;
   cursor: pointer;
   text-decoration: none;
 }
-.auth-footer a:hover { color: #c18a38; }
+.auth-footer a:hover { color: #0d928b; }
 
 .error-banner {
   margin-bottom: 14px;

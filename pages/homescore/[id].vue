@@ -148,11 +148,12 @@
                   stroke-width="7"
                   :stroke="simScoreColor"
                   stroke-dasharray="201.06"
-                  :stroke-dashoffset="201.06 - (simScore / 100) * 201.06"
+                  :stroke-dashoffset="201.06 - (simScoreDisplay / 100) * 201.06"
+                  style="transition: stroke-dashoffset 0.5s cubic-bezier(.22,1,.36,1)"
                 />
               </svg>
               <div class="sim-score-label">
-                <div class="sim-score-num">{{ simScore }}</div>
+                <div class="sim-score-num">{{ simScoreDisplay }}</div>
                 <div class="sim-score-denom">/ 100</div>
               </div>
             </div>
@@ -171,7 +172,7 @@
             <div class="sim-stat">
               <div class="sim-stat-label">Est. bills</div>
               <div class="sim-stat-val" :class="{ improved: simBillsDelta > 0 }">
-                £{{ simBills.toLocaleString() }}
+                £{{ simBillsDisplay.toLocaleString() }}
               </div>
               <div class="sim-stat-delta">
                 <template v-if="simBillsDelta > 0"
@@ -182,7 +183,7 @@
             <div class="sim-stat">
               <div class="sim-stat-label">CO₂/yr</div>
               <div class="sim-stat-val" :class="{ improved: simCo2Delta > 0 }">
-                {{ simCo2.toFixed(1) }}t
+                {{ simCo2Display.toFixed(1) }}t
               </div>
               <div class="sim-stat-delta">
                 <template v-if="simCo2Delta > 0"
@@ -200,10 +201,10 @@
                 }"
               >
                 <template v-if="simVsNeighbours > 0"
-                  >£{{ simVsNeighbours }} more</template
+                  >£{{ simVsNeighboursDisplay }} more</template
                 >
                 <template v-else-if="simVsNeighbours < 0"
-                  >£{{ Math.abs(simVsNeighbours) }} less</template
+                  >£{{ Math.abs(simVsNeighboursDisplay) }} less</template
                 >
                 <template v-else>At average</template>
               </div>
@@ -3522,6 +3523,42 @@ const simProgressPct = computed(
   () => (simAnsweredCount.value / simSteps.value.length) * 100,
 )
 
+// ── Animated stats: smooth count-up on first render + when the user
+// changes an answer. Honours prefers-reduced-motion.
+function makeAnimRef(source: () => number, durMs = 700, decimals = 0) {
+  const out = ref(0)
+  let raf = 0
+  function animateTo(to: number) {
+    const reduce =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) { out.value = to; return }
+    cancelAnimationFrame(raf)
+    const from = out.value
+    if (from === to) return
+    const start = performance.now()
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / durMs)
+      const eased = 1 - Math.pow(1 - t, 3)
+      const v = from + (to - from) * eased
+      out.value = decimals === 0 ? v : Math.round(v * Math.pow(10, decimals)) / Math.pow(10, decimals)
+      if (t < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+  }
+  watch(source, (v) => animateTo(Number(v) || 0), { immediate: true })
+  return out
+}
+const simScoreAnimated = makeAnimRef(() => simScore.value, 700)
+const simBillsAnimated = makeAnimRef(() => simBills.value, 700)
+const simCo2Animated = makeAnimRef(() => simCo2.value, 700, 1)
+const simVsNeighboursAnimated = makeAnimRef(() => simVsNeighbours.value, 600)
+const simScoreDisplay = computed(() => Math.round(simScoreAnimated.value))
+const simBillsDisplay = computed(() => Math.round(simBillsAnimated.value))
+const simCo2Display = computed(() => simCo2Animated.value)
+const simVsNeighboursDisplay = computed(() => Math.round(simVsNeighboursAnimated.value))
+
 const simScoreColor = computed(() => {
   const s = simScore.value
   if (s >= 75) return '#00514d'
@@ -3639,7 +3676,13 @@ function simConfirmDiff() {
 
 function simSelectPath(p: 'quiz' | 'bill') {
   simPath.value = p
-  if (p === 'bill') openStepId.value = null
+  if (p === 'bill') {
+    openStepId.value = null
+    // Prototype behaviour: tapping "Upload a bill" opens the upload drawer
+    // immediately. The picker tile below the path cards is only shown as a
+    // fallback if the bill drawer is closed without uploading.
+    if (!simBillUploaded.value) openSimBillDrawer()
+  }
 }
 
 function simReset() {

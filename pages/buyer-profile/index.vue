@@ -1,152 +1,129 @@
 <template>
   <div class="mp-page">
-    <!-- Sticky header -->
-    <div class="mp-header">
+    <!-- Top nav: back + eyebrow pill + sign-in/save -->
+    <div class="mp-top-nav">
       <button class="mp-back" @click="goBack" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
-          <polyline
-            points="15 18 9 12 15 6"
-            stroke="#231d45"
-            stroke-width="2.5"
-            stroke-linecap="round"
-          />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+          <path d="M19 12H5M12 5l-7 7 7 7" />
         </svg>
       </button>
-      <div class="mp-header-title">Buyer Profile</div>
-      <div class="mp-free-pill">Free</div>
+      <div class="mp-nav-centre">
+        <div class="eyebrow-pill">
+          <span class="eyebrow-dot" />Buyer Profile
+        </div>
+      </div>
+      <div style="width: 36px" />
     </div>
 
-    <div class="mp-scroll">
-      <!-- Hero -->
-      <div class="mp-hero">
-        <div class="mp-hero-circle" />
-        <div class="mp-hero-ic">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#3dbda3"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    <!-- ── Hero ─────────────────────────────────────────── -->
+    <div class="mp-hero-head">
+      <h1 class="mp-hero-title">Stand out as a serious buyer</h1>
+      <p class="mp-hero-sub">
+        Verified buyers get 3× more offers accepted. Build your profile in
+        about 5 minutes.
+      </p>
+    </div>
+
+    <!-- ── Hero card (prototype-exact gradient + shimmer) ── -->
+    <div class="mp-hero-wrap">
+      <div class="hero-card" @click="goToBuild">
+        <div class="hero-eyebrow">UMU Buyer Profile</div>
+        <div class="hero-tagline">"Trusted, ready,<br />chain-free."</div>
+        <div class="hero-name">{{ heroName }}</div>
+        <div class="hero-pills">
+          <div class="hero-pill">🪪 ID Verified</div>
+          <div v-if="heroFunds" class="hero-pill">{{ heroFunds }}</div>
+          <div class="hero-pill">Chain free</div>
+        </div>
+        <div class="hero-footer">
+          <span class="hero-footer-text">{{
+            hasProgress ? 'Tap to continue' : 'Tap to start'
+          }}</span>
+          <span class="hero-share-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Why it matters ─────────────────────────────────── -->
+    <div class="section-header">
+      <div class="sec-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      </div>
+      <div>
+        <div class="sec-title">WHY IT MATTERS</div>
+        <div class="sec-sub">Your competitive edge</div>
+      </div>
+    </div>
+    <div class="mp-benefits">
+      <div v-for="b in benefits" :key="b" class="mp-benefit">
+        <div class="mp-tick">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m5 12 5 5L20 7" />
           </svg>
         </div>
-        <div class="mp-hero-eyebrow">Buyer Profile</div>
-        <div class="mp-hero-title">Prove you're the<br />buyer they want</div>
-        <div class="mp-hero-body">
-          One verified document. Share with any agent, seller or solicitor. Skip
-          the endless back-and-forth and stand out in every offer.
-        </div>
+        <span>{{ b }}</span>
       </div>
+    </div>
 
-      <!-- What's inside -->
-      <div class="mp-section-title">What goes in your Profile</div>
-      <div class="mp-list-card">
-        <div class="mp-list-row">
-          <div class="mp-list-ic mp-ic-teal">🪪</div>
-          <div class="mp-list-body">
-            <div class="mp-list-title">Verified identity</div>
-            <div class="mp-list-sub">Photo ID + liveness check — done once</div>
-          </div>
-          <div class="mp-pill mp-pill-teal">Required</div>
-        </div>
-        <div class="mp-list-row">
-          <div class="mp-list-ic mp-ic-green">🏦</div>
-          <div class="mp-list-body">
-            <div class="mp-list-title">Proof of funds</div>
-            <div class="mp-list-sub">
-              Mortgage in principle or bank statement
-            </div>
-          </div>
-          <div class="mp-pill mp-pill-green">Required</div>
-        </div>
-        <div class="mp-list-row">
-          <div class="mp-list-ic mp-ic-amber">🔗</div>
-          <div class="mp-list-body">
-            <div class="mp-list-title">Chain position</div>
-            <div class="mp-list-sub">
-              First time buyer, chain-free, or selling
-            </div>
-          </div>
-          <div class="mp-pill mp-pill-amber">Required</div>
-        </div>
-        <div class="mp-list-row">
-          <div class="mp-list-ic mp-ic-purple">⚖️</div>
-          <div class="mp-list-body">
-            <div class="mp-list-title">Solicitor instructed</div>
-            <div class="mp-list-sub">Have you appointed a conveyancer?</div>
-          </div>
-          <div class="mp-pill mp-pill-purple">Optional</div>
-        </div>
-        <div class="mp-list-row mp-list-row-last">
-          <div class="mp-list-ic mp-ic-amber">✍️</div>
-          <div class="mp-list-body">
-            <div class="mp-list-title">Buyer statement</div>
-            <div class="mp-list-sub">Who you are and why this type of home</div>
-          </div>
-          <div class="mp-pill mp-pill-amber">Optional</div>
-        </div>
-      </div>
+    <!-- ── Live activity ──────────────────────────────────── -->
+    <div v-if="activityStats.publishedLast7d > 0" class="live-bar">
+      <div class="pulse-dot" />
+      <span>
+        <strong>{{ activityStats.publishedLast7d.toLocaleString() }}</strong>
+        {{ activityStats.publishedLast7d === 1 ? 'buyer' : 'buyers' }}
+        verified this week · avg. 4 min to complete
+      </span>
+    </div>
 
-      <!-- Why it works -->
-      <div class="mp-why-card">
-        <div class="mp-why-title">
-          Why agents and sellers prefer verified buyers
-        </div>
-        <div class="mp-why-bullets">
-          <div class="mp-why-row">
-            <div class="mp-why-dot" />
-            <span
-              >Agents spend less time chasing documents — your offer moves
-              faster</span
-            >
-          </div>
-          <div class="mp-why-row">
-            <div class="mp-why-dot" />
-            <span
-              >Sellers choose buyers they trust — a Profile builds that trust
-              before you meet</span
-            >
-          </div>
-          <div class="mp-why-row">
-            <div class="mp-why-dot" />
-            <span
-              >In sealed bids, a verified buyer with proof of funds stands out
-              immediately</span
-            >
-          </div>
-        </div>
-      </div>
-
-      <!-- CTA -->
-      <button class="mp-cta" @click="goToBuild">
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-          <circle cx="12" cy="7" r="4" />
+    <!-- ── What's inside ──────────────────────────────────── -->
+    <div class="section-header">
+      <div class="sec-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="M8 2v4M16 2v4M3 10h18" />
         </svg>
-        <span>{{
-          hasProgress ? 'Continue my Profile' : 'Build my Buyer Profile'
-        }}</span>
-      </button>
-      <div class="mp-cta-sub">
-        Free · Takes about 5 minutes · Share instantly
       </div>
+      <div>
+        <div class="sec-title">WHAT'S INSIDE</div>
+        <div class="sec-sub">Your five sections</div>
+      </div>
+    </div>
+    <div class="options-block">
+      <div v-for="s in sections" :key="s.title" class="opt-card opt-card--compact">
+        <div class="opt-icon">{{ s.emoji }}</div>
+        <div class="opt-text">
+          <div class="opt-title">{{ s.title }}</div>
+          <div class="opt-sub">{{ s.sub }}</div>
+        </div>
+        <span
+          class="rec-pill"
+          :class="s.required ? 'rec-pill--req' : 'rec-pill--opt'"
+        >
+          {{ s.required ? 'REQUIRED' : 'OPTIONAL' }}
+        </span>
+      </div>
+    </div>
 
-      <div style="height: 32px" />
+    <!-- ── CTA ────────────────────────────────────────────── -->
+    <div class="mp-cta-wrap">
+      <button class="cta-btn" @click="goToBuild">
+        <span class="cta-btn-inner">
+          {{ hasProgress ? 'Continue my Profile' : 'Build my Buyer Profile' }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </span>
+      </button>
+      <div class="ghost-link">Free · No subscription · 5-minute build</div>
     </div>
   </div>
 </template>
@@ -155,12 +132,15 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useBuyerProfile } from '~/composables/useBuyerProfile'
+import { useProfile } from '~/composables/useProfile'
 
 const router = useRouter()
-const { getBuyerProfile } = useBuyerProfile()
+const { getBuyerProfile, getActivityStats } = useBuyerProfile()
+const { fetchProfile, profile } = useProfile()
 
 const existing = ref<any>(null)
 const loading = ref(true)
+const activityStats = ref({ publishedLast7d: 0, totalPublished: 0 })
 
 const hasProgress = computed(() => {
   const p = existing.value
@@ -175,6 +155,36 @@ const hasProgress = computed(() => {
   )
 })
 
+const heroName = computed(() => {
+  const first = profile.value?.firstName?.trim()
+  const last = profile.value?.lastName?.trim()
+  if (first || last) return [first, last].filter(Boolean).join(' ')
+  return 'Your name here'
+})
+
+const heroFunds = computed(() => {
+  const amt = existing.value?.fundsAmount
+  if (!amt) return ''
+  if (amt >= 1_000_000) return `£${(amt / 1_000_000).toFixed(1)}M Funds`
+  if (amt >= 1000) return `£${Math.round(amt / 1000)}K Funds`
+  return `£${amt} Funds`
+})
+
+const benefits = [
+  'Sellers take your offer seriously',
+  'Agents prioritise your viewings',
+  'Solicitors can start faster',
+  'Verified credentials replace endless paperwork',
+]
+
+const sections = [
+  { emoji: '🪪', title: 'Verified identity', sub: 'Onfido KYC + DVS-certified', required: true },
+  { emoji: '🏦', title: 'Proof of funds', sub: 'Mortgage AIP or bank statement', required: true },
+  { emoji: '🔗', title: 'Chain position', sub: 'First-time, chain-free, or selling', required: true },
+  { emoji: '⚖️', title: 'Solicitor & timeline', sub: 'Move-readiness signals', required: false },
+  { emoji: '✍️', title: 'Your story', sub: 'Optional short intro to sellers', required: false },
+]
+
 const goBack = useGoBack('/explore')
 
 function goToBuild() {
@@ -182,10 +192,14 @@ function goToBuild() {
 }
 
 onMounted(async () => {
+  // Activity ticker — public endpoint, fire-and-forget.
+  getActivityStats()
+    .then((s) => { activityStats.value = s })
+    .catch(() => { /* no-op */ })
+  fetchProfile?.().catch(() => {})
   try {
     const data = await getBuyerProfile()
     existing.value = data
-    // If already published, jump straight to the view
     if (data?.published) {
       router.replace('/buyer-profile/view')
       return
@@ -199,264 +213,215 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* ───────────── Page shell ───────────── */
 .mp-page {
   min-height: 100dvh;
-  background: #fff;
-  color: #1f2024;
+  background: #fafafa;
+  color: #231d45;
   max-width: 28rem;
   width: 100%;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  padding-bottom: 32px;
 }
 
-/* ── Header ────────────────────────────────────────────── */
-.mp-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 16px 20px 12px;
-  padding-top: calc(16px + env(safe-area-inset-top));
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+/* ───────────── Top nav ───────────── */
+.mp-top-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px 6px;
+  padding-top: calc(14px + env(safe-area-inset-top));
 }
 .mp-back {
-  border: none;
-  background: none;
-  padding: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #fff; border: 1px solid #ececef;
+  display: flex; align-items: center; justify-content: center;
+  color: #231d45; cursor: pointer; flex-shrink: 0;
 }
-.mp-header-title {
-  flex: 1;
-  font-size: 15px;
-  font-weight: 800;
-  color: #231d45;
+.mp-nav-centre { flex: 1; display: flex; justify-content: center; }
+
+/* ───────────── Eyebrow pill (prototype) ───────────── */
+.eyebrow-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 800; letter-spacing: 1.4px;
+  color: #007e78; background: #f2faf8; border: 1px solid #e5f4f2;
+  padding: 6px 12px; border-radius: 100px; text-transform: uppercase;
 }
-.mp-free-pill {
-  background: #f0fdfa;
-  border: 1px solid #99f6e4;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 10px;
-  font-weight: 700;
-  color: #00a19a;
+.eyebrow-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: #00a19a;
 }
 
-/* ── Scroll ────────────────────────────────────────────── */
-.mp-scroll {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-/* ── Hero ──────────────────────────────────────────────── */
-.mp-hero {
-  background: linear-gradient(135deg, #231d45 0%, #1e1b4b 100%);
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-}
-.mp-hero-circle {
-  position: absolute;
-  right: -20px;
-  bottom: -20px;
-  width: 140px;
-  height: 140px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 50%;
-}
-.mp-hero-ic {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  width: 56px;
-  height: 56px;
-  background: rgba(94, 234, 212, 0.12);
-  border: 1.5px solid rgba(94, 234, 212, 0.2);
-  border-radius: 16px;
-  display: grid;
-  place-items: center;
-}
-.mp-hero-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 8px;
-}
+/* ───────────── Hero head ───────────── */
+.mp-hero-head { padding: 16px 22px 0; }
 .mp-hero-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.2;
-  margin-bottom: 10px;
-  letter-spacing: -0.03em;
+  font-size: 26px; font-weight: 800; color: #231d45;
+  line-height: 1.2; margin-bottom: 8px; letter-spacing: -0.5px;
 }
-.mp-hero-body {
-  font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.55);
-  line-height: 1.65;
+.mp-hero-sub {
+  font-size: 13px; color: #6b6783; line-height: 1.5;
 }
 
-/* ── Section title ─────────────────────────────────────── */
-.mp-section-title {
-  font-size: 14px;
-  font-weight: 800;
-  color: #1f2024;
-  margin-bottom: 12px;
+/* ───────────── Hero card (gradient + shimmer) ───────────── */
+.mp-hero-wrap { padding: 16px 22px 0; }
+.hero-card {
+  background: linear-gradient(140deg, #00b6ae 0%, #00a19a 50%, #00514d 100%);
+  box-shadow: 0 12px 32px -10px rgba(0, 161, 154, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  border-radius: 20px; padding: 22px;
+  color: white; position: relative; overflow: hidden; cursor: pointer;
 }
-
-/* ── List card ─────────────────────────────────────────── */
-.mp-list-card {
-  background: #fff;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 16px;
-  overflow: hidden;
-  margin-bottom: 20px;
+.hero-card::after {
+  content: ''; position: absolute; top: -40%; right: -20%;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, transparent 65%);
+  pointer-events: none;
 }
-.mp-list-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 13px 16px;
-  border-bottom: 1px solid #e5e7eb;
+.hero-card::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 60px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  animation: mp-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
 }
-.mp-list-row-last {
-  border-bottom: none;
+.hero-card > * { position: relative; z-index: 1; }
+@keyframes mp-shimmer {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(600%) skewX(-15deg); }
 }
-.mp-list-ic {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  font-size: 18px;
+.hero-eyebrow {
+  font-size: 9px; font-weight: 800; letter-spacing: 1.8px;
+  text-transform: uppercase; opacity: 0.7; margin-bottom: 4px;
 }
-.mp-ic-teal {
-  background: #f0fdfa;
+.hero-tagline {
+  font-size: 20px; font-weight: 800; font-style: italic;
+  line-height: 1.25; margin-bottom: 12px;
 }
-.mp-ic-green {
-  background: #f0fdf4;
+.hero-name { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+.hero-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.hero-pill {
+  font-size: 10px; font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.4); border-radius: 100px;
+  padding: 5px 10px; color: white; white-space: nowrap;
 }
-.mp-ic-amber {
-  background: #fef9f0;
-}
-.mp-ic-purple {
-  background: #f5f3ff;
-}
-.mp-list-body {
-  flex: 1;
-  min-width: 0;
-}
-.mp-list-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #1f2024;
-}
-.mp-list-sub {
-  font-size: 11px;
-  color: #94a3b8;
-  margin-top: 1px;
-}
-.mp-pill {
-  font-size: 10px;
-  font-weight: 700;
-  border-radius: 999px;
-  padding: 2px 8px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.mp-pill-teal {
-  color: #00a19a;
-  background: #f0fdfa;
-}
-.mp-pill-green {
-  color: #16a34a;
-  background: #f0fdf4;
-}
-.mp-pill-amber {
-  color: #92400e;
-  background: #fef9f0;
-}
-.mp-pill-purple {
-  color: #7c3aed;
-  background: #f5f3ff;
-}
-
-/* ── Why it works ──────────────────────────────────────── */
-.mp-why-card {
-  background: #f0fdfa;
-  border: 1.5px solid #99f6e4;
-  border-radius: 14px;
-  padding: 14px 16px;
-  margin-bottom: 20px;
-}
-.mp-why-title {
-  font-size: 12.5px;
-  font-weight: 800;
-  color: #231d45;
-  margin-bottom: 8px;
-}
-.mp-why-bullets {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.mp-why-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 12px;
-  color: #334155;
-  line-height: 1.5;
-}
-.mp-why-dot {
-  width: 5px;
-  height: 5px;
-  background: #00a19a;
-  border-radius: 50%;
-  margin-top: 5px;
+.hero-footer { display: flex; align-items: center; justify-content: space-between; }
+.hero-footer-text { font-size: 11px; font-weight: 600; opacity: 0.75; }
+.hero-share-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,0.2); color: white;
+  display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
 
-/* ── CTA ───────────────────────────────────────────────── */
-.mp-cta {
-  width: 100%;
-  border: none;
-  padding: 15px;
-  border-radius: 14px;
-  background: #00a19a;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 800;
-  cursor: pointer;
-  font-family: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  letter-spacing: -0.01em;
+/* ───────────── Section header ───────────── */
+.section-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 22px 22px 10px;
 }
-.mp-cta:active {
-  background: #00a19a;
+.sec-icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: linear-gradient(135deg, #00b6ae, #007e78);
+  box-shadow: 0 3px 10px rgba(0, 161, 154, 0.30);
+  display: flex; align-items: center; justify-content: center;
+  color: white; flex-shrink: 0;
 }
-.mp-cta-sub {
-  text-align: center;
-  font-size: 11px;
-  color: #94a3b8;
-  margin-top: 8px;
+.sec-title { font-size: 13px; font-weight: 800; color: #231d45; letter-spacing: 0.8px; }
+.sec-sub { font-size: 11.5px; color: #6b6783; }
+
+/* ───────────── Benefits ───────────── */
+.mp-benefits {
+  padding: 0 22px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.mp-benefit {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13.5px; font-weight: 700; color: #231d45;
+}
+.mp-tick {
+  width: 26px; height: 26px; border-radius: 50%; background: #00a19a;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* ───────────── Live bar ───────────── */
+.live-bar {
+  background: #f2faf8;
+  border-top: 1px solid #e5f4f2;
+  border-bottom: 1px solid #e5f4f2;
+  padding: 10px 22px; margin-top: 18px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; color: #007e78; font-weight: 700;
+}
+.pulse-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #00a19a;
+  position: relative; flex-shrink: 0;
+}
+.pulse-dot::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  background: #00a19a; opacity: 0.35;
+  animation: mp-pulse 1.8s ease-out infinite;
+}
+@keyframes mp-pulse {
+  0% { transform: scale(1); opacity: 0.35; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ───────────── Sections options-block (prototype) ───────────── */
+.options-block {
+  padding: 0 22px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.opt-card {
+  background: #fafafa; border: 1.5px solid #ececef;
+  border-radius: 14px; padding: 13px 14px;
+  cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; gap: 12px;
+}
+.opt-card--compact { cursor: default; }
+.opt-card.sel {
+  background: #f2faf8; border-color: #00a19a;
+  box-shadow: 0 0 0 3px rgba(0,161,154,0.10);
+}
+.opt-icon { font-size: 20px; width: 36px; text-align: center; flex-shrink: 0; }
+.opt-text { flex: 1; min-width: 0; }
+.opt-title { font-size: 13.5px; font-weight: 800; color: #231d45; }
+.opt-sub { font-size: 11px; color: #6b6783; margin-top: 1px; }
+.rec-pill {
+  font-size: 9px; font-weight: 800; padding: 3px 8px;
+  border-radius: 100px; letter-spacing: 1px; flex-shrink: 0;
+}
+.rec-pill--req {
+  background: #f2faf8; color: #007e78; border: 1px solid #e5f4f2;
+}
+.rec-pill--opt {
+  background: #f5f5f7; color: #6b6783;
+}
+
+/* ───────────── CTA ───────────── */
+.mp-cta-wrap { padding: 20px 22px 0; }
+.cta-btn {
+  width: 100%; background: #00a19a; color: white; border: none;
+  border-radius: 14px; padding: 16px;
+  font-size: 14px; font-weight: 800; font-family: inherit;
+  box-shadow: 0 4px 16px rgba(0,161,154,0.35);
+  position: relative; overflow: hidden; cursor: pointer;
+  transition: all 0.15s;
+}
+.cta-btn::after {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 50px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  animation: mp-shimmer 2.5s ease-in-out 1s infinite;
+}
+.cta-btn:hover { background: #00b6ae; transform: translateY(-1px); }
+.cta-btn-inner {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.ghost-link {
+  text-align: center; display: block;
+  font-size: 12px; font-weight: 700; color: #6b6783;
+  padding: 12px 10px 4px;
 }
 </style>

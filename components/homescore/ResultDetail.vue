@@ -121,11 +121,12 @@
               stroke-width="9"
               stroke-linecap="round"
               stroke-dasharray="314.16"
-              :stroke-dashoffset="314.16 - (score / 100) * 314.16"
+              :stroke-dashoffset="314.16 - (scoreDisplay / 100) * 314.16"
+              style="transition: stroke-dashoffset 0.6s cubic-bezier(.22,1,.36,1)"
             />
           </svg>
           <div class="rd-g-num">
-            <div class="gn-big">{{ score }}</div>
+            <div class="gn-big">{{ scoreDisplay }}</div>
             <div class="gn-small">/ 100</div>
           </div>
         </div>
@@ -156,12 +157,12 @@
         <span class="rd-dot" />Estimated annual running cost · EPC data
       </div>
       <div class="rd-overpay-num">
-        £{{ formatNum(estimatedAnnualCost)
+        £{{ formatNum(annualCostDisplay)
         }}<span class="rd-unit"> / year</span>
       </div>
       <div class="rd-overpay-sub">
         <template v-if="overpayDiff > 0"
-          >£{{ formatNum(overpayDiff) }} above the street average. Tap below to
+          >£{{ formatNum(overpayDisplay) }} above the street average. Tap below to
           see the full breakdown.</template
         >
         <template v-else
@@ -415,7 +416,43 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+
+// ── Tween helper: animates from `prev` → `target` with ease-out cubic ─────────
+// Used to count up the headline score and £ figures when the page first
+// resolves real EPC data. Honours prefers-reduced-motion (returns instant value).
+function useTween(source: () => number, durationMs = 900) {
+  const out = ref<number>(source() || 0)
+  let raf = 0
+  let cancelled = false
+  const prefersReduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3) }
+
+  function animateTo(to: number) {
+    if (cancelled) return
+    if (prefersReduced) { out.value = to; return }
+    cancelAnimationFrame(raf)
+    const from = out.value
+    if (from === to) return
+    const start = performance.now()
+    const tick = (now: number) => {
+      const elapsed = now - start
+      const p = Math.min(1, elapsed / durationMs)
+      out.value = from + (to - from) * easeOutCubic(p)
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+  }
+
+  watch(source, (v) => animateTo(Number(v) || 0))
+  onMounted(() => animateTo(Number(source()) || 0))
+  onBeforeUnmount(() => { cancelled = true; cancelAnimationFrame(raf) })
+  return out
+}
 
 type PassportState = 'unclaimed' | 'inProgress' | 'published'
 
@@ -458,6 +495,14 @@ const overpayDiff = computed(() =>
 // data is missing — we mirror that fallback so the chip never shows just
 // "EPC data" with nothing after.
 const displayEpcYear = computed<number>(() => props.epcYear ?? 2014)
+
+// ── Animated display values (count up on initial render + when source changes)
+const animatedScore = useTween(() => Number(props.score) || 0, 1100)
+const animatedAnnualCost = useTween(() => Number(props.estimatedAnnualCost) || 0, 900)
+const animatedOverpay = useTween(() => Math.max(0, Number(props.estimatedAnnualCost) - (Number(props.streetAvgCost) || 0)), 900)
+const scoreDisplay = computed(() => Math.round(animatedScore.value))
+const annualCostDisplay = computed(() => Math.round(animatedAnnualCost.value))
+const overpayDisplay = computed(() => Math.round(animatedOverpay.value))
 
 // ── EPC numbers — prefer real fields enriched onto the property row from the
 // EPC Register; fall back to per-rating heuristics only when those fields

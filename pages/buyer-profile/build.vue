@@ -1,7 +1,7 @@
 <template>
   <div class="bp-page">
-    <!-- Sticky header -->
-    <div class="bp-header">
+    <!-- Sticky header (hidden on the celebration screen) -->
+    <div v-if="step <= 5" class="bp-header">
       <button class="bp-back" @click="goBack" aria-label="Back">
         <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
           <polyline
@@ -18,8 +18,8 @@
       </div>
     </div>
 
-    <!-- Progress bar -->
-    <div class="bp-progress">
+    <!-- Progress bar (hidden on the celebration screen) -->
+    <div v-if="step <= 5" class="bp-progress">
       <div
         v-for="n in 5"
         :key="n"
@@ -39,15 +39,34 @@
           </div>
         </div>
 
-        <!-- Trust strip -->
-        <div class="bp-trust">
-          <div class="bp-trust-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
+        <!-- ID type picker (prototype-aligned: 3 options before KYC begins) -->
+        <div class="bp-field-label">Which ID will you use?</div>
+        <div class="bp-option-list bp-idtype-list">
+          <div
+            v-for="opt in idTypeOptions"
+            :key="opt.value"
+            class="bp-option-card"
+            :class="{ selected: idDocumentType === opt.value }"
+            @click="idDocumentType = opt.value"
+          >
+            <span class="bp-option-emoji">{{ opt.emoji }}</span>
+            <div class="bp-option-body">
+              <div class="bp-option-title">{{ opt.title }}</div>
+              <div v-if="opt.sub" class="bp-option-sub">{{ opt.sub }}</div>
+            </div>
+            <span v-if="opt.recommended" class="bp-rec-pill">RECOMMENDED</span>
+            <div class="bp-option-check" :class="{ filled: idDocumentType === opt.value }" />
           </div>
-          <div>Encrypted &amp; secure · powered by <strong>Onfido</strong> · used by major UK banks</div>
+        </div>
+
+        <!-- Trust strip (DVS-styled, matches prototype dvs-strip) -->
+        <div class="bp-trust">
+          <div class="bp-trust-ic">UK DVS</div>
+          <div>
+            Powered by <strong>Onfido</strong> · Certified under the UK Digital
+            Verification Services Trust Framework · Bank-grade · Data deleted
+            after 90 days.
+          </div>
         </div>
 
         <!-- Task 1: Photo ID -->
@@ -295,23 +314,72 @@
         </Teleport>
       </div>
 
-      <!-- ── STEP 2: Funds ── -->
+      <!-- ── STEP 2: Tier picker (and funds for Verified/Premium) ── -->
       <div v-if="step === 2" class="bp-step">
         <div class="bp-step-hero">
-          <div class="bp-step-ic bp-ic-green">🏛️</div>
-          <div class="bp-step-title">Proof of funds</div>
+          <div class="bp-step-ic bp-ic-purple">⭐</div>
+          <div class="bp-step-title">Choose your tier</div>
           <div class="bp-step-body">
-            Show sellers you're financially ready. Choose what applies to you.
+            Higher tiers add verified credentials sellers and agents look for.
+            One-off payment — no subscription.
           </div>
         </div>
-        <div class="bp-option-list">
-          <div
-            v-for="opt in fundsOptions"
-            :key="opt.value"
-            class="bp-funds-card"
-            :class="{ selected: fundsType === opt.value }"
-            @click="selectFunds(opt.value)"
+
+        <!-- Tier cards -->
+        <div class="bp-tier-list">
+          <button
+            v-for="t in tierOptions"
+            :key="t.id"
+            type="button"
+            class="bp-tier-card"
+            :class="[
+              t.id.toLowerCase(),
+              {
+                selected: selectedTier === t.id,
+                paid: tierPaidFor === t.id,
+              },
+            ]"
+            @click="selectedTier = t.id"
           >
+            <span class="bp-tier-corner">{{ t.corner }}</span>
+            <div class="bp-tier-badge" :class="`bp-tier-badge--${t.id.toLowerCase()}`">
+              {{ t.badge }}
+            </div>
+            <div class="bp-tier-title">{{ t.title }}</div>
+            <div class="bp-tier-sub">{{ t.sub }}</div>
+            <div class="bp-tier-price-row">
+              <span class="bp-tier-price">{{ t.priceLabel }}</span>
+              <span v-if="tierPaidFor === t.id" class="bp-tier-paid-pill">✓ Paid</span>
+            </div>
+            <ul class="bp-tier-features">
+              <li v-for="f in t.features" :key="f.text">
+                <span :class="f.included ? 'bp-tier-tick' : 'bp-tier-dash'">
+                  {{ f.included ? '✓' : '○' }}
+                </span>
+                {{ f.text }}
+              </li>
+            </ul>
+          </button>
+        </div>
+
+        <!-- ── Funds verification (only after a paid tier has been confirmed) ── -->
+        <template v-if="needsFundsCapture">
+          <div class="bp-field-label">
+            <span class="bp-funds-step-pill">Next</span>
+            Verify your funds
+          </div>
+          <div class="bp-funds-intro">
+            Pick the source that matches your situation. We use this to confirm
+            your maximum budget with the seller.
+          </div>
+          <div class="bp-option-list">
+            <div
+              v-for="opt in fundsOptions"
+              :key="opt.value"
+              class="bp-funds-card"
+              :class="{ selected: fundsType === opt.value }"
+              @click="selectFunds(opt.value)"
+            >
             <div class="bp-funds-row">
               <div class="bp-funds-ic">
                 <span style="font-size: 20px">{{ opt.emoji }}</span>
@@ -383,26 +451,29 @@
               </div>
             </div>
           </div>
-        </div>
+          </div>
 
-        <div class="bp-field-label">Maximum budget</div>
-        <div class="bp-budget-wrap">
-          <span class="bp-budget-sign">£</span>
-          <input
-            type="number"
-            v-model.number="fundsAmount"
-            placeholder="350,000"
-            class="bp-budget-input"
-            inputmode="numeric"
-          />
-        </div>
+          <div class="bp-field-label">Maximum budget</div>
+          <div class="bp-budget-wrap">
+            <span class="bp-budget-sign">£</span>
+            <input
+              type="number"
+              v-model.number="fundsAmount"
+              placeholder="350,000"
+              class="bp-budget-input"
+              inputmode="numeric"
+            />
+          </div>
+        </template>
+
+        <!-- Dynamic CTA: pay (paid tier, not yet paid) / continue (basic or after payment + funds) -->
         <button
           class="bp-next"
-          :class="{ disabled: !canContinue }"
-          :disabled="!canContinue"
-          @click="goNext"
+          :class="{ disabled: !step2CanContinue }"
+          :disabled="!step2CanContinue"
+          @click="onStep2Continue"
         >
-          {{ saving ? 'Saving…' : 'Continue →' }}
+          {{ step2CtaLabel }}
         </button>
 
         <!-- Funds upload bottom sheet -->
@@ -471,13 +542,13 @@
         </Teleport>
       </div>
 
-      <!-- ── STEP 3: Chain ── -->
+      <!-- ── STEP 3: Chain position ── -->
       <div v-if="step === 3" class="bp-step">
         <div class="bp-step-hero">
-          <div class="bp-step-ic bp-ic-amber">🔗</div>
+          <div class="bp-step-ic">🔗</div>
           <div class="bp-step-title">Your chain position</div>
           <div class="bp-step-body">
-            This tells sellers how straightforward a sale with you would be.
+            Chain-free buyers are preferred by 78% of sellers.
           </div>
         </div>
         <div class="bp-option-list">
@@ -488,105 +559,258 @@
             :class="{ selected: chainPosition === opt.value }"
             @click="chainPosition = opt.value"
           >
-            <span class="bp-option-emoji">{{ opt.emoji }}</span>
             <div class="bp-option-body">
-              <div class="bp-option-title">{{ opt.title }}</div>
+              <div class="bp-option-title-row">
+                <span class="bp-option-title">{{ opt.title }}</span>
+                <span v-if="opt.badge" class="bp-best-pill">{{ opt.badge }}</span>
+              </div>
               <div class="bp-option-sub">{{ opt.sub }}</div>
             </div>
             <div class="bp-option-check" :class="{ filled: chainPosition === opt.value }" />
           </button>
         </div>
+
+        <!-- Amber context card -->
+        <div class="bp-amber-card">
+          <div class="bp-amber-ic">💡</div>
+          <div>
+            <div class="bp-amber-title">Chain-free buyers</div>
+            <div class="bp-amber-body">
+              Sellers receive 78% fewer complications from chain-free buyers
+              and often prefer them even at a lower offer price.
+            </div>
+          </div>
+        </div>
+
         <button
           class="bp-next"
           :class="{ disabled: !canContinue }"
           :disabled="!canContinue"
           @click="goNext"
         >
-          {{ saving ? 'Saving…' : 'Continue →' }}
+          {{ saving ? 'Saving…' : 'Confirm my position →' }}
         </button>
       </div>
 
-      <!-- ── STEP 4: Solicitor + timeline ── -->
+      <!-- ── STEP 4: Quick questions (Timeline / Property type / Solicitor) ── -->
       <div v-if="step === 4" class="bp-step">
-        <div class="bp-step-hero">
-          <div class="bp-step-ic bp-ic-purple">⚖️</div>
+        <div class="bp-step-hero bp-step-hero--narrow">
           <div class="bp-step-title">A few quick questions</div>
-          <div class="bp-step-body">
-            This helps sellers and agents understand how ready you are to move.
-          </div>
+          <div class="bp-step-body">Helps sellers understand your situation</div>
         </div>
-        <div class="bp-field-label">Have you instructed a solicitor?</div>
-        <div class="bp-tile-row">
-          <button
-            v-for="opt in solicitorOptions"
-            :key="opt.value"
-            class="bp-tile"
-            :class="{ selected: solicitorStatus === opt.value }"
-            @click="solicitorStatus = opt.value"
-          >
-            <div class="bp-tile-emoji">{{ opt.emoji }}</div>
-            <div class="bp-tile-label">{{ opt.label }}</div>
-          </button>
-        </div>
-        <div class="bp-field-label">When are you looking to move?</div>
-        <div class="bp-tile-row">
+
+        <!-- Timeline -->
+        <div class="bp-sec-label">TIMELINE</div>
+        <div class="bp-chip-row">
           <button
             v-for="opt in timelineOptions"
             :key="opt.value"
-            class="bp-tile bp-tile-small"
-            :class="{ selected: timeline === opt.value }"
+            class="bp-chip"
+            :class="{ active: timeline === opt.value }"
             @click="timeline = opt.value"
           >
             {{ opt.label }}
           </button>
         </div>
+
+        <!-- Property type -->
+        <div class="bp-sec-label">PROPERTY TYPE</div>
+        <div class="bp-chip-row">
+          <button
+            v-for="opt in propertyTypeOptions"
+            :key="opt.value"
+            class="bp-chip"
+            :class="{ active: propertyType === opt.value }"
+            @click="propertyType = opt.value"
+          >
+            {{ opt.label }}
+          </button>
+        </div>
+
+        <!-- Solicitor -->
+        <div class="bp-sec-label">SOLICITOR</div>
+        <div
+          v-if="solicitorStatus === 'yes'"
+          class="bp-sol-card"
+          @click="solicitorStatus = null"
+        >
+          <div class="bp-sol-ic">🏛️</div>
+          <div class="bp-sol-body">
+            <div class="bp-sol-name">Solicitor instructed</div>
+            <div class="bp-sol-sub">Ready to proceed — tap to change</div>
+          </div>
+          <span class="bp-sol-pill">✓ INSTRUCTED</span>
+        </div>
+        <div v-else class="bp-sol-options">
+          <button
+            v-for="opt in solicitorOptions"
+            :key="opt.value"
+            class="bp-chip"
+            :class="{ active: solicitorStatus === opt.value }"
+            @click="solicitorStatus = opt.value"
+          >
+            {{ opt.label }}
+          </button>
+        </div>
+
+        <!-- Tip -->
+        <div class="bp-tip">
+          💡 Having a solicitor instructed tells sellers you're serious and
+          legally ready to proceed.
+        </div>
+
         <button
           class="bp-next"
           :class="{ disabled: !canContinue }"
           :disabled="!canContinue"
           @click="goNext"
         >
-          {{ saving ? 'Saving…' : 'Continue →' }}
+          {{ saving ? 'Saving…' : 'Next step →' }}
         </button>
       </div>
 
-      <!-- ── STEP 5: Statement ── -->
+      <!-- ── STEP 5: Your story ── -->
       <div v-if="step === 5" class="bp-step">
         <div class="bp-step-hero">
-          <div class="bp-step-ic bp-ic-amber">✍️</div>
+          <div class="bp-step-ic bp-step-ic--amber">✍️</div>
           <div class="bp-step-title">
             Tell your story
             <span class="bp-optional">(optional)</span>
           </div>
           <div class="bp-step-body">
-            A short personal note can make a real difference — sellers often choose buyers they connect with.
+            A short personal note makes a real difference — sellers often
+            choose buyers they connect with.
           </div>
         </div>
-        <div class="bp-prompts">
-          <div
+
+        <!-- Prompt chips -->
+        <div class="bp-prompt-row">
+          <button
             v-for="p in prompts"
             :key="p"
-            class="bp-prompt"
+            type="button"
+            class="bp-prompt-chip"
             @click="appendPrompt(p)"
           >
             + {{ p }}
-          </div>
+          </button>
         </div>
+
+        <!-- Textarea -->
         <textarea
           v-model="statement"
-          class="bp-textarea"
+          class="bp-story-ta"
           rows="6"
-          placeholder="e.g. We're a young family looking to put down roots in a community we love. We're chain-free, financially ready, and flexible on completion..."
+          placeholder="Write something that shows sellers who you are and why you'd be the perfect owner of their home…"
         />
-        <button class="bp-generate" @click="submit">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-          {{ publishing ? 'Generating…' : 'Generate my Profile' }}
+
+        <!-- AI draft card -->
+        <button
+          type="button"
+          class="bp-ai-card"
+          :disabled="aiDrafting"
+          @click="onAiDraft"
+        >
+          <span class="bp-ai-pill">✨ AI</span>
+          <span class="bp-ai-text">
+            {{
+              aiDrafting
+                ? 'Drafting…'
+                : statement.trim()
+                  ? 'Rewrite my story to be warmer and clearer'
+                  : 'Let AI write a compelling story based on your profile'
+            }}
+          </span>
+          <span class="bp-ai-try">Try it ›</span>
         </button>
-        <button class="bp-skip" @click="submit">Skip this step</button>
+        <div v-if="aiError" class="bp-ai-err">{{ aiError }}</div>
+
+        <button class="bp-generate" :disabled="publishing" @click="submit">
+          {{ publishing ? 'Generating…' : '✓ Generate my Passport' }}
+        </button>
+        <button class="bp-skip-ghost" @click="submit">Skip this step →</button>
+      </div>
+
+      <!-- ── DONE: Celebration screen (prototype `complete`) ── -->
+      <div v-if="step === 6" class="bp-step bp-complete">
+        <!-- Celebration hero -->
+        <div class="bp-complete-hero">
+          <div class="bp-complete-emoji">🎉</div>
+          <h2 class="bp-complete-title">You're a Trusted Buyer!</h2>
+          <p class="bp-complete-sub">Your passport is live.</p>
+        </div>
+
+        <!-- XP row -->
+        <div class="bp-xp-row">
+          <div class="bp-xp-icon">⭐</div>
+          <div class="bp-xp-body">
+            <div class="bp-xp-title">Passport badge earned</div>
+            <div class="bp-xp-sub">
+              {{ Math.round(completeStrength) }}% strength ·
+              {{ completeTierLabel }} tier
+            </div>
+          </div>
+          <div class="bp-xp-points">+100 XP</div>
+        </div>
+
+        <!-- Teal hero card -->
+        <div class="bp-complete-card-wrap">
+          <div class="bp-complete-card">
+            <div class="bp-complete-card-top">
+              <span class="bp-complete-card-eyebrow">UMU BUYER PROFILE</span>
+              <span class="bp-complete-card-strength">
+                {{ Math.round(completeStrength) }}% STRENGTH
+              </span>
+            </div>
+            <div class="bp-complete-tagline">"Trusted, ready,<br />chain-free."</div>
+            <div v-if="completeDisplayName" class="bp-complete-name">
+              {{ completeDisplayName }}
+            </div>
+            <div class="bp-complete-pills">
+              <span class="bp-complete-pill">🪪 ID Verified</span>
+              <span v-if="completeFundsLabel" class="bp-complete-pill">
+                {{ completeFundsLabel }}
+              </span>
+              <span class="bp-complete-pill">Chain free</span>
+              <span v-if="solicitorStatus === 'yes'" class="bp-complete-pill">
+                Solicitor instructed
+              </span>
+            </div>
+            <div class="bp-complete-foot">
+              <span class="bp-complete-foot-text">Tap to share with sellers</span>
+              <button class="bp-complete-share" aria-label="Share" @click="goToView">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                  <polyline points="16 6 12 2 8 6" />
+                  <line x1="12" y1="2" x2="12" y2="15" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Amber nudge -->
+        <div v-if="tierPaidFor !== 'PREMIUM'" class="bp-amber-nudge" @click="tierDrawerOpen = true">
+          One step to 100% Platinum: Add
+          {{ tierPaidFor === 'BASIC' ? 'your funds verification' : 'your credit file' }} →
+        </div>
+
+        <!-- Buttons -->
+        <div class="bp-complete-actions">
+          <button class="bp-next" @click="goToView">⤴ Share with agent now</button>
+          <button class="bp-cta-outline" @click="goToView">📄 Download as PDF</button>
+          <button class="bp-skip-ghost" @click="goToView">View my full Profile →</button>
+        </div>
       </div>
     </div>
+
+    <!-- Tier upgrade drawer (Stripe checkout) -->
+    <TierUpgradeDrawer
+      :open="tierDrawerOpen"
+      :current-tier="tierPaidFor"
+      @close="tierDrawerOpen = false"
+      @tier-changed="onTierPaid"
+    />
   </div>
 </template>
 
@@ -594,14 +818,19 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useBuyerProfile } from '~/composables/useBuyerProfile'
+import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
+import TierUpgradeDrawer from '~/components/buyer-profile/TierUpgradeDrawer.vue'
+
+type Tier = 'BASIC' | 'VERIFIED' | 'PREMIUM'
 
 const router = useRouter()
 const { getBuyerProfile, updateBuyerProfile, publishBuyerProfile } =
   useBuyerProfile()
 const { showToast } = useAppToast()
 
-const step = ref<1 | 2 | 3 | 4 | 5>(1)
+// step=6 is the post-publish celebration screen (matches prototype `complete`).
+const step = ref<1 | 2 | 3 | 4 | 5 | 6>(1)
 const saving = ref(false)
 const publishing = ref(false)
 
@@ -612,7 +841,111 @@ const fundsAmount = ref<number | null>(null)
 const chainPosition = ref<string | null>(null)
 const solicitorStatus = ref<string | null>(null)
 const timeline = ref<string | null>(null)
+const propertyType = ref<string | null>(null)
 const statement = ref('')
+
+// ── Tier picker (step 2) ────────────────────────────────────────
+// `selectedTier` is what the user has clicked on the tier cards.
+// `tierPaidFor` is the tier that's been confirmed and paid for (server truth).
+// `needsFundsCapture` controls whether the funds verification UI appears
+// inline below the tier cards.
+const selectedTier = ref<Tier>('VERIFIED')
+const tierPaidFor = ref<Tier>('BASIC')
+const tierDrawerOpen = ref(false)
+
+const needsFundsCapture = computed(() => {
+  // Funds verification only required for Verified/Premium, and only once
+  // payment has succeeded (otherwise we'd be asking for bank docs from a user
+  // who hasn't unlocked the verified tier yet).
+  return tierPaidFor.value !== 'BASIC'
+})
+
+const step2CanContinue = computed(() => {
+  // BASIC path: just need the user to have explicitly chosen it.
+  if (selectedTier.value === 'BASIC') return true
+  // Paid tiers: require payment + funds source + budget before continuing.
+  if (tierPaidFor.value !== selectedTier.value) return true // (button will open Stripe)
+  return !!fundsType.value && !!fundsAmount.value && fundsAmount.value > 0
+})
+
+const step2CtaLabel = computed(() => {
+  if (selectedTier.value === 'BASIC') return saving.value ? 'Saving…' : 'Continue with Basic →'
+  if (tierPaidFor.value !== selectedTier.value) {
+    const price = selectedTier.value === 'PREMIUM' ? 79 : 29
+    return `Pay £${price} & continue →`
+  }
+  return saving.value ? 'Saving…' : 'Continue →'
+})
+
+async function onStep2Continue() {
+  if (selectedTier.value === 'BASIC') {
+    // Persist tier=BASIC, then advance.
+    try {
+      saving.value = true
+      await updateBuyerProfile({ tier: 'BASIC' as any, completedSteps: 2 })
+      tierPaidFor.value = 'BASIC'
+      step.value = 3
+    } catch (e: any) {
+      showToast({ message: e?.data?.message ?? 'Could not save', iconEmoji: '⚠️' })
+    } finally {
+      saving.value = false
+    }
+    return
+  }
+  // Paid tier path
+  if (tierPaidFor.value !== selectedTier.value) {
+    // Open Stripe checkout via the upgrade drawer (it handles payment intent +
+    // confirmation; we get a callback through `onTierPaid`).
+    tierDrawerOpen.value = true
+    return
+  }
+  // Tier paid + funds captured → save + advance.
+  try {
+    saving.value = true
+    await updateBuyerProfile({
+      tier: tierPaidFor.value as any,
+      fundsType: fundsType.value,
+      fundsAmount: fundsAmount.value,
+      completedSteps: 2,
+    })
+    step.value = 3
+  } catch (e: any) {
+    showToast({ message: e?.data?.message ?? 'Could not save', iconEmoji: '⚠️' })
+  } finally {
+    saving.value = false
+  }
+}
+
+function onTierPaid(t: Tier) {
+  tierPaidFor.value = t
+  tierDrawerOpen.value = false
+  showToast({ message: `${t === 'PREMIUM' ? 'Premium' : 'Verified'} unlocked`, iconEmoji: '✨' })
+}
+
+// ── Complete screen helpers ────────────────────────────────────
+const completeStrength = ref(0)
+const completeTierLabel = computed(() => {
+  if (tierPaidFor.value === 'PREMIUM') return 'Platinum'
+  if (tierPaidFor.value === 'VERIFIED') return 'Verified'
+  return 'Trusted'
+})
+const { profile: userProfile, fetchProfile } = useProfile()
+const completeDisplayName = computed(() => {
+  const first = userProfile.value?.firstName?.trim()
+  const last = userProfile.value?.lastName?.trim()
+  if (first || last) return [first, last].filter(Boolean).join(' ')
+  return ''
+})
+const completeFundsLabel = computed(() => {
+  const amt = fundsAmount.value
+  if (!amt) return ''
+  if (amt >= 1_000_000) return `£${(amt / 1_000_000).toFixed(1)}M Funds`
+  if (amt >= 1000) return `£${Math.round(amt / 1000)}K Funds`
+  return `£${amt} Funds`
+})
+function goToView() {
+  router.replace('/buyer-profile/view')
+}
 
 // ── KYC (step 1) state ───────────────────────────────────────────
 const kycActive = ref<'id' | 'selfie' | 'aml'>('id')
@@ -802,48 +1135,126 @@ function removeFundsUpload() {
 }
 
 // Option lists
+const idTypeOptions = [
+  { value: 'passport', emoji: '🛂', title: 'UK / EU Passport', sub: 'Fastest match', recommended: true },
+  { value: 'drivingLicence', emoji: '🪪', title: 'UK Driving Licence', sub: 'Photocard, front + back' },
+  { value: 'nationalId', emoji: '🆔', title: 'National ID Card', sub: 'EU national ID' },
+]
 const fundsOptions = [
   { value: 'mortgage', emoji: '💳', title: 'Mortgage in principle', sub: 'Upload your DIP document' },
   { value: 'cash', emoji: '💷', title: 'Cash buyer', sub: 'Bank statement showing available funds' },
   { value: 'help', emoji: '🏛️', title: 'Help to Buy / Shared ownership', sub: 'Government scheme with mortgage' },
 ]
 const chainOptions = [
-  { value: 'ftb', emoji: '🌟', title: 'First time buyer', sub: 'No property to sell — chain-free' },
-  { value: 'selling', emoji: '🏠', title: 'Have a property to sell', sub: 'Currently on the market' },
-  { value: 'sold', emoji: '✅', title: 'Property sold / chain-free', sub: 'Sale agreed or renting while I buy' },
-  { value: 'renting', emoji: '🏢', title: 'Currently renting', sub: 'Flexible on completion date' },
+  {
+    value: 'sold',
+    title: 'Chain free',
+    badge: '✅ BEST',
+    sub: 'No property to sell. Move on completion day.',
+  },
+  {
+    value: 'selling',
+    title: 'Property to sell',
+    badge: null as string | null,
+    sub: 'You have an existing property in the chain.',
+  },
+  {
+    value: 'ftb',
+    title: 'First-time buyer',
+    badge: null as string | null,
+    sub: 'No chain, no complications. Fastest route.',
+  },
 ]
 const solicitorOptions = [
-  { value: 'yes', emoji: '✅', label: 'Yes' },
-  { value: 'looking', emoji: '🔍', label: 'Looking' },
-  { value: 'notsure', emoji: '❓', label: 'Not yet' },
+  { value: 'yes', label: 'Instructed' },
+  { value: 'looking', label: 'Looking' },
+  { value: 'notsure', label: 'Not yet' },
 ]
 const timelineOptions = [
-  { value: 'asap', label: 'ASAP' },
-  { value: '3m', label: '3 months' },
-  { value: '6m', label: '6 months' },
+  { value: 'asap', label: 'Ready now' },
+  { value: '3m', label: '1–3 months' },
+  { value: '6m', label: '3–6 months' },
   { value: 'flex', label: 'Flexible' },
 ]
+// Order + labels match prototype: House / Flat / Any / New build
+const propertyTypeOptions = [
+  { value: 'house', label: 'House' },
+  { value: 'flat', label: 'Flat' },
+  { value: 'any', label: 'Any' },
+  { value: 'newBuild', label: 'New build' },
+]
+const tierOptions: Array<{
+  id: Tier; corner: string; badge: string; title: string; sub: string;
+  priceLabel: string;
+  features: Array<{ text: string; included: boolean }>;
+}> = [
+  {
+    id: 'BASIC',
+    corner: '○',
+    badge: 'BASIC · FREE',
+    title: 'Identity Verified',
+    sub: "Get started — show sellers you're a real, verified buyer.",
+    priceLabel: 'Free',
+    features: [
+      { text: 'DVS-certified identity check', included: true },
+      { text: 'Chain position & timeline', included: true },
+      { text: 'Solicitor instructed status', included: true },
+      { text: 'Funds & affordability not verified', included: false },
+    ],
+  },
+  {
+    id: 'VERIFIED',
+    corner: '✓',
+    badge: 'VERIFIED · RECOMMENDED',
+    title: 'Identity + Funds Verified',
+    sub: 'The level most sellers and agents expect. Proves you can buy.',
+    priceLabel: '£29',
+    features: [
+      { text: 'Everything in Basic', included: true },
+      { text: 'Proof of deposit (open banking)', included: true },
+      { text: 'Source of funds + AML clear', included: true },
+      { text: 'Affordability score', included: true },
+      { text: 'Credit file not included', included: false },
+    ],
+  },
+  {
+    id: 'PREMIUM',
+    corner: '★',
+    badge: 'PREMIUM · PLATINUM',
+    title: 'Full Financial Profile',
+    sub: 'Maximum strength — lenders can pre-approve faster with this data.',
+    priceLabel: '£79',
+    features: [
+      { text: 'Everything in Verified', included: true },
+      { text: 'Experian credit file + score', included: true },
+      { text: 'Equifax cross-check (two-bureau)', included: true },
+      { text: 'Direct lender API access', included: true },
+    ],
+  },
+]
+// Exact prototype copy:
+//   + Why I love this type of home
+//   + My timeline & flexibility
+//   + What matters most to me
 const prompts = [
-  'Why I want this type of home',
-  'My timeline and flexibility',
+  'Why I love this type of home',
+  'My timeline & flexibility',
   'What matters most to me',
 ]
 
 const canContinue = computed(() => {
   switch (step.value) {
     case 1:
-      return kycAllDone.value
+      return kycAllDone.value && !!idDocumentType.value
     case 2:
-      return (
-        !!fundsType.value &&
-        !!fundsUpload.value &&
-        !!fundsAmount.value &&
-        fundsAmount.value > 0
-      )
+      // Step 2 has its own gate (`step2CanContinue`) wired directly to the
+      // tier picker / funds CTA — `canContinue` still surfaces here so legacy
+      // callers don't break, but the step-2 UI uses the dedicated computed.
+      return step2CanContinue.value
     case 3:
       return !!chainPosition.value
     case 4:
+      // Property type optional but encouraged — keep timeline + solicitor required.
       return !!solicitorStatus.value && !!timeline.value
     case 5:
       return true
@@ -858,6 +1269,12 @@ function appendPrompt(text: string) {
 }
 
 function goBack() {
+  // Don't allow stepping out of the celebration screen — the profile is
+  // already published. Send the user to /view instead.
+  if (step.value === 6) {
+    router.replace('/buyer-profile/view')
+    return
+  }
   if (step.value > 1) {
     step.value = (step.value - 1) as any
     return
@@ -878,6 +1295,7 @@ async function saveCurrentStep(): Promise<boolean> {
     if (step.value === 4) {
       patch.solicitorStatus = solicitorStatus.value
       patch.timeline = timeline.value
+      patch.propertyType = propertyType.value
     }
     if (step.value === 5) patch.statement = statement.value
     await updateBuyerProfile(patch)
@@ -900,24 +1318,85 @@ async function goNext() {
   }
 }
 
+// ── AI draft of the "Your story" field ─────────────────────────────────────
+// Calls the existing /chat endpoint (Groq Llama 3.3 70B) with a buyer-profile
+// system prompt. Replaces (or seeds) the textarea value. Empty user input
+// just generates a draft from the profile signals; non-empty input is rewritten.
+const aiDrafting = ref(false)
+const aiError = ref('')
+async function onAiDraft() {
+  aiError.value = ''
+  aiDrafting.value = true
+  try {
+    const config = useRuntimeConfig()
+    const token =
+      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    const signals: string[] = []
+    if (chainPosition.value) signals.push(`chain position: ${chainPosition.value}`)
+    if (timeline.value) signals.push(`timeline: ${timeline.value}`)
+    if (fundsType.value) signals.push(`funds type: ${fundsType.value}`)
+    if (fundsAmount.value) signals.push(`max budget: £${fundsAmount.value.toLocaleString()}`)
+    if (solicitorStatus.value) signals.push(`solicitor: ${solicitorStatus.value}`)
+    const system =
+      'You write short, sincere 80-120 word intros from UK home buyers to sellers. Plain English, no hype, first-person, no clichés. End with one line about being ready to move quickly. Do not invent personal details or numbers.'
+    const userMsg = statement.value.trim()
+      ? `Rewrite this draft to be warmer and clearer, keeping the facts: ${statement.value}\n\nKnown profile signals: ${signals.join('; ') || 'none yet'}.`
+      : `Draft a short intro for a UK home buyer to share with a seller. Known profile signals: ${signals.join('; ') || 'none yet'}.`
+    const res = await fetch(`${config.public.apiBase}/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: userMsg },
+        ],
+      }),
+    })
+    if (!res.ok) throw new Error(`AI request failed (${res.status})`)
+    const data = await res.json()
+    const text =
+      data?.message ||
+      data?.content ||
+      data?.choices?.[0]?.message?.content ||
+      ''
+    if (typeof text === 'string' && text.trim()) {
+      statement.value = text.trim()
+    } else {
+      aiError.value = 'Got an empty response — try again.'
+    }
+  } catch (e: any) {
+    aiError.value = e?.message || 'AI draft failed — try again.'
+  } finally {
+    aiDrafting.value = false
+  }
+}
+
 async function submit() {
   publishing.value = true
   try {
     // Single self-healing call — the publish endpoint upserts everything we
     // send, then publishes. So even if earlier per-step PATCHes failed
     // silently, this one request makes the wizard correct.
-    await publishBuyerProfile({
+    const published = await publishBuyerProfile({
+      tier: tierPaidFor.value as any,
       idDocumentType: idDocumentType.value,
       fundsType: fundsType.value,
       fundsAmount: fundsAmount.value,
       chainPosition: chainPosition.value,
       solicitorStatus: solicitorStatus.value,
       timeline: timeline.value,
+      propertyType: propertyType.value,
       statement: statement.value,
       completedSteps: 5,
     })
-    showToast({ message: 'Profile published', iconEmoji: '✅' })
-    router.replace('/buyer-profile/view')
+    // Land on the celebration screen first; "View my full Profile" routes to /view.
+    if (published?.strengthScore != null) {
+      completeStrength.value = published.strengthScore
+    }
+    step.value = 6
   } catch (err: any) {
     const msg = err?.data?.message || err?.message || 'Could not publish profile'
     showToast({ message: msg, iconEmoji: '⚠️' })
@@ -927,6 +1406,8 @@ async function submit() {
 }
 
 onMounted(async () => {
+  // Hydrate the logged-in user for the "complete" screen name line.
+  fetchProfile?.().catch(() => {})
   try {
     const data = await getBuyerProfile()
     if (data) {
@@ -945,7 +1426,13 @@ onMounted(async () => {
       chainPosition.value = data.chainPosition ?? null
       solicitorStatus.value = data.solicitorStatus ?? null
       timeline.value = data.timeline ?? null
+      propertyType.value = (data as any).propertyType ?? null
       statement.value = data.statement ?? ''
+
+      // Tier hydration — keep selected + paid in sync with server truth.
+      const t = ((data as any).tier as Tier) || 'BASIC'
+      tierPaidFor.value = t
+      selectedTier.value = t === 'BASIC' ? 'VERIFIED' : t
     }
   } catch {}
 })
@@ -1300,6 +1787,34 @@ onMounted(async () => {
   gap: 8px;
   letter-spacing: -0.01em;
   margin-bottom: 10px;
+}
+.bp-ai-draft {
+  width: 100%;
+  border: 1.5px dashed #b2e4e1;
+  padding: 12px;
+  border-radius: 14px;
+  background: #f2faf8;
+  color: #00857f;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.01em;
+  margin: 8px 0 10px;
+  transition: all 0.15s;
+}
+.bp-ai-draft:hover:not(:disabled) {
+  background: #e6f7f6;
+  border-color: #00a19a;
+}
+.bp-ai-draft:disabled { opacity: 0.6; cursor: progress; }
+.bp-ai-err {
+  font-size: 11.5px; font-weight: 600;
+  color: #c73e36; margin: -4px 0 8px;
 }
 .bp-skip {
   width: 100%;
@@ -1939,5 +2454,744 @@ onMounted(async () => {
   color: #4a5568;
   cursor: pointer;
   margin-top: 6px;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ *  PROTOTYPE-ALIGNED VISUAL LAYER  (overrides earlier `.bp-*` defaults)
+ *  Keeps existing templates/logic intact — only restyles classes so the
+ *  journey matches umu-buyer-passport-v6.html.
+ * ════════════════════════════════════════════════════════════════════════ */
+
+.bp-page {
+  background: #fafafa;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Inter, system-ui, sans-serif;
+  color: #231d45;
+}
+
+/* ── Top header → prototype top-nav + eyebrow pill ── */
+.bp-header {
+  background: transparent;
+  border-bottom: none;
+  padding: 14px 18px 6px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+  align-items: center;
+}
+.bp-header-body {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+}
+.bp-header-title {
+  display: none;
+}
+.bp-header-sub {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 10px; font-weight: 800; letter-spacing: 1.4px;
+  color: #007e78; background: #f2faf8; border: 1px solid #e5f4f2;
+  padding: 6px 12px; border-radius: 100px;
+  text-transform: uppercase;
+}
+.bp-header-sub::before {
+  content: ''; width: 5px; height: 5px; border-radius: 50%; background: #00a19a;
+}
+.bp-back {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #fff; border: 1px solid #ececef;
+}
+
+/* ── 5-segment progress bar → prototype step-bar ── */
+.bp-progress {
+  background: transparent;
+  padding: 10px 22px 4px;
+  gap: 4px;
+}
+.bp-progress-seg {
+  height: 4px; border-radius: 100px; background: #ececef; flex: 1;
+}
+.bp-progress-seg-filled {
+  background: #00a19a;
+}
+.bp-progress-seg-filled:last-of-type {
+  /* Mark the *latest* filled segment in amber per prototype */
+  background: linear-gradient(90deg, #00a19a 0%, #E6A23C 100%);
+}
+
+/* ── Step hero → centered, step-icon-box + h2 + p ── */
+.bp-step {
+  padding: 22px 22px 32px;
+  animation: bp-fadeSlideUp 0.4s 0.05s both;
+}
+@keyframes bp-fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.bp-step-hero {
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+  margin-bottom: 18px;
+}
+.bp-step-ic {
+  width: 58px; height: 58px; border-radius: 18px;
+  background: #f2faf8;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  margin: 0 0 12px;
+  border: none;
+  box-shadow: none;
+}
+.bp-step-ic.bp-ic-amber {
+  background: #fffaf0; border: 1px solid #fbefd9;
+}
+.bp-step-ic.bp-ic-purple {
+  background: #f6f5fb; border: 1px solid #eeedf5;
+}
+.bp-step-ic.bp-ic-green {
+  background: #f2faf8; border: 1px solid #e5f4f2;
+}
+.bp-step-title {
+  font-size: 22px; font-weight: 800; color: #231d45;
+  letter-spacing: -0.5px; line-height: 1.2;
+  margin-bottom: 6px;
+}
+.bp-step-body {
+  font-size: 13px; color: #6b6783; line-height: 1.5;
+}
+.bp-optional {
+  font-size: 11px; font-weight: 700; color: #9c98ad;
+  letter-spacing: 0.3px; margin-left: 4px;
+}
+
+/* ── Step 1 KYC trust strip → prototype DVS strip ── */
+.bp-trust {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: linear-gradient(90deg, #f6f5fb, #f2faf8);
+  border: 1px solid #e5f4f2;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0 0 16px;
+  font-size: 11px; font-weight: 700;
+  color: #4a4566; line-height: 1.4;
+}
+.bp-trust strong { color: #231d45; }
+.bp-trust-ic {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  background: #231d45; color: white;
+  border-radius: 6px;
+  font-size: 8px; font-weight: 800; letter-spacing: 0.5px;
+  display: flex; align-items: center; justify-content: center;
+}
+.bp-trust-ic svg {
+  width: 14px; height: 14px;
+}
+
+/* ── Option cards → prototype opt-card pattern ── */
+.bp-option-list,
+.bp-tile-row {
+  padding: 0;
+}
+.bp-option-card,
+.bp-funds-card {
+  background: #fafafa; border: 1.5px solid #ececef;
+  border-radius: 14px; padding: 14px 16px;
+  transition: all 0.15s;
+  box-shadow: none;
+}
+.bp-option-card.selected,
+.bp-funds-card.selected {
+  background: #f2faf8; border-color: #00a19a;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.10);
+}
+.bp-option-emoji {
+  font-size: 20px; width: 36px; text-align: center;
+}
+.bp-option-title {
+  font-size: 13.5px; font-weight: 800; color: #231d45;
+}
+.bp-option-sub {
+  font-size: 11px; color: #6b6783;
+}
+.bp-option-check {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid #ececef;
+  display: flex; align-items: center; justify-content: center;
+  margin-left: auto; flex-shrink: 0;
+}
+.bp-option-card.selected .bp-option-check {
+  background: #00a19a; border-color: #00a19a;
+}
+.bp-option-card.selected .bp-option-check::after,
+.bp-option-check.filled::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: #fff;
+}
+.bp-option-check.filled {
+  background: #00a19a; border-color: #00a19a;
+}
+
+/* Funds card radio pill → match opt-radio */
+.bp-funds-radio {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid #ececef;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: transparent;
+}
+.bp-funds-radio.filled {
+  background: #00a19a; border-color: #00a19a;
+}
+.bp-funds-radio.filled::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: #fff;
+}
+
+/* ── Tile row (step 4 solicitor/timeline) → prototype tile-grid ── */
+.bp-tile-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  margin-bottom: 18px;
+}
+.bp-tile {
+  background: #fff;
+  border-radius: 14px; padding: 12px 10px;
+  border: 1.5px solid #ececef;
+  box-shadow: none;
+  text-align: center;
+}
+.bp-tile.selected {
+  border-color: #00a19a; background: #f2faf8;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.10);
+}
+.bp-tile-emoji { font-size: 22px; margin-bottom: 4px; }
+.bp-tile-label {
+  font-size: 12px; font-weight: 800; color: #231d45;
+}
+
+/* Sub-heading "Have you instructed…", "When are you looking…" */
+.bp-field-label {
+  font-size: 11px; font-weight: 800; letter-spacing: 1px;
+  color: #6b6783; text-transform: uppercase;
+  margin: 18px 0 10px;
+}
+
+/* ── Continue / Generate CTA → prototype cta-btn ── */
+.bp-next,
+.bp-generate {
+  background: #00a19a;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 14px; font-weight: 800;
+  font-family: inherit;
+  box-shadow: 0 4px 16px rgba(0, 161, 154, 0.35);
+  position: relative; overflow: hidden;
+  margin-top: 18px;
+  transition: all 0.15s;
+}
+.bp-next::after,
+.bp-generate::after {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 50px; height: 100%;
+  background: linear-gradient(
+    90deg, transparent, rgba(255, 255, 255, 0.2), transparent
+  );
+  transform: translateX(-100%) skewX(-15deg);
+  animation: bp-shimmer 2.5s ease-in-out 1s infinite;
+}
+.bp-next:hover:not(.disabled):not(:disabled),
+.bp-generate:hover:not(:disabled) {
+  background: #00b6ae; transform: translateY(-1px);
+}
+.bp-next.disabled,
+.bp-next:disabled {
+  background: #ececef; color: #9c98ad;
+  box-shadow: none;
+}
+.bp-next.disabled::after,
+.bp-next:disabled::after { display: none; }
+@keyframes bp-shimmer {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(600%) skewX(-15deg); }
+}
+
+/* Skip / ghost link variants */
+.bp-skip {
+  color: #6b6783; font-weight: 700;
+}
+
+/* Statement textarea — prototype-style softer */
+.bp-textarea {
+  border: 1.5px solid #ececef; border-radius: 14px;
+  background: #fafafa;
+  padding: 14px;
+  font-family: inherit; font-size: 14px;
+  color: #231d45; line-height: 1.55;
+  width: 100%;
+}
+.bp-textarea:focus { outline: none; border-color: #00a19a; background: #fff; }
+
+.bp-prompts { gap: 6px; }
+.bp-prompt {
+  font-size: 11.5px; font-weight: 700;
+  background: #f2faf8; color: #007e78;
+  border: 1px solid #e5f4f2;
+  padding: 6px 12px; border-radius: 100px;
+}
+
+/* ── Tier cards (step 2) ──────────────────────────────────── */
+.bp-tier-list {
+  display: flex; flex-direction: column; gap: 10px;
+  margin-bottom: 18px;
+}
+.bp-tier-card {
+  position: relative;
+  border-radius: 18px; padding: 14px 16px;
+  border: 1.5px solid transparent;
+  cursor: pointer; text-align: left;
+  font-family: inherit;
+  transition: all 0.15s;
+  width: 100%;
+}
+.bp-tier-card.basic {
+  background: linear-gradient(135deg, #f6f5fb, #eeedf5);
+  border-color: #eeedf5;
+}
+.bp-tier-card.verified {
+  background: linear-gradient(135deg, #f2faf8, #d0f0ee);
+  border-color: #e5f4f2;
+}
+.bp-tier-card.premium {
+  background: linear-gradient(135deg, #fbefd9, #fff8ec);
+  border-color: #fbefd9;
+}
+.bp-tier-card.selected.basic {
+  border-color: #6b6783; box-shadow: 0 0 0 3px rgba(35, 29, 69, 0.12);
+}
+.bp-tier-card.selected.verified {
+  border-color: #00a19a; box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.18);
+}
+.bp-tier-card.selected.premium {
+  border-color: #d4822a; box-shadow: 0 0 0 3px rgba(212, 130, 42, 0.18);
+}
+.bp-tier-corner {
+  position: absolute; top: 12px; right: 14px;
+  font-size: 18px; font-weight: 900;
+  opacity: 0.5;
+}
+.bp-tier-card.selected.basic .bp-tier-corner { color: #231d45; opacity: 1; }
+.bp-tier-card.selected.verified .bp-tier-corner { color: #00a19a; opacity: 1; }
+.bp-tier-card.selected.premium .bp-tier-corner { color: #d4822a; opacity: 1; }
+.bp-tier-badge {
+  display: inline-block;
+  font-size: 9px; font-weight: 900; letter-spacing: 1.4px;
+  padding: 3px 8px; border-radius: 6px; margin-bottom: 8px;
+}
+.bp-tier-badge--basic { background: #ececef; color: #4a4566; }
+.bp-tier-badge--verified { background: #00a19a; color: #fff; }
+.bp-tier-badge--premium { background: #d4822a; color: #fff; }
+.bp-tier-title {
+  font-size: 14px; font-weight: 800; color: #231d45;
+  margin-bottom: 2px;
+}
+.bp-tier-sub {
+  font-size: 11.5px; font-weight: 500; color: #6b6783;
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+.bp-tier-price-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.bp-tier-price {
+  font-size: 22px; font-weight: 900; color: #231d45;
+  letter-spacing: -0.5px;
+}
+.bp-tier-card.premium .bp-tier-price { color: #d4822a; }
+.bp-tier-paid-pill {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.5px;
+  background: #00a19a; color: #fff;
+  padding: 3px 9px; border-radius: 100px;
+}
+.bp-tier-features {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.bp-tier-features li {
+  font-size: 11.5px; color: #4a4566;
+  display: flex; gap: 6px; align-items: flex-start;
+  line-height: 1.4;
+}
+.bp-tier-tick { color: #00a19a; font-weight: 900; flex-shrink: 0; }
+.bp-tier-dash { color: #c0bdcc; font-weight: 900; flex-shrink: 0; }
+.bp-tier-card.premium .bp-tier-tick { color: #d4822a; }
+
+/* Funds section header inside step 2 */
+.bp-funds-step-pill {
+  display: inline-block;
+  background: #00a19a; color: #fff;
+  font-size: 8.5px; font-weight: 900; letter-spacing: 1px;
+  padding: 3px 7px; border-radius: 4px;
+  margin-right: 8px; vertical-align: middle;
+}
+.bp-funds-intro {
+  font-size: 12px; color: #6b6783; line-height: 1.5;
+  margin: -4px 0 12px;
+}
+
+/* 4-up chip row for property type */
+.bp-tile-row-4 {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+/* Recommended pill (used in ID type picker) */
+.bp-rec-pill {
+  font-size: 8.5px; font-weight: 800; letter-spacing: 1px;
+  background: #fef3c7; color: #d4822a;
+  padding: 3px 7px; border-radius: 100px;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+/* ID type list — tighter spacing than the funds cards */
+.bp-idtype-list {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 16px;
+}
+.bp-option-list,
+.bp-idtype-list {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.bp-option-body {
+  flex: 1; min-width: 0;
+}
+
+/* ── Step 3: BEST pill + option title row + amber context card ── */
+.bp-option-title-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 4px;
+}
+.bp-best-pill {
+  font-size: 9.5px; font-weight: 800; letter-spacing: 0.4px;
+  background: #f2faf8; color: #007e78;
+  border: 1px solid #e5f4f2;
+  border-radius: 100px; padding: 2px 8px;
+}
+.bp-amber-card {
+  margin-top: 16px;
+  background: linear-gradient(135deg, #fbefd9, #fffaf0);
+  border: 1px solid #fbefd9; border-radius: 14px;
+  padding: 14px 16px;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.bp-amber-ic {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: #fbefd9;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.bp-amber-title {
+  font-size: 13px; font-weight: 800; color: #231d45; margin-bottom: 4px;
+}
+.bp-amber-body {
+  font-size: 12px; color: #6b6783; line-height: 1.4;
+}
+
+/* ── Step 4: sec-label + chip rows + sol-card + tip ── */
+.bp-step-hero--narrow .bp-step-ic { display: none; }
+.bp-sec-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+  color: #6b6783; text-transform: uppercase;
+  padding: 0;
+  margin: 18px 0 10px;
+}
+.bp-step .bp-sec-label:first-of-type { margin-top: 12px; }
+.bp-chip-row {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 4px;
+}
+.bp-chip {
+  background: #fff; border: 1.5px solid #ececef;
+  border-radius: 100px;
+  padding: 9px 14px;
+  font-family: inherit; font-size: 12.5px; font-weight: 700;
+  color: #231d45; cursor: pointer;
+  transition: all 0.15s;
+}
+.bp-chip:hover { border-color: #c0bdcc; }
+.bp-chip.active {
+  background: #00a19a; border-color: #00a19a; color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 161, 154, 0.2);
+}
+.bp-sol-options { display: flex; flex-wrap: wrap; gap: 6px; }
+.bp-sol-card {
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; border: 1.5px solid #ececef;
+  border-radius: 14px; padding: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.bp-sol-card:hover { border-color: #00a19a; }
+.bp-sol-ic {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: #f2faf8;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.bp-sol-body { flex: 1; min-width: 0; }
+.bp-sol-name { font-size: 13.5px; font-weight: 800; color: #231d45; }
+.bp-sol-sub { font-size: 11px; color: #6b6783; margin-top: 2px; }
+.bp-sol-pill {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.5px;
+  background: #e8f5ee; color: #2eab55;
+  border: 1px solid #b8e8c8;
+  border-radius: 100px; padding: 4px 8px;
+  flex-shrink: 0;
+}
+.bp-tip {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  background: #fafafa; border: 1px solid #ececef;
+  border-radius: 10px;
+  font-size: 11.5px; color: #6b6783; line-height: 1.45;
+}
+
+/* ── Step 5: story textarea + prompt chips + AI card ── */
+.bp-step-ic--amber {
+  background: #fffaf0 !important;
+  border: 1px solid #fbefd9 !important;
+}
+.bp-optional {
+  font-size: 14px; font-weight: 700;
+  color: #c4821a; letter-spacing: -0.1px;
+}
+.bp-prompt-row {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 12px;
+}
+.bp-prompt-chip {
+  background: #f2faf8; color: #007e78;
+  border: 1px solid #e5f4f2;
+  border-radius: 100px;
+  padding: 7px 12px;
+  font-family: inherit; font-size: 11.5px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s;
+}
+.bp-prompt-chip:hover {
+  background: #e5f4f2; border-color: #00a19a;
+}
+.bp-story-ta {
+  width: 100%;
+  background: #fafafa; border: 1.5px solid #ececef;
+  border-radius: 14px;
+  padding: 14px;
+  font-family: inherit; font-size: 14px;
+  color: #231d45; line-height: 1.55;
+  resize: vertical; min-height: 130px;
+}
+.bp-story-ta:focus {
+  outline: none; border-color: #00a19a; background: #fff;
+}
+.bp-ai-card {
+  margin-top: 12px;
+  width: 100%;
+  background: linear-gradient(135deg, #f2faf8, #f6f5fb);
+  border: 1px solid #e5f4f2; border-radius: 12px;
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+  font-family: inherit; text-align: left;
+  transition: all 0.15s;
+}
+.bp-ai-card:hover {
+  border-color: #00a19a;
+}
+.bp-ai-card:disabled { opacity: 0.6; cursor: progress; }
+.bp-ai-pill {
+  background: #00a19a; color: #fff;
+  font-size: 9px; font-weight: 800;
+  padding: 4px 8px; border-radius: 100px;
+  white-space: nowrap; letter-spacing: 0.5px;
+}
+.bp-ai-text {
+  flex: 1; min-width: 0;
+  font-size: 13px; font-weight: 600; color: #231d45;
+  line-height: 1.4;
+}
+.bp-ai-try {
+  font-size: 12px; font-weight: 800; color: #007e78;
+  white-space: nowrap;
+}
+.bp-ai-err {
+  font-size: 11.5px; font-weight: 600;
+  color: #c73e36; margin: 8px 0 0;
+}
+.bp-skip-ghost {
+  display: block; width: 100%;
+  background: none; border: none;
+  font-family: inherit;
+  font-size: 12px; font-weight: 700; color: #6b6783;
+  padding: 12px;
+  cursor: pointer; text-align: center;
+}
+.bp-generate {
+  margin-top: 16px;
+}
+
+/* ── DONE screen (prototype `complete`) ──────────────────────── */
+.bp-complete {
+  padding: 16px 22px 32px;
+}
+.bp-complete-hero {
+  text-align: center; padding: 12px 0 16px;
+}
+.bp-complete-emoji {
+  font-size: 52px; line-height: 1; margin-bottom: 12px;
+  display: inline-block;
+  animation: bp-pop 0.5s ease-out 0.1s both;
+}
+@keyframes bp-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.bp-complete-title {
+  font-size: 24px; font-weight: 800; color: #231d45;
+  letter-spacing: -0.5px; margin-bottom: 6px;
+  animation: bp-fadeSlideUp 0.4s 0.2s both;
+}
+.bp-complete-sub {
+  font-size: 13px; color: #6b6783;
+  animation: bp-fadeSlideUp 0.4s 0.25s both;
+}
+
+.bp-xp-row {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(135deg, #fbefd9, #fff8ec);
+  border: 1px solid #fbefd9;
+  border-radius: 14px;
+  padding: 12px 16px;
+  animation: bp-fadeSlideUp 0.4s 0.4s both;
+}
+.bp-xp-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.bp-xp-body { flex: 1; min-width: 0; }
+.bp-xp-title { font-size: 14px; font-weight: 800; color: #231d45; }
+.bp-xp-sub { font-size: 11px; color: #6b6783; margin-top: 1px; }
+.bp-xp-points {
+  font-size: 15px; font-weight: 800; color: #c4821a;
+  flex-shrink: 0;
+}
+
+.bp-complete-card-wrap {
+  margin-top: 16px;
+  animation: bp-fadeSlideUp 0.45s 0.5s both;
+}
+.bp-complete-card {
+  background: linear-gradient(140deg, #00b6ae 0%, #00a19a 50%, #00514d 100%);
+  box-shadow: 0 12px 32px -10px rgba(0, 161, 154, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  padding: 18px 20px 20px;
+  color: white;
+  position: relative; overflow: hidden;
+}
+.bp-complete-card::after {
+  content: ''; position: absolute; top: -40%; right: -20%;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, transparent 65%);
+  pointer-events: none;
+}
+.bp-complete-card > * { position: relative; z-index: 1; }
+.bp-complete-card-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.bp-complete-card-eyebrow {
+  font-size: 9px; font-weight: 800; letter-spacing: 1.8px;
+  text-transform: uppercase; opacity: 0.7;
+}
+.bp-complete-card-strength {
+  font-size: 9px; font-weight: 800;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 100px;
+  padding: 4px 10px;
+  letter-spacing: 0.4px;
+}
+.bp-complete-tagline {
+  font-size: 20px; font-weight: 800; font-style: italic;
+  line-height: 1.25; margin-bottom: 12px;
+}
+.bp-complete-name {
+  font-size: 13px; font-weight: 700; margin-bottom: 12px;
+}
+.bp-complete-pills {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;
+}
+.bp-complete-pill {
+  font-size: 10px; font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 100px;
+  padding: 5px 10px;
+  color: white; white-space: nowrap;
+}
+.bp-complete-foot {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.bp-complete-foot-text {
+  font-size: 11px; font-weight: 600; opacity: 0.75;
+}
+.bp-complete-share {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none; color: white;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; font-family: inherit;
+}
+
+.bp-amber-nudge {
+  margin-top: 16px;
+  background: linear-gradient(135deg, #fbefd9, #fffaf0);
+  border: 1px solid #f0b460;
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 12px; font-weight: 700; color: #c4821a;
+  cursor: pointer;
+  animation: bp-fadeSlideUp 0.4s 0.65s both;
+  line-height: 1.4;
+}
+
+.bp-complete-actions {
+  margin-top: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  animation: bp-fadeSlideUp 0.4s 0.75s both;
+}
+.bp-cta-outline {
+  width: 100%;
+  background: #fff; color: #231d45;
+  border: 1.5px solid #231d45;
+  border-radius: 14px;
+  padding: 16px;
+  font-family: inherit; font-size: 14px; font-weight: 800;
+  cursor: pointer;
+}
+
+/* Budget field */
+.bp-budget-wrap {
+  display: flex; align-items: center;
+  background: #fafafa; border: 1.5px solid #ececef;
+  border-radius: 14px; padding: 0 14px;
+  margin-top: 4px;
+}
+.bp-budget-wrap:focus-within {
+  border-color: #00a19a; background: #fff;
+}
+.bp-budget-sign {
+  font-size: 18px; font-weight: 800; color: #231d45; margin-right: 4px;
+}
+.bp-budget-input {
+  flex: 1; border: none; outline: none; background: transparent;
+  padding: 14px 0;
+  font-family: inherit; font-size: 16px; font-weight: 700; color: #231d45;
 }
 </style>
