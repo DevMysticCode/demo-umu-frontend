@@ -6,15 +6,16 @@
         <div class="rd-addr-pin" />
         <div class="rd-addr-block">
           <div class="rd-addr-line">
-            {{ property?.addressLine1 || 'This property' }}
+            {{ addressTyped }}<span
+              v-if="!addressTypingDone"
+              class="rd-typewriter-caret"
+              aria-hidden="true"
+            >|</span>
           </div>
           <div class="rd-addr-meta">
             {{ property?.postcode || '' }}
             <template v-if="property?.propertyType">
               · {{ property.propertyType }}</template
-            >
-            <template v-if="property?.bedrooms">
-              · {{ property.bedrooms }} bed</template
             >
           </div>
         </div>
@@ -260,24 +261,22 @@
         </div>
       </div>
 
-      <!-- Energy cells -->
+      <!-- Energy cells — three £ breakdowns that sum to the hero figure. -->
       <div class="rd-energy-row">
         <div class="rd-energy-cell">
-          <div class="rd-energy-eyebrow">Est. bills/yr</div>
-          <div class="rd-energy-num red">
-            £{{ formatNum(Math.round(estimatedAnnualCost * 1.35)) }}
-          </div>
-          <div class="rd-energy-meta">heating · hot water · lighting</div>
-        </div>
-        <div class="rd-energy-cell">
           <div class="rd-energy-eyebrow">Heating</div>
-          <div class="rd-energy-num navy">{{ formatNum(heatingKwh) }}</div>
-          <div class="rd-energy-meta">kWh/yr</div>
+          <div class="rd-energy-num navy">£{{ formatNum(heatingCost) }}</div>
+          <div class="rd-energy-meta">per year</div>
         </div>
         <div class="rd-energy-cell">
           <div class="rd-energy-eyebrow">Hot water</div>
-          <div class="rd-energy-num navy">{{ formatNum(hotWaterKwh) }}</div>
-          <div class="rd-energy-meta">kWh/yr</div>
+          <div class="rd-energy-num navy">£{{ formatNum(hotWaterCost) }}</div>
+          <div class="rd-energy-meta">per year</div>
+        </div>
+        <div class="rd-energy-cell">
+          <div class="rd-energy-eyebrow">Lighting</div>
+          <div class="rd-energy-num navy">£{{ formatNum(lightingCost) }}</div>
+          <div class="rd-energy-meta">per year</div>
         </div>
       </div>
 
@@ -418,11 +417,13 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 
-// ── Tween helper: animates from `prev` → `target` with ease-out cubic ─────────
-// Used to count up the headline score and £ figures when the page first
-// resolves real EPC data. Honours prefers-reduced-motion (returns instant value).
+// ── Tween helper: counts up from 0 → target with ease-out cubic on mount,
+// and re-tweens when the source changes (e.g. once real EPC data resolves).
+// Honours prefers-reduced-motion (returns instant value).
 function useTween(source: () => number, durationMs = 900) {
-  const out = ref<number>(source() || 0)
+  // Start at 0 so the count-up is visible even when the value is already
+  // available synchronously at mount.
+  const out = ref<number>(0)
   let raf = 0
   let cancelled = false
   const prefersReduced =
@@ -451,6 +452,35 @@ function useTween(source: () => number, durationMs = 900) {
   watch(source, (v) => animateTo(Number(v) || 0))
   onMounted(() => animateTo(Number(source()) || 0))
   onBeforeUnmount(() => { cancelled = true; cancelAnimationFrame(raf) })
+  return out
+}
+
+// Typewriter: reveals `source()` character by character. Re-runs when source
+// changes (e.g. property loads async). Honours prefers-reduced-motion.
+function useTypewriter(source: () => string, msPerChar = 32) {
+  const out = ref<string>('')
+  let timer: ReturnType<typeof setInterval> | null = null
+  const prefersReduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  function start(text: string) {
+    if (timer) { clearInterval(timer); timer = null }
+    const full = text || ''
+    if (prefersReduced || !full) { out.value = full; return }
+    out.value = ''
+    let i = 0
+    timer = setInterval(() => {
+      i += 1
+      out.value = full.slice(0, i)
+      if (i >= full.length && timer) { clearInterval(timer); timer = null }
+    }, msPerChar)
+  }
+
+  watch(source, (v) => start(v || ''))
+  onMounted(() => start(source() || ''))
+  onBeforeUnmount(() => { if (timer) clearInterval(timer) })
   return out
 }
 
@@ -504,14 +534,19 @@ const scoreDisplay = computed(() => Math.round(animatedScore.value))
 const annualCostDisplay = computed(() => Math.round(animatedAnnualCost.value))
 const overpayDisplay = computed(() => Math.round(animatedOverpay.value))
 
+// Typewriter address line — reveals the address one character at a time on
+// first render (and again when the property loads async).
+const addressFull = computed(
+  () => props.property?.addressLine1 || 'This property',
+)
+const addressTyped = useTypewriter(() => addressFull.value, 32)
+const addressTypingDone = computed(
+  () => addressTyped.value.length >= addressFull.value.length,
+)
+
 // ── EPC numbers — prefer real fields enriched onto the property row from the
 // EPC Register; fall back to per-rating heuristics only when those fields
 // are still null (property hasn't been enriched yet).
-
-// Gas/electricity tariffs used to convert £ → kWh for the breakdown rows.
-// Mirrors the Ofgem Q1 2025 cap-adjacent values in running-costs.service.ts.
-const GAS_TARIFF = 0.0548
-const ELEC_TARIFF = 0.245
 
 const realEpcScore = computed<number | null>(
   () => numOrNull(props.property?.epcScore),
@@ -576,20 +611,31 @@ const potentialSaving = computed(() => {
   return Math.max(100, Math.round(props.estimatedAnnualCost * factor))
 })
 
-// Reverse-engineer kWh from EPC £ figures via tariff. Heating + hot water
-// are gas-dominant in UK stock so we apply the gas tariff to both.
-const heatingKwh = computed(() => {
+// Cost breakdown in £/year. Prefer the real EPC fields, otherwise split the
+// hero total using a typical UK domestic energy mix (BEIS ECUK 2023):
+// ~63% heating, ~22% hot water, ~15% lighting. The three cells therefore
+// sum to the hero "Estimated annual running cost" — no duplication.
+const HEATING_SHARE = 0.63
+const HOT_WATER_SHARE = 0.22
+const LIGHTING_SHARE = 0.15
+
+const heatingCost = computed(() => {
   if (realHeatingCost.value != null && realHeatingCost.value > 0) {
-    return Math.round(realHeatingCost.value / GAS_TARIFF)
+    return Math.round(realHeatingCost.value)
   }
-  // Fallback (no EPC): rough proxy from total annual cost.
-  return Math.round(props.estimatedAnnualCost * 12)
+  return Math.round(props.estimatedAnnualCost * HEATING_SHARE)
 })
-const hotWaterKwh = computed(() => {
+const hotWaterCost = computed(() => {
   if (realHotWaterCost.value != null && realHotWaterCost.value > 0) {
-    return Math.round(realHotWaterCost.value / GAS_TARIFF)
+    return Math.round(realHotWaterCost.value)
   }
-  return Math.round(props.estimatedAnnualCost * 2.5)
+  return Math.round(props.estimatedAnnualCost * HOT_WATER_SHARE)
+})
+const lightingCost = computed(() => {
+  if (realLightingCost.value != null && realLightingCost.value > 0) {
+    return Math.round(realLightingCost.value)
+  }
+  return Math.round(props.estimatedAnnualCost * LIGHTING_SHARE)
 })
 
 const co2Now = computed(() => {
@@ -760,9 +806,22 @@ function formatNum(n: number): string {
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.2;
+  min-height: 1.2em;
+}
+.rd-typewriter-caret {
+  display: inline-block;
+  margin-left: 1px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.85);
+  animation: rd-caretBlink 0.85s steps(2, end) infinite;
+}
+@keyframes rd-caretBlink {
+  to {
+    opacity: 0;
+  }
 }
 .rd-addr-meta {
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.78);
   margin-top: 2px;
@@ -784,7 +843,7 @@ function formatNum(n: number): string {
   color: #fff;
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: -0.05px;
 }
@@ -798,7 +857,7 @@ function formatNum(n: number): string {
   height: 18px;
   border-radius: 4px;
   color: #fff;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
 }
 .rd-state-unclaimed {
@@ -822,7 +881,7 @@ function formatNum(n: number): string {
   color: #00514d;
 }
 .rd-arrow {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .rd-addr-stats {
@@ -835,7 +894,7 @@ function formatNum(n: number): string {
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.92);
 }
@@ -934,7 +993,7 @@ function formatNum(n: number): string {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 1.2px;
@@ -964,7 +1023,7 @@ function formatNum(n: number): string {
   margin-left: 2px;
 }
 .rd-overpay-sub {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.5;
@@ -1023,13 +1082,13 @@ function formatNum(n: number): string {
   min-width: 0;
 }
 .rd-cta-label {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   letter-spacing: -0.1px;
   line-height: 1.2;
 }
 .rd-cta-sub {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.4;
 }
@@ -1092,7 +1151,7 @@ function formatNum(n: number): string {
 /* "HOMESCORE" eyebrow — uppercase, teal-dark, with a green rounded
    gradient square to the left of the text (prototype-exact). */
 .rd-score-eyebrow .left {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -1111,7 +1170,7 @@ function formatNum(n: number): string {
   flex-shrink: 0;
 }
 .rd-score-eyebrow .right {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: #6b6783;
   background: #fafafa;
@@ -1190,7 +1249,7 @@ function formatNum(n: number): string {
   color: #007e78;
 }
 .rd-score-explainer {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: #6b6783;
   margin-top: 5px;
@@ -1208,7 +1267,7 @@ function formatNum(n: number): string {
   padding: 10px 12px;
   background: #fafafa;
   border-radius: 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.45;
@@ -1275,13 +1334,13 @@ function formatNum(n: number): string {
   justify-content: center;
   border-radius: 6px;
   color: #fff;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   padding: 3px 10px;
   line-height: 1;
 }
 .rd-epc-text {
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
   color: #6b6783;
 }
@@ -1300,7 +1359,7 @@ function formatNum(n: number): string {
   letter-spacing: -0.5px;
 }
 .rd-epc-saving-meta {
-  font-size: 10px;
+  font-size: 11px;
   color: #6b6783;
 }
 
@@ -1373,7 +1432,7 @@ function formatNum(n: number): string {
   color: #007e78;
 }
 .rd-env-meta {
-  font-size: 10px;
+  font-size: 11px;
   color: #6b6783;
   margin-top: 2px;
 }
@@ -1400,7 +1459,7 @@ function formatNum(n: number): string {
   transition: width 0.5s ease;
 }
 .rd-env-foot {
-  font-size: 10px;
+  font-size: 11px;
   color: #007e78;
   margin-top: 5px;
   font-weight: 700;
@@ -1482,7 +1541,7 @@ function formatNum(n: number): string {
 }
 /* Eyebrow: centered, uppercase, letter-spaced (prototype-exact). */
 .rd-intent-eyebrow {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   color: #6b6783;
   letter-spacing: 1.5px;
@@ -1559,7 +1618,7 @@ function formatNum(n: number): string {
 }
 .rd-intent-sub {
   display: block;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.05px;
   line-height: 1.35;
@@ -1591,7 +1650,7 @@ function formatNum(n: number): string {
   padding: 10px 12px;
   background: #fafafa;
   border-radius: 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: #6b6783;
 }

@@ -106,22 +106,57 @@ const injectStyle = computed(() => {
 </script>
 
 <style scoped>
+/* Click-capture only — fully transparent so the spotlight underneath dims
+   only the area *outside* the target rect (via its inverted box-shadow).
+   No backdrop-filter here: blurring the whole viewport hides what the
+   tour is actually pointing at. */
 .cm-overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(35, 29, 69, 0.55);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  background: transparent;
   pointer-events: auto;
 }
 
+/* Spotlight = transparent rect with a massive outer box-shadow that paints
+   the dim over everything except the target, plus a teal ring + soft glow
+   so the active card pops. Pulsing the ring (not the dim) keeps the
+   highlighted card perfectly stable. */
 .cm-spotlight {
   position: fixed;
   border-radius: 18px;
-  box-shadow: 0 0 0 9999px rgba(35, 29, 69, 0.55), 0 0 0 4px rgba(0, 161, 154, 0.7);
+  background: transparent;
+  box-shadow:
+    0 0 0 9999px rgba(35, 29, 69, 0.62),
+    0 0 0 3px rgba(0, 161, 154, 0.95),
+    0 0 24px 4px rgba(0, 161, 154, 0.45);
   pointer-events: none;
-  transition: top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease;
+  transition:
+    top 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    left 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: cm-spotlightPulse 1.9s ease-in-out infinite;
+}
+@keyframes cm-spotlightPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 9999px rgba(35, 29, 69, 0.62),
+      0 0 0 3px rgba(0, 161, 154, 0.95),
+      0 0 22px 3px rgba(0, 161, 154, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 0 9999px rgba(35, 29, 69, 0.62),
+      0 0 0 3px rgba(0, 161, 154, 1),
+      0 0 38px 8px rgba(0, 161, 154, 0.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-spotlight {
+    animation: none;
+  }
 }
 
 .cm-inject {

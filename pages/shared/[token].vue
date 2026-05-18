@@ -56,7 +56,6 @@
 
         <!-- Badges -->
         <div class="shared-badges" v-if="data.property">
-          <span v-if="data.property.bedrooms" class="shared-badge-pill">{{ data.property.bedrooms }} bed</span>
           <span v-if="data.property.bathrooms" class="shared-badge-pill">{{ data.property.bathrooms }} bath</span>
           <span v-if="data.property.propertyType" class="shared-badge-pill">{{ data.property.propertyType }}</span>
           <span v-if="data.property.sqft" class="shared-badge-pill">{{ data.property.sqft.toLocaleString() }} sqft</span>

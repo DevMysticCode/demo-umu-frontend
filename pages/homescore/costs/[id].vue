@@ -31,9 +31,6 @@
             <template v-if="property.propertyType">
               · {{ property.propertyType }}</template
             >
-            <template v-if="property.bedrooms">
-              · {{ property.bedrooms }} bed</template
-            >
           </div>
         </div>
       </div>

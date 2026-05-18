@@ -239,7 +239,6 @@
                   <p class="sd-result-loc">{{ r.area || r.postcode }}</p>
                   <p class="sd-result-price">{{ r.priceDisplay }}</p>
                   <div class="sd-result-badges">
-                    <span class="badge-pill">{{ r.bedrooms ?? '–' }} bed</span>
                     <span class="badge-pill"
                       >{{ r.bathrooms ?? '–' }} bath</span
                     >

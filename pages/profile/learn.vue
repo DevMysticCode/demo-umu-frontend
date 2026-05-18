@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <!-- Input -->
+      <!-- Input — voice button hidden until Web Speech wiring lands -->
       <form class="ai-input-wrap" @submit.prevent="askWith(question)">
         <input
           v-model="question"
@@ -39,13 +39,6 @@
           placeholder="Ask a question…"
           @keydown.enter.prevent="askWith(question)"
         />
-        <button type="button" class="ai-input-btn" aria-label="Voice (coming soon)" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="9" y="3" width="6" height="12" rx="3" />
-            <path d="M5 11a7 7 0 0 0 14 0" />
-            <line x1="12" y1="19" x2="12" y2="22" />
-          </svg>
-        </button>
         <button type="submit" class="ai-send" aria-label="Send" :disabled="!question.trim()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="19" x2="12" y2="5" />
@@ -70,42 +63,7 @@
         </button>
       </div>
 
-      <!-- Library -->
-      <div class="section-heading">
-        Library <span class="sh-action">Coming soon</span>
-      </div>
-
-      <div class="article-card coming-soon">
-        <div class="article-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-          </svg>
-        </div>
-        <div class="article-info">
-          <div class="article-title">
-            Articles
-            <span class="pill-tag gold">Soon</span>
-          </div>
-          <div class="article-meta">In-depth guides on every step</div>
-        </div>
-      </div>
-
-      <div class="article-card coming-soon">
-        <div class="article-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="23 7 16 12 23 17 23 7" />
-            <rect x="1" y="5" width="15" height="14" rx="2" />
-          </svg>
-        </div>
-        <div class="article-info">
-          <div class="article-title">
-            Video walk-throughs
-            <span class="pill-tag gold">Soon</span>
-          </div>
-          <div class="article-meta">5-min explainers on each topic</div>
-        </div>
-      </div>
+      <!-- Library section hidden until Articles + Video walk-throughs ship -->
     </main>
   </div>
 </template>

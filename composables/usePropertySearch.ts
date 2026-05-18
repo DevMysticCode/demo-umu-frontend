@@ -49,7 +49,9 @@ export const usePropertySearch = () => {
   const totalCount = ref(0)
   const hasMore = computed(() => properties.value.length < totalCount.value)
 
-  const PAGE_SIZE = 10
+  // 25 matches the backend default. Typical UK postcodes return 10–30 rows;
+  // 25 covers the long tail in a single page so users rarely need to scroll.
+  const PAGE_SIZE = 25
 
   const formatPrice = (price?: number | null): string => {
     if (!price) return 'Price on request'

@@ -1,7 +1,7 @@
 <template>
   <div class="mobile-container thankyou-page">
     <video autoplay muted loop playsinline class="thankyou-page__video">
-      <source src="/public/thankyou.mp4" type="video/mp4" />
+      <source src="/thankyou.mp4" type="video/mp4" />
     </video>
 
     <!-- Add this overlay div -->

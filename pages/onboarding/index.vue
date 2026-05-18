@@ -30,7 +30,9 @@ const onLogin = async () => {
   await navigateTo('/onboarding/signin')
 }
 
-const onSkipClick = () => {
-  alert('skip')
+const onSkipClick = async () => {
+  // Skip onboarding and land in the main app. The auth middleware on /explore
+  // will bounce unauthenticated users to /onboarding/signin if needed.
+  await navigateTo('/explore')
 }
 </script>

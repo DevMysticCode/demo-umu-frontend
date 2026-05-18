@@ -18,17 +18,47 @@
         class="pps-hero"
         :style="
           heroImage
-            ? { backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+            ? {
+                backgroundImage: `url(${heroImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }
             : undefined
         "
       >
-        <button class="pps-hero-btn pps-hero-btn-back" type="button" @click="goBack" aria-label="Back">
-          <svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <button
+          class="pps-hero-btn pps-hero-btn-back"
+          type="button"
+          @click="goBack"
+          aria-label="Back"
+        >
+          <svg
+            width="10"
+            height="16"
+            viewBox="0 0 10 16"
+            fill="none"
+            stroke="white"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M8 1L2 8l6 7" />
           </svg>
         </button>
-        <button class="pps-hero-btn pps-hero-btn-fav" type="button" @click="onWishlistToggle" aria-label="Favourite">
-          <svg width="16" height="15" viewBox="0 0 16 15" fill="none" stroke="white" stroke-width="1.8">
+        <button
+          class="pps-hero-btn pps-hero-btn-fav"
+          type="button"
+          @click="onWishlistToggle"
+          aria-label="Favourite"
+        >
+          <svg
+            width="16"
+            height="15"
+            viewBox="0 0 16 15"
+            fill="none"
+            stroke="white"
+            stroke-width="1.8"
+          >
             <path
               d="M8 13.5S1 9.5 1 4.5A3.5 3.5 0 0 1 8 2.9 3.5 3.5 0 0 1 15 4.5C15 9.5 8 13.5 8 13.5z"
               :fill="wishlisted ? 'white' : 'none'"
@@ -36,8 +66,22 @@
             />
           </svg>
         </button>
-        <button class="pps-hero-btn pps-hero-btn-share" type="button" @click="showShare = true" aria-label="Share">
-          <svg width="14" height="16" viewBox="0 0 14 16" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <button
+          class="pps-hero-btn pps-hero-btn-share"
+          type="button"
+          @click="showShare = true"
+          aria-label="Share"
+        >
+          <svg
+            width="14"
+            height="16"
+            viewBox="0 0 14 16"
+            fill="none"
+            stroke="white"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <circle cx="11.5" cy="2.5" r="1.8" />
             <circle cx="2.5" cy="8" r="1.8" />
             <circle cx="11.5" cy="13.5" r="1.8" />
@@ -55,19 +99,39 @@
           xmlns="http://www.w3.org/2000/svg"
         >
           <path d="M40 5L5 32h8v33h54V32h8L40 5z" />
-          <rect x="28" y="44" width="10" height="21" fill="#0a0d12" opacity="0.3" />
-          <rect x="42" y="44" width="10" height="21" fill="#0a0d12" opacity="0.3" />
+          <rect
+            x="28"
+            y="44"
+            width="10"
+            height="21"
+            fill="#0a0d12"
+            opacity="0.3"
+          />
+          <rect
+            x="42"
+            y="44"
+            width="10"
+            height="21"
+            fill="#0a0d12"
+            opacity="0.3"
+          />
         </svg>
 
         <div class="pps-hero-gradient-overlay" />
 
         <!-- State-aware hero badges -->
         <div class="pps-hero-badges">
-          <div v-if="pageState === 'unclaimed'" class="pps-badge-passport pps-badge-passport--unclaimed">
+          <div
+            v-if="pageState === 'unclaimed'"
+            class="pps-badge-passport pps-badge-passport--unclaimed"
+          >
             <span class="pps-badge-passport-dot" style="background: #9c98ad" />
             Unclaimed
           </div>
-          <div v-else-if="pageState === 'progress'" class="pps-badge-passport pps-badge-passport--progress">
+          <div
+            v-else-if="pageState === 'progress'"
+            class="pps-badge-passport pps-badge-passport--progress"
+          >
             <span class="pps-badge-passport-dot" style="background: #e6a23c" />
             Passport in progress
           </div>
@@ -75,7 +139,9 @@
             <span class="pps-badge-passport-dot" />
             ✓ Passport available
           </div>
-          <div v-if="floodBadgeLabel" class="pps-badge-flood">💧 {{ floodBadgeLabel }}</div>
+          <div v-if="floodBadgeLabel" class="pps-badge-flood">
+            💧 {{ floodBadgeLabel }}
+          </div>
         </div>
       </div>
 
@@ -94,10 +160,15 @@
         </div>
 
         <div class="pps-pill-row">
-          <span v-if="property.bedrooms" class="pps-pill">🛏 {{ property.bedrooms }} bed</span>
-          <span v-if="property.propertyType" class="pps-pill">{{ property.propertyType }}</span>
-          <span v-if="property.sqft" class="pps-pill">📐 {{ property.sqft.toLocaleString() }} sqft</span>
-          <span v-if="property.yearBuilt" class="pps-pill">📅 {{ property.yearBuilt }}</span>
+          <span v-if="property.propertyType" class="pps-pill">{{
+            property.propertyType
+          }}</span>
+          <span v-if="property.sqft" class="pps-pill"
+            >📐 {{ property.sqft.toLocaleString() }} sqft</span
+          >
+          <span v-if="property.yearBuilt" class="pps-pill"
+            >📅 {{ property.yearBuilt }}</span
+          >
         </div>
       </div>
 
@@ -106,18 +177,29 @@
         <button
           v-if="pageState === 'unclaimed'"
           class="pps-passport-cta-unlock"
-          style="background: #231d45; box-shadow: 0 6px 22px rgba(35, 29, 69, 0.4); margin-bottom: 10px"
+          style="
+            background: #231d45;
+            box-shadow: 0 6px 22px rgba(35, 29, 69, 0.4);
+            margin-bottom: 10px;
+          "
           type="button"
           @click="onClaimClick"
         >
           <div class="pps-passport-cta-unlock-left">
-            <div class="pps-passport-cta-unlock-title">Claim this property — it's free</div>
+            <div class="pps-passport-cta-unlock-title">
+              Claim this property — it's free
+            </div>
             <div class="pps-passport-cta-unlock-sub">
-              Build a verified Passport · TA6, TA7, TA10 · certificates · history
+              Build a verified Passport · TA6, TA7, TA10 · certificates ·
+              history
             </div>
           </div>
           <div class="pps-passport-cta-unlock-price">
-            <span class="pps-passport-cta-unlock-amount" style="font-size: 18px; letter-spacing: -0.3px">Free</span>
+            <span
+              class="pps-passport-cta-unlock-amount"
+              style="font-size: 18px; letter-spacing: -0.3px"
+              >Free</span
+            >
             <span class="pps-passport-cta-unlock-arrow">→</span>
           </div>
         </button>
@@ -125,29 +207,53 @@
         <button
           v-else-if="pageState === 'progress'"
           class="pps-passport-cta-unlock"
-          style="background: linear-gradient(135deg, #4dd4ce 0%, #00a19a 45%, #006e68 100%); box-shadow: 0 6px 22px rgba(0, 161, 154, 0.35); margin-bottom: 10px"
+          style="
+            background: linear-gradient(
+              135deg,
+              #4dd4ce 0%,
+              #00a19a 45%,
+              #006e68 100%
+            );
+            box-shadow: 0 6px 22px rgba(0, 161, 154, 0.35);
+            margin-bottom: 10px;
+          "
           type="button"
           @click="onAccessPassport"
         >
           <div class="pps-passport-cta-unlock-left">
-            <div class="pps-passport-cta-unlock-title">Preview what's being built</div>
+            <div class="pps-passport-cta-unlock-title">
+              Preview what's being built
+            </div>
             <div class="pps-passport-cta-unlock-sub">
               TA6, TA7, TA10 · certificates · history — live soon
             </div>
           </div>
           <div class="pps-passport-cta-unlock-price">
-            <span class="pps-passport-cta-unlock-amount" style="font-size: 14px; letter-spacing: -0.2px; line-height: 1.3"
-              >{{ progressPct }}%<br /><span style="font-size: 10px; font-weight: 600; opacity: 0.8">done</span></span
+            <span
+              class="pps-passport-cta-unlock-amount"
+              style="font-size: 14px; letter-spacing: -0.2px; line-height: 1.3"
+              >{{ progressPct }}%<br /><span
+                style="font-size: 11px; font-weight: 600; opacity: 0.8"
+                >done</span
+              ></span
             >
             <span class="pps-passport-cta-unlock-arrow">→</span>
           </div>
         </button>
 
-        <button v-else class="pps-passport-cta-unlock" type="button" @click="onAccessPassport">
+        <button
+          v-else
+          class="pps-passport-cta-unlock"
+          type="button"
+          @click="onAccessPassport"
+        >
           <div class="pps-passport-cta-unlock-left">
-            <div class="pps-passport-cta-unlock-title">Get the full Passport</div>
+            <div class="pps-passport-cta-unlock-title">
+              Get the full Passport
+            </div>
             <div class="pps-passport-cta-unlock-sub">
-              Conveyancing questions answered · TA6, TA7, TA10 · certificates · history
+              Conveyancing questions answered · TA6, TA7, TA10 · certificates ·
+              history
             </div>
           </div>
           <div class="pps-passport-cta-unlock-price">
@@ -162,15 +268,25 @@
               pageState === 'progress' ? '🔔 Get notified' : '🔔 Watch this'
             }}</span>
             <span class="pps-secondary-btn-sub">{{
-              pageState === 'progress' ? 'Alert when Passport is live' : 'Save & get alerts'
+              pageState === 'progress'
+                ? 'Alert when Passport is live'
+                : 'Save & get alerts'
             }}</span>
           </button>
-          <button type="button" class="pps-secondary-btn" @click="onContactClick">
+          <button
+            type="button"
+            class="pps-secondary-btn"
+            @click="onContactClick"
+          >
             <span class="pps-secondary-btn-label">{{
-              pageState === 'published' ? '💬 Make contact' : '💬 Ask a question'
+              pageState === 'published'
+                ? '💬 Make contact'
+                : '💬 Ask a question'
             }}</span>
             <span class="pps-secondary-btn-sub">{{
-              pageState === 'published' ? 'Owner or neighbour' : 'Neighbour or curious buyer'
+              pageState === 'published'
+                ? 'Owner or neighbour'
+                : 'Neighbour or curious buyer'
             }}</span>
           </button>
         </div>
@@ -207,7 +323,10 @@
       </div>
 
       <!-- ─── SECTION 5: HomeScore ─────────────────────────────────── -->
-      <div class="pps-score-card pps-score-card--clickable" @click="onScoreCardTap">
+      <div
+        class="pps-score-card pps-score-card--clickable"
+        @click="onScoreCardTap"
+      >
         <div class="pps-score-top">
           <div class="pps-score-blob-tr" />
           <div class="pps-score-blob-bl" />
@@ -235,8 +354,13 @@
             <div class="pps-score-desc">{{ scoreDesc }}</div>
             <div v-if="property.epcRating" class="pps-score-epc-pill">
               <span class="pps-epc-dot" :style="{ background: epcDotColor }" />
-              EPC {{ property.epcRating }}<template v-if="property.epcScore"> ({{ property.epcScore }})</template>
-              <template v-if="property.yearBuilt"> · Built {{ property.yearBuilt }}</template>
+              EPC {{ property.epcRating
+              }}<template v-if="property.epcScore">
+                ({{ property.epcScore }})</template
+              >
+              <template v-if="property.yearBuilt">
+                · Built {{ property.yearBuilt }}</template
+              >
             </div>
           </div>
         </div>
@@ -247,7 +371,10 @@
             <div v-for="bar in epcBars" :key="bar.label" class="pps-epc-row">
               <span class="pps-epc-label">{{ bar.label }}</span>
               <div class="pps-epc-track">
-                <div class="pps-bar-fill" :style="{ width: bar.pct + '%', background: bar.color }" />
+                <div
+                  class="pps-bar-fill"
+                  :style="{ width: bar.pct + '%', background: bar.color }"
+                />
               </div>
               <span class="pps-epc-rating">{{ bar.rating }}</span>
             </div>
@@ -258,7 +385,9 @@
       <!-- ─── SECTION 6: Explore Grid ──────────────────────────────── -->
       <div class="pps-explore-header">
         <span class="pps-explore-title">Explore this property</span>
-        <span class="pps-explore-sources">{{ exploreTiles.length }} data sources</span>
+        <span class="pps-explore-sources"
+          >{{ exploreTiles.length }} data sources</span
+        >
       </div>
       <div class="pps-explore-grid">
         <div
@@ -267,7 +396,9 @@
           class="pps-tile"
           @click="onExploreTileClick(tile.key)"
         >
-          <div class="pps-tile-icon" :style="{ background: tile.iconBg }">{{ tile.icon }}</div>
+          <div class="pps-tile-icon" :style="{ background: tile.iconBg }">
+            {{ tile.icon }}
+          </div>
           <div class="pps-tile-title">
             {{ tile.title }}
             <span
@@ -277,7 +408,9 @@
               >{{ tile.pip }}</span
             >
           </div>
-          <div class="pps-tile-value" :style="tile.valueStyle">{{ tile.value }}</div>
+          <div class="pps-tile-value" :style="tile.valueStyle">
+            {{ tile.value }}
+          </div>
           <div class="pps-tile-sub">{{ tile.sub }}</div>
           <div v-if="tile.trend" class="pps-tile-trend">
             <span class="pps-tile-trend-arrow">↑</span> {{ tile.trend }}
@@ -292,17 +425,27 @@
         <div class="pps-score-blob-bl" />
         <div class="pps-passport-eyebrow-row">
           <span class="pps-passport-eyebrow"
-            ><span class="pps-passport-eyebrow-dot" style="background: #9c98ad" />Property Passport</span
+            ><span
+              class="pps-passport-eyebrow-dot"
+              style="background: #9c98ad"
+            />Property Passport</span
           >
-          <span class="pps-passport-price-pill" style="background: #f5f5f7; color: #9c98ad; border-color: #ececef">Unclaimed</span>
+          <span
+            class="pps-passport-price-pill"
+            style="background: #f5f5f7; color: #9c98ad; border-color: #ececef"
+            >Unclaimed</span
+          >
         </div>
         <div class="pps-passport-title">No Passport yet — be the first</div>
         <div class="pps-passport-explain pps-passport-explain--unclaimed">
           <div style="flex: 1">
-            <div class="pps-passport-explain-eyebrow">Your home's permanent record</div>
+            <div class="pps-passport-explain-eyebrow">
+              Your home's permanent record
+            </div>
             <div class="pps-passport-explain-body">
-              Why would anyone buy a home without seeing its full history? A Passport stays with this
-              property for life — documents, certificates, everything verified.
+              Why would anyone buy a home without seeing its full history? A
+              Passport stays with this property for life — documents,
+              certificates, everything verified.
             </div>
           </div>
           <button
@@ -311,7 +454,9 @@
             style="background: #231d45"
             @click.stop="openSheet('explain-unclaimed')"
             aria-label="Why a Property Passport"
-          >?</button>
+          >
+            ?
+          </button>
         </div>
 
         <div class="pps-pp-stepper">
@@ -339,12 +484,18 @@
         <button
           type="button"
           class="pps-passport-cta"
-          style="background: #231d45; box-shadow: 0 4px 16px rgba(35, 29, 69, 0.35); color: white"
+          style="
+            background: #231d45;
+            box-shadow: 0 4px 16px rgba(35, 29, 69, 0.35);
+            color: white;
+          "
           @click="onClaimClick"
         >
           Claim this property — it's free →
         </button>
-        <div class="pps-passport-cta-sub">Takes 2 minutes · No listing required · Free forever</div>
+        <div class="pps-passport-cta-sub">
+          Takes 2 minutes · No listing required · Free forever
+        </div>
       </div>
 
       <div v-else-if="pageState === 'progress'" class="pps-passport-card">
@@ -352,19 +503,28 @@
         <div class="pps-score-blob-bl" />
         <div class="pps-passport-eyebrow-row">
           <span class="pps-passport-eyebrow"
-            ><span class="pps-passport-eyebrow-dot" style="background: #00a19a" />Property Passport</span
+            ><span
+              class="pps-passport-eyebrow-dot"
+              style="background: #00a19a"
+            />Property Passport</span
           >
-          <span class="pps-passport-price-pill" style="background: #e6f7f6; color: #007e78; border-color: #b2e4e1"
+          <span
+            class="pps-passport-price-pill"
+            style="background: #e6f7f6; color: #007e78; border-color: #b2e4e1"
             >In progress</span
           >
         </div>
-        <div class="pps-passport-title" style="color: #00a19a">Passport being built</div>
+        <div class="pps-passport-title" style="color: #00a19a">
+          Passport being built
+        </div>
         <div class="pps-passport-explain pps-passport-explain--progress">
           <div style="flex: 1">
-            <div class="pps-passport-explain-eyebrow" style="color: #007e78">Stop buying blind</div>
+            <div class="pps-passport-explain-eyebrow" style="color: #007e78">
+              Stop buying blind
+            </div>
             <div class="pps-passport-explain-body" style="color: #2a5c58">
-              This Passport is being built right now — so when you make your move, the answers are
-              already there.
+              This Passport is being built right now — so when you make your
+              move, the answers are already there.
             </div>
           </div>
           <button
@@ -373,7 +533,9 @@
             style="background: #00a19a"
             @click.stop="openSheet('explain-progress')"
             aria-label="Why a Property Passport"
-          >?</button>
+          >
+            ?
+          </button>
         </div>
 
         <div class="pps-progress-bar-wrap">
@@ -388,12 +550,26 @@
         <div class="pps-progress-label">{{ progressPct }}% complete</div>
 
         <div class="pps-passport-features">
-          <div v-for="f in passportFeatures" :key="f.title" class="pps-passport-feature">
+          <div
+            v-for="f in passportFeatures"
+            :key="f.title"
+            class="pps-passport-feature"
+          >
             <div
               class="pps-feature-icon"
-              :class="f.verified ? 'pps-feature-icon--verified' : 'pps-feature-icon--locked'"
+              :class="
+                f.verified
+                  ? 'pps-feature-icon--verified'
+                  : 'pps-feature-icon--locked'
+              "
             >
-              <svg v-if="f.verified" width="14" height="11" viewBox="0 0 14 11" fill="none">
+              <svg
+                v-if="f.verified"
+                width="14"
+                height="11"
+                viewBox="0 0 14 11"
+                fill="none"
+              >
                 <path
                   d="M1.5 5.5L5.5 9.5L12.5 1.5"
                   stroke="#00b6ae"
@@ -420,7 +596,9 @@
             <div>
               <div
                 :class="
-                  f.verified ? 'pps-feature-text-title--verified' : 'pps-feature-text-title--locked'
+                  f.verified
+                    ? 'pps-feature-text-title--verified'
+                    : 'pps-feature-text-title--locked'
                 "
               >
                 {{ f.title }}
@@ -430,15 +608,37 @@
           </div>
         </div>
 
+        <!-- CTA: owner/collaborator gets a "continue building" path; everyone
+             else sees the original "notify me on publish" watch CTA. -->
         <button
           type="button"
           class="pps-passport-cta"
-          style="background: #00a19a; box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3); color: white"
-          @click="onWatchClick"
+          style="
+            background: #00a19a;
+            box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+            color: white;
+          "
+          @click="onProgressCtaClick"
         >
-          🔔 Get notified when published →
+          <template v-if="isPassportOwnerOrCollab">
+            📋 Continue building your Passport →
+          </template>
+          <template v-else>🔔 Get notified when published →</template>
         </button>
-        <div class="pps-passport-cta-sub">We'll alert you the moment this Passport goes live</div>
+        <div class="pps-passport-cta-sub">
+          <template v-if="isPassportOwnerOrCollab">
+            <template v-if="progressPct > 0">
+              You're {{ progressPct }}% complete — tap to finish your remaining
+              sections.
+            </template>
+            <template v-else>
+              Open your Passport to start filling in sections.
+            </template>
+          </template>
+          <template v-else>
+            We'll alert you the moment this Passport goes live.
+          </template>
+        </div>
       </div>
 
       <div
@@ -464,7 +664,8 @@
               The HPI check for your home
             </div>
             <div class="pps-passport-explain-body" style="color: #6b4c1a">
-              The verified record that should have always existed — and now it does.
+              The verified record that should have always existed — and now it
+              does.
             </div>
           </div>
           <button
@@ -473,7 +674,9 @@
             style="background: #d4822a"
             @click.stop="openSheet('explain-published')"
             aria-label="Why a Property Passport"
-          >?</button>
+          >
+            ?
+          </button>
         </div>
 
         <div class="pps-progress-bar-wrap">
@@ -482,7 +685,11 @@
         <div class="pps-progress-label">100% complete — Passport live</div>
 
         <div class="pps-passport-features">
-          <div v-for="f in publishedFeatures" :key="f.title" class="pps-passport-feature">
+          <div
+            v-for="f in publishedFeatures"
+            :key="f.title"
+            class="pps-passport-feature"
+          >
             <div class="pps-feature-icon pps-feature-icon--verified">
               <svg width="14" height="11" viewBox="0 0 14 11" fill="none">
                 <path
@@ -501,7 +708,10 @@
           </div>
         </div>
 
-        <div class="pps-passport-cta-sub" style="margin-top: 14px; text-align: left">
+        <div
+          class="pps-passport-cta-sub"
+          style="margin-top: 14px; text-align: left"
+        >
           Secure payment · Instant access · No subscription
         </div>
       </div>
@@ -522,17 +732,43 @@
             >
               <div class="pps-costs-box-inner">
                 <div class="pps-costs-box-front">
-                  <span class="pps-costs-box-value">£{{ box.value.toLocaleString() }}</span>
+                  <span class="pps-costs-box-value"
+                    >£{{ box.value.toLocaleString() }}</span
+                  >
                   <span class="pps-costs-box-label">{{ box.label }}</span>
                 </div>
                 <div class="pps-costs-box-back">
                   <div class="pps-costs-box-back-label">Per month</div>
-                  <div class="pps-costs-box-back-val">~£{{ Math.round(box.value / 12).toLocaleString() }}</div>
+                  <div class="pps-costs-box-back-val">
+                    ~£{{ Math.round(box.value / 12).toLocaleString() }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="pps-costs-attr">Based on EPC assumptions. Costs vary by usage and tariff.</div>
+          <div class="pps-costs-attr">
+            Based on EPC assumptions. Costs vary by usage and tariff.
+          </div>
+          <!-- EPC potential rating (restored — surfaces the upside the EPC
+               surveyor noted, e.g. "could reach A 92"). -->
+          <div
+            v-if="
+              epcPotentialRating && epcPotentialRating !== property?.epcRating
+            "
+            class="pps-costs-upside"
+          >
+            <span class="pps-costs-upside-ic">↑</span>
+            <span>
+              Could reach
+              <strong
+                >{{ epcPotentialRating
+                }}<template v-if="epcPotentialScore">
+                  {{ epcPotentialScore }}</template
+                ></strong
+              >
+              with the EPC's recommended upgrades
+            </span>
+          </div>
         </div>
       </div>
 
@@ -555,11 +791,16 @@
             <div class="pps-detail-label">Year built</div>
             <div class="pps-detail-value">{{ property.yearBuilt }}</div>
           </div>
-          <div v-if="property.sqft || property.floorAreaSqm" class="pps-detail-tile">
+          <div
+            v-if="property.sqft || property.floorAreaSqm"
+            class="pps-detail-tile"
+          >
             <span class="pps-detail-tile-icon">📐</span>
             <div class="pps-detail-label">Floor area</div>
             <div class="pps-detail-value">
-              <template v-if="property.sqft">{{ property.sqft.toLocaleString() }} sqft</template>
+              <template v-if="property.sqft"
+                >{{ property.sqft.toLocaleString() }} sqft</template
+              >
               <template v-else>{{ property.floorAreaSqm }} m²</template>
             </div>
           </div>
@@ -567,14 +808,65 @@
             <span class="pps-detail-tile-icon">⚡</span>
             <div class="pps-detail-label">EPC</div>
             <div class="pps-detail-value">
-              <span class="pps-epc-badge" :style="{ background: epcDotColor }">{{ property.epcRating }}</span>
-              <template v-if="property.epcScore"> {{ property.epcScore }}/100</template>
+              <span
+                class="pps-epc-badge"
+                :style="{ background: epcDotColor }"
+                >{{ property.epcRating }}</span
+              >
+              <template v-if="property.epcScore">
+                {{ property.epcScore }}/100</template
+              >
             </div>
           </div>
           <div v-if="property.uprn" class="pps-detail-tile">
             <span class="pps-detail-tile-icon">🔢</span>
             <div class="pps-detail-label">UPRN</div>
-            <div class="pps-detail-value" style="font-size: 11px">{{ property.uprn }}</div>
+            <div class="pps-detail-value" style="font-size: 12px">
+              {{ property.uprn }}
+            </div>
+          </div>
+          <!-- Title number tile (restored) -->
+          <div v-if="property.titleNumber" class="pps-detail-tile">
+            <span class="pps-detail-tile-icon">📜</span>
+            <div class="pps-detail-label">Title number</div>
+            <div class="pps-detail-value" style="font-size: 12px">
+              {{ property.titleNumber }}
+            </div>
+          </div>
+          <!-- (Flood tile removed from Property Details — the same data is
+               already in the explore-grid 'Flood & Risk' tile + its own
+               bottom sheet, so a duplicate here only invited drift.) -->
+        </div>
+      </div>
+
+      <!-- EPC fabric breakdown (restored from old version) — only when we
+           have at least one component-level rating from the EPC API. -->
+      <div v-if="epcComponents.length > 0" class="pps-details-card">
+        <div class="pps-details-header">EPC fabric breakdown</div>
+        <div class="pps-details-sub">
+          How each part of the building scores in the latest Energy Performance
+          Certificate.
+        </div>
+        <div class="pps-epc-comp-list">
+          <div
+            v-for="c in epcComponents"
+            :key="c.label"
+            class="pps-epc-comp-row"
+          >
+            <div class="pps-epc-comp-label">{{ c.label }}</div>
+            <div class="pps-epc-comp-track">
+              <div
+                class="pps-epc-comp-fill"
+                :class="epcCompClass(c.eff)"
+                :style="{ width: c.pct + '%' }"
+              />
+            </div>
+            <div
+              class="pps-epc-comp-rating"
+              :style="{ color: epcCompColor(c.eff) }"
+            >
+              {{ c.eff }}
+            </div>
           </div>
         </div>
       </div>
@@ -583,18 +875,15 @@
     </template>
 
     <!-- Drawers — wired to the new state-driven CTAs. -->
-    <ClaimPassportTypeDrawer
-      v-model="showClaimTypeDrawer"
-      @close="showClaimTypeDrawer = false"
-      @selected="onPassportTypeChosen"
-    />
+    <!-- Owner-claim (free) goes through the global /claim/[id] flow which
+         enforces KYC + HM Land Registry verification before issuing a
+         Passport. The buyer-unlock (£99) drawer below handles the Stripe
+         payment for a published Passport. -->
     <ClaimPassportDrawer
-      v-model="showClaimDrawer"
-      :property-id="propertyId"
-      :address="property?.addressLine1 || ''"
-      :passport-type="claimPassportType"
-      :is-hmo="claimIsHmo"
-      @close="showClaimDrawer = false"
+      v-model="showUnlockDrawer"
+      :property="property"
+      :existing-passport-id="passportStatus?.passportId"
+      @claimed="onPassportUnlocked"
     />
     <BaseDrawer
       v-model="showRegisterInterest"
@@ -641,47 +930,107 @@
               <span class="pps-ds-header-icon">🏠</span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Price History</div>
-                <div class="pps-ds-header-meta">HM Land Registry · Updated monthly</div>
+                <div class="pps-ds-header-meta">
+                  HM Land Registry · Updated monthly
+                </div>
               </div>
             </div>
 
             <!-- Compound growth banner -->
             <div
               v-if="compoundGrowth"
-              style="background: #e6f7f6; border: 1.5px solid #b2e4e1; border-radius: 12px; padding: 12px 16px; margin: 14px 0 10px; display: flex; justify-content: space-between; align-items: center"
+              style="
+                background: #e6f7f6;
+                border: 1.5px solid #b2e4e1;
+                border-radius: 12px;
+                padding: 12px 16px;
+                margin: 14px 0 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
             >
-              <div style="font-size: 10px; font-weight: 800; color: #6b6783; letter-spacing: 1px; text-transform: uppercase">
+              <div
+                style="
+                  font-size: 11px;
+                  font-weight: 800;
+                  color: #6b6783;
+                  letter-spacing: 1px;
+                  text-transform: uppercase;
+                "
+              >
                 Compound growth · since {{ compoundGrowth.sinceYear }}
               </div>
               <div
                 style="font-size: 16px; font-weight: 900"
-                :style="{ color: compoundGrowth.pct >= 0 ? '#00a19a' : '#c73e36' }"
+                :style="{
+                  color: compoundGrowth.pct >= 0 ? '#00a19a' : '#c73e36',
+                }"
               >
-                {{ compoundGrowth.pct >= 0 ? '+' : '' }}{{ compoundGrowth.pct.toFixed(1) }}% / yr
+                {{ compoundGrowth.pct >= 0 ? '+' : ''
+                }}{{ compoundGrowth.pct.toFixed(1) }}% / yr
               </div>
             </div>
 
             <!-- Current estimated value -->
             <div
               v-if="estimatedPrice"
-              style="border: 1.5px solid #ececef; border-radius: 14px; padding: 16px; margin-bottom: 10px"
+              style="
+                border: 1.5px solid #ececef;
+                border-radius: 14px;
+                padding: 16px;
+                margin-bottom: 10px;
+              "
             >
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: flex-start;
+                  margin-bottom: 8px;
+                "
+              >
                 <div style="display: flex; align-items: center; gap: 10px">
                   <div
-                    style="width: 12px; height: 12px; border-radius: 50%; background: #00a19a; border: 2px solid white; box-shadow: 0 0 0 2px #00a19a; flex-shrink: 0; margin-top: 4px"
+                    style="
+                      width: 12px;
+                      height: 12px;
+                      border-radius: 50%;
+                      background: #00a19a;
+                      border: 2px solid white;
+                      box-shadow: 0 0 0 2px #00a19a;
+                      flex-shrink: 0;
+                      margin-top: 4px;
+                    "
                   />
                   <div>
-                    <div style="font-size: 22px; font-weight: 900; color: #231d45; letter-spacing: -0.5px">
+                    <div
+                      style="
+                        font-size: 22px;
+                        font-weight: 900;
+                        color: #231d45;
+                        letter-spacing: -0.5px;
+                      "
+                    >
                       {{ formatPrice(estimatedPrice) }}
                     </div>
-                    <div style="font-size: 11px; color: #9c98ad; margin-top: 2px">
+                    <div
+                      style="font-size: 12px; color: #9c98ad; margin-top: 2px"
+                    >
                       {{ priceSourceLabel }}
                     </div>
                   </div>
                 </div>
                 <div
-                  style="background: #e6f7f6; border: 1.5px solid #b2e4e1; border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 800; color: #007e78"
+                  style="
+                    background: #e6f7f6;
+                    border: 1.5px solid #b2e4e1;
+                    border-radius: 20px;
+                    padding: 4px 12px;
+                    font-size: 12px;
+                    font-weight: 800;
+                    color: #007e78;
+                  "
                 >
                   CURRENT
                 </div>
@@ -697,63 +1046,204 @@
                   gap: '6px',
                 }"
               >
-                <span :style="{ color: deltaSinceSold.positive ? '#2eab55' : '#c73e36', fontSize: '12px' }">{{ deltaSinceSold.positive ? '↑' : '↓' }}</span>
-                <span :style="{ fontSize: '12px', fontWeight: 700, color: deltaSinceSold.positive ? '#1a7a3a' : '#8a1d18' }">
-                  {{ deltaSinceSold.positive ? '+' : '−' }}£{{ Math.abs(deltaSinceSold.abs).toLocaleString() }}
-                  ({{ deltaSinceSold.positive ? '+' : '−' }}{{ Math.abs(deltaSinceSold.pct).toFixed(0) }}%)
+                <span
+                  :style="{
+                    color: deltaSinceSold.positive ? '#2eab55' : '#c73e36',
+                    fontSize: '12px',
+                  }"
+                  >{{ deltaSinceSold.positive ? '↑' : '↓' }}</span
+                >
+                <span
+                  :style="{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    color: deltaSinceSold.positive ? '#1a7a3a' : '#8a1d18',
+                  }"
+                >
+                  {{ deltaSinceSold.positive ? '+' : '−' }}£{{
+                    Math.abs(deltaSinceSold.abs).toLocaleString()
+                  }}
+                  ({{ deltaSinceSold.positive ? '+' : '−'
+                  }}{{ Math.abs(deltaSinceSold.pct).toFixed(0) }}%)
                 </span>
-                <span :style="{ fontSize: '10px', color: deltaSinceSold.positive ? '#6b9c78' : '#a86660' }">since last sold</span>
+                <span
+                  :style="{
+                    fontSize: '10px',
+                    color: deltaSinceSold.positive ? '#6b9c78' : '#a86660',
+                  }"
+                  >since last sold</span
+                >
               </div>
             </div>
 
             <!-- Last sold (most recent record) -->
             <div
               v-if="lastSale"
-              style="border: 1.5px solid #ececef; border-radius: 14px; padding: 16px; margin-bottom: 14px; opacity: 0.85"
+              style="
+                border: 1.5px solid #ececef;
+                border-radius: 14px;
+                padding: 16px;
+                margin-bottom: 14px;
+                opacity: 0.85;
+              "
             >
-              <div style="display: flex; justify-content: space-between; align-items: flex-start">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: flex-start;
+                "
+              >
                 <div style="display: flex; align-items: center; gap: 10px">
                   <div
-                    style="width: 12px; height: 12px; border-radius: 50%; background: white; border: 2px solid #c0bdcc; flex-shrink: 0; margin-top: 4px"
+                    style="
+                      width: 12px;
+                      height: 12px;
+                      border-radius: 50%;
+                      background: white;
+                      border: 2px solid #c0bdcc;
+                      flex-shrink: 0;
+                      margin-top: 4px;
+                    "
                   />
                   <div>
-                    <div style="font-size: 20px; font-weight: 900; color: #231d45; letter-spacing: -0.5px">
+                    <div
+                      style="
+                        font-size: 20px;
+                        font-weight: 900;
+                        color: #231d45;
+                        letter-spacing: -0.5px;
+                      "
+                    >
                       £{{ Number(lastSale.price).toLocaleString() }}
                     </div>
-                    <div style="font-size: 11px; color: #9c98ad; margin-top: 2px">
+                    <div
+                      style="font-size: 12px; color: #9c98ad; margin-top: 2px"
+                    >
                       {{ formatSoldDate(lastSale.date) }}
                     </div>
                   </div>
                 </div>
                 <div
-                  style="background: #f5f5f7; border: 1.5px solid #ececef; border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 800; color: #9c98ad"
+                  style="
+                    background: #f5f5f7;
+                    border: 1.5px solid #ececef;
+                    border-radius: 20px;
+                    padding: 4px 12px;
+                    font-size: 12px;
+                    font-weight: 800;
+                    color: #9c98ad;
+                  "
                 >
                   SOLD
                 </div>
               </div>
             </div>
 
-            <div v-if="soldHistory.length > 0">
-              <div class="pps-ds-section-title">Sold history</div>
-              <div class="pps-ds-table">
-                <div class="pps-ds-row pps-ds-row--header">
-                  <span>Date</span><span>Price paid</span><span>Tenure</span>
-                </div>
+            <!-- Compound annual growth rate banner (restored from old version) -->
+            <div v-if="priceHistoryCagr" class="pps-ds-cagr-banner">
+              <div class="pps-ds-cagr-label">
+                Compound growth · since {{ priceHistoryCagr.fromYear }}
+              </div>
+              <div
+                class="pps-ds-cagr-val"
+                :class="{
+                  'pps-ds-cagr-val--up': priceHistoryCagr.cagr >= 0,
+                  'pps-ds-cagr-val--down': priceHistoryCagr.cagr < 0,
+                }"
+              >
+                {{ priceHistoryCagr.cagr >= 0 ? '+' : ''
+                }}{{ priceHistoryCagr.cagr.toFixed(1) }}% / yr
+              </div>
+            </div>
+
+            <!-- Price-history timeline (restored from old version) — current
+                 estimate at the top, then each historic sale with delta -->
+            <div v-if="priceHistoryTimeline.length > 0">
+              <div class="pps-ds-section-title">Price timeline</div>
+              <div class="pps-ds-timeline">
                 <div
-                  v-for="s in soldHistory.slice(0, 5)"
-                  :key="s.date + s.price"
-                  class="pps-ds-row"
+                  v-for="(t, i) in priceHistoryTimeline"
+                  :key="(t.dateStr || 'est') + i"
+                  class="pps-ds-tl-row"
+                  :class="{ 'pps-ds-tl-row--est': t.isEstimate }"
                 >
-                  <span>{{ formatSoldDate(s.date) }}</span>
-                  <span class="pps-ds-val">£{{ Number(s.price).toLocaleString() }}</span>
-                  <span class="pps-ds-muted">{{ s.tenure || 'Freehold' }}</span>
+                  <div
+                    class="pps-ds-tl-bullet"
+                    :class="{ 'pps-ds-tl-bullet--est': t.isEstimate }"
+                  />
+                  <div class="pps-ds-tl-body">
+                    <div class="pps-ds-tl-price">
+                      £{{ Number(t.price).toLocaleString() }}
+                      <span v-if="t.isEstimate" class="pps-ds-tl-est-pill"
+                        >Estimate</span
+                      >
+                    </div>
+                    <div class="pps-ds-tl-date">
+                      <template v-if="t.dateObj">{{
+                        formatSoldDate(t.dateStr)
+                      }}</template>
+                      <template v-else>Today</template>
+                    </div>
+                  </div>
+                  <div
+                    v-if="t.delta"
+                    class="pps-ds-tl-delta"
+                    :class="{
+                      'pps-ds-tl-delta--up': t.delta.positive,
+                      'pps-ds-tl-delta--down': !t.delta.positive,
+                    }"
+                  >
+                    <span class="pps-ds-tl-arrow">{{
+                      t.delta.positive ? '↑' : '↓'
+                    }}</span>
+                    {{ t.delta.positive ? '+' : '−' }}£{{
+                      Math.abs(Math.round(t.delta.amount)).toLocaleString()
+                    }}
+                    <span class="pps-ds-tl-pct"
+                      >({{ t.delta.positive ? '+' : '−'
+                      }}{{ Math.abs(t.delta.pct).toFixed(0) }}%)</span
+                    >
+                  </div>
                 </div>
               </div>
             </div>
             <div v-else class="pps-ds-empty">
               No Land Registry sale records found for this address.
             </div>
-            <div v-if="property?.tenure || property?.titleNumber || property?.uprn" class="pps-ds-section-title" style="margin-top: 18px">
+
+            <!-- Nearby sales (restored — the data was already fetched) -->
+            <div
+              v-if="nearbySales.length > 0"
+              class="pps-ds-section-title"
+              style="margin-top: 18px"
+            >
+              Nearby sold prices
+            </div>
+            <div v-if="nearbySales.length > 0" class="pps-ds-kv-list">
+              <div
+                v-for="s in nearbySales.slice(0, 5)"
+                :key="(s.address || s.date) + s.price"
+                class="pps-ds-kv"
+              >
+                <span class="pps-ds-k">
+                  {{ s.address || s.postcode || 'Nearby property' }}
+                  <span class="pps-ds-tl-date" style="margin-left: 4px">
+                    · {{ formatSoldDate(s.date || s.transferDate || '') }}
+                  </span>
+                </span>
+                <span class="pps-ds-v"
+                  >£{{
+                    Number(s.price ?? s.amount ?? 0).toLocaleString()
+                  }}</span
+                >
+              </div>
+            </div>
+            <div
+              v-if="property?.tenure || property?.titleNumber || property?.uprn"
+              class="pps-ds-section-title"
+              style="margin-top: 18px"
+            >
               Title details
             </div>
             <div class="pps-ds-kv-list">
@@ -770,7 +1260,9 @@
                 <span class="pps-ds-v">{{ property.uprn }}</span>
               </div>
             </div>
-            <div class="pps-ds-attribution">Data from HM Land Registry · Updated monthly</div>
+            <div class="pps-ds-attribution">
+              Data from HM Land Registry · Updated monthly
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -789,65 +1281,99 @@
               </div>
             </div>
             <div v-if="streetEnergyRank?.rank">
-              <div class="pps-ds-section-title">This property vs the street</div>
+              <div class="pps-ds-section-title">
+                This property vs the street
+              </div>
               <div class="pps-ds-rank-card">
                 <div class="pps-ds-rank-big">
-                  {{ streetEnergyRank.rank }}<span style="font-size: 18px">{{ ordinalSuffix(streetEnergyRank.rank) }}</span>
+                  {{ streetEnergyRank.rank
+                  }}<span style="font-size: 18px">{{
+                    ordinalSuffix(streetEnergyRank.rank)
+                  }}</span>
                 </div>
                 <div class="pps-ds-rank-sub">
-                  out of {{ streetEnergyRank.total }} homes for energy efficiency
+                  out of {{ streetEnergyRank.total }} homes for energy
+                  efficiency
                 </div>
               </div>
             </div>
             <!-- Street EPC distribution -->
-            <template v-if="(streetEnergyRank?.epcDistribution?.length || 0) > 0">
-              <div class="pps-ds-section-title" style="margin-top: 18px">Street EPC distribution</div>
+            <template
+              v-if="(streetEnergyRank?.epcDistribution?.length || 0) > 0"
+            >
+              <div class="pps-ds-section-title" style="margin-top: 18px">
+                Street EPC distribution
+              </div>
               <div class="pps-ds-bar-list">
                 <div
                   v-for="bucket in streetEnergyRank!.epcDistribution"
                   :key="bucket.letter"
                   class="pps-ds-bar-item"
-                  :class="{ 'pps-ds-bar-item--active': streetEnergyRank?.yourEpcRating === bucket.letter }"
+                  :class="{
+                    'pps-ds-bar-item--active':
+                      streetEnergyRank?.yourEpcRating === bucket.letter,
+                  }"
                 >
                   <span class="pps-ds-bar-label">{{ bucket.letter }}</span>
                   <div class="pps-ds-bar-track">
                     <div
                       class="pps-ds-bar-fill"
                       :style="{
-                        width: epcBarMaxCount ? (bucket.count / epcBarMaxCount) * 100 + '%' : '0%',
+                        width: epcBarMaxCount
+                          ? (bucket.count / epcBarMaxCount) * 100 + '%'
+                          : '0%',
                         background: epcBarColor(bucket.letter),
                       }"
                     />
                   </div>
-                  <span class="pps-ds-bar-count">{{ bucket.count }}<template v-if="streetEnergyRank?.yourEpcRating === bucket.letter"> ← you</template></span>
+                  <span class="pps-ds-bar-count"
+                    >{{ bucket.count
+                    }}<template
+                      v-if="streetEnergyRank?.yourEpcRating === bucket.letter"
+                    >
+                      ← you</template
+                    ></span
+                  >
                 </div>
               </div>
             </template>
 
-            <div class="pps-ds-section-title" style="margin-top: 18px">Street averages</div>
+            <div class="pps-ds-section-title" style="margin-top: 18px">
+              Street averages
+            </div>
             <div class="pps-ds-kv-list">
               <div v-if="streetEnergyRank?.avgEpcScore" class="pps-ds-kv">
                 <span class="pps-ds-k">Avg. EPC score</span>
-                <span class="pps-ds-v">{{ streetEnergyRank.avgEpcScore }} / 100</span>
+                <span class="pps-ds-v"
+                  >{{ streetEnergyRank.avgEpcScore }} / 100</span
+                >
               </div>
               <div v-if="streetEnergyRank?.yourCost" class="pps-ds-kv">
                 <span class="pps-ds-k">Your annual cost</span>
-                <span class="pps-ds-v">£{{ streetEnergyRank.yourCost.toLocaleString() }}</span>
+                <span class="pps-ds-v"
+                  >£{{ streetEnergyRank.yourCost.toLocaleString() }}</span
+                >
               </div>
               <div v-if="streetEnergyRank?.averageCost" class="pps-ds-kv">
                 <span class="pps-ds-k">Street average</span>
-                <span class="pps-ds-v">£{{ streetEnergyRank.averageCost.toLocaleString() }}</span>
+                <span class="pps-ds-v"
+                  >£{{ streetEnergyRank.averageCost.toLocaleString() }}</span
+                >
               </div>
               <div v-if="streetEnergyRank?.bestCost" class="pps-ds-kv">
                 <span class="pps-ds-k">Best on street</span>
-                <span class="pps-ds-v">£{{ streetEnergyRank.bestCost.toLocaleString() }}</span>
+                <span class="pps-ds-v"
+                  >£{{ streetEnergyRank.bestCost.toLocaleString() }}</span
+                >
               </div>
               <div v-if="property?.epcScore" class="pps-ds-kv">
                 <span class="pps-ds-k">Your EPC score</span>
                 <span class="pps-ds-v">{{ property.epcScore }} / 100</span>
               </div>
             </div>
-            <div class="pps-ds-attribution">Source: Land Registry + EPC register · Aggregated</div>
+            <div class="pps-ds-attribution">
+              Source: Land Registry + EPC register · Aggregated
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -857,24 +1383,34 @@
               <span class="pps-ds-header-icon">🎓</span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Schools</div>
-                <div class="pps-ds-header-meta">Source: Ordnance Survey NGD · OS Open Names</div>
+                <div class="pps-ds-header-meta">
+                  Source: Ordnance Survey NGD · OS Open Names
+                </div>
               </div>
             </div>
             <template v-if="enrichmentSchools.length > 0">
               <div class="pps-ds-section-title">Nearby schools</div>
               <div class="pps-ds-kv-list">
-                <div v-for="s in enrichmentSchools" :key="s.name + s.distanceKm" class="pps-ds-kv">
+                <div
+                  v-for="s in enrichmentSchools"
+                  :key="s.name + s.distanceKm"
+                  class="pps-ds-kv"
+                >
                   <span class="pps-ds-k">🎓 {{ s.name }}</span>
                   <span class="pps-ds-v">{{ s.distanceKm.toFixed(1) }} km</span>
                 </div>
               </div>
               <div class="pps-ds-info-note">
-                Distances are straight-line. School categories from OS NGD landuse data. For admissions and Ofsted ratings, check the school's official page on GOV.UK.
+                Distances are straight-line. School categories from OS NGD
+                landuse data. For admissions and Ofsted ratings, check the
+                school's official page on GOV.UK.
               </div>
             </template>
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🎓</div>
-              <div class="pps-ds-placeholder-title">No schools data on file</div>
+              <div class="pps-ds-placeholder-title">
+                No schools data on file
+              </div>
               <div class="pps-ds-placeholder-sub">
                 We couldn't retrieve nearby schools for this address yet — it
                 will be backfilled on the next enrichment pass.
@@ -890,27 +1426,52 @@
               <span class="pps-ds-header-icon">🚂</span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Transport</div>
-                <div class="pps-ds-header-meta">Source: OpenStreetMap · Overpass API</div>
+                <div class="pps-ds-header-meta">
+                  Source: OpenStreetMap · Overpass API
+                </div>
               </div>
             </div>
 
             <!-- Proximity pills -->
-            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px">
+            <div
+              style="display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px"
+            >
               <div
                 v-if="enrichmentTrains[0]"
-                style="background: #f5f5f7; border-radius: 20px; padding: 7px 13px; font-size: 11px; font-weight: 700; color: #1a1535"
+                style="
+                  background: #f5f5f7;
+                  border-radius: 20px;
+                  padding: 7px 13px;
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #1a1535;
+                "
               >
                 🚂 {{ enrichmentTrains[0].distanceKm.toFixed(1) }} km station
               </div>
               <div
                 v-if="enrichmentBuses[0]"
-                style="background: #f5f5f7; border-radius: 20px; padding: 7px 13px; font-size: 11px; font-weight: 700; color: #1a1535"
+                style="
+                  background: #f5f5f7;
+                  border-radius: 20px;
+                  padding: 7px 13px;
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #1a1535;
+                "
               >
                 🚌 {{ enrichmentBuses[0].distanceKm.toFixed(2) }} km bus
               </div>
               <div
                 v-if="enrichmentAirports[0]"
-                style="background: #f5f5f7; border-radius: 20px; padding: 7px 13px; font-size: 11px; font-weight: 700; color: #1a1535"
+                style="
+                  background: #f5f5f7;
+                  border-radius: 20px;
+                  padding: 7px 13px;
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #1a1535;
+                "
               >
                 ✈️ {{ enrichmentAirports[0].distanceKm.toFixed(0) }} km airport
               </div>
@@ -919,45 +1480,81 @@
             <template v-if="enrichmentTrains.length > 0">
               <div class="pps-ds-section-title">Nearest stations</div>
               <div class="pps-ds-kv-list">
-                <div v-for="t in enrichmentTrains.slice(0, 5)" :key="t.name + t.distanceKm" class="pps-ds-kv">
+                <div
+                  v-for="t in enrichmentTrains.slice(0, 5)"
+                  :key="t.name + t.distanceKm"
+                  class="pps-ds-kv"
+                >
                   <span class="pps-ds-k">🚂 {{ t.name }}</span>
-                  <span class="pps-ds-v">{{ t.distanceKm.toFixed(1) }} km<template v-if="t.operator"> · {{ t.operator }}</template></span>
+                  <span class="pps-ds-v"
+                    >{{ t.distanceKm.toFixed(1) }} km<template
+                      v-if="t.operator"
+                    >
+                      · {{ t.operator }}</template
+                    ></span
+                  >
                 </div>
               </div>
             </template>
 
             <template v-if="enrichmentBuses.length > 0">
-              <div class="pps-ds-section-title" style="margin-top: 18px">Bus stops</div>
+              <div class="pps-ds-section-title" style="margin-top: 18px">
+                Bus stops
+              </div>
               <div class="pps-ds-kv-list">
-                <div v-for="b in enrichmentBuses.slice(0, 5)" :key="(b.name || 'stop') + b.distanceKm" class="pps-ds-kv">
-                  <span class="pps-ds-k">🚌 {{ b.name || 'Bus Stop' }}<template v-if="b.ref"> ({{ b.ref }})</template></span>
+                <div
+                  v-for="b in enrichmentBuses.slice(0, 5)"
+                  :key="(b.name || 'stop') + b.distanceKm"
+                  class="pps-ds-kv"
+                >
+                  <span class="pps-ds-k"
+                    >🚌 {{ b.name || 'Bus Stop'
+                    }}<template v-if="b.ref"> ({{ b.ref }})</template></span
+                  >
                   <span class="pps-ds-v">{{ b.distanceKm.toFixed(2) }} km</span>
                 </div>
               </div>
             </template>
 
             <template v-if="enrichmentAirports.length > 0">
-              <div class="pps-ds-section-title" style="margin-top: 18px">Airports</div>
+              <div class="pps-ds-section-title" style="margin-top: 18px">
+                Airports
+              </div>
               <div class="pps-ds-kv-list">
-                <div v-for="a in enrichmentAirports" :key="a.name" class="pps-ds-kv">
-                  <span class="pps-ds-k">✈️ {{ a.name }}<template v-if="a.iata"> ({{ a.iata }})</template></span>
+                <div
+                  v-for="a in enrichmentAirports"
+                  :key="a.name"
+                  class="pps-ds-kv"
+                >
+                  <span class="pps-ds-k"
+                    >✈️ {{ a.name
+                    }}<template v-if="a.iata"> ({{ a.iata }})</template></span
+                  >
                   <span class="pps-ds-v">{{ a.distanceKm.toFixed(1) }} km</span>
                 </div>
               </div>
             </template>
 
             <div
-              v-if="enrichmentTrains.length === 0 && enrichmentBuses.length === 0 && enrichmentAirports.length === 0"
+              v-if="
+                enrichmentTrains.length === 0 &&
+                enrichmentBuses.length === 0 &&
+                enrichmentAirports.length === 0
+              "
               class="pps-ds-placeholder"
             >
               <div class="pps-ds-placeholder-icon">🚂</div>
-              <div class="pps-ds-placeholder-title">No transport data on file</div>
+              <div class="pps-ds-placeholder-title">
+                No transport data on file
+              </div>
               <div class="pps-ds-placeholder-sub">
                 Will be backfilled on next enrichment pass.
               </div>
             </div>
 
-            <div class="pps-ds-attribution">Source: OpenStreetMap contributors</div>
+            <div class="pps-ds-attribution">
+              Source: OpenStreetMap contributors
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -968,30 +1565,58 @@
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Train stations</div>
                 <div class="pps-ds-header-meta">
-                  {{ enrichmentTrains.length }} station{{ enrichmentTrains.length === 1 ? '' : 's' }} within ~4 km
+                  {{ enrichmentTrains.length }} station{{
+                    enrichmentTrains.length === 1 ? '' : 's'
+                  }}
+                  within ~4 km
                 </div>
               </div>
             </div>
             <template v-if="enrichmentTrains.length > 0">
               <div class="pps-ds-section-title">Nearest stations</div>
               <div class="pps-ds-kv-list">
-                <div v-for="t in enrichmentTrains" :key="t.name + t.distanceKm" class="pps-ds-kv">
+                <div
+                  v-for="t in enrichmentTrains"
+                  :key="t.name + t.distanceKm"
+                  class="pps-ds-kv"
+                >
                   <span class="pps-ds-k">🚂 {{ t.name }}</span>
-                  <span class="pps-ds-v">{{ t.distanceKm.toFixed(1) }} km<template v-if="t.operator"> · {{ t.operator }}</template></span>
+                  <span class="pps-ds-v"
+                    >{{ t.distanceKm.toFixed(1) }} km<template
+                      v-if="t.operator"
+                    >
+                      · {{ t.operator }}</template
+                    ></span
+                  >
                 </div>
               </div>
               <div class="pps-ds-info-note">
-                Distances are straight-line. Walking distance and journey times depend on the route.
+                Distances are straight-line. Walking distance and journey times
+                depend on the route.
               </div>
             </template>
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🚂</div>
-              <div class="pps-ds-placeholder-title">No train stations within 4 km</div>
+              <div class="pps-ds-placeholder-title">
+                {{ transportLookupFailed
+                  ? 'Transport data unavailable from this network'
+                  : 'No train stations within 4 km' }}
+              </div>
               <div class="pps-ds-placeholder-sub">
-                This address has no National Rail or light-rail station within 4 km in OpenStreetMap.
+                <template v-if="transportLookupFailed">
+                  OpenStreetMap's Overpass servers couldn't be reached from
+                  the backend's network. This usually resolves automatically
+                  once deployed to UK/EU infra.
+                </template>
+                <template v-else>
+                  This address has no National Rail or light-rail station
+                  within 4 km in OpenStreetMap.
+                </template>
               </div>
             </div>
-            <div class="pps-ds-attribution">Source: OpenStreetMap · Overpass</div>
+            <div class="pps-ds-attribution">
+              Source: OpenStreetMap · Overpass
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -1002,30 +1627,55 @@
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Bus stops</div>
                 <div class="pps-ds-header-meta">
-                  {{ enrichmentBuses.length }} stop{{ enrichmentBuses.length === 1 ? '' : 's' }} within ~700 m
+                  {{ enrichmentBuses.length }} stop{{
+                    enrichmentBuses.length === 1 ? '' : 's'
+                  }}
+                  within ~700 m
                 </div>
               </div>
             </div>
             <template v-if="enrichmentBuses.length > 0">
               <div class="pps-ds-section-title">Nearest stops</div>
               <div class="pps-ds-kv-list">
-                <div v-for="b in enrichmentBuses" :key="(b.name || 'stop') + b.distanceKm" class="pps-ds-kv">
-                  <span class="pps-ds-k">🚌 {{ b.name || 'Bus Stop' }}<template v-if="b.ref"> ({{ b.ref }})</template></span>
+                <div
+                  v-for="b in enrichmentBuses"
+                  :key="(b.name || 'stop') + b.distanceKm"
+                  class="pps-ds-kv"
+                >
+                  <span class="pps-ds-k"
+                    >🚌 {{ b.name || 'Bus Stop'
+                    }}<template v-if="b.ref"> ({{ b.ref }})</template></span
+                  >
                   <span class="pps-ds-v">{{ b.distanceKm.toFixed(2) }} km</span>
                 </div>
               </div>
               <div class="pps-ds-info-note">
-                Bus stop locations from OpenStreetMap. Route numbers and operators vary by stop — check Traveline for live timetables.
+                Bus stop locations from OpenStreetMap. Route numbers and
+                operators vary by stop — check Traveline for live timetables.
               </div>
             </template>
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🚌</div>
-              <div class="pps-ds-placeholder-title">No bus stops within 700 m</div>
+              <div class="pps-ds-placeholder-title">
+                {{ transportLookupFailed
+                  ? 'Bus stop data unavailable from this network'
+                  : 'No bus stops within 700 m' }}
+              </div>
               <div class="pps-ds-placeholder-sub">
-                No bus stops are mapped within walking distance in OpenStreetMap.
+                <template v-if="transportLookupFailed">
+                  OpenStreetMap's Overpass servers couldn't be reached from
+                  the backend's network. This usually resolves once
+                  deployed to UK/EU infra.
+                </template>
+                <template v-else>
+                  No bus stops are mapped within walking distance in
+                  OpenStreetMap.
+                </template>
               </div>
             </div>
-            <div class="pps-ds-attribution">Source: OpenStreetMap · Overpass</div>
+            <div class="pps-ds-attribution">
+              Source: OpenStreetMap · Overpass
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -1036,30 +1686,55 @@
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Airports</div>
                 <div class="pps-ds-header-meta">
-                  {{ enrichmentAirports.length }} commercial airport{{ enrichmentAirports.length === 1 ? '' : 's' }} within ~50 km
+                  {{ enrichmentAirports.length }} commercial airport{{
+                    enrichmentAirports.length === 1 ? '' : 's'
+                  }}
+                  within ~50 km
                 </div>
               </div>
             </div>
             <template v-if="enrichmentAirports.length > 0">
               <div class="pps-ds-section-title">Nearest airports</div>
               <div class="pps-ds-kv-list">
-                <div v-for="a in enrichmentAirports" :key="a.name" class="pps-ds-kv">
-                  <span class="pps-ds-k">✈️ {{ a.name }}<template v-if="a.iata"> ({{ a.iata }})</template></span>
+                <div
+                  v-for="a in enrichmentAirports"
+                  :key="a.name"
+                  class="pps-ds-kv"
+                >
+                  <span class="pps-ds-k"
+                    >✈️ {{ a.name
+                    }}<template v-if="a.iata"> ({{ a.iata }})</template></span
+                  >
                   <span class="pps-ds-v">{{ a.distanceKm.toFixed(1) }} km</span>
                 </div>
               </div>
               <div class="pps-ds-info-note">
-                Distances are straight-line. Drive times depend on route and traffic.
+                Distances are straight-line. Drive times depend on route and
+                traffic.
               </div>
             </template>
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">✈️</div>
-              <div class="pps-ds-placeholder-title">No commercial airports within 50 km</div>
+              <div class="pps-ds-placeholder-title">
+                {{ transportLookupFailed
+                  ? 'Airport data unavailable from this network'
+                  : 'No commercial airports within 50 km' }}
+              </div>
               <div class="pps-ds-placeholder-sub">
-                Only aerodromes with an IATA code or "Airport" in their name are shown.
+                <template v-if="transportLookupFailed">
+                  OpenStreetMap's Overpass servers couldn't be reached from
+                  the backend's network. This usually resolves once
+                  deployed to UK/EU infra.
+                </template>
+                <template v-else>
+                  Only aerodromes with an IATA code or "Airport" in their
+                  name are shown.
+                </template>
               </div>
             </div>
-            <div class="pps-ds-attribution">Source: OpenStreetMap · Overpass</div>
+            <div class="pps-ds-attribution">
+              Source: OpenStreetMap · Overpass
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -1071,7 +1746,9 @@
                 <div class="pps-ds-header-title">Location &amp; Map</div>
                 <div class="pps-ds-header-meta">
                   {{ property?.city || '' }}
-                  <template v-if="property?.postcode"> · {{ property.postcode }}</template>
+                  <template v-if="property?.postcode">
+                    · {{ property.postcode }}</template
+                  >
                 </div>
               </div>
             </div>
@@ -1092,7 +1769,11 @@
             <template v-if="enrichmentParks.length > 0">
               <div class="pps-ds-section-title">Parks &amp; green space</div>
               <div class="pps-ds-kv-list">
-                <div v-for="p in enrichmentParks" :key="p.name + p.distanceKm" class="pps-ds-kv">
+                <div
+                  v-for="p in enrichmentParks"
+                  :key="p.name + p.distanceKm"
+                  class="pps-ds-kv"
+                >
                   <span class="pps-ds-k">🌳 {{ p.name }}</span>
                   <span class="pps-ds-v">{{ p.distanceKm.toFixed(2) }} km</span>
                 </div>
@@ -1100,22 +1781,33 @@
             </template>
 
             <template v-if="enrichmentAmenities.length > 0">
-              <div class="pps-ds-section-title" style="margin-top: 18px">Local amenities</div>
+              <div class="pps-ds-section-title" style="margin-top: 18px">
+                Local amenities
+              </div>
               <template v-for="(group, cat) in amenitiesByCategory" :key="cat">
-                <div v-if="group.length > 0" class="pps-ds-kv-list" style="margin-bottom: 8px">
+                <div
+                  v-if="group.length > 0"
+                  class="pps-ds-kv-list"
+                  style="margin-bottom: 8px"
+                >
                   <div
                     v-for="a in group.slice(0, 2)"
                     :key="a.name + a.distanceKm"
                     class="pps-ds-kv"
                   >
                     <span class="pps-ds-k">{{ a.icon }} {{ a.name }}</span>
-                    <span class="pps-ds-v">{{ Number(a.distanceKm).toFixed(2) }} km · {{ a.category }}</span>
+                    <span class="pps-ds-v"
+                      >{{ Number(a.distanceKm).toFixed(2) }} km ·
+                      {{ a.category }}</span
+                    >
                   </div>
                 </div>
               </template>
             </template>
 
-            <div class="pps-ds-attribution">Map: OpenStreetMap contributors</div>
+            <div class="pps-ds-attribution">
+              Map: OpenStreetMap contributors
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -1124,8 +1816,12 @@
             <div class="pps-ds-header" style="background: #fff8e1">
               <span class="pps-ds-header-icon">💧</span>
               <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">Flood &amp; environmental risk</div>
-                <div class="pps-ds-header-meta">Source: Environment Agency · GOV.UK</div>
+                <div class="pps-ds-header-title">
+                  Flood &amp; environmental risk
+                </div>
+                <div class="pps-ds-header-meta">
+                  Source: Environment Agency · GOV.UK
+                </div>
               </div>
             </div>
             <div
@@ -1134,23 +1830,34 @@
               :class="{
                 'pps-ds-risk-card--high': /high/i.test(property.floodRisk),
                 'pps-ds-risk-card--medium': /medium/i.test(property.floodRisk),
-                'pps-ds-risk-card--low': /low/i.test(property.floodRisk) && !/very/i.test(property.floodRisk),
-                'pps-ds-risk-card--clear': /very low|unknown/i.test(property.floodRisk),
+                'pps-ds-risk-card--low':
+                  /low/i.test(property.floodRisk) &&
+                  !/very/i.test(property.floodRisk),
+                'pps-ds-risk-card--clear': /very low|unknown/i.test(
+                  property.floodRisk,
+                ),
               }"
             >
-              <div class="pps-ds-risk-label">{{ property.floodRisk }} flood risk</div>
+              <div class="pps-ds-risk-label">
+                {{ property.floodRisk }} flood risk
+              </div>
               <div class="pps-ds-risk-desc">
                 <template v-if="/high/i.test(property.floodRisk)">
-                  This address sits in an EA-classified high-risk zone (greater than 3.3% chance of flooding in any given year from rivers or sea).
+                  This address sits in an EA-classified high-risk zone (greater
+                  than 3.3% chance of flooding in any given year from rivers or
+                  sea).
                 </template>
                 <template v-else-if="/medium/i.test(property.floodRisk)">
-                  Medium risk — between 1% and 3.3% annual probability of river or sea flooding.
+                  Medium risk — between 1% and 3.3% annual probability of river
+                  or sea flooding.
                 </template>
                 <template v-else-if="/very low/i.test(property.floodRisk)">
-                  Very low risk — less than 0.1% annual probability of river or sea flooding.
+                  Very low risk — less than 0.1% annual probability of river or
+                  sea flooding.
                 </template>
                 <template v-else-if="/low/i.test(property.floodRisk)">
-                  Low risk — between 0.1% and 1% annual probability of river or sea flooding.
+                  Low risk — between 0.1% and 1% annual probability of river or
+                  sea flooding.
                 </template>
                 <template v-else>
                   EA risk classification: {{ property.floodRisk }}.
@@ -1167,11 +1874,17 @@
             </div>
 
             <!-- Risk breakdown -->
-            <div class="pps-ds-section-title" style="margin-top: 18px">Risk breakdown</div>
+            <div class="pps-ds-section-title" style="margin-top: 18px">
+              Risk breakdown
+            </div>
             <div class="pps-ds-kv-list">
               <div class="pps-ds-kv">
                 <span class="pps-ds-k">River &amp; sea</span>
-                <span class="pps-ds-v" :class="floodBreakdownClass(property?.floodRisk)">{{ property?.floodRisk || 'Not assessed' }}</span>
+                <span
+                  class="pps-ds-v"
+                  :class="floodBreakdownClass(property?.floodRisk)"
+                  >{{ property?.floodRisk || 'Not assessed' }}</span
+                >
               </div>
               <div v-if="nearestWatercourse" class="pps-ds-kv">
                 <span class="pps-ds-k">Nearest watercourse</span>
@@ -1179,24 +1892,36 @@
               </div>
               <div v-for="z in floodZonesList" :key="z.name" class="pps-ds-kv">
                 <span class="pps-ds-k">📍 {{ z.name }}</span>
-                <span class="pps-ds-v" :class="floodBreakdownClass(z.severity)">{{ z.severity }}</span>
+                <span
+                  class="pps-ds-v"
+                  :class="floodBreakdownClass(z.severity)"
+                  >{{ z.severity }}</span
+                >
               </div>
               <div class="pps-ds-kv">
                 <span class="pps-ds-k">Surface water</span>
-                <span class="pps-ds-v pps-ds-v--muted">Not in EA monitoring feed</span>
+                <span class="pps-ds-v pps-ds-v--muted"
+                  >Not in EA monitoring feed</span
+                >
               </div>
               <div class="pps-ds-kv">
                 <span class="pps-ds-k">Groundwater</span>
-                <span class="pps-ds-v pps-ds-v--muted">Not in EA monitoring feed</span>
+                <span class="pps-ds-v pps-ds-v--muted"
+                  >Not in EA monitoring feed</span
+                >
               </div>
               <div class="pps-ds-kv">
                 <span class="pps-ds-k">Reservoir</span>
-                <span class="pps-ds-v pps-ds-v--muted">Not in EA monitoring feed</span>
+                <span class="pps-ds-v pps-ds-v--muted"
+                  >Not in EA monitoring feed</span
+                >
               </div>
             </div>
 
             <!-- Other environmental — links to official postcode lookups -->
-            <div class="pps-ds-section-title" style="margin-top: 18px">Other environmental</div>
+            <div class="pps-ds-section-title" style="margin-top: 18px">
+              Other environmental
+            </div>
             <div class="pps-ds-kv-list">
               <a
                 :href="`https://www.ukradon.org/information/ukmaps?utm_source=umovingu`"
@@ -1238,12 +1963,15 @@
 
             <div class="pps-ds-info-note">
               Flood risk data is from the Environment Agency's national mapping.
-              It indicates statistical probability — not a guarantee of flooding.
-              Surface water, groundwater and reservoir ratings need the EA RoFRS bulk dataset.
-              Radon, subsidence, ground stability and air quality come from third-party
-              government datasets — links above open the official postcode lookup.
+              It indicates statistical probability — not a guarantee of
+              flooding. Surface water, groundwater and reservoir ratings need
+              the EA RoFRS bulk dataset. Radon, subsidence, ground stability and
+              air quality come from third-party government datasets — links
+              above open the official postcode lookup.
             </div>
-            <div class="pps-ds-attribution">Sources: Environment Agency · UKHSA · BGS · DEFRA</div>
+            <div class="pps-ds-attribution">
+              Sources: Environment Agency · UKHSA · BGS · DEFRA
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -1254,7 +1982,9 @@
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Planning history</div>
                 <div class="pps-ds-header-meta">
-                  Source: planning.data.gov.uk{{ property?.city ? ` · ${property.city}` : '' }}
+                  Source: planning.data.gov.uk{{
+                    property?.city ? ` · ${property.city}` : ''
+                  }}
                 </div>
               </div>
             </div>
@@ -1263,8 +1993,14 @@
             <template v-if="planningConstraints.length > 0">
               <div class="pps-ds-section-title">Planning constraints</div>
               <div class="pps-ds-kv-list">
-                <div v-for="(c, i) in planningConstraints" :key="i" class="pps-ds-kv">
-                  <span class="pps-ds-k">{{ constraintIcon(c.category) }} {{ c.type }}</span>
+                <div
+                  v-for="(c, i) in planningConstraints"
+                  :key="i"
+                  class="pps-ds-kv"
+                >
+                  <span class="pps-ds-k"
+                    >{{ constraintIcon(c.category) }} {{ c.type }}</span
+                  >
                   <span class="pps-ds-v">{{ c.name }}</span>
                 </div>
               </div>
@@ -1272,38 +2008,68 @@
 
             <!-- Applications (property-specific via UPRN) -->
             <template v-if="planningApplications.length > 0">
-              <div class="pps-ds-section-title" style="margin-top: 18px">Planning applications</div>
+              <div class="pps-ds-section-title" style="margin-top: 18px">
+                Planning applications
+              </div>
               <div class="pps-ds-table">
                 <div class="pps-ds-row pps-ds-row--header">
                   <span>Date</span><span>Type</span><span>Status</span>
                 </div>
-                <div v-for="(a, i) in planningApplications.slice(0, 10)" :key="i" class="pps-ds-row">
-                  <span>{{ a.decisionDate ? new Date(a.decisionDate).getFullYear() : '—' }}</span>
-                  <span class="pps-ds-val">{{ (a.applicationType || a.description || 'Application').slice(0, 40) }}</span>
-                  <span class="pps-ds-muted">{{ a.decision || a.status || '—' }}</span>
+                <div
+                  v-for="(a, i) in planningApplications.slice(0, 10)"
+                  :key="i"
+                  class="pps-ds-row"
+                >
+                  <span>{{
+                    a.decisionDate
+                      ? new Date(a.decisionDate).getFullYear()
+                      : '—'
+                  }}</span>
+                  <span class="pps-ds-val">{{
+                    (a.applicationType || a.description || 'Application').slice(
+                      0,
+                      40,
+                    )
+                  }}</span>
+                  <span class="pps-ds-muted">{{
+                    a.decision || a.status || '—'
+                  }}</span>
                 </div>
               </div>
             </template>
 
             <div
-              v-if="planningConstraints.length === 0 && planningApplications.length === 0"
+              v-if="
+                planningConstraints.length === 0 &&
+                planningApplications.length === 0
+              "
               class="pps-ds-placeholder"
             >
               <div class="pps-ds-placeholder-icon">📋</div>
-              <div class="pps-ds-placeholder-title">No constraints or applications on file</div>
+              <div class="pps-ds-placeholder-title">
+                No constraints or applications on file
+              </div>
               <div class="pps-ds-placeholder-sub">
-                This address has no conservation area, listed building, Article 4 direction,
-                Green Belt, AONB or other planning designation in
-                <a href="https://www.planning.data.gov.uk" target="_blank" rel="noopener" style="color:#00a19a;font-weight:700;">planning.data.gov.uk</a>,
-                and no planning applications linked to this UPRN.
+                This address has no conservation area, listed building, Article
+                4 direction, Green Belt, AONB or other planning designation in
+                <a
+                  href="https://www.planning.data.gov.uk"
+                  target="_blank"
+                  rel="noopener"
+                  style="color: #00a19a; font-weight: 700"
+                  >planning.data.gov.uk</a
+                >, and no planning applications linked to this UPRN.
               </div>
             </div>
 
             <div class="pps-ds-info-note">
-              Constraints come from the national Planning Data platform. Applications are matched
-              to this property's UPRN — they may exclude older paper records held only by the LA portal.
+              Constraints come from the national Planning Data platform.
+              Applications are matched to this property's UPRN — they may
+              exclude older paper records held only by the LA portal.
             </div>
-            <div class="pps-ds-attribution">Source: planning.data.gov.uk · MHCLG</div>
+            <div class="pps-ds-attribution">
+              Source: planning.data.gov.uk · MHCLG
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -1314,18 +2080,25 @@
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Council tax</div>
                 <div class="pps-ds-header-meta">
-                  Source: VOA<template v-if="property?.city"> · {{ property.city }} Council</template>
+                  Source: {{ councilTaxSource || 'VOA'
+                  }}<template v-if="councilTaxCouncilName">
+                    · {{ councilTaxCouncilName }}</template
+                  >
                 </div>
               </div>
             </div>
             <div v-if="councilTaxAnnual" class="pps-ds-highlight-box">
-              <div class="pps-ds-highlight-num">£{{ councilTaxAnnual.toLocaleString() }} / yr</div>
+              <div class="pps-ds-highlight-num">
+                £{{ councilTaxAnnual.toLocaleString() }} / yr
+              </div>
               <div class="pps-ds-highlight-sub">
                 Band {{ property.councilTaxBand }} · 2024/25 average
                 <template v-if="property.city"> · {{ property.city }}</template>
               </div>
             </div>
-            <div class="pps-ds-section-title" style="margin-top: 18px">All bands · 2024/25 average</div>
+            <div class="pps-ds-section-title" style="margin-top: 18px">
+              All bands · 2024/25 average
+            </div>
             <div class="pps-ds-band-list">
               <div
                 v-for="b in councilTaxBands"
@@ -1333,23 +2106,64 @@
                 class="pps-ds-band-row"
                 :class="{ 'pps-ds-band-row--active': b.active }"
               >
-                <span class="pps-ds-band-letter">{{ b.letter }}{{ b.active ? ' ←' : '' }}</span>
+                <span class="pps-ds-band-letter"
+                  >{{ b.letter }}{{ b.active ? ' ←' : '' }}</span
+                >
                 <div class="pps-ds-band-bar-track">
                   <div
                     class="pps-ds-band-bar"
-                    :style="{ width: b.pct + '%', background: b.active ? '#00a19a' : undefined }"
+                    :style="{
+                      width: b.pct + '%',
+                      background: b.active ? '#00a19a' : undefined,
+                    }"
                   />
                 </div>
-                <span class="pps-ds-band-amt">£{{ b.amount.toLocaleString() }}</span>
+                <span class="pps-ds-band-amt"
+                  >£{{ b.amount.toLocaleString() }}</span
+                >
               </div>
             </div>
-            <div v-if="councilTaxAnnual" class="pps-ds-kv-list" style="margin-top: 14px">
+            <div
+              v-if="councilTaxAnnual"
+              class="pps-ds-kv-list"
+              style="margin-top: 14px"
+            >
               <div class="pps-ds-kv">
                 <span class="pps-ds-k">Monthly equivalent</span>
-                <span class="pps-ds-v">£{{ Math.round(councilTaxAnnual / 12) }} / month</span>
+                <span class="pps-ds-v"
+                  >£{{ Math.round(councilTaxAnnual / 12) }} / month</span
+                >
               </div>
             </div>
-            <div class="pps-ds-attribution">Source: Valuation Office Agency · 2024/25</div>
+
+            <!-- Nearby council tax bands (restored — uses the enrichment.councilTax.nearby
+                 array that was previously fetched but never rendered). -->
+            <template v-if="councilTaxNearby.length > 0">
+              <div class="pps-ds-section-title" style="margin-top: 18px">
+                Nearby addresses
+              </div>
+              <div class="pps-ds-kv-list">
+                <div
+                  v-for="(n, i) in councilTaxNearby.slice(0, 6)"
+                  :key="(n.address || 'n') + i"
+                  class="pps-ds-kv"
+                >
+                  <span class="pps-ds-k">{{
+                    n.address || n.postcode || 'Nearby property'
+                  }}</span>
+                  <span class="pps-ds-v">
+                    Band {{ n.band
+                    }}<template v-if="n.annualEstimate">
+                      · £{{ n.annualEstimate.toLocaleString() }}/yr</template
+                    >
+                  </span>
+                </div>
+              </div>
+            </template>
+
+            <div class="pps-ds-attribution">
+              Source: Valuation Office Agency · 2024/25
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -1359,61 +2173,111 @@
               <span class="pps-ds-header-icon">📶</span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Broadband</div>
-                <div class="pps-ds-header-meta">Source: Ofcom Connected Nations</div>
+                <div class="pps-ds-header-meta">
+                  Source: Ofcom Connected Nations
+                </div>
               </div>
             </div>
 
-            <template v-if="enrichmentBroadband">
-              <div v-if="enrichmentBroadband.maxDownload" class="pps-ds-highlight-box">
+            <template v-if="enrichmentBroadband?.available">
+              <div
+                v-if="enrichmentBroadband.maxDownload"
+                class="pps-ds-highlight-box"
+              >
                 <div class="pps-ds-highlight-num">
                   Up to {{ formatMbps(enrichmentBroadband.maxDownload) }}
                 </div>
                 <div class="pps-ds-highlight-sub">
-                  <template v-if="enrichmentBroadband.fttp">Full fibre (FTTP) available at this address</template>
-                  <template v-else-if="enrichmentBroadband.ultrafast">Ultrafast available at this address</template>
-                  <template v-else-if="enrichmentBroadband.superfast">Superfast available at this address</template>
-                  <template v-else>Standard broadband · upgrade may be possible</template>
+                  <template v-if="enrichmentBroadband.fttp"
+                    >Full fibre (FTTP) available at this address</template
+                  >
+                  <template v-else-if="enrichmentBroadband.ultrafast"
+                    >Ultrafast available at this address</template
+                  >
+                  <template v-else-if="enrichmentBroadband.superfast"
+                    >Superfast available at this address</template
+                  >
+                  <template v-else
+                    >Standard broadband · upgrade may be possible</template
+                  >
                 </div>
               </div>
 
-              <div class="pps-ds-section-title" style="margin-top: 18px">Technology available</div>
+              <div class="pps-ds-section-title" style="margin-top: 18px">
+                Technology available
+              </div>
               <div class="pps-ds-bb-list">
                 <div class="pps-ds-bb-row">
-                  <div class="pps-ds-bb-check" :class="enrichmentBroadband.fttp ? 'pps-ds-bb-check--yes' : 'pps-ds-bb-check--no'">
+                  <div
+                    class="pps-ds-bb-check"
+                    :class="
+                      enrichmentBroadband.fttp
+                        ? 'pps-ds-bb-check--yes'
+                        : 'pps-ds-bb-check--no'
+                    "
+                  >
                     {{ enrichmentBroadband.fttp ? '✓' : '✗' }}
                   </div>
                   <div class="pps-ds-bb-info">
                     <div class="pps-ds-bb-name">Full Fibre (FTTP)</div>
-                    <div class="pps-ds-bb-meta">Up to 1,000+ Mbps · Openreach / altnets</div>
+                    <div class="pps-ds-bb-meta">
+                      Up to 1,000+ Mbps · Openreach / altnets
+                    </div>
                   </div>
                 </div>
                 <div class="pps-ds-bb-row">
-                  <div class="pps-ds-bb-check" :class="enrichmentBroadband.fttc ? 'pps-ds-bb-check--yes' : 'pps-ds-bb-check--no'">
+                  <div
+                    class="pps-ds-bb-check"
+                    :class="
+                      enrichmentBroadband.fttc
+                        ? 'pps-ds-bb-check--yes'
+                        : 'pps-ds-bb-check--no'
+                    "
+                  >
                     {{ enrichmentBroadband.fttc ? '✓' : '✗' }}
                   </div>
                   <div class="pps-ds-bb-info">
                     <div class="pps-ds-bb-name">Superfast (FTTC)</div>
-                    <div class="pps-ds-bb-meta">Up to 80 Mbps · BT Openreach</div>
+                    <div class="pps-ds-bb-meta">
+                      Up to 80 Mbps · BT Openreach
+                    </div>
                   </div>
                 </div>
                 <div class="pps-ds-bb-row">
-                  <div class="pps-ds-bb-check" :class="enrichmentBroadband.cable ? 'pps-ds-bb-check--yes' : 'pps-ds-bb-check--no'">
+                  <div
+                    class="pps-ds-bb-check"
+                    :class="
+                      enrichmentBroadband.cable
+                        ? 'pps-ds-bb-check--yes'
+                        : 'pps-ds-bb-check--no'
+                    "
+                  >
                     {{ enrichmentBroadband.cable ? '✓' : '✗' }}
                   </div>
                   <div class="pps-ds-bb-info">
                     <div class="pps-ds-bb-name">Cable (DOCSIS)</div>
-                    <div class="pps-ds-bb-meta">Up to 1,130 Mbps · Virgin Media</div>
+                    <div class="pps-ds-bb-meta">
+                      Up to 1,130 Mbps · Virgin Media
+                    </div>
                   </div>
                 </div>
                 <div class="pps-ds-bb-row">
-                  <div class="pps-ds-bb-check" :class="enrichmentBroadband.ultrafast ? 'pps-ds-bb-check--yes' : 'pps-ds-bb-check--no'">
+                  <div
+                    class="pps-ds-bb-check"
+                    :class="
+                      enrichmentBroadband.ultrafast
+                        ? 'pps-ds-bb-check--yes'
+                        : 'pps-ds-bb-check--no'
+                    "
+                  >
                     {{ enrichmentBroadband.ultrafast ? '✓' : '✗' }}
                   </div>
                   <div class="pps-ds-bb-info">
                     <div class="pps-ds-bb-name">Ultrafast (>300 Mbps)</div>
                     <div class="pps-ds-bb-meta">
                       <template v-if="enrichmentBroadband.maxUfDownload">
-                        Up to {{ formatMbps(enrichmentBroadband.maxUfDownload) }}
+                        Up to
+                        {{ formatMbps(enrichmentBroadband.maxUfDownload) }}
                       </template>
                       <template v-else>Not currently listed</template>
                     </div>
@@ -1423,54 +2287,120 @@
             </template>
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">📶</div>
-              <div class="pps-ds-placeholder-title">Broadband data unavailable</div>
-              <div class="pps-ds-placeholder-sub">
-                Ofcom didn't return coverage for this postcode, or the OFCOM_API_KEY
-                isn't configured server-side.
+              <div class="pps-ds-placeholder-title">
+                {{ broadbandPlaceholder.title }}
               </div>
+              <div class="pps-ds-placeholder-sub">
+                {{ broadbandPlaceholder.sub }}
+              </div>
+              <a
+                v-if="property?.postcode"
+                :href="`https://checker.ofcom.org.uk/en-gb/broadband-coverage?Postcode=${encodeURIComponent(property.postcode)}`"
+                target="_blank"
+                rel="noopener"
+                class="pps-ds-placeholder-link"
+              >
+                Check on Ofcom's site →
+              </a>
             </div>
 
-            <template v-if="enrichmentMobile">
-              <div class="pps-ds-section-title" style="margin-top: 18px">Mobile signal (outdoor)</div>
+            <template v-if="enrichmentMobile?.available">
+              <div class="pps-ds-section-title" style="margin-top: 18px">
+                Mobile signal (outdoor)
+              </div>
               <div class="pps-ds-kv-list">
-                <div v-for="op in mobileOperatorRows" :key="op.label" class="pps-ds-kv">
+                <div
+                  v-for="op in mobileOperatorRows"
+                  :key="op.label"
+                  class="pps-ds-kv"
+                >
                   <span class="pps-ds-k">{{ op.label }}</span>
-                  <span class="pps-ds-v" :class="op.colour">{{ op.summary }}</span>
+                  <span class="pps-ds-v" :class="op.colour">{{
+                    op.summary
+                  }}</span>
                 </div>
               </div>
             </template>
 
-            <div class="pps-ds-attribution">Source: Ofcom Connected Nations · 2024</div>
+            <div class="pps-ds-attribution">
+              Source: Ofcom Connected Nations · 2024
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Stamp Duty Calculator (live) ──────────────────────── -->
           <template v-else-if="activeSheet === 'stamp-duty'">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0 16px">
-              <div style="font-size: 17px; font-weight: 900; color: #231d45; letter-spacing: -0.3px">
-                Stamp Duty Calculator
-              </div>
-              <div style="font-size: 11px; color: #9c98ad; font-weight: 600">England &amp; NI · 2026</div>
-            </div>
             <div
-              style="background: #e6f7f6; border: 1.5px solid #b2e4e1; border-radius: 14px; padding: 16px 18px; margin-bottom: 16px"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                padding: 4px 0 16px;
+              "
             >
               <div
-                style="font-size: 9px; font-weight: 800; color: #6b6783; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px"
+                style="
+                  font-size: 17px;
+                  font-weight: 900;
+                  color: #231d45;
+                  letter-spacing: -0.3px;
+                "
+              >
+                Stamp Duty Calculator
+              </div>
+              <div style="font-size: 12px; color: #9c98ad; font-weight: 600">
+                England &amp; NI · 2026
+              </div>
+            </div>
+            <div
+              style="
+                background: #e6f7f6;
+                border: 1.5px solid #b2e4e1;
+                border-radius: 14px;
+                padding: 16px 18px;
+                margin-bottom: 16px;
+              "
+            >
+              <div
+                style="
+                  font-size: 9px;
+                  font-weight: 800;
+                  color: #6b6783;
+                  letter-spacing: 1.5px;
+                  text-transform: uppercase;
+                  margin-bottom: 4px;
+                "
               >
                 Your estimated stamp duty
               </div>
-              <div style="font-size: 32px; font-weight: 900; color: #00a19a; letter-spacing: -1px">
+              <div
+                style="
+                  font-size: 32px;
+                  font-weight: 900;
+                  color: #00a19a;
+                  letter-spacing: -1px;
+                "
+              >
                 £{{ stampDuty.total.toLocaleString() }}
               </div>
-              <div style="font-size: 12px; color: #6b6783; margin-top: 4px">
+              <div style="font-size: 13px; color: #6b6783; margin-top: 4px">
                 On a price of £{{ (sdInput || 0).toLocaleString() }}
               </div>
             </div>
             <div
-              style="border: 1.5px solid #ececef; border-radius: 14px; padding: 14px 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px"
+              style="
+                border: 1.5px solid #ececef;
+                border-radius: 14px;
+                padding: 14px 18px;
+                margin-bottom: 14px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              "
             >
-              <span style="font-size: 20px; color: #c0bdcc; font-weight: 700">£</span>
+              <span style="font-size: 20px; color: #c0bdcc; font-weight: 700"
+                >£</span
+              >
               <input
                 :value="sdInput"
                 type="number"
@@ -1478,11 +2408,29 @@
                 max="10000000"
                 step="1000"
                 @input="onSdInput"
-                style="border: none; outline: none; font-size: 22px; font-weight: 800; color: #231d45; font-family: inherit; width: 100%; background: transparent; letter-spacing: -0.5px"
+                style="
+                  border: none;
+                  outline: none;
+                  font-size: 22px;
+                  font-weight: 800;
+                  color: #231d45;
+                  font-family: inherit;
+                  width: 100%;
+                  background: transparent;
+                  letter-spacing: -0.5px;
+                "
               />
             </div>
             <div
-              style="background: #f5f5f7; border-radius: 12px; padding: 4px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 18px"
+              style="
+                background: #f5f5f7;
+                border-radius: 12px;
+                padding: 4px;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 4px;
+                margin-bottom: 18px;
+              "
             >
               <button
                 class="pps-sd-type-btn"
@@ -1506,17 +2454,35 @@
                 🏘️ Additional
               </button>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px">
-              <div v-for="(b, i) in stampDuty.bands" :key="i" class="pps-sd-band">
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 16px;
+              "
+            >
+              <div
+                v-for="(b, i) in stampDuty.bands"
+                :key="i"
+                class="pps-sd-band"
+              >
                 <div class="pps-sd-band-top">
-                  <span class="pps-sd-band-pct">{{ Math.round(b.rate * 100) }}%</span>
-                  <span class="pps-sd-band-amt">£{{ b.amount.toLocaleString() }}</span>
+                  <span class="pps-sd-band-pct"
+                    >{{ Math.round(b.rate * 100) }}%</span
+                  >
+                  <span class="pps-sd-band-amt"
+                    >£{{ b.amount.toLocaleString() }}</span
+                  >
                 </div>
                 <div class="pps-sd-band-track">
                   <div
                     class="pps-sd-band-fill"
                     :style="{
-                      width: stampDuty.total > 0 ? (b.amount / stampDuty.total) * 100 + '%' : '0%',
+                      width:
+                        stampDuty.total > 0
+                          ? (b.amount / stampDuty.total) * 100 + '%'
+                          : '0%',
                     }"
                   />
                 </div>
@@ -1527,9 +2493,119 @@
               <a
                 href="https://www.gov.uk/stamp-duty-land-tax"
                 target="_blank"
-                style="font-size: 12px; font-weight: 700; color: #00a19a; text-decoration: none"
+                style="
+                  font-size: 13px;
+                  font-weight: 700;
+                  color: #00a19a;
+                  text-decoration: none;
+                "
                 >Full rates on GOV.UK →</a
               >
+            </div>
+            <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
+          </template>
+
+          <!-- ── Listed buildings / heritage sites ────────────────────── -->
+          <template v-else-if="activeSheet === 'listed'">
+            <div class="pps-ds-header" style="background: #fbefd9">
+              <span class="pps-ds-header-icon">🏛️</span>
+              <div class="pps-ds-header-text">
+                <div class="pps-ds-header-title">Heritage sites nearby</div>
+                <div class="pps-ds-header-meta">
+                  Source: OpenStreetMap · Historic England
+                </div>
+              </div>
+            </div>
+            <template v-if="enrichmentListedBuildings.length > 0">
+              <div class="pps-ds-section-title">
+                {{ enrichmentListedBuildings.length }} listed / historic site{{
+                  enrichmentListedBuildings.length === 1 ? '' : 's'
+                }}
+                within ~800m
+              </div>
+              <div class="pps-ds-kv-list">
+                <div
+                  v-for="(b, i) in enrichmentListedBuildings"
+                  :key="(b.name || 'site') + i"
+                  class="pps-ds-kv"
+                >
+                  <span class="pps-ds-k"
+                    >🏛️ {{ b.name || 'Unnamed site'
+                    }}<template v-if="b.location">
+                      · {{ b.location }}</template
+                    ></span
+                  >
+                  <span class="pps-ds-v">{{ b.grade || 'Heritage' }}</span>
+                </div>
+              </div>
+              <div class="pps-ds-info-note">
+                Heritage designations may affect what alterations or extensions
+                you can make. Always check with the local conservation officer.
+              </div>
+            </template>
+            <div v-else class="pps-ds-placeholder">
+              <div class="pps-ds-placeholder-icon">🏛️</div>
+              <div class="pps-ds-placeholder-title">
+                No heritage sites nearby
+              </div>
+              <div class="pps-ds-placeholder-sub">
+                No listed buildings or scheduled monuments within ~800m.
+              </div>
+            </div>
+            <div class="pps-ds-attribution">
+              Source: OpenStreetMap heritage tags
+            </div>
+            <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
+          </template>
+
+          <!-- ── Crime / safety (data.police.uk) ────────────────────── -->
+          <template v-else-if="activeSheet === 'crime'">
+            <div class="pps-ds-header" style="background: #eeedf5">
+              <span class="pps-ds-header-icon">🛡️</span>
+              <div class="pps-ds-header-text">
+                <div class="pps-ds-header-title">Crime in this area</div>
+                <div class="pps-ds-header-meta">
+                  Source: data.police.uk · last 12 months · 1 mile radius
+                </div>
+              </div>
+            </div>
+            <template v-if="enrichmentCrime?.totalLast12m != null">
+              <div class="pps-ds-highlight-box">
+                <div class="pps-ds-highlight-num">
+                  {{ enrichmentCrime.totalLast12m.toLocaleString() }} crimes
+                </div>
+                <div class="pps-ds-highlight-sub">
+                  Over the past 12 months within 1 mile of this address
+                </div>
+              </div>
+              <div class="pps-ds-section-title" style="margin-top: 18px">
+                Breakdown by category
+              </div>
+              <div class="pps-ds-kv-list">
+                <div
+                  v-for="cat in enrichmentCrime.byCategory"
+                  :key="cat.category"
+                  class="pps-ds-kv"
+                >
+                  <span class="pps-ds-k">{{ cat.label }}</span>
+                  <span class="pps-ds-v">{{ cat.count.toLocaleString() }}</span>
+                </div>
+              </div>
+              <div class="pps-ds-info-note">
+                Counts reflect reported crimes only. Many incidents go
+                unreported, and definitions vary by force. Use as a relative
+                indicator, not an absolute measure.
+              </div>
+            </template>
+            <div v-else class="pps-ds-placeholder">
+              <div class="pps-ds-placeholder-icon">🛡️</div>
+              <div class="pps-ds-placeholder-title">Crime data unavailable</div>
+              <div class="pps-ds-placeholder-sub">
+                Couldn't load data.police.uk stats for this location.
+              </div>
+            </div>
+            <div class="pps-ds-attribution">
+              Source: data.police.uk · open government licence
             </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
@@ -1566,7 +2642,11 @@
                 <label class="pps-field-label">Why are you watching?</label>
                 <div class="pps-choice-row">
                   <button
-                    v-for="r in ['Potential buyer', 'I love the road', 'Investor']"
+                    v-for="r in [
+                      'Potential buyer',
+                      'I love the road',
+                      'Investor',
+                    ]"
                     :key="r"
                     type="button"
                     class="pps-choice"
@@ -1581,7 +2661,11 @@
                 <label class="pps-field-label">Alert me when…</label>
                 <div class="pps-choice-row">
                   <button
-                    v-for="t in ['Listed for sale', 'Passport live', 'Any update']"
+                    v-for="t in [
+                      'Listed for sale',
+                      'Passport live',
+                      'Any update',
+                    ]"
                     :key="t"
                     type="button"
                     class="pps-choice"
@@ -1604,7 +2688,9 @@
             >
               {{ watchSubmitting ? 'Saving…' : 'Save & watch →' }}
             </button>
-            <button class="pps-sheet-cancel" @click="closeSheet">Not now</button>
+            <button class="pps-sheet-cancel" @click="closeSheet">
+              Not now
+            </button>
           </template>
 
           <!-- ── Make Contact (Owner / Neighbour) ──────────────────── -->
@@ -1674,7 +2760,7 @@
             </div>
 
             <div class="pps-privacy-note">
-              <span style="font-size: 13px">🔒</span>
+              <span style="font-size: 15px">🔒</span>
               Your details go only to the verified owner. We never share with
               third parties or agents without your consent.
             </div>
@@ -1694,59 +2780,182 @@
 
           <!-- ── Passport unlock (Published — £99) ─────────────────── -->
           <template v-else-if="activeSheet === 'passport'">
-            <div class="pps-passport-sheet-header">
+            <!-- Header branches by state: the badge text + dot colour reflect
+                 whether the Passport is verified, being built, or absent. -->
+            <div
+              class="pps-passport-sheet-header"
+              :class="{
+                'pps-passport-sheet-header--unclaimed': pageState === 'unclaimed',
+                'pps-passport-sheet-header--progress': pageState === 'progress',
+              }"
+            >
               <div class="pps-passport-sheet-badge">
-                <span class="pps-passport-sheet-dot" />
-                Verified Passport
+                <span
+                  class="pps-passport-sheet-dot"
+                  :style="
+                    pageState === 'unclaimed'
+                      ? { background: '#9c98ad' }
+                      : pageState === 'progress'
+                        ? { background: '#e6a23c' }
+                        : undefined
+                  "
+                />
+                <template v-if="pageState === 'unclaimed'">Unclaimed Property</template>
+                <template v-else-if="pageState === 'progress'">Passport in progress</template>
+                <template v-else>Verified Passport</template>
               </div>
               <div class="pps-passport-sheet-address">
                 {{ property?.addressLine1 }}
               </div>
               <div class="pps-passport-sheet-meta">
                 {{ property?.city }} · {{ property?.postcode }}
-                <template v-if="property?.propertyType"> · {{ property.propertyType }}</template>
-                <template v-if="property?.bedrooms"> · {{ property.bedrooms }} bed</template>
+                <template v-if="property?.propertyType">
+                  · {{ property.propertyType }}</template
+                >
               </div>
             </div>
-            <div class="pps-passport-sheet-section-title">What's inside</div>
-            <div class="pps-passport-sheet-items">
-              <div v-for="f in publishedFeatures" :key="f.title" class="pps-psi-row">
-                <div class="pps-psi-icon">📄</div>
-                <div class="pps-psi-text">
-                  <div class="pps-psi-name">{{ f.title }}</div>
-                  <div class="pps-psi-meta">{{ f.sub }}</div>
+
+            <!-- ── PUBLISHED: existing £99 unlock flow ── -->
+            <template v-if="pageState === 'published'">
+              <div class="pps-passport-sheet-section-title">What's inside</div>
+              <div class="pps-passport-sheet-items">
+                <div
+                  v-for="f in publishedFeatures"
+                  :key="f.title"
+                  class="pps-psi-row"
+                >
+                  <div class="pps-psi-icon">📄</div>
+                  <div class="pps-psi-text">
+                    <div class="pps-psi-name">{{ f.title }}</div>
+                    <div class="pps-psi-meta">{{ f.sub }}</div>
+                  </div>
+                  <div class="pps-psi-check">✓</div>
                 </div>
-                <div class="pps-psi-check">✓</div>
               </div>
-            </div>
-            <div class="pps-passport-sheet-section-title" style="margin-top: 18px">
-              One-off access
-            </div>
-            <div class="pps-passport-price-breakdown">
-              <div class="pps-ppb-row">
-                <span>Passport access</span><span>£79</span>
+              <div
+                class="pps-passport-sheet-section-title"
+                style="margin-top: 18px"
+              >
+                One-off access
               </div>
-              <div class="pps-ppb-row">
-                <span>HomeScore™ full report</span><span>£20</span>
+              <div class="pps-passport-price-breakdown">
+                <div class="pps-ppb-row">
+                  <span>Passport access</span><span>£79</span>
+                </div>
+                <div class="pps-ppb-row">
+                  <span>HomeScore™ full report</span><span>£20</span>
+                </div>
+                <div class="pps-ppb-divider" />
+                <div class="pps-ppb-row pps-ppb-total">
+                  <span>Total today</span><span>£99</span>
+                </div>
+                <div class="pps-ppb-note">
+                  Instant access · No subscription · Secure payment
+                </div>
               </div>
-              <div class="pps-ppb-divider" />
-              <div class="pps-ppb-row pps-ppb-total">
-                <span>Total today</span><span>£99</span>
+              <button class="pps-sheet-cta" @click="onPassportUnlock">
+                Unlock for £99 →
+              </button>
+            </template>
+
+            <!-- ── PROGRESS: not yet published, owner is building it ── -->
+            <template v-else-if="pageState === 'progress'">
+              <div class="pps-passport-sheet-section-title">
+                {{ progressPct }}% complete
               </div>
-              <div class="pps-ppb-note">
-                Instant access · No subscription · Secure payment
+              <div class="pps-progress-bar-wrap" style="margin: 6px 0 14px">
+                <div
+                  class="pps-progress-bar-fill"
+                  :style="{
+                    width: progressPct + '%',
+                    background: 'linear-gradient(90deg, #00a19a, #4DD4CE)',
+                  }"
+                />
               </div>
-            </div>
-            <button class="pps-sheet-cta" @click="onPassportUnlock">
-              Unlock for £99 →
+              <div class="pps-passport-sheet-items">
+                <div
+                  v-for="f in passportFeatures"
+                  :key="f.title"
+                  class="pps-psi-row"
+                >
+                  <div class="pps-psi-icon">{{ f.verified ? '✅' : '⏳' }}</div>
+                  <div class="pps-psi-text">
+                    <div class="pps-psi-name">{{ f.title }}</div>
+                    <div class="pps-psi-meta">{{ f.sub }}</div>
+                  </div>
+                </div>
+              </div>
+              <button
+                v-if="isPassportOwnerOrCollab"
+                class="pps-sheet-cta"
+                style="background: #00a19a"
+                @click="onProgressCtaClick"
+              >
+                📋 Continue building your Passport →
+              </button>
+              <button
+                v-else
+                class="pps-sheet-cta"
+                style="background: #00a19a"
+                @click="onWatchClick"
+              >
+                🔔 Get notified when published →
+              </button>
+            </template>
+
+            <!-- ── UNCLAIMED: no passport yet — pitch a Claim, not an Unlock ── -->
+            <template v-else>
+              <div class="pps-passport-sheet-section-title">
+                This home hasn't claimed its Passport yet
+              </div>
+              <p class="pps-passport-sheet-empty">
+                A Passport is the verified record of this property — TA6 / TA7 /
+                TA10 forms, certificates, planning, alterations, services and
+                history. It stays with the address for life. Anyone who owns
+                this property can claim it.
+              </p>
+              <div class="pps-passport-sheet-section-title" style="margin-top: 18px">
+                What you'd build
+              </div>
+              <div class="pps-passport-sheet-items">
+                <div
+                  v-for="f in passportFeatures.slice(0, 5)"
+                  :key="f.title"
+                  class="pps-psi-row"
+                >
+                  <div class="pps-psi-icon">📄</div>
+                  <div class="pps-psi-text">
+                    <div class="pps-psi-name">{{ f.title }}</div>
+                    <div class="pps-psi-meta">{{ f.sub }}</div>
+                  </div>
+                </div>
+              </div>
+              <button
+                class="pps-sheet-cta"
+                style="background: #231d45"
+                @click="closeSheet(); onClaimClick()"
+              >
+                Claim this property — it's free →
+              </button>
+              <div
+                style="text-align: center; font-size: 12px; color: #9c98ad; margin-top: 8px"
+              >
+                Takes 2 minutes · No listing required · Free forever
+              </div>
+            </template>
+
+            <button class="pps-sheet-cancel" @click="closeSheet">
+              Not now
             </button>
-            <button class="pps-sheet-cancel" @click="closeSheet">Not now</button>
           </template>
 
           <!-- ── Explain: Unclaimed ────────────────────────────────── -->
           <template v-else-if="activeSheet === 'explain-unclaimed'">
             <div class="pps-explain-hero pps-explain-hero--unclaimed">
-              <div class="pps-explain-eyebrow" style="color: rgba(255, 255, 255, 0.55)">
+              <div
+                class="pps-explain-eyebrow"
+                style="color: rgba(255, 255, 255, 0.55)"
+              >
                 Property Passport™
               </div>
               <div class="pps-explain-title">
@@ -1759,32 +2968,59 @@
               </div>
             </div>
             <div class="pps-explain-callout pps-explain-callout--unclaimed">
-              <div class="pps-explain-callout-eyebrow">The car you'd never buy blind</div>
-              <div class="pps-explain-callout-body">
-                You wouldn't buy a £15,000 car without an HPI check, its MOT history,
-                and a service record. Yet every day people spend £300,000, £400,000,
-                £500,000 on a home with almost no verified information at all.
-                A Property Passport changes that — permanently.
+              <div class="pps-explain-callout-eyebrow">
+                The car you'd never buy blind
               </div>
-              <div class="pps-explain-callout-foot">🏡 The biggest financial investment anyone makes — and it's done almost completely blind</div>
+              <div class="pps-explain-callout-body">
+                You wouldn't buy a £15,000 car without an HPI check, its MOT
+                history, and a service record. Yet every day people spend
+                £300,000, £400,000, £500,000 on a home with almost no verified
+                information at all. A Property Passport changes that —
+                permanently.
+              </div>
+              <div class="pps-explain-callout-foot">
+                🏡 The biggest financial investment anyone makes — and it's done
+                almost completely blind
+              </div>
             </div>
 
             <!-- Lifetime concept -->
             <div class="pps-explain-callout pps-explain-callout--lifetime">
-              <div class="pps-explain-callout-eyebrow" style="color: #5b52a0">Stays with the property forever</div>
+              <div class="pps-explain-callout-eyebrow" style="color: #5b52a0">
+                Stays with the property forever
+              </div>
               <div class="pps-explain-callout-body">
-                A Passport isn't a transaction tool. It's property infrastructure.
-                Claim it now, add your gas certificate when it's renewed, upload
-                planning permission when you do the extension. By the time you sell —
-                in 5, 10, 20 years — everything is already there.
+                A Passport isn't a transaction tool. It's property
+                infrastructure. Claim it now, add your gas certificate when it's
+                renewed, upload planning permission when you do the extension.
+                By the time you sell — in 5, 10, 20 years — everything is
+                already there.
               </div>
             </div>
 
             <div class="pps-explain-stats">
-              <div><div class="pps-explain-stat-num">Free</div><div class="pps-explain-stat-sub">To claim &amp; build forever</div></div>
-              <div><div class="pps-explain-stat-num">2 min</div><div class="pps-explain-stat-sub">To claim ownership today</div></div>
-              <div><div class="pps-explain-stat-num">150</div><div class="pps-explain-stat-sub">Days avg. conveyancing anxiety</div></div>
-              <div><div class="pps-explain-stat-num">18</div><div class="pps-explain-stat-sub">Searches on this address this month</div></div>
+              <div>
+                <div class="pps-explain-stat-num">Free</div>
+                <div class="pps-explain-stat-sub">
+                  To claim &amp; build forever
+                </div>
+              </div>
+              <div>
+                <div class="pps-explain-stat-num">2 min</div>
+                <div class="pps-explain-stat-sub">To claim ownership today</div>
+              </div>
+              <div>
+                <div class="pps-explain-stat-num">150</div>
+                <div class="pps-explain-stat-sub">
+                  Days avg. conveyancing anxiety
+                </div>
+              </div>
+              <div>
+                <div class="pps-explain-stat-num">18</div>
+                <div class="pps-explain-stat-sub">
+                  Searches on this address this month
+                </div>
+              </div>
             </div>
 
             <!-- 4 steps -->
@@ -1793,29 +3029,40 @@
               <div class="pps-explain-step pps-explain-step--active">
                 <div class="pps-explain-step-num">1</div>
                 <div class="pps-explain-step-title">Claim</div>
-                <div class="pps-explain-step-sub">Confirm ownership. 2 min. Free.</div>
+                <div class="pps-explain-step-sub">
+                  Confirm ownership. 2 min. Free.
+                </div>
               </div>
               <div class="pps-explain-step-line" />
               <div class="pps-explain-step">
                 <div class="pps-explain-step-num">2</div>
                 <div class="pps-explain-step-title">Verify</div>
-                <div class="pps-explain-step-sub">Upload docs. We verify against official sources.</div>
+                <div class="pps-explain-step-sub">
+                  Upload docs. We verify against official sources.
+                </div>
               </div>
               <div class="pps-explain-step-line" />
               <div class="pps-explain-step">
                 <div class="pps-explain-step-num">3</div>
                 <div class="pps-explain-step-title">Score</div>
-                <div class="pps-explain-step-sub">Get your verified HomeScore.</div>
+                <div class="pps-explain-step-sub">
+                  Get your verified HomeScore.
+                </div>
               </div>
               <div class="pps-explain-step-line" />
               <div class="pps-explain-step">
                 <div class="pps-explain-step-num">4</div>
                 <div class="pps-explain-step-title">Publish</div>
-                <div class="pps-explain-step-sub">Go live whenever you're ready.</div>
+                <div class="pps-explain-step-sub">
+                  Go live whenever you're ready.
+                </div>
               </div>
             </div>
 
-            <div class="pps-explain-footer">The way people buy homes is changing — and we're building that future with government.</div>
+            <div class="pps-explain-footer">
+              The way people buy homes is changing — and we're building that
+              future with government.
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Got it</button>
           </template>
 
@@ -1826,12 +3073,13 @@
                 Property Passport™ · In Progress
               </div>
               <div class="pps-explain-title">
-                This owner is building something that removes 150 days of uncertainty.
+                This owner is building something that removes 150 days of
+                uncertainty.
               </div>
               <div class="pps-explain-body">
-                A permanent verified record for this property. When it publishes,
-                you get instant access to everything — before you even make an
-                offer.
+                A permanent verified record for this property. When it
+                publishes, you get instant access to everything — before you
+                even make an offer.
               </div>
             </div>
             <div class="pps-explain-callout pps-explain-callout--progress">
@@ -1845,33 +3093,66 @@
                 collects all of that upfront, so by the time you make an offer,
                 the hard work is already done.
               </div>
-              <div class="pps-explain-callout-foot">🔔 Get notified the moment it publishes — be first in the door</div>
+              <div class="pps-explain-callout-foot">
+                🔔 Get notified the moment it publishes — be first in the door
+              </div>
             </div>
 
             <!-- Progress bar -->
             <div class="pps-explain-section-label">Build progress</div>
             <div class="pps-explain-progress-row">
-              <span class="pps-explain-progress-pct">{{ passportProgressPct }}% complete</span>
-              <span class="pps-explain-progress-frac">{{ passportProgressVerified }} of {{ passportProgressTotal }} verified</span>
+              <span class="pps-explain-progress-pct"
+                >{{ passportProgressPct }}% complete</span
+              >
+              <span class="pps-explain-progress-frac"
+                >{{ passportProgressVerified }} of
+                {{ passportProgressTotal }} verified</span
+              >
             </div>
             <div class="pps-explain-progress-track">
-              <div class="pps-explain-progress-fill" :style="{ width: passportProgressPct + '%' }" />
+              <div
+                class="pps-explain-progress-fill"
+                :style="{ width: passportProgressPct + '%' }"
+              />
             </div>
 
             <!-- Already verified -->
-            <div v-if="passportVerifiedItems.length > 0" class="pps-explain-section-label" style="margin-top: 16px">Already verified</div>
-            <div v-if="passportVerifiedItems.length > 0" class="pps-explain-checklist">
-              <div v-for="item in passportVerifiedItems" :key="item.title" class="pps-explain-checklist-item">
-                <div class="pps-explain-checklist-icon" :style="{ background: item.bg }">{{ item.icon }}</div>
+            <div
+              v-if="passportVerifiedItems.length > 0"
+              class="pps-explain-section-label"
+              style="margin-top: 16px"
+            >
+              Already verified
+            </div>
+            <div
+              v-if="passportVerifiedItems.length > 0"
+              class="pps-explain-checklist"
+            >
+              <div
+                v-for="item in passportVerifiedItems"
+                :key="item.title"
+                class="pps-explain-checklist-item"
+              >
+                <div
+                  class="pps-explain-checklist-icon"
+                  :style="{ background: item.bg }"
+                >
+                  {{ item.icon }}
+                </div>
                 <div class="pps-explain-checklist-text">
-                  <div class="pps-explain-checklist-title">{{ item.title }}</div>
+                  <div class="pps-explain-checklist-title">
+                    {{ item.title }}
+                  </div>
                   <div class="pps-explain-checklist-sub">{{ item.sub }}</div>
                 </div>
                 <div class="pps-explain-checklist-tick">✓</div>
               </div>
             </div>
 
-            <div class="pps-explain-footer">The way people buy homes is changing — and we're building that future with government.</div>
+            <div class="pps-explain-footer">
+              The way people buy homes is changing — and we're building that
+              future with government.
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Got it</button>
           </template>
 
@@ -1884,8 +3165,8 @@
               </div>
               <div class="pps-explain-body">
                 You wouldn't buy a £15,000 car without its service history. This
-                is the verified record that should have always existed for
-                every home.
+                is the verified record that should have always existed for every
+                home.
               </div>
             </div>
             <div class="pps-explain-callout pps-explain-callout--progress">
@@ -1894,73 +3175,189 @@
               </div>
               <div class="pps-explain-callout-body">
                 Conveyancing takes 150 days on average. Nearly half that time is
-                spent chasing documents that already exist somewhere — just not in
-                one place. The Property Passport ends that. Everything verified by
-                the owner, ready before solicitors are even instructed.
+                spent chasing documents that already exist somewhere — just not
+                in one place. The Property Passport ends that. Everything
+                verified by the owner, ready before solicitors are even
+                instructed.
               </div>
-              <div class="pps-explain-callout-foot">⏱ Average sale time cut by 6–8 weeks with upfront disclosure</div>
+              <div class="pps-explain-callout-foot">
+                ⏱ Average sale time cut by 6–8 weeks with upfront disclosure
+              </div>
             </div>
 
             <!-- Search reuse insight -->
             <div class="pps-explain-callout pps-explain-callout--reuse">
-              <div class="pps-explain-callout-eyebrow" style="color: #b07a1c">Not just for buying this home</div>
+              <div class="pps-explain-callout-eyebrow" style="color: #b07a1c">
+                Not just for buying this home
+              </div>
               <div class="pps-explain-callout-body">
-                The environmental data, flood risk, and planning history in this Passport
-                applies to the whole street. Solicitors charge £300–500 for searches that get
-                thrown away after every transaction. This data stays — and you can use it
-                even if you're interested in a neighbouring property.
+                The environmental data, flood risk, and planning history in this
+                Passport applies to the whole street. Solicitors charge £300–500
+                for searches that get thrown away after every transaction. This
+                data stays — and you can use it even if you're interested in a
+                neighbouring property.
               </div>
             </div>
 
             <div class="pps-explain-stats">
-              <div><div class="pps-explain-stat-num">150</div><div class="pps-explain-stat-sub">Avg. days in conveyancing</div></div>
-              <div><div class="pps-explain-stat-num">£99</div><div class="pps-explain-stat-sub">One-off · no subscription</div></div>
-              <div><div class="pps-explain-stat-num">23×</div><div class="pps-explain-stat-sub">Same search bought per street</div></div>
-              <div><div class="pps-explain-stat-num">100%</div><div class="pps-explain-stat-sub">Owner-verified · HMLR backed</div></div>
+              <div>
+                <div class="pps-explain-stat-num">150</div>
+                <div class="pps-explain-stat-sub">
+                  Avg. days in conveyancing
+                </div>
+              </div>
+              <div>
+                <div class="pps-explain-stat-num">£99</div>
+                <div class="pps-explain-stat-sub">
+                  One-off · no subscription
+                </div>
+              </div>
+              <div>
+                <div class="pps-explain-stat-num">23×</div>
+                <div class="pps-explain-stat-sub">
+                  Same search bought per street
+                </div>
+              </div>
+              <div>
+                <div class="pps-explain-stat-num">100%</div>
+                <div class="pps-explain-stat-sub">
+                  Owner-verified · HMLR backed
+                </div>
+              </div>
             </div>
 
             <!-- What's inside -->
             <div class="pps-explain-section-label">What's inside</div>
             <div class="pps-explain-checklist">
               <div class="pps-explain-checklist-item">
-                <div class="pps-explain-checklist-icon" style="background: #fff3e0">📋</div>
+                <div
+                  class="pps-explain-checklist-icon"
+                  style="background: #fff3e0"
+                >
+                  📋
+                </div>
                 <div class="pps-explain-checklist-text">
-                  <div class="pps-explain-checklist-title">TA6, TA7 &amp; TA10 forms</div>
-                  <div class="pps-explain-checklist-sub">All conveyancing questions answered upfront</div>
+                  <div class="pps-explain-checklist-title">
+                    TA6, TA7 &amp; TA10 forms
+                  </div>
+                  <div class="pps-explain-checklist-sub">
+                    All conveyancing questions answered upfront
+                  </div>
                 </div>
                 <div class="pps-explain-checklist-tick">✓</div>
               </div>
               <div class="pps-explain-checklist-item">
-                <div class="pps-explain-checklist-icon" style="background: #e6f7f6">🏛️</div>
+                <div
+                  class="pps-explain-checklist-icon"
+                  style="background: #e6f7f6"
+                >
+                  🏛️
+                </div>
                 <div class="pps-explain-checklist-text">
-                  <div class="pps-explain-checklist-title">Land Registry Title &amp; Plan</div>
-                  <div class="pps-explain-checklist-sub">Verified ownership · boundary map</div>
+                  <div class="pps-explain-checklist-title">
+                    Land Registry Title &amp; Plan
+                  </div>
+                  <div class="pps-explain-checklist-sub">
+                    Verified ownership · boundary map
+                  </div>
                 </div>
                 <div class="pps-explain-checklist-tick">✓</div>
               </div>
               <div class="pps-explain-checklist-item">
-                <div class="pps-explain-checklist-icon" style="background: #e6f7f6">🔧</div>
+                <div
+                  class="pps-explain-checklist-icon"
+                  style="background: #e6f7f6"
+                >
+                  🔧
+                </div>
                 <div class="pps-explain-checklist-text">
-                  <div class="pps-explain-checklist-title">Gas, Electrical &amp; EPC</div>
-                  <div class="pps-explain-checklist-sub">All certificates verified</div>
+                  <div class="pps-explain-checklist-title">
+                    Gas, Electrical &amp; EPC
+                  </div>
+                  <div class="pps-explain-checklist-sub">
+                    All certificates verified
+                  </div>
                 </div>
                 <div class="pps-explain-checklist-tick">✓</div>
               </div>
               <div class="pps-explain-checklist-item">
-                <div class="pps-explain-checklist-icon" style="background: #f3e5f5">📅</div>
+                <div
+                  class="pps-explain-checklist-icon"
+                  style="background: #f3e5f5"
+                >
+                  📅
+                </div>
                 <div class="pps-explain-checklist-text">
-                  <div class="pps-explain-checklist-title">Planning History</div>
-                  <div class="pps-explain-checklist-sub">Extensions, permissions, works</div>
+                  <div class="pps-explain-checklist-title">
+                    Planning History
+                  </div>
+                  <div class="pps-explain-checklist-sub">
+                    Extensions, permissions, works
+                  </div>
                 </div>
                 <div class="pps-explain-checklist-tick">✓</div>
               </div>
             </div>
 
-            <div class="pps-explain-footer">The way people buy homes is changing — and we're building that future with government.</div>
+            <div class="pps-explain-footer">
+              The way people buy homes is changing — and we're building that
+              future with government.
+            </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Got it</button>
           </template>
         </div>
       </div>
+    </Teleport>
+
+    <!-- ── Toast (restored — was orphaned import, never mounted) ────────── -->
+    <Toast
+      :is-visible="toastState.isVisible"
+      :message="toastState.message"
+      :icon="toastState.icon"
+      :icon-emoji="toastState.iconEmoji"
+      :duration="toastState.duration"
+      @close="hideToast"
+    />
+
+    <!-- ── Unpublished-passport modal (restored) ─────────────────────────
+         Fires when a buyer taps an in-progress passport — gives them a clear
+         "we'll notify you" path instead of the silent no-op the rebuild had. -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div
+          v-if="showUnpublishedModal"
+          class="unpub-overlay"
+          @click.self="showUnpublishedModal = false"
+        >
+          <div class="unpub-modal">
+            <button class="unpub-close" @click="showUnpublishedModal = false">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.4"
+                stroke-linecap="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <div class="unpub-icon">🪪</div>
+            <div class="unpub-eyebrow">
+              <span style="color: #00a19a">●</span> Property Passport — In
+              Progress
+            </div>
+            <h3 class="unpub-title">This home's Passport is being built</h3>
+            <p class="unpub-body">
+              You're seeing public EPC data for now — we'll alert you when the
+              full record is published.
+            </p>
+            <button class="unpub-cta" @click="openRegisterInterest">
+              🔔 Notify me when it's published
+            </button>
+          </div>
+        </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -1968,8 +3365,10 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue'
 import RegisterInterestContent from '~/components/property/RegisterInterestContent.vue'
+// Owner-claim runs through /claim/[id] (KYC + Land Registry + passport
+// issue). ClaimPassportDrawer below is ONLY for the buyer-unlock (£99
+// Stripe) path on a published Passport.
 import ClaimPassportDrawer from '~/components/property/ClaimPassportDrawer.vue'
-import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDrawer.vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
@@ -2000,17 +3399,14 @@ const pageLoading = ref(true)
 const loadError = ref('')
 const showRegisterInterest = ref(false)
 const showShare = ref(false)
-const showClaimDrawer = ref(false)
-const showClaimTypeDrawer = ref(false)
-const claimPassportType = ref<'seller' | 'landlord'>('seller')
-const claimIsHmo = ref(false)
 
-const onPassportTypeChosen = (payload: { type: 'seller' | 'landlord'; isHmo: boolean }) => {
-  claimPassportType.value = payload.type
-  claimIsHmo.value = payload.isHmo
-  showClaimTypeDrawer.value = false
-  showClaimDrawer.value = true
-}
+// Owner-claim is delegated to the global /claim/[id] page, which runs:
+//   1. KYC verification (skipped if the user is already approved)
+//   2. HM Land Registry ownership check (mandatory per property)
+//   3. Passport issuance + redirect to /passportview/{id}
+// Every "Claim" entry point on this page just pushes to that route — no
+// in-page drawer, no direct POST /passport/create.
+const goToClaim = () => router.push(`/claim/${propertyId}`)
 const showUnpublishedModal = ref(false)
 type LocTab =
   | 'map'
@@ -2154,6 +3550,23 @@ function effToPercent(eff: string | null | undefined): number {
   return map[eff] ?? 50
 }
 
+function epcCompClass(eff: string | null | undefined): string {
+  if (!eff) return 'pps-epc-comp-fill--na'
+  if (eff === 'Very Good' || eff === 'Good') return 'pps-epc-comp-fill--good'
+  if (eff === 'Average') return 'pps-epc-comp-fill--avg'
+  if (eff === 'Poor') return 'pps-epc-comp-fill--poor'
+  if (eff === 'Very Poor') return 'pps-epc-comp-fill--vpoor'
+  return 'pps-epc-comp-fill--na'
+}
+function epcCompColor(eff: string | null | undefined): string {
+  if (!eff) return '#9c98ad'
+  if (eff === 'Very Good' || eff === 'Good') return '#2eab55'
+  if (eff === 'Average') return '#e6a23c'
+  if (eff === 'Poor') return '#c73e36'
+  if (eff === 'Very Poor') return '#a82e26'
+  return '#9c98ad'
+}
+
 function effToColor(pct: number): string {
   if (pct >= 72) return '#1f7a66'
   if (pct >= 50) return '#00a19a'
@@ -2237,19 +3650,32 @@ const epcRatingColor = computed(() => {
 })
 
 // ── Flood risk ─────────────────────────────────────────────────────────────────
+// Single source of truth: the EA RoFRS rating (Very Low / Low / Medium /
+// High / Severe). The flood sheet renders `property.floodRisk` directly; the
+// tile uses `floodRiskData.label`. Previously these read different fields
+// (zone severity vs. RoFRS rating) and diverged when a postcode was in a
+// high-risk RoFRS band but had no active warnings — the tile would say
+// "Low" while the sheet said "High". This computed now mirrors the same
+// rating both views show.
 const floodRiskData = computed(() => {
-  const zones = enrichment.value?.floodZones ?? []
-  if (!zones.length)
+  // Prefer enrichment (fresh) over property.floodRisk (DB column, may be
+  // stale). Both come from `fetchFloodDetail`'s `rating` so they should
+  // match, but enrichment is always the most recent fetch.
+  const raw = String(
+    (enrichment.value as any)?.floodRisk ?? property.value?.floodRisk ?? '',
+  ).trim()
+  const lower = raw.toLowerCase()
+  if (lower.includes('severe')) {
     return {
-      label: 'Low',
-      color: '#1f7a66',
-      class: 'pp-badge-flood--low',
-      zone: 'Zone 1',
-      pill: 'background:#d1fae5;color:#1f7a66;',
-      badgeClass: 'pp-badge-flood--low',
+      label: 'Severe',
+      color: '#991b1b',
+      class: 'pp-badge-flood--high',
+      zone: 'Zone 3',
+      pill: 'background:#fee2e2;color:#991b1b;',
+      badgeClass: 'pp-badge-flood--high',
     }
-  const sevs = zones.map((z: any) => (z.severity ?? '').toLowerCase())
-  if (sevs.some((s: string) => s.includes('severe') || s.includes('warning')))
+  }
+  if (lower.includes('high')) {
     return {
       label: 'High',
       color: '#dc2626',
@@ -2258,7 +3684,8 @@ const floodRiskData = computed(() => {
       pill: 'background:#fee2e2;color:#991b1b;',
       badgeClass: 'pp-badge-flood--high',
     }
-  if (sevs.some((s: string) => s.includes('alert') || s.includes('high')))
+  }
+  if (lower.includes('medium')) {
     return {
       label: 'Medium',
       color: '#ea580c',
@@ -2267,12 +3694,34 @@ const floodRiskData = computed(() => {
       pill: 'background:#fef3c7;color:#92400e;',
       badgeClass: 'pp-badge-flood--med',
     }
+  }
+  if (lower.includes('very low')) {
+    return {
+      label: 'Very Low',
+      color: '#1f7a66',
+      class: 'pp-badge-flood--low',
+      zone: 'Zone 1',
+      pill: 'background:#d1fae5;color:#1f7a66;',
+      badgeClass: 'pp-badge-flood--low',
+    }
+  }
+  if (lower.includes('low')) {
+    return {
+      label: 'Low',
+      color: '#1f7a66',
+      class: 'pp-badge-flood--low',
+      zone: 'Zone 1',
+      pill: 'background:#d1fae5;color:#1f7a66;',
+      badgeClass: 'pp-badge-flood--low',
+    }
+  }
+  // Truly unknown — render nothing (the tile is conditional on a label).
   return {
-    label: 'Low',
-    color: '#1f7a66',
+    label: '',
+    color: '#9c98ad',
     class: 'pp-badge-flood--low',
-    zone: 'Zone 1',
-    pill: 'background:#d1fae5;color:#1f7a66;',
+    zone: '',
+    pill: 'background:#f5f5f7;color:#6b6783;',
     badgeClass: 'pp-badge-flood--low',
   }
 })
@@ -2322,7 +3771,12 @@ function constraintIcon(category: string) {
 const nearestWatercourse = computed(() => {
   const z = enrichment.value?.floodZones ?? []
   for (const row of z) {
-    if (row?.riverSea && typeof row.riverSea === 'string' && row.riverSea.trim()) return row.riverSea
+    if (
+      row?.riverSea &&
+      typeof row.riverSea === 'string' &&
+      row.riverSea.trim()
+    )
+      return row.riverSea
   }
   return null
 })
@@ -2338,7 +3792,8 @@ function floodBreakdownClass(value: any) {
   if (!v) return ''
   if (v.includes('severe') || v.includes('high')) return 'pps-ds-v--red'
   if (v.includes('medium') || v.includes('alert')) return 'pps-ds-v--amber'
-  if (v.includes('very low') || v.includes('low') || v.includes('no current')) return 'pps-ds-v--green'
+  if (v.includes('very low') || v.includes('low') || v.includes('no current'))
+    return 'pps-ds-v--green'
   return ''
 }
 
@@ -2782,7 +4237,8 @@ const heroImage = computed<string | null>(() => {
 
 const pageState = computed<'unclaimed' | 'progress' | 'published'>(() => {
   const s = passportStatus.value
-  if (s?.passportPublished || property.value?.passportPublished) return 'published'
+  if (s?.passportPublished || property.value?.passportPublished)
+    return 'published'
   if (s?.hasPassport || property.value?.hasPassport) return 'progress'
   return 'unclaimed'
 })
@@ -2836,7 +4292,7 @@ const scoreDesc = computed<string>(() => {
     return 'Refined by the owner. Tap to explore the full Passport.'
   }
   if (pageState.value === 'progress') {
-    return "Owner is building a verified Passport — this score will sharpen as data lands."
+    return 'Owner is building a verified Passport — this score will sharpen as data lands.'
   }
   return 'Score from public EPC data. Owner can run a full HomeScore for a verified picture.'
 })
@@ -2886,7 +4342,13 @@ function effRating(value: string | null | undefined, fallback = 'N/A'): string {
 
 const epcBars = computed(() => {
   const p = property.value
-  if (!p) return [] as Array<{ label: string; pct: number; color: string; rating: string }>
+  if (!p)
+    return [] as Array<{
+      label: string
+      pct: number
+      color: string
+      rating: string
+    }>
   const rows = [
     { label: 'Walls', eff: p.wallsEnergyEff },
     { label: 'Roof', eff: p.roofEnergyEff },
@@ -2904,7 +4366,11 @@ const epcBars = computed(() => {
 })
 
 const progressPct = computed<number>(() => {
-  // Crude completion proxy: how many key EPC + passport-claim signals are on file.
+  // Prefer the real-time passport progress returned by /passport-status.
+  // Falls back to the EPC-signals proxy only when no passport exists yet
+  // (so the "Unclaimed" state still shows a meaningful progress bar).
+  const realPct = passportStatus.value?.passportProgress?.completionPct
+  if (typeof realPct === 'number') return realPct
   const p = property.value
   if (!p) return 0
   let done = 0
@@ -2919,8 +4385,32 @@ const progressPct = computed<number>(() => {
   return Math.min(100, Math.round((done / total) * 100))
 })
 
+// Real-time per-section status from the backend. Used by the "Passport
+// being built" card to render which sections are actually verified instead
+// of the hard-coded placeholder list.
+const realPassportSections = computed<Array<any>>(
+  () => passportStatus.value?.passportProgress?.sections ?? [],
+)
+
 const passportFeatures = computed(() => {
   const p = property.value
+  const realSections = realPassportSections.value
+  // Prefer real backend section data when present — buyer sees actual
+  // verified state, not a hardcoded placeholder list.
+  if (realSections.length > 0) {
+    return realSections.map((s: any) => ({
+      title: s.title || s.key,
+      sub:
+        s.totalTasks > 0
+          ? `${s.completedTasks} of ${s.totalTasks} task${s.totalTasks === 1 ? '' : 's'} complete`
+          : 'No tasks',
+      // A section counts as "verified" once every task on it is complete.
+      verified: s.totalTasks > 0 && s.completedTasks === s.totalTasks,
+      partial: s.completedTasks > 0 && s.completedTasks < s.totalTasks,
+    }))
+  }
+  // Fallback (no passport yet) — keep the marketing-style list so the
+  // unclaimed state still has something to show.
   return [
     {
       title: 'EPC Certificate',
@@ -2939,11 +4429,27 @@ const passportFeatures = computed(() => {
       sub: 'Boundary map · HMLR verified',
       verified: !!p?.titleNumber,
     },
-    { title: 'TA6 — Property Information', sub: 'Boundaries, disputes, utilities', verified: false },
-    { title: 'TA10 — Fittings & Contents', sub: "What's included in the sale", verified: false },
+    {
+      title: 'TA6 — Property Information',
+      sub: 'Boundaries, disputes, utilities',
+      verified: false,
+    },
+    {
+      title: 'TA10 — Fittings & Contents',
+      sub: "What's included in the sale",
+      verified: false,
+    },
     { title: 'Gas Safety Record', sub: 'Not yet uploaded', verified: false },
-    { title: 'Electrical Certificate (EICR)', sub: 'Not yet uploaded', verified: false },
-    { title: 'TA7 — Leasehold Information', sub: 'Service charges, lease terms', verified: false },
+    {
+      title: 'Electrical Certificate (EICR)',
+      sub: 'Not yet uploaded',
+      verified: false,
+    },
+    {
+      title: 'TA7 — Leasehold Information',
+      sub: 'Service charges, lease terms',
+      verified: false,
+    },
   ]
 })
 
@@ -2953,7 +4459,9 @@ const publishedFeatures = computed(() => {
 })
 
 // ── Explain-Progress sheet data ───────────────────────────────────────────────
-const passportProgressTotal = computed<number>(() => passportFeatures.value.length)
+const passportProgressTotal = computed<number>(
+  () => passportFeatures.value.length,
+)
 const passportProgressVerified = computed<number>(
   () => passportFeatures.value.filter((f) => f.verified).length,
 )
@@ -2993,7 +4501,9 @@ const exploreTiles = computed(() => {
     icon: '🏠',
     iconBg: '#FFF3E0',
     title: 'Property history',
-    value: p.lastSoldPrice ? `£${Number(p.lastSoldPrice).toLocaleString()}` : 'No sales',
+    value: p.lastSoldPrice
+      ? `£${Number(p.lastSoldPrice).toLocaleString()}`
+      : 'No sales',
     sub: p.lastSoldDate
       ? `Last sold ${new Date(p.lastSoldDate).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}`
       : 'Land Registry record',
@@ -3016,8 +4526,16 @@ const exploreTiles = computed(() => {
     iconBg: '#E3F2FD',
     title: 'Schools',
     value: schoolsCount > 0 ? `${schoolsCount} nearby` : '—',
-    sub: nearestSchool ? `Nearest ${nearestSchool.distanceKm.toFixed(1)} km` : 'Tap for distance',
+    sub: nearestSchool
+      ? `Nearest ${nearestSchool.distanceKm.toFixed(1)} km`
+      : 'Tap for distance',
   })
+  // Transport (trains / buses / airports) — each one falls back through
+  // three states: real data → "looking up" while enrichment is pending →
+  // "sources unreachable" when Overpass mirrors all failed (the backend
+  // sets `transportLookupFailed`).
+  const enrichmentPending = !enrichment.value
+  const tFailed = transportLookupFailed.value
   // Trains
   const nearestTrain = enrichmentTrains.value[0]
   tiles.push({
@@ -3025,8 +4543,20 @@ const exploreTiles = computed(() => {
     icon: '🚂',
     iconBg: '#F3E5F5',
     title: 'Train stations',
-    value: nearestTrain ? `${nearestTrain.distanceKm.toFixed(1)} km` : '—',
-    sub: nearestTrain ? nearestTrain.name : 'Nearest station',
+    value: nearestTrain
+      ? `${nearestTrain.distanceKm.toFixed(1)} km`
+      : enrichmentPending
+        ? 'Looking up…'
+        : tFailed
+          ? 'Unavailable'
+          : 'No data',
+    sub: nearestTrain
+      ? nearestTrain.name
+      : enrichmentPending
+        ? 'Searching OpenStreetMap'
+        : tFailed
+          ? 'Map sources unreachable — tap to retry'
+          : 'No stations found nearby',
   })
   // Bus stops
   const nearestBus = enrichmentBuses.value[0]
@@ -3035,8 +4565,20 @@ const exploreTiles = computed(() => {
     icon: '🚌',
     iconBg: '#FFF3E0',
     title: 'Bus stops',
-    value: nearestBus ? `${nearestBus.distanceKm.toFixed(2)} km` : '—',
-    sub: nearestBus ? (nearestBus.name || 'Nearest bus stop') : 'Nearest stop',
+    value: nearestBus
+      ? `${nearestBus.distanceKm.toFixed(2)} km`
+      : enrichmentPending
+        ? 'Looking up…'
+        : tFailed
+          ? 'Unavailable'
+          : 'No data',
+    sub: nearestBus
+      ? nearestBus.name || 'Nearest bus stop'
+      : enrichmentPending
+        ? 'Searching OpenStreetMap'
+        : tFailed
+          ? 'Map sources unreachable — tap to retry'
+          : 'No stops found within 700 m',
   })
   // Airports
   const nearestAirport = enrichmentAirports.value[0]
@@ -3045,8 +4587,20 @@ const exploreTiles = computed(() => {
     icon: '✈️',
     iconBg: '#E1F5FE',
     title: 'Airports',
-    value: nearestAirport ? `${nearestAirport.distanceKm.toFixed(0)} km` : '—',
-    sub: nearestAirport ? nearestAirport.name : 'Nearest airport',
+    value: nearestAirport
+      ? `${nearestAirport.distanceKm.toFixed(0)} km`
+      : enrichmentPending
+        ? 'Looking up…'
+        : tFailed
+          ? 'Unavailable'
+          : 'No data',
+    sub: nearestAirport
+      ? nearestAirport.name
+      : enrichmentPending
+        ? 'Searching OpenStreetMap'
+        : tFailed
+          ? 'Map sources unreachable — tap to retry'
+          : 'No airports within 50 km',
   })
   // Location & map
   tiles.push({
@@ -3082,7 +4636,8 @@ const exploreTiles = computed(() => {
   }
   // Planning — show real constraint count
   {
-    const constraints = (enrichment.value as any)?.planningHistory?.constraints ?? []
+    const constraints =
+      (enrichment.value as any)?.planningHistory?.constraints ?? []
     const apps = (enrichment.value as any)?.planningHistory?.applications ?? []
     const count = constraints.length + apps.length
     tiles.push({
@@ -3092,7 +4647,10 @@ const exploreTiles = computed(() => {
       title: 'Planning',
       pip: count > 0 ? null : 'New',
       value: count > 0 ? `${count} on file` : '—',
-      sub: constraints.length > 0 ? `${constraints.length} constraint${constraints.length === 1 ? '' : 's'}` : 'Applications on file',
+      sub:
+        constraints.length > 0
+          ? `${constraints.length} constraint${constraints.length === 1 ? '' : 's'}`
+          : 'Applications on file',
     })
   }
   // Council tax — prefer EPC-sourced band when DB column empty
@@ -3131,6 +4689,37 @@ const exploreTiles = computed(() => {
       title: 'Stamp duty',
       value: `${formatPrice(stampDutyEstimate.value)}`,
       sub: 'On estimated value',
+    })
+  }
+  // Listed buildings + heritage (data was being fetched but never surfaced).
+  if (enrichmentListedBuildings.value.length > 0) {
+    tiles.push({
+      key: 'listed',
+      icon: '🏛️',
+      iconBg: '#FBEFD9',
+      title: 'Heritage sites',
+      value: `${enrichmentListedBuildings.value.length} nearby`,
+      sub: 'Listed buildings & monuments',
+    })
+  }
+  // Safety / crime stats (data.police.uk — free, no key). Tile always
+  // renders even if the backend hasn't responded yet so the slot doesn't
+  // disappear-reappear as enrichment lands; the sheet renders the empty
+  // state gracefully when there's no data.
+  {
+    const total = enrichmentCrime.value?.totalLast12m
+    const hasData = typeof total === 'number'
+    tiles.push({
+      key: 'crime',
+      icon: '🛡️',
+      iconBg: '#EEEDF5',
+      title: 'Safety',
+      value: hasData
+        ? total > 0
+          ? `${total.toLocaleString()} crimes`
+          : 'None reported'
+        : 'Tap to check',
+      sub: 'Last 12 months · 1 mile radius',
     })
   }
   return tiles
@@ -3180,8 +4769,8 @@ async function onWishlistToggle() {
 }
 
 function onClaimClick() {
-  // Open the existing passport-type chooser → claim drawer chain.
-  showClaimTypeDrawer.value = true
+  // Send the owner through the global KYC + Land Registry claim flow.
+  goToClaim()
 }
 
 function onAccessPassport() {
@@ -3192,11 +4781,30 @@ function onAccessPassport() {
     router.push(`/passportview/${s.passportId}`)
     return
   }
-  showClaimTypeDrawer.value = true
+  goToClaim()
 }
 
 function onWatchClick() {
   openSheet('watch')
+}
+
+// True when the logged-in user owns or collaborates on the passport for this
+// property. Used to swap "Get notified when published" → "Continue building".
+const isPassportOwnerOrCollab = computed<boolean>(() => {
+  const s = passportStatus.value
+  return !!(s?.isOwner || s?.isCollaborator)
+})
+
+// Owner/collaborator → open the passport so they can keep filling sections.
+// Everyone else → open the Watch sheet (notify-me flow). Single click handler
+// so the button copy can branch but the wiring stays simple.
+function onProgressCtaClick() {
+  const s = passportStatus.value
+  if (isPassportOwnerOrCollab.value && s?.passportId) {
+    router.push(`/passportview/${s.passportId}`)
+    return
+  }
+  onWatchClick()
 }
 
 function onContactClick() {
@@ -3222,6 +4830,8 @@ type SheetKey =
   | 'council'
   | 'broadband'
   | 'stamp-duty'
+  | 'listed'
+  | 'crime'
   | 'watch'
   | 'owner'
   | 'passport'
@@ -3253,6 +4863,8 @@ function onExploreTileClick(key: string) {
     council: 'council',
     broadband: 'broadband',
     'stamp-duty': 'stamp-duty',
+    listed: 'listed',
+    crime: 'crime',
   }
   const sheet = map[key]
   if (sheet) openSheet(sheet)
@@ -3286,9 +4898,18 @@ const SD_BANDS_ADDITIONAL: Array<{ from: number; to: number; rate: number }> = [
   { from: 925000, to: 1500000, rate: 0.15 },
   { from: 1500000, to: Infinity, rate: 0.17 },
 ]
-function computeStampDuty(price: number, type: SdType): {
+function computeStampDuty(
+  price: number,
+  type: SdType,
+): {
   total: number
-  bands: Array<{ from: number; to: number; rate: number; amount: number; range: string }>
+  bands: Array<{
+    from: number
+    to: number
+    rate: number
+    amount: number
+    range: string
+  }>
 } {
   if (price <= 0) return { total: 0, bands: [] }
   let bands = SD_BANDS_STANDARD
@@ -3334,7 +4955,11 @@ const lastSale = computed<{ price: number; date: string } | null>(() => {
 })
 
 // Delta between current HPI-adjusted estimate and most recent sale
-const deltaSinceSold = computed<{ abs: number; pct: number; positive: boolean } | null>(() => {
+const deltaSinceSold = computed<{
+  abs: number
+  pct: number
+  positive: boolean
+} | null>(() => {
   const ls = lastSale.value
   const cur = estimatedPrice.value
   if (!ls?.price || !cur) return null
@@ -3344,17 +4969,19 @@ const deltaSinceSold = computed<{ abs: number; pct: number; positive: boolean } 
 })
 
 // Compound annual growth rate from most recent sale → current estimate
-const compoundGrowth = computed<{ pct: number; sinceYear: number } | null>(() => {
-  const ls = lastSale.value
-  const cur = estimatedPrice.value
-  if (!ls?.price || !cur) return null
-  const sinceYear = new Date(ls.date).getFullYear()
-  if (!sinceYear || Number.isNaN(sinceYear)) return null
-  const years = new Date().getFullYear() - sinceYear
-  if (years <= 0) return null
-  const cagr = (Math.pow(cur / ls.price, 1 / years) - 1) * 100
-  return { pct: cagr, sinceYear }
-})
+const compoundGrowth = computed<{ pct: number; sinceYear: number } | null>(
+  () => {
+    const ls = lastSale.value
+    const cur = estimatedPrice.value
+    if (!ls?.price || !cur) return null
+    const sinceYear = new Date(ls.date).getFullYear()
+    if (!sinceYear || Number.isNaN(sinceYear)) return null
+    const years = new Date().getFullYear() - sinceYear
+    if (years <= 0) return null
+    const cagr = (Math.pow(cur / ls.price, 1 / years) - 1) * 100
+    return { pct: cagr, sinceYear }
+  },
+)
 async function loadSoldHistory() {
   if (soldHistoryLoaded.value) return
   soldHistoryLoaded.value = true
@@ -3420,7 +5047,14 @@ async function loadStreetEnergyRank() {
 
 // Council tax — band → 2024/25 England average annual £ table.
 const COUNCIL_BAND_AVG: Record<string, number> = {
-  A: 1340, B: 1563, C: 1787, D: 2010, E: 2457, F: 2904, G: 3350, H: 4020,
+  A: 1340,
+  B: 1563,
+  C: 1787,
+  D: 2010,
+  E: 2457,
+  F: 2904,
+  G: 3350,
+  H: 4020,
 }
 const councilTaxAnnual = computed<number | null>(() => {
   const b = (property.value?.councilTaxBand || '').toUpperCase()
@@ -3442,6 +5076,47 @@ const co2NowTonnes = computed<number | null>(() => {
   const v = Number(property.value?.co2Emissions ?? 0)
   return v > 0 ? Math.round(v * 10) / 10 : null
 })
+
+// Council-tax extras (restored — these fields were fetched but unused).
+const councilTaxCouncilName = computed<string | null>(() => {
+  const ct = (enrichment.value as any)?.councilTax
+  return (
+    ct?.councilName ||
+    (property.value?.city ? `${property.value.city} Council` : null)
+  )
+})
+const councilTaxSource = computed<string | null>(
+  () => (enrichment.value as any)?.councilTax?.dataSource || 'VOA',
+)
+const councilTaxNearby = computed<any[]>(() => {
+  const arr = (enrichment.value as any)?.councilTax?.nearby
+  return Array.isArray(arr) ? arr : []
+})
+
+// EPC "potential" rating (restored). Drives the small efficiency-upside row
+// on the running-costs card; pulled from EPC API by the backend enrichment.
+const epcPotentialRating = computed<string | null>(
+  () => (enrichment.value as any)?.epcPotentialRating ?? null,
+)
+const epcPotentialScore = computed<number | null>(
+  () => (enrichment.value as any)?.epcPotentialScore ?? null,
+)
+const enrichmentListedBuildings = computed<any[]>(
+  () => (enrichment.value as any)?.listedBuildings ?? [],
+)
+
+// data.police.uk — 12-month crime stats within 1 mile (no API key needed).
+const enrichmentCrime = computed<any | null>(
+  () => (enrichment.value as any)?.crime ?? null,
+)
+
+// True when OpenStreetMap's Overpass servers couldn't be reached server-side
+// (e.g. non-UK dev machine where all mirrors block). Used to distinguish
+// "we couldn't fetch" from "there genuinely are no stations" in transport
+// empty states. UK/EU production deployment usually resolves this.
+const transportLookupFailed = computed<boolean>(
+  () => (enrichment.value as any)?.nearby?.transportLookupFailed === true,
+)
 
 // ─── New CTAs wired from the prototype passport card + secondary row ───────
 // Override the earlier stubs so the buttons + tiles open the right sheet.
@@ -3498,17 +5173,35 @@ function ordinalSuffix(n: number): string {
   const lastTwo = n % 100
   if (lastTwo >= 11 && lastTwo <= 13) return 'th'
   switch (n % 10) {
-    case 1: return 'st'
-    case 2: return 'nd'
-    case 3: return 'rd'
-    default: return 'th'
+    case 1:
+      return 'st'
+    case 2:
+      return 'nd'
+    case 3:
+      return 'rd'
+    default:
+      return 'th'
   }
 }
 
+// Buyer-unlock (£99) — opens the Stripe payment drawer. The drawer handles
+// the create-intent → confirm-card → unlock-passport sequence and emits
+// `@claimed` with the passport id on success.
+const showUnlockDrawer = ref(false)
 function onPassportUnlock() {
-  // Placeholder — wire to Stripe checkout when the £99 SKU is live.
+  if (!passportStatus.value?.passportId) {
+    showToast({
+      message: 'No published Passport to unlock for this property yet.',
+      iconEmoji: 'ℹ️',
+    })
+    return
+  }
   closeSheet()
-  showToast({ message: 'Passport unlock checkout coming soon', iconEmoji: '🔒' })
+  showUnlockDrawer.value = true
+}
+function onPassportUnlocked(passportId: string) {
+  showUnlockDrawer.value = false
+  router.push(`/buyer-passport/${passportId}`)
 }
 
 // ─── Make Contact form state ───────────────────────────────────────────────
@@ -3599,7 +5292,7 @@ async function submitWatch() {
       return
     }
     closeSheet()
-    showToast({ message: 'Saved — we\'ll keep you posted', iconEmoji: '🔔' })
+    showToast({ message: "Saved — we'll keep you posted", iconEmoji: '🔔' })
     watchName.value = ''
     watchEmail.value = ''
   } catch {
@@ -3712,6 +5405,52 @@ const enrichmentMobile = computed<any | null>(
   () => enrichment.value?.mobileSignal ?? null,
 )
 
+// Human-readable placeholder copy keyed off the failure reason the backend
+// returns. Falls back to the generic "data unavailable" line when the shape
+// is older / unknown.
+const broadbandPlaceholder = computed<{ title: string; sub: string }>(() => {
+  const bb = enrichmentBroadband.value
+  const reason = bb && bb.available === false ? bb.reason : null
+  switch (reason) {
+    case 'no_key':
+      return {
+        title: 'Broadband lookup not configured',
+        sub: 'The Ofcom API key is missing on this server. Register at developer.ofcom.org.uk and add OFCOM_API_KEY to .env.',
+      }
+    case 'unauthorized':
+      return {
+        title: 'Ofcom rejected the API key',
+        sub: 'The configured OFCOM_API_KEY is invalid, expired, or its subscription tier doesn’t include broadband. Regenerate it from your Ofcom developer portal.',
+      }
+    case 'rate_limited':
+      return {
+        title: 'Ofcom rate limit reached',
+        sub: 'Too many requests for this key today. Wait or upgrade your Ofcom subscription tier.',
+      }
+    case 'not_found':
+    case 'no_premises':
+      return {
+        title: 'No coverage on file for this postcode',
+        sub: 'Ofcom’s database has no entries for this postcode. Newer builds may not be mapped yet.',
+      }
+    case 'timeout':
+      return {
+        title: 'Ofcom request timed out',
+        sub: 'The Ofcom API didn’t respond in time. Try again — if this persists, Ofcom may be having an outage.',
+      }
+    case 'network':
+      return {
+        title: 'Couldn’t reach Ofcom',
+        sub: 'Network error talking to Ofcom’s API. Check the server’s outbound connectivity.',
+      }
+    default:
+      return {
+        title: 'Broadband data unavailable',
+        sub: 'We couldn’t retrieve coverage for this postcode. Check directly on Ofcom’s site below.',
+      }
+  }
+})
+
 function formatMbps(v: any): string {
   const n = Number(v) || 0
   if (n >= 1000) return `${(n / 1000).toFixed(1)} Gbps`
@@ -3729,8 +5468,7 @@ const mobileOperatorRows = computed(() => {
     if (!op) return { text: 'No data', cls: '' }
     const has5g = (op.data5g ?? '').toLowerCase().includes('high')
     const data4gStr = String(op.data4g ?? '').toLowerCase()
-    const has4g =
-      data4gStr.includes('high') || data4gStr.includes('strong')
+    const has4g = data4gStr.includes('high') || data4gStr.includes('strong')
     const noService =
       data4gStr.includes('none') || data4gStr.includes('no signal')
     if (has5g) return { text: 'Strong · 5G', cls: 'pps-ds-v--green' }
@@ -3807,7 +5545,7 @@ async function initMap() {
   function makeDivIcon(color: string, emoji: string) {
     return L.divIcon({
       className: '',
-      html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size:13px;">${emoji}</div>`,
+      html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size:15px;">${emoji}</div>`,
       iconSize: [30, 30],
       iconAnchor: [15, 15],
     })
@@ -4202,7 +5940,7 @@ onMounted(async () => {
 function handlePassportAction() {
   const s = passportStatus.value
   if (!s?.hasPassport) {
-    router.push(`/claim/${propertyId}`)
+    goToClaim()
   } else if (s.isOwner || s.isCollaborator) {
     router.push(`/passportview/${s.passportId}`)
   } else if (s.isBuyer && s.passportId) {
@@ -4210,15 +5948,14 @@ function handlePassportAction() {
   } else if (!s.isPublished) {
     showUnpublishedModal.value = true
   } else {
-    showClaimTypeDrawer.value = true
+    goToClaim()
   }
 }
 
-// Inline claim CTA on the property page now opens the type picker first.
-// The chosen type / HMO flag flows through onPassportTypeChosen and is
-// passed to ClaimPassportDrawer, which forwards them to claimPassport().
+// Inline claim CTA on the property page routes into the global /claim/[id]
+// flow (KYC → Land Registry → passport issued).
 function onClaimCtaClick() {
-  showClaimTypeDrawer.value = true
+  goToClaim()
 }
 
 function goBack() {
@@ -4291,7 +6028,7 @@ function formatSaleDate(dateStr: string): string {
   justify-content: center;
   gap: 14px;
   color: #6b6783;
-  font-size: 13px;
+  font-size: 15px;
 }
 .pps-spinner {
   width: 32px;
@@ -4302,7 +6039,9 @@ function formatSaleDate(dateStr: string): string {
   animation: pps-spin 0.9s linear infinite;
 }
 @keyframes pps-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 .pps-back-txt {
   background: none;
@@ -4310,7 +6049,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 9px;
   padding: 8px 14px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -4319,7 +6058,13 @@ function formatSaleDate(dateStr: string): string {
 /* ─── Hero ──────────────────────────────────────────────────── */
 .pps-hero {
   height: 260px;
-  background: linear-gradient(180deg, #b8cfc4 0%, #8aab96 40%, #6d9080 70%, #f5f5f7 100%);
+  background: linear-gradient(
+    180deg,
+    #b8cfc4 0%,
+    #8aab96 40%,
+    #6d9080 70%,
+    #f5f5f7 100%
+  );
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
@@ -4340,9 +6085,21 @@ function formatSaleDate(dateStr: string): string {
   cursor: pointer;
   color: white;
 }
-.pps-hero-btn-back { top: 16px; left: 16px; padding-top: env(safe-area-inset-top); }
-.pps-hero-btn-fav { top: 16px; right: 60px; padding-top: env(safe-area-inset-top); }
-.pps-hero-btn-share { top: 16px; right: 16px; padding-top: env(safe-area-inset-top); }
+.pps-hero-btn-back {
+  top: 16px;
+  left: 16px;
+  padding-top: env(safe-area-inset-top);
+}
+.pps-hero-btn-fav {
+  top: 16px;
+  right: 60px;
+  padding-top: env(safe-area-inset-top);
+}
+.pps-hero-btn-share {
+  top: 16px;
+  right: 16px;
+  padding-top: env(safe-area-inset-top);
+}
 .pps-hero-house {
   position: absolute;
   left: 50%;
@@ -4373,8 +6130,14 @@ function formatSaleDate(dateStr: string): string {
   animation: pps-badge-slide-up 0.4s 0.4s both;
 }
 @keyframes pps-badge-slide-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .pps-badge-passport {
   backdrop-filter: blur(8px);
@@ -4383,7 +6146,7 @@ function formatSaleDate(dateStr: string): string {
   color: white;
   border-radius: 20px;
   padding: 6px 12px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -4403,7 +6166,7 @@ function formatSaleDate(dateStr: string): string {
   color: #c73e36;
   border-radius: 20px;
   padding: 6px 12px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -4419,7 +6182,7 @@ function formatSaleDate(dateStr: string): string {
   line-height: 1.1;
 }
 .pps-identity-suburb {
-  font-size: 13px;
+  font-size: 15px;
   color: #888;
   margin-top: 3px;
 }
@@ -4437,7 +6200,7 @@ function formatSaleDate(dateStr: string): string {
   line-height: 1;
 }
 .pps-price-source {
-  font-size: 11px;
+  font-size: 12px;
   color: #aaa;
   margin-left: 10px;
 }
@@ -4451,7 +6214,7 @@ function formatSaleDate(dateStr: string): string {
   background: #f0f0f2;
   border-radius: 20px;
   padding: 5px 12px;
-  font-size: 12px;
+  font-size: 13px;
   color: #444;
   font-weight: 600;
   display: inline-flex;
@@ -4493,12 +6256,21 @@ function formatSaleDate(dateStr: string): string {
   bottom: 0;
   left: 0;
   width: 60%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.12) 50%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 50%,
+    transparent 100%
+  );
   animation: pps-shimmer 3s ease-in-out infinite;
 }
 @keyframes pps-shimmer {
-  0% { transform: translateX(-100%) skewX(-15deg); }
-  100% { transform: translateX(400%) skewX(-15deg); }
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(400%) skewX(-15deg);
+  }
 }
 .pps-passport-cta-unlock:hover {
   transform: translateY(-1px);
@@ -4515,7 +6287,7 @@ function formatSaleDate(dateStr: string): string {
   letter-spacing: -0.3px;
 }
 .pps-passport-cta-unlock-sub {
-  font-size: 11.5px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.72);
   margin-top: 4px;
 }
@@ -4559,13 +6331,13 @@ function formatSaleDate(dateStr: string): string {
   box-shadow: 0 4px 12px rgba(35, 29, 69, 0.1);
 }
 .pps-secondary-btn-label {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #1a1535;
   display: block;
 }
 .pps-secondary-btn-sub {
-  font-size: 10px;
+  font-size: 11px;
   color: #999;
   display: block;
   margin-top: 2px;
@@ -4596,17 +6368,23 @@ function formatSaleDate(dateStr: string): string {
   display: inline-block;
 }
 @keyframes pps-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.6); }
-  70% { box-shadow: 0 0 0 6px rgba(0, 161, 154, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 161, 154, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(0, 161, 154, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0);
+  }
 }
 .pps-signal-viewing {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #00897b;
 }
 .pps-signal-count {
-  font-size: 11px;
+  font-size: 12px;
   color: #aaa;
 }
 
@@ -4621,7 +6399,9 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-score-card--clickable {
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 .pps-score-card--clickable:hover {
   transform: translateY(-2px);
@@ -4640,7 +6420,11 @@ function formatSaleDate(dateStr: string): string {
   position: absolute;
   width: 180px;
   height: 180px;
-  background: radial-gradient(circle, rgba(0, 161, 154, 0.15) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(0, 161, 154, 0.15) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   top: -60px;
   right: -40px;
@@ -4650,7 +6434,11 @@ function formatSaleDate(dateStr: string): string {
   position: absolute;
   width: 120px;
   height: 120px;
-  background: radial-gradient(circle, rgba(35, 29, 69, 0.04) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(35, 29, 69, 0.04) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   bottom: -30px;
   left: -20px;
@@ -4697,7 +6485,7 @@ function formatSaleDate(dateStr: string): string {
   line-height: 1;
 }
 .pps-gauge-denom {
-  font-size: 10px;
+  font-size: 11px;
   color: #9c98ad;
   margin-top: 1px;
 }
@@ -4720,7 +6508,7 @@ function formatSaleDate(dateStr: string): string {
   letter-spacing: -0.3px;
 }
 .pps-score-desc {
-  font-size: 11.5px;
+  font-size: 13px;
   color: #6b6783;
   margin-top: 5px;
   line-height: 1.5;
@@ -4734,7 +6522,7 @@ function formatSaleDate(dateStr: string): string {
   border: 1px solid #ececef;
   border-radius: 20px;
   padding: 5px 12px;
-  font-size: 11px;
+  font-size: 12px;
   color: #444;
 }
 .pps-epc-dot {
@@ -4767,7 +6555,7 @@ function formatSaleDate(dateStr: string): string {
   gap: 10px;
 }
 .pps-epc-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #333;
   width: 60px;
@@ -4788,7 +6576,7 @@ function formatSaleDate(dateStr: string): string {
   transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pps-epc-rating {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #555;
   width: 60px;
@@ -4809,7 +6597,7 @@ function formatSaleDate(dateStr: string): string {
   color: #1a1535;
 }
 .pps-explore-sources {
-  font-size: 12px;
+  font-size: 13px;
   color: #00a19a;
   font-weight: 700;
 }
@@ -4848,7 +6636,7 @@ function formatSaleDate(dateStr: string): string {
   font-size: 16px;
 }
 .pps-tile-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #1a1535;
   margin-top: 10px;
@@ -4860,12 +6648,12 @@ function formatSaleDate(dateStr: string): string {
   margin-top: 3px;
 }
 .pps-tile-sub {
-  font-size: 10px;
+  font-size: 11px;
   color: #999;
   margin-top: 2px;
 }
 .pps-tile-trend {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: #2eab55;
   margin-top: 4px;
@@ -4886,7 +6674,7 @@ function formatSaleDate(dateStr: string): string {
   position: absolute;
   bottom: 12px;
   right: 12px;
-  font-size: 11px;
+  font-size: 12px;
   color: #ccc;
   line-height: 1;
 }
@@ -4904,7 +6692,9 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-passport-card--clickable {
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 .pps-passport-card--clickable:hover {
   transform: translateY(-2px);
@@ -4935,7 +6725,7 @@ function formatSaleDate(dateStr: string): string {
 .pps-passport-price-pill {
   background: #f2faf8;
   color: #007e78;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   border-radius: 20px;
   padding: 3px 10px;
@@ -4961,7 +6751,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 50%;
   border: none;
   color: #fff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 900;
   cursor: pointer;
   flex-shrink: 0;
@@ -4997,7 +6787,7 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 3px;
 }
 .pps-passport-explain-body {
-  font-size: 11px;
+  font-size: 12px;
   color: #4a4560;
   line-height: 1.5;
 }
@@ -5024,7 +6814,7 @@ function formatSaleDate(dateStr: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   transition: all 0.15s ease;
 }
@@ -5033,7 +6823,7 @@ function formatSaleDate(dateStr: string): string {
   color: white;
 }
 .pps-pp-step-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: #9c98ad;
   margin-top: 6px;
@@ -5065,7 +6855,7 @@ function formatSaleDate(dateStr: string): string {
   transition: width 1s 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pps-progress-label {
-  font-size: 11px;
+  font-size: 12px;
   color: #9c98ad;
   text-align: right;
 }
@@ -5098,17 +6888,17 @@ function formatSaleDate(dateStr: string): string {
   background: #f5f5f7;
 }
 .pps-feature-text-title--verified {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #231d45;
 }
 .pps-feature-text-title--locked {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #c0bdcc;
 }
 .pps-feature-text-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: #9c98ad;
   margin-top: 1px;
 }
@@ -5135,7 +6925,7 @@ function formatSaleDate(dateStr: string): string {
   transform: translateY(-1px);
 }
 .pps-passport-cta-sub {
-  font-size: 10px;
+  font-size: 11px;
   color: #9c98ad;
   text-align: center;
   margin-top: 8px;
@@ -5159,12 +6949,12 @@ function formatSaleDate(dateStr: string): string {
   border-bottom: 1px solid #f0dc80;
 }
 .pps-costs-header-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #7a3a05;
 }
 .pps-costs-header-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: #c18a38;
 }
 .pps-costs-body {
@@ -5219,7 +7009,7 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 4px;
 }
 .pps-costs-box-back-val {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: white;
 }
@@ -5243,12 +7033,12 @@ function formatSaleDate(dateStr: string): string {
   color: #007e78;
 }
 .pps-costs-box-label {
-  font-size: 10px;
+  font-size: 11px;
   color: #999;
   margin-top: 3px;
 }
 .pps-costs-attr {
-  font-size: 11px;
+  font-size: 12px;
   color: #bbb;
   font-style: italic;
   margin-top: 12px;
@@ -5264,9 +7054,27 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-details-header {
   padding: 14px 16px 0;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #1a1535;
+}
+.pps-details-sub {
+  padding: 4px 16px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b6783;
+  line-height: 1.45;
+}
+button.pps-detail-tile {
+  border: 1.5px solid transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+button.pps-detail-tile.pps-detail-tile--clickable:hover {
+  border-color: #00a19a;
+  background: white;
 }
 .pps-details-grid {
   display: grid;
@@ -5300,7 +7108,7 @@ function formatSaleDate(dateStr: string): string {
   text-transform: uppercase;
 }
 .pps-detail-value {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #1a1535;
   margin-top: 4px;
@@ -5310,7 +7118,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-epc-badge {
   color: white;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   border-radius: 5px;
   padding: 1px 6px;
@@ -5330,8 +7138,12 @@ function formatSaleDate(dateStr: string): string {
   animation: pps-overlay-fade 0.22s ease both;
 }
 @keyframes pps-overlay-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .pps-sheet {
   width: 100%;
@@ -5349,8 +7161,14 @@ function formatSaleDate(dateStr: string): string {
   max-height: 92vh;
 }
 @keyframes pps-sheet-up {
-  from { transform: translateY(28px); opacity: 0.6; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(28px);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 .pps-sheet-handle {
   width: 40px;
@@ -5373,7 +7191,7 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 6px;
 }
 .pps-sheet-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: #6b6783;
   text-align: center;
   line-height: 1.5;
@@ -5401,7 +7219,7 @@ function formatSaleDate(dateStr: string): string {
   border: 1.5px solid #ececef;
   border-radius: 12px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #6b6783;
   cursor: pointer;
@@ -5428,13 +7246,13 @@ function formatSaleDate(dateStr: string): string {
   letter-spacing: -0.3px;
 }
 .pps-ds-header-meta {
-  font-size: 11px;
+  font-size: 12px;
   color: #9c98ad;
   margin-top: 2px;
 }
 
 .pps-ds-section-title {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1.5px;
@@ -5453,29 +7271,333 @@ function formatSaleDate(dateStr: string): string {
   grid-template-columns: 1fr 1fr 1fr;
   padding: 10px 14px;
   border-bottom: 1px solid #ececef;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: #231d45;
   align-items: center;
 }
-.pps-ds-row:last-child { border-bottom: none; }
+.pps-ds-row:last-child {
+  border-bottom: none;
+}
 .pps-ds-row--header {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   background: #fff;
 }
-.pps-ds-val { font-weight: 800; color: #231d45; }
-.pps-ds-muted { color: #9c98ad; font-size: 12px; }
+.pps-ds-val {
+  font-weight: 800;
+  color: #231d45;
+}
+.pps-ds-muted {
+  color: #9c98ad;
+  font-size: 13px;
+}
 .pps-ds-empty {
   background: #fafafa;
   border-radius: 12px;
   padding: 20px;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   color: #6b6783;
+}
+
+/* ── Price-history timeline (restored) ───────────────────── */
+.pps-ds-cagr-banner {
+  margin: 4px 0 14px;
+  background: #f2faf8;
+  border: 1px solid #e5f4f2;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pps-ds-cagr-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #6b6783;
+  text-transform: uppercase;
+}
+.pps-ds-cagr-val {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+}
+.pps-ds-cagr-val--up {
+  color: #00a19a;
+}
+.pps-ds-cagr-val--down {
+  color: #c73e36;
+}
+
+.pps-ds-timeline {
+  display: flex;
+  flex-direction: column;
+  border-left: 2px solid #ececef;
+  padding-left: 0;
+  margin-left: 6px;
+}
+.pps-ds-tl-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0 10px 16px;
+  border-bottom: 1px solid #f5f5f7;
+}
+.pps-ds-tl-row:last-child {
+  border-bottom: none;
+}
+.pps-ds-tl-row--est .pps-ds-tl-price {
+  color: #00a19a;
+}
+.pps-ds-tl-bullet {
+  position: absolute;
+  left: -7px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #c0bdcc;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px #c0bdcc;
+}
+.pps-ds-tl-bullet--est {
+  background: #00a19a;
+  box-shadow: 0 0 0 2px #00a19a;
+}
+.pps-ds-tl-body {
+  flex: 1;
+  min-width: 0;
+}
+.pps-ds-tl-price {
+  font-size: 16px;
+  font-weight: 900;
+  color: #231d45;
+  letter-spacing: -0.3px;
+}
+.pps-ds-tl-est-pill {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  background: #e6f7f6;
+  color: #007e78;
+  border: 1px solid #b2e4e1;
+  border-radius: 100px;
+  padding: 2px 8px;
+  margin-left: 6px;
+}
+.pps-ds-tl-date {
+  font-size: 12px;
+  color: #9c98ad;
+  margin-top: 1px;
+}
+.pps-ds-tl-delta {
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 100px;
+}
+.pps-ds-tl-delta--up {
+  background: #e8f5ee;
+  color: #2eab55;
+}
+.pps-ds-tl-delta--down {
+  background: #fcebea;
+  color: #c73e36;
+}
+.pps-ds-tl-arrow {
+  font-size: 13px;
+}
+.pps-ds-tl-pct {
+  font-weight: 700;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+/* ── EPC components bars (restored) ──────────────────────── */
+.pps-epc-comp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px;
+}
+.pps-epc-comp-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 50px;
+  align-items: center;
+  gap: 10px;
+}
+.pps-epc-comp-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #4a4566;
+}
+.pps-epc-comp-track {
+  height: 8px;
+  background: #f5f5f7;
+  border-radius: 100px;
+  overflow: hidden;
+}
+.pps-epc-comp-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.5s ease;
+}
+.pps-epc-comp-fill--good {
+  background: #2eab55;
+}
+.pps-epc-comp-fill--avg {
+  background: #e6a23c;
+}
+.pps-epc-comp-fill--poor {
+  background: #c73e36;
+}
+.pps-epc-comp-fill--vpoor {
+  background: #a82e26;
+}
+.pps-epc-comp-fill--na {
+  background: #c0bdcc;
+}
+.pps-epc-comp-rating {
+  font-size: 12px;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ── Running-costs EPC upside row ────────────────────────── */
+.pps-costs-upside {
+  margin: 8px 14px 0;
+  background: linear-gradient(135deg, #f2faf8, #f6f5fb);
+  border: 1px solid #e5f4f2;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #007e78;
+  line-height: 1.4;
+}
+.pps-costs-upside-ic {
+  font-size: 14px;
+  font-weight: 800;
+  width: 22px;
+  height: 22px;
+  background: #00a19a;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pps-costs-upside strong {
+  color: #231d45;
+}
+
+/* ── Unpublished-passport modal (restored) ─────────────────── */
+.unpub-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(35, 29, 69, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+}
+.unpub-modal {
+  background: white;
+  max-width: 380px;
+  width: 100%;
+  border-radius: 22px;
+  padding: 28px 24px 22px;
+  position: relative;
+  box-shadow: 0 24px 48px -12px rgba(35, 29, 69, 0.5);
+  text-align: center;
+}
+.unpub-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: #f5f5f7;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b6783;
+  cursor: pointer;
+}
+.unpub-close svg {
+  width: 16px;
+  height: 16px;
+}
+.unpub-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+.unpub-eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  color: #007e78;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.unpub-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.4px;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.unpub-body {
+  font-size: 15px;
+  color: #6b6783;
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+.unpub-cta {
+  width: 100%;
+  background: #00a19a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.unpub-cta:hover {
+  background: #00b6ae;
+  transform: translateY(-1px);
+}
+
+/* Fade transition for the modal */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 /* Key-value list */
@@ -5489,26 +7611,88 @@ function formatSaleDate(dateStr: string): string {
   align-items: center;
   padding: 9px 0;
   border-bottom: 1px solid #f5f5f7;
+  font-size: 15px;
+}
+.pps-ds-kv:last-child {
+  border-bottom: none;
+}
+.pps-ds-k {
+  color: #6b6783;
+  font-weight: 500;
+}
+.pps-ds-v {
+  font-weight: 700;
+  color: #231d45;
+}
+.pps-ds-v--red {
+  color: #c73e36;
+}
+.pps-ds-v--amber {
+  color: #c18a38;
+}
+.pps-ds-v--green {
+  color: #2eab55;
+}
+.pps-ds-v--muted {
+  color: #8a8595;
+  font-weight: 600;
   font-size: 13px;
 }
-.pps-ds-kv:last-child { border-bottom: none; }
-.pps-ds-k { color: #6b6783; font-weight: 500; }
-.pps-ds-v { font-weight: 700; color: #231d45; }
-.pps-ds-v--red { color: #c73e36; }
-.pps-ds-v--amber { color: #c18a38; }
-.pps-ds-v--green { color: #2eab55; }
-.pps-ds-v--muted { color: #8a8595; font-weight: 600; font-size: 12px; }
-.pps-ds-kv--link { text-decoration: none; cursor: pointer; transition: background 0.15s ease; }
-.pps-ds-kv--link:hover { background: #f5f5f7; }
-.pps-ds-kv--link .pps-ds-v--muted { color: #00a19a; font-weight: 700; }
-.pps-ds-bar-list { display: flex; flex-direction: column; gap: 8px; }
-.pps-ds-bar-item { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 10px; }
-.pps-ds-bar-item--active .pps-ds-bar-label { color: #00a19a; font-weight: 900; }
-.pps-ds-bar-item--active .pps-ds-bar-count { color: #00a19a; font-weight: 900; }
-.pps-ds-bar-label { font-weight: 800; color: #231d45; text-align: center; font-size: 13px; }
-.pps-ds-bar-track { background: #f5f5f7; border-radius: 6px; height: 14px; overflow: hidden; }
-.pps-ds-bar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; }
-.pps-ds-bar-count { font-size: 11px; font-weight: 700; color: #6b6783; min-width: 56px; text-align: right; }
+.pps-ds-kv--link {
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.pps-ds-kv--link:hover {
+  background: #f5f5f7;
+}
+.pps-ds-kv--link .pps-ds-v--muted {
+  color: #00a19a;
+  font-weight: 700;
+}
+.pps-ds-bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pps-ds-bar-item {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+.pps-ds-bar-item--active .pps-ds-bar-label {
+  color: #00a19a;
+  font-weight: 900;
+}
+.pps-ds-bar-item--active .pps-ds-bar-count {
+  color: #00a19a;
+  font-weight: 900;
+}
+.pps-ds-bar-label {
+  font-weight: 800;
+  color: #231d45;
+  text-align: center;
+  font-size: 15px;
+}
+.pps-ds-bar-track {
+  background: #f5f5f7;
+  border-radius: 6px;
+  height: 14px;
+  overflow: hidden;
+}
+.pps-ds-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
+.pps-ds-bar-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b6783;
+  min-width: 56px;
+  text-align: right;
+}
 
 /* Highlight box (used by Council, Broadband) */
 .pps-ds-highlight-box {
@@ -5526,7 +7710,7 @@ function formatSaleDate(dateStr: string): string {
   letter-spacing: -0.5px;
 }
 .pps-ds-highlight-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: #6b6783;
   margin-top: 4px;
 }
@@ -5547,7 +7731,7 @@ function formatSaleDate(dateStr: string): string {
   line-height: 1;
 }
 .pps-ds-rank-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: #6b6783;
   margin-top: 6px;
 }
@@ -5558,37 +7742,62 @@ function formatSaleDate(dateStr: string): string {
   padding: 16px;
   margin-bottom: 4px;
 }
-.pps-ds-risk-card--high { background: #fef2f2; border: 1.5px solid rgba(199, 62, 54, 0.3); }
-.pps-ds-risk-card--medium { background: #fff7e6; border: 1.5px solid rgba(230, 162, 60, 0.4); }
-.pps-ds-risk-card--low { background: #fffbe6; border: 1.5px solid rgba(240, 220, 128, 0.6); }
-.pps-ds-risk-card--clear { background: #f0fbf4; border: 1.5px solid #b8e8c8; }
+.pps-ds-risk-card--high {
+  background: #fef2f2;
+  border: 1.5px solid rgba(199, 62, 54, 0.3);
+}
+.pps-ds-risk-card--medium {
+  background: #fff7e6;
+  border: 1.5px solid rgba(230, 162, 60, 0.4);
+}
+.pps-ds-risk-card--low {
+  background: #fffbe6;
+  border: 1.5px solid rgba(240, 220, 128, 0.6);
+}
+.pps-ds-risk-card--clear {
+  background: #f0fbf4;
+  border: 1.5px solid #b8e8c8;
+}
 .pps-ds-risk-label {
   font-size: 14px;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 6px;
 }
-.pps-ds-risk-card--high .pps-ds-risk-label { color: #c73e36; }
-.pps-ds-risk-card--medium .pps-ds-risk-label { color: #c18a38; }
+.pps-ds-risk-card--high .pps-ds-risk-label {
+  color: #c73e36;
+}
+.pps-ds-risk-card--medium .pps-ds-risk-label {
+  color: #c18a38;
+}
 .pps-ds-risk-desc {
-  font-size: 12px;
+  font-size: 13px;
   color: #4a4560;
   line-height: 1.55;
 }
 
 /* Council band list */
-.pps-ds-band-list { display: flex; flex-direction: column; gap: 6px; }
+.pps-ds-band-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 .pps-ds-band-row {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 4px 0;
 }
-.pps-ds-band-row--active .pps-ds-band-letter { color: #00a19a; font-weight: 900; }
-.pps-ds-band-row--active .pps-ds-band-amt { color: #00a19a; }
+.pps-ds-band-row--active .pps-ds-band-letter {
+  color: #00a19a;
+  font-weight: 900;
+}
+.pps-ds-band-row--active .pps-ds-band-amt {
+  color: #00a19a;
+}
 .pps-ds-band-letter {
   width: 32px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   color: #6b6783;
 }
@@ -5608,7 +7817,7 @@ function formatSaleDate(dateStr: string): string {
 .pps-ds-band-amt {
   width: 64px;
   text-align: right;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #231d45;
 }
@@ -5620,12 +7829,12 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 0 8px 8px 0;
   padding: 10px 14px;
   margin-top: 14px;
-  font-size: 11px;
+  font-size: 12px;
   color: #6b6783;
   line-height: 1.55;
 }
 .pps-ds-attribution {
-  font-size: 11px;
+  font-size: 12px;
   color: #c0bdcc;
   text-align: center;
   margin-top: 16px;
@@ -5638,7 +7847,7 @@ function formatSaleDate(dateStr: string): string {
   border: none;
   border-radius: 9px;
   padding: 9px 6px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: #6b6783;
   cursor: pointer;
@@ -5660,8 +7869,16 @@ function formatSaleDate(dateStr: string): string {
   justify-content: space-between;
   align-items: baseline;
 }
-.pps-sd-band-pct { font-size: 13px; font-weight: 800; color: #231d45; }
-.pps-sd-band-amt { font-size: 13px; font-weight: 800; color: #231d45; }
+.pps-sd-band-pct {
+  font-size: 15px;
+  font-weight: 800;
+  color: #231d45;
+}
+.pps-sd-band-amt {
+  font-size: 15px;
+  font-weight: 800;
+  color: #231d45;
+}
 .pps-sd-band-track {
   height: 7px;
   background: #ececef;
@@ -5674,7 +7891,11 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 4px;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.pps-sd-band-range { font-size: 10px; color: #9c98ad; margin-top: 2px; }
+.pps-sd-band-range {
+  font-size: 11px;
+  color: #9c98ad;
+  margin-top: 2px;
+}
 
 /* Placeholder for sheets with no data yet */
 .pps-ds-placeholder {
@@ -5685,7 +7906,10 @@ function formatSaleDate(dateStr: string): string {
   border: 1.5px dashed #ececef;
   margin-bottom: 16px;
 }
-.pps-ds-placeholder-icon { font-size: 36px; margin-bottom: 10px; }
+.pps-ds-placeholder-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
 .pps-ds-placeholder-title {
   font-size: 14px;
   font-weight: 800;
@@ -5693,9 +7917,26 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 6px;
 }
 .pps-ds-placeholder-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: #6b6783;
   line-height: 1.55;
+}
+.pps-ds-placeholder-link {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #00a19a;
+  text-decoration: none;
+  padding: 8px 14px;
+  border: 1.5px solid #e5f4f2;
+  background: #f2faf8;
+  border-radius: 100px;
+  transition: all 0.15s;
+}
+.pps-ds-placeholder-link:hover {
+  background: #e5f4f2;
+  border-color: #00a19a;
 }
 
 /* Broadband — row layout */
@@ -5718,7 +7959,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -5735,12 +7976,12 @@ function formatSaleDate(dateStr: string): string {
   min-width: 0;
 }
 .pps-ds-bb-name {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #231d45;
 }
 .pps-ds-bb-meta {
-  font-size: 11px;
+  font-size: 12px;
   color: #6b6783;
   margin-top: 1px;
 }
@@ -5761,11 +8002,26 @@ function formatSaleDate(dateStr: string): string {
   padding: 16px 18px;
   margin-bottom: 16px;
 }
+/* Unclaimed: neutral grey gradient — no need to imply value already there */
+.pps-passport-sheet-header--unclaimed {
+  background: linear-gradient(135deg, #f6f5fb 0%, #eeedf5 100%);
+}
+/* Progress: teal gradient — Passport is actively being built */
+.pps-passport-sheet-header--progress {
+  background: linear-gradient(135deg, #e6f7f6 0%, #b2e4e1 100%);
+}
+.pps-passport-sheet-empty {
+  font-size: 14px;
+  color: #6b6783;
+  line-height: 1.55;
+  padding: 0 2px;
+  margin: 6px 0 4px;
+}
 .pps-passport-sheet-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   color: #b07a1c;
   letter-spacing: 1.2px;
@@ -5785,20 +8041,28 @@ function formatSaleDate(dateStr: string): string {
   margin-top: 4px;
 }
 .pps-passport-sheet-meta {
-  font-size: 12px;
+  font-size: 13px;
   color: #6b4c1a;
   margin-top: 2px;
 }
 .pps-passport-sheet-section-title {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 10px;
 }
-.pps-passport-sheet-items { display: flex; flex-direction: column; gap: 10px; }
-.pps-psi-row { display: flex; align-items: center; gap: 12px; }
+.pps-passport-sheet-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pps-psi-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .pps-psi-icon {
   width: 32px;
   height: 32px;
@@ -5810,10 +8074,25 @@ function formatSaleDate(dateStr: string): string {
   font-size: 15px;
   flex-shrink: 0;
 }
-.pps-psi-text { flex: 1; min-width: 0; }
-.pps-psi-name { font-size: 13px; font-weight: 800; color: #231d45; }
-.pps-psi-meta { font-size: 11px; color: #9c98ad; margin-top: 1px; }
-.pps-psi-check { color: #00a19a; font-weight: 800; font-size: 14px; }
+.pps-psi-text {
+  flex: 1;
+  min-width: 0;
+}
+.pps-psi-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #231d45;
+}
+.pps-psi-meta {
+  font-size: 12px;
+  color: #9c98ad;
+  margin-top: 1px;
+}
+.pps-psi-check {
+  color: #00a19a;
+  font-weight: 800;
+  font-size: 14px;
+}
 
 .pps-passport-price-breakdown {
   background: #fafafa;
@@ -5825,14 +8104,27 @@ function formatSaleDate(dateStr: string): string {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: #6b6783;
   padding: 4px 0;
 }
-.pps-ppb-divider { height: 1px; background: #ececef; margin: 8px 0; }
-.pps-ppb-total { font-size: 16px; font-weight: 900; color: #231d45; }
-.pps-ppb-note { font-size: 10px; color: #9c98ad; margin-top: 8px; text-align: center; }
+.pps-ppb-divider {
+  height: 1px;
+  background: #ececef;
+  margin: 8px 0;
+}
+.pps-ppb-total {
+  font-size: 16px;
+  font-weight: 900;
+  color: #231d45;
+}
+.pps-ppb-note {
+  font-size: 11px;
+  color: #9c98ad;
+  margin-top: 8px;
+  text-align: center;
+}
 
 /* Explain sheets */
 .pps-explain-hero {
@@ -5842,7 +8134,10 @@ function formatSaleDate(dateStr: string): string {
   position: relative;
   overflow: hidden;
 }
-.pps-explain-hero--unclaimed { background: #231d45; color: #fff; }
+.pps-explain-hero--unclaimed {
+  background: #231d45;
+  color: #fff;
+}
 .pps-explain-hero--progress {
   background: linear-gradient(135deg, #4dd4ce 0%, #00a19a 45%, #006e68 100%);
   color: #fff;
@@ -5868,7 +8163,7 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 8px;
 }
 .pps-explain-body {
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.55;
 }
@@ -5879,8 +8174,12 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 16px;
   border-left: 3px solid #231d45;
 }
-.pps-explain-callout--unclaimed { border-left-color: #231d45; }
-.pps-explain-callout--progress { border-left-color: #00a19a; }
+.pps-explain-callout--unclaimed {
+  border-left-color: #231d45;
+}
+.pps-explain-callout--progress {
+  border-left-color: #00a19a;
+}
 .pps-explain-callout-eyebrow {
   font-size: 9px;
   font-weight: 800;
@@ -5890,7 +8189,7 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 6px;
 }
 .pps-explain-callout-body {
-  font-size: 12px;
+  font-size: 13px;
   color: #4a4560;
   line-height: 1.6;
 }
@@ -5913,7 +8212,7 @@ function formatSaleDate(dateStr: string): string {
   letter-spacing: -0.5px;
 }
 .pps-explain-stat-sub {
-  font-size: 10px;
+  font-size: 11px;
   color: #9c98ad;
   margin-top: 2px;
   font-weight: 600;
@@ -5929,13 +8228,13 @@ function formatSaleDate(dateStr: string): string {
   border-left-color: #d4822a;
 }
 .pps-explain-callout-foot {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #231d45;
   margin-top: 8px;
 }
 .pps-explain-section-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1.5px;
@@ -5961,7 +8260,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 50%;
   background: #ececef;
   color: #9c98ad;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -5972,7 +8271,7 @@ function formatSaleDate(dateStr: string): string {
   color: #fff;
 }
 .pps-explain-step-title {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: #9c98ad;
 }
@@ -6016,21 +8315,24 @@ function formatSaleDate(dateStr: string): string {
   font-size: 14px;
   flex-shrink: 0;
 }
-.pps-explain-checklist-text { flex: 1; min-width: 0; }
+.pps-explain-checklist-text {
+  flex: 1;
+  min-width: 0;
+}
 .pps-explain-checklist-title {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   color: #231d45;
 }
 .pps-explain-checklist-sub {
-  font-size: 10px;
+  font-size: 11px;
   color: #9c98ad;
   margin-top: 1px;
 }
 .pps-explain-checklist-tick {
   color: #00a19a;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 15px;
 }
 .pps-explain-progress-row {
   display: flex;
@@ -6039,12 +8341,12 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 6px;
 }
 .pps-explain-progress-pct {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #231d45;
 }
 .pps-explain-progress-frac {
-  font-size: 11px;
+  font-size: 12px;
   color: #9c98ad;
 }
 .pps-explain-progress-track {
@@ -6062,7 +8364,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-explain-footer {
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
   color: #9c98ad;
   line-height: 1.6;
   padding: 0 8px 16px;
@@ -6081,7 +8383,7 @@ function formatSaleDate(dateStr: string): string {
   gap: 6px;
 }
 .pps-field-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   color: #6b6783;
   letter-spacing: 0.4px;
@@ -6093,7 +8395,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 10px;
   padding: 11px 13px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 15px;
   color: #231d45;
   outline: none;
   background: #fff;
@@ -6122,7 +8424,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 999px;
   padding: 7px 13px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #6b6783;
   cursor: pointer;
@@ -6144,7 +8446,7 @@ function formatSaleDate(dateStr: string): string {
   background: #f9f9fb;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 11px;
+  font-size: 12px;
   color: #6b6783;
   line-height: 1.5;
   display: flex;
@@ -6153,7 +8455,7 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 10px;
 }
 .pps-form-error {
-  font-size: 12px;
+  font-size: 13px;
   color: #c73e36;
   background: #fef2f2;
   border-radius: 8px;

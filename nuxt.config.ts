@@ -60,4 +60,13 @@ export default defineNuxtConfig({
     },
   },
   components: true,
+  // Strip console.* from production bundles. The dev server keeps them so
+  // engineers can still see logs locally; only the prod build (and SSR
+  // server build) is stripped. `debugger` is dropped too.
+  vite: {
+    esbuild: {
+      drop:
+        process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+    },
+  },
 })

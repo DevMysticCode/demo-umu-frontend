@@ -796,7 +796,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .brand-logo { width: 32px; height: 32px; flex-shrink: 0; color: #00a19a; }
 .brand-spacer { flex: 1; }
 .beta-pill {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   color: #00a19a; letter-spacing: 1.4px;
   padding: 4px 10px; border-radius: 100px;
   border: 1px solid #00a19a; text-transform: uppercase;
@@ -809,7 +809,7 @@ const currentSample = computed(() => samples[sampleType.value])
   line-height: 1.02; margin-bottom: 8px;
 }
 .hero-title .lt-teal { color: #00a19a; }
-.hero-sub { font-size: 13px; font-weight: 500; color: #6b6783; line-height: 1.5; }
+.hero-sub { font-size: 15px; font-weight: 500; color: #6b6783; line-height: 1.5; }
 
 /* Deck */
 .deck-wrap { margin: 22px 22px 0; position: relative; height: 468px; }
@@ -846,7 +846,7 @@ const currentSample = computed(() => samples[sampleType.value])
   pointer-events: none;
 }
 .dc-peek-label {
-  font-size: 10.5px; font-weight: 800;
+  font-size: 12px; font-weight: 800;
   letter-spacing: 1.4px; text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
   display: inline-flex; align-items: center; gap: 7px;
@@ -856,7 +856,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border-radius: 50%; background: rgba(255, 255, 255, 0.9);
 }
 .dc-peek-pill {
-  font-size: 9.5px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   background: rgba(255, 255, 255, 0.18); color: #fff;
   padding: 3px 9px; border-radius: 100px;
   letter-spacing: 0.5px; text-transform: uppercase;
@@ -875,14 +875,14 @@ const currentSample = computed(() => samples[sampleType.value])
 
 .dc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .dc-eyebrow {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   letter-spacing: 1.6px; text-transform: uppercase;
   color: rgba(255, 255, 255, 0.78);
   display: inline-flex; align-items: center; gap: 7px;
 }
 .dc-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.85); }
 .dc-pill {
-  font-size: 9.5px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   background: rgba(255, 255, 255, 0.18); color: #fff;
   padding: 4px 10px; border-radius: 100px;
   letter-spacing: 0.6px; text-transform: uppercase;
@@ -894,7 +894,7 @@ const currentSample = computed(() => samples[sampleType.value])
   font-size: 26px; font-weight: 800; color: #fff;
   letter-spacing: -0.8px; line-height: 1.05; margin-bottom: 8px;
 }
-.dc-sub { font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.78); line-height: 1.5; }
+.dc-sub { font-size: 15px; font-weight: 500; color: rgba(255, 255, 255, 0.78); line-height: 1.5; }
 
 .dc-hs-row { display: flex; align-items: center; gap: 16px; margin-top: 18px; }
 .dc-hs-gauge { width: 88px; height: 88px; position: relative; flex-shrink: 0; }
@@ -910,7 +910,7 @@ const currentSample = computed(() => samples[sampleType.value])
   font-size: 8.5px; font-weight: 800; color: rgba(255, 255, 255, 0.65);
   letter-spacing: 1.2px; text-transform: uppercase; margin-top: 2px;
 }
-.dc-hs-meta { flex: 1; font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.78); line-height: 1.5; }
+.dc-hs-meta { flex: 1; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.78); line-height: 1.5; }
 .dc-hs-meta strong { color: #fff; font-weight: 800; }
 
 .dc-pp-row { display: flex; gap: 14px; margin-top: 16px; align-items: center; }
@@ -969,7 +969,7 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .dc-pp-cats { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; align-content: flex-start; }
 .dc-pp-cat {
-  font-size: 10.5px; font-weight: 800;
+  font-size: 12px; font-weight: 800;
   background: rgba(255, 255, 255, 0.12); color: #fff;
   padding: 5px 10px; border-radius: 100px;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -979,7 +979,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .dc-ai-row { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
 .dc-ai-num { font-size: 56px; font-weight: 800; color: #fff; letter-spacing: -2px; line-height: 0.9; flex-shrink: 0; }
 .dc-ai-num .unit { font-size: 24px; color: rgba(255, 255, 255, 0.55); font-weight: 800; margin-left: 4px; }
-.dc-ai-text { flex: 1; font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.78); line-height: 1.5; }
+.dc-ai-text { flex: 1; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.78); line-height: 1.5; }
 .dc-ai-text strong { color: #fff; font-weight: 800; }
 
 .dc-mk-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 18px; }
@@ -989,7 +989,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border-radius: 12px; padding: 12px 10px; text-align: center;
 }
 .dc-mk-num { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; line-height: 1; margin-bottom: 4px; }
-.dc-mk-num .unit { font-size: 11px; color: rgba(255, 255, 255, 0.55); font-weight: 800; margin-left: 2px; }
+.dc-mk-num .unit { font-size: 12px; color: rgba(255, 255, 255, 0.55); font-weight: 800; margin-left: 2px; }
 .dc-mk-label { font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.6); letter-spacing: 0.3px; text-transform: uppercase; line-height: 1.2; }
 
 .dc-foot { margin-top: auto; padding-top: 14px; }
@@ -999,7 +999,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 12px;
-  font-family: inherit; font-size: 13px; font-weight: 800;
+  font-family: inherit; font-size: 15px; font-weight: 800;
   padding: 11px 14px; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   letter-spacing: -0.2px; transition: all 0.15s;
@@ -1022,7 +1022,7 @@ const currentSample = computed(() => samples[sampleType.value])
   box-shadow: 0 8px 22px rgba(0, 161, 154, 0.32);
 }
 .btn-primary svg { width: 14px; height: 14px; }
-.cta-signin { margin-top: 14px; font-size: 12.5px; font-weight: 600; color: #6b6783; text-align: center; }
+.cta-signin { margin-top: 14px; font-size: 14px; font-weight: 600; color: #6b6783; text-align: center; }
 .cta-signin a { color: #00a19a; font-weight: 800; cursor: pointer; }
 
 /* Sub-screen back bar */
@@ -1048,13 +1048,13 @@ const currentSample = computed(() => samples[sampleType.value])
 /* Market screen */
 .market-hero { padding: 24px 22px 22px; border-bottom: 1px solid #f5f5f7; }
 .market-eyebrow {
-  font-size: 10px; font-weight: 800; color: #00a19a;
+  font-size: 11px; font-weight: 800; color: #00a19a;
   letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
 }
 .market-title { font-size: 32px; font-weight: 800; color: #231d45; letter-spacing: -1.1px; line-height: 1; margin-bottom: 12px; }
 .market-sub { font-size: 14px; font-weight: 500; color: #6b6783; line-height: 1.55; }
 
-.market-section-h { font-size: 11px; font-weight: 800; color: #9c98ad; letter-spacing: 2px; text-transform: uppercase; padding: 28px 22px 14px; }
+.market-section-h { font-size: 12px; font-weight: 800; color: #9c98ad; letter-spacing: 2px; text-transform: uppercase; padding: 28px 22px 14px; }
 
 .market-stat-block { margin: 0 22px 12px; padding: 24px 22px 22px; border-radius: 18px; position: relative; overflow: hidden; }
 .market-stat-block.navy { background: #231d45; }
@@ -1076,16 +1076,16 @@ const currentSample = computed(() => samples[sampleType.value])
 .ms-arrow { font-size: 20px; color: rgba(255, 255, 255, 0.45); font-weight: 700; }
 .ms-target { font-size: 24px; color: rgba(255, 255, 255, 0.72); letter-spacing: -0.6px; font-weight: 800; }
 .market-stat-label {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   color: rgba(255, 255, 255, 0.72);
   letter-spacing: 1.6px; text-transform: uppercase;
   margin-bottom: 18px; position: relative; z-index: 1;
 }
 .market-stat-headline { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.4px; line-height: 1.25; margin-bottom: 8px; position: relative; z-index: 1; }
-.market-stat-text { font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.78); line-height: 1.55; position: relative; z-index: 1; }
+.market-stat-text { font-size: 15px; font-weight: 500; color: rgba(255, 255, 255, 0.78); line-height: 1.55; position: relative; z-index: 1; }
 .market-stat-text strong { color: #fff; font-weight: 800; }
 
-.market-para { padding: 0 22px; margin-bottom: 14px; font-size: 13.5px; font-weight: 500; color: #231d45; line-height: 1.6; }
+.market-para { padding: 0 22px; margin-bottom: 14px; font-size: 15px; font-weight: 500; color: #231d45; line-height: 1.6; }
 .market-para strong { color: #231d45; font-weight: 800; }
 
 /* Pull quote */
@@ -1099,7 +1099,7 @@ const currentSample = computed(() => samples[sampleType.value])
   letter-spacing: -0.3px;
 }
 .market-pull-attr {
-  font-size: 11px; font-weight: 700;
+  font-size: 12px; font-weight: 700;
   color: #9c98ad;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -1128,7 +1128,7 @@ const currentSample = computed(() => samples[sampleType.value])
   overflow: hidden;
 }
 .govt-eyebrow {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   color: #00a19a;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -1147,7 +1147,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #fff;
 }
 .govt-text {
-  font-size: 13px; font-weight: 500;
+  font-size: 15px; font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.55;
   letter-spacing: -0.1px;
@@ -1163,7 +1163,7 @@ const currentSample = computed(() => samples[sampleType.value])
   padding: 20px 18px;
 }
 .founder-eyebrow {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   color: #6b6783;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -1182,7 +1182,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #231d45;
 }
 .founder-para {
-  font-size: 13.5px; font-weight: 500;
+  font-size: 15px; font-weight: 500;
   color: #231d45;
   line-height: 1.6;
   letter-spacing: -0.1px;
@@ -1194,7 +1194,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px solid rgba(35, 29, 69, 0.1);
-  font-size: 11px; font-weight: 700;
+  font-size: 12px; font-weight: 700;
   color: #6b6783;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -1229,7 +1229,7 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .compare-cell.without { background: #fafafa; }
 .compare-cell-label {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -1241,14 +1241,14 @@ const currentSample = computed(() => samples[sampleType.value])
   gap: 8px;
   padding: 6px 0;
   border-top: 1px solid #f5f5f7;
-  font-size: 11.5px; font-weight: 600;
+  font-size: 13px; font-weight: 600;
   color: #231d45;
   line-height: 1.4;
   letter-spacing: -0.1px;
 }
 .compare-row:first-of-type { border-top: none; padding-top: 0; }
 .compare-row .day {
-  font-size: 9.5px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   color: #9c98ad;
   letter-spacing: 0.4px;
   flex-shrink: 0;
@@ -1279,7 +1279,7 @@ const currentSample = computed(() => samples[sampleType.value])
   pointer-events: none;
 }
 .mfc-eyebrow {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   color: #00a19a;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -1294,7 +1294,7 @@ const currentSample = computed(() => samples[sampleType.value])
   position: relative; z-index: 2;
 }
 .mfc-sub {
-  font-size: 12.5px; font-weight: 600;
+  font-size: 14px; font-weight: 600;
   color: rgba(255, 255, 255, 0.65);
   line-height: 1.5;
   margin-bottom: 18px;
@@ -1324,7 +1324,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border-bottom: 1px solid #f5f5f7;
 }
 .aisha-eyebrow {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   color: #007e78;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -1346,7 +1346,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .aisha-byline {
   display: flex; align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: 13px;
   color: #6b6783;
   letter-spacing: -0.1px;
 }
@@ -1356,7 +1356,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: linear-gradient(135deg, #c18a38 0%, #8a5f1f 100%);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 800;
+  font-size: 12px; font-weight: 800;
   flex-shrink: 0;
 }
 .aisha-byline-name { font-weight: 800; color: #231d45; }
@@ -1407,7 +1407,7 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .aisha-section-num {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 11px; font-weight: 700;
+  font-size: 12px; font-weight: 700;
   color: #00a19a;
 }
 .aisha-section-rule {
@@ -1430,7 +1430,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .aisha-para {
   padding: 0 22px;
   margin-bottom: 14px;
-  font-size: 13.5px; font-weight: 500;
+  font-size: 15px; font-weight: 500;
   color: #231d45;
   line-height: 1.6;
   letter-spacing: -0.1px;
@@ -1451,7 +1451,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 10px;
 }
 .aisha-pull-attr {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -1468,7 +1468,7 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .afc-eyebrow-pill {
   display: inline-block;
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   color: #007e78;
   background: #f2faf8;
   border: 1px solid #e5f4f2;
@@ -1486,7 +1486,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 8px;
 }
 .afc-sub {
-  font-size: 13px; font-weight: 500;
+  font-size: 15px; font-weight: 500;
   color: #6b6783;
   line-height: 1.55;
   margin-bottom: 18px;
@@ -1499,7 +1499,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 13px; font-weight: 800;
+  font-size: 15px; font-weight: 800;
   padding: 11px 22px;
   border-radius: 100px;
   cursor: pointer;
@@ -1519,19 +1519,19 @@ const currentSample = computed(() => samples[sampleType.value])
   display: flex; align-items: center; gap: 10px;
 }
 .sample-banner-tag {
-  font-size: 10px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   background: #c18a38; color: #fff;
   padding: 3px 8px; border-radius: 100px;
   letter-spacing: 0.4px; text-transform: uppercase;
 }
-.sample-banner-text { flex: 1; font-size: 12.5px; font-weight: 600; color: #6b4e9f; line-height: 1.4; }
+.sample-banner-text { flex: 1; font-size: 14px; font-weight: 600; color: #6b4e9f; line-height: 1.4; }
 
 .sample-type-picker { display: flex; gap: 6px; padding: 14px 22px 6px; }
 .stp-btn {
   flex: 1; background: #fff;
   border: 1px solid #ececef; border-radius: 100px;
   padding: 9px 12px;
-  font-family: inherit; font-size: 12.5px; font-weight: 800;
+  font-family: inherit; font-size: 14px; font-weight: 800;
   color: #6b6783; cursor: pointer; letter-spacing: -0.2px;
   transition: all 0.18s;
 }
@@ -1567,13 +1567,13 @@ const currentSample = computed(() => samples[sampleType.value])
 .ph-book-addr { font-size: 8.5px; font-weight: 800; text-align: center; margin-top: auto; margin-left: 8px; line-height: 1.25; letter-spacing: -0.2px; }
 
 .ph-info { flex: 1; min-width: 0; }
-.ph-eyebrow { font-size: 10px; font-weight: 800; color: #00a19a; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 6px; }
+.ph-eyebrow { font-size: 11px; font-weight: 800; color: #00a19a; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 6px; }
 .ph-addr { font-size: 18px; font-weight: 800; color: #231d45; letter-spacing: -0.5px; line-height: 1.1; }
-.ph-postcode { font-size: 11.5px; font-weight: 700; color: #6b6783; margin-top: 2px; margin-bottom: 12px; }
+.ph-postcode { font-size: 13px; font-weight: 700; color: #6b6783; margin-top: 2px; margin-bottom: 12px; }
 .ph-stats { display: flex; gap: 8px; align-items: center; }
 .ph-stat { flex: 1; text-align: left; }
 .phs-num { font-size: 16px; font-weight: 800; color: #231d45; letter-spacing: -0.4px; }
-.phs-pct { font-size: 11px; color: #6b6783; margin-left: 1px; }
+.phs-pct { font-size: 12px; color: #6b6783; margin-left: 1px; }
 .phs-label { font-size: 9px; font-weight: 800; color: #9c98ad; letter-spacing: 0.8px; text-transform: uppercase; margin-top: 2px; }
 .ph-stat-divider { width: 1px; height: 24px; background: #ececef; }
 
@@ -1583,19 +1583,19 @@ const currentSample = computed(() => samples[sampleType.value])
   border-radius: 18px;
 }
 .addr-h { font-size: 22px; font-weight: 800; color: #231d45; letter-spacing: -0.6px; }
-.addr-sub { font-size: 12.5px; font-weight: 700; color: #6b6783; margin-top: 2px; margin-bottom: 14px; }
+.addr-sub { font-size: 14px; font-weight: 700; color: #6b6783; margin-top: 2px; margin-bottom: 14px; }
 .addr-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 .addr-value { font-size: 24px; font-weight: 800; color: #00a19a; letter-spacing: -0.6px; }
-.addr-value-label { font-size: 11px; font-weight: 700; color: #9c98ad; letter-spacing: 0.4px; text-transform: uppercase; flex: 1; }
+.addr-value-label { font-size: 12px; font-weight: 700; color: #9c98ad; letter-spacing: 0.4px; text-transform: uppercase; flex: 1; }
 .addr-status {
   display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11px; font-weight: 800;
+  font-size: 12px; font-weight: 800;
   background: #e2f1ea; color: #007e78;
   padding: 4px 10px; border-radius: 100px;
 }
 .addr-pills { display: flex; gap: 6px; flex-wrap: wrap; }
 .addr-pill {
-  font-size: 11px; font-weight: 800;
+  font-size: 12px; font-weight: 800;
   background: #f5f5f7; color: #4a4566;
   padding: 5px 11px; border-radius: 100px;
   display: inline-flex; align-items: center; gap: 4px;
@@ -1603,7 +1603,7 @@ const currentSample = computed(() => samples[sampleType.value])
 
 .or-header { padding: 22px 22px 8px; }
 .or-h { font-size: 18px; font-weight: 800; color: #231d45; letter-spacing: -0.4px; margin-bottom: 4px; }
-.or-sub { font-size: 12px; font-weight: 500; color: #6b6783; line-height: 1.5; }
+.or-sub { font-size: 13px; font-weight: 500; color: #6b6783; line-height: 1.5; }
 
 .or-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 0 22px 14px; }
 .or-stat { padding: 12px; border-radius: 14px; text-align: center; }
@@ -1627,11 +1627,11 @@ const currentSample = computed(() => samples[sampleType.value])
   font-size: 22px; flex-shrink: 0;
 }
 .sec-info { flex: 1; min-width: 0; }
-.sec-name { font-size: 13px; font-weight: 800; color: #231d45; letter-spacing: -0.2px; }
-.sec-sub { font-size: 11px; font-weight: 600; color: #6b6783; margin-top: 1px; }
+.sec-name { font-size: 15px; font-weight: 800; color: #231d45; letter-spacing: -0.2px; }
+.sec-sub { font-size: 12px; font-weight: 600; color: #6b6783; margin-top: 1px; }
 .sec-status-pill {
   display: inline-block; margin-top: 6px;
-  font-size: 9.5px; font-weight: 800;
+  font-size: 11px; font-weight: 800;
   padding: 3px 8px; border-radius: 100px;
   letter-spacing: 0.3px;
 }
@@ -1641,7 +1641,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .sec-progress-col { width: 56px; flex-shrink: 0; }
 .sec-bar { height: 4px; background: #f5f5f7; border-radius: 100px; overflow: hidden; }
 .sec-bar-fill { height: 100%; background: #00a19a; border-radius: 100px; transition: width 0.3s; }
-.sec-pct { font-size: 10px; font-weight: 800; color: #00a19a; text-align: right; margin-top: 4px; }
+.sec-pct { font-size: 11px; font-weight: 800; color: #00a19a; text-align: right; margin-top: 4px; }
 .sec-arrow { color: #9c98ad; font-size: 18px; flex-shrink: 0; }
 
 .sec-more {
@@ -1650,8 +1650,8 @@ const currentSample = computed(() => samples[sampleType.value])
   border: 1px dashed #ececef; border-radius: 14px;
   text-align: center;
 }
-.sec-more-text { font-size: 12px; font-weight: 800; color: #4a4566; }
-.sec-more-meta { font-size: 10.5px; font-weight: 600; color: #9c98ad; margin-top: 4px; line-height: 1.4; }
+.sec-more-text { font-size: 13px; font-weight: 800; color: #4a4566; }
+.sec-more-meta { font-size: 12px; font-weight: 600; color: #9c98ad; margin-top: 4px; line-height: 1.4; }
 
 .sample-cta-bar {
   margin: 22px 22px 0; padding: 24px 22px;
@@ -1660,7 +1660,7 @@ const currentSample = computed(() => samples[sampleType.value])
   box-shadow: 0 16px 36px rgba(0, 161, 154, 0.4);
 }
 .scb-headline { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; margin-bottom: 6px; }
-.scb-sub { font-size: 12.5px; font-weight: 500; color: rgba(255, 255, 255, 0.85); line-height: 1.5; margin-bottom: 14px; }
+.scb-sub { font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.85); line-height: 1.5; margin-bottom: 14px; }
 .scb-btn {
   width: 100%; background: #fff; color: #00857f;
   border: none; font-family: inherit;
@@ -1692,8 +1692,8 @@ const currentSample = computed(() => samples[sampleType.value])
   box-shadow: 0 2px 6px rgba(157, 123, 255, 0.2);
 }
 .bas-info { flex: 1; min-width: 0; }
-.bas-title { font-size: 13px; font-weight: 800; color: #231d45; letter-spacing: -0.2px; }
-.bas-sub { font-size: 11px; font-weight: 700; color: #6b4e9f; margin-top: 2px; }
+.bas-title { font-size: 15px; font-weight: 800; color: #231d45; letter-spacing: -0.2px; }
+.bas-sub { font-size: 12px; font-weight: 700; color: #6b4e9f; margin-top: 2px; }
 
 .sample-cta-bar.buyer {
   background: linear-gradient(135deg, #231d45, #1a1535);
@@ -1712,7 +1712,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 12px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   padding: 10px 6px;
   cursor: pointer;

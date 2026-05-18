@@ -9,7 +9,7 @@
 
     <div class="content">
       <h1 class="title">Tap the Owner</h1>
-      <p class="subtitle">12, Maple Road, Staines TW18 3BA</p>
+      <p class="subtitle">{{ subtitle }}</p>
 
       <div class="house-illustration">
         <img
@@ -79,41 +79,105 @@
         </div>
       </div>
 
-      <button class="send-btn" @click="sendMessage" :disabled="!message.trim()">
-        Send Message
+      <p v-if="errorMsg" class="form-error">{{ errorMsg }}</p>
+
+      <button class="send-btn" @click="sendMessage" :disabled="!canSend">
+        <span v-if="sending" class="send-spinner" />
+        {{ sending ? 'Sending…' : 'Send Message' }}
       </button>
     </div>
+
+    <Toast
+      v-if="toastState.visible"
+      :message="toastState.message"
+      :icon-emoji="toastState.iconEmoji"
+      @close="hideToast"
+    />
   </div>
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import Toast from '~/components/ui/Toast.vue'
+import { useAppToast } from '~/composables/useCustomToast'
+
+definePageMeta({ middleware: 'auth' })
+
 const route = useRoute()
 const router = useRouter()
+const config = useRuntimeConfig()
+const { toastState, showToast, hideToast } = useAppToast()
 
+const propertyId = route.params.id
+const property = ref(null)
 const message = ref('')
 const sharePhone = ref(true)
 const sendEmailCopy = ref(false)
+const sending = ref(false)
+const errorMsg = ref('')
 
-const goBack = () => {
-  router.back()
-}
+// Subtitle reflects the actual property — no more hardcoded "Maple Road".
+const subtitle = computed(() => {
+  if (!property.value) return 'Loading property…'
+  const a1 = property.value.addressLine1 || ''
+  const city = property.value.city || ''
+  const pc = property.value.postcode || ''
+  return [a1, city, pc].filter(Boolean).join(', ')
+})
 
-const goHome = () => {
-  router.push('/')
-}
+const canSend = computed(
+  () => !!message.value.trim() && !sending.value && !!property.value,
+)
 
-const togglePhone = () => {
-  sharePhone.value = !sharePhone.value
-}
+onMounted(async () => {
+  if (!propertyId) return
+  try {
+    property.value = await $fetch(
+      `${config.public.apiBase}/property/${propertyId}`,
+    )
+  } catch {
+    errorMsg.value = "Couldn't load property — try again."
+  }
+})
 
-const toggleEmail = () => {
-  sendEmailCopy.value = !sendEmailCopy.value
-}
+const goBack = () => router.back()
+const goHome = () => router.push('/')
+const togglePhone = () => (sharePhone.value = !sharePhone.value)
+const toggleEmail = () => (sendEmailCopy.value = !sendEmailCopy.value)
 
-const sendMessage = () => {
-  if (message.value.trim()) {
-    alert('Message sent successfully! The owner will respond within 4 hours.')
-    router.push('/')
+const sendMessage = async () => {
+  if (!canSend.value) return
+  errorMsg.value = ''
+  sending.value = true
+  try {
+    const token = localStorage.getItem('token')
+    await $fetch(
+      `${config.public.apiBase}/property/${propertyId}/tap-owner`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: {
+          message: message.value.trim(),
+          sharePhone: sharePhone.value,
+        },
+      },
+    )
+    showToast({
+      message: 'Sent — the owner has been notified',
+      iconEmoji: '✅',
+    })
+    // Give the toast a moment, then send the user back to the property.
+    setTimeout(() => router.push(`/property/${propertyId}`), 1200)
+  } catch (err) {
+    // Phone-required failures get a clearer message and a profile link.
+    const msg =
+      err?.data?.message ||
+      err?.message ||
+      "Couldn't send — please try again."
+    errorMsg.value = msg
+  } finally {
+    sending.value = false
   }
 }
 </script>
@@ -367,5 +431,33 @@ const sendMessage = () => {
   background: #ccc;
   box-shadow: none;
   cursor: not-allowed;
+}
+
+.send-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: contact-spin 0.6s linear infinite;
+  margin-right: 8px;
+  vertical-align: -2px;
+}
+@keyframes contact-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.form-error {
+  color: #c73e36;
+  background: #fef2f1;
+  border: 1px solid #fbcec9;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin: 0 0 12px;
+  text-align: center;
 }
 </style>

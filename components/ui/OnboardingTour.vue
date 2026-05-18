@@ -6,9 +6,11 @@
         class="tour-root"
         @click.self="skip"
       >
-        <!-- Spotlight cutout via two layered overlays -->
+        <!-- Transparent click-capture (full viewport) -->
         <div class="tour-overlay" :style="overlayStyle" />
-        <div class="tour-spotlight" :style="spotlightStyle" />
+        <!-- Spotlight rect: dims OUTSIDE via inverted box-shadow, leaving the
+             target perfectly visible. Pulsing the ring keeps the card still. -->
+        <div class="tour-spotlight tour-spotlight-pulse" :style="spotlightStyle" />
 
         <!-- Tip card -->
         <div class="tour-tip" :style="tipStyle" :class="{ above: tipAbove }">
@@ -63,10 +65,14 @@ const targetRect = ref({ x: 0, y: 0, w: 0, h: 0 })
 
 const currentStep = computed(() => props.steps[index.value] ?? null)
 
+// Click-capture only — fully transparent so the spotlight underneath
+// dims everything *except* the target via its inverted box-shadow. A
+// full-screen background here would re-dim the target and defeat the
+// point of having a spotlight.
 const overlayStyle = computed(() => ({
   position: 'fixed',
   inset: 0,
-  background: 'rgba(15, 23, 42, 0.55)',
+  background: 'transparent',
   zIndex: 9998,
 }))
 
@@ -79,10 +85,12 @@ const spotlightStyle = computed(() => {
     left: `${r.x - pad}px`,
     width: `${r.w + pad * 2}px`,
     height: `${r.h + pad * 2}px`,
-    border: '3px solid #f59e0b',
+    background: 'transparent',
     borderRadius: '14px',
+    // The 9999px shadow paints the dim over everything outside the target.
+    // The 3px + 22px rings give the active card a clear, glowing focus state.
     boxShadow:
-      '0 0 0 9999px rgba(15, 23, 42, 0.55), 0 0 22px rgba(245, 158, 11, 0.55)',
+      '0 0 0 9999px rgba(15, 23, 42, 0.62), 0 0 0 3px rgba(245, 158, 11, 0.95), 0 0 22px 4px rgba(245, 158, 11, 0.5)',
     zIndex: 9999,
     pointerEvents: 'none',
     transition:
@@ -375,5 +383,24 @@ defineExpose({ start, finish, skip })
 .tour-fade-enter-from,
 .tour-fade-leave-to {
   opacity: 0;
+}
+
+/* Subtle ring pulse on the spotlight — adds a "look here" cue without
+   modifying the dim, so the target image stays rock-still. */
+.tour-spotlight-pulse {
+  animation: tour-spotlightPulse 1.9s ease-in-out infinite;
+}
+@keyframes tour-spotlightPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 0 rgba(245, 158, 11, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.55));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tour-spotlight-pulse {
+    animation: none;
+  }
 }
 </style>

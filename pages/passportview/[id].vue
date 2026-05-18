@@ -297,7 +297,6 @@
               <div class="pp-street-addr">{{ sp.addressLine1 }}</div>
               <div class="pp-street-meta">
                 <span v-if="sp.propertyType">{{ sp.propertyType }}</span>
-                <span v-if="sp.bedrooms"> · {{ sp.bedrooms }} bed</span>
                 <span
                   v-if="sp.epcRating"
                   class="pp-street-epc"

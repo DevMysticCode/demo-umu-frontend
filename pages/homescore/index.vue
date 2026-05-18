@@ -292,7 +292,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   border: 1px solid #e2f1ea;
   padding: 5px 11px;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.06em;
   color: #00a19a;
@@ -319,7 +319,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   margin-bottom: 12px;
 }
 .hs-hero-sub {
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.55;
@@ -389,7 +389,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 800;
   padding: 9px 14px;
   border-radius: 10px;
@@ -407,7 +407,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   justify-content: center;
   gap: 14px;
   flex-wrap: wrap;
-  font-size: 11.5px;
+  font-size: 13px;
   color: #9c98ad;
   font-weight: 600;
   margin: 12px 0 6px;
@@ -457,7 +457,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   margin-bottom: 6px;
 }
 .hs-real-story-quote {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #231d45;
   line-height: 1.4;
@@ -465,7 +465,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   letter-spacing: -0.1px;
 }
 .hs-real-story-text {
-  font-size: 11px;
+  font-size: 13px;
   color: #6b6783;
   line-height: 1.5;
   font-weight: 500;
@@ -500,7 +500,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   letter-spacing: -0.2px;
 }
 .hs-powered-tag {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   color: #6b6783;
   margin-top: 2px;
@@ -517,7 +517,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #007e78;
   letter-spacing: -0.05px;
@@ -557,7 +557,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   padding: 26px 24px 8px;
 }
 .hs-section-h {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 0.18em;
@@ -582,7 +582,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   background: transparent;
   color: #6b6783;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 800;
   padding: 8px 16px;
   border-radius: 100px;
@@ -633,7 +633,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
   flex-shrink: 0;
   position: relative;
@@ -653,7 +653,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   line-height: 1.2;
 }
 .hs-step-sub {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.5;

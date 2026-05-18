@@ -142,7 +142,7 @@
           <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
           <circle cx="12" cy="10" r="3" />
         </svg>
-        <div style="flex: 1; font-size: 12px; font-weight: 700; color: #231d45">
+        <div style="flex: 1; font-size: 13px; font-weight: 700; color: #231d45">
           {{ selectedAddressText }}
         </div>
         <div class="search-clear-btn" @click="clearSearch">x</div>
@@ -274,9 +274,6 @@
                 </div>
               </div>
               <div class="prop-pills">
-                <span v-if="prop.bedrooms" class="pill-grey"
-                  >🛏 {{ prop.bedrooms }} bed</span
-                >
                 <span v-if="prop.propertyType || prop.type" class="pill-grey">{{
                   prop.propertyType || prop.type
                 }}</span>
@@ -368,7 +365,7 @@
           <div style="margin-bottom: 16px">
             <div
               style="
-                font-size: 13px;
+                font-size: 15px;
                 font-weight: 700;
                 color: #1f2024;
                 margin-bottom: 10px;
@@ -380,7 +377,7 @@
               <div class="step-num">1</div>
               <div
                 style="
-                  font-size: 12.5px;
+                  font-size: 14px;
                   color: #4a5568;
                   line-height: 1.5;
                   padding-top: 2px;
@@ -393,7 +390,7 @@
               <div class="step-num">2</div>
               <div
                 style="
-                  font-size: 12.5px;
+                  font-size: 14px;
                   color: #4a5568;
                   line-height: 1.5;
                   padding-top: 2px;
@@ -406,7 +403,7 @@
               <div class="step-num">3</div>
               <div
                 style="
-                  font-size: 12.5px;
+                  font-size: 14px;
                   color: #4a5568;
                   line-height: 1.5;
                   padding-top: 2px;
@@ -497,9 +494,6 @@
                   }}
                 </div>
                 <div class="prop-pills">
-                  <span v-if="prop.bedrooms" class="pill-grey"
-                    >🛏 {{ prop.bedrooms }} bed</span
-                  >
                   <span v-if="prop.propertyType" class="pill-grey">{{
                     prop.propertyType
                   }}</span>
@@ -606,9 +600,6 @@
                   }}
                 </div>
                 <div class="prop-pills">
-                  <span v-if="prop.bedrooms" class="pill-grey"
-                    >🛏 {{ prop.bedrooms }} bed</span
-                  >
                   <span v-if="prop.propertyType" class="pill-grey">{{
                     prop.propertyType
                   }}</span>
@@ -789,12 +780,12 @@
         <template v-else-if="role === 'buy'">
           <div v-if="hasSavedSearch" class="saved-search-card">
             <div class="saved-search-top">
-              <div style="font-size: 13px; font-weight: 700; color: #231d45">
+              <div style="font-size: 15px; font-weight: 700; color: #231d45">
                 Your saved search
               </div>
               <div
                 style="
-                  font-size: 11px;
+                  font-size: 12px;
                   font-weight: 700;
                   color: #00a19a;
                   cursor: pointer;
@@ -814,7 +805,7 @@
             </div>
             <div
               v-if="properties.length"
-              style="margin-top: 10px; font-size: 11.5px; color: #4a5568"
+              style="margin-top: 10px; font-size: 13px; color: #4a5568"
             >
               <strong style="color: #231d45"
                 >{{ properties.length }}
@@ -829,12 +820,12 @@
             @click="navigateTo('/profile')"
           >
             <div class="saved-search-top">
-              <div style="font-size: 13px; font-weight: 700; color: #231d45">
+              <div style="font-size: 15px; font-weight: 700; color: #231d45">
                 Set up your search
               </div>
               <div
                 style="
-                  font-size: 11px;
+                  font-size: 12px;
                   font-weight: 700;
                   color: #00a19a;
                   cursor: pointer;
@@ -843,7 +834,7 @@
                 Add →
               </div>
             </div>
-            <div style="font-size: 12px; color: #4a5568; line-height: 1.5">
+            <div style="font-size: 13px; color: #4a5568; line-height: 1.5">
               Tell us your area, budget and must-haves. We'll match you to homes
               that fit.
             </div>
@@ -881,28 +872,34 @@
             <div class="my-passport-arrow">→</div>
           </div>
 
-          <div class="market-pulse-card">
+          <div v-if="pulseHasAny || marketPulseLoading" class="market-pulse-card">
             <div
               style="
-                font-size: 12px;
+                font-size: 15px;
                 font-weight: 700;
                 color: #1f2024;
                 margin-bottom: 8px;
               "
             >
-              Market pulse · Stockport
+              Market pulse<template v-if="pulseArea"> · {{ pulseArea }}</template>
             </div>
-            <div class="pulse-grid">
+            <div v-if="marketPulseLoading && !pulseHasAny" class="pulse-grid">
               <div class="pulse-cell">
-                <div class="pulse-val">179</div>
+                <div class="pulse-val">—</div>
+                <div class="pulse-lbl">loading</div>
+              </div>
+            </div>
+            <div v-else class="pulse-grid">
+              <div v-if="pulseDays !== null" class="pulse-cell">
+                <div class="pulse-val">{{ pulseDays }}</div>
                 <div class="pulse-lbl">avg days to sell</div>
               </div>
-              <div class="pulse-cell">
-                <div class="pulse-val" style="color: #1f7a66">+4%</div>
+              <div v-if="pulseYoY !== null" class="pulse-cell">
+                <div class="pulse-val" :style="{ color: pulseYoYColor }">{{ pulseYoY }}</div>
                 <div class="pulse-lbl">price change YoY</div>
               </div>
-              <div class="pulse-cell">
-                <div class="pulse-val">47</div>
+              <div v-if="pulseListings !== null" class="pulse-cell">
+                <div class="pulse-val">{{ pulseListings }}</div>
                 <div class="pulse-lbl">passport listings</div>
               </div>
             </div>
@@ -962,9 +959,6 @@
                   }}
                 </div>
                 <div class="prop-pills">
-                  <span v-if="prop.bedrooms" class="pill-grey"
-                    >🛏 {{ prop.bedrooms }} bed</span
-                  >
                   <span
                     v-if="prop.propertyType || prop.type"
                     class="pill-grey"
@@ -1124,7 +1118,7 @@
             <div style="flex: 1; min-width: 0">
               <div
                 style="
-                  font-size: 12.5px;
+                  font-size: 14px;
                   font-weight: 700;
                   color: #231d45;
                   margin-bottom: 2px;
@@ -1138,7 +1132,7 @@
               </div>
               <div
                 style="
-                  font-size: 11.5px;
+                  font-size: 13px;
                   color: #4a5568;
                   line-height: 1.4;
                   white-space: nowrap;
@@ -1151,7 +1145,7 @@
             </div>
             <div
               style="
-                font-size: 12px;
+                font-size: 13px;
                 font-weight: 700;
                 color: #00a19a;
                 flex-shrink: 0;
@@ -1169,7 +1163,7 @@
             <div style="flex: 1; min-width: 0">
               <div
                 style="
-                  font-size: 12.5px;
+                  font-size: 14px;
                   font-weight: 700;
                   color: #231d45;
                   margin-bottom: 2px;
@@ -1177,13 +1171,13 @@
               >
                 Set your buy preferences
               </div>
-              <div style="font-size: 11.5px; color: #4a5568; line-height: 1.4">
+              <div style="font-size: 13px; color: #4a5568; line-height: 1.4">
                 Area, budget, property type — we'll find matches.
               </div>
             </div>
             <div
               style="
-                font-size: 12px;
+                font-size: 13px;
                 font-weight: 700;
                 color: #00a19a;
                 flex-shrink: 0;
@@ -1249,9 +1243,6 @@
                   }}
                 </div>
                 <div class="prop-pills">
-                  <span v-if="prop.bedrooms" class="pill-grey"
-                    >🛏 {{ prop.bedrooms }} bed</span
-                  >
                   <span
                     v-if="prop.propertyType || prop.type"
                     class="pill-grey"
@@ -1313,7 +1304,7 @@
                   </div>
                   <div
                     style="
-                      font-size: 10px;
+                      font-size: 11px;
                       color: rgba(255, 255, 255, 0.4);
                       margin-top: 2px;
                     "
@@ -1329,7 +1320,7 @@
                   </div>
                   <div
                     style="
-                      font-size: 10px;
+                      font-size: 11px;
                       color: rgba(255, 255, 255, 0.4);
                       margin-top: 2px;
                     "
@@ -1345,7 +1336,7 @@
                   </div>
                   <div
                     style="
-                      font-size: 10px;
+                      font-size: 11px;
                       color: rgba(255, 255, 255, 0.4);
                       margin-top: 2px;
                     "
@@ -1363,7 +1354,7 @@
                 <div style="flex: 1">
                   <div
                     style="
-                      font-size: 11.5px;
+                      font-size: 13px;
                       font-weight: 700;
                       color: #fca5a5;
                       margin-bottom: 1px;
@@ -1372,14 +1363,14 @@
                     Action needed on {{ portfolioAlertAddress }}
                   </div>
                   <div
-                    style="font-size: 10.5px; color: rgba(255, 255, 255, 0.45)"
+                    style="font-size: 12px; color: rgba(255, 255, 255, 0.45)"
                   >
                     Rental Passport
                   </div>
                 </div>
                 <div
                   style="
-                    font-size: 11px;
+                    font-size: 12px;
                     font-weight: 700;
                     color: #f5c44c;
                     flex-shrink: 0;
@@ -1401,7 +1392,7 @@
                   <div style="flex: 1; min-width: 0">
                     <div
                       style="
-                        font-size: 12.5px;
+                        font-size: 14px;
                         font-weight: 700;
                         color: #fff;
                         white-space: nowrap;
@@ -1412,7 +1403,7 @@
                       {{ p.address || p.addressLine1 }}
                     </div>
                     <div
-                      style="font-size: 10.5px; color: rgba(255, 255, 255, 0.4)"
+                      style="font-size: 12px; color: rgba(255, 255, 255, 0.4)"
                     >
                       Rental Passport
                     </div>
@@ -1437,7 +1428,7 @@
                   </div>
                   <div
                     style="
-                      font-size: 13px;
+                      font-size: 15px;
                       font-weight: 800;
                       color: #fff;
                       flex-shrink: 0;
@@ -1458,7 +1449,7 @@
                   <div style="text-align: center">
                     <div
                       style="
-                        font-size: 12.5px;
+                        font-size: 14px;
                         font-weight: 700;
                         color: #fff;
                         margin-bottom: 4px;
@@ -1467,7 +1458,7 @@
                       No rental passports yet
                     </div>
                     <div
-                      style="font-size: 10.5px; color: rgba(255, 255, 255, 0.5)"
+                      style="font-size: 12px; color: rgba(255, 255, 255, 0.5)"
                     >
                       Claim your first property Passport to see compliance
                       tracking here.
@@ -1479,7 +1470,7 @@
               <div
                 style="
                   margin-top: 10px;
-                  font-size: 11px;
+                  font-size: 12px;
                   font-weight: 700;
                   color: rgba(255, 255, 255, 0.5);
                   text-align: center;
@@ -1508,7 +1499,7 @@
             <div style="flex: 1">
               <div
                 style="
-                  font-size: 12.5px;
+                  font-size: 14px;
                   font-weight: 700;
                   color: #231d45;
                   margin-bottom: 2px;
@@ -1516,13 +1507,13 @@
               >
                 Add another property
               </div>
-              <div style="font-size: 11.5px; color: #4a5568">
+              <div style="font-size: 13px; color: #4a5568">
                 Verify ownership, then choose Rental or Seller Passport
               </div>
             </div>
             <div
               style="
-                font-size: 12px;
+                font-size: 13px;
                 font-weight: 700;
                 color: #00a19a;
                 flex-shrink: 0;
@@ -1608,7 +1599,7 @@
                 <div class="sheet-section-label" style="margin-bottom: 0">
                   Has Passport
                 </div>
-                <div style="font-size: 11px; color: #94a3b8; margin-top: 2px">
+                <div style="font-size: 12px; color: #94a3b8; margin-top: 2px">
                   Only verified properties
                 </div>
               </div>
@@ -1631,7 +1622,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
@@ -1790,6 +1781,59 @@ function formatBudget(n?: number | null): string {
 }
 
 const userPostcode = computed(() => profile.value?.postcode?.trim() || '')
+
+// Market pulse — aggregate stats for the user's postcode sector. Backend
+// returns null for any figure it can't derive; the template hides those cells.
+interface MarketPulse {
+  area: string | null
+  priceChangeYoY: number | null
+  avgDaysToSell: number | null
+  passportListings: number
+  sampleSize: { recent: number; prior: number }
+}
+const marketPulse = ref<MarketPulse | null>(null)
+const marketPulseLoading = ref(false)
+
+async function fetchMarketPulse() {
+  const pc = userPostcode.value
+  if (!pc) {
+    marketPulse.value = null
+    return
+  }
+  marketPulseLoading.value = true
+  try {
+    marketPulse.value = await $fetch<MarketPulse>(
+      `${config.public.apiBase}/property/market-pulse?postcode=${encodeURIComponent(pc)}`,
+    )
+  } catch {
+    marketPulse.value = null
+  } finally {
+    marketPulseLoading.value = false
+  }
+}
+
+watch(userPostcode, (pc) => { if (pc) fetchMarketPulse() }, { immediate: false })
+
+// Derived display strings — null/no-data states collapse cleanly.
+const pulseArea = computed(() => marketPulse.value?.area || userPostcode.value || '')
+const pulseYoY = computed<string | null>(() => {
+  const v = marketPulse.value?.priceChangeYoY
+  if (typeof v !== 'number') return null
+  const sign = v > 0 ? '+' : ''
+  return `${sign}${v.toFixed(1)}%`
+})
+const pulseYoYColor = computed(() => {
+  const v = marketPulse.value?.priceChangeYoY ?? 0
+  return v >= 0 ? '#1f7a66' : '#c73e36'
+})
+const pulseListings = computed<number | null>(() => {
+  const n = marketPulse.value?.passportListings
+  return typeof n === 'number' ? n : null
+})
+const pulseDays = computed<number | null>(() => marketPulse.value?.avgDaysToSell ?? null)
+const pulseHasAny = computed(
+  () => pulseYoY.value !== null || pulseListings.value !== null || pulseDays.value !== null,
+)
 
 const savedSearchPills = computed(() => {
   const p = preferences.value
@@ -2088,6 +2132,10 @@ onMounted(async () => {
     verifiedPassportProperties.value = verifiedResult.value?.items ?? []
   }
   loadingVerifiedPassports.value = false
+
+  // Profile is now hydrated — fetch market pulse for the user's postcode.
+  // The watcher above also covers any later postcode changes from settings.
+  if (userPostcode.value) fetchMarketPulse()
 })
 </script>
 
@@ -2170,7 +2218,7 @@ onMounted(async () => {
 }
 
 .toggle-tab {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   padding: 5px 12px;
   border-radius: 999px;
@@ -2224,7 +2272,7 @@ onMounted(async () => {
   transform: translateY(-50%);
   background: #00a19a;
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   padding: 6px 12px;
   border-radius: 9px;
@@ -2258,7 +2306,7 @@ onMounted(async () => {
 }
 
 .eyebrow-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2269,7 +2317,7 @@ onMounted(async () => {
 }
 
 .badge-free {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   background: #00a19a;
   color: #fff;
@@ -2278,7 +2326,7 @@ onMounted(async () => {
 }
 
 .badge-pp-price {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   background: rgba(255, 255, 255, 0.12);
   color: #3dbda3;
@@ -2300,7 +2348,7 @@ onMounted(async () => {
 }
 
 .card-body-text {
-  font-size: 12px;
+  font-size: 13px;
   color: #4a5568;
   line-height: 1.55;
   margin-bottom: 14px;
@@ -2345,7 +2393,7 @@ onMounted(async () => {
   border-radius: 12px;
   border: 1.5px solid #e2f1ea;
   background: #fff;
-  font-size: 13px;
+  font-size: 15px;
   color: #1f2024;
   outline: none;
   font-family: inherit;
@@ -2414,14 +2462,14 @@ onMounted(async () => {
 }
 
 .feed-see-all {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #00a19a;
   cursor: pointer;
 }
 
 .feed-sub {
-  font-size: 11.5px;
+  font-size: 13px;
   color: #94a3b8;
   margin-bottom: 14px;
   line-height: 1.5;
@@ -2490,7 +2538,7 @@ onMounted(async () => {
   left: 10px;
   background: #231d45;
   color: #fff;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 999px;
@@ -2518,7 +2566,7 @@ onMounted(async () => {
   top: 10px;
   right: 10px;
   background: #fff;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 999px;
@@ -2539,7 +2587,7 @@ onMounted(async () => {
   right: 10px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   padding: 3px 10px;
   border-radius: 999px;
@@ -2557,7 +2605,7 @@ onMounted(async () => {
 }
 
 .prop-area {
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
   margin-bottom: 8px;
 }
@@ -2572,7 +2620,7 @@ onMounted(async () => {
 .pill-grey {
   background: #f1f5f9;
   color: #64748b;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
@@ -2593,7 +2641,7 @@ onMounted(async () => {
 }
 
 .prop-score-lbl {
-  font-size: 11px;
+  font-size: 12px;
   color: #94a3b8;
   font-weight: 600;
 }
@@ -2613,7 +2661,7 @@ onMounted(async () => {
 }
 
 .prop-score-num {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #1f2024;
 }
@@ -2621,7 +2669,7 @@ onMounted(async () => {
 .prop-passport-btn {
   background: #231d45;
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   padding: 5px 12px;
   border-radius: 999px;
@@ -2702,7 +2750,7 @@ onMounted(async () => {
 }
 
 .psc-postcode {
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.55);
 }
 
@@ -2741,7 +2789,7 @@ onMounted(async () => {
 }
 
 .psc-stat {
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.6);
 }
 
@@ -2750,7 +2798,7 @@ onMounted(async () => {
 }
 
 .psc-view-cta {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: #3dbda3;
 }
@@ -2782,11 +2830,11 @@ onMounted(async () => {
   margin-bottom: 2px;
 }
 .no-pp-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
 }
 .no-pp-cta {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #00a19a;
   flex-shrink: 0;
@@ -2817,18 +2865,18 @@ onMounted(async () => {
   flex: 1;
 }
 .na-title {
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 700;
   color: #92400e;
   margin-bottom: 2px;
 }
 .na-sub {
-  font-size: 11.5px;
+  font-size: 13px;
   color: #92400e;
   line-height: 1.4;
 }
 .na-cta {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #92400e;
   flex-shrink: 0;
@@ -2859,18 +2907,18 @@ onMounted(async () => {
   flex: 1;
 }
 .hs-quick-title {
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 700;
   color: #231d45;
   margin-bottom: 2px;
 }
 .hs-quick-sub {
-  font-size: 11.5px;
+  font-size: 13px;
   color: #4a5568;
   line-height: 1.4;
 }
 .hs-quick-cta {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #00a19a;
   flex-shrink: 0;
@@ -2900,13 +2948,13 @@ onMounted(async () => {
   flex: 1;
 }
 .pro-dark-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #fff;
   margin-bottom: 2px;
 }
 .pro-dark-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   line-height: 1.4;
 }
@@ -2916,7 +2964,7 @@ onMounted(async () => {
   border: 1px solid rgba(94, 234, 212, 0.3);
   border-radius: 999px;
   padding: 4px 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: #3dbda3;
   flex-shrink: 0;
@@ -2924,7 +2972,7 @@ onMounted(async () => {
 }
 
 .explore-greeting-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
   font-weight: 500;
 }
@@ -2958,7 +3006,7 @@ onMounted(async () => {
   border: 1.5px solid #e5e7eb;
   border-radius: 999px;
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #4a5568;
   cursor: pointer;
@@ -2991,7 +3039,7 @@ onMounted(async () => {
 }
 
 .addr-drop-header {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
@@ -3031,7 +3079,7 @@ onMounted(async () => {
 }
 
 .addr-line1 {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #231d45;
   white-space: nowrap;
@@ -3040,7 +3088,7 @@ onMounted(async () => {
 }
 
 .addr-line2 {
-  font-size: 11px;
+  font-size: 12px;
   color: #94a3b8;
   margin-top: 1px;
 }
@@ -3082,7 +3130,7 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 999px;
@@ -3133,7 +3181,7 @@ onMounted(async () => {
   background: #e5e7eb;
   display: grid;
   place-items: center;
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -3159,7 +3207,7 @@ onMounted(async () => {
 }
 
 .claim-eyebrow {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -3177,7 +3225,7 @@ onMounted(async () => {
 }
 
 .claim-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.55;
   margin-bottom: 16px;
@@ -3205,7 +3253,7 @@ onMounted(async () => {
 }
 
 .claim-stat-lbl {
-  font-size: 10px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.5);
   margin-top: 2px;
   line-height: 1.3;
@@ -3241,7 +3289,7 @@ onMounted(async () => {
   border-radius: 50%;
   background: #00a19a;
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -3281,7 +3329,7 @@ onMounted(async () => {
   border: 1px solid #e2f1ea;
   border-radius: 999px;
   padding: 4px 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -3351,12 +3399,12 @@ onMounted(async () => {
   min-width: 0;
 }
 .my-passport-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #231d45;
 }
 .my-passport-sub {
-  font-size: 11.5px;
+  font-size: 13px;
   color: #64748b;
   margin-top: 2px;
   line-height: 1.4;
@@ -3390,7 +3438,7 @@ onMounted(async () => {
 }
 
 .pulse-lbl {
-  font-size: 10px;
+  font-size: 11px;
   color: #94a3b8;
   margin-top: 2px;
   line-height: 1.3;
@@ -3421,7 +3469,7 @@ onMounted(async () => {
 }
 
 .portfolio-eyebrow {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -3510,7 +3558,7 @@ onMounted(async () => {
   border: none;
   border-radius: 999px;
   padding: 7px 14px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -3522,7 +3570,7 @@ onMounted(async () => {
 }
 
 .search-result-label {
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
   font-weight: 500;
   flex: 1;
@@ -3549,7 +3597,7 @@ onMounted(async () => {
 }
 
 .no-results-sub {
-  font-size: 13px;
+  font-size: 15px;
   color: #94a3b8;
 }
 
@@ -3573,7 +3621,7 @@ onMounted(async () => {
   margin-bottom: 4px;
 }
 .foryou-empty-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-soft);
   line-height: 1.5;
   margin-bottom: 12px;
@@ -3582,7 +3630,7 @@ onMounted(async () => {
   background: var(--brand);
   color: #fff;
   border: none;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 12px;
@@ -3610,7 +3658,7 @@ onMounted(async () => {
   margin-bottom: 4px;
 }
 .verified-empty-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-soft);
   line-height: 1.5;
   margin-bottom: 12px;
@@ -3619,7 +3667,7 @@ onMounted(async () => {
   background: var(--brand);
   color: #fff;
   border: none;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 12px;
@@ -3672,7 +3720,7 @@ onMounted(async () => {
   background: #fff;
   border: 1.5px solid var(--line);
   color: var(--brand);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 999px;
@@ -3697,7 +3745,7 @@ onMounted(async () => {
 }
 .load-more-end {
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
   color: #94a3b8;
   padding: 12px 0 8px;
   font-weight: 600;
@@ -3744,7 +3792,7 @@ onMounted(async () => {
 }
 
 .sheet-reset-btn {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #00a19a;
   background: none;
@@ -3758,7 +3806,7 @@ onMounted(async () => {
 }
 
 .sheet-section-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
@@ -3777,7 +3825,7 @@ onMounted(async () => {
   border: 1.5px solid #e5e7eb;
   border-radius: 999px;
   padding: 8px 16px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: #4a5568;
   cursor: pointer;

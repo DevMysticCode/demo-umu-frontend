@@ -127,9 +127,9 @@
 
       <div class="terms-text">
         By continuing you agree to our
-        <a @click="showTermsModal = true">Terms of Service</a>
+        <NuxtLink to="/legal/terms" target="_blank">Terms of Service</NuxtLink>
         and
-        <a @click="showTermsModal = true">Privacy Policy</a>.
+        <NuxtLink to="/legal/privacy" target="_blank">Privacy Policy</NuxtLink>.
       </div>
     </form>
 
