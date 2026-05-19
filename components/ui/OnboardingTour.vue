@@ -143,6 +143,29 @@ function measure() {
   }
 }
 
+// Returns true if the step at `i` exists in the current DOM (or has no
+// selector — selectorless steps are centered/standalone tips). Skipping
+// missing targets lets a single tour definition cover role/view-variant
+// pages without showing a stuck spotlight when something isn't rendered.
+function stepHasTarget(i) {
+  const s = props.steps[i]
+  if (!s) return false
+  if (!s.selector) return true
+  return !!document.querySelector(s.selector)
+}
+
+// Walk `index` forward/back through steps that don't have a visible
+// target on the current page. Returns null if no step is reachable.
+function nextRenderableIndex(start, direction) {
+  let i = start
+  const step = direction
+  while (i >= 0 && i < props.steps.length) {
+    if (stepHasTarget(i)) return i
+    i += step
+  }
+  return null
+}
+
 // Step-change measurement — also pulls the target into view if needed.
 // Only called from start/next/back so the user can scroll freely without
 // the tour snapping them back.
@@ -154,7 +177,14 @@ function focusStep() {
   }
   const el = document.querySelector(sel)
   if (!el) {
-    measure()
+    // No target on this page — auto-advance to the next renderable step.
+    const j = nextRenderableIndex(index.value + 1, 1)
+    if (j !== null) {
+      index.value = j
+      nextTick(focusStep)
+    } else {
+      finish()
+    }
     return
   }
   const rect = el.getBoundingClientRect()
@@ -170,23 +200,28 @@ function focusStep() {
 }
 
 function start() {
-  index.value = 0
+  // Jump to the first step whose target is on the current page.
+  const j = nextRenderableIndex(0, 1)
+  if (j === null) return
+  index.value = j
   visible.value = true
   nextTick(focusStep)
 }
 
 function next() {
-  if (index.value >= props.steps.length - 1) {
+  const j = nextRenderableIndex(index.value + 1, 1)
+  if (j === null) {
     finish()
     return
   }
-  index.value++
+  index.value = j
   nextTick(focusStep)
 }
 
 function back() {
-  if (index.value === 0) return
-  index.value--
+  const j = nextRenderableIndex(index.value - 1, -1)
+  if (j === null) return
+  index.value = j
   nextTick(focusStep)
 }
 

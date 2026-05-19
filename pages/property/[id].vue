@@ -1396,14 +1396,21 @@
                   :key="s.name + s.distanceKm"
                   class="pps-ds-kv"
                 >
-                  <span class="pps-ds-k">🎓 {{ s.name }}</span>
+                  <span class="pps-ds-k"
+                    >🎓 {{ s.name
+                    }}<span
+                      v-if="s.phase && s.phase !== 'School'"
+                      class="pps-ds-phase-pill"
+                      :class="schoolPhaseClass(s.phase)"
+                    >{{ s.phase }}</span></span
+                  >
                   <span class="pps-ds-v">{{ s.distanceKm.toFixed(1) }} km</span>
                 </div>
               </div>
               <div class="pps-ds-info-note">
-                Distances are straight-line. School categories from OS NGD
-                landuse data. For admissions and Ofsted ratings, check the
-                school's official page on GOV.UK.
+                Distances are straight-line. School phases derived from OS
+                NGD landuse data. For admissions and Ofsted ratings, check
+                the school's official page on GOV.UK.
               </div>
             </template>
             <div v-else class="pps-ds-placeholder">
@@ -1528,7 +1535,12 @@
                 >
                   <span class="pps-ds-k"
                     >✈️ {{ a.name
-                    }}<template v-if="a.iata"> ({{ a.iata }})</template></span
+                    }}<template v-if="a.iata"> ({{ a.iata }})</template
+                    ><span
+                      v-if="a.isMajor"
+                      class="pps-ds-major-pill"
+                      title="Major international hub"
+                    >Major</span></span
                   >
                   <span class="pps-ds-v">{{ a.distanceKm.toFixed(1) }} km</span>
                 </div>
@@ -1686,10 +1698,10 @@
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Airports</div>
                 <div class="pps-ds-header-meta">
-                  {{ enrichmentAirports.length }} commercial airport{{
+                  {{ enrichmentAirports.length }} airport{{
                     enrichmentAirports.length === 1 ? '' : 's'
                   }}
-                  within ~50 km
+                  — majors prioritised, then by distance
                 </div>
               </div>
             </div>
@@ -1703,7 +1715,12 @@
                 >
                   <span class="pps-ds-k"
                     >✈️ {{ a.name
-                    }}<template v-if="a.iata"> ({{ a.iata }})</template></span
+                    }}<template v-if="a.iata"> ({{ a.iata }})</template
+                    ><span
+                      v-if="a.isMajor"
+                      class="pps-ds-major-pill"
+                      title="Major international hub"
+                    >Major</span></span
                   >
                   <span class="pps-ds-v">{{ a.distanceKm.toFixed(1) }} km</span>
                 </div>
@@ -3565,6 +3582,27 @@ function epcCompColor(eff: string | null | undefined): string {
   if (eff === 'Poor') return '#c73e36'
   if (eff === 'Very Poor') return '#a82e26'
   return '#9c98ad'
+}
+
+// Maps OS NGD school phase strings to a CSS class so each chip gets a
+// distinct colour. Unknown phases fall back to a neutral grey pill.
+function schoolPhaseClass(phase: string | null | undefined): string {
+  switch (phase) {
+    case 'Pre-Primary':
+      return 'pps-ds-phase-pill--prenursery'
+    case 'Primary':
+      return 'pps-ds-phase-pill--primary'
+    case 'Secondary':
+      return 'pps-ds-phase-pill--secondary'
+    case 'Further Education':
+      return 'pps-ds-phase-pill--further'
+    case 'Higher Education':
+      return 'pps-ds-phase-pill--higher'
+    case 'Specialist':
+      return 'pps-ds-phase-pill--specialist'
+    default:
+      return 'pps-ds-phase-pill--default'
+  }
 }
 
 function effToColor(pct: number): string {
@@ -7619,6 +7657,65 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 .pps-ds-k {
   color: #6b6783;
   font-weight: 500;
+}
+.pps-ds-major-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #007e78;
+  background: #e0f4f1;
+  border: 1px solid #c2e6df;
+  vertical-align: 2px;
+}
+.pps-ds-phase-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+.pps-ds-phase-pill--prenursery {
+  color: #6b21a8;
+  background: #f3e8ff;
+  border: 1px solid #e9d5ff;
+}
+.pps-ds-phase-pill--primary {
+  color: #075985;
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+}
+.pps-ds-phase-pill--secondary {
+  color: #1e40af;
+  background: #dbeafe;
+  border: 1px solid #bfdbfe;
+}
+.pps-ds-phase-pill--further {
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+}
+.pps-ds-phase-pill--higher {
+  color: #831843;
+  background: #fce7f3;
+  border: 1px solid #fbcfe8;
+}
+.pps-ds-phase-pill--specialist {
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+}
+.pps-ds-phase-pill--default {
+  color: #4b5563;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
 }
 .pps-ds-v {
   font-weight: 700;

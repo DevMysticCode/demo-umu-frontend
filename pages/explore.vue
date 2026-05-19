@@ -19,7 +19,7 @@
           >
             ?
           </button>
-          <div class="hero-avatar" @click="navigateTo('/profile')">
+          <div class="hero-avatar" data-tour="avatar" @click="navigateTo('/profile')">
             <UserAvatar
               :src="profile?.avatarUrl"
               :firstName="profile?.firstName"
@@ -323,7 +323,7 @@
         <template
           v-if="role === 'sell' || role === 'landlord' || role === 'both'"
         >
-          <div class="claim-banner">
+          <div class="claim-banner" data-tour="claim-banner">
             <div class="claim-glow"></div>
             <div style="position: relative; z-index: 1">
               <div class="claim-eyebrow">Your first step</div>
@@ -407,6 +407,7 @@
 
           <div
             class="pro-dark-card"
+            data-tour="pro-card"
             style="margin-bottom: 16px"
             @click="navigateTo('/explore')"
           >
@@ -422,7 +423,7 @@
 
           <HealthPassportCards />
 
-          <div class="feed-header">
+          <div class="feed-header" data-tour="verified-feed">
             <div class="feed-title">Verified passport properties</div>
             <div
               v-if="verifiedPassportDisplay.length"
@@ -529,7 +530,7 @@
         <template v-else>
           <HealthPassportCards />
 
-          <div class="feed-header">
+          <div class="feed-header" data-tour="verified-feed">
             <div class="feed-title">Verified passport properties</div>
             <div
               v-if="verifiedPassportDisplay.length"
@@ -643,6 +644,7 @@
           <div
             v-else-if="passports.length"
             class="passport-status-card"
+            data-tour="passport-status"
             @click="navigateTo('/passportview/' + passports[0].id)"
           >
             <div class="psc-glow"></div>
@@ -724,7 +726,12 @@
               <div class="psc-view-cta">View Passport</div>
             </div>
           </div>
-          <div v-else class="no-passport-card" @click="startClaimFlow">
+          <div
+            v-else
+            class="no-passport-card"
+            data-tour="passport-status"
+            @click="startClaimFlow"
+          >
             <div class="no-pp-icon">📋</div>
             <div class="no-pp-body">
               <div class="no-pp-title">No passport yet</div>
@@ -737,6 +744,7 @@
 
           <div
             class="next-action-card"
+            data-tour="next-action"
             @click="
               navigateTo(
                 passports.length
@@ -755,7 +763,7 @@
 
           <HealthPassportCards />
 
-          <div class="pro-dark-card" @click="navigateTo('/explore')">
+          <div class="pro-dark-card" data-tour="pro-card" @click="navigateTo('/explore')">
             <div class="pro-dark-icon">🔧</div>
             <div class="pro-dark-body">
               <div class="pro-dark-title">Book a gas safety check</div>
@@ -768,7 +776,7 @@
         </template>
 
         <template v-else-if="role === 'buy'">
-          <div v-if="hasSavedSearch" class="saved-search-card">
+          <div v-if="hasSavedSearch" class="saved-search-card" data-tour="saved-search">
             <div class="saved-search-top">
               <div style="font-size: 15px; font-weight: 700; color: #231d45">
                 Your saved search
@@ -807,6 +815,7 @@
           <div
             v-else
             class="saved-search-card saved-search-card--empty"
+            data-tour="saved-search"
             @click="navigateTo('/profile')"
           >
             <div class="saved-search-top">
@@ -836,6 +845,7 @@
           <div
             v-if="buyerProfilePublished"
             class="my-passport-card my-passport-card--published"
+            data-tour="buyer-profile"
             @click="navigateTo('/buyer-profile/view')"
           >
             <div class="my-passport-ic">✓</div>
@@ -850,6 +860,7 @@
           <div
             v-else
             class="my-passport-card"
+            data-tour="buyer-profile"
             @click="navigateTo('/buyer-profile')"
           >
             <div class="my-passport-ic">👤</div>
@@ -862,7 +873,7 @@
             <div class="my-passport-arrow">→</div>
           </div>
 
-          <div v-if="pulseHasAny || marketPulseLoading" class="market-pulse-card">
+          <div v-if="pulseHasAny || marketPulseLoading" class="market-pulse-card" data-tour="market-pulse">
             <div
               style="
                 font-size: 15px;
@@ -895,7 +906,7 @@
             </div>
           </div>
 
-          <div class="feed-header" style="margin-top: 4px">
+          <div class="feed-header" data-tour="foryou-feed" style="margin-top: 4px">
             <div class="feed-title">For You</div>
             <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
           </div>
@@ -1007,6 +1018,7 @@
           <div
             v-else-if="passports.length"
             class="passport-status-card"
+            data-tour="passport-status"
             @click="navigateTo('/passportview/' + passports[0].id)"
           >
             <div class="psc-glow"></div>
@@ -1088,7 +1100,12 @@
               <div class="psc-view-cta">View Passport</div>
             </div>
           </div>
-          <div v-else class="no-passport-card" @click="startClaimFlow">
+          <div
+            v-else
+            class="no-passport-card"
+            data-tour="passport-status"
+            @click="startClaimFlow"
+          >
             <div class="no-pp-icon">📋</div>
             <div class="no-pp-body">
               <div class="no-pp-title">No passport yet</div>
@@ -1179,7 +1196,7 @@
 
           <HealthPassportCards />
 
-          <div class="feed-header" style="margin-top: 4px">
+          <div class="feed-header" data-tour="foryou-feed" style="margin-top: 4px">
             <div class="feed-title">For You</div>
             <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
           </div>
@@ -1620,15 +1637,80 @@ import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 // Guided tour wiring — replays via the "?" button in the hero, auto-runs
 // once per browser via storageKey on the OnboardingTour component.
 const exploreTourRef = ref<any>(null)
+// Full Explore tour. Steps whose target isn't on screen (e.g. seller-only
+// banner when the user signed up as a buyer) are auto-skipped by
+// OnboardingTour — so one list covers every variant of this page.
 const exploreTourSteps = [
   {
     selector: '.search-wrap',
     title: 'Search any UK property',
     body: 'Type a postcode, address or area. Properties with a verified Passport surface to the top.',
   },
-  // The "New vs Returning" step was removed — the view now switches
-  // automatically on first vs subsequent visits, so there's nothing to
-  // teach the user about.
+  {
+    selector: '.filter-row',
+    title: 'Filter by distance',
+    body: 'Tap Exact for the postcode only, or use 0.5–5 mile pills to broaden the search. "Filters" lets you narrow by price, type and more.',
+  },
+  {
+    selector: '[data-tour="avatar"]',
+    title: 'Your account',
+    body: 'Tap your avatar to manage your profile, preferences, saved properties and account.',
+  },
+  {
+    selector: '[data-tour="claim-banner"]',
+    title: 'Claim your Property Passport',
+    body: 'Verify your ownership, build your record, sell faster. £0 to get started — sellers see up to 12× faster exchanges.',
+  },
+  {
+    selector: '[data-tour="passport-status"]',
+    title: 'Your Property Passport',
+    body: 'Track completion, jump back into the next missing section, and share with your agent or solicitor.',
+  },
+  {
+    selector: '[data-tour="next-action"]',
+    title: 'Your next step',
+    body: 'The single most useful thing you can do right now to push your Passport forward.',
+  },
+  {
+    selector: '[data-tour="saved-search"]',
+    title: 'Saved search',
+    body: 'Set your area, budget and must-haves once — we match new listings to you automatically.',
+  },
+  {
+    selector: '[data-tour="buyer-profile"]',
+    title: 'Your Buyer Profile',
+    body: 'Prove you\'re a verified buyer (ID, funds, chain position). Share it with any seller or agent to stand out.',
+  },
+  {
+    selector: '[data-tour="market-pulse"]',
+    title: 'Market pulse',
+    body: 'Days-on-market, year-on-year price movement and live Passport listings for your area — pulled from Land Registry.',
+  },
+  {
+    selector: '.feat-card.homescore',
+    title: 'HomeScore — free, 60 seconds',
+    body: 'Bills, value, energy efficiency and street comparisons for any address — scored 0–100 from public records.',
+  },
+  {
+    selector: '.feat-card.passport',
+    title: 'See a sample Passport',
+    body: 'Tap to see exactly what buyers, agents and solicitors get on a verified Property Passport.',
+  },
+  {
+    selector: '[data-tour="pro-card"]',
+    title: 'Book a Pro',
+    body: 'Gas, EICR, EPC and other certs — book a vetted tradesperson; the certificate lands in your Passport automatically.',
+  },
+  {
+    selector: '[data-tour="verified-feed"]',
+    title: 'Verified Passport properties',
+    body: 'Real homes with a published Passport — full records, EPC, planning history, fewer surprises.',
+  },
+  {
+    selector: '[data-tour="foryou-feed"]',
+    title: 'For You',
+    body: 'Properties matched to your saved search — tap any card to see EPC, HomeScore and the full Passport (if published).',
+  },
   {
     selector: '.prop-card',
     title: 'Tap any property',

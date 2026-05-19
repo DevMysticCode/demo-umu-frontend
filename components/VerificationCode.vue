@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile-container" style="background: #fff;">
+  <div class="mobile-container" style="background: #fff">
     <div class="relative z-10 flex flex-col min-h-screen">
       <!-- Header -->
       <div class="verification-header">
@@ -36,7 +36,7 @@
             :disabled="!isCodeComplete || isLoading"
             class="verification-content__continue-button"
           >
-            {{ isLoading ? 'Verifying...' : 'Confirm & continue' }}
+            {{ isLoading ? 'Verifying...' : 'Continue' }}
             <span class="ml-2">→</span>
           </button>
         </div>
