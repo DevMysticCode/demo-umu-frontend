@@ -16,18 +16,45 @@
     <!-- PDF document render -->
     <div class="pv-doc-wrap">
       <div class="pdf-doc">
+        <!-- Diagonal repeating watermark (positioned behind everything) -->
+        <div class="pdf-watermark-layer" aria-hidden="true" />
+
         <!-- Header (navy) -->
         <div class="pdf-header">
           <div class="pdf-header-title">UMU BUYER PROFILE · VERIFIED DOCUMENT</div>
           <div class="pdf-header-name">{{ displayName }}</div>
-          <div class="pdf-header-ref">
-            Ref: {{ publicRef }} · Issued: {{ issuedDate }} · Valid 30 days
-          </div>
+          <div class="pdf-header-ref">Ref: {{ publicRef }}</div>
           <div class="pdf-header-pills">
             <span class="pdf-h-pill">🪪 ID Verified</span>
             <span v-if="fundsShort" class="pdf-h-pill">{{ fundsShort }} Funds</span>
             <span class="pdf-h-pill">{{ chainShort }}</span>
             <span v-if="tier === 'PREMIUM'" class="pdf-h-pill">★ Platinum</span>
+          </div>
+        </div>
+
+        <!-- Validity period -->
+        <div class="pdf-validity" :class="{ expired: isExpired }">
+          <div class="pdf-validity-col">
+            <div class="pdf-validity-lbl">Issued</div>
+            <div class="pdf-validity-val">{{ issuedDate }}</div>
+          </div>
+          <div class="pdf-validity-divider" />
+          <div class="pdf-validity-col">
+            <div class="pdf-validity-lbl">Expires</div>
+            <div class="pdf-validity-val">{{ expiresDate }}</div>
+          </div>
+          <div class="pdf-validity-divider" />
+          <div class="pdf-validity-status">
+            <span class="pdf-validity-dot" />
+            <span class="pdf-validity-status-text">
+              {{
+                isExpired
+                  ? 'Expired'
+                  : daysRemaining <= 1
+                    ? 'Active · expires today'
+                    : `Active · ${daysRemaining} days left`
+              }}
+            </span>
           </div>
         </div>
 
@@ -214,10 +241,39 @@ const publicRef = computed(
   () => (passport.value as any)?.publicRef || '—',
 )
 const canonicalShareUrl = computed(() => `umu.co/profile/${publicRef.value}`)
-const issuedDate = computed(() => {
+// ── Validity period ──────────────────────────────────────
+// A buyer profile is treated as fresh for 30 days from issuance. After
+// that the doc is shown as expired (still verifiable via QR — the buyer
+// just needs to re-share to refresh the dates).
+const VALIDITY_DAYS = 30
+const issuedAtMs = computed<number | null>(() => {
   const d = passport.value?.publishedAt || passport.value?.createdAt
-  if (!d) return '—'
-  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  if (!d) return null
+  const t = new Date(d).getTime()
+  return Number.isFinite(t) ? t : null
+})
+const expiresAtMs = computed<number | null>(() =>
+  issuedAtMs.value ? issuedAtMs.value + VALIDITY_DAYS * 86_400_000 : null,
+)
+function fmtDate(ms: number | null): string {
+  if (ms == null) return '—'
+  return new Date(ms).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+}
+const issuedDate = computed(() => fmtDate(issuedAtMs.value))
+const expiresDate = computed(() => fmtDate(expiresAtMs.value))
+const isExpired = computed(
+  () => !!expiresAtMs.value && expiresAtMs.value < Date.now(),
+)
+const daysRemaining = computed(() => {
+  if (!expiresAtMs.value) return 0
+  return Math.max(
+    0,
+    Math.ceil((expiresAtMs.value - Date.now()) / 86_400_000),
+  )
 })
 const fundsShort = computed(() => {
   const amt = passport.value?.fundsAmount
@@ -321,12 +377,32 @@ function downloadPdf() {
   to { opacity: 1; transform: translateY(0); }
 }
 .pdf-doc {
+  position: relative;
   background: white;
   margin: 0 14px;
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  isolation: isolate;
 }
+
+/* Diagonal repeating watermark — drawn behind every page region except
+   the navy header (which sits above via z-index). Uses an inline SVG so
+   it survives "print to PDF" cleanly without external assets. */
+.pdf-watermark-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='160'><text x='160' y='95' text-anchor='middle' transform='rotate(-24 160 95)' fill='rgba(35,29,69,0.055)' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif' font-size='22' font-weight='800' letter-spacing='3'>UMU · VERIFIED</text></svg>");
+  background-repeat: repeat;
+}
+/* Sections / header / validity sit above the watermark. */
+.pdf-doc > *:not(.pdf-watermark-layer) {
+  position: relative;
+  z-index: 1;
+}
+
 .pdf-header {
   background: #231d45;
   padding: 18px 20px;
@@ -355,6 +431,77 @@ function downloadPdf() {
   border-radius: 100px;
   padding: 3px 9px;
   color: white;
+}
+
+/* Validity period band — sits directly under the navy header */
+.pdf-validity {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 12px 18px;
+  background: #f2faf8;
+  border-bottom: 1px solid #e5f4f2;
+}
+.pdf-validity.expired {
+  background: #fef2f1;
+  border-bottom-color: #fbcec9;
+}
+.pdf-validity-col {
+  flex: 1;
+  min-width: 0;
+}
+.pdf-validity-divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 0 12px;
+  background: rgba(0, 161, 154, 0.18);
+}
+.pdf-validity.expired .pdf-validity-divider {
+  background: rgba(199, 62, 54, 0.2);
+}
+.pdf-validity-lbl {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: #6b6783;
+  margin-bottom: 2px;
+}
+.pdf-validity-val {
+  font-size: 12px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+}
+.pdf-validity-status {
+  flex: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.pdf-validity-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00a19a;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.18);
+  flex-shrink: 0;
+}
+.pdf-validity.expired .pdf-validity-dot {
+  background: #c73e36;
+  box-shadow: 0 0 0 3px rgba(199, 62, 54, 0.18);
+}
+.pdf-validity-status-text {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #007e78;
+  letter-spacing: -0.05px;
+  text-align: right;
+}
+.pdf-validity.expired .pdf-validity-status-text {
+  color: #882019;
 }
 
 .pdf-section {
@@ -471,10 +618,27 @@ function downloadPdf() {
   font-size: 13px; padding: 13px;
 }
 
-/* Print styles — when user prints to PDF, hide the chrome */
+/* Print styles — when user prints to PDF, hide the chrome and keep the
+   navy header / teal validity band / diagonal watermark visible.
+   `print-color-adjust: exact` is required for Chromium-based browsers. */
 @media print {
   .pv-top-nav, .pv-actions { display: none !important; }
   .pv-page { background: white; padding-bottom: 0; }
-  .pdf-doc { margin: 0; border-radius: 0; box-shadow: none; }
+  .pdf-doc {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .pdf-doc,
+  .pdf-header,
+  .pdf-validity,
+  .pdf-watermark-layer,
+  .pdf-h-pill,
+  .pdf-pill,
+  .pdf-validity-dot,
+  .pdf-sig-done {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 </style>

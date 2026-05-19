@@ -7,20 +7,10 @@
           <div class="explore-title">Explore</div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px">
-          <div class="toggle-track">
-            <div
-              :class="['toggle-tab', { active: view === 'new' }]"
-              @click="view = 'new'"
-            >
-              New
-            </div>
-            <div
-              :class="['toggle-tab', { active: view === 'returning' }]"
-              @click="view = 'returning'"
-            >
-              Returning
-            </div>
-          </div>
+          <!-- The New / Returning toggle was removed. The "New" view is now
+               shown automatically on the user's first ever visit to Explore
+               (gated by the `umu_explore_visited_v1` flag set in onMounted);
+               every visit after that lands them on the Returning view. -->
           <button
             class="explore-tour-btn"
             aria-label="Take a quick tour"
@@ -1636,11 +1626,9 @@ const exploreTourSteps = [
     title: 'Search any UK property',
     body: 'Type a postcode, address or area. Properties with a verified Passport surface to the top.',
   },
-  {
-    selector: '.toggle-track',
-    title: 'New vs Returning view',
-    body: 'Switch between curated discovery and your saved / recently viewed properties.',
-  },
+  // The "New vs Returning" step was removed — the view now switches
+  // automatically on first vs subsequent visits, so there's nothing to
+  // teach the user about.
   {
     selector: '.prop-card',
     title: 'Tap any property',
@@ -1660,7 +1648,26 @@ definePageMeta({ title: 'Explore - UmovingU', middleware: 'auth' })
 const config = useRuntimeConfig()
 const { profile, fetchProfile } = useProfile()
 
-const view = ref<'new' | 'returning'>('new')
+// First-visit detection: the "New" view is shown ONLY on the user's first
+// ever arrival at /explore (right after sign-up). Subsequent visits — even
+// from the same session, after a refresh — always land on "Returning".
+// We pre-set the flag synchronously here so a refresh during the same
+// browser session promotes the user to Returning without flicker.
+const EXPLORE_VISITED_KEY = 'umu_explore_visited_v1'
+const view = ref<'new' | 'returning'>(
+  (() => {
+    if (typeof window === 'undefined') return 'returning'
+    try {
+      if (localStorage.getItem(EXPLORE_VISITED_KEY)) return 'returning'
+      localStorage.setItem(EXPLORE_VISITED_KEY, String(Date.now()))
+      return 'new'
+    } catch {
+      // localStorage unavailable (private mode etc.) — degrade to Returning
+      // so we never lock the user into the onboarding "new" view forever.
+      return 'returning'
+    }
+  })(),
+)
 const searchQuery = ref('')
 const searchResults = ref<any[]>([])
 const showDropdown = ref(false)
@@ -2118,7 +2125,8 @@ onMounted(async () => {
 
   if (passportResult.status === 'fulfilled') {
     passports.value = passportResult.value ?? []
-    if (passports.value.length > 0) view.value = 'returning'
+    // No longer auto-switch to "returning" when passports exist — the view
+    // is now driven entirely by EXPLORE_VISITED_KEY (first visit vs. not).
   }
   loadingPassport.value = false
 
@@ -2206,30 +2214,6 @@ onMounted(async () => {
 .explore-tour-btn:hover,
 .explore-tour-btn:active {
   background: #ccfbf1;
-}
-
-/* ── Toggle ── */
-.toggle-track {
-  display: flex;
-  background: #f0f0f8;
-  border-radius: 999px;
-  padding: 3px;
-  gap: 2px;
-}
-
-.toggle-tab {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #94a3b8;
-}
-
-.toggle-tab.active {
-  background: #231d45;
-  color: #fff;
 }
 
 /* ── Search bar ── */

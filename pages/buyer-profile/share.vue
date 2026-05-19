@@ -149,8 +149,16 @@
 
       <!-- QR code -->
       <div class="navy-card sh-qr-card">
-        <div class="sh-qr-canvas" ref="qrCanvasEl" />
+        <div class="sh-qr-frame">
+          <div class="sh-qr-canvas" ref="qrCanvasEl">
+            <!-- Skeleton until the QR resolves -->
+            <div class="sh-qr-skeleton" />
+          </div>
+        </div>
         <div class="sh-qr-meta">Scan to verify</div>
+        <button class="sh-qr-save" type="button" @click="downloadQr">
+          📥 Save QR
+        </button>
       </div>
       <p class="sh-expires-note">
         Valid for 30 days · Share only with trusted parties
@@ -365,25 +373,84 @@ async function copyLink() {
 }
 
 // ── QR ────────────────────────────────────────────────────
+// Cached data URL so we can re-render synchronously on tab switches.
 const qrCanvasEl = ref<HTMLElement | null>(null)
+const qrDataUrl = ref<string>('')
+
+async function buildQrDataUrl(text: string): Promise<string> {
+  const { default: QRCode } = await import('qrcode')
+  return QRCode.toDataURL(text, {
+    margin: 1,
+    width: 220,
+    errorCorrectionLevel: 'M',
+    color: { dark: '#231d45', light: '#ffffff' },
+  })
+}
+
 async function drawQr() {
   if (!qrCanvasEl.value) return
+  // Use a fully-qualified URL so a scan opens the real site, not "umu.co/..."
+  // as a search query. Falls back to the canonical short form if window
+  // isn't available (SSR).
+  const origin =
+    typeof window !== 'undefined' && window.location?.origin
+      ? window.location.origin
+      : 'https://umu.co'
+  const publicRef = (passport.value as any)?.publicRef
+  const target = publicRef
+    ? `${origin}/profile/${publicRef}`
+    : canonicalShareLink.value
   try {
-    const { default: QRCode } = await import('qrcode')
-    const dataUrl = await QRCode.toDataURL(canonicalShareLink.value, {
-      margin: 1,
-      width: 200,
-      color: { dark: '#231d45', light: '#ffffff' },
-    })
-    qrCanvasEl.value.innerHTML = `<img src="${dataUrl}" alt="Share QR code" width="200" height="200" />`
+    qrDataUrl.value = await buildQrDataUrl(target)
+    qrCanvasEl.value.innerHTML = `<img src="${qrDataUrl.value}" alt="Share QR code" width="220" height="220" />`
   } catch {
     qrCanvasEl.value.innerHTML =
       '<div style="font-size:11px;color:#6b6783;padding:24px;text-align:center;">QR library missing — run <code>npm i qrcode</code></div>'
   }
 }
+
+// Re-draw whenever the user lands on the Link & QR tab, or when the
+// public ref arrives async from the profile load.
 watch(activeTab, async (t) => {
-  if (t === 'link') { await nextTick(); drawQr() }
+  if (t === 'link') {
+    await nextTick()
+    drawQr()
+  }
 })
+watch(
+  () => (passport.value as any)?.publicRef,
+  async (ref) => {
+    if (ref && activeTab.value === 'link') {
+      await nextTick()
+      drawQr()
+    }
+  },
+)
+
+// Save the QR to the camera roll / downloads folder.
+async function downloadQr() {
+  if (!qrDataUrl.value) {
+    try {
+      const target =
+        typeof window !== 'undefined' && window.location?.origin
+          ? `${window.location.origin}/profile/${
+              (passport.value as any)?.publicRef ?? ''
+            }`
+          : canonicalShareLink.value
+      qrDataUrl.value = await buildQrDataUrl(target)
+    } catch {
+      showToast({ message: 'Could not generate QR', iconEmoji: '⚠️' })
+      return
+    }
+  }
+  const a = document.createElement('a')
+  a.href = qrDataUrl.value
+  a.download = `umu-buyer-profile-qr-${
+    (passport.value as any)?.publicRef ?? 'share'
+  }.png`
+  a.click()
+  showToast({ message: 'QR saved', iconEmoji: '📥' })
+}
 
 // ── Navigation ────────────────────────────────────────────
 const goBack = useGoBack('/buyer-profile/view')
@@ -633,11 +700,53 @@ function goSign() { router.push('/buyer-profile/sign') }
   margin: 16px 22px 0;
   padding: 20px; text-align: center;
 }
-.sh-qr-canvas { display: inline-block; }
+.sh-qr-frame {
+  display: inline-block;
+  padding: 12px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 2px #f1efee;
+}
+.sh-qr-canvas {
+  display: inline-block;
+  width: 220px;
+  height: 220px;
+}
+.sh-qr-canvas img { display: block; }
+.sh-qr-skeleton {
+  width: 220px;
+  height: 220px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    #f1efee 0%,
+    #fafafa 50%,
+    #f1efee 100%
+  );
+  background-size: 200% 100%;
+  animation: sh-qr-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes sh-qr-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 .sh-qr-meta {
   font-size: 11px; color: #6b6783;
-  margin-top: 8px; font-weight: 600;
+  margin-top: 10px; font-weight: 600;
 }
+.sh-qr-save {
+  margin-top: 14px;
+  border: 1.5px solid #231d45;
+  background: #fff;
+  color: #231d45;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.sh-qr-save:active { transform: scale(0.98); }
 
 /* PDF tab */
 .sh-pdf-preview {

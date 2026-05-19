@@ -231,6 +231,45 @@
           </div>
         </div>
 
+        <!-- Persona-in-progress banner: shown while the user is in the
+             other tab. Reassures them not to close this tab and offers a
+             manual recheck if polling times out. -->
+        <div v-if="kycPolling && !kycAllDone" class="bp-kyc-pending">
+          <span class="bp-kyc-pending-spinner" />
+          <div class="bp-kyc-pending-body">
+            <div class="bp-kyc-pending-title">
+              Verifying with Persona…
+            </div>
+            <div class="bp-kyc-pending-sub">
+              Finish the steps in the new tab. We'll pick up the result
+              automatically — keep this tab open.
+            </div>
+          </div>
+          <button
+            class="bp-kyc-pending-btn"
+            type="button"
+            :disabled="kycCheckingNow"
+            @click="recheckKycNow"
+          >
+            <span v-if="kycCheckingNow" class="bp-kyc-mini-spinner" />
+            {{ kycCheckingNow ? 'Checking…' : "I've finished" }}
+          </button>
+        </div>
+
+        <!-- Error / decline / needs-review message -->
+        <div v-if="kycError && !kycAllDone" class="bp-kyc-err">
+          <div class="bp-kyc-err-ic">!</div>
+          <div class="bp-kyc-err-body">{{ kycError }}</div>
+          <button
+            v-if="!kycPolling"
+            class="bp-kyc-err-retry"
+            type="button"
+            @click="startBuyerKyc"
+          >
+            Retry
+          </button>
+        </div>
+
         <!-- KYC verified panel — appears once all 3 tasks pass -->
         <div v-if="kycAllDone" class="bp-kyc-success">
           <div class="bp-kyc-success-ic">✓</div>
@@ -815,10 +854,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useBuyerProfile } from '~/composables/useBuyerProfile'
 import { useProfile } from '~/composables/useProfile'
+import { useKyc } from '~/composables/useKyc'
 import { useAppToast } from '~/composables/useCustomToast'
 import TierUpgradeDrawer from '~/components/buyer-profile/TierUpgradeDrawer.vue'
 
@@ -1007,64 +1047,153 @@ function setKycActive(t: 'id' | 'selfie' | 'aml') {
 }
 
 function openKycSheet(target: 'id-front' | 'id-back') {
+  // Persona's hosted page runs its own capture UX (camera / upload / file)
+  // so the in-app method picker is redundant. Tapping either side just
+  // opens the single Persona session — Persona handles "which side" itself.
   kycSheetSide.value = target === 'id-front' ? 'front' : 'back'
-  kycSheetOpen.value = true
+  startBuyerKyc()
 }
 function closeKycSheet() { kycSheetOpen.value = false }
 
-function simulateIdCapture() {
-  const side = kycSheetSide.value
-  closeKycSheet()
-  setTimeout(() => {
-    if (side === 'front') kycIdFront.value = true
-    else kycIdBack.value = true
-    if (kycIdDone.value) {
-      // Backend stores idDocumentType — KYC defaults it to passport when both
-      // sides are captured (the prototype doesn't ask the user to pick).
-      if (!idDocumentType.value) idDocumentType.value = 'passport'
-      setTimeout(() => {
-        kycActive.value = 'selfie'
-      }, 500)
+// ── Real Persona KYC integration ───────────────────────────────
+// Persona's hosted page runs all three checks (ID front + back, selfie /
+// liveness, AML / sanctions) inside their UI. We open it in a new tab,
+// poll /kyc/status until it settles, then mark all three visual rows
+// done in one shot. No client-side simulation of capture or AML.
+const kycPolling = ref(false)
+const kycCheckingNow = ref(false)
+const kycError = ref('')
+const kycInquiryId = ref<string | null>(null)
+let kycAbort: AbortController | null = null
+
+function markKycComplete() {
+  kycIdFront.value = true
+  kycIdBack.value = true
+  kycSelfieDone.value = true
+  kycAmlDone.value = true
+  amlStep.value = 3
+  // Persona doesn't tell us *which* document the user uploaded — default to
+  // passport so the backend's `idDocumentType` column has a value.
+  if (!idDocumentType.value) idDocumentType.value = 'passport'
+}
+
+function resetKycVisualState() {
+  kycIdFront.value = false
+  kycIdBack.value = false
+  kycSelfieDone.value = false
+  kycAmlDone.value = false
+  amlStep.value = -1
+  kycActive.value = 'id'
+  livenessRunning.value = false
+}
+
+async function startBuyerKyc() {
+  if (kycPolling.value) return
+  kycError.value = ''
+  kycPolling.value = true
+  // Close any leftover sheet/overlay so the new state is visible.
+  kycSheetOpen.value = false
+  try {
+    const { startKyc } = useKyc()
+    const start = await startKyc()
+    if (start.alreadyVerified || start.status === 'approved') {
+      markKycComplete()
+      return
     }
-  }, 350)
+    if (!start.hostedUrl) {
+      kycError.value = 'Could not open the verification page — please retry.'
+      return
+    }
+    kycInquiryId.value = start.inquiryId
+    const w = window.open(start.hostedUrl, '_blank', 'noopener')
+    if (!w) {
+      kycError.value =
+        'Pop-ups blocked — allow pop-ups for this site and try again.'
+      return
+    }
+    await runKycPolling()
+  } catch (e: any) {
+    kycError.value =
+      e?.data?.message || e?.message || 'Verification could not start.'
+  } finally {
+    kycPolling.value = false
+  }
 }
 
+async function runKycPolling() {
+  const { pollUntilSettled } = useKyc()
+  kycAbort?.abort()
+  kycAbort = new AbortController()
+  try {
+    const finalStatus = await pollUntilSettled({
+      intervalMs: 3000,
+      maxAttempts: 100, // ~5 minutes at 3s each
+      signal: kycAbort.signal,
+    })
+    if (finalStatus === 'approved') {
+      markKycComplete()
+      kycError.value = ''
+    } else if (finalStatus === 'declined' || finalStatus === 'failed') {
+      resetKycVisualState()
+      kycError.value =
+        'Identity check failed. Please retry or contact support.'
+    } else if (finalStatus === 'needs_review') {
+      kycError.value =
+        "Your details need a manual review — we'll email you when it's done."
+    }
+  } catch (e: any) {
+    if (e?.message === 'timeout') {
+      kycError.value =
+        "We're still waiting for the result. If you've finished, tap \"I've finished — check now\"."
+    } else if (e?.message !== 'Polling aborted') {
+      kycError.value =
+        e?.data?.message || e?.message || 'Could not check status.'
+    }
+  }
+}
+
+async function recheckKycNow() {
+  if (kycCheckingNow.value) return
+  kycCheckingNow.value = true
+  kycError.value = ''
+  try {
+    const { getKycStatus } = useKyc()
+    const r = await getKycStatus()
+    if (r.status === 'approved') {
+      kycAbort?.abort()
+      markKycComplete()
+    } else if (r.status === 'declined' || r.status === 'failed') {
+      resetKycVisualState()
+      kycError.value = 'Identity check failed. Please retry.'
+    } else if (r.status === 'needs_review') {
+      kycError.value =
+        "Your details need a manual review — we'll email you when it's done."
+    } else {
+      kycError.value =
+        'Still waiting — finish the check in the other tab, then tap again.'
+    }
+  } catch (e: any) {
+    kycError.value =
+      e?.data?.message || e?.message || 'Could not check status.'
+  } finally {
+    kycCheckingNow.value = false
+  }
+}
+
+// Compatibility wrappers — the template still references the original
+// handler names. Each now triggers the single Persona session; Persona's
+// hosted page covers ID + selfie + AML in one flow.
+function simulateIdCapture() {
+  kycSheetOpen.value = false
+  startBuyerKyc()
+}
 function runLiveness() {
-  if (livenessRunning.value || kycSelfieDone.value) return
-  livenessRunning.value = true
-  livenessTitle.value = 'Look at the camera'
-  livenessStep.value = 'Step 1 of 3'
-  setTimeout(() => {
-    livenessTitle.value = 'Turn slightly left'
-    livenessStep.value = 'Step 2 of 3'
-  }, 1000)
-  setTimeout(() => {
-    livenessTitle.value = 'Turn slightly right'
-    livenessStep.value = 'Step 3 of 3'
-  }, 2000)
-  setTimeout(() => {
-    livenessTitle.value = 'Liveness confirmed'
-    livenessStep.value = '✓ Passed'
-  }, 3000)
-  setTimeout(() => {
-    livenessRunning.value = false
-    kycSelfieDone.value = true
-    setTimeout(() => {
-      kycActive.value = 'aml'
-      startAML()
-    }, 400)
-  }, 3800)
+  if (kycSelfieDone.value) return
+  startBuyerKyc()
 }
-
 function startAML() {
-  if (amlStep.value >= 0) return
-  amlStep.value = 0
-  setTimeout(() => { amlStep.value = 1 }, 900)
-  setTimeout(() => { amlStep.value = 2 }, 1800)
-  setTimeout(() => {
-    amlStep.value = 3
-    kycAmlDone.value = true
-  }, 2700)
+  if (kycAmlDone.value) return
+  startBuyerKyc()
 }
 
 watch(kycAllDone, (done) => {
@@ -1412,15 +1541,11 @@ onMounted(async () => {
     const data = await getBuyerProfile()
     if (data) {
       idDocumentType.value = data.idDocumentType ?? null
-      // If KYC was already completed in a previous session, mark all three
-      // checks as done so the user doesn't have to re-do them.
-      if (data.idDocumentType) {
-        kycIdFront.value = true
-        kycIdBack.value = true
-        kycSelfieDone.value = true
-        kycAmlDone.value = true
-        amlStep.value = 3
-      }
+      // Optimistic: if a previous session got far enough to persist
+      // idDocumentType, show KYC as done while we confirm with Persona
+      // below. Stops the UI flickering back to "ID required" for
+      // returning users on slow networks.
+      if (data.idDocumentType) markKycComplete()
       fundsType.value = data.fundsType ?? null
       fundsAmount.value = data.fundsAmount ?? null
       chainPosition.value = data.chainPosition ?? null
@@ -1435,6 +1560,32 @@ onMounted(async () => {
       selectedTier.value = t === 'BASIC' ? 'VERIFIED' : t
     }
   } catch {}
+
+  // Authoritative Persona check — trumps the optimistic flag-flip above.
+  // If Persona reports approved, we stay marked complete. If declined /
+  // failed, reset the visual state and surface a retry message. For
+  // pending / not_started, leave the optimistic state as it was so the
+  // user can pick up where they left off.
+  try {
+    const { getKycStatus } = useKyc()
+    const r = await getKycStatus()
+    if (r.status === 'approved') {
+      markKycComplete()
+    } else if (r.status === 'declined' || r.status === 'failed') {
+      resetKycVisualState()
+      kycError.value =
+        'Your previous identity check did not pass. Please retry.'
+    } else if (r.status === 'needs_review') {
+      kycError.value =
+        "Your previous identity check is under manual review — we'll email you when it's done."
+    }
+  } catch {
+    /* status endpoint failed — fall back to optimistic flags */
+  }
+})
+
+onBeforeUnmount(() => {
+  kycAbort?.abort()
 })
 </script>
 
@@ -2079,6 +2230,116 @@ onMounted(async () => {
   50% { box-shadow: 0 0 0 6px rgba(0, 161, 154, 0); }
 }
 .bp-aml-row.clear .bp-aml-dot { background: #1f7a66; color: #fff; }
+
+/* Persona in-progress banner — shown while user is in the other tab */
+.bp-kyc-pending {
+  margin-top: 14px;
+  background: #f2faf8;
+  border: 1px solid #c8eae6;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bp-kyc-pending-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid rgba(0, 161, 154, 0.18);
+  border-top-color: #00a19a;
+  border-radius: 50%;
+  animation: bp-kyc-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+.bp-kyc-pending-body {
+  flex: 1;
+  min-width: 0;
+}
+.bp-kyc-pending-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #00514d;
+  letter-spacing: -0.02em;
+}
+.bp-kyc-pending-sub {
+  font-size: 11.5px;
+  color: #4a4566;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.bp-kyc-pending-btn {
+  flex-shrink: 0;
+  border: 1.5px solid #00a19a;
+  background: #fff;
+  color: #00514d;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 11.5px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.bp-kyc-pending-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.bp-kyc-mini-spinner {
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgba(0, 161, 154, 0.3);
+  border-top-color: #00a19a;
+  border-radius: 50%;
+  animation: bp-kyc-spin 0.7s linear infinite;
+}
+@keyframes bp-kyc-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* KYC error / decline / needs-review */
+.bp-kyc-err {
+  margin-top: 12px;
+  background: #fef2f1;
+  border: 1px solid #fbcec9;
+  border-radius: 14px;
+  padding: 11px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bp-kyc-err-ic {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #c73e36;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.bp-kyc-err-body {
+  flex: 1;
+  font-size: 12px;
+  color: #882019;
+  line-height: 1.4;
+}
+.bp-kyc-err-retry {
+  flex-shrink: 0;
+  border: 1.5px solid #c73e36;
+  background: #fff;
+  color: #c73e36;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+}
 
 /* KYC success panel */
 .bp-kyc-success {
