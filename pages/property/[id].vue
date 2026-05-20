@@ -1733,19 +1733,19 @@
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">✈️</div>
               <div class="pps-ds-placeholder-title">
-                {{ transportLookupFailed
+                {{ airportsLookupFailed
                   ? 'Airport data unavailable from this network'
-                  : 'No commercial airports within 50 km' }}
+                  : 'No airports found within 150 km' }}
               </div>
               <div class="pps-ds-placeholder-sub">
-                <template v-if="transportLookupFailed">
+                <template v-if="airportsLookupFailed">
                   OpenStreetMap's Overpass servers couldn't be reached from
                   the backend's network. This usually resolves once
                   deployed to UK/EU infra.
                 </template>
                 <template v-else>
-                  Only aerodromes with an IATA code or "Airport" in their
-                  name are shown.
+                  Only commercial airports (IATA code, international flag,
+                  or "Airport" in their name) are shown.
                 </template>
               </div>
             </div>
@@ -4570,10 +4570,14 @@ const exploreTiles = computed(() => {
   })
   // Transport (trains / buses / airports) — each one falls back through
   // three states: real data → "looking up" while enrichment is pending →
-  // "sources unreachable" when Overpass mirrors all failed (the backend
-  // sets `transportLookupFailed`).
+  // "sources unreachable" when Overpass mirrors all failed. Trains and
+  // buses share `transportLookupFailed`; airports use their own batch
+  // (150 km radius is too heavy to fold into the station/bus query) and
+  // therefore have a separate `airportsLookupFailed` flag — a failed
+  // airports lookup must NOT mark trains/buses as unavailable.
   const enrichmentPending = !enrichment.value
   const tFailed = transportLookupFailed.value
+  const aFailed = airportsLookupFailed.value
   // Trains
   const nearestTrain = enrichmentTrains.value[0]
   tiles.push({
@@ -4618,7 +4622,7 @@ const exploreTiles = computed(() => {
           ? 'Map sources unreachable — tap to retry'
           : 'No stops found within 700 m',
   })
-  // Airports
+  // Airports — independent failure flag
   const nearestAirport = enrichmentAirports.value[0]
   tiles.push({
     key: 'airports',
@@ -4629,16 +4633,16 @@ const exploreTiles = computed(() => {
       ? `${nearestAirport.distanceKm.toFixed(0)} km`
       : enrichmentPending
         ? 'Looking up…'
-        : tFailed
+        : aFailed
           ? 'Unavailable'
           : 'No data',
     sub: nearestAirport
       ? nearestAirport.name
       : enrichmentPending
         ? 'Searching OpenStreetMap'
-        : tFailed
+        : aFailed
           ? 'Map sources unreachable — tap to retry'
-          : 'No airports within 50 km',
+          : 'No airports within 150 km',
   })
   // Location & map
   tiles.push({
@@ -5154,6 +5158,12 @@ const enrichmentCrime = computed<any | null>(
 // empty states. UK/EU production deployment usually resolves this.
 const transportLookupFailed = computed<boolean>(
   () => (enrichment.value as any)?.nearby?.transportLookupFailed === true,
+)
+// Airports run as their own Overpass batch on the backend (150 km radius
+// is too heavy to fold into the same query as 4 km station/bus searches).
+// A failed airports lookup must NOT mark trains and buses as unavailable.
+const airportsLookupFailed = computed<boolean>(
+  () => (enrichment.value as any)?.nearby?.airportsLookupFailed === true,
 )
 
 // ─── New CTAs wired from the prototype passport card + secondary row ───────

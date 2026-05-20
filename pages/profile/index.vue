@@ -17,16 +17,11 @@
         My Profile
       </h1>
 
-      <button
-        type="button"
-        class="w-8 h-8 rounded-full bg-[#403d91] flex items-center justify-center"
-        aria-label="More"
-      >
-        <Icon
-          name="i-heroicons-ellipsis-horizontal"
-          class="w-5 h-5 text-white"
-        />
-      </button>
+      <!-- Empty spacer matching the back button's footprint so the title
+           stays visually centered. The old purple "More" 3-dot button was
+           a dummy with no handler; sign-out + settings are already in the
+           list below, so it had nothing to surface. -->
+      <div class="w-10 h-10" aria-hidden="true" />
     </header>
 
     <main class="px-5 pb-8">

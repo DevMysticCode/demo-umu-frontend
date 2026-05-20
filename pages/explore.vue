@@ -53,6 +53,18 @@
           @keyup.enter="doSearch"
           @blur="showDropdown = false"
         />
+        <!-- Unified distance + filters pill (prototype's .exp-dist-btn).
+             Replaces the old radius-pill row + separate Filters button. -->
+        <button
+          class="exp-dist-btn"
+          :class="{ 'has-filters': hasAnyFilters }"
+          data-tour="filter-pill"
+          @click="openFilterSheet"
+        >
+          <span>{{ distLabelShort(activeRadius) }}</span>
+          <span class="filter-dot" />
+          <span class="arrow">▾</span>
+        </button>
         <button class="search-btn" @click="doSearch">Search</button>
       </div>
 
@@ -138,38 +150,24 @@
         <div class="search-clear-btn" @click="clearSearch">x</div>
       </div>
 
-      <div class="filter-row">
-        <div
-          :class="['radius-pill', { active: activeRadius === null }]"
-          @click="setRadius(null)"
+      <!-- Active-filter summary chips. Each chip dismisses the matching
+           committed filter; "Clear all" zeroes everything. Hidden when no
+           filters are active. -->
+      <div v-if="committedChips.length" class="filter-summary visible">
+        <span
+          v-for="c in committedChips"
+          :key="c.key"
+          class="fs-chip"
         >
-          Exact
-        </div>
-        <div
-          v-for="pill in radiusPills"
-          :key="pill.value"
-          :class="['radius-pill', { active: activeRadius === pill.value }]"
-          @click="setRadius(pill.value)"
-        >
-          {{ pill.label }}
-        </div>
-        <div class="filter-divider"></div>
-        <div class="radius-pill filters-btn" @click="showFilters = true">
-          <svg
-            width="13"
-            height="13"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-          >
-            <line x1="4" y1="6" x2="20" y2="6" />
-            <line x1="8" y1="12" x2="16" y2="12" />
-            <line x1="11" y1="18" x2="13" y2="18" />
-          </svg>
-          Filters
-        </div>
+          <span>{{ c.label }}</span>
+          <span
+            class="x"
+            role="button"
+            tabindex="0"
+            @click="removeCommittedFilter(c.key)"
+          >×</span>
+        </span>
+        <button class="fs-clear" @click="clearAllFilters">Clear all</button>
       </div>
     </div>
 
@@ -1542,89 +1540,170 @@
       storage-key="umu_tour_explore_v1"
     />
 
-    <!-- Filters Bottom Sheet -->
-    <Transition name="sheet-fade">
+    <!-- Unified Distance + Filters Bottom Sheet (prototype-exact).
+         Single source of truth for radius AND all other filters. Uses a
+         draft/committed pattern: edits inside the sheet only affect the
+         page after the user taps Apply. -->
+    <Teleport to="body">
       <div
-        v-if="showFilters"
-        class="sheet-overlay"
-        @click.self="showFilters = false"
-      >
-        <div class="sheet-panel">
-          <div class="sheet-handle"></div>
-          <div class="sheet-header">
-            <div class="sheet-title">Filters</div>
-            <button class="sheet-reset-btn" @click="resetFilters">Reset</button>
-          </div>
-
+        class="sheet-backdrop"
+        :class="{ open: showFilters }"
+        @click="closeFilterSheet"
+      />
+      <div class="sheet" :class="{ open: showFilters }" role="dialog" aria-modal="true">
+        <div class="sheet-grabber-wrap" @click="closeFilterSheet">
+          <div class="sheet-grabber" />
+        </div>
+        <div class="sheet-head">
+          <div class="sheet-title">Distance &amp; filters</div>
+          <button
+            class="sheet-reset"
+            :disabled="isDraftDefault"
+            @click="resetDraft"
+          >
+            Reset
+          </button>
+        </div>
+        <div class="sheet-body">
+          <!-- DISTANCE -->
           <div class="sheet-section">
-            <div class="sheet-section-label">Min bedrooms</div>
-            <div class="sheet-pills">
+            <div class="sheet-section-h">
+              <div class="sheet-section-title">Search radius</div>
+              <div class="sheet-section-value">
+                {{ distLabelLong(draft.distance) }}
+              </div>
+            </div>
+            <div class="dist-list">
               <div
-                v-for="n in [1, 2, 3, 4, 5]"
-                :key="n"
-                :class="['sheet-pill', { active: filterBeds === n }]"
-                @click="filterBeds = filterBeds === n ? null : n"
+                v-for="opt in distanceOptions"
+                :key="opt.value === null ? 'exact' : opt.value"
+                class="dist-row"
+                :class="{ active: draft.distance === opt.value }"
+                @click="draft.distance = opt.value"
               >
-                {{ n === 5 ? '5+' : n }}
+                <span class="dist-radio" />
+                <span class="dist-label-wrap">
+                  <span class="dist-label">{{ opt.label }}</span>
+                  <span class="dist-hint">{{ opt.hint }}</span>
+                </span>
               </div>
             </div>
           </div>
 
+          <!-- PROPERTY TYPE -->
           <div class="sheet-section">
-            <div class="sheet-section-label">Max price</div>
-            <div class="sheet-pills">
-              <div
-                v-for="p in pricePills"
-                :key="p.value"
-                :class="['sheet-pill', { active: filterMaxPrice === p.value }]"
-                @click="
-                  filterMaxPrice = filterMaxPrice === p.value ? null : p.value
-                "
+            <div class="sheet-section-h">
+              <div class="sheet-section-title">Property type</div>
+            </div>
+            <div class="chip-group">
+              <button
+                v-for="opt in propertyTypeOptions"
+                :key="opt.value"
+                class="chip"
+                :class="{ active: isPtypeActive(opt.value) }"
+                @click="togglePtype(opt.value)"
               >
-                {{ p.label }}
+                {{ opt.label }}
+              </button>
+            </div>
+          </div>
+
+          <!-- BEDROOMS -->
+          <div class="sheet-section">
+            <div class="sheet-section-h">
+              <div class="sheet-section-title">Bedrooms (min)</div>
+            </div>
+            <div class="chip-group">
+              <button
+                v-for="opt in bedsOptions"
+                :key="opt.value === null ? 'any' : opt.value"
+                class="chip"
+                :class="{ active: draft.beds === opt.value }"
+                @click="draft.beds = opt.value"
+              >
+                {{ opt.label }}
+              </button>
+            </div>
+          </div>
+
+          <!-- EPC -->
+          <div class="sheet-section">
+            <div class="sheet-section-h">
+              <div class="sheet-section-title">EPC rating (min)</div>
+            </div>
+            <div class="chip-group">
+              <button
+                class="chip"
+                :class="{ active: draft.epc === null }"
+                @click="draft.epc = null"
+              >
+                Any
+              </button>
+              <button
+                v-for="opt in epcOptions"
+                :key="opt.value"
+                class="chip epc-chip"
+                :class="{ active: draft.epc === opt.value }"
+                @click="draft.epc = opt.value"
+              >
+                <span
+                  class="epc-tile"
+                  :style="{ background: opt.color }"
+                >{{ opt.value }}</span>
+                {{ opt.label }}
+              </button>
+            </div>
+          </div>
+
+          <!-- HEALTHSCORE SLIDER -->
+          <div class="sheet-section">
+            <div class="sheet-section-h">
+              <div class="sheet-section-title">HomeScore (min)</div>
+              <div class="sheet-section-value">
+                {{ draft.hs === 0 ? 'Any' : draft.hs + '+' }}
+              </div>
+            </div>
+            <div class="slider-row">
+              <input
+                type="range"
+                class="slider"
+                min="0"
+                max="90"
+                step="5"
+                :value="draft.hs"
+                :style="{ '--fill': (draft.hs / 90 * 100) + '%' }"
+                @input="onHsInput(($event.target as HTMLInputElement).value)"
+              />
+              <div class="slider-scale">
+                <span>Any</span><span>30</span><span>50</span><span>70</span><span>90</span>
               </div>
             </div>
           </div>
 
+          <!-- PASSPORT TOGGLE -->
           <div class="sheet-section">
-            <div class="sheet-section-label">Property type</div>
-            <div class="sheet-pills">
-              <div
-                v-for="t in ['House', 'Flat', 'Bungalow', 'Land']"
-                :key="t"
-                :class="['sheet-pill', { active: filterType === t }]"
-                @click="filterType = filterType === t ? '' : t"
-              >
-                {{ t }}
-              </div>
-            </div>
-          </div>
-
-          <div class="sheet-section">
-            <div class="sheet-toggle-row">
-              <div>
-                <div class="sheet-section-label" style="margin-bottom: 0">
-                  Has Passport
+            <div class="toggle-row" @click="draft.passport = !draft.passport">
+              <div class="tr-text">
+                <div class="tr-title">Verified Passport only</div>
+                <div class="tr-sub">
+                  Show only properties with a full solicitor-grade Passport.
                 </div>
-                <div style="font-size: 12px; color: #94a3b8; margin-top: 2px">
-                  Only verified properties
-                </div>
               </div>
-              <div
-                :class="['toggle-sw', { on: filterHasPassport }]"
-                @click="filterHasPassport = !filterHasPassport"
-              >
-                <div class="toggle-sw-thumb"></div>
-              </div>
+              <div class="toggle" :class="{ on: draft.passport }" />
             </div>
           </div>
 
-          <button class="sheet-apply-btn" @click="applyFilters">
-            Apply filters
+          <div style="height: 8px" />
+        </div>
+        <div class="sheet-foot">
+          <button class="sheet-cancel" @click="closeFilterSheet">Cancel</button>
+          <button class="sheet-apply" @click="applyDraft">
+            <span>Apply</span>
+            <span v-if="draftFilterCount > 0" class="count">{{ draftFilterCount }}</span>
           </button>
         </div>
       </div>
-    </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -1647,9 +1726,9 @@ const exploreTourSteps = [
     body: 'Type a postcode, address or area. Properties with a verified Passport surface to the top.',
   },
   {
-    selector: '.filter-row',
-    title: 'Filter by distance',
-    body: 'Tap Exact for the postcode only, or use 0.5–5 mile pills to broaden the search. "Filters" lets you narrow by price, type and more.',
+    selector: '[data-tour="filter-pill"]',
+    title: 'Distance & filters',
+    body: 'Tap the pill next to Search to set radius (Exact → 10 miles) and narrow by property type, bedrooms, EPC, HomeScore or Passport status — all in one place.',
   },
   {
     selector: '[data-tour="avatar"]',
@@ -1754,13 +1833,11 @@ const searchQuery = ref('')
 const searchResults = ref<any[]>([])
 const showDropdown = ref(false)
 const selectedAddress = ref<any>(null)
+// `activeRadius` remains the canonical "committed" radius so existing
+// downstream call-sites (buildSearchUrl, etc.) keep working untouched.
+// The new sheet edits a `draft` object and copies it into the committed
+// refs below only when the user taps Apply.
 const activeRadius = ref<number | null>(null)
-const radiusPills = [
-  { label: '0.5 mi', value: 0.5 },
-  { label: '1 mi', value: 1 },
-  { label: '2 mi', value: 2 },
-  { label: '5 mi', value: 5 },
-]
 
 const loadingPrefs = ref(true)
 const loadingPassport = ref(true)
@@ -1776,12 +1853,235 @@ const SEARCH_PAGE_SIZE = 20
 const loadMoreSentinel = ref<HTMLElement | null>(null)
 let loadMoreObserver: IntersectionObserver | null = null
 
-// Filters
+// ── Unified filter sheet (prototype-exact) ──────────────────────
+// Two-layer state:
+//   * committed* — what the page actually filters by (drives the URL).
+//   * draft.*    — what's being edited inside the open sheet.
+// Cancel = throw away draft. Apply = copy draft → committed and refresh.
 const showFilters = ref(false)
-const filterBeds = ref<number | null>(null)
+
+const committedPtype = ref<string[]>(['any'])
+const committedBeds = ref<number | null>(null)
+const committedEpc = ref<string | null>(null)
+const committedHs = ref<number>(0)
+const committedPassport = ref<boolean>(false)
+
+interface FilterDraft {
+  distance: number | null
+  ptype: string[]
+  beds: number | null
+  epc: string | null
+  hs: number
+  passport: boolean
+}
+const draft = ref<FilterDraft>({
+  distance: null,
+  ptype: ['any'],
+  beds: null,
+  epc: null,
+  hs: 0,
+  passport: false,
+})
+
+const distanceOptions: { value: number | null; label: string; hint: string }[] = [
+  { value: null, label: 'Exact address only', hint: 'Score just this property' },
+  { value: 0.5, label: 'Within 0.5 miles', hint: 'Same street & immediate neighbours' },
+  { value: 1, label: 'Within 1 mile', hint: 'Roughly the same neighbourhood' },
+  { value: 2, label: 'Within 2 miles', hint: 'Whole side of town' },
+  { value: 5, label: 'Within 5 miles', hint: 'Across the city' },
+  { value: 10, label: 'Within 10 miles', hint: 'Wider catchment' },
+]
+const propertyTypeOptions = [
+  { value: 'any', label: 'Any' },
+  { value: 'detached', label: 'Detached' },
+  { value: 'semi', label: 'Semi' },
+  { value: 'terraced', label: 'Terraced' },
+  { value: 'flat', label: 'Flat' },
+  { value: 'bungalow', label: 'Bungalow' },
+]
+const bedsOptions: { value: number | null; label: string }[] = [
+  { value: null, label: 'Any' },
+  { value: 1, label: '1+' },
+  { value: 2, label: '2+' },
+  { value: 3, label: '3+' },
+  { value: 4, label: '4+' },
+  { value: 5, label: '5+' },
+]
+const epcOptions = [
+  { value: 'A', label: 'A',  color: '#008060' },
+  { value: 'B', label: 'B+', color: '#2EAB55' },
+  { value: 'C', label: 'C+', color: '#93C949' },
+  { value: 'D', label: 'D+', color: '#F4D63A' },
+]
+const PTYPE_LABELS: Record<string, string> = Object.fromEntries(
+  propertyTypeOptions.map((o) => [o.value, o.label]),
+)
+
+function distLabelShort(v: number | null): string {
+  if (v == null) return 'Exact'
+  return `${v} mi`
+}
+function distLabelLong(v: number | null): string {
+  if (v == null) return 'Just this address'
+  return `Within ${v} ${v === 1 ? 'mile' : 'miles'}`
+}
+
+function isPtypeActive(value: string): boolean {
+  return draft.value.ptype.includes(value)
+}
+function togglePtype(value: string) {
+  if (value === 'any') {
+    draft.value.ptype = ['any']
+    return
+  }
+  const cur = draft.value.ptype.filter((v) => v !== 'any')
+  if (cur.includes(value)) {
+    const next = cur.filter((v) => v !== value)
+    draft.value.ptype = next.length === 0 ? ['any'] : next
+  } else {
+    draft.value.ptype = [...cur, value]
+  }
+}
+function onHsInput(raw: string) {
+  draft.value.hs = parseInt(raw, 10) || 0
+}
+
+function isDraftDefaultObj(d: FilterDraft): boolean {
+  return (
+    d.distance == null &&
+    d.ptype.length === 1 &&
+    d.ptype[0] === 'any' &&
+    d.beds == null &&
+    d.epc == null &&
+    d.hs === 0 &&
+    !d.passport
+  )
+}
+function countDraftFilters(d: FilterDraft): number {
+  let n = 0
+  if (d.distance != null) n++
+  if (!(d.ptype.length === 1 && d.ptype[0] === 'any')) n += d.ptype.length
+  if (d.beds != null) n++
+  if (d.epc != null) n++
+  if (d.hs !== 0) n++
+  if (d.passport) n++
+  return n
+}
+const isDraftDefault = computed(() => isDraftDefaultObj(draft.value))
+const draftFilterCount = computed(() => countDraftFilters(draft.value))
+
+const committedDraft = computed<FilterDraft>(() => ({
+  distance: activeRadius.value,
+  ptype: committedPtype.value,
+  beds: committedBeds.value,
+  epc: committedEpc.value,
+  hs: committedHs.value,
+  passport: committedPassport.value,
+}))
+const hasAnyFilters = computed(() => !isDraftDefaultObj(committedDraft.value))
+
+const committedChips = computed<{ key: string; label: string }[]>(() => {
+  const chips: { key: string; label: string }[] = []
+  if (activeRadius.value != null) {
+    chips.push({ key: 'distance', label: distLabelShort(activeRadius.value) })
+  }
+  if (!(committedPtype.value.length === 1 && committedPtype.value[0] === 'any')) {
+    committedPtype.value.forEach((v) =>
+      chips.push({ key: `ptype:${v}`, label: PTYPE_LABELS[v] ?? v }),
+    )
+  }
+  if (committedBeds.value != null) {
+    chips.push({ key: 'beds', label: `${committedBeds.value}+ beds` })
+  }
+  if (committedEpc.value != null) {
+    chips.push({ key: 'epc', label: `EPC ${committedEpc.value}+` })
+  }
+  if (committedHs.value !== 0) {
+    chips.push({ key: 'hs', label: `HS ${committedHs.value}+` })
+  }
+  if (committedPassport.value) {
+    chips.push({ key: 'passport', label: 'Passport only' })
+  }
+  return chips
+})
+
+function openFilterSheet() {
+  draft.value = {
+    distance: activeRadius.value,
+    ptype: [...committedPtype.value],
+    beds: committedBeds.value,
+    epc: committedEpc.value,
+    hs: committedHs.value,
+    passport: committedPassport.value,
+  }
+  showFilters.value = true
+}
+function closeFilterSheet() {
+  showFilters.value = false
+}
+function resetDraft() {
+  draft.value = {
+    distance: null,
+    ptype: ['any'],
+    beds: null,
+    epc: null,
+    hs: 0,
+    passport: false,
+  }
+}
+function applyDraft() {
+  activeRadius.value = draft.value.distance
+  committedPtype.value = [...draft.value.ptype]
+  committedBeds.value = draft.value.beds
+  committedEpc.value = draft.value.epc
+  committedHs.value = draft.value.hs
+  committedPassport.value = draft.value.passport
+  showFilters.value = false
+  if (searchMode.value && searchQuery.value.trim()) doSearch()
+}
+
+function removeCommittedFilter(key: string) {
+  if (key === 'distance') activeRadius.value = null
+  else if (key.startsWith('ptype:')) {
+    const v = key.slice(6)
+    const next = committedPtype.value.filter((p) => p !== v)
+    committedPtype.value = next.length === 0 ? ['any'] : next
+  } else if (key === 'beds') committedBeds.value = null
+  else if (key === 'epc') committedEpc.value = null
+  else if (key === 'hs') committedHs.value = 0
+  else if (key === 'passport') committedPassport.value = false
+  if (searchMode.value && searchQuery.value.trim()) doSearch()
+}
+function clearAllFilters() {
+  activeRadius.value = null
+  committedPtype.value = ['any']
+  committedBeds.value = null
+  committedEpc.value = null
+  committedHs.value = 0
+  committedPassport.value = false
+  if (searchMode.value && searchQuery.value.trim()) doSearch()
+}
+
+// Legacy refs kept as no-op shims so any remaining script references
+// below still type-check. New code reads `committed*` directly.
+const filterBeds = computed({
+  get: () => committedBeds.value,
+  set: (v: number | null) => (committedBeds.value = v),
+})
 const filterMaxPrice = ref<number | null>(null)
-const filterType = ref('')
-const filterHasPassport = ref(false)
+const filterType = computed({
+  get: () =>
+    committedPtype.value.length === 1 && committedPtype.value[0] === 'any'
+      ? ''
+      : committedPtype.value.join(','),
+  set: () => {
+    /* no-op — chip group is the source of truth now */
+  },
+})
+const filterHasPassport = computed({
+  get: () => committedPassport.value,
+  set: (v: boolean) => (committedPassport.value = v),
+})
 
 const pricePills = [
   { label: '£200k', value: 200000 },
@@ -1807,9 +2107,15 @@ const role = ref<string>('buy')
 
 const greeting = computed(() => {
   const h = new Date().getHours()
-  if (h < 12) return 'Good morning 👋'
-  if (h < 17) return 'Good afternoon 👋'
-  return 'Good evening 👋'
+  const timeOfDay =
+    h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
+  // First name is the friendliest greeting — fall back to the local part of
+  // the email if no first name is set, and drop the suffix entirely when we
+  // have nothing user-facing (so we never render "Good afternoon , 👋").
+  const first = profile.value?.firstName?.trim()
+  const emailLocal = profile.value?.email?.split('@')[0]?.trim()
+  const name = first || emailLocal || ''
+  return name ? `${timeOfDay}, ${name} 👋` : `${timeOfDay} 👋`
 })
 
 const passportScore = computed(() => {
@@ -2049,6 +2355,26 @@ function buildSearchUrl(offset: number): string {
   if (activeRadius.value != null) {
     params.set('radius', String(activeRadius.value))
   }
+  // Filter params — only sent when the user has actually picked something
+  // (so an unset filter is indistinguishable from a fresh first page).
+  if (
+    committedPtype.value.length &&
+    !(committedPtype.value.length === 1 && committedPtype.value[0] === 'any')
+  ) {
+    params.set('propertyType', committedPtype.value.join(','))
+  }
+  if (committedBeds.value != null) {
+    params.set('minBedrooms', String(committedBeds.value))
+  }
+  if (committedEpc.value != null) {
+    params.set('minEpc', committedEpc.value)
+  }
+  if (committedHs.value > 0) {
+    params.set('minHomeScore', String(committedHs.value))
+  }
+  if (committedPassport.value) {
+    params.set('passportOnly', '1')
+  }
   return `${config.public.apiBase}/property/search?${params.toString()}`
 }
 
@@ -2075,14 +2401,6 @@ async function doSearch() {
   } finally {
     searchLoading.value = false
     nextTick(() => attachLoadMoreObserver())
-  }
-}
-
-function setRadius(r: number | null) {
-  if (activeRadius.value === r) return
-  activeRadius.value = r
-  if (searchMode.value && searchQuery.value.trim()) {
-    doSearch()
   }
 }
 
@@ -2138,18 +2456,6 @@ function exitSearch() {
     loadMoreObserver = null
   }
   clearSearch()
-}
-
-function resetFilters() {
-  filterBeds.value = null
-  filterMaxPrice.value = null
-  filterType.value = ''
-  filterHasPassport.value = false
-}
-
-function applyFilters() {
-  showFilters.value = false
-  if (searchQuery.value.trim()) doSearch()
 }
 
 // Take the user into the Claim flow (search → confirm → KYC → issue passport).
@@ -2316,7 +2622,9 @@ onMounted(async () => {
 
 .search-input {
   width: 100%;
-  padding: 13px 80px 13px 40px;
+  /* right padding holds the absolutely-positioned dist-btn (~78 px wide)
+     + search-btn (~62 px) + 18 px gap. Tweak together if either changes. */
+  padding: 13px 158px 13px 40px;
   border-radius: 14px;
   border: 1.5px solid #e5e7eb;
   background: #f8f7fc;
@@ -3050,49 +3358,110 @@ onMounted(async () => {
   letter-spacing: -0.02em;
 }
 
-.filter-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 12px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.filter-row::-webkit-scrollbar {
-  display: none;
-}
-
-.radius-pill {
+/* ── New unified Distance + Filters pill (prototype .exp-dist-btn) ──
+   Absolute-positioned inside .search-wrap, sitting just to the left of
+   the Search button. The Search button's right:10px + ~62 px width put
+   it at roughly right:80px; we leave a 6 px gap. */
+.exp-dist-btn {
+  position: absolute;
+  right: 80px;
+  top: 50%;
+  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  background: #f0f0f8;
-  border: 1.5px solid #e5e7eb;
+  gap: 4px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  color: #231d45;
+  background: #f4f4f6;
+  border: 1px solid #e5e7eb;
   border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #4a5568;
+  padding: 6px 10px;
   cursor: pointer;
-  white-space: nowrap;
+  letter-spacing: -0.05px;
   transition: all 0.15s;
   flex-shrink: 0;
 }
-
-.radius-pill.active {
+.exp-dist-btn:hover {
+  background: #f2faf8;
+  border-color: #c8eae6;
+  color: #00514d;
+}
+.exp-dist-btn .arrow {
+  font-size: 8px;
+  color: #9c98ad;
+  transition: transform 0.2s;
+}
+.exp-dist-btn.has-filters {
   background: #00a19a;
   border-color: #00a19a;
   color: #fff;
-  font-weight: 700;
+}
+.exp-dist-btn.has-filters .arrow {
+  color: rgba(255, 255, 255, 0.7);
+}
+.exp-dist-btn .filter-dot {
+  width: 6px;
+  height: 6px;
+  background: #f59e0b;
+  border-radius: 50%;
+  margin-left: 2px;
+  display: none;
+}
+.exp-dist-btn.has-filters .filter-dot {
+  display: block;
 }
 
-.filter-divider {
-  width: 1px;
-  height: 22px;
-  background: #e5e7eb;
-  flex-shrink: 0;
+/* ── Active-filter summary chip row (prototype .filter-summary) ── */
+.filter-summary {
+  display: none;
+  padding-top: 10px;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-summary.visible {
+  display: flex;
+}
+.fs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #00514d;
+  background: #e0f4f1;
+  border: 1px solid #c2e6df;
+  border-radius: 999px;
+  padding: 5px 10px;
+  letter-spacing: -0.05px;
+}
+.fs-chip .x {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #00a19a;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  cursor: pointer;
+  margin-left: 2px;
+  line-height: 1;
+}
+.fs-clear {
+  font-size: 11px;
+  font-weight: 800;
+  color: #6b6783;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  letter-spacing: -0.05px;
+  font-family: inherit;
+  margin-left: 4px;
 }
 
 .addr-drop {
@@ -3817,165 +4186,411 @@ onMounted(async () => {
   font-weight: 600;
 }
 
-/* ── Filters bottom sheet ── */
-.sheet-overlay {
+/* ── Unified Distance + Filters bottom sheet (prototype-exact) ── */
+.sheet-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(17, 13, 40, 0);
   z-index: 200;
-  display: flex;
-  align-items: flex-end;
+  pointer-events: none;
+  transition: background 0.25s ease;
 }
-
-.sheet-panel {
+.sheet-backdrop.open {
+  background: rgba(17, 13, 40, 0.55);
+  pointer-events: auto;
+}
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: #fff;
   border-radius: 24px 24px 0 0;
-  padding: 12px 20px 40px;
-  width: 100%;
-  max-height: 80dvh;
-  overflow-y: auto;
+  z-index: 201;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  max-height: 92dvh;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.18);
 }
-
-.sheet-handle {
+.sheet.open {
+  transform: translateY(0);
+}
+.sheet-grabber-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 4px;
+  cursor: pointer;
+}
+.sheet-grabber {
   width: 36px;
   height: 4px;
   background: #e5e7eb;
   border-radius: 999px;
-  margin: 0 auto 16px;
 }
-
-.sheet-header {
+.sheet-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  padding: 6px 22px 12px;
+  border-bottom: 1px solid #f3f4f6;
 }
-
 .sheet-title {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
   color: #231d45;
+  letter-spacing: -0.3px;
 }
-
-.sheet-reset-btn {
-  font-size: 15px;
-  font-weight: 700;
-  color: #00a19a;
+.sheet-reset {
   background: none;
   border: none;
-  cursor: pointer;
   font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  color: #6b6783;
+  cursor: pointer;
+  letter-spacing: -0.05px;
+  padding: 4px 0;
 }
-
+.sheet-reset:hover {
+  color: #231d45;
+}
+.sheet-reset:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.sheet-body {
+  overflow-y: auto;
+  flex: 1;
+}
 .sheet-section {
-  margin-bottom: 20px;
+  padding: 16px 22px 4px;
 }
-
-.sheet-section-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.sheet-section-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 10px;
 }
-
-.sheet-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.sheet-section-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #6b6783;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.sheet-section-value {
+  font-size: 12px;
+  font-weight: 800;
+  color: #00514d;
+  letter-spacing: -0.05px;
+  font-feature-settings: 'tnum';
 }
 
-.sheet-pill {
-  background: #f0f0f8;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 999px;
-  padding: 8px 16px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #4a5568;
+/* Distance radio list */
+.dist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #f4f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 4px;
+}
+.dist-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s;
 }
+.dist-row:hover {
+  background: #fff;
+}
+.dist-row.active {
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(35, 29, 69, 0.06);
+}
+.dist-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #9c98ad;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.dist-row.active .dist-radio {
+  border-color: #00a19a;
+  background: #00a19a;
+}
+.dist-radio::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.dist-row.active .dist-radio::after {
+  opacity: 1;
+}
+.dist-label-wrap {
+  flex: 1;
+  min-width: 0;
+}
+.dist-label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #231d45;
+  letter-spacing: -0.15px;
+  line-height: 1.2;
+}
+.dist-hint {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b6783;
+  margin-top: 1px;
+  letter-spacing: -0.05px;
+}
+.dist-row.active .dist-label {
+  color: #00514d;
+}
 
-.sheet-pill.active {
+/* Filter chip groups */
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: #231d45;
+  background: #f4f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 8px 13px;
+  cursor: pointer;
+  letter-spacing: -0.05px;
+  transition: all 0.15s;
+}
+.chip:hover {
+  background: #f2faf8;
+  border-color: #c8eae6;
+}
+.chip.active {
   background: #00a19a;
   border-color: #00a19a;
   color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 161, 154, 0.25);
+}
+.chip.epc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 8px;
+}
+.chip .epc-tile {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.chip.active .epc-tile {
+  background: rgba(255, 255, 255, 0.25) !important;
 }
 
-.sheet-toggle-row {
+/* HomeScore slider */
+.slider-row {
+  padding: 4px 4px 0;
+}
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  outline: none;
+  margin: 12px 0 6px;
+}
+.slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #00a19a 0%,
+    #00a19a var(--fill, 0%),
+    #e5e7eb var(--fill, 0%),
+    #e5e7eb 100%
+  );
+}
+.slider::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+.slider::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: #00a19a;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #00a19a;
+  cursor: pointer;
+  margin-top: -8px;
+  box-shadow: 0 2px 6px rgba(0, 161, 154, 0.25);
+}
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #00a19a;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 161, 154, 0.25);
+}
+.slider-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 700;
+  color: #9c98ad;
+  margin-top: 2px;
+  letter-spacing: 0.4px;
+}
+
+/* Passport toggle row */
+.toggle-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  padding: 14px;
+  background: #f4f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  cursor: pointer;
 }
-
-.toggle-sw {
-  width: 46px;
-  height: 26px;
+.toggle-row .tr-text {
+  flex: 1;
+  min-width: 0;
+}
+.toggle-row .tr-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.15px;
+  margin-bottom: 2px;
+}
+.toggle-row .tr-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b6783;
+  letter-spacing: -0.05px;
+  line-height: 1.3;
+}
+.toggle {
+  width: 38px;
+  height: 22px;
   border-radius: 999px;
   background: #e5e7eb;
   position: relative;
-  cursor: pointer;
+  transition: background 0.18s;
   flex-shrink: 0;
-  transition: background 0.2s;
 }
-
-.toggle-sw.on {
-  background: #00a19a;
-}
-
-.toggle-sw-thumb {
+.toggle::after {
+  content: '';
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 20px;
-  height: 20px;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s;
+  transition: transform 0.18s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 }
-
-.toggle-sw.on .toggle-sw-thumb {
-  transform: translateX(20px);
-}
-
-.sheet-apply-btn {
-  width: 100%;
-  border: none;
-  padding: 15px;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
+.toggle.on {
   background: #00a19a;
-  color: #fff;
+}
+.toggle.on::after {
+  transform: translateX(16px);
+}
+
+/* Cancel + Apply footer */
+.sheet-foot {
+  padding: 14px 22px calc(24px + env(safe-area-inset-bottom));
+  border-top: 1px solid #f3f4f6;
+  background: #fff;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.sheet-cancel {
   font-family: inherit;
-  margin-top: 4px;
-  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+  font-size: 13px;
+  font-weight: 800;
+  color: #231d45;
+  background: #f4f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 12px 18px;
+  cursor: pointer;
+  letter-spacing: -0.05px;
+  transition: all 0.15s;
 }
-
-.sheet-apply-btn:active {
-  transform: scale(0.98);
+.sheet-cancel:hover {
+  background: #fff;
+  border-color: #9c98ad;
 }
-
-/* Sheet transition */
-.sheet-fade-enter-active,
-.sheet-fade-leave-active {
-  transition: opacity 0.2s ease;
+.sheet-apply {
+  flex: 1;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  background: #00a19a;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 18px;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
-.sheet-fade-enter-active .sheet-panel,
-.sheet-fade-leave-active .sheet-panel {
-  transition: transform 0.2s ease;
+.sheet-apply:hover {
+  background: #00b6ae;
 }
-.sheet-fade-enter-from,
-.sheet-fade-leave-to {
-  opacity: 0;
-}
-.sheet-fade-enter-from .sheet-panel,
-.sheet-fade-leave-to .sheet-panel {
-  transform: translateY(100%);
+.sheet-apply .count {
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-feature-settings: 'tnum';
 }
 </style>
