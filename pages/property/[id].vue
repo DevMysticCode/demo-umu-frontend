@@ -4815,15 +4815,59 @@ function onClaimClick() {
   goToClaim()
 }
 
-function onAccessPassport() {
-  // If the property already has a passport, route to the appropriate view;
-  // otherwise fall through to the claim flow.
+// Single source of truth for "tap to do the right thing with the Passport"
+// — used by every Passport CTA on this page. Branches on the (ownership ×
+// passport state) matrix:
+//
+//                      | unclaimed       | in-progress           | published
+//   ------------------ + --------------- + --------------------- + ----------------
+//   owner / collab     | /claim/[id]     | /passportview/[id]    | /passportview/[id]
+//   buyer (unlocked)   | /claim/[id]     | /buyer-passport/[id]  | /buyer-passport/[id]
+//   non-owner          | /claim/[id]     | preview sheet (read)  | £99 unlock drawer
+//
+// "preview sheet" = the in-page Passport bottom sheet whose progress
+// variant already lists the completed sections — that's the "example of
+// what's been built" surface.
+function routeForPassportState() {
   const s = passportStatus.value
-  if (s?.hasPassport && s?.passportId) {
-    router.push(`/passportview/${s.passportId}`)
+  // 1. No passport at all → claim flow (KYC + Land Registry, free)
+  if (!s?.hasPassport) {
+    goToClaim()
     return
   }
-  goToClaim()
+  // 2. Owner or collaborator — straight to their passport, any state
+  if (s.isOwner || s.isCollaborator) {
+    if (s.passportId) {
+      router.push(`/passportview/${s.passportId}`)
+    } else {
+      goToClaim()
+    }
+    return
+  }
+  // 3. Buyer who has already unlocked — view in buyer mode
+  if (s.isBuyer && s.passportId) {
+    router.push(`/buyer-passport/${s.passportId}`)
+    return
+  }
+  // 4. Non-owner + published — open the £99 unlock payment drawer
+  if (s.isPublished) {
+    if (!s.passportId) {
+      showToast({
+        message: 'No published Passport to unlock for this property yet.',
+        iconEmoji: 'ℹ️',
+      })
+      return
+    }
+    showUnlockDrawer.value = true
+    return
+  }
+  // 5. Non-owner + in-progress — show the preview sheet so they can see
+  //    what's been built so far without unlocking anything.
+  openSheet('passport')
+}
+
+function onAccessPassport() {
+  routeForPassportState()
 }
 
 function onWatchClick() {
@@ -5986,18 +6030,9 @@ onMounted(async () => {
 
 // ── Actions ────────────────────────────────────────────────────────────────────
 function handlePassportAction() {
-  const s = passportStatus.value
-  if (!s?.hasPassport) {
-    goToClaim()
-  } else if (s.isOwner || s.isCollaborator) {
-    router.push(`/passportview/${s.passportId}`)
-  } else if (s.isBuyer && s.passportId) {
-    router.push(`/buyer-passport/${s.passportId}`)
-  } else if (!s.isPublished) {
-    showUnpublishedModal.value = true
-  } else {
-    goToClaim()
-  }
+  // Delegate to the single ownership-aware router so every Passport CTA on
+  // this page behaves identically.
+  routeForPassportState()
 }
 
 // Inline claim CTA on the property page routes into the global /claim/[id]

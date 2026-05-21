@@ -57,29 +57,16 @@
       </div>
 
       <span class="sec-label">SEND TO AGENT</span>
-      <div class="recipient-card">
-        <div
-          v-for="a in agentSuggestions"
-          :key="a.id"
-          class="recipient-row"
-        >
-          <div class="avatar" :style="{ background: sentSet.has(a.id) ? '#00a19a' : '#231d45' }">
-            {{ a.initials }}
-          </div>
-          <div class="recipient-meta">
-            <div class="recipient-firm">{{ a.firm }}</div>
-            <div class="recipient-name">{{ a.name }}</div>
-          </div>
-          <button
-            v-if="!sentSet.has(a.id)"
-            class="send-btn"
-            :disabled="sending"
-            @click="onSend(a)"
-          >
-            ⤴ Send
-          </button>
-          <span v-else class="sent-badge">✓ Sent</span>
+      <!-- Send to a specific agent: routes to the dedicated form so we
+           don't show fake "suggested agents" to the user. -->
+      <div class="recipient-card recipient-empty">
+        <div class="recipient-empty-emoji">📤</div>
+        <div class="recipient-empty-title">Send to your agent</div>
+        <div class="recipient-empty-sub">
+          Enter their name + email — we'll deliver a secure link that
+          expires in 30 days.
         </div>
+        <button class="cta-btn" @click="goSendAgent">Open send form →</button>
       </div>
 
       <button
@@ -203,7 +190,7 @@ import { useAppToast } from '~/composables/useCustomToast'
 definePageMeta({ title: 'Share Profile — UmovingU', middleware: 'auth' })
 
 const router = useRouter()
-const { getBuyerProfile, listShares, createShare, revokeShare } = useBuyerProfile()
+const { getBuyerProfile, listShares, revokeShare } = useBuyerProfile()
 const { fetchProfile, profile } = useProfile()
 const { showToast } = useAppToast()
 
@@ -219,14 +206,12 @@ const activeTab = ref<TabId>('people')
 const passport = ref<BuyerProfile | null>(null)
 const shares = ref<BuyerProfileShare[]>([])
 const loadingShares = ref(false)
-const sending = ref(false)
-const sentSet = ref(new Set<string>())
 
-const agentSuggestions = [
-  { id: 'JC', initials: 'JC', firm: 'Savills – Notting Hill', name: 'James Cooper' },
-  { id: 'SM', initials: 'SM', firm: 'Knight Frank', name: 'Sarah Mitchell' },
-  { id: 'DC', initials: 'DC', firm: 'Foxtons', name: 'David Chen' },
-]
+// The "Send" tab used to render three hardcoded sample agents (James
+// Cooper / Sarah Mitchell / David Chen) with one-tap send buttons. That
+// implied UMU had a partnership directory; we don't. Removed in favour of
+// the dedicated /buyer-profile/send-agent form which takes free-text name
+// + email. `sending` and `sentSet` went away with them.
 
 onMounted(async () => {
   fetchProfile?.().catch(() => {})
@@ -249,14 +234,13 @@ async function refreshShares() {
   loadingShares.value = true
   try {
     shares.value = await listShares()
-    sentSet.value = new Set(
-      shares.value
-        .filter((s) => !s.revokedAt)
-        .map((s) => initialsFor(s.recipientName || '').toUpperCase()),
-    )
   } finally {
     loadingShares.value = false
   }
+}
+
+function goSendAgent() {
+  router.push('/buyer-profile/send-agent')
 }
 
 const activeCount = computed(
@@ -317,36 +301,6 @@ function scopeShort(scope: any): string {
     story: 'Story',
   }
   return scope.map((s) => map[s] || s).join(' · ')
-}
-
-// ── Send ──────────────────────────────────────────────────
-async function onSend(a: { id: string; firm: string; name: string }) {
-  if (!passport.value) return
-  if (!passport.value.published) {
-    showToast({
-      message: 'Publish your profile before sharing',
-      iconEmoji: '⚠️',
-    })
-    return
-  }
-  sending.value = true
-  try {
-    await createShare({
-      recipientName: `${a.name} · ${a.firm}`,
-      expiresInDays: 30,
-      scope: ['identity', 'deposit', 'sof', 'afford', 'story'],
-    })
-    sentSet.value.add(a.id)
-    showToast({ message: `Sent to ${a.name}`, iconEmoji: '✓' })
-    await refreshShares()
-  } catch (e: any) {
-    showToast({
-      message: e?.data?.message || 'Could not send',
-      iconEmoji: '⚠️',
-    })
-  } finally {
-    sending.value = false
-  }
 }
 
 async function onRevoke(id: string) {
@@ -574,6 +528,34 @@ function goSign() { router.push('/buyer-profile/sign') }
   background: white; border: 2px solid #00a19a;
   border-radius: 14px; overflow: hidden;
   margin: 0 22px;
+}
+.recipient-empty {
+  padding: 22px 18px 18px;
+  text-align: center;
+}
+.recipient-empty-emoji {
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.recipient-empty-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+}
+.recipient-empty-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b6783;
+  line-height: 1.45;
+  margin: 0 auto 14px;
+  max-width: 280px;
+}
+.recipient-empty .cta-btn {
+  width: 100%;
+  margin: 0;
 }
 .recipient-row {
   display: flex; align-items: center; gap: 12px;

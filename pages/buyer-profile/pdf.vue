@@ -94,32 +94,19 @@
             <span class="pdf-cred-label">Max purchase</span>
             <span class="pdf-cred-value">£{{ passport.fundsAmount.toLocaleString() }}</span>
           </div>
-          <div v-if="tier !== 'BASIC'" class="pdf-cred-row">
-            <span class="pdf-cred-label">Affordability</span>
-            <span class="pdf-cred-value">82/100 · Low risk</span>
-          </div>
-          <div class="pdf-cred-row">
-            <span class="pdf-cred-label">Verified by</span>
-            <span class="pdf-pill">{{ tier === 'BASIC' ? 'Self-declared' : 'Armalytix ✓' }}</span>
-          </div>
+          <!-- Affordability row removed — was hard-coded "82/100 · Low risk"
+               for every user regardless of their profile. It will return
+               once the Armalytix / open-banking partner integration lands
+               and we can show a real score per buyer. -->
         </div>
 
-        <!-- Credit (Premium only) -->
-        <div v-if="tier === 'PREMIUM'" class="pdf-section">
-          <div class="pdf-section-title">CREDIT FILE</div>
-          <div class="pdf-cred-row">
-            <span class="pdf-cred-label">Experian score</span>
-            <span class="pdf-cred-value">821 · Excellent</span>
-          </div>
-          <div class="pdf-cred-row">
-            <span class="pdf-cred-label">Equifax score</span>
-            <span class="pdf-cred-value">794 · Very Good</span>
-          </div>
-          <div class="pdf-cred-row">
-            <span class="pdf-cred-label">CCJs / defaults</span>
-            <span class="pdf-pill">None ✓</span>
-          </div>
-        </div>
+        <!-- Credit File section removed — was showing the same hard-coded
+             Experian (821) and Equifax (794) numbers for every Premium
+             user. It will return once the Experian + Equifax partner
+             integrations ship and the backend persists real scores per
+             buyer. Keeping the dummy section in the PDF risks a lender or
+             solicitor relying on bogus numbers. -->
+
 
         <!-- Purchase profile -->
         <div class="pdf-section">

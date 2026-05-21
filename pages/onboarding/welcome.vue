@@ -15,85 +15,18 @@
     </div>
 
     <div class="welcome-celebration">
-      <!-- Illustrated house with chimney spewing confetti -->
+      <!-- Prototype-exact house illustration (auth-flow.html line 1212).
+           Confetti is fired from the top of the viewport by a canvas
+           overlay (see runConfetti below) so it falls down the whole
+           screen rather than erupting from the chimney. -->
       <div class="welcome-house-wrap">
-        <svg class="welcome-house" viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg">
-          <!-- Sky halo -->
-          <ellipse cx="120" cy="100" rx="110" ry="80" fill="#f2faf8" opacity="0.6" />
-
-          <!-- Ground -->
-          <ellipse cx="120" cy="200" rx="100" ry="10" fill="#231d45" opacity="0.10" />
-
-          <!-- Chimney with confetti source -->
-          <rect x="160" y="40" width="18" height="34" rx="2" fill="#231d45" />
-          <rect x="158" y="38" width="22" height="6" rx="1" fill="#231d45" />
-
-          <!-- Roof -->
-          <polygon points="60,90 120,40 180,90" fill="#00a19a" />
-          <polygon points="60,90 120,40 180,90" fill="#fff" opacity="0.08" />
-
-          <!-- Body -->
-          <rect x="70" y="90" width="100" height="100" fill="#fffefb" stroke="#231d45" stroke-width="2" />
-
-          <!-- Door -->
-          <rect x="108" y="138" width="24" height="52" rx="1" fill="#c18a38" />
-          <circle cx="127" cy="165" r="1.5" fill="#231d45" />
-
-          <!-- Windows -->
-          <rect x="80" y="106" width="22" height="22" fill="#6bd4cd" />
-          <line x1="91" y1="106" x2="91" y2="128" stroke="#231d45" stroke-width="1.5" />
-          <line x1="80" y1="117" x2="102" y2="117" stroke="#231d45" stroke-width="1.5" />
-          <rect x="80" y="106" width="22" height="22" fill="none" stroke="#231d45" stroke-width="2" />
-
-          <rect x="138" y="106" width="22" height="22" fill="#6bd4cd" />
-          <line x1="149" y1="106" x2="149" y2="128" stroke="#231d45" stroke-width="1.5" />
-          <line x1="138" y1="117" x2="160" y2="117" stroke="#231d45" stroke-width="1.5" />
-          <rect x="138" y="106" width="22" height="22" fill="none" stroke="#231d45" stroke-width="2" />
-
-          <!-- Path -->
-          <path d="M118 190 L 100 215 L 140 215 L 122 190 Z" fill="#c18a38" opacity="0.55" />
-        </svg>
-
-        <!-- Confetti — 14 pieces erupting from chimney -->
-        <div class="confetti-source">
-          <span
-            v-for="(c, i) in confettiPieces"
-            :key="i"
-            :class="['confetto', c.shape, c.color]"
-            :style="{
-              '--peak-x': c.peakX,
-              '--peak-y': c.peakY,
-              '--dur': c.dur,
-              '--delay': c.delay,
-            }"
-          />
-        </div>
-
-        <!-- Person walking dog -->
-        <svg class="welcome-figures" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="36" cy="56" rx="12" ry="1.6" fill="#231d45" opacity="0.18" />
-          <ellipse cx="63" cy="56" rx="9" ry="1.4" fill="#231d45" opacity="0.18" />
-          <g fill="#231d45">
-            <circle cx="36" cy="14" r="5" />
-            <path d="M 30 19 Q 30 30 31 38 L 41 38 Q 42 30 42 19 Q 42 17 36 17 Q 30 17 30 19 Z" />
-            <path d="M 32 38 L 30 54 L 33 54 L 35 38 Z" />
-            <path d="M 39 38 L 41 54 L 38 54 L 37 38 Z" />
-            <path d="M 30 22 L 27 33 L 29 33 L 32 22 Z" />
-            <path d="M 42 22 L 47 31 L 45 32 L 40 23 Z" />
-          </g>
-          <path d="M 47 32 Q 53 36 58 38" fill="none" stroke="#231d45" stroke-width="0.7" opacity="0.75" />
-          <g fill="#231d45">
-            <ellipse cx="63" cy="49" rx="8.5" ry="3.6" />
-            <circle cx="71.5" cy="46" r="3.3" />
-            <ellipse cx="74.5" cy="47" rx="2.2" ry="1.4" />
-            <path d="M 70 43 L 71.5 40 L 73 43 Z" />
-            <rect x="56" y="51" width="1.8" height="6" rx="0.6" />
-            <rect x="60" y="51" width="1.8" height="6" rx="0.6" />
-            <rect x="65" y="51" width="1.8" height="6" rx="0.6" />
-            <rect x="69" y="51" width="1.8" height="6" rx="0.6" />
-            <path d="M 55 47 Q 51 43 53 39" fill="none" stroke="#231d45" stroke-width="2" stroke-linecap="round" />
-          </g>
-        </svg>
+        <img
+          class="welcome-house"
+          src="/welcome-house.png"
+          alt=""
+          width="240"
+          height="auto"
+        />
       </div>
 
       <div class="welcome-eyebrow-big">You're all set</div>
@@ -133,6 +66,13 @@ const firstName = computed(() => {
 })
 
 onMounted(async () => {
+  // Fire the top-of-screen confetti shower once on mount. Same canvas
+  // implementation we use after the onboarding-preferences flow — pieces
+  // start above the viewport and fall straight down through the page,
+  // so the celebration covers the whole screen instead of dribbling out
+  // of the chimney.
+  runConfetti()
+
   try {
     const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
     if (!token) return
@@ -154,22 +94,82 @@ const continueToApp = async () => {
   }
 }
 
-// Confetti pieces — 14 colourful shards, deterministic so the layout is stable
-const colors = ['gold', 'cream', 'navy', 'tealLight', 'tealBright', 'teal']
-const shapes = ['', 'circle', 'thin', 'square']
-const confettiPieces = Array.from({ length: 14 }, (_, i) => {
-  const seed = (i * 9301 + 49297) % 233280
-  const r = (n: number) => ((seed * (n + 1)) % 1000) / 1000
-  const dir = i % 2 === 0 ? 1 : -1
-  return {
-    shape: shapes[i % shapes.length],
-    color: colors[i % colors.length],
-    peakX: `${dir * (60 + r(1) * 110)}px`,
-    peakY: `${-(140 + r(2) * 90)}px`,
-    dur: `${2.6 + r(3) * 1.6}s`,
-    delay: `${r(4) * 1.5}s`,
+// Top-of-screen confetti — ported verbatim from
+// pages/onboarding/preferences.vue::runConfetti. Spawns 120 mixed
+// rectangle/circle pieces above the viewport and lets them fall straight
+// down with small horizontal drift + rotation. Honours
+// prefers-reduced-motion (skips the animation entirely).
+function runConfetti() {
+  if (typeof window === 'undefined') return
+  const reduce =
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduce) return
+
+  const canvas = document.createElement('canvas')
+  canvas.style.cssText =
+    'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;'
+  document.body.appendChild(canvas)
+  const ctx = canvas.getContext('2d')!
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+
+  const colors = [
+    '#00A19A',
+    '#231d45',
+    '#00b5ad',
+    '#ffffff',
+    '#e2f1ea',
+    '#C18A38',
+    '#6BD4CD',
+  ]
+  const pieces = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -10 - Math.random() * 120,
+    w: 6 + Math.random() * 9,
+    h: 5 + Math.random() * 7,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    angle: Math.random() * Math.PI * 2,
+    spin: (Math.random() - 0.5) * 0.18,
+    vx: (Math.random() - 0.5) * 3,
+    vy: 2.5 + Math.random() * 3,
+    isCircle: Math.random() > 0.45,
+    opacity: 1,
+  }))
+
+  let frame = 0
+  const FRAMES = 160
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    for (const p of pieces) {
+      p.x += p.vx
+      p.y += p.vy
+      p.angle += p.spin
+      if (frame > 90) p.opacity = Math.max(0, p.opacity - 0.015)
+      ctx.save()
+      ctx.globalAlpha = p.opacity
+      ctx.translate(p.x, p.y)
+      ctx.rotate(p.angle)
+      ctx.fillStyle = p.color
+      if (p.isCircle) {
+        ctx.beginPath()
+        ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2)
+        ctx.fill()
+      } else {
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h)
+      }
+      ctx.restore()
+    }
+    frame++
+    if (frame < FRAMES) {
+      requestAnimationFrame(draw)
+    } else {
+      try { document.body.removeChild(canvas) } catch { /* already removed */ }
+    }
   }
-})
+  requestAnimationFrame(draw)
+}
 </script>
 
 <style scoped>
@@ -260,10 +260,11 @@ const confettiPieces = Array.from({ length: 14 }, (_, i) => {
   text-align: center;
 }
 
+/* House wrapper — prototype-exact 240 px container (auth-flow.html L582). */
 .welcome-house-wrap {
   position: relative;
   width: 240px;
-  margin: 16px auto 28px;
+  margin: 36px auto 28px;
   animation: welcome-fade-up 0.65s 0.2s both;
 }
 .welcome-house {
@@ -272,59 +273,6 @@ const confettiPieces = Array.from({ length: 14 }, (_, i) => {
   display: block;
   position: relative;
   z-index: 1;
-}
-
-.confetti-source {
-  position: absolute;
-  left: 73%;
-  top: 17%;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-  z-index: 3;
-}
-.confetto {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 14px;
-  border-radius: 1.5px;
-  opacity: 0;
-  animation: chimney-eruption var(--dur, 3.2s) var(--delay, 0s) cubic-bezier(0.4, 0.05, 0.5, 1) infinite;
-  will-change: transform, opacity;
-}
-.confetto.circle { border-radius: 50%; width: 8px; height: 8px; }
-.confetto.thin { width: 3px; height: 16px; }
-.confetto.square { width: 9px; height: 9px; border-radius: 1px; }
-.confetto.gold { background: #c18a38; }
-.confetto.cream { background: #f7f2e8; border: 1px solid #e8dec2; }
-.confetto.navy { background: #231d45; }
-.confetto.tealLight { background: #6bd4cd; }
-.confetto.tealBright { background: #00b6ae; }
-.confetto.teal { background: #00a19a; }
-@keyframes chimney-eruption {
-  0% { transform: translate(0, 0) rotate(0deg) scale(0.6); opacity: 0; }
-  4% { opacity: 1; transform: translate(calc(var(--peak-x) * 0.1), calc(var(--peak-y) * 0.15)) rotate(20deg) scale(1); }
-  22% { transform: translate(calc(var(--peak-x) * 0.45), var(--peak-y)) rotate(110deg) scale(1); opacity: 1; }
-  38% { transform: translate(calc(var(--peak-x) * 0.7), calc(var(--peak-y) * 0.7)) rotate(220deg) scale(1); opacity: 1; }
-  100% { transform: translate(var(--peak-x), 360px) rotate(720deg) scale(1); opacity: 0; }
-}
-
-.welcome-figures {
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: auto;
-  z-index: 4;
-  pointer-events: none;
-  animation: welcome-figures-fade 0.55s 0.75s both;
-}
-@keyframes welcome-figures-fade {
-  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 .welcome-eyebrow-big {

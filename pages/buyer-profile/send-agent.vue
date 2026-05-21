@@ -31,31 +31,57 @@
       </div>
     </div>
 
-    <span class="sec-label">SELECT AGENT</span>
-    <div class="recipient-card">
-      <div
-        v-for="a in agents"
-        :key="a.id"
-        class="recipient-row"
+    <span class="sec-label">AGENT DETAILS</span>
+    <form class="recipient-card recipient-form" @submit.prevent="onSend">
+      <label class="sa-field">
+        <span class="sa-field-label">Agent name</span>
+        <input
+          v-model="form.name"
+          type="text"
+          class="sa-input"
+          placeholder="e.g. James Cooper"
+          required
+          :disabled="sending || !!sentId"
+        />
+      </label>
+      <label class="sa-field">
+        <span class="sa-field-label">
+          Email
+          <span class="sa-field-hint">— the secure link is sent here</span>
+        </span>
+        <input
+          v-model="form.email"
+          type="email"
+          class="sa-input"
+          placeholder="agent@savills.co.uk"
+          required
+          :disabled="sending || !!sentId"
+        />
+      </label>
+      <label class="sa-field">
+        <span class="sa-field-label">
+          Firm
+          <span class="sa-field-hint">— optional</span>
+        </span>
+        <input
+          v-model="form.firm"
+          type="text"
+          class="sa-input"
+          placeholder="e.g. Savills, Knight Frank"
+          :disabled="sending || !!sentId"
+        />
+      </label>
+
+      <button
+        v-if="!sentId"
+        type="submit"
+        class="send-btn-wide"
+        :disabled="sending || !canSubmit"
       >
-        <div class="avatar" :style="{ background: sentId === a.id ? '#00a19a' : '#231d45' }">
-          {{ a.initials }}
-        </div>
-        <div class="recipient-meta">
-          <div class="recipient-firm">{{ a.firm }}</div>
-          <div class="recipient-name">{{ a.name }}</div>
-        </div>
-        <button
-          v-if="sentId !== a.id"
-          class="send-btn"
-          :disabled="sending"
-          @click="onSend(a)"
-        >
-          ⤴ Send
-        </button>
-        <span v-else class="sent-badge">✓ Sent</span>
-      </div>
-    </div>
+        <span v-if="sending" class="sa-spinner" />
+        {{ sending ? 'Sending…' : '⤴ Send secure link' }}
+      </button>
+    </form>
 
     <!-- Confirmation card -->
     <div v-if="sentId" class="sa-confirm-wrap">
@@ -70,10 +96,9 @@
       <div class="sa-back-cta-wrap">
         <button class="cta-btn outline" @click="goView">Back to my profile</button>
       </div>
+      <!-- Add another -->
+      <button class="sa-add-another" @click="resetForm">+ Send to another agent</button>
     </div>
-
-    <!-- Add another -->
-    <button class="sa-add-another" @click="sentId = null">+ Add another agent</button>
   </div>
 </template>
 
@@ -90,14 +115,18 @@ const { showToast } = useAppToast()
 
 const sending = ref(false)
 const sentId = ref<string | null>(null)
-const sentAgent = ref<{ firm: string; name: string } | null>(null)
+const sentAgent = ref<{ firm: string; name: string; email: string } | null>(null)
 const published = ref(false)
 
-const agents = [
-  { id: 'jc', initials: 'JC', firm: 'Savills – Notting Hill', name: 'James Cooper' },
-  { id: 'sm', initials: 'SM', firm: 'Knight Frank', name: 'Sarah Mitchell' },
-  { id: 'dc', initials: 'DC', firm: 'Foxtons', name: 'David Chen' },
-]
+const form = ref<{ name: string; email: string; firm: string }>({
+  name: '',
+  email: '',
+  firm: '',
+})
+
+const canSubmit = computed(
+  () => form.value.name.trim().length > 1 && /.+@.+\..+/.test(form.value.email),
+)
 
 onMounted(async () => {
   try {
@@ -111,26 +140,37 @@ onMounted(async () => {
 
 const sentSubLine = computed(() => {
   if (!sentAgent.value) return ''
-  return `${sentAgent.value.name} at ${sentAgent.value.firm.split(' – ')[0]} has been notified.`
+  const firmBit = sentAgent.value.firm ? ` at ${sentAgent.value.firm}` : ''
+  return `${sentAgent.value.name}${firmBit} has been notified.`
 })
 
-async function onSend(a: typeof agents[number]) {
+function resetForm() {
+  form.value = { name: '', email: '', firm: '' }
+  sentId.value = null
+  sentAgent.value = null
+}
+
+async function onSend() {
   if (!published.value) {
-    showToast({
-      message: 'Publish your profile first',
-      iconEmoji: '⚠️',
-    })
+    showToast({ message: 'Publish your profile first', iconEmoji: '⚠️' })
     return
   }
+  if (!canSubmit.value) return
   sending.value = true
   try {
+    const name = form.value.name.trim()
+    const email = form.value.email.trim()
+    const firm = form.value.firm.trim()
+    const recipientName = firm ? `${name} · ${firm}` : name
     await createShare({
-      recipientName: `${a.name} · ${a.firm}`,
+      recipientName,
+      recipientEmail: email,
       expiresInDays: 30,
       scope: ['identity', 'deposit', 'sof', 'afford', 'story'],
     })
-    sentId.value = a.id
-    sentAgent.value = { firm: a.firm, name: a.name }
+    // Stamp a synthetic id so the confirmation panel switches in.
+    sentId.value = `${Date.now()}`
+    sentAgent.value = { firm, name, email }
   } catch (e: any) {
     showToast({
       message: e?.data?.message || 'Could not send',
@@ -219,7 +259,7 @@ function goView() { router.push('/buyer-profile/view') }
   display: block;
 }
 
-/* Recipient card */
+/* Recipient form (free-text) */
 .recipient-card {
   background: white;
   border: 2px solid #00a19a;
@@ -227,38 +267,85 @@ function goView() { router.push('/buyer-profile/view') }
   overflow: hidden;
   margin: 0 22px;
 }
-.recipient-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 13px 14px;
-  border-bottom: 1px solid #f5f5f7;
+.recipient-form {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.recipient-row:last-child { border-bottom: none; }
-.avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: #231d45; color: white;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 800; flex-shrink: 0;
+.sa-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
-.recipient-meta { flex: 1; min-width: 0; }
-.recipient-firm {
-  font-size: 12px; font-weight: 800; color: #231d45;
+.sa-field-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #6b6783;
 }
-.recipient-name {
-  font-size: 11px; color: #6b6783;
+.sa-field-hint {
+  font-weight: 600;
+  color: #9c98ad;
+  letter-spacing: 0;
 }
-.send-btn {
-  background: #00a19a; color: white; border: none;
+.sa-input {
+  width: 100%;
+  padding: 11px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #231d45;
+  background: #fafafa;
+  border: 1.5px solid #ececef;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+.sa-input:focus {
+  border-color: #00a19a;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.1);
+}
+.sa-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.sa-input::placeholder {
+  color: #9c98ad;
+  font-weight: 500;
+}
+.send-btn-wide {
+  margin-top: 4px;
+  background: #00a19a;
+  color: white;
+  border: none;
   border-radius: 100px;
-  padding: 7px 13px;
-  font-family: inherit; font-size: 11px; font-weight: 800;
-  cursor: pointer; white-space: nowrap;
+  padding: 12px 16px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
-.send-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-.sent-badge {
-  background: #e8f5ee; color: #2eab55;
-  border: 1px solid #b8e8c8; border-radius: 100px;
-  padding: 6px 12px;
-  font-size: 11px; font-weight: 800; white-space: nowrap;
+.send-btn-wide:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.sa-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sa-spin 0.7s linear infinite;
+}
+@keyframes sa-spin {
+  to { transform: rotate(360deg); }
 }
 
 .sa-confirm-wrap {
