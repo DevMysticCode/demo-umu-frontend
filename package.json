@@ -7,7 +7,10 @@
     "dev": "npx rimraf .nuxt && nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "mobile:assets": "capacitor-assets generate --ios",
+    "mobile:sync": "npm run generate && cap sync ios",
+    "mobile:open": "cap open ios"
   },
   "dependencies": {
     "@capacitor-community/apple-sign-in": "^7.1.0",

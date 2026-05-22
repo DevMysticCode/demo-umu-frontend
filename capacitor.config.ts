@@ -11,13 +11,21 @@ const config: CapacitorConfig = {
   },
   plugins: {
     SplashScreen: {
-      // Disable the native Capacitor splash on iOS/Android — show the app
-      // immediately instead of the launchscreen image.
-      launchShowDuration: 0,
-      launchAutoHide: true,
+      // The native iOS launch storyboard always shows for the brief moment
+      // between tap-to-launch and the WebView being ready. The Capacitor
+      // splash plugin then keeps it on screen for `launchShowDuration` ms
+      // (cushioning the gap between WebView ready and Vue first paint),
+      // and our app.vue / nuxt root explicitly calls `SplashScreen.hide()`
+      // once the bundle is hydrated. `launchAutoHide: false` is the safer
+      // default — if the Vue side ever fails to hide, the timeout still
+      // catches us.
+      launchShowDuration: 2000,
+      launchAutoHide: false,
+      launchFadeOutDuration: 300,
+      backgroundColor: '#231d45',
       showSpinner: false,
-      splashFullScreen: false,
-      splashImmersive: false,
+      splashFullScreen: true,
+      splashImmersive: true,
     },
     GoogleAuth: {
       // iOS Client ID from Google Cloud Console (Credentials → iOS OAuth client)
