@@ -133,6 +133,12 @@
             ✦ Score +{{ q.pts }} pts · saves ~£{{ q.save }}/yr · cost {{ q.cost
             }}<template v-if="q.grant"> · 🎁 {{ q.grant }}</template>
           </div>
+          <div v-if="q.resultingSap != null" class="quest-resulting">
+            Potential rating after step {{ q.n }}:
+            <span class="quest-resulting-pill" :class="'grade-' + (q.resultingGrade ?? '').toLowerCase()">
+              {{ q.resultingSap }} {{ q.resultingGrade }}
+            </span>
+          </div>
           <div class="quest-question">Has this been done since the last EPC?</div>
           <div class="quest-options-4">
             <button
@@ -165,6 +171,90 @@
     <div class="quiz-reset" @click="resetQuests">↺ Start again</div>
 
     <div style="height: 32px" />
+
+    <!-- ── Bill upload bottom-sheet drawer ─────────────────────────── -->
+    <Transition name="bill-modal">
+      <div v-if="billModalOpen" class="modal-overlay" @click.self="closeBillModal">
+        <div class="modal-sheet" @click.stop>
+          <div class="modal-grip" />
+          <div class="modal-head">
+            <div class="modal-eyebrow">⚡ Shortcut</div>
+            <div class="modal-title">Upload a bill — skip the quiz</div>
+            <div class="modal-sub">
+              Your last gas or electricity bill tells us your real running cost in
+              seconds. More accurate than the EPC estimate.
+            </div>
+          </div>
+
+          <label class="drop-zone" :class="{ 'has-file': !!selectedFile }">
+            <input
+              ref="fileInputRef"
+              type="file"
+              accept="application/pdf,image/png,image/jpeg"
+              class="drop-zone-input"
+              @change="onFileSelected"
+            />
+            <div class="drop-zone-icon">{{ selectedFile ? '✓' : '📄' }}</div>
+            <div class="drop-zone-title">
+              {{ selectedFile ? selectedFile.name : 'Drop your bill here' }}
+            </div>
+            <div class="drop-zone-sub">
+              <template v-if="!selectedFile">
+                or <span class="drop-zone-tap">tap to browse</span>
+              </template>
+              <template v-else>
+                {{ formatFileSize(selectedFile.size) }} · tap to change
+              </template>
+            </div>
+            <div v-if="!selectedFile" class="drop-zone-formats">
+              PDF · JPG · PNG · screenshots
+            </div>
+          </label>
+
+          <div class="modal-read-row">
+            <div class="modal-read-icon">🔎</div>
+            <div class="modal-read-text">
+              We'll read your <b>kWh</b>, <b>tariff</b> and <b>supplier</b> — that's
+              all. The bill itself isn't stored after extraction.
+            </div>
+          </div>
+
+          <div class="modal-suppliers">
+            <div class="modal-suppliers-label">Works with</div>
+            <div class="modal-supplier-grid">
+              <div class="modal-supplier-tile">Octopus</div>
+              <div class="modal-supplier-tile">British Gas</div>
+              <div class="modal-supplier-tile">EDF</div>
+              <div class="modal-supplier-tile">OVO</div>
+              <div class="modal-supplier-tile">E.ON Next</div>
+              <div class="modal-supplier-tile">+ 12 more</div>
+            </div>
+          </div>
+
+          <div class="modal-cta-row">
+            <button type="button" class="modal-btn secondary" @click="closeBillModal">
+              Maybe later
+            </button>
+            <button
+              type="button"
+              class="modal-btn primary"
+              :disabled="!selectedFile"
+              @click="confirmBillUpload"
+            >
+              {{ selectedFile ? 'Use this bill' : 'Choose a file' }}
+            </button>
+          </div>
+
+          <div class="modal-privacy">
+            <span class="modal-privacy-icon">🔒</span>
+            <span>
+              Powered by Ofgem tariff data. We never sell your data and bills are
+              deleted after extraction.
+            </span>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -185,84 +275,132 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'back'): void
   (e: 'finish', payload: { finalScore: number; delta: number; answers: Record<string, string> }): void
-  (e: 'upload-bill'): void
+  (e: 'upload-bill', file: File): void
 }>()
 
-// Prototype's exact 6 quests
-const QUESTS = [
-  {
-    id: 'loft',
-    n: 1,
-    title: 'Increase loft insulation to 270mm',
-    summary: 'Pitched, 75mm + 100mm · EPC: Average',
-    desc: "Your EPC records 75mm in one roof section and 100mm in another — well below the 270mm recommended depth. Topping up is the EPC's first recommended step.",
-    stat: 'structure',
-    pts: 1,
-    save: 40,
-    cost: '£100–£350',
-    grant: null as string | null,
-  },
-  {
-    id: 'cavity',
-    n: 2,
-    title: 'Cavity wall insulation',
-    summary: 'Part insulated, part not · EPC: Poor',
-    desc: 'Your EPC says "cavity fill is recommended". Some walls are insulated, some aren\'t. Filling the rest is the biggest annual saving on the certificate.',
-    stat: 'structure',
-    pts: 8,
-    save: 224,
-    cost: '£500–£1,500',
-    grant: null,
-  },
-  {
-    id: 'floor',
-    n: 3,
-    title: 'Floor insulation',
-    summary: 'No insulation (assumed) · EPC: Poor',
-    desc: 'Your EPC lists both suspended and solid floor sections with no insulation. Insulating cuts draughts and stops heat escaping into the void.',
-    stat: 'structure',
-    pts: 3,
-    save: 97,
-    cost: '£800–£1,200',
-    grant: null,
-  },
-  {
-    id: 'lights',
-    n: 4,
-    title: 'Low energy lighting',
-    summary: '15% low-energy lighting · EPC: Poor',
-    desc: 'Your EPC records low-energy lighting in only 15% of fixed outlets. Swapping the rest to LED is the cheapest single step on your certificate.',
-    stat: 'efficiency',
-    pts: 1,
-    save: 45,
-    cost: '£110',
-    grant: null,
-  },
-  {
-    id: 'solarh',
-    n: 5,
-    title: 'Solar water heating',
-    summary: 'Not installed · recommended on EPC',
-    desc: 'A solar thermal collector pre-heats hot water from sunlight. Modest annual saving — weigh against capital cost.',
-    stat: 'plumbing',
-    pts: 1,
-    save: 40,
-    cost: '£4,000–£6,000',
-    grant: null,
-  },
-  {
-    id: 'solarp',
-    n: 6,
-    title: 'Solar photovoltaic panels',
-    summary: 'Not installed · recommended on EPC',
-    desc: "Solar PV generates electricity from sunlight, plus Smart Export Guarantee income for surplus. EPC's final step — crosses you from D into Band C.",
-    stat: 'electrics',
-    pts: 9,
-    save: 248,
-    cost: '£9,000–£14,000',
-    grant: 'SEG',
-  },
-] as const
+interface Quest {
+  id: string
+  n: number
+  title: string
+  summary: string
+  desc: string
+  stat: string
+  pts: number
+  save: number
+  cost: string
+  grant: string | null
+  /** Cumulative SAP rating after this step, mirrors the EPC website's
+   *  "Potential rating after completing step N" line. */
+  resultingSap?: number | null
+  resultingGrade?: string | null
+}
+
+// Fallback when the property has no EPC recommendations on file.
+// (Generic prototype quests, only used if the backend hasn't enriched
+// epcRecommendations yet.)
+const FALLBACK_QUESTS: Quest[] = [
+  { id: 'loft', n: 1, title: 'Increase loft insulation to 270mm', summary: 'Recommended on EPC', desc: "Top up loft insulation to the recommended 270 mm depth.", stat: 'structure', pts: 1, save: 40, cost: '£100–£350', grant: null },
+  { id: 'cavity', n: 2, title: 'Cavity wall insulation', summary: 'Recommended on EPC', desc: 'Fill cavity walls to cut heat loss — usually the biggest single annual saving.', stat: 'structure', pts: 8, save: 224, cost: '£500–£1,500', grant: null },
+  { id: 'floor', n: 3, title: 'Floor insulation', summary: 'Recommended on EPC', desc: 'Insulate uninsulated suspended or solid floors to stop heat escaping.', stat: 'structure', pts: 3, save: 97, cost: '£800–£1,200', grant: null },
+  { id: 'lights', n: 4, title: 'Low energy lighting', summary: 'Recommended on EPC', desc: 'Swap remaining fittings to LED — the cheapest single EPC step.', stat: 'efficiency', pts: 1, save: 45, cost: '£110', grant: null },
+  { id: 'solarh', n: 5, title: 'Solar water heating', summary: 'Recommended on EPC', desc: 'Solar thermal collector pre-heats hot water from sunlight.', stat: 'plumbing', pts: 1, save: 40, cost: '£4,000–£6,000', grant: null },
+  { id: 'solarp', n: 6, title: 'Solar photovoltaic panels', summary: 'Recommended on EPC', desc: 'Solar PV generates electricity; SEG income for surplus exported to grid.', stat: 'electrics', pts: 9, save: 248, cost: '£9,000–£14,000', grant: 'SEG' },
+]
+
+// Heuristic: classify a recommendation into one of the 5 stat pillars
+// using its title/improvementType text. Matches the prototype's stat keys.
+function classifyStat(title: string, improvementType: string | null): string {
+  const t = `${title} ${improvementType ?? ''}`.toLowerCase()
+  if (/(solar pv|photovoltaic|electric)/.test(t)) return 'electrics'
+  if (/(solar (?:water|thermal)|hot water|cylinder|hot-water)/.test(t)) return 'plumbing'
+  if (/(boiler|heating|heat pump|radiator|thermostat|controls|trv)/.test(t)) return 'heating'
+  if (/(led|lighting|light)/.test(t)) return 'efficiency'
+  return 'structure' // walls, roof, floor, windows, draught — default catch-all
+}
+
+// SAP score (0-100) → EPC grade letter (A–G)
+function sapToGrade(sap: number): string {
+  if (sap >= 92) return 'A'
+  if (sap >= 81) return 'B'
+  if (sap >= 69) return 'C'
+  if (sap >= 55) return 'D'
+  if (sap >= 39) return 'E'
+  if (sap >= 21) return 'F'
+  return 'G'
+}
+
+const QUESTS = computed<Quest[]>(() => {
+  const recs: any[] = (props.property as any)?.epcRecommendations
+  if (!Array.isArray(recs) || recs.length === 0) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[V6QuizView] No epcRecommendations on property — using fallback quests.',
+      'Property id:', (props.property as any)?.id,
+      'Postcode:', (props.property as any)?.postcode,
+    )
+    return FALLBACK_QUESTS
+  }
+
+  // The EPC API returns steps in execution order. Preserve that order by
+  // sorting on the numeric `id` (improvement-id) when it parses cleanly,
+  // falling back to the array index. This matches the "Step 1, 2, 3 …"
+  // numbering on find-energy-certificate.service.gov.uk.
+  const sorted = [...recs].sort((a, b) => {
+    const aNum = Number(a?.id)
+    const bNum = Number(b?.id)
+    if (Number.isFinite(aNum) && Number.isFinite(bNum)) return aNum - bNum
+    return 0
+  })
+
+  let prevSap: number | null = props.initialScore || null
+
+  return sorted.map((r: any, idx: number): Quest => {
+    const title = r?.title || r?.improvementDescr || 'EPC recommendation'
+    const stat = classifyStat(title, r?.improvementType ?? null)
+    const resultingSap: number | null =
+      typeof r?.resultingSap === 'number' && Number.isFinite(r.resultingSap)
+        ? r.resultingSap
+        : null
+
+    // Real points gained on THIS step = resultingSap - prevSap (cumulative
+    // EPC ratings). Falls back to a saving-based estimate when SAP isn't
+    // provided.
+    let pts = 2
+    if (resultingSap != null && prevSap != null) {
+      pts = Math.max(1, Math.round(resultingSap - prevSap))
+    } else {
+      const saving = Number(r?.typicalSaving ?? 0)
+      if (saving > 0) pts = Math.max(1, Math.round(saving / 28))
+    }
+    if (resultingSap != null) prevSap = resultingSap
+
+    const grant =
+      /eco|warm homes/i.test(`${title} ${r?.improvementType ?? ''}`)
+        ? 'ECO'
+        : /solar pv|photovoltaic/i.test(title)
+          ? 'SEG'
+          : /boiler upgrade/i.test(title)
+            ? 'BUS'
+            : null
+
+    return {
+      id: String(r?.id ?? `rec-${idx}`),
+      n: idx + 1,
+      title,
+      summary: r?.improvementType
+        ? `EPC: ${r.improvementType}`
+        : 'Recommended on EPC',
+      desc: r?.description || `An EPC-recommended improvement for this property.`,
+      stat,
+      pts,
+      save: Number(r?.typicalSaving ?? 0) || 0,
+      cost: r?.costRange || '—',
+      grant,
+      resultingSap,
+      resultingGrade: resultingSap != null ? sapToGrade(resultingSap) : null,
+    }
+  })
+})
 
 const OPT = {
   yes: { label: 'Yes — done', icon: '✓', cls: 'opt-yes', mult: 1.0 },
@@ -281,7 +419,7 @@ const deltaText = ref('+0 pts')
 const deltaFlash = ref(false)
 
 const answeredCount = computed(() => Object.keys(questState.value).length)
-const progressPct = computed(() => (answeredCount.value / QUESTS.length) * 100)
+const progressPct = computed(() => (answeredCount.value / QUESTS.value.length) * 100)
 const ringOffset = computed(() => {
   const circumference = 2 * Math.PI * 50 // 314.16
   return circumference - (liveScore.value / 100) * circumference
@@ -323,7 +461,7 @@ function toggleQuest(id: string) {
 function answerQuest(id: string, ans: OptKey) {
   const prev = questState.value[id]
   questState.value = { ...questState.value, [id]: ans }
-  const q = QUESTS.find((x) => x.id === id)
+  const q = QUESTS.value.find((x) => x.id === id)
   if (!q) return
   const prevPts = prev ? Math.round(q.pts * OPT[prev].mult) : 0
   const newPts = Math.round(q.pts * OPT[ans].mult)
@@ -364,9 +502,43 @@ function onFinish() {
   })
 }
 
+// ── Bill upload drawer ────────────────────────────────────────
+const billModalOpen = ref(false)
+const selectedFile = ref<File | null>(null)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
 function onUploadBill() {
   mode.value = 'bill'
-  emit('upload-bill')
+  billModalOpen.value = true
+}
+
+function closeBillModal() {
+  billModalOpen.value = false
+  selectedFile.value = null
+  mode.value = 'quiz'
+}
+
+function onFileSelected(e: Event) {
+  const input = e.target as HTMLInputElement
+  const f = input.files?.[0] ?? null
+  selectedFile.value = f
+}
+
+function confirmBillUpload() {
+  if (!selectedFile.value) {
+    fileInputRef.value?.click()
+    return
+  }
+  // Parsing happens on the backend later. For now, surface the file to the
+  // parent so it can POST to the upload endpoint when wired up.
+  emit('upload-bill', selectedFile.value)
+  billModalOpen.value = false
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 watch(() => props.initialScore, (v) => {
@@ -925,6 +1097,39 @@ watch(() => props.initialScore, (v) => {
   color: var(--accent-dark);
   margin-bottom: 14px;
 }
+.quest-resulting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+.quest-resulting-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.2px;
+}
+.quest-resulting-pill.grade-a { background: #008a84; }
+.quest-resulting-pill.grade-b { background: #00a19a; }
+.quest-resulting-pill.grade-c { background: #7ab040; }
+.quest-resulting-pill.grade-d { background: #e6a23c; }
+.quest-resulting-pill.grade-e { background: #d86f4a; }
+.quest-resulting-pill.grade-f { background: #c04a1a; }
+.quest-resulting-pill.grade-g { background: #a52a2a; }
+
 .quest-question {
   font-size: 13px;
   font-weight: 800;
@@ -1039,5 +1244,241 @@ watch(() => props.initialScore, (v) => {
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
+}
+
+/* ── Bill upload drawer ─────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(35, 29, 69, 0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.modal-sheet {
+  width: 100%;
+  max-width: 28rem;
+  background: var(--card);
+  border-radius: 22px 22px 0 0;
+  padding: 10px 20px calc(22px + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 32px rgba(35, 29, 69, 0.25);
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+.modal-grip {
+  width: 40px;
+  height: 4px;
+  border-radius: 100px;
+  background: var(--border);
+  margin: 0 auto 14px;
+}
+.modal-head {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.modal-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  background: var(--accent-paler);
+  border: 1px solid var(--accent-pale);
+  padding: 4px 10px;
+  border-radius: 100px;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  margin-bottom: 6px;
+}
+.modal-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.drop-zone {
+  display: block;
+  text-align: center;
+  padding: 22px 16px;
+  background: var(--accent-paler);
+  border: 1.5px dashed var(--accent-pale);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 14px;
+}
+.drop-zone:hover {
+  background: var(--accent-pale);
+  border-color: var(--accent);
+}
+.drop-zone.has-file {
+  background: var(--accent-paler);
+  border-style: solid;
+  border-color: var(--accent);
+}
+.drop-zone-input {
+  display: none;
+}
+.drop-zone-icon {
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: var(--accent-dark);
+}
+.drop-zone-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+.drop-zone-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.drop-zone-tap {
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+.drop-zone-formats {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-faint);
+  letter-spacing: 0.4px;
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+.modal-read-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+.modal-read-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.modal-read-text {
+  flex: 1;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.modal-read-text :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.modal-suppliers {
+  margin-bottom: 14px;
+}
+.modal-suppliers-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.modal-supplier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.modal-supplier-tile {
+  padding: 8px 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.modal-cta-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.modal-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+.modal-btn.secondary {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.modal-btn.secondary:hover {
+  background: var(--card);
+  color: var(--text);
+}
+.modal-btn.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  box-shadow: 0 3px 12px rgba(0, 161, 154, 0.25);
+}
+.modal-btn.primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+.modal-btn.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.modal-privacy {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-faint);
+  line-height: 1.5;
+  text-align: left;
+}
+.modal-privacy-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Transition for the bottom-sheet drawer */
+.bill-modal-enter-active,
+.bill-modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+.bill-modal-enter-active .modal-sheet,
+.bill-modal-leave-active .modal-sheet {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bill-modal-enter-from,
+.bill-modal-leave-to {
+  opacity: 0;
+}
+.bill-modal-enter-from .modal-sheet,
+.bill-modal-leave-to .modal-sheet {
+  transform: translateY(100%);
 }
 </style>

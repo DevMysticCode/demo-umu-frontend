@@ -2577,8 +2577,10 @@ function onQuizFinish(payload: { finalScore: number; delta: number; answers: Rec
   screen.value = 'level-up'
 }
 
-function onUploadBill() {
-  // Wire to an existing bill-upload flow later; for now just no-op.
+function onUploadBill(_file: File) {
+  // Bill-extraction endpoint is not wired up server-side yet. Once the
+  // backend exposes a parser for kWh / tariff / supplier we'll POST the
+  // file here and refine `liveScore` from the returned annual cost.
 }
 
 type PassportTab = 'sections' | 'street' | 'buyers'
@@ -5002,6 +5004,46 @@ onMounted(async () => {
       if (p?.hasPassport) {
         hasOtherOwnerPassport.value = true
         isOtherPassportPublished.value = !!p.passportPublished
+      }
+
+      // Diagnostic: log EPC enrichment status so we can verify what real
+      // data is coming through (per-property recommendations, fabric, etc.)
+      const recs: any[] = (p as any)?.epcRecommendations ?? []
+      // eslint-disable-next-line no-console
+      console.log('[HomeScore]', {
+        propertyId,
+        address: p?.addressLine1,
+        postcode: p?.postcode,
+        epcRating: p?.epcRating,
+        epcLmkKey: p?.epcLmkKey,
+        epcRecommendations: recs.length,
+        hasWallsDescription: !!p?.wallsDescription,
+      })
+
+      // If recommendations didn't come through, the EPC API lookup probably
+      // failed (or partially failed) the first time this property was
+      // enriched. Hit the dedicated `/epc-refresh` endpoint which bypasses
+      // the "already enriched" early-return and unconditionally re-pulls
+      // the certificate + recommendations from the EPC Register.
+      if (!Array.isArray(recs) || recs.length === 0) {
+        try {
+          const refreshRes = await fetch(
+            `${config.public.apiBase}/property/${propertyId}/epc-refresh`,
+            { method: 'POST' },
+          )
+          if (refreshRes.ok) {
+            const refreshed = await refreshRes.json()
+            const newRecs = (refreshed as any)?.epcRecommendations ?? []
+            // eslint-disable-next-line no-console
+            console.log('[HomeScore][epc-refresh]', {
+              epcLmkKey: refreshed?.epcLmkKey,
+              recsAfter: Array.isArray(newRecs) ? newRecs.length : 0,
+            })
+            if (Array.isArray(newRecs) && newRecs.length > 0) {
+              property.value = refreshed
+            }
+          }
+        } catch {}
       }
     }
   } catch {}
