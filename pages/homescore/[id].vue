@@ -4,7 +4,6 @@
          each render their own top nav and amber address card. -->
     <div
       v-if="
-        screen !== 'questions' &&
         screen !== 'results' &&
         screen !== 'publish' &&
         screen !== 'kyc' &&
@@ -28,17 +27,23 @@
       <div class="hs-header-center">
         <p class="hs-header-title">
           {{
-            screen === 'results'
+            screen === 'landing'
               ? 'Your HomeScore'
-              : screen === 'passport'
-                ? 'Property Passport'
-                : screen === 'buyer-results'
-                  ? 'Property Report'
-                  : screen === 'quick-wins'
-                    ? 'Boost your score'
-                    : screen === 'move-ready'
-                      ? 'Get move ready'
-                      : 'HomeScore'
+              : screen === 'questions'
+                ? 'Owner quiz'
+                : screen === 'level-up'
+                  ? 'Level up!'
+                  : screen === 'results'
+                    ? 'Your HomeScore'
+                    : screen === 'passport'
+                      ? 'Property Passport'
+                      : screen === 'buyer-results'
+                        ? 'Property Report'
+                        : screen === 'quick-wins'
+                          ? 'Boost your score'
+                          : screen === 'move-ready'
+                            ? 'Get move ready'
+                            : 'HomeScore'
           }}
         </p>
         <p class="hs-header-sub">{{ headerSub }}</p>
@@ -93,8 +98,10 @@
         :epc-rating="property?.epcRating ?? null"
         :epc-year="resolvedEpcYear"
         :annual-cost="resolvedAnnualCost"
-        :potential-saving="445"
-        :co2-now="6.4"
+        :potential-saving="resolvedPotentialSaving"
+        :co2-now="resolvedCo2Now"
+        :co2-potential="resolvedCo2Potential"
+        :bills-split="resolvedBillsSplit"
         :street-rank="streetEnergyRank?.rank ?? null"
         :street-total="streetEnergyRank?.total ?? null"
         :searches-today="searchStats?.today ?? 0"
@@ -2696,6 +2703,52 @@ const resolvedEpcYear = computed<number | null>(() => {
   return Number.isFinite(y) ? y : null
 })
 
+// ── Real-data computeds for V6ScoreView ─────────────────────────
+const resolvedCo2Now = computed<number | null>(() => {
+  const cert: any = (property.value as any)?.epcCert
+  const v = cert?.co2Emissions ?? cert?.co2EmissionsCurrent
+  if (v == null) return null
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.round(n * 10) / 10 : null
+})
+const resolvedCo2Potential = computed<number | null>(() => {
+  const cert: any = (property.value as any)?.epcCert
+  const v = cert?.co2EmissionsPotential
+  if (v == null) return null
+  const n = Number(v)
+  return Number.isFinite(n) ? Math.round(n * 10) / 10 : null
+})
+
+const resolvedBillsSplit = computed<{ heating: number; hotWater: number; lighting: number } | null>(() => {
+  const cert: any = (property.value as any)?.epcCert
+  const h = Number(cert?.heatingCostCurrent ?? 0)
+  const w = Number(cert?.hotWaterCostCurrent ?? 0)
+  const l = Number(cert?.lightingCostCurrent ?? 0)
+  const total = h + w + l
+  if (total <= 0) return null
+  return {
+    heating: Math.round((h / total) * 100),
+    hotWater: Math.round((w / total) * 100),
+    lighting: Math.round((l / total) * 100),
+  }
+})
+
+const resolvedPotentialSaving = computed<number>(() => {
+  const recs: any = (property.value as any)?.epcRecommendations
+  if (Array.isArray(recs) && recs.length) {
+    const sum = recs.reduce((acc: number, r: any) => {
+      const v = Number(r?.typicalSaving ?? r?.indicativeCost ?? 0)
+      return acc + (Number.isFinite(v) ? v : 0)
+    }, 0)
+    if (sum > 0) return Math.round(sum)
+  }
+  const cert: any = (property.value as any)?.epcCert
+  const curr = Number(cert?.energyCostCurrent ?? resolvedAnnualCost.value)
+  const pot = Number(cert?.energyCostPotential ?? 0)
+  if (curr > 0 && pot > 0 && pot < curr) return Math.round(curr - pot)
+  return 445
+})
+
 function goToBuyerView() {
   // "I'm interested in buying" — let guests through to the buyer view so
   // they can browse the running costs, comparison, etc. The auth gate
@@ -3080,9 +3133,9 @@ function pillarBarColor(value: number, max: number): string {
 }
 
 const headerSub = computed(() => {
-  if (screen.value === 'questions')
-    return `Question ${step.value + 1} of ${QUESTIONS.length}`
-  if (screen.value === 'landing') return 'Based on public records'
+  if (screen.value === 'landing') return "Your home's energy snapshot"
+  if (screen.value === 'questions') return 'Refine your HomeScore'
+  if (screen.value === 'level-up') return 'Your HomeScore has been refined'
   if (screen.value === 'results') return 'Refined with your answers'
   if (screen.value === 'passport') return 'Continue your journey'
   if (screen.value === 'buyer-results') return 'Based on public EPC data'
