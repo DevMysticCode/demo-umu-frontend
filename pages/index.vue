@@ -169,7 +169,7 @@
     <!-- ══════════════════════ MARKET ══════════════════════ -->
     <div v-show="screen === 'market'" class="ld-screen">
       <div class="back-bar">
-        <button class="back-btn" type="button" @click="screen = 'landing'">
+        <button class="back-btn" type="button" @click="dismissSubscreen">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -377,7 +377,7 @@
     <!-- ══════════════════════ AISHA ══════════════════════ -->
     <div v-show="screen === 'aisha'" class="ld-screen">
       <div class="back-bar">
-        <button class="back-btn" type="button" @click="screen = 'landing'">
+        <button class="back-btn" type="button" @click="dismissSubscreen">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -508,7 +508,7 @@
     <!-- ══════════════════════ SAMPLE PASSPORT ══════════════════════ -->
     <div v-show="screen === 'sample'" class="ld-screen">
       <div class="back-bar">
-        <button class="back-btn" type="button" @click="screen = 'landing'">
+        <button class="back-btn" type="button" @click="dismissSubscreen">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -624,6 +624,19 @@ onMounted(() => {
     screen.value = 'sample'
   }
 })
+
+// Smart back handler for the sample / aisha / market screens. Authenticated
+// users always came from /explore (via "See a sample Passport" on the
+// HomeScore/Passport card), so back should return them there — NOT to the
+// marketing landing deck, which is meant for unauthenticated visitors. The
+// fall-back for guests is the in-page landing screen.
+function dismissSubscreen() {
+  if (typeof window !== 'undefined' && localStorage.getItem('token')) {
+    navigateTo('/explore', { replace: true })
+    return
+  }
+  screen.value = 'landing'
+}
 
 const cards = [
   { id: 'HomeScore', peekLabel: 'HomeScore', peekPill: 'Free', cta: 'Check your home' },
