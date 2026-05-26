@@ -415,20 +415,28 @@
             <div class="stat-expand-meta-tile">
               <div class="stat-expand-meta-eyebrow">EPC steps</div>
               <div class="stat-expand-meta-num" :class="s.steps > 0 ? 'cost' : 'save'">
-                {{ s.steps }}
+                {{ s.steps > 0 ? s.steps : '—' }}
               </div>
-              <div class="stat-expand-meta-sub">{{ s.steps > 0 ? `of 6 total` : 'none recommended' }}</div>
+              <div class="stat-expand-meta-sub">
+                {{ s.steps > 0 ? 'recommended' : 'none recommended' }}
+              </div>
             </div>
             <div class="stat-expand-meta-tile">
               <div class="stat-expand-meta-eyebrow">Could save</div>
               <div class="stat-expand-meta-num save">
-                £{{ s.saving }}<span style="font-size: 9px; color: var(--text-secondary)">/yr</span>
+                <template v-if="s.saving > 0">
+                  £{{ s.saving
+                  }}<span style="font-size: 9px; color: var(--text-secondary)">/yr</span>
+                </template>
+                <template v-else>—</template>
               </div>
-              <div class="stat-expand-meta-sub">{{ s.savingSub }}</div>
+              <div class="stat-expand-meta-sub">
+                {{ s.saving > 0 ? s.savingSub : 'nothing to gain' }}
+              </div>
             </div>
             <div class="stat-expand-meta-tile">
               <div class="stat-expand-meta-eyebrow">{{ s.thirdTileLabel }}</div>
-              <div class="stat-expand-meta-num">{{ s.thirdTileNum }}</div>
+              <div class="stat-expand-meta-num">{{ s.thirdTileNum || '—' }}</div>
               <div class="stat-expand-meta-sub">{{ s.thirdTileSub }}</div>
             </div>
           </div>
@@ -919,182 +927,307 @@ interface StatRow {
   }[]
   footText: string
 }
-const stats: StatRow[] = [
-  {
-    id: 'heating',
-    icon: '🔥',
-    label: 'Heating',
-    value: 16,
-    max: 20,
-    pct: 80,
-    tone: 'high',
-    steps: 0,
-    saving: 0,
-    savingSub: 'nothing to fix',
-    thirdTileLabel: 'EPC rating',
-    thirdTileNum: 'Good',
-    thirdTileSub: 'on all 3 items',
-    lines: [
-      {
-        icon: '🔥',
-        title: 'Boiler & radiators · mains gas',
-        sub: 'Rated <b>Good</b> on the EPC. 17,717 kWh/yr heating use.',
-        amt: 'Good',
-        amtGood: true,
-      },
-      {
-        icon: '🌡',
-        title: 'Programmer, room thermostat & TRVs',
-        sub: 'Rated <b>Good</b> — heating controls are already in place.',
-        amt: 'Good',
-        amtGood: true,
-      },
-      {
-        icon: '💧',
-        title: 'Hot water · from main system',
-        sub: 'Rated <b>Good</b>. 2,749 kWh/yr.',
-        amt: 'Good',
-        amtGood: true,
-      },
-    ],
-    footText: '<b>Your strongest stat.</b> No EPC recommendations live here — heating is sorted.',
-  },
-  {
-    id: 'structure',
-    icon: '🧱',
-    label: 'Structure',
-    value: 8,
-    max: 25,
-    pct: 32,
-    tone: 'low',
-    steps: 3,
-    saving: 361,
-    savingSub: 'all 3 steps',
-    thirdTileLabel: 'Points gain',
-    thirdTileNum: '+12',
-    thirdTileSub: '52→64',
-    lines: [
-      {
-        icon: '🏠',
-        title: 'Step 1 · Loft to 270mm',
-        sub: 'Currently 75–100mm. EPC\'s <b>first recommended step</b>.',
-        amt: '–£40/yr',
-        amtSub: '£100–350',
-      },
-      {
-        icon: '🧱',
-        title: 'Step 2 · Cavity wall insulation',
-        sub: 'EPC says <b>cavity fill is recommended</b>. Biggest annual saving.',
-        amt: '–£224/yr',
-        amtSub: '£500–1,500',
-      },
-      {
-        icon: '🪟',
-        title: 'Step 3 · Floor insulation',
-        sub: 'Floor has no insulation per EPC (suspended + solid sections).',
-        amt: '–£97/yr',
-        amtSub: '£800–1,200',
-      },
-    ],
-    footText: '<b>Biggest drag on your score.</b> See the full 6-step pathway →',
-  },
-  {
-    id: 'efficiency',
-    icon: '💡',
-    label: 'Efficiency',
-    value: 5,
-    max: 15,
-    pct: 33,
-    tone: 'low',
-    steps: 1,
-    saving: 45,
-    savingSub: 'LED swap',
-    thirdTileLabel: 'Upgrade',
-    thirdTileNum: '£110',
-    thirdTileSub: 'cheapest step',
-    lines: [
-      {
-        icon: '💡',
-        title: 'Step 4 · Low energy lighting',
-        sub: 'Only <b>15% of fixed outlets</b> are LED (rated Poor). EPC\'s cheapest recommendation.',
-        amt: '–£45/yr',
-        amtSub: '£110',
-      },
-      {
-        icon: '🪟',
-        title: 'Windows · fully double glazed',
-        sub: 'Rated <b>Average</b> on EPC — already done, no upgrade recommended.',
-        amt: 'Done',
-        amtMuted: true,
-      },
-    ],
-    footText: '<b>£110 spent saves £45/yr</b> — payback under 3 years →',
-  },
-  {
-    id: 'electrics',
-    icon: '⚡',
-    label: 'Electrics',
-    value: 10,
-    max: 20,
-    pct: 50,
-    tone: 'mid',
-    steps: 1,
-    saving: 248,
-    savingSub: 'biggest /yr',
-    thirdTileLabel: 'Upgrade',
-    thirdTileNum: '£9–14k',
-    thirdTileSub: 'final step',
-    lines: [
-      {
-        icon: '☀️',
-        title: 'Step 6 · Solar PV panels',
-        sub: 'EPC\'s <b>final and biggest-saving</b> step. The one that lifts you from D into C.',
-        amt: '–£248/yr',
-        amtSub: '£9,000–14,000',
-      },
-      {
-        icon: '⚡',
-        title: 'Standard mains supply',
-        sub: 'Electrical layout itself is fine. The drag here is the missing renewable.',
-        amt: 'OK',
-        amtMuted: true,
-      },
-    ],
-    footText: '<b>Last step on the EPC pathway.</b> Crosses you into Band C →',
-  },
-  {
-    id: 'plumbing',
-    icon: '💧',
-    label: 'Plumbing',
-    value: 13,
-    max: 20,
-    pct: 65,
-    tone: 'mid',
-    steps: 1,
-    saving: 40,
-    savingSub: 'solar thermal',
-    thirdTileLabel: 'Upgrade',
-    thirdTileNum: '£4–6k',
-    thirdTileSub: 'long payback',
-    lines: [
-      {
-        icon: '💧',
-        title: 'Hot water · from main system',
-        sub: 'Rated <b>Good</b> on EPC. 2,749 kWh/yr.',
-        amt: 'Good',
-        amtGood: true,
-      },
-      {
-        icon: '☀️',
-        title: 'Step 5 · Solar water heating',
-        sub: 'Roof collector pre-heats water from sun energy. Modest annual saving.',
-        amt: '–£40/yr',
-        amtSub: '£4,000–6,000',
-      },
-    ],
-    footText: 'Smallest EPC saving · weigh against capital cost →',
-  },
-]
+// ── Real-EPC stat builders ──────────────────────────────────────
+// Convert an EPC efficiency string ("Very Good" / "Good" / "Average" /
+// "Poor" / "Very Poor" / "N/A") to a 0–1 normalised score.
+function effToScore(eff: string | null | undefined): number {
+  const e = (eff || '').toLowerCase().trim()
+  if (!e || e === 'n/a' || e === 'na') return 0.5
+  if (e === 'very good') return 1.0
+  if (e === 'good') return 0.8
+  if (e === 'average') return 0.6
+  if (e === 'poor') return 0.4
+  if (e === 'very poor') return 0.2
+  return 0.5
+}
+function effRating(eff: string | null | undefined): 'Good' | 'Average' | 'Poor' | 'N/A' {
+  const e = (eff || '').toLowerCase().trim()
+  if (!e || e === 'n/a' || e === 'na') return 'N/A'
+  if (e.includes('very good') || e === 'good') return 'Good'
+  if (e === 'average') return 'Average'
+  if (e.includes('poor')) return 'Poor'
+  return 'N/A'
+}
+function effTone(eff: string | null | undefined): 'high' | 'mid' | 'low' {
+  const s = effToScore(eff)
+  if (s >= 0.7) return 'high'
+  if (s >= 0.5) return 'mid'
+  return 'low'
+}
+
+// Pull the EPC cert sub-object (prefer `epcCert`, fall back to direct
+// fields on the property for older rows).
+const epc = computed<any>(() => {
+  const p = props.property as any
+  return p?.epcCert ?? p ?? {}
+})
+
+function fmtSaving(rec: any | null): string {
+  const v = Number(rec?.typicalSaving ?? 0)
+  if (!v) return ''
+  return `–£${Math.round(v)}/yr`
+}
+
+const stats = computed<StatRow[]>(() => {
+  const e = epc.value
+  const recs: any[] = (props.property as any)?.epcRecommendations ?? []
+
+  // ── Heating: mainheat + controls ──
+  const heatEff = e.mainheatEnergyEff
+  const heatcEff = e.mainheatcEnergyEff
+  const heatScore = (effToScore(heatEff) + effToScore(heatcEff)) / 2
+  const heatVal = Math.round(heatScore * 20)
+  const heatRecs = recs.filter((r) =>
+    /(boiler|heating|heat pump|radiator|thermostat|controls)/i.test(
+      `${r?.title ?? ''} ${r?.improvementType ?? ''}`,
+    ),
+  )
+  const heatSaving = heatRecs.reduce(
+    (s, r) => s + (Number(r?.typicalSaving) || 0),
+    0,
+  )
+
+  // ── Structure: walls + roof + floor + windows ──
+  const structScore =
+    (effToScore(e.wallsEnergyEff) +
+      effToScore(e.roofEnergyEff) +
+      effToScore(e.floorEnergyEff) +
+      effToScore(e.windowsEnergyEff)) /
+    4
+  const structVal = Math.round(structScore * 25)
+  const structRecs = recs.filter((r) =>
+    /(loft|cavity|wall|floor|window|glaz|roof|insulat)/i.test(
+      `${r?.title ?? ''} ${r?.improvementType ?? ''}`,
+    ),
+  )
+  const structSaving = structRecs.reduce(
+    (s, r) => s + (Number(r?.typicalSaving) || 0),
+    0,
+  )
+
+  // ── Efficiency: lighting (with low-energy %) ──
+  const ledPct = Number(e.lowEnergyLighting ?? 0)
+  const effLightScore = effToScore(e.lightingEnergyEff)
+  // Blend the % into the lighting eff rating so a 100% LED home beats a 15%.
+  const effScore = effLightScore * 0.6 + (ledPct / 100) * 0.4
+  const effVal = Math.round(effScore * 15)
+  const effRecs = recs.filter((r) => /(led|lighting|light)/i.test(`${r?.title ?? ''}`))
+  const effSaving = effRecs.reduce((s, r) => s + (Number(r?.typicalSaving) || 0), 0)
+
+  // ── Electrics: solar PV present? ──
+  const elecRecs = recs.filter((r) =>
+    /(solar pv|photovoltaic|electric)/i.test(`${r?.title ?? ''} ${r?.improvementType ?? ''}`),
+  )
+  // If solar PV is recommended, the property doesn't have it. Score 50%.
+  const elecScore = elecRecs.length > 0 ? 0.5 : 0.8
+  const elecVal = Math.round(elecScore * 20)
+  const elecSaving = elecRecs.reduce((s, r) => s + (Number(r?.typicalSaving) || 0), 0)
+
+  // ── Plumbing: hot water + ventilation ──
+  const plumbScore = effToScore(e.hotWaterEnergyEff)
+  const plumbVal = Math.round(plumbScore * 20)
+  const plumbRecs = recs.filter((r) =>
+    /(solar (?:water|thermal)|hot water|cylinder)/i.test(`${r?.title ?? ''}`),
+  )
+  const plumbSaving = plumbRecs.reduce((s, r) => s + (Number(r?.typicalSaving) || 0), 0)
+
+  const heatRating = effRating(heatEff)
+  const wallsRating = effRating(e.wallsEnergyEff)
+  const lightRating = effRating(e.lightingEnergyEff)
+  const hwRating = effRating(e.hotWaterEnergyEff)
+
+  return [
+    {
+      id: 'heating',
+      icon: '🔥',
+      label: 'Heating',
+      value: heatVal,
+      max: 20,
+      pct: Math.round(heatScore * 100),
+      tone: effTone(heatEff),
+      steps: heatRecs.length,
+      saving: Math.round(heatSaving),
+      savingSub: heatRecs.length ? `${heatRecs.length} step${heatRecs.length > 1 ? 's' : ''}` : 'nothing to fix',
+      thirdTileLabel: 'EPC rating',
+      thirdTileNum: heatRating,
+      thirdTileSub: `mainheat ${effRating(heatEff)}`,
+      lines: [
+        {
+          icon: '🔥',
+          title: e.mainheatDescription || 'Main heating system',
+          sub: `Rated <b>${effRating(heatEff)}</b> on the EPC.`,
+          amt: effRating(heatEff),
+          amtGood: effToScore(heatEff) >= 0.7,
+        },
+        {
+          icon: '🌡',
+          title: e.mainheatcontDescription || 'Heating controls',
+          sub: `Rated <b>${effRating(heatcEff)}</b> on the EPC.`,
+          amt: effRating(heatcEff),
+          amtGood: effToScore(heatcEff) >= 0.7,
+        },
+      ],
+      footText: heatRecs.length
+        ? `<b>${heatRecs.length} EPC step${heatRecs.length > 1 ? 's' : ''}</b> can lift heating →`
+        : '<b>Your strongest stat.</b> No EPC recommendations live here — heating is sorted.',
+    },
+    {
+      id: 'structure',
+      icon: '🧱',
+      label: 'Structure',
+      value: structVal,
+      max: 25,
+      pct: Math.round(structScore * 100),
+      tone:
+        structScore >= 0.7 ? 'high' : structScore >= 0.5 ? 'mid' : 'low',
+      steps: structRecs.length,
+      saving: Math.round(structSaving),
+      savingSub: structRecs.length ? `${structRecs.length} step${structRecs.length > 1 ? 's' : ''}` : 'all good',
+      thirdTileLabel: 'Walls EPC',
+      thirdTileNum: wallsRating,
+      thirdTileSub: e.builtForm || '',
+      lines: [
+        {
+          icon: '🧱',
+          title: e.wallsDescription || 'Walls',
+          sub: `Walls rated <b>${effRating(e.wallsEnergyEff)}</b> on the EPC.`,
+          amt: fmtSaving(structRecs.find((r) => /wall|cavity/i.test(r?.title ?? ''))) || effRating(e.wallsEnergyEff),
+          amtSub: structRecs.find((r) => /wall|cavity/i.test(r?.title ?? ''))?.costRange || '',
+          amtGood: !structRecs.find((r) => /wall|cavity/i.test(r?.title ?? '')),
+        },
+        {
+          icon: '🏠',
+          title: e.roofDescription || 'Roof',
+          sub: `Roof rated <b>${effRating(e.roofEnergyEff)}</b> on the EPC.`,
+          amt: fmtSaving(structRecs.find((r) => /loft|roof/i.test(r?.title ?? ''))) || effRating(e.roofEnergyEff),
+          amtSub: structRecs.find((r) => /loft|roof/i.test(r?.title ?? ''))?.costRange || '',
+          amtGood: !structRecs.find((r) => /loft|roof/i.test(r?.title ?? '')),
+        },
+        {
+          icon: '🪟',
+          title: e.floorDescription || 'Floor',
+          sub: `Floor rated <b>${effRating(e.floorEnergyEff)}</b> on the EPC.`,
+          amt: fmtSaving(structRecs.find((r) => /floor/i.test(r?.title ?? ''))) || effRating(e.floorEnergyEff),
+          amtSub: structRecs.find((r) => /floor/i.test(r?.title ?? ''))?.costRange || '',
+          amtGood: !structRecs.find((r) => /floor/i.test(r?.title ?? '')),
+        },
+      ],
+      footText: structRecs.length
+        ? '<b>Biggest drag on your score.</b> See the full pathway →'
+        : '<b>Structure is in good shape.</b>',
+    },
+    {
+      id: 'efficiency',
+      icon: '💡',
+      label: 'Efficiency',
+      value: effVal,
+      max: 15,
+      pct: Math.round(effScore * 100),
+      tone: effScore >= 0.7 ? 'high' : effScore >= 0.5 ? 'mid' : 'low',
+      steps: effRecs.length,
+      saving: Math.round(effSaving),
+      savingSub: effRecs.length ? 'LED swap' : 'all LED',
+      thirdTileLabel: 'LED %',
+      thirdTileNum: `${Math.round(ledPct)}%`,
+      thirdTileSub: 'of fixed outlets',
+      lines: [
+        {
+          icon: '💡',
+          title: 'Low energy lighting',
+          sub: `<b>${Math.round(ledPct)}%</b> of fixed outlets · rated <b>${effRating(e.lightingEnergyEff)}</b>.`,
+          amt: fmtSaving(effRecs[0]) || effRating(e.lightingEnergyEff),
+          amtSub: effRecs[0]?.costRange || '',
+          amtGood: !effRecs[0],
+        },
+        {
+          icon: '🪟',
+          title: e.windowsDescription || 'Windows',
+          sub: `Glazing rated <b>${effRating(e.windowsEnergyEff)}</b>.`,
+          amt: effRating(e.windowsEnergyEff),
+          amtMuted: true,
+        },
+      ],
+      footText: effRecs.length
+        ? '<b>LED swap is the cheapest EPC step</b> →'
+        : '<b>Lighting is already efficient.</b>',
+    },
+    {
+      id: 'electrics',
+      icon: '⚡',
+      label: 'Electrics',
+      value: elecVal,
+      max: 20,
+      pct: Math.round(elecScore * 100),
+      tone: elecScore >= 0.7 ? 'high' : elecScore >= 0.5 ? 'mid' : 'low',
+      steps: elecRecs.length,
+      saving: Math.round(elecSaving),
+      savingSub: elecRecs.length ? 'biggest /yr' : 'none',
+      thirdTileLabel: 'Solar PV',
+      thirdTileNum: elecRecs.length ? 'Missing' : 'Present',
+      thirdTileSub: elecRecs.length ? 'EPC step' : 'no upgrade',
+      lines: elecRecs.length
+        ? [
+            {
+              icon: '☀️',
+              title: elecRecs[0]?.title || 'Solar PV panels',
+              sub: elecRecs[0]?.description || "EPC's final step. Crosses you into Band C.",
+              amt: fmtSaving(elecRecs[0]) || '—',
+              amtSub: elecRecs[0]?.costRange || '',
+            },
+          ]
+        : [
+            {
+              icon: '⚡',
+              title: 'Standard electrical setup',
+              sub: 'No EPC recommendations for electrics.',
+              amt: 'OK',
+              amtMuted: true,
+            },
+          ],
+      footText: elecRecs.length
+        ? '<b>Final step on the EPC pathway.</b> →'
+        : '<b>Electrics OK on the EPC.</b>',
+    },
+    {
+      id: 'plumbing',
+      icon: '💧',
+      label: 'Plumbing',
+      value: plumbVal,
+      max: 20,
+      pct: Math.round(plumbScore * 100),
+      tone: effTone(e.hotWaterEnergyEff),
+      steps: plumbRecs.length,
+      saving: Math.round(plumbSaving),
+      savingSub: plumbRecs.length ? 'solar thermal' : 'all good',
+      thirdTileLabel: 'Hot water',
+      thirdTileNum: hwRating,
+      thirdTileSub: 'EPC rating',
+      lines: [
+        {
+          icon: '💧',
+          title: e.hotwaterDescription || 'Hot water',
+          sub: `Hot water rated <b>${effRating(e.hotWaterEnergyEff)}</b> on the EPC.`,
+          amt: effRating(e.hotWaterEnergyEff),
+          amtGood: effToScore(e.hotWaterEnergyEff) >= 0.7,
+        },
+        ...(plumbRecs.length
+          ? [
+              {
+                icon: '☀️',
+                title: plumbRecs[0]?.title || 'Solar water heating',
+                sub: plumbRecs[0]?.description || 'Roof collector pre-heats water from the sun.',
+                amt: fmtSaving(plumbRecs[0]) || '—',
+                amtSub: plumbRecs[0]?.costRange || '',
+              },
+            ]
+          : []),
+      ],
+      footText: plumbRecs.length
+        ? 'Solar thermal · longer payback →'
+        : '<b>Plumbing is in good shape.</b>',
+    },
+  ]
+})
 const expandedStat = ref<StatRow['id'] | null>(null)
 function toggleStat(id: StatRow['id']) {
   expandedStat.value = expandedStat.value === id ? null : id
@@ -1112,161 +1245,262 @@ interface EpcItem {
   flagText: string
   fix?: { label: string; text: string }
 }
-const epcItems: EpcItem[] = [
-  {
+function ratingClassFor(eff: string | null | undefined): 'good' | 'poor' | 'average' | 'nodata' {
+  const e = (eff || '').toLowerCase().trim()
+  if (!e || e === 'n/a' || e === 'na') return 'nodata'
+  if (e.includes('very good') || e === 'good') return 'good'
+  if (e === 'average') return 'average'
+  return 'poor'
+}
+
+function findRec(pattern: RegExp): any | null {
+  const recs: any[] = (props.property as any)?.epcRecommendations
+  if (!Array.isArray(recs)) return null
+  return recs.find((r) => pattern.test(`${r?.title ?? ''} ${r?.improvementType ?? ''}`)) ?? null
+}
+
+const epcItems = computed<EpcItem[]>(() => {
+  const e = epc.value
+  const items: EpcItem[] = []
+
+  // 1. Main heating
+  const mainHeatRec = findRec(/(boiler|heat pump|main heat)/i)
+  items.push({
     id: 'main-heating',
     icon: '🔥',
     title: 'Main heating',
-    sub: 'Boiler &amp; radiators · mains gas · 17,717 kWh/yr',
-    rating: 'Good',
-    ratingClass: 'good',
-    flagOk: true,
-    flagText: 'Boiler + radiators rated <b>Good</b> on the EPC. No upgrade recommended on this certificate.',
-  },
-  {
+    sub: e.mainheatDescription || 'Heating system',
+    rating: effRating(e.mainheatEnergyEff),
+    ratingClass: ratingClassFor(e.mainheatEnergyEff),
+    flagOk: !mainHeatRec,
+    flagText: mainHeatRec
+      ? `EPC flags: <b>${mainHeatRec.title}</b>`
+      : `Heating rated <b>${effRating(e.mainheatEnergyEff)}</b>. No upgrade on this EPC.`,
+    fix: mainHeatRec
+      ? {
+          label: '✨ EPC recommendation',
+          text: `${mainHeatRec.description || mainHeatRec.title}. ${mainHeatRec.typicalSaving ? `Saves <b>£${mainHeatRec.typicalSaving}/yr</b>.` : ''} ${mainHeatRec.costRange ? `Cost <b>${mainHeatRec.costRange}</b>.` : ''}`,
+        }
+      : undefined,
+  })
+
+  // 2. Heating controls
+  const controlsRec = findRec(/(controls|thermostat|programmer)/i)
+  items.push({
     id: 'heating-controls',
     icon: '🌡',
     title: 'Heating controls',
-    sub: 'Programmer, room thermostat &amp; TRVs',
-    rating: 'Good',
-    ratingClass: 'good',
-    flagOk: true,
-    flagText: 'Full controls present and rated <b>Good</b>. No smart-thermostat upgrade flagged on this EPC.',
-  },
-  {
+    sub: e.mainheatcontDescription || 'Controls',
+    rating: effRating(e.mainheatcEnergyEff),
+    ratingClass: ratingClassFor(e.mainheatcEnergyEff),
+    flagOk: !controlsRec,
+    flagText: controlsRec
+      ? `EPC flags: <b>${controlsRec.title}</b>`
+      : `Heating controls rated <b>${effRating(e.mainheatcEnergyEff)}</b>.`,
+    fix: controlsRec
+      ? {
+          label: '✨ EPC recommendation',
+          text: `${controlsRec.title}. ${controlsRec.typicalSaving ? `Saves <b>£${controlsRec.typicalSaving}/yr</b>.` : ''} ${controlsRec.costRange ? `Cost <b>${controlsRec.costRange}</b>.` : ''}`,
+        }
+      : undefined,
+  })
+
+  // 3. Hot water
+  const hwRec = findRec(/(hot water|cylinder|solar water|solar thermal)/i)
+  items.push({
     id: 'hot-water',
     icon: '💧',
     title: 'Hot water',
-    sub: 'From main system · 2,749 kWh/yr',
-    rating: 'Good',
-    ratingClass: 'good',
-    flagOk: true,
-    flagText: 'Rated <b>Good</b>. Solar water heating is recommended as an optional add-on (Step 5).',
-  },
-  {
+    sub: e.hotwaterDescription || 'Hot water system',
+    rating: effRating(e.hotWaterEnergyEff),
+    ratingClass: ratingClassFor(e.hotWaterEnergyEff),
+    flagOk: !hwRec,
+    flagText: hwRec
+      ? `EPC flags: <b>${hwRec.title}</b>`
+      : `Hot water rated <b>${effRating(e.hotWaterEnergyEff)}</b>.`,
+    fix: hwRec
+      ? {
+          label: '✨ EPC recommendation',
+          text: `${hwRec.description || hwRec.title}. ${hwRec.typicalSaving ? `Saves <b>£${hwRec.typicalSaving}/yr</b>.` : ''} ${hwRec.costRange ? `Cost <b>${hwRec.costRange}</b>.` : ''}`,
+        }
+      : undefined,
+  })
+
+  // 4. Walls
+  const wallsRec = findRec(/(cavity|wall insulation|external wall)/i)
+  items.push({
     id: 'walls',
     icon: '🧱',
-    title: 'Walls · cavity, no insulation',
-    sub: 'Part insulated, part not · "cavity fill is recommended"',
-    rating: 'Poor',
-    ratingClass: 'poor',
-    flagOk: false,
-    flagText: 'Some sections insulated (rated Good), some not (rated Poor). EPC\'s "Additional information" says: <b>cavity fill is recommended</b>.',
-    fix: {
-      label: '✨ Step 2 on the EPC',
-      text: 'Fill the remaining cavity. <b>Saves £224/yr</b>. Cost band <b>£500–£1,500</b>.',
-    },
-  },
-  {
+    title: 'Walls',
+    sub: e.wallsDescription || 'Walls',
+    rating: effRating(e.wallsEnergyEff),
+    ratingClass: ratingClassFor(e.wallsEnergyEff),
+    flagOk: !wallsRec,
+    flagText: wallsRec
+      ? `EPC flags: <b>${wallsRec.title}</b>`
+      : `Walls rated <b>${effRating(e.wallsEnergyEff)}</b>.`,
+    fix: wallsRec
+      ? {
+          label: '✨ EPC recommendation',
+          text: `${wallsRec.description || wallsRec.title}. ${wallsRec.typicalSaving ? `Saves <b>£${wallsRec.typicalSaving}/yr</b>.` : ''} ${wallsRec.costRange ? `Cost <b>${wallsRec.costRange}</b>.` : ''}`,
+        }
+      : undefined,
+  })
+
+  // 5. Roof / loft
+  const roofRec = findRec(/(loft|roof insulation|increase loft)/i)
+  items.push({
     id: 'roof',
     icon: '🏠',
     title: 'Roof · loft insulation',
-    sub: 'Pitched · 75mm + 100mm (recommended 270mm)',
-    rating: 'Average',
-    ratingClass: 'average',
-    flagOk: false,
-    flagText: 'Two roof sections at <b>75mm and 100mm</b> — both well below the 270mm recommended depth.',
-    fix: {
-      label: '✨ Step 1 on the EPC',
-      text: 'Top both sections up to 270mm. <b>Saves £40/yr</b>. Cost band <b>£100–£350</b>.',
-    },
-  },
-  {
+    sub: e.roofDescription || 'Roof',
+    rating: effRating(e.roofEnergyEff),
+    ratingClass: ratingClassFor(e.roofEnergyEff),
+    flagOk: !roofRec,
+    flagText: roofRec
+      ? `EPC flags: <b>${roofRec.title}</b>`
+      : `Roof rated <b>${effRating(e.roofEnergyEff)}</b>.`,
+    fix: roofRec
+      ? {
+          label: '✨ EPC recommendation',
+          text: `${roofRec.description || roofRec.title}. ${roofRec.typicalSaving ? `Saves <b>£${roofRec.typicalSaving}/yr</b>.` : ''} ${roofRec.costRange ? `Cost <b>${roofRec.costRange}</b>.` : ''}`,
+        }
+      : undefined,
+  })
+
+  // 6. Floor
+  const floorRec = findRec(/floor insulation/i)
+  items.push({
     id: 'floor',
     icon: '🪟',
     title: 'Floor',
-    sub: 'Suspended &amp; solid · no insulation (assumed)',
-    rating: 'Poor',
-    ratingClass: 'poor',
-    flagOk: false,
-    flagText: 'Assessor couldn\'t inspect — assumed uninsulated on both suspended and solid sections.',
-    fix: {
-      label: '✨ Step 3 on the EPC',
-      text: 'Insulate the floor void. <b>Saves £97/yr</b>. Cost band <b>£800–£1,200</b>.',
-    },
-  },
-  {
+    sub: e.floorDescription || 'Floor',
+    rating: effRating(e.floorEnergyEff),
+    ratingClass: ratingClassFor(e.floorEnergyEff),
+    flagOk: !floorRec,
+    flagText: floorRec
+      ? `EPC flags: <b>${floorRec.title}</b>`
+      : `Floor rated <b>${effRating(e.floorEnergyEff)}</b>.`,
+    fix: floorRec
+      ? {
+          label: '✨ EPC recommendation',
+          text: `${floorRec.description || floorRec.title}. ${floorRec.typicalSaving ? `Saves <b>£${floorRec.typicalSaving}/yr</b>.` : ''} ${floorRec.costRange ? `Cost <b>${floorRec.costRange}</b>.` : ''}`,
+        }
+      : undefined,
+  })
+
+  // 7. Windows
+  const windowsRec = findRec(/(window|glaz)/i)
+  items.push({
     id: 'windows',
     icon: '🪟',
-    title: 'Windows · fully double glazed',
-    sub: 'All windows double glazed',
-    rating: 'Average',
-    ratingClass: 'average',
-    flagOk: true,
-    flagText: 'All windows are double glazed. EPC rates as <b>Average</b> — no glazing upgrade recommended.',
-  },
-  {
+    title: 'Windows',
+    sub: e.windowsDescription || 'Windows',
+    rating: effRating(e.windowsEnergyEff),
+    ratingClass: ratingClassFor(e.windowsEnergyEff),
+    flagOk: !windowsRec,
+    flagText: windowsRec
+      ? `EPC flags: <b>${windowsRec.title}</b>`
+      : `Windows rated <b>${effRating(e.windowsEnergyEff)}</b>.`,
+    fix: windowsRec
+      ? {
+          label: '✨ EPC recommendation',
+          text: `${windowsRec.description || windowsRec.title}. ${windowsRec.typicalSaving ? `Saves <b>£${windowsRec.typicalSaving}/yr</b>.` : ''} ${windowsRec.costRange ? `Cost <b>${windowsRec.costRange}</b>.` : ''}`,
+        }
+      : undefined,
+  })
+
+  // 8. Lighting
+  const ledPct = Number(e.lowEnergyLighting ?? 0)
+  const lightingRec = findRec(/(led|lighting|light)/i)
+  items.push({
     id: 'lighting',
     icon: '💡',
     title: 'Lighting',
-    sub: 'Low energy in <b>15%</b> of fixed outlets',
-    rating: 'Poor',
-    ratingClass: 'poor',
-    flagOk: false,
-    flagText: 'Only 15% of outlets use low-energy bulbs. Rated <b>Poor</b>.',
-    fix: {
-      label: '✨ Step 4 on the EPC',
-      text: 'Swap remaining bulbs to LED. <b>Saves £45/yr</b>. Cost <b>£110</b> — cheapest single step on the EPC.',
-    },
-  },
-  {
-    id: 'solar-water',
-    icon: '☀️',
-    title: 'Solar water heating',
-    sub: 'Not present · recommended on EPC',
-    rating: 'Not installed',
-    ratingClass: 'nodata',
-    flagOk: false,
-    flagText: 'Listed as a recommended improvement on the EPC.',
-    fix: {
-      label: '✨ Step 5 on the EPC',
-      text: 'Solar thermal collector pre-heats hot water. <b>Saves £40/yr</b>. Cost band <b>£4,000–£6,000</b>.',
-    },
-  },
-  {
-    id: 'solar-pv',
-    icon: '⚡',
-    title: 'Solar PV panels',
-    sub: 'Not present · recommended on EPC',
-    rating: 'Not installed',
-    ratingClass: 'nodata',
-    flagOk: false,
-    flagText: 'Listed as a recommended improvement — generates electricity from sunlight.',
-    fix: {
-      label: '✨ Step 6 on the EPC',
-      text: 'Roof-mounted PV. <b>Saves £248/yr</b>. Cost band <b>£9,000–£14,000</b>. This step crosses you from D into Band C.',
-    },
-  },
-  {
-    id: 'primary-energy',
-    icon: '📊',
-    title: 'Primary energy use',
-    sub: '287 kWh/m²/yr · floor area 116m²',
-    rating: 'EPC figure',
-    ratingClass: 'average',
-    flagOk: false,
-    flagText: 'Primary energy consumption per square metre, as calculated by the EPC.',
-    fix: {
-      label: '✨ How to lower it',
-      text: 'The 6-step pathway brings this down. <b>The pathway covers the lot.</b>',
-    },
-  },
-  {
-    id: 'co2',
-    icon: '🌍',
-    title: 'CO₂ emissions',
-    sub: '6.4t/yr · UK average 6.0t · could drop to 3.4t',
-    rating: 'EPC figure',
-    ratingClass: 'average',
-    flagOk: false,
-    flagText: 'Slightly above UK average. <b>3.0 tonnes/yr is recoverable</b> after all six EPC steps.',
-    fix: {
-      label: '✨ How to lower it',
-      text: 'All EPC steps combined cut emissions to <b>3.4t/yr</b>.',
-    },
-  },
-]
-const epcDrawerOpen = ref(false)
+    sub: `Low energy in <b>${Math.round(ledPct)}%</b> of fixed outlets`,
+    rating: effRating(e.lightingEnergyEff),
+    ratingClass: ratingClassFor(e.lightingEnergyEff),
+    flagOk: !lightingRec,
+    flagText: lightingRec
+      ? `Only ${Math.round(ledPct)}% of outlets are low-energy. Rated <b>${effRating(e.lightingEnergyEff)}</b>.`
+      : `Lighting rated <b>${effRating(e.lightingEnergyEff)}</b>.`,
+    fix: lightingRec
+      ? {
+          label: '✨ EPC recommendation',
+          text: `${lightingRec.title}. ${lightingRec.typicalSaving ? `Saves <b>£${lightingRec.typicalSaving}/yr</b>.` : ''} ${lightingRec.costRange ? `Cost <b>${lightingRec.costRange}</b>.` : ''}`,
+        }
+      : undefined,
+  })
+
+  // 9. Solar water heating
+  const swhRec = findRec(/solar (?:water|thermal)/i)
+  if (swhRec) {
+    items.push({
+      id: 'solar-water',
+      icon: '☀️',
+      title: 'Solar water heating',
+      sub: 'Not present · recommended on EPC',
+      rating: 'Not installed',
+      ratingClass: 'nodata',
+      flagOk: false,
+      flagText: 'Listed as a recommended improvement on the EPC.',
+      fix: {
+        label: '✨ EPC recommendation',
+        text: `${swhRec.description || swhRec.title}. ${swhRec.typicalSaving ? `Saves <b>£${swhRec.typicalSaving}/yr</b>.` : ''} ${swhRec.costRange ? `Cost <b>${swhRec.costRange}</b>.` : ''}`,
+      },
+    })
+  }
+
+  // 10. Solar PV
+  const pvRec = findRec(/(solar pv|photovoltaic)/i)
+  if (pvRec) {
+    items.push({
+      id: 'solar-pv',
+      icon: '⚡',
+      title: 'Solar PV panels',
+      sub: 'Not present · recommended on EPC',
+      rating: 'Not installed',
+      ratingClass: 'nodata',
+      flagOk: false,
+      flagText: 'Listed as a recommended improvement — generates electricity from sunlight.',
+      fix: {
+        label: '✨ EPC recommendation',
+        text: `${pvRec.description || pvRec.title}. ${pvRec.typicalSaving ? `Saves <b>£${pvRec.typicalSaving}/yr</b>.` : ''} ${pvRec.costRange ? `Cost <b>${pvRec.costRange}</b>.` : ''}`,
+      },
+    })
+  }
+
+  // 11. Secondary heating (if present)
+  if (e.secondheatDescription && !/none/i.test(e.secondheatDescription)) {
+    items.push({
+      id: 'secondary-heating',
+      icon: '🔥',
+      title: 'Secondary heating',
+      sub: e.secondheatDescription,
+      rating: 'N/A',
+      ratingClass: 'nodata',
+      flagOk: true,
+      flagText: `Secondary heating: ${e.secondheatDescription}`,
+    })
+  }
+
+  // 12. Ventilation
+  if (e.mechanicalVentilation) {
+    items.push({
+      id: 'ventilation',
+      icon: '💨',
+      title: 'Ventilation',
+      sub: e.mechanicalVentilation,
+      rating: 'N/A',
+      ratingClass: 'nodata',
+      flagOk: true,
+      flagText: `Ventilation: <b>${e.mechanicalVentilation}</b>`,
+    })
+  }
+
+  return items
+})
+
 const expandedEpcItem = ref<string | null>(null)
 function toggleEpcItem(id: string) {
   expandedEpcItem.value = expandedEpcItem.value === id ? null : id
