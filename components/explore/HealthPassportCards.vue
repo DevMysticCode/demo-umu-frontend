@@ -221,8 +221,11 @@ function goToPassportSample() {
   box-shadow: 0 3px 10px rgba(35, 29, 69, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-/* Mini Property Passport tile */
-.feat-id-tile.mini-passport {
+/* Mini Property Passport tile — selector specificity needs to exceed
+   `.feat-card.passport .feat-id-tile` (which sets navy on every tile
+   inside the passport card), otherwise this whole tile renders purple
+   even though the rule below sets teal. */
+.feat-card.passport .feat-id-tile.mini-passport {
   width: 28px;
   height: 36px;
   border-radius: 4px;

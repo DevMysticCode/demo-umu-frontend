@@ -1,8 +1,8 @@
 <template>
   <nav
-    class="fixed bottom-0 w-full max-w-app bg-white border-t border-gray-200"
+    class="fixed bottom-0 w-full max-w-app border-t border-gray-200 bottom-nav-safe"
   >
-    <div class="flex justify-around py-2">
+    <div class="flex justify-around py-2 bottom-nav-row">
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('explore')"
@@ -68,3 +68,27 @@ const isActive = (key) => {
   return props.active === key ? 'text-brand-aqua' : 'text-gray-400'
 }
 </script>
+
+<style scoped>
+/* Pad the bottom of the nav so the iPhone home-indicator doesn't overlap
+   the icons / labels on X-class+ devices. Centred via `left/right: 0` +
+   the existing `max-w-app` so the bar stays the same width as the
+   mobile-container (28rem) on tablets. Background + z-index forced here
+   so cards with their own stacking contexts (the explore HomeScore /
+   Passport feature cards use `position: relative` + animations, which
+   spawn a stacking context that can otherwise win against the nav's
+   default z-auto and bleed text through). */
+.bottom-nav-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  background: #ffffff !important;
+  z-index: 50;
+  isolation: isolate;
+}
+.bottom-nav-row {
+  background: #ffffff;
+}
+</style>

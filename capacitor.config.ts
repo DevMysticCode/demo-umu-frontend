@@ -27,15 +27,9 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: true,
     },
-    GoogleAuth: {
-      // iOS Client ID from Google Cloud Console (Credentials → iOS OAuth client)
-      iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
-      // Web Client ID (same one you use on the web)
-      clientId: '869780740735-rlucf6t174rb3dljniqfj3ri2r0kg9cj.apps.googleusercontent.com',
-      scopes: ['profile', 'email'],
-      serverClientId: '869780740735-rlucf6t174rb3dljniqfj3ri2r0kg9cj.apps.googleusercontent.com',
-      forceCodeForRefreshToken: true,
-    },
+    // GoogleAuth block removed for the TestFlight build — the iosClientId
+    // was still a placeholder. Add it back here once we have a real iOS
+    // OAuth client ID from Google Cloud Console.
   },
 }
 

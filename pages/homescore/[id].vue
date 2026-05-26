@@ -85,28 +85,55 @@
       </div>
     </template>
 
-    <!-- ── LANDING / AUTO SCORE — prototype-aligned (3a/3b/3c) ──── -->
+    <!-- ── LANDING / AUTO SCORE — homescore-v6 prototype port ─── -->
     <template v-else-if="screen === 'landing'">
-      <ResultDetail
+      <V6ScoreView
         :property="property"
         :score="autoScoreVal"
         :epc-rating="property?.epcRating ?? null"
-        :state="resolvedPassportState"
-        :estimated-annual-cost="resolvedAnnualCost"
-        :street-avg-cost="1673"
         :epc-year="resolvedEpcYear"
-        :search-stats="searchStats"
+        :annual-cost="resolvedAnnualCost"
+        :potential-saving="445"
+        :co2-now="6.4"
+        :street-rank="streetEnergyRank?.rank ?? null"
+        :street-total="streetEnergyRank?.total ?? null"
+        :searches-today="searchStats?.today ?? 0"
+        @back="goBack"
         @claim="startQuestions"
-        @owner-dashboard="claimOrAccessPassport"
-        @interested="goToBuyerView"
-        @see-street="goToStreetCompare"
+        @refine="startQuestions"
+        @interested="goToRunningCosts"
+        @open-pathway="goToPathway"
         @see-running-costs="goToRunningCosts"
-        @refine-score="onRefineScore"
+        @see-street="goToStreetCompare"
       />
     </template>
 
-    <!-- ── QUESTIONS — prototype-style: teal address card + live gauge ── -->
+    <!-- ── LEVEL UP — homescore-v6 prototype port ──────────────── -->
+    <template v-else-if="screen === 'level-up'">
+      <V6LevelUpView
+        :from-score="autoScoreVal"
+        :to-score="v6QuizFinal?.finalScore ?? autoScoreVal"
+        :delta="v6QuizFinal?.delta ?? 0"
+        @back="screen = 'landing'"
+        @open-pathway="goToPathway"
+      />
+    </template>
+
+    <!-- ── QUESTIONS — homescore-v6 prototype owner-quiz port ───── -->
     <template v-else-if="screen === 'questions'">
+      <V6QuizView
+        :property="property"
+        :initial-score="autoScoreVal"
+        :epc-rating="property?.epcRating ?? null"
+        :epc-year="resolvedEpcYear"
+        @back="screen = 'landing'"
+        @finish="onQuizFinish"
+        @upload-bill="onUploadBill"
+      />
+    </template>
+
+    <!-- ── LEGACY QUESTIONS (kept for fallback) ─────────────────── -->
+    <template v-else-if="screen === 'questions-legacy'">
       <div class="sim-root">
         <!-- Top nav -->
         <div class="sim-topnav">
@@ -2471,6 +2498,9 @@ import { usePassportClaim } from '~/composables/usePassportClaim'
 import { usePropertyActions } from '~/composables/usePropertyActions'
 import { useAppToast } from '~/composables/useCustomToast'
 import ResultDetail from '~/components/homescore/ResultDetail.vue'
+import V6ScoreView from '~/components/homescore/V6ScoreView.vue'
+import V6QuizView from '~/components/homescore/V6QuizView.vue'
+import V6LevelUpView from '~/components/homescore/V6LevelUpView.vue'
 import TourCoach from '~/components/homescore/TourCoach.vue'
 import { useHomescoreTour } from '~/composables/useHomescoreTour'
 import type { TopWin, Opportunity } from '~/types/homescore'
@@ -2520,6 +2550,8 @@ type Screen =
   | 'loading'
   | 'landing'
   | 'questions'
+  | 'questions-legacy'
+  | 'level-up'
   | 'results'
   | 'publish'
   | 'kyc'
@@ -2530,6 +2562,17 @@ type Screen =
   | 'quick-wins'
   | 'move-ready'
 const screen = ref<Screen>('loading')
+
+const v6QuizFinal = ref<{ finalScore: number; delta: number; answers: Record<string, string> } | null>(null)
+
+function onQuizFinish(payload: { finalScore: number; delta: number; answers: Record<string, string> }) {
+  v6QuizFinal.value = payload
+  screen.value = 'level-up'
+}
+
+function onUploadBill() {
+  // Wire to an existing bill-upload flow later; for now just no-op.
+}
 
 type PassportTab = 'sections' | 'street' | 'buyers'
 const passportTab = ref<PassportTab>('sections')
@@ -2668,6 +2711,11 @@ function goToStreetCompare() {
 
 function goToRunningCosts() {
   router.push(`/homescore/costs/${propertyId}`)
+}
+
+// New in v6 — sends the user to the 6-step EPC pathway (Phase 2 route).
+function goToPathway() {
+  router.push(`/homescore/pathway/${propertyId}`)
 }
 
 function notifyWhenPublished() {

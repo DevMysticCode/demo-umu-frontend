@@ -1,9 +1,16 @@
 <template>
   <div class="pps-page">
-    <!-- Loading -->
-    <div v-if="pageLoading" class="pps-loading-state">
-      <div class="pps-spinner" />
-      <p>Loading property…</p>
+    <!-- Loading — shimmer skeleton that mirrors the real hero + cards
+         layout so the page doesn't jump when data arrives. -->
+    <div v-if="pageLoading" class="pps-loading-skel">
+      <div class="skeleton-block pps-skel-hero" />
+      <div class="pps-skel-body">
+        <div class="skeleton-line" style="width: 65%; height: 18px" />
+        <div class="skeleton-line" style="width: 40%; margin-top: 10px" />
+        <div class="skeleton-card pps-skel-card" />
+        <div class="skeleton-card pps-skel-card" />
+        <div class="skeleton-card pps-skel-card" style="height: 220px" />
+      </div>
     </div>
 
     <!-- Error -->
@@ -6112,6 +6119,23 @@ function formatSaleDate(dateStr: string): string {
   gap: 14px;
   color: #6b6783;
   font-size: 15px;
+}
+.pps-loading-skel {
+  min-height: 100dvh;
+}
+.pps-skel-hero {
+  width: 100%;
+  height: 280px;
+  border-radius: 0;
+}
+.pps-skel-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pps-skel-card {
+  height: 140px;
 }
 .pps-spinner {
   width: 32px;

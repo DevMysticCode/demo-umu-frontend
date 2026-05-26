@@ -2570,6 +2570,20 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
+  gap: 12px;
+  min-width: 0;
+}
+/* The greeting/title column shrinks freely so the avatar + tour button on
+   the right never get pushed past the viewport edge. `min-width:0` is the
+   key — flex children default to `min-width:auto` which prevents them
+   from shrinking below their intrinsic text width and causes the row to
+   blow past its parent. */
+.hero-row1 > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.hero-row1 > :last-child {
+  flex: 0 0 auto;
 }
 
 .greeting-text {
@@ -2611,6 +2625,12 @@ onMounted(async () => {
 
 .search-wrap {
   position: relative;
+  /* Belt-and-braces: clamp the search bar to its parent so the absolute
+     children (.exp-dist-btn + .search-btn, anchored via `right:`) can
+     never resolve their right-edge outside the visible viewport. */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .search-icon {
@@ -2659,7 +2679,10 @@ onMounted(async () => {
 .explore-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 20px 100px;
+  /* Bottom padding clears the fixed BottomNav PLUS the iPhone home-
+     indicator safe area, so the last card can't be hidden behind the
+     nav. Nav height ~64 px + safe-area-inset-bottom (34 px on X-class). */
+  padding: 16px 20px calc(100px + env(safe-area-inset-bottom));
   background: #f8f7fc;
 }
 
@@ -2850,28 +2873,9 @@ onMounted(async () => {
 }
 
 /* ── Property card ── */
-.skeletons {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.skeleton-card {
-  height: 180px;
-  background: linear-gradient(90deg, #f0f0f8 25%, #e8e8f0 50%, #f0f0f8 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  border-radius: 18px;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
+/* `.skeletons`, `.skeleton-card`, and the keyframes were promoted to
+   assets/css/main.css so every page in the app can render the same
+   shimmer placeholder without redefining the styles locally. */
 
 .prop-card {
   background: #fff;
@@ -3349,6 +3353,12 @@ onMounted(async () => {
   font-size: 13px;
   color: #94a3b8;
   font-weight: 500;
+  /* Single line + ellipsis. Long names like "Good afternoon, Christopher"
+     would otherwise wrap into three lines and squash the title. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .explore-title {
@@ -3356,6 +3366,11 @@ onMounted(async () => {
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.02em;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 /* ── New unified Distance + Filters pill (prototype .exp-dist-btn) ──

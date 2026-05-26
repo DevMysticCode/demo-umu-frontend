@@ -36,6 +36,20 @@
 }
 
 @layer base {
+  /* Global overflow guard — clamps the viewport horizontally so a stray
+     fixed-width child can never produce a horizontal scrollbar on phones
+     (which would also break percentage-based layouts inside the hero).
+     `overscroll-behavior-x: none` stops two-finger lateral swipes from
+     dragging the entire WebView in the Capacitor iOS shell. */
+  html,
+  body {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    /* Belt-and-braces: lock the body to the viewport width so any
+       miscalculated 100vw or absolute child can't push past the edge. */
+    max-width: 100vw;
+  }
+
   body {
     font-family:
       'SF Pro Display',
@@ -48,7 +62,9 @@
 
 @layer components {
   .mobile-container {
-    @apply max-w-md mx-auto min-h-dvh relative w-full;
+    /* `overflow-x:hidden` repeated here so any drawer/sheet portalled
+       inside the container respects the bound too. */
+    @apply max-w-md mx-auto min-h-dvh relative w-full overflow-x-hidden;
   }
 
   .backgound-image {
@@ -105,6 +121,61 @@
 
   .max-w-app {
     max-width: 28rem;
+  }
+
+  /* ── Skeleton loaders (global, used app-wide) ────────────────────
+     Originally defined inside pages/explore.vue but every page should
+     show a shimmer placeholder while async data loads. Now globally
+     available — any component can drop `<div class="skeleton-card" />`
+     into its template without redefining the keyframes. */
+  .skeletons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .skeleton-card {
+    height: 180px;
+    background: linear-gradient(90deg, #f0f0f8 25%, #e8e8f0 50%, #f0f0f8 75%);
+    background-size: 200% 100%;
+    animation: umu-shimmer 1.4s infinite;
+    border-radius: 18px;
+  }
+  /* Variants for non-card placeholder shapes. */
+  .skeleton-line {
+    height: 12px;
+    background: linear-gradient(90deg, #f0f0f8 25%, #e8e8f0 50%, #f0f0f8 75%);
+    background-size: 200% 100%;
+    animation: umu-shimmer 1.4s infinite;
+    border-radius: 6px;
+  }
+  .skeleton-circle {
+    background: linear-gradient(90deg, #f0f0f8 25%, #e8e8f0 50%, #f0f0f8 75%);
+    background-size: 200% 100%;
+    animation: umu-shimmer 1.4s infinite;
+    border-radius: 50%;
+  }
+  .skeleton-block {
+    background: linear-gradient(90deg, #f0f0f8 25%, #e8e8f0 50%, #f0f0f8 75%);
+    background-size: 200% 100%;
+    animation: umu-shimmer 1.4s infinite;
+    border-radius: 12px;
+  }
+  @keyframes umu-shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-card,
+    .skeleton-line,
+    .skeleton-circle,
+    .skeleton-block {
+      animation: none;
+      background: #f0f0f8;
+    }
   }
 
   .bg-umu-gradient {
