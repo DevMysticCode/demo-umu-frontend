@@ -1,26 +1,5 @@
 <template>
   <div class="hs-v6-score">
-    <!-- ── App header ───────────────────────────────────────────────── -->
-    <div class="app-header">
-      <button class="back-btn" type="button" @click="$emit('back')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-      </button>
-      <div class="app-header-info">
-        <div class="app-header-title">Your HomeScore</div>
-        <div class="app-header-sub">Your home's energy snapshot</div>
-      </div>
-      <div class="app-header-right">
-        <button class="app-icon-btn" type="button" aria-label="Notifications">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
     <!-- ── Amber address card (typewriter on mount) ────────────────── -->
     <div class="hs-addr-card anim-1">
       <div class="hs-addr-top">
@@ -134,7 +113,7 @@
       >
         <div class="score-strip-eyebrow">CO₂</div>
         <div class="score-strip-num warn">
-          {{ co2Now.toFixed(1) }}<span class="strip-unit">t/yr</span>
+          {{ co2NowDisplay.toFixed(1) }}<span class="strip-unit">t/yr</span>
         </div>
         <div class="score-strip-sub">UK avg 6.0t</div>
       </div>
@@ -147,7 +126,7 @@
         <div class="score-strip-num good">
           {{ streetRank ?? '—' }}<span class="strip-unit">/{{ streetTotal ?? '—' }}</span>
         </div>
-        <div class="score-strip-sub">below avg</div>
+        <div class="score-strip-sub">{{ streetRankLabel }}</div>
       </div>
     </div>
 
@@ -165,20 +144,20 @@
       <div class="ssp-bar-row">
         <div class="ssp-bar-icon">🔥</div>
         <div class="ssp-bar-label">Heating</div>
-        <div class="ssp-bar-track"><div class="ssp-bar-fill gas" :style="{ width: '72%' }" /></div>
-        <div class="ssp-bar-amt">£{{ formatNum(annualCost * 0.72) }}<div class="ssp-bar-amt-pct">72%</div></div>
+        <div class="ssp-bar-track"><div class="ssp-bar-fill gas" :style="{ width: billsSplitDisplay.heating + '%' }" /></div>
+        <div class="ssp-bar-amt">£{{ formatNum(annualCost * billsSplitDisplay.heating / 100) }}<div class="ssp-bar-amt-pct">{{ billsSplitDisplay.heating }}%</div></div>
       </div>
       <div class="ssp-bar-row">
         <div class="ssp-bar-icon">💧</div>
         <div class="ssp-bar-label">Hot water</div>
-        <div class="ssp-bar-track"><div class="ssp-bar-fill hw" :style="{ width: '18%' }" /></div>
-        <div class="ssp-bar-amt">£{{ formatNum(annualCost * 0.18) }}<div class="ssp-bar-amt-pct">18%</div></div>
+        <div class="ssp-bar-track"><div class="ssp-bar-fill hw" :style="{ width: billsSplitDisplay.hotWater + '%' }" /></div>
+        <div class="ssp-bar-amt">£{{ formatNum(annualCost * billsSplitDisplay.hotWater / 100) }}<div class="ssp-bar-amt-pct">{{ billsSplitDisplay.hotWater }}%</div></div>
       </div>
       <div class="ssp-bar-row">
         <div class="ssp-bar-icon">💡</div>
         <div class="ssp-bar-label">Lighting</div>
-        <div class="ssp-bar-track"><div class="ssp-bar-fill elec" :style="{ width: '10%' }" /></div>
-        <div class="ssp-bar-amt">£{{ formatNum(annualCost * 0.10) }}<div class="ssp-bar-amt-pct">10%</div></div>
+        <div class="ssp-bar-track"><div class="ssp-bar-fill elec" :style="{ width: billsSplitDisplay.lighting + '%' }" /></div>
+        <div class="ssp-bar-amt">£{{ formatNum(annualCost * billsSplitDisplay.lighting / 100) }}<div class="ssp-bar-amt-pct">{{ billsSplitDisplay.lighting }}%</div></div>
       </div>
       <div class="ssp-total-row">
         <div class="ssp-total-label">Total per year</div>
@@ -201,7 +180,7 @@
       <div class="ssp-head">
         <div class="ssp-head-icon">🌍</div>
         <div class="ssp-head-info">
-          <div class="ssp-head-title">CO₂ emissions · {{ co2Now.toFixed(1) }}t/yr</div>
+          <div class="ssp-head-title">CO₂ emissions · {{ co2NowDisplay.toFixed(1) }}t/yr</div>
           <div class="ssp-head-sub">UK average 6.0t · could drop to {{ co2Potential.toFixed(1) }}t after all 6 EPC steps</div>
         </div>
         <div class="ssp-head-close" @click="activePanel = null">×</div>
@@ -211,7 +190,7 @@
         <div class="ssp-bar-icon">🏠</div>
         <div class="ssp-bar-label">Your home</div>
         <div class="ssp-bar-track"><div class="ssp-bar-fill co2-heat" :style="{ width: co2NowPct + '%' }" /></div>
-        <div class="ssp-bar-amt">{{ co2Now.toFixed(1) }}t<div class="ssp-bar-amt-pct">now</div></div>
+        <div class="ssp-bar-amt">{{ co2NowDisplay.toFixed(1) }}t<div class="ssp-bar-amt-pct">now</div></div>
       </div>
       <div class="ssp-bar-row">
         <div class="ssp-bar-icon">📊</div>
@@ -227,15 +206,15 @@
       </div>
       <div class="ssp-total-row">
         <div class="ssp-total-label">Recoverable</div>
-        <div class="ssp-total-num">–{{ (co2Now - co2Potential).toFixed(1) }}t CO₂/yr</div>
+        <div class="ssp-total-num">–{{ (co2NowDisplay - co2Potential).toFixed(1) }}t CO₂/yr</div>
       </div>
       <div class="ssp-equiv">
         <div class="ssp-equiv-icon">🚗</div>
-        <div>{{ (co2Now - co2Potential).toFixed(1) }} tonnes CO₂ ≈ <b>driving 12,000 miles in a petrol car</b>.</div>
+        <div>{{ (co2NowDisplay - co2Potential).toFixed(1) }} tonnes CO₂ ≈ <b>driving 12,000 miles in a petrol car</b>.</div>
       </div>
       <div class="ssp-foot" @click="$emit('open-pathway')">
         <div class="ssp-foot-text">
-          All 6 EPC steps cut emissions by <b>{{ (co2Now - co2Potential).toFixed(1) }}t/yr</b> →
+          All 6 EPC steps cut emissions by <b>{{ (co2NowDisplay - co2Potential).toFixed(1) }}t/yr</b> →
         </div>
         <div class="ssp-foot-arrow">›</div>
       </div>
@@ -582,8 +561,12 @@ const props = withDefaults(
     annualCost: number
     /** Potential annual saving if all EPC steps done */
     potentialSaving?: number
-    /** Current CO₂ in tonnes/yr */
-    co2Now?: number
+    /** Current CO₂ in tonnes/yr (real EPC data; null if unavailable) */
+    co2Now?: number | null
+    /** Potential CO₂ if all improvements done (real EPC data; null if unavailable) */
+    co2Potential?: number | null
+    /** Real bills split from EPC heating/hotWater/lighting costs */
+    billsSplit?: { heating: number; hotWater: number; lighting: number } | null
     /** Street rank (1 = cheapest, N = most expensive) */
     streetRank?: number | null
     streetTotal?: number | null
@@ -592,12 +575,39 @@ const props = withDefaults(
   }>(),
   {
     potentialSaving: 445,
-    co2Now: 6.4,
+    co2Now: null,
+    co2Potential: null,
+    billsSplit: null,
     streetRank: null,
     streetTotal: null,
     searchesToday: 0,
   },
 )
+
+// Real or estimated splits/values, with safe fallbacks.
+const billsSplitDisplay = computed(() => {
+  if (props.billsSplit) return props.billsSplit
+  return { heating: 72, hotWater: 18, lighting: 10 }
+})
+const streetRankLabel = computed(() => {
+  const r = props.streetRank
+  const t = props.streetTotal
+  if (r == null || t == null || t <= 0) return '—'
+  const ratio = r / t
+  if (ratio <= 0.33) return 'top of street'
+  if (ratio <= 0.5) return 'above avg'
+  if (ratio <= 0.66) return 'around avg'
+  return 'below avg'
+})
+
+const co2NowDisplay = computed(() => {
+  const v = props.co2Now
+  if (v != null && Number.isFinite(v)) return v
+  // Estimate from EPC rating when no real value is present.
+  const map: Record<string, number> = { A: 1.8, B: 2.6, C: 3.8, D: 5.2, E: 6.4, F: 8.1, G: 9.6 }
+  const r = (props.epcRating || '').toUpperCase()
+  return map[r] ?? 6.4
+})
 
 defineEmits<{
   (e: 'back'): void
@@ -724,9 +734,14 @@ function togglePanel(p: 'bills' | 'co2' | 'street') {
 
 // ── CO₂ panel maths ──────────────────────────────────────────────
 // Potential = ~53% of current (matches prototype's 6.4 → 3.4 example).
-const co2Potential = computed(() => Math.max(1.4, props.co2Now * 0.53))
+// Use real co2Potential from EPC when available; otherwise estimate.
+const co2Potential = computed(() => {
+  const v = props.co2Potential
+  if (v != null && Number.isFinite(v)) return v
+  return Math.max(1.4, co2NowDisplay.value * 0.53)
+})
 // Bars are sized relative to a 10t maximum so they're comparable.
-const co2NowPct = computed(() => Math.min(100, (props.co2Now / 10) * 125))
+const co2NowPct = computed(() => Math.min(100, (co2NowDisplay.value / 10) * 125))
 const co2PotentialPct = computed(() => Math.min(100, (co2Potential.value / 10) * 125))
 
 // ── Street panel ────────────────────────────────────────────────
@@ -1295,13 +1310,28 @@ const searchesTodayDisplay = computed(() => {
 
   background: var(--page);
   color: var(--text);
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: inherit;
   -webkit-font-smoothing: antialiased;
-  min-height: 100dvh;
 }
 
-/* ── App header ───────────────────────────────────────────────── */
+/* ── Typography rebalance ──────────────────────────────────────
+   Soften the prototype's heavy 800-weights to match the rest of the
+   app (max weight ~700 to match the SF Pro 600/700 scale used in the
+   global header and other pages). */
+.hs-v6-score :is(.app-header-title, .hs-addr-line, .score-band, .gn-big,
+  .ssp-head-title, .ssp-bar-amt, .ssp-total-num, .ssp-cell-num,
+  .stat-cost-title, .epc-grade-letter, .epc-saving-num,
+  .fork-opt-title) {
+  font-weight: 700;
+}
+.hs-v6-score :is(.app-header-sub, .hs-addr-meta, .score-explainer,
+  .score-footer, .ssp-bar-label, .ssp-bar-amt-pct, .ssp-total-label,
+  .stat-cost-sub, .epc-grade-sub, .epc-saving-sub, .epc-item-sub,
+  .fork-opt-sub) {
+  font-weight: 500;
+}
+
+/* ── App header (kept for backwards-compat; no longer rendered) ── */
 .app-header {
   display: flex;
   align-items: center;

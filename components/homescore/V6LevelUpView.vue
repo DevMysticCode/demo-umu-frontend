@@ -14,27 +14,6 @@
       />
     </div>
 
-    <!-- App header -->
-    <div class="app-header">
-      <button class="back-btn" type="button" @click="$emit('back')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-      </button>
-      <div class="app-header-info">
-        <div class="app-header-title">Level up!</div>
-        <div class="app-header-sub">Your HomeScore has been refined</div>
-      </div>
-      <div class="app-header-right">
-        <button class="app-icon-btn" type="button" aria-label="Notifications">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-            <path d="M10 21a2 2 0 0 0 4 0" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
     <!-- Level up hero -->
     <div class="levelup-hero anim-1 level-up">
       <div class="levelup-eyebrow">🎉 Level up · Quiz complete</div>
@@ -201,12 +180,20 @@ const confetti = ref<ConfettiPiece[]>(
   --shadow-card: 0 2px 8px rgba(35, 29, 69, 0.05);
 
   position: relative;
-  min-height: 100dvh;
   background: var(--page);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: inherit;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
+}
+
+/* Soften prototype's 800-weights to match SF Pro app scale */
+.hs-v6-levelup :is(.levelup-title, .levelup-to-num, .levelup-from-num,
+  .stat-value) {
+  font-weight: 700;
+}
+.hs-v6-levelup :is(.levelup-sub, .levelup-from-label, .levelup-to-label) {
+  font-weight: 500;
 }
 
 /* Confetti */

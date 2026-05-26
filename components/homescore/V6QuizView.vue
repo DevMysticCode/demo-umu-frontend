@@ -1,26 +1,5 @@
 <template>
   <div class="hs-v6-quiz">
-    <!-- ── App header ───────────────────────────────────────────────── -->
-    <div class="app-header">
-      <button class="back-btn" type="button" @click="$emit('back')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-      </button>
-      <div class="app-header-info">
-        <div class="app-header-title">Owner quiz</div>
-        <div class="app-header-sub">Refine your HomeScore</div>
-      </div>
-      <div class="app-header-right">
-        <button class="app-icon-btn" type="button" aria-label="Notifications">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-            <path d="M10 21a2 2 0 0 0 4 0" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
     <!-- ── Address card (amber, compact) ───────────────────────────── -->
     <div class="hs-addr-card anim-1">
       <div class="hs-addr-top">
@@ -416,9 +395,18 @@ watch(() => props.initialScore, (v) => {
 
   background: var(--page);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: inherit;
   -webkit-font-smoothing: antialiased;
-  min-height: 100dvh;
+}
+
+/* Soften prototype's 800-weights to match SF Pro app scale */
+.hs-v6-quiz :is(.hs-addr-line, .score-band, .gn-big, .quest-summary-title,
+  .quest-question, .quest-impact, .two-ways-opt-title) {
+  font-weight: 700;
+}
+.hs-v6-quiz :is(.hs-addr-meta, .score-explainer, .quiz-progress-label,
+  .quest-summary-sub, .quest-desc, .two-ways-opt-sub) {
+  font-weight: 500;
 }
 
 /* App header */
