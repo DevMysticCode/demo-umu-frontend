@@ -117,7 +117,10 @@
         v-for="q in QUESTS"
         :key="q.id"
         class="quest-card v2"
-        :class="{ open: openQuest === q.id, answered: questState[q.id] === 'yes' }"
+        :class="{
+          open: openQuest === q.id,
+          answered: !!questState[q.id],
+        }"
       >
         <div class="quest-summary" @click="toggleQuest(q.id)">
           <div class="quest-num-circle">{{ q.n }}</div>
@@ -162,19 +165,25 @@
       <button
         class="quiz-finish-btn"
         type="button"
-        :disabled="answeredCount < QUESTS.length"
         @click="onFinish"
       >
         🏆 Get my real HomeScore →
       </button>
+      <div v-if="answeredCount < QUESTS.length" class="quiz-finish-hint">
+        Skipped questions count as "not done". Answer what you know and tap
+        above to see your score.
+      </div>
     </div>
     <div class="quiz-reset" @click="resetQuests">↺ Start again</div>
 
     <div style="height: 32px" />
 
-    <!-- ── Bill upload bottom-sheet drawer ─────────────────────────── -->
+    <!-- ── Bill upload bottom-sheet drawer (Teleported so it lives at
+         document.body level and can't be clipped by any parent's
+         overflow/transform stacking context) ──────────────────────── -->
+    <Teleport to="body">
     <Transition name="bill-modal">
-      <div v-if="billModalOpen" class="modal-overlay" @click.self="closeBillModal">
+      <div v-if="billModalOpen" class="modal-overlay hs-v6-quiz-modal" @click.self="closeBillModal">
         <div class="modal-sheet" @click.stop>
           <div class="modal-grip" />
           <div class="modal-head">
@@ -255,6 +264,7 @@
         </div>
       </div>
     </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -330,7 +340,10 @@ function sapToGrade(sap: number): string {
 }
 
 const QUESTS = computed<Quest[]>(() => {
-  const recs: any[] = (props.property as any)?.epcRecommendations
+  // Backend may surface recommendations either at the top of the
+  // Property row OR nested inside `epcCert`. Try both before falling back.
+  const p: any = props.property
+  const recs: any[] = p?.epcRecommendations || p?.epcCert?.epcRecommendations
   if (!Array.isArray(recs) || recs.length === 0) {
     // eslint-disable-next-line no-console
     console.warn(
@@ -1233,6 +1246,15 @@ watch(() => props.initialScore, (v) => {
 .quiz-finish-btn:hover:not(:disabled) {
   filter: brightness(1.06);
 }
+.quiz-finish-hint {
+  margin-top: 8px;
+  padding: 0 4px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
 .quiz-finish-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -1248,6 +1270,24 @@ watch(() => props.initialScore, (v) => {
 
 /* ── Bill upload drawer ─────────────────────────────────────── */
 .modal-overlay {
+  /* Re-declare design tokens locally — the modal is teleported to
+     <body> so it loses access to the CSS custom properties defined on
+     `.hs-v6-quiz`. Without these, the white sheet renders transparent
+     and the supplier tiles / buttons lose their tinted backgrounds. */
+  --accent: #00a19a;
+  --accent-dark: #008a84;
+  --accent-light: #00b8b0;
+  --accent-pale: #e5f4f2;
+  --accent-paler: #f2faf8;
+  --bg: #f5f6fa;
+  --card: #ffffff;
+  --text: #231d45;
+  --text-secondary: #6b7089;
+  --text-faint: #a8a9ad;
+  --border: #e4e5ed;
+  --border-soft: #f0f1f5;
+  --shadow-card: 0 2px 8px rgba(35, 29, 69, 0.05);
+
   position: fixed;
   inset: 0;
   background: rgba(35, 29, 69, 0.55);
@@ -1257,6 +1297,12 @@ watch(() => props.initialScore, (v) => {
   justify-content: center;
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+  /* Inherit the app's SF Pro Display rather than the default browser
+     font (teleport breaks the font-family inherit chain too). */
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--text);
 }
 .modal-sheet {
   width: 100%;
