@@ -151,10 +151,13 @@ function newJob() {
   --warning-deep: #7a5500;
   --shadow-card: 0 2px 8px rgba(35, 29, 69, 0.05);
 
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
   min-height: 100dvh;
   background: var(--page);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: inherit;
   -webkit-font-smoothing: antialiased;
 }
 

@@ -9,7 +9,9 @@
         screen !== 'kyc' &&
         screen !== 'kyc-pending' &&
         screen !== 'published' &&
-        screen !== 'quick-wins'
+        screen !== 'quick-wins' &&
+        screen !== 'level-up' &&
+        screen !== 'boost'
       "
       class="hs-header"
     >
@@ -105,6 +107,7 @@
         :street-rank="streetEnergyRank?.rank ?? null"
         :street-total="streetEnergyRank?.total ?? null"
         :searches-today="searchStats?.today ?? 0"
+        :auto-open-claim="autoOpenClaim"
         @back="goBack"
         @claim="startQuestions"
         @refine="startQuestions"
@@ -112,6 +115,17 @@
         @open-pathway="goToPathway"
         @see-running-costs="goToRunningCosts"
         @see-street="goToStreetCompare"
+        @claim-modal-closed="autoOpenClaim = false"
+      />
+    </template>
+
+    <!-- ── BOOST YOUR SCORE — homescore-v6-2 prototype port ────── -->
+    <template v-else-if="screen === 'boost'">
+      <V6BoostView
+        :home-score="autoScoreVal"
+        @back="screen = 'level-up'"
+        @open-marketplace="goToRunningCosts"
+        @start-passport="screen = 'kyc'"
       />
     </template>
 
@@ -123,6 +137,7 @@
         :delta="v6QuizFinal?.delta ?? 0"
         @back="screen = 'landing'"
         @open-pathway="goToPathway"
+        @open-boost="screen = 'boost'"
       />
     </template>
 
@@ -2508,6 +2523,7 @@ import ResultDetail from '~/components/homescore/ResultDetail.vue'
 import V6ScoreView from '~/components/homescore/V6ScoreView.vue'
 import V6QuizView from '~/components/homescore/V6QuizView.vue'
 import V6LevelUpView from '~/components/homescore/V6LevelUpView.vue'
+import V6BoostView from '~/components/homescore/V6BoostView.vue'
 import TourCoach from '~/components/homescore/TourCoach.vue'
 import { useHomescoreTour } from '~/composables/useHomescoreTour'
 import type { TopWin, Opportunity } from '~/types/homescore'
@@ -2559,6 +2575,7 @@ type Screen =
   | 'questions'
   | 'questions-legacy'
   | 'level-up'
+  | 'boost'
   | 'results'
   | 'publish'
   | 'kyc'
@@ -2679,17 +2696,30 @@ const resolvedPassportState = computed<
   return 'unclaimed'
 })
 
+// EPC fields can live either on the top-level Property row OR on the
+// nested `epcCert` sub-object (legacy + new shape). This helper reads
+// from both so we don't lose data when only one side is populated.
+function epcField(name: string): any {
+  const p: any = property.value
+  if (!p) return null
+  const top = p[name]
+  if (top != null && top !== '') return top
+  const cert = p.epcCert
+  if (cert && cert[name] != null && cert[name] !== '') return cert[name]
+  return null
+}
+
 const resolvedAnnualCost = computed<number>(() => {
-  const cert: any = (property.value as any)?.epcCert
-  if (cert?.energyCostCurrent) return Math.round(Number(cert.energyCostCurrent))
+  // Try the summed cost first (real EPC), then individual cost fields,
+  // then a rating-based map. Anything > 0 is preferred over the map.
+  const summed =
+    Number(epcField('energyCostCurrent') ?? 0) ||
+    (Number(epcField('heatingCostCurrent') ?? 0) +
+      Number(epcField('hotWaterCostCurrent') ?? 0) +
+      Number(epcField('lightingCostCurrent') ?? 0))
+  if (summed > 0) return Math.round(summed)
   const map: Record<string, number> = {
-    A: 980,
-    B: 1100,
-    C: 1300,
-    D: 1592,
-    E: 1823,
-    F: 2200,
-    G: 2600,
+    A: 980, B: 1100, C: 1300, D: 1592, E: 1823, F: 2200, G: 2600,
   }
   const r = (property.value?.epcRating || '').toUpperCase()
   if (map[r]) return map[r]
@@ -2697,9 +2727,7 @@ const resolvedAnnualCost = computed<number>(() => {
 })
 
 const resolvedEpcYear = computed<number | null>(() => {
-  const cert: any = (property.value as any)?.epcCert
-  const lodged =
-    cert?.lodgementDate || (property.value as any)?.epcLodgementDate
+  const lodged = epcField('lodgementDate') || epcField('epcLodgementDate')
   if (!lodged) return null
   const y = new Date(lodged).getFullYear()
   return Number.isFinite(y) ? y : null
@@ -2707,25 +2735,22 @@ const resolvedEpcYear = computed<number | null>(() => {
 
 // ── Real-data computeds for V6ScoreView ─────────────────────────
 const resolvedCo2Now = computed<number | null>(() => {
-  const cert: any = (property.value as any)?.epcCert
-  const v = cert?.co2Emissions ?? cert?.co2EmissionsCurrent
+  const v = epcField('co2Emissions') ?? epcField('co2EmissionsCurrent')
   if (v == null) return null
   const n = Number(v)
   return Number.isFinite(n) ? Math.round(n * 10) / 10 : null
 })
 const resolvedCo2Potential = computed<number | null>(() => {
-  const cert: any = (property.value as any)?.epcCert
-  const v = cert?.co2EmissionsPotential
+  const v = epcField('co2EmissionsPotential')
   if (v == null) return null
   const n = Number(v)
   return Number.isFinite(n) ? Math.round(n * 10) / 10 : null
 })
 
 const resolvedBillsSplit = computed<{ heating: number; hotWater: number; lighting: number } | null>(() => {
-  const cert: any = (property.value as any)?.epcCert
-  const h = Number(cert?.heatingCostCurrent ?? 0)
-  const w = Number(cert?.hotWaterCostCurrent ?? 0)
-  const l = Number(cert?.lightingCostCurrent ?? 0)
+  const h = Number(epcField('heatingCostCurrent') ?? 0)
+  const w = Number(epcField('hotWaterCostCurrent') ?? 0)
+  const l = Number(epcField('lightingCostCurrent') ?? 0)
   const total = h + w + l
   if (total <= 0) return null
   return {
@@ -2954,9 +2979,16 @@ function handleAnswer(qId: string, val: string) {
 
 // ── Computed ──────────────────────────────────────────────────
 
-const autoScoreVal = computed(
-  () => autoScore.value?.total ?? result.value.total,
-)
+// Prefer the property's real EPC SAP score from the gov register over the
+// heuristic-based homescore engine. The engine was seeded from a handful of
+// EPC rating buckets and produced a score close to BASE_SCORE (≈50) for
+// most properties even when the real SAP was much higher. When we have
+// a real `epcScore` on the row, use that as the headline number.
+const autoScoreVal = computed(() => {
+  const real = Number((property.value as any)?.epcScore)
+  if (Number.isFinite(real) && real > 0) return real
+  return autoScore.value?.total ?? result.value.total
+})
 const autoBreakdown = computed(
   () => autoScore.value?.breakdown ?? result.value.breakdown,
 )
@@ -4262,7 +4294,9 @@ async function loadStreetPublishStats() {
 // (e.g. after the user just published — the count should now include them).
 watch(screen, (s) => {
   if (s === 'publish' || s === 'published') void loadStreetPublishStats()
-  if (s === 'buyer-results') void loadStreetEnergyRank()
+  // V6ScoreView's street panel and the buyer-results view both consume
+  // streetEnergyRank, so hydrate it on either screen.
+  if (s === 'buyer-results' || s === 'landing') void loadStreetEnergyRank()
 })
 const pubMilestones = [
   { target: 1, label: 'Pioneer 🏅' },
@@ -4992,7 +5026,25 @@ async function saveToBackend() {
 
 // ── Lifecycle ─────────────────────────────────────────────────
 
+// Pop the claim explainer drawer on V6ScoreView when the user returns
+// here after sign-in (`?claim=1`). The flag flips back to false after
+// the modal is dismissed.
+const autoOpenClaim = ref(false)
+
 onMounted(async () => {
+  // Allow deep-link into specific homescore screens via ?screen=boost etc.
+  // Used by sibling pages (pathway, level-up) to return into the in-page flow.
+  const qScreen = route.query.screen
+  if (typeof qScreen === 'string' && qScreen === 'boost') {
+    screen.value = 'boost'
+  }
+
+  // Returning from sign-in with the claim journey intent — the score
+  // view's drawer pops open on the next render.
+  if (route.query.claim === '1') {
+    autoOpenClaim.value = true
+  }
+
   // Load property data — also returns hasPassport / passportPublished for guests.
   try {
     const res = await fetch(`${config.public.apiBase}/property/${propertyId}`)

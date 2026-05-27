@@ -1,7 +1,40 @@
 <template>
   <div class="hs-v6-score">
+    <!-- ── EPC NOT AVAILABLE — empty state ──────────────────────────
+         When the property has no EPC certificate on the gov register,
+         we don't fabricate scores from dummy data. Instead we surface
+         a clear "EPC not available" card so the user knows what's
+         missing and what to do next. -->
+    <div v-if="!hasEpcData" class="hs-noepc-card anim-1">
+      <div class="hs-noepc-icon">📄</div>
+      <div class="hs-noepc-title">No EPC on file for this property</div>
+      <div class="hs-noepc-sub">
+        The Energy Performance Certificate (EPC) Register doesn't have a
+        certificate for <b>{{ addrLineFull }}</b>. Without it we can't
+        calculate a HomeScore, running costs, or improvement steps.
+      </div>
+      <div class="hs-noepc-actions">
+        <button class="hs-noepc-btn primary" type="button" @click="$emit('refine')">
+          Take the quiz instead
+        </button>
+        <a
+          class="hs-noepc-btn ghost"
+          :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${encodeURIComponent(property?.postcode ?? '')}`"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Search EPC Register →
+        </a>
+      </div>
+      <div class="hs-noepc-help">
+        If the property has had an EPC done, ask the owner for the
+        certificate number (LMK key) and we can pull it in.
+      </div>
+    </div>
+
+    <template v-if="hasEpcData">
     <!-- ── Amber address card (typewriter on mount) ────────────────── -->
-    <div class="hs-addr-card anim-1">
+    <div class="hs-addr-card anim-1" data-tour="addr">
       <div class="hs-addr-top">
         <div class="hs-addr-pin" />
         <div class="hs-addr-block">
@@ -28,7 +61,7 @@
           ><span style="opacity: 0.75; font-weight: 600">/100</span>
         </span>
       </div>
-      <button class="claim-cta-btn" type="button" @click="$emit('claim')">
+      <button class="claim-cta-btn" type="button" @click="onClaimClick">
         Is this your property? Claim it free
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12" />
@@ -42,7 +75,7 @@
     </div>
 
     <!-- ── HomeScore card (animated outline + gauge + band + footer) ── -->
-    <div class="score-card anim-2">
+    <div class="score-card anim-2" data-tour="score">
       <div class="score-eyebrow-row">
         <div class="score-eyebrow-mark">HomeScore<sup>™</sup></div>
       </div>
@@ -94,7 +127,8 @@
     </div>
 
     <!-- ── Quick stats strip (3 clickable cards) ───────────────────── -->
-    <div class="score-strip-card anim-3">
+    <div class="score-strip-hint">Tap any row to explore</div>
+    <div class="score-strip-card anim-3" data-tour="overpay">
       <div
         class="score-strip-item clickable"
         :class="{ active: activePanel === 'bills' }"
@@ -395,7 +429,7 @@
       <div class="section-h">How your {{ displayScore }} splits · EPC stats</div>
       <div class="section-h-sub">Points breakdown</div>
     </div>
-    <div class="stat-card anim-4">
+    <div class="stat-card anim-4" data-tour="breakdown">
       <template v-for="s in stats" :key="s.id">
         <div
           class="stat-row clickable"
@@ -463,8 +497,8 @@
     </div>
 
     <!-- ── FULL EPC DRAWER ─────────────────────────────────────────── -->
-    <div class="epc-drawer anim-3">
-      <div class="epc-drawer-head" @click="epcDrawerOpen = !epcDrawerOpen">
+    <div ref="epcDrawerEl" class="epc-drawer anim-3" :class="{ open: epcDrawerOpen }">
+      <div class="epc-drawer-head" @click="toggleEpcDrawer">
         <div class="epc-drawer-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="13 2 4 14 11 14 11 22 20 10 13 10" fill="currentColor" />
@@ -472,7 +506,9 @@
         </div>
         <div class="epc-drawer-info">
           <div class="epc-drawer-title">Full EPC breakdown</div>
-          <div class="epc-drawer-sub">Every line of energy detail behind your score</div>
+          <div class="epc-drawer-sub">
+            {{ epcDrawerOpen ? 'Tap to close' : `Every line of energy detail behind your score · ${epcItems.length} items` }}
+          </div>
         </div>
         <div class="epc-drawer-chev" :class="{ open: epcDrawerOpen }">›</div>
       </div>
@@ -530,7 +566,7 @@
     </div>
 
     <!-- ── FORK SECTION (owner / interested) ───────────────────────── -->
-    <div class="fork-section anim-3">
+    <div class="fork-section anim-3" data-tour="intent">
       <div class="fork-eyebrow">What's your connection to this property?</div>
       <div class="fork-options">
         <button class="fork-opt primary" type="button" @click="$emit('claim')">
@@ -551,13 +587,71 @@
         </button>
       </div>
     </div>
+    </template><!-- /hasEpcData -->
 
     <div style="height: 32px" />
+
+    <!-- ── Claim-it-free explainer modal (teleported to body so it
+         escapes any parent overflow/transform stacking context) ─── -->
+    <Teleport to="body">
+    <Transition name="claim-modal">
+      <div v-if="claimModalOpen" class="claim-overlay" @click.self="claimModalOpen = false">
+        <div class="claim-sheet" @click.stop>
+          <div class="claim-grip" />
+          <div class="claim-icon">🪪</div>
+          <div class="claim-title">Claim this property</div>
+          <div class="claim-sub">
+            You'll verify you own <b>{{ addrLineFull }}</b> and unlock your
+            HomeScore, Move Ready % and Property Passport.
+          </div>
+          <div class="claim-steps">
+            <div class="claim-step">
+              <div class="claim-step-num">1</div>
+              <div class="claim-step-body">
+                <div class="claim-step-title">Verify your ID</div>
+                <div class="claim-step-sub">Onfido · photo + selfie · ~60 seconds</div>
+              </div>
+            </div>
+            <div class="claim-step">
+              <div class="claim-step-num">2</div>
+              <div class="claim-step-body">
+                <div class="claim-step-title">Confirm ownership</div>
+                <div class="claim-step-sub">HM Land Registry cross-check · automatic</div>
+              </div>
+            </div>
+            <div class="claim-step">
+              <div class="claim-step-num">3</div>
+              <div class="claim-step-body">
+                <div class="claim-step-title">Take the owner quiz</div>
+                <div class="claim-step-sub">6–8 EPC questions · earns your real HomeScore</div>
+              </div>
+            </div>
+          </div>
+          <div class="claim-cta-row">
+            <button type="button" class="claim-btn ghost" @click="claimModalOpen = false">
+              Not now
+            </button>
+            <button
+              type="button"
+              class="claim-btn primary"
+              @click="claimModalOpen = false; $emit('claim')"
+            >
+              Start verification →
+            </button>
+          </div>
+          <div class="claim-privacy">
+            <span>🔒</span>
+            <span>Free · no card needed · we'll never sell your data.</span>
+          </div>
+        </div>
+      </div>
+    </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -580,6 +674,9 @@ const props = withDefaults(
     streetTotal?: number | null
     /** Real searches today from PropertySearchLog */
     searchesToday?: number
+    /** Set by parent to auto-pop the claim drawer (e.g. when the user
+     *  has just returned from sign-in with ?claim=1) */
+    autoOpenClaim?: boolean
   }>(),
   {
     potentialSaving: 445,
@@ -589,8 +686,23 @@ const props = withDefaults(
     streetRank: null,
     streetTotal: null,
     searchesToday: 0,
+    autoOpenClaim: false,
   },
 )
+
+// Whether this property has enough EPC data to render the live score.
+// We require at least the rating + an annual cost figure (or the EPC cert
+// object) — if neither is present, the gov register has no certificate
+// and we surface a proper "EPC not available" empty state rather than
+// fabricating scores from dummy fallbacks.
+const hasEpcData = computed(() => {
+  const p = props.property as any
+  const cert = p?.epcCert
+  const hasRating = !!props.epcRating
+  const hasCert = !!cert && (cert.epcRating || cert.epcScore != null)
+  const hasCost = props.annualCost > 0
+  return hasRating || hasCert || hasCost
+})
 
 // Real or estimated splits/values, with safe fallbacks.
 const billsSplitDisplay = computed(() => {
@@ -617,7 +729,7 @@ const co2NowDisplay = computed(() => {
   return map[r] ?? 6.4
 })
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'back'): void
   (e: 'claim'): void
   (e: 'refine'): void
@@ -626,6 +738,9 @@ defineEmits<{
   (e: 'open-pathway'): void
   (e: 'see-running-costs'): void
   (e: 'see-street'): void
+  /** Fires when the user dismisses the claim modal so the parent can
+   *  clear the ?claim=1 auto-open intent and not re-trigger on remount. */
+  (e: 'claim-modal-closed'): void
 }>()
 
 // Unique id for the SVG gradient so multiple instances on a page don't
@@ -643,7 +758,15 @@ const addrMetaFull = computed(() => {
   const parts: string[] = []
   if (p.postcode) parts.push(p.postcode)
   if (p.propertyType) parts.push(p.propertyType)
-  if (p.bedrooms) parts.push(`${p.bedrooms} bed`)
+  // Show floor area (from EPC) instead of bedroom count — more meaningful
+  // for energy / running-cost context. Falls back to bedrooms only when
+  // we have no area on file.
+  const area = p.floorAreaSqm ?? p.epcCert?.floorAreaSqm
+  if (area && Number.isFinite(Number(area))) {
+    parts.push(`${Math.round(Number(area))}m²`)
+  } else if (p.bedrooms) {
+    parts.push(`${p.bedrooms} bed`)
+  }
   return parts.join(' · ')
 })
 
@@ -676,6 +799,12 @@ function startTypewriter(text: string) {
   }, 32)
 }
 onMounted(() => startTypewriter(addrLineFull.value))
+// Property data may arrive AFTER mount (async fetch from parent). When
+// `addrLineFull` changes from the fallback "Your property" to the real
+// address, restart the typewriter so the right text shows.
+watch(addrLineFull, (next, prev) => {
+  if (next && next !== prev) startTypewriter(next)
+})
 onBeforeUnmount(() => {
   if (twTimer) clearInterval(twTimer)
 })
@@ -774,38 +903,85 @@ interface StreetHouse {
   isYou: boolean
 }
 
-const topRowHouses = computed<StreetHouse[]>(() => [
-  mkHouse('7',  'A', 92, '£945',   'good', 30,  88),
-  mkHouse('9',  'F', 32, '£1,900', 'high', 80,  88),
-  mkHouse('11', 'E', 45, '£1,580', 'warn', 130, 88),
-  mkHouse('13', 'B', 84, '£1,108', 'good', 180, 88),
-  // House 15 = YOU (centre, highlighted). Score from props for accuracy.
-  mkHouse(
-    '15',
-    props.epcRating || 'E',
-    Math.round(props.score),
-    `£${formatNum(props.annualCost)}`,
-    'warn',
-    230,
-    88,
-    true,
-  ),
-  mkHouse('17', 'D', 64, '£1,310', 'warn', 280, 88),
-  mkHouse('19', 'F', 35, '£1,820', 'high', 330, 88),
-  mkHouse('21', 'F', 38, '£1,720', 'warn', 380, 88),
-  mkHouse('23', 'G', 18, '£2,340', 'high', 430, 88),
-])
-const bottomRowHouses = computed<StreetHouse[]>(() => [
-  mkHouse('6',  'C', 76, '£1,193', 'good', 30,  107),
-  mkHouse('8',  'D', 56, '£1,418', 'warn', 80,  107),
-  mkHouse('10', 'C', 72, '£1,265', 'warn', 130, 107),
-  mkHouse('12', 'F', 30, '£1,950', 'high', 180, 107),
-  mkHouse('14', 'D', 60, '£1,355', 'warn', 230, 107),
-  mkHouse('16', 'E', 42, '£1,635', 'warn', 280, 107),
-  mkHouse('18', 'G', 15, '£2,520', 'high', 330, 107),
-  mkHouse('20', 'F', 25, '£2,050', 'high', 380, 107),
-  mkHouse('22', 'G', 20, '£2,140', 'high', 430, 107),
-])
+// Extract the leading house number from the property's first address line
+// so the "YOU" marker on the street SVG lands on the user's actual house
+// rather than the prototype's hardcoded "15".
+const youHouseNum = computed<number>(() => {
+  const line = (props.property as any)?.addressLine1 || ''
+  const m = String(line).match(/(\d+)/)
+  const n = m ? parseInt(m[1], 10) : 15
+  return Number.isFinite(n) && n > 0 ? n : 15
+})
+
+// Build the 18 neighbouring houses centred on the user's real number.
+// Houses on UK streets alternate odd/even between the two sides of the
+// road, so the top row is the odd side and the bottom row is the even.
+function buildStreetHouses(): { top: StreetHouse[]; bottom: StreetHouse[] } {
+  const me = youHouseNum.value
+  // Mock palette for the 17 neighbours — until backend exposes per-house
+  // EPC data, we cycle through a plausible spread of grades/costs.
+  const palette: Array<[string, number, string, 'good' | 'warn' | 'high']> = [
+    ['A', 92, '£945',   'good'],
+    ['B', 84, '£1,108', 'good'],
+    ['C', 76, '£1,193', 'good'],
+    ['C', 72, '£1,265', 'warn'],
+    ['D', 64, '£1,310', 'warn'],
+    ['D', 60, '£1,355', 'warn'],
+    ['D', 56, '£1,418', 'warn'],
+    ['E', 45, '£1,580', 'warn'],
+    ['E', 42, '£1,635', 'warn'],
+    ['F', 38, '£1,720', 'warn'],
+    ['F', 35, '£1,820', 'high'],
+    ['F', 32, '£1,900', 'high'],
+    ['F', 30, '£1,950', 'high'],
+    ['F', 25, '£2,050', 'high'],
+    ['G', 20, '£2,140', 'high'],
+    ['G', 18, '£2,340', 'high'],
+    ['G', 15, '£2,520', 'high'],
+  ]
+  const isOdd = me % 2 === 1
+  // Generate 9 numbers on each side, centred on the user's number.
+  const myNums: number[] = []
+  const otherNums: number[] = []
+  const sideStart = me - 8
+  for (let i = 0; i < 9; i++) {
+    myNums.push(Math.max(1, sideStart + i * 2))
+  }
+  // Opposite side: neighbour numbers that interleave between the user's side.
+  for (let i = 0; i < 9; i++) {
+    otherNums.push(Math.max(1, sideStart + 1 + i * 2))
+  }
+  const topNums = isOdd ? myNums : otherNums
+  const bottomNums = isOdd ? otherNums : myNums
+
+  const buildRow = (nums: number[], y: number): StreetHouse[] =>
+    nums.map((n, idx) => {
+      const x = 30 + idx * 50
+      if (n === me) {
+        return mkHouse(
+          String(n),
+          props.epcRating || 'E',
+          Math.round(props.score),
+          `£${formatNum(props.annualCost)}`,
+          'warn',
+          x,
+          y,
+          true,
+        )
+      }
+      // Deterministic palette pick so each address gets a stable grade.
+      const [grade, score, cost, tier] = palette[(n * 7) % palette.length]
+      return mkHouse(String(n), grade, score, cost, tier, x, y)
+    })
+
+  return {
+    top: buildRow(topNums, 88),
+    bottom: buildRow(bottomNums, 107),
+  }
+}
+
+const topRowHouses = computed<StreetHouse[]>(() => buildStreetHouses().top)
+const bottomRowHouses = computed<StreetHouse[]>(() => buildStreetHouses().bottom)
 
 function mkHouse(
   num: string,
@@ -955,11 +1131,22 @@ function effTone(eff: string | null | undefined): 'high' | 'mid' | 'low' {
   return 'low'
 }
 
-// Pull the EPC cert sub-object (prefer `epcCert`, fall back to direct
-// fields on the property for older rows).
+// Pull EPC fields from BOTH the top-level Property row and the nested
+// `epcCert` sub-object (the backend exposes both shapes — legacy rows
+// have direct fields, newer rows have an embedded cert). For each
+// field name, we prefer the top-level value if present, otherwise the
+// cert's value. This proxy lets callers do `epc.value.mainheatEnergyEff`
+// without caring where it lived.
 const epc = computed<any>(() => {
-  const p = props.property as any
-  return p?.epcCert ?? p ?? {}
+  const p = (props.property as any) || {}
+  const cert = p.epcCert || {}
+  return new Proxy({}, {
+    get(_t, key: string) {
+      const top = p[key]
+      if (top != null && top !== '') return top
+      return cert[key]
+    },
+  })
 })
 
 function fmtSaving(rec: any | null): string {
@@ -1229,6 +1416,51 @@ const stats = computed<StatRow[]>(() => {
   ]
 })
 const expandedStat = ref<StatRow['id'] | null>(null)
+
+// Claim-it-free explainer modal (opens KYC/quiz flow when confirmed)
+const claimModalOpen = ref(false)
+
+// When the parent sets `autoOpenClaim` (user just returned from sign-in
+// via the claim flow), pop the drawer open. Notifies the parent on close
+// so it can clear the auto-open flag and not re-trigger.
+watch(
+  () => props.autoOpenClaim,
+  (open) => {
+    if (open) claimModalOpen.value = true
+  },
+  { immediate: true },
+)
+watch(claimModalOpen, (open) => {
+  if (!open) emit('claim-modal-closed')
+})
+
+// "Is this your property?" CTA. If the user is signed in, open the
+// explainer modal immediately. If they're a guest, send them to sign-in
+// with a redirect-back URL that includes `?claim=1` — the parent
+// homescore page picks that up on mount and pops this same modal open
+// so the journey resumes where it left off.
+function onClaimClick() {
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (token) {
+    claimModalOpen.value = true
+    return
+  }
+  // Save the return-to URL using the same key the auth middleware uses.
+  if (typeof window !== 'undefined' && (props.property as any)?.id) {
+    try {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/homescore/${(props.property as any).id}?claim=1`,
+      )
+    } catch {
+      /* private mode / disabled — fall through to plain push */
+    }
+  }
+  if (typeof window !== 'undefined') {
+    window.location.href = '/onboarding/signin'
+  }
+}
 function toggleStat(id: StatRow['id']) {
   expandedStat.value = expandedStat.value === id ? null : id
 }
@@ -1504,6 +1736,23 @@ const epcItems = computed<EpcItem[]>(() => {
 const expandedEpcItem = ref<string | null>(null)
 function toggleEpcItem(id: string) {
   expandedEpcItem.value = expandedEpcItem.value === id ? null : id
+}
+
+// Full EPC drawer (the "Every line of energy detail behind your score"
+// expandable card). This ref was missing — that's why clicking the head
+// row appeared to do nothing.
+const epcDrawerOpen = ref(false)
+const epcDrawerEl = ref<HTMLElement | null>(null)
+function toggleEpcDrawer() {
+  epcDrawerOpen.value = !epcDrawerOpen.value
+  if (epcDrawerOpen.value) {
+    // Scroll the drawer body into view so the user immediately sees the
+    // expansion. Without this, on small viewports the drawer can open
+    // below the fold and feel like the click did nothing.
+    requestAnimationFrame(() => {
+      epcDrawerEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
 }
 
 // ── Display helpers ───────────────────────────────────────────────
@@ -1963,6 +2212,14 @@ const searchesTodayDisplay = computed(() => {
 }
 
 /* ── Quick stats strip ────────────────────────────────────────── */
+.score-strip-hint {
+  margin: 12px 20px 4px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-faint);
+  letter-spacing: 0.3px;
+}
 .score-strip-card {
   display: flex;
   gap: 8px;
@@ -3177,5 +3434,248 @@ const searchesTodayDisplay = computed(() => {
 }
 .fork-opt.primary .fork-opt-chev {
   color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── EPC NOT AVAILABLE empty state ──────────────────────────── */
+.hs-noepc-card {
+  margin: 18px 20px 0;
+  padding: 24px 22px 20px;
+  background: var(--card);
+  border: 1.5px dashed var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+.hs-noepc-icon {
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.hs-noepc-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.hs-noepc-sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+.hs-noepc-sub :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.hs-noepc-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.hs-noepc-btn {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  display: inline-block;
+}
+.hs-noepc-btn.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  box-shadow: 0 3px 12px rgba(0, 161, 154, 0.25);
+}
+.hs-noepc-btn.ghost {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+}
+.hs-noepc-btn.ghost:hover {
+  border-color: var(--accent-pale);
+  background: var(--accent-paler);
+  color: var(--accent-dark);
+}
+.hs-noepc-help {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-faint);
+  line-height: 1.5;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+}
+
+/* ── Claim-it-free modal ────────────────────────────────────── */
+.claim-overlay {
+  /* Re-declare design tokens locally — the modal is teleported to
+     <body> so it loses access to the CSS custom properties defined on
+     `.hs-v6-score`. Without these, the white sheet renders transparent. */
+  --accent: #00a19a;
+  --accent-dark: #008a84;
+  --accent-pale: #e5f4f2;
+  --accent-paler: #f2faf8;
+  --bg: #f5f6fa;
+  --card: #ffffff;
+  --text: #231d45;
+  --text-secondary: #6b7089;
+  --text-faint: #a8a9ad;
+  --border: #e4e5ed;
+  --border-soft: #f0f1f5;
+  --shadow-card: 0 2px 8px rgba(35, 29, 69, 0.05);
+
+  position: fixed;
+  inset: 0;
+  background: rgba(35, 29, 69, 0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--text);
+}
+.claim-sheet {
+  width: 100%;
+  max-width: 28rem;
+  background: var(--card);
+  border-radius: 22px 22px 0 0;
+  padding: 10px 20px calc(22px + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 32px rgba(35, 29, 69, 0.25);
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+.claim-grip {
+  width: 40px;
+  height: 4px;
+  border-radius: 100px;
+  background: var(--border);
+  margin: 0 auto 14px;
+}
+.claim-icon {
+  font-size: 40px;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.claim-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.claim-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.claim-sub :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.claim-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.claim-step {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+}
+.claim-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.claim-step-body { flex: 1; min-width: 0; }
+.claim-step-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.claim-step-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.claim-cta-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.claim-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}
+.claim-btn.ghost {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.claim-btn.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  box-shadow: 0 3px 12px rgba(0, 161, 154, 0.25);
+}
+.claim-privacy {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-faint);
+}
+.claim-modal-enter-active,
+.claim-modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+.claim-modal-enter-active .claim-sheet,
+.claim-modal-leave-active .claim-sheet {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.claim-modal-enter-from,
+.claim-modal-leave-to {
+  opacity: 0;
+}
+.claim-modal-enter-from .claim-sheet,
+.claim-modal-leave-to .claim-sheet {
+  transform: translateY(100%);
 }
 </style>

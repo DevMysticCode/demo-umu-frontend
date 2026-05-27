@@ -63,12 +63,26 @@
 
     <!-- Section heading -->
     <div class="section-h-row">
-      <div class="section-h">EPC's 6 steps · in published order</div>
-      <div class="section-h-sub">{{ fromScore }} → {{ toScore }} points</div>
+      <div class="section-h">
+        EPC's {{ missions.length }} step{{ missions.length === 1 ? '' : 's' }} · in published order
+      </div>
+      <div v-if="fromScore && toScore" class="section-h-sub">
+        {{ fromScore }} → {{ toScore }} points
+      </div>
+    </div>
+
+    <!-- Empty state when the EPC has no improvement steps -->
+    <div v-if="missions.length === 0" class="pathway-empty">
+      <div class="pathway-empty-icon">✓</div>
+      <div class="pathway-empty-title">No improvements on this EPC</div>
+      <div class="pathway-empty-sub">
+        The certificate for this property doesn't list any energy-saving
+        steps — usually means it's already in good shape.
+      </div>
     </div>
 
     <!-- Mission list -->
-    <div class="mission-list anim-3">
+    <div v-else class="mission-list anim-3">
       <div
         v-for="(m, i) in missions"
         :key="m.id"
@@ -107,6 +121,69 @@
       </div>
     </div>
 
+    <!-- Beyond the pathway teaser — twin progress rings (v6-2) -->
+    <div class="moveready-teaser anim-4" @click="goToBoost">
+      <div class="moveready-teaser-head">
+        <div class="moveready-teaser-eyebrow">✨ Beyond the pathway</div>
+        <div class="moveready-teaser-title">See your MoveReady &amp; Passport scores</div>
+      </div>
+      <div class="moveready-teaser-row">
+        <div class="moveready-mini">
+          <div class="moveready-mini-ring">
+            <svg viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="30" cy="30" r="24" stroke="#E4E5ED" stroke-width="6" fill="none" />
+              <circle
+                cx="30" cy="30" r="24"
+                stroke="url(#mrGrad)" stroke-width="6" fill="none"
+                stroke-dasharray="150.8"
+                :stroke-dashoffset="150.8 - (mrPct / 100) * 150.8"
+                stroke-linecap="round"
+                transform="rotate(-90 30 30)"
+              />
+              <defs>
+                <linearGradient id="mrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#7C6FB0" />
+                  <stop offset="100%" stop-color="#5B3795" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="moveready-mini-num">{{ mrPct }}</div>
+          </div>
+          <div class="moveready-mini-label">MoveReady</div>
+        </div>
+        <div class="moveready-mini">
+          <div class="moveready-mini-ring">
+            <svg viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="30" cy="30" r="24" stroke="#E4E5ED" stroke-width="6" fill="none" />
+              <circle
+                cx="30" cy="30" r="24"
+                stroke="url(#ppGrad)" stroke-width="6" fill="none"
+                stroke-dasharray="150.8"
+                :stroke-dashoffset="150.8 - (ppPct / 100) * 150.8"
+                stroke-linecap="round"
+                transform="rotate(-90 30 30)"
+              />
+              <defs>
+                <linearGradient id="ppGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00B8B0" />
+                  <stop offset="100%" stop-color="#008A84" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="moveready-mini-num accent">{{ ppPct }}%</div>
+          </div>
+          <div class="moveready-mini-label">Passport</div>
+        </div>
+        <div class="moveready-teaser-body">
+          <div class="moveready-teaser-line">
+            <b>{{ passportDone }} of {{ passportTotal }}</b> Passport sections complete
+          </div>
+          <div class="moveready-teaser-line2">{{ passportSummary }}</div>
+        </div>
+        <div class="moveready-teaser-arrow">›</div>
+      </div>
+    </div>
+
     <!-- Bottom CTAs -->
     <div class="bottom-cta">
       <button class="bottom-cta-btn" type="button" @click="goToMarketplaceHub">
@@ -122,18 +199,70 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const router = useRouter()
 const route = useRoute()
 const propertyId = computed(() => String(route.params.id))
+const config = useRuntimeConfig()
 
-// Mocked from prototype — Phase 3 wiring will swap to real backend data
-const addressLine = '15 Woodfield Road'
-const fromScore = 52
-const toScore = 75
-const totalSavings = 445
-const co2Cut = '3.0'
+// Real property data fetched on mount so the pathway page shows the
+// actual EPC recommendations for THIS property (not the prototype's
+// hard-coded 6 steps).
+const property = ref<any>(null)
+
+onMounted(async () => {
+  try {
+    const res = await fetch(
+      `${config.public.apiBase}/property/${propertyId.value}`,
+    )
+    if (res.ok) property.value = await res.json()
+  } catch {
+    /* keep null — page falls back to a friendly empty state */
+  }
+})
+
+const addressLine = computed(() => {
+  const p = property.value
+  return p?.addressLine1 || 'Your property'
+})
+
+const fromScore = computed(() => {
+  const p: any = property.value
+  return Number(p?.epcScore ?? p?.epcCert?.epcScore ?? 0) || 0
+})
+const toScore = computed(() => {
+  const p: any = property.value
+  return Number(p?.epcScorePotential ?? p?.epcCert?.potentialScore ?? 0) || 0
+})
+
+// Pick an icon for each EPC recommendation type based on title keywords.
+function iconForRec(title: string): string {
+  const t = (title ?? '').toLowerCase()
+  if (/solar pv|photovoltaic/.test(t)) return '⚡'
+  if (/solar (?:water|thermal)/.test(t)) return '☀️'
+  if (/(loft|roof)/.test(t)) return '🏠'
+  if (/(cavity|wall)/.test(t)) return '🧱'
+  if (/floor/.test(t)) return '🪟'
+  if (/(led|light)/.test(t)) return '💡'
+  if (/(boiler|heat pump|heating)/.test(t)) return '🔥'
+  if (/thermostat|controls/.test(t)) return '🌡'
+  if (/hot water|cylinder/.test(t)) return '💧'
+  return '✦'
+}
+
+function supplierLabelForRec(title: string): string {
+  const t = (title ?? '').toLowerCase()
+  if (/solar pv|photovoltaic/.test(t)) return 'Find solar PV installers'
+  if (/solar (?:water|thermal)/.test(t)) return 'Find solar thermal installers'
+  if (/(led|light)/.test(t)) return 'LED suppliers'
+  if (/(boiler)/.test(t)) return 'Find Gas Safe engineers'
+  if (/heat pump/.test(t)) return 'Find heat-pump installers'
+  if (/(thermostat|controls)/.test(t)) return 'Find heating-controls fitters'
+  if (/(cavity|wall|loft|roof|floor|insulat)/.test(t))
+    return 'Find insulation installers'
+  return 'Find a verified pro'
+}
 
 function gradeFor(score: number): string {
   if (score >= 92) return 'A'
@@ -144,8 +273,8 @@ function gradeFor(score: number): string {
   if (score >= 21) return 'F'
   return 'G'
 }
-const fromLevel = computed(() => gradeFor(fromScore))
-const toLevel = computed(() => gradeFor(toScore))
+const fromLevel = computed(() => gradeFor(fromScore.value))
+const toLevel = computed(() => gradeFor(toScore.value))
 
 interface Mission {
   id: string
@@ -158,68 +287,57 @@ interface Mission {
   supplierLabel: string
 }
 
-const missions: Mission[] = [
-  {
-    id: 'loft',
-    icon: '🏠',
-    title: 'Loft insulation to 270mm',
-    meta: "EPC's first recommended step. Currently 75mm + 100mm — top up to 270mm.",
-    pts: '+1 pt → 53 E',
-    save: '£40/yr',
-    cost: '£100–£350',
-    supplierLabel: 'Find insulation installers',
-  },
-  {
-    id: 'cavity',
-    icon: '🧱',
-    title: 'Cavity wall insulation',
-    meta: 'EPC says "cavity fill is recommended". Biggest single annual saving. Crosses you from E into D.',
-    pts: '+8 pts → 61 D',
-    save: '£224/yr',
-    cost: '£500–£1,500',
-    supplierLabel: 'Find insulation installers',
-  },
-  {
-    id: 'floor',
-    icon: '🪟',
-    title: 'Floor insulation',
-    meta: 'Floor assumed uninsulated. Insulating the void cuts draughts and heat loss.',
-    pts: '+3 pts → 64 D',
-    save: '£97/yr',
-    cost: '£800–£1,200',
-    supplierLabel: 'Find insulation installers',
-  },
-  {
-    id: 'lights',
-    icon: '💡',
-    title: 'Low energy lighting',
-    meta: "Cheapest step on the EPC. 15% of fittings are LED — swap the rest. One evening's work.",
-    pts: '+1 pt → 65 D',
-    save: '£45/yr',
-    cost: '£110 · DIY',
-    supplierLabel: 'LED suppliers',
-  },
-  {
-    id: 'solarh',
-    icon: '☀️',
-    title: 'Solar water heating',
-    meta: 'Solar thermal collector pre-heats hot water. Smallest annual saving — weigh against capital cost.',
-    pts: '+1 pt → 66 D',
-    save: '£40/yr',
-    cost: '£4,000–£6,000',
-    supplierLabel: 'Find solar thermal installers',
-  },
-  {
-    id: 'solarp',
-    icon: '⚡',
-    title: 'Solar photovoltaic panels',
-    meta: "EPC's final step. Biggest annual saving. Lifts you from D into Band C.",
-    pts: '+9 pts → 75 C',
-    save: '£248/yr + SEG',
-    cost: '£9,000–£14,000',
-    supplierLabel: 'Find solar PV installers',
-  },
-]
+// Build the mission list from the property's real epcRecommendations.
+// Falls back to an empty list (page shows a friendly note) when the
+// property has no EPC steps on file.
+const missions = computed<Mission[]>(() => {
+  const p: any = property.value
+  const recs: any[] = p?.epcRecommendations || p?.epcCert?.epcRecommendations
+  if (!Array.isArray(recs) || recs.length === 0) return []
+  // Preserve the EPC's published order.
+  const sorted = [...recs].sort((a, b) => {
+    const an = Number(a?.id)
+    const bn = Number(b?.id)
+    if (Number.isFinite(an) && Number.isFinite(bn)) return an - bn
+    return 0
+  })
+  return sorted.map((r: any, idx: number) => {
+    const title = r?.title || r?.improvementDescr || 'EPC recommendation'
+    const sap = Number(r?.resultingSap ?? 0)
+    const grade = sap > 0 ? gradeFor(sap) : ''
+    return {
+      id: String(r?.id ?? idx),
+      icon: iconForRec(title),
+      title,
+      meta:
+        r?.description ||
+        `Step ${idx + 1} on this property's EPC pathway.`,
+      pts: sap > 0 ? `→ ${sap} ${grade}` : `Step ${idx + 1}`,
+      save: r?.typicalSaving ? `£${r.typicalSaving}/yr` : '',
+      cost: r?.costRange || '',
+      supplierLabel: supplierLabelForRec(title),
+    }
+  })
+})
+
+const totalSavings = computed(() => {
+  const p: any = property.value
+  const recs: any[] = p?.epcRecommendations || p?.epcCert?.epcRecommendations
+  if (!Array.isArray(recs)) return 0
+  return recs.reduce(
+    (acc, r) => acc + (Number(r?.typicalSaving) || 0),
+    0,
+  )
+})
+const co2Cut = computed(() => {
+  const p: any = property.value
+  const now = Number(p?.co2Emissions ?? p?.epcCert?.co2Emissions ?? 0)
+  const pot = Number(
+    p?.co2EmissionsPotential ?? p?.epcCert?.co2EmissionsPotential ?? 0,
+  )
+  if (!now || !pot || pot >= now) return '0'
+  return (now - pot).toFixed(1)
+})
 
 function goToMarketplace(missionId: string) {
   router.push(`/homescore/marketplace/${propertyId.value}?focus=${missionId}`)
@@ -233,6 +351,43 @@ function goToMatched() {
 function markDone(_id: string) {
   // Placeholder — backend wiring later
 }
+function goToBoost() {
+  // Pathway is a standalone route; redirect back into the homescore flow
+  // and let it switch to the boost screen.
+  router.push(`/homescore/${propertyId.value}?screen=boost`)
+}
+
+// ── "Beyond the pathway" teaser values ─────────────────────────
+// MoveReady % and Passport % aren't backed by a live endpoint yet, so we
+// derive defensible placeholders from the property's passport state.
+// Once the boost flow has counted uploaded docs server-side, swap these
+// for real `/property/:id/move-ready` and `/property/:id/passport/summary`
+// reads.
+const mrPct = computed(() => {
+  const p: any = property.value
+  if (!p) return 0
+  // Seed from whether a passport exists + has been published.
+  if (p.passportPublished) return 65
+  if (p.hasPassport) return 35
+  return 12
+})
+const ppPct = computed(() => {
+  const p: any = property.value
+  if (!p) return 0
+  if (p.passportPublished) return 70
+  if (p.hasPassport) return 40
+  return 30
+})
+const passportTotal = 19 // total passport section templates
+const passportDone = computed(() => {
+  // Rough estimate from Passport %: 19 sections × (ppPct / 100)
+  return Math.round((passportTotal * ppPct.value) / 100)
+})
+const passportSummary = computed(() => {
+  const remaining = passportTotal - passportDone.value
+  if (remaining <= 0) return 'All sections complete'
+  return `${remaining} section${remaining === 1 ? '' : 's'} to go · tap to boost`
+})
 </script>
 
 <style scoped>
@@ -254,11 +409,29 @@ function markDone(_id: string) {
   --warning-pale: #fff5e0;
   --shadow-card: 0 2px 8px rgba(35, 29, 69, 0.05);
 
+  /* Match the rest of the app: mobile-container width, SF Pro inherited */
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
   min-height: 100dvh;
   background: var(--page);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: inherit;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Soften prototype's 800-weights to match the SF Pro app scale */
+.hs-v6-pathway :is(.app-header-title, .pathway-eyebrow, .pathway-stat-num,
+  .grant-banner-title, .mission-title, .path-summary-title,
+  .bottom-cta-btn, .moveready-teaser-title, .quest-reward) {
+  font-weight: 700;
+}
+.hs-v6-pathway :is(.app-header-sub, .pathway-stat-label, .grant-banner-sub,
+  .mission-meta, .path-summary-sub, .moveready-teaser-sub) {
+  font-weight: 500;
+}
+.hs-v6-pathway .ignored-placeholder {
+  /* anchor to keep the soften block scoped */
 }
 
 @keyframes hs-v6-fadeUp {
@@ -496,6 +669,41 @@ function markDone(_id: string) {
 }
 
 /* Mission list */
+.pathway-empty {
+  margin: 14px 20px 0;
+  padding: 22px 18px;
+  background: var(--card);
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+.pathway-empty-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  background: var(--accent-paler);
+  color: var(--accent-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+}
+.pathway-empty-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.pathway-empty-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
 .mission-list {
   padding: 10px 20px 0;
   display: flex;
@@ -727,5 +935,101 @@ function markDone(_id: string) {
 .bottom-cta-secondary:hover {
   border-color: var(--accent-pale);
   background: var(--accent-paler);
+}
+
+/* Beyond the pathway teaser — two-section layout (v6-2) */
+.moveready-teaser {
+  margin: 12px 20px 0;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #f2ebfd 0%, var(--card) 100%);
+  border: 1.5px solid #c9b0f0;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.moveready-teaser:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(91, 55, 149, 0.15);
+}
+.moveready-teaser-head {
+  margin-bottom: 10px;
+}
+.moveready-teaser-eyebrow {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #5b3795;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.moveready-teaser-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  margin-top: 3px;
+}
+.moveready-teaser-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.moveready-mini {
+  text-align: center;
+  flex-shrink: 0;
+}
+.moveready-mini-ring {
+  position: relative;
+  width: 54px;
+  height: 54px;
+}
+.moveready-mini-ring svg {
+  width: 100%;
+  height: 100%;
+}
+.moveready-mini-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #5b3795;
+  letter-spacing: -0.3px;
+}
+.moveready-mini-num.accent {
+  color: var(--accent-dark);
+}
+.moveready-mini-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.moveready-teaser-body {
+  flex: 1;
+  min-width: 0;
+}
+.moveready-teaser-line {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+.moveready-teaser-line :deep(b) {
+  color: #5b3795;
+  font-weight: 700;
+}
+.moveready-teaser-line2 {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+.moveready-teaser-arrow {
+  font-size: 20px;
+  color: #5b3795;
+  flex-shrink: 0;
 }
 </style>

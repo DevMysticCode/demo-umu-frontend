@@ -14,6 +14,15 @@
       />
     </div>
 
+    <!-- Minimal back-only mini-header (no title strip, no bell) -->
+    <div class="lu-mini-header">
+      <button class="lu-back" type="button" @click="$emit('back')" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+    </div>
+
     <!-- Level up hero -->
     <div class="levelup-hero anim-1 level-up">
       <div class="levelup-eyebrow">🎉 Level up · Quiz complete</div>
@@ -33,6 +42,30 @@
         </div>
       </div>
       <div class="levelup-delta">{{ deltaLabel }}</div>
+    </div>
+
+    <!-- "What happens next" explainer — two paths side-by-side (v6-2) -->
+    <div class="boost-explain anim-2">
+      <div class="boost-explain-row">
+        <div class="boost-explain-step">
+          <div class="boost-explain-num">1</div>
+          <div class="boost-explain-text">
+            <b>Follow the pathway</b> — take recommended steps to keep climbing
+            your HomeScore.
+          </div>
+        </div>
+        <div class="boost-explain-step">
+          <div class="boost-explain-num">2</div>
+          <div class="boost-explain-text">
+            <b>Boost your score</b> — add docs and book pros to grow your
+            Passport.
+          </div>
+        </div>
+      </div>
+      <div class="boost-explain-foot">
+        Pathway lifts your <b>HomeScore</b> · Boost lifts your
+        <b>Move Ready</b> &amp; <b>Passport</b>.
+      </div>
     </div>
 
     <!-- Refined stats -->
@@ -59,10 +92,17 @@
       </div>
     </div>
 
-    <!-- Bottom CTA -->
+    <!-- Bottom CTAs (v6-2: primary filled pathway + outlined boost) -->
     <div class="bottom-cta">
       <button class="bottom-cta-btn" type="button" @click="$emit('open-pathway')">
-        🎯 See the EPC's 6-step pathway →
+        🎯 See the EPC's 6-step pathway
+      </button>
+      <button
+        class="bottom-cta-secondary outlined"
+        type="button"
+        @click="$emit('open-boost')"
+      >
+        ⚡ Boost your score
       </button>
     </div>
 
@@ -87,6 +127,7 @@ const props = withDefaults(defineProps<Props>(), {
 defineEmits<{
   (e: 'back'): void
   (e: 'open-pathway'): void
+  (e: 'open-boost'): void
 }>()
 
 function gradeFor(score: number): string {
@@ -526,5 +567,130 @@ const confetti = ref<ConfettiPiece[]>(
 }
 .bottom-cta-btn:hover {
   filter: brightness(1.06);
+}
+.bottom-cta-secondary {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  background: var(--card);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.bottom-cta-secondary:hover {
+  border-color: var(--accent-pale);
+  background: var(--accent-paler);
+  color: var(--accent-dark);
+}
+/* Outlined variant — transparent background, accent border (v6-2) */
+.bottom-cta-secondary.outlined {
+  background: transparent;
+  border: 1.5px solid var(--accent);
+  color: var(--accent-dark);
+}
+.bottom-cta-secondary.outlined:hover {
+  background: var(--accent-paler);
+}
+
+/* Mini header (back-only, no title strip, no bell) */
+.lu-mini-header {
+  position: relative;
+  z-index: 2;
+  padding: 12px 20px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+}
+.lu-back {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.lu-back svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* "What happens next" explainer — side-by-side two-path layout (v6-2) */
+.boost-explain {
+  position: relative;
+  z-index: 2;
+  margin: 14px 20px 0;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1.5px solid var(--border-soft);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+}
+.boost-explain-row {
+  display: flex;
+  gap: 10px;
+}
+.boost-explain-step {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  min-width: 0;
+}
+.boost-explain-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 161, 154, 0.3);
+}
+.boost-explain-text {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+.boost-explain-text :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.boost-explain-foot {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-soft);
+  text-align: center;
+}
+.boost-explain-foot :deep(b) {
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+@keyframes hs-v6-fadeUp-anim2 {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim-2 {
+  animation: hs-v6-fadeUp-anim2 0.35s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 </style>
