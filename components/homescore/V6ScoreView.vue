@@ -5,32 +5,50 @@
          we don't fabricate scores from dummy data. Instead we surface
          a clear "EPC not available" card so the user knows what's
          missing and what to do next. -->
-    <div v-if="!hasEpcData" class="hs-noepc-card anim-1">
-      <div class="hs-noepc-icon">📄</div>
-      <div class="hs-noepc-title">No EPC on file for this property</div>
-      <div class="hs-noepc-sub">
-        The Energy Performance Certificate (EPC) Register doesn't have a
-        certificate for <b>{{ addrLineFull }}</b>. Without it we can't
-        calculate a HomeScore, running costs, or improvement steps.
+    <template v-if="!hasEpcData">
+      <!-- Compact property header — keeps the user oriented even when
+           we can't render the full score view. -->
+      <div class="hs-noepc-prop anim-1">
+        <div class="hs-noepc-prop-pin" />
+        <div class="hs-noepc-prop-block">
+          <div class="hs-noepc-prop-line">{{ addrLineFull }}</div>
+          <div class="hs-noepc-prop-meta">{{ addrMetaFull }}</div>
+        </div>
       </div>
-      <div class="hs-noepc-actions">
-        <button class="hs-noepc-btn primary" type="button" @click="$emit('refine')">
-          Take the quiz instead
-        </button>
-        <a
-          class="hs-noepc-btn ghost"
-          :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${encodeURIComponent(property?.postcode ?? '')}`"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Search EPC Register →
-        </a>
+
+      <div class="hs-noepc-card anim-1">
+        <div class="hs-noepc-icon">📄</div>
+        <div class="hs-noepc-title">No EPC on file for this property</div>
+        <div class="hs-noepc-sub">
+          We couldn't find an Energy Performance Certificate for
+          <b>{{ addrLineFull }}</b> on the public register. That's not unusual —
+          some homes haven't been assessed yet, or the certificate has expired.
+        </div>
+        <div class="hs-noepc-sub" style="margin-top: 8px">
+          Without an EPC we don't fabricate a score from guesses. Here's what
+          you can do instead:
+        </div>
+        <div class="hs-noepc-actions">
+          <button class="hs-noepc-btn primary" type="button" @click="$emit('refine')">
+            Answer a few questions
+          </button>
+          <a
+            class="hs-noepc-btn ghost"
+            :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${encodeURIComponent(property?.postcode ?? '')}`"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Check the EPC Register →
+          </a>
+        </div>
+        <div class="hs-noepc-help">
+          The quiz gives you a rough estimate based on what you know about the
+          home (heating, insulation, lighting). If the property gets a new EPC
+          assessment, we'll pick it up automatically next time you load the
+          page.
+        </div>
       </div>
-      <div class="hs-noepc-help">
-        If the property has had an EPC done, ask the owner for the
-        certificate number (LMK key) and we can pull it in.
-      </div>
-    </div>
+    </template>
 
     <template v-if="hasEpcData">
     <!-- ── Amber address card (typewriter on mount) ────────────────── -->
@@ -696,12 +714,20 @@ const props = withDefaults(
 // and we surface a proper "EPC not available" empty state rather than
 // fabricating scores from dummy fallbacks.
 const hasEpcData = computed(() => {
+  // Trust ONLY positive evidence of a real EPC certificate. Don't trust
+  // `annualCost` — `resolvedAnnualCost` in the parent falls back to a
+  // rating-based map (or £1,592 if even that's missing), so it's always
+  // > 0 and would mask a "no EPC on file" property as if it had one.
   const p = props.property as any
-  const cert = p?.epcCert
-  const hasRating = !!props.epcRating
-  const hasCert = !!cert && (cert.epcRating || cert.epcScore != null)
-  const hasCost = props.annualCost > 0
-  return hasRating || hasCert || hasCost
+  if (!p) return false
+  if (props.epcRating) return true
+  // The lmk-key is positive proof the cert was actually fetched, not a
+  // heuristic fallback. Check both the top-level row and the nested
+  // cert sub-object (backend exposes both shapes).
+  if (p.epcLmkKey) return true
+  if (p.epcCert?.lmkKey) return true
+  if (p.epcCert?.epcRating) return true
+  return false
 })
 
 // Real or estimated splits/values, with safe fallbacks.
@@ -3437,6 +3463,40 @@ const searchesTodayDisplay = computed(() => {
 }
 
 /* ── EPC NOT AVAILABLE empty state ──────────────────────────── */
+/* Compact property header shown above the no-EPC card so the user
+   still knows which property they're looking at. */
+.hs-noepc-prop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 20px 0;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+}
+.hs-noepc-prop-pin {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.hs-noepc-prop-block { flex: 1; min-width: 0; }
+.hs-noepc-prop-line {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.hs-noepc-prop-meta {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
 .hs-noepc-card {
   margin: 18px 20px 0;
   padding: 24px 22px 20px;
