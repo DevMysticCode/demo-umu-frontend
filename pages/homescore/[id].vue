@@ -150,9 +150,12 @@
         :initial-score="autoScoreVal"
         :epc-rating="property?.epcRating ?? null"
         :epc-year="resolvedEpcYear"
+        :searches-today="searchStats?.today ?? 0"
+        :passport-state="resolvedPassportState"
         @back="screen = 'landing'"
         @finish="onQuizFinish"
         @upload-bill="onUploadBill"
+        @view-passport="goToPassport"
       />
     </template>
 
