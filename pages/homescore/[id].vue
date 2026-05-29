@@ -108,6 +108,9 @@
         :street-total="streetEnergyRank?.total ?? null"
         :searches-today="searchStats?.today ?? 0"
         :passport-state="resolvedPassportState"
+        :passport-progress-pct="passportProgressPct"
+        :passport-sections-done="passportSectionsDone"
+        :passport-sections-total="passportSectionsTotal"
         :auto-open-claim="autoOpenClaim"
         @back="goBack"
         @claim="startQuestions"
@@ -117,6 +120,7 @@
         @see-running-costs="goToRunningCosts"
         @see-street="goToStreetCompare"
         @view-passport="goToPassport"
+        @watch-property="goToWatch"
         @claim-modal-closed="autoOpenClaim = false"
       />
     </template>
@@ -2703,6 +2707,16 @@ const passportState = computed<'published' | 'inProgress' | null>(() => {
   return isOtherPassportPublished.value ? 'published' : 'inProgress'
 })
 
+// Passport build progress (feeds the claim box's in-progress ring + drawer).
+const passportProgress = ref<{
+  completionPct?: number
+  completedSections?: number
+  totalSections?: number
+} | null>(null)
+const passportProgressPct = computed(() => passportProgress.value?.completionPct ?? 0)
+const passportSectionsDone = computed(() => passportProgress.value?.completedSections ?? 0)
+const passportSectionsTotal = computed(() => passportProgress.value?.totalSections ?? 0)
+
 // ── ResultDetail (prototype-aligned 3a/3b/3c view) props ──
 // Reflect the property's TRUE Passport state — independent of who is viewing.
 // `passportState` (above) gates on `readOnlyMode` and is `null` for the owner;
@@ -4529,6 +4543,13 @@ function goToPassport() {
   router.push(`/property/${propertyId}`)
 }
 
+// Watch this (in-progress) property — route to the property page with
+// ?watched=1, which runs the full watch flow (saves it to the buyer's
+// profile + registers interest + toast). Guests are auth-gated en route.
+function goToWatch() {
+  router.push(`/property/${propertyId}?watched=1`)
+}
+
 // ── Buyer results helpers ─────────────────────────────────────
 
 const buyerAnnualCost = computed(() => {
@@ -5165,6 +5186,9 @@ onMounted(async () => {
       isOtherPassportPublished.value = !!(
         status.hasPassport && status.isPublished
       )
+      if ((status as any).passportProgress) {
+        passportProgress.value = (status as any).passportProgress
+      }
     }
 
     // Restore "already notified" state from localStorage
