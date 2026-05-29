@@ -1040,7 +1040,15 @@ const executeDelete = async () => {
 }
 .coll-resume-book :deep(.passport-container) {
   width: 100%;
-  height: 96px;
+  height: auto;
+}
+/* Size the passport to its natural aspect at the tile width — overrides the
+   image's Tailwind `h-full object-cover` (which cropped/stretched it inside a
+   fixed-height box and pushed the overlaid address off-centre). */
+.coll-resume-book :deep(.passport-image) {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 .coll-resume-content {
   flex: 1;

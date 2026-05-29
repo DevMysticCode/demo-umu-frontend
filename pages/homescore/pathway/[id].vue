@@ -96,7 +96,7 @@
         </div>
         <div class="mission-actions">
           <button class="mission-btn-supplier" type="button" @click="goToMarketplace(m.id)">
-            🔧 {{ m.supplierLabel }} →
+            🔧 {{ m.supplierLabel }}
           </button>
           <button class="mission-btn-done" type="button" @click="markDone(m.id)">✓ Done</button>
         </div>
@@ -180,7 +180,7 @@
     <!-- Bottom CTAs -->
     <div class="bottom-cta">
       <button class="bottom-cta-btn" type="button" @click="goToMarketplaceHub">
-        🛒 Open the UmovingU Marketplace →
+        🛒 Open the UmovingU Marketplace
       </button>
       <button class="bottom-cta-secondary" type="button" @click="goToMatched">
         See your matched suppliers
