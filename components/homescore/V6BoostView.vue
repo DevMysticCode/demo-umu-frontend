@@ -2,8 +2,20 @@
   <div class="hs-v6-boost">
     <!-- Mini header (back + title + help) -->
     <div class="boost-header">
-      <button class="boost-back" type="button" @click="$emit('back')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <button
+        class="boost-back"
+        type="button"
+        @click="$emit('back')"
+        aria-label="Back"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
@@ -11,7 +23,9 @@
         <div class="boost-header-title">Boost your score</div>
         <div class="boost-header-sub">Every document adds real value</div>
       </div>
-      <button class="boost-help" type="button" aria-label="How scoring works">?</button>
+      <button class="boost-help" type="button" aria-label="How scoring works">
+        ?
+      </button>
     </div>
 
     <!-- Your property journey · gauge rings -->
@@ -44,14 +58,21 @@
                 transform="rotate(-90 45 45)"
               />
               <defs>
-                <linearGradient :id="`bjGrad-${g.id}`" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient
+                  :id="`bjGrad-${g.id}`"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
                   <stop offset="0%" :stop-color="g.gradFrom" />
                   <stop offset="100%" :stop-color="g.gradTo" />
                 </linearGradient>
               </defs>
             </svg>
             <div class="boost-gauge-num" :class="{ pct: g.suffix === '%' }">
-              {{ Math.round(g.animatedValue) }}<span v-if="g.suffix">{{ g.suffix }}</span>
+              {{ Math.round(g.animatedValue)
+              }}<span v-if="g.suffix">{{ g.suffix }}</span>
             </div>
           </div>
           <div class="boost-gauge-cat">{{ g.label }}</div>
@@ -70,7 +91,9 @@
     <!-- Upload a document -->
     <div class="boost-section-h">
       <span class="ico">📎</span> Upload a document
-      <span class="pill-progress">{{ uploadedDocs.length }} of {{ docs.length }}</span>
+      <span class="pill-progress"
+        >{{ uploadedDocs.length }} of {{ docs.length }}</span
+      >
     </div>
     <div
       v-for="d in docs"
@@ -101,7 +124,9 @@
     </div>
 
     <!-- Book a professional -->
-    <div class="boost-section-h"><span class="ico">🔧</span> Book a professional</div>
+    <div class="boost-section-h">
+      <span class="ico">🔧</span> Book a professional
+    </div>
     <div
       v-for="b in bookings"
       :key="b.id"
@@ -121,12 +146,16 @@
       <div class="boost-next-eyebrow">✦ Next step on your journey</div>
       <div class="boost-next-route">
         <div class="boost-next-circle from">
-          <div class="boost-next-circle-num">{{ moveReadyPct }}<span class="pct">%</span></div>
+          <div class="boost-next-circle-num">
+            {{ moveReadyPct }}<span class="pct">%</span>
+          </div>
           <div class="boost-next-circle-out">Move Ready</div>
         </div>
-        <div class="boost-next-plus">+</div>
+        <!-- <div class="boost-next-plus">+</div> -->
         <div class="boost-next-circle from">
-          <div class="boost-next-circle-num">{{ passportPct }}<span class="pct">%</span></div>
+          <div class="boost-next-circle-num">
+            {{ passportPct }}<span class="pct">%</span>
+          </div>
           <div class="boost-next-circle-out">Passport</div>
         </div>
       </div>
@@ -135,17 +164,77 @@
         Each document you add lifts both scores. Reach Move Ready status and
         publish your Passport — lock in everything you've built.
       </div>
-      <button type="button" class="boost-next-cta" @click="$emit('start-passport')">
+      <button
+        type="button"
+        class="boost-next-cta"
+        @click="$emit('start-passport')"
+      >
         🚀 Start my Passport →
       </button>
     </div>
 
     <div style="height: 32px" />
+
+    <!-- Upload-a-document drawer (reuses BaseDrawer) -->
+    <BaseDrawer
+      v-model="uploadDrawerOpen"
+      :title="activeDoc ? `Upload ${activeDoc.title}` : 'Upload document'"
+      @close="onUploadClose"
+    >
+      <div v-if="activeDoc" class="bd-upload">
+        <div class="bd-upload-head">
+          <div class="bd-upload-ico" :class="activeDoc.tone">
+            {{ activeDoc.icon }}
+          </div>
+          <div class="bd-upload-sub">{{ activeDoc.sub }}</div>
+        </div>
+
+        <label class="bd-dropzone" :class="{ 'has-file': !!selectedFile }">
+          <input
+            ref="fileInputRef"
+            type="file"
+            accept="application/pdf,image/png,image/jpeg"
+            class="bd-dropzone-input"
+            @change="onFileChange"
+          />
+          <div class="bd-dropzone-icon">{{ selectedFile ? '✓' : '📄' }}</div>
+          <div class="bd-dropzone-title">
+            {{ selectedFile ? selectedFile.name : 'Drop your document here' }}
+          </div>
+          <div class="bd-dropzone-meta">
+            <template v-if="selectedFile"
+              >{{ formatFileSize(selectedFile.size) }} · tap to change</template
+            >
+            <template v-else
+              >or <span class="bd-dropzone-tap">tap to browse</span> · PDF · JPG
+              · PNG</template
+            >
+          </div>
+        </label>
+
+        <div class="bd-upload-note">
+          🔒 We read the key details only — the file is stored against your
+          property and never shared without your say-so.
+        </div>
+      </div>
+
+      <template #footer>
+        <button
+          class="bd-upload-cta"
+          type="button"
+          :disabled="!selectedFile"
+          @click="confirmUpload"
+        >
+          {{ selectedFile ? 'Add to my property →' : 'Choose a file' }}
+        </button>
+      </template>
+    </BaseDrawer>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
+import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 
 interface Props {
   homeScore: number
@@ -327,9 +416,52 @@ watch(passportPct, (v) => {
   animateGauge(2, v)
 })
 
+// ── Upload drawer ───────────────────────────────────────────────
+const uploadDrawerOpen = ref(false)
+const activeDocId = ref<string | null>(null)
+const selectedFile = ref<File | null>(null)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
+const activeDoc = computed(
+  () => docs.find((d) => d.id === activeDocId.value) || null,
+)
+
 function onAddDoc(id: string) {
   if (uploadedDocs.value.includes(id)) return
-  uploadedDocs.value = [...uploadedDocs.value, id]
+  activeDocId.value = id
+  selectedFile.value = null
+  uploadDrawerOpen.value = true
+}
+
+function onFileChange(e: Event) {
+  const input = e.target as HTMLInputElement
+  selectedFile.value = input.files?.[0] ?? null
+}
+
+function onUploadClose() {
+  uploadDrawerOpen.value = false
+  selectedFile.value = null
+  activeDocId.value = null
+}
+
+function confirmUpload() {
+  if (!selectedFile.value) {
+    fileInputRef.value?.click()
+    return
+  }
+  const id = activeDocId.value
+  if (id && !uploadedDocs.value.includes(id)) {
+    // Mark the doc uploaded — this lifts the Move Ready / Passport gauges.
+    // (Server-side file upload endpoint to be wired when available.)
+    uploadedDocs.value = [...uploadedDocs.value, id]
+  }
+  onUploadClose()
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 </script>
 
@@ -406,12 +538,25 @@ function onAddDoc(id: string) {
 
 /* Animations */
 @keyframes boostFadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes bjGlow {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.06); opacity: 0.7; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.7;
+  }
 }
 .anim-1 {
   animation: boostFadeUp 0.35s 0.08s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -439,7 +584,11 @@ function onAddDoc(id: string) {
   width: 280px;
   height: 280px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 193, 89, 0.18) 0%, transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 193, 89, 0.18) 0%,
+    transparent 65%
+  );
   pointer-events: none;
   animation: bjGlow 6s ease-in-out infinite;
 }
@@ -637,11 +786,21 @@ function onAddDoc(id: string) {
   font-size: 22px;
   flex-shrink: 0;
 }
-.boost-row-icon.yellow { background: #fff6d5; }
-.boost-row-icon.amber { background: #fce7b5; }
-.boost-row-icon.teal { background: var(--accent-paler); }
-.boost-row-icon.green { background: #d4f2e0; }
-.boost-row-icon.violet { background: #f2ebfd; }
+.boost-row-icon.yellow {
+  background: #fff6d5;
+}
+.boost-row-icon.amber {
+  background: #fce7b5;
+}
+.boost-row-icon.teal {
+  background: var(--accent-paler);
+}
+.boost-row-icon.green {
+  background: #d4f2e0;
+}
+.boost-row-icon.violet {
+  background: #f2ebfd;
+}
 .boost-row-icon.gold {
   background: linear-gradient(135deg, #ffd700, #ff9500);
   color: white;
@@ -716,7 +875,11 @@ function onAddDoc(id: string) {
   width: 240px;
   height: 240px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.18) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
 .boost-next > * {
@@ -808,5 +971,127 @@ function onAddDoc(id: string) {
   justify-content: center;
   gap: 6px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+/* Upload drawer body (rendered inside BaseDrawer) */
+.bd-upload {
+  --accent: #00a19a;
+  --accent-dark: #008a84;
+  --accent-paler: #f2faf8;
+  --accent-pale: #e5f4f2;
+  --text: #231d45;
+  --text-secondary: #6b7089;
+  --text-faint: #a8a9ad;
+  --border: #e4e5ed;
+}
+.bd-upload-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.bd-upload-ico {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.bd-upload-ico.yellow {
+  background: #fff6d5;
+}
+.bd-upload-ico.amber {
+  background: #fce7b5;
+}
+.bd-upload-ico.teal {
+  background: var(--accent-paler);
+}
+.bd-upload-ico.violet {
+  background: #f2ebfd;
+}
+.bd-upload-sub {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+.bd-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  padding: 28px 18px;
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  background: #fafbfd;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.bd-dropzone:hover {
+  border-color: var(--accent);
+}
+.bd-dropzone.has-file {
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--accent-paler);
+}
+.bd-dropzone-input {
+  display: none;
+}
+.bd-dropzone-icon {
+  font-size: 30px;
+  line-height: 1;
+}
+.bd-dropzone-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  word-break: break-word;
+}
+.bd-dropzone-meta {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-faint);
+}
+.bd-dropzone-tap {
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+.bd-upload-note {
+  margin-top: 14px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.bd-upload-cta {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+  transition: filter 0.15s;
+}
+.bd-upload-cta:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+.bd-upload-cta:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 </style>

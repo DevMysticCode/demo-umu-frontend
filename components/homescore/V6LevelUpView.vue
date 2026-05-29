@@ -1,23 +1,43 @@
 <template>
   <div class="hs-v6-levelup">
-    <div class="confetti-host">
+    <div class="fireworks-host">
       <div
-        v-for="(c, i) in confetti"
+        v-for="(fw, i) in fireworks"
         :key="i"
-        class="confetti-piece"
-        :style="{
-          left: c.left + '%',
-          background: c.color,
-          animationDelay: c.delay + 'ms',
-          animationDuration: c.duration + 'ms',
-        }"
-      />
+        class="firework"
+        :style="{ left: fw.left + '%', top: fw.top + '%' }"
+      >
+        <span
+          v-for="(p, j) in fw.particles"
+          :key="j"
+          class="fw-particle"
+          :style="{
+            background: fw.color,
+            boxShadow: `0 0 14px 2px ${fw.color}, 0 0 5px #fff`,
+            '--tx': p.tx + 'px',
+            '--ty': p.ty + 'px',
+            animationDelay: fw.delay + 'ms',
+          }"
+        />
+      </div>
     </div>
 
     <!-- Minimal back-only mini-header (no title strip, no bell) -->
     <div class="lu-mini-header">
-      <button class="lu-back" type="button" @click="$emit('back')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <button
+        class="lu-back"
+        type="button"
+        @click="$emit('back')"
+        aria-label="Back"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
@@ -28,7 +48,8 @@
       <div class="levelup-eyebrow">🎉 Level up · Quiz complete</div>
       <div class="levelup-title">You levelled up your home.</div>
       <div class="levelup-sub">
-        Your refined HomeScore reflects what's been done since the EPC. More accurate. Higher confidence.
+        Your refined HomeScore reflects what's been done since the EPC. More
+        accurate. Higher confidence.
       </div>
       <div class="levelup-row">
         <div class="levelup-from">
@@ -74,11 +95,7 @@
       <div class="section-h-sub">{{ toScore }}/100 points</div>
     </div>
     <div class="refined-stats-card">
-      <div
-        v-for="s in refinedStats"
-        :key="s.id"
-        class="stat-row gained"
-      >
+      <div v-for="s in refinedStats" :key="s.id" class="stat-row gained">
         <div class="stat-icon">{{ s.icon }}</div>
         <div class="stat-label">{{ s.label }}</div>
         <div class="stat-bar-wrap">
@@ -94,8 +111,12 @@
 
     <!-- Bottom CTAs (v6-2: primary filled pathway + outlined boost) -->
     <div class="bottom-cta">
-      <button class="bottom-cta-btn" type="button" @click="$emit('open-pathway')">
-        🎯 See the EPC's 6-step pathway
+      <button
+        class="bottom-cta-btn"
+        type="button"
+        @click="$emit('open-pathway')"
+      >
+        🎯 See the EPC's pathway
       </button>
       <button
         class="bottom-cta-secondary outlined"
@@ -173,28 +194,94 @@ onMounted(() => {
 })
 
 const refinedStats = [
-  { id: 'heating', icon: '🔥', label: 'Heating', value: 16, max: 20, pct: 80, tone: 'high' },
-  { id: 'structure', icon: '🧱', label: 'Structure', value: 17, max: 25, pct: 68, tone: 'high' },
-  { id: 'efficiency', icon: '💡', label: 'Efficiency', value: 6, max: 15, pct: 40, tone: 'mid' },
-  { id: 'electrics', icon: '⚡', label: 'Electrics', value: 10, max: 20, pct: 50, tone: 'mid' },
-  { id: 'plumbing', icon: '💧', label: 'Plumbing', value: 13, max: 20, pct: 65, tone: 'mid' },
+  {
+    id: 'heating',
+    icon: '🔥',
+    label: 'Heating',
+    value: 16,
+    max: 20,
+    pct: 80,
+    tone: 'high',
+  },
+  {
+    id: 'structure',
+    icon: '🧱',
+    label: 'Structure',
+    value: 17,
+    max: 25,
+    pct: 68,
+    tone: 'high',
+  },
+  {
+    id: 'efficiency',
+    icon: '💡',
+    label: 'Efficiency',
+    value: 6,
+    max: 15,
+    pct: 40,
+    tone: 'mid',
+  },
+  {
+    id: 'electrics',
+    icon: '⚡',
+    label: 'Electrics',
+    value: 10,
+    max: 20,
+    pct: 50,
+    tone: 'mid',
+  },
+  {
+    id: 'plumbing',
+    icon: '💧',
+    label: 'Plumbing',
+    value: 13,
+    max: 20,
+    pct: 65,
+    tone: 'mid',
+  },
 ] as const
 
-// Confetti
-interface ConfettiPiece {
+// Fireworks — each burst radiates a ring of particles from a point, then
+// fades; bursts repeat on a stagger so the celebration keeps going while the
+// user is on the level-up screen.
+interface FwParticle {
+  tx: number
+  ty: number
+}
+interface Firework {
   left: number
+  top: number
   color: string
   delay: number
-  duration: number
+  particles: FwParticle[]
 }
-const colors = ['#00a19a', '#00b8b0', '#f0a030', '#7c6fb0', '#7ab040', '#ffd54a']
-const confetti = ref<ConfettiPiece[]>(
-  Array.from({ length: 60 }, () => ({
-    left: Math.random() * 100,
-    color: colors[Math.floor(Math.random() * colors.length)],
-    delay: Math.random() * 600,
-    duration: 2200 + Math.random() * 800,
-  }))
+const fwColors = [
+  '#00b8b0',
+  '#f0a030',
+  '#7c6fb0',
+  '#ffd54a',
+  '#ff5e7e',
+  '#5eead4',
+  '#7ab040',
+]
+const fireworks = ref<Firework[]>(
+  Array.from({ length: 11 }, () => {
+    const count = 24
+    const baseR = 110 + Math.random() * 80
+    const particles = Array.from({ length: count }, (_, j) => {
+      const ang = (Math.PI * 2 * j) / count + Math.random() * 0.2
+      const r = baseR + Math.random() * 30
+      // +30 on ty gives a slight gravity droop to the burst.
+      return { tx: Math.cos(ang) * r, ty: Math.sin(ang) * r + 30 }
+    })
+    return {
+      left: 10 + Math.random() * 80,
+      top: 8 + Math.random() * 50,
+      color: fwColors[Math.floor(Math.random() * fwColors.length)],
+      delay: Math.random() * 2600,
+      particles,
+    }
+  }),
 )
 </script>
 
@@ -229,40 +316,59 @@ const confetti = ref<ConfettiPiece[]>(
 }
 
 /* Soften prototype's 800-weights to match SF Pro app scale */
-.hs-v6-levelup :is(.levelup-title, .levelup-to-num, .levelup-from-num,
-  .stat-value) {
+.hs-v6-levelup
+  :is(.levelup-title, .levelup-to-num, .levelup-from-num, .stat-value) {
   font-weight: 700;
 }
 .hs-v6-levelup :is(.levelup-sub, .levelup-from-label, .levelup-to-label) {
   font-weight: 500;
 }
 
-/* Confetti */
-.confetti-host {
+/* Fireworks */
+.fireworks-host {
   position: absolute;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
   z-index: 1;
 }
-.confetti-piece {
+.firework {
   position: absolute;
-  top: -20px;
-  width: 8px;
-  height: 14px;
-  opacity: 0;
-  animation-name: confettiFall;
-  animation-timing-function: cubic-bezier(0.22, 0.7, 0.5, 1);
-  animation-fill-mode: forwards;
+  width: 0;
+  height: 0;
 }
-@keyframes confettiFall {
+.fw-particle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: fwBurst 2000ms cubic-bezier(0.12, 0.65, 0.35, 1) infinite;
+  will-change: transform, opacity;
+}
+@keyframes fwBurst {
   0% {
-    transform: translateY(-20px) rotate(0deg);
+    transform: translate(0, 0) scale(0.5);
+    opacity: 0;
+  }
+  6% {
+    transform: translate(0, 0) scale(1.5);
     opacity: 1;
   }
+  45% {
+    opacity: 1;
+  }
+  62%,
   100% {
-    transform: translateY(110vh) rotate(720deg);
+    transform: translate(var(--tx), var(--ty)) scale(0.4);
     opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fw-particle {
+    animation: none;
   }
 }
 
@@ -339,7 +445,8 @@ const confetti = ref<ConfettiPiece[]>(
     box-shadow: 0 12px 32px -8px rgba(0, 161, 154, 0.3);
   }
   50% {
-    box-shadow: 0 12px 32px -8px rgba(0, 161, 154, 0.3),
+    box-shadow:
+      0 12px 32px -8px rgba(0, 161, 154, 0.3),
       0 0 0 8px rgba(0, 161, 154, 0.15);
   }
 }
@@ -360,7 +467,8 @@ const confetti = ref<ConfettiPiece[]>(
   overflow: hidden;
 }
 .levelup-hero.level-up {
-  animation: hs-v6-fadeUp 0.35s 0.08s cubic-bezier(0.22, 1, 0.36, 1) both,
+  animation:
+    hs-v6-fadeUp 0.35s 0.08s cubic-bezier(0.22, 1, 0.36, 1) both,
     levelGlow 1.5s ease-out 3;
 }
 .levelup-eyebrow {
@@ -687,8 +795,14 @@ const confetti = ref<ConfettiPiece[]>(
 }
 
 @keyframes hs-v6-fadeUp-anim2 {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .anim-2 {
   animation: hs-v6-fadeUp-anim2 0.35s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
