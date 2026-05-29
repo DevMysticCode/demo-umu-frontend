@@ -11,14 +11,7 @@
         <div class="app-header-title">Your pathway</div>
         <div class="app-header-sub">Level {{ fromLevel }} → Level {{ toLevel }} · {{ addressLine }}</div>
       </div>
-      <div class="app-header-right">
-        <button class="app-icon-btn" type="button" aria-label="Notifications">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-            <path d="M10 21a2 2 0 0 0 4 0" />
-          </svg>
-        </button>
-      </div>
+      <div class="app-header-spacer" />
     </div>
 
     <!-- Pathway hero -->
@@ -454,17 +447,16 @@ const passportSummary = computed(() => {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 20px;
+  padding: 14px 18px 10px;
   padding-top: calc(14px + env(safe-area-inset-top));
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
+  background: transparent;
 }
 .back-btn,
 .app-icon-btn {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  background: var(--bg);
+  border-radius: 50%;
+  background: #fff;
   border: 1px solid var(--border);
   cursor: pointer;
   display: flex;
@@ -488,6 +480,11 @@ const passportSummary = computed(() => {
 .app-header-info {
   flex: 1;
   min-width: 0;
+  text-align: center;
+}
+.app-header-spacer {
+  width: 36px;
+  flex-shrink: 0;
 }
 .app-header-title {
   font-size: 15px;

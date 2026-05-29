@@ -125,7 +125,7 @@
     <template v-else-if="screen === 'boost'">
       <V6BoostView
         :home-score="autoScoreVal"
-        @back="screen = 'level-up'"
+        @back="goBack"
         @open-marketplace="goToRunningCosts"
         @start-passport="screen = 'kyc'"
       />
@@ -137,7 +137,7 @@
         :from-score="autoScoreVal"
         :to-score="v6QuizFinal?.finalScore ?? autoScoreVal"
         :delta="v6QuizFinal?.delta ?? 0"
-        @back="screen = 'landing'"
+        @back="goBack"
         @open-pathway="goToPathway"
         @open-boost="goToBoost"
       />
@@ -152,7 +152,7 @@
         :epc-year="resolvedEpcYear"
         :searches-today="searchStats?.today ?? 0"
         :passport-state="resolvedPassportState"
-        @back="screen = 'landing'"
+        @back="goBack"
         @finish="onQuizFinish"
         @upload-bill="onUploadBill"
         @view-passport="goToPassport"
@@ -2592,6 +2592,25 @@ type Screen =
   | 'move-ready'
 const screen = ref<Screen>('loading')
 
+// ── Screen history ────────────────────────────────────────────────
+// Back buttons should retrace the exact forward path, not jump to a
+// hardcoded screen that may never have been visited. We record every screen
+// transition after mount and pop it on back. `navigatingBack` stops a pop
+// from being re-recorded; `historyReady` keeps the noisy initial-load
+// transitions (loading → landing/results/boost) out of the stack.
+const screenHistory = ref<Screen[]>([])
+let navigatingBack = false
+let historyReady = false
+watch(screen, (next, prev) => {
+  if (!historyReady || navigatingBack) {
+    navigatingBack = false
+    return
+  }
+  if (prev && prev !== next && prev !== 'loading') {
+    screenHistory.value.push(prev)
+  }
+})
+
 const v6QuizFinal = ref<{ finalScore: number; delta: number; answers: Record<string, string> } | null>(null)
 
 function onQuizFinish(payload: { finalScore: number; delta: number; answers: Record<string, string> }) {
@@ -4987,33 +5006,16 @@ function goToClaim() {
 }
 
 function goBack() {
-  if (screen.value === 'passport') {
-    screen.value = 'results'
+  // Retrace the actual forward path: pop the last screen we came from.
+  const prev = screenHistory.value.pop()
+  if (prev && prev !== 'loading') {
+    navigatingBack = true
+    screen.value = prev
     return
   }
-  if (screen.value === 'buyer-results') {
-    screen.value = 'landing'
-    return
-  }
-  if (screen.value === 'quick-wins') {
-    screen.value = 'results'
-    return
-  }
-  if (screen.value === 'move-ready') {
-    screen.value = 'quick-wins'
-    return
-  }
-  if (screen.value === 'results') {
-    screen.value = 'landing'
-    return
-  }
-  if (screen.value === 'questions') {
-    screen.value = 'landing'
-    return
-  }
-  // Landing screen — step back in history so we return to wherever we came
-  // from (property page, explore, etc.) without pushing a new entry. Falls
-  // back to the property page if the user landed here directly.
+  // No in-flow history left (we're at the first screen of this visit) — step
+  // back out of the page to wherever we came from (property page, explore…),
+  // falling back to the property page if the user landed here directly.
   const hasInAppPrev =
     typeof window !== 'undefined' &&
     typeof (router.options.history as any)?.state?.back === 'string'
@@ -5186,6 +5188,7 @@ onMounted(async () => {
         }
       } catch {}
       screen.value = 'landing'
+      historyReady = true
       return
     }
   } catch {}
@@ -5206,6 +5209,7 @@ onMounted(async () => {
             answers.value = existing.answers
             if (Object.keys(existing.answers).length >= QUESTIONS.length) {
               screen.value = 'results'
+              historyReady = true
               return
             }
           }
@@ -5234,6 +5238,19 @@ onMounted(async () => {
     'kyc-pending',
     'published',
   ]
+  // Boosting requires an account. A guest who lands here via ?screen=boost
+  // (e.g. from the pathway teaser) is sent to sign-in and bounced straight
+  // back to the boost screen for this property afterwards.
+  if (requested === 'boost' && !token) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/homescore/${propertyId}?screen=boost`,
+      )
+    }
+    router.push('/onboarding/signin')
+    return
+  }
   if (token && requested && (allowed as string[]).includes(requested)) {
     if (requested === 'questions') {
       const firstUnanswered = QUESTIONS.findIndex(
@@ -5253,6 +5270,7 @@ onMounted(async () => {
       screen.value = requested as Screen
     }
   }
+  historyReady = true
 })
 
 watch(showResult, (shown) => {

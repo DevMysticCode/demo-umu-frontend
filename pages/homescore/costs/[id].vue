@@ -25,9 +25,7 @@
           {{ shortAddress }} · Based on public records
         </div>
       </div>
-      <!-- <div class="app-header-right">
-        <button class="app-icon-btn" type="button" aria-label="Save">🔖</button>
-      </div> -->
+      <div class="app-header-spacer" />
     </div>
 
     <!-- Amber address card -->
@@ -2167,17 +2165,16 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 20px;
+  padding: 14px 18px 10px;
   padding-top: calc(14px + env(safe-area-inset-top));
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
+  background: transparent;
 }
 .back-btn,
 .app-icon-btn {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  background: var(--bg);
+  border-radius: 50%;
+  background: #fff;
   border: 1px solid var(--border);
   cursor: pointer;
   display: flex;
@@ -2194,6 +2191,11 @@ function onBuyPassport() {
 .app-header-info {
   flex: 1;
   min-width: 0;
+  text-align: center;
+}
+.app-header-spacer {
+  width: 36px;
+  flex-shrink: 0;
 }
 .app-header-title {
   font-size: 15px;
