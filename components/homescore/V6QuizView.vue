@@ -89,7 +89,8 @@
     </div>
 
     <!-- ── Two ways to update your score ───────────────────────────── -->
-    <div class="two-ways anim-1">
+    <!-- Bill upload is hidden for now (re-enable via SHOW_BILL_UPLOAD). -->
+    <div v-if="SHOW_BILL_UPLOAD" class="two-ways anim-1">
       <div class="two-ways-title">Two ways to update your score</div>
       <div class="two-ways-grid">
         <button
@@ -188,6 +189,26 @@
     <div class="quiz-reset" @click="resetQuests">↺ Start again</div>
 
     <div style="height: 32px" />
+
+    <!-- ── "Answer at least one question" prompt ───────────────────── -->
+    <Teleport to="body">
+    <Transition name="bill-modal">
+      <div v-if="needAnswerModalOpen" class="modal-overlay hs-v6-quiz-modal" @click.self="needAnswerModalOpen = false">
+        <div class="need-answer-sheet" @click.stop>
+          <div class="need-answer-icon">📋</div>
+          <div class="need-answer-title">Answer at least one question</div>
+          <div class="need-answer-sub">
+            To work out your updated EPC and real HomeScore, we need to know
+            what's changed since the certificate. Answer <b>at least one</b>
+            question below and we'll recalculate your score.
+          </div>
+          <button class="need-answer-btn" type="button" @click="needAnswerModalOpen = false">
+            Got it — let's answer
+          </button>
+        </div>
+      </div>
+    </Transition>
+    </Teleport>
 
     <!-- ── Bill upload bottom-sheet drawer (Teleported so it lives at
          document.body level and can't be clipped by any parent's
@@ -305,6 +326,10 @@ const emit = defineEmits<{
   (e: 'upload-bill', file: File): void
   (e: 'view-passport'): void
 }>()
+
+// Bill-upload shortcut is parked for now; flip to re-enable the whole
+// "Two ways to update your score" block + its drawer.
+const SHOW_BILL_UPLOAD = false
 
 const searchesTodayDisplay = computed(() => {
   const n = props.searchesToday ?? 0
@@ -549,7 +574,13 @@ function resetQuests() {
   deltaText.value = '+0 pts'
 }
 
+// Require at least one answer before we can compute an updated EPC/HomeScore.
+const needAnswerModalOpen = ref(false)
 function onFinish() {
+  if (answeredCount.value === 0) {
+    needAnswerModalOpen.value = true
+    return
+  }
   const delta = liveScore.value - props.initialScore
   emit('finish', {
     finalScore: liveScore.value,
@@ -1416,6 +1447,62 @@ watch(() => props.initialScore, (v) => {
   box-shadow: 0 -8px 32px rgba(35, 29, 69, 0.25);
   max-height: 90dvh;
   overflow-y: auto;
+}
+/* "Answer at least one question" prompt */
+.need-answer-sheet {
+  width: 100%;
+  max-width: 28rem;
+  background: var(--card);
+  border-radius: 22px 22px 0 0;
+  padding: 26px 24px calc(24px + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 32px rgba(35, 29, 69, 0.25);
+  text-align: center;
+}
+.need-answer-icon {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent-paler), var(--accent-pale));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+.need-answer-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+.need-answer-sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+.need-answer-sub b {
+  color: var(--text);
+  font-weight: 800;
+}
+.need-answer-btn {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.35);
+  transition: filter 0.15s;
+}
+.need-answer-btn:hover {
+  filter: brightness(1.06);
 }
 .modal-grip {
   width: 40px;
