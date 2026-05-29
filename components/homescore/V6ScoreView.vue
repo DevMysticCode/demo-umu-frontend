@@ -79,18 +79,22 @@
           ><span style="opacity: 0.75; font-weight: 600">/100</span>
         </span>
       </div>
-      <button class="claim-cta-btn" :class="claimCta.variant" type="button" @click="onClaimCta">
-        {{ claimCta.label }}
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg>
-      </button>
       <div class="hs-addr-stat-row">
         <div class="pulse-dot" />
         <span><span class="hs-addr-stat-count">{{ searchesTodayDisplay }}</span> checked this HomeScore today</span>
       </div>
     </div>
+
+    <!-- Claim / Passport-state box + explainer drawers -->
+    <PassportClaimBox
+      :state="passportState"
+      :progress-pct="passportProgressPct"
+      :sections-done="passportSectionsDone"
+      :sections-total="passportSectionsTotal"
+      @claim="$emit('claim')"
+      @watch="$emit('watch-property')"
+      @buy="$emit('view-passport')"
+    />
 
     <!-- ── HomeScore card (animated outline + gauge + band + footer) ── -->
     <div class="score-card anim-2" data-tour="score">
@@ -670,6 +674,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -692,9 +697,13 @@ const props = withDefaults(
     streetTotal?: number | null
     /** Real searches today from PropertySearchLog */
     searchesToday?: number
-    /** Passport status of the property — drives the address-card CTA so we
-     *  don't show "Claim it free" on a home that's already claimed. */
+    /** Passport status of the property — drives the claim box so we don't
+     *  pitch "claim" on a home that's already claimed. */
     passportState?: 'unclaimed' | 'inProgress' | 'published'
+    /** Passport build progress (drives the in-progress ring + drawer). */
+    passportProgressPct?: number
+    passportSectionsDone?: number
+    passportSectionsTotal?: number
     /** Set by parent to auto-pop the claim drawer (e.g. when the user
      *  has just returned from sign-in with ?claim=1) */
     autoOpenClaim?: boolean
@@ -708,6 +717,9 @@ const props = withDefaults(
     streetTotal: null,
     searchesToday: 0,
     passportState: 'unclaimed',
+    passportProgressPct: 0,
+    passportSectionsDone: 0,
+    passportSectionsTotal: 0,
     autoOpenClaim: false,
   },
 )
@@ -770,6 +782,8 @@ const emit = defineEmits<{
   (e: 'see-street'): void
   /** Property already claimed — parent navigates to the passport/property. */
   (e: 'view-passport'): void
+  /** Buyer wants to watch this (in-progress) property. */
+  (e: 'watch-property'): void
   /** Fires when the user dismisses the claim modal so the parent can
    *  clear the ?claim=1 auto-open intent and not re-trigger on remount. */
   (e: 'claim-modal-closed'): void
@@ -1471,33 +1485,6 @@ watch(claimModalOpen, (open) => {
 // with a redirect-back URL that includes `?claim=1` — the parent
 // homescore page picks that up on mount and pops this same modal open
 // so the journey resumes where it left off.
-// Address-card CTA, driven by the property's real Passport state. We only
-// pitch "Claim it free" when the home is genuinely unclaimed; once an owner
-// has started or published a Passport, the CTA flips to a view/track action.
-const claimCta = computed<{ label: string; variant: string }>(() => {
-  switch (props.passportState) {
-    case 'published':
-      return { label: 'Passport published — view it', variant: 'published' }
-    case 'inProgress':
-      return { label: 'Passport in progress — see status', variant: 'progress' }
-    default:
-      return { label: 'Is this your property? Claim it free', variant: '' }
-  }
-})
-
-function onClaimCta() {
-  if (props.passportState === 'published' || props.passportState === 'inProgress') {
-    emit('view-passport')
-    return
-  }
-  onClaimClick()
-}
-
-function onClaimClick() {
-  // No sign-in gate here. Guests are allowed to claim → take the owner quiz →
-  // see their real HomeScore. Auth is enforced later, at "Boost your score".
-  claimModalOpen.value = true
-}
 function toggleStat(id: StatRow['id']) {
   expandedStat.value = expandedStat.value === id ? null : id
 }
