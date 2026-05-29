@@ -37,22 +37,6 @@
           @select="onResultSelect"
           @enter="onSearchEnter"
         />
-        <button class="hs-search-go" type="button" @click="onCheckClick">
-          Check
-          <svg
-            width="11"
-            height="11"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.4"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="5" y1="12" x2="19" y2="12" />
-            <polyline points="13 5 19 12 13 19" />
-          </svg>
-        </button>
       </div>
 
       <div class="hs-meta-row">
@@ -181,12 +165,12 @@ function onSearchEnter(_q: string) {
   // PropertySearchInput already opens its dropdown on enter.
 }
 
-function onCheckClick() {
-  const input = document.querySelector<HTMLInputElement>(
-    '.hs-search-wrap input',
-  )
-  input?.focus()
-}
+// function onCheckClick() {
+//   const input = document.querySelector<HTMLInputElement>(
+//     '.hs-search-wrap input',
+//   )
+//   input?.focus()
+// }
 
 // ── How it works tabs ────────────────────────────────────────────────
 type HowId = 'buyers' | 'owners' | 'curious'
