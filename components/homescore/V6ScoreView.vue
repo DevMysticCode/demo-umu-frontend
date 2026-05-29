@@ -79,8 +79,8 @@
           ><span style="opacity: 0.75; font-weight: 600">/100</span>
         </span>
       </div>
-      <button class="claim-cta-btn" type="button" @click="onClaimClick">
-        Is this your property? Claim it free
+      <button class="claim-cta-btn" :class="claimCta.variant" type="button" @click="onClaimCta">
+        {{ claimCta.label }}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12" />
           <polyline points="12 5 19 12 12 19" />
@@ -692,6 +692,9 @@ const props = withDefaults(
     streetTotal?: number | null
     /** Real searches today from PropertySearchLog */
     searchesToday?: number
+    /** Passport status of the property — drives the address-card CTA so we
+     *  don't show "Claim it free" on a home that's already claimed. */
+    passportState?: 'unclaimed' | 'inProgress' | 'published'
     /** Set by parent to auto-pop the claim drawer (e.g. when the user
      *  has just returned from sign-in with ?claim=1) */
     autoOpenClaim?: boolean
@@ -704,6 +707,7 @@ const props = withDefaults(
     streetRank: null,
     streetTotal: null,
     searchesToday: 0,
+    passportState: 'unclaimed',
     autoOpenClaim: false,
   },
 )
@@ -764,6 +768,8 @@ const emit = defineEmits<{
   (e: 'open-pathway'): void
   (e: 'see-running-costs'): void
   (e: 'see-street'): void
+  /** Property already claimed — parent navigates to the passport/property. */
+  (e: 'view-passport'): void
   /** Fires when the user dismisses the claim modal so the parent can
    *  clear the ?claim=1 auto-open intent and not re-trigger on remount. */
   (e: 'claim-modal-closed'): void
@@ -1465,27 +1471,32 @@ watch(claimModalOpen, (open) => {
 // with a redirect-back URL that includes `?claim=1` — the parent
 // homescore page picks that up on mount and pops this same modal open
 // so the journey resumes where it left off.
-function onClaimClick() {
-  const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-  if (token) {
-    claimModalOpen.value = true
+// Address-card CTA, driven by the property's real Passport state. We only
+// pitch "Claim it free" when the home is genuinely unclaimed; once an owner
+// has started or published a Passport, the CTA flips to a view/track action.
+const claimCta = computed<{ label: string; variant: string }>(() => {
+  switch (props.passportState) {
+    case 'published':
+      return { label: 'Passport published — view it', variant: 'published' }
+    case 'inProgress':
+      return { label: 'Passport in progress — see status', variant: 'progress' }
+    default:
+      return { label: 'Is this your property? Claim it free', variant: '' }
+  }
+})
+
+function onClaimCta() {
+  if (props.passportState === 'published' || props.passportState === 'inProgress') {
+    emit('view-passport')
     return
   }
-  // Save the return-to URL using the same key the auth middleware uses.
-  if (typeof window !== 'undefined' && (props.property as any)?.id) {
-    try {
-      localStorage.setItem(
-        'redirectAfterLogin',
-        `/homescore/${(props.property as any).id}?claim=1`,
-      )
-    } catch {
-      /* private mode / disabled — fall through to plain push */
-    }
-  }
-  if (typeof window !== 'undefined') {
-    window.location.href = '/onboarding/signin'
-  }
+  onClaimClick()
+}
+
+function onClaimClick() {
+  // No sign-in gate here. Guests are allowed to claim → take the owner quiz →
+  // see their real HomeScore. Auth is enforced later, at "Boost your score".
+  claimModalOpen.value = true
 }
 function toggleStat(id: StatRow['id']) {
   expandedStat.value = expandedStat.value === id ? null : id
@@ -2059,6 +2070,18 @@ const searchesTodayDisplay = computed(() => {
 }
 .claim-cta-btn:hover {
   filter: brightness(1.06);
+}
+/* Already-claimed variants — informational, not a "claim" pitch. */
+.claim-cta-btn.published {
+  background: white;
+  color: #8b4e0a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+.claim-cta-btn.progress {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  box-shadow: none;
 }
 .hs-addr-stat-row {
   display: flex;

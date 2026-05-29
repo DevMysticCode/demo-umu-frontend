@@ -107,6 +107,7 @@
         :street-rank="streetEnergyRank?.rank ?? null"
         :street-total="streetEnergyRank?.total ?? null"
         :searches-today="searchStats?.today ?? 0"
+        :passport-state="resolvedPassportState"
         :auto-open-claim="autoOpenClaim"
         @back="goBack"
         @claim="startQuestions"
@@ -115,6 +116,7 @@
         @open-pathway="goToPathway"
         @see-running-costs="goToRunningCosts"
         @see-street="goToStreetCompare"
+        @view-passport="goToPassport"
         @claim-modal-closed="autoOpenClaim = false"
       />
     </template>
@@ -137,7 +139,7 @@
         :delta="v6QuizFinal?.delta ?? 0"
         @back="screen = 'landing'"
         @open-pathway="goToPathway"
-        @open-boost="screen = 'boost'"
+        @open-boost="goToBoost"
       />
     </template>
 
@@ -2798,6 +2800,25 @@ function goToPathway() {
   router.push(`/homescore/pathway/${propertyId}`)
 }
 
+// "Boost your score" — this is where we finally require an account. Guests
+// take the owner quiz and see their real HomeScore for free; only when they
+// choose to boost it do we gate on sign-in, then land them back on the boost
+// screen for this property (?screen=boost is honoured on mount).
+function goToBoost() {
+  if (readOnlyMode.value) {
+    router.push(`/property/${propertyId}`)
+    return
+  }
+  if (isGuest.value) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('redirectAfterLogin', `/homescore/${propertyId}?screen=boost`)
+    }
+    showAuthGate.value = true
+    return
+  }
+  screen.value = 'boost'
+}
+
 function notifyWhenPublished() {
   // Guests need to sign in before we can notify them — gate it.
   if (isGuest.value) {
@@ -5205,6 +5226,7 @@ onMounted(async () => {
     'results',
     'passport',
     'publish',
+    'boost',
     'kyc',
     'kyc-pending',
     'published',
