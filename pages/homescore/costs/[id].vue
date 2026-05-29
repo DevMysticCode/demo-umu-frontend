@@ -2,18 +2,32 @@
   <div class="hs-buyer">
     <!-- App header -->
     <div class="app-header">
-      <button class="back-btn" type="button" @click="router.back()" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <button
+        class="back-btn"
+        type="button"
+        @click="router.back()"
+        aria-label="Back"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
       <div class="app-header-info">
         <div class="app-header-title">Property Report</div>
-        <div class="app-header-sub">{{ shortAddress }} · Based on public records</div>
+        <div class="app-header-sub">
+          {{ shortAddress }} · Based on public records
+        </div>
       </div>
-      <div class="app-header-right">
+      <!-- <div class="app-header-right">
         <button class="app-icon-btn" type="button" aria-label="Save">🔖</button>
-      </div>
+      </div> -->
     </div>
 
     <!-- Amber address card -->
@@ -21,31 +35,52 @@
       <div class="hs-addr-top">
         <div class="hs-addr-pin" />
         <div class="hs-addr-block">
-          <div class="hs-addr-line">{{ property.addressLine1 || 'This property' }}</div>
+          <div class="hs-addr-line">
+            {{ property.addressLine1 || 'This property' }}
+          </div>
           <div class="hs-addr-meta">{{ addressMeta }}</div>
         </div>
       </div>
       <div class="hs-addr-pills">
         <span v-if="property.epcRating" class="hs-addr-pill">
-          <span class="epc-letter" :style="{ background: epcColor }">{{ property.epcRating }}</span>
+          <span class="epc-letter" :style="{ background: epcColor }">{{
+            property.epcRating
+          }}</span>
           EPC rating
         </span>
         <span v-if="displayScore" class="hs-addr-pill">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 4 14 11 14 11 22 20 10 13 10" /></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="13 2 4 14 11 14 11 22 20 10 13 10" />
+          </svg>
           HomeScore <b style="color: white">{{ displayScore }}</b
           ><span style="opacity: 0.75; font-weight: 600">/100</span>
         </span>
       </div>
-      <button class="claim-cta-btn" :class="claimCta.variant" type="button" @click="onClaimCta">
+      <button
+        class="claim-cta-btn"
+        :class="claimCta.variant"
+        type="button"
+        @click="onClaimCta"
+      >
         {{ claimCta.label }}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <line x1="5" y1="12" x2="19" y2="12" />
           <polyline points="12 5 19 12 12 19" />
         </svg>
       </button>
       <div class="hs-addr-stat-row">
         <div class="pulse-dot" />
-        <span><span class="hs-addr-stat-count">{{ searchesTodayDisplay }}</span> checked this HomeScore today</span>
+        <span
+          ><span class="hs-addr-stat-count">{{ searchesTodayDisplay }}</span>
+          checked this HomeScore today</span
+        >
       </div>
     </div>
 
@@ -57,7 +92,37 @@
           <div class="buyer-conf-eyebrow">Buyer confidence</div>
           <div class="buyer-conf-title">{{ confidenceTitle }}</div>
         </div>
-        <div class="buyer-conf-num">{{ displayScore || '—' }}/100</div>
+        <div class="buyer-conf-dial" aria-label="HomeScore">
+          <svg viewBox="0 0 60 60" aria-hidden="true">
+            <circle
+              cx="30"
+              cy="30"
+              r="24"
+              stroke="#E4E5ED"
+              stroke-width="6"
+              fill="none"
+            />
+            <circle
+              cx="30"
+              cy="30"
+              r="24"
+              stroke="url(#confGrad)"
+              stroke-width="6"
+              fill="none"
+              stroke-dasharray="150.8"
+              :stroke-dashoffset="150.8 - (displayScore / 100) * 150.8"
+              stroke-linecap="round"
+              transform="rotate(-90 30 30)"
+            />
+            <defs>
+              <linearGradient id="confGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00B8B0" />
+                <stop offset="100%" stop-color="#008A84" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="buyer-conf-dial-num">{{ displayScore || '—' }}</div>
+        </div>
       </div>
     </div>
 
@@ -91,13 +156,20 @@
             <div class="stat-icon">{{ s.icon }}</div>
             <div class="stat-label">{{ s.label }}</div>
             <div class="stat-bar-wrap">
-              <div class="stat-bar-fill" :class="s.tone" :style="{ width: s.pct + '%' }" />
+              <div
+                class="stat-bar-fill"
+                :class="s.tone"
+                :style="{ width: s.pct + '%' }"
+              />
             </div>
-            <div class="stat-value" :class="`v-${s.tone}`">{{ s.value }}/{{ s.max }}</div>
+            <div class="stat-value" :class="`v-${s.tone}`">
+              {{ s.value }}/{{ s.max }}
+            </div>
           </div>
           <div class="stats-note">
-            Ask the owner to run a full HomeScore — they may have made improvements
-            since {{ epcYear || 'the survey' }} that aren't on the public EPC.
+            Ask the owner to run a full HomeScore — they may have made
+            improvements since {{ epcYear || 'the survey' }} that aren't on the
+            public EPC.
           </div>
         </div>
 
@@ -146,8 +218,8 @@
         <div class="tab-note">
           Water &amp; sewerage is your water company's
           <b v-if="waterInfo?.company">{{ waterInfo.company }}</b> 2024/25
-          regional average — water companies don't expose a per-property
-          metered bill, so this is the published area figure.
+          regional average — water companies don't expose a per-property metered
+          bill, so this is the published area figure.
         </div>
       </div>
 
@@ -177,7 +249,11 @@
             <div class="br-card-info">
               <div class="br-card-title">Sale history</div>
               <div class="br-card-sub">
-                {{ saleHistory.length ? `${saleHistory.length} recorded sale${saleHistory.length === 1 ? '' : 's'} of this property` : 'No recorded sales of this property' }}
+                {{
+                  saleHistory.length
+                    ? `${saleHistory.length} recorded sale${saleHistory.length === 1 ? '' : 's'} of this property`
+                    : 'No recorded sales of this property'
+                }}
               </div>
             </div>
             <span class="br-card-chev">›</span>
@@ -196,9 +272,9 @@
                 </div>
               </template>
               <div v-else class="br-empty-note">
-                No Land Registry Price Paid record exists for this exact address.
-                Sales may be missing if the home is new-build, was last sold
-                before 1995, or transferred without a recorded price.
+                No Land Registry Price Paid record exists for this exact
+                address. Sales may be missing if the home is new-build, was last
+                sold before 1995, or transferred without a recorded price.
               </div>
               <div class="br-card-srcrow">
                 <span class="br-card-srcrow-label">Source</span>
@@ -215,7 +291,11 @@
             <div class="br-card-info">
               <div class="br-card-title">Comparable sales nearby</div>
               <div class="br-card-sub">
-                {{ comparables.length ? `${comparables.length} similar homes · ${property?.postcode || ''}` : 'No nearby sales found yet' }}
+                {{
+                  comparables.length
+                    ? `${comparables.length} similar homes · ${property?.postcode || ''}`
+                    : 'No nearby sales found yet'
+                }}
               </div>
             </div>
             <span class="br-card-chev">›</span>
@@ -259,7 +339,8 @@
           <div class="br-card-body" :class="{ open: openCards.has('title') }">
             <div class="br-card-body-inner">
               <b>Tenure:</b> {{ tenureLabel }}.<br />
-              <b>Title number:</b> {{ property?.titleNumber || 'available via solicitor' }}.<br />
+              <b>Title number:</b>
+              {{ property?.titleNumber || 'available via solicitor' }}.<br />
               The Land Registry can provide a full Title Register (£3) and Title
               Plan (£3) with a buyer's solicitor account.
               <div class="br-card-srcrow">
@@ -269,7 +350,6 @@
             </div>
           </div>
         </div>
-
       </div>
 
       <!-- ════ RISKS ════ -->
@@ -305,8 +385,12 @@
           <div class="risk-item-top">
             <div class="risk-icon" :class="listedTone">🏛️</div>
             <div class="risk-body">
-              <div class="risk-title">Listed building &amp; conservation area</div>
-              <div class="risk-sub">{{ listedSub }} · Historic England / Planning</div>
+              <div class="risk-title">
+                Listed building &amp; conservation area
+              </div>
+              <div class="risk-sub">
+                {{ listedSub }} · Historic England / Planning
+              </div>
             </div>
             <div class="risk-status" :class="listedTone">{{ listedLabel }}</div>
           </div>
@@ -326,19 +410,43 @@
         <!-- Planning -->
         <div class="risk-item col" @click="toggleCard('planning')">
           <div class="risk-item-top">
-            <div class="risk-icon" :class="planningApps.length ? 'note' : 'clear'">📋</div>
+            <div
+              class="risk-icon"
+              :class="planningApps.length ? 'note' : 'clear'"
+            >
+              📋
+            </div>
             <div class="risk-body">
               <div class="risk-title">Planning history</div>
               <div class="risk-sub">
-                {{ planningApps.length ? `${planningApps.length} application${planningApps.length === 1 ? '' : 's'} on file` : 'No applications on file' }} · Local planning authority
+                {{
+                  planningApps.length
+                    ? `${planningApps.length} application${planningApps.length === 1 ? '' : 's'} on file`
+                    : 'No applications on file'
+                }}
+                · Local planning authority
               </div>
             </div>
-            <div class="risk-status" :class="planningApps.length ? 'note' : 'clear'">
-              {{ planningApps.length ? `${planningApps.length} app${planningApps.length === 1 ? '' : 's'}` : 'Clear' }}
+            <div
+              class="risk-status"
+              :class="planningApps.length ? 'note' : 'clear'"
+            >
+              {{
+                planningApps.length
+                  ? `${planningApps.length} app${planningApps.length === 1 ? '' : 's'}`
+                  : 'Clear'
+              }}
             </div>
           </div>
-          <div v-if="openCards.has('planning') && planningApps.length" class="risk-drill">
-            <div v-for="(a, i) in planningApps.slice(0, 6)" :key="i" style="margin-bottom: 4px">
+          <div
+            v-if="openCards.has('planning') && planningApps.length"
+            class="risk-drill"
+          >
+            <div
+              v-for="(a, i) in planningApps.slice(0, 6)"
+              :key="i"
+              style="margin-bottom: 4px"
+            >
               · <b>{{ a.dateLabel }}</b> — {{ a.description }}
               <span :style="{ color: a.statusColor }">{{ a.status }}</span>
             </div>
@@ -392,15 +500,30 @@
         <!-- Crime -->
         <div class="tab-hero-stat">
           <div>
-            <div class="tab-hero-stat-big">{{ crime ? crimePerMonth : '—' }}<small> /mo</small></div>
+            <div class="tab-hero-stat-big">
+              {{ crime ? crimePerMonth : '—' }}<small> /mo</small>
+            </div>
             <div class="tab-hero-stat-label">Crimes within 1 mile</div>
           </div>
           <div class="tab-hero-stat-body">
-            <div class="tab-hero-stat-headline">{{ crime ? crimeHeadline : (enrichmentLoaded ? 'No crime data' : 'Loading…') }}</div>
+            <div class="tab-hero-stat-headline">
+              {{
+                crime
+                  ? crimeHeadline
+                  : enrichmentLoaded
+                    ? 'No crime data'
+                    : 'Loading…'
+              }}
+            </div>
             <div class="tab-hero-stat-sub">
               <template v-if="crime">
                 12-month total: {{ crime.totalLast12m }}
-                <template v-if="crimeTrendText"> · <span :class="crimeTrendClass">{{ crimeTrendText }}</span></template>
+                <template v-if="crimeTrendText">
+                  ·
+                  <span :class="crimeTrendClass">{{
+                    crimeTrendText
+                  }}</span></template
+                >
                 · data.police.uk
               </template>
               <template v-else>data.police.uk</template>
@@ -420,16 +543,28 @@
           <div class="br-card-body" :class="{ open: openCards.has('crime') }">
             <div class="br-card-body-inner">
               <template v-if="crimeByCategory.length">
-                <div v-for="(c, i) in crimeByCategory" :key="i" class="crime-row">
+                <div
+                  v-for="(c, i) in crimeByCategory"
+                  :key="i"
+                  class="crime-row"
+                >
                   <span class="crime-name">{{ c.label }}</span>
                   <div class="crime-bar">
-                    <div class="crime-bar-fill" :class="c.tone" :style="{ width: c.pct + '%' }" />
+                    <div
+                      class="crime-bar-fill"
+                      :class="c.tone"
+                      :style="{ width: c.pct + '%' }"
+                    />
                   </div>
                   <span class="crime-count">{{ c.count }}</span>
                 </div>
               </template>
               <div v-else class="br-empty-note">
-                {{ enrichmentLoaded ? 'No street-level crime returned for this location.' : 'Loading crime data…' }}
+                {{
+                  enrichmentLoaded
+                    ? 'No street-level crime returned for this location.'
+                    : 'Loading crime data…'
+                }}
               </div>
               <div class="br-card-srcrow">
                 <span class="br-card-srcrow-label">Source</span>
@@ -445,7 +580,13 @@
             <div class="br-card-ico teal">🎓</div>
             <div class="br-card-info">
               <div class="br-card-title">Schools nearby</div>
-              <div class="br-card-sub">{{ schools.length ? `${schools.length} within ~1 mile` : 'None found within ~1 mile' }}</div>
+              <div class="br-card-sub">
+                {{
+                  schools.length
+                    ? `${schools.length} within ~1 mile`
+                    : 'None found within ~1 mile'
+                }}
+              </div>
             </div>
             <span class="br-card-chev">›</span>
           </div>
@@ -462,7 +603,11 @@
                 </div>
               </template>
               <div v-else class="br-empty-note">
-                {{ enrichmentLoaded ? 'No schools found within ~1 mile of this address.' : 'Loading schools…' }}
+                {{
+                  enrichmentLoaded
+                    ? 'No schools found within ~1 mile of this address.'
+                    : 'Loading schools…'
+                }}
               </div>
               <div class="br-card-srcrow">
                 <span class="br-card-srcrow-label">Source</span>
@@ -479,9 +624,19 @@
             <div class="br-card-ico teal">📶</div>
             <div class="br-card-info">
               <div class="br-card-title">Broadband &amp; mobile</div>
-              <div class="br-card-sub">Ofcom checker for {{ property?.postcode }}</div>
+              <div class="br-card-sub">
+                Ofcom checker for {{ property?.postcode }}
+              </div>
             </div>
-            <div v-if="broadband" class="br-card-val accent">{{ broadband.fttp ? 'FTTP' : broadband.superfast ? 'Superfast' : 'Standard' }}</div>
+            <div v-if="broadband" class="br-card-val accent">
+              {{
+                broadband.fttp
+                  ? 'FTTP'
+                  : broadband.superfast
+                    ? 'Superfast'
+                    : 'Standard'
+              }}
+            </div>
             <span class="br-card-chev">›</span>
           </div>
           <div class="br-card-body" :class="{ open: openCards.has('bb') }">
@@ -489,7 +644,9 @@
               <template v-if="broadband">
                 <div class="bb-card">
                   <div class="bb-speed">
-                    <span class="bb-num">{{ broadband.maxDownload ?? '—' }}</span>
+                    <span class="bb-num">{{
+                      broadband.maxDownload ?? '—'
+                    }}</span>
                     <span class="bb-unit">Mb/s</span>
                   </div>
                   <div class="bb-bars">
@@ -500,16 +657,26 @@
                     <i :class="{ on: broadband.ultrafast }" />
                   </div>
                 </div>
-                <div v-if="mobileNets.length" class="bb-mobile-h">Mobile signal (outdoor)</div>
+                <div v-if="mobileNets.length" class="bb-mobile-h">
+                  Mobile signal (outdoor)
+                </div>
                 <div v-for="(n, i) in mobileNets" :key="i" class="bb-net-row">
                   <span class="bb-net-name">📱 {{ n.name }}</span>
                   <div class="bb-cov">
-                    <i v-for="bar in 5" :key="bar" :class="{ on: bar <= n.bars }" />
+                    <i
+                      v-for="bar in 5"
+                      :key="bar"
+                      :class="{ on: bar <= n.bars }"
+                    />
                   </div>
                 </div>
               </template>
               <div v-else class="br-empty-note">
-                {{ enrichmentLoaded ? 'Ofcom did not return coverage for this postcode.' : 'Loading broadband & mobile coverage…' }}
+                {{
+                  enrichmentLoaded
+                    ? 'Ofcom did not return coverage for this postcode.'
+                    : 'Loading broadband & mobile coverage…'
+                }}
               </div>
               <div class="br-card-srcrow">
                 <span class="br-card-srcrow-label">Source</span>
@@ -529,15 +696,26 @@
             </div>
             <span class="br-card-chev">›</span>
           </div>
-          <div class="br-card-body" :class="{ open: openCards.has('transport') }">
+          <div
+            class="br-card-body"
+            :class="{ open: openCards.has('transport') }"
+          >
             <div class="br-card-body-inner">
               <template v-if="transport.length">
-                <div v-for="(t, i) in transport" :key="i" style="margin-bottom: 4px">
+                <div
+                  v-for="(t, i) in transport"
+                  :key="i"
+                  style="margin-bottom: 4px"
+                >
                   <b>{{ t.name }}</b> — {{ t.dist }} ({{ t.kind }})
                 </div>
               </template>
               <div v-else class="br-empty-note">
-                {{ enrichmentLoaded ? 'No stations or bus stops found nearby.' : 'Loading transport…' }}
+                {{
+                  enrichmentLoaded
+                    ? 'No stations or bus stops found nearby.'
+                    : 'Loading transport…'
+                }}
               </div>
               <div class="br-card-srcrow">
                 <span class="br-card-srcrow-label">Source</span>
@@ -553,19 +731,29 @@
             <div class="br-card-ico teal">⚕️</div>
             <div class="br-card-info">
               <div class="br-card-title">Healthcare nearby</div>
-              <div class="br-card-sub">GP surgeries, pharmacies &amp; hospitals</div>
+              <div class="br-card-sub">
+                GP surgeries, pharmacies &amp; hospitals
+              </div>
             </div>
             <span class="br-card-chev">›</span>
           </div>
           <div class="br-card-body" :class="{ open: openCards.has('health') }">
             <div class="br-card-body-inner">
               <template v-if="healthcare.length">
-                <div v-for="(h, i) in healthcare" :key="i" style="margin-bottom: 4px">
+                <div
+                  v-for="(h, i) in healthcare"
+                  :key="i"
+                  style="margin-bottom: 4px"
+                >
                   <b>{{ h.name }}</b> — {{ h.dist }} ({{ h.kind }})
                 </div>
               </template>
               <div v-else class="br-empty-note">
-                {{ enrichmentLoaded ? 'No GP surgeries, pharmacies or hospitals found nearby.' : 'Loading healthcare…' }}
+                {{
+                  enrichmentLoaded
+                    ? 'No GP surgeries, pharmacies or hospitals found nearby.'
+                    : 'Loading healthcare…'
+                }}
               </div>
               <div class="br-card-srcrow">
                 <span class="br-card-srcrow-label">Source</span>
@@ -581,7 +769,13 @@
             <div class="br-card-ico teal">🏘️</div>
             <div class="br-card-info">
               <div class="br-card-title">Neighbourhood</div>
-              <div class="br-card-sub">{{ neighbourhood ? `${property?.postcode || ''} area profile` : 'Census demographics' }}</div>
+              <div class="br-card-sub">
+                {{
+                  neighbourhood
+                    ? `${property?.postcode || ''} area profile`
+                    : 'Census demographics'
+                }}
+              </div>
             </div>
             <span class="br-card-chev">›</span>
           </div>
@@ -613,10 +807,18 @@
       <div v-if="activeTab === 'street'" class="tab-panel active">
         <div class="street-rank-hero">
           <div class="street-rank-big">
-            {{ streetRank ?? '—' }}<span>{{ streetRank ? ordinalSuffix(streetRank) : '' }} of {{ streetTotal ?? '—' }}</span>
+            {{ streetRank ?? '—'
+            }}<span
+              >{{ streetRank ? ordinalSuffix(streetRank) : '' }} of
+              {{ streetTotal ?? '—' }}</span
+            >
           </div>
           <div class="street-rank-small">{{ streetRankLabel }}</div>
-          <div v-if="streetCallout" class="street-rank-callout" v-html="streetCallout" />
+          <div
+            v-if="streetCallout"
+            class="street-rank-callout"
+            v-html="streetCallout"
+          />
         </div>
         <div v-if="streetBars.length" class="street-bars">
           <div
@@ -625,11 +827,19 @@
             class="street-bar-row"
             :class="{ 'you-row': b.isYou }"
           >
-            <div class="street-bar-label" :class="{ you: b.isYou }">{{ b.label }}</div>
-            <div class="street-bar-wrap">
-              <div class="street-bar-fill" :class="b.tone" :style="{ width: b.pct + '%' }" />
+            <div class="street-bar-label" :class="{ you: b.isYou }">
+              {{ b.label }}
             </div>
-            <div class="street-bar-amt" :class="{ you: b.isYou }">£{{ formatNum(b.cost) }}</div>
+            <div class="street-bar-wrap">
+              <div
+                class="street-bar-fill"
+                :class="b.tone"
+                :style="{ width: b.pct + '%' }"
+              />
+            </div>
+            <div class="street-bar-amt" :class="{ you: b.isYou }">
+              £{{ formatNum(b.cost) }}
+            </div>
           </div>
         </div>
         <div v-else class="tab-note">
@@ -646,56 +856,103 @@
       <div class="state-banner anim-3">
         <div class="state-banner-ico">📭</div>
         <div class="state-banner-body">
-          <div class="state-banner-title">This property is Unclaimed <span class="state-banner-pill">Public record</span></div>
-          <div class="state-banner-sub">No owner action yet. Score is the public EPC only. <b>No Passport built.</b></div>
+          <div class="state-banner-title">
+            This property is Unclaimed
+            <span class="state-banner-pill">Public record</span>
+          </div>
+          <div class="state-banner-sub">
+            No owner action yet. Score is the public EPC only.
+            <b>No Passport built.</b>
+          </div>
         </div>
       </div>
 
       <div class="watch-card anim-4">
         <div class="watch-card-eyebrow">👁 Watch this property</div>
-        <div class="watch-card-title">Be the first to know if anything changes here.</div>
-        <div class="watch-card-sub">No Passport exists yet. Adding this to your profile turns on notifications for every meaningful change at <b>{{ addrShort }}</b>.</div>
+        <div class="watch-card-title">
+          Be the first to know if anything changes here.
+        </div>
+        <div class="watch-card-sub">
+          No Passport exists yet. Adding this to your profile turns on
+          notifications for every meaningful change at <b>{{ addrShort }}</b
+          >.
+        </div>
         <div class="watch-trigger">
           <div class="watch-trigger-ico">🏠</div>
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">Owner claims this property</div>
-            <div class="watch-trigger-sub">You'll get pinged the moment they verify ownership.</div>
+            <div class="watch-trigger-sub">
+              You'll get pinged the moment they verify ownership.
+            </div>
           </div>
         </div>
         <div class="watch-trigger">
           <div class="watch-trigger-ico">📋</div>
           <div class="watch-trigger-body">
-            <div class="watch-trigger-title">Passport started or progress milestones hit</div>
-            <div class="watch-trigger-sub">Get a ping at 25% / 50% / 75% so you can register interest before it's published.</div>
+            <div class="watch-trigger-title">
+              Passport started or progress milestones hit
+            </div>
+            <div class="watch-trigger-sub">
+              Get a ping at 25% / 50% / 75% so you can register interest before
+              it's published.
+            </div>
           </div>
         </div>
         <div class="watch-trigger">
           <div class="watch-trigger-ico">🎉</div>
           <div class="watch-trigger-body">
-            <div class="watch-trigger-title">Passport published · property goes live</div>
-            <div class="watch-trigger-sub">Buy access for <b>£15</b> — or <b>free</b> if you're a verified buyer.</div>
+            <div class="watch-trigger-title">
+              Passport published · property goes live
+            </div>
+            <div class="watch-trigger-sub">
+              Buy access for <b>£15</b> — or <b>free</b> if you're a verified
+              buyer.
+            </div>
           </div>
         </div>
         <div class="watch-trigger">
           <div class="watch-trigger-ico">📈</div>
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">Comparable sales nearby</div>
-            <div class="watch-trigger-sub">New Land Registry data on {{ property?.postcode }} — keeps your estimated value fresh.</div>
+            <div class="watch-trigger-sub">
+              New Land Registry data on {{ property?.postcode }} — keeps your
+              estimated value fresh.
+            </div>
           </div>
         </div>
-        <button class="watch-cta" type="button" @click="onWatch">👁 Watch this property →</button>
+        <button class="watch-cta" type="button" @click="onWatch">
+          👁 Watch this property →
+        </button>
       </div>
 
       <div class="verify-card anim-4">
         <div class="verify-card-eyebrow">🛡 Verified buyer · £35 one-off</div>
-        <div class="verify-card-title">Be ready to offer the moment this lists.</div>
-        <div class="verify-card-sub">Owners are most likely to publish a Passport <b style="color:#FFD58A;">when there's a verified buyer watching</b>. Verified status unlocks free Passport access on any home you're watching.</div>
-        <div class="verify-stats">
-          <div class="verify-stat"><div class="verify-stat-num">3×</div><div class="verify-stat-label">Offers accepted</div></div>
-          <div class="verify-stat"><div class="verify-stat-num">2-3w</div><div class="verify-stat-label">Faster exchange</div></div>
-          <div class="verify-stat"><div class="verify-stat-num">FREE</div><div class="verify-stat-label">Passport access</div></div>
+        <div class="verify-card-title">
+          Be ready to offer the moment this lists.
         </div>
-        <button class="verify-cta" type="button" @click="onVerify">✓ See what verification gets you →</button>
+        <div class="verify-card-sub">
+          Owners are most likely to publish a Passport
+          <b style="color: #ffd58a">when there's a verified buyer watching</b>.
+          Verified status unlocks free Passport access on any home you're
+          watching.
+        </div>
+        <div class="verify-stats">
+          <div class="verify-stat">
+            <div class="verify-stat-num">3×</div>
+            <div class="verify-stat-label">Offers accepted</div>
+          </div>
+          <div class="verify-stat">
+            <div class="verify-stat-num">2-3w</div>
+            <div class="verify-stat-label">Faster exchange</div>
+          </div>
+          <div class="verify-stat">
+            <div class="verify-stat-num">FREE</div>
+            <div class="verify-stat-label">Passport access</div>
+          </div>
+        </div>
+        <button class="verify-cta" type="button" @click="onVerify">
+          ✓ See what verification gets you →
+        </button>
       </div>
     </template>
 
@@ -704,8 +961,19 @@
       <div class="state-banner in-progress anim-3">
         <div class="state-banner-ico">📋</div>
         <div class="state-banner-body">
-          <div class="state-banner-title">Passport in progress <span class="state-banner-pill">Owner verified</span></div>
-          <div class="state-banner-sub">The owner has claimed this home and is building a verified Passport — <b>{{ passportSectionsDone }} of {{ passportSectionsTotal }} sections</b> done.</div>
+          <div class="state-banner-title">
+            Passport in progress
+            <span class="state-banner-pill">Owner verified</span>
+          </div>
+          <div class="state-banner-sub">
+            The owner has claimed this home and is building a verified Passport
+            —
+            <b
+              >{{ passportSectionsDone }} of
+              {{ passportSectionsTotal }} sections</b
+            >
+            done.
+          </div>
         </div>
       </div>
 
@@ -713,43 +981,88 @@
         <div class="pp-progress-eyebrow">📋 Passport build · live</div>
         <div class="pp-progress-pct-row">
           <span class="pp-progress-pct">{{ passportProgressPct }}%</span>
-          <span class="pp-progress-frac">{{ passportSectionsDone }} of {{ passportSectionsTotal }} sections complete</span>
+          <span class="pp-progress-frac"
+            >{{ passportSectionsDone }} of {{ passportSectionsTotal }} sections
+            complete</span
+          >
         </div>
-        <div class="pp-progress-bar"><div class="pp-progress-fill" :style="{ width: passportProgressPct + '%' }" /></div>
-        <div class="pp-progress-sub">The owner is gathering verified documents. <b>Register your interest to be first in line when it publishes.</b></div>
+        <div class="pp-progress-bar">
+          <div
+            class="pp-progress-fill"
+            :style="{ width: passportProgressPct + '%' }"
+          />
+        </div>
+        <div class="pp-progress-sub">
+          The owner is gathering verified documents.
+          <b>Register your interest to be first in line when it publishes.</b>
+        </div>
       </div>
 
       <div class="watch-card anim-5">
         <div class="watch-card-eyebrow">🥇 Register your interest</div>
-        <div class="watch-card-title">Get in the queue before it goes live.</div>
-        <div class="watch-card-sub">Registering interest tells the owner a real buyer is waiting — and puts you <b>first in line</b> for a viewing the moment the Passport publishes.</div>
+        <div class="watch-card-title">
+          Get in the queue before it goes live.
+        </div>
+        <div class="watch-card-sub">
+          Registering interest tells the owner a real buyer is waiting — and
+          puts you <b>first in line</b> for a viewing the moment the Passport
+          publishes.
+        </div>
         <div class="watch-trigger">
           <div class="watch-trigger-ico">📋</div>
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">Milestone pings</div>
-            <div class="watch-trigger-sub">Get pinged at 75%, 90%, and published.</div>
+            <div class="watch-trigger-sub">
+              Get pinged at 75%, 90%, and published.
+            </div>
           </div>
         </div>
         <div class="watch-trigger">
           <div class="watch-trigger-ico">🎉</div>
           <div class="watch-trigger-body">
-            <div class="watch-trigger-title">Free Passport the moment it publishes</div>
-            <div class="watch-trigger-sub">Verified buyers get the full sales pack free on publish — worth £15.</div>
+            <div class="watch-trigger-title">
+              Free Passport the moment it publishes
+            </div>
+            <div class="watch-trigger-sub">
+              Verified buyers get the full sales pack free on publish — worth
+              £15.
+            </div>
           </div>
         </div>
-        <button class="watch-cta" type="button" @click="onRegister">🥇 Register my interest →</button>
+        <button class="watch-cta" type="button" @click="onRegister">
+          🥇 Register my interest →
+        </button>
       </div>
 
       <div class="verify-card anim-5">
         <div class="verify-card-eyebrow">🛡 Verified buyer · £35 one-off</div>
-        <div class="verify-card-title">Be viewing-ready before anyone else.</div>
-        <div class="verify-card-sub">Owners building a Passport are choosing who to sell to. <b style="color:#FFD58A;">Verified + registered buyers go to the front</b> — and get the Passport free on day one.</div>
-        <div class="verify-stats">
-          <div class="verify-stat"><div class="verify-stat-num">1st</div><div class="verify-stat-label">In the queue</div></div>
-          <div class="verify-stat"><div class="verify-stat-num">FREE</div><div class="verify-stat-label">Passport on launch</div></div>
-          <div class="verify-stat"><div class="verify-stat-num">3×</div><div class="verify-stat-label">Offers accepted</div></div>
+        <div class="verify-card-title">
+          Be viewing-ready before anyone else.
         </div>
-        <button class="verify-cta" type="button" @click="onVerify">✓ See what verification gets you →</button>
+        <div class="verify-card-sub">
+          Owners building a Passport are choosing who to sell to.
+          <b style="color: #ffd58a"
+            >Verified + registered buyers go to the front</b
+          >
+          — and get the Passport free on day one.
+        </div>
+        <div class="verify-stats">
+          <div class="verify-stat">
+            <div class="verify-stat-num">1st</div>
+            <div class="verify-stat-label">In the queue</div>
+          </div>
+          <div class="verify-stat">
+            <div class="verify-stat-num">FREE</div>
+            <div class="verify-stat-label">Passport on launch</div>
+          </div>
+          <div class="verify-stat">
+            <div class="verify-stat-num">3×</div>
+            <div class="verify-stat-label">Offers accepted</div>
+          </div>
+        </div>
+        <button class="verify-cta" type="button" @click="onVerify">
+          ✓ See what verification gets you →
+        </button>
       </div>
     </template>
 
@@ -758,8 +1071,19 @@
       <div class="state-banner published anim-3">
         <div class="state-banner-ico">🎉</div>
         <div class="state-banner-body">
-          <div class="state-banner-title">Passport published <span class="state-banner-pill">Solicitor-grade</span></div>
-          <div class="state-banner-sub">Full verified sales pack ready<span v-if="passportSectionsTotal"> — <b>{{ passportSectionsDone }} of {{ passportSectionsTotal }} sections</b></span>. Title, surveys, planning &amp; fittings in one place.</div>
+          <div class="state-banner-title">
+            Passport published
+            <span class="state-banner-pill">Solicitor-grade</span>
+          </div>
+          <div class="state-banner-sub">
+            Full verified sales pack ready<span v-if="passportSectionsTotal">
+              —
+              <b
+                >{{ passportSectionsDone }} of
+                {{ passportSectionsTotal }} sections</b
+              ></span
+            >. Title, surveys, planning &amp; fittings in one place.
+          </div>
         </div>
       </div>
 
@@ -769,49 +1093,107 @@
           <span class="buy-pp-grade">Solicitor-grade</span>
         </div>
         <div class="buy-pp-title">The full story on this home — verified.</div>
-        <div class="buy-pp-sub">Everything a buyer's solicitor needs, gathered &amp; checked upfront. Homes with a Passport sell <b style="color:var(--accent-dark);">~12 weeks faster</b>.</div>
+        <div class="buy-pp-sub">
+          Everything a buyer's solicitor needs, gathered &amp; checked upfront.
+          Homes with a Passport sell
+          <b style="color: var(--accent-dark)">~12 weeks faster</b>.
+        </div>
         <div class="buy-pp-inside">
-          <div class="buy-pp-item"><span class="buy-pp-item-tick">✓</span> Title &amp; deeds</div>
-          <div class="buy-pp-item"><span class="buy-pp-item-tick">✓</span> RICS survey</div>
-          <div class="buy-pp-item"><span class="buy-pp-item-tick">✓</span> Planning &amp; building regs</div>
-          <div class="buy-pp-item"><span class="buy-pp-item-tick">✓</span> Fixtures &amp; fittings</div>
-          <div class="buy-pp-item"><span class="buy-pp-item-tick">✓</span> Warranties &amp; guarantees</div>
-          <div class="buy-pp-item"><span class="buy-pp-item-tick">✓</span> + 14 more sections</div>
+          <div class="buy-pp-item">
+            <span class="buy-pp-item-tick">✓</span> Title &amp; deeds
+          </div>
+          <div class="buy-pp-item">
+            <span class="buy-pp-item-tick">✓</span> RICS survey
+          </div>
+          <div class="buy-pp-item">
+            <span class="buy-pp-item-tick">✓</span> Planning &amp; building regs
+          </div>
+          <div class="buy-pp-item">
+            <span class="buy-pp-item-tick">✓</span> Fixtures &amp; fittings
+          </div>
+          <div class="buy-pp-item">
+            <span class="buy-pp-item-tick">✓</span> Warranties &amp; guarantees
+          </div>
+          <div class="buy-pp-item">
+            <span class="buy-pp-item-tick">✓</span> + 14 more sections
+          </div>
         </div>
         <div class="buy-pp-pricerow">
-          <div><div class="buy-pp-price">£15<small> one-off</small></div></div>
-          <div class="buy-pp-pricenote">Instant access to the full pack. <b>Free for verified buyers</b> — verify once, open every Passport.</div>
+          <div>
+            <div class="buy-pp-price">£15<small> one-off</small></div>
+          </div>
+          <div class="buy-pp-pricenote">
+            Instant access to the full pack. <b>Free for verified buyers</b> —
+            verify once, open every Passport.
+          </div>
         </div>
-        <button class="buy-pp-cta" type="button" @click="onBuyPassport">📋 Open the full Passport →</button>
+        <button class="buy-pp-cta" type="button" @click="onBuyPassport">
+          📋 Open the full Passport →
+        </button>
       </div>
 
       <div class="qoffer-card anim-5">
         <div class="qoffer-eyebrow">💰 Qualified offer</div>
         <div class="qoffer-title">Make an offer the seller sees first.</div>
-        <div class="qoffer-sub">Verified buyers can submit a qualified offer straight from the Passport — ID &amp; funds already checked, so the seller knows it's real. <b style="color:#FFD58A;">You need to be verified to make one.</b></div>
-        <button class="qoffer-cta locked" type="button" @click="onVerify">🔒 Get verified to make an offer →</button>
+        <div class="qoffer-sub">
+          Verified buyers can submit a qualified offer straight from the
+          Passport — ID &amp; funds already checked, so the seller knows it's
+          real.
+          <b style="color: #ffd58a">You need to be verified to make one.</b>
+        </div>
+        <button class="qoffer-cta locked" type="button" @click="onVerify">
+          🔒 Get verified to make an offer →
+        </button>
       </div>
 
       <div class="verify-card anim-5">
         <div class="verify-card-eyebrow">🛡 Verified buyer · £35 one-off</div>
-        <div class="verify-card-title">Get this Passport free + offer instantly.</div>
-        <div class="verify-card-sub">Verification pays for itself on the second Passport. Open this one <b style="color:#FFD58A;">free</b>, make qualified offers, and skip the back-and-forth at exchange.</div>
-        <div class="verify-stats">
-          <div class="verify-stat"><div class="verify-stat-num">FREE</div><div class="verify-stat-label">This Passport</div></div>
-          <div class="verify-stat"><div class="verify-stat-num">3×</div><div class="verify-stat-label">Offers accepted</div></div>
-          <div class="verify-stat"><div class="verify-stat-num">2-3w</div><div class="verify-stat-label">Faster exchange</div></div>
+        <div class="verify-card-title">
+          Get this Passport free + offer instantly.
         </div>
-        <button class="verify-cta" type="button" @click="onVerify">✓ See what verification gets you →</button>
+        <div class="verify-card-sub">
+          Verification pays for itself on the second Passport. Open this one
+          <b style="color: #ffd58a">free</b>, make qualified offers, and skip
+          the back-and-forth at exchange.
+        </div>
+        <div class="verify-stats">
+          <div class="verify-stat">
+            <div class="verify-stat-num">FREE</div>
+            <div class="verify-stat-label">This Passport</div>
+          </div>
+          <div class="verify-stat">
+            <div class="verify-stat-num">3×</div>
+            <div class="verify-stat-label">Offers accepted</div>
+          </div>
+          <div class="verify-stat">
+            <div class="verify-stat-num">2-3w</div>
+            <div class="verify-stat-label">Faster exchange</div>
+          </div>
+        </div>
+        <button class="verify-cta" type="button" @click="onVerify">
+          ✓ See what verification gets you →
+        </button>
       </div>
     </template>
 
     <div style="height: 32px" />
+
+    <WatchPropertyDrawer
+      :open="watchDrawerOpen"
+      :address-label="property?.addressLine1 || ''"
+      @close="watchDrawerOpen = false"
+      @submit="onWatchSubmit"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { calculateScore, getPrefillFromProperty } from '~/utils/homescoreScoring'
+import WatchPropertyDrawer from '~/components/property/WatchPropertyDrawer.vue'
+import {
+  calculateScore,
+  getPrefillFromProperty,
+} from '~/utils/homescoreScoring'
 
 const router = useRouter()
 const route = useRoute()
@@ -846,7 +1228,9 @@ function toggleCard(id: string) {
 
 onMounted(async () => {
   try {
-    const res = await fetch(`${config.public.apiBase}/property/${propertyId.value}`)
+    const res = await fetch(
+      `${config.public.apiBase}/property/${propertyId.value}`,
+    )
     if (res.ok) property.value = await res.json()
   } catch {}
   try {
@@ -916,7 +1300,8 @@ const passportState = computed<'unclaimed' | 'progress' | 'published'>(() => {
   // Prefer the authed status; fall back to the public property payload so the
   // state is correct for guests too (the /passport-status endpoint is
   // JWT-only, but /property/:id exposes hasPassport / passportPublished).
-  const published = s?.isPublished || s?.passportStatus === 'PUBLISHED' || p?.passportPublished
+  const published =
+    s?.isPublished || s?.passportStatus === 'PUBLISHED' || p?.passportPublished
   const claimed = s?.hasPassport || p?.hasPassport
   if (published) return 'published'
   if (claimed) return 'progress'
@@ -926,9 +1311,18 @@ const passportProgressPct = computed(() => {
   const p = passportStatus.value?.passportProgress
   return p?.completionPct ?? 0
 })
-const passportSectionsDone = computed(() => passportStatus.value?.passportProgress?.completedSections ?? 0)
-const passportSectionsTotal = computed(() => passportStatus.value?.passportProgress?.totalSections ?? 0)
-const addrShort = computed(() => property.value?.addressLine1 || property.value?.displayAddress || 'this property')
+const passportSectionsDone = computed(
+  () => passportStatus.value?.passportProgress?.completedSections ?? 0,
+)
+const passportSectionsTotal = computed(
+  () => passportStatus.value?.passportProgress?.totalSections ?? 0,
+)
+const addrShort = computed(
+  () =>
+    property.value?.addressLine1 ||
+    property.value?.displayAddress ||
+    'this property',
+)
 
 // ── EPC field helper (reads top-level or nested cert) ──
 function epcField(name: string): any {
@@ -942,8 +1336,13 @@ function epcField(name: string): any {
 
 const epcColor = computed(() => {
   const map: Record<string, string> = {
-    A: '#008a84', B: '#00a19a', C: '#7ab040', D: '#e6a23c',
-    E: '#d86f4a', F: '#c04a1a', G: '#a52a2a',
+    A: '#008a84',
+    B: '#00a19a',
+    C: '#7ab040',
+    D: '#e6a23c',
+    E: '#d86f4a',
+    F: '#c04a1a',
+    G: '#a52a2a',
   }
   return map[(property.value?.epcRating || '').toUpperCase()] || '#9c98ad'
 })
@@ -955,7 +1354,8 @@ const addressMeta = computed(() => {
   if (p.postcode) parts.push(p.postcode)
   if (p.propertyType) parts.push(p.propertyType)
   const area = p.floorAreaSqm ?? p.epcCert?.floorAreaSqm
-  if (area && Number.isFinite(Number(area))) parts.push(`${Math.round(Number(area))}m²`)
+  if (area && Number.isFinite(Number(area)))
+    parts.push(`${Math.round(Number(area))}m²`)
   return parts.join(' · ')
 })
 
@@ -1000,19 +1400,53 @@ function effToScore(eff: string | null | undefined): number {
   if (e === 'very poor') return 0.2
   return 0.5
 }
-interface StatRow { id: string; icon: string; label: string; value: number; max: number; pct: number; tone: 'high' | 'mid' | 'low' }
+interface StatRow {
+  id: string
+  icon: string
+  label: string
+  value: number
+  max: number
+  pct: number
+  tone: 'high' | 'mid' | 'low'
+}
 const epcStats = computed<StatRow[]>(() => {
-  const heat = (effToScore(epcField('mainheatEnergyEff')) + effToScore(epcField('mainheatcEnergyEff'))) / 2
-  const structure = (effToScore(epcField('wallsEnergyEff')) + effToScore(epcField('roofEnergyEff')) + effToScore(epcField('floorEnergyEff')) + effToScore(epcField('windowsEnergyEff'))) / 4
+  const heat =
+    (effToScore(epcField('mainheatEnergyEff')) +
+      effToScore(epcField('mainheatcEnergyEff'))) /
+    2
+  const structure =
+    (effToScore(epcField('wallsEnergyEff')) +
+      effToScore(epcField('roofEnergyEff')) +
+      effToScore(epcField('floorEnergyEff')) +
+      effToScore(epcField('windowsEnergyEff'))) /
+    4
   const ledPct = Number(epcField('lowEnergyLighting') ?? 0)
-  const efficiency = effToScore(epcField('lightingEnergyEff')) * 0.6 + (ledPct / 100) * 0.4
+  const efficiency =
+    effToScore(epcField('lightingEnergyEff')) * 0.6 + (ledPct / 100) * 0.4
   const recs: any[] = property.value?.epcRecommendations || []
-  const hasSolarPv = recs.some((r) => /(solar pv|photovoltaic)/i.test(r?.title || ''))
+  const hasSolarPv = recs.some((r) =>
+    /(solar pv|photovoltaic)/i.test(r?.title || ''),
+  )
   const electrics = hasSolarPv ? 0.5 : 0.8
   const plumbing = effToScore(epcField('hotWaterEnergyEff'))
-  const mk = (id: string, icon: string, label: string, score: number, max: number): StatRow => {
-    const tone: 'high' | 'mid' | 'low' = score >= 0.7 ? 'high' : score < 0.5 ? 'low' : 'mid'
-    return { id, icon, label, value: Math.round(score * max), max, pct: Math.round(score * 100), tone }
+  const mk = (
+    id: string,
+    icon: string,
+    label: string,
+    score: number,
+    max: number,
+  ): StatRow => {
+    const tone: 'high' | 'mid' | 'low' =
+      score >= 0.7 ? 'high' : score < 0.5 ? 'low' : 'mid'
+    return {
+      id,
+      icon,
+      label,
+      value: Math.round(score * max),
+      max,
+      pct: Math.round(score * 100),
+      tone,
+    }
   }
   return [
     mk('heating', '🔥', 'Heating', heat, 20),
@@ -1023,7 +1457,12 @@ const epcStats = computed<StatRow[]>(() => {
   ]
 })
 
-interface AskRow { id: string; icon: string; title: string; sub: string }
+interface AskRow {
+  id: string
+  icon: string
+  title: string
+  sub: string
+}
 function iconForTitle(title: string): string {
   const t = (title ?? '').toLowerCase()
   if (/solar pv|photovoltaic/.test(t)) return '⚡'
@@ -1044,18 +1483,36 @@ const askQuestions = computed<AskRow[]>(() => {
       id: r?.id || String(i),
       icon: iconForTitle(title),
       title: `Has the owner done: ${title}?`,
-      sub: r?.description || `Listed on the EPC. Ask if it's been done since${epcYear.value ? ` ${epcYear.value}` : ''}.`,
+      sub:
+        r?.description ||
+        `Listed on the EPC. Ask if it's been done since${epcYear.value ? ` ${epcYear.value}` : ''}.`,
     })
   })
-  out.push({ id: 'full-epc', icon: '📄', title: 'Can you share the full EPC report?', sub: 'The public register only shows the grade — the full document lists every item.' })
-  out.push({ id: 'eicr', icon: '⚡', title: 'Do you have an EICR certificate?', sub: 'Electrical Installation Condition Report — not legally required, but worth asking.' })
+  out.push({
+    id: 'gas-safety',
+    icon: '🔥',
+    title: 'Do you have a Gas Safety certificate?',
+    sub: 'A CP12 from a Gas Safe registered engineer confirms the boiler and gas appliances are safe — ask for the latest one.',
+  })
+  out.push({
+    id: 'eicr',
+    icon: '⚡',
+    title: 'Do you have an EICR certificate?',
+    sub: 'Electrical Installation Condition Report — not legally required, but worth asking.',
+  })
   return out
 })
 
 // ── Costs tab ──
-const heatingCost = computed(() => Number(epcField('heatingCostCurrent') ?? 0) || 0)
-const hotWaterCost = computed(() => Number(epcField('hotWaterCostCurrent') ?? 0) || 0)
-const lightingCost = computed(() => Number(epcField('lightingCostCurrent') ?? 0) || 0)
+const heatingCost = computed(
+  () => Number(epcField('heatingCostCurrent') ?? 0) || 0,
+)
+const hotWaterCost = computed(
+  () => Number(epcField('hotWaterCostCurrent') ?? 0) || 0,
+)
+const lightingCost = computed(
+  () => Number(epcField('lightingCostCurrent') ?? 0) || 0,
+)
 // Real water-company regional average (Discover Water 2024/25) from enrichment.
 const waterInfo = computed(() => enrichment.value?.water ?? null)
 const waterCost = computed(() => Number(waterInfo.value?.annual ?? 430) || 430)
@@ -1065,24 +1522,80 @@ const councilTaxCost = computed(() => {
   const real = Number((property.value as any)?.councilTaxAnnual ?? 0)
   if (real > 0) return Math.round(real)
   const band = (epcField('councilTaxBand') || '').toUpperCase()
-  const map: Record<string, number> = { A: 1340, B: 1564, C: 1787, D: 2010, E: 2457, F: 2904, G: 3350, H: 4020 }
+  const map: Record<string, number> = {
+    A: 1340,
+    B: 1564,
+    C: 1787,
+    D: 2010,
+    E: 2457,
+    F: 2904,
+    G: 3350,
+    H: 4020,
+  }
   return map[band] ?? 2010
 })
-const totalAnnual = computed(() =>
-  Math.round(heatingCost.value) + Math.round(hotWaterCost.value) + Math.round(lightingCost.value) + waterCost.value + councilTaxCost.value,
+const totalAnnual = computed(
+  () =>
+    Math.round(heatingCost.value) +
+    Math.round(hotWaterCost.value) +
+    Math.round(lightingCost.value) +
+    waterCost.value +
+    councilTaxCost.value,
 )
-interface CostLine { id: string; icon: string; title: string; sub: string; amount: number }
+interface CostLine {
+  id: string
+  icon: string
+  title: string
+  sub: string
+  amount: number
+}
 const costLines = computed<CostLine[]>(() => {
   const lines: CostLine[] = []
-  if (heatingCost.value > 0) lines.push({ id: 'heating', icon: '🔥', title: 'Heating', sub: epcField('mainheatDescription') || 'EPC figure', amount: Math.round(heatingCost.value) })
-  if (hotWaterCost.value > 0) lines.push({ id: 'hw', icon: '💧', title: 'Hot water', sub: epcField('hotwaterDescription') || 'From main system', amount: Math.round(hotWaterCost.value) })
+  if (heatingCost.value > 0)
+    lines.push({
+      id: 'heating',
+      icon: '🔥',
+      title: 'Heating',
+      sub: epcField('mainheatDescription') || 'EPC figure',
+      amount: Math.round(heatingCost.value),
+    })
+  if (hotWaterCost.value > 0)
+    lines.push({
+      id: 'hw',
+      icon: '💧',
+      title: 'Hot water',
+      sub: epcField('hotwaterDescription') || 'From main system',
+      amount: Math.round(hotWaterCost.value),
+    })
   if (lightingCost.value > 0) {
     const ledPct = Number(epcField('lowEnergyLighting') ?? 0)
-    lines.push({ id: 'light', icon: '💡', title: 'Lighting', sub: ledPct ? `${Math.round(ledPct)}% LED` : 'EPC figure', amount: Math.round(lightingCost.value) })
+    lines.push({
+      id: 'light',
+      icon: '💡',
+      title: 'Lighting',
+      sub: ledPct ? `${Math.round(ledPct)}% LED` : 'EPC figure',
+      amount: Math.round(lightingCost.value),
+    })
   }
-  lines.push({ id: 'water', icon: '🚰', title: 'Water & sewerage', sub: waterInfo.value?.company ? `${waterInfo.value.company} · regional avg` : 'Regional average · unmetered', amount: waterCost.value })
+  lines.push({
+    id: 'water',
+    icon: '🚰',
+    title: 'Water & sewerage',
+    sub: waterInfo.value?.company
+      ? `${waterInfo.value.company} · regional avg`
+      : 'Regional average · unmetered',
+    amount: waterCost.value,
+  })
   const band = (epcField('councilTaxBand') || '').toUpperCase()
-  lines.push({ id: 'ctax', icon: '🏠', title: 'Council tax', sub: band ? `Band ${band} · ${enrichment.value?.councilTax?.councilName || 'local council'}` : 'Estimated', amount: councilTaxCost.value })
+  lines.push({
+    id: 'ctax',
+    icon: '🏠',
+    title: 'Council tax',
+    sub: band
+      ? `Band ${band} · ${enrichment.value?.councilTax?.councilName || 'local council'}`
+      : 'Estimated',
+    amount: councilTaxCost.value,
+  })
   return lines
 })
 
@@ -1091,7 +1604,9 @@ const estimatedValue = computed(() => {
   const v = Number(enrichment.value?.landRegistryEstimate ?? 0)
   return v > 0 ? v : null
 })
-const estimateSource = computed(() => enrichment.value?.landRegistrySource || 'based on Land Registry data')
+const estimateSource = computed(
+  () => enrichment.value?.landRegistrySource || 'based on Land Registry data',
+)
 function fmtSaleDate(d: string): string {
   if (!d) return ''
   const dt = new Date(d)
@@ -1102,7 +1617,8 @@ const saleHistory = computed(() => {
   return arr.map((s) => ({
     price: Number(s.price) || 0,
     dateLabel: fmtSaleDate(s.date),
-    meta: [s.propertyType, s.tenure].filter(Boolean).join(' · ') || 'Recorded sale',
+    meta:
+      [s.propertyType, s.tenure].filter(Boolean).join(' · ') || 'Recorded sale',
   }))
 })
 const comparables = computed(() => {
@@ -1130,19 +1646,33 @@ const floodTone = computed(() => {
   return 'nodata'
 })
 const floodLabel = computed(() => floodRisk.value || 'No data')
-const floodSub = computed(() => (floodRisk.value ? `${floodRisk.value} risk across all sources` : 'Flood data not available'))
+const floodSub = computed(() =>
+  floodRisk.value
+    ? `${floodRisk.value} risk across all sources`
+    : 'Flood data not available',
+)
 
 const listedBuildings = computed<any[]>(() => {
-  const direct = enrichment.value?.listedBuildings || enrichment.value?.nearby?.listedBuildings || []
+  const direct =
+    enrichment.value?.listedBuildings ||
+    enrichment.value?.nearby?.listedBuildings ||
+    []
   return Array.isArray(direct) ? direct : []
 })
 const isListed = computed(() => {
-  const constraints: any[] = enrichment.value?.planningHistory?.constraints || []
-  return constraints.some((c) => /listed|conservation/i.test(c?.type || c?.name || ''))
+  const constraints: any[] =
+    enrichment.value?.planningHistory?.constraints || []
+  return constraints.some((c) =>
+    /listed|conservation/i.test(c?.type || c?.name || ''),
+  )
 })
 const listedTone = computed(() => (isListed.value ? 'note' : 'clear'))
 const listedLabel = computed(() => (isListed.value ? 'Listed' : 'None'))
-const listedSub = computed(() => (isListed.value ? 'Heritage constraints on file' : 'Not listed · not in a conservation area'))
+const listedSub = computed(() =>
+  isListed.value
+    ? 'Heritage constraints on file'
+    : 'Not listed · not in a conservation area',
+)
 
 const planningApps = computed(() => {
   const apps: any[] = enrichment.value?.planningHistory?.applications || []
@@ -1162,11 +1692,16 @@ const planningApps = computed(() => {
 // and `mineral-safeguarding-area` constraints (category: 'ground'). There's
 // no free Coal Authority point API, so this is partial coverage.
 const groundConstraints = computed<any[]>(() => {
-  const constraints: any[] = enrichment.value?.planningHistory?.constraints || []
+  const constraints: any[] =
+    enrichment.value?.planningHistory?.constraints || []
   return constraints.filter((c) => c?.category === 'ground')
 })
-const groundTone = computed(() => (groundConstraints.value.length ? 'note' : 'clear'))
-const groundLabel = computed(() => (groundConstraints.value.length ? 'Check' : 'None flagged'))
+const groundTone = computed(() =>
+  groundConstraints.value.length ? 'note' : 'clear',
+)
+const groundLabel = computed(() =>
+  groundConstraints.value.length ? 'Check' : 'None flagged',
+)
 const groundSub = computed(() => {
   if (!enrichmentLoaded.value) return 'Checking ground records…'
   if (groundConstraints.value.length) {
@@ -1175,7 +1710,14 @@ const groundSub = computed(() => {
   return 'No contaminated-land or mineral-safeguarding flags · Coal Authority report not connected'
 })
 
-interface RiskFlag { id: string; icon: string; title: string; sub: string; status: 'flag' | 'note'; statusLabel: string }
+interface RiskFlag {
+  id: string
+  icon: string
+  title: string
+  sub: string
+  status: 'flag' | 'note'
+  statusLabel: string
+}
 const epcRiskFlags = computed<RiskFlag[]>(() => {
   const recs: any[] = property.value?.epcRecommendations || []
   return recs.map((r, i) => {
@@ -1274,8 +1816,24 @@ const transport = computed(() => {
   const trains: any[] = enrichment.value?.nearby?.trains || []
   const buses: any[] = enrichment.value?.nearby?.busStops || []
   const out: any[] = []
-  trains.slice(0, 2).forEach((t) => out.push({ name: t.name || 'Station', dist: fmtDist(t.distanceKm), kind: 'rail' }))
-  buses.slice(0, 2).forEach((b) => out.push({ name: b.name || 'Bus stop', dist: fmtDist(b.distanceKm), kind: 'bus' }))
+  trains
+    .slice(0, 2)
+    .forEach((t) =>
+      out.push({
+        name: t.name || 'Station',
+        dist: fmtDist(t.distanceKm),
+        kind: 'rail',
+      }),
+    )
+  buses
+    .slice(0, 2)
+    .forEach((b) =>
+      out.push({
+        name: b.name || 'Bus stop',
+        dist: fmtDist(b.distanceKm),
+        kind: 'bus',
+      }),
+    )
   return out
 })
 const healthcare = computed(() => {
@@ -1283,62 +1841,110 @@ const healthcare = computed(() => {
   return amenities
     .filter((a) => /doctor|hospital|pharmacy|clinic|gp/i.test(a.category || ''))
     .slice(0, 4)
-    .map((a) => ({ name: a.name || 'Healthcare', dist: fmtDist(a.distanceKm), kind: a.category }))
+    .map((a) => ({
+      name: a.name || 'Healthcare',
+      dist: fmtDist(a.distanceKm),
+      kind: a.category,
+    }))
 })
 // ONS census demographics — not wired yet (NOMIS API planned). Returns
 // null so the Neighbourhood card shows its "not connected" note.
-const neighbourhood = computed<{ label: string; value: string }[] | null>(() => {
-  const d = enrichment.value?.demographics
-  if (!d) return null
-  const rows: { label: string; value: string }[] = []
-  if (d.population != null) rows.push({ label: 'Population (LSOA)', value: String(d.population) })
-  if (d.medianAge != null) rows.push({ label: 'Median age', value: String(d.medianAge) })
-  if (d.ownerOccupiedPct != null) rows.push({ label: 'Owner-occupied', value: `${d.ownerOccupiedPct}%` })
-  if (d.deprivationDecile != null) rows.push({ label: 'Deprivation decile', value: `${d.deprivationDecile}/10` })
-  return rows.length ? rows : null
-})
+const neighbourhood = computed<{ label: string; value: string }[] | null>(
+  () => {
+    const d = enrichment.value?.demographics
+    if (!d) return null
+    const rows: { label: string; value: string }[] = []
+    if (d.population != null)
+      rows.push({ label: 'Population (LSOA)', value: String(d.population) })
+    if (d.medianAge != null)
+      rows.push({ label: 'Median age', value: String(d.medianAge) })
+    if (d.ownerOccupiedPct != null)
+      rows.push({ label: 'Owner-occupied', value: `${d.ownerOccupiedPct}%` })
+    if (d.deprivationDecile != null)
+      rows.push({
+        label: 'Deprivation decile',
+        value: `${d.deprivationDecile}/10`,
+      })
+    return rows.length ? rows : null
+  },
+)
 
 // ── Street tab ──
 const streetRank = computed<number | null>(() => streetData.value?.rank ?? null)
-const streetTotal = computed<number | null>(() => streetData.value?.total ?? null)
+const streetTotal = computed<number | null>(
+  () => streetData.value?.total ?? null,
+)
 function ordinalSuffix(n: number): string {
   const s = ['th', 'st', 'nd', 'rd']
   const v = n % 100
   return s[(v - 20) % 10] || s[v] || s[0]
 }
 const streetRankLabel = computed(() => {
-  const r = streetRank.value, t = streetTotal.value
+  const r = streetRank.value,
+    t = streetTotal.value
   if (!r || !t) return ''
-  if (r / t <= 0.33) return `Top third on this street · ${property.value?.postcode}`
-  if (r / t <= 0.5) return `Better half of the street · ${property.value?.postcode}`
+  if (r / t <= 0.33)
+    return `Top third on this street · ${property.value?.postcode}`
+  if (r / t <= 0.5)
+    return `Better half of the street · ${property.value?.postcode}`
   if (r / t <= 0.66) return `Around average · ${property.value?.postcode}`
   return `Below average · ${property.value?.postcode}`
 })
 const streetCallout = computed(() => {
-  const best = streetData.value?.bestCost, yours = streetData.value?.yourCost
+  const best = streetData.value?.bestCost,
+    yours = streetData.value?.yourCost
   if (!best || !yours) return ''
   const diff = Math.max(0, Math.round(yours - best))
   if (diff <= 0) return ''
   return `The top homes on this street pay roughly <b>£${diff}/yr less</b>. The EPC pathway could close most of that gap.`
 })
-interface StreetBar { label: string; cost: number; pct: number; tone: 'good' | 'avg' | 'mid' | 'you'; isYou: boolean }
+interface StreetBar {
+  label: string
+  cost: number
+  pct: number
+  tone: 'good' | 'avg' | 'mid' | 'you'
+  isYou: boolean
+}
 const streetBars = computed<StreetBar[]>(() => {
   const neighbours: any[] = streetData.value?.neighbours || []
   const yours = Number(streetData.value?.yourCost ?? 0)
   if (!neighbours.length && !yours) return []
-  const allCosts = [...neighbours.map((n: any) => Number(n.cost) || 0), yours, Number(streetData.value?.averageCost ?? 0)].filter((x) => x > 0)
+  const allCosts = [
+    ...neighbours.map((n: any) => Number(n.cost) || 0),
+    yours,
+    Number(streetData.value?.averageCost ?? 0),
+  ].filter((x) => x > 0)
   const max = allCosts.length ? Math.max(...allCosts) : 1
   const rows: StreetBar[] = neighbours.map((n: any) => {
     const cost = Number(n.cost) || 0
     let tone: StreetBar['tone'] = 'mid'
     if (cost <= max * 0.55) tone = 'good'
     else if (cost <= max * 0.7) tone = 'avg'
-    return { label: n.label || 'Neighbour', cost, pct: Math.round((cost / max) * 100), tone, isYou: false }
+    return {
+      label: n.label || 'Neighbour',
+      cost,
+      pct: Math.round((cost / max) * 100),
+      tone,
+      isYou: false,
+    }
   })
-  if (yours > 0) rows.push({ label: 'You', cost: yours, pct: Math.round((yours / max) * 100), tone: 'you', isYou: true })
+  if (yours > 0)
+    rows.push({
+      label: 'You',
+      cost: yours,
+      pct: Math.round((yours / max) * 100),
+      tone: 'you',
+      isYou: true,
+    })
   if (streetData.value?.averageCost) {
     const avg = Number(streetData.value.averageCost)
-    rows.push({ label: 'PC avg', cost: avg, pct: Math.round((avg / max) * 100), tone: 'avg', isYou: false })
+    rows.push({
+      label: 'PC avg',
+      cost: avg,
+      pct: Math.round((avg / max) * 100),
+      tone: 'avg',
+      isYou: false,
+    })
   }
   rows.sort((a, b) => a.cost - b.cost)
   return rows
@@ -1347,7 +1953,9 @@ const streetBars = computed<StreetBar[]>(() => {
 // ── Buyer confidence ──
 const confidenceTitle = computed(() => {
   const recs: any[] = property.value?.epcRecommendations || []
-  const flagCount = recs.filter((r) => /insulation|cavity|loft|floor|wall/i.test(r?.title || '')).length
+  const flagCount = recs.filter((r) =>
+    /insulation|cavity|loft|floor|wall/i.test(r?.title || ''),
+  ).length
   const score = displayScore.value
   if (!score) return 'No EPC on the public register'
   // Match the prototype's cautious framing: whenever the EPC flags fabric
@@ -1375,18 +1983,29 @@ const claimCta = computed<{ label: string; variant: string }>(() => {
 
 // ── Actions ──
 function onClaimCta() {
-  if (passportState.value === 'published' || passportState.value === 'progress') {
-    const pid = passportStatus.value?.passportId || (property.value as any)?.passportId
-    if (pid && passportState.value === 'published') router.push(`/passportview/${pid}`)
+  if (
+    passportState.value === 'published' ||
+    passportState.value === 'progress'
+  ) {
+    const pid =
+      passportStatus.value?.passportId || (property.value as any)?.passportId
+    if (pid && passportState.value === 'published')
+      router.push(`/passportview/${pid}`)
     else router.push(`/property/${propertyId.value}`)
     return
   }
   onClaim()
 }
 function onClaim() {
-  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) {
-    try { localStorage.setItem('redirectAfterLogin', `/homescore/${propertyId.value}?claim=1`) } catch {}
+    try {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/homescore/${propertyId.value}?claim=1`,
+      )
+    } catch {}
     router.push('/onboarding/signin')
     return
   }
@@ -1395,26 +2014,30 @@ function onClaim() {
 function onVerify() {
   router.push(`/property/${propertyId.value}`)
 }
-function onSave() {
-  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+// "Watch this property" / "Register interest" both open the watch drawer.
+const watchDrawerOpen = ref(false)
+function onWatch() {
+  watchDrawerOpen.value = true
+}
+function onRegister() {
+  watchDrawerOpen.value = true
+}
+// Drawer submit: take the buyer to the property page, which persists the watch
+// (saves it to their profile + registers interest) and shows the toast. Guests
+// sign in first, then resume on that property page via redirectAfterLogin.
+function onWatchSubmit() {
+  watchDrawerOpen.value = false
+  const target = `/property/${propertyId.value}?watched=1`
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) {
-    try { localStorage.setItem('redirectAfterLogin', `/homescore/costs/${propertyId.value}`) } catch {}
+    try {
+      localStorage.setItem('redirectAfterLogin', target)
+    } catch {}
     router.push('/onboarding/signin')
     return
   }
-  fetch(`${config.public.apiBase}/property/${propertyId.value}/wishlist`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-  }).catch(() => {})
-}
-// Watching a property = saving it to the buyer profile (same backing action).
-function onWatch() {
-  onSave()
-}
-// Register interest while a Passport is being built — for now this saves the
-// property to the buyer profile so the buyer gets milestone notifications.
-function onRegister() {
-  onSave()
+  router.push(target)
 }
 // Open / buy the published Passport.
 function onBuyPassport() {
@@ -1462,339 +2085,1896 @@ function onBuyPassport() {
 }
 
 /* Soften weights to match the app */
-.hs-buyer :is(.app-header-title, .hs-addr-line, .buyer-conf-title,
-  .buyer-conf-num, .stat-value, .cost-total-num, .cost-line-title,
-  .cost-line-amt, .risk-title, .street-rank-big, .street-bar-amt,
-  .buyer-action-title, .br-card-title, .br-card-val, .sold-chart-h-est,
-  .comp-row-addr, .comp-row-price, .tab-hero-stat-big, .bb-num,
-  .school-name, .section-h) {
+.hs-buyer
+  :is(
+    .app-header-title,
+    .hs-addr-line,
+    .buyer-conf-title,
+    .buyer-conf-num,
+    .stat-value,
+    .cost-total-num,
+    .cost-line-title,
+    .cost-line-amt,
+    .risk-title,
+    .street-rank-big,
+    .street-bar-amt,
+    .buyer-action-title,
+    .br-card-title,
+    .br-card-val,
+    .sold-chart-h-est,
+    .comp-row-addr,
+    .comp-row-price,
+    .tab-hero-stat-big,
+    .bb-num,
+    .school-name,
+    .section-h
+  ) {
   font-weight: 700;
 }
 
-@keyframes hs-buyer-fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.anim-1 { animation: hs-buyer-fade 0.35s 0.08s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.anim-2 { animation: hs-buyer-fade 0.35s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.anim-3 { animation: hs-buyer-fade 0.35s 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.anim-4 { animation: hs-buyer-fade 0.35s 0.38s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.anim-5 { animation: hs-buyer-fade 0.35s 0.48s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes hs-buyer-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.anim-1 {
+  animation: hs-buyer-fade 0.35s 0.08s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-2 {
+  animation: hs-buyer-fade 0.35s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-3 {
+  animation: hs-buyer-fade 0.35s 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-4 {
+  animation: hs-buyer-fade 0.35s 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-5 {
+  animation: hs-buyer-fade 0.35s 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
 /* Header */
-.app-header { display: flex; align-items: center; gap: 12px; padding: 14px 20px; padding-top: calc(14px + env(safe-area-inset-top)); background: var(--card); border-bottom: 1px solid var(--border); }
-.back-btn, .app-icon-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text); flex-shrink: 0; font-family: inherit; }
-.back-btn svg { width: 16px; height: 16px; }
-.app-header-info { flex: 1; min-width: 0; }
-.app-header-title { font-size: 15px; color: var(--text); letter-spacing: -0.2px; }
-.app-header-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+.back-btn,
+.app-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  flex-shrink: 0;
+  font-family: inherit;
+}
+.back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.app-header-info {
+  flex: 1;
+  min-width: 0;
+}
+.app-header-title {
+  font-size: 15px;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.app-header-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* Amber address card */
-.hs-addr-card { margin: 14px 20px 0; padding: 22px 22px 18px; background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%); border-radius: 14px; color: white; box-shadow: 0 12px 32px -8px rgba(180, 100, 20, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.18); position: relative; overflow: hidden; }
-.hs-addr-card::after { content: ''; position: absolute; top: -45%; right: -15%; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 65%); pointer-events: none; }
-.hs-addr-card > * { position: relative; z-index: 1; }
-.hs-addr-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
-.hs-addr-pin { width: 10px; height: 10px; border-radius: 50%; background: white; margin-top: 8px; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); }
-.hs-addr-block { flex: 1; min-width: 0; }
-.hs-addr-line { font-size: 20px; color: white; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 2px; }
-.hs-addr-meta { font-size: 12.5px; color: rgba(255, 255, 255, 0.85); font-weight: 500; }
-.hs-addr-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
-.hs-addr-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; padding: 5px 10px 5px 7px; border-radius: 100px; background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.25); color: white; }
-.hs-addr-pill svg { width: 10px; height: 10px; }
-.epc-letter { width: 14px; height: 14px; border-radius: 3px; color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
-.claim-cta-btn { display: flex; width: 100%; margin-top: 14px; padding: 14px 16px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border: none; color: white; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(0, 161, 154, 0.35); }
-.claim-cta-btn svg { width: 14px; height: 14px; color: white; }
-.claim-cta-btn.published { background: white; color: #8b4e0a; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15); }
-.claim-cta-btn.published svg { color: #8b4e0a; }
-.claim-cta-btn.progress { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.4); color: white; box-shadow: none; }
-.hs-addr-stat-row { display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 600; color: rgba(255, 255, 255, 0.8); margin-top: 14px; flex-wrap: wrap; }
-.hs-addr-stat-count { font-weight: 700; color: white; }
+.hs-addr-card {
+  margin: 14px 20px 0;
+  padding: 22px 22px 18px;
+  background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
+  border-radius: 14px;
+  color: white;
+  box-shadow:
+    0 12px 32px -8px rgba(180, 100, 20, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+.hs-addr-card::after {
+  content: '';
+  position: absolute;
+  top: -45%;
+  right: -15%;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.hs-addr-card > * {
+  position: relative;
+  z-index: 1;
+}
+.hs-addr-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.hs-addr-pin {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+  margin-top: 8px;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+.hs-addr-block {
+  flex: 1;
+  min-width: 0;
+}
+.hs-addr-line {
+  font-size: 20px;
+  color: white;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+.hs-addr-meta {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+.hs-addr-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.hs-addr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 5px 10px 5px 7px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+}
+.hs-addr-pill svg {
+  width: 10px;
+  height: 10px;
+}
+.epc-letter {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+}
+.claim-cta-btn {
+  display: flex;
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border: none;
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.35);
+}
+.claim-cta-btn svg {
+  width: 14px;
+  height: 14px;
+  color: white;
+}
+.claim-cta-btn.published {
+  background: white;
+  color: #8b4e0a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+.claim-cta-btn.published svg {
+  color: #8b4e0a;
+}
+.claim-cta-btn.progress {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  box-shadow: none;
+}
+.hs-addr-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.hs-addr-stat-count {
+  font-weight: 700;
+  color: white;
+}
 
 /* Buyer confidence */
-.buyer-conf { margin: 14px 20px 0; padding: 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); }
-.buyer-conf-row { display: flex; align-items: center; gap: 12px; }
-.buyer-conf-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--warning-pale); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-.buyer-conf-info { flex: 1; }
-.buyer-conf-eyebrow { font-size: 10px; font-weight: 700; color: var(--text-secondary); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 2px; }
-.buyer-conf-title { font-size: 14px; color: var(--text); letter-spacing: -0.2px; }
-.buyer-conf-num { font-size: 18px; color: var(--warning-deep); letter-spacing: -0.3px; }
+.buyer-conf {
+  margin: 14px 20px 0;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+}
+.buyer-conf-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.buyer-conf-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: var(--warning-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.buyer-conf-info {
+  flex: 1;
+}
+.buyer-conf-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.buyer-conf-title {
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.buyer-conf-num {
+  font-size: 18px;
+  color: var(--warning-deep);
+  letter-spacing: -0.3px;
+}
+.buyer-conf-dial {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+}
+.buyer-conf-dial svg {
+  width: 100%;
+  height: 100%;
+}
+.buyer-conf-dial-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--accent-dark);
+  letter-spacing: -0.3px;
+}
 
 /* Tabs */
-.tab-bar { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 100px; padding: 4px; margin: 14px 20px 0; box-shadow: var(--shadow-card); }
-.tab-bar.scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-wrap: nowrap; justify-content: flex-start; }
-.tab-bar.scroll::-webkit-scrollbar { display: none; }
-.tab-btn { flex: 0 0 auto; padding: 9px 14px; font-size: 11.5px; font-weight: 700; border: none; background: transparent; border-radius: 100px; cursor: pointer; color: var(--text-secondary); font-family: inherit; white-space: nowrap; }
-.tab-btn.active { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; box-shadow: 0 2px 8px rgba(0, 161, 154, 0.25); }
-.tab-panels { padding: 14px 20px 0; }
-.tab-panel { animation: hs-buyer-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
-.tab-note { margin-top: 8px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border-soft); border-radius: 12px; font-size: 11.5px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; }
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px;
+  margin: 14px 20px 0;
+  box-shadow: var(--shadow-card);
+}
+.tab-bar.scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+.tab-bar.scroll::-webkit-scrollbar {
+  display: none;
+}
+.tab-btn {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  border-radius: 100px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-family: inherit;
+  white-space: nowrap;
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 161, 154, 0.25);
+}
+.tab-panels {
+  padding: 14px 20px 0;
+}
+.tab-panel {
+  animation: hs-buyer-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tab-note {
+  margin-top: 8px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
 
 /* Source tags */
-.src-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 9.5px; font-weight: 700; padding: 3px 8px; background: var(--bg); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 100px; }
-.src-tag::before { content: '🔗'; font-size: 9px; }
-.src-tag.teal { background: var(--accent-paler); color: var(--accent-dark); border-color: var(--accent-pale); }
-.src-tag.light { background: rgba(255, 255, 255, 0.18); color: rgba(255, 255, 255, 0.95); border-color: rgba(255, 255, 255, 0.3); }
+.src-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: var(--bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+}
+.src-tag::before {
+  content: '🔗';
+  font-size: 9px;
+}
+.src-tag.teal {
+  background: var(--accent-paler);
+  color: var(--accent-dark);
+  border-color: var(--accent-pale);
+}
+.src-tag.light {
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.3);
+}
 
 /* Energy / stats */
-.stats-card { padding: 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); }
-.stats-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.stats-card-eyebrow { font-size: 11px; font-weight: 700; color: var(--text-secondary); letter-spacing: 1.2px; text-transform: uppercase; }
-.stats-card-intro { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
-.stat-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
-.stat-icon { font-size: 14px; width: 22px; text-align: center; flex-shrink: 0; }
-.stat-label { width: 70px; font-size: 11px; font-weight: 700; color: var(--text); flex-shrink: 0; }
-.stat-bar-wrap { flex: 1; height: 8px; background: var(--bg); border-radius: 100px; overflow: hidden; border: 1px solid var(--border-soft); }
-.stat-bar-fill { height: 100%; border-radius: 100px; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
-.stat-bar-fill.high { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
-.stat-bar-fill.mid { background: linear-gradient(90deg, var(--warning), #f0b933); }
-.stat-bar-fill.low { background: linear-gradient(90deg, var(--error), var(--error-light)); }
-.stat-value { width: 46px; text-align: right; font-size: 11px; color: var(--text); flex-shrink: 0; }
-.stat-value.v-high { color: var(--accent-dark); }
-.stat-value.v-low { color: var(--error); }
-.stat-value.v-mid { color: var(--warning-deep); }
-.stats-note { padding: 10px 12px; background: var(--warning-pale); border: 1px solid rgba(245, 166, 35, 0.3); border-radius: 10px; margin-top: 12px; font-size: 11px; color: var(--warning-deep); font-weight: 500; line-height: 1.4; }
-.section-h { margin-top: 14px; font-size: 11px; color: var(--text-secondary); letter-spacing: 1.4px; text-transform: uppercase; padding: 6px 0 10px; }
-.questions-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow-card); }
-.ask-row { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-soft); }
-.ask-row:last-child { border-bottom: none; }
-.ask-icon { font-size: 18px; flex-shrink: 0; }
-.ask-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-.ask-sub { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+.stats-card {
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+}
+.stats-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.stats-card-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.stats-card-intro {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+.stat-icon {
+  font-size: 14px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.stat-label {
+  width: 70px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.stat-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: var(--bg);
+  border-radius: 100px;
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+}
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.stat-bar-fill.high {
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+}
+.stat-bar-fill.mid {
+  background: linear-gradient(90deg, var(--warning), #f0b933);
+}
+.stat-bar-fill.low {
+  background: linear-gradient(90deg, var(--error), var(--error-light));
+}
+.stat-value {
+  width: 46px;
+  text-align: right;
+  font-size: 11px;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.stat-value.v-high {
+  color: var(--accent-dark);
+}
+.stat-value.v-low {
+  color: var(--error);
+}
+.stat-value.v-mid {
+  color: var(--warning-deep);
+}
+.stats-note {
+  padding: 10px 12px;
+  background: var(--warning-pale);
+  border: 1px solid rgba(245, 166, 35, 0.3);
+  border-radius: 10px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--warning-deep);
+  font-weight: 500;
+  line-height: 1.4;
+}
+.section-h {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  padding: 6px 0 10px;
+}
+.questions-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow-card);
+}
+.ask-row {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+.ask-row:last-child {
+  border-bottom: none;
+}
+.ask-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.ask-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.ask-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
 
 /* Costs */
-.cost-total-card { padding: 18px 18px 16px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border-radius: 14px; color: white; margin-bottom: 10px; box-shadow: 0 8px 24px rgba(0, 161, 154, 0.25); position: relative; overflow: hidden; }
-.cost-total-card::after { content: ''; position: absolute; top: -30%; right: -15%; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 65%); pointer-events: none; }
-.cost-total-card > * { position: relative; z-index: 1; }
-.cost-total-eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: rgba(255, 255, 255, 0.78); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 6px; font-weight: 700; }
-.pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; }
-.pulse-dot.white { background: white; }
-.cost-total-num { font-size: 32px; letter-spacing: -1px; line-height: 1; }
-.cost-total-num span { font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.85); }
-.cost-total-sub { font-size: 12px; color: rgba(255, 255, 255, 0.85); margin-top: 6px; }
-.cost-total-srcs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
-.cost-line { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 6px; box-shadow: var(--shadow-card); }
-.cost-line-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--accent-paler); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-.cost-line-info { flex: 1; min-width: 0; }
-.cost-line-title { font-size: 12.5px; color: var(--text); }
-.cost-line-sub { font-size: 10.5px; color: var(--text-secondary); margin-top: 1px; }
-.cost-line-amt { font-size: 13px; color: var(--text); letter-spacing: -0.2px; text-align: right; }
-.cost-line-amt-sub { font-size: 9.5px; color: var(--text-faint); margin-top: 1px; text-align: right; }
+.cost-total-card {
+  padding: 18px 18px 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border-radius: 14px;
+  color: white;
+  margin-bottom: 10px;
+  box-shadow: 0 8px 24px rgba(0, 161, 154, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+.cost-total-card::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -15%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.18) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.cost-total-card > * {
+  position: relative;
+  z-index: 1;
+}
+.cost-total-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+}
+.pulse-dot.white {
+  background: white;
+}
+.cost-total-num {
+  font-size: 32px;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.cost-total-num span {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+.cost-total-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 6px;
+}
+.cost-total-srcs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.cost-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 6px;
+  box-shadow: var(--shadow-card);
+}
+.cost-line-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--accent-paler);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.cost-line-info {
+  flex: 1;
+  min-width: 0;
+}
+.cost-line-title {
+  font-size: 12.5px;
+  color: var(--text);
+}
+.cost-line-sub {
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+.cost-line-amt {
+  font-size: 13px;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  text-align: right;
+}
+.cost-line-amt-sub {
+  font-size: 9.5px;
+  color: var(--text-faint);
+  margin-top: 1px;
+  text-align: right;
+}
 
 /* Expandable br-card */
-.br-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); margin-bottom: 10px; overflow: hidden; }
-.br-card.open { box-shadow: 0 8px 20px rgba(35, 29, 69, 0.1); border-color: var(--accent-pale); }
-.br-card-head { display: flex; align-items: center; gap: 12px; padding: 13px 16px; cursor: pointer; }
-.br-card-head:hover { background: var(--accent-paler); }
-.br-card-ico { width: 34px; height: 34px; border-radius: 10px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
-.br-card-ico.teal { background: linear-gradient(135deg, var(--accent-paler), var(--accent-pale)); color: var(--accent-dark); }
-.br-card-info { flex: 1; min-width: 0; }
-.br-card-title { font-size: 13.5px; color: var(--text); letter-spacing: -0.2px; }
-.br-card-sub { font-size: 11.5px; font-weight: 500; color: var(--text-secondary); margin-top: 2px; }
-.br-card-val { font-size: 14px; color: var(--text); letter-spacing: -0.3px; text-align: right; flex-shrink: 0; }
-.br-card-val.accent { color: var(--accent-dark); }
-.br-card-chev { font-size: 14px; color: var(--text-faint); font-weight: 700; margin-left: 6px; transition: transform 0.2s; flex-shrink: 0; }
-.br-card.open .br-card-chev { transform: rotate(90deg); color: var(--accent-dark); }
-.br-card-body { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
-.br-card-body.open { max-height: 900px; }
-.br-card-body-inner { padding: 12px 16px 14px; font-size: 12px; font-weight: 500; color: var(--text-secondary); line-height: 1.55; border-top: 1px dashed var(--border-soft); }
-.br-card-body-inner :deep(b) { color: var(--text); font-weight: 700; }
-.br-card-srcrow { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; align-items: center; padding-top: 10px; border-top: 1px dashed var(--border-soft); }
-.br-card-srcrow-label { font-size: 10px; font-weight: 700; color: var(--text-faint); letter-spacing: 0.8px; text-transform: uppercase; margin-right: 4px; }
+.br-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.br-card.open {
+  box-shadow: 0 8px 20px rgba(35, 29, 69, 0.1);
+  border-color: var(--accent-pale);
+}
+.br-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  cursor: pointer;
+}
+.br-card-head:hover {
+  background: var(--accent-paler);
+}
+.br-card-ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.br-card-ico.teal {
+  background: linear-gradient(135deg, var(--accent-paler), var(--accent-pale));
+  color: var(--accent-dark);
+}
+.br-card-info {
+  flex: 1;
+  min-width: 0;
+}
+.br-card-title {
+  font-size: 13.5px;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.br-card-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.br-card-val {
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.br-card-val.accent {
+  color: var(--accent-dark);
+}
+.br-card-chev {
+  font-size: 14px;
+  color: var(--text-faint);
+  font-weight: 700;
+  margin-left: 6px;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.br-card.open .br-card-chev {
+  transform: rotate(90deg);
+  color: var(--accent-dark);
+}
+.br-card-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.br-card-body.open {
+  max-height: 900px;
+}
+.br-card-body-inner {
+  padding: 12px 16px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  border-top: 1px dashed var(--border-soft);
+}
+.br-card-body-inner :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.br-card-srcrow {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-soft);
+}
+.br-card-srcrow-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-faint);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
 
 /* Sold chart */
-.sold-chart { background: linear-gradient(135deg, var(--accent-paler), var(--card) 80%); border: 1px solid var(--accent-pale); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
-.sold-chart-h { display: flex; justify-content: space-between; align-items: baseline; }
-.sold-chart-h-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); letter-spacing: 1.2px; text-transform: uppercase; }
-.sold-chart-h-est { font-size: 18px; color: var(--accent-dark); letter-spacing: -0.4px; }
-.sold-chart-h-est small { font-size: 10.5px; font-weight: 500; color: var(--text-secondary); display: block; }
+.sold-chart {
+  background: linear-gradient(135deg, var(--accent-paler), var(--card) 80%);
+  border: 1px solid var(--accent-pale);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.sold-chart-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.sold-chart-h-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.sold-chart-h-est {
+  font-size: 18px;
+  color: var(--accent-dark);
+  letter-spacing: -0.4px;
+}
+.sold-chart-h-est small {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  display: block;
+}
 
 /* Comparable rows */
-.comp-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
-.comp-row + .comp-row { border-top: 1px dashed var(--border-soft); }
-.comp-row-info { flex: 1; min-width: 0; }
-.comp-row-addr { font-size: 12px; color: var(--text); }
-.comp-row-meta { font-size: 10.5px; font-weight: 500; color: var(--text-secondary); margin-top: 1px; }
-.comp-row-price { font-size: 14px; color: var(--accent-dark); letter-spacing: -0.2px; text-align: right; }
-.comp-row-date { font-size: 9.5px; font-weight: 700; color: var(--text-faint); text-align: right; margin-top: 1px; }
+.comp-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+.comp-row + .comp-row {
+  border-top: 1px dashed var(--border-soft);
+}
+.comp-row-info {
+  flex: 1;
+  min-width: 0;
+}
+.comp-row-addr {
+  font-size: 12px;
+  color: var(--text);
+}
+.comp-row-meta {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+.comp-row-price {
+  font-size: 14px;
+  color: var(--accent-dark);
+  letter-spacing: -0.2px;
+  text-align: right;
+}
+.comp-row-date {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-faint);
+  text-align: right;
+  margin-top: 1px;
+}
 
 /* Risks */
-.risk-srcs { display: flex; gap: 6px; flex-wrap: wrap; padding-bottom: 10px; }
-.risk-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; box-shadow: var(--shadow-card); }
-.risk-item.col { flex-direction: column; align-items: stretch; cursor: pointer; }
-.risk-item-top { display: flex; align-items: flex-start; gap: 12px; }
-.risk-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.risk-icon.clear { background: var(--accent-paler); }
-.risk-icon.note { background: var(--warning-pale); }
-.risk-icon.flag { background: var(--error-pale); }
-.risk-icon.nodata { background: var(--bg); }
-.risk-body { flex: 1; min-width: 0; }
-.risk-title { font-size: 13px; color: var(--text); }
-.risk-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; line-height: 1.4; }
-.risk-status { font-size: 11px; font-weight: 700; flex-shrink: 0; }
-.risk-status.clear { color: var(--accent-dark); }
-.risk-status.note { color: var(--warning); }
-.risk-status.flag { color: var(--error); }
-.risk-status.nodata { color: var(--text-faint); }
-.risk-drill { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-soft); font-size: 11.5px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; }
-.risk-drill :deep(b) { color: var(--text); font-weight: 700; }
-.risk-drill-note { margin-top: 6px; color: var(--text-faint); font-size: 11px; }
+.risk-srcs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-bottom: 10px;
+}
+.risk-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-card);
+}
+.risk-item.col {
+  flex-direction: column;
+  align-items: stretch;
+  cursor: pointer;
+}
+.risk-item-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.risk-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.risk-icon.clear {
+  background: var(--accent-paler);
+}
+.risk-icon.note {
+  background: var(--warning-pale);
+}
+.risk-icon.flag {
+  background: var(--error-pale);
+}
+.risk-icon.nodata {
+  background: var(--bg);
+}
+.risk-body {
+  flex: 1;
+  min-width: 0;
+}
+.risk-title {
+  font-size: 13px;
+  color: var(--text);
+}
+.risk-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.risk-status {
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.risk-status.clear {
+  color: var(--accent-dark);
+}
+.risk-status.note {
+  color: var(--warning);
+}
+.risk-status.flag {
+  color: var(--error);
+}
+.risk-status.nodata {
+  color: var(--text-faint);
+}
+.risk-drill {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-soft);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.risk-drill :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.risk-drill-note {
+  margin-top: 6px;
+  color: var(--text-faint);
+  font-size: 11px;
+}
 
 /* Area · hero stat */
-.tab-hero-stat { display: flex; align-items: center; gap: 14px; padding: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); margin-bottom: 12px; }
-.tab-hero-stat-big { font-size: 30px; color: var(--accent-dark); letter-spacing: -1px; line-height: 1; }
-.tab-hero-stat-big small { font-size: 13px; font-weight: 700; color: var(--text-secondary); }
-.tab-hero-stat-label { font-size: 10px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.6px; text-transform: uppercase; margin-top: 4px; }
-.tab-hero-stat-body { flex: 1; min-width: 0; padding-left: 14px; border-left: 1px solid var(--border-soft); }
-.tab-hero-stat-headline { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; }
-.tab-hero-stat-sub { font-size: 10.5px; font-weight: 500; color: var(--text-secondary); margin-top: 3px; }
-.trend-good { color: var(--accent-dark); font-weight: 700; }
-.trend-bad { color: var(--warning-deep); font-weight: 700; }
+.tab-hero-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 12px;
+}
+.tab-hero-stat-big {
+  font-size: 30px;
+  color: var(--accent-dark);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.tab-hero-stat-big small {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.tab-hero-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.tab-hero-stat-body {
+  flex: 1;
+  min-width: 0;
+  padding-left: 14px;
+  border-left: 1px solid var(--border-soft);
+}
+.tab-hero-stat-headline {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+.tab-hero-stat-sub {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+.trend-good {
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+.trend-bad {
+  color: var(--warning-deep);
+  font-weight: 700;
+}
 
 /* Crime */
-.crime-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
-.crime-row + .crime-row { border-top: 1px dashed var(--border-soft); }
-.crime-name { font-size: 12px; font-weight: 700; color: var(--text); flex: 1; }
-.crime-bar { width: 80px; height: 5px; background: var(--bg); border-radius: 100px; overflow: hidden; }
-.crime-bar-fill { height: 100%; border-radius: 100px; }
-.crime-bar-fill.low { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
-.crime-bar-fill.mid { background: linear-gradient(90deg, #ffd58a, var(--warning)); }
-.crime-bar-fill.high { background: linear-gradient(90deg, #f87171, var(--error)); }
-.crime-count { font-size: 12px; font-weight: 700; color: var(--text); min-width: 34px; text-align: right; }
+.crime-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+.crime-row + .crime-row {
+  border-top: 1px dashed var(--border-soft);
+}
+.crime-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+.crime-bar {
+  width: 80px;
+  height: 5px;
+  background: var(--bg);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.crime-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+}
+.crime-bar-fill.low {
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+}
+.crime-bar-fill.mid {
+  background: linear-gradient(90deg, #ffd58a, var(--warning));
+}
+.crime-bar-fill.high {
+  background: linear-gradient(90deg, #f87171, var(--error));
+}
+.crime-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 34px;
+  text-align: right;
+}
 
 /* Schools */
-.school-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; }
-.school-row + .school-row { border-top: 1px dashed var(--border-soft); }
-.school-ofsted { width: 46px; height: 46px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 8.5px; font-weight: 700; color: white; flex-shrink: 0; line-height: 1.1; padding: 3px; text-align: center; }
-.school-ofsted.nodata { background: var(--bg); color: var(--text-faint); }
-.school-ofsted big { font-size: 16px; font-weight: 800; line-height: 1; }
-.school-info { flex: 1; min-width: 0; }
-.school-name { font-size: 12.5px; color: var(--text); letter-spacing: -0.1px; }
-.school-meta { font-size: 10.5px; font-weight: 500; color: var(--text-secondary); margin-top: 1px; }
-.school-dist { font-size: 11px; font-weight: 700; color: var(--accent-dark); text-align: right; flex-shrink: 0; }
+.school-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+}
+.school-row + .school-row {
+  border-top: 1px dashed var(--border-soft);
+}
+.school-ofsted {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.5px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  line-height: 1.1;
+  padding: 3px;
+  text-align: center;
+}
+.school-ofsted.nodata {
+  background: var(--bg);
+  color: var(--text-faint);
+}
+.school-ofsted big {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+}
+.school-info {
+  flex: 1;
+  min-width: 0;
+}
+.school-name {
+  font-size: 12.5px;
+  color: var(--text);
+  letter-spacing: -0.1px;
+}
+.school-meta {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+.school-dist {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  text-align: right;
+  flex-shrink: 0;
+}
 
 /* Broadband / mobile */
-.bb-card { padding: 14px 16px; background: linear-gradient(135deg, #e6eefb, var(--card)); border: 1px solid #c7e0ff; border-radius: 12px; }
-.bb-speed { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
-.bb-num { font-size: 28px; color: #1a1f71; letter-spacing: -0.7px; line-height: 1; }
-.bb-unit { font-size: 13px; font-weight: 700; color: #2d68c4; }
-.bb-bars { display: flex; gap: 4px; }
-.bb-bars i { flex: 1; height: 8px; border-radius: 4px; background: #d5ddf0; }
-.bb-bars i.on { background: linear-gradient(90deg, #2d68c4, #1a1f71); }
-.bb-mobile-h { margin-top: 14px; font-size: 11px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.8px; text-transform: uppercase; }
-.bb-net-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 11.5px; font-weight: 700; color: var(--text); }
-.bb-net-row + .bb-net-row { border-top: 1px dashed var(--border-soft); }
-.bb-net-name { display: flex; align-items: center; gap: 7px; }
-.bb-cov { display: flex; gap: 3px; }
-.bb-cov i { width: 5px; height: 8px; border-radius: 1px; background: var(--border); }
-.bb-cov i.on { background: var(--accent); }
+.bb-card {
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #e6eefb, var(--card));
+  border: 1px solid #c7e0ff;
+  border-radius: 12px;
+}
+.bb-speed {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.bb-num {
+  font-size: 28px;
+  color: #1a1f71;
+  letter-spacing: -0.7px;
+  line-height: 1;
+}
+.bb-unit {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2d68c4;
+}
+.bb-bars {
+  display: flex;
+  gap: 4px;
+}
+.bb-bars i {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: #d5ddf0;
+}
+.bb-bars i.on {
+  background: linear-gradient(90deg, #2d68c4, #1a1f71);
+}
+.bb-mobile-h {
+  margin-top: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.bb-net-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+.bb-net-row + .bb-net-row {
+  border-top: 1px dashed var(--border-soft);
+}
+.bb-net-name {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.bb-cov {
+  display: flex;
+  gap: 3px;
+}
+.bb-cov i {
+  width: 5px;
+  height: 8px;
+  border-radius: 1px;
+  background: var(--border);
+}
+.bb-cov i.on {
+  background: var(--accent);
+}
 
 /* Street */
-.street-rank-hero { padding: 18px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; box-shadow: var(--shadow-card); text-align: center; }
-.street-rank-big { font-size: 42px; color: var(--error); letter-spacing: -1.5px; line-height: 1; }
-.street-rank-big span { font-size: 18px; font-weight: 700; color: var(--text-secondary); margin-left: 4px; }
-.street-rank-small { font-size: 11px; color: var(--text-secondary); margin-top: 6px; font-weight: 500; }
-.street-rank-callout { font-size: 12px; color: var(--text-secondary); margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--border-soft); }
-.street-rank-callout :deep(b) { color: var(--text); font-weight: 700; }
-.street-bars { padding: 12px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); }
-.street-bar-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
-.street-bar-row.you-row { background: var(--error-pale); border-radius: 8px; padding: 6px 8px; margin: 2px -2px; }
-.street-bar-label { font-size: 10px; font-weight: 700; color: var(--text-secondary); width: 50px; flex-shrink: 0; text-align: right; }
-.street-bar-label.you { color: var(--error); }
-.street-bar-wrap { flex: 1; height: 8px; background: var(--bg); border-radius: 100px; overflow: hidden; }
-.street-bar-fill { height: 100%; border-radius: 100px; transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
-.street-bar-fill.you { background: var(--error); }
-.street-bar-fill.good { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
-.street-bar-fill.avg { background: var(--accent); }
-.street-bar-fill.mid { background: var(--warning); }
-.street-bar-amt { font-size: 10.5px; width: 52px; flex-shrink: 0; text-align: right; color: var(--text); }
-.street-bar-amt.you { color: var(--error); }
+.street-rank-hero {
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+.street-rank-big {
+  font-size: 42px;
+  color: var(--error);
+  letter-spacing: -1.5px;
+  line-height: 1;
+}
+.street-rank-big span {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
+.street-rank-small {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  font-weight: 500;
+}
+.street-rank-callout {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-soft);
+}
+.street-rank-callout :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.street-bars {
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+}
+.street-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+.street-bar-row.you-row {
+  background: var(--error-pale);
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin: 2px -2px;
+}
+.street-bar-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  width: 50px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.street-bar-label.you {
+  color: var(--error);
+}
+.street-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: var(--bg);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.street-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.street-bar-fill.you {
+  background: var(--error);
+}
+.street-bar-fill.good {
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+}
+.street-bar-fill.avg {
+  background: var(--accent);
+}
+.street-bar-fill.mid {
+  background: var(--warning);
+}
+.street-bar-amt {
+  font-size: 10.5px;
+  width: 52px;
+  flex-shrink: 0;
+  text-align: right;
+  color: var(--text);
+}
+.street-bar-amt.you {
+  color: var(--error);
+}
 
 /* Empty-state note inside cards */
-.br-empty-note { font-size: 11.5px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; padding: 4px 0; }
-.sold-chart-h-est.muted { color: var(--text-faint); }
-.sold-chart-h-est.muted small { color: var(--text-faint); }
+.br-empty-note {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding: 4px 0;
+}
+.sold-chart-h-est.muted {
+  color: var(--text-faint);
+}
+.sold-chart-h-est.muted small {
+  color: var(--text-faint);
+}
 
 /* ── State-aware buyer sections ── */
-.state-banner { display: flex; align-items: center; gap: 12px; margin: 14px 20px 0; padding: 12px 14px; background: linear-gradient(135deg, #fdf3e0, var(--card)); border: 1.5px solid rgba(245, 166, 35, 0.30); border-radius: 14px; }
-.state-banner.in-progress { background: linear-gradient(135deg, var(--accent-paler), var(--card)); border-color: var(--accent-pale); }
-.state-banner.published { background: linear-gradient(135deg, #e6f0ff, var(--card)); border-color: #c7e0ff; }
-.state-banner-ico { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #ffd58a, var(--warning)); color: white; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(245, 166, 35, 0.25); }
-.state-banner.in-progress .state-banner-ico { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); box-shadow: 0 4px 10px rgba(0, 161, 154, 0.25); }
-.state-banner.published .state-banner-ico { background: linear-gradient(135deg, #5b8def, #1a1f71); box-shadow: 0 4px 10px rgba(45, 104, 196, 0.30); }
-.state-banner-body { flex: 1; min-width: 0; }
-.state-banner-title { font-size: 12.5px; font-weight: 700; color: var(--warning-deep); letter-spacing: -0.1px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.state-banner.in-progress .state-banner-title { color: var(--accent-dark); }
-.state-banner.published .state-banner-title { color: #1a1f71; }
-.state-banner-sub { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); margin-top: 2px; line-height: 1.4; }
-.state-banner-sub :deep(b) { color: var(--text); font-weight: 700; }
-.state-banner-pill { font-size: 9.5px; font-weight: 700; padding: 3px 8px; background: white; border: 1px solid var(--border); border-radius: 100px; letter-spacing: 0.4px; text-transform: uppercase; }
+.state-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 20px 0;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #fdf3e0, var(--card));
+  border: 1.5px solid rgba(245, 166, 35, 0.3);
+  border-radius: 14px;
+}
+.state-banner.in-progress {
+  background: linear-gradient(135deg, var(--accent-paler), var(--card));
+  border-color: var(--accent-pale);
+}
+.state-banner.published {
+  background: linear-gradient(135deg, #e6f0ff, var(--card));
+  border-color: #c7e0ff;
+}
+.state-banner-ico {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffd58a, var(--warning));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(245, 166, 35, 0.25);
+}
+.state-banner.in-progress .state-banner-ico {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  box-shadow: 0 4px 10px rgba(0, 161, 154, 0.25);
+}
+.state-banner.published .state-banner-ico {
+  background: linear-gradient(135deg, #5b8def, #1a1f71);
+  box-shadow: 0 4px 10px rgba(45, 104, 196, 0.3);
+}
+.state-banner-body {
+  flex: 1;
+  min-width: 0;
+}
+.state-banner-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--warning-deep);
+  letter-spacing: -0.1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.state-banner.in-progress .state-banner-title {
+  color: var(--accent-dark);
+}
+.state-banner.published .state-banner-title {
+  color: #1a1f71;
+}
+.state-banner-sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.state-banner-sub :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.state-banner-pill {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
 
-.watch-card { margin: 14px 20px 0; padding: 18px; background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-card); }
-.watch-card-eyebrow { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; color: var(--text-secondary); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 8px; }
-.watch-card-title { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 6px; }
-.watch-card-sub { font-size: 12.5px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; margin-bottom: 14px; }
-.watch-card-sub :deep(b) { color: var(--text); font-weight: 700; }
-.watch-trigger { display: flex; gap: 10px; padding: 10px 0; }
-.watch-trigger + .watch-trigger { border-top: 1px dashed var(--border-soft); }
-.watch-trigger-ico { width: 30px; height: 30px; border-radius: 9px; background: var(--accent-paler); color: var(--accent-dark); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
-.watch-trigger-body { flex: 1; }
-.watch-trigger-title { font-size: 12.5px; font-weight: 700; color: var(--text); letter-spacing: -0.1px; }
-.watch-trigger-sub { font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-top: 2px; line-height: 1.4; }
-.watch-trigger-sub :deep(b) { color: var(--text); font-weight: 700; }
-.watch-cta { width: 100%; margin-top: 14px; padding: 14px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border: none; font-family: inherit; font-size: 14px; font-weight: 700; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 161, 154, 0.30); display: flex; align-items: center; justify-content: center; gap: 8px; transition: filter 0.2s; }
-.watch-cta:hover { filter: brightness(1.06); }
+.watch-card {
+  margin: 14px 20px 0;
+  padding: 18px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+}
+.watch-card-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.watch-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+.watch-card-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.watch-card-sub :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.watch-trigger {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+}
+.watch-trigger + .watch-trigger {
+  border-top: 1px dashed var(--border-soft);
+}
+.watch-trigger-ico {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--accent-paler);
+  color: var(--accent-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.watch-trigger-body {
+  flex: 1;
+}
+.watch-trigger-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.1px;
+}
+.watch-trigger-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.watch-trigger-sub :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.watch-cta {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: filter 0.2s;
+}
+.watch-cta:hover {
+  filter: brightness(1.06);
+}
 
-.pp-progress-hero { margin: 14px 20px 0; padding: 18px; background: linear-gradient(140deg, #2d2466 0%, #231d45 55%, #15102e 100%); border-radius: 16px; color: white; position: relative; overflow: hidden; box-shadow: 0 16px 36px -10px rgba(35, 29, 69, 0.40); }
-.pp-progress-hero::after { content: ''; position: absolute; top: -40%; right: -15%; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(0, 184, 176, 0.22), transparent 65%); pointer-events: none; }
-.pp-progress-hero > * { position: relative; z-index: 1; }
-.pp-progress-eyebrow { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.85); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 10px; }
-.pp-progress-pct-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
-.pp-progress-pct { font-size: 34px; font-weight: 700; letter-spacing: -1px; line-height: 1; color: #5eead4; }
-.pp-progress-frac { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.78); }
-.pp-progress-bar { height: 8px; border-radius: 100px; background: rgba(255, 255, 255, 0.14); overflow: hidden; margin: 10px 0 6px; }
-.pp-progress-fill { height: 100%; background: linear-gradient(90deg, #5eead4, var(--accent)); border-radius: 100px; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
-.pp-progress-sub { font-size: 11.5px; font-weight: 600; color: rgba(255, 255, 255, 0.72); line-height: 1.45; }
-.pp-progress-sub :deep(b) { color: #ffd58a; font-weight: 700; }
+.pp-progress-hero {
+  margin: 14px 20px 0;
+  padding: 18px;
+  background: linear-gradient(140deg, #2d2466 0%, #231d45 55%, #15102e 100%);
+  border-radius: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 36px -10px rgba(35, 29, 69, 0.4);
+}
+.pp-progress-hero::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -15%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 184, 176, 0.22), transparent 65%);
+  pointer-events: none;
+}
+.pp-progress-hero > * {
+  position: relative;
+  z-index: 1;
+}
+.pp-progress-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.pp-progress-pct-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.pp-progress-pct {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: #5eead4;
+}
+.pp-progress-frac {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.78);
+}
+.pp-progress-bar {
+  height: 8px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+  margin: 10px 0 6px;
+}
+.pp-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5eead4, var(--accent));
+  border-radius: 100px;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pp-progress-sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.45;
+}
+.pp-progress-sub :deep(b) {
+  color: #ffd58a;
+  font-weight: 700;
+}
 
-.buy-pp-card { margin: 14px 20px 0; padding: 18px; background: var(--card); border: 1.5px solid var(--accent-pale); border-radius: 16px; box-shadow: 0 8px 22px rgba(0, 161, 154, 0.10); position: relative; overflow: hidden; }
-.buy-pp-card::after { content: ''; position: absolute; top: -40%; right: -20%; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(0, 161, 154, 0.08), transparent 65%); pointer-events: none; }
-.buy-pp-card > * { position: relative; z-index: 1; }
-.buy-pp-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.buy-pp-badge { width: 40px; height: 48px; border-radius: 6px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; box-shadow: 0 4px 10px rgba(0, 161, 154, 0.30); }
-.buy-pp-grade { font-size: 9.5px; font-weight: 700; padding: 6px 11px; background: var(--primary); color: white; border-radius: 100px; letter-spacing: 0.8px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(35, 29, 69, 0.25); }
-.buy-pp-title { font-size: 19px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; line-height: 1.15; margin-bottom: 6px; }
-.buy-pp-sub { font-size: 12.5px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; margin-bottom: 14px; }
-.buy-pp-sub :deep(b) { font-weight: 700; }
-.buy-pp-inside { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-.buy-pp-item { display: flex; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 700; color: var(--text); padding: 8px 10px; background: var(--accent-paler); border: 1px solid var(--accent-pale); border-radius: 10px; }
-.buy-pp-item-tick { color: var(--accent-dark); font-weight: 900; flex-shrink: 0; }
-.buy-pp-pricerow { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: linear-gradient(135deg, var(--accent-paler), var(--card)); border: 1px solid var(--accent-pale); border-radius: 12px; margin-bottom: 14px; }
-.buy-pp-price { font-size: 24px; font-weight: 700; color: var(--accent-dark); letter-spacing: -0.6px; }
-.buy-pp-price small { font-size: 11px; font-weight: 700; color: var(--text-secondary); }
-.buy-pp-pricenote { flex: 1; font-size: 11px; font-weight: 600; color: var(--text-secondary); line-height: 1.4; }
-.buy-pp-pricenote :deep(b) { color: var(--accent-dark); font-weight: 700; }
-.buy-pp-cta { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border: none; font-family: inherit; font-size: 15px; font-weight: 700; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 161, 154, 0.30); display: flex; align-items: center; justify-content: center; gap: 8px; transition: filter 0.15s; }
-.buy-pp-cta:hover { filter: brightness(1.06); }
+.buy-pp-card {
+  margin: 14px 20px 0;
+  padding: 18px;
+  background: var(--card);
+  border: 1.5px solid var(--accent-pale);
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0, 161, 154, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.buy-pp-card::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.08), transparent 65%);
+  pointer-events: none;
+}
+.buy-pp-card > * {
+  position: relative;
+  z-index: 1;
+}
+.buy-pp-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.buy-pp-badge {
+  width: 40px;
+  height: 48px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 161, 154, 0.3);
+}
+.buy-pp-grade {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 6px 11px;
+  background: var(--primary);
+  color: white;
+  border-radius: 100px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(35, 29, 69, 0.25);
+}
+.buy-pp-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.buy-pp-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.buy-pp-sub :deep(b) {
+  font-weight: 700;
+}
+.buy-pp-inside {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.buy-pp-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 8px 10px;
+  background: var(--accent-paler);
+  border: 1px solid var(--accent-pale);
+  border-radius: 10px;
+}
+.buy-pp-item-tick {
+  color: var(--accent-dark);
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.buy-pp-pricerow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, var(--accent-paler), var(--card));
+  border: 1px solid var(--accent-pale);
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+.buy-pp-price {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  letter-spacing: -0.6px;
+}
+.buy-pp-price small {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.buy-pp-pricenote {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.buy-pp-pricenote :deep(b) {
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+.buy-pp-cta {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: filter 0.15s;
+}
+.buy-pp-cta:hover {
+  filter: brightness(1.06);
+}
 
-.qoffer-card { margin: 14px 20px 0; padding: 16px 18px; background: linear-gradient(140deg, var(--primary), var(--primary-2)); border-radius: 16px; color: white; position: relative; overflow: hidden; box-shadow: 0 14px 32px -10px rgba(35, 29, 69, 0.40); }
-.qoffer-card::after { content: ''; position: absolute; bottom: -40%; left: -15%; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 193, 89, 0.18), transparent 65%); }
-.qoffer-card > * { position: relative; z-index: 1; }
-.qoffer-eyebrow { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.85); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 8px; }
-.qoffer-title { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.2; margin-bottom: 5px; }
-.qoffer-sub { font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.78); line-height: 1.45; margin-bottom: 14px; }
-.qoffer-sub :deep(b) { font-weight: 700; }
-.qoffer-cta { width: 100%; padding: 14px; background: rgba(255, 255, 255, 0.14); color: white; border: 1px solid rgba(255, 255, 255, 0.30); font-family: inherit; font-size: 14px; font-weight: 700; border-radius: 12px; cursor: pointer; transition: background 0.15s; }
-.qoffer-cta:hover { background: rgba(255, 255, 255, 0.22); }
-.qoffer-cta.locked { opacity: 0.7; }
+.qoffer-card {
+  margin: 14px 20px 0;
+  padding: 16px 18px;
+  background: linear-gradient(140deg, var(--primary), var(--primary-2));
+  border-radius: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 14px 32px -10px rgba(35, 29, 69, 0.4);
+}
+.qoffer-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: -15%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 193, 89, 0.18),
+    transparent 65%
+  );
+}
+.qoffer-card > * {
+  position: relative;
+  z-index: 1;
+}
+.qoffer-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.qoffer-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+.qoffer-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.45;
+  margin-bottom: 14px;
+}
+.qoffer-sub :deep(b) {
+  font-weight: 700;
+}
+.qoffer-cta {
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.qoffer-cta:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.qoffer-cta.locked {
+  opacity: 0.7;
+}
 
-.verify-card { margin: 14px 20px 0; padding: 18px; background: linear-gradient(140deg, var(--primary) 0%, var(--primary-2) 60%, var(--primary-3) 100%); border-radius: 16px; color: white; position: relative; overflow: hidden; box-shadow: 0 16px 36px -10px rgba(35, 29, 69, 0.40); }
-.verify-card::after { content: ''; position: absolute; top: -40%; right: -15%; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(0, 161, 154, 0.22), transparent 65%); pointer-events: none; }
-.verify-card > * { position: relative; z-index: 1; }
-.verify-card-eyebrow { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.85); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 8px; }
-.verify-card-title { font-size: 17px; font-weight: 700; letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 6px; }
-.verify-card-sub { font-size: 12.5px; font-weight: 500; color: rgba(255, 255, 255, 0.78); line-height: 1.5; margin-bottom: 14px; }
-.verify-card-sub :deep(b) { font-weight: 700; }
-.verify-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-.verify-stat { padding: 10px 6px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 10px; text-align: center; }
-.verify-stat-num { font-size: 18px; font-weight: 700; color: #ffd58a; letter-spacing: -0.4px; line-height: 1; }
-.verify-stat-label { font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.78); letter-spacing: 0.4px; text-transform: uppercase; margin-top: 4px; line-height: 1.2; }
-.verify-cta { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border: none; font-family: inherit; font-size: 14px; font-weight: 700; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 161, 154, 0.40); display: flex; align-items: center; justify-content: center; gap: 8px; transition: filter 0.15s; }
-.verify-cta:hover { filter: brightness(1.06); }
+.verify-card {
+  margin: 14px 20px 0;
+  padding: 18px;
+  background: linear-gradient(
+    140deg,
+    var(--primary) 0%,
+    var(--primary-2) 60%,
+    var(--primary-3) 100%
+  );
+  border-radius: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 36px -10px rgba(35, 29, 69, 0.4);
+}
+.verify-card::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -15%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.22), transparent 65%);
+  pointer-events: none;
+}
+.verify-card > * {
+  position: relative;
+  z-index: 1;
+}
+.verify-card-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.verify-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+.verify-card-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.verify-card-sub :deep(b) {
+  font-weight: 700;
+}
+.verify-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.verify-stat {
+  padding: 10px 6px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  text-align: center;
+}
+.verify-stat-num {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffd58a;
+  letter-spacing: -0.4px;
+  line-height: 1;
+}
+.verify-stat-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  margin-top: 4px;
+  line-height: 1.2;
+}
+.verify-cta {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: filter 0.15s;
+}
+.verify-cta:hover {
+  filter: brightness(1.06);
+}
 </style>
