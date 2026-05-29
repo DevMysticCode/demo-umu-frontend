@@ -1184,12 +1184,18 @@
       @close="watchDrawerOpen = false"
       @submit="onWatchSubmit"
     />
+    <VerifyBuyerDrawer
+      :open="verifyDrawerOpen"
+      @close="verifyDrawerOpen = false"
+      @start="onVerifyStart"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import WatchPropertyDrawer from '~/components/property/WatchPropertyDrawer.vue'
+import VerifyBuyerDrawer from '~/components/property/VerifyBuyerDrawer.vue'
 import {
   calculateScore,
   getPrefillFromProperty,
@@ -2011,8 +2017,26 @@ function onClaim() {
   }
   router.push(`/homescore/${propertyId.value}?claim=1`)
 }
+// "See what verification gets you" → open the verify drawer (prototype modal).
+const verifyDrawerOpen = ref(false)
 function onVerify() {
-  router.push(`/property/${propertyId.value}`)
+  verifyDrawerOpen.value = true
+}
+// Start verification → buyer-profile verification steps. Guests sign in first
+// and resume on the build flow.
+function onVerifyStart() {
+  verifyDrawerOpen.value = false
+  const target = '/buyer-profile/build'
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) {
+    try {
+      localStorage.setItem('redirectAfterLogin', target)
+    } catch {}
+    router.push('/onboarding/signin')
+    return
+  }
+  router.push(target)
 }
 // "Watch this property" / "Register interest" both open the watch drawer.
 const watchDrawerOpen = ref(false)
