@@ -20,6 +20,17 @@
           ><span style="opacity: 0.75; font-weight: 600">/100</span>
         </span>
       </div>
+      <button class="claim-cta-btn" :class="claimCta.variant" type="button" @click="onClaimCta">
+        {{ claimCta.label }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </button>
+      <div class="hs-addr-stat-row">
+        <div class="pulse-dot" />
+        <span><span class="hs-addr-stat-count">{{ searchesTodayDisplay }}</span> checked this HomeScore today</span>
+      </div>
     </div>
 
     <!-- ── Live HomeScore card (animates as user answers) ──────────── -->
@@ -276,17 +287,49 @@ interface Props {
   initialScore: number
   epcRating: string | null
   epcYear?: number | null
+  /** Real searches today from PropertySearchLog (for the views row). */
+  searchesToday?: number
+  /** Passport status — drives the address-card CTA, same as the score screen. */
+  passportState?: 'unclaimed' | 'inProgress' | 'published'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   epcYear: null,
+  searchesToday: 0,
+  passportState: 'unclaimed',
 })
 
 const emit = defineEmits<{
   (e: 'back'): void
   (e: 'finish', payload: { finalScore: number; delta: number; answers: Record<string, string> }): void
   (e: 'upload-bill', file: File): void
+  (e: 'view-passport'): void
 }>()
+
+const searchesTodayDisplay = computed(() => {
+  const n = props.searchesToday ?? 0
+  return `${n} ${n === 1 ? 'person' : 'people'}`
+})
+
+// Address-card CTA, kept consistent with the Score screen.
+const claimCta = computed<{ label: string; variant: string }>(() => {
+  switch (props.passportState) {
+    case 'published':
+      return { label: 'Passport published — view it', variant: 'published' }
+    case 'inProgress':
+      return { label: 'Passport in progress — see status', variant: 'progress' }
+    default:
+      return { label: 'Is this your property? Claim it free', variant: '' }
+  }
+})
+
+function onClaimCta() {
+  if (props.passportState === 'published' || props.passportState === 'inProgress') {
+    emit('view-passport')
+  }
+  // Unclaimed: already inside the owner quiz, so the CTA is informational here
+  // (matches the prototype, whose button stays on the quiz screen).
+}
 
 interface Quest {
   id: string
@@ -770,6 +813,66 @@ watch(() => props.initialScore, (v) => {
   justify-content: center;
   font-size: 9px;
   font-weight: 800;
+}
+/* Claim CTA + views row — consistent with the Score screen */
+.claim-cta-btn {
+  display: flex;
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border: none;
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.1px;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.35);
+  transition: filter 0.15s;
+}
+.claim-cta-btn:hover {
+  filter: brightness(1.06);
+}
+.claim-cta-btn svg {
+  width: 14px;
+  height: 14px;
+}
+.claim-cta-btn.published {
+  background: white;
+  color: #8b4e0a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+.claim-cta-btn.progress {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  box-shadow: none;
+}
+.hs-addr-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.hs-addr-stat-row .pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  flex-shrink: 0;
+}
+.hs-addr-stat-count {
+  font-weight: 800;
+  color: white;
 }
 
 /* Score card */
