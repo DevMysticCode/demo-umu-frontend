@@ -68,7 +68,7 @@
           >
             <path
               d="M8 13.5S1 9.5 1 4.5A3.5 3.5 0 0 1 8 2.9 3.5 3.5 0 0 1 15 4.5C15 9.5 8 13.5 8 13.5z"
-              :fill="wishlisted ? 'white' : 'none'"
+              :fill="saved ? 'white' : 'none'"
               stroke-linejoin="round"
             />
           </svg>
@@ -3383,6 +3383,14 @@
         </div>
       </Transition>
     </Teleport>
+
+    <WatchPropertyDrawer
+      :open="watchDrawerOpen"
+      :address-label="property?.addressLine1 || ''"
+      :submitting="watchSubmitting"
+      @close="watchDrawerOpen = false"
+      @submit="onWatchDrawerSubmit"
+    />
   </div>
 </template>
 
@@ -3397,6 +3405,7 @@ import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
 import ShareContent from '~/components/property/ShareContent.vue'
+import WatchPropertyDrawer from '~/components/property/WatchPropertyDrawer.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import { useAppToast } from '~/composables/useCustomToast'
 import { usePropertySearch } from '~/composables/usePropertySearch'
@@ -3413,7 +3422,7 @@ const propertyId = route.params.id as string
 const { getPropertyDetails, formatPrice } = usePropertySearch()
 const { getPassportStatus } = usePassportClaim()
 const { toastState, showToast, hideToast } = useAppToast()
-const { wishlisted, toggleWishlist, fetchActions } = usePropertyActions()
+const { saved, toggleSave, fetchActions } = usePropertyActions()
 
 const config = useRuntimeConfig()
 const property = ref<any>(null)
@@ -4811,10 +4820,25 @@ const signalCountLabel = computed<string>(() => {
 })
 
 // ── Handlers wired to existing drawers/refs ───────────────────────────────────
+// Heart = save the property to the user's profile (UserSavedProperty), which
+// is what the profile's "Saved Properties" page reads.
 async function onWishlistToggle() {
-  try {
-    await toggleWishlist(propertyId)
-  } catch {}
+  const result = await toggleSave(propertyId)
+  if (result === 'unauthenticated') {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('redirectAfterLogin', `/property/${propertyId}?save=1`)
+    }
+    router.push('/onboarding/signin')
+    return
+  }
+  if (result === 'error') {
+    showToast({ message: 'Something went wrong — please try again', duration: 2000 })
+    return
+  }
+  showToast({
+    message: result.saved ? '❤️ Saved to your properties' : 'Removed from saved',
+    duration: 2000,
+  })
 }
 
 function onClaimClick() {
@@ -4877,8 +4901,48 @@ function onAccessPassport() {
   routeForPassportState()
 }
 
+const watchDrawerOpen = ref(false)
 function onWatchClick() {
-  openSheet('watch')
+  watchDrawerOpen.value = true
+}
+
+// Persist a "watch": ensure the property is saved to the user's profile
+// (so it shows under Saved Properties) and register interest (email). Guests
+// are sent to sign-in and resume here via ?watched=1.
+async function persistWatch(opts: { silent?: boolean } = {}) {
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('redirectAfterLogin', `/property/${propertyId}?watched=1`)
+    }
+    router.push('/onboarding/signin')
+    return
+  }
+  watchSubmitting.value = true
+  try {
+    await fetchActions(propertyId)
+    if (!saved.value) await toggleSave(propertyId)
+    // Register interest (notifies owner/agent) — best-effort, non-blocking.
+    fetch(`${config.public.apiBase}/property/${propertyId}/register-interest`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ interestLevel: 'Potential buyer' }),
+    }).catch(() => {})
+    if (!opts.silent) {
+      showToast({ message: '👁 Added to your watch list', duration: 2400 })
+    }
+  } finally {
+    watchSubmitting.value = false
+  }
+}
+
+async function onWatchDrawerSubmit() {
+  watchDrawerOpen.value = false
+  await persistWatch()
 }
 
 // True when the logged-in user owns or collaborates on the passport for this
@@ -5956,6 +6020,19 @@ onMounted(async () => {
     }
   }
 
+  // Resume a watch/save started elsewhere (e.g. the Buyer Report's "Watch this
+  // property", or the heart, after the sign-in round-trip).
+  if (route.query?.watched === '1') {
+    router.replace({ path: route.path }).catch(() => {})
+    persistWatch()
+  } else if (route.query?.save === '1') {
+    router.replace({ path: route.path }).catch(() => {})
+    const r = await toggleSave(propertyId)
+    if (r !== 'unauthenticated' && r !== 'error') {
+      showToast({ message: '❤️ Saved to your properties', duration: 2200 })
+    }
+  }
+
   // Enrichment (non-blocking)
   try {
     const token = localStorage.getItem('token')
@@ -6069,20 +6146,6 @@ function onInterestRegistered() {
 
 function handleShare() {
   /* share logic */
-}
-
-async function handleWishlist() {
-  const result = await toggleWishlist(propertyId)
-  let message = ''
-  if (result === 'unauthenticated')
-    message = 'Please log in to wishlist properties'
-  else if (result === 'error')
-    message = 'Something went wrong, please try again'
-  else
-    message = result.wishlisted
-      ? 'Added to your wishlist'
-      : 'Removed from wishlist'
-  showToast({ message, icon: propertyImages.value[0], duration: 2000 })
 }
 
 function handleClaimed(passportId: string) {

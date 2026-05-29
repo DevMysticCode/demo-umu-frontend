@@ -159,7 +159,7 @@ const activeFilter = ref<'all' | 'passport' | 'price' | 'recent'>('all')
 const searchOpen = ref(false)
 const searchInputRef = ref<HTMLInputElement | null>(null)
 
-const { fetchSavedProperties } = usePropertyActions()
+const { fetchSavedProperties, toggleSave } = usePropertyActions()
 
 onMounted(async () => {
   try {
@@ -181,9 +181,15 @@ async function onToggleSearch() {
   }
 }
 
-function onUnsave(item: any) {
-  // Optimistic remove from local list — wire to backend later
+async function onUnsave(item: any) {
+  // Optimistic remove, then persist via the toggle endpoint. If the call
+  // fails or unexpectedly re-saves, restore the item.
+  const snapshot = properties.value
   properties.value = properties.value.filter((p) => p.id !== item.id)
+  const result = await toggleSave(item.id)
+  if (result === 'error' || (typeof result === 'object' && result.saved)) {
+    properties.value = snapshot
+  }
 }
 
 // ── Life-signal helpers ─────────────────────────────────────────
