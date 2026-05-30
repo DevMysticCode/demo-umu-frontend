@@ -82,7 +82,7 @@
       <div class="pp-action-row">
         <button
           class="pp-action-btn pp-action-outline"
-          @click="setTab('buyers')"
+          @click="openMatchDrawer"
         >
           <OPIcon name="matchToBuyers" class="w-[15px] h-[15px]" />
           Match to Buyers
@@ -94,7 +94,7 @@
           class="pp-action-btn pp-action-primary"
           :class="{ 'pp-action-loading': publishLoading }"
           :disabled="publishLoading"
-          @click="togglePublish"
+          @click="onPublishClick"
         >
           <OPIcon name="share" class="w-[15px] h-[15px]" />
           {{ publishLoading ? '...' : isPublished ? 'Unpublish' : 'Publish' }}
@@ -165,8 +165,8 @@
           Street
         </button>
         <button
-          :class="['pp-subtab', activeTab === 'buyers' ? 'active' : '']"
-          @click="setTab('buyers')"
+          :class="['pp-subtab', activeTab === 'vault' ? 'active' : '']"
+          @click="setTab('vault')"
         >
           <svg
             width="14"
@@ -178,15 +178,32 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <path d="M3 10h18" />
+            <circle cx="12" cy="15" r="1.5" />
           </svg>
-          Buyers
-          <span v-if="matchedBuyers.length" class="pp-subtab-badge">{{
-            matchedBuyers.length
-          }}</span>
+          Vault
+          <span v-if="vaultStoredCount" class="pp-subtab-badge">{{ vaultStoredCount }}</span>
+        </button>
+        <button
+          :class="['pp-subtab', activeTab === 'timeline' ? 'active' : '']"
+          @click="setTab('timeline')"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          </svg>
+          Timeline
+          <span v-if="timelineCount" class="pp-subtab-badge">{{ timelineCount }}</span>
         </button>
       </div>
 
@@ -352,88 +369,139 @@
       </div>
 
       <!-- Buyers tab -->
-      <div v-if="activeTab === 'buyers'" class="pp-tab-content">
-        <div class="pp-buyers-intro">
-          <div class="pp-buyers-count">
-            {{ buyersTotal || matchedBuyers.length }} buyers searching in your
-            area
+      <!-- Vault tab — sections with per-section public/private toggle -->
+      <div v-if="activeTab === 'vault'" class="pp-tab-content">
+        <div v-if="vaultLoading" class="pp-empty">
+          <div style="font-size: 28px; margin-bottom: 8px">🗄️</div>
+          <p>Loading your vault…</p>
+        </div>
+
+        <template v-else-if="vaultSections.length === 0">
+          <div class="pp-empty">
+            <div style="font-size: 32px; margin-bottom: 8px">🗄️</div>
+            <p>Your vault is empty</p>
+            <p style="font-size: 11.5px; margin-top: 6px; color: #94a3b8">
+              As you complete sections, the verified documents are stored here —
+              and you choose which are private and which publish with your
+              passport.
+            </p>
           </div>
-          <div class="pp-buyers-sub">
-            Tap any buyer to see how well they match your property.
+        </template>
+
+        <template v-else>
+          <div class="vault-legend">
+            <div class="vault-legend-t">Private or public?</div>
+            <div class="vault-legend-row">
+              <span class="vault-legend-ico private">🔒</span>
+              <div>
+                <b>Private</b> — only you. Kept out of the passport when you
+                publish — for personal documents you're not required to
+                disclose.
+              </div>
+            </div>
+            <div class="vault-legend-row">
+              <span class="vault-legend-ico public">🌐</span>
+              <div>
+                <b>Public</b> — published with your passport. Visible to
+                everyone once you publish (it doesn't go to anyone before
+                then).
+              </div>
+            </div>
+          </div>
+
+          <div class="vault-count">
+            {{ vaultStoredCount }} section{{ vaultStoredCount === 1 ? '' : 's' }} stored
+          </div>
+
+          <div
+            v-for="s in completedVaultSections"
+            :key="s.id"
+            class="vault-row"
+            :class="(s.visibility || 'PUBLIC').toLowerCase()"
+          >
+            <div class="vault-ico">{{ sectionIcon(s.key, s.imageKey) }}</div>
+            <div class="vault-info">
+              <div class="vault-name">{{ s.title }}</div>
+              <div class="vault-vis-meta">
+                {{
+                  s.visibility === 'PRIVATE'
+                    ? 'Verified · Private — only you. Not included when you publish.'
+                    : 'Verified · Public — published with your passport when you go live.'
+                }}
+              </div>
+            </div>
+            <div class="vis-seg">
+              <span
+                class="vis-opt private"
+                :class="{ on: s.visibility === 'PRIVATE' }"
+                @click="setVisibility(s, 'PRIVATE')"
+              >🔒 Private</span>
+              <span
+                class="vis-opt public"
+                :class="{ on: s.visibility !== 'PRIVATE' }"
+                @click="setVisibility(s, 'PUBLIC')"
+              >🌐 Public</span>
+            </div>
+          </div>
+        </template>
+        <div style="height: 80px" />
+      </div>
+
+      <!-- Timeline tab — immutable activity ledger -->
+      <div v-if="activeTab === 'timeline'" class="pp-tab-content">
+        <div class="tl-intro">
+          <span class="lockico">🔐</span>
+          <div>
+            An <b>immutable, time-stamped record</b> of every step — so
+            everyone in the chain can see exactly where the sale is, and trust
+            nothing has been altered.
           </div>
         </div>
 
-        <div v-if="matchedBuyers.length" class="pp-buyer-list">
-          <div
-            v-for="buyer in matchedBuyers"
-            :key="buyer.name"
-            class="pp-buyer-card"
-          >
-            <div
-              class="pp-buyer-avatar"
-              :style="{
-                background:
-                  buyer.matchScore >= 75
-                    ? '#dcfce7'
-                    : buyer.matchScore >= 55
-                      ? '#fef3c7'
-                      : '#f1f5f9',
-                color:
-                  buyer.matchScore >= 75
-                    ? '#16a34a'
-                    : buyer.matchScore >= 55
-                      ? '#92400e'
-                      : '#64748b',
-              }"
-            >
-              {{ buyer.name[0] }}
-            </div>
-            <div class="pp-buyer-info">
-              <div class="pp-buyer-name">{{ buyer.name }}</div>
-              <div class="pp-buyer-criteria">
-                {{ buyer.area }} · {{ buyer.budget }} · {{ buyer.timeline }}
+        <div v-if="timelineLoading" class="pp-empty">
+          <div style="font-size: 28px; margin-bottom: 8px">🔗</div>
+          <p>Loading timeline…</p>
+        </div>
+
+        <template v-else>
+          <div class="tl-stage">
+            <div class="tl-stage-h">Where this sale is</div>
+            <div class="tl-steps">
+              <div
+                v-for="(stage, i) in timelineStages"
+                :key="stage"
+                class="tl-step"
+                :class="i < timelineStageIdx ? 'done' : (i === timelineStageIdx ? 'now' : 'todo')"
+              >
+                <div class="tl-dot">{{ i < timelineStageIdx ? '✓' : '' }}</div>
+                <div class="tl-step-lbl">{{ stage }}</div>
               </div>
-              <div class="pp-buyer-tags">
-                <span
-                  v-for="tag in buyer.tags"
-                  :key="tag"
-                  class="pp-buyer-tag"
-                  :class="
-                    tag === 'Strong match'
-                      ? 'match'
-                      : tag === 'Good match'
-                        ? 'partial'
-                        : ''
-                  "
-                  >{{ tag }}</span
-                >
-              </div>
-            </div>
-            <div
-              class="pp-buyer-score"
-              :style="{
-                color:
-                  buyer.matchScore >= 75
-                    ? '#16a34a'
-                    : buyer.matchScore >= 55
-                      ? '#92400e'
-                      : '#94a3b8',
-              }"
-            >
-              {{ buyer.matchScore }}%
             </div>
           </div>
-        </div>
-        <div v-else class="pp-empty">
-          <div style="font-size: 32px; margin-bottom: 8px">👥</div>
-          <p>
-            {{
-              propertyId
-                ? 'Loading matched buyers…'
-                : 'Property not linked — no buyer data available.'
-            }}
-          </p>
-        </div>
+
+          <div class="tl-list-h">Verified activity</div>
+          <div v-if="timelineEvents.length === 0" class="pp-empty" style="margin: 0 18px">
+            No activity yet — events will appear here as your Passport progresses.
+          </div>
+          <div v-for="e in timelineEvents" :key="e.id" class="tl-item">
+            <div class="tl-rail">
+              <div class="tl-rail-dot">{{ e.icon || '📕' }}</div>
+              <div class="tl-rail-line" />
+            </div>
+            <div class="tl-card">
+              <div class="tl-card-top">
+                <div class="tl-title">{{ e.title }}</div>
+                <div class="tl-time">{{ formatStamp(e.createdAt) }}</div>
+              </div>
+              <div class="tl-who">{{ e.actor }}</div>
+              <div class="tl-stamp">
+                <span class="tl-stamp-lock">🔒</span>
+                <span class="tl-stamp-txt">{{ e.hash }}</span>
+                <span class="tl-stamp-verif">block-stamped</span>
+              </div>
+            </div>
+          </div>
+        </template>
         <div style="height: 80px" />
       </div>
     </div>
@@ -460,6 +528,27 @@
       :steps="passportTourSteps"
       storage-key="umu_tour_passportview_v1"
     />
+
+    <!-- Match-to-Buyers drawer + buyer detail drawer -->
+    <MatchedBuyersDrawer
+      :open="matchDrawerOpen"
+      :buyers="matchedBuyers"
+      @close="matchDrawerOpen = false"
+      @select="onBuyerSelect"
+    />
+    <BuyerDetailDrawer
+      :buyer="selectedBuyer"
+      @close="selectedBuyer = null"
+      @action="onBuyerAction"
+    />
+
+    <!-- Publish confirmation drawer -->
+    <PublishPassportDrawer
+      :open="publishDrawerOpen"
+      :submitting="publishLoading"
+      @close="publishDrawerOpen = false"
+      @publish="onPublishConfirm"
+    />
   </div>
 </template>
 
@@ -472,6 +561,9 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 import SegmentedSwitch from '@/components/core/SegmentedSwitch.vue'
 import AddCollaboratorModal from '@/components/modals/AddCollaboratorModal.vue'
 import YourPropertiesModal from '@/components/modals/YourPropertiesModal.vue'
+import MatchedBuyersDrawer from '~/components/passport/MatchedBuyersDrawer.vue'
+import BuyerDetailDrawer from '~/components/passport/BuyerDetailDrawer.vue'
+import PublishPassportDrawer from '~/components/passport/PublishPassportDrawer.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 
 // Guided tour — auto-runs once per browser, replays from the "?" button.
@@ -676,13 +768,175 @@ function setTab(tab) {
   ) {
     fetchStreetData(propertyId.value)
   }
-  if (
-    tab === 'buyers' &&
-    propertyId.value &&
-    matchedBuyers.value.length === 0
-  ) {
+  if (tab === 'vault' && vaultSections.value.length === 0) {
+    fetchVault()
+  }
+  if (tab === 'timeline' && timelineEvents.value.length === 0) {
+    fetchTimeline()
+  }
+}
+
+// ── Match-to-Buyers drawer ─────────────────────────────────────
+const matchDrawerOpen = ref(false)
+const selectedBuyer = ref(null)
+function openMatchDrawer() {
+  matchDrawerOpen.value = true
+  if (propertyId.value && matchedBuyers.value.length === 0) {
     fetchBuyerData(propertyId.value)
   }
+}
+function onBuyerSelect(buyer) {
+  selectedBuyer.value = buyer
+}
+function onBuyerAction(kind) {
+  // Lightweight stubs for now — wire to real flows when those endpoints exist.
+  const msg =
+    kind === 'invite' ? '📅 Invite sent to buyer'
+      : kind === 'share' ? '🔗 Passport link shared'
+        : '💬 Conversation opened'
+  selectedBuyer.value = null
+  // Simple inline toast via the existing pp-collab-text isn't suitable;
+  // surface as a window alert for now since this is a placeholder action.
+  if (typeof window !== 'undefined') console.log(msg)
+}
+
+// ── Vault ──────────────────────────────────────────────────────
+const vaultSections = ref([])
+const vaultLoading = ref(false)
+const completedVaultSections = computed(() =>
+  vaultSections.value.filter((s) => s.status === 'COMPLETED'),
+)
+const vaultStoredCount = computed(() => completedVaultSections.value.length)
+
+async function fetchVault() {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  vaultLoading.value = true
+  try {
+    const data = await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}/vault`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+    vaultSections.value = data.sections ?? []
+  } catch (e) {
+    console.error('Failed to load vault', e)
+  } finally {
+    vaultLoading.value = false
+  }
+}
+
+async function setVisibility(section, visibility) {
+  const current = section.visibility || 'PUBLIC'
+  if (current === visibility) return
+  // Optimistic update — rollback on error.
+  const prev = current
+  section.visibility = visibility
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  try {
+    await $fetch(
+      `${config.public.apiBase}/passport/section/${section.id}/visibility`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: { visibility },
+      },
+    )
+    // Activity ledger picks up the change server-side; refresh if user is on
+    // the timeline tab so the new row appears.
+    if (activeTab.value === 'timeline') fetchTimeline()
+  } catch (e) {
+    console.error('Failed to set visibility', e)
+    section.visibility = prev
+  }
+}
+
+function sectionIcon(key, _imageKey) {
+  const map = {
+    ownership_profile: '📖',
+    boundaries: '🏡',
+    disputes_complaints: '📋',
+    notices_proposals: '📨',
+    alterations: '📐',
+    guarantees_warranties: '🛡️',
+    insurance: '☂️',
+    environmental: '🌍',
+    rights: '🔑',
+    parking: '🚗',
+    other_charges: '💷',
+    occupiers: '👥',
+    services: '🔌',
+    energy_epc: '🌿',
+    transaction_info: '📑',
+    fixtures_fittings: '🛋️',
+    leasehold_info: '🏢',
+    title_deeds: '📜',
+  }
+  return map[key] || '📄'
+}
+
+// ── Timeline ───────────────────────────────────────────────────
+const timelineEvents = ref([])
+const timelineStages = ref(['Issued', 'Matched', 'Published', 'Offer', 'Exchange', 'Complete'])
+const timelineStageIdx = ref(0)
+const timelineLoading = ref(false)
+const timelineCount = computed(() => timelineEvents.value.length)
+
+async function fetchTimeline() {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  timelineLoading.value = true
+  try {
+    const data = await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}/timeline`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+    timelineEvents.value = data.events ?? []
+    timelineStages.value = data.stages ?? timelineStages.value
+    timelineStageIdx.value = data.stageIdx ?? 0
+  } catch (e) {
+    console.error('Failed to load timeline', e)
+  } finally {
+    timelineLoading.value = false
+  }
+}
+
+function formatStamp(iso) {
+  if (!iso) return ''
+  try {
+    const d = new Date(iso)
+    const day = d.getDate()
+    const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()]
+    const hh = String(d.getHours()).padStart(2, '0')
+    const mm = String(d.getMinutes()).padStart(2, '0')
+    return `${day} ${month} · ${hh}:${mm}`
+  } catch {
+    return ''
+  }
+}
+
+// ── Publish confirmation drawer ────────────────────────────────
+const publishDrawerOpen = ref(false)
+function onPublishClick() {
+  // Unpublishing stays a one-tap action; publishing shows the explainer first.
+  if (isPublished.value) {
+    togglePublish()
+  } else {
+    publishDrawerOpen.value = true
+  }
+}
+async function onPublishConfirm() {
+  await togglePublish()
+  publishDrawerOpen.value = false
+  // Refresh the timeline so the freshly-logged "Published" entry shows up.
+  if (activeTab.value === 'timeline') fetchTimeline()
+  else timelineEvents.value = [] // force re-fetch next time
 }
 
 function navigateToProperty(pid) {
@@ -2220,4 +2474,62 @@ const onRoleSwitch = (role) => {
   font-weight: 600;
   flex-shrink: 0;
 }
+
+/* ── Vault tab ───────────────────────────────────────────────── */
+.vault-legend { margin: 8px 18px 6px; padding: 12px 14px; background: #f5f6fa; border: 1px solid #e4e5ed; border-radius: 13px; }
+.vault-legend-t { font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: #a8a9ad; margin-bottom: 8px; }
+.vault-legend-row { display: flex; align-items: flex-start; gap: 9px; font-size: 11px; font-weight: 600; color: #6b7089; line-height: 1.45; }
+.vault-legend-row + .vault-legend-row { margin-top: 7px; }
+.vault-legend-ico { width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; flex-shrink: 0; }
+.vault-legend-ico.private { background: #6b7089; }
+.vault-legend-ico.public { background: #00a19a; }
+.vault-legend-row b { color: #231d45; font-weight: 800; }
+.vault-count { padding: 6px 18px 4px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #6b7089; }
+.vault-row { display: flex; align-items: flex-start; gap: 12px; margin: 0 18px 10px; padding: 14px; background: #fff; border: 1px solid #e4e5ed; border-radius: 14px; box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05); }
+.vault-ico { width: 40px; height: 40px; border-radius: 11px; background: #e5f4f2; color: #008a84; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.vault-info { flex: 1; min-width: 0; }
+.vault-name { font-size: 14px; font-weight: 800; color: #231d45; }
+.vault-vis-meta { font-size: 10.5px; font-weight: 700; margin-top: 3px; line-height: 1.35; }
+.vault-row.public .vault-vis-meta { color: #008a84; }
+.vault-row.private .vault-vis-meta { color: #6b7089; }
+.vis-seg { display: flex; gap: 2px; background: #f5f6fa; border: 1px solid #e4e5ed; border-radius: 100px; padding: 3px; flex-shrink: 0; align-self: center; }
+.vis-opt { display: flex; align-items: center; gap: 4px; padding: 6px 11px; border-radius: 100px; font-size: 11px; font-weight: 800; color: #6b7089; cursor: pointer; transition: all 0.12s; }
+.vis-opt:hover { color: #231d45; }
+.vis-opt.on { color: #fff; }
+.vis-opt.on.private { background: #6b7089; }
+.vis-opt.on.public { background: #00a19a; }
+
+/* ── Timeline tab ────────────────────────────────────────────── */
+.tl-intro { margin: 8px 18px 0; padding: 13px 15px; background: #f2faf8; border: 1px solid #e5f4f2; border-radius: 13px; font-size: 12px; font-weight: 600; color: #6b7089; line-height: 1.55; display: flex; gap: 9px; align-items: flex-start; }
+.tl-intro .lockico { font-size: 16px; flex-shrink: 0; }
+.tl-intro b { color: #008a84; font-weight: 800; }
+.tl-stage { margin: 14px 18px 0; padding: 16px 14px 12px; background: #fff; border: 1px solid #e4e5ed; border-radius: 16px; box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05); }
+.tl-stage-h { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #a8a9ad; margin-bottom: 14px; }
+.tl-steps { display: flex; align-items: flex-start; }
+.tl-step { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+.tl-step::before { content: ''; position: absolute; top: 9px; left: -50%; width: 100%; height: 2.5px; background: #e4e5ed; z-index: 0; }
+.tl-step:first-child::before { display: none; }
+.tl-step.done::before,
+.tl-step.now::before { background: #00a19a; }
+.tl-dot { width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2.5px solid #e4e5ed; z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: #a8a9ad; }
+.tl-step.done .tl-dot { background: #00a19a; border-color: #00a19a; color: #fff; }
+.tl-step.now .tl-dot { border-color: #00a19a; color: #008a84; box-shadow: 0 0 0 4px #e5f4f2; }
+.tl-step-lbl { font-size: 9px; font-weight: 800; color: #a8a9ad; margin-top: 7px; text-align: center; line-height: 1.2; letter-spacing: 0.2px; }
+.tl-step.done .tl-step-lbl,
+.tl-step.now .tl-step-lbl { color: #231d45; }
+.tl-list-h { padding: 18px 20px 6px; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #a8a9ad; }
+.tl-item { display: flex; gap: 12px; margin: 0 18px; padding: 4px 0; position: relative; }
+.tl-rail { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.tl-rail-dot { width: 34px; height: 34px; border-radius: 11px; background: #e5f4f2; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; z-index: 1; }
+.tl-rail-line { width: 2px; flex: 1; background: #e4e5ed; margin: 4px 0; min-height: 14px; }
+.tl-item:last-child .tl-rail-line { display: none; }
+.tl-card { flex: 1; min-width: 0; background: #fff; border: 1px solid #e4e5ed; border-radius: 14px; box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05); padding: 12px 14px; margin-bottom: 12px; }
+.tl-card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.tl-title { font-size: 13.5px; font-weight: 800; color: #231d45; letter-spacing: -0.2px; line-height: 1.25; }
+.tl-time { font-size: 10px; font-weight: 700; color: #a8a9ad; white-space: nowrap; flex-shrink: 0; }
+.tl-who { font-size: 11px; font-weight: 600; color: #6b7089; margin-top: 2px; }
+.tl-stamp { display: inline-flex; align-items: center; gap: 6px; margin-top: 9px; padding: 5px 9px; background: #f2faf8; border: 1px solid #e5f4f2; border-radius: 8px; }
+.tl-stamp-lock { font-size: 11px; }
+.tl-stamp-txt { font-family: 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 10px; font-weight: 700; color: #008a84; letter-spacing: 0.3px; }
+.tl-stamp-verif { font-size: 9px; font-weight: 800; color: #008a84; letter-spacing: 0.4px; text-transform: uppercase; margin-left: 2px; }
 </style>

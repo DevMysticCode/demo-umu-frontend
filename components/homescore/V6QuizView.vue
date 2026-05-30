@@ -20,18 +20,22 @@
           ><span style="opacity: 0.75; font-weight: 600">/100</span>
         </span>
       </div>
-      <button class="claim-cta-btn" :class="claimCta.variant" type="button" @click="onClaimCta">
-        {{ claimCta.label }}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg>
-      </button>
       <div class="hs-addr-stat-row">
         <div class="pulse-dot" />
         <span><span class="hs-addr-stat-count">{{ searchesTodayDisplay }}</span> checked this HomeScore today</span>
       </div>
     </div>
+
+    <!-- Claim / Passport-state box + explainer drawers (matches HomeScore) -->
+    <PassportClaimBox
+      :state="passportState"
+      :progress-pct="passportProgressPct"
+      :sections-done="passportSectionsDone"
+      :sections-total="passportSectionsTotal"
+      @claim="$emit('claim')"
+      @watch="$emit('watch-property')"
+      @buy="$emit('buy-passport')"
+    />
 
     <!-- ── Live HomeScore card (animates as user answers) ──────────── -->
     <div class="score-card anim-2" style="margin-top: 12px">
@@ -302,6 +306,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
 
 interface Props {
   property: any | null
@@ -310,21 +315,29 @@ interface Props {
   epcYear?: number | null
   /** Real searches today from PropertySearchLog (for the views row). */
   searchesToday?: number
-  /** Passport status — drives the address-card CTA, same as the score screen. */
+  /** Passport status — drives the claim box, same as the score screen. */
   passportState?: 'unclaimed' | 'inProgress' | 'published'
+  passportProgressPct?: number
+  passportSectionsDone?: number
+  passportSectionsTotal?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   epcYear: null,
   searchesToday: 0,
   passportState: 'unclaimed',
+  passportProgressPct: 0,
+  passportSectionsDone: 0,
+  passportSectionsTotal: 0,
 })
 
 const emit = defineEmits<{
   (e: 'back'): void
   (e: 'finish', payload: { finalScore: number; delta: number; answers: Record<string, string> }): void
   (e: 'upload-bill', file: File): void
-  (e: 'view-passport'): void
+  (e: 'claim'): void
+  (e: 'watch-property'): void
+  (e: 'buy-passport'): void
 }>()
 
 // Bill-upload shortcut is parked for now; flip to re-enable the whole
@@ -335,26 +348,6 @@ const searchesTodayDisplay = computed(() => {
   const n = props.searchesToday ?? 0
   return `${n} ${n === 1 ? 'person' : 'people'}`
 })
-
-// Address-card CTA, kept consistent with the Score screen.
-const claimCta = computed<{ label: string; variant: string }>(() => {
-  switch (props.passportState) {
-    case 'published':
-      return { label: 'Passport published — view it', variant: 'published' }
-    case 'inProgress':
-      return { label: 'Passport in progress — see status', variant: 'progress' }
-    default:
-      return { label: 'Is this your property? Claim it free', variant: '' }
-  }
-})
-
-function onClaimCta() {
-  if (props.passportState === 'published' || props.passportState === 'inProgress') {
-    emit('view-passport')
-  }
-  // Unclaimed: already inside the owner quiz, so the CTA is informational here
-  // (matches the prototype, whose button stays on the quiz screen).
-}
 
 interface Quest {
   id: string

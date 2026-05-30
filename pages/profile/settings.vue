@@ -488,14 +488,10 @@ const securityLabel = computed(() => {
   z-index: 1;
 }
 .hero-greeting {
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 16px;
-  letter-spacing: 0.2px;
-  color: #1f7a66;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
   margin-bottom: 4px;
-  text-transform: none;
 }
 .st-h1 {
   font-size: 32px;

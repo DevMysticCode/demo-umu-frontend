@@ -205,10 +205,9 @@ const goBack = useGoBack('/profile')
 }
 
 .ai-greeting {
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
-  font-size: 16px;
-  color: #1f7a66;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
   margin-bottom: 4px;
 }
 .ai-headline {

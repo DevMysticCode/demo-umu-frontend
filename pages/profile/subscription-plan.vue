@@ -615,13 +615,9 @@ function openStripePortal() {
 
 .bl-hero { padding: 8px 22px 14px; position: relative; z-index: 1; }
 .hero-greeting {
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0.2px;
-  text-transform: none;
-  color: #1f7a66;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
   margin-bottom: 4px;
 }
 .bl-h1 {
