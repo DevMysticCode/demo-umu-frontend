@@ -515,14 +515,10 @@ const goBack = useGoBack('/profile')
   z-index: 1;
 }
 .hero-greeting {
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 16px;
-  letter-spacing: 0.2px;
-  color: #1f7a66;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
   margin-bottom: 4px;
-  text-transform: none;
 }
 .cl-h1 {
   font-size: 32px;
@@ -534,10 +530,8 @@ const goBack = useGoBack('/profile')
 }
 .cl-h1-count {
   display: inline-block;
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
   font-size: 22px;
-  font-weight: 400;
+  font-weight: 700;
   color: #3dbda3;
   vertical-align: 8px;
   margin-left: 6px;

@@ -370,13 +370,10 @@ const filteredProperties = computed(() => {
   z-index: 1;
 }
 .hero-greeting {
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0.2px;
-  text-transform: none;
-  color: #1f7a66;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #94a3b8;
   margin-bottom: 4px;
 }
 .sp-h1 {
@@ -389,10 +386,8 @@ const filteredProperties = computed(() => {
 }
 .sp-h1-count {
   display: inline-block;
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
   font-size: 22px;
-  font-weight: 400;
+  font-weight: 700;
   color: #3dbda3;
   vertical-align: 8px;
   margin-left: 6px;

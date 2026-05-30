@@ -213,12 +213,9 @@ const goBack = useGoBack('/profile')
 /* Hero */
 .hs-hero { padding: 8px 22px 14px; position: relative; z-index: 1; }
 .hero-greeting {
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 16px;
-  letter-spacing: 0.2px;
-  color: #1f7a66;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
   margin-bottom: 4px;
 }
 .hs-h1 {
@@ -391,11 +388,9 @@ const goBack = useGoBack('/profile')
   line-height: 1.3;
 }
 .faq-num {
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
   font-size: 14px;
   color: #1f7a66;
-  font-weight: 400;
+  font-weight: 700;
   flex-shrink: 0;
   width: 18px;
 }

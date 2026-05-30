@@ -48,10 +48,8 @@ defineProps({
 }
 .ppt-count {
   display: inline-block;
-  font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-  font-style: italic;
   font-size: 22px;
-  font-weight: 400;
+  font-weight: 700;
   color: #3dbda3;
   vertical-align: 8px;
   margin-left: 6px;

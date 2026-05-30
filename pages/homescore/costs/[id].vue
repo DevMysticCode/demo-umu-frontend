@@ -54,25 +54,6 @@
           ><span style="opacity: 0.75; font-weight: 600">/100</span>
         </span>
       </div>
-      <button
-        class="claim-cta-btn"
-        :class="claimCta.variant"
-        type="button"
-        @click="onClaimCta"
-      >
-        {{ claimCta.label }}
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.4"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg>
-      </button>
       <div class="hs-addr-stat-row">
         <div class="pulse-dot" />
         <span
@@ -81,6 +62,17 @@
         >
       </div>
     </div>
+
+    <!-- Claim / Passport-state box + explainer drawers -->
+    <PassportClaimBox
+      :state="passportClaimState"
+      :progress-pct="passportProgressPct"
+      :sections-done="passportSectionsDone"
+      :sections-total="passportSectionsTotal"
+      @claim="goToClaimPassport"
+      @watch="goToBuyPassport"
+      @buy="goToBuyPassport"
+    />
 
     <!-- Buyer confidence -->
     <div class="buyer-conf anim-2">
@@ -1194,6 +1186,7 @@
 import { computed, onMounted, ref } from 'vue'
 import WatchPropertyDrawer from '~/components/property/WatchPropertyDrawer.vue'
 import VerifyBuyerDrawer from '~/components/property/VerifyBuyerDrawer.vue'
+import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
 import {
   calculateScore,
   getPrefillFromProperty,
@@ -1973,47 +1966,39 @@ const confidenceTitle = computed(() => {
   return 'Investigate before offering'
 })
 
-// Address-card CTA, driven by the property's real Passport state — only pitch
-// "Claim it free" on a genuinely unclaimed home.
-const claimCta = computed<{ label: string; variant: string }>(() => {
-  if (passportState.value === 'published') {
-    return { label: 'Passport published — view it', variant: 'published' }
-  }
-  if (passportState.value === 'progress') {
-    return { label: 'Passport in progress — see status', variant: 'progress' }
-  }
-  return { label: 'Is this your property? Claim it free', variant: '' }
+// Map the costs page's state vocab ('progress') to the claim-box's vocab.
+const passportClaimState = computed<'unclaimed' | 'inProgress' | 'published'>(() => {
+  if (passportState.value === 'published') return 'published'
+  if (passportState.value === 'progress') return 'inProgress'
+  return 'unclaimed'
 })
 
-// ── Actions ──
-function onClaimCta() {
-  if (
-    passportState.value === 'published' ||
-    passportState.value === 'progress'
-  ) {
-    const pid =
-      passportStatus.value?.passportId || (property.value as any)?.passportId
-    if (pid && passportState.value === 'published')
-      router.push(`/passportview/${pid}`)
-    else router.push(`/property/${propertyId.value}`)
-    return
-  }
-  onClaim()
-}
-function onClaim() {
+// Unclaimed claim CTA → property page with the "Choose your Passport" drawer
+// auto-opened. Guests sign in first and resume there.
+function goToClaimPassport() {
+  const target = `/property/${propertyId.value}?claim=1`
   const token =
     typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) {
-    try {
-      localStorage.setItem(
-        'redirectAfterLogin',
-        `/homescore/${propertyId.value}?claim=1`,
-      )
-    } catch {}
+    try { localStorage.setItem('redirectAfterLogin', target) } catch {}
     router.push('/onboarding/signin')
     return
   }
-  router.push(`/homescore/${propertyId.value}?claim=1`)
+  router.push(target)
+}
+
+// In-progress / published "buy the Passport" CTA → property page with the
+// £99 unlock drawer auto-opened.
+function goToBuyPassport() {
+  const target = `/property/${propertyId.value}?unlock=1`
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) {
+    try { localStorage.setItem('redirectAfterLogin', target) } catch {}
+    router.push('/onboarding/signin')
+    return
+  }
+  router.push(target)
 }
 // "See what verification gets you" → open the verify drawer (prototype modal).
 const verifyDrawerOpen = ref(false)

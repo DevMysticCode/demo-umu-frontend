@@ -92,8 +92,8 @@
       :sections-done="passportSectionsDone"
       :sections-total="passportSectionsTotal"
       @claim="$emit('claim')"
-      @watch="$emit('watch-property')"
-      @buy="$emit('view-passport')"
+      @watch="$emit('buy-passport')"
+      @buy="$emit('buy-passport')"
     />
 
     <!-- ── HomeScore card (animated outline + gauge + band + footer) ── -->
@@ -782,8 +782,8 @@ const emit = defineEmits<{
   (e: 'see-street'): void
   /** Property already claimed — parent navigates to the passport/property. */
   (e: 'view-passport'): void
-  /** Buyer wants to watch this (in-progress) property. */
-  (e: 'watch-property'): void
+  /** Open the £99 unlock drawer on the property page (in-progress/published). */
+  (e: 'buy-passport'): void
   /** Fires when the user dismisses the claim modal so the parent can
    *  clear the ?claim=1 auto-open intent and not re-trigger on remount. */
   (e: 'claim-modal-closed'): void

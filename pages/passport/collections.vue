@@ -964,12 +964,11 @@ const executeDelete = async () => {
   padding: 4px 16px 12px;
 }
 .coll-hero-eyebrow {
-  font-size: 17px;
-  font-style: italic;
-  color: #1f7a66;
-  letter-spacing: 0.01em;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  letter-spacing: 0;
   margin-bottom: 6px;
-  font-family: Georgia, 'Times New Roman', serif;
 }
 .coll-hero-title {
   font-size: 44px;
@@ -1029,26 +1028,31 @@ const executeDelete = async () => {
   transform: translateY(-2px);
   box-shadow: 0 8px 22px rgba(31, 122, 102, 0.18);
 }
+/* Resume tile renders the same Property Passport book as the grid below, just
+   smaller. Match the grid's fixed-aspect + object-cover treatment so the
+   overlaid address sits in the same spot and looks crisp instead of squashed
+   into a tiny natural-aspect frame. */
 .coll-resume-book {
-  width: 76px;
+  width: 92px;
+  height: 122px;
   flex-shrink: 0;
   filter: drop-shadow(0 6px 12px rgba(0, 140, 134, 0.22));
 }
 .coll-resume-book :deep(.passport-card) {
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
 }
 .coll-resume-book :deep(.passport-container) {
   width: 100%;
-  height: auto;
+  height: 100%;
+  max-width: none;
 }
-/* Size the passport to its natural aspect at the tile width — overrides the
-   image's Tailwind `h-full object-cover` (which cropped/stretched it inside a
-   fixed-height box and pushed the overlaid address off-centre). */
 .coll-resume-book :deep(.passport-image) {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
 }
 .coll-resume-content {
   flex: 1;

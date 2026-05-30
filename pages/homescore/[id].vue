@@ -113,14 +113,14 @@
         :passport-sections-total="passportSectionsTotal"
         :auto-open-claim="autoOpenClaim"
         @back="goBack"
-        @claim="startQuestions"
+        @claim="goToClaimPassport"
         @refine="startQuestions"
         @interested="goToRunningCosts"
         @open-pathway="goToPathway"
         @see-running-costs="goToRunningCosts"
         @see-street="goToStreetCompare"
         @view-passport="goToPassport"
-        @watch-property="goToWatch"
+        @buy-passport="goToBuyPassport"
         @claim-modal-closed="autoOpenClaim = false"
       />
     </template>
@@ -156,10 +156,15 @@
         :epc-year="resolvedEpcYear"
         :searches-today="searchStats?.today ?? 0"
         :passport-state="resolvedPassportState"
+        :passport-progress-pct="passportProgressPct"
+        :passport-sections-done="passportSectionsDone"
+        :passport-sections-total="passportSectionsTotal"
         @back="goBack"
         @finish="onQuizFinish"
         @upload-bill="onUploadBill"
-        @view-passport="goToPassport"
+        @claim="goToClaimPassport"
+        @watch-property="goToBuyPassport"
+        @buy-passport="goToBuyPassport"
       />
     </template>
 
@@ -4548,6 +4553,38 @@ function goToPassport() {
 // profile + registers interest + toast). Guests are auth-gated en route.
 function goToWatch() {
   router.push(`/property/${propertyId}?watched=1`)
+}
+
+// Unclaimed claim CTA → property page with the "Choose your Passport"
+// drawer auto-opened. Guests sign in first and resume there.
+function goToClaimPassport() {
+  const target = `/property/${propertyId}?claim=1`
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('redirectAfterLogin', target)
+    }
+    router.push('/onboarding/signin')
+    return
+  }
+  router.push(target)
+}
+
+// In-progress / published "buy the Passport" CTA → property page with the
+// £99 unlock drawer auto-opened. Guests sign in first and resume there.
+function goToBuyPassport() {
+  const target = `/property/${propertyId}?unlock=1`
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('redirectAfterLogin', target)
+    }
+    router.push('/onboarding/signin')
+    return
+  }
+  router.push(target)
 }
 
 // ── Buyer results helpers ─────────────────────────────────────
