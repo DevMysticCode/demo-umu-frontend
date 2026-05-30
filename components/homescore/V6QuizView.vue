@@ -32,7 +32,7 @@
       :progress-pct="passportProgressPct"
       :sections-done="passportSectionsDone"
       :sections-total="passportSectionsTotal"
-      @claim="$emit('claim')"
+      @claim-passport="$emit('claim-passport')"
       @watch="$emit('watch-property')"
       @buy="$emit('buy-passport')"
     />
@@ -335,7 +335,7 @@ const emit = defineEmits<{
   (e: 'back'): void
   (e: 'finish', payload: { finalScore: number; delta: number; answers: Record<string, string> }): void
   (e: 'upload-bill', file: File): void
-  (e: 'claim'): void
+  (e: 'claim-passport'): void
   (e: 'watch-property'): void
   (e: 'buy-passport'): void
 }>()

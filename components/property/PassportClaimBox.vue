@@ -6,7 +6,7 @@
       class="pcb-box"
       type="button"
       style="background: linear-gradient(135deg, #2d2456, #231d45)"
-      @click="$emit('claim')"
+      @click="$emit('claim-passport')"
     >
       <div class="pcb-left">
         <div class="pcb-main">This property is unclaimed</div>
@@ -109,7 +109,7 @@
               </div>
               <div class="cxd-cta-row">
                 <button class="cxd-btn secondary" type="button" @click="openSheet = null">Got it</button>
-                <button class="cxd-btn primary" type="button" @click="onPrimary('claim')">Claim it free →</button>
+                <button class="cxd-btn primary" type="button" @click="onPrimary('claim-passport')">Claim it free →</button>
               </div>
               <div class="cx-foot">The way people buy homes is changing — we're building that future with government.</div>
             </template>
@@ -192,7 +192,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'claim'): void
+  // Fired from the "This property is unclaimed" box and the cxUnclaimed
+  // drawer's "Claim it free →" button — the new login → property-page flow.
+  (e: 'claim-passport'): void
   (e: 'watch'): void
   (e: 'buy'): void
 }>()
@@ -216,7 +218,7 @@ const stepDetails: Record<number, { h: string; v: string }> = {
 const activeStep = ref(1)
 const activeStepData = computed(() => stepDetails[activeStep.value] ?? stepDetails[1])
 
-function onPrimary(action: 'claim' | 'watch' | 'buy') {
+function onPrimary(action: 'claim-passport' | 'watch' | 'buy') {
   openSheet.value = null
   emit(action)
 }

@@ -113,7 +113,7 @@
         :passport-sections-total="passportSectionsTotal"
         :auto-open-claim="autoOpenClaim"
         @back="goBack"
-        @claim="goToClaimPassport"
+        @claim="startQuestions"
         @refine="startQuestions"
         @interested="goToRunningCosts"
         @open-pathway="goToPathway"
@@ -121,6 +121,7 @@
         @see-street="goToStreetCompare"
         @view-passport="goToPassport"
         @buy-passport="goToBuyPassport"
+        @claim-passport="goToClaimPassport"
         @claim-modal-closed="autoOpenClaim = false"
       />
     </template>
@@ -162,7 +163,7 @@
         @back="goBack"
         @finish="onQuizFinish"
         @upload-bill="onUploadBill"
-        @claim="goToClaimPassport"
+        @claim-passport="goToClaimPassport"
         @watch-property="goToBuyPassport"
         @buy-passport="goToBuyPassport"
       />
