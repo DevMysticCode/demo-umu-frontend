@@ -91,7 +91,7 @@
       :progress-pct="passportProgressPct"
       :sections-done="passportSectionsDone"
       :sections-total="passportSectionsTotal"
-      @claim="$emit('claim')"
+      @claim-passport="$emit('claim-passport')"
       @watch="$emit('buy-passport')"
       @buy="$emit('buy-passport')"
     />
@@ -784,6 +784,9 @@ const emit = defineEmits<{
   (e: 'view-passport'): void
   /** Open the £99 unlock drawer on the property page (in-progress/published). */
   (e: 'buy-passport'): void
+  /** "This property is unclaimed" arrow / cxUnclaimed drawer CTA —
+   *  login (if needed) → property page with the Choose Passport drawer. */
+  (e: 'claim-passport'): void
   /** Fires when the user dismisses the claim modal so the parent can
    *  clear the ?claim=1 auto-open intent and not re-trigger on remount. */
   (e: 'claim-modal-closed'): void

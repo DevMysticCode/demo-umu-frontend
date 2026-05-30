@@ -69,7 +69,7 @@
       :progress-pct="passportProgressPct"
       :sections-done="passportSectionsDone"
       :sections-total="passportSectionsTotal"
-      @claim="goToClaimPassport"
+      @claim-passport="goToClaimPassport"
       @watch="goToBuyPassport"
       @buy="goToBuyPassport"
     />
