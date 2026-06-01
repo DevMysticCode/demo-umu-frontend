@@ -469,6 +469,56 @@
       </div>
     </div>
 
+    <!-- ════════════════════════════ LR FAILED ════════════════════════════ -->
+    <div v-else-if="step === 'lr-failed'" class="cl-screen cl-center-full">
+      <div class="cl-lr-pulse-wrap">
+        <div class="cl-lr-inner" style="background: #fef2f2; color: #b91c1c">⚠️</div>
+      </div>
+      <h1 class="cl-h1 cl-center">Ownership not confirmed</h1>
+      <p class="cl-body cl-center cl-mb-lg" style="max-width: 320px">
+        {{ lrErrorMessage || 'HM Land Registry could not confirm you own this property.' }}
+      </p>
+
+      <div
+        v-if="lrResult?.status === 'ADDITIONAL_INFO_NEEDED' || lrResult?.matchResult === 'NO_MATCHES'"
+        class="cl-card cl-mb-sm cl-w-full"
+        style="max-width: 360px"
+      >
+        <div class="cl-eyebrow cl-mb-sm">What HM Land Registry returned</div>
+        <div class="cl-lrf-rows">
+          <div v-if="lrResult?.titleNumber" class="cl-lrf-row">
+            <span class="cl-lrf-l">Title number</span>
+            <span class="cl-lrf-v">{{ lrResult.titleNumber }}</span>
+          </div>
+          <div v-if="lrResult?.matchResult" class="cl-lrf-row">
+            <span class="cl-lrf-l">Match result</span>
+            <span class="cl-lrf-v">{{ lrResult.matchResult }}</span>
+          </div>
+          <div v-if="lrResult?.historical" class="cl-lrf-row">
+            <span class="cl-lrf-l">Status</span>
+            <span class="cl-lrf-v">Historical proprietor</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-w-full" style="max-width: 360px; display: flex; gap: 8px">
+        <button
+          class="cl-btn-ghost"
+          style="flex: 1"
+          @click="step = 'search'"
+        >
+          Try another property
+        </button>
+        <button
+          class="cl-btn-brand"
+          style="flex: 1"
+          @click="runLrSearch()"
+        >
+          Retry
+        </button>
+      </div>
+    </div>
+
     <!-- ════════════════════════════ BOTTOM CTA BAR ════════════════════════════ -->
     <div v-if="showCta" class="cl-cta-bar">
       <button
@@ -505,6 +555,7 @@ type ClaimStep =
   | 'kyc-verified'
   | 'lr-searching'
   | 'lr-found'
+  | 'lr-failed'
 
 import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDrawer.vue'
 
@@ -605,7 +656,9 @@ onMounted(async () => {
 const isFullscreenStep = computed(() =>
   ['kyc-verified', 'lr-searching'].includes(step.value),
 )
-const showCta = computed(() => step.value !== 'lr-searching')
+const showCta = computed(
+  () => !['lr-searching', 'lr-failed'].includes(step.value),
+)
 
 const stepMeta: Record<
   ClaimStep,
@@ -620,17 +673,38 @@ const stepMeta: Record<
   'kyc-verified': { title: 'Identity verified', pct: 100 },
   'lr-searching': { title: 'Searching Land Registry', pct: 100 },
   'lr-found': { title: 'Ownership confirmed', pct: 100 },
+  'lr-failed': { title: 'Ownership not confirmed', pct: 100 },
 }
 const topbarTitle = computed(() => stepMeta[step.value].title)
 const topbarSub = computed(() => stepMeta[step.value].sub)
 const progressPct = computed(() => stepMeta[step.value].pct)
 
-// ── Display fields (from selectedProperty) ─────────────────────
+// HM Land Registry verification result — set by runLrSearch() after the
+// real /land-registry-check call returns. Fields below prefer this over
+// fallbacks from selectedProperty when the live check has data.
+interface LrCheckResult {
+  status: 'VERIFIED' | 'ADDITIONAL_INFO_NEEDED' | 'FAILED' | 'IN_PROGRESS'
+  typeCode?: number
+  matchResult?: string
+  titleNumber?: string
+  ownership?: string
+  historical?: boolean
+  rejection?: { reason?: string; code?: string }
+  acknowledgement?: { expectedResponseDateTime?: string }
+  messageId?: string
+}
+const lrResult = ref<LrCheckResult | null>(null)
+const lrErrorMessage = ref('')
+
+// ── Display fields (prefer live HMLR result, fall back to selectedProperty) ──
 const tenureDisplay = computed(
   () => selectedProperty.value?.tenure || '—',
 )
 const titleDisplay = computed(
-  () => selectedProperty.value?.titleNumber || '—',
+  () =>
+    lrResult.value?.titleNumber ||
+    selectedProperty.value?.titleNumber ||
+    '—',
 )
 const typeDisplay = computed(
   () => selectedProperty.value?.propertyType || '—',
@@ -647,6 +721,9 @@ const registeredDisplay = computed(() => {
 })
 const proprietorDisplay = computed(
   () => userFullName.value || 'Property owner',
+)
+const ownershipDisplay = computed(
+  () => lrResult.value?.ownership || '—',
 )
 const lrAddressDisplay = computed(() => {
   const a1 = selectedProperty.value?.addressLine1 || 'your property'
@@ -940,7 +1017,7 @@ async function doLiveness() {
   step.value = 'kyc-aml'
 }
 
-// ── LR searching animation → lr-found ─────────────────────────
+// ── LR searching: animation runs in parallel with the REAL HMLR call ──
 watch(
   () => step.value,
   (s) => {
@@ -949,17 +1026,128 @@ watch(
 )
 async function runLrSearch() {
   lrStep.value = 0
-  await new Promise((r) => setTimeout(r, 700))
-  lrStep.value = 1
-  await new Promise((r) => setTimeout(r, 800))
-  lrStep.value = 2
-  await new Promise((r) => setTimeout(r, 900))
-  lrStep.value = 3
-  await new Promise((r) => setTimeout(r, 600))
-  if (step.value === 'lr-searching') step.value = 'lr-found'
+  lrResult.value = null
+  lrErrorMessage.value = ''
+  const pId = selectedProperty.value?.id
+  if (!pId) {
+    lrErrorMessage.value = 'No property selected.'
+    step.value = 'lr-failed'
+    return
+  }
+
+  // Animate the first two pacing steps while the real call is in flight
+  // so the user never sees an idle spinner. The animation is deliberately
+  // slower than the real call most of the time — if HMLR is faster, we
+  // still let the user see the address-matched / register-retrieved beats.
+  const animation = (async () => {
+    await new Promise((r) => setTimeout(r, 600))
+    if (step.value === 'lr-searching') lrStep.value = 1
+    await new Promise((r) => setTimeout(r, 700))
+    if (step.value === 'lr-searching') lrStep.value = 2
+  })()
+
+  // Real Business Gateway Online Owner Verification call.
+  //   Dev/sandbox: append `?lr=eoov-fm-1` to the URL to pin a stub scenario.
+  const lrScenario = (route.query?.lr as string | undefined)?.trim()
+  let result: LrCheckResult
+  try {
+    result = await $fetch<LrCheckResult>(
+      `${base}/property/${pId}/land-registry-check`,
+      {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: lrScenario ? { messageId: lrScenario } : {},
+      },
+    )
+  } catch (e: any) {
+    lrErrorMessage.value =
+      e?.data?.message ||
+      e?.message ||
+      "We couldn't reach HM Land Registry. Please try again."
+    step.value = 'lr-failed'
+    return
+  }
+
+  // Make sure the animation has at least played the first two beats so the
+  // UI doesn't snap straight to the result.
+  await animation
+  lrResult.value = result
+
+  if (result.status === 'VERIFIED') {
+    lrStep.value = 3
+    await new Promise((r) => setTimeout(r, 500))
+    if (step.value === 'lr-searching') step.value = 'lr-found'
+    return
+  }
+
+  // Anything else — render the actionable failure screen.
+  lrErrorMessage.value = describeLrFailure(result)
+  step.value = 'lr-failed'
 }
 
-// ── Issue passport (complete-verification + claim) ────────────
+// Map an HMLR land-registry-check verdict into a user-facing message.
+// We surface enough detail that the user (or our support team) can act on
+// it — the full match record is in the backend audit log if they need more.
+function describeLrFailure(lr: {
+  status: string
+  matchResult?: string
+  rejection?: { reason?: string; code?: string }
+  acknowledgement?: { expectedResponseDateTime?: string }
+  historical?: boolean
+  titleNumber?: string
+}): string {
+  if (lr.status === 'IN_PROGRESS') {
+    const eta = lr.acknowledgement?.expectedResponseDateTime
+    return (
+      'HM Land Registry is currently out of service hours — we\'ve queued ' +
+      'your ownership check' +
+      (eta ? ` (expected back by ${eta})` : '') +
+      '. Please try again shortly.'
+    )
+  }
+  if (lr.status === 'ADDITIONAL_INFO_NEEDED') {
+    if (lr.matchResult === 'MULTIPLE_MATCHES') {
+      return (
+        "HM Land Registry returned multiple possible titles for this " +
+        "address. Please contact support so we can confirm the right one."
+      )
+    }
+    if (lr.historical) {
+      return (
+        'HM Land Registry shows your name on this title historically, but ' +
+        "you're no longer listed as the current owner. If you've recently " +
+        'sold or transferred this property, that\'s expected.'
+      )
+    }
+    return (
+      "We found a partial match against HM Land Registry but couldn't " +
+      'fully confirm ownership. Double-check the name on your profile ' +
+      'matches the name on the title deeds, then try again.'
+    )
+  }
+  if (lr.status === 'FAILED') {
+    if (lr.rejection?.code === 'bg.postcode.invalid') {
+      return 'HM Land Registry didn\'t accept the property postcode. Please correct it on the property and try again.'
+    }
+    if (lr.rejection?.code === 'bg.properties.nopropertyfound') {
+      return 'HM Land Registry couldn\'t find a title at this address. Double-check the address details.'
+    }
+    if (lr.rejection?.reason) {
+      return `HM Land Registry rejected the check: ${lr.rejection.reason}`
+    }
+    if (lr.matchResult === 'NO_MATCHES') {
+      return (
+        "Your name doesn't match the registered owner of this property on " +
+        "HM Land Registry. If this is wrong (e.g. you bought it recently " +
+        "and the register hasn't updated), please contact support."
+      )
+    }
+    return 'HM Land Registry could not confirm your ownership of this property. Please contact support.'
+  }
+  return 'Ownership check did not succeed. Please try again.'
+}
+
+// ── Issue passport (HM Land Registry verification + claim) ────────
 async function issuePassport() {
   issueError.value = ''
   const pId = selectedProperty.value?.id
@@ -969,17 +1157,18 @@ async function issuePassport() {
   }
   issueLoading.value = true
   try {
-    // 1) complete-verification
-    try {
-      await $fetch(`${base}/property/${pId}/complete-verification`, {
-        method: 'POST',
-        headers: authHeaders(),
-      })
-    } catch {
-      // Non-fatal: still try to claim; backend may tolerate without
+    // HM Land Registry verification has already run during the lr-searching
+    // step — runLrSearch() blocks the user from reaching here unless the
+    // verdict was VERIFIED. Belt-and-braces guard in case state got out of
+    // sync (e.g. via deep-link / back-nav).
+    if (lrResult.value?.status !== 'VERIFIED') {
+      issueError.value =
+        'Ownership has not been verified against HM Land Registry yet.'
+      issueLoading.value = false
+      return
     }
 
-    // 2) Gate the claim on the user's passport-type pick.
+    // Gate the claim on the user's passport-type pick.
     // We deliberately do NOT short-circuit on getPassportStatus() here:
     // that endpoint only returns SELLER passports (it's buyer-facing), so
     // reusing its id would land a landlord claim on a seller passport.
@@ -1743,6 +1932,18 @@ async function issuePassport() {
   opacity: 0.4;
   cursor: not-allowed;
 }
+.cl-btn-ghost {
+  width: 100%;
+  padding: 14px 18px;
+  background: #fff;
+  color: #0e2840;
+  border: 1px solid #e2e8e8;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.cl-btn-ghost:hover { background: #f7fafa; }
 .cl-btn-spinner {
   width: 14px;
   height: 14px;

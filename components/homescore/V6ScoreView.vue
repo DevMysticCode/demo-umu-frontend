@@ -91,6 +91,7 @@
       :progress-pct="passportProgressPct"
       :sections-done="passportSectionsDone"
       :sections-total="passportSectionsTotal"
+      :property-id="property?.id ?? null"
       @claim-passport="$emit('claim-passport')"
       @watch="$emit('buy-passport')"
       @buy="$emit('buy-passport')"
