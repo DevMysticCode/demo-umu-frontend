@@ -2,7 +2,7 @@
   <div class="passport-card">
     <div class="passport-container">
       <img
-        src="/op-icons/passportview/umu-passport.png"
+        :src="passportImage"
         alt="Passport Background"
         class="passport-image h-full object-cover rounded-lg"
       />
@@ -30,9 +30,10 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import OPIcon from '../ui/OPIcon.vue'
 
-defineProps({
+const props = defineProps({
   line1: {
     type: String,
     required: true,
@@ -41,7 +42,20 @@ defineProps({
     type: String,
     required: true,
   },
+  // Passport type drives which cover art we show. `SELLER` (default) uses
+  // the teal umu-passport book; `LANDLORD` uses the landlord-specific cover
+  // so the two passport types are visually distinguishable at a glance.
+  type: {
+    type: String,
+    default: 'SELLER',
+  },
 })
+
+const passportImage = computed(() =>
+  props.type === 'LANDLORD'
+    ? '/op-icons/passportview/landlordPassport.png'
+    : '/op-icons/passportview/umu-passport.png',
+)
 </script>
 
 <style scoped>

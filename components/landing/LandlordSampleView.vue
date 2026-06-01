@@ -9,7 +9,7 @@
     <div class="pp-hero">
       <div class="pp-hero-glow" />
       <div class="pp-hero-book">
-        <PassportCard line1="14 Hazel Grove" line2="Stockport, SK7 4BL" />
+        <PassportCard line1="14 Hazel Grove" line2="Stockport, SK7 4BL" type="LANDLORD" />
       </div>
       <div class="pp-hero-info">
         <div class="pp-hero-eyebrow">Landlord Passport</div>

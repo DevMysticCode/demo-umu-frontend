@@ -24,6 +24,7 @@
           <PassportCard
             :line1="passportAddress.line1"
             :line2="passportAddress.line2"
+            :type="passportType"
           />
         </div>
         <div class="pp-hero-info">
@@ -615,6 +616,9 @@ const showCollaboratorModal = ref(false)
 const showPropertiesModal = ref(false)
 
 const passportAddress = ref({ line1: '', line2: '' })
+// Passport type drives the cover art shown in the hero (SELLER → umu-passport,
+// LANDLORD → landlordPassport). Set once the passport loads.
+const passportType = ref('SELLER')
 const isPublished = ref(false)
 const publishLoading = ref(false)
 const propertyHomeScore = ref(null)
@@ -676,6 +680,7 @@ onMounted(async () => {
       line1: passport.addressLine1 ?? '',
       line2: passport.postcode ?? '',
     }
+    passportType.value = passport.type ?? 'SELLER'
     isPublished.value = passport.status === 'PUBLISHED'
     propertyId.value = passport.propertyId ?? null
     // Pre-fetch street + buyer data in background
