@@ -284,17 +284,6 @@
         <p class="cell-sub">
           {{ collection.items.length }}
           {{ collection.items.length === 1 ? 'Passport' : 'Passports' }}
-          <template v-if="collectionTypeBreakdown(collection).length">
-            <span
-              v-for="entry in collectionTypeBreakdown(collection)"
-              :key="entry.tone"
-              class="cell-type-chip"
-              :class="`tone-${entry.tone}`"
-            >
-              <span class="cell-type-dot" />
-              {{ entry.count }} {{ entry.label }}
-            </span>
-          </template>
         </p>
       </div>
 
@@ -393,13 +382,7 @@
           </div>
         </div>
         <p class="cell-name">{{ shortAddress(passport.addressLine1) }}</p>
-        <p class="cell-sub">
-          {{ passport.postcode }}
-          <span class="cell-type-chip" :class="`tone-${typeMeta(passport.type).tone}`">
-            <span class="cell-type-dot" />
-            {{ typeMeta(passport.type).label }}
-          </span>
-        </p>
+        <p class="cell-sub">{{ passport.postcode }}</p>
       </div>
 
       <!-- Add New -->
@@ -544,28 +527,6 @@ function typeMeta(t) {
 function passportMatchesType(p) {
   if (typeFilter.value === 'all') return true
   return (p?.type ?? 'SELLER') === typeFilter.value
-}
-
-// Per-collection mix indicator. Returns a list of `{ tone, label, count }`
-// for each type present in the collection — used to show "2 Seller · 1
-// Landlord" under the collection name. Returns an empty list when the
-// collection is empty or contains a single type, so a "Sellers only"
-// collection stays uncluttered.
-function collectionTypeBreakdown(collection) {
-  const items = collection?.items ?? []
-  if (items.length === 0) return []
-  const counts = new Map()
-  for (const it of items) {
-    const t = it?.passport?.type ?? 'SELLER'
-    counts.set(t, (counts.get(t) || 0) + 1)
-  }
-  if (counts.size <= 1) return []
-  return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .map(([t, count]) => {
-      const meta = typeMeta(t)
-      return { tone: meta.tone, label: meta.label, count }
-    })
 }
 
 // Compact navbar search toggle — only shown when the user taps the magnifier
@@ -1558,45 +1519,6 @@ const executeDelete = async () => {
   text-align: center;
   margin: 0;
   margin-top: -6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  width: 100%;
-}
-
-/* Inline type pill on the metadata row below each passport. Lives in
-   `cell-sub` next to the postcode — kept out of the book art so it doesn't
-   overlap the "Property Passport" brand text on the cover. */
-.cell-type-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 1px 8px 1px 6px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  line-height: 1.6;
-  border: 1px solid transparent;
-}
-.cell-type-chip.tone-seller {
-  background: rgba(0, 161, 154, 0.1);
-  color: #007e78;
-  border-color: rgba(0, 161, 154, 0.22);
-}
-.cell-type-chip.tone-landlord {
-  background: rgba(240, 160, 32, 0.12);
-  color: #b67518;
-  border-color: rgba(240, 160, 32, 0.32);
-}
-.cell-type-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  flex-shrink: 0;
 }
 
 /* Add New card */

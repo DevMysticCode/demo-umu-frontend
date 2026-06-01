@@ -2,7 +2,7 @@
   <div class="hs-v6-pathway">
     <!-- App header -->
     <div class="app-header">
-      <button class="back-btn" type="button" @click="router.back()" aria-label="Back">
+      <button class="back-btn" type="button" @click="onBack" aria-label="Back">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6" />
         </svg>
@@ -80,25 +80,43 @@
         v-for="(m, i) in missions"
         :key="m.id"
         class="mission-card"
-        :class="{ priority: i === 0 }"
+        :class="{ priority: i === 0 && !m.done, 'mission-card--done': m.done }"
       >
         <div class="mission-top">
-          <div class="mission-icon">{{ m.icon }}</div>
+          <div class="mission-icon">
+            <span v-if="m.done" class="mission-done-tick">✓</span>
+            <template v-else>{{ m.icon }}</template>
+          </div>
           <div class="mission-info">
-            <div class="mission-title">Step {{ i + 1 }} · {{ m.title }}</div>
-            <div class="mission-meta">{{ m.meta }}</div>
+            <div class="mission-title">
+              Step {{ i + 1 }} · {{ m.title }}
+              <span v-if="m.done" class="mission-done-pill">Already done</span>
+            </div>
+            <div class="mission-meta">
+              <template v-if="m.done">
+                You said this is in place — upload {{ m.docLabel }} to verify it on your Passport.
+              </template>
+              <template v-else>{{ m.meta }}</template>
+            </div>
           </div>
         </div>
-        <div class="mission-rewards">
+        <div v-if="!m.done" class="mission-rewards">
           <span class="quest-reward stat">{{ m.pts }}</span>
           <span class="quest-reward money">{{ m.save }}</span>
           <span class="quest-reward grant">{{ m.cost }}</span>
         </div>
         <div class="mission-actions">
-          <button class="mission-btn-supplier" type="button" @click="goToMarketplace(m.id)">
-            🔧 {{ m.supplierLabel }}
-          </button>
-          <button class="mission-btn-done" type="button" @click="markDone(m.id)">✓ Done</button>
+          <template v-if="m.done">
+            <button class="mission-btn-verify" type="button" @click="verifyDocsOpen = true">
+              📎 Verify with a document
+            </button>
+          </template>
+          <template v-else>
+            <button class="mission-btn-supplier" type="button" @click="goToMarketplace(m.id)">
+              🔧 {{ m.supplierLabel }}
+            </button>
+            <button class="mission-btn-done" type="button" @click="markDone(m.id)">✓ Done</button>
+          </template>
         </div>
       </div>
     </div>
@@ -187,12 +205,80 @@
       </button>
     </div>
 
+    <!-- Floating "Verify your answers" pill — re-opens the modal if the
+         user dismissed it. Only shown when they've claimed at least one
+         improvement as done. -->
+    <button
+      v-if="doneMissionDocs.length > 0 && !verifyDocsOpen"
+      class="verify-pill"
+      type="button"
+      @click="verifyDocsOpen = true"
+    >
+      📎 Verify {{ doneMissionDocs.length }} answer{{ doneMissionDocs.length === 1 ? '' : 's' }}
+    </button>
+
+    <!-- Verify-documents modal — pops on first arrival when the user has
+         answered the quiz with at least one "already done" answer. Asks
+         for the supporting docs so the claimed work can be verified on
+         their Property Passport. -->
+    <Teleport to="body">
+      <div v-if="verifyDocsOpen" class="vd-overlay" @click.self="closeVerifyDocs">
+        <div class="vd-sheet">
+          <div class="vd-grip" />
+          <div class="vd-header">
+            <div class="vd-eyebrow">✓ You've already done some of these</div>
+            <div class="vd-title">Verify your answers with documents</div>
+            <div class="vd-sub">
+              You told us {{ doneMissionDocs.length }} improvement{{ doneMissionDocs.length === 1 ? ' is' : 's are' }}
+              already in place. Upload a document for each so buyers and lenders
+              see a verified record on your Property Passport.
+            </div>
+          </div>
+          <div class="vd-list">
+            <label
+              v-for="m in doneMissionDocs"
+              :key="m.id"
+              class="vd-row"
+              :class="{ 'vd-row--filled': !!verifyDocsUploaded[m.docKey ?? ''] }"
+            >
+              <div class="vd-row-ic">{{ m.icon }}</div>
+              <div class="vd-row-body">
+                <div class="vd-row-title">{{ m.title }}</div>
+                <div class="vd-row-sub">{{ m.docLabel }}</div>
+                <div v-if="verifyDocsUploaded[m.docKey ?? '']" class="vd-row-file">
+                  ✓ {{ verifyDocsUploaded[m.docKey ?? ''] }}
+                </div>
+              </div>
+              <div class="vd-row-cta">
+                <span v-if="verifyDocsUploaded[m.docKey ?? '']">Replace</span>
+                <span v-else>+ Add</span>
+              </div>
+              <input
+                type="file"
+                class="vd-row-file-input"
+                accept=".pdf,.jpg,.jpeg,.png,.heic"
+                @change="onVerifyDocPicked($event, m.docKey ?? '')"
+              />
+            </label>
+          </div>
+          <div class="vd-footer">
+            <button class="vd-btn ghost" type="button" @click="closeVerifyDocs">
+              Maybe later
+            </button>
+            <button class="vd-btn primary" type="button" @click="closeVerifyDocs">
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
     <div style="height: 32px" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -203,6 +289,9 @@ const config = useRuntimeConfig()
 // actual EPC recommendations for THIS property (not the prototype's
 // hard-coded 6 steps).
 const property = ref<any>(null)
+// Homescore quiz answers — used to mark missions the user has already
+// reported as done, and to surface a "verify with documents" prompt.
+const quizAnswers = ref<Record<string, string>>({})
 
 onMounted(async () => {
   try {
@@ -212,6 +301,45 @@ onMounted(async () => {
     if (res.ok) property.value = await res.json()
   } catch {
     /* keep null — page falls back to a friendly empty state */
+  }
+  // Load the user's quiz answers — try the backend first (authed users),
+  // then localStorage (guests / unsaved answers). Either source is fine
+  // because the doneness heuristic only needs the answer values.
+  try {
+    const token =
+      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    if (token) {
+      const r = await fetch(
+        `${config.public.apiBase}/property/${propertyId.value}/homescore`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      if (r.ok) {
+        const j = await r.json()
+        if (j?.answers && typeof j.answers === 'object') {
+          quizAnswers.value = j.answers as Record<string, string>
+        }
+      }
+    }
+    if (
+      Object.keys(quizAnswers.value).length === 0 &&
+      typeof localStorage !== 'undefined'
+    ) {
+      const raw = localStorage.getItem(`hs_answers_${propertyId.value}`)
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw)
+          if (parsed && typeof parsed === 'object') quizAnswers.value = parsed
+        } catch {}
+      }
+    }
+  } catch {
+    /* non-critical — pathway still renders, just without done-state */
+  }
+  // Pop the verify-documents modal on first visit when the user has at
+  // least one "already done" mission. We only auto-open once per visit;
+  // they can re-open it from the "Verify your answers" link.
+  if (doneMissionDocs.value.length > 0) {
+    verifyDocsOpen.value = true
   }
 })
 
@@ -278,6 +406,64 @@ interface Mission {
   save: string
   cost: string
   supplierLabel: string
+  // True when the user's quiz answers say this improvement is already in
+  // place — flips the card to a "done · upload to verify" state.
+  done: boolean
+  // The document the user should upload to verify this completed step,
+  // when they've claimed it as done. Null when no upload makes sense.
+  docKey: string | null
+  docLabel: string | null
+}
+
+// Heuristic: given the EPC mission title and the user's quiz answers,
+// decide whether the user has already reported this improvement as done.
+// Conservative — only flips true when the answer clearly indicates the
+// upgrade is in place, not for "partial" or ambiguous responses.
+function isMissionDone(
+  title: string,
+  answers: Record<string, string>,
+): { done: boolean; docKey: string | null; docLabel: string | null } {
+  const t = (title ?? '').toLowerCase()
+  if (/(loft|roof.*insulat)/.test(t) && answers.loftInsulation === 'well') {
+    return { done: true, docKey: 'loft-insulation', docLabel: 'Loft insulation photos or installer invoice' }
+  }
+  if (
+    /(cavity|wall.*insulat|external wall|internal wall)/.test(t) &&
+    ['cavity_ins', 'solid_ins', 'timber'].includes(answers.wallType)
+  ) {
+    return { done: true, docKey: 'wall-insulation', docLabel: 'Wall insulation guarantee or CIGA certificate' }
+  }
+  if (
+    /(floor.*insulat)/.test(t) &&
+    ['floor_ins', 'concrete'].includes(answers.floorInsulation)
+  ) {
+    return { done: true, docKey: 'floor-insulation', docLabel: 'Floor insulation invoice or photos' }
+  }
+  if (
+    /(window|glaz)/.test(t) &&
+    ['triple', 'new_double'].includes(answers.windows)
+  ) {
+    return { done: true, docKey: 'glazing', docLabel: 'FENSA / CERTASS certificate' }
+  }
+  if (/solar pv|photovoltaic/.test(t) && /solar_pv/.test(answers.renewables ?? '')) {
+    return { done: true, docKey: 'solar-pv', docLabel: 'MCS certificate for solar PV' }
+  }
+  if (/solar (?:water|thermal)/.test(t) && /solar_thermal/.test(answers.renewables ?? '')) {
+    return { done: true, docKey: 'solar-thermal', docLabel: 'MCS certificate for solar thermal' }
+  }
+  if (
+    /(boiler|heating system|heat pump)/.test(t) &&
+    ['heat_pump', 'gas_modern', 'electric_modern'].includes(answers.heatingType)
+  ) {
+    return { done: true, docKey: 'heating-cert', docLabel: 'Heating system certificate or installer invoice' }
+  }
+  if (
+    /(led|low.energy.light|lighting)/.test(t) &&
+    /(led|low)/.test(answers.energyTariff ?? '')
+  ) {
+    return { done: true, docKey: 'led-lighting', docLabel: 'Photos of LED fittings (optional)' }
+  }
+  return { done: false, docKey: null, docLabel: null }
 }
 
 // Build the mission list from the property's real epcRecommendations.
@@ -298,6 +484,7 @@ const missions = computed<Mission[]>(() => {
     const title = r?.title || r?.improvementDescr || 'EPC recommendation'
     const sap = Number(r?.resultingSap ?? 0)
     const grade = sap > 0 ? gradeFor(sap) : ''
+    const doneInfo = isMissionDone(title, quizAnswers.value)
     return {
       id: String(r?.id ?? idx),
       icon: iconForRec(title),
@@ -309,9 +496,38 @@ const missions = computed<Mission[]>(() => {
       save: r?.typicalSaving ? `£${r.typicalSaving}/yr` : '',
       cost: r?.costRange || '',
       supplierLabel: supplierLabelForRec(title),
+      done: doneInfo.done,
+      docKey: doneInfo.docKey,
+      docLabel: doneInfo.docLabel,
     }
   })
 })
+
+// Missions the user has reported as done — drives the verify-documents
+// modal and the inline "Verify with a document" CTA on the done cards.
+const doneMissionDocs = computed(() =>
+  missions.value.filter((m) => m.done && m.docKey && m.docLabel),
+)
+
+// ── Verify-documents modal state ─────────────────────────────────
+const verifyDocsOpen = ref(false)
+// Files the user has picked, keyed by docKey. We're not actually wiring
+// uploads to the backend yet — this state lets the modal show a "ready
+// to upload" indicator so the user knows what they've staged. A backend
+// endpoint would replace the in-memory map.
+const verifyDocsUploaded = reactive<Record<string, string>>({})
+
+function onVerifyDocPicked(e: Event, docKey: string) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  verifyDocsUploaded[docKey] = file.name
+  if (input) input.value = ''
+}
+
+function closeVerifyDocs() {
+  verifyDocsOpen.value = false
+}
 
 const totalSavings = computed(() => {
   const p: any = property.value
@@ -348,6 +564,16 @@ function goToBoost() {
   // Pathway is a standalone route; redirect back into the homescore flow
   // and let it switch to the boost screen.
   router.push(`/homescore/${propertyId.value}?screen=boost`)
+}
+
+// Back button — restore the homescore screen the user was on before they
+// opened the pathway page (passed via `?from=level-up` etc.). Falls back
+// to `level-up` because that's the only place the pathway button lives
+// today. Bypassing `router.back()` ensures the in-page screen state is
+// recreated even if the browser history was nuked.
+function onBack() {
+  const from = (route.query.from as string) || 'level-up'
+  router.push(`/homescore/${propertyId.value}?screen=${encodeURIComponent(from)}`)
 }
 
 // ── "Beyond the pathway" teaser values ─────────────────────────
@@ -833,6 +1059,230 @@ const passportSummary = computed(() => {
 .mission-btn-supplier:hover {
   filter: brightness(1.06);
 }
+
+/* "Already done" mission state — derived from quiz answers. Dialled
+   back colours + a tick icon instead of the loud priority gradient. */
+.mission-card--done {
+  background: linear-gradient(135deg, #f2faf8, #fff);
+  border-color: #cfe9df;
+}
+.mission-card--done .mission-icon {
+  background: #00a19a;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+.mission-done-tick {
+  display: inline-block;
+  line-height: 1;
+}
+.mission-done-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(0, 161, 154, 0.14);
+  color: #007e78;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.mission-btn-verify {
+  flex: 1;
+  padding: 11px 12px;
+  background: #fff;
+  color: #007e78;
+  border: 1.5px solid #00a19a;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+.mission-btn-verify:hover {
+  background: #e2f1ea;
+}
+
+/* Floating "Verify N answers" pill — appears at the bottom of the
+   pathway when at least one mission is marked done. */
+.verify-pill {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  padding: 11px 18px;
+  background: #231d45;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(35, 29, 69, 0.32);
+  letter-spacing: -0.1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.verify-pill:hover {
+  filter: brightness(1.1);
+}
+
+/* ── Verify-documents bottom sheet ──────────────────────────── */
+.vd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-family: inherit;
+}
+.vd-sheet {
+  width: 100%;
+  max-width: 28rem;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  max-height: 92dvh;
+  overflow-y: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.vd-grip {
+  width: 42px;
+  height: 4px;
+  background: #e4e5ed;
+  border-radius: 100px;
+  margin: 10px auto 0;
+}
+.vd-header {
+  padding: 14px 22px 8px;
+  text-align: center;
+}
+.vd-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: #007e78;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.vd-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+.vd-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6b7089;
+  line-height: 1.55;
+}
+.vd-list {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vd-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f5f6fa;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.vd-row:hover { background: #eef0f6; }
+.vd-row--filled {
+  background: rgba(0, 161, 154, 0.08);
+  border-color: rgba(0, 161, 154, 0.32);
+}
+.vd-row-ic {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.vd-row-body { flex: 1; min-width: 0; }
+.vd-row-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #231d45;
+  margin-bottom: 2px;
+}
+.vd-row-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7089;
+  line-height: 1.4;
+}
+.vd-row-file {
+  font-size: 11px;
+  font-weight: 700;
+  color: #007e78;
+  margin-top: 4px;
+}
+.vd-row-cta {
+  font-size: 12px;
+  font-weight: 800;
+  color: #007e78;
+  flex-shrink: 0;
+}
+.vd-row-file-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.vd-footer {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px 18px;
+}
+.vd-btn {
+  flex: 1;
+  padding: 13px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 12px;
+  cursor: pointer;
+  border: none;
+}
+.vd-btn.primary {
+  background: linear-gradient(135deg, #00a19a, #008a84);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+}
+.vd-btn.primary:hover { filter: brightness(1.06); }
+.vd-btn.ghost {
+  background: #fff;
+  border: 1.5px solid #e4e5ed;
+  color: #6b7089;
+}
+.vd-btn.ghost:hover { background: #f5f6fa; }
 .mission-btn-done {
   padding: 11px 16px;
   background: var(--card);

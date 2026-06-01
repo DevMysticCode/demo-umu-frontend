@@ -3,9 +3,13 @@
     <!-- ── State box (replaces the old "Is this your property?" CTA) ── -->
     <!-- Tapping anywhere on the box now opens the explainer drawer first;
          the in-drawer "Claim it free" button is where the actual auth
-         gate fires. Matches the in-progress / published boxes below. -->
+         gate fires. Matches the in-progress / published boxes below.
+         In `headless` mode the visible box is suppressed and the drawer
+         is controlled entirely from the outside via `v-model:open-sheet`
+         — used by callers (e.g. the property detail page) that already
+         have their own "Claim this property" trigger button. -->
     <button
-      v-if="state === 'unclaimed'"
+      v-if="state === 'unclaimed' && !headless"
       class="pcb-box"
       type="button"
       style="background: linear-gradient(135deg, #2d2456, #231d45)"
@@ -24,7 +28,7 @@
     </button>
 
     <button
-      v-else-if="state === 'inProgress'"
+      v-else-if="state === 'inProgress' && !headless"
       class="pcb-box"
       type="button"
       style="
@@ -75,7 +79,7 @@
     </button>
 
     <button
-      v-else
+      v-else-if="!headless"
       class="pcb-box"
       type="button"
       style="
@@ -473,8 +477,24 @@ const props = withDefaults(
      *  user returns to the property page with the right drawer auto-opened
      *  after they sign in. Falls back to silent emit if not provided. */
     propertyId?: string | null
+    /** When true, suppress the visible state box and only render the
+     *  explainer drawer. Used by callers that already have their own
+     *  "Claim this property" trigger button. Pair with `v-model:open-sheet`
+     *  to control the drawer programmatically. */
+    headless?: boolean
+    /** External control of which sheet is open. Used in headless mode so
+     *  the parent can open `'unclaimed'` / `'progress'` / `'published'`
+     *  from its own button. Two-way bound via `update:openSheet`. */
+    openSheet?: 'unclaimed' | 'progress' | 'published' | null
   }>(),
-  { progressPct: 60, sectionsDone: 4, sectionsTotal: 8, propertyId: null },
+  {
+    progressPct: 60,
+    sectionsDone: 4,
+    sectionsTotal: 8,
+    propertyId: null,
+    headless: false,
+    openSheet: null,
+  },
 )
 
 const emit = defineEmits<{
@@ -483,13 +503,24 @@ const emit = defineEmits<{
   (e: 'claim-passport'): void
   (e: 'watch'): void
   (e: 'buy'): void
+  (e: 'update:openSheet', v: 'unclaimed' | 'progress' | 'published' | null): void
 }>()
 
 const pct = computed(() =>
   Math.max(0, Math.min(100, Math.round(props.progressPct ?? 0))),
 )
 
-const openSheet = ref<'unclaimed' | 'progress' | 'published' | null>(null)
+// In standard (non-headless) mode the component owns `openSheet` locally —
+// tapping the colored box flips it. In headless mode the parent drives it
+// via v-model so the colored box can be replaced by the parent's own CTA.
+const localOpenSheet = ref<'unclaimed' | 'progress' | 'published' | null>(null)
+const openSheet = computed<'unclaimed' | 'progress' | 'published' | null>({
+  get: () => (props.headless ? props.openSheet : localOpenSheet.value),
+  set: (v) => {
+    if (props.headless) emit('update:openSheet', v)
+    else localOpenSheet.value = v
+  },
+})
 
 // Auth gate state — which primary action the guest tried to take from
 // inside the drawer. Null = no prompt visible.

@@ -107,6 +107,7 @@
         :street-rank="streetEnergyRank?.rank ?? null"
         :street-total="streetEnergyRank?.total ?? null"
         :searches-today="searchStats?.today ?? 0"
+        :watchers-count="searchStats?.watchers ?? 0"
         :passport-state="resolvedPassportState"
         :passport-progress-pct="passportProgressPct"
         :passport-sections-done="passportSectionsDone"
@@ -132,7 +133,7 @@
         :home-score="autoScoreVal"
         @back="goBack"
         @open-marketplace="goToRunningCosts"
-        @start-passport="screen = 'kyc'"
+        @start-passport="onBoostStartPassport"
       />
     </template>
 
@@ -156,6 +157,7 @@
         :epc-rating="property?.epcRating ?? null"
         :epc-year="resolvedEpcYear"
         :searches-today="searchStats?.today ?? 0"
+        :watchers-count="searchStats?.watchers ?? 0"
         :passport-state="resolvedPassportState"
         :passport-progress-pct="passportProgressPct"
         :passport-sections-done="passportSectionsDone"
@@ -664,13 +666,38 @@
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </button>
+          <!-- Owners with a passport already on file see a direct link
+               into it instead of the legacy "Publish to your street" flow,
+               which was the pre-passport marketing pitch. -->
           <button
+            v-if="ownedPassportId"
             type="button"
             class="pq-hero-btn pq-hero-btn--ghost"
-            @click="goToPublish"
+            @click="goToOwnedPassport"
           >
-            <span class="pq-hero-btn-emoji">🏘️</span>
-            <span class="pq-hero-btn-label">Publish to your street</span>
+            <span class="pq-hero-btn-emoji">📘</span>
+            <span class="pq-hero-btn-label">Open my Property Passport</span>
+            <svg
+              class="pq-hero-btn-arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </button>
+          <button
+            v-else
+            type="button"
+            class="pq-hero-btn pq-hero-btn--ghost"
+            @click="goToClaim"
+          >
+            <span class="pq-hero-btn-emoji">🏠</span>
+            <span class="pq-hero-btn-label">Build my Property Passport</span>
             <svg
               class="pq-hero-btn-arrow"
               viewBox="0 0 24 24"
@@ -1049,7 +1076,7 @@
         <div class="kyc-topnav">
           <button
             class="kyc-back-btn"
-            @click="screen = 'publish'"
+            @click="goBack"
             aria-label="Back"
           >
             <svg
@@ -1157,7 +1184,7 @@
         <div class="kyc-topnav">
           <button
             class="kyc-back-btn"
-            @click="screen = 'kyc'"
+            @click="goBack"
             aria-label="Back"
           >
             <svg
@@ -2027,27 +2054,61 @@
           </div>
           <div class="boost-journey-stats">
             <div class="boost-stat">
-              <div
-                class="boost-stat-num"
-                :class="{ amber: qwScore < 40 }"
-                :style="{ color: scoreColor(qwScore) }"
-              >
-                {{ qwScore }}
+              <div class="boost-ring" :style="{ '--ring-color': scoreColor(qwScore) }">
+                <svg viewBox="0 0 60 60" aria-hidden="true">
+                  <circle cx="30" cy="30" r="26" class="boost-ring-track" />
+                  <circle
+                    cx="30"
+                    cy="30"
+                    r="26"
+                    class="boost-ring-fill"
+                    :stroke-dashoffset="ringOffset(qwScore)"
+                  />
+                </svg>
+                <div
+                  class="boost-stat-num"
+                  :class="{ amber: qwScore < 40 }"
+                  :style="{ color: scoreColor(qwScore) }"
+                >
+                  {{ qwScore }}
+                </div>
               </div>
               <div class="boost-stat-label">HOMESCORE</div>
               <div class="boost-stat-sub">Energy score</div>
             </div>
-            <div class="boost-stat-div" />
             <div class="boost-stat">
-              <div class="boost-stat-num" :class="{ muted: qwMoveReady === 0 }">
-                {{ qwMoveReady }}%
+              <div class="boost-ring" :style="{ '--ring-color': qwMoveReady > 0 ? '#00a19a' : '#cbd5e1' }">
+                <svg viewBox="0 0 60 60" aria-hidden="true">
+                  <circle cx="30" cy="30" r="26" class="boost-ring-track" />
+                  <circle
+                    cx="30"
+                    cy="30"
+                    r="26"
+                    class="boost-ring-fill"
+                    :stroke-dashoffset="ringOffset(qwMoveReady)"
+                  />
+                </svg>
+                <div class="boost-stat-num" :class="{ muted: qwMoveReady === 0 }">
+                  {{ qwMoveReady }}%
+                </div>
               </div>
               <div class="boost-stat-label">MOVE READY</div>
               <div class="boost-stat-sub">Docs &amp; certs</div>
             </div>
-            <div class="boost-stat-div" />
             <div class="boost-stat">
-              <div class="boost-stat-num muted">0%</div>
+              <div class="boost-ring" :style="{ '--ring-color': '#cbd5e1' }">
+                <svg viewBox="0 0 60 60" aria-hidden="true">
+                  <circle cx="30" cy="30" r="26" class="boost-ring-track" />
+                  <circle
+                    cx="30"
+                    cy="30"
+                    r="26"
+                    class="boost-ring-fill"
+                    :stroke-dashoffset="ringOffset(0)"
+                  />
+                </svg>
+                <div class="boost-stat-num muted">0%</div>
+              </div>
               <div class="boost-stat-label">PASSPORT</div>
               <div class="boost-stat-sub">Ownership verified</div>
             </div>
@@ -2060,40 +2121,40 @@
           </div>
         </div>
 
-        <!-- Upload a document section -->
-        <div class="boost-section-label">📎 UPLOAD A DOCUMENT</div>
+        <!-- Upload a document section. One question at a time: only the
+             current unanswered card renders. After upload, the congrats
+             overlay celebrates the impact, then the next card slides in. -->
+        <div class="boost-section-label">
+          📎 UPLOAD A DOCUMENT
+          <span v-if="boostStepLabel" class="boost-step-pill">{{ boostStepLabel }}</span>
+        </div>
         <div class="boost-cards">
           <div
-            v-for="(doc, idx) in qwDocs"
-            v-show="idx === 0 || boostUnlocked >= idx"
-            :key="doc.key"
-            class="boost-doc-card"
-            :class="{
-              uploaded: !!uploadedDocs[doc.key],
-              'boost-doc-card--unlocking':
-                idx === boostUnlocked && !uploadedDocs[doc.key],
-            }"
-            @click="triggerDocUpload(doc.key)"
+            v-if="currentBoostDoc"
+            :key="currentBoostDoc.key"
+            class="boost-doc-card boost-doc-card--unlocking"
+            @click="triggerDocUpload(currentBoostDoc.key)"
           >
-            <div class="boost-doc-icon" :style="{ background: doc.bg }">
-              {{ doc.icon }}
+            <div class="boost-doc-icon" :style="{ background: currentBoostDoc.bg }">
+              {{ currentBoostDoc.icon }}
             </div>
             <div class="boost-doc-body">
-              <div class="boost-doc-title">{{ doc.label }}</div>
-              <div class="boost-doc-sub">{{ doc.sub }}</div>
-            </div>
-            <div v-if="!!uploadedDocs[doc.key]" class="boost-pts">
-              ✓ +{{ doc.pts }} pts
+              <div class="boost-doc-title">{{ currentBoostDoc.label }}</div>
+              <div class="boost-doc-sub">{{ currentBoostDoc.sub }}</div>
             </div>
             <button
-              v-else
               class="boost-add-btn"
               type="button"
               aria-label="Upload"
-              @click.stop="triggerDocUpload(doc.key)"
+              @click.stop="triggerDocUpload(currentBoostDoc.key)"
             >
               +
             </button>
+          </div>
+          <div v-else class="boost-all-done">
+            <div class="boost-all-done-ic">✓</div>
+            <div class="boost-all-done-title">All documents uploaded</div>
+            <div class="boost-all-done-sub">Your Property Passport is ready to publish.</div>
           </div>
         </div>
 
@@ -2117,24 +2178,49 @@
           </div>
         </div>
 
-        <!-- Now make it count CTA -->
+        <!-- Now make it count CTA. Teal hero card with two ring gauges
+             (Move Ready, Passport) on a unified background — same design
+             language as the "Your Property" hero so users recognise it
+             as the same kind of progress signal. -->
         <div class="pj-cta-card">
-          <div class="pj-cta-eyebrow">Next step on your journey</div>
-          <div class="pj-cta-title">
-            Score: <span>{{ qwScore }}</span
-            >. Your Passport is taking shape.
+          <div class="pj-cta-eyebrow">✦ Next step on your journey</div>
+          <div class="pj-cta-rings">
+            <div class="pj-cta-ring">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" class="pj-cta-ring-track" />
+                <circle
+                  cx="40" cy="40" r="34"
+                  class="pj-cta-ring-fill"
+                  :stroke-dashoffset="pjRingOffset(qwMoveReady)"
+                />
+              </svg>
+              <div class="pj-cta-ring-num">{{ qwMoveReady }}%</div>
+              <div class="pj-cta-ring-label">Move Ready</div>
+            </div>
+            <div class="pj-cta-ring">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" class="pj-cta-ring-track" />
+                <circle
+                  cx="40" cy="40" r="34"
+                  class="pj-cta-ring-fill"
+                  :stroke-dashoffset="pjRingOffset(qwPassportPct)"
+                />
+              </svg>
+              <div class="pj-cta-ring-num">{{ qwPassportPct }}%</div>
+              <div class="pj-cta-ring-label">Passport</div>
+            </div>
           </div>
+          <div class="pj-cta-title">Your Passport is taking shape.</div>
           <div class="pj-cta-sub">
-            Each document you add is a verified layer of your Property Passport.
-            Keep uploading to reach Move Ready status and lock in everything
-            you've built.
+            Each document you add lifts both scores. Reach Move Ready status
+            and publish your Passport — lock in everything you've built.
           </div>
           <button
             class="pj-cta-btn"
             type="button"
             @click="claimOrAccessPassport"
           >
-            Start my Property Passport →
+            🚀 Start my Passport →
           </button>
         </div>
 
@@ -2277,24 +2363,79 @@
       </div>
     </template>
 
-    <!-- Auth gate modal — shown when a guest taps "I'm interested in buying"
-         or "Save to Buyer Profile". Returns user to this property after login. -->
+    <!-- Boost-doc congratulations overlay. Fires after each upload in the
+         boost flow. Celebrates the specific document's impact (points,
+         what it verifies) before the next question is revealed. The
+         fireworks loop infinitely but the user dismisses the overlay
+         to continue, so they don't linger. -->
+    <Teleport to="body">
+      <div v-if="boostCongrats" class="bc-overlay" @click.self="dismissBoostCongrats">
+        <div class="bc-firework-host">
+          <div
+            v-for="(fw, i) in boostCongratsFireworks"
+            :key="i"
+            class="bc-firework"
+            :style="{ left: fw.left + '%', top: fw.top + '%' }"
+          >
+            <span
+              v-for="(p, j) in fw.particles"
+              :key="j"
+              class="bc-fw-particle"
+              :style="{
+                background: fw.color,
+                boxShadow: `0 0 12px 2px ${fw.color}`,
+                '--tx': p.tx + 'px',
+                '--ty': p.ty + 'px',
+                animationDelay: fw.delay + 'ms',
+              }"
+            />
+          </div>
+        </div>
+        <div class="bc-card">
+          <div class="bc-icon" :style="{ background: boostCongrats.bg }">
+            {{ boostCongrats.icon }}
+          </div>
+          <div class="bc-eyebrow">DOCUMENT VERIFIED</div>
+          <div class="bc-title">+{{ boostCongrats.pts }} points</div>
+          <div class="bc-doc-label">{{ boostCongrats.label }}</div>
+          <div class="bc-impact">{{ boostCongrats.impact }}</div>
+          <div class="bc-score-row">
+            <div class="bc-score-cell">
+              <div class="bc-score-eyebrow">HomeScore</div>
+              <div class="bc-score-val">
+                <span class="bc-score-was">{{ boostCongrats.scoreBefore }}</span>
+                <span class="bc-score-arrow">→</span>
+                <span class="bc-score-now">{{ boostCongrats.scoreAfter }}</span>
+              </div>
+            </div>
+          </div>
+          <button class="bc-continue" type="button" @click="dismissBoostCongrats">
+            {{ boostCongrats.isLast ? 'See my Passport →' : 'Next document →' }}
+          </button>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Auth gate modal — shown when a guest taps any auth-required CTA
+         (Boost, Publish, Watch, Save to Buyer Profile, etc.). Copy adapts
+         to the specific action; the two CTAs mirror the Claim drawer
+         pattern (create-account + sign-in + dismiss). -->
     <div
-      v-if="showAuthGate"
+      v-if="authGateIntent"
       class="hs-authgate-overlay"
-      @click.self="showAuthGate = false"
+      @click.self="closeAuthGate"
     >
       <div class="hs-authgate-card">
         <div class="hs-authgate-ic">🔒</div>
-        <div class="hs-authgate-title">Log in to continue</div>
-        <div class="hs-authgate-sub">
-          Save this property, see your full Buyer Report and build your Buyer
-          Profile to share with sellers.
-        </div>
-        <button class="hs-authgate-primary" @click="goToSignIn">
-          Log in or Create account
+        <div class="hs-authgate-title">{{ authGateCopy.title }}</div>
+        <div class="hs-authgate-sub">{{ authGateCopy.body }}</div>
+        <button class="hs-authgate-primary" @click="goAuthGate('signup')">
+          Create free account
         </button>
-        <button class="hs-authgate-ghost" @click="showAuthGate = false">
+        <button class="hs-authgate-secondary" @click="goAuthGate('signin')">
+          I already have an account
+        </button>
+        <button class="hs-authgate-ghost" @click="closeAuthGate">
           Not now
         </button>
       </div>
@@ -2643,6 +2784,11 @@ const matchedBuyers = ref<any[]>([])
 const buyersTotal = ref(0)
 const passportClaimLoading = ref(false)
 const isPropertyOwner = ref(false)
+// Populated alongside isPropertyOwner — the user's own passport id for this
+// property when they're the owner or a collaborator. Lets us redirect to
+// /passportview/<id> instead of dumping returning-from-claim users back onto
+// the stale "publish to your street" marketing screen.
+const ownedPassportId = ref<string | null>(null)
 
 // Read-only mode: property has a passport claimed by someone else.
 // The current user can't run the quiz or modify the score — they see
@@ -2653,8 +2799,65 @@ const isOtherPassportPublished = ref(false)
 const publicOwnerScore = ref<any>(null)
 const notifiedOfPublish = ref(false)
 
-// Auth gate (shown when guest taps "I'm interested in buying" or "Save")
-const showAuthGate = ref(false)
+// Auth gate (shown when guest taps a CTA that needs an account). The intent
+// drives the copy + the post-login redirect; null = modal closed.
+type AuthGateIntent =
+  | 'boost'
+  | 'publish'
+  | 'quick-wins'
+  | 'watch'
+  | 'save-buyer'
+  | 'buyer-profile'
+const authGateIntent = ref<AuthGateIntent | null>(null)
+
+// Per-intent copy. Title + body mirror what the user is about to do so
+// the modal feels like a step in that specific flow, not a generic
+// "log in" wall.
+const authGateCopy = computed<{ title: string; body: string }>(() => {
+  switch (authGateIntent.value) {
+    case 'boost':
+    case 'quick-wins':
+      return {
+        title: 'Sign in to boost your HomeScore',
+        body: 'Create a free account to upload bills, certificates and answers — each one verifies your score and starts building your Property Passport.',
+      }
+    case 'publish':
+      return {
+        title: 'Sign in to publish your HomeScore',
+        body: "Create a free account to verify ownership and publish this property's verified HomeScore for your street to see.",
+      }
+    case 'watch':
+      return {
+        title: 'Sign in to watch this property',
+        body: "Create a free account and we'll notify you the moment this Passport publishes or anything material changes.",
+      }
+    case 'save-buyer':
+    case 'buyer-profile':
+      return {
+        title: 'Sign in to save to your Buyer Profile',
+        body: 'Create a free account to save this property, see the full Buyer Report and share a verified Buyer Profile with sellers.',
+      }
+    default:
+      return {
+        title: 'Sign in to continue',
+        body: 'Create a free account to keep building your record. Takes about a minute.',
+      }
+  }
+})
+
+function closeAuthGate() {
+  authGateIntent.value = null
+}
+
+// Either button on the auth gate. `redirectAfterLogin` is already set by
+// the caller that triggered the modal, so we just navigate to the right
+// auth screen. Signup falls back to signin's redirect logic (the signup
+// page reads the same key and bounces back after account creation).
+function goAuthGate(mode: 'signin' | 'signup') {
+  authGateIntent.value = null
+  const path = mode === 'signup' ? '/onboarding/signup' : '/onboarding/signin'
+  router.push(path)
+}
 
 // Search-stats card ("People searched this address this month")
 const searchStats = ref<{
@@ -2662,6 +2865,7 @@ const searchStats = ref<{
   thisMonth: number
   allTime: number
   distinctVisitors: number
+  watchers: number
 } | null>(null)
 
 // Deterministic fallback so the card still renders for properties with no
@@ -2839,7 +3043,12 @@ function goToRunningCosts() {
 
 // New in v6 — sends the user to the 6-step EPC pathway (Phase 2 route).
 function goToPathway() {
-  router.push(`/homescore/pathway/${propertyId}`)
+  // Preserve which screen the user is currently on so the pathway page's
+  // back button can return them to that screen rather than the homescore
+  // landing search. Default to 'level-up' when triggered from anywhere
+  // (level-up is the natural caller; other origins are rare).
+  const from = screen.value === 'level-up' ? 'level-up' : screen.value
+  router.push(`/homescore/pathway/${propertyId}?from=${encodeURIComponent(from)}`)
 }
 
 // "Boost your score" — this is where we finally require an account. Guests
@@ -2855,7 +3064,7 @@ function goToBoost() {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('redirectAfterLogin', `/homescore/${propertyId}?screen=boost`)
     }
-    showAuthGate.value = true
+    authGateIntent.value = 'boost'
     return
   }
   screen.value = 'boost'
@@ -2867,7 +3076,7 @@ function notifyWhenPublished() {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('redirectAfterLogin', `/homescore/${propertyId}`)
     }
-    showAuthGate.value = true
+    authGateIntent.value = 'watch'
     return
   }
   // Record locally so the button shows "already notified" across reloads.
@@ -2885,7 +3094,10 @@ function notifyWhenPublished() {
 // Tap handler for "Boost your score" CTA — gate guests up-front before they
 // invest time in the quick-wins flow.
 function onBoostScore() {
-  gateOwnerAction('quick-wins')
+  // Route to the V6BoostView (screen='boost') with the same auth gating
+  // as goToBoost. The legacy 'quick-wins' inline template predates
+  // V6BoostView and we don't want to surface it any more.
+  goToBoost()
 }
 
 /**
@@ -2915,7 +3127,10 @@ function gateOwnerAction(target: 'publish' | 'quick-wins') {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('redirectAfterLogin', targetPath)
     }
-    showAuthGate.value = true
+    // Two distinct copy variants — publish vs. boost-score (quick-wins) —
+    // come from the same gate, so map the requested screen back to its
+    // intent.
+    authGateIntent.value = target === 'publish' ? 'publish' : 'quick-wins'
     return
   }
 
@@ -3279,6 +3494,30 @@ function scoreColor(score: number): string {
   if (score >= 40) return '#f59e0b'
   return '#dc2626'
 }
+
+// Circumference of the boost-stat ring (r=26 → 2πr ≈ 163.36). Used to
+// drive `stroke-dashoffset` so the ring fills from 0% to N% based on the
+// stat value. Clamped to [0,100] so out-of-band values stay safe.
+const BOOST_RING_CIRC = 2 * Math.PI * 26
+function ringOffset(pct: number): number {
+  const safe = Math.max(0, Math.min(100, pct))
+  return BOOST_RING_CIRC * (1 - safe / 100)
+}
+// Larger gauges in the bottom "next step" CTA card (r=34). Kept as a
+// separate helper so the two ring sizes can evolve independently.
+const PJ_RING_CIRC = 2 * Math.PI * 34
+function pjRingOffset(pct: number): number {
+  const safe = Math.max(0, Math.min(100, pct))
+  return PJ_RING_CIRC * (1 - safe / 100)
+}
+// Passport % shown in the pj-cta-card. Falls back to the move-ready
+// number when the backend hasn't yet exposed a real passport-completion
+// signal so the ring stays meaningful instead of stuck at 0%.
+const qwPassportPct = computed(() => {
+  const real = passportProgress.value?.completionPct
+  if (typeof real === 'number' && real >= 0) return Math.min(100, Math.round(real))
+  return qwMoveReady.value
+})
 
 function epcColor(rating: string): string {
   const map: Record<string, string> = {
@@ -4289,8 +4528,74 @@ const refinedBreakdownBars = computed(() => {
 // Move to the publish funnel — gated so only verified owners reach the
 // publish preview. See `gateOwnerAction()` for the chain.
 function goToPublish() {
+  // Owners with a passport already on file should never see the legacy
+  // "Publish to your street" flow — route them to their passport.
+  if (ownedPassportId.value) {
+    router.push(`/passportview/${ownedPassportId.value}`)
+    return
+  }
   gateOwnerAction('publish')
 }
+
+function goToOwnedPassport() {
+  if (ownedPassportId.value) {
+    router.push(`/passportview/${ownedPassportId.value}`)
+  } else {
+    router.push(`/claim/${propertyId}`)
+  }
+}
+
+// Boost view's "🚀 Start my Passport →" button. Replaces the legacy
+// `screen = 'kyc'` toggle (which dropped users into the dead inline
+// verify-ownership/publish loop). Owners → their passport view;
+// everyone else → the real /claim flow which does KYC + Land Registry.
+function onBoostStartPassport() {
+  if (ownedPassportId.value) {
+    router.push(`/passportview/${ownedPassportId.value}`)
+  } else {
+    router.push(`/claim/${propertyId}`)
+  }
+}
+
+// Catch-all: the legacy in-page surfaces ('publish' / 'kyc' /
+// 'kyc-pending' / 'published') predate the real /claim and /passportview
+// flows and shouldn't be reachable any more. Whatever sets screen to
+// one of those values, bounce the user out of it before the template
+// renders the stale UI. Passport-owners → their passport view; everyone
+// else → the canonical /claim/<id> flow which does KYC + Land Registry
+// against the real backend.
+watch(
+  () => screen.value,
+  (s) => {
+    // 'quick-wins' is the pre-V6BoostView inline boost screen — same
+    // intent but the new V6BoostView (screen='boost') is the only
+    // surface we maintain now. Redirect in-page so anyone landing there
+    // sees the supported design.
+    if (s === 'quick-wins') {
+      screen.value = 'boost'
+      return
+    }
+    if (s !== 'publish' && s !== 'kyc' && s !== 'kyc-pending' && s !== 'published') return
+    if (ownedPassportId.value) {
+      router.replace(`/passportview/${ownedPassportId.value}`)
+    } else {
+      router.replace(`/claim/${propertyId}?next=${encodeURIComponent(`/homescore/${propertyId}?screen=boost`)}`)
+    }
+  },
+)
+// When a passport id arrives late (right after the claim chain finishes)
+// and the page is still parked on a stale screen, redirect again so the
+// user lands cleanly on their new passport view.
+watch(
+  () => ownedPassportId.value,
+  (id) => {
+    if (!id) return
+    const s = screen.value
+    if (s === 'publish' || s === 'kyc' || s === 'kyc-pending' || s === 'published') {
+      router.replace(`/passportview/${id}`)
+    }
+  },
+)
 
 // ── Publish screen helpers ───────────────────────────────────
 // Annual energy saving the owner is contributing.
@@ -4844,7 +5149,7 @@ async function saveToBuyerProfile() {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('redirectAfterLogin', '/buyer-profile')
     }
-    showAuthGate.value = true
+    authGateIntent.value = 'save-buyer'
     return
   }
   router.push('/buyer-profile')
@@ -4998,17 +5303,126 @@ function saveDrawerDoc() {
   }
   // Advance the sequential unlock so the next card slides in.
   const idx = qwDocs.findIndex((d) => d.key === key)
+  const doc = qwDocs.find((d) => d.key === key)
+  // Capture score before the unlock advances so the congrats overlay can
+  // show a believable "was → now" delta.
+  const scoreBefore = qwScore.value
   if (idx >= 0 && idx >= boostUnlocked.value) {
     boostUnlocked.value = Math.min(qwDocs.length - 1, idx + 1)
   }
-  const doc = qwDocs.find((d) => d.key === key)
-  showToast({
-    message: `${doc?.label ?? 'Document'} saved`,
-    iconEmoji: '✓',
-  })
+  const scoreAfter = Math.min(100, scoreBefore + (doc?.pts ?? 0))
+  // Trigger the congrats overlay. Dismissed by the user (or auto-tear
+  // the fireworks after 6s — see watcher).
+  if (doc) {
+    boostCongrats.value = {
+      key: doc.key,
+      label: doc.label,
+      icon: doc.icon,
+      bg: doc.bg,
+      pts: doc.pts,
+      impact: boostImpactCopy(doc.key),
+      scoreBefore,
+      scoreAfter,
+      isLast: idx === qwDocs.length - 1,
+    }
+  }
   qwDrawerOpen.value = false
   qwDrawerDocKey.value = null
   qwDrawerFile.value = null
+}
+
+// ── Boost: one-at-a-time question state + congrats overlay ──────────
+// `currentBoostDoc` is the first unuploaded doc in qwDocs. When all are
+// uploaded the boost section renders the "all done" tile instead.
+const currentBoostDoc = computed(() => qwDocs.find((d) => !uploadedDocs[d.key]) ?? null)
+const boostStepLabel = computed(() => {
+  if (!currentBoostDoc.value) return ''
+  const idx = qwDocs.findIndex((d) => d.key === currentBoostDoc.value!.key)
+  return idx >= 0 ? `${idx + 1} of ${qwDocs.length}` : ''
+})
+
+// Per-doc impact copy — describes what THIS upload unlocks beyond just
+// the point boost so the user sees concrete progress, not just a number.
+function boostImpactCopy(key: string): string {
+  switch (key) {
+    case 'utility-bills':
+      return "We'll cross-check your real spend against your EPC estimate — buyers see the verified figure, not the public one."
+    case 'heating-cert':
+      return 'Your heating system is now verified — boosts your energy pillar and tells buyers the boiler is recent.'
+    case 'gas':
+      return 'Annual gas safety on file — required for any rental, gives buyers confidence the appliances are checked.'
+    case 'epc':
+      return "Latest EPC locked in — the foundation of every conveyancer's enquiry pack."
+    case 'eicr':
+      return 'Electrical Installation Condition Report verified — covers a buyer survey question solicitors flag every time.'
+    case 'planning':
+      return "Planning history on file — surfaces every extension, conversion, and consent before a buyer's solicitor digs it up."
+    default:
+      return 'Document verified and locked into your Property Passport.'
+  }
+}
+
+// Congrats overlay state. Null = closed. Fireworks tied to its lifetime.
+interface BoostCongrats {
+  key: string
+  label: string
+  icon: string
+  bg: string
+  pts: number
+  impact: string
+  scoreBefore: number
+  scoreAfter: number
+  isLast: boolean
+}
+const boostCongrats = ref<BoostCongrats | null>(null)
+
+// Random bursts for the celebration. Kept local to the overlay so they
+// reset every time it opens and aren't running in the background. The
+// `infinite` animation is bounded by the user dismissing the overlay.
+interface BcFwParticle { tx: number; ty: number }
+interface BcFw { left: number; top: number; color: string; delay: number; particles: BcFwParticle[] }
+const bcFwColors = ['#00b8b0', '#f0a030', '#7c6fb0', '#ffd54a', '#ff5e7e', '#5eead4']
+const boostCongratsFireworks = ref<BcFw[]>([])
+let boostCongratsTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(boostCongrats, (val) => {
+  if (boostCongratsTimer) {
+    clearTimeout(boostCongratsTimer)
+    boostCongratsTimer = null
+  }
+  if (val) {
+    boostCongratsFireworks.value = Array.from({ length: 9 }, () => {
+      const count = 18
+      const baseR = 90 + Math.random() * 50
+      const particles = Array.from({ length: count }, (_, j) => {
+        const ang = (Math.PI * 2 * j) / count + Math.random() * 0.2
+        const r = baseR + Math.random() * 20
+        return { tx: Math.cos(ang) * r, ty: Math.sin(ang) * r + 20 }
+      })
+      return {
+        left: 10 + Math.random() * 80,
+        top: 8 + Math.random() * 50,
+        color: bcFwColors[Math.floor(Math.random() * bcFwColors.length)],
+        delay: Math.random() * 1800,
+        particles,
+      }
+    })
+    // Auto-tear the fireworks after 6s — the modal stays so the user can
+    // still read the impact copy, the bursts just stop being noisy.
+    boostCongratsTimer = setTimeout(() => {
+      boostCongratsFireworks.value = []
+    }, 6000)
+  } else {
+    boostCongratsFireworks.value = []
+  }
+})
+
+function dismissBoostCongrats() {
+  const wasLast = boostCongrats.value?.isLast
+  boostCongrats.value = null
+  // Last document: take the user into the passport flow. Otherwise just
+  // let the next card render in place.
+  if (wasLast) claimOrAccessPassport()
 }
 
 function removeDrawerDoc() {
@@ -5119,9 +5533,12 @@ const autoOpenClaim = ref(false)
 onMounted(async () => {
   // Allow deep-link into specific homescore screens via ?screen=boost etc.
   // Used by sibling pages (pathway, level-up) to return into the in-page flow.
+  // `level-up` is what the pathway page sends in its back button so the
+  // user returns to the Level Up celebration rather than the search landing.
   const qScreen = route.query.screen
-  if (typeof qScreen === 'string' && qScreen === 'boost') {
-    screen.value = 'boost'
+  if (typeof qScreen === 'string') {
+    if (qScreen === 'boost') screen.value = 'boost'
+    else if (qScreen === 'level-up') screen.value = 'level-up'
   }
 
   // Returning from sign-in with the claim journey intent — the score
@@ -5224,6 +5641,12 @@ onMounted(async () => {
       isOtherPassportPublished.value = !!(
         status.hasPassport && status.isPublished
       )
+      // Capture this user's passport id so the ?screen=publish / ?screen=quick-wins
+      // handler below can short-circuit straight to the passport view when the
+      // user has already claimed (e.g. returning from the claim chain).
+      if (status.hasPassport && status.passportId && (status.isOwner || status.isCollaborator)) {
+        ownedPassportId.value = status.passportId
+      }
       if ((status as any).passportProgress) {
         passportProgress.value = (status as any).passportProgress
       }
@@ -5327,7 +5750,15 @@ onMounted(async () => {
     // a freshly-signed-in user who hasn't claimed the property yet is sent
     // through /claim instead of dropped onto a screen they shouldn't see.
     if (requested === 'publish' || requested === 'quick-wins') {
-      gateOwnerAction(requested)
+      // Coming back from the claim chain (verify-ownership → passport issue),
+      // these legacy marketing screens are stale — the user now has a real
+      // passport and the "Publish to your street" / "Quick wins" pitches no
+      // longer apply. Send them to the passport view instead.
+      if (ownedPassportId.value) {
+        router.replace(`/passportview/${ownedPassportId.value}`).catch(() => {})
+      } else {
+        gateOwnerAction(requested)
+      }
     } else {
       screen.value = requested as Screen
     }
@@ -9248,6 +9679,201 @@ watch(screen, (s) => {
   place-items: center;
   padding: 20px;
 }
+
+/* ── Boost congratulations overlay ───────────────────────────────────
+   Fires after each document upload in the one-at-a-time boost flow.
+   Fireworks burst behind a centered impact card that shows the points
+   gained and what was actually verified. */
+.bc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow: hidden;
+}
+.bc-firework-host {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bc-firework {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.bc-fw-particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: bcFwBurst 1800ms cubic-bezier(0.12, 0.65, 0.35, 1) infinite;
+  will-change: transform, opacity;
+}
+@keyframes bcFwBurst {
+  0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bc-fw-particle { animation: none; }
+}
+.bc-card {
+  position: relative;
+  width: 100%;
+  max-width: 22rem;
+  background: #fff;
+  border-radius: 22px;
+  padding: 24px 22px 18px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45);
+  z-index: 1;
+}
+.bc-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+}
+.bc-eyebrow {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #00a19a;
+  margin-bottom: 6px;
+}
+.bc-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #231d45;
+  letter-spacing: -0.6px;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.bc-doc-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #4a5568;
+  margin-bottom: 12px;
+}
+.bc-impact {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7089;
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+.bc-score-row {
+  background: #f5f6fa;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 18px;
+}
+.bc-score-cell {
+  text-align: center;
+}
+.bc-score-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  color: #6b7089;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.bc-score-val {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  font-feature-settings: 'tnum';
+}
+.bc-score-was {
+  font-size: 16px;
+  font-weight: 700;
+  color: #a8a9ad;
+  text-decoration: line-through;
+}
+.bc-score-arrow {
+  font-size: 14px;
+  color: #00a19a;
+}
+.bc-score-now {
+  font-size: 26px;
+  font-weight: 900;
+  color: #00a19a;
+  letter-spacing: -0.5px;
+}
+.bc-continue {
+  width: 100%;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00a19a, #008a84);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: -0.1px;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+}
+.bc-continue:hover {
+  filter: brightness(1.06);
+}
+
+/* Boost "all done" tile — replaces the doc card list once every
+   question is answered. */
+.boost-all-done {
+  text-align: center;
+  padding: 22px 18px;
+  background: linear-gradient(135deg, #e2f1ea, #fff);
+  border-radius: 14px;
+  border: 1px solid #cfe9df;
+}
+.boost-all-done-ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #00a19a;
+  color: #fff;
+  margin: 0 auto 10px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 800;
+}
+.boost-all-done-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #231d45;
+  margin-bottom: 4px;
+}
+.boost-all-done-sub {
+  font-size: 12px;
+  color: #6b7089;
+}
+
+/* Small step indicator next to "UPLOAD A DOCUMENT" section header. */
+.boost-step-pill {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(0, 161, 154, 0.12);
+  color: #007e78;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
 .hs-authgate-card {
   width: 100%;
   max-width: 24rem;
@@ -9291,6 +9917,23 @@ watch(screen, (s) => {
   cursor: pointer;
   font-family: inherit;
   margin-bottom: 8px;
+}
+.hs-authgate-secondary {
+  width: 100%;
+  border: 1.5px solid #e4e5ed;
+  padding: 13px;
+  border-radius: 12px;
+  background: #fff;
+  color: #231d45;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  margin-bottom: 8px;
+  transition: background 0.15s;
+}
+.hs-authgate-secondary:hover {
+  background: #f5f6fa;
 }
 .hs-authgate-ghost {
   width: 100%;
@@ -12737,20 +13380,58 @@ watch(screen, (s) => {
 }
 .boost-journey-stats {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  /* More breathing room between the three rings — the visual weight of
+     each circular gauge replaces the old vertical divider, so each stat
+     gets a clear "island" of space. */
+  gap: 18px;
   margin-bottom: 14px;
+  padding: 0 6px;
 }
 .boost-stat {
   flex: 1;
   text-align: center;
+  min-width: 0;
+}
+/* Circular gauge wrapping each stat number. The fill ring colour comes
+   from `--ring-color` (set inline per-stat) so HomeScore can flip
+   red → amber → green while Move Ready stays teal. */
+.boost-ring {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 8px;
+}
+.boost-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.boost-ring-track {
+  fill: none;
+  stroke: #eef0f6;
+  stroke-width: 4.5;
+}
+.boost-ring-fill {
+  fill: none;
+  stroke: var(--ring-color, #00a19a);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-dasharray: 163.36;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
 }
 .boost-stat-num {
-  font-size: 30px;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
   font-weight: 800;
   color: var(--b-text-soft);
-  letter-spacing: -0.8px;
+  letter-spacing: -0.5px;
   line-height: 1;
-  margin-bottom: 4px;
   font-feature-settings: 'tnum';
 }
 .boost-stat-num.amber {
@@ -12908,21 +13589,82 @@ watch(screen, (s) => {
   flex-shrink: 0;
 }
 
-/* "Now make it count" CTA */
+/* "Next step on your journey" CTA — teal hero with two ring gauges
+   (Move Ready, Passport) on a white-on-teal palette. Mirrors the
+   "Your Property" hero so the visual language reads as the same kind
+   of progress signal across the page. */
 .pj-cta-card {
   margin: 16px 16px 0;
-  background: linear-gradient(135deg, var(--b-navy) 0%, #1a1640 100%);
+  background: linear-gradient(135deg, #00a19a 0%, #008a84 60%, #006e68 100%);
   border-radius: 20px;
   padding: 22px 20px 20px;
-  box-shadow: 0 8px 28px rgba(35, 29, 69, 0.3);
+  box-shadow: 0 8px 28px rgba(0, 110, 104, 0.32);
 }
 .pj-cta-eyebrow {
   font-size: 9px;
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.78);
   letter-spacing: 1.4px;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+/* Two ring gauges, well spaced horizontally — same dial language as
+   the V6 score hero on the property view. */
+.pj-cta-rings {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 48px;
+  margin-bottom: 16px;
+}
+.pj-cta-ring {
+  position: relative;
+  width: 96px;
+  text-align: center;
+}
+.pj-cta-ring svg {
+  width: 96px;
+  height: 96px;
+  transform: rotate(-90deg);
+  display: block;
+}
+.pj-cta-ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 6;
+}
+.pj-cta-ring-fill {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 213.63;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.55));
+}
+.pj-cta-ring-num {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  font-feature-settings: 'tnum';
+}
+.pj-cta-ring-label {
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
 }
 .pj-cta-title {
   font-size: 20px;
@@ -12935,15 +13677,15 @@ watch(screen, (s) => {
 .pj-cta-sub {
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.82);
   line-height: 1.6;
   margin-bottom: 16px;
 }
 .pj-cta-btn {
   width: 100%;
   padding: 15px;
-  background: var(--b-teal);
-  color: #fff;
+  background: #fff;
+  color: #007e78;
   font-family: inherit;
   font-size: 15px;
   font-weight: 800;
@@ -12951,10 +13693,11 @@ watch(screen, (s) => {
   border-radius: 14px;
   cursor: pointer;
   letter-spacing: -0.1px;
-  transition: background 0.15s;
+  transition: filter 0.15s, background 0.15s;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 .pj-cta-btn:hover {
-  background: var(--b-teal-bright);
+  filter: brightness(1.04);
 }
 
 /* Back link at the bottom */

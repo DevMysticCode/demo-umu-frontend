@@ -83,6 +83,13 @@
         <div class="pulse-dot" />
         <span><span class="hs-addr-stat-count">{{ searchesTodayDisplay }}</span> checked this HomeScore today</span>
       </div>
+      <div class="hs-addr-stat-row">
+        <div class="pulse-dot pulse-dot--watch" />
+        <span>
+          <span class="hs-addr-stat-count">{{ watchersDisplay }}</span>
+          {{ watchersCount === 1 ? 'is' : 'are' }} watching this property
+        </span>
+      </div>
     </div>
 
     <!-- Claim / Passport-state box + explainer drawers -->
@@ -698,6 +705,9 @@ const props = withDefaults(
     streetTotal?: number | null
     /** Real searches today from PropertySearchLog */
     searchesToday?: number
+    /** Number of users actively watching this property (wishlist + saved).
+     *  Drives the "people watching" social-proof row under the address. */
+    watchersCount?: number
     /** Passport status of the property — drives the claim box so we don't
      *  pitch "claim" on a home that's already claimed. */
     passportState?: 'unclaimed' | 'inProgress' | 'published'
@@ -717,6 +727,7 @@ const props = withDefaults(
     streetRank: null,
     streetTotal: null,
     searchesToday: 0,
+    watchersCount: 0,
     passportState: 'unclaimed',
     passportProgressPct: 0,
     passportSectionsDone: 0,
@@ -1791,6 +1802,12 @@ const searchesTodayDisplay = computed(() => {
   const n = props.searchesToday ?? 0
   return `${n} ${n === 1 ? 'person' : 'people'}`
 })
+// Watchers = wishlist + saved-property count. Phrased as "1 person" /
+// "N people" with verb-agreement handled in the template.
+const watchersDisplay = computed(() => {
+  const n = props.watchersCount ?? 0
+  return `${n} ${n === 1 ? 'person' : 'people'}`
+})
 </script>
 
 <style scoped>
@@ -2084,8 +2101,18 @@ const searchesTodayDisplay = computed(() => {
   margin-top: 14px;
   flex-wrap: wrap;
 }
+/* Stack the two social-proof rows tighter so they read as a pair. */
+.hs-addr-stat-row + .hs-addr-stat-row { margin-top: 6px; }
 .hs-addr-stat-row .pulse-dot {
   background: var(--accent-light);
+}
+/* Watchers row uses an amber dot so the two stats are visually distinct
+   from each other (teal = activity, amber = intent / saved). */
+.hs-addr-stat-row .pulse-dot--watch {
+  background: #f0b933;
+}
+.hs-addr-stat-row .pulse-dot--watch::after {
+  background: #f0b933;
 }
 .hs-addr-stat-row .pulse-dot::after {
   background: var(--accent-light);
@@ -2314,12 +2341,33 @@ const searchesTodayDisplay = computed(() => {
   cursor: pointer;
   transition: all 0.15s;
   position: relative;
+  /* Gentle teal halo cycles through the three cards so first-time users
+     notice they're tappable. Stops the moment one becomes active (open
+     panel) and on hover so it doesn't fight the interaction state. */
+  animation: scoreStripPulse 2.8s ease-in-out infinite;
+}
+.score-strip-item.clickable:nth-child(2) { animation-delay: 0.45s; }
+.score-strip-item.clickable:nth-child(3) { animation-delay: 0.9s; }
+@keyframes scoreStripPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0);
+    border-color: var(--border-soft);
+  }
+  45% {
+    box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.0), 0 0 14px 2px rgba(0, 161, 154, 0.18);
+    border-color: rgba(0, 161, 154, 0.45);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .score-strip-item.clickable { animation: none; }
 }
 .score-strip-item.clickable:hover {
   border-color: var(--accent-pale);
   background: var(--card);
   transform: translateY(-1px);
+  animation: none;
 }
+.score-strip-item.clickable.active { animation: none; }
 .score-strip-item.clickable.active {
   border-color: var(--accent);
   background: var(--accent-paler);
