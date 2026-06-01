@@ -882,6 +882,18 @@
     </template>
 
     <!-- Drawers — wired to the new state-driven CTAs. -->
+    <!-- Reuses the same explainer drawer + auth gate the homescore page
+         shows on its PassportClaimBox. We render in `headless` mode so
+         only the drawer appears (the property page already has its own
+         "Claim this property — it's free" CTA). -->
+    <PassportClaimBox
+      v-model:open-sheet="claimExplainerSheet"
+      headless
+      state="unclaimed"
+      :property-id="propertyId"
+      @claim-passport="goToClaim"
+    />
+
     <!-- Owner-claim (free) goes through the global /claim/[id] flow which
          enforces KYC + HM Land Registry verification before issuing a
          Passport. The buyer-unlock (£99) drawer below handles the Stripe
@@ -3408,6 +3420,7 @@ import RegisterInterestContent from '~/components/property/RegisterInterestConte
 // issue). ClaimPassportDrawer below is ONLY for the buyer-unlock (£99
 // Stripe) path on a published Passport.
 import ClaimPassportDrawer from '~/components/property/ClaimPassportDrawer.vue'
+import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
 import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDrawer.vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
@@ -3448,6 +3461,11 @@ const showShare = ref(false)
 // Every "Claim" entry point on this page just pushes to that route — no
 // in-page drawer, no direct POST /passport/create.
 const goToClaim = () => router.push(`/claim/${propertyId}`)
+// Headless PassportClaimBox drawer — opened by the "Claim this property"
+// CTA so guests see the same four-step explainer + auth gate the homescore
+// page uses. Authed users hit "Claim it" and goToClaim() routes them to
+// the existing /claim/[id] KYC + HMLR flow.
+const claimExplainerSheet = ref<'unclaimed' | 'progress' | 'published' | null>(null)
 const showUnpublishedModal = ref(false)
 type LocTab =
   | 'map'
@@ -4850,8 +4868,11 @@ async function onWishlistToggle() {
 }
 
 function onClaimClick() {
-  // Send the owner through the global KYC + Land Registry claim flow.
-  goToClaim()
+  // Show the same four-step explainer drawer the homescore page uses.
+  // The drawer's primary "Claim it →" button emits `claim-passport`,
+  // which routes authed users into the existing /claim/[id] flow and
+  // shows guests the sign-in / create-account modal first.
+  claimExplainerSheet.value = 'unclaimed'
 }
 
 // Single source of truth for "tap to do the right thing with the Passport"

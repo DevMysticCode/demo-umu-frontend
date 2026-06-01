@@ -2105,6 +2105,16 @@ const buyerProfilePublished = ref(false)
 // Always initialize to 'buy' so SSR and client match — updated in onMounted
 const role = ref<string>('buy')
 
+// Coerce the role to one of the values the template branches on. The
+// returning-user view dispatches on `role === 'sell' | 'buy' | 'both' |
+// 'landlord'` — anything else and the whole scroll area renders empty
+// (only the header + hero stay), which produced the "distorted explore
+// page" bug when the cached/profile role was missing or unexpected.
+function normalizeRole(r: unknown): string {
+  const allowed = ['sell', 'buy', 'both', 'landlord']
+  return typeof r === 'string' && allowed.includes(r) ? r : 'buy'
+}
+
 const greeting = computed(() => {
   const h = new Date().getHours()
   const timeOfDay =
@@ -2478,7 +2488,7 @@ onMounted(async () => {
 
   // Apply cached role immediately after hydration (before API responds)
   const cachedRole = localStorage.getItem('umu_role')
-  if (cachedRole) role.value = cachedRole
+  if (cachedRole) role.value = normalizeRole(cachedRole)
 
   const [prefResult, passportResult, propResult, verifiedResult, buyerProfileResult] =
     await Promise.allSettled([
@@ -2505,7 +2515,7 @@ onMounted(async () => {
 
   if (prefResult.status === 'fulfilled') {
     preferences.value = prefResult.value
-    const r = (prefResult.value?.purpose as string[])?.[0] ?? 'buy'
+    const r = normalizeRole((prefResult.value?.purpose as string[])?.[0])
     role.value = r
     if (typeof window !== 'undefined') localStorage.setItem('umu_role', r)
   }

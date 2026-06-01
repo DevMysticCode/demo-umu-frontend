@@ -22,10 +22,10 @@
               :key="item.id"
               class="cdm-row"
             >
-              <!-- Thumbnail -->
+              <!-- Thumbnail — landlord and seller passports use distinct covers -->
               <div class="cdm-thumb">
                 <div class="cdm-thumb-inner">
-                  <img src="/op-icons/passportview/umu-passport.png" class="cdm-thumb-img" alt="" />
+                  <img :src="passportImage(item.passport?.type)" class="cdm-thumb-img" alt="" />
                 </div>
               </div>
 
@@ -62,7 +62,7 @@
             >
               <div class="cdm-thumb">
                 <div class="cdm-thumb-inner">
-                  <img src="/op-icons/passportview/umu-passport.png" class="cdm-thumb-img" alt="" />
+                  <img :src="passportImage(p?.type)" class="cdm-thumb-img" alt="" />
                 </div>
               </div>
 
@@ -104,6 +104,16 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close', 'navigate', 'updated'])
+
+// Cover art is type-aware: landlord passports get the dedicated landlord
+// book; everything else falls back to the standard umu-passport. Mirrors
+// the logic in PassportCard.vue so the modal stays visually consistent
+// with the grid behind it.
+function passportImage(type) {
+  return type === 'LANDLORD'
+    ? '/op-icons/passportview/landlordPassport.png'
+    : '/op-icons/passportview/umu-passport.png'
+}
 
 const config = useRuntimeConfig()
 const removing = ref(null)

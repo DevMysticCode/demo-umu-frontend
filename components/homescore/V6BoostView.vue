@@ -88,31 +88,46 @@
       </div>
     </div>
 
-    <!-- Upload a document -->
+    <!-- Upload a document. One question at a time — only the next
+         unuploaded doc renders. After upload, the congratulations
+         overlay celebrates the impact, then the next card slides in. -->
     <div class="boost-section-h">
       <span class="ico">📎</span> Upload a document
       <span class="pill-progress"
         >{{ uploadedDocs.length }} of {{ docs.length }}</span
       >
     </div>
+    <!-- Completed docs stay in the list as "done" rows so the user can
+         see their progress. Only the next-unuploaded card is rendered
+         after them; later docs stay hidden until their turn. -->
     <div
-      v-for="d in docs"
+      v-for="d in completedDocs"
       :key="d.id"
-      class="boost-row"
-      :class="{ added: uploadedDocs.includes(d.id) }"
-      @click="onAddDoc(d.id)"
+      class="boost-row added"
     >
       <div class="boost-row-icon" :class="d.tone">{{ d.icon }}</div>
       <div class="boost-row-info">
         <div class="boost-row-title">{{ d.title }}</div>
-        <div class="boost-row-sub">{{ d.sub }}</div>
+        <div class="boost-row-sub">Verified · +{{ d.mrDelta }}% Move Ready</div>
       </div>
-      <div v-if="uploadedDocs.includes(d.id)" class="boost-row-check">✓</div>
-      <div v-else class="boost-row-plus">＋</div>
+      <div class="boost-row-check">✓</div>
+    </div>
+    <div
+      v-if="currentDoc"
+      :key="currentDoc.id"
+      class="boost-row boost-row--active"
+      @click="onAddDoc(currentDoc.id)"
+    >
+      <div class="boost-row-icon" :class="currentDoc.tone">{{ currentDoc.icon }}</div>
+      <div class="boost-row-info">
+        <div class="boost-row-title">{{ currentDoc.title }}</div>
+        <div class="boost-row-sub">{{ currentDoc.sub }}</div>
+      </div>
+      <div class="boost-row-plus">＋</div>
     </div>
 
     <!-- All documents uploaded celebration -->
-    <div v-if="uploadedDocs.length === docs.length" class="boost-row alldone">
+    <div v-else class="boost-row alldone">
       <div class="boost-row-icon gold">🏆</div>
       <div class="boost-row-info">
         <div class="boost-row-title">All documents uploaded</div>
@@ -122,6 +137,47 @@
       </div>
       <div class="boost-row-chev">›</div>
     </div>
+
+    <!-- Per-upload congratulations overlay. Fireworks burst behind a
+         centered impact card with the points won + what this document
+         actually verifies, then the next question is revealed when the
+         user taps "Next document". -->
+    <Teleport to="body">
+      <div v-if="celebrateDoc" class="bcv-overlay" @click.self="dismissCelebrate">
+        <div class="bcv-fw-host">
+          <div
+            v-for="(fw, i) in celebrateFireworks"
+            :key="i"
+            class="bcv-fw"
+            :style="{ left: fw.left + '%', top: fw.top + '%' }"
+          >
+            <span
+              v-for="(p, j) in fw.particles"
+              :key="j"
+              class="bcv-fw-particle"
+              :style="{
+                background: fw.color,
+                boxShadow: `0 0 12px 2px ${fw.color}`,
+                '--tx': p.tx + 'px',
+                '--ty': p.ty + 'px',
+                animationDelay: fw.delay + 'ms',
+              }"
+            />
+          </div>
+        </div>
+        <div class="bcv-card">
+          <div class="bcv-ico" :class="celebrateDoc.tone">{{ celebrateDoc.icon }}</div>
+          <div class="bcv-eyebrow">DOCUMENT VERIFIED</div>
+          <div class="bcv-headline">+{{ celebrateDoc.mrDelta }}% Move Ready</div>
+          <div class="bcv-subhead">+{{ celebrateDoc.ppDelta }}% Passport</div>
+          <div class="bcv-doc-label">{{ celebrateDoc.title }}</div>
+          <div class="bcv-impact">{{ celebrateImpact }}</div>
+          <button class="bcv-continue" type="button" @click="dismissCelebrate">
+            {{ isLastDoc ? 'See my Passport →' : 'Next document →' }}
+          </button>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- Book a professional -->
     <div class="boost-section-h">
@@ -141,22 +197,40 @@
       <div class="boost-row-chev">›</div>
     </div>
 
-    <!-- Next step · Move Ready + Passport -->
+    <!-- Next step · Move Ready + Passport. SVG ring gauges show actual
+         progress (white arc on translucent track) — same dial language
+         as the journey card at the top, spaced wide so each reads as
+         its own milestone. -->
     <div class="boost-next anim-2">
       <div class="boost-next-eyebrow">✦ Next step on your journey</div>
       <div class="boost-next-route">
-        <div class="boost-next-circle from">
-          <div class="boost-next-circle-num">
+        <div class="boost-next-ring">
+          <svg viewBox="0 0 90 90" aria-hidden="true">
+            <circle cx="45" cy="45" r="38" class="boost-next-ring-track" />
+            <circle
+              cx="45" cy="45" r="38"
+              class="boost-next-ring-fill"
+              :stroke-dashoffset="nextRingOffset(moveReadyPct)"
+            />
+          </svg>
+          <div class="boost-next-ring-num">
             {{ moveReadyPct }}<span class="pct">%</span>
           </div>
-          <div class="boost-next-circle-out">Move Ready</div>
+          <div class="boost-next-ring-label">Move Ready</div>
         </div>
-        <!-- <div class="boost-next-plus">+</div> -->
-        <div class="boost-next-circle from">
-          <div class="boost-next-circle-num">
+        <div class="boost-next-ring">
+          <svg viewBox="0 0 90 90" aria-hidden="true">
+            <circle cx="45" cy="45" r="38" class="boost-next-ring-track" />
+            <circle
+              cx="45" cy="45" r="38"
+              class="boost-next-ring-fill"
+              :stroke-dashoffset="nextRingOffset(passportPct)"
+            />
+          </svg>
+          <div class="boost-next-ring-num">
             {{ passportPct }}<span class="pct">%</span>
           </div>
-          <div class="boost-next-circle-out">Passport</div>
+          <div class="boost-next-ring-label">Passport</div>
         </div>
       </div>
       <div class="boost-next-title">Your Passport is taking shape.</div>
@@ -233,7 +307,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 
 interface Props {
@@ -318,6 +392,15 @@ const bookings = [
 ]
 
 const uploadedDocs = ref<string[]>([])
+
+// Circumference of the bottom-card ring (r=38 → 2πr ≈ 238.76). Used to
+// drive `stroke-dashoffset` from 0%→100% so the white arc grows as the
+// user uploads more docs.
+const NEXT_RING_CIRC = 2 * Math.PI * 38
+function nextRingOffset(pct: number): number {
+  const safe = Math.max(0, Math.min(100, pct))
+  return NEXT_RING_CIRC * (1 - safe / 100)
+}
 
 const moveReadyPct = computed(() => {
   const delta = uploadedDocs.value.reduce((acc, id) => {
@@ -454,8 +537,95 @@ function confirmUpload() {
     // Mark the doc uploaded — this lifts the Move Ready / Passport gauges.
     // (Server-side file upload endpoint to be wired when available.)
     uploadedDocs.value = [...uploadedDocs.value, id]
+    const doc = docs.find((d) => d.id === id)
+    if (doc) celebrateDoc.value = doc
   }
   onUploadClose()
+}
+
+// ── One-question-at-a-time flow + celebration overlay ───────────
+// `currentDoc` is the next unuploaded doc; renders alone in the upload
+// section so the user can only act on one thing at a time. Completed
+// docs render above it as muted "✓ Verified" rows so the user can see
+// their progress. Future docs stay hidden until their turn.
+const currentDoc = computed(() => docs.find((d) => !uploadedDocs.value.includes(d.id)) ?? null)
+const completedDocs = computed(() =>
+  docs.filter((d) => uploadedDocs.value.includes(d.id)),
+)
+// Tracks the doc to celebrate right after upload. Null = overlay closed.
+const celebrateDoc = ref<(typeof docs)[number] | null>(null)
+const isLastDoc = computed(
+  () => uploadedDocs.value.length === docs.length && !!celebrateDoc.value,
+)
+
+// Per-doc impact copy — describes what THIS upload verifies beyond the
+// numeric uplift, so the user reads concrete value, not just a percentage.
+const docImpacts: Record<string, string> = {
+  bills:
+    "We'll cross-check your real spend against your EPC estimate — buyers see the verified figure, not the public one.",
+  gas:
+    'Annual gas safety is on file. Required for any rental and reassures buyers the appliances are checked.',
+  eicr:
+    "Electrical Installation Condition Report verified — covers a survey question solicitors flag every time.",
+  boiler:
+    'Boiler service history locked in. Tells buyers the heating system is maintained and recent.',
+}
+const celebrateImpact = computed(() => {
+  const id = celebrateDoc.value?.id
+  return (id && docImpacts[id]) ||
+    'Document verified and locked into your Property Passport.'
+})
+
+// Fireworks for the celebration. Lifetime is bounded by the overlay
+// (cleared when the user dismisses or after 6s for the visual ones).
+interface BcvFwParticle { tx: number; ty: number }
+interface BcvFw {
+  left: number
+  top: number
+  color: string
+  delay: number
+  particles: BcvFwParticle[]
+}
+const bcvFwColors = ['#00b8b0', '#f0a030', '#7c6fb0', '#ffd54a', '#ff5e7e', '#5eead4']
+const celebrateFireworks = ref<BcvFw[]>([])
+let celebrateTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(celebrateDoc, (val) => {
+  if (celebrateTimer) {
+    clearTimeout(celebrateTimer)
+    celebrateTimer = null
+  }
+  if (val) {
+    celebrateFireworks.value = Array.from({ length: 9 }, () => {
+      const count = 18
+      const baseR = 90 + Math.random() * 50
+      const particles = Array.from({ length: count }, (_, j) => {
+        const ang = (Math.PI * 2 * j) / count + Math.random() * 0.2
+        const r = baseR + Math.random() * 20
+        return { tx: Math.cos(ang) * r, ty: Math.sin(ang) * r + 20 }
+      })
+      return {
+        left: 10 + Math.random() * 80,
+        top: 8 + Math.random() * 50,
+        color: bcvFwColors[Math.floor(Math.random() * bcvFwColors.length)],
+        delay: Math.random() * 1800,
+        particles,
+      }
+    })
+    celebrateTimer = setTimeout(() => {
+      celebrateFireworks.value = []
+    }, 6000)
+  } else {
+    celebrateFireworks.value = []
+  }
+})
+
+onBeforeUnmount(() => {
+  if (celebrateTimer) clearTimeout(celebrateTimer)
+})
+
+function dismissCelebrate() {
+  celebrateDoc.value = null
 }
 
 function formatFileSize(bytes: number): string {
@@ -772,6 +942,26 @@ function formatFileSize(bytes: number): string {
   background: var(--accent-paler);
   border-color: var(--accent-pale);
 }
+/* The single "current" upload card pulses subtly to draw the user's eye
+   to the one thing they need to do next. */
+.boost-row--active {
+  border-color: var(--accent-pale);
+  box-shadow: 0 6px 18px rgba(0, 161, 154, 0.18);
+  animation: boostActiveGlow 2.4s ease-in-out infinite;
+}
+@keyframes boostActiveGlow {
+  0%, 100% {
+    box-shadow: 0 6px 18px rgba(0, 161, 154, 0.18);
+    border-color: var(--accent-pale);
+  }
+  50% {
+    box-shadow: 0 6px 22px rgba(0, 161, 154, 0.32), 0 0 0 4px rgba(0, 161, 154, 0.08);
+    border-color: rgba(0, 161, 154, 0.5);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .boost-row--active { animation: none; }
+}
 .boost-row.alldone {
   background: linear-gradient(135deg, #fff6d5, var(--card));
   border: 1.5px solid #ffc107;
@@ -896,50 +1086,66 @@ function formatFileSize(bytes: number): string {
 }
 .boost-next-route {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
+  align-items: flex-start;
+  /* Wide gap so the two rings sit as separate milestones, not jammed
+     side-by-side. Matches the visual rhythm of the top journey card. */
+  gap: 56px;
+  margin-bottom: 18px;
   justify-content: center;
 }
-.boost-next-circle {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+.boost-next-ring {
+  position: relative;
+  width: 90px;
+  text-align: center;
 }
-.boost-next-circle-num {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
+.boost-next-ring svg {
+  width: 90px;
+  height: 90px;
+  display: block;
+  transform: rotate(-90deg);
+}
+.boost-next-ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 6;
+}
+.boost-next-ring-fill {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 238.76;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.55));
+}
+.boost-next-ring-num {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.6px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  font-feature-settings: 'tnum';
 }
-.boost-next-circle.from .boost-next-circle-num {
-  background: rgba(255, 255, 255, 0.18);
-  color: white;
-  border: 2.5px solid rgba(255, 255, 255, 0.35);
-}
-.boost-next-circle-num .pct {
+.boost-next-ring-num .pct {
   font-size: 14px;
   font-weight: 700;
   opacity: 0.85;
+  margin-left: 1px;
 }
-.boost-next-circle-out {
+.boost-next-ring-label {
+  margin-top: 6px;
   font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  color: rgba(255, 255, 255, 0.75);
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 1.1px;
   text-transform: uppercase;
-}
-.boost-next-plus {
-  font-size: 24px;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.65);
-  padding: 0 2px;
 }
 .boost-next-title {
   font-size: 18px;
@@ -1094,4 +1300,123 @@ function formatFileSize(bytes: number): string {
   opacity: 0.55;
   cursor: default;
 }
+
+/* ── Per-upload celebration overlay ──────────────────────────────
+   Fires after every successful upload. Fireworks burst behind a card
+   that shows the points won + what this document actually verifies.
+   The user dismisses to reveal the next question. */
+.bcv-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow: hidden;
+  font-family: inherit;
+}
+.bcv-fw-host {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bcv-fw { position: absolute; width: 0; height: 0; }
+.bcv-fw-particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: bcvFwBurst 1800ms cubic-bezier(0.12, 0.65, 0.35, 1) infinite;
+  will-change: transform, opacity;
+}
+@keyframes bcvFwBurst {
+  0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bcv-fw-particle { animation: none; }
+}
+/* The overlay teleports to <body>, so it sits outside .hs-v6-boost and
+   the component-level CSS variables (--accent, --text, etc.) don't
+   cascade. Use literal hex values inside .bcv-* so the styles render
+   correctly regardless of mount point. */
+.bcv-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 22rem;
+  background: #fff;
+  border-radius: 22px;
+  padding: 24px 22px 18px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45);
+  color: #231d45;
+}
+.bcv-ico {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+}
+.bcv-ico.yellow { background: #fff6d5; }
+.bcv-ico.amber { background: #fce7b5; }
+.bcv-ico.teal { background: #f2faf8; }
+.bcv-ico.violet { background: #f2ebfd; }
+.bcv-ico.green { background: #d4f2e0; }
+.bcv-eyebrow {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #00a19a;
+  margin-bottom: 6px;
+}
+.bcv-headline {
+  font-size: 24px;
+  font-weight: 900;
+  color: #231d45;
+  letter-spacing: -0.4px;
+  line-height: 1.15;
+}
+.bcv-subhead {
+  font-size: 14px;
+  font-weight: 800;
+  color: #b07afe;
+  margin-top: 2px;
+}
+.bcv-doc-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b7089;
+  margin: 10px 0 8px;
+}
+.bcv-impact {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6b7089;
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+.bcv-continue {
+  width: 100%;
+  border: none;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00a19a, #008a84);
+  color: #ffffff !important;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+}
+.bcv-continue:hover { filter: brightness(1.06); }
 </style>

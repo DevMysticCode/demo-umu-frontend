@@ -132,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 
 interface Props {
   fromScore: number
@@ -172,7 +172,20 @@ const deltaLabel = computed(() => {
 const animatedToScore = ref(props.fromScore)
 const barsAnimated = ref(false)
 
+// Auto-stop the celebration after a few seconds. The fireworks loop
+// infinitely so without this they'd run for as long as the user lingers
+// — distracting once the user reads the stats. Eight seconds covers two
+// full burst cycles + the stagger delay, then we tear the host down.
+const fireworksTimer = ref<ReturnType<typeof setTimeout> | null>(null)
+onBeforeUnmount(() => {
+  if (fireworksTimer.value) clearTimeout(fireworksTimer.value)
+})
+
 onMounted(() => {
+  fireworksTimer.value = setTimeout(() => {
+    fireworks.value = []
+  }, 8000)
+
   // Count-up animation for the score
   const start = props.fromScore
   const end = props.toScore
