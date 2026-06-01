@@ -19,7 +19,17 @@
         <div class="hero-title">
           Know your home<br /><span class="lt-teal">inside out.</span>
         </div>
-        <div class="hero-sub">Tap any card to bring it to the front.</div>
+        <div class="hero-sub">
+          Tap any card to bring it to the front.
+          <button type="button" class="hero-tour-btn" @click="landingTour.restart()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            Take the tour
+          </button>
+        </div>
       </div>
 
       <!-- The deck -->
@@ -30,6 +40,7 @@
           class="deck-card"
           :class="card.id"
           :data-pos="positionOf(card.id)"
+          :data-tour="card.id"
           @click="bringToFront(card.id)"
         >
           <div class="dc-peek">
@@ -597,15 +608,22 @@
         </button>
       </div>
     </div>
+
+    <!-- Coach-mark tour for the four landing cards. Teleports to body so it
+         sits above the deck regardless of where the page is scrolled. -->
+    <TourCoach :tour="landingTour" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import PassportCard from '~/components/passport-view/PassportCard.vue'
 import SellerSampleView from '~/components/landing/SellerSampleView.vue'
 import LandlordSampleView from '~/components/landing/LandlordSampleView.vue'
 import BuyerSampleView from '~/components/landing/BuyerSampleView.vue'
+import TourCoach from '~/components/homescore/TourCoach.vue'
+import { useHomescoreTour } from '~/composables/useHomescoreTour'
 
 definePageMeta({ middleware: 'guest' })
 
@@ -660,6 +678,64 @@ function onCardCta(id: string) {
   else if (id === 'aisha') screen.value = 'aisha'
   else if (id === 'market') screen.value = 'market'
 }
+
+// ── Coach-mark tour ────────────────────────────────────────────────────
+// Walks through the four landing cards one by one. The deck normally only
+// shows the front card in full — to make sure the card being explained is
+// visible, we reorder the stack so the current step's card sits on top
+// before the spotlight measures the target.
+const landingTour = useHomescoreTour({
+  storageKey: 'umu-tour-landing',
+  autoStart: true,
+  steps: [
+    {
+      sel: '[data-tour="HomeScore"]',
+      title: 'HomeScore — free in 60 seconds',
+      body: 'A quick read on how your home compares to the street: running costs, EPC rating, where you could save. No signup needed.',
+    },
+    {
+      sel: '[data-tour="passport"]',
+      title: 'Property Passport — solicitor-grade',
+      body: 'A verified record of everything a buyer\'s solicitor will ask for — deeds, planning, surveys, fittings. Ready from day one, not three weeks into a sale.',
+    },
+    {
+      sel: '[data-tour="aisha"]',
+      title: 'A real story — Aisha, Coventry',
+      body: 'A two-bed semi sold in 14 days with no fall-throughs, because the paperwork was ready before the first viewing. Tap to read how.',
+    },
+    {
+      sel: '[data-tour="market"]',
+      title: 'Why we built this',
+      body: 'A third of UK sales collapse. The ones that complete take almost six months. Here\'s the case for fixing it — and the numbers behind it.',
+    },
+  ],
+})
+
+// Whenever the tour advances, bring the matching card to the front so the
+// spotlight lands on the card we're talking about (cards are stacked with
+// `data-pos` and only the front one is fully visible).
+watch(
+  () => landingTour.idx.value,
+  (i) => {
+    if (!landingTour.active.value) return
+    const cardId = cards[i]?.id
+    if (cardId && stack.value[0] !== cardId) {
+      stack.value = [cardId, ...stack.value.filter((x) => x !== cardId)]
+    }
+  },
+  { immediate: false },
+)
+// Also reorder when the tour first opens (idx=0 already, watch won't fire).
+watch(
+  () => landingTour.active.value,
+  (on) => {
+    if (!on) return
+    const cardId = cards[landingTour.idx.value]?.id
+    if (cardId && stack.value[0] !== cardId) {
+      stack.value = [cardId, ...stack.value.filter((x) => x !== cardId)]
+    }
+  },
+)
 
 const sampleTypes: { value: SampleType; label: string }[] = [
   { value: 'seller', label: 'Seller' },
@@ -822,7 +898,18 @@ const currentSample = computed(() => samples[sampleType.value])
   line-height: 1.02; margin-bottom: 8px;
 }
 .hero-title .lt-teal { color: #00a19a; }
-.hero-sub { font-size: 15px; font-weight: 500; color: #6b6783; line-height: 1.5; }
+.hero-sub { font-size: 15px; font-weight: 500; color: #6b6783; line-height: 1.5; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.hero-tour-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0, 161, 154, 0.1); color: #007e78;
+  border: 1px solid rgba(0, 161, 154, 0.35);
+  font-family: inherit; font-size: 12px; font-weight: 700;
+  letter-spacing: -0.1px;
+  padding: 5px 11px 5px 9px; border-radius: 999px;
+  cursor: pointer; transition: all 0.18s;
+}
+.hero-tour-btn:hover { background: rgba(0, 161, 154, 0.18); }
+.hero-tour-btn svg { width: 13px; height: 13px; }
 
 /* Deck */
 .deck-wrap { margin: 22px 22px 0; position: relative; height: 468px; }

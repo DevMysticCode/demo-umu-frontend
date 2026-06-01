@@ -83,13 +83,13 @@
     </div>
 
     <!-- ── Real story card ─────────────────────────────────────────── -->
-    <div class="hs-real-story">
+    <div ref="realStoryEl" class="hs-real-story">
       <div class="hs-real-story-bar" />
       <div class="hs-real-story-body">
         <div class="hs-real-story-eyebrow">Real story</div>
-        <div class="hs-real-story-quote">
-          "My neighbour was being charged £150 a month extra — her supplier
-          thought she had a swimming pool."
+        <div class="hs-real-story-quote" :aria-label="realStoryQuote">
+          <span>{{ typedQuote }}</span>
+          <span v-if="!typingDone" class="hs-typer-caret" aria-hidden="true" />
         </div>
         <div class="hs-real-story-text">
           Energy suppliers estimate usage based on assumptions. Those
@@ -149,10 +149,67 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 
 const router = useRouter()
+
+// ── Typewriter for the "Real story" quote ────────────────────────────
+// Drives attention to the most important piece of social proof on the
+// landing page. Holds at the full string once finished. Triggered on
+// scroll-into-view so it actually animates in front of the user, not
+// silently above the fold while the page is still loading.
+const realStoryQuote =
+  '"My neighbour was being charged £150 a month extra — her supplier thought she had a swimming pool."'
+const typedQuote = ref('')
+const typingDone = ref(false)
+const realStoryEl = ref<HTMLElement | null>(null)
+let typerTimer: ReturnType<typeof setTimeout> | null = null
+let observer: IntersectionObserver | null = null
+
+function runTyper() {
+  if (typingDone.value || typedQuote.value.length > 0) return
+  let i = 0
+  const step = () => {
+    typedQuote.value = realStoryQuote.slice(0, i + 1)
+    i++
+    if (i < realStoryQuote.length) {
+      // Tiny per-char jitter so it reads as a person typing, not a tape.
+      const ch = realStoryQuote[i - 1]
+      const delay = ch === ' ' ? 18 : ch === ',' || ch === '.' ? 90 : 28
+      typerTimer = setTimeout(step, delay)
+    } else {
+      typingDone.value = true
+    }
+  }
+  step()
+}
+
+onMounted(() => {
+  if (typeof IntersectionObserver === 'undefined') {
+    runTyper()
+    return
+  }
+  observer = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          runTyper()
+          observer?.disconnect()
+          observer = null
+          break
+        }
+      }
+    },
+    { threshold: 0.4 },
+  )
+  if (realStoryEl.value) observer.observe(realStoryEl.value)
+})
+
+onBeforeUnmount(() => {
+  if (typerTimer) clearTimeout(typerTimer)
+  observer?.disconnect()
+})
 
 function onResultSelect(property: any) {
   // HomeScore detail is the page's main purpose — go there directly.
@@ -207,8 +264,8 @@ const howCopy: Record<HowId, { title: string; sub: string }[]> = {
       sub: 'Find out if this property is costing more to run than similar homes nearby — and why.',
     },
     {
-      title: 'Upload bills to get your real number',
-      sub: 'Public EPC data can be years out of date. Your actual bills tell the real story — and start building your Property Passport.',
+      title: 'Answer a few quick questions to get your real score',
+      sub: 'Public EPC data can be years out of date. A 2-minute quiz about your home tells the real story — and starts building your Property Passport.',
     },
   ],
   curious: [
@@ -321,10 +378,30 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   align-items: center;
   gap: 8px;
   background: #fff;
-  border: 1.5px solid #ececef;
+  border: 1.5px solid #00a19a;
   border-radius: 14px;
   padding: 4px 4px 4px 10px;
   transition: all 0.15s;
+  /* Pulsing teal halo to draw the eye to the primary CTA. Pauses once the
+     user focuses the field so the highlight doesn't fight the cursor. */
+  animation: hsSearchPulse 2.2s ease-in-out infinite;
+}
+@keyframes hsSearchPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 rgba(0, 161, 154, 0.55),
+      0 0 0 0 rgba(0, 161, 154, 0.18);
+    border-color: #00a19a;
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px rgba(0, 161, 154, 0.0),
+      0 0 18px 4px rgba(0, 161, 154, 0.28);
+    border-color: #00c4bc;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-search-wrap { animation: none; }
 }
 /* Make the dropdown span the full width of the outer search shell, not just
    the inner input's narrower column. We do this by making .psi-wrap
@@ -342,6 +419,8 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
 .hs-search-wrap:focus-within {
   border-color: #00a19a;
   box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.1);
+  /* Stop pulsing once the user starts typing — the halo's job is done. */
+  animation: none;
 }
 /* Make the embedded PropertySearchInput visually flat — the outer wrap is the shell */
 .hs-search-wrap :deep(> div),
@@ -411,13 +490,14 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
 .hs-real-story {
   margin: 16px 22px 0;
   background: #fff;
-  border: 1.5px solid #f5f5f7;
+  border: 1.5px solid #e2f1ea;
   border-radius: 16px;
   padding: 16px 18px;
   position: relative;
   overflow: hidden;
   display: flex;
   gap: 10px;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.06);
 }
 .hs-real-story-bar {
   position: absolute;
@@ -425,7 +505,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   left: 0;
   width: 4px;
   height: 100%;
-  background: #00a19a;
+  background: linear-gradient(180deg, #00c4bc 0%, #00a19a 60%, #007e78 100%);
   border-radius: 4px 0 0 4px;
 }
 .hs-real-story-body {
@@ -443,10 +523,28 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
 .hs-real-story-quote {
   font-size: 15px;
   font-weight: 800;
-  color: #231d45;
+  color: #007e78;
   line-height: 1.4;
   margin-bottom: 6px;
   letter-spacing: -0.1px;
+  /* Reserve roughly two lines of vertical space while typing so the rest of
+     the page below doesn't reflow up as characters appear. */
+  min-height: 2.8em;
+}
+.hs-typer-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #00a19a;
+  margin-left: 2px;
+  vertical-align: -2px;
+  animation: hsCaretBlink 0.9s steps(1) infinite;
+}
+@keyframes hsCaretBlink {
+  50% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-typer-caret { animation: none; }
 }
 .hs-real-story-text {
   font-size: 13px;

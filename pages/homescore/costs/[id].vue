@@ -843,20 +843,6 @@
 
     <!-- ─── UNCLAIMED ─── -->
     <template v-if="passportState === 'unclaimed'">
-      <div class="state-banner anim-3">
-        <div class="state-banner-ico">📭</div>
-        <div class="state-banner-body">
-          <div class="state-banner-title">
-            This property is Unclaimed
-            <span class="state-banner-pill">Public record</span>
-          </div>
-          <div class="state-banner-sub">
-            No owner action yet. Score is the public EPC only.
-            <b>No Passport built.</b>
-          </div>
-        </div>
-      </div>
-
       <div class="watch-card anim-4">
         <div class="watch-card-eyebrow">👁 Watch this property</div>
         <div class="watch-card-title">
