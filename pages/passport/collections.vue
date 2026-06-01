@@ -114,6 +114,7 @@
         <PassportCard
           :line1="resumeCard.addressLine1"
           :line2="resumeCard.postcode"
+          :type="resumeCard.type"
         />
       </div>
       <div class="coll-resume-content">
@@ -207,6 +208,22 @@
       </button>
     </div>
 
+    <!-- Passport type chips — only shown when the user has more than one type
+         (e.g. both Seller and Landlord passports). -->
+    <div v-if="typeChips.length > 1" class="coll-cities coll-types">
+      <button
+        v-for="chip in typeChips"
+        :key="chip.value"
+        class="coll-city-chip coll-type-chip"
+        :class="[`tone-${chip.tone}`, { active: typeFilter === chip.value }]"
+        @click="typeFilter = chip.value"
+      >
+        <span v-if="chip.value !== 'all'" class="coll-type-dot" />
+        {{ chip.label }}
+        <span class="coll-city-num">{{ chip.count }}</span>
+      </button>
+    </div>
+
     <!-- Controls row -->
     <div class="controls-row px-4 mb-4">
       <button class="create-collection-btn" @click="showCreateModal = true">
@@ -253,6 +270,7 @@
               <PassportCard
                 :line1="item.passport.addressLine1"
                 :line2="item.passport.postcode"
+                :type="item.passport.type"
               />
             </div>
           </div>
@@ -266,6 +284,17 @@
         <p class="cell-sub">
           {{ collection.items.length }}
           {{ collection.items.length === 1 ? 'Passport' : 'Passports' }}
+          <template v-if="collectionTypeBreakdown(collection).length">
+            <span
+              v-for="entry in collectionTypeBreakdown(collection)"
+              :key="entry.tone"
+              class="cell-type-chip"
+              :class="`tone-${entry.tone}`"
+            >
+              <span class="cell-type-dot" />
+              {{ entry.count }} {{ entry.label }}
+            </span>
+          </template>
         </p>
       </div>
 
@@ -330,6 +359,7 @@
               <PassportCard
                 :line1="passport.addressLine1"
                 :line2="passport.postcode"
+                :type="passport.type"
               />
               <button
                 class="book-trash-btn book-trash-btn--fallback"
@@ -363,7 +393,13 @@
           </div>
         </div>
         <p class="cell-name">{{ shortAddress(passport.addressLine1) }}</p>
-        <p class="cell-sub">{{ passport.postcode }}</p>
+        <p class="cell-sub">
+          {{ passport.postcode }}
+          <span class="cell-type-chip" :class="`tone-${typeMeta(passport.type).tone}`">
+            <span class="cell-type-dot" />
+            {{ typeMeta(passport.type).label }}
+          </span>
+        </p>
       </div>
 
       <!-- Add New -->
@@ -495,6 +531,42 @@ const showDetailModal = ref(false)
 const activeCollection = ref(null)
 const sortAsc = ref(true)
 const cityFilter = ref('all')
+const typeFilter = ref('all')
+
+// Map a passport's `type` enum to a label + tone for the badge + chip.
+// SELLER is the implicit default (also used for legacy passports created
+// before the enum existed) so anything we don't recognise falls back to it.
+function typeMeta(t) {
+  if (t === 'LANDLORD') return { label: 'Landlord', tone: 'landlord' }
+  return { label: 'Seller', tone: 'seller' }
+}
+
+function passportMatchesType(p) {
+  if (typeFilter.value === 'all') return true
+  return (p?.type ?? 'SELLER') === typeFilter.value
+}
+
+// Per-collection mix indicator. Returns a list of `{ tone, label, count }`
+// for each type present in the collection — used to show "2 Seller · 1
+// Landlord" under the collection name. Returns an empty list when the
+// collection is empty or contains a single type, so a "Sellers only"
+// collection stays uncluttered.
+function collectionTypeBreakdown(collection) {
+  const items = collection?.items ?? []
+  if (items.length === 0) return []
+  const counts = new Map()
+  for (const it of items) {
+    const t = it?.passport?.type ?? 'SELLER'
+    counts.set(t, (counts.get(t) || 0) + 1)
+  }
+  if (counts.size <= 1) return []
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([t, count]) => {
+      const meta = typeMeta(t)
+      return { tone: meta.tone, label: meta.label, count }
+    })
+}
 
 // Compact navbar search toggle — only shown when the user taps the magnifier
 // in the header. Closes on blur (unless there's an active query) and on Esc.
@@ -547,10 +619,15 @@ const filteredCollections = computed(() => {
   let list = [...collections.value]
   const q = query.value.trim().toLowerCase()
   if (q) list = list.filter((c) => c.name.toLowerCase().includes(q))
-  // A collection is visible if any of its passports match the city filter.
+  // A collection is visible if any of its passports match the active filters.
   if (cityFilter.value !== 'all') {
     list = list.filter((c) =>
       (c.items ?? []).some((it) => passportMatchesCity(it.passport)),
+    )
+  }
+  if (typeFilter.value !== 'all') {
+    list = list.filter((c) =>
+      (c.items ?? []).some((it) => passportMatchesType(it.passport)),
     )
   }
   return sortAsc.value ? list : [...list].reverse()
@@ -568,6 +645,9 @@ const filteredPassports = computed(() => {
   }
   if (cityFilter.value !== 'all') {
     list = list.filter(passportMatchesCity)
+  }
+  if (typeFilter.value !== 'all') {
+    list = list.filter(passportMatchesType)
   }
   return list
 })
@@ -588,6 +668,30 @@ const cityChips = computed(() => {
   return [
     { value: 'all', label: 'All locations', count: allPassports.value.length },
     ...places,
+  ]
+})
+
+// Same idea for passport type (SELLER / LANDLORD). Only render the chip
+// row when at least two distinct types are present — a user with only
+// Seller passports doesn't need a "Seller only" filter.
+const typeChips = computed(() => {
+  const counts = new Map()
+  for (const p of allPassports.value) {
+    const t = p?.type ?? 'SELLER'
+    counts.set(t, (counts.get(t) || 0) + 1)
+  }
+  if (counts.size <= 1) return []
+  const types = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([value, count]) => ({
+      value,
+      label: typeMeta(value).label,
+      tone: typeMeta(value).tone,
+      count,
+    }))
+  return [
+    { value: 'all', label: 'All types', tone: 'all', count: allPassports.value.length },
+    ...types,
   ]
 })
 
@@ -654,6 +758,7 @@ const resumeCard = computed(() => {
     id: p.id,
     addressLine1: p.addressLine1,
     postcode: p.postcode,
+    type: p.type ?? 'SELLER',
     sectionsToGo: Math.max(0, total - done),
     pct: Math.max(0, Math.min(100, pct || 0)),
     lastEdit: relativeTime(p?.lastVisitedAt || p?.updatedAt),
@@ -1220,6 +1325,32 @@ const executeDelete = async () => {
   color: #fff;
 }
 
+/* Passport-type chip row — second filter row, type-coloured dot per chip. */
+.coll-types { margin-top: 6px; }
+.coll-type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00a19a;
+  flex-shrink: 0;
+}
+.coll-type-chip.tone-seller .coll-type-dot { background: #00a19a; }
+.coll-type-chip.tone-landlord .coll-type-dot { background: #f0a020; }
+.coll-type-chip.tone-seller.active {
+  background: #00a19a;
+  border-color: #00a19a;
+}
+.coll-type-chip.tone-landlord.active {
+  background: #f0a020;
+  border-color: #f0a020;
+  box-shadow: 0 2px 8px rgba(240, 160, 32, 0.32);
+}
+.coll-type-chip.tone-landlord.active .coll-city-num {
+  background: rgba(255, 255, 255, 0.25);
+}
+.coll-type-chip.active .coll-type-dot { background: #fff; }
+
+
 .sort-btn {
   width: 40px;
   height: 40px;
@@ -1427,6 +1558,45 @@ const executeDelete = async () => {
   text-align: center;
   margin: 0;
   margin-top: -6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+}
+
+/* Inline type pill on the metadata row below each passport. Lives in
+   `cell-sub` next to the postcode — kept out of the book art so it doesn't
+   overlap the "Property Passport" brand text on the cover. */
+.cell-type-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px 1px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  line-height: 1.6;
+  border: 1px solid transparent;
+}
+.cell-type-chip.tone-seller {
+  background: rgba(0, 161, 154, 0.1);
+  color: #007e78;
+  border-color: rgba(0, 161, 154, 0.22);
+}
+.cell-type-chip.tone-landlord {
+  background: rgba(240, 160, 32, 0.12);
+  color: #b67518;
+  border-color: rgba(240, 160, 32, 0.32);
+}
+.cell-type-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
 }
 
 /* Add New card */

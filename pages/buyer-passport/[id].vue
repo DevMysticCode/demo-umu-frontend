@@ -60,6 +60,7 @@
             <PassportCard
               :line1="data.passport.addressLine1"
               :line2="data.passport.postcode"
+              :type="data.passport.type"
             />
           </div>
           <div class="buyer-hero-info">

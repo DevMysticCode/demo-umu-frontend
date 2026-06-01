@@ -24,6 +24,7 @@
             <PassportCard
               :line1="passport.addressLine1"
               :line2="passport.postcode"
+              type="LANDLORD"
             />
           </div>
           <div class="pp-hero-info">
