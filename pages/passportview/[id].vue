@@ -550,6 +550,11 @@
       @close="publishDrawerOpen = false"
       @publish="onPublishConfirm"
     />
+
+    <!-- Bottom navigation bar — keeps the passportview consistent with the
+         rest of the authed app surfaces. Extra padding above is added on
+         the page wrapper so the last card isn't hidden behind the bar. -->
+    <BottomNav />
   </div>
 </template>
 
@@ -560,6 +565,7 @@ import AppHeader from '@/components/core/AppHeader.vue'
 import PassportCard from '@/components/passport-view/PassportCard.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import SegmentedSwitch from '@/components/core/SegmentedSwitch.vue'
+import BottomNav from '~/components/core/BottomNav.vue'
 import AddCollaboratorModal from '@/components/modals/AddCollaboratorModal.vue'
 import YourPropertiesModal from '@/components/modals/YourPropertiesModal.vue'
 import MatchedBuyersDrawer from '~/components/passport/MatchedBuyersDrawer.vue'

@@ -4183,8 +4183,15 @@ function makeAnimRef(source: () => number, durMs = 700, decimals = 0) {
   const out = ref(0)
   let raf = 0
   function animateTo(to: number) {
+    // SSR safety — `watch(..., { immediate: true })` fires this during
+    // <script setup>, which runs on the server too. Bail before touching
+    // any browser-only globals (cancelAnimationFrame / requestAnimationFrame
+    // / performance.now). The onMounted run on the client will animate.
+    if (typeof window === 'undefined') {
+      out.value = to
+      return
+    }
     const reduce =
-      typeof window !== 'undefined' &&
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) {

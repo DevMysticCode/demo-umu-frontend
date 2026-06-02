@@ -80,8 +80,12 @@
         </span>
       </div>
       <div class="hs-addr-stat-row">
-        <div class="pulse-dot" />
-        <span><span class="hs-addr-stat-count">{{ searchesTodayDisplay }}</span> checked this HomeScore today</span>
+        <span class="hs-live-pill">
+          <span class="hs-live-dot" aria-hidden="true" />
+          <span class="hs-live-text">
+            <b>{{ searchesTodayDisplay }}</b> checked this HomeScore today
+          </span>
+        </span>
       </div>
       <!-- Published passports get a "Live interest" signal-bars pill —
            it reads as live activity ("people are tracking THIS verified
@@ -100,22 +104,24 @@
         </span>
       </div>
       <div v-else class="hs-addr-stat-row">
-        <svg
-          class="hs-addr-stat-eye"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.4"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-        <span>
-          <span class="hs-addr-stat-count">{{ watchersDisplay }}</span>
-          {{ watchersCount === 1 ? 'is' : 'are' }} watching this property
+        <span class="hs-live-pill">
+          <svg
+            class="hs-addr-stat-eye"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <span class="hs-live-text">
+            <b>{{ watchersDisplay }}</b>
+            {{ watchersCount === 1 ? 'is' : 'are' }} watching this property
+          </span>
         </span>
       </div>
     </div>
@@ -2145,8 +2151,17 @@ const watchersDisplay = computed(() => {
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
 }
 
-/* "Live interest" pill — only shown for published passports. Three
-   animated signal bars climb in sequence to convey live activity. */
+/* Shared pill background for the social-proof rows ("checked today" +
+   "watching" / "Live interest"). Mirrors V6QuizView so both surfaces
+   look identical. */
+.hs-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5eead4;
+  box-shadow: 0 0 8px rgba(94, 234, 212, 0.7);
+  flex-shrink: 0;
+}
 .hs-addr-stat-row .hs-live-pill {
   display: inline-flex;
   align-items: center;

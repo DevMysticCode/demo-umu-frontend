@@ -536,6 +536,10 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Bottom navigation — same component the rest of the authed app
+         uses, so the landlord passport stays consistent. -->
+    <BottomNav />
   </div>
 </template>
 
@@ -545,6 +549,7 @@ import { usePassportClaim } from '~/composables/usePassportClaim'
 import PassportCard from '~/components/passport-view/PassportCard.vue'
 import LandlordPassportMapView from '~/components/passport-view/LandlordPassportMapView.vue'
 import SegmentedSwitch from '~/components/core/SegmentedSwitch.vue'
+import BottomNav from '~/components/core/BottomNav.vue'
 
 definePageMeta({ title: 'Landlord Passport — UmovingU', middleware: 'auth' })
 
