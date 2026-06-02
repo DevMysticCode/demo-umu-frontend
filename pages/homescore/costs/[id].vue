@@ -28,39 +28,21 @@
       <div class="app-header-spacer" />
     </div>
 
-    <!-- Amber address card -->
-    <div v-if="property" class="hs-addr-card anim-1">
-      <div class="hs-addr-top">
-        <div class="hs-addr-pin" />
-        <div class="hs-addr-block">
-          <div class="hs-addr-line">
-            {{ property.addressLine1 || 'This property' }}
-          </div>
-          <div class="hs-addr-meta">{{ addressMeta }}</div>
-        </div>
-      </div>
-      <div class="hs-addr-pills">
-        <span v-if="property.epcRating" class="hs-addr-pill">
-          <span class="epc-letter" :style="{ background: epcColor }">{{
-            property.epcRating
-          }}</span>
-          EPC rating
-        </span>
-        <span v-if="displayScore" class="hs-addr-pill">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="13 2 4 14 11 14 11 22 20 10 13 10" />
-          </svg>
-          HomeScore <b style="color: white">{{ displayScore }}</b
-          ><span style="opacity: 0.75; font-weight: 600">/100</span>
-        </span>
-      </div>
-      <div class="hs-addr-stat-row">
-        <div class="pulse-dot" />
-        <span
-          ><span class="hs-addr-stat-count">{{ searchesTodayDisplay }}</span>
-          checked this HomeScore today</span
-        >
-      </div>
+    <!-- HomeScore address card — single source-of-truth component used
+         here, on V6ScoreView (homescore detail), and V6QuizView (owner
+         quiz). Update the component once, all three pages stay in sync. -->
+    <div v-if="property" class="hs-addr-card-wrap anim-1">
+      <HomescoreAddressCard
+        :address="property.addressLine1 || 'This property'"
+        :postcode="property.postcode ?? null"
+        :property-type="property.propertyType ?? null"
+        :sqm="property.floorAreaSqm ?? property.sqm ?? null"
+        :epc-rating="property.epcRating ?? null"
+        :home-score="displayScore"
+        :searches-today="searchStats?.today ?? 0"
+        :watchers-count="searchStats?.watchers ?? 0"
+        :passport-state="passportClaimState"
+      />
     </div>
 
     <!-- Claim / Passport-state box + explainer drawers -->
@@ -901,35 +883,16 @@
         </button>
       </div>
 
-      <div class="verify-card anim-4">
-        <div class="verify-card-eyebrow">🛡 Verified buyer · £35 one-off</div>
-        <div class="verify-card-title">
-          Be ready to offer the moment this lists.
-        </div>
-        <div class="verify-card-sub">
-          Owners are most likely to publish a Passport
-          <b style="color: #ffd58a">when there's a verified buyer watching</b>.
-          Verified status unlocks free Passport access on any home you're
-          watching.
-        </div>
-        <div class="verify-stats">
-          <div class="verify-stat">
-            <div class="verify-stat-num">3×</div>
-            <div class="verify-stat-label">Offers accepted</div>
-          </div>
-          <div class="verify-stat">
-            <div class="verify-stat-num">2-3w</div>
-            <div class="verify-stat-label">Faster exchange</div>
-          </div>
-          <div class="verify-stat">
-            <div class="verify-stat-num">FREE</div>
-            <div class="verify-stat-label">Passport access</div>
-          </div>
-        </div>
-        <button class="verify-cta" type="button" @click="onVerify">
-          ✓ See what verification gets you →
-        </button>
-      </div>
+      <!-- Verified Buyer card — backend-driven (guest / no-profile →
+           unverified CTA, published profile → verified greeting). Same
+           component lives on the buyer-results screen. -->
+      <BuyerVerifyCard
+        class="anim-4"
+        :first-name="userProfile?.firstName ?? null"
+        @start-verification="onBuyerStartVerification"
+        @view-profile="onBuyerViewProfile"
+        @edit-profile="onBuyerEditProfile"
+      />
     </template>
 
     <!-- ─── IN PROGRESS ─── -->
@@ -1010,36 +973,13 @@
         </button>
       </div>
 
-      <div class="verify-card anim-5">
-        <div class="verify-card-eyebrow">🛡 Verified buyer · £35 one-off</div>
-        <div class="verify-card-title">
-          Be viewing-ready before anyone else.
-        </div>
-        <div class="verify-card-sub">
-          Owners building a Passport are choosing who to sell to.
-          <b style="color: #ffd58a"
-            >Verified + registered buyers go to the front</b
-          >
-          — and get the Passport free on day one.
-        </div>
-        <div class="verify-stats">
-          <div class="verify-stat">
-            <div class="verify-stat-num">1st</div>
-            <div class="verify-stat-label">In the queue</div>
-          </div>
-          <div class="verify-stat">
-            <div class="verify-stat-num">FREE</div>
-            <div class="verify-stat-label">Passport on launch</div>
-          </div>
-          <div class="verify-stat">
-            <div class="verify-stat-num">3×</div>
-            <div class="verify-stat-label">Offers accepted</div>
-          </div>
-        </div>
-        <button class="verify-cta" type="button" @click="onVerify">
-          ✓ See what verification gets you →
-        </button>
-      </div>
+      <BuyerVerifyCard
+        class="anim-5"
+        :first-name="userProfile?.firstName ?? null"
+        @start-verification="onBuyerStartVerification"
+        @view-profile="onBuyerViewProfile"
+        @edit-profile="onBuyerEditProfile"
+      />
     </template>
 
     <!-- ─── PUBLISHED ─── -->
@@ -1122,34 +1062,13 @@
         </button>
       </div>
 
-      <div class="verify-card anim-5">
-        <div class="verify-card-eyebrow">🛡 Verified buyer · £35 one-off</div>
-        <div class="verify-card-title">
-          Get this Passport free + offer instantly.
-        </div>
-        <div class="verify-card-sub">
-          Verification pays for itself on the second Passport. Open this one
-          <b style="color: #ffd58a">free</b>, make qualified offers, and skip
-          the back-and-forth at exchange.
-        </div>
-        <div class="verify-stats">
-          <div class="verify-stat">
-            <div class="verify-stat-num">FREE</div>
-            <div class="verify-stat-label">This Passport</div>
-          </div>
-          <div class="verify-stat">
-            <div class="verify-stat-num">3×</div>
-            <div class="verify-stat-label">Offers accepted</div>
-          </div>
-          <div class="verify-stat">
-            <div class="verify-stat-num">2-3w</div>
-            <div class="verify-stat-label">Faster exchange</div>
-          </div>
-        </div>
-        <button class="verify-cta" type="button" @click="onVerify">
-          ✓ See what verification gets you →
-        </button>
-      </div>
+      <BuyerVerifyCard
+        class="anim-5"
+        :first-name="userProfile?.firstName ?? null"
+        @start-verification="onBuyerStartVerification"
+        @view-profile="onBuyerViewProfile"
+        @edit-profile="onBuyerEditProfile"
+      />
     </template>
 
     <div style="height: 32px" />
@@ -1173,6 +1092,8 @@ import { computed, onMounted, ref } from 'vue'
 import WatchPropertyDrawer from '~/components/property/WatchPropertyDrawer.vue'
 import VerifyBuyerDrawer from '~/components/property/VerifyBuyerDrawer.vue'
 import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
+import BuyerVerifyCard from '~/components/property/BuyerVerifyCard.vue'
+import HomescoreAddressCard from '~/components/homescore/HomescoreAddressCard.vue'
 import {
   calculateScore,
   getPrefillFromProperty,
@@ -1182,13 +1103,46 @@ const router = useRouter()
 const route = useRoute()
 const config = useRuntimeConfig()
 
+// Used by BuyerVerifyCard for the "Welcome back, {firstName}" greeting
+// when the user has a published buyer profile. Lazily fetched.
+const { profile: userProfile, fetchProfile } = useProfile()
+onMounted(() => {
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('token')) {
+    if (!userProfile.value) fetchProfile().catch(() => {})
+  }
+})
+
+// BuyerVerifyCard handlers — same routing as the buyer-results screen.
+function onBuyerStartVerification() {
+  const tk =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!tk) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('redirectAfterLogin', '/buyer-profile')
+    }
+    router.push('/onboarding/signin')
+    return
+  }
+  router.push('/buyer-profile')
+}
+function onBuyerViewProfile() {
+  router.push('/buyer-profile/view')
+}
+function onBuyerEditProfile() {
+  router.push('/buyer-profile')
+}
+
 const propertyId = computed(() => String(route.params.id))
 const property = ref<any>(null)
 const streetData = ref<any>(null)
 const enrichment = ref<any>(null)
 const enrichmentLoaded = ref(false)
 const passportStatus = ref<any>(null)
-const searchStats = ref<{ today?: number; thisMonth?: number } | null>(null)
+const searchStats = ref<{
+  today?: number
+  thisMonth?: number
+  watchers?: number
+} | null>(null)
 
 type TabId = 'energy' | 'costs' | 'sold' | 'risks' | 'area' | 'street'
 const tabs: { id: TabId; label: string }[] = [
@@ -2183,6 +2137,9 @@ function onBuyPassport() {
 }
 
 /* Amber address card */
+.hs-addr-card-wrap {
+  margin: 14px 20px 0;
+}
 .hs-addr-card {
   margin: 14px 20px 0;
   padding: 22px 22px 18px;

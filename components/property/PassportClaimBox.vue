@@ -116,33 +116,41 @@
           <div class="cxd-sheet" @click.stop>
             <div class="cxd-grip" />
 
-            <!-- UNCLAIMED -->
+            <!-- UNCLAIMED — content mirrors prisma/property-passport-let-it-prototype.html
+                 (Screen 0 / TUTORIAL). Five steps now (Claim · Ownership ·
+                 Passport · Build · Publish) rather than the older four, and
+                 the callout is the "Every car has a logbook" framing. -->
             <template v-if="openSheet === 'unclaimed'">
               <div class="cx-hero navy">
                 <div class="cx-hero-eyebrow">Property Passport™</div>
                 <div class="cx-hero-title">
-                  Your home's permanent record — not just for selling, for
-                  owning.
+                  Your home's permanent record — for owning, letting and
+                  selling.
                 </div>
                 <div class="cx-hero-sub">
                   A Passport stays with this property for life. Build it now,
-                  keep it updated, and when you do decide to sell — the hard
-                  work is already done.
+                  keep it updated, and when you do decide to let or sell — the
+                  hard work is already done.
                 </div>
               </div>
               <div class="cx-callout navy">
-                <div class="cx-callout-h">The car you'd never buy blind</div>
+                <div class="cx-callout-h">
+                  Every car has a logbook — your home should too
+                </div>
                 <div class="cx-callout-v">
-                  You wouldn't buy a £15,000 car without an HPI check and
-                  service history. Yet people spend £300k+ on a home with almost
-                  no verified information. A Property Passport changes that —
-                  <b>permanently</b>.
+                  A car's full history follows it from owner to owner. Your
+                  home is worth far more, yet its certificates, guarantees and
+                  compliance sit scattered across drawers, emails and
+                  solicitors — and have to be re-proven every time you sell or
+                  let. A Property Passport keeps it all in one
+                  <b>permanent, verified record</b>: current when you let,
+                  ready when you sell, and yours for as long as you own it.
                 </div>
               </div>
               <div class="cx-stats">
                 <div class="cx-stat">
                   <div class="cx-stat-num">Free</div>
-                  <div class="cx-stat-label">To claim &amp; build forever</div>
+                  <div class="cx-stat-label">To build forever</div>
                 </div>
                 <div class="cx-stat">
                   <div class="cx-stat-num">2 min</div>
@@ -161,7 +169,7 @@
                 </div>
               </div>
               <div class="cx-section-h">
-                Your four steps · tap to learn more
+                Your five steps · tap to learn more
               </div>
               <div class="cx-steps">
                 <template v-for="(s, i) in unclaimedSteps" :key="s.n">
@@ -621,28 +629,36 @@ function goAuth(mode: 'signin' | 'signup') {
   navigateTo(path)
 }
 
+// Mirrors prisma/property-passport-let-it-prototype.html — TUT array.
+// Five steps now (Claim → Ownership → Passport → Build → Publish) so the
+// drawer matches the same flow the /claim/[id] page implements.
 const unclaimedSteps = [
   { n: 1, name: 'Claim' },
-  { n: 2, name: 'Verify' },
-  { n: 3, name: 'Score' },
-  { n: 4, name: 'Publish' },
+  { n: 2, name: 'Ownership' },
+  { n: 3, name: 'Passport' },
+  { n: 4, name: 'Build' },
+  { n: 5, name: 'Publish' },
 ]
 const stepDetails: Record<number, { h: string; v: string }> = {
   1: {
     h: '1 · Claim',
-    v: "Confirm you own this property — takes about 2 minutes. We check it against HM Land Registry, so you don't need to upload anything to get started.",
+    v: "We run a quick identity check (KYC) to confirm it's really you — so no one else can claim your property's Passport. £15 one-off, and reusable forever.",
   },
   2: {
-    h: '2 · Verify',
-    v: 'Upload your certificates (gas, electrical, EPC) and answer the standard conveyancing questions. We verify each against official sources and mark them ✓ on your Passport.',
+    h: '2 · Ownership',
+    v: 'We verify you against HM Land Registry as the registered owner. Nothing to dig out or upload.',
   },
   3: {
-    h: '3 · Score',
-    v: 'As documents are verified, your HomeScore climbs from the public-records baseline to a fully verified score that buyers and lenders trust.',
+    h: '3 · Passport',
+    v: "Choose what you're building it for — a selling passport or a landlord passport. You can add the other later off the same claim.",
   },
   4: {
-    h: '4 · Publish',
-    v: "When you're ready to sell, publish your Passport. Buyers get instant access to everything upfront — cutting weeks off conveyancing.",
+    h: '4 · Build',
+    v: 'Add your certificates and property information. We verify each against the official source and tick it off your Passport.',
+  },
+  5: {
+    h: '5 · Publish',
+    v: 'Publish or share your Passport and control who can access it — buyers, tenants, agents or your solicitor, whoever you choose. It stays with the property for life.',
   },
 }
 const activeStep = ref(1)

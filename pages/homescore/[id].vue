@@ -1987,29 +1987,17 @@
           </div>
         </div>
 
-        <!-- ── Save to Buyer Profile CTA ───────────────────────── -->
-        <div class="bv-save-card" @click="saveToBuyerProfile">
-          <div class="bv-save-icon">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-            </svg>
-          </div>
-          <div class="bv-save-body">
-            <div class="bv-save-title">Save to your Buyer Profile</div>
-            <div class="bv-save-sub">
-              Track this property, compare with others, share with your
-              solicitor.
-            </div>
-          </div>
-          <div class="bv-save-cta">Save →</div>
-        </div>
+        <!-- ── Verified Buyer card — three states driven by the
+             buyer-profile API on mount (see BuyerVerifyCard.vue):
+               • guest → unverified with sign-in CTA
+               • logged in, no profile / not published → unverified
+               • logged in, published profile → verified ("Welcome back") -->
+        <BuyerVerifyCard
+          :first-name="userProfile?.firstName ?? null"
+          @start-verification="onBuyerStartVerification"
+          @view-profile="onBuyerViewProfile"
+          @edit-profile="onBuyerEditProfile"
+        />
 
         <button class="bv-back" @click="screen = 'landing'">
           ← Back to HomeScore
@@ -2678,6 +2666,7 @@ import { useAppToast } from '~/composables/useCustomToast'
 import ResultDetail from '~/components/homescore/ResultDetail.vue'
 import V6ScoreView from '~/components/homescore/V6ScoreView.vue'
 import V6QuizView from '~/components/homescore/V6QuizView.vue'
+import BuyerVerifyCard from '~/components/property/BuyerVerifyCard.vue'
 import V6LevelUpView from '~/components/homescore/V6LevelUpView.vue'
 import V6BoostView from '~/components/homescore/V6BoostView.vue'
 import TourCoach from '~/components/homescore/TourCoach.vue'
@@ -5143,6 +5132,36 @@ const buyerRisks = computed(() => {
 
 const { toggleSave } = usePropertyActions()
 const { showToast } = useAppToast()
+
+// Profile (for the "Welcome back, {firstName}" greeting on the verified
+// buyer card). Lazily loaded so guests don't pay for the call.
+const { profile: userProfile, fetchProfile } = useProfile()
+onMounted(() => {
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('token')) {
+    if (!userProfile.value) fetchProfile().catch(() => {})
+  }
+})
+
+// BuyerVerifyCard handlers — auth-gate guests, route authed users
+// through the buyer-profile build / view flow.
+function onBuyerStartVerification() {
+  const tk =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!tk) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('redirectAfterLogin', '/buyer-profile')
+    }
+    authGateIntent.value = 'save-buyer'
+    return
+  }
+  router.push('/buyer-profile')
+}
+function onBuyerViewProfile() {
+  router.push('/buyer-profile/view')
+}
+function onBuyerEditProfile() {
+  router.push('/buyer-profile')
+}
 
 async function saveToBuyerProfile() {
   // The "Save to Buyer Profile" CTAs now direct the user to the new

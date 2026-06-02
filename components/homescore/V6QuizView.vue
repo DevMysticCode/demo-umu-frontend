@@ -1,70 +1,19 @@
 <template>
   <div class="hs-v6-quiz">
-    <!-- ── Address card (amber, compact) ───────────────────────────── -->
-    <div class="hs-addr-card anim-1">
-      <div class="hs-addr-top">
-        <div class="hs-addr-pin" />
-        <div class="hs-addr-block">
-          <div class="hs-addr-line">{{ addressLine }}</div>
-          <div class="hs-addr-meta">{{ addressMeta }}</div>
-        </div>
-      </div>
-      <div class="hs-addr-pills">
-        <span class="hs-addr-pill">
-          <span class="epc-letter" :style="{ background: epcColor }">{{ epcRating || '—' }}</span>
-          EPC rating
-        </span>
-        <span class="hs-addr-pill">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 4 14 11 14 11 22 20 10 13 10" /></svg>
-          HomeScore <b style="color: white">{{ initialScore }}</b
-          ><span style="opacity: 0.75; font-weight: 600">/100</span>
-        </span>
-      </div>
-      <div class="hs-addr-stat-row">
-        <span class="hs-live-pill">
-          <span class="hs-live-dot" aria-hidden="true" />
-          <span class="hs-live-text">
-            <b>{{ searchesTodayDisplay }}</b> checked this HomeScore today
-          </span>
-        </span>
-      </div>
-      <!-- Published passports get a "Live interest" signal-bars pill —
-           it reads as live activity ("people are tracking THIS verified
-           record") rather than the more passive "watching" stat we show
-           for unclaimed / in-progress homes. -->
-      <div v-if="passportState === 'published'" class="hs-addr-stat-row">
-        <span class="hs-live-pill">
-          <span class="hs-live-bars" aria-hidden="true">
-            <span class="hs-live-bar" />
-            <span class="hs-live-bar" />
-            <span class="hs-live-bar" />
-          </span>
-          <span class="hs-live-text">
-            <b>Live interest.</b> People are tracking this passport.
-          </span>
-        </span>
-      </div>
-      <div v-else class="hs-addr-stat-row">
-        <span class="hs-live-pill">
-          <svg
-            class="hs-addr-stat-eye"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.4"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-          <span class="hs-live-text">
-            <b>{{ watchersDisplay }}</b>
-            {{ watchersCount === 1 ? 'is' : 'are' }} watching this property
-          </span>
-        </span>
-      </div>
+    <!-- ── HomeScore address card — same component as the results
+             screen so both surfaces share the prototype-ported hero. -->
+    <div class="hs-addr-card-wrap anim-1">
+      <HomescoreAddressCard
+        :address="addressLine"
+        :postcode="property?.postcode ?? null"
+        :property-type="property?.propertyType ?? null"
+        :sqm="property?.floorAreaSqm ?? property?.sqm ?? null"
+        :epc-rating="epcRating"
+        :home-score="initialScore"
+        :searches-today="searchesToday"
+        :watchers-count="watchersCount"
+        :passport-state="passportState"
+      />
     </div>
 
     <!-- Claim / Passport-state box + explainer drawers (matches HomeScore) -->
@@ -348,6 +297,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
+import HomescoreAddressCard from '~/components/homescore/HomescoreAddressCard.vue'
 
 interface Props {
   property: any | null
@@ -792,6 +742,9 @@ watch(() => props.initialScore, (v) => {
 }
 
 /* Amber address card */
+.hs-addr-card-wrap {
+  margin: 14px 20px 0;
+}
 .hs-addr-card {
   margin: 14px 20px 0;
   padding: 22px 22px 18px;
