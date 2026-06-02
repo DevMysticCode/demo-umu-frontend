@@ -18,11 +18,16 @@
             :class="{ sel: chosen === 'seller' }"
             @click="chosen = 'seller'"
           >
-            <!-- House emoji U+1F3E0 — same codepoint the prototype uses
-                 (`&#x1F3E0;`). Rendered through the emoji-font stack on
-                 .choose-ico so it stays colour-emoji on every platform
-                 instead of falling back to a B/W text glyph. -->
-            <div class="choose-ico seller">&#x1F3E0;</div>
+            <!-- The actual umu seller passport book — same artwork the
+                 rest of the app uses on PassportCard, so the drawer
+                 reads as "you're picking which book to make". -->
+            <div class="choose-ico seller">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt="Seller passport"
+                class="choose-ico-img"
+              />
+            </div>
             <div class="choose-body">
               <div class="choose-title">Seller passport</div>
               <div class="choose-eyebrow">For selling your home</div>
@@ -42,12 +47,16 @@
             :class="{ sel: chosen === 'landlord' }"
             @click="chosen = 'landlord'"
           >
-            <!-- Shield emoji U+1F6E1 + variation-selector-16 (U+FE0F),
-                 same `&#x1F6E1;&#xFE0F;` sequence the prototype uses.
-                 The VS-16 forces the colour-emoji presentation; without
-                 it the shield falls back to a flat text glyph on
-                 Windows / older browsers. -->
-            <div class="choose-ico landlord">&#x1F6E1;&#xFE0F;</div>
+            <!-- The actual landlord passport book — dark-blue cover,
+                 matches the artwork PassportCard renders for landlord
+                 passports across the app. -->
+            <div class="choose-ico landlord">
+              <img
+                src="/op-icons/passportview/landlordPassport.png"
+                alt="Landlord passport"
+                class="choose-ico-img"
+              />
+            </div>
             <div class="choose-body">
               <div class="choose-title">Landlord passport</div>
               <div class="choose-eyebrow">For letting your property</div>
@@ -213,29 +222,25 @@ const confirm = () => {
   background: var(--accent-paler);
 }
 .choose-ico {
-  width: 54px;
+  /* width: 54px; */
   height: 54px;
-  border-radius: 14px;
+  /* border-radius: 14px; */
   display: flex;
   align-items: center;
   justify-content: center;
-  /* 24px matches the prototype exactly; was 26px before. */
-  font-size: 24px;
-  color: white;
   flex-shrink: 0;
+  /* Soft drop-shadow so the passport "lifts" off the card without
+     needing the old amber/green gradient tile underneath. The PNG
+     covers are colourful on their own. */
   box-shadow: 0 6px 14px rgba(35, 29, 69, 0.18);
-  /* Explicit colour-emoji font stack so the house/shield always render
-     in colour, never as a B/W text glyph (Windows + some Linux distros
-     default to text presentation when the page font is "SF Pro …"). */
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji',
-    'Twemoji Mozilla', sans-serif;
-  line-height: 1;
+  overflow: hidden;
+  background: transparent;
 }
-.choose-ico.seller {
-  background: linear-gradient(135deg, #d9a441, #a9761c);
-}
-.choose-ico.landlord {
-  background: linear-gradient(135deg, #2c7a5a, #16513a);
+.choose-ico-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .choose-body {
   flex: 1;
@@ -255,10 +260,13 @@ const confirm = () => {
   text-transform: uppercase;
   /* 2px matches the prototype; was 4px before. */
   margin-top: 2px;
-  color: #a9761c;
+  /* Eyebrow tints now follow the actual passport cover colours: teal
+     for the seller book, navy for the landlord book. Anchors the tonal
+     accent on the card to whichever passport's artwork sits beside it. */
+  color: #007e78;
 }
 .choose-opt.landlord .choose-eyebrow {
-  color: #2c7a5a;
+  color: #1e2a5e;
 }
 .choose-list {
   margin-top: 10px;
