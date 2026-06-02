@@ -65,8 +65,8 @@
         <span class="hsc-idc" style="background: #9fe1cb">
           <span
             style="
-              width: 11px;
-              height: 11px;
+              width: 8px;
+              height: 8px;
               background: #0f6e56;
               border-radius: 2px;
               transform: rotate(45deg);
@@ -76,9 +76,9 @@
         <span class="hsc-idc" style="background: #fac775">
           <span
             style="
-              width: 12px;
-              height: 12px;
-              border: 3px solid #633806;
+              width: 9px;
+              height: 9px;
+              border: 2.5px solid #633806;
               border-radius: 50%;
             "
           />
@@ -111,8 +111,8 @@
            fields; this one reads as "spotting / monitoring" — much
            closer to the actual meaning of "watching this property". -->
       <svg
-        width="24"
-        height="24"
+        width="18"
+        height="18"
         viewBox="0 0 24 24"
         fill="none"
         stroke="rgba(255,255,255,.92)"
@@ -233,17 +233,17 @@ const watchersDisplay = computed(() => {
 </script>
 
 <style scoped>
-/* All values are 1:1 with prisma/homescore-card.html — the amber hero,
-   white-on-amber tiles, bar shimmer animation, and viewer rows. */
+/* Sized to match the rest of the page's card rhythm (the app frame is
+   ~28rem max), so the amber hero doesn't tower over neighbouring cards.
+   Visual structure stays 1:1 with prisma/homescore-card.html. */
 .hsc-card {
-  width: 100%;
-  max-width: 560px;
-  margin: 0 auto;
+  width: auto;
+  max-width: 100%;
   background: #c46a14;
-  border-radius: 22px;
-  padding: 26px 28px;
+  border-radius: 16px;
+  padding: 16px 18px;
   color: #fff;
-  box-shadow: 0 14px 40px rgba(150, 84, 16, 0.18);
+  box-shadow: 0 10px 26px rgba(150, 84, 16, 0.16);
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
     sans-serif;
@@ -252,91 +252,93 @@ const watchersDisplay = computed(() => {
 .hsc-head {
   display: flex;
   align-items: flex-start;
-  gap: 13px;
+  gap: 10px;
 }
 .hsc-ring {
-  width: 15px;
-  height: 15px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.85);
-  margin-top: 8px;
+  border: 2.5px solid rgba(255, 255, 255, 0.85);
+  margin-top: 7px;
   flex: none;
 }
 .hsc-addr {
-  font-size: 30px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.15;
   color: #fff;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.2px;
 }
 .hsc-meta {
-  font-size: 16px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.82);
-  margin-top: 5px;
+  margin-top: 3px;
 }
 
 .hsc-divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.25);
-  margin: 20px 0;
+  margin: 14px 0;
 }
 
 /* Tiles */
 .hsc-tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 10px;
 }
 .hsc-tile {
   background: rgba(255, 255, 255, 0.1);
   border: 0.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  padding: 16px;
+  border-radius: 12px;
+  padding: 12px;
   text-align: left;
   color: #fff;
 }
 .hsc-tlabel {
-  font-size: 15px;
+  font-size: 11.5px;
+  font-weight: 600;
   color: rgba(255, 255, 255, 0.88);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  letter-spacing: 0.2px;
 }
 .hsc-epc-badge {
   background: #4d7c1f;
   color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  width: 27px;
-  height: 27px;
-  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .hsc-hs-num {
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 600;
 }
 .hsc-hs-num b {
-  font-size: 23px;
+  font-size: 18px;
   font-weight: 700;
 }
 .hsc-hs-num span {
   color: rgba(255, 255, 255, 0.7);
 }
 .hsc-tile-val {
-  margin-top: 12px;
+  margin-top: 8px;
   display: flex;
   align-items: baseline;
-  min-height: 32px;
+  min-height: 24px;
 }
 .hsc-bar {
-  height: 7px;
+  height: 5px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 99px;
   overflow: hidden;
-  margin: 13px 0 11px;
+  margin: 9px 0 7px;
 }
 .hsc-bar i {
   display: block;
@@ -376,63 +378,65 @@ const watchersDisplay = computed(() => {
   .hsc-bar i::after { animation: none; opacity: 0; }
 }
 .hsc-hook {
-  font-size: 14px;
+  font-size: 11.5px;
   color: rgba(255, 255, 255, 0.92);
+  line-height: 1.35;
 }
 
 /* Viewer rows (checked / watching / live interest) */
 .hsc-viewers {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 10px;
   background: rgba(255, 255, 255, 0.1);
   border: 0.5px solid rgba(255, 255, 255, 0.2);
-  border-radius: 14px;
-  padding: 14px 16px;
-  margin-top: 14px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-top: 10px;
 }
 .hsc-idstack {
   display: inline-flex;
   flex: none;
 }
 .hsc-idc {
-  width: 29px;
-  height: 29px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  border: 2.5px solid #c46a14;
+  border: 2px solid #c46a14;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   flex: none;
 }
-.hsc-idc:nth-child(n + 2) { margin-left: -10px; }
+.hsc-idc:nth-child(n + 2) { margin-left: -8px; }
 .hsc-vtxt {
-  font-size: 16px;
+  font-size: 12.5px;
+  line-height: 1.35;
 }
 .hsc-vtxt b { font-weight: 700; }
 .hsc-vtxt span { color: rgba(255, 255, 255, 0.85); }
 
 /* Animated signal-bars variant — shown for published passports. */
-.hsc-viewers--live { gap: 14px; }
+.hsc-viewers--live { gap: 10px; }
 .hsc-live-bars {
   display: inline-flex;
   align-items: flex-end;
-  gap: 3px;
-  height: 18px;
+  gap: 2px;
+  height: 14px;
   flex: none;
 }
 .hsc-live-bar {
-  width: 4px;
+  width: 3px;
   background: #fff;
-  border-radius: 2px;
+  border-radius: 1.5px;
   animation: hscLiveBars 1.2s ease-in-out infinite;
   transform-origin: bottom;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
 }
-.hsc-live-bar:nth-child(1) { height: 7px;  animation-delay: 0s; }
-.hsc-live-bar:nth-child(2) { height: 12px; animation-delay: 0.15s; }
-.hsc-live-bar:nth-child(3) { height: 17px; animation-delay: 0.3s; }
+.hsc-live-bar:nth-child(1) { height: 5px;  animation-delay: 0s; }
+.hsc-live-bar:nth-child(2) { height: 9px;  animation-delay: 0.15s; }
+.hsc-live-bar:nth-child(3) { height: 13px; animation-delay: 0.3s; }
 @keyframes hscLiveBars {
   0%, 100% { transform: scaleY(0.55); opacity: 0.6; }
   50%      { transform: scaleY(1);    opacity: 1; }
