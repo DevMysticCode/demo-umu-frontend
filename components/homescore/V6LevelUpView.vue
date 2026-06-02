@@ -350,34 +350,24 @@ const fireworks = ref<Firework[]>(
   width: 0;
   height: 0;
 }
+/* Real-firework feel: small sparks (5px) with a tight outer glow that
+   shoot outward and fade. Matches the boost-score celebration overlay
+   so the same celebratory visual reads as one motif across the app. */
 .fw-particle {
   position: absolute;
   left: 0;
   top: 0;
-  width: 11px;
-  height: 11px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   opacity: 0;
-  animation: fwBurst 2000ms cubic-bezier(0.12, 0.65, 0.35, 1) infinite;
+  animation: fwBurst 1800ms cubic-bezier(0.12, 0.65, 0.35, 1) infinite;
   will-change: transform, opacity;
 }
 @keyframes fwBurst {
-  0% {
-    transform: translate(0, 0) scale(0.5);
-    opacity: 0;
-  }
-  6% {
-    transform: translate(0, 0) scale(1.5);
-    opacity: 1;
-  }
-  45% {
-    opacity: 1;
-  }
-  62%,
-  100% {
-    transform: translate(var(--tx), var(--ty)) scale(0.4);
-    opacity: 0;
-  }
+  0%   { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .fw-particle {

@@ -18,7 +18,11 @@
             :class="{ sel: chosen === 'seller' }"
             @click="chosen = 'seller'"
           >
-            <div class="choose-ico seller">🏠</div>
+            <!-- House emoji U+1F3E0 — same codepoint the prototype uses
+                 (`&#x1F3E0;`). Rendered through the emoji-font stack on
+                 .choose-ico so it stays colour-emoji on every platform
+                 instead of falling back to a B/W text glyph. -->
+            <div class="choose-ico seller">&#x1F3E0;</div>
             <div class="choose-body">
               <div class="choose-title">Seller passport</div>
               <div class="choose-eyebrow">For selling your home</div>
@@ -38,7 +42,12 @@
             :class="{ sel: chosen === 'landlord' }"
             @click="chosen = 'landlord'"
           >
-            <div class="choose-ico landlord">🛡️</div>
+            <!-- Shield emoji U+1F6E1 + variation-selector-16 (U+FE0F),
+                 same `&#x1F6E1;&#xFE0F;` sequence the prototype uses.
+                 The VS-16 forces the colour-emoji presentation; without
+                 it the shield falls back to a flat text glyph on
+                 Windows / older browsers. -->
+            <div class="choose-ico landlord">&#x1F6E1;&#xFE0F;</div>
             <div class="choose-body">
               <div class="choose-title">Landlord passport</div>
               <div class="choose-eyebrow">For letting your property</div>
@@ -210,10 +219,17 @@ const confirm = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  /* 24px matches the prototype exactly; was 26px before. */
+  font-size: 24px;
   color: white;
   flex-shrink: 0;
   box-shadow: 0 6px 14px rgba(35, 29, 69, 0.18);
+  /* Explicit colour-emoji font stack so the house/shield always render
+     in colour, never as a B/W text glyph (Windows + some Linux distros
+     default to text presentation when the page font is "SF Pro …"). */
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji',
+    'Twemoji Mozilla', sans-serif;
+  line-height: 1;
 }
 .choose-ico.seller {
   background: linear-gradient(135deg, #d9a441, #a9761c);
@@ -237,7 +253,8 @@ const confirm = () => {
   font-weight: 800;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  margin-top: 4px;
+  /* 2px matches the prototype; was 4px before. */
+  margin-top: 2px;
   color: #a9761c;
 }
 .choose-opt.landlord .choose-eyebrow {

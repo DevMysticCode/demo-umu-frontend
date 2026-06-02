@@ -41,7 +41,7 @@
           class="boost-gauge-col"
           :class="g.id"
         >
-          <div class="gauge-emoji">{{ g.emoji }}</div>
+          <!-- <div class="gauge-emoji">{{ g.emoji }}</div> -->
           <div class="boost-gauge-ring">
             <svg viewBox="0 0 90 90">
               <circle cx="45" cy="45" r="36" stroke-width="7" fill="none" />
@@ -100,11 +100,7 @@
     <!-- Completed docs stay in the list as "done" rows so the user can
          see their progress. Only the next-unuploaded card is rendered
          after them; later docs stay hidden until their turn. -->
-    <div
-      v-for="d in completedDocs"
-      :key="d.id"
-      class="boost-row added"
-    >
+    <div v-for="d in completedDocs" :key="d.id" class="boost-row added">
       <div class="boost-row-icon" :class="d.tone">{{ d.icon }}</div>
       <div class="boost-row-info">
         <div class="boost-row-title">{{ d.title }}</div>
@@ -118,7 +114,9 @@
       class="boost-row boost-row--active"
       @click="onAddDoc(currentDoc.id)"
     >
-      <div class="boost-row-icon" :class="currentDoc.tone">{{ currentDoc.icon }}</div>
+      <div class="boost-row-icon" :class="currentDoc.tone">
+        {{ currentDoc.icon }}
+      </div>
       <div class="boost-row-info">
         <div class="boost-row-title">{{ currentDoc.title }}</div>
         <div class="boost-row-sub">{{ currentDoc.sub }}</div>
@@ -143,7 +141,11 @@
          actually verifies, then the next question is revealed when the
          user taps "Next document". -->
     <Teleport to="body">
-      <div v-if="celebrateDoc" class="bcv-overlay" @click.self="dismissCelebrate">
+      <div
+        v-if="celebrateDoc"
+        class="bcv-overlay"
+        @click.self="dismissCelebrate"
+      >
         <div class="bcv-fw-host">
           <div
             v-for="(fw, i) in celebrateFireworks"
@@ -166,9 +168,13 @@
           </div>
         </div>
         <div class="bcv-card">
-          <div class="bcv-ico" :class="celebrateDoc.tone">{{ celebrateDoc.icon }}</div>
+          <div class="bcv-ico" :class="celebrateDoc.tone">
+            {{ celebrateDoc.icon }}
+          </div>
           <div class="bcv-eyebrow">DOCUMENT VERIFIED</div>
-          <div class="bcv-headline">+{{ celebrateDoc.mrDelta }}% Move Ready</div>
+          <div class="bcv-headline">
+            +{{ celebrateDoc.mrDelta }}% Move Ready
+          </div>
           <div class="bcv-subhead">+{{ celebrateDoc.ppDelta }}% Passport</div>
           <div class="bcv-doc-label">{{ celebrateDoc.title }}</div>
           <div class="bcv-impact">{{ celebrateImpact }}</div>
@@ -208,7 +214,9 @@
           <svg viewBox="0 0 90 90" aria-hidden="true">
             <circle cx="45" cy="45" r="38" class="boost-next-ring-track" />
             <circle
-              cx="45" cy="45" r="38"
+              cx="45"
+              cy="45"
+              r="38"
               class="boost-next-ring-fill"
               :stroke-dashoffset="nextRingOffset(moveReadyPct)"
             />
@@ -222,7 +230,9 @@
           <svg viewBox="0 0 90 90" aria-hidden="true">
             <circle cx="45" cy="45" r="38" class="boost-next-ring-track" />
             <circle
-              cx="45" cy="45" r="38"
+              cx="45"
+              cy="45"
+              r="38"
               class="boost-next-ring-fill"
               :stroke-dashoffset="nextRingOffset(passportPct)"
             />
@@ -464,8 +474,11 @@ const gauges = ref<Gauge[]>([
     target: passportPct.value,
     max: 100,
     suffix: '%',
-    gradFrom: '#E5C8FF',
-    gradTo: '#B07AFF',
+    // Passport ring uses white so it reads as a neutral "completion"
+    // metric — distinct from Move Ready (amber) without competing with
+    // HomeScore (teal) for tone weight on the dark navy card.
+    gradFrom: '#ffffff',
+    gradTo: '#e5e7eb',
     animatedValue: 0,
   },
 ])
@@ -548,7 +561,9 @@ function confirmUpload() {
 // section so the user can only act on one thing at a time. Completed
 // docs render above it as muted "✓ Verified" rows so the user can see
 // their progress. Future docs stay hidden until their turn.
-const currentDoc = computed(() => docs.find((d) => !uploadedDocs.value.includes(d.id)) ?? null)
+const currentDoc = computed(
+  () => docs.find((d) => !uploadedDocs.value.includes(d.id)) ?? null,
+)
 const completedDocs = computed(() =>
   docs.filter((d) => uploadedDocs.value.includes(d.id)),
 )
@@ -563,22 +578,25 @@ const isLastDoc = computed(
 const docImpacts: Record<string, string> = {
   bills:
     "We'll cross-check your real spend against your EPC estimate — buyers see the verified figure, not the public one.",
-  gas:
-    'Annual gas safety is on file. Required for any rental and reassures buyers the appliances are checked.',
-  eicr:
-    "Electrical Installation Condition Report verified — covers a survey question solicitors flag every time.",
+  gas: 'Annual gas safety is on file. Required for any rental and reassures buyers the appliances are checked.',
+  eicr: 'Electrical Installation Condition Report verified — covers a survey question solicitors flag every time.',
   boiler:
     'Boiler service history locked in. Tells buyers the heating system is maintained and recent.',
 }
 const celebrateImpact = computed(() => {
   const id = celebrateDoc.value?.id
-  return (id && docImpacts[id]) ||
+  return (
+    (id && docImpacts[id]) ||
     'Document verified and locked into your Property Passport.'
+  )
 })
 
 // Fireworks for the celebration. Lifetime is bounded by the overlay
 // (cleared when the user dismisses or after 6s for the visual ones).
-interface BcvFwParticle { tx: number; ty: number }
+interface BcvFwParticle {
+  tx: number
+  ty: number
+}
 interface BcvFw {
   left: number
   top: number
@@ -586,7 +604,14 @@ interface BcvFw {
   delay: number
   particles: BcvFwParticle[]
 }
-const bcvFwColors = ['#00b8b0', '#f0a030', '#7c6fb0', '#ffd54a', '#ff5e7e', '#5eead4']
+const bcvFwColors = [
+  '#00b8b0',
+  '#f0a030',
+  '#7c6fb0',
+  '#ffd54a',
+  '#ff5e7e',
+  '#5eead4',
+]
 const celebrateFireworks = ref<BcvFw[]>([])
 let celebrateTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -803,12 +828,12 @@ function formatFileSize(bytes: number): string {
 .boost-gauge-col:hover {
   transform: translateY(-2px);
 }
-.gauge-emoji {
+/* .gauge-emoji {
   font-size: 16px;
   line-height: 1;
   margin-bottom: 8px;
   opacity: 0.9;
-}
+} */
 .boost-gauge-ring {
   position: relative;
   width: 88px;
@@ -832,7 +857,7 @@ function formatFileSize(bytes: number): string {
   filter: drop-shadow(0 0 9px rgba(255, 179, 71, 0.7));
 }
 .boost-gauge-col.pp .boost-gauge-ring svg circle:last-of-type {
-  filter: drop-shadow(0 0 9px rgba(208, 160, 255, 0.75));
+  filter: drop-shadow(0 0 9px rgba(255, 255, 255, 0.7));
 }
 .boost-gauge-num {
   position: absolute;
@@ -950,17 +975,22 @@ function formatFileSize(bytes: number): string {
   animation: boostActiveGlow 2.4s ease-in-out infinite;
 }
 @keyframes boostActiveGlow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 6px 18px rgba(0, 161, 154, 0.18);
     border-color: var(--accent-pale);
   }
   50% {
-    box-shadow: 0 6px 22px rgba(0, 161, 154, 0.32), 0 0 0 4px rgba(0, 161, 154, 0.08);
+    box-shadow:
+      0 6px 22px rgba(0, 161, 154, 0.32),
+      0 0 0 4px rgba(0, 161, 154, 0.08);
     border-color: rgba(0, 161, 154, 0.5);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .boost-row--active { animation: none; }
+  .boost-row--active {
+    animation: none;
+  }
 }
 .boost-row.alldone {
   background: linear-gradient(135deg, #fff6d5, var(--card));
@@ -1323,7 +1353,11 @@ function formatFileSize(bytes: number): string {
   pointer-events: none;
   overflow: hidden;
 }
-.bcv-fw { position: absolute; width: 0; height: 0; }
+.bcv-fw {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
 .bcv-fw-particle {
   position: absolute;
   width: 5px;
@@ -1334,12 +1368,22 @@ function formatFileSize(bytes: number): string {
   will-change: transform, opacity;
 }
 @keyframes bcvFwBurst {
-  0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
-  10% { opacity: 1; }
-  100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+  0% {
+    transform: translate(0, 0) scale(0.5);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0.2);
+    opacity: 0;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bcv-fw-particle { animation: none; }
+  .bcv-fw-particle {
+    animation: none;
+  }
 }
 /* The overlay teleports to <body>, so it sits outside .hs-v6-boost and
    the component-level CSS variables (--accent, --text, etc.) don't
@@ -1366,11 +1410,21 @@ function formatFileSize(bytes: number): string {
   place-items: center;
   font-size: 28px;
 }
-.bcv-ico.yellow { background: #fff6d5; }
-.bcv-ico.amber { background: #fce7b5; }
-.bcv-ico.teal { background: #f2faf8; }
-.bcv-ico.violet { background: #f2ebfd; }
-.bcv-ico.green { background: #d4f2e0; }
+.bcv-ico.yellow {
+  background: #fff6d5;
+}
+.bcv-ico.amber {
+  background: #fce7b5;
+}
+.bcv-ico.teal {
+  background: #f2faf8;
+}
+.bcv-ico.violet {
+  background: #f2ebfd;
+}
+.bcv-ico.green {
+  background: #d4f2e0;
+}
 .bcv-eyebrow {
   font-size: 9px;
   font-weight: 800;
@@ -1418,5 +1472,7 @@ function formatFileSize(bytes: number): string {
   letter-spacing: -0.1px;
   box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
 }
-.bcv-continue:hover { filter: brightness(1.06); }
+.bcv-continue:hover {
+  filter: brightness(1.06);
+}
 </style>

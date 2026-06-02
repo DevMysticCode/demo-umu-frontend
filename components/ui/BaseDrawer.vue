@@ -134,13 +134,16 @@ onUnmounted(() => {
   transform: none;
 }
 
-/* Drawer Container */
+/* Drawer Container — constrained to the app's `.mobile-container`
+   max-width (28rem ≈ Tailwind's max-w-md) so the sheet doesn't spill
+   past the chrome on desktop / wider viewports. Centered via the
+   overlay's flex centering above. */
 .drawer {
   background-color: #f3f4f6;
   position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
+  max-width: 28rem;
   max-height: 90vh;
   border-radius: 1rem 1rem 0 0;
   display: flex;

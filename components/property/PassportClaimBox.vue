@@ -298,7 +298,7 @@
 
             <!-- PUBLISHED -->
             <template v-else>
-              <div class="cx-hero amber">
+              <div class="cx-hero purple">
                 <div class="cx-hero-eyebrow">Property Passport™</div>
                 <div class="cx-hero-title">
                   The biggest purchase of your life — and you're doing it blind.
@@ -318,7 +318,7 @@
                   even instructed. <b>⏱ Average sale cut by 6–8 weeks.</b>
                 </div>
               </div>
-              <div class="cx-callout amber">
+              <div class="cx-callout purple">
                 <div class="cx-callout-h">Not just for buying this home</div>
                 <div class="cx-callout-v">
                   The environmental, flood and planning data applies to the
@@ -876,6 +876,11 @@ function onPrimary(action: PrimaryAction) {
 .cx-hero.amber {
   background: linear-gradient(135deg, #f0b460 0%, #d4822a 45%, #7a3a05 100%);
 }
+/* Matches the published state-box gradient (#8b6fe0 → #5b3795 → #3a1f66)
+   so the drawer feels like a continuation of the card you tapped. */
+.cx-hero.purple {
+  background: linear-gradient(135deg, #8b6fe0 0%, #5b3795 45%, #3a1f66 100%);
+}
 .cx-hero-eyebrow {
   font-size: 9px;
   font-weight: 800;
@@ -911,6 +916,13 @@ function onPrimary(action: PrimaryAction) {
 }
 .cx-callout.navy {
   border-left-color: var(--primary);
+}
+.cx-callout.purple {
+  border-left-color: #5b3795;
+  background: #f5f1fc;
+}
+.cx-callout.purple .cx-callout-h {
+  color: #5b3795;
 }
 .cx-callout.amber {
   border-left-color: #d4822a;

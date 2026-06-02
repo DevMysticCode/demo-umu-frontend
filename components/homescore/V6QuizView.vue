@@ -21,8 +21,49 @@
         </span>
       </div>
       <div class="hs-addr-stat-row">
-        <div class="pulse-dot" />
-        <span><span class="hs-addr-stat-count">{{ searchesTodayDisplay }}</span> checked this HomeScore today</span>
+        <span class="hs-live-pill">
+          <span class="hs-live-dot" aria-hidden="true" />
+          <span class="hs-live-text">
+            <b>{{ searchesTodayDisplay }}</b> checked this HomeScore today
+          </span>
+        </span>
+      </div>
+      <!-- Published passports get a "Live interest" signal-bars pill —
+           it reads as live activity ("people are tracking THIS verified
+           record") rather than the more passive "watching" stat we show
+           for unclaimed / in-progress homes. -->
+      <div v-if="passportState === 'published'" class="hs-addr-stat-row">
+        <span class="hs-live-pill">
+          <span class="hs-live-bars" aria-hidden="true">
+            <span class="hs-live-bar" />
+            <span class="hs-live-bar" />
+            <span class="hs-live-bar" />
+          </span>
+          <span class="hs-live-text">
+            <b>Live interest.</b> People are tracking this passport.
+          </span>
+        </span>
+      </div>
+      <div v-else class="hs-addr-stat-row">
+        <span class="hs-live-pill">
+          <svg
+            class="hs-addr-stat-eye"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <span class="hs-live-text">
+            <b>{{ watchersDisplay }}</b>
+            {{ watchersCount === 1 ? 'is' : 'are' }} watching this property
+          </span>
+        </span>
       </div>
     </div>
 
@@ -315,6 +356,8 @@ interface Props {
   epcYear?: number | null
   /** Real searches today from PropertySearchLog (for the views row). */
   searchesToday?: number
+  /** Number of users watching this property (wishlist + saved). */
+  watchersCount?: number
   /** Passport status — drives the claim box, same as the score screen. */
   passportState?: 'unclaimed' | 'inProgress' | 'published'
   passportProgressPct?: number
@@ -325,6 +368,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   epcYear: null,
   searchesToday: 0,
+  watchersCount: 0,
   passportState: 'unclaimed',
   passportProgressPct: 0,
   passportSectionsDone: 0,
@@ -346,6 +390,10 @@ const SHOW_BILL_UPLOAD = false
 
 const searchesTodayDisplay = computed(() => {
   const n = props.searchesToday ?? 0
+  return `${n} ${n === 1 ? 'person' : 'people'}`
+})
+const watchersDisplay = computed(() => {
+  const n = props.watchersCount ?? 0
   return `${n} ${n === 1 ? 'person' : 'people'}`
 })
 
@@ -887,6 +935,7 @@ watch(() => props.initialScore, (v) => {
   margin-top: 14px;
   flex-wrap: wrap;
 }
+.hs-addr-stat-row + .hs-addr-stat-row { margin-top: 6px; }
 .hs-addr-stat-row .pulse-dot {
   width: 6px;
   height: 6px;
@@ -897,6 +946,65 @@ watch(() => props.initialScore, (v) => {
 .hs-addr-stat-count {
   font-weight: 800;
   color: white;
+}
+
+/* Pill background — matches V6ScoreView so both surfaces (results + quiz)
+   share the exact same social-proof treatment. */
+.hs-addr-stat-row .hs-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+.hs-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5eead4;
+  box-shadow: 0 0 8px rgba(94, 234, 212, 0.7);
+  flex-shrink: 0;
+}
+.hs-live-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.hs-live-bar {
+  width: 3px;
+  background: #fff;
+  border-radius: 1.5px;
+  animation: hsLiveBars 1.2s ease-in-out infinite;
+  transform-origin: bottom;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.55);
+}
+.hs-live-bar:nth-child(1) { height: 5px;  animation-delay: 0s; }
+.hs-live-bar:nth-child(2) { height: 9px;  animation-delay: 0.15s; }
+.hs-live-bar:nth-child(3) { height: 13px; animation-delay: 0.3s; }
+@keyframes hsLiveBars {
+  0%, 100% { transform: scaleY(0.55); opacity: 0.55; }
+  50%      { transform: scaleY(1);    opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-live-bar { animation: none; transform: scaleY(1); opacity: 0.9; }
+}
+.hs-live-text {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: -0.05px;
+  line-height: 1.25;
+}
+.hs-live-text b { font-weight: 800; }
+.hs-addr-stat-row .hs-addr-stat-eye {
+  width: 15px;
+  height: 15px;
+  color: #ffffff;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
 }
 
 /* Score card */
