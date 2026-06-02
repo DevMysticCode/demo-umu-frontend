@@ -117,6 +117,15 @@
 
         <!-- COMPLIANCE -->
         <div v-show="activeTab === 'compliance'">
+          <!-- List / Map view toggle — uses the same SegmentedSwitch the
+               seller passport uses, so both passport types feel like the
+               same product. -->
+          <div class="lp-view-toggle">
+            <SegmentedSwitch v-model="complianceView" :options="viewOptions" />
+          </div>
+
+          <!-- LIST VIEW (existing grouped sections) -->
+          <template v-if="complianceView === 'list'">
           <template v-for="group in complianceGroups" :key="group.label">
             <div v-if="group.sections.length > 0" class="section-heading">{{ group.label }}</div>
             <button
@@ -128,7 +137,11 @@
               @click="openSection(section)"
             >
               <div class="lp-sec-icon" :class="`lp-sec-icon--${cardData(section).tone}`">
-                {{ iconForSection(section.key) }}
+                <img
+                  :src="iconUrlForSection(section.key)"
+                  :alt="section.title"
+                  class="lp-sec-icon-img"
+                />
               </div>
               <div class="lp-sec-content">
                 <div class="lp-sec-row-top">
@@ -182,7 +195,11 @@
               @click="openSection(section)"
             >
               <div class="lp-sec-icon" :class="`lp-sec-icon--${cardData(section).tone}`">
-                {{ iconForSection(section.key) }}
+                <img
+                  :src="iconUrlForSection(section.key)"
+                  :alt="section.title"
+                  class="lp-sec-icon-img"
+                />
               </div>
               <div class="lp-sec-content">
                 <div class="lp-sec-row-top">
@@ -211,6 +228,17 @@
               </div>
             </button>
           </template>
+          </template>
+
+          <!-- MAP VIEW — landlord-specific clone of PassportMapView.
+               Same isometric path, roads, decorations and walking-lady
+               as the seller's map; only the section icons are swapped
+               for the rental-passport SVG set. -->
+          <LandlordPassportMapView
+            v-else
+            :sections="allComplianceSections"
+            @open-section="openSection"
+          />
         </div>
 
         <!-- VAULT -->
@@ -261,7 +289,11 @@
             @click="openSection(section)"
           >
             <div class="lp-sec-icon" :class="`lp-sec-icon--${cardData(section).tone}`">
-              {{ iconForSection(section.key) }}
+              <img
+                :src="iconUrlForSection(section.key)"
+                :alt="section.title"
+                class="lp-sec-icon-img"
+              />
             </div>
             <div class="lp-sec-content">
               <div class="lp-sec-row-top">
@@ -511,6 +543,8 @@
 import { useRoute } from 'vue-router'
 import { usePassportClaim } from '~/composables/usePassportClaim'
 import PassportCard from '~/components/passport-view/PassportCard.vue'
+import LandlordPassportMapView from '~/components/passport-view/LandlordPassportMapView.vue'
+import SegmentedSwitch from '~/components/core/SegmentedSwitch.vue'
 
 definePageMeta({ title: 'Landlord Passport — UmovingU', middleware: 'auth' })
 
@@ -526,6 +560,13 @@ const sections = ref<any[]>([])
 const siblingSellerId = ref<string | null>(null)
 
 const activeTab = ref<'compliance' | 'vault' | 'tenancy'>('compliance')
+// List vs map view for the Compliance tab — mirrors the seller passport
+// pattern, including the same SegmentedSwitch options shape.
+const complianceView = ref<'list' | 'map'>('list')
+const viewOptions = [
+  { label: 'List', value: 'list', icon: 'list' },
+  { label: 'Map', value: 'map', icon: 'map' },
+]
 
 const showConvertModal = ref(false)
 const converting = ref(false)
@@ -593,6 +634,16 @@ const complianceGroups = computed(() => [
   { label: 'Statutory — annual / 5-yearly', sections: safetySections.value },
   { label: 'Tenancy & deposit', sections: tenancySections.value },
   { label: 'Insurance & HMO', sections: insuranceSections.value },
+])
+
+// Flat list across all groups (in group order) for the map view, plus
+// the ungrouped fallback so nothing is hidden when the map is the
+// active view.
+const allComplianceSections = computed(() => [
+  ...safetySections.value,
+  ...tenancySections.value,
+  ...insuranceSections.value,
+  ...ungroupedSections.value,
 ])
 
 // ── Stats ─────────────────────────────────────────────────────────
@@ -694,22 +745,26 @@ const transferDocs = [
   { label: 'Tenant disclosure data', meta: 'from AST' },
 ]
 
-function iconForSection(key: string): string {
+// Map a section key to one of the rental-passport icon slugs. Falls back
+// to `tenancy-agreement` (a generic document) when nothing matches — the
+// only sections without a dedicated icon are uncommon edge cases.
+function iconSlugForSection(key: string): string {
   const k = key.toLowerCase()
-  if (k.includes('gas')) return '🔥'
-  if (k.includes('eicr') || k.includes('electric')) return '⚡'
-  if (k.includes('epc') || k.includes('energy')) return '🌿'
-  if (k.includes('alarm') || k.includes('smoke')) return '🔔'
-  if (k.includes('legionella')) return '💧'
-  if (k.includes('insurance')) return '🛡️'
-  if (k.includes('ast') || k.includes('tenancy')) return '📜'
-  if (k.includes('deposit')) return '£'
-  if (k.includes('right_to_rent') || k.includes('rtr')) return '🪪'
-  if (k.includes('how_to_rent')) return '📘'
-  if (k.includes('inventory')) return '📋'
-  if (k.includes('pat')) return '🔌'
-  if (k.includes('hmo')) return '🏠'
-  return '📄'
+  if (k.includes('gas')) return 'gas-safety'
+  if (k.includes('eicr') || k.includes('electric') || k.includes('pat')) return 'electrical-safety'
+  if (k.includes('epc') || k.includes('energy')) return 'energy-performance'
+  if (k.includes('alarm') || k.includes('smoke') || k.includes('co_')) return 'smoke-co-alarms'
+  if (k.includes('legionella')) return 'legionella'
+  if (k.includes('insurance')) return 'landlord-insurance'
+  if (k.includes('deposit')) return 'deposit-protection'
+  if (k.includes('right_to_rent') || k.includes('rtr')) return 'right-to-rent'
+  if (k.includes('how_to_rent')) return 'how-to-rent'
+  if (k.includes('inventory')) return 'inventory'
+  if (k.includes('ast') || k.includes('tenancy')) return 'tenancy-agreement'
+  return 'tenancy-agreement'
+}
+function iconUrlForSection(key: string, variant: 'freestanding' | 'map' = 'freestanding'): string {
+  return `/op-icons/rental-passport/${variant}/${iconSlugForSection(key)}.svg`
 }
 
 // ── Section drawer (upload / view / replace certificate) ───────
@@ -1391,6 +1446,17 @@ const SectionCard = defineComponent({
 }
 .lp-tab:not(.active) .lp-tab-count { background: #f0f2f1; color: #4a5868; }
 
+/* List / Map view toggle wrapper — matches `.view-toggle` on the
+   seller passport page so the SegmentedSwitch lays out identically. */
+.lp-view-toggle {
+  display: flex;
+  gap: 16px;
+  margin: 12px auto 16px;
+  padding: 0 22px;
+  position: relative;
+  z-index: 1;
+}
+
 /* Section heading */
 .section-heading {
   font-size: 10.5px;
@@ -1432,6 +1498,13 @@ const SectionCard = defineComponent({
   justify-content: center;
   flex-shrink: 0;
   font-size: 26px;
+  overflow: hidden;
+}
+.lp-sec-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
   box-shadow: inset 0 0 0 1px rgba(31, 122, 102, 0.1);
 }
 .lp-sec-icon--good { background: linear-gradient(135deg, #f1f9f4, #d6efe2); box-shadow: inset 0 0 0 1px rgba(61, 189, 163, 0.25); }
