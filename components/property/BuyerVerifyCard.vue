@@ -157,18 +157,17 @@ function onEdit() { emit('edit-profile') }
 </script>
 
 <style scoped>
-/* Palette ported from prisma/{verified-buyer-card,buyer-card-unverified}.html
-   — kept colors literal so the card matches the prototype 1:1.
-   Side margins live on the card itself so every consumer (homescore
-   buyer-results screen, property report) gets the same breathing room
-   without needing to wrap it in their own container. */
+/* Palette ported from prisma/{verified-buyer-card,buyer-card-unverified}.html.
+   Sizes scaled down from the prototype's 560px frame to match the app's
+   ~28rem card rhythm, so the buyer card sits flush with neighbouring
+   cards instead of dwarfing them. */
 .vb-card {
   box-sizing: border-box;
   width: auto;
-  max-width: 560px;
+  max-width: 100%;
   background: #221d44;
   border-radius: 16px;
-  padding: 24px;
+  padding: 16px 18px;
   color: #e9e7f5;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   margin: 14px 20px 0;
@@ -178,68 +177,71 @@ function onEdit() { emit('edit-profile') }
 .vb-badge {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  letter-spacing: 1px;
-  font-weight: 500;
+  gap: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.8px;
+  font-weight: 600;
   color: #c9c4e8;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
-.vb-badge__icon { font-size: 16px; }
+.vb-badge__icon { font-size: 13px; }
 .vb-badge__sep { color: #6f689c; }
 .vb-badge__price { color: #c9c4e8; }
 .vb-badge__active { color: #5dcaa5; }
 
 .vb-title {
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
   color: #ffffff;
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   line-height: 1.2;
+  letter-spacing: -0.2px;
 }
 .vb-lede {
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 12.5px;
+  line-height: 1.5;
   color: #c4bfe0;
-  margin: 0 0 20px;
+  margin: 0 0 14px;
 }
 
 .vb-benefit {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-start;
   background: #2c2657;
   border-radius: 10px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
 }
-.vb-benefit:last-of-type { margin-bottom: 20px; }
+.vb-benefit:last-of-type { margin-bottom: 14px; }
 .vb-benefit__icon {
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.3;
   flex: 0 0 auto;
 }
 .vb-benefit__icon--amber { color: #f0b84a; }
 .vb-benefit__icon--teal { color: #5dcaa5; }
 .vb-benefit__head {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 600;
   color: #ffffff;
+  line-height: 1.3;
 }
 .vb-benefit__sub {
-  font-size: 13px;
+  font-size: 11.5px;
   color: #b3aed6;
-  line-height: 1.5;
+  line-height: 1.45;
+  margin-top: 2px;
 }
 
 .vb-btn {
   width: 100%;
-  font-size: 16px;
-  font-weight: 500;
-  padding: 16px;
-  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border: none;
   transition: opacity 0.15s ease, background 0.15s ease;
   font-family: inherit;
@@ -254,8 +256,8 @@ function onEdit() { emit('edit-profile') }
   border: 0.5px solid #4a4480;
   background: transparent;
   color: #d8d4ef;
-  font-size: 15px;
-  padding: 13px;
+  font-size: 12.5px;
+  padding: 10px;
 }
 .vb-btn--ghost:hover { background: #2c2657; }
 </style>
