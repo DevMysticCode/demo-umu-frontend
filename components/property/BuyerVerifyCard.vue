@@ -20,7 +20,11 @@
       </p>
 
       <div class="vb-benefit">
-        <span class="vb-benefit__icon vb-benefit__icon--amber" aria-hidden="true">↑</span>
+        <span
+          class="vb-benefit__icon vb-benefit__icon--amber"
+          aria-hidden="true"
+          >↑</span
+        >
         <div>
           <div class="vb-benefit__head">First in the queue</div>
           <div class="vb-benefit__sub">
@@ -30,9 +34,13 @@
       </div>
 
       <div class="vb-benefit">
-        <span class="vb-benefit__icon vb-benefit__icon--teal" aria-hidden="true">✓</span>
+        <span class="vb-benefit__icon vb-benefit__icon--teal" aria-hidden="true"
+          >✓</span
+        >
         <div>
-          <div class="vb-benefit__head">Passport unlocked — free on day one</div>
+          <div class="vb-benefit__head">
+            Passport unlocked — free on day one
+          </div>
           <div class="vb-benefit__sub">
             It's yours free when you start viewing — no £35 charge.
           </div>
@@ -58,12 +66,16 @@
 
       <h2 class="vb-title">Be viewing-ready before anyone else.</h2>
       <p class="vb-lede">
-        Owners building a Passport are choosing who to sell to. Get verified
-        and here's what you unlock.
+        Owners building a Passport are choosing who to sell to. Get verified and
+        here's what you unlock.
       </p>
 
       <div class="vb-benefit">
-        <span class="vb-benefit__icon vb-benefit__icon--amber" aria-hidden="true">↑</span>
+        <span
+          class="vb-benefit__icon vb-benefit__icon--amber"
+          aria-hidden="true"
+          >↑</span
+        >
         <div>
           <div class="vb-benefit__head">Go to the front of the queue</div>
           <div class="vb-benefit__sub">
@@ -73,7 +85,9 @@
       </div>
 
       <div class="vb-benefit">
-        <span class="vb-benefit__icon vb-benefit__icon--teal" aria-hidden="true">✓</span>
+        <span class="vb-benefit__icon vb-benefit__icon--teal" aria-hidden="true"
+          >✓</span
+        >
         <div>
           <div class="vb-benefit__head">Get your Passport free on day one</div>
           <div class="vb-benefit__sub">
@@ -83,16 +97,26 @@
       </div>
 
       <div class="vb-benefit">
-        <span class="vb-benefit__icon vb-benefit__icon--amber" aria-hidden="true">★</span>
+        <span
+          class="vb-benefit__icon vb-benefit__icon--amber"
+          aria-hidden="true"
+          >★</span
+        >
         <div>
-          <div class="vb-benefit__head">3× more likely to have an offer accepted</div>
+          <div class="vb-benefit__head">
+            3× more likely to have an offer accepted
+          </div>
           <div class="vb-benefit__sub">
             Owners favour verified buyers, so your offers land more often.
           </div>
         </div>
       </div>
 
-      <button type="button" class="vb-btn vb-btn--primary vb-btn--cta" @click="onStart">
+      <button
+        type="button"
+        class="vb-btn vb-btn--primary vb-btn--cta"
+        @click="onStart"
+      >
         ✓ See what verification gets you →
       </button>
     </template>
@@ -135,9 +159,12 @@ async function loadState() {
   }
   try {
     const config = useRuntimeConfig()
-    const profile = await $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const profile = await $fetch<any>(
+      `${config.public.apiBase}/buyer-profile`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
     // Profile counts as "active / verified" only once it's been published.
     // A draft profile that exists but isn't published still shows the
     // unverified card (the user has more to do).
@@ -151,9 +178,15 @@ onMounted(loadState)
 
 const firstName = computed(() => props.firstName ?? null)
 
-function onStart() { emit('start-verification') }
-function onView() { emit('view-profile') }
-function onEdit() { emit('edit-profile') }
+function onStart() {
+  emit('start-verification')
+}
+function onView() {
+  emit('view-profile')
+}
+function onEdit() {
+  emit('edit-profile')
+}
 </script>
 
 <style scoped>
@@ -169,10 +202,14 @@ function onEdit() { emit('edit-profile') }
   border-radius: 16px;
   padding: 16px 18px;
   color: #e9e7f5;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
   margin: 14px 20px 0;
 }
-.vb-card * { box-sizing: border-box; }
+.vb-card * {
+  box-sizing: border-box;
+}
 
 .vb-badge {
   display: flex;
@@ -184,10 +221,18 @@ function onEdit() { emit('edit-profile') }
   color: #c9c4e8;
   margin-bottom: 12px;
 }
-.vb-badge__icon { font-size: 13px; }
-.vb-badge__sep { color: #6f689c; }
-.vb-badge__price { color: #c9c4e8; }
-.vb-badge__active { color: #5dcaa5; }
+.vb-badge__icon {
+  font-size: 13px;
+}
+.vb-badge__sep {
+  color: #6f689c;
+}
+.vb-badge__price {
+  color: #c9c4e8;
+}
+.vb-badge__active {
+  color: #5dcaa5;
+}
 
 .vb-title {
   font-size: 17px;
@@ -213,14 +258,20 @@ function onEdit() { emit('edit-profile') }
   padding: 10px 12px;
   margin-bottom: 8px;
 }
-.vb-benefit:last-of-type { margin-bottom: 14px; }
+.vb-benefit:last-of-type {
+  margin-bottom: 14px;
+}
 .vb-benefit__icon {
   font-size: 14px;
   line-height: 1.3;
   flex: 0 0 auto;
 }
-.vb-benefit__icon--amber { color: #f0b84a; }
-.vb-benefit__icon--teal { color: #5dcaa5; }
+.vb-benefit__icon--amber {
+  color: #f0b84a;
+}
+.vb-benefit__icon--teal {
+  color: #5dcaa5;
+}
 .vb-benefit__head {
   font-size: 12.5px;
   font-weight: 600;
@@ -243,15 +294,21 @@ function onEdit() { emit('edit-profile') }
   cursor: pointer;
   margin-bottom: 8px;
   border: none;
-  transition: opacity 0.15s ease, background 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease;
   font-family: inherit;
 }
-.vb-btn:last-child { margin-bottom: 0; }
+.vb-btn:last-child {
+  margin-bottom: 0;
+}
 .vb-btn--primary {
-  background: #0f9e78;
+  background: #00a19a;
   color: #ffffff;
 }
-.vb-btn--primary:hover { background: #0d8a69; }
+.vb-btn--primary:hover {
+  background: #0d8a69;
+}
 .vb-btn--ghost {
   border: 0.5px solid #4a4480;
   background: transparent;
@@ -259,5 +316,7 @@ function onEdit() { emit('edit-profile') }
   font-size: 12.5px;
   padding: 10px;
 }
-.vb-btn--ghost:hover { background: #2c2657; }
+.vb-btn--ghost:hover {
+  background: #2c2657;
+}
 </style>
