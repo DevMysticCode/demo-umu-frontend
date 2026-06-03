@@ -3782,6 +3782,12 @@ function startQuestions() {
     (q) => !(answers.value as Record<string, string>)[q.id],
   )
   step.value = firstUnanswered >= 0 ? firstUnanswered : 0
+  // Push the current screen (landing / results) so back from the quiz
+  // returns there reliably. Watcher dedupes if it also fires.
+  if (screen.value && screen.value !== 'loading' && screen.value !== 'questions') {
+    const last = screenHistory.value[screenHistory.value.length - 1]
+    if (last !== screen.value) screenHistory.value.push(screen.value)
+  }
   screen.value = 'questions'
 }
 

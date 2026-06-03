@@ -232,12 +232,12 @@ const confirm = () => {
   /* Soft drop-shadow so the passport "lifts" off the card without
      needing the old amber/green gradient tile underneath. The PNG
      covers are colourful on their own. */
-  box-shadow: 0 6px 14px rgba(35, 29, 69, 0.18);
+  /*box-shadow: 0 6px 14px rgba(35, 29, 69, 0.18); */
   overflow: hidden;
   background: transparent;
 }
 .choose-ico-img {
-  width: 100%;
+  /* width: 100%; */
   height: 100%;
   object-fit: cover;
   display: block;

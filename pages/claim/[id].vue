@@ -1903,14 +1903,14 @@ async function issuePassport() {
 /* ── Bottom CTA bar ──────────────────────────────── */
 .cl-cta-bar {
   position: fixed;
-  left: 50%;
   bottom: 0;
-  transform: translateX(-50%);
-  width: 100%;
-  /* Match the .mobile-container max-width (28rem = max-w-md) so the
-     CTA bar never spills past the app frame on wider viewports. The
-     button inside is width: 100% which now means "100% of the app",
-     not "100% of the viewport". */
+  /* `left: 0; right: 0` + `margin: 0 auto` centres the fixed bar within
+     the viewport and caps it at the app's max width. More robust on
+     Safari than `left: 50%; transform: translateX(-50%)` which can
+     mis-render with width:100% on a fixed element. */
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   max-width: 28rem;
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
   background: #fff;
