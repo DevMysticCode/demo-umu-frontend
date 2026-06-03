@@ -571,27 +571,94 @@
       </div>
     </div>
 
-    <!-- ── FORK SECTION (owner / interested) ───────────────────────── -->
+    <!-- ── FORK SECTION ───────────────────────────────────────────────
+         Three branches driven by auth + ownership, per
+         prisma/two-pieces.html:
+         • Guest                   → "I own" + "I'm interested" (legacy)
+         • Logged-in, IS the owner → Dashboard / Pathway / Boost /
+                                       Get Real HomeScore (returning-owner block)
+         • Logged-in, NOT owner    → only "I'm interested" — no "I own
+                                       this property" because we know
+                                       from the auth state they don't. -->
     <div class="fork-section anim-3" data-tour="intent">
-      <div class="fork-eyebrow">What's your connection to this property?</div>
-      <div class="fork-options">
-        <button class="fork-opt primary" type="button" @click="$emit('claim')">
-          <div class="fork-opt-icon">🏠</div>
-          <div class="fork-opt-body">
-            <div class="fork-opt-title">I own this property</div>
-            <div class="fork-opt-sub">Take the quiz to level up your stats and get your real score.</div>
-          </div>
-          <div class="fork-opt-chev">›</div>
-        </button>
-        <button class="fork-opt" type="button" @click="$emit('interested')">
-          <div class="fork-opt-icon">🔍</div>
-          <div class="fork-opt-body">
-            <div class="fork-opt-title">I'm interested in this property</div>
-            <div class="fork-opt-sub">Full running costs, risks and questions to ask before you offer.</div>
-          </div>
-          <div class="fork-opt-chev">›</div>
-        </button>
-      </div>
+      <!-- Logged-in owner — four destinations -->
+      <template v-if="isPropertyOwner">
+        <div class="fork-eyebrow">Pick up where you left off</div>
+        <div class="fork-options">
+          <button class="fork-opt primary" type="button" @click="$emit('open-dashboard')">
+            <div class="fork-opt-icon">📊</div>
+            <div class="fork-opt-body">
+              <div class="fork-opt-title">Go to your dashboard</div>
+              <div class="fork-opt-sub">Your home base — Passport, docs &amp; everything in one place.</div>
+            </div>
+            <div class="fork-opt-chev">›</div>
+          </button>
+          <button class="fork-opt" type="button" @click="$emit('open-pathway')">
+            <div class="fork-opt-icon">🎯</div>
+            <div class="fork-opt-body">
+              <div class="fork-opt-title">Your pathway</div>
+              <div class="fork-opt-sub">Keep climbing your HomeScore.</div>
+            </div>
+            <div class="fork-opt-chev">›</div>
+          </button>
+          <button class="fork-opt" type="button" @click="$emit('open-boost')">
+            <div class="fork-opt-icon">⚡</div>
+            <div class="fork-opt-body">
+              <div class="fork-opt-title">Boost your score</div>
+              <div class="fork-opt-sub">Add docs to grow your Move Ready &amp; Passport.</div>
+            </div>
+            <div class="fork-opt-chev">›</div>
+          </button>
+          <button class="fork-opt" type="button" @click="$emit('refine')">
+            <div class="fork-opt-icon">📈</div>
+            <div class="fork-opt-body">
+              <div class="fork-opt-title">Get Real HomeScore</div>
+              <div class="fork-opt-sub">Answer the owner quiz to lock in your verified score.</div>
+            </div>
+            <div class="fork-opt-chev">›</div>
+          </button>
+        </div>
+      </template>
+
+      <!-- Logged-in non-owner — only the buyer-side option. The "I own
+           this property" CTA is hidden because the auth state already
+           tells us they don't. -->
+      <template v-else-if="isLoggedIn">
+        <div class="fork-eyebrow">What you can do here</div>
+        <div class="fork-options">
+          <button class="fork-opt primary" type="button" @click="$emit('interested')">
+            <div class="fork-opt-icon">🔍</div>
+            <div class="fork-opt-body">
+              <div class="fork-opt-title">I'm interested in this property</div>
+              <div class="fork-opt-sub">Full running costs, risks and questions to ask before you offer.</div>
+            </div>
+            <div class="fork-opt-chev">›</div>
+          </button>
+        </div>
+      </template>
+
+      <!-- Guest — keep the existing fork (claim flow auth-gates on tap). -->
+      <template v-else>
+        <div class="fork-eyebrow">What's your connection to this property?</div>
+        <div class="fork-options">
+          <button class="fork-opt primary" type="button" @click="$emit('claim')">
+            <div class="fork-opt-icon">🏠</div>
+            <div class="fork-opt-body">
+              <div class="fork-opt-title">I own this property</div>
+              <div class="fork-opt-sub">Take the quiz to level up your stats and get your real score.</div>
+            </div>
+            <div class="fork-opt-chev">›</div>
+          </button>
+          <button class="fork-opt" type="button" @click="$emit('interested')">
+            <div class="fork-opt-icon">🔍</div>
+            <div class="fork-opt-body">
+              <div class="fork-opt-title">I'm interested in this property</div>
+              <div class="fork-opt-sub">Full running costs, risks and questions to ask before you offer.</div>
+            </div>
+            <div class="fork-opt-chev">›</div>
+          </button>
+        </div>
+      </template>
     </div>
     </template><!-- /hasEpcData -->
 
@@ -695,6 +762,10 @@ const props = withDefaults(
     /** Set by parent to auto-pop the claim drawer (e.g. when the user
      *  has just returned from sign-in with ?claim=1) */
     autoOpenClaim?: boolean
+    /** Auth + ownership flags — drive the fork-section branching at the
+     *  bottom of the score view (guest / owner / non-owner). */
+    isLoggedIn?: boolean
+    isPropertyOwner?: boolean
   }>(),
   {
     potentialSaving: 445,
@@ -710,6 +781,8 @@ const props = withDefaults(
     passportSectionsDone: 0,
     passportSectionsTotal: 0,
     autoOpenClaim: false,
+    isLoggedIn: false,
+    isPropertyOwner: false,
   },
 )
 
@@ -779,6 +852,10 @@ const emit = defineEmits<{
   /** Fires when the user dismisses the claim modal so the parent can
    *  clear the ?claim=1 auto-open intent and not re-trigger on remount. */
   (e: 'claim-modal-closed'): void
+  /** Owner fork: opens the user's passport / dashboard. */
+  (e: 'open-dashboard'): void
+  /** Owner fork: opens the boost-your-score flow. */
+  (e: 'open-boost'): void
 }>()
 
 // Unique id for the SVG gradient so multiple instances on a page don't

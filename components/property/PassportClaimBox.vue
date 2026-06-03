@@ -78,31 +78,33 @@
       </div>
     </button>
 
+    <!-- Published-passport "champagne band" — animated gold conic-gradient
+         border + sheen sweep, ported from prisma/published-band-standalone.html.
+         The card itself is white so the verified record feels premium /
+         document-like, distinct from the dark unclaimed and in-progress
+         bands. -->
     <button
       v-else-if="!headless"
-      class="pcb-box"
+      class="pcb-pubwrap"
       type="button"
-      style="
-        background: linear-gradient(
-          135deg,
-          #8b6fe0 0%,
-          #5b3795 45%,
-          #3a1f66 100%
-        );
-      "
       @click="openSheet = 'published'"
     >
-      <div class="pcb-left">
-        <div class="pcb-main">This property has a published Passport</div>
-        <div class="pcb-sub">
-          Gain access to the full verified record — certificates, history &amp;
-          more.
+      <div class="pcb-pub">
+        <div class="pcb-pub-body">
+          <div class="pcb-pub-title">This property has a published Passport</div>
+          <div class="pcb-pub-sub">
+            Gain access to the full verified record — certificates, history
+            &amp; more.
+          </div>
+          <span class="pcb-pub-inside" @click.stop="openSheet = 'published'">
+            What's inside the Passport? <span class="pcb-pub-q">?</span>
+          </span>
         </div>
-        <span class="pcb-explain" @click.stop="openSheet = 'published'">
-          What's inside the Passport? <span class="pcb-q">?</span>
-        </span>
+        <div class="pcb-pub-price">
+          <span class="pcb-pub-amt">£99</span>
+          <span class="pcb-pub-arrow">→</span>
+        </div>
       </div>
-      <div class="pcb-right">£99 →</div>
     </button>
 
     <!-- ── Explainer drawers ─────────────────────────────────────── -->
@@ -780,6 +782,150 @@ function onPrimary(action: PrimaryAction) {
   flex-shrink: 0;
   letter-spacing: -0.5px;
 }
+
+/* ── Published "champagne band" ──────────────────────────────────
+   White card framed by a spinning gold conic-gradient border + sheen
+   sweep. Mirrors prisma/published-band-standalone.html so the verified
+   passport reads as a premium, document-like surface — distinct from
+   the dark unclaimed / in-progress bands. */
+.pcb-pubwrap {
+  position: relative;
+  width: 100%;
+  border-radius: 18px;
+  padding: 2px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 12px 30px rgba(193, 138, 56, 0.16);
+}
+.pcb-pubwrap::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(
+    from 0deg,
+    #c9a052,
+    #c9a052 58%,
+    #f6e0a6 70%,
+    #ffffff 75%,
+    #f6e0a6 80%,
+    #c9a052 92%,
+    #c9a052
+  );
+  animation: pcbPubSpin 4.6s linear infinite;
+}
+@keyframes pcbPubSpin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcb-pubwrap::before { animation: none; }
+}
+.pcb-pub {
+  position: relative;
+  z-index: 1;
+  border-radius: 16px;
+  background: #fff;
+  padding: 13px 18px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+.pcb-pub::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(216, 178, 96, 0.2),
+    transparent
+  );
+  transform: translateX(-220%) skewX(-18deg);
+  animation: pcbPubSheen 5.6s ease-in-out 1.6s infinite;
+}
+@keyframes pcbPubSheen {
+  0%        { transform: translateX(-220%) skewX(-18deg); }
+  24%, 100% { transform: translateX(360%)  skewX(-18deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcb-pub::after { animation: none; }
+}
+.pcb-pub-body {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+}
+.pcb-pub-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.1px;
+  line-height: 1.2;
+}
+.pcb-pub-sub {
+  font-size: 11.5px;
+  color: #6b6a82;
+  line-height: 1.4;
+  margin-top: 5px;
+}
+.pcb-pub-inside {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 7px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #231d45;
+  cursor: pointer;
+}
+.pcb-pub-q {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #faeeda;
+  color: #9a6f22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  flex: none;
+}
+.pcb-pub-price {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+.pcb-pub-amt {
+  font-size: 28px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.6px;
+}
+.pcb-pub-arrow {
+  font-size: 24px;
+  font-weight: 700;
+  color: #231d45;
+  animation: pcbPubNudge 1.6s ease-in-out infinite;
+}
+@keyframes pcbPubNudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcb-pub-arrow { animation: none; }
+}
 .pcb-ring {
   position: relative;
   width: 46px;
@@ -892,10 +1038,21 @@ function onPrimary(action: PrimaryAction) {
 .cx-hero.amber {
   background: linear-gradient(135deg, #f0b460 0%, #d4822a 45%, #7a3a05 100%);
 }
-/* Matches the published state-box gradient (#8b6fe0 → #5b3795 → #3a1f66)
-   so the drawer feels like a continuation of the card you tapped. */
+/* Champagne / gold drawer hero — same palette as the published band on
+   the card so the drawer reads as a continuation of the surface you
+   tapped. Dark text on a warm gold base to keep the "premium document"
+   feel; the band itself is white-on-gold-border, the drawer hero is
+   gold-on-gold for visual depth. */
 .cx-hero.purple {
-  background: linear-gradient(135deg, #8b6fe0 0%, #5b3795 45%, #3a1f66 100%);
+  background: linear-gradient(135deg, #f6e0a6 0%, #c9a052 55%, #9a6f22 100%);
+  color: #231d45;
+}
+.cx-hero.purple .cx-hero-eyebrow {
+  color: rgba(35, 29, 69, 0.7);
+}
+.cx-hero.purple .cx-hero-title,
+.cx-hero.purple .cx-hero-sub {
+  color: #231d45;
 }
 .cx-hero-eyebrow {
   font-size: 9px;
