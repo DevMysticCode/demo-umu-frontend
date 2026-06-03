@@ -222,9 +222,9 @@ const confirm = () => {
   background: var(--accent-paler);
 }
 .choose-ico {
-  /* width: 54px; */
+  width: 54px;
   height: 54px;
-  /* border-radius: 14px; */
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;

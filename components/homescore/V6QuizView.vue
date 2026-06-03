@@ -31,7 +31,9 @@
     <div class="score-card anim-2" style="margin-top: 12px">
       <div class="score-eyebrow-row">
         <div class="score-eyebrow-mark">HomeScore<sup>™</sup> · Live</div>
-        <span class="quiz-live-delta-pill" :class="{ flash: deltaFlash }">{{ deltaText }}</span>
+        <span class="quiz-live-delta-pill" :class="{ flash: deltaFlash }">{{
+          deltaText
+        }}</span>
       </div>
       <div class="score-top">
         <div class="score-gauge">
@@ -54,7 +56,10 @@
               stroke="url(#quizGrad)"
               fill="none"
               stroke-linecap="round"
-              style="transition: stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1)"
+              style="
+                transition: stroke-dashoffset 0.6s
+                  cubic-bezier(0.22, 1, 0.36, 1);
+              "
             />
           </svg>
           <div class="g-num">
@@ -73,10 +78,14 @@
       <div class="score-footer" style="padding-top: 12px; margin-top: 12px">
         <div style="flex: 1">
           <div class="quiz-progress-bar-bg">
-            <div class="quiz-progress-bar-fill" :style="{ width: progressPct + '%' }" />
+            <div
+              class="quiz-progress-bar-fill"
+              :style="{ width: progressPct + '%' }"
+            />
           </div>
           <div class="quiz-progress-label">
-            {{ answeredCount }} of {{ QUESTS.length }} answered · earn XP for every question
+            {{ answeredCount }} of {{ QUESTS.length }} answered · earn XP for
+            every question
           </div>
         </div>
       </div>
@@ -114,7 +123,9 @@
     <!-- ── Section header ─────────────────────────────────────────── -->
     <div class="section-h-row" style="padding-top: 18px; padding-bottom: 6px">
       <div class="section-h">Has your home had these improvements?</div>
-      <div class="section-h-sub">{{ answeredCount }} of {{ QUESTS.length }} answered</div>
+      <div class="section-h-sub">
+        {{ answeredCount }} of {{ QUESTS.length }} answered
+      </div>
     </div>
 
     <!-- ── Quest list (collapsible · 4 options each) ──────────────── -->
@@ -144,11 +155,16 @@
           </div>
           <div v-if="q.resultingSap != null" class="quest-resulting">
             Potential rating after step {{ q.n }}:
-            <span class="quest-resulting-pill" :class="'grade-' + (q.resultingGrade ?? '').toLowerCase()">
+            <span
+              class="quest-resulting-pill"
+              :class="'grade-' + (q.resultingGrade ?? '').toLowerCase()"
+            >
               {{ q.resultingSap }} {{ q.resultingGrade }}
             </span>
           </div>
-          <div class="quest-question">Has this been done since the last EPC?</div>
+          <div class="quest-question">
+            Has this been done since the last EPC?
+          </div>
           <div class="quest-options-4">
             <button
               v-for="(o, key) in OPT"
@@ -168,12 +184,8 @@
 
     <!-- ── Finish CTA ─────────────────────────────────────────────── -->
     <div class="quiz-finish">
-      <button
-        class="quiz-finish-btn"
-        type="button"
-        @click="onFinish"
-      >
-        🏆 Get my real HomeScore →
+      <button class="quiz-finish-btn" type="button" @click="onFinish">
+        Get my real HomeScore →
       </button>
       <div v-if="answeredCount < QUESTS.length" class="quiz-finish-hint">
         Skipped questions count as "not done". Answer what you know and tap
@@ -186,110 +198,126 @@
 
     <!-- ── "Answer at least one question" prompt ───────────────────── -->
     <Teleport to="body">
-    <Transition name="bill-modal">
-      <div v-if="needAnswerModalOpen" class="modal-overlay hs-v6-quiz-modal" @click.self="needAnswerModalOpen = false">
-        <div class="need-answer-sheet" @click.stop>
-          <div class="need-answer-icon">📋</div>
-          <div class="need-answer-title">Answer at least one question</div>
-          <div class="need-answer-sub">
-            To work out your updated EPC and real HomeScore, we need to know
-            what's changed since the certificate. Answer <b>at least one</b>
-            question below and we'll recalculate your score.
+      <Transition name="bill-modal">
+        <div
+          v-if="needAnswerModalOpen"
+          class="modal-overlay hs-v6-quiz-modal"
+          @click.self="needAnswerModalOpen = false"
+        >
+          <div class="need-answer-sheet" @click.stop>
+            <div class="need-answer-icon">📋</div>
+            <div class="need-answer-title">Answer at least one question</div>
+            <div class="need-answer-sub">
+              To work out your updated EPC and real HomeScore, we need to know
+              what's changed since the certificate. Answer <b>at least one</b>
+              question below and we'll recalculate your score.
+            </div>
+            <button
+              class="need-answer-btn"
+              type="button"
+              @click="needAnswerModalOpen = false"
+            >
+              Got it — let's answer
+            </button>
           </div>
-          <button class="need-answer-btn" type="button" @click="needAnswerModalOpen = false">
-            Got it — let's answer
-          </button>
         </div>
-      </div>
-    </Transition>
+      </Transition>
     </Teleport>
 
     <!-- ── Bill upload bottom-sheet drawer (Teleported so it lives at
          document.body level and can't be clipped by any parent's
          overflow/transform stacking context) ──────────────────────── -->
     <Teleport to="body">
-    <Transition name="bill-modal">
-      <div v-if="billModalOpen" class="modal-overlay hs-v6-quiz-modal" @click.self="closeBillModal">
-        <div class="modal-sheet" @click.stop>
-          <div class="modal-grip" />
-          <div class="modal-head">
-            <div class="modal-eyebrow">⚡ Shortcut</div>
-            <div class="modal-title">Upload a bill — skip the quiz</div>
-            <div class="modal-sub">
-              Your last gas or electricity bill tells us your real running cost in
-              seconds. More accurate than the EPC estimate.
+      <Transition name="bill-modal">
+        <div
+          v-if="billModalOpen"
+          class="modal-overlay hs-v6-quiz-modal"
+          @click.self="closeBillModal"
+        >
+          <div class="modal-sheet" @click.stop>
+            <div class="modal-grip" />
+            <div class="modal-head">
+              <div class="modal-eyebrow">⚡ Shortcut</div>
+              <div class="modal-title">Upload a bill — skip the quiz</div>
+              <div class="modal-sub">
+                Your last gas or electricity bill tells us your real running
+                cost in seconds. More accurate than the EPC estimate.
+              </div>
             </div>
-          </div>
 
-          <label class="drop-zone" :class="{ 'has-file': !!selectedFile }">
-            <input
-              ref="fileInputRef"
-              type="file"
-              accept="application/pdf,image/png,image/jpeg"
-              class="drop-zone-input"
-              @change="onFileSelected"
-            />
-            <div class="drop-zone-icon">{{ selectedFile ? '✓' : '📄' }}</div>
-            <div class="drop-zone-title">
-              {{ selectedFile ? selectedFile.name : 'Drop your bill here' }}
-            </div>
-            <div class="drop-zone-sub">
-              <template v-if="!selectedFile">
-                or <span class="drop-zone-tap">tap to browse</span>
-              </template>
-              <template v-else>
-                {{ formatFileSize(selectedFile.size) }} · tap to change
-              </template>
-            </div>
-            <div v-if="!selectedFile" class="drop-zone-formats">
-              PDF · JPG · PNG · screenshots
-            </div>
-          </label>
+            <label class="drop-zone" :class="{ 'has-file': !!selectedFile }">
+              <input
+                ref="fileInputRef"
+                type="file"
+                accept="application/pdf,image/png,image/jpeg"
+                class="drop-zone-input"
+                @change="onFileSelected"
+              />
+              <div class="drop-zone-icon">{{ selectedFile ? '✓' : '📄' }}</div>
+              <div class="drop-zone-title">
+                {{ selectedFile ? selectedFile.name : 'Drop your bill here' }}
+              </div>
+              <div class="drop-zone-sub">
+                <template v-if="!selectedFile">
+                  or <span class="drop-zone-tap">tap to browse</span>
+                </template>
+                <template v-else>
+                  {{ formatFileSize(selectedFile.size) }} · tap to change
+                </template>
+              </div>
+              <div v-if="!selectedFile" class="drop-zone-formats">
+                PDF · JPG · PNG · screenshots
+              </div>
+            </label>
 
-          <div class="modal-read-row">
-            <div class="modal-read-icon">🔎</div>
-            <div class="modal-read-text">
-              We'll read your <b>kWh</b>, <b>tariff</b> and <b>supplier</b> — that's
-              all. The bill itself isn't stored after extraction.
+            <div class="modal-read-row">
+              <div class="modal-read-icon">🔎</div>
+              <div class="modal-read-text">
+                We'll read your <b>kWh</b>, <b>tariff</b> and <b>supplier</b> —
+                that's all. The bill itself isn't stored after extraction.
+              </div>
             </div>
-          </div>
 
-          <div class="modal-suppliers">
-            <div class="modal-suppliers-label">Works with</div>
-            <div class="modal-supplier-grid">
-              <div class="modal-supplier-tile">Octopus</div>
-              <div class="modal-supplier-tile">British Gas</div>
-              <div class="modal-supplier-tile">EDF</div>
-              <div class="modal-supplier-tile">OVO</div>
-              <div class="modal-supplier-tile">E.ON Next</div>
-              <div class="modal-supplier-tile">+ 12 more</div>
+            <div class="modal-suppliers">
+              <div class="modal-suppliers-label">Works with</div>
+              <div class="modal-supplier-grid">
+                <div class="modal-supplier-tile">Octopus</div>
+                <div class="modal-supplier-tile">British Gas</div>
+                <div class="modal-supplier-tile">EDF</div>
+                <div class="modal-supplier-tile">OVO</div>
+                <div class="modal-supplier-tile">E.ON Next</div>
+                <div class="modal-supplier-tile">+ 12 more</div>
+              </div>
             </div>
-          </div>
 
-          <div class="modal-cta-row">
-            <button type="button" class="modal-btn secondary" @click="closeBillModal">
-              Maybe later
-            </button>
-            <button
-              type="button"
-              class="modal-btn primary"
-              :disabled="!selectedFile"
-              @click="confirmBillUpload"
-            >
-              {{ selectedFile ? 'Use this bill' : 'Choose a file' }}
-            </button>
-          </div>
+            <div class="modal-cta-row">
+              <button
+                type="button"
+                class="modal-btn secondary"
+                @click="closeBillModal"
+              >
+                Maybe later
+              </button>
+              <button
+                type="button"
+                class="modal-btn primary"
+                :disabled="!selectedFile"
+                @click="confirmBillUpload"
+              >
+                {{ selectedFile ? 'Use this bill' : 'Choose a file' }}
+              </button>
+            </div>
 
-          <div class="modal-privacy">
-            <span class="modal-privacy-icon">🔒</span>
-            <span>
-              Powered by Ofgem tariff data. We never sell your data and bills are
-              deleted after extraction.
-            </span>
+            <div class="modal-privacy">
+              <span class="modal-privacy-icon">🔒</span>
+              <span>
+                Powered by Ofgem tariff data. We never sell your data and bills
+                are deleted after extraction.
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -327,7 +355,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'back'): void
-  (e: 'finish', payload: { finalScore: number; delta: number; answers: Record<string, string> }): void
+  (
+    e: 'finish',
+    payload: {
+      finalScore: number
+      delta: number
+      answers: Record<string, string>
+    },
+  ): void
   (e: 'upload-bill', file: File): void
   (e: 'claim-passport'): void
   (e: 'watch-property'): void
@@ -368,12 +403,78 @@ interface Quest {
 // (Generic prototype quests, only used if the backend hasn't enriched
 // epcRecommendations yet.)
 const FALLBACK_QUESTS: Quest[] = [
-  { id: 'loft', n: 1, title: 'Increase loft insulation to 270mm', summary: 'Recommended on EPC', desc: "Top up loft insulation to the recommended 270 mm depth.", stat: 'structure', pts: 1, save: 40, cost: '£100–£350', grant: null },
-  { id: 'cavity', n: 2, title: 'Cavity wall insulation', summary: 'Recommended on EPC', desc: 'Fill cavity walls to cut heat loss — usually the biggest single annual saving.', stat: 'structure', pts: 8, save: 224, cost: '£500–£1,500', grant: null },
-  { id: 'floor', n: 3, title: 'Floor insulation', summary: 'Recommended on EPC', desc: 'Insulate uninsulated suspended or solid floors to stop heat escaping.', stat: 'structure', pts: 3, save: 97, cost: '£800–£1,200', grant: null },
-  { id: 'lights', n: 4, title: 'Low energy lighting', summary: 'Recommended on EPC', desc: 'Swap remaining fittings to LED — the cheapest single EPC step.', stat: 'efficiency', pts: 1, save: 45, cost: '£110', grant: null },
-  { id: 'solarh', n: 5, title: 'Solar water heating', summary: 'Recommended on EPC', desc: 'Solar thermal collector pre-heats hot water from sunlight.', stat: 'plumbing', pts: 1, save: 40, cost: '£4,000–£6,000', grant: null },
-  { id: 'solarp', n: 6, title: 'Solar photovoltaic panels', summary: 'Recommended on EPC', desc: 'Solar PV generates electricity; SEG income for surplus exported to grid.', stat: 'electrics', pts: 9, save: 248, cost: '£9,000–£14,000', grant: 'SEG' },
+  {
+    id: 'loft',
+    n: 1,
+    title: 'Increase loft insulation to 270mm',
+    summary: 'Recommended on EPC',
+    desc: 'Top up loft insulation to the recommended 270 mm depth.',
+    stat: 'structure',
+    pts: 1,
+    save: 40,
+    cost: '£100–£350',
+    grant: null,
+  },
+  {
+    id: 'cavity',
+    n: 2,
+    title: 'Cavity wall insulation',
+    summary: 'Recommended on EPC',
+    desc: 'Fill cavity walls to cut heat loss — usually the biggest single annual saving.',
+    stat: 'structure',
+    pts: 8,
+    save: 224,
+    cost: '£500–£1,500',
+    grant: null,
+  },
+  {
+    id: 'floor',
+    n: 3,
+    title: 'Floor insulation',
+    summary: 'Recommended on EPC',
+    desc: 'Insulate uninsulated suspended or solid floors to stop heat escaping.',
+    stat: 'structure',
+    pts: 3,
+    save: 97,
+    cost: '£800–£1,200',
+    grant: null,
+  },
+  {
+    id: 'lights',
+    n: 4,
+    title: 'Low energy lighting',
+    summary: 'Recommended on EPC',
+    desc: 'Swap remaining fittings to LED — the cheapest single EPC step.',
+    stat: 'efficiency',
+    pts: 1,
+    save: 45,
+    cost: '£110',
+    grant: null,
+  },
+  {
+    id: 'solarh',
+    n: 5,
+    title: 'Solar water heating',
+    summary: 'Recommended on EPC',
+    desc: 'Solar thermal collector pre-heats hot water from sunlight.',
+    stat: 'plumbing',
+    pts: 1,
+    save: 40,
+    cost: '£4,000–£6,000',
+    grant: null,
+  },
+  {
+    id: 'solarp',
+    n: 6,
+    title: 'Solar photovoltaic panels',
+    summary: 'Recommended on EPC',
+    desc: 'Solar PV generates electricity; SEG income for surplus exported to grid.',
+    stat: 'electrics',
+    pts: 9,
+    save: 248,
+    cost: '£9,000–£14,000',
+    grant: 'SEG',
+  },
 ]
 
 // Heuristic: classify a recommendation into one of the 5 stat pillars
@@ -381,8 +482,10 @@ const FALLBACK_QUESTS: Quest[] = [
 function classifyStat(title: string, improvementType: string | null): string {
   const t = `${title} ${improvementType ?? ''}`.toLowerCase()
   if (/(solar pv|photovoltaic|electric)/.test(t)) return 'electrics'
-  if (/(solar (?:water|thermal)|hot water|cylinder|hot-water)/.test(t)) return 'plumbing'
-  if (/(boiler|heating|heat pump|radiator|thermostat|controls|trv)/.test(t)) return 'heating'
+  if (/(solar (?:water|thermal)|hot water|cylinder|hot-water)/.test(t))
+    return 'plumbing'
+  if (/(boiler|heating|heat pump|radiator|thermostat|controls|trv)/.test(t))
+    return 'heating'
   if (/(led|lighting|light)/.test(t)) return 'efficiency'
   return 'structure' // walls, roof, floor, windows, draught — default catch-all
 }
@@ -407,8 +510,10 @@ const QUESTS = computed<Quest[]>(() => {
     // eslint-disable-next-line no-console
     console.warn(
       '[V6QuizView] No epcRecommendations on property — using fallback quests.',
-      'Property id:', (props.property as any)?.id,
-      'Postcode:', (props.property as any)?.postcode,
+      'Property id:',
+      (props.property as any)?.id,
+      'Postcode:',
+      (props.property as any)?.postcode,
     )
     return FALLBACK_QUESTS
   }
@@ -446,14 +551,13 @@ const QUESTS = computed<Quest[]>(() => {
     }
     if (resultingSap != null) prevSap = resultingSap
 
-    const grant =
-      /eco|warm homes/i.test(`${title} ${r?.improvementType ?? ''}`)
-        ? 'ECO'
-        : /solar pv|photovoltaic/i.test(title)
-          ? 'SEG'
-          : /boiler upgrade/i.test(title)
-            ? 'BUS'
-            : null
+    const grant = /eco|warm homes/i.test(`${title} ${r?.improvementType ?? ''}`)
+      ? 'ECO'
+      : /solar pv|photovoltaic/i.test(title)
+        ? 'SEG'
+        : /boiler upgrade/i.test(title)
+          ? 'BUS'
+          : null
 
     return {
       id: String(r?.id ?? `rec-${idx}`),
@@ -462,7 +566,8 @@ const QUESTS = computed<Quest[]>(() => {
       summary: r?.improvementType
         ? `EPC: ${r.improvementType}`
         : 'Recommended on EPC',
-      desc: r?.description || `An EPC-recommended improvement for this property.`,
+      desc:
+        r?.description || `An EPC-recommended improvement for this property.`,
       stat,
       pts,
       save: Number(r?.typicalSaving ?? 0) || 0,
@@ -476,7 +581,12 @@ const QUESTS = computed<Quest[]>(() => {
 
 const OPT = {
   yes: { label: 'Yes — done', icon: '✓', cls: 'opt-yes', mult: 1.0 },
-  different: { label: 'Done something different', icon: '↻', cls: 'opt-different', mult: 0.5 },
+  different: {
+    label: 'Done something different',
+    icon: '↻',
+    cls: 'opt-different',
+    mult: 0.5,
+  },
   notyet: { label: 'Not yet', icon: '•', cls: 'opt-not-yet', mult: 0 },
   na: { label: 'Not applicable', icon: '⊘', cls: 'opt-na', mult: 0 },
 } as const
@@ -491,7 +601,9 @@ const deltaText = ref('+0 pts')
 const deltaFlash = ref(false)
 
 const answeredCount = computed(() => Object.keys(questState.value).length)
-const progressPct = computed(() => (answeredCount.value / QUESTS.value.length) * 100)
+const progressPct = computed(
+  () => (answeredCount.value / QUESTS.value.length) * 100,
+)
 const ringOffset = computed(() => {
   const circumference = 2 * Math.PI * 50 // 314.16
   return circumference - (liveScore.value / 100) * circumference
@@ -619,9 +731,12 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-watch(() => props.initialScore, (v) => {
-  liveScore.value = v
-})
+watch(
+  () => props.initialScore,
+  (v) => {
+    liveScore.value = v
+  },
+)
 </script>
 
 <style scoped>
@@ -650,12 +765,27 @@ watch(() => props.initialScore, (v) => {
 }
 
 /* Soften prototype's 800-weights to match SF Pro app scale */
-.hs-v6-quiz :is(.hs-addr-line, .score-band, .gn-big, .quest-summary-title,
-  .quest-question, .quest-impact, .two-ways-opt-title) {
+.hs-v6-quiz
+  :is(
+    .hs-addr-line,
+    .score-band,
+    .gn-big,
+    .quest-summary-title,
+    .quest-question,
+    .quest-impact,
+    .two-ways-opt-title
+  ) {
   font-weight: 700;
 }
-.hs-v6-quiz :is(.hs-addr-meta, .score-explainer, .quiz-progress-label,
-  .quest-summary-sub, .quest-desc, .two-ways-opt-sub) {
+.hs-v6-quiz
+  :is(
+    .hs-addr-meta,
+    .score-explainer,
+    .quiz-progress-label,
+    .quest-summary-sub,
+    .quest-desc,
+    .two-ways-opt-sub
+  ) {
   font-weight: 500;
 }
 
@@ -751,7 +881,8 @@ watch(() => props.initialScore, (v) => {
   background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
   border: none;
   border-radius: 14px;
-  box-shadow: 0 12px 32px -8px rgba(180, 100, 20, 0.4),
+  box-shadow:
+    0 12px 32px -8px rgba(180, 100, 20, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
   color: white;
   position: relative;
@@ -765,7 +896,11 @@ watch(() => props.initialScore, (v) => {
   width: 260px;
   height: 260px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
 .hs-addr-card > * {
@@ -888,7 +1023,9 @@ watch(() => props.initialScore, (v) => {
   margin-top: 14px;
   flex-wrap: wrap;
 }
-.hs-addr-stat-row + .hs-addr-stat-row { margin-top: 6px; }
+.hs-addr-stat-row + .hs-addr-stat-row {
+  margin-top: 6px;
+}
 .hs-addr-stat-row .pulse-dot {
   width: 6px;
   height: 6px;
@@ -935,15 +1072,35 @@ watch(() => props.initialScore, (v) => {
   transform-origin: bottom;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.55);
 }
-.hs-live-bar:nth-child(1) { height: 5px;  animation-delay: 0s; }
-.hs-live-bar:nth-child(2) { height: 9px;  animation-delay: 0.15s; }
-.hs-live-bar:nth-child(3) { height: 13px; animation-delay: 0.3s; }
+.hs-live-bar:nth-child(1) {
+  height: 5px;
+  animation-delay: 0s;
+}
+.hs-live-bar:nth-child(2) {
+  height: 9px;
+  animation-delay: 0.15s;
+}
+.hs-live-bar:nth-child(3) {
+  height: 13px;
+  animation-delay: 0.3s;
+}
 @keyframes hsLiveBars {
-  0%, 100% { transform: scaleY(0.55); opacity: 0.55; }
-  50%      { transform: scaleY(1);    opacity: 1; }
+  0%,
+  100% {
+    transform: scaleY(0.55);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hs-live-bar { animation: none; transform: scaleY(1); opacity: 0.9; }
+  .hs-live-bar {
+    animation: none;
+    transform: scaleY(1);
+    opacity: 0.9;
+  }
 }
 .hs-live-text {
   font-size: 11.5px;
@@ -951,7 +1108,9 @@ watch(() => props.initialScore, (v) => {
   letter-spacing: -0.05px;
   line-height: 1.25;
 }
-.hs-live-text b { font-weight: 800; }
+.hs-live-text b {
+  font-weight: 800;
+}
 .hs-addr-stat-row .hs-addr-stat-eye {
   width: 15px;
   height: 15px;
@@ -1323,13 +1482,27 @@ watch(() => props.initialScore, (v) => {
   color: white;
   letter-spacing: 0.2px;
 }
-.quest-resulting-pill.grade-a { background: #008a84; }
-.quest-resulting-pill.grade-b { background: #00a19a; }
-.quest-resulting-pill.grade-c { background: #7ab040; }
-.quest-resulting-pill.grade-d { background: #e6a23c; }
-.quest-resulting-pill.grade-e { background: #d86f4a; }
-.quest-resulting-pill.grade-f { background: #c04a1a; }
-.quest-resulting-pill.grade-g { background: #a52a2a; }
+.quest-resulting-pill.grade-a {
+  background: #008a84;
+}
+.quest-resulting-pill.grade-b {
+  background: #00a19a;
+}
+.quest-resulting-pill.grade-c {
+  background: #7ab040;
+}
+.quest-resulting-pill.grade-d {
+  background: #e6a23c;
+}
+.quest-resulting-pill.grade-e {
+  background: #d86f4a;
+}
+.quest-resulting-pill.grade-f {
+  background: #c04a1a;
+}
+.quest-resulting-pill.grade-g {
+  background: #a52a2a;
+}
 
 .quest-question {
   font-size: 13px;
@@ -1487,8 +1660,13 @@ watch(() => props.initialScore, (v) => {
   -webkit-backdrop-filter: blur(2px);
   /* Inherit the app's SF Pro Display rather than the default browser
      font (teleport breaks the font-family inherit chain too). */
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, sans-serif;
+  font-family:
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   color: var(--text);
 }

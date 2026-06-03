@@ -2743,6 +2743,29 @@ const screen = ref<Screen>('loading')
 // from being re-recorded; `historyReady` keeps the noisy initial-load
 // transitions (loading → landing/results/boost) out of the stack.
 const screenHistory = ref<Screen[]>([])
+
+// When the page mounts on a deep-link (?screen=level-up etc.) the natural
+// forward path (landing → questions → level-up …) didn't actually run, so
+// `screenHistory` is empty and goBack falls straight out of the page —
+// skipping every intermediate screen the user would expect to retrace.
+// This map reconstructs the path each deep-link should be treated as
+// having come from, so back-navigation lands on the right predecessor.
+const SCREEN_PATH: Partial<Record<Screen, Screen[]>> = {
+  questions: ['landing'],
+  results: ['landing'],
+  'buyer-results': ['landing'],
+  passport: ['landing'],
+  'level-up': ['landing', 'questions'],
+  boost: ['landing', 'questions', 'level-up'],
+  'move-ready': ['landing', 'questions', 'level-up', 'boost'],
+}
+function seedScreenHistory(target: Screen) {
+  const path = SCREEN_PATH[target]
+  if (!path || path.length === 0) return
+  // Replace, not append — the previous mount's history (if any) isn't
+  // meaningful after a fresh deep-link.
+  screenHistory.value = [...path]
+}
 let navigatingBack = false
 let historyReady = false
 watch(screen, (next, prev) => {
@@ -2751,7 +2774,11 @@ watch(screen, (next, prev) => {
     return
   }
   if (prev && prev !== next && prev !== 'loading') {
-    screenHistory.value.push(prev)
+    // Dedupe — handler functions (e.g. onQuizFinish) may have already
+    // pushed this same prev value to guarantee correct retracing when
+    // the watcher might miss the change.
+    const last = screenHistory.value[screenHistory.value.length - 1]
+    if (last !== prev) screenHistory.value.push(prev)
   }
 })
 
@@ -2759,6 +2786,16 @@ const v6QuizFinal = ref<{ finalScore: number; delta: number; answers: Record<str
 
 function onQuizFinish(payload: { finalScore: number; delta: number; answers: Record<string, string> }) {
   v6QuizFinal.value = payload
+  // Explicitly push 'questions' onto the history stack — relying on the
+  // screen watcher to do it can miss in two scenarios:
+  //   1. `historyReady` is still false because mount is mid-flight
+  //   2. `navigatingBack` is still true from a recent goBack call
+  // Pushing here directly makes "back from level-up" reliably retrace
+  // to the owner quiz regardless.
+  if (screen.value && screen.value !== 'loading') {
+    const last = screenHistory.value[screenHistory.value.length - 1]
+    if (last !== screen.value) screenHistory.value.push(screen.value)
+  }
   screen.value = 'level-up'
 }
 
@@ -5523,7 +5560,22 @@ function goToClaim() {
 
 function goBack() {
   // Retrace the actual forward path: pop the last screen we came from.
-  const prev = screenHistory.value.pop()
+  let prev = screenHistory.value.pop()
+  // Defensive fallback: if history is empty but the current screen has
+  // a known forward path in SCREEN_PATH (e.g. level-up's natural
+  // predecessor is questions), use that. Covers deep-link mounts that
+  // bypassed the watcher, races during initial mount, and the case
+  // where the watcher was suppressed by `historyReady=false` during
+  // an in-page transition that happened before mount finished.
+  if (!prev) {
+    const path = SCREEN_PATH[screen.value]
+    if (path && path.length > 0) {
+      prev = path[path.length - 1]
+      // Re-seed the rest of the path so subsequent backs continue to
+      // retrace correctly (questions → landing → exit).
+      screenHistory.value = path.slice(0, -1)
+    }
+  }
   if (prev && prev !== 'loading') {
     navigatingBack = true
     screen.value = prev
@@ -5580,8 +5632,13 @@ onMounted(async () => {
   // user returns to the Level Up celebration rather than the search landing.
   const qScreen = route.query.screen
   if (typeof qScreen === 'string') {
-    if (qScreen === 'boost') screen.value = 'boost'
-    else if (qScreen === 'level-up') screen.value = 'level-up'
+    if (qScreen === 'boost') {
+      screen.value = 'boost'
+      seedScreenHistory('boost')
+    } else if (qScreen === 'level-up') {
+      screen.value = 'level-up'
+      seedScreenHistory('level-up')
+    }
   }
 
   // Returning from sign-in with the claim journey intent — the score
@@ -5804,6 +5861,7 @@ onMounted(async () => {
       }
     } else {
       screen.value = requested as Screen
+      seedScreenHistory(requested as Screen)
     }
   }
   historyReady = true

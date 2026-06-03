@@ -1903,9 +1903,15 @@ async function issuePassport() {
 /* ── Bottom CTA bar ──────────────────────────────── */
 .cl-cta-bar {
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 50%;
   bottom: 0;
+  transform: translateX(-50%);
+  width: 100%;
+  /* Match the .mobile-container max-width (28rem = max-w-md) so the
+     CTA bar never spills past the app frame on wider viewports. The
+     button inside is width: 100% which now means "100% of the app",
+     not "100% of the viewport". */
+  max-width: 28rem;
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
   background: #fff;
   border-top: 1px solid #eef2f7;

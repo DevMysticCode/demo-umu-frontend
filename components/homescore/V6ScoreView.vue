@@ -572,16 +572,19 @@
     </div>
 
     <!-- ── FORK SECTION ───────────────────────────────────────────────
-         Three branches driven by auth + ownership, per
-         prisma/two-pieces.html:
-         • Guest                   → "I own" + "I'm interested" (legacy)
-         • Logged-in, IS the owner → Dashboard / Pathway / Boost /
-                                       Get Real HomeScore (returning-owner block)
-         • Logged-in, NOT owner    → only "I'm interested" — no "I own
-                                       this property" because we know
-                                       from the auth state they don't. -->
+         Branching driven by ownership + passport state:
+         • IS the owner (has a passport on this property)
+             → Dashboard / Pathway / Boost / Get Real HomeScore
+         • Property is UNCLAIMED (no one owns it yet)
+             → "I own this property" + "I'm interested" — anyone, signed-in
+               or not, might be the owner of an unclaimed home, so we keep
+               the claim CTA visible.
+         • Property is claimed by someone else (in-progress / published)
+             AND current user isn't the owner
+             → only "I'm interested" — the auth state tells us they aren't
+               the owner. -->
     <div class="fork-section anim-3" data-tour="intent">
-      <!-- Logged-in owner — four destinations -->
+      <!-- Owner of this property — four destinations -->
       <template v-if="isPropertyOwner">
         <div class="fork-eyebrow">Pick up where you left off</div>
         <div class="fork-options">
@@ -610,7 +613,6 @@
             <div class="fork-opt-chev">›</div>
           </button>
           <button class="fork-opt" type="button" @click="$emit('refine')">
-            <div class="fork-opt-icon">📈</div>
             <div class="fork-opt-body">
               <div class="fork-opt-title">Get Real HomeScore</div>
               <div class="fork-opt-sub">Answer the owner quiz to lock in your verified score.</div>
@@ -620,10 +622,11 @@
         </div>
       </template>
 
-      <!-- Logged-in non-owner — only the buyer-side option. The "I own
-           this property" CTA is hidden because the auth state already
-           tells us they don't. -->
-      <template v-else-if="isLoggedIn">
+      <!-- Logged-in non-owner viewing a property that someone else has
+           already claimed (in-progress / published). Only the buyer-side
+           option here — the "I own this property" CTA is hidden because
+           the property already has a verified owner. -->
+      <template v-else-if="isLoggedIn && passportState !== 'unclaimed'">
         <div class="fork-eyebrow">What you can do here</div>
         <div class="fork-options">
           <button class="fork-opt primary" type="button" @click="$emit('interested')">
@@ -637,7 +640,10 @@
         </div>
       </template>
 
-      <!-- Guest — keep the existing fork (claim flow auth-gates on tap). -->
+      <!-- Unclaimed property OR guest visitor — keep both options. Even a
+           signed-in user might be the owner of an unclaimed home that
+           hasn't been claimed yet, so we still surface "I own this
+           property". The claim CTA auth-gates on tap if needed. -->
       <template v-else>
         <div class="fork-eyebrow">What's your connection to this property?</div>
         <div class="fork-options">
