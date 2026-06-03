@@ -572,8 +572,13 @@ function goToBoost() {
 // today. Bypassing `router.back()` ensures the in-page screen state is
 // recreated even if the browser history was nuked.
 function onBack() {
+  // `replace` rather than `push` so the pathway URL gets removed from
+  // browser history. Otherwise back-navigating from the resulting
+  // homescore page would bounce the user right back into the pathway
+  // they just left, breaking the in-page screen-history retracing
+  // (level-up → questions → landing → exit).
   const from = (route.query.from as string) || 'level-up'
-  router.push(`/homescore/${propertyId.value}?screen=${encodeURIComponent(from)}`)
+  router.replace(`/homescore/${propertyId.value}?screen=${encodeURIComponent(from)}`)
 }
 
 // ── "Beyond the pathway" teaser values ─────────────────────────
