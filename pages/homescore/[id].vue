@@ -113,11 +113,15 @@
         :passport-sections-done="passportSectionsDone"
         :passport-sections-total="passportSectionsTotal"
         :auto-open-claim="autoOpenClaim"
+        :is-logged-in="!isGuest"
+        :is-property-owner="isPropertyOwner"
         @back="goBack"
         @claim="startQuestions"
         @refine="startQuestions"
         @interested="goToRunningCosts"
         @open-pathway="goToPathway"
+        @open-dashboard="goToDashboard"
+        @open-boost="goToBoost"
         @see-running-costs="goToRunningCosts"
         @see-street="goToStreetCompare"
         @view-passport="goToPassport"
@@ -4847,6 +4851,19 @@ async function fetchBuyerData() {
 }
 
 function goToPassport() {
+  router.push(`/property/${propertyId}`)
+}
+
+// "Go to your dashboard" on the owner fork — takes the user straight to
+// their own passport view (the canonical owner-dashboard surface).
+// `ownedPassportId` is populated from the passport-status fetch on
+// mount; if it isn't ready yet (race), fall back to the property page
+// which itself routes through to the passport based on state.
+function goToDashboard() {
+  if (ownedPassportId.value) {
+    router.push(`/passportview/${ownedPassportId.value}`)
+    return
+  }
   router.push(`/property/${propertyId}`)
 }
 
