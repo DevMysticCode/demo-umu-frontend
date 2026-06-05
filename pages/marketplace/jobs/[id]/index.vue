@@ -124,13 +124,15 @@
              CTA switches to the receipt (owner sees Release control;
              both parties see the timeline). The pre-payment CTAs only
              fire when no payment row is present. -->
+        <!-- Both parties → live contract is the main thing to do
+             once a payment exists (timeline, evidence, release CTA). -->
         <button
           v-if="payment"
           class="jd-cta-primary"
           type="button"
-          @click="goToReceipt"
+          @click="goToContract"
         >
-          {{ payment.status === 'released' ? 'View UProtect receipt' : (job.isMine ? 'Release funds · £' + (payment.amount / 100).toLocaleString('en-GB') : 'View UProtect receipt') }}
+          🛡 Open contract
         </button>
         <button
           v-else-if="job.isMine"
@@ -314,6 +316,9 @@ function goToOffers() {
 }
 function goToReceipt() {
   if (payment.value) router.push(`/marketplace/payments/${payment.value.id}`)
+}
+function goToContract() {
+  router.push(`/marketplace/jobs/${jobId.value}/contract`)
 }
 async function goToMessageCustomer() {
   try {
