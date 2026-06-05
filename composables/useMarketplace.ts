@@ -113,6 +113,56 @@ export interface MarketplacePayment {
   heldAt: string | null
   releasedAt: string | null
   refundedAt: string | null
+  evidencePhotos: string[]
+}
+
+// ── Contract bundle (live job dashboard) ──────────────────────────
+export interface MarketplaceContract {
+  job: {
+    id: string
+    title: string
+    locationLabel: string
+    categoryLabel: string
+    startedAt: string
+    status: string
+  }
+  payment: MarketplacePayment
+  offer: {
+    id: string
+    message: string
+    availableDate: string | null
+    acceptedAt: string
+  }
+  parties: {
+    customer: {
+      id: string
+      name: string
+      initials: string
+      rating: number | null
+      reviewCount: number
+      jobsPosted: number
+    }
+    supplier: {
+      id: string
+      name: string
+      initials: string
+      rating: number | null
+      reviewCount: number
+      jobsCompleted: number
+    }
+  }
+  viewerRole: 'customer' | 'supplier'
+  thread: {
+    id: string
+    lastMessage: {
+      body: string
+      createdAt: string
+      senderId: string
+      senderName: string
+      isMine: boolean
+    } | null
+  } | null
+  viewerHasReviewed: boolean
 }
 
 export interface AuthorizeOfferResult {
@@ -129,9 +179,24 @@ export interface MarketplaceReview {
   direction: 'customer_to_supplier' | 'supplier_to_customer'
   rating: number
   body: string | null
+  punctuality: number | null
+  communication: number | null
+  workmanship: number | null
+  reliability: number | null
+  tags: string[]
   createdAt: string
   fromUserName: string
   fromUserInitials: string
+}
+
+export interface CreateReviewPayload {
+  rating: number
+  body?: string
+  punctuality?: number
+  communication?: number
+  workmanship?: number
+  reliability?: number
+  tags?: string[]
 }
 
 export interface MarketplaceUserStats {
@@ -380,8 +445,23 @@ export function useMarketplace() {
       headers: authHeaders(),
     })
 
+  // Evidence photos appended to the contract — either party may add.
+  // Backend validates that each URL starts with `/uploads/`.
+  const addEvidence = (paymentId: string, photos: string[]) =>
+    $fetch<MarketplacePayment>(`${BASE_URL}/marketplace/payments/${paymentId}/evidence`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: { photos },
+    })
+
+  // Bundled contract payload — drives the live contract screen.
+  const fetchContract = (jobId: string) =>
+    $fetch<MarketplaceContract>(`${BASE_URL}/marketplace/jobs/${jobId}/contract`, {
+      headers: authHeaders(),
+    })
+
   // ── Reviews + earnings ────────────────────────────────────────────
-  const createReview = (jobId: string, payload: { rating: number; body?: string }) =>
+  const createReview = (jobId: string, payload: CreateReviewPayload) =>
     $fetch<MarketplaceReview>(`${BASE_URL}/marketplace/jobs/${jobId}/review`, {
       method: 'POST',
       headers: authHeaders(),
@@ -428,6 +508,8 @@ export function useMarketplace() {
     releasePayment,
     fetchPayment,
     fetchPaymentForJob,
+    addEvidence,
+    fetchContract,
     createReview,
     fetchUserReviews,
     fetchUserStats,

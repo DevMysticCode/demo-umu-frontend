@@ -239,7 +239,9 @@ async function submit() {
     await confirmPayment(payment.id)
 
     showToast({ message: 'Funds held in UProtect escrow', iconEmoji: '🛡' })
-    router.replace(`/marketplace/payments/${payment.id}`)
+    // Land the customer on the live contract page — the receipt is
+    // still reachable from the contract footer.
+    router.replace(`/marketplace/jobs/${payment.jobId}/contract`)
   } catch (err: any) {
     topError.value = err?.data?.message ?? 'Could not authorise payment. Try again.'
     submitting.value = false

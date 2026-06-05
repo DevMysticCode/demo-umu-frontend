@@ -105,6 +105,16 @@
         </button>
       </div>
 
+      <!-- Open the live contract for the day-to-day job view. -->
+      <button class="rc-contract-link rc-anim-4" type="button" @click="goToContract">
+        <span class="rc-contract-link-ic">🛡</span>
+        <div class="rc-contract-link-body">
+          <div class="rc-contract-link-title">View live contract</div>
+          <div class="rc-contract-link-sub">Timeline, evidence and latest updates</div>
+        </div>
+        <span class="rc-contract-link-arrow">›</span>
+      </button>
+
       <!-- Pending-card note for stranded payments -->
       <div v-if="payment.status === 'pending'" class="rc-trust">
         <div class="rc-trust-icon">⚠️</div>
@@ -217,6 +227,9 @@ if (payment.value?.status === 'released') await checkReviewed()
 
 function goToReview() {
   if (payment.value) router.push(`/marketplace/jobs/${payment.value.jobId}/review`)
+}
+function goToContract() {
+  if (payment.value) router.push(`/marketplace/jobs/${payment.value.jobId}/contract`)
 }
 
 function formatMoney(pence: number): string {
@@ -449,6 +462,54 @@ function goBack() {
 }
 .rc-release-btn:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
 .rc-release-btn:not(:disabled):hover { filter: brightness(1.05); }
+
+/* ── View-contract link ────────────────────────────────────── */
+.rc-contract-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 40px);
+  margin: 14px 20px 0;
+  padding: 14px;
+  background: linear-gradient(135deg, #231d45, #352D5C);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 12px 28px -8px rgba(35, 29, 69, 0.4);
+  transition: filter 0.15s, transform 0.15s;
+}
+.rc-contract-link:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.rc-contract-link-ic {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00a19a, #008a84);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.rc-contract-link-body { flex: 1; min-width: 0; }
+.rc-contract-link-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.2px;
+}
+.rc-contract-link-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 2px;
+}
+.rc-contract-link-arrow {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
 
 /* ── Trust + error blocks ──────────────────────────────────── */
 .rc-trust {

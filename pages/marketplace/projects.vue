@@ -47,7 +47,7 @@
           :key="job.id"
           class="pj-row"
           type="button"
-          @click="openJob(job.id)"
+          @click="openJob(job.id, job.status)"
         >
           <div class="pj-row-photo" :style="{ background: jobBackground(job) }">
             <span class="pj-row-cat">{{ job.categoryLabel }}</span>
@@ -135,7 +135,17 @@ function jobBackground(job: MarketplaceJobListItem) {
   return job.photoBg ?? 'linear-gradient(135deg, #352D5C, #008A84)'
 }
 
-function openJob(id: string) { router.push(`/marketplace/jobs/${id}`) }
+// Active and completed jobs land on the live contract (timeline +
+// evidence + release/review CTAs). Open jobs with no accepted offer
+// don't have a contract yet — they continue to land on the detail
+// page so the customer can keep reviewing offers.
+function openJob(id: string, status?: string) {
+  if (status === 'in_progress' || status === 'completed') {
+    router.push(`/marketplace/jobs/${id}/contract`)
+  } else {
+    router.push(`/marketplace/jobs/${id}`)
+  }
+}
 function goPost() { router.push('/marketplace/post') }
 </script>
 
