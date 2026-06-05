@@ -157,17 +157,41 @@
         </div>
         <div class="score-strip-sub">UK avg 6.0t</div>
       </div>
-      <div
-        class="score-strip-item clickable"
-        :class="{ active: activePanel === 'street' }"
-        @click="togglePanel('street')"
-      >
-        <div class="score-strip-eyebrow">Street</div>
-        <div class="score-strip-num good">
-          {{ streetRank ?? '—' }}<span class="strip-unit">/{{ streetTotal ?? '—' }}</span>
+    </div>
+
+    <!-- ── STREET HERO CARD (ported 1:1 from `.hero` in the
+         umu-owner-journey prototype) ─────────────────────────────── -->
+    <div
+      class="hs-street-hero anim-3"
+      :class="{ active: activePanel === 'street' }"
+      @click="togglePanel('street')"
+    >
+      <div class="hsh-eyebrow">🏘 Your street · {{ streetNameTitle }}</div>
+      <div class="hsh-rankrow">
+        <span class="hsh-big">#{{ streetRank ?? 8 }}</span>
+        <div class="hsh-rmeta">
+          <b>of {{ streetTotal || 43 }} homes</b>
+          <p>£190 cheaper than the street average</p>
         </div>
-        <div class="score-strip-sub">{{ streetRankLabel }}</div>
       </div>
+      <div class="hsh-preview" aria-hidden="true">
+        <div class="hsh-road" />
+        <div
+          v-for="(p, i) in streetHeroPins"
+          :key="i"
+          class="hsh-ph"
+          :class="{ you: p.isYou }"
+          :style="{ left: p.left + '%', top: p.isYou ? '1px' : '5px' }"
+        >
+          <span v-if="p.isYou" class="hsh-pin">📍</span>
+          <span class="hsh-cd" :style="{ background: p.dot }" />
+        </div>
+      </div>
+      <span class="hsh-projchip">↑ You could be 2nd · save £{{ formatNum(potentialSaving) }}/yr</span>
+      <button class="hsh-cta" type="button" @click.stop="togglePanel('street')">
+        Explore your street map
+        <span class="hsh-cta-ar">→</span>
+      </button>
     </div>
 
     <!-- ── BILLS PANEL ─────────────────────────────────────────────── -->
@@ -1175,6 +1199,27 @@ const streetName = computed(() => {
   const cleaned = a.replace(/^\d+[a-z]?[,\s]+/i, '').trim()
   return (cleaned || 'WOODFIELD ROAD').toUpperCase()
 })
+
+// Title-cased version used in the eyebrow of the street hero card
+// (the prototype shows "Woodfield Road", not all-caps).
+const streetNameTitle = computed(() =>
+  streetName.value
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase()),
+)
+
+// Static pin layout that mirrors the prototype's `.preview` mini-strip —
+// 7 houses spread across the road, with the "you" pin highlighted with
+// a teal halo. Colours mirror the band legend.
+const streetHeroPins = [
+  { left: 0,  isYou: false, dot: '#37B27A' },
+  { left: 14, isYou: false, dot: '#E0584F' },
+  { left: 28, isYou: false, dot: '#E8A33A' },
+  { left: 43, isYou: true,  dot: '#E8A33A' },
+  { left: 60, isYou: false, dot: '#37B27A' },
+  { left: 74, isYou: false, dot: '#E0584F' },
+  { left: 88, isYou: false, dot: '#E8A33A' },
+]
 
 // Outward postcode (first half) for the Land Registry comparison line.
 const outwardPostcode = computed(() => {
@@ -3919,5 +3964,194 @@ const watchersDisplay = computed(() => {
 .claim-modal-enter-from .claim-sheet,
 .claim-modal-leave-to .claim-sheet {
   transform: translateY(100%);
+}
+
+/* ── Street hero card (1:1 with `.hero` in umu-owner-journey
+   prototype, lines 63-78). Sits below the bills/CO₂ strip and opens
+   the same street drill-down panel on tap. ─────────────────────── */
+.hs-street-hero {
+  position: relative;
+  overflow: hidden;
+  margin: 12px 20px 0;
+  padding: 17px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(25, 199, 166, 0.22), transparent 42%),
+    radial-gradient(circle at 10% 90%, rgba(193, 138, 56, 0.14), transparent 40%),
+    linear-gradient(150deg, #231D45, #33285C);
+  color: #fff;
+  box-shadow: 0 14px 34px rgba(20, 14, 50, 0.45);
+  cursor: pointer;
+}
+.hs-street-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 1px, transparent 1px, transparent 22px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 1px, transparent 1px, transparent 22px);
+  pointer-events: none;
+}
+.hs-street-hero > * { position: relative; z-index: 1; }
+.hs-street-hero.active {
+  box-shadow: 0 0 0 2px rgba(0, 161, 154, 0.5), 0 14px 34px rgba(20, 14, 50, 0.45);
+}
+
+.hsh-eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #9DEFDB;
+}
+.hsh-rankrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+.hsh-big {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 0.9;
+}
+.hsh-rmeta b {
+  font-size: 13px;
+  font-weight: 700;
+}
+.hsh-rmeta p {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 1px;
+}
+
+.hsh-preview {
+  position: relative;
+  margin: 14px 0 3px;
+  height: 54px;
+}
+.hsh-road {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 27px;
+  height: 11px;
+  background: #15102E;
+  border-radius: 3px;
+}
+.hsh-road::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  border-top: 2px dashed rgba(232, 163, 58, 0.55);
+}
+.hsh-ph {
+  position: absolute;
+  width: 22px;
+  height: 20px;
+  border-radius: 4px 4px 2px 2px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+.hsh-ph::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -1px;
+  right: -1px;
+  height: 8px;
+  background: inherit;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+}
+.hsh-cd {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.hsh-ph.you {
+  width: 28px;
+  height: 26px;
+  background: #9DEFDB;
+  box-shadow: 0 0 0 4px rgba(25, 199, 166, 0.3);
+  animation: hshPulse 2.2s ease-out infinite;
+}
+.hsh-ph.you .hsh-pin {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+}
+@keyframes hshPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(25, 199, 166, 0.4); }
+  70%  { box-shadow: 0 0 0 11px rgba(25, 199, 166, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(25, 199, 166, 0); }
+}
+
+.hsh-projchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 7px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #0c1f1a;
+  background: linear-gradient(135deg, #9DEFDB, #19C7A6);
+  padding: 6px 12px;
+  border-radius: 99px;
+}
+
+.hsh-cta {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  margin-top: 13px;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  color: #231D45;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.hsh-cta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(25, 199, 166, 0.25), transparent);
+  transform: translateX(-200%) skewX(-18deg);
+  animation: hshSheen 4.4s ease-in-out 1.2s infinite;
+}
+.hsh-cta-ar {
+  animation: hshNudge 1.5s ease-in-out infinite;
+}
+@keyframes hshSheen {
+  0%        { transform: translateX(-200%) skewX(-18deg); }
+  30%, 100% { transform: translateX(360%) skewX(-18deg); }
+}
+@keyframes hshNudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hsh-cta::after,
+  .hsh-cta-ar,
+  .hsh-ph.you { animation: none; }
 }
 </style>

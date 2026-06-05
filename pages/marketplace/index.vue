@@ -114,10 +114,9 @@
         v-for="cat in homeCategories"
         :key="cat.slug"
         class="mp-cat-tile"
-        :style="{ background: cat.background }"
+        :style="{ background: categoryTileBg(cat) }"
         @click="onPickCategory(cat.slug)"
       >
-        <span class="mp-cat-emoji" aria-hidden="true">{{ cat.emoji }}</span>
         <span class="mp-cat-name">{{ cat.name }}</span>
       </button>
     </div>
@@ -220,7 +219,7 @@ definePageMeta({ title: 'Marketplace — UmovingU' })
 const router = useRouter()
 const { profile } = useProfile()
 const { showToast } = useAppToast()
-const { fetchCategories, fetchJobs, fetchMyStats, fetchThreads, fetchEarnings, resolvePhotoUrl } = useMarketplace()
+const { fetchCategories, fetchJobs, fetchMyStats, fetchThreads, fetchEarnings, resolvePhotoUrl, categoryTileBg } = useMarketplace()
 
 // Backend returns `photoUrl` (real upload, relative path) and `photoBg`
 // (legacy gradient for seeded demo jobs) separately. We compose the
@@ -736,33 +735,40 @@ function onLearnUprotect() {
   position: relative;
   aspect-ratio: 1 / 1;
   border-radius: 14px;
-  border: none;
+  border: 1px solid #e4e5ed;
   color: #fff;
   cursor: pointer;
   font-family: inherit;
   overflow: hidden;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  padding: 0;
   transition: transform 0.15s, box-shadow 0.15s;
   box-shadow: 0 4px 10px rgba(35, 29, 69, 0.1);
+  background-size: cover;
+  background-position: center;
+}
+.mp-cat-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.78) 100%);
+  pointer-events: none;
 }
 .mp-cat-tile:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(35, 29, 69, 0.18);
-}
-.mp-cat-emoji {
-  font-size: 22px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+  box-shadow: 0 10px 22px rgba(35, 29, 69, 0.18);
 }
 .mp-cat-name {
-  font-size: 11.5px;
+  position: absolute;
+  bottom: 7px;
+  left: 8px;
+  right: 8px;
+  z-index: 2;
+  font-size: 10.5px;
   font-weight: 800;
   letter-spacing: -0.1px;
   text-align: left;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  line-height: 1.15;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* ── Job list cards ─────────────────────────────────────────────── */

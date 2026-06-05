@@ -204,6 +204,33 @@ export function useMarketplace() {
     return url
   }
 
+  // Slug → photographic background for category tiles. The prototype
+  // uses loremflickr; we mirror the exact tag list + lock numbers so
+  // the tiles render the same images. Falls back to a generic
+  // "trade,tools" query if the slug is unknown.
+  const CATEGORY_IMAGE: Record<string, string> = {
+    plumbing:   'https://loremflickr.com/400/400/plumber,pipework?lock=1001',
+    electrical: 'https://loremflickr.com/400/400/electrician,wiring?lock=1002',
+    carpentry:  'https://loremflickr.com/400/400/carpenter,woodwork?lock=1003',
+    painting:   'https://loremflickr.com/400/400/decorating,wall?lock=1004',
+    bathrooms:  'https://loremflickr.com/400/400/bathroom,interior?lock=1005',
+    kitchens:   'https://loremflickr.com/400/400/kitchen,cabinets?lock=1006',
+    garden:     'https://loremflickr.com/400/400/gardener,landscaping?lock=1007',
+    surveys:    'https://loremflickr.com/400/400/architecture,blueprint?lock=1008',
+    building:   'https://loremflickr.com/400/400/building,site?lock=1016',
+    heating:    'https://loremflickr.com/400/400/boiler,radiator?lock=1017',
+    windows:    'https://loremflickr.com/400/400/window,glazing?lock=1019',
+    cleaning:   'https://loremflickr.com/400/400/cleaning,housework?lock=1020',
+  }
+  const getCategoryImage = (slug: string): string =>
+    CATEGORY_IMAGE[slug] ?? `https://loremflickr.com/400/400/trade,tools?lock=${slug.length}`
+
+  // Composed CSS background — photo overlaid on the seeded gradient so
+  // the tile still has colour while the image streams in. Caller drops
+  // this straight into `:style="{ background: ... }"`.
+  const categoryTileBg = (cat: { slug: string; background: string }): string =>
+    `url(${getCategoryImage(cat.slug)}) center/cover no-repeat, ${cat.background}`
+
   const fetchCategories = () =>
     $fetch<MarketplaceCategory[]>(`${BASE_URL}/marketplace/categories`)
 
@@ -407,5 +434,7 @@ export function useMarketplace() {
     fetchEarnings,
     fetchPayouts,
     resolvePhotoUrl,
+    getCategoryImage,
+    categoryTileBg,
   }
 }

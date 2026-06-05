@@ -36,12 +36,12 @@
           :key="cat.slug"
           class="pj-cat-tile"
           :class="{ sel: form.categorySlug === cat.slug }"
-          :style="{ background: cat.background }"
+          :style="{ background: categoryTileBg(cat) }"
           type="button"
           @click="form.categorySlug = cat.slug"
         >
-          <span class="pj-cat-emoji">{{ cat.emoji }}</span>
           <span class="pj-cat-name">{{ cat.name }}</span>
+          <span v-if="form.categorySlug === cat.slug" class="pj-cat-tick" aria-hidden="true">✓</span>
         </button>
       </div>
     </template>
@@ -303,7 +303,7 @@ definePageMeta({ title: 'Post a job — Marketplace', middleware: 'auth' })
 
 const router = useRouter()
 const { showToast } = useAppToast()
-const { fetchCategories, uploadPhoto, createJob, resolvePhotoUrl } = useMarketplace()
+const { fetchCategories, uploadPhoto, createJob, resolvePhotoUrl, categoryTileBg } = useMarketplace()
 
 // ── Step machine ──────────────────────────────────────────────────
 const TOTAL_STEPS = 5
@@ -590,20 +590,63 @@ async function submit() {
   color: #fff;
   cursor: pointer;
   font-family: inherit;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  padding: 0;
+  overflow: hidden;
   transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
   box-shadow: 0 4px 10px rgba(35, 29, 69, 0.1);
+  background-size: cover;
+  background-position: center;
+}
+.pj-cat-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.78) 100%);
+  pointer-events: none;
 }
 .pj-cat-tile.sel {
   border-color: #00a19a;
-  box-shadow: 0 8px 18px rgba(0, 161, 154, 0.35);
+  box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.25), 0 10px 22px rgba(0, 161, 154, 0.45);
 }
-.pj-cat-emoji { font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18)); }
-.pj-cat-name { font-size: 12px; font-weight: 800; text-align: left; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+.pj-cat-tile.sel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: rgba(0, 161, 154, 0.18);
+  pointer-events: none;
+  z-index: 1;
+}
+.pj-cat-name {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  right: 10px;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: left;
+  letter-spacing: -0.1px;
+  line-height: 1.15;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+.pj-cat-tick {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #00a19a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 2px 6px rgba(0, 161, 154, 0.5), inset 0 0 0 2px #fff;
+}
 
 /* ── Step 2: photo checklist + grid ──────────────────────────── */
 .pj-photo-checklist {
@@ -657,22 +700,27 @@ async function submit() {
   position: relative;
   aspect-ratio: 1 / 1;
   border-radius: 12px;
-  background: #fff;
-  border: 2px dashed #d8dae6;
+  background: linear-gradient(135deg, #D5F0EE, #F2FAF8);
+  border: 1.5px dashed #B5E5E1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 800;
-  color: #a8a9ad;
+  color: #00635E;
   cursor: pointer;
   background-size: cover;
   background-position: center;
   overflow: hidden;
+  transition: border-color 0.15s, background 0.15s;
+}
+.pj-photo-tile:hover {
+  border-color: #00a19a;
+  background: #E5F4F2;
 }
 .pj-photo-tile.filled {
-  border: none;
-  background-color: #352D5C;
+  border: 1.5px solid transparent;
+  background-color: transparent;
 }
 .pj-photo-tile.uploading { color: #00a19a; }
 .pj-photo-input { display: none; }

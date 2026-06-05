@@ -70,10 +70,9 @@
         :key="cat.slug"
         class="mp-cat-tile"
         :class="{ sel: activeCategory === cat.slug }"
-        :style="{ background: cat.background }"
+        :style="{ background: categoryTileBg(cat) }"
         @click="toggleCategory(cat.slug)"
       >
-        <span class="mp-cat-emoji" aria-hidden="true">{{ cat.emoji }}</span>
         <span class="mp-cat-name">{{ cat.name }}</span>
       </button>
     </div>
@@ -145,7 +144,7 @@ definePageMeta({ title: 'Browse jobs — Marketplace' })
 
 const route = useRoute()
 const router = useRouter()
-const { fetchCategories, fetchJobs, resolvePhotoUrl } = useMarketplace()
+const { fetchCategories, fetchJobs, resolvePhotoUrl, categoryTileBg } = useMarketplace()
 
 function jobBackground(job: MarketplaceJobListItem): string | undefined {
   if (job.photoUrl) {
@@ -361,29 +360,39 @@ function openJob(id: string) {
   cursor: pointer;
   font-family: inherit;
   overflow: hidden;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  padding: 0;
   transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
   box-shadow: 0 4px 10px rgba(35, 29, 69, 0.1);
+  background-size: cover;
+  background-position: center;
+}
+.mp-cat-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.78) 100%);
+  pointer-events: none;
 }
 .mp-cat-tile:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(35, 29, 69, 0.18);
+  box-shadow: 0 10px 22px rgba(35, 29, 69, 0.18);
 }
 .mp-cat-tile.sel {
   border-color: #00a19a;
-  box-shadow: 0 8px 18px rgba(0, 161, 154, 0.35);
-}
-.mp-cat-emoji {
-  font-size: 22px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+  box-shadow: 0 8px 18px rgba(0, 161, 154, 0.45);
 }
 .mp-cat-name {
-  font-size: 11.5px; font-weight: 800; letter-spacing: -0.1px;
-  text-align: left; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  position: absolute;
+  bottom: 7px;
+  left: 8px;
+  right: 8px;
+  z-index: 2;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.1px;
+  text-align: left;
+  line-height: 1.15;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* Job list cards — identical to home page */

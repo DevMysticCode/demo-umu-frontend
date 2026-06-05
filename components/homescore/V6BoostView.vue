@@ -88,6 +88,44 @@
       </div>
     </div>
 
+    <!-- ── Make it official · EPC status card (1:1 with `.epcstatus`
+         from umu-owner-journey prototype, lines 318-329). Surfaces
+         that the public register is still showing the old EPC while
+         the boost work the user has done shows in their verified
+         score. ───────────────────────────────────────────────────── -->
+    <div class="boost-epcstatus">
+      <div class="bes-eye">Make it official</div>
+      <div class="bes-h">The public still sees your {{ officialPublicYear }} EPC</div>
+      <div class="bes-compare">
+        <div class="bes-badge stale">
+          <div class="bes-bl">Public record</div>
+          <div class="bes-letter">{{ officialPublicRating }}</div>
+          <div class="bes-num">{{ officialPublicScore }} · {{ officialPublicYear }}</div>
+          <span class="bes-tagp">out of date</span>
+        </div>
+        <span class="bes-arrow">→</span>
+        <div class="bes-badge ver">
+          <div class="bes-bl">Your verified score</div>
+          <div class="bes-letter">{{ officialVerifiedRating }}</div>
+          <div class="bes-num">{{ officialVerifiedScore }} · now</div>
+          <span class="bes-tagp">✓ confirmed</span>
+        </div>
+      </div>
+      <p class="bes-p">
+        Your <b>street rank and the public register</b> still read
+        {{ officialPublicRating }}·{{ officialPublicScore }} from
+        {{ officialPublicYear }} — so the work you've done isn't showing
+        where it counts. A new EPC syncs the public record to your verified
+        score.
+      </p>
+      <button class="bes-btn" type="button" @click="$emit('open-marketplace', 'epc')">
+        Update my EPC · from £60 →
+      </button>
+      <div class="bes-micro">
+        Only your new official EPC moves your public street rank.
+      </div>
+    </div>
+
     <!-- Upload a document. One question at a time — only the next
          unuploaded doc renders. After upload, the congratulations
          overlay celebrates the impact, then the next card slides in. -->
@@ -203,57 +241,19 @@
       <div class="boost-row-chev">›</div>
     </div>
 
-    <!-- Next step · Move Ready + Passport. SVG ring gauges show actual
-         progress (white arc on translucent track) — same dial language
-         as the journey card at the top, spaced wide so each reads as
-         its own milestone. -->
-    <div class="boost-next anim-2">
-      <div class="boost-next-eyebrow">✦ Next step on your journey</div>
-      <div class="boost-next-route">
-        <div class="boost-next-ring">
-          <svg viewBox="0 0 90 90" aria-hidden="true">
-            <circle cx="45" cy="45" r="38" class="boost-next-ring-track" />
-            <circle
-              cx="45"
-              cy="45"
-              r="38"
-              class="boost-next-ring-fill"
-              :stroke-dashoffset="nextRingOffset(moveReadyPct)"
-            />
-          </svg>
-          <div class="boost-next-ring-num">
-            {{ moveReadyPct }}<span class="pct">%</span>
-          </div>
-          <div class="boost-next-ring-label">Move Ready</div>
-        </div>
-        <div class="boost-next-ring">
-          <svg viewBox="0 0 90 90" aria-hidden="true">
-            <circle cx="45" cy="45" r="38" class="boost-next-ring-track" />
-            <circle
-              cx="45"
-              cy="45"
-              r="38"
-              class="boost-next-ring-fill"
-              :stroke-dashoffset="nextRingOffset(passportPct)"
-            />
-          </svg>
-          <div class="boost-next-ring-num">
-            {{ passportPct }}<span class="pct">%</span>
-          </div>
-          <div class="boost-next-ring-label">Passport</div>
-        </div>
+    <!-- Next step on your journey · 1:1 with `.nextstep` from the
+         umu-owner-journey prototype (lines 342-347). Reads as a single
+         decisive teal CTA — the rings live up top in the journey card
+         so we don't double up the dial language here. -->
+    <div class="nextstep anim-2">
+      <div class="ns-eye">✦ Next step on your journey</div>
+      <div class="ns-h">Your Passport is {{ passportPct }}% there.</div>
+      <div class="ns-p">
+        Each document you add lifts your scores. Reach Move Ready and publish
+        your Passport to lock in everything you've built.
       </div>
-      <div class="boost-next-title">Your Passport is taking shape.</div>
-      <div class="boost-next-sub">
-        Each document you add lifts both scores. Reach Move Ready status and
-        publish your Passport — lock in everything you've built.
-      </div>
-      <button
-        type="button"
-        class="boost-next-cta"
-        @click="$emit('start-passport')"
-      >
-        🚀 Start my Passport →
+      <button type="button" class="ns-btn" @click="$emit('start-passport')">
+        🚀 Continue my Passport →
       </button>
     </div>
 
@@ -324,12 +324,36 @@ interface Props {
   homeScore: number
   moveReadyStart?: number
   passportStart?: number
+  /** Public-register EPC fields — drive the "Make it official" card.
+   *  Falls back to the prototype's example values when missing. */
+  publicEpcRating?: string | null
+  publicEpcScore?: number | null
+  publicEpcYear?: string | number | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
   moveReadyStart: 12,
   passportStart: 30,
+  publicEpcRating: null,
+  publicEpcScore: null,
+  publicEpcYear: null,
 })
+
+// Score → EPC band letter. Matches the prototype's verified-score badge.
+function scoreToBand(s: number): string {
+  if (s >= 92) return 'A'
+  if (s >= 81) return 'B'
+  if (s >= 69) return 'C'
+  if (s >= 55) return 'D'
+  if (s >= 39) return 'E'
+  if (s >= 21) return 'F'
+  return 'G'
+}
+const officialPublicRating = computed(() => props.publicEpcRating ?? 'E')
+const officialPublicScore = computed(() => props.publicEpcScore ?? 46)
+const officialPublicYear = computed(() => String(props.publicEpcYear ?? '2017'))
+const officialVerifiedRating = computed(() => scoreToBand(props.homeScore))
+const officialVerifiedScore = computed(() => Math.round(props.homeScore))
 
 defineEmits<{
   (e: 'back'): void
@@ -402,15 +426,6 @@ const bookings = [
 ]
 
 const uploadedDocs = ref<string[]>([])
-
-// Circumference of the bottom-card ring (r=38 → 2πr ≈ 238.76). Used to
-// drive `stroke-dashoffset` from 0%→100% so the white arc grows as the
-// user uploads more docs.
-const NEXT_RING_CIRC = 2 * Math.PI * 38
-function nextRingOffset(pct: number): number {
-  const safe = Math.max(0, Math.min(100, pct))
-  return NEXT_RING_CIRC * (1 - safe / 100)
-}
 
 const moveReadyPct = computed(() => {
   const delta = uploadedDocs.value.reduce((acc, id) => {
@@ -1076,137 +1091,58 @@ function formatFileSize(bytes: number): string {
   flex-shrink: 0;
 }
 
-/* Next step card */
-.boost-next {
-  margin: 18px 20px 0;
-  padding: 22px 18px 18px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark) 70%);
-  border-radius: 16px;
-  color: white;
-  box-shadow: 0 12px 30px -8px rgba(0, 161, 154, 0.32);
-  position: relative;
-  overflow: hidden;
+/* Next step card · 1:1 with `.nextstep` from umu-owner-journey
+   prototype (lines 209-216). Solid teal gradient block with the
+   ✦ eyebrow, percentage-headlined Passport progress, and a white
+   inset CTA. ───────────────────────────────────────────────────── */
+.nextstep {
+  background: linear-gradient(155deg, #00A19A, #00857E);
+  border-radius: 18px;
+  padding: 20px 16px;
+  margin: 14px 16px 0;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(0, 120, 112, 0.3);
 }
-.boost-next::after {
-  content: '';
-  position: absolute;
-  top: -40%;
-  right: -15%;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.18) 0%,
-    transparent 65%
-  );
-  pointer-events: none;
-}
-.boost-next > * {
-  position: relative;
-  z-index: 1;
-}
-.boost-next-eyebrow {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 1.4px;
+.ns-eye {
+  font-size: 10px;
+  letter-spacing: 1.3px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 14px;
-}
-.boost-next-route {
-  display: flex;
-  align-items: flex-start;
-  /* Wide gap so the two rings sit as separate milestones, not jammed
-     side-by-side. Matches the visual rhythm of the top journey card. */
-  gap: 56px;
-  margin-bottom: 18px;
-  justify-content: center;
-}
-.boost-next-ring {
-  position: relative;
-  width: 90px;
-  text-align: center;
-}
-.boost-next-ring svg {
-  width: 90px;
-  height: 90px;
-  display: block;
-  transform: rotate(-90deg);
-}
-.boost-next-ring-track {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.22);
-  stroke-width: 6;
-}
-.boost-next-ring-fill {
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-dasharray: 238.76;
-  transition: stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.55));
-}
-.boost-next-ring-num {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
   font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -0.5px;
-  font-feature-settings: 'tnum';
 }
-.boost-next-ring-num .pct {
-  font-size: 14px;
-  font-weight: 700;
-  opacity: 0.85;
-  margin-left: 1px;
+.ns-h {
+  font-size: 21px;
+  font-weight: 750;
+  margin-top: 15px;
+  letter-spacing: -0.3px;
 }
-.boost-next-ring-label {
-  margin-top: 6px;
-  font-size: 9.5px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.85);
-  letter-spacing: 1.1px;
-  text-transform: uppercase;
-}
-.boost-next-title {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.4px;
-  line-height: 1.2;
-}
-.boost-next-sub {
+.ns-p {
   font-size: 12.5px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.5;
   margin-top: 8px;
-  line-height: 1.55;
 }
-.boost-next-cta {
+.ns-btn {
   display: flex;
   width: 100%;
-  padding: 14px 16px;
-  margin-top: 14px;
+  margin-top: 16px;
+  padding: 15px;
   border: none;
-  background: white;
-  color: var(--accent-dark);
-  border-radius: 12px;
+  border-radius: 13px;
+  background: #fff;
+  color: #007E78;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
-  cursor: pointer;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+  gap: 8px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.15s;
+}
+.ns-btn:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
 }
 
 /* Upload drawer body (rendered inside BaseDrawer) */
@@ -1474,5 +1410,140 @@ function formatFileSize(bytes: number): string {
 }
 .bcv-continue:hover {
   filter: brightness(1.06);
+}
+
+/* ── Make it official · EPC status card (1:1 with `.epcstatus` from
+   umu-owner-journey.html lines 100-116) ─────────────────────────── */
+.boost-epcstatus {
+  position: relative;
+  background: #fff;
+  border: 1.5px solid #ECD9AC;
+  border-radius: 18px;
+  padding: 17px;
+  margin: 16px 16px 0;
+  box-shadow: 0 10px 26px rgba(193, 138, 56, 0.14);
+  overflow: hidden;
+}
+.boost-epcstatus::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #C18A38, #A9772A);
+}
+.bes-eye {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #A9772A;
+  font-weight: 800;
+}
+.bes-h {
+  font-size: 17px;
+  font-weight: 750;
+  color: #231D45;
+  margin: 6px 0 14px;
+  letter-spacing: -0.2px;
+}
+.bes-compare {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bes-badge {
+  flex: 1;
+  border-radius: 13px;
+  padding: 13px 10px;
+  text-align: center;
+}
+.bes-badge.stale {
+  background: #F4F3F8;
+  border: 1px solid #E4E3EE;
+}
+.bes-badge.ver {
+  background: #E7F4F1;
+  border: 1px solid #BFE7DF;
+}
+.bes-bl {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+.bes-badge.stale .bes-bl { color: #7E7D93; }
+.bes-badge.ver   .bes-bl { color: #007E78; }
+.bes-letter {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  margin: 8px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+.bes-badge.stale .bes-letter { background: #D86F4A; opacity: 0.65; }
+.bes-badge.ver   .bes-letter { background: #6F9A33; }
+.bes-num {
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.bes-badge.stale .bes-num { color: #7E7D93; }
+.bes-badge.ver   .bes-num { color: #231D45; }
+.bes-tagp {
+  font-size: 9px;
+  font-weight: 700;
+  margin-top: 6px;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+.bes-badge.stale .bes-tagp { background: #E7E6F0; color: #8A8899; }
+.bes-badge.ver   .bes-tagp { background: #fff;    color: #007E78; }
+.bes-arrow {
+  font-size: 18px;
+  color: #C18A38;
+  font-weight: 700;
+  flex: none;
+}
+.bes-p {
+  font-size: 12px;
+  color: #7E7D93;
+  line-height: 1.5;
+  margin: 14px 0 0;
+}
+.bes-p b { color: #231D45; }
+.bes-btn {
+  display: flex;
+  width: 100%;
+  margin-top: 14px;
+  padding: 13px;
+  border: 2px solid #00A19A;
+  border-radius: 12px;
+  background: #fff;
+  color: #007E78;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.bes-btn:hover {
+  background: #00A19A;
+  color: #fff;
+}
+.bes-micro {
+  text-align: center;
+  font-size: 10px;
+  color: #A9A8BC;
+  margin-top: 9px;
 }
 </style>
