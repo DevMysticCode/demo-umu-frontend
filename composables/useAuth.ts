@@ -59,14 +59,6 @@ export const useAuth = () => {
     })
   }
 
-  /** Dev-only: bypasses Apple SDK — use on localhost */
-  const appleLoginMock = (email = 'apple-test@dev.local') => {
-    return $fetch(`${base}/auth/apple/mock`, {
-      method: 'POST',
-      body: { email, firstName: 'Apple', lastName: 'Test' },
-    })
-  }
-
   return {
     requestOtp,
     verifyOtp,
@@ -74,7 +66,6 @@ export const useAuth = () => {
     login,
     googleLogin,
     appleLogin,
-    appleLoginMock,
   }
 }
 
