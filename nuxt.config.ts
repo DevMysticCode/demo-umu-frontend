@@ -1,3 +1,20 @@
+// Production config requires real env values for keys/IDs that used to
+// have hardcoded literals here (DF4 audit Finding §5 hygiene). In dev
+// we keep the literals as a no-setup-required fallback; in production
+// we never substitute, and we warn loudly at build time if a required
+// var is missing so a deploy doesn't silently ship with empty config.
+const IS_PROD = process.env.NODE_ENV === 'production'
+
+function devOnly(envValue: string | undefined, devFallback: string, name: string): string {
+  if (envValue && envValue.trim()) return envValue
+  if (IS_PROD) {
+    // eslint-disable-next-line no-console
+    console.warn(`[nuxt.config] ${name} is unset in production — feature using it will be disabled.`)
+    return ''
+  }
+  return devFallback
+}
+
 export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ['@nuxt/ui', '@pinia/nuxt'],
@@ -38,22 +55,36 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
-    // Private keys (only available on server-side)
-    apiSecret: process.env.API_SECRET || '123',
-    // Public keys (exposed to client-side)
+    // No private keys live here — `apiSecret: '123'` was a dead
+    // scaffold default never read by any code. Removed.
     public: {
+      // apiBase: the only literal kept unconditionally — pointing at
+      // localhost in prod is a clear "this build was misconfigured"
+      // signal rather than a silent empty value.
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3002',
-      googleClientId:
-        process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID ||
+      googleClientId: devOnly(
+        process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
         '869780740735-rlucf6t174rb3dljniqfj3ri2r0kg9cj.apps.googleusercontent.com',
-      appleClientId:
-        process.env.NUXT_PUBLIC_APPLE_CLIENT_ID || 'io.umovingu.webapp',
-      appleRedirectUri:
-        process.env.NUXT_PUBLIC_APPLE_REDIRECT_URI ||
+        'NUXT_PUBLIC_GOOGLE_CLIENT_ID',
+      ),
+      appleClientId: devOnly(
+        process.env.NUXT_PUBLIC_APPLE_CLIENT_ID,
+        'io.umovingu.webapp',
+        'NUXT_PUBLIC_APPLE_CLIENT_ID',
+      ),
+      appleRedirectUri: devOnly(
+        process.env.NUXT_PUBLIC_APPLE_REDIRECT_URI,
         'https://demo-umu-frontend.vercel.app/auth/apple/callback',
-      stripeKey:
-        process.env.NUXT_PUBLIC_STRIPE_KEY ||
+        'NUXT_PUBLIC_APPLE_REDIRECT_URI',
+      ),
+      stripeKey: devOnly(
+        process.env.NUXT_PUBLIC_STRIPE_KEY,
+        // Stripe TEST publishable key — safe to commit. Test mode
+        // can only create test PaymentIntents, no real money moves.
+        // Production sets NUXT_PUBLIC_STRIPE_KEY to a pk_live_* value.
         'pk_test_51RvzhKLR3oJsnvMf4gRG09EZsz4uX4VYt89aqLXTTAdFnphlHHVyfzHlkLyR6I5U0TSi8Su5H3gTaT0Yasza7t6K00h9dldDgB',
+        'NUXT_PUBLIC_STRIPE_KEY',
+      ),
       mapboxToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN || '',
       googleApiKey: process.env.NUXT_PUBLIC_GOOGLE_API_KEY || '',
       osApiKey: process.env.NUXT_PUBLIC_OS_API_KEY || '',
