@@ -10,10 +10,10 @@
     "postinstall": "nuxt prepare",
     "mobile:assets": "capacitor-assets generate --ios",
     "mobile:sync": "npm run generate && cap sync ios",
-    "mobile:open": "cap open ios"
+    "mobile:open": "cap open ios",
+    "mobile:build:bundled": "cross-env CAPACITOR_BUILD=true nuxt generate && cap sync ios"
   },
   "dependencies": {
-    "@capacitor-community/apple-sign-in": "^7.1.0",
     "@capacitor/core": "^8.3.0",
     "@capacitor/local-notifications": "^7.0.6",
     "@capacitor/splash-screen": "^8.0.1",
@@ -31,6 +31,7 @@
     "@nuxt/devtools": "^1.5.2",
     "@nuxt/typescript-build": "^3.0.2",
     "@tailwindcss/typography": "^0.5.15",
+    "cross-env": "^10.1.0",
     "tailwindcss": "^3.4.16",
     "typescript": "^5.9.2"
   }

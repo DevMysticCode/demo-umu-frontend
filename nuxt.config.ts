@@ -3,6 +3,12 @@
 // we keep the literals as a no-setup-required fallback; in production
 // we never substitute, and we warn loudly at build time if a required
 // var is missing so a deploy doesn't silently ship with empty config.
+
+// CAPACITOR_BUILD=true forces SPA mode (no SSR, no Nitro server) so the
+// build output can be bundled into the iOS/Android shells. Without this
+// the default is SSR/universal — good for web, won't bundle for native.
+// `npm run build:capacitor` sets this; manual builds need not touch it.
+const IS_CAPACITOR_BUILD = process.env.CAPACITOR_BUILD === 'true'
 const IS_PROD = process.env.NODE_ENV === 'production'
 
 function devOnly(envValue: string | undefined, devFallback: string, name: string): string {
@@ -16,6 +22,10 @@ function devOnly(envValue: string | undefined, devFallback: string, name: string
 }
 
 export default defineNuxtConfig({
+  // SSR off for Capacitor: the native shells run the bundle from disk,
+  // there's no Node server inside the WebView. Keep SSR on for the web
+  // build so Vercel can pre-render.
+  ssr: !IS_CAPACITOR_BUILD,
   devtools: { enabled: false },
   modules: ['@nuxt/ui', '@pinia/nuxt'],
   css: ['~/assets/css/main.css'],
