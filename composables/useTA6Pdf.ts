@@ -166,7 +166,12 @@ export function useTA6Pdf() {
     const sellerName = passport.ownerName || ''
     const cityLine = [property?.city || property?.county, property?.postcode || passport.postcode].filter(Boolean).join(', ')
     const tenure = property?.tenure || findAnswer(sections, 'ownershipProfile', 'tenure') || ''
-    const titleNum = property?.titleNumber || ''
+    // Only print a title number when HMLR has confirmed one (post-fix,
+    // Property.titleNumber is null unless the backend's
+    // verifyOwnershipWithLandRegistry promoted it from a VERIFIED match).
+    // Empty cell on a conveyancing form is ambiguous to a solicitor, so
+    // use an explicit placeholder they recognise as deliberately unfilled.
+    const titleNum = property?.titleNumber || '[to be confirmed]'
 
     // Pull answers from passport sections (keys match seed.ts)
     const boundaries = getSectionAnswers(sections, 'boundaries')
