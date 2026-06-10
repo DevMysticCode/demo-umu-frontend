@@ -232,39 +232,55 @@ const mountStripe = async () => {
 }
 
 const handlePayment = async () => {
-  if (!props.property || !stripeInstance || !cardElement) return
+  if (!props.property) return
   loading.value = true
   errorMsg.value = ''
   stripeError.value = ''
 
   try {
-    const token = localStorage.getItem('token')
-    const { clientSecret } = await $fetch<{ clientSecret: string }>(
-      `${config.public.apiBase}/payment/create-intent`,
-      {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    )
-
-    const { error, paymentIntent } = await stripeInstance.confirmCardPayment(clientSecret, {
-      payment_method: { card: cardElement },
-    })
-
-    if (error) {
-      stripeError.value = error.message ?? 'Payment failed. Please try again.'
-      return
-    }
-
-    if (paymentIntent?.status !== 'succeeded') {
-      stripeError.value = 'Payment not completed. Please try again.'
-      return
-    }
-
     let result: { passportId: string }
+
     if (isBuyerMode.value && props.existingPassportId) {
+      // Buyer mode: £99 unlock with Stripe. The backend now gates
+      // buyer-unlock on a successful PassportPayment row for this
+      // (user, passport) pair — pass the passportId so the intent's
+      // metadata carries the link.
+      if (!stripeInstance || !cardElement) {
+        stripeError.value = 'Card form not ready. Please try again.'
+        return
+      }
+      const token = localStorage.getItem('token')
+      const { clientSecret } = await $fetch<{ clientSecret: string }>(
+        `${config.public.apiBase}/payment/create-intent`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: { passportId: props.existingPassportId },
+        },
+      )
+
+      const { error, paymentIntent } = await stripeInstance.confirmCardPayment(clientSecret, {
+        payment_method: { card: cardElement },
+      })
+
+      if (error) {
+        stripeError.value = error.message ?? 'Payment failed. Please try again.'
+        return
+      }
+      if (paymentIntent?.status !== 'succeeded') {
+        stripeError.value = 'Payment not completed. Please try again.'
+        return
+      }
+
+      // The webhook may not have fired yet; the backend re-fetches the
+      // intent from Stripe inside hasSuccessfulPayment so this is safe.
       result = await unlockPassport(props.existingPassportId)
     } else {
+      // Claim mode: owner creates their own passport. Currently free —
+      // see comment in pages/property/[id].vue:899 stating "buyer-unlock
+      // (£99)" as the only paywall surface. If product later wants to
+      // also charge for claim, build a separate flow that pre-allocates
+      // a draft passport, takes payment, then activates.
       result = await claimPassport(
         props.property.id,
         props.property.addressLine1,
