@@ -94,6 +94,17 @@
           >
             Add phone number →
           </NuxtLink>
+          <!-- Backend's KYC gate (assertKycVerified) throws with the
+               string "Identity verification (KYC) is required" — surface
+               the deep-link to the Persona-driven verification flow so
+               the user gets unstuck without a support email. -->
+          <NuxtLink
+            v-else-if="errorMsg.toLowerCase().includes('kyc') || errorMsg.toLowerCase().includes('identity verification')"
+            to="/buyer-profile/build"
+            class="cp__error-link"
+          >
+            Verify your identity →
+          </NuxtLink>
         </div>
 
         <button
