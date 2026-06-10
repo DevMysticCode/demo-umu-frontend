@@ -62,21 +62,10 @@ export default defineNuxtConfig({
       // localhost in prod is a clear "this build was misconfigured"
       // signal rather than a silent empty value.
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3002',
-      googleClientId: devOnly(
-        process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
-        '869780740735-rlucf6t174rb3dljniqfj3ri2r0kg9cj.apps.googleusercontent.com',
-        'NUXT_PUBLIC_GOOGLE_CLIENT_ID',
-      ),
-      appleClientId: devOnly(
-        process.env.NUXT_PUBLIC_APPLE_CLIENT_ID,
-        'io.umovingu.webapp',
-        'NUXT_PUBLIC_APPLE_CLIENT_ID',
-      ),
-      appleRedirectUri: devOnly(
-        process.env.NUXT_PUBLIC_APPLE_REDIRECT_URI,
-        'https://demo-umu-frontend.vercel.app/auth/apple/callback',
-        'NUXT_PUBLIC_APPLE_REDIRECT_URI',
-      ),
+      // Google + Apple OAuth removed — UMU uses email/password + OTP.
+      // If social login is reintroduced, restore the devOnly() blocks
+      // for googleClientId / appleClientId / appleRedirectUri and the
+      // backend /auth/google + /auth/apple endpoints.
       stripeKey: devOnly(
         process.env.NUXT_PUBLIC_STRIPE_KEY,
         // Stripe TEST publishable key — safe to commit. Test mode

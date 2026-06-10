@@ -45,27 +45,11 @@ export const useAuth = () => {
     })
   }
 
-  const googleLogin = (credential: string) => {
-    return $fetch(`${base}/auth/google`, {
-      method: 'POST',
-      body: { credential },
-    })
-  }
-
-  const appleLogin = (idToken: string, firstName?: string, lastName?: string) => {
-    return $fetch(`${base}/auth/apple`, {
-      method: 'POST',
-      body: { idToken, firstName, lastName },
-    })
-  }
-
   return {
     requestOtp,
     verifyOtp,
     register,
     login,
-    googleLogin,
-    appleLogin,
   }
 }
 
