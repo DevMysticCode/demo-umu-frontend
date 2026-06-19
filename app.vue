@@ -15,6 +15,14 @@ useHead({
     lang: 'en'
   }
 })
+
+// Native push notifications — only fires on Capacitor (iOS/Android);
+// no-ops on the web build. The composable defers backend registration
+// until a JWT exists in localStorage, so calling it pre-login is safe.
+if (process.client) {
+  const { register } = usePushNotifications()
+  onMounted(() => { void register() })
+}
 </script>
 <style scoped>
 .app {
