@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">UMovingU</string>
+    <string name="title_activity_main">UMovingU</string>
+    <string name="package_name">io.umovingu.app</string>
+    <string name="custom_url_scheme">io.umovingu.app</string>
+</resources>
