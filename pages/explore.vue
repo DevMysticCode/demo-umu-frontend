@@ -19,7 +19,11 @@
           >
             ?
           </button>
-          <div class="hero-avatar" data-tour="avatar" @click="navigateTo('/profile')">
+          <div
+            class="hero-avatar"
+            data-tour="avatar"
+            @click="navigateTo('/profile')"
+          >
             <UserAvatar
               :src="profile?.avatarUrl"
               :firstName="profile?.firstName"
@@ -77,7 +81,15 @@
           @mousedown.prevent="selectAddress(addr)"
         >
           <div class="addr-ic">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            >
               <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
               <circle cx="12" cy="10" r="3" />
             </svg>
@@ -87,7 +99,8 @@
               {{ addr.addressLine1 || addr.line1 || addr.address }}
             </div>
             <div class="addr-line2">
-              <span v-if="addr.city">{{ addr.city }} · </span>{{ addr.postcode || addr.addressLine2 || addr.line2 || '' }}
+              <span v-if="addr.city">{{ addr.city }} · </span
+              >{{ addr.postcode || addr.addressLine2 || addr.line2 || '' }}
             </div>
             <div class="addr-badges">
               <span
@@ -101,21 +114,30 @@
                 v-if="addr.hasPassport && addr.passportPublished"
                 class="addr-badge addr-badge--pub"
               >
-                <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="addr-badge-ic"
+                />
                 Passport Published
               </span>
               <span
                 v-else-if="addr.hasPassport"
                 class="addr-badge addr-badge--prog"
               >
-                <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="addr-badge-ic"
+                />
                 Passport In Progress
               </span>
-              <span
-                v-else
-                class="addr-badge addr-badge--unclaimed"
-              >
-                <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
+              <span v-else class="addr-badge addr-badge--unclaimed">
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="addr-badge-ic"
+                />
                 Unclaimed · Claim yours? →
               </span>
             </div>
@@ -125,7 +147,9 @@
             class="addr-hs"
             :style="{ color: hsDropColor(addr.homeScore ?? addr.epcScore) }"
           >
-            <span class="addr-hs-num">{{ addr.homeScore ?? addr.epcScore }}</span>
+            <span class="addr-hs-num">{{
+              addr.homeScore ?? addr.epcScore
+            }}</span>
             <span class="addr-hs-lbl">HS</span>
           </div>
         </div>
@@ -154,18 +178,15 @@
            committed filter; "Clear all" zeroes everything. Hidden when no
            filters are active. -->
       <div v-if="committedChips.length" class="filter-summary visible">
-        <span
-          v-for="c in committedChips"
-          :key="c.key"
-          class="fs-chip"
-        >
+        <span v-for="c in committedChips" :key="c.key" class="fs-chip">
           <span>{{ c.label }}</span>
           <span
             class="x"
             role="button"
             tabindex="0"
             @click="removeCommittedFilter(c.key)"
-          >×</span>
+            >×</span
+          >
         </span>
         <button class="fs-clear" @click="clearAllFilters">Clear all</button>
       </div>
@@ -761,7 +782,11 @@
 
           <HealthPassportCards />
 
-          <div class="pro-dark-card" data-tour="pro-card" @click="navigateTo('/explore')">
+          <div
+            class="pro-dark-card"
+            data-tour="pro-card"
+            @click="navigateTo('/explore')"
+          >
             <div class="pro-dark-icon">🔧</div>
             <div class="pro-dark-body">
               <div class="pro-dark-title">Book a gas safety check</div>
@@ -771,10 +796,43 @@
             </div>
             <div class="pro-dark-badge">Book</div>
           </div>
+
+          <div class="add-property-card" @click="startClaimFlow">
+            <div style="font-size: 22px; flex-shrink: 0">➕</div>
+            <div style="flex: 1">
+              <div
+                style="
+                  font-size: 14px;
+                  font-weight: 700;
+                  color: #231d45;
+                  margin-bottom: 2px;
+                "
+              >
+                Add another property
+              </div>
+              <div style="font-size: 13px; color: #4a5568">
+                Verify ownership, then choose Rental or Seller Passport
+              </div>
+            </div>
+            <div
+              style="
+                font-size: 13px;
+                font-weight: 700;
+                color: #00a19a;
+                flex-shrink: 0;
+              "
+            >
+              Add
+            </div>
+          </div>
         </template>
 
         <template v-else-if="role === 'buy'">
-          <div v-if="hasSavedSearch" class="saved-search-card" data-tour="saved-search">
+          <div
+            v-if="hasSavedSearch"
+            class="saved-search-card"
+            data-tour="saved-search"
+          >
             <div class="saved-search-top">
               <div style="font-size: 15px; font-weight: 700; color: #231d45">
                 Your saved search
@@ -849,7 +907,9 @@
             <div class="my-passport-ic">✓</div>
             <div class="my-passport-body">
               <div class="my-passport-title">Buyer Profile · Published</div>
-              <div class="my-passport-sub">Tap to view or share with sellers</div>
+              <div class="my-passport-sub">
+                Tap to view or share with sellers
+              </div>
             </div>
             <div class="my-passport-arrow">→</div>
           </div>
@@ -871,7 +931,11 @@
             <div class="my-passport-arrow">→</div>
           </div>
 
-          <div v-if="pulseHasAny || marketPulseLoading" class="market-pulse-card" data-tour="market-pulse">
+          <div
+            v-if="pulseHasAny || marketPulseLoading"
+            class="market-pulse-card"
+            data-tour="market-pulse"
+          >
             <div
               style="
                 font-size: 15px;
@@ -880,7 +944,9 @@
                 margin-bottom: 8px;
               "
             >
-              Market pulse<template v-if="pulseArea"> · {{ pulseArea }}</template>
+              Market pulse<template v-if="pulseArea">
+                · {{ pulseArea }}</template
+              >
             </div>
             <div v-if="marketPulseLoading && !pulseHasAny" class="pulse-grid">
               <div class="pulse-cell">
@@ -894,7 +960,9 @@
                 <div class="pulse-lbl">avg days to sell</div>
               </div>
               <div v-if="pulseYoY !== null" class="pulse-cell">
-                <div class="pulse-val" :style="{ color: pulseYoYColor }">{{ pulseYoY }}</div>
+                <div class="pulse-val" :style="{ color: pulseYoYColor }">
+                  {{ pulseYoY }}
+                </div>
                 <div class="pulse-lbl">price change YoY</div>
               </div>
               <div v-if="pulseListings !== null" class="pulse-cell">
@@ -904,7 +972,11 @@
             </div>
           </div>
 
-          <div class="feed-header" data-tour="foryou-feed" style="margin-top: 4px">
+          <div
+            class="feed-header"
+            data-tour="foryou-feed"
+            style="margin-top: 4px"
+          >
             <div class="feed-title">For You</div>
             <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
           </div>
@@ -1194,7 +1266,11 @@
 
           <HealthPassportCards />
 
-          <div class="feed-header" data-tour="foryou-feed" style="margin-top: 4px">
+          <div
+            class="feed-header"
+            data-tour="foryou-feed"
+            style="margin-top: 4px"
+          >
             <div class="feed-title">For You</div>
             <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
           </div>
@@ -1298,194 +1374,125 @@
         </template>
 
         <template v-else-if="role === 'landlord'">
-          <div class="portfolio-card">
-            <div class="portfolio-glow"></div>
-            <div style="position: relative; z-index: 1">
-              <div class="portfolio-eyebrow">Your portfolio</div>
-              <div class="portfolio-stats-row">
-                <div style="text-align: center">
-                  <div style="font-size: 20px; font-weight: 800; color: #fff">
-                    {{ passports.length || 3 }}
-                  </div>
-                  <div
-                    style="
-                      font-size: 11px;
-                      color: rgba(255, 255, 255, 0.4);
-                      margin-top: 2px;
-                    "
-                  >
-                    Properties
-                  </div>
+          <div
+            v-if="loadingPassport"
+            class="skeleton-card"
+            style="height: 110px; margin-bottom: 14px"
+          />
+          <div
+            v-else-if="passports.length"
+            class="passport-status-card"
+            data-tour="passport-status"
+            @click="navigateTo('/passportview/' + passports[0].id)"
+          >
+            <div class="psc-glow"></div>
+            <div class="psc-main" style="position: relative; z-index: 1">
+              <div class="psc-left">
+                <div class="psc-icon-box">
+                  <svg width="26" height="26" viewBox="0 0 877.69 877.69">
+                    <circle
+                      fill="rgba(255,255,255,0.1)"
+                      cx="438.85"
+                      cy="438.85"
+                      r="438.85"
+                    />
+                    <path
+                      fill="#fff"
+                      d="m573.6,497.11v21.8h-39.28l-.22-20.26c0-34.14-14.14-48.26-38.03-48.26s-38.03,14.12-38.03,48.26v41.36h-39.01v-42.9c0-52.88,28.77-82.14,77.29-82.14s77.29,29.26,77.29,82.14Z"
+                    />
+                    <path
+                      fill="#fff"
+                      d="m379.84,415.26c48.52,0,77.29,29.26,77.29,82.14v42.9s-39.01,0-39.01,0v-41.36c0-34.14-13.9-48.26-38.03-48.26-23.89,0-38.03,14.12-38.03,48.26l-.15,20.26h-39.24s-.1-21.8-.1-21.8c0-52.88,28.77-82.14,77.29-82.14Z"
+                    />
+                    <path
+                      fill="#3dbda3"
+                      d="m689.16,439c-.03-11.46-8.86-20.75-19.76-20.75s-19.76,9.32-19.76,20.81h.04v92.38c0,34.14-14.14,48.26-38.03,48.26s-38.03-14.12-38.03-48.26v-12.54h-39.32v14.08c0,52.88,29.07,82.14,77.59,82.14s77.28-29.26,77.28-82.14v-93.98h-.02Z"
+                    />
+                    <path
+                      fill="#3dbda3"
+                      d="m187.37,439c.03-11.46,8.86-20.75,19.76-20.75,10.91,0,19.76,9.32,19.76,20.81h-.04v92.38c0,34.14,14.14,48.26,38.03,48.26,24.14,0,37.79-14.12,37.79-48.26v-12.54s39.25,0,39.25,0v14.08c0,52.88-28.77,82.14-77.29,82.14-48.52,0-77.28-29.26-77.28-82.14v-93.98s.02,0,.02,0Z"
+                    />
+                    <path
+                      fill="#3dbda3"
+                      d="m677.57,352.22l-226.28-134.71c-3.1-1.81-6.69-2.82-10.34-2.91h-.57l-.39-1.48h-.54c-3.68.1-7.26,1.11-10.38,2.93l-157.5,93.76v-16.4c0-10.74-9.3-19.48-20.72-19.48s-20.72,8.74-20.72,19.48v41.08l-27.33,16.27c-9.7,5.67-12.68,17.71-6.64,26.83,6.03,9.12,18.84,11.92,28.55,6.24l215.48-128.28,215.49,128.29c3.33,1.95,7.08,2.95,10.91,2.95,1.58,0,3.17-.17,4.74-.51,5.39-1.18,9.97-4.26,12.9-8.68,6.03-9.12,3.05-21.15-6.64-26.82Z"
+                    />
+                  </svg>
                 </div>
-                <div style="text-align: center">
-                  <div
-                    style="font-size: 20px; font-weight: 800; color: #4ade80"
-                  >
-                    {{ portfolioCompliant }}
+                <div>
+                  <div class="psc-label-small">Property Passport</div>
+                  <div class="psc-address">
+                    {{ passports[0].address || passports[0].addressLine1 }}
                   </div>
-                  <div
-                    style="
-                      font-size: 11px;
-                      color: rgba(255, 255, 255, 0.4);
-                      margin-top: 2px;
-                    "
-                  >
-                    Compliant
-                  </div>
-                </div>
-                <div style="text-align: center">
-                  <div
-                    style="font-size: 20px; font-weight: 800; color: #f87171"
-                  >
-                    {{ portfolioActionNeeded }}
-                  </div>
-                  <div
-                    style="
-                      font-size: 11px;
-                      color: rgba(255, 255, 255, 0.4);
-                      margin-top: 2px;
-                    "
-                  >
-                    Action needed
-                  </div>
-                </div>
-              </div>
-
-              <div
-                v-if="portfolioActionNeeded > 0 && portfolioAlertAddress"
-                class="portfolio-alert"
-              >
-                <div style="font-size: 16px">⚠️</div>
-                <div style="flex: 1">
-                  <div
-                    style="
-                      font-size: 13px;
-                      font-weight: 700;
-                      color: #fca5a5;
-                      margin-bottom: 1px;
-                    "
-                  >
-                    Action needed on {{ portfolioAlertAddress }}
-                  </div>
-                  <div
-                    style="font-size: 12px; color: rgba(255, 255, 255, 0.45)"
-                  >
-                    Rental Passport
-                  </div>
-                </div>
-                <div
-                  style="
-                    font-size: 12px;
-                    font-weight: 700;
-                    color: #f5c44c;
-                    flex-shrink: 0;
-                    cursor: pointer;
-                  "
-                  @click.stop="navigateTo('/explore')"
-                >
-                  Book
+                  <div class="psc-postcode">{{ passports[0].postcode }}</div>
                 </div>
               </div>
-
-              <template v-if="passports.length">
-                <div
-                  v-for="p in passports"
-                  :key="p.id"
-                  class="portfolio-prop-row"
-                  @click="navigateTo('/passportview/' + p.id)"
-                >
-                  <div style="flex: 1; min-width: 0">
-                    <div
-                      style="
-                        font-size: 14px;
-                        font-weight: 700;
-                        color: #fff;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                      "
-                    >
-                      {{ p.address || p.addressLine1 }}
-                    </div>
-                    <div
-                      style="font-size: 12px; color: rgba(255, 255, 255, 0.4)"
-                    >
-                      Rental Passport
-                    </div>
-                  </div>
-                  <div
-                    :style="{
-                      fontSize: '10px',
-                      fontWeight: '700',
-                      color:
-                        (p.completionPercentage ?? 0) >= 80
-                          ? '#4ade80'
-                          : '#f87171',
-                      flexShrink: '0',
-                      marginRight: '6px',
-                    }"
-                  >
-                    {{
-                      (p.completionPercentage ?? 0) >= 80
-                        ? 'Compliant'
-                        : 'Action needed'
-                    }}
-                  </div>
-                  <div
-                    style="
-                      font-size: 15px;
-                      font-weight: 800;
-                      color: #fff;
-                      flex-shrink: 0;
-                      width: 28px;
-                      text-align: right;
-                    "
-                  >
-                    {{ Math.round((p.completionPercentage ?? 0) * 0.9) }}
-                  </div>
-                </div>
-              </template>
-              <template v-else>
-                <div
-                  class="portfolio-prop-row"
-                  style="justify-content: center; padding: 16px 0"
-                  @click="startClaimFlow"
-                >
-                  <div style="text-align: center">
-                    <div
-                      style="
-                        font-size: 14px;
-                        font-weight: 700;
-                        color: #fff;
-                        margin-bottom: 4px;
-                      "
-                    >
-                      No rental passports yet
-                    </div>
-                    <div
-                      style="font-size: 12px; color: rgba(255, 255, 255, 0.5)"
-                    >
-                      Claim your first property Passport to see compliance
-                      tracking here.
-                    </div>
-                  </div>
-                </div>
-              </template>
-
-              <div
-                style="
-                  margin-top: 10px;
-                  font-size: 12px;
-                  font-weight: 700;
-                  color: rgba(255, 255, 255, 0.5);
-                  text-align: center;
-                  cursor: pointer;
-                "
-                @click="navigateTo('/passport')"
-              >
-                View all in Passport tab
+              <div class="psc-gauge">
+                <svg width="54" height="34" viewBox="0 0 58 36">
+                  <path
+                    d="M 7 34 A 24 24 0 0 1 51 34"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.2)"
+                    stroke-width="4"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 7 34 A 24 24 0 0 1 51 34"
+                    fill="none"
+                    stroke="#3dbda3"
+                    stroke-width="4"
+                    stroke-linecap="round"
+                    stroke-dasharray="75.4"
+                    :stroke-dashoffset="passportDashoffset"
+                  />
+                </svg>
+                <div class="psc-gauge-num">{{ passportScore }}</div>
+                <div class="psc-gauge-lbl">Score</div>
               </div>
             </div>
+            <div class="psc-footer" style="position: relative; z-index: 1">
+              <div class="psc-footer-stats">
+                <span class="psc-stat"
+                  >Complete
+                  <strong
+                    >{{ passports[0].completionPercentage ?? 0 }}%</strong
+                  ></span
+                >
+                <span v-if="passportDaysActive" class="psc-stat"
+                  >Day <strong>{{ passportDaysActive }}</strong></span
+                >
+              </div>
+              <div class="psc-view-cta">View Passport</div>
+            </div>
+          </div>
+          <div
+            v-else
+            class="no-passport-card"
+            data-tour="passport-status"
+            @click="startClaimFlow"
+          >
+            <div class="no-pp-icon">📋</div>
+            <div class="no-pp-body">
+              <div class="no-pp-title">No passport yet</div>
+              <div class="no-pp-sub">
+                Search for your property to claim your first Passport
+              </div>
+            </div>
+            <div class="no-pp-cta">Claim</div>
+          </div>
+
+          <!-- Next action card for landlord (matches seller position) -->
+          <div
+            v-if="passports.length"
+            class="next-action-card"
+            data-tour="next-action"
+            @click="navigateTo('/passportview/' + passports[0].id)"
+          >
+            <div class="na-icon">⚡</div>
+            <div class="na-body">
+              <div class="na-title">{{ nextActionLabel }}</div>
+              <div class="na-sub">{{ nextActionSub }}</div>
+            </div>
+            <div class="na-cta">Add</div>
           </div>
 
           <HealthPassportCards />
@@ -1550,7 +1557,12 @@
         :class="{ open: showFilters }"
         @click="closeFilterSheet"
       />
-      <div class="sheet" :class="{ open: showFilters }" role="dialog" aria-modal="true">
+      <div
+        class="sheet"
+        :class="{ open: showFilters }"
+        role="dialog"
+        aria-modal="true"
+      >
         <div class="sheet-grabber-wrap" @click="closeFilterSheet">
           <div class="sheet-grabber" />
         </div>
@@ -1646,10 +1658,9 @@
                 :class="{ active: draft.epc === opt.value }"
                 @click="draft.epc = opt.value"
               >
-                <span
-                  class="epc-tile"
-                  :style="{ background: opt.color }"
-                >{{ opt.value }}</span>
+                <span class="epc-tile" :style="{ background: opt.color }">{{
+                  opt.value
+                }}</span>
                 {{ opt.label }}
               </button>
             </div>
@@ -1671,11 +1682,12 @@
                 max="90"
                 step="5"
                 :value="draft.hs"
-                :style="{ '--fill': (draft.hs / 90 * 100) + '%' }"
+                :style="{ '--fill': (draft.hs / 90) * 100 + '%' }"
                 @input="onHsInput(($event.target as HTMLInputElement).value)"
               />
               <div class="slider-scale">
-                <span>Any</span><span>30</span><span>50</span><span>70</span><span>90</span>
+                <span>Any</span><span>30</span><span>50</span><span>70</span
+                ><span>90</span>
               </div>
             </div>
           </div>
@@ -1699,7 +1711,9 @@
           <button class="sheet-cancel" @click="closeFilterSheet">Cancel</button>
           <button class="sheet-apply" @click="applyDraft">
             <span>Apply</span>
-            <span v-if="draftFilterCount > 0" class="count">{{ draftFilterCount }}</span>
+            <span v-if="draftFilterCount > 0" class="count">{{
+              draftFilterCount
+            }}</span>
           </button>
         </div>
       </div>
@@ -1758,7 +1772,7 @@ const exploreTourSteps = [
   {
     selector: '[data-tour="buyer-profile"]',
     title: 'Your Buyer Profile',
-    body: 'Prove you\'re a verified buyer (ID, funds, chain position). Share it with any seller or agent to stand out.',
+    body: "Prove you're a verified buyer (ID, funds, chain position). Share it with any seller or agent to stand out.",
   },
   {
     selector: '[data-tour="market-pulse"]',
@@ -1793,7 +1807,7 @@ const exploreTourSteps = [
   {
     selector: '.prop-card',
     title: 'Tap any property',
-    body: 'You\'ll see EPC, HomeScore and — for verified ones — the full Property Passport.',
+    body: "You'll see EPC, HomeScore and — for verified ones — the full Property Passport.",
   },
   {
     selector: '[data-tour="tour-btn"]',
@@ -1883,14 +1897,27 @@ const draft = ref<FilterDraft>({
   passport: false,
 })
 
-const distanceOptions: { value: number | null; label: string; hint: string }[] = [
-  { value: null, label: 'Exact address only', hint: 'Score just this property' },
-  { value: 0.5, label: 'Within 0.5 miles', hint: 'Same street & immediate neighbours' },
-  { value: 1, label: 'Within 1 mile', hint: 'Roughly the same neighbourhood' },
-  { value: 2, label: 'Within 2 miles', hint: 'Whole side of town' },
-  { value: 5, label: 'Within 5 miles', hint: 'Across the city' },
-  { value: 10, label: 'Within 10 miles', hint: 'Wider catchment' },
-]
+const distanceOptions: { value: number | null; label: string; hint: string }[] =
+  [
+    {
+      value: null,
+      label: 'Exact address only',
+      hint: 'Score just this property',
+    },
+    {
+      value: 0.5,
+      label: 'Within 0.5 miles',
+      hint: 'Same street & immediate neighbours',
+    },
+    {
+      value: 1,
+      label: 'Within 1 mile',
+      hint: 'Roughly the same neighbourhood',
+    },
+    { value: 2, label: 'Within 2 miles', hint: 'Whole side of town' },
+    { value: 5, label: 'Within 5 miles', hint: 'Across the city' },
+    { value: 10, label: 'Within 10 miles', hint: 'Wider catchment' },
+  ]
 const propertyTypeOptions = [
   { value: 'any', label: 'Any' },
   { value: 'detached', label: 'Detached' },
@@ -1908,7 +1935,7 @@ const bedsOptions: { value: number | null; label: string }[] = [
   { value: 5, label: '5+' },
 ]
 const epcOptions = [
-  { value: 'A', label: 'A',  color: '#008060' },
+  { value: 'A', label: 'A', color: '#008060' },
   { value: 'B', label: 'B+', color: '#2EAB55' },
   { value: 'C', label: 'C+', color: '#93C949' },
   { value: 'D', label: 'D+', color: '#F4D63A' },
@@ -1985,7 +2012,9 @@ const committedChips = computed<{ key: string; label: string }[]>(() => {
   if (activeRadius.value != null) {
     chips.push({ key: 'distance', label: distLabelShort(activeRadius.value) })
   }
-  if (!(committedPtype.value.length === 1 && committedPtype.value[0] === 'any')) {
+  if (
+    !(committedPtype.value.length === 1 && committedPtype.value[0] === 'any')
+  ) {
     committedPtype.value.forEach((v) =>
       chips.push({ key: `ptype:${v}`, label: PTYPE_LABELS[v] ?? v }),
     )
@@ -2166,7 +2195,7 @@ const nextActionLabel = computed(() => {
   if (pct >= 100) return 'Publish your passport'
   if (pct >= 80) return 'Almost there — finish your passport'
   if (pct >= 40) return 'Continue your passport'
-  return 'Start your passport sections'
+  return 'Pick up where you left off'
 })
 
 const nextActionSub = computed(() => {
@@ -2217,10 +2246,18 @@ async function fetchMarketPulse() {
   }
 }
 
-watch(userPostcode, (pc) => { if (pc) fetchMarketPulse() }, { immediate: false })
+watch(
+  userPostcode,
+  (pc) => {
+    if (pc) fetchMarketPulse()
+  },
+  { immediate: false },
+)
 
 // Derived display strings — null/no-data states collapse cleanly.
-const pulseArea = computed(() => marketPulse.value?.area || userPostcode.value || '')
+const pulseArea = computed(
+  () => marketPulse.value?.area || userPostcode.value || '',
+)
 const pulseYoY = computed<string | null>(() => {
   const v = marketPulse.value?.priceChangeYoY
   if (typeof v !== 'number') return null
@@ -2235,9 +2272,14 @@ const pulseListings = computed<number | null>(() => {
   const n = marketPulse.value?.passportListings
   return typeof n === 'number' ? n : null
 })
-const pulseDays = computed<number | null>(() => marketPulse.value?.avgDaysToSell ?? null)
+const pulseDays = computed<number | null>(
+  () => marketPulse.value?.avgDaysToSell ?? null,
+)
 const pulseHasAny = computed(
-  () => pulseYoY.value !== null || pulseListings.value !== null || pulseDays.value !== null,
+  () =>
+    pulseYoY.value !== null ||
+    pulseListings.value !== null ||
+    pulseDays.value !== null,
 )
 
 const savedSearchPills = computed(() => {
@@ -2490,24 +2532,29 @@ onMounted(async () => {
   const cachedRole = localStorage.getItem('umu_role')
   if (cachedRole) role.value = normalizeRole(cachedRole)
 
-  const [prefResult, passportResult, propResult, verifiedResult, buyerProfileResult] =
-    await Promise.allSettled([
-      $fetch<any>(`${config.public.apiBase}/profile/preferences`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-      $fetch<any[]>(`${config.public.apiBase}/profile/passports`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-      $fetch<{ items: any[] }>(`${config.public.apiBase}/property/for-you`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-      $fetch<{ items: any[] }>(
-        `${config.public.apiBase}/property/verified-passports?limit=12`,
-      ),
-      $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-    ])
+  const [
+    prefResult,
+    passportResult,
+    propResult,
+    verifiedResult,
+    buyerProfileResult,
+  ] = await Promise.allSettled([
+    $fetch<any>(`${config.public.apiBase}/profile/preferences`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+    $fetch<any[]>(`${config.public.apiBase}/profile/passports`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+    $fetch<{ items: any[] }>(`${config.public.apiBase}/property/for-you`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+    $fetch<{ items: any[] }>(
+      `${config.public.apiBase}/property/verified-passports?limit=12`,
+    ),
+    $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  ])
 
   if (buyerProfileResult.status === 'fulfilled') {
     buyerProfilePublished.value = !!buyerProfileResult.value?.published
