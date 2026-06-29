@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AppTheme color references in values/styles.xml expect these to
+         resolve at aapt-link time. Without this file the Android build
+         fails with "resource color/colorPrimary not found". Values
+         match the splash backgroundColor in capacitor.config.ts so
+         the launcher and theme stay visually consistent. -->
+    <color name="colorPrimary">#231D45</color>
+    <color name="colorPrimaryDark">#16102E</color>
+    <color name="colorAccent">#7B61FF</color>
+</resources>

@@ -332,6 +332,10 @@ const handleLogin = async () => {
   try {
     const response: any = await login(emailInput.value, passwordInput.value)
     localStorage.setItem('token', response.token)
+    // Native push tokens are registered on app boot, before the user
+    // has a JWT — drain the cached one now that we do.
+    const { syncTokenAfterSignin } = usePushNotifications()
+    await syncTokenAfterSignin()
     await redirectAfterAuth()
   } catch {
     loginError.value = 'Incorrect email or password. Please try again.'

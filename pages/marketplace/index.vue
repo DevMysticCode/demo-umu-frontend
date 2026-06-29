@@ -365,7 +365,7 @@ function notImplemented(msg: string) {
 function onPostJob() {
   if (!isAuthed.value) {
     showToast({ message: 'Sign in to post a job', iconEmoji: '🔒' })
-    router.push('/login')
+    router.push('/onboarding/signin')
     return
   }
   router.push('/marketplace/post')
@@ -373,7 +373,7 @@ function onPostJob() {
 function onOpenInbox() {
   if (!isAuthed.value) {
     showToast({ message: 'Sign in to see messages', iconEmoji: '🔒' })
-    router.push('/login')
+    router.push('/onboarding/signin')
     return
   }
   router.push('/marketplace/inbox')
