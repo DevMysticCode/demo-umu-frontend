@@ -99,6 +99,10 @@ export const useVerificationCode = () => {
         })
         localStorage.setItem('token', regRes.token)
         sessionStorage.removeItem('umu-pending-email')
+        // OTP-driven signup completes here too — flush any cached push
+        // token so notifications work on the very first session.
+        const { syncTokenAfterSignin } = usePushNotifications()
+        await syncTokenAfterSignin()
         pendingSignup.value = null
         await navigateTo('/onboarding/preferences?new=true')
       } else {
