@@ -13,7 +13,15 @@ const IS_PROD = process.env.NODE_ENV === 'production'
 
 function devOnly(envValue: string | undefined, devFallback: string, name: string): string {
   if (envValue && envValue.trim()) return envValue
-  if (IS_PROD) {
+  // Capacitor bundled builds (TestFlight / Play Internal Testing) run
+  // through `nuxt generate` which forces NODE_ENV=production — but
+  // they're not user-facing prod, they're QA. Falling back to '' here
+  // (the old behaviour) silently broke the Stripe card form in
+  // TestFlight because every other code path treats stripeKey='' as
+  // "Stripe not configured". Keep the dev fallback in Capacitor mode
+  // so the test key keeps working; warn loudly only for real web
+  // production builds where a leaked test key is the actual risk.
+  if (IS_PROD && !IS_CAPACITOR_BUILD) {
     // eslint-disable-next-line no-console
     console.warn(`[nuxt.config] ${name} is unset in production — feature using it will be disabled.`)
     return ''

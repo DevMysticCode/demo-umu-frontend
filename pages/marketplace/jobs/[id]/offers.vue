@@ -227,7 +227,17 @@ const acceptedOffer = computed(() => offers.value.find((o) => o.status === 'acce
 const pendingCount = computed(() => offers.value.filter((o) => o.status === 'pending').length)
 
 function formatBudget(amount: number): string {
-  return `£${new Intl.NumberFormat('en-GB').format(amount)}`
+  // Show pence when present (£5.50 includes a fee), drop them when
+  // the value is a clean pound (£5). Intl currency formatter does
+  // the right thing for both shapes.
+  const hasPence = Math.abs(amount * 100 - Math.round(amount * 100)) < 0.0001
+    && amount !== Math.floor(amount)
+  return new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP',
+    minimumFractionDigits: hasPence ? 2 : 0,
+    maximumFractionDigits: 2,
+  }).format(amount)
 }
 
 function statusLabel(s: MarketplaceOffer['status']): string {
@@ -263,8 +273,15 @@ function onAccept(offerId: string) {
 }
 
 function authorizeTotal(jobPrice: number): number {
-  // Mirrors backend's PLATFORM_FEE_BPS = 1000 (10%).
-  return jobPrice + Math.round(jobPrice * 0.1)
+  // Mirrors backend's PLATFORM_FEE_BPS = 1000 (10%). The previous
+  // version did the round in pounds (Math.round(5 * 0.1) = 1) which
+  // showed "£6" on this accept screen but the authorize page charged
+  // £5.50 (computed in pence) — a real mismatch flagged by DF4 audit.
+  // Doing the arithmetic in pence and converting back to pounds at
+  // the end keeps both sides aligned to the penny.
+  const pence = Math.round(jobPrice * 100)
+  const totalPence = pence + Math.round((pence * 1000) / 10_000)
+  return totalPence / 100
 }
 
 async function onMessage(offerId: string) {

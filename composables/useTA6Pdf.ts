@@ -169,9 +169,17 @@ export function useTA6Pdf() {
     // Only print a title number when HMLR has confirmed one (post-fix,
     // Property.titleNumber is null unless the backend's
     // verifyOwnershipWithLandRegistry promoted it from a VERIFIED match).
+    //
     // Empty cell on a conveyancing form is ambiguous to a solicitor, so
-    // use an explicit placeholder they recognise as deliberately unfilled.
-    const titleNum = property?.titleNumber || '[to be confirmed]'
+    // we surface an explicit "[to be confirmed]" placeholder — but only
+    // when the cell would otherwise be empty. Tracking the realness of
+    // the title separately fixes the DF4 finding where the
+    // `titleNum ? ...` render guard was always-truthy because the
+    // fallback string was itself truthy, leaving every PDF stamped
+    // "Title No: [to be confirmed]" even when a real one existed
+    // elsewhere in the data flow.
+    const hasRealTitle = Boolean(property?.titleNumber && property.titleNumber.trim())
+    const titleNum = hasRealTitle ? (property!.titleNumber as string) : '[to be confirmed]'
 
     // Pull answers from passport sections (keys match seed.ts)
     const boundaries = getSectionAnswers(sections, 'boundaries')
@@ -236,7 +244,7 @@ export function useTA6Pdf() {
 <div class="property-box">
   <div class="property-box-title">Property address</div>
   <div class="property-address">${esc(addr)}</div>
-  ${cityLine ? `<div class="property-sub">${esc(cityLine)}${titleNum ? `&nbsp;&nbsp;|&nbsp;&nbsp;Title No:&nbsp;<strong>${esc(titleNum)}</strong>` : ''}</div>` : ''}
+  ${cityLine ? `<div class="property-sub">${esc(cityLine)}&nbsp;&nbsp;|&nbsp;&nbsp;Title No:&nbsp;<strong${hasRealTitle ? '' : ' style="color:#888;font-style:italic"'}>${esc(titleNum)}</strong></div>` : ''}
 </div>
 
 <!-- ══ IMPORTANT NOTICE ════════════════════════════════════════════════════ -->

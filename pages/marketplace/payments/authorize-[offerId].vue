@@ -201,6 +201,13 @@ onBeforeUnmount(() => {
 
 const canSubmit = computed(() => !!offer.value && cardReady.value && !cardError.value)
 
+// Cache the PaymentIntent created by step 1 so a step-2 / step-3
+// failure that triggers a retry doesn't re-call authorizeOffer (the
+// backend short-circuits with "already has a payment in progress",
+// which used to leave the user stuck). Cleared on success or fatal
+// errors only.
+const pendingIntent = ref<{ paymentId: string; clientSecret: string } | null>(null)
+
 async function submit() {
   if (!canSubmit.value || submitting.value || !offer.value) return
   submitting.value = true
@@ -208,16 +215,24 @@ async function submit() {
   cardError.value = ''
 
   try {
-    // 1. Server-side: accept offer + create PaymentIntent. After this
-    //    point the job is in_progress and other offers are declined,
-    //    so failure here must surface clearly.
-    processingLabel.value = 'Reserving offer…'
-    const { payment, clientSecret } = await authorizeOffer(offerId.value)
+    // 1. Server-side: accept offer + create PaymentIntent. The Stripe
+    //    SDK side is idempotent (we pass `escrow:<offerId>` as the
+    //    idempotencyKey) so the same PaymentIntent comes back if this
+    //    fires twice. Cache the result so subsequent retries in this
+    //    submit() don't re-call the endpoint at all.
+    if (!pendingIntent.value) {
+      processingLabel.value = 'Reserving offer…'
+      const { payment, clientSecret } = await authorizeOffer(offerId.value)
+      pendingIntent.value = { paymentId: payment.id, clientSecret }
+    }
+    const { paymentId, clientSecret } = pendingIntent.value
 
-    // 2. Confirm the card via Stripe. If this fails the PaymentIntent
-    //    stays unconfirmed and Stripe expires it — the Payment row on
-    //    our side stays pending; the customer can retry from the
-    //    receipt page.
+    // 2. Confirm the card via Stripe. For 3DS/SCA cards Stripe runs
+    //    the challenge inline and only resolves once it's complete or
+    //    failed — that's why we have to distinguish `succeeded`
+    //    (we're done) from `requires_action` / `processing` (Stripe
+    //    is still working / user dropped the modal) and treat the
+    //    latter as recoverable, not a hard failure.
     processingLabel.value = 'Confirming card…'
     const { error, paymentIntent } = await stripeInstance.confirmCardPayment(clientSecret, {
       payment_method: { card: cardElement },
@@ -227,8 +242,23 @@ async function submit() {
       submitting.value = false
       return
     }
-    if (paymentIntent?.status !== 'succeeded') {
-      cardError.value = 'Payment did not complete. Try again.'
+    const status = paymentIntent?.status
+    if (status === 'requires_action' || status === 'requires_confirmation') {
+      cardError.value = 'We need an extra verification step from your bank — tap Authorise again to retry.'
+      submitting.value = false
+      return
+    }
+    if (status === 'processing') {
+      // Bank is still processing — confirm on the server (which
+      // re-fetches Stripe and will reject until status flips to
+      // succeeded) but don't double-charge. User can refresh the
+      // receipt page; the server-side confirm catches up.
+      cardError.value = 'Your bank is processing the payment. Refresh the page in a moment to confirm.'
+      submitting.value = false
+      return
+    }
+    if (status !== 'succeeded') {
+      cardError.value = `Payment did not complete (${status ?? 'unknown'}). Try again.`
       submitting.value = false
       return
     }
@@ -236,12 +266,15 @@ async function submit() {
     // 3. Tell the server the card cleared — flips Payment to "held"
     //    and posts the system message into the thread.
     processingLabel.value = 'Securing escrow…'
-    await confirmPayment(payment.id)
+    await confirmPayment(paymentId)
 
+    // Terminal success — clear the cached intent so a back+retry on
+    // this same page wouldn't reuse it (the offer is already paid).
+    pendingIntent.value = null
     showToast({ message: 'Funds held in UProtect escrow', iconEmoji: '🛡' })
     // Land the customer on the live contract page — the receipt is
     // still reachable from the contract footer.
-    router.replace(`/marketplace/jobs/${payment.jobId}/contract`)
+    router.replace(`/marketplace/jobs/${offer.value?.jobId ?? ''}/contract`)
   } catch (err: any) {
     topError.value = err?.data?.message ?? 'Could not authorise payment. Try again.'
     submitting.value = false
