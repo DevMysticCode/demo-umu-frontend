@@ -153,7 +153,13 @@ const route = useRoute()
 const router = useRouter()
 const { showToast } = useAppToast()
 const { fetchPayment, releasePayment, fetchUserReviews } = useMarketplace()
-const { profile } = useProfile()
+// Pull fetchProfile from the composable too — the canRelease /
+// hasReviewed computeds depend on profile.value.id, and useProfile
+// doesn't auto-load on mount. On a fresh page (deep-link / refresh)
+// profile stays null and the Release button + review prompt never
+// render. Calling fetchProfile() below in the same await chain as
+// load() makes the page work without an intermediate visit elsewhere.
+const { profile, fetchProfile } = useProfile()
 
 const paymentId = computed(() => String(route.params.id))
 
@@ -165,7 +171,13 @@ const releaseError = ref<string | null>(null)
 async function load() {
   loading.value = true
   try {
-    payment.value = await fetchPayment(paymentId.value)
+    // Load both in parallel so the deep-link/refresh case opens
+    // with profile.value populated for the canRelease computed.
+    const [p] = await Promise.all([
+      fetchPayment(paymentId.value),
+      profile.value ? Promise.resolve() : fetchProfile(),
+    ])
+    payment.value = p
   } catch {
     payment.value = null
   } finally {

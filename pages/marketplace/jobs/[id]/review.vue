@@ -189,7 +189,11 @@ definePageMeta({ title: 'Leave a review — Marketplace', middleware: 'auth' })
 const route = useRoute()
 const router = useRouter()
 const { showToast } = useAppToast()
-const { profile } = useProfile()
+// Need fetchProfile too — the `direction` computed gates the entire
+// form on profile.value.id, and useProfile doesn't auto-load. On a
+// fresh refresh / deep-link, profile stayed null and the submit
+// button silently broke (DF4 audit HIGH finding).
+const { profile, fetchProfile } = useProfile()
 const { fetchJob, fetchPaymentForJob, fetchContract, createReview } = useMarketplace()
 
 const jobId = computed(() => String(route.params.id))
@@ -245,6 +249,9 @@ async function load() {
       // initials without a separate user lookup. If it fails (e.g. the
       // backend is older), we fall back to generic copy.
       fetchContract(jobId.value).catch(() => null),
+      // Profile is the one that gates the entire form; load it
+      // alongside everything else so refresh + deep-link work.
+      profile.value ? Promise.resolve() : fetchProfile().catch(() => undefined),
     ])
     job.value = j
     payment.value = p
