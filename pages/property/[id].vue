@@ -4577,17 +4577,17 @@ const exploreTiles = computed(() => {
   const tiles: Array<any> = []
   // Property history (Land Registry sold history)
   //
-  // property.lastSoldPrice/Date are the fields written on the Property
-  // row at scrape time. They can be null even when the enrichment API
-  // does return a real sale — the enrichment call happens AFTER the
-  // list search, so the tile used to show "No sales" even though
-  // opening the details expanded a full sale history.
-  //
-  // Prefer the enrichment's `thisSales[0]` (already ordered most-recent
-  // first) when it's present; fall back to the row-level cache only.
+  // Enrichment sale rows can arrive with EITHER `price`/`date` (our
+  // internal shape) or `amount`/`transferDate` (raw Land Registry
+  // shape) depending on the upstream. The timeline accordion below
+  // already handles both variants; the tile has to as well or it
+  // reads null and displays "No sales" while the accordion happily
+  // lists the same transactions. That mismatch was the bug.
   const mostRecentSale = thisSales.value[0]
-  const soldPrice = p.lastSoldPrice ?? mostRecentSale?.price ?? null
-  const soldDate = p.lastSoldDate ?? mostRecentSale?.date ?? null
+  const salePriceRaw = mostRecentSale?.price ?? (mostRecentSale as any)?.amount
+  const saleDateRaw = mostRecentSale?.date ?? (mostRecentSale as any)?.transferDate
+  const soldPrice = p.lastSoldPrice ?? (salePriceRaw ? Number(salePriceRaw) : null)
+  const soldDate = p.lastSoldDate ?? saleDateRaw ?? null
   tiles.push({
     key: 'history',
     icon: '🏠',
@@ -4600,16 +4600,34 @@ const exploreTiles = computed(() => {
       ? `Last sold ${new Date(soldDate).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}`
       : 'Land Registry record',
   })
-  // Street data
+  // Street data — median of nearby sales (last 5 yrs) plus a count.
+  // Falls back to the outward postcode when we have no comps, which
+  // at least tells the user which area the tile represents.
+  const nearby = nearbySales.value ?? []
+  const nearbyPrices = nearby
+    .map((s: any) => Number(s.price ?? s.amount ?? 0))
+    .filter((n: number) => n > 0)
+    .sort((a: number, b: number) => a - b)
+  const streetValue = nearbyPrices.length
+    ? `£${Math.round(nearbyPrices[Math.floor(nearbyPrices.length / 2)] / 1000)}k median`
+    : p.postcode
+      ? p.postcode.split(' ')[0]
+      : '—'
+  const streetSub = nearbyPrices.length
+    ? `${nearbyPrices.length} nearby sale${nearbyPrices.length === 1 ? '' : 's'}`
+    : 'Neighbourhood comparison'
   tiles.push({
     key: 'street',
     icon: '🏘️',
     iconBg: '#E8F5E9',
     title: 'Street data',
-    value: p.postcode ? p.postcode.split(' ')[0] : '—',
-    sub: 'Neighbourhood comparison',
+    value: streetValue,
+    sub: streetSub,
   })
-  // Schools — live count from enrichment
+  // Schools — live count from enrichment. When the enrichment source
+  // returns nothing we fall back to a directional message that points
+  // the user at the definitive government checker rather than a bare
+  // em-dash which reads as "loading" forever.
   const schoolsCount = enrichmentSchools.value.length
   const nearestSchool = enrichmentSchools.value[0]
   tiles.push({
@@ -4617,10 +4635,10 @@ const exploreTiles = computed(() => {
     icon: '🎓',
     iconBg: '#E3F2FD',
     title: 'Schools',
-    value: schoolsCount > 0 ? `${schoolsCount} nearby` : '—',
+    value: schoolsCount > 0 ? `${schoolsCount} nearby` : 'Check Ofsted',
     sub: nearestSchool
       ? `Nearest ${nearestSchool.distanceKm.toFixed(1)} km`
-      : 'Tap for distance',
+      : 'See full list on gov.uk',
   })
   // Transport (trains / buses / airports) — each one falls back through
   // three states: real data → "looking up" while enrichment is pending →
@@ -5620,49 +5638,26 @@ const enrichmentMobile = computed<any | null>(
   () => enrichment.value?.mobileSignal ?? null,
 )
 
-// Human-readable placeholder copy keyed off the failure reason the backend
-// returns. Falls back to the generic "data unavailable" line when the shape
-// is older / unknown.
+// User-facing placeholder copy. The backend distinguishes half a dozen
+// failure modes (missing key, quota, timeout, no coverage on file, …)
+// but consumers don't care WHY we couldn't fetch — they just want a
+// working answer. Split into two buckets:
+//   - "no_premises" / "not_found" → Ofcom really has nothing on file
+//   - everything else → treat as an internal fetch problem and point
+//     the user straight at Ofcom's own checker (link rendered in the
+//     template) so they can look it up themselves.
 const broadbandPlaceholder = computed<{ title: string; sub: string }>(() => {
   const bb = enrichmentBroadband.value
   const reason = bb && bb.available === false ? bb.reason : null
-  switch (reason) {
-    case 'no_key':
-      return {
-        title: 'Broadband lookup not configured',
-        sub: 'The Ofcom API key is missing on this server. Register at developer.ofcom.org.uk and add OFCOM_API_KEY to .env.',
-      }
-    case 'unauthorized':
-      return {
-        title: 'Ofcom rejected the API key',
-        sub: 'The configured OFCOM_API_KEY is invalid, expired, or its subscription tier doesn’t include broadband. Regenerate it from your Ofcom developer portal.',
-      }
-    case 'rate_limited':
-      return {
-        title: 'Ofcom rate limit reached',
-        sub: 'Too many requests for this key today. Wait or upgrade your Ofcom subscription tier.',
-      }
-    case 'not_found':
-    case 'no_premises':
-      return {
-        title: 'No coverage on file for this postcode',
-        sub: 'Ofcom’s database has no entries for this postcode. Newer builds may not be mapped yet.',
-      }
-    case 'timeout':
-      return {
-        title: 'Ofcom request timed out',
-        sub: 'The Ofcom API didn’t respond in time. Try again — if this persists, Ofcom may be having an outage.',
-      }
-    case 'network':
-      return {
-        title: 'Couldn’t reach Ofcom',
-        sub: 'Network error talking to Ofcom’s API. Check the server’s outbound connectivity.',
-      }
-    default:
-      return {
-        title: 'Broadband data unavailable',
-        sub: 'We couldn’t retrieve coverage for this postcode. Check directly on Ofcom’s site below.',
-      }
+  if (reason === 'not_found' || reason === 'no_premises') {
+    return {
+      title: 'No coverage on file for this postcode',
+      sub: 'Ofcom has no entries for this postcode yet — check their official checker below.',
+    }
+  }
+  return {
+    title: 'Broadband data unavailable',
+    sub: 'We couldn’t load broadband coverage for this postcode. Check directly on Ofcom’s checker below.',
   }
 })
 
