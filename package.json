@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "mobile:assets": "capacitor-assets generate",
+    "mobile:assets": "capacitor-assets generate --assetPath resources --iconBackgroundColor '#231D45' --splashBackgroundColor '#231D45'",
     "mobile:sync": "npm run generate && cap sync",
     "mobile:sync:ios": "npm run generate && cap sync ios",
     "mobile:sync:android": "npm run generate && cap sync android",
@@ -35,6 +35,7 @@
     "vue": "latest"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^8.4.0",
     "@nuxt/devtools": "^1.5.2",
     "@nuxt/typescript-build": "^3.0.2",
