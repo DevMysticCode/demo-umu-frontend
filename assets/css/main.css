@@ -58,6 +58,21 @@
       'Segoe UI',
       sans-serif;
   }
+
+  /* Belt-and-braces for the iOS input auto-zoom bug. The viewport
+     meta already sets maximum-scale=1, but if any host (a Safari tab
+     opened from a share link, an in-app browser inside another
+     Capacitor shell, etc.) ignores that hint, inputs whose computed
+     font-size falls below 16px will trigger the auto-zoom. Locking
+     every editable control to 16px at rest guarantees the WebView
+     never zooms in the first place. Visual design that wants a
+     smaller-looking input can still transform: scale down; the
+     16px floor is only about the rendered font-size at focus time. */
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
 
 @layer components {
