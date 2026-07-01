@@ -4576,16 +4576,28 @@ const exploreTiles = computed(() => {
   if (!p) return []
   const tiles: Array<any> = []
   // Property history (Land Registry sold history)
+  //
+  // property.lastSoldPrice/Date are the fields written on the Property
+  // row at scrape time. They can be null even when the enrichment API
+  // does return a real sale — the enrichment call happens AFTER the
+  // list search, so the tile used to show "No sales" even though
+  // opening the details expanded a full sale history.
+  //
+  // Prefer the enrichment's `thisSales[0]` (already ordered most-recent
+  // first) when it's present; fall back to the row-level cache only.
+  const mostRecentSale = thisSales.value[0]
+  const soldPrice = p.lastSoldPrice ?? mostRecentSale?.price ?? null
+  const soldDate = p.lastSoldDate ?? mostRecentSale?.date ?? null
   tiles.push({
     key: 'history',
     icon: '🏠',
     iconBg: '#FFF3E0',
     title: 'Property history',
-    value: p.lastSoldPrice
-      ? `£${Number(p.lastSoldPrice).toLocaleString()}`
+    value: soldPrice
+      ? `£${Number(soldPrice).toLocaleString()}`
       : 'No sales',
-    sub: p.lastSoldDate
-      ? `Last sold ${new Date(p.lastSoldDate).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}`
+    sub: soldDate
+      ? `Last sold ${new Date(soldDate).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}`
       : 'Land Registry record',
   })
   // Street data
