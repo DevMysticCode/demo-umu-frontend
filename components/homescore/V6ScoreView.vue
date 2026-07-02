@@ -6,43 +6,68 @@
          a clear "EPC not available" card so the user knows what's
          missing and what to do next. -->
     <template v-if="!hasEpcData">
-      <!-- Compact property header — keeps the user oriented even when
-           we can't render the full score view. -->
-      <div class="hs-noepc-prop anim-1">
-        <div class="hs-noepc-prop-pin" />
-        <div class="hs-noepc-prop-block">
-          <div class="hs-noepc-prop-line">{{ addrLineFull }}</div>
-          <div class="hs-noepc-prop-meta">{{ addrMetaFull }}</div>
+      <!-- Amber hero — port of prisma/homescore-no-epc-prototype.html.
+           Same amber gradient as the prototype so the "no EPC" state
+           feels considered rather than error-y, and gives the score
+           column something to sit next to before the quiz runs. -->
+      <div class="hs-noepc-hero anim-1">
+        <div class="hs-noepc-hero-title">
+          <span class="hs-noepc-hero-pin">◯</span>
+          {{ property?.addressLine1 ?? 'This property' }}
+        </div>
+        <div class="hs-noepc-hero-meta">
+          {{ addrMetaFull }}
+        </div>
+        <hr class="hs-noepc-hero-hr" />
+        <div class="hs-noepc-hero-tiles">
+          <div class="hs-noepc-hero-tile">
+            <div class="hs-noepc-hero-tile-lbl">EPC rating</div>
+            <span class="hs-noepc-badge">None</span>
+            <div class="hs-noepc-hero-tile-cap">No EPC on record</div>
+          </div>
+          <div class="hs-noepc-hero-tile">
+            <div class="hs-noepc-hero-tile-lbl">⚡ HomeScore</div>
+            <div class="hs-noepc-hero-tile-big">?<small>/100</small></div>
+            <div class="hs-noepc-hero-tile-cap">Answer 20 questions</div>
+          </div>
         </div>
       </div>
 
-      <div class="hs-noepc-card anim-1">
-        <div class="hs-noepc-icon">📄</div>
-        <div class="hs-noepc-title">No EPC on file for this property</div>
-        <div class="hs-noepc-sub">
-          We couldn't find an Energy Performance Certificate for
-          <b>{{ addrLineFull }}</b> on the public register. That's not unusual —
-          some homes haven't been assessed yet, or the certificate has expired.
+      <!-- Navy CTA card driving the quiz. Emits 'refine' so the
+           parent page can transition to its existing quiz screen — no
+           new routing needed. -->
+      <div class="hs-noepc-cta anim-1">
+        <div class="hs-noepc-cta-title">This property has no EPC</div>
+        <div class="hs-noepc-cta-body">
+          No problem — answer 20 quick questions about the home and we'll
+          build an <b>estimated HomeScore</b>, the same way an assessor
+          fills gaps using the property's age.
         </div>
-        <div class="hs-noepc-sub" style="margin-top: 8px">
-          Without an EPC we can't calculate a HomeScore for this property.
-          You can check the official register directly to confirm.
-        </div>
-        <div class="hs-noepc-actions">
-          <a
-            class="hs-noepc-btn primary"
-            :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${encodeURIComponent(property?.postcode ?? '')}`"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Check the EPC Register →
-          </a>
-        </div>
-        <div class="hs-noepc-help">
-          If the property gets a new EPC assessment, we'll pick it up
-          automatically next time you load the page.
+        <button class="hs-noepc-cta-btn" type="button" @click="$emit('refine')">
+          Estimate my score →
+        </button>
+        <div class="hs-noepc-cta-note">
+          Takes ~2 minutes · No documents needed · "Not sure" is always OK
         </div>
       </div>
+
+      <div class="hs-noepc-info anim-1">
+        <div class="hs-noepc-info-i">i</div>
+        <div>
+          Where you're not sure, we assume what's <b>typical for the
+          property's age</b> — exactly like the official RdSAP method.
+          Every confident answer tightens your estimate.
+        </div>
+      </div>
+
+      <a
+        class="hs-noepc-secondary anim-1"
+        :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${encodeURIComponent(property?.postcode ?? '')}`"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Check the EPC Register directly →
+      </a>
     </template>
 
     <template v-if="hasEpcData">
@@ -3784,6 +3809,167 @@ const watchersDisplay = computed(() => {
   line-height: 1.5;
   padding-top: 12px;
   border-top: 1px solid var(--border-soft);
+}
+
+/* ── No-EPC — prototype UX (amber hero + navy CTA + quiz entry) ──
+   Ported from prisma/homescore-no-epc-prototype.html so the empty
+   state feels like a considered path, not an error. */
+.hs-noepc-hero {
+  margin: 18px 20px 0;
+  padding: 22px 18px 18px;
+  background: linear-gradient(160deg, #cd8038, #b96f26);
+  border-radius: 26px;
+  color: #fff;
+}
+.hs-noepc-hero-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.hs-noepc-hero-pin {
+  font-size: 16px;
+  opacity: 0.9;
+}
+.hs-noepc-hero-meta {
+  font-size: 13.5px;
+  opacity: 0.9;
+  margin: 4px 0 14px;
+}
+.hs-noepc-hero-hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  margin-bottom: 14px;
+}
+.hs-noepc-hero-tiles {
+  display: flex;
+  gap: 10px;
+}
+.hs-noepc-hero-tile {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  padding: 14px;
+}
+.hs-noepc-hero-tile-lbl {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.95;
+  margin-bottom: 10px;
+}
+.hs-noepc-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 7px;
+  font-weight: 800;
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+.hs-noepc-hero-tile-big {
+  font-size: 24px;
+  font-weight: 800;
+}
+.hs-noepc-hero-tile-big small {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+.hs-noepc-hero-tile-cap {
+  font-size: 12px;
+  opacity: 0.85;
+  margin-top: 8px;
+}
+
+.hs-noepc-cta {
+  margin: 14px 20px 0;
+  padding: 22px 20px;
+  background: #2e2a50;
+  border-radius: 26px;
+  color: #fff;
+}
+.hs-noepc-cta-title {
+  font-size: 19px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+.hs-noepc-cta-body {
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.45;
+}
+.hs-noepc-cta-body :deep(b) {
+  color: #fff;
+  font-weight: 700;
+}
+.hs-noepc-cta-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  text-align: center;
+  background: #fff;
+  color: #2e2a50;
+  margin-top: 16px;
+}
+.hs-noepc-cta-btn:active {
+  transform: scale(0.99);
+}
+.hs-noepc-cta-note {
+  font-size: 12px;
+  text-align: center;
+  opacity: 0.7;
+  margin-top: 10px;
+}
+
+.hs-noepc-info {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 14px 24px 0;
+  padding: 12px 14px;
+  background: var(--card);
+  border-radius: 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  box-shadow: var(--shadow-card);
+}
+.hs-noepc-info-i {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-secondary);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  font-weight: 700;
+}
+.hs-noepc-info :deep(b) {
+  color: var(--text);
+  font-weight: 700;
+}
+.hs-noepc-secondary {
+  display: block;
+  margin: 14px 24px 24px;
+  padding: 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-dark);
+  text-decoration: none;
+  background: transparent;
 }
 
 /* ── Claim-it-free modal ────────────────────────────────────── */

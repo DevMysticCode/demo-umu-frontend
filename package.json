@@ -25,6 +25,7 @@
     "@capacitor/local-notifications": "^8.2.0",
     "@capacitor/push-notifications": "^8.1.1",
     "@capacitor/splash-screen": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.2",
     "@nuxt/ui": "^2.18.7",
     "@pinia/nuxt": "^0.5.5",
     "@stripe/stripe-js": "^8.11.0",
