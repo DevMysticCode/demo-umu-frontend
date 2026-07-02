@@ -25,15 +25,12 @@
           some homes haven't been assessed yet, or the certificate has expired.
         </div>
         <div class="hs-noepc-sub" style="margin-top: 8px">
-          Without an EPC we don't fabricate a score from guesses. Here's what
-          you can do instead:
+          Without an EPC we can't calculate a HomeScore for this property.
+          You can check the official register directly to confirm.
         </div>
         <div class="hs-noepc-actions">
-          <button class="hs-noepc-btn primary" type="button" @click="$emit('refine')">
-            Answer a few questions
-          </button>
           <a
-            class="hs-noepc-btn ghost"
+            class="hs-noepc-btn primary"
             :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${encodeURIComponent(property?.postcode ?? '')}`"
             target="_blank"
             rel="noopener noreferrer"
@@ -42,10 +39,8 @@
           </a>
         </div>
         <div class="hs-noepc-help">
-          The quiz gives you a rough estimate based on what you know about the
-          home (heating, insulation, lighting). If the property gets a new EPC
-          assessment, we'll pick it up automatically next time you load the
-          page.
+          If the property gets a new EPC assessment, we'll pick it up
+          automatically next time you load the page.
         </div>
       </div>
     </template>
@@ -127,7 +122,6 @@
         <div>
           Based on a <b>{{ epcYear || '—' }} EPC</b>. Your real score may be higher if
           improvements have been made.
-          <span class="score-refine-link" @click="$emit('refine')">Refine with the quiz →</span>
         </div>
       </div>
     </div>
@@ -584,14 +578,6 @@
           </div>
         </template>
 
-        <!-- Refine CTA -->
-        <div class="epc-drawer-cta" @click="$emit('refine')">
-          <div class="epc-drawer-cta-text">
-            Some of this may have changed since the survey.
-            <b>Refine your score in 2 minutes →</b>
-          </div>
-          <div class="epc-drawer-cta-arrow">›</div>
-        </div>
       </div>
     </div>
 
