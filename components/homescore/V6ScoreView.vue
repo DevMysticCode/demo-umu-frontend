@@ -6,36 +6,26 @@
          a clear "EPC not available" card so the user knows what's
          missing and what to do next. -->
     <template v-if="!hasEpcData">
-      <!-- Amber hero — port of prisma/homescore-no-epc-prototype.html.
-           Same amber gradient as the prototype so the "no EPC" state
-           feels considered rather than error-y, and gives the score
-           column something to sit next to before the quiz runs. -->
-      <div class="hs-noepc-hero anim-1">
-        <div class="hs-noepc-hero-title">
-          <span class="hs-noepc-hero-pin">◯</span>
-          {{ property?.addressLine1 ?? 'This property' }}
-        </div>
-        <div class="hs-noepc-hero-meta">
-          {{ addrMetaFull }}
-        </div>
-        <hr class="hs-noepc-hero-hr" />
-        <div class="hs-noepc-hero-tiles">
-          <div class="hs-noepc-hero-tile">
-            <div class="hs-noepc-hero-tile-lbl">EPC rating</div>
-            <span class="hs-noepc-badge">None</span>
-            <div class="hs-noepc-hero-tile-cap">No EPC on record</div>
-          </div>
-          <div class="hs-noepc-hero-tile">
-            <div class="hs-noepc-hero-tile-lbl">⚡ HomeScore</div>
-            <div class="hs-noepc-hero-tile-big">?<small>/100</small></div>
-            <div class="hs-noepc-hero-tile-cap">Answer 20 questions</div>
-          </div>
-        </div>
+      <!-- Amber hero — reuses the same HomescoreAddressCard as the
+           EPC-present view so the no-EPC card sits in the same visual
+           language. The card shows None / ? because there's no
+           certificate data; every other pixel is identical. -->
+      <div class="hs-addr-card-wrap anim-1">
+        <HomescoreAddressCard
+          :address="addrLineFull"
+          :postcode="property?.postcode ?? null"
+          :property-type="property?.propertyType ?? null"
+          :sqm="property?.floorAreaSqm ?? property?.sqm ?? null"
+          :epc-rating="null"
+          :home-score="0"
+          :searches-today="searchesToday"
+          :watchers-count="watchersCount"
+          :passport-state="passportState"
+        />
       </div>
 
       <!-- Navy CTA card driving the quiz. Emits 'refine' so the
-           parent page can transition to its existing quiz screen — no
-           new routing needed. -->
+           parent page can transition to the estimator screen. -->
       <div class="hs-noepc-cta anim-1">
         <div class="hs-noepc-cta-title">This property has no EPC</div>
         <div class="hs-noepc-cta-body">

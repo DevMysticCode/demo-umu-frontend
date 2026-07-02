@@ -24,12 +24,14 @@
         <div class="hsc-tile-val">
           <span
             class="hsc-epc-badge"
-            :style="{ background: epcColor(epcRating) }"
-          >{{ epcRating || '—' }}</span>
+            :class="{ 'hsc-epc-badge--none': isNoEpc }"
+            :style="!isNoEpc ? { background: epcColor(epcRating) } : {}"
+          >{{ isNoEpc ? 'None' : (epcRating || '—') }}</span>
         </div>
-        <div class="hsc-bar">
+        <div v-if="!isNoEpc" class="hsc-bar">
           <i :style="{ width: epcBarPct + '%' }" />
         </div>
+        <div v-else class="hsc-bar hsc-bar--empty" />
         <div class="hsc-hook">{{ epcHook }}</div>
       </div>
 
@@ -48,13 +50,17 @@
           HomeScore
         </span>
         <div class="hsc-tile-val">
-          <span class="hsc-hs-num">
+          <span v-if="isNoEpc" class="hsc-hs-num hsc-hs-num--unknown">
+            <b>?</b><span>/100</span>
+          </span>
+          <span v-else class="hsc-hs-num">
             <b>{{ Math.round(homeScore || 0) }}</b><span>/100</span>
           </span>
         </div>
-        <div class="hsc-bar">
+        <div v-if="!isNoEpc" class="hsc-bar">
           <i :style="{ width: homeScoreBarPct + '%' }" />
         </div>
+        <div v-else class="hsc-bar hsc-bar--empty" />
         <div class="hsc-hook">{{ homeScoreHook }}</div>
       </div>
     </div>
@@ -204,9 +210,20 @@ const homeScoreBarPct = computed(() =>
   Math.max(0, Math.min(100, Math.round(props.homeScore || 0))),
 )
 
+// No-EPC state — when the property has no certificate on file, we
+// swap the two tiles' inner content out (grey None badge + ?/100)
+// and hide the animated bars. Visual container stays identical so
+// this card sits in the same amber card language as the EPC-present
+// version. Both flags must be null/zero because a real value in
+// either would mean we DO have a HomeScore to display.
+const isNoEpc = computed(
+  () => !props.epcRating && (props.homeScore == null || props.homeScore === 0),
+)
+
 // Hook copy — small line under each bar, mirrors the prototype's
 // "Lower running costs" / "Above average". Adapts to the actual data.
 const epcHook = computed(() => {
+  if (isNoEpc.value) return 'No EPC on record'
   const r = (props.epcRating || '').toUpperCase()
   if (r === 'A' || r === 'B') return 'Top-band efficiency'
   if (r === 'C') return 'Lower running costs'
@@ -215,6 +232,7 @@ const epcHook = computed(() => {
   return 'Energy rating'
 })
 const homeScoreHook = computed(() => {
+  if (isNoEpc.value) return 'Answer 20 questions'
   const s = props.homeScore || 0
   if (s >= 80) return 'Top of the street'
   if (s >= 60) return 'Above average'
@@ -315,6 +333,22 @@ const watchersDisplay = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+/* No-EPC variant — reads as "empty state" rather than a low band. */
+.hsc-epc-badge--none {
+  background: rgba(255, 255, 255, 0.28);
+  color: #fff;
+  width: auto;
+  padding: 2px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  border-radius: 8px;
+}
+.hsc-hs-num--unknown b {
+  opacity: 0.85;
+}
+.hsc-bar--empty {
+  background: rgba(255, 255, 255, 0.14);
 }
 .hsc-hs-num {
   font-size: 12px;

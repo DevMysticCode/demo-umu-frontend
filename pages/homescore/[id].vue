@@ -156,6 +156,19 @@
       />
     </template>
 
+    <!-- ── NO-EPC ESTIMATOR — self-contained visitor quiz.
+             Fires when the property has no EPC on file; ports
+             prisma/homescore-no-epc-prototype.html 1:1 for questions,
+             scoring, ring / range / confidence display, and category
+             breakdown. Emits 'close' when the user backs out. -->
+    <template v-else-if="screen === 'no-epc-estimator'">
+      <V6NoEpcEstimator
+        :property="property"
+        @close="goBack"
+        @book-assessment="onBookAssessment"
+      />
+    </template>
+
     <!-- ── QUESTIONS — homescore-v6 prototype owner-quiz port ───── -->
     <template v-else-if="screen === 'questions'">
       <V6QuizView
@@ -2673,6 +2686,7 @@ import { useAppToast } from '~/composables/useCustomToast'
 import ResultDetail from '~/components/homescore/ResultDetail.vue'
 import V6ScoreView from '~/components/homescore/V6ScoreView.vue'
 import V6QuizView from '~/components/homescore/V6QuizView.vue'
+import V6NoEpcEstimator from '~/components/homescore/V6NoEpcEstimator.vue'
 import BuyerVerifyCard from '~/components/property/BuyerVerifyCard.vue'
 import V6LevelUpView from '~/components/homescore/V6LevelUpView.vue'
 import V6BoostView from '~/components/homescore/V6BoostView.vue'
@@ -2726,6 +2740,7 @@ type Screen =
   | 'landing'
   | 'questions'
   | 'questions-legacy'
+  | 'no-epc-estimator'
   | 'level-up'
   | 'boost'
   | 'results'
@@ -2806,6 +2821,18 @@ function onUploadBill(_file: File) {
   // Bill-extraction endpoint is not wired up server-side yet. Once the
   // backend exposes a parser for kWh / tariff / supplier we'll POST the
   // file here and refine `liveScore` from the returned annual cost.
+}
+
+function onBookAssessment() {
+  // Handoff to a real accredited-assessor booking is out of scope for
+  // v1 — for now we open the government "find an assessor" page in a
+  // new tab which is what the prototype's placeholder alert directed
+  // people towards.
+  window.open(
+    'https://www.gov.uk/find-energy-certificate/find-an-assessor',
+    '_blank',
+    'noopener,noreferrer',
+  )
 }
 
 type PassportTab = 'sections' | 'street' | 'buyers'
@@ -3774,7 +3801,23 @@ const nbGapReasons = computed(() => {
 // ── Actions ───────────────────────────────────────────────────
 
 function startQuestions() {
-  // Read-only mode: don't let non-owners run the quiz
+  // No-EPC path: run the self-contained visitor estimator (prototype
+  // port). Everyone — signed-in or not, owner or not — gets the same
+  // 20-question flow when the property has no certificate on file.
+  // The owner-quiz below is only for properties that DO have an EPC
+  // and need refinement; without one, there's no anchor score for
+  // the owner quiz's live-refine to sit against.
+  if (!property.value?.epcRating) {
+    if (screen.value && screen.value !== 'loading' && screen.value !== 'no-epc-estimator') {
+      const last = screenHistory.value[screenHistory.value.length - 1]
+      if (last !== screen.value) screenHistory.value.push(screen.value)
+    }
+    screen.value = 'no-epc-estimator'
+    return
+  }
+
+  // Read-only mode: don't let non-owners run the owner quiz on EPC
+  // properties (that flow claims ownership as a side effect).
   if (readOnlyMode.value) {
     router.push(`/property/${propertyId}`)
     return
