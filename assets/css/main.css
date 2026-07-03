@@ -78,8 +78,17 @@
 @layer components {
   .mobile-container {
     /* `overflow-x:hidden` repeated here so any drawer/sheet portalled
-       inside the container respects the bound too. */
+       inside the container respects the bound too.
+       display:block enforced so a legacy flex wrapper up-stream can't
+       shrink us to intrinsic content width — the symptom testers saw
+       when the outer .app wrapper was still `flex items-center
+       justify-center` (an old build cached at the edge, or a stale
+       preview deploy). Block layout is neutral to any parent context
+       and `max-w-md mx-auto` still centres us on desktop. */
     @apply max-w-md mx-auto min-h-dvh relative w-full overflow-x-hidden;
+    display: block !important;
+    width: 100% !important;
+    flex: 0 0 100% !important;
   }
 
   .backgound-image {
