@@ -45,10 +45,17 @@ const config: CapacitorConfig = {
       // once the bundle is hydrated. `launchAutoHide: false` is the safer
       // default — if the Vue side ever fails to hide, the timeout still
       // catches us.
-      launchShowDuration: 2000,
+      //
+      // Background flipped from the old navy (#231d45) to white so the
+      // brand mark reads as our logo on a white sheet rather than a
+      // photo negative. launchFadeOutDuration bumped to 550ms — the
+      // Vue-side splash overlay picks up the same white background
+      // and animates the logo (scale + fade) so the transition into
+      // the first Nuxt page feels intentional, not a hard cut.
+      launchShowDuration: 1200,
       launchAutoHide: false,
-      launchFadeOutDuration: 300,
-      backgroundColor: '#231d45',
+      launchFadeOutDuration: 550,
+      backgroundColor: '#ffffff',
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: true,

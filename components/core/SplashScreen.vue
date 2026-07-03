@@ -8,12 +8,16 @@
           viewBox="0 0 877.69 877.69"
           xmlns="http://www.w3.org/2000/svg"
         >
+          <!-- Fills rewritten for a WHITE background: the mark's inner
+               shapes (m-loops + inner dots) flip from white to the
+               brand navy so they read as the logo against the sheet.
+               Teal accents keep their brand hex — same on white. -->
           <path
-            fill="#fff"
+            fill="#231d45"
             d="m573.6,497.11v21.8h-39.28l-.22-20.26c0-34.14-14.14-48.26-38.03-48.26s-38.03,14.12-38.03,48.26v41.36h-39.01v-42.9c0-52.88,28.77-82.14,77.29-82.14s77.29,29.26,77.29,82.14Z"
           />
           <path
-            fill="#fff"
+            fill="#231d45"
             d="m379.84,415.26c48.52,0,77.29,29.26,77.29,82.14v42.9s-39.01,0-39.01,0v-41.36c0-34.14-13.9-48.26-38.03-48.26-23.89,0-38.03,14.12-38.03,48.26l-.15,20.26h-39.24s-.1-21.8-.1-21.8c0-52.88,28.77-82.14,77.29-82.14Z"
           />
           <path
@@ -28,46 +32,23 @@
             fill="#00a19a"
             d="m677.57,352.22l-226.28-134.71c-3.1-1.81-6.69-2.82-10.34-2.91h-.57s0,1.48,0,1.48l-.39-1.48h-.54c-3.68.1-7.26,1.11-10.38,2.93l-157.5,93.76v-16.4c0-10.74-9.3-19.48-20.72-19.48s-20.72,8.74-20.72,19.48v41.08l-27.33,16.27c-9.7,5.67-12.68,17.71-6.64,26.83,6.03,9.12,18.84,11.92,28.55,6.24l215.48-128.28,215.49,128.29c3.33,1.95,7.08,2.95,10.91,2.95,1.58,0,3.17-.17,4.74-.51,5.39-1.18,9.97-4.26,12.9-8.68,6.03-9.12,3.05-21.15-6.64-26.82Z"
           />
-          <rect
-            fill="#fff"
-            x="392.79"
-            y="309.67"
-            width="39.07"
-            height="39.07"
-            rx="4.79"
-          />
-          <rect
-            fill="#fff"
-            x="443.76"
-            y="309.67"
-            width="39.07"
-            height="39.07"
-            rx="4.79"
-          />
-          <rect
-            fill="#fff"
-            x="392.79"
-            y="358.62"
-            width="39.07"
-            height="39.07"
-            rx="4.79"
-          />
-          <rect
-            fill="#fff"
-            x="443.76"
-            y="358.62"
-            width="39.07"
-            height="39.07"
-            rx="4.79"
-          />
+          <rect fill="#231d45" x="392.79" y="309.67" width="39.07" height="39.07" rx="4.79" />
+          <rect fill="#231d45" x="443.76" y="309.67" width="39.07" height="39.07" rx="4.79" />
+          <rect fill="#231d45" x="392.79" y="358.62" width="39.07" height="39.07" rx="4.79" />
+          <rect fill="#231d45" x="443.76" y="358.62" width="39.07" height="39.07" rx="4.79" />
         </svg>
       </div>
       <div class="splash-wordmark">umovingu</div>
 
+      <!-- Subtle teal pulse under the mark to add motion beyond the
+           scale-in — 'a little animated' per product feedback without
+           tipping into busy-loading territory. Disappears with the
+           overlay. -->
+      <div class="splash-pulse" aria-hidden="true" />
+
       <div class="splash-powered-by">
         <div class="splash-powered-label">Powered by</div>
         <div class="splash-powered-row">
-          <!-- <OPIcon name="opLogo" class="w-10 h-10" /> -->
           <OPIcon name="opLogo" width="16" height="16" />
           <span class="splash-powered-name">OpenProperty</span>
         </div>
@@ -88,7 +69,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  duration: 2400,
+  duration: 1800,
   everyLoad: false,
 })
 
@@ -102,13 +83,13 @@ onMounted(() => {
   if (!props.everyLoad && sessionStorage.getItem(SESSION_KEY) === '1') return
 
   visible.value = true
-  // sessionStorage.setItem(SESSION_KEY, '1')
+  sessionStorage.setItem(SESSION_KEY, '1')
 
   setTimeout(() => {
     hiding.value = true
     setTimeout(() => {
       visible.value = false
-    }, 600)
+    }, 550)
   }, props.duration)
 })
 </script>
@@ -118,7 +99,10 @@ onMounted(() => {
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: #231d45;
+  /* WHITE background — carries the same colour as the Capacitor
+     native launch screen so the transition from native → Vue is
+     invisible instead of a colour flash. */
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -129,18 +113,39 @@ onMounted(() => {
 .splash-logo-wrap {
   display: grid;
   place-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   opacity: 0;
-  animation: splashLogoIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  animation: splashLogoIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+  position: relative;
+  z-index: 2;
 }
 
 .splash-wordmark {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 900;
-  color: #fff;
+  color: #231d45;
   letter-spacing: -0.04em;
   opacity: 0;
-  animation: splashWordmarkIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
+  animation: splashWordmarkIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
+  position: relative;
+  z-index: 2;
+}
+
+/* Soft teal pulse behind the mark — reads as a heartbeat/breath so
+   the splash feels alive even during the brief hold. Loops until the
+   overlay hides. */
+.splash-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;
+  height: 260px;
+  margin-top: -155px; /* mark sits ~30px above centre */
+  margin-left: -130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.18) 0%, rgba(0, 161, 154, 0) 62%);
+  animation: splashPulse 2400ms ease-in-out 0.4s infinite;
+  z-index: 1;
 }
 
 .splash-powered-by {
@@ -153,12 +158,12 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   opacity: 0;
-  animation: splashWordmarkIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.8s forwards;
+  animation: splashWordmarkIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
 }
 
 .splash-powered-label {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(35, 29, 69, 0.45);
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -173,49 +178,46 @@ onMounted(() => {
 .splash-powered-name {
   font-size: 13px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(35, 29, 69, 0.9);
   letter-spacing: -0.01em;
 }
 
 .splash--hiding {
-  animation: splashFadeOut 0.6s cubic-bezier(0.4, 0, 1, 1) forwards;
+  animation: splashFadeOut 0.55s cubic-bezier(0.4, 0, 1, 1) forwards;
   pointer-events: none;
 }
 
 @keyframes splashLogoIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-  30% {
-    opacity: 1;
-  }
-  80% {
-    transform: scale(1.02);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+  0%   { opacity: 0; transform: scale(0.6); }
+  40%  { opacity: 1; }
+  75%  { transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 @keyframes splashWordmarkIn {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0%   { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes splashPulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.55; }
+  50%      { transform: scale(1.08); opacity: 1; }
 }
 
 @keyframes splashFadeOut {
-  0% {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-logo-wrap,
+  .splash-wordmark,
+  .splash-powered-by,
+  .splash-pulse,
+  .splash--hiding {
+    animation: none !important;
     opacity: 1;
-  }
-  100% {
-    opacity: 0;
+    transform: none;
   }
 }
 </style>
