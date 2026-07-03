@@ -9849,10 +9849,15 @@ watch(screen, (s) => {
   overflow: hidden;
 }
 .bc-firework-host {
+  /* Above the boost celebration modal content so the sparks read as
+     celebration on top rather than a background pattern peeking
+     through. pointer-events:none keeps the confirm button underneath
+     tappable. */
   position: absolute;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
+  z-index: 9999;
 }
 .bc-firework {
   position: absolute;

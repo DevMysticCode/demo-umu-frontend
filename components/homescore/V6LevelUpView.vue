@@ -337,13 +337,17 @@ const fireworks = ref<Firework[]>(
   font-weight: 500;
 }
 
-/* Fireworks */
+/* Fireworks — sit ABOVE every other layer in the level-up view so the
+   sparks read as celebration rather than a background pattern peeking
+   through gaps. pointer-events:none means the header + CTA under
+   them still receive taps normally. z-index deliberately huge so
+   any later drawer/sheet portalled into the same view stays below. */
 .fireworks-host {
   position: absolute;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
-  z-index: 1;
+  z-index: 9999;
 }
 .firework {
   position: absolute;
