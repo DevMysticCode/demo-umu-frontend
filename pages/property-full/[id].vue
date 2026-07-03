@@ -496,7 +496,7 @@
           class="prop-section"
         >
           <h2 class="prop-section-title">Train Stations Nearby</h2>
-          <p class="prop-nearby-source">Source: OpenStreetMap / Overpass</p>
+          <p class="prop-nearby-source">Data · Public transport &amp; mapping records</p>
           <div class="prop-station-list">
             <template v-if="enrichment?.nearby?.trains?.length">
               <div
@@ -589,7 +589,7 @@
           class="prop-section"
         >
           <h2 class="prop-section-title">Parks Nearby</h2>
-          <p class="prop-nearby-source">Source: OpenStreetMap / Overpass</p>
+          <p class="prop-nearby-source">Data · Public transport &amp; mapping records</p>
           <div class="prop-station-list">
             <template v-if="enrichment?.nearby?.parks?.length">
               <div
@@ -632,7 +632,7 @@
           class="prop-section"
         >
           <h2 class="prop-section-title">Bus Stops Nearby</h2>
-          <p class="prop-nearby-source">Source: OpenStreetMap / Overpass</p>
+          <p class="prop-nearby-source">Data · Public transport &amp; mapping records</p>
           <div class="prop-station-list">
             <template v-if="enrichment?.nearby?.busStops?.length">
               <div
@@ -715,7 +715,7 @@
           class="prop-section"
         >
           <h2 class="prop-section-title">Airports Nearby</h2>
-          <p class="prop-nearby-source">Source: OpenStreetMap / Overpass</p>
+          <p class="prop-nearby-source">Data · Public transport &amp; mapping records</p>
           <div class="prop-station-list">
             <template v-if="enrichment?.nearby?.airports?.length">
               <div
@@ -1244,7 +1244,7 @@
         >
           <h2 class="prop-section-title">Heritage &amp; Historic Sites</h2>
           <p class="prop-nearby-source">
-            Source: OpenStreetMap heritage data · 800m radius
+            Data · Historic England &amp; local heritage records · 800m radius
           </p>
           <div class="prop-listed-list">
             <div

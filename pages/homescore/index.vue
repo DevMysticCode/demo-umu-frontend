@@ -20,10 +20,10 @@
 
     <!-- ── Hero ─────────────────────────────────────────────────────── -->
     <div class="hs-hero">
-      <div class="hs-hero-title">How energy efficient is any UK property?</div>
+      <div class="hs-hero-title">What does any UK home really cost to run?</div>
       <div class="hs-hero-sub">
-        Instantly scored from public EPC data — for any address, anyone. See how
-        a property compares to its street in seconds.
+        Instantly scored from public EPC data. Check any UK address and see its
+        running costs against the street — in seconds.
       </div>
     </div>
 
@@ -387,21 +387,21 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   animation: hsSearchPulse 2.2s ease-in-out infinite;
 }
 @keyframes hsSearchPulse {
-  0%, 100% {
-    box-shadow:
-      0 0 0 0 rgba(0, 161, 154, 0.55),
-      0 0 0 0 rgba(0, 161, 154, 0.18);
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.55), 0 0 0 0 rgba(0, 161, 154, 0.18);
     border-color: #00a19a;
   }
   50% {
-    box-shadow:
-      0 0 0 6px rgba(0, 161, 154, 0.0),
+    box-shadow: 0 0 0 6px rgba(0, 161, 154, 0),
       0 0 18px 4px rgba(0, 161, 154, 0.28);
     border-color: #00c4bc;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hs-search-wrap { animation: none; }
+  .hs-search-wrap {
+    animation: none;
+  }
 }
 /* Make the dropdown span the full width of the outer search shell, not just
    the inner input's narrower column. We do this by making .psi-wrap
@@ -541,10 +541,14 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   animation: hsCaretBlink 0.9s steps(1) infinite;
 }
 @keyframes hsCaretBlink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hs-typer-caret { animation: none; }
+  .hs-typer-caret {
+    animation: none;
+  }
 }
 .hs-real-story-text {
   font-size: 13px;
