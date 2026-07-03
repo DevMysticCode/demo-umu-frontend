@@ -21,7 +21,7 @@ useHead({
 // Native push notifications — only fires on Capacitor (iOS/Android);
 // no-ops on the web build. The composable defers backend registration
 // until a JWT exists in localStorage, so calling it pre-login is safe.
-if (process.client) {
+if (import.meta.client) {
   const { register } = usePushNotifications()
 
   // Configure native status bar so the safe-area colour matches the
@@ -55,11 +55,16 @@ if (process.client) {
 </script>
 <style scoped>
 .app {
-  /* White base so any safe-area padding blends with the pages under
-     it. Individual pages that need a dark hero can layer their own
-     background on top. The bg-black default was what produced the
-     black strip above the notch. */
-  @apply min-h-dvh bg-white flex items-center justify-center overflow-x-hidden;
+  /* Full-width block wrapper. The child pages carry .mobile-container
+     with `max-w-md mx-auto` so they centre themselves — the previous
+     `flex items-center justify-center` layered a second centring on
+     top and on Capacitor's initial paint could shrink the child to
+     its intrinsic width before Tailwind's `w-full` applied, giving
+     the "Good afternoon,\nPradeep" word-wrap symptom testers saw on
+     first open of Explore. Block layout + mx-auto is the standard
+     pattern for a mobile-shell root and behaves consistently across
+     iOS/Android/web. */
+  @apply min-h-dvh bg-white overflow-x-hidden;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
