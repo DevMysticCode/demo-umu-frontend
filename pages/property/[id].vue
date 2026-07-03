@@ -1460,7 +1460,7 @@
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Transport</div>
                 <div class="pps-ds-header-meta">
-                  Source: OpenStreetMap · Overpass API
+                  Nearest stations, bus stops &amp; airports
                 </div>
               </div>
             </div>
@@ -1637,23 +1637,22 @@
               <div class="pps-ds-placeholder-icon">🚂</div>
               <div class="pps-ds-placeholder-title">
                 {{ transportLookupFailed
-                  ? 'Transport data unavailable from this network'
+                  ? 'Train information unavailable right now'
                   : 'No train stations within 4 km' }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
-                  OpenStreetMap's Overpass servers couldn't be reached from
-                  the backend's network. This usually resolves automatically
-                  once deployed to UK/EU infra.
+                  We couldn't load nearby stations for this area — please
+                  try again in a moment.
                 </template>
                 <template v-else>
-                  This address has no National Rail or light-rail station
-                  within 4 km in OpenStreetMap.
+                  We couldn't find a National Rail or light-rail station
+                  within 4 km of this address.
                 </template>
               </div>
             </div>
             <div class="pps-ds-attribution">
-              Source: OpenStreetMap · Overpass
+              Data · National Rail &amp; local operators
             </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
@@ -1696,23 +1695,22 @@
               <div class="pps-ds-placeholder-icon">🚌</div>
               <div class="pps-ds-placeholder-title">
                 {{ transportLookupFailed
-                  ? 'Bus stop data unavailable from this network'
+                  ? 'Bus stop information unavailable right now'
                   : 'No bus stops within 700 m' }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
-                  OpenStreetMap's Overpass servers couldn't be reached from
-                  the backend's network. This usually resolves once
-                  deployed to UK/EU infra.
+                  We couldn't load nearby stops for this area — please try
+                  again in a moment.
                 </template>
                 <template v-else>
-                  No bus stops are mapped within walking distance in
-                  OpenStreetMap.
+                  We couldn't find a bus stop within walking distance of
+                  this address. Check Traveline for the latest coverage.
                 </template>
               </div>
             </div>
             <div class="pps-ds-attribution">
-              Source: OpenStreetMap · Overpass
+              Data · Traveline &amp; local operators
             </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
@@ -1760,14 +1758,13 @@
               <div class="pps-ds-placeholder-icon">✈️</div>
               <div class="pps-ds-placeholder-title">
                 {{ airportsLookupFailed
-                  ? 'Airport data unavailable from this network'
+                  ? 'Airport information unavailable right now'
                   : 'No airports found within 150 km' }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="airportsLookupFailed">
-                  OpenStreetMap's Overpass servers couldn't be reached from
-                  the backend's network. This usually resolves once
-                  deployed to UK/EU infra.
+                  We couldn't load nearby airports for this area — please
+                  try again in a moment.
                 </template>
                 <template v-else>
                   Only commercial airports (IATA code, international flag,
@@ -1776,7 +1773,7 @@
               </div>
             </div>
             <div class="pps-ds-attribution">
-              Source: OpenStreetMap · Overpass
+              Data · Public aviation records
             </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
@@ -2596,7 +2593,7 @@
               </div>
             </div>
             <div class="pps-ds-attribution">
-              Source: OpenStreetMap heritage tags
+              Data · Historic England &amp; local records
             </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
@@ -4667,9 +4664,9 @@ const exploreTiles = computed(() => {
     sub: nearestTrain
       ? nearestTrain.name
       : enrichmentPending
-        ? 'Searching OpenStreetMap'
+        ? 'Loading nearest stations'
         : tFailed
-          ? 'Map sources unreachable — tap to retry'
+          ? 'Couldn’t load right now — tap to retry'
           : 'No stations found nearby',
   })
   // Bus stops
@@ -4689,9 +4686,9 @@ const exploreTiles = computed(() => {
     sub: nearestBus
       ? nearestBus.name || 'Nearest bus stop'
       : enrichmentPending
-        ? 'Searching OpenStreetMap'
+        ? 'Loading nearest stops'
         : tFailed
-          ? 'Map sources unreachable — tap to retry'
+          ? 'Couldn’t load right now — tap to retry'
           : 'No stops found within 700 m',
   })
   // Airports — independent failure flag
@@ -4711,9 +4708,9 @@ const exploreTiles = computed(() => {
     sub: nearestAirport
       ? nearestAirport.name
       : enrichmentPending
-        ? 'Searching OpenStreetMap'
+        ? 'Loading nearest airports'
         : aFailed
-          ? 'Map sources unreachable — tap to retry'
+          ? 'Couldn’t load right now — tap to retry'
           : 'No airports within 150 km',
   })
   // Location & map
