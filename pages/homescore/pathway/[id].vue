@@ -112,10 +112,15 @@
             </button>
           </template>
           <template v-else>
-            <button class="mission-btn-supplier" type="button" @click="goToMarketplace(m.id)">
-              🔧 {{ m.supplierLabel }}
+            <!-- Phase 1: marketplace is not live yet. The supplier CTA
+                 becomes an inert 'Coming soon' badge so the pathway
+                 still communicates the intent (users know this is
+                 where they'll book work) without opening a dead
+                 flow. Re-enable @click + drop the disabled state
+                 when marketplace launches. -->
+            <button class="mission-btn-supplier mission-btn-supplier--soon" type="button" disabled>
+              🔧 {{ m.supplierLabel }} · Coming soon
             </button>
-            <button class="mission-btn-done" type="button" @click="markDone(m.id)">✓ Done</button>
           </template>
         </div>
       </div>
@@ -195,8 +200,13 @@
       </div>
     </div>
 
-    <!-- Bottom CTAs -->
-    <div class="bottom-cta">
+    <!-- Bottom CTAs
+         Phase 1: marketplace is not launched — the two CTAs below
+         (open marketplace / see matched suppliers) both went into
+         that flow, so they're hidden entirely for now. When the
+         marketplace launches, remove the v-if="false" wrapper to
+         bring them back. -->
+    <div v-if="false" class="bottom-cta">
       <button class="bottom-cta-btn" type="button" @click="goToMarketplaceHub">
         🛒 Open the UmovingU Marketplace
       </button>
@@ -1063,6 +1073,21 @@ const passportSummary = computed(() => {
 }
 .mission-btn-supplier:hover {
   filter: brightness(1.06);
+}
+
+/* Phase-1 'Coming soon' state — dialled-back grey badge so the mission
+   card still says "this is where you'll book work" without the loud
+   teal CTA that would imply the flow is live. Removed when the
+   marketplace launches (see the <template v-else> in mission-actions). */
+.mission-btn-supplier--soon {
+  background: #f2f3f7;
+  color: #6a6e83;
+  cursor: not-allowed;
+  box-shadow: none;
+  border: 1px solid #e5e7eb;
+}
+.mission-btn-supplier--soon:hover {
+  filter: none;
 }
 
 /* "Already done" mission state — derived from quiz answers. Dialled
