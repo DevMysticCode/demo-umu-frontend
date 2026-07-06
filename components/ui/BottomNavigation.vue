@@ -50,12 +50,15 @@ const navigationItems: NavigationItem[] = [
     icon: '/icons/Search-Map.png',
     route: '/find-property',
   },
-  {
-    id: 'marketplace',
-    label: 'Marketplace',
-    icon: '/icons/Marketplace.png',
-    route: '/marketplace',
-  },
+  // Marketplace hidden for Phase 1 launch. Kept the entry commented
+  // out so the id/label/icon/route stays as a one-line restore when
+  // the feature ships.
+  // {
+  //   id: 'marketplace',
+  //   label: 'Marketplace',
+  //   icon: '/icons/Marketplace.png',
+  //   route: '/marketplace',
+  // },
   {
     id: 'rewards',
     label: 'Rewards',

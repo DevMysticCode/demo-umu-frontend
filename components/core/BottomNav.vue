@@ -21,7 +21,13 @@
         <span class="text-xs mt-1">Passport</span>
       </button>
 
+      <!-- Marketplace hidden for Phase 1 launch. The route + backend
+           module still exist so we can flip it back on with one line
+           by removing the v-if="false". Do NOT remove the whole
+           button + assets — every icon slot is designed to keep the
+           4-item spacing balanced. -->
       <button
+        v-if="false"
         class="flex flex-col items-center py-2"
         :class="isActive('marketplace')"
         @click="router.push('/marketplace')"
