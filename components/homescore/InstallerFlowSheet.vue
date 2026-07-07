@@ -324,7 +324,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 type Kind = 'insulation' | 'solarpv' | 'other'
 type StateName =
@@ -362,15 +362,33 @@ const eaName = ref('')
 const eaContact = ref('')
 const interests = ref<string[]>([])
 
-// Local demand-tracker seed. Persists per-session only; server-side
-// storage lives in CaptureEvent rows on the backend.
+// Match requests survive: (a) sheet close/reopen — the outer `v-if`
+// unmounts everything inside, so a local ref would reset every time,
+// (b) navigation elsewhere in the app — a Nuxt `useState` singleton
+// backed by localStorage restores the list on any page. Server side
+// still has the authoritative record in CaptureEvent rows.
 interface TrackedRequest {
   measure: string
   date: string
   status: 'sourcing'
   grant: string | null
 }
-const requests = ref<TrackedRequest[]>([])
+const REQUESTS_LS_KEY = 'umu.installer.requests'
+const requests = useState<TrackedRequest[]>('installer-requests', () => [])
+onMounted(() => {
+  if (requests.value.length > 0) return
+  try {
+    const raw = localStorage.getItem(REQUESTS_LS_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) requests.value = parsed as TrackedRequest[]
+    }
+  } catch { /* corrupt LS is fine — leave empty */ }
+})
+function persistRequests() {
+  try { localStorage.setItem(REQUESTS_LS_KEY, JSON.stringify(requests.value)) } catch {}
+}
+
 
 const { send: sendCapture } = useCaptureEvent()
 
@@ -516,14 +534,18 @@ function goConfirm() {
       grantContext: lastGrantContext,
     },
   })
-  requests.value.unshift({
-    measure: trade.value.measure,
-    date: 'Requested just now',
-    status: 'sourcing',
-    grant: (answers.benefits === 'yes' || answers.income === 'low')
-      ? 'Grant check · likely'
-      : null,
-  })
+  requests.value = [
+    {
+      measure: trade.value.measure,
+      date: 'Requested just now',
+      status: 'sourcing',
+      grant: (answers.benefits === 'yes' || answers.income === 'low')
+        ? 'Grant check · likely'
+        : null,
+    },
+    ...requests.value,
+  ]
+  persistRequests()
   lastGrantContext = null
   state.value = 'confirm'
 }
@@ -580,6 +602,11 @@ watch(() => props.open, (o) => {
    pathway page's CSS (which owns `.mission-…`, `.pathway-…`) can't
    collide with the sheet. */
 .ifs-overlay {
+  /* `fixed` so the scrim + sheet track the visible viewport, not the
+     scrolled page. Width is unconstrained on purpose; the sheet
+     itself is `max-width:448px` (Tailwind's max-w-md) so it lines
+     up with the `.mobile-container` column on desktop preview and
+     still fills the screen edge-to-edge on a real mobile viewport. */
   position: fixed;
   inset: 0;
   z-index: 9998;
@@ -594,16 +621,22 @@ watch(() => props.open, (o) => {
 
 .ifs-sheet {
   width: 100%;
-  max-width: 500px;
+  max-width: 448px; /* matches Tailwind max-w-md so it lines up with .mobile-container */
   background: #fff;
   border-radius: 26px 26px 0 0;
   box-shadow: 0 -12px 40px rgba(35, 29, 69, 0.2);
-  max-height: 92vh;
+  /* dvh = dynamic viewport height, respects mobile browser chrome —
+     avoids the drawer being clipped below the address bar which is
+     what vh reports on iOS Safari. */
+  max-height: 85dvh;
   display: flex;
   flex-direction: column;
   animation: ifs-slide 0.34s cubic-bezier(.22, 1, .36, 1);
   font-family: inherit;
   color: #231d45;
+  /* Leave room for the iOS home indicator inside the scrollable
+     content area — the sheet itself sits flush at the bottom. */
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 @keyframes ifs-slide { from { transform: translateY(100%) } to { transform: translateY(0) } }
 
