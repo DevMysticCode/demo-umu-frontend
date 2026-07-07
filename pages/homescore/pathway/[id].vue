@@ -112,14 +112,17 @@
             </button>
           </template>
           <template v-else>
-            <!-- Phase 1: marketplace is not live yet. The supplier CTA
-                 becomes an inert 'Coming soon' badge so the pathway
-                 still communicates the intent (users know this is
-                 where they'll book work) without opening a dead
-                 flow. Re-enable @click + drop the disabled state
-                 when marketplace launches. -->
-            <button class="mission-btn-supplier mission-btn-supplier--soon" type="button" disabled>
-              🔧 {{ m.supplierLabel }} · Coming soon
+            <!-- Phase 1: no live marketplace, but the drawer captures
+                 real demand (match request + grant check + early
+                 access) so the pathway CTA does something useful.
+                 Backed by CaptureEvent rows on the backend — see
+                 useCaptureEvent / InstallerFlowSheet. -->
+            <button
+              class="mission-btn-supplier"
+              type="button"
+              @click="openInstallerSheet(m)"
+            >
+              🔧 {{ m.supplierLabel }}
             </button>
           </template>
         </div>
@@ -201,19 +204,40 @@
     </div>
 
     <!-- Bottom CTAs
-         Phase 1: marketplace is not launched — the two CTAs below
-         (open marketplace / see matched suppliers) both went into
-         that flow, so they're hidden entirely for now. When the
-         marketplace launches, remove the v-if="false" wrapper to
-         bring them back. -->
-    <div v-if="false" class="bottom-cta">
-      <button class="bottom-cta-btn" type="button" @click="goToMarketplaceHub">
-        🛒 Open the UmovingU Marketplace
+         Phase 1: no live marketplace. Both buttons open the demand-
+         capture drawer instead — one collects early-access sign-ups
+         for the marketplace, the other lets the user see the
+         match requests they've already fired. All demand lands in
+         the CaptureEvent table on the backend. -->
+    <div class="bottom-cta">
+      <button
+        class="bottom-cta-btn"
+        type="button"
+        @click="openMarketplaceSheet"
+      >
+        🛒 Join the marketplace early access
       </button>
-      <button class="bottom-cta-secondary" type="button" @click="goToMatched">
-        See your matched suppliers
+      <button
+        class="bottom-cta-secondary"
+        type="button"
+        @click="openTrackerSheet"
+      >
+        See your requests
       </button>
     </div>
+
+    <!-- Demand-capture drawer — replaces the coming-soon badge with
+         a real flow that records grant checks, match requests and
+         early-access sign-ups against the current property. -->
+    <InstallerFlowSheet
+      v-model:open="installerSheetOpen"
+      :kind="installerKind"
+      :measure-title="installerMeasureTitle"
+      :property-id="propertyId"
+      :postcode="propertyPostcode"
+      :address="addressLine"
+      :initial-state="installerInitialState"
+    />
 
     <!-- Floating "Verify your answers" pill — re-opens the modal if the
          user dismissed it. Only shown when they've claimed at least one
@@ -289,6 +313,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
+import InstallerFlowSheet from '~/components/homescore/InstallerFlowSheet.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -357,6 +382,50 @@ const addressLine = computed(() => {
   const p = property.value
   return p?.addressLine1 || 'Your property'
 })
+
+const propertyPostcode = computed<string>(() => {
+  const p = property.value
+  return (p?.postcode || p?.epcCert?.postcode || '') as string
+})
+
+// Demand-capture drawer state. `kind` picks the correct trade card
+// inside the sheet (TrustMark vs MCS self-search link, grant flow
+// on/off, accreditation string logged with the match request).
+type InstallerKind = 'insulation' | 'solarpv' | 'other'
+type SheetState =
+  | 'routes' | 'elig' | 'result' | 'form' | 'confirm'
+  | 'tracker' | 'market' | 'ea-form' | 'ea-confirm'
+const installerSheetOpen = ref(false)
+const installerKind = ref<InstallerKind>('other')
+const installerMeasureTitle = ref('')
+const installerInitialState = ref<SheetState>('routes')
+
+// Rough mapping mission title → trade kind. Only used to pick which
+// accreditation copy (TrustMark vs MCS) the drawer shows; everything
+// downstream (capture events) records the exact measure title too.
+function kindForMissionTitle(title: string): InstallerKind {
+  const t = (title ?? '').toLowerCase()
+  if (/solar pv|photovoltaic/.test(t)) return 'solarpv'
+  if (/(cavity|wall|loft|roof|floor|insulat)/.test(t)) return 'insulation'
+  return 'other'
+}
+
+function openInstallerSheet(m: { title: string }) {
+  installerKind.value = kindForMissionTitle(m.title)
+  installerMeasureTitle.value = m.title
+  installerInitialState.value = 'routes'
+  installerSheetOpen.value = true
+}
+
+function openTrackerSheet() {
+  installerInitialState.value = 'tracker'
+  installerSheetOpen.value = true
+}
+
+function openMarketplaceSheet() {
+  installerInitialState.value = 'market'
+  installerSheetOpen.value = true
+}
 
 const fromScore = computed(() => {
   const p: any = property.value
