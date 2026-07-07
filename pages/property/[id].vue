@@ -878,16 +878,6 @@
         </div>
       </div>
 
-      <!-- ─── HM Land Registry Local Land Charges ────────────────────
-           Indicative LLC search direct from HMLR's approved-user API.
-           Renders empty states honestly (not-migrated / multi-geometry
-           / no-charges) rather than hiding when data isn't available,
-           because "we don't know" is itself signal for the buyer. -->
-      <LlcChargesCard
-        v-if="propertyId"
-        :property-id="propertyId"
-      />
-
       <div style="height: 80px" />
     </template>
 
@@ -2120,6 +2110,24 @@
             <div class="pps-ds-attribution">
               Source: planning.data.gov.uk · MHCLG
             </div>
+            <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
+          </template>
+
+          <!-- ── Local Land Charges (HM Land Registry) ─────────────── -->
+          <template v-else-if="activeSheet === 'llc'">
+            <div class="pps-ds-header" style="background: #f3effb">
+              <span class="pps-ds-header-icon">📜</span>
+              <div class="pps-ds-header-text">
+                <div class="pps-ds-header-title">Local Land Charges</div>
+                <div class="pps-ds-header-meta">
+                  Source: HM Land Registry · indicative search
+                </div>
+              </div>
+            </div>
+            <LlcChargesCard
+              v-if="propertyId"
+              :property-id="propertyId"
+            />
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -4775,6 +4783,18 @@ const exploreTiles = computed(() => {
           : 'Applications on file',
     })
   }
+  // Local Land Charges — indicative HMLR check. The tile value + sub
+  // are static because the actual outcome (charges vs not-migrated vs
+  // clean) is only known after the sheet loads. We hint "HM Land
+  // Registry" so buyers understand the provenance before they tap.
+  tiles.push({
+    key: 'llc',
+    icon: '📜',
+    iconBg: '#F3EFFB',
+    title: 'Land charges',
+    value: 'Check LLC',
+    sub: 'HM Land Registry',
+  })
   // Council tax — prefer EPC-sourced band when DB column empty
   {
     const band =
@@ -5051,6 +5071,7 @@ type SheetKey =
   | 'map'
   | 'flood'
   | 'planning'
+  | 'llc'
   | 'council'
   | 'broadband'
   | 'stamp-duty'
@@ -5084,6 +5105,7 @@ function onExploreTileClick(key: string) {
     map: 'map',
     flood: 'flood',
     planning: 'planning',
+    llc: 'llc',
     council: 'council',
     broadband: 'broadband',
     'stamp-duty': 'stamp-duty',
@@ -5382,6 +5404,7 @@ const TALL_SHEETS = new Set<SheetKey>([
   'map',
   'flood',
   'planning',
+  'llc',
   'stamp-duty',
   'passport',
   'explain-unclaimed',
