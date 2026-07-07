@@ -878,6 +878,16 @@
         </div>
       </div>
 
+      <!-- ─── HM Land Registry Local Land Charges ────────────────────
+           Indicative LLC search direct from HMLR's approved-user API.
+           Renders empty states honestly (not-migrated / multi-geometry
+           / no-charges) rather than hiding when data isn't available,
+           because "we don't know" is itself signal for the buyer. -->
+      <LlcChargesCard
+        v-if="propertyId"
+        :property-id="propertyId"
+      />
+
       <div style="height: 80px" />
     </template>
 
@@ -3417,6 +3427,7 @@ import RegisterInterestContent from '~/components/property/RegisterInterestConte
 // issue). ClaimPassportDrawer below is ONLY for the buyer-unlock (£99
 // Stripe) path on a published Passport.
 import ClaimPassportDrawer from '~/components/property/ClaimPassportDrawer.vue'
+import LlcChargesCard from '~/components/property/LlcChargesCard.vue'
 import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
 import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDrawer.vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
