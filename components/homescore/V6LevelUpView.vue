@@ -1,27 +1,5 @@
 <template>
   <div class="hs-v6-levelup">
-    <div class="fireworks-host">
-      <div
-        v-for="(fw, i) in fireworks"
-        :key="i"
-        class="firework"
-        :style="{ left: fw.left + '%', top: fw.top + '%' }"
-      >
-        <span
-          v-for="(p, j) in fw.particles"
-          :key="j"
-          class="fw-particle"
-          :style="{
-            background: fw.color,
-            boxShadow: `0 0 14px 2px ${fw.color}, 0 0 5px #fff`,
-            '--tx': p.tx + 'px',
-            '--ty': p.ty + 'px',
-            animationDelay: fw.delay + 'ms',
-          }"
-        />
-      </div>
-    </div>
-
     <!-- Minimal back-only mini-header (no title strip, no bell) -->
     <div class="lu-mini-header">
       <button
@@ -132,7 +110,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useConfetti } from '~/composables/useConfetti'
 
 interface Props {
   fromScore: number
@@ -150,6 +129,8 @@ defineEmits<{
   (e: 'open-pathway'): void
   (e: 'open-boost'): void
 }>()
+
+const { runConfetti } = useConfetti()
 
 function gradeFor(score: number): string {
   if (score >= 92) return 'A'
@@ -172,19 +153,12 @@ const deltaLabel = computed(() => {
 const animatedToScore = ref(props.fromScore)
 const barsAnimated = ref(false)
 
-// Auto-stop the celebration after a few seconds. The fireworks loop
-// infinitely so without this they'd run for as long as the user lingers
-// — distracting once the user reads the stats. Eight seconds covers two
-// full burst cycles + the stagger delay, then we tear the host down.
-const fireworksTimer = ref<ReturnType<typeof setTimeout> | null>(null)
-onBeforeUnmount(() => {
-  if (fireworksTimer.value) clearTimeout(fireworksTimer.value)
-})
-
 onMounted(() => {
-  fireworksTimer.value = setTimeout(() => {
-    fireworks.value = []
-  }, 8000)
+  // Fire the same confetti burst the onboarding "preferences saved"
+  // screen uses — one-shot, tears down its own canvas, respects
+  // prefers-reduced-motion. Fires slightly after mount so the level-
+  // up hero has finished its own fade-in first.
+  setTimeout(() => runConfetti(), 200)
 
   // Count-up animation for the score
   const start = props.fromScore
@@ -254,48 +228,6 @@ const refinedStats = [
   },
 ] as const
 
-// Fireworks — each burst radiates a ring of particles from a point, then
-// fades; bursts repeat on a stagger so the celebration keeps going while the
-// user is on the level-up screen.
-interface FwParticle {
-  tx: number
-  ty: number
-}
-interface Firework {
-  left: number
-  top: number
-  color: string
-  delay: number
-  particles: FwParticle[]
-}
-const fwColors = [
-  '#00b8b0',
-  '#f0a030',
-  '#7c6fb0',
-  '#ffd54a',
-  '#ff5e7e',
-  '#5eead4',
-  '#7ab040',
-]
-const fireworks = ref<Firework[]>(
-  Array.from({ length: 11 }, () => {
-    const count = 24
-    const baseR = 110 + Math.random() * 80
-    const particles = Array.from({ length: count }, (_, j) => {
-      const ang = (Math.PI * 2 * j) / count + Math.random() * 0.2
-      const r = baseR + Math.random() * 30
-      // +30 on ty gives a slight gravity droop to the burst.
-      return { tx: Math.cos(ang) * r, ty: Math.sin(ang) * r + 30 }
-    })
-    return {
-      left: 10 + Math.random() * 80,
-      top: 8 + Math.random() * 50,
-      color: fwColors[Math.floor(Math.random() * fwColors.length)],
-      delay: Math.random() * 2600,
-      particles,
-    }
-  }),
-)
 </script>
 
 <style scoped>
@@ -335,48 +267,6 @@ const fireworks = ref<Firework[]>(
 }
 .hs-v6-levelup :is(.levelup-sub, .levelup-from-label, .levelup-to-label) {
   font-weight: 500;
-}
-
-/* Fireworks — sit ABOVE every other layer in the level-up view so the
-   sparks read as celebration rather than a background pattern peeking
-   through gaps. pointer-events:none means the header + CTA under
-   them still receive taps normally. z-index deliberately huge so
-   any later drawer/sheet portalled into the same view stays below. */
-.fireworks-host {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 9999;
-}
-.firework {
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-/* Real-firework feel: small sparks (5px) with a tight outer glow that
-   shoot outward and fade. Matches the boost-score celebration overlay
-   so the same celebratory visual reads as one motif across the app. */
-.fw-particle {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  opacity: 0;
-  animation: fwBurst 1800ms cubic-bezier(0.12, 0.65, 0.35, 1) infinite;
-  will-change: transform, opacity;
-}
-@keyframes fwBurst {
-  0%   { transform: translate(0, 0) scale(0.5); opacity: 0; }
-  10%  { opacity: 1; }
-  100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .fw-particle {
-    animation: none;
-  }
 }
 
 /* App header */
