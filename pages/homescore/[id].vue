@@ -50,20 +50,14 @@
         </p>
         <p class="hs-header-sub">{{ headerSub }}</p>
       </div>
-      <button
-        v-if="
-          screen === 'landing' ||
-          screen === 'results' ||
-          screen === 'buyer-results'
-        "
-        class="hs-tour-btn"
-        type="button"
-        title="How does this work?"
-        @click="resultTour.restart()"
-      >
-        ?
-      </button>
-      <div v-else class="hs-header-spacer" />
+      <!-- Tour "?" removed: the resultTour steps below target
+           `data-tour` attributes that live inside V6ScoreView /
+           V6BoostView children, and those children haven't been
+           tagged yet. Without matching targets the tour ends
+           silently, so the button did nothing on tap. Re-enable
+           by tagging the target elements inside those child
+           components AND restoring this button. -->
+      <div class="hs-header-spacer" />
     </div>
 
     <!-- Tour overlay (renders only when active) -->

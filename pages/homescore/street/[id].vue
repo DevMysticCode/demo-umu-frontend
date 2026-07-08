@@ -174,7 +174,12 @@
       </div>
     </div>
 
-    <button class="back-link" type="button" @click="router.back()">
+    <button
+      class="back-link"
+      type="button"
+      data-tour="cta"
+      @click="router.back()"
+    >
       ← Back to results
     </button>
     <div style="height: 24px" />
