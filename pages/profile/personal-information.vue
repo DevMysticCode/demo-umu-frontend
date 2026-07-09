@@ -578,7 +578,7 @@
         <img
           :src="avatarPreview"
           alt="Preview"
-          class="w-24 h-24 rounded-full object-cover border-4 border-[#3dbda3]"
+          class="w-24 h-24 rounded-full object-cover border-4 border-[#00a19a]"
         />
       </div>
       <div class="space-y-3">
@@ -1035,7 +1035,7 @@ const goBack = useGoBack('/profile')
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(155deg, #2a9484 0%, #143f58 60%, #0e2840 100%);
+  background: linear-gradient(155deg, #008a84 0%, #143f58 60%, #0e2840 100%);
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -1066,7 +1066,7 @@ const goBack = useGoBack('/profile')
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   border: 2.5px solid #fafaf8;
   display: flex;
@@ -1112,12 +1112,12 @@ const goBack = useGoBack('/profile')
 }
 .pic-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3dbda3, #1f7a66);
+  background: linear-gradient(90deg, #00a19a, #008a84);
   border-radius: 100px;
   transition: width 0.3s ease;
 }
 .pic-pct {
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 800;
   font-feature-settings: 'tnum';
 }
@@ -1140,7 +1140,7 @@ const goBack = useGoBack('/profile')
   margin-left: auto;
   font-size: 11px;
   font-weight: 800;
-  color: #1f7a66;
+  color: #008a84;
   cursor: pointer;
   letter-spacing: -0.1px;
   text-transform: none;
@@ -1200,7 +1200,7 @@ const goBack = useGoBack('/profile')
   margin-bottom: 2px;
 }
 .pir-label.verified-label {
-  color: #1f7a66;
+  color: #008a84;
 }
 .pir-value {
   font-size: 13px;
@@ -1210,7 +1210,7 @@ const goBack = useGoBack('/profile')
   word-break: break-word;
 }
 .pir-value.empty {
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 700;
 }
 .pir-hint {
@@ -1226,7 +1226,7 @@ const goBack = useGoBack('/profile')
   border-radius: 10px;
   border: none;
   background: #f1f9f4;
-  color: #1f7a66;
+  color: #008a84;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1273,7 +1273,7 @@ const goBack = useGoBack('/profile')
   transition: transform 0.2s;
 }
 .pir-toggle.on {
-  background: #3dbda3;
+  background: #00a19a;
 }
 .pir-toggle.on::after {
   transform: translateX(18px);
@@ -1283,7 +1283,7 @@ const goBack = useGoBack('/profile')
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
   display: flex;
   align-items: center;
@@ -1300,7 +1300,7 @@ const goBack = useGoBack('/profile')
   width: 100%;
   height: 50px;
   border-radius: 14px;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   font-size: 15px;
   font-weight: 800;
