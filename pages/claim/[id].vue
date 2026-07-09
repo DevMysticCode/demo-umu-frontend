@@ -1007,7 +1007,39 @@ async function checkPersonaNow() {
   }
 }
 
-onBeforeUnmount(() => personaAbort?.abort())
+onBeforeUnmount(() => {
+  personaAbort?.abort()
+  if (typeof window !== 'undefined') {
+    document.removeEventListener('visibilitychange', onTabVisible)
+    window.removeEventListener('focus', onTabVisible)
+  }
+})
+
+// Safety net for the "returned to our tab but the poll loop had died"
+// case. pollUntilSettled inside useKyc already resumes on visibility,
+// but if the loop terminated (transient network error before this fix,
+// or a WebView that swallowed all wake events), this restarts it
+// automatically. Only fires while the user is still on a KYC step
+// with a live inquiry — otherwise it's a no-op.
+function onTabVisible() {
+  if (typeof document === 'undefined') return
+  if (document.visibilityState !== 'visible') return
+  const onKycStep =
+    step.value === 'kyc-explainer' ||
+    step.value === 'kyc-id' ||
+    step.value === 'kyc-liveness' ||
+    step.value === 'kyc-aml'
+  if (!onKycStep) return
+  if (!personaInquiryId.value) return
+  if (personaPolling.value) return
+  runPolling()
+}
+
+onMounted(() => {
+  if (typeof window === 'undefined') return
+  document.addEventListener('visibilitychange', onTabVisible)
+  window.addEventListener('focus', onTabVisible)
+})
 
 // ── Liveness simulated delay ──────────────────────────────────
 async function doLiveness() {

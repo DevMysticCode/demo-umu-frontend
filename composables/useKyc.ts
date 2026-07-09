@@ -62,17 +62,28 @@ export const useKyc = () => {
       signal?: AbortSignal
     } = {},
   ): Promise<KycStatus> => {
-    const interval = opts.intervalMs ?? 3000
-    const maxAttempts = opts.maxAttempts ?? 100
+    // 2s cadence + 300 attempts = 10 minutes of coverage before we
+    // give up. Cheap enough (one authenticated GET per tick) that a
+    // shorter interval doesn't matter, and it means the auto-detect
+    // fires within 2s of the user returning to our tab — the previous
+    // 3s felt like the loop had died even when it hadn't.
+    const interval = opts.intervalMs ?? 2000
+    const maxAttempts = opts.maxAttempts ?? 300
 
     let attempts = 0
     let resolveEarly: (() => void) | null = null
 
-    // Wake the poll loop early when the user returns to this tab.
-    const onFocus = () => resolveEarly?.()
+    // Wake the poll loop early when the user returns to our tab.
+    // Focus + visibilitychange cover browsers; pageshow catches iOS
+    // Safari's bfcache restore (returning to a backgrounded PWA tab
+    // often only fires pageshow, not focus). Capacitor's inappbrowser
+    // close event isn't observable here, but visibilitychange fires
+    // when the WebView regains foreground so it's covered too.
+    const wake = () => resolveEarly?.()
     if (typeof window !== 'undefined') {
-      window.addEventListener('focus', onFocus)
-      window.addEventListener('visibilitychange', onFocus)
+      window.addEventListener('focus', wake)
+      window.addEventListener('visibilitychange', wake)
+      window.addEventListener('pageshow', wake)
     }
 
     try {
@@ -80,19 +91,27 @@ export const useKyc = () => {
         if (opts.signal?.aborted) throw new Error('Polling aborted')
         attempts++
 
-        const r = await getKycStatus()
-        if (r.status !== 'pending' && r.status !== 'not_started') {
-          return r.status
+        // Swallow transient errors inside the loop. A single network
+        // blip / brief 5xx used to throw all the way out of
+        // pollUntilSettled, which flipped the UI to the "Check now"
+        // state even though the user hadn't finished — the visible
+        // symptom users reported. Log in dev, keep going in prod.
+        try {
+          const r = await getKycStatus()
+          if (r.status !== 'pending' && r.status !== 'not_started') {
+            return r.status
+          }
+        } catch (err) {
+          if (import.meta.dev) console.warn('[kyc] poll tick failed', err)
         }
 
-        // Wait either the full interval OR until window-focus wakes us up.
+        // Wait either the full interval OR until a wake-up event fires.
         await new Promise<void>((res) => {
           resolveEarly = res
           const t = setTimeout(() => {
             resolveEarly = null
             res()
           }, interval)
-          // If aborted, clear immediately.
           opts.signal?.addEventListener(
             'abort',
             () => {
@@ -107,8 +126,9 @@ export const useKyc = () => {
       throw new Error('timeout')
     } finally {
       if (typeof window !== 'undefined') {
-        window.removeEventListener('focus', onFocus)
-        window.removeEventListener('visibilitychange', onFocus)
+        window.removeEventListener('focus', wake)
+        window.removeEventListener('visibilitychange', wake)
+        window.removeEventListener('pageshow', wake)
       }
     }
   }
