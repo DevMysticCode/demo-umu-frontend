@@ -1,13 +1,13 @@
 <template>
   <div class="multipart-question">
     <!-- Question Display (task-level title/description/help shown above parts) -->
-    <template v-if="displayedQuestion || displayedDescription || showTaskHelp">
-      <p v-if="displayedQuestion" class="question-text">
+    <template v-if="showTaskQuestion || showTaskDescription || showTaskHelp">
+      <p v-if="showTaskQuestion" class="question-text">
         {{ displayedQuestion }}
         <span v-if="showQuestionCursor" class="typing-cursor">|</span>
       </p>
 
-      <div v-if="displayedDescription" class="question-description">
+      <div v-if="showTaskDescription" class="question-description">
         {{ displayedDescription }}
         <span
           v-if="showDescriptionCursor"
@@ -313,16 +313,32 @@ const sortedParts = computed(() => {
 })
 
 // Fixtures & Fittings seeds often populate BOTH the question-level
-// `help` (surfaced by the task page as `displayedHelp`) AND the
-// first part's `helpText` with the exact same copy — see the
-// Free-Standing Heaters template in the payload the tester
-// forwarded. That produces two "What is this?" tips inside this
-// component even after the outer page-level tip is suppressed.
-// Whenever any part carries its own helpText we treat the
-// per-part tip as the source of truth (it's more specific) and
-// hide the task-level one to prevent the second duplicate.
+// fields (`question` / `description` / `help`, surfaced by the
+// task page as `displayedQuestion` / `displayedDescription` /
+// `displayedHelp`) AND the first part's matching field with the
+// exact same copy — see Night-Storage Heaters / Window Fittings
+// in the payload the tester forwarded. That produces the same
+// title / description / "What is this?" rendered twice inside
+// this one component (task-level block up top, then again inside
+// the part card below).
+//
+// When any part carries its own copy of a field we treat the
+// per-part value as the source of truth (it's more specific) and
+// hide the task-level duplicate.
+const hasPartTitle = computed(() =>
+  sortedParts.value.some((p) => (p?.title ?? '').toString().trim() !== ''),
+)
+const hasPartDescription = computed(() =>
+  sortedParts.value.some((p) => (p?.description ?? '').toString().trim() !== ''),
+)
 const hasPartHelp = computed(() =>
   sortedParts.value.some((p) => (p?.helpText ?? '').toString().trim() !== ''),
+)
+const showTaskQuestion = computed(
+  () => !!props.displayedQuestion && !hasPartTitle.value,
+)
+const showTaskDescription = computed(
+  () => !!props.displayedDescription && !hasPartDescription.value,
 )
 const showTaskHelp = computed(
   () => !!props.displayedHelp && !hasPartHelp.value,
