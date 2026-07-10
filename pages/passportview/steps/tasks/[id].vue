@@ -1,6 +1,6 @@
 <template>
   <div v-if="!showThankYou" class="mobile-container task-page bg-umu-gradient">
-    <AppHeader :showBack="true" :backTo="backToStepsUrl" right="dots" />
+    <AppHeader :showBack="true" :backTo="backToStepsUrl" />
 
     <div class="task-content">
       <!-- ── Hero (matches prototype: teal-pale gradient + ring meta) ─── -->
