@@ -129,6 +129,7 @@
     <template v-else-if="screen === 'boost'">
       <V6BoostView
         :home-score="autoScoreVal"
+        :property-id="propertyId"
         :public-epc-rating="property?.epcRating ?? null"
         :public-epc-score="(property as any)?.epcScore ?? (property as any)?.epcCert?.currentEnergyEfficiency ?? null"
         :public-epc-year="simEpcYear"
