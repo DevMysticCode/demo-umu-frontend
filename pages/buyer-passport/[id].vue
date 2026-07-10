@@ -980,12 +980,53 @@ onMounted(async () => {
     )
     await Promise.all([loadComparables(), loadNotes()])
     loadResumeSection()
+    // Some property rows were persisted before the EPC / OS Places
+    // enrichment pipeline ran — so the buyer view lands on a card
+    // with propertyType / sqft / yearBuilt / tenure all showing "—"
+    // even though the upstream registers have the data. Fire the
+    // enrichment endpoint on mount when any of those key fields
+    // are missing and merge the returned property back into `data`
+    // so the details grid renders real values without needing a
+    // backfill migration.
+    await backfillPropertyEnrichmentIfNeeded()
   } catch (e: any) {
     error.value = e?.data?.message || 'Failed to load passport.'
   } finally {
     loading.value = false
   }
 })
+
+async function backfillPropertyEnrichmentIfNeeded() {
+  const p = data.value?.property
+  const propertyId = p?.id
+  if (!propertyId) return
+  const missing =
+    !p.propertyType || !p.sqft || !p.yearBuilt || !p.tenure
+  if (!missing) return
+  try {
+    const tok =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const enrichment: any = await $fetch(
+      `${config.public.apiBase}/property/${propertyId}/enrichment`,
+      { headers: tok ? { Authorization: `Bearer ${tok}` } : {} },
+    )
+    if (enrichment && typeof enrichment === 'object') {
+      // Only fill in the blanks — never clobber a value the row
+      // already had. The enrichment API sometimes returns partial
+      // data (e.g. EPC gave us floorAreaSqm but not yearBuilt),
+      // and the merged shape needs to converge on the most
+      // complete state without overwriting anything good.
+      data.value.property = {
+        ...enrichment,
+        ...Object.fromEntries(
+          Object.entries(p).filter(([, v]) => v != null && v !== ''),
+        ),
+      }
+    }
+  } catch (e) {
+    if (import.meta.dev) console.warn('[buyer-passport] enrichment backfill failed', e)
+  }
+}
 
 const propertyImagesArr = computed<string[]>(() => {
   const uploaded = data.value?.property?.images as string[] | null
@@ -1149,8 +1190,20 @@ function toggleSaveToProfile() {
   // The real save endpoint can hook in here later.
 }
 function askSeller() {
-  const url = `/contact/${data.value?.passport?.id ?? passportId}?prefill=I've reviewed the Passport — I'd like to ask about…`
-  router.push(url)
+  // Route to the new /owner/:propertyId "Tap the Owner" flow
+  // (pages/owner/[id].vue) — the older /contact/:passportId page
+  // still exists but ships the pre-redesign UI (purple hero, house
+  // emoji illustration) that testers flagged as stale. Owner page
+  // is keyed by propertyId, not passportId, and has the whole
+  // WhatsApp / phone-gating flow the contact page doesn't.
+  const propertyId = data.value?.property?.id ?? data.value?.passport?.propertyId
+  if (propertyId) {
+    router.push(
+      `/owner/${propertyId}?prefill=${encodeURIComponent(
+        "I've reviewed the Passport — I'd like to ask about…",
+      )}`,
+    )
+  }
 }
 
 // Red flag patterns scanned from all answer text
@@ -1535,8 +1588,11 @@ async function deleteNote(noteId: string) {
   color: #231d45;
 }
 
-/* Title block */
+/* Title block. Extra top margin so the address heading has room
+   to breathe after the passport hero card — testers flagged the
+   two blocks sitting so close they read as one dense strip. */
 .buyer-title-block {
+  margin-top: 20px;
   margin-bottom: 14px;
 }
 .buyer-address {

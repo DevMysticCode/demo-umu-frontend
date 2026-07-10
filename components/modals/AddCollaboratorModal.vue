@@ -63,8 +63,15 @@
           </button>
         </div>
       </div>
+    </div>
 
-      <!-- Action Buttons -->
+    <!-- Action buttons live in BaseDrawer's footer slot so they stay
+         pinned to the bottom of the drawer even when the content
+         scrolls or the iOS keyboard opens on the email input.
+         Before this move the buttons sat at the tail of a scrollable
+         content column and testers couldn't see them below the
+         email field. -->
+    <template #footer>
       <div class="modal-actions">
         <button
           class="btn btn-secondary"
@@ -81,7 +88,7 @@
           {{ isLoading ? 'Adding...' : 'Add Collaborator' }}
         </button>
       </div>
-    </div>
+    </template>
   </BaseDrawer>
 </template>
 
