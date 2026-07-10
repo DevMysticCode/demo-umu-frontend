@@ -34,7 +34,7 @@ defineEmits<{ 'update:modelValue': [value: string] }>()
 const PILLAR_COLORS: Record<string, string> = {
   heating: '#ef4444',
   structure: '#f59e0b',
-  efficiency: '#22c55e',
+  efficiency: '#00a19a',
   electrics: '#3b82f6',
   plumbing: '#8b5cf6',
 }

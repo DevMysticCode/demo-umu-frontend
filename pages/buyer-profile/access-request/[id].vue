@@ -403,7 +403,7 @@ function goView() { router.push('/buyer-profile/view') }
 .ar-status-banner--approved {
   background: #e8f5ee;
   border: 1px solid #b8e8c8;
-  color: #166534;
+  color: #008a84;
 }
 .ar-status-banner--declined {
   background: #fcebea;

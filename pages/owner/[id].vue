@@ -542,13 +542,13 @@ const sendMessage = async () => {
 .to-privacy__title {
   font-size: 12px;
   font-weight: 700;
-  color: #15803d;
+  color: #008a84;
   margin-bottom: 2px;
 }
 
 .to-privacy__desc {
   font-size: 11.5px;
-  color: #166534;
+  color: #008a84;
   line-height: 1.55;
 }
 

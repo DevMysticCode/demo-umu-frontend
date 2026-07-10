@@ -713,7 +713,7 @@ const ladyPosition = computed(() => {
   transition: stroke-dashoffset 0.6s ease;
 }
 .map-step-ring-fg--done {
-  stroke: #16a34a;
+  stroke: #008a84;
 }
 .map-step-ring-text {
   position: absolute;
@@ -726,7 +726,7 @@ const ladyPosition = computed(() => {
   color: #00a19a;
 }
 .map-step-ring-text--done {
-  color: #16a34a;
+  color: #008a84;
   font-size: 14px;
 }
 </style>

@@ -303,7 +303,7 @@
               class="pp-street-icon"
               :style="{
                 color: sp.isPublished
-                  ? '#1f7a66'
+                  ? '#008a84'
                   : sp.hasPassport
                     ? '#f59e0b'
                     : '#94a3b8',
@@ -1707,7 +1707,7 @@ const onRoleSwitch = (role) => {
 }
 .pp-tab.active {
   background: white;
-  color: #1f7a66;
+  color: #008a84;
   box-shadow:
     0 1px 4px rgba(15, 23, 42, 0.1),
     0 0 0 1px rgba(15, 23, 42, 0.04);
@@ -1720,7 +1720,7 @@ const onRoleSwitch = (role) => {
   font-size: 12px;
 }
 .pp-tab-badge {
-  background: #1f7a66;
+  background: #008a84;
   color: white;
   font-size: 9px;
   font-weight: 800;
@@ -1799,7 +1799,7 @@ const onRoleSwitch = (role) => {
 }
 .pp-street-badge.published {
   background: #dcfce7;
-  color: #166534;
+  color: #008a84;
 }
 .pp-street-badge.started {
   background: #fef3c7;
@@ -1859,10 +1859,10 @@ const onRoleSwitch = (role) => {
   color: #0f172a;
 }
 .pp-stat.brand .pp-stat-val {
-  color: #1f7a66;
+  color: #008a84;
 }
 .pp-stat.green .pp-stat-val {
-  color: #16a34a;
+  color: #008a84;
 }
 .pp-stat.amber .pp-stat-val {
   color: #92400e;
@@ -1961,7 +1961,7 @@ const onRoleSwitch = (role) => {
 }
 .pp-buyer-tag.match {
   background: #dcfce7;
-  color: #166534;
+  color: #008a84;
 }
 .pp-buyer-tag.partial {
   background: #fef3c7;
@@ -2476,7 +2476,7 @@ const onRoleSwitch = (role) => {
 }
 .pp-section-pct.full {
   background: #d1fae5;
-  color: #1f7a66;
+  color: #008a84;
   border-color: #a7f3d0;
 }
 .pp-section-chev {

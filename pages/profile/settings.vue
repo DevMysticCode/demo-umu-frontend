@@ -600,7 +600,7 @@ const securityLabel = computed(() => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 .st-toggle.on {
-  background: #3dbda3;
+  background: #00a19a;
 }
 .st-toggle.on::after {
   transform: translateX(16px);
@@ -649,7 +649,7 @@ const securityLabel = computed(() => {
   width: 40px;
   height: 40px;
   border-radius: 11px;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   display: grid;
   place-items: center;
@@ -683,7 +683,7 @@ const securityLabel = computed(() => {
 }
 .st-strength-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3dbda3, #1f7a66);
+  background: linear-gradient(90deg, #00a19a, #008a84);
   border-radius: 100px;
   transition: width 0.4s ease;
 }
@@ -696,7 +696,7 @@ const securityLabel = computed(() => {
   gap: 6px;
 }
 .st-strength-pct {
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 800;
 }
 

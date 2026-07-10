@@ -35,7 +35,7 @@ defineProps({
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
-  color: #1f7a66;
+  color: #008a84;
   margin-bottom: 6px;
 }
 .ppt-h1 {
@@ -50,7 +50,7 @@ defineProps({
   display: inline-block;
   font-size: 22px;
   font-weight: 700;
-  color: #3dbda3;
+  color: #00a19a;
   vertical-align: 8px;
   margin-left: 6px;
   letter-spacing: -0.5px;
@@ -71,7 +71,7 @@ defineProps({
   margin-right: 4px;
 }
 .ppt-stats :deep(.stat-num.teal) {
-  color: #1f7a66;
+  color: #008a84;
 }
 .ppt-stats :deep(.stat-num.gold) {
   color: #b07a1f;

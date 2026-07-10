@@ -9,7 +9,7 @@
     <div class="pir-content">
       <div
         class="pir-label"
-        :style="verified ? 'color: #1f7a66;' : ''"
+        :style="verified ? 'color: #008a84;' : ''"
       >
         {{ label }}
       </div>
@@ -120,7 +120,7 @@ function onClick(e) {
   line-height: 1.3;
 }
 .pir-value.empty {
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 700;
 }
 .pir-edit {
@@ -162,7 +162,7 @@ function onClick(e) {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 .pir-toggle.on {
-  background: #3dbda3;
+  background: #00a19a;
 }
 .pir-toggle.on::after {
   transform: translateX(16px);
@@ -177,7 +177,7 @@ function onClick(e) {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   display: flex;
   align-items: center;

@@ -573,7 +573,7 @@ onMounted(loadPassports)
   margin-left: auto;
   font-size: 11px;
   font-weight: 800;
-  color: #1f7a66;
+  color: #008a84;
   cursor: pointer;
   text-transform: none;
   letter-spacing: -0.1px;
@@ -610,7 +610,7 @@ onMounted(loadPassports)
   font-weight: 500;
 }
 .ac-search-input:focus {
-  border-color: #3dbda3;
+  border-color: #00a19a;
   box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18);
 }
 .ac-search-icon {
@@ -631,7 +631,7 @@ onMounted(loadPassports)
   width: 14px;
   height: 14px;
   margin-top: -7px;
-  border: 2px solid #3dbda3;
+  border: 2px solid #00a19a;
   border-right-color: transparent;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -673,7 +673,7 @@ onMounted(loadPassports)
 .ac-existing-row {
   margin-top: 6px;
   background: #fff;
-  border: 1.5px solid #3dbda3;
+  border: 1.5px solid #00a19a;
   border-radius: 14px;
   padding: 10px 12px;
   display: flex;
@@ -763,7 +763,7 @@ onMounted(loadPassports)
   transition: all 0.18s;
 }
 .mform-input:focus {
-  border-color: #3dbda3;
+  border-color: #00a19a;
   box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18);
 }
 .mform-input::placeholder {
@@ -836,7 +836,7 @@ onMounted(loadPassports)
   height: 26px;
   border-radius: 8px;
   background: #f1f9f4;
-  color: #1f7a66;
+  color: #008a84;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -871,7 +871,7 @@ onMounted(loadPassports)
   border-color: #d9dee2;
 }
 .ac-property.selected {
-  border-color: #3dbda3;
+  border-color: #00a19a;
   background: #f1f9f4;
 }
 .ac-property-icon {
@@ -879,14 +879,14 @@ onMounted(loadPassports)
   height: 32px;
   border-radius: 9px;
   background: #f1f9f4;
-  color: #1f7a66;
+  color: #008a84;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 .ac-property.selected .ac-property-icon {
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
 }
 .ac-property-icon svg {
@@ -925,8 +925,8 @@ onMounted(loadPassports)
   color: #fff;
 }
 .ac-property.selected .ac-property-check {
-  background: #3dbda3;
-  border-color: #3dbda3;
+  background: #00a19a;
+  border-color: #00a19a;
 }
 .ac-property-check svg {
   width: 12px;
@@ -985,7 +985,7 @@ onMounted(loadPassports)
   transition: transform 0.2s;
 }
 .pir-toggle.on {
-  background: #3dbda3;
+  background: #00a19a;
 }
 .pir-toggle.on::after {
   transform: translateX(18px);
@@ -1025,7 +1025,7 @@ onMounted(loadPassports)
 }
 .btn-primary {
   flex: 2;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -1042,7 +1042,7 @@ onMounted(loadPassports)
   box-shadow: 0 4px 12px rgba(61, 189, 163, 0.32);
 }
 .btn-primary:hover {
-  background: #2a9484;
+  background: #008a84;
 }
 .btn-primary:disabled {
   opacity: 0.5;

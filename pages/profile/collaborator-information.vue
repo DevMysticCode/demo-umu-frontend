@@ -532,7 +532,7 @@ const goBack = useGoBack('/profile')
   display: inline-block;
   font-size: 22px;
   font-weight: 700;
-  color: #3dbda3;
+  color: #00a19a;
   vertical-align: 8px;
   margin-left: 6px;
   letter-spacing: -0.5px;
@@ -553,7 +553,7 @@ const goBack = useGoBack('/profile')
   margin-right: 4px;
 }
 .hero-stats .stat-num.teal {
-  color: #1f7a66;
+  color: #008a84;
 }
 .hero-stats .stat-sep {
   width: 3px;
@@ -671,7 +671,7 @@ const goBack = useGoBack('/profile')
 .collab-role {
   font-size: 11px;
   font-weight: 700;
-  color: #1f7a66;
+  color: #008a84;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   margin-top: 1px;
@@ -694,7 +694,7 @@ const goBack = useGoBack('/profile')
   align-items: center;
   gap: 4px;
   background: #f1f9f4;
-  color: #1f7a66;
+  color: #008a84;
   font-size: 10px;
   font-weight: 700;
   padding: 3px 8px 3px 6px;
@@ -729,7 +729,7 @@ const goBack = useGoBack('/profile')
 }
 .collab-action-btn:hover {
   background: #f1f9f4;
-  color: #1f7a66;
+  color: #008a84;
 }
 .collab-action-btn svg {
   width: 13px;
@@ -753,7 +753,7 @@ const goBack = useGoBack('/profile')
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #1f7a66;
+  color: #008a84;
   margin-bottom: 10px;
   box-shadow: 0 2px 6px rgba(14, 40, 64, 0.06);
 }
@@ -794,8 +794,8 @@ const goBack = useGoBack('/profile')
   transition: all 0.15s;
 }
 .btn-secondary:hover {
-  border-color: #3dbda3;
-  color: #1f7a66;
+  border-color: #00a19a;
+  color: #008a84;
 }
 
 /* Floating add button */
@@ -807,7 +807,7 @@ const goBack = useGoBack('/profile')
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   border: none;
   display: flex;
@@ -818,7 +818,7 @@ const goBack = useGoBack('/profile')
   transition: all 0.18s;
 }
 .fab:hover {
-  background: #2a9484;
+  background: #008a84;
   transform: translateY(-2px) scale(1.05);
 }
 .fab svg {

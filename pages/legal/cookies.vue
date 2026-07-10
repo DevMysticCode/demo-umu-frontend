@@ -157,7 +157,7 @@ const goBack = useGoBack('/profile/settings')
   font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   font-style: italic;
   font-size: 16px;
-  color: #1f7a66;
+  color: #008a84;
   margin-bottom: 4px;
 }
 .lg-h1 { font-size: 28px; font-weight: 800; color: #0e2840; letter-spacing: -1px; line-height: 1.05; }
@@ -168,11 +168,11 @@ const goBack = useGoBack('/profile/settings')
 .lg-content p { font-size: 13px; font-weight: 500; color: #4a5868; line-height: 1.6; margin-bottom: 10px; }
 .lg-content ul { margin: 0 0 10px 18px; padding: 0; }
 .lg-content li { font-size: 13px; font-weight: 500; color: #4a5868; line-height: 1.55; margin-bottom: 6px; }
-.lg-content a { color: #1f7a66; font-weight: 700; text-decoration: none; border-bottom: 1px dashed #1f7a66; }
+.lg-content a { color: #008a84; font-weight: 700; text-decoration: none; border-bottom: 1px dashed #008a84; }
 .lg-content strong { color: #0e2840; font-weight: 800; }
 .lg-content code {
   background: #f1f9f4;
-  color: #1f7a66;
+  color: #008a84;
   font-family: 'SF Mono', Menlo, Consolas, monospace;
   font-size: 11.5px;
   padding: 1px 6px;
@@ -214,13 +214,13 @@ const goBack = useGoBack('/profile/settings')
   border-radius: 100px;
   text-transform: uppercase;
 }
-.pill.ess { background: #e2f1ea; color: #1f7a66; }
+.pill.ess { background: #e2f1ea; color: #008a84; }
 .pill.ana { background: #fdf4dc; color: #6f4d14; }
 
 .lg-note {
   font-size: 11.5px !important;
   font-weight: 700 !important;
-  color: #1f7a66 !important;
+  color: #008a84 !important;
 }
 .lg-footer {
   margin-top: 28px;

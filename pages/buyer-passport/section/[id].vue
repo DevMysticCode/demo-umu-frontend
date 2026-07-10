@@ -1094,7 +1094,7 @@ function downloadAllFiles() {
   height: var(--size);
   border-radius: 50%;
   background: conic-gradient(
-    #1f7a66 calc(var(--p) * 1%),
+    #008a84 calc(var(--p) * 1%),
     rgba(15, 118, 110, 0.15) 0
   );
   display: grid;

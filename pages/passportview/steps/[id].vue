@@ -465,7 +465,7 @@ const goBack = () => {
   height: var(--size);
   border-radius: 50%;
   background: conic-gradient(
-    #1f7a66 calc(var(--p) * 1%),
+    #008a84 calc(var(--p) * 1%),
     rgba(15, 118, 110, 0.15) 0
   );
   display: grid;
@@ -605,9 +605,9 @@ const goBack = () => {
 }
 
 .video-btn {
-  background: #1f7a66;
+  background: #008a84;
   color: white;
-  border-color: #1f7a66;
+  border-color: #008a84;
   box-shadow: 0 8px 20px -8px rgba(13, 148, 136, 0.6);
 }
 

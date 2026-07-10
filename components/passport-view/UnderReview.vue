@@ -147,7 +147,7 @@ defineEmits(['viewProfile'])
   display: flex;
   align-items: center;
   width: 100%;
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
   border: 0;
   border-radius: 999px;

@@ -106,7 +106,7 @@
     <!-- Step 2: success -->
     <div v-else class="ri-body ri-body--center">
       <div class="ri-check-circle">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.5" stroke-linecap="round">
           <polyline points="20 6 9 17 4 12" />
         </svg>
       </div>
@@ -286,7 +286,7 @@ const registerInterest = async () => {
 .ri-hero__dot {
   width: 6px;
   height: 6px;
-  background: #3dbda3;
+  background: #00a19a;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -335,7 +335,7 @@ const registerInterest = async () => {
 
 .ri-row__icon--green {
   background: #f0fdf4;
-  color: #16a34a;
+  color: #008a84;
 }
 
 .ri-row__icon--amber {
@@ -375,7 +375,7 @@ const registerInterest = async () => {
 
 .ri-chip--green {
   background: #f0fdf4;
-  color: #16a34a;
+  color: #008a84;
 }
 
 .ri-chip--amber {
@@ -402,7 +402,7 @@ const registerInterest = async () => {
 
 .ri-privacy__text {
   font-size: 11.5px;
-  color: #166534;
+  color: #008a84;
   line-height: 1.55;
 }
 

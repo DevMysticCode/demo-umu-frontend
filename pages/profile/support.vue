@@ -254,7 +254,7 @@ const goBack = useGoBack('/profile')
   position: absolute;
   bottom: -1px; right: -1px;
   width: 11px; height: 11px;
-  background: #3dbda3;
+  background: #00a19a;
   border: 2px solid #fafaf8;
   border-radius: 50%;
   animation: ss-pulse 2s ease-in-out infinite;
@@ -263,7 +263,7 @@ const goBack = useGoBack('/profile')
   0%, 100% { box-shadow: 0 0 0 0 rgba(61, 189, 163, 0.55); }
   50% { box-shadow: 0 0 0 7px rgba(61, 189, 163, 0); }
 }
-.ss-icon-wrap svg { width: 16px; height: 16px; color: #1f7a66; }
+.ss-icon-wrap svg { width: 16px; height: 16px; color: #008a84; }
 .ss-info { flex: 1; min-width: 0; }
 .ss-headline {
   font-size: 13px;
@@ -296,7 +296,7 @@ const goBack = useGoBack('/profile')
   margin-left: auto;
   font-size: 11px;
   font-weight: 800;
-  color: #1f7a66;
+  color: #008a84;
   text-transform: none;
   letter-spacing: -0.1px;
   cursor: pointer;
@@ -334,7 +334,7 @@ const goBack = useGoBack('/profile')
   width: 32px; height: 32px;
   border-radius: 10px;
   background: #f1f9f4;
-  color: #1f7a66;
+  color: #008a84;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -389,7 +389,7 @@ const goBack = useGoBack('/profile')
 }
 .faq-num {
   font-size: 14px;
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 700;
   flex-shrink: 0;
   width: 18px;
@@ -403,7 +403,7 @@ const goBack = useGoBack('/profile')
 }
 .faq-item.open .faq-chev {
   transform: rotate(90deg);
-  color: #1f7a66;
+  color: #008a84;
 }
 .faq-a {
   padding: 0 14px 12px 36px;
@@ -430,7 +430,7 @@ const goBack = useGoBack('/profile')
   width: 36px; height: 36px;
   border-radius: 11px;
   background: #f1f9f4;
-  color: #1f7a66;
+  color: #008a84;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -467,14 +467,14 @@ const goBack = useGoBack('/profile')
 }
 .pill-tag.live {
   background: #e2f1ea;
-  color: #1f7a66;
+  color: #008a84;
   display: inline-flex;
   align-items: center;
   gap: 5px;
 }
 .live-dot {
   width: 6px; height: 6px;
-  background: #3dbda3;
+  background: #00a19a;
   border-radius: 50%;
   animation: live-pulse 2s ease-in-out infinite;
 }

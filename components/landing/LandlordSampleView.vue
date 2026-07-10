@@ -247,7 +247,7 @@ const insuranceGroup: SampleSection[] = [
 .pp-hero-eyebrow {
   font-size: 10px; font-weight: 800;
   letter-spacing: 1.4px; text-transform: uppercase;
-  color: #1f7a66; margin-bottom: 4px;
+  color: #008a84; margin-bottom: 4px;
 }
 .pp-hero-addr-row { display: flex; align-items: center; gap: 6px; }
 .pp-hero-addr-text { flex: 1; min-width: 0; }
@@ -281,7 +281,7 @@ const insuranceGroup: SampleSection[] = [
   letter-spacing: 1px; text-transform: uppercase;
   color: #4a5868; margin-bottom: 5px;
 }
-.pp-hero-dash-pct { color: #1f7a66; font-feature-settings: 'tnum'; }
+.pp-hero-dash-pct { color: #008a84; font-feature-settings: 'tnum'; }
 .pp-hero-dash-bar {
   height: 8px; background: rgba(31, 122, 102, 0.12);
   border-radius: 100px; overflow: visible;
@@ -289,7 +289,7 @@ const insuranceGroup: SampleSection[] = [
 }
 .pp-hero-dash-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00a19a, #1f7a66);
+  background: linear-gradient(90deg, #00a19a, #008a84);
   border-radius: 100px;
   position: relative;
 }
@@ -315,7 +315,7 @@ const insuranceGroup: SampleSection[] = [
   margin: 4px 22px 16px;
   background:
     radial-gradient(ellipse 70% 70% at 30% 30%, rgba(255, 255, 255, 0.18), transparent 60%),
-    linear-gradient(135deg, #00a19a, #1f7a66);
+    linear-gradient(135deg, #00a19a, #008a84);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 16px;
   padding: 14px 16px;
@@ -424,7 +424,7 @@ const insuranceGroup: SampleSection[] = [
 }
 .lp-sec-pill--doc { background: #f0f2f1; color: #4a5868; }
 .lp-sec-pill-ic { font-size: 10px; }
-.lp-sec-pill--good { background: #d6efe2; color: #1f7a66; }
+.lp-sec-pill--good { background: #d6efe2; color: #008a84; }
 .lp-sec-pill--warn { background: #fef3c7; color: #92400e; }
 .lp-sec-pill--pending { background: #f5f4f0; color: #8a95a0; }
 .lp-sec-bar {
@@ -434,7 +434,7 @@ const insuranceGroup: SampleSection[] = [
 .lp-sec-bar-fill {
   height: 100%; border-radius: 100px;
 }
-.lp-sec-bar-fill--good { background: linear-gradient(90deg, #00a19a, #1f7a66); }
+.lp-sec-bar-fill--good { background: linear-gradient(90deg, #00a19a, #008a84); }
 .lp-sec-bar-fill--warn { background: linear-gradient(90deg, #f5c44c, #d4a659); }
 .lp-sec-bar-fill--pending { background: #d9dee2; }
 .lp-sec-pct {
@@ -444,7 +444,7 @@ const insuranceGroup: SampleSection[] = [
   letter-spacing: -0.1px;
   font-feature-settings: 'tnum';
 }
-.lp-sec-pct--good { color: #1f7a66; }
+.lp-sec-pct--good { color: #008a84; }
 .lp-sec-actionby {
   text-align: right;
   font-size: 11px; font-weight: 800;

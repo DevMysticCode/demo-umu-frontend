@@ -601,7 +601,7 @@ const goBack = useGoBack('/profile')
   display: inline-block;
   font-size: 22px;
   font-weight: 700;
-  color: #3dbda3;
+  color: #00a19a;
   vertical-align: 8px;
   margin-left: 6px;
   letter-spacing: -0.5px;
@@ -616,7 +616,7 @@ const goBack = useGoBack('/profile')
   flex-wrap: wrap;
 }
 .hero-stats .stat-num { color: #0e2840; font-weight: 800; font-feature-settings: 'tnum'; margin-right: 4px; }
-.hero-stats .stat-num.teal { color: #1f7a66; }
+.hero-stats .stat-num.teal { color: #008a84; }
 .hero-stats .stat-num.coral { color: #b85b36; }
 .hero-stats .stat-sep { width: 3px; height: 3px; border-radius: 50%; background: #b5bdc4; margin: 0 8px; display: inline-block; }
 
@@ -637,7 +637,7 @@ const goBack = useGoBack('/profile')
 }
 .dc-search-input::placeholder { color: #8a95a0; font-weight: 500; }
 .dc-search-input:focus {
-  border-color: #3dbda3;
+  border-color: #00a19a;
   box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18);
 }
 .dc-search-icon {
@@ -718,7 +718,7 @@ const goBack = useGoBack('/profile')
   margin-left: auto;
   font-size: 11px;
   font-weight: 800;
-  color: #1f7a66;
+  color: #008a84;
   cursor: pointer;
   letter-spacing: -0.1px;
   text-transform: none;
@@ -756,7 +756,7 @@ const goBack = useGoBack('/profile')
   position: relative;
 }
 .dc-doc-icon.pdf { background: linear-gradient(135deg, #ffe0dc, #ffc4bd); color: #b85b36; }
-.dc-doc-icon.img { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #1f7a66; }
+.dc-doc-icon.img { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #008a84; }
 .dc-doc-icon::after {
   content: '';
   position: absolute;
@@ -809,7 +809,7 @@ const goBack = useGoBack('/profile')
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   border: none;
   display: flex;
@@ -819,7 +819,7 @@ const goBack = useGoBack('/profile')
   box-shadow: 0 6px 20px rgba(61, 189, 163, 0.4);
   transition: all 0.18s;
 }
-.fab:hover { background: #2a9484; transform: translateY(-2px) scale(1.05); }
+.fab:hover { background: #008a84; transform: translateY(-2px) scale(1.05); }
 .fab svg { width: 22px; height: 22px; }
 
 /* ── Modal pattern ─────────────────────────────────────────────── */
@@ -878,7 +878,7 @@ const goBack = useGoBack('/profile')
 .up-drop {
   display: block;
   background: linear-gradient(135deg, #f1f9f4, #e2f1ea);
-  border: 1.5px dashed #3dbda3;
+  border: 1.5px dashed #00a19a;
   border-radius: 14px;
   padding: 22px 16px;
   text-align: center;
@@ -887,7 +887,7 @@ const goBack = useGoBack('/profile')
 }
 .up-drop-icon {
   width: 48px; height: 48px;
-  background: #3dbda3;
+  background: #00a19a;
   border-radius: 14px;
   display: inline-flex;
   align-items: center;
@@ -999,7 +999,7 @@ const goBack = useGoBack('/profile')
   outline: none;
   transition: all 0.18s;
 }
-.mform-input:focus { border-color: #3dbda3; box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18); }
+.mform-input:focus { border-color: #00a19a; box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18); }
 .mform-input::placeholder { color: #8a95a0; font-weight: 500; }
 .mform-radio-group {
   display: grid;
@@ -1022,7 +1022,7 @@ const goBack = useGoBack('/profile')
   transition: all 0.18s;
   text-align: left;
 }
-.mform-radio.identity.active { border-color: #3dbda3; background: #f1f9f4; color: #1f7a66; }
+.mform-radio.identity.active { border-color: #00a19a; background: #f1f9f4; color: #008a84; }
 .mform-radio.identity.active .mfr-icon { background: rgba(61, 189, 163, 0.4); }
 .mform-radio.property.active { border-color: #d4a659; background: #fdf4dc; color: #6f4d14; }
 .mform-radio.property.active .mfr-icon { background: #f5c44c; color: #6f4d14; }
@@ -1034,7 +1034,7 @@ const goBack = useGoBack('/profile')
   width: 26px; height: 26px;
   border-radius: 8px;
   background: #f1f9f4;
-  color: #1f7a66;
+  color: #008a84;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1050,7 +1050,7 @@ const goBack = useGoBack('/profile')
 }
 .up-tag {
   background: rgba(61, 189, 163, 0.12);
-  color: #1f7a66;
+  color: #008a84;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: -0.1px;
@@ -1084,7 +1084,7 @@ const goBack = useGoBack('/profile')
 .btn-secondary:hover { background: #e8eceb; }
 .btn-primary {
   flex: 2;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -1100,7 +1100,7 @@ const goBack = useGoBack('/profile')
   gap: 6px;
   box-shadow: 0 4px 12px rgba(61, 189, 163, 0.32);
 }
-.btn-primary:hover { background: #2a9484; }
+.btn-primary:hover { background: #008a84; }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 .btn-primary svg { width: 14px; height: 14px; }
 </style>
