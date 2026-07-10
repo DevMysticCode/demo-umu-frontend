@@ -177,7 +177,7 @@ const goBack = useGoBack('/profile')
   background:
     radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.4), transparent 50%),
     radial-gradient(circle at 70% 70%, rgba(245, 196, 76, 0.5), transparent 60%),
-    linear-gradient(135deg, #00a19a 0%, #1f7a66 50%, #3dbda3 100%);
+    linear-gradient(135deg, #00a19a 0%, #008a84 50%, #00a19a 100%);
   margin: 0 auto 12px;
   position: relative;
   box-shadow:
@@ -222,7 +222,7 @@ const goBack = useGoBack('/profile')
   font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   font-style: italic;
   font-weight: 400;
-  color: #1f7a66;
+  color: #008a84;
 }
 .ai-sub {
   font-size: 12.5px;
@@ -249,7 +249,7 @@ const goBack = useGoBack('/profile')
   z-index: 1;
 }
 .ai-input-wrap:focus-within {
-  border-color: #3dbda3;
+  border-color: #00a19a;
   box-shadow:
     0 0 0 3px rgba(61, 189, 163, 0.18),
     0 8px 24px rgba(61, 189, 163, 0.18);
@@ -290,7 +290,7 @@ const goBack = useGoBack('/profile')
 .ai-send {
   width: 38px; height: 38px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #3dbda3, #1f7a66);
+  background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
   border: none;
   cursor: pointer;
@@ -324,7 +324,7 @@ const goBack = useGoBack('/profile')
   margin-left: auto;
   font-size: 11px;
   font-weight: 800;
-  color: #1f7a66;
+  color: #008a84;
   text-transform: none;
   letter-spacing: -0.1px;
 }
@@ -361,7 +361,7 @@ const goBack = useGoBack('/profile')
   width: 26px; height: 26px;
   border-radius: 8px;
   background: #fff;
-  color: #1f7a66;
+  color: #008a84;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -377,7 +377,7 @@ const goBack = useGoBack('/profile')
   line-height: 1.3;
   flex: 1;
 }
-.ai-prompt-arrow { color: #1f7a66; font-size: 14px; flex-shrink: 0; }
+.ai-prompt-arrow { color: #008a84; font-size: 14px; flex-shrink: 0; }
 
 /* Article card */
 .article-card {
@@ -398,7 +398,7 @@ const goBack = useGoBack('/profile')
   width: 38px; height: 38px;
   border-radius: 12px;
   background: linear-gradient(135deg, #e2f1ea, #c5e3d4);
-  color: #1f7a66;
+  color: #008a84;
   display: flex;
   align-items: center;
   justify-content: center;

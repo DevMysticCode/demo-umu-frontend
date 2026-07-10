@@ -159,7 +159,7 @@ onMounted(async () => {
   font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   font-style: italic;
   font-size: 16px;
-  color: #1f7a66;
+  color: #008a84;
   margin-bottom: 4px;
 }
 .st-h1 {
@@ -226,7 +226,7 @@ onMounted(async () => {
   padding: 3px 8px;
   border-radius: 100px;
 }
-.st-card-pill.good { background: #1f7a66; color: #fff; }
+.st-card-pill.good { background: #008a84; color: #fff; }
 .st-card-pill.pending { background: #f0f2f1; color: #4a5868; }
 .st-card-sub { font-size: 11px; font-weight: 600; color: #4a5868; margin-bottom: 8px; }
 
@@ -256,7 +256,7 @@ onMounted(async () => {
 }
 .st-doc-meta { font-size: 10px; font-weight: 600; color: #8a95a0; margin-top: 1px; }
 .st-doc-action {
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   font-size: 11px;
   font-weight: 800;

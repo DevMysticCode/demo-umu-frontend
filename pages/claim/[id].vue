@@ -176,7 +176,7 @@
               v-if="!personaPolling"
               type="button"
               class="cl-err-retry"
-              style="background: transparent; color: #1f7a66;"
+              style="background: transparent; color: #008a84;"
               @click="runPolling"
             >
               Resume auto-check
@@ -1370,7 +1370,7 @@ async function issuePassport() {
 .cl-prog-strip span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #00a19a, #3dbda3);
+  background: linear-gradient(90deg, #00a19a, #00a19a);
   transition: width 0.35s ease;
 }
 
@@ -1464,7 +1464,7 @@ async function issuePassport() {
 .cl-sel-eyebrow {
   font-size: 10px;
   font-weight: 700;
-  color: #1f7a66;
+  color: #008a84;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 4px;
@@ -1709,7 +1709,7 @@ async function issuePassport() {
 .cl-slot-text {
   font-size: 13px;
   font-weight: 600;
-  color: #1f7a66;
+  color: #008a84;
 }
 .cl-slot-text-muted { color: #94a3b8; }
 .cl-slot-thumb {
@@ -1748,7 +1748,7 @@ async function issuePassport() {
 }
 .cl-pill-good {
   background: #dcfce7;
-  color: #15803d;
+  color: #008a84;
   font-size: 11.5px;
   font-weight: 700;
   padding: 4px 10px;
@@ -1822,7 +1822,7 @@ async function issuePassport() {
 .cl-big-check {
   width: 90px;
   height: 90px;
-  background: linear-gradient(135deg, #1f7a66, #00a19a);
+  background: linear-gradient(135deg, #008a84, #00a19a);
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -1902,7 +1902,7 @@ async function issuePassport() {
   align-items: center;
   gap: 12px;
   padding: 14px;
-  background: linear-gradient(135deg, #1f7a66, #00a19a);
+  background: linear-gradient(135deg, #008a84, #00a19a);
   border-radius: 16px;
   margin-bottom: 18px;
   color: #fff;
@@ -1941,7 +1941,7 @@ async function issuePassport() {
 .cl-lrf-row-last { border-bottom: none; padding-bottom: 0; }
 .cl-lrf-l { color: #94a3b8; }
 .cl-lrf-v { font-weight: 700; color: #231d45; }
-.cl-lrf-v-good { color: #15803d; }
+.cl-lrf-v-good { color: #008a84; }
 .cl-big-tick {
   width: 44px;
   height: 44px;

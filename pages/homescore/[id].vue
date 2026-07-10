@@ -1585,7 +1585,7 @@
                 class="hs-street-house-icon"
                 :style="{
                   color: sp.isPublished
-                    ? '#1f7a66'
+                    ? '#008a84'
                     : sp.hasPassport
                       ? '#f59e0b'
                       : '#94a3b8',
@@ -1696,7 +1696,7 @@
                         : '#f1f5f9',
                   color:
                     buyer.matchScore >= 75
-                      ? '#16a34a'
+                      ? '#008a84'
                       : buyer.matchScore >= 55
                         ? '#92400e'
                         : '#64748b',
@@ -1730,7 +1730,7 @@
                 :style="{
                   color:
                     buyer.matchScore >= 75
-                      ? '#16a34a'
+                      ? '#008a84'
                       : buyer.matchScore >= 55
                         ? '#92400e'
                         : '#94a3b8',
@@ -3494,7 +3494,7 @@ const pillarCarbonDrivers = computed(() => {
 
 function pillarBarColor(value: number, max: number): string {
   const pct = (value / max) * 100
-  if (pct >= 60) return '#16a34a'
+  if (pct >= 60) return '#008a84'
   if (pct >= 40) return '#f59e0b'
   return '#dc2626'
 }
@@ -3544,8 +3544,8 @@ const scoreBand = computed(() => {
 // ── Score helpers ─────────────────────────────────────────────
 
 function scoreColor(score: number): string {
-  if (score >= 75) return '#1f7a66'
-  if (score >= 60) return '#16a34a'
+  if (score >= 75) return '#008a84'
+  if (score >= 60) return '#008a84'
   if (score >= 40) return '#f59e0b'
   return '#dc2626'
 }
@@ -3610,7 +3610,7 @@ const CARBON_BASELINE = 2900
 
 const carbonGradeInfo = computed(() => {
   const kg = carbonKg.value
-  if (kg < 800) return { grade: 'A', label: 'Excellent', col: '#16a34a' }
+  if (kg < 800) return { grade: 'A', label: 'Excellent', col: '#008a84' }
   if (kg < 1400) return { grade: 'B', label: 'Good', col: '#65a30d' }
   if (kg < 2000) return { grade: 'C', label: 'Average', col: '#ca8a04' }
   if (kg < 2800) return { grade: 'D', label: 'Below avg', col: '#92400e' }
@@ -3622,7 +3622,7 @@ const carbonGradeInfo = computed(() => {
 const carbonGradient = computed(() => {
   const g = carbonGradeInfo.value.grade
   const map: Record<string, string> = {
-    A: 'linear-gradient(135deg,#14532d,#166534)',
+    A: 'linear-gradient(135deg,#14532d,#008a84)',
     B: 'linear-gradient(135deg,#365314,#3f6212)',
     C: 'linear-gradient(135deg,#713f12,#854d0e)',
     D: 'linear-gradient(135deg,#78350f,#92400e)',
@@ -3644,7 +3644,7 @@ const carbonVsAvg = computed(() => {
 const carbonBarChart = computed(() => {
   const grade = carbonGradeInfo.value.grade
   return [
-    { letter: 'A', color: '#16a34a', h: 8 },
+    { letter: 'A', color: '#008a84', h: 8 },
     { letter: 'B', color: '#65a30d', h: 12 },
     { letter: 'C', color: '#ca8a04', h: 16 },
     { letter: 'D', color: '#92400e', h: 20 },
@@ -3748,7 +3748,7 @@ const neighbourhood = computed(() => {
       rank: i + 1,
       cost: scoreToCost(r.score),
       costColor:
-        r.score >= 70 ? '#16a34a' : r.score >= 55 ? '#92400e' : '#dc2626',
+        r.score >= 70 ? '#008a84' : r.score >= 55 ? '#92400e' : '#dc2626',
     }))
 })
 
@@ -6026,7 +6026,7 @@ watch(screen, (s) => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #1f7a66;
+  background: #008a84;
   box-shadow: 0 0 0 4px #ccfbf1;
   flex-shrink: 0;
 }
@@ -6070,7 +6070,7 @@ watch(screen, (s) => {
   width: 44px;
   height: 44px;
   border: 4px solid #e2e8e8;
-  border-top-color: #1f7a66;
+  border-top-color: #008a84;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -6143,7 +6143,7 @@ watch(screen, (s) => {
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 600;
   margin-bottom: 6px;
   align-self: flex-start;
@@ -6200,7 +6200,7 @@ watch(screen, (s) => {
 }
 .hs-conf-pill--good {
   background: #d1fae5;
-  color: #1f7a66;
+  color: #008a84;
 }
 .hs-conf-pill--ok {
   background: #f1f9f4;
@@ -6340,7 +6340,7 @@ watch(screen, (s) => {
 }
 .hs-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #1f7a66, #2dd4bf);
+  background: linear-gradient(90deg, #008a84, #2dd4bf);
   border-radius: 4px;
   transition: width 0.45s ease;
 }
@@ -6423,7 +6423,7 @@ watch(screen, (s) => {
 }
 .hs-live-conf.high {
   background: #dcfce7;
-  color: #166534;
+  color: #008a84;
 }
 
 /* ── Delta flying animation ───────────────────────────── */
@@ -6438,7 +6438,7 @@ watch(screen, (s) => {
   z-index: 10;
 }
 .hs-delta-float.pos {
-  color: #16a34a;
+  color: #008a84;
 }
 .hs-delta-float.neg {
   color: #dc2626;
@@ -6472,7 +6472,7 @@ watch(screen, (s) => {
 .hs-cat-chip {
   font-size: 12px;
   font-weight: 600;
-  color: #1f7a66;
+  color: #008a84;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -6508,7 +6508,7 @@ watch(screen, (s) => {
   border-color: #94a3b8;
 }
 .hs-option-btn.selected {
-  border-color: #1f7a66;
+  border-color: #008a84;
   background: #f0fdfa;
   color: #0f766e;
   font-weight: 600;
@@ -6524,8 +6524,8 @@ watch(screen, (s) => {
   transition: border-color 0.15s ease;
 }
 .hs-option-btn.selected .hs-option-radio {
-  border-color: #1f7a66;
-  background: #1f7a66;
+  border-color: #008a84;
+  background: #008a84;
 }
 .hs-option-radio-dot {
   width: 8px;
@@ -6547,7 +6547,7 @@ watch(screen, (s) => {
   font-style: italic;
   margin: 12px 0 0;
   line-height: 1.45;
-  border-left: 3px solid #1f7a66;
+  border-left: 3px solid #008a84;
   padding-left: 10px;
 }
 
@@ -6568,7 +6568,7 @@ watch(screen, (s) => {
 }
 .hs-btn-primary {
   flex: 1;
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
   border: none;
   padding: 14px 18px;
@@ -6640,7 +6640,7 @@ watch(screen, (s) => {
 .hs-pp-banner-cta--mint {
   flex-shrink: 0;
   border: none;
-  background: #3dbda3;
+  background: #00a19a;
   color: #042f2e;
   font-size: 12px;
   font-weight: 700;
@@ -6687,7 +6687,7 @@ watch(screen, (s) => {
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #3dbda3;
+  color: #00a19a;
   margin-bottom: 6px;
 }
 .hs-pp-eyebrow-ic {
@@ -6751,7 +6751,7 @@ watch(screen, (s) => {
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #3dbda3;
+  color: #00a19a;
   margin-bottom: 6px;
 }
 .hs-pp-pub-explainer-row {
@@ -6762,14 +6762,14 @@ watch(screen, (s) => {
   gap: 6px;
 }
 .hs-pp-pub-check {
-  color: #3dbda3;
+  color: #00a19a;
   font-weight: 800;
   flex-shrink: 0;
 }
 .hs-pp-pub-unlock {
   width: 100%;
   border: none;
-  background: #3dbda3;
+  background: #00a19a;
   color: #042f2e;
   font-size: 15px;
   font-weight: 800;
@@ -6903,7 +6903,7 @@ watch(screen, (s) => {
 .hs-pp-claimed-done {
   text-align: center;
   font-size: 13px;
-  color: #15803d;
+  color: #008a84;
   font-weight: 600;
   padding: 8px 0;
   margin-bottom: 4px;
@@ -6998,7 +6998,7 @@ watch(screen, (s) => {
 .hs-pp-owner-cta--published {
   border: 1.5px solid rgba(94, 234, 212, 0.5);
   background: rgba(94, 234, 212, 0.08);
-  color: #3dbda3;
+  color: #00a19a;
   margin: 0;
   padding: 10px;
 }
@@ -7089,7 +7089,7 @@ watch(screen, (s) => {
 .hs-pp-inprogress-done {
   text-align: center;
   font-size: 13px;
-  color: #15803d;
+  color: #008a84;
   font-weight: 600;
   padding: 10px 0 2px;
 }
@@ -7136,7 +7136,7 @@ watch(screen, (s) => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #1f7a66;
+  background: #008a84;
   box-shadow: 0 0 0 4px #ccfbf1;
   flex-shrink: 0;
   margin-top: 6px;
@@ -7204,7 +7204,7 @@ watch(screen, (s) => {
 }
 
 .hs-savings-hero {
-  background: linear-gradient(135deg, #1f7a66, #00a19a);
+  background: linear-gradient(135deg, #008a84, #00a19a);
   color: #fff;
   border-radius: 20px;
   padding: 22px;
@@ -7297,7 +7297,7 @@ watch(screen, (s) => {
 }
 .hs-journey-bar-fill {
   height: 8px;
-  background: linear-gradient(90deg, #1f7a66, #16a34a);
+  background: linear-gradient(90deg, #008a84, #008a84);
   border-radius: 4px;
   transition: width 0.8s ease;
 }
@@ -7485,7 +7485,7 @@ watch(screen, (s) => {
   margin: 0 auto 5px;
 }
 .hs-trust-dot.done {
-  background: #16a34a;
+  background: #008a84;
   color: #fff;
 }
 .hs-trust-dot.pending {
@@ -7497,7 +7497,7 @@ watch(screen, (s) => {
   font-weight: 700;
 }
 .hs-trust-step-label.done {
-  color: #16a34a;
+  color: #008a84;
 }
 .hs-trust-step-label.pending {
   color: #94a3b8;
@@ -7515,7 +7515,7 @@ watch(screen, (s) => {
   margin-top: 13px;
 }
 .hs-trust-connector.done {
-  background: #16a34a;
+  background: #008a84;
 }
 .hs-trust-explain {
   background: #f8fafc;
@@ -7612,13 +7612,13 @@ watch(screen, (s) => {
   flex-shrink: 0;
 }
 .hs-win-saving {
-  color: #16a34a;
+  color: #008a84;
   font-weight: 700;
   font-size: 15px;
   margin: 0;
 }
 .hs-win-pts {
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 700;
   font-size: 13px;
   margin: 0;
@@ -7846,7 +7846,7 @@ watch(screen, (s) => {
 .hs-pp-badge {
   display: inline-block;
   background: rgba(20, 184, 166, 0.2);
-  color: #3dbda3;
+  color: #00a19a;
   font-size: 12px;
   font-weight: 700;
   padding: 5px 10px;
@@ -7888,7 +7888,7 @@ watch(screen, (s) => {
 }
 .hs-pp-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #14b8a6, #3dbda3);
+  background: linear-gradient(90deg, #14b8a6, #00a19a);
   border-radius: 999px;
   transition: width 0.6s ease;
 }
@@ -7914,7 +7914,7 @@ watch(screen, (s) => {
   flex: 1;
 }
 .hs-pp-doc-gain {
-  color: #3dbda3;
+  color: #00a19a;
   font-weight: 600;
   font-size: 13px;
 }
@@ -8007,11 +8007,11 @@ watch(screen, (s) => {
     border-color 0.15s;
 }
 .hs-vault-tab.active {
-  color: #1f7a66;
-  border-bottom-color: #1f7a66;
+  color: #008a84;
+  border-bottom-color: #008a84;
 }
 .hs-tab-badge {
-  background: #1f7a66;
+  background: #008a84;
   color: white;
   font-size: 11px;
   font-weight: 700;
@@ -8040,11 +8040,11 @@ watch(screen, (s) => {
 }
 .hs-pa-btn.outline {
   background: #f0fdfa;
-  color: #1f7a66;
+  color: #008a84;
   border: 1.5px solid #99f6e4;
 }
 .hs-pa-btn.solid {
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
 }
 .hs-pa-btn:disabled {
@@ -8115,7 +8115,7 @@ watch(screen, (s) => {
 }
 .hs-street-badge.published {
   background: #dcfce7;
-  color: #166534;
+  color: #008a84;
 }
 .hs-street-badge.started {
   background: #fef3c7;
@@ -8172,10 +8172,10 @@ watch(screen, (s) => {
   color: #0f172a;
 }
 .hs-stat-box.brand .hs-stat-val {
-  color: #1f7a66;
+  color: #008a84;
 }
 .hs-stat-box.green .hs-stat-val {
-  color: #16a34a;
+  color: #008a84;
 }
 .hs-stat-box.amber .hs-stat-val {
   color: #92400e;
@@ -8264,7 +8264,7 @@ watch(screen, (s) => {
 }
 .hs-buyer-tag.match {
   background: #dcfce7;
-  color: #166534;
+  color: #008a84;
 }
 .hs-buyer-tag.partial {
   background: #fef3c7;
@@ -8678,7 +8678,7 @@ watch(screen, (s) => {
 }
 .hsq-progress-fill {
   height: 4px;
-  background: linear-gradient(90deg, #1f7a66, #3dbda3);
+  background: linear-gradient(90deg, #008a84, #00a19a);
   border-radius: 999px;
   transition: width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -8695,7 +8695,7 @@ watch(screen, (s) => {
   padding: 4px 11px;
   font-size: 11px;
   font-weight: 700;
-  color: #3dbda3;
+  color: #00a19a;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -8768,7 +8768,7 @@ watch(screen, (s) => {
   flex-shrink: 0;
 }
 .hsq-delta.pos {
-  color: #16a34a;
+  color: #008a84;
 }
 .hsq-delta.neg {
   color: #dc2626;
@@ -8832,8 +8832,8 @@ watch(screen, (s) => {
   border-color: #e2f1ea;
 }
 .hsq-opt.selected {
-  background: #1f7a66;
-  border-color: #1f7a66;
+  background: #008a84;
+  border-color: #008a84;
   color: #fff;
   font-weight: 600;
 }
@@ -8866,7 +8866,7 @@ watch(screen, (s) => {
   flex: 1;
   height: 48px;
   border: none;
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
   border-radius: 14px;
   font-size: 15px;
@@ -8897,7 +8897,7 @@ watch(screen, (s) => {
 .hs-journey-link {
   font-size: 12px;
   font-weight: 600;
-  color: #1f7a66;
+  color: #008a84;
 }
 .hs-journey-num-wrap {
   display: flex;
@@ -8940,7 +8940,7 @@ watch(screen, (s) => {
   height: 50px;
   border: none;
   border-radius: 14px;
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
   font-size: 15px;
   font-weight: 700;
@@ -8992,7 +8992,7 @@ watch(screen, (s) => {
   font-family: inherit;
 }
 .hs-interest-btn.primary {
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
 }
 .hs-interest-btn.outline {
@@ -9162,7 +9162,7 @@ watch(screen, (s) => {
 }
 .hs-buyer-risk-row.ok .hs-buyer-risk-body {
   font-size: 13px;
-  color: #166534;
+  color: #008a84;
   margin-top: 1px;
 }
 .hs-buyer-bd-sub {
@@ -9265,7 +9265,7 @@ watch(screen, (s) => {
 .hs-buyer-save-arrow {
   font-size: 15px;
   font-weight: 700;
-  color: #1f7a66;
+  color: #008a84;
   white-space: nowrap;
 }
 
@@ -9327,7 +9327,7 @@ watch(screen, (s) => {
   color: #94a3b8;
 }
 .hs-nb-pos.mine {
-  color: #1f7a66;
+  color: #008a84;
 }
 .hs-nb-addr {
   font-size: 15px;
@@ -9335,7 +9335,7 @@ watch(screen, (s) => {
   font-weight: 500;
 }
 .hs-nb-addr.mine {
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 700;
 }
 .hs-nb-detail {
@@ -9411,7 +9411,7 @@ watch(screen, (s) => {
 .hs-qw-doc-pts {
   font-size: 12px;
   font-weight: 700;
-  color: #16a34a;
+  color: #008a84;
   background: #dcfce7;
   padding: 2px 7px;
   border-radius: 999px;
@@ -9420,7 +9420,7 @@ watch(screen, (s) => {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #008a84;
   color: #fff;
   font-size: 15px;
   font-weight: 800;
@@ -9568,7 +9568,7 @@ watch(screen, (s) => {
   color: #fca5a5;
 }
 .hs-mr-compare-head.teal {
-  color: #3dbda3;
+  color: #00a19a;
 }
 .hs-mr-compare-list {
   display: flex;
@@ -9609,7 +9609,7 @@ watch(screen, (s) => {
   font-weight: 800;
 }
 .hs-mr-step-ic.teal {
-  background: #1f7a66;
+  background: #008a84;
 }
 .hs-mr-step-title {
   font-size: 15px;
@@ -9637,7 +9637,7 @@ watch(screen, (s) => {
 .hs-mr-stat-num {
   font-size: 20px;
   font-weight: 800;
-  color: #1f7a66;
+  color: #008a84;
 }
 .hs-mr-stat-lbl {
   font-size: 11px;
@@ -9682,7 +9682,7 @@ watch(screen, (s) => {
   overflow: hidden;
 }
 .hs-searched-card--published {
-  background: linear-gradient(135deg, #1f7a66, #0f766e);
+  background: linear-gradient(135deg, #008a84, #0f766e);
   color: #fff;
 }
 .hs-searched-card--inprogress,
@@ -9723,7 +9723,7 @@ watch(screen, (s) => {
 }
 .hs-searched-card--inprogress .hs-searched-num,
 .hs-searched-card--unclaimed .hs-searched-num {
-  color: #3dbda3;
+  color: #00a19a;
 }
 .hs-searched-numlbl {
   font-size: 9px;
@@ -9767,14 +9767,14 @@ watch(screen, (s) => {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #3dbda3;
+  color: #00a19a;
   margin-bottom: 4px;
 }
 .hs-searched-pulse {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #3dbda3;
+  background: #00a19a;
   box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.25);
   animation: hs-pulse-mint 1.5s infinite;
   flex-shrink: 0;

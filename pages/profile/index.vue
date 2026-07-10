@@ -76,7 +76,7 @@
             {{ r.label }}
           </button>
         </div>
-        <p v-if="roleSaved" class="mt-2 text-[13px] text-[#1f7a66] font-sf-pro">
+        <p v-if="roleSaved" class="mt-2 text-[13px] text-[#008a84] font-sf-pro">
           ✓ Role updated
         </p>
         <p v-if="roleError" class="mt-2 text-[13px] text-red-500 font-sf-pro">

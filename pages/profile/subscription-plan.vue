@@ -645,7 +645,7 @@ function openStripePortal() {
   margin-left: auto;
   font-size: 11px;
   font-weight: 800;
-  color: #1f7a66;
+  color: #008a84;
   cursor: pointer;
   letter-spacing: -0.1px;
   text-transform: none;

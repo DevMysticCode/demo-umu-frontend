@@ -1798,7 +1798,7 @@ async function deleteNote(noteId: string) {
 }
 .pill--complete {
   background: #d1fae5;
-  color: #1f7a66;
+  color: #008a84;
   border: 1px solid #a7f3d0;
 }
 .pill--partial {
@@ -1831,7 +1831,7 @@ async function deleteNote(noteId: string) {
   transition: width 0.5s ease;
 }
 .fill--complete {
-  background: linear-gradient(90deg, #16a34a, #34d399);
+  background: linear-gradient(90deg, #008a84, #00a19a);
 }
 .fill--partial {
   background: linear-gradient(90deg, #f59e0b, #f5c44c);
@@ -2076,7 +2076,7 @@ async function deleteNote(noteId: string) {
 }
 
 .dot--complete {
-  background: #22c55e;
+  background: #00a19a;
 }
 
 .dot--partial {
@@ -2563,7 +2563,7 @@ async function deleteNote(noteId: string) {
 }
 .risk-pill--ok {
   background: #d1fae5;
-  color: #1f7a66;
+  color: #008a84;
   border-color: #a7f3d0;
 }
 .risk-pill--ok:hover {
@@ -2664,7 +2664,7 @@ async function deleteNote(noteId: string) {
   letter-spacing: -0.02em;
 }
 .buyer-summary-num--done {
-  color: #16a34a;
+  color: #008a84;
 }
 .buyer-summary-num--partial {
   color: #92400e;

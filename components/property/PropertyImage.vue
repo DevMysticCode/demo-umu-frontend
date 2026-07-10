@@ -81,7 +81,7 @@ watch(() => props.src, () => { failed.value = false })
 .prop-img-caption {
   font-size: 11px;
   font-weight: 700;
-  color: #1f7a66;
+  color: #008a84;
   letter-spacing: -0.1px;
   padding: 0 12px;
   text-align: center;

@@ -369,7 +369,7 @@ defineExpose({ clearQuery })
   stroke: rgba(255, 255, 255, 0.5);
 }
 .psi-wrap--dark .psi-input:focus {
-  border-color: #3dbda3;
+  border-color: #00a19a;
   background: rgba(255, 255, 255, 0.12);
 }
 .psi-wrap--dark .psi-input::placeholder {
@@ -541,7 +541,7 @@ defineExpose({ clearQuery })
 }
 .psi-drop-badge--hs {
   background: #f0fdfa;
-  color: #1f7a66;
+  color: #008a84;
   border: 1px solid #ccfbf1;
 }
 

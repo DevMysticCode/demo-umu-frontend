@@ -92,7 +92,7 @@ function onClick(e) {
 .prow-icon--good {
   background: #d1fae5;
   border-color: #a7f3d0;
-  color: #1f7a66;
+  color: #008a84;
 }
 .prow-icon--neutral {
   background: #f1f5f9;

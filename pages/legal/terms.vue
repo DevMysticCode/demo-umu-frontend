@@ -189,7 +189,7 @@ const goBack = useGoBack('/profile/settings')
   font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   font-style: italic;
   font-size: 16px;
-  color: #1f7a66;
+  color: #008a84;
   margin-bottom: 4px;
 }
 .lg-h1 {
@@ -239,10 +239,10 @@ const goBack = useGoBack('/profile/settings')
   margin-bottom: 4px;
 }
 .lg-content a {
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 700;
   text-decoration: none;
-  border-bottom: 1px dashed #1f7a66;
+  border-bottom: 1px dashed #008a84;
 }
 .lg-footer {
   margin-top: 28px;

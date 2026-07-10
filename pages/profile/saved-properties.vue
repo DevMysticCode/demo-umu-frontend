@@ -331,7 +331,7 @@ const filteredProperties = computed(() => {
   outline: none;
 }
 .sp-nav-search-input:focus {
-  border-color: #3dbda3;
+  border-color: #00a19a;
   box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18);
 }
 .sp-nav-search-clear {
@@ -388,7 +388,7 @@ const filteredProperties = computed(() => {
   display: inline-block;
   font-size: 22px;
   font-weight: 700;
-  color: #3dbda3;
+  color: #00a19a;
   vertical-align: 8px;
   margin-left: 6px;
   letter-spacing: -0.5px;
@@ -403,7 +403,7 @@ const filteredProperties = computed(() => {
   flex-wrap: wrap;
 }
 .hero-stats .stat-num { color: #0e2840; font-weight: 800; font-feature-settings: 'tnum'; margin-right: 4px; }
-.hero-stats .stat-num.teal { color: #1f7a66; }
+.hero-stats .stat-num.teal { color: #008a84; }
 .hero-stats .stat-num.coral { color: #b85b36; }
 .hero-stats .stat-sep { width: 3px; height: 3px; border-radius: 50%; background: #b5bdc4; margin: 0 8px; display: inline-block; }
 
@@ -564,7 +564,7 @@ const filteredProperties = computed(() => {
   box-shadow: 0 2px 6px rgba(245, 196, 76, 0.35);
 }
 .sp-priceflag.priceflag--active {
-  background: #3dbda3;
+  background: #00a19a;
   box-shadow: 0 2px 6px rgba(61, 189, 163, 0.35);
 }
 .sp-priceflag.priceflag--neutral {
@@ -592,7 +592,7 @@ const filteredProperties = computed(() => {
 .sp-price {
   font-size: 13px;
   font-weight: 800;
-  color: #1f7a66;
+  color: #008a84;
   font-feature-settings: 'tnum';
   letter-spacing: -0.3px;
 }

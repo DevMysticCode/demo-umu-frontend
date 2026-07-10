@@ -2098,7 +2098,7 @@ onBeforeUnmount(() => {
 }
 .bp-status-required { background: #f1f5f9; color: #4a5568; }
 .bp-status-progress { background: #fef3c7; color: #92400e; }
-.bp-status-done { background: #d1fae5; color: #1f7a66; }
+.bp-status-done { background: #d1fae5; color: #008a84; }
 .bp-status-running { background: #f1f9f4; color: #00a19a; border: 1px solid #e2f1ea; }
 .bp-task-extras { margin-top: 12px; }
 
@@ -2161,7 +2161,7 @@ onBeforeUnmount(() => {
 }
 .bp-id-status {
   font-size: 10px;
-  color: #1f7a66;
+  color: #008a84;
   font-weight: 700;
   margin-top: 1px;
 }
@@ -2257,7 +2257,7 @@ onBeforeUnmount(() => {
   0%, 100% { box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.4); }
   50% { box-shadow: 0 0 0 6px rgba(0, 161, 154, 0); }
 }
-.bp-aml-row.clear .bp-aml-dot { background: #1f7a66; color: #fff; }
+.bp-aml-row.clear .bp-aml-dot { background: #008a84; color: #fff; }
 
 /* Persona in-progress banner — shown while user is in the other tab */
 .bp-kyc-pending {
@@ -2373,7 +2373,7 @@ onBeforeUnmount(() => {
 .bp-kyc-success {
   margin-top: 16px;
   background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-  border: 1px solid #6ee7b7;
+  border: 1px solid #e5f4f2;
   border-radius: 14px;
   padding: 14px 16px;
   text-align: center;
@@ -2382,7 +2382,7 @@ onBeforeUnmount(() => {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
   display: grid;
   place-items: center;
@@ -2393,12 +2393,12 @@ onBeforeUnmount(() => {
 .bp-kyc-success-title {
   font-size: 14px;
   font-weight: 800;
-  color: #1f7a66;
+  color: #008a84;
   letter-spacing: -0.01em;
 }
 .bp-kyc-success-sub {
   font-size: 11.5px;
-  color: #1f7a66;
+  color: #008a84;
   margin-top: 3px;
 }
 
@@ -2454,7 +2454,7 @@ onBeforeUnmount(() => {
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #3dbda3;
+  color: #00a19a;
   margin-top: 18px;
 }
 
@@ -2595,7 +2595,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 5px;
 }
-.bp-uploaded-check { color: #1f7a66; font-weight: 800; }
+.bp-uploaded-check { color: #008a84; font-weight: 800; }
 .bp-uploaded-actions { display: flex; gap: 6px; flex-shrink: 0; }
 .bp-uploaded-btn {
   width: 28px;

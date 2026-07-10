@@ -366,14 +366,14 @@ function goView() { router.push('/buyer-profile/view') }
 }
 .sent-emoji { font-size: 36px; margin-bottom: 8px; }
 .sent-title {
-  font-size: 15px; font-weight: 800; color: #166534;
+  font-size: 15px; font-weight: 800; color: #008a84;
   margin-bottom: 4px;
 }
 .sent-sub {
-  font-size: 12px; color: #166534; opacity: 0.8;
+  font-size: 12px; color: #008a84; opacity: 0.8;
 }
 .sent-foot {
-  font-size: 11px; color: #166534; opacity: 0.6;
+  font-size: 11px; color: #008a84; opacity: 0.6;
   margin-top: 4px;
 }
 .sa-back-cta-wrap {

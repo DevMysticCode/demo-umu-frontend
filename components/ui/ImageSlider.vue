@@ -281,7 +281,7 @@ defineExpose({
 .no-image-logo svg { width: 100%; height: auto; }
 .no-image-title {
   text-align: center;
-  color: #1f7a66;
+  color: #008a84;
   font-size: 17px;
   font-weight: 800;
   letter-spacing: -0.3px;

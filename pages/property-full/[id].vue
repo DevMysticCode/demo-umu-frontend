@@ -2542,7 +2542,7 @@ const planningCategories = [
   {
     id: 'environment',
     label: 'Environment',
-    color: '#16a34a',
+    color: '#008a84',
     bg: 'rgba(22,163,74,0.1)',
   },
   {
@@ -3663,7 +3663,7 @@ function handleClaimed(passportId: string) {
   border-radius: 50%;
 }
 .prop-mobile-dot--good {
-  background: #16a34a;
+  background: #008a84;
 }
 .prop-mobile-dot--limited {
   background: #f59e0b;
@@ -3714,7 +3714,7 @@ function handleClaimed(passportId: string) {
 }
 .prop-tv-badge--yes {
   background: rgba(22, 163, 74, 0.1);
-  color: #16a34a;
+  color: #008a84;
 }
 .prop-tv-badge--check {
   background: rgba(234, 88, 12, 0.1);
@@ -4351,7 +4351,7 @@ function handleClaimed(passportId: string) {
 }
 .prop-planning-decision--approved {
   background: rgba(22, 163, 74, 0.12);
-  color: #16a34a;
+  color: #008a84;
 }
 .prop-planning-decision--refused {
   background: rgba(220, 38, 38, 0.1);

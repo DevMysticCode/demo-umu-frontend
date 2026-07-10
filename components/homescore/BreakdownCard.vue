@@ -27,7 +27,7 @@ defineProps<{ breakdown: PillarBreakdown }>()
 const pillars = [
   { id: 'heating' as const, label: 'Heating', max: 20, color: '#ef4444' },
   { id: 'structure' as const, label: 'Structure', max: 25, color: '#f59e0b' },
-  { id: 'efficiency' as const, label: 'Efficiency', max: 20, color: '#22c55e' },
+  { id: 'efficiency' as const, label: 'Efficiency', max: 20, color: '#00a19a' },
   { id: 'electrics' as const, label: 'Electrics', max: 20, color: '#3b82f6' },
   { id: 'plumbing' as const, label: 'Plumbing', max: 15, color: '#8b5cf6' },
 ]

@@ -3566,7 +3566,7 @@ const gaugeScore = computed(
 
 const gaugeColor = computed(() => {
   const s = gaugeScore.value ?? 0
-  if (s >= 80) return '#1f7a66'
+  if (s >= 80) return '#008a84'
   if (s >= 60) return '#00a19a'
   if (s >= 40) return '#92400e'
   return '#dc2626'
@@ -3664,7 +3664,7 @@ function schoolPhaseClass(phase: string | null | undefined): string {
 }
 
 function effToColor(pct: number): string {
-  if (pct >= 72) return '#1f7a66'
+  if (pct >= 72) return '#008a84'
   if (pct >= 50) return '#00a19a'
   if (pct >= 28) return '#92400e'
   return '#dc2626'
@@ -3738,7 +3738,7 @@ function formatCost(val: number | null): string {
 // ── EPC rating color ───────────────────────────────────────────────────────────
 const epcRatingColor = computed(() => {
   const r = prop.value?.epcRating ?? ''
-  if (r === 'A' || r === 'B') return '#1f7a66'
+  if (r === 'A' || r === 'B') return '#008a84'
   if (r === 'C') return '#00a19a'
   if (r === 'D') return '#92400e'
   if (r === 'E') return '#ea580c'
@@ -3794,20 +3794,20 @@ const floodRiskData = computed(() => {
   if (lower.includes('very low')) {
     return {
       label: 'Very Low',
-      color: '#1f7a66',
+      color: '#008a84',
       class: 'pp-badge-flood--low',
       zone: 'Zone 1',
-      pill: 'background:#d1fae5;color:#1f7a66;',
+      pill: 'background:#d1fae5;color:#008a84;',
       badgeClass: 'pp-badge-flood--low',
     }
   }
   if (lower.includes('low')) {
     return {
       label: 'Low',
-      color: '#1f7a66',
+      color: '#008a84',
       class: 'pp-badge-flood--low',
       zone: 'Zone 1',
-      pill: 'background:#d1fae5;color:#1f7a66;',
+      pill: 'background:#d1fae5;color:#008a84;',
       badgeClass: 'pp-badge-flood--low',
     }
   }
@@ -4094,7 +4094,7 @@ const nearbyKeyPlaces = computed(() => {
 // ── EPC/Flood tile colours ─────────────────────────────────────────────────────
 const epcLetterChipStyle = computed(() => {
   const r = prop.value?.epcRating ?? ''
-  if (r === 'A' || r === 'B') return 'background:#d1fae5;color:#1f7a66;'
+  if (r === 'A' || r === 'B') return 'background:#d1fae5;color:#008a84;'
   if (r === 'C') return 'background:#ccfbf1;color:#115e59;'
   if (r === 'D') return 'background:#fef3c7;color:#92400e;'
   if (r === 'E') return 'background:#fed7aa;color:#92400e;'
@@ -7927,7 +7927,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 1px solid #fbcfe8;
 }
 .pps-ds-phase-pill--specialist {
-  color: #166534;
+  color: #008a84;
   background: #dcfce7;
   border: 1px solid #bbf7d0;
 }

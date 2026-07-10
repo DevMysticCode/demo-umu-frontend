@@ -1222,7 +1222,7 @@ const handleContinue = () => {
   height: var(--size);
   border-radius: 50%;
   background: conic-gradient(
-    #1f7a66 calc(var(--p) * 1%),
+    #008a84 calc(var(--p) * 1%),
     rgba(15, 118, 110, 0.15) 0
   );
   display: grid;
@@ -1291,7 +1291,7 @@ const handleContinue = () => {
   color: #0f766e;
 }
 .qpill.primary {
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
   box-shadow: 0 8px 20px -8px rgba(13, 148, 136, 0.6);
 }

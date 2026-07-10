@@ -56,7 +56,7 @@ defineProps<{ flags: RiskFlag[] }>()
 }
 .hs-flag-icon--high { background: #fef2f2; color: #ef4444; }
 .hs-flag-icon--medium { background: #fffbeb; color: #f59e0b; }
-.hs-flag-icon--low { background: #f0fdf4; color: #22c55e; }
+.hs-flag-icon--low { background: #f0fdf4; color: #00a19a; }
 .hs-flag-title {
   font-size: 14px;
   font-weight: 600;

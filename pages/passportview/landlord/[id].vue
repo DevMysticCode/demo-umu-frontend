@@ -1202,7 +1202,7 @@ const SectionCard = defineComponent({
   background: transparent;
   cursor: pointer;
   font-family: inherit;
-  color: #1f7a66;
+  color: #008a84;
   flex-shrink: 0;
 }
 .lp-nav-action:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -1272,7 +1272,7 @@ const SectionCard = defineComponent({
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
-  color: #1f7a66;
+  color: #008a84;
   margin-bottom: 4px;
 }
 .pp-hero-addr-row { display: flex; align-items: center; gap: 6px; }
@@ -1326,7 +1326,7 @@ const SectionCard = defineComponent({
   color: #4a5868;
   margin-bottom: 5px;
 }
-.pp-hero-dash-pct { color: #1f7a66; font-feature-settings: 'tnum'; }
+.pp-hero-dash-pct { color: #008a84; font-feature-settings: 'tnum'; }
 .pp-hero-dash-bar {
   height: 8px;
   background: rgba(31, 122, 102, 0.12);
@@ -1336,7 +1336,7 @@ const SectionCard = defineComponent({
 }
 .pp-hero-dash-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3dbda3, #1f7a66);
+  background: linear-gradient(90deg, #00a19a, #008a84);
   border-radius: 100px;
   transition: width 0.3s ease;
   position: relative;
@@ -1358,9 +1358,9 @@ const SectionCard = defineComponent({
   font-weight: 800;
   letter-spacing: -0.1px;
 }
-.pp-hero-dash-issued { color: #1f7a66; }
+.pp-hero-dash-issued { color: #008a84; }
 .pp-hero-dash-warn { color: #b85b36; }
-.pp-hero-dash-dot { width: 7px; height: 7px; background: #3dbda3; border-radius: 50%; }
+.pp-hero-dash-dot { width: 7px; height: 7px; background: #00a19a; border-radius: 50%; }
 .pp-hero-dash-warn-dot { width: 7px; height: 7px; background: #ff8b5a; border-radius: 50%; }
 
 /* Convert card */
@@ -1369,7 +1369,7 @@ const SectionCard = defineComponent({
   margin: 4px 22px 16px;
   background:
     radial-gradient(ellipse 70% 70% at 30% 30%, rgba(255, 255, 255, 0.18), transparent 60%),
-    linear-gradient(135deg, #00a19a, #1f7a66);
+    linear-gradient(135deg, #00a19a, #008a84);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 16px;
   padding: 14px 16px;
@@ -1401,7 +1401,7 @@ const SectionCard = defineComponent({
   flex-shrink: 0;
 }
 .lp-convert-card--linked .lp-convert-icon {
-  background: #1f7a66;
+  background: #008a84;
   color: #fff;
 }
 .lp-convert-icon svg { width: 18px; height: 18px; }
@@ -1556,7 +1556,7 @@ const SectionCard = defineComponent({
 }
 .lp-sec-pill--doc { background: #f0f2f1; color: #4a5868; }
 .lp-sec-pill-ic { font-size: 10px; }
-.lp-sec-pill--good { background: #d6efe2; color: #1f7a66; }
+.lp-sec-pill--good { background: #d6efe2; color: #008a84; }
 .lp-sec-pill--warn { background: #fef3c7; color: #92400e; }
 .lp-sec-pill--pending { background: #f5f4f0; color: #8a95a0; }
 
@@ -1572,7 +1572,7 @@ const SectionCard = defineComponent({
   border-radius: 100px;
   transition: width 0.3s ease;
 }
-.lp-sec-bar-fill--good { background: linear-gradient(90deg, #3dbda3, #1f7a66); }
+.lp-sec-bar-fill--good { background: linear-gradient(90deg, #00a19a, #008a84); }
 .lp-sec-bar-fill--warn { background: linear-gradient(90deg, #f5c44c, #d4a659); }
 .lp-sec-bar-fill--pending { background: #d9dee2; }
 
@@ -1585,7 +1585,7 @@ const SectionCard = defineComponent({
   letter-spacing: -0.1px;
   font-feature-settings: 'tnum';
 }
-.lp-sec-pct--good { color: #1f7a66; }
+.lp-sec-pct--good { color: #008a84; }
 
 .lp-sec-actionby {
   text-align: right;
@@ -1667,7 +1667,7 @@ const SectionCard = defineComponent({
 .lp-tenancy-row:not(:last-child) { border-bottom: 1px solid #f0f2f1; }
 .lp-tenancy-lbl { color: #4a5868; font-weight: 600; }
 .lp-tenancy-val { color: #0e2840; font-weight: 800; }
-.lp-tenancy-val.ok { color: #1f7a66; }
+.lp-tenancy-val.ok { color: #008a84; }
 
 /* Modal pattern */
 .lp-overlay {
@@ -1736,7 +1736,7 @@ const SectionCard = defineComponent({
 }
 .lp-modal-doc-tick {
   width: 22px; height: 22px;
-  background: #1f7a66;
+  background: #008a84;
   border-radius: 50%;
   color: #fff;
   display: flex;
@@ -1798,7 +1798,7 @@ const SectionCard = defineComponent({
 }
 .btn-primary {
   flex: 2;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -1849,7 +1849,7 @@ const SectionCard = defineComponent({
 .lp-doc-preview-meta {
   font-size: 11px;
   font-weight: 700;
-  color: #1f7a66;
+  color: #008a84;
   margin-top: 2px;
 }
 .lp-doc-preview-btn {
@@ -1874,7 +1874,7 @@ const SectionCard = defineComponent({
   align-items: center;
   gap: 12px;
   background: #fff;
-  border: 1.5px dashed #3dbda3;
+  border: 1.5px dashed #00a19a;
   border-radius: 14px;
   padding: 14px;
   margin-bottom: 14px;
@@ -1887,7 +1887,7 @@ const SectionCard = defineComponent({
 .lp-upload-icon {
   width: 40px; height: 40px;
   border-radius: 11px;
-  background: #3dbda3;
+  background: #00a19a;
   color: #fff;
   display: flex;
   align-items: center;
@@ -1932,7 +1932,7 @@ const SectionCard = defineComponent({
   outline: none;
   transition: all 0.18s;
 }
-.mform-input:focus { border-color: #3dbda3; box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18); }
+.mform-input:focus { border-color: #00a19a; box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18); }
 .lp-modal-hint {
   font-size: 11px;
   font-weight: 600;

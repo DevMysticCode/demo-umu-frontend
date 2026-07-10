@@ -452,7 +452,7 @@ const sections = [
 }
 .risk-pill--ok {
   background: #d1fae5;
-  color: #1f7a66;
+  color: #008a84;
   border-color: #a7f3d0;
 }
 
@@ -608,7 +608,7 @@ const sections = [
   line-height: 1;
   letter-spacing: -0.02em;
 }
-.buyer-summary-num--done { color: #16a34a; }
+.buyer-summary-num--done { color: #008a84; }
 .buyer-summary-num--partial { color: #92400e; }
 .buyer-summary-num--empty { color: #94a3b8; }
 .buyer-summary-lbl {
@@ -693,7 +693,7 @@ const sections = [
 }
 .pill--complete {
   background: #d1fae5;
-  color: #1f7a66;
+  color: #008a84;
   border: 1px solid #a7f3d0;
 }
 .buyer-record-progress {
@@ -713,7 +713,7 @@ const sections = [
   border-radius: 999px;
   transition: width 0.5s ease;
 }
-.fill--complete { background: linear-gradient(90deg, #16a34a, #34d399); }
+.fill--complete { background: linear-gradient(90deg, #008a84, #00a19a); }
 .buyer-record-pct {
   font-size: 11px;
   font-weight: 800;
