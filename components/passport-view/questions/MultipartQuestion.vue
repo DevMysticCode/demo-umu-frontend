@@ -1,7 +1,7 @@
 <template>
   <div class="multipart-question">
     <!-- Question Display (task-level title/description/help shown above parts) -->
-    <template v-if="displayedQuestion || displayedDescription || displayedHelp">
+    <template v-if="displayedQuestion || displayedDescription || showTaskHelp">
       <p v-if="displayedQuestion" class="question-text">
         {{ displayedQuestion }}
         <span v-if="showQuestionCursor" class="typing-cursor">|</span>
@@ -16,7 +16,7 @@
         >
       </div>
 
-      <div v-if="displayedHelp" class="help-section">
+      <div v-if="showTaskHelp" class="help-section">
         <div class="help-content">
           <h4 class="help-title">
             <span class="help-icon">💡</span>What is this?
@@ -311,6 +311,22 @@ const sortedParts = computed(() => {
   if (!props.question?.parts) return []
   return [...props.question.parts].sort((a, b) => a.order - b.order)
 })
+
+// Fixtures & Fittings seeds often populate BOTH the question-level
+// `help` (surfaced by the task page as `displayedHelp`) AND the
+// first part's `helpText` with the exact same copy — see the
+// Free-Standing Heaters template in the payload the tester
+// forwarded. That produces two "What is this?" tips inside this
+// component even after the outer page-level tip is suppressed.
+// Whenever any part carries its own helpText we treat the
+// per-part tip as the source of truth (it's more specific) and
+// hide the task-level one to prevent the second duplicate.
+const hasPartHelp = computed(() =>
+  sortedParts.value.some((p) => (p?.helpText ?? '').toString().trim() !== ''),
+)
+const showTaskHelp = computed(
+  () => !!props.displayedHelp && !hasPartHelp.value,
+)
 
 // Link cards from prewritten.links (rendered after all parts)
 const questionLinks = computed(() => props.question?.prewritten?.links || [])
