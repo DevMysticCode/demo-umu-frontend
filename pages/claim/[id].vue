@@ -1096,10 +1096,25 @@ async function doLiveness() {
   step.value = 'kyc-aml'
 }
 
-// ── LR searching: animation runs in parallel with the REAL HMLR call ──
+// Whenever we land on kyc-verified, force every "loading" flag off.
+// runPolling's finally block resets personaPolling on its own path,
+// but there are still failure modes that can leave it stuck
+// (browser BFCache restore mid-await, watchers firing before the
+// finally resolves, native WebView pausing the JS event loop while
+// Persona's redirect is in flight) — the symptom is a permanent
+// spinner on the "Verify property ownership →" button that stops
+// the user tapping through to LR. Belt-and-braces: kyc-verified is
+// a terminal state for anything KYC-related, so no loading flag
+// should survive past it.
 watch(
   () => step.value,
   (s) => {
+    if (s === 'kyc-verified') {
+      personaPolling.value = false
+      personaCheckingNow.value = false
+      verifyLoading.value = false
+      personaAbort?.abort()
+    }
     if (s === 'lr-searching') runLrSearch()
   },
 )
