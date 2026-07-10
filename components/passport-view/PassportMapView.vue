@@ -187,10 +187,7 @@
               </div>
               <div class="task-info">
                 <div class="task-title">{{ task.title }}</div>
-                <p
-                  v-if="task.description"
-                  class="task-description"
-                >
+                <p v-if="task.description" class="task-description">
                   {{ task.description }}
                 </p>
                 <div class="task-meta">
@@ -354,10 +351,10 @@ const decorativeObjects = [
   { icon: 'post', x: 124, y: 391, z: 7 },
   { icon: 'tree', x: 195, y: 506 },
   { icon: 'orangeDog', x: 169, y: 531 },
-  { icon: 'tree', x: 111, y: 629, z: 7 },
+  { icon: 'tree', x: 59, y: 653, z: 7 },
   { icon: 'lampPost', x: 254, y: 626 },
   { icon: 'post', x: 150, y: 745, z: 7 },
-  { icon: 'tree', x: 110, y: 850 },
+  { icon: 'tree', x: 70, y: 861 },
   // { icon: 'dog', x: 248, y: 844 },
   { icon: 'postInverted', x: 113, y: 1056, z: 7 },
   // { icon: 'tree', x: 20, y: 1130 },
@@ -581,9 +578,7 @@ const navigateToStep = (stepId) => {
   height: 48px;
   z-index: 13;
   pointer-events: none;
-  transition:
-    left 0.35s ease,
-    top 0.35s ease;
+  transition: left 0.35s ease, top 0.35s ease;
 }
 
 .lady-icon {
@@ -598,9 +593,7 @@ const navigateToStep = (stepId) => {
   cursor: pointer;
   position: relative;
   overflow: visible;
-  transition:
-    transform 0.25s ease,
-    filter 0.25s ease;
+  transition: transform 0.25s ease, filter 0.25s ease;
   z-index: 9;
 }
 
