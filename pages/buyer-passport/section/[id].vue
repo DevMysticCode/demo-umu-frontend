@@ -8,7 +8,6 @@
       <AppHeader
         :showBack="true"
         :backTo="`/buyer-passport/${passportId}`"
-        right="dots"
       />
 
       <div class="section-content">

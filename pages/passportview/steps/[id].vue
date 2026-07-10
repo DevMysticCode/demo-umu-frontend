@@ -7,7 +7,7 @@
       <button class="menu-btn">⋯</button>
     </div> -->
 
-    <AppHeader :showBack="true" :backTo="backToPassportUrl" right="dots" />
+    <AppHeader :showBack="true" :backTo="backToPassportUrl" />
 
     <div class="step-content">
       <!-- Hero — matches prototype (teal-pale gradient + ring meta) but uses our icon -->

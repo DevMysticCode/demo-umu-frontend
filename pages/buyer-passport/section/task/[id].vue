@@ -5,7 +5,7 @@
     </div>
 
     <template v-else-if="task">
-      <AppHeader :showBack="true" :backTo="backUrl" right="dots" />
+      <AppHeader :showBack="true" :backTo="backUrl" />
 
       <div class="task-content">
         <!-- Hero — mirrors passportview/steps/tasks/[id].vue qhero -->
