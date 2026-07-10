@@ -279,6 +279,19 @@ onUnmounted(() => {
   min-height: 300px;
 }
 
+/* Footer — must stay pinned to the drawer bottom regardless of
+   content overflow. `flex-shrink: 0` stops the flex column from
+   squeezing the buttons out when `.drawer__content` gets tall;
+   before this rule existed the footer only had padding from a
+   mobile media query and could collapse to zero height on some
+   viewports, leaving testers with an invisible submit button. */
+.drawer__footer {
+  flex-shrink: 0;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0));
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+}
+
 /* Scrollbar Styling */
 .drawer__content::-webkit-scrollbar {
   width: 4px;

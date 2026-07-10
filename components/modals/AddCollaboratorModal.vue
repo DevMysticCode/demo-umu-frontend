@@ -359,10 +359,11 @@ const getInitials = (firstName, lastName) => {
   cursor: not-allowed;
 }
 
+/* Buttons live in BaseDrawer's #footer slot which already provides
+   padding + safe-area bottom, so no top margin needed here. */
 .modal-actions {
   display: flex;
   gap: 12px;
-  margin-top: 24px;
 }
 
 .btn {
