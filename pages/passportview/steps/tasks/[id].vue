@@ -180,8 +180,19 @@
         />
       </div>
 
-      <!-- "What is this?" tip — kept on aqua per request -->
-      <div v-if="tipBody" class="qtip">
+      <!-- "What is this?" tip — kept on aqua per request.
+           Suppressed for question types whose own component already
+           renders an inner "What is this?" section, otherwise the
+           same help text appears twice (tester feedback in Fixtures
+           & Fittings: outer tip + card's own tip = duplicate).
+           These types render their own inner tip today:
+             multipart / repeatable_item / radio / checkbox / date /
+             note / scale / boundary_responsibility / text_upload
+           The remaining types (text / address / chips /
+           multitextinput / multifieldform / collaborators) don't
+           render inner help, so the outer tip is the only one and
+           still fires. -->
+      <div v-if="tipBody && !typeHasInnerTip" class="qtip">
         <div class="qtip-ic">
           <svg
             width="14"
@@ -640,6 +651,27 @@ const tipBody = computed(() => {
     ''
   )
 })
+
+// Question types whose components render their own inner
+// "What is this?" tip inside the answer card. See the template
+// comment above `.qtip` for the full rationale — we hide the
+// outer tip for these so the same copy doesn't render twice.
+const TYPES_WITH_INNER_TIP = new Set([
+  'multipart',
+  'repeatable_item',
+  'radio',
+  'checkbox',
+  'date',
+  'note',
+  'scale',
+  'boundary_responsibility',
+  'text_upload',
+  'textupload',
+  'upload',
+])
+const typeHasInnerTip = computed(() =>
+  TYPES_WITH_INNER_TIP.has(currentQuestionType.value),
+)
 
 const remainingQuestions = computed(() => {
   return currentQuestions.value.filter((q) => !q.completed).length
