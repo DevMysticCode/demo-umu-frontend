@@ -656,17 +656,27 @@ const tipBody = computed(() => {
 // "What is this?" tip inside the answer card. See the template
 // comment above `.qtip` for the full rationale — we hide the
 // outer tip for these so the same copy doesn't render twice.
+//
+// IMPORTANT: these are the actual `q.type` values that arrive
+// from the API (mirror `getQuestionComponent` above), NOT the
+// component names. A previous version of this set used
+// `repeatable_item`, `boundary_responsibility`, `text_upload`
+// — none of which match the real payload — so the guard never
+// fired for MULTIPART / BOUNDARY / TEXT / UPLOAD questions and
+// testers still saw the duplicate on Fixtures & Fittings.
+// The repeatable multipart uses type='multipart' with
+// repeatable:true, so it's already covered by 'multipart'.
 const TYPES_WITH_INNER_TIP = new Set([
   'multipart',
-  'repeatable_item',
   'radio',
+  'single_choice',
   'checkbox',
+  'multiple_choice',
   'date',
   'note',
   'scale',
-  'boundary_responsibility',
-  'text_upload',
-  'textupload',
+  'boundary',
+  'text',
   'upload',
 ])
 const typeHasInnerTip = computed(() =>
