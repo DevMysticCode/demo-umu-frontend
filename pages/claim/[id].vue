@@ -645,6 +645,33 @@ async function loadProfile() {
 }
 
 onMounted(async () => {
+  // Persona return path — user just finished (or cancelled) the hosted
+  // KYC flow and Persona redirected them back to this page with
+  // `?kycreturn=1`. Restore the stored inquiry id and jump straight to
+  // polling so we settle without them having to tap anything. If the
+  // marker is stale (different property, or older than 30 min) we
+  // ignore it and fall through to the normal claim flow.
+  const url = new URL(window.location.href)
+  if (url.searchParams.get('kycreturn') === '1') {
+    try {
+      const raw = localStorage.getItem('umu_persona_return')
+      if (raw) {
+        const saved = JSON.parse(raw)
+        const fresh = Date.now() - Number(saved?.startedAt ?? 0) < 30 * 60_000
+        if (fresh && saved?.propertyId === propertyId && saved?.inquiryId) {
+          personaInquiryId.value = saved.inquiryId
+          step.value = 'kyc-explainer'
+          // Strip the query param so a refresh doesn't re-enter this path.
+          url.searchParams.delete('kycreturn')
+          window.history.replaceState({}, '', url.toString())
+          // Fire polling without awaiting so the type drawer + property
+          // load below still happen in parallel.
+          runPolling()
+        }
+      }
+    } catch { /* corrupt localStorage — fall through to normal flow */ }
+  }
+
   // First thing: ask the user which type of passport they're claiming.
   // Always shown — even if their profile role suggests one — so they can
   // override per-property (a landlord might still claim a seller passport).
@@ -925,16 +952,36 @@ async function startPersonaKyc() {
       return
     }
     personaInquiryId.value = start.inquiryId
-    // Open the hosted flow in a new tab. Persona handles ID upload,
-    // liveness + AML inside their UI; we just wait for the result.
-    const w = window.open(start.hostedUrl, '_blank', 'noopener')
-    if (!w) {
-      personaError.value =
-        'Pop-ups blocked — allow pop-ups for this site and try again.'
-      personaPolling.value = false
-      return
+
+    // Same-tab navigation to Persona's hosted flow. The previous
+    // implementation used `window.open(url, '_blank')`, which iOS
+    // Safari + TestFlight's WKWebView block as a popup even with
+    // the popup blocker turned off — the browser only lets popups
+    // through if they're opened SYNCHRONOUSLY inside a user gesture,
+    // and our `await startKyc()` breaks that gesture chain. Same-tab
+    // navigation is never blocked and works identically across
+    // desktop Safari, iOS Safari, Android Chrome, and native WebView.
+    //
+    // `redirect-uri` tells Persona where to send the user when they
+    // finish. We come back to the same claim page with a marker
+    // query so onMounted knows to jump straight to polling. Inquiry
+    // id is persisted so we can pick it up on the return trip.
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(
+          'umu_persona_return',
+          JSON.stringify({
+            propertyId,
+            inquiryId: start.inquiryId,
+            startedAt: Date.now(),
+          }),
+        )
+      } catch { /* localStorage may be full; polling will still work */ }
     }
-    runPolling()
+    const returnUrl = `${window.location.origin}/claim/${propertyId}?kycreturn=1`
+    const separator = start.hostedUrl.includes('?') ? '&' : '?'
+    const hostedWithReturn = `${start.hostedUrl}${separator}redirect-uri=${encodeURIComponent(returnUrl)}`
+    window.location.href = hostedWithReturn
   } catch (e: any) {
     personaError.value =
       e?.data?.message || e?.message || 'Verification could not start.'

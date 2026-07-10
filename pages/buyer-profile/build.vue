@@ -1105,13 +1105,22 @@ async function startBuyerKyc() {
       return
     }
     kycInquiryId.value = start.inquiryId
-    const w = window.open(start.hostedUrl, '_blank', 'noopener')
-    if (!w) {
-      kycError.value =
-        'Pop-ups blocked — allow pop-ups for this site and try again.'
-      return
+    // Same-tab redirect — see comment in pages/claim/[id].vue for why.
+    // TL;DR: window.open('_blank') is blocked by iOS Safari + native
+    // WebView after any await, no matter whether the user has the popup
+    // blocker off. Same-tab navigation is never blocked.
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(
+          'umu_buyer_persona_return',
+          JSON.stringify({ inquiryId: start.inquiryId, startedAt: Date.now() }),
+        )
+      } catch { /* full localStorage — polling still works on return */ }
     }
-    await runKycPolling()
+    const returnUrl = `${window.location.origin}/buyer-profile/build?kycreturn=1`
+    const separator = start.hostedUrl.includes('?') ? '&' : '?'
+    window.location.href = `${start.hostedUrl}${separator}redirect-uri=${encodeURIComponent(returnUrl)}`
+    return
   } catch (e: any) {
     kycError.value =
       e?.data?.message || e?.message || 'Verification could not start.'
@@ -1535,6 +1544,25 @@ async function submit() {
 }
 
 onMounted(async () => {
+  // Persona return path — same flow as pages/claim/[id].vue. If the
+  // user came back from the hosted flow, restore the stored inquiry
+  // id and poll immediately.
+  const url = new URL(window.location.href)
+  if (url.searchParams.get('kycreturn') === '1') {
+    try {
+      const raw = localStorage.getItem('umu_buyer_persona_return')
+      if (raw) {
+        const saved = JSON.parse(raw)
+        const fresh = Date.now() - Number(saved?.startedAt ?? 0) < 30 * 60_000
+        if (fresh && saved?.inquiryId) {
+          kycInquiryId.value = saved.inquiryId
+          url.searchParams.delete('kycreturn')
+          window.history.replaceState({}, '', url.toString())
+          runKycPolling()
+        }
+      }
+    } catch { /* fall through */ }
+  }
   // Hydrate the logged-in user for the "complete" screen name line.
   fetchProfile?.().catch(() => {})
   try {

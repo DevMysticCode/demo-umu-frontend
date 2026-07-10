@@ -209,7 +209,14 @@
           <div class="bcv-ico" :class="celebrateDoc.tone">
             {{ celebrateDoc.icon }}
           </div>
-          <div class="bcv-eyebrow">DOCUMENT VERIFIED</div>
+          <!-- "VERIFIED" is only honest for the utility bill (where
+               server-side OCR just confirmed a real annual spend
+               figure). For every other doc we haven't wired real
+               verification yet, so we call it "UPLOADED" — tester
+               feedback flagged the previous copy as false. -->
+          <div class="bcv-eyebrow">
+            {{ celebrateDoc.id === 'bills' ? 'BILL VERIFIED' : 'DOCUMENT UPLOADED' }}
+          </div>
           <div class="bcv-headline">
             +{{ celebrateDoc.mrDelta }}% Move Ready
           </div>
@@ -300,16 +307,24 @@
           🔒 We read the key details only — the file is stored against your
           property and never shared without your say-so.
         </div>
+
+        <!-- Error line shown when OCR fails to find a legible spend
+             on the bill (returned annualSpend=null). The user needs
+             actionable copy telling them what to try next. -->
+        <div v-if="uploadError" class="bd-upload-err">{{ uploadError }}</div>
       </div>
 
       <template #footer>
         <button
           class="bd-upload-cta"
           type="button"
-          :disabled="!selectedFile"
+          :disabled="!selectedFile || uploading"
           @click="confirmUpload"
         >
-          {{ selectedFile ? 'Add to my property →' : 'Choose a file' }}
+          <template v-if="uploading">Reading your bill…</template>
+          <template v-else>
+            {{ selectedFile ? 'Add to my property →' : 'Choose a file' }}
+          </template>
         </button>
       </template>
     </BaseDrawer>
@@ -322,6 +337,11 @@ import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 
 interface Props {
   homeScore: number
+  /** Passed through so the utility-bill upload can call the real OCR
+   *  endpoint (POST /property/:id/bill-parse). Without it we can't
+   *  verify the bill and would revert to a fake boost — see
+   *  confirmUpload() below for the branch that requires this. */
+  propertyId?: string | null
   moveReadyStart?: number
   passportStart?: number
   /** Public-register EPC fields — drive the "Make it official" card.
@@ -332,6 +352,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  propertyId: null,
   moveReadyStart: 12,
   passportStart: 30,
   publicEpcRating: null,
@@ -555,19 +576,96 @@ function onUploadClose() {
   activeDocId.value = null
 }
 
-function confirmUpload() {
+// State for the utility-bill OCR round-trip. The user waits for
+// Tesseract on the server before the celebration overlay opens, so
+// we show a spinner state on the CTA and an explicit error line if
+// the bill couldn't be parsed. Everything else uses the direct-mark
+// path.
+const uploading = ref(false)
+const uploadError = ref('')
+const parsedBillResult = ref<{
+  annualSpend: number | null
+  supplier: string | null
+  period: string | null
+} | null>(null)
+
+async function confirmUpload() {
   if (!selectedFile.value) {
     fileInputRef.value?.click()
     return
   }
   const id = activeDocId.value
-  if (id && !uploadedDocs.value.includes(id)) {
-    // Mark the doc uploaded — this lifts the Move Ready / Passport gauges.
-    // (Server-side file upload endpoint to be wired when available.)
-    uploadedDocs.value = [...uploadedDocs.value, id]
-    const doc = docs.find((d) => d.id === id)
-    if (doc) celebrateDoc.value = doc
+  if (!id || uploadedDocs.value.includes(id)) {
+    onUploadClose()
+    return
   }
+
+  // Utility bill takes the OCR path: server extracts real annual
+  // spend + supplier from the image/PDF. Only grant the boost when
+  // the OCR actually found a number — no more "click and the score
+  // goes up regardless of what you uploaded" (tester feedback #5).
+  if (id === 'bills') {
+    if (!props.propertyId) {
+      uploadError.value =
+        "Can't verify without a property. Please claim this property first."
+      return
+    }
+    uploadError.value = ''
+    uploading.value = true
+    try {
+      const config = useRuntimeConfig()
+      const base = (config.public as any).apiBase || ''
+      const token =
+        typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      const fd = new FormData()
+      fd.append('file', selectedFile.value)
+      const parsed: any = await $fetch(
+        `${base}/property/${props.propertyId}/bill-parse`,
+        {
+          method: 'POST',
+          body: fd,
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        },
+      )
+      // Only credit the boost when we actually extracted a number.
+      // If Tesseract couldn't read a legible spend figure the bill
+      // is either unreadable or not an energy bill — we tell the
+      // user and don't touch the gauges.
+      if (parsed && typeof parsed.annualSpend === 'number' && parsed.annualSpend > 0) {
+        parsedBillResult.value = {
+          annualSpend: parsed.annualSpend,
+          supplier: parsed.supplier ?? null,
+          period: parsed.period ?? null,
+        }
+        uploadedDocs.value = [...uploadedDocs.value, id]
+        const doc = docs.find((d) => d.id === id)
+        if (doc) celebrateDoc.value = doc
+        onUploadClose()
+      } else {
+        uploadError.value =
+          "Couldn't read a spend figure from that file. Try a clearer photo of the annual summary page, or a PDF directly from your supplier."
+      }
+    } catch (e: any) {
+      uploadError.value =
+        e?.data?.message ??
+        e?.message ??
+        "Couldn't upload the bill. Try again in a moment."
+    } finally {
+      uploading.value = false
+    }
+    return
+  }
+
+  // Non-bill docs (gas, EICR, boiler) don't have server-side
+  // verification wired yet, so we mark them uploaded but tell the
+  // user honestly in the celebration copy that it's uploaded — not
+  // "verified" — until a professional reviews it. The score bump is
+  // preserved for now (tester feedback #5 was specifically about the
+  // utility bill mismatch); when we add proper verification for the
+  // others we'll gate them the same way.
+  uploadedDocs.value = [...uploadedDocs.value, id]
+  const doc = docs.find((d) => d.id === id)
+  if (doc) celebrateDoc.value = doc
   onUploadClose()
 }
 
@@ -590,19 +688,31 @@ const isLastDoc = computed(
 
 // Per-doc impact copy — describes what THIS upload verifies beyond the
 // numeric uplift, so the user reads concrete value, not just a percentage.
+// The utility-bill line is generated dynamically below because it now
+// carries the OCR-extracted annual spend figure (tester feedback #5).
 const docImpacts: Record<string, string> = {
   bills:
-    "We'll cross-check your real spend against your EPC estimate — buyers see the verified figure, not the public one.",
-  gas: 'Annual gas safety is on file. Required for any rental and reassures buyers the appliances are checked.',
-  eicr: 'Electrical Installation Condition Report verified — covers a survey question solicitors flag every time.',
+    "Real annual spend extracted from your bill. Buyers see this verified figure, not the older EPC estimate.",
+  gas: 'Uploaded — kept on file against your property. Buyer-side visibility, and a marker for solicitors that annual gas safety is in place.',
+  eicr: 'Uploaded — buyers see the EICR is on file against your property. Full verification runs at conveyancing.',
   boiler:
-    'Boiler service history locked in. Tells buyers the heating system is maintained and recent.',
+    'Uploaded — service history stored against the property. Buyers can see maintenance is up-to-date.',
 }
 const celebrateImpact = computed(() => {
   const id = celebrateDoc.value?.id
+  // Utility-bill line is dynamic: once OCR returns we replace the
+  // generic copy with the actual numbers we extracted — that's what
+  // the user is being told is "verified", so it should be visible.
+  if (id === 'bills' && parsedBillResult.value?.annualSpend) {
+    const spend = Math.round(parsedBillResult.value.annualSpend)
+    const supplier = parsedBillResult.value.supplier
+    return supplier
+      ? `We read £${spend}/yr as your annual spend on the ${supplier} bill you uploaded. Buyers see this verified figure, not the older EPC estimate.`
+      : `We read £${spend}/yr as your annual spend on the bill you uploaded. Buyers see this verified figure, not the older EPC estimate.`
+  }
   return (
     (id && docImpacts[id]) ||
-    'Document verified and locked into your Property Passport.'
+    'Uploaded and locked into your Property Passport.'
   )
 })
 
@@ -1244,6 +1354,17 @@ function formatFileSize(bytes: number): string {
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
+}
+.bd-upload-err {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fff2f2;
+  border: 1px solid #f3c9c9;
+  color: #a02c2c;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.45;
 }
 .bd-upload-cta {
   width: 100%;
