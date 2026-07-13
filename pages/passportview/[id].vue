@@ -242,7 +242,7 @@
               </div>
             </div>
             <div class="step-info">
-              <h3 class="step-title">{{ step.title }}</h3>
+              <h3 class="step-title">{{ toSmartTitleCase(step.title) }}</h3>
               <p class="step-points">
                 {{ getStepPoints(step) }} points earned so far
               </p>
@@ -605,6 +605,7 @@ const passportTourSteps = [
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
 import { onMounted, ref, computed } from 'vue'
+import { toSmartTitleCase } from '~/utils/titleCase'
 
 definePageMeta({
   middleware: 'auth',

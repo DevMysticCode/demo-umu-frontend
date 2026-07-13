@@ -28,6 +28,18 @@
       <!-- Error Message -->
       <div v-if="error" class="error-message">
         {{ error }}
+        <!-- If HMLR-style "not registered" error came back, offer to
+             send an email invite so the owner isn't stuck. mailto:
+             opens the user's own email client — no backend email
+             endpoint needed for MVP. -->
+        <button
+          v-if="showInviteFallback"
+          type="button"
+          class="invite-fallback-btn"
+          @click="sendMailtoInvite"
+        >
+          ✉︎ Send them an email invite to join UMovingU
+        </button>
       </div>
 
       <!-- Success Message -->
@@ -142,11 +154,16 @@ const loadCollaborators = async () => {
   }
 }
 
+// Flag flipped whenever the backend says the email isn't registered
+// — used to offer the mailto-invite fallback in the error banner.
+const showInviteFallback = ref(false)
+
 const handleAdd = async () => {
   if (!email.value) return
 
   error.value = ''
   success.value = ''
+  showInviteFallback.value = false
   isLoading.value = true
 
   try {
@@ -166,10 +183,29 @@ const handleAdd = async () => {
     }, 3000)
   } catch (err) {
     console.error('Failed to add collaborator:', err)
-    error.value = err?.data?.message || 'Failed to add collaborator'
+    const message = err?.data?.message || 'Failed to add collaborator'
+    error.value = message
+    // Backend returns "User with this email not found" when the email
+    // isn't registered yet — offer to send a mailto invite so the
+    // owner isn't stuck at that dead-end.
+    if (/not\s+found|not\s+registered/i.test(message)) {
+      showInviteFallback.value = true
+    }
   } finally {
     isLoading.value = false
   }
+}
+
+function sendMailtoInvite() {
+  const address = email.value.trim()
+  if (!address) return
+  const subject = encodeURIComponent(
+    'Join me on UMovingU to view my Property Passport',
+  )
+  const body = encodeURIComponent(
+    `Hi,\n\nI'd like to give you access to my Property Passport on UMovingU — a verified record of my property that shows every detail your solicitor would ask for.\n\nSign up here first, then let me know once you're on the platform: https://demo-umu-frontend.vercel.app/onboarding/signup\n\nThanks,`,
+  )
+  window.location.href = `mailto:${encodeURIComponent(address)}?subject=${subject}&body=${body}`
 }
 
 const handleRemove = async (collaboratorId) => {
@@ -266,6 +302,23 @@ const getInitials = (firstName, lastName) => {
   color: #c00;
   font-size: 14px;
   margin-bottom: 16px;
+}
+.invite-fallback-btn {
+  margin-top: 10px;
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #00a19a;
+  border-radius: 8px;
+  color: #00857f;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.invite-fallback-btn:hover {
+  background: #e5f4f2;
 }
 
 .success-message {

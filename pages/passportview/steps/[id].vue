@@ -82,7 +82,6 @@
       <div class="tasks-section">
         <div class="section-header">
           <h2 class="section-title">Your Tasks</h2>
-          <button class="sort-btn">Sort</button>
         </div>
 
         <div class="tasks-list">
@@ -120,7 +119,7 @@
                 /></span>
                 +0pts
               </div>
-              <h3 class="task-title">{{ task.title }}</h3>
+              <h3 class="task-title">{{ toSmartTitleCase(task.title) }}</h3>
               <p class="task-description">{{ task.description }}</p>
               <div class="task-meta">
                 <span>
@@ -185,6 +184,7 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import HelpDrawer from '@/components/passport-view/HelpDrawer.vue'
 import VideoModal from '@/components/passport-view/VideoModal.vue'
+import { toSmartTitleCase } from '~/utils/titleCase'
 
 const route = useRoute()
 const router = useRouter()
