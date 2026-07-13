@@ -31,7 +31,19 @@
               <button class="hero-btn" @click="goBack">
                 <OPIcon name="leftChevronWhite" class="w-[16px] h-[16px]" />
               </button>
-              <div class="flex gap-3">
+              <div class="flex gap-3 items-center">
+                <!-- Owner-only jump back to their editable seller view.
+                     Renders as a small pill so it doesn't compete with
+                     the round icon buttons. Only fires when the backend
+                     confirms the signed-in user owns this passport. -->
+                <button
+                  v-if="isOwner"
+                  class="hero-owner-switch"
+                  type="button"
+                  @click="switchToSellerView"
+                >
+                  Switch to Seller view
+                </button>
                 <button
                   class="hero-btn"
                   aria-label="Take a quick tour"
@@ -871,7 +883,11 @@
     <Transition name="buyer-toast">
       <div v-if="saveToast" class="buyer-save-toast">{{ saveToast }}</div>
     </Transition>
-    <div v-if="data" class="buyer-action-bar">
+    <!-- Buyer-only action bar. Owners see the Switch-to-Seller pill
+         in the hero and don't need to "Save to Profile" or "Ask the
+         seller" (they're the seller). Hiding it also frees up the
+         bottom of the page for the app-wide BottomNav below. -->
+    <div v-if="data && !isOwner" class="buyer-action-bar">
       <button
         class="buyer-action-save"
         :class="{ 'is-saved': isSavedToProfile }"
@@ -893,6 +909,11 @@
       :steps="buyerTourSteps"
       storage-key="umu_tour_buyer_passport_v1"
     />
+
+    <!-- App bottom nav — was missing on this page, meaning users landing
+         here from a share link had no way back to Explore / Passport /
+         Calendar / AI without the browser back button. -->
+    <BottomNav active="passport" />
   </div>
 </template>
 
@@ -900,6 +921,7 @@
 import OPIcon from '~/components/ui/OPIcon.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
+import BottomNav from '~/components/core/BottomNav.vue'
 import PassportCard from '~/components/passport-view/PassportCard.vue'
 
 // Guided tour for buyers — surfaces the things they care about most.
@@ -1343,7 +1365,28 @@ function downloadTA10() {
 }
 
 function goBack() {
-  router.back()
+  // router.back() looped: after visiting a section the browser
+  // history is [explore, property, buyer-passport, section]; when
+  // the user hit browser back they arrived at buyer-passport, then
+  // our back button popped the next entry which was the section
+  // again. Explicit navigation to a canonical home fixes it — we
+  // prefer the property page when we know it, else the explore
+  // feed which is always safe.
+  const propertyId = data.value?.property?.id
+  if (propertyId) {
+    router.push(`/property/${propertyId}`)
+  } else {
+    router.push('/explore')
+  }
+}
+
+/** True when the signed-in user is the passport owner. Backend
+ *  returns `passport.isOwner` from getBuyerView. */
+const isOwner = computed(() => Boolean(data.value?.passport?.isOwner))
+
+function switchToSellerView() {
+  if (!passportId) return
+  router.push(`/passportview/${passportId}`)
 }
 
 function goToSection(sectionId: string) {
@@ -1579,6 +1622,24 @@ async function deleteNote(noteId: string) {
   justify-content: center;
   backdrop-filter: blur(4px);
 }
+/* Owner-only pill — surfaces the seller view without competing with
+   the circular icon buttons. Uses the same translucent chrome pattern
+   as .hero-btn so it reads as part of the same row. */
+.hero-owner-switch {
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+}
+.hero-owner-switch:hover { background: rgba(0, 0, 0, 0.6) }
+.hero-owner-switch:active { transform: scale(0.98) }
 
 /* ── Card / page surface — matches passportview theme ─────── */
 .buyer-card {
@@ -2743,13 +2804,17 @@ async function deleteNote(noteId: string) {
   margin: 0;
 }
 
-/* ── Sticky bottom action bar ─────────────────────────────────── */
+/* ── Sticky bottom action bar ───────────────────────────────────
+   Sits ABOVE the app-wide BottomNav (~64px + safe-area) rather
+   than on top of it. Previously the action bar was at bottom:0
+   and the BottomNav wasn't rendered on this page at all; adding
+   BottomNav means the two would collide unless one moves. */
 .buyer-action-bar {
   position: fixed;
-  bottom: 0;
+  bottom: calc(64px + env(safe-area-inset-bottom, 0));
   left: 0;
   right: 0;
-  z-index: 30;
+  z-index: 51;
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 8px;
@@ -2810,7 +2875,10 @@ async function deleteNote(noteId: string) {
 /* Pad the bottom of the scrollable card so content isn't hidden under
    the sticky bar. */
 .buyer-card {
-  padding-bottom: 88px;
+  /* Cleared for the sticky action bar (~72px) + BottomNav
+     (~64px) + safe-area at the foot of the page. Without this
+     the last content row hid behind the fixed bars. */
+  padding-bottom: calc(150px + env(safe-area-inset-bottom, 0));
 }
 
 /* Save toast — slides down from the top */
