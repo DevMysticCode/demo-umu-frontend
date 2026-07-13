@@ -115,7 +115,10 @@ onUnmounted(() => {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 50;
+  /* Above the bottom-nav's z-50 — otherwise the nav's fixed bar
+     paints over the drawer's pinned #footer slot and the primary
+     CTA (Add Collaborators, etc.) becomes invisible + untappable. */
+  z-index: 100;
   display: flex;
   align-items: flex-end;
   justify-content: center;
