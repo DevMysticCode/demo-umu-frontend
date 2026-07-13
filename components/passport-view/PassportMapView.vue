@@ -143,7 +143,7 @@
                 </div>
               </div>
               <div class="sheet-meta">
-                <div class="sheet-title">{{ drawerStep.title }}</div>
+                <div class="sheet-title">{{ toSmartTitleCase(drawerStep.title) }}</div>
                 <div class="sheet-sub">
                   {{ drawerStep.subtitle || drawerStep.description || '' }}
                 </div>
@@ -168,7 +168,6 @@
 
             <div class="task-list-head">
               <div class="lbl">Your tasks</div>
-              <div class="sort">Sort ⌄</div>
             </div>
 
             <button
@@ -186,7 +185,7 @@
                 </template>
               </div>
               <div class="task-info">
-                <div class="task-title">{{ task.title }}</div>
+                <div class="task-title">{{ toSmartTitleCase(task.title) }}</div>
                 <p v-if="task.description" class="task-description">
                   {{ task.description }}
                 </p>
@@ -225,6 +224,7 @@ import { computed, ref, watch } from 'vue'
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toSmartTitleCase } from '~/utils/titleCase'
 
 const { steps } = usePassportRuntime()
 const route = useRoute()

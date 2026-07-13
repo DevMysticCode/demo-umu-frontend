@@ -27,7 +27,7 @@
           />
         </div>
         <div class="map-now-body">
-          <div class="map-now-title">{{ currentStep.title }}</div>
+          <div class="map-now-title">{{ toSmartTitleCase(currentStep.title) }}</div>
           <div class="map-now-meta">
             {{ currentStepCompletedTasks }}/{{
               currentStep.tasks?.length ?? 0
@@ -133,6 +133,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
+import { toSmartTitleCase } from '~/utils/titleCase'
 
 // Landlord-specific map view. Same isometric path, road connectors,
 // decorations and walking lady as the seller's PassportMapView — the
