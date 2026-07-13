@@ -1,407 +1,344 @@
 <template>
-  <div class="drawer-container" @click.stop>
-    <div class="drawer-content">
-      <div class="property-info">
-        <img
-          v-if="propertyImage"
-          :src="propertyImage"
-          alt="Property"
-          class="property-thumb"
-        />
-        <div class="property-details">
-          <h3 class="property-title">{{ propertyTitle }}</h3>
-          <p class="property-address">{{ propertyAddress }}</p>
-          <p class="property-price">{{ propertyPrice }}</p>
-        </div>
-        <!-- <button class="close-btn" @click="close">✕</button> -->
+  <div class="share-content">
+    <!-- Property summary card at the top -->
+    <div class="share-property-card">
+      <img
+        v-if="propertyImage"
+        :src="propertyImage"
+        alt=""
+        class="share-property-thumb"
+      />
+      <div v-else class="share-property-thumb share-property-thumb--empty">
+        🏠
       </div>
-
-      <div class="contacts-section">
-        <div class="contacts-scroll">
-          <div
-            v-for="contact in contacts"
-            :key="contact.name"
-            class="contact-item"
-            @click="shareWithContact(contact)"
-          >
-            <div class="contact-avatar">
-              <img :src="contact.avatar" :alt="contact.name" />
-              <div class="message-badge">
-                <OPIcon name="messages" class="w-[20px] h-[20px]" />
-              </div>
-            </div>
-            <p class="contact-name">{{ contact.name }}</p>
-          </div>
+      <div class="share-property-info">
+        <div class="share-property-title">{{ propertyTitle }}</div>
+        <div class="share-property-address">{{ propertyAddress }}</div>
+        <div v-if="propertyPrice" class="share-property-price">
+          {{ propertyPrice }}
         </div>
       </div>
+    </div>
 
-      <div class="share-options">
-        <div
-          v-for="option in shareOptions"
-          :key="option.name"
-          class="share-option"
-          @click="handleShare(option)"
-        >
-          <div class="option-icon" :style="{ background: option.color }">
-            <span
-              ><OPIcon :name="option.icon" class="w-[60px] h-[60px]"
-            /></span>
-          </div>
-          <p class="option-name">{{ option.name }}</p>
+    <!-- Primary CTA — Web Share API opens the OS share sheet
+         (WhatsApp / Messages / Mail / Instagram / etc.). Falls back
+         to copying the link when Web Share isn't available. -->
+    <button
+      v-if="canNativeShare"
+      class="share-primary"
+      type="button"
+      @click="onNativeShare"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+        <polyline points="16 6 12 2 8 6" />
+        <line x1="12" y1="2" x2="12" y2="15" />
+      </svg>
+      Share via…
+    </button>
+
+    <!-- Link row — always visible so the owner can see the link and
+         copy it manually even when the OS share sheet is available. -->
+    <div class="share-link-row">
+      <div class="share-link-input" @click="selectLink">
+        {{ shareLink }}
+      </div>
+      <button
+        type="button"
+        class="share-copy-btn"
+        :class="{ copied: copyState === 'copied' }"
+        @click="onCopyLink"
+      >
+        {{ copyState === 'copied' ? '✓ Copied' : 'Copy' }}
+      </button>
+    </div>
+
+    <!-- Secondary actions — Print + Save as PDF both use the browser's
+         built-in print dialog which lets the user pick either. -->
+    <div class="share-actions">
+      <button type="button" class="share-action" @click="onPrint">
+        <div class="share-action-ic">🖨️</div>
+        <div class="share-action-body">
+          <div class="share-action-title">Print</div>
+          <div class="share-action-sub">Send this page to a printer</div>
         </div>
-      </div>
-
-      <div class="action-buttons">
-        <button class="action-btn">
-          <span class="action-icon">♡</span>
-          <span class="action-text">Add Property to Favourites</span>
-          <span class="action-arrow">❤️</span>
-        </button>
-        <button class="action-btn">
-          <span class="action-icon">🖨️</span>
-          <span class="action-text">Print</span>
-        </button>
-        <button class="action-btn">
-          <span class="action-icon">📝</span>
-          <span class="action-text">Save in Notes</span>
-        </button>
-        <button class="action-btn">
-          <span class="action-icon">📤</span>
-          <span class="action-text">Export</span>
-        </button>
-      </div>
-
-      <div class="action-buttons">
-        <button class="action-btn">
-          <span class="action-icon">💬</span>
-          <span class="action-text">Report</span>
-        </button>
-        <button class="action-btn">
-          <span class="action-icon">✓</span>
-          <span class="action-text">Verify Data</span>
-        </button>
-      </div>
+      </button>
+      <button type="button" class="share-action" @click="onSavePdf">
+        <div class="share-action-ic">📄</div>
+        <div class="share-action-body">
+          <div class="share-action-title">Save as PDF</div>
+          <div class="share-action-sub">Uses your device's Save to PDF option</div>
+        </div>
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import OPIcon from '~/components/ui/OPIcon.vue'
+import { computed, ref } from 'vue'
+
 const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-  propertyTitle: {
-    type: String,
-    default: '8, Greenfield Avenue',
-  },
-  propertyAddress: {
-    type: String,
-    default: 'Walton-on-Thames, TW18...',
-  },
-  propertyPrice: {
-    type: String,
-    default: '£1,200,000',
-  },
-  propertyImage: {
-    type: String,
-    default: '',
-  },
+  propertyTitle: { type: String, default: '' },
+  propertyAddress: { type: String, default: '' },
+  propertyPrice: { type: String, default: '' },
+  propertyImage: { type: String, default: '' },
 })
 
-const emit = defineEmits(['update:modelValue', 'share'])
+// Current page URL — resolves to the actual property page the user is
+// on, so pasting the link elsewhere lands the recipient on the same
+// property view. Falls back to '' during SSR.
+const shareLink = computed(() => {
+  if (typeof window === 'undefined') return ''
+  return window.location.href
+})
 
-const contacts = [
-  {
-    name: 'Sandy Wilder Cheng',
-    avatar:
-      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23FF6B9D"/%3E%3C/svg%3E',
-  },
-  {
-    name: 'Kevin Leong',
-    avatar:
-      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%234A90E2"/%3E%3C/svg%3E',
-  },
-  {
-    name: 'Sandy and Kevin',
-    avatar:
-      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%2350C878"/%3E%3C/svg%3E',
-  },
-  {
-    name: 'Juliana Mejia',
-    avatar:
-      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23F39C12"/%3E%3C/svg%3E',
-  },
-]
+// Web Share API is on iOS Safari + Chrome Android + most Firefox
+// mobile. We only render the primary "Share via…" button when the
+// browser can actually service navigator.share() with the payload —
+// otherwise the copy-link row is the primary action.
+const canNativeShare = computed(() => {
+  if (typeof navigator === 'undefined') return false
+  return typeof navigator.share === 'function'
+})
 
-const shareOptions = [
-  {
-    name: 'AirDrop',
-    icon: 'airdrop',
-    color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  },
-  { name: 'Messages', icon: 'messagesLight', color: '#34C759' },
-  {
-    name: 'Instagram',
-    icon: 'instagram',
-    color:
-      'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)',
-  },
-  { name: 'WhatsApp', icon: 'whatsapp', color: '#1877F2' },
-]
+const copyState = ref('idle') // idle | copied | error
 
-const close = () => {
-  emit('update:modelValue', false)
+async function onNativeShare() {
+  try {
+    await navigator.share({
+      title: props.propertyTitle
+        ? `${props.propertyTitle} on UMovingU`
+        : 'Property on UMovingU',
+      text: [props.propertyTitle, props.propertyAddress, props.propertyPrice]
+        .filter(Boolean)
+        .join(' · '),
+      url: shareLink.value,
+    })
+  } catch (err) {
+    // AbortError is the user cancelling the share sheet — silent.
+    if (err?.name !== 'AbortError' && import.meta.dev) {
+      console.warn('[share] native share failed', err)
+    }
+  }
 }
 
-const shareWithContact = (contact) => {
-  emit('share', { type: 'contact', data: contact })
-  close()
+async function onCopyLink() {
+  copyState.value = 'idle'
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(shareLink.value)
+    } else {
+      // Fallback for older webviews without the Clipboard API.
+      const ta = document.createElement('textarea')
+      ta.value = shareLink.value
+      ta.style.position = 'fixed'
+      ta.style.opacity = '0'
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+    }
+    copyState.value = 'copied'
+    setTimeout(() => (copyState.value = 'idle'), 1800)
+  } catch {
+    copyState.value = 'error'
+  }
 }
 
-const handleShare = (option) => {
-  emit('share', { type: 'option', data: option })
-  close()
+function selectLink(e) {
+  // Allow the user to tap the link box and see it highlighted, in
+  // case they want to copy manually (belt-and-braces if Clipboard
+  // API is blocked by the browser).
+  const range = document.createRange()
+  range.selectNodeContents(e.target)
+  const sel = window.getSelection()
+  sel?.removeAllRanges()
+  sel?.addRange(range)
+}
+
+function onPrint() {
+  if (typeof window === 'undefined') return
+  window.print()
+}
+
+function onSavePdf() {
+  // iOS Safari and Chrome both expose "Save as PDF" as one of the
+  // destinations inside the standard print dialog — same handler
+  // works for both actions with a clarifying tap target on the UI.
+  onPrint()
 }
 </script>
 
 <style scoped>
-/* .drawer-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 9998;
+.share-content {
   display: flex;
-  align-items: flex-end;
-} */
-
-.drawer-container {
-  border-radius: 20px 20px 0 0;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 12px 0 20px;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.drawer-handle {
-  width: 36px;
-  height: 5px;
-  background: #c7c7cc;
-  border-radius: 3px;
-  margin: 0 auto 16px;
-}
-
-.drawer-content {
-  padding: 0 16px;
-}
-
-.property-info {
+/* Property card */
+.share-property-card {
   display: flex;
-  align-items: center;
   gap: 12px;
-  padding: 16px;
-  background: white;
-  border-radius: 16px;
-  margin-bottom: 16px;
+  padding: 12px;
+  background: #f8f7fc;
+  border-radius: 14px;
+  border: 1px solid #eaeaef;
+  align-items: center;
 }
-
-.property-thumb {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+.share-property-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
   object-fit: cover;
   flex-shrink: 0;
 }
-
-.property-details {
+.share-property-thumb--empty {
+  background: #e5f4f2;
+  color: #00857f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.share-property-info {
   flex: 1;
   min-width: 0;
 }
-
-.property-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 0 0 4px;
-  color: #1a1a1a;
+.share-property-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
-.property-address {
+.share-property-address {
+  font-size: 12.5px;
+  color: #6b7089;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.share-property-price {
   font-size: 13px;
-  color: #666;
-  margin: 0 0 4px;
+  font-weight: 700;
+  color: #00857f;
+  margin-top: 4px;
 }
 
-.property-price {
+/* Primary share */
+.share-primary {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #00a19a;
+  color: #fff;
+  font-family: inherit;
   font-size: 15px;
   font-weight: 700;
-  color: #00a19a;
-  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.15s;
 }
+.share-primary:hover { background: #00857f }
+.share-primary:active { transform: scale(0.99) }
+.share-primary svg { width: 18px; height: 18px }
 
-.close-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #e0e0e0;
+/* Link row */
+.share-link-row {
+  display: flex;
+  gap: 8px;
+  background: #f8f7fc;
+  border: 1px solid #eaeaef;
+  border-radius: 12px;
+  padding: 6px 6px 6px 12px;
+  align-items: center;
+}
+.share-link-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: #4a5868;
+  font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 8px 0;
+}
+.share-copy-btn {
   border: none;
-  font-size: 16px;
-  color: #666;
+  background: #fff;
+  color: #00857f;
+  border: 1px solid #b8e0dc;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;
+  transition: background 0.15s;
+}
+.share-copy-btn:hover { background: #e5f4f2 }
+.share-copy-btn.copied {
+  background: #e5f4f2;
+  color: #008a84;
 }
 
-.contacts-section {
-  margin-bottom: 16px;
-}
-
-.contacts-scroll {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  padding: 12px 0;
-}
-
-.contact-item {
+/* Secondary actions */
+.share-actions {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 8px;
-  min-width: 70px;
-  cursor: pointer;
+  margin-top: 4px;
 }
-
-.contact-avatar {
-  position: relative;
-  width: 60px;
-  height: 60px;
-}
-
-.contact-avatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.message-badge {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 24px;
-  height: 24px;
-  background: #34c759;
-  border-radius: 50%;
+.share-action {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  border: 2px solid #f2f2f7;
-}
-
-.contact-name {
-  font-size: 11px;
-  text-align: center;
-  margin: 0;
-  color: #1a1a1a;
-  line-height: 1.2;
-}
-
-.share-options {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  padding: 12px 0;
-  margin-bottom: 16px;
-}
-
-.share-option {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  min-width: 70px;
-  cursor: pointer;
-}
-
-.option-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-}
-
-.option-name {
-  font-size: 11px;
-  text-align: center;
-  margin: 0;
-  color: #1a1a1a;
-}
-
-.action-buttons {
-  background: white;
-  border-radius: 16px;
-  margin-bottom: 12px;
-  overflow: hidden;
-}
-
-.action-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
   gap: 12px;
-  padding: 14px 16px;
-  background: white;
-  border: none;
-  border-bottom: 1px solid #e0e0e0;
-  font-size: 16px;
-  color: #1a1a1a;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #eaeaef;
+  border-radius: 12px;
   cursor: pointer;
+  font-family: inherit;
   text-align: left;
+  transition: background 0.14s, border-color 0.14s;
 }
-
-.action-btn:last-child {
-  border-bottom: none;
+.share-action:hover {
+  background: #f8f7fc;
+  border-color: #ded9ea;
 }
-
-.action-btn:active {
-  background: #f5f5f5;
-}
-
-.action-icon {
+.share-action:active { transform: scale(0.998) }
+.share-action-ic {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #e5f4f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 20px;
-  width: 24px;
-  text-align: center;
+  flex-shrink: 0;
 }
-
-.action-text {
-  flex: 1;
-  font-weight: 400;
+.share-action-body { flex: 1; min-width: 0 }
+.share-action-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #231d45;
 }
-
-.action-arrow {
-  font-size: 18px;
-}
-
-.drawer-enter-active,
-.drawer-leave-active {
-  transition: all 0.3s ease;
-}
-
-.drawer-enter-from,
-.drawer-leave-to {
-  opacity: 0;
-}
-
-.drawer-enter-from .drawer-container,
-.drawer-leave-to .drawer-container {
-  transform: translateY(100%);
+.share-action-sub {
+  font-size: 12px;
+  color: #6b7089;
+  margin-top: 2px;
 }
 </style>
-
-
