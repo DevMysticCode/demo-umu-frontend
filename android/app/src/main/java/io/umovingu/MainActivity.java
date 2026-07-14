@@ -1,4 +1,4 @@
-package io.umovingu.app;
+package io.umovingu;
 
 import com.getcapacitor.BridgeActivity;
 
