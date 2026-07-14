@@ -24,7 +24,7 @@ import type { CapacitorConfig } from '@capacitor/cli'
 const USE_REMOTE = process.env.CAPACITOR_USE_REMOTE !== 'false'
 
 const config: CapacitorConfig = {
-  appId: 'io.umovingu.app',
+  appId: 'io.umovingu',
   appName: 'UMovingU',
   webDir: '.output/public',
   ...(USE_REMOTE

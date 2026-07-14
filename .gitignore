@@ -31,3 +31,8 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Play Store upload keystore — NEVER commit
+android/app/umu-upload-key.jks
+android/app/keystore.properties
+
