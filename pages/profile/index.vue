@@ -118,7 +118,14 @@
           @click="onPreferenceClick(item)"
         >
           <template #icon>
-            <OPIcon :name="item.icon" class="w-[18px] h-[18px]" />
+            <img
+              v-if="item.iconImage"
+              :src="item.iconImage"
+              :alt="item.title"
+              class="profile-tile-img"
+              loading="lazy"
+            />
+            <OPIcon v-else :name="item.icon" class="w-[18px] h-[18px]" />
           </template>
         </ProfileRow>
       </div>
@@ -330,6 +337,7 @@ const profileItems = [
     title: 'Your Personal Information',
     description: 'Manage how we know and communicate with you.',
     icon: 'personalInformation',
+    iconImage: '/op-icons/profile/personalInfomation.jpeg',
     route: '/profile/personal-information',
   },
   {
@@ -337,6 +345,7 @@ const profileItems = [
     description:
       'Verified ID, proof of funds and chain position — share with sellers, agents and solicitors.',
     icon: 'personalInformation',
+    iconImage: '/op-icons/profile/buyerProfile.jpeg',
     route: '/buyer-profile',
   },
   {
@@ -344,12 +353,14 @@ const profileItems = [
     description:
       'Invite, manage, and control who you work with across your property journey.',
     icon: 'collaborators',
+    iconImage: '/op-icons/profile/collaborators.jpeg',
     route: '/profile/collaborator-information',
   },
   {
     title: 'Your Documents',
     description: 'View and manage your essential property documents.',
     icon: 'yourDocuments',
+    iconImage: '/op-icons/profile/yourDocuments.jpeg',
     route: '/profile/document',
   },
   // Downloaded Snapshots — hidden for now; route still exists at
@@ -365,6 +376,7 @@ const profileItems = [
     title: 'Saved Properties',
     description: 'All your saved and recently viewed properties, organized.',
     icon: 'savedProperties',
+    iconImage: '/op-icons/profile/savedProperties.jpeg',
     route: '/profile/saved-properties',
   },
   // Billing & Payment History — hidden for now; route still exists at
@@ -379,18 +391,21 @@ const profileItems = [
     title: 'Settings',
     description: 'Customize your experience, privacy, and account security.',
     icon: 'settings',
+    iconImage: '/op-icons/profile/settings.jpeg',
     route: '/profile/settings',
   },
   {
     title: 'Help & Support',
     description: 'Need help? Browse FAQs or speak to support.',
     icon: 'helpSupport',
+    iconImage: '/op-icons/profile/helpAndSupport.jpeg',
     route: '/profile/support',
   },
   {
     title: 'Calendar',
     description: 'Stay on top of viewings, deadlines, and reminders.',
     icon: 'calendar',
+    iconImage: '/op-icons/profile/calendar.jpeg',
     route: '/profile/calendar',
   },
   {
@@ -504,5 +519,26 @@ const deleteAccount = async () => {
   flex-direction: column;
   gap: 8px;
   padding: 0 4px;
+}
+
+/* When a profile row's icon slot contains a JPEG illustration, strip
+   the aqua backdrop and enlarge the container so the 3D artwork is
+   legible. Uses :has() (supported on all target platforms — Android
+   WebView 105+, iOS Safari 15.4+, modern Chrome/Firefox). */
+.profile-row-list :deep(.prow-icon:has(.profile-tile-img)) {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  padding: 0;
+}
+.profile-tile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 </style>

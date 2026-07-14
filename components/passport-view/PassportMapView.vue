@@ -143,7 +143,9 @@
                 </div>
               </div>
               <div class="sheet-meta">
-                <div class="sheet-title">{{ toSmartTitleCase(drawerStep.title) }}</div>
+                <div class="sheet-title">
+                  {{ toSmartTitleCase(drawerStep.title) }}
+                </div>
                 <div class="sheet-sub">
                   {{ drawerStep.subtitle || drawerStep.description || '' }}
                 </div>
@@ -348,7 +350,7 @@ const decorativeObjects = [
   { icon: 'tree', x: 18, y: 90 },
   { icon: 'lampPost', x: 198, y: 294 },
   { icon: 'dog', x: 22, y: 300 },
-  { icon: 'post', x: 124, y: 391, z: 7 },
+  { icon: 'post', x: 126, y: 334, z: 7 },
   { icon: 'tree', x: 195, y: 506 },
   { icon: 'orangeDog', x: 169, y: 531 },
   { icon: 'tree', x: 59, y: 653, z: 7 },
