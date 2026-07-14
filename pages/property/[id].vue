@@ -21,18 +21,14 @@
 
     <template v-else-if="property">
       <!-- ─── SECTION 1: Hero ──────────────────────────────────────── -->
-      <div
-        class="pps-hero"
-        :style="
-          heroImage
-            ? {
-                backgroundImage: `url(${heroImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }
-            : undefined
-        "
-      >
+      <div class="pps-hero" :class="{ 'pps-hero--empty': !heroImage }">
+        <img
+          v-if="heroImageRaw && !heroImageFailed"
+          :src="heroImageRaw"
+          class="pps-hero-img"
+          alt=""
+          @error="onHeroImageError"
+        />
         <button
           class="pps-hero-btn pps-hero-btn-back"
           type="button"
@@ -97,32 +93,22 @@
           </svg>
         </button>
 
-        <!-- House silhouette fallback when no real image -->
-        <svg
-          v-if="!heroImage"
-          class="pps-hero-house"
-          viewBox="0 0 80 70"
-          fill="white"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M40 5L5 32h8v33h54V32h8L40 5z" />
-          <rect
-            x="28"
-            y="44"
-            width="10"
-            height="21"
-            fill="#0a0d12"
-            opacity="0.3"
-          />
-          <rect
-            x="42"
-            y="44"
-            width="10"
-            height="21"
-            fill="#0a0d12"
-            opacity="0.3"
-          />
-        </svg>
+        <!-- Aqua fallback when no real image (or Street View failed) -->
+        <div v-if="!heroImage" class="pps-hero-empty">
+          <div class="pps-hero-empty-glow" />
+          <div class="pps-hero-empty-logo">
+            <svg viewBox="0 0 43 33" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M33.0496 22.7447V24.4998H29.6886L29.6698 22.8687C29.6698 20.1202 28.4599 18.9834 26.4158 18.9834C24.3716 18.9834 23.1617 20.1202 23.1617 22.8687V26.1985H19.8239V22.7447C19.8239 18.4875 22.2856 16.1318 26.4372 16.1318C30.5888 16.1318 33.0496 18.4875 33.0496 22.7447Z" fill="currentColor" />
+              <path d="M16.4704 16.1548C20.622 16.1548 23.0837 18.5104 23.0837 22.7677V26.2214H19.7458V22.8917C19.7458 20.1431 18.5564 19.0064 16.4918 19.0064C14.4476 19.0064 13.2377 20.1431 13.2377 22.8917L13.2249 24.5227H9.86732L9.85876 22.7677C9.85876 18.5104 12.3205 16.1548 16.4721 16.1548H16.4704Z" fill="currentColor" />
+              <path d="M24.4625 26.1176C24.4625 24.4712 23.1157 23.1372 21.454 23.1372C19.7923 23.1372 18.4456 24.472 18.4456 26.1176C18.4456 27.0764 18.9042 27.9266 19.6135 28.4716L18.9119 32.8005H23.997L23.2954 28.4716C24.0047 27.9266 24.4625 27.0756 24.4625 26.1176Z" fill="currentColor" />
+              <path d="M42.9371 18.066C42.9345 17.1434 42.179 16.3955 41.2463 16.3955C40.3137 16.3955 39.5556 17.1458 39.5556 18.0709H39.559V25.5082C39.559 28.2567 38.3491 29.3934 36.305 29.3934C34.2608 29.3934 33.0509 28.2567 33.0509 25.5082V24.4986H29.6865V25.6321C29.6865 29.8894 32.1739 32.245 36.3255 32.245C40.4771 32.245 42.938 29.8894 42.938 25.6321L42.9371 18.066Z" fill="currentColor" />
+              <path d="M0.00171036 18.066C0.0042773 17.1434 0.759816 16.3955 1.69247 16.3955C2.62599 16.3955 3.38323 17.1458 3.38323 18.0709H3.37981V25.5082C3.37981 28.2567 4.5897 29.3934 6.63384 29.3934C8.69938 29.3934 9.86734 28.2567 9.86734 25.5082V24.4986H13.2258V25.6321C13.2258 29.8894 10.7641 32.245 6.61245 32.245C2.46084 32.245 0 29.8894 0 25.6321V18.066H0.00171036Z" fill="currentColor" />
+              <path d="M41.9458 11.0794L22.5842 0.234276C22.3189 0.0885573 22.0118 0.00724567 21.6995 0H21.6507V0.119151L21.6173 0H21.5711C21.2562 0.00805074 20.9499 0.0893627 20.6829 0.235886L7.20648 7.78426V6.46394C7.20648 5.59929 6.41072 4.89566 5.43357 4.89566C4.45642 4.89566 3.66067 5.59929 3.66067 6.46394V9.77119L1.32218 11.081C0.4922 11.5375 0.237216 12.5068 0.754028 13.2411C1.26998 13.9753 2.36607 14.2007 3.19691 13.7434L21.6344 3.41593L40.0728 13.7442C40.3577 13.9012 40.6786 13.9817 41.0063 13.9817C41.1415 13.9817 41.2776 13.968 41.4119 13.9407C41.8731 13.8457 42.265 13.5977 42.5157 13.2419C43.0316 12.5076 42.7767 11.5391 41.9475 11.0827L41.9458 11.0794Z" fill="currentColor" />
+            </svg>
+          </div>
+          <p class="pps-hero-empty-title">No image available</p>
+          <p class="pps-hero-empty-sub">The owner hasn't added photos for this property yet — check back soon.</p>
+        </div>
 
         <div class="pps-hero-gradient-overlay" />
 
@@ -271,8 +257,14 @@
 
         <div class="pps-secondary-row">
           <button type="button" class="pps-secondary-btn" @click="onWatchClick">
+            <img
+              src="/op-icons/property/watchThis.jpeg"
+              alt=""
+              class="pps-secondary-btn-img"
+              loading="lazy"
+            />
             <span class="pps-secondary-btn-label">{{
-              pageState === 'progress' ? '🔔 Get notified' : '🔔 Watch this'
+              pageState === 'progress' ? 'Get notified' : 'Watch this'
             }}</span>
             <span class="pps-secondary-btn-sub">{{
               pageState === 'progress'
@@ -285,10 +277,14 @@
             class="pps-secondary-btn"
             @click="onContactClick"
           >
+            <img
+              src="/op-icons/property/askAQuestion.jpeg"
+              alt=""
+              class="pps-secondary-btn-img"
+              loading="lazy"
+            />
             <span class="pps-secondary-btn-label">{{
-              pageState === 'published'
-                ? '💬 Make contact'
-                : '💬 Ask a question'
+              pageState === 'published' ? 'Make contact' : 'Ask a question'
             }}</span>
             <span class="pps-secondary-btn-sub">{{
               pageState === 'published'
@@ -403,8 +399,19 @@
           class="pps-tile"
           @click="onExploreTileClick(tile.key)"
         >
-          <div class="pps-tile-icon" :style="{ background: tile.iconBg }">
-            {{ tile.icon }}
+          <div
+            class="pps-tile-icon"
+            :class="{ 'pps-tile-icon--img': !!tile.iconImage }"
+            :style="tile.iconImage ? undefined : { background: tile.iconBg }"
+          >
+            <img
+              v-if="tile.iconImage"
+              :src="tile.iconImage"
+              :alt="tile.title"
+              class="pps-tile-icon-img"
+              loading="lazy"
+            />
+            <template v-else>{{ tile.icon }}</template>
           </div>
           <div class="pps-tile-title">
             {{ tile.title }}
@@ -784,7 +791,12 @@
         <div class="pps-details-header">Property details</div>
         <div class="pps-details-grid">
           <div v-if="property.propertyType" class="pps-detail-tile">
-            <span class="pps-detail-tile-icon">🏠</span>
+            <img
+              src="/op-icons/property/type.jpeg"
+              alt=""
+              class="pps-detail-tile-icon-img"
+              loading="lazy"
+            />
             <div class="pps-detail-label">Type</div>
             <div class="pps-detail-value">{{ property.propertyType }}</div>
           </div>
@@ -812,7 +824,12 @@
             </div>
           </div>
           <div v-if="property.epcRating" class="pps-detail-tile">
-            <span class="pps-detail-tile-icon">⚡</span>
+            <img
+              src="/op-icons/property/epc.jpeg"
+              alt=""
+              class="pps-detail-tile-icon-img"
+              loading="lazy"
+            />
             <div class="pps-detail-label">EPC</div>
             <div class="pps-detail-value">
               <span
@@ -826,7 +843,12 @@
             </div>
           </div>
           <div v-if="property.uprn" class="pps-detail-tile">
-            <span class="pps-detail-tile-icon">🔢</span>
+            <img
+              src="/op-icons/property/uprn.jpeg"
+              alt=""
+              class="pps-detail-tile-icon-img"
+              loading="lazy"
+            />
             <div class="pps-detail-label">UPRN</div>
             <div class="pps-detail-value" style="font-size: 12px">
               {{ property.uprn }}
@@ -4323,13 +4345,19 @@ const propertyImages = computed(() => {
 //   2. the Google Street View static-API URL from /enrichment (already
 //      generated server-side for any property with lat/lng)
 //   3. null — falls through to the SVG house silhouette
-const heroImage = computed<string | null>(() => {
+const heroImageFailed = ref(false)
+const heroImageRaw = computed<string | null>(() => {
   const uploaded = propertyImages.value[0]
   if (uploaded) return uploaded
   const sv = (enrichment.value as any)?.streetViewUrl
   if (typeof sv === 'string' && sv.trim()) return sv
   return null
 })
+const heroImage = computed<string | null>(() =>
+  heroImageFailed.value ? null : heroImageRaw.value,
+)
+watch(heroImageRaw, () => { heroImageFailed.value = false })
+const onHeroImageError = () => { heroImageFailed.value = true }
 
 const pageState = computed<'unclaimed' | 'progress' | 'published'>(() => {
   const s = passportStatus.value
@@ -4608,6 +4636,7 @@ const exploreTiles = computed(() => {
     key: 'history',
     icon: '🏠',
     iconBg: '#FFF3E0',
+    iconImage: '/op-icons/property/propertyHistory.jpeg',
     title: 'Property history',
     value: soldPrice
       ? `£${Number(soldPrice).toLocaleString()}`
@@ -4636,6 +4665,7 @@ const exploreTiles = computed(() => {
     key: 'street',
     icon: '🏘️',
     iconBg: '#E8F5E9',
+    iconImage: '/op-icons/property/streetData.jpeg',
     title: 'Street data',
     value: streetValue,
     sub: streetSub,
@@ -4650,6 +4680,7 @@ const exploreTiles = computed(() => {
     key: 'schools',
     icon: '🎓',
     iconBg: '#E3F2FD',
+    iconImage: '/op-icons/property/schools.jpeg',
     title: 'Schools',
     value: schoolsCount > 0 ? `${schoolsCount} nearby` : 'Check Ofsted',
     sub: nearestSchool
@@ -4672,6 +4703,7 @@ const exploreTiles = computed(() => {
     key: 'trains',
     icon: '🚂',
     iconBg: '#F3E5F5',
+    iconImage: '/op-icons/property/trainstations.jpeg',
     title: 'Train stations',
     value: nearestTrain
       ? `${nearestTrain.distanceKm.toFixed(1)} km`
@@ -4694,6 +4726,7 @@ const exploreTiles = computed(() => {
     key: 'buses',
     icon: '🚌',
     iconBg: '#FFF3E0',
+    iconImage: '/op-icons/property/busStops.jpeg',
     title: 'Bus stops',
     value: nearestBus
       ? `${nearestBus.distanceKm.toFixed(2)} km`
@@ -4716,6 +4749,7 @@ const exploreTiles = computed(() => {
     key: 'airports',
     icon: '✈️',
     iconBg: '#E1F5FE',
+    iconImage: '/op-icons/property/airports.jpeg',
     title: 'Airports',
     value: nearestAirport
       ? `${nearestAirport.distanceKm.toFixed(0)} km`
@@ -4737,6 +4771,7 @@ const exploreTiles = computed(() => {
     key: 'map',
     icon: '📍',
     iconBg: '#E8F5E9',
+    iconImage: '/op-icons/property/locationAndMap.jpeg',
     title: 'Location & map',
     value: p.postcode || '—',
     sub: p.city || 'View on map',
@@ -4753,6 +4788,7 @@ const exploreTiles = computed(() => {
       key: 'flood',
       icon: '💧',
       iconBg: '#FFF8E1',
+      iconImage: '/op-icons/property/floodAndRisj.jpeg',
       title: 'Flood & risk',
       pip: isHigh ? '!' : null,
       value,
@@ -4774,6 +4810,7 @@ const exploreTiles = computed(() => {
       key: 'planning',
       icon: '📋',
       iconBg: '#FAFAFA',
+      iconImage: '/op-icons/property/planning.jpeg',
       title: 'Planning',
       pip: count > 0 ? null : 'New',
       value: count > 0 ? `${count} on file` : '—',
@@ -4791,6 +4828,7 @@ const exploreTiles = computed(() => {
     key: 'llc',
     icon: '📜',
     iconBg: '#F3EFFB',
+    iconImage: '/op-icons/property/landCharges.jpeg',
     title: 'Land charges',
     value: 'Check LLC',
     sub: 'HM Land Registry',
@@ -4807,6 +4845,7 @@ const exploreTiles = computed(() => {
         key: 'council',
         icon: '🏛️',
         iconBg: '#E8F5E9',
+        iconImage: '/op-icons/property/councilTax.jpeg',
         title: 'Council tax',
         value: `Band ${band}`,
         sub: 'Local authority',
@@ -4818,6 +4857,7 @@ const exploreTiles = computed(() => {
     key: 'broadband',
     icon: '📶',
     iconBg: '#E3F2FD',
+    iconImage: '/op-icons/property/broadband.jpeg',
     title: 'Broadband',
     value: 'Check speeds',
     sub: 'Full fibre availability',
@@ -4828,6 +4868,7 @@ const exploreTiles = computed(() => {
       key: 'stamp-duty',
       icon: '🏛️',
       iconBg: '#FCE4EC',
+      iconImage: '/op-icons/property/stampDuty.jpeg',
       title: 'Stamp duty',
       value: `${formatPrice(stampDutyEstimate.value)}`,
       sub: 'On estimated value',
@@ -4839,6 +4880,7 @@ const exploreTiles = computed(() => {
       key: 'listed',
       icon: '🏛️',
       iconBg: '#FBEFD9',
+      iconImage: '/op-icons/property/listedBuildings.jpeg',
       title: 'Heritage sites',
       value: `${enrichmentListedBuildings.value.length} nearby`,
       sub: 'Listed buildings & monuments',
@@ -4855,6 +4897,7 @@ const exploreTiles = computed(() => {
       key: 'crime',
       icon: '🛡️',
       iconBg: '#EEEDF5',
+      iconImage: '/op-icons/property/crime.jpeg',
       title: 'Safety',
       value: hasData
         ? total > 0
@@ -6315,24 +6358,28 @@ function formatSaleDate(dateStr: string): string {
 /* ─── Hero ──────────────────────────────────────────────────── */
 .pps-hero {
   height: 260px;
-  background: linear-gradient(
-    180deg,
-    #b8cfc4 0%,
-    #8aab96 40%,
-    #6d9080 70%,
-    #f5f5f7 100%
-  );
+  background:
+    radial-gradient(ellipse 70% 80% at 50% 30%, rgba(0, 161, 154, 0.18), transparent 70%),
+    linear-gradient(135deg, #f1f9f4 0%, #e2f1ea 100%);
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
+}
+.pps-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
 .pps-hero-btn {
   position: absolute;
   z-index: 10;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   width: 38px;
   height: 38px;
@@ -6341,6 +6388,7 @@ function formatSaleDate(dateStr: string): string {
   justify-content: center;
   cursor: pointer;
   color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 .pps-hero-btn-back {
   top: 16px;
@@ -6357,14 +6405,52 @@ function formatSaleDate(dateStr: string): string {
   right: 16px;
   padding-top: env(safe-area-inset-top);
 }
-.pps-hero-house {
+.pps-hero-empty {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 70px;
-  opacity: 0.15;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 32px;
+  z-index: 1;
   pointer-events: none;
+}
+.pps-hero-empty-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(0, 161, 154, 0.12), transparent 60%);
+  pointer-events: none;
+}
+.pps-hero-empty-logo {
+  width: 80px;
+  color: #00a19a;
+  filter: drop-shadow(0 6px 14px rgba(0, 161, 154, 0.22));
+  position: relative;
+  z-index: 1;
+}
+.pps-hero-empty-logo svg { width: 100%; height: auto; }
+.pps-hero-empty-title {
+  text-align: center;
+  color: #008a84;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+.pps-hero-empty-sub {
+  text-align: center;
+  color: #4a5868;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  max-width: 280px;
+  position: relative;
+  z-index: 1;
+  margin: 0;
 }
 .pps-hero-gradient-overlay {
   position: absolute;
@@ -6582,6 +6668,19 @@ function formatSaleDate(dateStr: string): string {
   cursor: pointer;
   font-family: inherit;
   transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.pps-secondary-btn-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 .pps-secondary-btn:hover {
   border-color: #231d45;
@@ -6891,6 +6990,21 @@ function formatSaleDate(dateStr: string): string {
   align-items: center;
   justify-content: center;
   font-size: 16px;
+}
+.pps-tile-icon--img {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: transparent !important;
+  overflow: hidden;
+  padding: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.pps-tile-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .pps-tile-title {
   font-size: 15px;
@@ -7356,6 +7470,15 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-size: 16px;
   margin-bottom: 6px;
   display: block;
+}
+.pps-detail-tile-icon-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 6px;
+  display: block;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 .pps-detail-label {
   font-size: 9px;
