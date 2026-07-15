@@ -8,11 +8,10 @@
         </svg>
       </button>
       <div class="dc-nav-title">Your Documents</div>
-      <button class="dc-nav-icon-btn" aria-label="Filter">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-        </svg>
-      </button>
+      <!-- Spacer matches the back button's footprint so the title stays
+           visually centered. Old folder icon was a dead button (no handler);
+           filtering already happens via the category tiles below. -->
+      <div class="dc-nav-icon-btn" aria-hidden="true" />
     </div>
 
     <main class="dc-body">
@@ -58,7 +57,14 @@
           @click="activeCategory = activeCategory === cat.key ? '' : cat.key"
         >
           <div class="dc-cat-icon">
-            <span v-html="cat.icon" />
+            <img
+              v-if="cat.iconImage"
+              :src="cat.iconImage"
+              :alt="cat.name"
+              class="dc-cat-icon-img"
+              loading="lazy"
+            />
+            <span v-else v-html="cat.icon" />
           </div>
           <div class="dc-cat-name">{{ cat.name }}</div>
           <div class="dc-cat-count">
@@ -338,12 +344,12 @@ const categories = computed(() => {
   const counts = { title: 0, energy: 0, legal: 0, surveys: 0, financial: 0, other: 0 }
   for (const d of allDocs.value) counts[docCategory(d)]++
   return [
-    { key: 'title', name: 'Title', tone: 'identity', count: counts.title, icon: '🪪' },
-    { key: 'energy', name: 'Energy', tone: 'property', count: counts.energy, icon: '⚡' },
-    { key: 'legal', name: 'Legal', tone: 'identity', count: counts.legal, icon: '⚖️' },
-    { key: 'surveys', name: 'Surveys', tone: 'property', count: counts.surveys, icon: '🏠' },
-    { key: 'financial', name: 'Financial', tone: 'financial', count: counts.financial, icon: '£' },
-    { key: 'other', name: 'Other', tone: 'other', count: counts.other, icon: '📁' },
+    { key: 'title', name: 'Title', tone: 'identity', count: counts.title, icon: '🪪', iconImage: '/op-icons/yourDocuments/title.jpeg' },
+    { key: 'energy', name: 'Energy', tone: 'property', count: counts.energy, icon: '⚡', iconImage: '/op-icons/yourDocuments/energy.jpeg' },
+    { key: 'legal', name: 'Legal', tone: 'identity', count: counts.legal, icon: '⚖️', iconImage: '/op-icons/yourDocuments/legal.jpeg' },
+    { key: 'surveys', name: 'Surveys', tone: 'property', count: counts.surveys, icon: '🏠', iconImage: '/op-icons/yourDocuments/surveys.jpeg' },
+    { key: 'financial', name: 'Financial', tone: 'financial', count: counts.financial, icon: '£', iconImage: '/op-icons/yourDocuments/financial.jpeg' },
+    { key: 'other', name: 'Other', tone: 'other', count: counts.other, icon: '📁', iconImage: '/op-icons/yourDocuments/other.jpeg' },
   ]
 })
 
@@ -685,6 +691,20 @@ const goBack = useGoBack('/profile')
   justify-content: center;
   margin-bottom: 8px;
   font-size: 16px;
+}
+.dc-cat-icon:has(.dc-cat-icon-img) {
+  width: 52px;
+  height: 52px;
+  background: transparent;
+  overflow: visible;
+  padding: 0;
+}
+.dc-cat-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  mix-blend-mode: multiply;
 }
 .dc-cat-name {
   font-size: 12.5px;

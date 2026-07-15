@@ -240,7 +240,16 @@
       class="boost-row"
       @click="$emit('open-marketplace', b.id)"
     >
-      <div class="boost-row-icon" :class="b.tone">{{ b.icon }}</div>
+      <div class="boost-row-icon" :class="[b.tone, { 'boost-row-icon--img': !!b.iconImage }]">
+        <img
+          v-if="b.iconImage"
+          :src="b.iconImage"
+          :alt="b.title"
+          class="boost-row-icon-img"
+          loading="lazy"
+        />
+        <template v-else>{{ b.icon }}</template>
+      </div>
       <div class="boost-row-info">
         <div class="boost-row-title">{{ b.title }}</div>
         <div class="boost-row-sub">{{ b.sub }}</div>
@@ -426,6 +435,7 @@ const bookings = [
   {
     id: 'gas-safe',
     icon: '🔥',
+    iconImage: '/op-icons/boostYourScore/gasSafety.png',
     tone: 'amber',
     title: 'Book a Gas Safe engineer',
     sub: 'Service your boiler · cert auto-lands in your score',
@@ -433,6 +443,7 @@ const bookings = [
   {
     id: 'eicr',
     icon: '⚡',
+    iconImage: '/op-icons/boostYourScore/electrician.png',
     tone: 'violet',
     title: 'Book an electrician (EICR)',
     sub: 'Electrical check · from £150',
@@ -440,6 +451,7 @@ const bookings = [
   {
     id: 'new-epc',
     icon: '🏠',
+    iconImage: '/op-icons/boostYourScore/epcAssessment.png',
     tone: 'green',
     title: 'New EPC assessment',
     sub: 'From £60 · required if yours is 10+ years old',
@@ -1149,6 +1161,19 @@ function formatFileSize(bytes: number): string {
 .boost-row-icon.gold {
   background: linear-gradient(135deg, #ffd700, #ff9500);
   color: white;
+}
+.boost-row-icon--img {
+  width: 56px;
+  height: 56px;
+  background: transparent !important;
+  padding: 0;
+  overflow: visible;
+}
+.boost-row-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .boost-row-info {
   flex: 1;
