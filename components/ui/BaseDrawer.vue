@@ -8,7 +8,16 @@
     <div
       class="drawer"
       :class="{ 'drawer--open': modelValue, 'drawer--fullscreen': fullscreen }"
+      :style="dragStyle"
+      @touchstart.passive="onDragStart"
+      @touchmove.passive="onDragMove"
+      @touchend="onDragEnd"
+      @touchcancel="onDragEnd"
     >
+      <!-- Grab handle — signals swipe-to-dismiss affordance. Hidden on
+           fullscreen drawers since they have their own back button. -->
+      <div v-if="!fullscreen" class="drawer__handle" aria-hidden="true" />
+
       <!-- Header -->
       <div class="drawer__header">
         <button v-if="showBackButton" @click="handleClose" class="drawer__back">
@@ -50,7 +59,7 @@
 
 <script setup>
 import OPIcon from './OPIcon.vue'
-import { watch, onUnmounted } from 'vue'
+import { computed, ref, watch, onUnmounted } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -107,6 +116,71 @@ onUnmounted(() => {
     lockScroll(false)
   }
 })
+
+// ── Swipe-to-dismiss ─────────────────────────────────────────────
+// Standard iOS-style: pulling the drawer downward past a threshold
+// closes it. Only intercepts touches that either start on the header/
+// handle area OR start with the inner content already scrolled to the
+// top — so long lists remain scrollable normally.
+const dragY = ref(0)
+const dragging = ref(false)
+let dragStartY = 0
+let dragStartTime = 0
+let dragStartOnHeader = false
+let dragStartScrollTop = 0
+
+const dragStyle = computed(() => {
+  if (dragY.value <= 0) return undefined
+  return {
+    transform: `translateY(${dragY.value}px)`,
+    transition: dragging.value
+      ? 'none'
+      : 'transform 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+  }
+})
+
+const onDragStart = (e) => {
+  if (props.fullscreen) return
+  const target = e.target
+  // Header, handle, and title area are always drag-safe. Content is
+  // drag-safe only when scrolled to the top (prevents hijacking scroll).
+  dragStartOnHeader = !!(
+    target &&
+    target.closest &&
+    (target.closest('.drawer__handle') ||
+      target.closest('.drawer__header'))
+  )
+  const contentEl = e.currentTarget.querySelector('.drawer__content')
+  dragStartScrollTop = contentEl?.scrollTop ?? 0
+  dragStartY = e.touches[0].clientY
+  dragStartTime = Date.now()
+  dragging.value = true
+  dragY.value = 0
+}
+
+const onDragMove = (e) => {
+  if (!dragging.value) return
+  const dy = e.touches[0].clientY - dragStartY
+  // Only start dragging the sheet when going downward AND either we
+  // began on the header/handle OR the inner content is already at top.
+  if (dy > 0 && (dragStartOnHeader || dragStartScrollTop <= 0)) {
+    dragY.value = dy
+  } else {
+    dragY.value = 0
+  }
+}
+
+const onDragEnd = () => {
+  if (!dragging.value) return
+  dragging.value = false
+  const elapsed = Date.now() - dragStartTime
+  const velocity = dragY.value / Math.max(elapsed, 1) // px/ms
+  const shouldClose = dragY.value > 120 || velocity > 0.6
+  if (shouldClose) {
+    handleClose()
+  }
+  dragY.value = 0
+}
 </script>
 
 <style scoped>
@@ -167,6 +241,16 @@ onUnmounted(() => {
 
 .drawer--open {
   transform: translateY(0);
+}
+
+/* Grab handle at the top of the sheet — iOS-native drag affordance. */
+.drawer__handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 100px;
+  background: #d1d5db;
+  margin: 8px auto 4px;
+  flex-shrink: 0;
 }
 
 /* Header */

@@ -969,7 +969,15 @@
         class="pps-sheet-overlay"
         @click.self="closeSheet"
       >
-        <div class="pps-sheet" :class="{ 'pps-sheet--tall': isTallSheet }">
+        <div
+          class="pps-sheet"
+          :class="{ 'pps-sheet--tall': isTallSheet }"
+          :style="sheetDragStyle"
+          @touchstart.passive="onSheetTouchStart"
+          @touchmove.passive="onSheetTouchMove"
+          @touchend="onSheetTouchEnd"
+          @touchcancel="onSheetTouchEnd"
+        >
           <div class="pps-sheet-handle" />
 
           <!-- ── History (Land Registry) ─────────────────────────── -->
@@ -2137,15 +2145,7 @@
 
           <!-- ── Local Land Charges (HM Land Registry) ─────────────── -->
           <template v-else-if="activeSheet === 'llc'">
-            <div class="pps-ds-header" style="background: #f3effb">
-              <span class="pps-ds-header-icon">📜</span>
-              <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">Local Land Charges</div>
-                <div class="pps-ds-header-meta">
-                  Source: HM Land Registry · indicative search
-                </div>
-              </div>
-            </div>
+            <!-- LlcChargesCard renders its own header; don't duplicate. -->
             <LlcChargesCard
               v-if="propertyId"
               :property-id="propertyId"
@@ -5133,6 +5133,61 @@ function openSheet(k: SheetKey) {
 }
 function closeSheet() {
   activeSheet.value = null
+}
+
+// ── Swipe-to-dismiss for pps-sheet ─────────────────────────────
+// Standard iOS-style behavior: dragging down from the top of the sheet
+// closes it. Only engages when the sheet is scrolled to the top AND the
+// gesture is heading downward — so normal upward scroll inside a long
+// sheet is never intercepted.
+const sheetDragY = ref(0)
+const sheetDragging = ref(false)
+let sheetTouchStartY = 0
+let sheetTouchStartTime = 0
+let sheetTouchStartScroll = 0
+
+const sheetDragStyle = computed(() => {
+  if (sheetDragY.value <= 0) return undefined
+  return {
+    transform: `translateY(${sheetDragY.value}px)`,
+    transition: sheetDragging.value
+      ? 'none'
+      : 'transform 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+  }
+})
+
+function onSheetTouchStart(e: TouchEvent) {
+  const sheet = (e.currentTarget as HTMLElement) ?? null
+  sheetTouchStartScroll = sheet?.scrollTop ?? 0
+  sheetTouchStartY = e.touches[0].clientY
+  sheetTouchStartTime = Date.now()
+  sheetDragging.value = true
+  sheetDragY.value = 0
+}
+
+function onSheetTouchMove(e: TouchEvent) {
+  if (!sheetDragging.value) return
+  const dy = e.touches[0].clientY - sheetTouchStartY
+  // Only translate the sheet if the user is at the top of its scroll
+  // and is dragging downward. Anything else — let normal scroll happen.
+  if (sheetTouchStartScroll <= 0 && dy > 0) {
+    sheetDragY.value = dy
+  } else {
+    sheetDragY.value = 0
+  }
+}
+
+function onSheetTouchEnd() {
+  if (!sheetDragging.value) return
+  sheetDragging.value = false
+  const elapsed = Date.now() - sheetTouchStartTime
+  const velocity = sheetDragY.value / Math.max(elapsed, 1) // px/ms
+  const shouldClose = sheetDragY.value > 120 || velocity > 0.6
+  if (shouldClose) {
+    closeSheet()
+  }
+  // Reset regardless — animate spring-back if we didn't close.
+  sheetDragY.value = 0
 }
 
 function onExploreTileClick(key: string) {
