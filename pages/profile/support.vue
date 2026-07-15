@@ -28,11 +28,12 @@
       <!-- Live status card -->
       <div class="support-status">
         <div class="ss-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-            <path d="M21 19a2 2 0 0 1-2 2h-1v-7h3z" />
-            <path d="M3 19a2 2 0 0 0 2 2h1v-7H3z" />
-          </svg>
+          <img
+            src="/op-icons/helpAndSupport/support.jpeg"
+            alt=""
+            class="ss-icon-img"
+            loading="lazy"
+          />
         </div>
         <div class="ss-info">
           <div class="ss-headline">Support team is online</div>
@@ -45,19 +46,24 @@
       <div class="contact-grid">
         <button class="contact-card primary" type="button" @click="navigateTo('/profile/chat')">
           <div class="contact-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2" />
-            </svg>
+            <img
+              src="/op-icons/helpAndSupport/askAiFirst.jpeg"
+              alt=""
+              class="contact-card-icon-img"
+              loading="lazy"
+            />
           </div>
           <div class="contact-card-name">Ask AI first</div>
           <div class="contact-card-meta">Instant answers · 24/7</div>
         </button>
         <a class="contact-card" href="mailto:help@umovingu.com">
           <div class="contact-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-              <polyline points="22 6 12 13 2 6" />
-            </svg>
+            <img
+              src="/op-icons/helpAndSupport/email.jpeg"
+              alt=""
+              class="contact-card-icon-img"
+              loading="lazy"
+            />
           </div>
           <div class="contact-card-name">Email us</div>
           <div class="contact-card-meta">help@umovingu.com</div>
@@ -264,6 +270,20 @@ const goBack = useGoBack('/profile')
   50% { box-shadow: 0 0 0 7px rgba(61, 189, 163, 0); }
 }
 .ss-icon-wrap svg { width: 16px; height: 16px; color: #008a84; }
+.ss-icon-wrap:has(.ss-icon-img) {
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  overflow: visible;
+  box-shadow: none;
+}
+.ss-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  mix-blend-mode: multiply;
+}
 .ss-info { flex: 1; min-width: 0; }
 .ss-headline {
   font-size: 13px;
@@ -345,6 +365,22 @@ const goBack = useGoBack('/profile')
   color: #fff;
 }
 .contact-card-icon svg { width: 15px; height: 15px; }
+.contact-card-icon:has(.contact-card-icon-img) {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: transparent !important;
+  overflow: visible;
+  padding: 0;
+  box-shadow: none;
+}
+.contact-card-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  mix-blend-mode: multiply;
+}
 .contact-card-name {
   font-size: 13px;
   font-weight: 800;

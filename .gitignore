@@ -32,7 +32,11 @@ dist-ssr
 .env.*
 !.env.example
 
-# Play Store upload keystore — NEVER commit
+# Play Store upload keystore ï¿½ NEVER commit
 android/app/umu-upload-key.jks
 android/app/keystore.properties
+
+# Client-supplied asset archives ï¿½ keep local, we only commit the
+# unpacked images referenced by the app.
+public/op-icons/**/*.zip
 

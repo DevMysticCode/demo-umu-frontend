@@ -15,16 +15,12 @@
       </div>
 
       <div class="feat-mid">
-        <div class="feat-gauge">
-          <svg viewBox="0 0 64 64">
-            <circle class="g-bg" cx="32" cy="32" r="26" fill="none" stroke-width="6" />
-            <circle class="g-fill" cx="32" cy="32" r="26" fill="none" stroke-width="6" stroke-dasharray="163.4" stroke-dashoffset="42.5" />
-          </svg>
-          <div class="g-num">
-            <div class="gn-big">74</div>
-            <div class="gn-small">HS</div>
-          </div>
-        </div>
+        <img
+          src="/op-icons/explore/passportHasAStory.png"
+          alt="Sample HomeScore"
+          class="feat-homescore-img"
+          loading="lazy"
+        />
         <div class="feat-stats">
           <div class="feat-stat-row">
             <span class="check">
@@ -60,16 +56,12 @@
     <div class="feat-card passport" @click="goToPassportSample">
       <div class="feat-top">
         <div class="feat-id">
-          <div class="feat-id-tile mini-passport" aria-label="Property Passport">
-            <div class="mp-head">Property<b>Passport</b></div>
-            <div class="mp-house">
-              <svg viewBox="0 0 32 32">
-                <path d="M4 14 L16 5 L28 14 L28 26 Q28 27 27 27 L5 27 Q4 27 4 26 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                <text x="16" y="22" font-family="inherit" font-size="9" font-weight="800" fill="currentColor" text-anchor="middle" letter-spacing="-0.5">umu</text>
-              </svg>
-            </div>
-            <div class="mp-addr">21, Rochester Rd<b>Coventry, CV5 6AB</b></div>
-          </div>
+          <img
+            src="/op-icons/explore/samplePassportImage.png"
+            alt="Property Passport"
+            class="feat-passport-img"
+            loading="lazy"
+          />
           <div class="feat-eyebrow">Property Passport</div>
         </div>
         <span class="feat-pill">Solicitor-grade</span>
@@ -296,6 +288,14 @@ function goToPassportSample() {
   font-size: 2.8px;
 }
 
+.feat-passport-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
 .feat-eyebrow {
   font-size: 10px;
   font-weight: 800;
@@ -361,6 +361,14 @@ function goToPassportSample() {
 }
 .feat-card.homescore .feat-mid { border-color: #e5f4f2; }
 .feat-card.passport .feat-mid { border-color: rgba(35, 29, 69, 0.10); }
+
+.feat-homescore-img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
 
 /* Mini gauge */
 .feat-gauge {
