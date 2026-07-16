@@ -33,7 +33,7 @@
           /></span>
           <span>Upload from Files</span>
         </button>
-        <button class="upload-btn camera">
+        <button class="upload-btn camera" type="button" :disabled="uploading" @click="showScanner = true">
           <span class="upload-icon"
             ><OPIcon name="scan" class="w-[20px] h-[20px]"
           /></span>
@@ -45,9 +45,12 @@
         ref="fileInput"
         type="file"
         multiple
+        accept="image/*,.pdf"
         @change="handleFileSelect"
         style="display: none"
       />
+
+      <CameraScanModal :open="showScanner" @close="showScanner = false" @capture="onCameraCapture" />
 
       <div v-if="uploadedFiles.length > 0" class="uploaded-files">
         <h4 class="files-title">Uploaded Files ({{ uploadedFiles.length }})</h4>
@@ -171,7 +174,7 @@
             /></span>
             <span>Upload from Files</span>
           </button>
-          <button class="upload-btn camera">
+          <button class="upload-btn camera" type="button" :disabled="uploading" @click="showScanner = true">
             <span class="upload-icon"
               ><OPIcon name="scan" class="w-[20px] h-[20px]"
             /></span>
@@ -183,9 +186,12 @@
           ref="fileInput"
           type="file"
           multiple
+          accept="image/*,.pdf"
           @change="handleFileSelect"
           style="display: none"
         />
+
+        <CameraScanModal :open="showScanner" @close="showScanner = false" @capture="onCameraCapture" />
 
         <div v-if="uploadedFiles.length > 0" class="uploaded-files">
           <h4 class="files-title">
@@ -208,6 +214,7 @@
 
 <script setup>
 import OPIcon from '~/components/ui/OPIcon.vue'
+import CameraScanModal from '~/components/ui/CameraScanModal.vue'
 const props = defineProps({
   question: { type: Object, default: 'Test Question' },
   answer: { type: [String, Array, Object], default: '' },
@@ -247,6 +254,11 @@ const emit = defineEmits(['update'])
 const config = useRuntimeConfig()
 const fileInput = ref(null)
 const uploading = ref(false)
+const showScanner = ref(false)
+
+const onCameraCapture = async (file) => {
+  await handleFileSelect({ target: { files: [file], value: '' } })
+}
 
 const displayMode = computed(() => {
   // Build a raw candidate for the display mode from props or question metadata
