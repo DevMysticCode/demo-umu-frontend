@@ -428,7 +428,7 @@
             class="pro-dark-card"
             data-tour="pro-card"
             style="margin-bottom: 16px"
-            @click="navigateTo('/explore')"
+            @click="openGasSafetySheet"
           >
             <div class="pro-dark-icon">🔧</div>
             <div class="pro-dark-body">
@@ -669,35 +669,24 @@
             <div class="psc-glow"></div>
             <div class="psc-main" style="position: relative; z-index: 1">
               <div class="psc-left">
-                <div class="psc-icon-box">
-                  <svg width="26" height="26" viewBox="0 0 877.69 877.69">
-                    <circle
-                      fill="rgba(255,255,255,0.1)"
-                      cx="438.85"
-                      cy="438.85"
-                      r="438.85"
-                    />
-                    <path
-                      fill="#fff"
-                      d="m573.6,497.11v21.8h-39.28l-.22-20.26c0-34.14-14.14-48.26-38.03-48.26s-38.03,14.12-38.03,48.26v41.36h-39.01v-42.9c0-52.88,28.77-82.14,77.29-82.14s77.29,29.26,77.29,82.14Z"
-                    />
-                    <path
-                      fill="#fff"
-                      d="m379.84,415.26c48.52,0,77.29,29.26,77.29,82.14v42.9s-39.01,0-39.01,0v-41.36c0-34.14-13.9-48.26-38.03-48.26-23.89,0-38.03,14.12-38.03,48.26l-.15,20.26h-39.24s-.1-21.8-.1-21.8c0-52.88,28.77-82.14,77.29-82.14Z"
-                    />
-                    <path
-                      fill="#00a19a"
-                      d="m689.16,439c-.03-11.46-8.86-20.75-19.76-20.75s-19.76,9.32-19.76,20.81h.04v92.38c0,34.14-14.14,48.26-38.03,48.26s-38.03-14.12-38.03-48.26v-12.54h-39.32v14.08c0,52.88,29.07,82.14,77.59,82.14s77.28-29.26,77.28-82.14v-93.98h-.02Z"
-                    />
-                    <path
-                      fill="#00a19a"
-                      d="m187.37,439c.03-11.46,8.86-20.75,19.76-20.75,10.91,0,19.76,9.32,19.76,20.81h-.04v92.38c0,34.14,14.14,48.26,38.03,48.26,24.14,0,37.79-14.12,37.79-48.26v-12.54s39.25,0,39.25,0v14.08c0,52.88-28.77,82.14-77.29,82.14-48.52,0-77.28-29.26-77.28-82.14v-93.98s.02,0,.02,0Z"
-                    />
-                    <path
-                      fill="#00a19a"
-                      d="m677.57,352.22l-226.28-134.71c-3.1-1.81-6.69-2.82-10.34-2.91h-.57l-.39-1.48h-.54c-3.68.1-7.26,1.11-10.38,2.93l-157.5,93.76v-16.4c0-10.74-9.3-19.48-20.72-19.48s-20.72,8.74-20.72,19.48v41.08l-27.33,16.27c-9.7,5.67-12.68,17.71-6.64,26.83,6.03,9.12,18.84,11.92,28.55,6.24l215.48-128.28,215.49,128.29c3.33,1.95,7.08,2.95,10.91,2.95,1.58,0,3.17-.17,4.74-.51,5.39-1.18,9.97-4.26,12.9-8.68,6.03-9.12,3.05-21.15-6.64-26.82Z"
-                    />
-                  </svg>
+                <!-- Real Property Passport cover — same PassportCard
+                     component the /passport/collections page uses, so
+                     the two views look identical. Address + postcode
+                     are overlaid on top of the umu-passport.png asset
+                     via container-query typography, so it stays legible
+                     at this small tile size. -->
+                <div class="psc-passport-slot">
+                  <PassportCard
+                    :line1="
+                      (
+                        passports[0].address ||
+                        passports[0].addressLine1 ||
+                        ''
+                      ).split(',')[0]
+                    "
+                    :line2="passports[0].postcode || ''"
+                    :type="passports[0].type || 'SELLER'"
+                  />
                 </div>
                 <div>
                   <div class="psc-label-small">Property Passport</div>
@@ -712,7 +701,7 @@
                   <path
                     d="M 7 34 A 24 24 0 0 1 51 34"
                     fill="none"
-                    stroke="rgba(255,255,255,0.2)"
+                    stroke="#e5f4f2"
                     stroke-width="4"
                     stroke-linecap="round"
                   />
@@ -785,7 +774,7 @@
           <div
             class="pro-dark-card"
             data-tour="pro-card"
-            @click="navigateTo('/explore')"
+            @click="openGasSafetySheet"
           >
             <div class="pro-dark-icon">🔧</div>
             <div class="pro-dark-body">
@@ -1094,35 +1083,24 @@
             <div class="psc-glow"></div>
             <div class="psc-main" style="position: relative; z-index: 1">
               <div class="psc-left">
-                <div class="psc-icon-box">
-                  <svg width="26" height="26" viewBox="0 0 877.69 877.69">
-                    <circle
-                      fill="rgba(255,255,255,0.1)"
-                      cx="438.85"
-                      cy="438.85"
-                      r="438.85"
-                    />
-                    <path
-                      fill="#fff"
-                      d="m573.6,497.11v21.8h-39.28l-.22-20.26c0-34.14-14.14-48.26-38.03-48.26s-38.03,14.12-38.03,48.26v41.36h-39.01v-42.9c0-52.88,28.77-82.14,77.29-82.14s77.29,29.26,77.29,82.14Z"
-                    />
-                    <path
-                      fill="#fff"
-                      d="m379.84,415.26c48.52,0,77.29,29.26,77.29,82.14v42.9s-39.01,0-39.01,0v-41.36c0-34.14-13.9-48.26-38.03-48.26-23.89,0-38.03,14.12-38.03,48.26l-.15,20.26h-39.24s-.1-21.8-.1-21.8c0-52.88,28.77-82.14,77.29-82.14Z"
-                    />
-                    <path
-                      fill="#00a19a"
-                      d="m689.16,439c-.03-11.46-8.86-20.75-19.76-20.75s-19.76,9.32-19.76,20.81h.04v92.38c0,34.14-14.14,48.26-38.03,48.26s-38.03-14.12-38.03-48.26v-12.54h-39.32v14.08c0,52.88,29.07,82.14,77.59,82.14s77.28-29.26,77.28-82.14v-93.98h-.02Z"
-                    />
-                    <path
-                      fill="#00a19a"
-                      d="m187.37,439c.03-11.46,8.86-20.75,19.76-20.75,10.91,0,19.76,9.32,19.76,20.81h-.04v92.38c0,34.14,14.14,48.26,38.03,48.26,24.14,0,37.79-14.12,37.79-48.26v-12.54s39.25,0,39.25,0v14.08c0,52.88-28.77,82.14-77.29,82.14-48.52,0-77.28-29.26-77.28-82.14v-93.98s.02,0,.02,0Z"
-                    />
-                    <path
-                      fill="#00a19a"
-                      d="m677.57,352.22l-226.28-134.71c-3.1-1.81-6.69-2.82-10.34-2.91h-.57l-.39-1.48h-.54c-3.68.1-7.26,1.11-10.38,2.93l-157.5,93.76v-16.4c0-10.74-9.3-19.48-20.72-19.48s-20.72,8.74-20.72,19.48v41.08l-27.33,16.27c-9.7,5.67-12.68,17.71-6.64,26.83,6.03,9.12,18.84,11.92,28.55,6.24l215.48-128.28,215.49,128.29c3.33,1.95,7.08,2.95,10.91,2.95,1.58,0,3.17-.17,4.74-.51,5.39-1.18,9.97-4.26,12.9-8.68,6.03-9.12,3.05-21.15-6.64-26.82Z"
-                    />
-                  </svg>
+                <!-- Real Property Passport cover — same PassportCard
+                     component the /passport/collections page uses, so
+                     the two views look identical. Address + postcode
+                     are overlaid on top of the umu-passport.png asset
+                     via container-query typography, so it stays legible
+                     at this small tile size. -->
+                <div class="psc-passport-slot">
+                  <PassportCard
+                    :line1="
+                      (
+                        passports[0].address ||
+                        passports[0].addressLine1 ||
+                        ''
+                      ).split(',')[0]
+                    "
+                    :line2="passports[0].postcode || ''"
+                    :type="passports[0].type || 'SELLER'"
+                  />
                 </div>
                 <div>
                   <div class="psc-label-small">Property Passport</div>
@@ -1137,7 +1115,7 @@
                   <path
                     d="M 7 34 A 24 24 0 0 1 51 34"
                     fill="none"
-                    stroke="rgba(255,255,255,0.2)"
+                    stroke="#e5f4f2"
                     stroke-width="4"
                     stroke-linecap="round"
                   />
@@ -1388,35 +1366,24 @@
             <div class="psc-glow"></div>
             <div class="psc-main" style="position: relative; z-index: 1">
               <div class="psc-left">
-                <div class="psc-icon-box">
-                  <svg width="26" height="26" viewBox="0 0 877.69 877.69">
-                    <circle
-                      fill="rgba(255,255,255,0.1)"
-                      cx="438.85"
-                      cy="438.85"
-                      r="438.85"
-                    />
-                    <path
-                      fill="#fff"
-                      d="m573.6,497.11v21.8h-39.28l-.22-20.26c0-34.14-14.14-48.26-38.03-48.26s-38.03,14.12-38.03,48.26v41.36h-39.01v-42.9c0-52.88,28.77-82.14,77.29-82.14s77.29,29.26,77.29,82.14Z"
-                    />
-                    <path
-                      fill="#fff"
-                      d="m379.84,415.26c48.52,0,77.29,29.26,77.29,82.14v42.9s-39.01,0-39.01,0v-41.36c0-34.14-13.9-48.26-38.03-48.26-23.89,0-38.03,14.12-38.03,48.26l-.15,20.26h-39.24s-.1-21.8-.1-21.8c0-52.88,28.77-82.14,77.29-82.14Z"
-                    />
-                    <path
-                      fill="#00a19a"
-                      d="m689.16,439c-.03-11.46-8.86-20.75-19.76-20.75s-19.76,9.32-19.76,20.81h.04v92.38c0,34.14-14.14,48.26-38.03,48.26s-38.03-14.12-38.03-48.26v-12.54h-39.32v14.08c0,52.88,29.07,82.14,77.59,82.14s77.28-29.26,77.28-82.14v-93.98h-.02Z"
-                    />
-                    <path
-                      fill="#00a19a"
-                      d="m187.37,439c.03-11.46,8.86-20.75,19.76-20.75,10.91,0,19.76,9.32,19.76,20.81h-.04v92.38c0,34.14,14.14,48.26,38.03,48.26,24.14,0,37.79-14.12,37.79-48.26v-12.54s39.25,0,39.25,0v14.08c0,52.88-28.77,82.14-77.29,82.14-48.52,0-77.28-29.26-77.28-82.14v-93.98s.02,0,.02,0Z"
-                    />
-                    <path
-                      fill="#00a19a"
-                      d="m677.57,352.22l-226.28-134.71c-3.1-1.81-6.69-2.82-10.34-2.91h-.57l-.39-1.48h-.54c-3.68.1-7.26,1.11-10.38,2.93l-157.5,93.76v-16.4c0-10.74-9.3-19.48-20.72-19.48s-20.72,8.74-20.72,19.48v41.08l-27.33,16.27c-9.7,5.67-12.68,17.71-6.64,26.83,6.03,9.12,18.84,11.92,28.55,6.24l215.48-128.28,215.49,128.29c3.33,1.95,7.08,2.95,10.91,2.95,1.58,0,3.17-.17,4.74-.51,5.39-1.18,9.97-4.26,12.9-8.68,6.03-9.12,3.05-21.15-6.64-26.82Z"
-                    />
-                  </svg>
+                <!-- Real Property Passport cover — same PassportCard
+                     component the /passport/collections page uses, so
+                     the two views look identical. Address + postcode
+                     are overlaid on top of the umu-passport.png asset
+                     via container-query typography, so it stays legible
+                     at this small tile size. -->
+                <div class="psc-passport-slot">
+                  <PassportCard
+                    :line1="
+                      (
+                        passports[0].address ||
+                        passports[0].addressLine1 ||
+                        ''
+                      ).split(',')[0]
+                    "
+                    :line2="passports[0].postcode || ''"
+                    :type="passports[0].type || 'SELLER'"
+                  />
                 </div>
                 <div>
                   <div class="psc-label-small">Property Passport</div>
@@ -1431,7 +1398,7 @@
                   <path
                     d="M 7 34 A 24 24 0 0 1 51 34"
                     fill="none"
-                    stroke="rgba(255,255,255,0.2)"
+                    stroke="#e5f4f2"
                     stroke-width="4"
                     stroke-linecap="round"
                   />
@@ -1497,7 +1464,7 @@
 
           <HealthPassportCards />
 
-          <div class="pro-dark-card" @click="navigateTo('/explore')">
+          <div class="pro-dark-card" @click="openGasSafetySheet">
             <div class="pro-dark-icon">🔧</div>
             <div class="pro-dark-body">
               <div class="pro-dark-title">Book a gas safety engineer</div>
@@ -1545,6 +1512,16 @@
       ref="exploreTourRef"
       :steps="exploreTourSteps"
       storage-key="umu_tour_explore_v1"
+    />
+
+    <InstallerFlowSheet
+      v-model:open="installerSheetOpen"
+      :kind="installerKind"
+      :measure-title="installerMeasureTitle"
+      :property-id="installerPropertyId"
+      :postcode="installerPostcode"
+      :address="installerAddress"
+      :initial-state="installerInitialState"
     />
 
     <!-- Unified Distance + Filters Bottom Sheet (prototype-exact).
@@ -1817,6 +1794,8 @@ const exploreTourSteps = [
 ]
 import HealthPassportCards from '~/components/explore/HealthPassportCards.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
+import PassportCard from '~/components/passport-view/PassportCard.vue'
+import InstallerFlowSheet from '~/components/homescore/InstallerFlowSheet.vue'
 
 definePageMeta({ title: 'Explore - UmovingU', middleware: 'auth' })
 
@@ -2127,6 +2106,22 @@ const verifiedPassportProperties = ref<any[]>([])
 const loadingVerifiedPassports = ref(true)
 const needsPostcode = ref(false)
 
+type InstallerKind = 'insulation' | 'solarpv' | 'gas' | 'other'
+type InstallerSheetState =
+  | 'routes'
+  | 'elig'
+  | 'result'
+  | 'form'
+  | 'confirm'
+  | 'tracker'
+  | 'market'
+  | 'ea-form'
+  | 'ea-confirm'
+const installerSheetOpen = ref(false)
+const installerKind = ref<InstallerKind>('gas')
+const installerMeasureTitle = ref('Gas safety check (CP12)')
+const installerInitialState = ref<InstallerSheetState>('routes')
+
 // Whether the current user has a published Buyer Profile — drives the
 // "✓ Buyer Profile · Published" quick-access card in the buy view.
 const buyerProfilePublished = ref(false)
@@ -2237,7 +2232,9 @@ async function fetchMarketPulse() {
   marketPulseLoading.value = true
   try {
     marketPulse.value = await $fetch<MarketPulse>(
-      `${config.public.apiBase}/property/market-pulse?postcode=${encodeURIComponent(pc)}`,
+      `${
+        config.public.apiBase
+      }/property/market-pulse?postcode=${encodeURIComponent(pc)}`,
     )
   } catch {
     marketPulse.value = null
@@ -2318,6 +2315,45 @@ const selectedAddressText = computed(() => {
   const line2 = a.addressLine2 || a.line2 || a.postcode || ''
   return line2 ? `${line1} · ${line2}` : line1
 })
+
+const installerPropertyId = computed<string | null>(() => {
+  const selectedId = selectedAddress.value?.id
+  if (selectedId != null && String(selectedId).trim()) return String(selectedId)
+
+  const passportPropertyId = passports.value[0]?.propertyId
+  if (passportPropertyId != null && String(passportPropertyId).trim()) {
+    return String(passportPropertyId)
+  }
+
+  return null
+})
+
+const installerPostcode = computed<string>(() => {
+  return (
+    selectedAddress.value?.postcode ||
+    passports.value[0]?.postcode ||
+    userPostcode.value ||
+    ''
+  )
+})
+
+const installerAddress = computed<string>(() => {
+  return (
+    selectedAddress.value?.addressLine1 ||
+    selectedAddress.value?.address ||
+    selectedAddress.value?.line1 ||
+    passports.value[0]?.addressLine1 ||
+    passports.value[0]?.address ||
+    ''
+  )
+})
+
+function openGasSafetySheet() {
+  installerKind.value = 'gas'
+  installerMeasureTitle.value = 'Gas safety check (CP12)'
+  installerInitialState.value = 'routes'
+  installerSheetOpen.value = true
+}
 
 const displayProperties = computed(() => properties.value.slice(0, 6))
 
@@ -3112,13 +3148,19 @@ onMounted(async () => {
 
 /* ── Returning user: Passport status card ── */
 .passport-status-card {
-  background: linear-gradient(135deg, #00a19a, #00a19a);
+  background: #fff;
+  border: 1.5px solid #e5f4f2;
   border-radius: 18px;
-  padding: 16px 18px;
+  padding: 14px 16px;
   margin-bottom: 14px;
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.passport-status-card:hover {
+  border-color: #00a19a;
+  box-shadow: 0 8px 22px -8px rgba(0, 161, 154, 0.25);
 }
 
 .passport-status-card:active {
@@ -3131,11 +3173,7 @@ onMounted(async () => {
   top: -30px;
   width: 120px;
   height: 120px;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.15),
-    transparent 70%
-  );
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.1), transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -3159,26 +3197,60 @@ onMounted(async () => {
   width: 42px;
   height: 42px;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.15);
+  background: #e6f7f6;
   border-radius: 12px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid #b2e4e1;
+}
+
+/* Real Property Passport cover — hosts the shared <PassportCard>
+   component (same one the /passport/collections page uses). Overrides
+   the component's default 32px vertical margin and 360px max-width so
+   it renders as a compact ~64px tile inside this tighter tile slot. */
+.psc-passport-slot {
+  width: 64px;
+  flex-shrink: 0;
+}
+.psc-passport-slot :deep(.passport-card) {
+  margin: 0;
+  perspective: none;
+}
+.psc-passport-slot :deep(.passport-container) {
+  width: 100%;
+  max-width: none;
+}
+.psc-passport-slot :deep(.passport-image) {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+/* Address on the mini-passport reads too bold + too high at this size —
+   nudge down 2px and drop weight to normal. Applied via :deep() so the
+   shared PassportCard component styling stays untouched elsewhere. */
+.psc-passport-slot :deep(.passport-address) {
+  bottom: calc(14% - 2px);
+}
+.psc-passport-slot :deep(.address-line) {
+  font-weight: 400;
+}
+.psc-passport-slot :deep(.address-line-small) {
+  font-weight: 400;
 }
 
 .psc-label-small {
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: #00a19a;
   margin-bottom: 2px;
 }
 
 .psc-address {
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: #0e2840;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3186,7 +3258,7 @@ onMounted(async () => {
 
 .psc-postcode {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
+  color: #6b7c8e;
 }
 
 .psc-gauge {
@@ -3197,15 +3269,15 @@ onMounted(async () => {
 .psc-gauge-num {
   font-size: 18px;
   font-weight: 800;
-  color: #fff;
+  color: #0e2840;
   line-height: 1;
   margin-top: -8px;
 }
 
 .psc-gauge-lbl {
   font-size: 9px;
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 600;
+  color: #8f9094;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -3215,7 +3287,7 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid #e5f4f2;
 }
 
 .psc-footer-stats {
@@ -3225,17 +3297,23 @@ onMounted(async () => {
 
 .psc-stat {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #6b7c8e;
+  font-weight: 600;
 }
 
 .psc-stat strong {
-  color: #fff;
+  color: #0e2840;
+  font-weight: 800;
 }
 
 .psc-view-cta {
   font-size: 12px;
-  font-weight: 700;
-  color: #00a19a;
+  font-weight: 800;
+  color: #fff;
+  background: #00a19a;
+  padding: 6px 12px;
+  border-radius: 100px;
+  box-shadow: 0 2px 8px rgba(0, 161, 154, 0.25);
 }
 
 /* No passport state */
