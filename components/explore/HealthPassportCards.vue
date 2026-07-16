@@ -394,35 +394,43 @@ function goToPassportSample() {
     border-radius: 22px;
   }
 
+  /* Keep the side-by-side illustration + body layout on phones so the
+     card matches the demo/desktop look. The old rule collapsed to a
+     single column which pushed the CTA into a second row and made the
+     card twice as tall as it needed to be. */
   .feat-main {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: minmax(96px, 34%) 1fr;
+    gap: 12px;
     padding: 14px 14px 12px;
   }
 
-  .feat-hero {
-    justify-content: flex-start;
-  }
-
   .feat-hero-img {
-    width: 72%;
-    max-width: 230px;
     max-height: 150px;
   }
 
+  /* Footer stays a row (meta on left, CTA pill on right) — same as
+     desktop — but the meta text can wrap under the icon if needed. */
   .feat-footer {
-    flex-direction: column;
-    align-items: stretch;
     padding: 12px 14px 14px;
-  }
-
-  .feat-meta {
-    width: 100%;
+    gap: 10px;
   }
 
   .feat-cta {
-    width: 100%;
-    min-width: 0;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  .feat-cta svg { width: 14px; height: 14px; }
+
+  /* If the viewport really is tiny (<360px), we still can't fit
+     everything on one row cleanly — collapse only the footer to
+     stack the CTA below the meta, but keep illustration + body
+     side-by-side above. */
+  @media (max-width: 360px) {
+    .feat-footer {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .feat-cta { width: 100%; }
   }
 }
 </style>
