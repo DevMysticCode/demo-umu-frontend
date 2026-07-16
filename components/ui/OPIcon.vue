@@ -72,27 +72,36 @@ const iconMap: Record<string, string> = {
   list: '/op-icons/passportview/list.svg',
   map: '/op-icons/passportview/map.svg',
   caretRight: '/op-icons/passportview/caretRight.svg',
-  instructions: '/op-icons/passportview/instructions.svg',
-  ownershipProfile: '/op-icons/passportview/instructions.svg',
-  boundaries: '/op-icons/passportview/boundaries.svg',
-  disputesAndComplaints: '/op-icons/passportview/disputes-and-complaints.svg',
-  noticesAndProposals: '/op-icons/passportview/notices-and-proposals.svg',
-  alterationsAndPlanning: '/op-icons/passportview/alterations-and-planning.svg',
+  // 'instructions' is the DB-seeded icon key for the Ownership Profile
+  // section (see backend prisma/seed.ts). Point it at the new 3D
+  // illustration so the map, section header and question screens all
+  // pick up the new artwork without a data migration.
+  instructions: '/op-icons/passportview/ownerShipProfile.png',
+  // Passport section icons — swapped to the client's 3D illustration
+  // PNGs (background already stripped so they sit cleanly on any card).
+  // Filenames follow the client's spelling exactly ("gurantess",
+  // "ownerShip", "parkings") so re-uploads don't need renames.
+  // `leasehold` stays SVG until the client provides an illustration.
+  ownershipProfile: '/op-icons/passportview/ownerShipProfile.png',
+  boundaries: '/op-icons/passportview/boundaries.png',
+  disputesAndComplaints: '/op-icons/passportview/disputesAndComplaints.png',
+  noticesAndProposals: '/op-icons/passportview/noticesAndProposals.png',
+  alterationsAndPlanning: '/op-icons/passportview/alterationsAndPlanning.png',
   guaranteesAndWarranties:
-    '/op-icons/passportview/guarantees-and-warranties.svg',
-  insurance: '/op-icons/passportview/insurance.svg',
-  environmental: '/op-icons/passportview/environmental.svg',
+    '/op-icons/passportview/gurantessAndWarranties.png',
+  insurance: '/op-icons/passportview/insurance.png',
+  environmental: '/op-icons/passportview/environmental.png',
   rightsAndInformalArrangements:
-    '/op-icons/passportview/rights-and-informal-arrangements.svg',
-  parking: '/op-icons/passportview/parking.svg',
-  otherCharges: '/op-icons/passportview/other-charges.svg',
-  occupiers: '/op-icons/passportview/occupiers.svg',
-  services: '/op-icons/passportview/services.svg',
-  transactionInformation: '/op-icons/passportview/transaction-information.svg',
-  fixturesAndFittings: '/op-icons/passportview/fixture-and-fittings.svg',
+    '/op-icons/passportview/rightsAndInformalArrangements.png',
+  parking: '/op-icons/passportview/parkings.png',
+  otherCharges: '/op-icons/passportview/otherCharges.png',
+  occupiers: '/op-icons/passportview/occupiers.png',
+  services: '/op-icons/passportview/services.png',
+  transactionInformation: '/op-icons/passportview/transactionInformation.png',
+  fixturesAndFittings: '/op-icons/passportview/fixturesAndFittings.png',
   leasehold: '/op-icons/passportview/leasehold.svg',
-  titleDeedsAndPlan: '/op-icons/passportview/title-deeds-and-plan.svg',
-  searches: '/op-icons/passportview/searches.svg',
+  titleDeedsAndPlan: '/op-icons/passportview/titleDeedsAndPlan.png',
+  searches: '/op-icons/passportview/searches.png',
   info: '/op-icons/passportview/steps/info.svg',
   playIcon: '/op-icons/passportview/steps/play-icon.svg',
   rewardBox: '/op-icons/passportview/steps/rewardBox.svg',
