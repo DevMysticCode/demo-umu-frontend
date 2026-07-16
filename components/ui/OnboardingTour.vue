@@ -17,13 +17,13 @@
           <div class="tour-arrow" :class="{ above: tipAbove }" />
           <div class="tour-content">
             <div class="tour-step-num">
-              <span class="step-text">{{ index + 1 }} of {{ steps.length }}</span>
+              <span class="step-text">{{ displayedPosition }} of {{ renderableCount }}</span>
               <span class="step-dots">
                 <span
-                  v-for="(_, i) in steps"
+                  v-for="i in renderableCount"
                   :key="i"
                   class="step-dot"
-                  :class="{ active: i === index }"
+                  :class="{ active: i === displayedPosition }"
                 />
               </span>
             </div>
@@ -63,7 +63,25 @@ const visible = ref(false)
 const index = ref(0)
 const targetRect = ref({ x: 0, y: 0, w: 0, h: 0 })
 
+// Set of raw-step indexes whose selector is currently in the DOM. Populated
+// once on start() and refreshed on next()/back() so the counter + dot count
+// always reflect what the user will actually see. Without this the display
+// jumps (e.g. "3 of 15" then "10 of 15") because the auto-skip inside
+// nextRenderableIndex burns through indexes 4-9 in a single tick.
+const renderableIdxs = ref([])
+
 const currentStep = computed(() => props.steps[index.value] ?? null)
+
+// 1-indexed position within the renderable set, and total renderable count.
+// Falls back to raw step count so the display doesn't collapse to 0/0 before
+// the tour has started.
+const renderableCount = computed(() =>
+  renderableIdxs.value.length || props.steps.length,
+)
+const displayedPosition = computed(() => {
+  const pos = renderableIdxs.value.indexOf(index.value)
+  return pos >= 0 ? pos + 1 : index.value + 1
+})
 
 // Click-capture only — fully transparent so the spotlight underneath
 // dims everything *except* the target via its inverted box-shadow. A
@@ -199,7 +217,18 @@ function focusStep() {
   }
 }
 
+function computeRenderableIdxs() {
+  const out = []
+  for (let i = 0; i < props.steps.length; i++) {
+    if (stepHasTarget(i)) out.push(i)
+  }
+  renderableIdxs.value = out
+}
+
 function start() {
+  // Snapshot which steps actually have a target in the DOM right now so
+  // the counter reads "N of <real-total>" instead of "N of <raw-total>".
+  computeRenderableIdxs()
   // Jump to the first step whose target is on the current page.
   const j = nextRenderableIndex(0, 1)
   if (j === null) return
@@ -209,6 +238,9 @@ function start() {
 }
 
 function next() {
+  // Recompute in case new cards mounted (e.g. lazy-loaded feeds arriving
+  // during the tour). Keeps "N of M" honest even for a slow-load page.
+  computeRenderableIdxs()
   const j = nextRenderableIndex(index.value + 1, 1)
   if (j === null) {
     finish()
@@ -219,6 +251,7 @@ function next() {
 }
 
 function back() {
+  computeRenderableIdxs()
   const j = nextRenderableIndex(index.value - 1, -1)
   if (j === null) return
   index.value = j

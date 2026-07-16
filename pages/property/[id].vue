@@ -3474,6 +3474,7 @@ import { usePropertySearch } from '~/composables/usePropertySearch'
 import { usePassportClaim } from '~/composables/usePassportClaim'
 import { usePropertyActions } from '~/composables/usePropertyActions'
 import { toTitleCase } from '~/utils/form-helpres'
+import { normalizeUploadUrl, normalizeUploadUrls } from '~/utils/normalizeUploadUrl'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -4377,11 +4378,15 @@ const sdltBreakdown = computed((): { bands: SdltBand[]; total: number } => {
 // placeholder. We deliberately don't fall back to a Google Street View
 // snapshot — that gave the impression of a stock image and confused users.
 const propertyImages = computed(() => {
+  const apiBase = String(config.public.apiBase ?? '')
   const images: string[] = []
   const uploaded = (property.value?.images as string[] | null) ?? []
-  images.push(...uploaded.filter((u) => typeof u === 'string' && u.trim()))
-  const imgUrl = property.value?.imageUrl
-  if (imgUrl && imgUrl.trim() && !images.includes(imgUrl)) {
+  // normalizeUploadUrl heals old URLs saved with the localhost:3002
+  // fallback from a misconfigured backend deploy — swaps that prefix
+  // for the current apiBase so images load on any device.
+  images.push(...normalizeUploadUrls(uploaded, apiBase))
+  const imgUrl = normalizeUploadUrl(property.value?.imageUrl, apiBase)
+  if (imgUrl && !images.includes(imgUrl)) {
     images.push(imgUrl)
   }
   return images

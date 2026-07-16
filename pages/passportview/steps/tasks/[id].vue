@@ -87,6 +87,7 @@
               :src="img"
               :alt="`Photo ${index + 1}`"
               class="property-photo-thumb"
+              @error="onPropertyPhotoError($event, index)"
             />
             <button
               class="property-photo-delete"
@@ -319,6 +320,7 @@
 
 <script setup>
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
+import { normalizeUploadUrl, normalizeUploadUrls } from '~/utils/normalizeUploadUrl'
 import PointsSection from '~/components/passport-view/PointsSection.vue'
 import ThankYouModal from '~/components/passport-view/ThankYouModal.vue'
 import RadioQuestion from '~/components/passport-view/questions/RadioQuestion.vue'
@@ -413,12 +415,17 @@ const { getPropertyImages, updatePropertyImages, uploadPropertyImage } =
 const propertyImages = ref([])
 const uploadingImages = ref(false)
 
+const runtimeConfig = useRuntimeConfig()
+const apiBase = String(runtimeConfig.public.apiBase ?? '')
+
 async function loadPropertyImages() {
   const passportId = route.query.propertyId
   if (!passportId) return
   try {
     const res = await getPropertyImages(passportId)
-    propertyImages.value = res.images ?? []
+    // Heal any legacy URLs pointing at localhost:3002 from an earlier
+    // misconfigured backend deploy so old uploads still render.
+    propertyImages.value = normalizeUploadUrls(res.images, apiBase)
   } catch {
     // ignore — not critical
   }
@@ -435,7 +442,10 @@ async function handlePropertyImageUpload(event) {
     const uploaded = await Promise.all(
       files.map((file) => uploadPropertyImage(passportId, file)),
     )
-    const newImages = [...propertyImages.value, ...uploaded.map((r) => r.url)]
+    const newImages = [
+      ...propertyImages.value,
+      ...uploaded.map((r) => normalizeUploadUrl(r.url, apiBase)),
+    ]
     propertyImages.value = newImages
     await updatePropertyImages(passportId, newImages)
   } catch (err) {
@@ -444,6 +454,28 @@ async function handlePropertyImageUpload(event) {
     uploadingImages.value = false
     event.target.value = ''
   }
+}
+
+// On thumbnail load failure, replace the broken <img> with an inline
+// "Image unavailable" state so users see something meaningful instead
+// of the browser's grey question-mark placeholder.
+function onPropertyPhotoError(event, _index) {
+  const el = event?.target
+  if (!(el instanceof HTMLImageElement)) return
+  // Prevent an error loop if the fallback data-uri itself somehow fails.
+  el.onerror = null
+  const svg = encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>
+      <rect width='120' height='120' fill='#f4f5f7'/>
+      <g fill='none' stroke='#8f9094' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+        <rect x='24' y='30' width='72' height='54' rx='6'/>
+        <circle cx='44' cy='50' r='6'/>
+        <path d='M28 78l22-22 18 18 12-12 14 14'/>
+      </g>
+      <text x='60' y='104' text-anchor='middle' font-family='sans-serif' font-size='10' fill='#8f9094'>Image unavailable</text>
+    </svg>`,
+  )
+  el.src = `data:image/svg+xml;utf8,${svg}`
 }
 
 async function removePropertyImage(index) {

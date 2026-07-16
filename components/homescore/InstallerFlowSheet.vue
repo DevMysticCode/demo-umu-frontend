@@ -4,14 +4,13 @@
       <div class="ifs-sheet" role="dialog" aria-modal="true">
         <div class="ifs-handle" />
         <div class="ifs-scroll">
-
           <!-- STATE: routes (per-measure entry) -->
           <div v-if="state === 'routes'" class="ifs-state">
             <div class="ifs-eyebrow">{{ trade.eyebrow }}</div>
             <h3 class="ifs-title">{{ trade.title }}</h3>
             <p class="ifs-lede">
-              We're building our vetted network in your area. Here's what
-              you can do right now for this measure.
+              We're building our vetted network in your area. Here's what you
+              can do right now for this measure.
             </p>
             <div class="ifs-acc">
               <span class="ifs-acc-ic">🛡️</span>
@@ -31,19 +30,29 @@
                     Check if grants could cover this
                     <span class="ifs-badge ifs-badge--money">Free</span>
                   </span>
-                  <span class="ifs-r-sub">3 quick questions. See which schemes you may qualify for before you get quotes.</span>
+                  <span class="ifs-r-sub"
+                    >3 quick questions. See which schemes you may qualify for
+                    before you get quotes.</span
+                  >
                 </span>
                 <span class="ifs-r-arrow">›</span>
               </button>
 
-              <button class="ifs-route ifs-route--match" type="button" @click="goForm">
+              <button
+                class="ifs-route ifs-route--match"
+                type="button"
+                @click="goForm"
+              >
                 <span class="ifs-r-ic">✅</span>
                 <span class="ifs-r-body">
                   <span class="ifs-r-title">
                     Get matched
                     <span class="ifs-badge ifs-badge--free">Free</span>
                   </span>
-                  <span class="ifs-r-sub">Leave your details and we'll line up vetted installers for this measure.</span>
+                  <span class="ifs-r-sub"
+                    >Leave your details and we'll line up vetted installers for
+                    this measure.</span
+                  >
                 </span>
                 <span class="ifs-r-arrow">›</span>
               </button>
@@ -62,7 +71,9 @@
                 <span class="ifs-r-arrow">›</span>
               </a>
             </div>
-            <p class="ifs-foot">Every request helps us bring installers to your postcode faster.</p>
+            <p class="ifs-foot">
+              Every request helps us bring installers to your postcode faster.
+            </p>
           </div>
 
           <!-- STATE: eligibility Qs -->
@@ -76,36 +87,64 @@
 
             <div v-if="eligStep === 1" class="ifs-q">
               <h4>Do you own or rent this home?</h4>
-              <p class="ifs-qhint">Different schemes apply to owners, private and social tenants.</p>
+              <p class="ifs-qhint">
+                Different schemes apply to owners, private and social tenants.
+              </p>
               <div class="ifs-opts">
-                <button class="ifs-opt" @click="answer('tenure', 'own')">Own it</button>
-                <button class="ifs-opt" @click="answer('tenure', 'private')">Private rental</button>
-                <button class="ifs-opt" @click="answer('tenure', 'social')">Social / council rental</button>
+                <button class="ifs-opt" @click="answer('tenure', 'own')">
+                  Own it
+                </button>
+                <button class="ifs-opt" @click="answer('tenure', 'private')">
+                  Private rental
+                </button>
+                <button class="ifs-opt" @click="answer('tenure', 'social')">
+                  Social / council rental
+                </button>
               </div>
             </div>
 
             <div v-else-if="eligStep === 2" class="ifs-q">
               <h4>Does anyone in the home get means-tested benefits?</h4>
-              <p class="ifs-qhint">e.g. Universal Credit, Pension Credit, income-based JSA/ESA.</p>
+              <p class="ifs-qhint">
+                e.g. Universal Credit, Pension Credit, income-based JSA/ESA.
+              </p>
               <div class="ifs-opts">
-                <button class="ifs-opt" @click="answer('benefits', 'yes')">Yes</button>
-                <button class="ifs-opt" @click="answer('benefits', 'no')">No</button>
-                <button class="ifs-opt" @click="answer('benefits', 'unsure')">Not sure</button>
+                <button class="ifs-opt" @click="answer('benefits', 'yes')">
+                  Yes
+                </button>
+                <button class="ifs-opt" @click="answer('benefits', 'no')">
+                  No
+                </button>
+                <button class="ifs-opt" @click="answer('benefits', 'unsure')">
+                  Not sure
+                </button>
               </div>
             </div>
 
             <div v-else class="ifs-q">
               <h4>Roughly, what's the household income?</h4>
-              <p class="ifs-qhint">Before tax. Helps flag income-capped schemes.</p>
+              <p class="ifs-qhint">
+                Before tax. Helps flag income-capped schemes.
+              </p>
               <div class="ifs-opts">
-                <button class="ifs-opt" @click="answer('income', 'low')">Under £31,000</button>
-                <button class="ifs-opt" @click="answer('income', 'high')">£31,000 or more</button>
-                <button class="ifs-opt" @click="answer('income', 'skip')">Prefer not to say</button>
+                <button class="ifs-opt" @click="answer('income', 'low')">
+                  Under £31,000
+                </button>
+                <button class="ifs-opt" @click="answer('income', 'high')">
+                  £31,000 or more
+                </button>
+                <button class="ifs-opt" @click="answer('income', 'skip')">
+                  Prefer not to say
+                </button>
               </div>
             </div>
 
-            <span class="ifs-indicative">⚠️ Indicative only — your installer confirms at survey</span>
-            <button class="ifs-back-link" @click="state = 'routes'">‹ Back</button>
+            <span class="ifs-indicative"
+              >⚠️ Indicative only — your installer confirms at survey</span
+            >
+            <button class="ifs-back-link" @click="state = 'routes'">
+              ‹ Back
+            </button>
           </div>
 
           <!-- STATE: eligibility result -->
@@ -113,12 +152,19 @@
             <div v-if="grants.length" class="ifs-result-hero">
               <div class="ifs-rh-ic">🎉</div>
               <h3>You may qualify for funding</h3>
-              <p>Based on your answers, these schemes could cover part or all of this measure. Your installer confirms eligibility at survey.</p>
+              <p>
+                Based on your answers, these schemes could cover part or all of
+                this measure. Your installer confirms eligibility at survey.
+              </p>
             </div>
             <div v-else class="ifs-result-hero ifs-result-hero--none">
               <div class="ifs-rh-ic">🔍</div>
               <h3>No means-tested grants flagged</h3>
-              <p>You may not qualify for the income-based schemes, but installers can still check local offers — and paying direct is always an option. We'll match either way.</p>
+              <p>
+                You may not qualify for the income-based schemes, but installers
+                can still check local offers — and paying direct is always an
+                option. We'll match either way.
+              </p>
             </div>
 
             <div v-if="grants.length" class="ifs-grant-list">
@@ -136,39 +182,62 @@
               <span class="ifs-pl-ic">🏠</span>
               <div>
                 <div class="ifs-pl-label">Measure · Property</div>
-                <div class="ifs-pl-val">{{ trade.measure }} · {{ address }}</div>
+                <div class="ifs-pl-val">
+                  {{ trade.measure }} · {{ address }}
+                </div>
               </div>
             </div>
 
-            <button class="ifs-submit" @click="goForm">Get matched with eligible installers</button>
-            <button class="ifs-back-link" @click="state = 'routes'">‹ Start over</button>
+            <button class="ifs-submit" @click="goForm">
+              Get matched with eligible installers
+            </button>
+            <button class="ifs-back-link" @click="state = 'routes'">
+              ‹ Start over
+            </button>
           </div>
 
           <!-- STATE: capture form -->
           <div v-else-if="state === 'form'" class="ifs-state">
             <div class="ifs-eyebrow">Get matched</div>
             <h3 class="ifs-title">Line up installers</h3>
-            <p class="ifs-lede">Just the basics — we'll come back with vetted installers. No obligation.</p>
+            <p class="ifs-lede">
+              Just the basics — we'll come back with vetted installers. No
+              obligation.
+            </p>
 
             <div class="ifs-prop-lock">
               <span class="ifs-pl-ic">🏠</span>
               <div>
                 <div class="ifs-pl-label">Measure · Property</div>
-                <div class="ifs-pl-val">{{ trade.measure }} · {{ address }}</div>
+                <div class="ifs-pl-val">
+                  {{ trade.measure }} · {{ address }}
+                </div>
               </div>
             </div>
 
             <div class="ifs-field">
               <label>Your name</label>
-              <input v-model="formName" type="text" placeholder="e.g. Maxine Wilson" />
+              <input
+                v-model="formName"
+                type="text"
+                placeholder="e.g. Maxine Wilson"
+              />
             </div>
             <div class="ifs-field">
               <label>Email or mobile</label>
-              <input v-model="formContact" type="text" placeholder="So installers can reach you" />
+              <input
+                v-model="formContact"
+                type="text"
+                placeholder="So installers can reach you"
+              />
             </div>
 
-            <button class="ifs-submit" @click="goConfirm">Request matches</button>
-            <button class="ifs-back-link" @click="state = 'routes'">‹ Back</button>
+            <button class="ifs-submit" @click="goConfirm">
+              Request matches
+            </button>
+            <button class="ifs-back-link" @click="state = 'routes'">
+              ‹ Back
+            </button>
           </div>
 
           <!-- STATE: match confirm -->
@@ -176,18 +245,26 @@
             <div class="ifs-confirm">
               <div class="ifs-tick">
                 <span class="ifs-ring" />
-                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+                <svg viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
               </div>
               <h3>You're on the list</h3>
               <p>
                 We'll be in touch with vetted installers for
-                <b>{{ trade.measure.toLowerCase() }}</b> at <b>{{ address }}</b>{{ grantLine }}.
+                <b>{{ trade.measure.toLowerCase() }}</b> at <b>{{ address }}</b
+                >{{ grantLine }}.
               </p>
               <div class="ifs-passport">
                 <span class="ifs-passport-ic">📗</span>
-                <p>Every match request helps us bring installers to <b>{{ postcode || 'your area' }}</b> faster.</p>
+                <p>
+                  Every match request helps us bring installers to
+                  <b>{{ postcode || 'your area' }}</b> faster.
+                </p>
               </div>
-              <button class="ifs-primary" @click="afterConfirm">See your requests</button>
+              <button class="ifs-primary" @click="afterConfirm">
+                See your requests
+              </button>
             </div>
           </div>
 
@@ -195,12 +272,18 @@
           <div v-else-if="state === 'tracker'" class="ifs-state">
             <div class="ifs-eyebrow">Your requests</div>
             <h3 class="ifs-title">Match requests</h3>
-            <p class="ifs-lede">Where each of your match requests has got to. We're sourcing vetted installers for these measures.</p>
+            <p class="ifs-lede">
+              Where each of your match requests has got to. We're sourcing
+              vetted installers for these measures.
+            </p>
 
             <div v-if="requests.length === 0" class="ifs-empty">
               <div class="ifs-empty-ic">🧰</div>
               <h4>No requests yet</h4>
-              <p>Tap <b>Find installers</b> on any measure and we'll start sourcing vetted trades for you.</p>
+              <p>
+                Tap <b>Find installers</b> on any measure and we'll start
+                sourcing vetted trades for you.
+              </p>
             </div>
             <div v-else class="ifs-track">
               <div v-for="(r, i) in requests" :key="i" class="ifs-track-item">
@@ -215,7 +298,9 @@
                   <span class="ifs-pill ifs-pill--sourcing">
                     <span class="ifs-dot" />Sourcing installers
                   </span>
-                  <span v-if="r.grant" class="ifs-pill ifs-pill--grant">🎁 {{ r.grant }}</span>
+                  <span v-if="r.grant" class="ifs-pill ifs-pill--grant"
+                    >🎁 {{ r.grant }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -226,40 +311,57 @@
             <div class="ifs-ea-hero">
               <div class="ifs-ea-ic">🛒</div>
               <h3>Marketplace — early access</h3>
-              <p>We're onboarding vetted local trades right now. Join early access and we'll open your marketplace the moment installers cover {{ postcode || 'your area' }}.</p>
+              <p>
+                We're onboarding vetted local trades right now. Join early
+                access and we'll open your marketplace the moment installers
+                cover {{ postcode || 'your area' }}.
+              </p>
             </div>
             <div class="ifs-promise">
               <div class="ifs-promise-row">
                 <div class="ifs-p-ic">✅</div>
                 <div>
                   <div class="ifs-p-title">UMU-verified suppliers</div>
-                  <div class="ifs-p-sub">ID, insurance and accreditation checked before they list.</div>
+                  <div class="ifs-p-sub">
+                    ID, insurance and accreditation checked before they list.
+                  </div>
                 </div>
               </div>
               <div class="ifs-promise-row">
                 <div class="ifs-p-ic">🔒</div>
                 <div>
                   <div class="ifs-p-title">Payments in escrow</div>
-                  <div class="ifs-p-sub">Held via UProtect, released when work's signed off.</div>
+                  <div class="ifs-p-sub">
+                    Held via UProtect, released when work's signed off.
+                  </div>
                 </div>
               </div>
               <div class="ifs-promise-row">
                 <div class="ifs-p-ic">🎁</div>
                 <div>
                   <div class="ifs-p-title">Grant-ready</div>
-                  <div class="ifs-p-sub">TrustMark & ECO4-registered trades for funded work.</div>
+                  <div class="ifs-p-sub">
+                    TrustMark & ECO4-registered trades for funded work.
+                  </div>
                 </div>
               </div>
             </div>
-            <button class="ifs-submit" @click="state = 'ea-form'">Join early access</button>
+            <button class="ifs-submit" @click="state = 'ea-form'">
+              Join early access
+            </button>
             <button class="ifs-back-link" @click="close">‹ Not now</button>
           </div>
 
           <!-- STATE: early-access form -->
           <div v-else-if="state === 'ea-form'" class="ifs-state">
             <div class="ifs-eyebrow">Early access</div>
-            <h3 class="ifs-title">Get in the queue for {{ postcode || 'your area' }}</h3>
-            <p class="ifs-lede">We'll open your marketplace the moment vetted trades cover your postcode. Tell us what to prioritise.</p>
+            <h3 class="ifs-title">
+              Get in the queue for {{ postcode || 'your area' }}
+            </h3>
+            <p class="ifs-lede">
+              We'll open your marketplace the moment vetted trades cover your
+              postcode. Tell us what to prioritise.
+            </p>
 
             <div class="ifs-prop-lock">
               <span class="ifs-pl-ic">📍</span>
@@ -285,15 +387,27 @@
 
             <div class="ifs-field">
               <label>Your name</label>
-              <input v-model="eaName" type="text" placeholder="e.g. Maxine Wilson" />
+              <input
+                v-model="eaName"
+                type="text"
+                placeholder="e.g. Maxine Wilson"
+              />
             </div>
             <div class="ifs-field">
               <label>Email or mobile</label>
-              <input v-model="eaContact" type="text" placeholder="We'll tell you when it opens" />
+              <input
+                v-model="eaContact"
+                type="text"
+                placeholder="We'll tell you when it opens"
+              />
             </div>
 
-            <button class="ifs-submit" @click="submitEarly">Join early access</button>
-            <button class="ifs-back-link" @click="state = 'market'">‹ Back</button>
+            <button class="ifs-submit" @click="submitEarly">
+              Join early access
+            </button>
+            <button class="ifs-back-link" @click="state = 'market'">
+              ‹ Back
+            </button>
           </div>
 
           <!-- STATE: early-access confirm -->
@@ -301,22 +415,34 @@
             <div class="ifs-confirm">
               <div class="ifs-tick">
                 <span class="ifs-ring" />
-                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+                <svg viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
               </div>
               <h3>You're on the early list</h3>
               <p>
                 We'll email you the moment vetted trades cover
-                <b>{{ postcode || 'your area' }}</b>.
-                <span v-if="interests.length">We'll prioritise <b>{{ interests.join(', ').toLowerCase() }}</b> for your area.</span>
+                <b>{{ postcode || 'your area' }}</b
+                >.
+                <span v-if="interests.length"
+                  >We'll prioritise
+                  <b>{{ interests.join(', ').toLowerCase() }}</b> for your
+                  area.</span
+                >
               </p>
               <div class="ifs-passport">
                 <span class="ifs-passport-ic">📈</span>
-                <p>Your interest helps us decide <b>which trades to onboard first</b> — the more demand in {{ postcode || 'your area' }}, the sooner it opens.</p>
+                <p>
+                  Your interest helps us decide
+                  <b>which trades to onboard first</b> — the more demand in
+                  {{ postcode || 'your area' }}, the sooner it opens.
+                </p>
               </div>
-              <button class="ifs-primary" @click="close">Back to pathway</button>
+              <button class="ifs-primary" @click="close">
+                Back to pathway
+              </button>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -326,27 +452,37 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 
-type Kind = 'insulation' | 'solarpv' | 'other'
+type Kind = 'insulation' | 'solarpv' | 'gas' | 'other'
 type StateName =
-  | 'routes' | 'elig' | 'result' | 'form' | 'confirm'
-  | 'tracker' | 'market' | 'ea-form' | 'ea-confirm'
+  | 'routes'
+  | 'elig'
+  | 'result'
+  | 'form'
+  | 'confirm'
+  | 'tracker'
+  | 'market'
+  | 'ea-form'
+  | 'ea-confirm'
 
-const props = withDefaults(defineProps<{
-  open: boolean
-  kind?: Kind
-  measureTitle?: string
-  propertyId?: string | null
-  postcode?: string | null
-  address?: string
-  initialState?: StateName
-}>(), {
-  kind: 'other',
-  measureTitle: '',
-  propertyId: null,
-  postcode: '',
-  address: '',
-  initialState: 'routes',
-})
+const props = withDefaults(
+  defineProps<{
+    open: boolean
+    kind?: Kind
+    measureTitle?: string
+    propertyId?: string | null
+    postcode?: string | null
+    address?: string
+    initialState?: StateName
+  }>(),
+  {
+    kind: 'other',
+    measureTitle: '',
+    propertyId: null,
+    postcode: '',
+    address: '',
+    initialState: 'routes',
+  },
+)
 
 const emit = defineEmits<{
   (e: 'update:open', v: boolean): void
@@ -355,7 +491,11 @@ const emit = defineEmits<{
 
 const state = ref<StateName>('routes')
 const eligStep = ref(1)
-const answers = reactive<{ tenure?: string; benefits?: string; income?: string }>({})
+const answers = reactive<{
+  tenure?: string
+  benefits?: string
+  income?: string
+}>({})
 const formName = ref('')
 const formContact = ref('')
 const eaName = ref('')
@@ -383,12 +523,15 @@ onMounted(() => {
       const parsed = JSON.parse(raw)
       if (Array.isArray(parsed)) requests.value = parsed as TrackedRequest[]
     }
-  } catch { /* corrupt LS is fine — leave empty */ }
+  } catch {
+    /* corrupt LS is fine — leave empty */
+  }
 })
 function persistRequests() {
-  try { localStorage.setItem(REQUESTS_LS_KEY, JSON.stringify(requests.value)) } catch {}
+  try {
+    localStorage.setItem(REQUESTS_LS_KEY, JSON.stringify(requests.value))
+  } catch {}
 }
-
 
 const { send: sendCapture } = useCaptureEvent()
 
@@ -400,7 +543,7 @@ const TRADES = {
     code: 'insulation',
     accreditation: 'TrustMark',
     grant: true,
-    acc: "<b>Grant-funded work must use a TrustMark-registered installer.</b> Checking funding first keeps you eligible.",
+    acc: '<b>Grant-funded work must use a TrustMark-registered installer.</b> Checking funding first keeps you eligible.',
     self: {
       t: 'Search TrustMark yourself',
       s: 'Government-endorsed scheme. Opens TrustMark, filtered near you.',
@@ -421,6 +564,20 @@ const TRADES = {
       href: 'https://mcscertified.com/find-an-installer/',
     },
   },
+  gas: {
+    eyebrow: 'Safety certificates',
+    title: 'Book a gas safety check',
+    measure: 'Gas safety check (CP12)',
+    code: 'gas_safety_check',
+    accreditation: 'Gas Safe',
+    grant: false,
+    acc: "<b>Gas safety checks should be carried out by a Gas Safe registered engineer.</b> We'll match you with appropriately registered engineers for this work.",
+    self: {
+      t: 'Search Gas Safe yourself',
+      s: 'Official register for gas engineers. Opens Gas Safe search.',
+      href: 'https://www.gassaferegister.co.uk/find-an-engineer-or-check-the-register/',
+    },
+  },
   other: {
     eyebrow: 'Verified pro',
     title: 'Find a verified pro',
@@ -428,7 +585,7 @@ const TRADES = {
     code: 'other',
     accreditation: 'UMU-verified',
     grant: true,
-    acc: "<b>Grant-funded work must use a TrustMark-registered installer.</b> Checking funding first keeps you eligible.",
+    acc: '<b>Grant-funded work must use a TrustMark-registered installer.</b> Checking funding first keeps you eligible.',
     self: {
       t: 'Search TrustMark yourself',
       s: 'Government-endorsed scheme. Opens TrustMark, filtered near you.',
@@ -454,7 +611,9 @@ const interestChoices = [
 ]
 
 // --- eligibility engine (illustrative) ---
-const grants = ref<Array<{ ic: string; name: string; desc: string; tag: string }>>([])
+const grants = ref<
+  Array<{ ic: string; name: string; desc: string; tag: string }>
+>([])
 let lastGrantContext: string | null = null
 
 function computeGrants() {
@@ -463,10 +622,25 @@ function computeGrants() {
   const eligibleTenure = tenure === 'own' || tenure === 'private'
   const g: typeof grants.value = []
   if (eligibleTenure && lowNeed) {
-    g.push({ ic: '🏠', name: 'Warm Homes: Local Grant', desc: 'Up to £15k for insulation & heating in low-EPC homes.', tag: 'Likely' })
-    g.push({ ic: '⚡', name: 'ECO4', desc: 'Supplier-funded upgrades for eligible households.', tag: 'Likely' })
+    g.push({
+      ic: '🏠',
+      name: 'Warm Homes: Local Grant',
+      desc: 'Up to £15k for insulation & heating in low-EPC homes.',
+      tag: 'Likely',
+    })
+    g.push({
+      ic: '⚡',
+      name: 'ECO4',
+      desc: 'Supplier-funded upgrades for eligible households.',
+      tag: 'Likely',
+    })
   } else if (eligibleTenure && income === 'high' && benefits === 'no') {
-    g.push({ ic: '🏠', name: 'Great British Insulation Scheme', desc: 'Not fully means-tested — Council Tax band & EPC based.', tag: 'Possible' })
+    g.push({
+      ic: '🏠',
+      name: 'Great British Insulation Scheme',
+      desc: 'Not fully means-tested — Council Tax band & EPC based.',
+      tag: 'Possible',
+    })
   }
   grants.value = g
   lastGrantContext = g.length ? g.map((x) => x.name).join(', ') : null
@@ -496,7 +670,10 @@ function answer(key: 'tenure' | 'benefits' | 'income', value: string) {
 
 function showResult() {
   computeGrants()
-  const flagged = grants.value.map((g) => ({ scheme: g.name, likelihood: g.tag.toLowerCase() }))
+  const flagged = grants.value.map((g) => ({
+    scheme: g.name,
+    likelihood: g.tag.toLowerCase(),
+  }))
   sendCapture({
     type: 'grant_check',
     source: 'pathway.grant_check',
@@ -514,7 +691,9 @@ function showResult() {
   state.value = 'result'
 }
 
-function goForm() { state.value = 'form' }
+function goForm() {
+  state.value = 'form'
+}
 
 function goConfirm() {
   sendCapture({
@@ -539,9 +718,10 @@ function goConfirm() {
       measure: trade.value.measure,
       date: 'Requested just now',
       status: 'sourcing',
-      grant: (answers.benefits === 'yes' || answers.income === 'low')
-        ? 'Grant check · likely'
-        : null,
+      grant:
+        answers.benefits === 'yes' || answers.income === 'low'
+          ? 'Grant check · likely'
+          : null,
     },
     ...requests.value,
   ]
@@ -550,7 +730,9 @@ function goConfirm() {
   state.value = 'confirm'
 }
 
-function afterConfirm() { state.value = 'tracker' }
+function afterConfirm() {
+  state.value = 'tracker'
+}
 
 function toggleInterest(v: string) {
   const i = interests.value.indexOf(v)
@@ -583,17 +765,20 @@ function close() {
 // Without this the sheet would re-open on whichever state it last held,
 // which surprises the user (e.g. they closed on ea-confirm, tap "Find
 // installers" and land back on the confirm page).
-watch(() => props.open, (o) => {
-  if (o) {
-    state.value = props.initialState
-    // Only wipe form fields on a fresh routes open — reopening the
-    // tracker or market state shouldn't lose in-progress form input.
-    if (props.initialState === 'routes') {
-      formName.value = ''
-      formContact.value = ''
+watch(
+  () => props.open,
+  (o) => {
+    if (o) {
+      state.value = props.initialState
+      // Only wipe form fields on a fresh routes open — reopening the
+      // tracker or market state shouldn't lose in-progress form input.
+      if (props.initialState === 'routes') {
+        formName.value = ''
+        formContact.value = ''
+      }
     }
-  }
-})
+  },
+)
 </script>
 
 <style scoped>
@@ -617,7 +802,14 @@ watch(() => props.open, (o) => {
   justify-content: center;
   animation: ifs-fade 0.24s ease;
 }
-@keyframes ifs-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes ifs-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 .ifs-sheet {
   width: 100%;
@@ -631,14 +823,21 @@ watch(() => props.open, (o) => {
   max-height: 85dvh;
   display: flex;
   flex-direction: column;
-  animation: ifs-slide 0.34s cubic-bezier(.22, 1, .36, 1);
+  animation: ifs-slide 0.34s cubic-bezier(0.22, 1, 0.36, 1);
   font-family: inherit;
   color: #231d45;
   /* Leave room for the iOS home indicator inside the scrollable
      content area — the sheet itself sits flush at the bottom. */
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
-@keyframes ifs-slide { from { transform: translateY(100%) } to { transform: translateY(0) } }
+@keyframes ifs-slide {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
 
 .ifs-handle {
   width: 40px;
@@ -653,7 +852,9 @@ watch(() => props.open, (o) => {
   padding: 6px 22px 30px;
   flex: 1;
 }
-.ifs-scroll::-webkit-scrollbar { display: none }
+.ifs-scroll::-webkit-scrollbar {
+  display: none;
+}
 
 .ifs-eyebrow {
   font-size: 11px;
@@ -687,9 +888,18 @@ watch(() => props.open, (o) => {
   padding: 13px 14px;
   margin-top: 16px;
 }
-.ifs-acc-ic { font-size: 18px }
-.ifs-acc p { font-size: 12.5px; color: #4a3f6b; font-weight: 500; line-height: 1.5 }
-.ifs-acc :deep(b) { color: #231d45 }
+.ifs-acc-ic {
+  font-size: 18px;
+}
+.ifs-acc p {
+  font-size: 12.5px;
+  color: #4a3f6b;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.ifs-acc :deep(b) {
+  color: #231d45;
+}
 
 .ifs-routes {
   display: flex;
@@ -713,19 +923,38 @@ watch(() => props.open, (o) => {
   color: inherit;
   transition: border-color 0.14s, box-shadow 0.14s, transform 0.12s;
 }
-.ifs-route:hover { border-color: #00a19a; box-shadow: 0 6px 18px rgba(0, 161, 154, 0.12) }
-.ifs-route:active { transform: scale(0.99) }
+.ifs-route:hover {
+  border-color: #00a19a;
+  box-shadow: 0 6px 18px rgba(0, 161, 154, 0.12);
+}
+.ifs-route:active {
+  transform: scale(0.99);
+}
 .ifs-r-ic {
-  width: 46px; height: 46px;
+  width: 46px;
+  height: 46px;
   border-radius: 13px;
   flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 22px;
 }
-.ifs-route--grant .ifs-r-ic { background: #e4f4ec }
-.ifs-route--match .ifs-r-ic { background: #e6f5f4 }
-.ifs-route--self  .ifs-r-ic { background: #fbf1e1 }
-.ifs-r-body { flex: 1; min-width: 0; display: flex; flex-direction: column }
+.ifs-route--grant .ifs-r-ic {
+  background: #e4f4ec;
+}
+.ifs-route--match .ifs-r-ic {
+  background: #e6f5f4;
+}
+.ifs-route--self .ifs-r-ic {
+  background: #fbf1e1;
+}
+.ifs-r-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
 .ifs-r-title {
   font-size: 15px;
   font-weight: 800;
@@ -743,8 +972,14 @@ watch(() => props.open, (o) => {
   border-radius: 10px;
   text-transform: uppercase;
 }
-.ifs-badge--free  { background: #00a19a; color: #fff }
-.ifs-badge--money { background: #2e9e6b; color: #fff }
+.ifs-badge--free {
+  background: #00a19a;
+  color: #fff;
+}
+.ifs-badge--money {
+  background: #2e9e6b;
+  color: #fff;
+}
 .ifs-r-sub {
   font-size: 12.5px;
   color: #6b6880;
@@ -752,8 +987,14 @@ watch(() => props.open, (o) => {
   margin-top: 3px;
   line-height: 1.45;
 }
-.ifs-r-arrow { color: #bdb8cc; font-size: 20px; flex-shrink: 0 }
-.ifs-route:hover .ifs-r-arrow { color: #00a19a }
+.ifs-r-arrow {
+  color: #bdb8cc;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.ifs-route:hover .ifs-r-arrow {
+  color: #00a19a;
+}
 .ifs-foot {
   font-size: 11.5px;
   color: #9994ab;
@@ -764,12 +1005,38 @@ watch(() => props.open, (o) => {
 }
 
 /* eligibility */
-.ifs-progress { display: flex; gap: 6px; margin: 16px 0 4px }
-.ifs-progress span { flex: 1; height: 5px; border-radius: 3px; background: #e9e7f0 }
-.ifs-progress span.on { background: #00a19a }
-.ifs-q h4 { font-size: 17px; font-weight: 800; margin-top: 18px; letter-spacing: -0.01em }
-.ifs-qhint { font-size: 12.5px; color: #6b6880; font-weight: 500; margin-top: 5px }
-.ifs-opts { display: flex; flex-direction: column; gap: 10px; margin-top: 16px }
+.ifs-progress {
+  display: flex;
+  gap: 6px;
+  margin: 16px 0 4px;
+}
+.ifs-progress span {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: #e9e7f0;
+}
+.ifs-progress span.on {
+  background: #00a19a;
+}
+.ifs-q h4 {
+  font-size: 17px;
+  font-weight: 800;
+  margin-top: 18px;
+  letter-spacing: -0.01em;
+}
+.ifs-qhint {
+  font-size: 12.5px;
+  color: #6b6880;
+  font-weight: 500;
+  margin-top: 5px;
+}
+.ifs-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
 .ifs-opt {
   border: 1.5px solid #e9e7f0;
   border-radius: 14px;
@@ -783,8 +1050,13 @@ watch(() => props.open, (o) => {
   text-align: left;
   transition: border-color 0.14s, background 0.14s;
 }
-.ifs-opt:hover { border-color: #00a19a; background: #fbfefe }
-.ifs-opt:active { transform: scale(0.99) }
+.ifs-opt:hover {
+  border-color: #00a19a;
+  background: #fbfefe;
+}
+.ifs-opt:active {
+  transform: scale(0.99);
+}
 .ifs-indicative {
   display: inline-flex;
   align-items: center;
@@ -811,7 +1083,9 @@ watch(() => props.open, (o) => {
   gap: 6px;
   padding: 0;
 }
-.ifs-back-link:hover { color: #231d45 }
+.ifs-back-link:hover {
+  color: #231d45;
+}
 
 /* result */
 .ifs-result-hero {
@@ -821,9 +1095,18 @@ watch(() => props.open, (o) => {
   color: #fff;
   margin-top: 6px;
 }
-.ifs-result-hero--none { background: linear-gradient(135deg, #6b6880, #4a4760) }
-.ifs-rh-ic { font-size: 30px }
-.ifs-result-hero h3 { color: #fff; font-size: 20px; margin-top: 10px; font-weight: 800 }
+.ifs-result-hero--none {
+  background: linear-gradient(135deg, #6b6880, #4a4760);
+}
+.ifs-rh-ic {
+  font-size: 30px;
+}
+.ifs-result-hero h3 {
+  color: #fff;
+  font-size: 20px;
+  margin-top: 10px;
+  font-weight: 800;
+}
 .ifs-result-hero p {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.9);
@@ -831,7 +1114,12 @@ watch(() => props.open, (o) => {
   line-height: 1.5;
   margin-top: 6px;
 }
-.ifs-grant-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px }
+.ifs-grant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
 .ifs-grant-item {
   display: flex;
   gap: 12px;
@@ -842,16 +1130,31 @@ watch(() => props.open, (o) => {
   padding: 13px 14px;
 }
 .ifs-gi-ic {
-  width: 38px; height: 38px;
+  width: 38px;
+  height: 38px;
   border-radius: 11px;
   background: #e4f4ec;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 18px;
   flex-shrink: 0;
 }
-.ifs-gi-body { flex: 1; min-width: 0 }
-.ifs-gi-name { font-size: 14px; font-weight: 800; color: #231d45 }
-.ifs-gi-desc { font-size: 11.5px; color: #6b6880; font-weight: 500; margin-top: 2px }
+.ifs-gi-body {
+  flex: 1;
+  min-width: 0;
+}
+.ifs-gi-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+}
+.ifs-gi-desc {
+  font-size: 11.5px;
+  color: #6b6880;
+  font-weight: 500;
+  margin-top: 2px;
+}
 .ifs-gi-tag {
   font-size: 10.5px;
   font-weight: 800;
@@ -872,7 +1175,9 @@ watch(() => props.open, (o) => {
   padding: 13px 14px;
   margin-top: 16px;
 }
-.ifs-pl-ic { font-size: 18px }
+.ifs-pl-ic {
+  font-size: 18px;
+}
 .ifs-pl-label {
   font-size: 10.5px;
   font-weight: 800;
@@ -888,7 +1193,9 @@ watch(() => props.open, (o) => {
 }
 
 /* form fields */
-.ifs-field { margin-top: 14px }
+.ifs-field {
+  margin-top: 14px;
+}
 .ifs-field label {
   font-size: 12.5px;
   font-weight: 700;
@@ -907,8 +1214,15 @@ watch(() => props.open, (o) => {
   color: #231d45;
   background: #fbfafe;
 }
-.ifs-field input:focus { outline: none; border-color: #00a19a; background: #fff }
-.ifs-field input::placeholder { color: #b4afc4; font-weight: 500 }
+.ifs-field input:focus {
+  outline: none;
+  border-color: #00a19a;
+  background: #fff;
+}
+.ifs-field input::placeholder {
+  color: #b4afc4;
+  font-weight: 500;
+}
 
 /* primary CTAs */
 .ifs-submit,
@@ -924,24 +1238,40 @@ watch(() => props.open, (o) => {
   cursor: pointer;
   margin-top: 20px;
 }
-.ifs-submit { background: #00a19a }
-.ifs-submit:hover { background: #00857f }
-.ifs-primary { background: #231d45; margin-top: 22px }
+.ifs-submit {
+  background: #00a19a;
+}
+.ifs-submit:hover {
+  background: #00857f;
+}
+.ifs-primary {
+  background: #231d45;
+  margin-top: 22px;
+}
 .ifs-submit:active,
-.ifs-primary:active { transform: scale(0.99) }
+.ifs-primary:active {
+  transform: scale(0.99);
+}
 
 /* confirm state */
-.ifs-confirm { text-align: center; padding: 16px 4px 8px }
+.ifs-confirm {
+  text-align: center;
+  padding: 16px 4px 8px;
+}
 .ifs-tick {
-  width: 76px; height: 76px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   background: #e6f5f4;
   margin: 6px auto 20px;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
 }
 .ifs-tick svg {
-  width: 34px; height: 34px;
+  width: 34px;
+  height: 34px;
   stroke: #00a19a;
   stroke-width: 3;
   fill: none;
@@ -949,7 +1279,11 @@ watch(() => props.open, (o) => {
   stroke-dashoffset: 48;
   animation: ifs-draw 0.5s ease 0.15s forwards;
 }
-@keyframes ifs-draw { to { stroke-dashoffset: 0 } }
+@keyframes ifs-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
 .ifs-ring {
   position: absolute;
   inset: -6px;
@@ -959,10 +1293,19 @@ watch(() => props.open, (o) => {
   animation: ifs-pulse 0.6s ease 0.1s;
 }
 @keyframes ifs-pulse {
-  0% { transform: scale(0.8); opacity: 0.6 }
-  100% { transform: scale(1.25); opacity: 0 }
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
 }
-.ifs-confirm h3 { font-size: 21px; font-weight: 800 }
+.ifs-confirm h3 {
+  font-size: 21px;
+  font-weight: 800;
+}
 .ifs-confirm p {
   font-size: 13.5px;
   color: #6b6880;
@@ -971,7 +1314,9 @@ watch(() => props.open, (o) => {
   margin-top: 10px;
   padding: 0 6px;
 }
-.ifs-confirm p b { color: #231d45 }
+.ifs-confirm p b {
+  color: #231d45;
+}
 .ifs-passport {
   display: flex;
   gap: 11px;
@@ -983,7 +1328,9 @@ watch(() => props.open, (o) => {
   padding: 14px;
   margin-top: 20px;
 }
-.ifs-passport-ic { font-size: 17px }
+.ifs-passport-ic {
+  font-size: 17px;
+}
 .ifs-passport p {
   margin: 0;
   font-size: 12.5px;
@@ -991,26 +1338,49 @@ watch(() => props.open, (o) => {
   line-height: 1.5;
   font-weight: 500;
 }
-.ifs-passport p b { color: #231d45 }
+.ifs-passport p b {
+  color: #231d45;
+}
 
 /* tracker */
-.ifs-track { display: flex; flex-direction: column; gap: 12px; margin-top: 16px }
+.ifs-track {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
 .ifs-track-item {
   border: 1.5px solid #e9e7f0;
   border-radius: 16px;
   padding: 15px;
 }
-.ifs-track-top { display: flex; gap: 12px; align-items: flex-start }
+.ifs-track-top {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
 .ifs-t-ic {
-  width: 42px; height: 42px;
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
   background: #e6f5f4;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
 }
-.ifs-t-name { font-size: 14.5px; font-weight: 800; color: #231d45 }
-.ifs-t-date { font-size: 11.5px; color: #6b6880; font-weight: 600; margin-top: 2px }
+.ifs-t-name {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #231d45;
+}
+.ifs-t-date {
+  font-size: 11.5px;
+  color: #6b6880;
+  font-weight: 600;
+  margin-top: 2px;
+}
 .ifs-pill {
   display: inline-flex;
   align-items: center;
@@ -1021,15 +1391,33 @@ watch(() => props.open, (o) => {
   border-radius: 20px;
   margin-top: 12px;
 }
-.ifs-pill--sourcing { background: #fff7e8; color: #c18a38 }
-.ifs-pill--grant { background: #f3effb; color: #6a4fb5; margin-left: 8px }
+.ifs-pill--sourcing {
+  background: #fff7e8;
+  color: #c18a38;
+}
+.ifs-pill--grant {
+  background: #f3effb;
+  color: #6a4fb5;
+  margin-left: 8px;
+}
 .ifs-dot {
-  width: 7px; height: 7px; border-radius: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
   background: currentColor;
 }
-.ifs-empty { text-align: center; padding: 30px 10px }
-.ifs-empty-ic { font-size: 40px }
-.ifs-empty h4 { font-size: 16px; font-weight: 800; margin-top: 12px }
+.ifs-empty {
+  text-align: center;
+  padding: 30px 10px;
+}
+.ifs-empty-ic {
+  font-size: 40px;
+}
+.ifs-empty h4 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 12px;
+}
 .ifs-empty p {
   font-size: 13px;
   color: #6b6880;
@@ -1037,7 +1425,9 @@ watch(() => props.open, (o) => {
   margin-top: 6px;
   line-height: 1.5;
 }
-.ifs-empty p b { color: #231d45 }
+.ifs-empty p b {
+  color: #231d45;
+}
 
 /* early access */
 .ifs-ea-hero {
@@ -1048,8 +1438,15 @@ watch(() => props.open, (o) => {
   text-align: center;
   margin-top: 4px;
 }
-.ifs-ea-ic { font-size: 36px }
-.ifs-ea-hero h3 { color: #fff; font-size: 21px; margin-top: 12px; font-weight: 800 }
+.ifs-ea-ic {
+  font-size: 36px;
+}
+.ifs-ea-hero h3 {
+  color: #fff;
+  font-size: 21px;
+  margin-top: 12px;
+  font-weight: 800;
+}
 .ifs-ea-hero p {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.85);
@@ -1057,20 +1454,51 @@ watch(() => props.open, (o) => {
   line-height: 1.55;
   margin-top: 8px;
 }
-.ifs-promise { display: flex; flex-direction: column; gap: 12px; margin-top: 20px }
-.ifs-promise-row { display: flex; gap: 13px; align-items: center }
+.ifs-promise {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+.ifs-promise-row {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+}
 .ifs-p-ic {
-  width: 42px; height: 42px;
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
   background: #e4f4ec;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
 }
-.ifs-p-title { font-size: 14px; font-weight: 800; color: #231d45 }
-.ifs-p-sub { font-size: 12px; color: #6b6880; font-weight: 500; margin-top: 2px }
-.ifs-ea-q { font-size: 14px; font-weight: 800; color: #231d45; margin-top: 20px }
-.ifs-ea-chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px }
+.ifs-p-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+}
+.ifs-p-sub {
+  font-size: 12px;
+  color: #6b6880;
+  font-weight: 500;
+  margin-top: 2px;
+}
+.ifs-ea-q {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+  margin-top: 20px;
+}
+.ifs-ea-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 12px;
+}
 .ifs-ea-chip {
   border: 1.5px solid #e9e7f0;
   background: #fff;
@@ -1083,11 +1511,15 @@ watch(() => props.open, (o) => {
   cursor: pointer;
   transition: all 0.14s;
 }
-.ifs-ea-chip:hover { border-color: #00a19a }
+.ifs-ea-chip:hover {
+  border-color: #00a19a;
+}
 .ifs-ea-chip.on {
   background: #00a19a;
   border-color: #00a19a;
   color: #fff;
 }
-.ifs-ea-chip:active { transform: scale(0.97) }
+.ifs-ea-chip:active {
+  transform: scale(0.97);
+}
 </style>
