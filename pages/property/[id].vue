@@ -786,87 +786,8 @@
         </div>
       </div>
 
-      <!-- ─── SECTION 9: Property Details ──────────────────────────── -->
-      <div class="pps-details-card">
-        <div class="pps-details-header">Property details</div>
-        <div class="pps-details-grid">
-          <div v-if="property.propertyType" class="pps-detail-tile">
-            <img
-              src="/op-icons/property/type.jpeg"
-              alt=""
-              class="pps-detail-tile-icon-img"
-              loading="lazy"
-            />
-            <div class="pps-detail-label">Type</div>
-            <div class="pps-detail-value">{{ property.propertyType }}</div>
-          </div>
-          <div v-if="property.tenure" class="pps-detail-tile">
-            <span class="pps-detail-tile-icon">🔑</span>
-            <div class="pps-detail-label">Tenure</div>
-            <div class="pps-detail-value">{{ property.tenure }}</div>
-          </div>
-          <div v-if="property.yearBuilt" class="pps-detail-tile">
-            <span class="pps-detail-tile-icon">📅</span>
-            <div class="pps-detail-label">Year built</div>
-            <div class="pps-detail-value">{{ property.yearBuilt }}</div>
-          </div>
-          <div
-            v-if="property.sqft || property.floorAreaSqm"
-            class="pps-detail-tile"
-          >
-            <span class="pps-detail-tile-icon">📐</span>
-            <div class="pps-detail-label">Floor area</div>
-            <div class="pps-detail-value">
-              <template v-if="property.sqft"
-                >{{ property.sqft.toLocaleString() }} sqft</template
-              >
-              <template v-else>{{ property.floorAreaSqm }} m²</template>
-            </div>
-          </div>
-          <div v-if="property.epcRating" class="pps-detail-tile">
-            <img
-              src="/op-icons/property/epc.jpeg"
-              alt=""
-              class="pps-detail-tile-icon-img"
-              loading="lazy"
-            />
-            <div class="pps-detail-label">EPC</div>
-            <div class="pps-detail-value">
-              <span
-                class="pps-epc-badge"
-                :style="{ background: epcDotColor }"
-                >{{ property.epcRating }}</span
-              >
-              <template v-if="property.epcScore">
-                {{ property.epcScore }}/100</template
-              >
-            </div>
-          </div>
-          <div v-if="property.uprn" class="pps-detail-tile">
-            <img
-              src="/op-icons/property/uprn.jpeg"
-              alt=""
-              class="pps-detail-tile-icon-img"
-              loading="lazy"
-            />
-            <div class="pps-detail-label">UPRN</div>
-            <div class="pps-detail-value" style="font-size: 12px">
-              {{ property.uprn }}
-            </div>
-          </div>
-          <!-- Title number tile (restored) -->
-          <div v-if="property.titleNumber" class="pps-detail-tile">
-            <span class="pps-detail-tile-icon">📜</span>
-            <div class="pps-detail-label">Title number</div>
-            <div class="pps-detail-value" style="font-size: 12px">
-              {{ property.titleNumber }}
-            </div>
-          </div>
-          <!-- (Flood tile removed from Property Details — the same data is
-               already in the explore-grid 'Flood & Risk' tile + its own
-               bottom sheet, so a duplicate here only invited drift.) -->
-        </div>
-      </div>
+      <!-- SECTION 9 removed — Type / EPC / UPRN now live inside the
+           'Property details' explore-grid tile → bottom sheet. -->
 
       <!-- EPC fabric breakdown (restored from old version) — only when we
            have at least one component-level rating from the EPC API. -->
@@ -980,10 +901,92 @@
         >
           <div class="pps-sheet-handle" />
 
+          <!-- ── Property details (Type / EPC / UPRN + Download EPC) ─ -->
+          <template v-if="activeSheet === 'property-details'">
+            <div class="pps-ds-header" style="background: #eef3f7">
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/type.jpeg" alt="" loading="lazy" /></span>
+              <div class="pps-ds-header-text">
+                <div class="pps-ds-header-title">Property details</div>
+                <div class="pps-ds-header-meta">
+                  Verified against Ordnance Survey · EPC Register
+                </div>
+              </div>
+            </div>
+            <div class="pps-pd-list">
+              <div v-if="property?.propertyType" class="pps-pd-row">
+                <img
+                  src="/op-icons/property/type.jpeg"
+                  alt=""
+                  class="pps-pd-row-icon"
+                  loading="lazy"
+                />
+                <div class="pps-pd-row-body">
+                  <div class="pps-pd-row-label">Type</div>
+                  <div class="pps-pd-row-value">{{ property.propertyType }}</div>
+                </div>
+              </div>
+              <div v-if="property?.epcRating" class="pps-pd-row">
+                <img
+                  src="/op-icons/property/epc.jpeg"
+                  alt=""
+                  class="pps-pd-row-icon"
+                  loading="lazy"
+                />
+                <div class="pps-pd-row-body">
+                  <div class="pps-pd-row-label">EPC</div>
+                  <div class="pps-pd-row-value">
+                    <span
+                      class="pps-epc-badge"
+                      :style="{ background: epcDotColor }"
+                      >{{ property.epcRating }}</span
+                    ><template v-if="property.epcScore">
+                      {{ property.epcScore }}/100</template
+                    >
+                  </div>
+                  <button
+                    v-if="property.epcLmkKey || property.uprn"
+                    type="button"
+                    class="pps-pd-download"
+                    :disabled="epcDownloading"
+                    @click="downloadEpc"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    {{ epcDownloading ? 'Opening…' : 'View EPC certificate' }}
+                  </button>
+                </div>
+              </div>
+              <div v-if="property?.uprn" class="pps-pd-row">
+                <img
+                  src="/op-icons/property/uprn.jpeg"
+                  alt=""
+                  class="pps-pd-row-icon"
+                  loading="lazy"
+                />
+                <div class="pps-pd-row-body">
+                  <div class="pps-pd-row-label">UPRN</div>
+                  <div class="pps-pd-row-value pps-pd-row-value--mono">
+                    {{ property.uprn }}
+                  </div>
+                </div>
+              </div>
+              <div
+                v-if="!property?.propertyType && !property?.epcRating && !property?.uprn"
+                class="pps-pd-empty"
+              >
+                No property details on file yet.
+              </div>
+            </div>
+            <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
+          </template>
+
           <!-- ── History (Land Registry) ─────────────────────────── -->
-          <template v-if="activeSheet === 'history'">
+          <template v-else-if="activeSheet === 'history'">
             <div class="pps-ds-header" style="background: #fff3e0">
-              <span class="pps-ds-header-icon">🏠</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/propertyHistory.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Price History</div>
                 <div class="pps-ds-header-meta">
@@ -1325,7 +1328,7 @@
           <!-- ── Street (live energy rank) ─────────────────────────── -->
           <template v-else-if="activeSheet === 'street'">
             <div class="pps-ds-header" style="background: #e8f5e9">
-              <span class="pps-ds-header-icon">🏘️</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/streetData.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Street data</div>
                 <div class="pps-ds-header-meta">
@@ -1436,7 +1439,7 @@
           <!-- ── Schools (Ordnance Survey NGD via /enrichment) ─────── -->
           <template v-else-if="activeSheet === 'schools'">
             <div class="pps-ds-header" style="background: #e3f2fd">
-              <span class="pps-ds-header-icon">🎓</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/schools.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Schools</div>
                 <div class="pps-ds-header-meta">
@@ -1486,7 +1489,7 @@
           <!-- ── Transport (OpenStreetMap via Overpass) ───────────── -->
           <template v-else-if="activeSheet === 'transport'">
             <div class="pps-ds-header" style="background: #f3e5f5">
-              <span class="pps-ds-header-icon">🚂</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/trainstations.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Transport</div>
                 <div class="pps-ds-header-meta">
@@ -1629,7 +1632,7 @@
           <!-- ── Train stations (dedicated sheet) ──────────────────── -->
           <template v-else-if="activeSheet === 'trains'">
             <div class="pps-ds-header" style="background: #f3e5f5">
-              <span class="pps-ds-header-icon">🚂</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/trainstations.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Train stations</div>
                 <div class="pps-ds-header-meta">
@@ -1690,7 +1693,7 @@
           <!-- ── Bus stops (dedicated sheet) ──────────────────────── -->
           <template v-else-if="activeSheet === 'buses'">
             <div class="pps-ds-header" style="background: #fff3e0">
-              <span class="pps-ds-header-icon">🚌</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/busStops.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Bus stops</div>
                 <div class="pps-ds-header-meta">
@@ -1748,7 +1751,7 @@
           <!-- ── Airports (dedicated sheet) ───────────────────────── -->
           <template v-else-if="activeSheet === 'airports'">
             <div class="pps-ds-header" style="background: #e1f5fe">
-              <span class="pps-ds-header-icon">✈️</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/airports.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Airports</div>
                 <div class="pps-ds-header-meta">
@@ -1811,7 +1814,7 @@
           <!-- ── Map (light Leaflet via existing pps-map-iframe) ───── -->
           <template v-else-if="activeSheet === 'map'">
             <div class="pps-ds-header" style="background: #e8f5e9">
-              <span class="pps-ds-header-icon">📍</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/locationAndMap.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Location &amp; Map</div>
                 <div class="pps-ds-header-meta">
@@ -1884,7 +1887,7 @@
           <!-- ── Flood (real EA RoFRS data) ───────────────────────── -->
           <template v-else-if="activeSheet === 'flood'">
             <div class="pps-ds-header" style="background: #fff8e1">
-              <span class="pps-ds-header-icon">💧</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/floodAndRisj.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">
                   Flood &amp; environmental risk
@@ -2048,7 +2051,7 @@
           <!-- ── Planning (placeholder) ────────────────────────────── -->
           <template v-else-if="activeSheet === 'planning'">
             <div class="pps-ds-header" style="background: #f5f5f7">
-              <span class="pps-ds-header-icon">📋</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/planning.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Planning history</div>
                 <div class="pps-ds-header-meta">
@@ -2156,7 +2159,7 @@
           <!-- ── Council tax (real band) ───────────────────────────── -->
           <template v-else-if="activeSheet === 'council'">
             <div class="pps-ds-header" style="background: #e8f5e9">
-              <span class="pps-ds-header-icon">🏛️</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/councilTax.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Council tax</div>
                 <div class="pps-ds-header-meta">
@@ -2250,7 +2253,7 @@
           <!-- ── Broadband (Ofcom Connected Nations) ──────────────── -->
           <template v-else-if="activeSheet === 'broadband'">
             <div class="pps-ds-header" style="background: #e3f2fd">
-              <span class="pps-ds-header-icon">📶</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/broadband.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Broadband</div>
                 <div class="pps-ds-header-meta">
@@ -2588,7 +2591,7 @@
           <!-- ── Listed buildings / heritage sites ────────────────────── -->
           <template v-else-if="activeSheet === 'listed'">
             <div class="pps-ds-header" style="background: #fbefd9">
-              <span class="pps-ds-header-icon">🏛️</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/listedBuildings.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Heritage sites nearby</div>
                 <div class="pps-ds-header-meta">
@@ -2641,7 +2644,7 @@
           <!-- ── Crime / safety (data.police.uk) ────────────────────── -->
           <template v-else-if="activeSheet === 'crime'">
             <div class="pps-ds-header" style="background: #eeedf5">
-              <span class="pps-ds-header-icon">🛡️</span>
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/crime.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Crime in this area</div>
                 <div class="pps-ds-header-meta">
@@ -3491,6 +3494,54 @@ const pageLoading = ref(true)
 const loadError = ref('')
 const showRegisterInterest = ref(false)
 const showShare = ref(false)
+
+// EPC certificate — open the official gov.uk cert page in a new tab.
+// The old opendatacommunities.org/files/{lmk} endpoint was retired
+// with the EPC API migration, and the new API doesn't expose a PDF
+// download. The find-energy-certificate.service.gov.uk consumer
+// page serves the cert HTML with a "Print or download" flow —
+// same URL every UK property portal uses.
+//
+// Fast path: property already has epcLmkKey persisted → link
+// straight to it.
+// Slow path: no lmk on file → hit the backend once to resolve it
+// via UPRN, then open the resulting URL.
+const epcDownloading = ref(false)
+async function downloadEpc() {
+  if (epcDownloading.value) return
+  epcDownloading.value = true
+  try {
+    const openCert = (lmk: string) => {
+      const url = `https://find-energy-certificate.service.gov.uk/energy-certificate/${lmk}`
+      window.open(url, '_blank', 'noopener,noreferrer')
+    }
+    const stored = property.value?.epcLmkKey
+    if (stored) {
+      openCert(stored)
+      return
+    }
+    // Fall back to backend UPRN lookup for older cache rows that
+    // don't have the lmk-key persisted.
+    const apiBase = config.public.apiBase as string
+    const res = await fetch(`${apiBase}/property/${propertyId}/epc-download-info`).catch(() => null)
+    const info = res && res.ok ? await res.json().catch(() => null) : null
+    if (info?.lmkKey) {
+      openCert(info.lmkKey)
+      return
+    }
+    showToast({
+      message: 'No EPC certificate is on file for this property.',
+      duration: 3000,
+    })
+  } catch {
+    showToast({
+      message: 'Could not open the EPC certificate. Please try again.',
+      duration: 3000,
+    })
+  } finally {
+    epcDownloading.value = false
+  }
+}
 
 // Owner-claim is delegated to the global /claim/[id] page, which runs:
 //   1. KYC verification (skipped if the user is already approved)
@@ -4619,6 +4670,29 @@ const exploreTiles = computed(() => {
   const p = property.value
   if (!p) return []
   const tiles: Array<any> = []
+  // Property details — first tile in the grid. Opens a sheet with
+  // Type / EPC / UPRN + Download EPC. Kept as a tile (not a
+  // top-level card) so the layout stays consistent with every other
+  // data-source drawer on this page.
+  const epcValue = p.epcRating
+    ? `EPC ${p.epcRating}${p.epcScore ? ` · ${p.epcScore}` : ''}`
+    : p.propertyType
+      ? p.propertyType
+      : '—'
+  const detailsSub = p.uprn
+    ? `UPRN ${p.uprn}`
+    : p.propertyType && p.epcRating
+      ? p.propertyType
+      : 'Type · EPC · UPRN'
+  tiles.push({
+    key: 'property-details',
+    icon: '🏷️',
+    iconBg: '#EEF3F7',
+    iconImage: '/op-icons/property/type.jpeg',
+    title: 'Property details',
+    value: epcValue,
+    sub: detailsSub,
+  })
   // Property history (Land Registry sold history)
   //
   // Enrichment sale rows can arrive with EITHER `price`/`date` (our
@@ -5104,6 +5178,7 @@ function onScoreCardTap() {
 
 // ─── Bottom-sheet system (prototype's openSheet/closeSheet) ────────────────
 type SheetKey =
+  | 'property-details'
   | 'history'
   | 'street'
   | 'schools'
@@ -5193,6 +5268,7 @@ function onSheetTouchEnd() {
 function onExploreTileClick(key: string) {
   // Every explore tile now opens its matching bottom sheet (prototype parity).
   const map: Record<string, SheetKey | null> = {
+    'property-details': 'property-details',
     history: 'history',
     street: 'street',
     schools: 'schools',
@@ -7478,6 +7554,77 @@ function formatSaleDate(dateStr: string): string {
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
   background: white;
 }
+
+/* ── Property Details bottom-sheet content ──────────────────────
+   Rendered inside the shared .pps-sheet container when the
+   'property-details' explore tile is tapped. Rows follow the same
+   pattern as ProfileRow — icon + label/value stack — so the sheet
+   feels familiar. */
+.pps-pd-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0 12px;
+}
+.pps-pd-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: #f9f9fb;
+  border-radius: 12px;
+}
+.pps-pd-row-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.pps-pd-row-body { flex: 1; min-width: 0; }
+.pps-pd-row-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #aaa;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.pps-pd-row-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0e2840;
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+.pps-pd-row-value--mono {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.pps-pd-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #00a19a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.pps-pd-download:hover { background: #008a84; }
+.pps-pd-download:disabled { background: #b4b5b8; cursor: not-allowed; }
+.pps-pd-empty {
+  padding: 24px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: #8f9094;
+}
 .pps-details-header {
   padding: 14px 16px 0;
   font-size: 15px;
@@ -7673,6 +7820,15 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 .pps-ds-header-icon {
   font-size: 26px;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pps-ds-header-icon img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  display: block;
 }
 .pps-ds-header-title {
   font-size: 17px;

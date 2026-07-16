@@ -12,13 +12,15 @@
           <span class="upload-icon"><OPIcon name="upload" class="w-[20px] h-[20px]" /></span>
           <span>{{ uploading ? 'Uploading...' : 'Upload from Files' }}</span>
         </button>
-        <button class="upload-btn camera" disabled>
+        <button class="upload-btn camera" :disabled="uploading" @click="showScanner = true">
           <span class="upload-icon"><OPIcon name="scan" class="w-[20px] h-[20px]" /></span>
           <span>Scan Using Camera</span>
         </button>
       </div>
 
-      <input ref="fileInput" type="file" multiple @change="handleFileSelect" style="display: none" />
+      <input ref="fileInput" type="file" multiple accept="image/*,.pdf" @change="handleFileSelect" style="display: none" />
+
+      <CameraScanModal :open="showScanner" @close="showScanner = false" @capture="onCameraCapture" />
 
       <p v-if="uploadError" class="upload-error">{{ uploadError }}</p>
 
@@ -39,6 +41,7 @@
 
 <script setup>
 import OPIcon from '~/components/ui/OPIcon.vue'
+import CameraScanModal from '~/components/ui/CameraScanModal.vue'
 
 const props = defineProps({
   question: { type: Object, required: true },
@@ -51,6 +54,7 @@ const config = useRuntimeConfig()
 const fileInput = ref(null)
 const uploading = ref(false)
 const uploadError = ref('')
+const showScanner = ref(false)
 
 const uploadedFiles = computed(() => props.answer || [])
 
@@ -93,6 +97,13 @@ const handleFileSelect = async (event) => {
 const removeFile = (index) => {
   const updated = uploadedFiles.value.filter((_, i) => i !== index)
   emit('update', updated)
+}
+
+// Camera scan → funnel through the same upload flow. The captured File
+// arrives as a real File object with type image/jpeg, so the backend
+// treats it identically to a filesystem pick.
+const onCameraCapture = async (file) => {
+  await handleFileSelect({ target: { files: [file], value: '' } })
 }
 </script>
 

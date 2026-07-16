@@ -178,6 +178,7 @@
                   <div
                     class="cx-step cx-step-tap"
                     :class="{ active: activeStep === s.n }"
+                    :style="{ '--cx-step-i': i }"
                     @click="activeStep = s.n"
                   >
                     <div class="cx-step-num" :class="s.n === 1 ? 'on' : 'off'">
@@ -1284,11 +1285,64 @@ function onPrimary(action: PrimaryAction) {
   background: var(--bg);
 }
 .cx-step-tap .cx-step-num {
+  position: relative;
   transition: transform 0.15s;
 }
+
+/* Gentle breathing animation on every step circle to signal these
+   are interactive targets, not decorative dots. Pauses on hover so
+   the user's actual selection doesn't fight the animation. */
+.cx-step-tap .cx-step-num::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  pointer-events: none;
+}
+.cx-step-tap:hover .cx-step-num {
+  animation-play-state: paused;
+}
+
 .cx-step-tap.active .cx-step-num {
   transform: scale(1.12);
   box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.15);
+  animation: cx-step-pulse 1.8s ease-in-out infinite;
+}
+/* Radiating tap-ripple on the active step — the primary "you can tap
+   these" cue. Sits behind the circle so it doesn't obscure the number. */
+.cx-step-tap.active .cx-step-num::after {
+  border-color: rgba(0, 161, 154, 0.5);
+  animation: cx-step-ripple 1.8s ease-out infinite;
+}
+@keyframes cx-step-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.15); }
+  50%      { box-shadow: 0 0 0 6px rgba(0, 161, 154, 0.05); }
+}
+@keyframes cx-step-ripple {
+  0%   { transform: scale(1);   opacity: 0.55; border-width: 2px; }
+  80%  { transform: scale(1.6); opacity: 0;    border-width: 1px; }
+  100% { transform: scale(1.6); opacity: 0;    border-width: 1px; }
+}
+
+/* First-load "attention bounce" on the whole stepper — a single wave
+   from left to right so testers immediately see it responding to
+   nothing, hinting the row is interactive. Fires once, then quiet. */
+.cx-steps .cx-step-tap {
+  animation: cx-step-nudge 1s ease-in-out;
+  animation-delay: calc(var(--cx-step-i, 0) * 120ms);
+  animation-fill-mode: both;
+}
+@keyframes cx-step-nudge {
+  0%, 100% { transform: translateY(0); }
+  40%      { transform: translateY(-4px); }
+}
+
+/* Respect user reduced-motion preference — animations off entirely. */
+@media (prefers-reduced-motion: reduce) {
+  .cx-step-tap.active .cx-step-num,
+  .cx-step-tap.active .cx-step-num::after,
+  .cx-steps .cx-step-tap { animation: none; }
 }
 .cx-step-tap.active .cx-step-num.off {
   background: var(--accent);

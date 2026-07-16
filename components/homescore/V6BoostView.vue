@@ -139,7 +139,10 @@
          see their progress. Only the next-unuploaded card is rendered
          after them; later docs stay hidden until their turn. -->
     <div v-for="d in completedDocs" :key="d.id" class="boost-row added">
-      <div class="boost-row-icon" :class="d.tone">{{ d.icon }}</div>
+      <div class="boost-row-icon" :class="[d.tone, { 'boost-row-icon--img': !!d.iconImage }]">
+        <img v-if="d.iconImage" :src="d.iconImage" :alt="d.title" class="boost-row-icon-img" loading="lazy" />
+        <template v-else>{{ d.icon }}</template>
+      </div>
       <div class="boost-row-info">
         <div class="boost-row-title">{{ d.title }}</div>
         <div class="boost-row-sub">Verified · +{{ d.mrDelta }}% Move Ready</div>
@@ -152,8 +155,9 @@
       class="boost-row boost-row--active"
       @click="onAddDoc(currentDoc.id)"
     >
-      <div class="boost-row-icon" :class="currentDoc.tone">
-        {{ currentDoc.icon }}
+      <div class="boost-row-icon" :class="[currentDoc.tone, { 'boost-row-icon--img': !!currentDoc.iconImage }]">
+        <img v-if="currentDoc.iconImage" :src="currentDoc.iconImage" :alt="currentDoc.title" class="boost-row-icon-img" loading="lazy" />
+        <template v-else>{{ currentDoc.icon }}</template>
       </div>
       <div class="boost-row-info">
         <div class="boost-row-title">{{ currentDoc.title }}</div>
@@ -206,8 +210,9 @@
           </div>
         </div>
         <div class="bcv-card">
-          <div class="bcv-ico" :class="celebrateDoc.tone">
-            {{ celebrateDoc.icon }}
+          <div class="bcv-ico" :class="[celebrateDoc.tone, { 'bcv-ico--img': !!celebrateDoc.iconImage }]">
+            <img v-if="celebrateDoc.iconImage" :src="celebrateDoc.iconImage" :alt="celebrateDoc.title" class="bcv-ico-img" loading="lazy" />
+            <template v-else>{{ celebrateDoc.icon }}</template>
           </div>
           <!-- "VERIFIED" is only honest for the utility bill (where
                server-side OCR just confirmed a real annual spend
@@ -396,6 +401,7 @@ const docs = [
   {
     id: 'bills',
     icon: '💡',
+    iconImage: '/op-icons/boostYourScore/utilityBills.png',
     tone: 'yellow',
     title: 'Utility bills',
     sub: 'See your actual spend vs your EPC estimate — most impactful first step',
@@ -1491,6 +1497,19 @@ function formatFileSize(bytes: number): string {
   display: grid;
   place-items: center;
   font-size: 28px;
+}
+.bcv-ico--img {
+  width: 72px;
+  height: 72px;
+  background: transparent !important;
+  padding: 0;
+  overflow: visible;
+}
+.bcv-ico-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .bcv-ico.yellow {
   background: #fff6d5;

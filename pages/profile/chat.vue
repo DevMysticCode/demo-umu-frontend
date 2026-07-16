@@ -16,11 +16,11 @@
       </button>
 
       <div class="flex items-center gap-3 flex-1">
-        <div
-          class="w-10 h-10 rounded-full bg-brand-aqua flex items-center justify-center flex-shrink-0"
-        >
-          <Icon name="i-heroicons-sparkles" class="w-5 h-5 text-white" />
-        </div>
+        <img
+          src="/op-icons/ai/moveCompanion.png"
+          alt="MoveCompanion"
+          class="w-11 h-11 flex-shrink-0 object-contain"
+        />
         <div>
           <p
             class="font-sf-pro text-[17px] leading-[22px] font-semibold text-[#1f2024]"
