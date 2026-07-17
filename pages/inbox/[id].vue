@@ -117,7 +117,33 @@
             :class="isMine(m) ? 'thread-bubble--mine' : 'thread-bubble--theirs'"
           >
             <div class="thread-bubble-body">{{ m.body }}</div>
-            <div class="thread-bubble-time">{{ formatTime(m.createdAt) }}</div>
+            <div class="thread-bubble-meta">
+              <span class="thread-bubble-time">{{ formatTime(m.createdAt) }}</span>
+              <!-- Read receipts on my outgoing messages only. One grey
+                   check = delivered to the server; two blue checks =
+                   read by the other participant. WhatsApp-style. -->
+              <span
+                v-if="isMine(m)"
+                class="thread-tick"
+                :class="{ 'thread-tick--read': isReadByOthers(m) }"
+                :title="isReadByOthers(m) ? 'Read' : 'Sent'"
+                aria-hidden="true"
+              >
+                <template v-if="isReadByOthers(m)">
+                  <!-- Double tick -->
+                  <svg viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="1 6.5 4 9.5 10 3" />
+                    <polyline points="7 6.5 10 9.5 19 1" />
+                  </svg>
+                </template>
+                <template v-else>
+                  <!-- Single tick -->
+                  <svg viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="1 5 4.5 8.5 11 1.5" />
+                  </svg>
+                </template>
+              </span>
+            </div>
           </div>
         </template>
       </div>
@@ -146,7 +172,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import {
   useConversations,
   type MessageRow,
@@ -164,6 +190,7 @@ const conversationId = route.params.id as string
 
 const {
   messages,
+  participants,
   loading,
   error,
   loadMessages,
@@ -179,12 +206,54 @@ const responding = ref(false)
 const scrollHost = ref<HTMLElement | null>(null)
 const inputEl = ref<HTMLTextAreaElement | null>(null)
 
+// Light poll while the tab is visible so read-receipt ticks flip to
+// blue when the other side opens the thread. Cheap: it's the same
+// endpoint the initial load hits, and only fires when the tab is
+// foregrounded. When we ship SSE later this timer goes away.
+let pollTimer: ReturnType<typeof setInterval> | null = null
+function startPolling() {
+  stopPolling()
+  pollTimer = setInterval(() => {
+    if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+      loadMessages(conversationId)
+    }
+  }, 15_000)
+}
+function stopPolling() {
+  if (pollTimer) {
+    clearInterval(pollTimer)
+    pollTimer = null
+  }
+}
+
 onMounted(async () => {
   await loadMessages(conversationId)
   await markRead(conversationId)
   await nextTick()
   scrollToBottom()
+  startPolling()
 })
+
+onBeforeUnmount(() => {
+  stopPolling()
+})
+
+// True when every OTHER participant has a lastReadAt at or after this
+// message's createdAt. WhatsApp's contract: sender sees blue ticks as
+// soon as the recipient has "seen" (i.e. opened) the conversation
+// after the message was posted. For a 1:1 thread this is exactly one
+// recipient; for a future group thread the same predicate still holds
+// (all others must have seen it).
+function isReadByOthers(m: MessageRow): boolean {
+  if (!m.senderId || !myId.value) return false
+  const others = participants.value.filter((p) => p.userId !== myId.value)
+  if (others.length === 0) return false
+  const msgTime = new Date(m.createdAt).getTime()
+  return others.every((p) => {
+    if (!p.lastReadAt) return false
+    return new Date(p.lastReadAt).getTime() >= msgTime
+  })
+}
 
 watch(
   () => messages.value.length,
@@ -434,13 +503,30 @@ function openPassport(payload: any) {
   border: 1px solid #eef0f6;
 }
 .thread-bubble-body { white-space: pre-wrap; }
-.thread-bubble-time {
+.thread-bubble-meta {
   margin-top: 4px;
+  display: flex; align-items: center; gap: 4px;
+  justify-content: flex-end;
   font-size: 10px; font-weight: 600;
-  opacity: 0.7;
-  text-align: right;
+  opacity: 0.75;
 }
-.thread-bubble--theirs .thread-bubble-time { color: #a8a9ad; opacity: 1; }
+.thread-bubble-time {
+  line-height: 1;
+}
+.thread-bubble--theirs .thread-bubble-meta { color: #a8a9ad; opacity: 1; }
+/* Ticks — grey (delivered) → sky-blue (read). Sits inside the aqua
+   "mine" bubble, so we override the mine-bubble text colour just for
+   the tick when it's flipped to read. */
+.thread-tick {
+  display: inline-flex; align-items: center;
+  color: currentColor;
+  opacity: 0.85;
+}
+.thread-tick svg { width: 14px; height: 10px; display: block; }
+.thread-tick--read {
+  color: #5EEAD4; /* light teal reads clearly on the aqua "mine" bubble */
+  opacity: 1;
+}
 
 .thread-card {
   align-self: stretch;

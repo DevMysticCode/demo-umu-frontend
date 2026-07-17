@@ -64,6 +64,10 @@ export function useConversations() {
 
   const conversations = ref<ConversationRow[]>([])
   const messages = ref<MessageRow[]>([])
+  // Participant list for the currently-loaded thread — carries each
+  // user's lastReadAt so the thread view can compute WhatsApp-style
+  // read receipts for outgoing messages without a second round-trip.
+  const participants = ref<Array<{ userId: string; lastReadAt: string | null; role: string | null }>>([])
   const loading = ref(false)
   const error = ref('')
 
@@ -86,10 +90,15 @@ export function useConversations() {
     loading.value = true
     error.value = ''
     try {
-      messages.value = await $fetch<MessageRow[]>(
+      const res = await $fetch<{
+        messages: MessageRow[]
+        participants: Array<{ userId: string; lastReadAt: string | null; role: string | null }>
+      }>(
         `${apiBase()}/conversations/${conversationId}/messages`,
         { headers: authHeaders() },
       )
+      messages.value = res.messages
+      participants.value = res.participants
     } catch (e: any) {
       error.value = e?.data?.message || e?.message || 'Failed to load messages'
     } finally {
@@ -147,6 +156,7 @@ export function useConversations() {
   return {
     conversations,
     messages,
+    participants,
     loading,
     error,
     list,
