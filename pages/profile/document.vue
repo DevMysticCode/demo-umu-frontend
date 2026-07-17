@@ -102,7 +102,19 @@
             {{ docIconLabel(doc) }}
           </div>
           <div class="dc-doc-info">
-            <div class="dc-doc-name">{{ doc.title }}</div>
+            <div class="dc-doc-row-top">
+              <div class="dc-doc-name">{{ doc.title }}</div>
+              <span
+                class="dc-vis-pill"
+                :class="doc.visibility === 'PUBLIC' ? 'is-public' : 'is-private'"
+                :title="doc.visibility === 'PUBLIC'
+                  ? 'Visible to buyers who have unlocked this passport'
+                  : 'Only you can see this document'"
+              >
+                <template v-if="doc.visibility === 'PUBLIC'">🌍 Public</template>
+                <template v-else>🔒 Only you</template>
+              </span>
+            </div>
             <div class="dc-doc-meta">
               {{ docMeta(doc) }}
             </div>
@@ -795,6 +807,39 @@ const goBack = useGoBack('/profile')
   border-color: transparent transparent rgba(0, 0, 0, 0.15) transparent;
 }
 .dc-doc-info { flex: 1; min-width: 0; }
+.dc-doc-row-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+/* Visibility pill — inline with the doc title. Aqua for public,
+   slate for private. Small enough that it doesn't crowd the row
+   but readable at a glance. */
+.dc-vis-pill {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  line-height: 1;
+}
+.dc-vis-pill.is-public {
+  background: #e6f7f6;
+  color: #007e78;
+  border-color: #b2e4e1;
+}
+.dc-vis-pill.is-private {
+  background: #f5f6fa;
+  color: #4a5868;
+  border-color: #e4e5ed;
+}
 .dc-doc-name {
   font-size: 12.5px;
   font-weight: 800;
