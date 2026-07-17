@@ -306,8 +306,12 @@
               <div class="book-brand">Property Passport</div>
               <img src="/op-icons/logo.svg" class="book-logo" alt="" />
               <div class="book-addr">{{ passport.addressLine1 }}</div>
-              <!-- Trash icon — shown on hover -->
+              <!-- Trash icon — shown on hover. Only rendered for the
+                   passport owner (see backend GET /passport/my which
+                   tags each row with isOwner). Collaborators can edit
+                   sections but never delete the whole passport. -->
               <button
+                v-if="passport.isOwner"
                 class="book-trash-btn"
                 @click.stop="confirmDelete(passport)"
                 title="Delete passport"
@@ -351,6 +355,7 @@
                 :type="passport.type"
               />
               <button
+                v-if="passport.isOwner"
                 class="book-trash-btn book-trash-btn--fallback"
                 @click.stop="confirmDelete(passport)"
                 title="Delete passport"
