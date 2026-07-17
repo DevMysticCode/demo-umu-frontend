@@ -19,6 +19,7 @@
           >
             ?
           </button>
+          <NotificationBell data-tour="notifications" />
           <div
             class="hero-avatar"
             data-tour="avatar"
@@ -1701,6 +1702,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
+import NotificationBell from '~/components/ui/NotificationBell.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 
