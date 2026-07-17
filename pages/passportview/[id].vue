@@ -542,6 +542,14 @@
       @close="selectedBuyer = null"
       @action="onBuyerAction"
     />
+    <BuyerActionDrawer
+      :kind="buyerActionKind"
+      :buyer="buyerActionTarget"
+      :property-id="propertyId"
+      :passport-id="route.params.id"
+      @close="buyerActionKind = null"
+      @done="onBuyerActionDone"
+    />
 
     <!-- Publish confirmation drawer -->
     <PublishPassportDrawer
@@ -570,6 +578,7 @@ import AddCollaboratorModal from '@/components/modals/AddCollaboratorModal.vue'
 import YourPropertiesModal from '@/components/modals/YourPropertiesModal.vue'
 import MatchedBuyersDrawer from '~/components/passport/MatchedBuyersDrawer.vue'
 import BuyerDetailDrawer from '~/components/passport/BuyerDetailDrawer.vue'
+import BuyerActionDrawer from '~/components/passport/BuyerActionDrawer.vue'
 import PublishPassportDrawer from '~/components/passport/PublishPassportDrawer.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 
@@ -800,16 +809,41 @@ function openMatchDrawer() {
 function onBuyerSelect(buyer) {
   selectedBuyer.value = buyer
 }
+// ── Buyer actions (invite / share / message) ───────────────────
+// Two-step drawer flow: user taps a CTA in the BuyerDetailDrawer,
+// which just emits `action`; we close that drawer and open the
+// BuyerActionDrawer for the chosen kind. Keeps each drawer focused
+// on one job.
+const buyerActionKind = ref(null)
+const buyerActionTarget = ref(null)
 function onBuyerAction(kind) {
-  // Lightweight stubs for now — wire to real flows when those endpoints exist.
-  const msg =
-    kind === 'invite' ? '📅 Invite sent to buyer'
-      : kind === 'share' ? '🔗 Passport link shared'
-        : '💬 Conversation opened'
+  if (!selectedBuyer.value?.userId) {
+    console.warn(
+      '[buyer-action] Selected buyer has no userId — cannot invite/share/message. ' +
+        'Backend /property/:id/matched-buyers must return { userId } (see property.service.ts).',
+    )
+    return
+  }
+  buyerActionTarget.value = { ...selectedBuyer.value }
+  buyerActionKind.value = kind
+  // Close the detail drawer so the user only sees one modal at a time.
   selectedBuyer.value = null
-  // Simple inline toast via the existing pp-collab-text isn't suitable;
-  // surface as a window alert for now since this is a placeholder action.
-  if (typeof window !== 'undefined') console.log(msg)
+}
+function onBuyerActionDone(kind, _result) {
+  buyerActionKind.value = null
+  buyerActionTarget.value = null
+  const msg =
+    kind === 'invite'
+      ? '📅 Invite sent — buyer will be notified'
+      : kind === 'share'
+        ? '🔗 Passport shared — buyer can preview + unlock'
+        : '💬 Message sent — carry on in the Inbox'
+  if (typeof window !== 'undefined' && window?.dispatchEvent) {
+    // Reuse the existing toast bus if the page has one; console
+    // fallback keeps this useful during Ticket 5 (which adds the
+    // proper in-app inbox + notification bell).
+    console.log(msg)
+  }
 }
 
 // ── Vault ──────────────────────────────────────────────────────
