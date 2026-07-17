@@ -45,19 +45,7 @@
         </div>
       </div>
 
-      <div class="feat-footer">
-        <div class="feat-meta">
-          <span class="feat-clock" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 7v5l3 2" />
-            </svg>
-          </span>
-          <div>
-            <div class="feat-meta-title">Done in 60 seconds</div>
-            <div class="feat-meta-sub">Scored 0–100</div>
-          </div>
-        </div>
+      <div class="feat-footer feat-footer--cta-only">
         <button class="feat-cta" type="button" @click.stop="router.push('/homescore')">
           Run a HomeScore
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -113,19 +101,7 @@
         </div>
       </div>
 
-      <div class="feat-footer">
-        <div class="feat-meta">
-          <span class="feat-clock" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 7v5l3 2" />
-            </svg>
-          </span>
-          <div>
-            <div class="feat-meta-title">See a sample Passport</div>
-            <div class="feat-meta-sub">Instant preview</div>
-          </div>
-        </div>
+      <div class="feat-footer feat-footer--cta-only">
         <button class="feat-cta" type="button" @click.stop="goToPassportSample">
           See a sample Passport
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -309,6 +285,10 @@ function goToPassportSample() {
   justify-content: space-between;
   gap: 16px;
 }
+/* When the meta row is removed, let the CTA span the whole footer so
+   the button isn't marooned to the right on wide screens. */
+.feat-footer--cta-only { justify-content: stretch; }
+.feat-footer--cta-only .feat-cta { flex: 1; min-width: 0; }
 
 .feat-meta {
   display: flex;

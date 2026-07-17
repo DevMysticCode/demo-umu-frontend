@@ -1,10 +1,18 @@
 <template>
-  <div
-    v-if="modelValue"
-    class="drawer-overlay"
-    :class="{ 'drawer-overlay--fullscreen': fullscreen }"
-    @click.self="handleClose"
-  >
+  <!-- Transition wrapper so the drawer slides down on close instead of
+       unmounting instantly. `v-if` on the outer overlay used to yank
+       the DOM before the CSS transform-transition could fire; wrapping
+       in <Transition name="drawer"> defers the unmount until the
+       leave animation completes. The overlay fade + the sheet
+       slide-down are keyed off the same class prefix (see .drawer-*
+       transition classes below). -->
+  <Transition name="drawer" appear>
+    <div
+      v-if="modelValue"
+      class="drawer-overlay"
+      :class="{ 'drawer-overlay--fullscreen': fullscreen }"
+      @click.self="handleClose"
+    >
     <div
       class="drawer"
       :class="{ 'drawer--open': modelValue, 'drawer--fullscreen': fullscreen }"
@@ -55,6 +63,7 @@
       </div>
     </div>
   </div>
+  </Transition>
 </template>
 
 <script setup>
@@ -241,6 +250,31 @@ const onDragEnd = () => {
 
 .drawer--open {
   transform: translateY(0);
+}
+
+/* ── Slide-down / fade animation on close ──────────────────────────
+   Wrapped in a Vue <Transition name="drawer"> so the overlay + drawer
+   stay mounted through the leave animation. Without this the outer
+   `v-if` would tear the DOM out before the CSS transform-transition
+   on `.drawer` could play, and the user would see a hard cut. */
+.drawer-enter-active,
+.drawer-leave-active {
+  transition: background-color 0.28s ease;
+}
+.drawer-enter-active .drawer,
+.drawer-leave-active .drawer {
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0.24, 1);
+}
+/* Starting / ending states — overlay fades to transparent, sheet
+   slides fully off-screen. The `.drawer--open` class rule above
+   handles the resting position. */
+.drawer-enter-from,
+.drawer-leave-to {
+  background-color: transparent !important;
+}
+.drawer-enter-from .drawer,
+.drawer-leave-to .drawer {
+  transform: translateY(100%) !important;
 }
 
 /* Grab handle at the top of the sheet — iOS-native drag affordance. */

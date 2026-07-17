@@ -3233,11 +3233,22 @@ onMounted(async () => {
 .psc-passport-slot :deep(.passport-address) {
   bottom: calc(14% - 2px);
 }
+/* Force the address type well below PassportCard's clamp minimum —
+   at 64px width the shared component's clamp(8px, 7.5cqi, 14px)
+   floors at 8px which visually overflowed the cover. Explicit tiny
+   sizes match the client's 5-6px ask; !important is needed because
+   the source rule uses clamp() which otherwise wins the cascade tie. */
 .psc-passport-slot :deep(.address-line) {
+  font-size: 6px !important;
   font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0;
 }
 .psc-passport-slot :deep(.address-line-small) {
+  font-size: 5px !important;
   font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
 }
 
 .psc-label-small {

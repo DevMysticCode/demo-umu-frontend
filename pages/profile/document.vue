@@ -678,10 +678,18 @@ const goBack = useGoBack('/profile')
   text-align: left;
 }
 .dc-cat:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(14, 40, 64, 0.06); }
-.dc-cat.identity { background: linear-gradient(135deg, #f1f9f4, #e2f1ea); border-color: rgba(61, 189, 163, 0.25); }
-.dc-cat.property { background: linear-gradient(135deg, #fdf4dc, #f8e6c2); border-color: rgba(212, 166, 89, 0.32); }
-.dc-cat.financial { background: linear-gradient(135deg, #ffe9dd, #ffd4bd); border-color: rgba(255, 139, 90, 0.28); }
-.dc-cat.other { background: linear-gradient(135deg, #ede5ff, #dcc8ff); border-color: rgba(157, 123, 255, 0.28); }
+/* Category tone overrides removed — every tile now uses the base
+   white background from .dc-cat above so the whole page reads as
+   one consistent surface, matching the property-details tile look.
+   Border stays neutral; the illustration inside carries the visual
+   identity that the pastel wash used to. */
+.dc-cat.identity,
+.dc-cat.property,
+.dc-cat.financial,
+.dc-cat.other {
+  background: #fff;
+  border-color: #e8eceb;
+}
 .dc-cat-icon {
   width: 30px; height: 30px;
   border-radius: 9px;
