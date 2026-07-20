@@ -5,10 +5,6 @@
     <div class="task-content">
       <!-- ── Hero (matches prototype: teal-pale gradient + ring meta) ─── -->
       <section class="qhero">
-        <span class="qhero-badge">
-          <span class="qhero-dot"></span>
-          {{ currentStep?.title || '' }}
-        </span>
         <div class="qhero-illustration" aria-hidden="true">
           <OPIcon
             v-if="currentStep?.icon"

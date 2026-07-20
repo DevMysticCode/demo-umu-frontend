@@ -347,7 +347,14 @@
 
       <div class="cl-card-pale cl-text-l cl-w-full">
         <div class="cl-pale-row">
-          <div class="cl-pale-ic">🏛️</div>
+          <div class="cl-pale-ic">
+            <img
+              src="/op-icons/claim/LandRegistryChek.png"
+              alt=""
+              class="cl-pale-img"
+              loading="lazy"
+            />
+          </div>
           <div>
             <div class="cl-pale-t">Next: Land Registry check</div>
             <div class="cl-pale-s">
@@ -362,7 +369,14 @@
     <div v-else-if="step === 'lr-searching'" class="cl-screen cl-center-full">
       <div class="cl-lr-pulse-wrap">
         <div class="cl-lr-pulse" />
-        <div class="cl-lr-inner">🏛️</div>
+        <div class="cl-lr-inner">
+          <img
+            src="/op-icons/claim/LandRegistryChek.png"
+            alt=""
+            class="cl-lr-img"
+            loading="lazy"
+          />
+        </div>
       </div>
       <h1 class="cl-h1 cl-center">Searching Land Registry</h1>
       <p class="cl-body cl-center cl-mb-lg">
@@ -1655,7 +1669,22 @@ async function issuePassport() {
   align-items: center;
   gap: 12px;
 }
-.cl-pale-ic { font-size: 28px; flex-shrink: 0; }
+.cl-pale-ic {
+  font-size: 28px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Land Registry illustration in the "Next: Land Registry check" tile.
+   Sized bigger than the emoji it replaces so the 3D artwork reads
+   properly against the aqua card. */
+.cl-pale-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+}
 .cl-pale-ic-sm { font-size: 18px; flex-shrink: 0; }
 .cl-pale-t {
   font-size: 13.5px;
@@ -1858,11 +1887,20 @@ async function issuePassport() {
 .cl-lr-inner {
   position: absolute;
   inset: 16px;
-  background: #00a19a;
+  background: #fff;
   border-radius: 50%;
   display: grid;
   place-items: center;
   font-size: 28px;
+  padding: 8px;
+}
+/* Land Registry illustration inside the pulsing loader — larger than
+   the emoji so the 3D building fills the pulse circle cleanly. */
+.cl-lr-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .cl-lr-steps {
   display: flex;
