@@ -8,7 +8,7 @@
         :class="isActive('explore')"
         @click="router.push('/explore')"
       >
-        <OPIcon name="explore" :class="iconSize" />
+        <img src="/op-icons/explore/explore.png" alt="" class="nav-icon" />
         <span class="text-xs mt-1">Explore</span>
       </button>
 
@@ -17,32 +17,20 @@
         :class="isActive('passport')"
         @click="router.push('/passport/collections')"
       >
-        <OPIcon name="passport" :class="iconSize" />
+        <img src="/op-icons/explore/passport.png" alt="" class="nav-icon" />
         <span class="text-xs mt-1">Passport</span>
       </button>
 
-      <!-- Inbox — messages + notifications home. Red dot on the icon
-           when there's anything unread; drives the same useNotifications
-           badge state the top bell uses so both surfaces agree. Inline
-           SVG (rather than OPIcon) because we need the dot overlay
-           inside the same slot. -->
+      <!-- Inbox — messages + notifications home. The unread red dot is
+           overlaid on the illustration rather than baked into it so we
+           can drop it when useNotifications.unreadCount is 0. -->
       <button
         class="flex flex-col items-center py-2 relative"
         :class="isActive('inbox')"
         @click="router.push('/inbox')"
       >
         <span class="relative inline-flex">
-          <svg
-            :class="iconSize"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-          </svg>
+          <img src="/op-icons/explore/inbox.png" alt="" class="nav-icon" />
           <span v-if="unreadCount > 0" class="inbox-tab-dot" aria-hidden="true" />
         </span>
         <span class="text-xs mt-1">Inbox</span>
@@ -68,7 +56,7 @@
         :class="isActive('calendar')"
         @click="router.push('/profile/calendar')"
       >
-        <OPIcon name="calendar" :class="iconSize" />
+        <img src="/op-icons/explore/calendar.png" alt="" class="nav-icon" />
         <span class="text-xs mt-1">Calendar</span>
       </button>
 
@@ -77,7 +65,7 @@
         :class="isActive('ai')"
         @click="router.push('/profile/chat')"
       >
-        <OPIcon name="learnAskAI" :class="iconSize" />
+        <img src="/op-icons/explore/ai.png" alt="" class="nav-icon" />
         <span class="text-xs mt-1">AI</span>
       </button>
     </div>
@@ -130,6 +118,17 @@ const { unreadCount } = useNotifications()
 .bottom-nav-row {
   background: #ffffff;
 }
+/* 3D illustration nav icons — sized just slightly larger than the
+   old SVG glyphs because the artwork carries more detail per pixel
+   and reads better at 26px than 20px. Aspect kept natural so passport
+   book / calendar / chat bubble all stay proportional. */
+.nav-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
+
 /* Small red dot on the Inbox tab whenever the user has unread items —
    mirrors the top-bell badge without stealing space for a count. */
 .inbox-tab-dot {

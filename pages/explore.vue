@@ -716,8 +716,8 @@
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
-                <div class="psc-gauge-num">{{ passportScore }}</div>
-                <div class="psc-gauge-lbl">Score</div>
+                <div class="psc-gauge-num">{{ passportScore ?? '—' }}</div>
+                <div class="psc-gauge-lbl">HomeScore</div>
               </div>
             </div>
             <div class="psc-footer" style="position: relative; z-index: 1">
@@ -1130,8 +1130,8 @@
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
-                <div class="psc-gauge-num">{{ passportScore }}</div>
-                <div class="psc-gauge-lbl">Score</div>
+                <div class="psc-gauge-num">{{ passportScore ?? '—' }}</div>
+                <div class="psc-gauge-lbl">HomeScore</div>
               </div>
             </div>
             <div class="psc-footer" style="position: relative; z-index: 1">
@@ -1413,8 +1413,8 @@
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
-                <div class="psc-gauge-num">{{ passportScore }}</div>
-                <div class="psc-gauge-lbl">Score</div>
+                <div class="psc-gauge-num">{{ passportScore ?? '—' }}</div>
+                <div class="psc-gauge-lbl">HomeScore</div>
               </div>
             </div>
             <div class="psc-footer" style="position: relative; z-index: 1">
@@ -2154,14 +2154,29 @@ const greeting = computed(() => {
   return name ? `${timeOfDay}, ${name} 👋` : `${timeOfDay} 👋`
 })
 
+// Gauge on the passport summary card shows the property's HomeScore
+// (0-100 from EPC + energy data), not passport-fill progress. The
+// backend attaches `homeScore` per passport row from HomeScoreResult;
+// null means nobody has run one yet, so the dial reads "—".
 const passportScore = computed(() => {
+  const hs = passports.value[0]?.homeScore
+  return typeof hs === 'number' ? hs : null
+})
+
+// Progress bar / "Complete X%" line below the gauge is a separate
+// number — how much of the passport itself the owner has filled in.
+const passportCompletion = computed(() => {
   const pct = passports.value[0]?.completionPercentage
   return typeof pct === 'number' ? pct : 0
 })
 
-const passportDashoffset = computed(() =>
-  (75.4 * (1 - passportScore.value / 100)).toFixed(1),
-)
+// The dial arc empties when there's no score to show, so the ring
+// stays a soft placeholder rather than a full circle by default.
+const passportDashoffset = computed(() => {
+  const s = passportScore.value
+  if (s == null) return '75.4' // fully empty
+  return (75.4 * (1 - s / 100)).toFixed(1)
+})
 
 const portfolioCompliant = computed(
   () =>
