@@ -698,21 +698,24 @@
                 </div>
               </div>
               <div class="psc-gauge">
-                <svg width="54" height="34" viewBox="0 0 58 36">
-                  <path
-                    d="M 7 34 A 24 24 0 0 1 51 34"
+                <!-- Full-circle progress ring — replaces the old
+                     half-moon arc so the gauge matches the property
+                     page's HomeScore ring and the boost-view rings.
+                     Rotated -90deg so the fill starts from the top. -->
+                <svg width="54" height="54" viewBox="0 0 58 58" style="transform: rotate(-90deg)">
+                  <circle
+                    cx="29" cy="29" r="24"
                     fill="none"
                     stroke="#e5f4f2"
                     stroke-width="4"
-                    stroke-linecap="round"
                   />
-                  <path
-                    d="M 7 34 A 24 24 0 0 1 51 34"
+                  <circle
+                    cx="29" cy="29" r="24"
                     fill="none"
                     stroke="#00a19a"
                     stroke-width="4"
                     stroke-linecap="round"
-                    stroke-dasharray="75.4"
+                    stroke-dasharray="150.8"
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
@@ -1112,21 +1115,24 @@
                 </div>
               </div>
               <div class="psc-gauge">
-                <svg width="54" height="34" viewBox="0 0 58 36">
-                  <path
-                    d="M 7 34 A 24 24 0 0 1 51 34"
+                <!-- Full-circle progress ring — replaces the old
+                     half-moon arc so the gauge matches the property
+                     page's HomeScore ring and the boost-view rings.
+                     Rotated -90deg so the fill starts from the top. -->
+                <svg width="54" height="54" viewBox="0 0 58 58" style="transform: rotate(-90deg)">
+                  <circle
+                    cx="29" cy="29" r="24"
                     fill="none"
                     stroke="#e5f4f2"
                     stroke-width="4"
-                    stroke-linecap="round"
                   />
-                  <path
-                    d="M 7 34 A 24 24 0 0 1 51 34"
+                  <circle
+                    cx="29" cy="29" r="24"
                     fill="none"
                     stroke="#00a19a"
                     stroke-width="4"
                     stroke-linecap="round"
-                    stroke-dasharray="75.4"
+                    stroke-dasharray="150.8"
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
@@ -1395,21 +1401,24 @@
                 </div>
               </div>
               <div class="psc-gauge">
-                <svg width="54" height="34" viewBox="0 0 58 36">
-                  <path
-                    d="M 7 34 A 24 24 0 0 1 51 34"
+                <!-- Full-circle progress ring — replaces the old
+                     half-moon arc so the gauge matches the property
+                     page's HomeScore ring and the boost-view rings.
+                     Rotated -90deg so the fill starts from the top. -->
+                <svg width="54" height="54" viewBox="0 0 58 58" style="transform: rotate(-90deg)">
+                  <circle
+                    cx="29" cy="29" r="24"
                     fill="none"
                     stroke="#e5f4f2"
                     stroke-width="4"
-                    stroke-linecap="round"
                   />
-                  <path
-                    d="M 7 34 A 24 24 0 0 1 51 34"
+                  <circle
+                    cx="29" cy="29" r="24"
                     fill="none"
                     stroke="#00a19a"
                     stroke-width="4"
                     stroke-linecap="round"
-                    stroke-dasharray="75.4"
+                    stroke-dasharray="150.8"
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
@@ -2170,12 +2179,13 @@ const passportCompletion = computed(() => {
   return typeof pct === 'number' ? pct : 0
 })
 
-// The dial arc empties when there's no score to show, so the ring
-// stays a soft placeholder rather than a full circle by default.
+// Full-circle progress ring — circumference for r=24 is 2π × 24 ≈
+// 150.8. Empty state offsets by the full length so the ring reads
+// as an empty track rather than a bogus full green loop at 0.
 const passportDashoffset = computed(() => {
   const s = passportScore.value
-  if (s == null) return '75.4' // fully empty
-  return (75.4 * (1 - s / 100)).toFixed(1)
+  if (s == null) return '150.8'
+  return (150.8 * (1 - s / 100)).toFixed(1)
 })
 
 const portfolioCompliant = computed(
@@ -3292,22 +3302,37 @@ onMounted(async () => {
 .psc-gauge {
   flex-shrink: 0;
   text-align: center;
+  position: relative;
+  /* SVG is 54px, label sits below — total container height ~68px so
+     the score number can be absolutely centred inside the ring. */
+  width: 54px;
 }
-
+/* Score number sits dead-centre inside the ring rather than below the
+   old half-moon. Absolute-positioning it works for any digit count. */
 .psc-gauge-num {
-  font-size: 18px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
   font-weight: 800;
   color: #0e2840;
   line-height: 1;
-  margin-top: -8px;
+  pointer-events: none;
 }
 
 .psc-gauge-lbl {
+  margin-top: 4px;
   font-size: 9px;
   color: #8f9094;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  line-height: 1;
 }
 
 .psc-footer {
