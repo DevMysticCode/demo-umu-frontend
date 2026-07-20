@@ -2168,7 +2168,7 @@
             v-for="pro in qwPros"
             :key="pro.key"
             class="boost-doc-card"
-            @click="openMarketplace"
+            @click="openBookPro(pro)"
           >
             <div class="boost-doc-icon" :style="{ background: pro.bg }">
               {{ pro.icon }}
@@ -2668,6 +2668,18 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- "How Book-a-Pro works" drawer — opens when a user taps any
+         qwPros row (Gas Safe / EICR / EPC). 3 illustrated steps + a
+         "Notify me when live" primary CTA. Marketplace-ready flag
+         stays false until Phase 2 ships the real booking flow. -->
+    <BookProDrawer
+      :pro="bookProActive"
+      :marketplace-ready="false"
+      @close="bookProActive = null"
+      @notify-me="onNotifyMePro"
+      @find-pro="onFindPro"
+    />
   </div>
 </template>
 
@@ -2685,6 +2697,7 @@ import V6NoEpcEstimator from '~/components/homescore/V6NoEpcEstimator.vue'
 import BuyerVerifyCard from '~/components/property/BuyerVerifyCard.vue'
 import V6LevelUpView from '~/components/homescore/V6LevelUpView.vue'
 import V6BoostView from '~/components/homescore/V6BoostView.vue'
+import BookProDrawer from '~/components/homescore/BookProDrawer.vue'
 import TourCoach from '~/components/homescore/TourCoach.vue'
 import { useHomescoreTour } from '~/composables/useHomescoreTour'
 import type { TopWin, Opportunity } from '~/types/homescore'
@@ -5575,6 +5588,34 @@ function formatFileSize(bytes: number): string {
 }
 
 function openMarketplace() {
+  showToast({
+    message: 'Marketplace coming soon',
+    iconEmoji: '🔧',
+  })
+}
+
+// Book-a-Pro drawer state — the qwPros row emits `openBookPro(pro)`
+// with the tapped row, we hold it here so <BookProDrawer> can render
+// the trade-specific step 3 copy (gas cert vs EICR vs EPC assessment).
+const bookProActive = ref<{ key: string; label: string; sub: string } | null>(null)
+function openBookPro(pro: { key: string; label: string; sub: string }) {
+  bookProActive.value = pro
+}
+function onNotifyMePro(proKey: string) {
+  bookProActive.value = null
+  // No email-capture endpoint wired yet; friendly acknowledgement so
+  // the tester knows the tap registered. When the marketplace ships
+  // this becomes a POST to a waitlist endpoint.
+  showToast({
+    message: `Got it — we'll email you when ${proKey === 'gassafe' ? 'Gas Safe' : proKey === 'electrician' ? 'electrician' : 'EPC assessor'} bookings go live`,
+    iconEmoji: '🔔',
+  })
+}
+function onFindPro(_proKey: string) {
+  // Placeholder for when the marketplace ships. For now this is
+  // unreachable because BookProDrawer's marketplace-ready flag stays
+  // false — Phase 2 will flip it and route into the marketplace flow.
+  bookProActive.value = null
   showToast({
     message: 'Marketplace coming soon',
     iconEmoji: '🔧',
