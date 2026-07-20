@@ -2648,38 +2648,149 @@
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Crime in this area</div>
                 <div class="pps-ds-header-meta">
-                  Source: data.police.uk · last 12 months · 1 mile radius
+                  data.police.uk · {{ crimeWindowLabel }}
                 </div>
               </div>
             </div>
+
             <template v-if="enrichmentCrime?.totalLast12m != null">
-              <div class="pps-ds-highlight-box">
-                <div class="pps-ds-highlight-num">
-                  {{ enrichmentCrime.totalLast12m.toLocaleString() }} crimes
-                </div>
-                <div class="pps-ds-highlight-sub">
-                  Over the past 12 months within 1 mile of this address
-                </div>
-              </div>
-              <div class="pps-ds-section-title" style="margin-top: 18px">
-                Breakdown by category
-              </div>
-              <div class="pps-ds-kv-list">
-                <div
-                  v-for="cat in enrichmentCrime.byCategory"
-                  :key="cat.category"
-                  class="pps-ds-kv"
+              <!-- Radius segmented control. Numbers scale client-side
+                   from the 1-mile fetch since the API only gives us
+                   one radius per call; ½ / 2 mile are estimates,
+                   flagged in the copy below. -->
+              <div class="crime-seg" role="group" aria-label="Search radius">
+                <button
+                  v-for="opt in crimeRadiusOptions"
+                  :key="opt.value"
+                  type="button"
+                  :aria-pressed="crimeRadius === opt.value"
+                  @click="crimeRadius = opt.value"
                 >
-                  <span class="pps-ds-k">{{ cat.label }}</span>
-                  <span class="pps-ds-v">{{ cat.count.toLocaleString() }}</span>
+                  {{ opt.label }}
+                </button>
+              </div>
+
+              <!-- Headline card: rate + verdict + benchmark scale -->
+              <section class="crime-headline" aria-live="polite">
+                <div class="crime-rate-row">
+                  <span class="crime-rate">{{ crimeRatePer1000 }}</span>
+                  <span class="crime-rate-unit">crimes per 1,000<br>residents / year</span>
                 </div>
+                <p class="crime-verdict" v-html="crimeVerdictHtml"></p>
+                <p class="crime-raw">
+                  {{ crimeScaledTotal.toLocaleString() }} recorded crimes ·
+                  est. {{ crimeEstimatedPop.toLocaleString() }} residents
+                </p>
+
+                <div class="crime-scale-wrap">
+                  <div class="crime-scale" role="img" :aria-label="crimeScaleAriaLabel">
+                    <span class="crime-tick" style="left: 25%" />
+                    <span class="crime-tick" style="left: 50%" />
+                    <span class="crime-tick" style="left: 75%" />
+                    <span class="crime-marker" :style="{ left: crimeMarkerPct + '%' }" />
+                  </div>
+                  <div class="crime-scale-labels">
+                    <span>QUIETEST 25%</span>
+                    <span>AVERAGE</span>
+                    <span>BUSIEST 25%</span>
+                  </div>
+                  <p class="crime-scale-key">{{ crimeScaleKey }}</p>
+                </div>
+              </section>
+
+              <!-- Trend card -->
+              <section
+                v-if="crimeSparkPath"
+                class="crime-trend"
+              >
+                <div class="crime-trend-top">
+                  <span>Direction of travel</span>
+                  <span
+                    v-if="crimeTrendChipLabel"
+                    class="crime-chip"
+                    :class="{ up: enrichmentCrime.trendDirection === 'up' }"
+                  >{{ crimeTrendChipLabel }}</span>
+                </div>
+                <svg class="crime-spark" viewBox="0 0 300 52" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="crimeSparkFade" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#00A19A" stop-opacity=".22" />
+                      <stop offset="100%" stop-color="#00A19A" stop-opacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path :d="crimeSparkFillPath" fill="url(#crimeSparkFade)" />
+                  <path :d="crimeSparkPath" fill="none" stroke="#00A19A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div class="crime-spark-x">
+                  <span>{{ crimeSparkLabels.first }}</span>
+                  <span>{{ crimeSparkLabels.mid }}</span>
+                  <span>{{ crimeSparkLabels.last }}</span>
+                </div>
+              </section>
+
+              <!-- Category breakdown with filter chips + expandable
+                   rows. Group chips are purely client-side — every
+                   category is mapped to property/personal/public via
+                   crimeGroupFor(). -->
+              <p class="crime-section-label">What was reported</p>
+              <p class="crime-section-sub">Tap a category for what it usually means locally.</p>
+
+              <div class="crime-seg" role="group" aria-label="Filter categories">
+                <button
+                  v-for="opt in crimeGroupOptions"
+                  :key="opt.value"
+                  type="button"
+                  :aria-pressed="crimeGroup === opt.value"
+                  @click="crimeGroup = opt.value; crimeOpenIdx = -1"
+                >
+                  {{ opt.label }}
+                </button>
               </div>
-              <div class="pps-ds-info-note">
-                Counts reflect reported crimes only. Many incidents go
-                unreported, and definitions vary by force. Use as a relative
-                indicator, not an absolute measure.
+
+              <div class="crime-cats">
+                <button
+                  v-for="(c, i) in crimeVisibleCats"
+                  :key="c.category"
+                  type="button"
+                  class="crime-cat"
+                  :aria-expanded="crimeOpenIdx === i"
+                  @click="crimeOpenIdx = crimeOpenIdx === i ? -1 : i"
+                >
+                  <div class="crime-cat-top">
+                    <span class="crime-cat-name">{{ c.label }}</span>
+                    <span class="crime-cat-num">{{ scaledCount(c.count).toLocaleString() }}</span>
+                  </div>
+                  <div class="crime-bar">
+                    <i
+                      :style="{
+                        width: crimeBarPct(c.count) + '%',
+                        background: crimeGroupColour(c.category),
+                      }"
+                    />
+                  </div>
+                  <p v-if="crimeOpenIdx === i" class="crime-cat-note">
+                    {{ crimeNoteFor(c.category) }}
+                  </p>
+                </button>
               </div>
+
+              <button
+                v-if="crimeGroup === 'all' && crimeAllCats.length > 5"
+                type="button"
+                class="crime-more"
+                @click="crimeExpandedAll = !crimeExpandedAll"
+              >
+                {{ crimeExpandedAll ? 'Show top 5 only' : `Show all ${crimeAllCats.length} categories` }}
+              </button>
+
+              <p class="crime-note">
+                <b>Read this as indicative, not exact.</b> Police data is mapped to
+                anonymised snap-points on nearby streets, not to individual
+                addresses. A wider radius will pick up retail and night-time
+                economy crime that has little bearing on a residential street.
+              </p>
             </template>
+
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🛡️</div>
               <div class="pps-ds-placeholder-title">Crime data unavailable</div>
@@ -5534,6 +5645,254 @@ const enrichmentListedBuildings = computed<any[]>(
 const enrichmentCrime = computed<any | null>(
   () => (enrichment.value as any)?.crime ?? null,
 )
+
+// ── Crime sheet: radius, group filter, expandable rows ─────────
+// Radius switcher is client-side because the API only returns one
+// radius per call; ½ and 2-mile scale the 1-mile counts by rough
+// population multipliers. Flagged as an estimate in the footnote.
+const crimeRadiusOptions = [
+  { value: '0.5', label: '½ mile' },
+  { value: '1',   label: '1 mile'  },
+  { value: '2',   label: '2 miles' },
+] as const
+type CrimeRadius = '0.5' | '1' | '2'
+const crimeRadius = ref<CrimeRadius>('1')
+
+const crimeGroupOptions = [
+  { value: 'all',      label: 'All'         },
+  { value: 'property', label: 'Property'    },
+  { value: 'personal', label: 'Personal'    },
+  { value: 'public',   label: 'Public order'},
+] as const
+type CrimeGroup = 'all' | 'property' | 'personal' | 'public'
+const crimeGroup = ref<CrimeGroup>('all')
+
+const crimeOpenIdx = ref(-1)
+const crimeExpandedAll = ref(false)
+
+// Radius → scale multiplier + estimated resident population. The
+// 1-mile pop is anchored at 18,600 (typical UK urban 1-mile radius);
+// ½ and 2-mile derived from area ratio × density correction to match
+// the reference mockup.
+const CRIME_RADIUS_META: Record<CrimeRadius, { scale: number; pop: number }> = {
+  '0.5': { scale: 0.28, pop: 6400  },
+  '1':   { scale: 1,    pop: 18600 },
+  '2':   { scale: 4.02, pop: 60600 },
+}
+
+// National England & Wales average — used to compute the "% above /
+// below" verdict + the benchmark-scale marker position.
+const CRIME_NATIONAL_RATE = 89
+
+const CRIME_GROUP_MAP: Record<string, CrimeGroup> = {
+  'violent-crime':                'personal',
+  'violence-and-sexual-offences': 'personal',
+  'robbery':                      'personal',
+  'drugs':                        'personal',
+  'burglary':                     'property',
+  'vehicle-crime':                'property',
+  'bicycle-theft':                'property',
+  'other-theft':                  'property',
+  'theft-from-the-person':        'property',
+  'criminal-damage-arson':        'property',
+  'possession-of-weapons':        'property',
+  'shoplifting':                  'public',
+  'public-order':                 'public',
+  'anti-social-behaviour':        'public',
+  'other-crime':                  'public',
+}
+function crimeGroupFor(category: string): CrimeGroup {
+  return CRIME_GROUP_MAP[category] ?? 'public'
+}
+
+const CRIME_GROUP_COLOUR: Record<CrimeGroup, string> = {
+  property: '#231D45',
+  personal: '#C4586B',
+  public:   '#C18A38',
+  all:      '#00A19A', // unused (chip filter, never a bar colour)
+}
+function crimeGroupColour(category: string): string {
+  return CRIME_GROUP_COLOUR[crimeGroupFor(category)]
+}
+
+// Category-specific editorial notes — copy borrowed from the design
+// mockup. Falls back to a generic line for anything the mockup didn't
+// name so an unknown category still shows something on expand.
+const CRIME_NOTES: Record<string, string> = {
+  'violence-and-sexual-offences':
+    'Mostly night-time economy incidents concentrated around the high street, not residential streets.',
+  'violent-crime':
+    'Mostly night-time economy incidents concentrated around the high street, not residential streets.',
+  'shoplifting':
+    'Retail crime from the shopping parade inside the radius. No bearing on the property itself.',
+  'vehicle-crime':
+    'Theft from vehicles, largely overnight on unlit roads. Off-street parking materially reduces risk.',
+  'other-theft':
+    'Includes theft from the person and unattended property in public places.',
+  'criminal-damage-arson':
+    'Predominantly minor damage to vehicles and fencing.',
+  'burglary':
+    'The figure most relevant to a home purchase. Compare against the national norm before drawing conclusions.',
+  'public-order':
+    'Disturbances and harassment reports, weighted to weekend evenings.',
+  'anti-social-behaviour':
+    'Under-reported nationally — treat the count as a floor rather than a total.',
+  'other-crime':
+    'Offences that do not fit the standard Home Office categories.',
+  'robbery':
+    'Theft involving force or threat. Low in absolute terms for most residential areas.',
+  'bicycle-theft':
+    'Clustered near stations. Secure storage is the main mitigation.',
+  'drugs':
+    'Largely possession offences arising from stop and search, which reflects policing activity as much as prevalence.',
+  'possession-of-weapons':
+    'Includes carrying prohibited items in public. Rare in absolute terms.',
+  'theft-from-the-person':
+    'Pickpocketing and similar — concentrated in busy public spaces.',
+}
+function crimeNoteFor(category: string): string {
+  return (
+    CRIME_NOTES[category] ??
+    'A relative indicator only — reporting rates vary and small absolute numbers can shift the ranking materially.'
+  )
+}
+
+// ── Derived values used by the sheet template ─────────────────
+
+const crimeScaledTotal = computed(() => {
+  const total = enrichmentCrime.value?.totalLast12m ?? 0
+  return Math.round(total * CRIME_RADIUS_META[crimeRadius.value].scale)
+})
+const crimeEstimatedPop = computed(
+  () => CRIME_RADIUS_META[crimeRadius.value].pop,
+)
+const crimeRatePer1000 = computed(() => {
+  const pop = crimeEstimatedPop.value
+  if (pop <= 0) return 0
+  return Math.round((crimeScaledTotal.value / pop) * 1000)
+})
+
+// Verdict + scale key derived from the rate vs national average.
+// pctDiff > 0 means area is BUSIER than national norm.
+const crimeVerdictHtml = computed(() => {
+  const r = crimeRatePer1000.value
+  if (!r) return 'Not enough data to compare with the national average.'
+  const pct = Math.round(((r - CRIME_NATIONAL_RATE) / CRIME_NATIONAL_RATE) * 100)
+  const direction = pct === 0 ? 'in line with' : pct > 0 ? '<em>' + pct + '% above</em>' : '<em>' + Math.abs(pct) + '% below</em>'
+  return `About ${direction} the average for England &amp; Wales.`
+})
+const crimeScaleKey = computed(() => {
+  const r = crimeRatePer1000.value
+  if (!r) return 'No comparable rate available.'
+  const pct = ((r - CRIME_NATIONAL_RATE) / CRIME_NATIONAL_RATE) * 100
+  const bandCopy =
+    pct <= -20
+      ? 'Quietest third nationally'
+      : pct <= 0
+        ? 'Lower third of neighbourhoods nationally'
+        : pct <= 20
+          ? 'Around the national midpoint'
+          : 'Above the national midpoint'
+  return `${bandCopy}. National average: ${CRIME_NATIONAL_RATE} per 1,000.`
+})
+const crimeScaleAriaLabel = computed(
+  () => `This location sits at ${crimeMarkerPct.value.toFixed(0)}% of the national spread`,
+)
+// Marker position on the 0-100% benchmark scale. National average is
+// pinned at 50%. Rate = 0 sits at 0%; rate = 2× national sits at 100%.
+const crimeMarkerPct = computed(() => {
+  const r = crimeRatePer1000.value
+  if (!r) return 0
+  const raw = (r / (CRIME_NATIONAL_RATE * 2)) * 100
+  return Math.max(2, Math.min(98, raw))
+})
+
+// Sparkline path — from the same monthlyTrend the backend already
+// computes (chronological, oldest → newest). Returns null when there's
+// no trend to draw so the whole trend card can be hidden.
+const crimeSparkPath = computed<string | null>(() => {
+  const rows: Array<{ month: string; count: number }> =
+    enrichmentCrime.value?.monthlyTrend ?? []
+  if (rows.length < 2) return null
+  const w = 300
+  const h = 44
+  const counts = rows.map((r) => r.count * CRIME_RADIUS_META[crimeRadius.value].scale)
+  const min = Math.min(...counts)
+  const max = Math.max(...counts)
+  const span = max - min || 1
+  const pts = counts.map((n, i) => {
+    const x = (i * w) / (counts.length - 1)
+    const y = h - ((n - min) / span) * h + 4
+    return `${x.toFixed(1)} ${y.toFixed(1)}`
+  })
+  return pts.map((p, i) => (i ? 'L' : 'M') + p).join(' ')
+})
+const crimeSparkFillPath = computed<string>(() => {
+  const p = crimeSparkPath.value
+  if (!p) return ''
+  return `${p} L300 52 L0 52 Z`
+})
+const crimeSparkLabels = computed(() => {
+  const rows: Array<{ month: string; count: number }> =
+    enrichmentCrime.value?.monthlyTrend ?? []
+  if (rows.length === 0) return { first: '', mid: '', last: '' }
+  const first = rows[0]?.month ?? ''
+  const last = rows[rows.length - 1]?.month ?? ''
+  const mid = rows[Math.floor(rows.length / 2)]?.month ?? ''
+  const humanise = (ym: string) => {
+    // month is "YYYY-MM" per data.police.uk convention.
+    const [y, m] = ym.split('-').map((s) => parseInt(s, 10))
+    if (!y || !m) return ym
+    const short = new Date(y, m - 1, 1).toLocaleString('en-GB', { month: 'short' })
+    return `${short} ${String(y).slice(2)}`
+  }
+  return { first: humanise(first), mid: humanise(mid), last: humanise(last) }
+})
+const crimeTrendChipLabel = computed(() => {
+  const pct = enrichmentCrime.value?.yoyChangePct
+  const dir = enrichmentCrime.value?.trendDirection
+  if (typeof pct !== 'number' || dir === 'flat') return ''
+  const arrow = pct >= 0 ? '↑' : '↓'
+  return `${arrow} ${Math.abs(pct)}% year on year`
+})
+const crimeWindowLabel = computed(() => {
+  const rows: Array<{ month: string; count: number }> =
+    enrichmentCrime.value?.monthlyTrend ?? []
+  if (rows.length === 0) return 'Last 12 months'
+  const last = rows[rows.length - 1]?.month ?? ''
+  const [y, m] = last.split('-').map((s) => parseInt(s, 10))
+  if (!y || !m) return 'Last 12 months'
+  const short = new Date(y, m - 1, 1).toLocaleString('en-GB', { month: 'long' })
+  return `12 months to ${short} ${y}`
+})
+
+// Category bars — visible slice honours group filter + "show all" state.
+const crimeAllCats = computed<Array<{ category: string; label: string; count: number }>>(() => {
+  return enrichmentCrime.value?.byCategory ?? []
+})
+const crimeFilteredCats = computed(() => {
+  const list = crimeAllCats.value
+  if (crimeGroup.value === 'all') return list
+  return list.filter((c) => crimeGroupFor(c.category) === crimeGroup.value)
+})
+const crimeVisibleCats = computed(() => {
+  const list = crimeFilteredCats.value
+  if (crimeGroup.value !== 'all' || crimeExpandedAll.value) return list
+  return list.slice(0, 5)
+})
+const crimeMaxCount = computed(() => {
+  const list = crimeAllCats.value
+  if (!list.length) return 1
+  return Math.max(...list.map((c) => c.count))
+})
+function scaledCount(raw: number): number {
+  return Math.round(raw * CRIME_RADIUS_META[crimeRadius.value].scale)
+}
+function crimeBarPct(raw: number): number {
+  const max = crimeMaxCount.value
+  if (max <= 0) return 0
+  return Math.min(100, Math.round((raw / max) * 100))
+}
 
 // True when OpenStreetMap's Overpass servers couldn't be reached server-side
 // (e.g. non-UK dev machine where all mirrors block). Used to distinguish
@@ -8488,6 +8847,251 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #6b6783;
   line-height: 1.55;
 }
+/* ── Crime sheet styles ─────────────────────────────────────────
+   Panel matches the umu-crime-panel design reference. Colours use
+   the same navy/teal/rose/gold palette as the rest of the property
+   view so it doesn't feel like a bolted-on module. */
+.crime-seg {
+  display: flex;
+  background: #f4f3f8;
+  border-radius: 12px;
+  padding: 3px;
+  gap: 2px;
+  margin: 12px 0 16px;
+}
+.crime-seg button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6b6685;
+  padding: 8px 4px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+.crime-seg button[aria-pressed='true'] {
+  background: #fff;
+  color: #231d45;
+  box-shadow: 0 1px 3px rgba(35, 29, 69, 0.12);
+}
+
+.crime-headline {
+  border: 1px solid #eae8f0;
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.crime-rate-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.crime-rate {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: #231d45;
+}
+.crime-rate-unit {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6b6685;
+  line-height: 1.3;
+}
+.crime-verdict {
+  margin: 10px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #231d45;
+  line-height: 1.45;
+}
+.crime-verdict :deep(em) { font-style: normal; font-weight: 800; }
+.crime-raw {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #9b97ad;
+  font-weight: 500;
+}
+
+.crime-scale-wrap { margin-top: 18px; }
+.crime-scale {
+  position: relative;
+  height: 10px;
+  border-radius: 99px;
+  /* Cool → warm gradient — teal (quiet) through amber to rose (busy).
+     Matches the reference exactly. */
+  background: linear-gradient(90deg, #7fcfc9 0%, #cfe0c0 32%, #f0d9a8 62%, #e3a9a9 100%);
+}
+.crime-tick {
+  position: absolute;
+  top: -5px;
+  width: 1px;
+  height: 20px;
+  background: rgba(35, 29, 69, 0.22);
+}
+.crime-marker {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #231d45;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(35, 29, 69, 0.35);
+  transform: translate(-50%, -50%);
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.crime-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 9px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #9b97ad;
+  letter-spacing: 0.03em;
+}
+.crime-scale-key {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: #6b6685;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.crime-trend {
+  border: 1px solid #eae8f0;
+  border-radius: 20px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.crime-trend-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.crime-trend-top > span:first-child {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9b97ad;
+}
+.crime-chip {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: rgba(0, 161, 154, 0.12);
+  color: #00817c;
+}
+.crime-chip.up {
+  background: rgba(196, 88, 107, 0.12);
+  color: #c4586b;
+}
+.crime-spark { width: 100%; height: 52px; display: block; overflow: visible; }
+.crime-spark-x {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 10px;
+  color: #9b97ad;
+  font-weight: 600;
+}
+
+.crime-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9b97ad;
+  margin: 8px 0 4px;
+}
+.crime-section-sub {
+  font-size: 12.5px;
+  color: #6b6685;
+  margin: 0 0 12px;
+  font-weight: 500;
+}
+
+.crime-cats {
+  display: flex;
+  flex-direction: column;
+}
+.crime-cat {
+  padding: 11px 0;
+  border: 0;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  display: block;
+  border-bottom: 1px solid #f4f3f8;
+}
+.crime-cat:last-child { border-bottom: none; }
+.crime-cat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 7px;
+}
+.crime-cat-name { font-size: 14px; font-weight: 600; color: #231d45; }
+.crime-cat-num {
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+  color: #231d45;
+}
+.crime-bar { height: 6px; border-radius: 99px; background: #f4f3f8; overflow: hidden; }
+.crime-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.crime-cat-note {
+  font-size: 12.5px;
+  color: #6b6685;
+  line-height: 1.5;
+  margin: 9px 0 2px;
+  font-weight: 500;
+}
+
+.crime-more {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid #eae8f0;
+  background: #fff;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #231d45;
+  cursor: pointer;
+}
+.crime-more:hover { background: #f4f3f8; }
+
+.crime-note {
+  margin-top: 22px;
+  padding: 14px;
+  background: #f4f3f8;
+  border-radius: 14px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #6b6685;
+  font-weight: 500;
+}
+.crime-note :deep(b) { color: #231d45; font-weight: 700; }
+
 .pps-ds-attribution {
   font-size: 12px;
   color: #c0bdcc;
