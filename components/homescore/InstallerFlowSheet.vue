@@ -13,7 +13,14 @@
               can do right now for this measure.
             </p>
             <div class="ifs-acc">
-              <span class="ifs-acc-ic">🛡️</span>
+              <span class="ifs-acc-ic">
+                <img
+                  src="/op-icons/explore/safetyCheck.png"
+                  alt=""
+                  class="ifs-acc-img"
+                  loading="lazy"
+                />
+              </span>
               <p v-html="trade.acc" />
             </div>
 
@@ -43,7 +50,14 @@
                 type="button"
                 @click="goForm"
               >
-                <span class="ifs-r-ic">✅</span>
+                <span class="ifs-r-ic">
+                  <img
+                    src="/op-icons/explore/getMatched.png"
+                    alt=""
+                    class="ifs-r-img"
+                    loading="lazy"
+                  />
+                </span>
                 <span class="ifs-r-body">
                   <span class="ifs-r-title">
                     Get matched
@@ -63,7 +77,14 @@
                 rel="noopener"
                 class="ifs-route ifs-route--self"
               >
-                <span class="ifs-r-ic">🔎</span>
+                <span class="ifs-r-ic">
+                  <img
+                    src="/op-icons/explore/searchYourself.png"
+                    alt=""
+                    class="ifs-r-img"
+                    loading="lazy"
+                  />
+                </span>
                 <span class="ifs-r-body">
                   <span class="ifs-r-title">{{ trade.self.t }}</span>
                   <span class="ifs-r-sub">{{ trade.self.s }}</span>
@@ -890,6 +911,19 @@ watch(
 }
 .ifs-acc-ic {
   font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+/* Illustration inside the accreditation-notice icon slot. Slightly
+   larger than the emoji it replaces so the shield artwork reads
+   without being cramped. */
+.ifs-acc-img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
 }
 .ifs-acc p {
   font-size: 12.5px;
@@ -948,6 +982,17 @@ watch(
 }
 .ifs-route--self .ifs-r-ic {
   background: #fbf1e1;
+}
+/* When the icon slot holds a real illustration (not an emoji) drop
+   the pastel background — the artwork carries its own tile look. */
+.ifs-r-ic:has(.ifs-r-img) {
+  background: transparent;
+}
+.ifs-r-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .ifs-r-body {
   flex: 1;
