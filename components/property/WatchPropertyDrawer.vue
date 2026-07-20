@@ -20,7 +20,14 @@
               :key="t.key"
               class="watch-trigger"
             >
-              <div class="watch-trigger-ico">{{ t.icon }}</div>
+              <div class="watch-trigger-ico">
+                <img
+                  :src="`/op-icons/watchThisProperty/${t.icon}.png`"
+                  :alt="''"
+                  class="watch-trigger-img"
+                  loading="lazy"
+                />
+              </div>
               <div class="watch-trigger-body">
                 <div class="watch-trigger-title">{{ t.title }}</div>
                 <div class="watch-trigger-sub">{{ t.sub }}</div>
@@ -38,7 +45,14 @@
           </div>
 
           <div class="watch-read-row">
-            <div class="watch-read-icon">💡</div>
+            <div class="watch-read-icon">
+              <img
+                src="/op-icons/watchThisProperty/buyersWatching.png"
+                alt=""
+                class="watch-read-img"
+                loading="lazy"
+              />
+            </div>
             <div class="watch-read-text">
               <b>You'll be among the first buyers watching</b> this address. The seller
               sees that on their dashboard when they claim it — sometimes that's the
@@ -80,11 +94,11 @@ const emit = defineEmits<{
 }>()
 
 const triggers = [
-  { key: 'claimed', icon: '🏠', title: 'Owner claims this property', sub: 'Most important — your "in" with the seller' },
-  { key: 'progress', icon: '📋', title: 'Passport progress milestones', sub: '25% · 50% · 75% built' },
-  { key: 'published', icon: '🎉', title: 'Passport published', sub: 'Live notification + access (free for verified)' },
-  { key: 'comparables', icon: '📈', title: 'Comparable sales nearby', sub: 'Weekly digest if there\'s new Land Registry data' },
-  { key: 'homescore', icon: '⚡', title: 'HomeScore changes', sub: 'New EPC or upgrade pushes the score up or down' },
+  { key: 'claimed', icon: 'ownerClaim', title: 'Owner claims this property', sub: 'Most important — your "in" with the seller' },
+  { key: 'progress', icon: 'passportProgress', title: 'Passport progress milestones', sub: '25% · 50% · 75% built' },
+  { key: 'published', icon: 'passportPublished', title: 'Passport published', sub: 'Live notification + access (free for verified)' },
+  { key: 'comparables', icon: 'comparableSales', title: 'Comparable sales nearby', sub: 'Weekly digest if there\'s new Land Registry data' },
+  { key: 'homescore', icon: 'homescoreChanges', title: 'HomeScore changes', sub: 'New EPC or upgrade pushes the score up or down' },
 ] as const
 
 const selected = reactive<Record<string, boolean>>({
@@ -173,24 +187,27 @@ function onSubmit() {
 }
 .watch-trigger {
   display: flex;
-  gap: 10px;
-  padding: 11px 0;
+  gap: 12px;
+  padding: 13px 0;
   align-items: center;
 }
 .watch-trigger + .watch-trigger {
   border-top: 1px dashed var(--border-soft);
 }
 .watch-trigger-ico {
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  background: var(--accent-paler);
-  color: var(--accent-dark);
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
   flex-shrink: 0;
+}
+.watch-trigger-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .watch-trigger-body {
   flex: 1;
@@ -247,8 +264,18 @@ function onSubmit() {
   border-radius: 12px;
 }
 .watch-read-icon {
-  font-size: 18px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.watch-read-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .watch-read-text {
   font-size: 12px;

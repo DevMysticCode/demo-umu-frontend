@@ -8,8 +8,8 @@
           <div class="cpt-head">
             <div class="cpt-title">Choose your passport</div>
             <div class="cpt-sub">
-              What kind of passport are you setting up for this property?
-              We'll seed the right sections for you.
+              What kind of passport are you setting up for this property? We'll
+              seed the right sections for you.
             </div>
           </div>
 
@@ -34,9 +34,11 @@
               <div class="choose-list">
                 <div class="choose-list-item">Full TA6 / TA10 / TA7 forms</div>
                 <div class="choose-list-item">
-                  18 sections — boundaries, deeds, alterations, services
+                  17 sections — boundaries, deeds, alterations, services
                 </div>
-                <div class="choose-list-item">Buyer-shareable digital passport</div>
+                <div class="choose-list-item">
+                  Buyer-shareable digital passport
+                </div>
               </div>
             </div>
             <div class="choose-radio" />
@@ -74,11 +76,16 @@
           </div>
 
           <div v-if="chosen === 'landlord'" class="cpt-hmo">
-            <button type="button" class="cpt-toggle-row" @click="isHmo = !isHmo">
+            <button
+              type="button"
+              class="cpt-toggle-row"
+              @click="isHmo = !isHmo"
+            >
               <div class="cpt-toggle-content">
                 <div class="cpt-toggle-title">Is this an HMO?</div>
                 <div class="cpt-toggle-meta">
-                  House in Multiple Occupation — adds PAT testing &amp; HMO licence sections
+                  House in Multiple Occupation — adds PAT testing &amp; HMO
+                  licence sections
                 </div>
               </div>
               <div class="cpt-toggle" :class="{ on: isHmo }" />
@@ -86,7 +93,9 @@
           </div>
 
           <div class="modal-cta-row">
-            <button class="modal-btn secondary" type="button" @click="close">Cancel</button>
+            <button class="modal-btn secondary" type="button" @click="close">
+              Cancel
+            </button>
             <button
               class="modal-btn primary"
               type="button"
@@ -151,7 +160,8 @@ const confirm = () => {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   --accent: #00a19a;
   --accent-dark: #008a84;
@@ -397,11 +407,19 @@ const confirm = () => {
 
 /* Slide-up transition */
 .cpt-enter-active,
-.cpt-leave-active { transition: opacity 0.25s ease; }
+.cpt-leave-active {
+  transition: opacity 0.25s ease;
+}
 .cpt-enter-active .cpt-sheet,
-.cpt-leave-active .cpt-sheet { transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+.cpt-leave-active .cpt-sheet {
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
 .cpt-enter-from,
-.cpt-leave-to { opacity: 0; }
+.cpt-leave-to {
+  opacity: 0;
+}
 .cpt-enter-from .cpt-sheet,
-.cpt-leave-to .cpt-sheet { transform: translateY(100%); }
+.cpt-leave-to .cpt-sheet {
+  transform: translateY(100%);
+}
 </style>

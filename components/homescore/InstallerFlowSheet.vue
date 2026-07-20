@@ -31,7 +31,14 @@
                 type="button"
                 @click="startElig"
               >
-                <span class="ifs-r-ic">🎁</span>
+                <span class="ifs-r-ic">
+                  <img
+                    src="/op-icons/explore/claim.png"
+                    alt=""
+                    class="ifs-r-img"
+                    loading="lazy"
+                  />
+                </span>
                 <span class="ifs-r-body">
                   <span class="ifs-r-title">
                     Check if grants could cover this
