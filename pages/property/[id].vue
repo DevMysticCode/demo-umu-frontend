@@ -97,17 +97,43 @@
         <div v-if="!heroImage" class="pps-hero-empty">
           <div class="pps-hero-empty-glow" />
           <div class="pps-hero-empty-logo">
-            <svg viewBox="0 0 43 33" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M33.0496 22.7447V24.4998H29.6886L29.6698 22.8687C29.6698 20.1202 28.4599 18.9834 26.4158 18.9834C24.3716 18.9834 23.1617 20.1202 23.1617 22.8687V26.1985H19.8239V22.7447C19.8239 18.4875 22.2856 16.1318 26.4372 16.1318C30.5888 16.1318 33.0496 18.4875 33.0496 22.7447Z" fill="currentColor" />
-              <path d="M16.4704 16.1548C20.622 16.1548 23.0837 18.5104 23.0837 22.7677V26.2214H19.7458V22.8917C19.7458 20.1431 18.5564 19.0064 16.4918 19.0064C14.4476 19.0064 13.2377 20.1431 13.2377 22.8917L13.2249 24.5227H9.86732L9.85876 22.7677C9.85876 18.5104 12.3205 16.1548 16.4721 16.1548H16.4704Z" fill="currentColor" />
-              <path d="M24.4625 26.1176C24.4625 24.4712 23.1157 23.1372 21.454 23.1372C19.7923 23.1372 18.4456 24.472 18.4456 26.1176C18.4456 27.0764 18.9042 27.9266 19.6135 28.4716L18.9119 32.8005H23.997L23.2954 28.4716C24.0047 27.9266 24.4625 27.0756 24.4625 26.1176Z" fill="currentColor" />
-              <path d="M42.9371 18.066C42.9345 17.1434 42.179 16.3955 41.2463 16.3955C40.3137 16.3955 39.5556 17.1458 39.5556 18.0709H39.559V25.5082C39.559 28.2567 38.3491 29.3934 36.305 29.3934C34.2608 29.3934 33.0509 28.2567 33.0509 25.5082V24.4986H29.6865V25.6321C29.6865 29.8894 32.1739 32.245 36.3255 32.245C40.4771 32.245 42.938 29.8894 42.938 25.6321L42.9371 18.066Z" fill="currentColor" />
-              <path d="M0.00171036 18.066C0.0042773 17.1434 0.759816 16.3955 1.69247 16.3955C2.62599 16.3955 3.38323 17.1458 3.38323 18.0709H3.37981V25.5082C3.37981 28.2567 4.5897 29.3934 6.63384 29.3934C8.69938 29.3934 9.86734 28.2567 9.86734 25.5082V24.4986H13.2258V25.6321C13.2258 29.8894 10.7641 32.245 6.61245 32.245C2.46084 32.245 0 29.8894 0 25.6321V18.066H0.00171036Z" fill="currentColor" />
-              <path d="M41.9458 11.0794L22.5842 0.234276C22.3189 0.0885573 22.0118 0.00724567 21.6995 0H21.6507V0.119151L21.6173 0H21.5711C21.2562 0.00805074 20.9499 0.0893627 20.6829 0.235886L7.20648 7.78426V6.46394C7.20648 5.59929 6.41072 4.89566 5.43357 4.89566C4.45642 4.89566 3.66067 5.59929 3.66067 6.46394V9.77119L1.32218 11.081C0.4922 11.5375 0.237216 12.5068 0.754028 13.2411C1.26998 13.9753 2.36607 14.2007 3.19691 13.7434L21.6344 3.41593L40.0728 13.7442C40.3577 13.9012 40.6786 13.9817 41.0063 13.9817C41.1415 13.9817 41.2776 13.968 41.4119 13.9407C41.8731 13.8457 42.265 13.5977 42.5157 13.2419C43.0316 12.5076 42.7767 11.5391 41.9475 11.0827L41.9458 11.0794Z" fill="currentColor" />
+            <svg
+              viewBox="0 0 43 33"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M33.0496 22.7447V24.4998H29.6886L29.6698 22.8687C29.6698 20.1202 28.4599 18.9834 26.4158 18.9834C24.3716 18.9834 23.1617 20.1202 23.1617 22.8687V26.1985H19.8239V22.7447C19.8239 18.4875 22.2856 16.1318 26.4372 16.1318C30.5888 16.1318 33.0496 18.4875 33.0496 22.7447Z"
+                fill="currentColor"
+              />
+              <path
+                d="M16.4704 16.1548C20.622 16.1548 23.0837 18.5104 23.0837 22.7677V26.2214H19.7458V22.8917C19.7458 20.1431 18.5564 19.0064 16.4918 19.0064C14.4476 19.0064 13.2377 20.1431 13.2377 22.8917L13.2249 24.5227H9.86732L9.85876 22.7677C9.85876 18.5104 12.3205 16.1548 16.4721 16.1548H16.4704Z"
+                fill="currentColor"
+              />
+              <path
+                d="M24.4625 26.1176C24.4625 24.4712 23.1157 23.1372 21.454 23.1372C19.7923 23.1372 18.4456 24.472 18.4456 26.1176C18.4456 27.0764 18.9042 27.9266 19.6135 28.4716L18.9119 32.8005H23.997L23.2954 28.4716C24.0047 27.9266 24.4625 27.0756 24.4625 26.1176Z"
+                fill="currentColor"
+              />
+              <path
+                d="M42.9371 18.066C42.9345 17.1434 42.179 16.3955 41.2463 16.3955C40.3137 16.3955 39.5556 17.1458 39.5556 18.0709H39.559V25.5082C39.559 28.2567 38.3491 29.3934 36.305 29.3934C34.2608 29.3934 33.0509 28.2567 33.0509 25.5082V24.4986H29.6865V25.6321C29.6865 29.8894 32.1739 32.245 36.3255 32.245C40.4771 32.245 42.938 29.8894 42.938 25.6321L42.9371 18.066Z"
+                fill="currentColor"
+              />
+              <path
+                d="M0.00171036 18.066C0.0042773 17.1434 0.759816 16.3955 1.69247 16.3955C2.62599 16.3955 3.38323 17.1458 3.38323 18.0709H3.37981V25.5082C3.37981 28.2567 4.5897 29.3934 6.63384 29.3934C8.69938 29.3934 9.86734 28.2567 9.86734 25.5082V24.4986H13.2258V25.6321C13.2258 29.8894 10.7641 32.245 6.61245 32.245C2.46084 32.245 0 29.8894 0 25.6321V18.066H0.00171036Z"
+                fill="currentColor"
+              />
+              <path
+                d="M41.9458 11.0794L22.5842 0.234276C22.3189 0.0885573 22.0118 0.00724567 21.6995 0H21.6507V0.119151L21.6173 0H21.5711C21.2562 0.00805074 20.9499 0.0893627 20.6829 0.235886L7.20648 7.78426V6.46394C7.20648 5.59929 6.41072 4.89566 5.43357 4.89566C4.45642 4.89566 3.66067 5.59929 3.66067 6.46394V9.77119L1.32218 11.081C0.4922 11.5375 0.237216 12.5068 0.754028 13.2411C1.26998 13.9753 2.36607 14.2007 3.19691 13.7434L21.6344 3.41593L40.0728 13.7442C40.3577 13.9012 40.6786 13.9817 41.0063 13.9817C41.1415 13.9817 41.2776 13.968 41.4119 13.9407C41.8731 13.8457 42.265 13.5977 42.5157 13.2419C43.0316 12.5076 42.7767 11.5391 41.9475 11.0827L41.9458 11.0794Z"
+                fill="currentColor"
+              />
             </svg>
           </div>
           <p class="pps-hero-empty-title">No image available</p>
-          <p class="pps-hero-empty-sub">The owner hasn't added photos for this property yet — check back soon.</p>
+          <p class="pps-hero-empty-sub">
+            The owner hasn't added photos for this property yet — check back
+            soon.
+          </p>
         </div>
 
         <div class="pps-hero-gradient-overlay" />
@@ -315,8 +341,8 @@
               pageState === 'unclaimed'
                 ? { color: '#9c98ad' }
                 : pageState === 'progress'
-                  ? { color: '#b07a1c' }
-                  : undefined
+                ? { color: '#b07a1c' }
+                : undefined
             "
           >
             {{ signalLeftLabel }}
@@ -874,7 +900,9 @@
     >
       <ShareContent
         :property-title="property?.addressLine1 ?? ''"
-        :property-address="`${property?.city ?? ''}, ${property?.postcode ?? ''}`"
+        :property-address="`${property?.city ?? ''}, ${
+          property?.postcode ?? ''
+        }`"
         :property-price="estimatedPrice ? formatPrice(estimatedPrice) : ''"
         :property-image="propertyImages[0]"
       />
@@ -903,11 +931,18 @@
 
           <!-- ── Property details (Type / EPC / UPRN + Download EPC) ─ -->
           <template v-if="activeSheet === 'property-details'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/type.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img src="/op-icons/property/type.jpeg" alt="" loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Property details</div>
-                <div class="pps-ds-header-meta">Ordnance Survey · EPC Register · HM Land Registry</div>
+                <div class="pps-ds-header-meta">
+                  Ordnance Survey · EPC Register · HM Land Registry
+                </div>
               </div>
             </div>
 
@@ -916,13 +951,22 @@
               <div class="pps-tr-big">
                 {{ property?.propertyType || 'Property' }}
               </div>
-              <p class="pps-tr-sub" v-if="property?.addressLine1 || property?.postcode">
-                <template v-if="property?.addressLine1">{{ property.addressLine1 }}<template v-if="property?.postcode"> · </template></template>
-                <template v-if="property?.postcode"><b>{{ property.postcode }}</b></template>
+              <p
+                class="pps-tr-sub"
+                v-if="property?.addressLine1 || property?.postcode"
+              >
+                <template v-if="property?.addressLine1"
+                  >{{ property.addressLine1
+                  }}<template v-if="property?.postcode"> · </template></template
+                >
+                <template v-if="property?.postcode"
+                  ><b>{{ property.postcode }}</b></template
+                >
               </p>
               <div class="pps-tr-eff" v-if="propertyDetailStats.length">
                 <div v-for="s in propertyDetailStats" :key="s.label">
-                  <b>{{ s.value }}</b><span>{{ s.label }}</span>
+                  <b>{{ s.value }}</b
+                  ><span>{{ s.label }}</span>
                 </div>
               </div>
             </section>
@@ -935,18 +979,34 @@
                     <span
                       class="pps-epc-badge"
                       :style="{ background: epcDotColor }"
-                    >{{ property.epcRating }}</span>
-                    <template v-if="property.epcScore"> {{ property.epcScore }}/100</template>
+                      >{{ property.epcRating }}</span
+                    >
+                    <template v-if="property.epcScore">
+                      {{ property.epcScore }}/100</template
+                    >
                   </span>
                 </div>
-                <div class="pps-tr-tags" v-if="property.epcLmkKey || property.uprn">
+                <div
+                  class="pps-tr-tags"
+                  v-if="property.epcLmkKey || property.uprn"
+                >
                   <button
                     type="button"
                     class="pps-pd-download"
                     :disabled="epcDownloading"
                     @click="downloadEpc"
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
@@ -958,50 +1018,78 @@
               <div v-if="property?.uprn" class="pps-tr-row pps-tr-row--static">
                 <div class="pps-tr-strow">
                   <span class="pps-tr-stname">UPRN</span>
-                  <span class="pps-tr-stwalk pps-pd-row-value--mono">{{ property.uprn }}</span>
+                  <span class="pps-tr-stwalk pps-pd-row-value--mono">{{
+                    property.uprn
+                  }}</span>
                 </div>
               </div>
-              <div v-if="property?.tenure" class="pps-tr-row pps-tr-row--static">
+              <div
+                v-if="property?.tenure"
+                class="pps-tr-row pps-tr-row--static"
+              >
                 <div class="pps-tr-strow">
                   <span class="pps-tr-stname">Tenure</span>
                   <span class="pps-tr-stwalk">{{ property.tenure }}</span>
                 </div>
               </div>
-              <div v-if="property?.titleNumber" class="pps-tr-row pps-tr-row--static">
+              <div
+                v-if="property?.titleNumber"
+                class="pps-tr-row pps-tr-row--static"
+              >
                 <div class="pps-tr-strow">
                   <span class="pps-tr-stname">Title number</span>
-                  <span class="pps-tr-stwalk pps-pd-row-value--mono">{{ property.titleNumber }}</span>
+                  <span class="pps-tr-stwalk pps-pd-row-value--mono">{{
+                    property.titleNumber
+                  }}</span>
                 </div>
               </div>
             </div>
 
             <div
-              v-if="!property?.propertyType && !property?.epcRating && !property?.uprn"
+              v-if="
+                !property?.propertyType &&
+                !property?.epcRating &&
+                !property?.uprn
+              "
               class="pps-ds-placeholder"
             >
               <div class="pps-ds-placeholder-icon">🏠</div>
-              <div class="pps-ds-placeholder-title">No property details on file yet</div>
+              <div class="pps-ds-placeholder-title">
+                No property details on file yet
+              </div>
               <div class="pps-ds-placeholder-sub">
-                We'll backfill on the next enrichment pass — this usually happens once the
-                property has been through EPC lookup and OS Places verification.
+                We'll backfill on the next enrichment pass — this usually
+                happens once the property has been through EPC lookup and OS
+                Places verification.
               </div>
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Cross-referenced.</b> Type, size and EPC come from the Energy Performance
-              Certificate register; tenure and title number are from HM Land Registry.
-              UPRN identifies the property uniquely across all official sources.
+              <b>Cross-referenced.</b> Type, size and EPC come from the Energy
+              Performance Certificate register; tenure and title number are from
+              HM Land Registry. UPRN identifies the property uniquely across all
+              official sources.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── History (Land Registry) ─────────────────────────── -->
           <template v-else-if="activeSheet === 'history'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/propertyHistory.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/propertyHistory.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Price history</div>
-                <div class="pps-ds-header-meta">HM Land Registry · updated monthly</div>
+                <div class="pps-ds-header-meta">
+                  HM Land Registry · updated monthly
+                </div>
               </div>
             </div>
 
@@ -1018,19 +1106,38 @@
                   {{ priceSourceLabel
                   }}<template v-if="deltaSinceSold">
                     ·
-                    <b :style="{ color: deltaSinceSold.positive ? '#00817c' : '#c73e36' }">
-                      {{ deltaSinceSold.positive ? '+' : '−' }}£{{ Math.abs(deltaSinceSold.abs).toLocaleString() }}
-                      ({{ deltaSinceSold.positive ? '+' : '−' }}{{ Math.abs(deltaSinceSold.pct).toFixed(0) }}%)
+                    <b
+                      :style="{
+                        color: deltaSinceSold.positive ? '#00817c' : '#c73e36',
+                      }"
+                    >
+                      {{ deltaSinceSold.positive ? '+' : '−' }}£{{
+                        Math.abs(deltaSinceSold.abs).toLocaleString()
+                      }}
+                      ({{ deltaSinceSold.positive ? '+' : '−'
+                      }}{{ Math.abs(deltaSinceSold.pct).toFixed(0) }}%)
                     </b>
-                    since last sold</template>.
+                    since last sold</template
+                  >.
                 </p>
                 <p class="pps-tr-sub" v-else-if="lastSale">
                   Last sold {{ formatSoldDate(lastSale.date) }}.
                 </p>
-                <div class="pps-tr-eff" v-if="priceHistoryCagr || lastSale || priceHistoryTimeline.length">
+                <div
+                  class="pps-tr-eff"
+                  v-if="
+                    priceHistoryCagr || lastSale || priceHistoryTimeline.length
+                  "
+                >
                   <div v-if="priceHistoryCagr">
-                    <b :style="{ color: priceHistoryCagr.cagr >= 0 ? '#00817c' : '#c73e36' }">
-                      {{ priceHistoryCagr.cagr >= 0 ? '+' : '' }}{{ priceHistoryCagr.cagr.toFixed(1) }}%
+                    <b
+                      :style="{
+                        color:
+                          priceHistoryCagr.cagr >= 0 ? '#00817c' : '#c73e36',
+                      }"
+                    >
+                      {{ priceHistoryCagr.cagr >= 0 ? '+' : ''
+                      }}{{ priceHistoryCagr.cagr.toFixed(1) }}%
                     </b>
                     <span>Per year since {{ priceHistoryCagr.fromYear }}</span>
                   </div>
@@ -1039,8 +1146,17 @@
                     <span>Last sold {{ formatSoldDate(lastSale.date) }}</span>
                   </div>
                   <div v-if="priceHistoryTimeline.length">
-                    <b>{{ priceHistoryTimeline.filter((t) => !t.isEstimate).length }}</b>
-                    <span>Land Registry sale{{ priceHistoryTimeline.filter((t) => !t.isEstimate).length === 1 ? '' : 's' }}</span>
+                    <b>{{
+                      priceHistoryTimeline.filter((t) => !t.isEstimate).length
+                    }}</b>
+                    <span
+                      >Land Registry sale{{
+                        priceHistoryTimeline.filter((t) => !t.isEstimate)
+                          .length === 1
+                          ? ''
+                          : 's'
+                      }}</span
+                    >
                   </div>
                 </div>
               </section>
@@ -1049,8 +1165,8 @@
             <template v-if="priceHistoryTimeline.length > 0">
               <h2 class="pps-tr-sec">Price timeline</h2>
               <p class="pps-tr-secsub">
-                Each recorded sale on this address, with the delta from the previous
-                transaction.
+                Each recorded sale on this address, with the delta from the
+                previous transaction.
               </p>
               <div class="pps-ds-timeline">
                 <div
@@ -1066,10 +1182,14 @@
                   <div class="pps-ds-tl-body">
                     <div class="pps-ds-tl-price">
                       £{{ Number(t.price).toLocaleString() }}
-                      <span v-if="t.isEstimate" class="pps-ds-tl-est-pill">Estimate</span>
+                      <span v-if="t.isEstimate" class="pps-ds-tl-est-pill"
+                        >Estimate</span
+                      >
                     </div>
                     <div class="pps-ds-tl-date">
-                      <template v-if="t.dateObj">{{ formatSoldDate(t.dateStr) }}</template>
+                      <template v-if="t.dateObj">{{
+                        formatSoldDate(t.dateStr)
+                      }}</template>
                       <template v-else>Today</template>
                     </div>
                   </div>
@@ -1081,32 +1201,41 @@
                       'pps-ds-tl-delta--down': !t.delta.positive,
                     }"
                   >
-                    <span class="pps-ds-tl-arrow">{{ t.delta.positive ? '↑' : '↓' }}</span>
+                    <span class="pps-ds-tl-arrow">{{
+                      t.delta.positive ? '↑' : '↓'
+                    }}</span>
                     {{ t.delta.positive ? '+' : '−' }}£{{
                       Math.abs(Math.round(t.delta.amount)).toLocaleString()
                     }}
                     <span class="pps-ds-tl-pct">
-                      ({{ t.delta.positive ? '+' : '−' }}{{ Math.abs(t.delta.pct).toFixed(0) }}%)
+                      ({{ t.delta.positive ? '+' : '−'
+                      }}{{ Math.abs(t.delta.pct).toFixed(0) }}%)
                     </span>
                   </div>
                 </div>
               </div>
             </template>
 
-            <div v-else-if="!estimatedPrice && !lastSale" class="pps-ds-placeholder">
+            <div
+              v-else-if="!estimatedPrice && !lastSale"
+              class="pps-ds-placeholder"
+            >
               <div class="pps-ds-placeholder-icon">📜</div>
-              <div class="pps-ds-placeholder-title">No sale records on file</div>
+              <div class="pps-ds-placeholder-title">
+                No sale records on file
+              </div>
               <div class="pps-ds-placeholder-sub">
-                HM Land Registry has no transaction records for this address yet — this
-                can happen with new builds, exchange of parts, or unregistered land.
+                HM Land Registry has no transaction records for this address yet
+                — this can happen with new builds, exchange of parts, or
+                unregistered land.
               </div>
             </div>
 
             <template v-if="nearbySales.length > 0">
               <h2 class="pps-tr-sec">Nearby sold prices</h2>
               <p class="pps-tr-secsub">
-                Recent transactions on the same road or postcode — useful for a sanity
-                check against the estimate above.
+                Recent transactions on the same road or postcode — useful for a
+                sanity check against the estimate above.
               </p>
               <div class="pps-tr-list">
                 <div
@@ -1131,46 +1260,71 @@
               </div>
             </template>
 
-            <template v-if="property?.tenure || property?.titleNumber || property?.uprn">
+            <template
+              v-if="property?.tenure || property?.titleNumber || property?.uprn"
+            >
               <h2 class="pps-tr-sec">Title details</h2>
               <div class="pps-tr-list">
-                <div v-if="property?.tenure" class="pps-tr-row pps-tr-row--static">
+                <div
+                  v-if="property?.tenure"
+                  class="pps-tr-row pps-tr-row--static"
+                >
                   <div class="pps-tr-strow">
                     <span class="pps-tr-stname">Tenure</span>
                     <span class="pps-tr-stwalk">{{ property.tenure }}</span>
                   </div>
                 </div>
-                <div v-if="property?.titleNumber" class="pps-tr-row pps-tr-row--static">
+                <div
+                  v-if="property?.titleNumber"
+                  class="pps-tr-row pps-tr-row--static"
+                >
                   <div class="pps-tr-strow">
                     <span class="pps-tr-stname">Title number</span>
-                    <span class="pps-tr-stwalk pps-pd-row-value--mono">{{ property.titleNumber }}</span>
+                    <span class="pps-tr-stwalk pps-pd-row-value--mono">{{
+                      property.titleNumber
+                    }}</span>
                   </div>
                 </div>
-                <div v-if="property?.uprn" class="pps-tr-row pps-tr-row--static">
+                <div
+                  v-if="property?.uprn"
+                  class="pps-tr-row pps-tr-row--static"
+                >
                   <div class="pps-tr-strow">
                     <span class="pps-tr-stname">UPRN</span>
-                    <span class="pps-tr-stwalk pps-pd-row-value--mono">{{ property.uprn }}</span>
+                    <span class="pps-tr-stwalk pps-pd-row-value--mono">{{
+                      property.uprn
+                    }}</span>
                   </div>
                 </div>
               </div>
             </template>
 
             <p class="pps-ds-info-note">
-              <b>Updated monthly.</b> HM Land Registry publishes the previous month's
-              transactions on the third working day of each month. Prices are the price
-              paid at completion; sellers' asking prices are not recorded.
+              <b>Updated monthly.</b> HM Land Registry publishes the previous
+              month's transactions on the third working day of each month.
+              Prices are the price paid at completion; sellers' asking prices
+              are not recorded.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Street (live energy rank) ─────────────────────────── -->
           <template v-else-if="activeSheet === 'street'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/streetData.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/streetData.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Street data</div>
                 <div class="pps-ds-header-meta">
-                  {{ property?.postcode || 'Outcode' }} · aggregated from EPC register
+                  {{ property?.postcode || 'Outcode' }} · aggregated from EPC
+                  register
                 </div>
               </div>
             </div>
@@ -1179,8 +1333,13 @@
               <section class="pps-tr-head">
                 <div class="pps-tr-lab">Energy rank on this street</div>
                 <div class="pps-tr-big">
-                  {{ streetEnergyRank.rank }}<span style="font-size: 22px">{{ ordinalSuffix(streetEnergyRank.rank) }}</span>
-                  <span style="font-size: 16px; font-weight: 700; color: #75757c">
+                  {{ streetEnergyRank.rank
+                  }}<span style="font-size: 22px">{{
+                    ordinalSuffix(streetEnergyRank.rank)
+                  }}</span>
+                  <span
+                    style="font-size: 16px; font-weight: 700; color: #75757c"
+                  >
                     of {{ streetEnergyRank.total }}
                   </span>
                 </div>
@@ -1205,7 +1364,9 @@
               </section>
             </template>
 
-            <template v-if="(streetEnergyRank?.epcDistribution?.length || 0) > 0">
+            <template
+              v-if="(streetEnergyRank?.epcDistribution?.length || 0) > 0"
+            >
               <h2 class="pps-tr-sec">EPC distribution</h2>
               <p class="pps-tr-secsub">
                 How many properties in this postcode fall into each EPC band.
@@ -1216,7 +1377,8 @@
                   :key="bucket.letter"
                   class="pps-ds-bar-item"
                   :class="{
-                    'pps-ds-bar-item--active': streetEnergyRank?.yourEpcRating === bucket.letter,
+                    'pps-ds-bar-item--active':
+                      streetEnergyRank?.yourEpcRating === bucket.letter,
                   }"
                 >
                   <span class="pps-ds-bar-label">{{ bucket.letter }}</span>
@@ -1224,77 +1386,128 @@
                     <div
                       class="pps-ds-bar-fill"
                       :style="{
-                        width: epcBarMaxCount ? (bucket.count / epcBarMaxCount) * 100 + '%' : '0%',
+                        width: epcBarMaxCount
+                          ? (bucket.count / epcBarMaxCount) * 100 + '%'
+                          : '0%',
                         background: epcBarColor(bucket.letter),
                       }"
                     />
                   </div>
                   <span class="pps-ds-bar-count">
-                    {{ bucket.count }}<template v-if="streetEnergyRank?.yourEpcRating === bucket.letter">
-                      ← you</template>
+                    {{ bucket.count
+                    }}<template
+                      v-if="streetEnergyRank?.yourEpcRating === bucket.letter"
+                    >
+                      ← you</template
+                    >
                   </span>
                 </div>
               </div>
             </template>
 
-            <template v-if="streetEnergyRank?.avgEpcScore || property?.epcScore">
+            <template
+              v-if="streetEnergyRank?.avgEpcScore || property?.epcScore"
+            >
               <h2 class="pps-tr-sec">Score comparison</h2>
               <div class="pps-tr-list">
-                <div v-if="property?.epcScore" class="pps-tr-row pps-tr-row--static">
+                <div
+                  v-if="property?.epcScore"
+                  class="pps-tr-row pps-tr-row--static"
+                >
                   <div class="pps-tr-strow">
                     <span class="pps-tr-stname">Your EPC score</span>
-                    <span class="pps-tr-stwalk">{{ property.epcScore }} / 100</span>
+                    <span class="pps-tr-stwalk"
+                      >{{ property.epcScore }} / 100</span
+                    >
                   </div>
                 </div>
-                <div v-if="streetEnergyRank?.avgEpcScore" class="pps-tr-row pps-tr-row--static">
+                <div
+                  v-if="streetEnergyRank?.avgEpcScore"
+                  class="pps-tr-row pps-tr-row--static"
+                >
                   <div class="pps-tr-strow">
                     <span class="pps-tr-stname">Street average score</span>
-                    <span class="pps-tr-stwalk">{{ streetEnergyRank.avgEpcScore }} / 100</span>
+                    <span class="pps-tr-stwalk"
+                      >{{ streetEnergyRank.avgEpcScore }} / 100</span
+                    >
                   </div>
                 </div>
               </div>
             </template>
 
             <div v-if="!streetEnergyRank?.rank" class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">🏘️</div>
-              <div class="pps-ds-placeholder-title">Not enough street data yet</div>
+              <div class="pps-ds-placeholder-icon"></div>
+              <div class="pps-ds-placeholder-title">
+                Not enough street data yet
+              </div>
               <div class="pps-ds-placeholder-sub">
-                We couldn't find enough neighbouring properties with EPC cost data in
-                this postcode. Fills in as more homes on the street get enriched.
+                We couldn't find enough neighbouring properties with EPC cost
+                data in this postcode. Fills in as more homes on the street get
+                enriched.
               </div>
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Aggregated from the EPC register.</b> Compares against every property in
-              the same outcode that we already have EPC running-cost figures for. The
-              cohort grows as more properties are enriched.
+              <b>Aggregated from the EPC register.</b> Compares against every
+              property in the same outcode that we already have EPC running-cost
+              figures for. The cohort grows as more properties are enriched.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Schools (Ordnance Survey NGD via /enrichment) ─────── -->
           <template v-else-if="activeSheet === 'schools'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/schools.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/schools.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Schools nearby</div>
-                <div class="pps-ds-header-meta">Ordnance Survey NGD · straight-line distances</div>
+                <div class="pps-ds-header-meta">
+                  Ordnance Survey NGD · straight-line distances
+                </div>
               </div>
             </div>
 
             <template v-if="enrichmentSchools.length > 0">
               <section class="pps-sh-summary">
-                <div class="pps-sh-big">{{ schoolStats.total }} school{{ schoolStats.total === 1 ? '' : 's' }}</div>
+                <div class="pps-sh-big">
+                  {{ schoolStats.total }} school{{
+                    schoolStats.total === 1 ? '' : 's'
+                  }}
+                </div>
                 <p class="pps-sh-cap">
-                  Within ~2&nbsp;km of this address<template v-if="schoolStats.primariesNearby">
-                    — <em>{{ schoolStats.primariesNearby }} primar{{ schoolStats.primariesNearby === 1 ? 'y' : 'ies' }} within 1&nbsp;km</em></template>.
+                  Within ~2&nbsp;km of this address<template
+                    v-if="schoolStats.primariesNearby"
+                  >
+                    —
+                    <em
+                      >{{ schoolStats.primariesNearby }} primar{{
+                        schoolStats.primariesNearby === 1 ? 'y' : 'ies'
+                      }}
+                      within 1&nbsp;km</em
+                    ></template
+                  >.
                 </p>
                 <div class="pps-sh-mini">
-                  <div><b>{{ schoolStats.primariesNearby }}</b><span>Primaries within 1&nbsp;km</span></div>
-                  <div><b>{{ schoolStats.secondariesNearby }}</b><span>Secondaries within 2&nbsp;km</span></div>
+                  <div>
+                    <b>{{ schoolStats.primariesNearby }}</b
+                    ><span>Primaries within 1&nbsp;km</span>
+                  </div>
+                  <div>
+                    <b>{{ schoolStats.secondariesNearby }}</b
+                    ><span>Secondaries within 2&nbsp;km</span>
+                  </div>
                   <div>
                     <b v-if="schoolStats.nearestPrimaryKm != null">
-                      {{ schoolStats.nearestPrimaryKm.toFixed(1) }}<small>&nbsp;km</small>
+                      {{ schoolStats.nearestPrimaryKm.toFixed(1)
+                      }}<small>&nbsp;km</small>
                     </b>
                     <b v-else>—</b>
                     <span>To nearest primary</span>
@@ -1308,11 +1521,17 @@
                   :key="p.key"
                   :aria-pressed="schoolPhaseFilter === p.key"
                   @click="schoolPhaseFilter = p.key"
-                >{{ p.label }}</button>
+                >
+                  {{ p.label }}
+                </button>
               </div>
 
               <div class="pps-sh-sortbar">
-                <span>Showing {{ filteredSchools.length }} school{{ filteredSchools.length === 1 ? '' : 's' }}</span>
+                <span
+                  >Showing {{ filteredSchools.length }} school{{
+                    filteredSchools.length === 1 ? '' : 's'
+                  }}</span
+                >
                 <span class="pps-sh-sortnote">Sorted by distance</span>
               </div>
 
@@ -1326,34 +1545,51 @@
                 >
                   <div class="pps-sh-r1">
                     <span class="pps-sh-name">{{ s.name }}</span>
-                    <span class="pps-sh-dist">{{ walkMinutes(s.distanceKm) }} min</span>
+                    <span class="pps-sh-dist"
+                      >{{ walkMinutes(s.distanceKm) }} min</span
+                    >
                   </div>
                   <div class="pps-sh-bar">
-                    <i :style="{
-                      width: proximityPct(s.distanceKm) + '%',
-                      background: schoolPhaseColor(s.phase),
-                    }" />
+                    <i
+                      :style="{
+                        width: proximityPct(s.distanceKm) + '%',
+                        background: schoolPhaseColor(s.phase),
+                      }"
+                    />
                   </div>
                   <div class="pps-sh-r2">
                     <span
                       v-if="s.phase && s.phase !== 'School'"
                       class="pps-sh-tag"
                       :class="'pps-sh-tag--' + schoolPhaseKey(s.phase)"
-                    >{{ s.phase }}</span>
-                    <span class="pps-sh-walk">· {{ s.distanceKm.toFixed(1) }} km walk</span>
+                      >{{ s.phase }}</span
+                    >
+                    <span class="pps-sh-walk"
+                      >· {{ s.distanceKm.toFixed(1) }} km walk</span
+                    >
                   </div>
                   <div v-if="schoolOpen === i" class="pps-sh-detail">
                     <dl class="pps-sh-dl">
-                      <dt>Phase</dt><dd>{{ s.phase || 'School' }}</dd>
-                      <dt>Distance</dt><dd>{{ s.distanceKm.toFixed(1) }} km straight-line · ~{{ walkMinutes(s.distanceKm) }} min walk</dd>
+                      <dt>Phase</dt>
+                      <dd>{{ s.phase || 'School' }}</dd>
+                      <dt>Distance</dt>
+                      <dd>
+                        {{ s.distanceKm.toFixed(1) }} km straight-line · ~{{
+                          walkMinutes(s.distanceKm)
+                        }}
+                        min walk
+                      </dd>
                       <dt v-if="s.operator || s.authority">Operator</dt>
-                      <dd v-if="s.operator || s.authority">{{ s.operator || s.authority }}</dd>
+                      <dd v-if="s.operator || s.authority">
+                        {{ s.operator || s.authority }}
+                      </dd>
                     </dl>
                     <p class="pps-sh-catch">
-                      <b>Getting a place:</b> straight-line distance is a rough guide only. Local
-                      authorities decide admissions on each year's applications and cut-off distances
-                      can shift materially year to year. Check the school's GOV.UK page for its
-                      current admissions criteria and Ofsted rating.
+                      <b>Getting a place:</b> straight-line distance is a rough
+                      guide only. Local authorities decide admissions on each
+                      year's applications and cut-off distances can shift
+                      materially year to year. Check the school's GOV.UK page
+                      for its current admissions criteria and Ofsted rating.
                     </p>
                   </div>
                 </button>
@@ -1362,7 +1598,9 @@
 
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🎓</div>
-              <div class="pps-ds-placeholder-title">No schools data on file</div>
+              <div class="pps-ds-placeholder-title">
+                No schools data on file
+              </div>
               <div class="pps-ds-placeholder-sub">
                 We couldn't retrieve nearby schools for this address yet — it
                 will be backfilled on the next enrichment pass.
@@ -1370,20 +1608,31 @@
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Sample proximity only.</b> Walking times are estimated from straight-line distance
-              at 12 minutes per kilometre. Being close to a school doesn't guarantee a place —
-              admissions are decided by the local authority on the year's actual applications.
+              <b>Sample proximity only.</b> Walking times are estimated from
+              straight-line distance at 12 minutes per kilometre. Being close to
+              a school doesn't guarantee a place — admissions are decided by the
+              local authority on the year's actual applications.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Transport (OpenStreetMap via Overpass) ───────────── -->
           <template v-else-if="activeSheet === 'transport'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/trainstations.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/trainstations.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Transport</div>
-                <div class="pps-ds-header-meta">National Rail · Ordnance Survey</div>
+                <div class="pps-ds-header-meta">
+                  National Rail · Ordnance Survey
+                </div>
               </div>
             </div>
 
@@ -1391,22 +1640,28 @@
               <section class="pps-tr-head">
                 <div class="pps-tr-lab">Nearest station</div>
                 <div class="pps-tr-big">
-                  {{ enrichmentTrains[0].name }} · {{ walkMinutes(enrichmentTrains[0].distanceKm) }} min walk
+                  {{ enrichmentTrains[0].name }} ·
+                  {{ walkMinutes(enrichmentTrains[0].distanceKm) }} min walk
                 </div>
                 <p class="pps-tr-sub" v-if="enrichmentTrains[0].operator">
                   Served by <b>{{ enrichmentTrains[0].operator }}</b
                   ><template v-if="enrichmentTrains.length > 1">
-                    · {{ enrichmentTrains.length - 1 }} other station{{ enrichmentTrains.length === 2 ? '' : 's' }} within reach</template>.
+                    · {{ enrichmentTrains.length - 1 }} other station{{
+                      enrichmentTrains.length === 2 ? '' : 's'
+                    }}
+                    within reach</template
+                  >.
                 </p>
                 <p class="pps-tr-sub" v-else>
-                  Straight-line distance {{ enrichmentTrains[0].distanceKm.toFixed(1) }} km.
+                  Straight-line distance
+                  {{ enrichmentTrains[0].distanceKm.toFixed(1) }} km.
                 </p>
               </section>
 
               <h2 class="pps-tr-sec">Stations</h2>
               <p class="pps-tr-secsub">
-                Walking time from this address at ~12 minutes per km. Heritage and miniature
-                railways are excluded.
+                Walking time from this address at ~12 minutes per km. Heritage
+                and miniature railways are excluded.
               </p>
               <div class="pps-tr-list">
                 <button
@@ -1418,23 +1673,32 @@
                 >
                   <div class="pps-tr-strow">
                     <span class="pps-tr-stname">{{ t.name }}</span>
-                    <span class="pps-tr-stwalk">{{ walkMinutes(t.distanceKm) }} min walk</span>
+                    <span class="pps-tr-stwalk"
+                      >{{ walkMinutes(t.distanceKm) }} min walk</span
+                    >
                   </div>
                   <div class="pps-tr-tags">
-                    <span v-if="i === 0" class="pps-tr-tag pps-tr-tag--hub">Nearest</span>
-                    <span v-if="t.operator" class="pps-tr-tag">{{ t.operator }}</span>
-                    <span class="pps-tr-tag pps-tr-tag--muted">{{ t.distanceKm.toFixed(1) }} km</span>
+                    <span v-if="i === 0" class="pps-tr-tag pps-tr-tag--hub"
+                      >Nearest</span
+                    >
+                    <span v-if="t.operator" class="pps-tr-tag">{{
+                      t.operator
+                    }}</span>
+                    <span class="pps-tr-tag pps-tr-tag--muted"
+                      >{{ t.distanceKm.toFixed(1) }} km</span
+                    >
                   </div>
                   <div v-if="trainOpen === i" class="pps-tr-det">
                     <template v-if="i === 0">
-                      Closest station. <b>{{ walkMinutes(t.distanceKm) }} minutes' walk</b>
+                      Closest station.
+                      <b>{{ walkMinutes(t.distanceKm) }} minutes' walk</b>
                       from this address at a normal pace.
                     </template>
                     <template v-else>
-                      Alternative station about {{ t.distanceKm.toFixed(1) }} km away
-                      (~{{ walkMinutes(t.distanceKm) }} min walk). Useful if the nearest
-                      station is closed or if the service pattern here suits your commute
-                      better.
+                      Alternative station about {{ t.distanceKm.toFixed(1) }} km
+                      away (~{{ walkMinutes(t.distanceKm) }} min walk). Useful
+                      if the nearest station is closed or if the service pattern
+                      here suits your commute better.
                     </template>
                   </div>
                 </button>
@@ -1442,24 +1706,31 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">🚂</div>
+              <div class="pps-ds-placeholder-icon"></div>
               <div class="pps-ds-placeholder-title">
-                {{ transportLookupFailed ? 'Rail information unavailable right now' : 'No stations within reach' }}
+                {{
+                  transportLookupFailed
+                    ? 'Rail information unavailable right now'
+                    : 'No stations within reach'
+                }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
-                  We couldn't load nearby stations — please try again in a moment.
+                  We couldn't load nearby stations — please try again in a
+                  moment.
                 </template>
                 <template v-else>
-                  We couldn't find a National Rail or light-rail station within 4 km of
-                  this address.
+                  We couldn't find a National Rail or light-rail station within
+                  4 km of this address.
                 </template>
               </div>
             </div>
 
             <template v-if="enrichmentAirports.length > 0">
               <h2 class="pps-tr-sec">Airports</h2>
-              <p class="pps-tr-secsub">Straight-line distance. Drive times depend on route and traffic.</p>
+              <p class="pps-tr-secsub">
+                Straight-line distance. Drive times depend on route and traffic.
+              </p>
               <div class="pps-tr-list">
                 <div
                   v-for="a in enrichmentAirports"
@@ -1467,32 +1738,49 @@
                   class="pps-tr-row pps-tr-row--static"
                 >
                   <div class="pps-tr-strow">
-                    <span class="pps-tr-stname">✈️ {{ a.name }}<template v-if="a.iata"> ({{ a.iata }})</template></span>
-                    <span class="pps-tr-stwalk">{{ a.distanceKm.toFixed(0) }} km</span>
+                    <span class="pps-tr-stname"
+                      >✈️ {{ a.name
+                      }}<template v-if="a.iata"> ({{ a.iata }})</template></span
+                    >
+                    <span class="pps-tr-stwalk"
+                      >{{ a.distanceKm.toFixed(0) }} km</span
+                    >
                   </div>
                   <div class="pps-tr-tags">
-                    <span v-if="a.isMajor" class="pps-tr-tag pps-tr-tag--hub">Major</span>
+                    <span v-if="a.isMajor" class="pps-tr-tag pps-tr-tag--hub"
+                      >Major</span
+                    >
                   </div>
                 </div>
               </div>
             </template>
 
             <p class="pps-ds-info-note">
-              <b>Not a timetable.</b> Walking times are typical door-to-platform, not
-              straight-line distance. Services vary by time of day and are subject to
-              timetable changes — check National Rail before relying on a specific
-              connection.
+              <b>Not a timetable.</b> Walking times are typical
+              door-to-platform, not straight-line distance. Services vary by
+              time of day and are subject to timetable changes — check National
+              Rail before relying on a specific connection.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Train stations (dedicated sheet) ──────────────────── -->
           <template v-else-if="activeSheet === 'trains'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/trainstations.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/trainstations.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Train stations</div>
-                <div class="pps-ds-header-meta">National Rail · light-rail within ~4 km</div>
+                <div class="pps-ds-header-meta">
+                  National Rail · light-rail within ~4 km
+                </div>
               </div>
             </div>
 
@@ -1500,21 +1788,28 @@
               <section class="pps-tr-head">
                 <div class="pps-tr-lab">Nearest station</div>
                 <div class="pps-tr-big">
-                  {{ enrichmentTrains[0].name }} · {{ walkMinutes(enrichmentTrains[0].distanceKm) }} min walk
+                  {{ enrichmentTrains[0].name }} ·
+                  {{ walkMinutes(enrichmentTrains[0].distanceKm) }} min walk
                 </div>
                 <p class="pps-tr-sub" v-if="enrichmentTrains[0].operator">
                   Served by <b>{{ enrichmentTrains[0].operator }}</b
                   ><template v-if="enrichmentTrains.length > 1">
-                    · {{ enrichmentTrains.length - 1 }} more within reach</template>.
+                    · {{ enrichmentTrains.length - 1 }} more within
+                    reach</template
+                  >.
                 </p>
                 <p class="pps-tr-sub" v-else>
-                  {{ enrichmentTrains.length }} station{{ enrichmentTrains.length === 1 ? '' : 's' }} within ~4&nbsp;km.
+                  {{ enrichmentTrains.length }} station{{
+                    enrichmentTrains.length === 1 ? '' : 's'
+                  }}
+                  within ~4&nbsp;km.
                 </p>
               </section>
 
               <h2 class="pps-tr-sec">All stations</h2>
               <p class="pps-tr-secsub">
-                Walking time at ~12 min/km. Heritage and miniature railways are excluded.
+                Walking time at ~12 min/km. Heritage and miniature railways are
+                excluded.
               </p>
               <div class="pps-tr-list">
                 <button
@@ -1526,18 +1821,29 @@
                 >
                   <div class="pps-tr-strow">
                     <span class="pps-tr-stname">{{ t.name }}</span>
-                    <span class="pps-tr-stwalk">{{ walkMinutes(t.distanceKm) }} min walk</span>
+                    <span class="pps-tr-stwalk"
+                      >{{ walkMinutes(t.distanceKm) }} min walk</span
+                    >
                   </div>
                   <div class="pps-tr-tags">
-                    <span v-if="i === 0" class="pps-tr-tag pps-tr-tag--hub">Nearest</span>
-                    <span v-if="t.operator" class="pps-tr-tag">{{ t.operator }}</span>
-                    <span class="pps-tr-tag pps-tr-tag--muted">{{ t.distanceKm.toFixed(1) }} km</span>
+                    <span v-if="i === 0" class="pps-tr-tag pps-tr-tag--hub"
+                      >Nearest</span
+                    >
+                    <span v-if="t.operator" class="pps-tr-tag">{{
+                      t.operator
+                    }}</span>
+                    <span class="pps-tr-tag pps-tr-tag--muted"
+                      >{{ t.distanceKm.toFixed(1) }} km</span
+                    >
                   </div>
                   <div v-if="trainOpen === i" class="pps-tr-det">
-                    About <b>{{ walkMinutes(t.distanceKm) }} minutes' walk</b> from this
-                    address at a normal pace ({{ t.distanceKm.toFixed(1) }} km straight-line).
-                    Journey times and connections vary — check National Rail for live
-                    timetables.
+                    About
+                    <b>{{ walkMinutes(t.distanceKm) }} minutes' walk</b> from
+                    this address at a normal pace ({{
+                      t.distanceKm.toFixed(1)
+                    }}
+                    km straight-line). Journey times and connections vary —
+                    check National Rail for live timetables.
                   </div>
                 </button>
               </div>
@@ -1546,60 +1852,102 @@
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🚂</div>
               <div class="pps-ds-placeholder-title">
-                {{ transportLookupFailed ? 'Train information unavailable right now' : 'No train stations within 4 km' }}
+                {{
+                  transportLookupFailed
+                    ? 'Train information unavailable right now'
+                    : 'No train stations within 4 km'
+                }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
-                  We couldn't load nearby stations — please try again in a moment.
+                  We couldn't load nearby stations — please try again in a
+                  moment.
                 </template>
                 <template v-else>
-                  No National Rail or light-rail station within 4 km of this address.
+                  No National Rail or light-rail station within 4 km of this
+                  address.
                 </template>
               </div>
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Straight-line distances.</b> Walking routes and drive-times will be
-              longer. Timetables come from National Rail; live disruption is not
-              reflected in this view.
+              <b>Straight-line distances.</b> Walking routes and drive-times
+              will be longer. Timetables come from National Rail; live
+              disruption is not reflected in this view.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Bus stops (dedicated sheet) ──────────────────────── -->
           <template v-else-if="activeSheet === 'buses'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/busStops.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/busStops.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Buses</div>
-                <div class="pps-ds-header-meta">NaPTAN stops · OpenStreetMap</div>
+                <div class="pps-ds-header-meta">
+                  NaPTAN stops · OpenStreetMap
+                </div>
               </div>
             </div>
 
             <template v-if="enrichmentBuses.length > 0">
               <section class="pps-tr-head">
                 <div class="pps-tr-lab">Best stop</div>
-                <div class="pps-tr-big">{{ enrichmentBuses[0].name || 'Bus stop' }}</div>
+                <div class="pps-tr-big">
+                  {{ enrichmentBuses[0].name || 'Bus stop' }}
+                </div>
                 <p class="pps-tr-sub">
-                  <b>{{ walkMinutes(enrichmentBuses[0].distanceKm) }} minutes' walk</b>
-                  from this address<template v-if="enrichmentBuses[0].ref"> ({{ enrichmentBuses[0].ref }})</template>.
+                  <b
+                    >{{ walkMinutes(enrichmentBuses[0].distanceKm) }} minutes'
+                    walk</b
+                  >
+                  from this address<template v-if="enrichmentBuses[0].ref">
+                    ({{ enrichmentBuses[0].ref }})</template
+                  >.
                 </p>
                 <div class="pps-tr-eff">
-                  <div><b>{{ busStats.total }}</b><span>Stops within reach</span></div>
-                  <div><b>{{ busStats.within10 }}</b><span>Within 10&nbsp;min walk</span></div>
-                  <div><b>{{ walkMinutes(enrichmentBuses[0].distanceKm) }}&nbsp;min</b><span>To the best stop</span></div>
+                  <div>
+                    <b>{{ busStats.total }}</b
+                    ><span>Stops within reach</span>
+                  </div>
+                  <div>
+                    <b>{{ busStats.within10 }}</b
+                    ><span>Within 10&nbsp;min walk</span>
+                  </div>
+                  <div>
+                    <b
+                      >{{
+                        walkMinutes(enrichmentBuses[0].distanceKm)
+                      }}&nbsp;min</b
+                    ><span>To the best stop</span>
+                  </div>
                 </div>
               </section>
 
               <div class="pps-tr-sortbar">
-                <span>{{ sortedBuses.length }} stop{{ sortedBuses.length === 1 ? '' : 's' }}</span>
-                <button class="pps-tr-sortbtn" @click="busSortMode = busSortMode === 'walk' ? 'name' : 'walk'">
+                <span
+                  >{{ sortedBuses.length }} stop{{
+                    sortedBuses.length === 1 ? '' : 's'
+                  }}</span
+                >
+                <button
+                  class="pps-tr-sortbtn"
+                  @click="busSortMode = busSortMode === 'walk' ? 'name' : 'walk'"
+                >
                   Sort: {{ busSortMode === 'walk' ? 'Walk time' : 'Name' }} ▾
                 </button>
               </div>
               <p class="pps-tr-secsub">
-                Both directions are shown together. Route numbers and frequencies vary by
-                stop — check Traveline for live timetables.
+                Both directions are shown together. Route numbers and
+                frequencies vary by stop — check Traveline for live timetables.
               </p>
 
               <div class="pps-tr-list">
@@ -1612,24 +1960,38 @@
                 >
                   <div class="pps-tr-strow">
                     <span class="pps-tr-stname">
-                      {{ b.name || 'Bus stop' }}<template v-if="b.ref"> ({{ b.ref }})</template>
+                      {{ b.name || 'Bus stop'
+                      }}<template v-if="b.ref"> ({{ b.ref }})</template>
                     </span>
-                    <span class="pps-tr-stwalk">{{ walkMinutes(b.distanceKm) }} min walk</span>
+                    <span class="pps-tr-stwalk"
+                      >{{ walkMinutes(b.distanceKm) }} min walk</span
+                    >
                   </div>
                   <div class="pps-tr-tags">
-                    <span v-if="i === 0" class="pps-tr-tag pps-tr-tag--hub">Best stop</span>
-                    <span class="pps-tr-tag pps-tr-tag--muted">{{ b.distanceKm.toFixed(2) }} km</span>
+                    <span v-if="i === 0" class="pps-tr-tag pps-tr-tag--hub"
+                      >Best stop</span
+                    >
+                    <span class="pps-tr-tag pps-tr-tag--muted"
+                      >{{ b.distanceKm.toFixed(2) }} km</span
+                    >
                   </div>
                   <div v-if="busOpen === i" class="pps-tr-det">
                     <template v-if="i === 0">
-                      The closest stop. <b>{{ walkMinutes(b.distanceKm) }} minutes' walk</b>.
-                      For live route numbers and frequencies check
-                      <a href="https://traveline.info" target="_blank" rel="noopener">Traveline</a>.
+                      The closest stop.
+                      <b>{{ walkMinutes(b.distanceKm) }} minutes' walk</b>. For
+                      live route numbers and frequencies check
+                      <a
+                        href="https://traveline.info"
+                        target="_blank"
+                        rel="noopener"
+                        >Traveline</a
+                      >.
                     </template>
                     <template v-else>
                       About {{ b.distanceKm.toFixed(2) }} km from this address
-                      (~{{ walkMinutes(b.distanceKm) }} min). Useful for the opposite
-                      direction or when the nearest stop is closed for works.
+                      (~{{ walkMinutes(b.distanceKm) }} min). Useful for the
+                      opposite direction or when the nearest stop is closed for
+                      works.
                     </template>
                   </div>
                 </button>
@@ -1637,37 +1999,52 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">🚌</div>
+              <div class="pps-ds-placeholder-icon"></div>
               <div class="pps-ds-placeholder-title">
-                {{ transportLookupFailed ? 'Bus stop information unavailable right now' : 'No bus stops within reach' }}
+                {{
+                  transportLookupFailed
+                    ? 'Bus stop information unavailable right now'
+                    : 'No bus stops within reach'
+                }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
                   We couldn't load nearby stops — please try again in a moment.
                 </template>
                 <template v-else>
-                  We couldn't find a bus stop within walking distance of this address.
-                  Check Traveline for the latest coverage.
+                  We couldn't find a bus stop within walking distance of this
+                  address. Check Traveline for the latest coverage.
                 </template>
               </div>
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Frequencies drop off-peak.</b> Bus stop locations come from OpenStreetMap;
-              timetables come from the Bus Open Data Service (not yet wired). Weekday
-              daytime frequencies drop substantially in the evening and on Sundays —
-              worth checking if anyone would rely on the bus for a commute.
+              <b>Frequencies drop off-peak.</b> Bus stop locations come from
+              OpenStreetMap; timetables come from the Bus Open Data Service (not
+              yet wired). Weekday daytime frequencies drop substantially in the
+              evening and on Sundays — worth checking if anyone would rely on
+              the bus for a commute.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Airports (dedicated sheet) ───────────────────────── -->
           <template v-else-if="activeSheet === 'airports'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/airports.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/airports.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Airports</div>
-                <div class="pps-ds-header-meta">Commercial airports · majors first</div>
+                <div class="pps-ds-header-meta">
+                  Commercial airports · majors first
+                </div>
               </div>
             </div>
 
@@ -1675,18 +2052,27 @@
               <section class="pps-tr-head">
                 <div class="pps-tr-lab">Nearest airport</div>
                 <div class="pps-tr-big">
-                  {{ enrichmentAirports[0].name }}<template v-if="enrichmentAirports[0].iata"> ({{ enrichmentAirports[0].iata }})</template>
+                  {{ enrichmentAirports[0].name
+                  }}<template v-if="enrichmentAirports[0].iata">
+                    ({{ enrichmentAirports[0].iata }})</template
+                  >
                 </div>
                 <p class="pps-tr-sub">
-                  <b>{{ enrichmentAirports[0].distanceKm.toFixed(0) }} km</b> away
+                  <b>{{ enrichmentAirports[0].distanceKm.toFixed(0) }} km</b>
+                  away
                   <template v-if="enrichmentAirports.length > 1">
-                    · {{ enrichmentAirports.length - 1 }} other{{ enrichmentAirports.length === 2 ? '' : 's' }} within reach</template>.
+                    · {{ enrichmentAirports.length - 1 }} other{{
+                      enrichmentAirports.length === 2 ? '' : 's'
+                    }}
+                    within reach</template
+                  >.
                 </p>
               </section>
 
               <h2 class="pps-tr-sec">All airports</h2>
               <p class="pps-tr-secsub">
-                Straight-line distances. Drive times depend on route and traffic.
+                Straight-line distances. Drive times depend on route and
+                traffic.
               </p>
               <div class="pps-tr-list">
                 <div
@@ -1696,9 +2082,12 @@
                 >
                   <div class="pps-tr-strow">
                     <span class="pps-tr-stname">
-                      ✈️ {{ a.name }}<template v-if="a.iata"> ({{ a.iata }})</template>
+                      {{ a.name
+                      }}<template v-if="a.iata"> ({{ a.iata }})</template>
                     </span>
-                    <span class="pps-tr-stwalk">{{ a.distanceKm.toFixed(0) }} km</span>
+                    <span class="pps-tr-stwalk"
+                      >{{ a.distanceKm.toFixed(0) }} km</span
+                    >
                   </div>
                   <div class="pps-tr-tags" v-if="a.isMajor">
                     <span class="pps-tr-tag pps-tr-tag--hub">Major hub</span>
@@ -1710,11 +2099,16 @@
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">✈️</div>
               <div class="pps-ds-placeholder-title">
-                {{ airportsLookupFailed ? 'Airport information unavailable right now' : 'No airports within 150 km' }}
+                {{
+                  airportsLookupFailed
+                    ? 'Airport information unavailable right now'
+                    : 'No airports within 150 km'
+                }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="airportsLookupFailed">
-                  We couldn't load nearby airports — please try again in a moment.
+                  We couldn't load nearby airports — please try again in a
+                  moment.
                 </template>
                 <template v-else>
                   Only commercial airports (IATA code, international flag, or
@@ -1724,9 +2118,10 @@
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Straight-line only.</b> Actual drive to the terminal is longer, and
-              airport noise varies with wind direction and time of day — worth checking
-              flight-path maps if the address is close to a runway approach.
+              <b>Straight-line only.</b> Actual drive to the terminal is longer,
+              and airport noise varies with wind direction and time of day —
+              worth checking flight-path maps if the address is close to a
+              runway approach.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
@@ -1734,7 +2129,12 @@
           <!-- ── Map (light Leaflet via existing pps-map-iframe) ───── -->
           <template v-else-if="activeSheet === 'map'">
             <div class="pps-ds-header" style="background: #e8f5e9">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/locationAndMap.jpeg" alt="" loading="lazy" /></span>
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/locationAndMap.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Location &amp; Map</div>
                 <div class="pps-ds-header-meta">
@@ -1748,7 +2148,11 @@
             <iframe
               v-if="property?.latitude && property?.longitude"
               class="pps-map-frame"
-              :src="`https://www.openstreetmap.org/export/embed.html?bbox=${property.longitude - 0.005},${property.latitude - 0.0025},${property.longitude + 0.005},${property.latitude + 0.0025}&layer=mapnik&marker=${property.latitude},${property.longitude}`"
+              :src="`https://www.openstreetmap.org/export/embed.html?bbox=${
+                property.longitude - 0.005
+              },${property.latitude - 0.0025},${property.longitude + 0.005},${
+                property.latitude + 0.0025
+              }&layer=mapnik&marker=${property.latitude},${property.longitude}`"
               loading="lazy"
             />
             <div v-else class="pps-ds-placeholder">
@@ -1806,15 +2210,30 @@
 
           <!-- ── Flood (real EA RoFRS data) ───────────────────────── -->
           <template v-else-if="activeSheet === 'flood'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/floodAndRisj.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/floodAndRisj.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">Flood &amp; environmental risk</div>
-                <div class="pps-ds-header-meta">Environment Agency · BGS · UKHSA · DEFRA</div>
+                <div class="pps-ds-header-title">
+                  Flood &amp; environmental risk
+                </div>
+                <div class="pps-ds-header-meta">
+                  Environment Agency · BGS · UKHSA · DEFRA
+                </div>
               </div>
             </div>
 
-            <section class="pps-fl-head" :class="{ 'pps-fl-head--pending': !property?.floodRisk }">
+            <section
+              class="pps-fl-head"
+              :class="{ 'pps-fl-head--pending': !property?.floodRisk }"
+            >
               <div class="pps-fl-lab">Overall flood risk</div>
               <div class="pps-fl-big">{{ floodOverall.label }}</div>
               <p class="pps-fl-sub" v-html="floodOverall.sub" />
@@ -1823,8 +2242,8 @@
 
             <h2 class="pps-fl-sec">Long-term flood risk</h2>
             <p class="pps-fl-secsub">
-              The likelihood of flooding over the lifetime of ownership. This is what lenders and
-              insurers use.
+              The likelihood of flooding over the lifetime of ownership. This is
+              what lenders and insurers use.
             </p>
             <div class="pps-fl-risks">
               <button
@@ -1836,25 +2255,42 @@
               >
                 <div class="pps-fl-rtop">
                   <span class="pps-fl-rname">{{ r.n }}</span>
-                  <span class="pps-fl-pill" :class="'pps-fl-pill--' + r.c">{{ r.s }}</span>
+                  <span class="pps-fl-pill" :class="'pps-fl-pill--' + r.c">{{
+                    r.s
+                  }}</span>
                 </div>
                 <p v-if="r.m" class="pps-fl-rmean">{{ r.m }}</p>
-                <div v-if="r.d && floodOpen === i" class="pps-fl-rdet" v-html="r.d" />
+                <div
+                  v-if="r.d && floodOpen === i"
+                  class="pps-fl-rdet"
+                  v-html="r.d"
+                />
               </button>
             </div>
 
-            <div v-if="floodLiveWarnings.length" class="pps-fl-live" :class="{ 'pps-fl-live--open': floodLiveOpen }">
+            <div
+              v-if="floodLiveWarnings.length"
+              class="pps-fl-live"
+              :class="{ 'pps-fl-live--open': floodLiveOpen }"
+            >
               <h2 class="pps-fl-sec">Live status today</h2>
               <p class="pps-fl-secsub">
-                Real-time Environment Agency warnings for nearby watercourses. This is a live
-                snapshot — not a long-term risk measure.
+                Real-time Environment Agency warnings for nearby watercourses.
+                This is a live snapshot — not a long-term risk measure.
               </p>
-              <button class="pps-fl-livehead" @click="floodLiveOpen = !floodLiveOpen">
+              <button
+                class="pps-fl-livehead"
+                @click="floodLiveOpen = !floodLiveOpen"
+              >
                 <span>{{ floodLiveWarnings.length }} monitored nearby</span>
                 <small>{{ floodLiveOpen ? 'hide' : 'show' }}</small>
               </button>
               <div v-if="floodLiveOpen" class="pps-fl-livebody">
-                <div v-for="w in floodLiveWarnings" :key="w.name" class="pps-fl-wrow">
+                <div
+                  v-for="w in floodLiveWarnings"
+                  :key="w.name"
+                  class="pps-fl-wrow"
+                >
                   <span>{{ w.name }}</span>
                   <span>{{ w.status || 'No warning' }}</span>
                 </div>
@@ -1864,33 +2300,63 @@
             <div class="pps-fl-impact">
               <h3>What this means when you buy</h3>
               <ul>
-                <li><b>Insurance.</b> Properties built before 2009 in a flood-risk area are usually
-                  eligible for Flood Re, which caps premiums. Newer builds are not.</li>
-                <li><b>Mortgage.</b> Some lenders decline or require a specialist survey where
-                  river-and-sea risk is High.</li>
-                <li><b>Ask your conveyancer</b> for a full flood report and the seller's answers on
-                  past flooding in the property information form.</li>
+                <li>
+                  <b>Insurance.</b> Properties built before 2009 in a flood-risk
+                  area are usually eligible for Flood Re, which caps premiums.
+                  Newer builds are not.
+                </li>
+                <li>
+                  <b>Mortgage.</b> Some lenders decline or require a specialist
+                  survey where river-and-sea risk is High.
+                </li>
+                <li>
+                  <b>Ask your conveyancer</b> for a full flood report and the
+                  seller's answers on past flooding in the property information
+                  form.
+                </li>
               </ul>
             </div>
 
             <h2 class="pps-fl-sec">Other environmental checks</h2>
-            <p class="pps-fl-secsub">Not yet included in your report. These open the official postcode lookup.</p>
+            <p class="pps-fl-secsub">
+              Not yet included in your report. These open the official postcode
+              lookup.
+            </p>
             <div class="pps-fl-lookups">
-              <a href="https://www.ukradon.org/information/ukmaps?utm_source=umovingu" target="_blank" rel="noopener" class="pps-fl-lookup">
+              <a
+                href="https://www.ukradon.org/information/ukmaps?utm_source=umovingu"
+                target="_blank"
+                rel="noopener"
+                class="pps-fl-lookup"
+              >
                 <div>
                   <div class="pps-fl-lname">Radon</div>
                   <div class="pps-fl-lsub">UKHSA — not checked</div>
                 </div>
                 <span class="pps-fl-go">Look up →</span>
               </a>
-              <a href="https://www.bgs.ac.uk/geology-projects/shrink-swell/" target="_blank" rel="noopener" class="pps-fl-lookup">
+              <a
+                href="https://www.bgs.ac.uk/geology-projects/shrink-swell/"
+                target="_blank"
+                rel="noopener"
+                class="pps-fl-lookup"
+              >
                 <div>
-                  <div class="pps-fl-lname">Subsidence &amp; clay shrink-swell</div>
-                  <div class="pps-fl-lsub">British Geological Survey — not checked</div>
+                  <div class="pps-fl-lname">
+                    Subsidence &amp; clay shrink-swell
+                  </div>
+                  <div class="pps-fl-lsub">
+                    British Geological Survey — not checked
+                  </div>
                 </div>
                 <span class="pps-fl-go">Look up →</span>
               </a>
-              <a href="https://www.bgs.ac.uk/datasets/geosure/" target="_blank" rel="noopener" class="pps-fl-lookup">
+              <a
+                href="https://www.bgs.ac.uk/datasets/geosure/"
+                target="_blank"
+                rel="noopener"
+                class="pps-fl-lookup"
+              >
                 <div>
                   <div class="pps-fl-lname">Ground stability</div>
                   <div class="pps-fl-lsub">BGS GeoSure — not checked</div>
@@ -1898,7 +2364,11 @@
                 <span class="pps-fl-go">Look up →</span>
               </a>
               <a
-                :href="`https://uk-air.defra.gov.uk/data/local-authority-statistics${property?.city ? `?la=${encodeURIComponent(property.city)}` : ''}`"
+                :href="`https://uk-air.defra.gov.uk/data/local-authority-statistics${
+                  property?.city
+                    ? `?la=${encodeURIComponent(property.city)}`
+                    : ''
+                }`"
                 target="_blank"
                 rel="noopener"
                 class="pps-fl-lookup"
@@ -1912,49 +2382,75 @@
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Not a substitute for a full flood report.</b> Environment Agency mapping gives a
-              statistical likelihood for an area, not a prediction for an individual building —
-              ground levels, defences and property-level protection all vary within a postcode.
+              <b>Not a substitute for a full flood report.</b> Environment
+              Agency mapping gives a statistical likelihood for an area, not a
+              prediction for an individual building — ground levels, defences
+              and property-level protection all vary within a postcode.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Planning (placeholder) ────────────────────────────── -->
           <template v-else-if="activeSheet === 'planning'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/planning.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/planning.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Planning history</div>
                 <div class="pps-ds-header-meta">
-                  planning.data.gov.uk<template v-if="property?.city"> · {{ property.city }}</template>
+                  planning.data.gov.uk<template v-if="property?.city">
+                    · {{ property.city }}</template
+                  >
                 </div>
               </div>
             </div>
 
-            <template v-if="planningConstraints.length > 0 || planningApplications.length > 0">
+            <template
+              v-if="
+                planningConstraints.length > 0 ||
+                planningApplications.length > 0
+              "
+            >
               <section class="pps-tr-head">
                 <div class="pps-tr-lab">Planning summary</div>
                 <div class="pps-tr-big">
-                  {{ planningConstraints.length }} constraint{{ planningConstraints.length === 1 ? '' : 's' }}
-                  · {{ planningApplications.length }} application{{ planningApplications.length === 1 ? '' : 's' }}
+                  {{ planningConstraints.length }} constraint{{
+                    planningConstraints.length === 1 ? '' : 's'
+                  }}
+                  · {{ planningApplications.length }} application{{
+                    planningApplications.length === 1 ? '' : 's'
+                  }}
                 </div>
                 <p class="pps-tr-sub" v-if="planningConstraints.length > 0">
                   This address sits within
-                  <b>{{ planningConstraints.length }} planning designation{{ planningConstraints.length === 1 ? '' : 's' }}</b>.
-                  Applications linked to this UPRN may exclude older paper records held
-                  only by the local authority portal.
+                  <b
+                    >{{ planningConstraints.length }} planning designation{{
+                      planningConstraints.length === 1 ? '' : 's'
+                    }}</b
+                  >. Applications linked to this UPRN may exclude older paper
+                  records held only by the local authority portal.
                 </p>
                 <p class="pps-tr-sub" v-else>
-                  No planning designations at this address. {{ planningApplications.length }}
-                  application{{ planningApplications.length === 1 ? '' : 's' }} linked to
-                  this property's UPRN.
+                  No planning designations at this address.
+                  {{ planningApplications.length }} application{{
+                    planningApplications.length === 1 ? '' : 's'
+                  }}
+                  linked to this property's UPRN.
                 </p>
               </section>
 
               <template v-if="planningConstraints.length > 0">
                 <h2 class="pps-tr-sec">Planning constraints</h2>
                 <p class="pps-tr-secsub">
-                  Designations that can affect what you're allowed to alter or extend.
+                  Designations that can affect what you're allowed to alter or
+                  extend.
                 </p>
                 <div class="pps-tr-list">
                   <div
@@ -1963,7 +2459,9 @@
                     class="pps-tr-row pps-tr-row--static"
                   >
                     <div class="pps-tr-strow">
-                      <span class="pps-tr-stname">{{ constraintIcon(c.category) }} {{ c.type }}</span>
+                      <span class="pps-tr-stname"
+                        >{{ constraintIcon(c.category) }} {{ c.type }}</span
+                      >
                     </div>
                     <div class="pps-tr-tags">
                       <span class="pps-tr-tag">{{ c.name }}</span>
@@ -1987,24 +2485,43 @@
                   >
                     <div class="pps-tr-strow">
                       <span class="pps-tr-stname">
-                        {{ (a.applicationType || a.description || 'Application').slice(0, 60) }}
+                        {{
+                          (
+                            a.applicationType ||
+                            a.description ||
+                            'Application'
+                          ).slice(0, 60)
+                        }}
                       </span>
                       <span class="pps-tr-stwalk">
-                        {{ a.decisionDate ? new Date(a.decisionDate).getFullYear() : '—' }}
+                        {{
+                          a.decisionDate
+                            ? new Date(a.decisionDate).getFullYear()
+                            : '—'
+                        }}
                       </span>
                     </div>
                     <div class="pps-tr-tags">
                       <span
                         class="pps-tr-tag"
                         :class="{
-                          'pps-tr-tag--hub': /granted|approved|permit/i.test(a.decision || a.status || ''),
-                          'pps-tr-tag--muted': /refuse|withdrawn/i.test(a.decision || a.status || ''),
+                          'pps-tr-tag--hub': /granted|approved|permit/i.test(
+                            a.decision || a.status || '',
+                          ),
+                          'pps-tr-tag--muted': /refuse|withdrawn/i.test(
+                            a.decision || a.status || '',
+                          ),
                         }"
-                      >{{ a.decision || a.status || 'Pending' }}</span>
+                        >{{ a.decision || a.status || 'Pending' }}</span
+                      >
                     </div>
                     <div v-if="planningOpen === i" class="pps-tr-det">
-                      <template v-if="a.description">{{ a.description }}</template>
-                      <template v-else>No further description on file.</template>
+                      <template v-if="a.description">{{
+                        a.description
+                      }}</template>
+                      <template v-else
+                        >No further description on file.</template
+                      >
                     </div>
                   </button>
                 </div>
@@ -2013,19 +2530,26 @@
 
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">📋</div>
-              <div class="pps-ds-placeholder-title">No planning constraints or applications on file</div>
+              <div class="pps-ds-placeholder-title">
+                No planning constraints or applications on file
+              </div>
               <div class="pps-ds-placeholder-sub">
-                No conservation area, listed building, Article 4 direction, Green Belt,
-                AONB or other planning designation in
-                <a href="https://www.planning.data.gov.uk" target="_blank" rel="noopener" style="color: #00817c; font-weight: 700">planning.data.gov.uk</a>,
-                and no applications linked to this UPRN.
+                No conservation area, listed building, Article 4 direction,
+                Green Belt, AONB or other planning designation in
+                <a
+                  href="https://www.planning.data.gov.uk"
+                  target="_blank"
+                  rel="noopener"
+                  style="color: #00817c; font-weight: 700"
+                  >planning.data.gov.uk</a
+                >, and no applications linked to this UPRN.
               </div>
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Not exhaustive.</b> Constraints come from the national Planning Data
-              platform. Applications are matched by UPRN — older paper records held only
-              by the local authority may be missing.
+              <b>Not exhaustive.</b> Constraints come from the national Planning
+              Data platform. Applications are matched by UPRN — older paper
+              records held only by the local authority may be missing.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
@@ -2033,22 +2557,29 @@
           <!-- ── Local Land Charges (HM Land Registry) ─────────────── -->
           <template v-else-if="activeSheet === 'llc'">
             <!-- LlcChargesCard renders its own header; don't duplicate. -->
-            <LlcChargesCard
-              v-if="propertyId"
-              :property-id="propertyId"
-            />
+            <LlcChargesCard v-if="propertyId" :property-id="propertyId" />
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Council tax (real band) ───────────────────────────── -->
           <template v-else-if="activeSheet === 'council'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/councilTax.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/councilTax.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Council tax</div>
                 <div class="pps-ds-header-meta">
                   {{ councilTaxSource || 'Valuation Office Agency'
-                  }}<template v-if="councilTaxCouncilName"> · {{ councilTaxCouncilName }}</template>
+                  }}<template v-if="councilTaxCouncilName">
+                    · {{ councilTaxCouncilName }}</template
+                  >
                 </div>
               </div>
             </div>
@@ -2056,10 +2587,14 @@
             <template v-if="councilTaxAnnual">
               <section class="pps-tr-head">
                 <div class="pps-tr-lab">Estimated annual bill</div>
-                <div class="pps-tr-big">£{{ councilTaxAnnual.toLocaleString() }} / yr</div>
+                <div class="pps-tr-big">
+                  £{{ councilTaxAnnual.toLocaleString() }} / yr
+                </div>
                 <p class="pps-tr-sub">
                   Band <b>{{ property.councilTaxBand }}</b> · 2024/25 average
-                  <template v-if="property.city"> · {{ property.city }}</template>.
+                  <template v-if="property.city">
+                    · {{ property.city }}</template
+                  >.
                 </p>
                 <div class="pps-tr-eff">
                   <div>
@@ -2080,7 +2615,8 @@
 
             <h2 class="pps-tr-sec">All bands · 2024/25 average</h2>
             <p class="pps-tr-secsub">
-              How your band compares to the rest of the council-tax scale for this area.
+              How your band compares to the rest of the council-tax scale for
+              this area.
             </p>
             <div class="pps-ds-band-list">
               <div
@@ -2089,7 +2625,9 @@
                 class="pps-ds-band-row"
                 :class="{ 'pps-ds-band-row--active': b.active }"
               >
-                <span class="pps-ds-band-letter">{{ b.letter }}{{ b.active ? ' ←' : '' }}</span>
+                <span class="pps-ds-band-letter"
+                  >{{ b.letter }}{{ b.active ? ' ←' : '' }}</span
+                >
                 <div class="pps-ds-band-bar-track">
                   <div
                     class="pps-ds-band-bar"
@@ -2099,7 +2637,9 @@
                     }"
                   />
                 </div>
-                <span class="pps-ds-band-amt">£{{ b.amount.toLocaleString() }}</span>
+                <span class="pps-ds-band-amt"
+                  >£{{ b.amount.toLocaleString() }}</span
+                >
               </div>
             </div>
 
@@ -2115,9 +2655,14 @@
                   class="pps-tr-row pps-tr-row--static"
                 >
                   <div class="pps-tr-strow">
-                    <span class="pps-tr-stname">{{ n.address || n.postcode || 'Nearby property' }}</span>
+                    <span class="pps-tr-stname">{{
+                      n.address || n.postcode || 'Nearby property'
+                    }}</span>
                     <span class="pps-tr-stwalk">
-                      Band {{ n.band }}<template v-if="n.annualEstimate"> · £{{ n.annualEstimate.toLocaleString() }}</template>
+                      Band {{ n.band
+                      }}<template v-if="n.annualEstimate">
+                        · £{{ n.annualEstimate.toLocaleString() }}</template
+                      >
                     </span>
                   </div>
                 </div>
@@ -2125,20 +2670,32 @@
             </template>
 
             <p class="pps-ds-info-note">
-              <b>An estimate.</b> Council tax is set by the local authority and can change
-              each April. The 2024/25 average shown here is representative; check with
-              {{ councilTaxCouncilName || 'your council' }} for the current year's rate.
+              <b>An estimate.</b> Council tax is set by the local authority and
+              can change each April. The 2024/25 average shown here is
+              representative; check with
+              {{ councilTaxCouncilName || 'your council' }} for the current
+              year's rate.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Broadband (Ofcom Connected Nations) ──────────────── -->
           <template v-else-if="activeSheet === 'broadband'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/broadband.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/broadband.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Broadband &amp; mobile</div>
-                <div class="pps-ds-header-meta">Ofcom Connected Nations · postcode level</div>
+                <div class="pps-ds-header-meta">
+                  Ofcom Connected Nations · postcode level
+                </div>
               </div>
             </div>
 
@@ -2146,24 +2703,35 @@
               <section class="pps-bb-head">
                 <div class="pps-bb-lab">Fastest available download</div>
                 <div class="pps-bb-big">
-                  {{ broadbandBig.value }}<small>&nbsp;{{ broadbandBig.unit }}</small>
+                  {{ broadbandBig.value
+                  }}<small>&nbsp;{{ broadbandBig.unit }}</small>
                 </div>
                 <p class="pps-bb-sub" v-html="broadbandBig.sub" />
                 <div class="pps-bb-scale-wrap">
-                  <div class="pps-bb-scale" role="img" aria-label="Speed relative to UK availability">
-                    <span class="pps-bb-marker" :style="{ left: broadbandBig.pos + '%' }" />
+                  <div
+                    class="pps-bb-scale"
+                    role="img"
+                    aria-label="Speed relative to UK availability"
+                  >
+                    <span
+                      class="pps-bb-marker"
+                      :style="{ left: broadbandBig.pos + '%' }"
+                    />
                   </div>
                   <div class="pps-bb-scale-labels">
-                    <span>UNDER 30</span><span>SUPERFAST</span><span>ULTRAFAST</span><span>GIGABIT</span>
+                    <span>UNDER 30</span><span>SUPERFAST</span
+                    ><span>ULTRAFAST</span><span>GIGABIT</span>
                   </div>
                 </div>
               </section>
-              <p class="pps-bb-stamp">Ofcom Connected Nations · latest available</p>
+              <p class="pps-bb-stamp">
+                Ofcom Connected Nations · latest available
+              </p>
 
               <h2 class="pps-tr-sec">Networks at this postcode</h2>
               <p class="pps-tr-secsub">
-                Maximum advertised download speed available from each network. Actual speed
-                depends on the package you buy.
+                Maximum advertised download speed available from each network.
+                Actual speed depends on the package you buy.
               </p>
               <div class="pps-bb-nets">
                 <div
@@ -2175,33 +2743,47 @@
                     <span class="pps-bb-nname">
                       {{ n.name }}<em>{{ n.tech }}</em>
                     </span>
-                    <span class="pps-bb-nspeed">{{ formatMbps(n.speedMbps) }}</span>
+                    <span class="pps-bb-nspeed">{{
+                      formatMbps(n.speedMbps)
+                    }}</span>
                   </div>
                   <div class="pps-bb-nbar">
-                    <i :style="{ width: n.pct + '%', background: n.fibre ? '#00A19A' : '#231D45' }" />
+                    <i
+                      :style="{
+                        width: n.pct + '%',
+                        background: n.fibre ? '#00A19A' : '#231D45',
+                      }"
+                    />
                   </div>
                 </div>
               </div>
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">📶</div>
-              <div class="pps-ds-placeholder-title">{{ broadbandPlaceholder.title }}</div>
-              <div class="pps-ds-placeholder-sub">{{ broadbandPlaceholder.sub }}</div>
+              <div class="pps-ds-placeholder-icon"></div>
+              <div class="pps-ds-placeholder-title">
+                {{ broadbandPlaceholder.title }}
+              </div>
+              <div class="pps-ds-placeholder-sub">
+                {{ broadbandPlaceholder.sub }}
+              </div>
               <a
                 v-if="property?.postcode"
-                :href="`https://checker.ofcom.org.uk/en-gb/broadband-coverage?Postcode=${encodeURIComponent(property.postcode)}`"
+                :href="`https://checker.ofcom.org.uk/en-gb/broadband-coverage?Postcode=${encodeURIComponent(
+                  property.postcode,
+                )}`"
                 target="_blank"
                 rel="noopener"
                 class="pps-ds-placeholder-link"
-              >Check on Ofcom's site →</a>
+                >Check on Ofcom's site →</a
+              >
             </div>
 
             <template v-if="enrichmentMobile?.available">
               <h2 class="pps-tr-sec">Mobile signal</h2>
               <p class="pps-tr-secsub">
-                Predicted outdoor coverage by operator. Worth checking if anyone works from
-                home or the property has thick walls.
+                Predicted outdoor coverage by operator. Worth checking if anyone
+                works from home or the property has thick walls.
               </p>
               <div class="pps-bb-mob">
                 <div class="pps-bb-mob-h">Operator</div>
@@ -2224,49 +2806,83 @@
             <div v-if="broadbandImpact.length" class="pps-bb-impact">
               <h3>What this supports</h3>
               <ul>
-                <li v-for="(line, i) in broadbandImpact" :key="i" v-html="line" />
+                <li
+                  v-for="(line, i) in broadbandImpact"
+                  :key="i"
+                  v-html="line"
+                />
               </ul>
             </div>
 
             <div class="pps-tr-links">
               <a
                 v-if="property?.postcode"
-                :href="`https://checker.ofcom.org.uk/en-gb/broadband-coverage?Postcode=${encodeURIComponent(property.postcode)}`"
+                :href="`https://checker.ofcom.org.uk/en-gb/broadband-coverage?Postcode=${encodeURIComponent(
+                  property.postcode,
+                )}`"
                 target="_blank"
                 rel="noopener"
-              >Check on Ofcom →</a>
-              <a href="https://www.uswitch.com/broadband/" target="_blank" rel="noopener">
+                >Check on Ofcom →</a
+              >
+              <a
+                href="https://www.uswitch.com/broadband/"
+                target="_blank"
+                rel="noopener"
+              >
                 Compare packages →
               </a>
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Modelled at postcode level.</b> Ofcom figures may differ from what an
-              individual property gets — particularly on older copper lines where distance
-              from the cabinet matters. Full fibre availability does not mean it is already
-              installed at the property; installation may still be needed.
+              <b>Modelled at postcode level.</b> Ofcom figures may differ from
+              what an individual property gets — particularly on older copper
+              lines where distance from the cabinet matters. Full fibre
+              availability does not mean it is already installed at the
+              property; installation may still be needed.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Stamp Duty Calculator (live) ──────────────────────── -->
           <template v-else-if="activeSheet === 'stamp-duty'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/stampDuty.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/stampDuty.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Stamp duty</div>
-                <div class="pps-ds-header-meta">England &amp; NI · rates from 1 April 2025</div>
+                <div class="pps-ds-header-meta">
+                  England &amp; NI · rates from 1 April 2025
+                </div>
               </div>
             </div>
 
             <section class="pps-sx-head" aria-live="polite">
               <div class="pps-sx-lab">Estimated stamp duty</div>
-              <div class="pps-sx-big">£{{ stampDuty.total.toLocaleString() }}</div>
-              <p class="pps-sx-sub">On a price of <b>£{{ (sdInput || 0).toLocaleString() }}</b></p>
+              <div class="pps-sx-big">
+                £{{ stampDuty.total.toLocaleString() }}
+              </div>
+              <p class="pps-sx-sub">
+                On a price of <b>£{{ (sdInput || 0).toLocaleString() }}</b>
+              </p>
               <div class="pps-sx-eff">
-                <div><b>{{ sdEffective.rate.toFixed(1) }}%</b><span>Effective rate</span></div>
-                <div><b>£{{ sdEffective.per100.toFixed(2) }}</b><span>Per £100 of price</span></div>
-                <div><b>{{ sdEffective.topBand }}%</b><span>Top band reached</span></div>
+                <div>
+                  <b>{{ sdEffective.rate.toFixed(1) }}%</b
+                  ><span>Effective rate</span>
+                </div>
+                <div>
+                  <b>£{{ sdEffective.per100.toFixed(2) }}</b
+                  ><span>Per £100 of price</span>
+                </div>
+                <div>
+                  <b>{{ sdEffective.topBand }}%</b><span>Top band reached</span>
+                </div>
               </div>
             </section>
 
@@ -2297,15 +2913,21 @@
               <button
                 :aria-pressed="sdType === 'standard'"
                 @click="sdType = 'standard'"
-              >Moving home</button>
+              >
+                Moving home
+              </button>
               <button
                 :aria-pressed="sdType === 'first'"
                 @click="sdType = 'first'"
-              >First-time</button>
+              >
+                First-time
+              </button>
               <button
                 :aria-pressed="sdType === 'additional'"
                 @click="sdType = 'additional'"
-              >Additional</button>
+              >
+                Additional
+              </button>
             </div>
 
             <div class="pps-sx-switch">
@@ -2332,7 +2954,9 @@
                   v-for="s in sdStack"
                   :key="s.i"
                   :style="{ width: s.pct + '%', background: s.color }"
-                  :title="`${Math.round(s.rate * 100)}% on £${s.slice.toLocaleString()}`"
+                  :title="`${Math.round(
+                    s.rate * 100,
+                  )}% on £${s.slice.toLocaleString()}`"
                 />
               </div>
               <div class="pps-sx-stack-key">
@@ -2350,20 +2974,32 @@
               :class="{ 'pps-sx-band--off': !b.amount }"
             >
               <div class="pps-sx-brow">
-                <span class="pps-sx-brate">{{ Math.round(b.rate * 100) }}%</span>
-                <span class="pps-sx-bamt">£{{ b.amount.toLocaleString() }}</span>
+                <span class="pps-sx-brate"
+                  >{{ Math.round(b.rate * 100) }}%</span
+                >
+                <span class="pps-sx-bamt"
+                  >£{{ b.amount.toLocaleString() }}</span
+                >
               </div>
               <div class="pps-sx-bbar">
                 <i
                   :style="{
-                    width: sdMaxBand > 0 ? (b.amount / sdMaxBand) * 100 + '%' : '0%',
+                    width:
+                      sdMaxBand > 0 ? (b.amount / sdMaxBand) * 100 + '%' : '0%',
                     background: SD_SHADES[i % SD_SHADES.length],
                   }"
                 />
               </div>
               <div class="pps-sx-bmeta">
-                <span>{{ sdShort(b.from) }} – {{ b.to === Infinity ? 'above' : sdShort(b.to) }}</span>
-                <span>{{ b.amount ? '£' + (b.slice || 0).toLocaleString() + ' of your price' : '—' }}</span>
+                <span
+                  >{{ sdShort(b.from) }} –
+                  {{ b.to === Infinity ? 'above' : sdShort(b.to) }}</span
+                >
+                <span>{{
+                  b.amount
+                    ? '£' + (b.slice || 0).toLocaleString() + ' of your price'
+                    : '—'
+                }}</span>
               </div>
             </div>
 
@@ -2373,14 +3009,25 @@
             </div>
 
             <div class="pps-sx-links">
-              <a href="https://www.gov.uk/stamp-duty-land-tax" target="_blank" rel="noopener">Full rates on GOV.UK →</a>
-              <a href="https://www.gov.uk/guidance/land-and-buildings-transaction-tax" target="_blank" rel="noopener">Buying in Scotland or Wales? →</a>
+              <a
+                href="https://www.gov.uk/stamp-duty-land-tax"
+                target="_blank"
+                rel="noopener"
+                >Full rates on GOV.UK →</a
+              >
+              <a
+                href="https://www.gov.uk/guidance/land-and-buildings-transaction-tax"
+                target="_blank"
+                rel="noopener"
+                >Buying in Scotland or Wales? →</a
+              >
             </div>
 
             <p class="pps-ds-info-note">
-              <b>An estimate, not advice.</b> Assumes a freehold residential purchase with no linked
-              transactions, shared ownership or multiple dwellings. Scotland uses LBTT and Wales
-              uses LTT, both with different bands. Your solicitor files the return and confirms the
+              <b>An estimate, not advice.</b> Assumes a freehold residential
+              purchase with no linked transactions, shared ownership or multiple
+              dwellings. Scotland uses LBTT and Wales uses LTT, both with
+              different bands. Your solicitor files the return and confirms the
               final figure.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
@@ -2388,11 +3035,21 @@
 
           <!-- ── Listed buildings / heritage sites ────────────────────── -->
           <template v-else-if="activeSheet === 'listed'">
-            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/listedBuildings.jpeg" alt="" loading="lazy" /></span>
+            <div
+              class="pps-ds-header"
+              style="background: var(--teal-wash, #e9f6f5)"
+            >
+              <span class="pps-ds-header-icon"
+                ><img
+                  src="/op-icons/property/listedBuildings.jpeg"
+                  alt=""
+                  loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Heritage sites nearby</div>
-                <div class="pps-ds-header-meta">Historic England · OpenStreetMap</div>
+                <div class="pps-ds-header-meta">
+                  Historic England · OpenStreetMap
+                </div>
               </div>
             </div>
 
@@ -2400,12 +3057,15 @@
               <section class="pps-tr-head">
                 <div class="pps-tr-lab">Within ~800 m of this address</div>
                 <div class="pps-tr-big">
-                  {{ enrichmentListedBuildings.length }} heritage site{{ enrichmentListedBuildings.length === 1 ? '' : 's' }}
+                  {{ enrichmentListedBuildings.length }} heritage site{{
+                    enrichmentListedBuildings.length === 1 ? '' : 's'
+                  }}
                 </div>
                 <p class="pps-tr-sub">
                   Nearby listed buildings and scheduled monuments.
-                  <b>Designations affect what alterations you can make</b> — check with the
-                  local conservation officer before any exterior work.
+                  <b>Designations affect what alterations you can make</b> —
+                  check with the local conservation officer before any exterior
+                  work.
                 </p>
               </section>
 
@@ -2417,11 +3077,17 @@
                   class="pps-tr-row pps-tr-row--static"
                 >
                   <div class="pps-tr-strow">
-                    <span class="pps-tr-stname">🏛️ {{ b.name || 'Unnamed site' }}</span>
-                    <span class="pps-tr-stwalk">{{ b.grade || 'Heritage' }}</span>
+                    <span class="pps-tr-stname"
+                      > {{ b.name || 'Unnamed site' }}</span
+                    >
+                    <span class="pps-tr-stwalk">{{
+                      b.grade || 'Heritage'
+                    }}</span>
                   </div>
                   <div class="pps-tr-tags" v-if="b.location">
-                    <span class="pps-tr-tag pps-tr-tag--muted">{{ b.location }}</span>
+                    <span class="pps-tr-tag pps-tr-tag--muted">{{
+                      b.location
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -2429,7 +3095,9 @@
 
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🏛️</div>
-              <div class="pps-ds-placeholder-title">No heritage sites nearby</div>
+              <div class="pps-ds-placeholder-title">
+                No heritage sites nearby
+              </div>
               <div class="pps-ds-placeholder-sub">
                 No listed buildings or scheduled monuments within ~800 m of this
                 address.
@@ -2437,10 +3105,10 @@
             </div>
 
             <p class="pps-ds-info-note">
-              <b>Heritage designations matter.</b> Being near a listed building doesn't
-              affect this property directly, but if it or its neighbours ARE listed,
-              conservation rules apply — always check with the local conservation
-              officer before any exterior work.
+              <b>Heritage designations matter.</b> Being near a listed building
+              doesn't affect this property directly, but if it or its neighbours
+              ARE listed, conservation rules apply — always check with the local
+              conservation officer before any exterior work.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
@@ -2448,7 +3116,9 @@
           <!-- ── Crime / safety (data.police.uk) ────────────────────── -->
           <template v-else-if="activeSheet === 'crime'">
             <div class="pps-ds-header" style="background: #eeedf5">
-              <span class="pps-ds-header-icon"><img src="/op-icons/property/crime.jpeg" alt="" loading="lazy" /></span>
+              <span class="pps-ds-header-icon"
+                ><img src="/op-icons/property/crime.jpeg" alt="" loading="lazy"
+              /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Crime in this area</div>
                 <div class="pps-ds-header-meta">
@@ -2478,20 +3148,29 @@
               <section class="crime-headline" aria-live="polite">
                 <div class="crime-rate-row">
                   <span class="crime-rate">{{ crimeRatePer1000 }}</span>
-                  <span class="crime-rate-unit">crimes per 1,000<br>residents / year</span>
+                  <span class="crime-rate-unit"
+                    >crimes per 1,000<br />residents / year</span
+                  >
                 </div>
                 <p class="crime-verdict" v-html="crimeVerdictHtml"></p>
                 <p class="crime-raw">
-                  {{ crimeScaledTotal.toLocaleString() }} recorded crimes ·
-                  est. {{ crimeEstimatedPop.toLocaleString() }} residents
+                  {{ crimeScaledTotal.toLocaleString() }} recorded crimes · est.
+                  {{ crimeEstimatedPop.toLocaleString() }} residents
                 </p>
 
                 <div class="crime-scale-wrap">
-                  <div class="crime-scale" role="img" :aria-label="crimeScaleAriaLabel">
+                  <div
+                    class="crime-scale"
+                    role="img"
+                    :aria-label="crimeScaleAriaLabel"
+                  >
                     <span class="crime-tick" style="left: 25%" />
                     <span class="crime-tick" style="left: 50%" />
                     <span class="crime-tick" style="left: 75%" />
-                    <span class="crime-marker" :style="{ left: crimeMarkerPct + '%' }" />
+                    <span
+                      class="crime-marker"
+                      :style="{ left: crimeMarkerPct + '%' }"
+                    />
                   </div>
                   <div class="crime-scale-labels">
                     <span>QUIETEST 25%</span>
@@ -2503,27 +3182,51 @@
               </section>
 
               <!-- Trend card -->
-              <section
-                v-if="crimeSparkPath"
-                class="crime-trend"
-              >
+              <section v-if="crimeSparkPath" class="crime-trend">
                 <div class="crime-trend-top">
                   <span>Direction of travel</span>
                   <span
                     v-if="crimeTrendChipLabel"
                     class="crime-chip"
                     :class="{ up: enrichmentCrime.trendDirection === 'up' }"
-                  >{{ crimeTrendChipLabel }}</span>
+                    >{{ crimeTrendChipLabel }}</span
+                  >
                 </div>
-                <svg class="crime-spark" viewBox="0 0 300 52" preserveAspectRatio="none" aria-hidden="true">
+                <svg
+                  class="crime-spark"
+                  viewBox="0 0 300 52"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
                   <defs>
-                    <linearGradient id="crimeSparkFade" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#00A19A" stop-opacity=".22" />
-                      <stop offset="100%" stop-color="#00A19A" stop-opacity="0" />
+                    <linearGradient
+                      id="crimeSparkFade"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="0%"
+                        stop-color="#00A19A"
+                        stop-opacity=".22"
+                      />
+                      <stop
+                        offset="100%"
+                        stop-color="#00A19A"
+                        stop-opacity="0"
+                      />
                     </linearGradient>
                   </defs>
                   <path :d="crimeSparkFillPath" fill="url(#crimeSparkFade)" />
-                  <path :d="crimeSparkPath" fill="none" stroke="#00A19A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path
+                    :d="crimeSparkPath"
+                    fill="none"
+                    stroke="#00A19A"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <div class="crime-spark-x">
                   <span>{{ crimeSparkLabels.first }}</span>
@@ -2537,15 +3240,21 @@
                    category is mapped to property/personal/public via
                    crimeGroupFor(). -->
               <p class="crime-section-label">What was reported</p>
-              <p class="crime-section-sub">Tap a category for what it usually means locally.</p>
+              <p class="crime-section-sub">
+                Tap a category for what it usually means locally.
+              </p>
 
-              <div class="crime-seg" role="group" aria-label="Filter categories">
+              <div
+                class="crime-seg"
+                role="group"
+                aria-label="Filter categories"
+              >
                 <button
                   v-for="opt in crimeGroupOptions"
                   :key="opt.value"
                   type="button"
                   :aria-pressed="crimeGroup === opt.value"
-                  @click="crimeGroup = opt.value; crimeOpenIdx = -1"
+                  @click="onCrimeGroupClick(opt.value)"
                 >
                   {{ opt.label }}
                 </button>
@@ -2562,7 +3271,9 @@
                 >
                   <div class="crime-cat-top">
                     <span class="crime-cat-name">{{ c.label }}</span>
-                    <span class="crime-cat-num">{{ scaledCount(c.count).toLocaleString() }}</span>
+                    <span class="crime-cat-num">{{
+                      scaledCount(c.count).toLocaleString()
+                    }}</span>
                   </div>
                   <div class="crime-bar">
                     <i
@@ -2584,12 +3295,16 @@
                 class="crime-more"
                 @click="crimeExpandedAll = !crimeExpandedAll"
               >
-                {{ crimeExpandedAll ? 'Show top 5 only' : `Show all ${crimeAllCats.length} categories` }}
+                {{
+                  crimeExpandedAll
+                    ? 'Show top 5 only'
+                    : `Show all ${crimeAllCats.length} categories`
+                }}
               </button>
 
               <p class="crime-note">
-                <b>Read this as indicative, not exact.</b> Police data is mapped to
-                anonymised snap-points on nearby streets, not to individual
+                <b>Read this as indicative, not exact.</b> Police data is mapped
+                to anonymised snap-points on nearby streets, not to individual
                 addresses. A wider radius will pick up retail and night-time
                 economy crime that has little bearing on a residential street.
               </p>
@@ -2783,7 +3498,8 @@
             <div
               class="pps-passport-sheet-header"
               :class="{
-                'pps-passport-sheet-header--unclaimed': pageState === 'unclaimed',
+                'pps-passport-sheet-header--unclaimed':
+                  pageState === 'unclaimed',
                 'pps-passport-sheet-header--progress': pageState === 'progress',
               }"
             >
@@ -2794,12 +3510,16 @@
                     pageState === 'unclaimed'
                       ? { background: '#9c98ad' }
                       : pageState === 'progress'
-                        ? { background: '#e6a23c' }
-                        : undefined
+                      ? { background: '#e6a23c' }
+                      : undefined
                   "
                 />
-                <template v-if="pageState === 'unclaimed'">Unclaimed Property</template>
-                <template v-else-if="pageState === 'progress'">Passport in progress</template>
+                <template v-if="pageState === 'unclaimed'"
+                  >Unclaimed Property</template
+                >
+                <template v-else-if="pageState === 'progress'"
+                  >Passport in progress</template
+                >
                 <template v-else>Verified Passport</template>
               </div>
               <div class="pps-passport-sheet-address">
@@ -2912,7 +3632,10 @@
                 history. It stays with the address for life. Anyone who owns
                 this property can claim it.
               </p>
-              <div class="pps-passport-sheet-section-title" style="margin-top: 18px">
+              <div
+                class="pps-passport-sheet-section-title"
+                style="margin-top: 18px"
+              >
                 What you'd build
               </div>
               <div class="pps-passport-sheet-items">
@@ -2936,7 +3659,12 @@
                 Claim this property — it's free →
               </button>
               <div
-                style="text-align: center; font-size: 12px; color: #9c98ad; margin-top: 8px"
+                style="
+                  text-align: center;
+                  font-size: 12px;
+                  color: #9c98ad;
+                  margin-top: 8px;
+                "
               >
                 Takes 2 minutes · No listing required · Free forever
               </div>
@@ -3389,7 +4117,10 @@ import { usePropertySearch } from '~/composables/usePropertySearch'
 import { usePassportClaim } from '~/composables/usePassportClaim'
 import { usePropertyActions } from '~/composables/usePropertyActions'
 import { toTitleCase } from '~/utils/form-helpres'
-import { normalizeUploadUrl, normalizeUploadUrls } from '~/utils/normalizeUploadUrl'
+import {
+  normalizeUploadUrl,
+  normalizeUploadUrls,
+} from '~/utils/normalizeUploadUrl'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -3439,7 +4170,9 @@ async function downloadEpc() {
     // Fall back to backend UPRN lookup for older cache rows that
     // don't have the lmk-key persisted.
     const apiBase = config.public.apiBase as string
-    const res = await fetch(`${apiBase}/property/${propertyId}/epc-download-info`).catch(() => null)
+    const res = await fetch(
+      `${apiBase}/property/${propertyId}/epc-download-info`,
+    ).catch(() => null)
     const info = res && res.ok ? await res.json().catch(() => null) : null
     if (info?.lmkKey) {
       openCert(info.lmkKey)
@@ -3470,7 +4203,9 @@ const goToClaim = () => router.push(`/claim/${propertyId}`)
 // CTA so guests see the same four-step explainer + auth gate the homescore
 // page uses. Authed users hit "Claim it" and goToClaim() routes them to
 // the existing /claim/[id] KYC + HMLR flow.
-const claimExplainerSheet = ref<'unclaimed' | 'progress' | 'published' | null>(null)
+const claimExplainerSheet = ref<'unclaimed' | 'progress' | 'published' | null>(
+  null,
+)
 const showUnpublishedModal = ref(false)
 type LocTab =
   | 'map'
@@ -3525,7 +4260,7 @@ const displayEstimatedPrice = computed(
 )
 const estimatedPriceSource = computed(() =>
   enrichment.value?.landRegistryEstimate
-    ? (enrichment.value.landRegistrySource ?? 'Land Registry, HPI adjusted')
+    ? enrichment.value.landRegistrySource ?? 'Land Registry, HPI adjusted'
     : 'Estimated',
 )
 
@@ -4239,7 +4974,9 @@ const sdltBreakdown = computed((): { bands: SdltBand[]; total: number } => {
     total += tax
     if (taxable > 0) {
       bands.push({
-        label: `£${(b.from / 1000).toFixed(0)}k – ${b.to === Infinity ? 'above' : '£' + (b.to / 1000).toFixed(0) + 'k'}`,
+        label: `£${(b.from / 1000).toFixed(0)}k – ${
+          b.to === Infinity ? 'above' : '£' + (b.to / 1000).toFixed(0) + 'k'
+        }`,
         rate: b.rate,
         tax,
       })
@@ -4289,8 +5026,12 @@ const heroImageRaw = computed<string | null>(() => {
 const heroImage = computed<string | null>(() =>
   heroImageFailed.value ? null : heroImageRaw.value,
 )
-watch(heroImageRaw, () => { heroImageFailed.value = false })
-const onHeroImageError = () => { heroImageFailed.value = true }
+watch(heroImageRaw, () => {
+  heroImageFailed.value = false
+})
+const onHeroImageError = () => {
+  heroImageFailed.value = true
+}
 
 const pageState = computed<'unclaimed' | 'progress' | 'published'>(() => {
   const s = passportStatus.value
@@ -4459,7 +5200,9 @@ const passportFeatures = computed(() => {
       title: s.title || s.key,
       sub:
         s.totalTasks > 0
-          ? `${s.completedTasks} of ${s.totalTasks} task${s.totalTasks === 1 ? '' : 's'} complete`
+          ? `${s.completedTasks} of ${s.totalTasks} task${
+              s.totalTasks === 1 ? '' : 's'
+            } complete`
           : 'No tasks',
       // A section counts as "verified" once every task on it is complete.
       verified: s.totalTasks > 0 && s.completedTasks === s.totalTasks,
@@ -4472,7 +5215,9 @@ const passportFeatures = computed(() => {
     {
       title: 'EPC Certificate',
       sub: p?.lodgementDate
-        ? `Lodged ${new Date(p.lodgementDate).getFullYear()} · Grade ${p.epcRating}`
+        ? `Lodged ${new Date(p.lodgementDate).getFullYear()} · Grade ${
+            p.epcRating
+          }`
         : 'Energy Performance Certificate',
       verified: !!p?.epcRating,
     },
@@ -4559,13 +5304,13 @@ const exploreTiles = computed(() => {
   const epcValue = p.epcRating
     ? `EPC ${p.epcRating}${p.epcScore ? ` · ${p.epcScore}` : ''}`
     : p.propertyType
-      ? p.propertyType
-      : '—'
+    ? p.propertyType
+    : '—'
   const detailsSub = p.uprn
     ? `UPRN ${p.uprn}`
     : p.propertyType && p.epcRating
-      ? p.propertyType
-      : 'Type · EPC · UPRN'
+    ? p.propertyType
+    : 'Type · EPC · UPRN'
   tiles.push({
     key: 'property-details',
     icon: '🏷️',
@@ -4585,20 +5330,23 @@ const exploreTiles = computed(() => {
   // lists the same transactions. That mismatch was the bug.
   const mostRecentSale = thisSales.value[0]
   const salePriceRaw = mostRecentSale?.price ?? (mostRecentSale as any)?.amount
-  const saleDateRaw = mostRecentSale?.date ?? (mostRecentSale as any)?.transferDate
-  const soldPrice = p.lastSoldPrice ?? (salePriceRaw ? Number(salePriceRaw) : null)
+  const saleDateRaw =
+    mostRecentSale?.date ?? (mostRecentSale as any)?.transferDate
+  const soldPrice =
+    p.lastSoldPrice ?? (salePriceRaw ? Number(salePriceRaw) : null)
   const soldDate = p.lastSoldDate ?? saleDateRaw ?? null
   tiles.push({
     key: 'history',
-    icon: '🏠',
+    icon: '',
     iconBg: '#FFF3E0',
     iconImage: '/op-icons/property/propertyHistory.jpeg',
     title: 'Property history',
-    value: soldPrice
-      ? `£${Number(soldPrice).toLocaleString()}`
-      : 'No sales',
+    value: soldPrice ? `£${Number(soldPrice).toLocaleString()}` : 'No sales',
     sub: soldDate
-      ? `Last sold ${new Date(soldDate).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}`
+      ? `Last sold ${new Date(soldDate).toLocaleDateString('en-GB', {
+          month: 'short',
+          year: 'numeric',
+        })}`
       : 'Land Registry record',
   })
   // Street data — median of nearby sales (last 5 yrs) plus a count.
@@ -4610,16 +5358,20 @@ const exploreTiles = computed(() => {
     .filter((n: number) => n > 0)
     .sort((a: number, b: number) => a - b)
   const streetValue = nearbyPrices.length
-    ? `£${Math.round(nearbyPrices[Math.floor(nearbyPrices.length / 2)] / 1000)}k median`
+    ? `£${Math.round(
+        nearbyPrices[Math.floor(nearbyPrices.length / 2)] / 1000,
+      )}k median`
     : p.postcode
-      ? p.postcode.split(' ')[0]
-      : '—'
+    ? p.postcode.split(' ')[0]
+    : '—'
   const streetSub = nearbyPrices.length
-    ? `${nearbyPrices.length} nearby sale${nearbyPrices.length === 1 ? '' : 's'}`
+    ? `${nearbyPrices.length} nearby sale${
+        nearbyPrices.length === 1 ? '' : 's'
+      }`
     : 'Neighbourhood comparison'
   tiles.push({
     key: 'street',
-    icon: '🏘️',
+    icon: '',
     iconBg: '#E8F5E9',
     iconImage: '/op-icons/property/streetData.jpeg',
     title: 'Street data',
@@ -4634,7 +5386,7 @@ const exploreTiles = computed(() => {
   const nearestSchool = enrichmentSchools.value[0]
   tiles.push({
     key: 'schools',
-    icon: '🎓',
+    icon: '',
     iconBg: '#E3F2FD',
     iconImage: '/op-icons/property/schools.jpeg',
     title: 'Schools',
@@ -4657,75 +5409,75 @@ const exploreTiles = computed(() => {
   const nearestTrain = enrichmentTrains.value[0]
   tiles.push({
     key: 'trains',
-    icon: '🚂',
+    icon: '',
     iconBg: '#F3E5F5',
     iconImage: '/op-icons/property/trainstations.jpeg',
     title: 'Train stations',
     value: nearestTrain
       ? `${nearestTrain.distanceKm.toFixed(1)} km`
       : enrichmentPending
-        ? 'Looking up…'
-        : tFailed
-          ? 'Unavailable'
-          : 'No data',
+      ? 'Looking up…'
+      : tFailed
+      ? 'Unavailable'
+      : 'No data',
     sub: nearestTrain
       ? nearestTrain.name
       : enrichmentPending
-        ? 'Loading nearest stations'
-        : tFailed
-          ? 'Couldn’t load right now — tap to retry'
-          : 'No stations found nearby',
+      ? 'Loading nearest stations'
+      : tFailed
+      ? 'Couldn’t load right now — tap to retry'
+      : 'No stations found nearby',
   })
   // Bus stops
   const nearestBus = enrichmentBuses.value[0]
   tiles.push({
     key: 'buses',
-    icon: '🚌',
+    icon: '',
     iconBg: '#FFF3E0',
     iconImage: '/op-icons/property/busStops.jpeg',
     title: 'Bus stops',
     value: nearestBus
       ? `${nearestBus.distanceKm.toFixed(2)} km`
       : enrichmentPending
-        ? 'Looking up…'
-        : tFailed
-          ? 'Unavailable'
-          : 'No data',
+      ? 'Looking up…'
+      : tFailed
+      ? 'Unavailable'
+      : 'No data',
     sub: nearestBus
       ? nearestBus.name || 'Nearest bus stop'
       : enrichmentPending
-        ? 'Loading nearest stops'
-        : tFailed
-          ? 'Couldn’t load right now — tap to retry'
-          : 'No stops found within 700 m',
+      ? 'Loading nearest stops'
+      : tFailed
+      ? 'Couldn’t load right now — tap to retry'
+      : 'No stops found within 700 m',
   })
   // Airports — independent failure flag
   const nearestAirport = enrichmentAirports.value[0]
   tiles.push({
     key: 'airports',
-    icon: '✈️',
+    icon: '',
     iconBg: '#E1F5FE',
     iconImage: '/op-icons/property/airports.jpeg',
     title: 'Airports',
     value: nearestAirport
       ? `${nearestAirport.distanceKm.toFixed(0)} km`
       : enrichmentPending
-        ? 'Looking up…'
-        : aFailed
-          ? 'Unavailable'
-          : 'No data',
+      ? 'Looking up…'
+      : aFailed
+      ? 'Unavailable'
+      : 'No data',
     sub: nearestAirport
       ? nearestAirport.name
       : enrichmentPending
-        ? 'Loading nearest airports'
-        : aFailed
-          ? 'Couldn’t load right now — tap to retry'
-          : 'No airports within 150 km',
+      ? 'Loading nearest airports'
+      : aFailed
+      ? 'Couldn’t load right now — tap to retry'
+      : 'No airports within 150 km',
   })
   // Location & map
   tiles.push({
     key: 'map',
-    icon: '📍',
+    icon: '',
     iconBg: '#E8F5E9',
     iconImage: '/op-icons/property/locationAndMap.jpeg',
     title: 'Location & map',
@@ -4752,8 +5504,8 @@ const exploreTiles = computed(() => {
       valueStyle: isHigh
         ? { color: '#C73E36' }
         : isMed
-          ? { color: '#D9772A' }
-          : undefined,
+        ? { color: '#D9772A' }
+        : undefined,
     })
   }
   // Planning — show real constraint count
@@ -4764,7 +5516,7 @@ const exploreTiles = computed(() => {
     const count = constraints.length + apps.length
     tiles.push({
       key: 'planning',
-      icon: '📋',
+      icon: '',
       iconBg: '#FAFAFA',
       iconImage: '/op-icons/property/planning.jpeg',
       title: 'Planning',
@@ -4772,7 +5524,9 @@ const exploreTiles = computed(() => {
       value: count > 0 ? `${count} on file` : '—',
       sub:
         constraints.length > 0
-          ? `${constraints.length} constraint${constraints.length === 1 ? '' : 's'}`
+          ? `${constraints.length} constraint${
+              constraints.length === 1 ? '' : 's'
+            }`
           : 'Applications on file',
     })
   }
@@ -4782,7 +5536,7 @@ const exploreTiles = computed(() => {
   // Registry" so buyers understand the provenance before they tap.
   tiles.push({
     key: 'llc',
-    icon: '📜',
+    icon: '',
     iconBg: '#F3EFFB',
     iconImage: '/op-icons/property/landCharges.jpeg',
     title: 'Land charges',
@@ -4811,7 +5565,7 @@ const exploreTiles = computed(() => {
   // Broadband
   tiles.push({
     key: 'broadband',
-    icon: '📶',
+    icon: '',
     iconBg: '#E3F2FD',
     iconImage: '/op-icons/property/broadband.jpeg',
     title: 'Broadband',
@@ -4822,7 +5576,7 @@ const exploreTiles = computed(() => {
   if (estimatedPrice.value) {
     tiles.push({
       key: 'stamp-duty',
-      icon: '🏛️',
+      icon: '',
       iconBg: '#FCE4EC',
       iconImage: '/op-icons/property/stampDuty.jpeg',
       title: 'Stamp duty',
@@ -4834,7 +5588,7 @@ const exploreTiles = computed(() => {
   if (enrichmentListedBuildings.value.length > 0) {
     tiles.push({
       key: 'listed',
-      icon: '🏛️',
+      icon: '',
       iconBg: '#FBEFD9',
       iconImage: '/op-icons/property/listedBuildings.jpeg',
       title: 'Heritage sites',
@@ -4851,7 +5605,7 @@ const exploreTiles = computed(() => {
     const hasData = typeof total === 'number'
     tiles.push({
       key: 'crime',
-      icon: '🛡️',
+      icon: '',
       iconBg: '#EEEDF5',
       iconImage: '/op-icons/property/crime.jpeg',
       title: 'Safety',
@@ -4909,17 +5663,25 @@ async function onWishlistToggle() {
   const result = await toggleSave(propertyId)
   if (result === 'unauthenticated') {
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('redirectAfterLogin', `/property/${propertyId}?save=1`)
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/property/${propertyId}?save=1`,
+      )
     }
     router.push('/onboarding/signin')
     return
   }
   if (result === 'error') {
-    showToast({ message: 'Something went wrong — please try again', duration: 2000 })
+    showToast({
+      message: 'Something went wrong — please try again',
+      duration: 2000,
+    })
     return
   }
   showToast({
-    message: result.saved ? '❤️ Saved to your properties' : 'Removed from saved',
+    message: result.saved
+      ? '❤️ Saved to your properties'
+      : 'Removed from saved',
     duration: 2000,
   })
 }
@@ -5000,7 +5762,10 @@ async function persistWatch(opts: { silent?: boolean } = {}) {
     typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) {
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('redirectAfterLogin', `/property/${propertyId}?watched=1`)
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/property/${propertyId}?watched=1`,
+      )
     }
     router.push('/onboarding/signin')
     return
@@ -5214,7 +5979,8 @@ function computeStampDuty(
   const ftbApplies = type === 'first' && price <= 625000
   const base = ftbApplies ? SD_BANDS_FIRST : SD_BANDS_STANDARD
   // Additional-property surcharge: +5% on every band; non-UK-resident: +2%.
-  const bump = (type === 'additional' && price >= 40000 ? 0.05 : 0) + (nonRes ? 0.02 : 0)
+  const bump =
+    (type === 'additional' && price >= 40000 ? 0.05 : 0) + (nonRes ? 0.02 : 0)
   const rows: SdBand[] = base.map((b) => {
     const top = Math.min(price, b.to)
     const slice = Math.max(0, top - b.from)
@@ -5324,8 +6090,10 @@ const schoolPhases: Array<{ key: SchoolPhaseKey; label: string }> = [
 function schoolPhaseKey(phase: string | null | undefined): string {
   const p = (phase || '').toLowerCase()
   if (p.includes('nursery') || p.includes('early')) return 'nursery'
-  if (p.includes('primary') || p.includes('infant') || p.includes('junior')) return 'primary'
-  if (p.includes('secondary') || p.includes('senior') || p.includes('sixth')) return 'secondary'
+  if (p.includes('primary') || p.includes('infant') || p.includes('junior'))
+    return 'primary'
+  if (p.includes('secondary') || p.includes('senior') || p.includes('sixth'))
+    return 'secondary'
   return 'other'
 }
 function schoolPhaseColor(phase: string | null | undefined): string {
@@ -5358,9 +6126,15 @@ watch(schoolPhaseFilter, () => {
 const schoolStats = computed(() => {
   const list = enrichmentSchools.value
   const primaries = list.filter((s) => schoolPhaseKey(s.phase) === 'primary')
-  const secondaries = list.filter((s) => schoolPhaseKey(s.phase) === 'secondary')
-  const primariesNearby = primaries.filter((s) => (s.distanceKm || 0) <= 1).length
-  const secondariesNearby = secondaries.filter((s) => (s.distanceKm || 0) <= 2).length
+  const secondaries = list.filter(
+    (s) => schoolPhaseKey(s.phase) === 'secondary',
+  )
+  const primariesNearby = primaries.filter(
+    (s) => (s.distanceKm || 0) <= 1,
+  ).length
+  const secondariesNearby = secondaries.filter(
+    (s) => (s.distanceKm || 0) <= 2,
+  ).length
   const nearestPrimaryKm = primaries.length
     ? Math.min(...primaries.map((s) => s.distanceKm || Infinity))
     : null
@@ -5448,59 +6222,62 @@ const floodRows = computed(() => {
       ? 'none'
       : 'low'
   const nearest = nearestWatercourse.value
-  const rows: Array<{ n: string; s: string; c: string; m: string; d: string }> = [
-    {
-      n: 'Rivers &amp; the sea',
-      s: riversS,
-      c: riversC,
-      m:
-        riversS === 'High'
-          ? 'Greater than 3.3% chance of flooding in any given year.'
-          : riversS === 'Medium'
-          ? 'Between 1% and 3.3% chance in any given year.'
-          : riversS === 'Very low'
-          ? 'Less than 0.1% chance in any given year.'
-          : riversS === 'Low'
-          ? 'Between 0.1% and 1% chance in any given year.'
-          : 'No Environment Agency classification retrieved yet.',
-      d:
-        riversS === 'High'
-          ? '<b>Get a flood report before you offer.</b> Expect insurers to ask for a Flood Re declaration and some lenders to require a specialist survey. Ask the seller whether the property has flooded and whether a claim was made.'
-          : riversS === 'Medium'
-          ? 'Check whether the property has property-level protection fitted — flood doors, airbrick covers, non-return valves. <b>These reduce premiums materially.</b>'
-          : riversS === 'Low' || riversS === 'Very low'
-          ? nearest
-            ? `Nearest watercourse: <b>${nearest}</b>. Distance and elevation both matter more than the postcode-level rating.`
-            : 'Lenders rarely raise questions at this rating. Distance to the nearest watercourse still matters for individual homes.'
-          : '',
-    },
-    {
-      n: 'Surface water',
-      s: 'Not assessed',
-      c: 'none',
-      m: 'Not currently in our EA monitoring feed.',
-      d: 'Surface water is the most common cause of flooding in urban areas and often overlooked. <b>Worth asking whether the road has flooded in heavy storms.</b>',
-    },
-    {
-      n: 'Groundwater',
-      s: 'Not assessed',
-      c: 'none',
-      m: 'Not currently in our EA monitoring feed.',
-      d: 'Groundwater flooding affects basements and cellars first. If the property has one, <b>ask specifically about damp history.</b>',
-    },
-    {
-      n: 'Reservoirs',
-      s: 'Not assessed',
-      c: 'none',
-      m: 'Not currently in our EA monitoring feed.',
-      d: 'Reservoir flooding is extremely rare but would be rapid. The full EA inundation model isn\'t in our feed yet.',
-    },
-  ]
+  const rows: Array<{ n: string; s: string; c: string; m: string; d: string }> =
+    [
+      {
+        n: 'Rivers &amp; the sea',
+        s: riversS,
+        c: riversC,
+        m:
+          riversS === 'High'
+            ? 'Greater than 3.3% chance of flooding in any given year.'
+            : riversS === 'Medium'
+            ? 'Between 1% and 3.3% chance in any given year.'
+            : riversS === 'Very low'
+            ? 'Less than 0.1% chance in any given year.'
+            : riversS === 'Low'
+            ? 'Between 0.1% and 1% chance in any given year.'
+            : 'No Environment Agency classification retrieved yet.',
+        d:
+          riversS === 'High'
+            ? '<b>Get a flood report before you offer.</b> Expect insurers to ask for a Flood Re declaration and some lenders to require a specialist survey. Ask the seller whether the property has flooded and whether a claim was made.'
+            : riversS === 'Medium'
+            ? 'Check whether the property has property-level protection fitted — flood doors, airbrick covers, non-return valves. <b>These reduce premiums materially.</b>'
+            : riversS === 'Low' || riversS === 'Very low'
+            ? nearest
+              ? `Nearest watercourse: <b>${nearest}</b>. Distance and elevation both matter more than the postcode-level rating.`
+              : 'Lenders rarely raise questions at this rating. Distance to the nearest watercourse still matters for individual homes.'
+            : '',
+      },
+      {
+        n: 'Surface water',
+        s: 'Not assessed',
+        c: 'none',
+        m: 'Not currently in our EA monitoring feed.',
+        d: 'Surface water is the most common cause of flooding in urban areas and often overlooked. <b>Worth asking whether the road has flooded in heavy storms.</b>',
+      },
+      {
+        n: 'Groundwater',
+        s: 'Not assessed',
+        c: 'none',
+        m: 'Not currently in our EA monitoring feed.',
+        d: 'Groundwater flooding affects basements and cellars first. If the property has one, <b>ask specifically about damp history.</b>',
+      },
+      {
+        n: 'Reservoirs',
+        s: 'Not assessed',
+        c: 'none',
+        m: 'Not currently in our EA monitoring feed.',
+        d: "Reservoir flooding is extremely rare but would be rapid. The full EA inundation model isn't in our feed yet.",
+      },
+    ]
   return rows
 })
 // Placeholder — no live-warnings EA feed wired yet, so this stays empty and the
 // panel doesn't render. When we add the feed, populate {name, status} rows here.
-const floodLiveWarnings = computed<Array<{ name: string; status?: string }>>(() => [])
+const floodLiveWarnings = computed<Array<{ name: string; status?: string }>>(
+  () => [],
+)
 
 // ─── Sheet: history — fetch sold history when the sheet opens ──────────────
 const soldHistory = ref<any[]>([])
@@ -5664,32 +6441,36 @@ const enrichmentCrime = computed<any | null>(
 // population multipliers. Flagged as an estimate in the footnote.
 const crimeRadiusOptions = [
   { value: '0.5', label: '½ mile' },
-  { value: '1',   label: '1 mile'  },
-  { value: '2',   label: '2 miles' },
+  { value: '1', label: '1 mile' },
+  { value: '2', label: '2 miles' },
 ] as const
 type CrimeRadius = '0.5' | '1' | '2'
 const crimeRadius = ref<CrimeRadius>('1')
 
 const crimeGroupOptions = [
-  { value: 'all',      label: 'All'         },
-  { value: 'property', label: 'Property'    },
-  { value: 'personal', label: 'Personal'    },
-  { value: 'public',   label: 'Public order'},
+  { value: 'all', label: 'All' },
+  { value: 'property', label: 'Property' },
+  { value: 'personal', label: 'Personal' },
+  { value: 'public', label: 'Public order' },
 ] as const
 type CrimeGroup = 'all' | 'property' | 'personal' | 'public'
 const crimeGroup = ref<CrimeGroup>('all')
 
 const crimeOpenIdx = ref(-1)
 const crimeExpandedAll = ref(false)
+function onCrimeGroupClick(value: CrimeGroup) {
+  crimeGroup.value = value
+  crimeOpenIdx.value = -1
+}
 
 // Radius → scale multiplier + estimated resident population. The
 // 1-mile pop is anchored at 18,600 (typical UK urban 1-mile radius);
 // ½ and 2-mile derived from area ratio × density correction to match
 // the reference mockup.
 const CRIME_RADIUS_META: Record<CrimeRadius, { scale: number; pop: number }> = {
-  '0.5': { scale: 0.28, pop: 6400  },
-  '1':   { scale: 1,    pop: 18600 },
-  '2':   { scale: 4.02, pop: 60600 },
+  '0.5': { scale: 0.28, pop: 6400 },
+  '1': { scale: 1, pop: 18600 },
+  '2': { scale: 4.02, pop: 60600 },
 }
 
 // National England & Wales average — used to compute the "% above /
@@ -5697,21 +6478,21 @@ const CRIME_RADIUS_META: Record<CrimeRadius, { scale: number; pop: number }> = {
 const CRIME_NATIONAL_RATE = 89
 
 const CRIME_GROUP_MAP: Record<string, CrimeGroup> = {
-  'violent-crime':                'personal',
+  'violent-crime': 'personal',
   'violence-and-sexual-offences': 'personal',
-  'robbery':                      'personal',
-  'drugs':                        'personal',
-  'burglary':                     'property',
-  'vehicle-crime':                'property',
-  'bicycle-theft':                'property',
-  'other-theft':                  'property',
-  'theft-from-the-person':        'property',
-  'criminal-damage-arson':        'property',
-  'possession-of-weapons':        'property',
-  'shoplifting':                  'public',
-  'public-order':                 'public',
-  'anti-social-behaviour':        'public',
-  'other-crime':                  'public',
+  robbery: 'personal',
+  drugs: 'personal',
+  burglary: 'property',
+  'vehicle-crime': 'property',
+  'bicycle-theft': 'property',
+  'other-theft': 'property',
+  'theft-from-the-person': 'property',
+  'criminal-damage-arson': 'property',
+  'possession-of-weapons': 'property',
+  shoplifting: 'public',
+  'public-order': 'public',
+  'anti-social-behaviour': 'public',
+  'other-crime': 'public',
 }
 function crimeGroupFor(category: string): CrimeGroup {
   return CRIME_GROUP_MAP[category] ?? 'public'
@@ -5720,8 +6501,8 @@ function crimeGroupFor(category: string): CrimeGroup {
 const CRIME_GROUP_COLOUR: Record<CrimeGroup, string> = {
   property: '#231D45',
   personal: '#C4586B',
-  public:   '#C18A38',
-  all:      '#00A19A', // unused (chip filter, never a bar colour)
+  public: '#C18A38',
+  all: '#00A19A', // unused (chip filter, never a bar colour)
 }
 function crimeGroupColour(category: string): string {
   return CRIME_GROUP_COLOUR[crimeGroupFor(category)]
@@ -5735,7 +6516,7 @@ const CRIME_NOTES: Record<string, string> = {
     'Mostly night-time economy incidents concentrated around the high street, not residential streets.',
   'violent-crime':
     'Mostly night-time economy incidents concentrated around the high street, not residential streets.',
-  'shoplifting':
+  shoplifting:
     'Retail crime from the shopping parade inside the radius. No bearing on the property itself.',
   'vehicle-crime':
     'Theft from vehicles, largely overnight on unlit roads. Off-street parking materially reduces risk.',
@@ -5743,7 +6524,7 @@ const CRIME_NOTES: Record<string, string> = {
     'Includes theft from the person and unattended property in public places.',
   'criminal-damage-arson':
     'Predominantly minor damage to vehicles and fencing.',
-  'burglary':
+  burglary:
     'The figure most relevant to a home purchase. Compare against the national norm before drawing conclusions.',
   'public-order':
     'Disturbances and harassment reports, weighted to weekend evenings.',
@@ -5751,11 +6532,11 @@ const CRIME_NOTES: Record<string, string> = {
     'Under-reported nationally — treat the count as a floor rather than a total.',
   'other-crime':
     'Offences that do not fit the standard Home Office categories.',
-  'robbery':
+  robbery:
     'Theft involving force or threat. Low in absolute terms for most residential areas.',
   'bicycle-theft':
     'Clustered near stations. Secure storage is the main mitigation.',
-  'drugs':
+  drugs:
     'Largely possession offences arising from stop and search, which reflects policing activity as much as prevalence.',
   'possession-of-weapons':
     'Includes carrying prohibited items in public. Rare in absolute terms.',
@@ -5789,8 +6570,15 @@ const crimeRatePer1000 = computed(() => {
 const crimeVerdictHtml = computed(() => {
   const r = crimeRatePer1000.value
   if (!r) return 'Not enough data to compare with the national average.'
-  const pct = Math.round(((r - CRIME_NATIONAL_RATE) / CRIME_NATIONAL_RATE) * 100)
-  const direction = pct === 0 ? 'in line with' : pct > 0 ? '<em>' + pct + '% above</em>' : '<em>' + Math.abs(pct) + '% below</em>'
+  const pct = Math.round(
+    ((r - CRIME_NATIONAL_RATE) / CRIME_NATIONAL_RATE) * 100,
+  )
+  const direction =
+    pct === 0
+      ? 'in line with'
+      : pct > 0
+      ? '<em>' + pct + '% above</em>'
+      : '<em>' + Math.abs(pct) + '% below</em>'
   return `About ${direction} the average for England &amp; Wales.`
 })
 const crimeScaleKey = computed(() => {
@@ -5801,14 +6589,17 @@ const crimeScaleKey = computed(() => {
     pct <= -20
       ? 'Quietest third nationally'
       : pct <= 0
-        ? 'Lower third of neighbourhoods nationally'
-        : pct <= 20
-          ? 'Around the national midpoint'
-          : 'Above the national midpoint'
+      ? 'Lower third of neighbourhoods nationally'
+      : pct <= 20
+      ? 'Around the national midpoint'
+      : 'Above the national midpoint'
   return `${bandCopy}. National average: ${CRIME_NATIONAL_RATE} per 1,000.`
 })
 const crimeScaleAriaLabel = computed(
-  () => `This location sits at ${crimeMarkerPct.value.toFixed(0)}% of the national spread`,
+  () =>
+    `This location sits at ${crimeMarkerPct.value.toFixed(
+      0,
+    )}% of the national spread`,
 )
 // Marker position on the 0-100% benchmark scale. National average is
 // pinned at 50%. Rate = 0 sits at 0%; rate = 2× national sits at 100%.
@@ -5828,7 +6619,9 @@ const crimeSparkPath = computed<string | null>(() => {
   if (rows.length < 2) return null
   const w = 300
   const h = 44
-  const counts = rows.map((r) => r.count * CRIME_RADIUS_META[crimeRadius.value].scale)
+  const counts = rows.map(
+    (r) => r.count * CRIME_RADIUS_META[crimeRadius.value].scale,
+  )
   const min = Math.min(...counts)
   const max = Math.max(...counts)
   const span = max - min || 1
@@ -5855,7 +6648,9 @@ const crimeSparkLabels = computed(() => {
     // month is "YYYY-MM" per data.police.uk convention.
     const [y, m] = ym.split('-').map((s) => parseInt(s, 10))
     if (!y || !m) return ym
-    const short = new Date(y, m - 1, 1).toLocaleString('en-GB', { month: 'short' })
+    const short = new Date(y, m - 1, 1).toLocaleString('en-GB', {
+      month: 'short',
+    })
     return `${short} ${String(y).slice(2)}`
   }
   return { first: humanise(first), mid: humanise(mid), last: humanise(last) }
@@ -5879,7 +6674,9 @@ const crimeWindowLabel = computed(() => {
 })
 
 // Category bars — visible slice honours group filter + "show all" state.
-const crimeAllCats = computed<Array<{ category: string; label: string; count: number }>>(() => {
+const crimeAllCats = computed<
+  Array<{ category: string; label: string; count: number }>
+>(() => {
   return enrichmentCrime.value?.byCategory ?? []
 })
 const crimeFilteredCats = computed(() => {
@@ -6012,7 +6809,10 @@ function onPassportUnlocked(passportId: string) {
 // /claim/[id] KYC flow with the chosen type as a query so it skips the
 // in-page picker and goes straight into verification.
 const showChooseTypeDrawer = ref(false)
-function onChooseTypeConfirm(payload: { type: 'seller' | 'landlord'; isHmo: boolean }) {
+function onChooseTypeConfirm(payload: {
+  type: 'seller' | 'landlord'
+  isHmo: boolean
+}) {
   const qs = new URLSearchParams({ type: payload.type })
   if (payload.isHmo) qs.set('hmo', '1')
   router.push(`/claim/${propertyId}?${qs.toString()}`)
@@ -6293,9 +7093,19 @@ const propertyDetailStats = computed(() => {
   const p: any = property.value
   const out: Array<{ label: string; value: string }> = []
   if (!p) return out
-  if (p.bedrooms) out.push({ label: p.bedrooms === 1 ? 'Bedroom' : 'Bedrooms', value: String(p.bedrooms) })
-  if (p.bathrooms) out.push({ label: p.bathrooms === 1 ? 'Bathroom' : 'Bathrooms', value: String(p.bathrooms) })
-  const sqft = p.sqft || (p.floorAreaSqm ? Math.round(Number(p.floorAreaSqm) * 10.7639) : 0)
+  if (p.bedrooms)
+    out.push({
+      label: p.bedrooms === 1 ? 'Bedroom' : 'Bedrooms',
+      value: String(p.bedrooms),
+    })
+  if (p.bathrooms)
+    out.push({
+      label: p.bathrooms === 1 ? 'Bathroom' : 'Bathrooms',
+      value: String(p.bathrooms),
+    })
+  const sqft =
+    p.sqft ||
+    (p.floorAreaSqm ? Math.round(Number(p.floorAreaSqm) * 10.7639) : 0)
   if (sqft) out.push({ label: 'sq ft', value: sqft.toLocaleString() })
   if (p.yearBuilt) out.push({ label: 'Built', value: String(p.yearBuilt) })
   return out.slice(0, 3)
@@ -6321,7 +7131,9 @@ watch(busSortMode, () => {
 })
 const busStats = computed(() => {
   const list = enrichmentBuses.value
-  const within10 = list.filter((b) => walkMinutes(b.distanceKm || 0) <= 10).length
+  const within10 = list.filter(
+    (b) => walkMinutes(b.distanceKm || 0) <= 10,
+  ).length
   return { total: list.length, within10 }
 })
 
@@ -6345,7 +7157,8 @@ const broadbandBig = computed(() => {
 
   let sub = ''
   if (bb?.fttp) {
-    sub = '<b>Full fibre (FTTP)</b> is available here — a direct fibre connection to the property.'
+    sub =
+      '<b>Full fibre (FTTP)</b> is available here — a direct fibre connection to the property.'
   } else if (bb?.cable) {
     sub = '<b>Cable</b> is available here from Virgin Media (DOCSIS).'
   } else if (bb?.ultrafast) {
@@ -6366,21 +7179,57 @@ const broadbandBig = computed(() => {
 const broadbandNetworks = computed(() => {
   const bb = enrichmentBroadband.value
   if (!bb || !bb.available) return []
-  const rows: Array<{ name: string; tech: string; speedMbps: number; pct: number; fibre: boolean }> = []
+  const rows: Array<{
+    name: string
+    tech: string
+    speedMbps: number
+    pct: number
+    fibre: boolean
+  }> = []
   if (bb.fttp) {
-    rows.push({ name: 'Openreach / altnets', tech: 'Full fibre (FTTP)', speedMbps: Number(bb.maxDownload) || 1000, pct: 0, fibre: true })
+    rows.push({
+      name: 'Openreach / altnets',
+      tech: 'Full fibre (FTTP)',
+      speedMbps: Number(bb.maxDownload) || 1000,
+      pct: 0,
+      fibre: true,
+    })
   }
   if (bb.cable) {
-    rows.push({ name: 'Virgin Media', tech: 'Cable (DOCSIS)', speedMbps: 1130, pct: 0, fibre: false })
+    rows.push({
+      name: 'Virgin Media',
+      tech: 'Cable (DOCSIS)',
+      speedMbps: 1130,
+      pct: 0,
+      fibre: false,
+    })
   }
   if (bb.ultrafast && !bb.fttp && !bb.cable) {
-    rows.push({ name: 'Ultrafast', tech: 'Ultrafast', speedMbps: Number(bb.maxUfDownload) || 300, pct: 0, fibre: false })
+    rows.push({
+      name: 'Ultrafast',
+      tech: 'Ultrafast',
+      speedMbps: Number(bb.maxUfDownload) || 300,
+      pct: 0,
+      fibre: false,
+    })
   }
   if (bb.fttc) {
-    rows.push({ name: 'Openreach', tech: 'Copper (FTTC)', speedMbps: bb.fttp ? 76 : Math.min(80, Number(bb.maxDownload) || 40), pct: 0, fibre: false })
+    rows.push({
+      name: 'Openreach',
+      tech: 'Copper (FTTC)',
+      speedMbps: bb.fttp ? 76 : Math.min(80, Number(bb.maxDownload) || 40),
+      pct: 0,
+      fibre: false,
+    })
   }
   if (!rows.length) {
-    rows.push({ name: 'Standard', tech: 'ADSL', speedMbps: Number(bb.maxDownload) || 11, pct: 0, fibre: false })
+    rows.push({
+      name: 'Standard',
+      tech: 'ADSL',
+      speedMbps: Number(bb.maxDownload) || 11,
+      pct: 0,
+      fibre: false,
+    })
   }
   const max = Math.max(1, ...rows.map((r) => r.speedMbps))
   return rows.map((r) => ({ ...r, pct: (r.speedMbps / max) * 100 }))
@@ -6393,20 +7242,36 @@ const broadbandImpact = computed<string[]>(() => {
   const speed = Number(bb.maxDownload) || 0
   const out: string[] = []
   if (speed >= 500) {
-    out.push('<b>Comfortably supports</b> several 4K streams, video calls and large file transfers at once.')
+    out.push(
+      '<b>Comfortably supports</b> several 4K streams, video calls and large file transfers at once.',
+    )
     if (bb.fttp) {
-      out.push('Full fibre is <b>symmetric on some packages</b> — relevant if anyone uploads large files or runs a home server.')
+      out.push(
+        'Full fibre is <b>symmetric on some packages</b> — relevant if anyone uploads large files or runs a home server.',
+      )
     }
-    out.push('Multiple networks at this postcode means <b>real price competition</b>, which is unusual and worth something.')
+    out.push(
+      'Multiple networks at this postcode means <b>real price competition</b>, which is unusual and worth something.',
+    )
   } else if (speed >= 60) {
-    out.push('<b>Handles most households comfortably</b> — one 4K stream plus HD calls should be fine.')
+    out.push(
+      '<b>Handles most households comfortably</b> — one 4K stream plus HD calls should be fine.',
+    )
     out.push('Not gigabit but rarely a bottleneck for day-to-day use.')
   } else if (speed >= 30) {
-    out.push('<b>One 4K stream at a time.</b> Two people on simultaneous video calls may struggle.')
-    out.push('Copper speeds fall with distance from the cabinet, so <b>this address may get less than the headline figure.</b>')
+    out.push(
+      '<b>One 4K stream at a time.</b> Two people on simultaneous video calls may struggle.',
+    )
+    out.push(
+      'Copper speeds fall with distance from the cabinet, so <b>this address may get less than the headline figure.</b>',
+    )
   } else {
-    out.push('<b>Standard broadband only.</b> Streaming and video calls will be limited.')
-    out.push('Ask the seller what they actually get, and <b>check whether a fibre build is planned</b> — altnets often publish rollout maps.')
+    out.push(
+      '<b>Standard broadband only.</b> Streaming and video calls will be limited.',
+    )
+    out.push(
+      'Ask the seller what they actually get, and <b>check whether a fibre build is planned</b> — altnets often publish rollout maps.',
+    )
   }
   return out
 })
@@ -6415,11 +7280,13 @@ const broadbandImpact = computed<string[]>(() => {
 // a filled/half/empty three-dot visual for the broadband sheet.
 function mobileDotClass(op: any, i: number): string {
   const s = String(op?.summary || '').toLowerCase()
-  const filled =
-    s.includes('strong') ? 3 :
-    s.includes('limited') ? 2 :
-    s.includes('no service') ? 0 :
-    1
+  const filled = s.includes('strong')
+    ? 3
+    : s.includes('limited')
+    ? 2
+    : s.includes('no service')
+    ? 0
+    : 1
   if (i > filled) return ''
   if (filled === 3) return 'pps-bb-dot-full'
   return 'pps-bb-dot-on'
@@ -6877,8 +7744,9 @@ onMounted(async () => {
   // EPC auto-score fallback
   if (!homeScore.value) {
     try {
-      const { getPrefillFromProperty, calculateScore } =
-        await import('~/utils/homescoreScoring')
+      const { getPrefillFromProperty, calculateScore } = await import(
+        '~/utils/homescoreScoring'
+      )
       const epcPrefill = property.value
         ? getPrefillFromProperty(property.value)
         : {}
@@ -7011,8 +7879,11 @@ function formatSaleDate(dateStr: string): string {
 /* ─── Hero ──────────────────────────────────────────────────── */
 .pps-hero {
   height: 260px;
-  background:
-    radial-gradient(ellipse 70% 80% at 50% 30%, rgba(0, 161, 154, 0.18), transparent 70%),
+  background: radial-gradient(
+      ellipse 70% 80% at 50% 30%,
+      rgba(0, 161, 154, 0.18),
+      transparent 70%
+    ),
     linear-gradient(135deg, #f1f9f4 0%, #e2f1ea 100%);
   position: relative;
   overflow: hidden;
@@ -7073,7 +7944,11 @@ function formatSaleDate(dateStr: string): string {
 .pps-hero-empty-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 40%, rgba(0, 161, 154, 0.12), transparent 60%);
+  background: radial-gradient(
+    circle at 50% 40%,
+    rgba(0, 161, 154, 0.12),
+    transparent 60%
+  );
   pointer-events: none;
 }
 .pps-hero-empty-logo {
@@ -7083,7 +7958,10 @@ function formatSaleDate(dateStr: string): string {
   position: relative;
   z-index: 1;
 }
-.pps-hero-empty-logo svg { width: 100%; height: auto; }
+.pps-hero-empty-logo svg {
+  width: 100%;
+  height: auto;
+}
 .pps-hero-empty-title {
   text-align: center;
   color: #008a84;
@@ -7408,9 +8286,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-score-card--clickable {
   cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .pps-score-card--clickable:hover {
   transform: translateY(-2px);
@@ -7716,9 +8592,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-passport-card--clickable {
   cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .pps-passport-card--clickable:hover {
   transform: translateY(-2px);
@@ -8104,7 +8978,10 @@ function formatSaleDate(dateStr: string): string {
   flex-shrink: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
-.pps-pd-row-body { flex: 1; min-width: 0; }
+.pps-pd-row-body {
+  flex: 1;
+  min-width: 0;
+}
 .pps-pd-row-label {
   font-size: 10px;
   font-weight: 800;
@@ -8139,8 +9016,13 @@ function formatSaleDate(dateStr: string): string {
   cursor: pointer;
   transition: background 0.15s;
 }
-.pps-pd-download:hover { background: #008a84; }
-.pps-pd-download:disabled { background: #b4b5b8; cursor: not-allowed; }
+.pps-pd-download:hover {
+  background: #008a84;
+}
+.pps-pd-download:disabled {
+  background: #b4b5b8;
+  cursor: not-allowed;
+}
 .pps-pd-empty {
   padding: 24px 12px;
   text-align: center;
@@ -9022,7 +9904,10 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #231d45;
   line-height: 1.45;
 }
-.crime-verdict :deep(em) { font-style: normal; font-weight: 800; }
+.crime-verdict :deep(em) {
+  font-style: normal;
+  font-weight: 800;
+}
 .crime-raw {
   margin: 6px 0 0;
   font-size: 12px;
@@ -9030,14 +9915,22 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 500;
 }
 
-.crime-scale-wrap { margin-top: 18px; }
+.crime-scale-wrap {
+  margin-top: 18px;
+}
 .crime-scale {
   position: relative;
   height: 10px;
   border-radius: 99px;
   /* Cool → warm gradient — teal (quiet) through amber to rose (busy).
      Matches the reference exactly. */
-  background: linear-gradient(90deg, #7fcfc9 0%, #cfe0c0 32%, #f0d9a8 62%, #e3a9a9 100%);
+  background: linear-gradient(
+    90deg,
+    #7fcfc9 0%,
+    #cfe0c0 32%,
+    #f0d9a8 62%,
+    #e3a9a9 100%
+  );
 }
 .crime-tick {
   position: absolute;
@@ -9106,7 +9999,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: rgba(196, 88, 107, 0.12);
   color: #c4586b;
 }
-.crime-spark { width: 100%; height: 52px; display: block; overflow: visible; }
+.crime-spark {
+  width: 100%;
+  height: 52px;
+  display: block;
+  overflow: visible;
+}
 .crime-spark-x {
   display: flex;
   justify-content: space-between;
@@ -9146,7 +10044,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: block;
   border-bottom: 1px solid #f4f3f8;
 }
-.crime-cat:last-child { border-bottom: none; }
+.crime-cat:last-child {
+  border-bottom: none;
+}
 .crime-cat-top {
   display: flex;
   justify-content: space-between;
@@ -9154,7 +10054,11 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 12px;
   margin-bottom: 7px;
 }
-.crime-cat-name { font-size: 14px; font-weight: 600; color: #231d45; }
+.crime-cat-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #231d45;
+}
 .crime-cat-num {
   font-size: 14px;
   font-weight: 700;
@@ -9162,7 +10066,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   flex: none;
   color: #231d45;
 }
-.crime-bar { height: 6px; border-radius: 99px; background: #f4f3f8; overflow: hidden; }
+.crime-bar {
+  height: 6px;
+  border-radius: 99px;
+  background: #f4f3f8;
+  overflow: hidden;
+}
 .crime-bar i {
   display: block;
   height: 100%;
@@ -9190,7 +10099,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #231d45;
   cursor: pointer;
 }
-.crime-more:hover { background: #f4f3f8; }
+.crime-more:hover {
+  background: #f4f3f8;
+}
 
 .crime-note {
   margin-top: 22px;
@@ -9202,7 +10113,10 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #6b6685;
   font-weight: 500;
 }
-.crime-note :deep(b) { color: #231d45; font-weight: 700; }
+.crime-note :deep(b) {
+  color: #231d45;
+  font-weight: 700;
+}
 
 .pps-ds-attribution {
   font-size: 12px;
@@ -9246,7 +10160,10 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 8px 0 0;
   line-height: 1.45;
 }
-.pps-sx-sub b { color: #231d45; font-weight: 800; }
+.pps-sx-sub b {
+  color: #231d45;
+  font-weight: 800;
+}
 .pps-sx-eff {
   display: flex;
   gap: 12px;
@@ -9254,7 +10171,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   padding-top: 14px;
   border-top: 1px solid rgba(35, 29, 69, 0.09);
 }
-.pps-sx-eff > div { flex: 1; }
+.pps-sx-eff > div {
+  flex: 1;
+}
 .pps-sx-eff b {
   display: block;
   font-size: 17px;
@@ -9291,8 +10210,16 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #a2a2a9;
   margin-bottom: 2px;
 }
-.pps-sx-inrow { display: flex; align-items: baseline; gap: 6px; }
-.pps-sx-cur { font-size: 22px; font-weight: 700; color: #a2a2a9; }
+.pps-sx-inrow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.pps-sx-cur {
+  font-size: 22px;
+  font-weight: 700;
+  color: #a2a2a9;
+}
 .pps-sx-inrow input {
   border: 0;
   outline: 0;
@@ -9333,7 +10260,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   cursor: pointer;
   transition: 0.18s;
 }
-.pps-sx-seg button[aria-pressed="true"] {
+.pps-sx-seg button[aria-pressed='true'] {
   background: #fff;
   color: #231d45;
   box-shadow: 0 1px 3px rgba(35, 29, 69, 0.14);
@@ -9371,7 +10298,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   transition: 0.2s;
   padding: 0;
 }
-.pps-sx-tog[aria-pressed="true"] { background: #00a19a; }
+.pps-sx-tog[aria-pressed='true'] {
+  background: #00a19a;
+}
 .pps-sx-tog::after {
   content: '';
   position: absolute;
@@ -9384,7 +10313,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   transition: 0.2s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
-.pps-sx-tog[aria-pressed="true"]::after { left: 22px; }
+.pps-sx-tog[aria-pressed='true']::after {
+  left: 22px;
+}
 .pps-sx-alert {
   background: #231d45;
   color: #fff;
@@ -9395,8 +10326,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   line-height: 1.55;
   font-weight: 600;
 }
-.pps-sx-alert b { font-weight: 800; display: inline; }
-.pps-sx-stack-wrap { margin-bottom: 18px; }
+.pps-sx-alert b {
+  font-weight: 800;
+  display: inline;
+}
+.pps-sx-stack-wrap {
+  margin-bottom: 18px;
+}
 .pps-sx-stack-lab {
   font-size: 11px;
   font-weight: 800;
@@ -9441,7 +10377,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   padding: 12px 0;
   border-bottom: 1px solid #e4e4e7;
 }
-.pps-sx-band--off { opacity: 0.4; }
+.pps-sx-band--off {
+  opacity: 0.4;
+}
 .pps-sx-brow {
   display: flex;
   justify-content: space-between;
@@ -9531,7 +10469,11 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 8px 0 0;
   line-height: 1.45;
 }
-.pps-sh-cap em { font-style: normal; font-weight: 800; color: #231d45; }
+.pps-sh-cap em {
+  font-style: normal;
+  font-weight: 800;
+  color: #231d45;
+}
 .pps-sh-mini {
   display: flex;
   gap: 14px;
@@ -9539,7 +10481,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   padding-top: 16px;
   border-top: 1px solid rgba(35, 29, 69, 0.09);
 }
-.pps-sh-mini > div { flex: 1; }
+.pps-sh-mini > div {
+  flex: 1;
+}
 .pps-sh-mini b {
   display: block;
   font-size: 19px;
@@ -9583,7 +10527,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   cursor: pointer;
   transition: 0.18s;
 }
-.pps-sh-seg button[aria-pressed="true"] {
+.pps-sh-seg button[aria-pressed='true'] {
   background: #fff;
   color: #231d45;
   box-shadow: 0 1px 3px rgba(35, 29, 69, 0.14);
@@ -9606,7 +10550,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 700;
   color: #00817c;
 }
-.pps-sh-list { margin-top: 4px; }
+.pps-sh-list {
+  margin-top: 4px;
+}
 .pps-sh-row {
   border: 0;
   background: none;
@@ -9619,7 +10565,11 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: block;
   color: inherit;
 }
-.pps-sh-r1 { display: flex; gap: 10px; align-items: baseline; }
+.pps-sh-r1 {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
 .pps-sh-name {
   font-size: 14.5px;
   font-weight: 600;
@@ -9662,9 +10612,18 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #f3f3f5;
   color: #75757c;
 }
-.pps-sh-tag--primary { background: #e9f6f5; color: #00817c; }
-.pps-sh-tag--secondary { background: #231d45; color: #fff; }
-.pps-sh-tag--nursery { background: #f3f3f5; color: #4a4468; }
+.pps-sh-tag--primary {
+  background: #e9f6f5;
+  color: #00817c;
+}
+.pps-sh-tag--secondary {
+  background: #231d45;
+  color: #fff;
+}
+.pps-sh-tag--nursery {
+  background: #f3f3f5;
+  color: #4a4468;
+}
 .pps-sh-walk {
   font-size: 11.5px;
   font-weight: 600;
@@ -9684,8 +10643,15 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-size: 12.5px;
   margin: 0;
 }
-.pps-sh-dl dt { color: #a2a2a9; font-weight: 600; }
-.pps-sh-dl dd { margin: 0; font-weight: 600; color: #231d45; }
+.pps-sh-dl dt {
+  color: #a2a2a9;
+  font-weight: 600;
+}
+.pps-sh-dl dd {
+  margin: 0;
+  font-weight: 600;
+  color: #231d45;
+}
 .pps-sh-catch {
   margin: 12px 0 0;
   font-size: 12.5px;
@@ -9693,7 +10659,10 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 500;
   color: #75757c;
 }
-.pps-sh-catch b { color: #231d45; font-weight: 700; }
+.pps-sh-catch b {
+  color: #231d45;
+  font-weight: 700;
+}
 
 /* ── Flood (pps-fl) ──────────────────────────────────────────────────
    Headline card + per-source risk rows + live-warnings toggle +
@@ -9705,7 +10674,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   text-align: center;
   background: linear-gradient(160deg, #e9f6f5, #f7fbfb);
 }
-.pps-fl-head--pending { background: #f3f3f5; }
+.pps-fl-head--pending {
+  background: #f3f3f5;
+}
 .pps-fl-lab {
   font-size: 11px;
   font-weight: 800;
@@ -9728,7 +10699,10 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 9px 0 0;
   line-height: 1.5;
 }
-.pps-fl-sub :deep(b) { color: #231d45; font-weight: 800; }
+.pps-fl-sub :deep(b) {
+  color: #231d45;
+  font-weight: 800;
+}
 .pps-fl-stamp {
   font-size: 11.5px;
   color: #a2a2a9;
@@ -9751,7 +10725,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 500;
   line-height: 1.5;
 }
-.pps-fl-risks { display: block; }
+.pps-fl-risks {
+  display: block;
+}
 .pps-fl-risk {
   border: 0;
   background: none;
@@ -9782,10 +10758,24 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 99px;
   flex: none;
 }
-.pps-fl-pill--low { background: #00a19a; color: #fff; }
-.pps-fl-pill--med { background: transparent; color: #231d45; box-shadow: inset 0 0 0 1.5px #231d45; }
-.pps-fl-pill--high { background: #231d45; color: #fff; }
-.pps-fl-pill--none { background: #f3f3f5; color: #a2a2a9; box-shadow: inset 0 0 0 1px #e4e4e7; }
+.pps-fl-pill--low {
+  background: #00a19a;
+  color: #fff;
+}
+.pps-fl-pill--med {
+  background: transparent;
+  color: #231d45;
+  box-shadow: inset 0 0 0 1.5px #231d45;
+}
+.pps-fl-pill--high {
+  background: #231d45;
+  color: #fff;
+}
+.pps-fl-pill--none {
+  background: #f3f3f5;
+  color: #a2a2a9;
+  box-shadow: inset 0 0 0 1px #e4e4e7;
+}
 .pps-fl-rmean {
   font-size: 12.5px;
   color: #75757c;
@@ -9804,14 +10794,19 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 500;
   color: #75757c;
 }
-.pps-fl-rdet :deep(b) { color: #231d45; font-weight: 700; }
+.pps-fl-rdet :deep(b) {
+  color: #231d45;
+  font-weight: 700;
+}
 .pps-fl-live {
   background: #f3f3f5;
   border-radius: 16px;
   padding: 12px 14px;
   margin-top: 12px;
 }
-.pps-fl-live .pps-fl-sec { margin-top: 0; }
+.pps-fl-live .pps-fl-sec {
+  margin-top: 0;
+}
 .pps-fl-livehead {
   display: flex;
   justify-content: space-between;
@@ -9824,9 +10819,19 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   width: 100%;
   color: inherit;
 }
-.pps-fl-livehead span { font-size: 13px; font-weight: 700; color: #231d45; }
-.pps-fl-livehead small { font-size: 11.5px; color: #a2a2a9; font-weight: 600; }
-.pps-fl-livebody { padding-bottom: 6px; }
+.pps-fl-livehead span {
+  font-size: 13px;
+  font-weight: 700;
+  color: #231d45;
+}
+.pps-fl-livehead small {
+  font-size: 11.5px;
+  color: #a2a2a9;
+  font-weight: 600;
+}
+.pps-fl-livebody {
+  padding-bottom: 6px;
+}
 .pps-fl-wrow {
   display: flex;
   justify-content: space-between;
@@ -9835,8 +10840,15 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-top: 1px solid #e4e4e7;
   font-size: 12.5px;
 }
-.pps-fl-wrow span:first-child { font-weight: 600; color: #75757c; }
-.pps-fl-wrow span:last-child { font-weight: 700; flex: none; color: #231d45; }
+.pps-fl-wrow span:first-child {
+  font-weight: 600;
+  color: #75757c;
+}
+.pps-fl-wrow span:last-child {
+  font-weight: 700;
+  flex: none;
+  color: #231d45;
+}
 .pps-fl-impact {
   margin-top: 20px;
   background: #e9f6f5;
@@ -9857,9 +10869,16 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 500;
   color: #75757c;
 }
-.pps-fl-impact li { margin-bottom: 5px; }
-.pps-fl-impact b { color: #231d45; font-weight: 700; }
-.pps-fl-lookups { display: block; }
+.pps-fl-impact li {
+  margin-bottom: 5px;
+}
+.pps-fl-impact b {
+  color: #231d45;
+  font-weight: 700;
+}
+.pps-fl-lookups {
+  display: block;
+}
 .pps-fl-lookup {
   display: flex;
   justify-content: space-between;
@@ -9869,7 +10888,11 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   text-decoration: none;
   color: inherit;
 }
-.pps-fl-lname { font-size: 14.5px; font-weight: 600; color: #231d45; }
+.pps-fl-lname {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #231d45;
+}
 .pps-fl-lsub {
   font-size: 11.5px;
   color: #a2a2a9;
@@ -9915,7 +10938,10 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 8px 0 0;
   line-height: 1.5;
 }
-.pps-tr-sub :deep(b) { color: #231d45; font-weight: 800; }
+.pps-tr-sub :deep(b) {
+  color: #231d45;
+  font-weight: 800;
+}
 .pps-tr-eff {
   display: flex;
   gap: 12px;
@@ -9923,7 +10949,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   padding-top: 14px;
   border-top: 1px solid rgba(35, 29, 69, 0.09);
 }
-.pps-tr-eff > div { flex: 1; }
+.pps-tr-eff > div {
+  flex: 1;
+}
 .pps-tr-eff b {
   display: block;
   font-size: 18px;
@@ -9982,7 +11010,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
-.pps-tr-list { display: block; }
+.pps-tr-list {
+  display: block;
+}
 .pps-tr-row {
   border: 0;
   background: none;
@@ -9995,7 +11025,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: block;
   color: inherit;
 }
-.pps-tr-row--static { cursor: default; }
+.pps-tr-row--static {
+  cursor: default;
+}
 .pps-tr-strow {
   display: flex;
   justify-content: space-between;
@@ -10031,8 +11063,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #f3f3f5;
   color: #75757c;
 }
-.pps-tr-tag--hub { background: #231d45; color: #fff; }
-.pps-tr-tag--muted { background: transparent; color: #a2a2a9; }
+.pps-tr-tag--hub {
+  background: #231d45;
+  color: #fff;
+}
+.pps-tr-tag--muted {
+  background: transparent;
+  color: #a2a2a9;
+}
 .pps-tr-det {
   margin-top: 11px;
   padding: 13px;
@@ -10044,8 +11082,15 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 500;
   color: #75757c;
 }
-.pps-tr-det :deep(b) { color: #231d45; font-weight: 700; }
-.pps-tr-det :deep(a) { color: #00817c; text-decoration: none; font-weight: 700; }
+.pps-tr-det :deep(b) {
+  color: #231d45;
+  font-weight: 700;
+}
+.pps-tr-det :deep(a) {
+  color: #00817c;
+  text-decoration: none;
+  font-weight: 700;
+}
 .pps-tr-links {
   display: flex;
   gap: 16px;
@@ -10098,13 +11143,24 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 9px 0 0;
   line-height: 1.5;
 }
-.pps-bb-sub :deep(b) { color: #231d45; font-weight: 800; }
-.pps-bb-scale-wrap { margin-top: 18px; }
+.pps-bb-sub :deep(b) {
+  color: #231d45;
+  font-weight: 800;
+}
+.pps-bb-scale-wrap {
+  margin-top: 18px;
+}
 .pps-bb-scale {
   position: relative;
   height: 9px;
   border-radius: 99px;
-  background: linear-gradient(90deg, #e4e4e7 0%, #b7e4e1 30%, #00a19a 62%, #231d45 100%);
+  background: linear-gradient(
+    90deg,
+    #e4e4e7 0%,
+    #b7e4e1 30%,
+    #00a19a 62%,
+    #231d45 100%
+  );
 }
 .pps-bb-marker {
   position: absolute;
@@ -10133,7 +11189,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   text-align: center;
   margin: 14px 0 8px;
 }
-.pps-bb-nets { display: block; }
+.pps-bb-nets {
+  display: block;
+}
 .pps-bb-net {
   padding: 13px 0;
   border-bottom: 1px solid #e4e4e7;
@@ -10195,7 +11253,10 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #a2a2a9;
   padding-bottom: 7px;
 }
-.pps-bb-mob-op { font-weight: 600; color: #231d45; }
+.pps-bb-mob-op {
+  font-weight: 600;
+  color: #231d45;
+}
 .pps-bb-mob-c {
   text-align: right;
   padding-left: 14px;
@@ -10213,8 +11274,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #e4e4e7;
   display: block;
 }
-.pps-bb-dots s.pps-bb-dot-on { background: #00a19a; }
-.pps-bb-dots s.pps-bb-dot-full { background: #231d45; }
+.pps-bb-dots s.pps-bb-dot-on {
+  background: #00a19a;
+}
+.pps-bb-dots s.pps-bb-dot-full {
+  background: #231d45;
+}
 .pps-bb-impact {
   margin-top: 20px;
   background: #e9f6f5;
@@ -10235,8 +11300,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 500;
   color: #75757c;
 }
-.pps-bb-impact li { margin-bottom: 5px; }
-.pps-bb-impact :deep(b) { color: #231d45; font-weight: 700; }
+.pps-bb-impact li {
+  margin-bottom: 5px;
+}
+.pps-bb-impact :deep(b) {
+  color: #231d45;
+  font-weight: 700;
+}
 
 /* Placeholder for sheets with no data yet */
 .pps-ds-placeholder {
