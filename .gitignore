@@ -39,4 +39,7 @@ android/app/keystore.properties
 # Client-supplied asset archives � keep local, we only commit the
 # unpacked images referenced by the app.
 public/op-icons/**/*.zip
+# Mockup source screenshots kept locally for re-cropping icons; we only
+# commit the derived per-icon PNGs.
+public/op-icons/**/source/
 
