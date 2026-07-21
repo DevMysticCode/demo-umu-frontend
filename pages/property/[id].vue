@@ -903,48 +903,44 @@
 
           <!-- ── Property details (Type / EPC / UPRN + Download EPC) ─ -->
           <template v-if="activeSheet === 'property-details'">
-            <div class="pps-ds-header" style="background: #eef3f7">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/type.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Property details</div>
-                <div class="pps-ds-header-meta">
-                  Verified against Ordnance Survey · EPC Register
-                </div>
+                <div class="pps-ds-header-meta">Ordnance Survey · EPC Register · HM Land Registry</div>
               </div>
             </div>
-            <div class="pps-pd-list">
-              <div v-if="property?.propertyType" class="pps-pd-row">
-                <img
-                  src="/op-icons/property/type.jpeg"
-                  alt=""
-                  class="pps-pd-row-icon"
-                  loading="lazy"
-                />
-                <div class="pps-pd-row-body">
-                  <div class="pps-pd-row-label">Type</div>
-                  <div class="pps-pd-row-value">{{ property.propertyType }}</div>
+
+            <section class="pps-tr-head">
+              <div class="pps-tr-lab">This home</div>
+              <div class="pps-tr-big">
+                {{ property?.propertyType || 'Property' }}
+              </div>
+              <p class="pps-tr-sub" v-if="property?.addressLine1 || property?.postcode">
+                <template v-if="property?.addressLine1">{{ property.addressLine1 }}<template v-if="property?.postcode"> · </template></template>
+                <template v-if="property?.postcode"><b>{{ property.postcode }}</b></template>
+              </p>
+              <div class="pps-tr-eff" v-if="propertyDetailStats.length">
+                <div v-for="s in propertyDetailStats" :key="s.label">
+                  <b>{{ s.value }}</b><span>{{ s.label }}</span>
                 </div>
               </div>
-              <div v-if="property?.epcRating" class="pps-pd-row">
-                <img
-                  src="/op-icons/property/epc.jpeg"
-                  alt=""
-                  class="pps-pd-row-icon"
-                  loading="lazy"
-                />
-                <div class="pps-pd-row-body">
-                  <div class="pps-pd-row-label">EPC</div>
-                  <div class="pps-pd-row-value">
+            </section>
+
+            <div v-if="property?.epcRating" class="pps-tr-list">
+              <div class="pps-tr-row pps-tr-row--static">
+                <div class="pps-tr-strow">
+                  <span class="pps-tr-stname">Energy rating</span>
+                  <span class="pps-tr-stwalk">
                     <span
                       class="pps-epc-badge"
                       :style="{ background: epcDotColor }"
-                      >{{ property.epcRating }}</span
-                    ><template v-if="property.epcScore">
-                      {{ property.epcScore }}/100</template
-                    >
-                  </div>
+                    >{{ property.epcRating }}</span>
+                    <template v-if="property.epcScore"> {{ property.epcScore }}/100</template>
+                  </span>
+                </div>
+                <div class="pps-tr-tags" v-if="property.epcLmkKey || property.uprn">
                   <button
-                    v-if="property.epcLmkKey || property.uprn"
                     type="button"
                     class="pps-pd-download"
                     :disabled="epcDownloading"
@@ -959,267 +955,103 @@
                   </button>
                 </div>
               </div>
-              <div v-if="property?.uprn" class="pps-pd-row">
-                <img
-                  src="/op-icons/property/uprn.jpeg"
-                  alt=""
-                  class="pps-pd-row-icon"
-                  loading="lazy"
-                />
-                <div class="pps-pd-row-body">
-                  <div class="pps-pd-row-label">UPRN</div>
-                  <div class="pps-pd-row-value pps-pd-row-value--mono">
-                    {{ property.uprn }}
-                  </div>
+              <div v-if="property?.uprn" class="pps-tr-row pps-tr-row--static">
+                <div class="pps-tr-strow">
+                  <span class="pps-tr-stname">UPRN</span>
+                  <span class="pps-tr-stwalk pps-pd-row-value--mono">{{ property.uprn }}</span>
                 </div>
               </div>
-              <div
-                v-if="!property?.propertyType && !property?.epcRating && !property?.uprn"
-                class="pps-pd-empty"
-              >
-                No property details on file yet.
+              <div v-if="property?.tenure" class="pps-tr-row pps-tr-row--static">
+                <div class="pps-tr-strow">
+                  <span class="pps-tr-stname">Tenure</span>
+                  <span class="pps-tr-stwalk">{{ property.tenure }}</span>
+                </div>
+              </div>
+              <div v-if="property?.titleNumber" class="pps-tr-row pps-tr-row--static">
+                <div class="pps-tr-strow">
+                  <span class="pps-tr-stname">Title number</span>
+                  <span class="pps-tr-stwalk pps-pd-row-value--mono">{{ property.titleNumber }}</span>
+                </div>
               </div>
             </div>
+
+            <div
+              v-if="!property?.propertyType && !property?.epcRating && !property?.uprn"
+              class="pps-ds-placeholder"
+            >
+              <div class="pps-ds-placeholder-icon">🏠</div>
+              <div class="pps-ds-placeholder-title">No property details on file yet</div>
+              <div class="pps-ds-placeholder-sub">
+                We'll backfill on the next enrichment pass — this usually happens once the
+                property has been through EPC lookup and OS Places verification.
+              </div>
+            </div>
+
+            <p class="pps-ds-info-note">
+              <b>Cross-referenced.</b> Type, size and EPC come from the Energy Performance
+              Certificate register; tenure and title number are from HM Land Registry.
+              UPRN identifies the property uniquely across all official sources.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── History (Land Registry) ─────────────────────────── -->
           <template v-else-if="activeSheet === 'history'">
-            <div class="pps-ds-header" style="background: #fff3e0">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/propertyHistory.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">Price History</div>
-                <div class="pps-ds-header-meta">
-                  HM Land Registry · Updated monthly
+                <div class="pps-ds-header-title">Price history</div>
+                <div class="pps-ds-header-meta">HM Land Registry · updated monthly</div>
+              </div>
+            </div>
+
+            <template v-if="estimatedPrice || lastSale">
+              <section class="pps-tr-head">
+                <div class="pps-tr-lab">Current estimated value</div>
+                <div class="pps-tr-big" v-if="estimatedPrice">
+                  {{ formatPrice(estimatedPrice) }}
                 </div>
-              </div>
-            </div>
-
-            <!-- Compound growth banner -->
-            <div
-              v-if="compoundGrowth"
-              style="
-                background: #e6f7f6;
-                border: 1.5px solid #b2e4e1;
-                border-radius: 12px;
-                padding: 12px 16px;
-                margin: 14px 0 10px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-              "
-            >
-              <div
-                style="
-                  font-size: 11px;
-                  font-weight: 800;
-                  color: #6b6783;
-                  letter-spacing: 1px;
-                  text-transform: uppercase;
-                "
-              >
-                Compound growth · since {{ compoundGrowth.sinceYear }}
-              </div>
-              <div
-                style="font-size: 16px; font-weight: 900"
-                :style="{
-                  color: compoundGrowth.pct >= 0 ? '#00a19a' : '#c73e36',
-                }"
-              >
-                {{ compoundGrowth.pct >= 0 ? '+' : ''
-                }}{{ compoundGrowth.pct.toFixed(1) }}% / yr
-              </div>
-            </div>
-
-            <!-- Current estimated value -->
-            <div
-              v-if="estimatedPrice"
-              style="
-                border: 1.5px solid #ececef;
-                border-radius: 14px;
-                padding: 16px;
-                margin-bottom: 10px;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: flex-start;
-                  margin-bottom: 8px;
-                "
-              >
-                <div style="display: flex; align-items: center; gap: 10px">
-                  <div
-                    style="
-                      width: 12px;
-                      height: 12px;
-                      border-radius: 50%;
-                      background: #00a19a;
-                      border: 2px solid white;
-                      box-shadow: 0 0 0 2px #00a19a;
-                      flex-shrink: 0;
-                      margin-top: 4px;
-                    "
-                  />
-                  <div>
-                    <div
-                      style="
-                        font-size: 22px;
-                        font-weight: 900;
-                        color: #231d45;
-                        letter-spacing: -0.5px;
-                      "
-                    >
-                      {{ formatPrice(estimatedPrice) }}
-                    </div>
-                    <div
-                      style="font-size: 12px; color: #9c98ad; margin-top: 2px"
-                    >
-                      {{ priceSourceLabel }}
-                    </div>
+                <div class="pps-tr-big" v-else-if="lastSale">
+                  £{{ Number(lastSale.price).toLocaleString() }}
+                </div>
+                <p class="pps-tr-sub" v-if="estimatedPrice">
+                  {{ priceSourceLabel
+                  }}<template v-if="deltaSinceSold">
+                    ·
+                    <b :style="{ color: deltaSinceSold.positive ? '#00817c' : '#c73e36' }">
+                      {{ deltaSinceSold.positive ? '+' : '−' }}£{{ Math.abs(deltaSinceSold.abs).toLocaleString() }}
+                      ({{ deltaSinceSold.positive ? '+' : '−' }}{{ Math.abs(deltaSinceSold.pct).toFixed(0) }}%)
+                    </b>
+                    since last sold</template>.
+                </p>
+                <p class="pps-tr-sub" v-else-if="lastSale">
+                  Last sold {{ formatSoldDate(lastSale.date) }}.
+                </p>
+                <div class="pps-tr-eff" v-if="priceHistoryCagr || lastSale || priceHistoryTimeline.length">
+                  <div v-if="priceHistoryCagr">
+                    <b :style="{ color: priceHistoryCagr.cagr >= 0 ? '#00817c' : '#c73e36' }">
+                      {{ priceHistoryCagr.cagr >= 0 ? '+' : '' }}{{ priceHistoryCagr.cagr.toFixed(1) }}%
+                    </b>
+                    <span>Per year since {{ priceHistoryCagr.fromYear }}</span>
+                  </div>
+                  <div v-if="lastSale">
+                    <b>£{{ Number(lastSale.price).toLocaleString() }}</b>
+                    <span>Last sold {{ formatSoldDate(lastSale.date) }}</span>
+                  </div>
+                  <div v-if="priceHistoryTimeline.length">
+                    <b>{{ priceHistoryTimeline.filter((t) => !t.isEstimate).length }}</b>
+                    <span>Land Registry sale{{ priceHistoryTimeline.filter((t) => !t.isEstimate).length === 1 ? '' : 's' }}</span>
                   </div>
                 </div>
-                <div
-                  style="
-                    background: #e6f7f6;
-                    border: 1.5px solid #b2e4e1;
-                    border-radius: 20px;
-                    padding: 4px 12px;
-                    font-size: 12px;
-                    font-weight: 800;
-                    color: #007e78;
-                  "
-                >
-                  CURRENT
-                </div>
-              </div>
-              <div
-                v-if="deltaSinceSold"
-                :style="{
-                  background: deltaSinceSold.positive ? '#e8f5ee' : '#fdecea',
-                  borderRadius: '8px',
-                  padding: '6px 10px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }"
-              >
-                <span
-                  :style="{
-                    color: deltaSinceSold.positive ? '#2eab55' : '#c73e36',
-                    fontSize: '12px',
-                  }"
-                  >{{ deltaSinceSold.positive ? '↑' : '↓' }}</span
-                >
-                <span
-                  :style="{
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    color: deltaSinceSold.positive ? '#1a7a3a' : '#8a1d18',
-                  }"
-                >
-                  {{ deltaSinceSold.positive ? '+' : '−' }}£{{
-                    Math.abs(deltaSinceSold.abs).toLocaleString()
-                  }}
-                  ({{ deltaSinceSold.positive ? '+' : '−'
-                  }}{{ Math.abs(deltaSinceSold.pct).toFixed(0) }}%)
-                </span>
-                <span
-                  :style="{
-                    fontSize: '10px',
-                    color: deltaSinceSold.positive ? '#6b9c78' : '#a86660',
-                  }"
-                  >since last sold</span
-                >
-              </div>
-            </div>
+              </section>
+            </template>
 
-            <!-- Last sold (most recent record) -->
-            <div
-              v-if="lastSale"
-              style="
-                border: 1.5px solid #ececef;
-                border-radius: 14px;
-                padding: 16px;
-                margin-bottom: 14px;
-                opacity: 0.85;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: flex-start;
-                "
-              >
-                <div style="display: flex; align-items: center; gap: 10px">
-                  <div
-                    style="
-                      width: 12px;
-                      height: 12px;
-                      border-radius: 50%;
-                      background: white;
-                      border: 2px solid #c0bdcc;
-                      flex-shrink: 0;
-                      margin-top: 4px;
-                    "
-                  />
-                  <div>
-                    <div
-                      style="
-                        font-size: 20px;
-                        font-weight: 900;
-                        color: #231d45;
-                        letter-spacing: -0.5px;
-                      "
-                    >
-                      £{{ Number(lastSale.price).toLocaleString() }}
-                    </div>
-                    <div
-                      style="font-size: 12px; color: #9c98ad; margin-top: 2px"
-                    >
-                      {{ formatSoldDate(lastSale.date) }}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  style="
-                    background: #f5f5f7;
-                    border: 1.5px solid #ececef;
-                    border-radius: 20px;
-                    padding: 4px 12px;
-                    font-size: 12px;
-                    font-weight: 800;
-                    color: #9c98ad;
-                  "
-                >
-                  SOLD
-                </div>
-              </div>
-            </div>
-
-            <!-- Compound annual growth rate banner (restored from old version) -->
-            <div v-if="priceHistoryCagr" class="pps-ds-cagr-banner">
-              <div class="pps-ds-cagr-label">
-                Compound growth · since {{ priceHistoryCagr.fromYear }}
-              </div>
-              <div
-                class="pps-ds-cagr-val"
-                :class="{
-                  'pps-ds-cagr-val--up': priceHistoryCagr.cagr >= 0,
-                  'pps-ds-cagr-val--down': priceHistoryCagr.cagr < 0,
-                }"
-              >
-                {{ priceHistoryCagr.cagr >= 0 ? '+' : ''
-                }}{{ priceHistoryCagr.cagr.toFixed(1) }}% / yr
-              </div>
-            </div>
-
-            <!-- Price-history timeline (restored from old version) — current
-                 estimate at the top, then each historic sale with delta -->
-            <div v-if="priceHistoryTimeline.length > 0">
-              <div class="pps-ds-section-title">Price timeline</div>
+            <template v-if="priceHistoryTimeline.length > 0">
+              <h2 class="pps-tr-sec">Price timeline</h2>
+              <p class="pps-tr-secsub">
+                Each recorded sale on this address, with the delta from the previous
+                transaction.
+              </p>
               <div class="pps-ds-timeline">
                 <div
                   v-for="(t, i) in priceHistoryTimeline"
@@ -1234,14 +1066,10 @@
                   <div class="pps-ds-tl-body">
                     <div class="pps-ds-tl-price">
                       £{{ Number(t.price).toLocaleString() }}
-                      <span v-if="t.isEstimate" class="pps-ds-tl-est-pill"
-                        >Estimate</span
-                      >
+                      <span v-if="t.isEstimate" class="pps-ds-tl-est-pill">Estimate</span>
                     </div>
                     <div class="pps-ds-tl-date">
-                      <template v-if="t.dateObj">{{
-                        formatSoldDate(t.dateStr)
-                      }}</template>
+                      <template v-if="t.dateObj">{{ formatSoldDate(t.dateStr) }}</template>
                       <template v-else>Today</template>
                     </div>
                   </div>
@@ -1253,124 +1081,142 @@
                       'pps-ds-tl-delta--down': !t.delta.positive,
                     }"
                   >
-                    <span class="pps-ds-tl-arrow">{{
-                      t.delta.positive ? '↑' : '↓'
-                    }}</span>
+                    <span class="pps-ds-tl-arrow">{{ t.delta.positive ? '↑' : '↓' }}</span>
                     {{ t.delta.positive ? '+' : '−' }}£{{
                       Math.abs(Math.round(t.delta.amount)).toLocaleString()
                     }}
-                    <span class="pps-ds-tl-pct"
-                      >({{ t.delta.positive ? '+' : '−'
-                      }}{{ Math.abs(t.delta.pct).toFixed(0) }}%)</span
-                    >
+                    <span class="pps-ds-tl-pct">
+                      ({{ t.delta.positive ? '+' : '−' }}{{ Math.abs(t.delta.pct).toFixed(0) }}%)
+                    </span>
                   </div>
                 </div>
               </div>
-            </div>
-            <div v-else class="pps-ds-empty">
-              No Land Registry sale records found for this address.
+            </template>
+
+            <div v-else-if="!estimatedPrice && !lastSale" class="pps-ds-placeholder">
+              <div class="pps-ds-placeholder-icon">📜</div>
+              <div class="pps-ds-placeholder-title">No sale records on file</div>
+              <div class="pps-ds-placeholder-sub">
+                HM Land Registry has no transaction records for this address yet — this
+                can happen with new builds, exchange of parts, or unregistered land.
+              </div>
             </div>
 
-            <!-- Nearby sales (restored — the data was already fetched) -->
-            <div
-              v-if="nearbySales.length > 0"
-              class="pps-ds-section-title"
-              style="margin-top: 18px"
-            >
-              Nearby sold prices
-            </div>
-            <div v-if="nearbySales.length > 0" class="pps-ds-kv-list">
-              <div
-                v-for="s in nearbySales.slice(0, 5)"
-                :key="(s.address || s.date) + s.price"
-                class="pps-ds-kv"
-              >
-                <span class="pps-ds-k">
-                  {{ s.address || s.postcode || 'Nearby property' }}
-                  <span class="pps-ds-tl-date" style="margin-left: 4px">
-                    · {{ formatSoldDate(s.date || s.transferDate || '') }}
-                  </span>
-                </span>
-                <span class="pps-ds-v"
-                  >£{{
-                    Number(s.price ?? s.amount ?? 0).toLocaleString()
-                  }}</span
+            <template v-if="nearbySales.length > 0">
+              <h2 class="pps-tr-sec">Nearby sold prices</h2>
+              <p class="pps-tr-secsub">
+                Recent transactions on the same road or postcode — useful for a sanity
+                check against the estimate above.
+              </p>
+              <div class="pps-tr-list">
+                <div
+                  v-for="s in nearbySales.slice(0, 5)"
+                  :key="(s.address || s.date) + s.price"
+                  class="pps-tr-row pps-tr-row--static"
                 >
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">
+                      {{ s.address || s.postcode || 'Nearby property' }}
+                    </span>
+                    <span class="pps-tr-stwalk">
+                      £{{ Number(s.price ?? s.amount ?? 0).toLocaleString() }}
+                    </span>
+                  </div>
+                  <div class="pps-tr-tags">
+                    <span class="pps-tr-tag pps-tr-tag--muted">
+                      {{ formatSoldDate(s.date || s.transferDate || '') }}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div
-              v-if="property?.tenure || property?.titleNumber || property?.uprn"
-              class="pps-ds-section-title"
-              style="margin-top: 18px"
-            >
-              Title details
-            </div>
-            <div class="pps-ds-kv-list">
-              <div v-if="property?.tenure" class="pps-ds-kv">
-                <span class="pps-ds-k">Tenure</span>
-                <span class="pps-ds-v">{{ property.tenure }}</span>
+            </template>
+
+            <template v-if="property?.tenure || property?.titleNumber || property?.uprn">
+              <h2 class="pps-tr-sec">Title details</h2>
+              <div class="pps-tr-list">
+                <div v-if="property?.tenure" class="pps-tr-row pps-tr-row--static">
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">Tenure</span>
+                    <span class="pps-tr-stwalk">{{ property.tenure }}</span>
+                  </div>
+                </div>
+                <div v-if="property?.titleNumber" class="pps-tr-row pps-tr-row--static">
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">Title number</span>
+                    <span class="pps-tr-stwalk pps-pd-row-value--mono">{{ property.titleNumber }}</span>
+                  </div>
+                </div>
+                <div v-if="property?.uprn" class="pps-tr-row pps-tr-row--static">
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">UPRN</span>
+                    <span class="pps-tr-stwalk pps-pd-row-value--mono">{{ property.uprn }}</span>
+                  </div>
+                </div>
               </div>
-              <div v-if="property?.titleNumber" class="pps-ds-kv">
-                <span class="pps-ds-k">Title number</span>
-                <span class="pps-ds-v">{{ property.titleNumber }}</span>
-              </div>
-              <div v-if="property?.uprn" class="pps-ds-kv">
-                <span class="pps-ds-k">UPRN</span>
-                <span class="pps-ds-v">{{ property.uprn }}</span>
-              </div>
-            </div>
-            <div class="pps-ds-attribution">
-              Data from HM Land Registry · Updated monthly
-            </div>
+            </template>
+
+            <p class="pps-ds-info-note">
+              <b>Updated monthly.</b> HM Land Registry publishes the previous month's
+              transactions on the third working day of each month. Prices are the price
+              paid at completion; sellers' asking prices are not recorded.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Street (live energy rank) ─────────────────────────── -->
           <template v-else-if="activeSheet === 'street'">
-            <div class="pps-ds-header" style="background: #e8f5e9">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/streetData.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Street data</div>
                 <div class="pps-ds-header-meta">
-                  {{ property?.postcode || 'Outcode' }}
-                  <template v-if="streetEnergyRank?.total">
-                    · {{ streetEnergyRank.total }} properties on file
-                  </template>
+                  {{ property?.postcode || 'Outcode' }} · aggregated from EPC register
                 </div>
               </div>
             </div>
-            <div v-if="streetEnergyRank?.rank">
-              <div class="pps-ds-section-title">
-                This property vs the street
-              </div>
-              <div class="pps-ds-rank-card">
-                <div class="pps-ds-rank-big">
-                  {{ streetEnergyRank.rank
-                  }}<span style="font-size: 18px">{{
-                    ordinalSuffix(streetEnergyRank.rank)
-                  }}</span>
+
+            <template v-if="streetEnergyRank?.rank">
+              <section class="pps-tr-head">
+                <div class="pps-tr-lab">Energy rank on this street</div>
+                <div class="pps-tr-big">
+                  {{ streetEnergyRank.rank }}<span style="font-size: 22px">{{ ordinalSuffix(streetEnergyRank.rank) }}</span>
+                  <span style="font-size: 16px; font-weight: 700; color: #75757c">
+                    of {{ streetEnergyRank.total }}
+                  </span>
                 </div>
-                <div class="pps-ds-rank-sub">
-                  out of {{ streetEnergyRank.total }} homes for energy
-                  efficiency
+                <p class="pps-tr-sub">
+                  Ranked by <b>predicted annual running cost</b> across
+                  {{ streetEnergyRank.total }} homes in this postcode.
+                </p>
+                <div class="pps-tr-eff">
+                  <div v-if="streetEnergyRank.yourCost">
+                    <b>£{{ streetEnergyRank.yourCost.toLocaleString() }}</b>
+                    <span>Your annual cost</span>
+                  </div>
+                  <div v-if="streetEnergyRank.averageCost">
+                    <b>£{{ streetEnergyRank.averageCost.toLocaleString() }}</b>
+                    <span>Street average</span>
+                  </div>
+                  <div v-if="streetEnergyRank.bestCost">
+                    <b>£{{ streetEnergyRank.bestCost.toLocaleString() }}</b>
+                    <span>Best on street</span>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <!-- Street EPC distribution -->
-            <template
-              v-if="(streetEnergyRank?.epcDistribution?.length || 0) > 0"
-            >
-              <div class="pps-ds-section-title" style="margin-top: 18px">
-                Street EPC distribution
-              </div>
+              </section>
+            </template>
+
+            <template v-if="(streetEnergyRank?.epcDistribution?.length || 0) > 0">
+              <h2 class="pps-tr-sec">EPC distribution</h2>
+              <p class="pps-tr-secsub">
+                How many properties in this postcode fall into each EPC band.
+              </p>
               <div class="pps-ds-bar-list">
                 <div
                   v-for="bucket in streetEnergyRank!.epcDistribution"
                   :key="bucket.letter"
                   class="pps-ds-bar-item"
                   :class="{
-                    'pps-ds-bar-item--active':
-                      streetEnergyRank?.yourEpcRating === bucket.letter,
+                    'pps-ds-bar-item--active': streetEnergyRank?.yourEpcRating === bucket.letter,
                   }"
                 >
                   <span class="pps-ds-bar-label">{{ bucket.letter }}</span>
@@ -1378,61 +1224,51 @@
                     <div
                       class="pps-ds-bar-fill"
                       :style="{
-                        width: epcBarMaxCount
-                          ? (bucket.count / epcBarMaxCount) * 100 + '%'
-                          : '0%',
+                        width: epcBarMaxCount ? (bucket.count / epcBarMaxCount) * 100 + '%' : '0%',
                         background: epcBarColor(bucket.letter),
                       }"
                     />
                   </div>
-                  <span class="pps-ds-bar-count"
-                    >{{ bucket.count
-                    }}<template
-                      v-if="streetEnergyRank?.yourEpcRating === bucket.letter"
-                    >
-                      ← you</template
-                    ></span
-                  >
+                  <span class="pps-ds-bar-count">
+                    {{ bucket.count }}<template v-if="streetEnergyRank?.yourEpcRating === bucket.letter">
+                      ← you</template>
+                  </span>
                 </div>
               </div>
             </template>
 
-            <div class="pps-ds-section-title" style="margin-top: 18px">
-              Street averages
-            </div>
-            <div class="pps-ds-kv-list">
-              <div v-if="streetEnergyRank?.avgEpcScore" class="pps-ds-kv">
-                <span class="pps-ds-k">Avg. EPC score</span>
-                <span class="pps-ds-v"
-                  >{{ streetEnergyRank.avgEpcScore }} / 100</span
-                >
+            <template v-if="streetEnergyRank?.avgEpcScore || property?.epcScore">
+              <h2 class="pps-tr-sec">Score comparison</h2>
+              <div class="pps-tr-list">
+                <div v-if="property?.epcScore" class="pps-tr-row pps-tr-row--static">
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">Your EPC score</span>
+                    <span class="pps-tr-stwalk">{{ property.epcScore }} / 100</span>
+                  </div>
+                </div>
+                <div v-if="streetEnergyRank?.avgEpcScore" class="pps-tr-row pps-tr-row--static">
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">Street average score</span>
+                    <span class="pps-tr-stwalk">{{ streetEnergyRank.avgEpcScore }} / 100</span>
+                  </div>
+                </div>
               </div>
-              <div v-if="streetEnergyRank?.yourCost" class="pps-ds-kv">
-                <span class="pps-ds-k">Your annual cost</span>
-                <span class="pps-ds-v"
-                  >£{{ streetEnergyRank.yourCost.toLocaleString() }}</span
-                >
-              </div>
-              <div v-if="streetEnergyRank?.averageCost" class="pps-ds-kv">
-                <span class="pps-ds-k">Street average</span>
-                <span class="pps-ds-v"
-                  >£{{ streetEnergyRank.averageCost.toLocaleString() }}</span
-                >
-              </div>
-              <div v-if="streetEnergyRank?.bestCost" class="pps-ds-kv">
-                <span class="pps-ds-k">Best on street</span>
-                <span class="pps-ds-v"
-                  >£{{ streetEnergyRank.bestCost.toLocaleString() }}</span
-                >
-              </div>
-              <div v-if="property?.epcScore" class="pps-ds-kv">
-                <span class="pps-ds-k">Your EPC score</span>
-                <span class="pps-ds-v">{{ property.epcScore }} / 100</span>
+            </template>
+
+            <div v-if="!streetEnergyRank?.rank" class="pps-ds-placeholder">
+              <div class="pps-ds-placeholder-icon">🏘️</div>
+              <div class="pps-ds-placeholder-title">Not enough street data yet</div>
+              <div class="pps-ds-placeholder-sub">
+                We couldn't find enough neighbouring properties with EPC cost data in
+                this postcode. Fills in as more homes on the street get enriched.
               </div>
             </div>
-            <div class="pps-ds-attribution">
-              Source: Land Registry + EPC register · Aggregated
-            </div>
+
+            <p class="pps-ds-info-note">
+              <b>Aggregated from the EPC register.</b> Compares against every property in
+              the same outcode that we already have EPC running-cost figures for. The
+              cohort grows as more properties are enriched.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -1543,326 +1379,355 @@
 
           <!-- ── Transport (OpenStreetMap via Overpass) ───────────── -->
           <template v-else-if="activeSheet === 'transport'">
-            <div class="pps-ds-header" style="background: #f3e5f5">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/trainstations.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Transport</div>
-                <div class="pps-ds-header-meta">
-                  Nearest stations, bus stops &amp; airports
-                </div>
-              </div>
-            </div>
-
-            <!-- Proximity pills -->
-            <div
-              style="display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px"
-            >
-              <div
-                v-if="enrichmentTrains[0]"
-                style="
-                  background: #f5f5f7;
-                  border-radius: 20px;
-                  padding: 7px 13px;
-                  font-size: 12px;
-                  font-weight: 700;
-                  color: #1a1535;
-                "
-              >
-                🚂 {{ enrichmentTrains[0].distanceKm.toFixed(1) }} km station
-              </div>
-              <div
-                v-if="enrichmentBuses[0]"
-                style="
-                  background: #f5f5f7;
-                  border-radius: 20px;
-                  padding: 7px 13px;
-                  font-size: 12px;
-                  font-weight: 700;
-                  color: #1a1535;
-                "
-              >
-                🚌 {{ enrichmentBuses[0].distanceKm.toFixed(2) }} km bus
-              </div>
-              <div
-                v-if="enrichmentAirports[0]"
-                style="
-                  background: #f5f5f7;
-                  border-radius: 20px;
-                  padding: 7px 13px;
-                  font-size: 12px;
-                  font-weight: 700;
-                  color: #1a1535;
-                "
-              >
-                ✈️ {{ enrichmentAirports[0].distanceKm.toFixed(0) }} km airport
+                <div class="pps-ds-header-meta">National Rail · Ordnance Survey</div>
               </div>
             </div>
 
             <template v-if="enrichmentTrains.length > 0">
-              <div class="pps-ds-section-title">Nearest stations</div>
-              <div class="pps-ds-kv-list">
-                <div
-                  v-for="t in enrichmentTrains.slice(0, 5)"
-                  :key="t.name + t.distanceKm"
-                  class="pps-ds-kv"
-                >
-                  <span class="pps-ds-k">🚂 {{ t.name }}</span>
-                  <span class="pps-ds-v"
-                    >{{ t.distanceKm.toFixed(1) }} km<template
-                      v-if="t.operator"
-                    >
-                      · {{ t.operator }}</template
-                    ></span
-                  >
+              <section class="pps-tr-head">
+                <div class="pps-tr-lab">Nearest station</div>
+                <div class="pps-tr-big">
+                  {{ enrichmentTrains[0].name }} · {{ walkMinutes(enrichmentTrains[0].distanceKm) }} min walk
                 </div>
+                <p class="pps-tr-sub" v-if="enrichmentTrains[0].operator">
+                  Served by <b>{{ enrichmentTrains[0].operator }}</b
+                  ><template v-if="enrichmentTrains.length > 1">
+                    · {{ enrichmentTrains.length - 1 }} other station{{ enrichmentTrains.length === 2 ? '' : 's' }} within reach</template>.
+                </p>
+                <p class="pps-tr-sub" v-else>
+                  Straight-line distance {{ enrichmentTrains[0].distanceKm.toFixed(1) }} km.
+                </p>
+              </section>
+
+              <h2 class="pps-tr-sec">Stations</h2>
+              <p class="pps-tr-secsub">
+                Walking time from this address at ~12 minutes per km. Heritage and miniature
+                railways are excluded.
+              </p>
+              <div class="pps-tr-list">
+                <button
+                  v-for="(t, i) in enrichmentTrains.slice(0, 6)"
+                  :key="t.name + t.distanceKm"
+                  class="pps-tr-row"
+                  :aria-expanded="trainOpen === i"
+                  @click="trainOpen = trainOpen === i ? -1 : i"
+                >
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">{{ t.name }}</span>
+                    <span class="pps-tr-stwalk">{{ walkMinutes(t.distanceKm) }} min walk</span>
+                  </div>
+                  <div class="pps-tr-tags">
+                    <span v-if="i === 0" class="pps-tr-tag pps-tr-tag--hub">Nearest</span>
+                    <span v-if="t.operator" class="pps-tr-tag">{{ t.operator }}</span>
+                    <span class="pps-tr-tag pps-tr-tag--muted">{{ t.distanceKm.toFixed(1) }} km</span>
+                  </div>
+                  <div v-if="trainOpen === i" class="pps-tr-det">
+                    <template v-if="i === 0">
+                      Closest station. <b>{{ walkMinutes(t.distanceKm) }} minutes' walk</b>
+                      from this address at a normal pace.
+                    </template>
+                    <template v-else>
+                      Alternative station about {{ t.distanceKm.toFixed(1) }} km away
+                      (~{{ walkMinutes(t.distanceKm) }} min walk). Useful if the nearest
+                      station is closed or if the service pattern here suits your commute
+                      better.
+                    </template>
+                  </div>
+                </button>
               </div>
             </template>
 
-            <template v-if="enrichmentBuses.length > 0">
-              <div class="pps-ds-section-title" style="margin-top: 18px">
-                Bus stops
+            <div v-else class="pps-ds-placeholder">
+              <div class="pps-ds-placeholder-icon">🚂</div>
+              <div class="pps-ds-placeholder-title">
+                {{ transportLookupFailed ? 'Rail information unavailable right now' : 'No stations within reach' }}
               </div>
-              <div class="pps-ds-kv-list">
-                <div
-                  v-for="b in enrichmentBuses.slice(0, 5)"
-                  :key="(b.name || 'stop') + b.distanceKm"
-                  class="pps-ds-kv"
-                >
-                  <span class="pps-ds-k"
-                    >🚌 {{ b.name || 'Bus Stop'
-                    }}<template v-if="b.ref"> ({{ b.ref }})</template></span
-                  >
-                  <span class="pps-ds-v">{{ b.distanceKm.toFixed(2) }} km</span>
-                </div>
+              <div class="pps-ds-placeholder-sub">
+                <template v-if="transportLookupFailed">
+                  We couldn't load nearby stations — please try again in a moment.
+                </template>
+                <template v-else>
+                  We couldn't find a National Rail or light-rail station within 4 km of
+                  this address.
+                </template>
               </div>
-            </template>
+            </div>
 
             <template v-if="enrichmentAirports.length > 0">
-              <div class="pps-ds-section-title" style="margin-top: 18px">
-                Airports
-              </div>
-              <div class="pps-ds-kv-list">
+              <h2 class="pps-tr-sec">Airports</h2>
+              <p class="pps-tr-secsub">Straight-line distance. Drive times depend on route and traffic.</p>
+              <div class="pps-tr-list">
                 <div
                   v-for="a in enrichmentAirports"
                   :key="a.name"
-                  class="pps-ds-kv"
+                  class="pps-tr-row pps-tr-row--static"
                 >
-                  <span class="pps-ds-k"
-                    >✈️ {{ a.name
-                    }}<template v-if="a.iata"> ({{ a.iata }})</template
-                    ><span
-                      v-if="a.isMajor"
-                      class="pps-ds-major-pill"
-                      title="Major international hub"
-                    >Major</span></span
-                  >
-                  <span class="pps-ds-v">{{ a.distanceKm.toFixed(1) }} km</span>
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">✈️ {{ a.name }}<template v-if="a.iata"> ({{ a.iata }})</template></span>
+                    <span class="pps-tr-stwalk">{{ a.distanceKm.toFixed(0) }} km</span>
+                  </div>
+                  <div class="pps-tr-tags">
+                    <span v-if="a.isMajor" class="pps-tr-tag pps-tr-tag--hub">Major</span>
+                  </div>
                 </div>
               </div>
             </template>
 
-            <div
-              v-if="
-                enrichmentTrains.length === 0 &&
-                enrichmentBuses.length === 0 &&
-                enrichmentAirports.length === 0
-              "
-              class="pps-ds-placeholder"
-            >
-              <div class="pps-ds-placeholder-icon">🚂</div>
-              <div class="pps-ds-placeholder-title">
-                No transport data on file
-              </div>
-              <div class="pps-ds-placeholder-sub">
-                Will be backfilled on next enrichment pass.
-              </div>
-            </div>
-
-            <div class="pps-ds-attribution">
-              Source: OpenStreetMap contributors
-            </div>
+            <p class="pps-ds-info-note">
+              <b>Not a timetable.</b> Walking times are typical door-to-platform, not
+              straight-line distance. Services vary by time of day and are subject to
+              timetable changes — check National Rail before relying on a specific
+              connection.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Train stations (dedicated sheet) ──────────────────── -->
           <template v-else-if="activeSheet === 'trains'">
-            <div class="pps-ds-header" style="background: #f3e5f5">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/trainstations.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Train stations</div>
-                <div class="pps-ds-header-meta">
-                  {{ enrichmentTrains.length }} station{{
-                    enrichmentTrains.length === 1 ? '' : 's'
-                  }}
-                  within ~4 km
-                </div>
+                <div class="pps-ds-header-meta">National Rail · light-rail within ~4 km</div>
               </div>
             </div>
+
             <template v-if="enrichmentTrains.length > 0">
-              <div class="pps-ds-section-title">Nearest stations</div>
-              <div class="pps-ds-kv-list">
-                <div
-                  v-for="t in enrichmentTrains"
-                  :key="t.name + t.distanceKm"
-                  class="pps-ds-kv"
-                >
-                  <span class="pps-ds-k">🚂 {{ t.name }}</span>
-                  <span class="pps-ds-v"
-                    >{{ t.distanceKm.toFixed(1) }} km<template
-                      v-if="t.operator"
-                    >
-                      · {{ t.operator }}</template
-                    ></span
-                  >
+              <section class="pps-tr-head">
+                <div class="pps-tr-lab">Nearest station</div>
+                <div class="pps-tr-big">
+                  {{ enrichmentTrains[0].name }} · {{ walkMinutes(enrichmentTrains[0].distanceKm) }} min walk
                 </div>
-              </div>
-              <div class="pps-ds-info-note">
-                Distances are straight-line. Walking distance and journey times
-                depend on the route.
+                <p class="pps-tr-sub" v-if="enrichmentTrains[0].operator">
+                  Served by <b>{{ enrichmentTrains[0].operator }}</b
+                  ><template v-if="enrichmentTrains.length > 1">
+                    · {{ enrichmentTrains.length - 1 }} more within reach</template>.
+                </p>
+                <p class="pps-tr-sub" v-else>
+                  {{ enrichmentTrains.length }} station{{ enrichmentTrains.length === 1 ? '' : 's' }} within ~4&nbsp;km.
+                </p>
+              </section>
+
+              <h2 class="pps-tr-sec">All stations</h2>
+              <p class="pps-tr-secsub">
+                Walking time at ~12 min/km. Heritage and miniature railways are excluded.
+              </p>
+              <div class="pps-tr-list">
+                <button
+                  v-for="(t, i) in enrichmentTrains"
+                  :key="t.name + t.distanceKm"
+                  class="pps-tr-row"
+                  :aria-expanded="trainOpen === i"
+                  @click="trainOpen = trainOpen === i ? -1 : i"
+                >
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">{{ t.name }}</span>
+                    <span class="pps-tr-stwalk">{{ walkMinutes(t.distanceKm) }} min walk</span>
+                  </div>
+                  <div class="pps-tr-tags">
+                    <span v-if="i === 0" class="pps-tr-tag pps-tr-tag--hub">Nearest</span>
+                    <span v-if="t.operator" class="pps-tr-tag">{{ t.operator }}</span>
+                    <span class="pps-tr-tag pps-tr-tag--muted">{{ t.distanceKm.toFixed(1) }} km</span>
+                  </div>
+                  <div v-if="trainOpen === i" class="pps-tr-det">
+                    About <b>{{ walkMinutes(t.distanceKm) }} minutes' walk</b> from this
+                    address at a normal pace ({{ t.distanceKm.toFixed(1) }} km straight-line).
+                    Journey times and connections vary — check National Rail for live
+                    timetables.
+                  </div>
+                </button>
               </div>
             </template>
+
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🚂</div>
               <div class="pps-ds-placeholder-title">
-                {{ transportLookupFailed
-                  ? 'Train information unavailable right now'
-                  : 'No train stations within 4 km' }}
+                {{ transportLookupFailed ? 'Train information unavailable right now' : 'No train stations within 4 km' }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
-                  We couldn't load nearby stations for this area — please
-                  try again in a moment.
+                  We couldn't load nearby stations — please try again in a moment.
                 </template>
                 <template v-else>
-                  We couldn't find a National Rail or light-rail station
-                  within 4 km of this address.
+                  No National Rail or light-rail station within 4 km of this address.
                 </template>
               </div>
             </div>
-            <div class="pps-ds-attribution">
-              Data · National Rail &amp; local operators
-            </div>
+
+            <p class="pps-ds-info-note">
+              <b>Straight-line distances.</b> Walking routes and drive-times will be
+              longer. Timetables come from National Rail; live disruption is not
+              reflected in this view.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Bus stops (dedicated sheet) ──────────────────────── -->
           <template v-else-if="activeSheet === 'buses'">
-            <div class="pps-ds-header" style="background: #fff3e0">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/busStops.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">Bus stops</div>
-                <div class="pps-ds-header-meta">
-                  {{ enrichmentBuses.length }} stop{{
-                    enrichmentBuses.length === 1 ? '' : 's'
-                  }}
-                  within ~700 m
-                </div>
+                <div class="pps-ds-header-title">Buses</div>
+                <div class="pps-ds-header-meta">NaPTAN stops · OpenStreetMap</div>
               </div>
             </div>
+
             <template v-if="enrichmentBuses.length > 0">
-              <div class="pps-ds-section-title">Nearest stops</div>
-              <div class="pps-ds-kv-list">
-                <div
-                  v-for="b in enrichmentBuses"
-                  :key="(b.name || 'stop') + b.distanceKm"
-                  class="pps-ds-kv"
-                >
-                  <span class="pps-ds-k"
-                    >🚌 {{ b.name || 'Bus Stop'
-                    }}<template v-if="b.ref"> ({{ b.ref }})</template></span
-                  >
-                  <span class="pps-ds-v">{{ b.distanceKm.toFixed(2) }} km</span>
+              <section class="pps-tr-head">
+                <div class="pps-tr-lab">Best stop</div>
+                <div class="pps-tr-big">{{ enrichmentBuses[0].name || 'Bus stop' }}</div>
+                <p class="pps-tr-sub">
+                  <b>{{ walkMinutes(enrichmentBuses[0].distanceKm) }} minutes' walk</b>
+                  from this address<template v-if="enrichmentBuses[0].ref"> ({{ enrichmentBuses[0].ref }})</template>.
+                </p>
+                <div class="pps-tr-eff">
+                  <div><b>{{ busStats.total }}</b><span>Stops within reach</span></div>
+                  <div><b>{{ busStats.within10 }}</b><span>Within 10&nbsp;min walk</span></div>
+                  <div><b>{{ walkMinutes(enrichmentBuses[0].distanceKm) }}&nbsp;min</b><span>To the best stop</span></div>
                 </div>
+              </section>
+
+              <div class="pps-tr-sortbar">
+                <span>{{ sortedBuses.length }} stop{{ sortedBuses.length === 1 ? '' : 's' }}</span>
+                <button class="pps-tr-sortbtn" @click="busSortMode = busSortMode === 'walk' ? 'name' : 'walk'">
+                  Sort: {{ busSortMode === 'walk' ? 'Walk time' : 'Name' }} ▾
+                </button>
               </div>
-              <div class="pps-ds-info-note">
-                Bus stop locations from OpenStreetMap. Route numbers and
-                operators vary by stop — check Traveline for live timetables.
+              <p class="pps-tr-secsub">
+                Both directions are shown together. Route numbers and frequencies vary by
+                stop — check Traveline for live timetables.
+              </p>
+
+              <div class="pps-tr-list">
+                <button
+                  v-for="(b, i) in sortedBuses"
+                  :key="(b.name || 'stop') + b.distanceKm"
+                  class="pps-tr-row"
+                  :aria-expanded="busOpen === i"
+                  @click="busOpen = busOpen === i ? -1 : i"
+                >
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">
+                      {{ b.name || 'Bus stop' }}<template v-if="b.ref"> ({{ b.ref }})</template>
+                    </span>
+                    <span class="pps-tr-stwalk">{{ walkMinutes(b.distanceKm) }} min walk</span>
+                  </div>
+                  <div class="pps-tr-tags">
+                    <span v-if="i === 0" class="pps-tr-tag pps-tr-tag--hub">Best stop</span>
+                    <span class="pps-tr-tag pps-tr-tag--muted">{{ b.distanceKm.toFixed(2) }} km</span>
+                  </div>
+                  <div v-if="busOpen === i" class="pps-tr-det">
+                    <template v-if="i === 0">
+                      The closest stop. <b>{{ walkMinutes(b.distanceKm) }} minutes' walk</b>.
+                      For live route numbers and frequencies check
+                      <a href="https://traveline.info" target="_blank" rel="noopener">Traveline</a>.
+                    </template>
+                    <template v-else>
+                      About {{ b.distanceKm.toFixed(2) }} km from this address
+                      (~{{ walkMinutes(b.distanceKm) }} min). Useful for the opposite
+                      direction or when the nearest stop is closed for works.
+                    </template>
+                  </div>
+                </button>
               </div>
             </template>
+
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🚌</div>
               <div class="pps-ds-placeholder-title">
-                {{ transportLookupFailed
-                  ? 'Bus stop information unavailable right now'
-                  : 'No bus stops within 700 m' }}
+                {{ transportLookupFailed ? 'Bus stop information unavailable right now' : 'No bus stops within reach' }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
-                  We couldn't load nearby stops for this area — please try
-                  again in a moment.
+                  We couldn't load nearby stops — please try again in a moment.
                 </template>
                 <template v-else>
-                  We couldn't find a bus stop within walking distance of
-                  this address. Check Traveline for the latest coverage.
+                  We couldn't find a bus stop within walking distance of this address.
+                  Check Traveline for the latest coverage.
                 </template>
               </div>
             </div>
-            <div class="pps-ds-attribution">
-              Data · Traveline &amp; local operators
-            </div>
+
+            <p class="pps-ds-info-note">
+              <b>Frequencies drop off-peak.</b> Bus stop locations come from OpenStreetMap;
+              timetables come from the Bus Open Data Service (not yet wired). Weekday
+              daytime frequencies drop substantially in the evening and on Sundays —
+              worth checking if anyone would rely on the bus for a commute.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Airports (dedicated sheet) ───────────────────────── -->
           <template v-else-if="activeSheet === 'airports'">
-            <div class="pps-ds-header" style="background: #e1f5fe">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/airports.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Airports</div>
-                <div class="pps-ds-header-meta">
-                  {{ enrichmentAirports.length }} airport{{
-                    enrichmentAirports.length === 1 ? '' : 's'
-                  }}
-                  — majors prioritised, then by distance
-                </div>
+                <div class="pps-ds-header-meta">Commercial airports · majors first</div>
               </div>
             </div>
+
             <template v-if="enrichmentAirports.length > 0">
-              <div class="pps-ds-section-title">Nearest airports</div>
-              <div class="pps-ds-kv-list">
+              <section class="pps-tr-head">
+                <div class="pps-tr-lab">Nearest airport</div>
+                <div class="pps-tr-big">
+                  {{ enrichmentAirports[0].name }}<template v-if="enrichmentAirports[0].iata"> ({{ enrichmentAirports[0].iata }})</template>
+                </div>
+                <p class="pps-tr-sub">
+                  <b>{{ enrichmentAirports[0].distanceKm.toFixed(0) }} km</b> away
+                  <template v-if="enrichmentAirports.length > 1">
+                    · {{ enrichmentAirports.length - 1 }} other{{ enrichmentAirports.length === 2 ? '' : 's' }} within reach</template>.
+                </p>
+              </section>
+
+              <h2 class="pps-tr-sec">All airports</h2>
+              <p class="pps-tr-secsub">
+                Straight-line distances. Drive times depend on route and traffic.
+              </p>
+              <div class="pps-tr-list">
                 <div
                   v-for="a in enrichmentAirports"
                   :key="a.name"
-                  class="pps-ds-kv"
+                  class="pps-tr-row pps-tr-row--static"
                 >
-                  <span class="pps-ds-k"
-                    >✈️ {{ a.name
-                    }}<template v-if="a.iata"> ({{ a.iata }})</template
-                    ><span
-                      v-if="a.isMajor"
-                      class="pps-ds-major-pill"
-                      title="Major international hub"
-                    >Major</span></span
-                  >
-                  <span class="pps-ds-v">{{ a.distanceKm.toFixed(1) }} km</span>
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">
+                      ✈️ {{ a.name }}<template v-if="a.iata"> ({{ a.iata }})</template>
+                    </span>
+                    <span class="pps-tr-stwalk">{{ a.distanceKm.toFixed(0) }} km</span>
+                  </div>
+                  <div class="pps-tr-tags" v-if="a.isMajor">
+                    <span class="pps-tr-tag pps-tr-tag--hub">Major hub</span>
+                  </div>
                 </div>
               </div>
-              <div class="pps-ds-info-note">
-                Distances are straight-line. Drive times depend on route and
-                traffic.
-              </div>
             </template>
+
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">✈️</div>
               <div class="pps-ds-placeholder-title">
-                {{ airportsLookupFailed
-                  ? 'Airport information unavailable right now'
-                  : 'No airports found within 150 km' }}
+                {{ airportsLookupFailed ? 'Airport information unavailable right now' : 'No airports within 150 km' }}
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="airportsLookupFailed">
-                  We couldn't load nearby airports for this area — please
-                  try again in a moment.
+                  We couldn't load nearby airports — please try again in a moment.
                 </template>
                 <template v-else>
-                  Only commercial airports (IATA code, international flag,
-                  or "Airport" in their name) are shown.
+                  Only commercial airports (IATA code, international flag, or
+                  "Airport" in the name) are shown.
                 </template>
               </div>
             </div>
-            <div class="pps-ds-attribution">
-              Data · Public aviation records
-            </div>
+
+            <p class="pps-ds-info-note">
+              <b>Straight-line only.</b> Actual drive to the terminal is longer, and
+              airport noise varies with wind direction and time of day — worth checking
+              flight-path maps if the address is close to a runway approach.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -2056,99 +1921,112 @@
 
           <!-- ── Planning (placeholder) ────────────────────────────── -->
           <template v-else-if="activeSheet === 'planning'">
-            <div class="pps-ds-header" style="background: #f5f5f7">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/planning.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Planning history</div>
                 <div class="pps-ds-header-meta">
-                  Source: planning.data.gov.uk{{
-                    property?.city ? ` · ${property.city}` : ''
-                  }}
+                  planning.data.gov.uk<template v-if="property?.city"> · {{ property.city }}</template>
                 </div>
               </div>
             </div>
 
-            <!-- Constraints (heritage, environment, development) -->
-            <template v-if="planningConstraints.length > 0">
-              <div class="pps-ds-section-title">Planning constraints</div>
-              <div class="pps-ds-kv-list">
-                <div
-                  v-for="(c, i) in planningConstraints"
-                  :key="i"
-                  class="pps-ds-kv"
-                >
-                  <span class="pps-ds-k"
-                    >{{ constraintIcon(c.category) }} {{ c.type }}</span
+            <template v-if="planningConstraints.length > 0 || planningApplications.length > 0">
+              <section class="pps-tr-head">
+                <div class="pps-tr-lab">Planning summary</div>
+                <div class="pps-tr-big">
+                  {{ planningConstraints.length }} constraint{{ planningConstraints.length === 1 ? '' : 's' }}
+                  · {{ planningApplications.length }} application{{ planningApplications.length === 1 ? '' : 's' }}
+                </div>
+                <p class="pps-tr-sub" v-if="planningConstraints.length > 0">
+                  This address sits within
+                  <b>{{ planningConstraints.length }} planning designation{{ planningConstraints.length === 1 ? '' : 's' }}</b>.
+                  Applications linked to this UPRN may exclude older paper records held
+                  only by the local authority portal.
+                </p>
+                <p class="pps-tr-sub" v-else>
+                  No planning designations at this address. {{ planningApplications.length }}
+                  application{{ planningApplications.length === 1 ? '' : 's' }} linked to
+                  this property's UPRN.
+                </p>
+              </section>
+
+              <template v-if="planningConstraints.length > 0">
+                <h2 class="pps-tr-sec">Planning constraints</h2>
+                <p class="pps-tr-secsub">
+                  Designations that can affect what you're allowed to alter or extend.
+                </p>
+                <div class="pps-tr-list">
+                  <div
+                    v-for="(c, i) in planningConstraints"
+                    :key="i"
+                    class="pps-tr-row pps-tr-row--static"
                   >
-                  <span class="pps-ds-v">{{ c.name }}</span>
+                    <div class="pps-tr-strow">
+                      <span class="pps-tr-stname">{{ constraintIcon(c.category) }} {{ c.type }}</span>
+                    </div>
+                    <div class="pps-tr-tags">
+                      <span class="pps-tr-tag">{{ c.name }}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </template>
+
+              <template v-if="planningApplications.length > 0">
+                <h2 class="pps-tr-sec">Planning applications</h2>
+                <p class="pps-tr-secsub">
+                  Matched to this property's UPRN. Tap to see decision detail.
+                </p>
+                <div class="pps-tr-list">
+                  <button
+                    v-for="(a, i) in planningApplications.slice(0, 10)"
+                    :key="i"
+                    class="pps-tr-row"
+                    :aria-expanded="planningOpen === i"
+                    @click="planningOpen = planningOpen === i ? -1 : i"
+                  >
+                    <div class="pps-tr-strow">
+                      <span class="pps-tr-stname">
+                        {{ (a.applicationType || a.description || 'Application').slice(0, 60) }}
+                      </span>
+                      <span class="pps-tr-stwalk">
+                        {{ a.decisionDate ? new Date(a.decisionDate).getFullYear() : '—' }}
+                      </span>
+                    </div>
+                    <div class="pps-tr-tags">
+                      <span
+                        class="pps-tr-tag"
+                        :class="{
+                          'pps-tr-tag--hub': /granted|approved|permit/i.test(a.decision || a.status || ''),
+                          'pps-tr-tag--muted': /refuse|withdrawn/i.test(a.decision || a.status || ''),
+                        }"
+                      >{{ a.decision || a.status || 'Pending' }}</span>
+                    </div>
+                    <div v-if="planningOpen === i" class="pps-tr-det">
+                      <template v-if="a.description">{{ a.description }}</template>
+                      <template v-else>No further description on file.</template>
+                    </div>
+                  </button>
+                </div>
+              </template>
             </template>
 
-            <!-- Applications (property-specific via UPRN) -->
-            <template v-if="planningApplications.length > 0">
-              <div class="pps-ds-section-title" style="margin-top: 18px">
-                Planning applications
-              </div>
-              <div class="pps-ds-table">
-                <div class="pps-ds-row pps-ds-row--header">
-                  <span>Date</span><span>Type</span><span>Status</span>
-                </div>
-                <div
-                  v-for="(a, i) in planningApplications.slice(0, 10)"
-                  :key="i"
-                  class="pps-ds-row"
-                >
-                  <span>{{
-                    a.decisionDate
-                      ? new Date(a.decisionDate).getFullYear()
-                      : '—'
-                  }}</span>
-                  <span class="pps-ds-val">{{
-                    (a.applicationType || a.description || 'Application').slice(
-                      0,
-                      40,
-                    )
-                  }}</span>
-                  <span class="pps-ds-muted">{{
-                    a.decision || a.status || '—'
-                  }}</span>
-                </div>
-              </div>
-            </template>
-
-            <div
-              v-if="
-                planningConstraints.length === 0 &&
-                planningApplications.length === 0
-              "
-              class="pps-ds-placeholder"
-            >
+            <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">📋</div>
-              <div class="pps-ds-placeholder-title">
-                No constraints or applications on file
-              </div>
+              <div class="pps-ds-placeholder-title">No planning constraints or applications on file</div>
               <div class="pps-ds-placeholder-sub">
-                This address has no conservation area, listed building, Article
-                4 direction, Green Belt, AONB or other planning designation in
-                <a
-                  href="https://www.planning.data.gov.uk"
-                  target="_blank"
-                  rel="noopener"
-                  style="color: #00a19a; font-weight: 700"
-                  >planning.data.gov.uk</a
-                >, and no planning applications linked to this UPRN.
+                No conservation area, listed building, Article 4 direction, Green Belt,
+                AONB or other planning designation in
+                <a href="https://www.planning.data.gov.uk" target="_blank" rel="noopener" style="color: #00817c; font-weight: 700">planning.data.gov.uk</a>,
+                and no applications linked to this UPRN.
               </div>
             </div>
 
-            <div class="pps-ds-info-note">
-              Constraints come from the national Planning Data platform.
-              Applications are matched to this property's UPRN — they may
-              exclude older paper records held only by the LA portal.
-            </div>
-            <div class="pps-ds-attribution">
-              Source: planning.data.gov.uk · MHCLG
-            </div>
+            <p class="pps-ds-info-note">
+              <b>Not exhaustive.</b> Constraints come from the national Planning Data
+              platform. Applications are matched by UPRN — older paper records held only
+              by the local authority may be missing.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -2164,30 +2042,46 @@
 
           <!-- ── Council tax (real band) ───────────────────────────── -->
           <template v-else-if="activeSheet === 'council'">
-            <div class="pps-ds-header" style="background: #e8f5e9">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/councilTax.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Council tax</div>
                 <div class="pps-ds-header-meta">
-                  Source: {{ councilTaxSource || 'VOA'
-                  }}<template v-if="councilTaxCouncilName">
-                    · {{ councilTaxCouncilName }}</template
-                  >
+                  {{ councilTaxSource || 'Valuation Office Agency'
+                  }}<template v-if="councilTaxCouncilName"> · {{ councilTaxCouncilName }}</template>
                 </div>
               </div>
             </div>
-            <div v-if="councilTaxAnnual" class="pps-ds-highlight-box">
-              <div class="pps-ds-highlight-num">
-                £{{ councilTaxAnnual.toLocaleString() }} / yr
-              </div>
-              <div class="pps-ds-highlight-sub">
-                Band {{ property.councilTaxBand }} · 2024/25 average
-                <template v-if="property.city"> · {{ property.city }}</template>
-              </div>
-            </div>
-            <div class="pps-ds-section-title" style="margin-top: 18px">
-              All bands · 2024/25 average
-            </div>
+
+            <template v-if="councilTaxAnnual">
+              <section class="pps-tr-head">
+                <div class="pps-tr-lab">Estimated annual bill</div>
+                <div class="pps-tr-big">£{{ councilTaxAnnual.toLocaleString() }} / yr</div>
+                <p class="pps-tr-sub">
+                  Band <b>{{ property.councilTaxBand }}</b> · 2024/25 average
+                  <template v-if="property.city"> · {{ property.city }}</template>.
+                </p>
+                <div class="pps-tr-eff">
+                  <div>
+                    <b>£{{ Math.round(councilTaxAnnual / 12) }}</b>
+                    <span>Per month</span>
+                  </div>
+                  <div>
+                    <b>Band {{ property.councilTaxBand }}</b>
+                    <span>Assessment band</span>
+                  </div>
+                  <div v-if="councilTaxNearby.length">
+                    <b>{{ councilTaxNearby.length }}</b>
+                    <span>Nearby comparables</span>
+                  </div>
+                </div>
+              </section>
+            </template>
+
+            <h2 class="pps-tr-sec">All bands · 2024/25 average</h2>
+            <p class="pps-tr-secsub">
+              How your band compares to the rest of the council-tax scale for this area.
+            </p>
             <div class="pps-ds-band-list">
               <div
                 v-for="b in councilTaxBands"
@@ -2195,9 +2089,7 @@
                 class="pps-ds-band-row"
                 :class="{ 'pps-ds-band-row--active': b.active }"
               >
-                <span class="pps-ds-band-letter"
-                  >{{ b.letter }}{{ b.active ? ' ←' : '' }}</span
-                >
+                <span class="pps-ds-band-letter">{{ b.letter }}{{ b.active ? ' ←' : '' }}</span>
                 <div class="pps-ds-band-bar-track">
                   <div
                     class="pps-ds-band-bar"
@@ -2207,213 +2099,153 @@
                     }"
                   />
                 </div>
-                <span class="pps-ds-band-amt"
-                  >£{{ b.amount.toLocaleString() }}</span
-                >
-              </div>
-            </div>
-            <div
-              v-if="councilTaxAnnual"
-              class="pps-ds-kv-list"
-              style="margin-top: 14px"
-            >
-              <div class="pps-ds-kv">
-                <span class="pps-ds-k">Monthly equivalent</span>
-                <span class="pps-ds-v"
-                  >£{{ Math.round(councilTaxAnnual / 12) }} / month</span
-                >
+                <span class="pps-ds-band-amt">£{{ b.amount.toLocaleString() }}</span>
               </div>
             </div>
 
-            <!-- Nearby council tax bands (restored — uses the enrichment.councilTax.nearby
-                 array that was previously fetched but never rendered). -->
             <template v-if="councilTaxNearby.length > 0">
-              <div class="pps-ds-section-title" style="margin-top: 18px">
-                Nearby addresses
-              </div>
-              <div class="pps-ds-kv-list">
+              <h2 class="pps-tr-sec">Nearby addresses</h2>
+              <p class="pps-tr-secsub">
+                What comparable properties in the same postcode are banded at.
+              </p>
+              <div class="pps-tr-list">
                 <div
                   v-for="(n, i) in councilTaxNearby.slice(0, 6)"
                   :key="(n.address || 'n') + i"
-                  class="pps-ds-kv"
+                  class="pps-tr-row pps-tr-row--static"
                 >
-                  <span class="pps-ds-k">{{
-                    n.address || n.postcode || 'Nearby property'
-                  }}</span>
-                  <span class="pps-ds-v">
-                    Band {{ n.band
-                    }}<template v-if="n.annualEstimate">
-                      · £{{ n.annualEstimate.toLocaleString() }}/yr</template
-                    >
-                  </span>
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">{{ n.address || n.postcode || 'Nearby property' }}</span>
+                    <span class="pps-tr-stwalk">
+                      Band {{ n.band }}<template v-if="n.annualEstimate"> · £{{ n.annualEstimate.toLocaleString() }}</template>
+                    </span>
+                  </div>
                 </div>
               </div>
             </template>
 
-            <div class="pps-ds-attribution">
-              Source: Valuation Office Agency · 2024/25
-            </div>
+            <p class="pps-ds-info-note">
+              <b>An estimate.</b> Council tax is set by the local authority and can change
+              each April. The 2024/25 average shown here is representative; check with
+              {{ councilTaxCouncilName || 'your council' }} for the current year's rate.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
           <!-- ── Broadband (Ofcom Connected Nations) ──────────────── -->
           <template v-else-if="activeSheet === 'broadband'">
-            <div class="pps-ds-header" style="background: #e3f2fd">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/broadband.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">Broadband</div>
-                <div class="pps-ds-header-meta">
-                  Source: Ofcom Connected Nations
-                </div>
+                <div class="pps-ds-header-title">Broadband &amp; mobile</div>
+                <div class="pps-ds-header-meta">Ofcom Connected Nations · postcode level</div>
               </div>
             </div>
 
             <template v-if="enrichmentBroadband?.available">
-              <div
-                v-if="enrichmentBroadband.maxDownload"
-                class="pps-ds-highlight-box"
-              >
-                <div class="pps-ds-highlight-num">
-                  Up to {{ formatMbps(enrichmentBroadband.maxDownload) }}
+              <section class="pps-bb-head">
+                <div class="pps-bb-lab">Fastest available download</div>
+                <div class="pps-bb-big">
+                  {{ broadbandBig.value }}<small>&nbsp;{{ broadbandBig.unit }}</small>
                 </div>
-                <div class="pps-ds-highlight-sub">
-                  <template v-if="enrichmentBroadband.fttp"
-                    >Full fibre (FTTP) available at this address</template
-                  >
-                  <template v-else-if="enrichmentBroadband.ultrafast"
-                    >Ultrafast available at this address</template
-                  >
-                  <template v-else-if="enrichmentBroadband.superfast"
-                    >Superfast available at this address</template
-                  >
-                  <template v-else
-                    >Standard broadband · upgrade may be possible</template
-                  >
+                <p class="pps-bb-sub" v-html="broadbandBig.sub" />
+                <div class="pps-bb-scale-wrap">
+                  <div class="pps-bb-scale" role="img" aria-label="Speed relative to UK availability">
+                    <span class="pps-bb-marker" :style="{ left: broadbandBig.pos + '%' }" />
+                  </div>
+                  <div class="pps-bb-scale-labels">
+                    <span>UNDER 30</span><span>SUPERFAST</span><span>ULTRAFAST</span><span>GIGABIT</span>
+                  </div>
                 </div>
-              </div>
+              </section>
+              <p class="pps-bb-stamp">Ofcom Connected Nations · latest available</p>
 
-              <div class="pps-ds-section-title" style="margin-top: 18px">
-                Technology available
-              </div>
-              <div class="pps-ds-bb-list">
-                <div class="pps-ds-bb-row">
-                  <div
-                    class="pps-ds-bb-check"
-                    :class="
-                      enrichmentBroadband.fttp
-                        ? 'pps-ds-bb-check--yes'
-                        : 'pps-ds-bb-check--no'
-                    "
-                  >
-                    {{ enrichmentBroadband.fttp ? '✓' : '✗' }}
+              <h2 class="pps-tr-sec">Networks at this postcode</h2>
+              <p class="pps-tr-secsub">
+                Maximum advertised download speed available from each network. Actual speed
+                depends on the package you buy.
+              </p>
+              <div class="pps-bb-nets">
+                <div
+                  v-for="n in broadbandNetworks"
+                  :key="n.tech"
+                  class="pps-bb-net"
+                >
+                  <div class="pps-bb-nrow">
+                    <span class="pps-bb-nname">
+                      {{ n.name }}<em>{{ n.tech }}</em>
+                    </span>
+                    <span class="pps-bb-nspeed">{{ formatMbps(n.speedMbps) }}</span>
                   </div>
-                  <div class="pps-ds-bb-info">
-                    <div class="pps-ds-bb-name">Full Fibre (FTTP)</div>
-                    <div class="pps-ds-bb-meta">
-                      Up to 1,000+ Mbps · Openreach / altnets
-                    </div>
-                  </div>
-                </div>
-                <div class="pps-ds-bb-row">
-                  <div
-                    class="pps-ds-bb-check"
-                    :class="
-                      enrichmentBroadband.fttc
-                        ? 'pps-ds-bb-check--yes'
-                        : 'pps-ds-bb-check--no'
-                    "
-                  >
-                    {{ enrichmentBroadband.fttc ? '✓' : '✗' }}
-                  </div>
-                  <div class="pps-ds-bb-info">
-                    <div class="pps-ds-bb-name">Superfast (FTTC)</div>
-                    <div class="pps-ds-bb-meta">
-                      Up to 80 Mbps · BT Openreach
-                    </div>
-                  </div>
-                </div>
-                <div class="pps-ds-bb-row">
-                  <div
-                    class="pps-ds-bb-check"
-                    :class="
-                      enrichmentBroadband.cable
-                        ? 'pps-ds-bb-check--yes'
-                        : 'pps-ds-bb-check--no'
-                    "
-                  >
-                    {{ enrichmentBroadband.cable ? '✓' : '✗' }}
-                  </div>
-                  <div class="pps-ds-bb-info">
-                    <div class="pps-ds-bb-name">Cable (DOCSIS)</div>
-                    <div class="pps-ds-bb-meta">
-                      Up to 1,130 Mbps · Virgin Media
-                    </div>
-                  </div>
-                </div>
-                <div class="pps-ds-bb-row">
-                  <div
-                    class="pps-ds-bb-check"
-                    :class="
-                      enrichmentBroadband.ultrafast
-                        ? 'pps-ds-bb-check--yes'
-                        : 'pps-ds-bb-check--no'
-                    "
-                  >
-                    {{ enrichmentBroadband.ultrafast ? '✓' : '✗' }}
-                  </div>
-                  <div class="pps-ds-bb-info">
-                    <div class="pps-ds-bb-name">Ultrafast (>300 Mbps)</div>
-                    <div class="pps-ds-bb-meta">
-                      <template v-if="enrichmentBroadband.maxUfDownload">
-                        Up to
-                        {{ formatMbps(enrichmentBroadband.maxUfDownload) }}
-                      </template>
-                      <template v-else>Not currently listed</template>
-                    </div>
+                  <div class="pps-bb-nbar">
+                    <i :style="{ width: n.pct + '%', background: n.fibre ? '#00A19A' : '#231D45' }" />
                   </div>
                 </div>
               </div>
             </template>
+
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">📶</div>
-              <div class="pps-ds-placeholder-title">
-                {{ broadbandPlaceholder.title }}
-              </div>
-              <div class="pps-ds-placeholder-sub">
-                {{ broadbandPlaceholder.sub }}
-              </div>
+              <div class="pps-ds-placeholder-title">{{ broadbandPlaceholder.title }}</div>
+              <div class="pps-ds-placeholder-sub">{{ broadbandPlaceholder.sub }}</div>
               <a
                 v-if="property?.postcode"
                 :href="`https://checker.ofcom.org.uk/en-gb/broadband-coverage?Postcode=${encodeURIComponent(property.postcode)}`"
                 target="_blank"
                 rel="noopener"
                 class="pps-ds-placeholder-link"
-              >
-                Check on Ofcom's site →
-              </a>
+              >Check on Ofcom's site →</a>
             </div>
 
             <template v-if="enrichmentMobile?.available">
-              <div class="pps-ds-section-title" style="margin-top: 18px">
-                Mobile signal (outdoor)
-              </div>
-              <div class="pps-ds-kv-list">
-                <div
-                  v-for="op in mobileOperatorRows"
-                  :key="op.label"
-                  class="pps-ds-kv"
-                >
-                  <span class="pps-ds-k">{{ op.label }}</span>
-                  <span class="pps-ds-v" :class="op.colour">{{
-                    op.summary
-                  }}</span>
-                </div>
+              <h2 class="pps-tr-sec">Mobile signal</h2>
+              <p class="pps-tr-secsub">
+                Predicted outdoor coverage by operator. Worth checking if anyone works from
+                home or the property has thick walls.
+              </p>
+              <div class="pps-bb-mob">
+                <div class="pps-bb-mob-h">Operator</div>
+                <div class="pps-bb-mob-h pps-bb-mob-c">Signal</div>
+                <template v-for="op in mobileOperatorRows" :key="op.label">
+                  <div class="pps-bb-mob-op">{{ op.label }}</div>
+                  <div class="pps-bb-mob-c">
+                    <span class="pps-bb-dots">
+                      <s
+                        v-for="i in 3"
+                        :key="i"
+                        :class="mobileDotClass(op, i)"
+                      />
+                    </span>
+                  </div>
+                </template>
               </div>
             </template>
 
-            <div class="pps-ds-attribution">
-              Source: Ofcom Connected Nations · 2024
+            <div v-if="broadbandImpact.length" class="pps-bb-impact">
+              <h3>What this supports</h3>
+              <ul>
+                <li v-for="(line, i) in broadbandImpact" :key="i" v-html="line" />
+              </ul>
             </div>
+
+            <div class="pps-tr-links">
+              <a
+                v-if="property?.postcode"
+                :href="`https://checker.ofcom.org.uk/en-gb/broadband-coverage?Postcode=${encodeURIComponent(property.postcode)}`"
+                target="_blank"
+                rel="noopener"
+              >Check on Ofcom →</a>
+              <a href="https://www.uswitch.com/broadband/" target="_blank" rel="noopener">
+                Compare packages →
+              </a>
+            </div>
+
+            <p class="pps-ds-info-note">
+              <b>Modelled at postcode level.</b> Ofcom figures may differ from what an
+              individual property gets — particularly on older copper lines where distance
+              from the cabinet matters. Full fibre availability does not mean it is already
+              installed at the property; installation may still be needed.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -2556,54 +2388,60 @@
 
           <!-- ── Listed buildings / heritage sites ────────────────────── -->
           <template v-else-if="activeSheet === 'listed'">
-            <div class="pps-ds-header" style="background: #fbefd9">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/listedBuildings.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Heritage sites nearby</div>
-                <div class="pps-ds-header-meta">
-                  Source: OpenStreetMap · Historic England
-                </div>
+                <div class="pps-ds-header-meta">Historic England · OpenStreetMap</div>
               </div>
             </div>
+
             <template v-if="enrichmentListedBuildings.length > 0">
-              <div class="pps-ds-section-title">
-                {{ enrichmentListedBuildings.length }} listed / historic site{{
-                  enrichmentListedBuildings.length === 1 ? '' : 's'
-                }}
-                within ~800m
-              </div>
-              <div class="pps-ds-kv-list">
+              <section class="pps-tr-head">
+                <div class="pps-tr-lab">Within ~800 m of this address</div>
+                <div class="pps-tr-big">
+                  {{ enrichmentListedBuildings.length }} heritage site{{ enrichmentListedBuildings.length === 1 ? '' : 's' }}
+                </div>
+                <p class="pps-tr-sub">
+                  Nearby listed buildings and scheduled monuments.
+                  <b>Designations affect what alterations you can make</b> — check with the
+                  local conservation officer before any exterior work.
+                </p>
+              </section>
+
+              <h2 class="pps-tr-sec">Nearby sites</h2>
+              <div class="pps-tr-list">
                 <div
                   v-for="(b, i) in enrichmentListedBuildings"
                   :key="(b.name || 'site') + i"
-                  class="pps-ds-kv"
+                  class="pps-tr-row pps-tr-row--static"
                 >
-                  <span class="pps-ds-k"
-                    >🏛️ {{ b.name || 'Unnamed site'
-                    }}<template v-if="b.location">
-                      · {{ b.location }}</template
-                    ></span
-                  >
-                  <span class="pps-ds-v">{{ b.grade || 'Heritage' }}</span>
+                  <div class="pps-tr-strow">
+                    <span class="pps-tr-stname">🏛️ {{ b.name || 'Unnamed site' }}</span>
+                    <span class="pps-tr-stwalk">{{ b.grade || 'Heritage' }}</span>
+                  </div>
+                  <div class="pps-tr-tags" v-if="b.location">
+                    <span class="pps-tr-tag pps-tr-tag--muted">{{ b.location }}</span>
+                  </div>
                 </div>
               </div>
-              <div class="pps-ds-info-note">
-                Heritage designations may affect what alterations or extensions
-                you can make. Always check with the local conservation officer.
-              </div>
             </template>
+
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🏛️</div>
-              <div class="pps-ds-placeholder-title">
-                No heritage sites nearby
-              </div>
+              <div class="pps-ds-placeholder-title">No heritage sites nearby</div>
               <div class="pps-ds-placeholder-sub">
-                No listed buildings or scheduled monuments within ~800m.
+                No listed buildings or scheduled monuments within ~800 m of this
+                address.
               </div>
             </div>
-            <div class="pps-ds-attribution">
-              Data · Historic England &amp; local records
-            </div>
+
+            <p class="pps-ds-info-note">
+              <b>Heritage designations matter.</b> Being near a listed building doesn't
+              affect this property directly, but if it or its neighbours ARE listed,
+              conservation rules apply — always check with the local conservation
+              officer before any exterior work.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -5692,20 +5530,6 @@ const deltaSinceSold = computed<{
   return { abs, pct, positive: abs >= 0 }
 })
 
-// Compound annual growth rate from most recent sale → current estimate
-const compoundGrowth = computed<{ pct: number; sinceYear: number } | null>(
-  () => {
-    const ls = lastSale.value
-    const cur = estimatedPrice.value
-    if (!ls?.price || !cur) return null
-    const sinceYear = new Date(ls.date).getFullYear()
-    if (!sinceYear || Number.isNaN(sinceYear)) return null
-    const years = new Date().getFullYear() - sinceYear
-    if (years <= 0) return null
-    const cagr = (Math.pow(cur / ls.price, 1 / years) - 1) * 100
-    return { pct: cagr, sinceYear }
-  },
-)
 async function loadSoldHistory() {
   if (soldHistoryLoaded.value) return
   soldHistoryLoaded.value = true
@@ -6454,6 +6278,152 @@ const mobileOperatorRows = computed(() => {
   }
   return ops
 })
+
+// ── Transport / Buses / Broadband sheet helpers ──────────────────────────────
+// walkMinutes() lives higher up (added for the Schools sheet). Reused here.
+
+// Transport (rail-only). Bus/road tabs skipped — Buses has its own sheet.
+const trainOpen = ref(-1)
+
+// Planning applications sheet — one row expanded at a time.
+const planningOpen = ref(-1)
+
+// Property-details headline mini-stats. Only rows with a value render.
+const propertyDetailStats = computed(() => {
+  const p: any = property.value
+  const out: Array<{ label: string; value: string }> = []
+  if (!p) return out
+  if (p.bedrooms) out.push({ label: p.bedrooms === 1 ? 'Bedroom' : 'Bedrooms', value: String(p.bedrooms) })
+  if (p.bathrooms) out.push({ label: p.bathrooms === 1 ? 'Bathroom' : 'Bathrooms', value: String(p.bathrooms) })
+  const sqft = p.sqft || (p.floorAreaSqm ? Math.round(Number(p.floorAreaSqm) * 10.7639) : 0)
+  if (sqft) out.push({ label: 'sq ft', value: sqft.toLocaleString() })
+  if (p.yearBuilt) out.push({ label: 'Built', value: String(p.yearBuilt) })
+  return out.slice(0, 3)
+})
+
+// Buses. Live-timetable / route data isn't in our OSM feed yet, so the
+// UI degrades gracefully: sort by walk-distance is the only meaningful axis.
+const busOpen = ref(-1)
+const busSortMode = ref<'walk' | 'name'>('walk')
+const sortedBuses = computed(() => {
+  const list = enrichmentBuses.value.slice()
+  if (busSortMode.value === 'walk') {
+    list.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0))
+  } else {
+    list.sort((a, b) =>
+      String(a.name || '').localeCompare(String(b.name || '')),
+    )
+  }
+  return list
+})
+watch(busSortMode, () => {
+  busOpen.value = -1
+})
+const busStats = computed(() => {
+  const list = enrichmentBuses.value
+  const within10 = list.filter((b) => walkMinutes(b.distanceKm || 0) <= 10).length
+  return { total: list.length, within10 }
+})
+
+// Broadband headline: pick the biggest advertised speed and derive a 0-100
+// position on the UK-availability gradient scale (30 Mbps = Superfast marker,
+// 300 Mbps = Ultrafast, 1000 Mbps = Gigabit).
+const broadbandBig = computed(() => {
+  const bb = enrichmentBroadband.value
+  const speed = Number(bb?.maxDownload) || 0
+  const value =
+    speed >= 1000 ? (speed / 1000).toFixed(1) : String(Math.round(speed))
+  const unit = speed >= 1000 ? 'Gbps' : 'Mbps'
+  // Map speed → 0-100 on a piecewise scale so the marker lands sensibly on
+  // the four labeled segments (Under 30 / Superfast / Ultrafast / Gigabit).
+  let pos = 0
+  if (speed <= 0) pos = 0
+  else if (speed < 30) pos = (speed / 30) * 25
+  else if (speed < 300) pos = 25 + ((speed - 30) / 270) * 35
+  else if (speed < 1000) pos = 60 + ((speed - 300) / 700) * 30
+  else pos = Math.min(100, 90 + ((speed - 1000) / 1000) * 10)
+
+  let sub = ''
+  if (bb?.fttp) {
+    sub = '<b>Full fibre (FTTP)</b> is available here — a direct fibre connection to the property.'
+  } else if (bb?.cable) {
+    sub = '<b>Cable</b> is available here from Virgin Media (DOCSIS).'
+  } else if (bb?.ultrafast) {
+    sub = 'Ultrafast broadband is available at this postcode.'
+  } else if (bb?.superfast) {
+    sub = 'Superfast broadband is available at this postcode.'
+  } else if (bb?.fttc) {
+    sub = 'The fastest option is <b>a copper line from the street cabinet</b>.'
+  } else {
+    sub = 'Standard broadband is listed — an upgrade may be possible.'
+  }
+  return { value, unit, sub, pos }
+})
+
+// Networks list — one row per tech Ofcom reports at this postcode. Speeds are
+// the Ofcom "max advertised" numbers where we have them; otherwise the
+// canonical ceiling for the tech.
+const broadbandNetworks = computed(() => {
+  const bb = enrichmentBroadband.value
+  if (!bb || !bb.available) return []
+  const rows: Array<{ name: string; tech: string; speedMbps: number; pct: number; fibre: boolean }> = []
+  if (bb.fttp) {
+    rows.push({ name: 'Openreach / altnets', tech: 'Full fibre (FTTP)', speedMbps: Number(bb.maxDownload) || 1000, pct: 0, fibre: true })
+  }
+  if (bb.cable) {
+    rows.push({ name: 'Virgin Media', tech: 'Cable (DOCSIS)', speedMbps: 1130, pct: 0, fibre: false })
+  }
+  if (bb.ultrafast && !bb.fttp && !bb.cable) {
+    rows.push({ name: 'Ultrafast', tech: 'Ultrafast', speedMbps: Number(bb.maxUfDownload) || 300, pct: 0, fibre: false })
+  }
+  if (bb.fttc) {
+    rows.push({ name: 'Openreach', tech: 'Copper (FTTC)', speedMbps: bb.fttp ? 76 : Math.min(80, Number(bb.maxDownload) || 40), pct: 0, fibre: false })
+  }
+  if (!rows.length) {
+    rows.push({ name: 'Standard', tech: 'ADSL', speedMbps: Number(bb.maxDownload) || 11, pct: 0, fibre: false })
+  }
+  const max = Math.max(1, ...rows.map((r) => r.speedMbps))
+  return rows.map((r) => ({ ...r, pct: (r.speedMbps / max) * 100 }))
+})
+
+// Impact bullets — what the fastest available speed actually supports.
+const broadbandImpact = computed<string[]>(() => {
+  const bb = enrichmentBroadband.value
+  if (!bb || !bb.available) return []
+  const speed = Number(bb.maxDownload) || 0
+  const out: string[] = []
+  if (speed >= 500) {
+    out.push('<b>Comfortably supports</b> several 4K streams, video calls and large file transfers at once.')
+    if (bb.fttp) {
+      out.push('Full fibre is <b>symmetric on some packages</b> — relevant if anyone uploads large files or runs a home server.')
+    }
+    out.push('Multiple networks at this postcode means <b>real price competition</b>, which is unusual and worth something.')
+  } else if (speed >= 60) {
+    out.push('<b>Handles most households comfortably</b> — one 4K stream plus HD calls should be fine.')
+    out.push('Not gigabit but rarely a bottleneck for day-to-day use.')
+  } else if (speed >= 30) {
+    out.push('<b>One 4K stream at a time.</b> Two people on simultaneous video calls may struggle.')
+    out.push('Copper speeds fall with distance from the cabinet, so <b>this address may get less than the headline figure.</b>')
+  } else {
+    out.push('<b>Standard broadband only.</b> Streaming and video calls will be limited.')
+    out.push('Ask the seller what they actually get, and <b>check whether a fibre build is planned</b> — altnets often publish rollout maps.')
+  }
+  return out
+})
+
+// Map a Good/Limited/Poor/No-service verdict from mobileOperatorRows into
+// a filled/half/empty three-dot visual for the broadband sheet.
+function mobileDotClass(op: any, i: number): string {
+  const s = String(op?.summary || '').toLowerCase()
+  const filled =
+    s.includes('strong') ? 3 :
+    s.includes('limited') ? 2 :
+    s.includes('no service') ? 0 :
+    1
+  if (i > filled) return ''
+  if (filled === 3) return 'pps-bb-dot-full'
+  return 'pps-bb-dot-on'
+}
 
 // ── Leaflet map ────────────────────────────────────────────────────────────────
 const mapEl = ref<HTMLElement | null>(null)
@@ -9913,6 +9883,361 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   flex: none;
 }
 
+/* ── Transport / Buses (pps-tr) ──────────────────────────────────────
+   Shared headline + expandable-row + tag styles used by the Transport
+   and Buses sheets. Matches the umu-transport / umu-bus prototypes. */
+.pps-tr-head {
+  border-radius: 20px;
+  padding: 20px 18px;
+  margin-bottom: 14px;
+  text-align: center;
+  background: linear-gradient(160deg, #e9f6f5, #f7fbfb);
+}
+.pps-tr-lab {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #75757c;
+}
+.pps-tr-big {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-top: 6px;
+  color: #231d45;
+}
+.pps-tr-sub {
+  font-size: 13px;
+  color: #75757c;
+  font-weight: 600;
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+.pps-tr-sub :deep(b) { color: #231d45; font-weight: 800; }
+.pps-tr-eff {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(35, 29, 69, 0.09);
+}
+.pps-tr-eff > div { flex: 1; }
+.pps-tr-eff b {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #231d45;
+  font-variant-numeric: tabular-nums;
+}
+.pps-tr-eff span {
+  font-size: 10.5px;
+  color: #a2a2a9;
+  font-weight: 600;
+  display: block;
+  margin-top: 3px;
+  line-height: 1.3;
+}
+.pps-tr-sec {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a2a2a9;
+  margin: 22px 0 3px;
+}
+.pps-tr-secsub {
+  font-size: 12.5px;
+  color: #75757c;
+  margin: 0 0 10px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.pps-tr-sortbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0 2px;
+}
+.pps-tr-sortbar span {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a2a2a9;
+}
+.pps-tr-sortbtn {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #231d45;
+  cursor: pointer;
+  padding: 6px 0;
+  text-decoration: underline;
+  text-decoration-color: #00a19a;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.pps-tr-list { display: block; }
+.pps-tr-row {
+  border: 0;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  padding: 13px 0;
+  border-bottom: 1px solid #e4e4e7;
+  display: block;
+  color: inherit;
+}
+.pps-tr-row--static { cursor: default; }
+.pps-tr-strow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.pps-tr-stname {
+  font-size: 14.5px;
+  font-weight: 700;
+  flex: 1;
+  color: #231d45;
+  line-height: 1.35;
+}
+.pps-tr-stwalk {
+  font-size: 13.5px;
+  font-weight: 700;
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  color: #231d45;
+}
+.pps-tr-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  align-items: center;
+}
+.pps-tr-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3.5px 9px;
+  border-radius: 99px;
+  background: #f3f3f5;
+  color: #75757c;
+}
+.pps-tr-tag--hub { background: #231d45; color: #fff; }
+.pps-tr-tag--muted { background: transparent; color: #a2a2a9; }
+.pps-tr-det {
+  margin-top: 11px;
+  padding: 13px;
+  background: #f3f3f5;
+  border-radius: 13px;
+  border-left: 3px solid #00a19a;
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-weight: 500;
+  color: #75757c;
+}
+.pps-tr-det :deep(b) { color: #231d45; font-weight: 700; }
+.pps-tr-det :deep(a) { color: #00817c; text-decoration: none; font-weight: 700; }
+.pps-tr-links {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.pps-tr-links a {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #00817c;
+  text-decoration: none;
+}
+
+/* ── Broadband (pps-bb) ──────────────────────────────────────────────
+   Big speed headline with gradient scale marker, per-network rows,
+   mobile-signal dot grid, impact card. Matches umu-broadband. */
+.pps-bb-head {
+  border-radius: 20px;
+  padding: 20px 18px;
+  margin-bottom: 8px;
+  text-align: center;
+  background: linear-gradient(160deg, #e9f6f5, #f7fbfb);
+}
+.pps-bb-lab {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #75757c;
+}
+.pps-bb-big {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-top: 6px;
+  color: #231d45;
+  font-variant-numeric: tabular-nums;
+}
+.pps-bb-big small {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #75757c;
+}
+.pps-bb-sub {
+  font-size: 13px;
+  color: #75757c;
+  font-weight: 600;
+  margin: 9px 0 0;
+  line-height: 1.5;
+}
+.pps-bb-sub :deep(b) { color: #231d45; font-weight: 800; }
+.pps-bb-scale-wrap { margin-top: 18px; }
+.pps-bb-scale {
+  position: relative;
+  height: 9px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #e4e4e7 0%, #b7e4e1 30%, #00a19a 62%, #231d45 100%);
+}
+.pps-bb-marker {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3.5px #231d45, 0 2px 6px rgba(35, 29, 69, 0.3);
+  transform: translate(-50%, -50%);
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pps-bb-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 9px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #a2a2a9;
+  letter-spacing: 0.02em;
+}
+.pps-bb-stamp {
+  font-size: 11.5px;
+  color: #a2a2a9;
+  font-weight: 600;
+  text-align: center;
+  margin: 14px 0 8px;
+}
+.pps-bb-nets { display: block; }
+.pps-bb-net {
+  padding: 13px 0;
+  border-bottom: 1px solid #e4e4e7;
+}
+.pps-bb-nrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.pps-bb-nname {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #231d45;
+}
+.pps-bb-nname em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 700;
+  color: #a2a2a9;
+  display: block;
+  margin-top: 2px;
+}
+.pps-bb-nspeed {
+  font-size: 14.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+  color: #231d45;
+}
+.pps-bb-nbar {
+  height: 5px;
+  border-radius: 99px;
+  background: #f3f3f5;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.pps-bb-nbar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pps-bb-mob {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0;
+  font-size: 13px;
+}
+.pps-bb-mob > * {
+  padding: 11px 0;
+  border-bottom: 1px solid #e4e4e7;
+}
+.pps-bb-mob-h {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a2a2a9;
+  padding-bottom: 7px;
+}
+.pps-bb-mob-op { font-weight: 600; color: #231d45; }
+.pps-bb-mob-c {
+  text-align: right;
+  padding-left: 14px;
+  font-weight: 700;
+}
+.pps-bb-dots {
+  display: inline-flex;
+  gap: 3px;
+  vertical-align: middle;
+}
+.pps-bb-dots s {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e4e4e7;
+  display: block;
+}
+.pps-bb-dots s.pps-bb-dot-on { background: #00a19a; }
+.pps-bb-dots s.pps-bb-dot-full { background: #231d45; }
+.pps-bb-impact {
+  margin-top: 20px;
+  background: #e9f6f5;
+  border-radius: 16px;
+  padding: 16px;
+}
+.pps-bb-impact h3 {
+  font-size: 13.5px;
+  font-weight: 800;
+  margin: 0 0 9px;
+  color: #231d45;
+}
+.pps-bb-impact ul {
+  margin: 0;
+  padding-left: 17px;
+  font-size: 12.5px;
+  line-height: 1.65;
+  font-weight: 500;
+  color: #75757c;
+}
+.pps-bb-impact li { margin-bottom: 5px; }
+.pps-bb-impact :deep(b) { color: #231d45; font-weight: 700; }
+
 /* Placeholder for sheets with no data yet */
 .pps-ds-placeholder {
   text-align: center;
@@ -9953,53 +10278,6 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 .pps-ds-placeholder-link:hover {
   background: #e5f4f2;
   border-color: #00a19a;
-}
-
-/* Broadband — row layout */
-.pps-ds-bb-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.pps-ds-bb-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: #fafafa;
-  border-radius: 10px;
-}
-.pps-ds-bb-check {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 15px;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-.pps-ds-bb-check--yes {
-  background: #e8f5ee;
-  color: #2eab55;
-}
-.pps-ds-bb-check--no {
-  background: #fef2f2;
-  color: #c73e36;
-}
-.pps-ds-bb-info {
-  flex: 1;
-  min-width: 0;
-}
-.pps-ds-bb-name {
-  font-size: 15px;
-  font-weight: 800;
-  color: #231d45;
-}
-.pps-ds-bb-meta {
-  font-size: 12px;
-  color: #6b6783;
-  margin-top: 1px;
 }
 
 /* Map iframe */
