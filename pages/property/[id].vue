@@ -1438,51 +1438,106 @@
 
           <!-- ── Schools (Ordnance Survey NGD via /enrichment) ─────── -->
           <template v-else-if="activeSheet === 'schools'">
-            <div class="pps-ds-header" style="background: #e3f2fd">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/schools.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">Schools</div>
-                <div class="pps-ds-header-meta">
-                  Source: Ordnance Survey NGD · OS Open Names
-                </div>
+                <div class="pps-ds-header-title">Schools nearby</div>
+                <div class="pps-ds-header-meta">Ordnance Survey NGD · straight-line distances</div>
               </div>
             </div>
+
             <template v-if="enrichmentSchools.length > 0">
-              <div class="pps-ds-section-title">Nearby schools</div>
-              <div class="pps-ds-kv-list">
-                <div
-                  v-for="s in enrichmentSchools"
-                  :key="s.name + s.distanceKm"
-                  class="pps-ds-kv"
-                >
-                  <span class="pps-ds-k"
-                    >🎓 {{ s.name
-                    }}<span
-                      v-if="s.phase && s.phase !== 'School'"
-                      class="pps-ds-phase-pill"
-                      :class="schoolPhaseClass(s.phase)"
-                    >{{ s.phase }}</span></span
-                  >
-                  <span class="pps-ds-v">{{ s.distanceKm.toFixed(1) }} km</span>
+              <section class="pps-sh-summary">
+                <div class="pps-sh-big">{{ schoolStats.total }} school{{ schoolStats.total === 1 ? '' : 's' }}</div>
+                <p class="pps-sh-cap">
+                  Within ~2&nbsp;km of this address<template v-if="schoolStats.primariesNearby">
+                    — <em>{{ schoolStats.primariesNearby }} primar{{ schoolStats.primariesNearby === 1 ? 'y' : 'ies' }} within 1&nbsp;km</em></template>.
+                </p>
+                <div class="pps-sh-mini">
+                  <div><b>{{ schoolStats.primariesNearby }}</b><span>Primaries within 1&nbsp;km</span></div>
+                  <div><b>{{ schoolStats.secondariesNearby }}</b><span>Secondaries within 2&nbsp;km</span></div>
+                  <div>
+                    <b v-if="schoolStats.nearestPrimaryKm != null">
+                      {{ schoolStats.nearestPrimaryKm.toFixed(1) }}<small>&nbsp;km</small>
+                    </b>
+                    <b v-else>—</b>
+                    <span>To nearest primary</span>
+                  </div>
                 </div>
+              </section>
+
+              <div class="pps-sh-seg" role="group" aria-label="School phase">
+                <button
+                  v-for="p in schoolPhases"
+                  :key="p.key"
+                  :aria-pressed="schoolPhaseFilter === p.key"
+                  @click="schoolPhaseFilter = p.key"
+                >{{ p.label }}</button>
               </div>
-              <div class="pps-ds-info-note">
-                Distances are straight-line. School phases derived from OS
-                NGD landuse data. For admissions and Ofsted ratings, check
-                the school's official page on GOV.UK.
+
+              <div class="pps-sh-sortbar">
+                <span>Showing {{ filteredSchools.length }} school{{ filteredSchools.length === 1 ? '' : 's' }}</span>
+                <span class="pps-sh-sortnote">Sorted by distance</span>
+              </div>
+
+              <div class="pps-sh-list">
+                <button
+                  v-for="(s, i) in filteredSchools"
+                  :key="s.name + s.distanceKm"
+                  class="pps-sh-row"
+                  :aria-expanded="schoolOpen === i"
+                  @click="schoolOpen = schoolOpen === i ? -1 : i"
+                >
+                  <div class="pps-sh-r1">
+                    <span class="pps-sh-name">{{ s.name }}</span>
+                    <span class="pps-sh-dist">{{ walkMinutes(s.distanceKm) }} min</span>
+                  </div>
+                  <div class="pps-sh-bar">
+                    <i :style="{
+                      width: proximityPct(s.distanceKm) + '%',
+                      background: schoolPhaseColor(s.phase),
+                    }" />
+                  </div>
+                  <div class="pps-sh-r2">
+                    <span
+                      v-if="s.phase && s.phase !== 'School'"
+                      class="pps-sh-tag"
+                      :class="'pps-sh-tag--' + schoolPhaseKey(s.phase)"
+                    >{{ s.phase }}</span>
+                    <span class="pps-sh-walk">· {{ s.distanceKm.toFixed(1) }} km walk</span>
+                  </div>
+                  <div v-if="schoolOpen === i" class="pps-sh-detail">
+                    <dl class="pps-sh-dl">
+                      <dt>Phase</dt><dd>{{ s.phase || 'School' }}</dd>
+                      <dt>Distance</dt><dd>{{ s.distanceKm.toFixed(1) }} km straight-line · ~{{ walkMinutes(s.distanceKm) }} min walk</dd>
+                      <dt v-if="s.operator || s.authority">Operator</dt>
+                      <dd v-if="s.operator || s.authority">{{ s.operator || s.authority }}</dd>
+                    </dl>
+                    <p class="pps-sh-catch">
+                      <b>Getting a place:</b> straight-line distance is a rough guide only. Local
+                      authorities decide admissions on each year's applications and cut-off distances
+                      can shift materially year to year. Check the school's GOV.UK page for its
+                      current admissions criteria and Ofsted rating.
+                    </p>
+                  </div>
+                </button>
               </div>
             </template>
+
             <div v-else class="pps-ds-placeholder">
               <div class="pps-ds-placeholder-icon">🎓</div>
-              <div class="pps-ds-placeholder-title">
-                No schools data on file
-              </div>
+              <div class="pps-ds-placeholder-title">No schools data on file</div>
               <div class="pps-ds-placeholder-sub">
                 We couldn't retrieve nearby schools for this address yet — it
                 will be backfilled on the next enrichment pass.
               </div>
             </div>
-            <div class="pps-ds-attribution">Source: Ordnance Survey NGD</div>
+
+            <p class="pps-ds-info-note">
+              <b>Sample proximity only.</b> Walking times are estimated from straight-line distance
+              at 12 minutes per kilometre. Being close to a school doesn't guarantee a place —
+              admissions are decided by the local authority on the year's actual applications.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -1886,165 +1941,116 @@
 
           <!-- ── Flood (real EA RoFRS data) ───────────────────────── -->
           <template v-else-if="activeSheet === 'flood'">
-            <div class="pps-ds-header" style="background: #fff8e1">
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
               <span class="pps-ds-header-icon"><img src="/op-icons/property/floodAndRisj.jpeg" alt="" loading="lazy" /></span>
               <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">
-                  Flood &amp; environmental risk
-                </div>
-                <div class="pps-ds-header-meta">
-                  Source: Environment Agency · GOV.UK
-                </div>
-              </div>
-            </div>
-            <div
-              v-if="property?.floodRisk"
-              class="pps-ds-risk-card"
-              :class="{
-                'pps-ds-risk-card--high': /high/i.test(property.floodRisk),
-                'pps-ds-risk-card--medium': /medium/i.test(property.floodRisk),
-                'pps-ds-risk-card--low':
-                  /low/i.test(property.floodRisk) &&
-                  !/very/i.test(property.floodRisk),
-                'pps-ds-risk-card--clear': /very low|unknown/i.test(
-                  property.floodRisk,
-                ),
-              }"
-            >
-              <div class="pps-ds-risk-label">
-                {{ property.floodRisk }} flood risk
-              </div>
-              <div class="pps-ds-risk-desc">
-                <template v-if="/high/i.test(property.floodRisk)">
-                  This address sits in an EA-classified high-risk zone (greater
-                  than 3.3% chance of flooding in any given year from rivers or
-                  sea).
-                </template>
-                <template v-else-if="/medium/i.test(property.floodRisk)">
-                  Medium risk — between 1% and 3.3% annual probability of river
-                  or sea flooding.
-                </template>
-                <template v-else-if="/very low/i.test(property.floodRisk)">
-                  Very low risk — less than 0.1% annual probability of river or
-                  sea flooding.
-                </template>
-                <template v-else-if="/low/i.test(property.floodRisk)">
-                  Low risk — between 0.1% and 1% annual probability of river or
-                  sea flooding.
-                </template>
-                <template v-else>
-                  EA risk classification: {{ property.floodRisk }}.
-                </template>
-              </div>
-            </div>
-            <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">💧</div>
-              <div class="pps-ds-placeholder-title">No flood risk on file</div>
-              <div class="pps-ds-placeholder-sub">
-                We couldn't retrieve an EA flood-risk classification for this
-                address yet. It will be backfilled on the next enrichment pass.
+                <div class="pps-ds-header-title">Flood &amp; environmental risk</div>
+                <div class="pps-ds-header-meta">Environment Agency · BGS · UKHSA · DEFRA</div>
               </div>
             </div>
 
-            <!-- Risk breakdown -->
-            <div class="pps-ds-section-title" style="margin-top: 18px">
-              Risk breakdown
-            </div>
-            <div class="pps-ds-kv-list">
-              <div class="pps-ds-kv">
-                <span class="pps-ds-k">River &amp; sea</span>
-                <span
-                  class="pps-ds-v"
-                  :class="floodBreakdownClass(property?.floodRisk)"
-                  >{{ property?.floodRisk || 'Not assessed' }}</span
-                >
-              </div>
-              <div v-if="nearestWatercourse" class="pps-ds-kv">
-                <span class="pps-ds-k">Nearest watercourse</span>
-                <span class="pps-ds-v">{{ nearestWatercourse }}</span>
-              </div>
-              <div v-for="z in floodZonesList" :key="z.name" class="pps-ds-kv">
-                <span class="pps-ds-k">📍 {{ z.name }}</span>
-                <span
-                  class="pps-ds-v"
-                  :class="floodBreakdownClass(z.severity)"
-                  >{{ z.severity }}</span
-                >
-              </div>
-              <div class="pps-ds-kv">
-                <span class="pps-ds-k">Surface water</span>
-                <span class="pps-ds-v pps-ds-v--muted"
-                  >Not in EA monitoring feed</span
-                >
-              </div>
-              <div class="pps-ds-kv">
-                <span class="pps-ds-k">Groundwater</span>
-                <span class="pps-ds-v pps-ds-v--muted"
-                  >Not in EA monitoring feed</span
-                >
-              </div>
-              <div class="pps-ds-kv">
-                <span class="pps-ds-k">Reservoir</span>
-                <span class="pps-ds-v pps-ds-v--muted"
-                  >Not in EA monitoring feed</span
-                >
-              </div>
-            </div>
+            <section class="pps-fl-head" :class="{ 'pps-fl-head--pending': !property?.floodRisk }">
+              <div class="pps-fl-lab">Overall flood risk</div>
+              <div class="pps-fl-big">{{ floodOverall.label }}</div>
+              <p class="pps-fl-sub" v-html="floodOverall.sub" />
+            </section>
+            <p class="pps-fl-stamp">{{ floodOverall.stamp }}</p>
 
-            <!-- Other environmental — links to official postcode lookups -->
-            <div class="pps-ds-section-title" style="margin-top: 18px">
-              Other environmental
-            </div>
-            <div class="pps-ds-kv-list">
-              <a
-                :href="`https://www.ukradon.org/information/ukmaps?utm_source=umovingu`"
-                target="_blank"
-                rel="noopener"
-                class="pps-ds-kv pps-ds-kv--link"
+            <h2 class="pps-fl-sec">Long-term flood risk</h2>
+            <p class="pps-fl-secsub">
+              The likelihood of flooding over the lifetime of ownership. This is what lenders and
+              insurers use.
+            </p>
+            <div class="pps-fl-risks">
+              <button
+                v-for="(r, i) in floodRows"
+                :key="r.n"
+                class="pps-fl-risk"
+                :aria-expanded="floodOpen === i && !!r.d"
+                @click="onFloodRowClick(i, r.d)"
               >
-                <span class="pps-ds-k">☢️ Radon risk</span>
-                <span class="pps-ds-v pps-ds-v--muted">UKHSA lookup →</span>
+                <div class="pps-fl-rtop">
+                  <span class="pps-fl-rname">{{ r.n }}</span>
+                  <span class="pps-fl-pill" :class="'pps-fl-pill--' + r.c">{{ r.s }}</span>
+                </div>
+                <p v-if="r.m" class="pps-fl-rmean">{{ r.m }}</p>
+                <div v-if="r.d && floodOpen === i" class="pps-fl-rdet" v-html="r.d" />
+              </button>
+            </div>
+
+            <div v-if="floodLiveWarnings.length" class="pps-fl-live" :class="{ 'pps-fl-live--open': floodLiveOpen }">
+              <h2 class="pps-fl-sec">Live status today</h2>
+              <p class="pps-fl-secsub">
+                Real-time Environment Agency warnings for nearby watercourses. This is a live
+                snapshot — not a long-term risk measure.
+              </p>
+              <button class="pps-fl-livehead" @click="floodLiveOpen = !floodLiveOpen">
+                <span>{{ floodLiveWarnings.length }} monitored nearby</span>
+                <small>{{ floodLiveOpen ? 'hide' : 'show' }}</small>
+              </button>
+              <div v-if="floodLiveOpen" class="pps-fl-livebody">
+                <div v-for="w in floodLiveWarnings" :key="w.name" class="pps-fl-wrow">
+                  <span>{{ w.name }}</span>
+                  <span>{{ w.status || 'No warning' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pps-fl-impact">
+              <h3>What this means when you buy</h3>
+              <ul>
+                <li><b>Insurance.</b> Properties built before 2009 in a flood-risk area are usually
+                  eligible for Flood Re, which caps premiums. Newer builds are not.</li>
+                <li><b>Mortgage.</b> Some lenders decline or require a specialist survey where
+                  river-and-sea risk is High.</li>
+                <li><b>Ask your conveyancer</b> for a full flood report and the seller's answers on
+                  past flooding in the property information form.</li>
+              </ul>
+            </div>
+
+            <h2 class="pps-fl-sec">Other environmental checks</h2>
+            <p class="pps-fl-secsub">Not yet included in your report. These open the official postcode lookup.</p>
+            <div class="pps-fl-lookups">
+              <a href="https://www.ukradon.org/information/ukmaps?utm_source=umovingu" target="_blank" rel="noopener" class="pps-fl-lookup">
+                <div>
+                  <div class="pps-fl-lname">Radon</div>
+                  <div class="pps-fl-lsub">UKHSA — not checked</div>
+                </div>
+                <span class="pps-fl-go">Look up →</span>
               </a>
-              <a
-                :href="`https://www.bgs.ac.uk/geology-projects/shrink-swell/`"
-                target="_blank"
-                rel="noopener"
-                class="pps-ds-kv pps-ds-kv--link"
-              >
-                <span class="pps-ds-k">🏚️ Subsidence / clay shrink-swell</span>
-                <span class="pps-ds-v pps-ds-v--muted">BGS lookup →</span>
+              <a href="https://www.bgs.ac.uk/geology-projects/shrink-swell/" target="_blank" rel="noopener" class="pps-fl-lookup">
+                <div>
+                  <div class="pps-fl-lname">Subsidence &amp; clay shrink-swell</div>
+                  <div class="pps-fl-lsub">British Geological Survey — not checked</div>
+                </div>
+                <span class="pps-fl-go">Look up →</span>
+              </a>
+              <a href="https://www.bgs.ac.uk/datasets/geosure/" target="_blank" rel="noopener" class="pps-fl-lookup">
+                <div>
+                  <div class="pps-fl-lname">Ground stability</div>
+                  <div class="pps-fl-lsub">BGS GeoSure — not checked</div>
+                </div>
+                <span class="pps-fl-go">Look up →</span>
               </a>
               <a
                 :href="`https://uk-air.defra.gov.uk/data/local-authority-statistics${property?.city ? `?la=${encodeURIComponent(property.city)}` : ''}`"
                 target="_blank"
                 rel="noopener"
-                class="pps-ds-kv pps-ds-kv--link"
+                class="pps-fl-lookup"
               >
-                <span class="pps-ds-k">🌬️ Air quality (NO₂ / PM2.5)</span>
-                <span class="pps-ds-v pps-ds-v--muted">DEFRA UK-AIR →</span>
-              </a>
-              <a
-                :href="`https://www.bgs.ac.uk/datasets/geosure/`"
-                target="_blank"
-                rel="noopener"
-                class="pps-ds-kv pps-ds-kv--link"
-              >
-                <span class="pps-ds-k">🪨 Ground stability</span>
-                <span class="pps-ds-v pps-ds-v--muted">BGS GeoSure →</span>
+                <div>
+                  <div class="pps-fl-lname">Air quality</div>
+                  <div class="pps-fl-lsub">DEFRA UK-AIR — not checked</div>
+                </div>
+                <span class="pps-fl-go">Look up →</span>
               </a>
             </div>
 
-            <div class="pps-ds-info-note">
-              Flood risk data is from the Environment Agency's national mapping.
-              It indicates statistical probability — not a guarantee of
-              flooding. Surface water, groundwater and reservoir ratings need
-              the EA RoFRS bulk dataset. Radon, subsidence, ground stability and
-              air quality come from third-party government datasets — links
-              above open the official postcode lookup.
-            </div>
-            <div class="pps-ds-attribution">
-              Sources: Environment Agency · UKHSA · BGS · DEFRA
-            </div>
+            <p class="pps-ds-info-note">
+              <b>Not a substitute for a full flood report.</b> Environment Agency mapping gives a
+              statistical likelihood for an area, not a prediction for an individual building —
+              ground levels, defences and property-level protection all vary within a postcode.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -2413,178 +2419,138 @@
 
           <!-- ── Stamp Duty Calculator (live) ──────────────────────── -->
           <template v-else-if="activeSheet === 'stamp-duty'">
-            <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: baseline;
-                padding: 4px 0 16px;
-              "
-            >
-              <div
-                style="
-                  font-size: 17px;
-                  font-weight: 900;
-                  color: #231d45;
-                  letter-spacing: -0.3px;
-                "
-              >
-                Stamp Duty Calculator
-              </div>
-              <div style="font-size: 12px; color: #9c98ad; font-weight: 600">
-                England &amp; NI · 2026
+            <div class="pps-ds-header" style="background: var(--teal-wash, #e9f6f5)">
+              <span class="pps-ds-header-icon"><img src="/op-icons/property/stampDuty.jpeg" alt="" loading="lazy" /></span>
+              <div class="pps-ds-header-text">
+                <div class="pps-ds-header-title">Stamp duty</div>
+                <div class="pps-ds-header-meta">England &amp; NI · rates from 1 April 2025</div>
               </div>
             </div>
-            <div
-              style="
-                background: #e6f7f6;
-                border: 1.5px solid #b2e4e1;
-                border-radius: 14px;
-                padding: 16px 18px;
-                margin-bottom: 16px;
-              "
-            >
-              <div
-                style="
-                  font-size: 9px;
-                  font-weight: 800;
-                  color: #6b6783;
-                  letter-spacing: 1.5px;
-                  text-transform: uppercase;
-                  margin-bottom: 4px;
-                "
-              >
-                Your estimated stamp duty
+
+            <section class="pps-sx-head" aria-live="polite">
+              <div class="pps-sx-lab">Estimated stamp duty</div>
+              <div class="pps-sx-big">£{{ stampDuty.total.toLocaleString() }}</div>
+              <p class="pps-sx-sub">On a price of <b>£{{ (sdInput || 0).toLocaleString() }}</b></p>
+              <div class="pps-sx-eff">
+                <div><b>{{ sdEffective.rate.toFixed(1) }}%</b><span>Effective rate</span></div>
+                <div><b>£{{ sdEffective.per100.toFixed(2) }}</b><span>Per £100 of price</span></div>
+                <div><b>{{ sdEffective.topBand }}%</b><span>Top band reached</span></div>
               </div>
-              <div
-                style="
-                  font-size: 32px;
-                  font-weight: 900;
-                  color: #00a19a;
-                  letter-spacing: -1px;
-                "
-              >
-                £{{ stampDuty.total.toLocaleString() }}
-              </div>
-              <div style="font-size: 13px; color: #6b6783; margin-top: 4px">
-                On a price of £{{ (sdInput || 0).toLocaleString() }}
+            </section>
+
+            <div class="pps-sx-field">
+              <label>Purchase price</label>
+              <div class="pps-sx-inrow">
+                <span class="pps-sx-cur">£</span>
+                <input
+                  :value="sdInput ? sdInput.toLocaleString('en-GB') : ''"
+                  type="text"
+                  inputmode="numeric"
+                  @input="onSdInputText"
+                />
               </div>
             </div>
-            <div
-              style="
-                border: 1.5px solid #ececef;
-                border-radius: 14px;
-                padding: 14px 18px;
-                margin-bottom: 14px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-              "
-            >
-              <span style="font-size: 20px; color: #c0bdcc; font-weight: 700"
-                >£</span
-              >
-              <input
-                :value="sdInput"
-                type="number"
-                min="0"
-                max="10000000"
-                step="1000"
-                @input="onSdInput"
-                style="
-                  border: none;
-                  outline: none;
-                  font-size: 22px;
-                  font-weight: 800;
-                  color: #231d45;
-                  font-family: inherit;
-                  width: 100%;
-                  background: transparent;
-                  letter-spacing: -0.5px;
-                "
+            <input
+              type="range"
+              class="pps-sx-slider"
+              min="50000"
+              max="2000000"
+              step="5000"
+              :value="Math.min(2000000, Math.max(50000, sdInput || 50000))"
+              @input="onSdSlider"
+              aria-label="Purchase price slider"
+            />
+
+            <div class="pps-sx-seg" role="group" aria-label="Buyer type">
+              <button
+                :aria-pressed="sdType === 'standard'"
+                @click="sdType = 'standard'"
+              >Moving home</button>
+              <button
+                :aria-pressed="sdType === 'first'"
+                @click="sdType = 'first'"
+              >First-time</button>
+              <button
+                :aria-pressed="sdType === 'additional'"
+                @click="sdType = 'additional'"
+              >Additional</button>
+            </div>
+
+            <div class="pps-sx-switch">
+              <div>
+                <span>Non-UK resident</span>
+                <small>Adds 2% to every band</small>
+              </div>
+              <button
+                class="pps-sx-tog"
+                :aria-pressed="sdNonRes"
+                aria-label="Non-UK resident surcharge"
+                @click="sdNonRes = !sdNonRes"
               />
             </div>
-            <div
-              style="
-                background: #f5f5f7;
-                border-radius: 12px;
-                padding: 4px;
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 4px;
-                margin-bottom: 18px;
-              "
-            >
-              <button
-                class="pps-sd-type-btn"
-                :class="{ 'pps-sd-type-btn--active': sdType === 'standard' }"
-                @click="sdType = 'standard'"
-              >
-                🏠 Standard
-              </button>
-              <button
-                class="pps-sd-type-btn"
-                :class="{ 'pps-sd-type-btn--active': sdType === 'first' }"
-                @click="sdType = 'first'"
-              >
-                🌱 First-time
-              </button>
-              <button
-                class="pps-sd-type-btn"
-                :class="{ 'pps-sd-type-btn--active': sdType === 'additional' }"
-                @click="sdType = 'additional'"
-              >
-                🏘️ Additional
-              </button>
+
+            <div v-if="sdAlert" class="pps-sx-alert">
+              <b>{{ sdAlert.title }}</b> {{ sdAlert.body }}
             </div>
-            <div
-              style="
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                margin-bottom: 16px;
-              "
-            >
-              <div
-                v-for="(b, i) in stampDuty.bands"
-                :key="i"
-                class="pps-sd-band"
-              >
-                <div class="pps-sd-band-top">
-                  <span class="pps-sd-band-pct"
-                    >{{ Math.round(b.rate * 100) }}%</span
-                  >
-                  <span class="pps-sd-band-amt"
-                    >£{{ b.amount.toLocaleString() }}</span
-                  >
-                </div>
-                <div class="pps-sd-band-track">
-                  <div
-                    class="pps-sd-band-fill"
-                    :style="{
-                      width:
-                        stampDuty.total > 0
-                          ? (b.amount / stampDuty.total) * 100 + '%'
-                          : '0%',
-                    }"
-                  />
-                </div>
-                <div class="pps-sd-band-range">{{ b.range }}</div>
+
+            <div class="pps-sx-stack-wrap" v-if="sdStack.length">
+              <div class="pps-sx-stack-lab">How the price is taxed</div>
+              <div class="pps-sx-stack">
+                <i
+                  v-for="s in sdStack"
+                  :key="s.i"
+                  :style="{ width: s.pct + '%', background: s.color }"
+                  :title="`${Math.round(s.rate * 100)}% on £${s.slice.toLocaleString()}`"
+                />
+              </div>
+              <div class="pps-sx-stack-key">
+                <span v-for="s in sdStack" :key="s.i" class="pps-sx-k">
+                  <s :style="{ background: s.color }" />
+                  {{ Math.round(s.rate * 100) }}% on {{ sdShort(s.slice) }}
+                </span>
               </div>
             </div>
-            <div style="margin-bottom: 14px">
-              <a
-                href="https://www.gov.uk/stamp-duty-land-tax"
-                target="_blank"
-                style="
-                  font-size: 13px;
-                  font-weight: 700;
-                  color: #00a19a;
-                  text-decoration: none;
-                "
-                >Full rates on GOV.UK →</a
-              >
+
+            <div
+              v-for="(b, i) in stampDuty.bands"
+              :key="i"
+              class="pps-sx-band"
+              :class="{ 'pps-sx-band--off': !b.amount }"
+            >
+              <div class="pps-sx-brow">
+                <span class="pps-sx-brate">{{ Math.round(b.rate * 100) }}%</span>
+                <span class="pps-sx-bamt">£{{ b.amount.toLocaleString() }}</span>
+              </div>
+              <div class="pps-sx-bbar">
+                <i
+                  :style="{
+                    width: sdMaxBand > 0 ? (b.amount / sdMaxBand) * 100 + '%' : '0%',
+                    background: SD_SHADES[i % SD_SHADES.length],
+                  }"
+                />
+              </div>
+              <div class="pps-sx-bmeta">
+                <span>{{ sdShort(b.from) }} – {{ b.to === Infinity ? 'above' : sdShort(b.to) }}</span>
+                <span>{{ b.amount ? '£' + (b.slice || 0).toLocaleString() + ' of your price' : '—' }}</span>
+              </div>
             </div>
+
+            <div class="pps-sx-total">
+              <span>Total due within 14 days of completion</span>
+              <span>£{{ stampDuty.total.toLocaleString() }}</span>
+            </div>
+
+            <div class="pps-sx-links">
+              <a href="https://www.gov.uk/stamp-duty-land-tax" target="_blank" rel="noopener">Full rates on GOV.UK →</a>
+              <a href="https://www.gov.uk/guidance/land-and-buildings-transaction-tax" target="_blank" rel="noopener">Buying in Scotland or Wales? →</a>
+            </div>
+
+            <p class="pps-ds-info-note">
+              <b>An estimate, not advice.</b> Assumes a freehold residential purchase with no linked
+              transactions, shared ownership or multiple dwellings. Scotland uses LBTT and Wales
+              uses LTT, both with different bands. Your solicitor files the return and confirms the
+              final figure.
+            </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
@@ -3827,27 +3793,6 @@ function epcCompColor(eff: string | null | undefined): string {
   return '#9c98ad'
 }
 
-// Maps OS NGD school phase strings to a CSS class so each chip gets a
-// distinct colour. Unknown phases fall back to a neutral grey pill.
-function schoolPhaseClass(phase: string | null | undefined): string {
-  switch (phase) {
-    case 'Pre-Primary':
-      return 'pps-ds-phase-pill--prenursery'
-    case 'Primary':
-      return 'pps-ds-phase-pill--primary'
-    case 'Secondary':
-      return 'pps-ds-phase-pill--secondary'
-    case 'Further Education':
-      return 'pps-ds-phase-pill--further'
-    case 'Higher Education':
-      return 'pps-ds-phase-pill--higher'
-    case 'Specialist':
-      return 'pps-ds-phase-pill--specialist'
-    default:
-      return 'pps-ds-phase-pill--default'
-  }
-}
-
 function effToColor(pct: number): string {
   if (pct >= 72) return '#008a84'
   if (pct >= 50) return '#00a19a'
@@ -4061,23 +4006,6 @@ const nearestWatercourse = computed(() => {
   }
   return null
 })
-const floodZonesList = computed(() => {
-  const z = enrichment.value?.floodZones ?? []
-  return z
-    .filter((x: any) => x && x.name && x.severity)
-    .slice(0, 3)
-    .map((x: any) => ({ name: String(x.name), severity: String(x.severity) }))
-})
-function floodBreakdownClass(value: any) {
-  const v = String(value ?? '').toLowerCase()
-  if (!v) return ''
-  if (v.includes('severe') || v.includes('high')) return 'pps-ds-v--red'
-  if (v.includes('medium') || v.includes('alert')) return 'pps-ds-v--amber'
-  if (v.includes('very low') || v.includes('low') || v.includes('no current'))
-    return 'pps-ds-v--green'
-  return ''
-}
-
 const floodRiskDescription = computed(() => {
   const r = enrichment.value?.floodRisk
   if (r === 'Very Low')
@@ -5414,6 +5342,7 @@ watch(estimatedPrice, (v) => {
 const sdTouched = ref(false)
 type SdType = 'standard' | 'first' | 'additional'
 const sdType = ref<SdType>('standard')
+const sdNonRes = ref(false)
 
 // 2026 SDLT bands (England & NI). Source: HMRC current rates.
 const SD_BANDS_STANDARD: Array<{ from: number; to: number; rate: number }> = [
@@ -5427,39 +5356,39 @@ const SD_BANDS_FIRST: Array<{ from: number; to: number; rate: number }> = [
   { from: 425000, to: 625000, rate: 0.05 },
   // First-time relief is lost above £625k — falls back to standard.
 ]
-const SD_BANDS_ADDITIONAL: Array<{ from: number; to: number; rate: number }> = [
-  // Additional dwelling surcharge: standard rates + 5%.
-  { from: 0, to: 250000, rate: 0.05 },
-  { from: 250000, to: 925000, rate: 0.1 },
-  { from: 925000, to: 1500000, rate: 0.15 },
-  { from: 1500000, to: Infinity, rate: 0.17 },
-]
+// Stacked-bar palette (light → dark) for band visualisation.
+const SD_SHADES = ['#F3F3F5', '#B7E4E1', '#00A19A', '#4A4468', '#231D45']
+
+type SdBand = {
+  from: number
+  to: number
+  rate: number
+  amount: number
+  slice: number
+  range: string
+}
 function computeStampDuty(
   price: number,
   type: SdType,
-): {
-  total: number
-  bands: Array<{
-    from: number
-    to: number
-    rate: number
-    amount: number
-    range: string
-  }>
-} {
+  nonRes: boolean,
+): { total: number; bands: SdBand[] } {
   if (price <= 0) return { total: 0, bands: [] }
-  let bands = SD_BANDS_STANDARD
-  if (type === 'first' && price <= 625000) bands = SD_BANDS_FIRST
-  else if (type === 'first') bands = SD_BANDS_STANDARD
-  else if (type === 'additional') bands = SD_BANDS_ADDITIONAL
-  const rows = bands.map((b) => {
+  const ftbApplies = type === 'first' && price <= 625000
+  const base = ftbApplies ? SD_BANDS_FIRST : SD_BANDS_STANDARD
+  // Additional-property surcharge: +5% on every band; non-UK-resident: +2%.
+  const bump = (type === 'additional' && price >= 40000 ? 0.05 : 0) + (nonRes ? 0.02 : 0)
+  const rows: SdBand[] = base.map((b) => {
     const top = Math.min(price, b.to)
     const slice = Math.max(0, top - b.from)
-    const amount = Math.round(slice * b.rate)
+    const rate = b.rate + bump
+    const amount = Math.round(slice * rate)
     const fmt = (n: number) =>
       n === Infinity ? '∞' : `£${Math.round(n).toLocaleString()}`
     return {
-      ...b,
+      from: b.from,
+      to: b.to,
+      rate,
+      slice,
       amount,
       range: `${fmt(b.from)} – ${fmt(b.to)}`,
     }
@@ -5468,13 +5397,272 @@ function computeStampDuty(
   return { total, bands: rows }
 }
 const stampDuty = computed(() =>
-  computeStampDuty(sdInput.value || 0, sdType.value),
+  computeStampDuty(sdInput.value || 0, sdType.value, sdNonRes.value),
 )
-function onSdInput(e: Event) {
+const sdEffective = computed(() => {
+  const price = sdInput.value || 0
+  const rate = price > 0 ? (stampDuty.value.total / price) * 100 : 0
+  const active = stampDuty.value.bands.filter((b) => b.slice > 0)
+  const top = active.length ? active[active.length - 1] : null
+  return {
+    rate,
+    per100: rate,
+    topBand: top ? Math.round(top.rate * 100) : 0,
+  }
+})
+const sdStack = computed(() =>
+  stampDuty.value.bands
+    .filter((b) => b.slice > 0)
+    .map((b, i) => ({
+      i,
+      rate: b.rate,
+      slice: b.slice,
+      pct: sdInput.value ? (b.slice / sdInput.value) * 100 : 0,
+      color: SD_SHADES[i % SD_SHADES.length],
+    })),
+)
+const sdMaxBand = computed(() =>
+  Math.max(1, ...stampDuty.value.bands.map((b) => b.amount)),
+)
+const sdAlert = computed<{ title: string; body: string } | null>(() => {
+  const price = sdInput.value || 0
+  if (sdType.value === 'first' && price > 625000) {
+    return {
+      title: 'No first-time buyer relief above £625,000.',
+      body: 'At this price you pay full standard rates. Relief only applies to purchases of £625,000 or less.',
+    }
+  }
+  if (sdType.value === 'first' && price > 600000 && price <= 625000) {
+    return {
+      title: "You're close to the £625,000 cliff edge.",
+      body: 'One pound over and first-time relief disappears entirely — the bill jumps sharply for a small increase in price.',
+    }
+  }
+  if (sdType.value === 'additional' && price >= 40000) {
+    return {
+      title: 'Includes the 5% additional-property surcharge on every band.',
+      body: 'If you sell your previous main home within three years you may be able to reclaim it.',
+    }
+  }
+  if (sdNonRes.value && price > 0) {
+    return {
+      title: '+2% non-UK resident surcharge on every band.',
+      body: 'Reclaim is possible if you spend 183+ days in the UK in the year after completion.',
+    }
+  }
+  return null
+})
+function sdShort(n: number): string {
+  if (!n) return '£0'
+  if (n === Infinity) return 'above'
+  if (n >= 1_000_000) {
+    const m = n / 1_000_000
+    return '£' + (n % 1_000_000 ? m.toFixed(2) : m.toFixed(1)) + 'm'
+  }
+  return '£' + Math.round(n / 1000) + 'k'
+}
+function onSdInputText(e: Event) {
+  const raw = ((e.target as HTMLInputElement).value || '').replace(/[^\d]/g, '')
+  const v = parseInt(raw || '0', 10)
+  sdInput.value = Math.min(10_000_000, Number.isFinite(v) ? v : 0)
+  sdTouched.value = true
+}
+function onSdSlider(e: Event) {
   const v = parseInt((e.target as HTMLInputElement).value || '0', 10)
   sdInput.value = Number.isFinite(v) ? v : 0
   sdTouched.value = true
 }
+
+// ─── Schools sheet (filter + summary computeds) ────────────────────────────
+type SchoolPhaseKey = 'all' | 'nursery' | 'primary' | 'secondary'
+const schoolPhaseFilter = ref<SchoolPhaseKey>('all')
+const schoolOpen = ref(-1)
+const schoolPhases: Array<{ key: SchoolPhaseKey; label: string }> = [
+  { key: 'all', label: 'All' },
+  { key: 'nursery', label: 'Nursery' },
+  { key: 'primary', label: 'Primary' },
+  { key: 'secondary', label: 'Secondary' },
+]
+function schoolPhaseKey(phase: string | null | undefined): string {
+  const p = (phase || '').toLowerCase()
+  if (p.includes('nursery') || p.includes('early')) return 'nursery'
+  if (p.includes('primary') || p.includes('infant') || p.includes('junior')) return 'primary'
+  if (p.includes('secondary') || p.includes('senior') || p.includes('sixth')) return 'secondary'
+  return 'other'
+}
+function schoolPhaseColor(phase: string | null | undefined): string {
+  const k = schoolPhaseKey(phase)
+  if (k === 'primary') return '#00A19A'
+  if (k === 'secondary') return '#231D45'
+  if (k === 'nursery') return '#9A9AA1'
+  return '#75757C'
+}
+function walkMinutes(km: number): number {
+  // 12 min/km rough walking pace, rounded up, min 1.
+  return Math.max(1, Math.round((km || 0) * 12))
+}
+function proximityPct(km: number): number {
+  // Bar full at 0km, empty at ~40 min walk (~3.3 km).
+  const mins = walkMinutes(km)
+  return Math.max(6, (1 - Math.min(mins, 40) / 40) * 100)
+}
+const filteredSchools = computed(() => {
+  const list = enrichmentSchools.value.slice()
+  const filtered =
+    schoolPhaseFilter.value === 'all'
+      ? list
+      : list.filter((s) => schoolPhaseKey(s.phase) === schoolPhaseFilter.value)
+  return filtered.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0))
+})
+watch(schoolPhaseFilter, () => {
+  schoolOpen.value = -1
+})
+const schoolStats = computed(() => {
+  const list = enrichmentSchools.value
+  const primaries = list.filter((s) => schoolPhaseKey(s.phase) === 'primary')
+  const secondaries = list.filter((s) => schoolPhaseKey(s.phase) === 'secondary')
+  const primariesNearby = primaries.filter((s) => (s.distanceKm || 0) <= 1).length
+  const secondariesNearby = secondaries.filter((s) => (s.distanceKm || 0) <= 2).length
+  const nearestPrimaryKm = primaries.length
+    ? Math.min(...primaries.map((s) => s.distanceKm || Infinity))
+    : null
+  return {
+    total: list.length,
+    primariesNearby,
+    secondariesNearby,
+    nearestPrimaryKm: Number.isFinite(nearestPrimaryKm as number)
+      ? (nearestPrimaryKm as number)
+      : null,
+  }
+})
+
+// ─── Flood sheet (per-source rows + live-warnings) ─────────────────────────
+const floodOpen = ref(-1)
+const floodLiveOpen = ref(false)
+function onFloodRowClick(i: number, hasDetail: string) {
+  if (!hasDetail) return
+  floodOpen.value = floodOpen.value === i ? -1 : i
+}
+const floodOverall = computed(() => {
+  const raw = property.value?.floodRisk
+  const stamp = raw
+    ? 'Environment Agency RoFRS classification'
+    : 'Not yet checked'
+  if (!raw) {
+    return {
+      label: 'Not yet checked',
+      sub: "We haven't been able to retrieve an Environment Agency classification for this address. Nothing here should be read as a low risk — it simply hasn't been checked.",
+      stamp,
+    }
+  }
+  const lower = raw.toLowerCase()
+  if (lower.includes('high')) {
+    return {
+      label: 'High',
+      sub: 'This address sits in an EA-classified high-risk zone. <b>This will affect insurance and may affect lending.</b>',
+      stamp,
+    }
+  }
+  if (lower.includes('medium')) {
+    return {
+      label: 'Medium',
+      sub: 'Between 1% and 3.3% annual probability of river or sea flooding. Ask insurers about premium loading.',
+      stamp,
+    }
+  }
+  if (lower.includes('very low')) {
+    return {
+      label: 'Very low',
+      sub: 'Less than 0.1% annual probability of river or sea flooding.',
+      stamp,
+    }
+  }
+  if (lower.includes('low')) {
+    return {
+      label: 'Low',
+      sub: 'Between 0.1% and 1% annual probability of river or sea flooding. Lenders rarely raise questions at this level.',
+      stamp,
+    }
+  }
+  return {
+    label: raw,
+    sub: `EA risk classification: ${raw}.`,
+    stamp,
+  }
+})
+const floodRows = computed(() => {
+  const raw = (property.value?.floodRisk || '').toLowerCase()
+  const riversS = raw.includes('high')
+    ? 'High'
+    : raw.includes('medium')
+    ? 'Medium'
+    : raw.includes('very low')
+    ? 'Very low'
+    : raw.includes('low')
+    ? 'Low'
+    : 'Not assessed'
+  const riversC =
+    riversS === 'High'
+      ? 'high'
+      : riversS === 'Medium'
+      ? 'med'
+      : riversS === 'Not assessed'
+      ? 'none'
+      : 'low'
+  const nearest = nearestWatercourse.value
+  const rows: Array<{ n: string; s: string; c: string; m: string; d: string }> = [
+    {
+      n: 'Rivers &amp; the sea',
+      s: riversS,
+      c: riversC,
+      m:
+        riversS === 'High'
+          ? 'Greater than 3.3% chance of flooding in any given year.'
+          : riversS === 'Medium'
+          ? 'Between 1% and 3.3% chance in any given year.'
+          : riversS === 'Very low'
+          ? 'Less than 0.1% chance in any given year.'
+          : riversS === 'Low'
+          ? 'Between 0.1% and 1% chance in any given year.'
+          : 'No Environment Agency classification retrieved yet.',
+      d:
+        riversS === 'High'
+          ? '<b>Get a flood report before you offer.</b> Expect insurers to ask for a Flood Re declaration and some lenders to require a specialist survey. Ask the seller whether the property has flooded and whether a claim was made.'
+          : riversS === 'Medium'
+          ? 'Check whether the property has property-level protection fitted — flood doors, airbrick covers, non-return valves. <b>These reduce premiums materially.</b>'
+          : riversS === 'Low' || riversS === 'Very low'
+          ? nearest
+            ? `Nearest watercourse: <b>${nearest}</b>. Distance and elevation both matter more than the postcode-level rating.`
+            : 'Lenders rarely raise questions at this rating. Distance to the nearest watercourse still matters for individual homes.'
+          : '',
+    },
+    {
+      n: 'Surface water',
+      s: 'Not assessed',
+      c: 'none',
+      m: 'Not currently in our EA monitoring feed.',
+      d: 'Surface water is the most common cause of flooding in urban areas and often overlooked. <b>Worth asking whether the road has flooded in heavy storms.</b>',
+    },
+    {
+      n: 'Groundwater',
+      s: 'Not assessed',
+      c: 'none',
+      m: 'Not currently in our EA monitoring feed.',
+      d: 'Groundwater flooding affects basements and cellars first. If the property has one, <b>ask specifically about damp history.</b>',
+    },
+    {
+      n: 'Reservoirs',
+      s: 'Not assessed',
+      c: 'none',
+      m: 'Not currently in our EA monitoring feed.',
+      d: 'Reservoir flooding is extremely rare but would be rapid. The full EA inundation model isn\'t in our feed yet.',
+    },
+  ]
+  return rows
+})
+// Placeholder — no live-warnings EA feed wired yet, so this stays empty and the
+// panel doesn't render. When we add the feed, populate {name, status} rows here.
+const floodLiveWarnings = computed<Array<{ name: string; status?: string }>>(() => [])
 
 // ─── Sheet: history — fetch sold history when the sheet opens ──────────────
 const soldHistory = ref<any[]>([])
@@ -8588,52 +8776,6 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 1px solid #c2e6df;
   vertical-align: 2px;
 }
-.pps-ds-phase-pill {
-  display: inline-block;
-  margin-left: 6px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  vertical-align: 2px;
-  white-space: nowrap;
-}
-.pps-ds-phase-pill--prenursery {
-  color: #6b21a8;
-  background: #f3e8ff;
-  border: 1px solid #e9d5ff;
-}
-.pps-ds-phase-pill--primary {
-  color: #075985;
-  background: #e0f2fe;
-  border: 1px solid #bae6fd;
-}
-.pps-ds-phase-pill--secondary {
-  color: #1e40af;
-  background: #dbeafe;
-  border: 1px solid #bfdbfe;
-}
-.pps-ds-phase-pill--further {
-  color: #92400e;
-  background: #fef3c7;
-  border: 1px solid #fde68a;
-}
-.pps-ds-phase-pill--higher {
-  color: #831843;
-  background: #fce7f3;
-  border: 1px solid #fbcfe8;
-}
-.pps-ds-phase-pill--specialist {
-  color: #008a84;
-  background: #dcfce7;
-  border: 1px solid #bbf7d0;
-}
-.pps-ds-phase-pill--default {
-  color: #4b5563;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
-}
 .pps-ds-v {
   font-weight: 700;
   color: #231d45;
@@ -9100,60 +9242,675 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-style: italic;
 }
 
-/* Stamp Duty type buttons + bands */
-.pps-sd-type-btn {
-  background: transparent;
-  border: none;
-  border-radius: 9px;
-  padding: 9px 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #6b6783;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s ease;
+/* ── Stamp Duty (pps-sx) ─────────────────────────────────────────────
+   Rebuilt to match the umu-stamp-duty prototype: headline card with
+   effective-rate mini stats, price input + slider, buyer-type seg,
+   non-UK-resident toggle, contextual alert, stacked band bar. */
+.pps-sx-head {
+  border-radius: 20px;
+  padding: 20px 18px;
+  margin-bottom: 14px;
+  text-align: center;
+  background: linear-gradient(160deg, #e9f6f5, #f7fbfb);
 }
-.pps-sd-type-btn--active {
+.pps-sx-lab {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #75757c;
+}
+.pps-sx-big {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-top: 6px;
+  color: #231d45;
+  font-variant-numeric: tabular-nums;
+}
+.pps-sx-sub {
+  font-size: 13px;
+  color: #75757c;
+  font-weight: 600;
+  margin: 8px 0 0;
+  line-height: 1.45;
+}
+.pps-sx-sub b { color: #231d45; font-weight: 800; }
+.pps-sx-eff {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(35, 29, 69, 0.09);
+}
+.pps-sx-eff > div { flex: 1; }
+.pps-sx-eff b {
+  display: block;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #231d45;
+  font-variant-numeric: tabular-nums;
+}
+.pps-sx-eff span {
+  font-size: 10.5px;
+  color: #a2a2a9;
+  font-weight: 600;
+  display: block;
+  margin-top: 3px;
+  line-height: 1.3;
+}
+.pps-sx-field {
+  border: 1.5px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  transition: 0.18s;
+}
+.pps-sx-field:focus-within {
+  border-color: #00a19a;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.12);
+}
+.pps-sx-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a2a2a9;
+  margin-bottom: 2px;
+}
+.pps-sx-inrow { display: flex; align-items: baseline; gap: 6px; }
+.pps-sx-cur { font-size: 22px; font-weight: 700; color: #a2a2a9; }
+.pps-sx-inrow input {
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #231d45;
+  width: 100%;
+  padding: 0;
+  background: none;
+  font-variant-numeric: tabular-nums;
+}
+.pps-sx-slider {
+  width: 100%;
+  margin: 12px 0 18px;
+  accent-color: #00a19a;
+  height: 22px;
+}
+.pps-sx-seg {
+  display: flex;
+  background: #f3f3f5;
+  border-radius: 12px;
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+.pps-sx-seg button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #75757c;
+  padding: 9px 4px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: 0.18s;
+}
+.pps-sx-seg button[aria-pressed="true"] {
   background: #fff;
   color: #231d45;
-  box-shadow: 0 2px 8px rgba(35, 29, 69, 0.1);
+  box-shadow: 0 1px 3px rgba(35, 29, 69, 0.14);
 }
-.pps-sd-band {
+.pps-sx-switch {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4px;
+  border-bottom: 1px solid #e4e4e7;
+  margin-bottom: 18px;
 }
-.pps-sd-band-top {
+.pps-sx-switch span {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #231d45;
+  display: block;
+}
+.pps-sx-switch small {
+  display: block;
+  font-size: 11.5px;
+  color: #a2a2a9;
+  font-weight: 500;
+  margin-top: 2px;
+}
+.pps-sx-tog {
+  width: 46px;
+  height: 27px;
+  border-radius: 99px;
+  border: 0;
+  background: #e4e4e7;
+  position: relative;
+  cursor: pointer;
+  flex: none;
+  transition: 0.2s;
+  padding: 0;
+}
+.pps-sx-tog[aria-pressed="true"] { background: #00a19a; }
+.pps-sx-tog::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #fff;
+  transition: 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.pps-sx-tog[aria-pressed="true"]::after { left: 22px; }
+.pps-sx-alert {
+  background: #231d45;
+  color: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+.pps-sx-alert b { font-weight: 800; display: inline; }
+.pps-sx-stack-wrap { margin-bottom: 18px; }
+.pps-sx-stack-lab {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a2a2a9;
+  margin-bottom: 9px;
+}
+.pps-sx-stack {
+  display: flex;
+  height: 14px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: #f3f3f5;
+}
+.pps-sx-stack i {
+  display: block;
+  height: 100%;
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pps-sx-stack-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+.pps-sx-k {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #75757c;
+}
+.pps-sx-k s {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  display: block;
+}
+.pps-sx-band {
+  padding: 12px 0;
+  border-bottom: 1px solid #e4e4e7;
+}
+.pps-sx-band--off { opacity: 0.4; }
+.pps-sx-brow {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: 12px;
 }
-.pps-sd-band-pct {
-  font-size: 15px;
+.pps-sx-brate {
+  font-size: 14.5px;
   font-weight: 800;
   color: #231d45;
+  font-variant-numeric: tabular-nums;
 }
-.pps-sd-band-amt {
-  font-size: 15px;
-  font-weight: 800;
+.pps-sx-bamt {
+  font-size: 14.5px;
+  font-weight: 700;
   color: #231d45;
+  font-variant-numeric: tabular-nums;
 }
-.pps-sd-band-track {
-  height: 7px;
-  background: #ececef;
-  border-radius: 4px;
+.pps-sx-bbar {
+  height: 5px;
+  border-radius: 99px;
+  background: #f3f3f5;
   overflow: hidden;
+  margin-top: 8px;
 }
-.pps-sd-band-fill {
+.pps-sx-bbar i {
+  display: block;
   height: 100%;
-  background: #00a19a;
-  border-radius: 4px;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 99px;
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.pps-sd-band-range {
+.pps-sx-bmeta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 7px;
+  font-size: 11.5px;
+  color: #a2a2a9;
+  font-weight: 600;
+}
+.pps-sx-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16px 0 4px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #231d45;
+}
+.pps-sx-total span:last-child {
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.pps-sx-links {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.pps-sx-links a {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #00817c;
+  text-decoration: none;
+}
+
+/* ── Schools (pps-sh) ────────────────────────────────────────────────
+   Headline stat card + phase seg + sortable list of expandable rows. */
+.pps-sh-summary {
+  background: linear-gradient(160deg, #e9f6f5, #f7fbfb);
+  border-radius: 20px;
+  padding: 20px 18px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.pps-sh-big {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: #231d45;
+}
+.pps-sh-cap {
+  font-size: 13px;
+  color: #75757c;
+  font-weight: 600;
+  margin: 8px 0 0;
+  line-height: 1.45;
+}
+.pps-sh-cap em { font-style: normal; font-weight: 800; color: #231d45; }
+.pps-sh-mini {
+  display: flex;
+  gap: 14px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(35, 29, 69, 0.09);
+}
+.pps-sh-mini > div { flex: 1; }
+.pps-sh-mini b {
+  display: block;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #231d45;
+  font-variant-numeric: tabular-nums;
+}
+.pps-sh-mini b small {
+  font-size: 12px;
+  font-weight: 700;
+  color: #75757c;
+}
+.pps-sh-mini span {
+  font-size: 10.5px;
+  color: #a2a2a9;
+  font-weight: 600;
+  line-height: 1.35;
+  display: block;
+  margin-top: 4px;
+}
+.pps-sh-seg {
+  display: flex;
+  background: #f3f3f5;
+  border-radius: 12px;
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+.pps-sh-seg button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #75757c;
+  padding: 8px 4px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: 0.18s;
+}
+.pps-sh-seg button[aria-pressed="true"] {
+  background: #fff;
+  color: #231d45;
+  box-shadow: 0 1px 3px rgba(35, 29, 69, 0.14);
+}
+.pps-sh-sortbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px 0 2px;
+}
+.pps-sh-sortbar span:first-child {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a2a2a9;
+}
+.pps-sh-sortnote {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #00817c;
+}
+.pps-sh-list { margin-top: 4px; }
+.pps-sh-row {
+  border: 0;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  padding: 13px 0;
+  border-bottom: 1px solid #e4e4e7;
+  display: block;
+  color: inherit;
+}
+.pps-sh-r1 { display: flex; gap: 10px; align-items: baseline; }
+.pps-sh-name {
+  font-size: 14.5px;
+  font-weight: 600;
+  flex: 1;
+  line-height: 1.35;
+  color: #231d45;
+}
+.pps-sh-dist {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #231d45;
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.pps-sh-bar {
+  height: 5px;
+  border-radius: 99px;
+  background: #f3f3f5;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.pps-sh-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pps-sh-r2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+  align-items: center;
+}
+.pps-sh-tag {
   font-size: 11px;
-  color: #9c98ad;
-  margin-top: 2px;
+  font-weight: 700;
+  padding: 3.5px 9px;
+  border-radius: 99px;
+  background: #f3f3f5;
+  color: #75757c;
+}
+.pps-sh-tag--primary { background: #e9f6f5; color: #00817c; }
+.pps-sh-tag--secondary { background: #231d45; color: #fff; }
+.pps-sh-tag--nursery { background: #f3f3f5; color: #4a4468; }
+.pps-sh-walk {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #a2a2a9;
+}
+.pps-sh-detail {
+  margin-top: 12px;
+  padding: 14px;
+  background: #f3f3f5;
+  border-radius: 14px;
+  border-left: 3px solid #00a19a;
+}
+.pps-sh-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 7px 14px;
+  font-size: 12.5px;
+  margin: 0;
+}
+.pps-sh-dl dt { color: #a2a2a9; font-weight: 600; }
+.pps-sh-dl dd { margin: 0; font-weight: 600; color: #231d45; }
+.pps-sh-catch {
+  margin: 12px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #75757c;
+}
+.pps-sh-catch b { color: #231d45; font-weight: 700; }
+
+/* ── Flood (pps-fl) ──────────────────────────────────────────────────
+   Headline card + per-source risk rows + live-warnings toggle +
+   environmental lookup links. */
+.pps-fl-head {
+  border-radius: 20px;
+  padding: 20px 18px;
+  margin-bottom: 8px;
+  text-align: center;
+  background: linear-gradient(160deg, #e9f6f5, #f7fbfb);
+}
+.pps-fl-head--pending { background: #f3f3f5; }
+.pps-fl-lab {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #75757c;
+}
+.pps-fl-big {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-top: 7px;
+  color: #231d45;
+}
+.pps-fl-sub {
+  font-size: 13px;
+  color: #75757c;
+  font-weight: 600;
+  margin: 9px 0 0;
+  line-height: 1.5;
+}
+.pps-fl-sub :deep(b) { color: #231d45; font-weight: 800; }
+.pps-fl-stamp {
+  font-size: 11.5px;
+  color: #a2a2a9;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 18px;
+}
+.pps-fl-sec {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a2a2a9;
+  margin: 22px 0 3px;
+}
+.pps-fl-secsub {
+  font-size: 12.5px;
+  color: #75757c;
+  margin: 0 0 10px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.pps-fl-risks { display: block; }
+.pps-fl-risk {
+  border: 0;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  padding: 13px 0;
+  border-bottom: 1px solid #e4e4e7;
+  display: block;
+  color: inherit;
+}
+.pps-fl-rtop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.pps-fl-rname {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #231d45;
+}
+.pps-fl-pill {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 99px;
+  flex: none;
+}
+.pps-fl-pill--low { background: #00a19a; color: #fff; }
+.pps-fl-pill--med { background: transparent; color: #231d45; box-shadow: inset 0 0 0 1.5px #231d45; }
+.pps-fl-pill--high { background: #231d45; color: #fff; }
+.pps-fl-pill--none { background: #f3f3f5; color: #a2a2a9; box-shadow: inset 0 0 0 1px #e4e4e7; }
+.pps-fl-rmean {
+  font-size: 12.5px;
+  color: #75757c;
+  font-weight: 500;
+  margin: 7px 0 0;
+  line-height: 1.5;
+}
+.pps-fl-rdet {
+  margin-top: 11px;
+  padding: 13px;
+  background: #f3f3f5;
+  border-radius: 13px;
+  border-left: 3px solid #00a19a;
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-weight: 500;
+  color: #75757c;
+}
+.pps-fl-rdet :deep(b) { color: #231d45; font-weight: 700; }
+.pps-fl-live {
+  background: #f3f3f5;
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin-top: 12px;
+}
+.pps-fl-live .pps-fl-sec { margin-top: 0; }
+.pps-fl-livehead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  font: inherit;
+  width: 100%;
+  color: inherit;
+}
+.pps-fl-livehead span { font-size: 13px; font-weight: 700; color: #231d45; }
+.pps-fl-livehead small { font-size: 11.5px; color: #a2a2a9; font-weight: 600; }
+.pps-fl-livebody { padding-bottom: 6px; }
+.pps-fl-wrow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid #e4e4e7;
+  font-size: 12.5px;
+}
+.pps-fl-wrow span:first-child { font-weight: 600; color: #75757c; }
+.pps-fl-wrow span:last-child { font-weight: 700; flex: none; color: #231d45; }
+.pps-fl-impact {
+  margin-top: 20px;
+  background: #e9f6f5;
+  border-radius: 16px;
+  padding: 16px;
+}
+.pps-fl-impact h3 {
+  font-size: 13.5px;
+  font-weight: 800;
+  margin: 0 0 9px;
+  color: #231d45;
+}
+.pps-fl-impact ul {
+  margin: 0;
+  padding-left: 17px;
+  font-size: 12.5px;
+  line-height: 1.65;
+  font-weight: 500;
+  color: #75757c;
+}
+.pps-fl-impact li { margin-bottom: 5px; }
+.pps-fl-impact b { color: #231d45; font-weight: 700; }
+.pps-fl-lookups { display: block; }
+.pps-fl-lookup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid #e4e4e7;
+  text-decoration: none;
+  color: inherit;
+}
+.pps-fl-lname { font-size: 14.5px; font-weight: 600; color: #231d45; }
+.pps-fl-lsub {
+  font-size: 11.5px;
+  color: #a2a2a9;
+  font-weight: 600;
+  margin-top: 3px;
+}
+.pps-fl-go {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #00817c;
+  flex: none;
 }
 
 /* Placeholder for sheets with no data yet */
