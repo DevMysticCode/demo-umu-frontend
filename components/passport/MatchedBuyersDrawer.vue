@@ -4,26 +4,52 @@
       <div v-if="open" class="mbd-overlay" @click.self="$emit('close')">
         <div class="mbd-sheet" @click.stop>
           <div class="mbd-grip" />
+
+          <!-- Header: handshake eyebrow + big title + house illustration right -->
           <div class="mbd-head">
-            <div class="mbd-eyebrow">🤝 Matched buyers</div>
-            <div class="mbd-title">Buyers are already waiting for this home.</div>
-            <div class="mbd-sub">
-              As your Passport fills out, we match it to verified buyers. Reach
-              out privately and gauge interest first — then publish when you're
-              ready to go public.
+            <div class="mbd-head-text">
+              <div class="mbd-eyebrow">
+                <img src="/op-icons/matched-buyers/handshake.png" alt="" class="mbd-eyebrow-ic" loading="lazy" />
+                MATCHED BUYERS
+              </div>
+              <h2 class="mbd-title">Buyers are already waiting for this home.</h2>
+              <p class="mbd-sub">
+                As your Passport fills out, we match it to verified buyers. Reach
+                out privately and gauge interest first — then publish when you're
+                ready to go public.
+              </p>
+            </div>
+            <img
+              src="/op-icons/matched-buyers/house-person.png"
+              alt=""
+              class="mbd-head-illustration"
+              loading="lazy"
+            />
+          </div>
+
+          <!-- Hint bar -->
+          <div class="mbd-hint">
+            <span class="mbd-hint-ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z" />
+              </svg>
+            </span>
+            <span><b>Tap any buyer</b> to see how well they match your property.</span>
+          </div>
+
+          <!-- Empty -->
+          <div v-if="buyers.length === 0" class="mbd-empty">
+            <img src="/op-icons/matched-buyers/handshake.png" alt="" class="mbd-empty-ic" loading="lazy" />
+            <div class="mbd-empty-text">
+              No buyers yet. As you complete more sections, matches will appear here.
             </div>
           </div>
 
-          <div class="mbd-hint">Tap any buyer to see how well they match your property.</div>
-
-          <div v-if="buyers.length === 0" class="mbd-empty">
-            <div class="mbd-empty-ico">👥</div>
-            <div>No buyers yet. As you complete more sections, matches will appear here.</div>
-          </div>
-
-          <div
+          <!-- Buyer cards -->
+          <button
             v-for="b in buyers"
             :key="b.name"
+            type="button"
             class="mbd-card"
             @click="$emit('select', b)"
           >
@@ -33,46 +59,38 @@
               <div class="mbd-meta">
                 {{ b.area }} · {{ b.budget }} · {{ b.timeline }}
               </div>
-              <div class="mbd-tags">
-                <span
-                  v-for="t in b.tags"
-                  :key="t"
-                  class="mbd-tag"
-                  :class="{ watch: /watch|active/i.test(t) }"
-                >{{ t }}</span>
-              </div>
+              <span class="mbd-pill" :class="matchPillClass(b.matchScore)">
+                {{ matchLabel(b.matchScore) }}
+                <svg
+                  v-if="b.matchScore >= 55"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="mbd-pill-star"
+                >
+                  <path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6z" />
+                </svg>
+              </span>
             </div>
             <div class="mbd-gauge">
               <svg viewBox="0 0 80 80">
-                <circle class="mg-track" cx="40" cy="40" r="32" stroke-width="7" fill="none" />
+                <circle class="mg-track" cx="40" cy="40" r="32" stroke-width="6" fill="none" />
                 <circle
                   class="mg-fill" cx="40" cy="40" r="32"
-                  stroke="url(#mbdGrad)" stroke-width="7" fill="none"
+                  :stroke="matchStrokeColor(b.matchScore)"
+                  stroke-width="6" fill="none"
                   stroke-dasharray="201.06"
                   :stroke-dashoffset="201.06 - (b.matchScore / 100) * 201.06"
                   stroke-linecap="round" transform="rotate(-90 40 40)"
                 />
-                <defs>
-                  <linearGradient id="mbdGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#5EEAD4" />
-                    <stop offset="100%" stop-color="#00A19A" />
-                  </linearGradient>
-                </defs>
               </svg>
               <div class="mbd-gauge-num">{{ b.matchScore }}<small>%</small></div>
             </div>
-          </div>
+            <svg class="mbd-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
 
-          <div class="mbd-how">
-            <div class="mbd-how-h">How matching works</div>
-            <div class="mbd-how-v">
-              We match against <b>verified buyers</b> with a saved search near
-              your home. The score rises as your Passport completes — and as
-              buyers' criteria line up on location, price &amp; type. Tap a
-              buyer to see exactly why.
-            </div>
-          </div>
-          <div style="height: 14px" />
+          <div style="height: 24px" />
         </div>
       </div>
     </Transition>
@@ -99,68 +117,259 @@ defineEmits<{
 function initial(name: string) {
   return (name || '?').trim().charAt(0).toUpperCase()
 }
+function matchLabel(score: number): string {
+  if (score >= 75) return 'Strong match'
+  if (score >= 55) return 'Good match'
+  return 'Possible match'
+}
+function matchPillClass(score: number): string {
+  if (score >= 75) return 'mbd-pill--strong'
+  if (score >= 55) return 'mbd-pill--good'
+  return 'mbd-pill--possible'
+}
+function matchStrokeColor(score: number): string {
+  // Full teal for strong, medium for good, soft for possible.
+  if (score >= 75) return '#00A19A'
+  if (score >= 55) return '#4CBFB4'
+  return '#7FD0CB'
+}
 </script>
 
 <style scoped>
 .mbd-overlay {
-  position: fixed; inset: 0;
+  position: fixed;
+  inset: 0;
   background: rgba(35, 29, 69, 0.55);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   z-index: 1100;
-  display: flex; align-items: flex-end; justify-content: center;
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
-  --accent: #00a19a; --accent-dark: #008a84;
-  --accent-pale: #e5f4f2; --accent-paler: #f2faf8;
-  --bg: #f5f6fa; --card: #ffffff;
-  --text: #231d45; --text-secondary: #6b7089; --text-faint: #a8a9ad;
-  --border: #e4e5ed; --border-soft: #f0f1f5;
-  color: var(--text);
+  --navy: #231D45;
+  --navy-70: #4A5876;
+  --navy-40: #A8B0C2;
+  --teal: #00A19A;
+  --teal-dk: #008A84;
+  --teal-wash: #E9F6F5;
+  --lilac: #8B75E8;
+  --line: #E7EAEE;
+  --wash: #F5F7F9;
+  --card: #FFFFFF;
+  color: var(--navy);
 }
 .mbd-sheet {
-  width: 100%; max-width: 28rem;
+  width: 100%;
+  max-width: 28rem;
   background: var(--card);
-  border-radius: 22px 22px 0 0;
+  border-radius: 26px 26px 0 0;
   box-shadow: 0 -8px 30px rgba(35, 29, 69, 0.25);
   max-height: 92dvh;
   overflow-y: auto;
   padding-bottom: env(safe-area-inset-bottom);
 }
-.mbd-grip { width: 42px; height: 4px; background: var(--border); border-radius: 100px; margin: 10px auto 0; }
-.mbd-head { padding: 14px 22px 6px; }
-.mbd-eyebrow { font-size: 10px; font-weight: 800; color: var(--accent-dark); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 6px; }
-.mbd-title { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 4px; }
-.mbd-sub { font-size: 12.5px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; }
-.mbd-hint { padding: 8px 22px 0; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
-.mbd-empty { padding: 28px 22px; text-align: center; color: var(--text-faint); font-size: 12.5px; }
-.mbd-empty-ico { font-size: 32px; margin-bottom: 8px; }
+.mbd-grip {
+  width: 44px;
+  height: 4px;
+  background: #DADEE4;
+  border-radius: 100px;
+  margin: 10px auto 4px;
+}
 
-.mbd-card { display: flex; align-items: center; gap: 12px; margin: 10px 22px 0; padding: 13px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05); cursor: pointer; transition: transform 0.12s, box-shadow 0.15s, border-color 0.15s; }
-.mbd-card:hover { transform: translateY(-1px); border-color: var(--accent-pale); box-shadow: 0 8px 20px rgba(35, 29, 69, 0.10); }
-.mbd-avatar { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #00b8b0, var(--accent-dark)); color: white; font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 161, 154, 0.25); }
+.mbd-head {
+  display: flex;
+  gap: 14px;
+  padding: 14px 22px 4px;
+  align-items: flex-start;
+}
+.mbd-head-text { flex: 1; min-width: 0; }
+.mbd-head-illustration {
+  width: 118px;
+  height: 118px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 8px;
+}
+.mbd-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--teal-dk);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.mbd-eyebrow-ic {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.mbd-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin: 0 0 10px;
+}
+.mbd-sub {
+  font-size: 13px;
+  color: var(--navy-70);
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.mbd-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 22px 10px;
+  font-size: 13px;
+  color: var(--navy-70);
+  font-weight: 500;
+}
+.mbd-hint b { color: var(--navy); font-weight: 800; }
+.mbd-hint-ic {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--teal-wash);
+  color: var(--teal-dk);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.mbd-hint-ic svg { width: 18px; height: 18px; }
+
+.mbd-empty {
+  margin: 12px 22px 0;
+  padding: 22px 20px;
+  background: var(--wash);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mbd-empty-ic { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
+.mbd-empty-text {
+  font-size: 12.5px;
+  color: var(--navy-70);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.mbd-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 22px 0;
+  padding: 14px 14px 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 3px 10px rgba(35, 29, 69, 0.05);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.15s;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  width: calc(100% - 44px);
+}
+.mbd-card:active { transform: scale(0.99); }
+.mbd-card:hover { box-shadow: 0 6px 18px rgba(35, 29, 69, 0.08); }
+.mbd-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00B8B0, var(--teal-dk));
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 14px rgba(0, 161, 154, 0.28);
+}
 .mbd-info { flex: 1; min-width: 0; }
-.mbd-name { font-size: 14px; font-weight: 800; color: var(--text); }
-.mbd-meta { font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-top: 2px; }
-.mbd-tags { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
-.mbd-tag { font-size: 9.5px; font-weight: 800; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 100px; color: var(--text-secondary); letter-spacing: 0.2px; }
-.mbd-tag.watch { background: var(--accent-paler); color: var(--accent-dark); border-color: var(--accent-pale); }
-.mbd-gauge { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
-.mbd-gauge svg { width: 100%; height: 100%; }
-.mbd-gauge .mg-track { stroke: var(--accent-pale); }
-.mbd-gauge .mg-fill { transition: stroke-dashoffset 1.1s cubic-bezier(0.22, 1, 0.36, 1); filter: drop-shadow(0 0 4px rgba(0, 161, 154, 0.30)); }
-.mbd-gauge-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: var(--accent-dark); letter-spacing: -0.4px; }
-.mbd-gauge-num small { font-size: 8px; font-weight: 800; margin-left: 1px; }
+.mbd-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.3px;
+  line-height: 1.15;
+}
+.mbd-meta {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--navy-70);
+  margin-top: 4px;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mbd-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-top: 8px;
+  background: var(--teal-wash);
+  color: var(--teal-dk);
+}
+.mbd-pill--good     { background: var(--teal-wash); color: var(--teal-dk); }
+.mbd-pill--strong   { background: var(--teal-wash); color: var(--teal-dk); }
+.mbd-pill--possible { background: var(--wash); color: var(--navy-70); }
+.mbd-pill-star { width: 12px; height: 12px; }
+.mbd-pill--possible .mbd-pill-star { color: var(--navy-40); }
 
-.mbd-how { margin: 14px 22px 0; padding: 13px 15px; background: var(--accent-paler); border: 1px solid var(--accent-pale); border-radius: 12px; }
-.mbd-how-h { font-size: 9.5px; font-weight: 800; color: var(--accent-dark); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-.mbd-how-v { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); line-height: 1.55; }
-.mbd-how-v b { color: var(--text); font-weight: 800; }
+.mbd-gauge {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+.mbd-gauge svg { width: 100%; height: 100%; }
+.mbd-gauge .mg-track { stroke: var(--teal-wash); }
+.mbd-gauge .mg-fill {
+  transition: stroke-dashoffset 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mbd-gauge-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--teal-dk);
+  letter-spacing: -0.3px;
+}
+.mbd-gauge-num small { font-size: 8px; font-weight: 800; margin-left: 1px; }
+.mbd-chev {
+  width: 18px;
+  height: 18px;
+  color: var(--navy-40);
+  flex-shrink: 0;
+}
 
 .mbd-enter-active,
 .mbd-leave-active { transition: opacity 0.25s ease; }
 .mbd-enter-active .mbd-sheet,
-.mbd-leave-active .mbd-sheet { transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+.mbd-leave-active .mbd-sheet {
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
 .mbd-enter-from,
 .mbd-leave-to { opacity: 0; }
 .mbd-enter-from .mbd-sheet,

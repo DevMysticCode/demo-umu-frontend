@@ -1738,8 +1738,8 @@
                   class="pps-tr-row pps-tr-row--static"
                 >
                   <div class="pps-tr-strow">
-                    <span class="pps-tr-stname"
-                      >✈️ {{ a.name
+                    <span class="pps-tr-stname">
+                      {{ a.name
                       }}<template v-if="a.iata"> ({{ a.iata }})</template></span
                     >
                     <span class="pps-tr-stwalk"
@@ -1839,9 +1839,7 @@
                   <div v-if="trainOpen === i" class="pps-tr-det">
                     About
                     <b>{{ walkMinutes(t.distanceKm) }} minutes' walk</b> from
-                    this address at a normal pace ({{
-                      t.distanceKm.toFixed(1)
-                    }}
+                    this address at a normal pace ({{ t.distanceKm.toFixed(1) }}
                     km straight-line). Journey times and connections vary —
                     check National Rail for live timetables.
                   </div>
@@ -1850,7 +1848,7 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">🚂</div>
+              <div class="pps-ds-placeholder-icon"></div>
               <div class="pps-ds-placeholder-title">
                 {{
                   transportLookupFailed
@@ -2097,7 +2095,7 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">✈️</div>
+              <div class="pps-ds-placeholder-icon"></div>
               <div class="pps-ds-placeholder-title">
                 {{
                   airportsLookupFailed
@@ -3077,8 +3075,8 @@
                   class="pps-tr-row pps-tr-row--static"
                 >
                   <div class="pps-tr-strow">
-                    <span class="pps-tr-stname"
-                      > {{ b.name || 'Unnamed site' }}</span
+                    <span class="pps-tr-stname">
+                      {{ b.name || 'Unnamed site' }}</span
                     >
                     <span class="pps-tr-stwalk">{{
                       b.grade || 'Heritage'
@@ -3408,87 +3406,135 @@
 
           <!-- ── Make Contact (Owner / Neighbour) ──────────────────── -->
           <template v-else-if="activeSheet === 'owner'">
-            <div class="pps-sheet-icon">💬</div>
-            <div class="pps-sheet-title">Make contact</div>
-            <div class="pps-sheet-sub">
-              Drop a note to the owner — whether you're a neighbour with a
-              question or a buyer making a quiet approach.
-            </div>
-
-            <!-- Role -->
-            <div class="pps-field-group">
-              <div class="pps-field">
-                <label class="pps-field-label">I am a…</label>
-                <div class="pps-choice-row">
-                  <button
-                    v-for="r in ['Potential buyer', 'Neighbour', 'Agent']"
-                    :key="r"
-                    type="button"
-                    class="pps-choice"
-                    :class="{ 'pps-choice--active': contactRole === r }"
-                    @click="contactRole = r"
-                  >
-                    {{ r }}
-                  </button>
+            <div class="mkc-head">
+              <img src="/op-icons/matched-buyers/chat-multi.png" alt="" class="mkc-head-ic" loading="lazy" />
+              <div class="mkc-head-text">
+                <div class="mkc-head-title">Make contact</div>
+                <div class="mkc-head-sub">
+                  Drop a note to the owner — whether you're a neighbour with a
+                  question or a buyer making a quiet approach.
                 </div>
               </div>
+            </div>
 
-              <!-- Name -->
-              <div class="pps-field">
-                <label class="pps-field-label">Your name</label>
+            <div class="mkc-section">
+              <div class="mkc-label">I AM A…</div>
+              <div class="mkc-chip-row">
+                <button
+                  v-for="r in contactRoles"
+                  :key="r.value"
+                  type="button"
+                  class="mkc-chip"
+                  :class="{ 'mkc-chip--active': contactRole === r.value }"
+                  @click="contactRole = r.value"
+                >
+                  <span class="mkc-chip-ic" aria-hidden="true">
+                    <svg v-if="r.icon === 'person'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="8" r="4" />
+                      <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                    </svg>
+                    <svg v-else-if="r.icon === 'briefcase'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="8" width="18" height="12" rx="2" />
+                      <path d="M8 8V6a2 2 0 012-2h4a2 2 0 012 2v2" />
+                      <line x1="3" y1="14" x2="21" y2="14" />
+                    </svg>
+                  </span>
+                  {{ r.label }}
+                </button>
+              </div>
+            </div>
+
+            <div class="mkc-section">
+              <div class="mkc-label">YOUR NAME</div>
+              <div class="mkc-input-wrap">
+                <span class="mkc-input-ic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                  </svg>
+                </span>
                 <input
                   v-model="contactName"
                   type="text"
-                  class="pps-text-input"
+                  class="mkc-input"
                   placeholder="Alex Quinn"
                 />
               </div>
+            </div>
 
-              <!-- Message -->
-              <div class="pps-field">
-                <label class="pps-field-label">Your message</label>
+            <div class="mkc-section">
+              <div class="mkc-label">YOUR MESSAGE</div>
+              <div class="mkc-input-wrap mkc-input-wrap--textarea">
+                <span class="mkc-input-ic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 20h4l10-10-4-4L4 16v4z" />
+                    <path d="M14 6l4 4" />
+                  </svg>
+                </span>
                 <textarea
                   v-model="contactMessage"
-                  class="pps-text-input pps-text-textarea"
+                  class="mkc-input mkc-textarea"
                   :placeholder="contactPlaceholder"
                 />
               </div>
+            </div>
 
-              <!-- Reply preference -->
-              <div class="pps-field">
-                <label class="pps-field-label">How should they reply?</label>
-                <div class="pps-choice-row">
-                  <button
-                    v-for="r in ['Email', 'Phone', 'Either']"
-                    :key="r"
-                    type="button"
-                    class="pps-choice"
-                    :class="{ 'pps-choice--active': contactReplyPref === r }"
-                    @click="contactReplyPref = r"
-                  >
-                    {{ r }}
-                  </button>
-                </div>
+            <div class="mkc-section">
+              <div class="mkc-label">HOW SHOULD THEY REPLY?</div>
+              <div class="mkc-chip-row">
+                <button
+                  v-for="r in contactReplyChoices"
+                  :key="r.value"
+                  type="button"
+                  class="mkc-chip"
+                  :class="{ 'mkc-chip--active': contactReplyPref === r.value }"
+                  @click="contactReplyPref = r.value"
+                >
+                  <span class="mkc-chip-ic" aria-hidden="true">
+                    <svg v-if="r.icon === 'envelope'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="5" width="18" height="14" rx="2" />
+                      <polyline points="3 7 12 13 21 7" />
+                    </svg>
+                    <svg v-else-if="r.icon === 'phone'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.7A2 2 0 014.1 2h3a2 2 0 012 1.7 12.8 12.8 0 00.7 2.8 2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.5 12.8 12.8 0 002.8.7A2 2 0 0122 16.9z" />
+                    </svg>
+                    <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 12a8 8 0 01-11.5 7.2L4 21l1.8-5.5A8 8 0 1121 12z" />
+                      <circle cx="8.5" cy="12" r="1" fill="currentColor" />
+                      <circle cx="12" cy="12" r="1" fill="currentColor" />
+                      <circle cx="15.5" cy="12" r="1" fill="currentColor" />
+                    </svg>
+                  </span>
+                  {{ r.label }}
+                </button>
               </div>
             </div>
 
-            <div class="pps-privacy-note">
-              <span style="font-size: 15px">🔒</span>
-              Your details go only to the verified owner. We never share with
-              third parties or agents without your consent.
+            <div class="mkc-privacy">
+              <img src="/op-icons/matched-buyers/lock-big.png" alt="" class="mkc-privacy-ic" loading="lazy" />
+              <div class="mkc-privacy-body">
+                <div class="mkc-privacy-title">Your details go only to the verified owner.</div>
+                <div class="mkc-privacy-sub">
+                  We never share with third parties or agents without your consent.
+                </div>
+              </div>
             </div>
 
             <p v-if="contactError" class="pps-form-error">{{ contactError }}</p>
 
             <button
               type="button"
-              class="pps-sheet-cta"
+              class="mkc-send"
               :disabled="contactSubmitting"
               @click="submitOwnerContact"
             >
-              {{ contactSubmitting ? 'Sending…' : 'Send message →' }}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+              {{ contactSubmitting ? 'Sending…' : 'Send message' }}
             </button>
-            <button class="pps-sheet-cancel" @click="closeSheet">Cancel</button>
+            <button class="mkc-cancel" @click="closeSheet">Cancel</button>
           </template>
 
           <!-- ── Passport unlock (Published — £99) ─────────────────── -->
@@ -4828,7 +4874,7 @@ const nearbyTransport = computed(() => {
     items.push({
       name: t.name,
       meta: t.distanceKm ? t.distanceKm + ' km' : '',
-      emoji: '🚂',
+      emoji: '',
       type: 'Rail',
       iconClass: 'pp-nearby-icon--purple',
       badgeClass: 'pp-transport-badge--purple',
@@ -4837,7 +4883,7 @@ const nearbyTransport = computed(() => {
     items.push({
       name: b.name,
       meta: b.distanceKm ? b.distanceKm + ' km' : '',
-      emoji: '🚌',
+      emoji: '',
       type: 'Bus',
       iconClass: 'pp-nearby-icon--amber',
       badgeClass: 'pp-transport-badge--amber',
@@ -4846,7 +4892,7 @@ const nearbyTransport = computed(() => {
     items.push({
       name: a.name,
       meta: a.distanceKm ? a.distanceKm + ' km drive' : '',
-      emoji: '✈️',
+      emoji: '',
       type: 'Airport',
       iconClass: 'pp-nearby-icon--sky',
       badgeClass: 'pp-transport-badge--sky',
@@ -6828,6 +6874,18 @@ const contactReplyPref = ref<ContactReplyPref>('Email')
 const contactSubmitting = ref(false)
 const contactError = ref('')
 
+// Contact chip option lists — icon name maps to the inline SVG we render.
+const contactRoles: Array<{ value: ContactRole; label: string; icon: string }> = [
+  { value: 'Potential buyer', label: 'Potential buyer', icon: 'person' },
+  { value: 'Neighbour',       label: 'Neighbour',       icon: 'person' },
+  { value: 'Agent',           label: 'Agent',           icon: 'briefcase' },
+]
+const contactReplyChoices: Array<{ value: ContactReplyPref; label: string; icon: string }> = [
+  { value: 'Email',  label: 'Email',  icon: 'envelope' },
+  { value: 'Phone',  label: 'Phone',  icon: 'phone' },
+  { value: 'Either', label: 'Either', icon: 'chat' },
+]
+
 // Message placeholder swaps based on the picked role so the textarea gives a
 // natural starting point ("Hi — I've been following this road…" for buyers,
 // "Hi — your hedge is hanging over my driveway…" for neighbours, etc.).
@@ -7377,31 +7435,31 @@ async function initMap() {
     const n = enrichment.value?.nearby ?? {}
     for (const s of n.schools ?? []) {
       if (s.lat && s.lon)
-        L.marker([s.lat, s.lon], { icon: makeDivIcon('#3b82f6', '🎓') })
+        L.marker([s.lat, s.lon], { icon: makeDivIcon('#3b82f6', '') })
           .bindPopup(s.name)
           .addTo(map)
     }
     for (const t of n.trains ?? []) {
       if (t.lat && t.lon)
-        L.marker([t.lat, t.lon], { icon: makeDivIcon('#8b5cf6', '🚆') })
+        L.marker([t.lat, t.lon], { icon: makeDivIcon('#8b5cf6', '') })
           .bindPopup(t.name)
           .addTo(map)
     }
     for (const b of n.busStops ?? []) {
       if (b.lat && b.lon)
-        L.marker([b.lat, b.lon], { icon: makeDivIcon('#f59e0b', '🚌') })
+        L.marker([b.lat, b.lon], { icon: makeDivIcon('#f59e0b', '') })
           .bindPopup(b.name)
           .addTo(map)
     }
     for (const p of n.parks ?? []) {
       if (p.lat && p.lon)
-        L.marker([p.lat, p.lon], { icon: makeDivIcon('#00a19a', '🌳') })
+        L.marker([p.lat, p.lon], { icon: makeDivIcon('#00a19a', '') })
           .bindPopup(p.name)
           .addTo(map)
     }
     for (const a of n.airports ?? []) {
       if (a.lat && a.lon)
-        L.marker([a.lat, a.lon], { icon: makeDivIcon('#ec4899', '✈️') })
+        L.marker([a.lat, a.lon], { icon: makeDivIcon('#ec4899', '') })
           .bindPopup(a.name)
           .addTo(map)
     }
@@ -11827,4 +11885,210 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 6px 0 10px;
   font-weight: 600;
 }
+
+/* ── Make Contact (mkc-*) ────────────────────────────────────────────
+   Matches the new "Make contact" mockup: 3D chat-multi header, role/
+   reply chips with 2D SVG icons, icon-prefixed inputs, lock-illustrated
+   privacy card, gradient-teal Send button. */
+.mkc-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 4px 20px;
+}
+.mkc-head-ic {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.mkc-head-text { flex: 1; min-width: 0; }
+.mkc-head-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #231D45;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.mkc-head-sub {
+  font-size: 13.5px;
+  color: #4A5876;
+  font-weight: 500;
+  line-height: 1.45;
+  margin-top: 6px;
+}
+
+.mkc-section { margin-bottom: 18px; }
+.mkc-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #008A84;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+}
+
+/* Chip rows (role + reply preference) */
+.mkc-chip-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+.mkc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 10px;
+  background: #FFFFFF;
+  border: 1.5px solid #E7EAEE;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #231D45;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+  min-width: 0;
+  justify-content: center;
+}
+.mkc-chip:active { transform: scale(0.98); }
+.mkc-chip-ic {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #E9F6F5;
+  color: #00A19A;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.18s, color 0.18s;
+}
+.mkc-chip-ic svg { width: 18px; height: 18px; }
+.mkc-chip--active {
+  background: #231D45;
+  border-color: #231D45;
+  color: #FFFFFF;
+}
+.mkc-chip--active .mkc-chip-ic {
+  background: rgba(255, 255, 255, 0.12);
+  color: #5EEAD4;
+}
+
+/* Icon-prefixed inputs (name + message) */
+.mkc-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FFFFFF;
+  border: 1.5px solid #E7EAEE;
+  border-radius: 16px;
+  padding: 12px 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.mkc-input-wrap:focus-within {
+  border-color: #00A19A;
+  box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.12);
+}
+.mkc-input-wrap--textarea { align-items: flex-start; padding: 14px; }
+.mkc-input-ic {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #E9F6F5;
+  color: #008A84;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.mkc-input-ic svg { width: 20px; height: 20px; }
+.mkc-input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #231D45;
+  min-width: 0;
+}
+.mkc-input::placeholder { color: #A8B0C2; font-weight: 500; }
+.mkc-textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.55;
+  padding: 4px 0 0;
+}
+
+/* Privacy card with 3D lock illustration */
+.mkc-privacy {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 4px 0 20px;
+  padding: 16px 18px;
+  background: #E9F6F5;
+  border-radius: 16px;
+}
+.mkc-privacy-ic {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.mkc-privacy-body { flex: 1; min-width: 0; }
+.mkc-privacy-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231D45;
+  letter-spacing: -0.2px;
+  line-height: 1.25;
+}
+.mkc-privacy-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #4A5876;
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+.mkc-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 17px;
+  background: linear-gradient(135deg, #00B0A8, #00A19A);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 16px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  box-shadow: 0 8px 22px rgba(0, 161, 154, 0.4);
+  transition: transform 0.15s ease, opacity 0.15s;
+}
+.mkc-send svg { width: 20px; height: 20px; }
+.mkc-send:active:not(:disabled) { transform: scale(0.98); }
+.mkc-send:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+.mkc-cancel {
+  width: 100%;
+  margin-top: 10px;
+  padding: 15px;
+  background: #FFFFFF;
+  border: 1.5px solid #E7EAEE;
+  border-radius: 16px;
+  color: #231D45;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+}
+.mkc-cancel:hover { background: #F5F7F9; }
 </style>
