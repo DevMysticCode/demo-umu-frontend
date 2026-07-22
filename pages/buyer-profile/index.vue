@@ -27,26 +27,40 @@
     <!-- ── Hero card (prototype-exact gradient + shimmer) ── -->
     <div class="mp-hero-wrap">
       <div class="hero-card" @click="goToBuild">
-        <div class="hero-eyebrow">UMU Buyer Profile</div>
-        <div class="hero-tagline">"Trusted, ready,<br />chain-free."</div>
-        <div class="hero-name">{{ heroName }}</div>
-        <div class="hero-pills">
-          <div class="hero-pill">🪪 ID Verified</div>
-          <div v-if="heroFunds" class="hero-pill">{{ heroFunds }}</div>
-          <div class="hero-pill">Chain free</div>
+        <div class="hero-card-content">
+          <div class="hero-eyebrow">UMU Buyer Profile</div>
+          <div class="hero-tagline">"Trusted, ready,<br />chain-free."</div>
+          <div class="hero-name">{{ heroName }}</div>
+          <div class="hero-pills">
+            <div class="hero-pill">
+              <img src="/op-icons/verify-identity/idCard.png" alt="" class="hero-pill-ic" loading="lazy" />
+              ID Verified
+            </div>
+            <div v-if="heroFunds" class="hero-pill">{{ heroFunds }}</div>
+            <div class="hero-pill">
+              <img src="/op-icons/verify-identity/shield.png" alt="" class="hero-pill-ic" loading="lazy" />
+              Chain free
+            </div>
+          </div>
+          <div class="hero-footer">
+            <span class="hero-footer-text">{{
+              hasProgress ? 'Tap to continue' : 'Tap to start'
+            }}</span>
+          </div>
         </div>
-        <div class="hero-footer">
-          <span class="hero-footer-text">{{
-            hasProgress ? 'Tap to continue' : 'Tap to start'
-          }}</span>
-          <span class="hero-share-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-              <polyline points="16 6 12 2 8 6" />
-              <line x1="12" y1="2" x2="12" y2="15" />
-            </svg>
-          </span>
-        </div>
+        <img
+          src="/op-icons/buyer-profile-hero/phone-shield.png"
+          alt=""
+          class="hero-illustration"
+          loading="lazy"
+        />
+        <span class="hero-share-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+            <polyline points="16 6 12 2 8 6" />
+            <line x1="12" y1="2" x2="12" y2="15" />
+          </svg>
+        </span>
       </div>
     </div>
 
@@ -257,17 +271,45 @@ onMounted(async () => {
 /* ───────────── Hero card (gradient + shimmer) ───────────── */
 .mp-hero-wrap { padding: 16px 22px 0; }
 .hero-card {
-  background: linear-gradient(140deg, #00b6ae 0%, #00a19a 50%, #00514d 100%);
+  /* Solid teal matched to the phone-shield illustration crop so its
+     background blends seamlessly with the card. */
+  background: #17A199;
   box-shadow: 0 12px 32px -10px rgba(0, 161, 154, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  border-radius: 20px; padding: 22px;
-  color: white; position: relative; overflow: hidden; cursor: pointer;
+  border-radius: 20px;
+  padding: 22px 18px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 300px;
 }
 .hero-card::after {
   content: ''; position: absolute; top: -40%; right: -20%;
   width: 280px; height: 280px; border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, transparent 65%);
   pointer-events: none;
+}
+/* Left column with tagline / name / pills / tap-to-start. */
+.hero-card-content {
+  position: relative;
+  z-index: 1;
+  max-width: 55%;
+}
+/* The phone-with-shield illustration is anchored to the bottom-right
+   of the card. Kept at ~48% width so it never crowds the copy on
+   narrow devices; slight negative right/bottom so the flat teal edges
+   fall behind the card's rounded corners. */
+.hero-illustration {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  width: 52%;
+  max-width: 240px;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 18px rgba(0, 65, 62, 0.28));
 }
 .hero-card::before {
   content: ''; position: absolute; top: 0; left: 0;
@@ -277,7 +319,7 @@ onMounted(async () => {
   animation: mp-shimmer 3s ease-in-out infinite;
   pointer-events: none;
 }
-.hero-card > * { position: relative; z-index: 1; }
+.hero-card-content > * { position: relative; z-index: 1; }
 @keyframes mp-shimmer {
   0% { transform: translateX(-100%) skewX(-15deg); }
   100% { transform: translateX(600%) skewX(-15deg); }
@@ -293,16 +335,38 @@ onMounted(async () => {
 .hero-name { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
 .hero-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
 .hero-pill {
-  font-size: 10px; font-weight: 700;
-  border: 1px solid rgba(255,255,255,0.4); border-radius: 100px;
-  padding: 5px 10px; color: white; white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 100px;
+  padding: 5px 10px 5px 6px;
+  color: white;
+  white-space: nowrap;
+}
+.hero-pill-ic {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .hero-footer { display: flex; align-items: center; justify-content: space-between; }
-.hero-footer-text { font-size: 11px; font-weight: 600; opacity: 0.75; }
+.hero-footer-text { font-size: 11px; font-weight: 600; opacity: 0.9; }
 .hero-share-btn {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: rgba(255,255,255,0.2); color: white;
-  display: flex; align-items: center; justify-content: center;
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
