@@ -5830,7 +5830,11 @@ async function persistWatch(opts: { silent?: boolean } = {}) {
       body: JSON.stringify({ interestLevel: 'Potential buyer' }),
     }).catch(() => {})
     if (!opts.silent) {
-      showToast({ message: '👁 Added to your watch list', duration: 2400 })
+      showToast({
+        message: 'Added to your watch list',
+        icon: '/op-icons/homescore/houseSearch.png',
+        duration: 2400,
+      })
     }
   } finally {
     watchSubmitting.value = false

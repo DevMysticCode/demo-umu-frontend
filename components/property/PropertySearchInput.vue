@@ -69,17 +69,23 @@
           <div
             class="psi-drop-ic"
             style="
-              width: 32px;
-              height: 32px;
-              background: #f1f9f4;
-              border-radius: 9px;
-              display: grid;
-              place-items: center;
+              width: 44px;
+              height: 44px;
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
               flex-shrink: 0;
-              font-size: 14px;
+              background: transparent;
+              overflow: hidden;
             "
           >
-            🏠
+            <img
+              src="/op-icons/homescore/houseSearch.png"
+              alt=""
+              style="width: 100%; height: 100%; object-fit: contain;"
+              loading="lazy"
+            />
           </div>
           <!-- Body column: title + sub + badges -->
           <div class="psi-drop-body">
