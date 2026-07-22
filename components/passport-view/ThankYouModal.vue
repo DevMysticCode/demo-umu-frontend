@@ -2,22 +2,26 @@
   <Transition name="cong">
     <div v-if="modelValue" class="cong-page">
       <div class="cong-inner">
-        <!-- Headline -->
-        <h1 class="cong-title">Congratulations!</h1>
-        <p class="cong-sub">
-          You've earned <b class="cong-points">{{ points || 475 }} points</b>
-          by completing the {{ stepName || 'Boundaries' }} section
-        </p>
+        <!-- Headline (fixed height, no overflow) -->
+        <div class="cong-header">
+          <h1 class="cong-title">Congratulations!</h1>
+          <p class="cong-sub">
+            You've earned <b class="cong-points">{{ points || 475 }} points</b>
+            by completing the {{ stepName || 'Boundaries' }} section
+          </p>
+        </div>
 
-        <!-- Gift illustration -->
-        <img
-          src="/op-icons/congratulations/gift.png"
-          alt=""
-          class="cong-gift"
-          loading="lazy"
-        />
+        <!-- Gift illustration — flexes to fill remaining space -->
+        <div class="cong-gift-wrap">
+          <img
+            src="/op-icons/congratulations/gift.png"
+            alt=""
+            class="cong-gift"
+            loading="lazy"
+          />
+        </div>
 
-        <!-- Rewards card -->
+        <!-- Reward card — two-column flex, no absolute positioning -->
         <div class="cong-reward">
           <div class="cong-reward-body">
             <h3 class="cong-reward-title">Your Rewards Await</h3>
@@ -42,7 +46,7 @@
           />
         </div>
 
-        <!-- Finish CTA -->
+        <!-- Finish CTA — always visible -->
         <button class="cong-finish" type="button" @click="handleContinue">
           Finish
         </button>
@@ -81,160 +85,178 @@ const onGoRewards = () => {
   color: #231D45;
   display: flex;
   justify-content: center;
-  overflow-y: auto;
-  padding: env(safe-area-inset-top) 22px calc(24px + env(safe-area-inset-bottom));
+  overflow: hidden;
 }
 .cong-inner {
   width: 100%;
   max-width: 28rem;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
-  padding-top: 40px;
+  padding:
+    calc(24px + env(safe-area-inset-top))
+    22px
+    calc(16px + env(safe-area-inset-bottom));
+  gap: 14px;
+  min-height: 0;
 }
 
-/* Headline */
+/* ── Header ──────────────────────────────────────────────────── */
+.cong-header {
+  flex-shrink: 0;
+  text-align: center;
+  animation: congPop 0.5s cubic-bezier(0.22, 1.36, 0.32, 1);
+}
+@keyframes congPop {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
 .cong-title {
-  font-size: 34px;
+  font-size: clamp(26px, 7vw, 32px);
   font-weight: 800;
   letter-spacing: -0.6px;
   color: #231D45;
-  margin: 0 0 12px;
-  text-align: center;
+  margin: 0 0 8px;
   line-height: 1.1;
-  animation: congPop 0.6s cubic-bezier(0.22, 1.36, 0.32, 1);
-}
-@keyframes congPop {
-  0% { transform: scale(0.85); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
 }
 .cong-sub {
-  font-size: 16px;
+  font-size: clamp(13px, 3.6vw, 15px);
   font-weight: 500;
   color: #4A5876;
-  text-align: center;
-  line-height: 1.5;
-  margin: 0 8px;
+  line-height: 1.45;
+  margin: 0 4px;
 }
 .cong-points {
   color: #00A19A;
   font-weight: 800;
 }
 
-/* Gift illustration */
+/* ── Gift (flexes to fill remaining vertical space) ─────────── */
+.cong-gift-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 .cong-gift {
-  width: 84%;
-  max-width: 340px;
+  max-width: min(260px, 60%);
+  max-height: 100%;
+  width: auto;
   height: auto;
-  align-self: center;
-  margin: 22px auto 24px;
+  object-fit: contain;
   animation: congFloat 3.4s ease-in-out infinite;
   filter: drop-shadow(0 12px 24px rgba(0, 161, 154, 0.18));
 }
 @keyframes congFloat {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
+  50%      { transform: translateY(-6px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cong-gift { animation: none; }
-  .cong-title { animation: none; }
+  .cong-gift, .cong-header { animation: none; }
 }
 
-/* Reward card */
+/* ── Reward card ─────────────────────────────────────────────── */
 .cong-reward {
-  position: relative;
+  flex-shrink: 0;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 26px 22px;
+  align-items: stretch;
+  gap: 12px;
+  padding: 20px 20px 18px;
   background: #FFFFFF;
-  border-radius: 22px;
-  box-shadow: 0 12px 26px rgba(31, 44, 76, 0.06);
-  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(31, 44, 76, 0.06);
 }
-.cong-reward-body { flex: 1; min-width: 0; }
+.cong-reward-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
 .cong-reward-title {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 800;
   color: #231D45;
   letter-spacing: -0.3px;
-  margin: 0 0 14px;
+  margin: 0 0 10px;
+  line-height: 1.15;
 }
 .cong-reward-num {
-  font-size: 46px;
+  font-size: clamp(34px, 10vw, 42px);
   font-weight: 800;
   color: #00A19A;
-  letter-spacing: -1.5px;
+  letter-spacing: -1.3px;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .cong-reward-label {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: #231D45;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 .cong-reward-text {
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 500;
   color: #4A5876;
-  line-height: 1.45;
-  margin: 12px 0 0;
-  max-width: 68%;
+  line-height: 1.4;
+  margin: 8px 0 12px;
 }
 .cong-reward-btn {
   display: inline-flex;
+  align-self: flex-start;
   align-items: center;
   gap: 8px;
-  margin-top: 18px;
-  padding: 12px 18px;
+  margin-top: auto;
+  padding: 10px 16px;
   background: #E9F6F5;
   color: #00817C;
   border: 0;
   border-radius: 100px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: -0.2px;
   transition: transform 0.15s ease, background 0.15s;
 }
 .cong-reward-btn:hover { background: #DCF0EE; }
 .cong-reward-btn:active { transform: scale(0.97); }
-.cong-reward-btn svg { width: 16px; height: 16px; }
+.cong-reward-btn svg { width: 15px; height: 15px; }
+
 .cong-reward-star {
-  position: absolute;
-  right: 18px;
-  bottom: 20px;
-  width: 42%;
-  max-width: 170px;
+  align-self: center;
+  width: 34%;
+  max-width: 130px;
   height: auto;
-  pointer-events: none;
-  filter: drop-shadow(0 8px 18px rgba(0, 161, 154, 0.2));
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 6px 14px rgba(0, 161, 154, 0.22));
 }
 
-/* Finish CTA */
+/* ── Finish CTA ──────────────────────────────────────────────── */
 .cong-finish {
+  flex-shrink: 0;
   width: 100%;
-  margin-top: auto;
-  padding: 20px;
+  padding: 18px;
   background: #00817C;
   color: #FFFFFF;
   border: 0;
-  border-radius: 18px;
+  border-radius: 16px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.2px;
-  box-shadow: 0 10px 24px rgba(0, 129, 124, 0.28);
+  box-shadow: 0 8px 20px rgba(0, 129, 124, 0.28);
   transition: transform 0.15s ease;
 }
 .cong-finish:active { transform: scale(0.98); }
 
-/* Enter/leave */
+/* ── Enter/leave ─────────────────────────────────────────────── */
 .cong-enter-active, .cong-leave-active {
-  transition: opacity 0.28s ease;
+  transition: opacity 0.25s ease;
 }
 .cong-enter-from, .cong-leave-to { opacity: 0; }
 </style>
