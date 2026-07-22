@@ -475,7 +475,10 @@
           :class="{ open: expandedStat === s.id }"
           @click="toggleStat(s.id)"
         >
-          <div class="stat-icon">{{ s.icon }}</div>
+          <div class="stat-icon">
+            <img v-if="s.icon && s.icon.startsWith('/')" :src="s.icon" alt="" loading="lazy" />
+            <template v-else>{{ s.icon }}</template>
+          </div>
           <div class="stat-label">{{ s.label }}</div>
           <div class="stat-bar-wrap">
             <div class="stat-bar-fill" :class="s.tone" :style="{ width: s.pct + '%' }" />
@@ -539,9 +542,7 @@
     <div ref="epcDrawerEl" class="epc-drawer anim-3" :class="{ open: epcDrawerOpen }">
       <div class="epc-drawer-head" @click="toggleEpcDrawer">
         <div class="epc-drawer-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="13 2 4 14 11 14 11 22 20 10 13 10" fill="currentColor" />
-          </svg>
+          <img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" />
         </div>
         <div class="epc-drawer-info">
           <div class="epc-drawer-title">Full EPC breakdown</div>
@@ -630,7 +631,7 @@
             <div class="fork-opt-chev">›</div>
           </button>
           <button class="fork-opt" type="button" @click="$emit('open-boost')">
-            <div class="fork-opt-icon">⚡</div>
+            <div class="fork-opt-icon"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
             <div class="fork-opt-body">
               <div class="fork-opt-title">Boost your score</div>
               <div class="fork-opt-sub">Add docs to grow your Move Ready &amp; Passport.</div>
@@ -655,7 +656,7 @@
         <div class="fork-eyebrow">What you can do here</div>
         <div class="fork-options">
           <button class="fork-opt primary" type="button" @click="$emit('interested')">
-            <div class="fork-opt-icon">🔍</div>
+            <div class="fork-opt-icon"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
             <div class="fork-opt-body">
               <div class="fork-opt-title">I'm interested in this property</div>
               <div class="fork-opt-sub">Full running costs, risks and questions to ask before you offer.</div>
@@ -673,7 +674,7 @@
         <div class="fork-eyebrow">What's your connection to this property?</div>
         <div class="fork-options">
           <button class="fork-opt primary" type="button" @click="$emit('claim')">
-            <div class="fork-opt-icon">🏠</div>
+            <div class="fork-opt-icon"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></div>
             <div class="fork-opt-body">
               <div class="fork-opt-title">I own this property</div>
               <div class="fork-opt-sub">Take the quiz to level up your stats and get your real score.</div>
@@ -681,7 +682,7 @@
             <div class="fork-opt-chev">›</div>
           </button>
           <button class="fork-opt" type="button" @click="$emit('interested')">
-            <div class="fork-opt-icon">🔍</div>
+            <div class="fork-opt-icon"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
             <div class="fork-opt-body">
               <div class="fork-opt-title">I'm interested in this property</div>
               <div class="fork-opt-sub">Full running costs, risks and questions to ask before you offer.</div>
@@ -1393,7 +1394,7 @@ const stats = computed<StatRow[]>(() => {
   return [
     {
       id: 'heating',
-      icon: '🔥',
+      icon: '/op-icons/homescore/flame.png',
       label: 'Heating',
       value: heatVal,
       max: 20,
@@ -1427,7 +1428,7 @@ const stats = computed<StatRow[]>(() => {
     },
     {
       id: 'structure',
-      icon: '🧱',
+      icon: '/op-icons/homescore/bricks.png',
       label: 'Structure',
       value: structVal,
       max: 25,
@@ -1472,7 +1473,7 @@ const stats = computed<StatRow[]>(() => {
     },
     {
       id: 'efficiency',
-      icon: '💡',
+      icon: '/op-icons/homescore/lightbulb.png',
       label: 'Efficiency',
       value: effVal,
       max: 15,
@@ -1507,7 +1508,7 @@ const stats = computed<StatRow[]>(() => {
     },
     {
       id: 'electrics',
-      icon: '⚡',
+      icon: '/op-icons/homescore/lightning.png',
       label: 'Electrics',
       value: elecVal,
       max: 20,
@@ -1544,7 +1545,7 @@ const stats = computed<StatRow[]>(() => {
     },
     {
       id: 'plumbing',
-      icon: '💧',
+      icon: '/op-icons/homescore/tap.png',
       label: 'Plumbing',
       value: plumbVal,
       max: 20,
@@ -3100,9 +3101,19 @@ const watchersDisplay = computed(() => {
 }
 .stat-icon {
   font-size: 14px;
-  width: 22px;
+  width: 34px;
+  height: 34px;
   text-align: center;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stat-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .stat-label {
   width: 70px;
@@ -3327,15 +3338,18 @@ const watchersDisplay = computed(() => {
   background: var(--accent-paler);
 }
 .epc-drawer-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--accent-paler);
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--accent-dark);
+}
+.epc-drawer-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .epc-drawer-icon svg {
   width: 18px;
@@ -3646,17 +3660,18 @@ const watchersDisplay = computed(() => {
 }
 .fork-opt-icon {
   font-size: 22px;
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background: var(--accent-paler);
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.fork-opt.primary .fork-opt-icon {
-  background: rgba(255, 255, 255, 0.18);
+.fork-opt-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .fork-opt-body {
   flex: 1;
