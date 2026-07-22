@@ -1446,11 +1446,12 @@ const executeDelete = async () => {
   line-height: 1.3;
 }
 
-/* Trash button — always visible on touch devices (no hover), reveal on
-   hover for pointer devices. `@media (hover: hover)` matches devices
-   whose primary input can hover (mouse, trackpad). Phones/tablets fall
-   through to the base rule and see the button at full opacity so it's
-   actually tappable. */
+/* Trash button — always visible on every device. Previously the
+   reveal was gated by `@media (hover: hover)` but that query
+   mis-reports on some phones with a connected keyboard/mouse and
+   left the button hidden on touch. Unconditional visibility is the
+   safer default; the red shadow makes it read as its own affordance
+   sitting on the passport thumbnail. */
 .book-trash-btn {
   position: absolute;
   bottom: 8px;
@@ -1459,35 +1460,18 @@ const executeDelete = async () => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(229, 62, 62, 0.9);
+  background: rgba(229, 62, 62, 0.92);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 1;
-  transform: scale(1);
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease;
+  transition: transform 0.15s ease;
   backdrop-filter: blur(4px);
   box-shadow: 0 3px 10px rgba(229, 62, 62, 0.35);
 }
+.book-trash-btn:hover { background: rgba(229, 62, 62, 1); }
 .book-trash-btn:active { transform: scale(0.9); }
-
-@media (hover: hover) {
-  .book-trash-btn {
-    opacity: 0;
-    transform: scale(0.8);
-    box-shadow: none;
-  }
-  .passport-book-card:hover .book-trash-btn,
-  .passport-book-fallback:hover .book-trash-btn {
-    opacity: 1;
-    transform: scale(1);
-    box-shadow: 0 3px 10px rgba(229, 62, 62, 0.35);
-  }
-}
 
 /* When there's no property image, use the real Property Passport book.
    The PassportCard component renders the full umu-passport.png with the
