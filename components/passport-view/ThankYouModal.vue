@@ -1,291 +1,240 @@
 <template>
-  <div v-if="modelValue" class="mobile-container thankyou-page">
-    <video autoplay muted loop playsinline class="thankyou-page__video">
-      <source src="/public/thankyou.mp4" type="video/mp4" />
-    </video>
+  <Transition name="cong">
+    <div v-if="modelValue" class="cong-page">
+      <div class="cong-inner">
+        <!-- Headline -->
+        <h1 class="cong-title">Congratulations!</h1>
+        <p class="cong-sub">
+          You've earned <b class="cong-points">{{ points || 475 }} points</b>
+          by completing the {{ stepName || 'Boundaries' }} section
+        </p>
 
-    <div class="thankyou-page__overlay"></div>
+        <!-- Gift illustration -->
+        <img
+          src="/op-icons/congratulations/gift.png"
+          alt=""
+          class="cong-gift"
+          loading="lazy"
+        />
 
-    <div class="thankyou-inner">
-      <div class="modal-content">
-        <div class="modal-heading-content">
-          <h1 class="title">Congratulations!</h1>
-          <p class="message">
-            You've earned {{ points || 475 }} points by completing the
-            {{ stepName || 'Boundaries' }} section
-          </p>
-        </div>
-
-        <div class="modal-body-content">
-          <div class="rewards-section">
-            <div class="reward-card">
-              <div class="reward-container">
-                <div class="reward-content">
-                  <h3 class="reward-title">Your Rewards Await</h3>
-                  <div class="reward-points">1500</div>
-                  <p class="reward-subtitle">Points balance</p>
-                  <p class="reward-description">
-                    Redeem points for property services, premium features, or
-                    cash back on your next marketplace booking
-                  </p>
-                </div>
-                <div class="reward-image">
-                  <OPIcon name="rewardBox" class="w-[80px] h-[80px]" />
-                </div>
-              </div>
-
-              <button class="rewards-btn">Go to Rewards</button>
-            </div>
-
-            <div class="reward-card">
-              <div class="reward-container">
-                <div class="reward-content">
-                  <h3 class="reward-title">Property Services Hib</h3>
-                  <p class="reward-description">
-                    Redeem points for property services, premium features, or
-                    cash back on your next marketplace booking
-                  </p>
-                </div>
-                <div class="reward-image">
-                  <OPIcon name="rewardBox" class="w-[80px] h-[80px]" />
-                </div>
-              </div>
-            </div>
+        <!-- Rewards card -->
+        <div class="cong-reward">
+          <div class="cong-reward-body">
+            <h3 class="cong-reward-title">Your Rewards Await</h3>
+            <div class="cong-reward-num">{{ balance || 1500 }}</div>
+            <div class="cong-reward-label">Points balance</div>
+            <p class="cong-reward-text">
+              Redeem points for property services and premium features
+            </p>
+            <button class="cong-reward-btn" type="button" @click="onGoRewards">
+              Go to Rewards
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
           </div>
-
-          <button class="finish-btn" @click="handleContinue">Finish</button>
+          <img
+            src="/op-icons/congratulations/star.png"
+            alt=""
+            class="cong-reward-star"
+            loading="lazy"
+          />
         </div>
+
+        <!-- Finish CTA -->
+        <button class="cong-finish" type="button" @click="handleContinue">
+          Finish
+        </button>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <script setup>
-import OPIcon from '~/components/ui/OPIcon.vue'
 const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-  points: {
-    type: Number,
-    default: 475,
-  },
-  stepName: {
-    type: String,
-    default: 'Boundaries',
-  },
+  modelValue: { type: Boolean, default: false },
+  points: { type: Number, default: 475 },
+  stepName: { type: String, default: 'Boundaries' },
+  balance: { type: Number, default: 1500 },
 })
 
-const emit = defineEmits(['update:modelValue', 'continue'])
+const emit = defineEmits(['update:modelValue', 'continue', 'go-rewards'])
 
 const handleContinue = () => {
   emit('continue')
-  // keep existing behavior to let parent hide this page
   emit('update:modelValue', false)
+}
+const onGoRewards = () => {
+  emit('go-rewards')
 }
 </script>
 
 <style scoped>
-.thankyou-page {
+.cong-page {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: linear-gradient(180deg, #F0F6F6 0%, #F5F9F9 100%);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #231D45;
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+  padding: env(safe-area-inset-top) 22px calc(24px + env(safe-area-inset-bottom));
+}
+.cong-inner {
+  width: 100%;
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-top: 40px;
+}
+
+/* Headline */
+.cong-title {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: #231D45;
+  margin: 0 0 12px;
+  text-align: center;
+  line-height: 1.1;
+  animation: congPop 0.6s cubic-bezier(0.22, 1.36, 0.32, 1);
+}
+@keyframes congPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.cong-sub {
+  font-size: 16px;
+  font-weight: 500;
+  color: #4A5876;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0 8px;
+}
+.cong-points {
+  color: #00A19A;
+  font-weight: 800;
+}
+
+/* Gift illustration */
+.cong-gift {
+  width: 84%;
+  max-width: 340px;
+  height: auto;
+  align-self: center;
+  margin: 22px auto 24px;
+  animation: congFloat 3.4s ease-in-out infinite;
+  filter: drop-shadow(0 12px 24px rgba(0, 161, 154, 0.18));
+}
+@keyframes congFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cong-gift { animation: none; }
+  .cong-title { animation: none; }
+}
+
+/* Reward card */
+.cong-reward {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
+  gap: 8px;
+  padding: 26px 22px;
+  background: #FFFFFF;
+  border-radius: 22px;
+  box-shadow: 0 12px 26px rgba(31, 44, 76, 0.06);
   overflow: hidden;
 }
-
-/* Video and overlay */
-.thankyou-page__video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
+.cong-reward-body { flex: 1; min-width: 0; }
+.cong-reward-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #231D45;
+  letter-spacing: -0.3px;
+  margin: 0 0 14px;
 }
-
-.thankyou-page__overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  z-index: 1;
+.cong-reward-num {
+  font-size: 46px;
+  font-weight: 800;
+  color: #00A19A;
+  letter-spacing: -1.5px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
-
-.thankyou-inner {
-  width: 100%;
-  max-width: 720px;
-  z-index: 2; /* above video and overlay */
-}
-
-.modal-content {
-  padding: 0;
-  text-align: center;
-  background: transparent;
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: calc(100vh - 40px);
-}
-
-.gift-illustration {
-  margin-bottom: 24px;
-  display: flex;
-  justify-content: center;
-}
-
-.gift-icon {
-  font-size: 120px;
-  animation: bounce 0.6s ease-out;
-}
-
-@keyframes bounce {
-  0% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.title {
-  font-size: 28px;
-  font-weight: 700;
-  margin: 0 0 12px;
-  color: white;
-}
-
-.message {
+.cong-reward-label {
   font-size: 16px;
-  color: white;
-  margin: 0 0 32px;
-  line-height: 1.5;
+  font-weight: 600;
+  color: #231D45;
+  margin-top: 8px;
 }
-
-.reward-container {
-  display: flex;
-  gap: 10px;
-  text-align: left;
+.cong-reward-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4A5876;
+  line-height: 1.45;
+  margin: 12px 0 0;
+  max-width: 68%;
 }
-
-.rewards-section {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-  overflow-x: auto;
-  scrollbar-width: none; /* For Firefox */
-  -ms-overflow-style: none; /* For Internet Explorer and Edge */
-}
-
-.rewards-section::-webkit-scrollbar {
-  display: none; /* For Chrome, Safari, and Opera */
-}
-
-.reward-card {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  min-width: 240px;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  max-width: 70%;
-  text-align: right;
-}
-
-.reward-title {
-  margin: 0 0 12px;
-  color: #000000;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 21px;
-  letter-spacing: -0.31px;
-  vertical-align: middle;
-}
-
-.reward-points {
-  color: #000000;
-  font-weight: 700;
-  font-style: Bold;
-  font-size: 34px;
-  line-height: 41px;
-  letter-spacing: 0.4px;
-  vertical-align: middle;
-}
-
-.reward-image {
-  min-width: fit-content;
-}
-
-.reward-subtitle {
-  color: #3c3c4399;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 21px;
-  letter-spacing: -0.31px;
-  vertical-align: middle;
-}
-
-.reward-description {
-  color: #00a19a;
-  margin: 0 0 16px;
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 13px;
-  letter-spacing: 0.06px;
-  vertical-align: middle;
-}
-
-.rewards-btn {
-  padding: 6px 10px;
-  background: #00a19a1a;
-  color: #00a19a;
+.cong-reward-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 12px 18px;
+  background: #E9F6F5;
+  color: #00817C;
+  border: 0;
   border-radius: 100px;
   cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 400;
+  font-family: inherit;
   font-size: 15px;
-  line-height: 20px;
-  letter-spacing: -0.23px;
-  vertical-align: middle;
-}
-
-.rewards-btn:active {
-  transform: scale(0.98);
-}
-
-.finish-btn {
-  width: 100%;
-  padding: 18px;
-  background: #00a19a;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
   font-weight: 700;
+  letter-spacing: -0.2px;
+  transition: transform 0.15s ease, background 0.15s;
+}
+.cong-reward-btn:hover { background: #DCF0EE; }
+.cong-reward-btn:active { transform: scale(0.97); }
+.cong-reward-btn svg { width: 16px; height: 16px; }
+.cong-reward-star {
+  position: absolute;
+  right: 18px;
+  bottom: 20px;
+  width: 42%;
+  max-width: 170px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 18px rgba(0, 161, 154, 0.2));
+}
+
+/* Finish CTA */
+.cong-finish {
+  width: 100%;
+  margin-top: auto;
+  padding: 20px;
+  background: #00817C;
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 18px;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 184, 169, 0.4);
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  box-shadow: 0 10px 24px rgba(0, 129, 124, 0.28);
+  transition: transform 0.15s ease;
 }
+.cong-finish:active { transform: scale(0.98); }
 
-.finish-btn:active {
-  transform: scale(0.98);
+/* Enter/leave */
+.cong-enter-active, .cong-leave-active {
+  transition: opacity 0.28s ease;
 }
-
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-}
+.cong-enter-from, .cong-leave-to { opacity: 0; }
 </style>
-
-

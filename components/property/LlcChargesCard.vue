@@ -2,7 +2,12 @@
   <div class="llc-card">
     <!-- Header -->
     <div class="llc-header">
-      <span class="llc-header-ic">📜</span>
+      <img
+        src="/op-icons/property/landCharges.png"
+        alt=""
+        class="llc-header-ic"
+        loading="lazy"
+      />
       <div class="llc-header-body">
         <div class="llc-header-title">Local Land Charges</div>
         <div class="llc-header-sub">HM Land Registry · indicative search</div>
@@ -263,11 +268,9 @@ function formatWhen(iso: string): string {
   border-bottom: 1px solid #f0eff5;
 }
 .llc-header-ic {
-  width: 40px; height: 40px;
-  border-radius: 11px;
-  background: #f3effb;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 .llc-header-body { flex: 1; min-width: 0 }

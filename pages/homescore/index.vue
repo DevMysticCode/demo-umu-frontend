@@ -85,8 +85,12 @@
     <!-- ── Real story card ─────────────────────────────────────────── -->
     <div ref="realStoryEl" class="hs-real-story">
       <div class="hs-real-story-bar" />
+      <span class="hs-real-story-quote-mark" aria-hidden="true">"</span>
       <div class="hs-real-story-body">
-        <div class="hs-real-story-eyebrow">Real story</div>
+        <div class="hs-real-story-eyebrow">
+          <span class="hs-real-story-eyebrow-dot" aria-hidden="true" />
+          Real story
+        </div>
         <div class="hs-real-story-quote" :aria-label="realStoryQuote">
           <span>{{ typedQuote }}</span>
           <span v-if="!typingDone" class="hs-typer-caret" aria-hidden="true" />
@@ -487,38 +491,87 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
 }
 
 /* ── Real story card ──────────────────────────────────────────── */
+/* Made deliberately more prominent than the plain white card it used
+   to be: gradient teal-wash background, larger scale, floating quote
+   mark decoration, animated pulse-dot eyebrow, and a subtle glow so it
+   stands out from the surrounding page. */
 .hs-real-story {
-  margin: 16px 22px 0;
-  background: #fff;
-  border: 1.5px solid #e2f1ea;
-  border-radius: 16px;
-  padding: 16px 18px;
+  margin: 18px 22px 0;
+  background: linear-gradient(160deg, #E9F6F5 0%, #F5FBFA 55%, #FFFFFF 100%);
+  border: 1.5px solid #B7E4E1;
+  border-radius: 20px;
+  padding: 20px 20px 20px 26px;
   position: relative;
   overflow: hidden;
   display: flex;
   gap: 10px;
-  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.06);
+  box-shadow:
+    0 8px 22px rgba(0, 161, 154, 0.14),
+    0 2px 6px rgba(0, 161, 154, 0.08);
+}
+.hs-real-story::before {
+  /* Soft teal halo in the top-right corner */
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle at center, rgba(0, 161, 154, 0.16), transparent 70%);
+  pointer-events: none;
 }
 .hs-real-story-bar {
   position: absolute;
   top: 0;
   left: 0;
-  width: 4px;
+  width: 5px;
   height: 100%;
-  background: linear-gradient(180deg, #00c4bc 0%, #00a19a 60%, #007e78 100%);
-  border-radius: 4px 0 0 4px;
+  background: linear-gradient(180deg, #00C4BC 0%, #00A19A 60%, #007E78 100%);
+  border-radius: 5px 0 0 5px;
+}
+.hs-real-story-quote-mark {
+  position: absolute;
+  top: -8px;
+  right: 16px;
+  font-family: 'Georgia', serif;
+  font-size: 78px;
+  font-weight: 800;
+  color: rgba(0, 161, 154, 0.15);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
 }
 .hs-real-story-body {
-  padding-left: 10px;
+  padding-left: 6px;
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 .hs-real-story-eyebrow {
-  font-size: 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
   font-weight: 800;
-  color: #007e78;
-  letter-spacing: 0.12em;
+  color: #007E78;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
+}
+.hs-real-story-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00A19A;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.2);
+  animation: hsPulse 2s ease-in-out infinite;
+}
+@keyframes hsPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.2); }
+  50%      { box-shadow: 0 0 0 5px rgba(0, 161, 154, 0.05); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-real-story-eyebrow-dot { animation: none; }
 }
 .hs-real-story-quote {
   font-size: 15px;
