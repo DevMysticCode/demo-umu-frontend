@@ -1446,33 +1446,47 @@ const executeDelete = async () => {
   line-height: 1.3;
 }
 
-/* Trash button — hidden by default, shown on hover */
+/* Trash button — always visible on touch devices (no hover), reveal on
+   hover for pointer devices. `@media (hover: hover)` matches devices
+   whose primary input can hover (mouse, trackpad). Phones/tablets fall
+   through to the base rule and see the button at full opacity so it's
+   actually tappable. */
 .book-trash-btn {
   position: absolute;
   bottom: 8px;
   right: 8px;
   z-index: 10;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(229, 62, 62, 0.85);
+  background: rgba(229, 62, 62, 0.9);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0;
-  transform: scale(0.8);
+  opacity: 1;
+  transform: scale(1);
   transition:
     opacity 0.18s ease,
     transform 0.18s ease;
   backdrop-filter: blur(4px);
+  box-shadow: 0 3px 10px rgba(229, 62, 62, 0.35);
 }
+.book-trash-btn:active { transform: scale(0.9); }
 
-.passport-book-card:hover .book-trash-btn,
-.passport-book-fallback:hover .book-trash-btn {
-  opacity: 1;
-  transform: scale(1);
+@media (hover: hover) {
+  .book-trash-btn {
+    opacity: 0;
+    transform: scale(0.8);
+    box-shadow: none;
+  }
+  .passport-book-card:hover .book-trash-btn,
+  .passport-book-fallback:hover .book-trash-btn {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 3px 10px rgba(229, 62, 62, 0.35);
+  }
 }
 
 /* When there's no property image, use the real Property Passport book.
