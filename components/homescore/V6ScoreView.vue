@@ -517,7 +517,10 @@
             </div>
           </div>
           <div v-for="(line, i) in s.lines" :key="i" class="stat-cost-line">
-            <div class="stat-cost-bullet">{{ line.icon }}</div>
+            <div class="stat-cost-bullet">
+              <img v-if="line.icon && line.icon.startsWith('/')" :src="line.icon" alt="" loading="lazy" />
+              <template v-else>{{ line.icon }}</template>
+            </div>
             <div class="stat-cost-info">
               <div class="stat-cost-title">{{ line.title }}</div>
               <div class="stat-cost-sub" v-html="line.sub" />
@@ -1408,14 +1411,14 @@ const stats = computed<StatRow[]>(() => {
       thirdTileSub: `mainheat ${effRating(heatEff)}`,
       lines: [
         {
-          icon: '🔥',
+          icon: '/op-icons/homescore/boiler.png',
           title: e.mainheatDescription || 'Main heating system',
           sub: `Rated <b>${effRating(heatEff)}</b> on the EPC.`,
           amt: effRating(heatEff),
           amtGood: effToScore(heatEff) >= 0.7,
         },
         {
-          icon: '🌡',
+          icon: '/op-icons/homescore/heatingControls.png',
           title: e.mainheatcontDescription || 'Heating controls',
           sub: `Rated <b>${effRating(heatcEff)}</b> on the EPC.`,
           amt: effRating(heatcEff),
@@ -1443,7 +1446,7 @@ const stats = computed<StatRow[]>(() => {
       thirdTileSub: e.builtForm || '',
       lines: [
         {
-          icon: '🧱',
+          icon: '/op-icons/homescore/walls.png',
           title: e.wallsDescription || 'Walls',
           sub: `Walls rated <b>${effRating(e.wallsEnergyEff)}</b> on the EPC.`,
           amt: fmtSaving(structRecs.find((r) => /wall|cavity/i.test(r?.title ?? ''))) || effRating(e.wallsEnergyEff),
@@ -1451,7 +1454,7 @@ const stats = computed<StatRow[]>(() => {
           amtGood: !structRecs.find((r) => /wall|cavity/i.test(r?.title ?? '')),
         },
         {
-          icon: '🏠',
+          icon: '/op-icons/homescore/roof.png',
           title: e.roofDescription || 'Roof',
           sub: `Roof rated <b>${effRating(e.roofEnergyEff)}</b> on the EPC.`,
           amt: fmtSaving(structRecs.find((r) => /loft|roof/i.test(r?.title ?? ''))) || effRating(e.roofEnergyEff),
@@ -1459,7 +1462,7 @@ const stats = computed<StatRow[]>(() => {
           amtGood: !structRecs.find((r) => /loft|roof/i.test(r?.title ?? '')),
         },
         {
-          icon: '🪟',
+          icon: '/op-icons/homescore/floor.png',
           title: e.floorDescription || 'Floor',
           sub: `Floor rated <b>${effRating(e.floorEnergyEff)}</b> on the EPC.`,
           amt: fmtSaving(structRecs.find((r) => /floor/i.test(r?.title ?? ''))) || effRating(e.floorEnergyEff),
@@ -1487,7 +1490,7 @@ const stats = computed<StatRow[]>(() => {
       thirdTileSub: 'of fixed outlets',
       lines: [
         {
-          icon: '💡',
+          icon: '/op-icons/homescore/bulb.png',
           title: 'Low energy lighting',
           sub: `<b>${Math.round(ledPct)}%</b> of fixed outlets · rated <b>${effRating(e.lightingEnergyEff)}</b>.`,
           amt: fmtSaving(effRecs[0]) || effRating(e.lightingEnergyEff),
@@ -1495,7 +1498,7 @@ const stats = computed<StatRow[]>(() => {
           amtGood: !effRecs[0],
         },
         {
-          icon: '🪟',
+          icon: '/op-icons/homescore/windows.png',
           title: e.windowsDescription || 'Windows',
           sub: `Glazing rated <b>${effRating(e.windowsEnergyEff)}</b>.`,
           amt: effRating(e.windowsEnergyEff),
@@ -3233,9 +3236,9 @@ const watchersDisplay = computed(() => {
   border-top: 1px solid var(--border-soft);
 }
 .stat-cost-bullet {
-  width: 24px;
-  height: 24px;
-  border-radius: 7px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
   background: var(--bg);
   display: flex;
   align-items: center;
@@ -3243,6 +3246,15 @@ const watchersDisplay = computed(() => {
   font-size: 12px;
   flex-shrink: 0;
   margin-top: 1px;
+}
+/* Illustrated variant — 3D icon fills the slot cleanly; drop the pale
+   grey card background so the illustration's own pedestal reads. */
+.stat-cost-bullet:has(> img) { background: transparent; }
+.stat-cost-bullet img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .stat-cost-info {
   flex: 1;
