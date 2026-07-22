@@ -993,29 +993,31 @@ const updateAnswer = async (answer) => {
 
   // Check if this is a NOTE question being completed
   if (currentQuestion.value.type?.toLowerCase() === 'note' && answer === true) {
-    console.log('✅ NOTE question completed! Auto-saving...')
+    console.log('✅ NOTE question completed! Auto-saving + navigating to tasks page…')
+
+    const currentId = currentQuestion.value.id
+    // Snapshot the completion state BEFORE the save mutates `completed`,
+    // so an all-done section still reliably falls into the thank-you branch.
+    const allCompleted = currentQuestions.value.every(
+      (q) => q.completed || q.id === currentId,
+    )
+
+    // Fire navigation *before* the async save when the section still has
+    // work left — otherwise the drawer visually closes and the current
+    // question view stays visible for the full API round-trip, giving
+    // the user the impression they've been advanced. Save runs in the
+    // background while we route away.
+    if (!allCompleted) {
+      const targetUrl = backToStepsUrl.value
+      router.replace(targetUrl)
+    }
+
     isSaving.value = true
     try {
-      // Save the note as completed
-      await apiSaveAnswer(currentQuestion.value.id, answer)
-
-      // Check if this was the last incomplete question (before advancing)
-      const currentId = currentQuestion.value.id
-      const allCompleted = currentQuestions.value.every(
-        (q) => q.completed || q.id === currentId,
-      )
-
+      await apiSaveAnswer(currentId, answer)
       if (allCompleted) {
-        // All questions in section done — show thank-you
         earnedPoints.value = calculateEarnedPoints()
         showThankYou.value = true
-      } else {
-        // Note-drawer close should NOT auto-advance to the next question —
-        // it saves the note as read and drops the user back on the tasks
-        // page so they can pick which task to tackle next.
-        router.push(
-          `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
-        )
       }
     } catch (error) {
       console.error('Error completing NOTE question:', error)
