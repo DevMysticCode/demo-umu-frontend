@@ -94,14 +94,26 @@
         type="button"
         @click="$emit('open-pathway')"
       >
-        🎯 See the EPC's pathway
+        <img
+          src="/op-icons/homescore/targetPathway.png"
+          alt=""
+          class="bottom-cta-ic"
+          loading="lazy"
+        />
+        See the EPC's pathway
       </button>
       <button
         class="bottom-cta-secondary outlined"
         type="button"
         @click="$emit('open-boost')"
       >
-        ⚡ Boost your score
+        <img
+          src="/op-icons/homescore/boostBolt.png"
+          alt=""
+          class="bottom-cta-ic"
+          loading="lazy"
+        />
+        Boost your score
       </button>
     </div>
 
@@ -603,6 +615,16 @@ const refinedStats = [
 }
 .bottom-cta-secondary.outlined:hover {
   background: var(--accent-paler);
+}
+/* 3D illustration inside the two bottom CTAs — replaces the 🎯 and ⚡
+   emoji at the front of each button. Sized to sit neatly next to the
+   label without overwhelming the button height. */
+.bottom-cta-ic {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-right: 2px;
 }
 
 /* Mini header (back-only, no title strip, no bell) */
