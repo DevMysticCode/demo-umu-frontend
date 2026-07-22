@@ -1010,13 +1010,12 @@ const updateAnswer = async (answer) => {
         earnedPoints.value = calculateEarnedPoints()
         showThankYou.value = true
       } else {
-        // More questions remain — move to next
-        const hasMoreQuestions = moveToNextQuestion()
-        if (!hasMoreQuestions) {
-          router.push(
-            `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
-          )
-        }
+        // Note-drawer close should NOT auto-advance to the next question —
+        // it saves the note as read and drops the user back on the tasks
+        // page so they can pick which task to tackle next.
+        router.push(
+          `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
+        )
       }
     } catch (error) {
       console.error('Error completing NOTE question:', error)
