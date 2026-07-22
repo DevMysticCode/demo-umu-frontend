@@ -11927,22 +11927,25 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 10px;
 }
 
-/* Chip rows (role + reply preference) */
+/* Chip rows (role + reply preference).
+   First column is 1.7fr because the widest label ("Potential buyer" /
+   "Email") is meaningfully longer than the other two — an even 3-column
+   grid clipped the text on narrow screens. */
 .mkc-chip-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: 1.7fr 1fr 1fr;
+  gap: 8px;
 }
 .mkc-chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 10px;
+  gap: 6px;
+  padding: 11px 10px;
   background: #FFFFFF;
   border: 1.5px solid #E7EAEE;
   border-radius: 14px;
   font: inherit;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   color: #231D45;
   cursor: pointer;
@@ -11953,8 +11956,8 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .mkc-chip:active { transform: scale(0.98); }
 .mkc-chip-ic {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 8px;
   background: #E9F6F5;
   color: #00A19A;
@@ -11964,7 +11967,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   flex-shrink: 0;
   transition: background 0.18s, color 0.18s;
 }
-.mkc-chip-ic svg { width: 18px; height: 18px; }
+.mkc-chip-ic svg { width: 16px; height: 16px; }
 .mkc-chip--active {
   background: #231D45;
   border-color: #231D45;
