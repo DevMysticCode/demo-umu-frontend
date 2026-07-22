@@ -74,7 +74,10 @@
     </div>
     <div class="refined-stats-card">
       <div v-for="s in refinedStats" :key="s.id" class="stat-row gained">
-        <div class="stat-icon">{{ s.icon }}</div>
+        <div class="stat-icon">
+          <img v-if="s.icon && s.icon.startsWith('/')" :src="s.icon" alt="" loading="lazy" />
+          <template v-else>{{ s.icon }}</template>
+        </div>
         <div class="stat-label">{{ s.label }}</div>
         <div class="stat-bar-wrap">
           <div
@@ -195,7 +198,7 @@ onMounted(() => {
 const refinedStats = [
   {
     id: 'heating',
-    icon: '🔥',
+    icon: '/op-icons/homescore/flame.png',
     label: 'Heating',
     value: 16,
     max: 20,
@@ -204,7 +207,7 @@ const refinedStats = [
   },
   {
     id: 'structure',
-    icon: '🧱',
+    icon: '/op-icons/homescore/bricks.png',
     label: 'Structure',
     value: 17,
     max: 25,
@@ -213,7 +216,7 @@ const refinedStats = [
   },
   {
     id: 'efficiency',
-    icon: '💡',
+    icon: '/op-icons/homescore/lightbulb.png',
     label: 'Efficiency',
     value: 6,
     max: 15,
@@ -222,7 +225,7 @@ const refinedStats = [
   },
   {
     id: 'electrics',
-    icon: '⚡',
+    icon: '/op-icons/homescore/lightning.png',
     label: 'Electrics',
     value: 10,
     max: 20,
@@ -231,7 +234,7 @@ const refinedStats = [
   },
   {
     id: 'plumbing',
-    icon: '💧',
+    icon: '/op-icons/homescore/tap.png',
     label: 'Plumbing',
     value: 13,
     max: 20,
@@ -513,9 +516,19 @@ const refinedStats = [
 }
 .stat-icon {
   font-size: 14px;
-  width: 22px;
+  width: 34px;
+  height: 34px;
   text-align: center;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stat-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .stat-label {
   width: 70px;
