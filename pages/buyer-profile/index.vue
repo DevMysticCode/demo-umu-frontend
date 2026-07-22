@@ -51,7 +51,7 @@
         <img
           src="/op-icons/buyer-profile-hero/phone-shield.png"
           alt=""
-          class="hero-illustration"
+          class="hero-illustration mb-6"
           loading="lazy"
         />
         <span class="hero-share-btn">
@@ -297,19 +297,18 @@ onMounted(async () => {
   max-width: 55%;
 }
 /* The phone-with-shield illustration is anchored to the bottom-right
-   of the card. Kept at ~48% width so it never crowds the copy on
-   narrow devices; slight negative right/bottom so the flat teal edges
-   fall behind the card's rounded corners. */
+   of the card. Sized to sit *inside* the card so its pedestal is fully
+   visible and the flat teal doesn't spill past the rounded corners. */
 .hero-illustration {
   position: absolute;
-  right: -8px;
-  bottom: -8px;
-  width: 52%;
-  max-width: 240px;
+  right: 6px;
+  bottom: 6px;
+  width: 44%;
+  max-width: 190px;
   height: auto;
   object-fit: contain;
   pointer-events: none;
-  filter: drop-shadow(0 8px 18px rgba(0, 65, 62, 0.28));
+  filter: drop-shadow(0 6px 14px rgba(0, 65, 62, 0.25));
 }
 .hero-card::before {
   content: ''; position: absolute; top: 0; left: 0;
