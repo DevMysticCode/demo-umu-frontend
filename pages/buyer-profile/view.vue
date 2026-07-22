@@ -165,13 +165,17 @@
       </div>
       <div class="tile-grid">
         <div class="tile">
-          <div class="tile-icon">🪪</div>
+          <div class="tile-icon">
+            <img src="/op-icons/buyer-profile/idCard.png" alt="" loading="lazy" />
+          </div>
           <div class="tile-title">Identity</div>
           <div class="tile-value">Verified</div>
           <div class="tile-prov">via Onfido / DVS</div>
         </div>
         <div class="tile" :class="{ amber: !passport.fundsType }">
-          <div class="tile-icon" :class="{ 'amber-bg': !passport.fundsType }">💰</div>
+          <div class="tile-icon">
+            <img src="/op-icons/buyer-profile/moneyBag.png" alt="" loading="lazy" />
+          </div>
           <div class="tile-title">Funds</div>
           <div class="tile-value" :class="{ amber: !passport.fundsType }">
             {{ fundsLabelLong || 'Add proof' }}
@@ -181,14 +185,16 @@
           </div>
         </div>
         <div class="tile">
-          <div class="tile-icon">🔗</div>
+          <div class="tile-icon">
+            <img src="/op-icons/buyer-profile/chainLink.png" alt="" loading="lazy" />
+          </div>
           <div class="tile-title">Chain</div>
           <div class="tile-value">{{ chainShortLabel }}</div>
           <div class="tile-prov">Self-declared</div>
         </div>
         <div class="tile" :class="{ amber: !hasMortgageAip }">
-          <div class="tile-icon" :class="{ 'amber-bg': !hasMortgageAip }">
-            {{ hasMortgageAip ? '🏦' : '⚠️' }}
+          <div class="tile-icon">
+            <img src="/op-icons/buyer-profile/mortgageHouse.png" alt="" loading="lazy" />
           </div>
           <div class="tile-title">Mortgage</div>
           <div class="tile-value" :class="{ amber: !hasMortgageAip }">
@@ -217,7 +223,9 @@
       </div>
       <div class="teal-card bp-docs-card">
         <div class="doc-row">
-          <div class="doc-icon">🪪</div>
+          <div class="doc-icon">
+            <img src="/op-icons/buyer-profile/idCard.png" alt="" loading="lazy" />
+          </div>
           <div class="doc-body">
             <div class="doc-title">Identity Verification</div>
             <div class="doc-meta">{{ idTypeLabel }} · verified by Onfido (DVS)</div>
@@ -228,7 +236,9 @@
           </div>
         </div>
         <div class="doc-row">
-          <div class="doc-icon">💰</div>
+          <div class="doc-icon">
+            <img src="/op-icons/buyer-profile/moneyBag.png" alt="" loading="lazy" />
+          </div>
           <div class="doc-body">
             <div class="doc-title">Proof of Funds</div>
             <div class="doc-meta">{{ fundsMetaText }}</div>
@@ -240,7 +250,9 @@
           <span class="doc-chev">›</span>
         </div>
         <div class="doc-row" @click="goShare('pdf-add-aip' as any)">
-          <div class="doc-icon">🏦</div>
+          <div class="doc-icon">
+            <img src="/op-icons/buyer-profile/mortgageHouse.png" alt="" loading="lazy" />
+          </div>
           <div class="doc-body">
             <div class="doc-title">Mortgage in Principle</div>
             <div class="doc-meta">
@@ -257,7 +269,9 @@
           </div>
         </div>
         <div class="doc-row">
-          <div class="doc-icon">🔗</div>
+          <div class="doc-icon">
+            <img src="/op-icons/buyer-profile/clipboardLink.png" alt="" loading="lazy" />
+          </div>
           <div class="doc-body">
             <div class="doc-title">Chain Position</div>
             <div class="doc-meta">
@@ -270,7 +284,9 @@
           </div>
         </div>
         <div v-if="passport.solicitorStatus === 'yes'" class="doc-row">
-          <div class="doc-icon">🏛️</div>
+          <div class="doc-icon">
+            <img src="/op-icons/buyer-profile/bank.png" alt="" loading="lazy" />
+          </div>
           <div class="doc-body">
             <div class="doc-title">Solicitor</div>
             <div class="doc-meta">Solicitor instructed</div>
@@ -304,11 +320,7 @@
       <div class="bp-share-card">
         <button class="action-row" @click="goShare">
           <div class="action-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#007e78" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-              <polyline points="16 6 12 2 8 6" />
-              <line x1="12" y1="2" x2="12" y2="15" />
-            </svg>
+            <img src="/op-icons/buyer-profile/upload.png" alt="" loading="lazy" />
           </div>
           <div class="action-text">
             <div class="action-title">Share</div>
@@ -318,10 +330,7 @@
         </button>
         <button class="action-row action-row--bordered" @click="goPdf">
           <div class="action-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#007e78" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-            </svg>
+            <img src="/op-icons/buyer-profile/pdf.png" alt="" loading="lazy" />
           </div>
           <div class="action-text">
             <div class="action-title">Download PDF</div>
@@ -331,10 +340,7 @@
         </button>
         <button class="action-row action-row--bordered" @click="goSign">
           <div class="action-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#007e78" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-            </svg>
+            <img src="/op-icons/buyer-profile/signature.png" alt="" loading="lazy" />
           </div>
           <div class="action-text">
             <div class="action-title">
@@ -350,10 +356,7 @@
         </button>
         <button class="action-row action-row--bordered" @click="goEdit">
           <div class="action-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#007e78" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-            </svg>
+            <img src="/op-icons/buyer-profile/editBox.png" alt="" loading="lazy" />
           </div>
           <div class="action-text">
             <div class="action-title">Edit Profile</div>
@@ -863,12 +866,15 @@ function goEdit() { router.push('/buyer-profile/build') }
 }
 .tile.amber { border-color: #e6a23c; }
 .tile-icon {
-  width: 32px; height: 32px; border-radius: 10px;
-  background: #f2faf8;
+  width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px; margin-bottom: 10px;
+  margin-bottom: 10px;
 }
-.tile-icon.amber-bg { background: #fbefd9; }
+.tile-icon img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+}
 .tile-title {
   font-size: 13px; font-weight: 800; color: #231d45; margin-bottom: 2px;
 }
@@ -908,10 +914,14 @@ function goEdit() { router.push('/buyer-profile/build') }
 .doc-row:last-child { border-bottom: none; }
 .doc-row:hover { background: #fafafa; }
 .doc-icon {
-  width: 32px; height: 32px; border-radius: 10px;
-  background: #f2faf8;
+  width: 42px; height: 42px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px; flex-shrink: 0;
+  flex-shrink: 0;
+}
+.doc-icon img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .doc-body { flex: 1; min-width: 0; }
 .doc-title {
@@ -967,10 +977,14 @@ function goEdit() { router.push('/buyer-profile/build') }
 .action-row:hover { background: #fafafa; }
 .action-row--bordered { border-top: 1px solid #f5f5f7; }
 .action-icon {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: #f2faf8;
+  width: 42px; height: 42px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px; flex-shrink: 0;
+  flex-shrink: 0;
+}
+.action-icon img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .action-text { flex: 1; min-width: 0; }
 .action-title { font-size: 13.5px; font-weight: 800; color: #231d45; }
