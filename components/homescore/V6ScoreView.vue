@@ -175,7 +175,10 @@
       :class="{ active: activePanel === 'street' }"
       @click="togglePanel('street')"
     >
-      <div class="hsh-eyebrow">🏘 Your street · {{ streetNameTitle }}</div>
+      <div class="hsh-eyebrow">
+        <img src="/op-icons/homescore/houseSearch.png" alt="" class="hsh-eyebrow-ic" loading="lazy" />
+        Your street · {{ streetNameTitle }}
+      </div>
       <div class="hsh-rankrow">
         <span class="hsh-big">#{{ streetRank ?? 8 }}</span>
         <div class="hsh-rmeta">
@@ -576,7 +579,10 @@
         <!-- 12 EPC items, each clickable to expand -->
         <template v-for="item in epcItems" :key="item.id">
           <div class="epc-item" @click="toggleEpcItem(item.id)">
-            <div class="epc-item-icon">{{ item.icon }}</div>
+            <div class="epc-item-icon">
+              <img v-if="item.icon && item.icon.startsWith('/')" :src="item.icon" alt="" loading="lazy" />
+              <template v-else>{{ item.icon }}</template>
+            </div>
             <div class="epc-item-body">
               <div class="epc-item-title">{{ item.title }}</div>
               <div class="epc-item-sub" v-html="item.sub" />
@@ -1648,7 +1654,7 @@ const epcItems = computed<EpcItem[]>(() => {
   const mainHeatRec = findRec(/(boiler|heat pump|main heat)/i)
   items.push({
     id: 'main-heating',
-    icon: '🔥',
+    icon: '/op-icons/homescore/flame.png',
     title: 'Main heating',
     sub: e.mainheatDescription || 'Heating system',
     rating: effRating(e.mainheatEnergyEff),
@@ -1669,7 +1675,7 @@ const epcItems = computed<EpcItem[]>(() => {
   const controlsRec = findRec(/(controls|thermostat|programmer)/i)
   items.push({
     id: 'heating-controls',
-    icon: '🌡',
+    icon: '/op-icons/homescore/heatingControls.png',
     title: 'Heating controls',
     sub: e.mainheatcontDescription || 'Controls',
     rating: effRating(e.mainheatcEnergyEff),
@@ -1690,7 +1696,7 @@ const epcItems = computed<EpcItem[]>(() => {
   const hwRec = findRec(/(hot water|cylinder|solar water|solar thermal)/i)
   items.push({
     id: 'hot-water',
-    icon: '💧',
+    icon: '/op-icons/homescore/tap.png',
     title: 'Hot water',
     sub: e.hotwaterDescription || 'Hot water system',
     rating: effRating(e.hotWaterEnergyEff),
@@ -1711,7 +1717,7 @@ const epcItems = computed<EpcItem[]>(() => {
   const wallsRec = findRec(/(cavity|wall insulation|external wall)/i)
   items.push({
     id: 'walls',
-    icon: '🧱',
+    icon: '/op-icons/homescore/walls.png',
     title: 'Walls',
     sub: e.wallsDescription || 'Walls',
     rating: effRating(e.wallsEnergyEff),
@@ -1732,7 +1738,7 @@ const epcItems = computed<EpcItem[]>(() => {
   const roofRec = findRec(/(loft|roof insulation|increase loft)/i)
   items.push({
     id: 'roof',
-    icon: '🏠',
+    icon: '/op-icons/homescore/roof.png',
     title: 'Roof · loft insulation',
     sub: e.roofDescription || 'Roof',
     rating: effRating(e.roofEnergyEff),
@@ -1753,7 +1759,7 @@ const epcItems = computed<EpcItem[]>(() => {
   const floorRec = findRec(/floor insulation/i)
   items.push({
     id: 'floor',
-    icon: '🪟',
+    icon: '/op-icons/homescore/floor.png',
     title: 'Floor',
     sub: e.floorDescription || 'Floor',
     rating: effRating(e.floorEnergyEff),
@@ -1774,7 +1780,7 @@ const epcItems = computed<EpcItem[]>(() => {
   const windowsRec = findRec(/(window|glaz)/i)
   items.push({
     id: 'windows',
-    icon: '🪟',
+    icon: '/op-icons/homescore/windows.png',
     title: 'Windows',
     sub: e.windowsDescription || 'Windows',
     rating: effRating(e.windowsEnergyEff),
@@ -1796,7 +1802,7 @@ const epcItems = computed<EpcItem[]>(() => {
   const lightingRec = findRec(/(led|lighting|light)/i)
   items.push({
     id: 'lighting',
-    icon: '💡',
+    icon: '/op-icons/homescore/bulb.png',
     title: 'Lighting',
     sub: `Low energy in <b>${Math.round(ledPct)}%</b> of fixed outlets`,
     rating: effRating(e.lightingEnergyEff),
@@ -1837,7 +1843,7 @@ const epcItems = computed<EpcItem[]>(() => {
   if (pvRec) {
     items.push({
       id: 'solar-pv',
-      icon: '⚡',
+      icon: '/op-icons/homescore/lightning.png',
       title: 'Solar PV panels',
       sub: 'Not present · recommended on EPC',
       rating: 'Not installed',
@@ -3467,10 +3473,20 @@ const watchersDisplay = computed(() => {
 }
 .epc-item-icon {
   font-size: 16px;
-  width: 24px;
+  width: 34px;
+  height: 34px;
   text-align: center;
   flex-shrink: 0;
-  padding-top: 1px;
+  padding-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.epc-item-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .epc-item-body {
   flex: 1;
@@ -4193,6 +4209,15 @@ const watchersDisplay = computed(() => {
   text-transform: uppercase;
   font-weight: 800;
   color: #9DEFDB;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hsh-eyebrow-ic {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .hsh-rankrow {
   display: flex;
