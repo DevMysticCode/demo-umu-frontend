@@ -207,7 +207,7 @@
             </div>
 
             <div class="ifs-prop-lock">
-              <span class="ifs-pl-ic">🏠</span>
+              <img src="/op-icons/homescore/houseSearch.png" alt="" class="ifs-pl-ic" loading="lazy" />
               <div>
                 <div class="ifs-pl-label">Measure · Property</div>
                 <div class="ifs-pl-val">
@@ -234,7 +234,7 @@
             </p>
 
             <div class="ifs-prop-lock">
-              <span class="ifs-pl-ic">🏠</span>
+              <img src="/op-icons/homescore/houseSearch.png" alt="" class="ifs-pl-ic" loading="lazy" />
               <div>
                 <div class="ifs-pl-label">Measure · Property</div>
                 <div class="ifs-pl-val">
@@ -316,7 +316,11 @@
             <div v-else class="ifs-track">
               <div v-for="(r, i) in requests" :key="i" class="ifs-track-item">
                 <div class="ifs-track-top">
-                  <div class="ifs-t-ic">🔧</div>
+                  <div class="ifs-t-ic">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                    </svg>
+                  </div>
                   <div>
                     <div class="ifs-t-name">{{ r.measure }}</div>
                     <div class="ifs-t-date">{{ r.date }}</div>
@@ -326,9 +330,10 @@
                   <span class="ifs-pill ifs-pill--sourcing">
                     <span class="ifs-dot" />Sourcing installers
                   </span>
-                  <span v-if="r.grant" class="ifs-pill ifs-pill--grant"
-                    >🎁 {{ r.grant }}</span
-                  >
+                  <span v-if="r.grant" class="ifs-pill ifs-pill--grant">
+                    <img src="/op-icons/congratulations/gift.png" alt="" class="ifs-pill-ic" loading="lazy" />
+                    {{ r.grant }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -365,7 +370,9 @@
                 </div>
               </div>
               <div class="ifs-promise-row">
-                <div class="ifs-p-ic">🎁</div>
+                <div class="ifs-p-ic ifs-p-ic--img">
+                  <img src="/op-icons/congratulations/gift.png" alt="" loading="lazy" />
+                </div>
                 <div>
                   <div class="ifs-p-title">Grant-ready</div>
                   <div class="ifs-p-sub">
@@ -459,7 +466,12 @@
                 >
               </p>
               <div class="ifs-passport">
-                <span class="ifs-passport-ic">📈</span>
+                <span class="ifs-passport-ic">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                    <polyline points="16 7 22 7 22 13" />
+                  </svg>
+                </span>
                 <p>
                   Your interest helps us decide
                   <b>which trades to onboard first</b> — the more demand in
@@ -1228,7 +1240,10 @@ watch(
   margin-top: 16px;
 }
 .ifs-pl-ic {
-  font-size: 18px;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .ifs-pl-label {
   font-size: 10.5px;
@@ -1381,8 +1396,17 @@ watch(
   margin-top: 20px;
 }
 .ifs-passport-ic {
-  font-size: 17px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #EEE8FB;
+  color: #6B4E9F;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
+.ifs-passport-ic svg { width: 18px; height: 18px; }
 .ifs-passport p {
   margin: 0;
   font-size: 12.5px;
@@ -1416,12 +1440,14 @@ watch(
   height: 42px;
   border-radius: 12px;
   background: #e6f5f4;
+  color: #00817C;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
 }
+.ifs-t-ic svg { width: 22px; height: 22px; }
 .ifs-t-name {
   font-size: 14.5px;
   font-weight: 800;
@@ -1442,6 +1468,12 @@ watch(
   padding: 5px 10px;
   border-radius: 20px;
   margin-top: 12px;
+}
+.ifs-pill-ic {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .ifs-pill--sourcing {
   background: #fff7e8;
@@ -1527,6 +1559,15 @@ watch(
   justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
+}
+.ifs-p-ic--img {
+  background: transparent;
+}
+.ifs-p-ic--img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .ifs-p-title {
   font-size: 14px;
