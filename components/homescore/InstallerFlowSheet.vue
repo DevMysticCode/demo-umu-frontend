@@ -178,7 +178,7 @@
           <!-- STATE: eligibility result -->
           <div v-else-if="state === 'result'" class="ifs-state">
             <div v-if="grants.length" class="ifs-result-hero">
-              <div class="ifs-rh-ic">🎉</div>
+              <div class="ifs-rh-ic ifs-rh-ic-img"><img src="/op-icons/congratulations/gift.png" alt="" loading="lazy" /></div>
               <h3>You may qualify for funding</h3>
               <p>
                 Based on your answers, these schemes could cover part or all of
@@ -197,7 +197,10 @@
 
             <div v-if="grants.length" class="ifs-grant-list">
               <div v-for="g in grants" :key="g.name" class="ifs-grant-item">
-                <div class="ifs-gi-ic">{{ g.ic }}</div>
+                <div class="ifs-gi-ic">
+                  <img v-if="g.ic.startsWith('/')" :src="g.ic" alt="" loading="lazy" />
+                  <template v-else>{{ g.ic }}</template>
+                </div>
                 <div class="ifs-gi-body">
                   <div class="ifs-gi-name">{{ g.name }}</div>
                   <div class="ifs-gi-desc">{{ g.desc }}</div>
@@ -685,20 +688,20 @@ function computeGrants() {
   const g: typeof grants.value = []
   if (eligibleTenure && lowNeed) {
     g.push({
-      ic: '🏠',
+      ic: '/op-icons/homescore/houseSearch.png',
       name: 'Warm Homes: Local Grant',
       desc: 'Up to £15k for insulation & heating in low-EPC homes.',
       tag: 'Likely',
     })
     g.push({
-      ic: '⚡',
+      ic: '/op-icons/homescore/lightning.png',
       name: 'ECO4',
       desc: 'Supplier-funded upgrades for eligible households.',
       tag: 'Likely',
     })
   } else if (eligibleTenure && income === 'high' && benefits === 'no') {
     g.push({
-      ic: '🏠',
+      ic: '/op-icons/homescore/houseSearch.png',
       name: 'Great British Insulation Scheme',
       desc: 'Not fully means-tested — Council Tax band & EPC based.',
       tag: 'Possible',
@@ -1187,6 +1190,17 @@ watch(
 .ifs-rh-ic {
   font-size: 30px;
 }
+.ifs-rh-ic-img {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto;
+}
+.ifs-rh-ic-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
 .ifs-result-hero h3 {
   color: #fff;
   font-size: 20px;
@@ -1225,6 +1239,13 @@ watch(
   justify-content: center;
   font-size: 18px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+.ifs-gi-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .ifs-gi-body {
   flex: 1;

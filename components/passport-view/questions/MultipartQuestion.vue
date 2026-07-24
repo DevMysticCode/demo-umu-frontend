@@ -120,6 +120,7 @@
           v-if="part.showVoiceInput"
           :value="localAnswers[part.partKey + '_text'] || ''"
           @update="(val) => updateVoiceText(part.partKey, val)"
+          @submit="(val) => addVoiceChip(part, val)"
         />
 
         <!-- Date input badge row (shown above the component when showDateInput is true) -->
@@ -295,6 +296,10 @@ const props = defineProps({
 const emit = defineEmits(['update'])
 
 const localAnswers = ref({})
+// Custom chips added via the voice/text input, keyed by partKey. Kept
+// separate from `part.options` (a prop) so we never mutate the question
+// template — buildPartQuestion() merges these in when rendering.
+const customVoiceOptions = ref({})
 
 // Initialize from saved answers
 watch(
@@ -424,7 +429,10 @@ const buildPartQuestion = (part) => {
   return {
     title: part.title,
     description: part.description || '',
-    options: part.options || [],
+    options: [
+      ...(part.options || []),
+      ...(customVoiceOptions.value[part.partKey] || []),
+    ],
     placeholder: part.placeholder || '',
     type: normalizedType,
     display: normalizedType === 'upload' ? 'upload' : part.display || 'text',
@@ -542,6 +550,33 @@ const updateCurrencyPartInput = (partKey, value) => {
 
 const updateVoiceText = (partKey, value) => {
   localAnswers.value[partKey + '_text'] = value
+  emit('update', { ...localAnswers.value })
+}
+
+// Voice/text submit → add as a new chip and clear the field so it's
+// ready for the next note. Multiple notes can stack up this way.
+const addVoiceChip = (part, text) => {
+  const trimmed = (text || '').trim()
+  if (!trimmed) return
+  const partKey = part.partKey
+
+  const inTemplate = (part.options || []).some((o) => o.value === trimmed)
+  if (!inTemplate) {
+    const custom = customVoiceOptions.value[partKey] || []
+    if (!custom.some((o) => o.value === trimmed)) {
+      customVoiceOptions.value = {
+        ...customVoiceOptions.value,
+        [partKey]: [...custom, { value: trimmed, label: trimmed }],
+      }
+    }
+  }
+
+  const current = Array.isArray(localAnswers.value[partKey])
+    ? [...localAnswers.value[partKey]]
+    : []
+  if (!current.includes(trimmed)) current.push(trimmed)
+  localAnswers.value[partKey] = current
+  localAnswers.value[partKey + '_text'] = ''
   emit('update', { ...localAnswers.value })
 }
 

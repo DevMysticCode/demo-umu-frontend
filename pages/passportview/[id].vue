@@ -97,7 +97,7 @@
           :disabled="publishLoading"
           @click="onPublishClick"
         >
-          <OPIcon name="share" class="w-[15px] h-[15px]" />
+          <OPIcon name="published" class="w-[15px] h-[15px]" />
           {{ publishLoading ? '...' : isPublished ? 'Unpublish' : 'Publish' }}
         </button>
       </div>
@@ -127,42 +127,14 @@
           :class="['pp-subtab', activeTab === 'sections' ? 'active' : '']"
           @click="setTab('sections')"
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.4"
-            stroke-linecap="round"
-          >
-            <line x1="8" y1="6" x2="21" y2="6" />
-            <line x1="8" y1="12" x2="21" y2="12" />
-            <line x1="8" y1="18" x2="21" y2="18" />
-            <line x1="3" y1="6" x2="3.01" y2="6" />
-            <line x1="3" y1="12" x2="3.01" y2="12" />
-            <line x1="3" y1="18" x2="3.01" y2="18" />
-          </svg>
+          <OPIcon name="sections3d" class="w-[14px] h-[14px]" />
           Sections
         </button>
         <button
           :class="['pp-subtab', activeTab === 'street' ? 'active' : '']"
           @click="setTab('street')"
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polygon points="1 6 9 2 15 6 23 2 23 18 15 22 9 18 1 22 1 6" />
-            <line x1="9" y1="2" x2="9" y2="18" />
-            <line x1="15" y1="6" x2="15" y2="22" />
-          </svg>
+          <OPIcon name="street3d" class="w-[14px] h-[14px]" />
           Street
         </button>
         <button
@@ -299,17 +271,8 @@
             class="pp-street-row"
             @click="navigateToProperty(sp.id)"
           >
-            <div
-              class="pp-street-icon"
-              :style="{
-                color: sp.isPublished
-                  ? '#008a84'
-                  : sp.hasPassport
-                    ? '#f59e0b'
-                    : '#94a3b8',
-              }"
-            >
-              🏠
+            <div class="pp-street-icon">
+              <img src="/op-icons/homescore/house.png" alt="" loading="lazy" />
             </div>
             <div style="flex: 1; min-width: 0">
               <div class="pp-street-addr">{{ sp.addressLine1 }}</div>
@@ -1799,8 +1762,15 @@ const onRoleSwitch = (role) => {
   background: #f0fdfa;
 }
 .pp-street-icon {
-  font-size: 20px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
+}
+.pp-street-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .pp-street-addr {
   font-size: 13px;

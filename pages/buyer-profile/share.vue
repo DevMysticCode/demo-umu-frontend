@@ -60,7 +60,7 @@
       <!-- Send to a specific agent: routes to the dedicated form so we
            don't show fake "suggested agents" to the user. -->
       <div class="recipient-card recipient-empty">
-        <div class="recipient-empty-emoji">📤</div>
+        <div class="recipient-empty-emoji"><img src="/op-icons/helpAndSupport/email.jpeg" alt="" loading="lazy" /></div>
         <div class="recipient-empty-title">Send to your agent</div>
         <div class="recipient-empty-sub">
           Enter their name + email — we'll deliver a secure link that
@@ -534,9 +534,15 @@ function goSign() { router.push('/buyer-profile/sign') }
   text-align: center;
 }
 .recipient-empty-emoji {
-  font-size: 28px;
-  line-height: 1;
-  margin-bottom: 10px;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 10px;
+}
+.recipient-empty-emoji img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .recipient-empty-title {
   font-size: 14px;

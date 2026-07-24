@@ -69,8 +69,12 @@ const iconMap: Record<string, string> = {
   pin: '/op-icons/passportview/pin.svg',
   caretDown: '/op-icons/passportview/caretDown.svg',
   addCollaborator: '/op-icons/passportview/addCollaborator.svg',
-  list: '/op-icons/passportview/list.svg',
-  map: '/op-icons/passportview/map.svg',
+  list: '/op-icons/passportview3d/list.png',
+  map: '/op-icons/passportview3d/map.png',
+  published: '/op-icons/passportview3d/published.png',
+  sections3d: '/op-icons/passportview3d/sections.png',
+  street3d: '/op-icons/passportview3d/street.png',
+  buyers3d: '/op-icons/passportview3d/buyers.png',
   caretRight: '/op-icons/passportview/caretRight.svg',
   // 'instructions' is the DB-seeded icon key for the Ownership Profile
   // section (see backend prisma/seed.ts). Point it at the new 3D
@@ -116,7 +120,7 @@ const iconMap: Record<string, string> = {
   instagram: '/op-icons/property/instagram.svg',
   messagesLight: '/op-icons/property/messagesLight.svg',
   whatsapp: '/op-icons/property/whatsapp.svg',
-  matchToBuyers: '/op-icons/passportview/matchToBuyers.svg',
+  matchToBuyers: '/op-icons/passportview3d/matchToBuyers.png',
   pending: '/op-icons/passportview/pending.svg',
   upload: '/op-icons/passportview/upload.svg',
   scan: '/op-icons/passportview/scan.svg',

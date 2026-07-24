@@ -914,7 +914,7 @@
             data-tour="buyer-profile"
             @click="navigateTo('/buyer-profile')"
           >
-            <div class="my-passport-ic">👤</div>
+            <div class="my-passport-ic"><img src="/op-icons/profile/buyerProfile.jpeg" alt="" loading="lazy" /></div>
             <div class="my-passport-body">
               <div class="my-passport-title">My Buyer Profile</div>
               <div class="my-passport-sub">
@@ -1049,7 +1049,7 @@
             </div>
           </div>
           <div v-else-if="needsPostcode" class="foryou-empty">
-            <div class="foryou-empty-ic">📍</div>
+            <div class="foryou-empty-ic foryou-empty-ic-img"><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" /></div>
             <div class="foryou-empty-title">Add a postcode to see matches</div>
             <div class="foryou-empty-sub">
               We'll tailor properties to your budget, preferred types and
@@ -1335,7 +1335,7 @@
             </div>
           </div>
           <div v-else-if="needsPostcode" class="foryou-empty">
-            <div class="foryou-empty-ic">📍</div>
+            <div class="foryou-empty-ic foryou-empty-ic-img"><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" /></div>
             <div class="foryou-empty-title">Add a postcode to see matches</div>
             <div class="foryou-empty-sub">
               We'll tailor properties to your budget, preferred types and
@@ -4031,6 +4031,13 @@ onMounted(async () => {
   place-items: center;
   font-size: 20px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+.my-passport-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .my-passport-body {
   flex: 1;
@@ -4251,6 +4258,17 @@ onMounted(async () => {
 .foryou-empty-ic {
   font-size: 32px;
   margin-bottom: 8px;
+}
+.foryou-empty-ic-img {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 8px;
+}
+.foryou-empty-ic-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .foryou-empty-title {
   font-size: 14px;

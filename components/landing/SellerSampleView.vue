@@ -60,7 +60,7 @@
         <span class="pp-action-badge">3</span>
       </button>
       <button class="pp-action-btn pp-action-primary" type="button">
-        <OPIcon name="share" class="w-[15px] h-[15px]" />
+        <OPIcon name="published" class="w-[15px] h-[15px]" />
         Published
       </button>
     </div>
@@ -79,31 +79,15 @@
     <!-- ── Sub-tabs ── -->
     <div class="pp-subtabs">
       <button class="pp-subtab active" type="button">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
-          <line x1="8" y1="6" x2="21" y2="6" />
-          <line x1="8" y1="12" x2="21" y2="12" />
-          <line x1="8" y1="18" x2="21" y2="18" />
-          <line x1="3" y1="6" x2="3.01" y2="6" />
-          <line x1="3" y1="12" x2="3.01" y2="12" />
-          <line x1="3" y1="18" x2="3.01" y2="18" />
-        </svg>
+        <OPIcon name="sections3d" class="w-[15px] h-[15px]" />
         Sections
       </button>
       <button class="pp-subtab" type="button">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="1 6 9 2 15 6 23 2 23 18 15 22 9 18 1 22 1 6" />
-          <line x1="9" y1="2" x2="9" y2="18" />
-          <line x1="15" y1="6" x2="15" y2="22" />
-        </svg>
+        <OPIcon name="street3d" class="w-[15px] h-[15px]" />
         Street
       </button>
       <button class="pp-subtab" type="button">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
+        <OPIcon name="buyers3d" class="w-[15px] h-[15px]" />
         Buyers
         <span class="pp-subtab-badge">3</span>
       </button>
