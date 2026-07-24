@@ -220,7 +220,10 @@ const displayValue = computed(() => {
   // For numeric scales with custom format
   const format = props.question.scaleFormat
   if (format === 'currency') {
-    return '£' + localValue.value + 'K'
+    // The slider itself can't go past its max (e.g. "750K+" is an
+    // open-ended top bucket), but the actual typed price can — show
+    // the real amount, not the clamped slider position.
+    return '£' + currencyActualK.value + 'K'
   }
   if (format === 'percentage') {
     return localValue.value + '%'
@@ -233,6 +236,12 @@ watch(
   (newAnswer) => {
     if (newAnswer !== null && newAnswer !== undefined) {
       localValue.value = convertAnswerToSliderValue(newAnswer)
+      if (props.question.scaleFormat === 'currency') {
+        currencyActualK.value = Number(newAnswer) / 1000
+        if (!currencyInputFocused.value) {
+          currencyInputText.value = formatCurrencyFull(currencyActualK.value)
+        }
+      }
     }
   },
 )
@@ -304,17 +313,22 @@ const bottomLabels = computed(() => {
 
 const handleInput = (event) => {
   localValue.value = Number(event.target.value)
-  // Sync currency input text when slider moves
-  if (
-    props.question.scaleFormat === 'currency' &&
-    !currencyInputFocused.value
-  ) {
-    currencyInputText.value = formatCurrencyFull(localValue.value)
+  // Dragging the slider itself can't exceed its max, so the real value
+  // tracks the slider position here.
+  if (props.question.scaleFormat === 'currency') {
+    currencyActualK.value = localValue.value
+    if (!currencyInputFocused.value) {
+      currencyInputText.value = formatCurrencyFull(currencyActualK.value)
+    }
   }
   emitValue()
 }
 
 const emitValue = () => {
+  if (props.question.scaleFormat === 'currency') {
+    emit('update', Math.round(currencyActualK.value * 1000))
+    return
+  }
   emit('update', convertSliderValueToAnswer(localValue.value))
 }
 
@@ -325,21 +339,17 @@ function formatCurrencyFull(kValue) {
 }
 
 const currencyInputFocused = ref(false)
+// Real typed/answer value in £K — unlike `localValue` (the slider's
+// position), this is allowed to exceed the slider's max so a price
+// past the top bucket (e.g. "750K+") isn't silently capped.
+const currencyActualK = ref(
+  props.question.scaleFormat === 'currency' ? localValue.value : 0,
+)
 const currencyInputText = ref(
   props.question.scaleFormat === 'currency'
-    ? formatCurrencyFull(localValue.value)
+    ? formatCurrencyFull(currencyActualK.value)
     : '',
 )
-
-// Keep input text in sync when slider changes externally (e.g. answer prop)
-watch(localValue, (newVal) => {
-  if (
-    props.question.scaleFormat === 'currency' &&
-    !currencyInputFocused.value
-  ) {
-    currencyInputText.value = formatCurrencyFull(newVal)
-  }
-})
 
 const handleCurrencyFocus = () => {
   currencyInputFocused.value = true
@@ -355,14 +365,16 @@ const handleCurrencyBlur = (event) => {
   const raw = event.target.value.replace(/[£,\s]/g, '')
   const parsed = parseInt(raw, 10)
   if (!isNaN(parsed) && parsed > 0) {
-    // Convert full amount to K, snap to nearest step
+    // Convert full amount to K, snap to nearest step. The real value
+    // can exceed the slider's max — only the handle position is clamped.
     const inK = parsed / 1000
     const stepped = Math.round(inK / step.value) * step.value
+    currencyActualK.value = stepped
     localValue.value = clampToScaleBounds(stepped)
     emitValue()
   }
-  // Always reformat to match the slider value
-  currencyInputText.value = formatCurrencyFull(localValue.value)
+  // Always reformat to match the real (unclamped) value
+  currencyInputText.value = formatCurrencyFull(currencyActualK.value)
 }
 </script>
 

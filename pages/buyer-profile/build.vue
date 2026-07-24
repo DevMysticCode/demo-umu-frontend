@@ -342,7 +342,7 @@
       <!-- ── STEP 2: Tier picker (and funds for Verified/Premium) ── -->
       <div v-if="step === 2" class="bp-step">
         <div class="bp-step-hero">
-          <div class="bp-step-ic bp-ic-purple">⭐</div>
+          <div class="bp-step-ic bp-ic-purple"><img src="/op-icons/misc/star.png" alt="" loading="lazy" /></div>
           <div class="bp-step-title">Choose your tier</div>
           <div class="bp-step-body">
             Higher tiers add verified credentials sellers and agents look for.
@@ -570,7 +570,7 @@
       <!-- ── STEP 3: Chain position ── -->
       <div v-if="step === 3" class="bp-step">
         <div class="bp-step-hero">
-          <div class="bp-step-ic">🔗</div>
+          <div class="bp-step-ic"><img src="/op-icons/investment/chainLink.png" alt="" loading="lazy" /></div>
           <div class="bp-step-title">Your chain position</div>
           <div class="bp-step-body">
             Chain-free buyers are preferred by 78% of sellers.
@@ -1690,6 +1690,13 @@ onBeforeUnmount(() => {
   margin: 0 auto 14px;
   font-size: 30px;
   border: 2px solid transparent;
+  overflow: hidden;
+}
+.bp-step-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .bp-ic-teal {
   background: #f0fdfa;

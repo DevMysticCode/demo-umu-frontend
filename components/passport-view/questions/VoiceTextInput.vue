@@ -69,7 +69,7 @@ const props = defineProps({
   placeholder: { type: String, default: 'Start typing or use voice...' },
 })
 
-const emit = defineEmits(['update'])
+const emit = defineEmits(['update', 'submit'])
 
 const inputText = ref(props.value || '')
 const isRecording = ref(false)
@@ -88,7 +88,12 @@ const onInput = () => {
 }
 
 const submit = () => {
-  emit('update', inputText.value)
+  const trimmed = inputText.value.trim()
+  if (!trimmed) return
+  emit('submit', trimmed)
+  // Clear and reset so the field is ready for the next note.
+  inputText.value = ''
+  emit('update', '')
 }
 
 // ── Speech Recognition ──────────────────────────────────────────────────────

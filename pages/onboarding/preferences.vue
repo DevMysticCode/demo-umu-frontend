@@ -205,7 +205,9 @@
                     )
                   "
                 >
-                  <span v-if="opt.icon" class="chip-emoji">{{ opt.icon }}</span
+                  <span v-if="opt.icon && opt.icon.startsWith('/')" class="chip-emoji chip-emoji-img"
+                    ><img :src="opt.icon" alt="" loading="lazy" /></span
+                  ><span v-else-if="opt.icon" class="chip-emoji">{{ opt.icon }}</span
                   >{{ opt.v }}
                 </button>
                 <template v-if="expanded[q.id] && q.expandOpts">
@@ -217,7 +219,9 @@
                     :class="{ selected: isSelected(q.id, opt.v, !!q.multiSelect) }"
                     @click="pick(q.id, opt.v, !!q.multiSelect)"
                   >
-                    <span v-if="opt.icon" class="chip-emoji">{{ opt.icon }}</span
+                    <span v-if="opt.icon && opt.icon.startsWith('/')" class="chip-emoji chip-emoji-img"
+                      ><img :src="opt.icon" alt="" loading="lazy" /></span
+                    ><span v-else-if="opt.icon" class="chip-emoji">{{ opt.icon }}</span
                     >{{ opt.v }}
                   </button>
                 </template>
@@ -726,17 +730,17 @@ const landlordQuestions: Question[] = [
     type: 'chips',
     label: 'HOW MANY PROPERTIES DO YOU CURRENTLY OWN?',
     opts: [
-      { v: 'None — first purchase', icon: '🏠' },
-      { v: '1–2', icon: '🏘' },
-      { v: '3–5', icon: '🏢' },
-      { v: '6–10', icon: '🏗' },
-      { v: '10+', icon: '🏙', expandKey: 'portfolio' },
+      { v: 'None — first purchase', icon: '/op-icons/investment/house.png' },
+      { v: '1–2', icon: '/op-icons/investment/housesCluster.png' },
+      { v: '3–5', icon: '/op-icons/investment/apartmentBlock.png' },
+      { v: '6–10', icon: '/op-icons/investment/crane.png' },
+      { v: '10+', icon: '/op-icons/investment/citySkyline.png', expandKey: 'portfolio' },
     ],
     expandOpts: [
-      { v: '11–25', icon: '🏘' },
-      { v: '26–50', icon: '🏢' },
-      { v: '51–100', icon: '🏗' },
-      { v: '100+', icon: '🏙' },
+      { v: '11–25', icon: '/op-icons/investment/housesCluster.png' },
+      { v: '26–50', icon: '/op-icons/investment/apartmentBlock.png' },
+      { v: '51–100', icon: '/op-icons/investment/crane.png' },
+      { v: '100+', icon: '/op-icons/investment/citySkyline.png' },
     ],
   },
   {
@@ -744,10 +748,10 @@ const landlordQuestions: Question[] = [
     type: 'chips',
     label: 'HOW DO YOU CURRENTLY MANAGE?',
     opts: [
-      { v: 'Self-managed', icon: '🔑' },
-      { v: 'Letting agent', icon: '🏢' },
-      { v: 'Mix of both' },
-      { v: 'First purchase' },
+      { v: 'Self-managed', icon: '/op-icons/investment/key.png' },
+      { v: 'Letting agent', icon: '/op-icons/investment/officeBuilding.png' },
+      { v: 'Mix of both', icon: '/op-icons/investment/handshake.png' },
+      { v: 'First purchase', icon: '/op-icons/investment/trolleyWithHouse.png' },
     ],
   },
   H("🎯 What you're looking to buy"),
@@ -757,14 +761,14 @@ const landlordQuestions: Question[] = [
     label: 'INVESTMENT STRATEGY',
     multiSelect: true,
     opts: [
-      { v: 'Buy-to-let yield', icon: '💰' },
-      { v: 'Capital growth', icon: '📈' },
-      { v: 'Yield + growth', icon: '🎯' },
-      { v: 'Below market value', icon: '🏷' },
-      { v: 'Refurb & hold', icon: '🔨' },
-      { v: 'Refurb & flip', icon: '🔄' },
-      { v: 'HMO conversion', icon: '🏘' },
-      { v: 'Short-term / Airbnb', icon: '🏖' },
+      { v: 'Buy-to-let yield', icon: '/op-icons/investment/moneyBagPound.png' },
+      { v: 'Capital growth', icon: '/op-icons/investment/growthChart.png' },
+      { v: 'Yield + growth', icon: '/op-icons/investment/target.png' },
+      { v: 'Below market value', icon: '/op-icons/investment/priceTagPound.png' },
+      { v: 'Refurb & hold', icon: '/op-icons/investment/hammer.png' },
+      { v: 'Refurb & flip', icon: '/op-icons/investment/refreshArrows.png' },
+      { v: 'HMO conversion', icon: '/op-icons/investment/houseDetached.png' },
+      { v: 'Short-term / Airbnb', icon: '/op-icons/investment/parasol.png' },
     ],
   },
   {
@@ -793,10 +797,10 @@ const landlordQuestions: Question[] = [
     type: 'chips',
     label: 'HOW ARE YOU BUYING?',
     opts: [
-      { v: 'Cash buyer', icon: '💵' },
-      { v: 'BTL mortgage', icon: '🏦' },
-      { v: 'Bridging finance', icon: '⚡' },
-      { v: 'Limited company', icon: '🏢' },
+      { v: 'Cash buyer', icon: '/op-icons/investment/cashAndCoins.png' },
+      { v: 'BTL mortgage', icon: '/op-icons/investment/bank.png' },
+      { v: 'Bridging finance', icon: '/op-icons/investment/lightningBolt.png' },
+      { v: 'Limited company', icon: '/op-icons/investment/officeBuildings.png' },
       { v: 'Not sure yet' },
     ],
   },
@@ -818,10 +822,10 @@ const landlordQuestions: Question[] = [
     type: 'chips',
     label: 'WORK APPETITE',
     opts: [
-      { v: 'Turnkey — ready to let', icon: '✅' },
-      { v: 'Light cosmetic work', icon: '🎨' },
-      { v: 'Full refurb', icon: '🔨' },
-      { v: 'Structural / development', icon: '🏗' },
+      { v: 'Turnkey — ready to let', icon: '/op-icons/investment/paintPalette.png' },
+      { v: 'Light cosmetic work', icon: '/op-icons/investment/paintRoller.png' },
+      { v: 'Full refurb', icon: '/op-icons/investment/hammerClaw.png' },
+      { v: 'Structural / development', icon: '/op-icons/investment/craneTower.png' },
     ],
   },
   {
@@ -829,11 +833,11 @@ const landlordQuestions: Question[] = [
     type: 'chips',
     label: 'PREFERRED LET TYPE',
     opts: [
-      { v: 'Single let', icon: '🏠' },
-      { v: 'HMO / multi-room', icon: '🏘' },
-      { v: 'Student let', icon: '🎓' },
-      { v: 'Short-term / holiday', icon: '🏖' },
-      { v: 'Commercial', icon: '🏪' },
+      { v: 'Single let', icon: '/op-icons/investment/houseSemi.png' },
+      { v: 'HMO / multi-room', icon: '/op-icons/investment/housesTerrace.png' },
+      { v: 'Student let', icon: '/op-icons/investment/graduationCap.png' },
+      { v: 'Short-term / holiday', icon: '/op-icons/investment/parasolLounger.png' },
+      { v: 'Commercial', icon: '/op-icons/investment/officeBlock.png' },
     ],
   },
   {
@@ -841,12 +845,12 @@ const landlordQuestions: Question[] = [
     type: 'chips',
     label: 'LOCATION STRATEGY',
     opts: [
-      { v: 'Local to me', icon: '📍' },
-      { v: 'High-yield North', icon: '🏙' },
-      { v: 'London & SE', icon: '🌆' },
-      { v: 'University towns', icon: '🎓' },
-      { v: 'Coastal', icon: '🌊' },
-      { v: 'Flexible', icon: '🗺' },
+      { v: 'Local to me', icon: '/op-icons/investment/locationPinMap.png' },
+      { v: 'High-yield North', icon: '/op-icons/investment/cityTowers.png' },
+      { v: 'London & SE', icon: '/op-icons/investment/landmarks.png' },
+      { v: 'University towns', icon: '/op-icons/investment/graduationCapDark.png' },
+      { v: 'Coastal', icon: '/op-icons/investment/lighthouse.png' },
+      { v: 'Flexible', icon: '/op-icons/investment/signpost.png' },
     ],
   },
   {
@@ -855,13 +859,13 @@ const landlordQuestions: Question[] = [
     label: 'MUST-HAVES',
     multiSelect: true,
     opts: [
-      { v: 'Vacant possession', icon: '🔓' },
-      { v: 'Sitting tenant', icon: '🤝' },
-      { v: 'No chain', icon: '⛓️' },
-      { v: 'EPC D or above', icon: '🌿' },
-      { v: 'Planning potential', icon: '📋' },
-      { v: 'BMV — below market value', icon: '🏷' },
-      { v: 'Off-market deals', icon: '🤫' },
+      { v: 'Vacant possession', icon: '/op-icons/investment/padlock.png' },
+      { v: 'Sitting tenant', icon: '/op-icons/investment/armchair.png' },
+      { v: 'No chain', icon: '/op-icons/investment/chainLink.png' },
+      { v: 'EPC D or above', icon: '/op-icons/investment/plantSprout.png' },
+      { v: 'Planning potential', icon: '/op-icons/investment/clipboardChecklist.png' },
+      { v: 'BMV — below market value', icon: '/op-icons/investment/priceTagPound2.png' },
+      { v: 'Off-market deals', icon: '/op-icons/investment/smileyFace.png' },
     ],
   },
 ]
@@ -1649,6 +1653,17 @@ onMounted(() => {
 .chip-emoji {
   font-size: 13px;
   line-height: 1;
+}
+.chip-emoji-img {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+}
+.chip-emoji-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* ── Sticky footer ───────────────────────────────────────────────── */
