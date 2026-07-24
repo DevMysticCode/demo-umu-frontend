@@ -23,7 +23,12 @@
 
     <!-- Level up hero -->
     <div class="levelup-hero anim-1 level-up">
-      <div class="levelup-eyebrow">🎉 Level up · Quiz complete</div>
+      <div class="levelup-eyebrow">
+        <svg class="levelup-eyebrow-ic" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2 22l3-9 6 6-9 3zm7-8l4-4 5 5-4 4-5-5zm5-5l4-4a3.5 3.5 0 015 5l-4 4-5-5zM17 3l1 1-1 1V4h-1l1-1zm4 4l1 1-1 1V8h-1l1-1zm-2 4l1 1-1 1v-1h-1l1-1z" />
+        </svg>
+        Level up · Quiz complete
+      </div>
       <div class="levelup-title">You levelled up your home.</div>
       <div class="levelup-sub">
         Your refined HomeScore reflects what's been done since the EPC. More
@@ -386,13 +391,20 @@ const refinedStats = [
 .levelup-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 11px;
   font-weight: 800;
   color: var(--accent-dark);
   background: var(--accent-paler);
   padding: 6px 12px;
   border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.levelup-eyebrow-ic {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   border: 1px solid var(--accent-pale);

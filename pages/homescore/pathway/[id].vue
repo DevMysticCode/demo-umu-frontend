@@ -46,7 +46,10 @@
 
     <!-- Grant banner -->
     <div class="grant-banner anim-2">
-      <div class="grant-banner-title">🎁 Grants listed on your EPC</div>
+      <div class="grant-banner-title">
+        <img src="/op-icons/congratulations/gift.png" alt="" class="grant-banner-ic" loading="lazy" />
+        Grants listed on your EPC
+      </div>
       <div class="grant-banner-sub">
         The EPC lists <b>Warm Homes Local Grant</b>, <b>Boiler Upgrade Scheme</b>, and
         <b>Energy Company Obligation (ECO)</b>. Eligibility depends on income and area — your
@@ -85,7 +88,10 @@
         <div class="mission-top">
           <div class="mission-icon">
             <span v-if="m.done" class="mission-done-tick">✓</span>
-            <template v-else>{{ m.icon }}</template>
+            <template v-else>
+              <img v-if="m.icon && m.icon.startsWith('/')" :src="m.icon" alt="" loading="lazy" class="mission-icon-img" />
+              <template v-else>{{ m.icon }}</template>
+            </template>
           </div>
           <div class="mission-info">
             <div class="mission-title">
@@ -122,7 +128,10 @@
               type="button"
               @click="openInstallerSheet(m)"
             >
-              🔧 {{ m.supplierLabel }}
+              <svg class="mission-btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+              </svg>
+              {{ m.supplierLabel }}
             </button>
           </template>
         </div>
@@ -131,7 +140,9 @@
 
     <!-- Path summary -->
     <div class="path-summary anim-4">
-      <div class="path-summary-icon">🛡️</div>
+      <div class="path-summary-icon">
+        <img src="/op-icons/verify-identity/shield.png" alt="" loading="lazy" />
+      </div>
       <div class="path-summary-body">
         <div class="path-summary-title">All suppliers are UMU-verified</div>
         <div class="path-summary-sub">
@@ -437,17 +448,19 @@ const toScore = computed(() => {
 })
 
 // Pick an icon for each EPC recommendation type based on title keywords.
+// Returns a path into /op-icons/homescore/. The template branches on
+// startsWith('/') to render as <img>, else fall back to emoji.
 function iconForRec(title: string): string {
   const t = (title ?? '').toLowerCase()
-  if (/solar pv|photovoltaic/.test(t)) return '⚡'
-  if (/solar (?:water|thermal)/.test(t)) return '☀️'
-  if (/(loft|roof)/.test(t)) return '🏠'
-  if (/(cavity|wall)/.test(t)) return '🧱'
-  if (/floor/.test(t)) return '🪟'
-  if (/(led|light)/.test(t)) return '💡'
-  if (/(boiler|heat pump|heating)/.test(t)) return '🔥'
-  if (/thermostat|controls/.test(t)) return '🌡'
-  if (/hot water|cylinder/.test(t)) return '💧'
+  if (/solar pv|photovoltaic/.test(t))       return '/op-icons/homescore/lightning.png'
+  if (/solar (?:water|thermal)/.test(t))     return '☀️'
+  if (/(loft|roof)/.test(t))                 return '/op-icons/homescore/roof.png'
+  if (/(cavity|wall)/.test(t))               return '/op-icons/homescore/walls.png'
+  if (/floor/.test(t))                       return '/op-icons/homescore/floor.png'
+  if (/(led|light)/.test(t))                 return '/op-icons/homescore/bulb.png'
+  if (/(boiler|heat pump|heating)/.test(t))  return '/op-icons/homescore/flame.png'
+  if (/thermostat|controls/.test(t))         return '/op-icons/homescore/heatingControls.png'
+  if (/hot water|cylinder/.test(t))          return '/op-icons/homescore/tap.png'
   return '✦'
 }
 
@@ -938,11 +951,20 @@ const passportSummary = computed(() => {
   box-shadow: var(--shadow-card);
 }
 .grant-banner-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 13px;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 4px;
   letter-spacing: -0.1px;
+}
+.grant-banner-ic {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .grant-banner-sub {
   font-size: 11.5px;
@@ -1054,18 +1076,24 @@ const passportSummary = computed(() => {
   margin-bottom: 10px;
 }
 .mission-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: var(--bg);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
   flex-shrink: 0;
 }
+.mission-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
 .mission-card.priority .mission-icon {
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  background: transparent;
 }
 .mission-info {
   flex: 1;
@@ -1129,6 +1157,10 @@ const passportSummary = computed(() => {
   color: white;
   border: none;
   border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-family: inherit;
   font-size: 12.5px;
   font-weight: 800;
@@ -1139,6 +1171,11 @@ const passportSummary = computed(() => {
   gap: 6px;
   transition: filter 0.15s;
   box-shadow: 0 3px 10px rgba(0, 161, 154, 0.25);
+}
+.mission-btn-svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 .mission-btn-supplier:hover {
   filter: brightness(1.06);
@@ -1415,13 +1452,19 @@ const passportSummary = computed(() => {
 .path-summary-icon {
   font-size: 22px;
   flex-shrink: 0;
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   border-radius: 10px;
-  background: var(--accent-paler);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.path-summary-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .path-summary-body {
   flex: 1;
