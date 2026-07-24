@@ -342,7 +342,13 @@
           <!-- STATE: marketplace early access -->
           <div v-else-if="state === 'market'" class="ifs-state">
             <div class="ifs-ea-hero">
-              <div class="ifs-ea-ic">🛒</div>
+              <div class="ifs-ea-ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
+                </svg>
+              </div>
               <h3>Marketplace — early access</h3>
               <p>
                 We're onboarding vetted local trades right now. Join early
@@ -352,7 +358,11 @@
             </div>
             <div class="ifs-promise">
               <div class="ifs-promise-row">
-                <div class="ifs-p-ic">✅</div>
+                <div class="ifs-p-ic ifs-p-ic--svg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
                 <div>
                   <div class="ifs-p-title">UMU-verified suppliers</div>
                   <div class="ifs-p-sub">
@@ -361,7 +371,9 @@
                 </div>
               </div>
               <div class="ifs-promise-row">
-                <div class="ifs-p-ic">🔒</div>
+                <div class="ifs-p-ic ifs-p-ic--img">
+                  <img src="/op-icons/matched-buyers/lock-big.png" alt="" loading="lazy" />
+                </div>
                 <div>
                   <div class="ifs-p-title">Payments in escrow</div>
                   <div class="ifs-p-sub">
@@ -399,7 +411,11 @@
             </p>
 
             <div class="ifs-prop-lock">
-              <span class="ifs-pl-ic">📍</span>
+              <span class="ifs-pl-ic ifs-pl-ic--pin">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2a7 7 0 017 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 017-7zm0 4.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z" />
+                </svg>
+              </span>
               <div>
                 <div class="ifs-pl-label">Postcode area</div>
                 <div class="ifs-pl-val">{{ postcode || '—' }}</div>
@@ -416,6 +432,10 @@
                 type="button"
                 @click="toggleInterest(c.value)"
               >
+                <img v-if="c.icon" :src="c.icon" alt="" class="ifs-ea-chip-ic" loading="lazy" />
+                <svg v-else-if="c.svg === 'wrench'" class="ifs-ea-chip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                </svg>
                 {{ c.label }}
               </button>
             </div>
@@ -642,12 +662,14 @@ const trade = computed(() => {
   return base
 })
 
+// Trade chips: an `icon` path renders the 3D illustration, an
+// `svg` string renders inline SVG (used for wrench — no 3D asset).
 const interestChoices = [
-  { value: 'Insulation', label: '🧱 Insulation' },
-  { value: 'Solar & battery', label: '⚡ Solar & battery' },
-  { value: 'Heat pumps', label: '♨️ Heat pumps' },
-  { value: 'Windows & doors', label: '🪟 Windows & doors' },
-  { value: 'General trades', label: '🔧 General trades' },
+  { value: 'Insulation',       label: 'Insulation',       icon: '/op-icons/homescore/walls.png' },
+  { value: 'Solar & battery',  label: 'Solar & battery',  icon: '/op-icons/homescore/lightning.png' },
+  { value: 'Heat pumps',       label: 'Heat pumps',       icon: '/op-icons/homescore/flame.png' },
+  { value: 'Windows & doors',  label: 'Windows & doors',  icon: '/op-icons/homescore/windows.png' },
+  { value: 'General trades',   label: 'General trades',   svg: 'wrench' },
 ]
 
 // --- eligibility engine (illustrative) ---
@@ -1245,6 +1267,17 @@ watch(
   object-fit: contain;
   flex-shrink: 0;
 }
+.ifs-pl-ic--pin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #FEE2E2;
+  color: #DC2626;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ifs-pl-ic--pin svg { width: 18px; height: 18px; }
 .ifs-pl-label {
   font-size: 10.5px;
   font-weight: 800;
@@ -1524,7 +1557,12 @@ watch(
 }
 .ifs-ea-ic {
   font-size: 36px;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
+.ifs-ea-ic svg { width: 46px; height: 46px; }
 .ifs-ea-hero h3 {
   color: #fff;
   font-size: 21px;
@@ -1569,6 +1607,14 @@ watch(
   object-fit: contain;
   display: block;
 }
+.ifs-p-ic--svg {
+  background: #DCFCE7;
+  color: #059669;
+}
+.ifs-p-ic--svg svg {
+  width: 22px;
+  height: 22px;
+}
 .ifs-p-title {
   font-size: 14px;
   font-weight: 800;
@@ -1593,10 +1639,13 @@ watch(
   margin-top: 12px;
 }
 .ifs-ea-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   border: 1.5px solid #e9e7f0;
   background: #fff;
   border-radius: 22px;
-  padding: 10px 14px;
+  padding: 8px 14px 8px 10px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
@@ -1604,6 +1653,19 @@ watch(
   cursor: pointer;
   transition: all 0.14s;
 }
+.ifs-ea-chip-ic {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.ifs-ea-chip-svg {
+  width: 18px;
+  height: 18px;
+  color: #00817C;
+  flex-shrink: 0;
+}
+.ifs-ea-chip.on .ifs-ea-chip-svg { color: #fff; }
 .ifs-ea-chip:hover {
   border-color: #00a19a;
 }
