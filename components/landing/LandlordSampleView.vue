@@ -40,7 +40,7 @@
           </div>
           <div class="pp-hero-dash-bar">
             <div class="pp-hero-dash-fill" :style="{ width: '83%' }">
-              <span class="pp-hero-dash-man">🚶</span>
+              <img src="/op-icons/passportview/progressMan.svg" alt="" class="pp-hero-dash-man" loading="lazy" />
             </div>
           </div>
           <div class="pp-hero-dash-warn">
@@ -81,7 +81,7 @@
     <!-- Compliance — Statutory group -->
     <div class="section-heading">Statutory — annual / 5-yearly</div>
     <div v-for="section in safetyGroup" :key="section.name" class="lp-sec" :class="`lp-sec--${section.tone}`">
-      <div class="lp-sec-icon" :class="`lp-sec-icon--${section.tone}`">{{ section.icon }}</div>
+      <div class="lp-sec-icon" :class="`lp-sec-icon--${section.tone}`"><img :src="section.icon" alt="" class="lp-sec-icon-img" loading="lazy" /></div>
       <div class="lp-sec-content">
         <div class="lp-sec-row-top">
           <div class="lp-sec-text">
@@ -89,7 +89,7 @@
             <div class="lp-sec-sub">{{ section.subtitle }}</div>
             <div class="lp-sec-pills">
               <span class="lp-sec-pill lp-sec-pill--doc">
-                <span class="lp-sec-pill-ic">📄</span>
+                <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-sec-pill-ic" loading="lazy" />
                 {{ section.docs }} doc
               </span>
               <span class="lp-sec-pill" :class="`lp-sec-pill--${section.tone}`">{{ section.statusLabel }}</span>
@@ -108,7 +108,7 @@
     <!-- Tenancy & deposit group -->
     <div class="section-heading">Tenancy &amp; deposit</div>
     <div v-for="section in tenancyGroup" :key="section.name" class="lp-sec" :class="`lp-sec--${section.tone}`">
-      <div class="lp-sec-icon" :class="`lp-sec-icon--${section.tone}`">{{ section.icon }}</div>
+      <div class="lp-sec-icon" :class="`lp-sec-icon--${section.tone}`"><img :src="section.icon" alt="" class="lp-sec-icon-img" loading="lazy" /></div>
       <div class="lp-sec-content">
         <div class="lp-sec-row-top">
           <div class="lp-sec-text">
@@ -116,7 +116,7 @@
             <div class="lp-sec-sub">{{ section.subtitle }}</div>
             <div class="lp-sec-pills">
               <span class="lp-sec-pill lp-sec-pill--doc">
-                <span class="lp-sec-pill-ic">📄</span>
+                <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-sec-pill-ic" loading="lazy" />
                 {{ section.docs }} doc
               </span>
               <span class="lp-sec-pill" :class="`lp-sec-pill--${section.tone}`">{{ section.statusLabel }}</span>
@@ -134,7 +134,7 @@
     <!-- Insurance & HMO group -->
     <div class="section-heading">Insurance &amp; HMO</div>
     <div v-for="section in insuranceGroup" :key="section.name" class="lp-sec" :class="`lp-sec--${section.tone}`">
-      <div class="lp-sec-icon" :class="`lp-sec-icon--${section.tone}`">{{ section.icon }}</div>
+      <div class="lp-sec-icon" :class="`lp-sec-icon--${section.tone}`"><img :src="section.icon" alt="" class="lp-sec-icon-img" loading="lazy" /></div>
       <div class="lp-sec-content">
         <div class="lp-sec-row-top">
           <div class="lp-sec-text">
@@ -142,7 +142,7 @@
             <div class="lp-sec-sub">{{ section.subtitle }}</div>
             <div class="lp-sec-pills">
               <span class="lp-sec-pill lp-sec-pill--doc">
-                <span class="lp-sec-pill-ic">📄</span>
+                <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-sec-pill-ic" loading="lazy" />
                 {{ section.docs }} doc
               </span>
               <span class="lp-sec-pill" :class="`lp-sec-pill--${section.tone}`">{{ section.statusLabel }}</span>
@@ -182,16 +182,16 @@ interface SampleSection {
 // Sample shows 4 curated sections — surrounding chrome (hero, dashboard,
 // tabs, group headings) stays faithful to the real landlord-passport view.
 const safetyGroup: SampleSection[] = [
-  { name: 'Gas Safety Certificate (CP12)', subtitle: 'Annual · renewing in 30 days', icon: '🔥', tone: 'warn', statusLabel: '⚠ Renew soon', docs: '1/1', pct: 80, actionBy: 'Action by 30 May' },
-  { name: 'Electrical Safety (EICR)', subtitle: '5-yearly · valid to Apr 2028', icon: '⚡', tone: 'good', statusLabel: '✓ Satisfactory', docs: '1/1', pct: 100 },
+  { name: 'Gas Safety Certificate (CP12)', subtitle: 'Annual · renewing in 30 days', icon: '/op-icons/homescore/flame.png', tone: 'warn', statusLabel: '⚠ Renew soon', docs: '1/1', pct: 80, actionBy: 'Action by 30 May' },
+  { name: 'Electrical Safety (EICR)', subtitle: '5-yearly · valid to Apr 2028', icon: '/op-icons/homescore/lightning.png', tone: 'good', statusLabel: '✓ Satisfactory', docs: '1/1', pct: 100 },
 ]
 
 const tenancyGroup: SampleSection[] = [
-  { name: 'Tenancy Agreement (AST)', subtitle: 'Signed · J. Smith · 12-month term', icon: '📜', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
+  { name: 'Tenancy Agreement (AST)', subtitle: 'Signed · J. Smith · 12-month term', icon: '/op-icons/rental-passport/freestanding/tenancy-agreement.svg', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
 ]
 
 const insuranceGroup: SampleSection[] = [
-  { name: 'Landlord Insurance', subtitle: 'Direct Line · cover £350k · valid 2026', icon: '🛡️', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
+  { name: 'Landlord Insurance', subtitle: 'Direct Line · cover £350k · valid 2026', icon: '/op-icons/verify-identity/shield.png', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
 ]
 </script>
 
@@ -294,9 +294,11 @@ const insuranceGroup: SampleSection[] = [
   position: relative;
 }
 .pp-hero-dash-man {
-  position: absolute; right: -10px; top: -12px;
-  font-size: 16px;
+  position: absolute; right: -10px; top: 50%;
+  transform: translateY(-50%);
+  width: 22px; height: 22px;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  pointer-events: none;
 }
 .pp-hero-dash-warn {
   display: flex; align-items: center; gap: 6px;
@@ -394,6 +396,7 @@ const insuranceGroup: SampleSection[] = [
   flex-shrink: 0; font-size: 26px;
   box-shadow: inset 0 0 0 1px rgba(31, 122, 102, 0.1);
 }
+.lp-sec-icon-img { width: 28px; height: 28px; object-fit: contain; }
 .lp-sec-icon--good {
   background: linear-gradient(135deg, #f1f9f4, #d6efe2);
   box-shadow: inset 0 0 0 1px rgba(0, 161, 154, 0.25);
@@ -423,7 +426,7 @@ const insuranceGroup: SampleSection[] = [
   white-space: nowrap;
 }
 .lp-sec-pill--doc { background: #f0f2f1; color: #4a5868; }
-.lp-sec-pill-ic { font-size: 10px; }
+.lp-sec-pill-ic { width: 10px; height: 10px; object-fit: contain; }
 .lp-sec-pill--good { background: #d6efe2; color: #008a84; }
 .lp-sec-pill--warn { background: #fef3c7; color: #92400e; }
 .lp-sec-pill--pending { background: #f5f4f0; color: #8a95a0; }
