@@ -9,7 +9,7 @@
         <div class="watch-sheet" @click.stop>
           <div class="watch-grip" />
           <div class="watch-head">
-            <div class="watch-eyebrow">👁 Watch{{ addressLabel ? ` · ${addressLabel}` : '' }}</div>
+            <div class="watch-eyebrow"><img src="/op-icons/misc/eye.png" alt="" style="height:1.4em;display:inline-block;vertical-align:-0.3em;margin-right:4px" loading="lazy" />Watch{{ addressLabel ? ` · ${addressLabel}` : '' }}</div>
             <div class="watch-title">Pick what you want to be pinged about.</div>
             <div class="watch-sub">All notifications stay in your buyer profile. Turn any off in Settings anytime.</div>
           </div>

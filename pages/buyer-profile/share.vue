@@ -167,9 +167,9 @@
         </div>
       </div>
       <div class="sh-cta-wrap">
-        <button class="cta-btn" @click="goPdf">📄 Preview & Download PDF</button>
+        <button class="cta-btn" @click="goPdf"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="inline-ic" loading="lazy" /> Preview & Download PDF</button>
       </div>
-      <button class="sh-sign-link" @click="goSign">✍️ Add digital signature</button>
+      <button class="sh-sign-link" @click="goSign"><img src="/op-icons/misc/signature.png" alt="" class="inline-ic" loading="lazy" /> Add digital signature</button>
       <p class="sh-pdf-note">
         PDF includes your verified badge and is digitally signed by UMU
       </p>
@@ -414,6 +414,14 @@ function goSign() { router.push('/buyer-profile/sign') }
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 .sh-page {
   min-height: 100dvh;
   background: #fafafa;

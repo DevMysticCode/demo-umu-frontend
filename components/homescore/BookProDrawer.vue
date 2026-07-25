@@ -6,7 +6,7 @@
           <div class="bpd-grip" aria-hidden="true" />
 
           <div class="bpd-head">
-            <div class="bpd-eyebrow">🔧 How it works</div>
+            <div class="bpd-eyebrow"><img src="/op-icons/misc/wrench.png" alt="" class="inline-ic" loading="lazy" /> How it works</div>
             <div class="bpd-title">{{ pro.label }}</div>
             <div class="bpd-sub">{{ pro.sub }}</div>
           </div>
@@ -184,6 +184,14 @@ function onCta() {
   color: #008a84;
   letter-spacing: 1.4px; text-transform: uppercase;
   margin-bottom: 6px;
+}
+.bpd-eyebrow .inline-ic {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  vertical-align: -1px;
+  display: inline-block;
+  margin-right: 2px;
 }
 .bpd-title {
   font-size: 20px; font-weight: 800;

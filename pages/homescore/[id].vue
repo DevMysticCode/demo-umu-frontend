@@ -336,7 +336,7 @@
               :class="{ active: simPath === 'quiz' }"
               @click="simSelectPath('quiz')"
             >
-              <div class="sim-path-icon">📋</div>
+              <div class="sim-path-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
               <div class="sim-path-title">Answer questions</div>
               <div class="sim-path-sub">Work through the list below</div>
             </div>
@@ -346,7 +346,7 @@
               :class="{ active: simPath === 'bill' }"
               @click="simSelectPath('bill')"
             >
-              <div class="sim-path-icon">💡</div>
+              <div class="sim-path-icon"><img src="/op-icons/homescore/bulb.png" alt="" loading="lazy" /></div>
               <div class="sim-path-title">Upload a bill</div>
               <div class="sim-path-sub">Skip the questions</div>
             </div>
@@ -462,7 +462,7 @@
           class="sim-bill-picker"
           @click="openSimBillDrawer"
         >
-          <div class="sim-bill-emoji">📄</div>
+          <div class="sim-bill-emoji"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
           <div>
             <div class="sim-bill-title">Tap to upload a recent energy bill</div>
             <div class="sim-bill-sub">
@@ -541,7 +541,7 @@
               placeholder="e.g. Replaced hot water cylinder completely, installed underfloor heating, added a heat pump..."
             />
             <div class="sim-diff-tip">
-              <span class="sim-diff-tip-icon">💡</span>
+              <span class="sim-diff-tip-icon"><img src="/op-icons/homescore/bulb.png" alt="" loading="lazy" /></span>
               <div class="sim-diff-tip-text">
                 <b>This won't show on your EPC</b> until it's reassessed. A new
                 EPC costs around <b>£50</b> and could move your rating from F to
@@ -690,7 +690,7 @@
             class="pq-hero-btn pq-hero-btn--ghost"
             @click="goToOwnedPassport"
           >
-            <span class="pq-hero-btn-emoji">📘</span>
+            <span class="pq-hero-btn-emoji"><img src="/op-icons/misc/book.png" alt="" loading="lazy" /></span>
             <span class="pq-hero-btn-label">Open my Property Passport</span>
             <svg
               class="pq-hero-btn-arrow"
@@ -711,7 +711,7 @@
             class="pq-hero-btn pq-hero-btn--ghost"
             @click="goToClaim"
           >
-            <span class="pq-hero-btn-emoji">🏠</span>
+            <span class="pq-hero-btn-emoji"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></span>
             <span class="pq-hero-btn-label">Build my Property Passport</span>
             <svg
               class="pq-hero-btn-arrow"
@@ -829,7 +829,7 @@
               type="button"
               @click="onBoostScore"
             >
-              <span class="pq-interest-opt-icon">📎</span>
+              <span class="pq-interest-opt-icon"><img src="/op-icons/misc/paperClip.png" alt="" loading="lazy" /></span>
               <span class="pq-interest-opt-body">
                 <span class="pq-interest-opt-title">Boost your score</span>
                 <span class="pq-interest-opt-sub"
@@ -962,7 +962,7 @@
             <div class="pub-contrib-row">
               <div class="pub-contrib-head">
                 <div class="pub-contrib-label">
-                  <span class="pub-contrib-icon">💷</span>
+                  <span class="pub-contrib-icon"><img src="/op-icons/investment/moneyBagPound.png" alt="" loading="lazy" /></span>
                   <span>Annual energy saving</span>
                 </div>
                 <span class="pub-contrib-val">~£{{ pubSavingAmount }}/yr</span>
@@ -980,7 +980,7 @@
             <div class="pub-contrib-row">
               <div class="pub-contrib-head">
                 <div class="pub-contrib-label">
-                  <span class="pub-contrib-icon">🌱</span>
+                  <span class="pub-contrib-icon"><img src="/op-icons/investment/plantSprout.png" alt="" loading="lazy" /></span>
                   <span>Carbon saved</span>
                 </div>
                 <span class="pub-contrib-val"
@@ -1000,7 +1000,7 @@
             <div class="pub-contrib-row">
               <div class="pub-contrib-head">
                 <div class="pub-contrib-label">
-                  <span class="pub-contrib-icon">🏠</span>
+                  <span class="pub-contrib-icon"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></span>
                   <span>HomeScore accuracy</span>
                 </div>
                 <span class="pub-contrib-val">{{ simScore }} / 100</span>
@@ -1020,7 +1020,7 @@
 
         <!-- Anonymous notice -->
         <div class="pub-anon">
-          <div class="pub-anon-icon">🔒</div>
+          <div class="pub-anon-icon"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
           <div>
             <b>Published anonymously</b> — only the data above is shared, never
             your name or personal details.
@@ -1134,7 +1134,7 @@
 
         <!-- Navy gradient hero -->
         <div class="kyc-hero">
-          <div class="kyc-hero-emoji">🔐</div>
+          <div class="kyc-hero-emoji"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
           <div class="kyc-hero-title">Prove you own this property</div>
           <div class="kyc-hero-sub">
             We use a quick identity check so only the real owner can publish and
@@ -1396,7 +1396,7 @@
         <div class="kyc-next-step">
           <div class="kyc-next-step-eyebrow">Your next step</div>
           <button type="button" class="kyc-cta-primary" @click="onBoostScore">
-            📎 Boost your score with documents
+            <img src="/op-icons/misc/paperClip.png" alt="" loading="lazy" /> Boost your score with documents
           </button>
           <button
             type="button"
@@ -2128,7 +2128,7 @@
              current unanswered card renders. After upload, the congrats
              overlay celebrates the impact, then the next card slides in. -->
         <div class="boost-section-label">
-          📎 UPLOAD A DOCUMENT
+          <img src="/op-icons/misc/paperClip.png" alt="" loading="lazy" /> UPLOAD A DOCUMENT
           <span v-if="boostStepLabel" class="boost-step-pill">{{ boostStepLabel }}</span>
         </div>
         <div class="boost-cards">
@@ -2139,7 +2139,13 @@
             @click="triggerDocUpload(currentBoostDoc.key)"
           >
             <div class="boost-doc-icon" :style="{ background: currentBoostDoc.bg }">
-              {{ currentBoostDoc.icon }}
+              <img
+                v-if="currentBoostDoc.icon.startsWith('/')"
+                :src="currentBoostDoc.icon"
+                alt=""
+                loading="lazy"
+              />
+              <template v-else>{{ currentBoostDoc.icon }}</template>
             </div>
             <div class="boost-doc-body">
               <div class="boost-doc-title">{{ currentBoostDoc.label }}</div>
@@ -2162,7 +2168,7 @@
         </div>
 
         <!-- Book a professional section -->
-        <div class="boost-section-label">🔧 BOOK A PROFESSIONAL</div>
+        <div class="boost-section-label"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /> BOOK A PROFESSIONAL</div>
         <div class="boost-cards">
           <div
             v-for="pro in qwPros"
@@ -2171,7 +2177,13 @@
             @click="openBookPro(pro)"
           >
             <div class="boost-doc-icon" :style="{ background: pro.bg }">
-              {{ pro.icon }}
+              <img
+                v-if="pro.icon.startsWith('/')"
+                :src="pro.icon"
+                alt=""
+                loading="lazy"
+              />
+              <template v-else>{{ pro.icon }}</template>
             </div>
             <div class="boost-doc-body">
               <div class="boost-doc-title">{{ pro.label }}</div>
@@ -2223,7 +2235,8 @@
             type="button"
             @click="claimOrAccessPassport"
           >
-            🚀 Start my Passport →
+            <img class="pj-cta-btn-ic" src="/op-icons/misc/rocket.png" alt="" loading="lazy" />
+            Start my Passport →
           </button>
         </div>
 
@@ -2472,7 +2485,7 @@
 
             <!-- Already-saved file preview -->
             <div v-if="qwDrawerExistingEntry" class="qw-doc-preview">
-              <div class="qw-doc-preview-icon">📄</div>
+              <div class="qw-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
               <div class="qw-doc-preview-info">
                 <div class="qw-doc-preview-name">
                   {{ qwDrawerExistingEntry.fileName }}
@@ -2495,7 +2508,7 @@
               v-if="qwDrawerFile"
               class="qw-doc-preview qw-doc-preview--pending"
             >
-              <div class="qw-doc-preview-icon">📄</div>
+              <div class="qw-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
               <div class="qw-doc-preview-info">
                 <div class="qw-doc-preview-name">{{ qwDrawerFile.name }}</div>
                 <div class="qw-doc-preview-meta">
@@ -2599,7 +2612,7 @@
               v-if="simBillFile"
               class="qw-doc-preview qw-doc-preview--pending"
             >
-              <div class="qw-doc-preview-icon">📄</div>
+              <div class="qw-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
               <div class="qw-doc-preview-info">
                 <div class="qw-doc-preview-name">{{ simBillFile.name }}</div>
                 <div class="qw-doc-preview-meta">
@@ -5306,7 +5319,7 @@ const qwDocs = [
     label: 'Utility Bills',
     sub: 'See your actual spend vs your EPC estimate — most impactful first step',
     pts: 12,
-    icon: '💡',
+    icon: '/op-icons/boostYourScore/utilityBills.png',
     bg: '#FFFBEB',
   },
   {
@@ -5314,7 +5327,7 @@ const qwDocs = [
     label: 'Heating System Certificate',
     sub: 'Upgraded boiler or system not yet reflected on your EPC',
     pts: 9,
-    icon: '🔥',
+    icon: '/op-icons/homescore/flame.png',
     bg: '#FEF2F2',
   },
   {
@@ -5322,7 +5335,7 @@ const qwDocs = [
     label: 'Gas Safety Certificate',
     sub: 'Annual boiler service — Gas Safe registered engineer',
     pts: 10,
-    icon: '🔧',
+    icon: '/op-icons/boostYourScore/gasSafety.png',
     bg: '#FFF7ED',
   },
   {
@@ -5330,7 +5343,7 @@ const qwDocs = [
     label: 'EPC Certificate',
     sub: 'Energy rating — required for any sale or rental',
     pts: 8,
-    icon: '⚡',
+    icon: '/op-icons/boostYourScore/epcAssessment.png',
     bg: '#FFFBEB',
   },
   {
@@ -5338,7 +5351,7 @@ const qwDocs = [
     label: 'EICR Report',
     sub: 'Electrical check — removes a major buyer concern',
     pts: 7,
-    icon: '🔌',
+    icon: '/op-icons/boostYourScore/electrician.png',
     bg: '#EEF2FF',
   },
   {
@@ -5346,7 +5359,7 @@ const qwDocs = [
     label: 'Planning Permission',
     sub: 'Extensions, conversions or permitted development',
     pts: 5,
-    icon: '📋',
+    icon: '/op-icons/homescore/clipboard.png',
     bg: '#F0FDF4',
   },
 ]
@@ -5360,21 +5373,21 @@ const qwPros = [
     key: 'gassafe',
     label: 'Book a Gas Safe engineer',
     sub: 'Service your boiler · cert auto-lands in your score',
-    icon: '🛠️',
+    icon: '/op-icons/boostYourScore/gasSafety.png',
     bg: '#fef3c7',
   },
   {
     key: 'electrician',
     label: 'Book an electrician (EICR)',
     sub: 'Electrical check · from £150',
-    icon: '⚡',
+    icon: '/op-icons/boostYourScore/electrician.png',
     bg: '#eff6ff',
   },
   {
     key: 'epcassess',
     label: 'New EPC assessment',
     sub: 'From £60 · required if yours is 10+ years old',
-    icon: '🏡',
+    icon: '/op-icons/boostYourScore/epcAssessment.png',
     bg: '#f0fdf4',
   },
 ]
@@ -5608,7 +5621,7 @@ function onNotifyMePro(proKey: string) {
   // this becomes a POST to a waitlist endpoint.
   showToast({
     message: `Got it — we'll email you when ${proKey === 'gassafe' ? 'Gas Safe' : proKey === 'electrician' ? 'electrician' : 'EPC assessor'} bookings go live`,
-    iconEmoji: '🔔',
+    icon: '/op-icons/misc/bell.png',
   })
 }
 function onFindPro(_proKey: string) {
@@ -12228,6 +12241,12 @@ watch(screen, (s) => {
   width: 14px;
   height: 14px;
 }
+.pq-interest-opt-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
 .pq-interest-opt.outline .pq-interest-opt-icon {
   color: var(--pq-teal-dark);
 }
@@ -13096,6 +13115,13 @@ watch(screen, (s) => {
 .kyc-cta-primary:hover {
   background: var(--kyc-teal-bright);
 }
+.kyc-cta-primary img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  vertical-align: -3px;
+  display: inline-block;
+}
 .kyc-cta-outline {
   width: 100%;
   padding: 15px;
@@ -13675,6 +13701,14 @@ watch(screen, (s) => {
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
+.boost-section-label img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 
 /* Card rows */
 .boost-cards {
@@ -13725,6 +13759,13 @@ watch(screen, (s) => {
   justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+.boost-doc-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
 }
 .boost-doc-body {
   flex: 1;
@@ -13889,6 +13930,16 @@ watch(screen, (s) => {
   letter-spacing: -0.1px;
   transition: filter 0.15s, background 0.15s;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.pj-cta-btn-ic {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
 }
 .pj-cta-btn:hover {
   filter: brightness(1.04);
@@ -13909,5 +13960,52 @@ watch(screen, (s) => {
 }
 .boost-back-link:hover {
   color: var(--b-navy);
+}
+
+/* 3D icon images that replaced flat emoji inside icon wrappers */
+.sim-path-icon {
+  width: 24px;
+  height: 24px;
+  margin: 0 auto 4px;
+}
+.sim-diff-tip-icon {
+  width: 22px;
+  height: 22px;
+}
+.pq-hero-btn-emoji,
+.pub-contrib-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+}
+.sim-bill-emoji {
+  width: 34px;
+  height: 34px;
+}
+.pub-anon-icon {
+  width: 22px;
+  height: 22px;
+}
+.kyc-hero-emoji {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 12px;
+}
+.qw-doc-preview-icon {
+  width: 28px;
+  height: 28px;
+}
+.sim-path-icon img,
+.sim-bill-emoji img,
+.sim-diff-tip-icon img,
+.pq-hero-btn-emoji img,
+.pub-contrib-icon img,
+.pub-anon-icon img,
+.kyc-hero-emoji img,
+.qw-doc-preview-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 </style>

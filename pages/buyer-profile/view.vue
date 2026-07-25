@@ -14,7 +14,7 @@
     <!-- Loading / empty -->
     <div v-if="loading" class="bp-loading">Loading your Profile…</div>
     <div v-else-if="!passport" class="bp-empty">
-      <div class="bp-empty-ic">📘</div>
+      <div class="bp-empty-ic"><img src="/op-icons/misc/book.png" alt="" loading="lazy" /></div>
       <div class="bp-empty-title">No Profile yet</div>
       <div class="bp-empty-sub">
         Build your Buyer Profile to share with sellers and agents.
@@ -608,7 +608,8 @@ function goEdit() { router.push('/buyer-profile/build') }
 .bp-empty {
   padding: 60px 22px; text-align: center;
 }
-.bp-empty-ic { font-size: 48px; margin-bottom: 12px; }
+.bp-empty-ic { width: 60px; height: 60px; margin: 0 auto 12px; }
+.bp-empty-ic img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .bp-empty-title {
   font-size: 18px; font-weight: 800; color: #231d45; margin-bottom: 8px;
 }

@@ -5,7 +5,7 @@
         <div class="ppd-sheet" @click.stop>
           <div class="ppd-grip" />
           <div class="ppd-head">
-            <div class="ppd-eyebrow">🚀 Publish your passport</div>
+            <div class="ppd-eyebrow"><img src="/op-icons/misc/rocket.png" alt="" style="height:1.4em;display:inline-block;vertical-align:-0.3em;margin-right:4px" loading="lazy" />Publish your passport</div>
             <div class="ppd-title">Go public to every matching buyer.</div>
             <div class="ppd-sub">
               Right now your passport is private — you choose who sees it.

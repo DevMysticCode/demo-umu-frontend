@@ -2,7 +2,9 @@
   <div class="mobile-container p-4">
     <AppHeader title="Step complete" showBack />
     <div class="mt-8 text-center">
-      <h2 class="text-2xl font-semibold">🎉 Well done</h2>
+      <h2 class="text-2xl font-semibold">
+        <img src="/op-icons/misc/confetti.png" alt="" class="inline-block w-6 h-6 align-middle mr-1" loading="lazy" /> Well done
+      </h2>
       <p class="text-gray-600 mt-2">You completed this step.</p>
 
       <div class="mt-6">

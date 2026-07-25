@@ -130,7 +130,7 @@
          unuploaded doc renders. After upload, the congratulations
          overlay celebrates the impact, then the next card slides in. -->
     <div class="boost-section-h">
-      <span class="ico">📎</span> Upload a document
+      <span class="ico"><img src="/op-icons/misc/paperClip.png" alt="" loading="lazy" /></span> Upload a document
       <span class="pill-progress"
         >{{ uploadedDocs.length }} of {{ docs.length }}</span
       >
@@ -168,7 +168,7 @@
 
     <!-- All documents uploaded celebration -->
     <div v-else class="boost-row alldone">
-      <div class="boost-row-icon gold">🏆</div>
+      <div class="boost-row-icon gold boost-row-icon--img"><img src="/op-icons/misc/trophy.png" alt="" class="boost-row-icon-img" loading="lazy" /></div>
       <div class="boost-row-info">
         <div class="boost-row-title">All documents uploaded</div>
         <div class="boost-row-sub">
@@ -237,7 +237,7 @@
 
     <!-- Book a professional -->
     <div class="boost-section-h">
-      <span class="ico">🔧</span> Book a professional
+      <span class="ico"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></span> Book a professional
     </div>
     <div
       v-for="b in bookings"
@@ -274,7 +274,8 @@
         your Passport to lock in everything you've built.
       </div>
       <button type="button" class="ns-btn" @click="$emit('start-passport')">
-        🚀 Continue my Passport →
+        <img class="ns-btn-ic" src="/op-icons/misc/rocket.png" alt="" loading="lazy" />
+        Continue my Passport →
       </button>
     </div>
 
@@ -289,7 +290,14 @@
       <div v-if="activeDoc" class="bd-upload">
         <div class="bd-upload-head">
           <div class="bd-upload-ico" :class="activeDoc.tone">
-            {{ activeDoc.icon }}
+            <img
+              v-if="activeDoc.iconImage"
+              :src="activeDoc.iconImage"
+              :alt="activeDoc.title"
+              class="bd-upload-ico-img"
+              loading="lazy"
+            />
+            <template v-else>{{ activeDoc.icon }}</template>
           </div>
           <div class="bd-upload-sub">{{ activeDoc.sub }}</div>
         </div>
@@ -411,6 +419,7 @@ const docs = [
   {
     id: 'gas',
     icon: '🔥',
+    iconImage: '/op-icons/boostYourScore/gasSafety.png',
     tone: 'amber',
     title: 'Gas Safety Certificate',
     sub: 'Annual safety check from a Gas Safe engineer · +25% MoveReady',
@@ -420,6 +429,7 @@ const docs = [
   {
     id: 'eicr',
     icon: '⚡',
+    iconImage: '/op-icons/boostYourScore/electrician.png',
     tone: 'violet',
     title: 'EICR · Electrical safety report',
     sub: '5-yearly · required for letting · +20% MoveReady',
@@ -1074,6 +1084,15 @@ function formatFileSize(bytes: number): string {
 }
 .boost-section-h .ico {
   font-size: 12px;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+}
+.boost-section-h .ico img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .pill-progress {
   margin-left: auto;
@@ -1281,6 +1300,12 @@ function formatFileSize(bytes: number): string {
   cursor: pointer;
   transition: filter 0.15s, transform 0.15s;
 }
+.ns-btn-ic {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
 .ns-btn:hover {
   filter: brightness(1.04);
   transform: translateY(-1px);
@@ -1312,6 +1337,12 @@ function formatFileSize(bytes: number): string {
   justify-content: center;
   font-size: 22px;
   flex-shrink: 0;
+}
+.bd-upload-ico-img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
 }
 .bd-upload-ico.yellow {
   background: #fff6d5;

@@ -59,7 +59,9 @@
     <!-- Buyer confidence -->
     <div class="buyer-conf anim-2">
       <div class="buyer-conf-row">
-        <div class="buyer-conf-icon">🛡️</div>
+        <div class="buyer-conf-icon">
+          <img src="/op-icons/calendar/shield.png" alt="" loading="lazy" />
+        </div>
         <div class="buyer-conf-info">
           <div class="buyer-conf-eyebrow">Buyer confidence</div>
           <div class="buyer-conf-title">{{ confidenceTitle }}</div>
@@ -125,7 +127,15 @@
             what the public EPC says today.
           </div>
           <div v-for="s in epcStats" :key="s.id" class="stat-row">
-            <div class="stat-icon">{{ s.icon }}</div>
+            <div class="stat-icon">
+              <img
+                v-if="s.icon && s.icon.startsWith('/')"
+                :src="s.icon"
+                alt=""
+                loading="lazy"
+              />
+              <template v-else>{{ s.icon }}</template>
+            </div>
             <div class="stat-label">{{ s.label }}</div>
             <div class="stat-bar-wrap">
               <div
@@ -148,7 +158,15 @@
         <div class="section-h">Questions to ask the owner</div>
         <div class="questions-card">
           <div v-for="q in askQuestions" :key="q.id" class="ask-row">
-            <div class="ask-icon">{{ q.icon }}</div>
+            <div class="ask-icon">
+              <img
+                v-if="q.icon && q.icon.startsWith('/')"
+                :src="q.icon"
+                alt=""
+                loading="lazy"
+              />
+              <template v-else>{{ q.icon }}</template>
+            </div>
             <div>
               <div class="ask-title">{{ q.title }}</div>
               <div class="ask-sub">{{ q.sub }}</div>
@@ -177,7 +195,15 @@
           </div>
         </div>
         <div v-for="c in costLines" :key="c.id" class="cost-line">
-          <div class="cost-line-icon">{{ c.icon }}</div>
+          <div class="cost-line-icon">
+            <img
+              v-if="c.icon && c.icon.startsWith('/')"
+              :src="c.icon"
+              alt=""
+              loading="lazy"
+            />
+            <template v-else>{{ c.icon }}</template>
+          </div>
           <div class="cost-line-info">
             <div class="cost-line-title">{{ c.title }}</div>
             <div class="cost-line-sub">{{ c.sub }}</div>
@@ -217,7 +243,13 @@
         <!-- Sale history -->
         <div class="br-card" :class="{ open: openCards.has('sales') }">
           <div class="br-card-head" @click="toggleCard('sales')">
-            <div class="br-card-ico teal">📜</div>
+            <div class="br-card-ico teal">
+              <img
+                src="/op-icons/passportview/titleDeedsAndPlan.png"
+                alt=""
+                loading="lazy"
+              />
+            </div>
             <div class="br-card-info">
               <div class="br-card-title">Sale history</div>
               <div class="br-card-sub">
@@ -301,7 +333,13 @@
         <!-- Title summary -->
         <div class="br-card" :class="{ open: openCards.has('title') }">
           <div class="br-card-head" @click="toggleCard('title')">
-            <div class="br-card-ico teal">📄</div>
+            <div class="br-card-ico teal">
+              <img
+                src="/op-icons/passportview/titleDeedsAndPlan.png"
+                alt=""
+                loading="lazy"
+              />
+            </div>
             <div class="br-card-info">
               <div class="br-card-title">Title &amp; tenure</div>
               <div class="br-card-sub">{{ tenureLabel }}</div>
@@ -336,7 +374,7 @@
         <!-- Flood -->
         <div class="risk-item col" @click="toggleCard('flood')">
           <div class="risk-item-top">
-            <div class="risk-icon" :class="floodTone">💧</div>
+            <div class="risk-icon" :class="floodTone"><img src="/op-icons/misc/waterDroplet.png" alt="" loading="lazy" /></div>
             <div class="risk-body">
               <div class="risk-title">Flood risk</div>
               <div class="risk-sub">{{ floodSub }} · Environment Agency</div>
@@ -355,7 +393,9 @@
         <!-- Listed / conservation -->
         <div class="risk-item col" @click="toggleCard('listed')">
           <div class="risk-item-top">
-            <div class="risk-icon" :class="listedTone">🏛️</div>
+            <div class="risk-icon" :class="listedTone">
+              <img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" />
+            </div>
             <div class="risk-body">
               <div class="risk-title">
                 Listed building &amp; conservation area
@@ -386,7 +426,7 @@
               class="risk-icon"
               :class="planningApps.length ? 'note' : 'clear'"
             >
-              📋
+              <img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" />
             </div>
             <div class="risk-body">
               <div class="risk-title">Planning history</div>
@@ -457,7 +497,15 @@
         <!-- EPC-derived flags -->
         <template v-for="r in epcRiskFlags" :key="r.id">
           <div class="risk-item">
-            <div class="risk-icon" :class="r.status">{{ r.icon }}</div>
+            <div class="risk-icon" :class="r.status">
+              <img
+                v-if="r.icon && r.icon.startsWith('/')"
+                :src="r.icon"
+                alt=""
+                loading="lazy"
+              />
+              <template v-else>{{ r.icon }}</template>
+            </div>
             <div class="risk-body">
               <div class="risk-title">{{ r.title }}</div>
               <div class="risk-sub">{{ r.sub }}</div>
@@ -549,7 +597,13 @@
         <!-- Schools -->
         <div class="br-card" :class="{ open: openCards.has('schools') }">
           <div class="br-card-head" @click="toggleCard('schools')">
-            <div class="br-card-ico teal">🎓</div>
+            <div class="br-card-ico teal">
+              <img
+                src="/op-icons/investment/graduationCap.png"
+                alt=""
+                loading="lazy"
+              />
+            </div>
             <div class="br-card-info">
               <div class="br-card-title">Schools nearby</div>
               <div class="br-card-sub">
@@ -633,7 +687,7 @@
                   Mobile signal (outdoor)
                 </div>
                 <div v-for="(n, i) in mobileNets" :key="i" class="bb-net-row">
-                  <span class="bb-net-name">📱 {{ n.name }}</span>
+                  <span class="bb-net-name"><img src="/op-icons/misc/phoneCall.png" alt="" class="inline-ic" loading="lazy" /> {{ n.name }}</span>
                   <div class="bb-cov">
                     <i
                       v-for="bar in 5"
@@ -826,7 +880,7 @@
     <!-- ─── UNCLAIMED ─── -->
     <template v-if="passportState === 'unclaimed'">
       <div class="watch-card anim-4">
-        <div class="watch-card-eyebrow">👁 Watch this property</div>
+        <div class="watch-card-eyebrow"><img src="/op-icons/misc/eye.png" alt="" class="inline-ic" loading="lazy" /> Watch this property</div>
         <div class="watch-card-title">
           Be the first to know if anything changes here.
         </div>
@@ -836,7 +890,9 @@
           >.
         </div>
         <div class="watch-trigger">
-          <div class="watch-trigger-ico">🏠</div>
+          <div class="watch-trigger-ico">
+            <img src="/op-icons/homescore/house.png" alt="" loading="lazy" />
+          </div>
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">Owner claims this property</div>
             <div class="watch-trigger-sub">
@@ -845,7 +901,9 @@
           </div>
         </div>
         <div class="watch-trigger">
-          <div class="watch-trigger-ico">📋</div>
+          <div class="watch-trigger-ico">
+            <img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" />
+          </div>
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">
               Passport started or progress milestones hit
@@ -857,7 +915,7 @@
           </div>
         </div>
         <div class="watch-trigger">
-          <div class="watch-trigger-ico">🎉</div>
+          <div class="watch-trigger-ico"><img src="/op-icons/misc/confetti.png" alt="" loading="lazy" /></div>
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">
               Passport published · property goes live
@@ -869,7 +927,7 @@
           </div>
         </div>
         <div class="watch-trigger">
-          <div class="watch-trigger-ico">📈</div>
+          <div class="watch-trigger-ico"><img src="/op-icons/investment/growthChart.png" alt="" loading="lazy" /></div>
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">Comparable sales nearby</div>
             <div class="watch-trigger-sub">
@@ -879,7 +937,7 @@
           </div>
         </div>
         <button class="watch-cta" type="button" @click="onWatch">
-          👁 Watch this property →
+          <img src="/op-icons/misc/eye.png" alt="" class="inline-ic" loading="lazy" /> Watch this property →
         </button>
       </div>
 
@@ -898,7 +956,9 @@
     <!-- ─── IN PROGRESS ─── -->
     <template v-else-if="passportState === 'progress'">
       <div class="state-banner in-progress anim-3">
-        <div class="state-banner-ico">📋</div>
+        <div class="state-banner-ico">
+          <img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" />
+        </div>
         <div class="state-banner-body">
           <div class="state-banner-title">
             Passport in progress
@@ -938,7 +998,7 @@
       </div>
 
       <div class="watch-card anim-5">
-        <div class="watch-card-eyebrow">🥇 Register your interest</div>
+        <div class="watch-card-eyebrow"><img src="/op-icons/misc/trophy.png" alt="" class="inline-ic" loading="lazy" /> Register your interest</div>
         <div class="watch-card-title">
           Get in the queue before it goes live.
         </div>
@@ -948,7 +1008,9 @@
           publishes.
         </div>
         <div class="watch-trigger">
-          <div class="watch-trigger-ico">📋</div>
+          <div class="watch-trigger-ico">
+            <img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" />
+          </div>
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">Milestone pings</div>
             <div class="watch-trigger-sub">
@@ -957,7 +1019,7 @@
           </div>
         </div>
         <div class="watch-trigger">
-          <div class="watch-trigger-ico">🎉</div>
+          <div class="watch-trigger-ico"><img src="/op-icons/misc/confetti.png" alt="" loading="lazy" /></div>
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">
               Free Passport the moment it publishes
@@ -969,7 +1031,7 @@
           </div>
         </div>
         <button class="watch-cta" type="button" @click="onRegister">
-          🥇 Register my interest →
+          <img src="/op-icons/misc/trophy.png" alt="" class="inline-ic" loading="lazy" /> Register my interest →
         </button>
       </div>
 
@@ -985,7 +1047,7 @@
     <!-- ─── PUBLISHED ─── -->
     <template v-else>
       <div class="state-banner published anim-3">
-        <div class="state-banner-ico">🎉</div>
+        <div class="state-banner-ico"><img src="/op-icons/misc/confetti.png" alt="" loading="lazy" /></div>
         <div class="state-banner-body">
           <div class="state-banner-title">
             Passport published
@@ -1005,7 +1067,9 @@
 
       <div class="buy-pp-card anim-4">
         <div class="buy-pp-top">
-          <div class="buy-pp-badge">📋</div>
+          <div class="buy-pp-badge">
+            <img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" />
+          </div>
           <span class="buy-pp-grade">Solicitor-grade</span>
         </div>
         <div class="buy-pp-title">The full story on this home — verified.</div>
@@ -1386,11 +1450,11 @@ const epcStats = computed<StatRow[]>(() => {
     }
   }
   return [
-    mk('heating', '🔥', 'Heating', heat, 20),
-    mk('structure', '🧱', 'Structure', structure, 25),
-    mk('efficiency', '💡', 'Efficiency', efficiency, 15),
-    mk('electrics', '⚡', 'Electrics', electrics, 20),
-    mk('plumbing', '💧', 'Plumbing', plumbing, 20),
+    mk('heating', '/op-icons/homescore/flame.png', 'Heating', heat, 20),
+    mk('structure', '/op-icons/homescore/bricks.png', 'Structure', structure, 25),
+    mk('efficiency', '/op-icons/homescore/bulb.png', 'Efficiency', efficiency, 15),
+    mk('electrics', '/op-icons/homescore/lightning.png', 'Electrics', electrics, 20),
+    mk('plumbing', '/op-icons/misc/waterDroplet.png', 'Plumbing', plumbing, 20),
   ]
 })
 
@@ -1402,13 +1466,13 @@ interface AskRow {
 }
 function iconForTitle(title: string): string {
   const t = (title ?? '').toLowerCase()
-  if (/solar pv|photovoltaic/.test(t)) return '⚡'
-  if (/solar (?:water|thermal)/.test(t)) return '☀️'
-  if (/(loft|roof)/.test(t)) return '🏠'
-  if (/(cavity|wall)/.test(t)) return '🧱'
+  if (/solar pv|photovoltaic/.test(t)) return '/op-icons/homescore/lightning.png'
+  if (/solar (?:water|thermal)/.test(t)) return '/op-icons/misc/sun.png'
+  if (/(loft|roof)/.test(t)) return '/op-icons/homescore/house.png'
+  if (/(cavity|wall)/.test(t)) return '/op-icons/homescore/bricks.png'
   if (/floor/.test(t)) return '🪟'
-  if (/(led|light)/.test(t)) return '💡'
-  if (/(boiler|heat pump|heating)/.test(t)) return '🔥'
+  if (/(led|light)/.test(t)) return '/op-icons/homescore/bulb.png'
+  if (/(boiler|heat pump|heating)/.test(t)) return '/op-icons/homescore/flame.png'
   return '✦'
 }
 const askQuestions = computed<AskRow[]>(() => {
@@ -1427,13 +1491,13 @@ const askQuestions = computed<AskRow[]>(() => {
   })
   out.push({
     id: 'gas-safety',
-    icon: '🔥',
+    icon: '/op-icons/homescore/flame.png',
     title: 'Do you have a Gas Safety certificate?',
     sub: 'A CP12 from a Gas Safe registered engineer confirms the boiler and gas appliances are safe — ask for the latest one.',
   })
   out.push({
     id: 'eicr',
-    icon: '⚡',
+    icon: '/op-icons/homescore/lightning.png',
     title: 'Do you have an EICR certificate?',
     sub: 'Electrical Installation Condition Report — not legally required, but worth asking.',
   })
@@ -1491,7 +1555,7 @@ const costLines = computed<CostLine[]>(() => {
   if (heatingCost.value > 0)
     lines.push({
       id: 'heating',
-      icon: '🔥',
+      icon: '/op-icons/homescore/flame.png',
       title: 'Heating',
       sub: epcField('mainheatDescription') || 'EPC figure',
       amount: Math.round(heatingCost.value),
@@ -1499,7 +1563,7 @@ const costLines = computed<CostLine[]>(() => {
   if (hotWaterCost.value > 0)
     lines.push({
       id: 'hw',
-      icon: '💧',
+      icon: '/op-icons/misc/waterDroplet.png',
       title: 'Hot water',
       sub: epcField('hotwaterDescription') || 'From main system',
       amount: Math.round(hotWaterCost.value),
@@ -1508,7 +1572,7 @@ const costLines = computed<CostLine[]>(() => {
     const ledPct = Number(epcField('lowEnergyLighting') ?? 0)
     lines.push({
       id: 'light',
-      icon: '💡',
+      icon: '/op-icons/homescore/bulb.png',
       title: 'Lighting',
       sub: ledPct ? `${Math.round(ledPct)}% LED` : 'EPC figure',
       amount: Math.round(lightingCost.value),
@@ -1516,7 +1580,7 @@ const costLines = computed<CostLine[]>(() => {
   }
   lines.push({
     id: 'water',
-    icon: '🚰',
+    icon: '/op-icons/homescore/tap.png',
     title: 'Water & sewerage',
     sub: waterInfo.value?.company
       ? `${waterInfo.value.company} · regional avg`
@@ -1526,7 +1590,7 @@ const costLines = computed<CostLine[]>(() => {
   const band = (epcField('councilTaxBand') || '').toUpperCase()
   lines.push({
     id: 'ctax',
-    icon: '🏠',
+    icon: '/op-icons/homescore/house.png',
     title: 'Council tax',
     sub: band
       ? `Band ${band} · ${enrichment.value?.councilTax?.councilName || 'local council'}`
@@ -1995,6 +2059,14 @@ function onBuyPassport() {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 .hs-buyer {
   --primary: #231d45;
   --primary-2: #352d5c;
@@ -3930,5 +4002,72 @@ function onBuyPassport() {
 }
 .verify-cta:hover {
   filter: brightness(1.06);
+}
+
+/* 3D icon images that replaced flat emoji inside icon wrappers */
+.buyer-conf-icon img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
+.br-card-ico img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+.risk-icon img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+}
+.stat-icon {
+  height: 20px;
+}
+.stat-icon img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+.ask-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ask-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.cost-line-icon img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+.watch-trigger-ico img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+.state-banner-ico img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+}
+.buy-pp-badge img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
 }
 </style>

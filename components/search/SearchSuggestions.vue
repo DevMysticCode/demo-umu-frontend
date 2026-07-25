@@ -53,7 +53,7 @@
     <!-- Voice Feedback -->
     <transition name="fade">
       <p v-if="isVoiceListening" class="px-4 mb-4 text-sm text-brand-aqua">
-        <span class="inline-block animate-pulse">🎤 Listening...</span>
+        <span class="inline-block animate-pulse"><img src="/op-icons/misc/microphone.png" alt="" style="height:1.05em;display:inline-block;vertical-align:-0.15em;margin-right:3px" loading="lazy" />Listening...</span>
       </p>
     </transition>
 

@@ -333,7 +333,7 @@
           </div>
         </template>
         <div v-else class="no-results-msg">
-          <div class="no-results-icon">🔍</div>
+          <div class="no-results-icon"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
           <div class="no-results-text">No properties found</div>
           <div class="no-results-sub">Try a different postcode or area</div>
         </div>
@@ -431,7 +431,7 @@
             style="margin-bottom: 16px"
             @click="openGasSafetySheet"
           >
-            <div class="pro-dark-icon">🔧</div>
+            <div class="pro-dark-icon"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></div>
             <div class="pro-dark-body">
               <div class="pro-dark-title">Need certs? Find a Pro</div>
               <div class="pro-dark-sub">
@@ -744,7 +744,7 @@
             data-tour="passport-status"
             @click="startClaimFlow"
           >
-            <div class="no-pp-icon">📋</div>
+            <div class="no-pp-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
             <div class="no-pp-body">
               <div class="no-pp-title">No passport yet</div>
               <div class="no-pp-sub">
@@ -765,7 +765,7 @@
               )
             "
           >
-            <div class="na-icon">⚡</div>
+            <div class="na-icon"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
             <div class="na-body">
               <div class="na-title">{{ nextActionLabel }}</div>
               <div class="na-sub">{{ nextActionSub }}</div>
@@ -780,7 +780,7 @@
             data-tour="pro-card"
             @click="openGasSafetySheet"
           >
-            <div class="pro-dark-icon">🔧</div>
+            <div class="pro-dark-icon"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></div>
             <div class="pro-dark-body">
               <div class="pro-dark-title">Book a gas safety check</div>
               <div class="pro-dark-sub">
@@ -1060,7 +1060,7 @@
             </button>
           </div>
           <div v-else class="foryou-empty">
-            <div class="foryou-empty-ic">🔍</div>
+            <div class="foryou-empty-ic"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
             <div class="foryou-empty-title">No matches yet</div>
             <div class="foryou-empty-sub">
               Nothing in your area matches your saved preferences. Try
@@ -1161,7 +1161,7 @@
             data-tour="passport-status"
             @click="startClaimFlow"
           >
-            <div class="no-pp-icon">📋</div>
+            <div class="no-pp-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
             <div class="no-pp-body">
               <div class="no-pp-title">No passport yet</div>
               <div class="no-pp-sub">
@@ -1176,7 +1176,9 @@
             class="saved-search-compact"
             @click="navigateTo('/profile')"
           >
-            <div style="font-size: 22px; flex-shrink: 0">🔍</div>
+            <div style="width: 24px; height: 24px; flex-shrink: 0">
+              <img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" style="width: 100%; height: 100%; object-fit: contain; display: block" />
+            </div>
             <div style="flex: 1; min-width: 0">
               <div
                 style="
@@ -1221,7 +1223,9 @@
             class="saved-search-compact"
             @click="navigateTo('/profile')"
           >
-            <div style="font-size: 22px; flex-shrink: 0">📍</div>
+            <div style="width: 24px; height: 24px; flex-shrink: 0">
+              <img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" style="width: 100%; height: 100%; object-fit: contain; display: block" />
+            </div>
             <div style="flex: 1; min-width: 0">
               <div
                 style="
@@ -1346,7 +1350,7 @@
             </button>
           </div>
           <div v-else class="foryou-empty">
-            <div class="foryou-empty-ic">🔍</div>
+            <div class="foryou-empty-ic"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
             <div class="foryou-empty-title">No matches yet</div>
             <div class="foryou-empty-sub">
               Nothing in your area matches your saved preferences. Try
@@ -1447,7 +1451,7 @@
             data-tour="passport-status"
             @click="startClaimFlow"
           >
-            <div class="no-pp-icon">📋</div>
+            <div class="no-pp-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
             <div class="no-pp-body">
               <div class="no-pp-title">No passport yet</div>
               <div class="no-pp-sub">
@@ -1464,7 +1468,7 @@
             data-tour="next-action"
             @click="navigateTo('/passportview/' + passports[0].id)"
           >
-            <div class="na-icon">⚡</div>
+            <div class="na-icon"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
             <div class="na-body">
               <div class="na-title">{{ nextActionLabel }}</div>
               <div class="na-sub">{{ nextActionSub }}</div>
@@ -1475,7 +1479,7 @@
           <HealthPassportCards />
 
           <div class="pro-dark-card" @click="openGasSafetySheet">
-            <div class="pro-dark-icon">🔧</div>
+            <div class="pro-dark-icon"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></div>
             <div class="pro-dark-body">
               <div class="pro-dark-title">Book a gas safety engineer</div>
               <div class="pro-dark-sub">Cert auto-lands in your Passport</div>
@@ -3509,6 +3513,14 @@ onMounted(async () => {
 .pro-dark-icon {
   font-size: 26px;
   flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+}
+.pro-dark-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .pro-dark-body {
   flex: 1;
@@ -4813,5 +4825,49 @@ onMounted(async () => {
   border-radius: 999px;
   font-weight: 800;
   font-feature-settings: 'tnum';
+}
+
+/* 3D icon images that replaced flat emoji inside icon wrappers */
+.no-results-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 12px;
+}
+.no-results-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.no-pp-icon {
+  width: 34px;
+  height: 34px;
+}
+.no-pp-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.na-icon {
+  width: 26px;
+  height: 26px;
+}
+.na-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.foryou-empty-ic {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 8px;
+}
+.foryou-empty-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 </style>

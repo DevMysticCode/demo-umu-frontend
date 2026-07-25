@@ -32,7 +32,10 @@
         :key="row.scope"
         class="doc-row"
       >
-        <div class="doc-icon">{{ row.icon }}</div>
+        <div class="doc-icon">
+          <img v-if="row.icon && row.icon.startsWith('/')" :src="row.icon" alt="" loading="lazy" />
+          <template v-else>{{ row.icon }}</template>
+        </div>
         <div class="doc-body">
           <div class="doc-title">{{ row.title }}</div>
           <div class="doc-meta">{{ row.meta }}</div>
@@ -94,37 +97,37 @@ const sharedRows = computed(() => {
   if (!request.value?.grant) return []
   const map: Record<string, { icon: string; title: string; meta: string }> = {
     identity: {
-      icon: '🪪',
+      icon: '/op-icons/buyer-profile-build/idCard.png',
       title: 'Identity',
       meta: 'DVS-certified · Onfido / Persona',
     },
     proof_of_deposit: {
-      icon: '🏦',
+      icon: '/op-icons/investment/bank.png',
       title: 'Proof of deposit',
       meta: 'Bank verified · Armalytix',
     },
     source_of_funds: {
-      icon: '🛡️',
+      icon: '/op-icons/calendar/shield.png',
       title: 'Source of funds',
       meta: 'AML clear · Armalytix',
     },
     affordability: {
-      icon: '📊',
+      icon: '/op-icons/investment/growthChart.png',
       title: 'Affordability',
       meta: 'Score + stress test · Armalytix',
     },
     credit_file: {
-      icon: '📋',
+      icon: '/op-icons/homescore/clipboard.png',
       title: 'Credit file',
       meta: 'Experian · soft search',
     },
     purchase_profile: {
-      icon: '🔗',
+      icon: '/op-icons/matched-buyers/link.png',
       title: 'Purchase profile',
       meta: 'Chain, timeline, property type',
     },
     story: {
-      icon: '✍️',
+      icon: '/op-icons/misc/signature.png',
       title: 'Personal story',
       meta: 'Your optional note',
     },
@@ -261,6 +264,13 @@ function goShare() { router.push('/buyer-profile/share') }
   background: #f2faf8;
   display: flex; align-items: center; justify-content: center;
   font-size: 15px; flex-shrink: 0;
+  overflow: hidden;
+}
+.doc-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
 }
 .doc-body { flex: 1; min-width: 0; }
 .doc-title {

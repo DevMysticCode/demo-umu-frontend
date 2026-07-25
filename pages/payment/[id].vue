@@ -65,7 +65,7 @@
             <div class="method-info">
               <div class="method-name">Use UMU Credits</div>
               <div class="credits-info">
-                <div class="credits-icon">💳</div>
+                <div class="credits-icon"><img src="/op-icons/misc/creditCard.png" alt="" loading="lazy" /></div>
                 <div>
                   <div class="credits-balance">Balance: 1,240 points</div>
                   <div class="credits-required">
@@ -183,7 +183,7 @@
         </div>
 
         <div class="security-item">
-          <div class="security-icon">💳</div>
+          <div class="security-icon"><img src="/op-icons/misc/creditCard.png" alt="" loading="lazy" /></div>
           <div class="security-content">
             <div class="security-title">Card Details</div>
             <div class="security-text">
@@ -462,7 +462,14 @@ const processPayment = () => {
 }
 
 .credits-icon {
-  font-size: 24px;
+  width: 30px;
+  height: 30px;
+}
+.credits-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .credits-balance {
@@ -622,8 +629,15 @@ const processPayment = () => {
 }
 
 .security-icon {
-  font-size: 28px;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
+}
+.security-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .security-title {

@@ -27,29 +27,29 @@
 
       <div class="benefits-list">
         <div class="benefit-item">
-          <span class="benefit-icon">📞</span>
+          <span class="benefit-icon"><img src="/op-icons/misc/phoneCall.png" alt="" loading="lazy" /></span>
           <span class="benefit-text">Easily reach out to the owner</span>
         </div>
         <div class="benefit-item">
-          <span class="benefit-icon">📄</span>
+          <span class="benefit-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></span>
           <span class="benefit-text"
             >Access complete property documentation</span
           >
         </div>
         <div class="benefit-item">
-          <span class="benefit-icon">🛡️</span>
+          <span class="benefit-icon"><img src="/op-icons/calendar/shield.png" alt="" loading="lazy" /></span>
           <span class="benefit-text"
             >See all warranties, certificates & repairs</span
           >
         </div>
         <div class="benefit-item">
-          <span class="benefit-icon">💬</span>
+          <span class="benefit-icon"><img src="/op-icons/matched-buyers/chat.png" alt="" loading="lazy" /></span>
           <span class="benefit-text"
             >Get answers to specific property questions</span
           >
         </div>
         <div class="benefit-item">
-          <span class="benefit-icon">⏱️</span>
+          <span class="benefit-icon"><img src="/op-icons/buyer-profile-build/stopwatch.png" alt="" loading="lazy" /></span>
           <span class="benefit-text">Save time with verified information</span>
         </div>
       </div>
@@ -426,6 +426,12 @@ const navigateToPayment = async () => {
 .benefit-icon {
   font-size: 24px;
   flex-shrink: 0;
+}
+.benefit-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
 }
 
 .benefit-text {

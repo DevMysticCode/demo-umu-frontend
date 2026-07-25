@@ -193,7 +193,7 @@
           class="pp-resume-cta"
           @click="goToResume"
         >
-          <span class="pp-resume-ic">↪</span>
+          <span class="pp-resume-ic"><img src="/op-icons/misc/continueWhereYouLeft.png" alt="" loading="lazy" /></span>
           <span class="pp-resume-text">
             <span class="pp-resume-title">Pick up where you left off</span>
             <span class="pp-resume-sub">{{ resumeSubtitle }}</span>
@@ -220,12 +220,12 @@
               </p>
               <div class="step-counts">
                 <span class="step-count-pill step-count-docs">
-                  📎
+                  <img src="/op-icons/misc/paperClip.png" alt="" loading="lazy" />
                   {{ getStepDocs(step).done }}/{{ getStepDocs(step).total }}
                   docs
                 </span>
                 <span class="step-count-pill step-count-q">
-                  ❓
+                  <img src="/op-icons/misc/question.png" alt="" loading="lazy" />
                   {{ getStepQuestions(step).done }}/{{
                     getStepQuestions(step).total
                   }}
@@ -414,7 +414,7 @@
       <!-- Timeline tab — immutable activity ledger -->
       <div v-if="activeTab === 'timeline'" class="pp-tab-content">
         <div class="tl-intro">
-          <span class="lockico">🔐</span>
+          <span class="lockico"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
           <div>
             An <b>immutable, time-stamped record</b> of every step — so
             everyone in the chain can see exactly where the sale is, and trust
@@ -423,7 +423,14 @@
         </div>
 
         <div v-if="timelineLoading" class="pp-empty">
-          <div style="font-size: 28px; margin-bottom: 8px">🔗</div>
+          <div style="width: 28px; height: 28px; margin: 0 auto 8px">
+            <img
+              src="/op-icons/matched-buyers/link.png"
+              alt=""
+              loading="lazy"
+              style="width: 100%; height: 100%; object-fit: contain; display: block"
+            />
+          </div>
           <p>Loading timeline…</p>
         </div>
 
@@ -459,7 +466,7 @@
               </div>
               <div class="tl-who">{{ e.actor }}</div>
               <div class="tl-stamp">
-                <span class="tl-stamp-lock">🔒</span>
+                <span class="tl-stamp-lock"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
                 <span class="tl-stamp-txt">{{ e.hash }}</span>
                 <span class="tl-stamp-verif">block-stamped</span>
               </div>
@@ -1569,6 +1576,12 @@ const onRoleSwitch = (role) => {
   gap: 6px;
   margin-top: 6px;
 }
+.step-count-pill img {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  display: block;
+}
 .step-count-pill {
   display: inline-flex;
   align-items: center;
@@ -2012,6 +2025,12 @@ const onRoleSwitch = (role) => {
   font-size: 16px;
   font-weight: 800;
   flex-shrink: 0;
+}
+.pp-resume-ic img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
 }
 .pp-resume-text {
   flex: 1;
@@ -2545,7 +2564,10 @@ const onRoleSwitch = (role) => {
 .tl-time { font-size: 10px; font-weight: 700; color: #a8a9ad; white-space: nowrap; flex-shrink: 0; }
 .tl-who { font-size: 11px; font-weight: 600; color: #6b7089; margin-top: 2px; }
 .tl-stamp { display: inline-flex; align-items: center; gap: 6px; margin-top: 9px; padding: 5px 9px; background: #f2faf8; border: 1px solid #e5f4f2; border-radius: 8px; }
-.tl-stamp-lock { font-size: 11px; }
+.tl-stamp-lock { font-size: 11px; display: inline-flex; width: 12px; height: 12px; }
+.tl-stamp-lock img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.lockico { display: inline-flex; width: 26px; height: 26px; flex-shrink: 0; }
+.lockico img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .tl-stamp-txt { font-family: 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 10px; font-weight: 700; color: #008a84; letter-spacing: 0.3px; }
 .tl-stamp-verif { font-size: 9px; font-weight: 800; color: #008a84; letter-spacing: 0.4px; text-transform: uppercase; margin-left: 2px; }
 </style>
