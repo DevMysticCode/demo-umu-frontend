@@ -55,7 +55,7 @@
         class="enhanced-search__feedback-wrapper"
       >
         <p v-if="isVoiceListening" class="enhanced-search__feedback">
-          <span class="inline-block animate-pulse">🎤 Listening...</span>
+          <span class="inline-block animate-pulse"><img src="/op-icons/misc/microphone.png" alt="" style="height:1.05em;display:inline-block;vertical-align:-0.15em;margin-right:3px" loading="lazy" />Listening...</span>
         </p>
         <p v-if="voiceError" class="enhanced-search__error">
           {{ voiceError }}

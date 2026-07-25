@@ -35,7 +35,7 @@
 
     <!-- Signed-out / auth error -->
     <div v-else-if="!data" class="llc-empty">
-      <div class="llc-empty-ic">🔒</div>
+      <div class="llc-empty-ic"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
       <div class="llc-empty-title">Sign in to see LLC data</div>
       <div class="llc-empty-sub">Local Land Charges are shown to signed-in users only.</div>
     </div>
@@ -52,7 +52,7 @@
 
     <!-- Council not migrated (E435) -->
     <div v-else-if="data.status === 'NOT_MIGRATED'" class="llc-empty llc-empty--warn">
-      <div class="llc-empty-ic">🏛️</div>
+      <div class="llc-empty-ic"><img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" /></div>
       <div class="llc-empty-title">This council hasn't moved to HM Land Registry yet</div>
       <div class="llc-empty-sub">
         LLC data for this area is still held by the local authority.
@@ -304,7 +304,8 @@ function formatWhen(iso: string): string {
   text-align: center;
   padding: 22px 12px 6px;
 }
-.llc-empty-ic { font-size: 32px }
+.llc-empty-ic { width: 42px; height: 42px; margin: 0 auto; }
+.llc-empty-ic img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .llc-empty-title {
   font-size: 14.5px;
   font-weight: 800;

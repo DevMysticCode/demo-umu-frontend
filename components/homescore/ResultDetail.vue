@@ -322,7 +322,7 @@
           type="button"
           @click="$emit('claim')"
         >
-          <span class="rd-intent-icon">🏠</span>
+          <span class="rd-intent-icon"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></span>
           <span class="rd-intent-body">
             <span class="rd-intent-title">I own this property</span>
             <span class="rd-intent-sub"
@@ -338,7 +338,7 @@
           type="button"
           @click="$emit('owner-dashboard')"
         >
-          <span class="rd-intent-icon">📄</span>
+          <span class="rd-intent-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></span>
           <span class="rd-intent-body">
             <span class="rd-intent-title">Go to my dashboard</span>
             <span class="rd-intent-sub">
@@ -360,7 +360,7 @@
           type="button"
           @click="$emit('refine-score')"
         >
-          <span class="rd-intent-icon">📝</span>
+          <span class="rd-intent-icon"><img src="/op-icons/calendar/pen.png" alt="" loading="lazy" /></span>
           <span class="rd-intent-body">
             <span class="rd-intent-title">Refine my HomeScore</span>
             <span class="rd-intent-sub">
@@ -376,7 +376,7 @@
           type="button"
           @click="$emit('interested')"
         >
-          <span class="rd-intent-icon">🔍</span>
+          <span class="rd-intent-icon"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></span>
           <span class="rd-intent-body">
             <span class="rd-intent-title">I'm interested in this property</span>
             <span class="rd-intent-sub">
@@ -1600,6 +1600,12 @@ function formatNum(n: number): string {
   flex-shrink: 0;
   font-size: 18px;
   line-height: 1;
+}
+.rd-intent-icon img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
 }
 .rd-intent-opt.outline .rd-intent-icon {
   background: #f2faf8;

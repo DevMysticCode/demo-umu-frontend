@@ -102,7 +102,7 @@
           type="button"
           @click="mode = 'quiz'"
         >
-          <div class="two-ways-opt-icon">📋</div>
+          <div class="two-ways-opt-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
           <div class="two-ways-opt-title">Answer questions</div>
           <div class="two-ways-opt-sub">Work through the list below</div>
         </button>
@@ -113,7 +113,7 @@
           type="button"
           @click="onUploadBill"
         >
-          <div class="two-ways-opt-icon">💡</div>
+          <div class="two-ways-opt-icon"><img src="/op-icons/homescore/bulb.png" alt="" loading="lazy" /></div>
           <div class="two-ways-opt-title">Upload a bill</div>
           <div class="two-ways-opt-sub">Skip the questions</div>
         </button>
@@ -205,7 +205,7 @@
           @click.self="needAnswerModalOpen = false"
         >
           <div class="need-answer-sheet" @click.stop>
-            <div class="need-answer-icon">📋</div>
+            <div class="need-answer-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
             <div class="need-answer-title">Answer at least one question</div>
             <div class="need-answer-sub">
               To work out your updated EPC and real HomeScore, we need to know
@@ -309,7 +309,7 @@
             </div>
 
             <div class="modal-privacy">
-              <span class="modal-privacy-icon">🔒</span>
+              <span class="modal-privacy-icon"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
               <span>
                 Powered by Ofgem tariff data. We never sell your data and bills
                 are deleted after extraction.
@@ -1948,5 +1948,35 @@ watch(
 .bill-modal-enter-from .modal-sheet,
 .bill-modal-leave-to .modal-sheet {
   transform: translateY(100%);
+}
+
+/* 3D icon images that replaced flat emoji inside icon wrappers */
+.two-ways-opt-icon {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 5px;
+}
+.two-ways-opt-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.need-answer-icon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
+}
+.modal-privacy-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+}
+.modal-privacy-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 </style>

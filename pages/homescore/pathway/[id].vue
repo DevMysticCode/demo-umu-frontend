@@ -114,7 +114,7 @@
         <div class="mission-actions">
           <template v-if="m.done">
             <button class="mission-btn-verify" type="button" @click="verifyDocsOpen = true">
-              📎 Verify with a document
+              <img src="/op-icons/misc/paperClip.png" alt="" class="inline-ic" loading="lazy" /> Verify with a document
             </button>
           </template>
           <template v-else>
@@ -259,7 +259,7 @@
       type="button"
       @click="verifyDocsOpen = true"
     >
-      📎 Verify {{ doneMissionDocs.length }} answer{{ doneMissionDocs.length === 1 ? '' : 's' }}
+      <img src="/op-icons/misc/paperClip.png" alt="" class="inline-ic" loading="lazy" /> Verify {{ doneMissionDocs.length }} answer{{ doneMissionDocs.length === 1 ? '' : 's' }}
     </button>
 
     <!-- Verify-documents modal — pops on first arrival when the user has
@@ -453,7 +453,7 @@ const toScore = computed(() => {
 function iconForRec(title: string): string {
   const t = (title ?? '').toLowerCase()
   if (/solar pv|photovoltaic/.test(t))       return '/op-icons/homescore/lightning.png'
-  if (/solar (?:water|thermal)/.test(t))     return '☀️'
+  if (/solar (?:water|thermal)/.test(t))     return '/op-icons/misc/sun.png'
   if (/(loft|roof)/.test(t))                 return '/op-icons/homescore/roof.png'
   if (/(cavity|wall)/.test(t))               return '/op-icons/homescore/walls.png'
   if (/floor/.test(t))                       return '/op-icons/homescore/floor.png'
@@ -1226,6 +1226,14 @@ const passportSummary = computed(() => {
   letter-spacing: 0.4px;
   text-transform: uppercase;
   vertical-align: middle;
+}
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
 }
 .mission-btn-verify {
   flex: 1;

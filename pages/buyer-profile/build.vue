@@ -170,7 +170,7 @@
             class="bp-task-extras"
           >
             <div class="bp-selfie-box" @click.stop="runLiveness">
-              <div class="bp-selfie-iconbig">🤳</div>
+              <div class="bp-selfie-iconbig"><img src="/op-icons/misc/phoneSelfie.png" alt="" loading="lazy" /></div>
               <div class="bp-selfie-prompt">Tap to start face scan</div>
               <div class="bp-selfie-meta">
                 Look at the camera and follow the on-screen prompts
@@ -330,7 +330,7 @@
           <div v-if="livenessRunning" class="bp-liveness">
             <div class="bp-liveness-circle">
               <div class="bp-liveness-ring" />
-              <div class="bp-liveness-face">🤳</div>
+              <div class="bp-liveness-face"><img src="/op-icons/misc/phoneSelfie.png" alt="" loading="lazy" /></div>
             </div>
             <div class="bp-liveness-h1">{{ livenessTitle }}</div>
             <div class="bp-liveness-sub">Hold still — we'll capture automatically.</div>
@@ -407,7 +407,7 @@
             >
             <div class="bp-funds-row">
               <div class="bp-funds-ic">
-                <span style="font-size: 20px">{{ opt.emoji }}</span>
+                <img :src="opt.emoji" alt="" loading="lazy" />
               </div>
               <div class="bp-funds-body">
                 <div class="bp-funds-title">{{ opt.title }}</div>
@@ -697,7 +697,7 @@
       <!-- ── STEP 5: Your story ── -->
       <div v-if="step === 5" class="bp-step">
         <div class="bp-step-hero">
-          <div class="bp-step-ic bp-step-ic--amber">✍️</div>
+          <div class="bp-step-ic bp-step-ic--amber"><img src="/op-icons/misc/signature.png" alt="" loading="lazy" /></div>
           <div class="bp-step-title">
             Tell your story
             <span class="bp-optional">(optional)</span>
@@ -760,7 +760,7 @@
       <div v-if="step === 6" class="bp-step bp-complete">
         <!-- Celebration hero -->
         <div class="bp-complete-hero">
-          <div class="bp-complete-emoji">🎉</div>
+          <div class="bp-complete-emoji"><img src="/op-icons/misc/confetti.png" alt="" loading="lazy" /></div>
           <h2 class="bp-complete-title">You're a Trusted Buyer!</h2>
           <p class="bp-complete-sub">Your passport is live.</p>
         </div>
@@ -1265,9 +1265,9 @@ const idTypeOptions = [
   { value: 'nationalId',     icon: '/op-icons/verify-identity/idBadge.png',        title: 'National ID Card',    sub: 'EU national ID' },
 ]
 const fundsOptions = [
-  { value: 'mortgage', emoji: '💳', title: 'Mortgage in principle', sub: 'Upload your DIP document' },
-  { value: 'cash', emoji: '💷', title: 'Cash buyer', sub: 'Bank statement showing available funds' },
-  { value: 'help', emoji: '🏛️', title: 'Help to Buy / Shared ownership', sub: 'Government scheme with mortgage' },
+  { value: 'mortgage', emoji: '/op-icons/misc/creditCard.png', title: 'Mortgage in principle', sub: 'Upload your DIP document' },
+  { value: 'cash', emoji: '/op-icons/investment/moneyBagPound.png', title: 'Cash buyer', sub: 'Bank statement showing available funds' },
+  { value: 'help', emoji: '/op-icons/investment/landmarks.png', title: 'Help to Buy / Shared ownership', sub: 'Government scheme with mortgage' },
 ]
 const chainOptions = [
   {
@@ -2250,6 +2250,12 @@ onBeforeUnmount(() => {
   margin: 0 auto 10px;
   font-size: 26px;
 }
+.bp-selfie-iconbig img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  display: block;
+}
 .bp-selfie-prompt {
   font-size: 13px;
   font-weight: 700;
@@ -2483,6 +2489,12 @@ onBeforeUnmount(() => {
   place-items: center;
   font-size: 54px;
 }
+.bp-liveness-face img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  display: block;
+}
 .bp-liveness-h1 {
   font-size: 18px;
   font-weight: 800;
@@ -2530,6 +2542,13 @@ onBeforeUnmount(() => {
   place-items: center;
   flex-shrink: 0;
   color: #00a19a;
+  overflow: hidden;
+}
+.bp-funds-ic img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
 }
 .bp-funds-card.selected .bp-funds-ic {
   background: #fff;
@@ -3379,6 +3398,12 @@ onBeforeUnmount(() => {
   font-size: 52px; line-height: 1; margin-bottom: 12px;
   display: inline-block;
   animation: bp-pop 0.5s ease-out 0.1s both;
+}
+.bp-complete-emoji img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  display: inline-block;
 }
 @keyframes bp-pop {
   0% { transform: scale(0.5); opacity: 0; }

@@ -157,7 +157,7 @@
               <div class="up-drop-sub">or tap to browse · PDF, JPG, DOCX up to 25MB</div>
               <div class="up-drop-actions">
                 <span class="btn-secondary">📷 Camera</span>
-                <span class="btn-secondary">📁 Files</span>
+                <span class="btn-secondary"><img src="/op-icons/misc/folder.png" alt="" class="inline-ic" loading="lazy" /> Files</span>
               </div>
               <input
                 type="file"
@@ -200,7 +200,7 @@
                   :class="[cat.tone, { active: chosenCategory === cat.key }]"
                   @click="chosenCategory = cat.key"
                 >
-                  <div class="mfr-icon">{{ cat.icon }}</div>
+                  <div class="mfr-icon"><img :src="cat.icon" alt="" loading="lazy" /></div>
                   {{ cat.name }}
                 </button>
               </div>
@@ -435,10 +435,10 @@ const uploadError = ref('')
 const chosenCategory = ref('property')
 
 const catOptions = [
-  { key: 'identity', name: 'Identity', tone: 'identity', icon: '🪪' },
-  { key: 'property', name: 'Property', tone: 'property', icon: '🏠' },
-  { key: 'financial', name: 'Financial', tone: 'financial', icon: '£' },
-  { key: 'other', name: 'Other', tone: 'other', icon: '📁' },
+  { key: 'identity', name: 'Identity', tone: 'identity', icon: '/op-icons/buyer-profile-build/idCard.png' },
+  { key: 'property', name: 'Property', tone: 'property', icon: '/op-icons/homescore/house.png' },
+  { key: 'financial', name: 'Financial', tone: 'financial', icon: '/op-icons/investment/moneyBagPound.png' },
+  { key: 'other', name: 'Other', tone: 'other', icon: '/op-icons/misc/folder.png' },
 ]
 
 const openUploadModal = () => {
@@ -1113,6 +1113,21 @@ const goBack = useGoBack('/profile')
   justify-content: center;
   flex-shrink: 0;
   font-size: 13px;
+  overflow: hidden;
+}
+.mfr-icon img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+}
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
 }
 
 .up-tag-row {

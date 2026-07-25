@@ -159,7 +159,7 @@
             ✓ Passport available
           </div>
           <div v-if="floodBadgeLabel" class="pps-badge-flood">
-            💧 {{ floodBadgeLabel }}
+            <img src="/op-icons/misc/waterDroplet.png" alt="" loading="lazy" /> {{ floodBadgeLabel }}
           </div>
         </div>
       </div>
@@ -661,9 +661,9 @@
           @click="onProgressCtaClick"
         >
           <template v-if="isPassportOwnerOrCollab">
-            📋 Continue building your Passport →
+            <img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Continue building your Passport →
           </template>
-          <template v-else>🔔 Get notified when published →</template>
+          <template v-else><img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Get notified when published →</template>
         </button>
         <div class="pps-passport-cta-sub">
           <template v-if="isPassportOwnerOrCollab">
@@ -1053,7 +1053,7 @@
               "
               class="pps-ds-placeholder"
             >
-              <div class="pps-ds-placeholder-icon">🏠</div>
+              <div class="pps-ds-placeholder-icon"><img src="/op-icons/investment/house.png" alt="" loading="lazy" /></div>
               <div class="pps-ds-placeholder-title">
                 No property details on file yet
               </div>
@@ -1220,7 +1220,7 @@
               v-else-if="!estimatedPrice && !lastSale"
               class="pps-ds-placeholder"
             >
-              <div class="pps-ds-placeholder-icon">📜</div>
+              <div class="pps-ds-placeholder-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
               <div class="pps-ds-placeholder-title">
                 No sale records on file
               </div>
@@ -1597,7 +1597,7 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">🎓</div>
+              <div class="pps-ds-placeholder-icon"><img src="/op-icons/investment/graduationCap.png" alt="" loading="lazy" /></div>
               <div class="pps-ds-placeholder-title">
                 No schools data on file
               </div>
@@ -2154,7 +2154,7 @@
               loading="lazy"
             />
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">📍</div>
+              <div class="pps-ds-placeholder-icon"><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" /></div>
               <div class="pps-ds-placeholder-title">Map unavailable</div>
               <div class="pps-ds-placeholder-sub">
                 No coordinates on file for this property.
@@ -2527,7 +2527,7 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">📋</div>
+              <div class="pps-ds-placeholder-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
               <div class="pps-ds-placeholder-title">
                 No planning constraints or applications on file
               </div>
@@ -3092,7 +3092,7 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">🏛️</div>
+              <div class="pps-ds-placeholder-icon"><img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" /></div>
               <div class="pps-ds-placeholder-title">
                 No heritage sites nearby
               </div>
@@ -3309,7 +3309,7 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon">🛡️</div>
+              <div class="pps-ds-placeholder-icon"><img src="/op-icons/calendar/shield.png" alt="" loading="lazy" /></div>
               <div class="pps-ds-placeholder-title">Crime data unavailable</div>
               <div class="pps-ds-placeholder-sub">
                 Couldn't load data.police.uk stats for this location.
@@ -3323,7 +3323,7 @@
 
           <!-- ── Watch this (Register interest) ────────────────────── -->
           <template v-else-if="activeSheet === 'watch'">
-            <div class="pps-sheet-icon">🔔</div>
+            <div class="pps-sheet-icon"><img src="/op-icons/misc/bell.png" alt="" loading="lazy" /></div>
             <div class="pps-sheet-title">Watch this property</div>
             <div class="pps-sheet-sub">
               Save it to your list. We'll alert you if it comes to market, when
@@ -3588,7 +3588,7 @@
                   :key="f.title"
                   class="pps-psi-row"
                 >
-                  <div class="pps-psi-icon">📄</div>
+                  <div class="pps-psi-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
                   <div class="pps-psi-text">
                     <div class="pps-psi-name">{{ f.title }}</div>
                     <div class="pps-psi-meta">{{ f.sub }}</div>
@@ -3655,7 +3655,7 @@
                 style="background: #00a19a"
                 @click="onProgressCtaClick"
               >
-                📋 Continue building your Passport →
+                <img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Continue building your Passport →
               </button>
               <button
                 v-else
@@ -3663,7 +3663,7 @@
                 style="background: #00a19a"
                 @click="onWatchClick"
               >
-                🔔 Get notified when published →
+                <img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Get notified when published →
               </button>
             </template>
 
@@ -3690,7 +3690,7 @@
                   :key="f.title"
                   class="pps-psi-row"
                 >
-                  <div class="pps-psi-icon">📄</div>
+                  <div class="pps-psi-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
                   <div class="pps-psi-text">
                     <div class="pps-psi-name">{{ f.title }}</div>
                     <div class="pps-psi-meta">{{ f.sub }}</div>
@@ -3866,7 +3866,7 @@
                 the hard work is already done.
               </div>
               <div class="pps-explain-callout-foot">
-                🔔 Get notified the moment it publishes — be first in the door
+                <img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Get notified the moment it publishes — be first in the door
               </div>
             </div>
 
@@ -3909,7 +3909,13 @@
                   class="pps-explain-checklist-icon"
                   :style="{ background: item.bg }"
                 >
-                  {{ item.icon }}
+                  <img
+                    v-if="item.icon && item.icon.startsWith('/')"
+                    :src="item.icon"
+                    alt=""
+                    loading="lazy"
+                  />
+                  <template v-else>{{ item.icon }}</template>
                 </div>
                 <div class="pps-explain-checklist-text">
                   <div class="pps-explain-checklist-title">
@@ -4006,7 +4012,7 @@
                   class="pps-explain-checklist-icon"
                   style="background: #fff3e0"
                 >
-                  📋
+                  <img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" />
                 </div>
                 <div class="pps-explain-checklist-text">
                   <div class="pps-explain-checklist-title">
@@ -4023,7 +4029,7 @@
                   class="pps-explain-checklist-icon"
                   style="background: #e6f7f6"
                 >
-                  🏛️
+                  <img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" />
                 </div>
                 <div class="pps-explain-checklist-text">
                   <div class="pps-explain-checklist-title">
@@ -4040,7 +4046,7 @@
                   class="pps-explain-checklist-icon"
                   style="background: #e6f7f6"
                 >
-                  🔧
+                  <img src="/op-icons/misc/wrench.png" alt="" loading="lazy" />
                 </div>
                 <div class="pps-explain-checklist-text">
                   <div class="pps-explain-checklist-title">
@@ -4057,7 +4063,7 @@
                   class="pps-explain-checklist-icon"
                   style="background: #f3e5f5"
                 >
-                  📅
+                  <img src="/op-icons/calendar/calendar.png" alt="" loading="lazy" />
                 </div>
                 <div class="pps-explain-checklist-text">
                   <div class="pps-explain-checklist-title">
@@ -4114,7 +4120,7 @@
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
-            <div class="unpub-icon">🪪</div>
+            <div class="unpub-icon"><img src="/op-icons/buyer-profile-build/idCard.png" alt="" loading="lazy" /></div>
             <div class="unpub-eyebrow">
               <span style="color: #00a19a">●</span> Property Passport — In
               Progress
@@ -4125,7 +4131,7 @@
               full record is published.
             </p>
             <button class="unpub-cta" @click="openRegisterInterest">
-              🔔 Notify me when it's published
+              <img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Notify me when it's published
             </button>
           </div>
         </div>
@@ -5320,21 +5326,21 @@ const passportProgressPct = computed<number>(() => {
 })
 const passportVerifiedItems = computed(() => {
   const iconMap: Record<string, { icon: string; bg: string }> = {
-    'EPC Certificate': { icon: '⚡', bg: '#e6f7f6' },
-    'Land Registry Title': { icon: '🏛️', bg: '#e6f7f6' },
+    'EPC Certificate': { icon: '/op-icons/homescore/lightning.png', bg: '#e6f7f6' },
+    'Land Registry Title': { icon: '/op-icons/investment/landmarks.png', bg: '#e6f7f6' },
     'Title Plan': { icon: '🗺️', bg: '#e6f7f6' },
-    'TA6 — Property Information': { icon: '📋', bg: '#fff3e0' },
-    'TA10 — Fittings & Contents': { icon: '🔧', bg: '#fff3e0' },
-    'Gas Safety Record': { icon: '🔥', bg: '#ffe0e0' },
-    'Electrical Certificate (EICR)': { icon: '⚡', bg: '#e6f7f6' },
-    'TA7 — Leasehold Information': { icon: '📜', bg: '#f3e5f5' },
+    'TA6 — Property Information': { icon: '/op-icons/homescore/clipboard.png', bg: '#fff3e0' },
+    'TA10 — Fittings & Contents': { icon: '/op-icons/misc/wrench.png', bg: '#fff3e0' },
+    'Gas Safety Record': { icon: '/op-icons/homescore/flame.png', bg: '#ffe0e0' },
+    'Electrical Certificate (EICR)': { icon: '/op-icons/homescore/lightning.png', bg: '#e6f7f6' },
+    'TA7 — Leasehold Information': { icon: '/op-icons/passportview/titleDeedsAndPlan.png', bg: '#f3e5f5' },
   }
   return passportFeatures.value
     .filter((f) => f.verified)
     .map((f) => ({
       title: f.title,
       sub: f.sub,
-      icon: iconMap[f.title]?.icon ?? '📄',
+      icon: iconMap[f.title]?.icon ?? '/op-icons/passportview/titleDeedsAndPlan.png',
       bg: iconMap[f.title]?.bg ?? '#f9f9fb',
     }))
 })
@@ -6968,7 +6974,7 @@ async function submitWatch() {
       return
     }
     closeSheet()
-    showToast({ message: "Saved — we'll keep you posted", iconEmoji: '🔔' })
+    showToast({ message: "Saved — we'll keep you posted", icon: '/op-icons/misc/bell.png' })
     watchName.value = ''
     watchEmail.value = ''
   } catch {
@@ -7874,6 +7880,14 @@ function formatSaleDate(dateStr: string): string {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 .pps-page {
   min-height: 100dvh;
   background: #f5f5f7;
@@ -8094,6 +8108,13 @@ function formatSaleDate(dateStr: string): string {
   background: #00b6ae;
   border-radius: 2px;
   flex-shrink: 0;
+}
+.pps-badge-flood img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  vertical-align: -3px;
+  display: inline-block;
 }
 .pps-badge-flood {
   backdrop-filter: blur(8px);
@@ -9226,9 +9247,15 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 0 auto 14px;
 }
 .pps-sheet-icon {
-  font-size: 36px;
-  text-align: center;
-  margin: 4px 0 8px;
+  width: 48px;
+  height: 48px;
+  margin: 4px auto 8px;
+}
+.pps-sheet-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .pps-sheet-title {
   font-size: 17px;
@@ -12098,4 +12125,40 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   cursor: pointer;
 }
 .mkc-cancel:hover { background: #F5F7F9; }
+
+/* 3D icon images that replaced flat emoji inside icon wrappers */
+.pps-ds-placeholder-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 10px;
+}
+.pps-ds-placeholder-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.pps-psi-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+.pps-explain-checklist-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+.unpub-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 12px;
+}
+.unpub-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
 </style>

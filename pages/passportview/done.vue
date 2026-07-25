@@ -22,7 +22,7 @@
       <div class="pd-burst" aria-hidden="true">
         <span v-for="i in 12" :key="i" :class="`burst-${i}`" />
       </div>
-      <div class="pd-emoji">🎉</div>
+      <div class="pd-emoji"><img src="/op-icons/misc/confetti.png" alt="" loading="lazy" /></div>
       <h1 class="pd-h1">Your Passport is complete</h1>
       <p class="pd-sub">
         Every section answered, every document attached. Your home now has a
@@ -268,6 +268,12 @@ function goBack() {
   0%   { opacity: 0; transform: translate(-50%, 0) rotate(var(--r, 0deg)) translateY(0); }
   20%  { opacity: 1; }
   100% { opacity: 0; transform: translate(-50%, -120px) rotate(var(--r, 0deg)) translateY(-90px); }
+}
+.pd-emoji img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: inline-block;
 }
 .pd-emoji {
   font-size: 56px;

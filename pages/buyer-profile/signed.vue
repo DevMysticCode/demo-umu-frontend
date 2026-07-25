@@ -2,7 +2,7 @@
   <div class="sn-page">
     <!-- Celebration hero -->
     <div class="sn-hero">
-      <div class="sn-emoji">✍️</div>
+      <div class="sn-emoji"><img src="/op-icons/misc/signature.png" alt="" loading="lazy" /></div>
       <h2 class="sn-title">Profile signed</h2>
       <p class="sn-sub">
         Your digital signature has been embedded. The PDF is now ready to share
@@ -131,6 +131,12 @@ function goView() { router.push('/buyer-profile/view') }
   margin-bottom: 14px;
   display: inline-block;
   animation: sn-pop 0.5s ease-out 0.05s both;
+}
+.sn-emoji img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
 }
 @keyframes sn-pop {
   0% { transform: scale(0.5); opacity: 0; }

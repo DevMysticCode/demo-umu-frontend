@@ -195,7 +195,7 @@
           :class="{ you: p.isYou }"
           :style="{ left: p.left + '%', top: p.isYou ? '1px' : '5px' }"
         >
-          <span v-if="p.isYou" class="hsh-pin">📍</span>
+          <span v-if="p.isYou" class="hsh-pin"><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" /></span>
           <span class="hsh-cd" :style="{ background: p.dot }" />
         </div>
       </div>
@@ -209,7 +209,7 @@
     <!-- ── BILLS PANEL ─────────────────────────────────────────────── -->
     <div v-if="activePanel === 'bills'" class="score-strip-panel open">
       <div class="ssp-head">
-        <div class="ssp-head-icon">💷</div>
+        <div class="ssp-head-icon"><img src="/op-icons/investment/moneyBagPound.png" alt="" loading="lazy" /></div>
         <div class="ssp-head-info">
           <div class="ssp-head-title">Annual running costs · £{{ formatNum(annualCost) }}/yr</div>
           <div class="ssp-head-sub">EPC figure · heating, hot water &amp; lighting only</div>
@@ -218,19 +218,19 @@
       </div>
       <div class="ssp-divider">Where it goes</div>
       <div class="ssp-bar-row">
-        <div class="ssp-bar-icon">🔥</div>
+        <div class="ssp-bar-icon"><img src="/op-icons/homescore/flame.png" alt="" loading="lazy" /></div>
         <div class="ssp-bar-label">Heating</div>
         <div class="ssp-bar-track"><div class="ssp-bar-fill gas" :style="{ width: billsSplitDisplay.heating + '%' }" /></div>
         <div class="ssp-bar-amt">£{{ formatNum(annualCost * billsSplitDisplay.heating / 100) }}<div class="ssp-bar-amt-pct">{{ billsSplitDisplay.heating }}%</div></div>
       </div>
       <div class="ssp-bar-row">
-        <div class="ssp-bar-icon">💧</div>
+        <div class="ssp-bar-icon"><img src="/op-icons/misc/waterDroplet.png" alt="" loading="lazy" /></div>
         <div class="ssp-bar-label">Hot water</div>
         <div class="ssp-bar-track"><div class="ssp-bar-fill hw" :style="{ width: billsSplitDisplay.hotWater + '%' }" /></div>
         <div class="ssp-bar-amt">£{{ formatNum(annualCost * billsSplitDisplay.hotWater / 100) }}<div class="ssp-bar-amt-pct">{{ billsSplitDisplay.hotWater }}%</div></div>
       </div>
       <div class="ssp-bar-row">
-        <div class="ssp-bar-icon">💡</div>
+        <div class="ssp-bar-icon"><img src="/op-icons/homescore/bulb.png" alt="" loading="lazy" /></div>
         <div class="ssp-bar-label">Lighting</div>
         <div class="ssp-bar-track"><div class="ssp-bar-fill elec" :style="{ width: billsSplitDisplay.lighting + '%' }" /></div>
         <div class="ssp-bar-amt">£{{ formatNum(annualCost * billsSplitDisplay.lighting / 100) }}<div class="ssp-bar-amt-pct">{{ billsSplitDisplay.lighting }}%</div></div>
@@ -254,7 +254,7 @@
     <!-- ── CO₂ PANEL ───────────────────────────────────────────────── -->
     <div v-if="activePanel === 'co2'" class="score-strip-panel open">
       <div class="ssp-head">
-        <div class="ssp-head-icon">🌍</div>
+        <div class="ssp-head-icon"><img src="/op-icons/passportview/environmental.png" alt="" loading="lazy" /></div>
         <div class="ssp-head-info">
           <div class="ssp-head-title">CO₂ emissions · {{ co2NowDisplay.toFixed(1) }}t/yr</div>
           <div class="ssp-head-sub">UK average 6.0t · could drop to {{ co2Potential.toFixed(1) }}t after all 6 EPC steps</div>
@@ -263,7 +263,7 @@
       </div>
       <div class="ssp-divider">Now vs potential</div>
       <div class="ssp-bar-row">
-        <div class="ssp-bar-icon">🏠</div>
+        <div class="ssp-bar-icon"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></div>
         <div class="ssp-bar-label">Your home</div>
         <div class="ssp-bar-track"><div class="ssp-bar-fill co2-heat" :style="{ width: co2NowPct + '%' }" /></div>
         <div class="ssp-bar-amt">{{ co2NowDisplay.toFixed(1) }}t<div class="ssp-bar-amt-pct">now</div></div>
@@ -275,7 +275,7 @@
         <div class="ssp-bar-amt">6.0t<div class="ssp-bar-amt-pct">benchmark</div></div>
       </div>
       <div class="ssp-bar-row">
-        <div class="ssp-bar-icon">🎯</div>
+        <div class="ssp-bar-icon"><img src="/op-icons/investment/target.png" alt="" loading="lazy" /></div>
         <div class="ssp-bar-label">Potential</div>
         <div class="ssp-bar-track"><div class="ssp-bar-fill co2-hw" :style="{ width: co2PotentialPct + '%' }" /></div>
         <div class="ssp-bar-amt">{{ co2Potential.toFixed(1) }}t<div class="ssp-bar-amt-pct">after</div></div>
@@ -632,7 +632,7 @@
             <div class="fork-opt-chev">›</div>
           </button>
           <button class="fork-opt" type="button" @click="$emit('open-pathway')">
-            <div class="fork-opt-icon">🎯</div>
+            <div class="fork-opt-icon"><img src="/op-icons/investment/target.png" alt="" loading="lazy" /></div>
             <div class="fork-opt-body">
               <div class="fork-opt-title">Your pathway</div>
               <div class="fork-opt-sub">Keep climbing your HomeScore.</div>
@@ -712,7 +712,7 @@
       <div v-if="claimModalOpen" class="claim-overlay" @click.self="claimModalOpen = false">
         <div class="claim-sheet" @click.stop>
           <div class="claim-grip" />
-          <div class="claim-icon">🪪</div>
+          <div class="claim-icon"><img src="/op-icons/buyer-profile-build/idCard.png" alt="" loading="lazy" /></div>
           <div class="claim-title">Claim this property</div>
           <div class="claim-sub">
             You'll verify you own <b>{{ addrLineFull }}</b> and unlock your
@@ -754,7 +754,7 @@
             </button>
           </div>
           <div class="claim-privacy">
-            <span>🔒</span>
+            <span class="claim-privacy-ic"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
             <span>Free · no card needed · we'll never sell your data.</span>
           </div>
         </div>
@@ -1532,7 +1532,7 @@ const stats = computed<StatRow[]>(() => {
       lines: elecRecs.length
         ? [
             {
-              icon: '☀️',
+              icon: '/op-icons/misc/sun.png',
               title: elecRecs[0]?.title || 'Solar PV panels',
               sub: elecRecs[0]?.description || "EPC's final step. Crosses you into Band C.",
               amt: fmtSaving(elecRecs[0]) || '—',
@@ -1541,7 +1541,7 @@ const stats = computed<StatRow[]>(() => {
           ]
         : [
             {
-              icon: '⚡',
+              icon: '/op-icons/homescore/lightning.png',
               title: 'Standard electrical setup',
               sub: 'No EPC recommendations for electrics.',
               amt: 'OK',
@@ -1568,7 +1568,7 @@ const stats = computed<StatRow[]>(() => {
       thirdTileSub: 'EPC rating',
       lines: [
         {
-          icon: '💧',
+          icon: '/op-icons/misc/waterDroplet.png',
           title: e.hotwaterDescription || 'Hot water',
           sub: `Hot water rated <b>${effRating(e.hotWaterEnergyEff)}</b> on the EPC.`,
           amt: effRating(e.hotWaterEnergyEff),
@@ -1577,7 +1577,7 @@ const stats = computed<StatRow[]>(() => {
         ...(plumbRecs.length
           ? [
               {
-                icon: '☀️',
+                icon: '/op-icons/misc/sun.png',
                 title: plumbRecs[0]?.title || 'Solar water heating',
                 sub: plumbRecs[0]?.description || 'Roof collector pre-heats water from the sun.',
                 amt: fmtSaving(plumbRecs[0]) || '—',
@@ -1824,7 +1824,7 @@ const epcItems = computed<EpcItem[]>(() => {
   if (swhRec) {
     items.push({
       id: 'solar-water',
-      icon: '☀️',
+      icon: '/op-icons/misc/sun.png',
       title: 'Solar water heating',
       sub: 'Not present · recommended on EPC',
       rating: 'Not installed',
@@ -1861,7 +1861,7 @@ const epcItems = computed<EpcItem[]>(() => {
   if (e.secondheatDescription && !/none/i.test(e.secondheatDescription)) {
     items.push({
       id: 'secondary-heating',
-      icon: '🔥',
+      icon: '/op-icons/homescore/flame.png',
       title: 'Secondary heating',
       sub: e.secondheatDescription,
       rating: 'N/A',
@@ -4367,5 +4367,62 @@ const watchersDisplay = computed(() => {
   .hsh-cta::after,
   .hsh-cta-ar,
   .hsh-ph.you { animation: none; }
+}
+
+/* 3D icon images that replaced flat emoji inside icon wrappers */
+.hsh-pin {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+}
+.hsh-pin img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.ssp-head-icon img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+.ssp-bar-icon {
+  height: 20px;
+}
+.ssp-bar-icon img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+.fork-opt-icon img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  display: block;
+}
+.claim-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 8px;
+}
+.claim-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.claim-privacy-ic {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+}
+.claim-privacy-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 </style>

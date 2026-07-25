@@ -44,7 +44,15 @@
                 :class="{ 'nb-item--unread': !n.readAt }"
                 @click="onOpen(n)"
               >
-                <div class="nb-item-icon">{{ iconFor(n.type) }}</div>
+                <div class="nb-item-icon">
+                  <img
+                    v-if="iconFor(n.type).startsWith('/')"
+                    :src="iconFor(n.type)"
+                    alt=""
+                    loading="lazy"
+                  />
+                  <template v-else>{{ iconFor(n.type) }}</template>
+                </div>
                 <div class="nb-item-body">
                   <div class="nb-item-title">{{ n.title }}</div>
                   <div class="nb-item-sub">{{ n.body }}</div>
@@ -124,13 +132,13 @@ watch(
 
 function iconFor(type: string): string {
   switch (type) {
-    case 'new_message': return '💬'
-    case 'viewing_request': return '📅'
+    case 'new_message': return '/op-icons/matched-buyers/chat.png'
+    case 'viewing_request': return '/op-icons/calendar/calendar.png'
     case 'viewing_response': return '✅'
-    case 'passport_shared': return '🔗'
+    case 'passport_shared': return '/op-icons/matched-buyers/link.png'
     case 'passport_unlocked': return '🔓'
-    case 'invite_accepted': return '🎉'
-    default: return '🔔'
+    case 'invite_accepted': return '/op-icons/misc/confetti.png'
+    default: return '/op-icons/misc/bell.png'
   }
 }
 
@@ -248,6 +256,13 @@ function relativeTime(iso: string): string {
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 16px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+.nb-item-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
 }
 .nb-item-body { flex: 1; min-width: 0; }
 .nb-item-title {

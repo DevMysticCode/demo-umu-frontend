@@ -117,8 +117,8 @@
           <h3 class="step-title">{{ step.title }}</h3>
           <p class="step-points">{{ step.points }} points earned so far</p>
           <div class="step-counts">
-            <span class="step-count-pill step-count-docs">📎 {{ step.docs }} docs</span>
-            <span class="step-count-pill step-count-q">❓ {{ step.questions }} questions</span>
+            <span class="step-count-pill step-count-docs"><img src="/op-icons/misc/paperClip.png" alt="" loading="lazy" /> {{ step.docs }} docs</span>
+            <span class="step-count-pill step-count-q"><img src="/op-icons/misc/question.png" alt="" loading="lazy" /> {{ step.questions }} questions</span>
           </div>
           <div class="step-progress">
             <div class="progress-bar small">
@@ -385,6 +385,12 @@ const steps = [
   font-size: 10.5px; font-weight: 700;
   padding: 2px 8px; border-radius: 999px;
   white-space: nowrap; line-height: 1.4;
+}
+.step-count-pill img {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  display: block;
 }
 .step-count-docs { background: #f1f9f4; color: #00a19a; border: 1px solid #e2f1ea; }
 .step-count-q { background: #f1f5f9; color: #4a5568; border: 1px solid #eef0f6; }

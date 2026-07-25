@@ -57,7 +57,7 @@
          built-in print dialog which lets the user pick either. -->
     <div class="share-actions">
       <button type="button" class="share-action" @click="onPrint">
-        <div class="share-action-ic">🖨️</div>
+        <div class="share-action-ic"><img src="/op-icons/misc/printer.png" alt="" loading="lazy" /></div>
         <div class="share-action-body">
           <div class="share-action-title">Print</div>
           <div class="share-action-sub">Send this page to a printer</div>
@@ -319,6 +319,12 @@ function onSavePdf() {
   border-color: #ded9ea;
 }
 .share-action:active { transform: scale(0.998) }
+.share-action-ic img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+}
 .share-action-ic {
   width: 40px;
   height: 40px;

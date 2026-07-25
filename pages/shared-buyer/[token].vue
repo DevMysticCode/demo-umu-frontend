@@ -179,7 +179,7 @@
       <!-- Story -->
       <div v-if="data.statement" class="sb-card">
         <div class="sb-card-head">
-          <div class="sb-card-emoji">✍️</div>
+          <div class="sb-card-emoji"><img src="/op-icons/misc/signature.png" alt="" loading="lazy" /></div>
           <div class="sb-card-title">Their story</div>
         </div>
         <p class="sb-story">{{ data.statement }}</p>
@@ -321,7 +321,8 @@ function normaliseSof(raw: any): { label: string; amount: number }[] {
 
 .sb-card { background: #fff; border: 1px solid #ececef; border-radius: 16px; padding: 16px 18px; }
 .sb-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.sb-card-emoji { font-size: 18px; }
+.sb-card-emoji { width: 24px; height: 24px; }
+.sb-card-emoji img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .sb-card-title { font-size: 14px; font-weight: 800; color: #231d45; flex: 1; }
 .sb-pill { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 100px; letter-spacing: 0.5px; }
 .sb-pill--ok { background: #e6f7f6; color: #00857f; }

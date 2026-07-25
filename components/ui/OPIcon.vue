@@ -220,3 +220,17 @@ const iconPath = computed(() => {
   return iconMap[props.name] || '/op-icons/default.svg'
 })
 </script>
+
+<style scoped>
+/*
+ * Icons are sized by the width/height utility classes passed in via
+ * `:class` (e.g. w-[80px] h-[80px]). Without object-fit the browser
+ * defaults to `fill`, which stretches non-square 3D PNGs to the box and
+ * visibly clips/distorts them inside rounded containers. `contain` scales
+ * the artwork to fit the box while preserving its aspect ratio, so an
+ * icon can never bleed outside or be cropped regardless of container size.
+ */
+.op-icon {
+  object-fit: contain;
+}
+</style>

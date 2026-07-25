@@ -18,7 +18,7 @@
 
     <!-- ════════════════════════════ SEARCH ════════════════════════════ -->
     <div v-if="step === 'search'" class="cl-screen">
-      <div class="cl-icon-square">🏠</div>
+      <div class="cl-icon-square"><img src="/op-icons/investment/house.png" alt="" loading="lazy" /></div>
       <h1 class="cl-h2 cl-center">Which property are you claiming?</h1>
       <p class="cl-body cl-center cl-mb-lg">
         Enter your postcode and select your address. We'll verify ownership via
@@ -44,7 +44,7 @@
       </div>
 
       <div class="cl-lock-note">
-        <div class="cl-lock-ic">🔒</div>
+        <div class="cl-lock-ic"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
         <div class="cl-lock-body">
           We verify ownership via
           <strong>HM Land Registry</strong> — encrypted and never sold.
@@ -168,7 +168,7 @@
 
     <!-- ════════════════════════════ KYC EXPLAINER ════════════════════════════ -->
     <div v-else-if="step === 'kyc-explainer'" class="cl-screen cl-center-col">
-      <div class="cl-icon-square cl-icon-lg">🪪</div>
+      <div class="cl-icon-square cl-icon-lg"><img src="/op-icons/buyer-profile-build/idCard.png" alt="" loading="lazy" /></div>
       <h1 class="cl-h1">Before we build your Passport</h1>
       <p class="cl-body cl-mb-lg">
         We need to confirm who you are and that you own the property. Takes
@@ -179,21 +179,21 @@
         <div class="cl-eyebrow">What's involved</div>
         <div class="cl-row-list">
           <div class="cl-step-row">
-            <div class="cl-step-ic">🪪</div>
+            <div class="cl-step-ic"><img src="/op-icons/buyer-profile-build/idCard.png" alt="" loading="lazy" /></div>
             <div>
               <div class="cl-step-t">Photo ID</div>
               <div class="cl-step-s">Passport or driving licence</div>
             </div>
           </div>
           <div class="cl-step-row">
-            <div class="cl-step-ic">🤳</div>
+            <div class="cl-step-ic"><img src="/op-icons/misc/phoneSelfie.png" alt="" loading="lazy" /></div>
             <div>
               <div class="cl-step-t">Liveness check</div>
               <div class="cl-step-s">Quick selfie to confirm it's you</div>
             </div>
           </div>
           <div class="cl-step-row">
-            <div class="cl-step-ic">🛡️</div>
+            <div class="cl-step-ic"><img src="/op-icons/calendar/shield.png" alt="" loading="lazy" /></div>
             <div>
               <div class="cl-step-t">AML screening</div>
               <div class="cl-step-s">Automatic check — takes seconds</div>
@@ -204,7 +204,7 @@
 
       <div class="cl-card-pale cl-text-l">
         <div class="cl-pale-row">
-          <div class="cl-pale-ic">⏱️</div>
+          <div class="cl-pale-ic"><img src="/op-icons/buyer-profile-build/stopwatch.png" alt="" loading="lazy" /></div>
           <div>
             <div class="cl-pale-t">Usually under 2 minutes</div>
             <div class="cl-pale-s">
@@ -327,7 +327,7 @@
             class="cl-live-ring"
           />
         </svg>
-        <div class="cl-live-inner">🤳</div>
+        <div class="cl-live-inner"><img src="/op-icons/misc/phoneSelfie.png" alt="" loading="lazy" /></div>
       </div>
 
       <h1 class="cl-h1">Quick selfie check</h1>
@@ -355,7 +355,7 @@
 
     <!-- ════════════════════════════ KYC AML ════════════════════════════ -->
     <div v-else-if="step === 'kyc-aml'" class="cl-screen cl-center-col">
-      <div class="cl-icon-square cl-icon-lg">🛡️</div>
+      <div class="cl-icon-square cl-icon-lg"><img src="/op-icons/calendar/shield.png" alt="" loading="lazy" /></div>
       <h1 class="cl-h1">Almost there</h1>
       <p class="cl-body cl-mb-lg">
         Automatic check against sanctions lists and PEP registers. Happens
@@ -381,7 +381,7 @@
 
       <div class="cl-card-pale cl-text-l">
         <div class="cl-pale-row">
-          <div class="cl-pale-ic-sm">🔒</div>
+          <div class="cl-pale-ic-sm"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
           <div class="cl-pale-s">
             AML checks are required by UK regulations. Data processed securely.
           </div>
@@ -2004,6 +2004,12 @@ async function issuePassport() {
   place-items: center;
   font-size: 60px;
 }
+.cl-live-inner img {
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  display: block;
+}
 
 .cl-num-row {
   display: flex;
@@ -2701,5 +2707,45 @@ async function issuePassport() {
   font-weight: 500;
   line-height: 1.5;
   margin-top: 4px;
+}
+
+/* 3D icon images that replaced flat emoji inside icon wrappers */
+.cl-icon-square img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  display: block;
+}
+.cl-icon-square.cl-icon-lg img {
+  width: 46px;
+  height: 46px;
+}
+.cl-lock-ic {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.cl-lock-ic img,
+.cl-pale-ic img,
+.cl-pale-ic-sm img,
+.cl-step-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.cl-step-ic img {
+  width: 26px;
+  height: 26px;
+}
+.cl-pale-ic {
+  width: 34px;
+  height: 34px;
+}
+.cl-pale-ic-sm {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
 }
 </style>

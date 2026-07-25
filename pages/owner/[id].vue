@@ -23,7 +23,7 @@
 
       <!-- Phone blocker -->
       <div v-else-if="!userHasPhone" class="to-blocker">
-        <div class="to-blocker__icon">📱</div>
+        <div class="to-blocker__icon"><img src="/op-icons/misc/phoneCall.png" alt="" loading="lazy" /></div>
         <h2 class="to-blocker__title">Phone Number Required</h2>
         <p class="to-blocker__desc">
           To contact a property owner, you need a phone number on your profile.
@@ -379,8 +379,15 @@ const sendMessage = async () => {
 }
 
 .to-blocker__icon {
-  font-size: 64px;
-  margin-bottom: 20px;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+}
+.to-blocker__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .to-blocker__title {

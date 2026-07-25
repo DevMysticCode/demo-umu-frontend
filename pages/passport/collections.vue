@@ -157,7 +157,7 @@
           class="watching-card"
           @click="router.push(`/buyer-passport/${w.passportId}`)"
         >
-          <div class="watching-card-ic">📘</div>
+          <div class="watching-card-ic"><img src="/op-icons/misc/book.png" alt="" loading="lazy" /></div>
           <div class="watching-card-body">
             <div class="watching-card-addr">{{ w.addressLine1 }}</div>
             <div class="watching-card-sub">
@@ -1726,6 +1726,12 @@ const executeDelete = async () => {
   place-items: center;
   font-size: 20px;
   flex-shrink: 0;
+}
+.watching-card-ic img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
 }
 .watching-card-body {
   flex: 1;

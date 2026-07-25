@@ -9,7 +9,8 @@
       </button>
       <div class="pv-nav-centre">Profile PDF</div>
       <span class="pv-nav-right" @click="goSign">
-        {{ passport?.signedAt ? '✓ Signed' : '✍️ Sign' }}
+        <template v-if="passport?.signedAt">✓ Signed</template>
+        <template v-else><img src="/op-icons/misc/signature.png" alt="" class="inline-ic" loading="lazy" /> Sign</template>
       </span>
     </div>
 
@@ -138,7 +139,7 @@
             class="pdf-sig-placeholder"
             @click="goSign"
           >
-            ✍️ Tap to add your digital signature
+            <img src="/op-icons/misc/signature.png" alt="" class="inline-ic" loading="lazy" /> Tap to add your digital signature
           </div>
           <!-- Signed -->
           <div v-else class="pdf-sig-done">
@@ -164,21 +165,21 @@
     <!-- Download / sign actions -->
     <div class="pv-actions">
       <button class="cta-btn" :disabled="downloading" @click="downloadPdf">
-        📄 {{ downloading ? 'Preparing…' : 'Download PDF' }}
+        <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="inline-ic" loading="lazy" /> {{ downloading ? 'Preparing…' : 'Download PDF' }}
       </button>
       <button
         v-if="!passport?.signedAt"
         class="cta-btn outline"
         @click="goSign"
       >
-        ✍️ Add digital signature first
+        <img src="/op-icons/misc/signature.png" alt="" class="inline-ic" loading="lazy" /> Add digital signature first
       </button>
       <button
         v-else
         class="cta-btn outline"
         @click="goSign"
       >
-        ✍️ Update signature
+        <img src="/op-icons/misc/signature.png" alt="" class="inline-ic" loading="lazy" /> Update signature
       </button>
     </div>
   </div>
@@ -321,6 +322,14 @@ function downloadPdf() {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 .pv-page {
   min-height: 100dvh;
   background: #fafafa;

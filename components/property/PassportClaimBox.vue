@@ -243,7 +243,7 @@
                   chasing solicitors and documents that already exist somewhere.
                   This Passport collects it all upfront.
                   <b
-                    >👁 Watch this property to be first in the door the moment
+                    ><img src="/op-icons/misc/eye.png" alt="" class="inline-ic" loading="lazy" /> Watch this property to be first in the door the moment
                     it publishes.</b
                   >
                 </div>
@@ -258,7 +258,7 @@
               </div>
               <div class="cx-section-h">Already verified</div>
               <div class="cx-item">
-                <div class="cx-item-ico">⚡</div>
+                <div class="cx-item-ico"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
                 <div class="cx-item-body">
                   <div class="cx-item-title">EPC Certificate</div>
                   <div class="cx-item-sub">
@@ -268,7 +268,7 @@
                 <div class="cx-item-tick">✓</div>
               </div>
               <div class="cx-item">
-                <div class="cx-item-ico">🏛️</div>
+                <div class="cx-item-ico"><img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" /></div>
                 <div class="cx-item-body">
                   <div class="cx-item-title">
                     Land Registry Title &amp; Plan
@@ -278,7 +278,7 @@
                 <div class="cx-item-tick">✓</div>
               </div>
               <div class="cx-item">
-                <div class="cx-item-ico">📋</div>
+                <div class="cx-item-ico"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
                 <div class="cx-item-body">
                   <div class="cx-item-title">TA6 — Property Information</div>
                   <div class="cx-item-sub">Boundaries, disputes, utilities</div>
@@ -298,7 +298,7 @@
                   type="button"
                   @click="onPrimary('watch')"
                 >
-                  👁 Watch this property
+                  <img src="/op-icons/misc/eye.png" alt="" class="inline-ic" loading="lazy" /> Watch this property
                 </button>
               </div>
               <div class="cx-foot">
@@ -357,7 +357,7 @@
               </div>
               <div class="cx-section-h">What's inside</div>
               <div class="cx-item">
-                <div class="cx-item-ico">📋</div>
+                <div class="cx-item-ico"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
                 <div class="cx-item-body">
                   <div class="cx-item-title">TA6, TA7 &amp; TA10 forms</div>
                   <div class="cx-item-sub">
@@ -367,7 +367,7 @@
                 <div class="cx-item-tick">✓</div>
               </div>
               <div class="cx-item">
-                <div class="cx-item-ico">🏛️</div>
+                <div class="cx-item-ico"><img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" /></div>
                 <div class="cx-item-body">
                   <div class="cx-item-title">
                     Land Registry Title &amp; Plan
@@ -379,7 +379,7 @@
                 <div class="cx-item-tick">✓</div>
               </div>
               <div class="cx-item">
-                <div class="cx-item-ico">🔧</div>
+                <div class="cx-item-ico"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></div>
                 <div class="cx-item-body">
                   <div class="cx-item-title">Gas, Electrical &amp; EPC</div>
                   <div class="cx-item-sub">All certificates verified</div>
@@ -387,7 +387,7 @@
                 <div class="cx-item-tick">✓</div>
               </div>
               <div class="cx-item">
-                <div class="cx-item-ico">📅</div>
+                <div class="cx-item-ico"><img src="/op-icons/calendar/calendar.png" alt="" loading="lazy" /></div>
                 <div class="cx-item-body">
                   <div class="cx-item-title">Planning History</div>
                   <div class="cx-item-sub">Extensions, permissions, works</div>
@@ -682,6 +682,14 @@ function onPrimary(action: PrimaryAction) {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 .pcb {
   --primary: #231d45;
   --accent: #00a19a;
@@ -1199,6 +1207,12 @@ function onPrimary(action: PrimaryAction) {
   border-radius: 11px;
   padding: 10px 12px;
   margin: 0 22px 7px;
+}
+.cx-item-ico img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
 }
 .cx-item-ico {
   width: 30px;
