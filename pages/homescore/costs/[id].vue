@@ -291,7 +291,7 @@
         <!-- Comparable sales -->
         <div class="br-card" :class="{ open: openCards.has('comps') }">
           <div class="br-card-head" @click="toggleCard('comps')">
-            <div class="br-card-ico teal">🏘</div>
+            <div class="br-card-ico teal"><img src="/op-icons/investment/housesCluster.png" alt="" loading="lazy" /></div>
             <div class="br-card-info">
               <div class="br-card-title">Comparable sales nearby</div>
               <div class="br-card-sub">
@@ -792,7 +792,7 @@
         <!-- Neighbourhood -->
         <div class="br-card" :class="{ open: openCards.has('hood') }">
           <div class="br-card-head" @click="toggleCard('hood')">
-            <div class="br-card-ico teal">🏘️</div>
+            <div class="br-card-ico teal"><img src="/op-icons/investment/housesCluster.png" alt="" loading="lazy" /></div>
             <div class="br-card-info">
               <div class="br-card-title">Neighbourhood</div>
               <div class="br-card-sub">
@@ -977,7 +977,7 @@
       </div>
 
       <div class="pp-progress-hero anim-4">
-        <div class="pp-progress-eyebrow">📋 Passport build · live</div>
+        <div class="pp-progress-eyebrow"><img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Passport build · live</div>
         <div class="pp-progress-pct-row">
           <span class="pp-progress-pct">{{ passportProgressPct }}%</span>
           <span class="pp-progress-frac"
@@ -1108,12 +1108,12 @@
           </div>
         </div>
         <button class="buy-pp-cta" type="button" @click="onBuyPassport">
-          📋 Open the full Passport →
+          <img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Open the full Passport →
         </button>
       </div>
 
       <div class="qoffer-card anim-5">
-        <div class="qoffer-eyebrow">💰 Qualified offer</div>
+        <div class="qoffer-eyebrow"><img src="/op-icons/investment/moneyBagPound.png" alt="" class="inline-ic" loading="lazy" /> Qualified offer</div>
         <div class="qoffer-title">Make an offer the seller sees first.</div>
         <div class="qoffer-sub">
           Verified buyers can submit a qualified offer straight from the
@@ -1122,7 +1122,7 @@
           <b style="color: #ffd58a">You need to be verified to make one.</b>
         </div>
         <button class="qoffer-cta locked" type="button" @click="onVerify">
-          🔒 Get verified to make an offer →
+          <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" /> Get verified to make an offer →
         </button>
       </div>
 
@@ -1470,7 +1470,7 @@ function iconForTitle(title: string): string {
   if (/solar (?:water|thermal)/.test(t)) return '/op-icons/misc/sun.png'
   if (/(loft|roof)/.test(t)) return '/op-icons/homescore/house.png'
   if (/(cavity|wall)/.test(t)) return '/op-icons/homescore/bricks.png'
-  if (/floor/.test(t)) return '🪟'
+  if (/floor/.test(t)) return '/op-icons/homescore/windows.png'
   if (/(led|light)/.test(t)) return '/op-icons/homescore/bulb.png'
   if (/(boiler|heat pump|heating)/.test(t)) return '/op-icons/homescore/flame.png'
   return '✦'
