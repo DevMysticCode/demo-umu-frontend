@@ -51,7 +51,7 @@
       <div class="info-section">
         <h2 class="section-title">Safety information</h2>
         <div class="info-card">
-          <div class="info-icon">🔒</div>
+          <div class="info-icon"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
           <div class="info-content">
             <h3 class="info-title">Safe Messaging</h3>
             <ul class="info-list">
@@ -66,7 +66,7 @@
       <div class="info-section">
         <h2 class="section-title">Response Expectation</h2>
         <div class="info-card">
-          <div class="info-icon">💬</div>
+          <div class="info-icon"><img src="/op-icons/matched-buyers/chat.png" alt="" loading="lazy" /></div>
           <div class="info-content">
             <h3 class="info-title">What happens next?</h3>
             <ul class="info-list">
@@ -371,8 +371,16 @@ const sendMessage = async () => {
 }
 
 .info-icon {
+  width: 40px;
+  height: 40px;
   font-size: 32px;
   flex-shrink: 0;
+}
+.info-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .info-content {
