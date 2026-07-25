@@ -58,7 +58,7 @@
               </div>
               <div class="pp-hero-dash-bar">
                 <div class="pp-hero-dash-fill" :style="{ width: progressPct + '%' }">
-                  <span class="pp-hero-dash-man">🚶</span>
+                  <img src="/op-icons/passportview/progressMan.svg" alt="" class="pp-hero-dash-man" loading="lazy" />
                 </div>
               </div>
               <div v-if="firstExpiring" class="pp-hero-dash-warn">
@@ -150,7 +150,7 @@
                     <div class="lp-sec-sub">{{ cardData(section).subtitleLine }}</div>
                     <div class="lp-sec-pills">
                       <span class="lp-sec-pill lp-sec-pill--doc">
-                        <span class="lp-sec-pill-ic">📄</span>
+                        <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-sec-pill-ic" loading="lazy" />
                         {{ cardData(section).docCount }}/{{ cardData(section).docTotal }} doc
                       </span>
                       <span class="lp-sec-pill" :class="`lp-sec-pill--${cardData(section).tone}`">
@@ -208,7 +208,7 @@
                     <div class="lp-sec-sub">{{ cardData(section).subtitleLine }}</div>
                     <div class="lp-sec-pills">
                       <span class="lp-sec-pill lp-sec-pill--doc">
-                        <span class="lp-sec-pill-ic">📄</span>
+                        <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-sec-pill-ic" loading="lazy" />
                         {{ cardData(section).docCount }}/{{ cardData(section).docTotal }} doc
                       </span>
                       <span class="lp-sec-pill" :class="`lp-sec-pill--${cardData(section).tone}`">
@@ -248,7 +248,7 @@
             No documents uploaded yet. Tap a section in the Compliance tab to upload one.
           </div>
           <div v-for="doc in uploadedDocs" :key="doc.id" class="lp-doc">
-            <div class="lp-doc-icon">📄</div>
+            <div class="lp-doc-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-icon-img" loading="lazy" /></div>
             <div class="lp-doc-info">
               <div class="lp-doc-name">{{ doc.title }}</div>
               <div class="lp-doc-meta">{{ doc.section }} · {{ doc.dateLabel }}</div>
@@ -302,7 +302,7 @@
                   <div class="lp-sec-sub">{{ cardData(section).subtitleLine }}</div>
                   <div class="lp-sec-pills">
                     <span class="lp-sec-pill lp-sec-pill--doc">
-                      <span class="lp-sec-pill-ic">📄</span>
+                      <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-sec-pill-ic" loading="lazy" />
                       {{ cardData(section).docCount }}/{{ cardData(section).docTotal }} doc
                     </span>
                     <span class="lp-sec-pill" :class="`lp-sec-pill--${cardData(section).tone}`">
@@ -388,7 +388,7 @@
 
             <!-- Existing document preview -->
             <div v-if="drawerFileUrl" class="lp-doc-preview">
-              <div class="lp-doc-preview-icon">📄</div>
+              <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
               <div class="lp-doc-preview-info">
                 <div class="lp-doc-preview-name">{{ drawerDocName || 'Certificate on file' }}</div>
                 <div class="lp-doc-preview-meta">
@@ -413,7 +413,7 @@
 
             <!-- Pending file -->
             <div v-if="pendingFile" class="lp-doc-preview lp-doc-preview--pending">
-              <div class="lp-doc-preview-icon">📄</div>
+              <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
               <div class="lp-doc-preview-info">
                 <div class="lp-doc-preview-name">{{ pendingFile.name }}</div>
                 <div class="lp-doc-preview-meta">{{ pendingFileSizeLabel }} · ready to save</div>
@@ -1344,9 +1344,12 @@ const SectionCard = defineComponent({
 .pp-hero-dash-man {
   position: absolute;
   right: -10px;
-  top: -12px;
-  font-size: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  pointer-events: none;
 }
 .pp-hero-dash-issued,
 .pp-hero-dash-warn {
@@ -1555,7 +1558,7 @@ const SectionCard = defineComponent({
   white-space: nowrap;
 }
 .lp-sec-pill--doc { background: #f0f2f1; color: #4a5868; }
-.lp-sec-pill-ic { font-size: 10px; }
+.lp-sec-pill-ic { width: 10px; height: 10px; object-fit: contain; }
 .lp-sec-pill--good { background: #d6efe2; color: #008a84; }
 .lp-sec-pill--warn { background: #fef3c7; color: #92400e; }
 .lp-sec-pill--pending { background: #f5f4f0; color: #8a95a0; }
@@ -1621,6 +1624,7 @@ const SectionCard = defineComponent({
   justify-content: center;
   flex-shrink: 0;
 }
+.lp-doc-icon-img { width: 18px; height: 18px; object-fit: contain; }
 .lp-doc-info { flex: 1; min-width: 0; }
 .lp-doc-name {
   font-size: 12.5px;
@@ -1828,6 +1832,7 @@ const SectionCard = defineComponent({
   border-radius: 14px;
   margin-bottom: 14px;
 }
+.lp-doc-preview-icon-img { width: 24px; height: 24px; object-fit: contain; }
 .lp-doc-preview-icon {
   width: 44px; height: 50px;
   border-radius: 8px;
