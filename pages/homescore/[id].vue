@@ -231,7 +231,7 @@
 
         <!-- Hero -->
         <div class="sim-hero">
-          <div class="sim-hero-eyebrow">🎯 Your HomeScore accuracy check</div>
+          <div class="sim-hero-eyebrow"><img src="/op-icons/investment/target.png" alt="" class="inline-ic" loading="lazy" /> Your HomeScore accuracy check</div>
           <div class="sim-hero-body">
             Your EPC is from <b>{{ simEpcYear }}</b
             >. A lot may have changed. Tell us what's been done — we'll give you
@@ -403,14 +403,14 @@
                     class="sim-step-btn diff"
                     @click.stop="simOpenDiff(s.id)"
                   >
-                    🔄 Done something different
+                    <img src="/op-icons/investment/refreshArrows.png" alt="" class="inline-ic" loading="lazy" /> Done something different
                   </button>
                   <button
                     type="button"
                     class="sim-step-btn todo"
                     @click.stop="simAnswer(s.id, 'todo')"
                   >
-                    📋 Not yet
+                    <img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Not yet
                   </button>
                   <button
                     type="button"
@@ -474,7 +474,7 @@
 
         <!-- Publish prompt — shown after enough answers -->
         <div v-if="simShowPublishPrompt" class="sim-publish">
-          <div class="sim-publish-title">🏠 Ready to publish this data?</div>
+          <div class="sim-publish-title"><img src="/op-icons/homescore/house.png" alt="" class="inline-ic" loading="lazy" /> Ready to publish this data?</div>
           <div class="sim-publish-sub">
             Publishing updates your property's data and makes energy cost
             estimates more accurate for everyone nearby. You'll need to verify
@@ -482,7 +482,7 @@
           </div>
           <div class="sim-publish-btns">
             <button type="button" class="sim-publish-go" @click="simSubmit">
-              🏠 Claim &amp; publish →
+              <img src="/op-icons/homescore/house.png" alt="" class="inline-ic" loading="lazy" /> Claim &amp; publish →
             </button>
             <button
               type="button"
@@ -514,7 +514,7 @@
         <!-- CTA + reset -->
         <div class="sim-cta">
           <button type="button" class="sim-cta-btn" @click="simSubmit">
-            🏠 Get my real HomeScore
+            <img src="/op-icons/homescore/house.png" alt="" class="inline-ic" loading="lazy" /> Get my real HomeScore
           </button>
           <button type="button" class="sim-reset-btn" @click="simReset">
             ↺ Start again
@@ -666,7 +666,7 @@
             class="pq-hero-btn pq-hero-btn--primary"
             @click="goToRunningCosts"
           >
-            <span class="pq-hero-btn-emoji">📊</span>
+            <span class="pq-hero-btn-emoji"><img src="/op-icons/investment/growthChart.png" alt="" loading="lazy" /></span>
             <span class="pq-hero-btn-label">See full running costs</span>
             <svg
               class="pq-hero-btn-arrow"
@@ -1069,7 +1069,7 @@
         <!-- Publish CTA -->
         <div class="pub-cta">
           <button type="button" class="pub-cta-btn" @click="onPublishToStreet">
-            🏘️ Publish to {{ pubStreetName }}
+            <img src="/op-icons/investment/housesCluster.png" alt="" class="inline-ic" loading="lazy" /> Publish to {{ pubStreetName }}
           </button>
           <button
             type="button"
@@ -1149,7 +1149,7 @@
               class="kyc-method-icon"
               :style="{ background: 'var(--kyc-teal-paler)' }"
             >
-              🪪
+              <img src="/op-icons/buyer-profile-build/idCard.png" alt="" loading="lazy" />
             </div>
             <div class="kyc-method-body">
               <div class="kyc-method-title">Photo ID</div>
@@ -1161,7 +1161,7 @@
           </div>
           <div class="kyc-method" @click="verifyWith('mortgage')">
             <div class="kyc-method-icon" :style="{ background: '#FFFBEB' }">
-              📄
+              <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" />
             </div>
             <div class="kyc-method-body">
               <div class="kyc-method-title">Mortgage or title document</div>
@@ -1171,7 +1171,7 @@
           </div>
           <div class="kyc-method" @click="verifyWith('open-banking')">
             <div class="kyc-method-icon" :style="{ background: '#F0F9FF' }">
-              🏦
+              <img src="/op-icons/investment/bank.png" alt="" loading="lazy" />
             </div>
             <div class="kyc-method-body">
               <div class="kyc-method-title">Open Banking</div>
@@ -1185,7 +1185,7 @@
 
         <!-- Privacy note -->
         <div class="kyc-privacy">
-          🔒 Your documents are verified by our KYC partner and never stored by
+          <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" /> Your documents are verified by our KYC partner and never stored by
           UMU HomeScore.
         </div>
         <div style="height: 32px" />
@@ -1280,7 +1280,7 @@
             class="kyc-cta-outline"
             @click="claimOrAccessPassport"
           >
-            🏠 Start my Property Passport
+            <img src="/op-icons/homescore/house.png" alt="" class="inline-ic" loading="lazy" /> Start my Property Passport
           </button>
         </div>
         <div style="height: 32px" />
@@ -1353,21 +1353,21 @@
           </div>
           <div class="kyc-updates-list">
             <div class="kyc-updates-row">
-              <span class="kyc-updates-icon">📊</span>
+              <span class="kyc-updates-icon"><img src="/op-icons/investment/growthChart.png" alt="" loading="lazy" /></span>
               <div>
                 <b>Your HomeScore</b> — reflects actual property data, not EPC
                 estimates
               </div>
             </div>
             <div class="kyc-updates-row">
-              <span class="kyc-updates-icon">💡</span>
+              <span class="kyc-updates-icon"><img src="/op-icons/homescore/bulb.png" alt="" loading="lazy" /></span>
               <div>
                 <b>Energy cost benchmarks</b> — more accurate for similar homes
                 nearby
               </div>
             </div>
             <div class="kyc-updates-row">
-              <span class="kyc-updates-icon">🏘️</span>
+              <span class="kyc-updates-icon"><img src="/op-icons/investment/housesCluster.png" alt="" loading="lazy" /></span>
               <div>
                 <b>Street-level data pool</b> — every owner who publishes
                 improves it further
@@ -1422,19 +1422,19 @@
             ]"
             @click="setPassportTab('sections')"
           >
-            📋 Sections
+            <img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Sections
           </button>
           <button
             :class="['hs-vault-tab', passportTab === 'street' ? 'active' : '']"
             @click="setPassportTab('street')"
           >
-            🗺 Street
+            <img src="/op-icons/passportview3d/map.png" alt="" class="inline-ic" loading="lazy" /> Street
           </button>
           <button
             :class="['hs-vault-tab', passportTab === 'buyers' ? 'active' : '']"
             @click="setPassportTab('buyers')"
           >
-            👥 Buyers<span v-if="matchedBuyers.length" class="hs-tab-badge">{{
+            <img src="/op-icons/passportview3d/buyers.png" alt="" class="inline-ic" loading="lazy" /> Buyers<span v-if="matchedBuyers.length" class="hs-tab-badge">{{
               matchedBuyers.length
             }}</span>
           </button>
@@ -1483,19 +1483,19 @@
             </div>
             <div class="hs-pp-docs">
               <div class="hs-pp-doc-row">
-                <div class="hs-pp-doc-ic">🔥</div>
+                <div class="hs-pp-doc-ic"><img src="/op-icons/homescore/flame.png" alt="" loading="lazy" /></div>
                 <div class="hs-pp-doc-name">
                   Last boiler service certificate
                 </div>
                 <div class="hs-pp-doc-gain">+15% conf</div>
               </div>
               <div class="hs-pp-doc-row">
-                <div class="hs-pp-doc-ic">⚡</div>
+                <div class="hs-pp-doc-ic"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
                 <div class="hs-pp-doc-name">Last 12 months energy bills</div>
                 <div class="hs-pp-doc-gain">+20% conf</div>
               </div>
               <div class="hs-pp-doc-row">
-                <div class="hs-pp-doc-ic">👤</div>
+                <div class="hs-pp-doc-ic"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
                 <div class="hs-pp-doc-name">EICR (electrical report)</div>
                 <div class="hs-pp-doc-gain">+10% conf</div>
               </div>
@@ -1519,7 +1519,7 @@
             <p class="hs-pp-unlocks-title">What a Passport unlocks</p>
             <div class="hs-pp-unlocks-list">
               <div class="hs-pp-unlock-row">
-                <span class="hs-pp-unlock-icon">📄</span>
+                <span class="hs-pp-unlock-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></span>
                 <div>
                   <div class="hs-pp-unlock-name">Document vault</div>
                   <div class="hs-pp-unlock-sub">
@@ -1528,7 +1528,7 @@
                 </div>
               </div>
               <div class="hs-pp-unlock-row">
-                <span class="hs-pp-unlock-icon">⚡</span>
+                <span class="hs-pp-unlock-icon"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></span>
                 <div>
                   <div class="hs-pp-unlock-name">14-day completion</div>
                   <div class="hs-pp-unlock-sub">
@@ -1538,7 +1538,7 @@
                 </div>
               </div>
               <div class="hs-pp-unlock-row">
-                <span class="hs-pp-unlock-icon">📊</span>
+                <span class="hs-pp-unlock-icon"><img src="/op-icons/investment/growthChart.png" alt="" loading="lazy" /></span>
                 <div>
                   <div class="hs-pp-unlock-name">
                     Live running cost tracking
@@ -1549,7 +1549,7 @@
                 </div>
               </div>
               <div class="hs-pp-unlock-row">
-                <span class="hs-pp-unlock-icon">🛡</span>
+                <span class="hs-pp-unlock-icon"><img src="/op-icons/calendar/shield.png" alt="" loading="lazy" /></span>
                 <div>
                   <div class="hs-pp-unlock-name">TA6-ready when you sell</div>
                   <div class="hs-pp-unlock-sub">
@@ -1581,17 +1581,8 @@
               class="hs-street-row"
               @click="router.push(`/property/${sp.id}`)"
             >
-              <div
-                class="hs-street-house-icon"
-                :style="{
-                  color: sp.isPublished
-                    ? '#008a84'
-                    : sp.hasPassport
-                      ? '#f59e0b'
-                      : '#94a3b8',
-                }"
-              >
-                🏠
+              <div class="hs-street-house-icon">
+                <img src="/op-icons/homescore/house.png" alt="" loading="lazy" />
               </div>
               <div style="flex: 1; min-width: 0">
                 <div class="hs-street-addr">{{ sp.addressLine1 }}</div>
@@ -1619,7 +1610,7 @@
             </div>
           </div>
           <div v-else class="hs-street-empty">
-            <div style="font-size: 32px; margin-bottom: 8px">🏘</div>
+            <div style="width: 40px; height: 40px; margin: 0 auto 8px"><img src="/op-icons/investment/housesCluster.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
             <p style="font-size: 15px; color: #64748b; text-align: center">
               No other properties found on this street yet. Be the first to
               start your Passport!
@@ -1652,7 +1643,7 @@
               </div>
             </div>
             <div class="hs-street-tip">
-              💡 <strong>You're ahead of your street.</strong> Most neighbours
+              <img src="/op-icons/homescore/bulb.png" alt="" class="inline-ic" loading="lazy" /> <strong>You're ahead of your street.</strong> Most neighbours
               haven't started their passport. Sellers with a passport typically
               accept offers <strong>18 days faster</strong>.
             </div>
@@ -1741,7 +1732,7 @@
             </div>
           </div>
           <div v-else class="hs-buyers-loading">
-            <div style="font-size: 32px; margin-bottom: 8px">👥</div>
+            <div style="width: 40px; height: 40px; margin: 0 auto 8px"><img src="/op-icons/passportview3d/buyers.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
             <p style="font-size: 15px; color: #64748b; text-align: center">
               Loading matched buyers…
             </p>
@@ -1916,7 +1907,10 @@
             class="bv-risk-row"
             :class="r.tone === 'ok' ? 'green' : 'amber'"
           >
-            <span class="bv-risk-icon">{{ r.icon }}</span>
+            <span class="bv-risk-icon">
+              <img v-if="r.icon && r.icon.startsWith('/')" :src="r.icon" alt="" loading="lazy" />
+              <template v-else>{{ r.icon }}</template>
+            </span>
             <div class="bv-risk-body">
               <div class="bv-risk-title">{{ r.title }}</div>
               <div class="bv-risk-sub">{{ r.body }}</div>
@@ -1994,7 +1988,7 @@
         </div>
         <div class="bv-questions-card">
           <div v-for="q in bvQuestions" :key="q.title" class="bv-q-row">
-            <span class="bv-q-icon">{{ q.icon }}</span>
+            <span class="bv-q-icon"><img :src="q.icon" alt="" loading="lazy" /></span>
             <div class="bv-q-body">
               <div class="bv-q-title">{{ q.title }}</div>
               <div class="bv-q-sub">{{ q.sub }}</div>
@@ -2442,7 +2436,7 @@
       @click.self="closeAuthGate"
     >
       <div class="hs-authgate-card">
-        <div class="hs-authgate-ic">🔒</div>
+        <div class="hs-authgate-ic"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
         <div class="hs-authgate-title">{{ authGateCopy.title }}</div>
         <div class="hs-authgate-sub">{{ authGateCopy.body }}</div>
         <button class="hs-authgate-primary" @click="goAuthGate('signup')">
@@ -3456,17 +3450,17 @@ const DEFAULT_WINS: TopWin[] = [
 ]
 const DEFAULT_OPPS: Opportunity[] = [
   {
-    icon: '🏠',
+    icon: '/op-icons/homescore/house.png',
     title: 'Improve loft insulation',
     sub: 'Topping up to 270mm is one of the most cost-effective fixes.',
   },
   {
-    icon: '🔥',
+    icon: '/op-icons/homescore/boiler.png',
     title: 'Book a boiler service',
     sub: 'An annual service keeps your boiler running at peak efficiency.',
   },
   {
-    icon: '🌡️',
+    icon: '/op-icons/homescore/heatingControls.png',
     title: 'Fit a smart thermostat',
     sub: 'Could save ~£130/yr — low cost, high impact.',
   },
@@ -3498,11 +3492,11 @@ const pillarCarbonDrivers = computed(() => {
     const value = (result.value.breakdown as any)?.[d.key] ?? 0
     const pct = Math.round(100 - (value / d.max) * 100)
     const iconMap: Record<string, string> = {
-      heating: '🔥',
-      structure: '🧱',
-      efficiency: '💡',
-      electrics: '⚡',
-      plumbing: '🚰',
+      heating: '/op-icons/homescore/flame.png',
+      structure: '/op-icons/homescore/bricks.png',
+      efficiency: '/op-icons/homescore/bulb.png',
+      electrics: '/op-icons/homescore/lightning.png',
+      plumbing: '/op-icons/homescore/tap.png',
     }
     return {
       key: d.key,
@@ -5127,22 +5121,22 @@ const bvMonthSearches = computed<number>(
 
 const bvQuestions = [
   {
-    icon: '🔥',
+    icon: '/op-icons/homescore/flame.png',
     title: 'When was the boiler last serviced?',
     sub: 'Heating scores low — ask for the service record or Gas Safe certificate.',
   },
   {
-    icon: '🧱',
+    icon: '/op-icons/homescore/bricks.png',
     title: 'Is there cavity wall or loft insulation?',
     sub: 'The biggest cost driver at this score. Ask for any installer guarantees.',
   },
   {
-    icon: '📄',
+    icon: '/op-icons/passportview/titleDeedsAndPlan.png',
     title: 'Can you share the full EPC report?',
     sub: 'The public register only shows the grade — the full document lists every item.',
   },
   {
-    icon: '⚡',
+    icon: '/op-icons/homescore/lightning.png',
     title: 'Do you have an EICR certificate?',
     sub: 'Electrical Installation Condition Report — not legally required for sales, but worth asking.',
   },
@@ -5184,7 +5178,7 @@ const buyerRisks = computed(() => {
   if (heatingPct < 60) {
     all.push({
       key: 'heating',
-      icon: '🔥',
+      icon: '/op-icons/homescore/flame.png',
       title: 'Heating — needs attention',
       body: 'EPC flags old heating system. Boiler replacement could cost £2,500–£4,000.',
       tone: 'warn',
@@ -5192,7 +5186,7 @@ const buyerRisks = computed(() => {
   } else {
     all.push({
       key: 'heating',
-      icon: '🔥',
+      icon: '/op-icons/homescore/flame.png',
       title: 'Heating — looks reasonable',
       body: 'Heating efficiency is in line with similar homes. Worth asking for the latest service record.',
       tone: 'ok',
@@ -5203,7 +5197,7 @@ const buyerRisks = computed(() => {
   if (structurePct < 60) {
     all.push({
       key: 'structure',
-      icon: '🧱',
+      icon: '/op-icons/homescore/bricks.png',
       title: 'Insulation — below average',
       body: 'Likely no cavity wall insulation. Adds ~£400/yr vs best-in-street.',
       tone: 'warn',
@@ -5211,7 +5205,7 @@ const buyerRisks = computed(() => {
   } else {
     all.push({
       key: 'structure',
-      icon: '🧱',
+      icon: '/op-icons/homescore/bricks.png',
       title: 'Insulation — looks reasonable',
       body: 'Insulation appears adequate for the property age. Confirm any guarantees with the seller.',
       tone: 'ok',
@@ -5222,7 +5216,7 @@ const buyerRisks = computed(() => {
   if (electricsPct >= 60) {
     all.push({
       key: 'electrics',
-      icon: '⚡',
+      icon: '/op-icons/homescore/lightning.png',
       title: 'Electrics — looks reasonable',
       body: 'Average for a property of this age. Worth confirming EICR.',
       tone: 'ok',
@@ -5230,7 +5224,7 @@ const buyerRisks = computed(() => {
   } else {
     all.push({
       key: 'electrics',
-      icon: '⚡',
+      icon: '/op-icons/homescore/lightning.png',
       title: 'Electrics — worth checking',
       body: 'Ask for a recent EICR certificate to rule out rewiring costs.',
       tone: 'warn',
@@ -5986,6 +5980,14 @@ watch(screen, (s) => {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 /* ── Page ────────────────────────────────────────────────── */
 .hs-page {
   min-height: 100dvh;
@@ -7963,6 +7965,15 @@ watch(screen, (s) => {
 }
 .hs-pp-doc-ic {
   font-size: 14px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.hs-pp-doc-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .hs-pp-doc-name {
   flex: 1;
@@ -8023,6 +8034,16 @@ watch(screen, (s) => {
 }
 .hs-pp-unlock-icon {
   font-size: 20px;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.hs-pp-unlock-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .hs-pp-unlock-name {
   font-weight: 600;
@@ -8137,6 +8158,14 @@ watch(screen, (s) => {
 .hs-street-house-icon {
   font-size: 20px;
   flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+.hs-street-house-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .hs-street-addr {
   font-size: 15px;
@@ -10099,6 +10128,13 @@ watch(screen, (s) => {
   place-items: center;
   margin: 0 auto 14px;
   font-size: 26px;
+  overflow: hidden;
+}
+.hs-authgate-ic img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
 }
 .hs-authgate-title {
   font-size: 18px;
@@ -10523,6 +10559,15 @@ watch(screen, (s) => {
   font-size: 16px;
   flex-shrink: 0;
   margin-top: 1px;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+.bv-risk-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .bv-risk-body {
   flex: 1;
@@ -10645,6 +10690,15 @@ watch(screen, (s) => {
   font-size: 16px;
   flex-shrink: 0;
   margin-top: 1px;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+.bv-q-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .bv-q-body {
   flex: 1;
@@ -11958,6 +12012,15 @@ watch(screen, (s) => {
   font-size: 16px;
   line-height: 1;
   flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+.pq-hero-btn-emoji img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .pq-hero-btn-label {
   flex: 1;
@@ -13029,6 +13092,13 @@ watch(screen, (s) => {
   justify-content: center;
   font-size: 18px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+.kyc-method-icon img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
 }
 .kyc-method-body {
   flex: 1;
@@ -13225,6 +13295,15 @@ watch(screen, (s) => {
   font-size: 14px;
   flex-shrink: 0;
   margin-top: 1px;
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+}
+.kyc-updates-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* Street impact pill */

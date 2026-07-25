@@ -14,7 +14,7 @@
       </div>
       <div v-else-if="error" class="inbox-error">{{ error }}</div>
       <div v-else-if="conversations.length === 0" class="inbox-empty">
-        <div class="inbox-empty-icon">💬</div>
+        <div class="inbox-empty-icon"><img src="/op-icons/matched-buyers/chat.png" alt="" loading="lazy" /></div>
         <div class="inbox-empty-title">No conversations yet</div>
         <div class="inbox-empty-sub">
           When someone invites you to view, shares a passport, or messages
@@ -40,7 +40,14 @@
             <div class="inbox-row-context">{{ contextLabel(c.context) }}</div>
             <div class="inbox-row-preview">
               <span v-if="lastMessageKind(c) !== 'text'" class="inbox-row-kind">
-                {{ kindIcon(lastMessageKind(c)) }}
+                <img
+                  v-if="kindIcon(lastMessageKind(c)).startsWith('/')"
+                  :src="kindIcon(lastMessageKind(c))"
+                  alt=""
+                  class="inline-ic"
+                  loading="lazy"
+                />
+                <template v-else>{{ kindIcon(lastMessageKind(c)) }}</template>
               </span>
               {{ lastMessagePreview(c) }}
             </div>
@@ -120,10 +127,10 @@ function lastMessageKind(c: ConversationRow): string {
 
 function kindIcon(kind: string): string {
   switch (kind) {
-    case 'viewing_request': return '📅'
+    case 'viewing_request': return '/op-icons/calendar/calendar.png'
     case 'viewing_response': return '✅'
-    case 'share_passport': return '🔗'
-    case 'payment_prompt': return '💷'
+    case 'share_passport': return '/op-icons/matched-buyers/link.png'
+    case 'payment_prompt': return '/op-icons/investment/moneyBagPound.png'
     case 'system': return 'ℹ️'
     default: return ''
   }
@@ -160,6 +167,14 @@ function relativeTime(iso: string | null): string {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 .inbox-page {
   min-height: 100dvh;
   background: #f5f6fa;
@@ -194,7 +209,8 @@ function relativeTime(iso: string | null): string {
   text-align: center;
   color: #6b7089;
 }
-.inbox-empty-icon { font-size: 42px; margin-bottom: 12px; }
+.inbox-empty-icon { font-size: 42px; margin-bottom: 12px; width: 56px; height: 56px; margin-left: auto; margin-right: auto; }
+.inbox-empty-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .inbox-empty-title { font-size: 16px; font-weight: 800; color: #231d45; margin-bottom: 6px; }
 .inbox-empty-sub { font-size: 13px; color: #6b7089; max-width: 300px; margin: 0 auto; line-height: 1.5; }
 .inbox-error {

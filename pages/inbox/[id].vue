@@ -27,7 +27,7 @@
             v-if="m.kind === 'viewing_request'"
             class="thread-card thread-card--viewing"
           >
-            <div class="thread-card-eyebrow">📅 Viewing invite</div>
+            <div class="thread-card-eyebrow"><img src="/op-icons/calendar/calendar.png" alt="" class="inline-ic" loading="lazy" /> Viewing invite</div>
             <div class="thread-card-title">
               {{ m.payload?.propertyAddress || 'Property viewing' }}
             </div>
@@ -95,7 +95,7 @@
             v-else-if="m.kind === 'share_passport'"
             class="thread-card thread-card--passport"
           >
-            <div class="thread-card-eyebrow">🔗 Passport shared</div>
+            <div class="thread-card-eyebrow"><img src="/op-icons/matched-buyers/link.png" alt="" class="inline-ic" loading="lazy" /> Passport shared</div>
             <div class="thread-card-title">
               {{ m.payload?.propertyAddress || 'Property Passport' }}
             </div>
@@ -441,6 +441,14 @@ function openPassport(payload: any) {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 .thread-page {
   min-height: 100dvh;
   display: flex; flex-direction: column;

@@ -63,7 +63,7 @@
 
     <!-- Ambiguous parcel (E425) -->
     <div v-else-if="data.status === 'MULTI_GEOMETRY'" class="llc-empty llc-empty--warn">
-      <div class="llc-empty-ic">🗺️</div>
+      <div class="llc-empty-ic"><img src="/op-icons/passportview3d/map.png" alt="" loading="lazy" /></div>
       <div class="llc-empty-title">Parcel boundary is ambiguous</div>
       <div class="llc-empty-sub">
         HM Land Registry couldn't resolve a single parcel for this
@@ -102,7 +102,7 @@
           <div v-for="c in directCharges" :key="c.id" class="llc-charge">
             <div class="llc-charge-head">
               <span class="llc-charge-cat" :class="categoryClass(c.category)">
-                {{ categoryIcon(c.category) }} {{ c.category }}
+                <img :src="categoryIcon(c.category)" alt="" class="inline-ic" loading="lazy" /> {{ c.category }}
                 <template v-if="c.subCategory"> · {{ c.subCategory }}</template>
               </span>
               <span v-if="c.registrationDate" class="llc-charge-date">
@@ -110,7 +110,8 @@
               </span>
             </div>
             <div v-if="c.description" class="llc-charge-desc" :class="{ 'llc-redacted': isRedacted(c.description) }">
-              {{ isRedacted(c.description) ? '🔒 Full text available on the official search result only.' : c.description }}
+              <template v-if="isRedacted(c.description)"><img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" /> Full text available on the official search result only.</template>
+              <template v-else>{{ c.description }}</template>
             </div>
             <div class="llc-charge-meta">
               <span v-if="c.legalDocument">{{ c.legalDocument }}</span>
@@ -132,16 +133,17 @@
           <div v-for="c in boundaryCharges" :key="c.id" class="llc-charge llc-charge--boundary">
             <div class="llc-charge-head">
               <span class="llc-charge-cat" :class="categoryClass(c.category)">
-                {{ categoryIcon(c.category) }} {{ c.category }}
+                <img :src="categoryIcon(c.category)" alt="" class="inline-ic" loading="lazy" /> {{ c.category }}
                 <template v-if="c.subCategory"> · {{ c.subCategory }}</template>
               </span>
               <span v-if="c.registrationDate" class="llc-charge-date">
                 {{ formatYear(c.registrationDate) }}
               </span>
             </div>
-            <div v-if="c.location" class="llc-charge-loc">📍 {{ c.location }}</div>
+            <div v-if="c.location" class="llc-charge-loc"><img src="/op-icons/misc/addressPin.png" alt="" class="inline-ic" loading="lazy" /> {{ c.location }}</div>
             <div v-if="c.description" class="llc-charge-desc" :class="{ 'llc-redacted': isRedacted(c.description) }">
-              {{ isRedacted(c.description) ? '🔒 Full text available on the official search result only.' : c.description }}
+              <template v-if="isRedacted(c.description)"><img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" /> Full text available on the official search result only.</template>
+              <template v-else>{{ c.description }}</template>
             </div>
           </div>
         </div>
@@ -214,12 +216,12 @@ function isRedacted(description: string | null) {
 
 function categoryIcon(cat: string): string {
   const c = (cat ?? '').toLowerCase()
-  if (c.includes('planning')) return '🏗️'
-  if (c.includes('housing') || c.includes('building')) return '🏠'
-  if (c.includes('financial')) return '💷'
-  if (c.includes('light')) return '💡'
-  if (c.includes('other')) return '📌'
-  return '📄'
+  if (c.includes('planning')) return '/op-icons/investment/crane.png'
+  if (c.includes('housing') || c.includes('building')) return '/op-icons/homescore/house.png'
+  if (c.includes('financial')) return '/op-icons/investment/moneyBagPound.png'
+  if (c.includes('light')) return '/op-icons/homescore/bulb.png'
+  if (c.includes('other')) return '/op-icons/misc/addressPin.png'
+  return '/op-icons/passportview/titleDeedsAndPlan.png'
 }
 
 function categoryClass(cat: string): string {
@@ -248,6 +250,13 @@ function formatWhen(iso: string): string {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  display: inline-block;
+  flex-shrink: 0;
+}
 .llc-card {
   background: #fff;
   border-radius: 18px;

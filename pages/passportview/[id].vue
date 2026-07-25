@@ -296,7 +296,7 @@
           </div>
         </div>
         <div v-else class="pp-empty">
-          <div style="font-size: 32px; margin-bottom: 8px">🏘</div>
+          <div style="width: 40px; height: 40px; margin: 0 auto 8px"><img src="/op-icons/investment/housesCluster.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
           <p>No other properties found on this street yet.</p>
         </div>
 
@@ -336,13 +336,13 @@
       <!-- Vault tab — sections with per-section public/private toggle -->
       <div v-if="activeTab === 'vault'" class="pp-tab-content">
         <div v-if="vaultLoading" class="pp-empty">
-          <div style="font-size: 28px; margin-bottom: 8px">🗄️</div>
+          <div style="width: 36px; height: 36px; margin: 0 auto 8px"><img src="/op-icons/misc/fileCabinet.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
           <p>Loading your vault…</p>
         </div>
 
         <template v-else-if="vaultSections.length === 0">
           <div class="pp-empty">
-            <div style="font-size: 32px; margin-bottom: 8px">🗄️</div>
+            <div style="width: 40px; height: 40px; margin: 0 auto 8px"><img src="/op-icons/misc/fileCabinet.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
             <p>Your vault is empty</p>
             <p style="font-size: 11.5px; margin-top: 6px; color: #94a3b8">
               As you complete sections, the verified documents are stored here —
@@ -356,7 +356,7 @@
           <div class="vault-legend">
             <div class="vault-legend-t">Private or public?</div>
             <div class="vault-legend-row">
-              <span class="vault-legend-ico private">🔒</span>
+              <span class="vault-legend-ico private"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
               <div>
                 <b>Private</b> — only you. Kept out of the passport when you
                 publish — for personal documents you're not required to
@@ -364,7 +364,7 @@
               </div>
             </div>
             <div class="vault-legend-row">
-              <span class="vault-legend-ico public">🌐</span>
+              <span class="vault-legend-ico public"><img src="/op-icons/misc/globe.png" alt="" loading="lazy" /></span>
               <div>
                 <b>Public</b> — published with your passport. Visible to
                 everyone once you publish (it doesn't go to anyone before
@@ -383,7 +383,7 @@
             class="vault-row"
             :class="(s.visibility || 'PUBLIC').toLowerCase()"
           >
-            <div class="vault-ico">{{ sectionIcon(s.key, s.imageKey) }}</div>
+            <div class="vault-ico"><img :src="sectionIcon(s.key, s.imageKey)" alt="" loading="lazy" /></div>
             <div class="vault-info">
               <div class="vault-name">{{ s.title }}</div>
               <div class="vault-vis-meta">
@@ -399,12 +399,12 @@
                 class="vis-opt private"
                 :class="{ on: s.visibility === 'PRIVATE' }"
                 @click="setVisibility(s, 'PRIVATE')"
-              >🔒 Private</span>
+              ><img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" /> Private</span>
               <span
                 class="vis-opt public"
                 :class="{ on: s.visibility !== 'PRIVATE' }"
                 @click="setVisibility(s, 'PUBLIC')"
-              >🌐 Public</span>
+              ><img src="/op-icons/misc/globe.png" alt="" class="inline-ic" loading="lazy" /> Public</span>
             </div>
           </div>
         </template>
@@ -874,26 +874,26 @@ async function setVisibility(section, visibility) {
 
 function sectionIcon(key, _imageKey) {
   const map = {
-    ownership_profile: '📖',
-    boundaries: '🏡',
-    disputes_complaints: '📋',
-    notices_proposals: '📨',
-    alterations: '📐',
-    guarantees_warranties: '🛡️',
-    insurance: '☂️',
-    environmental: '🌍',
-    rights: '🔑',
-    parking: '🚗',
-    other_charges: '💷',
-    occupiers: '👥',
-    services: '🔌',
-    energy_epc: '🌿',
-    transaction_info: '📑',
-    fixtures_fittings: '🛋️',
-    leasehold_info: '🏢',
-    title_deeds: '📜',
+    ownership_profile: '/op-icons/passportview/ownerShipProfile.png',
+    boundaries: '/op-icons/passportview/boundaries.png',
+    disputes_complaints: '/op-icons/passportview/disputesAndComplaints.png',
+    notices_proposals: '/op-icons/passportview/noticesAndProposals.png',
+    alterations: '/op-icons/passportview/alterationsAndPlanning.png',
+    guarantees_warranties: '/op-icons/passportview/gurantessAndWarranties.png',
+    insurance: '/op-icons/passportview/insurance.png',
+    environmental: '/op-icons/passportview/environmental.png',
+    rights: '/op-icons/passportview/rightsAndInformalArrangements.png',
+    parking: '/op-icons/passportview/parkings.png',
+    other_charges: '/op-icons/passportview/otherCharges.png',
+    occupiers: '/op-icons/passportview/occupiers.png',
+    services: '/op-icons/passportview/services.png',
+    energy_epc: '/op-icons/homescore/lightning.png',
+    transaction_info: '/op-icons/passportview/transactionInformation.png',
+    fixtures_fittings: '/op-icons/passportview/fixturesAndFittings.png',
+    leasehold_info: '/op-icons/passportview/leasehold.svg',
+    title_deeds: '/op-icons/passportview/titleDeedsAndPlan.png',
   }
-  return map[key] || '📄'
+  return map[key] || '/op-icons/passportview/titleDeedsAndPlan.png'
 }
 
 // ── Timeline ───────────────────────────────────────────────────
@@ -1163,6 +1163,14 @@ const onRoleSwitch = (role) => {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  vertical-align: -1px;
+  display: inline-block;
+  margin-right: 2px;
+}
 .passport-page {
   min-height: 100vh;
   background: #fff;
@@ -2515,13 +2523,15 @@ const onRoleSwitch = (role) => {
 .vault-legend-t { font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: #a8a9ad; margin-bottom: 8px; }
 .vault-legend-row { display: flex; align-items: flex-start; gap: 9px; font-size: 11px; font-weight: 600; color: #6b7089; line-height: 1.45; }
 .vault-legend-row + .vault-legend-row { margin-top: 7px; }
-.vault-legend-ico { width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; flex-shrink: 0; }
+.vault-legend-ico { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; flex-shrink: 0; overflow: hidden; }
+.vault-legend-ico img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .vault-legend-ico.private { background: #6b7089; }
 .vault-legend-ico.public { background: #00a19a; }
 .vault-legend-row b { color: #231d45; font-weight: 800; }
 .vault-count { padding: 6px 18px 4px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #6b7089; }
 .vault-row { display: flex; align-items: flex-start; gap: 12px; margin: 0 18px 10px; padding: 14px; background: #fff; border: 1px solid #e4e5ed; border-radius: 14px; box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05); }
-.vault-ico { width: 40px; height: 40px; border-radius: 11px; background: #e5f4f2; color: #008a84; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.vault-ico { width: 40px; height: 40px; border-radius: 11px; background: #e5f4f2; color: #008a84; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; overflow: hidden; }
+.vault-ico img { width: 26px; height: 26px; object-fit: contain; display: block; }
 .vault-info { flex: 1; min-width: 0; }
 .vault-name { font-size: 14px; font-weight: 800; color: #231d45; }
 .vault-vis-meta { font-size: 10.5px; font-weight: 700; margin-top: 3px; line-height: 1.35; }

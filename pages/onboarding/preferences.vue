@@ -550,9 +550,9 @@ const buyQuestions: Question[] = [
     type: 'chips',
     label: 'PROPERTY TYPE',
     opts: [
-      { v: 'House', icon: '🏠' },
-      { v: 'Flat', icon: '🏢' },
-      { v: 'Bungalow', icon: '🏡' },
+      { v: 'House', icon: '/op-icons/homescore/house.png' },
+      { v: 'Flat', icon: '/op-icons/investment/officeBuilding.png' },
+      { v: 'Bungalow', icon: '/op-icons/homescore/house.png' },
       { v: 'Any' },
       { v: 'Other…', isExpand: true, expandKey: 'buyPropertyType' },
     ],
@@ -640,11 +640,11 @@ const sellQuestions: Question[] = [
     type: 'chips',
     label: 'PROPERTY TYPE',
     opts: [
-      { v: 'Detached', icon: '🏠' },
-      { v: 'Semi-detached', icon: '🏘' },
-      { v: 'Terraced', icon: '🏚' },
-      { v: 'Flat', icon: '🏢' },
-      { v: 'Bungalow', icon: '🏡' },
+      { v: 'Detached', icon: '/op-icons/investment/houseDetached.png' },
+      { v: 'Semi-detached', icon: '/op-icons/investment/houseSemi.png' },
+      { v: 'Terraced', icon: '/op-icons/investment/housesTerrace.png' },
+      { v: 'Flat', icon: '/op-icons/investment/officeBuilding.png' },
+      { v: 'Bungalow', icon: '/op-icons/homescore/house.png' },
       { v: 'Other…', isExpand: true, expandKey: 'sellPropertyType' },
     ],
     expandOpts: [
@@ -684,7 +684,7 @@ const sellQuestions: Question[] = [
     label: 'CHAIN POSITION',
     hint: 'Buyers pay more for chain-free — this appears on your Passport',
     opts: [
-      { v: 'Chain-free', icon: '⛓️' },
+      { v: 'Chain-free', icon: '/op-icons/investment/chainLink.png' },
       { v: 'Buying onward' },
       { v: 'Part-exchange' },
       { v: 'Not sure yet' },

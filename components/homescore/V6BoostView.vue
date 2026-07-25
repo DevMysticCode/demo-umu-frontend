@@ -439,6 +439,7 @@ const docs = [
   {
     id: 'boiler',
     icon: '🛠',
+    iconImage: '/op-icons/boostYourScore/gasSafety.png',
     tone: 'teal',
     title: 'Boiler service record',
     sub: 'Annual service invoice or certificate · +12% MoveReady',
