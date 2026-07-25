@@ -768,8 +768,26 @@ function iconSlugForSection(key: string): string {
   if (k.includes('ast') || k.includes('tenancy')) return 'tenancy-agreement'
   return 'tenancy-agreement'
 }
+// Reuse existing 3D isometric icons from elsewhere in the app (plus a
+// purpose-generated one for smoke-co-alarms) so these match the look of
+// the buyer/seller passport section icons. Any slug without an entry
+// here falls back to the old flat SVG set.
+const SECTION_ICON_URLS: Record<string, string> = {
+  'gas-safety': '/op-icons/homescore/flame.png',
+  'electrical-safety': '/op-icons/homescore/lightning.png',
+  'energy-performance': '/op-icons/investment/plantSprout.png',
+  'smoke-co-alarms': '/op-icons/rental-passport/freestanding/smoke-co-alarms-3d.png',
+  legionella: '/op-icons/misc/waterDroplet.png',
+  'landlord-insurance': '/op-icons/verify-identity/shield.png',
+  'deposit-protection': '/op-icons/investment/padlock.png',
+  'right-to-rent': '/op-icons/verify-identity/idCard.png',
+  'how-to-rent': '/op-icons/misc/book.png',
+  inventory: '/op-icons/investment/clipboardChecklist.png',
+  'tenancy-agreement': '/op-icons/misc/signature.png',
+}
 function iconUrlForSection(key: string, variant: 'freestanding' | 'map' = 'freestanding'): string {
-  return `/op-icons/rental-passport/${variant}/${iconSlugForSection(key)}.svg`
+  const slug = iconSlugForSection(key)
+  return SECTION_ICON_URLS[slug] ?? `/op-icons/rental-passport/${variant}/${slug}.svg`
 }
 
 // ── Section drawer (upload / view / replace certificate) ───────
