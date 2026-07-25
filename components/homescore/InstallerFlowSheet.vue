@@ -287,7 +287,7 @@
                 >{{ grantLine }}.
               </p>
               <div class="ifs-passport">
-                <span class="ifs-passport-ic">📗</span>
+                <span class="ifs-passport-ic"><img src="/op-icons/misc/book.png" alt="" loading="lazy" /></span>
                 <p>
                   Every match request helps us bring installers to
                   <b>{{ postcode || 'your area' }}</b> faster.
@@ -309,7 +309,7 @@
             </p>
 
             <div v-if="requests.length === 0" class="ifs-empty">
-              <div class="ifs-empty-ic">🧰</div>
+              <div class="ifs-empty-ic"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></div>
               <h4>No requests yet</h4>
               <p>
                 Tap <b>Find installers</b> on any measure and we'll start
@@ -1459,8 +1459,10 @@ watch(
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
 .ifs-passport-ic svg { width: 18px; height: 18px; }
+.ifs-passport-ic img { width: 22px; height: 22px; object-fit: contain; display: block; }
 .ifs-passport p {
   margin: 0;
   font-size: 12.5px;
@@ -1550,6 +1552,15 @@ watch(
 }
 .ifs-empty-ic {
   font-size: 40px;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+}
+.ifs-empty-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .ifs-empty h4 {
   font-size: 16px;

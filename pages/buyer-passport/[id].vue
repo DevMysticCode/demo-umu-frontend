@@ -899,7 +899,7 @@
         {{ isSavedToProfile ? 'Saved' : 'Save to Profile' }}
       </button>
       <button class="buyer-action-ask" data-tour="ask" @click="askSeller">
-        💬 Ask the seller
+        <img src="/op-icons/matched-buyers/chat.png" alt="" class="inline-ic" loading="lazy" /> Ask the seller
       </button>
     </div>
 
@@ -1499,6 +1499,14 @@ async function deleteNote(noteId: string) {
 </script>
 
 <style scoped>
+.inline-ic {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-right: 2px;
+}
 .buyer-page {
   background: #f2f6f6;
   padding-bottom: 40px;
