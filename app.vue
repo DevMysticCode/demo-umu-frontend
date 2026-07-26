@@ -12,6 +12,7 @@
 <script setup>
 import { Capacitor } from '@capacitor/core'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import SplashScreen from '~/components/core/SplashScreen.vue'
 
 // Only render the Vue splash on native platforms. Web builds see the
@@ -31,6 +32,31 @@ useHead({
 // until a JWT exists in localStorage, so calling it pre-login is safe.
 if (import.meta.client) {
   const { register } = usePushNotifications()
+  const router = useRouter()
+
+  // Hardware/gesture back button on Android (and the equivalent swipe
+  // gesture on Android 13+ predictive-back) defaults to Capacitor's
+  // WebView.canGoBack() — which quits/minimises the app far too
+  // eagerly in an SPA. `history.state.back` is Vue Router's own record
+  // of whether there's a previous entry in ITS managed stack (set on
+  // every push/replace), so it reflects in-app navigation depth
+  // correctly regardless of WebView history quirks. Only exit the app
+  // once we're genuinely at a root screen with nothing behind it.
+  const configureBackButton = async () => {
+    if (!Capacitor.isNativePlatform()) return
+    try {
+      const { App: CapacitorApp } = await import('@capacitor/app')
+      CapacitorApp.addListener('backButton', () => {
+        if (window.history.state?.back) {
+          router.back()
+        } else {
+          void CapacitorApp.exitApp()
+        }
+      })
+    } catch (err) {
+      console.warn('[back-button] listener setup skipped:', err)
+    }
+  }
 
   // Configure native status bar so the safe-area colour matches the
   // page (light theme with dark status-bar icons) instead of showing
@@ -58,6 +84,7 @@ if (import.meta.client) {
   onMounted(() => {
     void register()
     void configureStatusBar()
+    void configureBackButton()
   })
 }
 </script>
