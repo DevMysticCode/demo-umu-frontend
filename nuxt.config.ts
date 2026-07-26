@@ -36,6 +36,19 @@ export default defineNuxtConfig({
   ssr: !IS_CAPACITOR_BUILD,
   devtools: { enabled: false },
   modules: ['@nuxt/ui', '@pinia/nuxt'],
+  // Nuxt Icon's server-bundled Iconify collections (used by @nuxt/ui's
+  // <Icon> component) generate a Nitro cached-event-handler that calls
+  // `createRequire(import.meta.url)` against a Rollup-injected shim.
+  // In the `nuxt generate` prerender worker that shim resolves to a
+  // bare `file:///_entry.js` with no real path, which crashes Node's
+  // createRequire ("must be a file URL object...") — this only
+  // reproduces during static generation, not `nuxt dev`/`build`.
+  // serverBundle:false drops that handler entirely; <Icon> falls back
+  // to fetching from the public Iconify API at runtime instead, which
+  // is fine for a Capacitor app that already needs network access.
+  icon: {
+    serverBundle: false,
+  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {

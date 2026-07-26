@@ -7,19 +7,20 @@
     "dev": "npx rimraf .nuxt && nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "patch-package && nuxt prepare",
     "mobile:assets": "capacitor-assets generate --assetPath resources --iconBackgroundColor '#231D45' --splashBackgroundColor '#FFFFFF'",
     "mobile:sync": "npm run generate && cap sync",
     "mobile:sync:ios": "npm run generate && cap sync ios",
     "mobile:sync:android": "npm run generate && cap sync android",
     "mobile:open:ios": "cap open ios",
     "mobile:open:android": "cap open android",
-    "mobile:build:bundled": "cross-env CAPACITOR_BUILD=true nuxt generate && cap sync",
-    "mobile:build:bundled:ios": "cross-env CAPACITOR_BUILD=true nuxt generate && cap sync ios",
-    "mobile:build:bundled:android": "cross-env CAPACITOR_BUILD=true nuxt generate && cap sync android"
+    "mobile:build:bundled": "cross-env CAPACITOR_BUILD=true CAPACITOR_USE_REMOTE=false nuxt generate && cross-env CAPACITOR_USE_REMOTE=false cap sync",
+    "mobile:build:bundled:ios": "cross-env CAPACITOR_BUILD=true CAPACITOR_USE_REMOTE=false nuxt generate && cross-env CAPACITOR_USE_REMOTE=false cap sync ios",
+    "mobile:build:bundled:android": "cross-env CAPACITOR_BUILD=true CAPACITOR_USE_REMOTE=false nuxt generate && cross-env CAPACITOR_USE_REMOTE=false cap sync android"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",
+    "@capacitor/app": "^8.1.1",
     "@capacitor/core": "^8.4.0",
     "@capacitor/ios": "^8.4.1",
     "@capacitor/local-notifications": "^8.2.0",
@@ -43,6 +44,7 @@
     "@nuxt/typescript-build": "^3.0.2",
     "@tailwindcss/typography": "^0.5.15",
     "cross-env": "^10.1.0",
+    "patch-package": "^8.0.1",
     "tailwindcss": "^3.4.16",
     "typescript": "^5.9.2"
   }

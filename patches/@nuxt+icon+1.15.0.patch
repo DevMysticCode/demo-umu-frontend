@@ -1,0 +1,130 @@
+diff --git a/node_modules/@nuxt/icon/dist/module.mjs b/node_modules/@nuxt/icon/dist/module.mjs
+index b076efc..97f4a42 100644
+--- a/node_modules/@nuxt/icon/dist/module.mjs
++++ b/node_modules/@nuxt/icon/dist/module.mjs
+@@ -516,10 +516,15 @@ function registerServerBundle(ctx) {
+         }
+       });
+       const lines = [
+-        ...isBundling ? [] : [
+-          `import { createRequire } from 'node:module'`,
+-          `const require = createRequire(import.meta.url)`
+-        ],
++        // PATCHED (see patches/@nuxt+icon+*.patch): this createRequire(import.meta.url)
++        // pair crashes Nitro's static-generate prerender worker on Windows —
++        // `import.meta.url` resolves to a bare `file:///_entry.js` with no real
++        // path there (a Rollup/Nitro shim bug in that specific sub-build), and
++        // createRequire throws immediately on the malformed URL. We never ship
++        // with local collections bundled (serverBundle:false in nuxt.config),
++        // so `require` is always dead code here — just drop it unconditionally
++        // instead of trying to detect the one build mode that needs it.
++        ...[],
+         `function createRemoteCollection(fetchEndpoint) {`,
+         "  let _cache",
+         "  return async () => {",
+diff --git a/node_modules/@nuxt/icon/dist/runtime/components/css.d.ts b/node_modules/@nuxt/icon/dist/runtime/components/css.d.ts
+index b012056..9817fec 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/components/css.d.ts
++++ b/node_modules/@nuxt/icon/dist/runtime/components/css.d.ts
+@@ -25,3 +25,4 @@ export declare const NuxtIconCss: import("vue").DefineComponent<import("vue").Ex
+ }>> & Readonly<{}>, {
+     customize: boolean | IconifyIconCustomizeCallback | null;
+ }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/components/css.js b/node_modules/@nuxt/icon/dist/runtime/components/css.js
+index 5e382ce..876fb0c 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/components/css.js
++++ b/node_modules/@nuxt/icon/dist/runtime/components/css.js
+@@ -165,3 +165,4 @@ export const NuxtIconCss = /* @__PURE__ */ defineComponent({
+     return () => h("span", { class: ["iconify", cssClass.value] });
+   }
+ });
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/components/index.d.ts b/node_modules/@nuxt/icon/dist/runtime/components/index.d.ts
+index a30d305..b0e727e 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/components/index.d.ts
++++ b/node_modules/@nuxt/icon/dist/runtime/components/index.d.ts
+@@ -48,3 +48,4 @@ declare const _default: import("vue").DefineComponent<import("vue").ExtractPropT
+     mode: "svg" | "css";
+ }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
+ export default _default;
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/components/index.js b/node_modules/@nuxt/icon/dist/runtime/components/index.js
+index 7387935..5b7dceb 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/components/index.js
++++ b/node_modules/@nuxt/icon/dist/runtime/components/index.js
+@@ -50,3 +50,4 @@ export default defineComponent({
+     );
+   }
+ });
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/components/shared.d.ts b/node_modules/@nuxt/icon/dist/runtime/components/shared.d.ts
+index e5906b4..e6f7206 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/components/shared.d.ts
++++ b/node_modules/@nuxt/icon/dist/runtime/components/shared.d.ts
+@@ -5,3 +5,4 @@ export type IconifyIconCustomizeCallback = (content: string, name?: string, pref
+ export declare function loadIcon(name: string, timeout: number): Promise<Required<IconifyIcon> | null | undefined>;
+ export declare function useResolvedName(getName: () => string): import("vue").ComputedRef<string>;
+ export declare function resolveCustomizeFn(customize: IconifyIconCustomizeCallback | boolean | null | undefined, globalCustomize: IconifyIconCustomizeCallback | undefined): IconifyIconCustomizeCallback | undefined;
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/components/shared.js b/node_modules/@nuxt/icon/dist/runtime/components/shared.js
+index f756ff6..3bcf4c8 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/components/shared.js
++++ b/node_modules/@nuxt/icon/dist/runtime/components/shared.js
+@@ -48,3 +48,4 @@ export function resolveCustomizeFn(customize, globalCustomize) {
+   if (customize === true || customize === null) return globalCustomize;
+   return customize;
+ }
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/components/svg.d.ts b/node_modules/@nuxt/icon/dist/runtime/components/svg.d.ts
+index 5c06cdc..fdf4d44 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/components/svg.d.ts
++++ b/node_modules/@nuxt/icon/dist/runtime/components/svg.d.ts
+@@ -25,3 +25,4 @@ export declare const NuxtIconSvg: import("vue").DefineComponent<import("vue").Ex
+ }>> & Readonly<{}>, {
+     customize: boolean | IconifyIconCustomizeCallback | null;
+ }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/components/svg.js b/node_modules/@nuxt/icon/dist/runtime/components/svg.js
+index b581441..dafecb7 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/components/svg.js
++++ b/node_modules/@nuxt/icon/dist/runtime/components/svg.js
+@@ -47,3 +47,4 @@ export const NuxtIconSvg = /* @__PURE__ */ defineComponent({
+     }, slots);
+   }
+ });
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/plugin.d.ts b/node_modules/@nuxt/icon/dist/runtime/plugin.d.ts
+index 5298df7..0564f50 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/plugin.d.ts
++++ b/node_modules/@nuxt/icon/dist/runtime/plugin.d.ts
+@@ -1,2 +1,3 @@
+ declare const _default: any;
+ export default _default;
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/plugin.js b/node_modules/@nuxt/icon/dist/runtime/plugin.js
+index 1faaf1d..6eab2d6 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/plugin.js
++++ b/node_modules/@nuxt/icon/dist/runtime/plugin.js
+@@ -42,3 +42,4 @@ export default defineNuxtPlugin({
+   // For type portability
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ });
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/server/api.d.ts b/node_modules/@nuxt/icon/dist/runtime/server/api.d.ts
+index 5298df7..0564f50 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/server/api.d.ts
++++ b/node_modules/@nuxt/icon/dist/runtime/server/api.d.ts
+@@ -1,2 +1,3 @@
+ declare const _default: any;
+ export default _default;
++
+diff --git a/node_modules/@nuxt/icon/dist/runtime/server/api.js b/node_modules/@nuxt/icon/dist/runtime/server/api.js
+index 042c65f..98d6578 100644
+--- a/node_modules/@nuxt/icon/dist/runtime/server/api.js
++++ b/node_modules/@nuxt/icon/dist/runtime/server/api.js
+@@ -64,3 +64,4 @@ export default defineCachedEventHandler(async (event) => {
+   maxAge: 60 * 60 * 24 * 7
+   // 1 week
+ });
++
