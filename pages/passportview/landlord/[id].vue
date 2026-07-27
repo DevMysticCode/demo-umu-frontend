@@ -909,6 +909,25 @@ async function saveDrawerForm() {
         headers: { Authorization: `Bearer ${token}` },
         body: { value: drawerExpiryDraft.value },
       })
+
+      // Mirror the renewal date onto the Calendar tab — the drawer promises
+      // "we'll remind you before this date" but nothing ever created the
+      // reminder. sourceRef keys it to this section so re-saving a later
+      // date moves the same entry instead of leaving a stale duplicate.
+      const addr = passport.value?.addressLine1
+      await $fetch(`${config.public.apiBase}/calendar`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: {
+          title: `${drawerSection.value?.title ?? 'Compliance'} renewal due${addr ? ` — ${addr}` : ''}`,
+          date: drawerExpiryDraft.value,
+          type: 'compliance-renewal',
+          notes: 'Auto-added from your Landlord Passport compliance section.',
+          sourceRef: `landlord-compliance:${drawerSection.value?.id}`,
+        },
+      }).catch(() => {
+        /* non-critical — certificate is already saved either way */
+      })
     }
 
     pendingFile.value = null
