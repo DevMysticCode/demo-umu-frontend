@@ -55,12 +55,14 @@
 
           <!-- HomeScore body -->
           <div v-if="card.id === 'HomeScore'" class="dc-content">
-            <div class="dc-headline-row">
-              <div class="dc-headline">Discover what your<br />home is really telling you.</div>
-              <img src="/op-icons/homescore/house.png" alt="" class="dc-headline-icon" />
-            </div>
-            <div class="dc-sub">
-              Bills vs. neighbours. Value vs. similar homes. Savings, efficiency and hidden insights.
+            <div class="dc-header-block">
+              <div class="dc-text-col">
+                <div class="dc-headline">Discover what your<br />home is really telling you.</div>
+                <div class="dc-sub">
+                  Bills vs. neighbours. Value vs. similar homes. Savings, efficiency and hidden insights.
+                </div>
+              </div>
+              <img src="/op-icons/landing/homeScoreCard.png" alt="" class="dc-card-hero-img" />
             </div>
             <div class="dc-hs-row">
               <div class="dc-hs-gauge">
@@ -81,12 +83,14 @@
 
           <!-- Property Passport body -->
           <div v-if="card.id === 'passport'" class="dc-content">
-            <div class="dc-headline-row">
-              <div class="dc-headline">Everything your buyer<br />will ask for. Before they ask.</div>
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="dc-headline-icon" />
-            </div>
-            <div class="dc-sub">
-              Store, verify and securely share everything from deeds and planning to guarantees and surveys.
+            <div class="dc-header-block">
+              <div class="dc-text-col">
+                <div class="dc-headline">Everything your buyer<br />will ask for. Before they ask.</div>
+                <div class="dc-sub">
+                  Store, verify and securely share everything from deeds and planning to guarantees and surveys.
+                </div>
+              </div>
+              <img src="/op-icons/landing/propertyPassportCard.png" alt="" class="dc-card-hero-img" />
             </div>
             <div class="dc-pp-row">
               <div class="dc-pp-book-wrap">
@@ -112,12 +116,14 @@
 
           <!-- Aisha body -->
           <div v-if="card.id === 'aisha'" class="dc-content">
-            <div class="dc-headline-row">
-              <div class="dc-headline">Aisha sold<br />in 14 days.</div>
-              <img src="/op-icons/investment/key.png" alt="" class="dc-headline-icon" />
-            </div>
-            <div class="dc-sub">
-              A two-bed semi in Coventry. No surveys lost. No fall-throughs. Sold March 2026.
+            <div class="dc-header-block">
+              <div class="dc-text-col">
+                <div class="dc-headline">Aisha sold<br />in 14 days.</div>
+                <div class="dc-sub">
+                  A two-bed semi in Coventry. No surveys lost. No fall-throughs. Sold March 2026.
+                </div>
+              </div>
+              <img src="/op-icons/landing/realStoryCard.png" alt="" class="dc-card-hero-img" />
             </div>
             <div class="dc-ai-row">
               <div class="dc-ai-num">14<span class="unit">days</span></div>
@@ -129,12 +135,14 @@
 
           <!-- Market body -->
           <div v-if="card.id === 'market'" class="dc-content">
-            <div class="dc-headline-row">
-              <div class="dc-headline">UK home sales<br />are broken.</div>
-              <img src="/op-icons/investment/growthChart.png" alt="" class="dc-headline-icon" />
-            </div>
-            <div class="dc-sub">
-              A third collapse before completion. The average that does complete takes nearly six months.
+            <div class="dc-header-block">
+              <div class="dc-text-col">
+                <div class="dc-headline">UK home sales<br />are broken.</div>
+                <div class="dc-sub">
+                  A third collapse before completion. The average that does complete takes nearly six months.
+                </div>
+              </div>
+              <img src="/op-icons/landing/marketTodayCard.png" alt="" class="dc-card-hero-img" />
             </div>
             <div class="dc-mk-row">
               <div class="dc-mk-cell">
@@ -1007,12 +1015,13 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 
 .dc-content { flex: 1; display: flex; flex-direction: column; }
-.dc-headline-row {
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+.dc-header-block {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
 }
-.dc-headline-icon {
-  width: 56px; height: 56px; object-fit: contain; flex-shrink: 0;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18));
+.dc-text-col { flex: 1 1 auto; min-width: 0; }
+.dc-card-hero-img {
+  width: 128px; max-height: 118px; object-fit: contain; flex-shrink: 0;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.28));
 }
 .dc-headline {
   font-size: 26px; font-weight: 800; color: #fff;
