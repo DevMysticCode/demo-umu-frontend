@@ -55,9 +55,9 @@
 
           <!-- HomeScore body -->
           <div v-if="card.id === 'HomeScore'" class="dc-content">
-            <div class="dc-headline">How does your<br />home compare?</div>
+            <div class="dc-headline">Discover what your<br />home is really telling you.</div>
             <div class="dc-sub">
-              Bills vs. street. Value vs. neighbours. Where you could save. In 60 seconds.
+              Bills vs. neighbours. Value vs. similar homes. Savings, efficiency and hidden insights.
             </div>
             <div class="dc-hs-row">
               <div class="dc-hs-gauge">
@@ -71,16 +71,16 @@
                 </div>
               </div>
               <div class="dc-hs-meta">
-                Sample · bills <strong>22% above</strong> the street. EPC <strong>C</strong>. Up to <strong>£330/yr</strong> savings available.
+                Sample · bills <strong>22% above</strong> similar homes. Up to <strong>£330/yr</strong> savings available.
               </div>
             </div>
           </div>
 
           <!-- Property Passport body -->
           <div v-if="card.id === 'passport'" class="dc-content">
-            <div class="dc-headline">Find out now.<br />Not three weeks in.</div>
+            <div class="dc-headline">Everything your buyer<br />will ask for. Before they ask.</div>
             <div class="dc-sub">
-              Everything a buyer's solicitor needs — and will ask for. You stay in control.
+              Store, verify and securely share everything from deeds and planning to guarantees and surveys.
             </div>
             <div class="dc-pp-row">
               <div class="dc-pp-book-wrap">
@@ -1117,12 +1117,12 @@ const currentSample = computed(() => samples[sampleType.value])
 .deck-dot.active { width: 22px; border-radius: 100px; background: #00a19a; }
 
 .cta-section { padding: 22px 22px 24px; }
-.cta-cards { display: flex; flex-direction: column; gap: 10px; }
+.cta-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .cta-card {
-  display: flex; align-items: center; gap: 12px;
-  width: 100%; text-align: left; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: 100%; text-align: center; font-family: inherit;
   background: #f7f7fa; border: 1px solid #ececef; border-radius: 16px;
-  padding: 12px 16px; cursor: pointer;
+  padding: 16px 12px; cursor: pointer;
 }
 .cta-card.primary {
   background: linear-gradient(135deg, #e2f7f5, #f0fbfa);
