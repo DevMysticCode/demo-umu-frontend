@@ -4,7 +4,7 @@
       <div class="hero-row1">
         <div>
           <div class="explore-greeting-sub">{{ greeting }}</div>
-          <div class="explore-title">Explore</div>
+          <div class="explore-title">Explore property passports</div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px">
           <!-- The New / Returning toggle was removed. The "New" view is now
@@ -2061,6 +2061,7 @@ function applyDraft() {
   committedPassport.value = draft.value.passport
   showFilters.value = false
   if (searchMode.value && searchQuery.value.trim()) doSearch()
+  else refreshForYou()
 }
 
 function removeCommittedFilter(key: string) {
@@ -2074,6 +2075,7 @@ function removeCommittedFilter(key: string) {
   else if (key === 'hs') committedHs.value = 0
   else if (key === 'passport') committedPassport.value = false
   if (searchMode.value && searchQuery.value.trim()) doSearch()
+  else refreshForYou()
 }
 function clearAllFilters() {
   activeRadius.value = null
@@ -2083,6 +2085,7 @@ function clearAllFilters() {
   committedHs.value = 0
   committedPassport.value = false
   if (searchMode.value && searchQuery.value.trim()) doSearch()
+  else refreshForYou()
 }
 
 // Legacy refs kept as no-op shims so any remaining script references
@@ -2387,6 +2390,48 @@ function openGasSafetySheet() {
 }
 
 const displayProperties = computed(() => properties.value.slice(0, 6))
+
+// Re-fetches the "For You" feed with the committed filters applied.
+// applyDraft() previously only re-ran a search when the user had typed
+// a free-text query (searchMode) — opening the filter sheet from the
+// base Explore feed and tapping Apply did nothing visible, because
+// nothing re-fetched the For You list with the new filter values.
+function buildForYouUrl(): string {
+  const params = new URLSearchParams()
+  if (
+    committedPtype.value.length &&
+    !(committedPtype.value.length === 1 && committedPtype.value[0] === 'any')
+  ) {
+    params.set('propertyType', committedPtype.value.join(','))
+  }
+  if (committedBeds.value != null) {
+    params.set('minBedrooms', String(committedBeds.value))
+  }
+  if (committedEpc.value != null) {
+    params.set('minEpc', committedEpc.value)
+  }
+  if (committedHs.value > 0) {
+    params.set('minHomeScore', String(committedHs.value))
+  }
+  if (committedPassport.value) {
+    params.set('passportOnly', '1')
+  }
+  const qs = params.toString()
+  return `${config.public.apiBase}/property/for-you${qs ? `?${qs}` : ''}`
+}
+async function refreshForYou() {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  try {
+    const res = await $fetch<{ items: any[]; needsPostcode?: boolean }>(buildForYouUrl(), {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    properties.value = res?.items ?? []
+    needsPostcode.value = res?.needsPostcode === true
+  } catch {
+    /* keep whatever was already showing rather than blank the feed */
+  }
+}
 
 const verifiedPassportDisplay = computed(() =>
   verifiedPassportProperties.value.slice(0, 6),
@@ -3562,7 +3607,7 @@ onMounted(async () => {
 }
 
 .explore-title {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.02em;

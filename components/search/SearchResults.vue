@@ -155,13 +155,21 @@
 
             <!-- Features Row -->
             <div class="flex items-center flex-wrap gap-2 mb-3">
-              <!-- Passport Available badge -->
+              <!-- Passport status badge — reflects the real state (no
+                   passport / claimed but unpublished / published) rather
+                   than a single generic "Passport" pill shown on every
+                   result regardless of status. -->
               <span
-                v-if="result.hasPassport"
-                class="flex items-center gap-1 bg-brand-aqua text-white px-2 py-1 rounded text-xs font-semibold"
+                :class="[
+                  'flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold',
+                  passportBadge(result).classes,
+                ]"
               >
-                <Icon name="i-heroicons-check-circle" class="w-3.5 h-3.5" />
-                Passport
+                <Icon
+                  :name="result.hasPassport ? 'i-heroicons-check-circle' : 'i-heroicons-minus-circle'"
+                  class="w-3.5 h-3.5"
+                />
+                {{ passportBadge(result).label }}
               </span>
 
               <!-- Bedroom -->
@@ -274,6 +282,7 @@ interface PropertyResult {
   price?: number
   priceDisplay: string
   hasPassport?: boolean
+  passportPublished?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
   type: string
@@ -300,6 +309,20 @@ const filteredResults = computed(() =>
     ? props.results.filter(r => r.hasPassport)
     : props.results,
 )
+
+// Every card showing the same generic "Passport" pill regardless of
+// actual status made a broad search (e.g. a whole town) look like every
+// property was fully verified, when most are really just claimed/in
+// progress or have no passport at all. Surface the real state instead.
+function passportBadge(result: PropertyResult) {
+  if (!result.hasPassport) {
+    return { label: 'No passport', classes: 'bg-gray-100 text-gray-500' }
+  }
+  if (result.passportPublished) {
+    return { label: 'Passport published', classes: 'bg-brand-aqua text-white' }
+  }
+  return { label: 'Passport in progress', classes: 'bg-amber-100 text-amber-700' }
+}
 
 const viewProperty = (id: string) => {
   router.push(`/property/${id}`)

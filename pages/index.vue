@@ -163,16 +163,21 @@
       </div>
 
       <div class="cta-section">
-        <button class="btn-primary" type="button" @click="navigateTo('/onboarding/signup')">
-          Get started
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12" />
-            <polyline points="12 5 19 12 12 19" />
-          </svg>
-        </button>
-        <div class="cta-signin">
-          Already have an account?
-          <a @click="navigateTo('/onboarding/signin')">Sign in</a>
+        <div class="cta-cards">
+          <button type="button" class="cta-card" @click="navigateTo('/onboarding/signin')">
+            <img src="/op-icons/landing/signIn.png" alt="" class="cta-card-icon" />
+            <span class="cta-card-text">
+              <span class="cta-card-q">Already have an account?</span>
+              <span class="cta-card-link">Sign in</span>
+            </span>
+          </button>
+          <button type="button" class="cta-card primary" @click="navigateTo('/onboarding/signup')">
+            <img src="/op-icons/landing/createAccount.png" alt="" class="cta-card-icon" />
+            <span class="cta-card-text">
+              <span class="cta-card-q">Ready to save your progress?</span>
+              <span class="cta-card-link">Create your free account</span>
+            </span>
+          </button>
         </div>
       </div>
     </div>
@@ -1112,18 +1117,22 @@ const currentSample = computed(() => samples[sampleType.value])
 .deck-dot.active { width: 22px; border-radius: 100px; background: #00a19a; }
 
 .cta-section { padding: 22px 22px 24px; }
-.btn-primary {
-  width: 100%; background: #00a19a; color: #fff;
-  border: none; font-family: inherit;
-  font-size: 15px; font-weight: 800;
-  padding: 16px 18px; border-radius: 14px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  letter-spacing: -0.2px;
-  box-shadow: 0 8px 22px rgba(0, 161, 154, 0.32);
+.cta-cards { display: flex; flex-direction: column; gap: 10px; }
+.cta-card {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; text-align: left; font-family: inherit;
+  background: #f7f7fa; border: 1px solid #ececef; border-radius: 16px;
+  padding: 12px 16px; cursor: pointer;
 }
-.btn-primary svg { width: 14px; height: 14px; }
-.cta-signin { margin-top: 14px; font-size: 14px; font-weight: 600; color: #6b6783; text-align: center; }
-.cta-signin a { color: #00a19a; font-weight: 800; cursor: pointer; }
+.cta-card.primary {
+  background: linear-gradient(135deg, #e2f7f5, #f0fbfa);
+  border-color: rgba(0, 161, 154, 0.25);
+  box-shadow: 0 6px 18px rgba(0, 161, 154, 0.14);
+}
+.cta-card-icon { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
+.cta-card-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cta-card-q { font-size: 12.5px; color: #6b6783; font-weight: 600; }
+.cta-card-link { font-size: 15.5px; color: #231d45; font-weight: 800; letter-spacing: -0.2px; }
 
 /* Sub-screen back bar */
 .back-bar {
