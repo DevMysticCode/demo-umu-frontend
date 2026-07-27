@@ -20,16 +20,18 @@
           Know your home<br /><span class="lt-teal">inside out.</span>
         </div>
         <div class="hero-sub">
-          Tap any card to bring it to the front.
-          <button type="button" class="hero-tour-btn" @click="landingTour.restart()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-            Take the tour
-          </button>
+          Start with a free HomeScore in under 60 seconds.
+          No account needed. Claim your home later to
+          save your progress and build your Property Passport.
         </div>
+        <button type="button" class="hero-tour-link" @click="landingTour.restart()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          Take the Tour
+        </button>
       </div>
 
       <!-- The deck -->
@@ -56,13 +58,11 @@
           <!-- HomeScore body -->
           <div v-if="card.id === 'HomeScore'" class="dc-content">
             <div class="dc-header-block">
-              <div class="dc-text-col">
-                <div class="dc-headline">Discover what your<br />home is really telling you.</div>
-                <div class="dc-sub">
-                  Bills vs. neighbours. Value vs. similar homes. Savings, efficiency and hidden insights.
-                </div>
-              </div>
+              <div class="dc-headline">Discover what your<br />home is really telling you.</div>
               <img src="/op-icons/landing/homeScoreCard.png" alt="" class="dc-card-hero-img" />
+            </div>
+            <div class="dc-sub">
+              Bills vs. neighbours. Value vs. similar homes. Savings, efficiency and hidden insights.
             </div>
             <div class="dc-hs-row">
               <div class="dc-hs-gauge">
@@ -76,7 +76,7 @@
                 </div>
               </div>
               <div class="dc-hs-meta">
-                Sample · bills <strong>22% above</strong> similar homes. Up to <strong>£330/yr</strong> savings available.
+                Sample · bills <strong>22% above</strong> similar homes. Up to <strong>£330/year</strong> savings.
               </div>
             </div>
           </div>
@@ -84,46 +84,22 @@
           <!-- Property Passport body -->
           <div v-if="card.id === 'passport'" class="dc-content">
             <div class="dc-header-block">
-              <div class="dc-text-col">
-                <div class="dc-headline">Everything your buyer<br />will ask for. Before they ask.</div>
-                <div class="dc-sub">
-                  Store, verify and securely share everything from deeds and planning to guarantees and surveys.
-                </div>
-              </div>
+              <div class="dc-headline">Everything your buyer<br />will ask for. Before they ask.</div>
               <img src="/op-icons/landing/propertyPassportCard.png" alt="" class="dc-card-hero-img" />
             </div>
-            <div class="dc-pp-row">
-              <div class="dc-pp-book-wrap">
-                <img
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt="Property Passport"
-                  class="dc-pp-book-img"
-                />
-                <div class="dc-pp-book-addr">
-                  <div class="dc-pp-book-addr-1">55, Woodfield Rd</div>
-                  <div class="dc-pp-book-addr-2">CV5 6AJ</div>
-                </div>
-              </div>
-              <div class="dc-pp-cats">
-                <div class="dc-pp-cat">Deeds</div>
-                <div class="dc-pp-cat">Planning</div>
-                <div class="dc-pp-cat">Surveys</div>
-                <div class="dc-pp-cat">Fittings</div>
-                <div class="dc-pp-cat more">+13 more</div>
-              </div>
+            <div class="dc-sub">
+              Store, verify and securely share everything from deeds and planning to guarantees and surveys.
             </div>
           </div>
 
           <!-- Aisha body -->
           <div v-if="card.id === 'aisha'" class="dc-content">
             <div class="dc-header-block">
-              <div class="dc-text-col">
-                <div class="dc-headline">Aisha sold<br />in 14 days.</div>
-                <div class="dc-sub">
-                  A two-bed semi in Coventry. No surveys lost. No fall-throughs. Sold March 2026.
-                </div>
-              </div>
+              <div class="dc-headline">Aisha sold<br />in 14 days.</div>
               <img src="/op-icons/landing/realStoryCard.png" alt="" class="dc-card-hero-img" />
+            </div>
+            <div class="dc-sub">
+              A two-bed semi in Coventry. No surveys lost. No fall-throughs. Sold March 2026.
             </div>
             <div class="dc-ai-row">
               <div class="dc-ai-num">14<span class="unit">days</span></div>
@@ -136,13 +112,11 @@
           <!-- Market body -->
           <div v-if="card.id === 'market'" class="dc-content">
             <div class="dc-header-block">
-              <div class="dc-text-col">
-                <div class="dc-headline">UK home sales<br />are broken.</div>
-                <div class="dc-sub">
-                  A third collapse before completion. The average that does complete takes nearly six months.
-                </div>
-              </div>
+              <div class="dc-headline">UK home sales<br />are broken.</div>
               <img src="/op-icons/landing/marketTodayCard.png" alt="" class="dc-card-hero-img" />
+            </div>
+            <div class="dc-sub">
+              A third collapse before completion. The average that does complete takes nearly six months.
             </div>
             <div class="dc-mk-row">
               <div class="dc-mk-cell">
@@ -923,18 +897,16 @@ const currentSample = computed(() => samples[sampleType.value])
   line-height: 1.02; margin-bottom: 8px;
 }
 .hero-title .lt-teal { color: #00a19a; }
-.hero-sub { font-size: 15px; font-weight: 500; color: #6b6783; line-height: 1.5; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-.hero-tour-btn {
+.hero-sub { font-size: 14.5px; font-weight: 500; color: #6b6783; line-height: 1.5; }
+.hero-tour-link {
   display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(0, 161, 154, 0.1); color: #007e78;
-  border: 1px solid rgba(0, 161, 154, 0.35);
-  font-family: inherit; font-size: 12px; font-weight: 700;
+  background: none; border: none; color: #00a19a;
+  font-family: inherit; font-size: 14px; font-weight: 700;
   letter-spacing: -0.1px;
-  padding: 5px 11px 5px 9px; border-radius: 999px;
-  cursor: pointer; transition: all 0.18s;
+  padding: 10px 0 0; cursor: pointer;
 }
-.hero-tour-btn:hover { background: rgba(0, 161, 154, 0.18); }
-.hero-tour-btn svg { width: 13px; height: 13px; }
+.hero-tour-link:hover { color: #007e78; }
+.hero-tour-link svg { width: 15px; height: 15px; }
 
 /* Deck */
 .deck-wrap { margin: 22px 22px 0; position: relative; height: 468px; }
@@ -954,8 +926,16 @@ const currentSample = computed(() => samples[sampleType.value])
     0 4px 8px rgba(0, 0, 0, 0.06),
     inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
-.deck-card.HomeScore { background: #00a19a; }
-.deck-card.passport { background: #231d45; }
+.deck-card.HomeScore {
+  background:
+    radial-gradient(circle at 88% 24%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #00aaa4 0%, #00968f 100%);
+}
+.deck-card.passport {
+  background:
+    radial-gradient(circle at 82% 24%, rgba(124, 104, 186, 0.35), transparent 34%),
+    linear-gradient(135deg, #211b44 0%, #1a1536 100%);
+}
 .deck-card.aisha { background: #c18a38; }
 .deck-card.market { background: #1a1535; }
 .deck-card[data-pos="1"] { top: 0; transform: scale(1); z-index: 4; }
@@ -998,116 +978,100 @@ const currentSample = computed(() => samples[sampleType.value])
   opacity: 1; transition: opacity 0.4s 0.2s;
 }
 
-.dc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.dc-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 10px;
+  position: relative; z-index: 2;
+}
 .dc-eyebrow {
   font-size: 11px; font-weight: 800;
-  letter-spacing: 1.6px; text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 2.2px; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
   display: inline-flex; align-items: center; gap: 7px;
 }
-.dc-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.85); }
+.dc-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: #bdf4f0; }
 .dc-pill {
   font-size: 11px; font-weight: 800;
-  background: rgba(255, 255, 255, 0.18); color: #fff;
-  padding: 4px 10px; border-radius: 100px;
+  background: rgba(255, 255, 255, 0.16); color: #fff;
+  padding: 6px 12px; border-radius: 100px;
   letter-spacing: 0.6px; text-transform: uppercase;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 0;
+  white-space: nowrap;
 }
 
-.dc-content { flex: 1; display: flex; flex-direction: column; }
-.dc-header-block {
-  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+.dc-content {
+  flex: 1;
+  display: flex; flex-direction: column;
+  position: relative; z-index: 2;
 }
-.dc-text-col { flex: 1 1 auto; min-width: 0; }
+.dc-header-block {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  position: relative;
+}
 .dc-card-hero-img {
-  width: 128px; max-height: 118px; object-fit: contain; flex-shrink: 0;
-  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.28));
+  width: 108px; max-height: 100px; object-fit: contain; flex-shrink: 0;
+  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.22));
 }
 .dc-headline {
-  font-size: 26px; font-weight: 800; color: #fff;
-  letter-spacing: -0.8px; line-height: 1.05; margin-bottom: 8px;
+  flex: 1 1 auto; min-width: 0;
+  font-size: 24px; font-weight: 800; color: #fff;
+  letter-spacing: -0.5px; line-height: 1.12;
 }
-.dc-sub { font-size: 15px; font-weight: 500; color: rgba(255, 255, 255, 0.78); line-height: 1.5; }
+.dc-sub {
+  margin-top: 10px;
+  font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.78); line-height: 1.5;
+}
 
-.dc-hs-row { display: flex; align-items: center; gap: 16px; margin-top: 18px; }
-.dc-hs-gauge { width: 88px; height: 88px; position: relative; flex-shrink: 0; }
+.deck-card.HomeScore .dc-headline,
+.deck-card.passport .dc-headline {
+  font-size: 22px;
+  line-height: 1.08;
+  max-width: 64%;
+}
+.deck-card.HomeScore .dc-card-hero-img {
+  position: absolute;
+  right: -4px;
+  top: 10px;
+  width: 38%;
+  max-height: 122px;
+}
+.deck-card.passport .dc-card-hero-img {
+  position: absolute;
+  right: -4px;
+  top: 2px;
+  width: 37%;
+  max-height: 118px;
+}
+.deck-card.HomeScore .dc-sub,
+.deck-card.passport .dc-sub {
+  margin-top: 8px;
+  max-width: 60%;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.32;
+}
+
+.dc-hs-row { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+.dc-hs-gauge { width: 60px; height: 60px; position: relative; flex-shrink: 0; }
 .dc-hs-gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.dc-hs-gauge .g-bg { stroke: rgba(255, 255, 255, 0.18); }
+.dc-hs-gauge .g-bg { stroke: rgba(255, 255, 255, 0.2); }
 .dc-hs-gauge .g-fill { stroke: #fff; stroke-linecap: round; }
 .g-num {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-.gn-big { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -1px; line-height: 1; }
+.gn-big { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -1px; line-height: 1; }
 .gn-small {
-  font-size: 8.5px; font-weight: 800; color: rgba(255, 255, 255, 0.65);
-  letter-spacing: 1.2px; text-transform: uppercase; margin-top: 2px;
+  font-size: 7.5px; font-weight: 800; color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
 }
-.dc-hs-meta { flex: 1; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.78); line-height: 1.5; }
+.dc-hs-meta {
+  flex: 1;
+  max-width: 190px;
+  font-size: 12.5px; font-weight: 600; color: rgba(255, 255, 255, 0.88); line-height: 1.42;
+}
 .dc-hs-meta strong { color: #fff; font-weight: 800; }
-
-.dc-pp-row { display: flex; gap: 14px; margin-top: 16px; align-items: center; }
-.dc-pp-book-wrap {
-  width: 70px;
-  flex-shrink: 0;
-  position: relative;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.32));
-}
-.dc-pp-book-img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.dc-pp-book-addr {
-  position: absolute;
-  bottom: 13%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 78%;
-  text-align: center;
-  color: #fff;
-  line-height: 1.15;
-  pointer-events: none;
-}
-.dc-pp-book-addr-1 {
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: -0.1px;
-  white-space: nowrap;
-}
-.dc-pp-book-addr-2 {
-  font-size: 6px;
-  font-weight: 700;
-  opacity: 0.9;
-  margin-top: 1px;
-  letter-spacing: 0.2px;
-}
-.dc-pp-book {
-  width: 56px; height: 80px;
-  background: #00a19a; border-radius: 6px 3px 3px 6px;
-  flex-shrink: 0; padding: 8px;
-  position: relative;
-  display: flex; flex-direction: column; align-items: center;
-}
-.dc-pp-book::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.2), transparent);
-  border-radius: 6px 0 0 6px;
-}
-.dc-pp-book-label {
-  font-size: 5px; font-weight: 800; color: #fff;
-  letter-spacing: 0.4px; text-transform: uppercase;
-  text-align: center; margin-top: 6px; line-height: 1.2;
-}
-.dc-pp-cats { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; align-content: flex-start; }
-.dc-pp-cat {
-  font-size: 12px; font-weight: 800;
-  background: rgba(255, 255, 255, 0.12); color: #fff;
-  padding: 5px 10px; border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-.dc-pp-cat.more { background: rgba(0, 161, 154, 0.32); border-color: rgba(0, 161, 154, 0.5); }
 
 .dc-ai-row { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
 .dc-ai-num { font-size: 56px; font-weight: 800; color: #fff; letter-spacing: -2px; line-height: 0.9; flex-shrink: 0; }
@@ -1125,7 +1089,10 @@ const currentSample = computed(() => samples[sampleType.value])
 .dc-mk-num .unit { font-size: 12px; color: rgba(255, 255, 255, 0.55); font-weight: 800; margin-left: 2px; }
 .dc-mk-label { font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.6); letter-spacing: 0.3px; text-transform: uppercase; line-height: 1.2; }
 
-.dc-foot { margin-top: auto; padding-top: 14px; }
+.dc-foot {
+  margin-top: auto; padding-top: 10px;
+  position: relative; z-index: 2;
+}
 .dc-cta {
   width: 100%;
   background: rgba(255, 255, 255, 0.18);
@@ -1139,6 +1106,44 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .dc-cta:hover { background: rgba(255, 255, 255, 0.26); }
 .dc-cta svg { width: 13px; height: 13px; }
+.deck-card.HomeScore .dc-cta,
+.deck-card.passport .dc-cta,
+.deck-card.aisha .dc-cta,
+.deck-card.market .dc-cta {
+  width: min(100%, 212px);
+  justify-content: space-between;
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 18px;
+  font-size: 15px;
+}
+.deck-card.HomeScore .dc-cta {
+  background: #fff;
+  color: #008f88;
+}
+.deck-card.HomeScore .dc-cta:hover { background: rgba(255, 255, 255, 0.92); }
+.deck-card.passport .dc-cta {
+  background: rgba(103, 83, 170, 0.62);
+  color: #fff;
+}
+.deck-card.passport .dc-cta:hover { background: rgba(113, 92, 184, 0.78); }
+.deck-card.aisha .dc-cta {
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+.deck-card.aisha .dc-cta:hover { background: rgba(0, 0, 0, 0.3); }
+.deck-card.market .dc-cta {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.deck-card.market .dc-cta:hover { background: rgba(255, 255, 255, 0.24); }
+.deck-card.HomeScore .dc-cta svg,
+.deck-card.passport .dc-cta svg,
+.deck-card.aisha .dc-cta svg,
+.deck-card.market .dc-cta svg {
+  width: 18px;
+  height: 18px;
+}
 
 .deck-dots { display: flex; justify-content: center; gap: 6px; margin: 18px 22px 0; }
 .deck-dot { width: 6px; height: 6px; border-radius: 50%; background: #ececef; transition: all 0.3s; cursor: pointer; }
