@@ -55,7 +55,10 @@
 
           <!-- HomeScore body -->
           <div v-if="card.id === 'HomeScore'" class="dc-content">
-            <div class="dc-headline">Discover what your<br />home is really telling you.</div>
+            <div class="dc-headline-row">
+              <div class="dc-headline">Discover what your<br />home is really telling you.</div>
+              <img src="/op-icons/homescore/house.png" alt="" class="dc-headline-icon" />
+            </div>
             <div class="dc-sub">
               Bills vs. neighbours. Value vs. similar homes. Savings, efficiency and hidden insights.
             </div>
@@ -78,7 +81,10 @@
 
           <!-- Property Passport body -->
           <div v-if="card.id === 'passport'" class="dc-content">
-            <div class="dc-headline">Everything your buyer<br />will ask for. Before they ask.</div>
+            <div class="dc-headline-row">
+              <div class="dc-headline">Everything your buyer<br />will ask for. Before they ask.</div>
+              <img src="/op-icons/passportview/umu-passport.png" alt="" class="dc-headline-icon" />
+            </div>
             <div class="dc-sub">
               Store, verify and securely share everything from deeds and planning to guarantees and surveys.
             </div>
@@ -106,7 +112,10 @@
 
           <!-- Aisha body -->
           <div v-if="card.id === 'aisha'" class="dc-content">
-            <div class="dc-headline">Aisha sold<br />in 14 days.</div>
+            <div class="dc-headline-row">
+              <div class="dc-headline">Aisha sold<br />in 14 days.</div>
+              <img src="/op-icons/investment/key.png" alt="" class="dc-headline-icon" />
+            </div>
             <div class="dc-sub">
               A two-bed semi in Coventry. No surveys lost. No fall-throughs. Sold March 2026.
             </div>
@@ -120,7 +129,10 @@
 
           <!-- Market body -->
           <div v-if="card.id === 'market'" class="dc-content">
-            <div class="dc-headline">UK home sales<br />are broken.</div>
+            <div class="dc-headline-row">
+              <div class="dc-headline">UK home sales<br />are broken.</div>
+              <img src="/op-icons/investment/growthChart.png" alt="" class="dc-headline-icon" />
+            </div>
             <div class="dc-sub">
               A third collapse before completion. The average that does complete takes nearly six months.
             </div>
@@ -665,7 +677,7 @@ const cards = [
   { id: 'HomeScore', peekLabel: 'HomeScore', peekPill: 'Free', cta: 'Check your home' },
   { id: 'passport', peekLabel: 'Property Passport', peekPill: 'Solicitor-grade', cta: 'See a sample' },
   { id: 'aisha', peekLabel: 'A real story', peekPill: '5 min read', cta: 'Read her story' },
-  { id: 'market', peekLabel: 'The market today', peekPill: 'Why we built it', cta: 'Read the case' },
+  { id: 'market', peekLabel: 'The market today', peekPill: 'Why it matters', cta: 'Read the case' },
 ]
 const stack = ref<string[]>(cards.map((c) => c.id))
 
@@ -995,6 +1007,13 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 
 .dc-content { flex: 1; display: flex; flex-direction: column; }
+.dc-headline-row {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.dc-headline-icon {
+  width: 56px; height: 56px; object-fit: contain; flex-shrink: 0;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18));
+}
 .dc-headline {
   font-size: 26px; font-weight: 800; color: #fff;
   letter-spacing: -0.8px; line-height: 1.05; margin-bottom: 8px;
