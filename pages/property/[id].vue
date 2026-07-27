@@ -5087,7 +5087,13 @@ const onHeroImageError = () => {
 
 const pageState = computed<'unclaimed' | 'progress' | 'published'>(() => {
   const s = passportStatus.value
-  if (s?.passportPublished || property.value?.passportPublished)
+  // GET /property/:id/passport-status returns `isPublished`, not
+  // `passportPublished` (that name only exists on /property/search and
+  // GET /property/:id). This mismatch meant a published passport's own
+  // status endpoint was silently ignored here — a logged-in user would
+  // fall through to 'progress' ("Preview what's being built") even
+  // though search correctly showed it as published.
+  if (s?.isPublished || property.value?.passportPublished)
     return 'published'
   if (s?.hasPassport || property.value?.hasPassport) return 'progress'
   return 'unclaimed'
