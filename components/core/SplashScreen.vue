@@ -111,11 +111,17 @@ onMounted(() => {
 }
 
 .splash-logo-wrap {
+  /* No entrance animation here on purpose: this exact mark, in this
+     exact spot, is already on screen from the native launch image
+     (resources/splash.png) before Vue ever mounts. Animating it in
+     would mean it visibly resets/re-appears — reads as "a second
+     splash screen", which is the whole thing we're trying to avoid.
+     Wordmark/powered-by/pulse below are content the native screen
+     never had, so THEIR fade-ins read as detail arriving, not a
+     screen change. */
   display: grid;
   place-items: center;
   margin-bottom: 12px;
-  opacity: 0;
-  animation: splashLogoIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
   position: relative;
   z-index: 2;
 }
@@ -185,13 +191,6 @@ onMounted(() => {
 .splash--hiding {
   animation: splashFadeOut 0.55s cubic-bezier(0.4, 0, 1, 1) forwards;
   pointer-events: none;
-}
-
-@keyframes splashLogoIn {
-  0%   { opacity: 0; transform: scale(0.6); }
-  40%  { opacity: 1; }
-  75%  { transform: scale(1.03); }
-  100% { opacity: 1; transform: scale(1); }
 }
 
 @keyframes splashWordmarkIn {
