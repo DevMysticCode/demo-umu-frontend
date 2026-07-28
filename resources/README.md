@@ -28,7 +28,12 @@ That writes every required size into `ios/App/App/Assets.xcassets/`.
   - iPhone notch / Dynamic Island (top centre, ~30 px)
   - Curved corners (all four corners on iPhone X+)
   - Landscape orientation (sides clipped)
-- **Background:** solid `#231d45` (matches `capacitor.config.ts → SplashScreen.backgroundColor` so the launch storyboard + Capacitor splash blend seamlessly)
+- **Background:** solid **white `#ffffff`**, logo in navy `#231d45` (matches `capacitor.config.ts →
+  SplashScreen.backgroundColor` and `components/core/SplashScreen.vue`, so the native launch
+  screen and the JS-driven splash overlay blend seamlessly — no colour flash between them). This
+  used to be navy with a white logo; if you ever see a navy/purple flash before the white splash
+  on a fresh install, it means this file (or the generated native assets) drifted from
+  `capacitor.config.ts` again — regenerate.
 
 ## Optional (recommended for Android adaptive icons later)
 
