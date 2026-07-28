@@ -57,8 +57,14 @@
           @click="bringToFront(card.id)"
         >
           <div class="dc-peek">
-            <span class="dc-peek-label">{{ card.peekLabel }}</span>
-            <span class="dc-peek-pill">{{ card.peekPill }}</span>
+            <div class="dc-peek-row">
+              <span class="dc-peek-label">{{ card.peekLabel }}</span>
+              <span class="dc-peek-pill">{{ card.peekPill }}</span>
+              <svg class="dc-peek-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+            <div class="dc-peek-sub">{{ card.peekSub }}</div>
           </div>
 
           <div class="dc-top">
@@ -72,7 +78,7 @@
           <div v-if="card.id === 'HomeScore'" class="dc-content">
             <div class="dc-header-block">
               <div class="dc-headline">
-                Discover what your<br />home is really telling you.
+                Could your home be costing you<br />more than it should?
               </div>
               <img
                 src="/op-icons/landing/homeScoreCard.png"
@@ -81,8 +87,8 @@
               />
             </div>
             <div class="dc-sub">
-              Bills vs. neighbours. Value vs. similar homes. Savings, efficiency
-              and hidden insights.
+              Discover hidden savings, compare with similar homes and see what
+              your property is really telling you.
             </div>
             <div class="dc-hs-row">
               <div class="dc-hs-gauge">
@@ -111,9 +117,31 @@
                   <div class="gn-small">/ 100</div>
                 </div>
               </div>
-              <div class="dc-hs-meta">
-                Sample · bills <strong>22% above</strong> similar homes. Up to
-                <strong>£330/year</strong> savings.
+              <div class="dc-hs-meta-list">
+                <div class="dc-hs-meta-item">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 1.5h6l2.5 2.5v10.5h-8.5a.5.5 0 0 1-.5-.5v-12a.5.5 0 0 1 .5-.5z" />
+                    <path d="M10 1.5V4a.5.5 0 0 0 .5.5H13" />
+                    <line x1="5" y1="8" x2="11" y2="8" />
+                    <line x1="5" y1="10.5" x2="11" y2="10.5" />
+                  </svg>
+                  <span>Bills <strong>22% above</strong> similar homes</span>
+                </div>
+                <div class="dc-hs-meta-item">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1.5 8 8 2l6.5 6" />
+                    <path d="M3.5 6.5V14h9V6.5" />
+                    <path d="M6.5 14v-4h3v4" />
+                  </svg>
+                  <span>Potential savings up to <strong>£330/year</strong></span>
+                </div>
+                <div class="dc-hs-meta-item">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 14.5S2.5 11.8 2.5 6.8C2.5 3.9 4.8 2 7.3 2.6c.5.12.9.4 1.2.8 3.4-1.2 6 1.1 6 4 0 4.5-6.5 7.1-6.5 7.1z" />
+                    <path d="M8 14.5V7" />
+                  </svg>
+                  <span>Lower your bills and carbon footprint</span>
+                </div>
               </div>
             </div>
           </div>
@@ -888,24 +916,28 @@ const cards = [
   {
     id: 'HomeScore',
     peekLabel: 'HomeScore',
+    peekSub: 'Could your home be costing you more than it should?',
     peekPill: 'Free',
     cta: 'Check your home',
   },
   {
     id: 'passport',
     peekLabel: 'Property Passport',
+    peekSub: "Build your home's verified digital record.",
     peekPill: 'Solicitor-grade',
     cta: 'See a sample',
   },
   {
     id: 'aisha',
     peekLabel: 'A real story',
+    peekSub: 'See how UMU is helping homeowners.',
     peekPill: '5 min read',
     cta: 'Read her story',
   },
   {
     id: 'market',
-    peekLabel: 'Why moves fail',
+    peekLabel: 'The market today',
+    peekSub: 'Live property market insights.',
     peekPill: 'Why it matters',
     cta: 'Read the case',
   },
@@ -1276,7 +1308,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .deck-wrap {
   margin: 22px 22px 0;
   position: relative;
-  height: 468px;
+  height: 546px;
 }
 .deck-card {
   position: absolute;
@@ -1324,17 +1356,17 @@ const currentSample = computed(() => samples[sampleType.value])
   z-index: 4;
 }
 .deck-card[data-pos='2'] {
-  top: 36px;
+  top: 62px;
   transform: scale(0.985);
   z-index: 3;
 }
 .deck-card[data-pos='3'] {
-  top: 72px;
+  top: 124px;
   transform: scale(0.97);
   z-index: 2;
 }
 .deck-card[data-pos='4'] {
-  top: 108px;
+  top: 186px;
   transform: scale(0.955);
   z-index: 1;
 }
@@ -1344,12 +1376,18 @@ const currentSample = computed(() => samples[sampleType.value])
   bottom: 0;
   left: 0;
   right: 0;
-  height: 36px;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 22px;
+  pointer-events: none;
+}
+.dc-peek-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 22px;
-  pointer-events: none;
+  gap: 8px;
 }
 .dc-peek-label {
   font-size: 12px;
@@ -1360,6 +1398,8 @@ const currentSample = computed(() => samples[sampleType.value])
   display: inline-flex;
   align-items: center;
   gap: 7px;
+  flex: 1;
+  min-width: 0;
 }
 .dc-peek-label::before {
   content: '';
@@ -1367,6 +1407,22 @@ const currentSample = computed(() => samples[sampleType.value])
   height: 5px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+}
+.dc-peek-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dc-peek-chev {
+  width: 14px;
+  height: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
 }
 .dc-peek-pill {
   font-size: 11px;
@@ -1378,6 +1434,7 @@ const currentSample = computed(() => samples[sampleType.value])
   letter-spacing: 0.5px;
   text-transform: uppercase;
   border: 1px solid rgba(255, 255, 255, 0.22);
+  flex-shrink: 0;
 }
 .deck-card[data-pos='1'] .dc-peek {
   opacity: 0;
@@ -1552,15 +1609,29 @@ const currentSample = computed(() => samples[sampleType.value])
   text-transform: uppercase;
   margin-top: 2px;
 }
-.dc-hs-meta {
+.dc-hs-meta-list {
   flex: 1;
-  max-width: 190px;
-  font-size: 12.5px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dc-hs-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.88);
-  line-height: 1.42;
+  line-height: 1.3;
 }
-.dc-hs-meta strong {
+.dc-hs-meta-item svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.85);
+}
+.dc-hs-meta-item strong {
   color: #fff;
   font-weight: 800;
 }
