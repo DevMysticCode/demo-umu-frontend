@@ -180,7 +180,7 @@
             <div class="buyer-details-grid">
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerPropertyType" class="w-[20px] h-[20px]" />
+                  <OPIcon name="buyerPropertyType" class="w-[30px] h-[30px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Property type</p>
@@ -191,7 +191,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerTitleNumber" class="w-[20px] h-[20px]" />
+                  <OPIcon name="buyerTitleNumber" class="w-[30px] h-[30px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Title number</p>
@@ -202,7 +202,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerAreaSqft" class="w-[20px] h-[20px]" />
+                  <OPIcon name="buyerAreaSqft" class="w-[30px] h-[30px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Area sqft</p>
@@ -217,7 +217,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerEpcRating" class="w-[20px] h-[20px]" />
+                  <OPIcon name="buyerEpcRating" class="w-[30px] h-[30px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">EPC Rating</p>
@@ -228,7 +228,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerTenure" class="w-[20px] h-[20px]" />
+                  <OPIcon name="buyerTenure" class="w-[30px] h-[30px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Tenure</p>
@@ -239,7 +239,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerYearBuilt" class="w-[20px] h-[20px]" />
+                  <OPIcon name="buyerYearBuilt" class="w-[30px] h-[30px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Year Built</p>
@@ -1759,8 +1759,8 @@ async function deleteNote(noteId: string) {
   align-items: flex-start;
 }
 .buyer-detail-icon-wrap {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 11px;
   background: #fff;
   border: 1px solid #e2f1ea;
