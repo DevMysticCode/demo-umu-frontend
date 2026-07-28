@@ -437,7 +437,8 @@ const sections = [
 
 /* ── Risk pill ──────────────────────────────────────────────── */
 .buyer-risk-pill {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
   align-items: center;
   gap: 5px;
   margin-top: 8px;

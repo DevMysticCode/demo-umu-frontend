@@ -138,7 +138,7 @@
 
           <!-- Anonymity card -->
           <div class="bdd-anon">
-            <img src="/op-icons/matched-buyers/lock-big.png" alt="" class="bdd-anon-ic" loading="lazy" />
+            <img src="/op-icons/onboarding/trustPadlock.png" alt="" class="bdd-anon-ic" loading="lazy" />
             <div class="bdd-anon-body">
               <div class="bdd-anon-title">Stays anonymous until you reach out.</div>
               <div class="bdd-anon-sub">
