@@ -180,17 +180,17 @@ function iconSlugForSection(key) {
 // the buyer/seller passport section icons. Any slug without an entry
 // here falls back to the old flat SVG set.
 const SECTION_ICON_URLS = {
-  'gas-safety': '/op-icons/homescore/flame.png',
-  'electrical-safety': '/op-icons/homescore/lightning.png',
-  'energy-performance': '/op-icons/investment/plantSprout.png',
-  'smoke-co-alarms': '/op-icons/rental-passport/freestanding/smoke-co-alarms-3d.png',
-  legionella: '/op-icons/misc/waterDroplet.png',
-  'landlord-insurance': '/op-icons/verify-identity/shield.png',
-  'deposit-protection': '/op-icons/investment/padlock.png',
-  'right-to-rent': '/op-icons/verify-identity/idCard.png',
+  'gas-safety': '/op-icons/landlordPassport/gasSafetyCertificate.png',
+  'electrical-safety': '/op-icons/landlordPassport/electricalSafety.png',
+  'energy-performance': '/op-icons/landlordPassport/epc.png',
+  'smoke-co-alarms': '/op-icons/landlordPassport/smokeCOAlarms.png',
+  legionella: '/op-icons/landlordPassport/legionellaRiskAssessment.png',
+  'landlord-insurance': '/op-icons/landlordPassport/landlordInsurance.png',
+  'deposit-protection': '/op-icons/landlordPassport/depositProtection.png',
+  'right-to-rent': '/op-icons/landlordPassport/rightToRent.png',
   'how-to-rent': '/op-icons/misc/book.png',
-  inventory: '/op-icons/investment/clipboardChecklist.png',
-  'tenancy-agreement': '/op-icons/misc/signature.png',
+  inventory: '/op-icons/landlordPassport/inventory.png',
+  'tenancy-agreement': '/op-icons/landlordPassport/tenancyAgreement.png',
 }
 function iconUrlForSection(key) {
   const slug = iconSlugForSection(key)
