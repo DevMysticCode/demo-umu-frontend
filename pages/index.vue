@@ -160,17 +160,11 @@
         <div class="cta-cards">
           <button type="button" class="cta-card" @click="navigateTo('/onboarding/signin')">
             <img src="/op-icons/landing/signIn.png" alt="" class="cta-card-icon" />
-            <span class="cta-card-text">
-              <span class="cta-card-q">Already have an account?</span>
-              <span class="cta-card-link">Sign in</span>
-            </span>
+            <span class="cta-card-link">Sign in</span>
           </button>
           <button type="button" class="cta-card primary" @click="navigateTo('/onboarding/signup')">
             <img src="/op-icons/landing/createAccount.png" alt="" class="cta-card-icon" />
-            <span class="cta-card-text">
-              <span class="cta-card-q">Ready to save your progress?</span>
-              <span class="cta-card-link">Create your free account</span>
-            </span>
+            <span class="cta-card-link">Create account</span>
           </button>
         </div>
       </div>
@@ -1149,23 +1143,21 @@ const currentSample = computed(() => samples[sampleType.value])
 .deck-dot { width: 6px; height: 6px; border-radius: 50%; background: #ececef; transition: all 0.3s; cursor: pointer; }
 .deck-dot.active { width: 22px; border-radius: 100px; background: #00a19a; }
 
-.cta-section { padding: 22px 22px 24px; }
+.cta-section { padding: 18px 22px 24px; }
 .cta-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .cta-card {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  width: 100%; text-align: center; font-family: inherit;
-  background: #f7f7fa; border: 1px solid #ececef; border-radius: 16px;
-  padding: 16px 12px; cursor: pointer;
+  display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; text-align: left; font-family: inherit;
+  background: #f7f7fa; border: 1px solid #ececef; border-radius: 12px;
+  padding: 11px 10px; cursor: pointer;
 }
 .cta-card.primary {
   background: linear-gradient(135deg, #e2f7f5, #f0fbfa);
   border-color: rgba(0, 161, 154, 0.25);
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.14);
 }
-.cta-card-icon { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
-.cta-card-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.cta-card-q { font-size: 12.5px; color: #6b6783; font-weight: 600; }
-.cta-card-link { font-size: 15.5px; color: #231d45; font-weight: 800; letter-spacing: -0.2px; }
+.cta-card-icon { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
+.cta-card-link { min-width: 0; font-size: 13.5px; color: #231d45; font-weight: 800; letter-spacing: -0.2px; white-space: nowrap; }
 
 /* Sub-screen back bar */
 .back-bar {

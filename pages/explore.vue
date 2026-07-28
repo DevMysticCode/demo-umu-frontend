@@ -82,18 +82,12 @@
           @mousedown.prevent="selectAddress(addr)"
         >
           <div class="addr-ic">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-            >
-              <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
+            <img
+              src="/op-icons/homescore/houseSearch.png"
+              alt=""
+              style="width: 100%; height: 100%; object-fit: contain"
+              loading="lazy"
+            />
           </div>
           <div class="addr-body">
             <div class="addr-line1">
@@ -3762,10 +3756,13 @@ onMounted(async () => {
 }
 
 .addr-ic {
+  width: 28px;
+  height: 28px;
   color: #00a19a;
   display: grid;
   place-items: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .addr-body {
