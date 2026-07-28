@@ -49,6 +49,22 @@ export default defineNuxtConfig({
   icon: {
     serverBundle: false,
   },
+  // `nuxt generate` (only used by the mobile:sync:*/mobile:build:bundled:*
+  // scripts — the web/Vercel deploy uses `nuxt build`/SSR, never this) hard
+  // crawls every discoverable route and hard-exits if any of them fail to
+  // prerender. A couple of pages (marketplace/earnings, buyer-profile/view)
+  // need a live user session to render and 404/500 when crawled anonymously
+  // at build time — irrelevant for the native shell, which either runs in
+  // remote mode (loads the live site, ignores this local output entirely)
+  // or bundled mode (real navigation happens client-side post-hydration
+  // with a real session, this static fallback HTML is never what's shown).
+  // Without this the whole native build pipeline is blocked by pages that
+  // were never meant to prerender standalone.
+  nitro: {
+    prerender: {
+      failOnError: false,
+    },
+  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {
