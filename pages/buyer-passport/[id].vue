@@ -614,7 +614,7 @@
               <div class="buyer-record-icon">
                 <OPIcon
                   :name="section.imageKey || 'fittingsContents'"
-                  class="w-[60px] h-[60px]"
+                  class="w-[80px] h-[80px]"
                 />
               </div>
               <div class="buyer-record-info">
@@ -1871,17 +1871,9 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-record-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 14px;
-  background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
-  border: 1px solid #e2f1ea;
-  color: #00a19a;
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  overflow: hidden;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .buyer-record-info {

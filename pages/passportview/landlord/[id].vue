@@ -773,17 +773,17 @@ function iconSlugForSection(key: string): string {
 // the buyer/seller passport section icons. Any slug without an entry
 // here falls back to the old flat SVG set.
 const SECTION_ICON_URLS: Record<string, string> = {
-  'gas-safety': '/op-icons/homescore/flame.png',
-  'electrical-safety': '/op-icons/homescore/lightning.png',
-  'energy-performance': '/op-icons/investment/plantSprout.png',
-  'smoke-co-alarms': '/op-icons/rental-passport/freestanding/smoke-co-alarms-3d.png',
-  legionella: '/op-icons/misc/waterDroplet.png',
-  'landlord-insurance': '/op-icons/verify-identity/shield.png',
-  'deposit-protection': '/op-icons/investment/padlock.png',
-  'right-to-rent': '/op-icons/verify-identity/idCard.png',
+  'gas-safety': '/op-icons/landlordPassport/gasSafetyCertificate.png',
+  'electrical-safety': '/op-icons/landlordPassport/electricalSafety.png',
+  'energy-performance': '/op-icons/landlordPassport/epc.png',
+  'smoke-co-alarms': '/op-icons/landlordPassport/smokeCOAlarms.png',
+  legionella: '/op-icons/landlordPassport/legionellaRiskAssessment.png',
+  'landlord-insurance': '/op-icons/landlordPassport/landlordInsurance.png',
+  'deposit-protection': '/op-icons/landlordPassport/depositProtection.png',
+  'right-to-rent': '/op-icons/landlordPassport/rightToRent.png',
   'how-to-rent': '/op-icons/misc/book.png',
-  inventory: '/op-icons/investment/clipboardChecklist.png',
-  'tenancy-agreement': '/op-icons/misc/signature.png',
+  inventory: '/op-icons/landlordPassport/inventory.png',
+  'tenancy-agreement': '/op-icons/landlordPassport/tenancyAgreement.png',
 }
 function iconUrlForSection(key: string, variant: 'freestanding' | 'map' = 'freestanding'): string {
   const slug = iconSlugForSection(key)
@@ -1204,7 +1204,12 @@ const SectionCard = defineComponent({
   background: #fafaf8;
   color: #0e2840;
   position: relative;
-  padding-bottom: 32px;
+  /* BottomNav is position:fixed and doesn't push content — needs enough
+     clearance below the last card to not sit under it. Matches the
+     seller passport's .passport-content padding-bottom (same fixed nav,
+     same problem, same fix) rather than the old 32px which wasn't
+     enough to clear the nav's actual height + safe-area-inset-bottom. */
+  padding-bottom: 80px;
 }
 
 .lp-nav-bar {
@@ -1535,25 +1540,18 @@ const SectionCard = defineComponent({
 }
 .lp-sec:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(14, 40, 64, 0.08); }
 .lp-sec-icon {
-  width: 56px; height: 56px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #f1f9f4, #e2f1ea);
+  width: 64px; height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 26px;
-  overflow: hidden;
 }
 .lp-sec-icon-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
-  box-shadow: inset 0 0 0 1px rgba(31, 122, 102, 0.1);
 }
-.lp-sec-icon--good { background: linear-gradient(135deg, #f1f9f4, #d6efe2); box-shadow: inset 0 0 0 1px rgba(61, 189, 163, 0.25); }
-.lp-sec-icon--warn { background: linear-gradient(135deg, #fef3c7, #fde9a4); box-shadow: inset 0 0 0 1px rgba(245, 196, 76, 0.4); }
 
 .lp-sec-content { flex: 1; min-width: 0; }
 .lp-sec-row-top {
