@@ -52,8 +52,8 @@
             :class="{ selected: selectedRole === r.key }"
             @click="selectRole(r.key)"
           >
-            <div class="j-icon" :class="r.iconClass">
-              <span v-html="r.svg" />
+            <div class="j-icon">
+              <img :src="r.icon" alt="" loading="lazy" />
             </div>
             <div class="j-body">
               <div class="j-title">{{ r.label }}</div>
@@ -66,10 +66,7 @@
         <!-- Info stripe replaces the £900m green block -->
         <div class="info-stripe">
           <div class="info-stripe-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z" />
-              <path d="m9 12 2 2 4-4" />
-            </svg>
+            <img src="/op-icons/onboarding/trustShield.png" alt="" loading="lazy" />
           </div>
           <div class="info-stripe-text">
             UK consumers lose <strong>£900m a year</strong> on aborted property
@@ -85,8 +82,8 @@
             :key="t.title"
             class="trust-tile"
           >
-            <div class="trust-icon" :class="{ gold: t.gold }">
-              <span v-html="t.svg" />
+            <div class="trust-icon">
+              <img :src="t.icon" alt="" loading="lazy" />
             </div>
             <div class="trust-title">{{ t.title }}</div>
             <div class="trust-sub">{{ t.sub }}</div>
@@ -422,29 +419,25 @@ const expanded = reactive<Record<string, boolean>>({})
 const roles = [
   {
     key: 'buy',
-    iconClass: '', // default teal
-    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+    icon: '/op-icons/onboarding/lookingToBuy.png',
     label: "I'm looking to buy",
     desc: 'Search properties, check risks, find your home',
   },
   {
     key: 'sell',
-    iconClass: 'gold',
-    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
+    icon: '/op-icons/onboarding/sellingHome.png',
     label: "I'm selling my home",
     desc: 'Build your Passport, get verified, move faster',
   },
   {
     key: 'landlord',
-    iconClass: 'navy',
-    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 8.4-8.4"/><path d="m17 5 3 3"/><path d="m14 8 3 3"/></svg>',
+    icon: '/op-icons/onboarding/landlord.png',
     label: "I'm a landlord",
     desc: 'Manage compliance, certs & tenant safety in one place',
   },
   {
     key: 'both',
-    iconClass: '',
-    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>',
+    icon: '/op-icons/onboarding/sellingAndBuying.png',
     label: 'Selling and buying',
     desc: "We'll set up both sides of your move",
   },
@@ -453,20 +446,17 @@ const trust = [
   {
     title: 'Your data is yours',
     sub: 'Never sold or shared',
-    gold: false,
-    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+    icon: '/op-icons/onboarding/trustPadlock.png',
   },
   {
     title: 'Takes 2 mins',
     sub: 'Save & continue any time',
-    gold: true,
-    svg: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg>',
+    icon: '/op-icons/onboarding/trustLightning.png',
   },
   {
     title: '12× faster',
     sub: 'to exchange than average',
-    gold: true,
-    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M17 4H7v6a5 5 0 1 0 10 0V4z"/><path d="M17 4h3v2a3 3 0 0 1-3 3"/><path d="M7 4H4v2a3 3 0 0 0 3 3"/></svg>',
+    icon: '/op-icons/onboarding/trustTrophy.png',
   },
 ]
 
@@ -1309,27 +1299,17 @@ onMounted(() => {
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.14);
 }
 .j-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 56px;
+  height: 56px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--teal-paler);
-  color: var(--teal-dark);
 }
-.j-icon.gold {
-  background: var(--gold-paler);
-  color: var(--gold-deep);
-}
-.j-icon.navy {
-  background: rgba(35, 29, 69, 0.06);
-  color: var(--navy);
-}
-.j-icon :deep(svg) {
-  width: 20px;
-  height: 20px;
+.j-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .j-body {
@@ -1391,20 +1371,17 @@ onMounted(() => {
   gap: 11px;
 }
 .info-stripe-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #fff;
-  border: 1px solid var(--teal-pale);
-  color: var(--teal);
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.info-stripe-icon svg {
-  width: 13px;
-  height: 13px;
+.info-stripe-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .info-stripe-text {
   font-size: 12px;
@@ -1433,23 +1410,17 @@ onMounted(() => {
   text-align: center;
 }
 .trust-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--bg);
+  width: 40px;
+  height: 40px;
   margin: 0 auto 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--teal);
 }
-.trust-icon.gold {
-  color: var(--gold-deep);
-  background: var(--gold-paler);
-}
-.trust-icon :deep(svg) {
-  width: 14px;
-  height: 14px;
+.trust-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .trust-title {
   font-size: 11.5px;
