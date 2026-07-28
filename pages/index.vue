@@ -905,7 +905,7 @@ const cards = [
   },
   {
     id: 'market',
-    peekLabel: 'The market today',
+    peekLabel: 'Why moves fail',
     peekPill: 'Why it matters',
     cta: 'Read the case',
   },
@@ -1491,7 +1491,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .deck-card.passport .dc-card-hero-img {
   position: absolute;
   right: -4px;
-  top: 2px;
+  top: 18px;
   width: 37%;
   max-height: 118px;
 }
