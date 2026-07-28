@@ -111,14 +111,15 @@ onMounted(() => {
 }
 
 .splash-logo-wrap {
-  /* No entrance animation here on purpose: this exact mark, in this
-     exact spot, is already on screen from the native launch image
-     (resources/splash.png) before Vue ever mounts. Animating it in
-     would mean it visibly resets/re-appears — reads as "a second
-     splash screen", which is the whole thing we're trying to avoid.
-     Wordmark/powered-by/pulse below are content the native screen
-     never had, so THEIR fade-ins read as detail arriving, not a
-     screen change. */
+  /* No entrance animation here on purpose: the logo, wordmark, and
+     "Powered by" line below are now ALL baked into the native launch
+     image (resources/splash.png) — this Vue overlay takes over showing
+     the exact same composition, already fully visible, so there's zero
+     visible change when it mounts. Only the pulse still animates, since
+     it's motion the static native image can't have. Keep this component
+     and resources/splash.png visually in sync if either ever changes —
+     that's the whole point of this file existing instead of just
+     leaning on the native launch screen alone. */
   display: grid;
   place-items: center;
   margin-bottom: 12px;
@@ -131,8 +132,6 @@ onMounted(() => {
   font-weight: 900;
   color: #231d45;
   letter-spacing: -0.04em;
-  opacity: 0;
-  animation: splashWordmarkIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
   position: relative;
   z-index: 2;
 }
@@ -163,8 +162,6 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  opacity: 0;
-  animation: splashWordmarkIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
 }
 
 .splash-powered-label {
@@ -191,11 +188,6 @@ onMounted(() => {
 .splash--hiding {
   animation: splashFadeOut 0.55s cubic-bezier(0.4, 0, 1, 1) forwards;
   pointer-events: none;
-}
-
-@keyframes splashWordmarkIn {
-  0%   { opacity: 0; transform: translateY(8px); }
-  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes splashPulse {
