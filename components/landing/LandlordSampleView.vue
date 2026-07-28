@@ -182,16 +182,16 @@ interface SampleSection {
 // Sample shows 4 curated sections — surrounding chrome (hero, dashboard,
 // tabs, group headings) stays faithful to the real landlord-passport view.
 const safetyGroup: SampleSection[] = [
-  { name: 'Gas Safety Certificate (CP12)', subtitle: 'Annual · renewing in 30 days', icon: '/op-icons/homescore/flame.png', tone: 'warn', statusLabel: '⚠ Renew soon', docs: '1/1', pct: 80, actionBy: 'Action by 30 May' },
-  { name: 'Electrical Safety (EICR)', subtitle: '5-yearly · valid to Apr 2028', icon: '/op-icons/homescore/lightning.png', tone: 'good', statusLabel: '✓ Satisfactory', docs: '1/1', pct: 100 },
+  { name: 'Gas Safety Certificate (CP12)', subtitle: 'Annual · renewing in 30 days', icon: '/op-icons/landlordPassport/gasSafetyCertificate.png', tone: 'warn', statusLabel: '⚠ Renew soon', docs: '1/1', pct: 80, actionBy: 'Action by 30 May' },
+  { name: 'Electrical Safety (EICR)', subtitle: '5-yearly · valid to Apr 2028', icon: '/op-icons/landlordPassport/electricalSafety.png', tone: 'good', statusLabel: '✓ Satisfactory', docs: '1/1', pct: 100 },
 ]
 
 const tenancyGroup: SampleSection[] = [
-  { name: 'Tenancy Agreement (AST)', subtitle: 'Signed · J. Smith · 12-month term', icon: '/op-icons/rental-passport/freestanding/tenancy-agreement.svg', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
+  { name: 'Tenancy Agreement (AST)', subtitle: 'Signed · J. Smith · 12-month term', icon: '/op-icons/landlordPassport/tenancyAgreement.png', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
 ]
 
 const insuranceGroup: SampleSection[] = [
-  { name: 'Landlord Insurance', subtitle: 'Direct Line · cover £350k · valid 2026', icon: '/op-icons/verify-identity/shield.png', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
+  { name: 'Landlord Insurance', subtitle: 'Direct Line · cover £350k · valid 2026', icon: '/op-icons/landlordPassport/landlordInsurance.png', tone: 'good', statusLabel: '✓ Active', docs: '1/1', pct: 100 },
 ]
 </script>
 
@@ -389,22 +389,11 @@ const insuranceGroup: SampleSection[] = [
   box-shadow: 0 1px 2px rgba(14, 40, 64, 0.04);
 }
 .lp-sec-icon {
-  width: 56px; height: 56px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #f1f9f4, #e2f1ea);
+  width: 64px; height: 64px;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; font-size: 26px;
-  box-shadow: inset 0 0 0 1px rgba(31, 122, 102, 0.1);
+  flex-shrink: 0;
 }
-.lp-sec-icon-img { width: 28px; height: 28px; object-fit: contain; }
-.lp-sec-icon--good {
-  background: linear-gradient(135deg, #f1f9f4, #d6efe2);
-  box-shadow: inset 0 0 0 1px rgba(0, 161, 154, 0.25);
-}
-.lp-sec-icon--warn {
-  background: linear-gradient(135deg, #fef3c7, #fde9a4);
-  box-shadow: inset 0 0 0 1px rgba(245, 196, 76, 0.4);
-}
+.lp-sec-icon-img { width: 100%; height: 100%; object-fit: contain; }
 .lp-sec-content { flex: 1; min-width: 0; }
 .lp-sec-row-top { display: flex; align-items: flex-start; gap: 8px; }
 .lp-sec-row-top > div:first-child { flex: 1; min-width: 0; }
