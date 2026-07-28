@@ -375,7 +375,7 @@
               </div>
               <div class="ifs-promise-row">
                 <div class="ifs-p-ic ifs-p-ic--img">
-                  <img src="/op-icons/matched-buyers/lock-big.png" alt="" loading="lazy" />
+                  <img src="/op-icons/onboarding/trustPadlock.png" alt="" loading="lazy" />
                 </div>
                 <div>
                   <div class="ifs-p-title">Payments in escrow</div>

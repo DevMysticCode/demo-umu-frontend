@@ -2665,7 +2665,8 @@ async function deleteNote(noteId: string) {
 
 /* ── Risk pill in title block ──────────────────────────────────── */
 .buyer-risk-pill {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
   align-items: center;
   gap: 5px;
   margin-top: 8px;

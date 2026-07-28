@@ -3511,7 +3511,7 @@
             </div>
 
             <div class="mkc-privacy">
-              <img src="/op-icons/matched-buyers/lock-big.png" alt="" class="mkc-privacy-ic" loading="lazy" />
+              <img src="/op-icons/onboarding/trustPadlock.png" alt="" class="mkc-privacy-ic" loading="lazy" />
               <div class="mkc-privacy-body">
                 <div class="mkc-privacy-title">Your details go only to the verified owner.</div>
                 <div class="mkc-privacy-sub">
