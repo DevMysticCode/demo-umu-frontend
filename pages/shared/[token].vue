@@ -64,7 +64,7 @@
         <!-- CTA -->
         <div class="shared-cta">
           <p class="shared-cta-text">Want full access to this passport, including all legal records and documents?</p>
-          <button class="shared-cta-btn" @click="router.push('/auth/login')">
+          <button class="shared-cta-btn" @click="router.push('/onboarding/signin')">
             Sign in to Access Full Passport
           </button>
         </div>

@@ -201,7 +201,7 @@ onMounted(async () => {
   try {
     const token = localStorage.getItem('token')
     if (!token) {
-      router.push('/auth/login')
+      router.push('/onboarding/signin')
       return
     }
 
