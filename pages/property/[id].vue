@@ -7996,20 +7996,22 @@ function formatSaleDate(dateStr: string): string {
   color: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
+/* top offset includes the safe-area inset so the button moves clear of
+   the notch/status bar as a whole — the old `padding-top:
+   env(safe-area-inset-top)` instead grew the fixed 38x38 circle's content
+   box internally, pushing the icon down inside a background that stayed
+   put, so the icon visibly drifted out of its circle on notched devices. */
 .pps-hero-btn-back {
-  top: 16px;
+  top: calc(16px + env(safe-area-inset-top));
   left: 16px;
-  padding-top: env(safe-area-inset-top);
 }
 .pps-hero-btn-fav {
-  top: 16px;
+  top: calc(16px + env(safe-area-inset-top));
   right: 60px;
-  padding-top: env(safe-area-inset-top);
 }
 .pps-hero-btn-share {
-  top: 16px;
+  top: calc(16px + env(safe-area-inset-top));
   right: 16px;
-  padding-top: env(safe-area-inset-top);
 }
 .pps-hero-empty {
   position: absolute;
@@ -11964,20 +11966,25 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 10px;
 }
 
-/* Chip rows (role + reply preference).
-   First column is 1.7fr because the widest label ("Potential buyer" /
-   "Email") is meaningfully longer than the other two — an even 3-column
-   grid clipped the text on narrow screens. */
+/* Chip rows (role + reply preference). This row is reused for two
+   different label sets ("Potential buyer"/"Neighbour"/"Agent" and
+   "Email"/"Phone"/"Either") — a 1.7fr-weighted first column tuned for
+   one set's longest label just squeezed the OTHER set's longest label
+   (e.g. "Neighbour" in a 1fr column) into overflow, and made same-length
+   labels in the other row render at visibly different widths. Equal
+   columns + wrapping text (no nowrap) sizes correctly for both, and
+   for any label length without per-row tuning. */
 .mkc-chip-row {
   display: grid;
-  grid-template-columns: 1.7fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
+  align-items: stretch;
 }
 .mkc-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 11px 10px;
+  padding: 11px 8px;
   background: #FFFFFF;
   border: 1.5px solid #E7EAEE;
   border-radius: 14px;
@@ -11987,7 +11994,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #231D45;
   cursor: pointer;
   transition: all 0.18s;
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.15;
+  text-align: center;
   min-width: 0;
   justify-content: center;
 }

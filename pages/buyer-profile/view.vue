@@ -130,22 +130,17 @@
         </div>
       </div>
 
-      <!-- Tier upgrade nudge -->
-      <div v-if="tier !== 'PREMIUM'" class="upgrade-nudge-wrap">
+      <!-- Tier upgrade nudge — Verified (£19.99) is now the top purchasable
+           tier, so there's nothing left to upsell once it's bought. -->
+      <div v-if="tier === 'BASIC'" class="upgrade-nudge-wrap">
         <button
           class="upgrade-nudge amber-n"
           @click="tierDrawerOpen = true"
         >
           <div class="upgrade-star">★</div>
           <div class="upgrade-body">
-            <div class="upgrade-title">
-              {{ tier === 'BASIC' ? 'Upgrade to Verified' : 'Upgrade to Platinum' }}
-            </div>
-            <div class="upgrade-sub">
-              {{ tier === 'BASIC'
-                ? 'Add proof of funds + affordability — £29'
-                : 'Add Equifax + lender API access — takes 2 minutes' }}
-            </div>
+            <div class="upgrade-title">Upgrade to Verified</div>
+            <div class="upgrade-sub">Add proof of funds + affordability — £19.99</div>
           </div>
           <span class="upgrade-arrow">→</span>
         </button>
@@ -235,7 +230,7 @@
             <span class="doc-chev">›</span>
           </div>
         </div>
-        <div class="doc-row">
+        <div class="doc-row" @click="triggerUpload('funds')">
           <div class="doc-icon">
             <img src="/op-icons/buyer-profile/moneyBag.png" alt="" loading="lazy" />
           </div>
@@ -244,30 +239,38 @@
             <div class="doc-meta">{{ fundsMetaText }}</div>
           </div>
           <div class="doc-right doc-right--col">
-            <span v-if="passport.fundsType" class="risk-pill clear">✓ VERIFIED</span>
+            <span v-if="uploading === 'funds'" class="risk-pill add">Uploading…</span>
+            <span v-else-if="passport.fundsVerified" class="risk-pill clear">✓ VERIFIED</span>
+            <span v-else-if="passport.fundsReviewStatus === 'pending'" class="risk-pill add">⏳ IN REVIEW</span>
+            <span v-else-if="passport.fundsReviewStatus === 'rejected'" class="risk-pill reject">✕ RESUBMIT</span>
             <span v-else class="risk-pill add">+ ADD DOC</span>
           </div>
           <span class="doc-chev">›</span>
         </div>
-        <div class="doc-row" @click="goShare('pdf-add-aip' as any)">
+        <div class="doc-row" @click="triggerUpload('mortgage')">
           <div class="doc-icon">
             <img src="/op-icons/buyer-profile/mortgageHouse.png" alt="" loading="lazy" />
           </div>
           <div class="doc-body">
             <div class="doc-title">Mortgage in Principle</div>
-            <div class="doc-meta">
-              {{ hasMortgageAip
-                ? 'AIP on file · lender verified'
-                : 'Upload your AIP — lender will be verified' }}
-            </div>
+            <div class="doc-meta">{{ mortgageMetaText }}</div>
           </div>
           <div class="doc-right">
-            <span :class="hasMortgageAip ? 'risk-pill clear' : 'risk-pill add'">
-              {{ hasMortgageAip ? '✓ VERIFIED' : '+ ADD DOC' }}
-            </span>
+            <span v-if="uploading === 'mortgage'" class="risk-pill add">Uploading…</span>
+            <span v-else-if="passport.mortgageAipVerified" class="risk-pill clear">✓ VERIFIED</span>
+            <span v-else-if="passport.mortgageAipReviewStatus === 'pending'" class="risk-pill add">⏳ IN REVIEW</span>
+            <span v-else-if="passport.mortgageAipReviewStatus === 'rejected'" class="risk-pill reject">✕ RESUBMIT</span>
+            <span v-else class="risk-pill add">+ ADD DOC</span>
             <span class="doc-chev">›</span>
           </div>
         </div>
+        <input
+          ref="docFileInput"
+          type="file"
+          accept="application/pdf,image/*"
+          style="display: none"
+          @change="onDocFileChosen"
+        />
         <div class="doc-row">
           <div class="doc-icon">
             <img src="/op-icons/buyer-profile/clipboardLink.png" alt="" loading="lazy" />
@@ -512,13 +515,25 @@ const fundsTypeLong = computed(() => {
   return 'Not yet verified'
 })
 
+// Selecting a funds type during onboarding is a self-declared statement,
+// not a verification — the copy here used to claim "verified" the moment
+// a type was picked, with no document and no review at all. Only the
+// admin-approved fundsVerified flag earns that word now.
 const fundsMetaText = computed(() => {
   const t = passport.value?.fundsType
   const amt = fundsLabelShort.value
-  if (t === 'mortgage') return `Mortgage in principle · ${amt} verified`
-  if (t === 'cash') return `Cash buyer · ${amt} on deposit`
-  if (t === 'help') return `Help to Buy scheme · ${amt} max`
+  const verifiedSuffix = passport.value?.fundsVerified ? ' · verified' : ''
+  if (t === 'mortgage') return `Mortgage in principle · ${amt}${verifiedSuffix}`
+  if (t === 'cash') return `Cash buyer · ${amt} on deposit${verifiedSuffix}`
+  if (t === 'help') return `Help to Buy scheme · ${amt} max${verifiedSuffix}`
   return 'Add your funds proof to unlock'
+})
+
+const mortgageMetaText = computed(() => {
+  if (passport.value?.mortgageAipVerified) return 'AIP on file · lender verified'
+  if (passport.value?.mortgageAipReviewStatus === 'pending') return 'AIP uploaded · awaiting review'
+  if (passport.value?.mortgageAipReviewStatus === 'rejected') return "Couldn't verify that AIP — please re-upload"
+  return 'Upload your AIP — lender will be verified'
 })
 
 const chainShortLabel = computed(() => {
@@ -538,15 +553,13 @@ const idTypeLabel = computed(() => {
   return 'Photo ID'
 })
 
-const hasMortgageAip = computed(
-  () => passport.value?.fundsType === 'mortgage' && !!passport.value?.fundsDocumentUrl,
-)
+const hasMortgageAip = computed(() => !!passport.value?.mortgageAipVerified)
 
 const completionTip = computed(() => {
   if (animatedStrength.value >= 95) return ''
-  if (!hasMortgageAip.value) return '+ Add Mortgage AIP to reach 100% Platinum'
-  if (!passport.value?.statement) return '+ Add your story to reach 100% Platinum'
-  return '+ Upgrade your tier to reach 100% Platinum'
+  if (!hasMortgageAip.value) return '+ Add Mortgage AIP to strengthen your profile'
+  if (!passport.value?.statement) return '+ Add your story to strengthen your profile'
+  return ''
 })
 
 function formatSignedAt(iso: string) {
@@ -555,6 +568,50 @@ function formatSignedAt(iso: string) {
     month: 'short',
     year: 'numeric',
   })
+}
+
+// ── Document upload (Proof of Funds / Mortgage AIP) ────────────
+// Was previously two dead rows — "Proof of Funds" had no click handler at
+// all, and "Mortgage in Principle" called goShare() with a bogus tab id
+// left over from an earlier draft. Uploads now go to a private storage
+// bucket and land in an admin review queue — the "✓ VERIFIED" badge only
+// appears once a human has actually checked the document, not the moment
+// a file is selected.
+const config = useRuntimeConfig()
+const docFileInput = ref<HTMLInputElement | null>(null)
+const uploadKind = ref<'funds' | 'mortgage' | null>(null)
+const uploading = ref<'funds' | 'mortgage' | null>(null)
+
+function triggerUpload(kind: 'funds' | 'mortgage') {
+  if (uploading.value) return
+  uploadKind.value = kind
+  docFileInput.value?.click()
+}
+
+async function onDocFileChosen(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  const kind = uploadKind.value
+  input.value = ''
+  if (!file || !kind) return
+  uploading.value = kind
+  try {
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    if (!token) throw new Error('Not signed in')
+    const form = new FormData()
+    form.append('file', file)
+    await $fetch(`${config.public.apiBase}/buyer-profile/documents/${kind}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: form,
+    })
+    passport.value = await getBuyerProfile()
+    showToast({ message: 'Uploaded — awaiting review', iconEmoji: '📄' })
+  } catch (e: any) {
+    showToast({ message: e?.data?.message ?? 'Upload failed — try again', iconEmoji: '⚠️' })
+  } finally {
+    uploading.value = null
+  }
 }
 
 // ── Navigation ───────────────────────────────────────────────
@@ -951,6 +1008,9 @@ function goEdit() { router.push('/buyer-profile/build') }
 }
 .risk-pill.add {
   background: #fbefd9; color: #c4821a; border: 1px solid #e6a23c;
+}
+.risk-pill.reject {
+  background: #fdecea; color: #c0392b; border: 1px solid #f5b7b1;
 }
 
 .sol-verified {

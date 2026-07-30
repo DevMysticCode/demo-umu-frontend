@@ -314,29 +314,6 @@
               Download All
             </button>
           </div>
-
-          <div class="section-progress-card">
-            <div class="section-progress-row">
-              <span class="section-progress-label"
-                >Questions answered by seller</span
-              >
-              <span class="section-progress-count"
-                >{{ progress.answered }} / {{ progress.total }}</span
-              >
-            </div>
-            <div class="section-progress-bar-bg">
-              <div
-                class="section-progress-bar-fill"
-                :style="{ width: progress.pct + '%' }"
-              />
-            </div>
-            <p
-              v-if="progress.lastUpdated !== '—'"
-              class="section-progress-date"
-            >
-              Last updated {{ progress.lastUpdated }}
-            </p>
-          </div>
         </template>
 
         <!-- Expert guidance (UnderReview style) -->
@@ -806,39 +783,6 @@ const stats = computed(() => {
   return { included, excluded, offered, lastUpdated }
 })
 
-// Progress for non-fixtures sections
-const progress = computed(() => {
-  if (!section.value) return { answered: 0, total: 0, pct: 0, lastUpdated: '—' }
-  let total = 0,
-    answered = 0
-  let latestDate: Date | null = null
-  for (const task of section.value.tasks) {
-    const qs = visibleQuestions(task)
-    total += qs.length
-    for (const q of qs) {
-      if (
-        q.answer &&
-        (q.answer.answerText || q.answer.answerJson || q.answer.fileUrl)
-      ) {
-        answered++
-        if (q.answer.createdAt) {
-          const d = new Date(q.answer.createdAt)
-          if (!latestDate || d > latestDate) latestDate = d
-        }
-      }
-    }
-  }
-  const pct = total > 0 ? Math.round((answered / total) * 100) : 0
-  const lastUpdated = latestDate
-    ? latestDate.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      })
-    : '—'
-  return { answered, total, pct, lastUpdated }
-})
-
 function extractPrimaryStatus(
   answerJson: any,
   answerText: string | null,
@@ -1253,54 +1197,6 @@ function downloadAllFiles() {
 }
 .section-stat-value--amber {
   color: #e8941a;
-}
-
-/* Progress card (non-fixtures) */
-.section-progress-card {
-  background: white;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 20px;
-  border: 0.5px solid #f0f0f0;
-}
-
-.section-progress-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.section-progress-label {
-  font-size: 13px;
-  color: #444;
-}
-
-.section-progress-count {
-  font-size: 14px;
-  font-weight: 700;
-  color: #00a19a;
-}
-
-.section-progress-bar-bg {
-  height: 6px;
-  background: #f0f0f0;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.section-progress-bar-fill {
-  height: 100%;
-  background: #00a19a;
-  border-radius: 3px;
-  transition: width 0.4s ease;
-}
-
-.section-progress-date {
-  font-size: 11px;
-  color: #9ca3af;
-  margin: 8px 0 0;
-  text-align: right;
 }
 
 /* Form details header */

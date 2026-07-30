@@ -312,12 +312,19 @@ function downloadPdf() {
   // Server-side PDF generation is Phase 4 work — for now we let the browser
   // print the rendered preview to PDF, which is the same approach the legacy
   // download used. The prototype's "Download PDF" is also a simulation.
+  //
+  // window.print() MUST run synchronously inside the click handler — like
+  // window.open(), WebKit only allows it while still inside the original
+  // user-gesture call stack. The previous setTimeout (even at 200ms) moved
+  // the call onto a timer callback, outside that gesture chain. A desktop/
+  // mobile browser tab is lenient enough to still show the print dialog
+  // anyway, but Capacitor's WKWebView on iOS enforces the gesture
+  // requirement strictly and silently drops the call — this is the same
+  // class of bug documented in claim/[id].vue's Persona popup handling.
   downloading.value = true
-  setTimeout(() => {
-    window.print()
-    downloading.value = false
-    showToast({ message: 'PDF prepared', iconEmoji: '✓' })
-  }, 200)
+  window.print()
+  downloading.value = false
+  showToast({ message: 'PDF prepared', iconEmoji: '✓' })
 }
 </script>
 

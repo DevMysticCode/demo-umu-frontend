@@ -929,7 +929,7 @@ onMounted(async () => {
 
 // ── Topbar logic ──────────────────────────────────────────────
 const isFullscreenStep = computed(() =>
-  ['kyc-verified', 'lr-searching'].includes(step.value),
+  ['lr-searching'].includes(step.value),
 )
 const showCta = computed(
   () => !['lr-searching', 'lr-failed', 'payment'].includes(step.value),
@@ -1037,7 +1037,12 @@ function onBack() {
       step.value = 'kyc-liveness'
       return
     case 'kyc-verified':
-      step.value = 'kyc-aml'
+      // Not 'kyc-aml' — that's a legacy simulated screen unreachable with
+      // the real Persona flow wired in, and this step can also be reached
+      // directly from 'confirm' when KYC was already approved (no
+      // kyc-explainer/kyc-aml ever visited this attempt). 'confirm' is
+      // always a valid prior step regardless of which path got here.
+      step.value = 'confirm'
       return
     case 'lr-found':
       step.value = 'kyc-verified'

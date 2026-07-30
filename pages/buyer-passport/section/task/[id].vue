@@ -852,6 +852,20 @@ function fieldLabelFromQuestion(q: any, key: string): string {
 
 function formatDate(val: any): string {
   if (!val) return ''
+  // Date-type parts with a hasDate option (see DateQuestion.vue) store
+  // { value: <selectedOption>, date: <text> } rather than a plain date
+  // string — unwrap it first, or `new Date({...})` is Invalid Date and
+  // the old fallback `String(val)` printed the literal "[object Object]".
+  if (typeof val === 'object') {
+    if (typeof val.date === 'string' && val.date) return formatDate(val.date)
+    // Multi-input mode: { [optionValue]: text, ... } — no single date to
+    // format, so show whichever sub-values are present instead of the
+    // object itself.
+    const parts = Object.values(val).filter(
+      (v): v is string => typeof v === 'string' && v.trim().length > 0,
+    )
+    return parts.join(', ')
+  }
   try {
     const d = new Date(val)
     if (isNaN(d.getTime())) return String(val)

@@ -345,6 +345,28 @@ onMounted(async () => {
       `${config.public.apiBase}/property/${propertyId.value}`,
     )
     if (res.ok) property.value = await res.json()
+    // The "Now → Potential" rating and mission list below are both driven
+    // by epcRecommendations — if a previous enrichment pass came back
+    // empty, "potential" defaults to garbage (can render worse than
+    // "now") and the mission list looks like "no improvements" even
+    // though the register likely has real recommended steps. Self-heal
+    // the same way the main HomeScore page does before rendering either.
+    const recs = (property.value as any)?.epcRecommendations
+    if (!Array.isArray(recs) || recs.length === 0) {
+      try {
+        const refreshRes = await fetch(
+          `${config.public.apiBase}/property/${propertyId.value}/epc-refresh`,
+          { method: 'POST' },
+        )
+        if (refreshRes.ok) {
+          const refreshed = await refreshRes.json()
+          const newRecs = (refreshed as any)?.epcRecommendations ?? []
+          if (Array.isArray(newRecs) && newRecs.length > 0) {
+            property.value = refreshed
+          }
+        }
+      } catch {}
+    }
   } catch {
     /* keep null — page falls back to a friendly empty state */
   }
@@ -444,7 +466,11 @@ const fromScore = computed(() => {
 })
 const toScore = computed(() => {
   const p: any = property.value
-  return Number(p?.epcScorePotential ?? p?.epcCert?.potentialScore ?? 0) || 0
+  const raw = Number(p?.epcScorePotential ?? p?.epcCert?.potentialScore ?? 0) || 0
+  // A missing/unrefreshed potential score defaults to 0 ("Grade G") — never
+  // show a "potential" worse than "now" (e.g. "Now B → Potential G",
+  // "+-81 points to gain"). Floor it at the current score instead.
+  return Math.max(raw, fromScore.value)
 })
 
 // Pick an icon for each EPC recommendation type based on title keywords.
