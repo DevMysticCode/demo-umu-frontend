@@ -2277,7 +2277,11 @@ async function deleteNote(noteId: string) {
 /* ── Notes FAB ────────────────────────────────────────────────────────── */
 .notes-fab {
   position: fixed;
-  bottom: 96px;
+  /* BottomNav's own content is ~64px tall before its safe-area padding;
+     a flat 96px didn't add safe-area on top of that, so on notched/
+     home-indicator devices the FAB sat low enough to overlap the AI
+     tab instead of floating above the bar. */
+  bottom: calc(80px + env(safe-area-inset-bottom));
   right: 20px;
   width: 52px;
   height: 52px;
@@ -2587,7 +2591,10 @@ async function deleteNote(noteId: string) {
   pointer-events: none;
 }
 .buyer-hero-book {
-  width: 84px;
+  /* Matched to pp-hero-book's 104x140 (passportview/[id].vue) — at the
+     old 84x110, PassportCard's address text (which has a font-size
+     floor and doesn't shrink further) routinely crowded the card edges. */
+  width: 104px;
   flex-shrink: 0;
   filter: drop-shadow(0 6px 14px rgba(0, 140, 134, 0.28));
   position: relative;
@@ -2599,7 +2606,7 @@ async function deleteNote(noteId: string) {
 }
 .buyer-hero-book :deep(.passport-container) {
   width: 100%;
-  height: 110px;
+  height: 140px;
 }
 .buyer-hero-info {
   flex: 1;

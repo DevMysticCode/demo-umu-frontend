@@ -815,9 +815,8 @@
         </div>
 
         <!-- Amber nudge -->
-        <div v-if="tierPaidFor !== 'PREMIUM'" class="bp-amber-nudge" @click="tierDrawerOpen = true">
-          One step to 100% Platinum: Add
-          {{ tierPaidFor === 'BASIC' ? 'your funds verification' : 'your credit file' }} →
+        <div v-if="tierPaidFor === 'BASIC'" class="bp-amber-nudge" @click="tierDrawerOpen = true">
+          One step to full strength: Add your funds verification →
         </div>
 
         <!-- Buttons -->
@@ -880,9 +879,9 @@ const tierPaidFor = ref<Tier>('BASIC')
 const tierDrawerOpen = ref(false)
 
 const needsFundsCapture = computed(() => {
-  // Funds verification only required for Verified/Premium, and only once
-  // payment has succeeded (otherwise we'd be asking for bank docs from a user
-  // who hasn't unlocked the verified tier yet).
+  // Funds verification only required once Verified has been paid for
+  // (otherwise we'd be asking for bank docs from a user who hasn't
+  // unlocked that tier yet).
   return tierPaidFor.value !== 'BASIC'
 })
 
@@ -897,8 +896,7 @@ const step2CanContinue = computed(() => {
 const step2CtaLabel = computed(() => {
   if (selectedTier.value === 'BASIC') return saving.value ? 'Saving…' : 'Continue with Basic →'
   if (tierPaidFor.value !== selectedTier.value) {
-    const price = selectedTier.value === 'PREMIUM' ? 79 : 29
-    return `Pay £${price} & continue →`
+    return `Pay £19.99 & continue →`
   }
   return saving.value ? 'Saving…' : 'Continue →'
 })
@@ -945,7 +943,7 @@ async function onStep2Continue() {
 function onTierPaid(t: Tier) {
   tierPaidFor.value = t
   tierDrawerOpen.value = false
-  showToast({ message: `${t === 'PREMIUM' ? 'Premium' : 'Verified'} unlocked`, iconEmoji: '✨' })
+  showToast({ message: 'Verified unlocked', iconEmoji: '✨' })
 }
 
 // ── Complete screen helpers ────────────────────────────────────
@@ -1332,27 +1330,12 @@ const tierOptions: Array<{
     badge: 'VERIFIED · RECOMMENDED',
     title: 'Identity + Funds Verified',
     sub: 'The level most sellers and agents expect. Proves you can buy.',
-    priceLabel: '£29',
+    priceLabel: '£19.99',
     features: [
       { text: 'Everything in Basic', included: true },
       { text: 'Proof of deposit (open banking)', included: true },
       { text: 'Source of funds + AML clear', included: true },
       { text: 'Affordability score', included: true },
-      { text: 'Credit file not included', included: false },
-    ],
-  },
-  {
-    id: 'PREMIUM',
-    corner: '★',
-    badge: 'PREMIUM · PLATINUM',
-    title: 'Full Financial Profile',
-    sub: 'Maximum strength — lenders can pre-approve faster with this data.',
-    priceLabel: '£79',
-    features: [
-      { text: 'Everything in Verified', included: true },
-      { text: 'Experian credit file + score', included: true },
-      { text: 'Equifax cross-check (two-bureau)', included: true },
-      { text: 'Direct lender API access', included: true },
     ],
   },
 ]
@@ -1455,38 +1438,25 @@ async function onAiDraft() {
     const config = useRuntimeConfig()
     const token =
       typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-    const signals: string[] = []
-    if (chainPosition.value) signals.push(`chain position: ${chainPosition.value}`)
-    if (timeline.value) signals.push(`timeline: ${timeline.value}`)
-    if (fundsType.value) signals.push(`funds type: ${fundsType.value}`)
-    if (fundsAmount.value) signals.push(`max budget: £${fundsAmount.value.toLocaleString()}`)
-    if (solicitorStatus.value) signals.push(`solicitor: ${solicitorStatus.value}`)
-    const system =
-      'You write short, sincere 80-120 word intros from UK home buyers to sellers. Plain English, no hype, first-person, no clichés. End with one line about being ready to move quickly. Do not invent personal details or numbers.'
-    const userMsg = statement.value.trim()
-      ? `Rewrite this draft to be warmer and clearer, keeping the facts: ${statement.value}\n\nKnown profile signals: ${signals.join('; ') || 'none yet'}.`
-      : `Draft a short intro for a UK home buyer to share with a seller. Known profile signals: ${signals.join('; ') || 'none yet'}.`
-    const res = await fetch(`${config.public.apiBase}/chat`, {
+    // Dedicated endpoint, not the general /chat assistant — that endpoint
+    // requires a single `message` string (this used to send an OpenAI-style
+    // `messages` array, which failed its validation with a 400 before ever
+    // reaching the model) and runs a property-assistant persona with
+    // tool-calling that isn't suited to a short first-person writing task.
+    // Profile signals are read server-side from the saved profile rather
+    // than sent from here.
+    const res = await fetch(`${config.public.apiBase}/buyer-profile/ai-story`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify({
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: userMsg },
-        ],
-      }),
+      body: JSON.stringify({ existingDraft: statement.value }),
     })
     if (!res.ok) throw new Error(`AI request failed (${res.status})`)
     const data = await res.json()
-    const text =
-      data?.message ||
-      data?.content ||
-      data?.choices?.[0]?.message?.content ||
-      ''
-    if (typeof text === 'string' && text.trim()) {
+    const text = typeof data?.text === 'string' ? data.text : ''
+    if (text.trim()) {
       statement.value = text.trim()
     } else {
       aiError.value = 'Got an empty response — try again.'

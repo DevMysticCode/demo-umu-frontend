@@ -190,7 +190,7 @@ import { useAppToast } from '~/composables/useCustomToast'
 definePageMeta({ title: 'Share Profile — UmovingU', middleware: 'auth' })
 
 const router = useRouter()
-const { getBuyerProfile, listShares, revokeShare } = useBuyerProfile()
+const { getBuyerProfile, listShares, revokeShare, createShare } = useBuyerProfile()
 const { fetchProfile, profile } = useProfile()
 const { showToast } = useAppToast()
 
@@ -270,11 +270,56 @@ const chainShort = computed(() => {
   return 'Add chain'
 })
 
+// The public share page (pages/shared-buyer/[token].vue) looks up a
+// BuyerProfileShare row by its `token` — it has no concept of
+// BuyerProfile.publicRef at all. This tab's link/QR previously built a
+// URL from publicRef under a fake "umu.co" domain and the wrong
+// "/profile/" path, which is why it 404'd for every visitor: neither the
+// domain, the path, nor the identifier matched anything real. A generic
+// (no named recipient), full-scope BuyerProfileShare is created lazily —
+// reusing one if this tab already minted an unexpired one — and its real
+// token backs both the QR code and "Copy link".
+const linkShareToken = ref<string | null>(null)
+const linkShareLoading = ref(false)
+
+const shareOrigin = computed(() =>
+  typeof window !== 'undefined' && window.location?.origin
+    ? window.location.origin
+    : '',
+)
 const canonicalShareLink = computed(() => {
-  const ref = (passport.value as any)?.publicRef
-  if (!ref) return 'umu.co/profile/—'
-  return `umu.co/profile/${ref}`
+  if (!linkShareToken.value) return 'Generating link…'
+  return `${shareOrigin.value}/shared-buyer/${linkShareToken.value}`
 })
+
+async function ensureLinkShare(): Promise<string | null> {
+  if (linkShareToken.value) return linkShareToken.value
+  linkShareLoading.value = true
+  try {
+    // Reuse an existing generic link (no recipient) if one's still valid,
+    // rather than minting a fresh BuyerProfileShare every time this tab
+    // is opened.
+    const existing = shares.value.find(
+      (s) => !s.recipientName && !s.recipientEmail && !s.revokedAt && !isExpired(s),
+    )
+    if (existing) {
+      linkShareToken.value = existing.token
+      return existing.token
+    }
+    const created = await createShare({})
+    linkShareToken.value = created.token
+    await refreshShares()
+    return created.token
+  } catch (e: any) {
+    showToast({
+      message: e?.data?.message || 'Could not generate a share link.',
+      iconEmoji: '⚠️',
+    })
+    return null
+  } finally {
+    linkShareLoading.value = false
+  }
+}
 
 function initialsFor(name: string | null | undefined): string {
   if (!name) return '??'
@@ -317,7 +362,9 @@ async function onRevoke(id: string) {
 }
 
 async function copyLink() {
-  const text = canonicalShareLink.value
+  const token = await ensureLinkShare()
+  if (!token) return
+  const text = `${shareOrigin.value}/shared-buyer/${token}`
   try {
     await navigator.clipboard.writeText(text)
     showToast({ message: 'Link copied', iconEmoji: '🔗' })
@@ -343,17 +390,9 @@ async function buildQrDataUrl(text: string): Promise<string> {
 
 async function drawQr() {
   if (!qrCanvasEl.value) return
-  // Use a fully-qualified URL so a scan opens the real site, not "umu.co/..."
-  // as a search query. Falls back to the canonical short form if window
-  // isn't available (SSR).
-  const origin =
-    typeof window !== 'undefined' && window.location?.origin
-      ? window.location.origin
-      : 'https://umu.co'
-  const publicRef = (passport.value as any)?.publicRef
-  const target = publicRef
-    ? `${origin}/profile/${publicRef}`
-    : canonicalShareLink.value
+  const token = await ensureLinkShare()
+  if (!token) return
+  const target = `${shareOrigin.value}/shared-buyer/${token}`
   try {
     qrDataUrl.value = await buildQrDataUrl(target)
     qrCanvasEl.value.innerHTML = `<img src="${qrDataUrl.value}" alt="Share QR code" width="220" height="220" />`
@@ -385,13 +424,9 @@ watch(
 async function downloadQr() {
   if (!qrDataUrl.value) {
     try {
-      const target =
-        typeof window !== 'undefined' && window.location?.origin
-          ? `${window.location.origin}/profile/${
-              (passport.value as any)?.publicRef ?? ''
-            }`
-          : canonicalShareLink.value
-      qrDataUrl.value = await buildQrDataUrl(target)
+      const token = await ensureLinkShare()
+      if (!token) return
+      qrDataUrl.value = await buildQrDataUrl(`${shareOrigin.value}/shared-buyer/${token}`)
     } catch {
       showToast({ message: 'Could not generate QR', iconEmoji: '⚠️' })
       return

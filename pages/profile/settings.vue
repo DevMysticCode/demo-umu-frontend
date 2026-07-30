@@ -129,37 +129,6 @@
         </div>
       </div>
 
-      <!-- Appearance & language -->
-      <div class="st-section-heading">Appearance &amp; language</div>
-      <div class="st-section">
-        <div class="st-group">
-          <div class="st-row">
-            <div class="st-row-content">
-              <div class="st-row-label">Theme</div>
-              <div class="st-row-meta">Choose how the app looks</div>
-            </div>
-            <div class="st-segment">
-              <button
-                v-for="opt in themeOptions"
-                :key="opt.value"
-                class="st-segment-btn"
-                :class="{ active: theme === opt.value }"
-                @click="setTheme(opt.value)"
-              >
-                {{ opt.label }}
-              </button>
-            </div>
-          </div>
-          <button class="st-row">
-            <div class="st-row-content">
-              <div class="st-row-label">Language</div>
-              <div class="st-row-meta">English (UK)</div>
-            </div>
-            <span class="st-row-chev">›</span>
-          </button>
-        </div>
-      </div>
-
       <!-- Privacy & data -->
       <div class="st-section-heading">Privacy &amp; data</div>
       <div class="st-section">
@@ -177,14 +146,14 @@
               @click="setPref('contactVisible', !prefs.contactVisible)"
             />
           </div>
-          <button class="st-row">
+          <button class="st-row" :disabled="downloadingData" @click="downloadData">
             <div class="st-row-content">
               <div class="st-row-label">Download your data</div>
-              <div class="st-row-meta">Export everything as JSON</div>
+              <div class="st-row-meta">{{ downloadingData ? 'Preparing…' : 'Export everything as JSON' }}</div>
             </div>
             <span class="st-row-chev">›</span>
           </button>
-          <button class="st-row danger">
+          <button class="st-row danger" @click="showDeleteAccount = true">
             <div class="st-row-content">
               <div class="st-row-label">Delete account</div>
               <div class="st-row-meta">Permanent. We'll wipe everything.</div>
@@ -283,6 +252,33 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Delete account confirmation drawer -->
+    <Teleport to="body">
+      <div v-if="showDeleteAccount" class="st-overlay" @click.self="closeDeleteAccount">
+        <div class="st-modal">
+          <div class="st-modal-handle" />
+          <div class="st-modal-header">
+            <div class="st-modal-title">Delete account</div>
+            <button class="st-modal-close" type="button" aria-label="Close" @click="closeDeleteAccount">×</button>
+          </div>
+          <div class="st-modal-body">
+            <p class="st-modal-intro">
+              This will permanently delete your account, all your passports,
+              documents, and data.
+              <strong style="color: #b85b36">This cannot be undone.</strong>
+            </p>
+            <p v-if="deleteError" class="st-modal-error">{{ deleteError }}</p>
+          </div>
+          <div class="st-modal-footer">
+            <button class="st-btn-secondary" type="button" :disabled="deletingAccount" @click="closeDeleteAccount">Cancel</button>
+            <button class="st-btn-danger" type="button" :disabled="deletingAccount" @click="confirmDeleteAccount">
+              {{ deletingAccount ? 'Deleting…' : 'Delete permanently' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -293,13 +289,6 @@ definePageMeta({ title: 'Settings - UmovingU', middleware: 'auth' })
 
 const config = useRuntimeConfig()
 const { profile, fetchProfile } = useProfile()
-const { theme, setTheme: applyTheme } = useTheme()
-
-const themeOptions = [
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-  { value: 'auto', label: 'Auto' },
-] as const
 
 const prefs = reactive({
   pushNotifications: true,
@@ -362,6 +351,64 @@ async function submitChangePassword() {
   }
 }
 
+// ── Download your data ────────────────────────────────────────
+const downloadingData = ref(false)
+async function downloadData() {
+  if (downloadingData.value) return
+  downloadingData.value = true
+  try {
+    const tok = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    if (!tok) throw new Error('Not signed in')
+    const data = await $fetch(`${config.public.apiBase}/profile/export`, {
+      headers: { Authorization: `Bearer ${tok}` },
+    })
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `umu-my-data-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    showToast('Data ready — check your downloads')
+  } catch {
+    showToast('Could not export your data')
+  } finally {
+    downloadingData.value = false
+  }
+}
+
+// ── Delete account ────────────────────────────────────────────
+const showDeleteAccount = ref(false)
+const deletingAccount = ref(false)
+const deleteError = ref('')
+function closeDeleteAccount() {
+  if (deletingAccount.value) return
+  showDeleteAccount.value = false
+  deleteError.value = ''
+}
+async function confirmDeleteAccount() {
+  deleteError.value = ''
+  deletingAccount.value = true
+  try {
+    const tok = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    if (tok) {
+      await $fetch(`${config.public.apiBase}/profile/me`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${tok}` },
+      })
+    }
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('token')
+      localStorage.removeItem('redirectAfterLogin')
+      sessionStorage.clear()
+    }
+    await navigateTo('/onboarding/signup', { replace: true })
+  } catch (err: any) {
+    deleteError.value = err?.data?.message ?? err?.message ?? 'Could not delete account'
+    deletingAccount.value = false
+  }
+}
+
 onMounted(async () => {
   await fetchProfile()
   prefs.pushNotifications = profile.value?.pushNotifications ?? true
@@ -385,11 +432,6 @@ async function setPref(key: keyof typeof prefs, value: boolean) {
   } catch {
     showToast('Could not save')
   }
-}
-
-function setTheme(next: 'light' | 'dark' | 'auto') {
-  applyTheme(next)
-  showToast(`Theme: ${next.charAt(0).toUpperCase() + next.slice(1)}`)
 }
 
 function showToast(msg: string) {
@@ -606,32 +648,6 @@ const securityLabel = computed(() => {
   transform: translateX(16px);
 }
 
-/* Theme segmented */
-.st-segment {
-  display: inline-flex;
-  background: #f0f2f1;
-  border-radius: 100px;
-  padding: 3px;
-  flex-shrink: 0;
-}
-.st-segment-btn {
-  border: none;
-  background: transparent;
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 700;
-  color: #4a5868;
-  padding: 5px 10px;
-  border-radius: 100px;
-  cursor: pointer;
-  letter-spacing: -0.1px;
-}
-.st-segment-btn.active {
-  background: #fff;
-  color: #0e2840;
-  box-shadow: 0 1px 2px rgba(14, 40, 64, 0.06);
-}
-
 /* Security strength card */
 .st-strength-card {
   background: linear-gradient(135deg, #f1f9f4, #e2f1ea);
@@ -843,4 +859,19 @@ const securityLabel = computed(() => {
   box-shadow: 0 4px 12px rgba(0, 161, 154, 0.32);
 }
 .st-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+.st-btn-danger {
+  flex: 2;
+  background: #dc4b34;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(220, 75, 52, 0.32);
+}
+.st-btn-danger:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 </style>

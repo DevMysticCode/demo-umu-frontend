@@ -334,14 +334,19 @@ const sections = [
   pointer-events: none;
 }
 .buyer-hero-book {
-  width: 84px;
+  /* PassportCard's address text has a font-size floor (clamp min) that
+     doesn't shrink further to fit a smaller container — at 84x110 the
+     two-line address routinely crowded the card's edges. Matched to the
+     seller sample's 104x140 (pp-hero-book in SellerSampleView.vue) so
+     the same text gets the room it was actually designed for. */
+  width: 104px;
   flex-shrink: 0;
   filter: drop-shadow(0 6px 14px rgba(0, 140, 134, 0.28));
   position: relative;
   z-index: 1;
 }
 .buyer-hero-book :deep(.passport-card) { margin: 0; padding: 0; }
-.buyer-hero-book :deep(.passport-container) { width: 100%; height: 110px; }
+.buyer-hero-book :deep(.passport-container) { width: 100%; height: 140px; }
 .buyer-hero-info {
   flex: 1;
   min-width: 0;

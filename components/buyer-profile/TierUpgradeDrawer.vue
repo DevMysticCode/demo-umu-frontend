@@ -52,7 +52,6 @@
           <button
             v-else
             class="tu-cta"
-            :class="{ premium: selected === 'PREMIUM' }"
             @click="goPay"
           >
             Continue with {{ tierName(selected) }} · £{{ tierPrice(selected) }} <span>→</span>
@@ -76,7 +75,6 @@
 
           <button
             class="tu-cta"
-            :class="{ premium: selected === 'PREMIUM' }"
             :disabled="loading || !cardReady"
             @click="handlePay"
           >
@@ -110,7 +108,7 @@
 import { ref, watch, nextTick, onBeforeUnmount } from 'vue'
 import type { Stripe as StripeJs, StripeCardElement } from '@stripe/stripe-js'
 
-type TierId = 'BASIC' | 'VERIFIED' | 'PREMIUM'
+type TierId = 'BASIC' | 'VERIFIED'
 
 interface TierFeature { text: string; included: boolean }
 interface TierDef {
@@ -170,50 +168,30 @@ const tiers: TierDef[] = [
     corner: '✓',
     title: 'Identity + Funds',
     sub: 'The level most sellers and agents expect. Proves you can buy.',
-    priceGbp: 29,
+    priceGbp: 19.99,
     features: [
       { text: 'Everything in Basic', included: true },
       { text: 'Proof of deposit (open banking)', included: true },
       { text: 'Source of funds + AML clear', included: true },
       { text: 'Affordability score', included: true },
-      { text: 'Credit file not included', included: false },
-    ],
-  },
-  {
-    id: 'PREMIUM',
-    badge: 'PREMIUM · PLATINUM',
-    corner: '★',
-    title: 'Full Financial Profile',
-    sub: 'Maximum strength — lenders can pre-approve faster with this data.',
-    priceGbp: 79,
-    features: [
-      { text: 'Everything in Verified', included: true },
-      { text: 'Experian credit file + score', included: true },
-      { text: 'Equifax cross-check (two-bureau)', included: true },
-      { text: 'Direct lender API access', included: true },
     ],
   },
 ]
 
 function tierName(t: TierId) {
-  return t === 'PREMIUM' ? 'Premium' : t === 'VERIFIED' ? 'Verified' : 'Basic'
+  return t === 'VERIFIED' ? 'Verified' : 'Basic'
 }
 function tierPrice(t: TierId) {
   return tiers.find((x) => x.id === t)?.priceGbp ?? 0
 }
 
-// Default selection — bump up from current tier (Basic → Verified, Verified → Premium).
+// Default selection — Verified is the only paid tier, so it's always the
+// pre-selected upgrade target regardless of current tier.
 watch(
   () => props.open,
   (v) => {
     if (!v) return
-    const current = props.currentTier ?? 'BASIC'
-    selected.value =
-      current === 'PREMIUM'
-        ? 'PREMIUM'
-        : current === 'VERIFIED'
-          ? 'PREMIUM'
-          : 'VERIFIED'
+    selected.value = 'VERIFIED'
     step.value = 'pick'
     stripeError.value = ''
     errorMsg.value = ''
@@ -371,19 +349,16 @@ onBeforeUnmount(() => {
   font-family: inherit; width: 100%; transition: all 0.15s;
 }
 .tu-card.active { border-color: #00a19a; box-shadow: 0 4px 16px rgba(0,161,154,0.18); }
-.tu-card.premium.active { border-color: #d4822a; box-shadow: 0 4px 16px rgba(212,130,42,0.18); }
 .tu-corner {
   position: absolute; top: 12px; right: 14px; font-size: 18px; font-weight: 900;
 }
 .tu-card.active .tu-corner { color: #00a19a; }
-.tu-card.premium.active .tu-corner { color: #d4822a; }
 .tu-badge {
   display: inline-block; padding: 3px 9px; border-radius: 6px;
   font-size: 9px; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 8px;
 }
 .tu-badge--basic { background: #f5f5f7; color: #6b6783; }
 .tu-badge--verified { background: #e6f7f6; color: #00857f; }
-.tu-badge--premium { background: #fef3c7; color: #d4822a; }
 .tu-card-title { font-size: 14px; font-weight: 800; color: #231d45; }
 .tu-card-sub { font-size: 11.5px; font-weight: 500; color: #6b6783; line-height: 1.45; margin-top: 2px; }
 .tu-price { font-size: 22px; font-weight: 900; color: #231d45; letter-spacing: -0.5px; margin-top: 8px; }
@@ -399,7 +374,6 @@ onBeforeUnmount(() => {
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   gap: 8px; letter-spacing: -0.2px; margin-top: 4px;
 }
-.tu-cta.premium { background: linear-gradient(135deg, #f0b460, #d4822a); }
 .tu-cta:disabled { opacity: 0.55; cursor: not-allowed; }
 .tu-cancel {
   width: 100%; background: transparent; border: none;

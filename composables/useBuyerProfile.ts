@@ -17,8 +17,12 @@ export interface BuyerProfile {
   fundsType: string | null
   fundsAmount: number | null
   fundsDocumentUrl: string | null
+  fundsReviewStatus: string | null
   fundsVerified: boolean
   fundsAmountVerified: number | null
+  mortgageAipUrl: string | null
+  mortgageAipReviewStatus: string | null
+  mortgageAipVerified: boolean
   amlStatus: string | null
   affordabilityScore: number | null
   sourceOfFundsJson: any
