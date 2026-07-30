@@ -5,6 +5,7 @@
  * Only relevant for leasehold properties.
  */
 export function useTA7Pdf() {
+  const { printHtmlDocument } = usePrintDocument()
 
   function esc(v: any): string {
     if (v == null) return ''
@@ -364,12 +365,7 @@ export function useTA7Pdf() {
 </body>
 </html>`
 
-    const win = window.open('', '_blank')
-    if (win) {
-      win.document.write(html)
-      win.document.close()
-      setTimeout(() => win.print(), 600)
-    }
+    printHtmlDocument(html, 'Pop-ups are blocked. Please allow pop-ups for this site to generate the TA7 form.')
   }
 
   return { generateTA7 }

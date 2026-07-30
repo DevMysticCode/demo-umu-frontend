@@ -7,6 +7,7 @@
  * for manual completion before printing.
  */
 export function useTA6Pdf() {
+  const { printHtmlDocument } = usePrintDocument()
 
   // ─── Utilities ─────────────────────────────────────────────────────────────
 
@@ -706,14 +707,7 @@ export function useTA6Pdf() {
     if (!data) return
     const { passport, property, sections } = data
     const html = buildHtml(passport, property, sections ?? [])
-    const win = window.open('', '_blank', 'width=960,height=800,scrollbars=yes,resizable=yes')
-    if (!win) {
-      alert('Pop-ups are blocked. Please allow pop-ups for this site to generate the TA6 form.')
-      return
-    }
-    win.document.write(html)
-    win.document.close()
-    win.focus()
+    printHtmlDocument(html, 'Pop-ups are blocked. Please allow pop-ups for this site to generate the TA6 form.')
   }
 
   return { generateTA6 }
