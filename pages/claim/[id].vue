@@ -703,6 +703,58 @@
       </div>
     </div>
 
+    <!-- ════════════════════════════ OWNER-CLAIM PAYMENT ════════════════════════════ -->
+    <div v-else-if="step === 'payment'" class="cl-screen">
+      <div class="cl-owned">
+        <img
+          src="/op-icons/claim/lrTitleBank.png"
+          alt=""
+          class="cl-owned-illus"
+          loading="lazy"
+        />
+        <div>
+          <div class="cl-owned-t">One more step</div>
+          <div class="cl-owned-s">{{ claimPriceReason }}</div>
+        </div>
+      </div>
+
+      <div class="cl-card cl-mb-sm">
+        <div class="cl-eyebrow cl-mb-sm">Why there's a fee</div>
+        <p class="cl-body" style="margin: 0">
+          Identity checks and HM Land Registry ownership lookups cost us
+          real money per property. This one-off fee covers exactly what
+          this claim used — {{ claimPriceReason.toLowerCase() }}.
+        </p>
+      </div>
+
+      <div class="cl-card cl-mb-sm">
+        <div class="cl-lrf-rows">
+          <div class="cl-lrf-row">
+            <span class="cl-lrf-l">Verification fee</span>
+            <span class="cl-lrf-v">{{ claimPriceDisplay }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-card cl-mb-sm">
+        <div class="cl-eyebrow cl-mb-sm">Card details</div>
+        <div id="claim-stripe-card-element" class="cl-stripe-box" />
+      </div>
+
+      <div v-if="paymentError" class="cl-err-banner">
+        <span>{{ paymentError }}</span>
+      </div>
+
+      <button
+        class="cl-btn-brand cl-w-full"
+        :disabled="paymentLoading || !cardReady"
+        @click="payClaimFee"
+      >
+        <span v-if="paymentLoading" class="cl-btn-spinner" />
+        <template v-else>Pay {{ claimPriceDisplay }} securely →</template>
+      </button>
+    </div>
+
     <!-- ════════════════════════════ BOTTOM CTA BAR ════════════════════════════ -->
     <div v-if="showCta" class="cl-cta-bar">
       <button
@@ -723,8 +775,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { Stripe, StripeCardElement } from '@stripe/stripe-js'
 import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 
 definePageMeta({ middleware: 'auth' })
@@ -740,6 +793,7 @@ type ClaimStep =
   | 'lr-searching'
   | 'lr-found'
   | 'lr-failed'
+  | 'payment'
 
 import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDrawer.vue'
 
@@ -878,7 +932,7 @@ const isFullscreenStep = computed(() =>
   ['kyc-verified', 'lr-searching'].includes(step.value),
 )
 const showCta = computed(
-  () => !['lr-searching', 'lr-failed'].includes(step.value),
+  () => !['lr-searching', 'lr-failed', 'payment'].includes(step.value),
 )
 
 const stepMeta: Record<
@@ -895,6 +949,7 @@ const stepMeta: Record<
   'lr-searching': { title: 'Searching Land Registry', pct: 100 },
   'lr-found': { title: 'Ownership confirmed', pct: 100 },
   'lr-failed': { title: 'Ownership not confirmed', pct: 100 },
+  payment: { title: 'Verification fee', pct: 100 },
 }
 const topbarTitle = computed(() => stepMeta[step.value].title)
 const topbarSub = computed(() => stepMeta[step.value].sub)
@@ -986,6 +1041,9 @@ function onBack() {
       return
     case 'lr-found':
       step.value = 'kyc-verified'
+      return
+    case 'payment':
+      step.value = 'lr-found'
       return
     default:
       router.back()
@@ -1477,25 +1535,18 @@ async function issuePassport() {
     const passportId = res.passportId
     if (!passportId) throw new Error('Passport could not be created')
 
-    // 3) Where to send the user next?
-    //
-    //   - If a `?next=…` was passed (e.g. they entered the claim chain from
-    //     "Publish to your street" or "Boost your score" on /homescore), honour
-    //     it so the user lands back on that screen, now as a verified owner.
-    //   - Otherwise fall through to the canonical passport view for the type
-    //     of passport that was issued.
-    //
-    // Use replace() either way so the back button doesn't drop the user mid-KYC.
-    const nextParam = (route.query?.next as string | undefined)?.trim()
-    if (nextParam && nextParam.startsWith('/')) {
-      router.replace(nextParam)
+    // KYC + HM Land Registry checks both cost us real money — a fresh
+    // property claim comes back PENDING_PAYMENT and needs the owner-claim
+    // fee paid before its sections are seeded. An already-active passport
+    // (resumed draft, or the free manual/convert path) skips straight to
+    // navigation.
+    if (res.status === 'PENDING_PAYMENT') {
+      claimPassportId.value = passportId
+      await openPaymentStep(passportId)
       return
     }
-    if (chosenPassportType.value === 'landlord') {
-      router.replace(`/passportview/landlord/${passportId}`)
-    } else {
-      router.replace(`/passportview/${passportId}`)
-    }
+
+    finishAndNavigate(passportId)
   } catch (e: any) {
     issueError.value =
       e?.data?.message ||
@@ -1505,6 +1556,133 @@ async function issuePassport() {
     issueLoading.value = false
   }
 }
+
+// 3) Where to send the user next, once the passport is actually active?
+//
+//   - If a `?next=…` was passed (e.g. they entered the claim chain from
+//     "Publish to your street" or "Boost your score" on /homescore), honour
+//     it so the user lands back on that screen, now as a verified owner.
+//   - Otherwise fall through to the canonical passport view for the type
+//     of passport that was issued.
+//
+// Use replace() either way so the back button doesn't drop the user mid-KYC.
+function finishAndNavigate(passportId: string) {
+  const nextParam = (route.query?.next as string | undefined)?.trim()
+  if (nextParam && nextParam.startsWith('/')) {
+    router.replace(nextParam)
+    return
+  }
+  if (chosenPassportType.value === 'landlord') {
+    router.replace(`/passportview/landlord/${passportId}`)
+  } else {
+    router.replace(`/passportview/${passportId}`)
+  }
+}
+
+// ── Owner-claim payment (KYC+HMLR £35.99, or HMLR-only £15.99) ──
+const claimPassportId = ref<string | null>(null)
+const claimClientSecret = ref<string | null>(null)
+const claimAmountPence = ref<number | null>(null)
+const paymentError = ref('')
+const paymentLoading = ref(false)
+const cardReady = ref(false)
+let stripeInstance: Stripe | null = null
+let cardElement: StripeCardElement | null = null
+
+const claimPriceDisplay = computed(() =>
+  claimAmountPence.value != null ? `£${(claimAmountPence.value / 100).toFixed(2)}` : '',
+)
+// The backend picks the tier — infer which one just from the amount so the
+// copy explains what's being charged without duplicating the pricing logic.
+const claimPriceReason = computed(() => {
+  if (claimAmountPence.value == null) return ''
+  return claimAmountPence.value >= 3599
+    ? 'Identity verification (KYC) and HM Land Registry ownership check'
+    : 'HM Land Registry ownership check'
+})
+
+async function openPaymentStep(passportId: string) {
+  paymentError.value = ''
+  step.value = 'payment'
+  try {
+    const { createClaimPaymentIntent } = usePassportClaim()
+    const { clientSecret, amount } = await createClaimPaymentIntent(passportId)
+    claimClientSecret.value = clientSecret
+    claimAmountPence.value = amount
+    await nextTick()
+    await mountClaimStripe()
+  } catch (e: any) {
+    paymentError.value =
+      e?.data?.message || e?.message || 'Could not start payment. Please try again.'
+  }
+}
+
+async function mountClaimStripe() {
+  if (stripeInstance) return
+  const { loadStripe } = await import('@stripe/stripe-js')
+  stripeInstance = await loadStripe(config.public.stripeKey as string)
+  if (!stripeInstance) return
+
+  const elements = stripeInstance.elements()
+  cardElement = elements.create('card', {
+    hidePostalCode: true,
+    style: {
+      base: {
+        fontSize: '16px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+        color: '#1a1a1a',
+        '::placeholder': { color: '#aab7c4' },
+      },
+      invalid: { color: '#e53e3e' },
+    },
+  })
+  const mountEl = document.getElementById('claim-stripe-card-element')
+  if (mountEl) {
+    cardElement.mount(mountEl)
+    cardElement.on('change', (e) => {
+      paymentError.value = e.error?.message ?? ''
+      cardReady.value = e.complete
+    })
+  }
+}
+
+async function payClaimFee() {
+  if (!stripeInstance || !cardElement || !claimClientSecret.value || !claimPassportId.value) {
+    paymentError.value = 'Card form not ready. Please try again.'
+    return
+  }
+  paymentLoading.value = true
+  paymentError.value = ''
+  try {
+    const { error, paymentIntent } = await stripeInstance.confirmCardPayment(
+      claimClientSecret.value,
+      { payment_method: { card: cardElement } },
+    )
+    if (error) {
+      paymentError.value = error.message ?? 'Payment failed. Please try again.'
+      return
+    }
+    if (paymentIntent?.status !== 'succeeded') {
+      paymentError.value = 'Payment not completed. Please try again.'
+      return
+    }
+
+    // The webhook may not have fired yet; activatePassport re-checks
+    // Stripe directly via hasSuccessfulPayment so this is safe either way.
+    const { activatePassport } = usePassportClaim()
+    await activatePassport(claimPassportId.value)
+    finishAndNavigate(claimPassportId.value)
+  } catch (e: any) {
+    paymentError.value =
+      e?.data?.message || e?.message || 'Could not confirm payment. Please try again.'
+  } finally {
+    paymentLoading.value = false
+  }
+}
+
+onBeforeUnmount(() => {
+  cardElement?.destroy()
+})
 </script>
 
 <style scoped>
@@ -2277,6 +2455,14 @@ async function issuePassport() {
   animation: cl-spin 0.7s linear infinite;
 }
 @keyframes cl-spin { to { transform: rotate(360deg); } }
+.cl-stripe-box {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+.cl-stripe-box:focus-within { border-color: #00a19a; }
 
 /* ─────────────────────────────────────────────────────────────────
    KYC screens redesign (Confirm / Identity verified / Searching LR /
