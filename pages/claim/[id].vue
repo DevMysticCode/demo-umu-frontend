@@ -571,25 +571,15 @@
       <!-- Data rows with SVG icons on the left -->
       <div class="cl-data-rows">
         <div class="cl-data-row">
-          <span class="cl-data-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="4" y1="9" x2="20" y2="9" />
-              <line x1="4" y1="15" x2="20" y2="15" />
-              <line x1="10" y1="3" x2="8" y2="21" />
-              <line x1="16" y1="3" x2="14" y2="21" />
-            </svg>
+          <span class="cl-data-ic cl-data-ic--img">
+            <img src="/op-icons/buyer-passport/titleNumber.png" alt="" loading="lazy" />
           </span>
           <span class="cl-data-l">Title number</span>
           <span class="cl-data-v">{{ titleDisplay }}</span>
         </div>
         <div class="cl-data-row">
-          <span class="cl-data-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="9" y1="13" x2="15" y2="13" />
-              <line x1="9" y1="17" x2="15" y2="17" />
-            </svg>
+          <span class="cl-data-ic cl-data-ic--img">
+            <img src="/op-icons/buyer-passport/tenure.png" alt="" loading="lazy" />
           </span>
           <span class="cl-data-l">Tenure</span>
           <span class="cl-data-v">{{ tenureDisplay }}</span>
@@ -2661,6 +2651,11 @@ async function issuePassport() {
   justify-content: center;
 }
 .cl-data-ic svg { width: 20px; height: 20px; }
+.cl-data-ic--img {
+  background: #fff;
+  border: 1px solid #e2f1ea;
+}
+.cl-data-ic--img img { width: 30px; height: 30px; object-fit: contain; }
 .cl-data-l {
   font-size: 15px;
   font-weight: 600;
