@@ -936,7 +936,7 @@ const cards = [
   },
   {
     id: 'market',
-    peekLabel: 'The market today',
+    peekLabel: 'Why Moves Fail',
     peekSub: 'Live property market insights.',
     peekPill: 'Why it matters',
     cta: 'Read the case',

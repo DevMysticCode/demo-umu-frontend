@@ -262,7 +262,7 @@
             title="Connect with a Property Expert"
             description="Our verified solicitors and surveyors are ready to review this passport with you."
             minimumTime="1 Day"
-            @viewProfile="router.push('/experts')"
+            @viewProfile="router.push('/passportview/expert')"
           />
         </div>
 

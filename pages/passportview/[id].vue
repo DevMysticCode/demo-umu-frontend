@@ -98,7 +98,7 @@
           @click="onPublishClick"
         >
           <OPIcon name="published" class="w-[15px] h-[15px]" />
-          {{ publishLoading ? '...' : isPublished ? 'Unpublish' : 'Publish' }}
+          {{ publishLoading ? '...' : isPublished ? 'Unpublish Passport' : 'Publish Passport' }}
         </button>
       </div>
 
@@ -1035,8 +1035,8 @@ const safeProgress = computed(() =>
 const selectedRole = ref('seller')
 
 const roleOptions = [
-  { label: 'Buyer', value: 'buyer', icon: 'buyer' },
-  { label: 'Seller', value: 'seller', icon: 'seller' },
+  { label: 'Buyer View', value: 'buyer', icon: 'buyer' },
+  { label: 'Seller View', value: 'seller', icon: 'seller' },
 ]
 
 const overallProgress = computed(() => {
