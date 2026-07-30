@@ -3429,15 +3429,7 @@
                   @click="contactRole = r.value"
                 >
                   <span class="mkc-chip-ic" aria-hidden="true">
-                    <svg v-if="r.icon === 'person'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="8" r="4" />
-                      <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-                    </svg>
-                    <svg v-else-if="r.icon === 'briefcase'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="8" width="18" height="12" rx="2" />
-                      <path d="M8 8V6a2 2 0 012-2h4a2 2 0 012 2v2" />
-                      <line x1="3" y1="14" x2="21" y2="14" />
-                    </svg>
+                    <img :src="`/op-icons/makeContact/${r.icon}.png`" alt="" loading="lazy" />
                   </span>
                   {{ r.label }}
                 </button>
@@ -3491,19 +3483,7 @@
                   @click="contactReplyPref = r.value"
                 >
                   <span class="mkc-chip-ic" aria-hidden="true">
-                    <svg v-if="r.icon === 'envelope'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="5" width="18" height="14" rx="2" />
-                      <polyline points="3 7 12 13 21 7" />
-                    </svg>
-                    <svg v-else-if="r.icon === 'phone'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.7A2 2 0 014.1 2h3a2 2 0 012 1.7 12.8 12.8 0 00.7 2.8 2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.5 12.8 12.8 0 002.8.7A2 2 0 0122 16.9z" />
-                    </svg>
-                    <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 12a8 8 0 01-11.5 7.2L4 21l1.8-5.5A8 8 0 1121 12z" />
-                      <circle cx="8.5" cy="12" r="1" fill="currentColor" />
-                      <circle cx="12" cy="12" r="1" fill="currentColor" />
-                      <circle cx="15.5" cy="12" r="1" fill="currentColor" />
-                    </svg>
+                    <img :src="`/op-icons/makeContact/${r.icon}.png`" alt="" loading="lazy" />
                   </span>
                   {{ r.label }}
                 </button>
@@ -6890,16 +6870,16 @@ const contactReplyPref = ref<ContactReplyPref>('Email')
 const contactSubmitting = ref(false)
 const contactError = ref('')
 
-// Contact chip option lists — icon name maps to the inline SVG we render.
+// Contact chip option lists — icon name maps to a PNG in /op-icons/makeContact.
 const contactRoles: Array<{ value: ContactRole; label: string; icon: string }> = [
-  { value: 'Potential buyer', label: 'Potential buyer', icon: 'person' },
-  { value: 'Neighbour',       label: 'Neighbour',       icon: 'person' },
-  { value: 'Agent',           label: 'Agent',           icon: 'briefcase' },
+  { value: 'Potential buyer', label: 'Potential buyer', icon: 'buyer' },
+  { value: 'Neighbour',       label: 'Neighbour',       icon: 'neighbour' },
+  { value: 'Agent',           label: 'Agent',           icon: 'agent' },
 ]
 const contactReplyChoices: Array<{ value: ContactReplyPref; label: string; icon: string }> = [
-  { value: 'Email',  label: 'Email',  icon: 'envelope' },
+  { value: 'Email',  label: 'Email',  icon: 'email' },
   { value: 'Phone',  label: 'Phone',  icon: 'phone' },
-  { value: 'Either', label: 'Either', icon: 'chat' },
+  { value: 'Either', label: 'Either', icon: 'either' },
 ]
 
 // Message placeholder swaps based on the picked role so the textarea gives a
@@ -12006,14 +11986,15 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   height: 26px;
   border-radius: 8px;
   background: #E9F6F5;
-  color: #00A19A;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: background 0.18s, color 0.18s;
+  transition: background 0.18s;
 }
-.mkc-chip-ic svg { width: 16px; height: 16px; }
+/* Full-colour 3D PNGs now — no currentColor recolour, just size them
+   to fill the chip's icon slot. */
+.mkc-chip-ic img { width: 22px; height: 22px; object-fit: contain; }
 .mkc-chip--active {
   background: #231D45;
   border-color: #231D45;
@@ -12021,7 +12002,6 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .mkc-chip--active .mkc-chip-ic {
   background: rgba(255, 255, 255, 0.12);
-  color: #5EEAD4;
 }
 
 /* Icon-prefixed inputs (name + message) */
