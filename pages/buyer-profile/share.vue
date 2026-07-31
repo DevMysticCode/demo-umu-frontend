@@ -131,7 +131,7 @@
         <div class="sh-link-url">
           {{ canonicalShareLink }}
         </div>
-        <button class="sh-link-copy" @click="copyLink">Copy link</button>
+        <button class="sh-link-copy" :disabled="linkShareLoading" @click="copyLink">Copy link</button>
       </div>
 
       <!-- QR code -->
@@ -402,23 +402,15 @@ async function drawQr() {
   }
 }
 
-// Re-draw whenever the user lands on the Link & QR tab, or when the
-// public ref arrives async from the profile load.
+// Draw whenever the user lands on the Link & QR tab. drawQr() calls
+// ensureLinkShare() itself, which reuses shares.value once loaded (or
+// creates one) — no separate watcher needed for data arriving late.
 watch(activeTab, async (t) => {
   if (t === 'link') {
     await nextTick()
     drawQr()
   }
 })
-watch(
-  () => (passport.value as any)?.publicRef,
-  async (ref) => {
-    if (ref && activeTab.value === 'link') {
-      await nextTick()
-      drawQr()
-    }
-  },
-)
 
 // Save the QR to the camera roll / downloads folder.
 async function downloadQr() {
@@ -434,9 +426,7 @@ async function downloadQr() {
   }
   const a = document.createElement('a')
   a.href = qrDataUrl.value
-  a.download = `umu-buyer-profile-qr-${
-    (passport.value as any)?.publicRef ?? 'share'
-  }.png`
+  a.download = `umu-buyer-profile-qr-${linkShareToken.value ?? 'share'}.png`
   a.click()
   showToast({ message: 'QR saved', iconEmoji: '📥' })
 }
