@@ -295,8 +295,10 @@
     <ThankYouModal
       v-model="showThankYou"
       :points="earnedPoints"
+      :balance="rewardsBalance"
       :step-name="currentStep?.title || 'this'"
       @continue="handleContinue"
+      @go-rewards="router.push('/profile/rewards')"
     />
   </div>
 
@@ -359,6 +361,13 @@ const {
 
 const showThankYou = ref(false)
 const earnedPoints = ref(0)
+// Real points earned across this page's answers this session (accumulated
+// from each save's actual pointsAwarded — 0 on an edit of an
+// already-answered question, per the backend's idempotency guard). This is
+// "what you just earned finishing these questions," not a full section
+// lifetime total, which would need a backend query this page doesn't have.
+const sessionPointsEarned = ref(0)
+const rewardsBalance = ref(0)
 const isSaving = ref(false)
 const additionalInfoAnswer = ref(null)
 
@@ -624,11 +633,24 @@ watch(
   { immediate: true },
 )
 
-const calculateEarnedPoints = () => {
-  if (!currentStep.value) return 0
-  return currentStep.value.tasks
-    .filter((t) => t.completed)
-    .reduce((sum, t) => sum + (t.pointsReward || 0), 0)
+// Real balance is fetched fresh right before the "Congratulations" modal
+// shows, rather than kept live the whole page visit — it's only displayed
+// at that one moment, so there's no reason to poll it continuously.
+async function showThankYouWithRealPoints() {
+  earnedPoints.value = sessionPointsEarned.value
+  try {
+    const config = useRuntimeConfig()
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    if (token) {
+      const res = await $fetch(`${config.public.apiBase}/rewards/balance`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      rewardsBalance.value = res?.balance ?? 0
+    }
+  } catch {
+    /* modal just falls back to its own default balance display */
+  }
+  showThankYou.value = true
 }
 
 const totalQuestions = computed(() => currentQuestions.value.length || 0)
@@ -1014,10 +1036,10 @@ const updateAnswer = async (answer) => {
 
     isSaving.value = true
     try {
-      await apiSaveAnswer(currentId, answer)
+      const { pointsAwarded } = await apiSaveAnswer(currentId, answer)
+      sessionPointsEarned.value += pointsAwarded
       if (allCompleted) {
-        earnedPoints.value = calculateEarnedPoints()
-        showThankYou.value = true
+        await showThankYouWithRealPoints()
       }
     } catch (error) {
       console.error('Error completing NOTE question:', error)
@@ -1032,7 +1054,8 @@ const updateAnswer = async (answer) => {
     console.log('✅ RADIO question selected! Auto-saving...')
     isSaving.value = true
     try {
-      await apiSaveAnswer(currentQuestion.value.id, answer)
+      const { pointsAwarded } = await apiSaveAnswer(currentQuestion.value.id, answer)
+      sessionPointsEarned.value += pointsAwarded
 
       const currentId = currentQuestion.value.id
       const allCompleted = currentQuestions.value.every(
@@ -1040,8 +1063,7 @@ const updateAnswer = async (answer) => {
       )
 
       if (allCompleted) {
-        earnedPoints.value = calculateEarnedPoints()
-        showThankYou.value = true
+        await showThankYouWithRealPoints()
       } else {
         const hasMoreQuestions = moveToNextQuestion()
         if (!hasMoreQuestions) {
@@ -1102,7 +1124,8 @@ const updateAnswer = async (answer) => {
       console.log('✅ Auto-save triggered! Saving question...')
       isSaving.value = true
       try {
-        await apiSaveAnswer(currentQuestion.value.id, answer)
+        const { pointsAwarded } = await apiSaveAnswer(currentQuestion.value.id, answer)
+        sessionPointsEarned.value += pointsAwarded
 
         const currentId = currentQuestion.value.id
         const allCompleted = currentQuestions.value.every(
@@ -1111,8 +1134,7 @@ const updateAnswer = async (answer) => {
 
         if (allCompleted) {
           // All questions in section done — show thank-you
-          earnedPoints.value = calculateEarnedPoints()
-          showThankYou.value = true
+          await showThankYouWithRealPoints()
         } else {
           // More questions remain — move to next
           const hasMoreQuestions = moveToNextQuestion()
@@ -1154,7 +1176,8 @@ const saveAnswer = async () => {
     }
 
     // Save answer to backend
-    await apiSaveAnswer(currentQuestion.value.id, answerValue)
+    const { pointsAwarded } = await apiSaveAnswer(currentQuestion.value.id, answerValue)
+    sessionPointsEarned.value += pointsAwarded
 
     // Check if this was the last incomplete question (before advancing)
     const currentId = currentQuestion.value.id
@@ -1164,8 +1187,7 @@ const saveAnswer = async () => {
 
     if (allCompleted) {
       // All questions in section done — show thank-you
-      earnedPoints.value = calculateEarnedPoints()
-      showThankYou.value = true
+      await showThankYouWithRealPoints()
     } else {
       // More questions remain — move to next
       const hasMoreQuestions = moveToNextQuestion()

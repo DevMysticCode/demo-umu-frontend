@@ -333,43 +333,16 @@ const config = useRuntimeConfig()
 
 // Real property data fetched on mount so the pathway page shows the
 // actual EPC recommendations for THIS property (not the prototype's
-// hard-coded 6 steps).
-const property = ref<any>(null)
+// hard-coded 6 steps). Fetch + EPC self-heal logic lives in
+// useHomeScorePropertyData (shared with costs/[id].vue and the homescore
+// flow) so the three pages can't drift out of sync with each other again.
+const { property, loadProperty } = useHomeScorePropertyData()
 // Homescore quiz answers — used to mark missions the user has already
 // reported as done, and to surface a "verify with documents" prompt.
 const quizAnswers = ref<Record<string, string>>({})
 
 onMounted(async () => {
-  try {
-    const res = await fetch(
-      `${config.public.apiBase}/property/${propertyId.value}`,
-    )
-    if (res.ok) property.value = await res.json()
-    // The "Now → Potential" rating and mission list below are both driven
-    // by epcRecommendations — if a previous enrichment pass came back
-    // empty, "potential" defaults to garbage (can render worse than
-    // "now") and the mission list looks like "no improvements" even
-    // though the register likely has real recommended steps. Self-heal
-    // the same way the main HomeScore page does before rendering either.
-    const recs = (property.value as any)?.epcRecommendations
-    if (!Array.isArray(recs) || recs.length === 0) {
-      try {
-        const refreshRes = await fetch(
-          `${config.public.apiBase}/property/${propertyId.value}/epc-refresh`,
-          { method: 'POST' },
-        )
-        if (refreshRes.ok) {
-          const refreshed = await refreshRes.json()
-          const newRecs = (refreshed as any)?.epcRecommendations ?? []
-          if (Array.isArray(newRecs) && newRecs.length > 0) {
-            property.value = refreshed
-          }
-        }
-      } catch {}
-    }
-  } catch {
-    /* keep null — page falls back to a friendly empty state */
-  }
+  await loadProperty(propertyId.value)
   // Load the user's quiz answers — try the backend first (authed users),
   // then localStorage (guests / unsaved answers). Either source is fine
   // because the doneness heuristic only needs the answer values.

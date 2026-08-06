@@ -92,7 +92,18 @@
             </span>
             <div>
               <div class="cl-lr-tile-l">Tenure</div>
-              <div class="cl-lr-tile-v">{{ tenureDisplay }}</div>
+              <select
+                v-if="tenureDisplay === '—'"
+                class="cl-lr-tile-select"
+                :disabled="savingSelfDeclare"
+                @change="onSelfDeclare('tenure', ($event.target as HTMLSelectElement).value)"
+              >
+                <option value="" disabled selected>Select…</option>
+                <option value="Freehold">Freehold</option>
+                <option value="Leasehold">Leasehold</option>
+                <option value="Commonhold">Commonhold</option>
+              </select>
+              <div v-else class="cl-lr-tile-v">{{ tenureDisplay }}</div>
             </div>
           </div>
           <div class="cl-lr-tile">
@@ -118,7 +129,22 @@
             </span>
             <div>
               <div class="cl-lr-tile-l">Type</div>
-              <div class="cl-lr-tile-v">{{ typeDisplay }}</div>
+              <select
+                v-if="typeDisplay === '—'"
+                class="cl-lr-tile-select"
+                :disabled="savingSelfDeclare"
+                @change="onSelfDeclare('propertyType', ($event.target as HTMLSelectElement).value)"
+              >
+                <option value="" disabled selected>Select…</option>
+                <option value="Detached">Detached</option>
+                <option value="Semi-Detached">Semi-Detached</option>
+                <option value="Terraced">Terraced</option>
+                <option value="Flat">Flat</option>
+                <option value="Bungalow">Bungalow</option>
+                <option value="Maisonette">Maisonette</option>
+                <option value="Other">Other</option>
+              </select>
+              <div v-else class="cl-lr-tile-v">{{ typeDisplay }}</div>
             </div>
           </div>
           <div class="cl-lr-tile">
@@ -874,9 +900,62 @@ async function loadProperty() {
     if (data && data.id) {
       selectedProperty.value = data
       step.value = 'confirm'
+      ensurePropertyEnriched()
     }
   } catch {
     // Property not found — remain on search step
+  }
+}
+
+// Properties fresh from OS/Land-Registry search (or a raw /property/:id row
+// pre-dating the EPC enrichment pipeline) can have null tenure/propertyType,
+// which left this screen's "Tenure" / "Type" tiles permanently stuck on "—".
+// The enrichment endpoint's real tenure/propertyType live nested under
+// `epcCert` (EpcCert), not at the response's top level — pulling from the
+// top level directly (as buyer-passport/[id].vue's equivalent backfill
+// does) silently backfills nothing. Fired non-blockingly so "Is this your
+// property?" still renders immediately; tiles fill in reactively once/if
+// the fetch resolves.
+// Manual fallback for when neither EPC nor OS Places has tenure/propertyType
+// for this address (a genuine gap in those registers, not something a
+// retry/enrichment call can fix — see ensurePropertyEnriched above).
+const savingSelfDeclare = ref(false)
+async function onSelfDeclare(field: 'tenure' | 'propertyType', value: string) {
+  if (!value || !selectedProperty.value?.id) return
+  savingSelfDeclare.value = true
+  try {
+    await $fetch(`${base}/property/${selectedProperty.value.id}/self-declare`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: { [field]: value },
+    })
+    selectedProperty.value = { ...selectedProperty.value, [field]: value }
+  } catch {
+    // non-critical — tile just falls back to showing the picker again
+  } finally {
+    savingSelfDeclare.value = false
+  }
+}
+
+async function ensurePropertyEnriched() {
+  const p = selectedProperty.value
+  const id = p?.id
+  if (!id) return
+  if (p.propertyType && p.tenure) return // already have both, nothing to backfill
+  try {
+    const enrichment = await $fetch<any>(`${base}/property/${id}/enrichment`)
+    const epc = enrichment?.epcCert
+    if (epc && typeof epc === 'object' && selectedProperty.value?.id === id) {
+      selectedProperty.value = {
+        ...selectedProperty.value,
+        propertyType: selectedProperty.value.propertyType || epc.propertyType || null,
+        tenure: selectedProperty.value.tenure || epc.tenure || null,
+        sqft: selectedProperty.value.sqft || epc.sqft || null,
+        yearBuilt: selectedProperty.value.yearBuilt || epc.yearBuilt || null,
+      }
+    }
+  } catch {
+    // non-critical — tiles just keep showing "—"
   }
 }
 
@@ -1010,6 +1089,7 @@ const lrAddressDisplay = computed(() => {
 // ── Search step ───────────────────────────────────────────────
 function onPropertySelect(p: any) {
   selectedProperty.value = p
+  ensurePropertyEnriched()
 }
 function clearSelection() {
   selectedProperty.value = null
@@ -2558,6 +2638,21 @@ onBeforeUnmount(() => {
   color: #231D45;
   margin-top: 1px;
   word-break: break-all;
+}
+
+.cl-lr-tile-select {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #231D45;
+  margin-top: 2px;
+  border: 1.5px solid #00534f;
+  border-radius: 6px;
+  padding: 3px 4px;
+  background: #fff;
+  max-width: 100%;
+}
+.cl-lr-tile-select:disabled {
+  opacity: 0.6;
 }
 
 .cl-lock-note {

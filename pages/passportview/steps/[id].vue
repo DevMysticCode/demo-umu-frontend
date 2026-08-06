@@ -33,7 +33,7 @@
             <strong>
               {{ completedTaskCount }} of {{ totalTaskCount }}
               {{ totalTaskCount === 1 ? 'task' : 'tasks' }}
-              <em>· {{ totalStepPoints }}pts earned</em>
+              <em>· {{ stepEarnedPoints }}pts earned</em>
             </strong>
           </div>
         </div>
@@ -64,12 +64,13 @@
       />
 
       <PointsSection
-        :points="totalStepPoints"
+        :points="stepTotalPoints"
         :label="nextStepLabel"
-        :description="`A total of ${totalStepPoints}points are available in this section.`"
+        :description="`A total of ${stepTotalPoints} points are available in this section.`"
         :show-rewards-link="true"
         :show-next-task="hasNextTask"
         @nextTask="goToNextTask"
+        @go-rewards="router.push('/profile/rewards')"
       />
 
       <UnderReview
@@ -232,13 +233,18 @@ const stepProgress = computed(() => {
   return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 })
 
-// const totalStepPoints = computed(() => {
-//   return currentStep.value
-//     ? currentStep.value.tasks.reduce((sum, task) => sum + task.pointsReward, 0)
-//     : 0
-// })
-
-const totalStepPoints = computed(() => 0)
+// Real per-task totals now come straight from the backend (task.totalPoints /
+// task.earnedPoints, sourced from QuestionTemplate.points) — these two are
+// deliberately separate: the progress header shows what's been EARNED so
+// far, the PointsSection card shows what's AVAILABLE in the whole section.
+const stepEarnedPoints = computed(() => {
+  if (!currentStep.value) return 0
+  return currentStep.value.tasks.reduce((sum, task) => sum + (task.earnedPoints || 0), 0)
+})
+const stepTotalPoints = computed(() => {
+  if (!currentStep.value) return 0
+  return currentStep.value.tasks.reduce((sum, task) => sum + (task.totalPoints || 0), 0)
+})
 
 const orderedSteps = computed(() => {
   const list = [...steps.value]
