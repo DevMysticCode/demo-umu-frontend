@@ -161,7 +161,7 @@ export function useTA6Pdf() {
 
   // ─── Document builder ───────────────────────────────────────────────────────
 
-  function buildHtml(passport: any, property: any, sections: any[]): string {
+  function buildHtml(passport: any, property: any, sections: any[], enrichment: any = null): string {
     const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
     const addr = passport.addressLine1 || ''
     const sellerName = passport.ownerName || ''
@@ -192,6 +192,14 @@ export function useTA6Pdf() {
     const services = getSectionAnswers(sections, 'services')
     const rights = getSectionAnswers(sections, 'rightsAndInformalArrangements')
     const transaction = getSectionAnswers(sections, 'transactionInformation')
+
+    // Live enrichment (planning.data.gov.uk) — real listed-building /
+    // conservation-area / heritage constraints for this exact coordinate,
+    // rather than leaving §10.4 permanently blank for manual completion.
+    const planningHistory = enrichment?.planningHistory ?? null
+    const heritageConstraints: any[] = (planningHistory?.constraints ?? []).filter(
+      (c: any) => c.category === 'heritage',
+    )
 
     // Helper: Render passport answers as a teal data block
     function passportBlock(items: Array<{ q: string; a: string }>, maxRows = 99): string {
@@ -443,8 +451,10 @@ export function useTA6Pdf() {
     </div>
     <div class="row">
       <div class="row-num">7.3</div>
-      <div class="row-q">Is the property in a radon-affected area?</div>
-      <div class="row-a">${yesNo('')}</div>
+      <div class="row-q">Is the property in a radon-affected area?
+        ${enrichment?.radon?.description ? `<div style="margin-top:4px;font-size:7.5pt;color:#00534f" class="filled">${esc(enrichment.radon.description)}</div>` : ''}
+      </div>
+      <div class="row-a">${yesNo(enrichment?.radon ? (enrichment.radon.band === 'Low' ? 'no' : 'yes') : '')}</div>
     </div>
     <div class="row">
       <div class="row-num">7.4</div>
@@ -561,8 +571,10 @@ export function useTA6Pdf() {
     </div>
     <div class="row">
       <div class="row-num">10.4</div>
-      <div class="row-q">Is the property or any part of it listed or in a conservation area?</div>
-      <div class="row-a">${yesNo('')}</div>
+      <div class="row-q">Is the property or any part of it listed or in a conservation area?
+        ${heritageConstraints.length ? `<div style="margin-top:4px;font-size:7.5pt;color:#00534f" class="filled">${esc(heritageConstraints.map((c: any) => c.type).join(', '))}</div>` : ''}
+      </div>
+      <div class="row-a">${yesNo(planningHistory ? (heritageConstraints.length ? 'yes' : 'no') : '')}</div>
     </div>
     <div class="row">
       <div class="row-num">10.5</div>
@@ -705,8 +717,8 @@ export function useTA6Pdf() {
 
   function generateTA6(data: any) {
     if (!data) return
-    const { passport, property, sections } = data
-    const html = buildHtml(passport, property, sections ?? [])
+    const { passport, property, sections, enrichment } = data
+    const html = buildHtml(passport, property, sections ?? [], enrichment ?? null)
     printHtmlDocument(html, 'Pop-ups are blocked. Please allow pop-ups for this site to generate the TA6 form.')
   }
 

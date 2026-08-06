@@ -1197,7 +1197,10 @@ function onBuyerEditProfile() {
 }
 
 const propertyId = computed(() => String(route.params.id))
-const property = ref<any>(null)
+// Fetch + EPC self-heal logic lives in useHomeScorePropertyData (shared
+// with pathway/[id].vue and the homescore flow) so this page can't drift
+// out of sync with the same pattern implemented separately elsewhere.
+const { property, loadProperty } = useHomeScorePropertyData()
 const streetData = ref<any>(null)
 const enrichment = ref<any>(null)
 const enrichmentLoaded = ref(false)
@@ -1228,33 +1231,7 @@ function toggleCard(id: string) {
 }
 
 onMounted(async () => {
-  try {
-    const res = await fetch(
-      `${config.public.apiBase}/property/${propertyId.value}`,
-    )
-    if (res.ok) property.value = await res.json()
-    // The EPC breakdown bars on this page (see `epcStats`) score Electrics
-    // off `epcRecommendations` — if a previous enrichment pass came back
-    // empty, that scores as an optimistic "no upgrades needed" instead of
-    // reflecting what the register actually recommends. Self-heal the same
-    // way the owner-facing HomeScore page does.
-    const recs = (property.value as any)?.epcRecommendations
-    if (!Array.isArray(recs) || recs.length === 0) {
-      try {
-        const refreshRes = await fetch(
-          `${config.public.apiBase}/property/${propertyId.value}/epc-refresh`,
-          { method: 'POST' },
-        )
-        if (refreshRes.ok) {
-          const refreshed = await refreshRes.json()
-          const newRecs = (refreshed as any)?.epcRecommendations ?? []
-          if (Array.isArray(newRecs) && newRecs.length > 0) {
-            property.value = refreshed
-          }
-        }
-      } catch {}
-    }
-  } catch {}
+  await loadProperty(propertyId.value)
   try {
     const res = await fetch(
       `${config.public.apiBase}/property/${propertyId.value}/street-energy-rank`,

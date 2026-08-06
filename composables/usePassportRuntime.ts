@@ -141,13 +141,18 @@ const loadSectionQuestions = async (stepId, startAtTaskId = null) => {
 }
 
 const saveAnswer = async (questionId, value) => {
-  await getApi().answerQuestion(questionId, value)
+  const res: any = await getApi().answerQuestion(questionId, value)
 
   const q = currentQuestions.value.find((q) => q.id === questionId)
   if (q) {
     q.completed = true
     q.answer = value
   }
+
+  // Real points just earned for this specific answer — 0 when the question
+  // was already answered before (the backend's idempotency guard), so
+  // callers accumulating a running total never double-count an edit.
+  return { pointsAwarded: res?.pointsAwarded ?? 0 }
 }
 
 const moveToNextQuestion = () => {

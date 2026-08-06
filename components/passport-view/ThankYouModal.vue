@@ -6,8 +6,8 @@
         <div class="cong-header">
           <h1 class="cong-title">Congratulations!</h1>
           <p class="cong-sub">
-            You've earned <b class="cong-points">{{ points || 475 }} points</b>
-            by completing the {{ stepName || 'Boundaries' }} section
+            You've earned <b class="cong-points">{{ points }} points</b>
+            by completing the {{ stepName || 'this' }} section
           </p>
         </div>
 
@@ -25,7 +25,7 @@
         <div class="cong-reward">
           <div class="cong-reward-body">
             <h3 class="cong-reward-title">Your Rewards Await</h3>
-            <div class="cong-reward-num">{{ balance || 1500 }}</div>
+            <div class="cong-reward-num">{{ balance }}</div>
             <div class="cong-reward-label">Points balance</div>
             <p class="cong-reward-text">
               Redeem points for property services and premium features
@@ -58,9 +58,9 @@
 <script setup>
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
-  points: { type: Number, default: 475 },
-  stepName: { type: String, default: 'Boundaries' },
-  balance: { type: Number, default: 1500 },
+  points: { type: Number, default: 0 },
+  stepName: { type: String, default: '' },
+  balance: { type: Number, default: 0 },
 })
 
 const emit = defineEmits(['update:modelValue', 'continue', 'go-rewards'])

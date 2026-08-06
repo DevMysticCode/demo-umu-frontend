@@ -986,6 +986,11 @@ const shareCopied = ref(false)
 // Comparables
 const comparables = ref<any[]>([])
 
+// Live property enrichment (radon, planning constraints, etc.) — stashed
+// separately from `data.value.property` so the TA6 generator can read it
+// without depending on the conditional backfill-merge below.
+const propertyEnrichment = ref<any>(null)
+
 // Notes
 const showNotesSheet = ref(false)
 const notes = ref<any[]>([])
@@ -1002,15 +1007,15 @@ onMounted(async () => {
     )
     await Promise.all([loadComparables(), loadNotes()])
     loadResumeSection()
-    // Some property rows were persisted before the EPC / OS Places
-    // enrichment pipeline ran — so the buyer view lands on a card
-    // with propertyType / sqft / yearBuilt / tenure all showing "—"
-    // even though the upstream registers have the data. Fire the
-    // enrichment endpoint on mount when any of those key fields
-    // are missing and merge the returned property back into `data`
-    // so the details grid renders real values without needing a
-    // backfill migration.
-    await backfillPropertyEnrichmentIfNeeded()
+    // Fire the enrichment endpoint on mount (backend serves a cached
+    // aggregate instantly when available, so this is cheap on repeat
+    // views). Two jobs: back-fill propertyType/sqft/yearBuilt/tenure when
+    // a pre-enrichment-pipeline row is missing them, and stash the full
+    // aggregate (radon, planning constraints, ...) for the TA6 generator.
+    // Deliberately NOT awaited — this must not hold up the page's loading
+    // spinner on a cold cache (~60-70s worst case); it fills in whatever
+    // it can by the time the user reaches the download buttons.
+    backfillPropertyEnrichmentIfNeeded()
   } catch (e: any) {
     error.value = e?.data?.message || 'Failed to load passport.'
   } finally {
@@ -1022,9 +1027,6 @@ async function backfillPropertyEnrichmentIfNeeded() {
   const p = data.value?.property
   const propertyId = p?.id
   if (!propertyId) return
-  const missing =
-    !p.propertyType || !p.sqft || !p.yearBuilt || !p.tenure
-  if (!missing) return
   try {
     const tok =
       typeof window !== 'undefined' ? localStorage.getItem('token') : null
@@ -1033,16 +1035,24 @@ async function backfillPropertyEnrichmentIfNeeded() {
       { headers: tok ? { Authorization: `Bearer ${tok}` } : {} },
     )
     if (enrichment && typeof enrichment === 'object') {
-      // Only fill in the blanks — never clobber a value the row
-      // already had. The enrichment API sometimes returns partial
-      // data (e.g. EPC gave us floorAreaSqm but not yearBuilt),
-      // and the merged shape needs to converge on the most
-      // complete state without overwriting anything good.
-      data.value.property = {
-        ...enrichment,
-        ...Object.fromEntries(
-          Object.entries(p).filter(([, v]) => v != null && v !== ''),
-        ),
+      propertyEnrichment.value = enrichment
+      // The real tenure/propertyType/sqft/yearBuilt live nested under
+      // `enrichment.epcCert`, not at the response's top level — spreading
+      // `enrichment` directly onto `property` (the old approach here)
+      // silently backfilled nothing, since those keys don't exist at that
+      // level, while also leaking unrelated enrichment fields (crime,
+      // radon, nearby, ...) into the property object's namespace.
+      const epc = enrichment.epcCert
+      if (epc && typeof epc === 'object') {
+        // Only fill in the blanks — never clobber a value the row
+        // already had.
+        data.value.property = {
+          ...p,
+          propertyType: p.propertyType || epc.propertyType || null,
+          sqft: p.sqft || epc.sqft || null,
+          yearBuilt: p.yearBuilt || epc.yearBuilt || null,
+          tenure: p.tenure || epc.tenure || null,
+        }
       }
     }
   } catch (e) {
@@ -1332,7 +1342,7 @@ function downloadTA6() {
   if (!data.value) return
   generatingTA6.value = true
   try {
-    generateTA6(data.value)
+    generateTA6({ ...data.value, enrichment: propertyEnrichment.value })
   } finally {
     setTimeout(() => {
       generatingTA6.value = false
