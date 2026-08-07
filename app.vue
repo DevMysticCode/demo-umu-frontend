@@ -1,24 +1,12 @@
 <template>
   <div class="app">
-    <!-- Animated splash overlay — mounts once per session on native
-         Capacitor builds only. Web (Vercel) skips it because there's
-         no launch flash to bridge. Hides after ~1.8s, matching the
-         Capacitor plugin's launchShowDuration + fade out. -->
-    <SplashScreen v-if="showNativeSplash" />
     <NuxtPage />
   </div>
 </template>
 
 <script setup>
 import { Capacitor } from '@capacitor/core'
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import SplashScreen from '~/components/core/SplashScreen.vue'
-
-// Only render the Vue splash on native platforms. Web builds see the
-// browser tab loading indicator and the standard Nuxt hydration —
-// adding a splash there would be a delay for no reason.
-const showNativeSplash = ref(import.meta.client && Capacitor.isNativePlatform())
 
 // Global app configuration
 useHead({
