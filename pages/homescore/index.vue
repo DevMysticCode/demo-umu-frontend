@@ -20,11 +20,21 @@
 
     <!-- ── Hero ─────────────────────────────────────────────────────── -->
     <div class="hs-hero">
-      <div class="hs-hero-title">What does any UK home really cost to run?</div>
-      <div class="hs-hero-sub">
-        Instantly scored from public EPC data. Check any UK address and see its
-        running costs against the street — in seconds.
+      <div class="hs-hero-text">
+        <div class="hs-hero-title">
+          Discover what <span class="lt-teal">any</span> UK home is really
+          telling you.
+        </div>
+        <div class="hs-hero-sub">
+          Search any UK address to compare running costs, energy performance and
+          public property insights in seconds.
+        </div>
       </div>
+      <img
+        src="/op-icons/landing/homeScoreCard.png"
+        alt=""
+        class="hs-hero-house"
+      />
     </div>
 
     <!-- ── Search ───────────────────────────────────────────────────── -->
@@ -85,7 +95,10 @@
     <!-- ── Real story card ─────────────────────────────────────────── -->
     <div ref="realStoryEl" class="hs-real-story">
       <div class="hs-real-story-bar" />
-      <span class="hs-real-story-quote-mark" aria-hidden="true">"</span>
+      <svg class="hs-real-story-leaves" viewBox="0 0 40 28" aria-hidden="true">
+        <path d="M9 2c5 0 9 5.5 9 12s-4 12-9 12S0 20.5 0 14 4 2 9 2z" />
+        <path d="M31 2c5 0 9 5.5 9 12s-4 12-9 12-9-5.5-9-12S26 2 31 2z" />
+      </svg>
       <div class="hs-real-story-body">
         <div class="hs-real-story-eyebrow">
           <span class="hs-real-story-eyebrow-dot" aria-hidden="true" />
@@ -96,17 +109,39 @@
           <span v-if="!typingDone" class="hs-typer-caret" aria-hidden="true" />
         </div>
         <div class="hs-real-story-text">
-          Energy suppliers estimate usage based on assumptions. Those
-          assumptions are sometimes very wrong. HomeScore shows you what your
-          home should actually cost — and flags when something doesn't add up.
+          Energy suppliers estimate usage using assumptions. Sometimes
+          they're wrong. HomeScore compares public EPC data and highlights
+          when something doesn't look right.
         </div>
       </div>
+      <img
+        src="/op-icons/homescore/wallet.png"
+        alt=""
+        class="hs-real-story-icon"
+      />
     </div>
 
     <!-- ── Live activity ───────────────────────────────────────────── -->
     <div class="hs-live-row">
-      <span class="hs-live-pulse" />
-      <span><strong>147</strong> HomeScores run in the last hour</span>
+      <span class="hs-live-icon" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </span>
+      <span class="hs-live-text"
+        ><strong>{{ lastHourCount }} HomeScores</strong> run in the last
+        hour</span
+      >
     </div>
 
     <!-- ── How it works ───────────────────────────────────────────── -->
@@ -114,23 +149,14 @@
       <div class="hs-section-h">How it works</div>
     </div>
 
-    <div class="hs-how-tabs" role="tablist">
-      <button
-        v-for="t in howTabs"
-        :key="t.id"
-        class="hs-how-tab"
-        :class="{ active: activeHow === t.id }"
-        @click="activeHow = t.id"
-      >
-        {{ t.label }}
-      </button>
-    </div>
-
     <div class="hs-steps-list">
-      <div v-for="(step, i) in currentHowSteps" :key="i" class="hs-step-row">
-        <div class="hs-step-num">{{ i + 1 }}</div>
+      <div v-for="(step, i) in howSteps" :key="i" class="hs-step-row">
+        <img :src="step.icon" alt="" class="hs-step-icon" />
         <div class="hs-step-body">
-          <div class="hs-step-title">{{ step.title }}</div>
+          <div class="hs-step-title-row">
+            <span class="hs-step-num">{{ i + 1 }}</span>
+            <span class="hs-step-title">{{ step.title }}</span>
+          </div>
           <div class="hs-step-sub">{{ step.sub }}</div>
         </div>
       </div>
@@ -153,7 +179,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 
 const router = useRouter()
@@ -233,61 +259,38 @@ function onSearchEnter(_q: string) {
 //   input?.focus()
 // }
 
-// ── How it works tabs ────────────────────────────────────────────────
-type HowId = 'buyers' | 'owners' | 'curious'
-const activeHow = ref<HowId>('buyers')
-
-const howTabs: { id: HowId; label: string }[] = [
-  { id: 'buyers', label: 'Looking to buy' },
-  { id: 'owners', label: "It's my property" },
-  { id: 'curious', label: 'Just curious' },
+// ── How it works — fixed 3 steps (no audience tabs) ──────────────────
+const howSteps = [
+  {
+    title: 'Search any UK address',
+    sub: 'Enter a postcode or street name to instantly view its HomeScore.',
+    icon: '/op-icons/explore/propertySearch.png',
+  },
+  {
+    title: 'See how the property compares',
+    sub: 'Compare running costs, energy efficiency and public property information with similar homes.',
+    icon: '/op-icons/investment/growthChart.png',
+  },
+  {
+    title: 'Know more about the home',
+    sub: 'Spot potential issues, understand where money could be saved and know what to investigate next.',
+    icon: '/op-icons/homescore/clipboard.png',
+  },
 ]
 
-const howCopy: Record<HowId, { title: string; sub: string }[]> = {
-  buyers: [
-    {
-      title: 'Search any UK address',
-      sub: 'Type a postcode or street and see how it scores against its neighbours.',
-    },
-    {
-      title: 'See running costs & risks',
-      sub: 'Energy costs, sold history, flood risk — everything public records can tell you before you make an offer.',
-    },
-    {
-      title: 'Know what to ask before you view',
-      sub: 'Get a list of questions based on what the EPC data flags — walk in already informed.',
-    },
-  ],
-  owners: [
-    {
-      title: 'Search your address',
-      sub: "See your property's estimated score from public EPC data — takes 5 seconds.",
-    },
-    {
-      title: 'See how you compare to your street',
-      sub: 'Find out if this property is costing more to run than similar homes nearby — and why.',
-    },
-    {
-      title: 'Answer a few quick questions to get your real score',
-      sub: 'Public EPC data can be years out of date. A 2-minute quiz about your home tells the real story — and starts building your Property Passport.',
-    },
-  ],
-  curious: [
-    {
-      title: "Search any address — yours or anyone's",
-      sub: 'No account, no commitment. Just type a postcode and see what the data says.',
-    },
-    {
-      title: 'See what your street is paying',
-      sub: 'Compare running costs across nearby homes — renting or owning, the data is the same for everyone.',
-    },
-    {
-      title: 'Find out if you could be paying less',
-      sub: 'If this property is costing more than its neighbours, the HomeScore shows you exactly why — and what could change it.',
-    },
-  ],
-}
-const currentHowSteps = computed(() => howCopy[activeHow.value])
+// ── Real "N HomeScores run in the last hour" count ────────────────────
+const config = useRuntimeConfig()
+const lastHourCount = ref(0)
+onMounted(async () => {
+  try {
+    const res: any = await $fetch(
+      `${config.public.apiBase}/property/activity/last-hour`,
+    )
+    lastHourCount.value = res?.count ?? 0
+  } catch {
+    /* stays at 0 on failure */
+  }
+})
 </script>
 
 <style scoped>
@@ -354,14 +357,31 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
 /* ── Hero ─────────────────────────────────────────────────────────── */
 .hs-hero {
   padding: 18px 24px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.hs-hero-text {
+  flex: 1;
+  min-width: 0;
+}
+.hs-hero-house {
+  width: 164px;
+  height: 164px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 .hs-hero-title {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.1;
+  line-height: 1.15;
   color: #231d45;
   margin-bottom: 12px;
+}
+.hs-hero-title .lt-teal {
+  color: #00a19a;
 }
 .hs-hero-sub {
   font-size: 15px;
@@ -475,8 +495,8 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   gap: 14px;
   flex-wrap: wrap;
   font-size: 13px;
-  color: #9c98ad;
-  font-weight: 600;
+  color: #231d45;
+  font-weight: 700;
   margin: 12px 0 6px;
 }
 .hs-meta-item {
@@ -485,8 +505,8 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   gap: 5px;
 }
 .hs-meta-item svg {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   color: #00a19a;
 }
 
@@ -497,16 +517,15 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
    stands out from the surrounding page. */
 .hs-real-story {
   margin: 18px 22px 0;
-  background: linear-gradient(160deg, #E9F6F5 0%, #F5FBFA 55%, #FFFFFF 100%);
-  border: 1.5px solid #B7E4E1;
+  background: linear-gradient(160deg, #e9f6f5 0%, #f5fbfa 55%, #ffffff 100%);
+  border: 1.5px solid #b7e4e1;
   border-radius: 20px;
   padding: 20px 20px 20px 26px;
   position: relative;
   overflow: hidden;
   display: flex;
   gap: 10px;
-  box-shadow:
-    0 8px 22px rgba(0, 161, 154, 0.14),
+  box-shadow: 0 8px 22px rgba(0, 161, 154, 0.14),
     0 2px 6px rgba(0, 161, 154, 0.08);
 }
 .hs-real-story::before {
@@ -517,7 +536,11 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   right: -40px;
   width: 140px;
   height: 140px;
-  background: radial-gradient(circle at center, rgba(0, 161, 154, 0.16), transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 161, 154, 0.16),
+    transparent 70%
+  );
   pointer-events: none;
 }
 .hs-real-story-bar {
@@ -526,20 +549,27 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   left: 0;
   width: 5px;
   height: 100%;
-  background: linear-gradient(180deg, #00C4BC 0%, #00A19A 60%, #007E78 100%);
+  background: linear-gradient(180deg, #00c4bc 0%, #00a19a 60%, #007e78 100%);
   border-radius: 5px 0 0 5px;
 }
-.hs-real-story-quote-mark {
+.hs-real-story-leaves {
   position: absolute;
-  top: -8px;
+  top: 14px;
   right: 16px;
-  font-family: 'Georgia', serif;
-  font-size: 78px;
-  font-weight: 800;
-  color: rgba(0, 161, 154, 0.15);
-  line-height: 1;
+  width: 22px;
+  height: 16px;
+  fill: rgba(35, 29, 69, 0.1);
   pointer-events: none;
   z-index: 0;
+}
+.hs-real-story-icon {
+  width: 136px;
+  height: 136px;
+  object-fit: contain;
+  flex-shrink: 0;
+  align-self: center;
+  position: relative;
+  z-index: 1;
 }
 .hs-real-story-body {
   padding-left: 6px;
@@ -553,7 +583,7 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   gap: 6px;
   font-size: 10px;
   font-weight: 800;
-  color: #007E78;
+  color: #007e78;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -562,16 +592,23 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #00A19A;
+  background: #00a19a;
   box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.2);
   animation: hsPulse 2s ease-in-out infinite;
 }
 @keyframes hsPulse {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.2); }
-  50%      { box-shadow: 0 0 0 5px rgba(0, 161, 154, 0.05); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(0, 161, 154, 0.05);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hs-real-story-eyebrow-dot { animation: none; }
+  .hs-real-story-eyebrow-dot {
+    animation: none;
+  }
 }
 .hs-real-story-quote {
   font-size: 15px;
@@ -658,37 +695,27 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   gap: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: #007e78;
   letter-spacing: -0.05px;
+}
+.hs-live-text {
+  color: #231d45;
 }
 .hs-live-row strong {
   color: #00a19a;
   font-weight: 800;
 }
-.hs-live-pulse {
-  width: 7px;
-  height: 7px;
+.hs-live-icon {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #00a19a;
-  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
 }
-.hs-live-pulse::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(0, 161, 154, 0.4);
-  animation: hs-live-pulse 1.6s ease-out infinite;
-}
-@keyframes hs-live-pulse {
-  0% {
-    transform: scale(0.6);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
+.hs-live-icon svg {
+  width: 13px;
+  height: 13px;
 }
 
 /* ── How it works ─────────────────────────────────────────────────── */
@@ -703,99 +730,73 @@ const currentHowSteps = computed(() => howCopy[activeHow.value])
   text-transform: uppercase;
 }
 
-/* Tabs: inline-flex segmented pill (prototype-exact) */
-.hs-how-tabs {
-  display: inline-flex;
-  background: #fafafa;
-  border: 1px solid #ececef;
-  border-radius: 100px;
-  padding: 4px;
-  gap: 2px;
-  margin: 0 22px 14px;
-  width: calc(100% - 28px);
-  justify-content: space-evenly;
-}
-.hs-how-tab {
-  white-space: nowrap;
-  border: none;
-  background: transparent;
-  color: #6b6783;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 800;
-  padding: 8px 16px;
-  border-radius: 100px;
-  cursor: pointer;
-  letter-spacing: -0.05px;
-  transition: all 0.15s;
-}
-.hs-how-tab:hover {
-  color: #231d45;
-}
-.hs-how-tab.active {
-  background: #fff;
-  color: #231d45;
-  box-shadow: 0 2px 6px rgba(35, 29, 69, 0.08);
-}
-
-/* Steps — generous spacing + connecting vertical line between numbers */
+/* Steps — icon + numbered title, connecting dotted line between numbers */
 .hs-steps-list {
-  padding: 0 22px;
+  padding: 4px 22px 0;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 26px;
 }
 .hs-step-row {
   display: flex;
-  gap: 14px;
+  gap: 16px;
   align-items: flex-start;
-  position: relative;
-  z-index: 1;
 }
-.hs-step-row:not(:last-child)::before {
-  content: '';
-  position: absolute;
-  left: 13px;
-  top: 28px;
-  width: 1.5px;
-  height: calc(100% + 22px - 6px);
-  background: #e5f4f2;
-  z-index: 0;
-}
-.hs-step-num {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #fff;
-  border: 1.5px solid #e5f4f2;
-  color: #007e78;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 800;
+.hs-step-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
   flex-shrink: 0;
-  position: relative;
-  z-index: 1;
 }
 .hs-step-body {
   flex: 1;
   min-width: 0;
-  padding-top: 2px;
+  padding-top: 6px;
+}
+.hs-step-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+.hs-step-row:not(:last-child) .hs-step-num::after {
+  content: '';
+  position: absolute;
+  top: 26px;
+  left: 12px;
+  width: 1.5px;
+  height: 42px;
+  border-left: 1.5px dashed #cfe9e6;
+}
+.hs-step-num {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid #00a19a;
+  color: #00a19a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
 }
 .hs-step-title {
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
-  margin-bottom: 4px;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 .hs-step-sub {
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.5;
   letter-spacing: -0.05px;
+  margin-top: 6px;
+  padding-left: 34px;
 }
 </style>

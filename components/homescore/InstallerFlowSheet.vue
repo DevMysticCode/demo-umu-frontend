@@ -294,7 +294,7 @@
                 </p>
               </div>
               <button class="ifs-primary" @click="afterConfirm">
-                See your requests
+                View my requests
               </button>
             </div>
           </div>
@@ -354,22 +354,25 @@
               </div>
               <h3>Marketplace — early access</h3>
               <p>
-                We're onboarding vetted local trades right now. Join early
-                access and we'll open your marketplace the moment installers
-                cover {{ postcode || 'your area' }}.
+                We're building your local marketplace around real homeowner
+                demand. Join early access and we'll let you know as soon as
+                vetted professionals are available for
+                <b>{{ postcode || 'your area' }}</b>.
               </p>
             </div>
             <div class="ifs-promise">
               <div class="ifs-promise-row">
                 <div class="ifs-p-ic ifs-p-ic--svg">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z" />
+                    <polyline points="9 12 11 14 15.5 9.5" />
                   </svg>
                 </div>
                 <div>
-                  <div class="ifs-p-title">UMU-verified suppliers</div>
+                  <div class="ifs-p-title">UMU-verified professionals</div>
                   <div class="ifs-p-sub">
-                    ID, insurance and accreditation checked before they list.
+                    Identity, insurance and relevant accreditations checked
+                    before they appear.
                   </div>
                 </div>
               </div>
@@ -378,9 +381,10 @@
                   <img src="/op-icons/onboarding/trustPadlock.png" alt="" loading="lazy" />
                 </div>
                 <div>
-                  <div class="ifs-p-title">Payments in escrow</div>
+                  <div class="ifs-p-title">Protected payments</div>
                   <div class="ifs-p-sub">
-                    Held via UProtect, released when work's signed off.
+                    Where available, payments can be held securely until work
+                    is signed off.
                   </div>
                 </div>
               </div>
@@ -389,9 +393,10 @@
                   <img src="/op-icons/congratulations/gift.png" alt="" loading="lazy" />
                 </div>
                 <div>
-                  <div class="ifs-p-title">Grant-ready</div>
+                  <div class="ifs-p-title">Funding-aware matching</div>
                   <div class="ifs-p-sub">
-                    TrustMark & ECO4-registered trades for funded work.
+                    We'll prioritise appropriately registered professionals
+                    where funded work requires it.
                   </div>
                 </div>
               </div>
@@ -406,11 +411,13 @@
           <div v-else-if="state === 'ea-form'" class="ifs-state">
             <div class="ifs-eyebrow">Early access</div>
             <h3 class="ifs-title">
-              Get in the queue for {{ postcode || 'your area' }}
+              Help us build the right network for
+              {{ postcode || 'your area' }}
             </h3>
             <p class="ifs-lede">
-              We'll open your marketplace the moment vetted trades cover your
-              postcode. Tell us what to prioritise.
+              Tell us which professionals matter most to you. We'll use local
+              demand to prioritise who we onboard first and let you know when
+              matching is available.
             </p>
 
             <div class="ifs-prop-lock">
@@ -425,7 +432,7 @@
               </div>
             </div>
 
-            <div class="ifs-ea-q">Which trades matter most to you?</div>
+            <div class="ifs-ea-q">Which professionals matter most to you?</div>
             <div class="ifs-ea-chips">
               <button
                 v-for="c in interestChoices"
@@ -443,20 +450,38 @@
               </button>
             </div>
 
-            <div class="ifs-field">
-              <label>Your name</label>
-              <input
-                v-model="eaName"
-                type="text"
-                placeholder="e.g. Maxine Wilson"
-              />
+            <div class="ifs-ea-q">How should we contact you?</div>
+            <div class="ifs-contact-toggle">
+              <button
+                type="button"
+                class="ifs-contact-opt"
+                :class="{ on: contactMethod === 'email' }"
+                @click="contactMethod = 'email'"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="M2 7l10 6 10-6" />
+                </svg>
+                Email
+              </button>
+              <button
+                type="button"
+                class="ifs-contact-opt"
+                :class="{ on: contactMethod === 'mobile' }"
+                @click="contactMethod = 'mobile'"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="2" width="12" height="20" rx="2" />
+                  <line x1="11" y1="18" x2="13" y2="18" />
+                </svg>
+                Mobile
+              </button>
             </div>
             <div class="ifs-field">
-              <label>Email or mobile</label>
               <input
                 v-model="eaContact"
-                type="text"
-                placeholder="We'll tell you when it opens"
+                :type="contactMethod === 'email' ? 'email' : 'tel'"
+                :placeholder="contactMethod === 'email' ? 'e.g. maxine.wilson@email.com' : 'e.g. 07700 900123'"
               />
             </div>
 
@@ -471,17 +496,20 @@
           <!-- STATE: early-access confirm -->
           <div v-else-if="state === 'ea-confirm'" class="ifs-state">
             <div class="ifs-confirm">
-              <div class="ifs-tick">
+              <div class="ifs-tick ifs-tick--sparkly">
+                <svg class="ifs-tick-sparkle ifs-tick-sparkle--1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z" /></svg>
+                <svg class="ifs-tick-sparkle ifs-tick-sparkle--2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z" /></svg>
+                <svg class="ifs-tick-sparkle ifs-tick-sparkle--3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z" /></svg>
                 <span class="ifs-ring" />
                 <svg viewBox="0 0 24 24">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <h3>You're on the early list</h3>
+              <h3>You're on the early access list!</h3>
               <p>
-                We'll email you the moment vetted trades cover
-                <b>{{ postcode || 'your area' }}</b
-                >.
+                We'll contact you as soon as suitable vetted professionals
+                are available for
+                <b>{{ postcode || 'your area' }}</b>.
                 <span v-if="interests.length"
                   >We'll prioritise
                   <b>{{ interests.join(', ').toLowerCase() }}</b> for your
@@ -495,11 +523,14 @@
                     <polyline points="16 7 22 7 22 13" />
                   </svg>
                 </span>
-                <p>
-                  Your interest helps us decide
-                  <b>which trades to onboard first</b> — the more demand in
-                  {{ postcode || 'your area' }}, the sooner it opens.
-                </p>
+                <div>
+                  <div class="ifs-passport-title">Your request helps shape the marketplace</div>
+                  <p>
+                    The more demand we see for a trade in your area, the
+                    sooner we can prioritise onboarding suitable
+                    professionals.
+                  </p>
+                </div>
               </div>
               <button class="ifs-primary" @click="close">
                 Back to pathway
@@ -561,8 +592,8 @@ const answers = reactive<{
 }>({})
 const formName = ref('')
 const formContact = ref('')
-const eaName = ref('')
 const eaContact = ref('')
+const contactMethod = ref<'email' | 'mobile'>('email')
 const interests = ref<string[]>([])
 
 // Match requests survive: (a) sheet close/reopen — the outer `v-if`
@@ -595,6 +626,21 @@ function persistRequests() {
     localStorage.setItem(REQUESTS_LS_KEY, JSON.stringify(requests.value))
   } catch {}
 }
+
+// Whether the user has already joined marketplace early access — read by
+// the pathway page to swap "Join marketplace early access" for "Request
+// another professional" once they're already on the list. Same
+// useState+localStorage mirror pattern as `requests` above.
+const EARLY_ACCESS_LS_KEY = 'umu.installer.earlyAccessJoined'
+const earlyAccessJoined = useState<boolean>('installer-early-access-joined', () => false)
+onMounted(() => {
+  if (earlyAccessJoined.value) return
+  try {
+    earlyAccessJoined.value = localStorage.getItem(EARLY_ACCESS_LS_KEY) === '1'
+  } catch {
+    /* corrupt/inaccessible LS is fine — leave false */
+  }
+})
 
 const { send: sendCapture } = useCaptureEvent()
 
@@ -812,12 +858,15 @@ function submitEarly() {
     propertyId: null,
     postcode: props.postcode || null,
     contact: {
-      name: eaName.value || undefined,
       contact: eaContact.value || undefined,
       consentToContact: true,
     },
-    data: { interests: [...interests.value] },
+    data: { interests: [...interests.value], contactMethod: contactMethod.value },
   })
+  earlyAccessJoined.value = true
+  try {
+    localStorage.setItem(EARLY_ACCESS_LS_KEY, '1')
+  } catch {}
   state.value = 'ea-confirm'
 }
 
@@ -1413,6 +1462,34 @@ watch(
   opacity: 0;
   animation: ifs-pulse 0.6s ease 0.1s;
 }
+.ifs-tick--sparkly {
+  overflow: visible;
+}
+.ifs-tick-sparkle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  color: #7c6fb0;
+  opacity: 0.85;
+}
+.ifs-tick-sparkle--1 {
+  top: -10px;
+  left: -14px;
+  color: #00a19a;
+}
+.ifs-tick-sparkle--2 {
+  bottom: -6px;
+  right: -18px;
+  width: 9px;
+  height: 9px;
+}
+.ifs-tick-sparkle--3 {
+  top: 8px;
+  right: -22px;
+  width: 7px;
+  height: 7px;
+  color: #00a19a;
+}
 @keyframes ifs-pulse {
   0% {
     transform: scale(0.8);
@@ -1472,6 +1549,12 @@ watch(
 }
 .ifs-passport p b {
   color: #231d45;
+}
+.ifs-passport-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #231d45;
+  margin-bottom: 3px;
 }
 
 /* tracker */
@@ -1708,5 +1791,39 @@ watch(
 }
 .ifs-ea-chip:active {
   transform: scale(0.97);
+}
+.ifs-contact-toggle {
+  display: flex;
+  margin-top: 12px;
+  background: #f4f2fa;
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+}
+.ifs-contact-opt {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b6880;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+.ifs-contact-opt svg {
+  width: 15px;
+  height: 15px;
+}
+.ifs-contact-opt.on {
+  background: #fff;
+  color: #231d45;
+  box-shadow: 0 2px 6px rgba(35, 29, 69, 0.1);
 }
 </style>

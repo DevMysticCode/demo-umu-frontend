@@ -8,62 +8,115 @@
         </svg>
       </button>
       <div class="app-header-info">
-        <div class="app-header-title">Your pathway</div>
-        <div class="app-header-sub">Level {{ fromLevel }} → Level {{ toLevel }} · {{ addressLine }}</div>
+        <div class="app-header-title">Your improvement pathway</div>
+        <div class="app-header-sub">{{ addressLine }} · EPC {{ fromLevel }}</div>
       </div>
-      <div class="app-header-spacer" />
+      <button class="app-icon-btn" type="button" aria-label="How this works">?</button>
+    </div>
+
+    <!-- Intro: current score + headline + house illustration -->
+    <div class="pathway-intro anim-1">
+      <div class="pathway-intro-text">
+        <div class="pathway-intro-eyebrow">Your HomeScore: {{ fromScore }}</div>
+        <div class="pathway-intro-title">
+          Here's how your home could improve further.
+        </div>
+      </div>
+      <div class="pathway-house-wrap">
+        <svg class="pw-sparkle pw-sparkle--1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z" /></svg>
+        <svg class="pw-sparkle pw-sparkle--2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z" /></svg>
+        <img src="/op-icons/landing/homeScoreCard.png" alt="" class="pathway-house-ic" />
+      </div>
     </div>
 
     <!-- Pathway hero -->
     <div class="pathway-hero anim-1">
-      <div class="pathway-eyebrow">✦ EPC-recommended route</div>
-      <div class="pathway-route">
-        <div class="pathway-level-from">
-          <div class="pathway-level-letter from">{{ fromLevel }}</div>
-          <div class="pathway-level-sub">Now · {{ fromScore }}</div>
+      <div class="pathway-eyebrow">✦ Your improvement pathway</div>
+      <div class="pathway-hero-row">
+        <div class="pathway-circles-block">
+          <div class="pathway-circles-row">
+            <div class="pw-circle-wrap">
+              <svg class="pw-circle-svg" viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="pwc-bg" cx="60" cy="60" r="50" stroke-width="9" />
+                <circle
+                  class="pwc-fill"
+                  cx="60" cy="60" r="50" stroke-width="9"
+                  stroke-dasharray="314.16"
+                  :stroke-dashoffset="pwFromOffset"
+                  stroke-linecap="round" fill="none"
+                />
+              </svg>
+              <div class="pw-circle-num">
+                <div class="pwc-big">{{ fromScore }}</div>
+                <div class="pwc-small">/100</div>
+              </div>
+            </div>
+            <div class="pathway-arrow">→</div>
+            <div class="pw-circle-wrap">
+              <svg class="pw-circle-svg" viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="pwc-bg" cx="60" cy="60" r="50" stroke-width="9" />
+                <circle
+                  class="pwc-fill pwc-fill--to"
+                  cx="60" cy="60" r="50" stroke-width="9"
+                  stroke-dasharray="314.16"
+                  :stroke-dashoffset="pwToOffset"
+                  stroke-linecap="round" fill="none"
+                />
+              </svg>
+              <div class="pw-circle-num">
+                <div class="pwc-big pwc-big--to">{{ toScore }}</div>
+                <div class="pwc-small">/100</div>
+              </div>
+            </div>
+          </div>
+          <div class="pathway-circle-labels">
+            <div class="pw-clabel">Current HomeScore</div>
+            <div class="pw-clabel">Potential HomeScore</div>
+          </div>
         </div>
-        <div class="pathway-arrow" />
-        <div class="pathway-level-to">
-          <div class="pathway-level-letter to">{{ toLevel }}</div>
-          <div class="pathway-level-sub">Potential · {{ toScore }}</div>
+        <div class="pathway-hero-divider" />
+        <div class="pathway-hero-stats">
+          <div class="pathway-hero-stat">
+            <span class="pw-stat-icon pw-stat-icon--img"><img src="/op-icons/investment/cashAndCoins.png" alt="" loading="lazy" /></span>
+            <span class="pw-stat-text">Save up to<br /><b>£{{ totalSavings }}/year</b></span>
+          </div>
+          <div class="pathway-hero-stat">
+            <span class="pw-stat-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M11 20c-4.5 0-8-3.5-8-8 0-6 6-9.5 9-10.5.3 3.5 3 5 5 6.5 2.3 1.7 4 4 4 7 0 3-2.5 5-5.5 5-.7 0-1.3-.1-1.9-.3.6-1.2 1.1-2.7 1.1-4.2 0-2-.8-3.4-1.7-4.5-.2 2.2-1.3 3.7-2 5-.6 1.1-1 2.2-1 3z" />
+              </svg>
+            </span>
+            <span class="pw-stat-text">Lower<br />carbon impact</span>
+          </div>
         </div>
       </div>
-      <div class="pathway-stats-row">
-        <div class="pathway-stat">
-          <div class="pathway-stat-num">+{{ toScore - fromScore }}</div>
-          <div class="pathway-stat-label">Points to gain</div>
-        </div>
-        <div class="pathway-stat">
-          <div class="pathway-stat-num">£{{ totalSavings }}</div>
-          <div class="pathway-stat-label">/yr saved</div>
-        </div>
-        <div class="pathway-stat">
-          <div class="pathway-stat-num">{{ co2Cut }}t</div>
-          <div class="pathway-stat-label">CO₂ cut /yr</div>
-        </div>
+      <div class="pathway-hero-foot">
+        Based on the improvements recommended in your EPC. Costs and savings
+        are estimates.
       </div>
     </div>
 
     <!-- Grant banner -->
     <div class="grant-banner anim-2">
-      <div class="grant-banner-title">
-        <img src="/op-icons/congratulations/gift.png" alt="" class="grant-banner-ic" loading="lazy" />
-        Grants listed on your EPC
+      <img src="/op-icons/congratulations/gift.png" alt="" class="grant-banner-ic" loading="lazy" />
+      <div class="grant-banner-body">
+        <div class="grant-banner-title">You may be able to get help with the cost</div>
+        <div class="grant-banner-sub">
+          You could be eligible for:
+          <span class="grant-banner-schemes">Warm Homes Local Grant, Boiler Upgrade Scheme, and Energy Company Obligation (ECO).</span>
+        </div>
+        <div class="grant-banner-note">Eligibility depends on income, property type and area.</div>
       </div>
-      <div class="grant-banner-sub">
-        The EPC lists <b>Warm Homes Local Grant</b>, <b>Boiler Upgrade Scheme</b>, and
-        <b>Energy Company Obligation (ECO)</b>. Eligibility depends on income and area — your
-        installer will check.
-      </div>
+      <span class="grant-banner-chev">›</span>
     </div>
 
     <!-- Section heading -->
     <div class="section-h-row">
       <div class="section-h">
-        EPC's {{ missions.length }} step{{ missions.length === 1 ? '' : 's' }} · in published order
+        {{ missions.length }} recommended improvement{{ missions.length === 1 ? '' : 's' }}
       </div>
       <div v-if="fromScore && toScore" class="section-h-sub">
-        {{ fromScore }} → {{ toScore }} points
+        {{ fromScore }} → {{ toScore }} <span class="section-h-sub-muted">Potential (+{{ toScore - fromScore }})</span>
       </div>
     </div>
 
@@ -95,21 +148,32 @@
           </div>
           <div class="mission-info">
             <div class="mission-title">
-              Step {{ i + 1 }} · {{ m.title }}
+              <span class="mission-num-badge">{{ i + 1 }}</span>
+              {{ m.title }}
               <span v-if="m.done" class="mission-done-pill">Already done</span>
             </div>
             <div class="mission-meta">
               <template v-if="m.done">
                 You said this is in place — upload {{ m.docLabel }} to verify it on your Passport.
               </template>
-              <template v-else>{{ m.meta }}</template>
+              <template v-else>Recommended in your EPC</template>
             </div>
           </div>
+          <button v-if="!m.done" class="mission-add-btn" type="button" aria-label="Add to shortlist" @click.stop="openInstallerSheet(m)">+</button>
         </div>
-        <div v-if="!m.done" class="mission-rewards">
-          <span class="quest-reward stat">{{ m.pts }}</span>
-          <span class="quest-reward money">{{ m.save }}</span>
-          <span class="quest-reward grant">{{ m.cost }}</span>
+        <div v-if="!m.done" class="mission-stats-row">
+          <div class="mission-stat">
+            <div class="mission-stat-label">HomeScore</div>
+            <div class="mission-stat-val mission-stat-val--score">{{ m.scoreFrom }} → {{ m.scoreTo }}</div>
+          </div>
+          <div class="mission-stat">
+            <div class="mission-stat-label">Save</div>
+            <div class="mission-stat-val mission-stat-val--save">{{ m.save || '—' }}</div>
+          </div>
+          <div class="mission-stat">
+            <div class="mission-stat-label">Est. cost</div>
+            <div class="mission-stat-val mission-stat-val--cost">{{ m.cost || '—' }}</div>
+          </div>
         </div>
         <div class="mission-actions">
           <template v-if="m.done">
@@ -151,67 +215,20 @@
       </div>
     </div>
 
-    <!-- Beyond the pathway teaser — twin progress rings (v6-2) -->
-    <div class="moveready-teaser anim-4" @click="goToBoost">
-      <div class="moveready-teaser-head">
-        <div class="moveready-teaser-eyebrow">✨ Beyond the pathway</div>
-        <div class="moveready-teaser-title">See your MoveReady &amp; Passport scores</div>
+    <!-- Beyond the pathway — compact banner with a pill CTA -->
+    <div class="beyond-banner anim-4">
+      <span class="beyond-banner-ic" aria-hidden="true">✨</span>
+      <div class="beyond-banner-body">
+        <div class="beyond-banner-title">Beyond the pathway</div>
+        <div class="beyond-banner-sub">
+          Build your Property Passport to record improvements, boost your
+          HomeScore and unlock more benefits.
+        </div>
       </div>
-      <div class="moveready-teaser-row">
-        <div class="moveready-mini">
-          <div class="moveready-mini-ring">
-            <svg viewBox="0 0 60 60" aria-hidden="true">
-              <circle cx="30" cy="30" r="24" stroke="#E4E5ED" stroke-width="6" fill="none" />
-              <circle
-                cx="30" cy="30" r="24"
-                stroke="url(#mrGrad)" stroke-width="6" fill="none"
-                stroke-dasharray="150.8"
-                :stroke-dashoffset="150.8 - (mrPct / 100) * 150.8"
-                stroke-linecap="round"
-                transform="rotate(-90 30 30)"
-              />
-              <defs>
-                <linearGradient id="mrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#7C6FB0" />
-                  <stop offset="100%" stop-color="#5B3795" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div class="moveready-mini-num">{{ mrPct }}</div>
-          </div>
-          <div class="moveready-mini-label">MoveReady</div>
-        </div>
-        <div class="moveready-mini">
-          <div class="moveready-mini-ring">
-            <svg viewBox="0 0 60 60" aria-hidden="true">
-              <circle cx="30" cy="30" r="24" stroke="#E4E5ED" stroke-width="6" fill="none" />
-              <circle
-                cx="30" cy="30" r="24"
-                stroke="url(#ppGrad)" stroke-width="6" fill="none"
-                stroke-dasharray="150.8"
-                :stroke-dashoffset="150.8 - (ppPct / 100) * 150.8"
-                stroke-linecap="round"
-                transform="rotate(-90 30 30)"
-              />
-              <defs>
-                <linearGradient id="ppGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#00B8B0" />
-                  <stop offset="100%" stop-color="#008A84" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div class="moveready-mini-num accent">{{ ppPct }}%</div>
-          </div>
-          <div class="moveready-mini-label">Passport</div>
-        </div>
-        <div class="moveready-teaser-body">
-          <div class="moveready-teaser-line">
-            <b>{{ passportDone }} of {{ passportTotal }}</b> Passport sections complete
-          </div>
-          <div class="moveready-teaser-line2">{{ passportSummary }}</div>
-        </div>
-        <div class="moveready-teaser-arrow">›</div>
-      </div>
+      <button class="beyond-banner-btn" type="button" @click="goToBuildPassport">
+        Build my Property Passport
+        <span class="beyond-banner-btn-ar">→</span>
+      </button>
     </div>
 
     <!-- Bottom CTAs
@@ -226,14 +243,14 @@
         type="button"
         @click="openMarketplaceSheet"
       >
-        🛒 Join the marketplace early access
+        🛒 {{ earlyAccessJoined ? 'Request another professional' : 'Join the marketplace early access' }}
       </button>
       <button
         class="bottom-cta-secondary"
         type="button"
         @click="openTrackerSheet"
       >
-        See your requests
+        View my requests
       </button>
     </div>
 
@@ -428,8 +445,14 @@ function openTrackerSheet() {
   installerSheetOpen.value = true
 }
 
+// Shared with InstallerFlowSheet.vue via the same useState key — true once
+// the user has joined marketplace early access anywhere in the app, so this
+// button can invite them to request another professional instead of
+// re-showing the "join early access" intro they've already completed.
+const earlyAccessJoined = useState<boolean>('installer-early-access-joined', () => false)
+
 function openMarketplaceSheet() {
-  installerInitialState.value = 'market'
+  installerInitialState.value = earlyAccessJoined.value ? 'ea-form' : 'market'
   installerSheetOpen.value = true
 }
 
@@ -445,6 +468,18 @@ const toScore = computed(() => {
   // "+-81 points to gain"). Floor it at the current score instead.
   return Math.max(raw, fromScore.value)
 })
+
+const PW_CIRCUMFERENCE = 2 * Math.PI * 50 // 314.16, matches the SVG r=50 rings
+const pwFromOffset = computed(
+  () => PW_CIRCUMFERENCE - (Math.max(0, Math.min(100, fromScore.value)) / 100) * PW_CIRCUMFERENCE,
+)
+const pwToOffset = computed(
+  () => PW_CIRCUMFERENCE - (Math.max(0, Math.min(100, toScore.value)) / 100) * PW_CIRCUMFERENCE,
+)
+
+function goToBuildPassport() {
+  router.push(`/homescore/passport/${propertyId.value}`)
+}
 
 // Pick an icon for each EPC recommendation type based on title keywords.
 // Returns a path into /op-icons/homescore/. The template branches on
@@ -486,7 +521,6 @@ function gradeFor(score: number): string {
   return 'G'
 }
 const fromLevel = computed(() => gradeFor(fromScore.value))
-const toLevel = computed(() => gradeFor(toScore.value))
 
 interface Mission {
   id: string
@@ -494,6 +528,8 @@ interface Mission {
   title: string
   meta: string
   pts: string
+  scoreFrom: number
+  scoreTo: number
   save: string
   cost: string
   supplierLabel: string
@@ -571,11 +607,15 @@ const missions = computed<Mission[]>(() => {
     if (Number.isFinite(an) && Number.isFinite(bn)) return an - bn
     return 0
   })
+  let prevScore = fromScore.value
   return sorted.map((r: any, idx: number) => {
     const title = r?.title || r?.improvementDescr || 'EPC recommendation'
     const sap = Number(r?.resultingSap ?? 0)
     const grade = sap > 0 ? gradeFor(sap) : ''
     const doneInfo = isMissionDone(title, quizAnswers.value)
+    const scoreFrom = prevScore
+    const scoreTo = sap > 0 ? Math.round(sap) : prevScore
+    prevScore = scoreTo
     return {
       id: String(r?.id ?? idx),
       icon: iconForRec(title),
@@ -584,7 +624,9 @@ const missions = computed<Mission[]>(() => {
         r?.description ||
         `Step ${idx + 1} on this property's EPC pathway.`,
       pts: sap > 0 ? `→ ${sap} ${grade}` : `Step ${idx + 1}`,
-      save: r?.typicalSaving ? `£${r.typicalSaving}/yr` : '',
+      scoreFrom,
+      scoreTo,
+      save: r?.typicalSaving ? `~£${r.typicalSaving}/year` : '',
       cost: r?.costRange || '',
       supplierLabel: supplierLabelForRec(title),
       done: doneInfo.done,
@@ -629,16 +671,6 @@ const totalSavings = computed(() => {
     0,
   )
 })
-const co2Cut = computed(() => {
-  const p: any = property.value
-  const now = Number(p?.co2Emissions ?? p?.epcCert?.co2Emissions ?? 0)
-  const pot = Number(
-    p?.co2EmissionsPotential ?? p?.epcCert?.co2EmissionsPotential ?? 0,
-  )
-  if (!now || !pot || pot >= now) return '0'
-  return (now - pot).toFixed(1)
-})
-
 function goToMarketplace(missionId: string) {
   router.push(`/homescore/marketplace/${propertyId.value}?focus=${missionId}`)
 }
@@ -650,11 +682,6 @@ function goToMatched() {
 }
 function markDone(_id: string) {
   // Placeholder — backend wiring later
-}
-function goToBoost() {
-  // Pathway is a standalone route; redirect back into the homescore flow
-  // and let it switch to the boost screen.
-  router.push(`/homescore/${propertyId.value}?screen=boost`)
 }
 
 // Back button — restore the homescore screen the user was on before they
@@ -672,37 +699,6 @@ function onBack() {
   router.replace(`/homescore/${propertyId.value}?screen=${encodeURIComponent(from)}`)
 }
 
-// ── "Beyond the pathway" teaser values ─────────────────────────
-// MoveReady % and Passport % aren't backed by a live endpoint yet, so we
-// derive defensible placeholders from the property's passport state.
-// Once the boost flow has counted uploaded docs server-side, swap these
-// for real `/property/:id/move-ready` and `/property/:id/passport/summary`
-// reads.
-const mrPct = computed(() => {
-  const p: any = property.value
-  if (!p) return 0
-  // Seed from whether a passport exists + has been published.
-  if (p.passportPublished) return 65
-  if (p.hasPassport) return 35
-  return 12
-})
-const ppPct = computed(() => {
-  const p: any = property.value
-  if (!p) return 0
-  if (p.passportPublished) return 70
-  if (p.hasPassport) return 40
-  return 30
-})
-const passportTotal = 19 // total passport section templates
-const passportDone = computed(() => {
-  // Rough estimate from Passport %: 19 sections × (ppPct / 100)
-  return Math.round((passportTotal * ppPct.value) / 100)
-})
-const passportSummary = computed(() => {
-  const remaining = passportTotal - passportDone.value
-  if (remaining <= 0) return 'All sections complete'
-  return `${remaining} section${remaining === 1 ? '' : 's'} to go · tap to boost`
-})
 </script>
 
 <style scoped>
@@ -736,13 +732,13 @@ const passportSummary = computed(() => {
 }
 
 /* Soften prototype's 800-weights to match the SF Pro app scale */
-.hs-v6-pathway :is(.app-header-title, .pathway-eyebrow, .pathway-stat-num,
+.hs-v6-pathway :is(.app-header-title, .pathway-eyebrow,
   .grant-banner-title, .mission-title, .path-summary-title,
-  .bottom-cta-btn, .moveready-teaser-title, .quest-reward) {
+  .bottom-cta-btn, .beyond-banner-title, .mission-stat-val) {
   font-weight: 700;
 }
-.hs-v6-pathway :is(.app-header-sub, .pathway-stat-label, .grant-banner-sub,
-  .mission-meta, .path-summary-sub, .moveready-teaser-sub) {
+.hs-v6-pathway :is(.app-header-sub, .grant-banner-sub,
+  .mission-meta, .path-summary-sub, .beyond-banner-sub) {
   font-weight: 500;
 }
 .hs-v6-pathway .ignored-placeholder {
@@ -804,10 +800,6 @@ const passportSummary = computed(() => {
   min-width: 0;
   text-align: center;
 }
-.app-header-spacer {
-  width: 36px;
-  flex-shrink: 0;
-}
 .app-header-title {
   font-size: 15px;
   font-weight: 800;
@@ -822,9 +814,63 @@ const passportSummary = computed(() => {
   margin-top: 1px;
 }
 
+/* Intro — current score + headline + house illustration */
+.pathway-intro {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 6px 20px 0;
+}
+.pathway-intro-text {
+  flex: 1;
+  min-width: 0;
+}
+.pathway-intro-eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--accent-dark);
+  margin-bottom: 4px;
+}
+.pathway-intro-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+.pathway-house-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  margin-top: -6px;
+}
+.pathway-house-ic {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.pw-sparkle {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  color: var(--accent-light);
+  opacity: 0.8;
+}
+.pw-sparkle--1 {
+  top: -2px;
+  left: 2px;
+}
+.pw-sparkle--2 {
+  top: 16px;
+  right: -4px;
+  width: 7px;
+  height: 7px;
+}
+
 /* Pathway hero */
 .pathway-hero {
-  margin: 14px 20px 0;
+  margin: 18px 20px 0;
   padding: 20px 18px 16px;
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   border-radius: 14px;
@@ -856,92 +902,157 @@ const passportSummary = computed(() => {
   text-transform: uppercase;
   margin-bottom: 10px;
 }
-.pathway-route {
+.pathway-hero-row {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 14px;
 }
-.pathway-level-from,
-.pathway-level-to {
+.pathway-circles-block {
+  flex: 1.3;
+  min-width: 0;
+}
+.pathway-hero-divider {
+  width: 1px;
+  align-self: stretch;
+  background: rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+}
+.pathway-hero-stats {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  gap: 14px;
 }
-.pathway-level-letter {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
+.pathway-hero-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pw-stat-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+}
+.pw-stat-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.pw-stat-icon--img {
+  background: #fff;
+  padding: 5px;
+}
+.pw-stat-icon--img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.pw-stat-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.35;
+}
+.pw-stat-text b {
+  font-weight: 800;
+  color: #fff;
+}
+.pathway-hero-foot {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.4;
+}
+.pathway-circles-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.pw-circle-wrap {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+}
+.pw-circle-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.pwc-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+}
+.pwc-fill {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.55);
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pwc-fill--to {
+  stroke: #ffffff;
+}
+.pw-circle-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.pwc-big {
   font-size: 22px;
   font-weight: 800;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.6px;
+  line-height: 1;
 }
-.pathway-level-letter.from {
-  background: rgba(255, 255, 255, 0.18);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+.pwc-big--to {
+  color: #ffffff;
+  font-size: 26px;
 }
-.pathway-level-letter.to {
-  background: white;
-  color: var(--accent-dark);
-  border: 2px solid white;
-  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.25);
-}
-.pathway-level-sub {
-  font-size: 9.5px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
-  color: rgba(255, 255, 255, 0.75);
-  text-transform: uppercase;
+.pwc-small {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
 }
 .pathway-arrow {
-  flex: 1;
-  height: 3px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), white);
-  position: relative;
-  border-radius: 100px;
-}
-.pathway-arrow::after {
-  content: '→';
-  position: absolute;
-  top: 50%;
-  right: -2px;
-  transform: translateY(-50%);
-  color: white;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
+  color: white;
+  flex-shrink: 0;
 }
-.pathway-stats-row {
+.pathway-circle-labels {
   display: flex;
+  justify-content: center;
   gap: 8px;
 }
-.pathway-stat {
-  flex: 1;
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+.pw-clabel {
+  width: 76px;
   text-align: center;
-}
-.pathway-stat-num {
-  font-size: 16px;
+  font-size: 8.5px;
   font-weight: 800;
-  letter-spacing: -0.4px;
-}
-.pathway-stat-label {
-  font-size: 9px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.75);
-  letter-spacing: 0.8px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
-  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 /* Grant banner */
 .grant-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin: 12px 20px 0;
   padding: 14px 16px;
   background: #f2ebfd;
@@ -949,21 +1060,22 @@ const passportSummary = computed(() => {
   border-radius: 14px;
   box-shadow: var(--shadow-card);
 }
+.grant-banner-ic {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.grant-banner-body {
+  flex: 1;
+  min-width: 0;
+}
 .grant-banner-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
   font-size: 13px;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 4px;
   letter-spacing: -0.1px;
-}
-.grant-banner-ic {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-  flex-shrink: 0;
 }
 .grant-banner-sub {
   font-size: 11.5px;
@@ -971,9 +1083,22 @@ const passportSummary = computed(() => {
   color: var(--text-secondary);
   line-height: 1.55;
 }
-.grant-banner-sub :deep(b) {
+.grant-banner-schemes {
   color: #5b3795;
   font-weight: 800;
+}
+.grant-banner-note {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-faint);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.grant-banner-chev {
+  font-size: 20px;
+  font-weight: 800;
+  color: #5b3795;
+  flex-shrink: 0;
 }
 
 /* Section heading */
@@ -994,6 +1119,10 @@ const passportSummary = computed(() => {
   font-size: 11px;
   font-weight: 600;
   color: var(--accent-dark);
+}
+.section-h-sub-muted {
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 /* Mission list */
@@ -1099,6 +1228,9 @@ const passportSummary = computed(() => {
   min-width: 0;
 }
 .mission-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
   font-weight: 800;
   color: var(--text);
@@ -1106,42 +1238,76 @@ const passportSummary = computed(() => {
   margin-bottom: 3px;
   line-height: 1.25;
 }
+.mission-num-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-dark);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
 .mission-meta {
   font-size: 11.5px;
   color: var(--text-secondary);
   font-weight: 500;
   line-height: 1.4;
+  padding-left: 30px;
 }
-.mission-rewards {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-.quest-reward {
-  padding: 4px 9px;
-  border-radius: 100px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.1px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.quest-reward.stat {
-  background: var(--accent-paler);
+.mission-add-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--card);
   color: var(--accent-dark);
-  border: 1px solid var(--accent-pale);
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
 }
-.quest-reward.money {
-  background: var(--warning-pale);
-  color: #7a5500;
-  border: 1px solid rgba(245, 166, 35, 0.3);
+.mission-add-btn:hover {
+  border-color: var(--accent-pale);
+  background: var(--accent-paler);
 }
-.quest-reward.grant {
-  background: #f2ebfd;
+.mission-stats-row {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0 12px;
+  padding: 12px;
+  background: var(--accent-paler);
+  border-radius: 12px;
+}
+.mission-stat {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+.mission-stat-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.mission-stat-val {
+  font-size: 12.5px;
+  letter-spacing: -0.2px;
+}
+.mission-stat-val--score {
+  color: var(--accent-dark);
+}
+.mission-stat-val--save {
+  color: #b5762f;
+}
+.mission-stat-val--cost {
   color: #5b3795;
-  border: 1px solid #c9b0f0;
 }
 .mission-actions {
   display: flex;
@@ -1489,6 +1655,63 @@ const passportSummary = computed(() => {
   line-height: 1.4;
 }
 
+/* Beyond the pathway banner */
+.beyond-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 20px 0;
+  padding: 14px 16px;
+  background: var(--accent-paler);
+  border: 1px solid var(--accent-pale);
+  border-radius: 14px;
+}
+.beyond-banner-ic {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.beyond-banner-body {
+  flex: 1;
+  min-width: 0;
+}
+.beyond-banner-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.beyond-banner-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.beyond-banner-btn {
+  flex-shrink: 0;
+  max-width: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1.5px solid var(--accent);
+  border-radius: 100px;
+  color: var(--accent-dark);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+}
+.beyond-banner-btn:hover {
+  background: var(--accent-paler);
+}
+.beyond-banner-btn-ar {
+  font-size: 13px;
+}
+
 /* Bottom CTA */
 .bottom-cta {
   padding: 16px 20px 24px;
@@ -1533,99 +1756,4 @@ const passportSummary = computed(() => {
   background: var(--accent-paler);
 }
 
-/* Beyond the pathway teaser — two-section layout (v6-2) */
-.moveready-teaser {
-  margin: 12px 20px 0;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #f2ebfd 0%, var(--card) 100%);
-  border: 1.5px solid #c9b0f0;
-  border-radius: 14px;
-  cursor: pointer;
-  transition: all 0.18s;
-}
-.moveready-teaser:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(91, 55, 149, 0.15);
-}
-.moveready-teaser-head {
-  margin-bottom: 10px;
-}
-.moveready-teaser-eyebrow {
-  font-size: 9.5px;
-  font-weight: 700;
-  color: #5b3795;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-}
-.moveready-teaser-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.2px;
-  margin-top: 3px;
-}
-.moveready-teaser-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.moveready-mini {
-  text-align: center;
-  flex-shrink: 0;
-}
-.moveready-mini-ring {
-  position: relative;
-  width: 54px;
-  height: 54px;
-}
-.moveready-mini-ring svg {
-  width: 100%;
-  height: 100%;
-}
-.moveready-mini-num {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  color: #5b3795;
-  letter-spacing: -0.3px;
-}
-.moveready-mini-num.accent {
-  color: var(--accent-dark);
-}
-.moveready-mini-label {
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  margin-top: 4px;
-}
-.moveready-teaser-body {
-  flex: 1;
-  min-width: 0;
-}
-.moveready-teaser-line {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-}
-.moveready-teaser-line :deep(b) {
-  color: #5b3795;
-  font-weight: 700;
-}
-.moveready-teaser-line2 {
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-top: 3px;
-}
-.moveready-teaser-arrow {
-  font-size: 20px;
-  color: #5b3795;
-  flex-shrink: 0;
-}
 </style>

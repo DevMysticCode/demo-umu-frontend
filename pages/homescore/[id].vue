@@ -57,7 +57,7 @@
            silently, so the button did nothing on tap. Re-enable
            by tagging the target elements inside those child
            components AND restoring this button. -->
-      <div class="hs-header-spacer" />
+      <div class="hs-beta-pill">BETA</div>
     </div>
 
     <!-- Tour overlay (renders only when active) -->
@@ -145,9 +145,15 @@
         :from-score="autoScoreVal"
         :to-score="v6QuizFinal?.finalScore ?? autoScoreVal"
         :delta="v6QuizFinal?.delta ?? 0"
+        :property="property"
+        :stat-gains="v6QuizFinal?.statGains ?? {}"
+        :est-savings="resolvedPotentialSaving"
+        :co2-now="resolvedCo2Now"
+        :co2-potential="resolvedCo2Potential"
         @back="goBack"
         @open-pathway="goToPathway"
         @open-boost="goToBoost"
+        @build-passport="goToPassportDashboard"
       />
     </template>
 
@@ -2815,9 +2821,9 @@ watch(screen, (next, prev) => {
   }
 })
 
-const v6QuizFinal = ref<{ finalScore: number; delta: number; answers: Record<string, string> } | null>(null)
+const v6QuizFinal = ref<{ finalScore: number; delta: number; answers: Record<string, string>; statGains: Record<string, number> } | null>(null)
 
-function onQuizFinish(payload: { finalScore: number; delta: number; answers: Record<string, string> }) {
+function onQuizFinish(payload: { finalScore: number; delta: number; answers: Record<string, string>; statGains: Record<string, number> }) {
   v6QuizFinal.value = payload
   // Explicitly push 'questions' onto the history stack — relying on the
   // screen watcher to do it can miss in two scenarios:
@@ -4335,11 +4341,16 @@ function makeTypewriterRef(source: () => string, msPerChar = 32) {
       clearInterval(timer)
       timer = null
     }
+    const full = text || ''
+    // setInterval isn't allowed during SSR — render the full string
+    // server-side and let the client take over the animation on mount.
+    if (typeof window === 'undefined') {
+      out.value = full
+      return
+    }
     const reduce =
-      typeof window !== 'undefined' &&
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const full = text || ''
     if (reduce || !full) {
       out.value = full
       return
@@ -4976,6 +4987,13 @@ function goToDashboard() {
 // profile + registers interest + toast). Guests are auth-gated en route.
 function goToWatch() {
   router.push(`/property/${propertyId}?watched=1`)
+}
+
+// "Build my Property Passport" from the level-up / pathway screens →
+// the pre-claim dashboard (progress, EPC age, locked doc tiles, real
+// claim CTA), not straight into the claim wizard.
+function goToPassportDashboard() {
+  router.push(`/homescore/passport/${propertyId}`)
 }
 
 // Unclaimed claim CTA → property page with the "Choose your Passport"
@@ -6042,6 +6060,17 @@ watch(screen, (s) => {
 }
 .hs-header-spacer {
   width: 32px;
+  flex-shrink: 0;
+}
+.hs-beta-pill {
+  padding: 5px 12px;
+  border: 1.5px solid #00a19a;
+  border-radius: 999px;
+  color: #00a19a;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   flex-shrink: 0;
 }
 .hs-tour-btn {
