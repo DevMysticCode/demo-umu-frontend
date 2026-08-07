@@ -21,6 +21,7 @@
           :searches-today="searchesToday"
           :watchers-count="watchersCount"
           :passport-state="passportState"
+          compact
         />
       </div>
 
@@ -75,20 +76,9 @@
         :searches-today="searchesToday"
         :watchers-count="watchersCount"
         :passport-state="passportState"
+        compact
       />
     </div>
-
-    <!-- Claim / Passport-state box + explainer drawers -->
-    <PassportClaimBox
-      :state="passportState"
-      :progress-pct="passportProgressPct"
-      :sections-done="passportSectionsDone"
-      :sections-total="passportSectionsTotal"
-      :property-id="property?.id ?? null"
-      @claim-passport="$emit('claim-passport')"
-      @watch="$emit('buy-passport')"
-      @buy="$emit('buy-passport')"
-    />
 
     <!-- ── HomeScore card (animated outline + gauge + band + footer) ── -->
     <div class="score-card anim-2" data-tour="score">
@@ -126,45 +116,51 @@
         <div class="score-summary">
           <div class="score-band">{{ scoreBandTitle }}</div>
           <div class="score-explainer" v-html="scoreExplainer" />
-        </div>
-      </div>
-      <div class="score-footer">
-        <svg class="score-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
-        <div>
-          Based on a <b>{{ epcYear || '—' }} EPC</b>. Your real score may be higher if
-          improvements have been made.
+          <div class="score-footer">
+            <svg class="score-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <div>
+              Based on a <b>{{ epcYear || '—' }} EPC</b>. Made improvements since then?
+              Your actual HomeScore could be higher.
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- ── Quick stats strip (3 clickable cards) ───────────────────── -->
-    <div class="score-strip-hint">Tap any row to explore</div>
+    <!-- ── Quick stats strip (2 clickable cards) ───────────────────── -->
+    <div class="section-h-row">
+      <div class="section-h">Estimated running costs &amp; impact</div>
+    </div>
     <div class="score-strip-card anim-3" data-tour="overpay">
       <div
         class="score-strip-item clickable"
         :class="{ active: activePanel === 'bills' }"
         @click="togglePanel('bills')"
       >
-        <div class="score-strip-eyebrow">Est. bills</div>
+        <img src="/op-icons/homescore/wallet.png" alt="" class="score-strip-icon" loading="lazy" />
+        <div class="score-strip-eyebrow">Est. running cost</div>
         <div class="score-strip-num">
-          £{{ formatNum(annualCost) }}<span class="strip-unit">/yr</span>
+          £{{ formatNum(annualCost) }}<span class="strip-unit">/year</span>
         </div>
-        <div class="score-strip-sub">Save up to £{{ formatNum(potentialSaving) }}/yr</div>
+        <div class="score-strip-sub-label">Potential saving</div>
+        <div class="score-strip-sub-val">£{{ formatNum(potentialSaving) }} <span class="strip-unit">/year</span></div>
       </div>
       <div
         class="score-strip-item clickable"
         :class="{ active: activePanel === 'co2' }"
         @click="togglePanel('co2')"
       >
-        <div class="score-strip-eyebrow">CO₂</div>
-        <div class="score-strip-num warn">
-          {{ co2NowDisplay.toFixed(1) }}<span class="strip-unit">t/yr</span>
+        <img src="/op-icons/passportview/environmental.png" alt="" class="score-strip-icon" loading="lazy" />
+        <div class="score-strip-eyebrow">CO<sub>2</sub> emissions</div>
+        <div class="score-strip-num">
+          {{ co2NowDisplay.toFixed(1) }} <span class="strip-unit">t /year</span>
         </div>
-        <div class="score-strip-sub">UK avg 6.0t</div>
+        <div class="score-strip-sub-label">UK average</div>
+        <div class="score-strip-sub-val">6.0 <span class="strip-unit">t /year</span></div>
       </div>
     </div>
 
@@ -177,33 +173,36 @@
     >
       <div class="hsh-eyebrow">
         <img src="/op-icons/homescore/houseSearch.png" alt="" class="hsh-eyebrow-ic" loading="lazy" />
-        Your street · {{ streetNameTitle }}
+        How does this home compare?
       </div>
       <div class="hsh-rankrow">
-        <span class="hsh-big">#{{ streetRank ?? 8 }}</span>
-        <div class="hsh-rmeta">
-          <b>of {{ streetTotal || 43 }} homes</b>
-          <p>£190 cheaper than the street average</p>
+        <div class="hsh-rankrow-left">
+          <span class="hsh-big">#{{ streetRank ?? 8 }}</span>
+          <div class="hsh-rmeta">of {{ streetTotal || 43 }} homes</div>
+        </div>
+        <div class="hsh-preview" aria-hidden="true">
+          <div
+            v-for="(p, i) in streetHeroPins"
+            :key="i"
+            class="hsh-ph"
+            :class="{ you: p.isYou }"
+          >
+            <span v-if="p.isYou" class="hsh-pin"><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" /></span>
+            <span class="hsh-cd" :style="{ background: p.dot }" />
+          </div>
         </div>
       </div>
-      <div class="hsh-preview" aria-hidden="true">
-        <div class="hsh-road" />
-        <div
-          v-for="(p, i) in streetHeroPins"
-          :key="i"
-          class="hsh-ph"
-          :class="{ you: p.isYou }"
-          :style="{ left: p.left + '%', top: p.isYou ? '1px' : '5px' }"
-        >
-          <span v-if="p.isYou" class="hsh-pin"><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" /></span>
-          <span class="hsh-cd" :style="{ background: p.dot }" />
-        </div>
+      <p class="hsh-desc">
+        This home is estimated to cost £190 less per year to run than the
+        street average.
+      </p>
+      <div class="hsh-bottom-row">
+        <span class="hsh-projchip">↑ With the suggested improvements, it could rank #2 and save around £{{ formatNum(potentialSaving) }}/year.</span>
+        <button class="hsh-cta" type="button" @click.stop="togglePanel('street')">
+          Explore your street
+          <span class="hsh-cta-ar">→</span>
+        </button>
       </div>
-      <span class="hsh-projchip">↑ You could be 2nd · save £{{ formatNum(potentialSaving) }}/yr</span>
-      <button class="hsh-cta" type="button" @click.stop="togglePanel('street')">
-        Explore your street map
-        <span class="hsh-cta-ar">→</span>
-      </button>
     </div>
 
     <!-- ── BILLS PANEL ─────────────────────────────────────────────── -->
@@ -468,7 +467,7 @@
 
     <!-- ── STAT BREAKDOWN (5 rows · expandable) ─────────────────────── -->
     <div class="section-h-row">
-      <div class="section-h">How your {{ displayScore }} splits · EPC stats</div>
+      <div class="section-h section-h--accent">What's behind your score?</div>
       <div class="section-h-sub">Points breakdown</div>
     </div>
     <div class="stat-card anim-4" data-tour="breakdown">
@@ -547,16 +546,16 @@
     <!-- ── FULL EPC DRAWER ─────────────────────────────────────────── -->
     <div ref="epcDrawerEl" class="epc-drawer anim-3" :class="{ open: epcDrawerOpen }">
       <div class="epc-drawer-head" @click="toggleEpcDrawer">
-        <div class="epc-drawer-icon">
-          <img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" />
-        </div>
         <div class="epc-drawer-info">
-          <div class="epc-drawer-title">Full EPC breakdown</div>
+          <div class="epc-drawer-title">Full HomeScore breakdown</div>
           <div class="epc-drawer-sub">
-            {{ epcDrawerOpen ? 'Tap to close' : `Every line of energy detail behind your score · ${epcItems.length} items` }}
+            {{ epcDrawerOpen ? 'Tap to close' : 'Explore the public data and energy information behind this score' }}
           </div>
         </div>
-        <div class="epc-drawer-chev" :class="{ open: epcDrawerOpen }">›</div>
+        <div class="epc-drawer-view" :class="{ open: epcDrawerOpen }">
+          {{ epcDrawerOpen ? 'Close' : 'View breakdown' }}
+          <span class="epc-drawer-view-ar">→</span>
+        </div>
       </div>
       <div v-if="epcDrawerOpen" class="epc-drawer-body">
         <!-- Summary row: current → potential -->
@@ -681,25 +680,42 @@
            property". The claim CTA auth-gates on tap if needed. -->
       <template v-else>
         <div class="fork-eyebrow">What's your connection to this property?</div>
-        <div class="fork-options">
-          <button class="fork-opt primary" type="button" @click="$emit('claim')">
-            <div class="fork-opt-icon"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></div>
-            <div class="fork-opt-body">
-              <div class="fork-opt-title">I own this property</div>
-              <div class="fork-opt-sub">Take the quiz to level up your stats and get your real score.</div>
+        <div class="fork-grid">
+          <button class="fork-tile fork-tile--owner" type="button" @click="$emit('claim')">
+            <img src="/op-icons/landing/homeScoreCard.png" alt="" class="fork-tile-icon-top" loading="lazy" />
+            <div class="fork-tile-title">I own this property</div>
+            <div class="fork-tile-sub">
+              Take the HomeScore quiz to tell us what's changed, unlock a
+              more accurate score and start building your Property
+              Passport.
             </div>
-            <div class="fork-opt-chev">›</div>
+            <div class="fork-tile-bottom-row">
+              <span class="fork-tile-lock">🔒 Secure &amp; private</span>
+              <span class="fork-tile-arrow fork-tile-arrow--owner">→</span>
+            </div>
           </button>
-          <button class="fork-opt" type="button" @click="$emit('interested')">
-            <div class="fork-opt-icon"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
-            <div class="fork-opt-body">
-              <div class="fork-opt-title">I'm interested in this property</div>
-              <div class="fork-opt-sub">Full running costs, risks and questions to ask before you offer.</div>
+          <button class="fork-tile fork-tile--buyer" type="button" @click="$emit('interested')">
+            <div class="fork-tile-buyer-body">
+              <div class="fork-tile-title">I'm interested in this property</div>
+              <div class="fork-tile-sub">
+                Explore its running costs, risks and the questions worth
+                asking before you buy.
+              </div>
             </div>
-            <div class="fork-opt-chev">›</div>
+            <img src="/op-icons/homescore/magnifier.png" alt="" class="fork-tile-icon--buyer" loading="lazy" />
+            <span class="fork-tile-arrow fork-tile-arrow--buyer">→</span>
           </button>
         </div>
       </template>
+    </div>
+
+    <div class="hs-trust-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
+        <rect x="3" y="11" width="18" height="11" rx="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
+      Your data is private and secure. We'll never share your information
+      without your permission.
     </div>
     </template><!-- /hasEpcData -->
 
@@ -766,7 +782,6 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
 import HomescoreAddressCard from '~/components/homescore/HomescoreAddressCard.vue'
 
 const props = withDefaults(
@@ -992,17 +1007,17 @@ const gaugeOffset = computed(() => 314.16 - (animatedScore.value / 100) * 314.16
 // ── Score band copy (drives the big headline next to the gauge) ──
 const scoreBandTitle = computed(() => {
   const s = props.score
-  if (s >= 92) return 'Top of the class · A'
-  if (s >= 81) return 'Excellent · B'
-  if (s >= 69) return 'Above average · C'
-  if (s >= 55) return 'Average · D'
-  if (s >= 39) return 'Room to climb · E → C'
-  if (s >= 21) return 'Plenty to gain · F → C'
-  return 'Critical · G → D'
+  if (s >= 92) return 'Top of the class'
+  if (s >= 81) return 'Excellent'
+  if (s >= 69) return 'Above average'
+  if (s >= 55) return 'Average'
+  if (s >= 39) return 'Room to climb'
+  if (s >= 21) return 'Plenty to gain'
+  return 'Critical'
 })
 const scoreExplainer = computed(() => {
   const saving = formatNum(props.potentialSaving ?? 0)
-  return `The EPC lists <b>6 steps</b> to lift your score and cut bills by <b>~£${saving}/yr</b>. See the path below.`
+  return `Public data suggests <b>6 improvements</b> that could reduce estimated running costs by around <b>£${saving}/year</b>.`
 })
 
 // ── EPC letter pill colour ───────────────────────────────────────
@@ -1403,8 +1418,8 @@ const stats = computed<StatRow[]>(() => {
   return [
     {
       id: 'heating',
-      icon: '/op-icons/homescore/flame.png',
-      label: 'Heating',
+      icon: '/op-icons/homescore/house.png',
+      label: 'Heating & insulation',
       value: heatVal,
       max: 20,
       pct: Math.round(heatScore * 100),
@@ -1438,7 +1453,7 @@ const stats = computed<StatRow[]>(() => {
     {
       id: 'structure',
       icon: '/op-icons/homescore/bricks.png',
-      label: 'Structure',
+      label: 'Building fabric',
       value: structVal,
       max: 25,
       pct: Math.round(structScore * 100),
@@ -1483,7 +1498,7 @@ const stats = computed<StatRow[]>(() => {
     {
       id: 'efficiency',
       icon: '/op-icons/homescore/lightbulb.png',
-      label: 'Efficiency',
+      label: 'Energy efficiency',
       value: effVal,
       max: 15,
       pct: Math.round(effScore * 100),
@@ -1518,7 +1533,7 @@ const stats = computed<StatRow[]>(() => {
     {
       id: 'electrics',
       icon: '/op-icons/homescore/lightning.png',
-      label: 'Electrics',
+      label: 'Electrical systems',
       value: elecVal,
       max: 20,
       pct: Math.round(elecScore * 100),
@@ -1555,7 +1570,7 @@ const stats = computed<StatRow[]>(() => {
     {
       id: 'plumbing',
       icon: '/op-icons/homescore/tap.png',
-      label: 'Plumbing',
+      label: 'Water & plumbing',
       value: plumbVal,
       max: 20,
       pct: Math.round(plumbScore * 100),
@@ -2319,12 +2334,12 @@ const watchersDisplay = computed(() => {
 /* ── HomeScore card ─────────────────────────────────────────────── */
 .score-card {
   margin: 14px 20px 0;
-  padding: 20px 20px 18px;
-  background: linear-gradient(180deg, var(--accent-paler) 0%, var(--card) 60%);
-  border: 2px solid var(--accent);
-  border-radius: 14px;
+  padding: 22px 20px 18px;
+  background: var(--card);
+  border: 1.5px solid var(--accent);
+  border-radius: 16px;
   position: relative;
-  box-shadow: 0 4px 16px rgba(0, 161, 154, 0.12);
+  box-shadow: var(--shadow-card);
 }
 .score-card::before {
   content: '';
@@ -2345,7 +2360,7 @@ const watchersDisplay = computed(() => {
 .score-eyebrow-mark {
   font-size: 11px;
   font-weight: 800;
-  color: var(--text-secondary);
+  color: var(--accent-dark);
   letter-spacing: 1.4px;
   text-transform: uppercase;
 }
@@ -2358,12 +2373,12 @@ const watchersDisplay = computed(() => {
 .score-top {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 22px;
 }
 .score-gauge {
   position: relative;
-  width: 104px;
-  height: 104px;
+  width: 140px;
+  height: 140px;
   flex-shrink: 0;
 }
 .score-gauge svg {
@@ -2389,33 +2404,33 @@ const watchersDisplay = computed(() => {
   justify-content: center;
 }
 .gn-big {
-  font-size: 34px;
+  font-size: 44px;
   font-weight: 800;
   color: var(--text);
-  letter-spacing: -1.2px;
+  letter-spacing: -1.4px;
   line-height: 1;
   font-feature-settings: 'tnum';
 }
 .gn-small {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--text-faint);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 .score-summary {
   flex: 1;
   min-width: 0;
 }
 .score-band {
-  font-size: 19px;
+  font-size: 22px;
   font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.4px;
-  margin-bottom: 6px;
+  color: var(--accent-dark);
+  letter-spacing: -0.5px;
+  margin-bottom: 7px;
   line-height: 1.1;
 }
 .score-explainer {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -2427,10 +2442,8 @@ const watchersDisplay = computed(() => {
 .score-footer {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  padding-top: 14px;
-  margin-top: 14px;
-  border-top: 1px solid var(--border-soft);
+  gap: 6px;
+  margin-top: 10px;
   font-size: 11.5px;
   font-weight: 500;
   color: var(--text-secondary);
@@ -2455,63 +2468,63 @@ const watchersDisplay = computed(() => {
 }
 
 /* ── Quick stats strip ────────────────────────────────────────── */
-.score-strip-hint {
-  margin: 12px 20px 4px;
-  text-align: center;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-faint);
-  letter-spacing: 0.3px;
-}
 .score-strip-card {
   display: flex;
-  gap: 8px;
-  margin: 12px 20px 0;
-  padding: 12px;
+  gap: 10px;
+  margin: 10px 20px 0;
+}
+.score-strip-item {
+  flex: 1;
+  min-width: 0;
+  padding: 14px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: var(--shadow-card);
+  text-align: left;
+  position: relative;
 }
-.score-strip-item {
-  flex: 1;
-  padding: 10px;
-  background: var(--bg);
-  border: 1px solid var(--border-soft);
-  border-radius: 10px;
-  text-align: center;
+.score-strip-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
 }
 .score-strip-eyebrow {
   font-size: 9px;
   font-weight: 800;
   color: var(--text-faint);
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  margin-bottom: 3px;
+  margin-bottom: 10px;
+  padding-right: 56px;
 }
 .score-strip-num {
-  font-size: 14px;
+  font-size: 19px;
   font-weight: 800;
   color: var(--text);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
   line-height: 1.1;
-}
-.score-strip-num.warn {
-  color: var(--error);
-}
-.score-strip-num.good {
-  color: var(--accent-dark);
+  margin-bottom: 10px;
 }
 .strip-unit {
   font-weight: 600;
   font-size: 11px;
   color: var(--text-secondary);
 }
-.score-strip-sub {
-  font-size: 9.5px;
-  color: var(--text-secondary);
+.score-strip-sub-label {
+  font-size: 10px;
   font-weight: 600;
-  margin-top: 2px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+.score-strip-sub-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent-dark);
 }
 .score-strip-item.clickable {
   cursor: pointer;
@@ -3092,6 +3105,9 @@ const watchersDisplay = computed(() => {
   font-weight: 600;
   color: var(--accent-dark);
 }
+.section-h--accent {
+  color: var(--accent-dark);
+}
 
 /* ── Stat breakdown card (5 rows · expandable) ──────────────────── */
 .stat-card {
@@ -3337,7 +3353,7 @@ const watchersDisplay = computed(() => {
 
 /* ── Full EPC drawer ───────────────────────────────────────────── */
 .epc-drawer {
-  margin: 14px 20px 0;
+  margin: 8px 20px 0;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -3355,49 +3371,38 @@ const watchersDisplay = computed(() => {
 .epc-drawer-head:hover {
   background: var(--accent-paler);
 }
-.epc-drawer-icon {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.epc-drawer-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-.epc-drawer-icon svg {
-  width: 18px;
-  height: 18px;
-}
 .epc-drawer-info {
   flex: 1;
   min-width: 0;
 }
 .epc-drawer-title {
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 800;
-  color: var(--text);
+  color: var(--accent-dark);
   letter-spacing: -0.2px;
 }
 .epc-drawer-sub {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 500;
   color: var(--text-secondary);
-  margin-top: 2px;
+  margin-top: 3px;
+  line-height: 1.4;
 }
-.epc-drawer-chev {
-  font-size: 20px;
-  color: var(--text-faint);
-  transition: transform 0.2s;
-  line-height: 1;
-}
-.epc-drawer-chev.open {
-  transform: rotate(90deg);
+.epc-drawer-view {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-size: 12.5px;
+  font-weight: 800;
   color: var(--accent-dark);
+  white-space: nowrap;
+}
+.epc-drawer-view-ar {
+  transition: transform 0.2s;
+}
+.epc-drawer-view.open .epc-drawer-view-ar {
+  transform: rotate(90deg);
 }
 .epc-drawer-body {
   padding: 0 16px 14px;
@@ -3645,12 +3650,12 @@ const watchersDisplay = computed(() => {
   padding: 20px 20px 0;
 }
 .fork-eyebrow {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
-  color: var(--text-secondary);
-  letter-spacing: 1.5px;
+  color: var(--text);
+  letter-spacing: 0.4px;
   text-transform: uppercase;
-  text-align: center;
+  text-align: left;
   margin-bottom: 14px;
 }
 .fork-options {
@@ -3731,6 +3736,117 @@ const watchersDisplay = computed(() => {
 }
 .fork-opt.primary .fork-opt-chev {
   color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Fork grid (guest/unclaimed): two tiles side by side ─────────── */
+.fork-grid {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.fork-tile {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  overflow: visible;
+  text-align: left;
+  border-radius: 16px;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.fork-tile:hover {
+  transform: translateY(-1px);
+}
+.fork-tile--owner {
+  background: var(--accent-paler);
+  padding: 16px 14px;
+}
+.fork-tile--buyer {
+  background: #efe9fb;
+  padding: 16px 14px 50px;
+}
+.fork-tile-icon-top {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  display: block;
+  margin:auto;
+  margin-bottom: 10px;
+}
+.fork-tile-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+.fork-tile-buyer-body {
+  padding-right: 8px;
+}
+.fork-tile-icon--buyer {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin:auto;
+}
+.fork-tile-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  line-height: 1.25;
+  margin-bottom: 6px;
+}
+.fork-tile-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  padding-right: 4px;
+}
+.fork-tile-lock {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+.fork-tile-arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.fork-tile-arrow--owner {
+  background: var(--accent-dark);
+}
+.fork-tile-arrow--buyer {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  background: #5b3795;
+}
+
+.hs-trust-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 16px 24px 0;
+  padding-bottom: 4px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-faint);
+  text-align: center;
+}
+.hs-trust-note svg {
+  flex-shrink: 0;
 }
 
 /* ── EPC NOT AVAILABLE empty state ──────────────────────────── */
@@ -4221,9 +4337,15 @@ const watchersDisplay = computed(() => {
 }
 .hsh-rankrow {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+.hsh-rankrow-left {
+  display: flex;
   align-items: flex-end;
   gap: 10px;
-  margin-top: 8px;
 }
 .hsh-big {
   font-size: 40px;
@@ -4231,77 +4353,61 @@ const watchersDisplay = computed(() => {
   letter-spacing: -2px;
   line-height: 0.9;
 }
-.hsh-rmeta b {
+.hsh-rmeta {
   font-size: 13px;
   font-weight: 700;
-}
-.hsh-rmeta p {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 1px;
+  color: #fff;
 }
 
 .hsh-preview {
-  position: relative;
-  margin: 14px 0 3px;
-  height: 54px;
-}
-.hsh-road {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 27px;
-  height: 11px;
-  background: #15102E;
-  border-radius: 3px;
-}
-.hsh-road::after {
-  content: '';
-  position: absolute;
-  top: 4px;
-  left: 0;
-  right: 0;
-  border-top: 2px dashed rgba(232, 163, 58, 0.55);
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 6px 0 8px;
+  margin-top: 4px;
+  border-bottom: 2px dashed rgba(232, 163, 58, 0.5);
 }
 .hsh-ph {
-  position: absolute;
-  width: 22px;
-  height: 20px;
-  border-radius: 4px 4px 2px 2px;
+  position: relative;
+  width: 15px;
+  height: 13px;
+  border-radius: 3px 3px 1px 1px;
   background: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
 }
 .hsh-ph::before {
   content: '';
   position: absolute;
-  top: -6px;
+  top: -5px;
   left: -1px;
   right: -1px;
-  height: 8px;
+  height: 7px;
   background: inherit;
   clip-path: polygon(0 100%, 50% 0, 100% 100%);
 }
 .hsh-cd {
   position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 5px;
-  height: 5px;
+  bottom: 1px;
+  right: 1px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
 }
 .hsh-ph.you {
-  width: 28px;
-  height: 26px;
+  width: 19px;
+  height: 17px;
   background: #9DEFDB;
-  box-shadow: 0 0 0 4px rgba(25, 199, 166, 0.3);
+  box-shadow: 0 0 0 3px rgba(25, 199, 166, 0.3);
   animation: hshPulse 2.2s ease-out infinite;
 }
 .hsh-ph.you .hsh-pin {
   position: absolute;
-  top: -18px;
+  top: -13px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 12px;
+  width: 10px;
+  height: 10px;
 }
 @keyframes hshPulse {
   0%   { box-shadow: 0 0 0 0 rgba(25, 199, 166, 0.4); }
@@ -4309,36 +4415,50 @@ const watchersDisplay = computed(() => {
   100% { box-shadow: 0 0 0 0 rgba(25, 199, 166, 0); }
 }
 
+.hsh-desc {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+.hsh-bottom-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 13px;
+}
 .hsh-projchip {
-  display: inline-flex;
+  flex: 1.3;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 7px;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 800;
+  line-height: 1.4;
   color: #0c1f1a;
   background: linear-gradient(135deg, #9DEFDB, #19C7A6);
-  padding: 6px 12px;
-  border-radius: 99px;
+  padding: 10px 12px;
+  border-radius: 12px;
 }
 
 .hsh-cta {
   position: relative;
   overflow: hidden;
   display: flex;
-  width: 100%;
-  margin-top: 13px;
-  padding: 13px;
+  flex: 1;
+  margin-top: 0;
+  padding: 10px 12px;
   border: none;
   border-radius: 12px;
   background: #fff;
   color: #231D45;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
 }
 .hsh-cta::after {

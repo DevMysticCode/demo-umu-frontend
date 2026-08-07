@@ -1,7 +1,9 @@
 <template>
   <div class="hs-v6-quiz">
     <!-- ── HomeScore address card — same component as the results
-             screen so both surfaces share the prototype-ported hero. -->
+             screen so both surfaces share the prototype-ported hero.
+             Compact variant: no two-tile grid, no social-proof rows —
+             matches the score-result screen (V6ScoreView). -->
     <div class="hs-addr-card-wrap anim-1">
       <HomescoreAddressCard
         :address="addressLine"
@@ -13,19 +15,9 @@
         :searches-today="searchesToday"
         :watchers-count="watchersCount"
         :passport-state="passportState"
+        compact
       />
     </div>
-
-    <!-- Claim / Passport-state box + explainer drawers (matches HomeScore) -->
-    <PassportClaimBox
-      :state="passportState"
-      :progress-pct="passportProgressPct"
-      :sections-done="passportSectionsDone"
-      :sections-total="passportSectionsTotal"
-      @claim-passport="$emit('claim-passport')"
-      @watch="$emit('watch-property')"
-      @buy="$emit('buy-passport')"
-    />
 
     <!-- ── Live HomeScore card (animates as user answers) ──────────── -->
     <div class="score-card anim-2" style="margin-top: 12px">
@@ -120,11 +112,32 @@
       </div>
     </div>
 
-    <!-- ── Section header ─────────────────────────────────────────── -->
-    <div class="section-h-row" style="padding-top: 18px; padding-bottom: 6px">
-      <div class="section-h">Has your home had these improvements?</div>
-      <div class="section-h-sub">
-        {{ answeredCount }} of {{ QUESTS.length }} answered
+    <!-- ── "N things could have changed" card ───────────────────────── -->
+    <div class="quiz-changed-card anim-3">
+      <div class="quiz-changed-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 4H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" />
+          <rect x="9" y="2" width="6" height="4" rx="1" />
+          <path d="M9 13.5l2 2 4-4.5" />
+        </svg>
+      </div>
+      <div class="quiz-changed-body">
+        <div class="quiz-changed-title">{{ QUESTS.length }} things could have changed</div>
+        <div class="quiz-changed-sub">
+          Your {{ epcYear || 'latest' }} EPC recommended these improvements.
+          Tell us what's happened since.
+        </div>
+      </div>
+      <div class="quiz-changed-right">
+        <div class="quiz-changed-count">{{ answeredCount }} of {{ QUESTS.length }} answered</div>
+        <div class="quiz-step-dots" aria-hidden="true">
+          <span
+            v-for="q in QUESTS"
+            :key="'dot-' + q.id"
+            class="quiz-step-dot"
+            :class="{ done: !!questState[q.id] }"
+          />
+        </div>
       </div>
     </div>
 
@@ -145,14 +158,28 @@
             <div class="quest-summary-title">{{ q.title }}</div>
             <div class="quest-summary-sub">{{ q.summary }}</div>
           </div>
-          <div class="quest-summary-chev">›</div>
+          <div class="quest-summary-chev">⌄</div>
         </div>
         <div v-if="openQuest === q.id" class="quest-detail">
           <div class="quest-desc">{{ q.desc }}</div>
-          <div class="quest-impact">
-            ✦ Score +{{ q.pts }} pts · saves ~£{{ q.save }}/yr · cost {{ q.cost
-            }}<template v-if="q.grant"> · 🎁 {{ q.grant }}</template>
+          <div class="quest-stat-row">
+            <div class="quest-stat-box">
+              <div class="quest-stat-eyebrow">Estimated score impact</div>
+              <div class="quest-stat-val">+{{ q.pts }} HomeScore points</div>
+              <div v-if="q.resultingSap != null" class="quest-stat-note">
+                (could improve score to {{ q.resultingSap }})
+              </div>
+            </div>
+            <div class="quest-stat-box">
+              <div class="quest-stat-eyebrow">Estimated saving</div>
+              <div class="quest-stat-val">~£{{ q.save }}/yr</div>
+            </div>
+            <div class="quest-stat-box">
+              <div class="quest-stat-eyebrow">Typical investment</div>
+              <div class="quest-stat-val">{{ q.cost }}</div>
+            </div>
           </div>
+          <div v-if="q.grant" class="quest-impact">🎁 {{ q.grant }}</div>
           <div v-if="q.resultingSap != null" class="quest-resulting">
             Potential rating after step {{ q.n }}:
             <span
@@ -163,7 +190,7 @@
             </span>
           </div>
           <div class="quest-question">
-            Has this been done since the last EPC?
+            Has this been done since your last EPC?
           </div>
           <div class="quest-options-4">
             <button
@@ -185,7 +212,7 @@
     <!-- ── Finish CTA ─────────────────────────────────────────────── -->
     <div class="quiz-finish">
       <button class="quiz-finish-btn" type="button" @click="onFinish">
-        Get my real HomeScore →
+        Reveal my updated HomeScore
       </button>
       <div v-if="answeredCount < QUESTS.length" class="quiz-finish-hint">
         Skipped questions count as "not done". Answer what you know and tap
@@ -324,7 +351,6 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
 import HomescoreAddressCard from '~/components/homescore/HomescoreAddressCard.vue'
 
 interface Props {
@@ -361,6 +387,7 @@ const emit = defineEmits<{
       finalScore: number
       delta: number
       answers: Record<string, string>
+      statGains: Record<string, number>
     },
   ): void
   (e: 'upload-bill', file: File): void
@@ -580,15 +607,15 @@ const QUESTS = computed<Quest[]>(() => {
 })
 
 const OPT = {
-  yes: { label: 'Yes — done', icon: '✓', cls: 'opt-yes', mult: 1.0 },
+  yes: { label: "Yes, it's been done", icon: '✓', cls: 'opt-yes', mult: 1.0 },
   different: {
-    label: 'Done something different',
+    label: 'Something different was done',
     icon: '↻',
     cls: 'opt-different',
     mult: 0.5,
   },
-  notyet: { label: 'Not yet', icon: '•', cls: 'opt-not-yet', mult: 0 },
-  na: { label: 'Not applicable', icon: '⊘', cls: 'opt-na', mult: 0 },
+  notyet: { label: 'Not yet', icon: '🕐', cls: 'opt-not-yet', mult: 0 },
+  na: { label: 'Not applicable', icon: '−', cls: 'opt-na', mult: 0 },
 } as const
 
 type OptKey = keyof typeof OPT
@@ -685,10 +712,21 @@ function onFinish() {
     return
   }
   const delta = liveScore.value - props.initialScore
+  // Per-pillar points actually earned this session, so the level-up screen
+  // can show a real before→after per pillar instead of a placeholder.
+  const statGains: Record<string, number> = {}
+  for (const q of QUESTS.value) {
+    const ans = questState.value[q.id]
+    if (!ans) continue
+    const gained = Math.round(q.pts * OPT[ans].mult)
+    if (!gained) continue
+    statGains[q.stat] = (statGains[q.stat] ?? 0) + gained
+  }
   emit('finish', {
     finalScore: liveScore.value,
     delta,
     answers: { ...questState.value },
+    statGains,
   })
 }
 
@@ -1122,12 +1160,12 @@ watch(
 /* Score card */
 .score-card {
   margin: 14px 20px 0;
-  padding: 20px 20px 18px;
-  background: linear-gradient(180deg, var(--accent-paler) 0%, var(--card) 60%);
-  border: 2px solid var(--accent);
-  border-radius: 14px;
+  padding: 22px 20px 18px;
+  background: var(--card);
+  border: 1.5px solid var(--accent);
+  border-radius: 16px;
   position: relative;
-  box-shadow: 0 4px 16px rgba(0, 161, 154, 0.12);
+  box-shadow: var(--shadow-card);
 }
 .score-eyebrow-row {
   display: flex;
@@ -1167,12 +1205,12 @@ watch(
 .score-top {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 22px;
 }
 .score-gauge {
   position: relative;
-  width: 104px;
-  height: 104px;
+  width: 140px;
+  height: 140px;
   flex-shrink: 0;
 }
 .score-gauge svg {
@@ -1193,32 +1231,32 @@ watch(
   justify-content: center;
 }
 .gn-big {
-  font-size: 34px;
+  font-size: 44px;
   font-weight: 800;
   color: var(--text);
-  letter-spacing: -1.2px;
+  letter-spacing: -1.4px;
   line-height: 1;
 }
 .gn-small {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--text-faint);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 .score-summary {
   flex: 1;
   min-width: 0;
 }
 .score-band {
-  font-size: 19px;
+  font-size: 22px;
   font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.4px;
-  margin-bottom: 6px;
+  color: var(--accent-dark);
+  letter-spacing: -0.5px;
+  margin-bottom: 7px;
   line-height: 1.1;
 }
 .score-explainer {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -1345,9 +1383,93 @@ watch(
   color: var(--accent-dark);
 }
 
+.quiz-changed-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 18px 20px 0;
+  padding: 14px 16px;
+  background: var(--accent-paler);
+  border: 1px solid var(--accent-pale);
+  border-radius: 16px;
+}
+.quiz-changed-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--accent-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.quiz-changed-icon svg {
+  width: 19px;
+  height: 19px;
+}
+.quiz-changed-body {
+  flex: 1;
+  min-width: 0;
+}
+.quiz-changed-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+.quiz-changed-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.quiz-changed-right {
+  flex-shrink: 0;
+  text-align: right;
+}
+.quiz-changed-count {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-dark);
+  white-space: nowrap;
+  margin-bottom: 8px;
+}
+.quiz-step-dots {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.quiz-step-dots::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 50%;
+  height: 1.5px;
+  background: var(--border);
+  z-index: 0;
+}
+.quiz-step-dot {
+  position: relative;
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.quiz-step-dot.done {
+  background: var(--accent);
+}
+
 /* Quest list */
 .quest-list {
-  margin: 0 20px;
+  margin: 14px 20px 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1364,6 +1486,10 @@ watch(
 .quest-card.answered {
   border-color: var(--accent);
   background: linear-gradient(135deg, var(--accent-paler), var(--card));
+}
+.quest-card.open {
+  border-color: var(--accent);
+  border-width: 1.5px;
 }
 .quest-card.answered::after {
   content: '✓';
@@ -1406,6 +1532,11 @@ watch(
   color: white;
   border-color: transparent;
 }
+.quest-card.v2.open:not(.answered) .quest-num-circle {
+  background: var(--accent-paler);
+  color: var(--accent-dark);
+  border: 1.5px solid var(--accent-pale);
+}
 .quest-summary-info {
   flex: 1;
   min-width: 0;
@@ -1432,7 +1563,7 @@ watch(
   flex-shrink: 0;
 }
 .quest-card.v2.open .quest-summary-chev {
-  transform: rotate(90deg);
+  transform: rotate(180deg);
   color: var(--accent-dark);
 }
 .quest-detail {
@@ -1456,6 +1587,41 @@ watch(
   font-weight: 800;
   color: var(--accent-dark);
   margin-bottom: 14px;
+}
+.quest-stat-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.quest-stat-box {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  text-align: center;
+}
+.quest-stat-eyebrow {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--text-faint);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+.quest-stat-val {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.quest-stat-note {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 2px;
 }
 .quest-resulting {
   display: flex;
@@ -1512,34 +1678,37 @@ watch(
   letter-spacing: -0.2px;
 }
 .quest-options-4 {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 6px;
 }
 .quest-opt-btn {
-  padding: 11px 14px;
+  padding: 10px 4px;
   background: var(--card);
   border: 1.5px solid var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 10.5px;
   font-weight: 700;
   color: var(--text);
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   transition: all 0.15s;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.25;
 }
 .quest-opt-btn:hover {
   border-color: var(--accent-pale);
   background: var(--bg);
 }
 .quest-opt-btn .opt-icon-tile {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -20,9 +20,9 @@
           Know your home<br /><span class="lt-teal">inside out.</span>
         </div>
         <div class="hero-sub">
-          Start with a free HomeScore in under 60 seconds. No account needed.
-          Claim your home later to save your progress and build your Property
-          Passport.
+          Everything about your home, in one place. Understand what it costs,
+          discover what you could save, and build a Property Passport that
+          stays with your home.
         </div>
         <button
           type="button"
