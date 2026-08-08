@@ -392,6 +392,7 @@ const watchersDisplay = computed(() => {
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;
+  padding-right: 108px;
 }
 .hsc-epc-badge--compact {
   width: 26px;

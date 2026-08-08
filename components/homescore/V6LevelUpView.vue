@@ -258,7 +258,7 @@
     <div class="bottom-cta bottom-cta--tiles">
       <button class="lu-tile lu-tile--pathway" type="button" @click="$emit('open-pathway')">
         <img
-          src="/op-icons/homescore/targetPathway.png"
+          src="/op-icons/homescore/pathwaySignpost.png"
           alt=""
           class="lu-tile-icon-top"
           loading="lazy"
@@ -370,6 +370,10 @@ const toRingOffset = computed(
 // score gap this quiz session actually closed — a rough but honest
 // approximation, since we don't have a per-question CO2 figure to sum.
 const carbonSavedDisplay = computed(() => {
+  // No score change → no carbon change, regardless of whether we have
+  // real co2Now/co2Potential figures for this property. Only reach for
+  // the CO2 data when there's an actual delta to translate into a share.
+  if (props.delta <= 0) return '0 tonnes/year'
   if (props.co2Now == null || props.co2Potential == null) return '—'
   const totalGap = props.co2Now - props.co2Potential
   const scoreGap = Math.max(1, 100 - props.fromScore)
