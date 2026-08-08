@@ -841,9 +841,9 @@ function onBack() {
 .pathway-house-wrap {
   position: relative;
   flex-shrink: 0;
-  width: 100px;
-  height: 100px;
-  margin-top: -6px;
+  width: 145px;
+  height: 130px;
+  margin-top: -8px;
 }
 .pathway-house-ic {
   width: 100%;
@@ -1201,7 +1201,7 @@ function onBack() {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .mission-icon {
   width: 48px;
@@ -1279,11 +1279,11 @@ function onBack() {
 }
 .mission-stats-row {
   display: flex;
-  gap: 8px;
-  margin: 10px 0 12px;
-  padding: 12px;
+  gap: 6px;
+  margin: 8px 0 10px;
+  padding: 8px 6px;
   background: var(--accent-paler);
-  border-radius: 12px;
+  border-radius: 10px;
 }
 .mission-stat {
   flex: 1;
@@ -1291,14 +1291,16 @@ function onBack() {
   text-align: center;
 }
 .mission-stat-label {
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 700;
   color: var(--text-secondary);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  line-height: 1.2;
 }
 .mission-stat-val {
-  font-size: 12.5px;
+  font-size: 12px;
   letter-spacing: -0.2px;
+  line-height: 1.2;
 }
 .mission-stat-val--score {
   color: var(--accent-dark);

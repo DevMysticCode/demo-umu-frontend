@@ -367,6 +367,7 @@ const profileItems = [
     title: 'Rewards',
     description: 'Points you\'ve earned completing your Passport, and how you\'ve used them.',
     icon: 'rewards',
+    iconImage: '/op-icons/profile/rewards.png',
     route: '/profile/rewards',
   },
   // Downloaded Snapshots — hidden for now; route still exists at

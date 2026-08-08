@@ -702,7 +702,7 @@
                 asking before you buy.
               </div>
             </div>
-            <img src="/op-icons/homescore/magnifier.png" alt="" class="fork-tile-icon--buyer" loading="lazy" />
+            <img src="/op-icons/homescore/houseSearch.png" alt="" class="fork-tile-icon--buyer" loading="lazy" />
             <span class="fork-tile-arrow fork-tile-arrow--buyer">→</span>
           </button>
         </div>

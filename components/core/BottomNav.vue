@@ -68,6 +68,15 @@
         <img src="/op-icons/explore/ai.png" alt="" class="nav-icon" />
         <span class="text-xs mt-1">AI</span>
       </button>
+
+      <button
+        class="flex flex-col items-center py-2"
+        :class="isActive('rewards')"
+        @click="router.push('/profile/rewards')"
+      >
+        <img src="/op-icons/profile/rewards.png" alt="" class="nav-icon" />
+        <span class="text-xs mt-1">Rewards</span>
+      </button>
     </div>
   </nav>
 </template>
