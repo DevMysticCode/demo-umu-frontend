@@ -216,8 +216,10 @@ onMounted(async () => {
 })
 
 // ── Display ───────────────────────────────────────────────
-const tier = computed<'BASIC' | 'VERIFIED' | 'PREMIUM'>(
-  () => ((passport.value as any)?.tier as any) || 'BASIC',
+// No free tier — every published profile is paid VERIFIED. PREMIUM is
+// legacy/unreachable, kept for old rows. UNVERIFIED is the pre-payment default.
+const tier = computed<'UNVERIFIED' | 'VERIFIED' | 'PREMIUM'>(
+  () => ((passport.value as any)?.tier as any) || 'UNVERIFIED',
 )
 const displayName = computed(() => {
   const first = profile.value?.firstName?.trim()
@@ -281,7 +283,7 @@ const idTypeLabel = computed(() => {
   const t = passport.value?.idDocumentType
   if (t === 'passport') return 'UK / EU Passport'
   if (t === 'drivingLicence') return 'UK Driving Licence'
-  if (t === 'nationalId') return 'National ID Card'
+  if (t === 'nationalId') return 'Biometric Residence Permit'
   return 'Photo ID'
 })
 const timelineLabel = computed(() => {

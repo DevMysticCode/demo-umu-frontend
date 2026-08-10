@@ -13,7 +13,7 @@
     <!-- Signed document preview (teal-bordered card) -->
     <div class="sn-doc-card">
       <div class="sn-doc-eyebrow">SIGNED DOCUMENT</div>
-      <div class="sn-doc-title">UMU Buyer Profile — {{ displayName }}</div>
+      <div class="sn-doc-title">UMU Buyer Passport — {{ displayName }}</div>
 
       <!-- Signature — image OR typed -->
       <div class="sn-sig-wrap">

@@ -893,7 +893,7 @@
           >
             <div class="my-passport-ic">✓</div>
             <div class="my-passport-body">
-              <div class="my-passport-title">Buyer Profile · Published</div>
+              <div class="my-passport-title">Buyer Passport · Published</div>
               <div class="my-passport-sub">
                 Tap to view or share with sellers
               </div>
@@ -910,7 +910,7 @@
           >
             <div class="my-passport-ic"><img src="/op-icons/profile/buyerProfile.jpeg" alt="" loading="lazy" /></div>
             <div class="my-passport-body">
-              <div class="my-passport-title">My Buyer Profile</div>
+              <div class="my-passport-title">My Buyer Passport</div>
               <div class="my-passport-sub">
                 Prove you're a verified buyer — share with any agent or seller
               </div>
@@ -1757,7 +1757,7 @@ const exploreTourSteps = [
   },
   {
     selector: '[data-tour="buyer-profile"]',
-    title: 'Your Buyer Profile',
+    title: 'Your Buyer Passport',
     body: "Prove you're a verified buyer (ID, funds, chain position). Share it with any seller or agent to stand out.",
   },
   {

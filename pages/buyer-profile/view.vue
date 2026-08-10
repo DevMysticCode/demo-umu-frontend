@@ -7,20 +7,20 @@
           <path d="M19 12H5M12 5l-7 7 7 7" />
         </svg>
       </button>
-      <div class="bp-nav-centre">Buyer Profile</div>
+      <div class="bp-nav-centre">Buyer Passport</div>
       <span class="bp-nav-right" @click="goShare">Share</span>
     </div>
 
     <!-- Loading / empty -->
-    <div v-if="loading" class="bp-loading">Loading your Profile…</div>
+    <div v-if="loading" class="bp-loading">Loading your Passport…</div>
     <div v-else-if="!passport" class="bp-empty">
       <div class="bp-empty-ic"><img src="/op-icons/misc/book.png" alt="" loading="lazy" /></div>
-      <div class="bp-empty-title">No Profile yet</div>
+      <div class="bp-empty-title">No Passport yet</div>
       <div class="bp-empty-sub">
-        Build your Buyer Profile to share with sellers and agents.
+        Build your Buyer Passport to share with sellers and agents.
       </div>
       <button class="cta-btn" @click="router.push('/buyer-profile')">
-        Build my Profile
+        Build my Passport
       </button>
     </div>
 
@@ -128,22 +128,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Tier upgrade nudge — Verified (£19.99) is now the top purchasable
-           tier, so there's nothing left to upsell once it's bought. -->
-      <div v-if="tier === 'BASIC'" class="upgrade-nudge-wrap">
-        <button
-          class="upgrade-nudge amber-n"
-          @click="tierDrawerOpen = true"
-        >
-          <div class="upgrade-star">★</div>
-          <div class="upgrade-body">
-            <div class="upgrade-title">Upgrade to Verified</div>
-            <div class="upgrade-sub">Add proof of funds + affordability — £19.99</div>
-          </div>
-          <span class="upgrade-arrow">→</span>
-        </button>
       </div>
 
       <!-- ── Verified Credentials section ── -->
@@ -371,14 +355,6 @@
 
       <div style="height: 24px" />
     </template>
-
-    <!-- Tier upgrade drawer (Stripe checkout) -->
-    <TierUpgradeDrawer
-      :open="tierDrawerOpen"
-      :current-tier="tier"
-      @close="tierDrawerOpen = false"
-      @tier-changed="onTierChanged"
-    />
   </div>
 </template>
 
@@ -394,9 +370,8 @@ import {
 } from '~/composables/useVerifierAccess'
 import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
-import TierUpgradeDrawer from '~/components/buyer-profile/TierUpgradeDrawer.vue'
 
-definePageMeta({ title: 'Buyer Profile — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Buyer Passport — UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile } = useBuyerProfile()
@@ -406,7 +381,6 @@ const { showToast } = useAppToast()
 
 const passport = ref<BuyerProfile | null>(null)
 const loading = ref(true)
-const tierDrawerOpen = ref(false)
 const accessRequests = ref<AccessRequest[]>([])
 const pendingRequests = computed(() =>
   accessRequests.value.filter((r) => r.status === 'PENDING'),
@@ -438,20 +412,16 @@ onMounted(async () => {
 })
 
 // ── Tier ─────────────────────────────────────────────────────
-const tier = computed<'BASIC' | 'VERIFIED' | 'PREMIUM'>(
-  () => ((passport.value as any)?.tier as any) || 'BASIC',
+// No free tier — every published profile is paid VERIFIED (payment is now
+// mandatory in the wizard). PREMIUM is legacy/unreachable, kept for old rows.
+const tier = computed<'UNVERIFIED' | 'VERIFIED' | 'PREMIUM'>(
+  () => ((passport.value as any)?.tier as any) || 'UNVERIFIED',
 )
 const tierLabel = computed(() => {
   if (tier.value === 'PREMIUM') return 'Platinum Buyer'
   if (tier.value === 'VERIFIED') return 'Verified Buyer'
   return 'Trusted Buyer'
 })
-
-async function onTierChanged(_t: string) {
-  const p = await getBuyerProfile()
-  if (p) passport.value = p
-  showToast({ message: 'Tier updated', iconEmoji: '✓' })
-}
 
 // ── Strength gauge (animated) ────────────────────────────────
 const strength = computed(() => {
@@ -549,7 +519,7 @@ const idTypeLabel = computed(() => {
   const t = passport.value?.idDocumentType
   if (t === 'passport') return 'UK / EU Passport'
   if (t === 'drivingLicence') return 'UK Driving Licence'
-  if (t === 'nationalId') return 'National ID Card'
+  if (t === 'nationalId') return 'Biometric Residence Permit'
   return 'Photo ID'
 })
 

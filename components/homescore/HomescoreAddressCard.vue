@@ -9,7 +9,7 @@
   <div class="hsc-card">
     <div class="hsc-head">
       <svg
-        v-if="compact"
+        v-if="compact || reportMode"
         class="hsc-pin-ic"
         viewBox="0 0 24 24"
         fill="rgba(255,255,255,0.9)"
@@ -31,10 +31,61 @@
       class="hsc-house-ic"
     />
 
+    <!-- Report variant: stacked EPC row (badge + title + hook) and a
+         passport-status pill — no HomeScore tile, no social-proof rows.
+         Used by the Property Report page (homescore/costs/[id].vue). -->
+    <template v-if="reportMode">
+      <div class="hsc-report-epc">
+        <span
+          class="hsc-epc-badge hsc-epc-badge--report"
+          :class="{ 'hsc-epc-badge--none': isNoEpc }"
+          :style="!isNoEpc ? { background: epcColor(epcRating) } : {}"
+          >{{ isNoEpc ? 'None' : epcRating || '—' }}</span
+        >
+        <div class="hsc-report-epc-text">
+          <div class="hsc-report-epc-title">
+            EPC rating {{ isNoEpc ? 'unavailable' : epcRating }}
+          </div>
+          <div class="hsc-report-epc-hook">{{ epcHook }}</div>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="hsc-report-pill"
+        @click="emit('passport-pill-click')"
+      >
+        <img
+          src="/op-icons/homescore/clipboard.png"
+          alt=""
+          class="hsc-report-pill-ic"
+          loading="lazy"
+        />
+        <span class="hsc-report-pill-txt">{{ passportPillLabel }}</span>
+        <svg
+          class="hsc-report-pill-info"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="rgba(255,255,255,.75)"
+          stroke-width="1.8"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="9.5" />
+          <path d="M12 11v5.5" stroke-linecap="round" />
+          <circle
+            cx="12"
+            cy="8"
+            r="0.25"
+            fill="rgba(255,255,255,.75)"
+            stroke-width="1.5"
+          />
+        </svg>
+      </button>
+    </template>
+
     <!-- Compact variant: single EPC line, no HomeScore tile, no social
          proof rows — used by the score-result screen, which shows its
          own big HomeScore gauge right below this card. -->
-    <template v-if="compact">
+    <template v-else-if="compact">
       <div class="hsc-compact-divider" />
       <div class="hsc-compact-row">
         <span
@@ -105,7 +156,7 @@
       </div>
 
       <!-- Social proof: searches today -->
-      <div class="hsc-viewers">
+      <div v-if="showSocialProof" class="hsc-viewers">
         <span class="hsc-idstack" aria-hidden="true">
           <span class="hsc-idc" style="background: #9fe1cb">
             <span
@@ -137,7 +188,7 @@
 
       <!-- Social proof: live interest (published) or watchers (others) -->
       <div
-        v-if="passportState === 'published'"
+        v-if="showSocialProof && passportState === 'published'"
         class="hsc-viewers hsc-viewers--live"
       >
         <span class="hsc-live-bars" aria-hidden="true">
@@ -150,7 +201,7 @@
           <span>&nbsp;People are tracking this passport.</span>
         </div>
       </div>
-      <div v-else class="hsc-viewers">
+      <div v-else-if="showSocialProof" class="hsc-viewers">
         <!-- Binoculars-style watching glyph. The earlier eye-with-pupil
              icon was too close to the "show password" eye used in form
              fields; this one reads as "spotting / monitoring" — much
@@ -202,6 +253,17 @@ const props = withDefaults(
     /** Single-line EPC row, no HomeScore tile, no social-proof rows —
      *  used by the score-result screen (V6ScoreView). */
     compact?: boolean
+    /** Hides both "checked today" and "watching" rows while keeping full
+     *  EPC + HomeScore tiles — used by the Property Report page, whose
+     *  prototype doesn't show these rows in the header card (the costs
+     *  page has its own separate claim/watch UI below instead). Defaults
+     *  to true so V6ScoreView/V6QuizView keep their existing rows. */
+    showSocialProof?: boolean
+    /** Stacked EPC row (bigger badge + title + hook, no HomeScore tile)
+     *  plus a passport-status pill instead of the tiles/social-proof rows
+     *  — matches the Property Report prototype's header exactly. Takes
+     *  priority over `compact` when both are set. */
+    reportMode?: boolean
   }>(),
   {
     address: null,
@@ -214,8 +276,14 @@ const props = withDefaults(
     watchersCount: 0,
     passportState: 'unclaimed',
     compact: false,
+    showSocialProof: true,
+    reportMode: false,
   },
 )
+
+const emit = defineEmits<{
+  (e: 'passport-pill-click'): void
+}>()
 
 const metaLine = computed(() => {
   const parts: string[] = []
@@ -294,6 +362,14 @@ const epcHook = computed(() => {
   if (r) return 'High running costs'
   return 'Energy rating'
 })
+// Report-mode passport pill — mirrors the state vocab passed in via
+// passportState (already used by the social-proof "live interest" row).
+const passportPillLabel = computed(() => {
+  if (props.passportState === 'published') return 'Passport ready to view'
+  if (props.passportState === 'inProgress') return 'Passport in progress'
+  return 'No Passport yet'
+})
+
 const homeScoreHook = computed(() => {
   if (isNoEpc.value) return 'Answer 20 questions'
   const s = props.homeScore || 0
@@ -344,8 +420,8 @@ const watchersDisplay = computed(() => {
   position: absolute;
   top: -14px;
   right: 6px;
-  width: 155px;
-  height: 155px;
+  width: 180px;
+  height: 195px;
   object-fit: contain;
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
   pointer-events: none;
@@ -415,6 +491,67 @@ const watchersDisplay = computed(() => {
   font-size: 14px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.82);
+}
+
+/* Report mode */
+.hsc-report-epc {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+.hsc-epc-badge--report {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.hsc-report-epc-text {
+  min-width: 0;
+}
+.hsc-report-epc-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.1px;
+}
+.hsc-report-epc-hook {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 2px;
+}
+.hsc-report-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: auto;
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 0.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.hsc-report-pill-ic {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.hsc-report-pill-txt {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.hsc-report-pill-info {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 /* Tiles */

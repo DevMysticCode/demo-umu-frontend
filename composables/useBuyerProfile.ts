@@ -2,7 +2,10 @@
 // they share with sellers, agents, solicitors). Not to be confused with
 // /buyer-passport/[id] which is a buyer's PURCHASED access to a seller's passport.
 
-export type BuyerProfileTier = 'BASIC' | 'VERIFIED' | 'PREMIUM'
+// No free tier — "Identity Verified" (£19.99) is the only purchasable tier
+// (VERIFIED). UNVERIFIED is the pre-payment default, not a real tier.
+// PREMIUM is legacy/unreachable (kept only so old profile rows still typecheck).
+export type BuyerProfileTier = 'UNVERIFIED' | 'VERIFIED' | 'PREMIUM'
 
 export interface BuyerProfile {
   id: string

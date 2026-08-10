@@ -9,9 +9,9 @@
         <div class="watch-sheet" @click.stop>
           <div class="watch-grip" />
           <div class="watch-head">
-            <div class="watch-eyebrow"><img src="/op-icons/misc/eye.png" alt="" style="height:1.4em;display:inline-block;vertical-align:-0.3em;margin-right:4px" loading="lazy" />Watch{{ addressLabel ? ` · ${addressLabel}` : '' }}</div>
-            <div class="watch-title">Pick what you want to be pinged about.</div>
-            <div class="watch-sub">All notifications stay in your buyer profile. Turn any off in Settings anytime.</div>
+            <div class="watch-eyebrow"><img src="/op-icons/misc/eye.png" alt="" style="height:1.4em;display:inline-block;vertical-align:-0.3em;margin-right:4px" loading="lazy" />Watch this property</div>
+            <div class="watch-title">Pick what you want to be notified about.</div>
+            <div class="watch-sub">We'll keep you updated when something important happens at <b>{{ addressLabel || 'this property' }}</b>.</div>
           </div>
 
           <div class="watch-triggers">
@@ -54,9 +54,9 @@
               />
             </div>
             <div class="watch-read-text">
-              <b>You'll be among the first buyers watching</b> this address. The seller
-              sees that on their dashboard when they claim it — sometimes that's the
-              nudge they need.
+              <b>You'll be among the first to know.</b> Sellers see that buyers
+              are watching this property when they claim it — it's a helpful
+              nudge.
             </div>
           </div>
 
@@ -65,12 +65,12 @@
               Maybe later
             </button>
             <button class="watch-btn primary" type="button" :disabled="submitting" @click="onSubmit">
-              {{ submitting ? 'Saving…' : '✓ Watch this property' }}
+              {{ submitting ? 'Saving…' : '👁 Watch this property' }}
             </button>
           </div>
           <div class="watch-privacy">
             <span class="watch-privacy-icon">🔒</span>
-            <span>Saved to your buyer profile. The owner won't see your name — only a count of "buyers watching".</span>
+            <span>Saved to your account. The owner won't see your name — only a count of buyers watching.</span>
           </div>
         </div>
       </div>
@@ -79,13 +79,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   open: boolean
   /** Short address label shown in the eyebrow, e.g. "9 Woodfield Rd". */
   addressLabel?: string
   submitting?: boolean
+  /** Existing prefs to prefill with (e.g. from GET /property/:id/watch) —
+   *  without this the toggles always reset to the hardcoded defaults below,
+   *  discarding whatever the user actually chose last time. */
+  initialPrefs?: Record<string, boolean> | null
 }>()
 
 const emit = defineEmits<{
@@ -94,20 +98,35 @@ const emit = defineEmits<{
 }>()
 
 const triggers = [
-  { key: 'claimed', icon: 'ownerClaim', title: 'Owner claims this property', sub: 'Most important — your "in" with the seller' },
-  { key: 'progress', icon: 'passportProgress', title: 'Passport progress milestones', sub: '25% · 50% · 75% built' },
-  { key: 'published', icon: 'passportPublished', title: 'Passport published', sub: 'Live notification + access (free for verified)' },
-  { key: 'comparables', icon: 'comparableSales', title: 'Comparable sales nearby', sub: 'Weekly digest if there\'s new Land Registry data' },
-  { key: 'homescore', icon: 'homescoreChanges', title: 'HomeScore changes', sub: 'New EPC or upgrade pushes the score up or down' },
+  { key: 'claimed', icon: 'ownerClaim', title: 'Owner claims this property', sub: "You'll be notified the moment they verify ownership." },
+  { key: 'progress', icon: 'passportProgress', title: 'Passport progress milestones', sub: 'Get a ping at 25% / 50% / 75% as their Passport is built.' },
+  { key: 'published', icon: 'passportPublished', title: 'Passport published', sub: "We'll notify you when it goes live and you can access it." },
+  { key: 'comparables', icon: 'comparableSales', title: 'Comparable sales nearby', sub: "Weekly update if there's new Land Registry data." },
+  { key: 'homescore', icon: 'homescoreChanges', title: 'HomeScore changes', sub: "We'll let you know if the public HomeScore goes up or down." },
 ] as const
 
-const selected = reactive<Record<string, boolean>>({
+const DEFAULT_PREFS: Record<string, boolean> = {
   claimed: true,
   progress: true,
   published: true,
   comparables: false,
   homescore: true,
+}
+
+const selected = reactive<Record<string, boolean>>({
+  ...DEFAULT_PREFS,
+  ...(props.initialPrefs ?? {}),
 })
+
+// initialPrefs typically arrives async (a GET call after the drawer's
+// already mounted) — watch so a late-arriving fetch still prefills.
+watch(
+  () => props.initialPrefs,
+  (prefs) => {
+    if (!prefs) return
+    Object.assign(selected, prefs)
+  },
+)
 
 function onSubmit() {
   emit('submit', { ...selected })
@@ -181,6 +200,10 @@ function onSubmit() {
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.55;
+}
+.watch-sub b {
+  color: var(--text);
+  font-weight: 800;
 }
 .watch-triggers {
   padding: 6px 22px 0;

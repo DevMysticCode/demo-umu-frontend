@@ -4,57 +4,33 @@
       <div class="tu-sheet">
         <div class="tu-handle" />
 
-        <!-- ── Step 1: Pick a tier ── -->
+        <!-- ── Step 1: Confirm — single tier, no picking ── -->
         <template v-if="step === 'pick'">
-          <div class="tu-eyebrow">Buyer Profile</div>
-          <div class="tu-title">Choose your tier</div>
+          <div class="tu-eyebrow">Buyer Passport</div>
+          <div class="tu-title">Identity Verified</div>
           <div class="tu-sub">
-            Higher tiers add verified credentials sellers and agents look for.
-            One-off payment — no subscription.
+            One-off payment — proves your identity, funds and buying position
+            to sellers and agents. No subscription.
           </div>
 
           <div class="tu-cards">
-            <button
-              v-for="t in tiers"
-              :key="t.id"
-              class="tu-card"
-              :class="[t.id.toLowerCase(), { active: selected === t.id }]"
-              @click="selected = t.id"
-            >
-              <div class="tu-corner">{{ t.corner }}</div>
-              <div class="tu-badge" :class="`tu-badge--${t.id.toLowerCase()}`">
-                {{ t.badge }}
-              </div>
-              <div class="tu-card-title">{{ t.title }}</div>
-              <div class="tu-card-sub">{{ t.sub }}</div>
-              <div class="tu-price">
-                <template v-if="t.priceGbp === 0">FREE</template>
-                <template v-else>£{{ t.priceGbp }}</template>
-              </div>
+            <div class="tu-card verified active">
+              <div class="tu-corner">✓</div>
+              <div class="tu-badge tu-badge--verified">IDENTITY VERIFIED</div>
+              <div class="tu-card-title">{{ tier.title }}</div>
+              <div class="tu-card-sub">{{ tier.sub }}</div>
+              <div class="tu-price">£{{ tier.priceGbp }}</div>
               <ul class="tu-features">
-                <li v-for="f in t.features" :key="f.text">
-                  <span :class="f.included ? 'tu-check' : 'tu-dash'">
-                    {{ f.included ? '✓' : '○' }}
-                  </span>
+                <li v-for="f in tier.features" :key="f.text">
+                  <span class="tu-check">✓</span>
                   {{ f.text }}
                 </li>
               </ul>
-            </button>
+            </div>
           </div>
 
-          <button
-            v-if="selected === 'BASIC'"
-            class="tu-cta"
-            @click="confirmBasic"
-          >
-            Continue with Basic <span>→</span>
-          </button>
-          <button
-            v-else
-            class="tu-cta"
-            @click="goPay"
-          >
-            Continue with {{ tierName(selected) }} · £{{ tierPrice(selected) }} <span>→</span>
+          <button class="tu-cta" @click="goPay">
+            Pay £{{ tier.priceGbp }} & continue <span>→</span>
           </button>
 
           <button class="tu-cancel" @click="close">Cancel</button>
@@ -62,7 +38,7 @@
 
         <!-- ── Step 2: Stripe card ── -->
         <template v-else-if="step === 'pay'">
-          <div class="tu-eyebrow">Payment · {{ tierName(selected) }} · £{{ tierPrice(selected) }}</div>
+          <div class="tu-eyebrow">Payment · {{ tier.title }} · £{{ tier.priceGbp }}</div>
           <div class="tu-title">Card details</div>
           <div class="tu-sub">
             Powered by Stripe. We never see or store your card. UMU is a
@@ -79,11 +55,11 @@
             @click="handlePay"
           >
             <template v-if="loading">Processing…</template>
-            <template v-else>Pay £{{ tierPrice(selected) }} →</template>
+            <template v-else>Pay £{{ tier.priceGbp }} →</template>
           </button>
 
           <button class="tu-cancel" :disabled="loading" @click="step = 'pick'">
-            ← Choose a different tier
+            ← Back
           </button>
         </template>
 
@@ -91,11 +67,11 @@
         <template v-else-if="step === 'done'">
           <div class="tu-success-emoji">✨</div>
           <div class="tu-title" style="text-align: center">
-            {{ tierName(selected) }} unlocked
+            {{ tier.title }} unlocked
           </div>
           <div class="tu-sub" style="text-align: center">
-            Your buyer profile is now {{ tierName(selected) }}. The new
-            credentials will appear on the next step.
+            Your buyer profile is now {{ tier.title }}. The new credentials
+            will appear on the next step.
           </div>
           <button class="tu-cta" @click="finish">Continue →</button>
         </template>
@@ -108,13 +84,13 @@
 import { ref, watch, nextTick, onBeforeUnmount } from 'vue'
 import type { Stripe as StripeJs, StripeCardElement } from '@stripe/stripe-js'
 
-type TierId = 'BASIC' | 'VERIFIED'
+// No free tier — VERIFIED ("Identity Verified", £19.99) is the only
+// purchasable tier, so there's nothing left to pick between.
+type TierId = 'VERIFIED'
 
-interface TierFeature { text: string; included: boolean }
+interface TierFeature { text: string }
 interface TierDef {
   id: TierId
-  badge: string
-  corner: string
   title: string
   sub: string
   priceGbp: number
@@ -123,7 +99,8 @@ interface TierDef {
 
 const props = defineProps<{
   open: boolean
-  /** Tier already on the profile — used to default the picker. */
+  /** Tier already on the profile. Kept for API compatibility with callers;
+   *  no longer used to pick between tiers since there's only one. */
   currentTier?: TierId | null
 }>()
 const emit = defineEmits<{
@@ -132,11 +109,10 @@ const emit = defineEmits<{
 }>()
 
 const config = useRuntimeConfig()
-const { createTierCheckout, confirmTierPayment, updateBuyerProfile } =
-  useBuyerProfile()
+const { createTierCheckout, confirmTierPayment } = useBuyerProfile()
 
 const step = ref<'pick' | 'pay' | 'done'>('pick')
-const selected = ref<TierId>('VERIFIED')
+const selected: TierId = 'VERIFIED'
 const loading = ref(false)
 const cardReady = ref(false)
 const stripeError = ref('')
@@ -147,51 +123,26 @@ let cardElement: StripeCardElement | null = null
 let activeClientSecret = ''
 let activePaymentIntentId = ''
 
-const tiers: TierDef[] = [
-  {
-    id: 'BASIC',
-    badge: 'BASIC · FREE',
-    corner: '○',
-    title: 'Identity Verified',
-    sub: "Get started — show sellers you're a real, verified buyer.",
-    priceGbp: 0,
-    features: [
-      { text: 'DVS-certified identity check', included: true },
-      { text: 'Chain position & timeline', included: true },
-      { text: 'Solicitor instructed status', included: true },
-      { text: 'Funds & affordability not verified', included: false },
-    ],
-  },
-  {
-    id: 'VERIFIED',
-    badge: 'VERIFIED · RECOMMENDED',
-    corner: '✓',
-    title: 'Identity + Funds',
-    sub: 'The level most sellers and agents expect. Proves you can buy.',
-    priceGbp: 19.99,
-    features: [
-      { text: 'Everything in Basic', included: true },
-      { text: 'Proof of deposit (open banking)', included: true },
-      { text: 'Source of funds + AML clear', included: true },
-      { text: 'Affordability score', included: true },
-    ],
-  },
-]
-
-function tierName(t: TierId) {
-  return t === 'VERIFIED' ? 'Verified' : 'Basic'
-}
-function tierPrice(t: TierId) {
-  return tiers.find((x) => x.id === t)?.priceGbp ?? 0
+const tier: TierDef = {
+  id: 'VERIFIED',
+  title: 'Identity Verified',
+  sub: 'The level most sellers and agents expect. Proves who you are and that you can buy.',
+  priceGbp: 19.99,
+  features: [
+    { text: 'DVS-certified identity check' },
+    { text: 'Chain position & timeline' },
+    { text: 'Solicitor instructed status' },
+    { text: 'Proof of deposit (open banking)' },
+    { text: 'Source of funds + AML clear' },
+    { text: 'Affordability score' },
+  ],
 }
 
-// Default selection — Verified is the only paid tier, so it's always the
-// pre-selected upgrade target regardless of current tier.
+// Reset to a clean state each time the drawer opens.
 watch(
   () => props.open,
   (v) => {
     if (!v) return
-    selected.value = 'VERIFIED'
     step.value = 'pick'
     stripeError.value = ''
     errorMsg.value = ''
@@ -203,29 +154,12 @@ function close() {
   emit('close')
 }
 
-async function confirmBasic() {
-  loading.value = true
-  try {
-    await updateBuyerProfile({ tier: 'BASIC' as any })
-    emit('tier-changed', 'BASIC')
-    close()
-  } catch (e: any) {
-    errorMsg.value = e?.data?.message ?? 'Could not save tier.'
-  } finally {
-    loading.value = false
-  }
-}
-
 async function goPay() {
-  if (selected.value === 'BASIC') {
-    confirmBasic()
-    return
-  }
   errorMsg.value = ''
   stripeError.value = ''
   loading.value = true
   try {
-    const { clientSecret } = await createTierCheckout(selected.value)
+    const { clientSecret } = await createTierCheckout(selected)
     activeClientSecret = clientSecret
     activePaymentIntentId = clientSecret.split('_secret_')[0] || ''
     step.value = 'pay'
@@ -299,7 +233,7 @@ async function handlePay() {
 }
 
 function finish() {
-  emit('tier-changed', selected.value)
+  emit('tier-changed', selected)
   emit('close')
 }
 
@@ -357,7 +291,6 @@ onBeforeUnmount(() => {
   display: inline-block; padding: 3px 9px; border-radius: 6px;
   font-size: 9px; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 8px;
 }
-.tu-badge--basic { background: #f5f5f7; color: #6b6783; }
 .tu-badge--verified { background: #e6f7f6; color: #00857f; }
 .tu-card-title { font-size: 14px; font-weight: 800; color: #231d45; }
 .tu-card-sub { font-size: 11.5px; font-weight: 500; color: #6b6783; line-height: 1.45; margin-top: 2px; }

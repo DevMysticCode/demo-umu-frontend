@@ -341,7 +341,7 @@ const profileItems = [
     route: '/profile/personal-information',
   },
   {
-    title: 'Your Buyer Profile',
+    title: 'Your Buyer Passport',
     description:
       'Verified ID, proof of funds and chain position — share with sellers, agents and solicitors.',
     icon: 'personalInformation',

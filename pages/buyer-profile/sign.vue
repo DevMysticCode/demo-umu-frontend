@@ -28,9 +28,9 @@
     <!-- Document summary -->
     <div class="sd-doc-summary">
       <div class="sd-doc-label">SIGNING</div>
-      <div class="sd-doc-title">UMU Buyer Profile — {{ displayName }}</div>
+      <div class="sd-doc-title">UMU Buyer Passport — {{ displayName }}</div>
       <div class="sd-doc-meta">
-        Ref: {{ publicRef }} · {{ todayLabel }} · Profile + Financial Credentials
+        Ref: {{ publicRef }} · {{ todayLabel }} · Passport + Financial Credentials
       </div>
     </div>
 

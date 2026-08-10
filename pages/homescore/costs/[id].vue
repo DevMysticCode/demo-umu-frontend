@@ -21,16 +21,16 @@
       </button>
       <div class="app-header-info">
         <div class="app-header-title">Property Report</div>
-        <div class="app-header-sub">
-          {{ shortAddress }} · Based on public records
-        </div>
+        <div class="app-header-sub">What we know about this property today</div>
       </div>
       <div class="app-header-spacer" />
     </div>
 
     <!-- HomeScore address card — single source-of-truth component used
          here, on V6ScoreView (homescore detail), and V6QuizView (owner
-         quiz). Update the component once, all three pages stay in sync. -->
+         quiz). Update the component once, all three pages stay in sync.
+         report-mode swaps the tiles/social-proof rows for the stacked EPC
+         row + passport-status pill the Property Report prototype shows. -->
     <div v-if="property" class="hs-addr-card-wrap anim-1">
       <HomescoreAddressCard
         :address="property.addressLine1 || 'This property'"
@@ -42,29 +42,23 @@
         :searches-today="searchStats?.today ?? 0"
         :watchers-count="searchStats?.watchers ?? 0"
         :passport-state="passportClaimState"
+        report-mode
+        @passport-pill-click="onPassportPillClick"
       />
     </div>
 
-    <!-- Claim / Passport-state box + explainer drawers -->
-    <PassportClaimBox
-      :state="passportClaimState"
-      :progress-pct="passportProgressPct"
-      :sections-done="passportSectionsDone"
-      :sections-total="passportSectionsTotal"
-      @claim-passport="goToClaimPassport"
-      @watch="goToBuyPassport"
-      @buy="goToBuyPassport"
-    />
-
-    <!-- Buyer confidence -->
+    <!-- Buyer snapshot -->
     <div class="buyer-conf anim-2">
       <div class="buyer-conf-row">
-        <div class="buyer-conf-icon">
-          <img src="/op-icons/calendar/shield.png" alt="" loading="lazy" />
-        </div>
         <div class="buyer-conf-info">
-          <div class="buyer-conf-eyebrow">Buyer confidence</div>
-          <div class="buyer-conf-title">{{ confidenceTitle }}</div>
+          <div class="buyer-conf-eyebrow">
+            <img src="/op-icons/calendar/shield.png" alt="" class="buyer-conf-eyebrow-ic" loading="lazy" />
+            BUYER SNAPSHOT
+          </div>
+          <div class="buyer-conf-title">
+            HomeScore {{ displayScore || '—' }} · <span>Based on public data</span>
+          </div>
+          <div class="buyer-conf-desc">{{ confidenceTitle }}</div>
         </div>
         <div class="buyer-conf-dial" aria-label="HomeScore">
           <svg viewBox="0 0 60 60" aria-hidden="true">
@@ -98,6 +92,31 @@
           <div class="buyer-conf-dial-num">{{ displayScore || '—' }}</div>
         </div>
       </div>
+
+      <div class="buyer-conf-stats">
+        <div class="buyer-conf-stat">
+          <img src="/op-icons/investment/moneyBagPound.png" alt="" class="buyer-conf-stat-ic" loading="lazy" />
+          <div class="buyer-conf-stat-label">Est. running cost</div>
+          <div class="buyer-conf-stat-val">£{{ formatNum(totalAnnual) }}<span>/year</span></div>
+        </div>
+        <div class="buyer-conf-stat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="buyer-conf-stat-ic buyer-conf-stat-ic--svg">
+            <line x1="6" y1="20" x2="6" y2="12" />
+            <line x1="12" y1="20" x2="12" y2="8" />
+            <line x1="18" y1="20" x2="18" y2="14" />
+          </svg>
+          <div class="buyer-conf-stat-label">Compared to area</div>
+          <div class="buyer-conf-stat-val">{{ bsAreaLabel ?? '—' }}</div>
+        </div>
+        <div class="buyer-conf-stat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="buyer-conf-stat-ic buyer-conf-stat-ic--svg">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <div class="buyer-conf-stat-label">Areas worth checking</div>
+          <div class="buyer-conf-stat-val">{{ bsWorthCheckingCount }}</div>
+        </div>
+      </div>
     </div>
 
     <!-- Tab bar (scrollable, 6 tabs) -->
@@ -119,12 +138,12 @@
       <div v-if="activeTab === 'energy'" class="tab-panel active">
         <div class="stats-card">
           <div class="stats-card-head">
-            <div class="stats-card-eyebrow">EPC breakdown</div>
+            <div class="stats-card-eyebrow">What the public EPC tells you</div>
             <span class="src-tag teal">via EPC Register</span>
           </div>
           <div class="stats-card-intro">
-            The owner could improve this with a full HomeScore. These bars show
-            what the public EPC says today.
+            EPC data comes from the government register. The owner may have
+            made improvements since this EPC was recorded.
           </div>
           <div v-for="s in epcStats" :key="s.id" class="stat-row">
             <div class="stat-icon">
@@ -149,13 +168,15 @@
             </div>
           </div>
           <div class="stats-note">
-            Ask the owner to run a full HomeScore — they may have made
-            improvements since {{ epcYear || 'the survey' }} that aren't on the
-            public EPC.
+            An up-to-date Property Passport could reveal improvements that
+            aren't reflected in this EPC.
           </div>
         </div>
 
-        <div class="section-h">Questions to ask the owner</div>
+        <div class="section-h">Questions worth asking</div>
+        <div class="section-h-sub">
+          A Property Passport could answer these for you automatically
+        </div>
         <div class="questions-card">
           <div v-for="q in askQuestions" :key="q.id" class="ask-row">
             <div class="ask-icon">
@@ -1143,6 +1164,13 @@
       @close="watchDrawerOpen = false"
       @submit="onWatchSubmit"
     />
+    <WatchConfirmedDrawer
+      :open="watchConfirmedOpen"
+      :address-label="property?.addressLine1 || ''"
+      :prefs="watchConfirmedPrefs"
+      @close="watchConfirmedOpen = false"
+      @create-passport="goToBuildBuyerPassport"
+    />
     <VerifyBuyerDrawer
       :open="verifyDrawerOpen"
       @close="verifyDrawerOpen = false"
@@ -1154,8 +1182,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import WatchPropertyDrawer from '~/components/property/WatchPropertyDrawer.vue'
+import WatchConfirmedDrawer from '~/components/property/WatchConfirmedDrawer.vue'
 import VerifyBuyerDrawer from '~/components/property/VerifyBuyerDrawer.vue'
-import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
 import BuyerVerifyCard from '~/components/property/BuyerVerifyCard.vue'
 import HomescoreAddressCard from '~/components/homescore/HomescoreAddressCard.vue'
 import {
@@ -1950,6 +1978,23 @@ const streetBars = computed<StreetBar[]>(() => {
 })
 
 // ── Buyer confidence ──
+// "Compared to area" — real comparison using the same street-rank data the
+// Street tab already shows, not a fabricated value. Null when there isn't
+// enough enriched-neighbour data yet, so the template can show a dash.
+const bsAreaLabel = computed<string | null>(() => {
+  const r = streetRank.value,
+    t = streetTotal.value
+  if (!r || !t) return null
+  return r / t <= 0.5 ? 'Below average' : 'Above average'
+})
+
+// "Areas worth checking" — count of the 5 EPC pillars (heating, structure,
+// efficiency, electrics, plumbing) epcStats already flags as 'low', not a
+// decorative number.
+const bsWorthCheckingCount = computed(
+  () => epcStats.value.filter((s) => s.tone === 'low').length,
+)
+
 const confidenceTitle = computed(() => {
   const recs: any[] = property.value?.epcRecommendations || []
   const flagCount = recs.filter((r) =>
@@ -1987,6 +2032,16 @@ function goToClaimPassport() {
     return
   }
   router.push(target)
+}
+
+// Header card's passport-status pill — claim if nobody's started one yet,
+// otherwise route to the same "buy/unlock" flow the rest of the page uses.
+function onPassportPillClick() {
+  if (passportState.value === 'unclaimed') {
+    goToClaimPassport()
+    return
+  }
+  goToBuyPassport()
 }
 
 // In-progress / published "buy the Passport" CTA → property page with the
@@ -2031,11 +2086,17 @@ function onWatch() {
 function onRegister() {
   watchDrawerOpen.value = true
 }
-// Drawer submit: take the buyer to the property page, which persists the watch
-// (saves it to their profile + registers interest) and shows the toast. Guests
-// sign in first, then resume on that property page via redirectAfterLogin.
-function onWatchSubmit() {
+// Drawer submit: persist the per-event notification prefs, then show the
+// celebratory confirmation drawer in place (matching the "You're watching…"
+// prototype) instead of navigating away. Guests sign in first and resume
+// back here — the watch itself only gets saved once they're authed.
+const watchConfirmedOpen = ref(false)
+const watchConfirmedPrefs = ref<Record<string, boolean> | null>(null)
+async function onWatchSubmit(prefs: Record<string, boolean>) {
   watchDrawerOpen.value = false
+  // Guests land on the property page after sign-in — it already has a
+  // ?watched=1 handler that persists the watch there. Prefs aren't carried
+  // through that round-trip (pre-existing limitation), same as elsewhere.
   const target = `/property/${propertyId.value}?watched=1`
   const token =
     typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
@@ -2043,6 +2104,31 @@ function onWatchSubmit() {
     try {
       localStorage.setItem('redirectAfterLogin', target)
     } catch {}
+    router.push('/onboarding/signin')
+    return
+  }
+  try {
+    await fetch(`${config.public.apiBase}/property/${propertyId.value}/watch`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(prefs),
+    })
+  } catch {}
+  watchConfirmedPrefs.value = prefs
+  watchConfirmedOpen.value = true
+}
+
+// "Create my Buyer Passport" CTA on the watch-confirmed drawer.
+function goToBuildBuyerPassport() {
+  watchConfirmedOpen.value = false
+  const target = '/buyer-profile/build'
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) {
+    try { localStorage.setItem('redirectAfterLogin', target) } catch {}
     router.push('/onboarding/signin')
     return
   }
@@ -2388,22 +2474,85 @@ function onBuyPassport() {
   flex: 1;
 }
 .buyer-conf-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.2px;
   text-transform: uppercase;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+}
+.buyer-conf-eyebrow-ic {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
 }
 .buyer-conf-title {
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 800;
   color: var(--text);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
+}
+.buyer-conf-title span {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.buyer-conf-desc {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 5px;
 }
 .buyer-conf-num {
   font-size: 18px;
   color: var(--warning-deep);
   letter-spacing: -0.3px;
+}
+.buyer-conf-stats {
+  display: flex;
+  align-items: stretch;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-soft, var(--border));
+}
+.buyer-conf-stat {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  padding: 0 4px;
+}
+.buyer-conf-stat + .buyer-conf-stat {
+  border-left: 1px solid var(--border-soft, var(--border));
+}
+.buyer-conf-stat-ic {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin: 0 auto 6px;
+  display: block;
+}
+.buyer-conf-stat-ic--svg {
+  color: var(--accent, #00a19a);
+}
+.buyer-conf-stat-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+.buyer-conf-stat-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+  margin-top: 3px;
+}
+.buyer-conf-stat-val span {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 .buyer-conf-dial {
   position: relative;
@@ -2614,6 +2763,15 @@ function onBuyPassport() {
   letter-spacing: 1.4px;
   text-transform: uppercase;
   padding: 6px 0 10px;
+}
+.section-h:has(+ .section-h-sub) {
+  padding-bottom: 2px;
+}
+.section-h-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding-bottom: 10px;
 }
 .questions-card {
   background: var(--card);
