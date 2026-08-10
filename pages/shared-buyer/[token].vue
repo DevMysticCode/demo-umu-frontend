@@ -3,7 +3,7 @@
     <!-- ── Header (no auth context — purely visual) ── -->
     <div class="sb-header">
       <div class="sb-eyebrow">
-        <span class="sb-dot" />UMU · Verified Buyer Profile
+        <span class="sb-dot" />UMU · Verified Buyer Passport
       </div>
       <div v-if="data?.publicRef" class="sb-ref">Ref · {{ data.publicRef }}</div>
     </div>
@@ -39,12 +39,12 @@
     <!-- ── Profile badge ── -->
     <div v-else-if="data" class="sb-content">
       <!-- Hero with tier + strength gauge -->
-      <div class="sb-hero" :class="`sb-hero--${(data.tier || 'BASIC').toLowerCase()}`">
+      <div class="sb-hero" :class="`sb-hero--${(data.tier || 'unverified').toLowerCase()}`">
         <div class="sb-tier-row">
-          <div class="sb-tier-badge" :class="`sb-tier-badge--${(data.tier || 'BASIC').toLowerCase()}`">
+          <div class="sb-tier-badge" :class="`sb-tier-badge--${(data.tier || 'unverified').toLowerCase()}`">
             <span v-if="data.tier === 'PREMIUM'">★ PREMIUM</span>
             <span v-else-if="data.tier === 'VERIFIED'">✓ VERIFIED</span>
-            <span v-else>○ BASIC</span>
+            <span v-else>○ UNVERIFIED</span>
           </div>
           <div v-if="data.sharedTo" class="sb-shared-to">Shared with {{ data.sharedTo }}</div>
         </div>
@@ -251,7 +251,7 @@ onBeforeUnmount(() => cancelAnimationFrame(raf))
 // ── Label helpers ──
 function idTypeLabel(t: string | null | undefined) {
   if (!t) return '—'
-  return ({ passport: 'Passport', drivingLicence: 'Driving licence', nationalId: 'National ID' } as any)[t] || t
+  return ({ passport: 'Passport', drivingLicence: 'Driving licence', nationalId: 'Biometric Residence Permit' } as any)[t] || t
 }
 function fundsTypeLabel(t: string | null | undefined) {
   return ({ mortgage: 'Mortgage', cash: 'Cash buyer', help: 'Help to Buy' } as any)[t || ''] || '—'
@@ -302,7 +302,7 @@ function normaliseSof(raw: any): { label: string; amount: number }[] {
 .sb-content { display: flex; flex-direction: column; gap: 12px; }
 
 .sb-hero { border-radius: 22px; padding: 22px 22px 24px; color: #fff; position: relative; overflow: hidden; }
-.sb-hero--basic { background: linear-gradient(135deg, #4dd4ce 0%, #00a19a 60%, #006e68 100%); }
+.sb-hero--unverified { background: linear-gradient(135deg, #4dd4ce 0%, #00a19a 60%, #006e68 100%); }
 .sb-hero--verified { background: linear-gradient(135deg, #00a19a 0%, #00857f 60%, #00514d 100%); }
 .sb-hero--premium { background: linear-gradient(135deg, #f0b460 0%, #d4822a 50%, #7a3a05 100%); }
 .sb-tier-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }

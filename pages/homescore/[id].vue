@@ -1765,6 +1765,12 @@
       <div class="hs-scroll bv-root">
         <!-- ── Address card (consistent with ResultDetail) ─────── -->
         <div v-if="property" class="bv-addr-card">
+          <img
+            src="/op-icons/landing/homeScoreCard.png"
+            alt=""
+            class="bv-addr-house-illus"
+            loading="lazy"
+          />
           <div class="bv-addr-top">
             <div class="bv-addr-pin" />
             <div class="bv-addr-block">
@@ -1803,7 +1809,7 @@
             <span
               v-if="bvPassportState === 'unclaimed'"
               class="bv-addr-pill bv-state-unclaimed"
-              >Unclaimed</span
+              >📋 No Passport yet</span
             >
             <span
               v-else-if="bvPassportState === 'inProgress'"
@@ -1852,39 +1858,88 @@
           </div>
         </div>
 
-        <!-- ── Running cost hero (navy gradient) ───────────────── -->
-        <div class="bv-cost-hero">
-          <div class="bv-cost-eyebrow">Estimated annual running cost</div>
-          <div class="bv-cost-num">
-            ~£{{ bvAnnualCostDisplay.toLocaleString()
-            }}<span class="bv-cost-unit"> / year</span>
-          </div>
-          <div class="bv-cost-sub">
-            Based on EPC data. The best homes on this street cost
-            <b>£{{ bvStreetBest.toLocaleString() }}/yr</b> — there's potential
-            to negotiate or factor in upgrade costs.
-          </div>
-          <div class="bv-cost-stats">
-            <div class="bv-cost-stat">
-              <div class="bv-cost-stat-num">{{ result.total }}</div>
-              <div class="bv-cost-stat-label">HomeScore</div>
-            </div>
-            <div class="bv-cost-stat-div" />
-            <div class="bv-cost-stat">
-              <div class="bv-cost-stat-num">{{ buyerEpcGrade }}</div>
-              <div class="bv-cost-stat-label">EPC Grade</div>
-            </div>
-            <div v-if="bvStreetRankLabel" class="bv-cost-stat-div" />
-            <div v-if="bvStreetRankLabel" class="bv-cost-stat">
-              <div class="bv-cost-stat-num">{{ bvStreetRankLabel }}</div>
-              <div class="bv-cost-stat-label">
-                of {{ streetEnergyRank?.total }} on street
+        <!-- ── Buyer snapshot (HomeScore gauge + running-cost stats) ── -->
+        <div class="bv-snapshot-card">
+          <div class="bv-snapshot-top">
+            <div class="bv-snapshot-body">
+              <div class="bv-snapshot-eyebrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
+                  <path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z" />
+                </svg>
+                BUYER SNAPSHOT
               </div>
+              <div class="bv-snapshot-title">
+                HomeScore {{ result.total }} · <span>Based on public data</span>
+              </div>
+              <div class="bv-snapshot-desc">
+                This gives you a quick view of this home's likely running
+                costs, risks and potential.
+              </div>
+            </div>
+            <div class="bv-snapshot-gauge-wrap">
+              <svg class="bv-snapshot-gauge-svg" viewBox="0 0 100 100">
+                <circle class="bv-snapshot-gauge-bg" cx="50" cy="50" r="40" />
+                <circle
+                  class="bv-snapshot-gauge-fill"
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  :stroke-dashoffset="251.33 - (result.total / 100) * 251.33"
+                />
+              </svg>
+              <div class="bv-snapshot-gauge-center">
+                <span class="bv-snapshot-gauge-num">{{ result.total }}</span>
+                <span class="bv-snapshot-gauge-denom">/100</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bv-snapshot-stats">
+            <div class="bv-snapshot-stat">
+              <img src="/op-icons/investment/moneyBagPound.png" alt="" class="bv-snapshot-stat-ic" loading="lazy" />
+              <div class="bv-snapshot-stat-label">Est. running cost</div>
+              <div class="bv-snapshot-stat-val">
+                £{{ bvAnnualCostDisplay.toLocaleString() }}<span>/year</span>
+              </div>
+            </div>
+            <div class="bv-snapshot-stat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bv-snapshot-stat-ic bv-snapshot-stat-ic--svg">
+                <line x1="6" y1="20" x2="6" y2="12" />
+                <line x1="12" y1="20" x2="12" y2="8" />
+                <line x1="18" y1="20" x2="18" y2="14" />
+              </svg>
+              <div class="bv-snapshot-stat-label">Compared to area</div>
+              <div class="bv-snapshot-stat-val">
+                {{ bvAreaComparisonLabel ?? '—' }}
+              </div>
+            </div>
+            <div class="bv-snapshot-stat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bv-snapshot-stat-ic bv-snapshot-stat-ic--svg">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <div class="bv-snapshot-stat-label">Areas worth checking</div>
+              <div class="bv-snapshot-stat-val">{{ bvAreasWorthCheckingCount }}</div>
             </div>
           </div>
         </div>
 
-        <!-- ── Buyer risk summary ──────────────────────────────── -->
+        <!-- ── Report tabs (jump to the section below) ─────────── -->
+        <div class="bv-tabs">
+          <button
+            v-for="t in bvTabs"
+            :key="t.key"
+            type="button"
+            class="bv-tab"
+            :class="{ active: bvActiveTab === t.key }"
+            @click="bvActiveTab = t.key"
+          >
+            <span class="bv-tab-emoji">{{ t.emoji }}</span>{{ t.label }}
+          </button>
+        </div>
+
+        <!-- ── Buyer risk summary (Risks tab) ──────────────────── -->
+        <template v-if="bvActiveTab === 'risks'">
         <div class="bv-section-h">
           <div class="bv-section-h-icon warn">
             <svg
@@ -1923,8 +1978,10 @@
             </div>
           </div>
         </div>
+        </template>
 
-        <!-- ── Score breakdown ─────────────────────────────────── -->
+        <!-- ── Score breakdown (Energy tab) ────────────────────── -->
+        <template v-if="bvActiveTab === 'energy'">
         <div class="bv-section-h">
           <div class="bv-section-h-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
@@ -1932,7 +1989,7 @@
             </svg>
           </div>
           <div class="bv-section-h-text">
-            <div class="bv-section-h-title">Score breakdown</div>
+            <div class="bv-section-h-title">What the public EPC tells you</div>
             <div class="bv-section-h-sub">Based on public EPC data only</div>
           </div>
         </div>
@@ -1969,6 +2026,79 @@
             HomeScore to get a verified picture.
           </div>
         </div>
+        </template>
+
+        <!-- ── Costs tab — real numbers already loaded for this screen,
+             just not fabricated beyond what street-energy-rank gives us. -->
+        <template v-if="bvActiveTab === 'costs'">
+        <div class="bv-section-h">
+          <div class="bv-section-h-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+          </div>
+          <div class="bv-section-h-text">
+            <div class="bv-section-h-title">Running costs</div>
+            <div class="bv-section-h-sub">Estimated from public EPC data</div>
+          </div>
+        </div>
+        <div class="bv-costs-card">
+          <div class="bv-costs-row">
+            <span>This property (estimated)</span>
+            <b>£{{ bvAnnualCostDisplay.toLocaleString() }}/yr</b>
+          </div>
+          <div class="bv-costs-row">
+            <span>Best on this street</span>
+            <b>£{{ bvStreetBest.toLocaleString() }}/yr</b>
+          </div>
+          <div v-if="streetEnergyRank?.averageCost" class="bv-costs-row">
+            <span>Street average</span>
+            <b>£{{ Math.round(streetEnergyRank?.averageCost ?? 0).toLocaleString() }}/yr</b>
+          </div>
+        </div>
+        </template>
+
+        <!-- ── Sold tab — no price-history data loaded on this screen yet;
+             honest empty state rather than a fabricated figure. -->
+        <template v-if="bvActiveTab === 'sold'">
+        <div class="bv-empty-tab">
+          <div class="bv-empty-tab-title">Sale history not available here</div>
+          <div class="bv-empty-tab-sub">
+            Full sold-price history for this property isn't part of this
+            quick report yet.
+          </div>
+        </div>
+        </template>
+
+        <!-- ── Area tab — real street-rank data already loaded here. -->
+        <template v-if="bvActiveTab === 'area'">
+        <div class="bv-section-h">
+          <div class="bv-section-h-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
+          <div class="bv-section-h-text">
+            <div class="bv-section-h-title">This street</div>
+            <div class="bv-section-h-sub">How this property compares nearby</div>
+          </div>
+        </div>
+        <div v-if="bvStreetRankLabel" class="bv-costs-card">
+          <div class="bv-costs-row">
+            <span>Running-cost rank on this street</span>
+            <b>{{ bvStreetRankLabel }} of {{ streetEnergyRank?.total }}</b>
+          </div>
+        </div>
+        <div v-else class="bv-empty-tab">
+          <div class="bv-empty-tab-title">Not enough nearby data yet</div>
+          <div class="bv-empty-tab-sub">
+            We need a few more enriched neighbours on this street to rank
+            this property.
+          </div>
+        </div>
+        </template>
 
         <!-- ── Questions to ask the owner ──────────────────────── -->
         <div class="bv-section-h">
@@ -1986,9 +2116,9 @@
             </svg>
           </div>
           <div class="bv-section-h-text">
-            <div class="bv-section-h-title">Questions to ask the owner</div>
+            <div class="bv-section-h-title">Questions worth asking</div>
             <div class="bv-section-h-sub">
-              Based on what the EPC data flags for this property
+              A Property Passport could answer these for you automatically
             </div>
           </div>
         </div>
@@ -1999,6 +2129,7 @@
               <div class="bv-q-title">{{ q.title }}</div>
               <div class="bv-q-sub">{{ q.sub }}</div>
             </div>
+            <span class="bv-q-chev">›</span>
           </div>
         </div>
 
@@ -2915,8 +3046,8 @@ const authGateCopy = computed<{ title: string; body: string }>(() => {
     case 'save-buyer':
     case 'buyer-profile':
       return {
-        title: 'Sign in to save to your Buyer Profile',
-        body: 'Create a free account to save this property, see the full Buyer Report and share a verified Buyer Profile with sellers.',
+        title: 'Sign in to save to your Buyer Passport',
+        body: 'Create a free account to save this property, see the full Buyer Report and share a verified Buyer Passport with sellers.',
       }
     default:
       return {
@@ -3531,7 +3662,7 @@ const headerSub = computed(() => {
   if (screen.value === 'level-up') return 'Your HomeScore has been refined'
   if (screen.value === 'results') return 'Refined with your answers'
   if (screen.value === 'passport') return 'Continue your journey'
-  if (screen.value === 'buyer-results') return 'Based on public EPC data'
+  if (screen.value === 'buyer-results') return 'What we know about this property today'
   if (screen.value === 'quick-wins') return 'Every document adds real value'
   if (screen.value === 'move-ready') return 'What it means for you'
   return ''
@@ -5108,6 +5239,38 @@ const bvStreetRankLabel = computed<string | null>(() => {
   }
 })
 
+// ── Report tabs — jump between sections of the buyer-results screen.
+// "Sold" has no backing data on this screen yet (would need a fresh
+// price-paid fetch) — shown as an honest empty state rather than a
+// fabricated panel. Energy/Risks reuse the two sections that already
+// existed; Costs/Area are small new panels built from data already
+// loaded here (street-energy-rank), not invented numbers.
+const bvTabs = [
+  { key: 'energy', emoji: '⚡', label: 'Energy' },
+  { key: 'costs', emoji: '💰', label: 'Costs' },
+  { key: 'sold', emoji: '📈', label: 'Sold' },
+  { key: 'risks', emoji: '⚠️', label: 'Risks' },
+  { key: 'area', emoji: '📍', label: 'Area' },
+] as const
+const bvActiveTab = ref<(typeof bvTabs)[number]['key']>('energy')
+
+// "Compared to area" stat on the Buyer Snapshot card — real comparison
+// against the street's average running cost (same source as bvStreetBest),
+// not a guess. Null when we don't have enough neighbours enriched yet, so
+// the template can hide the stat rather than show a made-up value.
+const bvAreaComparisonLabel = computed<string | null>(() => {
+  const avg = streetEnergyRank.value?.averageCost
+  if (typeof avg !== 'number' || avg <= 0) return null
+  return bvAnnualCostDisplay.value <= avg ? 'Below average' : 'Above average'
+})
+
+// "Areas worth checking" stat — count of the 5 EPC pillars (heating,
+// structure, electrics, plumbing, efficiency) that buyerRisks below flags
+// as a real concern, not a fixed/decorative number.
+const bvAreasWorthCheckingCount = computed(
+  () => buyerRisks.value.filter((r) => r.tone === 'warn').length,
+)
+
 const bvEpcColor = computed(() => {
   const map: Record<string, string> = {
     A: '#00B050',
@@ -5751,6 +5914,11 @@ onMounted(async () => {
     } else if (qScreen === 'level-up') {
       screen.value = 'level-up'
       seedScreenHistory('level-up')
+    } else if (qScreen === 'buyer-results') {
+      // Deep link from the property page's "Property Report" entry point
+      // (score card tap for non-owner viewers).
+      screen.value = 'buyer-results'
+      seedScreenHistory('buyer-results')
     }
   }
 
@@ -10249,13 +10417,18 @@ watch(screen, (s) => {
   margin: 16px 22px 0;
   border-radius: 22px;
   padding: 22px 22px 18px;
-  background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
+  background: linear-gradient(
+    135deg,
+    var(--bv-navy-soft) 0%,
+    var(--bv-navy) 60%,
+    #0d1a3a 100%
+  );
   color: #fff;
   position: relative;
   overflow: hidden;
   box-shadow:
-    0 12px 32px -8px rgba(180, 100, 20, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    0 12px 32px -8px rgba(35, 29, 69, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .bv-addr-card::after {
   content: '';
@@ -10267,7 +10440,7 @@ watch(screen, (s) => {
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.06) 0%,
     transparent 65%
   );
   pointer-events: none;
@@ -10275,6 +10448,16 @@ watch(screen, (s) => {
 .bv-addr-card > * {
   position: relative;
   z-index: 1;
+}
+.bv-addr-house-illus {
+  position: absolute;
+  z-index: 1;
+  top: 14px;
+  right: 14px;
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+  pointer-events: none;
 }
 .bv-addr-top {
   display: flex;
@@ -10294,6 +10477,7 @@ watch(screen, (s) => {
 .bv-addr-block {
   flex: 1;
   min-width: 0;
+  padding-right: 96px;
 }
 .bv-addr-line {
   font-size: 19px;
@@ -10418,84 +10602,222 @@ watch(screen, (s) => {
   }
 }
 
-/* ── Running cost hero (navy gradient) ─────────────────────── */
-.bv-cost-hero {
+/* ── Buyer snapshot card ────────────────────────────────────── */
+.bv-snapshot-card {
   margin: 12px 22px 0;
-  padding: 22px 20px 20px;
-  background: linear-gradient(
-    135deg,
-    var(--bv-navy-soft) 0%,
-    var(--bv-navy) 60%,
-    #0d1a3a 100%
-  );
+  padding: 20px;
+  background: #fff;
+  border: 1px solid var(--bv-border, #ece9f3);
   border-radius: 20px;
-  color: #fff;
-  box-shadow: 0 12px 32px -8px rgba(35, 29, 69, 0.45);
+  box-shadow: 0 8px 24px -12px rgba(35, 29, 69, 0.18);
 }
-.bv-cost-eyebrow {
-  font-size: 11px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.6);
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.bv-cost-num {
-  font-size: 38px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -1.2px;
-  line-height: 1;
-  margin-bottom: 10px;
-}
-.bv-cost-unit {
-  font-size: 20px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.75);
-}
-.bv-cost-sub {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.5;
-  margin-bottom: 16px;
-}
-.bv-cost-sub b {
-  color: #6bd4cd;
-  font-weight: 800;
-}
-.bv-cost-stats {
+.bv-snapshot-top {
   display: flex;
   align-items: center;
-  gap: 0;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
+  gap: 16px;
 }
-.bv-cost-stat {
+.bv-snapshot-body {
   flex: 1;
-  padding: 10px 8px;
+  min-width: 0;
+}
+.bv-snapshot-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #6b7089;
+  margin-bottom: 6px;
+}
+.bv-snapshot-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.3px;
+}
+.bv-snapshot-title span {
+  font-weight: 600;
+  color: #6b7089;
+}
+.bv-snapshot-desc {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6b7089;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+.bv-snapshot-gauge-wrap {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+}
+.bv-snapshot-gauge-svg {
+  width: 84px;
+  height: 84px;
+  transform: rotate(-90deg);
+}
+.bv-snapshot-gauge-bg {
+  fill: none;
+  stroke: rgba(35, 29, 69, 0.1);
+  stroke-width: 8;
+}
+.bv-snapshot-gauge-fill {
+  fill: none;
+  stroke: #00a19a;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 251.33;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bv-snapshot-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.bv-snapshot-gauge-num {
+  font-size: 22px;
+  font-weight: 900;
+  color: #231d45;
+  line-height: 1;
+}
+.bv-snapshot-gauge-denom {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9c98ad;
+}
+.bv-snapshot-stats {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #f0eff6;
+}
+.bv-snapshot-stat {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  padding: 0 4px;
+}
+.bv-snapshot-stat + .bv-snapshot-stat {
+  border-left: 1px solid #f0eff6;
+}
+.bv-snapshot-stat-ic {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  margin: 0 auto 6px;
+  display: block;
+}
+.bv-snapshot-stat-ic--svg {
+  color: #00a19a;
+}
+.bv-snapshot-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #6b7089;
+  line-height: 1.3;
+}
+.bv-snapshot-stat-val {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #231d45;
+  margin-top: 3px;
+}
+.bv-snapshot-stat-val span {
+  font-size: 10px;
+  font-weight: 600;
+  color: #9c98ad;
+}
+
+/* ── Report tabs ────────────────────────────────────────────── */
+.bv-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 14px 22px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.bv-tabs::-webkit-scrollbar {
+  display: none;
+}
+.bv-tab {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid #ece9f3;
+  background: #fff;
+  color: #6b7089;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.bv-tab-emoji {
+  font-size: 13px;
+}
+.bv-tab.active {
+  background: #00a19a;
+  border-color: #00a19a;
+  color: #fff;
+}
+
+/* ── Costs / Area panels (shared card style) ─────────────────── */
+.bv-costs-card {
+  margin: 8px 22px 0;
+  padding: 4px 18px;
+  background: #fff;
+  border: 1px solid #ece9f3;
+  border-radius: 16px;
+}
+.bv-costs-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7089;
+}
+.bv-costs-row + .bv-costs-row {
+  border-top: 1px solid #f0eff6;
+}
+.bv-costs-row b {
+  color: #231d45;
+  font-weight: 800;
+}
+
+/* ── Empty-tab state (Sold / Area with no data yet) ──────────── */
+.bv-empty-tab {
+  margin: 8px 22px 0;
+  padding: 28px 20px;
+  background: #fff;
+  border: 1px dashed #ddd9ea;
+  border-radius: 16px;
   text-align: center;
 }
-.bv-cost-stat-num {
-  font-size: 18px;
+.bv-empty-tab-title {
+  font-size: 14px;
   font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.5px;
+  color: #231d45;
 }
-.bv-cost-stat-label {
-  font-size: 9px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.55);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  margin-top: 2px;
-}
-.bv-cost-stat-div {
-  width: 1px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.15);
-  flex-shrink: 0;
+.bv-empty-tab-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6b7089;
+  line-height: 1.5;
+  margin-top: 6px;
 }
 
 /* ── Section header (mirrors costs page) ───────────────────── */
@@ -10745,6 +11067,13 @@ watch(screen, (s) => {
   font-weight: 500;
   color: var(--bv-text-soft);
   line-height: 1.4;
+}
+.bv-q-chev {
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--bv-text-soft);
+  margin-top: 2px;
 }
 
 /* ── Save to Buyer Profile card ────────────────────────────── */

@@ -1,7 +1,7 @@
 <template>
   <div class="bp-page">
     <!-- Sticky header (hidden on the celebration screen) -->
-    <div v-if="step <= 5" class="bp-header">
+    <div v-if="step <= 7" class="bp-header">
       <button class="bp-back" @click="goBack" aria-label="Back">
         <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
           <polyline
@@ -13,18 +13,41 @@
         </svg>
       </button>
       <div class="bp-header-body">
-        <div class="bp-header-title">Build your Profile</div>
-        <div class="bp-header-sub">Step {{ step }} of 5</div>
+        <div class="bp-header-title">Build your Buyer Passport</div>
+        <div class="bp-header-sub">
+          <template v-if="step <= 4">Step {{ step }} of 4</template>
+          <template v-else>Bonus step {{ step - 4 }} of 3</template>
+        </div>
       </div>
     </div>
 
-    <!-- Progress bar (hidden on the celebration screen) -->
-    <div v-if="step <= 5" class="bp-progress">
+    <!-- 4-step labeled stepper for the core Passport steps (matches the
+         "Identity / Buying position / Finance / Chain position" prototype). -->
+    <div v-if="step <= 4" class="bp-stepper">
       <div
-        v-for="n in 5"
+        v-for="(s, i) in coreSteps"
+        :key="s.key"
+        class="bp-stepper-dot"
+        :class="{ done: step > i + 1, active: step === i + 1 }"
+      >
+        <span class="bp-stepper-num">
+          <template v-if="step > i + 1">✓</template>
+          <template v-else>{{ i + 1 }}</template>
+        </span>
+        <span class="bp-stepper-label">{{ s.label }}</span>
+      </div>
+    </div>
+
+    <!-- Plain progress bar for the 3 bonus steps beyond the core 4 (tier /
+         solicitor / story) — these aren't part of the prototype's numbered
+         flow, so they keep the simpler existing indicator rather than
+         inventing new labeled-dot artwork for them. -->
+    <div v-else class="bp-progress">
+      <div
+        v-for="n in 3"
         :key="n"
         class="bp-progress-seg"
-        :class="{ 'bp-progress-seg-filled': n <= step }"
+        :class="{ 'bp-progress-seg-filled': n <= step - 4 }"
       />
     </div>
 
@@ -339,60 +362,63 @@
         </Teleport>
       </div>
 
-      <!-- ── STEP 2: Tier picker (and funds for Verified/Premium) ── -->
+      <!-- ── STEP 2: Buying position ── -->
       <div v-if="step === 2" class="bp-step">
-        <div class="bp-step-hero">
-          <div class="bp-step-ic bp-ic-purple"><img src="/op-icons/misc/star.png" alt="" loading="lazy" /></div>
-          <div class="bp-step-title">Choose your tier</div>
-          <div class="bp-step-body">
-            Higher tiers add verified credentials sellers and agents look for.
-            One-off payment — no subscription.
-          </div>
+        <div class="bp-step-hero bp-step-hero--narrow">
+          <div class="bp-step-ic"><img src="/op-icons/buyer-profile-build/target.png" alt="" loading="lazy" /></div>
+          <div class="bp-step-title">Your buying position</div>
+          <div class="bp-step-body">Tell us about your buying plans</div>
         </div>
 
-        <!-- Tier cards -->
-        <div class="bp-tier-list">
+        <!-- Timeline -->
+        <div class="bp-sec-label">TIMELINE</div>
+        <div class="bp-chip-row">
           <button
-            v-for="t in tierOptions"
-            :key="t.id"
-            type="button"
-            class="bp-tier-card"
-            :class="[
-              t.id.toLowerCase(),
-              {
-                selected: selectedTier === t.id,
-                paid: tierPaidFor === t.id,
-              },
-            ]"
-            @click="selectedTier = t.id"
+            v-for="opt in timelineOptions"
+            :key="opt.value"
+            class="bp-chip"
+            :class="{ active: timeline === opt.value }"
+            @click="timeline = opt.value"
           >
-            <span class="bp-tier-corner">{{ t.corner }}</span>
-            <div class="bp-tier-badge" :class="`bp-tier-badge--${t.id.toLowerCase()}`">
-              {{ t.badge }}
-            </div>
-            <div class="bp-tier-title">{{ t.title }}</div>
-            <div class="bp-tier-sub">{{ t.sub }}</div>
-            <div class="bp-tier-price-row">
-              <span class="bp-tier-price">{{ t.priceLabel }}</span>
-              <span v-if="tierPaidFor === t.id" class="bp-tier-paid-pill">✓ Paid</span>
-            </div>
-            <ul class="bp-tier-features">
-              <li v-for="f in t.features" :key="f.text">
-                <span :class="f.included ? 'bp-tier-tick' : 'bp-tier-dash'">
-                  {{ f.included ? '✓' : '○' }}
-                </span>
-                {{ f.text }}
-              </li>
-            </ul>
+            {{ opt.label }}
           </button>
         </div>
 
-        <!-- ── Funds verification (only after a paid tier has been confirmed) ── -->
-        <template v-if="needsFundsCapture">
-          <div class="bp-field-label">
-            <span class="bp-funds-step-pill">Next</span>
-            Verify your funds
+        <!-- Property type -->
+        <div class="bp-sec-label">PROPERTY TYPE</div>
+        <div class="bp-chip-row">
+          <button
+            v-for="opt in propertyTypeOptions"
+            :key="opt.value"
+            class="bp-chip"
+            :class="{ active: propertyType === opt.value }"
+            @click="propertyType = opt.value"
+          >
+            {{ opt.label }}
+          </button>
+        </div>
+
+        <button
+          class="bp-next"
+          :class="{ disabled: !canContinue }"
+          :disabled="!canContinue"
+          @click="goNext"
+        >
+          {{ saving ? 'Saving…' : 'Next step →' }}
+        </button>
+      </div>
+
+      <!-- ── STEP 3: Finance ── -->
+      <div v-if="step === 3" class="bp-step">
+        <div class="bp-step-hero">
+          <div class="bp-step-ic"><img src="/op-icons/buyer-profile-build/bank.png" alt="" loading="lazy" /></div>
+          <div class="bp-step-title">Add proof of funds</div>
+          <div class="bp-step-body">
+            Add proof of funds or your mortgage position — this helps sellers
+            confirm your maximum budget.
           </div>
+        </div>
+
           <div class="bp-funds-intro">
             Pick the source that matches your situation. We use this to confirm
             your maximum budget with the seller.
@@ -489,16 +515,14 @@
               inputmode="numeric"
             />
           </div>
-        </template>
 
-        <!-- Dynamic CTA: pay (paid tier, not yet paid) / continue (basic or after payment + funds) -->
         <button
           class="bp-next"
-          :class="{ disabled: !step2CanContinue }"
-          :disabled="!step2CanContinue"
-          @click="onStep2Continue"
+          :class="{ disabled: !canContinue }"
+          :disabled="!canContinue"
+          @click="goNext"
         >
-          {{ step2CtaLabel }}
+          {{ saving ? 'Saving…' : 'Next step →' }}
         </button>
 
         <!-- Funds upload bottom sheet -->
@@ -567,8 +591,8 @@
         </Teleport>
       </div>
 
-      <!-- ── STEP 3: Chain position ── -->
-      <div v-if="step === 3" class="bp-step">
+      <!-- ── STEP 4: Chain position ── -->
+      <div v-if="step === 4" class="bp-step">
         <div class="bp-step-hero">
           <div class="bp-step-ic"><img src="/op-icons/investment/chainLink.png" alt="" loading="lazy" /></div>
           <div class="bp-step-title">Your chain position</div>
@@ -617,39 +641,69 @@
         </button>
       </div>
 
-      <!-- ── STEP 4: Quick questions (Timeline / Property type / Solicitor) ── -->
-      <div v-if="step === 4" class="bp-step">
+      <!-- ── STEP 5: Identity Verified (bonus step, beyond the core 4) ── -->
+      <div v-if="step === 5" class="bp-step">
+        <div class="bp-step-hero">
+          <div class="bp-step-ic bp-ic-purple"><img src="/op-icons/misc/star.png" alt="" loading="lazy" /></div>
+          <div class="bp-step-title">Identity Verified</div>
+          <div class="bp-step-body">
+            One-off payment — proves your identity, funds and buying position
+            to sellers and agents. No subscription.
+          </div>
+        </div>
+
+        <!-- Tier card -->
+        <div class="bp-tier-list">
+          <button
+            v-for="t in tierOptions"
+            :key="t.id"
+            type="button"
+            class="bp-tier-card"
+            :class="[
+              t.id.toLowerCase(),
+              {
+                selected: selectedTier === t.id,
+                paid: tierPaidFor === t.id,
+              },
+            ]"
+            @click="selectedTier = t.id"
+          >
+            <span class="bp-tier-corner">{{ t.corner }}</span>
+            <div class="bp-tier-badge" :class="`bp-tier-badge--${t.id.toLowerCase()}`">
+              {{ t.badge }}
+            </div>
+            <div class="bp-tier-title">{{ t.title }}</div>
+            <div class="bp-tier-sub">{{ t.sub }}</div>
+            <div class="bp-tier-price-row">
+              <span class="bp-tier-price">{{ t.priceLabel }}</span>
+              <span v-if="tierPaidFor === t.id" class="bp-tier-paid-pill">✓ Paid</span>
+            </div>
+            <ul class="bp-tier-features">
+              <li v-for="f in t.features" :key="f.text">
+                <span :class="f.included ? 'bp-tier-tick' : 'bp-tier-dash'">
+                  {{ f.included ? '✓' : '○' }}
+                </span>
+                {{ f.text }}
+              </li>
+            </ul>
+          </button>
+        </div>
+
+        <button
+          class="bp-next"
+          :class="{ disabled: !tierCanContinue }"
+          :disabled="!tierCanContinue"
+          @click="onTierStepContinue"
+        >
+          {{ tierCtaLabel }}
+        </button>
+      </div>
+
+      <!-- ── STEP 6: Solicitor status (bonus step, beyond the core 4) ── -->
+      <div v-if="step === 6" class="bp-step">
         <div class="bp-step-hero bp-step-hero--narrow">
-          <div class="bp-step-title">A few quick questions</div>
+          <div class="bp-step-title">Your solicitor</div>
           <div class="bp-step-body">Helps sellers understand your situation</div>
-        </div>
-
-        <!-- Timeline -->
-        <div class="bp-sec-label">TIMELINE</div>
-        <div class="bp-chip-row">
-          <button
-            v-for="opt in timelineOptions"
-            :key="opt.value"
-            class="bp-chip"
-            :class="{ active: timeline === opt.value }"
-            @click="timeline = opt.value"
-          >
-            {{ opt.label }}
-          </button>
-        </div>
-
-        <!-- Property type -->
-        <div class="bp-sec-label">PROPERTY TYPE</div>
-        <div class="bp-chip-row">
-          <button
-            v-for="opt in propertyTypeOptions"
-            :key="opt.value"
-            class="bp-chip"
-            :class="{ active: propertyType === opt.value }"
-            @click="propertyType = opt.value"
-          >
-            {{ opt.label }}
-          </button>
         </div>
 
         <!-- Solicitor -->
@@ -694,8 +748,8 @@
         </button>
       </div>
 
-      <!-- ── STEP 5: Your story ── -->
-      <div v-if="step === 5" class="bp-step">
+      <!-- ── STEP 7: Your story ── -->
+      <div v-if="step === 7" class="bp-step">
         <div class="bp-step-hero">
           <div class="bp-step-ic bp-step-ic--amber"><img src="/op-icons/misc/signature.png" alt="" loading="lazy" /></div>
           <div class="bp-step-title">
@@ -757,7 +811,7 @@
       </div>
 
       <!-- ── DONE: Celebration screen (prototype `complete`) ── -->
-      <div v-if="step === 6" class="bp-step bp-complete">
+      <div v-if="step === 8" class="bp-step bp-complete">
         <!-- Celebration hero -->
         <div class="bp-complete-hero">
           <div class="bp-complete-emoji"><img src="/op-icons/misc/confetti.png" alt="" loading="lazy" /></div>
@@ -782,7 +836,7 @@
         <div class="bp-complete-card-wrap">
           <div class="bp-complete-card">
             <div class="bp-complete-card-top">
-              <span class="bp-complete-card-eyebrow">UMU BUYER PROFILE</span>
+              <span class="bp-complete-card-eyebrow">UMU BUYER PASSPORT</span>
               <span class="bp-complete-card-strength">
                 {{ Math.round(completeStrength) }}% STRENGTH
               </span>
@@ -814,16 +868,11 @@
           </div>
         </div>
 
-        <!-- Amber nudge -->
-        <div v-if="tierPaidFor === 'BASIC'" class="bp-amber-nudge" @click="tierDrawerOpen = true">
-          One step to full strength: Add your funds verification →
-        </div>
-
         <!-- Buttons -->
         <div class="bp-complete-actions">
           <button class="bp-next" @click="goToView">⤴ Share with agent now</button>
           <button class="bp-cta-outline" @click="goToView">📄 Download as PDF</button>
-          <button class="bp-skip-ghost" @click="goToView">View my full Profile →</button>
+          <button class="bp-skip-ghost" @click="goToView">View my full Passport →</button>
         </div>
       </div>
     </div>
@@ -847,17 +896,31 @@ import { useKyc } from '~/composables/useKyc'
 import { useAppToast } from '~/composables/useCustomToast'
 import TierUpgradeDrawer from '~/components/buyer-profile/TierUpgradeDrawer.vue'
 
-type Tier = 'BASIC' | 'VERIFIED' | 'PREMIUM'
+// No free tier — VERIFIED ("Identity Verified", £19.99) is the only
+// purchasable tier. UNVERIFIED is the pre-payment default, not a real tier.
+// PREMIUM is legacy/unreachable, kept only so old profile rows still typecheck.
+type Tier = 'UNVERIFIED' | 'VERIFIED' | 'PREMIUM'
 
 const router = useRouter()
 const { getBuyerProfile, updateBuyerProfile, publishBuyerProfile } =
   useBuyerProfile()
 const { showToast } = useAppToast()
 
-// step=6 is the post-publish celebration screen (matches prototype `complete`).
-const step = ref<1 | 2 | 3 | 4 | 5 | 6>(1)
+// step=8 is the post-publish celebration screen (matches prototype `complete`).
+// Steps 1-4 are the core Buyer Passport flow (Identity / Buying position /
+// Finance / Chain position — matches the prototype's numbered stepper).
+// Steps 5-7 (tier, solicitor, story) are additional, not part of that core
+// numbered flow — see the header/stepper markup above.
+const step = ref<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8>(1)
 const saving = ref(false)
 const publishing = ref(false)
+
+const coreSteps = [
+  { key: 'identity', label: 'Identity' },
+  { key: 'buying', label: 'Buying position' },
+  { key: 'finance', label: 'Finance' },
+  { key: 'chain', label: 'Chain position' },
+] as const
 
 // Form state
 const idDocumentType = ref<string | null>(null)
@@ -869,70 +932,36 @@ const timeline = ref<string | null>(null)
 const propertyType = ref<string | null>(null)
 const statement = ref('')
 
-// ── Tier picker (step 2) ────────────────────────────────────────
-// `selectedTier` is what the user has clicked on the tier cards.
-// `tierPaidFor` is the tier that's been confirmed and paid for (server truth).
-// `needsFundsCapture` controls whether the funds verification UI appears
-// inline below the tier cards.
+// ── Identity Verified payment (step 5) ────────────────────────────
+// `selectedTier` is always 'VERIFIED' now — there's nothing left to pick.
+// `tierPaidFor` is the tier that's been confirmed and paid for (server
+// truth); starts 'UNVERIFIED' until the Stripe payment on this step
+// completes. Funds verification (step 3) is a separate, free, required
+// core step for every buyer — it used to be gated behind this payment,
+// but that coupling was removed; paying here is now a standalone,
+// mandatory step, not a gate on Finance.
 const selectedTier = ref<Tier>('VERIFIED')
-const tierPaidFor = ref<Tier>('BASIC')
+const tierPaidFor = ref<Tier>('UNVERIFIED')
 const tierDrawerOpen = ref(false)
 
-const needsFundsCapture = computed(() => {
-  // Funds verification only required once Verified has been paid for
-  // (otherwise we'd be asking for bank docs from a user who hasn't
-  // unlocked that tier yet).
-  return tierPaidFor.value !== 'BASIC'
-})
+const tierCanContinue = computed(() => tierPaidFor.value === 'VERIFIED')
 
-const step2CanContinue = computed(() => {
-  // BASIC path: just need the user to have explicitly chosen it.
-  if (selectedTier.value === 'BASIC') return true
-  // Paid tiers: require payment + funds source + budget before continuing.
-  if (tierPaidFor.value !== selectedTier.value) return true // (button will open Stripe)
-  return !!fundsType.value && !!fundsAmount.value && fundsAmount.value > 0
-})
-
-const step2CtaLabel = computed(() => {
-  if (selectedTier.value === 'BASIC') return saving.value ? 'Saving…' : 'Continue with Basic →'
-  if (tierPaidFor.value !== selectedTier.value) {
-    return `Pay £19.99 & continue →`
-  }
+const tierCtaLabel = computed(() => {
+  if (tierPaidFor.value !== 'VERIFIED') return `Pay £19.99 & continue →`
   return saving.value ? 'Saving…' : 'Continue →'
 })
 
-async function onStep2Continue() {
-  if (selectedTier.value === 'BASIC') {
-    // Persist tier=BASIC, then advance.
-    try {
-      saving.value = true
-      await updateBuyerProfile({ tier: 'BASIC' as any, completedSteps: 2 })
-      tierPaidFor.value = 'BASIC'
-      step.value = 3
-    } catch (e: any) {
-      showToast({ message: e?.data?.message ?? 'Could not save', iconEmoji: '⚠️' })
-    } finally {
-      saving.value = false
-    }
-    return
-  }
-  // Paid tier path
-  if (tierPaidFor.value !== selectedTier.value) {
+async function onTierStepContinue() {
+  if (tierPaidFor.value !== 'VERIFIED') {
     // Open Stripe checkout via the upgrade drawer (it handles payment intent +
     // confirmation; we get a callback through `onTierPaid`).
     tierDrawerOpen.value = true
     return
   }
-  // Tier paid + funds captured → save + advance.
   try {
     saving.value = true
-    await updateBuyerProfile({
-      tier: tierPaidFor.value as any,
-      fundsType: fundsType.value,
-      fundsAmount: fundsAmount.value,
-      completedSteps: 2,
-    })
-    step.value = 3
+    await updateBuyerProfile({ tier: tierPaidFor.value as any, completedSteps: 5 })
+    step.value = 6
   } catch (e: any) {
     showToast({ message: e?.data?.message ?? 'Could not save', iconEmoji: '⚠️' })
   } finally {
@@ -1260,7 +1289,7 @@ function removeFundsUpload() {
 const idTypeOptions = [
   { value: 'passport',       icon: '/op-icons/verify-identity/passport.png',       title: 'UK / EU Passport',    sub: 'Fastest match',           recommended: true },
   { value: 'drivingLicence', icon: '/op-icons/verify-identity/drivingLicence.png', title: 'UK Driving Licence',  sub: 'Photocard, front + back' },
-  { value: 'nationalId',     icon: '/op-icons/verify-identity/idBadge.png',        title: 'National ID Card',    sub: 'EU national ID' },
+  { value: 'nationalId',     icon: '/op-icons/verify-identity/idBadge.png',        title: 'Biometric Residence Permit',    sub: 'If you\'re not a UK/EU passport holder' },
 ]
 const fundsOptions = [
   { value: 'mortgage', emoji: '/op-icons/misc/creditCard.png', title: 'Mortgage in principle', sub: 'Upload your DIP document' },
@@ -1305,34 +1334,25 @@ const propertyTypeOptions = [
   { value: 'any', label: 'Any' },
   { value: 'newBuild', label: 'New build' },
 ]
+// No free tier — a single mandatory, purchasable tier. Kept as a
+// one-element array (rather than a plain object) so the existing v-for in
+// the template doesn't need restructuring.
 const tierOptions: Array<{
   id: Tier; corner: string; badge: string; title: string; sub: string;
   priceLabel: string;
   features: Array<{ text: string; included: boolean }>;
 }> = [
   {
-    id: 'BASIC',
-    corner: '○',
-    badge: 'BASIC · FREE',
+    id: 'VERIFIED',
+    corner: '✓',
+    badge: 'IDENTITY VERIFIED',
     title: 'Identity Verified',
-    sub: "Get started — show sellers you're a real, verified buyer.",
-    priceLabel: 'Free',
+    sub: 'The level most sellers and agents expect. Proves who you are and that you can buy.',
+    priceLabel: '£19.99',
     features: [
       { text: 'DVS-certified identity check', included: true },
       { text: 'Chain position & timeline', included: true },
       { text: 'Solicitor instructed status', included: true },
-      { text: 'Funds & affordability not verified', included: false },
-    ],
-  },
-  {
-    id: 'VERIFIED',
-    corner: '✓',
-    badge: 'VERIFIED · RECOMMENDED',
-    title: 'Identity + Funds Verified',
-    sub: 'The level most sellers and agents expect. Proves you can buy.',
-    priceLabel: '£19.99',
-    features: [
-      { text: 'Everything in Basic', included: true },
       { text: 'Proof of deposit (open banking)', included: true },
       { text: 'Source of funds + AML clear', included: true },
       { text: 'Affordability score', included: true },
@@ -1354,16 +1374,22 @@ const canContinue = computed(() => {
     case 1:
       return kycAllDone.value && !!idDocumentType.value
     case 2:
-      // Step 2 has its own gate (`step2CanContinue`) wired directly to the
-      // tier picker / funds CTA — `canContinue` still surfaces here so legacy
-      // callers don't break, but the step-2 UI uses the dedicated computed.
-      return step2CanContinue.value
+      // Buying position — property type optional but encouraged, timeline required.
+      return !!timeline.value
     case 3:
-      return !!chainPosition.value
+      // Finance — free, required core step for every buyer (see tier picker
+      // comment above for why this is no longer gated behind a paid tier).
+      return !!fundsType.value && !!fundsAmount.value && fundsAmount.value > 0
     case 4:
-      // Property type optional but encouraged — keep timeline + solicitor required.
-      return !!solicitorStatus.value && !!timeline.value
+      return !!chainPosition.value
     case 5:
+      // Step 5 (tier) has its own gate (`tierCanContinue`) wired directly to
+      // the tier picker / Stripe CTA — surfaced here too so nothing else
+      // relying on `canContinue` breaks.
+      return tierCanContinue.value
+    case 6:
+      return !!solicitorStatus.value
+    case 7:
       return true
     default:
       return false
@@ -1378,7 +1404,7 @@ function appendPrompt(text: string) {
 function goBack() {
   // Don't allow stepping out of the celebration screen — the profile is
   // already published. Send the user to /view instead.
-  if (step.value === 6) {
+  if (step.value === 8) {
     router.replace('/buyer-profile/view')
     return
   }
@@ -1395,16 +1421,16 @@ async function saveCurrentStep(): Promise<boolean> {
     const patch: any = { completedSteps: Math.max(step.value, 1) }
     if (step.value === 1) patch.idDocumentType = idDocumentType.value
     if (step.value === 2) {
-      patch.fundsType = fundsType.value
-      patch.fundsAmount = fundsAmount.value
-    }
-    if (step.value === 3) patch.chainPosition = chainPosition.value
-    if (step.value === 4) {
-      patch.solicitorStatus = solicitorStatus.value
       patch.timeline = timeline.value
       patch.propertyType = propertyType.value
     }
-    if (step.value === 5) patch.statement = statement.value
+    if (step.value === 3) {
+      patch.fundsType = fundsType.value
+      patch.fundsAmount = fundsAmount.value
+    }
+    if (step.value === 4) patch.chainPosition = chainPosition.value
+    if (step.value === 6) patch.solicitorStatus = solicitorStatus.value
+    if (step.value === 7) patch.statement = statement.value
     await updateBuyerProfile(patch)
     return true
   } catch (err: any) {
@@ -1420,7 +1446,7 @@ async function goNext() {
   if (!canContinue.value) return
   const ok = await saveCurrentStep()
   if (!ok) return // stay on this step so the user can retry
-  if (step.value < 5) {
+  if (step.value < 7) {
     step.value = (step.value + 1) as any
   }
 }
@@ -1484,13 +1510,13 @@ async function submit() {
       timeline: timeline.value,
       propertyType: propertyType.value,
       statement: statement.value,
-      completedSteps: 5,
+      completedSteps: 7,
     })
-    // Land on the celebration screen first; "View my full Profile" routes to /view.
+    // Land on the celebration screen first; "View my full Passport" routes to /view.
     if (published?.strengthScore != null) {
       completeStrength.value = published.strengthScore
     }
-    step.value = 6
+    step.value = 8
   } catch (err: any) {
     const msg = err?.data?.message || err?.message || 'Could not publish profile'
     showToast({ message: msg, iconEmoji: '⚠️' })
@@ -1538,10 +1564,9 @@ onMounted(async () => {
       propertyType.value = (data as any).propertyType ?? null
       statement.value = data.statement ?? ''
 
-      // Tier hydration — keep selected + paid in sync with server truth.
-      const t = ((data as any).tier as Tier) || 'BASIC'
-      tierPaidFor.value = t
-      selectedTier.value = t === 'BASIC' ? 'VERIFIED' : t
+      // Tier hydration — keep paid state in sync with server truth.
+      // selectedTier stays 'VERIFIED' (the only tier) regardless.
+      tierPaidFor.value = ((data as any).tier as Tier) || 'UNVERIFIED'
     }
   } catch {}
 
@@ -1637,6 +1662,59 @@ onBeforeUnmount(() => {
 }
 .bp-progress-seg-filled {
   background: #00a19a;
+}
+
+/* ── 4-step labeled stepper (Identity / Buying position / Finance /
+     Chain position) ──────────────────────────────────────── */
+.bp-stepper {
+  position: sticky;
+  top: 57px;
+  z-index: 19;
+  display: flex;
+  gap: 4px;
+  padding: 12px 16px 14px;
+  background: #fff;
+}
+.bp-stepper-dot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.bp-stepper-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  background: #eef0f4;
+  color: #94a3b8;
+  transition: background 0.25s, color 0.25s;
+}
+.bp-stepper-dot.active .bp-stepper-num {
+  background: #00a19a;
+  color: #fff;
+}
+.bp-stepper-dot.done .bp-stepper-num {
+  background: #d8f3ef;
+  color: #00a19a;
+}
+.bp-stepper-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  line-height: 1.25;
+}
+.bp-stepper-dot.active .bp-stepper-label {
+  color: #231d45;
+}
+.bp-stepper-dot.done .bp-stepper-label {
+  color: #00a19a;
 }
 
 /* ── Scroll ────────────────────────────────────────────── */
@@ -3073,10 +3151,6 @@ onBeforeUnmount(() => {
   transition: all 0.15s;
   width: 100%;
 }
-.bp-tier-card.basic {
-  background: linear-gradient(135deg, #f6f5fb, #eeedf5);
-  border-color: #eeedf5;
-}
 .bp-tier-card.verified {
   background: linear-gradient(135deg, #f2faf8, #d0f0ee);
   border-color: #e5f4f2;
@@ -3084,9 +3158,6 @@ onBeforeUnmount(() => {
 .bp-tier-card.premium {
   background: linear-gradient(135deg, #fbefd9, #fff8ec);
   border-color: #fbefd9;
-}
-.bp-tier-card.selected.basic {
-  border-color: #6b6783; box-shadow: 0 0 0 3px rgba(35, 29, 69, 0.12);
 }
 .bp-tier-card.selected.verified {
   border-color: #00a19a; box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.18);
@@ -3099,7 +3170,6 @@ onBeforeUnmount(() => {
   font-size: 18px; font-weight: 900;
   opacity: 0.5;
 }
-.bp-tier-card.selected.basic .bp-tier-corner { color: #231d45; opacity: 1; }
 .bp-tier-card.selected.verified .bp-tier-corner { color: #00a19a; opacity: 1; }
 .bp-tier-card.selected.premium .bp-tier-corner { color: #d4822a; opacity: 1; }
 .bp-tier-badge {
@@ -3107,7 +3177,6 @@ onBeforeUnmount(() => {
   font-size: 9px; font-weight: 900; letter-spacing: 1.4px;
   padding: 3px 8px; border-radius: 6px; margin-bottom: 8px;
 }
-.bp-tier-badge--basic { background: #ececef; color: #4a4566; }
 .bp-tier-badge--verified { background: #00a19a; color: #fff; }
 .bp-tier-badge--premium { background: #d4822a; color: #fff; }
 .bp-tier-title {
@@ -3477,18 +3546,6 @@ onBeforeUnmount(() => {
   border: none; color: white;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; flex-shrink: 0; font-family: inherit;
-}
-
-.bp-amber-nudge {
-  margin-top: 16px;
-  background: linear-gradient(135deg, #fbefd9, #fffaf0);
-  border: 1px solid #f0b460;
-  border-radius: 14px;
-  padding: 12px 16px;
-  font-size: 12px; font-weight: 700; color: #c4821a;
-  cursor: pointer;
-  animation: bp-fadeSlideUp 0.4s 0.65s both;
-  line-height: 1.4;
 }
 
 .bp-complete-actions {

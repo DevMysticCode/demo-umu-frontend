@@ -6,7 +6,7 @@
       </span>
       <div class="reward-pts">{{ points }} pts <em>locked</em></div>
     </div>
-    <h3 class="reward-h3">Next: {{ label }}</h3>
+    <h3 class="reward-h3">{{ label }}</h3>
     <p class="reward-p">
       {{ description || `A total of ${points} points are available in this section.` }}
       Complete tasks to unlock rewards and move to the next section.

@@ -140,8 +140,8 @@ const faqs = [
     a: 'We use a combination of passport / driving-licence checks, liveness detection, and AML screening. The whole flow takes 2–3 minutes and only happens once.',
   },
   {
-    q: 'Can I share my Buyer Profile with someone outside UMU?',
-    a: 'Yes — generate a secure share link from your Buyer Profile. The recipient sees a verified read-only view in their browser; no UMU account required.',
+    q: 'Can I share my Buyer Passport with someone outside UMU?',
+    a: 'Yes — generate a secure share link from your Buyer Passport. The recipient sees a verified read-only view in their browser; no UMU account required.',
   },
   {
     q: "What happens if a seller doesn't have a passport yet?",

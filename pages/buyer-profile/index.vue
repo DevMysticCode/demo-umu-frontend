@@ -18,7 +18,7 @@
       </button>
       <div class="mp-nav-centre">
         <div class="eyebrow-pill">
-          <span class="eyebrow-dot" />Buyer Profile
+          <span class="eyebrow-dot" />Buyer Passport
         </div>
       </div>
       <div style="width: 36px" />
@@ -37,7 +37,7 @@
     <div class="mp-hero-wrap">
       <div class="hero-card" @click="goToBuild">
         <div class="hero-card-content">
-          <div class="hero-eyebrow">UMU Buyer Profile</div>
+          <div class="hero-eyebrow">UMU Buyer Passport</div>
           <div class="hero-tagline">"Trusted, ready,<br />chain-free."</div>
           <div class="hero-name">{{ heroName }}</div>
           <div class="hero-pills">
@@ -184,7 +184,7 @@
             class="cta-btn-ic"
             loading="lazy"
           />
-          {{ hasProgress ? 'Continue my Profile' : 'Build my Buyer Profile' }}
+          {{ hasProgress ? 'Continue my Passport' : 'Build my Buyer Passport' }}
           <svg
             width="16"
             height="16"

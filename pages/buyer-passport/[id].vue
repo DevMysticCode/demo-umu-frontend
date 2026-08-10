@@ -1216,8 +1216,8 @@ function toggleSaveToProfile() {
   // Optimistic UX — flips the heart and shows a quick toast.
   isSavedToProfile.value = !isSavedToProfile.value
   saveToast.value = isSavedToProfile.value
-    ? 'Saved to your Buyer Profile'
-    : 'Removed from your Buyer Profile'
+    ? 'Saved to your Buyer Passport'
+    : 'Removed from your Buyer Passport'
   setTimeout(() => (saveToast.value = ''), 2200)
   // The real save endpoint can hook in here later.
 }
