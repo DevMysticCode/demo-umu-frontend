@@ -95,26 +95,34 @@
 
       <div class="buyer-conf-stats">
         <div class="buyer-conf-stat">
-          <img src="/op-icons/investment/moneyBagPound.png" alt="" class="buyer-conf-stat-ic" loading="lazy" />
-          <div class="buyer-conf-stat-label">Est. running cost</div>
-          <div class="buyer-conf-stat-val">£{{ formatNum(totalAnnual) }}<span>/year</span></div>
+          <img src="/op-icons/homescore/wallet.png" alt="" class="buyer-conf-stat-ic" loading="lazy" />
+          <div class="buyer-conf-stat-text">
+            <div class="buyer-conf-stat-label">Est. running cost</div>
+            <div class="buyer-conf-stat-val">£{{ formatNum(totalAnnual) }}<span>/year</span></div>
+            <div
+              v-if="bsCostVsAreaLabel"
+              class="buyer-conf-stat-sub"
+              :class="{ good: bsCostVsAreaGood }"
+            >
+              {{ bsCostVsAreaLabel }}
+            </div>
+          </div>
         </div>
         <div class="buyer-conf-stat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="buyer-conf-stat-ic buyer-conf-stat-ic--svg">
-            <line x1="6" y1="20" x2="6" y2="12" />
-            <line x1="12" y1="20" x2="12" y2="8" />
-            <line x1="18" y1="20" x2="18" y2="14" />
-          </svg>
-          <div class="buyer-conf-stat-label">Compared to area</div>
-          <div class="buyer-conf-stat-val">{{ bsAreaLabel ?? '—' }}</div>
+          <img src="/op-icons/investment/growthChart.png" alt="" class="buyer-conf-stat-ic" loading="lazy" />
+          <div class="buyer-conf-stat-text">
+            <div class="buyer-conf-stat-label">Compared to area</div>
+            <div class="buyer-conf-stat-val">{{ bsAreaLabel ?? '—' }}</div>
+            <div v-if="bsAreaSubtext" class="buyer-conf-stat-sub">{{ bsAreaSubtext }}</div>
+          </div>
         </div>
         <div class="buyer-conf-stat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="buyer-conf-stat-ic buyer-conf-stat-ic--svg">
-            <circle cx="11" cy="11" r="7" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <div class="buyer-conf-stat-label">Areas worth checking</div>
-          <div class="buyer-conf-stat-val">{{ bsWorthCheckingCount }}</div>
+          <img src="/op-icons/homescore/magnifier.png" alt="" class="buyer-conf-stat-ic" loading="lazy" />
+          <div class="buyer-conf-stat-text">
+            <div class="buyer-conf-stat-label">Areas worth checking</div>
+            <div class="buyer-conf-stat-val">{{ bsWorthCheckingCount }}</div>
+            <div class="buyer-conf-stat-sub">See key risks and questions below</div>
+          </div>
         </div>
       </div>
     </div>
@@ -960,6 +968,10 @@
         <button class="watch-cta" type="button" @click="onWatch">
           <img src="/op-icons/misc/eye.png" alt="" class="inline-ic" loading="lazy" /> Watch this property →
         </button>
+        <div class="watch-cta-note">
+          Be the first to know if anything important changes.<br />
+          We'll notify you when a Passport is started, published or updated.
+        </div>
       </div>
 
       <!-- Verified Buyer card — backend-driven (guest / no-profile →
@@ -1987,6 +1999,28 @@ const bsAreaLabel = computed<string | null>(() => {
   if (!r || !t) return null
   return r / t <= 0.5 ? 'Below average' : 'Above average'
 })
+const bsAreaSubtext = computed<string | null>(() => {
+  if (bsAreaLabel.value === 'Below average') return 'Lower running costs than similar homes'
+  if (bsAreaLabel.value === 'Above average') return 'Higher running costs than similar homes'
+  return null
+})
+
+// "£X below/above street average" — same averageCost the Street tab's
+// bars already use, compared against this property's own running cost.
+const bsCostVsAreaGood = computed<boolean | null>(() => {
+  const avg = Number(streetData.value?.averageCost ?? 0)
+  const yours = Number(totalAnnual.value ?? 0)
+  if (!avg || !yours) return null
+  return yours < avg
+})
+const bsCostVsAreaLabel = computed<string | null>(() => {
+  const avg = Number(streetData.value?.averageCost ?? 0)
+  const yours = Number(totalAnnual.value ?? 0)
+  if (!avg || !yours) return null
+  const diff = Math.round(Math.abs(yours - avg))
+  if (diff === 0) return null
+  return `£${diff} ${yours < avg ? 'below' : 'above'} street average`
+})
 
 // "Areas worth checking" — count of the 5 EPC pillars (heating, structure,
 // efficiency, electrics, plumbing) epcStats already flags as 'low', not a
@@ -2513,7 +2547,7 @@ function onBuyPassport() {
 }
 .buyer-conf-stats {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px solid var(--border-soft, var(--border));
@@ -2521,21 +2555,24 @@ function onBuyPassport() {
 .buyer-conf-stat {
   flex: 1;
   min-width: 0;
-  text-align: center;
-  padding: 0 4px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  text-align: left;
+  padding: 0 6px;
 }
 .buyer-conf-stat + .buyer-conf-stat {
   border-left: 1px solid var(--border-soft, var(--border));
 }
-.buyer-conf-stat-ic {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  margin: 0 auto 6px;
-  display: block;
+.buyer-conf-stat-text {
+  min-width: 0;
 }
-.buyer-conf-stat-ic--svg {
-  color: var(--accent, #00a19a);
+.buyer-conf-stat-ic {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 .buyer-conf-stat-label {
   font-size: 9.5px;
@@ -2553,6 +2590,16 @@ function onBuyPassport() {
   font-size: 9.5px;
   font-weight: 600;
   color: var(--text-secondary);
+}
+.buyer-conf-stat-sub {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  margin-top: 3px;
+}
+.buyer-conf-stat-sub.good {
+  color: var(--accent, #00a19a);
 }
 .buyer-conf-dial {
   position: relative;
@@ -3746,6 +3793,14 @@ function onBuyPassport() {
 }
 .watch-cta:hover {
   filter: brightness(1.06);
+}
+.watch-cta-note {
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  text-align: center;
 }
 
 .pp-progress-hero {
