@@ -849,6 +849,13 @@ const propertyId = route.params.id as string
 const step = ref<ClaimStep>('search')
 const selectedProperty = ref<any>(null)
 
+// Steps render different content in place on the same route, so the
+// browser never resets scroll on its own — without this the new step can
+// render already scrolled to wherever the previous one was left.
+watch(step, (next, prev) => {
+  if (next !== prev && import.meta.client) window.scrollTo(0, 0)
+})
+
 // KYC state
 const idInputEl = ref<HTMLInputElement | null>(null)
 const idUploadSide = ref<'front' | 'back'>('front')

@@ -388,6 +388,7 @@ const emit = defineEmits<{
       delta: number
       answers: Record<string, string>
       statGains: Record<string, number>
+      answeredSavings: number
     },
   ): void
   (e: 'upload-bill', file: File): void
@@ -715,18 +716,26 @@ function onFinish() {
   // Per-pillar points actually earned this session, so the level-up screen
   // can show a real before→after per pillar instead of a placeholder.
   const statGains: Record<string, number> = {}
+  // Bill saving actually earned this session — sum of each answered
+  // question's typical saving, weighted by the same yes/different/not-yet
+  // multiplier used for points, so "Not yet"/"N/A" answers contribute
+  // nothing and "Something different" only counts half. This is the
+  // saving from what the user actually answered, not the total saving
+  // available across every EPC recommendation.
+  let answeredSavings = 0
   for (const q of QUESTS.value) {
     const ans = questState.value[q.id]
     if (!ans) continue
     const gained = Math.round(q.pts * OPT[ans].mult)
-    if (!gained) continue
-    statGains[q.stat] = (statGains[q.stat] ?? 0) + gained
+    if (gained) statGains[q.stat] = (statGains[q.stat] ?? 0) + gained
+    answeredSavings += q.save * OPT[ans].mult
   }
   emit('finish', {
     finalScore: liveScore.value,
     delta,
     answers: { ...questState.value },
     statGains,
+    answeredSavings: Math.round(answeredSavings),
   })
 }
 

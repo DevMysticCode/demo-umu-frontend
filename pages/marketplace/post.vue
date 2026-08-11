@@ -308,6 +308,13 @@ const { fetchCategories, uploadPhoto, createJob, resolvePhotoUrl, categoryTileBg
 // ── Step machine ──────────────────────────────────────────────────
 const TOTAL_STEPS = 5
 const step = ref<number>(1)
+
+// Steps render different content in place on the same route, so the
+// browser never resets scroll on its own — without this the new step can
+// render already scrolled to wherever the previous one was left.
+watch(step, (next, prev) => {
+  if (next !== prev && import.meta.client) window.scrollTo(0, 0)
+})
 const stepTitle = computed(() => {
   switch (step.value) {
     case 1: return 'Choose category'

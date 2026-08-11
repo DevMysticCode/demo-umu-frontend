@@ -147,7 +147,7 @@
         :delta="v6QuizFinal?.delta ?? 0"
         :property="property"
         :stat-gains="v6QuizFinal?.statGains ?? {}"
-        :est-savings="resolvedPotentialSaving"
+        :est-savings="v6QuizFinal?.answeredSavings ?? resolvedPotentialSaving"
         :co2-now="resolvedCo2Now"
         :co2-potential="resolvedCo2Potential"
         @back="goBack"
@@ -2939,6 +2939,11 @@ function seedScreenHistory(target: Screen) {
 let navigatingBack = false
 let historyReady = false
 watch(screen, (next, prev) => {
+  // Screen switches render entirely different content in place on the
+  // same route (no real navigation happens), so the browser has no
+  // reason to reset scroll on its own — without this the new screen
+  // can render already scrolled to wherever the previous one was left.
+  if (next !== prev && import.meta.client) window.scrollTo(0, 0)
   if (!historyReady || navigatingBack) {
     navigatingBack = false
     return
@@ -2952,9 +2957,9 @@ watch(screen, (next, prev) => {
   }
 })
 
-const v6QuizFinal = ref<{ finalScore: number; delta: number; answers: Record<string, string>; statGains: Record<string, number> } | null>(null)
+const v6QuizFinal = ref<{ finalScore: number; delta: number; answers: Record<string, string>; statGains: Record<string, number>; answeredSavings: number } | null>(null)
 
-function onQuizFinish(payload: { finalScore: number; delta: number; answers: Record<string, string>; statGains: Record<string, number> }) {
+function onQuizFinish(payload: { finalScore: number; delta: number; answers: Record<string, string>; statGains: Record<string, number>; answeredSavings: number }) {
   v6QuizFinal.value = payload
   // Explicitly push 'questions' onto the history stack — relying on the
   // screen watcher to do it can miss in two scenarios:
