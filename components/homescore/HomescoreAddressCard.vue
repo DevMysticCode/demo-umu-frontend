@@ -418,13 +418,14 @@ const watchersDisplay = computed(() => {
 }
 .hsc-house-ic {
   position: absolute;
-  top: -14px;
+  top: 50%;
   right: 6px;
-  width: 180px;
-  height: 195px;
+  width: 128px;
+  height: 123px;
   object-fit: contain;
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
   pointer-events: none;
+  transform: translateY(-50%);
 }
 .hsc-ring {
   width: 12px;
