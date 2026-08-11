@@ -5912,18 +5912,22 @@ onMounted(async () => {
   // `level-up` is what the pathway page sends in its back button so the
   // user returns to the Level Up celebration rather than the search landing.
   const qScreen = route.query.screen
+  let earlyScreenHandled = false
   if (typeof qScreen === 'string') {
     if (qScreen === 'boost') {
       screen.value = 'boost'
       seedScreenHistory('boost')
+      earlyScreenHandled = true
     } else if (qScreen === 'level-up') {
       screen.value = 'level-up'
       seedScreenHistory('level-up')
+      earlyScreenHandled = true
     } else if (qScreen === 'buyer-results') {
       // Deep link from the property page's "Property Report" entry point
       // (score card tap for non-owner viewers).
       screen.value = 'buyer-results'
       seedScreenHistory('buyer-results')
+      earlyScreenHandled = true
     }
   }
 
@@ -6058,7 +6062,7 @@ onMounted(async () => {
           }
         }
       } catch {}
-      screen.value = 'landing'
+      if (!earlyScreenHandled) screen.value = 'landing'
       historyReady = true
       return
     }
@@ -6079,7 +6083,7 @@ onMounted(async () => {
             // Owner has a saved score — load it (backend is source of truth)
             answers.value = existing.answers
             if (Object.keys(existing.answers).length >= QUESTIONS.length) {
-              screen.value = 'results'
+              if (!earlyScreenHandled) screen.value = 'results'
               historyReady = true
               return
             }
@@ -6090,7 +6094,11 @@ onMounted(async () => {
   }
 
   const answeredCount = Object.keys(answers.value).length
-  screen.value = answeredCount >= QUESTIONS.length ? 'results' : 'landing'
+  // Deep-link screens (level-up, boost, buyer-results) handled above are
+  // final — don't let the default landing/results computation stomp them.
+  if (!earlyScreenHandled) {
+    screen.value = answeredCount >= QUESTIONS.length ? 'results' : 'landing'
+  }
 
   // Honour ?screen=… so users returning here after sign-in / signup land on
   // the page they were trying to reach (e.g. buyer-results, questions,

@@ -421,11 +421,7 @@
             </p>
 
             <div class="ifs-prop-lock">
-              <span class="ifs-pl-ic ifs-pl-ic--pin">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2a7 7 0 017 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 017-7zm0 4.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z" />
-                </svg>
-              </span>
+              <img src="/op-icons/misc/addressPin.png" alt="" class="ifs-pl-ic" loading="lazy" />
               <div>
                 <div class="ifs-pl-label">Postcode area</div>
                 <div class="ifs-pl-val">{{ postcode || '—' }}</div>
@@ -1337,17 +1333,6 @@ watch(
   object-fit: contain;
   flex-shrink: 0;
 }
-.ifs-pl-ic--pin {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #FEE2E2;
-  color: #DC2626;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.ifs-pl-ic--pin svg { width: 18px; height: 18px; }
 .ifs-pl-label {
   font-size: 10.5px;
   font-weight: 800;
