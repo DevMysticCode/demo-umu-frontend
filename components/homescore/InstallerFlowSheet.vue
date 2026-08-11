@@ -1,7 +1,17 @@
 <template>
   <Teleport to="body">
+    <Transition name="ifs" appear>
     <div v-if="open" class="ifs-overlay" @click.self="close">
-      <div class="ifs-sheet" role="dialog" aria-modal="true">
+      <div
+        class="ifs-sheet"
+        role="dialog"
+        aria-modal="true"
+        :style="dragStyle"
+        @touchstart.passive="onTouchStart"
+        @touchmove="onTouchMove"
+        @touchend="onTouchEnd"
+        @touchcancel="onTouchEnd"
+      >
         <div class="ifs-handle" />
         <div class="ifs-scroll">
           <!-- STATE: routes (per-measure entry) -->
@@ -320,7 +330,7 @@
               <div v-for="(r, i) in requests" :key="i" class="ifs-track-item">
                 <div class="ifs-track-top">
                   <div class="ifs-t-ic">
-                    <img src="/op-icons/misc/wrench.png" alt="" loading="lazy" />
+                    <img :src="iconForRequest(r.measure)" alt="" loading="lazy" />
                   </div>
                   <div>
                     <div class="ifs-t-name">{{ r.measure }}</div>
@@ -534,6 +544,7 @@
         </div>
       </div>
     </div>
+    </Transition>
   </Teleport>
 </template>
 
@@ -600,6 +611,24 @@ interface TrackedRequest {
   date: string
   status: 'sourcing'
   grant: string | null
+}
+
+// Same measure-keyword → icon mapping as the pathway page's `iconForRec`
+// (the request's `measure` string is that page's mission title, passed
+// through as-is), so a tracked request shows the same icon the mission
+// card it came from used, instead of a generic wrench for everything.
+function iconForRequest(measure: string): string {
+  const t = (measure ?? '').toLowerCase()
+  if (/solar pv|photovoltaic/.test(t)) return '/op-icons/homescore/lightning.png'
+  if (/solar (?:water|thermal)/.test(t)) return '/op-icons/misc/sun.png'
+  if (/(loft|roof)/.test(t)) return '/op-icons/homescore/roof.png'
+  if (/(cavity|wall)/.test(t)) return '/op-icons/homescore/walls.png'
+  if (/floor/.test(t)) return '/op-icons/homescore/floor.png'
+  if (/(led|light)/.test(t)) return '/op-icons/homescore/bulb.png'
+  if (/(boiler|heat pump|heating)/.test(t)) return '/op-icons/homescore/flame.png'
+  if (/thermostat|controls/.test(t)) return '/op-icons/homescore/heatingControls.png'
+  if (/hot water|cylinder/.test(t)) return '/op-icons/homescore/tap.png'
+  return '/op-icons/misc/wrench.png'
 }
 const REQUESTS_LS_KEY = 'umu.installer.requests'
 const requests = useState<TrackedRequest[]>('installer-requests', () => [])
@@ -869,6 +898,12 @@ function close() {
   emit('close')
 }
 
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: close,
+  handleSelector: '.ifs-handle',
+  contentSelector: '.ifs-scroll',
+})
+
 // Reset to the caller's chosen initial state each time the sheet opens.
 // Without this the sheet would re-open on whichever state it last held,
 // which surprises the user (e.g. they closed on ea-confirm, tap "Find
@@ -908,15 +943,26 @@ watch(
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  animation: ifs-fade 0.24s ease;
 }
-@keyframes ifs-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+
+/* ── Enter/leave — Transition wrapper so the sheet slides down and the
+   scrim fades out on close instead of vanishing instantly. Symmetric
+   with the enter animation so open/close feel the same. ── */
+.ifs-enter-active,
+.ifs-leave-active {
+  transition: background-color 0.28s ease;
+}
+.ifs-enter-active .ifs-sheet,
+.ifs-leave-active .ifs-sheet {
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0.24, 1);
+}
+.ifs-enter-from,
+.ifs-leave-to {
+  background-color: transparent !important;
+}
+.ifs-enter-from .ifs-sheet,
+.ifs-leave-to .ifs-sheet {
+  transform: translateY(100%) !important;
 }
 
 .ifs-sheet {
@@ -931,27 +977,18 @@ watch(
   max-height: 85dvh;
   display: flex;
   flex-direction: column;
-  animation: ifs-slide 0.34s cubic-bezier(0.22, 1, 0.36, 1);
   font-family: inherit;
   color: #231d45;
   /* Leave room for the iOS home indicator inside the scrollable
      content area — the sheet itself sits flush at the bottom. */
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
-@keyframes ifs-slide {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
 .ifs-handle {
   width: 40px;
   height: 5px;
   border-radius: 3px;
   background: #dbd8e6;
+  touch-action: none;
   margin: 12px auto 4px;
   flex-shrink: 0;
 }

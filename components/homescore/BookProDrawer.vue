@@ -2,7 +2,15 @@
   <Teleport to="body">
     <Transition name="bpd">
       <div v-if="pro" class="bpd-overlay" @click.self="close">
-        <div class="bpd-sheet" @click.stop>
+        <div
+          class="bpd-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <div class="bpd-grip" aria-hidden="true" />
 
           <div class="bpd-head">
@@ -146,6 +154,11 @@ const step3Copy = computed(() => {
 function close() {
   emit('close')
 }
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: close,
+  handleSelector: '.bpd-grip',
+})
 function onCta() {
   if (!props.pro) return
   if (props.marketplaceReady) emit('find-pro', props.pro.key)
@@ -177,6 +190,7 @@ function onCta() {
   background: #e4e5ed;
   border-radius: 100px;
   margin: 10px auto 0;
+  touch-action: none;
 }
 .bpd-head { padding: 14px 22px 6px; }
 .bpd-eyebrow {

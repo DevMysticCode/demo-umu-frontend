@@ -2,7 +2,14 @@
   <Teleport to="body">
     <Transition name="drawer">
       <div v-if="show" class="help-drawer-overlay" @click.self="$emit('close')">
-        <div class="help-drawer">
+        <div
+          class="help-drawer"
+          :style="dragStyle"
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <!-- Handle -->
           <div class="help-drawer-handle" />
 
@@ -115,7 +122,13 @@ const props = defineProps<{
   mode?: 'seller' | 'buyer'
 }>()
 
-defineEmits<{ close: [] }>()
+const emit = defineEmits<{ close: [] }>()
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: () => emit('close'),
+  handleSelector: '.help-drawer-handle, .help-drawer-header',
+  contentSelector: '.help-drawer-body',
+})
 
 const guidanceText = computed(() => {
   if (!props.content) return null
@@ -190,9 +203,11 @@ const blocks = computed((): Block[] => {
   border-radius: 2px;
   margin: 12px auto 4px;
   flex-shrink: 0;
+  touch-action: none;
 }
 
 .help-drawer-header {
+  touch-action: none;
   display: flex;
   align-items: center;
   justify-content: space-between;

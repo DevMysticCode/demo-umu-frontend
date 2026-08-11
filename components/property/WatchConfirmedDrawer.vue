@@ -6,7 +6,15 @@
         class="watch-overlay"
         @click.self="$emit('close')"
       >
-        <div class="watch-sheet" @click.stop>
+        <div
+          class="watch-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <div class="watch-grip" />
 
           <div class="wc-hero">
@@ -129,10 +137,15 @@ defineProps<{
   prefs?: Record<string, boolean> | null
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'close'): void
   (e: 'create-passport'): void
 }>()
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: () => emit('close'),
+  handleSelector: '.watch-grip',
+})
 
 // Same trigger set/copy as WatchPropertyDrawer.vue, kept in sync manually
 // since both live show the same 5 notification types.
@@ -187,6 +200,7 @@ const triggers = [
   background: var(--border);
   border-radius: 100px;
   margin: 10px auto 0;
+  touch-action: none;
 }
 
 /* Hero icon + confetti */

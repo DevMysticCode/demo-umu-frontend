@@ -2,7 +2,15 @@
   <Teleport to="body">
     <Transition name="verify-modal">
       <div v-if="open" class="vb-overlay" @click.self="$emit('close')">
-        <div class="vb-sheet" @click.stop>
+        <div
+          class="vb-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <div class="vb-grip" />
           <div class="vb-head">
             <div class="vb-eyebrow">🛡 Verified buyer · Onfido</div>
@@ -49,7 +57,12 @@
 
 <script setup lang="ts">
 defineProps<{ open: boolean }>()
-defineEmits<{ (e: 'close'): void; (e: 'start'): void }>()
+const emit = defineEmits<{ (e: 'close'): void; (e: 'start'): void }>()
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: () => emit('close'),
+  handleSelector: '.vb-grip',
+})
 
 const benefits = [
   { icon: '⚡', title: '3× more likely to have your offer accepted', sub: 'Sellers see a "verified buyer" badge next to your offer. <b>Lloyds research, 2024</b>.' },
@@ -98,7 +111,7 @@ const benefits = [
   overflow-y: auto;
   padding-bottom: env(safe-area-inset-bottom);
 }
-.vb-grip { width: 42px; height: 4px; background: var(--border); border-radius: 100px; margin: 10px auto 0; }
+.vb-grip { width: 42px; height: 4px; background: var(--border); border-radius: 100px; margin: 10px auto 0; touch-action: none; }
 .vb-head { padding: 14px 22px 6px; }
 .vb-eyebrow { font-size: 10px; font-weight: 800; color: var(--accent-dark); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 6px; }
 .vb-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 6px; }

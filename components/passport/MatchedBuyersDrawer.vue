@@ -2,7 +2,15 @@
   <Teleport to="body">
     <Transition name="mbd">
       <div v-if="open" class="mbd-overlay" @click.self="$emit('close')">
-        <div class="mbd-sheet" @click.stop>
+        <div
+          class="mbd-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <div class="mbd-grip" />
 
           <!-- Header: handshake eyebrow + big title + house illustration right -->
@@ -109,10 +117,15 @@ defineProps<{
     tags: string[]
   }>
 }>()
-defineEmits<{
+const emit = defineEmits<{
   (e: 'close'): void
   (e: 'select', buyer: any): void
 }>()
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: () => emit('close'),
+  handleSelector: '.mbd-grip',
+})
 
 function initial(name: string) {
   return (name || '?').trim().charAt(0).toUpperCase()
@@ -176,6 +189,7 @@ function matchStrokeColor(score: number): string {
   background: #DADEE4;
   border-radius: 100px;
   margin: 10px auto 4px;
+  touch-action: none;
 }
 
 .mbd-head {

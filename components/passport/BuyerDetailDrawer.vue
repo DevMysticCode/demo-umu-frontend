@@ -2,7 +2,15 @@
   <Teleport to="body">
     <Transition name="bdd">
       <div v-if="buyer" class="bdd-overlay" @click.self="$emit('close')">
-        <div class="bdd-sheet" @click.stop>
+        <div
+          class="bdd-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <div class="bdd-grip" />
 
           <!-- Dark navy hero card with avatar + verified + match gauge -->
@@ -209,10 +217,15 @@ const props = defineProps<{
   } | null
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'close'): void
   (e: 'action', kind: 'invite' | 'share' | 'message'): void
 }>()
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: () => emit('close'),
+  handleSelector: '.bdd-grip',
+})
 
 const initial = computed(() =>
   (props.buyer?.name || '?').trim().charAt(0).toUpperCase(),
@@ -306,6 +319,7 @@ const factors = computed(() => {
   background: #DADEE4;
   border-radius: 100px;
   margin: 10px auto 12px;
+  touch-action: none;
 }
 
 /* Dark hero */
