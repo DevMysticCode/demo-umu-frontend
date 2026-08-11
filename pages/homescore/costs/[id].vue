@@ -908,7 +908,7 @@
 
     <!-- ─── UNCLAIMED ─── -->
     <template v-if="passportState === 'unclaimed'">
-      <div class="watch-card anim-4">
+      <!-- <div class="watch-card anim-4">
         <div class="watch-card-eyebrow"><img src="/op-icons/misc/eye.png" alt="" class="inline-ic" loading="lazy" /> Watch this property</div>
         <div class="watch-card-title">
           Be the first to know if anything changes here.
@@ -965,6 +965,9 @@
             </div>
           </div>
         </div>
+        
+      </div> -->
+      <div class="watch-card anim-4">
         <button class="watch-cta" type="button" @click="onWatch">
           <img src="/op-icons/misc/eye.png" alt="" class="inline-ic" loading="lazy" /> Watch this property →
         </button>
@@ -973,17 +976,17 @@
           We'll notify you when a Passport is started, published or updated.
         </div>
       </div>
-
+      
       <!-- Verified Buyer card — backend-driven (guest / no-profile →
            unverified CTA, published profile → verified greeting). Same
            component lives on the buyer-results screen. -->
-      <BuyerVerifyCard
+      <!-- <BuyerVerifyCard
         class="anim-4"
         :first-name="userProfile?.firstName ?? null"
         @start-verification="onBuyerStartVerification"
         @view-profile="onBuyerViewProfile"
         @edit-profile="onBuyerEditProfile"
-      />
+      /> -->
     </template>
 
     <!-- ─── IN PROGRESS ─── -->
@@ -3696,11 +3699,7 @@ function onBuyPassport() {
 
 .watch-card {
   margin: 14px 20px 0;
-  padding: 18px;
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: 16px;
-  box-shadow: var(--shadow-card);
+  /* padding: 18px; */
 }
 .watch-card-eyebrow {
   display: flex;
