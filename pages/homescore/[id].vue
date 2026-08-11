@@ -2957,7 +2957,16 @@ watch(screen, (next, prev) => {
   }
 })
 
-const v6QuizFinal = ref<{ finalScore: number; delta: number; answers: Record<string, string>; statGains: Record<string, number>; answeredSavings: number } | null>(null)
+// `useState` (not a plain ref) — navigating to the pathway page is a real
+// route change to a different component, which unmounts this page. A
+// plain ref would reset to null on remount, wiping the just-finished
+// quiz result and making the level-up screen fall back to defaults
+// (public EPC score, £0 delta, total potential saving instead of the
+// answered-only figure) when the user comes back via the back button.
+const v6QuizFinal = useState<{ finalScore: number; delta: number; answers: Record<string, string>; statGains: Record<string, number>; answeredSavings: number } | null>(
+  `hs-quiz-final-${propertyId}`,
+  () => null,
+)
 
 function onQuizFinish(payload: { finalScore: number; delta: number; answers: Record<string, string>; statGains: Record<string, number>; answeredSavings: number }) {
   v6QuizFinal.value = payload
