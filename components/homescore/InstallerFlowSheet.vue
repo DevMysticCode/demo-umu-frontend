@@ -320,9 +320,7 @@
               <div v-for="(r, i) in requests" :key="i" class="ifs-track-item">
                 <div class="ifs-track-top">
                   <div class="ifs-t-ic">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                    </svg>
+                    <img src="/op-icons/misc/wrench.png" alt="" loading="lazy" />
                   </div>
                   <div>
                     <div class="ifs-t-name">{{ r.measure }}</div>
@@ -1562,16 +1560,17 @@ watch(
 .ifs-t-ic {
   width: 42px;
   height: 42px;
-  border-radius: 12px;
-  background: #e6f5f4;
-  color: #00817C;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
   flex-shrink: 0;
 }
-.ifs-t-ic svg { width: 22px; height: 22px; }
+.ifs-t-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
 .ifs-t-name {
   font-size: 14.5px;
   font-weight: 800;
