@@ -1055,8 +1055,8 @@ function onBack() {
   gap: 12px;
   margin: 12px 20px 0;
   padding: 14px 16px;
-  background: #f2ebfd;
-  border: 1px solid #c9b0f0;
+  background: var(--primary);
+  border: none;
   border-radius: 14px;
   box-shadow: var(--shadow-card);
 }
@@ -1073,31 +1073,31 @@ function onBack() {
 .grant-banner-title {
   font-size: 13px;
   font-weight: 800;
-  color: var(--text);
+  color: #fff;
   margin-bottom: 4px;
   letter-spacing: -0.1px;
 }
 .grant-banner-sub {
   font-size: 11.5px;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.75);
   line-height: 1.55;
 }
 .grant-banner-schemes {
-  color: #5b3795;
+  color: #b9a4e8;
   font-weight: 800;
 }
 .grant-banner-note {
   font-size: 10.5px;
   font-weight: 500;
-  color: var(--text-faint);
+  color: rgba(255, 255, 255, 0.55);
   margin-top: 4px;
   line-height: 1.4;
 }
 .grant-banner-chev {
   font-size: 20px;
   font-weight: 800;
-  color: #5b3795;
+  color: rgba(255, 255, 255, 0.7);
   flex-shrink: 0;
 }
 

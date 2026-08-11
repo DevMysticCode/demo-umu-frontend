@@ -889,6 +889,13 @@ type SampleType = 'seller' | 'landlord' | 'buyer'
 const screen = ref<Screen>('landing')
 const sampleType = ref<SampleType>('seller')
 
+// Screen switches render different content in place on the same route, so
+// the browser never resets scroll on its own — without this the new screen
+// can render already scrolled to wherever the previous one was left.
+watch(screen, (next, prev) => {
+  if (next !== prev && import.meta.client) window.scrollTo(0, 0)
+})
+
 // Allow deep-linking to the sample sub-screen via /?sample=seller|landlord|buyer
 const route = useRoute()
 onMounted(() => {
