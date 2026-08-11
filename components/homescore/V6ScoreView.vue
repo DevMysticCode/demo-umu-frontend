@@ -989,10 +989,15 @@
             </div>
             <div class="epc-arrow">→</div>
             <div class="epc-grade">
-              <div class="epc-grade-letter" :style="{ background: epcPotentialColor }">
+              <div
+                class="epc-grade-letter"
+                :style="{ background: epcPotentialColor }"
+              >
                 {{ epcPotentialRating || '—' }}
               </div>
-              <div class="epc-grade-sub">Potential · {{ epcPotentialScore ?? '—' }}</div>
+              <div class="epc-grade-sub">
+                Potential · {{ epcPotentialScore ?? '—' }}
+              </div>
             </div>
             <div class="epc-saving">
               <div class="epc-saving-num">
@@ -1194,20 +1199,19 @@
               <img
                 src="/op-icons/homescore/houseSearch.png"
                 alt=""
-                class="fork-tile-icon--buyer"
+                class="fork-tile-icon-top"
                 loading="lazy"
               />
-              <div class="fork-tile-buyer-body">
-                <div class="fork-tile-title">
-                  I'm interested in this property
-                </div>
-                <div class="fork-tile-sub">
-                  Explore its running costs, risks and the questions worth
-                  asking before you buy.
-                </div>
+              <div class="fork-tile-title fork-tile-title--buyer">
+                I'm interested in this property
               </div>
-
-              <span class="fork-tile-arrow fork-tile-arrow--buyer">→</span>
+              <div class="fork-tile-sub fork-tile-sub--buyer">
+                Explore its running costs, risks and the questions worth asking
+                before you buy.
+              </div>
+              <div class="fork-tile-bottom-row fork-tile-bottom-row--buyer">
+                <span class="fork-tile-arrow fork-tile-arrow--buyer">→</span>
+              </div>
             </button>
           </div>
         </template>
@@ -1571,7 +1575,8 @@ const scoreExplainer = computed(() => {
   // number — was hardcoded to "6 improvements" regardless of how many
   // steps the actual certificate listed (often 3-5).
   const count = (props.property as any)?.epcRecommendations?.length ?? 0
-  const improvements = count > 0 ? `${count} improvement${count === 1 ? '' : 's'}` : 'improvements'
+  const improvements =
+    count > 0 ? `${count} improvement${count === 1 ? '' : 's'}` : 'improvements'
   return `Public data suggests <b>${improvements}</b> that could reduce estimated running costs by around <b>£${saving}/year</b>.`
 })
 
@@ -1601,7 +1606,9 @@ const epcPotentialRating = computed<string | null>(
   () => (props.property as any)?.epcRatingPotential || null,
 )
 const epcPotentialColor = computed(
-  () => EPC_BAND_COLORS[(epcPotentialRating.value || '').toUpperCase()] || '#9c98ad',
+  () =>
+    EPC_BAND_COLORS[(epcPotentialRating.value || '').toUpperCase()] ||
+    '#9c98ad',
 )
 
 // ── Quick stats strip — popout panel toggle ──────────────────────
@@ -3310,7 +3317,7 @@ const watchersDisplay = computed(() => {
 .score-strip-eyebrow {
   font-size: 9px;
   font-weight: 800;
-  color: var(--text-faint);
+  color: var(--primary);
   letter-spacing: 0.6px;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -3971,7 +3978,7 @@ const watchersDisplay = computed(() => {
 .section-h {
   font-size: 11px;
   font-weight: 800;
-  color: var(--text-secondary);
+  color: var(--primary);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
@@ -4641,8 +4648,8 @@ const watchersDisplay = computed(() => {
   padding: 16px 14px;
 }
 .fork-tile--buyer {
-  background: #efe9fb;
-  padding: 16px 14px 50px;
+  background: var(--primary);
+  padding: 16px 14px;
 }
 .fork-tile-icon-top {
   width: 60px;
@@ -4659,14 +4666,8 @@ const watchersDisplay = computed(() => {
   gap: 8px;
   margin-top: 12px;
 }
-.fork-tile-buyer-body {
-  padding-right: 8px;
-}
-.fork-tile-icon--buyer {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  margin: auto;
+.fork-tile-bottom-row--buyer {
+  justify-content: flex-end;
 }
 .fork-tile-title {
   font-size: 14px;
@@ -4676,12 +4677,18 @@ const watchersDisplay = computed(() => {
   line-height: 1.25;
   margin-bottom: 6px;
 }
+.fork-tile-title--buyer {
+  color: #fff;
+}
 .fork-tile-sub {
   font-size: 11.5px;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.45;
   padding-right: 4px;
+}
+.fork-tile-sub--buyer {
+  color: rgba(255, 255, 255, 0.75);
 }
 .fork-tile-lock {
   font-size: 9.5px;
@@ -4704,10 +4711,7 @@ const watchersDisplay = computed(() => {
   background: var(--accent-dark);
 }
 .fork-tile-arrow--buyer {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
-  background: #5b3795;
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .hs-trust-note {
@@ -5341,7 +5345,7 @@ const watchersDisplay = computed(() => {
   margin-top: 13px;
 }
 .hsh-projchip {
-  flex: 1.3;
+  flex: 1;
   display: flex;
   align-items: center;
   font-size: 11px;

@@ -817,7 +817,7 @@ function onBack() {
 /* Intro — current score + headline + house illustration */
 .pathway-intro {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   margin: 6px 20px 0;
 }

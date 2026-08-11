@@ -18,7 +18,7 @@
       :class="{ 'drawer--open': modelValue, 'drawer--fullscreen': fullscreen }"
       :style="dragStyle"
       @touchstart.passive="onDragStart"
-      @touchmove.passive="onDragMove"
+      @touchmove="onDragMove"
       @touchend="onDragEnd"
       @touchcancel="onDragEnd"
     >
@@ -173,6 +173,10 @@ const onDragMove = (e) => {
   // Only start dragging the sheet when going downward AND either we
   // began on the header/handle OR the inner content is already at top.
   if (dy > 0 && (dragStartOnHeader || dragStartScrollTop <= 0)) {
+    // Stop the page/content behind the gesture from also rubber-band
+    // scrolling — without this the browser's own overscroll bounce
+    // fights our transform and the sheet barely seems to move.
+    e.preventDefault()
     dragY.value = dy
   } else {
     dragY.value = 0
@@ -285,6 +289,7 @@ const onDragEnd = () => {
   background: #d1d5db;
   margin: 8px auto 4px;
   flex-shrink: 0;
+  touch-action: none;
 }
 
 /* Header */
@@ -296,6 +301,7 @@ const onDragEnd = () => {
   background-color: #fff;
   border-bottom: 1px solid #e5e7eb;
   min-height: 3.5rem; /* Ensure consistent height */
+  touch-action: none;
 }
 
 .drawer__back {
