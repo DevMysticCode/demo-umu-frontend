@@ -30,9 +30,9 @@
       <div class="hs-noepc-cta anim-1">
         <div class="hs-noepc-cta-title">This property has no EPC</div>
         <div class="hs-noepc-cta-body">
-          No problem — answer 20 quick questions about the home and we'll
-          build an <b>estimated HomeScore</b>, the same way an assessor
-          fills gaps using the property's age.
+          No problem — answer 20 quick questions about the home and we'll build
+          an <b>estimated HomeScore</b>, the same way an assessor fills gaps
+          using the property's age.
         </div>
         <button class="hs-noepc-cta-btn" type="button" @click="$emit('refine')">
           Estimate my score →
@@ -45,15 +45,17 @@
       <div class="hs-noepc-info anim-1">
         <div class="hs-noepc-info-i">i</div>
         <div>
-          Where you're not sure, we assume what's <b>typical for the
-          property's age</b> — exactly like the official RdSAP method.
-          Every confident answer tightens your estimate.
+          Where you're not sure, we assume what's
+          <b>typical for the property's age</b> — exactly like the official
+          RdSAP method. Every confident answer tightens your estimate.
         </div>
       </div>
 
       <a
         class="hs-noepc-secondary anim-1"
-        :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${encodeURIComponent(property?.postcode ?? '')}`"
+        :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${encodeURIComponent(
+          property?.postcode ?? '',
+        )}`"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -62,550 +64,989 @@
     </template>
 
     <template v-if="hasEpcData">
-    <!-- ── HomeScore address card (port of prisma/homescore-card.html).
+      <!-- ── HomeScore address card (port of prisma/homescore-card.html).
              Shared component used here AND on the owner-quiz screen so
              both surfaces show the same hero. -->
-    <div class="hs-addr-card-wrap anim-1" data-tour="addr">
-      <HomescoreAddressCard
-        :address="addrLineFull"
-        :postcode="property?.postcode ?? null"
-        :property-type="property?.propertyType ?? null"
-        :sqm="property?.floorAreaSqm ?? property?.sqm ?? null"
-        :epc-rating="epcRating"
-        :home-score="Number(score) || 0"
-        :searches-today="searchesToday"
-        :watchers-count="watchersCount"
-        :passport-state="passportState"
-        compact
-      />
-    </div>
-
-    <!-- ── HomeScore card (animated outline + gauge + band + footer) ── -->
-    <div class="score-card anim-2" data-tour="score">
-      <div class="score-eyebrow-row">
-        <div class="score-eyebrow-mark">HomeScore<sup>™</sup></div>
+      <div class="hs-addr-card-wrap anim-1" data-tour="addr">
+        <HomescoreAddressCard
+          :address="addrLineFull"
+          :postcode="property?.postcode ?? null"
+          :property-type="property?.propertyType ?? null"
+          :sqm="property?.floorAreaSqm ?? property?.sqm ?? null"
+          :epc-rating="epcRating"
+          :home-score="Number(score) || 0"
+          :searches-today="searchesToday"
+          :watchers-count="watchersCount"
+          :passport-state="passportState"
+          compact
+        />
       </div>
-      <div class="score-top">
-        <div class="score-gauge">
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <defs>
-              <linearGradient :id="gradientId" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#00B8B0" />
-                <stop offset="100%" stop-color="#008A84" />
-              </linearGradient>
-            </defs>
-            <circle class="g-bg" cx="60" cy="60" r="50" stroke-width="9" />
-            <circle
-              class="g-fill"
-              cx="60"
-              cy="60"
-              r="50"
-              stroke-width="9"
-              :stroke="`url(#${gradientId})`"
-              stroke-dasharray="314.16"
-              :stroke-dashoffset="gaugeOffset"
-              stroke-linecap="round"
-              fill="none"
-            />
-          </svg>
-          <div class="g-num">
-            <div class="gn-big">{{ displayScore }}</div>
-            <div class="gn-small">/ 100</div>
-          </div>
+
+      <!-- ── HomeScore card (animated outline + gauge + band + footer) ── -->
+      <div class="score-card anim-2" data-tour="score">
+        <div class="score-eyebrow-row">
+          <div class="score-eyebrow-mark">HomeScore<sup>™</sup></div>
         </div>
-        <div class="score-summary">
-          <div class="score-band">{{ scoreBandTitle }}</div>
-          <div class="score-explainer" v-html="scoreExplainer" />
-          <div class="score-footer">
-            <svg class="score-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
+        <div class="score-top">
+          <div class="score-gauge">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <defs>
+                <linearGradient :id="gradientId" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#00B8B0" />
+                  <stop offset="100%" stop-color="#008A84" />
+                </linearGradient>
+              </defs>
+              <circle class="g-bg" cx="60" cy="60" r="50" stroke-width="9" />
+              <circle
+                class="g-fill"
+                cx="60"
+                cy="60"
+                r="50"
+                stroke-width="9"
+                :stroke="`url(#${gradientId})`"
+                stroke-dasharray="314.16"
+                :stroke-dashoffset="gaugeOffset"
+                stroke-linecap="round"
+                fill="none"
+              />
             </svg>
-            <div>
-              Based on a <b>{{ epcYear || '—' }} EPC</b>. Made improvements since then?
-              Your actual HomeScore could be higher.
+            <div class="g-num">
+              <div class="gn-big">{{ displayScore }}</div>
+              <div class="gn-small">/ 100</div>
+            </div>
+          </div>
+          <div class="score-summary">
+            <div class="score-band">{{ scoreBandTitle }}</div>
+            <div class="score-explainer" v-html="scoreExplainer" />
+            <div class="score-footer">
+              <svg
+                class="score-footer-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <div>
+                Based on a <b>{{ epcYear || '—' }} EPC</b>. Made improvements
+                since then? Your actual HomeScore could be higher.
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ── Quick stats strip (2 clickable cards) ───────────────────── -->
-    <div class="section-h-row">
-      <div class="section-h">Estimated running costs &amp; impact</div>
-    </div>
-    <div class="score-strip-card anim-3" data-tour="overpay">
-      <div
-        class="score-strip-item clickable"
-        :class="{ active: activePanel === 'bills' }"
-        @click="togglePanel('bills')"
-      >
-        <img src="/op-icons/homescore/wallet.png" alt="" class="score-strip-icon" loading="lazy" />
-        <div class="score-strip-eyebrow">Est. running cost</div>
-        <div class="score-strip-num">
-          £{{ formatNum(annualCost) }}<span class="strip-unit">/year</span>
-        </div>
-        <div class="score-strip-sub-label">Potential saving</div>
-        <div class="score-strip-sub-val">£{{ formatNum(potentialSaving) }} <span class="strip-unit">/year</span></div>
+      <!-- ── Quick stats strip (2 clickable cards) ───────────────────── -->
+      <div class="section-h-row">
+        <div class="section-h">Estimated running costs &amp; impact</div>
       </div>
-      <div
-        class="score-strip-item clickable"
-        :class="{ active: activePanel === 'co2' }"
-        @click="togglePanel('co2')"
-      >
-        <img src="/op-icons/passportview/environmental.png" alt="" class="score-strip-icon" loading="lazy" />
-        <div class="score-strip-eyebrow">CO<sub>2</sub> emissions</div>
-        <div class="score-strip-num">
-          {{ co2NowDisplay.toFixed(1) }} <span class="strip-unit">t /year</span>
-        </div>
-        <div class="score-strip-sub-label">UK average</div>
-        <div class="score-strip-sub-val">6.0 <span class="strip-unit">t /year</span></div>
-      </div>
-    </div>
-
-    <!-- ── STREET HERO CARD (ported 1:1 from `.hero` in the
-         umu-owner-journey prototype) ─────────────────────────────── -->
-    <div
-      class="hs-street-hero anim-3"
-      :class="{ active: activePanel === 'street' }"
-      @click="togglePanel('street')"
-    >
-      <div class="hsh-eyebrow">
-        <img src="/op-icons/homescore/houseSearch.png" alt="" class="hsh-eyebrow-ic" loading="lazy" />
-        How does this home compare?
-      </div>
-      <div class="hsh-rankrow">
-        <div class="hsh-rankrow-left">
-          <span class="hsh-big">#{{ streetRank ?? 8 }}</span>
-          <div class="hsh-rmeta">of {{ streetTotal || 43 }} homes</div>
-        </div>
-        <div class="hsh-preview" aria-hidden="true">
-          <div
-            v-for="(p, i) in streetHeroPins"
-            :key="i"
-            class="hsh-ph"
-            :class="{ you: p.isYou }"
-          >
-            <span v-if="p.isYou" class="hsh-pin"><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" /></span>
-            <span class="hsh-cd" :style="{ background: p.dot }" />
-          </div>
-        </div>
-      </div>
-      <p class="hsh-desc">
-        This home is estimated to cost £190 less per year to run than the
-        street average.
-      </p>
-      <div class="hsh-bottom-row">
-        <span class="hsh-projchip">↑ With the suggested improvements, it could rank #2 and save around £{{ formatNum(potentialSaving) }}/year.</span>
-        <button class="hsh-cta" type="button" @click.stop="togglePanel('street')">
-          Explore your street
-          <span class="hsh-cta-ar">→</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- ── BILLS PANEL ─────────────────────────────────────────────── -->
-    <div v-if="activePanel === 'bills'" class="score-strip-panel open">
-      <div class="ssp-head">
-        <div class="ssp-head-icon"><img src="/op-icons/investment/moneyBagPound.png" alt="" loading="lazy" /></div>
-        <div class="ssp-head-info">
-          <div class="ssp-head-title">Annual running costs · £{{ formatNum(annualCost) }}/yr</div>
-          <div class="ssp-head-sub">EPC figure · heating, hot water &amp; lighting only</div>
-        </div>
-        <div class="ssp-head-close" @click="activePanel = null">×</div>
-      </div>
-      <div class="ssp-divider">Where it goes</div>
-      <div class="ssp-bar-row">
-        <div class="ssp-bar-icon"><img src="/op-icons/homescore/flame.png" alt="" loading="lazy" /></div>
-        <div class="ssp-bar-label">Heating</div>
-        <div class="ssp-bar-track"><div class="ssp-bar-fill gas" :style="{ width: billsSplitDisplay.heating + '%' }" /></div>
-        <div class="ssp-bar-amt">£{{ formatNum(annualCost * billsSplitDisplay.heating / 100) }}<div class="ssp-bar-amt-pct">{{ billsSplitDisplay.heating }}%</div></div>
-      </div>
-      <div class="ssp-bar-row">
-        <div class="ssp-bar-icon"><img src="/op-icons/misc/waterDroplet.png" alt="" loading="lazy" /></div>
-        <div class="ssp-bar-label">Hot water</div>
-        <div class="ssp-bar-track"><div class="ssp-bar-fill hw" :style="{ width: billsSplitDisplay.hotWater + '%' }" /></div>
-        <div class="ssp-bar-amt">£{{ formatNum(annualCost * billsSplitDisplay.hotWater / 100) }}<div class="ssp-bar-amt-pct">{{ billsSplitDisplay.hotWater }}%</div></div>
-      </div>
-      <div class="ssp-bar-row">
-        <div class="ssp-bar-icon"><img src="/op-icons/homescore/bulb.png" alt="" loading="lazy" /></div>
-        <div class="ssp-bar-label">Lighting</div>
-        <div class="ssp-bar-track"><div class="ssp-bar-fill elec" :style="{ width: billsSplitDisplay.lighting + '%' }" /></div>
-        <div class="ssp-bar-amt">£{{ formatNum(annualCost * billsSplitDisplay.lighting / 100) }}<div class="ssp-bar-amt-pct">{{ billsSplitDisplay.lighting }}%</div></div>
-      </div>
-      <div class="ssp-total-row">
-        <div class="ssp-total-label">Total per year</div>
-        <div class="ssp-total-num">£{{ formatNum(annualCost) }}</div>
-      </div>
-      <div class="ssp-note">
-        Standing charges, cooking and appliances are <b>not included</b> in the
-        EPC figure.
-      </div>
-      <div class="ssp-foot" @click="$emit('open-pathway')">
-        <div class="ssp-foot-text">
-          All 6 EPC steps cut bills by <b>£{{ formatNum(potentialSaving) }}/yr</b> →
-        </div>
-        <div class="ssp-foot-arrow">›</div>
-      </div>
-    </div>
-
-    <!-- ── CO₂ PANEL ───────────────────────────────────────────────── -->
-    <div v-if="activePanel === 'co2'" class="score-strip-panel open">
-      <div class="ssp-head">
-        <div class="ssp-head-icon"><img src="/op-icons/passportview/environmental.png" alt="" loading="lazy" /></div>
-        <div class="ssp-head-info">
-          <div class="ssp-head-title">CO₂ emissions · {{ co2NowDisplay.toFixed(1) }}t/yr</div>
-          <div class="ssp-head-sub">UK average 6.0t · could drop to {{ co2Potential.toFixed(1) }}t after all 6 EPC steps</div>
-        </div>
-        <div class="ssp-head-close" @click="activePanel = null">×</div>
-      </div>
-      <div class="ssp-divider">Now vs potential</div>
-      <div class="ssp-bar-row">
-        <div class="ssp-bar-icon"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></div>
-        <div class="ssp-bar-label">Your home</div>
-        <div class="ssp-bar-track"><div class="ssp-bar-fill co2-heat" :style="{ width: co2NowPct + '%' }" /></div>
-        <div class="ssp-bar-amt">{{ co2NowDisplay.toFixed(1) }}t<div class="ssp-bar-amt-pct">now</div></div>
-      </div>
-      <div class="ssp-bar-row">
-        <div class="ssp-bar-icon">📊</div>
-        <div class="ssp-bar-label">UK avg</div>
-        <div class="ssp-bar-track"><div class="ssp-bar-fill co2-elec" :style="{ width: '75%' }" /></div>
-        <div class="ssp-bar-amt">6.0t<div class="ssp-bar-amt-pct">benchmark</div></div>
-      </div>
-      <div class="ssp-bar-row">
-        <div class="ssp-bar-icon"><img src="/op-icons/investment/target.png" alt="" loading="lazy" /></div>
-        <div class="ssp-bar-label">Potential</div>
-        <div class="ssp-bar-track"><div class="ssp-bar-fill co2-hw" :style="{ width: co2PotentialPct + '%' }" /></div>
-        <div class="ssp-bar-amt">{{ co2Potential.toFixed(1) }}t<div class="ssp-bar-amt-pct">after</div></div>
-      </div>
-      <div class="ssp-total-row">
-        <div class="ssp-total-label">Recoverable</div>
-        <div class="ssp-total-num">–{{ (co2NowDisplay - co2Potential).toFixed(1) }}t CO₂/yr</div>
-      </div>
-      <div class="ssp-equiv">
-        <div class="ssp-equiv-icon">🚗</div>
-        <div>{{ (co2NowDisplay - co2Potential).toFixed(1) }} tonnes CO₂ ≈ <b>driving 12,000 miles in a petrol car</b>.</div>
-      </div>
-      <div class="ssp-foot" @click="$emit('open-pathway')">
-        <div class="ssp-foot-text">
-          All 6 EPC steps cut emissions by <b>{{ (co2NowDisplay - co2Potential).toFixed(1) }}t/yr</b> →
-        </div>
-        <div class="ssp-foot-arrow">›</div>
-      </div>
-    </div>
-
-    <!-- ── STREET PANEL ────────────────────────────────────────────── -->
-    <div v-if="activePanel === 'street'" class="score-strip-panel open">
-      <div class="ssp-head">
-        <div class="ssp-head-icon">🏘</div>
-        <div class="ssp-head-info">
-          <div class="ssp-head-title">Your street, ranked by energy cost</div>
-          <div class="ssp-head-sub">
-            {{ property?.postcode || '—' }} · {{ streetTotal || 18 }} homes · estimated from EPC data
-          </div>
-        </div>
-        <div class="ssp-head-close" @click="activePanel = null">×</div>
-      </div>
-      <div class="ssp-rank-hero">
-        <div class="ssp-rank-num">#{{ streetRank ?? 8 }}</div>
-        <div class="ssp-rank-info">
-          <div class="ssp-rank-label">{{ streetRankOrdinal }} cheapest of {{ streetTotal || 18 }} homes</div>
-          <div class="ssp-rank-sub">
-            <b>£190 below</b> the postcode average of £1,651/yr
-          </div>
-        </div>
-      </div>
-
-      <div class="ssp-street-legend">
-        <span class="ssp-street-legend-item">
-          <span class="ssp-street-legend-dot" style="background:#2EAB55" />Under £1,200/yr
-        </span>
-        <span class="ssp-street-legend-item">
-          <span class="ssp-street-legend-dot" style="background:#E6A23C" />£1,200–£1,800
-        </span>
-        <span class="ssp-street-legend-item">
-          <span class="ssp-street-legend-dot" style="background:#E74C5E" />Over £1,800/yr
-        </span>
-      </div>
-
-      <!-- Scrollable street scene -->
-      <div class="ssp-street-scene">
-        <div class="ssp-street-inner">
-          <svg class="ssp-street-svg" viewBox="0 0 460 180" preserveAspectRatio="xMinYMid meet" aria-label="Postcode street view">
-            <defs>
-              <linearGradient id="streetSkyGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#DCEEF0" />
-                <stop offset="100%" stop-color="#BFE2E5" />
-              </linearGradient>
-            </defs>
-            <rect width="460" height="85" fill="url(#streetSkyGrad)" />
-
-            <!-- Top row -->
-            <g
-              v-for="h in topRowHouses"
-              :key="`top-${h.num}`"
-              class="ssp-street-house"
-              :class="{ you: h.isYou }"
-              @click="pickHouse(h)"
-            >
-              <!-- YOU house: bigger body + person marker -->
-              <template v-if="h.isYou">
-                <circle :cx="h.cx" cy="32" r="4.5" fill="#00A19A" />
-                <circle :cx="h.cx" cy="32" r="1.8" fill="white" />
-                <path :d="`M${h.cx} 36.5 L${h.cx - 3} 41 L${h.cx + 3} 41 Z`" fill="#00A19A" />
-                <polygon :points="`${h.cx - 14},55 ${h.cx},44 ${h.cx + 14},55`" fill="#00A19A" />
-                <rect class="ssp-house-body" :x="h.cx - 11" y="55" width="22" height="20" fill="#E5F4F2" stroke="#00A19A" stroke-width="1.4" />
-                <rect :x="h.cx - 7" y="59" width="4" height="4" fill="#6BD4CD" />
-                <rect :x="h.cx + 2" y="59" width="4" height="4" fill="#6BD4CD" />
-                <rect :x="h.cx - 2.5" y="67" width="5" height="8" fill="#231d45" />
-                <rect :x="h.cx - 16" y="57" width="4.5" height="6" :fill="h.color" rx="0.5" />
-                <text :x="h.cx - 13.8" y="61" font-size="4" font-weight="800" fill="white" text-anchor="middle">{{ h.grade }}</text>
-                <circle :cx="h.cx + 14" cy="58" r="3" :fill="h.dot" />
-                <text :x="h.cx + 14" y="60.2" font-size="4.5" font-weight="800" fill="white" text-anchor="middle">★</text>
-                <text :x="h.cx" y="82" font-size="6.5" font-weight="800" fill="#00A19A" text-anchor="middle">{{ h.num }}</text>
-              </template>
-              <!-- Regular house -->
-              <template v-else>
-                <polygon :points="`${h.cx - 11},55 ${h.cx},46 ${h.cx + 11},55`" :fill="h.roof" />
-                <rect class="ssp-house-body" :x="h.cx - 8" y="55" width="16" height="16" fill="#FAFAFA" stroke="#9C98AD" stroke-width="0.5" />
-                <rect :x="h.cx - 5" y="58" width="3" height="3" :fill="h.window" />
-                <rect :x="h.cx + 2" y="58" width="3" height="3" :fill="h.window" />
-                <rect :x="h.cx - 2" y="64" width="3" height="7" :fill="h.door" />
-                <rect :x="h.cx - 12" y="56" width="4" height="5" :fill="h.color" rx="0.5" />
-                <text :x="h.cx - 10" y="59.5" font-size="3.5" font-weight="800" fill="white" text-anchor="middle">{{ h.grade }}</text>
-                <circle :cx="h.cx + 11" cy="58" r="2.5" :fill="h.dot" />
-                <text :x="h.cx" y="80" font-size="6" font-weight="800" fill="#231d45" text-anchor="middle">{{ h.num }}</text>
-              </template>
-            </g>
-
-            <!-- Road -->
-            <rect x="0" y="85" width="460" height="25" fill="#3A3F4A" />
-            <line x1="0" y1="97.5" x2="460" y2="97.5" stroke="#E6A23C" stroke-width="1.5" stroke-dasharray="10,8" />
-            <text x="230" y="100" font-size="6.5" font-weight="800" fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="2.5">
-              {{ streetName }}
-            </text>
-
-            <!-- Bottom row -->
-            <g
-              v-for="h in bottomRowHouses"
-              :key="`bot-${h.num}`"
-              class="ssp-street-house"
-              @click="pickHouse(h)"
-            >
-              <polygon :points="`${h.cx - 11},128 ${h.cx},119 ${h.cx + 11},128`" :fill="h.roof" />
-              <rect class="ssp-house-body" :x="h.cx - 8" y="128" width="16" height="16" fill="#FAFAFA" stroke="#9C98AD" stroke-width="0.5" />
-              <rect :x="h.cx - 5" y="131" width="3" height="3" :fill="h.window" />
-              <rect :x="h.cx + 2" y="131" width="3" height="3" :fill="h.window" />
-              <rect :x="h.cx - 2" y="137" width="3" height="7" :fill="h.door" />
-              <rect :x="h.cx - 12" y="129" width="4" height="5" :fill="h.color" rx="0.5" />
-              <text :x="h.cx - 10" y="132.5" font-size="3.5" font-weight="800" fill="white" text-anchor="middle">{{ h.grade }}</text>
-              <circle :cx="h.cx + 11" cy="131" r="2.5" :fill="h.dot" />
-              <text :x="h.cx" y="156" font-size="6" font-weight="800" fill="#231d45" text-anchor="middle">{{ h.num }}</text>
-            </g>
-
-            <!-- Ground -->
-            <rect x="0" y="148" width="460" height="32" fill="#B8C7B0" opacity="0.4" />
-          </svg>
-
-          <!-- Walker overlay — moves to clicked house via CSS transition -->
-          <div
-            class="ssp-street-walker walking"
-            :style="{ left: walkerX + 'px', top: walkerY + 'px' }"
-          >
-            <svg viewBox="0 0 18 26" aria-hidden="true">
-              <circle cx="9" cy="5" r="3.5" fill="#231d45" />
-              <rect x="7" y="8" width="4" height="8" rx="1" fill="#00A19A" />
-              <rect class="arm-l" x="4.5" y="9" width="2" height="6" rx="1" fill="#231d45" />
-              <rect class="arm-r" x="11.5" y="9" width="2" height="6" rx="1" fill="#231d45" />
-              <rect class="leg-l" x="6.5" y="15" width="2" height="8" rx="1" fill="#231d45" />
-              <rect class="leg-r" x="9.5" y="15" width="2" height="8" rx="1" fill="#231d45" />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="ssp-street-scroll-hint">← swipe to see the rest of your postcode →</div>
-      <div class="ssp-street-tip">Tap any house to see its EPC and cost</div>
-
-      <!-- Selected house tooltip -->
-      <div class="ssp-street-tooltip" :class="{ you: selectedHouse.isYou }">
-        <span class="ssp-street-tooltip-num">
-          No. {{ selectedHouse.num }}{{ selectedHouse.isYou ? ' — You' : '' }}
-        </span>
-        <span
-          class="ssp-street-tooltip-rating"
-          :style="{ background: selectedHouse.color }"
-        >{{ selectedHouse.grade }} · {{ selectedHouse.score }}</span>
-        <span class="ssp-street-tooltip-cost" :class="selectedHouse.tier">
-          {{ selectedHouse.cost }}/yr
-        </span>
-      </div>
-
-      <!-- Pathway projection -->
-      <div class="ssp-street-projection" @click="$emit('open-pathway')">
-        <div class="ssp-street-projection-icon">📈</div>
-        <div class="ssp-street-projection-body">
-          <div class="ssp-street-projection-label">If you complete the EPC pathway</div>
-          <div class="ssp-street-projection-num">
-            £{{ formatNum(annualCost - potentialSaving) }}<span>/yr</span>
-          </div>
-          <div class="ssp-street-projection-sub">
-            <b>2nd of {{ streetTotal || 18 }}</b> on your street · up from {{ streetRankOrdinal.toLowerCase() }}
-          </div>
-        </div>
-        <div class="ssp-street-projection-saving">
-          <div class="ssp-street-projection-saving-num">–£{{ formatNum(potentialSaving) }}</div>
-          <div class="ssp-street-projection-saving-sub">/yr saved</div>
-        </div>
-      </div>
-
-      <div class="ssp-note">
-        Higher EPCs sell faster and <b>command ~£15k more</b> on average for a
-        3-bed in {{ outwardPostcode }} (Land Reg data).
-      </div>
-    </div>
-
-    <!-- ── STAT BREAKDOWN (5 rows · expandable) ─────────────────────── -->
-    <div class="section-h-row">
-      <div class="section-h section-h--accent">What's behind your score?</div>
-      <div class="section-h-sub">Points breakdown</div>
-    </div>
-    <div class="stat-card anim-4" data-tour="breakdown">
-      <template v-for="s in stats" :key="s.id">
+      <div class="score-strip-card anim-3" data-tour="overpay">
         <div
-          class="stat-row clickable"
-          :class="{ open: expandedStat === s.id }"
-          @click="toggleStat(s.id)"
+          class="score-strip-item clickable"
+          :class="{ active: activePanel === 'bills' }"
+          @click="togglePanel('bills')"
         >
-          <div class="stat-icon">
-            <img v-if="s.icon && s.icon.startsWith('/')" :src="s.icon" alt="" loading="lazy" />
-            <template v-else>{{ s.icon }}</template>
+          <img
+            src="/op-icons/homescore/wallet.png"
+            alt=""
+            class="score-strip-icon"
+            loading="lazy"
+          />
+          <div class="score-strip-eyebrow">Est. running cost</div>
+          <div class="score-strip-num">
+            £{{ formatNum(annualCost) }}<span class="strip-unit">/year</span>
           </div>
-          <div class="stat-label">{{ s.label }}</div>
-          <div class="stat-bar-wrap">
-            <div class="stat-bar-fill" :class="s.tone" :style="{ width: s.pct + '%' }" />
-          </div>
-          <div class="stat-value">{{ s.value }}/{{ s.max }}</div>
-          <span class="stat-row-chev">›</span>
-        </div>
-        <div v-if="expandedStat === s.id" class="stat-expand">
-          <div class="stat-expand-meta">
-            <div class="stat-expand-meta-tile">
-              <div class="stat-expand-meta-eyebrow">EPC steps</div>
-              <div class="stat-expand-meta-num" :class="s.steps > 0 ? 'cost' : 'save'">
-                {{ s.steps > 0 ? s.steps : '—' }}
-              </div>
-              <div class="stat-expand-meta-sub">
-                {{ s.steps > 0 ? 'recommended' : 'none recommended' }}
-              </div>
-            </div>
-            <div class="stat-expand-meta-tile">
-              <div class="stat-expand-meta-eyebrow">Could save</div>
-              <div class="stat-expand-meta-num save">
-                <template v-if="s.saving > 0">
-                  £{{ s.saving
-                  }}<span style="font-size: 9px; color: var(--text-secondary)">/yr</span>
-                </template>
-                <template v-else>—</template>
-              </div>
-              <div class="stat-expand-meta-sub">
-                {{ s.saving > 0 ? s.savingSub : 'nothing to gain' }}
-              </div>
-            </div>
-            <div class="stat-expand-meta-tile">
-              <div class="stat-expand-meta-eyebrow">{{ s.thirdTileLabel }}</div>
-              <div class="stat-expand-meta-num">{{ s.thirdTileNum || '—' }}</div>
-              <div class="stat-expand-meta-sub">{{ s.thirdTileSub }}</div>
-            </div>
-          </div>
-          <div v-for="(line, i) in s.lines" :key="i" class="stat-cost-line">
-            <div class="stat-cost-bullet">
-              <img v-if="line.icon && line.icon.startsWith('/')" :src="line.icon" alt="" loading="lazy" />
-              <template v-else>{{ line.icon }}</template>
-            </div>
-            <div class="stat-cost-info">
-              <div class="stat-cost-title">{{ line.title }}</div>
-              <div class="stat-cost-sub" v-html="line.sub" />
-            </div>
-            <div class="stat-cost-amt">
-              <div
-                class="stat-cost-amt-big"
-                :style="line.amtMuted ? { color: 'var(--text-faint)' } : line.amtGood ? { color: 'var(--accent-dark)' } : null"
-              >{{ line.amt }}</div>
-              <div v-if="line.amtSub" class="stat-cost-amt-sub">{{ line.amtSub }}</div>
-            </div>
-          </div>
-          <div class="stat-expand-foot" @click.stop="$emit('open-pathway')">
-            <div class="stat-expand-foot-text" v-html="s.footText" />
-            <div class="stat-expand-foot-arrow">›</div>
+          <div class="score-strip-sub-label">Potential saving</div>
+          <div class="score-strip-sub-val">
+            £{{ formatNum(potentialSaving) }}
+            <span class="strip-unit">/year</span>
           </div>
         </div>
-      </template>
-    </div>
-
-    <!-- ── FULL EPC DRAWER ─────────────────────────────────────────── -->
-    <div ref="epcDrawerEl" class="epc-drawer anim-3" :class="{ open: epcDrawerOpen }">
-      <div class="epc-drawer-head" @click="toggleEpcDrawer">
-        <div class="epc-drawer-info">
-          <div class="epc-drawer-title">Full HomeScore breakdown</div>
-          <div class="epc-drawer-sub">
-            {{ epcDrawerOpen ? 'Tap to close' : 'Explore the public data and energy information behind this score' }}
+        <div
+          class="score-strip-item clickable"
+          :class="{ active: activePanel === 'co2' }"
+          @click="togglePanel('co2')"
+        >
+          <img
+            src="/op-icons/passportview/environmental.png"
+            alt=""
+            class="score-strip-icon"
+            loading="lazy"
+          />
+          <div class="score-strip-eyebrow">CO<sub>2</sub> emissions</div>
+          <div class="score-strip-num">
+            {{ co2NowDisplay.toFixed(1) }}
+            <span class="strip-unit">t /year</span>
           </div>
-        </div>
-        <div class="epc-drawer-view" :class="{ open: epcDrawerOpen }">
-          {{ epcDrawerOpen ? 'Close' : 'View breakdown' }}
-          <span class="epc-drawer-view-ar">→</span>
+          <div class="score-strip-sub-label">UK average</div>
+          <div class="score-strip-sub-val">
+            6.0 <span class="strip-unit">t /year</span>
+          </div>
         </div>
       </div>
-      <div v-if="epcDrawerOpen" class="epc-drawer-body">
-        <!-- Summary row: current → potential -->
-        <div class="epc-summary">
-          <div class="epc-grade">
-            <div class="epc-grade-letter" :style="{ background: epcColor }">{{ epcRating || '—' }}</div>
-            <div class="epc-grade-sub">Current · {{ displayScore }}</div>
+
+      <!-- ── STREET HERO CARD (ported 1:1 from `.hero` in the
+         umu-owner-journey prototype) ─────────────────────────────── -->
+      <div
+        class="hs-street-hero anim-3"
+        :class="{ active: activePanel === 'street' }"
+        @click="togglePanel('street')"
+      >
+        <div class="hsh-eyebrow">
+          <img
+            src="/op-icons/homescore/houseSearch.png"
+            alt=""
+            class="hsh-eyebrow-ic"
+            loading="lazy"
+          />
+          How does this home compare?
+        </div>
+        <div class="hsh-rankrow">
+          <div class="hsh-rankrow-left">
+            <span class="hsh-big">#{{ streetRank ?? 8 }}</span>
+            <div class="hsh-rmeta">of {{ streetTotal || 43 }} homes</div>
           </div>
-          <div class="epc-arrow">→</div>
-          <div class="epc-grade">
-            <div class="epc-grade-letter" :style="{ background: epcPotentialColor }">{{ epcPotentialRating || '—' }}</div>
-            <div class="epc-grade-sub">Potential · {{ epcPotentialScore ?? '—' }}</div>
+          <div class="hsh-preview" aria-hidden="true">
+            <div
+              v-for="(p, i) in streetHeroPins"
+              :key="i"
+              class="hsh-ph"
+              :class="{ you: p.isYou }"
+            >
+              <span v-if="p.isYou" class="hsh-pin"
+                ><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy"
+              /></span>
+              <span class="hsh-cd" :style="{ background: p.dot }" />
+            </div>
           </div>
-          <div class="epc-saving">
-            <div class="epc-saving-num">£{{ formatNum(potentialSaving) }}/yr</div>
-            <div class="epc-saving-sub">potential saving</div>
+        </div>
+        <p class="hsh-desc">
+          This home is estimated to cost £190 less per year to run than the
+          street average.
+        </p>
+        <div class="hsh-bottom-row">
+          <span class="hsh-projchip"
+            >↑ With the suggested improvements, it could rank #2 and save around
+            £{{ formatNum(potentialSaving) }}/year.</span
+          >
+          <button
+            class="hsh-cta"
+            type="button"
+            @click.stop="togglePanel('street')"
+          >
+            Explore your street
+            <span class="hsh-cta-ar">→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── BILLS PANEL ─────────────────────────────────────────────── -->
+      <div v-if="activePanel === 'bills'" class="score-strip-panel open">
+        <div class="ssp-head">
+          <div class="ssp-head-icon">
+            <img
+              src="/op-icons/investment/moneyBagPound.png"
+              alt=""
+              loading="lazy"
+            />
+          </div>
+          <div class="ssp-head-info">
+            <div class="ssp-head-title">
+              Annual running costs · £{{ formatNum(annualCost) }}/yr
+            </div>
+            <div class="ssp-head-sub">
+              EPC figure · heating, hot water &amp; lighting only
+            </div>
+          </div>
+          <div class="ssp-head-close" @click="activePanel = null">×</div>
+        </div>
+        <div class="ssp-divider">Where it goes</div>
+        <div class="ssp-bar-row">
+          <div class="ssp-bar-icon">
+            <img src="/op-icons/homescore/flame.png" alt="" loading="lazy" />
+          </div>
+          <div class="ssp-bar-label">Heating</div>
+          <div class="ssp-bar-track">
+            <div
+              class="ssp-bar-fill gas"
+              :style="{ width: billsSplitDisplay.heating + '%' }"
+            />
+          </div>
+          <div class="ssp-bar-amt">
+            £{{ formatNum((annualCost * billsSplitDisplay.heating) / 100) }}
+            <div class="ssp-bar-amt-pct">{{ billsSplitDisplay.heating }}%</div>
+          </div>
+        </div>
+        <div class="ssp-bar-row">
+          <div class="ssp-bar-icon">
+            <img src="/op-icons/misc/waterDroplet.png" alt="" loading="lazy" />
+          </div>
+          <div class="ssp-bar-label">Hot water</div>
+          <div class="ssp-bar-track">
+            <div
+              class="ssp-bar-fill hw"
+              :style="{ width: billsSplitDisplay.hotWater + '%' }"
+            />
+          </div>
+          <div class="ssp-bar-amt">
+            £{{ formatNum((annualCost * billsSplitDisplay.hotWater) / 100) }}
+            <div class="ssp-bar-amt-pct">{{ billsSplitDisplay.hotWater }}%</div>
+          </div>
+        </div>
+        <div class="ssp-bar-row">
+          <div class="ssp-bar-icon">
+            <img src="/op-icons/homescore/bulb.png" alt="" loading="lazy" />
+          </div>
+          <div class="ssp-bar-label">Lighting</div>
+          <div class="ssp-bar-track">
+            <div
+              class="ssp-bar-fill elec"
+              :style="{ width: billsSplitDisplay.lighting + '%' }"
+            />
+          </div>
+          <div class="ssp-bar-amt">
+            £{{ formatNum((annualCost * billsSplitDisplay.lighting) / 100) }}
+            <div class="ssp-bar-amt-pct">{{ billsSplitDisplay.lighting }}%</div>
+          </div>
+        </div>
+        <div class="ssp-total-row">
+          <div class="ssp-total-label">Total per year</div>
+          <div class="ssp-total-num">£{{ formatNum(annualCost) }}</div>
+        </div>
+        <div class="ssp-note">
+          Standing charges, cooking and appliances are <b>not included</b> in
+          the EPC figure.
+        </div>
+        <div class="ssp-foot" @click="$emit('open-pathway')">
+          <div class="ssp-foot-text">
+            All 6 EPC steps cut bills by
+            <b>£{{ formatNum(potentialSaving) }}/yr</b> →
+          </div>
+          <div class="ssp-foot-arrow">›</div>
+        </div>
+      </div>
+
+      <!-- ── CO₂ PANEL ───────────────────────────────────────────────── -->
+      <div v-if="activePanel === 'co2'" class="score-strip-panel open">
+        <div class="ssp-head">
+          <div class="ssp-head-icon">
+            <img
+              src="/op-icons/passportview/environmental.png"
+              alt=""
+              loading="lazy"
+            />
+          </div>
+          <div class="ssp-head-info">
+            <div class="ssp-head-title">
+              CO₂ emissions · {{ co2NowDisplay.toFixed(1) }}t/yr
+            </div>
+            <div class="ssp-head-sub">
+              UK average 6.0t · could drop to {{ co2Potential.toFixed(1) }}t
+              after all 6 EPC steps
+            </div>
+          </div>
+          <div class="ssp-head-close" @click="activePanel = null">×</div>
+        </div>
+        <div class="ssp-divider">Now vs potential</div>
+        <div class="ssp-bar-row">
+          <div class="ssp-bar-icon">
+            <img src="/op-icons/homescore/house.png" alt="" loading="lazy" />
+          </div>
+          <div class="ssp-bar-label">Your home</div>
+          <div class="ssp-bar-track">
+            <div
+              class="ssp-bar-fill co2-heat"
+              :style="{ width: co2NowPct + '%' }"
+            />
+          </div>
+          <div class="ssp-bar-amt">
+            {{ co2NowDisplay.toFixed(1) }}t
+            <div class="ssp-bar-amt-pct">now</div>
+          </div>
+        </div>
+        <div class="ssp-bar-row">
+          <div class="ssp-bar-icon">📊</div>
+          <div class="ssp-bar-label">UK avg</div>
+          <div class="ssp-bar-track">
+            <div class="ssp-bar-fill co2-elec" :style="{ width: '75%' }" />
+          </div>
+          <div class="ssp-bar-amt">
+            6.0t
+            <div class="ssp-bar-amt-pct">benchmark</div>
+          </div>
+        </div>
+        <div class="ssp-bar-row">
+          <div class="ssp-bar-icon">
+            <img src="/op-icons/investment/target.png" alt="" loading="lazy" />
+          </div>
+          <div class="ssp-bar-label">Potential</div>
+          <div class="ssp-bar-track">
+            <div
+              class="ssp-bar-fill co2-hw"
+              :style="{ width: co2PotentialPct + '%' }"
+            />
+          </div>
+          <div class="ssp-bar-amt">
+            {{ co2Potential.toFixed(1) }}t
+            <div class="ssp-bar-amt-pct">after</div>
+          </div>
+        </div>
+        <div class="ssp-total-row">
+          <div class="ssp-total-label">Recoverable</div>
+          <div class="ssp-total-num">
+            –{{ (co2NowDisplay - co2Potential).toFixed(1) }}t CO₂/yr
+          </div>
+        </div>
+        <div class="ssp-equiv">
+          <div class="ssp-equiv-icon">🚗</div>
+          <div>
+            {{ (co2NowDisplay - co2Potential).toFixed(1) }} tonnes CO₂ ≈
+            <b>driving 12,000 miles in a petrol car</b>.
+          </div>
+        </div>
+        <div class="ssp-foot" @click="$emit('open-pathway')">
+          <div class="ssp-foot-text">
+            All 6 EPC steps cut emissions by
+            <b>{{ (co2NowDisplay - co2Potential).toFixed(1) }}t/yr</b> →
+          </div>
+          <div class="ssp-foot-arrow">›</div>
+        </div>
+      </div>
+
+      <!-- ── STREET PANEL ────────────────────────────────────────────── -->
+      <div v-if="activePanel === 'street'" class="score-strip-panel open">
+        <div class="ssp-head">
+          <div class="ssp-head-icon">🏘</div>
+          <div class="ssp-head-info">
+            <div class="ssp-head-title">Your street, ranked by energy cost</div>
+            <div class="ssp-head-sub">
+              {{ property?.postcode || '—' }} · {{ streetTotal || 18 }} homes ·
+              estimated from EPC data
+            </div>
+          </div>
+          <div class="ssp-head-close" @click="activePanel = null">×</div>
+        </div>
+        <div class="ssp-rank-hero">
+          <div class="ssp-rank-num">#{{ streetRank ?? 8 }}</div>
+          <div class="ssp-rank-info">
+            <div class="ssp-rank-label">
+              {{ streetRankOrdinal }} cheapest of {{ streetTotal || 18 }} homes
+            </div>
+            <div class="ssp-rank-sub">
+              <b>£190 below</b> the postcode average of £1,651/yr
+            </div>
           </div>
         </div>
 
-        <!-- 12 EPC items, each clickable to expand -->
-        <template v-for="item in epcItems" :key="item.id">
-          <div class="epc-item" @click="toggleEpcItem(item.id)">
-            <div class="epc-item-icon">
-              <img v-if="item.icon && item.icon.startsWith('/')" :src="item.icon" alt="" loading="lazy" />
-              <template v-else>{{ item.icon }}</template>
+        <div class="ssp-street-legend">
+          <span class="ssp-street-legend-item">
+            <span
+              class="ssp-street-legend-dot"
+              style="background: #2eab55"
+            />Under £1,200/yr
+          </span>
+          <span class="ssp-street-legend-item">
+            <span
+              class="ssp-street-legend-dot"
+              style="background: #e6a23c"
+            />£1,200–£1,800
+          </span>
+          <span class="ssp-street-legend-item">
+            <span
+              class="ssp-street-legend-dot"
+              style="background: #e74c5e"
+            />Over £1,800/yr
+          </span>
+        </div>
+
+        <!-- Scrollable street scene -->
+        <div class="ssp-street-scene">
+          <div class="ssp-street-inner">
+            <svg
+              class="ssp-street-svg"
+              viewBox="0 0 460 180"
+              preserveAspectRatio="xMinYMid meet"
+              aria-label="Postcode street view"
+            >
+              <defs>
+                <linearGradient id="streetSkyGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#DCEEF0" />
+                  <stop offset="100%" stop-color="#BFE2E5" />
+                </linearGradient>
+              </defs>
+              <rect width="460" height="85" fill="url(#streetSkyGrad)" />
+
+              <!-- Top row -->
+              <g
+                v-for="h in topRowHouses"
+                :key="`top-${h.num}`"
+                class="ssp-street-house"
+                :class="{ you: h.isYou }"
+                @click="pickHouse(h)"
+              >
+                <!-- YOU house: bigger body + person marker -->
+                <template v-if="h.isYou">
+                  <circle :cx="h.cx" cy="32" r="4.5" fill="#00A19A" />
+                  <circle :cx="h.cx" cy="32" r="1.8" fill="white" />
+                  <path
+                    :d="`M${h.cx} 36.5 L${h.cx - 3} 41 L${h.cx + 3} 41 Z`"
+                    fill="#00A19A"
+                  />
+                  <polygon
+                    :points="`${h.cx - 14},55 ${h.cx},44 ${h.cx + 14},55`"
+                    fill="#00A19A"
+                  />
+                  <rect
+                    class="ssp-house-body"
+                    :x="h.cx - 11"
+                    y="55"
+                    width="22"
+                    height="20"
+                    fill="#E5F4F2"
+                    stroke="#00A19A"
+                    stroke-width="1.4"
+                  />
+                  <rect
+                    :x="h.cx - 7"
+                    y="59"
+                    width="4"
+                    height="4"
+                    fill="#6BD4CD"
+                  />
+                  <rect
+                    :x="h.cx + 2"
+                    y="59"
+                    width="4"
+                    height="4"
+                    fill="#6BD4CD"
+                  />
+                  <rect
+                    :x="h.cx - 2.5"
+                    y="67"
+                    width="5"
+                    height="8"
+                    fill="#231d45"
+                  />
+                  <rect
+                    :x="h.cx - 16"
+                    y="57"
+                    width="4.5"
+                    height="6"
+                    :fill="h.color"
+                    rx="0.5"
+                  />
+                  <text
+                    :x="h.cx - 13.8"
+                    y="61"
+                    font-size="4"
+                    font-weight="800"
+                    fill="white"
+                    text-anchor="middle"
+                  >
+                    {{ h.grade }}
+                  </text>
+                  <circle :cx="h.cx + 14" cy="58" r="3" :fill="h.dot" />
+                  <text
+                    :x="h.cx + 14"
+                    y="60.2"
+                    font-size="4.5"
+                    font-weight="800"
+                    fill="white"
+                    text-anchor="middle"
+                  >
+                    ★
+                  </text>
+                  <text
+                    :x="h.cx"
+                    y="82"
+                    font-size="6.5"
+                    font-weight="800"
+                    fill="#00A19A"
+                    text-anchor="middle"
+                  >
+                    {{ h.num }}
+                  </text>
+                </template>
+                <!-- Regular house -->
+                <template v-else>
+                  <polygon
+                    :points="`${h.cx - 11},55 ${h.cx},46 ${h.cx + 11},55`"
+                    :fill="h.roof"
+                  />
+                  <rect
+                    class="ssp-house-body"
+                    :x="h.cx - 8"
+                    y="55"
+                    width="16"
+                    height="16"
+                    fill="#FAFAFA"
+                    stroke="#9C98AD"
+                    stroke-width="0.5"
+                  />
+                  <rect
+                    :x="h.cx - 5"
+                    y="58"
+                    width="3"
+                    height="3"
+                    :fill="h.window"
+                  />
+                  <rect
+                    :x="h.cx + 2"
+                    y="58"
+                    width="3"
+                    height="3"
+                    :fill="h.window"
+                  />
+                  <rect
+                    :x="h.cx - 2"
+                    y="64"
+                    width="3"
+                    height="7"
+                    :fill="h.door"
+                  />
+                  <rect
+                    :x="h.cx - 12"
+                    y="56"
+                    width="4"
+                    height="5"
+                    :fill="h.color"
+                    rx="0.5"
+                  />
+                  <text
+                    :x="h.cx - 10"
+                    y="59.5"
+                    font-size="3.5"
+                    font-weight="800"
+                    fill="white"
+                    text-anchor="middle"
+                  >
+                    {{ h.grade }}
+                  </text>
+                  <circle :cx="h.cx + 11" cy="58" r="2.5" :fill="h.dot" />
+                  <text
+                    :x="h.cx"
+                    y="80"
+                    font-size="6"
+                    font-weight="800"
+                    fill="#231d45"
+                    text-anchor="middle"
+                  >
+                    {{ h.num }}
+                  </text>
+                </template>
+              </g>
+
+              <!-- Road -->
+              <rect x="0" y="85" width="460" height="25" fill="#3A3F4A" />
+              <line
+                x1="0"
+                y1="97.5"
+                x2="460"
+                y2="97.5"
+                stroke="#E6A23C"
+                stroke-width="1.5"
+                stroke-dasharray="10,8"
+              />
+              <text
+                x="230"
+                y="100"
+                font-size="6.5"
+                font-weight="800"
+                fill="rgba(255,255,255,0.55)"
+                text-anchor="middle"
+                letter-spacing="2.5"
+              >
+                {{ streetName }}
+              </text>
+
+              <!-- Bottom row -->
+              <g
+                v-for="h in bottomRowHouses"
+                :key="`bot-${h.num}`"
+                class="ssp-street-house"
+                @click="pickHouse(h)"
+              >
+                <polygon
+                  :points="`${h.cx - 11},128 ${h.cx},119 ${h.cx + 11},128`"
+                  :fill="h.roof"
+                />
+                <rect
+                  class="ssp-house-body"
+                  :x="h.cx - 8"
+                  y="128"
+                  width="16"
+                  height="16"
+                  fill="#FAFAFA"
+                  stroke="#9C98AD"
+                  stroke-width="0.5"
+                />
+                <rect
+                  :x="h.cx - 5"
+                  y="131"
+                  width="3"
+                  height="3"
+                  :fill="h.window"
+                />
+                <rect
+                  :x="h.cx + 2"
+                  y="131"
+                  width="3"
+                  height="3"
+                  :fill="h.window"
+                />
+                <rect
+                  :x="h.cx - 2"
+                  y="137"
+                  width="3"
+                  height="7"
+                  :fill="h.door"
+                />
+                <rect
+                  :x="h.cx - 12"
+                  y="129"
+                  width="4"
+                  height="5"
+                  :fill="h.color"
+                  rx="0.5"
+                />
+                <text
+                  :x="h.cx - 10"
+                  y="132.5"
+                  font-size="3.5"
+                  font-weight="800"
+                  fill="white"
+                  text-anchor="middle"
+                >
+                  {{ h.grade }}
+                </text>
+                <circle :cx="h.cx + 11" cy="131" r="2.5" :fill="h.dot" />
+                <text
+                  :x="h.cx"
+                  y="156"
+                  font-size="6"
+                  font-weight="800"
+                  fill="#231d45"
+                  text-anchor="middle"
+                >
+                  {{ h.num }}
+                </text>
+              </g>
+
+              <!-- Ground -->
+              <rect
+                x="0"
+                y="148"
+                width="460"
+                height="32"
+                fill="#B8C7B0"
+                opacity="0.4"
+              />
+            </svg>
+
+            <!-- Walker overlay — moves to clicked house via CSS transition -->
+            <div
+              class="ssp-street-walker walking"
+              :style="{ left: walkerX + 'px', top: walkerY + 'px' }"
+            >
+              <svg viewBox="0 0 18 26" aria-hidden="true">
+                <circle cx="9" cy="5" r="3.5" fill="#231d45" />
+                <rect x="7" y="8" width="4" height="8" rx="1" fill="#00A19A" />
+                <rect
+                  class="arm-l"
+                  x="4.5"
+                  y="9"
+                  width="2"
+                  height="6"
+                  rx="1"
+                  fill="#231d45"
+                />
+                <rect
+                  class="arm-r"
+                  x="11.5"
+                  y="9"
+                  width="2"
+                  height="6"
+                  rx="1"
+                  fill="#231d45"
+                />
+                <rect
+                  class="leg-l"
+                  x="6.5"
+                  y="15"
+                  width="2"
+                  height="8"
+                  rx="1"
+                  fill="#231d45"
+                />
+                <rect
+                  class="leg-r"
+                  x="9.5"
+                  y="15"
+                  width="2"
+                  height="8"
+                  rx="1"
+                  fill="#231d45"
+                />
+              </svg>
             </div>
-            <div class="epc-item-body">
-              <div class="epc-item-title">{{ item.title }}</div>
-              <div class="epc-item-sub" v-html="item.sub" />
-            </div>
-            <span class="epc-item-rating" :class="item.ratingClass">{{ item.rating }}</span>
-            <span class="epc-item-chev" :class="{ open: expandedEpcItem === item.id }">›</span>
           </div>
-          <div v-if="expandedEpcItem === item.id" class="epc-item-expand">
-            <div class="epc-flag" :class="{ ok: item.flagOk }">
-              <div class="epc-flag-label">{{ item.flagOk ? '✓ Already strong' : '⚠ What\'s flagged' }}</div>
-              <div class="epc-flag-text" v-html="item.flagText" />
+        </div>
+        <div class="ssp-street-scroll-hint">
+          ← swipe to see the rest of your postcode →
+        </div>
+        <div class="ssp-street-tip">Tap any house to see its EPC and cost</div>
+
+        <!-- Selected house tooltip -->
+        <div class="ssp-street-tooltip" :class="{ you: selectedHouse.isYou }">
+          <span class="ssp-street-tooltip-num">
+            No. {{ selectedHouse.num }}{{ selectedHouse.isYou ? ' — You' : '' }}
+          </span>
+          <span
+            class="ssp-street-tooltip-rating"
+            :style="{ background: selectedHouse.color }"
+            >{{ selectedHouse.grade }} · {{ selectedHouse.score }}</span
+          >
+          <span class="ssp-street-tooltip-cost" :class="selectedHouse.tier">
+            {{ selectedHouse.cost }}/yr
+          </span>
+        </div>
+
+        <!-- Pathway projection -->
+        <div class="ssp-street-projection" @click="$emit('open-pathway')">
+          <div class="ssp-street-projection-icon">📈</div>
+          <div class="ssp-street-projection-body">
+            <div class="ssp-street-projection-label">
+              If you complete the EPC pathway
             </div>
-            <div v-if="item.fix" class="epc-fix">
-              <div class="epc-fix-label">{{ item.fix.label }}</div>
-              <div class="epc-fix-text" v-html="item.fix.text" />
-              <a class="epc-fix-action" @click.stop="$emit('open-pathway')">See suppliers →</a>
+            <div class="ssp-street-projection-num">
+              £{{ formatNum(annualCost - potentialSaving) }}<span>/yr</span>
+            </div>
+            <div class="ssp-street-projection-sub">
+              <b>2nd of {{ streetTotal || 18 }}</b> on your street · up from
+              {{ streetRankOrdinal.toLowerCase() }}
+            </div>
+          </div>
+          <div class="ssp-street-projection-saving">
+            <div class="ssp-street-projection-saving-num">
+              –£{{ formatNum(potentialSaving) }}
+            </div>
+            <div class="ssp-street-projection-saving-sub">/yr saved</div>
+          </div>
+        </div>
+
+        <div class="ssp-note">
+          Higher EPCs sell faster and <b>command ~£15k more</b> on average for a
+          3-bed in {{ outwardPostcode }} (Land Reg data).
+        </div>
+      </div>
+
+      <!-- ── STAT BREAKDOWN (5 rows · expandable) ─────────────────────── -->
+      <div class="section-h-row">
+        <div class="section-h section-h--accent">What's behind your score?</div>
+        <div class="section-h-sub">Points breakdown</div>
+      </div>
+      <div class="stat-card anim-4" data-tour="breakdown">
+        <template v-for="s in stats" :key="s.id">
+          <div
+            class="stat-row clickable"
+            :class="{ open: expandedStat === s.id }"
+            @click="toggleStat(s.id)"
+          >
+            <div class="stat-icon">
+              <img
+                v-if="s.icon && s.icon.startsWith('/')"
+                :src="s.icon"
+                alt=""
+                loading="lazy"
+              />
+              <template v-else>{{ s.icon }}</template>
+            </div>
+            <div class="stat-label">{{ s.label }}</div>
+            <div class="stat-bar-wrap">
+              <div
+                class="stat-bar-fill"
+                :class="s.tone"
+                :style="{ width: s.pct + '%' }"
+              />
+            </div>
+            <div class="stat-value">{{ s.value }}/{{ s.max }}</div>
+            <span class="stat-row-chev">›</span>
+          </div>
+          <div v-if="expandedStat === s.id" class="stat-expand">
+            <div class="stat-expand-meta">
+              <div class="stat-expand-meta-tile">
+                <div class="stat-expand-meta-eyebrow">EPC steps</div>
+                <div
+                  class="stat-expand-meta-num"
+                  :class="s.steps > 0 ? 'cost' : 'save'"
+                >
+                  {{ s.steps > 0 ? s.steps : '—' }}
+                </div>
+                <div class="stat-expand-meta-sub">
+                  {{ s.steps > 0 ? 'recommended' : 'none recommended' }}
+                </div>
+              </div>
+              <div class="stat-expand-meta-tile">
+                <div class="stat-expand-meta-eyebrow">Could save</div>
+                <div class="stat-expand-meta-num save">
+                  <template v-if="s.saving > 0">
+                    £{{ s.saving
+                    }}<span style="font-size: 9px; color: var(--text-secondary)"
+                      >/yr</span
+                    >
+                  </template>
+                  <template v-else>—</template>
+                </div>
+                <div class="stat-expand-meta-sub">
+                  {{ s.saving > 0 ? s.savingSub : 'nothing to gain' }}
+                </div>
+              </div>
+              <div class="stat-expand-meta-tile">
+                <div class="stat-expand-meta-eyebrow">
+                  {{ s.thirdTileLabel }}
+                </div>
+                <div class="stat-expand-meta-num">
+                  {{ s.thirdTileNum || '—' }}
+                </div>
+                <div class="stat-expand-meta-sub">{{ s.thirdTileSub }}</div>
+              </div>
+            </div>
+            <div v-for="(line, i) in s.lines" :key="i" class="stat-cost-line">
+              <div class="stat-cost-bullet">
+                <img
+                  v-if="line.icon && line.icon.startsWith('/')"
+                  :src="line.icon"
+                  alt=""
+                  loading="lazy"
+                />
+                <template v-else>{{ line.icon }}</template>
+              </div>
+              <div class="stat-cost-info">
+                <div class="stat-cost-title">{{ line.title }}</div>
+                <div class="stat-cost-sub" v-html="line.sub" />
+              </div>
+              <div class="stat-cost-amt">
+                <div
+                  class="stat-cost-amt-big"
+                  :style="
+                    line.amtMuted
+                      ? { color: 'var(--text-faint)' }
+                      : line.amtGood
+                      ? { color: 'var(--accent-dark)' }
+                      : null
+                  "
+                >
+                  {{ line.amt }}
+                </div>
+                <div v-if="line.amtSub" class="stat-cost-amt-sub">
+                  {{ line.amtSub }}
+                </div>
+              </div>
+            </div>
+            <div class="stat-expand-foot" @click.stop="$emit('open-pathway')">
+              <div class="stat-expand-foot-text" v-html="s.footText" />
+              <div class="stat-expand-foot-arrow">›</div>
             </div>
           </div>
         </template>
-
       </div>
-    </div>
 
-    <!-- ── FORK SECTION ───────────────────────────────────────────────
+      <!-- ── FULL EPC DRAWER ─────────────────────────────────────────── -->
+      <div
+        ref="epcDrawerEl"
+        class="epc-drawer anim-3"
+        :class="{ open: epcDrawerOpen }"
+      >
+        <div class="epc-drawer-head" @click="toggleEpcDrawer">
+          <div class="epc-drawer-info">
+            <div class="epc-drawer-title">Full HomeScore breakdown</div>
+            <div class="epc-drawer-sub">
+              {{
+                epcDrawerOpen
+                  ? 'Tap to close'
+                  : 'Explore the public data and energy information behind this score'
+              }}
+            </div>
+          </div>
+          <div class="epc-drawer-view" :class="{ open: epcDrawerOpen }">
+            {{ epcDrawerOpen ? 'Close' : 'View breakdown' }}
+            <span class="epc-drawer-view-ar">→</span>
+          </div>
+        </div>
+        <div v-if="epcDrawerOpen" class="epc-drawer-body">
+          <!-- Summary row: current → potential -->
+          <div class="epc-summary">
+            <div class="epc-grade">
+              <div class="epc-grade-letter" :style="{ background: epcColor }">
+                {{ epcRating || '—' }}
+              </div>
+              <div class="epc-grade-sub">Current · {{ displayScore }}</div>
+            </div>
+            <div class="epc-arrow">→</div>
+            <div class="epc-grade">
+              <div class="epc-grade-letter" :style="{ background: epcPotentialColor }">
+                {{ epcPotentialRating || '—' }}
+              </div>
+              <div class="epc-grade-sub">Potential · {{ epcPotentialScore ?? '—' }}</div>
+            </div>
+            <div class="epc-saving">
+              <div class="epc-saving-num">
+                £{{ formatNum(potentialSaving) }}/yr
+              </div>
+              <div class="epc-saving-sub">potential saving</div>
+            </div>
+          </div>
+
+          <!-- 12 EPC items, each clickable to expand -->
+          <template v-for="item in epcItems" :key="item.id">
+            <div class="epc-item" @click="toggleEpcItem(item.id)">
+              <div class="epc-item-icon">
+                <img
+                  v-if="item.icon && item.icon.startsWith('/')"
+                  :src="item.icon"
+                  alt=""
+                  loading="lazy"
+                />
+                <template v-else>{{ item.icon }}</template>
+              </div>
+              <div class="epc-item-body">
+                <div class="epc-item-title">{{ item.title }}</div>
+                <div class="epc-item-sub" v-html="item.sub" />
+              </div>
+              <span class="epc-item-rating" :class="item.ratingClass">{{
+                item.rating
+              }}</span>
+              <span
+                class="epc-item-chev"
+                :class="{ open: expandedEpcItem === item.id }"
+                >›</span
+              >
+            </div>
+            <div v-if="expandedEpcItem === item.id" class="epc-item-expand">
+              <div class="epc-flag" :class="{ ok: item.flagOk }">
+                <div class="epc-flag-label">
+                  {{ item.flagOk ? '✓ Already strong' : "⚠ What's flagged" }}
+                </div>
+                <div class="epc-flag-text" v-html="item.flagText" />
+              </div>
+              <div v-if="item.fix" class="epc-fix">
+                <div class="epc-fix-label">{{ item.fix.label }}</div>
+                <div class="epc-fix-text" v-html="item.fix.text" />
+                <a class="epc-fix-action" @click.stop="$emit('open-pathway')"
+                  >See suppliers →</a
+                >
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- ── FORK SECTION ───────────────────────────────────────────────
          Branching driven by ownership + passport state:
          • IS the owner (has a passport on this property)
              → Dashboard / Pathway / Boost / Get Real HomeScore
@@ -617,165 +1058,262 @@
              AND current user isn't the owner
              → only "I'm interested" — the auth state tells us they aren't
                the owner. -->
-    <div class="fork-section anim-3" data-tour="intent">
-      <!-- Owner of this property — four destinations -->
-      <template v-if="isPropertyOwner">
-        <div class="fork-eyebrow">Pick up where you left off</div>
-        <div class="fork-options">
-          <button class="fork-opt primary" type="button" @click="$emit('open-dashboard')">
-            <div class="fork-opt-icon">📊</div>
-            <div class="fork-opt-body">
-              <div class="fork-opt-title">Go to your dashboard</div>
-              <div class="fork-opt-sub">Your home base — Passport, docs &amp; everything in one place.</div>
-            </div>
-            <div class="fork-opt-chev">›</div>
-          </button>
-          <button class="fork-opt" type="button" @click="$emit('open-pathway')">
-            <div class="fork-opt-icon"><img src="/op-icons/investment/target.png" alt="" loading="lazy" /></div>
-            <div class="fork-opt-body">
-              <div class="fork-opt-title">Your pathway</div>
-              <div class="fork-opt-sub">Keep climbing your HomeScore.</div>
-            </div>
-            <div class="fork-opt-chev">›</div>
-          </button>
-          <button class="fork-opt" type="button" @click="$emit('open-boost')">
-            <div class="fork-opt-icon"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
-            <div class="fork-opt-body">
-              <div class="fork-opt-title">Boost your score</div>
-              <div class="fork-opt-sub">Add docs to grow your Move Ready &amp; Passport.</div>
-            </div>
-            <div class="fork-opt-chev">›</div>
-          </button>
-          <button class="fork-opt" type="button" @click="$emit('refine')">
-            <div class="fork-opt-body">
-              <div class="fork-opt-title">Get Real HomeScore</div>
-              <div class="fork-opt-sub">Answer the owner quiz to lock in your verified score.</div>
-            </div>
-            <div class="fork-opt-chev">›</div>
-          </button>
-        </div>
-      </template>
+      <div class="fork-section anim-3" data-tour="intent">
+        <!-- Owner of this property — four destinations -->
+        <template v-if="isPropertyOwner">
+          <div class="fork-eyebrow">Pick up where you left off</div>
+          <div class="fork-options">
+            <button
+              class="fork-opt primary"
+              type="button"
+              @click="$emit('open-dashboard')"
+            >
+              <div class="fork-opt-icon">📊</div>
+              <div class="fork-opt-body">
+                <div class="fork-opt-title">Go to your dashboard</div>
+                <div class="fork-opt-sub">
+                  Your home base — Passport, docs &amp; everything in one place.
+                </div>
+              </div>
+              <div class="fork-opt-chev">›</div>
+            </button>
+            <button
+              class="fork-opt"
+              type="button"
+              @click="$emit('open-pathway')"
+            >
+              <div class="fork-opt-icon">
+                <img
+                  src="/op-icons/investment/target.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
+              <div class="fork-opt-body">
+                <div class="fork-opt-title">Your pathway</div>
+                <div class="fork-opt-sub">Keep climbing your HomeScore.</div>
+              </div>
+              <div class="fork-opt-chev">›</div>
+            </button>
+            <button class="fork-opt" type="button" @click="$emit('open-boost')">
+              <div class="fork-opt-icon">
+                <img
+                  src="/op-icons/homescore/lightning.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
+              <div class="fork-opt-body">
+                <div class="fork-opt-title">Boost your score</div>
+                <div class="fork-opt-sub">
+                  Add docs to grow your Move Ready &amp; Passport.
+                </div>
+              </div>
+              <div class="fork-opt-chev">›</div>
+            </button>
+            <button class="fork-opt" type="button" @click="$emit('refine')">
+              <div class="fork-opt-body">
+                <div class="fork-opt-title">Get Real HomeScore</div>
+                <div class="fork-opt-sub">
+                  Answer the owner quiz to lock in your verified score.
+                </div>
+              </div>
+              <div class="fork-opt-chev">›</div>
+            </button>
+          </div>
+        </template>
 
-      <!-- Logged-in non-owner viewing a property that someone else has
+        <!-- Logged-in non-owner viewing a property that someone else has
            already claimed (in-progress / published). Only the buyer-side
            option here — the "I own this property" CTA is hidden because
            the property already has a verified owner. -->
-      <template v-else-if="isLoggedIn && passportState !== 'unclaimed'">
-        <div class="fork-eyebrow">What you can do here</div>
-        <div class="fork-options">
-          <button class="fork-opt primary" type="button" @click="$emit('interested')">
-            <div class="fork-opt-icon"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
-            <div class="fork-opt-body">
-              <div class="fork-opt-title">I'm interested in this property</div>
-              <div class="fork-opt-sub">Full running costs, risks and questions to ask before you offer.</div>
-            </div>
-            <div class="fork-opt-chev">›</div>
-          </button>
-        </div>
-      </template>
+        <template v-else-if="isLoggedIn && passportState !== 'unclaimed'">
+          <div class="fork-eyebrow">What you can do here</div>
+          <div class="fork-options">
+            <button
+              class="fork-opt primary"
+              type="button"
+              @click="$emit('interested')"
+            >
+              <div class="fork-opt-icon">
+                <img
+                  src="/op-icons/homescore/magnifier.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
+              <div class="fork-opt-body">
+                <div class="fork-opt-title">
+                  I'm interested in this property
+                </div>
+                <div class="fork-opt-sub">
+                  Full running costs, risks and questions to ask before you
+                  offer.
+                </div>
+              </div>
+              <div class="fork-opt-chev">›</div>
+            </button>
+          </div>
+        </template>
 
-      <!-- Unclaimed property OR guest visitor — keep both options. Even a
+        <!-- Unclaimed property OR guest visitor — keep both options. Even a
            signed-in user might be the owner of an unclaimed home that
            hasn't been claimed yet, so we still surface "I own this
            property". The claim CTA auth-gates on tap if needed. -->
-      <template v-else>
-        <div class="fork-eyebrow">What's your connection to this property?</div>
-        <div class="fork-grid">
-          <button class="fork-tile fork-tile--owner" type="button" @click="$emit('claim')">
-            <img src="/op-icons/landing/homeScoreCard.png" alt="" class="fork-tile-icon-top" loading="lazy" />
-            <div class="fork-tile-title">I own this property</div>
-            <div class="fork-tile-sub">
-              Take the HomeScore quiz to tell us what's changed, unlock a
-              more accurate score and start building your Property
-              Passport.
-            </div>
-            <div class="fork-tile-bottom-row">
-              <span class="fork-tile-lock">🔒 Secure &amp; private</span>
-              <span class="fork-tile-arrow fork-tile-arrow--owner">→</span>
-            </div>
-          </button>
-          <button class="fork-tile fork-tile--buyer" type="button" @click="$emit('interested')">
-            <div class="fork-tile-buyer-body">
-              <div class="fork-tile-title">I'm interested in this property</div>
+        <template v-else>
+          <div class="fork-eyebrow">
+            What's your connection to this property?
+          </div>
+          <div class="fork-grid">
+            <button
+              class="fork-tile fork-tile--owner"
+              type="button"
+              @click="$emit('claim')"
+            >
+              <img
+                src="/op-icons/landing/homeScoreCard.png"
+                alt=""
+                class="fork-tile-icon-top"
+                loading="lazy"
+              />
+              <div class="fork-tile-title">I own this property</div>
               <div class="fork-tile-sub">
-                Explore its running costs, risks and the questions worth
-                asking before you buy.
+                Take the HomeScore quiz to tell us what's changed, unlock a more
+                accurate score and start building your Property Passport.
               </div>
-            </div>
-            <img src="/op-icons/homescore/houseSearch.png" alt="" class="fork-tile-icon--buyer" loading="lazy" />
-            <span class="fork-tile-arrow fork-tile-arrow--buyer">→</span>
-          </button>
-        </div>
-      </template>
-    </div>
+              <div class="fork-tile-bottom-row">
+                <span class="fork-tile-lock">🔒 Secure &amp; private</span>
+                <span class="fork-tile-arrow fork-tile-arrow--owner">→</span>
+              </div>
+            </button>
+            <button
+              class="fork-tile fork-tile--buyer"
+              type="button"
+              @click="$emit('interested')"
+            >
+              <img
+                src="/op-icons/homescore/houseSearch.png"
+                alt=""
+                class="fork-tile-icon--buyer"
+                loading="lazy"
+              />
+              <div class="fork-tile-buyer-body">
+                <div class="fork-tile-title">
+                  I'm interested in this property
+                </div>
+                <div class="fork-tile-sub">
+                  Explore its running costs, risks and the questions worth
+                  asking before you buy.
+                </div>
+              </div>
 
-    <div class="hs-trust-note">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
-        <rect x="3" y="11" width="18" height="11" rx="2" />
-        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </svg>
-      Your data is private and secure. We'll never share your information
-      without your permission.
-    </div>
-    </template><!-- /hasEpcData -->
+              <span class="fork-tile-arrow fork-tile-arrow--buyer">→</span>
+            </button>
+          </div>
+        </template>
+      </div>
+
+      <div class="hs-trust-note">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="13"
+          height="13"
+        >
+          <rect x="3" y="11" width="18" height="11" rx="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        Your data is private and secure. We'll never share your information
+        without your permission.
+      </div> </template
+    ><!-- /hasEpcData -->
 
     <div style="height: 32px" />
 
     <!-- ── Claim-it-free explainer modal (teleported to body so it
          escapes any parent overflow/transform stacking context) ─── -->
     <Teleport to="body">
-    <Transition name="claim-modal">
-      <div v-if="claimModalOpen" class="claim-overlay" @click.self="claimModalOpen = false">
-        <div class="claim-sheet" @click.stop>
-          <div class="claim-grip" />
-          <div class="claim-icon"><img src="/op-icons/buyer-profile-build/idCard.png" alt="" loading="lazy" /></div>
-          <div class="claim-title">Claim this property</div>
-          <div class="claim-sub">
-            You'll verify you own <b>{{ addrLineFull }}</b> and unlock your
-            HomeScore, Move Ready % and Property Passport.
-          </div>
-          <div class="claim-steps">
-            <div class="claim-step">
-              <div class="claim-step-num">1</div>
-              <div class="claim-step-body">
-                <div class="claim-step-title">Verify your ID</div>
-                <div class="claim-step-sub">Onfido · photo + selfie · ~60 seconds</div>
+      <Transition name="claim-modal">
+        <div
+          v-if="claimModalOpen"
+          class="claim-overlay"
+          @click.self="claimModalOpen = false"
+        >
+          <div class="claim-sheet" @click.stop>
+            <div class="claim-grip" />
+            <div class="claim-icon">
+              <img
+                src="/op-icons/buyer-profile-build/idCard.png"
+                alt=""
+                loading="lazy"
+              />
+            </div>
+            <div class="claim-title">Claim this property</div>
+            <div class="claim-sub">
+              You'll verify you own <b>{{ addrLineFull }}</b> and unlock your
+              HomeScore, Move Ready % and Property Passport.
+            </div>
+            <div class="claim-steps">
+              <div class="claim-step">
+                <div class="claim-step-num">1</div>
+                <div class="claim-step-body">
+                  <div class="claim-step-title">Verify your ID</div>
+                  <div class="claim-step-sub">
+                    Onfido · photo + selfie · ~60 seconds
+                  </div>
+                </div>
+              </div>
+              <div class="claim-step">
+                <div class="claim-step-num">2</div>
+                <div class="claim-step-body">
+                  <div class="claim-step-title">Confirm ownership</div>
+                  <div class="claim-step-sub">
+                    HM Land Registry cross-check · automatic
+                  </div>
+                </div>
+              </div>
+              <div class="claim-step">
+                <div class="claim-step-num">3</div>
+                <div class="claim-step-body">
+                  <div class="claim-step-title">Take the owner quiz</div>
+                  <div class="claim-step-sub">
+                    6–8 EPC questions · earns your real HomeScore
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="claim-step">
-              <div class="claim-step-num">2</div>
-              <div class="claim-step-body">
-                <div class="claim-step-title">Confirm ownership</div>
-                <div class="claim-step-sub">HM Land Registry cross-check · automatic</div>
-              </div>
+            <div class="claim-cta-row">
+              <button
+                type="button"
+                class="claim-btn ghost"
+                @click="claimModalOpen = false"
+              >
+                Not now
+              </button>
+              <button
+                type="button"
+                class="claim-btn primary"
+                @click="claimModalOpen = false; $emit('claim')"
+              >
+                Start verification →
+              </button>
             </div>
-            <div class="claim-step">
-              <div class="claim-step-num">3</div>
-              <div class="claim-step-body">
-                <div class="claim-step-title">Take the owner quiz</div>
-                <div class="claim-step-sub">6–8 EPC questions · earns your real HomeScore</div>
-              </div>
+            <div class="claim-privacy">
+              <span class="claim-privacy-ic"
+                ><img
+                  src="/op-icons/investment/padlock.png"
+                  alt=""
+                  loading="lazy"
+              /></span>
+              <span>Free · no card needed · we'll never sell your data.</span>
             </div>
-          </div>
-          <div class="claim-cta-row">
-            <button type="button" class="claim-btn ghost" @click="claimModalOpen = false">
-              Not now
-            </button>
-            <button
-              type="button"
-              class="claim-btn primary"
-              @click="claimModalOpen = false; $emit('claim')"
-            >
-              Start verification →
-            </button>
-          </div>
-          <div class="claim-privacy">
-            <span class="claim-privacy-ic"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
-            <span>Free · no card needed · we'll never sell your data.</span>
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -884,7 +1422,15 @@ const co2NowDisplay = computed(() => {
   const v = props.co2Now
   if (v != null && Number.isFinite(v)) return v
   // Estimate from EPC rating when no real value is present.
-  const map: Record<string, number> = { A: 1.8, B: 2.6, C: 3.8, D: 5.2, E: 6.4, F: 8.1, G: 9.6 }
+  const map: Record<string, number> = {
+    A: 1.8,
+    B: 2.6,
+    C: 3.8,
+    D: 5.2,
+    E: 6.4,
+    F: 8.1,
+    G: 9.6,
+  }
   const r = (props.epcRating || '').toUpperCase()
   return map[r] ?? 6.4
 })
@@ -922,7 +1468,9 @@ const gradientId = `hs-v6-grad-${Math.random().toString(36).slice(2, 8)}`
 // The meta sub-line (postcode · type · bedrooms) reveals instantly,
 // the headline address types out one character at a time for a "this
 // is YOUR home" beat. Mirrors the prototype's #addrLine / #addrLineCaret.
-const addrLineFull = computed(() => props.property?.addressLine1 || 'Your property')
+const addrLineFull = computed(
+  () => props.property?.addressLine1 || 'Your property',
+)
 const addrMetaFull = computed(() => {
   const p = props.property
   if (!p) return ''
@@ -1002,7 +1550,9 @@ const displayScore = computed(() => Math.round(animatedScore.value))
 
 // Gauge stroke-dashoffset: full circle is 2π·50 = 314.16. We start at
 // 314.16 (empty), tick down to 314.16 · (1 - score/100).
-const gaugeOffset = computed(() => 314.16 - (animatedScore.value / 100) * 314.16)
+const gaugeOffset = computed(
+  () => 314.16 - (animatedScore.value / 100) * 314.16,
+)
 
 // ── Score band copy (drives the big headline next to the gauge) ──
 const scoreBandTitle = computed(() => {
@@ -1069,8 +1619,12 @@ const co2Potential = computed(() => {
   return Math.max(1.4, co2NowDisplay.value * 0.53)
 })
 // Bars are sized relative to a 10t maximum so they're comparable.
-const co2NowPct = computed(() => Math.min(100, (co2NowDisplay.value / 10) * 125))
-const co2PotentialPct = computed(() => Math.min(100, (co2Potential.value / 10) * 125))
+const co2NowPct = computed(() =>
+  Math.min(100, (co2NowDisplay.value / 10) * 125),
+)
+const co2PotentialPct = computed(() =>
+  Math.min(100, (co2Potential.value / 10) * 125),
+)
 
 // ── Street panel ────────────────────────────────────────────────
 // House data lifted from the prototype's hand-drawn 18-house SVG. Each
@@ -1112,7 +1666,7 @@ function buildStreetHouses(): { top: StreetHouse[]; bottom: StreetHouse[] } {
   // Mock palette for the 17 neighbours — until backend exposes per-house
   // EPC data, we cycle through a plausible spread of grades/costs.
   const palette: Array<[string, number, string, 'good' | 'warn' | 'high']> = [
-    ['A', 92, '£945',   'good'],
+    ['A', 92, '£945', 'good'],
     ['B', 84, '£1,108', 'good'],
     ['C', 76, '£1,193', 'good'],
     ['C', 72, '£1,265', 'warn'],
@@ -1172,7 +1726,9 @@ function buildStreetHouses(): { top: StreetHouse[]; bottom: StreetHouse[] } {
 }
 
 const topRowHouses = computed<StreetHouse[]>(() => buildStreetHouses().top)
-const bottomRowHouses = computed<StreetHouse[]>(() => buildStreetHouses().bottom)
+const bottomRowHouses = computed<StreetHouse[]>(
+  () => buildStreetHouses().bottom,
+)
 
 function mkHouse(
   num: string,
@@ -1190,13 +1746,55 @@ function mkHouse(
     string,
     { color: string; roof: string; door: string; window: string; dot: string }
   > = {
-    A: { color: '#00A19A', roof: '#2EAB55', door: '#2EAB55', window: '#A8E6C4', dot: '#2EAB55' },
-    B: { color: '#2EAB55', roof: '#2EAB55', door: '#2EAB55', window: '#A8E6C4', dot: '#2EAB55' },
-    C: { color: '#7AB040', roof: '#7AB040', door: '#2EAB55', window: '#C7E8E4', dot: '#2EAB55' },
-    D: { color: '#E6A23C', roof: '#E6A23C', door: '#A0683E', window: '#C7E8E4', dot: '#E6A23C' },
-    E: { color: '#D86F4A', roof: '#D86F4A', door: '#7C8B9C', window: '#A4B4C2', dot: '#E6A23C' },
-    F: { color: '#C73E36', roof: '#C73E36', door: '#7C8B9C', window: '#A4B4C2', dot: '#E74C5E' },
-    G: { color: '#C73E36', roof: '#C73E36', door: '#7C8B9C', window: '#A4B4C2', dot: '#E74C5E' },
+    A: {
+      color: '#00A19A',
+      roof: '#2EAB55',
+      door: '#2EAB55',
+      window: '#A8E6C4',
+      dot: '#2EAB55',
+    },
+    B: {
+      color: '#2EAB55',
+      roof: '#2EAB55',
+      door: '#2EAB55',
+      window: '#A8E6C4',
+      dot: '#2EAB55',
+    },
+    C: {
+      color: '#7AB040',
+      roof: '#7AB040',
+      door: '#2EAB55',
+      window: '#C7E8E4',
+      dot: '#2EAB55',
+    },
+    D: {
+      color: '#E6A23C',
+      roof: '#E6A23C',
+      door: '#A0683E',
+      window: '#C7E8E4',
+      dot: '#E6A23C',
+    },
+    E: {
+      color: '#D86F4A',
+      roof: '#D86F4A',
+      door: '#7C8B9C',
+      window: '#A4B4C2',
+      dot: '#E6A23C',
+    },
+    F: {
+      color: '#C73E36',
+      roof: '#C73E36',
+      door: '#7C8B9C',
+      window: '#A4B4C2',
+      dot: '#E74C5E',
+    },
+    G: {
+      color: '#C73E36',
+      roof: '#C73E36',
+      door: '#7C8B9C',
+      window: '#A4B4C2',
+      dot: '#E74C5E',
+    },
   }
   const p = palette[grade] ?? palette.E
   return {
@@ -1249,19 +1847,17 @@ const streetName = computed(() => {
 // Title-cased version used in the eyebrow of the street hero card
 // (the prototype shows "Woodfield Road", not all-caps).
 const streetNameTitle = computed(() =>
-  streetName.value
-    .toLowerCase()
-    .replace(/\b\w/g, (c) => c.toUpperCase()),
+  streetName.value.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()),
 )
 
 // Static pin layout that mirrors the prototype's `.preview` mini-strip —
 // 7 houses spread across the road, with the "you" pin highlighted with
 // a teal halo. Colours mirror the band legend.
 const streetHeroPins = [
-  { left: 0,  isYou: false, dot: '#37B27A' },
+  { left: 0, isYou: false, dot: '#37B27A' },
   { left: 14, isYou: false, dot: '#E0584F' },
   { left: 28, isYou: false, dot: '#E8A33A' },
-  { left: 43, isYou: true,  dot: '#E8A33A' },
+  { left: 43, isYou: true, dot: '#E8A33A' },
   { left: 60, isYou: false, dot: '#37B27A' },
   { left: 74, isYou: false, dot: '#E0584F' },
   { left: 88, isYou: false, dot: '#E8A33A' },
@@ -1279,10 +1875,14 @@ const streetRankOrdinal = computed(() => {
   const v = r % 100
   if (v >= 11 && v <= 13) return `${r}th`
   switch (r % 10) {
-    case 1: return `${r}st`
-    case 2: return `${r}nd`
-    case 3: return `${r}rd`
-    default: return `${r}th`
+    case 1:
+      return `${r}st`
+    case 2:
+      return `${r}nd`
+    case 3:
+      return `${r}rd`
+    default:
+      return `${r}th`
   }
 })
 
@@ -1328,7 +1928,9 @@ function effToScore(eff: string | null | undefined): number {
   if (e === 'very poor') return 0.2
   return 0.5
 }
-function effRating(eff: string | null | undefined): 'Good' | 'Average' | 'Poor' | 'N/A' {
+function effRating(
+  eff: string | null | undefined,
+): 'Good' | 'Average' | 'Poor' | 'N/A' {
   const e = (eff || '').toLowerCase().trim()
   if (!e || e === 'n/a' || e === 'na') return 'N/A'
   if (e.includes('very good') || e === 'good') return 'Good'
@@ -1352,13 +1954,16 @@ function effTone(eff: string | null | undefined): 'high' | 'mid' | 'low' {
 const epc = computed<any>(() => {
   const p = (props.property as any) || {}
   const cert = p.epcCert || {}
-  return new Proxy({}, {
-    get(_t, key: string) {
-      const top = p[key]
-      if (top != null && top !== '') return top
-      return cert[key]
+  return new Proxy(
+    {},
+    {
+      get(_t, key: string) {
+        const top = p[key]
+        if (top != null && top !== '') return top
+        return cert[key]
+      },
     },
-  })
+  )
 })
 
 function fmtSaving(rec: any | null): string {
@@ -1410,17 +2015,27 @@ const stats = computed<StatRow[]>(() => {
   // Blend the % into the lighting eff rating so a 100% LED home beats a 15%.
   const effScore = effLightScore * 0.6 + (ledPct / 100) * 0.4
   const effVal = Math.round(effScore * 15)
-  const effRecs = recs.filter((r) => /(led|lighting|light)/i.test(`${r?.title ?? ''}`))
-  const effSaving = effRecs.reduce((s, r) => s + (Number(r?.typicalSaving) || 0), 0)
+  const effRecs = recs.filter((r) =>
+    /(led|lighting|light)/i.test(`${r?.title ?? ''}`),
+  )
+  const effSaving = effRecs.reduce(
+    (s, r) => s + (Number(r?.typicalSaving) || 0),
+    0,
+  )
 
   // ── Electrics: solar PV present? ──
   const elecRecs = recs.filter((r) =>
-    /(solar pv|photovoltaic|electric)/i.test(`${r?.title ?? ''} ${r?.improvementType ?? ''}`),
+    /(solar pv|photovoltaic|electric)/i.test(
+      `${r?.title ?? ''} ${r?.improvementType ?? ''}`,
+    ),
   )
   // If solar PV is recommended, the property doesn't have it. Score 50%.
   const elecScore = elecRecs.length > 0 ? 0.5 : 0.8
   const elecVal = Math.round(elecScore * 20)
-  const elecSaving = elecRecs.reduce((s, r) => s + (Number(r?.typicalSaving) || 0), 0)
+  const elecSaving = elecRecs.reduce(
+    (s, r) => s + (Number(r?.typicalSaving) || 0),
+    0,
+  )
 
   // ── Plumbing: hot water + ventilation ──
   const plumbScore = effToScore(e.hotWaterEnergyEff)
@@ -1428,7 +2043,10 @@ const stats = computed<StatRow[]>(() => {
   const plumbRecs = recs.filter((r) =>
     /(solar (?:water|thermal)|hot water|cylinder)/i.test(`${r?.title ?? ''}`),
   )
-  const plumbSaving = plumbRecs.reduce((s, r) => s + (Number(r?.typicalSaving) || 0), 0)
+  const plumbSaving = plumbRecs.reduce(
+    (s, r) => s + (Number(r?.typicalSaving) || 0),
+    0,
+  )
 
   const heatRating = effRating(heatEff)
   const wallsRating = effRating(e.wallsEnergyEff)
@@ -1446,7 +2064,9 @@ const stats = computed<StatRow[]>(() => {
       tone: effTone(heatEff),
       steps: heatRecs.length,
       saving: Math.round(heatSaving),
-      savingSub: heatRecs.length ? `${heatRecs.length} step${heatRecs.length > 1 ? 's' : ''}` : 'nothing to fix',
+      savingSub: heatRecs.length
+        ? `${heatRecs.length} step${heatRecs.length > 1 ? 's' : ''}`
+        : 'nothing to fix',
       thirdTileLabel: 'EPC rating',
       thirdTileNum: heatRating,
       thirdTileSub: `mainheat ${effRating(heatEff)}`,
@@ -1467,7 +2087,9 @@ const stats = computed<StatRow[]>(() => {
         },
       ],
       footText: heatRecs.length
-        ? `<b>${heatRecs.length} EPC step${heatRecs.length > 1 ? 's' : ''}</b> can lift heating →`
+        ? `<b>${heatRecs.length} EPC step${
+            heatRecs.length > 1 ? 's' : ''
+          }</b> can lift heating →`
         : '<b>Your strongest stat.</b> No EPC recommendations live here — heating is sorted.',
     },
     {
@@ -1477,11 +2099,12 @@ const stats = computed<StatRow[]>(() => {
       value: structVal,
       max: 25,
       pct: Math.round(structScore * 100),
-      tone:
-        structScore >= 0.7 ? 'high' : structScore >= 0.5 ? 'mid' : 'low',
+      tone: structScore >= 0.7 ? 'high' : structScore >= 0.5 ? 'mid' : 'low',
       steps: structRecs.length,
       saving: Math.round(structSaving),
-      savingSub: structRecs.length ? `${structRecs.length} step${structRecs.length > 1 ? 's' : ''}` : 'all good',
+      savingSub: structRecs.length
+        ? `${structRecs.length} step${structRecs.length > 1 ? 's' : ''}`
+        : 'all good',
       thirdTileLabel: 'Walls EPC',
       thirdTileNum: wallsRating,
       thirdTileSub: e.builtForm || '',
@@ -1490,24 +2113,38 @@ const stats = computed<StatRow[]>(() => {
           icon: '/op-icons/homescore/walls.png',
           title: e.wallsDescription || 'Walls',
           sub: `Walls rated <b>${effRating(e.wallsEnergyEff)}</b> on the EPC.`,
-          amt: fmtSaving(structRecs.find((r) => /wall|cavity/i.test(r?.title ?? ''))) || effRating(e.wallsEnergyEff),
-          amtSub: structRecs.find((r) => /wall|cavity/i.test(r?.title ?? ''))?.costRange || '',
+          amt:
+            fmtSaving(
+              structRecs.find((r) => /wall|cavity/i.test(r?.title ?? '')),
+            ) || effRating(e.wallsEnergyEff),
+          amtSub:
+            structRecs.find((r) => /wall|cavity/i.test(r?.title ?? ''))
+              ?.costRange || '',
           amtGood: !structRecs.find((r) => /wall|cavity/i.test(r?.title ?? '')),
         },
         {
           icon: '/op-icons/homescore/roof.png',
           title: e.roofDescription || 'Roof',
           sub: `Roof rated <b>${effRating(e.roofEnergyEff)}</b> on the EPC.`,
-          amt: fmtSaving(structRecs.find((r) => /loft|roof/i.test(r?.title ?? ''))) || effRating(e.roofEnergyEff),
-          amtSub: structRecs.find((r) => /loft|roof/i.test(r?.title ?? ''))?.costRange || '',
+          amt:
+            fmtSaving(
+              structRecs.find((r) => /loft|roof/i.test(r?.title ?? '')),
+            ) || effRating(e.roofEnergyEff),
+          amtSub:
+            structRecs.find((r) => /loft|roof/i.test(r?.title ?? ''))
+              ?.costRange || '',
           amtGood: !structRecs.find((r) => /loft|roof/i.test(r?.title ?? '')),
         },
         {
           icon: '/op-icons/homescore/floor.png',
           title: e.floorDescription || 'Floor',
           sub: `Floor rated <b>${effRating(e.floorEnergyEff)}</b> on the EPC.`,
-          amt: fmtSaving(structRecs.find((r) => /floor/i.test(r?.title ?? ''))) || effRating(e.floorEnergyEff),
-          amtSub: structRecs.find((r) => /floor/i.test(r?.title ?? ''))?.costRange || '',
+          amt:
+            fmtSaving(structRecs.find((r) => /floor/i.test(r?.title ?? ''))) ||
+            effRating(e.floorEnergyEff),
+          amtSub:
+            structRecs.find((r) => /floor/i.test(r?.title ?? ''))?.costRange ||
+            '',
           amtGood: !structRecs.find((r) => /floor/i.test(r?.title ?? '')),
         },
       ],
@@ -1533,7 +2170,11 @@ const stats = computed<StatRow[]>(() => {
         {
           icon: '/op-icons/homescore/bulb.png',
           title: 'Low energy lighting',
-          sub: `<b>${Math.round(ledPct)}%</b> of fixed outlets · rated <b>${effRating(e.lightingEnergyEff)}</b>.`,
+          sub: `<b>${Math.round(
+            ledPct,
+          )}%</b> of fixed outlets · rated <b>${effRating(
+            e.lightingEnergyEff,
+          )}</b>.`,
           amt: fmtSaving(effRecs[0]) || effRating(e.lightingEnergyEff),
           amtSub: effRecs[0]?.costRange || '',
           amtGood: !effRecs[0],
@@ -1569,7 +2210,9 @@ const stats = computed<StatRow[]>(() => {
             {
               icon: '/op-icons/misc/sun.png',
               title: elecRecs[0]?.title || 'Solar PV panels',
-              sub: elecRecs[0]?.description || "EPC's final step. Crosses you into Band C.",
+              sub:
+                elecRecs[0]?.description ||
+                "EPC's final step. Crosses you into Band C.",
               amt: fmtSaving(elecRecs[0]) || '—',
               amtSub: elecRecs[0]?.costRange || '',
             },
@@ -1605,7 +2248,9 @@ const stats = computed<StatRow[]>(() => {
         {
           icon: '/op-icons/misc/waterDroplet.png',
           title: e.hotwaterDescription || 'Hot water',
-          sub: `Hot water rated <b>${effRating(e.hotWaterEnergyEff)}</b> on the EPC.`,
+          sub: `Hot water rated <b>${effRating(
+            e.hotWaterEnergyEff,
+          )}</b> on the EPC.`,
           amt: effRating(e.hotWaterEnergyEff),
           amtGood: effToScore(e.hotWaterEnergyEff) >= 0.7,
         },
@@ -1614,7 +2259,9 @@ const stats = computed<StatRow[]>(() => {
               {
                 icon: '/op-icons/misc/sun.png',
                 title: plumbRecs[0]?.title || 'Solar water heating',
-                sub: plumbRecs[0]?.description || 'Roof collector pre-heats water from the sun.',
+                sub:
+                  plumbRecs[0]?.description ||
+                  'Roof collector pre-heats water from the sun.',
                 amt: fmtSaving(plumbRecs[0]) || '—',
                 amtSub: plumbRecs[0]?.costRange || '',
               },
@@ -1667,7 +2314,9 @@ interface EpcItem {
   flagText: string
   fix?: { label: string; text: string }
 }
-function ratingClassFor(eff: string | null | undefined): 'good' | 'poor' | 'average' | 'nodata' {
+function ratingClassFor(
+  eff: string | null | undefined,
+): 'good' | 'poor' | 'average' | 'nodata' {
   const e = (eff || '').toLowerCase().trim()
   if (!e || e === 'n/a' || e === 'na') return 'nodata'
   if (e.includes('very good') || e === 'good') return 'good'
@@ -1678,7 +2327,11 @@ function ratingClassFor(eff: string | null | undefined): 'good' | 'poor' | 'aver
 function findRec(pattern: RegExp): any | null {
   const recs: any[] = (props.property as any)?.epcRecommendations
   if (!Array.isArray(recs)) return null
-  return recs.find((r) => pattern.test(`${r?.title ?? ''} ${r?.improvementType ?? ''}`)) ?? null
+  return (
+    recs.find((r) =>
+      pattern.test(`${r?.title ?? ''} ${r?.improvementType ?? ''}`),
+    ) ?? null
+  )
 }
 
 const epcItems = computed<EpcItem[]>(() => {
@@ -1697,11 +2350,19 @@ const epcItems = computed<EpcItem[]>(() => {
     flagOk: !mainHeatRec,
     flagText: mainHeatRec
       ? `EPC flags: <b>${mainHeatRec.title}</b>`
-      : `Heating rated <b>${effRating(e.mainheatEnergyEff)}</b>. No upgrade on this EPC.`,
+      : `Heating rated <b>${effRating(
+          e.mainheatEnergyEff,
+        )}</b>. No upgrade on this EPC.`,
     fix: mainHeatRec
       ? {
           label: '✨ EPC recommendation',
-          text: `${mainHeatRec.description || mainHeatRec.title}. ${mainHeatRec.typicalSaving ? `Saves <b>£${mainHeatRec.typicalSaving}/yr</b>.` : ''} ${mainHeatRec.costRange ? `Cost <b>${mainHeatRec.costRange}</b>.` : ''}`,
+          text: `${mainHeatRec.description || mainHeatRec.title}. ${
+            mainHeatRec.typicalSaving
+              ? `Saves <b>£${mainHeatRec.typicalSaving}/yr</b>.`
+              : ''
+          } ${
+            mainHeatRec.costRange ? `Cost <b>${mainHeatRec.costRange}</b>.` : ''
+          }`,
         }
       : undefined,
   })
@@ -1722,7 +2383,13 @@ const epcItems = computed<EpcItem[]>(() => {
     fix: controlsRec
       ? {
           label: '✨ EPC recommendation',
-          text: `${controlsRec.title}. ${controlsRec.typicalSaving ? `Saves <b>£${controlsRec.typicalSaving}/yr</b>.` : ''} ${controlsRec.costRange ? `Cost <b>${controlsRec.costRange}</b>.` : ''}`,
+          text: `${controlsRec.title}. ${
+            controlsRec.typicalSaving
+              ? `Saves <b>£${controlsRec.typicalSaving}/yr</b>.`
+              : ''
+          } ${
+            controlsRec.costRange ? `Cost <b>${controlsRec.costRange}</b>.` : ''
+          }`,
         }
       : undefined,
   })
@@ -1743,7 +2410,11 @@ const epcItems = computed<EpcItem[]>(() => {
     fix: hwRec
       ? {
           label: '✨ EPC recommendation',
-          text: `${hwRec.description || hwRec.title}. ${hwRec.typicalSaving ? `Saves <b>£${hwRec.typicalSaving}/yr</b>.` : ''} ${hwRec.costRange ? `Cost <b>${hwRec.costRange}</b>.` : ''}`,
+          text: `${hwRec.description || hwRec.title}. ${
+            hwRec.typicalSaving
+              ? `Saves <b>£${hwRec.typicalSaving}/yr</b>.`
+              : ''
+          } ${hwRec.costRange ? `Cost <b>${hwRec.costRange}</b>.` : ''}`,
         }
       : undefined,
   })
@@ -1764,7 +2435,11 @@ const epcItems = computed<EpcItem[]>(() => {
     fix: wallsRec
       ? {
           label: '✨ EPC recommendation',
-          text: `${wallsRec.description || wallsRec.title}. ${wallsRec.typicalSaving ? `Saves <b>£${wallsRec.typicalSaving}/yr</b>.` : ''} ${wallsRec.costRange ? `Cost <b>${wallsRec.costRange}</b>.` : ''}`,
+          text: `${wallsRec.description || wallsRec.title}. ${
+            wallsRec.typicalSaving
+              ? `Saves <b>£${wallsRec.typicalSaving}/yr</b>.`
+              : ''
+          } ${wallsRec.costRange ? `Cost <b>${wallsRec.costRange}</b>.` : ''}`,
         }
       : undefined,
   })
@@ -1785,7 +2460,11 @@ const epcItems = computed<EpcItem[]>(() => {
     fix: roofRec
       ? {
           label: '✨ EPC recommendation',
-          text: `${roofRec.description || roofRec.title}. ${roofRec.typicalSaving ? `Saves <b>£${roofRec.typicalSaving}/yr</b>.` : ''} ${roofRec.costRange ? `Cost <b>${roofRec.costRange}</b>.` : ''}`,
+          text: `${roofRec.description || roofRec.title}. ${
+            roofRec.typicalSaving
+              ? `Saves <b>£${roofRec.typicalSaving}/yr</b>.`
+              : ''
+          } ${roofRec.costRange ? `Cost <b>${roofRec.costRange}</b>.` : ''}`,
         }
       : undefined,
   })
@@ -1806,7 +2485,11 @@ const epcItems = computed<EpcItem[]>(() => {
     fix: floorRec
       ? {
           label: '✨ EPC recommendation',
-          text: `${floorRec.description || floorRec.title}. ${floorRec.typicalSaving ? `Saves <b>£${floorRec.typicalSaving}/yr</b>.` : ''} ${floorRec.costRange ? `Cost <b>${floorRec.costRange}</b>.` : ''}`,
+          text: `${floorRec.description || floorRec.title}. ${
+            floorRec.typicalSaving
+              ? `Saves <b>£${floorRec.typicalSaving}/yr</b>.`
+              : ''
+          } ${floorRec.costRange ? `Cost <b>${floorRec.costRange}</b>.` : ''}`,
         }
       : undefined,
   })
@@ -1827,7 +2510,13 @@ const epcItems = computed<EpcItem[]>(() => {
     fix: windowsRec
       ? {
           label: '✨ EPC recommendation',
-          text: `${windowsRec.description || windowsRec.title}. ${windowsRec.typicalSaving ? `Saves <b>£${windowsRec.typicalSaving}/yr</b>.` : ''} ${windowsRec.costRange ? `Cost <b>${windowsRec.costRange}</b>.` : ''}`,
+          text: `${windowsRec.description || windowsRec.title}. ${
+            windowsRec.typicalSaving
+              ? `Saves <b>£${windowsRec.typicalSaving}/yr</b>.`
+              : ''
+          } ${
+            windowsRec.costRange ? `Cost <b>${windowsRec.costRange}</b>.` : ''
+          }`,
         }
       : undefined,
   })
@@ -1844,12 +2533,22 @@ const epcItems = computed<EpcItem[]>(() => {
     ratingClass: ratingClassFor(e.lightingEnergyEff),
     flagOk: !lightingRec,
     flagText: lightingRec
-      ? `Only ${Math.round(ledPct)}% of outlets are low-energy. Rated <b>${effRating(e.lightingEnergyEff)}</b>.`
+      ? `Only ${Math.round(
+          ledPct,
+        )}% of outlets are low-energy. Rated <b>${effRating(
+          e.lightingEnergyEff,
+        )}</b>.`
       : `Lighting rated <b>${effRating(e.lightingEnergyEff)}</b>.`,
     fix: lightingRec
       ? {
           label: '✨ EPC recommendation',
-          text: `${lightingRec.title}. ${lightingRec.typicalSaving ? `Saves <b>£${lightingRec.typicalSaving}/yr</b>.` : ''} ${lightingRec.costRange ? `Cost <b>${lightingRec.costRange}</b>.` : ''}`,
+          text: `${lightingRec.title}. ${
+            lightingRec.typicalSaving
+              ? `Saves <b>£${lightingRec.typicalSaving}/yr</b>.`
+              : ''
+          } ${
+            lightingRec.costRange ? `Cost <b>${lightingRec.costRange}</b>.` : ''
+          }`,
         }
       : undefined,
   })
@@ -1868,7 +2567,11 @@ const epcItems = computed<EpcItem[]>(() => {
       flagText: 'Listed as a recommended improvement on the EPC.',
       fix: {
         label: '✨ EPC recommendation',
-        text: `${swhRec.description || swhRec.title}. ${swhRec.typicalSaving ? `Saves <b>£${swhRec.typicalSaving}/yr</b>.` : ''} ${swhRec.costRange ? `Cost <b>${swhRec.costRange}</b>.` : ''}`,
+        text: `${swhRec.description || swhRec.title}. ${
+          swhRec.typicalSaving
+            ? `Saves <b>£${swhRec.typicalSaving}/yr</b>.`
+            : ''
+        } ${swhRec.costRange ? `Cost <b>${swhRec.costRange}</b>.` : ''}`,
       },
     })
   }
@@ -1884,10 +2587,13 @@ const epcItems = computed<EpcItem[]>(() => {
       rating: 'Not installed',
       ratingClass: 'nodata',
       flagOk: false,
-      flagText: 'Listed as a recommended improvement — generates electricity from sunlight.',
+      flagText:
+        'Listed as a recommended improvement — generates electricity from sunlight.',
       fix: {
         label: '✨ EPC recommendation',
-        text: `${pvRec.description || pvRec.title}. ${pvRec.typicalSaving ? `Saves <b>£${pvRec.typicalSaving}/yr</b>.` : ''} ${pvRec.costRange ? `Cost <b>${pvRec.costRange}</b>.` : ''}`,
+        text: `${pvRec.description || pvRec.title}. ${
+          pvRec.typicalSaving ? `Saves <b>£${pvRec.typicalSaving}/yr</b>.` : ''
+        } ${pvRec.costRange ? `Cost <b>${pvRec.costRange}</b>.` : ''}`,
       },
     })
   }
@@ -1997,16 +2703,38 @@ const watchersDisplay = computed(() => {
    Soften the prototype's heavy 800-weights to match the rest of the
    app (max weight ~700 to match the SF Pro 600/700 scale used in the
    global header and other pages). */
-.hs-v6-score :is(.app-header-title, .hs-addr-line, .score-band, .gn-big,
-  .ssp-head-title, .ssp-bar-amt, .ssp-total-num, .ssp-cell-num,
-  .stat-cost-title, .epc-grade-letter, .epc-saving-num,
-  .fork-opt-title) {
+.hs-v6-score
+  :is(
+    .app-header-title,
+    .hs-addr-line,
+    .score-band,
+    .gn-big,
+    .ssp-head-title,
+    .ssp-bar-amt,
+    .ssp-total-num,
+    .ssp-cell-num,
+    .stat-cost-title,
+    .epc-grade-letter,
+    .epc-saving-num,
+    .fork-opt-title
+  ) {
   font-weight: 700;
 }
-.hs-v6-score :is(.app-header-sub, .hs-addr-meta, .score-explainer,
-  .score-footer, .ssp-bar-label, .ssp-bar-amt-pct, .ssp-total-label,
-  .stat-cost-sub, .epc-grade-sub, .epc-saving-sub, .epc-item-sub,
-  .fork-opt-sub) {
+.hs-v6-score
+  :is(
+    .app-header-sub,
+    .hs-addr-meta,
+    .score-explainer,
+    .score-footer,
+    .ssp-bar-label,
+    .ssp-bar-amt-pct,
+    .ssp-total-label,
+    .stat-cost-sub,
+    .epc-grade-sub,
+    .epc-saving-sub,
+    .epc-item-sub,
+    .fork-opt-sub
+  ) {
   font-weight: 500;
 }
 
@@ -2069,30 +2797,71 @@ const watchersDisplay = computed(() => {
 
 /* ── Animations ───────────────────────────────────────────────── */
 @keyframes hs-v6-pulse {
-  0% { transform: scale(0.6); opacity: 0.5; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
 @keyframes hs-v6-fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes hs-v6-caretBlink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 @keyframes hs-v6-scoreRing {
-  0% { transform: scale(1); opacity: 0.6; }
-  70% { transform: scale(1.05); opacity: 0; }
-  100% { transform: scale(1.06); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  70% {
+    transform: scale(1.05);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.06);
+    opacity: 0;
+  }
 }
-.anim-1 { animation: hs-v6-fadeUp 0.35s 0.08s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.anim-2 { animation: hs-v6-fadeUp 0.35s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.anim-3 { animation: hs-v6-fadeUp 0.35s 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.anim-4 { animation: hs-v6-fadeUp 0.35s 0.38s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.anim-1 {
+  animation: hs-v6-fadeUp 0.35s 0.08s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-2 {
+  animation: hs-v6-fadeUp 0.35s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-3 {
+  animation: hs-v6-fadeUp 0.35s 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-4 {
+  animation: hs-v6-fadeUp 0.35s 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
 @keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .tw-caret {
   display: inline-block;
@@ -2121,8 +2890,7 @@ const watchersDisplay = computed(() => {
   background: linear-gradient(135deg, #f0a030 0%, #c67c18 50%, #8b4e0a 100%);
   border: none;
   border-radius: 14px;
-  box-shadow:
-    0 12px 32px -8px rgba(180, 100, 20, 0.4),
+  box-shadow: 0 12px 32px -8px rgba(180, 100, 20, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
   color: white;
   position: relative;
@@ -2136,7 +2904,11 @@ const watchersDisplay = computed(() => {
   width: 260px;
   height: 260px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
 .hs-addr-card > * {
@@ -2256,7 +3028,9 @@ const watchersDisplay = computed(() => {
   flex-wrap: wrap;
 }
 /* Stack the two social-proof rows tighter so they read as a pair. */
-.hs-addr-stat-row + .hs-addr-stat-row { margin-top: 6px; }
+.hs-addr-stat-row + .hs-addr-stat-row {
+  margin-top: 6px;
+}
 .hs-addr-stat-row .pulse-dot {
   background: var(--accent-light);
 }
@@ -2306,15 +3080,35 @@ const watchersDisplay = computed(() => {
   transform-origin: bottom;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.55);
 }
-.hs-live-bar:nth-child(1) { height: 5px;  animation-delay: 0s; }
-.hs-live-bar:nth-child(2) { height: 9px;  animation-delay: 0.15s; }
-.hs-live-bar:nth-child(3) { height: 13px; animation-delay: 0.3s; }
+.hs-live-bar:nth-child(1) {
+  height: 5px;
+  animation-delay: 0s;
+}
+.hs-live-bar:nth-child(2) {
+  height: 9px;
+  animation-delay: 0.15s;
+}
+.hs-live-bar:nth-child(3) {
+  height: 13px;
+  animation-delay: 0.3s;
+}
 @keyframes hsLiveBars {
-  0%, 100% { transform: scaleY(0.55); opacity: 0.55; }
-  50%      { transform: scaleY(1);    opacity: 1; }
+  0%,
+  100% {
+    transform: scaleY(0.55);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hs-live-bar { animation: none; transform: scaleY(1); opacity: 0.9; }
+  .hs-live-bar {
+    animation: none;
+    transform: scaleY(1);
+    opacity: 0.9;
+  }
 }
 .hs-live-text {
   font-size: 11.5px;
@@ -2491,7 +3285,7 @@ const watchersDisplay = computed(() => {
 .score-strip-card {
   display: flex;
   gap: 10px;
-  margin: 10px 20px 0;
+  margin: 0 20px 0;
 }
 .score-strip-item {
   flex: 1;
@@ -2509,8 +3303,8 @@ const watchersDisplay = computed(() => {
   top: 50%;
   right: 10px;
   transform: translateY(-50%);
-  width: 58px;
-  height: 58px;
+  width: 85px;
+  height: 80px;
   object-fit: contain;
 }
 .score-strip-eyebrow {
@@ -2555,20 +3349,28 @@ const watchersDisplay = computed(() => {
      panel) and on hover so it doesn't fight the interaction state. */
   animation: scoreStripPulse 2.8s ease-in-out infinite;
 }
-.score-strip-item.clickable:nth-child(2) { animation-delay: 0.45s; }
-.score-strip-item.clickable:nth-child(3) { animation-delay: 0.9s; }
+.score-strip-item.clickable:nth-child(2) {
+  animation-delay: 0.45s;
+}
+.score-strip-item.clickable:nth-child(3) {
+  animation-delay: 0.9s;
+}
 @keyframes scoreStripPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(0, 161, 154, 0);
     border-color: var(--border-soft);
   }
   45% {
-    box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.0), 0 0 14px 2px rgba(0, 161, 154, 0.18);
+    box-shadow: 0 0 0 4px rgba(0, 161, 154, 0),
+      0 0 14px 2px rgba(0, 161, 154, 0.18);
     border-color: rgba(0, 161, 154, 0.45);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .score-strip-item.clickable { animation: none; }
+  .score-strip-item.clickable {
+    animation: none;
+  }
 }
 .score-strip-item.clickable:hover {
   border-color: var(--accent-pale);
@@ -2576,7 +3378,9 @@ const watchersDisplay = computed(() => {
   transform: translateY(-1px);
   animation: none;
 }
-.score-strip-item.clickable.active { animation: none; }
+.score-strip-item.clickable.active {
+  animation: none;
+}
 .score-strip-item.clickable.active {
   border-color: var(--accent);
   background: var(--accent-paler);
@@ -2624,7 +3428,9 @@ const watchersDisplay = computed(() => {
   font-size: 16px;
   flex-shrink: 0;
 }
-.ssp-head-info { flex: 1; }
+.ssp-head-info {
+  flex: 1;
+}
 .ssp-head-title {
   font-size: 13px;
   font-weight: 800;
@@ -2709,9 +3515,15 @@ const watchersDisplay = computed(() => {
 .ssp-bar-fill.elec {
   background: linear-gradient(90deg, #ffd700, #e6be00);
 }
-.ssp-bar-fill.co2-heat { background: #8b4e0a; }
-.ssp-bar-fill.co2-hw   { background: #4a9fcf; }
-.ssp-bar-fill.co2-elec { background: var(--warning); }
+.ssp-bar-fill.co2-heat {
+  background: #8b4e0a;
+}
+.ssp-bar-fill.co2-hw {
+  background: #4a9fcf;
+}
+.ssp-bar-fill.co2-elec {
+  background: var(--warning);
+}
 .ssp-bar-amt {
   font-size: 11px;
   font-weight: 800;
@@ -2760,7 +3572,10 @@ const watchersDisplay = computed(() => {
   font-weight: 500;
   line-height: 1.4;
 }
-.ssp-note b { color: var(--text); font-weight: 800; }
+.ssp-note b {
+  color: var(--text);
+  font-weight: 800;
+}
 .ssp-equiv {
   display: flex;
   align-items: center;
@@ -2801,7 +3616,9 @@ const watchersDisplay = computed(() => {
   color: var(--accent-dark);
   line-height: 1.35;
 }
-.ssp-foot-text :deep(b) { font-weight: 800; }
+.ssp-foot-text :deep(b) {
+  font-weight: 800;
+}
 .ssp-foot-arrow {
   color: var(--accent-dark);
   font-size: 14px;
@@ -2827,7 +3644,9 @@ const watchersDisplay = computed(() => {
   letter-spacing: -1px;
   line-height: 1;
 }
-.ssp-rank-info { flex: 1; }
+.ssp-rank-info {
+  flex: 1;
+}
 .ssp-rank-label {
   font-size: 11px;
   font-weight: 800;
@@ -2842,7 +3661,10 @@ const watchersDisplay = computed(() => {
   margin-top: 2px;
   line-height: 1.35;
 }
-.ssp-rank-sub :deep(b) { color: var(--text); font-weight: 800; }
+.ssp-rank-sub :deep(b) {
+  color: var(--text);
+  font-weight: 800;
+}
 
 .ssp-street-legend {
   display: flex;
@@ -2877,8 +3699,12 @@ const watchersDisplay = computed(() => {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
-.ssp-street-scene::-webkit-scrollbar { height: 5px; }
-.ssp-street-scene::-webkit-scrollbar-track { background: transparent; }
+.ssp-street-scene::-webkit-scrollbar {
+  height: 5px;
+}
+.ssp-street-scene::-webkit-scrollbar-track {
+  background: transparent;
+}
 .ssp-street-scene::-webkit-scrollbar-thumb {
   background: rgba(35, 29, 69, 0.18);
   border-radius: 100px;
@@ -2896,7 +3722,9 @@ const watchersDisplay = computed(() => {
   position: absolute;
   inset: 0;
 }
-.ssp-street-house { cursor: pointer; }
+.ssp-street-house {
+  cursor: pointer;
+}
 .ssp-street-house:hover .ssp-house-body {
   stroke: var(--accent-dark);
   stroke-width: 1.2;
@@ -2930,8 +3758,7 @@ const watchersDisplay = computed(() => {
   width: 18px;
   height: 26px;
   transform: translate(-50%, -50%);
-  transition:
-    left 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+  transition: left 0.85s cubic-bezier(0.4, 0, 0.2, 1),
     top 0.85s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .ssp-street-walker svg {
@@ -2962,20 +3789,40 @@ const watchersDisplay = computed(() => {
   transform-origin: 50% 0%;
 }
 @keyframes hs-v6-wlk-leg-l {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(35deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(35deg);
+  }
 }
 @keyframes hs-v6-wlk-leg-r {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(-35deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-35deg);
+  }
 }
 @keyframes hs-v6-wlk-arm-l {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(-30deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-30deg);
+  }
 }
 @keyframes hs-v6-wlk-arm-r {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(30deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(30deg);
+  }
 }
 
 /* Selected house tooltip */
@@ -3018,9 +3865,15 @@ const watchersDisplay = computed(() => {
   color: var(--text);
   letter-spacing: -0.3px;
 }
-.ssp-street-tooltip-cost.good { color: var(--accent-dark); }
-.ssp-street-tooltip-cost.warn { color: var(--warning-deep); }
-.ssp-street-tooltip-cost.high { color: var(--error); }
+.ssp-street-tooltip-cost.good {
+  color: var(--accent-dark);
+}
+.ssp-street-tooltip-cost.warn {
+  color: var(--warning-deep);
+}
+.ssp-street-tooltip-cost.high {
+  color: var(--error);
+}
 
 /* Pathway projection card */
 .ssp-street-projection {
@@ -3035,7 +3888,9 @@ const watchersDisplay = computed(() => {
   cursor: pointer;
   transition: filter 0.15s;
 }
-.ssp-street-projection:hover { filter: brightness(0.98); }
+.ssp-street-projection:hover {
+  filter: brightness(0.98);
+}
 .ssp-street-projection-icon {
   font-size: 24px;
   flex-shrink: 0;
@@ -3111,7 +3966,7 @@ const watchersDisplay = computed(() => {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 18px 20px 10px;
+  padding: 18px 20px 5px;
 }
 .section-h {
   font-size: 11px;
@@ -3291,7 +4146,9 @@ const watchersDisplay = computed(() => {
 }
 /* Illustrated variant — 3D icon fills the slot cleanly; drop the pale
    grey card background so the illustration's own pedestal reads. */
-.stat-cost-bullet:has(> img) { background: transparent; }
+.stat-cost-bullet:has(> img) {
+  background: transparent;
+}
 .stat-cost-bullet img {
   width: 100%;
   height: 100%;
@@ -3792,7 +4649,7 @@ const watchersDisplay = computed(() => {
   height: 60px;
   object-fit: contain;
   display: block;
-  margin:auto;
+  margin: auto;
   margin-bottom: 10px;
 }
 .fork-tile-bottom-row {
@@ -3809,7 +4666,7 @@ const watchersDisplay = computed(() => {
   width: 60px;
   height: 60px;
   object-fit: contain;
-  margin:auto;
+  margin: auto;
 }
 .fork-tile-title {
   font-size: 14px;
@@ -3890,7 +4747,10 @@ const watchersDisplay = computed(() => {
   background: var(--accent);
   flex-shrink: 0;
 }
-.hs-noepc-prop-block { flex: 1; min-width: 0; }
+.hs-noepc-prop-block {
+  flex: 1;
+  min-width: 0;
+}
 .hs-noepc-prop-line {
   font-size: 14px;
   font-weight: 700;
@@ -4167,8 +5027,8 @@ const watchersDisplay = computed(() => {
   align-items: flex-end;
   justify-content: center;
   backdrop-filter: blur(2px);
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, sans-serif;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   color: var(--text);
 }
@@ -4243,7 +5103,10 @@ const watchersDisplay = computed(() => {
   justify-content: center;
   flex-shrink: 0;
 }
-.claim-step-body { flex: 1; min-width: 0; }
+.claim-step-body {
+  flex: 1;
+  min-width: 0;
+}
 .claim-step-title {
   font-size: 13.5px;
   font-weight: 700;
@@ -4313,13 +5176,20 @@ const watchersDisplay = computed(() => {
 .hs-street-hero {
   position: relative;
   overflow: hidden;
-  margin: 12px 20px 0;
+  margin: 22px 20px 0;
   padding: 17px;
   border-radius: 18px;
-  background:
-    radial-gradient(circle at 88% 12%, rgba(25, 199, 166, 0.22), transparent 42%),
-    radial-gradient(circle at 10% 90%, rgba(193, 138, 56, 0.14), transparent 40%),
-    linear-gradient(150deg, #231D45, #33285C);
+  background: radial-gradient(
+      circle at 88% 12%,
+      rgba(25, 199, 166, 0.22),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 10% 90%,
+      rgba(193, 138, 56, 0.14),
+      transparent 40%
+    ),
+    linear-gradient(150deg, #231d45, #33285c);
   color: #fff;
   box-shadow: 0 14px 34px rgba(20, 14, 50, 0.45);
   cursor: pointer;
@@ -4329,14 +5199,29 @@ const watchersDisplay = computed(() => {
   position: absolute;
   inset: 0;
   opacity: 0.5;
-  background:
-    repeating-linear-gradient(0deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 1px, transparent 1px, transparent 22px),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 1px, transparent 1px, transparent 22px);
+  background: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 22px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 22px
+    );
   pointer-events: none;
 }
-.hs-street-hero > * { position: relative; z-index: 1; }
+.hs-street-hero > * {
+  position: relative;
+  z-index: 1;
+}
 .hs-street-hero.active {
-  box-shadow: 0 0 0 2px rgba(0, 161, 154, 0.5), 0 14px 34px rgba(20, 14, 50, 0.45);
+  box-shadow: 0 0 0 2px rgba(0, 161, 154, 0.5),
+    0 14px 34px rgba(20, 14, 50, 0.45);
 }
 
 .hsh-eyebrow {
@@ -4344,7 +5229,7 @@ const watchersDisplay = computed(() => {
   letter-spacing: 1.3px;
   text-transform: uppercase;
   font-weight: 800;
-  color: #9DEFDB;
+  color: #9defdb;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -4389,8 +5274,8 @@ const watchersDisplay = computed(() => {
 }
 .hsh-ph {
   position: relative;
-  width: 15px;
-  height: 13px;
+  width: 24px;
+  height: 24px;
   border-radius: 3px 3px 1px 1px;
   background: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
@@ -4417,7 +5302,7 @@ const watchersDisplay = computed(() => {
 .hsh-ph.you {
   width: 19px;
   height: 17px;
-  background: #9DEFDB;
+  background: #9defdb;
   box-shadow: 0 0 0 3px rgba(25, 199, 166, 0.3);
   animation: hshPulse 2.2s ease-out infinite;
 }
@@ -4430,9 +5315,15 @@ const watchersDisplay = computed(() => {
   height: 10px;
 }
 @keyframes hshPulse {
-  0%   { box-shadow: 0 0 0 0 rgba(25, 199, 166, 0.4); }
-  70%  { box-shadow: 0 0 0 11px rgba(25, 199, 166, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(25, 199, 166, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(25, 199, 166, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 11px rgba(25, 199, 166, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(25, 199, 166, 0);
+  }
 }
 
 .hsh-desc {
@@ -4457,7 +5348,7 @@ const watchersDisplay = computed(() => {
   font-weight: 800;
   line-height: 1.4;
   color: #0c1f1a;
-  background: linear-gradient(135deg, #9DEFDB, #19C7A6);
+  background: linear-gradient(135deg, #9defdb, #19c7a6);
   padding: 10px 12px;
   border-radius: 12px;
 }
@@ -4472,7 +5363,7 @@ const watchersDisplay = computed(() => {
   border: none;
   border-radius: 12px;
   background: #fff;
-  color: #231D45;
+  color: #231d45;
   font-family: inherit;
   font-size: 13px;
   font-weight: 800;
@@ -4488,7 +5379,12 @@ const watchersDisplay = computed(() => {
   bottom: 0;
   left: 0;
   width: 40%;
-  background: linear-gradient(100deg, transparent, rgba(25, 199, 166, 0.25), transparent);
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(25, 199, 166, 0.25),
+    transparent
+  );
   transform: translateX(-200%) skewX(-18deg);
   animation: hshSheen 4.4s ease-in-out 1.2s infinite;
 }
@@ -4496,17 +5392,29 @@ const watchersDisplay = computed(() => {
   animation: hshNudge 1.5s ease-in-out infinite;
 }
 @keyframes hshSheen {
-  0%        { transform: translateX(-200%) skewX(-18deg); }
-  30%, 100% { transform: translateX(360%) skewX(-18deg); }
+  0% {
+    transform: translateX(-200%) skewX(-18deg);
+  }
+  30%,
+  100% {
+    transform: translateX(360%) skewX(-18deg);
+  }
 }
 @keyframes hshNudge {
-  0%, 100% { transform: translateX(0); }
-  50%      { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hsh-cta::after,
   .hsh-cta-ar,
-  .hsh-ph.you { animation: none; }
+  .hsh-ph.you {
+    animation: none;
+  }
 }
 
 /* 3D icon images that replaced flat emoji inside icon wrappers */
