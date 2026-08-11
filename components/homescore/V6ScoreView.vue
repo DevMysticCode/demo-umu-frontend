@@ -566,8 +566,8 @@
           </div>
           <div class="epc-arrow">→</div>
           <div class="epc-grade">
-            <div class="epc-grade-letter" style="background: #7ab040">C</div>
-            <div class="epc-grade-sub">Potential · 75</div>
+            <div class="epc-grade-letter" :style="{ background: epcPotentialColor }">{{ epcPotentialRating || '—' }}</div>
+            <div class="epc-grade-sub">Potential · {{ epcPotentialScore ?? '—' }}</div>
           </div>
           <div class="epc-saving">
             <div class="epc-saving-num">£{{ formatNum(potentialSaving) }}/yr</div>
@@ -1017,22 +1017,42 @@ const scoreBandTitle = computed(() => {
 })
 const scoreExplainer = computed(() => {
   const saving = formatNum(props.potentialSaving ?? 0)
-  return `Public data suggests <b>6 improvements</b> that could reduce estimated running costs by around <b>£${saving}/year</b>.`
+  // Real count from the EPC certificate's recommendations, not a fixed
+  // number — was hardcoded to "6 improvements" regardless of how many
+  // steps the actual certificate listed (often 3-5).
+  const count = (props.property as any)?.epcRecommendations?.length ?? 0
+  const improvements = count > 0 ? `${count} improvement${count === 1 ? '' : 's'}` : 'improvements'
+  return `Public data suggests <b>${improvements}</b> that could reduce estimated running costs by around <b>£${saving}/year</b>.`
 })
 
 // ── EPC letter pill colour ───────────────────────────────────────
-const epcColor = computed(() => {
-  const map: Record<string, string> = {
-    A: '#008060',
-    B: '#2EAB55',
-    C: '#7AB040',
-    D: '#E6A23C',
-    E: '#D86F4A',
-    F: '#C73E36',
-    G: '#7A2A20',
-  }
-  return map[(props.epcRating || '').toUpperCase()] || '#9c98ad'
+const EPC_BAND_COLORS: Record<string, string> = {
+  A: '#008060',
+  B: '#2EAB55',
+  C: '#7AB040',
+  D: '#E6A23C',
+  E: '#D86F4A',
+  F: '#C73E36',
+  G: '#7A2A20',
+}
+const epcColor = computed(
+  () => EPC_BAND_COLORS[(props.epcRating || '').toUpperCase()] || '#9c98ad',
+)
+
+// Real potential rating/score from the EPC certificate — was hardcoded to
+// "C" / "75" regardless of what the actual certificate said (e.g. a real
+// potential of 81/B showed as 75/C, matching only the *first* improvement
+// step's result rather than the certificate's true overall potential).
+const epcPotentialScore = computed<number | null>(() => {
+  const v = (props.property as any)?.epcScorePotential
+  return typeof v === 'number' && Number.isFinite(v) ? v : null
 })
+const epcPotentialRating = computed<string | null>(
+  () => (props.property as any)?.epcRatingPotential || null,
+)
+const epcPotentialColor = computed(
+  () => EPC_BAND_COLORS[(epcPotentialRating.value || '').toUpperCase()] || '#9c98ad',
+)
 
 // ── Quick stats strip — popout panel toggle ──────────────────────
 const activePanel = ref<'bills' | 'co2' | 'street' | null>(null)
