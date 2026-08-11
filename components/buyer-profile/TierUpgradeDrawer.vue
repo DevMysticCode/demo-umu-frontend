@@ -1,7 +1,15 @@
 <template>
   <Teleport to="body">
+    <Transition name="tu" appear>
     <div v-if="open" class="tu-overlay" @click.self="close">
-      <div class="tu-sheet">
+      <div
+        class="tu-sheet"
+        :style="dragStyle"
+        @touchstart.passive="onTouchStart"
+        @touchmove="onTouchMove"
+        @touchend="onTouchEnd"
+        @touchcancel="onTouchEnd"
+      >
         <div class="tu-handle" />
 
         <!-- ── Step 1: Confirm — single tier, no picking ── -->
@@ -77,6 +85,7 @@
         </template>
       </div>
     </div>
+    </Transition>
   </Teleport>
 </template>
 
@@ -153,6 +162,11 @@ function close() {
   if (loading.value) return
   emit('close')
 }
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: close,
+  handleSelector: '.tu-handle',
+})
 
 async function goPay() {
   errorMsg.value = ''
@@ -250,6 +264,22 @@ onBeforeUnmount(() => {
   display: flex; align-items: flex-end; justify-content: center;
   font-family: inherit;
 }
+.tu-enter-active,
+.tu-leave-active {
+  transition: background-color 0.28s ease;
+}
+.tu-enter-active .tu-sheet,
+.tu-leave-active .tu-sheet {
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0.24, 1);
+}
+.tu-enter-from,
+.tu-leave-to {
+  background-color: transparent !important;
+}
+.tu-enter-from .tu-sheet,
+.tu-leave-to .tu-sheet {
+  transform: translateY(100%) !important;
+}
 .tu-sheet {
   background: #fff;
   width: 100%; max-width: 480px;
@@ -262,6 +292,7 @@ onBeforeUnmount(() => {
   width: 44px; height: 5px;
   background: #ececef; border-radius: 100px;
   margin: 0 auto 14px;
+  touch-action: none;
 }
 .tu-eyebrow {
   font-size: 10px; font-weight: 800; letter-spacing: 1.5px;

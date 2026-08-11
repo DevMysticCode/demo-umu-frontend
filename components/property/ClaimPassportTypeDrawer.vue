@@ -2,7 +2,15 @@
   <Teleport to="body">
     <Transition name="cpt">
       <div v-if="modelValue" class="cpt-overlay" @click.self="close">
-        <div class="cpt-sheet" @click.stop>
+        <div
+          class="cpt-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <div class="cpt-grip" />
 
           <div class="cpt-head">
@@ -139,6 +147,12 @@ watch(
 )
 
 const close = () => emit('update:modelValue', false)
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: close,
+  handleSelector: '.cpt-grip',
+})
+
 const confirm = () => {
   if (!chosen.value) return
   emit('confirm', {
@@ -191,6 +205,7 @@ const confirm = () => {
   background: var(--border);
   border-radius: 100px;
   margin: 10px auto 0;
+  touch-action: none;
 }
 .cpt-head {
   padding: 14px 22px 6px;

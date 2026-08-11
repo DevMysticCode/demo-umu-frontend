@@ -1,7 +1,15 @@
 <template>
   <Teleport to="body">
+    <Transition name="sd" appear>
     <div v-if="open" class="sd-overlay" @click.self="close">
-      <div class="sd-sheet">
+      <div
+        class="sd-sheet"
+        :style="dragStyle"
+        @touchstart.passive="onTouchStart"
+        @touchmove="onTouchMove"
+        @touchend="onTouchEnd"
+        @touchcancel="onTouchEnd"
+      >
         <div class="sd-handle" />
 
         <div class="sd-eyebrow">Share your buyer profile</div>
@@ -193,6 +201,7 @@
         <button class="sd-cancel" @click="close">Close</button>
       </div>
     </div>
+    </Transition>
   </Teleport>
 </template>
 
@@ -374,6 +383,11 @@ async function drawQr() {
 }
 
 function close() { emit('close') }
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: close,
+  handleSelector: '.sd-handle',
+})
 </script>
 
 <style scoped>
@@ -382,6 +396,22 @@ function close() { emit('close') }
   background: rgba(35, 29, 69, 0.45);
   display: flex; align-items: flex-end; justify-content: center;
   font-family: inherit;
+}
+.sd-enter-active,
+.sd-leave-active {
+  transition: background-color 0.28s ease;
+}
+.sd-enter-active .sd-sheet,
+.sd-leave-active .sd-sheet {
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0.24, 1);
+}
+.sd-enter-from,
+.sd-leave-to {
+  background-color: transparent !important;
+}
+.sd-enter-from .sd-sheet,
+.sd-leave-to .sd-sheet {
+  transform: translateY(100%) !important;
 }
 .sd-sheet {
   background: #fff;
@@ -394,6 +424,7 @@ function close() { emit('close') }
   width: 44px; height: 5px;
   background: #ececef; border-radius: 100px;
   margin: 0 auto 14px;
+  touch-action: none;
 }
 .sd-eyebrow {
   font-size: 10px; font-weight: 800; letter-spacing: 1.5px;

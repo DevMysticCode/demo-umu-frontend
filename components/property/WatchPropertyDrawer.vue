@@ -6,7 +6,15 @@
         class="watch-overlay"
         @click.self="$emit('close')"
       >
-        <div class="watch-sheet" @click.stop>
+        <div
+          class="watch-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <div class="watch-grip" />
           <div class="watch-head">
             <div class="watch-eyebrow"><img src="/op-icons/misc/eye.png" alt="" style="height:1.4em;display:inline-block;vertical-align:-0.3em;margin-right:4px" loading="lazy" />Watch this property</div>
@@ -97,6 +105,11 @@ const emit = defineEmits<{
   (e: 'submit', prefs: Record<string, boolean>): void
 }>()
 
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: () => emit('close'),
+  handleSelector: '.watch-grip',
+})
+
 const triggers = [
   { key: 'claimed', icon: 'ownerClaim', title: 'Owner claims this property', sub: "You'll be notified the moment they verify ownership." },
   { key: 'progress', icon: 'passportProgress', title: 'Passport progress milestones', sub: 'Get a ping at 25% / 50% / 75% as their Passport is built.' },
@@ -175,6 +188,7 @@ function onSubmit() {
   background: var(--border);
   border-radius: 100px;
   margin: 10px auto 0;
+  touch-action: none;
 }
 .watch-head {
   padding: 14px 22px 6px;

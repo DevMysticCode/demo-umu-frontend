@@ -2,7 +2,15 @@
   <Teleport to="body">
     <Transition name="ppd">
       <div v-if="open" class="ppd-overlay" @click.self="$emit('close')">
-        <div class="ppd-sheet" @click.stop>
+        <div
+          class="ppd-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <div class="ppd-grip" />
           <div class="ppd-head">
             <div class="ppd-eyebrow"><img src="/op-icons/misc/rocket.png" alt="" style="height:1.4em;display:inline-block;vertical-align:-0.3em;margin-right:4px" loading="lazy" />Publish your passport</div>
@@ -77,10 +85,15 @@ defineProps<{
   open: boolean
   submitting?: boolean
 }>()
-defineEmits<{
+const emit = defineEmits<{
   (e: 'close'): void
   (e: 'publish'): void
 }>()
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: () => emit('close'),
+  handleSelector: '.ppd-grip',
+})
 </script>
 
 <style scoped>
@@ -101,7 +114,7 @@ defineEmits<{
   color: var(--text);
 }
 .ppd-sheet { width: 100%; max-width: 28rem; background: var(--card); border-radius: 22px 22px 0 0; box-shadow: 0 -8px 30px rgba(35, 29, 69, 0.25); max-height: 90dvh; overflow-y: auto; padding-bottom: env(safe-area-inset-bottom); }
-.ppd-grip { width: 42px; height: 4px; background: var(--border); border-radius: 100px; margin: 10px auto 0; }
+.ppd-grip { width: 42px; height: 4px; background: var(--border); border-radius: 100px; margin: 10px auto 0; touch-action: none; }
 .ppd-head { padding: 14px 22px 6px; }
 .ppd-eyebrow { font-size: 10px; font-weight: 800; color: var(--accent-dark); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 6px; }
 .ppd-title { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 4px; }

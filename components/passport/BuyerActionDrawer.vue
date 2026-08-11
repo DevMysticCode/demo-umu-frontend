@@ -2,7 +2,15 @@
   <Teleport to="body">
     <Transition name="bad">
       <div v-if="kind" class="bad-overlay" @click.self="close">
-        <div class="bad-sheet" @click.stop>
+        <div
+          class="bad-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
           <div class="bad-grip" />
           <div class="bad-head">
             <div class="bad-eyebrow">{{ eyebrow }}</div>
@@ -229,6 +237,11 @@ function close() {
   emit('close')
 }
 
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: close,
+  handleSelector: '.bad-grip',
+})
+
 function authHeaders(): HeadersInit {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
   return token ? { Authorization: `Bearer ${token}` } : {}
@@ -351,6 +364,7 @@ function friendlyError(err: any, fallback: string): string {
   background: #e4e5ed;
   border-radius: 100px;
   margin: 10px auto 0;
+  touch-action: none;
 }
 .bad-head { padding: 14px 22px 6px; }
 .bad-eyebrow {
