@@ -74,6 +74,29 @@
             <div class="dc-pill">{{ card.peekPill }}</div>
           </div>
 
+          <!-- Explore body -->
+          <div v-if="card.id === 'explore'" class="dc-content">
+            <div class="dc-header-block">
+              <div class="dc-header-text-col">
+                <div class="dc-headline">Explore any<br />UK property</div>
+                <div class="dc-sub">
+                  See what we already know — value, history, energy,
+                  planning, local area and more.
+                </div>
+              </div>
+              <img
+                src="/op-icons/misc/exploreProperty.png"
+                alt=""
+                class="dc-card-hero-img"
+              />
+            </div>
+            <div class="dc-explore-badge">
+              <span class="dc-explore-badge-check">✓</span>
+              Free <span class="dc-explore-badge-sep">•</span> No account
+              needed
+            </div>
+          </div>
+
           <!-- HomeScore body -->
           <div v-if="card.id === 'HomeScore'" class="dc-content">
             <div class="dc-header-block">
@@ -928,6 +951,13 @@ const cards = [
     cta: 'Check your home',
   },
   {
+    id: 'explore',
+    peekLabel: 'Explore',
+    peekSub: 'See what we already know about any UK home.',
+    peekPill: 'Free',
+    cta: 'Explore property',
+  },
+  {
     id: 'passport',
     peekLabel: 'Property Passport',
     peekSub: "Build your home's verified digital record.",
@@ -962,7 +992,8 @@ function bringToFront(id: string) {
   stack.value = [id, ...stack.value.filter((x) => x !== id)]
 }
 function onCardCta(id: string) {
-  if (id === 'HomeScore') navigateTo('/homescore')
+  if (id === 'explore') navigateTo('/discover')
+  else if (id === 'HomeScore') navigateTo('/homescore')
   else if (id === 'passport') screen.value = 'sample'
   else if (id === 'aisha') screen.value = 'aisha'
   else if (id === 'market') screen.value = 'market'
@@ -1539,6 +1570,92 @@ const currentSample = computed(() => samples[sampleType.value])
   line-height: 1.5;
 }
 
+/* ── Explore card — the one light-background card in the deck; every
+   other card assumes white-on-dark text, so eyebrow/pill/headline/sub
+   all need dark-text overrides here. ── */
+.deck-card.explore {
+  background:
+    radial-gradient(circle at 85% 18%, rgba(0, 161, 154, 0.1), transparent 40%),
+    linear-gradient(160deg, #ffffff 0%, #eef8f7 100%);
+  color: #231d45;
+}
+.deck-card.explore .dc-eyebrow {
+  color: #00817c;
+}
+.deck-card.explore .dc-eyebrow .dot {
+  background: #00a19a;
+}
+.deck-card.explore .dc-pill {
+  background: rgba(0, 161, 154, 0.12);
+  color: #00817c;
+}
+.deck-card.explore .dc-headline {
+  color: #231d45;
+}
+.deck-card.explore .dc-sub {
+  color: #6b7089;
+}
+/* Text column sits alongside the illustration in .dc-header-block, with
+   .dc-sub directly under the headline — otherwise .dc-sub sat below the
+   whole (taller) image row, leaving a slab of empty space under the
+   shorter two-line headline before any text continued. */
+.dc-header-text-col {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.dc-header-text-col .dc-sub {
+  margin-top: 10px;
+}
+.deck-card.explore .dc-card-hero-img {
+  width: 148px;
+  max-height: 140px;
+}
+.dc-explore-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #231d45;
+}
+.dc-explore-badge-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #00a19a;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.dc-explore-badge-sep {
+  color: #c7c5d6;
+}
+/* ── Peek state (card stacked behind another) — same white-on-dark
+   assumption as the front-facing overrides above, needs the same
+   dark-on-light treatment for the explore card specifically. ── */
+.deck-card.explore .dc-peek-label {
+  color: #231d45;
+}
+.deck-card.explore .dc-peek-label::before {
+  background: #00a19a;
+}
+.deck-card.explore .dc-peek-sub {
+  color: #6b7089;
+}
+.deck-card.explore .dc-peek-chev {
+  color: #9c98ad;
+}
+.deck-card.explore .dc-peek-pill {
+  background: rgba(0, 161, 154, 0.12);
+  color: #00817c;
+  border-color: rgba(0, 161, 154, 0.2);
+}
+
 .deck-card.HomeScore .dc-headline,
 .deck-card.passport .dc-headline {
   font-size: 22px;
@@ -1745,7 +1862,8 @@ const currentSample = computed(() => samples[sampleType.value])
 .deck-card.HomeScore .dc-cta,
 .deck-card.passport .dc-cta,
 .deck-card.aisha .dc-cta,
-.deck-card.market .dc-cta {
+.deck-card.market .dc-cta,
+.deck-card.explore .dc-cta {
   width: min(100%, 212px);
   justify-content: space-between;
   border: 0;
@@ -1759,6 +1877,17 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .deck-card.HomeScore .dc-cta:hover {
   background: rgba(255, 255, 255, 0.92);
+}
+/* Explore card is light-background (every other card is dark), so its
+   button needs to be the one solid/dark-enough surface for contrast —
+   same rgba(255,255,255,...) treatment the others use would be
+   invisible on white. */
+.deck-card.explore .dc-cta {
+  background: #00a19a;
+  color: #fff;
+}
+.deck-card.explore .dc-cta:hover {
+  background: #00918b;
 }
 .deck-card.passport .dc-cta {
   background: rgba(103, 83, 170, 0.62);
