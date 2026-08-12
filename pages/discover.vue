@@ -459,12 +459,11 @@ function lastSoldLabel(dateStr: string): string {
 }
 .exp-more-ic {
   position: absolute;
-  top: -24px;
-  right: 12px;
-  width: 50px;
-  height: 50px;
+  top: -18px;
+  right: 10px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
-  z-index: 1;
 }
 .exp-more-eyebrow {
   font-size: 10.5px;
@@ -473,7 +472,6 @@ function lastSoldLabel(dateStr: string): string {
   text-transform: uppercase;
   color: #00a19a;
   margin-bottom: 6px;
-  padding-right: 56px;
 }
 .exp-more-pill {
   display: inline-block;
