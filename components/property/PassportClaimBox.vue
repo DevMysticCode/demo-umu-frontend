@@ -123,55 +123,54 @@
                  Passport · Build · Publish) rather than the older four, and
                  the callout is the "Every car has a logbook" framing. -->
             <template v-if="openSheet === 'unclaimed'">
-              <div class="cx-hero navy">
-                <div class="cx-hero-eyebrow">Property Passport™</div>
-                <div class="cx-hero-title">
-                  Your home's permanent record — for owning, letting and
-                  selling.
+              <div class="cx2-header">
+                <div class="cx2-eyebrow">Property Passport™</div>
+                <div class="cx2-title">Your home's permanent record.</div>
+                <div class="cx2-subtitle">Build it once. Keep it for life.</div>
+                <div class="cx2-body">
+                  A Property Passport brings all your important information
+                  together in one secure, verified record that stays with
+                  your home.
                 </div>
-                <div class="cx-hero-sub">
-                  A Passport stays with this property for life. Build it now,
-                  keep it updated, and when you do decide to let or sell — the
-                  hard work is already done.
+              </div>
+              <div class="cx-stats cx-stats--4col">
+                <div class="cx-stat">
+                  <img src="/op-icons/investment/priceTagPound2.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <div class="cx-stat-num">Free</div>
+                  <div class="cx-stat-label">Property Passport</div>
                 </div>
+                <div class="cx-stat">
+                  <img src="/op-icons/calendar/clock.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <div class="cx-stat-num">2 min</div>
+                  <div class="cx-stat-label">To claim your home</div>
+                </div>
+                <div class="cx-stat">
+                  <img src="/op-icons/calendar/shield.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <div class="cx-stat-num">For life</div>
+                  <div class="cx-stat-label">Stays with the property</div>
+                </div>
+                <div class="cx-stat">
+                  <img src="/op-icons/investment/key.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <div class="cx-stat-num">Ready</div>
+                  <div class="cx-stat-label">When you sell or let</div>
+                </div>
+              </div>
+              <div class="cx2-illustration">
+                <img src="/op-icons/landing/propertyPassportCard.png" alt="" loading="lazy" />
               </div>
               <div class="cx-callout navy">
                 <div class="cx-callout-h">
                   Every car has a logbook — your home should too
                 </div>
                 <div class="cx-callout-v">
-                  A car's full history follows it from owner to owner. Your
-                  home is worth far more, yet its certificates, guarantees and
-                  compliance sit scattered across drawers, emails and
-                  solicitors — and have to be re-proven every time you sell or
-                  let. A Property Passport keeps it all in one
-                  <b>permanent, verified record</b>: current when you let,
-                  ready when you sell, and yours for as long as you own it.
-                </div>
-              </div>
-              <div class="cx-stats">
-                <div class="cx-stat">
-                  <div class="cx-stat-num">Free</div>
-                  <div class="cx-stat-label">To build forever</div>
-                </div>
-                <div class="cx-stat">
-                  <div class="cx-stat-num">2 min</div>
-                  <div class="cx-stat-label">To claim ownership today</div>
-                </div>
-                <div class="cx-stat">
-                  <div class="cx-stat-num cx-stat-anim">{{ animDaysAvg }}</div>
-                  <div class="cx-stat-label">Days avg. conveyancing</div>
-                </div>
-                <div class="cx-stat">
-                  <div class="cx-stat-num cx-stat-anim cx-stat-live">
-                    {{ animSearches }}
-                    <span class="cx-stat-pulse" />
-                  </div>
-                  <div class="cx-stat-label">Searches on this address / mo</div>
+                  A car's history follows it from owner to owner. Your home's
+                  important information is scattered across emails, drawers
+                  and different organisations. A Property Passport brings it
+                  together into one <b>permanent, verified record</b>.
                 </div>
               </div>
               <div class="cx-section-h">
-                Your five steps · tap to learn more
+                Your Passport journey · tap to learn more
               </div>
               <div class="cx-steps">
                 <template v-for="(s, i) in unclaimedSteps" :key="s.n">
@@ -195,28 +194,44 @@
                 </template>
               </div>
               <div class="cx-step-detail">
-                <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
-                <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                <div class="cx-step-detail-icon">
+                  <img src="/op-icons/verify-identity/idCard.png" alt="" loading="lazy" />
+                </div>
+                <div class="cx-step-detail-body">
+                  <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
+                  <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                </div>
               </div>
-              <div class="cxd-cta-row">
-                <button
-                  class="cxd-btn secondary"
-                  type="button"
-                  @click="openSheet = null"
-                >
-                  Got it
-                </button>
+              <div class="cx2-secure">
+                <img src="/op-icons/investment/padlock.png" alt="" class="cx2-secure-ic" loading="lazy" />
+                <div>
+                  <div class="cx2-secure-h">Secure. Verified. Yours forever.</div>
+                  <div class="cx2-secure-v">
+                    Your Passport is securely linked to your property, not
+                    just you. It stays with the property through owning,
+                    letting and selling.
+                  </div>
+                </div>
+              </div>
+              <div class="cxd-cta-col">
                 <button
                   class="cxd-btn primary"
                   type="button"
                   @click="onPrimary('claim-passport')"
                 >
-                  Claim it →
+                  Claim my property →
+                </button>
+                <button
+                  class="cxd-btn secondary"
+                  type="button"
+                  @click="openSheet = null"
+                >
+                  Not now
                 </button>
               </div>
               <div class="cx-foot">
-                The way people buy homes is changing — we're building that
-                future with government.
+                <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" />
+                Secure KYC · Encrypted data · You're in control
               </div>
             </template>
 
@@ -476,7 +491,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -572,52 +587,6 @@ function redirectTargetFor(action: PrimaryAction): string | null {
 }
 
 // ── Animated stats in the unclaimed drawer ─────────────────────────
-// Per-property "searches this month" — deterministic so the same
-// property always shows the same number on repeat visits, but varies
-// across properties so the stat feels live rather than canned.
-function hashStr(s: string): number {
-  let h = 0
-  for (let i = 0; i < s.length; i++) {
-    h = (h * 31 + s.charCodeAt(i)) | 0
-  }
-  return Math.abs(h)
-}
-const searchesTarget = computed(() => {
-  const seed = props.propertyId ?? 'fallback'
-  // 8–37 range — high enough to feel meaningful, varied enough to feel
-  // alive across the property catalogue.
-  return 8 + (hashStr(seed) % 30)
-})
-const daysAvgTarget = 150
-
-const animSearches = ref(0)
-const animDaysAvg = ref(0)
-
-// Count-up animation. Eases out so the final value lingers.
-function countUp(
-  setter: (v: number) => void,
-  target: number,
-  durationMs = 900,
-) {
-  const start = performance.now()
-  const tick = (now: number) => {
-    const t = Math.min(1, (now - start) / durationMs)
-    const eased = 1 - Math.pow(1 - t, 3)
-    setter(Math.round(target * eased))
-    if (t < 1) requestAnimationFrame(tick)
-  }
-  requestAnimationFrame(tick)
-}
-
-// Re-run the count-up every time the unclaimed drawer opens.
-watch(openSheet, (val) => {
-  if (val !== 'unclaimed') return
-  animSearches.value = 0
-  animDaysAvg.value = 0
-  countUp((v) => (animSearches.value = v), searchesTarget.value, 950)
-  countUp((v) => (animDaysAvg.value = v), daysAvgTarget, 1200)
-})
-
 function goAuth(mode: 'signin' | 'signup') {
   const action = authPrompt.value
   if (!action) return
@@ -632,35 +601,31 @@ function goAuth(mode: 'signin' | 'signup') {
   navigateTo(path)
 }
 
-// Mirrors prisma/property-passport-let-it-prototype.html — TUT array.
-// Five steps now (Claim → Ownership → Passport → Build → Publish) so the
-// drawer matches the same flow the /claim/[id] page implements.
+// Mirrors the "Your Passport journey" prototype — Claim → Verify → Build →
+// Publish. Claim now folds in the old Ownership check (KYC + Land Registry
+// happen together as one £15 step) and Verify covers choosing what the
+// Passport is being built for.
 const unclaimedSteps = [
   { n: 1, name: 'Claim' },
-  { n: 2, name: 'Ownership' },
-  { n: 3, name: 'Passport' },
-  { n: 4, name: 'Build' },
-  { n: 5, name: 'Publish' },
+  { n: 2, name: 'Verify' },
+  { n: 3, name: 'Build' },
+  { n: 4, name: 'Publish' },
 ]
 const stepDetails: Record<number, { h: string; v: string }> = {
   1: {
-    h: '1 · Claim',
-    v: "We run a quick identity check (KYC) to confirm it's really you — so no one else can claim your property's Passport. £15 one-off, and reusable forever.",
+    h: '1 · Claim your home',
+    v: "We run a quick identity and ownership check (KYC) to confirm it's really you. This one-off verification costs £15 and is required before we can create your Property Passport.",
   },
   2: {
-    h: '2 · Ownership',
-    v: 'We verify you against HM Land Registry as the registered owner. Nothing to dig out or upload.',
-  },
-  3: {
-    h: '3 · Passport',
+    h: '2 · Verify',
     v: "Choose what you're building it for — a selling passport or a landlord passport. You can add the other later off the same claim.",
   },
-  4: {
-    h: '4 · Build',
+  3: {
+    h: '3 · Build',
     v: 'Add your certificates and property information. We verify each against the official source and tick it off your Passport.',
   },
-  5: {
-    h: '5 · Publish',
+  4: {
+    h: '4 · Publish',
     v: 'Publish or share your Passport and control who can access it — buyers, tenants, agents or your solicitor, whoever you choose. It stays with the property for life.',
   },
 }
@@ -674,7 +639,7 @@ function onPrimary(action: PrimaryAction) {
   // Guests → show the in-drawer auth prompt (Sign in / Create account).
   if (hasAuth()) {
     openSheet.value = null
-    emit(action)
+    ;(emit as (e: PrimaryAction) => void)(action)
     return
   }
   authPrompt.value = action
@@ -1019,6 +984,81 @@ function onPrimary(action: PrimaryAction) {
   margin: 10px auto 0;
 }
 
+/* ── cx2-* — plain white-background variant of the drawer header, used
+   by the "unclaimed" sheet's redesigned prototype instead of the dark
+   .cx-hero band the other sheets still use. ── */
+.cx2-header {
+  padding: 20px 22px 0;
+}
+.cx2-eyebrow {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+  margin-bottom: 6px;
+}
+.cx2-title {
+  font-size: 21px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+.cx2-subtitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent-dark);
+  margin-top: 2px;
+}
+.cx2-body {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-top: 8px;
+}
+.cx2-illustration {
+  display: flex;
+  justify-content: center;
+  margin: 14px 22px 0;
+  padding: 18px;
+  background: var(--bg);
+  border-radius: 16px;
+}
+.cx2-illustration img {
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+}
+.cx2-secure {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 16px 22px 0;
+  padding: 14px;
+  background: var(--accent-paler);
+  border-radius: 14px;
+}
+.cx2-secure-ic {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.cx2-secure-h {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.1px;
+}
+.cx2-secure-v {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 3px;
+}
+
 /* ── cx-* drawer content (ported from prototype) ── */
 .cx-hero {
   border-radius: 16px;
@@ -1190,6 +1230,29 @@ function onPrimary(action: PrimaryAction) {
   margin-top: 2px;
   font-weight: 600;
   line-height: 1.3;
+}
+/* 4-across variant used by the redesigned "unclaimed" sheet — smaller
+   type + an icon per stat so four fit comfortably in one row. */
+.cx-stats--4col {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.cx-stats--4col .cx-stat {
+  padding: 10px 6px;
+}
+.cx-stat-ic {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  margin: 0 auto 6px;
+  display: block;
+}
+.cx-stats--4col .cx-stat-num {
+  font-size: 12.5px;
+  letter-spacing: -0.2px;
+}
+.cx-stats--4col .cx-stat-label {
+  font-size: 8.5px;
 }
 .cx-section-h {
   font-size: 10px;
@@ -1370,11 +1433,28 @@ function onPrimary(action: PrimaryAction) {
   font-weight: 800;
 }
 .cx-step-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   margin: 0 22px 4px;
   padding: 13px 15px;
   background: var(--accent-paler);
   border: 1px solid var(--accent-pale);
   border-radius: 12px;
+}
+.cx-step-detail-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.cx-step-detail-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.cx-step-detail-body {
+  min-width: 0;
 }
 .cx-step-detail-h {
   font-size: 12px;
@@ -1429,6 +1509,12 @@ function onPrimary(action: PrimaryAction) {
 .cxd-cta-row {
   padding: 18px 22px 8px;
   display: flex;
+  gap: 8px;
+}
+.cxd-cta-col {
+  padding: 18px 22px 8px;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 .cxd-btn {
