@@ -124,13 +124,18 @@
                  the callout is the "Every car has a logbook" framing. -->
             <template v-if="openSheet === 'unclaimed'">
               <div class="cx2-header">
-                <div class="cx2-eyebrow">Property Passport™</div>
-                <div class="cx2-title">Your home's permanent record.</div>
-                <div class="cx2-subtitle">Build it once. Keep it for life.</div>
-                <div class="cx2-body">
-                  A Property Passport brings all your important information
-                  together in one secure, verified record that stays with
-                  your home.
+                <div class="cx2-header-text">
+                  <div class="cx2-eyebrow">Property Passport™</div>
+                  <div class="cx2-title">Your home's permanent record.</div>
+                  <div class="cx2-subtitle">Build it once. Keep it for life.</div>
+                  <div class="cx2-body">
+                    A Property Passport brings all your important information
+                    together in one secure, verified record that stays with
+                    your home.
+                  </div>
+                </div>
+                <div class="cx2-header-illustration">
+                  <img src="/op-icons/landing/propertyPassportCard.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cx-stats cx-stats--4col">
@@ -155,19 +160,31 @@
                   <div class="cx-stat-label">When you sell or let</div>
                 </div>
               </div>
-              <div class="cx2-illustration">
-                <img src="/op-icons/landing/propertyPassportCard.png" alt="" loading="lazy" />
-              </div>
-              <div class="cx-callout navy">
-                <div class="cx-callout-h">
-                  Every car has a logbook — your home should too
+              <div class="cx-callout navy cx-callout--car">
+                <div class="cx-callout-body">
+                  <div class="cx-callout-h">
+                    Every car has a logbook — your home should too
+                  </div>
+                  <div class="cx-callout-v">
+                    A car's history follows it from owner to owner. Your home's
+                    important information is scattered across emails, drawers
+                    and different organisations. A Property Passport brings it
+                    together into one <b>permanent, verified record</b>.
+                  </div>
                 </div>
-                <div class="cx-callout-v">
-                  A car's history follows it from owner to owner. Your home's
-                  important information is scattered across emails, drawers
-                  and different organisations. A Property Passport brings it
-                  together into one <b>permanent, verified record</b>.
-                </div>
+                <svg class="cx-callout-car" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <ellipse cx="32" cy="34" rx="24" ry="2.5" fill="#008A84" opacity="0.15" />
+                  <rect x="5" y="20" width="54" height="11" rx="5" fill="#00A19A" />
+                  <path d="M16 20 L21 9 Q22.5 7 25 7 H39 Q41.5 7 43 9 L48 20 Z" fill="#00A19A" />
+                  <path d="M20 19 L24 11 H31.3 V19 Z" fill="#BFEFEC" />
+                  <path d="M32.7 19 V11 H40 L44 19 Z" fill="#BFEFEC" />
+                  <rect x="31.3" y="10" width="1.4" height="9" fill="#00A19A" />
+                  <circle cx="17" cy="31" r="5" fill="#231D45" />
+                  <circle cx="17" cy="31" r="2" fill="#DDE3EA" />
+                  <circle cx="47" cy="31" r="5" fill="#231D45" />
+                  <circle cx="47" cy="31" r="2" fill="#DDE3EA" />
+                  <rect x="56" y="23" width="3" height="3.5" rx="1" fill="#F6D87A" />
+                </svg>
               </div>
               <div class="cx-section-h">
                 Your Passport journey · tap to learn more
@@ -988,7 +1005,24 @@ function onPrimary(action: PrimaryAction) {
    by the "unclaimed" sheet's redesigned prototype instead of the dark
    .cx-hero band the other sheets still use. ── */
 .cx2-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
   padding: 20px 22px 0;
+}
+.cx2-header-text {
+  flex: 1;
+  min-width: 0;
+}
+.cx2-header-illustration {
+  flex-shrink: 0;
+  width: 120px;
+  padding-top: 4px;
+}
+.cx2-header-illustration img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 .cx2-eyebrow {
   font-size: 9px;
@@ -1016,19 +1050,6 @@ function onPrimary(action: PrimaryAction) {
   color: var(--text-secondary);
   line-height: 1.55;
   margin-top: 8px;
-}
-.cx2-illustration {
-  display: flex;
-  justify-content: center;
-  margin: 14px 22px 0;
-  padding: 18px;
-  background: var(--bg);
-  border-radius: 16px;
-}
-.cx2-illustration img {
-  width: 140px;
-  height: auto;
-  object-fit: contain;
 }
 .cx2-secure {
   display: flex;
@@ -1138,6 +1159,20 @@ function onPrimary(action: PrimaryAction) {
 }
 .cx-callout.navy {
   border-left-color: var(--primary);
+}
+.cx-callout--car {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cx-callout-body {
+  flex: 1;
+  min-width: 0;
+}
+.cx-callout-car {
+  width: 64px;
+  height: 40px;
+  flex-shrink: 0;
 }
 .cx-callout.purple {
   border-left-color: #5b3795;
