@@ -209,7 +209,7 @@
                   <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
                 </div>
                 <div class="cx-step-detail-icon">
-                  <img src="/op-icons/verify-identity/idCard.png" alt="" loading="lazy" />
+                  <img src="/op-icons/verify-identity/idCardChecked.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cx2-secure">
