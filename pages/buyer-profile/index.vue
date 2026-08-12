@@ -38,7 +38,7 @@
     <div class="bph-hero-wrap">
       <div class="bph-hero-card" @click="goToBuild">
         <img
-          src="/op-icons/passportview/umu-passport.png"
+          src="/op-icons/misc/explorePassport.png"
           alt=""
           class="bph-hero-icon"
           loading="lazy"
@@ -282,11 +282,10 @@ onMounted(async () => {
   box-shadow: 0 12px 28px -12px rgba(35, 29, 69, 0.5);
 }
 .bph-hero-icon {
-  width: 68px;
+  width: 76px;
   height: auto;
   object-fit: contain;
   flex-shrink: 0;
-  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
 }
 .bph-hero-body {
   flex: 1;
@@ -389,9 +388,9 @@ onMounted(async () => {
   transform: scale(0.99);
 }
 .bph-check-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 13px;
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
   background: #f2faf8;
   border: 1px solid #e5f4f2;
   display: flex;
@@ -400,8 +399,8 @@ onMounted(async () => {
   flex-shrink: 0;
 }
 .bph-check-icon img {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
 }
 .bph-check-icon.is-done {
@@ -421,7 +420,7 @@ onMounted(async () => {
 }
 .bph-check-sub {
   font-size: 12px;
-  color: #94a3b8;
+  color: #6b6783;
   line-height: 1.4;
 }
 .bph-check-chev {

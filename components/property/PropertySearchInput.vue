@@ -6,49 +6,76 @@
       { 'psi-wrap--open': showDropdown && results.length > 0 },
     ]"
   >
-    <div class="psi-input-wrap">
-      <svg
-        class="psi-icon"
-        width="15"
-        height="15"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.2"
-        stroke-linecap="round"
-      >
-        <circle cx="11" cy="11" r="8" />
-        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-      </svg>
-      <input
-        :value="query"
-        type="text"
-        :placeholder="placeholder"
-        class="psi-input"
-        @input="handleInput(($event.target as HTMLInputElement).value)"
-        @focus="onFocus"
-        @keyup.enter="onEnter"
-      />
-      <div v-if="loading" class="psi-spinner" />
-      <button
-        v-else-if="query"
-        class="psi-clear"
-        @click="clearQuery"
-        aria-label="Clear"
-      >
+    <div class="psi-input-wrap" :class="{ 'psi-input-wrap--actions': showActions }">
+      <div class="psi-input-core">
         <svg
-          width="12"
-          height="12"
+          class="psi-icon"
+          width="15"
+          height="15"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2.5"
+          stroke-width="2.2"
           stroke-linecap="round"
         >
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
-      </button>
+        <input
+          :value="query"
+          type="text"
+          :placeholder="placeholder"
+          class="psi-input"
+          @input="handleInput(($event.target as HTMLInputElement).value)"
+          @focus="onFocus"
+          @keyup.enter="onEnter"
+        />
+        <div v-if="loading" class="psi-spinner" />
+        <button
+          v-else-if="query"
+          class="psi-clear"
+          @click="clearQuery"
+          aria-label="Clear"
+        >
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <template v-if="showActions">
+        <button
+          type="button"
+          class="psi-locate-btn"
+          :disabled="locating"
+          aria-label="Use my current location"
+          @click="onLocateClick"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+          </svg>
+        </button>
+        <button type="button" class="psi-search-btn" @click="onEnter">
+          Search
+        </button>
+      </template>
     </div>
 
     <!-- Dropdown -->
@@ -168,6 +195,8 @@ interface Props {
   preferPassport?: boolean
   /** Show a labelled "Published" / "In progress" pill instead of the tiny circular icon */
   showPassportStatus?: boolean
+  /** Render the "use my location" + "Search" buttons inside the pill */
+  showActions?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -175,6 +204,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'light',
   preferPassport: false,
   showPassportStatus: false,
+  showActions: false,
 })
 
 const emit = defineEmits<{
@@ -296,6 +326,35 @@ function clearQuery() {
   showDropdown.value = false
 }
 
+// "Use my location" → reverse-geocode via postcodes.io (free, keyless UK
+// lookup already used elsewhere in this app) to the nearest postcode, then
+// feed it into the normal debounced search flow.
+const locating = ref(false)
+function onLocateClick() {
+  if (typeof navigator === 'undefined' || !navigator.geolocation) return
+  locating.value = true
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      try {
+        const { latitude, longitude } = pos.coords
+        const res = await $fetch<any>(
+          `https://api.postcodes.io/postcodes?lon=${longitude}&lat=${latitude}&limit=1`,
+        )
+        const postcode = res?.result?.[0]?.postcode
+        if (postcode) handleInput(postcode)
+      } catch {
+        /* non-critical — leave the search box as-is */
+      } finally {
+        locating.value = false
+      }
+    },
+    () => {
+      locating.value = false
+    },
+    { timeout: 8000 },
+  )
+}
+
 function epcColor(rating: string): string {
   const map: Record<string, string> = {
     A: '#00b050',
@@ -333,9 +392,16 @@ defineExpose({ clearQuery })
   align-items: center;
 }
 
+.psi-input-core {
+  position: relative;
+  width: 100%;
+}
+
 .psi-icon {
   position: absolute;
   left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
   pointer-events: none;
 }
 
@@ -388,6 +454,8 @@ defineExpose({ clearQuery })
 .psi-spinner {
   position: absolute;
   right: 14px;
+  top: 50%;
+  margin-top: -7px;
   width: 14px;
   height: 14px;
   border: 2px solid rgba(148, 163, 184, 0.3);
@@ -404,6 +472,8 @@ defineExpose({ clearQuery })
 .psi-clear {
   position: absolute;
   right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -413,6 +483,60 @@ defineExpose({ clearQuery })
   display: grid;
   place-items: center;
   cursor: pointer;
+}
+
+/* ── Actions variant (location + Search button inside the pill) ── */
+.psi-input-wrap--actions {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 100px;
+  padding: 5px 5px 5px 4px;
+  gap: 4px;
+}
+.psi-input-wrap--actions .psi-input-core {
+  flex: 1;
+  min-width: 0;
+}
+.psi-input-wrap--actions .psi-input {
+  background: transparent;
+  border-color: transparent;
+  padding-right: 8px;
+}
+.psi-input-wrap--actions .psi-input:focus {
+  background: transparent;
+  border-color: transparent;
+}
+.psi-locate-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #00a19a;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.psi-locate-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.psi-search-btn {
+  background: #00a19a;
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 10px 20px;
+  font-size: 13.5px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.psi-search-btn:hover {
+  background: #00918b;
 }
 
 /* ── Dropdown ── */

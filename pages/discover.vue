@@ -59,6 +59,7 @@
         <PropertySearchInput
           placeholder="Enter postcode or address"
           variant="light"
+          show-actions
           @select="onResultSelect"
         />
       </div>
@@ -70,7 +71,7 @@
       <!-- ── Three entry-point cards ─────────────────────────────── -->
       <div class="exp-cards-row">
         <button type="button" class="exp-card exp-card--teal" @click="focusSearchInput">
-          <img src="/op-icons/misc/exploreProperty.png" alt="" class="exp-card-ic" loading="lazy" />
+          <img src="/op-icons/misc/exploreLocation.png" alt="" class="exp-card-ic" loading="lazy" />
           <div class="exp-card-title">Explore a property</div>
           <div class="exp-card-sub">
             Search any UK home and see its public property data.
@@ -297,11 +298,11 @@ function lastSoldLabel(dateStr: string): string {
   color: #00817c;
 }
 .exp-hero-illustration {
-  width: 118px;
+  width: 172px;
   height: auto;
   object-fit: contain;
   flex-shrink: 0;
-  margin-top: 4px;
+  margin-top: -4px;
 }
 
 /* ── Search ── */
