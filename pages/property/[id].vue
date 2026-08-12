@@ -183,7 +183,9 @@
 
 
       <!-- ─── SECTION 3: Action Bar ────────────────────────────────── -->
-      <div class="pps-action-bar">
+      <!-- Hidden per request: duplicates the floating claim box's CTA and
+           the hero's Watch/Ask pills, which already cover this. -->
+      <div v-if="false" class="pps-action-bar">
         <button
           v-if="pageState === 'unclaimed'"
           class="pps-passport-cta-unlock"
