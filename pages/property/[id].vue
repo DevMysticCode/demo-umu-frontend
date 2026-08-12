@@ -181,10 +181,41 @@
         </div>
       </div>
 
+
       <!-- ─── SECTION 3: Action Bar ────────────────────────────────── -->
-      <div class="pps-action-bar" v-if="pageState !== 'unclaimed'">
+      <div class="pps-action-bar">
         <button
-          v-if="pageState === 'progress'"
+          v-if="pageState === 'unclaimed'"
+          class="pps-passport-cta-unlock"
+          style="
+            background: #231d45;
+            box-shadow: 0 6px 22px rgba(35, 29, 69, 0.4);
+            margin-bottom: 10px;
+          "
+          type="button"
+          @click="onClaimClick"
+        >
+          <div class="pps-passport-cta-unlock-left">
+            <div class="pps-passport-cta-unlock-title">
+              Claim this property — it's free
+            </div>
+            <div class="pps-passport-cta-unlock-sub">
+              Build a verified Passport · TA6, TA7, TA10 · certificates ·
+              history
+            </div>
+          </div>
+          <div class="pps-passport-cta-unlock-price">
+            <span
+              class="pps-passport-cta-unlock-amount"
+              style="font-size: 18px; letter-spacing: -0.3px"
+              >Free</span
+            >
+            <span class="pps-passport-cta-unlock-arrow">→</span>
+          </div>
+        </button>
+
+        <button
+          v-else-if="pageState === 'progress'"
           class="pps-passport-cta-unlock"
           style="
             background: linear-gradient(
@@ -240,6 +271,45 @@
             <span class="pps-passport-cta-unlock-arrow">→</span>
           </div>
         </button>
+
+        <div class="pps-secondary-row">
+          <button type="button" class="pps-secondary-btn" @click="onWatchClick">
+            <img
+              src="/op-icons/property/watchThis.jpeg"
+              alt=""
+              class="pps-secondary-btn-img"
+              loading="lazy"
+            />
+            <span class="pps-secondary-btn-label">{{
+              pageState === 'progress' ? 'Get notified' : 'Watch this'
+            }}</span>
+            <span class="pps-secondary-btn-sub">{{
+              pageState === 'progress'
+                ? 'Alert when Passport is live'
+                : 'Save & get alerts'
+            }}</span>
+          </button>
+          <button
+            type="button"
+            class="pps-secondary-btn"
+            @click="onContactClick"
+          >
+            <img
+              src="/op-icons/property/askAQuestion.jpeg"
+              alt=""
+              class="pps-secondary-btn-img"
+              loading="lazy"
+            />
+            <span class="pps-secondary-btn-label">{{
+              pageState === 'published' ? 'Make contact' : 'Ask a question'
+            }}</span>
+            <span class="pps-secondary-btn-sub">{{
+              pageState === 'published'
+                ? 'Owner or neighbour'
+                : 'Neighbour or curious buyer'
+            }}</span>
+          </button>
+        </div>
       </div>
 
       <!-- ─── SECTION 4: Live Signal Bar ──────────────────────────── -->
@@ -315,27 +385,28 @@
           </div>
         </div>
 
-        <button
-          type="button"
-          class="pps-score-run-btn"
-          @click.stop="onScoreCardTap"
-        >
-          Run full HomeScore <span>→</span>
-        </button>
+        <div v-if="epcBars.length > 0" class="pps-score-bottom">
+          <div class="pps-epc-header">From the public EPC certificate</div>
+          <div class="pps-epc-rows">
+            <div v-for="bar in epcBars" :key="bar.label" class="pps-epc-row">
+              <span class="pps-epc-label">{{ bar.label }}</span>
+              <div class="pps-epc-track">
+                <div
+                  class="pps-bar-fill"
+                  :style="{ width: bar.pct + '%', background: bar.color }"
+                />
+              </div>
+              <span class="pps-epc-rating">{{ bar.rating }}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- SECTION 5b (EPC breakdown bars) removed from this page — the
-           prototype goes straight from the HomeScore card to the Explore
-           Grid. Not deleted: the EPC breakdown still lives on the full
-           HomeScore page (onScoreCardTap) and in the Explore Grid's "EPC"
-           tile. -->
-
       <!-- ─── SECTION 6: Explore Grid ──────────────────────────────── -->
-      <div class="pps-explore-header pps-explore-header--stacked">
-        <span class="pps-explore-title">What we know about this property</span>
+      <div class="pps-explore-header">
+        <span class="pps-explore-title">Explore this property</span>
         <span class="pps-explore-sources"
-          >{{ exploreTiles.length }} sources of property and area
-          information</span
+          >{{ exploreTiles.length }} data sources</span
         >
       </div>
       <div class="pps-explore-grid">
@@ -359,29 +430,23 @@
             />
             <template v-else>{{ tile.icon }}</template>
           </div>
-          <div class="pps-tile-body">
-            <div class="pps-tile-title">
-              {{ tile.title }}
-              <span
-                v-if="tile.pip"
-                class="pps-tile-new-pip"
-                :style="tile.pip === '!' ? { background: '#C73E36' } : undefined"
-                >{{ tile.pip }}</span
-              >
-            </div>
-            <div class="pps-tile-value" :style="tile.valueStyle">
-              {{ tile.value }}
-            </div>
-            <div class="pps-tile-sub">{{ tile.sub }}</div>
-            <div v-if="tile.trend" class="pps-tile-trend">
-              <span class="pps-tile-trend-arrow">↑</span> {{ tile.trend }}
-            </div>
+          <div class="pps-tile-title">
+            {{ tile.title }}
+            <span
+              v-if="tile.pip"
+              class="pps-tile-new-pip"
+              :style="tile.pip === '!' ? { background: '#C73E36' } : undefined"
+              >{{ tile.pip }}</span
+            >
           </div>
-          <span class="pps-tile-arrow">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </span>
+          <div class="pps-tile-value" :style="tile.valueStyle">
+            {{ tile.value }}
+          </div>
+          <div class="pps-tile-sub">{{ tile.sub }}</div>
+          <div v-if="tile.trend" class="pps-tile-trend">
+            <span class="pps-tile-trend-arrow">↑</span> {{ tile.trend }}
+          </div>
+          <span class="pps-tile-arrow">→</span>
         </div>
       </div>
 
@@ -425,17 +490,25 @@
           </button>
         </div>
 
-        <div class="pps-pp-icon-stack">
-          <span class="pps-pp-stack-ic pps-pp-stack-ic--seller">🏠</span>
-          <span class="pps-pp-stack-ic pps-pp-stack-ic--landlord">🔑</span>
-          <span class="pps-pp-stack-ic pps-pp-stack-ic--tenant">📋</span>
-          <span class="pps-pp-stack-ic pps-pp-stack-ic--buyer">🛒</span>
-          <div class="pps-pp-stack-body">
-            <div class="pps-pp-stack-title">Your Property Passport</div>
-            <div class="pps-pp-stack-sub">
-              The permanent record for this home. Build it today. Keep it for
-              life. Ready when you let or sell.
-            </div>
+        <div class="pps-pp-stepper">
+          <div class="pps-pp-step pps-pp-step--active">
+            <div class="pps-pp-step-dot">1</div>
+            <div class="pps-pp-step-label">Claim</div>
+          </div>
+          <div class="pps-pp-step-line" />
+          <div class="pps-pp-step">
+            <div class="pps-pp-step-dot">2</div>
+            <div class="pps-pp-step-label">Verify</div>
+          </div>
+          <div class="pps-pp-step-line" />
+          <div class="pps-pp-step">
+            <div class="pps-pp-step-dot">3</div>
+            <div class="pps-pp-step-label">Score</div>
+          </div>
+          <div class="pps-pp-step-line" />
+          <div class="pps-pp-step">
+            <div class="pps-pp-step-dot">4</div>
+            <div class="pps-pp-step-label">Publish</div>
           </div>
         </div>
 
@@ -449,9 +522,11 @@
           "
           @click="onClaimClick"
         >
-          Create Passport
+          Claim this property — it's free →
         </button>
-        <div class="pps-passport-cta-sub">£15 one-off</div>
+        <div class="pps-passport-cta-sub">
+          Takes 2 minutes · No listing required · Free forever
+        </div>
       </div>
 
       <div v-else-if="pageState === 'progress'" class="pps-passport-card">
@@ -804,7 +879,7 @@
     >
       <RegisterInterestContent
         :property-id="propertyId"
-        :address="property?.addressLine1 || ''"
+        :property-address="property?.addressLine1 || ''"
         @submit="showRegisterInterest = false"
       />
     </BaseDrawer>
@@ -2593,69 +2668,7 @@
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
-          <!-- ── Utilities — no live per-property supply API exists, so
-               this is a plain informational panel, same categorical-default
-               spirit as the tile itself. ─────────────────────────────── -->
-          <template v-else-if="activeSheet === 'utilities'">
-            <div
-              class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
-            >
-              <span class="pps-ds-header-icon"
-                ><img
-                  src="/op-icons/property/broadband.jpeg"
-                  alt=""
-                  loading="lazy"
-              /></span>
-              <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">Utilities</div>
-                <div class="pps-ds-header-meta">Mains supply</div>
-              </div>
-            </div>
-            <section class="pps-tr-head">
-              <div class="pps-tr-lab">Connections</div>
-              <div class="pps-tr-big">Mains gas, electricity &amp; water</div>
-              <p class="pps-tr-sub">
-                UK residential properties are connected to mains utilities by
-                default unless flagged otherwise — no property-specific
-                supply record exists yet for this address. A Property
-                Passport lets the owner confirm the real meter/supplier
-                details.
-              </p>
-            </section>
-            <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
-          </template>
-
-          <!-- ── Price estimate info ───────────────────────────────── -->
-          <template v-else-if="activeSheet === 'price-info'">
-            <div
-              class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
-            >
-              <span class="pps-ds-header-icon"
-                ><img
-                  src="/op-icons/property/propertyHistory.jpeg"
-                  alt=""
-                  loading="lazy"
-              /></span>
-              <div class="pps-ds-header-text">
-                <div class="pps-ds-header-title">About this estimate</div>
-                <div class="pps-ds-header-meta">HM Land Registry</div>
-              </div>
-            </div>
-            <section class="pps-tr-head">
-              <div class="pps-tr-lab">{{ priceSourceLabel }}</div>
-              <div class="pps-tr-big">{{ formatPrice(estimatedPrice) }}</div>
-              <p class="pps-tr-sub">
-                Based on the UK House Price Index applied to this property's
-                last known sale price — not a valuation or survey. A Property
-                Passport with verified improvements gives a more accurate
-                picture.
-              </p>
-            </section>
-            <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
-          </template>
-
+          <!-- ── Broadband (Ofcom Connected Nations) ──────────────── -->
           <template v-else-if="activeSheet === 'broadband'">
             <div
               class="pps-ds-header"
@@ -4100,18 +4113,9 @@
       :open="watchDrawerOpen"
       :address-label="property?.addressLine1 || ''"
       :submitting="watchSubmitting"
-      :initial-prefs="watchPrefs"
       @close="watchDrawerOpen = false"
       @submit="onWatchDrawerSubmit"
     />
-    <WatchConfirmedDrawer
-      :open="watchConfirmedOpen"
-      :address-label="property?.addressLine1 || ''"
-      :prefs="watchConfirmedPrefs"
-      @close="watchConfirmedOpen = false"
-      @create-passport="goToBuildBuyerPassport"
-    />
-    <BottomNav active="explore" />
   </div>
 </template>
 
@@ -4130,7 +4134,6 @@ import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
 import ShareContent from '~/components/property/ShareContent.vue'
 import WatchPropertyDrawer from '~/components/property/WatchPropertyDrawer.vue'
-import WatchConfirmedDrawer from '~/components/property/WatchConfirmedDrawer.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import NotificationBell from '~/components/ui/NotificationBell.vue'
@@ -5351,20 +5354,6 @@ const exploreTiles = computed(() => {
     value: epcValue,
     sub: detailsSub,
   })
-  // EPC — standalone tile (was folded into Property details only). Opens
-  // the same 'property-details' sheet, which already has the real Energy
-  // rating row — no new sheet content needed.
-  tiles.push({
-    key: 'epc',
-    icon: '⚡',
-    iconBg: '#FFF8E1',
-    iconImage: '/op-icons/property/type.jpeg',
-    title: 'EPC',
-    value: p.epcRating ? `EPC ${p.epcRating}${p.epcScore ? ` (${p.epcScore})` : ''}` : 'Not on file',
-    sub: p.epcExpiryDate
-      ? `Expires ${new Date(p.epcExpiryDate).toLocaleDateString('en-GB')}`
-      : 'EPC Register',
-  })
   // Property history (Land Registry sold history)
   //
   // Enrichment sale rows can arrive with EITHER `price`/`date` (our
@@ -5440,41 +5429,85 @@ const exploreTiles = computed(() => {
       ? `Nearest ${nearestSchool.distanceKm.toFixed(1)} km`
       : 'See full list on gov.uk',
   })
-  // Transport — single tile covering trains/buses/airports (each still
-  // falls back through real data → "looking up" → "unavailable" inside the
-  // combined 'transport' sheet). Was 3 separate tiles; merged to match the
-  // redesigned grid — the 'transport' sheet already aggregates all three,
-  // so this is a display change only, no content lost.
+  // Transport (trains / buses / airports) — each one falls back through
+  // three states: real data → "looking up" while enrichment is pending →
+  // "sources unreachable" when Overpass mirrors all failed. Trains and
+  // buses share `transportLookupFailed`; airports use their own batch
+  // (150 km radius is too heavy to fold into the station/bus query) and
+  // therefore have a separate `airportsLookupFailed` flag — a failed
+  // airports lookup must NOT mark trains/buses as unavailable.
   const enrichmentPending = !enrichment.value
   const tFailed = transportLookupFailed.value
+  const aFailed = airportsLookupFailed.value
+  // Trains
   const nearestTrain = enrichmentTrains.value[0]
-  const nearestBus = enrichmentBuses.value[0]
-  {
-    const nearest = nearestTrain || nearestBus
-    const transportValue = nearest
-      ? `${nearest.distanceKm.toFixed(1)} km`
+  tiles.push({
+    key: 'trains',
+    icon: '',
+    iconBg: '#F3E5F5',
+    iconImage: '/op-icons/property/trainstations.jpeg',
+    title: 'Train stations',
+    value: nearestTrain
+      ? `${nearestTrain.distanceKm.toFixed(1)} km`
       : enrichmentPending
       ? 'Looking up…'
       : tFailed
       ? 'Unavailable'
-      : 'No data'
-    const transportSub = nearestTrain
+      : 'No data',
+    sub: nearestTrain
       ? nearestTrain.name
-      : nearestBus
+      : enrichmentPending
+      ? 'Loading nearest stations'
+      : tFailed
+      ? 'Couldn’t load right now — tap to retry'
+      : 'No stations found nearby',
+  })
+  // Bus stops
+  const nearestBus = enrichmentBuses.value[0]
+  tiles.push({
+    key: 'buses',
+    icon: '',
+    iconBg: '#FFF3E0',
+    iconImage: '/op-icons/property/busStops.jpeg',
+    title: 'Bus stops',
+    value: nearestBus
+      ? `${nearestBus.distanceKm.toFixed(2)} km`
+      : enrichmentPending
+      ? 'Looking up…'
+      : tFailed
+      ? 'Unavailable'
+      : 'No data',
+    sub: nearestBus
       ? nearestBus.name || 'Nearest bus stop'
       : enrichmentPending
-      ? 'Loading nearby transport'
-      : 'Trains · buses · airports'
-    tiles.push({
-      key: 'transport',
-      icon: '🚌',
-      iconBg: '#F3E5F5',
-      iconImage: '/op-icons/property/trainstations.jpeg',
-      title: 'Transport',
-      value: transportValue,
-      sub: transportSub,
-    })
-  }
+      ? 'Loading nearest stops'
+      : tFailed
+      ? 'Couldn’t load right now — tap to retry'
+      : 'No stops found within 700 m',
+  })
+  // Airports — independent failure flag
+  const nearestAirport = enrichmentAirports.value[0]
+  tiles.push({
+    key: 'airports',
+    icon: '',
+    iconBg: '#E1F5FE',
+    iconImage: '/op-icons/property/airports.jpeg',
+    title: 'Airports',
+    value: nearestAirport
+      ? `${nearestAirport.distanceKm.toFixed(0)} km`
+      : enrichmentPending
+      ? 'Looking up…'
+      : aFailed
+      ? 'Unavailable'
+      : 'No data',
+    sub: nearestAirport
+      ? nearestAirport.name
+      : enrichmentPending
+      ? 'Loading nearest airports'
+      : aFailed
+      ? 'Couldn’t load right now — tap to retry'
+      : 'No airports within 150 km',
+  })
   // Location & map
   tiles.push({
     key: 'map',
@@ -5535,17 +5568,14 @@ const exploreTiles = computed(() => {
   // are static because the actual outcome (charges vs not-migrated vs
   // clean) is only known after the sheet loads. We hint "HM Land
   // Registry" so buyers understand the provenance before they tap.
-  // Title & ownership — real tenure/title data when on file, opens the
-  // existing LLC (Local Land Charges) sheet, the closest real ownership
-  // check already built.
   tiles.push({
     key: 'llc',
     icon: '',
     iconBg: '#F3EFFB',
     iconImage: '/op-icons/property/landCharges.jpeg',
-    title: 'Title & ownership',
-    value: p.tenure || 'Check LLC',
-    sub: p.titleNumber ? `Title ${p.titleNumber}` : 'HM Land Registry',
+    title: 'Land charges',
+    value: 'Check LLC',
+    sub: 'HM Land Registry',
   })
   // Council tax — prefer EPC-sourced band when DB column empty
   {
@@ -5575,18 +5605,6 @@ const exploreTiles = computed(() => {
     title: 'Broadband',
     value: 'Check speeds',
     sub: 'Full fibre availability',
-  })
-  // Utilities — no per-property supply API exists (same "no live source"
-  // gap as flood risk, which defaults to 'Very Low' above), so this uses
-  // the same categorical-default pattern rather than a live figure.
-  tiles.push({
-    key: 'utilities',
-    icon: '⚡',
-    iconBg: '#E8F5E9',
-    iconImage: '/op-icons/property/broadband.jpeg',
-    title: 'Utilities',
-    value: 'Mains',
-    sub: 'Gas, electricity, water',
   })
   // Stamp duty
   if (estimatedPrice.value) {
@@ -5766,43 +5784,14 @@ function onAccessPassport() {
 }
 
 const watchDrawerOpen = ref(false)
-// Prefill for WatchPropertyDrawer — fetched lazily so reopening the drawer
-// (or a returning watcher) sees their actual saved toggles instead of the
-// drawer's hardcoded defaults every time.
-const watchPrefs = ref<Record<string, boolean> | null>(null)
-async function loadWatchPrefs() {
-  const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-  if (!token) return
-  try {
-    const res = await fetch(`${config.public.apiBase}/property/${propertyId}/watch`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    if (!res.ok) return
-    const data = await res.json()
-    if (data) {
-      watchPrefs.value = {
-        claimed: data.claimed,
-        progress: data.progress,
-        published: data.published,
-        comparables: data.comparables,
-        homescore: data.homescore,
-      }
-    }
-  } catch {
-    /* prefill just stays empty — drawer falls back to its own defaults */
-  }
-}
 function onWatchClick() {
   watchDrawerOpen.value = true
-  loadWatchPrefs()
 }
 
 // Persist a "watch": ensure the property is saved to the user's profile
-// (so it shows under Saved Properties), register interest (email), and
-// store the per-event notification prefs from the drawer. Guests are sent
-// to sign-in and resume here via ?watched=1.
-async function persistWatch(opts: { silent?: boolean; prefs?: Record<string, boolean> } = {}) {
+// (so it shows under Saved Properties) and register interest (email). Guests
+// are sent to sign-in and resume here via ?watched=1.
+async function persistWatch(opts: { silent?: boolean } = {}) {
   const token =
     typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) {
@@ -5828,16 +5817,6 @@ async function persistWatch(opts: { silent?: boolean; prefs?: Record<string, boo
       },
       body: JSON.stringify({ interestLevel: 'Potential buyer' }),
     }).catch(() => {})
-    if (opts.prefs) {
-      fetch(`${config.public.apiBase}/property/${propertyId}/watch`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(opts.prefs),
-      }).catch(() => {})
-    }
     if (!opts.silent) {
       showToast({
         message: 'Added to your watch list',
@@ -5850,29 +5829,9 @@ async function persistWatch(opts: { silent?: boolean; prefs?: Record<string, boo
   }
 }
 
-// Confirmation drawer shown right after a successful watch — replaces the
-// plain toast so the buyer sees exactly what they'll be notified about,
-// matching the "You're watching…" prototype.
-const watchConfirmedOpen = ref(false)
-const watchConfirmedPrefs = ref<Record<string, boolean> | null>(null)
-async function onWatchDrawerSubmit(prefs: Record<string, boolean>) {
+async function onWatchDrawerSubmit() {
   watchDrawerOpen.value = false
-  await persistWatch({ prefs, silent: true })
-  watchConfirmedPrefs.value = prefs
-  watchConfirmedOpen.value = true
-}
-
-function goToBuildBuyerPassport() {
-  watchConfirmedOpen.value = false
-  const target = '/buyer-profile/build'
-  const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-  if (!token) {
-    try { localStorage.setItem('redirectAfterLogin', target) } catch {}
-    router.push('/onboarding/signin')
-    return
-  }
-  router.push(target)
+  await persistWatch()
 }
 
 // True when the logged-in user owns or collaborates on the passport for this
@@ -5898,15 +5857,8 @@ function onContactClick() {
   openSheet('owner')
 }
 
-// Owner/collaborator → their own full HomeScore flow (can run the quiz,
-// see improvement pathway, etc). Everyone else (buyer/guest) → the
-// "Property Report" buyer view — public-EPC-only snapshot, no quiz.
 function onScoreCardTap() {
-  if (isPassportOwnerOrCollab.value) {
-    router.push(`/homescore/${propertyId}`)
-  } else {
-    router.push(`/homescore/${propertyId}?screen=buyer-results`)
-  }
+  router.push(`/homescore/${propertyId}`)
 }
 
 // ─── Bottom-sheet system (prototype's openSheet/closeSheet) ────────────────
@@ -5925,14 +5877,12 @@ type SheetKey =
   | 'llc'
   | 'council'
   | 'broadband'
-  | 'utilities'
   | 'stamp-duty'
   | 'listed'
   | 'crime'
   | 'watch'
   | 'owner'
   | 'passport'
-  | 'price-info'
   | 'explain-unclaimed'
   | 'explain-progress'
   | 'explain-published'
@@ -6004,8 +5954,6 @@ function onExploreTileClick(key: string) {
   // Every explore tile now opens its matching bottom sheet (prototype parity).
   const map: Record<string, SheetKey | null> = {
     'property-details': 'property-details',
-    epc: 'property-details',
-    utilities: 'utilities',
     history: 'history',
     street: 'street',
     schools: 'schools',
@@ -7932,9 +7880,7 @@ function formatSaleDate(dateStr: string): string {
   color: #231d45;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  /* Clears the fixed BottomNav (~64px) plus the home-indicator safe area —
-     same pattern as explore.vue's .explore-scroll. */
-  padding-bottom: calc(100px + env(safe-area-inset-bottom));
+  padding-bottom: 24px;
 }
 
 .pps-loading-state {
@@ -8358,6 +8304,7 @@ function formatSaleDate(dateStr: string): string {
   color: #00a19a;
 }
 
+
 /* ─── Action bar ────────────────────────────────────────────── */
 .pps-action-bar {
   margin: 0;
@@ -8447,6 +8394,51 @@ function formatSaleDate(dateStr: string): string {
   color: rgba(255, 255, 255, 0.8);
   font-weight: 700;
 }
+.pps-secondary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.pps-secondary-btn {
+  background: white;
+  border: 1.5px solid #ececef;
+  border-radius: 12px;
+  padding: 12px 10px;
+  text-align: center;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.pps-secondary-btn-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.pps-secondary-btn:hover {
+  border-color: #231d45;
+  box-shadow: 0 4px 12px rgba(35, 29, 69, 0.1);
+}
+.pps-secondary-btn-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1535;
+  display: block;
+}
+.pps-secondary-btn-sub {
+  font-size: 11px;
+  color: #999;
+  display: block;
+  margin-top: 2px;
+}
+
 /* ─── Signal bar ────────────────────────────────────────────── */
 .pps-signal-bar {
   background: #f2faf8;
@@ -8494,7 +8486,6 @@ function formatSaleDate(dateStr: string): string {
 
 /* ─── Score card ────────────────────────────────────────────── */
 .pps-score-card {
-  position: relative;
   margin: 14px 14px 0;
   border-radius: 20px;
   overflow: hidden;
@@ -8517,8 +8508,7 @@ function formatSaleDate(dateStr: string): string {
   overflow: hidden;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 14px 20px;
+  gap: 20px;
 }
 .pps-score-blob-tr {
   position: absolute;
@@ -8596,34 +8586,6 @@ function formatSaleDate(dateStr: string): string {
 .pps-score-info {
   flex: 1;
   z-index: 1;
-  min-width: 0;
-  /* Reserves room so the absolutely-positioned "Run full HomeScore" button
-     (top-right of the card) never overlaps the eyebrow/verdict text. */
-  padding-right: 96px;
-}
-.pps-score-run-btn {
-  /* Anchored to .pps-score-card (top-right corner), not inline in the
-     gauge/text row — matches the prototype's placement. */
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 2;
-  padding: 9px 14px;
-  border-radius: 100px;
-  border: 1.5px solid #00a19a;
-  background: white;
-  color: #00857f;
-  font-family: inherit;
-  font-size: 11.5px;
-  font-weight: 800;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-}
-.pps-score-run-btn span {
-  font-weight: 900;
 }
 .pps-score-eyebrow {
   font-size: 9px;
@@ -8664,17 +8626,64 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 50%;
   flex-shrink: 0;
 }
+.pps-score-bottom {
+  background: white;
+  padding: 16px 18px;
+}
+.pps-epc-header {
+  font-size: 9px;
+  font-weight: 800;
+  color: #aaa;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.pps-epc-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pps-epc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pps-epc-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  width: 60px;
+  flex-shrink: 0;
+}
+.pps-epc-track {
+  flex: 1;
+  height: 8px;
+  background: #f0f0f2;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.pps-bar-fill {
+  height: 100%;
+  background: #00a19a;
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pps-epc-rating {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  width: 60px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
 /* ─── Explore grid ──────────────────────────────────────────── */
 .pps-explore-header {
   padding: 20px 16px 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-.pps-explore-header--stacked {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
 }
 .pps-explore-title {
   font-size: 15px;
@@ -8693,22 +8702,15 @@ function formatSaleDate(dateStr: string): string {
   padding: 0 14px;
 }
 .pps-tile {
-  /* min-width: 0 lets a grid item shrink below its content's intrinsic
-     width — without it the right column's text/icon could push the
-     card wider than its 1fr track, overflowing the page horizontally
-     (clipped by .pps-page's overflow-x: hidden, which is what made the
-     second column look "cut off"). */
-  min-width: 0;
   background: white;
   border-radius: 16px;
-  padding: 12px;
+  padding: 16px 14px;
   cursor: pointer;
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
   border: 1.5px solid transparent;
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  position: relative;
+  overflow: hidden;
 }
 .pps-tile:hover {
   transform: scale(1.03);
@@ -8719,18 +8721,17 @@ function formatSaleDate(dateStr: string): string {
   transform: scale(0.97);
 }
 .pps-tile-icon {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  flex-shrink: 0;
 }
 .pps-tile-icon--img {
-  width: 44px;
-  height: 44px;
+  width: 56px;
+  height: 56px;
   border-radius: 12px;
   background: transparent !important;
   overflow: hidden;
@@ -8743,40 +8744,28 @@ function formatSaleDate(dateStr: string): string {
   object-fit: cover;
   display: block;
 }
-.pps-tile-body {
-  flex: 1;
-  min-width: 0;
-}
 .pps-tile-title {
-  font-size: 12.5px;
+  font-size: 15px;
   font-weight: 800;
   color: #1a1535;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  margin-top: 10px;
 }
 .pps-tile-value {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #00a19a;
   margin-top: 3px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .pps-tile-sub {
-  font-size: 10px;
+  font-size: 11px;
   color: #999;
   margin-top: 2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .pps-tile-trend {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: #2eab55;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 .pps-tile-new-pip {
   display: inline-block;
@@ -8791,15 +8780,12 @@ function formatSaleDate(dateStr: string): string {
   margin-left: 3px;
 }
 .pps-tile-arrow {
-  flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 1.3px solid #ececef;
-  color: #9c98ad;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  font-size: 12px;
+  color: #ccc;
+  line-height: 1;
 }
 
 /* ─── Passport card ─────────────────────────────────────────── */
@@ -8913,45 +8899,51 @@ function formatSaleDate(dateStr: string): string {
   line-height: 1.5;
 }
 
-/* 4-passport-type icon stack — unclaimed bottom banner */
-.pps-pp-icon-stack {
+/* Stepper for unclaimed */
+.pps-pp-stepper {
   display: flex;
   align-items: center;
   margin: 18px 0 16px;
 }
-.pps-pp-stack-ic {
-  width: 34px;
-  height: 44px;
-  border-radius: 6px;
+.pps-pp-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  position: relative;
+}
+.pps-pp-step-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f0f0f2;
+  color: #9c98ad;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
-  border: 2px solid white;
-  box-shadow: 0 2px 6px rgba(35, 29, 69, 0.15);
-  flex-shrink: 0;
-}
-.pps-pp-stack-ic + .pps-pp-stack-ic {
-  margin-left: -14px;
-}
-.pps-pp-stack-ic--seller { background: #00a19a; transform: rotate(-6deg); }
-.pps-pp-stack-ic--landlord { background: #8a5a2a; transform: rotate(-2deg); }
-.pps-pp-stack-ic--tenant { background: #d4822a; transform: rotate(2deg); }
-.pps-pp-stack-ic--buyer { background: #6b4ba3; transform: rotate(6deg); z-index: 1; }
-.pps-pp-stack-body {
-  margin-left: 16px;
-}
-.pps-pp-stack-title {
-  font-size: 14px;
   font-weight: 800;
+  transition: all 0.15s ease;
+}
+.pps-pp-step--active .pps-pp-step-dot {
+  background: #231d45;
+  color: white;
+}
+.pps-pp-step-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #9c98ad;
+  margin-top: 6px;
+}
+.pps-pp-step--active .pps-pp-step-label {
   color: #231d45;
 }
-.pps-pp-stack-sub {
-  font-size: 11.5px;
-  font-weight: 500;
-  color: #6b6783;
-  line-height: 1.45;
-  margin-top: 2px;
+.pps-pp-step-line {
+  flex: 1;
+  height: 2px;
+  background: #f0f0f2;
+  margin: 0 4px;
+  margin-bottom: 18px;
 }
 
 /* Progress bar (used by in-progress + published) */
