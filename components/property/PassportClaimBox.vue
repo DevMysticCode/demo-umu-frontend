@@ -172,19 +172,12 @@
                     together into one <b>permanent, verified record</b>.
                   </div>
                 </div>
-                <svg class="cx-callout-car" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <ellipse cx="32" cy="34" rx="24" ry="2.5" fill="#008A84" opacity="0.15" />
-                  <rect x="5" y="20" width="54" height="11" rx="5" fill="#00A19A" />
-                  <path d="M16 20 L21 9 Q22.5 7 25 7 H39 Q41.5 7 43 9 L48 20 Z" fill="#00A19A" />
-                  <path d="M20 19 L24 11 H31.3 V19 Z" fill="#BFEFEC" />
-                  <path d="M32.7 19 V11 H40 L44 19 Z" fill="#BFEFEC" />
-                  <rect x="31.3" y="10" width="1.4" height="9" fill="#00A19A" />
-                  <circle cx="17" cy="31" r="5" fill="#231D45" />
-                  <circle cx="17" cy="31" r="2" fill="#DDE3EA" />
-                  <circle cx="47" cy="31" r="5" fill="#231D45" />
-                  <circle cx="47" cy="31" r="2" fill="#DDE3EA" />
-                  <rect x="56" y="23" width="3" height="3.5" rx="1" fill="#F6D87A" />
-                </svg>
+                <img
+                  src="/op-icons/misc/car.png"
+                  alt=""
+                  class="cx-callout-car"
+                  loading="lazy"
+                />
               </div>
               <div class="cx-section-h">
                 Your Passport journey · tap to learn more
@@ -211,16 +204,18 @@
                 </template>
               </div>
               <div class="cx-step-detail">
-                <div class="cx-step-detail-icon">
-                  <img src="/op-icons/verify-identity/idCard.png" alt="" loading="lazy" />
-                </div>
                 <div class="cx-step-detail-body">
                   <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
                   <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
                 </div>
+                <div class="cx-step-detail-icon">
+                  <img src="/op-icons/verify-identity/idCard.png" alt="" loading="lazy" />
+                </div>
               </div>
               <div class="cx2-secure">
-                <img src="/op-icons/investment/padlock.png" alt="" class="cx2-secure-ic" loading="lazy" />
+                <div class="cx2-secure-ic-wrap">
+                  <img src="/op-icons/investment/padlock.png" alt="" class="cx2-secure-ic" loading="lazy" />
+                </div>
                 <div>
                   <div class="cx2-secure-h">Secure. Verified. Yours forever.</div>
                   <div class="cx2-secure-v">
@@ -1057,15 +1052,23 @@ function onPrimary(action: PrimaryAction) {
   gap: 12px;
   margin: 16px 22px 0;
   padding: 14px;
-  background: var(--accent-paler);
+  background: var(--bg);
   border-radius: 14px;
 }
-.cx2-secure-ic {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
+.cx2-secure-ic-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e7e5f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  margin-top: 1px;
+}
+.cx2-secure-ic {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 .cx2-secure-h {
   font-size: 12.5px;
@@ -1172,6 +1175,7 @@ function onPrimary(action: PrimaryAction) {
 .cx-callout-car {
   width: 64px;
   height: 40px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 .cx-callout.purple {
@@ -1469,17 +1473,18 @@ function onPrimary(action: PrimaryAction) {
 }
 .cx-step-detail {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin: 0 22px 4px;
-  padding: 13px 15px;
+  padding: 16px 15px;
   background: var(--accent-paler);
   border: 1px solid var(--accent-pale);
-  border-radius: 12px;
+  border-radius: 14px;
 }
 .cx-step-detail-icon {
-  width: 30px;
-  height: 30px;
+  width: 68px;
+  height: 68px;
   flex-shrink: 0;
 }
 .cx-step-detail-icon img {
@@ -1490,6 +1495,7 @@ function onPrimary(action: PrimaryAction) {
 }
 .cx-step-detail-body {
   min-width: 0;
+  flex: 1;
 }
 .cx-step-detail-h {
   font-size: 12px;
