@@ -20,8 +20,8 @@
           Know your home<br /><span class="lt-teal">inside out.</span>
         </div>
         <div class="hero-sub">
-          Everything about your home, in one place. Understand what it costs,
-          discover what you could save, and build a Property Passport that
+          Everything about your home, in one place. Understand what it costs to
+          run, discover what you could save, and build a Property Passport that
           stays with your home.
         </div>
         <button
@@ -60,7 +60,15 @@
             <div class="dc-peek-row">
               <span class="dc-peek-label">{{ card.peekLabel }}</span>
               <span class="dc-peek-pill">{{ card.peekPill }}</span>
-              <svg class="dc-peek-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                class="dc-peek-chev"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </div>
@@ -80,8 +88,8 @@
               <div class="dc-header-text-col">
                 <div class="dc-headline">Explore any<br />UK property</div>
                 <div class="dc-sub">
-                  See what we already know — value, history, energy,
-                  planning, local area and more.
+                  See what we already know — value, history, energy, planning,
+                  local area and more.
                 </div>
               </div>
               <img
@@ -92,8 +100,7 @@
             </div>
             <div class="dc-explore-badge">
               <span class="dc-explore-badge-check">✓</span>
-              Free <span class="dc-explore-badge-sep">•</span> No account
-              needed
+              Free <span class="dc-explore-badge-sep">•</span> No account needed
             </div>
           </div>
 
@@ -142,8 +149,17 @@
               </div>
               <div class="dc-hs-meta-list">
                 <div class="dc-hs-meta-item">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 1.5h6l2.5 2.5v10.5h-8.5a.5.5 0 0 1-.5-.5v-12a.5.5 0 0 1 .5-.5z" />
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M4 1.5h6l2.5 2.5v10.5h-8.5a.5.5 0 0 1-.5-.5v-12a.5.5 0 0 1 .5-.5z"
+                    />
                     <path d="M10 1.5V4a.5.5 0 0 0 .5.5H13" />
                     <line x1="5" y1="8" x2="11" y2="8" />
                     <line x1="5" y1="10.5" x2="11" y2="10.5" />
@@ -151,16 +167,34 @@
                   <span>Bills <strong>22% above</strong> similar homes</span>
                 </div>
                 <div class="dc-hs-meta-item">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
                     <path d="M1.5 8 8 2l6.5 6" />
                     <path d="M3.5 6.5V14h9V6.5" />
                     <path d="M6.5 14v-4h3v4" />
                   </svg>
-                  <span>Potential savings up to <strong>£330/year</strong></span>
+                  <span
+                    >Potential savings up to <strong>£330/year</strong></span
+                  >
                 </div>
                 <div class="dc-hs-meta-item">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M8 14.5S2.5 11.8 2.5 6.8C2.5 3.9 4.8 2 7.3 2.6c.5.12.9.4 1.2.8 3.4-1.2 6 1.1 6 4 0 4.5-6.5 7.1-6.5 7.1z" />
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M8 14.5S2.5 11.8 2.5 6.8C2.5 3.9 4.8 2 7.3 2.6c.5.12.9.4 1.2.8 3.4-1.2 6 1.1 6 4 0 4.5-6.5 7.1-6.5 7.1z"
+                    />
                     <path d="M8 14.5V7" />
                   </svg>
                   <span>Lower your bills and carbon footprint</span>
@@ -944,18 +978,18 @@ function dismissSubscreen() {
 
 const cards = [
   {
-    id: 'HomeScore',
-    peekLabel: 'HomeScore',
-    peekSub: 'Could your home be costing you more than it should?',
-    peekPill: 'Free',
-    cta: 'Check your home',
-  },
-  {
     id: 'explore',
     peekLabel: 'Explore',
     peekSub: 'See what we already know about any UK home.',
     peekPill: 'Free',
     cta: 'Explore property',
+  },
+  {
+    id: 'HomeScore',
+    peekLabel: 'HomeScore',
+    peekSub: 'Could your home be costing you more than it should?',
+    peekPill: 'Free',
+    cta: 'Check your home',
   },
   {
     id: 'passport',
@@ -1574,9 +1608,12 @@ const currentSample = computed(() => samples[sampleType.value])
    other card assumes white-on-dark text, so eyebrow/pill/headline/sub
    all need dark-text overrides here. ── */
 .deck-card.explore {
-  background:
-    radial-gradient(circle at 85% 18%, rgba(0, 161, 154, 0.1), transparent 40%),
-    linear-gradient(160deg, #ffffff 0%, #eef8f7 100%);
+  background: radial-gradient(
+      circle at 85% 18%,
+      rgba(0, 161, 154, 0.07),
+      transparent 45%
+    ),
+    linear-gradient(160deg, #eef9f6 0%, #fafdfc 100%);
   color: #231d45;
 }
 .deck-card.explore .dc-eyebrow {

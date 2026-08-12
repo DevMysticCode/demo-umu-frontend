@@ -13,12 +13,29 @@
         </svg>
       </button>
       <div class="bp-header-body">
-        <div class="bp-header-title">Build your Buyer Passport</div>
-        <div class="bp-header-sub">
-          <template v-if="step <= 4">Step {{ step }} of 4</template>
-          <template v-else>Bonus step {{ step - 4 }} of 3</template>
-        </div>
+        <template v-if="step <= 4">
+          <div class="bp-header-title-row">
+            <span class="bp-header-title3">{{ coreSteps[step - 1].headerTitle }}</span>
+            <button
+              class="bp-header-info"
+              type="button"
+              aria-label="What happens in this step?"
+              @click="showStepInfoToast"
+            >
+              <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" />
+                <path d="M12 11v5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                <circle cx="12" cy="7.6" r="1" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </template>
+        <template v-else>
+          <div class="bp-header-title">Build your Buyer Passport</div>
+          <div class="bp-header-sub">Bonus step {{ step - 4 }} of 3</div>
+        </template>
       </div>
+      <div style="width: 36px" />
     </div>
 
     <!-- 4-step labeled stepper for the core Passport steps (matches the
@@ -54,34 +71,54 @@
     <div class="bp-scroll">
       <!-- ── STEP 1: KYC — Photo ID / Selfie / AML ── -->
       <div v-if="step === 1" class="bp-step">
-        <div class="bp-step-hero">
-          <div class="bp-step-ic bp-ic-teal bp-ic-illus">
-            <img src="/op-icons/verify-identity/idCard.png" alt="" loading="lazy" />
-          </div>
-          <div class="bp-step-title">Verify your identity</div>
-          <div class="bp-step-body">
-            Show sellers we've checked who you are. Takes about 2 minutes — done once only.
-          </div>
-        </div>
-
-        <!-- ID type picker (prototype-aligned: 3 options before KYC begins) -->
-        <div class="bp-field-label">Which ID will you use?</div>
-        <div class="bp-option-list bp-idtype-list">
-          <div
-            v-for="opt in idTypeOptions"
-            :key="opt.value"
-            class="bp-option-card"
-            :class="{ selected: idDocumentType === opt.value }"
-            @click="idDocumentType = opt.value"
-          >
-            <img v-if="opt.icon" :src="opt.icon" alt="" class="bp-option-illus" loading="lazy" />
-            <span v-else class="bp-option-emoji">{{ opt.emoji }}</span>
-            <div class="bp-option-body">
-              <div class="bp-option-title">{{ opt.title }}</div>
-              <div v-if="opt.sub" class="bp-option-sub">{{ opt.sub }}</div>
+        <!-- Identity intro + document picker card (prototype-exact) -->
+        <div class="bp-id-panel">
+          <div class="bp-id-panel-head">
+            <img
+              src="/op-icons/passportview/umu-passport.png"
+              alt=""
+              class="bp-id-panel-icon"
+              loading="lazy"
+            />
+            <div>
+              <div class="bp-id-panel-title">Let's verify who you are</div>
+              <div class="bp-id-panel-body">
+                This helps build trust with sellers when you choose to show
+                them you're a verified buyer.
+              </div>
             </div>
-            <span v-if="opt.recommended" class="bp-rec-pill">RECOMMENDED</span>
-            <div class="bp-option-check" :class="{ filled: idDocumentType === opt.value }" />
+          </div>
+
+          <div class="bp-id-panel-label">Choose a document to verify</div>
+          <div class="bp-doctype-list">
+            <div
+              v-for="opt in idTypeOptions"
+              :key="opt.value"
+              class="bp-doctype-row"
+              :class="{ selected: idDocumentType === opt.value }"
+              @click="idDocumentType = opt.value"
+            >
+              <div class="bp-doctype-ic">
+                <img v-if="opt.icon" :src="opt.icon" alt="" loading="lazy" />
+                <span v-else>{{ opt.emoji }}</span>
+              </div>
+              <div class="bp-doctype-body">
+                <div class="bp-doctype-title">{{ opt.title }}</div>
+                <div v-if="opt.sub" class="bp-doctype-sub">{{ opt.sub }}</div>
+              </div>
+              <span v-if="opt.recommended" class="bp-doctype-rec">RECOMMENDED</span>
+              <span class="bp-doctype-chev">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                  <path
+                    d="M9 6l6 6-6 6"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -916,11 +953,36 @@ const saving = ref(false)
 const publishing = ref(false)
 
 const coreSteps = [
-  { key: 'identity', label: 'Identity' },
-  { key: 'buying', label: 'Buying position' },
-  { key: 'finance', label: 'Finance' },
-  { key: 'chain', label: 'Chain position' },
+  {
+    key: 'identity',
+    label: 'Identity',
+    headerTitle: 'Your identity',
+    info: "We verify your ID to build trust with sellers — takes about 2 minutes, done once only.",
+  },
+  {
+    key: 'buying',
+    label: 'Buying position',
+    headerTitle: 'Your buying position',
+    info: 'This helps sellers understand your timeline and what you\'re looking for.',
+  },
+  {
+    key: 'finance',
+    label: 'Finance',
+    headerTitle: 'Add proof of funds',
+    info: 'Proof of funds confirms your maximum budget to sellers and agents.',
+  },
+  {
+    key: 'chain',
+    label: 'Chain position',
+    headerTitle: 'Your chain position',
+    info: 'Chain-free buyers are preferred by most sellers — this tells them where you stand.',
+  },
 ] as const
+
+function showStepInfoToast() {
+  const s = coreSteps[step.value - 1]
+  if (s) showToast({ message: s.info, iconEmoji: 'ℹ️' })
+}
 
 // Form state
 const idDocumentType = ref<string | null>(null)
@@ -2898,6 +2960,160 @@ onBeforeUnmount(() => {
 .bp-back {
   width: 36px; height: 36px; border-radius: 50%;
   background: #fff; border: 1px solid #ececef;
+}
+
+/* ── Steps 1-4 header title (mockup: bold title + info icon, no eyebrow pill) ── */
+.bp-header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bp-header-title3 {
+  font-size: 17px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.2px;
+}
+.bp-header-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+}
+
+/* ── 4-step stepper (mockup: numbered circles joined by a line) ── */
+.bp-stepper-dot {
+  position: relative;
+}
+.bp-stepper-dot:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: calc(50% + 12px);
+  right: calc(-50% + 12px);
+  height: 2px;
+  background: #eef0f4;
+  z-index: 0;
+}
+.bp-stepper-dot.done:not(:last-child)::after {
+  background: #00a19a;
+}
+.bp-stepper-num {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Step 1 identity panel (mockup-exact card) ── */
+.bp-id-panel {
+  background: #fff;
+  border: 1px solid #eef0f6;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(35, 29, 69, 0.06), 0 2px 8px rgba(35, 29, 69, 0.04);
+}
+.bp-id-panel-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.bp-id-panel-icon {
+  width: 52px;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.bp-id-panel-title {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.1px;
+  margin-bottom: 4px;
+}
+.bp-id-panel-body {
+  font-size: 12.5px;
+  color: #6b6783;
+  line-height: 1.5;
+}
+.bp-id-panel-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #6b6783;
+  margin-bottom: 10px;
+}
+.bp-doctype-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bp-doctype-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1.5px solid #ececef;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.bp-doctype-row.selected {
+  border-color: #00a19a;
+  background: #f2faf8;
+  box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.1);
+}
+.bp-doctype-ic {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #f6f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+.bp-doctype-ic img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.bp-doctype-body {
+  flex: 1;
+  min-width: 0;
+}
+.bp-doctype-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #231d45;
+}
+.bp-doctype-sub {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 1px;
+}
+.bp-doctype-rec {
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: #007e78;
+  background: #f2faf8;
+  border: 1px solid #e5f4f2;
+  padding: 3px 7px;
+  border-radius: 100px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.bp-doctype-chev {
+  color: #c3c5cf;
+  flex-shrink: 0;
+  display: flex;
 }
 
 /* ── 5-segment progress bar → prototype step-bar ── */
