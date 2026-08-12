@@ -96,6 +96,48 @@
         </button>
       </div>
 
+      <!-- ── More from UMU ────────────────────────────────────────── -->
+      <div class="exp-more">
+        <div class="exp-more-title">More from UMU</div>
+        <div class="exp-more-grid">
+          <button type="button" class="exp-more-card" @click="navigateTo('/homescore')">
+            <img
+              src="/op-icons/misc/exploreHomescore.png"
+              alt=""
+              class="exp-more-ic"
+              loading="lazy"
+            />
+            <div class="exp-more-eyebrow">HomeScore&trade;</div>
+            <span class="exp-more-pill">FREE</span>
+            <div class="exp-more-card-title">
+              Know what your home could be costing you
+            </div>
+            <div class="exp-more-card-sub">
+              Check energy performance, costs and where you could improve.
+            </div>
+            <span class="exp-more-arrow">→</span>
+          </button>
+          <button type="button" class="exp-more-card" @click="navigateTo('/claim')">
+            <img
+              src="/op-icons/misc/explorePropertyPassport.png"
+              alt=""
+              class="exp-more-ic"
+              loading="lazy"
+            />
+            <div class="exp-more-eyebrow">Property Passport</div>
+            <span class="exp-more-pill">SOLICITOR-GRADE</span>
+            <div class="exp-more-card-title">
+              Build your home's verified record
+            </div>
+            <div class="exp-more-card-sub">
+              Store, verify and share documents, answers and history in one
+              place.
+            </div>
+            <span class="exp-more-arrow">→</span>
+          </button>
+        </div>
+      </div>
+
       <!-- ── Recently explored ───────────────────────────────────── -->
       <div v-if="recentlyExplored.length" class="exp-recent">
         <div class="exp-recent-header">
@@ -387,6 +429,82 @@ function lastSoldLabel(dateStr: string): string {
 }
 .exp-card-arrow--amber {
   color: #d4922a;
+}
+
+/* ── More from UMU ── */
+.exp-more {
+  margin-top: 26px;
+}
+.exp-more-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #231d45;
+  margin-bottom: 12px;
+}
+.exp-more-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.exp-more-card {
+  position: relative;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #eef0f6;
+  border-radius: 16px;
+  padding: 16px 14px 34px;
+  font-family: inherit;
+  cursor: pointer;
+  overflow: visible;
+}
+.exp-more-ic {
+  position: absolute;
+  top: -18px;
+  right: 10px;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+.exp-more-eyebrow {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: #00a19a;
+  margin-bottom: 6px;
+}
+.exp-more-pill {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  color: #00817c;
+  background: #eaf7f6;
+  padding: 3px 8px;
+  border-radius: 100px;
+  margin-bottom: 10px;
+}
+.exp-more-card-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #231d45;
+  line-height: 1.3;
+  letter-spacing: -0.1px;
+}
+.exp-more-card-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #6b7089;
+  line-height: 1.45;
+  margin-top: 6px;
+}
+.exp-more-arrow {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #00a19a;
 }
 
 /* ── Recently explored ── */

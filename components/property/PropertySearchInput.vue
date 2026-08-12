@@ -488,10 +488,11 @@ defineExpose({ clearQuery })
 /* ── Actions variant (location + Search button inside the pill) ── */
 .psi-input-wrap--actions {
   background: #fff;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 100px;
-  padding: 5px 5px 5px 4px;
-  gap: 4px;
+  border: 1.5px solid #e6e7eb;
+  border-radius: 999px;
+  padding: 6px;
+  gap: 6px;
+  overflow: hidden;
 }
 .psi-input-wrap--actions .psi-input-core {
   flex: 1;
@@ -499,24 +500,28 @@ defineExpose({ clearQuery })
 }
 .psi-input-wrap--actions .psi-input {
   background: transparent;
-  border-color: transparent;
-  padding-right: 8px;
+  border: none;
+  padding: 8px 4px 8px 34px;
 }
 .psi-input-wrap--actions .psi-input:focus {
   background: transparent;
-  border-color: transparent;
+  border: none;
 }
 .psi-locate-btn {
   width: 38px;
   height: 38px;
   border-radius: 50%;
   border: none;
-  background: transparent;
-  color: #00a19a;
+  background: #f1f2f6;
+  color: #6b7280;
   display: grid;
   place-items: center;
   cursor: pointer;
   flex-shrink: 0;
+  transition: background 0.15s;
+}
+.psi-locate-btn:hover {
+  background: #e7e8ee;
 }
 .psi-locate-btn:disabled {
   opacity: 0.5;
@@ -526,9 +531,9 @@ defineExpose({ clearQuery })
   background: #00a19a;
   color: #fff;
   border: none;
-  border-radius: 100px;
-  padding: 10px 20px;
-  font-size: 13.5px;
+  border-radius: 999px;
+  padding: 13px 26px;
+  font-size: 14px;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
