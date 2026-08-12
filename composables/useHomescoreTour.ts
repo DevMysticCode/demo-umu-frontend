@@ -45,7 +45,7 @@ export function useHomescoreTour(opts: UseHomescoreTourOptions) {
     return all.find((el) => el.offsetParent !== null) ?? null
   }
 
-  function show() {
+  function show(): void {
     const step = steps[idx.value]
     if (!step) return end()
     const el = findTarget(step.sel)
@@ -83,6 +83,12 @@ export function useHomescoreTour(opts: UseHomescoreTourOptions) {
   function end() {
     active.value = false
     targetEl.value = null
+    // Steps scroll their target card into view as the tour progresses
+    // (see `show()`), so by the time it ends the page can be scrolled
+    // anywhere — reset to the top rather than leaving the user mid-page.
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0)
+    }
     try {
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem(opts.storageKey, '1')
