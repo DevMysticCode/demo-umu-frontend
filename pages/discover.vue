@@ -100,40 +100,52 @@
       <div class="exp-more">
         <div class="exp-more-title">More from UMU</div>
         <div class="exp-more-grid">
-          <button type="button" class="exp-more-card" @click="navigateTo('/homescore')">
+          <button
+            type="button"
+            class="exp-more-card exp-more-card--teal"
+            @click="navigateTo('/homescore')"
+          >
+            <div class="exp-more-body">
+              <div class="exp-more-eyebrow">HomeScore&trade;</div>
+              <span class="exp-more-pill">FREE</span>
+              <div class="exp-more-card-title">
+                Know what your home could be costing you
+              </div>
+              <div class="exp-more-card-sub">
+                Check energy performance, costs and where you could improve.
+              </div>
+              <span class="exp-more-arrow exp-more-arrow--teal">→</span>
+            </div>
             <img
               src="/op-icons/misc/exploreHomescore.png"
               alt=""
               class="exp-more-ic"
               loading="lazy"
             />
-            <div class="exp-more-eyebrow">HomeScore&trade;</div>
-            <span class="exp-more-pill">FREE</span>
-            <div class="exp-more-card-title">
-              Know what your home could be costing you
-            </div>
-            <div class="exp-more-card-sub">
-              Check energy performance, costs and where you could improve.
-            </div>
-            <span class="exp-more-arrow">→</span>
           </button>
-          <button type="button" class="exp-more-card" @click="navigateTo('/claim')">
+          <button
+            type="button"
+            class="exp-more-card exp-more-card--amber"
+            @click="navigateTo('/claim')"
+          >
+            <div class="exp-more-body">
+              <div class="exp-more-eyebrow">Property Passport</div>
+              <span class="exp-more-pill">SOLICITOR-GRADE</span>
+              <div class="exp-more-card-title">
+                Build your home's verified record
+              </div>
+              <div class="exp-more-card-sub">
+                Store, verify and share documents, answers and history in
+                one place.
+              </div>
+              <span class="exp-more-arrow exp-more-arrow--amber">→</span>
+            </div>
             <img
               src="/op-icons/misc/explorePropertyPassport.png"
               alt=""
               class="exp-more-ic"
               loading="lazy"
             />
-            <div class="exp-more-eyebrow">Property Passport</div>
-            <span class="exp-more-pill">SOLICITOR-GRADE</span>
-            <div class="exp-more-card-title">
-              Build your home's verified record
-            </div>
-            <div class="exp-more-card-sub">
-              Store, verify and share documents, answers and history in one
-              place.
-            </div>
-            <span class="exp-more-arrow">→</span>
           </button>
         </div>
       </div>
@@ -448,22 +460,32 @@ function lastSoldLabel(dateStr: string): string {
 }
 .exp-more-card {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   text-align: left;
-  background: #fff;
   border: 1px solid #eef0f6;
   border-radius: 16px;
-  padding: 16px 14px 34px;
+  padding: 16px 10px 16px 14px;
   font-family: inherit;
   cursor: pointer;
-  overflow: visible;
+  overflow: hidden;
+}
+.exp-more-card--teal {
+  background: linear-gradient(160deg, #eaf6f5 0%, #f8fcfb 100%);
+}
+.exp-more-card--amber {
+  background: linear-gradient(160deg, #fdf3e4 0%, #fdf9f2 100%);
+}
+.exp-more-body {
+  flex: 1;
+  min-width: 0;
 }
 .exp-more-ic {
-  position: absolute;
-  top: -18px;
-  right: 10px;
   width: 64px;
   height: 64px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 .exp-more-eyebrow {
   font-size: 10.5px;
@@ -479,7 +501,7 @@ function lastSoldLabel(dateStr: string): string {
   font-weight: 800;
   letter-spacing: 0.4px;
   color: #00817c;
-  background: #eaf7f6;
+  background: rgba(255, 255, 255, 0.7);
   padding: 3px 8px;
   border-radius: 100px;
   margin-bottom: 10px;
@@ -499,12 +521,16 @@ function lastSoldLabel(dateStr: string): string {
   margin-top: 6px;
 }
 .exp-more-arrow {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
+  display: block;
+  margin-top: 14px;
   font-size: 16px;
   font-weight: 800;
+}
+.exp-more-arrow--teal {
   color: #00a19a;
+}
+.exp-more-arrow--amber {
+  color: #d4922a;
 }
 
 /* ── Recently explored ── */
