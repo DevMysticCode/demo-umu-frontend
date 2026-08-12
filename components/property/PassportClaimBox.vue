@@ -1056,8 +1056,8 @@ function onPrimary(action: PrimaryAction) {
   border-radius: 14px;
 }
 .cx2-secure-ic-wrap {
-  width: 40px;
-  height: 40px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: #e7e5f8;
   display: flex;
@@ -1066,8 +1066,8 @@ function onPrimary(action: PrimaryAction) {
   flex-shrink: 0;
 }
 .cx2-secure-ic {
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
 }
 .cx2-secure-h {
@@ -1280,8 +1280,8 @@ function onPrimary(action: PrimaryAction) {
   padding: 10px 6px;
 }
 .cx-stat-ic {
-  width: 22px;
-  height: 22px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
   margin: 0 auto 6px;
   display: block;
