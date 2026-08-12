@@ -453,81 +453,25 @@
       </div>
 
       <!-- ─── SECTION 7: Passport Card ─────────────────────────────── -->
-      <div v-if="pageState === 'unclaimed'" class="pps-passport-card">
-        <div class="pps-score-blob-tr" />
-        <div class="pps-score-blob-bl" />
-        <div class="pps-passport-eyebrow-row">
-          <span class="pps-passport-eyebrow"
-            ><span
-              class="pps-passport-eyebrow-dot"
-              style="background: #9c98ad"
-            />Property Passport</span
-          >
-          <span
-            class="pps-passport-price-pill"
-            style="background: #f5f5f7; color: #9c98ad; border-color: #ececef"
-            >Unclaimed</span
-          >
-        </div>
-        <div class="pps-passport-title">No Passport yet — be the first</div>
-        <div class="pps-passport-explain pps-passport-explain--unclaimed">
-          <div style="flex: 1">
-            <div class="pps-passport-explain-eyebrow">
-              Your home's permanent record
-            </div>
-            <div class="pps-passport-explain-body">
-              Why would anyone buy a home without seeing its full history? A
-              Passport stays with this property for life — documents,
-              certificates, everything verified.
-            </div>
+      <div v-if="pageState === 'unclaimed'" class="pps-pc2">
+        <img
+          src="/op-icons/misc/passportFan.png"
+          alt=""
+          class="pps-pc2-fan"
+          loading="lazy"
+        />
+        <div class="pps-pc2-text">
+          <div class="pps-pc2-title">Your Property Passport</div>
+          <div class="pps-pc2-sub">
+            The permanent record for this home. Build it today. Keep it for
+            life. Ready when you let or sell.
           </div>
-          <button
-            type="button"
-            class="pps-explain-btn"
-            style="background: #231d45"
-            @click.stop="openSheet('explain-unclaimed')"
-            aria-label="Why a Property Passport"
-          >
-            ?
+        </div>
+        <div class="pps-pc2-cta-col">
+          <button type="button" class="pps-pc2-cta-btn" @click="onClaimClick">
+            Create Passport
           </button>
-        </div>
-
-        <div class="pps-pp-stepper">
-          <div class="pps-pp-step pps-pp-step--active">
-            <div class="pps-pp-step-dot">1</div>
-            <div class="pps-pp-step-label">Claim</div>
-          </div>
-          <div class="pps-pp-step-line" />
-          <div class="pps-pp-step">
-            <div class="pps-pp-step-dot">2</div>
-            <div class="pps-pp-step-label">Verify</div>
-          </div>
-          <div class="pps-pp-step-line" />
-          <div class="pps-pp-step">
-            <div class="pps-pp-step-dot">3</div>
-            <div class="pps-pp-step-label">Score</div>
-          </div>
-          <div class="pps-pp-step-line" />
-          <div class="pps-pp-step">
-            <div class="pps-pp-step-dot">4</div>
-            <div class="pps-pp-step-label">Publish</div>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          class="pps-passport-cta"
-          style="
-            background: #231d45;
-            box-shadow: 0 4px 16px rgba(35, 29, 69, 0.35);
-            color: white;
-          "
-          @click="onClaimClick"
-        >
-          Claim this property — it's free →
-        </button>
-        <div class="pps-passport-cta-sub">
-          Takes 2 minutes · No listing required · Free forever
+          <div class="pps-pc2-cta-price">£15 one-off</div>
         </div>
       </div>
 
@@ -8788,6 +8732,66 @@ function formatSaleDate(dateStr: string): string {
   font-size: 12px;
   color: #ccc;
   line-height: 1;
+}
+
+/* ─── Passport card v2 (unclaimed) — compact fanned-books banner ── */
+.pps-pc2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 14px 0;
+  padding: 14px;
+  background: #fafafd;
+  border: 1px solid #ececef;
+  border-radius: 18px;
+}
+.pps-pc2-fan {
+  width: 78px;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.pps-pc2-text {
+  flex: 1;
+  min-width: 0;
+}
+.pps-pc2-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.2px;
+}
+.pps-pc2-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b6a82;
+  line-height: 1.4;
+  margin-top: 3px;
+}
+.pps-pc2-cta-col {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.pps-pc2-cta-btn {
+  background: #231d45;
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(35, 29, 69, 0.3);
+}
+.pps-pc2-cta-price {
+  font-size: 11px;
+  font-weight: 800;
+  color: #00a19a;
 }
 
 /* ─── Passport card ─────────────────────────────────────────── */
