@@ -1610,10 +1610,10 @@ const currentSample = computed(() => samples[sampleType.value])
 .deck-card.explore {
   background: radial-gradient(
       circle at 85% 18%,
-      rgba(0, 161, 154, 0.07),
+      rgba(0, 161, 154, 0.1),
       transparent 45%
     ),
-    linear-gradient(160deg, #eef9f6 0%, #fafdfc 100%);
+    linear-gradient(160deg, #ddf3ec 0%, #f0faf7 100%);
   color: #231d45;
 }
 .deck-card.explore .dc-eyebrow {
