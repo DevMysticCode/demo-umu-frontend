@@ -59,7 +59,9 @@
           aria-label="Use my current location"
           @click="onLocateClick"
         >
+          <span v-if="locating" class="psi-locate-spinner" />
           <svg
+            v-else
             width="17"
             height="17"
             viewBox="0 0 24 24"
@@ -77,6 +79,9 @@
         </button>
       </template>
     </div>
+    <p v-if="showActions && locateError" class="psi-locate-error">
+      {{ locateError }}
+    </p>
 
     <!-- Dropdown -->
     <Transition name="psi-drop">
@@ -327,31 +332,47 @@ function clearQuery() {
 }
 
 // "Use my location" → reverse-geocode via postcodes.io (free, keyless UK
-// lookup already used elsewhere in this app) to the nearest postcode, then
-// feed it into the normal debounced search flow.
+// lookup — same approach as components/search/SearchDrawer.vue's
+// useCurrentLocation) to the nearest postcode, then feed it into the
+// normal debounced search flow. Errors are surfaced inline instead of
+// swallowed — a silent failure here just looks like a dead button.
 const locating = ref(false)
+const locateError = ref('')
 function onLocateClick() {
-  if (typeof navigator === 'undefined' || !navigator.geolocation) return
+  if (typeof navigator === 'undefined' || !navigator.geolocation) {
+    locateError.value = 'Geolocation is not supported on this device.'
+    return
+  }
   locating.value = true
+  locateError.value = ''
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
       try {
         const { latitude, longitude } = pos.coords
         const res = await $fetch<any>(
-          `https://api.postcodes.io/postcodes?lon=${longitude}&lat=${latitude}&limit=1`,
+          `https://api.postcodes.io/postcodes?lat=${latitude}&lon=${longitude}&limit=1`,
         )
         const postcode = res?.result?.[0]?.postcode
-        if (postcode) handleInput(postcode)
+        if (!postcode) {
+          locateError.value = 'Could not find a postcode for your location.'
+          return
+        }
+        handleInput(postcode)
       } catch {
-        /* non-critical — leave the search box as-is */
+        locateError.value =
+          'Could not determine your location. Try typing a postcode instead.'
       } finally {
         locating.value = false
       }
     },
-    () => {
+    (err) => {
+      locateError.value =
+        err?.code === 1
+          ? 'Location access denied — allow location access in your device settings.'
+          : 'Could not determine your location. Try typing a postcode instead.'
       locating.value = false
     },
-    { timeout: 8000 },
+    { timeout: 10000, maximumAge: 60000 },
   )
 }
 
@@ -526,6 +547,21 @@ defineExpose({ clearQuery })
 .psi-locate-btn:disabled {
   opacity: 0.5;
   cursor: default;
+}
+.psi-locate-spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(107, 114, 128, 0.25);
+  border-top-color: #6b7280;
+  border-radius: 50%;
+  animation: psi-spin 0.7s linear infinite;
+}
+.psi-locate-error {
+  margin: 6px 4px 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #dc2626;
+  line-height: 1.4;
 }
 .psi-search-btn {
   background: #00a19a;
