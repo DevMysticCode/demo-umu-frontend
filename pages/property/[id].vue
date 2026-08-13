@@ -4085,7 +4085,13 @@ import {
   normalizeUploadUrls,
 } from '~/utils/normalizeUploadUrl'
 
-definePageMeta({ middleware: 'auth' })
+// Deliberately no page-level auth middleware — property details (including
+// HomeScore) must be browsable by guests. Every write action reachable from
+// here (Watch This Property, Ask a Question, Claim Passport) already gates
+// itself on click and round-trips through /onboarding/signin via
+// redirectAfterLogin + a resume query param (?watched=1, ?save=1,
+// ?openSheet=owner, ?claim=1/?unlock=1 — see onMounted below), so gating
+// the whole page would only block guests from viewing, not from acting.
 
 const route = useRoute()
 const router = useRouter()
