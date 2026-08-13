@@ -124,6 +124,36 @@
       </template>
 
       <div class="rw-sec-row">
+        <div class="rw-sec-title">Passport Stamps</div>
+      </div>
+      <div v-if="loadingStamps" class="rw-loading">
+        <div class="rw-spinner" />
+      </div>
+      <div v-else-if="stampCatalogue.length" class="rw-stamps-grid">
+        <div
+          v-for="def in stampCatalogue"
+          :key="def.id"
+          class="rw-stamp-cell"
+          :class="{ 'rw-stamp-cell--locked': !earnedStampIds.has(def.id) }"
+        >
+          <StampFrame
+            :title="def.title"
+            :icon-asset="earnedStampIds.has(def.id) ? def.iconAsset : null"
+            :size="76"
+          />
+          <div class="rw-stamp-label">{{ def.title }}</div>
+        </div>
+      </div>
+
+      <!-- TEMPORARY test button — preview the PassportAchievement
+           celebration on demand without touching the database. Remove
+           this whole block once the real triggers no longer need manual
+           testing. -->
+      <button type="button" class="rw-test-simulate-btn" @click="simulateCelebration">
+        🧪 TEST: Preview stamp animation
+      </button>
+
+      <div class="rw-sec-row">
         <div class="rw-sec-title">History</div>
       </div>
 
@@ -182,6 +212,7 @@
 import RewardHistoryRow from '~/components/profile/RewardHistoryRow.vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
+import StampFrame from '~/components/rewards/StampFrame.vue'
 
 const config = useRuntimeConfig()
 const goBack = useGoBack('/profile')
@@ -213,6 +244,23 @@ interface CatalogueItem {
 }
 const catalogue = ref<CatalogueItem[]>([])
 const loadingCatalogue = ref(true)
+
+interface StampDef {
+  id: string
+  key: string
+  title: string
+  iconAsset: string | null
+}
+const earnedStamps = ref<Array<{ stampDefinitionId: string }>>([])
+const stampCatalogue = ref<StampDef[]>([])
+const loadingStamps = ref(true)
+const earnedStampIds = computed(() => new Set(earnedStamps.value.map((s) => s.stampDefinitionId)))
+
+// TEMPORARY — see the "TEST: Preview stamp animation" button in the
+// template. simulateCelebration() drives the SAME global singleton state
+// app.vue's <PassportAchievement /> is already watching, so no second
+// instance needs mounting here.
+const { simulateCelebration } = usePassportAchievement()
 
 function token() {
   return typeof window !== 'undefined' ? localStorage.getItem('token') : null
@@ -330,6 +378,21 @@ function openHistoryDrawer() {
   }
 }
 
+async function loadStamps() {
+  try {
+    const [earned, all]: any = await Promise.all([
+      $fetch(`${config.public.apiBase}/rewards/stamps`, { headers: authHeaders() }),
+      $fetch(`${config.public.apiBase}/rewards/stamps/catalogue`, { headers: authHeaders() }),
+    ])
+    earnedStamps.value = Array.isArray(earned) ? earned : []
+    stampCatalogue.value = Array.isArray(all) ? all : []
+  } catch {
+    /* stamps section just stays empty on failure */
+  } finally {
+    loadingStamps.value = false
+  }
+}
+
 async function loadPassportFlag() {
   try {
     const res: any = await $fetch(`${config.public.apiBase}/passport/my`, { headers: authHeaders() })
@@ -349,6 +412,7 @@ onMounted(() => {
   loadCatalogue()
   loadPreview()
   loadPassportFlag()
+  loadStamps()
 })
 </script>
 
@@ -443,6 +507,32 @@ onMounted(() => {
 .rw-reward-pill--unlocked { background: #dff2e9; color: #186b48; }
 .rw-reward-note { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
 .rw-reward-card--locked .rw-reward-title { color: #8a8594; }
+
+.rw-stamps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 8px; padding: 4px 0 6px; }
+.rw-stamp-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+/* Locked stamps get a subtle faded outline rather than a dominant grey
+   padlock — StampFrame with no iconAsset already renders a plain
+   checkmark placeholder, so locked cells just dial the whole badge back
+   with opacity + a lighter ring rather than overlaying a lock icon. */
+.rw-stamp-cell--locked { opacity: 0.4; }
+.rw-stamp-label { font-size: 10.5px; font-weight: 700; color: var(--navy); line-height: 1.25; }
+.rw-stamp-cell--locked .rw-stamp-label { color: var(--muted); }
+
+/* TEMPORARY — remove alongside the button in the template. Dashed amber
+   border deliberately reads as "test-only", not a real product button. */
+.rw-test-simulate-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border: 1.5px dashed #d4922a;
+  border-radius: 12px;
+  background: #fdf6ea;
+  color: #93630f;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
 
 .rw-loading { display: flex; justify-content: center; padding: 40px 0; }
 .rw-spinner { width: 28px; height: 28px; border: 3px solid var(--line); border-top-color: var(--teal); border-radius: 50%; animation: rw-spin 0.8s linear infinite; }

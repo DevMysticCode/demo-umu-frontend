@@ -56,10 +56,14 @@
         </button>
       </div>
 
-      <PointsSection
-        :points="currentQuestion?.points || 0"
-        label="Available for completing this question."
-        @nextTask="handleNextQuestion"
+      <QuestionPointsCard
+        :balance="runningBalance"
+        :question-points="currentQuestion?.points || 0"
+        :question-number="currentQuestionIndex + 1"
+        :total-questions="totalQuestions"
+        :saved="justSaved"
+        :saved-points="lastSavedPoints"
+        :balance-before="balanceBeforeSave"
       />
 
       <!-- Property photos upload — only for "What we love about our home?" task -->
@@ -319,7 +323,7 @@
 <script setup>
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import { normalizeUploadUrl, normalizeUploadUrls } from '~/utils/normalizeUploadUrl'
-import PointsSection from '~/components/passport-view/PointsSection.vue'
+import QuestionPointsCard from '~/components/passport-view/QuestionPointsCard.vue'
 import ThankYouModal from '~/components/passport-view/ThankYouModal.vue'
 import RadioQuestion from '~/components/passport-view/questions/RadioQuestion.vue'
 import TextUploadQuestion from '~/components/passport-view/questions/TextUploadQuestion.vue'
@@ -369,6 +373,51 @@ const earnedPoints = ref(0)
 const sessionPointsEarned = ref(0)
 const rewardsBalance = ref(0)
 const isSaving = ref(false)
+
+// Running points balance shown on the per-question points card, plus the
+// transient "Answer Saved" state it flashes into after each save. Kept
+// separate from `rewardsBalance` (which is only fetched once, right before
+// the end-of-section ThankYouModal) since this one needs to be live from
+// page load and update optimistically on every answer.
+const runningBalance = ref(0)
+const justSaved = ref(false)
+const lastSavedPoints = ref(0)
+const balanceBeforeSave = ref(0)
+let justSavedTimeout = null
+
+function recordPointsEarned(pointsAwarded) {
+  sessionPointsEarned.value += pointsAwarded
+  // 0 means the backend's idempotency guard fired (question already
+  // answered before) — nothing new was earned, so don't flash "Saved".
+  if (!pointsAwarded) return
+  balanceBeforeSave.value = runningBalance.value
+  runningBalance.value += pointsAwarded
+  lastSavedPoints.value = pointsAwarded
+  justSaved.value = true
+  if (justSavedTimeout) clearTimeout(justSavedTimeout)
+  justSavedTimeout = setTimeout(() => {
+    justSaved.value = false
+  }, 2200)
+}
+
+async function loadRunningBalance() {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  try {
+    const cfg = useRuntimeConfig()
+    const res = await $fetch(`${cfg.public.apiBase}/rewards/balance`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    runningBalance.value = res?.balance ?? 0
+  } catch {
+    /* card just starts at 0 — non-critical */
+  }
+}
+
+onBeforeUnmount(() => {
+  if (justSavedTimeout) clearTimeout(justSavedTimeout)
+})
 const additionalInfoAnswer = ref(null)
 
 const showHelp = ref(false)
@@ -518,6 +567,8 @@ onMounted(async () => {
 
   // Load property images for the home story task
   await loadPropertyImages()
+
+  await loadRunningBalance()
 
   // Track this task as the user's last visited so the "Pick up where you
   // left off" CTA on the passport view routes them straight back here.
@@ -1037,7 +1088,7 @@ const updateAnswer = async (answer) => {
     isSaving.value = true
     try {
       const { pointsAwarded } = await apiSaveAnswer(currentId, answer)
-      sessionPointsEarned.value += pointsAwarded
+      recordPointsEarned(pointsAwarded)
       if (allCompleted) {
         await showThankYouWithRealPoints()
       }
@@ -1055,7 +1106,7 @@ const updateAnswer = async (answer) => {
     isSaving.value = true
     try {
       const { pointsAwarded } = await apiSaveAnswer(currentQuestion.value.id, answer)
-      sessionPointsEarned.value += pointsAwarded
+      recordPointsEarned(pointsAwarded)
 
       const currentId = currentQuestion.value.id
       const allCompleted = currentQuestions.value.every(
@@ -1125,7 +1176,7 @@ const updateAnswer = async (answer) => {
       isSaving.value = true
       try {
         const { pointsAwarded } = await apiSaveAnswer(currentQuestion.value.id, answer)
-        sessionPointsEarned.value += pointsAwarded
+        recordPointsEarned(pointsAwarded)
 
         const currentId = currentQuestion.value.id
         const allCompleted = currentQuestions.value.every(
@@ -1177,7 +1228,7 @@ const saveAnswer = async () => {
 
     // Save answer to backend
     const { pointsAwarded } = await apiSaveAnswer(currentQuestion.value.id, answerValue)
-    sessionPointsEarned.value += pointsAwarded
+    recordPointsEarned(pointsAwarded)
 
     // Check if this was the last incomplete question (before advancing)
     const currentId = currentQuestion.value.id
@@ -1210,12 +1261,6 @@ const skipQuestion = () => {
 
 const goToPreviousQuestion = () => {
   moveToPreviousQuestion()
-}
-
-const handleNextQuestion = () => {
-  if (isAnswerValid.value) {
-    saveAnswer()
-  }
 }
 
 const handleContinue = () => {
