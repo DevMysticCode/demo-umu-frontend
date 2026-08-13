@@ -63,14 +63,16 @@
         @close="showVideo = false"
       />
 
-      <PointsSection
-        :points="stepTotalPoints"
-        :label="nextStepLabel"
-        :description="`A total of ${stepTotalPoints} points are available in this section.`"
-        :show-rewards-link="true"
-        :show-next-task="hasNextTask"
-        @nextTask="goToNextTask"
-        @go-rewards="router.push('/profile/rewards')"
+      <SectionProgressCard
+        :balance="progressBalance"
+        :section-title="currentStep?.title || ''"
+        :completed-count="completedTaskCount"
+        :total-count="totalTaskCount"
+        :section-complete="!hasNextTask"
+        :section-bonus-points="30"
+        :level="progressLevel"
+        :streak="progressStreak"
+        @finish-section="goToNextTask"
       />
 
       <UnderReview
@@ -178,7 +180,7 @@
 
 <script setup>
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
-import PointsSection from '@/components/passport-view/PointsSection.vue'
+import SectionProgressCard from '@/components/passport-view/SectionProgressCard.vue'
 import UnderReview from '~/components/passport-view/UnderReview.vue'
 import AppHeader from '@/components/core/AppHeader.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
@@ -206,10 +208,36 @@ const backToPassportUrl = computed(() => {
 //   setCurrentStep(stepId)
 // })
 
+// Balance/level/streak for the SectionProgressCard — fetched once on
+// mount rather than kept continuously live, same rationale as the
+// question page's ThankYouModal balance fetch: it's a point-in-time
+// display, not something this page needs to poll.
+const progressBalance = ref(0)
+const progressLevel = ref({ level: 1, name: 'Property Novice', progressPercent: 0, next: null })
+const progressStreak = ref({ current: 0, longest: 0 })
+
+async function loadProgress() {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  try {
+    const cfg = useRuntimeConfig()
+    const res = await $fetch(`${cfg.public.apiBase}/rewards/progress`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    progressBalance.value = res?.balance ?? 0
+    progressLevel.value = res?.level ?? progressLevel.value
+    progressStreak.value = res?.streak ?? progressStreak.value
+  } catch {
+    /* card just falls back to its defaults — non-critical */
+  }
+}
+
 onMounted(async () => {
   if (route.query.propertyId) {
     await loadPassport(route.query.propertyId)
   }
+  await loadProgress()
 })
 
 watchEffect(() => {
@@ -234,35 +262,10 @@ const stepProgress = computed(() => {
 })
 
 // Real per-task totals now come straight from the backend (task.totalPoints /
-// task.earnedPoints, sourced from QuestionTemplate.points) — these two are
-// deliberately separate: the progress header shows what's been EARNED so
-// far, the PointsSection card shows what's AVAILABLE in the whole section.
+// task.earnedPoints, sourced from QuestionTemplate.points).
 const stepEarnedPoints = computed(() => {
   if (!currentStep.value) return 0
   return currentStep.value.tasks.reduce((sum, task) => sum + (task.earnedPoints || 0), 0)
-})
-const stepTotalPoints = computed(() => {
-  if (!currentStep.value) return 0
-  return currentStep.value.tasks.reduce((sum, task) => sum + (task.totalPoints || 0), 0)
-})
-
-const orderedSteps = computed(() => {
-  const list = [...steps.value]
-  const hasOrder = list.some((step) => typeof step.order === 'number')
-  if (hasOrder) {
-    return list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-  }
-  return list
-})
-
-const nextStepLabel = computed(() => {
-  if (!currentStep.value) return 'Next: '
-  const currentIndex = orderedSteps.value.findIndex(
-    (step) => step.id === currentStep.value.id,
-  )
-  const nextStep =
-    currentIndex >= 0 ? orderedSteps.value[currentIndex + 1] : null
-  return nextStep?.title ? `Next: ${nextStep.title}` : 'Next: '
 })
 
 const hasNextTask = computed(() => {

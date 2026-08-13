@@ -1,12 +1,27 @@
 <template>
   <div class="app">
     <NuxtPage />
+    <PassportAchievement
+      v-if="currentAchievement"
+      :visible="achievementVisible"
+      :achievement-id="currentAchievement.achievementId"
+      :stamp-asset="currentAchievement.stampAsset"
+      :achievement-title="currentAchievement.achievementTitle"
+      :achievement-subtitle="currentAchievement.achievementSubtitle"
+      :achievement-description="currentAchievement.achievementDescription"
+      :achievement-checks="currentAchievement.achievementChecks"
+      :points-awarded="currentAchievement.pointsAwarded"
+      :completed-at="currentAchievement.completedAt"
+      :balance-after="achievementBalanceAfter"
+      @done="acknowledgeAchievement"
+    />
   </div>
 </template>
 
 <script setup>
 import { Capacitor } from '@capacitor/core'
 import { useRouter } from 'vue-router'
+import PassportAchievement from '~/components/rewards/PassportAchievement.vue'
 
 // Global app configuration
 useHead({
@@ -18,6 +33,35 @@ useHead({
 // Native push notifications — only fires on Capacitor (iOS/Android);
 // no-ops on the web build. The composable defers backend registration
 // until a JWT exists in localStorage, so calling it pre-login is safe.
+// PassportAchievement celebration — every reward-award call site on the
+// backend is fire-and-forget from its HTTP response's perspective, so the
+// frontend discovers new stamps by asking (checkForCelebrations), not by
+// listening to a response. Mounted here (not per-page like <Toast>/
+// OnboardingTour) since a celebration must fire regardless of which
+// screen the user is on when it's discovered.
+const {
+  current: currentStamp,
+  visible: achievementVisible,
+  balanceAfter: achievementBalanceAfter,
+  checkForCelebrations,
+  acknowledge: acknowledgeAchievement,
+} = usePassportAchievement()
+
+const currentAchievement = computed(() => {
+  const s = currentStamp.value
+  if (!s) return null
+  return {
+    achievementId: s.stampDefinitionId,
+    stampAsset: s.stampDefinition?.iconAsset ?? null,
+    achievementTitle: s.stampDefinition?.title ?? '',
+    achievementSubtitle: s.stampDefinition?.subtitle ?? null,
+    achievementDescription: s.stampDefinition?.description ?? null,
+    achievementChecks: s.stampDefinition?.checklistItems ?? [],
+    pointsAwarded: s.pointsAwarded ?? 0,
+    completedAt: s.awardedAt,
+  }
+})
+
 if (import.meta.client) {
   const { register } = usePushNotifications()
   const router = useRouter()
@@ -69,10 +113,28 @@ if (import.meta.client) {
     }
   }
 
+  // Foreground-return check — covers celebrations that were minted while
+  // the app was backgrounded (e.g. a KYC webhook landing, or the user
+  // completing a step in another tab) rather than only on cold start.
+  const configureAchievementResumeCheck = async () => {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') void checkForCelebrations()
+    })
+    if (!Capacitor.isNativePlatform()) return
+    try {
+      const { App: CapacitorApp } = await import('@capacitor/app')
+      CapacitorApp.addListener('resume', () => void checkForCelebrations())
+    } catch (err) {
+      console.warn('[passport-achievement] resume listener setup skipped:', err)
+    }
+  }
+
   onMounted(() => {
     void register()
     void configureStatusBar()
     void configureBackButton()
+    void checkForCelebrations()
+    void configureAchievementResumeCheck()
   })
 }
 </script>

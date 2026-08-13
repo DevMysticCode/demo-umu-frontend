@@ -29,7 +29,7 @@ export const useConfetti = () => {
     if (typeof window === 'undefined') return
     // Respect the user's motion preference — big burst of moving shapes
     // is exactly what this setting is meant to suppress.
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    if (prefersReducedMotion()) return
 
     const canvas = document.createElement('canvas')
     canvas.style.cssText =
