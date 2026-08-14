@@ -117,7 +117,8 @@
             </span>
             <div>
               <div class="cl-lr-tile-l">Title number</div>
-              <div class="cl-lr-tile-v">{{ titleDisplay }}</div>
+              <div v-if="titleDisplay" class="cl-lr-tile-v">{{ titleDisplay }}</div>
+              <div v-else class="cl-lr-tile-v cl-lr-tile-v--pending">Confirmed next step</div>
             </div>
           </div>
           <div class="cl-lr-tile">
@@ -1062,11 +1063,17 @@ const lrErrorMessage = ref('')
 const tenureDisplay = computed(
   () => selectedProperty.value?.tenure || '—',
 )
+// null (not '—') on purpose: a real title number only ever exists once
+// HMLR's Ownership Verification search confirms one — see
+// no-synthetic-title-number.spec.ts on the backend, which guards against
+// ever fabricating one. At this pre-verification step that's the expected
+// state, not missing data, so the template shows "Confirmed next step"
+// instead of a bare dash that reads as broken.
 const titleDisplay = computed(
   () =>
     lrResult.value?.titleNumber ||
     selectedProperty.value?.titleNumber ||
-    '—',
+    null,
 )
 const typeDisplay = computed(
   () => selectedProperty.value?.propertyType || '—',
@@ -2645,6 +2652,12 @@ onBeforeUnmount(() => {
   color: #231D45;
   margin-top: 1px;
   word-break: break-all;
+}
+.cl-lr-tile-v--pending {
+  font-size: 12.5px;
+  font-weight: 600;
+  font-style: italic;
+  color: #8A8A94;
 }
 
 .cl-lr-tile-select {
