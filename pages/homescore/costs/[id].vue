@@ -66,7 +66,7 @@
               cx="30"
               cy="30"
               r="24"
-              stroke="#E4E5ED"
+              stroke="#EDEDF3"
               stroke-width="6"
               fill="none"
             />
@@ -83,9 +83,9 @@
               transform="rotate(-90 30 30)"
             />
             <defs>
-              <linearGradient id="confGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#00B8B0" />
-                <stop offset="100%" stop-color="#008A84" />
+              <linearGradient id="confGrad" x1="100%" y1="0%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#00BB93" />
+                <stop offset="100%" stop-color="#016F84" />
               </linearGradient>
             </defs>
           </svg>

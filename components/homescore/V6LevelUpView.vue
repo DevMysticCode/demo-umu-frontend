@@ -107,9 +107,9 @@
               aria-hidden="true"
             >
               <defs>
-                <linearGradient id="luGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#00b8b0" />
-                  <stop offset="100%" stop-color="#008a84" />
+                <linearGradient id="luGrad" x1="1" y1="0" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#00BB93" />
+                  <stop offset="100%" stop-color="#016F84" />
                 </linearGradient>
               </defs>
               <circle class="lc-bg" cx="60" cy="60" r="50" stroke-width="9" />

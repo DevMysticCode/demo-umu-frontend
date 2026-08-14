@@ -60,10 +60,10 @@
               <defs>
                 <linearGradient
                   :id="`bjGrad-${g.id}`"
-                  x1="0%"
+                  x1="100%"
                   y1="0%"
-                  x2="100%"
-                  y2="100%"
+                  x2="0%"
+                  y2="0%"
                 >
                   <stop offset="0%" :stop-color="g.gradFrom" />
                   <stop offset="100%" :stop-color="g.gradTo" />
@@ -515,8 +515,8 @@ const gauges = ref<Gauge[]>([
     target: props.homeScore,
     max: 100,
     suffix: '',
-    gradFrom: '#5EEAD4',
-    gradTo: '#00B8B0',
+    gradFrom: '#00BB93',
+    gradTo: '#016F84',
     animatedValue: 0,
   },
   {

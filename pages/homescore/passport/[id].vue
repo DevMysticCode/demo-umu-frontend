@@ -38,10 +38,17 @@
         <div class="bpp-progress-col">
           <div class="bpp-circle-wrap">
             <svg class="bpp-circle-svg" viewBox="0 0 120 120" aria-hidden="true">
+              <defs>
+                <linearGradient id="bppScoreGrad" x1="1" y1="0" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#00BB93" />
+                  <stop offset="100%" stop-color="#016F84" />
+                </linearGradient>
+              </defs>
               <circle class="bppc-bg" cx="60" cy="60" r="50" stroke-width="9" />
               <circle
                 class="bppc-fill bppc-fill--score"
                 cx="60" cy="60" r="50" stroke-width="9"
+                stroke="url(#bppScoreGrad)"
                 stroke-dasharray="314.16"
                 :stroke-dashoffset="scoreRingOffset"
                 stroke-linecap="round" fill="none"
@@ -503,9 +510,6 @@ function goToClaim() {
 .bppc-fill {
   fill: none;
   transition: stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.bppc-fill--score {
-  stroke: var(--accent-light);
 }
 .bppc-fill--passport {
   stroke: #7c6fb0;

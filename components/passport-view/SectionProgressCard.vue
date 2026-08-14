@@ -2,7 +2,7 @@
   <div>
     <div class="spc">
       <div class="spc-row">
-        <img src="/op-icons/congratulations/star.png" alt="" class="spc-icon" />
+        <img src="/op-icons/rewards/pointsStar.png" alt="" class="spc-icon" />
         <div class="spc-balance">{{ balance }} <em>pts</em></div>
       </div>
       <h3 class="spc-h3">{{ sectionTitle }}</h3>

@@ -104,6 +104,12 @@
       <div class="rd-score-gauge-wrap">
         <div class="rd-gauge">
           <svg viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="rdGrad" x1="1" y1="0" x2="0" y2="0">
+                <stop offset="0%" stop-color="#00BB93" />
+                <stop offset="100%" stop-color="#016F84" />
+              </linearGradient>
+            </defs>
             <circle
               class="g-bg"
               cx="60"
@@ -118,7 +124,7 @@
               cy="60"
               r="50"
               fill="none"
-              :stroke="gaugeColor"
+              stroke="url(#rdGrad)"
               stroke-width="9"
               stroke-linecap="round"
               stroke-dasharray="314.16"

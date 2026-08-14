@@ -209,9 +209,8 @@ const backToPassportUrl = computed(() => {
 // })
 
 // Balance/level/streak for the SectionProgressCard — fetched once on
-// mount rather than kept continuously live, same rationale as the
-// question page's ThankYouModal balance fetch: it's a point-in-time
-// display, not something this page needs to poll.
+// mount rather than kept continuously live: it's a point-in-time display,
+// not something this page needs to poll.
 const progressBalance = ref(0)
 const progressLevel = ref({ level: 1, name: 'Property Novice', progressPercent: 0, next: null })
 const progressStreak = ref({ current: 0, longest: 0 })

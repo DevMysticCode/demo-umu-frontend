@@ -345,12 +345,19 @@
 
           <div class="pps-gauge-wrap">
             <svg class="pps-gauge-svg" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="ppsGrad" x1="1" y1="0" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#00BB93" />
+                  <stop offset="100%" stop-color="#016F84" />
+                </linearGradient>
+              </defs>
               <circle class="pps-gauge-bg" cx="50" cy="50" r="40" />
               <circle
                 class="pps-gauge-fill"
                 cx="50"
                 cy="50"
                 r="40"
+                stroke="url(#ppsGrad)"
                 :stroke-dashoffset="251.33 - (homescore / 100) * 251.33"
               />
             </svg>
@@ -8508,7 +8515,6 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-gauge-fill {
   fill: none;
-  stroke: #00a19a;
   stroke-width: 8;
   stroke-linecap: round;
   stroke-dasharray: 251.33;

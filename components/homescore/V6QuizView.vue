@@ -31,9 +31,9 @@
         <div class="score-gauge">
           <svg viewBox="0 0 120 120">
             <defs>
-              <linearGradient id="quizGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#00a19a" />
-                <stop offset="100%" stop-color="#00b8b0" />
+              <linearGradient id="quizGrad" x1="1" y1="0" x2="0" y2="0">
+                <stop offset="0%" stop-color="#00BB93" />
+                <stop offset="100%" stop-color="#016F84" />
               </linearGradient>
             </defs>
             <circle class="g-bg" cx="60" cy="60" r="50" stroke-width="9" />

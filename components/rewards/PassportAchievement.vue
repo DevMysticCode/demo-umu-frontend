@@ -15,106 +15,55 @@
           <button class="pa-skip" type="button" aria-label="Skip" @click="skip">Skip</button>
 
           <div class="pa-scene">
-            <div class="pa-book" :class="{ 'pa-book--video': videoAvailable }">
-              <!-- Video-primary path: this ONE clip covers closed -> open
-                   (and reverse for close) — the "cover" and "open pages"
-                   are literally the same object throughout, so there's
-                   no separate static image to accidentally leave visible
-                   once the video hides (that was the earlier bug: a
-                   static cover image stayed mounted at full opacity and
-                   re-surfaced once the video layer's v-show turned off).
-                   Always mounted (not gated by phase) so it starts
-                   preloading the moment this component exists, well
-                   before any celebration is actually triggered — by the
-                   time runSequence() needs to know if it's usable, it
-                   almost always already does. -->
-              <div class="pa-layer pa-video-layer" v-show="videoAvailable && phase !== 'idle'">
-                <video
-                  ref="bookVideoEl"
-                  class="pa-book-video"
-                  muted
-                  playsinline
-                  preload="auto"
-                  @loadeddata="onVideoLoaded"
-                  @error="onVideoError"
-                >
-                  <source src="/op-icons/rewards/passportOpenClose.mp4" type="video/mp4" />
-                </video>
+            <div class="pa-book">
+              <!-- Closed cover — GSAP-driven (rotationY tweened directly via
+                   JS/rAF each frame rather than a CSS @keyframes + class
+                   toggle, which measured zero intermediate frames). -->
+              <div class="pa-layer pa-cover-layer">
+                <img
+                  v-if="phase !== 'idle'"
+                  ref="coverEl"
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="pa-cover-closed"
+                  :class="{ 'pa-glow': phase === 'close' && closeSettled }"
+                />
               </div>
 
-              <!-- Fallback path — GSAP-driven cover + static open-page
-                   image — only rendered once we're SURE the video isn't
-                   usable (not during the brief loading-uncertainty
-                   window; see runSequence()'s startup gate), so the two
-                   paths can never both be on screen at once. -->
-              <template v-if="videoErrored">
-                <div class="pa-layer pa-cover-layer">
-                  <img
-                    v-if="phase !== 'idle'"
-                    ref="coverEl"
-                    src="/op-icons/passportview/umu-passport.png"
-                    alt=""
-                    class="pa-cover-closed"
-                    :class="{ 'pa-glow': phase === 'close' && closeSettled }"
-                  />
-                </div>
-                <div
-                  v-if="phase === 'open' || phase === 'stamp' || phase === 'content' || phase === 'points' || phase === 'hold' || (phase === 'close' && !closeSettled)"
-                  ref="openWrapEl"
-                  class="pa-layer pa-open-wrap"
-                >
-                  <img src="/op-icons/rewards/passportOpenBase.png" alt="" class="pa-open-base" />
-                </div>
-              </template>
-
-              <!-- Stamp + text overlay — shared by both paths, sitting on
-                   top of whichever "open book" visual is active. Exact
-                   position differs (see .pa-book--video overrides in
-                   <style>) since the video's framing is a tighter crop
-                   than the static fallback image. -->
-              <template
-                v-if="
-                  phase === 'stamp' ||
-                  phase === 'content' ||
-                  phase === 'points' ||
-                  phase === 'hold' ||
-                  (phase === 'close' && !closeSettled)
-                "
+              <div
+                v-if="phase === 'open' || phase === 'stamp' || phase === 'points' || phase === 'hold' || (phase === 'close' && !closeSettled)"
+                ref="openWrapEl"
+                class="pa-layer pa-open-wrap"
               >
-                <div class="pa-page pa-page-left">
-                  <img
-                    v-if="stampStep !== 'idle' && stampStep !== 'done'"
-                    src="/op-icons/rewards/stampTool.png"
-                    alt=""
-                    class="pa-stamp-tool"
-                    :class="stampStep"
-                  />
-                  <Transition name="pa-fade">
-                    <div v-if="stampStep === 'lifting' || stampStep === 'done'" class="pa-impression">
-                      <StampFrame :title="achievementTitle" :icon-asset="stampAsset" :size="88" />
-                    </div>
-                  </Transition>
-                </div>
+                <img src="/op-icons/rewards/passportOpenBase.png" alt="" class="pa-open-base" />
+                <!-- Shadow the cover casts on the pages while still mostly
+                     closed over them — fades out in sync with the cover's
+                     rotation so the book reads as "revealed" by the cover
+                     swinging away, not as a separate thing fading in on its
+                     own beat. -->
+                <div ref="shadeEl" class="pa-open-shade" />
+              </div>
 
-                <div class="pa-page pa-page-right">
-                  <h2 v-if="typedHeading" class="pa-heading">
-                    {{ typedHeading }}<span v-if="typingField === 'heading'" class="pa-caret" />
-                  </h2>
-                  <p v-if="typedSubtitle" class="pa-subtitle">
-                    {{ typedSubtitle }}<span v-if="typingField === 'subtitle'" class="pa-caret" />
-                  </p>
-                  <p v-if="typedBody" class="pa-body">
-                    {{ typedBody }}<span v-if="typingField === 'body'" class="pa-caret" />
-                  </p>
-                  <Transition name="pa-fade-up">
-                    <ul v-if="showChecklist" class="pa-checks">
-                      <li v-for="c in fullChecklist" :key="c">
-                        <span class="pa-check-tick">✓</span>{{ c }}
-                      </li>
-                    </ul>
-                  </Transition>
-                </div>
-              </template>
+              <!-- Stamp tool drops onto the open book, impacts, holds, then
+                   lifts away leaving the ink impression — no title/body/
+                   checklist text on the page, just the physical action. -->
+              <div
+                v-if="phase === 'stamp' || phase === 'points' || phase === 'hold' || (phase === 'close' && !closeSettled)"
+                class="pa-stamp-area"
+              >
+                <img
+                  v-if="stampStep !== 'idle' && stampStep !== 'done'"
+                  src="/op-icons/rewards/stampTool.png"
+                  alt=""
+                  class="pa-stamp-tool"
+                  :class="stampStep"
+                />
+                <Transition name="pa-fade">
+                  <div v-if="stampStep === 'lifting' || stampStep === 'done'" class="pa-impression">
+                    <StampFrame :icon-asset="stampAsset" :size="112" />
+                  </div>
+                </Transition>
+              </div>
             </div>
 
             <Transition name="pa-fade-up">
@@ -135,7 +84,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Ref } from 'vue'
 import gsap from 'gsap'
 import StampFrame from './StampFrame.vue'
 
@@ -161,26 +109,17 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{ (e: 'done'): void }>()
 
-type Phase = 'idle' | 'enter' | 'open' | 'stamp' | 'content' | 'points' | 'hold' | 'close'
+type Phase = 'idle' | 'enter' | 'open' | 'stamp' | 'points' | 'hold' | 'close'
 type StampStep = 'idle' | 'entering' | 'impact' | 'holding' | 'lifting' | 'done'
-type TypingField = 'heading' | 'subtitle' | 'body' | null
 
 const phase = ref<Phase>('idle')
 const stampStep = ref<StampStep>('idle')
 const closeSettled = ref(false)
 const reducedMotion = ref(false)
 
-// Cover open/close — GSAP-driven (option 2). The CSS rotateY +
-// backface-visibility version measured zero intermediate frames even in
-// a desktop browser (see git history / conversation), which pointed at
-// something breaking the CSS animation-name restart rather than a pure
-// rendering-engine 3D limitation. GSAP tweens the transform via direct
-// JS/rAF updates instead of a CSS @keyframes + class-toggle, sidestepping
-// that mechanism entirely. Cover stays mounted for the whole sequence
-// (not remounted per phase via v-if) so GSAP never loses track of its
-// current rotation between phases.
 const coverEl = ref<HTMLImageElement | null>(null)
 const openWrapEl = ref<HTMLDivElement | null>(null)
+const shadeEl = ref<HTMLDivElement | null>(null)
 
 function gsapTween(target: unknown, vars: gsap.TweenVars): Promise<void> {
   return new Promise((resolve) => {
@@ -191,118 +130,8 @@ function gsapTween(target: unknown, vars: gsap.TweenVars): Promise<void> {
     gsap.to(target, { ...vars, onComplete: resolve })
   })
 }
-function gsapTweenFrom(target: unknown, from: gsap.TweenVars, vars: gsap.TweenVars): Promise<void> {
-  return new Promise((resolve) => {
-    if (!target) {
-      resolve()
-      return
-    }
-    gsap.fromTo(target, from, { ...vars, onComplete: resolve })
-  })
-}
-
-// Option 3 — pre-rendered video IS the book (closed -> open, and reverse
-// for close) — see public/op-icons/rewards/passportOpenClose.mp4. Only
-// the FORWARD "opening" clip is needed; "closing" is the same clip played
-// backward via manual currentTime stepping (most browsers don't support
-// video.playbackRate < 0 reliably).
-//
-// Three-state loading model (not just a boolean) because the template
-// needs to distinguish "still loading, don't know yet" from "confirmed
-// unusable" — showing the GSAP/static-image fallback during the merely-
-// unknown window would risk the same double-image bug this replaced
-// (both paths rendering because neither was confirmed yet).
-//   videoAvailable = false, videoErrored = false  -> unknown (loading)
-//   videoAvailable = true                          -> use the video
-//   videoErrored = true                             -> use the fallback
-const bookVideoEl = ref<HTMLVideoElement | null>(null)
-const videoAvailable = ref(false)
-const videoErrored = ref(false)
-
-function onVideoLoaded() {
-  videoAvailable.value = true
-}
-function onVideoError() {
-  videoErrored.value = true
-}
-
-// The video element is mounted unconditionally (not gated by phase), so
-// it's typically been preloading for as long as this component has
-// existed — well before the specific celebration that calls this was
-// triggered. This is just a small safety margin for the rare case a
-// celebration fires immediately on mount, not the primary wait.
-async function waitForVideoDecision(maxMs = 400) {
-  const start = Date.now()
-  while (!videoAvailable.value && !videoErrored.value && Date.now() - start < maxMs) {
-    await sleep(30)
-  }
-}
-
-function playVideoForward(el: HTMLVideoElement): Promise<void> {
-  return new Promise((resolve) => {
-    try {
-      el.pause()
-      el.playbackRate = 1
-      el.currentTime = 0
-    } catch {
-      /* not seekable yet — play from wherever it is */
-    }
-    const onEnded = () => {
-      el.removeEventListener('ended', onEnded)
-      resolve()
-    }
-    el.addEventListener('ended', onEnded)
-    el.play().catch(() => resolve())
-  })
-}
-
-function playVideoReverse(el: HTMLVideoElement, duration: number): Promise<void> {
-  return new Promise((resolve) => {
-    el.pause()
-    const stepSeconds = 1 / 30
-    let raf = 0
-    const step = () => {
-      if (cancelled) {
-        cancelAnimationFrame(raf)
-        resolve()
-        return
-      }
-      const next = el.currentTime - stepSeconds
-      if (next <= 0.02) {
-        el.currentTime = 0
-        resolve()
-        return
-      }
-      el.currentTime = next
-      raf = requestAnimationFrame(step)
-    }
-    el.currentTime = duration
-    raf = requestAnimationFrame(step)
-  })
-}
-
-// Typewriter reveal for the right-page copy — the passport-book cross-fade
-// on its own read as an abrupt cut ("video-gamey"); typing the words in
-// gives the content phase the same unhurried, handwritten feel as the
-// stamp ceremony itself.
-const typedHeading = ref('')
-const typedSubtitle = ref('')
-const typedBody = ref('')
-const showChecklist = ref(false)
-const typingField = ref<TypingField>(null)
 
 const { value: animatedBalance, start: startBalanceCountUp } = useCountUp()
-
-const verifiedOnLabel = computed(() => {
-  const d = new Date(props.completedAt)
-  if (Number.isNaN(d.getTime())) return null
-  return `Verified on ${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`
-})
-const fullChecklist = computed(() => {
-  const items = [...(props.achievementChecks ?? [])]
-  if (verifiedOnLabel.value) items.push(verifiedOnLabel.value)
-  return items
-})
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -310,102 +139,48 @@ function sleep(ms: number) {
 
 let cancelled = false
 
-function typewrite(target: Ref<string>, text: string, msPerChar: number) {
-  return new Promise<void>((resolve) => {
-    target.value = ''
-    if (!text) {
-      resolve()
-      return
-    }
-    let i = 0
-    const id = setInterval(() => {
-      if (cancelled) {
-        clearInterval(id)
-        resolve()
-        return
-      }
-      i++
-      target.value = text.slice(0, i)
-      if (i >= text.length) {
-        clearInterval(id)
-        resolve()
-      }
-    }, msPerChar)
-  })
-}
-
 async function runSequence() {
   cancelled = false
-  await waitForVideoDecision()
-  if (cancelled) return
 
   phase.value = 'enter'
   await nextTick()
 
-  if (videoAvailable.value && bookVideoEl.value) {
-    // Video-primary path: the clip itself IS the closed book — just hold
-    // on its first frame for a beat rather than separately animating our
-    // own static cover image in. This is what fixes the earlier bug (a
-    // static cover left mounted at full opacity resurfacing once the
-    // video's own v-show turned off) — there's only ever one visual now.
-    try {
-      bookVideoEl.value.pause()
-      bookVideoEl.value.currentTime = 0
-    } catch {
-      /* not seekable yet */
-    }
-    await sleep(500)
-    if (cancelled) return
+  // No per-element transformPerspective here — .pa-scene already establishes
+  // a single perspective on the whole 3D scene (see CSS). Stacking a second,
+  // element-local perspective on top of that compounded into the warped,
+  // "off" vanishing point that read as unrealistic.
+  gsap.set(coverEl.value, {
+    scale: 0.6,
+    y: 70,
+    rotationY: 0,
+    opacity: 0,
+    transformOrigin: 'left center',
+  })
+  await gsapTween(coverEl.value, { scale: 1, y: 0, opacity: 1, duration: 1, ease: 'power3.out' })
+  if (cancelled) return
 
-    phase.value = 'open'
-    await playVideoForward(bookVideoEl.value)
-    // Deliberately stays paused on its last (fully-open) frame — that
-    // frame IS the backdrop for the stamp/content/points/hold phases
-    // below, still the same <video> element, nothing else to show/hide.
-    if (cancelled) return
-    // Brief hold on the settled-open page before the stamp starts — reads
-    // as "the pages finished opening" rather than the stamp cutting in
-    // immediately off the end of the opening motion.
-    await sleep(400)
-  } else {
-    // GSAP fallback (option 2) — only once the video is CONFIRMED
-    // unusable (videoErrored), never during the merely-unknown loading
-    // window (see waitForVideoDecision above).
-    gsap.set(coverEl.value, {
-      scale: 0.6,
-      y: 70,
-      rotationY: 0,
-      opacity: 0,
-      transformPerspective: 1000,
-      transformOrigin: 'left center',
-    })
-    await gsapTween(coverEl.value, { scale: 1, y: 0, opacity: 1, duration: 1, ease: 'power3.out' })
-    if (cancelled) return
+  phase.value = 'open'
+  await nextTick()
+  // The open book sits fully formed UNDER the cover from the first frame
+  // of this phase (not faded/scaled in separately on its own delayed
+  // beat) — the shade over it starts fully opaque, standing in for the
+  // shadow the still-mostly-closed cover casts on the pages. Both the
+  // cover's rotation and the shade's fade run the same duration/ease so
+  // the "reveal" reads as one continuous motion (cover swings away,
+  // shadow lifts with it) rather than two separately-timed animations
+  // that happen to overlap.
+  gsap.set(openWrapEl.value, { scale: 1, opacity: 1 })
+  gsap.set(shadeEl.value, { opacity: 1 })
+  const openVars: gsap.TweenVars = { duration: 0.95, ease: 'power2.out' }
+  const coverOpenP = gsapTween(coverEl.value, { rotationY: -100, ...openVars })
+  const shadeP = gsapTween(shadeEl.value, { opacity: 0, ...openVars })
+  await Promise.all([coverOpenP, shadeP])
+  if (cancelled) return
 
-    phase.value = 'open'
-    await nextTick()
-    // Cover swings open on a real 3D hinge (rotationY), GSAP-driven so the
-    // transform is set directly via JS/rAF each frame rather than a CSS
-    // @keyframes animation-name — backface-visibility (set in CSS) makes it
-    // vanish naturally once it's rotated edge-on to the camera, same as a
-    // real door. The open book underneath fades/grows in a beat later so
-    // the two motions read as sequential rather than a straight swap.
-    const coverOpenP = gsapTween(coverEl.value, {
-      rotationY: -100,
-      duration: 1.1,
-      ease: 'power2.inOut',
-    })
-    const bookInP = (async () => {
-      await sleep(450)
-      if (cancelled) return
-      await gsapTweenFrom(
-        openWrapEl.value,
-        { scale: 0.94, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.9, ease: 'power2.out' },
-      )
-    })()
-    await Promise.all([coverOpenP, bookInP])
-  }
+  // Brief hold on the settled-open page before the stamp starts — reads as
+  // "the pages finished opening" rather than the stamp cutting in
+  // immediately off the end of the opening motion.
+  await sleep(300)
   if (cancelled) return
 
   phase.value = 'stamp'
@@ -416,39 +191,13 @@ async function runSequence() {
   await sleep(150)
   if (cancelled) return
   stampStep.value = 'holding'
-  await sleep(200)
+  await sleep(400)
   if (cancelled) return
   stampStep.value = 'lifting'
   await sleep(450)
   if (cancelled) return
   stampStep.value = 'done'
-
-  phase.value = 'content'
-  typingField.value = 'heading'
-  await typewrite(typedHeading, props.achievementTitle, 30)
-  if (cancelled) return
-  await sleep(120)
-  if (cancelled) return
-
-  if (props.achievementSubtitle) {
-    typingField.value = 'subtitle'
-    await typewrite(typedSubtitle, props.achievementSubtitle, 22)
-    if (cancelled) return
-    await sleep(120)
-    if (cancelled) return
-  }
-
-  if (props.achievementDescription) {
-    typingField.value = 'body'
-    await typewrite(typedBody, props.achievementDescription, 12)
-    if (cancelled) return
-    await sleep(150)
-    if (cancelled) return
-  }
-  typingField.value = null
-
-  showChecklist.value = true
-  await sleep(500)
+  await sleep(300)
   if (cancelled) return
 
   phase.value = 'points'
@@ -462,25 +211,19 @@ async function runSequence() {
 
   phase.value = 'close'
   await nextTick()
-  if (videoAvailable.value && bookVideoEl.value) {
-    // Reverse-play the same clip back down to its first frame — still the
-    // same single <video> element throughout, nothing to swap or reveal.
-    await playVideoReverse(bookVideoEl.value, bookVideoEl.value.duration || 1.3)
-  } else {
-    const coverCloseP = gsapTween(coverEl.value, {
-      rotationY: 0,
-      duration: 0.8,
-      ease: 'power2.out',
-    })
-    const bookOutP = gsapTween(openWrapEl.value, {
-      scale: 0.92,
-      y: 20,
-      opacity: 0,
-      duration: 0.6,
-      ease: 'power1.in',
-    })
-    await Promise.all([coverCloseP, bookOutP])
-  }
+  const coverCloseP = gsapTween(coverEl.value, {
+    rotationY: 0,
+    duration: 0.8,
+    ease: 'power2.out',
+  })
+  const bookOutP = gsapTween(openWrapEl.value, {
+    scale: 0.92,
+    y: 20,
+    opacity: 0,
+    duration: 0.6,
+    ease: 'power1.in',
+  })
+  await Promise.all([coverCloseP, bookOutP])
   if (cancelled) return
   closeSettled.value = true
   await sleep(700)
@@ -497,7 +240,7 @@ function skip() {
   cancelled = true
   gsap.killTweensOf(coverEl.value)
   gsap.killTweensOf(openWrapEl.value)
-  bookVideoEl.value?.pause()
+  gsap.killTweensOf(shadeEl.value)
   finish()
 }
 
@@ -505,24 +248,9 @@ function resetState() {
   phase.value = 'idle'
   stampStep.value = 'idle'
   closeSettled.value = false
-  typedHeading.value = ''
-  typedSubtitle.value = ''
-  typedBody.value = ''
-  showChecklist.value = false
-  typingField.value = null
   gsap.killTweensOf(coverEl.value)
   gsap.killTweensOf(openWrapEl.value)
-  bookVideoEl.value?.pause()
-  // videoAvailable/videoErrored deliberately NOT reset here — they
-  // reflect whether the asset itself loaded, which doesn't change
-  // between celebration replays.
-  if (bookVideoEl.value) {
-    try {
-      bookVideoEl.value.currentTime = 0
-    } catch {
-      /* not seekable yet */
-    }
-  }
+  gsap.killTweensOf(shadeEl.value)
 }
 
 watch(
@@ -641,20 +369,6 @@ watch(
   width: 100%;
   aspect-ratio: 798 / 699;
 }
-/* The Kling-generated clip is a much tighter portrait crop than the old
-   static open-book PNG (520:734 vs 798:699 landscape) — the book fills
-   almost the whole frame rather than sitting with generous margin. Sized
-   by HEIGHT (not width like the default above): at 100% width, this
-   portrait ratio made the book taller than the viewport on typical phone
-   screens, cropping it top/bottom and pushing the points card off the
-   bottom edge. Constraining height and letting width follow keeps the
-   whole book on screen with room for the points card below it. */
-.pa-book--video {
-  width: auto;
-  height: min(46vh, 380px);
-  max-width: 100%;
-  aspect-ratio: 520 / 734;
-}
 /* Each phase's visual (closed cover / open book) is its own absolutely
    positioned, centered layer stacked on .pa-book rather than a flex
    sibling — during the enter/open/close transition both can be in the
@@ -670,25 +384,16 @@ watch(
 .pa-cover-layer {
   z-index: 2;
 }
-.pa-video-layer {
-  z-index: 3;
-}
-.pa-book-video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
 
-/* Closed cover. Transform/opacity are owned entirely by GSAP now (see
-   runSequence() in the script) — it tweens rotationY directly via JS/rAF
-   on every frame rather than a CSS animation-name + class toggle, which
-   is what wasn't rendering its intermediate frames reliably. Only static,
-   never-animated properties live here: backface-visibility is what makes
-   the cover disappear once GSAP has rotated it edge-on to the camera
-   (~90deg+), the same way a real swinging door vanishes via perspective
-   foreshortening — opacity:0 is just the pre-JS default so there's no
-   flash before the first gsap.set() runs on mount. */
+/* Closed cover. Transform/opacity are owned entirely by GSAP (see
+   runSequence()) — it tweens rotationY directly via JS/rAF on every frame
+   rather than a CSS animation-name + class toggle, which is what wasn't
+   rendering its intermediate frames reliably. Only static, never-animated
+   properties live here: backface-visibility is what makes the cover
+   disappear once GSAP has rotated it edge-on to the camera (~90deg+), the
+   same way a real swinging door vanishes via perspective foreshortening —
+   opacity:0 is just the pre-JS default so there's no flash before the
+   first gsap.set() runs on mount. */
 .pa-cover-closed {
   width: 52%;
   height: auto;
@@ -714,70 +419,45 @@ watch(
 }
 
 /* Open book — position comes from .pa-layer (absolute + flex-centered);
-   this element stays a valid containing block for its own absolutely-
-   positioned .pa-page children regardless. Transform/opacity are GSAP-
-   owned (fromTo/to tweens in runSequence()), same reasoning as the cover
-   above — opacity:0 here is just the pre-JS default. */
+   this element stays a valid containing block for .pa-stamp-area and
+   .pa-open-shade regardless. Transform/opacity are GSAP-owned (tweens in
+   runSequence()), same reasoning as the cover above — opacity:0 here is
+   just the pre-JS default before the 'open' phase sets it visible. */
 .pa-open-wrap {
   width: 100%;
   z-index: 1;
   opacity: 0;
+  position: relative;
 }
 .pa-open-base {
   width: 100%;
   height: auto;
   display: block;
 }
-/* Bounds measured directly against the printed page area in
-   passportOpenBase.png (pixel-sampled, not eyeballed) — the book is
-   rendered at a slight 3D angle with curved page corners, so a naive
-   symmetric inset crowded text against the real (photographed) top
-   edge. left page's clean content area: x 18-48%, right page: x 55-89%;
-   both: y 25-71%. */
-.pa-page {
+/* Shadow the still-mostly-closed cover casts over the pages — GSAP-owned
+   opacity (fades 1 -> 0 in sync with the cover's rotation, see
+   runSequence()). Darker toward the spine (left) since that's the part
+   still nearest the closing cover for longest. */
+.pa-open-shade {
   position: absolute;
-  /* Explicit z-index (not auto) so this always paints above
-     .pa-video-layer (z-index: 3) — an element with an explicit z-index
-     stacks above z-index:auto siblings regardless of DOM order, so
-     without this the stamp/text overlay would render invisibly behind
-     the video. */
+  inset: 0;
+  background: linear-gradient(90deg, rgba(10, 15, 44, 0.55) 0%, rgba(10, 15, 44, 0.15) 55%, rgba(10, 15, 44, 0) 85%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Stamp lands centered on the open book — no left/right page split since
+   there's no text to balance against, just the physical stamp action. */
+.pa-stamp-area {
+  position: absolute;
   z-index: 4;
   top: 25%;
   bottom: 29%;
+  left: 18%;
+  right: 18%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2%;
-}
-.pa-page-left {
-  left: 18%;
-  width: 30%;
-}
-.pa-page-right {
-  left: 55%;
-  width: 34%;
-  align-items: flex-start;
-  text-align: left;
-  justify-content: flex-start;
-  overflow: hidden;
-}
-/* Video path — bounds pixel-sampled against the actual clip's last
-   (settled-open) frame, not the static PNG above: the book fills nearly
-   the whole tightly-cropped portrait frame, and the right page runs
-   close enough to the frame's own right edge that text needs a bigger
-   inset to avoid crowding it. */
-.pa-book--video .pa-page {
-  top: 22%;
-  bottom: 36%;
-}
-.pa-book--video .pa-page-left {
-  left: 12%;
-  width: 32%;
-}
-.pa-book--video .pa-page-right {
-  left: 56%;
-  width: 28%;
 }
 
 /* Stamp tool + impression — centered explicitly via top/left/translate(-50%,-50%)
@@ -789,7 +469,7 @@ watch(
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 44%;
+  width: 46%;
   object-fit: contain;
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.3));
   transform: translate(-50%, -50%) translateY(-140%) scale(0.85);
@@ -844,67 +524,6 @@ watch(
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-/* Right page text */
-.pa-heading {
-  font-size: 16px;
-  font-weight: 800;
-  color: #231d45;
-  letter-spacing: -0.1px;
-  margin: 0 0 6px;
-  text-transform: uppercase;
-  line-height: 1.25;
-}
-.pa-caret {
-  display: inline-block;
-  width: 2px;
-  height: 0.9em;
-  margin-left: 2px;
-  background: currentColor;
-  vertical-align: -0.1em;
-  animation: pa-caret-blink 0.9s step-end infinite;
-}
-@keyframes pa-caret-blink {
-  0%, 50% {
-    opacity: 1;
-  }
-  50.01%, 100% {
-    opacity: 0;
-  }
-}
-.pa-subtitle {
-  font-size: 13px;
-  font-weight: 700;
-  color: #231d45;
-  margin: 0 0 8px;
-}
-.pa-body {
-  font-size: 11.5px;
-  color: #6b6151;
-  line-height: 1.5;
-  margin: 0 0 10px;
-}
-.pa-checks {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.pa-checks li {
-  font-size: 11px;
-  font-weight: 600;
-  color: #3a3327;
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-}
-.pa-check-tick {
-  color: #00817c;
-  font-weight: 800;
-  flex-shrink: 0;
 }
 
 .pa-fade-up-enter-active {
