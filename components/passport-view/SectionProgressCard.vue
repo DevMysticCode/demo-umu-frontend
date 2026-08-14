@@ -2,11 +2,7 @@
   <div>
     <div class="spc">
       <div class="spc-row">
-        <span class="spc-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2l2.9 6.3 6.9.8-5.1 4.8 1.4 6.8L12 17.3 5.9 20.7l1.4-6.8L2.2 9.1l6.9-.8L12 2z" />
-          </svg>
-        </span>
+        <img src="/op-icons/congratulations/star.png" alt="" class="spc-icon" />
         <div class="spc-balance">{{ balance }} <em>pts</em></div>
       </div>
       <h3 class="spc-h3">{{ sectionTitle }}</h3>
@@ -32,7 +28,9 @@
 
       <div class="spc-level">
         <div class="spc-level-bar">
-          <div class="spc-level-fill" :style="{ width: level.progressPercent + '%' }" />
+          <div class="spc-level-fill" :style="{ width: level.progressPercent + '%' }">
+            <span class="spc-level-marker">★</span>
+          </div>
         </div>
         <p class="spc-level-text">
           <template v-if="level.next">
@@ -112,17 +110,14 @@ defineEmits(['finish-section'])
   margin-bottom: 8px;
 }
 .spc-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #14b8a6;
-  color: #0a0f2c;
-  display: grid;
-  place-items: center;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
   flex-shrink: 0;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
 }
 .spc-balance {
-  font-size: 22px;
+  font-size: 30px;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1;
@@ -131,7 +126,7 @@ defineEmits(['finish-section'])
   font-style: normal;
   color: #99f6e4;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   margin-left: 4px;
 }
 
@@ -223,6 +218,16 @@ defineEmits(['finish-section'])
   border-radius: 999px;
   background: linear-gradient(90deg, #14b8a6, #5eead4);
   transition: width 0.4s ease;
+  position: relative;
+}
+.spc-level-marker {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  color: #fff;
+  text-shadow: 0 0 4px rgba(94, 234, 212, 0.9);
 }
 .spc-level-text {
   margin: 8px 0 0;
