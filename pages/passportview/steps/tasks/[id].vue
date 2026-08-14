@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!showThankYou" class="mobile-container task-page bg-umu-gradient">
+  <div v-if="!showSectionComplete" class="mobile-container task-page bg-umu-gradient">
     <AppHeader :showBack="true" :backTo="backToStepsUrl" />
 
     <div class="task-content">
@@ -57,6 +57,7 @@
       </div>
 
       <QuestionPointsCard
+        ref="pointsCardEl"
         :balance="runningBalance"
         :question-points="currentQuestion?.points || 0"
         :question-number="currentQuestionIndex + 1"
@@ -295,14 +296,13 @@
     </div>
   </div>
 
-  <div v-if="showThankYou">
-    <ThankYouModal
-      v-model="showThankYou"
-      :points="earnedPoints"
-      :balance="rewardsBalance"
-      :step-name="currentStep?.title || 'this'"
+  <div v-if="showSectionComplete">
+    <SectionCompleteCelebration
+      v-model="showSectionComplete"
+      :section-bonus-points="sectionBonusPoints"
+      :total-points-before="totalPointsBefore"
+      :total-points-after="totalPointsAfter"
       @continue="handleContinue"
-      @go-rewards="router.push('/profile/rewards')"
     />
   </div>
 
@@ -324,7 +324,7 @@
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import { normalizeUploadUrl, normalizeUploadUrls } from '~/utils/normalizeUploadUrl'
 import QuestionPointsCard from '~/components/passport-view/QuestionPointsCard.vue'
-import ThankYouModal from '~/components/passport-view/ThankYouModal.vue'
+import SectionCompleteCelebration from '~/components/passport-view/SectionCompleteCelebration.vue'
 import RadioQuestion from '~/components/passport-view/questions/RadioQuestion.vue'
 import TextUploadQuestion from '~/components/passport-view/questions/TextUploadQuestion.vue'
 import CheckboxQuestion from '~/components/passport-view/questions/CheckboxQuestion.vue'
@@ -363,30 +363,33 @@ const {
   moveToPreviousQuestion,
 } = usePassportRuntime()
 
-const showThankYou = ref(false)
-const earnedPoints = ref(0)
-// Real points earned across this page's answers this session (accumulated
-// from each save's actual pointsAwarded — 0 on an edit of an
-// already-answered question, per the backend's idempotency guard). This is
-// "what you just earned finishing these questions," not a full section
-// lifetime total, which would need a backend query this page doesn't have.
-const sessionPointsEarned = ref(0)
-const rewardsBalance = ref(0)
+const showSectionComplete = ref(false)
+const sectionBonusPoints = ref(0)
+const totalPointsBefore = ref(0)
+const totalPointsAfter = ref(0)
 const isSaving = ref(false)
 
 // Running points balance shown on the per-question points card, plus the
-// transient "Answer Saved" state it flashes into after each save. Kept
-// separate from `rewardsBalance` (which is only fetched once, right before
-// the end-of-section ThankYouModal) since this one needs to be live from
-// page load and update optimistically on every answer.
+// transient "Answer Saved" state it flashes into after each save. Live
+// from page load, updated optimistically on every answer.
 const runningBalance = ref(0)
 const justSaved = ref(false)
 const lastSavedPoints = ref(0)
 const balanceBeforeSave = ref(0)
+const pointsCardEl = ref(null)
 let justSavedTimeout = null
 
+// The points card sits at the top of the page, but the question someone's
+// answering can be well below the fold (long forms, multipart questions,
+// etc.) — without this, saving while scrolled down just silently advances
+// to the next question and the "Saved" animation plays entirely off-screen.
+function scrollToPointsCard() {
+  const el = pointsCardEl.value?.$el
+  if (!el || typeof el.scrollIntoView !== 'function') return
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+}
+
 function recordPointsEarned(pointsAwarded) {
-  sessionPointsEarned.value += pointsAwarded
   // 0 means the backend's idempotency guard fired (question already
   // answered before) — nothing new was earned, so don't flash "Saved".
   if (!pointsAwarded) return
@@ -394,10 +397,14 @@ function recordPointsEarned(pointsAwarded) {
   runningBalance.value += pointsAwarded
   lastSavedPoints.value = pointsAwarded
   justSaved.value = true
+  scrollToPointsCard()
   if (justSavedTimeout) clearTimeout(justSavedTimeout)
+  // Long enough to read the SAVED! state and watch the balance count-up
+  // (1600ms, see QuestionPointsCard's startCountUp) finish with a beat to
+  // spare, rather than reverting to the next question mid-animation.
   justSavedTimeout = setTimeout(() => {
     justSaved.value = false
-  }, 2200)
+  }, 3200)
 }
 
 async function loadRunningBalance() {
@@ -684,24 +691,67 @@ watch(
   { immediate: true },
 )
 
-// Real balance is fetched fresh right before the "Congratulations" modal
-// shows, rather than kept live the whole page visit — it's only displayed
-// at that one moment, so there's no reason to poll it continuously.
-async function showThankYouWithRealPoints() {
-  earnedPoints.value = sessionPointsEarned.value
+// Fires POST /tasks/:taskId/complete the moment every question belonging
+// to a task has been answered (checked against currentQuestions, which is
+// mutated in place by apiSaveAnswer before this runs). Previously this
+// endpoint was never called at all — completeTask was imported but unused
+// — which meant the backend's section-completion bonus could never fire,
+// since that logic lives entirely inside completeTask(). Returns the API
+// response (sectionCompleted/sectionBonusPoints/balanceAfterBonus) or null
+// if this save didn't finish a task.
+async function maybeCompleteTask(questionId) {
+  const q = currentQuestions.value.find((q) => q.id === questionId)
+  const taskId = q?._taskId
+  if (!taskId) return null
+  const taskQuestions = currentQuestions.value.filter((q) => q._taskId === taskId)
+  if (!taskQuestions.every((q) => q.completed)) return null
   try {
-    const config = useRuntimeConfig()
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    if (token) {
-      const res = await $fetch(`${config.public.apiBase}/rewards/balance`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      rewardsBalance.value = res?.balance ?? 0
-    }
-  } catch {
-    /* modal just falls back to its own default balance display */
+    return await completeTask(taskId)
+  } catch (err) {
+    console.error('Error completing task:', err)
+    return null
   }
-  showThankYou.value = true
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function showSectionCompleteWithRealPoints(taskResult) {
+  sectionBonusPoints.value = taskResult?.sectionBonusPoints ?? 0
+  const after = taskResult?.balanceAfterBonus ?? runningBalance.value
+  totalPointsAfter.value = after
+  totalPointsBefore.value = Math.max(0, after - sectionBonusPoints.value)
+  runningBalance.value = after
+  // Let the last question's "SAVED!" card animation actually play before
+  // the full-screen section-complete takeover replaces this page —
+  // otherwise the celebration for the LAST question would never be seen.
+  await sleep(1400)
+  showSectionComplete.value = true
+}
+
+// Shared "what happens after a save resolves" — used by every save path
+// (plain submit, RADIO/NOTE/multipart auto-save) once it has its
+// pointsAwarded. Keeps task/section completion bookkeeping consistent
+// regardless of which path triggered the save.
+async function finishAfterSave(questionId) {
+  const taskResult = await maybeCompleteTask(questionId)
+  if (taskResult?.sectionCompleted) {
+    await showSectionCompleteWithRealPoints(taskResult)
+    return
+  }
+  const allCompleted = currentQuestions.value.every((q) => q.completed)
+  if (allCompleted) {
+    // Defensive fallback — every question answered but the backend didn't
+    // report sectionCompleted (e.g. completeTask failed); still let the
+    // user continue rather than getting stuck on this page.
+    router.push(`/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`)
+    return
+  }
+  const hasMoreQuestions = moveToNextQuestion()
+  if (!hasMoreQuestions) {
+    router.push(`/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`)
+  }
 }
 
 const totalQuestions = computed(() => currentQuestions.value.length || 0)
@@ -1069,28 +1119,28 @@ const updateAnswer = async (answer) => {
     console.log('✅ NOTE question completed! Auto-saving + navigating to tasks page…')
 
     const currentId = currentQuestion.value.id
-    // Snapshot the completion state BEFORE the save mutates `completed`,
-    // so an all-done section still reliably falls into the thank-you branch.
-    const allCompleted = currentQuestions.value.every(
-      (q) => q.completed || q.id === currentId,
-    )
 
-    // Fire navigation *before* the async save when the section still has
-    // work left — otherwise the drawer visually closes and the current
-    // question view stays visible for the full API round-trip, giving
-    // the user the impression they've been advanced. Save runs in the
-    // background while we route away.
-    if (!allCompleted) {
-      const targetUrl = backToStepsUrl.value
-      router.replace(targetUrl)
-    }
-
+    // Previously this navigated to the steps page BEFORE the save
+    // resolved (a perceived-speed optimisation) whenever a pre-save
+    // snapshot guessed "not the last question yet". That guess used
+    // question-count, but section completion is actually driven by TASK
+    // status, not question order — a NOTE landing on a task that
+    // happens to be the one completing the section could still get
+    // "not last question" from the snapshot, navigate away early, and
+    // the resulting maybeCompleteTask() call (running in the
+    // background, its result discarded) would complete the section
+    // with nobody ever seeing the celebration. Now waits for the real
+    // outcome before deciding where to go — slightly less snappy, but
+    // the celebration never gets silently dropped.
     isSaving.value = true
     try {
       const { pointsAwarded } = await apiSaveAnswer(currentId, answer)
       recordPointsEarned(pointsAwarded)
-      if (allCompleted) {
-        await showThankYouWithRealPoints()
+      const taskResult = await maybeCompleteTask(currentId)
+      if (taskResult?.sectionCompleted) {
+        await showSectionCompleteWithRealPoints(taskResult)
+      } else {
+        router.push(`/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`)
       }
     } catch (error) {
       console.error('Error completing NOTE question:', error)
@@ -1107,22 +1157,7 @@ const updateAnswer = async (answer) => {
     try {
       const { pointsAwarded } = await apiSaveAnswer(currentQuestion.value.id, answer)
       recordPointsEarned(pointsAwarded)
-
-      const currentId = currentQuestion.value.id
-      const allCompleted = currentQuestions.value.every(
-        (q) => q.completed || q.id === currentId,
-      )
-
-      if (allCompleted) {
-        await showThankYouWithRealPoints()
-      } else {
-        const hasMoreQuestions = moveToNextQuestion()
-        if (!hasMoreQuestions) {
-          router.push(
-            `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
-          )
-        }
-      }
+      await finishAfterSave(currentQuestion.value.id)
     } catch (error) {
       console.error('Error auto-saving RADIO answer:', error)
     } finally {
@@ -1177,24 +1212,7 @@ const updateAnswer = async (answer) => {
       try {
         const { pointsAwarded } = await apiSaveAnswer(currentQuestion.value.id, answer)
         recordPointsEarned(pointsAwarded)
-
-        const currentId = currentQuestion.value.id
-        const allCompleted = currentQuestions.value.every(
-          (q) => q.completed || q.id === currentId,
-        )
-
-        if (allCompleted) {
-          // All questions in section done — show thank-you
-          await showThankYouWithRealPoints()
-        } else {
-          // More questions remain — move to next
-          const hasMoreQuestions = moveToNextQuestion()
-          if (!hasMoreQuestions) {
-            router.push(
-              `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
-            )
-          }
-        }
+        await finishAfterSave(currentQuestion.value.id)
       } catch (error) {
         console.error('Error auto-saving answer:', error)
       } finally {
@@ -1229,25 +1247,7 @@ const saveAnswer = async () => {
     // Save answer to backend
     const { pointsAwarded } = await apiSaveAnswer(currentQuestion.value.id, answerValue)
     recordPointsEarned(pointsAwarded)
-
-    // Check if this was the last incomplete question (before advancing)
-    const currentId = currentQuestion.value.id
-    const allCompleted = currentQuestions.value.every(
-      (q) => q.completed || q.id === currentId,
-    )
-
-    if (allCompleted) {
-      // All questions in section done — show thank-you
-      await showThankYouWithRealPoints()
-    } else {
-      // More questions remain — move to next
-      const hasMoreQuestions = moveToNextQuestion()
-      if (!hasMoreQuestions) {
-        router.push(
-          `/passportview/steps/${stepId}?propertyId=${route.query.propertyId}`,
-        )
-      }
-    }
+    await finishAfterSave(currentQuestion.value.id)
   } catch (error) {
     console.error('Error saving answer:', error)
   } finally {

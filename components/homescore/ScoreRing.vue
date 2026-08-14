@@ -1,21 +1,29 @@
 <template>
   <div class="hs-ring-wrap">
     <svg viewBox="0 0 200 200" width="200" height="200">
-      <!-- Track -->
-      <circle cx="100" cy="100" r="80" fill="none" stroke="#e8e8ee" stroke-width="18" stroke-dasharray="376.99" stroke-dashoffset="94.25" stroke-linecap="round" transform="rotate(135 100 100)" />
+      <defs>
+        <linearGradient id="hsRingGrad" x1="1" y1="0" x2="0" y2="0">
+          <stop offset="0%" stop-color="#00BB93" />
+          <stop offset="100%" stop-color="#016F84" />
+        </linearGradient>
+      </defs>
+      <!-- Track — full circle, top-start (12 o'clock), clockwise, matching
+           every other HomeScore ring in the app (this one previously used
+           a 270°-arc "speedometer" style, the one outlier). -->
+      <circle cx="100" cy="100" r="80" fill="none" stroke="#EDEDF3" stroke-width="18" transform="rotate(-90 100 100)" />
       <!-- Progress -->
       <circle
         cx="100" cy="100" r="80" fill="none"
-        :stroke="ratingColor"
+        stroke="url(#hsRingGrad)"
         stroke-width="18"
-        :stroke-dasharray="`${progressArc} 376.99`"
+        stroke-dasharray="502.65"
+        :stroke-dashoffset="502.65 - (displayScore / 100) * 502.65"
         stroke-linecap="round"
-        stroke-dashoffset="0"
-        transform="rotate(135 100 100)"
-        style="transition: stroke-dasharray 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)"
+        transform="rotate(-90 100 100)"
+        style="transition: stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)"
       />
       <!-- Score -->
-      <text x="100" y="90" text-anchor="middle" :font-size="score >= 100 ? 38 : 46" font-weight="800" :fill="ratingColor" font-family="sans-serif">
+      <text x="100" y="90" text-anchor="middle" :font-size="score >= 100 ? 38 : 46" font-weight="800" fill="#0a0f2c" font-family="sans-serif">
         {{ displayScore }}
       </text>
       <text x="100" y="115" text-anchor="middle" font-size="15" fill="#8e8e93" font-family="sans-serif" font-weight="500">
@@ -36,10 +44,6 @@ const props = defineProps<{
 }>()
 
 const displayScore = ref(0)
-const progressArc = computed(() => {
-  const maxArc = 376.99 * 0.75 // 270 degrees
-  return (displayScore.value / 100) * maxArc
-})
 
 onMounted(() => {
   setTimeout(() => {

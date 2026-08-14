@@ -91,9 +91,9 @@
           <div class="score-gauge">
             <svg viewBox="0 0 120 120" aria-hidden="true">
               <defs>
-                <linearGradient :id="gradientId" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#00B8B0" />
-                  <stop offset="100%" stop-color="#008A84" />
+                <linearGradient :id="gradientId" x1="1" y1="0" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#00BB93" />
+                  <stop offset="100%" stop-color="#016F84" />
                 </linearGradient>
               </defs>
               <circle class="g-bg" cx="60" cy="60" r="50" stroke-width="9" />
@@ -3208,7 +3208,7 @@ const watchersDisplay = computed(() => {
   transform: rotate(-90deg);
 }
 .g-bg {
-  stroke: var(--border-soft);
+  stroke: #ededf3;
   fill: none;
 }
 .g-fill {

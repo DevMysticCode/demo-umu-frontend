@@ -15,10 +15,12 @@
             stroke-linejoin="round"
           />
         </svg>
-        <div class="sf-title">{{ title }}</div>
-        <div class="sf-divider">
-          <span class="sf-divider-line" /><span class="sf-divider-dot" /><span class="sf-divider-line" />
-        </div>
+        <template v-if="title">
+          <div class="sf-title">{{ title }}</div>
+          <div class="sf-divider">
+            <span class="sf-divider-line" /><span class="sf-divider-dot" /><span class="sf-divider-line" />
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -33,11 +35,11 @@
 // same path rather than mixing photo-quality art with vector fallbacks.
 withDefaults(
   defineProps<{
-    title: string
+    title?: string | null
     iconAsset?: string | null
     size?: number
   }>(),
-  { iconAsset: null, size: 160 },
+  { title: null, iconAsset: null, size: 160 },
 )
 </script>
 

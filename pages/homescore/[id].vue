@@ -743,6 +743,12 @@
           <div class="pq-score-gauge-wrap">
             <div class="pq-gauge">
               <svg viewBox="0 0 120 120">
+                <defs>
+                  <linearGradient id="pqGrad" x1="1" y1="0" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#00BB93" />
+                    <stop offset="100%" stop-color="#016F84" />
+                  </linearGradient>
+                </defs>
                 <circle
                   class="g-bg"
                   cx="60"
@@ -757,7 +763,7 @@
                   cy="60"
                   r="50"
                   fill="none"
-                  :stroke="pqScoreColor"
+                  stroke="url(#pqGrad)"
                   stroke-width="9"
                   stroke-linecap="round"
                   stroke-dasharray="314.16"
@@ -1878,12 +1884,19 @@
             </div>
             <div class="bv-snapshot-gauge-wrap">
               <svg class="bv-snapshot-gauge-svg" viewBox="0 0 100 100">
+                <defs>
+                  <linearGradient id="bvGrad" x1="1" y1="0" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#00BB93" />
+                    <stop offset="100%" stop-color="#016F84" />
+                  </linearGradient>
+                </defs>
                 <circle class="bv-snapshot-gauge-bg" cx="50" cy="50" r="40" />
                 <circle
                   class="bv-snapshot-gauge-fill"
                   cx="50"
                   cy="50"
                   r="40"
+                  stroke="url(#bvGrad)"
                   :stroke-dashoffset="251.33 - (result.total / 100) * 251.33"
                 />
               </svg>
@@ -10688,7 +10701,6 @@ watch(screen, (s) => {
 }
 .bv-snapshot-gauge-fill {
   fill: none;
-  stroke: #00a19a;
   stroke-width: 8;
   stroke-linecap: round;
   stroke-dasharray: 251.33;
