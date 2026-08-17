@@ -52,6 +52,8 @@
 
       <CameraScanModal :open="showScanner" @close="showScanner = false" @capture="onCameraCapture" />
 
+      <p v-if="uploadError" class="upload-error">{{ uploadError }}</p>
+
       <div v-if="uploadedFiles.length > 0" class="uploaded-files">
         <h4 class="files-title">Uploaded Files ({{ uploadedFiles.length }})</h4>
         <div
@@ -193,6 +195,8 @@
 
         <CameraScanModal :open="showScanner" @close="showScanner = false" @capture="onCameraCapture" />
 
+        <p v-if="uploadError" class="upload-error">{{ uploadError }}</p>
+
         <div v-if="uploadedFiles.length > 0" class="uploaded-files">
           <h4 class="files-title">
             Uploaded Files ({{ uploadedFiles.length }})
@@ -333,34 +337,56 @@ const triggerFileUpload = () => {
   fileInput.value?.click()
 }
 
+const uploadError = ref('')
+
 const handleFileSelect = async (event) => {
   const files = Array.from(event.target.files || [])
   event.target.value = ''
   if (!files.length) return
 
   const questionId = props.question?.id
+  if (!questionId) {
+    uploadError.value = "Couldn't identify this question — please refresh and try again."
+    return
+  }
+
+  // Part of a MULTIPART question (see MultipartQuestion.vue's
+  // buildPartQuestion): the parent question's real id is used to store
+  // the file, but on the endpoint that only returns a URL rather than
+  // overwriting the parent's whole answer with this one part.
+  const endpoint = props.question?.uploadOnly ? 'upload-part' : 'upload'
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
 
   uploading.value = true
+  uploadError.value = ''
   const results = []
+  let failures = 0
   for (const file of files) {
     try {
       const formData = new FormData()
       formData.append('file', file)
-      const res = await $fetch(`${config.public.apiBase}/questions/${questionId}/upload`, {
+      const res = await $fetch(`${config.public.apiBase}/questions/${questionId}/${endpoint}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       })
       results.push({ name: res.name || file.name, url: res.url, size: file.size, type: file.type })
     } catch {
-      results.push({ name: file.name, size: file.size, type: file.type, url: '' })
+      failures += 1
     }
   }
   uploading.value = false
+  if (failures > 0) {
+    uploadError.value =
+      failures === files.length
+        ? 'Upload failed. Please try again.'
+        : `${failures} file(s) failed to upload. Please try again.`
+  }
 
-  uploadedFiles.value = [...(uploadedFiles.value || []), ...results]
-  emitUpdate()
+  if (results.length) {
+    uploadedFiles.value = [...(uploadedFiles.value || []), ...results]
+    emitUpdate()
+  }
 }
 
 const removeFile = (index) => {
@@ -621,6 +647,13 @@ onMounted(() => {
   font-size: 13px;
   font-weight: 600;
   color: #1a1a1a;
+}
+
+.upload-error {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ff3b30;
+  margin: 0;
 }
 
 .uploaded-files {

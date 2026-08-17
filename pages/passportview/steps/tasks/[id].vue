@@ -346,6 +346,8 @@ import VideoModal from '~/components/passport-view/VideoModal.vue'
 const route = useRoute()
 const router = useRouter()
 
+const { checkForCelebrations, waitForCelebrations } = usePassportAchievement()
+
 const {
   currentStep,
   currentTask,
@@ -706,7 +708,27 @@ async function maybeCompleteTask(questionId) {
   const taskQuestions = currentQuestions.value.filter((q) => q._taskId === taskId)
   if (!taskQuestions.every((q) => q.completed)) return null
   try {
-    return await completeTask(taskId)
+    const result = await completeTask(taskId)
+    // The backend mints any newly-earned stamps fire-and-forget right after
+    // marking the task complete (see StampEvaluatorService), so they may not
+    // have landed yet when this response comes back.
+    if (result?.sectionCompleted) {
+      // Stamp takes priority over section-complete — block here until any
+      // newly-earned stamp's celebration has played AND been acknowledged,
+      // so it never ends up appearing after section-complete (previously a
+      // race: whichever screen happened to be ready first — usually
+      // section-complete, since it doesn't need to wait on the backend's
+      // fire-and-forget evaluation — won).
+      await waitForCelebrations()
+    } else {
+      // Non-section-completing save: don't block navigation to the next
+      // question, but still check soon — without this a freshly-minted
+      // stamp would sit invisible until the app next backgrounds/
+      // foregrounds or reloads (checkForCelebrations' only other caller,
+      // in app.vue).
+      setTimeout(() => checkForCelebrations(), 800)
+    }
+    return result
   } catch (err) {
     console.error('Error completing task:', err)
     return null
@@ -993,8 +1015,26 @@ const isAnswerValid = computed(() => {
 
       if (partType === 'checkbox')
         return Array.isArray(partAnswer) && partAnswer.length > 0
-      if (partType === 'upload')
+      if (partType === 'upload') {
+        // display:'both' parts (text OR upload, per the "Or" divider in
+        // TextUploadQuestion.vue) emit { text, files } instead of a plain
+        // array — checking Array.isArray(partAnswer) alone always failed
+        // for those, permanently disabling the save button even with a
+        // real answer.
+        if (
+          partAnswer &&
+          typeof partAnswer === 'object' &&
+          !Array.isArray(partAnswer)
+        ) {
+          const hasText =
+            typeof partAnswer.text === 'string' &&
+            partAnswer.text.trim().length > 0
+          const hasFiles =
+            Array.isArray(partAnswer.files) && partAnswer.files.length > 0
+          return hasText || hasFiles
+        }
         return Array.isArray(partAnswer) && partAnswer.length > 0
+      }
       if (partType === 'multitextinput')
         return Array.isArray(partAnswer) && partAnswer.length > 0
       if (partType === 'multifieldform') {

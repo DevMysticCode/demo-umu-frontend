@@ -1043,6 +1043,11 @@ const landingTour = useHomescoreTour({
   autoStart: true,
   steps: [
     {
+      sel: '[data-tour="explore"]',
+      title: 'Explore any UK property',
+      body: 'See what we already know — value, history, energy, planning, local area and more. Free, no account needed.',
+    },
+    {
       sel: '[data-tour="HomeScore"]',
       title: 'HomeScore — free in 60 seconds',
       body: 'A quick read on how your home compares to the street: running costs, EPC rating, where you could save. No signup needed.',
@@ -1065,6 +1070,15 @@ const landingTour = useHomescoreTour({
   ],
 })
 
+// The tour's steps target cards by `[data-tour="id"]` selector and skip the
+// 'explore' card (it's not part of the walkthrough) — so the step index does
+// NOT line up with `cards`' own index and must never be used to index it
+// directly (that previously brought the wrong card to front on every step).
+function tourStepCardId(i) {
+  const sel = landingTour.steps[i]?.sel
+  return sel?.match(/data-tour="([^"]+)"/)?.[1]
+}
+
 // Whenever the tour advances, bring the matching card to the front so the
 // spotlight lands on the card we're talking about (cards are stacked with
 // `data-pos` and only the front one is fully visible).
@@ -1072,7 +1086,7 @@ watch(
   () => landingTour.idx.value,
   (i) => {
     if (!landingTour.active.value) return
-    const cardId = cards[i]?.id
+    const cardId = tourStepCardId(i)
     if (cardId && stack.value[0] !== cardId) {
       stack.value = [cardId, ...stack.value.filter((x) => x !== cardId)]
     }
@@ -1084,7 +1098,7 @@ watch(
   () => landingTour.active.value,
   (on) => {
     if (!on) return
-    const cardId = cards[landingTour.idx.value]?.id
+    const cardId = tourStepCardId(landingTour.idx.value)
     if (cardId && stack.value[0] !== cardId) {
       stack.value = [cardId, ...stack.value.filter((x) => x !== cardId)]
     }
@@ -1380,7 +1394,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .deck-wrap {
   margin: 22px 22px 0;
   position: relative;
-  height: 546px;
+  height: 608px;
 }
 .deck-card {
   position: absolute;
@@ -1441,6 +1455,11 @@ const currentSample = computed(() => samples[sampleType.value])
   top: 186px;
   transform: scale(0.955);
   z-index: 1;
+}
+.deck-card[data-pos='5'] {
+  top: 248px;
+  transform: scale(0.94);
+  z-index: 0;
 }
 
 .dc-peek {

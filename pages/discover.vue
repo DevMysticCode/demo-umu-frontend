@@ -86,7 +86,7 @@
           </div>
           <span class="exp-card-arrow exp-card-arrow--purple">→</span>
         </button>
-        <button type="button" class="exp-card exp-card--amber" @click="navigateTo('/passport')">
+        <button type="button" class="exp-card exp-card--amber" @click="navigateTo('/?sample=seller')">
           <img src="/op-icons/misc/explorePassport.png" alt="" class="exp-card-ic" loading="lazy" />
           <div class="exp-card-title">Property Passports</div>
           <div class="exp-card-sub">
