@@ -16,39 +16,27 @@
 
           <div class="pa-scene">
             <div class="pa-book">
-              <!-- Closed cover — GSAP-driven (rotationY tweened directly via
-                   JS/rAF each frame rather than a CSS @keyframes + class
-                   toggle, which measured zero intermediate frames). -->
-              <div class="pa-layer pa-cover-layer">
-                <img
-                  v-if="phase !== 'idle'"
-                  ref="coverEl"
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt=""
-                  class="pa-cover-closed"
-                  :class="{ 'pa-glow': phase === 'close' && closeSettled }"
-                />
-              </div>
+              <!-- Real footage of the passport physically opening. Plays
+                   once; on 'ended' the element naturally holds its last
+                   frame (no need to freeze it manually) for the rest of the
+                   celebration — that held frame is the backdrop the stamp
+                   drops onto, and stays put through points and the fade-out. -->
+              <video
+                v-if="phase !== 'idle'"
+                ref="openingVideoEl"
+                src="/op-icons/rewards/passportOpening.mp4"
+                class="pa-video"
+                muted
+                playsinline
+                autoplay
+              />
 
+              <!-- Stamp tool drops onto the right side of the opened
+                   passport (held on the opening video's last frame),
+                   impacts, holds, then lifts away leaving the ink
+                   impression. -->
               <div
-                v-if="phase === 'open' || phase === 'stamp' || phase === 'points' || phase === 'hold' || (phase === 'close' && !closeSettled)"
-                ref="openWrapEl"
-                class="pa-layer pa-open-wrap"
-              >
-                <img src="/op-icons/rewards/passportOpenBase.png" alt="" class="pa-open-base" />
-                <!-- Shadow the cover casts on the pages while still mostly
-                     closed over them — fades out in sync with the cover's
-                     rotation so the book reads as "revealed" by the cover
-                     swinging away, not as a separate thing fading in on its
-                     own beat. -->
-                <div ref="shadeEl" class="pa-open-shade" />
-              </div>
-
-              <!-- Stamp tool drops onto the open book, impacts, holds, then
-                   lifts away leaving the ink impression — no title/body/
-                   checklist text on the page, just the physical action. -->
-              <div
-                v-if="phase === 'stamp' || phase === 'points' || phase === 'hold' || (phase === 'close' && !closeSettled)"
+                v-if="phase === 'stamp' || phase === 'points' || phase === 'hold'"
                 class="pa-stamp-area"
               >
                 <img
@@ -60,20 +48,19 @@
                 />
                 <Transition name="pa-fade">
                   <div v-if="stampStep === 'lifting' || stampStep === 'done'" class="pa-impression">
-                    <StampFrame :icon-asset="stampAsset" :size="112" />
+                    <StampFrame :title="achievementTitle" :size="120" />
                   </div>
                 </Transition>
               </div>
             </div>
 
+            <!-- Points — plain glowing text, no card/background, so it
+                 reads as part of the same scene as the video + stamp
+                 rather than a separate boxed element. -->
             <Transition name="pa-fade-up">
-              <div v-if="phase === 'points' || phase === 'hold'" class="pa-points-card">
-                <div class="pa-points-check">✓</div>
-                <div>
-                  <div class="pa-points-amt">+{{ pointsAwarded }} points</div>
-                  <div class="pa-points-sub">Added to your rewards balance</div>
-                  <div class="pa-points-balance">{{ animatedBalance.toLocaleString('en-GB') }} points</div>
-                </div>
+              <div v-if="phase === 'points' || phase === 'hold'" class="pa-points-hero">
+                <div class="pa-points-num">+{{ animatedPoints.toLocaleString('en-GB') }}</div>
+                <div class="pa-points-label">Points Earned</div>
               </div>
             </Transition>
           </div>
@@ -84,7 +71,6 @@
 </template>
 
 <script setup lang="ts">
-import gsap from 'gsap'
 import StampFrame from './StampFrame.vue'
 
 interface Props {
@@ -109,32 +95,47 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{ (e: 'done'): void }>()
 
-type Phase = 'idle' | 'enter' | 'open' | 'stamp' | 'points' | 'hold' | 'close'
+type Phase = 'idle' | 'opening' | 'stamp' | 'points' | 'hold'
 type StampStep = 'idle' | 'entering' | 'impact' | 'holding' | 'lifting' | 'done'
 
 const phase = ref<Phase>('idle')
 const stampStep = ref<StampStep>('idle')
-const closeSettled = ref(false)
 const reducedMotion = ref(false)
 
-const coverEl = ref<HTMLImageElement | null>(null)
-const openWrapEl = ref<HTMLDivElement | null>(null)
-const shadeEl = ref<HTMLDivElement | null>(null)
+const openingVideoEl = ref<HTMLVideoElement | null>(null)
 
-function gsapTween(target: unknown, vars: gsap.TweenVars): Promise<void> {
-  return new Promise((resolve) => {
-    if (!target) {
-      resolve()
-      return
-    }
-    gsap.to(target, { ...vars, onComplete: resolve })
-  })
-}
-
-const { value: animatedBalance, start: startBalanceCountUp } = useCountUp()
+// Counts up 0 -> pointsAwarded (not a running balance total — the
+// redesigned points display shows just "+N Points Earned", matching the
+// reference: no card, no balance line).
+const { value: animatedPoints, start: startPointsCountUp } = useCountUp()
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+// Waits for the video's 'ended' event. A fallback timer (well above either
+// clip's real ~5s length) guarantees the celebration can never get stuck
+// even if a WebView silently blocks autoplay or the file fails to decode.
+function waitForVideo(el: HTMLVideoElement | null, fallbackMs = 8000): Promise<void> {
+  return new Promise((resolve) => {
+    if (!el) {
+      resolve()
+      return
+    }
+    let settled = false
+    const finishOnce = () => {
+      if (settled) return
+      settled = true
+      el.removeEventListener('ended', finishOnce)
+      resolve()
+    }
+    el.addEventListener('ended', finishOnce, { once: true })
+    setTimeout(finishOnce, fallbackMs)
+    el.play?.().catch(() => {
+      /* autoplay attribute already asked for this — the fallback timer
+         covers a WebView that silently refuses both */
+    })
+  })
 }
 
 let cancelled = false
@@ -142,48 +143,18 @@ let cancelled = false
 async function runSequence() {
   cancelled = false
 
-  phase.value = 'enter'
+  phase.value = 'opening'
   await nextTick()
-
-  // No per-element transformPerspective here — .pa-scene already establishes
-  // a single perspective on the whole 3D scene (see CSS). Stacking a second,
-  // element-local perspective on top of that compounded into the warped,
-  // "off" vanishing point that read as unrealistic.
-  gsap.set(coverEl.value, {
-    scale: 0.6,
-    y: 70,
-    rotationY: 0,
-    opacity: 0,
-    transformOrigin: 'left center',
-  })
-  await gsapTween(coverEl.value, { scale: 1, y: 0, opacity: 1, duration: 1, ease: 'power3.out' })
+  await waitForVideo(openingVideoEl.value)
   if (cancelled) return
 
-  phase.value = 'open'
-  await nextTick()
-  // The open book sits fully formed UNDER the cover from the first frame
-  // of this phase (not faded/scaled in separately on its own delayed
-  // beat) — the shade over it starts fully opaque, standing in for the
-  // shadow the still-mostly-closed cover casts on the pages. Both the
-  // cover's rotation and the shade's fade run the same duration/ease so
-  // the "reveal" reads as one continuous motion (cover swings away,
-  // shadow lifts with it) rather than two separately-timed animations
-  // that happen to overlap.
-  gsap.set(openWrapEl.value, { scale: 1, opacity: 1 })
-  gsap.set(shadeEl.value, { opacity: 1 })
-  const openVars: gsap.TweenVars = { duration: 0.95, ease: 'power2.out' }
-  const coverOpenP = gsapTween(coverEl.value, { rotationY: -100, ...openVars })
-  const shadeP = gsapTween(shadeEl.value, { opacity: 0, ...openVars })
-  await Promise.all([coverOpenP, shadeP])
-  if (cancelled) return
-
-  // Brief hold on the settled-open page before the stamp starts — reads as
-  // "the pages finished opening" rather than the stamp cutting in
-  // immediately off the end of the opening motion.
+  // The opening video's element naturally holds on its final frame once
+  // 'ended' fires — that's the "stopped open" backdrop the stamp lands on.
+  // This whole stamp sub-sequence totals ~2s, matching the requested
+  // "hold for 2 seconds and put the stamp" pause before closing.
+  phase.value = 'stamp'
   await sleep(300)
   if (cancelled) return
-
-  phase.value = 'stamp'
   stampStep.value = 'entering'
   await sleep(400)
   if (cancelled) return
@@ -201,34 +172,17 @@ async function runSequence() {
   if (cancelled) return
 
   phase.value = 'points'
-  startBalanceCountUp(Math.max(0, props.balanceAfter - props.pointsAwarded), props.balanceAfter, 1100)
+  startPointsCountUp(0, props.pointsAwarded, 900)
   await sleep(1400)
   if (cancelled) return
 
   phase.value = 'hold'
-  await sleep(800)
+  await sleep(1400)
   if (cancelled) return
 
-  phase.value = 'close'
-  await nextTick()
-  const coverCloseP = gsapTween(coverEl.value, {
-    rotationY: 0,
-    duration: 0.8,
-    ease: 'power2.out',
-  })
-  const bookOutP = gsapTween(openWrapEl.value, {
-    scale: 0.92,
-    y: 20,
-    opacity: 0,
-    duration: 0.6,
-    ease: 'power1.in',
-  })
-  await Promise.all([coverCloseP, bookOutP])
-  if (cancelled) return
-  closeSettled.value = true
-  await sleep(700)
-  if (cancelled) return
-
+  // No closing video — the whole overlay fades out via the Transition
+  // already wrapping it (pa-overlay-fade), which is triggered by visible
+  // going false once the parent reacts to 'done'.
   finish()
 }
 
@@ -238,19 +192,13 @@ function finish() {
 
 function skip() {
   cancelled = true
-  gsap.killTweensOf(coverEl.value)
-  gsap.killTweensOf(openWrapEl.value)
-  gsap.killTweensOf(shadeEl.value)
+  openingVideoEl.value?.pause?.()
   finish()
 }
 
 function resetState() {
   phase.value = 'idle'
   stampStep.value = 'idle'
-  closeSettled.value = false
-  gsap.killTweensOf(coverEl.value)
-  gsap.killTweensOf(openWrapEl.value)
-  gsap.killTweensOf(shadeEl.value)
 }
 
 watch(
@@ -367,94 +315,31 @@ watch(
 .pa-book {
   position: relative;
   width: 100%;
-  aspect-ratio: 798 / 699;
-}
-/* Each phase's visual (closed cover / open book) is its own absolutely
-   positioned, centered layer stacked on .pa-book rather than a flex
-   sibling — during the enter/open/close transition both can be in the
-   DOM at once (cross-fading), and flexbox would otherwise squeeze them
-   into sharing width instead of overlapping in the same spot. */
-.pa-layer {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.pa-cover-layer {
-  z-index: 2;
-}
-
-/* Closed cover. Transform/opacity are owned entirely by GSAP (see
-   runSequence()) — it tweens rotationY directly via JS/rAF on every frame
-   rather than a CSS animation-name + class toggle, which is what wasn't
-   rendering its intermediate frames reliably. Only static, never-animated
-   properties live here: backface-visibility is what makes the cover
-   disappear once GSAP has rotated it edge-on to the camera (~90deg+), the
-   same way a real swinging door vanishes via perspective foreshortening —
-   opacity:0 is just the pre-JS default so there's no flash before the
-   first gsap.set() runs on mount. */
-.pa-cover-closed {
-  width: 52%;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.4));
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  opacity: 0;
-}
-@keyframes pa-glow-pulse {
-  0% {
-    filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 0 rgba(0, 161, 154, 0));
-  }
-  50% {
-    filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 24px rgba(0, 161, 154, 0.7));
-  }
-  100% {
-    filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 0 rgba(0, 161, 154, 0));
-  }
-}
-.pa-cover-closed.pa-glow {
-  animation: pa-glow-pulse 1.4s ease-out 0.1s;
-}
-
-/* Open book — position comes from .pa-layer (absolute + flex-centered);
-   this element stays a valid containing block for .pa-stamp-area and
-   .pa-open-shade regardless. Transform/opacity are GSAP-owned (tweens in
-   runSequence()), same reasoning as the cover above — opacity:0 here is
-   just the pre-JS default before the 'open' phase sets it visible. */
-.pa-open-wrap {
-  width: 100%;
-  z-index: 1;
-  opacity: 0;
-  position: relative;
-}
-.pa-open-base {
+/* No fixed aspect-ratio, no card treatment — sized by the video's own
+   intrinsic dimensions, no border-radius/shadow so it sits directly on
+   the overlay's own background rather than reading as a boxed card. */
+.pa-video {
   width: 100%;
   height: auto;
   display: block;
 }
-/* Shadow the still-mostly-closed cover casts over the pages — GSAP-owned
-   opacity (fades 1 -> 0 in sync with the cover's rotation, see
-   runSequence()). Darker toward the spine (left) since that's the part
-   still nearest the closing cover for longest. */
-.pa-open-shade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(10, 15, 44, 0.55) 0%, rgba(10, 15, 44, 0.15) 55%, rgba(10, 15, 44, 0) 85%);
-  pointer-events: none;
-  opacity: 0;
-}
 
-/* Stamp lands centered on the open book — no left/right page split since
-   there's no text to balance against, just the physical stamp action. */
+/* Stamp lands on the right-hand page of the opened passport (measured
+   against the opening video's actual last frame: the right page spans
+   roughly x 52-89%, y 16-82% of the frame — this box sits inset within
+   that). Horizontally centered on the whole spread rather than the right
+   page specifically, nudged slightly left of dead-center per feedback. */
 .pa-stamp-area {
   position: absolute;
   z-index: 4;
-  top: 25%;
-  bottom: 29%;
-  left: 18%;
-  right: 18%;
+  top: 20%;
+  bottom: 22%;
+  left: 26%;
+  right: 40%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -540,43 +425,40 @@ watch(
   opacity: 0;
 }
 
-/* Points card */
-.pa-points-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 14px 18px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-  max-width: 280px;
-  width: 100%;
+/* Points — plain glowing text, no card/background/shadow (per the
+   reference: a big chunky "+N" with a soft glow behind it, floating
+   directly on the scene, "POINTS EARNED" underneath). The 3D-bevel look
+   is approximated with a gradient fill + stacked text-shadows, since a
+   true rendered-PNG bevel can't be replicated in flat CSS text. */
+.pa-points-hero {
+  position: relative;
+  text-align: center;
+  padding: 8px 0 4px;
 }
-.pa-points-check {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #f2faf8;
-  color: #00a19a;
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  flex-shrink: 0;
+.pa-points-hero::before {
+  content: '';
+  position: absolute;
+  inset: -30px -20px;
+  background: radial-gradient(closest-side, rgba(20, 184, 166, 0.28), transparent 70%);
+  z-index: -1;
 }
-.pa-points-amt {
+.pa-points-num {
+  font-size: clamp(40px, 12vw, 56px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  /* Solid, dark app-aqua fill — the previous pale gradient (near-white at
+     the top) washed out against the white overlay background and was
+     hard to read. */
+  color: #00817c;
+  text-shadow: 0 3px 0 rgba(0, 129, 124, 0.18), 0 8px 18px rgba(0, 129, 124, 0.3);
+}
+.pa-points-label {
+  margin-top: 4px;
   font-size: 14px;
   font-weight: 800;
-  color: #231d45;
-}
-.pa-points-sub {
-  font-size: 11px;
-  color: #94a3b8;
-  margin-top: 1px;
-}
-.pa-points-balance {
-  font-size: 11px;
-  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: #00817c;
-  margin-top: 4px;
 }
 </style>

@@ -827,6 +827,7 @@ import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDraw
 const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
+const { checkForCelebrations } = usePassportAchievement()
 
 // Passport-type gate. Always shown before the actual claim happens, even if
 // the user's role preference suggests one or the other.
@@ -1355,6 +1356,12 @@ async function runPolling() {
     if (finalStatus === 'approved') {
       step.value = 'kyc-verified'
       personaError.value = ''
+      // Backend mints IDENTITY_VERIFIED fire-and-forget off the same webhook
+      // that resolved this poll — <PassportAchievement> is mounted globally
+      // in app.vue, but it only re-checks on app mount/resume, not on this
+      // in-app step transition, so without this the celebration wouldn't
+      // surface until the next background/foreground cycle.
+      setTimeout(() => checkForCelebrations(), 800)
     } else if (finalStatus === 'declined' || finalStatus === 'failed') {
       personaError.value =
         'Identity verification failed. Please retry or contact support.'
@@ -1386,6 +1393,7 @@ async function checkPersonaNow() {
     if (r.status === 'approved') {
       personaAbort?.abort()
       step.value = 'kyc-verified'
+      setTimeout(() => checkForCelebrations(), 800)
     } else if (r.status === 'declined' || r.status === 'failed') {
       personaError.value =
         'Identity verification failed. Please retry or contact support.'
@@ -1666,6 +1674,10 @@ async function issuePassport() {
 //
 // Use replace() either way so the back button doesn't drop the user mid-KYC.
 function finishAndNavigate(passportId: string) {
+  // Backend mints OWNERSHIP_VERIFIED fire-and-forget as part of the claim
+  // that just resolved — check now rather than waiting for the next app
+  // mount/resume, same reasoning as the KYC checks above.
+  void checkForCelebrations()
   const nextParam = (route.query?.next as string | undefined)?.trim()
   if (nextParam && nextParam.startsWith('/')) {
     router.replace(nextParam)

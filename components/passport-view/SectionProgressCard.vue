@@ -27,10 +27,11 @@
       </template>
 
       <div class="spc-level">
-        <div class="spc-level-bar">
-          <div class="spc-level-fill" :style="{ width: level.progressPercent + '%' }">
-            <span class="spc-level-marker">★</span>
+        <div class="spc-level-track">
+          <div class="spc-level-bar">
+            <div class="spc-level-fill" :style="{ width: level.progressPercent + '%' }" />
           </div>
+          <span class="spc-level-marker" :style="{ left: level.progressPercent + '%' }">★</span>
         </div>
         <p class="spc-level-text">
           <template v-if="level.next">
@@ -207,6 +208,9 @@ defineEmits(['finish-section'])
   position: relative;
   z-index: 1;
 }
+.spc-level-track {
+  position: relative;
+}
 .spc-level-bar {
   height: 6px;
   border-radius: 999px;
@@ -218,16 +222,17 @@ defineEmits(['finish-section'])
   border-radius: 999px;
   background: linear-gradient(90deg, #14b8a6, #5eead4);
   transition: width 0.4s ease;
-  position: relative;
 }
 .spc-level-marker {
   position: absolute;
-  right: -6px;
   top: 50%;
-  transform: translateY(-50%);
-  font-size: 11px;
+  font-size: 13px;
+  line-height: 1;
   color: #fff;
   text-shadow: 0 0 4px rgba(94, 234, 212, 0.9);
+  transform: translate(-50%, -50%);
+  transition: left 0.4s ease;
+  pointer-events: none;
 }
 .spc-level-text {
   margin: 8px 0 0;

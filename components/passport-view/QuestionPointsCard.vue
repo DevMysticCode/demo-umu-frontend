@@ -19,9 +19,6 @@
           <div class="qpc-balance-row">
             <div class="qpc-balance">{{ balance }} <em>pts</em></div>
             <span v-if="questionPoints" class="qpc-pill">+{{ questionPoints }} pts</span>
-            <svg class="qpc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
           </div>
           <h3 class="qpc-h3">Answer Question {{ questionNumber }}</h3>
           <p class="qpc-sub">
@@ -157,11 +154,6 @@ watch(
   font-weight: 700;
   flex-shrink: 0;
 }
-.qpc-chevron {
-  color: rgba(255, 255, 255, 0.35);
-  flex-shrink: 0;
-}
-
 .qpc-saved-text {
   display: flex;
   flex-direction: column;

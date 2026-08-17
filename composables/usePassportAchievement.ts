@@ -131,12 +131,36 @@ async function acknowledge() {
   }
 }
 
+// Stamps take priority over the section-complete screen — a page that's
+// about to show section-complete should call this FIRST and await it, so
+// any newly-earned stamp's celebration plays (and gets acknowledged) before
+// section-complete appears, rather than the two racing based on whatever
+// checkForCelebrations()'s poll timing happens to land.
+async function waitForCelebrations(initialDelayMs = 600) {
+  if (typeof window === 'undefined') return
+  await new Promise((resolve) => setTimeout(resolve, initialDelayMs))
+  await checkForCelebrations()
+  if (!visible.value && !queue.value.length) return
+  await new Promise<void>((resolve) => {
+    const stop = watch(
+      [visible, () => queue.value.length],
+      ([v, qLen]) => {
+        if (!v && qLen === 0) {
+          stop()
+          resolve()
+        }
+      },
+    )
+  })
+}
+
 export function usePassportAchievement() {
   return {
     current: readonly(current),
     visible: readonly(visible),
     balanceAfter: readonly(balanceAfter),
     checkForCelebrations,
+    waitForCelebrations,
     acknowledge,
     simulateCelebration,
   }

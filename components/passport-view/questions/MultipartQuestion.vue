@@ -427,6 +427,12 @@ const buildPartQuestion = (part) => {
   const uploadInstruction = part.uploadInstruction || ''
 
   return {
+    // The parent MULTIPART PassportQuestion's real id — parts don't have
+    // their own PassportQuestion row, they all share this one. Combined
+    // with uploadOnly below, TextUploadQuestion posts to a non-destructive
+    // upload endpoint scoped by this id instead of /questions/undefined/upload.
+    id: props.question?.id,
+    uploadOnly: normalizedType === 'upload',
     title: part.title,
     description: part.description || '',
     options: [
