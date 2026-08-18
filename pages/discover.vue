@@ -52,17 +52,21 @@
         />
       </div>
 
-      <!-- Reuses the same search component the HomeScore guest page uses
-           (components/property/PropertySearchInput.vue) instead of
-           hand-rolling debounce/pagination/dropdown logic again. -->
-      <div class="discover-search-wrap">
-        <PropertySearchInput
-          placeholder="Enter postcode or address"
-          variant="light"
-          show-actions
-          @select="onResultSelect"
-        />
-      </div>
+      <!-- Explore's own search bar + "Distance & filters" sheet, extracted
+           verbatim into a shared component (components/property/
+           SearchFilterBar.vue) so this is the literal same component, not
+           a lookalike. It calls /property/search directly, which has no
+           auth guard, so this works for guests; only "Properties you're
+           watching" below needs an account, since that reads the user's
+           own saved list. Selecting an address here still navigates
+           straight to that property (unlike Explore, which shows a
+           results list on itself) — Discover isn't gaining a results
+           view, per feedback when this was built. -->
+      <SearchFilterBar
+        v-model="searchQuery"
+        placeholder="Enter postcode or address"
+        @select="onResultSelect"
+      />
       <div class="exp-search-hint">
         Try a postcode like <b>CV1 2WT</b> or an address like
         <b>10 Downing Street, London</b>
@@ -70,13 +74,14 @@
 
       <!-- ── Three entry-point cards ─────────────────────────────── -->
       <div class="exp-cards-row">
-        <button type="button" class="exp-card exp-card--teal" @click="focusSearchInput">
-          <img src="/op-icons/misc/exploreLocation.png" alt="" class="exp-card-ic" loading="lazy" />
-          <div class="exp-card-title">Explore a property</div>
+        <button type="button" class="exp-card exp-card--teal" @click="goToBuyerPassport">
+          <img src="/op-icons/misc/buyerPassport.png" alt="" class="exp-card-ic exp-card-ic--book" loading="lazy" />
+          <div class="exp-card-title">Buyer Passport</div>
           <div class="exp-card-sub">
-            Search any UK home and see its public property data.
+            Create your verified buyer profile, KYC, proof of funds and
+            buying readiness.
           </div>
-          <span class="exp-card-arrow exp-card-arrow--teal">→</span>
+          <span class="exp-card-arrow exp-card-arrow--purple">→</span>
         </button>
         <button type="button" class="exp-card exp-card--purple" @click="goToWatching">
           <img src="/op-icons/misc/exploreWatching.png" alt="" class="exp-card-ic" loading="lazy" />
@@ -86,19 +91,20 @@
           </div>
           <span class="exp-card-arrow exp-card-arrow--purple">→</span>
         </button>
-        <button type="button" class="exp-card exp-card--amber" @click="navigateTo('/?sample=seller')">
-          <img src="/op-icons/misc/explorePassport.png" alt="" class="exp-card-ic" loading="lazy" />
-          <div class="exp-card-title">Property Passports</div>
+        <div class="exp-card exp-card--gray exp-card--soon">
+          <img src="/op-icons/misc/tenantPassport.png" alt="" class="exp-card-ic exp-card-ic--book" loading="lazy" />
+          <div class="exp-card-title">Tenant Passport</div>
+          <span class="exp-card-soon-pill">COMING SOON</span>
           <div class="exp-card-sub">
-            Discover whether a property already has a Passport.
+            Build your reusable rental profile with ID, references, right
+            to rent and history.
           </div>
           <span class="exp-card-arrow exp-card-arrow--amber">→</span>
-        </button>
+        </div>
       </div>
 
-      <!-- ── More from UMU ────────────────────────────────────────── -->
+      <!-- ── HomeScore / Property Passport ─────────────────────────── -->
       <div class="exp-more">
-        <div class="exp-more-title">More from UMU</div>
         <div class="exp-more-grid">
           <button
             type="button"
@@ -116,12 +122,29 @@
               </div>
               <span class="exp-more-arrow exp-more-arrow--teal">→</span>
             </div>
-            <img
-              src="/op-icons/misc/exploreHomescore.png"
-              alt=""
-              class="exp-more-ic"
-              loading="lazy"
-            />
+            <div class="exp-more-ring">
+              <svg viewBox="0 0 100 100">
+                <defs>
+                  <linearGradient id="dfHomescoreGrad" x1="1" y1="0" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#00BB93" />
+                    <stop offset="100%" stop-color="#016F84" />
+                  </linearGradient>
+                </defs>
+                <circle class="exp-more-ring-bg" cx="50" cy="50" r="42" />
+                <circle
+                  class="exp-more-ring-fill"
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  :stroke-dasharray="263.9"
+                  :stroke-dashoffset="263.9 - (55 / 100) * 263.9"
+                />
+              </svg>
+              <div class="exp-more-ring-label">
+                <span class="exp-more-ring-num">55</span>
+                <span class="exp-more-ring-den">/100</span>
+              </div>
+            </div>
           </button>
           <button
             type="button"
@@ -141,9 +164,9 @@
               <span class="exp-more-arrow exp-more-arrow--amber">→</span>
             </div>
             <img
-              src="/op-icons/misc/explorePropertyPassport.png"
+              src="/op-icons/misc/passportFan.png"
               alt=""
-              class="exp-more-ic"
+              class="exp-more-ic exp-more-ic--fan"
               loading="lazy"
             />
           </button>
@@ -197,7 +220,7 @@
 definePageMeta({ title: 'Explore - UmovingU' })
 
 import OPIcon from '~/components/ui/OPIcon.vue'
-import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
+import SearchFilterBar from '~/components/property/SearchFilterBar.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
 import { usePropertySearch } from '~/composables/usePropertySearch'
 import {
@@ -218,9 +241,19 @@ function onResultSelect(property: any) {
   router.push(`/property/${property.id}`)
 }
 
-function focusSearchInput() {
-  const el = document.querySelector<HTMLInputElement>('.discover-search-wrap input')
-  el?.focus()
+// Search query + filter state now live inside SearchFilterBar (Explore's
+// own search bar, extracted) — this page just needs the current query
+// string for the v-model binding.
+const searchQuery = ref('')
+
+function goToBuyerPassport() {
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) {
+    navigateTo('/onboarding/signin')
+    return
+  }
+  navigateTo('/buyer-profile/build')
 }
 
 function goToWatching() {
@@ -359,21 +392,14 @@ function lastSoldLabel(dateStr: string): string {
   margin-top: -4px;
 }
 
-/* ── Search ── */
-.discover-search-wrap {
-  margin-bottom: 10px;
-}
-.discover-search-wrap :deep(.psi-input) {
-  padding-top: 14px;
-  padding-bottom: 14px;
-  border-radius: 100px;
-}
+/* ── Search — SearchFilterBar.vue owns its own styling (Explore's search
+   bar + filter sheet, verbatim); nothing to style here anymore. ── */
 .exp-search-hint {
   font-size: 11.5px;
   font-weight: 500;
   color: #9c98ad;
   text-align: center;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 .exp-search-hint b {
   color: #00817c;
@@ -405,12 +431,36 @@ function lastSoldLabel(dateStr: string): string {
 .exp-card--amber {
   background: #fdf3e4;
 }
+.exp-card--gray {
+  background: #f0f0f2;
+}
+.exp-card--soon {
+  cursor: default;
+}
 .exp-card-ic {
   width: 62px;
   height: 62px;
   object-fit: contain;
   display: block;
   margin: 0 auto 12px;
+}
+/* Buyer/Tenant Passport book art is portrait (~255x395), not square like
+   the other card icons — height-constrained instead of width-constrained
+   so it reads as a small standing book, not a squashed square. */
+.exp-card-ic--book {
+  width: auto;
+  height: 72px;
+}
+.exp-card-soon-pill {
+  display: inline-block;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  color: #6b7089;
+  background: #e2e2e6;
+  padding: 3px 7px;
+  border-radius: 100px;
+  margin-top: 4px;
 }
 .exp-card-title {
   font-size: 12.5px;
@@ -443,15 +493,9 @@ function lastSoldLabel(dateStr: string): string {
   color: #d4922a;
 }
 
-/* ── More from UMU ── */
+/* ── HomeScore / Property Passport ── */
 .exp-more {
-  margin-top: 26px;
-}
-.exp-more-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: #231d45;
-  margin-bottom: 12px;
+  margin-top: 12px;
 }
 .exp-more-grid {
   display: grid;
@@ -486,6 +530,51 @@ function lastSoldLabel(dateStr: string): string {
   height: 64px;
   object-fit: contain;
   flex-shrink: 0;
+}
+.exp-more-ic--fan {
+  width: 84px;
+  height: 84px;
+}
+.exp-more-ring {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+.exp-more-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.exp-more-ring-bg {
+  fill: none;
+  stroke: #ededf3;
+  stroke-width: 9;
+}
+.exp-more-ring-fill {
+  fill: none;
+  stroke: url(#dfHomescoreGrad);
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+.exp-more-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.exp-more-ring-num {
+  font-size: 17px;
+  font-weight: 900;
+  color: #231d45;
+  line-height: 1;
+}
+.exp-more-ring-den {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #9c98ad;
 }
 .exp-more-eyebrow {
   font-size: 10.5px;

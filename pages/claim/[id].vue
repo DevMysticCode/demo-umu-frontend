@@ -61,25 +61,27 @@
 
       <!-- Big teal-wash card: eyebrow + address on left, 3D house on right -->
       <div class="cl-lr-card">
-        <div class="cl-lr-card-text">
-          <div class="cl-lr-eyebrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <polyline points="9 12 11 14 15 10" />
-            </svg>
-            FOUND ON LAND REGISTRY
+        <div class="cl-lr-card-header">
+          <div class="cl-lr-card-text">
+            <div class="cl-lr-eyebrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <polyline points="9 12 11 14 15 10" />
+              </svg>
+              FOUND ON LAND REGISTRY
+            </div>
+            <div class="cl-lr-addr1">{{ selectedProperty?.addressLine1 || '—' }}</div>
+            <div class="cl-lr-addr2">
+              {{ [selectedProperty?.city, selectedProperty?.postcode].filter(Boolean).join(', ') || '—' }}
+            </div>
           </div>
-          <div class="cl-lr-addr1">{{ selectedProperty?.addressLine1 || '—' }}</div>
-          <div class="cl-lr-addr2">
-            {{ [selectedProperty?.city, selectedProperty?.postcode].filter(Boolean).join(', ') || '—' }}
-          </div>
+          <img
+            src="/op-icons/claim/houseWithPin.png"
+            alt=""
+            class="cl-lr-card-illus"
+            loading="lazy"
+          />
         </div>
-        <img
-          src="/op-icons/claim/houseWithPin.png"
-          alt=""
-          class="cl-lr-card-illus"
-          loading="lazy"
-        />
         <div class="cl-lr-tile-grid">
           <div class="cl-lr-tile">
             <span class="cl-lr-tile-ic">
@@ -2589,7 +2591,13 @@ onBeforeUnmount(() => {
   margin: 4px 0 16px;
   overflow: hidden;
 }
-.cl-lr-card-text { position: relative; z-index: 1; max-width: 62%; }
+.cl-lr-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cl-lr-card-text { flex: 1; min-width: 0; }
 .cl-lr-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -2615,18 +2623,13 @@ onBeforeUnmount(() => {
   margin-top: 4px;
 }
 .cl-lr-card-illus {
-  position: absolute;
-  right: 6px;
-  top: 12px;
-  width: 45%;
-  max-width: 180px;
-  height: auto;
+  width: 76px;
+  height: 76px;
   object-fit: contain;
+  flex-shrink: 0;
   pointer-events: none;
 }
 .cl-lr-tile-grid {
-  position: relative;
-  z-index: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;

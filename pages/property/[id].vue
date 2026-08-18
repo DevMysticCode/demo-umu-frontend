@@ -23,7 +23,9 @@
       <!-- ─── SECTION 0: App Header ────────────────────────────────── -->
       <div class="pps-app-header">
         <div class="pps-app-header-brand">
-          <div class="pps-app-header-logo"><OPIcon name="logo" class="w-[26px] h-[26px]" /></div>
+          <div class="pps-app-header-logo">
+            <OPIcon name="logo" class="w-[26px] h-[26px]" />
+          </div>
           <span>umovingu</span>
         </div>
         <div class="pps-app-header-actions">
@@ -47,7 +49,16 @@
         </div>
       </div>
       <button class="pps-back-link" type="button" @click="goBack">
-        <svg width="9" height="14" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          width="9"
+          height="14"
+          viewBox="0 0 10 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <path d="M8 1L2 8l6 7" />
         </svg>
         Back to Explore
@@ -66,8 +77,19 @@
               @error="onHeroImageError"
             />
             <div v-if="propertyImages.length > 0" class="pps-hero-photo-count">
-              <svg width="12" height="10" viewBox="0 0 24 20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 3l1.5-2h5L16 3h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3z" />
+              <svg
+                width="12"
+                height="10"
+                viewBox="0 0 24 20"
+                fill="none"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M8 3l1.5-2h5L16 3h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3z"
+                />
                 <circle cx="12" cy="11" r="3.5" />
               </svg>
               {{ propertyImages.length }}
@@ -76,7 +98,9 @@
 
           <div class="pps-hero-card-identity">
             <div class="pps-identity-title-row">
-              <div class="pps-identity-address">{{ property.addressLine1 }}</div>
+              <div class="pps-identity-address">
+                {{ property.addressLine1 }}
+              </div>
               <div
                 class="pps-badge-passport"
                 :class="{
@@ -85,18 +109,24 @@
                 }"
               >
                 <template v-if="pageState === 'unclaimed'">UNCLAIMED</template>
-                <template v-else-if="pageState === 'progress'">IN PROGRESS</template>
+                <template v-else-if="pageState === 'progress'"
+                  >IN PROGRESS</template
+                >
                 <template v-else>✓ AVAILABLE</template>
               </div>
             </div>
             <div class="pps-identity-suburb">
               <template v-if="property.city">{{ property.city }}</template>
               <template v-if="property.city && property.postcode">, </template>
-              <template v-if="property.postcode">{{ property.postcode }}</template>
+              <template v-if="property.postcode">{{
+                property.postcode
+              }}</template>
             </div>
 
             <div v-if="estimatedPrice" class="pps-price-row">
-              <span class="pps-price-value">{{ formatPrice(estimatedPrice) }}</span>
+              <span class="pps-price-value">{{
+                formatPrice(estimatedPrice)
+              }}</span>
               <span class="pps-price-source">
                 {{ priceSourceLabel }}
                 <button
@@ -104,7 +134,9 @@
                   type="button"
                   aria-label="About this estimate"
                   @click.stop="openSheet('price-info')"
-                >i</button>
+                >
+                  i
+                </button>
               </span>
             </div>
 
@@ -119,44 +151,39 @@
                 >📅 {{ property.yearBuilt }}</span
               >
             </div>
-            <div v-if="floodBadgeLabel" class="pps-badge-flood pps-badge-flood--card">
-              <img src="/op-icons/misc/waterDroplet.png" alt="" loading="lazy" /> {{ floodBadgeLabel }}
+            <div
+              v-if="floodBadgeLabel"
+              class="pps-badge-flood pps-badge-flood--card"
+            >
+              <img
+                src="/op-icons/misc/waterDroplet.png"
+                alt=""
+                loading="lazy"
+              />
+              {{ floodBadgeLabel }}
             </div>
 
-            <!-- Watch / Ask — confined to the identity column's width, not
-                 the full card, matching the prototype exactly. -->
-            <div class="pps-pill-actions">
-              <button type="button" class="pps-pill-btn" @click="onWatchClick">
-                <svg width="15" height="14" viewBox="0 0 16 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
-                  <path d="M8 13.2S1.3 9.5 1.3 4.8A3.3 3.3 0 0 1 8 3.3a3.3 3.3 0 0 1 6.7 1.5c0 4.7-6.7 8.4-6.7 8.4z" />
-                </svg>
-                {{ pageState === 'progress' ? 'Get notified' : 'Watch this' }}
-              </button>
-              <button type="button" class="pps-pill-btn" @click="onContactClick">
-                <svg width="15" height="14" viewBox="0 0 16 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 2h14v9H5l-4 3.5V2z" />
-                </svg>
-                {{ pageState === 'published' ? 'Make contact' : 'Ask a question' }}
-              </button>
-            </div>
           </div>
         </div>
       </div>
 
-      <!-- Floating claim box — a page-level sibling below the hero card
-           (not nested inside its padding), with just a small negative
-           top margin so it peeks up slightly without covering the price
-           or the Watch/Ask pills above it. Unclaimed state only —
-           progress/published keep the in-flow CTA below, which already
-           covers their case. Two-row internal layout (icon+text on top,
-           button+price below, full width) rather than cramming all three
-           into one row — a single row left too little space for the text
-           on real mobile widths and collapsed into unreadable wrapping. -->
+      <!-- Floating claim box — overlaps roughly the bottom third of the
+           hero photo (left-aligned with it, per the latest prototype),
+           rather than the small full-width "peek" this used to be.
+           Unclaimed state only — progress/published keep the in-flow CTA
+           below, which already covers their case. -->
       <div v-if="pageState === 'unclaimed'" class="pps-float-claim">
         <div class="pps-float-claim-top">
-          <img src="/op-icons/passportview/umu-passport.png" alt="" class="pps-float-claim-ic" loading="lazy" />
+          <img
+            src="/op-icons/passportview/umu-passport.png"
+            alt=""
+            class="pps-float-claim-ic"
+            loading="lazy"
+          />
           <div class="pps-float-claim-body">
-            <div class="pps-float-claim-title">No Passport yet — be the first</div>
+            <div class="pps-float-claim-title">
+              No Passport yet — be the first
+            </div>
             <div class="pps-float-claim-sub">
               Create your Property Passport to store, verify and share
               everything about your home.
@@ -164,17 +191,58 @@
           </div>
         </div>
         <div class="pps-float-claim-cta">
-          <button type="button" class="pps-float-claim-btn" @click="onClaimClick">
+          <button
+            type="button"
+            class="pps-float-claim-btn"
+            @click="onClaimClick"
+          >
             Claim this property
           </button>
           <div class="pps-float-claim-price">£15 one-off</div>
         </div>
       </div>
 
+      <!-- ─── Watch / Ask — back to its own standalone section (as it was
+           before the image-left/text-right hero redesign), not the small
+           pills that briefly lived inside the identity column. ─── -->
+      <div class="pps-secondary-row">
+        <button type="button" class="pps-secondary-btn" @click="onWatchClick">
+          <img
+            src="/op-icons/property/watchThis.jpeg"
+            alt=""
+            class="pps-secondary-btn-img"
+            loading="lazy"
+          />
+          <span class="pps-secondary-btn-label">{{
+            pageState === 'progress' ? 'Get notified' : 'Watch this'
+          }}</span>
+          <span class="pps-secondary-btn-sub">{{
+            pageState === 'progress'
+              ? 'Alert when Passport is live'
+              : 'Save & get alerts'
+          }}</span>
+        </button>
+        <button type="button" class="pps-secondary-btn" @click="onContactClick">
+          <img
+            src="/op-icons/property/askAQuestion.jpeg"
+            alt=""
+            class="pps-secondary-btn-img"
+            loading="lazy"
+          />
+          <span class="pps-secondary-btn-label">{{
+            pageState === 'published' ? 'Make contact' : 'Ask a question'
+          }}</span>
+          <span class="pps-secondary-btn-sub">{{
+            pageState === 'published'
+              ? 'Owner or neighbour'
+              : 'Neighbour or curious buyer'
+          }}</span>
+        </button>
+      </div>
 
       <!-- ─── SECTION 3: Action Bar ────────────────────────────────── -->
       <!-- Hidden per request: duplicates the floating claim box's CTA and
-           the hero's Watch/Ask pills, which already cover this. -->
+           the standalone Watch/Ask section above, which already cover this. -->
       <div v-if="false" class="pps-action-bar">
         <button
           v-if="pageState === 'unclaimed'"
@@ -263,45 +331,6 @@
             <span class="pps-passport-cta-unlock-arrow">→</span>
           </div>
         </button>
-
-        <div class="pps-secondary-row">
-          <button type="button" class="pps-secondary-btn" @click="onWatchClick">
-            <img
-              src="/op-icons/property/watchThis.jpeg"
-              alt=""
-              class="pps-secondary-btn-img"
-              loading="lazy"
-            />
-            <span class="pps-secondary-btn-label">{{
-              pageState === 'progress' ? 'Get notified' : 'Watch this'
-            }}</span>
-            <span class="pps-secondary-btn-sub">{{
-              pageState === 'progress'
-                ? 'Alert when Passport is live'
-                : 'Save & get alerts'
-            }}</span>
-          </button>
-          <button
-            type="button"
-            class="pps-secondary-btn"
-            @click="onContactClick"
-          >
-            <img
-              src="/op-icons/property/askAQuestion.jpeg"
-              alt=""
-              class="pps-secondary-btn-img"
-              loading="lazy"
-            />
-            <span class="pps-secondary-btn-label">{{
-              pageState === 'published' ? 'Make contact' : 'Ask a question'
-            }}</span>
-            <span class="pps-secondary-btn-sub">{{
-              pageState === 'published'
-                ? 'Owner or neighbour'
-                : 'Neighbour or curious buyer'
-            }}</span>
-          </button>
-        </div>
       </div>
 
       <!-- ─── SECTION 4: Live Signal Bar ──────────────────────────── -->
@@ -595,9 +624,23 @@
           @click="onProgressCtaClick"
         >
           <template v-if="isPassportOwnerOrCollab">
-            <img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Continue building your Passport →
+            <img
+              src="/op-icons/homescore/clipboard.png"
+              alt=""
+              class="inline-ic"
+              loading="lazy"
+            />
+            Continue building your Passport →
           </template>
-          <template v-else><img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Get notified when published →</template>
+          <template v-else
+            ><img
+              src="/op-icons/misc/bell.png"
+              alt=""
+              class="inline-ic"
+              loading="lazy"
+            />
+            Get notified when published →</template
+          >
         </button>
         <div class="pps-passport-cta-sub">
           <template v-if="isPassportOwnerOrCollab">
@@ -987,7 +1030,13 @@
               "
               class="pps-ds-placeholder"
             >
-              <div class="pps-ds-placeholder-icon"><img src="/op-icons/investment/house.png" alt="" loading="lazy" /></div>
+              <div class="pps-ds-placeholder-icon">
+                <img
+                  src="/op-icons/investment/house.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
               <div class="pps-ds-placeholder-title">
                 No property details on file yet
               </div>
@@ -1154,7 +1203,13 @@
               v-else-if="!estimatedPrice && !lastSale"
               class="pps-ds-placeholder"
             >
-              <div class="pps-ds-placeholder-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
+              <div class="pps-ds-placeholder-icon">
+                <img
+                  src="/op-icons/passportview/titleDeedsAndPlan.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
               <div class="pps-ds-placeholder-title">
                 No sale records on file
               </div>
@@ -1531,7 +1586,13 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon"><img src="/op-icons/investment/graduationCap.png" alt="" loading="lazy" /></div>
+              <div class="pps-ds-placeholder-icon">
+                <img
+                  src="/op-icons/investment/graduationCap.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
               <div class="pps-ds-placeholder-title">
                 No schools data on file
               </div>
@@ -1872,7 +1933,9 @@
                 >
                 <button
                   class="pps-tr-sortbtn"
-                  @click="busSortMode = busSortMode === 'walk' ? 'name' : 'walk'"
+                  @click="
+                    busSortMode = busSortMode === 'walk' ? 'name' : 'walk'
+                  "
                 >
                   Sort: {{ busSortMode === 'walk' ? 'Walk time' : 'Name' }} ▾
                 </button>
@@ -2088,7 +2151,13 @@
               loading="lazy"
             />
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon"><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" /></div>
+              <div class="pps-ds-placeholder-icon">
+                <img
+                  src="/op-icons/misc/addressPin.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
               <div class="pps-ds-placeholder-title">Map unavailable</div>
               <div class="pps-ds-placeholder-sub">
                 No coordinates on file for this property.
@@ -2461,7 +2530,13 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
+              <div class="pps-ds-placeholder-icon">
+                <img
+                  src="/op-icons/homescore/clipboard.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
               <div class="pps-ds-placeholder-title">
                 No planning constraints or applications on file
               </div>
@@ -3026,7 +3101,13 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon"><img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" /></div>
+              <div class="pps-ds-placeholder-icon">
+                <img
+                  src="/op-icons/investment/landmarks.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
               <div class="pps-ds-placeholder-title">
                 No heritage sites nearby
               </div>
@@ -3243,7 +3324,13 @@
             </template>
 
             <div v-else class="pps-ds-placeholder">
-              <div class="pps-ds-placeholder-icon"><img src="/op-icons/calendar/shield.png" alt="" loading="lazy" /></div>
+              <div class="pps-ds-placeholder-icon">
+                <img
+                  src="/op-icons/calendar/shield.png"
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
               <div class="pps-ds-placeholder-title">Crime data unavailable</div>
               <div class="pps-ds-placeholder-sub">
                 Couldn't load data.police.uk stats for this location.
@@ -3257,7 +3344,9 @@
 
           <!-- ── Watch this (Register interest) ────────────────────── -->
           <template v-else-if="activeSheet === 'watch'">
-            <div class="pps-sheet-icon"><img src="/op-icons/misc/bell.png" alt="" loading="lazy" /></div>
+            <div class="pps-sheet-icon">
+              <img src="/op-icons/misc/bell.png" alt="" loading="lazy" />
+            </div>
             <div class="pps-sheet-title">Watch this property</div>
             <div class="pps-sheet-sub">
               Save it to your list. We'll alert you if it comes to market, when
@@ -3341,7 +3430,12 @@
           <!-- ── Make Contact (Owner / Neighbour) ──────────────────── -->
           <template v-else-if="activeSheet === 'owner'">
             <div class="mkc-head">
-              <img src="/op-icons/matched-buyers/chat-multi.png" alt="" class="mkc-head-ic" loading="lazy" />
+              <img
+                src="/op-icons/matched-buyers/chat-multi.png"
+                alt=""
+                class="mkc-head-ic"
+                loading="lazy"
+              />
               <div class="mkc-head-text">
                 <div class="mkc-head-title">Make contact</div>
                 <div class="mkc-head-sub">
@@ -3363,7 +3457,11 @@
                   @click="contactRole = r.value"
                 >
                   <span class="mkc-chip-ic" aria-hidden="true">
-                    <img :src="`/op-icons/makeContact/${r.icon}.png`" alt="" loading="lazy" />
+                    <img
+                      :src="`/op-icons/makeContact/${r.icon}.png`"
+                      alt=""
+                      loading="lazy"
+                    />
                   </span>
                   {{ r.label }}
                 </button>
@@ -3374,7 +3472,14 @@
               <div class="mkc-label">YOUR NAME</div>
               <div class="mkc-input-wrap">
                 <span class="mkc-input-ic" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.1"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
                     <circle cx="12" cy="8" r="4" />
                     <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8" />
                   </svg>
@@ -3392,7 +3497,14 @@
               <div class="mkc-label">YOUR MESSAGE</div>
               <div class="mkc-input-wrap mkc-input-wrap--textarea">
                 <span class="mkc-input-ic" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.1"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
                     <path d="M4 20h4l10-10-4-4L4 16v4z" />
                     <path d="M14 6l4 4" />
                   </svg>
@@ -3417,7 +3529,11 @@
                   @click="contactReplyPref = r.value"
                 >
                   <span class="mkc-chip-ic" aria-hidden="true">
-                    <img :src="`/op-icons/makeContact/${r.icon}.png`" alt="" loading="lazy" />
+                    <img
+                      :src="`/op-icons/makeContact/${r.icon}.png`"
+                      alt=""
+                      loading="lazy"
+                    />
                   </span>
                   {{ r.label }}
                 </button>
@@ -3425,11 +3541,19 @@
             </div>
 
             <div class="mkc-privacy">
-              <img src="/op-icons/onboarding/trustPadlock.png" alt="" class="mkc-privacy-ic" loading="lazy" />
+              <img
+                src="/op-icons/onboarding/trustPadlock.png"
+                alt=""
+                class="mkc-privacy-ic"
+                loading="lazy"
+              />
               <div class="mkc-privacy-body">
-                <div class="mkc-privacy-title">Your details go only to the verified owner.</div>
+                <div class="mkc-privacy-title">
+                  Your details go only to the verified owner.
+                </div>
                 <div class="mkc-privacy-sub">
-                  We never share with third parties or agents without your consent.
+                  We never share with third parties or agents without your
+                  consent.
                 </div>
               </div>
             </div>
@@ -3442,7 +3566,14 @@
               :disabled="contactSubmitting"
               @click="submitOwnerContact"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <line x1="22" y1="2" x2="11" y2="13" />
                 <polygon points="22 2 15 22 11 13 2 9 22 2" />
               </svg>
@@ -3502,7 +3633,13 @@
                   :key="f.title"
                   class="pps-psi-row"
                 >
-                  <div class="pps-psi-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
+                  <div class="pps-psi-icon">
+                    <img
+                      src="/op-icons/passportview/titleDeedsAndPlan.png"
+                      alt=""
+                      loading="lazy"
+                    />
+                  </div>
                   <div class="pps-psi-text">
                     <div class="pps-psi-name">{{ f.title }}</div>
                     <div class="pps-psi-meta">{{ f.sub }}</div>
@@ -3569,7 +3706,13 @@
                 style="background: #00a19a"
                 @click="onProgressCtaClick"
               >
-                <img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Continue building your Passport →
+                <img
+                  src="/op-icons/homescore/clipboard.png"
+                  alt=""
+                  class="inline-ic"
+                  loading="lazy"
+                />
+                Continue building your Passport →
               </button>
               <button
                 v-else
@@ -3577,7 +3720,13 @@
                 style="background: #00a19a"
                 @click="onWatchClick"
               >
-                <img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Get notified when published →
+                <img
+                  src="/op-icons/misc/bell.png"
+                  alt=""
+                  class="inline-ic"
+                  loading="lazy"
+                />
+                Get notified when published →
               </button>
             </template>
 
@@ -3604,7 +3753,13 @@
                   :key="f.title"
                   class="pps-psi-row"
                 >
-                  <div class="pps-psi-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" loading="lazy" /></div>
+                  <div class="pps-psi-icon">
+                    <img
+                      src="/op-icons/passportview/titleDeedsAndPlan.png"
+                      alt=""
+                      loading="lazy"
+                    />
+                  </div>
                   <div class="pps-psi-text">
                     <div class="pps-psi-name">{{ f.title }}</div>
                     <div class="pps-psi-meta">{{ f.sub }}</div>
@@ -3780,7 +3935,13 @@
                 the hard work is already done.
               </div>
               <div class="pps-explain-callout-foot">
-                <img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Get notified the moment it publishes — be first in the door
+                <img
+                  src="/op-icons/misc/bell.png"
+                  alt=""
+                  class="inline-ic"
+                  loading="lazy"
+                />
+                Get notified the moment it publishes — be first in the door
               </div>
             </div>
 
@@ -3926,7 +4087,11 @@
                   class="pps-explain-checklist-icon"
                   style="background: #fff3e0"
                 >
-                  <img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" />
+                  <img
+                    src="/op-icons/homescore/clipboard.png"
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
                 <div class="pps-explain-checklist-text">
                   <div class="pps-explain-checklist-title">
@@ -3943,7 +4108,11 @@
                   class="pps-explain-checklist-icon"
                   style="background: #e6f7f6"
                 >
-                  <img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" />
+                  <img
+                    src="/op-icons/investment/landmarks.png"
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
                 <div class="pps-explain-checklist-text">
                   <div class="pps-explain-checklist-title">
@@ -3977,7 +4146,11 @@
                   class="pps-explain-checklist-icon"
                   style="background: #f3e5f5"
                 >
-                  <img src="/op-icons/calendar/calendar.png" alt="" loading="lazy" />
+                  <img
+                    src="/op-icons/calendar/calendar.png"
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
                 <div class="pps-explain-checklist-text">
                   <div class="pps-explain-checklist-title">
@@ -4034,7 +4207,13 @@
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
-            <div class="unpub-icon"><img src="/op-icons/buyer-profile-build/idCard.png" alt="" loading="lazy" /></div>
+            <div class="unpub-icon">
+              <img
+                src="/op-icons/buyer-profile-build/idCard.png"
+                alt=""
+                loading="lazy"
+              />
+            </div>
             <div class="unpub-eyebrow">
               <span style="color: #00a19a">●</span> Property Passport — In
               Progress
@@ -4045,7 +4224,13 @@
               full record is published.
             </p>
             <button class="unpub-cta" @click="openRegisterInterest">
-              <img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Notify me when it's published
+              <img
+                src="/op-icons/misc/bell.png"
+                alt=""
+                class="inline-ic"
+                loading="lazy"
+              />
+              Notify me when it's published
             </button>
           </div>
         </div>
@@ -5031,8 +5216,7 @@ const pageState = computed<'unclaimed' | 'progress' | 'published'>(() => {
   // status endpoint was silently ignored here — a logged-in user would
   // fall through to 'progress' ("Preview what's being built") even
   // though search correctly showed it as published.
-  if (s?.isPublished || property.value?.passportPublished)
-    return 'published'
+  if (s?.isPublished || property.value?.passportPublished) return 'published'
   if (s?.hasPassport || property.value?.hasPassport) return 'progress'
   return 'unclaimed'
 })
@@ -5270,21 +5454,44 @@ const passportProgressPct = computed<number>(() => {
 })
 const passportVerifiedItems = computed(() => {
   const iconMap: Record<string, { icon: string; bg: string }> = {
-    'EPC Certificate': { icon: '/op-icons/homescore/lightning.png', bg: '#e6f7f6' },
-    'Land Registry Title': { icon: '/op-icons/investment/landmarks.png', bg: '#e6f7f6' },
+    'EPC Certificate': {
+      icon: '/op-icons/homescore/lightning.png',
+      bg: '#e6f7f6',
+    },
+    'Land Registry Title': {
+      icon: '/op-icons/investment/landmarks.png',
+      bg: '#e6f7f6',
+    },
     'Title Plan': { icon: '🗺️', bg: '#e6f7f6' },
-    'TA6 — Property Information': { icon: '/op-icons/homescore/clipboard.png', bg: '#fff3e0' },
-    'TA10 — Fittings & Contents': { icon: '/op-icons/misc/wrench.png', bg: '#fff3e0' },
-    'Gas Safety Record': { icon: '/op-icons/homescore/flame.png', bg: '#ffe0e0' },
-    'Electrical Certificate (EICR)': { icon: '/op-icons/homescore/lightning.png', bg: '#e6f7f6' },
-    'TA7 — Leasehold Information': { icon: '/op-icons/passportview/titleDeedsAndPlan.png', bg: '#f3e5f5' },
+    'TA6 — Property Information': {
+      icon: '/op-icons/homescore/clipboard.png',
+      bg: '#fff3e0',
+    },
+    'TA10 — Fittings & Contents': {
+      icon: '/op-icons/misc/wrench.png',
+      bg: '#fff3e0',
+    },
+    'Gas Safety Record': {
+      icon: '/op-icons/homescore/flame.png',
+      bg: '#ffe0e0',
+    },
+    'Electrical Certificate (EICR)': {
+      icon: '/op-icons/homescore/lightning.png',
+      bg: '#e6f7f6',
+    },
+    'TA7 — Leasehold Information': {
+      icon: '/op-icons/passportview/titleDeedsAndPlan.png',
+      bg: '#f3e5f5',
+    },
   }
   return passportFeatures.value
     .filter((f) => f.verified)
     .map((f) => ({
       title: f.title,
       sub: f.sub,
-      icon: iconMap[f.title]?.icon ?? '/op-icons/passportview/titleDeedsAndPlan.png',
+      icon:
+        iconMap[f.title]?.icon ??
+        '/op-icons/passportview/titleDeedsAndPlan.png',
       bg: iconMap[f.title]?.bg ?? '#f9f9fb',
     }))
 })
@@ -6829,14 +7036,19 @@ const contactSubmitting = ref(false)
 const contactError = ref('')
 
 // Contact chip option lists — icon name maps to a PNG in /op-icons/makeContact.
-const contactRoles: Array<{ value: ContactRole; label: string; icon: string }> = [
-  { value: 'Potential buyer', label: 'Potential buyer', icon: 'buyer' },
-  { value: 'Neighbour',       label: 'Neighbour',       icon: 'neighbour' },
-  { value: 'Agent',           label: 'Agent',           icon: 'agent' },
-]
-const contactReplyChoices: Array<{ value: ContactReplyPref; label: string; icon: string }> = [
-  { value: 'Email',  label: 'Email',  icon: 'email' },
-  { value: 'Phone',  label: 'Phone',  icon: 'phone' },
+const contactRoles: Array<{ value: ContactRole; label: string; icon: string }> =
+  [
+    { value: 'Potential buyer', label: 'Potential buyer', icon: 'buyer' },
+    { value: 'Neighbour', label: 'Neighbour', icon: 'neighbour' },
+    { value: 'Agent', label: 'Agent', icon: 'agent' },
+  ]
+const contactReplyChoices: Array<{
+  value: ContactReplyPref
+  label: string
+  icon: string
+}> = [
+  { value: 'Email', label: 'Email', icon: 'email' },
+  { value: 'Phone', label: 'Phone', icon: 'phone' },
   { value: 'Either', label: 'Either', icon: 'either' },
 ]
 
@@ -6918,7 +7130,10 @@ async function submitWatch() {
       return
     }
     closeSheet()
-    showToast({ message: "Saved — we'll keep you posted", icon: '/op-icons/misc/bell.png' })
+    showToast({
+      message: "Saved — we'll keep you posted",
+      icon: '/op-icons/misc/bell.png',
+    })
     watchName.value = ''
     watchEmail.value = ''
   } catch {
@@ -7979,12 +8194,21 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-hero-card-top {
   display: flex;
+  align-items: flex-start;
   gap: 14px;
 }
+/* Sized generously enough (46% wide, 2:3 — taller than the previous 38%/
+   3:4) that its rendered height reliably exceeds the text column's
+   (address + badge, suburb, price, type pills, Watch/Ask buttons) even
+   with a 2-line address. That matters because .pps-float-claim overlaps
+   it via a negative margin measured from the CARD's bottom edge, which is
+   set by whichever column is taller — at the old 38%/3:4 size the text
+   column was consistently taller, so the "overlap" landed in empty space
+   below the photo instead of on the photo itself (no visible effect). */
 .pps-hero-photo {
   position: relative;
-  flex: 0 0 42%;
-  aspect-ratio: 1 / 1;
+  flex: 0 0 46%;
+  aspect-ratio: 2 / 3;
   border-radius: 14px;
   overflow: hidden;
   background: radial-gradient(
@@ -8124,34 +8348,6 @@ function formatSaleDate(dateStr: string): string {
   padding: 0;
   line-height: 1;
 }
-.pps-pill-actions {
-  margin-top: 12px;
-  display: flex;
-  gap: 8px;
-}
-.pps-pill-btn {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 10px 8px;
-  border-radius: 100px;
-  border: 1.5px solid #ececef;
-  background: white;
-  color: #231d45;
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-}
-.pps-pill-btn svg {
-  flex-shrink: 0;
-}
 .pps-price-edit {
   border: none;
   background: none;
@@ -8179,24 +8375,71 @@ function formatSaleDate(dateStr: string): string {
   align-items: center;
   gap: 5px;
 }
+.pps-secondary-row {
+  margin: 14px 14px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.pps-secondary-btn {
+  background: white;
+  border: 1.5px solid #ececef;
+  border-radius: 12px;
+  padding: 12px 10px;
+  text-align: center;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.pps-secondary-btn-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.pps-secondary-btn:hover {
+  border-color: #231d45;
+  box-shadow: 0 4px 12px rgba(35, 29, 69, 0.1);
+}
+.pps-secondary-btn-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1535;
+  display: block;
+}
+.pps-secondary-btn-sub {
+  font-size: 11px;
+  color: #999;
+  display: block;
+  margin-top: 2px;
+}
 
 /* ─── Floating claim box ────────────────────────────────────────
-   Absolutely positioned within .pps-hero-card (not full width): its
-   left edge starts past the photo's midpoint, so it overlaps the
-   photo's bottom-right corner rather than spanning the whole card, and
-   it hangs below the card's own bottom edge. Two rows internally
-   (icon+text on top, button+price below, both full box width) rather
-   than one row with 3 flex items — on real (~360-400px) phone widths a
-   single row left too little space for the text column and collapsed
-   into unreadable word-by-word wrapping. */
+   Page-level sibling right after the hero card, pulled up with a large
+   negative top margin so it overlaps roughly the bottom third of the
+   hero photo (left-aligned with it — both share the same 14px page
+   margin, so their left edges already line up) rather than the small
+   "peek" this used to be. Two rows internally (icon+text on top,
+   button+price below, both full box width) rather than one row with 3
+   flex items — on real (~360-400px) phone widths a single row left too
+   little space for the text column and collapsed into unreadable
+   word-by-word wrapping.
+   -68px assumes the photo (46% width, 2:3 aspect) is the taller of the
+   two hero columns, so the card's bottom edge ≈ the photo's bottom edge
+   — see the sizing note on .pps-hero-photo. On a device where the text
+   column still ends up taller (e.g. a very long address wrapping to 3
+   lines), this will under-overlap rather than break anything. */
 .pps-float-claim {
-  /* Back in normal document flow, right after the photo/identity/pills
-     content (not absolutely positioned over it) — only a small negative
-     margin so it peeks up slightly, without covering the price or the
-     Watch/Ask pills above it. */
   position: relative;
   z-index: 2;
-  margin: -18px 14px 0;
+  margin: -90px 14px 0;
   padding: 14px 16px;
   background: white;
   border-radius: 14px;
@@ -8205,6 +8448,8 @@ function formatSaleDate(dateStr: string): string {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 70%;
+  margin-left: auto;
 }
 .pps-float-claim-top {
   display: flex;
@@ -8261,7 +8506,6 @@ function formatSaleDate(dateStr: string): string {
   font-weight: 700;
   color: #00a19a;
 }
-
 
 /* ─── Action bar ────────────────────────────────────────────── */
 .pps-action-bar {
@@ -8352,51 +8596,6 @@ function formatSaleDate(dateStr: string): string {
   color: rgba(255, 255, 255, 0.8);
   font-weight: 700;
 }
-.pps-secondary-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.pps-secondary-btn {
-  background: white;
-  border: 1.5px solid #ececef;
-  border-radius: 12px;
-  padding: 12px 10px;
-  text-align: center;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.pps-secondary-btn-img {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  object-fit: cover;
-  display: block;
-  margin-bottom: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-.pps-secondary-btn:hover {
-  border-color: #231d45;
-  box-shadow: 0 4px 12px rgba(35, 29, 69, 0.1);
-}
-.pps-secondary-btn-label {
-  font-size: 15px;
-  font-weight: 700;
-  color: #1a1535;
-  display: block;
-}
-.pps-secondary-btn-sub {
-  font-size: 11px;
-  color: #999;
-  display: block;
-  margin-top: 2px;
-}
-
 /* ─── Signal bar ────────────────────────────────────────────── */
 .pps-signal-bar {
   background: #f2faf8;
@@ -12076,27 +12275,32 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   object-fit: contain;
   flex-shrink: 0;
 }
-.mkc-head-text { flex: 1; min-width: 0; }
+.mkc-head-text {
+  flex: 1;
+  min-width: 0;
+}
 .mkc-head-title {
   font-size: 24px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   letter-spacing: -0.5px;
   line-height: 1.1;
 }
 .mkc-head-sub {
   font-size: 13.5px;
-  color: #4A5876;
+  color: #4a5876;
   font-weight: 500;
   line-height: 1.45;
   margin-top: 6px;
 }
 
-.mkc-section { margin-bottom: 18px; }
+.mkc-section {
+  margin-bottom: 18px;
+}
 .mkc-label {
   font-size: 12px;
   font-weight: 800;
-  color: #008A84;
+  color: #008a84;
   letter-spacing: 1.4px;
   margin-bottom: 10px;
 }
@@ -12120,13 +12324,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   align-items: center;
   gap: 6px;
   padding: 11px 8px;
-  background: #FFFFFF;
-  border: 1.5px solid #E7EAEE;
+  background: #ffffff;
+  border: 1.5px solid #e7eaee;
   border-radius: 14px;
   font: inherit;
   font-size: 13px;
   font-weight: 700;
-  color: #231D45;
+  color: #231d45;
   cursor: pointer;
   transition: all 0.18s;
   white-space: normal;
@@ -12135,12 +12339,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   min-width: 0;
   justify-content: center;
 }
-.mkc-chip:active { transform: scale(0.98); }
+.mkc-chip:active {
+  transform: scale(0.98);
+}
 .mkc-chip-ic {
   width: 26px;
   height: 26px;
   border-radius: 8px;
-  background: #E9F6F5;
+  background: #e9f6f5;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -12149,11 +12355,15 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 /* Full-colour 3D PNGs now — no currentColor recolour, just size them
    to fill the chip's icon slot. */
-.mkc-chip-ic img { width: 22px; height: 22px; object-fit: contain; }
+.mkc-chip-ic img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
 .mkc-chip--active {
-  background: #231D45;
-  border-color: #231D45;
-  color: #FFFFFF;
+  background: #231d45;
+  border-color: #231d45;
+  color: #ffffff;
 }
 .mkc-chip--active .mkc-chip-ic {
   background: rgba(255, 255, 255, 0.12);
@@ -12164,29 +12374,35 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #FFFFFF;
-  border: 1.5px solid #E7EAEE;
+  background: #ffffff;
+  border: 1.5px solid #e7eaee;
   border-radius: 16px;
   padding: 12px 14px;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .mkc-input-wrap:focus-within {
-  border-color: #00A19A;
+  border-color: #00a19a;
   box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.12);
 }
-.mkc-input-wrap--textarea { align-items: flex-start; padding: 14px; }
+.mkc-input-wrap--textarea {
+  align-items: flex-start;
+  padding: 14px;
+}
 .mkc-input-ic {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: #E9F6F5;
-  color: #008A84;
+  background: #e9f6f5;
+  color: #008a84;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.mkc-input-ic svg { width: 20px; height: 20px; }
+.mkc-input-ic svg {
+  width: 20px;
+  height: 20px;
+}
 .mkc-input {
   flex: 1;
   border: 0;
@@ -12195,10 +12411,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font: inherit;
   font-size: 14.5px;
   font-weight: 500;
-  color: #231D45;
+  color: #231d45;
   min-width: 0;
 }
-.mkc-input::placeholder { color: #A8B0C2; font-weight: 500; }
+.mkc-input::placeholder {
+  color: #a8b0c2;
+  font-weight: 500;
+}
 .mkc-textarea {
   min-height: 100px;
   resize: vertical;
@@ -12213,7 +12432,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 14px;
   margin: 4px 0 20px;
   padding: 16px 18px;
-  background: #E9F6F5;
+  background: #e9f6f5;
   border-radius: 16px;
 }
 .mkc-privacy-ic {
@@ -12222,18 +12441,21 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   object-fit: contain;
   flex-shrink: 0;
 }
-.mkc-privacy-body { flex: 1; min-width: 0; }
+.mkc-privacy-body {
+  flex: 1;
+  min-width: 0;
+}
 .mkc-privacy-title {
   font-size: 14px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   letter-spacing: -0.2px;
   line-height: 1.25;
 }
 .mkc-privacy-sub {
   font-size: 12.5px;
   font-weight: 500;
-  color: #4A5876;
+  color: #4a5876;
   margin-top: 4px;
   line-height: 1.45;
 }
@@ -12245,8 +12467,8 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 10px;
   width: 100%;
   padding: 17px;
-  background: linear-gradient(135deg, #00B0A8, #00A19A);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, #00b0a8, #00a19a);
+  color: #ffffff;
   border: 0;
   border-radius: 16px;
   cursor: pointer;
@@ -12257,24 +12479,35 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   box-shadow: 0 8px 22px rgba(0, 161, 154, 0.4);
   transition: transform 0.15s ease, opacity 0.15s;
 }
-.mkc-send svg { width: 20px; height: 20px; }
-.mkc-send:active:not(:disabled) { transform: scale(0.98); }
-.mkc-send:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+.mkc-send svg {
+  width: 20px;
+  height: 20px;
+}
+.mkc-send:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.mkc-send:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
 .mkc-cancel {
   width: 100%;
   margin-top: 10px;
   padding: 15px;
-  background: #FFFFFF;
-  border: 1.5px solid #E7EAEE;
+  background: #ffffff;
+  border: 1.5px solid #e7eaee;
   border-radius: 16px;
-  color: #231D45;
+  color: #231d45;
   font-family: inherit;
   font-size: 15px;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;
 }
-.mkc-cancel:hover { background: #F5F7F9; }
+.mkc-cancel:hover {
+  background: #f5f7f9;
+}
 
 /* 3D icon images that replaced flat emoji inside icon wrappers */
 .pps-ds-placeholder-icon {
