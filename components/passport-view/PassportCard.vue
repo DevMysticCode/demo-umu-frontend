@@ -42,9 +42,9 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  // Passport type drives which cover art we show. `SELLER` (default) uses
-  // the teal umu-passport book; `LANDLORD` uses the landlord-specific cover
-  // so the two passport types are visually distinguishable at a glance.
+  // Passport type drives which cover art we show — each type has its own
+  // properly-labeled book cover so they're visually distinguishable at a
+  // glance, not just a generic "Property Passport" book for everything.
   type: {
     type: String,
     default: 'SELLER',
@@ -54,7 +54,7 @@ const props = defineProps({
 const passportImage = computed(() =>
   props.type === 'LANDLORD'
     ? '/op-icons/passportview/landlordPassport.png'
-    : '/op-icons/passportview/umu-passport.png',
+    : '/op-icons/misc/sellerPassport.png',
 )
 </script>
 

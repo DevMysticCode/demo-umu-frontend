@@ -106,13 +106,13 @@ const props = defineProps({
 const emit = defineEmits(['close', 'navigate', 'updated'])
 
 // Cover art is type-aware: landlord passports get the dedicated landlord
-// book; everything else falls back to the standard umu-passport. Mirrors
-// the logic in PassportCard.vue so the modal stays visually consistent
-// with the grid behind it.
+// book, everything else the seller book. Mirrors the logic in
+// PassportCard.vue so the modal stays visually consistent with the grid
+// behind it.
 function passportImage(type) {
   return type === 'LANDLORD'
     ? '/op-icons/passportview/landlordPassport.png'
-    : '/op-icons/passportview/umu-passport.png'
+    : '/op-icons/misc/sellerPassport.png'
 }
 
 const config = useRuntimeConfig()
