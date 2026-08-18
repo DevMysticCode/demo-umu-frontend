@@ -31,7 +31,7 @@
                  reads as "you're picking which book to make". -->
             <div class="choose-ico seller">
               <img
-                src="/op-icons/passportview/umu-passport.png"
+                src="/op-icons/misc/sellerPassport.png"
                 alt="Seller passport"
                 class="choose-ico-img"
               />
