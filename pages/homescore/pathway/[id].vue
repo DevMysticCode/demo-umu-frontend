@@ -98,7 +98,7 @@
     </div>
 
     <!-- Grant banner -->
-    <div class="grant-banner anim-2" role="button" tabindex="0" @click="openInstallerSheet({ title: '' })" @keydown.enter="openInstallerSheet({ title: '' })">
+    <div class="grant-banner anim-2" role="button" tabindex="0" @click="openGrantCheckSheet" @keydown.enter="openGrantCheckSheet">
       <img src="/op-icons/congratulations/gift.png" alt="" class="grant-banner-ic" loading="lazy" />
       <div class="grant-banner-body">
         <div class="grant-banner-title">You may be able to get help with the cost</div>
@@ -266,6 +266,7 @@
       :postcode="propertyPostcode"
       :address="addressLine"
       :initial-state="installerInitialState"
+      :hide-routes="installerHideRoutes"
     />
 
     <!-- Floating "Verify your answers" pill — re-opens the modal if the
@@ -423,6 +424,7 @@ const installerSheetOpen = ref(false)
 const installerKind = ref<InstallerKind>('other')
 const installerMeasureTitle = ref('')
 const installerInitialState = ref<SheetState>('routes')
+const installerHideRoutes = ref(false)
 
 // Rough mapping mission title → trade kind. Only used to pick which
 // accreditation copy (TrustMark vs MCS) the drawer shows; everything
@@ -438,11 +440,25 @@ function openInstallerSheet(m: { title: string }) {
   installerKind.value = kindForMissionTitle(m.title)
   installerMeasureTitle.value = m.title
   installerInitialState.value = 'routes'
+  installerHideRoutes.value = false
+  installerSheetOpen.value = true
+}
+
+// Grant banner ("You may be able to get help with the cost") opens
+// straight into the grant-check quiz — not the full routes screen with
+// unrelated "get matched"/"search yourself" options for one specific
+// measure, since this isn't about any single improvement.
+function openGrantCheckSheet() {
+  installerKind.value = 'other'
+  installerMeasureTitle.value = ''
+  installerInitialState.value = 'elig'
+  installerHideRoutes.value = true
   installerSheetOpen.value = true
 }
 
 function openTrackerSheet() {
   installerInitialState.value = 'tracker'
+  installerHideRoutes.value = false
   installerSheetOpen.value = true
 }
 
@@ -454,6 +470,7 @@ const earlyAccessJoined = useState<boolean>('installer-early-access-joined', () 
 
 function openMarketplaceSheet() {
   installerInitialState.value = earlyAccessJoined.value ? 'ea-form' : 'market'
+  installerHideRoutes.value = false
   installerSheetOpen.value = true
 }
 

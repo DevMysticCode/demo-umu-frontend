@@ -180,7 +180,7 @@
             <span class="ifs-indicative"
               >⚠️ Indicative only — your installer confirms at survey</span
             >
-            <button class="ifs-back-link" @click="state = 'routes'">
+            <button class="ifs-back-link" @click="backFromElig">
               ‹ Back
             </button>
           </div>
@@ -232,7 +232,7 @@
             <button class="ifs-submit" @click="goForm">
               Get matched with eligible installers
             </button>
-            <button class="ifs-back-link" @click="state = 'routes'">
+            <button class="ifs-back-link" @click="startOverFromResult">
               ‹ Start over
             </button>
           </div>
@@ -276,7 +276,7 @@
             <button class="ifs-submit" @click="goConfirm">
               Request matches
             </button>
-            <button class="ifs-back-link" @click="state = 'routes'">
+            <button class="ifs-back-link" @click="backFromForm">
               ‹ Back
             </button>
           </div>
@@ -572,6 +572,11 @@ const props = withDefaults(
     postcode?: string | null
     address?: string
     initialState?: StateName
+    /** When true, this sheet only ever shows the grant-check flow (elig →
+     *  result → its "get matched" continuation) — there's no 'routes'
+     *  screen to fall back to, so back/start-over stay within that flow
+     *  instead of surfacing the generic measure/installer options. */
+    hideRoutes?: boolean
   }>(),
   {
     kind: 'other',
@@ -580,6 +585,7 @@ const props = withDefaults(
     postcode: '',
     address: '',
     initialState: 'routes',
+    hideRoutes: false,
   },
 )
 
@@ -793,6 +799,24 @@ function startElig() {
   answers.income = undefined
   eligStep.value = 1
   state.value = 'elig'
+}
+
+// Grant-check-only entry (props.hideRoutes): there's no 'routes' screen to
+// return to, so "back" closes the sheet and "start over" restarts the quiz.
+function backFromElig() {
+  if (props.hideRoutes) close()
+  else state.value = 'routes'
+}
+function startOverFromResult() {
+  if (props.hideRoutes) startElig()
+  else state.value = 'routes'
+}
+function backFromForm() {
+  // In hideRoutes mode 'form' can only have been reached via the grant
+  // check's "Get matched with eligible installers" — go back to 'result',
+  // not the (hidden) generic routes screen.
+  if (props.hideRoutes) state.value = 'result'
+  else state.value = 'routes'
 }
 
 function answer(key: 'tenure' | 'benefits' | 'income', value: string) {
