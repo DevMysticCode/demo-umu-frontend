@@ -71,6 +71,7 @@
           </div>
           <div class="pathway-circle-labels">
             <div class="pw-clabel">Current HomeScore</div>
+            <div class="pw-clabel-spacer" aria-hidden="true" />
             <div class="pw-clabel">Potential HomeScore</div>
           </div>
         </div>
@@ -97,7 +98,7 @@
     </div>
 
     <!-- Grant banner -->
-    <div class="grant-banner anim-2">
+    <div class="grant-banner anim-2" role="button" tabindex="0" @click="openInstallerSheet({ title: '' })" @keydown.enter="openInstallerSheet({ title: '' })">
       <img src="/op-icons/congratulations/gift.png" alt="" class="grant-banner-ic" loading="lazy" />
       <div class="grant-banner-body">
         <div class="grant-banner-title">You may be able to get help with the cost</div>
@@ -904,35 +905,30 @@ function onBack() {
 }
 .pathway-hero-row {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 .pathway-circles-block {
-  width: 100%;
+  flex: 1.3;
   min-width: 0;
 }
 .pathway-hero-divider {
-  width: 100%;
-  height: 1px;
+  width: 1px;
   align-self: stretch;
   background: rgba(255, 255, 255, 0.25);
   flex-shrink: 0;
 }
 .pathway-hero-stats {
-  width: 100%;
+  flex: 1;
   min-width: 0;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 32px;
+  flex-direction: column;
+  gap: 14px;
 }
 .pathway-hero-stat {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 8px;
-  text-align: center;
 }
 .pw-stat-icon {
   width: 34px;
@@ -963,7 +959,6 @@ function onBack() {
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.35;
-  text-align: center;
 }
 .pw-stat-text b {
   font-weight: 800;
@@ -1034,15 +1029,21 @@ function onBack() {
   margin-top: 2px;
 }
 .pathway-arrow {
+  width: 20px;
   font-size: 20px;
   font-weight: 800;
   color: white;
+  text-align: center;
   flex-shrink: 0;
 }
 .pathway-circle-labels {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
+}
+.pw-clabel-spacer {
+  width: 20px;
+  flex-shrink: 0;
 }
 .pw-clabel {
   width: 76px;
@@ -1065,6 +1066,7 @@ function onBack() {
   border: none;
   border-radius: 14px;
   box-shadow: var(--shadow-card);
+  cursor: pointer;
 }
 .grant-banner-ic {
   width: 44px;
