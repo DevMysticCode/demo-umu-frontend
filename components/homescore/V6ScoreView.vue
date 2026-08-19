@@ -1111,7 +1111,7 @@
               <div class="fork-opt-body">
                 <div class="fork-opt-title">Boost your score</div>
                 <div class="fork-opt-sub">
-                  Add docs to grow your Move Ready &amp; Passport.
+                  Add docs to grow your Upfront Ready &amp; Passport.
                 </div>
               </div>
               <div class="fork-opt-chev">›</div>
@@ -1259,7 +1259,7 @@
             <div class="claim-title">Claim this property</div>
             <div class="claim-sub">
               You'll verify you own <b>{{ addrLineFull }}</b> and unlock your
-              HomeScore, Move Ready % and Property Passport.
+              HomeScore, Upfront Ready % and Property Passport.
             </div>
             <div class="claim-steps">
               <div class="claim-step">

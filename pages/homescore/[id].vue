@@ -2354,7 +2354,7 @@
                 />
               </svg>
               <div class="pj-cta-ring-num">{{ qwMoveReady }}%</div>
-              <div class="pj-cta-ring-label">Move Ready</div>
+              <div class="pj-cta-ring-label">Upfront Ready</div>
             </div>
             <div class="pj-cta-ring">
               <svg viewBox="0 0 80 80" aria-hidden="true">
@@ -2371,7 +2371,7 @@
           </div>
           <div class="pj-cta-title">Your Passport is taking shape.</div>
           <div class="pj-cta-sub">
-            Each document you add lifts both scores. Reach Move Ready status
+            Each document you add lifts both scores. Reach Upfront Ready status
             and publish your Passport — lock in everything you've built.
           </div>
           <button

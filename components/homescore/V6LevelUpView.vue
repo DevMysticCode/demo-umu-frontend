@@ -131,7 +131,7 @@
             </div>
           </div>
           <div class="levelup-col-title levelup-col-title--now">
-            Your refined HomeScore
+            {{ nowColTitle }}
           </div>
           <div class="levelup-col-sub">Based on what you told us</div>
           <div v-if="epcRating" class="levelup-epc-pill">
@@ -365,6 +365,13 @@ const headline = computed(() => {
     sub: "Your answers match what's on your public EPC record — no change to your score.",
   }
 })
+
+// "Refined" implies the quiz actually moved the score — when it didn't
+// (delta = 0), the NOW column is just confirming the public score, not
+// refining it.
+const nowColTitle = computed(() =>
+  props.delta > 0 ? 'Your refined HomeScore' : 'Your confirmed HomeScore',
+)
 
 const animatedToScore = ref(props.fromScore)
 const barsAnimated = ref(false)
