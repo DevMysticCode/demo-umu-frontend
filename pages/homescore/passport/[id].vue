@@ -2,8 +2,20 @@
   <div class="bpp-page">
     <!-- Header -->
     <div class="app-header">
-      <button class="app-icon-btn" type="button" @click="router.back()" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <button
+        class="app-icon-btn"
+        type="button"
+        @click="router.back()"
+        aria-label="Back"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
@@ -13,20 +25,38 @@
           Turn what you know about your home into a verified record.
         </div>
       </div>
-      <button class="app-icon-btn" type="button" aria-label="How this works">?</button>
+      <button class="app-icon-btn" type="button" aria-label="How this works">
+        ?
+      </button>
     </div>
 
     <!-- Passport progress card -->
     <div class="bpp-progress-card anim-1">
       <div class="bpp-progress-eyebrow-row">
         <div class="bpp-progress-eyebrow">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z"
+            />
           </svg>
           Your Passport progress
         </div>
         <div class="bpp-progress-pill">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
@@ -37,7 +67,11 @@
       <div class="bpp-progress-row">
         <div class="bpp-progress-col">
           <div class="bpp-circle-wrap">
-            <svg class="bpp-circle-svg" viewBox="0 0 120 120" aria-hidden="true">
+            <svg
+              class="bpp-circle-svg"
+              viewBox="0 0 120 120"
+              aria-hidden="true"
+            >
               <defs>
                 <linearGradient id="bppScoreGrad" x1="1" y1="0" x2="0" y2="0">
                   <stop offset="0%" stop-color="#00BB93" />
@@ -47,11 +81,15 @@
               <circle class="bppc-bg" cx="60" cy="60" r="50" stroke-width="9" />
               <circle
                 class="bppc-fill bppc-fill--score"
-                cx="60" cy="60" r="50" stroke-width="9"
+                cx="60"
+                cy="60"
+                r="50"
+                stroke-width="9"
                 stroke="url(#bppScoreGrad)"
                 stroke-dasharray="314.16"
                 :stroke-dashoffset="scoreRingOffset"
-                stroke-linecap="round" fill="none"
+                stroke-linecap="round"
+                fill="none"
               />
             </svg>
             <div class="bpp-circle-num">
@@ -64,14 +102,22 @@
         <div class="bpp-progress-divider" />
         <div class="bpp-progress-col">
           <div class="bpp-circle-wrap">
-            <svg class="bpp-circle-svg" viewBox="0 0 120 120" aria-hidden="true">
+            <svg
+              class="bpp-circle-svg"
+              viewBox="0 0 120 120"
+              aria-hidden="true"
+            >
               <circle class="bppc-bg" cx="60" cy="60" r="50" stroke-width="9" />
               <circle
                 class="bppc-fill bppc-fill--passport"
-                cx="60" cy="60" r="50" stroke-width="9"
+                cx="60"
+                cy="60"
+                r="50"
+                stroke-width="9"
                 stroke-dasharray="314.16"
                 :stroke-dashoffset="passportRingOffset"
-                stroke-linecap="round" fill="none"
+                stroke-linecap="round"
+                fill="none"
               />
             </svg>
             <div class="bpp-circle-num">
@@ -86,29 +132,43 @@
             Add key documents to reach <b>60%</b> and unlock
             <b>Upfront Ready</b>.
           </p>
-          <a class="bpp-milestones-btn" href="#professional-evidence">
+          <!-- <a class="bpp-milestones-btn" href="#professional-evidence">
             See milestones
             <span>→</span>
-          </a>
+          </a> -->
         </div>
       </div>
 
       <div class="bpp-progress-banner">
         <span class="bpp-progress-banner-ic" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="12" y1="20" x2="12" y2="10" />
             <line x1="18" y1="20" x2="18" y2="4" />
             <line x1="6" y1="20" x2="6" y2="16" />
           </svg>
         </span>
+        <span>
         Add documents and evidence to build your Passport and unlock
         <b>Upfront Ready</b>.
+        </span>
       </div>
     </div>
 
     <!-- EPC age card -->
     <div v-if="epcYear" class="bpp-epc-card anim-1">
-      <img src="/op-icons/calendar/document.png" alt="" class="bpp-epc-ic" loading="lazy" />
+      <img
+        src="/op-icons/calendar/document.png"
+        alt=""
+        class="bpp-epc-ic"
+        loading="lazy"
+      />
       <div class="bpp-epc-body">
         <div class="bpp-epc-title">Your EPC is from {{ epcYear }}</div>
         <div class="bpp-epc-sub">
@@ -129,8 +189,17 @@
     <!-- Add to your Passport -->
     <div class="section-h-row">
       <div class="section-h">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"
+          />
         </svg>
         Add to your Passport (after claiming your property)
       </div>
@@ -141,7 +210,14 @@
         <div class="bpp-tile-title">{{ t.title }}</div>
         <div class="bpp-tile-sub">{{ t.sub }}</div>
         <span class="bpp-tile-lock" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <rect x="3" y="11" width="18" height="11" rx="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
@@ -149,7 +225,14 @@
       </div>
     </div>
     <div class="bpp-note">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
         <rect x="3" y="11" width="18" height="11" rx="2" />
         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
       </svg>
@@ -159,7 +242,14 @@
     <!-- Get professional evidence -->
     <div id="professional-evidence" class="section-h-row">
       <div class="section-h">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <circle cx="12" cy="7" r="4" />
           <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
         </svg>
@@ -167,7 +257,13 @@
       </div>
     </div>
     <div class="bpp-list anim-2">
-      <button v-for="b in evidenceBookings" :key="b.title" class="bpp-list-row" type="button" @click="openInstallerSheet(b.kind as InstallerKind)">
+      <button
+        v-for="b in evidenceBookings"
+        :key="b.title"
+        class="bpp-list-row"
+        type="button"
+        @click="openInstallerSheet(b.kind as InstallerKind)"
+      >
         <img :src="b.icon" alt="" class="bpp-list-ic" loading="lazy" />
         <div class="bpp-list-body">
           <div class="bpp-list-title">{{ b.title }}</div>
@@ -177,7 +273,14 @@
       </button>
     </div>
     <div class="bpp-note">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
         <rect x="3" y="11" width="18" height="11" rx="2" />
         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
       </svg>
@@ -187,7 +290,12 @@
     <!-- Claim your Passport -->
     <div class="bpp-claim-card anim-2">
       <div class="bpp-claim-top">
-        <img src="/op-icons/passportview/passportClaim.png" alt="" class="bpp-claim-ic" loading="lazy" />
+        <img
+          src="/op-icons/passportview/passportClaim.png"
+          alt=""
+          class="bpp-claim-ic"
+          loading="lazy"
+        />
         <div class="bpp-claim-top-text">
           <div class="bpp-claim-title">Claim your Passport to get started</div>
           <div class="bpp-claim-sub">
@@ -200,29 +308,77 @@
       <div class="bpp-claim-checks">
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z" /><polyline points="8.5 12.3 11 14.8 15.5 9.8" /></svg>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z"
+              />
+              <polyline points="8.5 12.3 11 14.8 15.5 9.8" />
+            </svg>
           </span>
           <div class="bpp-claim-check-title">Confirm ownership</div>
           <div class="bpp-claim-check-sub">Verify you own this property</div>
         </div>
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z" /><circle cx="12" cy="10.5" r="2.1" /><path d="M8.7 15.5a3.6 3.6 0 0 1 6.6 0" /></svg>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z"
+              />
+              <circle cx="12" cy="10.5" r="2.1" />
+              <path d="M8.7 15.5a3.6 3.6 0 0 1 6.6 0" />
+            </svg>
           </span>
           <div class="bpp-claim-check-title">ID &amp; security step</div>
-          <div class="bpp-claim-check-sub">Quick &amp; secure identity check</div>
+          <div class="bpp-claim-check-sub">
+            Quick &amp; secure identity check
+          </div>
         </div>
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z" /><polyline points="8.5 12.3 11 14.8 15.5 9.8" /></svg>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z"
+              />
+              <polyline points="8.5 12.3 11 14.8 15.5 9.8" />
+            </svg>
           </span>
           <div class="bpp-claim-check-title">Secure &amp; private</div>
-          <div class="bpp-claim-check-sub">Your data is protected and only you control it</div>
+          <div class="bpp-claim-check-sub">
+            Your data is protected and only you control it
+          </div>
         </div>
       </div>
       <button class="bpp-claim-btn" type="button" @click="onClaimClick">
         <span class="bpp-claim-btn-left">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <rect x="3" y="11" width="18" height="11" rx="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
@@ -245,10 +401,21 @@
          PassportClaimBox.vue's authd-* prompt. -->
     <Teleport to="body">
       <Transition name="authd">
-        <div v-if="authPromptOpen" class="authd-overlay" @click.self="authPromptOpen = false">
+        <div
+          v-if="authPromptOpen"
+          class="authd-overlay"
+          @click.self="authPromptOpen = false"
+        >
           <div class="authd-card" @click.stop>
             <div class="authd-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
@@ -259,13 +426,25 @@
               Passport. Takes about a minute.
             </div>
             <div class="authd-actions">
-              <button class="authd-btn primary" type="button" @click="goAuth('signup')">
+              <button
+                class="authd-btn primary"
+                type="button"
+                @click="goAuth('signup')"
+              >
                 Create free account
               </button>
-              <button class="authd-btn secondary" type="button" @click="goAuth('signin')">
+              <button
+                class="authd-btn secondary"
+                type="button"
+                @click="goAuth('signin')"
+              >
                 I already have an account
               </button>
-              <button class="authd-btn ghost" type="button" @click="authPromptOpen = false">
+              <button
+                class="authd-btn ghost"
+                type="button"
+                @click="authPromptOpen = false"
+              >
                 Not now
               </button>
             </div>
@@ -275,11 +454,22 @@
     </Teleport>
 
     <div class="bpp-trust-note">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
-        <path d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z" />
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="13"
+        height="13"
+      >
+        <path
+          d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z"
+        />
       </svg>
-      Your data is secure. Your Passport is private to you and only shared
-      when you choose.
+      Your data is secure. Your Passport is private to you and only shared when
+      you choose.
     </div>
 
     <div style="height: 32px" />
@@ -311,7 +501,10 @@ onMounted(() => {
 
 const toScore = computed(() => {
   const p: any = property.value
-  const raw = Number(p?.epcScorePotential ?? p?.epcCert?.potentialScore ?? p?.epcScore ?? 0) || 0
+  const raw =
+    Number(
+      p?.epcScorePotential ?? p?.epcCert?.potentialScore ?? p?.epcScore ?? 0,
+    ) || 0
   return raw
 })
 const scoreHook = computed(() => {
@@ -330,7 +523,9 @@ const passportPct = 0
 
 const CIRCUMFERENCE = 2 * Math.PI * 50
 const scoreRingOffset = computed(
-  () => CIRCUMFERENCE - (Math.max(0, Math.min(100, toScore.value)) / 100) * CIRCUMFERENCE,
+  () =>
+    CIRCUMFERENCE -
+    (Math.max(0, Math.min(100, toScore.value)) / 100) * CIRCUMFERENCE,
 )
 const passportRingOffset = computed(
   () => CIRCUMFERENCE - (passportPct / 100) * CIRCUMFERENCE,
@@ -356,7 +551,13 @@ const propertyPostcode = computed<string>(() => {
 // page. "Get professional evidence" bookings and "Arrange a new EPC"
 // open straight into it instead of routing through the claim flow,
 // since none of this needs a claimed Passport to capture demand.
-type InstallerKind = 'insulation' | 'solarpv' | 'gas' | 'electrician' | 'epc' | 'other'
+type InstallerKind =
+  | 'insulation'
+  | 'solarpv'
+  | 'gas'
+  | 'electrician'
+  | 'epc'
+  | 'other'
 const installerSheetOpen = ref(false)
 const installerKind = ref<InstallerKind>('other')
 const installerMeasureTitle = ref('')
@@ -393,7 +594,7 @@ const addTiles = [
 const evidenceBookings = [
   {
     title: 'Book a Gas Safe engineer',
-    sub: "Service your boiler · cert auto-lands in your Passport",
+    sub: 'Service your boiler · cert auto-lands in your Passport',
     icon: '/op-icons/boostYourScore/gasSafety.png',
     kind: 'gas',
   },
@@ -417,7 +618,8 @@ const evidenceBookings = [
 const authPromptOpen = ref(false)
 
 function onClaimClick() {
-  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (token) {
     router.push(`/claim/${propertyId.value}`)
     return
@@ -461,11 +663,21 @@ function goAuth(mode: 'signin' | 'signup') {
 }
 
 @keyframes bpp-fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.anim-1 { animation: bpp-fadeUp 0.35s 0.06s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.anim-2 { animation: bpp-fadeUp 0.35s 0.14s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.anim-1 {
+  animation: bpp-fadeUp 0.35s 0.06s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-2 {
+  animation: bpp-fadeUp 0.35s 0.14s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
 /* Header */
 .app-header {
@@ -633,7 +845,7 @@ function goAuth(mode: 'signin' | 'signup') {
 }
 .bpp-progress-copy p {
   margin: 0;
-  font-size: 12.5px;
+  font-size: 16.5px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.82);
   line-height: 1.45;
@@ -921,7 +1133,7 @@ function goAuth(mode: 'signin' | 'signup') {
 .bpp-claim-checks {
   display: flex;
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 10px;
 }
 .bpp-claim-check {
   flex: 1;
