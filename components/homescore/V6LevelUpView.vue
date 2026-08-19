@@ -33,10 +33,9 @@
     <!-- Intro: title + house illustration, no card wrapper -->
     <div class="levelup-intro anim-1">
       <div class="levelup-intro-text">
-        <div class="levelup-title">You've updated your HomeScore!</div>
+        <div class="levelup-title">{{ headline.title }}</div>
         <div class="levelup-sub">
-          Your answers show your home is performing better than its public EPC
-          record.
+          {{ headline.sub }}
         </div>
       </div>
       <div class="levelup-house-wrap">
@@ -350,6 +349,22 @@ const { runConfetti } = useConfetti()
 // shown under both circles same as the reference (the EPC itself doesn't
 // change, only the live/refined HomeScore does).
 const epcRating = computed(() => props.property?.epcRating ?? null)
+
+// If the quiz didn't actually move the score (e.g. every question was
+// answered "Not yet" / "Not applicable"), don't claim it's "performing
+// better than its public EPC record" — that's only true when delta > 0.
+const headline = computed(() => {
+  if (props.delta > 0) {
+    return {
+      title: "You've updated your HomeScore!",
+      sub: 'Your answers show your home is performing better than its public EPC record.',
+    }
+  }
+  return {
+    title: 'Your HomeScore is confirmed',
+    sub: "Your answers match what's on your public EPC record — no change to your score.",
+  }
+})
 
 const animatedToScore = ref(props.fromScore)
 const barsAnimated = ref(false)

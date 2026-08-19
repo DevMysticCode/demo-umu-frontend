@@ -160,19 +160,39 @@
           <div class="quest-desc">{{ q.desc }}</div>
           <div class="quest-stat-row">
             <div class="quest-stat-box">
-              <div class="quest-stat-eyebrow">Estimated score impact</div>
+              <div class="quest-stat-eyebrow">
+                <svg class="quest-stat-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 11l9-8 9 8" />
+                  <path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
+                </svg>
+                Estimated score impact
+              </div>
               <div class="quest-stat-val">+{{ q.pts }} HomeScore points</div>
               <div v-if="q.resultingSap != null" class="quest-stat-note">
                 (could improve score to {{ q.resultingSap }})
               </div>
             </div>
             <div class="quest-stat-box">
-              <div class="quest-stat-eyebrow">Estimated saving</div>
-              <div class="quest-stat-val">~£{{ q.save }}/yr</div>
+              <div class="quest-stat-eyebrow">
+                <svg class="quest-stat-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" />
+                  <text x="12" y="16.5" text-anchor="middle" font-size="12" stroke="none" fill="currentColor" font-family="inherit">£</text>
+                </svg>
+                Estimated saving
+              </div>
+              <div class="quest-stat-val">~£{{ q.save }}</div>
+              <div class="quest-stat-note">per year</div>
             </div>
             <div class="quest-stat-box">
-              <div class="quest-stat-eyebrow">Typical investment</div>
+              <div class="quest-stat-eyebrow">
+                <svg class="quest-stat-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 11l9-8 9 8" />
+                  <path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
+                </svg>
+                Typical investment
+              </div>
               <div class="quest-stat-val">{{ q.cost }}</div>
+              <div class="quest-stat-note">estimated cost</div>
             </div>
           </div>
           <div v-if="q.grant" class="quest-impact">🎁 {{ q.grant }}</div>
@@ -1462,27 +1482,30 @@ watch(
 .quiz-step-dot {
   position: relative;
   z-index: 1;
+  box-sizing: border-box;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--border);
   flex-shrink: 0;
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s;
 }
 .quiz-step-dot:not(.done) {
+  border: 1.5px solid var(--accent);
   animation: quizStepDotPulse 1.6s ease-in-out infinite;
 }
 .quiz-step-dot.done {
   background: var(--accent);
+  border: 1.5px solid var(--accent);
   animation: none;
 }
 @keyframes quizStepDotPulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.35);
+    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.45);
   }
   50% {
-    box-shadow: 0 0 0 4px rgba(0, 161, 154, 0);
+    box-shadow: 0 0 0 5px rgba(0, 161, 154, 0);
   }
 }
 
@@ -1609,19 +1632,25 @@ watch(
 }
 .quest-stat-row {
   display: flex;
-  gap: 10px;
   margin-bottom: 12px;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
 }
 .quest-stat-box {
   flex: 1;
   min-width: 0;
-  padding: 12px 8px;
-  background: var(--bg);
-  border: 1px solid var(--border-soft);
-  border-radius: 10px;
-  text-align: center;
+  padding: 12px 10px;
+  text-align: left;
+  border-left: 1px solid var(--border-soft);
+}
+.quest-stat-box:first-child {
+  border-left: none;
 }
 .quest-stat-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 8.5px;
   font-weight: 800;
   color: var(--text-faint);
@@ -1630,11 +1659,18 @@ watch(
   margin-bottom: 8px;
   line-height: 1.35;
 }
+.quest-stat-ic {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  color: var(--text-faint);
+}
 .quest-stat-val {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
+  line-height: 1.3;
 }
 .quest-stat-note {
   font-size: 9.5px;
