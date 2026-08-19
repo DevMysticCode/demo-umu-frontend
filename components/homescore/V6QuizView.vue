@@ -173,7 +173,7 @@
               </div>
             </div>
             <div class="quest-stat-box">
-              <div class="quest-stat-eyebrow">
+              <div class="quest-stat-eyebrow" style="margin-bottom: 18px">
                 <svg class="quest-stat-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="9" />
                   <text x="12" y="16.5" text-anchor="middle" font-size="12" stroke="none" fill="currentColor" font-family="inherit">£</text>
@@ -1671,12 +1671,14 @@ watch(
   color: var(--text);
   letter-spacing: -0.2px;
   line-height: 1.3;
+  text-align: center;
 }
 .quest-stat-note {
   font-size: 9.5px;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
+  text-align: center;
 }
 .quest-resulting {
   display: flex;

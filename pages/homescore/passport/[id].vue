@@ -84,7 +84,7 @@
         <div class="bpp-progress-copy">
           <p>
             Add key documents to reach <b>60%</b> and unlock
-            <b>Move Ready</b>.
+            <b>Upfront Ready</b>.
           </p>
           <a class="bpp-milestones-btn" href="#professional-evidence">
             See milestones
@@ -102,7 +102,7 @@
           </svg>
         </span>
         Add documents and evidence to build your Passport and unlock
-        <b>Move Ready</b>.
+        <b>Upfront Ready</b>.
       </div>
     </div>
 
@@ -119,7 +119,7 @@
       <button
         type="button"
         class="bpp-epc-btn"
-        @click="onBookEvidence({ kind: 'epc' })"
+        @click="openInstallerSheet('epc')"
       >
         Arrange a new EPC
         <span>→</span>
@@ -163,11 +163,11 @@
           <circle cx="12" cy="7" r="4" />
           <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
         </svg>
-        Get professional evidence
+        Hire a professional
       </div>
     </div>
     <div class="bpp-list anim-2">
-      <button v-for="b in evidenceBookings" :key="b.title" class="bpp-list-row" type="button" @click="onBookEvidence(b)">
+      <button v-for="b in evidenceBookings" :key="b.title" class="bpp-list-row" type="button" @click="openInstallerSheet(b.kind as InstallerKind)">
         <img :src="b.icon" alt="" class="bpp-list-ic" loading="lazy" />
         <div class="bpp-list-body">
           <div class="bpp-list-title">{{ b.title }}</div>
@@ -250,11 +250,21 @@
     </div>
 
     <div style="height: 32px" />
+
+    <InstallerFlowSheet
+      v-model:open="installerSheetOpen"
+      :kind="installerKind"
+      :measure-title="installerMeasureTitle"
+      :property-id="propertyId"
+      :postcode="propertyPostcode"
+      :address="addressLine"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import InstallerFlowSheet from '~/components/homescore/InstallerFlowSheet.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -300,6 +310,30 @@ const epcYear = computed(() => {
   return /^\d{4}$/.test(year) ? year : null
 })
 
+const addressLine = computed(() => {
+  const p: any = property.value
+  return p?.addressLine1 || 'Your property'
+})
+const propertyPostcode = computed<string>(() => {
+  const p: any = property.value
+  return (p?.postcode || p?.epcCert?.postcode || '') as string
+})
+
+// Demand-capture drawer — same InstallerFlowSheet used on the pathway
+// page. "Get professional evidence" bookings and "Arrange a new EPC"
+// open straight into it instead of routing through the claim flow,
+// since none of this needs a claimed Passport to capture demand.
+type InstallerKind = 'insulation' | 'solarpv' | 'gas' | 'electrician' | 'epc' | 'other'
+const installerSheetOpen = ref(false)
+const installerKind = ref<InstallerKind>('other')
+const installerMeasureTitle = ref('')
+
+function openInstallerSheet(kind: InstallerKind, measureTitle = '') {
+  installerKind.value = kind
+  installerMeasureTitle.value = measureTitle
+  installerSheetOpen.value = true
+}
+
 const addTiles = [
   {
     title: 'Utility bills',
@@ -343,12 +377,6 @@ const evidenceBookings = [
     kind: 'epc',
   },
 ]
-
-function onBookEvidence(b: { kind: string }) {
-  // Professional bookings require a claimed Passport to link evidence to —
-  // route through the claim flow rather than booking against nothing.
-  router.push(`/claim/${propertyId.value}?intent=${b.kind}`)
-}
 
 function goToClaim() {
   router.push(`/claim/${propertyId.value}`)

@@ -551,7 +551,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 
-type Kind = 'insulation' | 'solarpv' | 'gas' | 'other'
+type Kind = 'insulation' | 'solarpv' | 'gas' | 'electrician' | 'epc' | 'other'
 type StateName =
   | 'routes'
   | 'elig'
@@ -714,6 +714,34 @@ const TRADES = {
       t: 'Search Gas Safe yourself',
       s: 'Official register for gas engineers. Opens Gas Safe search.',
       href: 'https://www.gassaferegister.co.uk/find-an-engineer-or-check-the-register/',
+    },
+  },
+  electrician: {
+    eyebrow: 'Safety certificates',
+    title: 'Find EICR electricians',
+    measure: 'EICR · Electrical safety report',
+    code: 'eicr',
+    accreditation: 'NICEIC',
+    grant: false,
+    acc: "<b>Electrical safety reports should be carried out by a NICEIC-registered electrician.</b> We'll match you with appropriately registered electricians for this work.",
+    self: {
+      t: 'Search NICEIC yourself',
+      s: 'Official register for electricians. Opens NICEIC, filtered near you.',
+      href: 'https://www.niceic.com/find-a-contractor',
+    },
+  },
+  epc: {
+    eyebrow: 'EPC assessment',
+    title: 'Find EPC Installers',
+    measure: 'EPC assessment',
+    code: 'epc_assessment',
+    accreditation: 'Accredited assessor',
+    grant: false,
+    acc: "<b>A new EPC must be carried out by an accredited domestic energy assessor.</b> We'll match you with accredited assessors for this property.",
+    self: {
+      t: 'Arrange it yourself',
+      s: 'GOV.UK — book an accredited assessor directly.',
+      href: 'https://www.gov.uk/get-new-energy-certificate',
     },
   },
   other: {

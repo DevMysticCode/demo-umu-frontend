@@ -145,7 +145,7 @@
       </div>
       <div class="boost-row-info">
         <div class="boost-row-title">{{ d.title }}</div>
-        <div class="boost-row-sub">Verified · +{{ d.mrDelta }}% Move Ready</div>
+        <div class="boost-row-sub">Verified · +{{ d.mrDelta }}% Upfront Ready</div>
       </div>
       <div class="boost-row-check">✓</div>
     </div>
@@ -223,7 +223,7 @@
             {{ celebrateDoc.id === 'bills' ? 'BILL VERIFIED' : 'DOCUMENT UPLOADED' }}
           </div>
           <div class="bcv-headline">
-            +{{ celebrateDoc.mrDelta }}% Move Ready
+            +{{ celebrateDoc.mrDelta }}% Upfront Ready
           </div>
           <div class="bcv-subhead">+{{ celebrateDoc.ppDelta }}% Passport</div>
           <div class="bcv-doc-label">{{ celebrateDoc.title }}</div>
@@ -270,7 +270,7 @@
       <div class="ns-eye">✦ Next step on your journey</div>
       <div class="ns-h">Your Passport is {{ passportPct }}% there.</div>
       <div class="ns-p">
-        Each document you add lifts your scores. Reach Move Ready and publish
+        Each document you add lifts your scores. Reach Upfront Ready and publish
         your Passport to lock in everything you've built.
       </div>
       <button type="button" class="ns-btn" @click="$emit('start-passport')">
@@ -422,7 +422,7 @@ const docs = [
     iconImage: '/op-icons/boostYourScore/gasSafety.png',
     tone: 'amber',
     title: 'Gas Safety Certificate',
-    sub: 'Annual safety check from a Gas Safe engineer · +25% MoveReady',
+    sub: 'Annual safety check from a Gas Safe engineer · +25% Upfront Ready',
     mrDelta: 25,
     ppDelta: 15,
   },
@@ -432,7 +432,7 @@ const docs = [
     iconImage: '/op-icons/boostYourScore/electrician.png',
     tone: 'violet',
     title: 'EICR · Electrical safety report',
-    sub: '5-yearly · required for letting · +20% MoveReady',
+    sub: '5-yearly · required for letting · +20% Upfront Ready',
     mrDelta: 20,
     ppDelta: 14,
   },
@@ -442,7 +442,7 @@ const docs = [
     iconImage: '/op-icons/boostYourScore/gasSafety.png',
     tone: 'teal',
     title: 'Boiler service record',
-    sub: 'Annual service invoice or certificate · +12% MoveReady',
+    sub: 'Annual service invoice or certificate · +12% Upfront Ready',
     mrDelta: 12,
     ppDelta: 10,
   },
@@ -522,7 +522,7 @@ const gauges = ref<Gauge[]>([
   {
     id: 'mr',
     emoji: '📋',
-    label: 'Move Ready',
+    label: 'Upfront Ready',
     sub: 'Docs & certs',
     target: moveReadyPct.value,
     max: 100,
