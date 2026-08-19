@@ -655,7 +655,7 @@
       <!-- Maxine confirmed card -->
       <div class="cl-name-card cl-mb-sm">
         <img
-          src="/op-icons/claim/maxineShield.png"
+          src="/op-icons/verify-identity/shield.png"
           alt=""
           class="cl-name-card-illus"
           loading="lazy"
@@ -752,7 +752,7 @@
         <p class="cl-body" style="margin: 0">
           Identity checks and HM Land Registry ownership lookups cost us
           real money per property. This one-off fee covers exactly what
-          this claim used — {{ claimPriceReason.toLowerCase() }}.
+          this claim used — {{ claimPriceReason }}.
         </p>
       </div>
 
@@ -1113,10 +1113,16 @@ function clearSelection() {
 }
 
 // ── Back button ───────────────────────────────────────────────
+// 'search' is the first step — if the user landed here directly (deep
+// link, push notification, or the SPA history was replaced on entry),
+// router.back() has nowhere to go and silently does nothing. Fall back
+// to the property page they're claiming.
+const goBackFromSearch = useGoBack(`/property/${propertyId}`)
+
 function onBack() {
   switch (step.value) {
     case 'search':
-      router.back()
+      goBackFromSearch()
       return
     case 'confirm':
       step.value = 'search'

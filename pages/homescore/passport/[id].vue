@@ -116,15 +116,14 @@
           strengthens your Passport.
         </div>
       </div>
-      <a
+      <button
+        type="button"
         class="bpp-epc-btn"
-        :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${encodeURIComponent(propertyPostcode)}`"
-        target="_blank"
-        rel="noopener noreferrer"
+        @click="onBookEvidence({ kind: 'epc' })"
       >
         Arrange a new EPC
         <span>→</span>
-      </a>
+      </button>
     </div>
 
     <!-- Add to your Passport -->
@@ -266,8 +265,6 @@ const { property, loadProperty, epcField } = useHomeScorePropertyData()
 onMounted(() => {
   loadProperty(propertyId.value)
 })
-
-const propertyPostcode = computed<string>(() => property.value?.postcode || '')
 
 const toScore = computed(() => {
   const p: any = property.value
@@ -646,13 +643,16 @@ function goToClaim() {
   align-items: center;
   gap: 5px;
   padding: 9px 12px;
+  background: transparent;
   border: 1.5px solid var(--accent);
   border-radius: 100px;
   color: var(--accent-dark);
   font-size: 11px;
   font-weight: 800;
+  font-family: inherit;
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 /* Section heading */

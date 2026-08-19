@@ -115,11 +115,7 @@
     <!-- ── "N things could have changed" card ───────────────────────── -->
     <div class="quiz-changed-card anim-3">
       <div class="quiz-changed-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 4H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" />
-          <rect x="9" y="2" width="6" height="4" rx="1" />
-          <path d="M9 13.5l2 2 4-4.5" />
-        </svg>
+        <img src="/op-icons/homescore/thingsChanged.png" alt="" loading="lazy" />
       </div>
       <div class="quiz-changed-body">
         <div class="quiz-changed-title">{{ QUESTS.length }} things could have changed</div>
@@ -1413,9 +1409,10 @@ watch(
   justify-content: center;
   flex-shrink: 0;
 }
-.quiz-changed-icon svg {
-  width: 19px;
-  height: 19px;
+.quiz-changed-icon img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
 }
 .quiz-changed-body {
   flex: 1;
@@ -1472,8 +1469,21 @@ watch(
   flex-shrink: 0;
   transition: background 0.2s;
 }
+.quiz-step-dot:not(.done) {
+  animation: quizStepDotPulse 1.6s ease-in-out infinite;
+}
 .quiz-step-dot.done {
   background: var(--accent);
+  animation: none;
+}
+@keyframes quizStepDotPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(0, 161, 154, 0);
+  }
 }
 
 /* Quest list */
@@ -1599,13 +1609,13 @@ watch(
 }
 .quest-stat-row {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 12px;
 }
 .quest-stat-box {
   flex: 1;
   min-width: 0;
-  padding: 9px 8px;
+  padding: 12px 8px;
   background: var(--bg);
   border: 1px solid var(--border-soft);
   border-radius: 10px;
@@ -1617,8 +1627,8 @@ watch(
   color: var(--text-faint);
   letter-spacing: 0.3px;
   text-transform: uppercase;
-  margin-bottom: 4px;
-  line-height: 1.25;
+  margin-bottom: 8px;
+  line-height: 1.35;
 }
 .quest-stat-val {
   font-size: 12px;
