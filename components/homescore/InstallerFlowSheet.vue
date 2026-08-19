@@ -704,7 +704,7 @@ const TRADES = {
   },
   gas: {
     eyebrow: 'Safety certificates',
-    title: 'Book a gas safety check',
+    title: 'Find Gas Installers',
     measure: 'Gas safety check (CP12)',
     code: 'gas_safety_check',
     accreditation: 'Gas Safe',
@@ -718,7 +718,7 @@ const TRADES = {
   },
   electrician: {
     eyebrow: 'Safety certificates',
-    title: 'Find electrical Installers',
+    title: 'Find Electrical Installers',
     measure: 'EICR · Electrical safety report',
     code: 'eicr',
     accreditation: 'NICEIC',
