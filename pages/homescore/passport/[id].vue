@@ -186,43 +186,41 @@
 
     <!-- Claim your Passport -->
     <div class="bpp-claim-card anim-2">
-      <img src="/op-icons/passportview/umu-passport.png" alt="" class="bpp-claim-ic" loading="lazy" />
-      <div class="bpp-claim-title">Claim your Passport to get started</div>
-      <div class="bpp-claim-sub">
-        Your Passport is free. To confirm you own this property, you'll need
-        to verify ownership and complete ID checks. This one-off step keeps
-        your Passport secure and trusted.
+      <div class="bpp-claim-top">
+        <img src="/op-icons/passportview/passportClaim.png" alt="" class="bpp-claim-ic" loading="lazy" />
+        <div class="bpp-claim-top-text">
+          <div class="bpp-claim-title">Claim your Passport to get started</div>
+          <div class="bpp-claim-sub">
+            Your Passport is free. To confirm you own this property, you'll need
+            to verify ownership and complete ID checks. This one-off step keeps
+            your Passport secure and trusted.
+          </div>
+        </div>
       </div>
       <div class="bpp-claim-checks">
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z" /><polyline points="8.5 12.3 11 14.8 15.5 9.8" /></svg>
           </span>
-          <div>
-            <div class="bpp-claim-check-title">Confirm ownership</div>
-            <div class="bpp-claim-check-sub">Verify you own this property</div>
-          </div>
+          <div class="bpp-claim-check-title">Confirm ownership</div>
+          <div class="bpp-claim-check-sub">Verify you own this property</div>
         </div>
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z" /><circle cx="12" cy="10.5" r="2.1" /><path d="M8.7 15.5a3.6 3.6 0 0 1 6.6 0" /></svg>
           </span>
-          <div>
-            <div class="bpp-claim-check-title">ID verification (KYC)</div>
-            <div class="bpp-claim-check-sub">Quick &amp; secure identity checks</div>
-          </div>
+          <div class="bpp-claim-check-title">ID &amp; security step</div>
+          <div class="bpp-claim-check-sub">Quick &amp; secure identity check</div>
         </div>
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z" /><polyline points="8.5 12.3 11 14.8 15.5 9.8" /></svg>
           </span>
-          <div>
-            <div class="bpp-claim-check-title">Secure &amp; private</div>
-            <div class="bpp-claim-check-sub">Your data is encrypted and only you control it</div>
-          </div>
+          <div class="bpp-claim-check-title">Secure &amp; private</div>
+          <div class="bpp-claim-check-sub">Your data is protected and only you control it</div>
         </div>
       </div>
-      <button class="bpp-claim-btn" type="button" @click="goToClaim">
+      <button class="bpp-claim-btn" type="button" @click="onClaimClick">
         <span class="bpp-claim-btn-left">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" />
@@ -240,6 +238,41 @@
         <span>→</span>
       </a>
     </div>
+
+    <!-- ── Auth-required popup ─────────────────────────────────────
+         Guests tapping "Claim my Passport" get this choice instead of
+         being routed straight into the claim flow. Same pattern as
+         PassportClaimBox.vue's authd-* prompt. -->
+    <Teleport to="body">
+      <Transition name="authd">
+        <div v-if="authPromptOpen" class="authd-overlay" @click.self="authPromptOpen = false">
+          <div class="authd-card" @click.stop>
+            <div class="authd-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <div class="authd-title">Sign in to claim this property</div>
+            <div class="authd-body">
+              You'll need a free account to verify ownership and build your
+              Passport. Takes about a minute.
+            </div>
+            <div class="authd-actions">
+              <button class="authd-btn primary" type="button" @click="goAuth('signup')">
+                Create free account
+              </button>
+              <button class="authd-btn secondary" type="button" @click="goAuth('signin')">
+                I already have an account
+              </button>
+              <button class="authd-btn ghost" type="button" @click="authPromptOpen = false">
+                Not now
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <div class="bpp-trust-note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
@@ -378,8 +411,26 @@ const evidenceBookings = [
   },
 ]
 
-function goToClaim() {
-  router.push(`/claim/${propertyId.value}`)
+// Logged in → straight into the claim flow. Guest → the auth-required
+// popup, which itself remembers this target and returns here after
+// sign-in/sign-up (see goAuth below).
+const authPromptOpen = ref(false)
+
+function onClaimClick() {
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (token) {
+    router.push(`/claim/${propertyId.value}`)
+    return
+  }
+  authPromptOpen.value = true
+}
+
+function goAuth(mode: 'signin' | 'signup') {
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('redirectAfterLogin', `/claim/${propertyId.value}`)
+  }
+  authPromptOpen.value = false
+  navigateTo(mode === 'signup' ? '/onboarding/signup' : '/onboarding/signin')
 }
 </script>
 
@@ -836,66 +887,76 @@ function goToClaim() {
   background: var(--card);
   border: 1.5px solid #c9b0f0;
   border-radius: 18px;
-  text-align: center;
+}
+.bpp-claim-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
 }
 .bpp-claim-ic {
-  width: 84px;
+  width: 76px;
+  flex-shrink: 0;
   object-fit: contain;
-  margin: 0 auto 12px;
   display: block;
   filter: drop-shadow(0 8px 12px rgba(35, 29, 69, 0.18));
 }
+.bpp-claim-top-text {
+  flex: 1;
+  min-width: 0;
+}
 .bpp-claim-title {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.3px;
+  line-height: 1.25;
 }
 .bpp-claim-sub {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 .bpp-claim-checks {
   display: flex;
-  flex-direction: column;
   gap: 10px;
-  margin-top: 16px;
-  text-align: left;
+  margin-top: 18px;
 }
 .bpp-claim-check {
+  flex: 1;
+  min-width: 0;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 6px;
 }
 .bpp-claim-check-ic {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
   background: var(--accent-paler);
   color: var(--accent-dark);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-top: 1px;
 }
 .bpp-claim-check-ic svg {
-  width: 11px;
-  height: 11px;
+  width: 14px;
+  height: 14px;
 }
 .bpp-claim-check-title {
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 800;
   color: var(--text);
+  line-height: 1.25;
 }
 .bpp-claim-check-sub {
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 500;
   color: var(--text-secondary);
-  margin-top: 1px;
+  line-height: 1.3;
 }
 .bpp-claim-btn {
   width: 100%;
@@ -933,10 +994,12 @@ function goToClaim() {
   text-align: right;
 }
 .bpp-claim-login {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  margin-top: 12px;
+  width: fit-content;
+  margin: 12px auto 0;
   color: #5b3795;
   font-size: 12.5px;
   font-weight: 700;
@@ -957,5 +1020,116 @@ function goToClaim() {
 .bpp-trust-note svg {
   flex-shrink: 0;
   color: var(--accent-dark);
+}
+
+/* Auth-required popup — mirrors PassportClaimBox.vue's authd-* prompt */
+.authd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 17, 42, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.authd-card {
+  width: 100%;
+  max-width: 22rem;
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 22px 18px;
+  box-shadow: 0 24px 60px rgba(35, 29, 69, 0.45);
+  text-align: center;
+  color: #231d45;
+}
+.authd-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(0, 161, 154, 0.12);
+  color: #007e78;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.authd-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.authd-title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.authd-body {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7089;
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+.authd-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.authd-btn {
+  width: 100%;
+  padding: 13px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  letter-spacing: -0.1px;
+}
+.authd-btn.primary {
+  background: linear-gradient(135deg, #00a19a, #008a84);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+}
+.authd-btn.primary:hover {
+  filter: brightness(1.06);
+}
+.authd-btn.secondary {
+  background: #fff;
+  border: 1.5px solid #e4e5ed;
+  color: #231d45;
+}
+.authd-btn.secondary:hover {
+  background: #f5f6fa;
+}
+.authd-btn.ghost {
+  background: transparent;
+  color: #6b7089;
+  font-weight: 700;
+  padding: 8px;
+}
+.authd-btn.ghost:hover {
+  color: #231d45;
+}
+.authd-enter-active,
+.authd-leave-active {
+  transition: opacity 0.22s ease;
+}
+.authd-enter-active .authd-card,
+.authd-leave-active .authd-card {
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.authd-enter-from,
+.authd-leave-to {
+  opacity: 0;
+}
+.authd-enter-from .authd-card,
+.authd-leave-to .authd-card {
+  transform: scale(0.94);
 }
 </style>

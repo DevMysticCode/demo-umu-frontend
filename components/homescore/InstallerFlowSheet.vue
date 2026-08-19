@@ -718,7 +718,7 @@ const TRADES = {
   },
   electrician: {
     eyebrow: 'Safety certificates',
-    title: 'Find EICR electricians',
+    title: 'Find electrical Installers',
     measure: 'EICR · Electrical safety report',
     code: 'eicr',
     accreditation: 'NICEIC',
