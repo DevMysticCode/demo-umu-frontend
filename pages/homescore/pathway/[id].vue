@@ -904,30 +904,35 @@ function onBack() {
 }
 .pathway-hero-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 .pathway-circles-block {
-  flex: 1.3;
+  width: 100%;
   min-width: 0;
 }
 .pathway-hero-divider {
-  width: 1px;
+  width: 100%;
+  height: 1px;
   align-self: stretch;
   background: rgba(255, 255, 255, 0.25);
   flex-shrink: 0;
 }
 .pathway-hero-stats {
-  flex: 1;
+  width: 100%;
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  flex-direction: row;
+  justify-content: center;
+  gap: 32px;
 }
 .pathway-hero-stat {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 8px;
+  text-align: center;
 }
 .pw-stat-icon {
   width: 34px;
@@ -958,6 +963,7 @@ function onBack() {
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.35;
+  text-align: center;
 }
 .pw-stat-text b {
   font-weight: 800;
