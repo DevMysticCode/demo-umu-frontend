@@ -4001,20 +4001,6 @@ function startQuestions() {
     router.push(`/property/${propertyId}`)
     return
   }
-  // Nothing to refine: if the EPC has no recommended improvements at
-  // all, there's nothing that "could have changed" — don't let the
-  // user into a quiz that has no real questions for it.
-  const recsForGate: any[] =
-    (property.value as any)?.epcRecommendations ||
-    (property.value as any)?.epcCert?.epcRecommendations ||
-    []
-  if (!Array.isArray(recsForGate) || recsForGate.length === 0) {
-    showToast({
-      message: 'Your HomeScore already reflects your latest EPC — nothing to update',
-      iconEmoji: 'ℹ️',
-    })
-    return
-  }
   // Guests are allowed into the simulator — auth is gated later in the
   // funnel (at "Publish to <address>" / KYC), matching the prototype flow.
   const firstUnanswered = QUESTIONS.findIndex(
