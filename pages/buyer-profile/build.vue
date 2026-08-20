@@ -728,8 +728,8 @@
 
         <button
           class="bp-next"
-          :class="{ disabled: !tierCanContinue }"
-          :disabled="!tierCanContinue"
+          :class="{ disabled: saving }"
+          :disabled="saving"
           @click="onTierStepContinue"
         >
           {{ tierCtaLabel }}
@@ -1005,6 +1005,12 @@ const statement = ref('')
 const selectedTier = ref<Tier>('VERIFIED')
 const tierPaidFor = ref<Tier>('UNVERIFIED')
 const tierDrawerOpen = ref(false)
+
+// Hydrated alongside the rest of the profile below — used so backing out
+// of step 1 can go straight to /buyer-profile/view for a published
+// profile instead of via /buyer-profile, which redirects there itself
+// and turns a back-tap into a bounce loop between build and view.
+const isPublished = ref(false)
 
 const tierCanContinue = computed(() => tierPaidFor.value === 'VERIFIED')
 
@@ -1474,6 +1480,13 @@ function goBack() {
     step.value = (step.value - 1) as any
     return
   }
+  if (isPublished.value) {
+    // /buyer-profile would just redirect straight back here anyway —
+    // skip it. replace (not push) so this doesn't leave a fresh /build
+    // history entry for /view's own back button to bounce off of.
+    router.replace('/buyer-profile/view')
+    return
+  }
   router.push('/buyer-profile')
 }
 
@@ -1629,6 +1642,7 @@ onMounted(async () => {
       // Tier hydration — keep paid state in sync with server truth.
       // selectedTier stays 'VERIFIED' (the only tier) regardless.
       tierPaidFor.value = ((data as any).tier as Tier) || 'UNVERIFIED'
+      isPublished.value = !!(data as any).published
     }
   } catch {}
 

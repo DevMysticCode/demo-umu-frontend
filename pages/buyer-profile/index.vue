@@ -38,7 +38,7 @@
     <div class="bph-hero-wrap">
       <div class="bph-hero-card" @click="goToBuild">
         <img
-          src="/op-icons/misc/explorePassport.png"
+          src="/op-icons/misc/buyerPassport.png"
           alt=""
           class="bph-hero-icon"
           loading="lazy"

@@ -389,7 +389,10 @@ function goAccessRequest(id: string) {
   router.push(`/buyer-profile/access-request/${id}`)
 }
 
-const goBack = useGoBack('/buyer-profile')
+// Falls back to /profile, not /buyer-profile — that checklist page
+// auto-redirects back here for a published profile, which turned a
+// direct-entry back-tap into an infinite bounce between the two pages.
+const goBack = useGoBack('/profile')
 
 onMounted(async () => {
   fetchProfile?.().catch(() => {})

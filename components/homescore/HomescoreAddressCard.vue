@@ -154,9 +154,14 @@
           <div class="hsc-hook">{{ homeScoreHook }}</div>
         </div>
       </div>
+    </template>
 
+    <!-- Social proof + passport status — shared by default and compact
+         modes (report-mode has its own separate pill and the costs page
+         already shows watch/claim UI elsewhere, so it opts out). -->
+    <template v-if="!reportMode && showSocialProof">
       <!-- Social proof: searches today -->
-      <div v-if="showSocialProof" class="hsc-viewers">
+      <div class="hsc-viewers">
         <span class="hsc-idstack" aria-hidden="true">
           <span class="hsc-idc" style="background: #9fe1cb">
             <span
@@ -188,7 +193,7 @@
 
       <!-- Social proof: live interest (published) or watchers (others) -->
       <div
-        v-if="showSocialProof && passportState === 'published'"
+        v-if="passportState === 'published'"
         class="hsc-viewers hsc-viewers--live"
       >
         <span class="hsc-live-bars" aria-hidden="true">
@@ -201,7 +206,7 @@
           <span>&nbsp;People are tracking this passport.</span>
         </div>
       </div>
-      <div v-else-if="showSocialProof" class="hsc-viewers">
+      <div v-else class="hsc-viewers">
         <!-- Binoculars-style watching glyph. The earlier eye-with-pupil
              icon was too close to the "show password" eye used in form
              fields; this one reads as "spotting / monitoring" — much
@@ -232,6 +237,35 @@
           >
         </div>
       </div>
+
+      <!-- Passport status — same state vocab as the report-mode pill. -->
+      <button
+        type="button"
+        class="hsc-viewers hsc-passport-box"
+        @click="emit('passport-pill-click')"
+      >
+        <img
+          src="/op-icons/homescore/clipboard.png"
+          alt=""
+          class="hsc-passport-box-ic"
+          loading="lazy"
+        />
+        <div class="hsc-vtxt hsc-passport-box-txt">
+          <b>{{ passportPillLabel }}</b>
+        </div>
+        <svg
+          class="hsc-passport-box-chev"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="rgba(255,255,255,.75)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="9 6 15 12 9 18" />
+        </svg>
+      </button>
     </template>
   </div>
 </template>
@@ -725,6 +759,31 @@ const watchersDisplay = computed(() => {
 }
 .hsc-vtxt span {
   color: rgba(255, 255, 255, 0.85);
+}
+
+/* Passport-status box — same "hsc-viewers" box language, but a real
+   button (width:100%, no UA button chrome) since it's tappable. */
+.hsc-passport-box {
+  width: 100%;
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.hsc-passport-box-ic {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.hsc-passport-box-txt {
+  flex: 1;
+  min-width: 0;
+}
+.hsc-passport-box-chev {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 /* Animated signal-bars variant — shown for published passports. */
