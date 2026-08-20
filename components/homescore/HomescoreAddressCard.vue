@@ -31,9 +31,12 @@
       class="hsc-house-ic"
     />
 
-    <!-- Report variant: stacked EPC row (badge + title + hook) and a
-         passport-status pill — no HomeScore tile, no social-proof rows.
-         Used by the Property Report page (homescore/costs/[id].vue). -->
+    <!-- Report variant: stacked EPC row (badge + title + hook) only —
+         no HomeScore tile. The passport-status box + social-proof rows
+         below are the same shared markup every other mode uses, so the
+         Property Report page (homescore/costs/[id].vue) matches the
+         rest of the HomeScore journey exactly instead of having its own
+         separate pill. -->
     <template v-if="reportMode">
       <div class="hsc-report-epc">
         <span
@@ -49,37 +52,6 @@
           <div class="hsc-report-epc-hook">{{ epcHook }}</div>
         </div>
       </div>
-      <button
-        type="button"
-        class="hsc-report-pill"
-        @click="emit('passport-pill-click')"
-      >
-        <img
-          src="/op-icons/homescore/clipboard.png"
-          alt=""
-          class="hsc-report-pill-ic"
-          loading="lazy"
-        />
-        <span class="hsc-report-pill-txt">{{ passportPillLabel }}</span>
-        <svg
-          class="hsc-report-pill-info"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="rgba(255,255,255,.75)"
-          stroke-width="1.8"
-          aria-hidden="true"
-        >
-          <circle cx="12" cy="12" r="9.5" />
-          <path d="M12 11v5.5" stroke-linecap="round" />
-          <circle
-            cx="12"
-            cy="8"
-            r="0.25"
-            fill="rgba(255,255,255,.75)"
-            stroke-width="1.5"
-          />
-        </svg>
-      </button>
     </template>
 
     <!-- Compact variant: single EPC line, no HomeScore tile, no social
@@ -239,12 +211,11 @@
       </div>
     </template>
 
-    <!-- Passport status — same state vocab as the report-mode pill.
-         Skipped in report-mode: that variant already has its own
-         (bigger, styled) passport pill above, so this would duplicate
-         it. -->
+    <!-- Passport status — same box in every mode, always last (after
+         checked/watching), so report-mode matches the rest of the
+         HomeScore journey instead of having its own separate pill. -->
     <button
-      v-if="!reportMode && showSocialProof"
+      v-if="showSocialProof"
       type="button"
       class="hsc-viewers hsc-passport-box"
       @click="emit('passport-pill-click')"
@@ -561,38 +532,6 @@ const watchersDisplay = computed(() => {
   color: rgba(255, 255, 255, 0.75);
   margin-top: 2px;
 }
-.hsc-report-pill {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: auto;
-  margin-top: 14px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 0.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 12px;
-  font-family: inherit;
-  cursor: pointer;
-  text-align: left;
-}
-.hsc-report-pill-ic {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-.hsc-report-pill-txt {
-  flex: 1;
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-}
-.hsc-report-pill-info {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
 /* Tiles */
 .hsc-tiles {
   display: grid;
