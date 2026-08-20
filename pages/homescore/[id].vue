@@ -3995,9 +3995,16 @@ function startQuestions() {
     return
   }
 
-  // Read-only mode: don't let non-owners run the owner quiz on EPC
-  // properties (that flow claims ownership as a side effect).
-  if (readOnlyMode.value) {
+  // Read-only mode: don't let a signed-in non-owner run the owner quiz on
+  // EPC properties (that flow claims ownership as a side effect) — we
+  // know for a fact they're not the owner once they're logged in.
+  // Guests are a different case: hasOtherOwnerPassport just means SOME
+  // account has claimed it, not that this particular visitor isn't the
+  // real owner — they just haven't signed in yet. Blocking them here
+  // entirely would strand the actual owner with no way in, so let guests
+  // through; auth (and the real ownership conflict, if any) is gated
+  // later in the funnel at claim/KYC, same as the rest of this flow.
+  if (readOnlyMode.value && !isGuest.value) {
     router.push(`/property/${propertyId}`)
     return
   }

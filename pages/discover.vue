@@ -599,8 +599,8 @@ function lastSoldLabel(dateStr: string): string {
 }
 .exp-more-ring {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 76px;
+  height: 82px;
   flex-shrink: 0;
 }
 .exp-more-ring svg {
@@ -676,6 +676,7 @@ function lastSoldLabel(dateStr: string): string {
   margin-top: 14px;
   font-size: 16px;
   font-weight: 800;
+  text-align: end;
 }
 .exp-more-arrow--teal {
   color: #00a19a;

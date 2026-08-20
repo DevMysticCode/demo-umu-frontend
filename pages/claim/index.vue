@@ -1,5 +1,5 @@
 <template>
-  <div class="claim-root">
+  <div class="claim-root mobile-container min-h-screen">
     <!-- Sticky topbar -->
     <div class="cl-topbar">
       <button class="cl-back" @click="onBack" aria-label="Back">‹</button>
@@ -51,8 +51,11 @@
 import { ref } from 'vue'
 import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 
+// No auth gate — guests can search for a property here too. The actual
+// sign-in ask happens on /claim/[id], right when "Yes, this is my
+// property" is tapped (the first point the flow needs to know who the
+// user is).
 definePageMeta({
-  middleware: 'auth',
   title: 'Claim your Property Passport',
 })
 
