@@ -4244,6 +4244,14 @@
       @close="watchDrawerOpen = false"
       @submit="onWatchDrawerSubmit"
     />
+
+    <WatchConfirmedDrawer
+      :open="watchConfirmedOpen"
+      :address-label="property?.addressLine1 || ''"
+      :prefs="watchConfirmedPrefs"
+      @close="watchConfirmedOpen = false"
+      @create-passport="onWatchConfirmedCreatePassport"
+    />
   </div>
 </template>
 
@@ -4262,6 +4270,7 @@ import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
 import ShareContent from '~/components/property/ShareContent.vue'
 import WatchPropertyDrawer from '~/components/property/WatchPropertyDrawer.vue'
+import WatchConfirmedDrawer from '~/components/property/WatchConfirmedDrawer.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import NotificationBell from '~/components/ui/NotificationBell.vue'
@@ -5998,9 +6007,46 @@ async function persistWatch(opts: { silent?: boolean } = {}) {
   }
 }
 
-async function onWatchDrawerSubmit() {
+// Same defaults WatchPropertyDrawer.vue prefills its toggles with — used
+// here when we persist a watch without the user ever seeing that drawer
+// (the ?watched=1 resume-after-signin path below).
+const DEFAULT_WATCH_PREFS: Record<string, boolean> = {
+  claimed: true,
+  progress: true,
+  published: true,
+  comparables: false,
+  homescore: true,
+}
+
+const watchConfirmedOpen = ref(false)
+const watchConfirmedPrefs = ref<Record<string, boolean> | null>(null)
+
+async function onWatchDrawerSubmit(prefs: Record<string, boolean>) {
   watchDrawerOpen.value = false
-  await persistWatch()
+  // The confirmation drawer below replaces the old toast — no need for
+  // both.
+  await persistWatch({ silent: true })
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (token) {
+    try {
+      await fetch(`${config.public.apiBase}/property/${propertyId}/watch`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(prefs),
+      })
+    } catch {}
+  }
+  watchConfirmedPrefs.value = prefs
+  watchConfirmedOpen.value = true
+}
+
+function onWatchConfirmedCreatePassport() {
+  watchConfirmedOpen.value = false
+  router.push('/buyer-profile/build')
 }
 
 // True when the logged-in user owns or collaborates on the passport for this
@@ -7903,7 +7949,9 @@ onMounted(async () => {
   // PassportClaimBox or the Buyer Report) after the sign-in round-trip.
   if (route.query?.watched === '1') {
     router.replace({ path: route.path }).catch(() => {})
-    persistWatch()
+    await persistWatch({ silent: true })
+    watchConfirmedPrefs.value = DEFAULT_WATCH_PREFS
+    watchConfirmedOpen.value = true
   } else if (route.query?.save === '1') {
     router.replace({ path: route.path }).catch(() => {})
     const r = await toggleSave(propertyId)
