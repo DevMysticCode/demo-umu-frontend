@@ -5969,7 +5969,9 @@ function onWatchClick() {
 // Persist a "watch": ensure the property is saved to the user's profile
 // (so it shows under Saved Properties) and register interest (email). Guests
 // are sent to sign-in and resume here via ?watched=1.
-async function persistWatch(opts: { silent?: boolean } = {}) {
+async function persistWatch(
+  opts: { silent?: boolean } = {},
+): Promise<'unauthenticated' | 'ok'> {
   const token =
     typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) {
@@ -5980,7 +5982,7 @@ async function persistWatch(opts: { silent?: boolean } = {}) {
       )
     }
     router.push('/onboarding/signin')
-    return
+    return 'unauthenticated'
   }
   watchSubmitting.value = true
   try {
@@ -6005,6 +6007,7 @@ async function persistWatch(opts: { silent?: boolean } = {}) {
   } finally {
     watchSubmitting.value = false
   }
+  return 'ok'
 }
 
 // Same defaults WatchPropertyDrawer.vue prefills its toggles with — used
@@ -6021,25 +6024,38 @@ const DEFAULT_WATCH_PREFS: Record<string, boolean> = {
 const watchConfirmedOpen = ref(false)
 const watchConfirmedPrefs = ref<Record<string, boolean> | null>(null)
 
-async function onWatchDrawerSubmit(prefs: Record<string, boolean>) {
-  watchDrawerOpen.value = false
-  // The confirmation drawer below replaces the old toast — no need for
-  // both.
-  await persistWatch({ silent: true })
+async function postWatchPrefs(prefs: Record<string, boolean>) {
   const token =
     typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-  if (token) {
-    try {
-      await fetch(`${config.public.apiBase}/property/${propertyId}/watch`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(prefs),
-      })
-    } catch {}
+  if (!token) return
+  try {
+    await fetch(`${config.public.apiBase}/property/${propertyId}/watch`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(prefs),
+    })
+  } catch {}
+}
+
+async function onWatchDrawerSubmit(prefs: Record<string, boolean>) {
+  watchDrawerOpen.value = false
+  // Guests get redirected to sign-in inside persistWatch and resume via
+  // ?watched=1 — stash the prefs they actually picked so that resume can
+  // still show a confirmation matching their real choices, not defaults.
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('pendingWatchPrefs', JSON.stringify(prefs))
   }
+  // The confirmation drawer below replaces the old toast — no need for
+  // both.
+  const result = await persistWatch({ silent: true })
+  if (result === 'unauthenticated') return
+  if (typeof localStorage !== 'undefined') {
+    localStorage.removeItem('pendingWatchPrefs')
+  }
+  await postWatchPrefs(prefs)
   watchConfirmedPrefs.value = prefs
   watchConfirmedOpen.value = true
 }
@@ -7950,7 +7966,21 @@ onMounted(async () => {
   if (route.query?.watched === '1') {
     router.replace({ path: route.path }).catch(() => {})
     await persistWatch({ silent: true })
-    watchConfirmedPrefs.value = DEFAULT_WATCH_PREFS
+    // Recover the prefs picked before the sign-in round-trip, if any —
+    // falls back to WatchPropertyDrawer's own defaults if the guest never
+    // actually saw that drawer (e.g. redirected here from elsewhere).
+    let resumedPrefs = DEFAULT_WATCH_PREFS
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem('pendingWatchPrefs')
+      if (raw) {
+        localStorage.removeItem('pendingWatchPrefs')
+        try {
+          resumedPrefs = { ...DEFAULT_WATCH_PREFS, ...JSON.parse(raw) }
+        } catch {}
+      }
+    }
+    await postWatchPrefs(resumedPrefs)
+    watchConfirmedPrefs.value = resumedPrefs
     watchConfirmedOpen.value = true
   } else if (route.query?.save === '1') {
     router.replace({ path: route.path }).catch(() => {})
