@@ -800,6 +800,65 @@
       v-model="showTypeDrawer"
       @confirm="onPassportTypeConfirmed"
     />
+
+    <!-- ── Auth-required popup ─────────────────────────────────────
+         Guests can search, pick a passport type and see "Is this your
+         property?" freely — this only appears when they tap "Yes, this
+         is my property". Same create-account/sign-in choice used on the
+         HomeScore Build-Passport page. -->
+    <Teleport to="body">
+      <Transition name="authd">
+        <div
+          v-if="authPromptOpen"
+          class="authd-overlay"
+          @click.self="authPromptOpen = false"
+        >
+          <div class="authd-card" @click.stop>
+            <div class="authd-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <div class="authd-title">Sign in to confirm ownership</div>
+            <div class="authd-body">
+              You'll need a free account to verify your identity and confirm
+              you own this property. Takes about a minute.
+            </div>
+            <div class="authd-actions">
+              <button
+                class="authd-btn primary"
+                type="button"
+                @click="goAuth('signup')"
+              >
+                Create free account
+              </button>
+              <button
+                class="authd-btn secondary"
+                type="button"
+                @click="goAuth('signin')"
+              >
+                I already have an account
+              </button>
+              <button
+                class="authd-btn ghost"
+                type="button"
+                @click="authPromptOpen = false"
+              >
+                Not now
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -809,7 +868,11 @@ import { useRoute, useRouter } from 'vue-router'
 import type { Stripe, StripeCardElement } from '@stripe/stripe-js'
 import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 
-definePageMeta({ middleware: 'auth' })
+// No page-level auth gate — guests can search, pick a passport type, and
+// see "Is this your property?" (search + confirm steps) without an
+// account. The gate now sits at confirmProperty() below, right when
+// "Yes, this is my property" is tapped, since that's the first point
+// this flow actually needs to know who the user is.
 
 type ClaimStep =
   | 'search'
@@ -839,6 +902,15 @@ const chosenIsHmo = ref(false)
 function onPassportTypeConfirmed(payload: { type: 'seller' | 'landlord'; isHmo: boolean }) {
   chosenPassportType.value = payload.type
   chosenIsHmo.value = payload.isHmo
+  // Persisted so the choice survives the guest sign-in round-trip from
+  // confirmProperty() below — this component fully remounts on return,
+  // losing plain refs.
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(
+      'umu_claim_passport_type',
+      JSON.stringify({ propertyId, type: payload.type, isHmo: payload.isHmo }),
+    )
+  }
   showTypeDrawer.value = false
   // Resume the claim only if the user is already at the final step. When the
   // drawer is shown at mount-time (the common case), the user still needs to
@@ -902,6 +974,23 @@ function authHeaders() {
     Authorization: `Bearer ${token()}`,
     'Content-Type': 'application/json',
   }
+}
+
+// ── Auth-required popup — same "create account / sign in / not now"
+//    choice used on the HomeScore Build-Passport page, shown when a
+//    guest taps "Yes, this is my property". Remembers this exact
+//    property + a resume marker so onMounted can pick straight back up
+//    at confirmProperty() once they're signed in (see onMounted below). ──
+const authPromptOpen = ref(false)
+function goAuth(mode: 'signin' | 'signup') {
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(
+      'redirectAfterLogin',
+      `/claim/${propertyId}?resumeConfirm=1`,
+    )
+  }
+  authPromptOpen.value = false
+  navigateTo(mode === 'signup' ? '/onboarding/signup' : '/onboarding/signin')
 }
 
 async function loadProperty() {
@@ -1010,11 +1099,35 @@ onMounted(async () => {
     } catch { /* corrupt localStorage — fall through to normal flow */ }
   }
 
+  // Resuming from the guest sign-in round-trip confirmProperty() below
+  // triggers? Restore the passport-type choice made before they left and
+  // skip straight back into "Yes, this is my property" — don't re-show
+  // the type drawer or make them re-confirm.
+  let resumingConfirm = false
+  if (url.searchParams.get('resumeConfirm') === '1') {
+    url.searchParams.delete('resumeConfirm')
+    window.history.replaceState({}, '', url.toString())
+    try {
+      const raw = localStorage.getItem('umu_claim_passport_type')
+      if (raw) {
+        const saved = JSON.parse(raw)
+        if (saved?.propertyId === propertyId && saved?.type) {
+          chosenPassportType.value = saved.type
+          chosenIsHmo.value = !!saved.isHmo
+          resumingConfirm = true
+        }
+      }
+    } catch { /* corrupt localStorage — fall through to the normal ask */ }
+  }
+
   // First thing: ask the user which type of passport they're claiming.
   // Always shown — even if their profile role suggests one — so they can
   // override per-property (a landlord might still claim a seller passport).
-  showTypeDrawer.value = true
+  // Skipped when resuming: they already chose, and are signed in now, so
+  // just carry on into confirmProperty() once the property has loaded.
+  showTypeDrawer.value = !resumingConfirm
   await Promise.all([loadProperty(), loadProfile()])
+  if (resumingConfirm) confirmProperty()
 })
 
 // ── Topbar logic ──────────────────────────────────────────────
@@ -1256,6 +1369,14 @@ function onPrimary() {
 // ── confirm → start-verification → kyc-explainer (or skip if already verified) ─────────────
 async function confirmProperty() {
   verificationError.value = ''
+  // "Yes, this is my property" is the first moment this flow actually
+  // needs an account — search + confirm are guest-accessible. Guests get
+  // the same create-account/sign-in choice used elsewhere, and resume
+  // straight back into this same call once they're back (see onMounted).
+  if (!token()) {
+    authPromptOpen.value = true
+    return
+  }
   if (!selectedProperty.value?.id) {
     step.value = 'kyc-explainer'
     return
@@ -3069,5 +3190,116 @@ onBeforeUnmount(() => {
   width: 22px;
   height: 22px;
   display: inline-flex;
+}
+
+/* ── Auth-required popup (sits above everything else) ── */
+.authd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 17, 42, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.authd-card {
+  width: 100%;
+  max-width: 22rem;
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 22px 18px;
+  box-shadow: 0 24px 60px rgba(35, 29, 69, 0.45);
+  text-align: center;
+  color: #231d45;
+}
+.authd-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(0, 161, 154, 0.12);
+  color: #007e78;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.authd-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.authd-title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.authd-body {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7089;
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+.authd-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.authd-btn {
+  width: 100%;
+  padding: 13px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  letter-spacing: -0.1px;
+}
+.authd-btn.primary {
+  background: linear-gradient(135deg, #00a19a, #008a84);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+}
+.authd-btn.primary:hover {
+  filter: brightness(1.06);
+}
+.authd-btn.secondary {
+  background: #fff;
+  border: 1.5px solid #e4e5ed;
+  color: #231d45;
+}
+.authd-btn.secondary:hover {
+  background: #f5f6fa;
+}
+.authd-btn.ghost {
+  background: transparent;
+  color: #6b7089;
+  font-weight: 700;
+  padding: 8px;
+}
+.authd-btn.ghost:hover {
+  color: #231d45;
+}
+.authd-enter-active,
+.authd-leave-active {
+  transition: opacity 0.22s ease;
+}
+.authd-enter-active .authd-card,
+.authd-leave-active .authd-card {
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.authd-enter-from,
+.authd-leave-to {
+  opacity: 0;
+}
+.authd-enter-from .authd-card,
+.authd-leave-to .authd-card {
+  transform: scale(0.94);
 }
 </style>

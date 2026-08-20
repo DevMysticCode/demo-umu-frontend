@@ -218,6 +218,15 @@
             <div class="dc-sub">
               Store, verify and securely share everything from deeds and
               planning to guarantees and surveys.
+
+              <br>
+              <button
+                type="button"
+                class="see-a-sample"
+                @click.stop="showPassportSample"
+              >
+                See a sample
+              </button>
             </div>
           </div>
 
@@ -996,7 +1005,7 @@ const cards = [
     peekLabel: 'Property Passport',
     peekSub: "Build your home's verified digital record.",
     peekPill: 'Solicitor-grade',
-    cta: 'See a sample',
+    cta: 'Start a property passport',
   },
   {
     id: 'aisha',
@@ -1028,9 +1037,15 @@ function bringToFront(id: string) {
 function onCardCta(id: string) {
   if (id === 'explore') navigateTo('/discover')
   else if (id === 'HomeScore') navigateTo('/homescore')
-  else if (id === 'passport') screen.value = 'sample'
+  else if (id === 'passport') navigateTo('/claim')
   else if (id === 'aisha') screen.value = 'aisha'
   else if (id === 'market') screen.value = 'market'
+}
+
+// "See a sample" pill on the Property Passport card — was previously
+// what the main CTA button did before it was repointed at /claim.
+function showPassportSample() {
+  screen.value = 'sample'
 }
 
 // ── Coach-mark tour ────────────────────────────────────────────────────
@@ -1545,6 +1560,20 @@ const currentSample = computed(() => samples[sampleType.value])
 .deck-card[data-pos='1'] .dc-foot {
   opacity: 1;
   transition: opacity 0.4s 0.2s;
+}
+
+.see-a-sample {
+  margin-top: 20px;
+  display: inline-block;
+  font-size: 16px;
+  font-family: inherit;
+  color: inherit;
+  border: 0.5px solid #00a19a;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 400;
+  background: #00a19a8f;
+  cursor: pointer;
 }
 
 .dc-top {
