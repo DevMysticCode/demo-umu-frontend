@@ -2,7 +2,11 @@
   <div class="bph-page">
     <!-- Header: title + info, settings on the right -->
     <div class="bph-header">
-      <div style="width: 36px" />
+      <button class="bph-settings-btn" type="button" aria-label="Back" @click="router.push('/profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
       <div class="bph-header-centre">
         <span class="bph-header-title">Buyer Passport</span>
         <button
@@ -18,20 +22,7 @@
           </svg>
         </button>
       </div>
-      <button class="bph-settings-btn" type="button" aria-label="Settings" @click="router.push('/profile')">
-        <svg viewBox="0 0 24 24" fill="none" width="19" height="19">
-          <path
-            d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-            stroke="currentColor"
-            stroke-width="1.8"
-          />
-          <path
-            d="M19.4 13.5a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V19.4a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H4.6a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H10.5a1.65 1.65 0 0 0 1-1.51V4.6a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V10.5a1.65 1.65 0 0 0 1.51 1H19.4a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-          />
-        </svg>
-      </button>
+      <div style="width: 36px" aria-hidden="true" />
     </div>
 
     <!-- Hero card -->

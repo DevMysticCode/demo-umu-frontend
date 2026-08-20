@@ -145,9 +145,42 @@
             class="exp-more-card exp-more-card--teal"
             @click="navigateTo('/homescore')"
           >
+            <div class="exp-more-top-row">
+              <div class="exp-more-eyebrow-col">
+                <div class="exp-more-eyebrow">HomeScore&trade;</div>
+                <span class="exp-more-pill">FREE</span>
+              </div>
+              <div class="exp-more-ring">
+                <svg viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient
+                      id="dfHomescoreGrad"
+                      x1="1"
+                      y1="0"
+                      x2="0"
+                      y2="0"
+                    >
+                      <stop offset="0%" stop-color="#00BB93" />
+                      <stop offset="100%" stop-color="#016F84" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="exp-more-ring-bg" cx="50" cy="50" r="42" />
+                  <circle
+                    class="exp-more-ring-fill"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    :stroke-dasharray="263.9"
+                    :stroke-dashoffset="263.9 - (55 / 100) * 263.9"
+                  />
+                </svg>
+                <div class="exp-more-ring-label">
+                  <span class="exp-more-ring-num">55</span>
+                  <span class="exp-more-ring-den">/100</span>
+                </div>
+              </div>
+            </div>
             <div class="exp-more-body">
-              <div class="exp-more-eyebrow">HomeScore&trade;</div>
-              <span class="exp-more-pill">FREE</span>
               <div class="exp-more-card-title">
                 Know what your home could be costing you
               </div>
@@ -156,44 +189,25 @@
               </div>
               <span class="exp-more-arrow exp-more-arrow--teal">→</span>
             </div>
-            <div class="exp-more-ring">
-              <svg viewBox="0 0 100 100">
-                <defs>
-                  <linearGradient
-                    id="dfHomescoreGrad"
-                    x1="1"
-                    y1="0"
-                    x2="0"
-                    y2="0"
-                  >
-                    <stop offset="0%" stop-color="#00BB93" />
-                    <stop offset="100%" stop-color="#016F84" />
-                  </linearGradient>
-                </defs>
-                <circle class="exp-more-ring-bg" cx="50" cy="50" r="42" />
-                <circle
-                  class="exp-more-ring-fill"
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  :stroke-dasharray="263.9"
-                  :stroke-dashoffset="263.9 - (55 / 100) * 263.9"
-                />
-              </svg>
-              <div class="exp-more-ring-label">
-                <span class="exp-more-ring-num">55</span>
-                <span class="exp-more-ring-den">/100</span>
-              </div>
-            </div>
           </button>
           <button
             type="button"
             class="exp-more-card exp-more-card--amber"
             @click="navigateTo('/claim')"
           >
+            <div class="exp-more-top-row">
+              <div class="exp-more-eyebrow-col">
+                <div class="exp-more-eyebrow">Property Passport</div>
+                <span class="exp-more-pill">SOLICITOR-GRADE</span>
+              </div>
+              <img
+                src="/op-icons/misc/passportFan.png"
+                alt=""
+                class="exp-more-ic exp-more-ic--fan"
+                loading="lazy"
+              />
+            </div>
             <div class="exp-more-body">
-              <div class="exp-more-eyebrow">Property Passport</div>
-              <span class="exp-more-pill">SOLICITOR-GRADE</span>
               <div class="exp-more-card-title">
                 Build your home's verified record
               </div>
@@ -203,12 +217,6 @@
               </div>
               <span class="exp-more-arrow exp-more-arrow--amber">→</span>
             </div>
-            <img
-              src="/op-icons/misc/passportFan.png"
-              alt=""
-              class="exp-more-ic exp-more-ic--fan"
-              loading="lazy"
-            />
           </button>
         </div>
       </div>
@@ -549,12 +557,11 @@ function lastSoldLabel(dateStr: string): string {
 .exp-more-card {
   position: relative;
   display: flex;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
   text-align: left;
   border: 1px solid #eef0f6;
   border-radius: 16px;
-  padding: 16px 10px 16px 14px;
+  padding: 14px 12px 16px 14px;
   font-family: inherit;
   cursor: pointer;
   overflow: hidden;
@@ -565,9 +572,20 @@ function lastSoldLabel(dateStr: string): string {
 .exp-more-card--amber {
   background: linear-gradient(160deg, #fdf3e4 0%, #fdf9f2 100%);
 }
-.exp-more-body {
-  flex: 1;
+.exp-more-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+}
+.exp-more-eyebrow-col {
   min-width: 0;
+}
+.exp-more-body {
+  width: 100%;
+  min-width: 0;
+  margin-top: 10px;
 }
 .exp-more-ic {
   width: 64px;

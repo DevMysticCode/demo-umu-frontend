@@ -38,19 +38,18 @@
          rest of the HomeScore journey exactly instead of having its own
          separate pill. -->
     <template v-if="reportMode">
-      <div class="hsc-report-epc">
+      <div class="hsc-compact-row" style="margin-top: 16px">
         <span
-          class="hsc-epc-badge hsc-epc-badge--report"
+          class="hsc-epc-badge hsc-epc-badge--compact"
           :class="{ 'hsc-epc-badge--none': isNoEpc }"
           :style="!isNoEpc ? { background: epcColor(epcRating) } : {}"
           >{{ isNoEpc ? 'None' : epcRating || '—' }}</span
         >
-        <div class="hsc-report-epc-text">
-          <div class="hsc-report-epc-title">
-            EPC rating {{ isNoEpc ? 'unavailable' : epcRating }}
-          </div>
-          <div class="hsc-report-epc-hook">{{ epcHook }}</div>
-        </div>
+        <span class="hsc-compact-label"
+          >EPC rating {{ isNoEpc ? 'unavailable' : epcRating }}</span
+        >
+        <span class="hsc-compact-sep">|</span>
+        <span class="hsc-compact-hook">{{ epcHook }}</span>
       </div>
     </template>
 
@@ -503,35 +502,6 @@ const watchersDisplay = computed(() => {
   color: rgba(255, 255, 255, 0.82);
 }
 
-/* Report mode */
-.hsc-report-epc {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-}
-.hsc-epc-badge--report {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-.hsc-report-epc-text {
-  min-width: 0;
-}
-.hsc-report-epc-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.1px;
-}
-.hsc-report-epc-hook {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
-  margin-top: 2px;
-}
 /* Tiles */
 .hsc-tiles {
   display: grid;
