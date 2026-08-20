@@ -589,12 +589,19 @@ function hasAuth(): boolean {
   return Boolean(localStorage.getItem('token'))
 }
 
-// Build the post-login redirect target. Claim → ?claim=1, watch/buy →
-// ?unlock=1 (mirrors the parent's existing goToClaimPassport /
-// goToBuyPassport routing).
+// Build the post-login redirect target. Claim → ?claim=1, watch →
+// ?watched=1, buy → ?unlock=1 (mirrors the parent's existing
+// goToClaimPassport / persistWatch / goToBuyPassport routing — watch
+// and buy resume completely differently on return, so they can't share
+// a flag).
 function redirectTargetFor(action: PrimaryAction): string | null {
   if (!props.propertyId) return null
-  const flag = action === 'claim-passport' ? 'claim=1' : 'unlock=1'
+  const flag =
+    action === 'claim-passport'
+      ? 'claim=1'
+      : action === 'watch'
+        ? 'watched=1'
+        : 'unlock=1'
   return `/property/${props.propertyId}?${flag}`
 }
 

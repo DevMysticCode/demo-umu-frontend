@@ -594,8 +594,8 @@ function lastSoldLabel(dateStr: string): string {
   flex-shrink: 0;
 }
 .exp-more-ic--fan {
-  width: 84px;
-  height: 84px;
+  width: 78px;
+  height: 72px;
 }
 .exp-more-ring {
   position: relative;

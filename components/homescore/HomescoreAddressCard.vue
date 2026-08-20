@@ -639,10 +639,10 @@ const watchersDisplay = computed(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  /* background: rgba(255, 255, 255, 0.1);
+  border: 0.5px solid rgba(255, 255, 255, 0.2); */
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 0;
   margin-top: 10px;
 }
 .hsc-idstack {
@@ -677,11 +677,13 @@ const watchersDisplay = computed(() => {
 /* Passport-status box — same "hsc-viewers" box language, but a real
    button (width:100%, no UA button chrome) since it's tappable. */
 .hsc-passport-box {
-  width: 100%;
   border: 0.5px solid rgba(255, 255, 255, 0.2);
   font-family: inherit;
   cursor: pointer;
   text-align: left;
+  width: auto;
+  background: #00a19a;
+  padding: 10px 8px;
 }
 .hsc-passport-box-ic {
   width: 20px;
