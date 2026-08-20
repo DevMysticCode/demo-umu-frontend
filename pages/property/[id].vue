@@ -241,97 +241,23 @@
       </div>
 
       <!-- ─── SECTION 3: Action Bar ────────────────────────────────── -->
-      <!-- Hidden per request: duplicates the floating claim box's CTA and
-           the standalone Watch/Ask section above, which already cover this. -->
-      <div v-if="false" class="pps-action-bar">
-        <button
-          v-if="pageState === 'unclaimed'"
-          class="pps-passport-cta-unlock"
-          style="
-            background: #231d45;
-            box-shadow: 0 6px 22px rgba(35, 29, 69, 0.4);
-            margin-bottom: 10px;
-          "
-          type="button"
-          @click="onClaimClick"
-        >
-          <div class="pps-passport-cta-unlock-left">
-            <div class="pps-passport-cta-unlock-title">
-              Claim this property — it's free
-            </div>
-            <div class="pps-passport-cta-unlock-sub">
-              Build a verified Passport · TA6, TA7, TA10 · certificates ·
-              history
-            </div>
-          </div>
-          <div class="pps-passport-cta-unlock-price">
-            <span
-              class="pps-passport-cta-unlock-amount"
-              style="font-size: 18px; letter-spacing: -0.3px"
-              >Free</span
-            >
-            <span class="pps-passport-cta-unlock-arrow">→</span>
-          </div>
-        </button>
-
-        <button
-          v-else-if="pageState === 'progress'"
-          class="pps-passport-cta-unlock"
-          style="
-            background: linear-gradient(
-              135deg,
-              #4dd4ce 0%,
-              #00a19a 45%,
-              #006e68 100%
-            );
-            box-shadow: 0 6px 22px rgba(0, 161, 154, 0.35);
-            margin-bottom: 10px;
-          "
-          type="button"
-          @click="onAccessPassport"
-        >
-          <div class="pps-passport-cta-unlock-left">
-            <div class="pps-passport-cta-unlock-title">
-              Preview what's being built
-            </div>
-            <div class="pps-passport-cta-unlock-sub">
-              TA6, TA7, TA10 · certificates · history — live soon
-            </div>
-          </div>
-          <div class="pps-passport-cta-unlock-price">
-            <span
-              class="pps-passport-cta-unlock-amount"
-              style="font-size: 14px; letter-spacing: -0.2px; line-height: 1.3"
-              >{{ progressPct }}%<br /><span
-                style="font-size: 11px; font-weight: 600; opacity: 0.8"
-                >done</span
-              ></span
-            >
-            <span class="pps-passport-cta-unlock-arrow">→</span>
-          </div>
-        </button>
-
-        <button
-          v-else
-          class="pps-passport-cta-unlock"
-          type="button"
-          @click="onAccessPassport"
-        >
-          <div class="pps-passport-cta-unlock-left">
-            <div class="pps-passport-cta-unlock-title">
-              Get the full Passport
-            </div>
-            <div class="pps-passport-cta-unlock-sub">
-              Conveyancing questions answered · TA6, TA7, TA10 · certificates ·
-              history
-            </div>
-          </div>
-          <div class="pps-passport-cta-unlock-price">
-            <span class="pps-passport-cta-unlock-amount">£99</span>
-            <span class="pps-passport-cta-unlock-arrow">→</span>
-          </div>
-        </button>
-      </div>
+      <!-- The actual PassportClaimBox visible box (teal in-progress ring /
+           gold "champagne band" published card) — NOT headless here, so
+           tapping it opens its own drawer directly via its own internal
+           click handler, same as it always has. Was previously
+           reconstructed by hand as static buttons (and before that,
+           hard-disabled with v-if="false"); this is the real component.
+           Unclaimed is skipped: .pps-float-claim above already covers it
+           with its own box, and owners/collaborators get their own
+           "Continue building" CTA in SECTION 7 instead of a buyer pitch. -->
+      <PassportClaimBox
+        v-if="pageState !== 'unclaimed' && !isPassportOwnerOrCollab"
+        :state="pageState === 'progress' ? 'inProgress' : 'published'"
+        :progress-pct="progressPct"
+        :property-id="propertyId"
+        @watch="onWatchClick"
+        @buy="routeForPassportState"
+      />
 
       <!-- ─── SECTION 4: Live Signal Bar ──────────────────────────── -->
       <div class="pps-signal-bar">
@@ -831,13 +757,21 @@
     <!-- Reuses the same explainer drawer + auth gate the homescore page
          shows on its PassportClaimBox. We render in `headless` mode so
          only the drawer appears (the property page already has its own
-         "Claim this property — it's free" CTA). -->
+         "Claim this property — it's free" CTA + the restored Action Bar
+         above, which opens the progress/published explainer states).
+         `state` has no effect in headless mode (it only gates the
+         suppressed visible boxes) — left as 'unclaimed' from before.
+         @watch/@buy reuse this page's own watch drawer / smart passport
+         router rather than PassportClaimBox inventing its own. -->
     <PassportClaimBox
       v-model:open-sheet="claimExplainerSheet"
       headless
       state="unclaimed"
       :property-id="propertyId"
+      :progress-pct="progressPct"
       @claim-passport="goToClaim"
+      @watch="onWatchClick"
+      @buy="routeForPassportState"
     />
 
     <!-- Owner-claim (free) goes through the global /claim/[id] flow which
@@ -8585,95 +8519,6 @@ function formatSaleDate(dateStr: string): string {
   color: #00a19a;
 }
 
-/* ─── Action bar ────────────────────────────────────────────── */
-.pps-action-bar {
-  margin: 0;
-  padding: 14px 16px;
-  background: white;
-  border-top: 1px solid #f0f0f2;
-  border-bottom: 1px solid #f0f0f2;
-}
-.pps-passport-cta-unlock {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  background: linear-gradient(135deg, #f0b460 0%, #d4822a 45%, #7a3a05 100%);
-  border: none;
-  border-radius: 16px;
-  padding: 20px 20px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  font-family: inherit;
-  text-align: left;
-  transition: all 0.15s ease;
-  box-shadow: 0 6px 22px rgba(122, 58, 5, 0.35);
-  position: relative;
-  overflow: hidden;
-}
-.pps-passport-cta-unlock::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 60%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.12) 50%,
-    transparent 100%
-  );
-  animation: pps-shimmer 3s ease-in-out infinite;
-}
-@keyframes pps-shimmer {
-  0% {
-    transform: translateX(-100%) skewX(-15deg);
-  }
-  100% {
-    transform: translateX(400%) skewX(-15deg);
-  }
-}
-.pps-passport-cta-unlock:hover {
-  transform: translateY(-1px);
-}
-.pps-passport-cta-unlock-left {
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
-.pps-passport-cta-unlock-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: white;
-  letter-spacing: -0.3px;
-}
-.pps-passport-cta-unlock-sub {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.72);
-  margin-top: 4px;
-}
-.pps-passport-cta-unlock-price {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
-}
-.pps-passport-cta-unlock-amount {
-  font-size: 26px;
-  font-weight: 900;
-  color: white;
-  letter-spacing: -0.8px;
-  line-height: 1;
-}
-.pps-passport-cta-unlock-arrow {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 700;
-}
 /* ─── Signal bar ────────────────────────────────────────────── */
 .pps-signal-bar {
   background: #f2faf8;
