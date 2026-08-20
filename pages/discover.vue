@@ -2,8 +2,22 @@
   <div class="mobile-container discover-root">
     <!-- ── App header ─────────────────────────────────────────────── -->
     <div class="exp-app-header">
-      <button class="exp-app-header-back" type="button" aria-label="Back" @click="router.back()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+      <button
+        class="exp-app-header-back"
+        type="button"
+        aria-label="Back"
+        @click="router.back()"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="18"
+          height="18"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
@@ -24,8 +38,8 @@
           <div class="exp-hero-eyebrow">Explore</div>
           <div class="exp-hero-title">Discover any UK property.</div>
           <div class="exp-hero-sub">
-            Search any UK address and see what the property is telling
-            you — before you buy, sell or even view it.
+            Search any UK address and see what the property is telling you —
+            before you buy, sell or even view it.
           </div>
           <div class="exp-hero-badge">
             <svg
@@ -74,31 +88,51 @@
 
       <!-- ── Three entry-point cards ─────────────────────────────── -->
       <div class="exp-cards-row">
-        <button type="button" class="exp-card exp-card--teal" @click="goToBuyerPassport">
-          <img src="/op-icons/misc/buyerPassport.png" alt="" class="exp-card-ic exp-card-ic--book" loading="lazy" />
+        <button
+          type="button"
+          class="exp-card exp-card--teal"
+          @click="goToBuyerPassport"
+        >
+          <img
+            src="/op-icons/misc/buyerPassport.png"
+            alt=""
+            class="exp-card-ic exp-card-ic--book"
+            loading="lazy"
+          />
           <div class="exp-card-title">Buyer Passport</div>
           <div class="exp-card-sub">
-            Create your verified buyer profile, KYC, proof of funds and
-            buying readiness.
+            Create your verified buyer profile, KYC, proof of funds and buying
+            readiness.
           </div>
           <span class="exp-card-arrow exp-card-arrow--purple">→</span>
         </button>
-        <button type="button" class="exp-card exp-card--purple" @click="goToWatching">
-          <img src="/op-icons/misc/exploreWatching.png" alt="" class="exp-card-ic" loading="lazy" />
-          <div class="exp-card-title">Properties you're watching</div>
+        <button
+          type="button"
+          class="exp-card exp-card--purple"
+          @click="goToWatching"
+        >
+          <img
+            src="/op-icons/misc/exploreWatching.png"
+            alt=""
+            class="exp-card-ic"
+            loading="lazy"
+          />
+          <div class="exp-card-title">Watched Properties</div>
           <div class="exp-card-sub">
             Sign in to see your watched homes and get alerts.
           </div>
           <span class="exp-card-arrow exp-card-arrow--purple">→</span>
         </button>
         <div class="exp-card exp-card--gray exp-card--soon">
-          <img src="/op-icons/misc/tenantPassport.png" alt="" class="exp-card-ic exp-card-ic--book" loading="lazy" />
+          <img
+            src="/op-icons/misc/tenantPassport.png"
+            alt=""
+            class="exp-card-ic exp-card-ic--book"
+            loading="lazy"
+          />
           <div class="exp-card-title">Tenant Passport</div>
           <span class="exp-card-soon-pill">COMING SOON</span>
-          <div class="exp-card-sub">
-            Build your reusable rental profile with ID, references, right
-            to rent and history.
-          </div>
+          <div class="exp-card-sub">Build your reusable rental profile.</div>
           <span class="exp-card-arrow exp-card-arrow--amber">→</span>
         </div>
       </div>
@@ -125,7 +159,13 @@
             <div class="exp-more-ring">
               <svg viewBox="0 0 100 100">
                 <defs>
-                  <linearGradient id="dfHomescoreGrad" x1="1" y1="0" x2="0" y2="0">
+                  <linearGradient
+                    id="dfHomescoreGrad"
+                    x1="1"
+                    y1="0"
+                    x2="0"
+                    y2="0"
+                  >
                     <stop offset="0%" stop-color="#00BB93" />
                     <stop offset="100%" stop-color="#016F84" />
                   </linearGradient>
@@ -158,8 +198,8 @@
                 Build your home's verified record
               </div>
               <div class="exp-more-card-sub">
-                Store, verify and share documents, answers and history in
-                one place.
+                Store, verify and share documents, answers and history in one
+                place.
               </div>
               <span class="exp-more-arrow exp-more-arrow--amber">→</span>
             </div>
@@ -185,7 +225,11 @@
           @click="navigateTo(`/property/${item.id}`)"
         >
           <div class="exp-recent-photo">
-            <PropertyImage :src="item.image" :alt="item.addressLine1" :show-caption="false" />
+            <PropertyImage
+              :src="item.image"
+              :alt="item.addressLine1"
+              :show-caption="false"
+            />
           </div>
           <div class="exp-recent-body">
             <div class="exp-recent-address">{{ item.addressLine1 }}</div>

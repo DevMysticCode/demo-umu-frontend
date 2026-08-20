@@ -156,10 +156,10 @@
       </div>
     </template>
 
-    <!-- Social proof + passport status — shared by default and compact
-         modes (report-mode has its own separate pill and the costs page
-         already shows watch/claim UI elsewhere, so it opts out). -->
-    <template v-if="!reportMode && showSocialProof">
+    <!-- Social proof rows — shown in every mode (including report-mode)
+         so "N checked today" / "N watching" stay consistent across the
+         whole HomeScore journey, not just the score/quiz screens. -->
+    <template v-if="showSocialProof">
       <!-- Social proof: searches today -->
       <div class="hsc-viewers">
         <span class="hsc-idstack" aria-hidden="true">
@@ -237,36 +237,40 @@
           >
         </div>
       </div>
-
-      <!-- Passport status — same state vocab as the report-mode pill. -->
-      <button
-        type="button"
-        class="hsc-viewers hsc-passport-box"
-        @click="emit('passport-pill-click')"
-      >
-        <img
-          src="/op-icons/homescore/clipboard.png"
-          alt=""
-          class="hsc-passport-box-ic"
-          loading="lazy"
-        />
-        <div class="hsc-vtxt hsc-passport-box-txt">
-          <b>{{ passportPillLabel }}</b>
-        </div>
-        <svg
-          class="hsc-passport-box-chev"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="rgba(255,255,255,.75)"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <polyline points="9 6 15 12 9 18" />
-        </svg>
-      </button>
     </template>
+
+    <!-- Passport status — same state vocab as the report-mode pill.
+         Skipped in report-mode: that variant already has its own
+         (bigger, styled) passport pill above, so this would duplicate
+         it. -->
+    <button
+      v-if="!reportMode && showSocialProof"
+      type="button"
+      class="hsc-viewers hsc-passport-box"
+      @click="emit('passport-pill-click')"
+    >
+      <img
+        src="/op-icons/homescore/clipboard.png"
+        alt=""
+        class="hsc-passport-box-ic"
+        loading="lazy"
+      />
+      <div class="hsc-vtxt hsc-passport-box-txt">
+        <b>{{ passportPillLabel }}</b>
+      </div>
+      <!-- <svg
+        class="hsc-passport-box-chev"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="rgba(255,255,255,.75)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <polyline points="9 6 15 12 9 18" />
+      </svg> -->
+    </button>
   </div>
 </template>
 
@@ -452,14 +456,14 @@ const watchersDisplay = computed(() => {
 }
 .hsc-house-ic {
   position: absolute;
-  top: 50%;
+  top: 2%;
   right: 6px;
   width: 128px;
   height: 123px;
   object-fit: contain;
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
   pointer-events: none;
-  transform: translateY(-50%);
+  /* transform: translateY(-50%); */
 }
 .hsc-ring {
   width: 12px;
