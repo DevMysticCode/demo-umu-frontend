@@ -2,8 +2,9 @@
   <div class="hs-v6-quiz">
     <!-- ── HomeScore address card — same component as the results
              screen so both surfaces share the prototype-ported hero.
-             Compact variant: no two-tile grid, no social-proof rows —
-             matches the score-result screen (V6ScoreView). -->
+             Full variant (tiles + social proof + passport status) — this
+             screen doesn't have its own separate score-result gauge card
+             like V6ScoreView, so nothing is duplicated by showing it. -->
     <div class="hs-addr-card-wrap anim-1">
       <HomescoreAddressCard
         :address="addressLine"
@@ -15,7 +16,6 @@
         :searches-today="searchesToday"
         :watchers-count="watchersCount"
         :passport-state="passportState"
-        compact
       />
     </div>
 

@@ -251,6 +251,7 @@ import OPIcon from '~/components/ui/OPIcon.vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
 import ProfileRow from '~/components/profile/ProfileRow.vue'
 import ProfileSectionHead from '~/components/profile/ProfileSectionHead.vue'
+import { useBuyerProfile } from '~/composables/useBuyerProfile'
 
 definePageMeta({
   title: 'My Profile - UmovingU',
@@ -259,6 +260,12 @@ definePageMeta({
 
 const { profile, fullName, memberSince, fetchProfile } = useProfile()
 const config = useRuntimeConfig()
+const { getBuyerProfile } = useBuyerProfile()
+
+// Known ahead of the click, not discovered by landing on /buyer-profile
+// and redirecting — that round trip is what caused the visible flash
+// between the "build" checklist and the published view.
+const buyerPassportPublished = ref(false)
 
 const searchQuery = ref('')
 
@@ -275,6 +282,11 @@ const roleError = ref('')
 
 onMounted(async () => {
   fetchProfile()
+  getBuyerProfile()
+    .then((p) => {
+      buyerPassportPublished.value = !!p?.published
+    })
+    .catch(() => {})
   // Read cached role immediately so the correct pill shows without waiting for API
   if (typeof window !== 'undefined') {
     const cached = localStorage.getItem('umu_role')
@@ -463,6 +475,10 @@ const goBack = () => {
 }
 
 const onPreferenceClick = async (item) => {
+  if (item.route === '/buyer-profile' && buyerPassportPublished.value) {
+    await navigateTo('/buyer-profile/view')
+    return
+  }
   if (item.route) {
     await navigateTo(item.route)
   }
