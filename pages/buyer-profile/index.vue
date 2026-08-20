@@ -2,8 +2,22 @@
   <div class="bph-page">
     <!-- Header: title + info, settings on the right -->
     <div class="bph-header">
-      <button class="bph-settings-btn" type="button" aria-label="Back" @click="router.push('/profile')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+      <button
+        class="bph-settings-btn"
+        type="button"
+        aria-label="Back"
+        @click="router.push('/profile')"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="18"
+          height="18"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
@@ -16,8 +30,19 @@
           @click="showInfo = true"
         >
           <svg viewBox="0 0 24 24" fill="none" width="15" height="15">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" />
-            <path d="M12 11v5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="1.8"
+            />
+            <path
+              d="M12 11v5.5"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
             <circle cx="12" cy="7.6" r="1" fill="currentColor" />
           </svg>
         </button>
@@ -39,7 +64,10 @@
           <div class="bph-hero-sub">
             Build trust. Show you're a serious, ready buyer.
           </div>
-          <span class="bph-status-pill" :class="'bph-status-pill--' + statusKey">
+          <span
+            class="bph-status-pill"
+            :class="'bph-status-pill--' + statusKey"
+          >
             <span class="bph-status-dot" />
             {{ statusLabel }}
           </span>
@@ -78,7 +106,13 @@
         </div>
         <span class="bph-check-chev">
           <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="M9 6l6 6-6 6"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </span>
       </div>
@@ -86,7 +120,12 @@
 
     <!-- Secure / private banner -->
     <div class="bph-secure-banner">
-      <img src="/op-icons/investment/padlock.png" alt="" class="bph-secure-ic" loading="lazy" />
+      <img
+        src="/op-icons/investment/padlock.png"
+        alt=""
+        class="bph-secure-ic"
+        loading="lazy"
+      />
       <div>
         <div class="bph-secure-h">Your information is secure and private.</div>
         <div class="bph-secure-v">You choose what to share and with whom.</div>
@@ -95,17 +134,23 @@
 
     <!-- Info sheet -->
     <Teleport to="body">
-      <div v-if="showInfo" class="bph-sheet-overlay" @click="showInfo = false" />
+      <div
+        v-if="showInfo"
+        class="bph-sheet-overlay"
+        @click="showInfo = false"
+      />
       <div v-if="showInfo" class="bph-sheet">
         <div class="bph-sheet-handle" />
         <h3 class="bph-sheet-title">What is a Buyer Passport?</h3>
         <p class="bph-sheet-body">
           A verified profile that shows sellers and agents you're a serious,
           ready buyer — your identity, buying position, finances and chain
-          position, all confirmed up front. Verified buyers get 3× more
-          offers accepted.
+          position, all confirmed up front. Verified buyers get 3× more offers
+          accepted.
         </p>
-        <button class="bph-sheet-close" @click="showInfo = false">Got it</button>
+        <button class="bph-sheet-close" @click="showInfo = false">
+          Got it
+        </button>
       </div>
     </Teleport>
   </div>
@@ -160,7 +205,7 @@ const checklistItems = computed(() => [
     key: 'chain',
     icon: '/op-icons/investment/chainLink.png',
     title: 'Chain position',
-    sub: "Help sellers understand your position in the chain.",
+    sub: 'Help sellers understand your position in the chain.',
     done: stepDone.value.chain,
   },
 ])
@@ -168,9 +213,7 @@ const checklistItems = computed(() => [
 const completedCount = computed(
   () => Object.values(stepDone.value).filter(Boolean).length,
 )
-const progressPct = computed(() =>
-  Math.round((completedCount.value / 4) * 100),
-)
+const progressPct = computed(() => Math.round((completedCount.value / 4) * 100))
 const statusKey = computed(() => {
   if (progressPct.value === 100) return 'complete'
   if (progressPct.value > 0) return 'progress'
@@ -263,7 +306,7 @@ onMounted(async () => {
   padding: 12px 18px 0;
 }
 .bph-hero-card {
-  background: linear-gradient(135deg, #2d2456, #231d45);
+  background: linear-gradient(140deg, #00b6ae 0%, #00a19a 50%, #00514d 100%);
   border-radius: 20px;
   padding: 20px;
   display: flex;
