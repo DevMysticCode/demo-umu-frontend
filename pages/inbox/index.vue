@@ -80,7 +80,7 @@ function goBack() {
   if (typeof window !== 'undefined' && window.history.length > 1) {
     router.back()
   } else {
-    router.push('/explore')
+    router.push('/dashboard')
   }
 }
 

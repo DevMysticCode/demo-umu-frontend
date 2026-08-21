@@ -24,7 +24,7 @@ function onBack() {
       return
     }
   }
-  router.push('/explore')
+  router.push('/dashboard')
 }
 </script>
 

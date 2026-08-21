@@ -180,7 +180,7 @@ function shareWithAgent() {
 }
 
 function goExplore() {
-  router.push('/explore')
+  router.push('/dashboard')
 }
 
 function goBack() {

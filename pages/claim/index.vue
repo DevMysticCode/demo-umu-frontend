@@ -68,7 +68,7 @@ function onPropertySelect(property: any) {
   router.push(`/claim/${property.id}`)
 }
 
-const onBack = useGoBack('/explore')
+const onBack = useGoBack('/dashboard')
 </script>
 
 <style scoped>
