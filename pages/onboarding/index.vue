@@ -31,8 +31,9 @@ const onLogin = async () => {
 }
 
 const onSkipClick = async () => {
-  // Skip onboarding and land in the main app. The auth middleware on /explore
-  // will bounce unauthenticated users to /onboarding/signin if needed.
-  await navigateTo('/explore')
+  // Skip onboarding and land in the main app. The auth middleware on
+  // /dashboard will bounce unauthenticated users to /onboarding/signin if
+  // needed.
+  await navigateTo('/dashboard')
 }
 </script>

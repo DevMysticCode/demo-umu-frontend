@@ -24,7 +24,7 @@
           </svg>
         </button>
         <div class="ob-step">{{ stepIndicator }}</div>
-        <button class="ob-skip" @click="navigateTo('/explore')">Skip</button>
+        <button class="ob-skip" @click="navigateTo('/dashboard')">Skip</button>
       </div>
       <div class="ob-progress">
         <div

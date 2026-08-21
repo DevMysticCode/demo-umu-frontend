@@ -973,13 +973,13 @@ onMounted(() => {
 })
 
 // Smart back handler for the sample / aisha / market screens. Authenticated
-// users always came from /explore (via "See a sample Passport" on the
+// users always came from /dashboard (via "See a sample Passport" on the
 // HomeScore/Passport card), so back should return them there — NOT to the
 // marketing landing deck, which is meant for unauthenticated visitors. The
 // fall-back for guests is the in-page landing screen.
 function dismissSubscreen() {
   if (typeof window !== 'undefined' && localStorage.getItem('token')) {
-    navigateTo('/explore', { replace: true })
+    navigateTo('/dashboard', { replace: true })
     return
   }
   screen.value = 'landing'

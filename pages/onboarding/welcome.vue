@@ -90,7 +90,7 @@ const continueToApp = async () => {
     localStorage.removeItem('redirectAfterLogin')
     await navigateTo(redirectPath)
   } else {
-    await navigateTo('/explore')
+    await navigateTo('/dashboard')
   }
 }
 
