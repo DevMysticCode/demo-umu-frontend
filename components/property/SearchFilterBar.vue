@@ -19,12 +19,16 @@
         type="text"
         :placeholder="placeholder"
         class="search-input"
+        :class="{ 'lightweight-input': lightweightMode }"
         @input="handleInput(($event.target as HTMLInputElement).value)"
         @keyup.enter="onEnter"
         @blur="showDropdown = false"
       />
-      <!-- Unified distance + filters pill (Explore's .exp-dist-btn). -->
+      <!-- Unified distance + filters pill (Explore's .exp-dist-btn). Not in
+           lightweightMode — that page opens its own filters modal after a
+           location is picked, instead of this inline sheet. -->
       <button
+        v-if="!lightweightMode"
         type="button"
         class="exp-dist-btn"
         :class="{ 'has-filters': hasAnyFilters }"
@@ -38,7 +42,31 @@
       <button type="button" class="search-btn" @click="onEnter">Search</button>
     </div>
 
-    <div v-if="showDropdown && results.length > 0" class="addr-drop">
+    <!-- Lightweight mode: plain AREA suggestions only (distinct
+         city/county groupings from /property/search-areas), no property
+         badges/HomeScore/individual addresses — picking one is equivalent
+         to hitting Search, not "here's a property to view." -->
+    <div v-if="lightweightMode && showDropdown && results.length > 0" class="addr-drop">
+      <div class="addr-drop-header">Areas</div>
+      <div
+        v-for="(addr, i) in results"
+        :key="i"
+        class="addr-item"
+        @mousedown.prevent="selectAddress(addr)"
+      >
+        <div class="addr-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+        </div>
+        <div class="addr-body">
+          <div class="addr-line1">{{ addr.label }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="showDropdown && results.length > 0" class="addr-drop">
       <div class="addr-drop-header">Select an address</div>
       <div
         v-for="(addr, i) in results"
@@ -98,8 +126,9 @@
       </div>
     </div>
 
-    <!-- Active-filter summary chips. -->
-    <div v-if="committedChips.length" class="filter-summary visible">
+    <!-- Active-filter summary chips. Not in lightweightMode — filters live
+         in the host page's own modal there. -->
+    <div v-if="!lightweightMode && committedChips.length" class="filter-summary visible">
       <span v-for="c in committedChips" :key="c.key" class="fs-chip">
         <span>{{ c.label }}</span>
         <span class="x" role="button" tabindex="0" @click="removeCommittedFilter(c.key)">×</span>
@@ -108,8 +137,9 @@
     </div>
 
     <!-- Distance + Filters bottom sheet — same dimensions/values/markup as
-         Explore's (this component IS Explore's search bar, extracted). -->
-    <Teleport to="body">
+         Explore's (this component IS Explore's search bar, extracted).
+         Not rendered in lightweightMode. -->
+    <Teleport v-if="!lightweightMode" to="body">
       <div class="sheet-backdrop" :class="{ open: showFilters }" @click="closeFilterSheet" />
       <div class="sheet" :class="{ open: showFilters }" role="dialog" aria-modal="true">
         <div class="sheet-grabber-wrap" @click="closeFilterSheet">
@@ -274,8 +304,17 @@ const props = withDefaults(
   defineProps<{
     modelValue: string
     placeholder?: string
+    // Rightmove-style mode (Explore's new search flow): dropdown shows
+    // plain location suggestions only (no property badges/HomeScore, small
+    // limit), and picking one is equivalent to hitting Search — it does
+    // NOT emit `select` with a full property object, since no specific
+    // property has been chosen yet, only a location. The inline distance
+    // pill / filter sheet / chip summary are hidden too; that page owns
+    // its own post-search filters modal instead. Discover doesn't pass
+    // this, so it keeps today's behavior byte-for-byte.
+    lightweightMode?: boolean
   }>(),
-  { placeholder: 'Search by postcode, address or area' },
+  { placeholder: 'Search by postcode, address or area', lightweightMode: false },
 )
 
 const emit = defineEmits<{
@@ -302,8 +341,15 @@ function handleInput(val: string) {
   searchTimer = setTimeout(async () => {
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      // Lightweight mode hits a dedicated AREA-suggestion endpoint (distinct
+      // city/county groupings), not /property/search — the dropdown should
+      // read as "where do you want to search", never a preview of actual
+      // property results.
+      const url = props.lightweightMode
+        ? `${config.public.apiBase}/property/search-areas?q=${encodeURIComponent(val)}&limit=8`
+        : `${config.public.apiBase}/property/search?q=${encodeURIComponent(val)}`
       const res = await $fetch<any>(
-        `${config.public.apiBase}/property/search?q=${encodeURIComponent(val)}`,
+        url,
         token ? { headers: { Authorization: `Bearer ${token}` } } : {},
       )
       results.value = res?.items ?? []
@@ -318,6 +364,19 @@ function handleInput(val: string) {
 function selectAddress(addr: any) {
   showDropdown.value = false
   results.value = []
+  if (props.lightweightMode) {
+    // No specific property chosen yet — just an area. `addr.label` (e.g.
+    // "Coventry, West Midlands") is display-only — submitting that whole
+    // string breaks /property/search's `city CONTAINS q` matching, since
+    // the stored city value ("Coventry") doesn't contain the combined
+    // label. Use just the city (falling back to the postcode district)
+    // as the actual search text, matching Rightmove (pick a suggestion →
+    // land on the filtered search step).
+    const text = addr.city || addr.postcode || addr.label || ''
+    emit('update:modelValue', text)
+    emit('enter', text)
+    return
+  }
   emit('select', addr)
 }
 
@@ -567,6 +626,11 @@ function clearAllFilters() {
 }
 .search-input:focus {
   border-color: #00a19a;
+}
+/* No distance/filters pill in lightweight mode — the Search button sits
+   right after the text instead of leaving the pill's ghost space. */
+.search-input.lightweight-input {
+  padding-right: 82px;
 }
 .search-btn {
   position: absolute;

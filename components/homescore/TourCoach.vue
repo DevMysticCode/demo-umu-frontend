@@ -94,8 +94,16 @@ const injectStyle = computed(() => {
   const cardWidth = Math.min(vw - 32, 360)
   // Anchor centered horizontally, just below the target (or above if near bottom).
   const vh = typeof window !== 'undefined' ? window.innerHeight : 640
-  const wantBelow = r.top + r.height + 200 < vh
-  const top = wantBelow ? r.top + r.height + 16 : Math.max(r.top - 200, 12)
+  // Prefer ABOVE the highlighted element — on phone screens the target is
+  // often lower on the page, so anchoring below pushed the card's bottom
+  // off the visible viewport. Only fall back to below when there's
+  // genuinely not enough room above.
+  const cardEstHeight = 200
+  const gap = 16
+  const wantAbove = r.top - cardEstHeight - gap > 12
+  const top = wantAbove
+    ? Math.max(r.top - cardEstHeight - gap, 12)
+    : Math.min(r.top + r.height + gap, vh - cardEstHeight - 12)
   const left = Math.max(16, Math.min(vw - cardWidth - 16, r.left + r.width / 2 - cardWidth / 2))
   return {
     top: `${top}px`,
