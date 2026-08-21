@@ -299,30 +299,17 @@ onMounted(() => {
 // marketing hero, entry-point cards and Recently explored below it.
 const searchMode = ref(false)
 
-// Guests get the same "Create account / Sign in" gate the HomeScore
-// flow already uses, instead of being dropped straight onto the sign-in
-// page — and the choice they were making is preserved via
-// redirectAfterLogin so they land back on it once authenticated.
-type AuthGateAction = 'buyer-passport' | 'watching'
+// Watched Properties still uses the generic "Create account / Sign in"
+// gate the HomeScore flow already uses, instead of being dropped
+// straight onto the sign-in page — Buyer Passport gets its own
+// dedicated screen instead (see goToBuyerPassport below).
 const authGateOpen = ref(false)
-const authGateAction = ref<AuthGateAction | null>(null)
 
-const authGateCopy = computed(() => {
-  if (authGateAction.value === 'watching') {
-    return {
-      title: 'Sign in to see watched properties',
-      body: 'Create a free account to save properties, watch homes and get alerted the moment something changes.',
-    }
-  }
-  return {
-    title: 'Sign in to build your Buyer Passport',
-    body: 'Create a free account to verify your identity, add proof of funds and show sellers you’re buying-ready.',
-  }
-})
-
-const authGateRedirect = computed(() =>
-  authGateAction.value === 'watching' ? '/passport/collections' : '/buyer-profile/build',
-)
+const authGateCopy = {
+  title: 'Sign in to see watched properties',
+  body: 'Create a free account to save properties, watch homes and get alerted the moment something changes.',
+}
+const authGateRedirect = '/passport/collections'
 
 function hasToken(): boolean {
   return typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
@@ -330,8 +317,10 @@ function hasToken(): boolean {
 
 function goToBuyerPassport() {
   if (!hasToken()) {
-    authGateAction.value = 'buyer-passport'
-    authGateOpen.value = true
+    // Buyer Passport gets its own dedicated landing + sign-in screen
+    // (pages/buyer-passport/get-started.vue) instead of the generic
+    // AuthGateModal — Watched Properties below still uses the modal.
+    navigateTo('/buyer-passport/get-started')
     return
   }
   navigateTo('/buyer-profile/build')
@@ -339,7 +328,6 @@ function goToBuyerPassport() {
 
 function goToWatching() {
   if (!hasToken()) {
-    authGateAction.value = 'watching'
     authGateOpen.value = true
     return
   }
