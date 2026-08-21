@@ -9,7 +9,7 @@
         @click="router.push('/dashboard')"
       >
         <img src="/op-icons/explore/explore.png" alt="" class="nav-icon" />
-        <span class="text-xs mt-1">Explore</span>
+        <span class="text-xs mt-1">Dashboard</span>
       </button>
 
       <button
