@@ -56,7 +56,6 @@
             class="psm-range-input"
           />
         </div>
-        <span class="psm-range-sep">—</span>
         <div class="psm-range-field">
           <span class="psm-range-prefix">£</span>
           <input
@@ -82,7 +81,6 @@
           <option :value="null">Min</option>
           <option v-for="n in 5" :key="n" :value="n">{{ n }}+</option>
         </select>
-        <span class="psm-range-sep">—</span>
         <select v-model="draft.maxBedrooms" class="psm-select">
           <option :value="null">Max</option>
           <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
@@ -456,6 +454,7 @@ function onSearch() {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
 }
 /* .psm-range-field (price £ inputs) and .psm-select (bedrooms/radius
    dropdowns) sit side by side in the same rows and must read as the
@@ -473,6 +472,7 @@ function onSearch() {
 }
 .psm-range-field {
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -494,11 +494,6 @@ function onSearch() {
   font-size: 13.5px;
   font-weight: 700;
   color: #231d45;
-}
-.psm-range-sep {
-  color: #9c98ad;
-  font-weight: 700;
-  flex-shrink: 0;
 }
 .psm-select {
   flex: 1;
