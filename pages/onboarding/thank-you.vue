@@ -57,7 +57,7 @@ const skipToApp = () => {
     redirectPath = localStorage.getItem('redirectAfterLogin')
     if (redirectPath) localStorage.removeItem('redirectAfterLogin')
   }
-  return navigateTo(redirectPath || '/explore')
+  return navigateTo(redirectPath || '/dashboard')
 }
 </script>
 

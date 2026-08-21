@@ -6,7 +6,7 @@
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('explore')"
-        @click="router.push('/explore')"
+        @click="router.push('/dashboard')"
       >
         <img src="/op-icons/explore/explore.png" alt="" class="nav-icon" />
         <span class="text-xs mt-1">Explore</span>

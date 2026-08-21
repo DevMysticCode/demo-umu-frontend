@@ -15,21 +15,15 @@
           <div class="psm-body">
     <div class="psm-section">
       <div class="psm-section-title">Search radius</div>
-      <div class="dist-list">
-        <div
+      <select v-model="draft.radius" class="psm-select psm-select-full">
+        <option
           v-for="opt in distanceOptions"
           :key="opt.value === null ? 'exact' : opt.value"
-          class="dist-row"
-          :class="{ active: draft.radius === opt.value }"
-          @click="draft.radius = opt.value"
+          :value="opt.value"
         >
-          <span class="dist-radio" />
-          <span class="dist-label-wrap">
-            <span class="dist-label">{{ opt.label }}</span>
-            <span class="dist-hint">{{ opt.hint }}</span>
-          </span>
-        </div>
-      </div>
+          {{ opt.label }}
+        </option>
+      </select>
     </div>
 
     <div class="psm-section">
@@ -399,82 +393,6 @@ function onSearch() {
   margin-bottom: 10px;
 }
 
-.dist-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  background: #f4f4f6;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 4px;
-}
-.dist-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.dist-row:hover {
-  background: #fff;
-}
-.dist-row.active {
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(35, 29, 69, 0.06);
-}
-.dist-radio {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid #9c98ad;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-}
-.dist-row.active .dist-radio {
-  border-color: #00a19a;
-  background: #00a19a;
-}
-.dist-radio::after {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #fff;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-.dist-row.active .dist-radio::after {
-  opacity: 1;
-}
-.dist-label-wrap {
-  flex: 1;
-  min-width: 0;
-}
-.dist-label {
-  display: block;
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #231d45;
-  letter-spacing: -0.15px;
-  line-height: 1.2;
-}
-.dist-hint {
-  display: block;
-  font-size: 11px;
-  font-weight: 500;
-  color: #6b6783;
-  margin-top: 1px;
-  letter-spacing: -0.05px;
-}
-.dist-row.active .dist-label {
-  color: #00514d;
-}
-
 .chip-group {
   display: flex;
   flex-wrap: wrap;
@@ -571,6 +489,9 @@ function onSearch() {
   font-size: 13.5px;
   font-weight: 700;
   color: #231d45;
+}
+.psm-select-full {
+  width: 100%;
 }
 .psm-hint {
   font-size: 11px;
