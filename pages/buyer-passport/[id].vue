@@ -1386,7 +1386,7 @@ function goBack() {
   if (propertyId) {
     router.push(`/property/${propertyId}`)
   } else {
-    router.push('/explore')
+    router.push('/dashboard')
   }
 }
 

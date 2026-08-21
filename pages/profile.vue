@@ -206,7 +206,7 @@ const filteredItems = computed(() => {
   );
 });
 
-const goBack = useGoBack('/explore');
+const goBack = useGoBack('/dashboard');
 
 const onPreferenceClick = async (item) => {
   if (item.route) {
