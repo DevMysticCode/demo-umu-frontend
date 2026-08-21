@@ -33,7 +33,7 @@
     <div class="discover-hero">
       <!-- ── Hero: eyebrow/title/sub/badge on the left, illustration
            on the right ─────────────────────────────────────────── -->
-      <div class="exp-hero-row">
+      <div v-if="!searchMode" class="exp-hero-row">
         <div class="exp-hero-text">
           <div class="exp-hero-eyebrow">Explore</div>
           <div class="exp-hero-title">Discover any UK property.</div>
@@ -66,28 +66,26 @@
         />
       </div>
 
-      <!-- Explore's own search bar + "Distance & filters" sheet, extracted
-           verbatim into a shared component (components/property/
-           SearchFilterBar.vue) so this is the literal same component, not
-           a lookalike. It calls /property/search directly, which has no
-           auth guard, so this works for guests; only "Properties you're
-           watching" below needs an account, since that reads the user's
-           own saved list. Selecting an address here still navigates
-           straight to that property (unlike Explore, which shows a
-           results list on itself) — Discover isn't gaining a results
-           view, per feedback when this was built. -->
-      <SearchFilterBar
-        v-model="searchQuery"
+      <!-- Explore's whole search experience — search bar, filters modal
+           and paginated results list — reused verbatim (components/
+           property/PropertySearchExperience.vue) so this is the literal
+           same component, not a lookalike. It calls /property/search
+           directly, which has no auth guard, so this works for guests;
+           only "Properties you're watching" below needs an account,
+           since that reads the user's own saved list. Discover now gets
+           the same results-list view as Explore (previously it navigated
+           straight to a property on selecting an address). -->
+      <PropertySearchExperience
         placeholder="Enter postcode or address"
-        @select="onResultSelect"
+        @update:search-mode="searchMode = $event"
       />
-      <div class="exp-search-hint">
+      <div v-if="!searchMode" class="exp-search-hint">
         Try a postcode like <b>CV1 2WT</b> or an address like
         <b>10 Downing Street, London</b>
       </div>
 
       <!-- ── Three entry-point cards ─────────────────────────────── -->
-      <div class="exp-cards-row">
+      <div v-if="!searchMode" class="exp-cards-row">
         <button
           type="button"
           class="exp-card exp-card--teal"
@@ -138,7 +136,7 @@
       </div>
 
       <!-- ── HomeScore / Property Passport ─────────────────────────── -->
-      <div class="exp-more">
+      <div v-if="!searchMode" class="exp-more">
         <div class="exp-more-grid">
           <button
             type="button"
@@ -222,7 +220,7 @@
       </div>
 
       <!-- ── Recently explored ───────────────────────────────────── -->
-      <div v-if="recentlyExplored.length" class="exp-recent">
+      <div v-if="!searchMode && recentlyExplored.length" class="exp-recent">
         <div class="exp-recent-header">
           <div class="exp-recent-title">Recently explored</div>
         </div>
@@ -272,7 +270,7 @@
 definePageMeta({ title: 'Explore - UmovingU' })
 
 import OPIcon from '~/components/ui/OPIcon.vue'
-import SearchFilterBar from '~/components/property/SearchFilterBar.vue'
+import PropertySearchExperience from '~/components/property/PropertySearchExperience.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
 import { usePropertySearch } from '~/composables/usePropertySearch'
 import {
@@ -289,14 +287,9 @@ onMounted(() => {
   recentlyExplored.value = getRecentlyExplored()
 })
 
-function onResultSelect(property: any) {
-  router.push(`/property/${property.id}`)
-}
-
-// Search query + filter state now live inside SearchFilterBar (Explore's
-// own search bar, extracted) — this page just needs the current query
-// string for the v-model binding.
-const searchQuery = ref('')
+// True while PropertySearchExperience is showing results — hides the
+// marketing hero, entry-point cards and Recently explored below it.
+const searchMode = ref(false)
 
 function goToBuyerPassport() {
   const token =
@@ -444,8 +437,8 @@ function lastSoldLabel(dateStr: string): string {
   margin-top: -4px;
 }
 
-/* ── Search — SearchFilterBar.vue owns its own styling (Explore's search
-   bar + filter sheet, verbatim); nothing to style here anymore. ── */
+/* ── Search — PropertySearchExperience.vue owns its own styling
+   (search bar, filters modal, results list); nothing to style here. ── */
 .exp-search-hint {
   font-size: 11.5px;
   font-weight: 500;

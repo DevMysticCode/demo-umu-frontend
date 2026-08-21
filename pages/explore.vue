@@ -35,13 +35,10 @@
         </div>
       </div>
 
-      <SearchFilterBar
-        v-model="searchQuery"
-        placeholder="Search by postcode, address or area"
-        style="margin-bottom: 6px"
-        @select="onSearchBarSelect"
-        @enter="doSearch"
-        @filters-change="onFiltersChange"
+      <PropertySearchFiltersModal
+        v-model="forYouFiltersModalOpen"
+        :initial-filters="forYouPendingFilters"
+        @search="onForYouFiltersSearch"
       />
 
       <div v-if="selectedAddress" class="selected-addr-pill">
@@ -65,152 +62,13 @@
     </div>
 
     <div class="explore-scroll">
-      <!-- ── Search Results Mode ── -->
-      <template v-if="searchMode">
-        <div class="search-back-row">
-          <button class="search-back-btn" @click="exitSearch">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-            Back
-          </button>
-          <div class="search-result-label">
-            <span v-if="!searchLoading && searchTotal > 0">
-              {{ searchTotal }}
-              {{ searchTotal === 1 ? 'result' : 'results' }} for "{{
-                searchQuery
-              }}"
-            </span>
-            <span v-else>Results for "{{ searchQuery }}"</span>
-          </div>
-        </div>
-        <div v-if="searchLoading" class="skeletons">
-          <div v-for="n in 4" :key="n" class="skeleton-card" />
-        </div>
-        <template v-else-if="searchProperties.length > 0">
-          <div
-            v-for="prop in searchProperties"
-            :key="prop.id"
-            class="prop-card"
-            @click="navigateTo('/property/' + prop.id)"
-          >
-            <div
-              class="prop-img-wrap"
-              :style="{
-                background:
-                  prop.imgGradient || 'linear-gradient(135deg,#dff4f0,#c8ebe6)',
-              }"
-            >
-              <PropertyImage
-                :src="prop.imageUrl || prop.image"
-                :alt="prop.addressLine1 || prop.address"
-                :show-caption="false"
-                class="prop-img"
-              />
-              <div v-if="prop.hasPassport" class="prop-badge-pp">
-                <img
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt=""
-                  class="pp-emoji-ic"
-                />
-                Passport
-              </div>
-              <div class="prop-price-tag">
-                {{
-                  prop.estimatedPrice
-                    ? '£' + Math.round(prop.estimatedPrice).toLocaleString()
-                    : prop.priceDisplay || 'POA'
-                }}
-              </div>
-            </div>
-            <div class="prop-body">
-              <div class="prop-row-top">
-                <div class="prop-title-col">
-                  <div class="prop-address">
-                    {{ prop.addressLine1 || prop.address }}
-                  </div>
-                  <div class="prop-area">
-                    {{
-                      prop.city
-                        ? prop.city + ', ' + prop.postcode
-                        : prop.area || prop.postcode || ''
-                    }}
-                  </div>
-                </div>
-                <div
-                  v-if="prop.epcRating"
-                  class="epc-badge"
-                  :style="{ background: epcColor(prop.epcRating) }"
-                >
-                  <div class="epc-badge-label">EPC</div>
-                  <div class="epc-badge-rating">{{ prop.epcRating }}</div>
-                </div>
-              </div>
-              <div class="prop-pills">
-                <span v-if="prop.propertyType || prop.type" class="pill-grey">{{
-                  prop.propertyType || prop.type
-                }}</span>
-                <span v-if="prop.tenure" class="pill-grey">{{
-                  prop.tenure
-                }}</span>
-              </div>
-              <div class="prop-footer">
-                <div class="prop-score-row" v-if="prop.HomeScore">
-                  <span class="prop-score-lbl">HomeScore</span>
-                  <div class="prop-score-bar">
-                    <div
-                      class="prop-score-fill"
-                      :style="{ width: prop.HomeScore + '%' }"
-                    ></div>
-                  </div>
-                  <span class="prop-score-num">{{ prop.HomeScore }}</span>
-                </div>
-                <span class="prop-passport-btn">View →</span>
-              </div>
-            </div>
-          </div>
-          <!-- Load-more sentinel + status -->
-          <div
-            v-if="hasMoreResults"
-            ref="loadMoreSentinel"
-            class="load-more-sentinel"
-          >
-            <div v-if="searchLoadingMore" class="load-more-spinner" />
-            <button v-else class="load-more-btn" @click="loadMoreResults">
-              Load
-              {{
-                Math.min(
-                  SEARCH_PAGE_SIZE,
-                  searchTotal - searchProperties.length,
-                )
-              }}
-              more
-            </button>
-          </div>
-          <div v-else class="load-more-end">
-            {{
-              searchProperties.length === 1
-                ? '1 result shown'
-                : searchProperties.length + ' results shown'
-            }}
-          </div>
-        </template>
-        <div v-else class="no-results-msg">
-          <div class="no-results-icon"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
-          <div class="no-results-text">No properties found</div>
-          <div class="no-results-sub">Try a different postcode or area</div>
-        </div>
-      </template>
+      <PropertySearchExperience
+        placeholder="Search by postcode, address or area"
+        @update:search-mode="searchMode = $event"
+      />
 
-      <template v-else-if="view === 'new'">
+      <template v-if="!searchMode">
+      <template v-if="view === 'new'">
         <template
           v-if="role === 'sell' || role === 'landlord' || role === 'both'"
         >
@@ -842,7 +700,22 @@
             style="margin-top: 4px"
           >
             <div class="feed-title">For You</div>
-            <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
+            <div class="feed-header-actions">
+              <button
+                type="button"
+                class="feed-filters-btn"
+                :class="{ active: hasAnyForYouFilters }"
+                @click="openForYouFilters"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="12" height="12">
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="7" y1="12" x2="17" y2="12" />
+                  <line x1="10" y1="18" x2="14" y2="18" />
+                </svg>
+                Filters
+              </button>
+              <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
+            </div>
           </div>
           <div v-if="loadingProperties" class="skeletons">
             <div v-for="n in 3" :key="n" class="skeleton-card" />
@@ -1132,7 +1005,22 @@
             style="margin-top: 4px"
           >
             <div class="feed-title">For You</div>
-            <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
+            <div class="feed-header-actions">
+              <button
+                type="button"
+                class="feed-filters-btn"
+                :class="{ active: hasAnyForYouFilters }"
+                @click="openForYouFilters"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="12" height="12">
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="7" y1="12" x2="17" y2="12" />
+                  <line x1="10" y1="18" x2="14" y2="18" />
+                </svg>
+                Filters
+              </button>
+              <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
+            </div>
           </div>
           <div v-if="loadingProperties" class="skeletons">
             <div v-for="n in 3" :key="n" class="skeleton-card" />
@@ -1388,6 +1276,7 @@
           </div>
         </template>
       </template>
+      </template>
     </div>
 
     <BottomNav />
@@ -1413,14 +1302,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
 import NotificationBell from '~/components/ui/NotificationBell.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
-import SearchFilterBar, {
-  type CommittedFilters,
-} from '~/components/property/SearchFilterBar.vue'
+import PropertySearchExperience from '~/components/property/PropertySearchExperience.vue'
+import PropertySearchFiltersModal, {
+  type PropertySearchFilters,
+} from '~/components/property/PropertySearchFiltersModal.vue'
 
 // Guided tour wiring — replays via the "?" button in the hero, auto-runs
 // once per browser via storageKey on the OnboardingTour component.
@@ -1540,86 +1430,73 @@ const view = ref<'new' | 'returning'>(
     }
   })(),
 )
-const searchQuery = ref('')
+// selectedAddress is never set by the current flow (the search bar now
+// lives inside PropertySearchExperience) but installerPropertyId/
+// installerPostcode/installerAddress below still read it as a fallback,
+// so the ref stays even though it's permanently null.
 const selectedAddress = ref<any>(null)
-// The search bar + filter sheet (dropdown, radius, property type, beds,
-// EPC, HomeScore, passport-only) now live entirely inside SearchFilterBar
-// — see onFiltersChange/onSearchBarSelect below. These committed refs stay
-// here since downstream code (buildSearchUrl, etc.) reads them directly.
-const activeRadius = ref<number | null>(null)
 
 const loadingPrefs = ref(true)
 const loadingPassport = ref(true)
 const loadingProperties = ref(true)
 
-// Search mode
+// True while PropertySearchExperience is showing results — hides the
+// dashboard content below the search bar.
 const searchMode = ref(false)
-const searchProperties = ref<any[]>([])
-const searchLoading = ref(false)
-const searchTotal = ref(0)
-const searchLoadingMore = ref(false)
-const SEARCH_PAGE_SIZE = 20
-const loadMoreSentinel = ref<HTMLElement | null>(null)
-let loadMoreObserver: IntersectionObserver | null = null
 
+// Committed "For You" filters — set via the Filters modal below.
+const activeRadius = ref<number | null>(null)
 const committedPtype = ref<string[]>(['any'])
 const committedBeds = ref<number | null>(null)
+const committedBedsMax = ref<number | null>(null)
 const committedEpc = ref<string | null>(null)
+const committedMinPrice = ref<number | null>(null)
+const committedMaxPrice = ref<number | null>(null)
+const committedPassportStatus = ref<string[]>([])
+// Kept for buildForYouUrl (unrelated, untouched surface) — nothing in the
+// new Rightmove-style filters modal sets these anymore, so they now just
+// stay at their defaults for the search-results flow.
 const committedHs = ref<number>(0)
 const committedPassport = ref<boolean>(false)
 
-// Fired by SearchFilterBar whenever its sheet is applied, or a chip is
-// removed/cleared — mirrors the old applyDraft/removeCommittedFilter/
-// clearAllFilters, which all did the same "commit + refresh" afterwards.
-function onFiltersChange(filters: CommittedFilters) {
+const forYouFiltersModalOpen = ref(false)
+const forYouPendingFilters = computed<PropertySearchFilters>(() => ({
+  radius: activeRadius.value,
+  propertyType: committedPtype.value,
+  minBedrooms: committedBeds.value,
+  maxBedrooms: committedBedsMax.value,
+  minEpc: committedEpc.value,
+  minPrice: committedMinPrice.value,
+  maxPrice: committedMaxPrice.value,
+  passportStatus: committedPassportStatus.value,
+}))
+const hasAnyForYouFilters = computed(
+  () =>
+    !(committedPtype.value.length === 1 && committedPtype.value[0] === 'any') ||
+    committedBeds.value != null ||
+    committedBedsMax.value != null ||
+    committedEpc.value != null ||
+    committedMinPrice.value != null ||
+    committedMaxPrice.value != null ||
+    committedPassportStatus.value.length > 0,
+)
+
+// The dashboard-only "Filters" pill opens the same modal used for search.
+function openForYouFilters() {
+  forYouFiltersModalOpen.value = true
+}
+
+function onForYouFiltersSearch(filters: PropertySearchFilters) {
   activeRadius.value = filters.radius
   committedPtype.value = filters.propertyType
   committedBeds.value = filters.minBedrooms
+  committedBedsMax.value = filters.maxBedrooms
   committedEpc.value = filters.minEpc
-  committedHs.value = filters.minHomeScore
-  committedPassport.value = filters.passportOnly
-  if (searchMode.value && searchQuery.value.trim()) doSearch()
-  else refreshForYou()
+  committedMinPrice.value = filters.minPrice
+  committedMaxPrice.value = filters.maxPrice
+  committedPassportStatus.value = filters.passportStatus
+  refreshForYou()
 }
-
-// SearchFilterBar's dropdown shows a LIST of nearby properties on this
-// page — picking one sets the address and runs the list search. (The
-// HomeScore page's own search dropdown navigates straight to
-// /homescore/[id] — that's a separate surface with a different purpose.)
-function onSearchBarSelect(addr: any) {
-  selectedAddress.value = addr
-  searchQuery.value = addr.addressLine1 || addr.address || addr.line1 || ''
-  doSearch()
-}
-
-// Legacy refs kept as no-op shims so any remaining script references
-// below still type-check. New code reads `committed*` directly.
-const filterBeds = computed({
-  get: () => committedBeds.value,
-  set: (v: number | null) => (committedBeds.value = v),
-})
-const filterMaxPrice = ref<number | null>(null)
-const filterType = computed({
-  get: () =>
-    committedPtype.value.length === 1 && committedPtype.value[0] === 'any'
-      ? ''
-      : committedPtype.value.join(','),
-  set: () => {
-    /* no-op — chip group is the source of truth now */
-  },
-})
-const filterHasPassport = computed({
-  get: () => committedPassport.value,
-  set: (v: boolean) => (committedPassport.value = v),
-})
-
-const pricePills = [
-  { label: '£200k', value: 200000 },
-  { label: '£300k', value: 300000 },
-  { label: '£400k', value: 400000 },
-  { label: '£500k', value: 500000 },
-  { label: '£750k+', value: 750000 },
-]
 
 const preferences = ref<any>(null)
 const passports = ref<any[]>([])
@@ -1911,14 +1788,26 @@ function buildForYouUrl(): string {
   if (committedBeds.value != null) {
     params.set('minBedrooms', String(committedBeds.value))
   }
+  if (committedBedsMax.value != null) {
+    params.set('maxBedrooms', String(committedBedsMax.value))
+  }
   if (committedEpc.value != null) {
     params.set('minEpc', committedEpc.value)
   }
   if (committedHs.value > 0) {
     params.set('minHomeScore', String(committedHs.value))
   }
+  if (committedMinPrice.value != null) {
+    params.set('minPrice', String(committedMinPrice.value))
+  }
+  if (committedMaxPrice.value != null) {
+    params.set('maxPrice', String(committedMaxPrice.value))
+  }
   if (committedPassport.value) {
     params.set('passportOnly', '1')
+  }
+  if (committedPassportStatus.value.length) {
+    params.set('passportStatus', committedPassportStatus.value.join(','))
   }
   const qs = params.toString()
   return `${config.public.apiBase}/property/for-you${qs ? `?${qs}` : ''}`
@@ -1943,146 +1832,12 @@ const verifiedPassportDisplay = computed(() =>
 
 function clearSearch() {
   selectedAddress.value = null
-  searchQuery.value = ''
-  searchMode.value = false
-  searchProperties.value = []
-}
-
-function epcColor(rating: string): string {
-  const map: Record<string, string> = {
-    A: '#00b050',
-    B: '#33b800',
-    C: '#92d050',
-    D: '#a39200',
-    E: '#e08a00',
-    F: '#ff6600',
-    G: '#ff0000',
-  }
-  return map[(rating ?? '').toUpperCase()] ?? '#8e8e93'
-}
-
-function buildSearchUrl(offset: number): string {
-  const params = new URLSearchParams({
-    q: searchQuery.value.trim(),
-    offset: String(offset),
-    limit: String(SEARCH_PAGE_SIZE),
-  })
-  if (activeRadius.value != null) {
-    params.set('radius', String(activeRadius.value))
-  }
-  // Filter params — only sent when the user has actually picked something
-  // (so an unset filter is indistinguishable from a fresh first page).
-  if (
-    committedPtype.value.length &&
-    !(committedPtype.value.length === 1 && committedPtype.value[0] === 'any')
-  ) {
-    params.set('propertyType', committedPtype.value.join(','))
-  }
-  if (committedBeds.value != null) {
-    params.set('minBedrooms', String(committedBeds.value))
-  }
-  if (committedEpc.value != null) {
-    params.set('minEpc', committedEpc.value)
-  }
-  if (committedHs.value > 0) {
-    params.set('minHomeScore', String(committedHs.value))
-  }
-  if (committedPassport.value) {
-    params.set('passportOnly', '1')
-  }
-  return `${config.public.apiBase}/property/search?${params.toString()}`
-}
-
-async function doSearch() {
-  if (!searchQuery.value.trim()) {
-    searchMode.value = false
-    return
-  }
-  searchMode.value = true
-  searchLoading.value = true
-  searchProperties.value = []
-  searchTotal.value = 0
-  try {
-    const token = localStorage.getItem('token')
-    const results = await $fetch<any>(buildSearchUrl(0), {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    searchProperties.value = results?.items ?? []
-    searchTotal.value = results?.total ?? searchProperties.value.length
-  } catch {
-    searchProperties.value = []
-    searchTotal.value = 0
-  } finally {
-    searchLoading.value = false
-    nextTick(() => attachLoadMoreObserver())
-  }
-}
-
-async function loadMoreResults() {
-  if (searchLoadingMore.value) return
-  if (searchProperties.value.length >= searchTotal.value) return
-  searchLoadingMore.value = true
-  try {
-    const token = localStorage.getItem('token')
-    const results = await $fetch<any>(
-      buildSearchUrl(searchProperties.value.length),
-      { headers: { Authorization: `Bearer ${token}` } },
-    )
-    const newItems = results?.items ?? []
-    // De-dupe by id in case of overlap
-    const existingIds = new Set(searchProperties.value.map((p) => p.id))
-    for (const item of newItems) {
-      if (!existingIds.has(item.id)) searchProperties.value.push(item)
-    }
-    searchTotal.value = results?.total ?? searchTotal.value
-  } catch {
-    /* non-critical */
-  } finally {
-    searchLoadingMore.value = false
-  }
-}
-
-function attachLoadMoreObserver() {
-  if (loadMoreObserver) {
-    loadMoreObserver.disconnect()
-    loadMoreObserver = null
-  }
-  if (!loadMoreSentinel.value) return
-  loadMoreObserver = new IntersectionObserver(
-    (entries) => {
-      if (entries[0]?.isIntersecting) loadMoreResults()
-    },
-    { rootMargin: '200px' },
-  )
-  loadMoreObserver.observe(loadMoreSentinel.value)
-}
-
-const hasMoreResults = computed(
-  () => searchTotal.value > searchProperties.value.length,
-)
-
-function exitSearch() {
-  searchMode.value = false
-  searchProperties.value = []
-  searchTotal.value = 0
-  if (loadMoreObserver) {
-    loadMoreObserver.disconnect()
-    loadMoreObserver = null
-  }
-  clearSearch()
 }
 
 // Take the user into the Claim flow (search → confirm → KYC → issue passport).
 function startClaimFlow() {
   navigateTo('/claim')
 }
-
-onBeforeUnmount(() => {
-  if (loadMoreObserver) {
-    loadMoreObserver.disconnect()
-    loadMoreObserver = null
-  }
-})
 
 onMounted(async () => {
   if (!profile.value) await fetchProfile()
@@ -2426,6 +2181,31 @@ onMounted(async () => {
   font-weight: 700;
   color: #00a19a;
   cursor: pointer;
+}
+
+.feed-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.feed-filters-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #6b7089;
+  background: #f4f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.feed-filters-btn.active {
+  color: #00514d;
+  background: #e0f4f1;
+  border-color: #c2e6df;
 }
 
 .feed-sub {
