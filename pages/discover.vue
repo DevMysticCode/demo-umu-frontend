@@ -259,6 +259,13 @@
         </div>
       </div>
     </div>
+
+    <AuthGateModal
+      v-model="authGateOpen"
+      :title="authGateCopy.title"
+      :body="authGateCopy.body"
+      :redirect-target="authGateRedirect"
+    />
   </div>
 </template>
 
@@ -270,6 +277,7 @@
 definePageMeta({ title: 'Explore - UmovingU' })
 
 import OPIcon from '~/components/ui/OPIcon.vue'
+import AuthGateModal from '~/components/ui/AuthGateModal.vue'
 import PropertySearchExperience from '~/components/property/PropertySearchExperience.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
 import { usePropertySearch } from '~/composables/usePropertySearch'
@@ -291,21 +299,48 @@ onMounted(() => {
 // marketing hero, entry-point cards and Recently explored below it.
 const searchMode = ref(false)
 
+// Guests get the same "Create account / Sign in" gate the HomeScore
+// flow already uses, instead of being dropped straight onto the sign-in
+// page — and the choice they were making is preserved via
+// redirectAfterLogin so they land back on it once authenticated.
+type AuthGateAction = 'buyer-passport' | 'watching'
+const authGateOpen = ref(false)
+const authGateAction = ref<AuthGateAction | null>(null)
+
+const authGateCopy = computed(() => {
+  if (authGateAction.value === 'watching') {
+    return {
+      title: 'Sign in to see watched properties',
+      body: 'Create a free account to save properties, watch homes and get alerted the moment something changes.',
+    }
+  }
+  return {
+    title: 'Sign in to build your Buyer Passport',
+    body: 'Create a free account to verify your identity, add proof of funds and show sellers you’re buying-ready.',
+  }
+})
+
+const authGateRedirect = computed(() =>
+  authGateAction.value === 'watching' ? '/passport/collections' : '/buyer-profile/build',
+)
+
+function hasToken(): boolean {
+  return typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
+}
+
 function goToBuyerPassport() {
-  const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-  if (!token) {
-    navigateTo('/onboarding/signin')
+  if (!hasToken()) {
+    authGateAction.value = 'buyer-passport'
+    authGateOpen.value = true
     return
   }
   navigateTo('/buyer-profile/build')
 }
 
 function goToWatching() {
-  const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-  if (!token) {
-    navigateTo('/onboarding/signin')
+  if (!hasToken()) {
+    authGateAction.value = 'watching'
+    authGateOpen.value = true
     return
   }
   navigateTo('/passport/collections')
