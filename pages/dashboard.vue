@@ -4,7 +4,7 @@
       <div class="hero-row1">
         <div>
           <div class="dash-greeting-sub">{{ greeting }}</div>
-          <div class="dash-title">Your home at a glance</div>
+          <div class="dash-title">{{ role === 'buy' ? 'Your move at a glance' : 'Your home at a glance' }}</div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px">
           <button class="dash-tour-btn" type="button" aria-label="Help">
@@ -24,12 +24,203 @@
     </div>
 
     <div class="dash-scroll">
+      <div v-if="roleResolved && role === 'buy'" class="explore-intro-card">
+        <div class="eic-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </div>
+        <div class="eic-body">
+          <div class="eic-title">Explore a property</div>
+          <div class="eic-sub">Search any UK address and see the property report.</div>
+        </div>
+      </div>
+
       <PropertySearchExperience
         placeholder="Search by postcode, address or area"
         @update:search-mode="searchMode = $event"
       />
 
-      <template v-if="!searchMode && roleResolved">
+      <template v-if="!searchMode && roleResolved && role === 'buy'">
+        <div v-if="loadingBuyerProfile" class="skeleton-card" style="height: 220px; margin-bottom: 20px" />
+
+        <template v-else>
+          <!-- ── Your Active (Buyer) Passport ── -->
+          <div class="dash-section">
+            <div class="dash-eyebrow">Your active passport</div>
+
+            <div
+              v-if="buyerProfile"
+              class="active-passport-card"
+              @click="navigateTo('/buyer-profile/view')"
+            >
+              <div class="apc-main">
+                <div class="apc-passport-slot">
+                  <PassportCard line1="" line2="" type="BUYER" />
+                </div>
+                <div class="apc-info">
+                  <span class="apc-pill">BUYER PASSPORT</span>
+                  <div class="apc-address">Buyer Passport</div>
+                  <div v-if="buyerIdVerified" class="apc-verified-row">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Identity verified
+                  </div>
+                  <div class="apc-progress-row">
+                    Finance <strong>{{ financePercent }}%</strong> complete
+                  </div>
+                  <div class="apc-progress-track">
+                    <div class="apc-progress-fill" :style="{ width: financePercent + '%' }" />
+                  </div>
+                </div>
+              </div>
+              <button
+                class="apc-continue-btn"
+                type="button"
+                @click.stop="navigateTo('/buyer-profile/build')"
+              >
+                Continue my Buyer Passport
+                <span>&rarr;</span>
+              </button>
+              <div class="apc-viewall-link" @click.stop="navigateTo('/passport/collections')">
+                View all Passports
+                <span>&rsaquo;</span>
+              </div>
+            </div>
+
+            <div v-else class="no-passport-card" @click="navigateTo('/buyer-profile/build')">
+              <div class="npc-icon">+</div>
+              <div class="npc-body">
+                <div class="npc-title">Start your Buyer Passport</div>
+                <div class="npc-sub">Verify your identity and buying position.</div>
+              </div>
+              <span class="npc-chevron">&rsaquo;</span>
+            </div>
+          </div>
+
+          <!-- ── Next For You ── -->
+          <div v-if="buyerProfile" class="dash-section">
+            <div class="dash-eyebrow">Next for you</div>
+            <div class="next-for-you-card">
+              <div
+                v-if="buyerIncompleteCount > 0"
+                class="nfy-row"
+                @click="navigateTo('/buyer-profile/build')"
+              >
+                <div class="nfy-icon nfy-icon-teal">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="3" width="14" height="18" rx="2" />
+                    <path d="M9 8h6M9 12h6M9 16h3" />
+                  </svg>
+                </div>
+                <div class="nfy-body">
+                  <div class="nfy-title">Complete {{ buyerIncompleteCount }} items in your Passport</div>
+                  <div class="nfy-sub">Add documents and details to build your record.</div>
+                </div>
+                <span class="nfy-chevron">&rsaquo;</span>
+              </div>
+              <div class="nfy-row" @click="navigateTo('/buyer-profile/build')">
+                <div class="nfy-icon nfy-icon-teal">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <path d="M12 18v-6M9 15l3-3 3 3" />
+                  </svg>
+                </div>
+                <div class="nfy-body">
+                  <div class="nfy-title">Upload proof of funds or AIP</div>
+                  <div class="nfy-sub">Strengthen your position and unlock more.</div>
+                </div>
+                <span class="nfy-chevron">&rsaquo;</span>
+              </div>
+              <div class="nfy-row" @click="navigateTo('/buyer-profile/build')">
+                <div class="nfy-icon nfy-icon-amber">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </div>
+                <div class="nfy-body">
+                  <div class="nfy-title">Confirm your buying position</div>
+                  <div class="nfy-sub">Let agents and sellers know where you are in the chain.</div>
+                </div>
+                <span class="nfy-chevron">&rsaquo;</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Watching ── -->
+          <div class="dash-section">
+            <div class="dash-eyebrow-row">
+              <div class="dash-eyebrow">
+                Watching
+                <span v-if="savedProperties.length" class="watching-badge">{{ savedProperties.length }}</span>
+              </div>
+              <div class="dash-view-all" @click="navigateTo('/profile/saved-properties')">View all</div>
+            </div>
+
+            <div v-if="loadingSaved" class="skeleton-card" style="height: 100px" />
+
+            <div v-else-if="savedProperties.length" class="watching-card">
+              <div class="watch-row" @click="navigateTo('/property/' + savedProperties[0].id)">
+                <div class="watch-img-wrap">
+                  <PropertyImage
+                    :src="savedProperties[0].imageUrl"
+                    :alt="savedProperties[0].addressLine1"
+                    :show-caption="false"
+                    class="watch-img"
+                  />
+                </div>
+                <div class="watch-body">
+                  <div class="watch-address">{{ savedProperties[0].addressLine1 }}</div>
+                  <div class="watch-postcode">{{ savedProperties[0].postcode }}</div>
+                  <div v-if="savedProperties[0].homeScore != null" class="watch-hs">
+                    HomeScore <strong>{{ savedProperties[0].homeScore }}/100</strong>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="watch-updates-btn"
+                  @click.stop="navigateTo('/property/' + savedProperties[0].id)"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                  </svg>
+                  Updates
+                </button>
+              </div>
+              <div
+                v-if="savedProperties.length > 1"
+                class="watch-more-link"
+                @click="navigateTo('/profile/saved-properties')"
+              >
+                {{ savedProperties.length - 1 }} more propert{{ savedProperties.length - 1 === 1 ? 'y' : 'ies' }} watching
+              </div>
+            </div>
+
+            <div v-else class="no-passport-card" @click="navigateTo('/dashboard')">
+              <div class="npc-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="7" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </div>
+              <div class="npc-body">
+                <div class="npc-title">Nothing saved yet</div>
+                <div class="npc-sub">Explore properties and save the ones you like.</div>
+              </div>
+              <span class="npc-chevron">&rsaquo;</span>
+            </div>
+          </div>
+        </template>
+      </template>
+
+      <template v-else-if="!searchMode && roleResolved">
         <div v-if="loadingPassport" class="skeleton-card" style="height: 220px; margin-bottom: 20px" />
 
         <template v-else>
@@ -206,10 +397,10 @@
 </template>
 
 <script setup lang="ts">
-// Seller dashboard — first of the role-specific dashboards that replace
-// Explore as the post-login landing page (see the other roles' plan for
-// context). Non-seller roles are bounced to /explore, which keeps its
-// current behavior unchanged and untouched by this page.
+// Role-specific dashboards that replace Explore as the post-login
+// landing page. Seller/'both' and Buyer are built; Landlord still
+// bounces to /explore, which keeps its current behavior unchanged and
+// untouched by this page.
 definePageMeta({ title: 'Dashboard - UmovingU', middleware: 'auth' })
 
 import { ref, computed, onMounted } from 'vue'
@@ -217,6 +408,7 @@ import NotificationBell from '~/components/ui/NotificationBell.vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import PassportCard from '~/components/passport-view/PassportCard.vue'
+import PropertyImage from '~/components/property/PropertyImage.vue'
 import PropertySearchExperience from '~/components/property/PropertySearchExperience.vue'
 import ForYouFeed from '~/components/property/ForYouFeed.vue'
 import PropertySearchFiltersModal from '~/components/property/PropertySearchFiltersModal.vue'
@@ -227,10 +419,16 @@ const { profile, fetchProfile } = useProfile()
 
 const searchMode = ref(false)
 const roleResolved = ref(false)
+const role = ref<string>('buy')
 
 const passports = ref<any[]>([])
 const loadingPassport = ref(true)
 const passportSections = ref<any[]>([])
+
+const buyerProfile = ref<any>(null)
+const loadingBuyerProfile = ref(true)
+const savedProperties = ref<any[]>([])
+const loadingSaved = ref(true)
 
 const {
   properties,
@@ -263,6 +461,32 @@ const homeScoreHref = computed(() => {
   return propertyId ? `/homescore/${propertyId}` : '/homescore'
 })
 
+// Real KYC signal — see buyer-profile.service.ts's getMine(), which
+// overrides the (always-false) stored idVerified column with the actual
+// User.kycStatus check before this ever reaches the frontend.
+const buyerIdVerified = computed(() => buyerProfile.value?.idVerified === true)
+
+// No isolated "finance %" field exists on BuyerProfile — derived from
+// the underlying funds fields instead of inventing a number: nothing
+// set yet (0%), funds declared but not reviewed (55%), reviewed and
+// verified (100%).
+const financePercent = computed(() => {
+  const p = buyerProfile.value
+  if (!p) return 0
+  if (p.fundsVerified) return 100
+  if (p.fundsType && p.fundsAmount != null) return 55
+  return 0
+})
+
+// BuyerProfile has 5 flat completion steps (identity/funds/chain/
+// solicitor/statement), not a sections→tasks→questions tree like a
+// real Passport — completedSteps is the closest real equivalent to
+// incompleteItemCount above.
+const buyerIncompleteCount = computed(() => {
+  const steps = buyerProfile.value?.completedSteps ?? 0
+  return Math.max(0, 5 - steps)
+})
+
 // Sum of unanswered questions across every task in every section — the
 // "Complete N items in your Passport" count. Nothing to derive this
 // server-side yet, so it's computed here from GET /passport/:id/sections,
@@ -287,10 +511,11 @@ function normalizeRole(r: unknown): string {
 }
 
 // 'both' users still have a seller passport to manage and there's no
-// buy+sell dashboard yet, so they see this one too — just without any
-// buyer-specific content until that's built.
-function isSellerFacingRole(role: string): boolean {
-  return role === 'sell' || role === 'both'
+// buy+sell dashboard yet, so they see the seller branch here too —
+// just without any buyer-specific content until that's built. Pure
+// 'landlord' is the only role still bounced to /explore.
+function isDashboardRole(r: string): boolean {
+  return r === 'sell' || r === 'both' || r === 'buy'
 }
 
 onMounted(async () => {
@@ -298,14 +523,18 @@ onMounted(async () => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) return
 
-  // A cached role from a previous visit lets non-sellers bounce back to
-  // Explore immediately, without waiting on the network round trip.
-  // 'both' (buy+sell) sees this dashboard too for now, since they still
-  // have a seller passport to manage and there's no combined dashboard
-  // yet — it just won't show any buyer-specific content until that
-  // exists. Buy/landlord-only users still go to Explore.
+  // A cached role from a previous visit lets landlord users bounce back
+  // to Explore immediately, without waiting on the network round trip.
+  //
+  // Deliberate exception to "Explore is retired everywhere": landlord
+  // has no dashboard content built yet, so this is the one remaining
+  // live target for /explore in the app — pointing it at /dashboard
+  // instead would just redirect a landlord user back to this same
+  // check, in a page with nothing for their role to render. Every
+  // other /explore reference in the app has been replaced; this one
+  // stays until a landlord dashboard exists.
   const cachedRole = typeof window !== 'undefined' ? localStorage.getItem('umu_role') : null
-  if (cachedRole && !isSellerFacingRole(normalizeRole(cachedRole))) {
+  if (cachedRole && !isDashboardRole(normalizeRole(cachedRole))) {
     navigateTo('/explore', { replace: true })
     return
   }
@@ -314,14 +543,37 @@ onMounted(async () => {
     headers: { Authorization: `Bearer ${token}` },
   }).catch(() => null)
 
-  const role = normalizeRole((prefResult?.purpose as string[])?.[0] ?? cachedRole)
-  if (typeof window !== 'undefined') localStorage.setItem('umu_role', role)
+  role.value = normalizeRole((prefResult?.purpose as string[])?.[0] ?? cachedRole)
+  if (typeof window !== 'undefined') localStorage.setItem('umu_role', role.value)
 
-  if (!isSellerFacingRole(role)) {
+  if (!isDashboardRole(role.value)) {
+    // Same landlord exception as above.
     navigateTo('/explore', { replace: true })
     return
   }
   roleResolved.value = true
+
+  if (role.value === 'buy') {
+    const [buyerResult, savedResult] = await Promise.allSettled([
+      $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      $fetch<any[]>(`${config.public.apiBase}/property/saved`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ])
+
+    if (buyerResult.status === 'fulfilled') {
+      buyerProfile.value = buyerResult.value ?? null
+    }
+    loadingBuyerProfile.value = false
+
+    if (savedResult.status === 'fulfilled') {
+      savedProperties.value = savedResult.value ?? []
+    }
+    loadingSaved.value = false
+    return
+  }
 
   const [passportResult, propResult] = await Promise.allSettled([
     $fetch<any[]>(`${config.public.apiBase}/profile/passports`, {
@@ -444,6 +696,73 @@ onMounted(async () => {
   color: #00a19a;
   margin-bottom: 10px;
 }
+.dash-eyebrow-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.dash-eyebrow-row .dash-eyebrow {
+  margin-bottom: 0;
+}
+.watching-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  margin-left: 5px;
+  background: #e0f4f1;
+  color: #00817c;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+.dash-view-all {
+  font-size: 13px;
+  font-weight: 700;
+  color: #00a19a;
+  cursor: pointer;
+}
+
+/* ── Explore a property (buyer intro card) ── */
+.explore-intro-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f4f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.eic-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e0f4f1;
+  color: #00a19a;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.eic-body {
+  flex: 1;
+  min-width: 0;
+}
+.eic-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+  margin-bottom: 2px;
+}
+.eic-sub {
+  font-size: 12px;
+  color: #6b7089;
+  line-height: 1.4;
+}
 
 /* ── Your Active Passport ── */
 .active-passport-card {
@@ -511,6 +830,15 @@ onMounted(async () => {
 .apc-postcode {
   font-size: 13px;
   color: #6b7089;
+  margin-bottom: 10px;
+}
+.apc-verified-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #00817c;
   margin-bottom: 10px;
 }
 .apc-progress-row {
@@ -807,5 +1135,84 @@ onMounted(async () => {
   font-size: 18px;
   color: #c7c5d6;
   flex-shrink: 0;
+}
+
+/* ── Watching (saved properties) ── */
+.watching-card {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 12px;
+}
+.watch-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.watch-img-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f1f5f9;
+}
+.watch-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.watch-body {
+  flex: 1;
+  min-width: 0;
+}
+.watch-address {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.watch-postcode {
+  font-size: 12.5px;
+  color: #6b7089;
+  margin-top: 1px;
+}
+.watch-hs {
+  font-size: 12px;
+  color: #6b7089;
+  margin-top: 3px;
+}
+.watch-hs strong {
+  color: #00817c;
+  font-weight: 800;
+}
+.watch-updates-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: #f4f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #6b7089;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.watch-more-link {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eef0f6;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #00a19a;
+  cursor: pointer;
 }
 </style>

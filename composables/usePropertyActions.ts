@@ -16,6 +16,8 @@ export interface PropertyListItem {
   bedrooms?: number | null
   bathrooms?: number | null
   imageUrl?: string | null
+  epcScore?: number | null
+  homeScore?: number | null
   wishlistedAt?: string
   savedAt?: string
 }
