@@ -1975,6 +1975,12 @@ const currentSample = computed(() => samples[sampleType.value])
   background: #00918b;
 }
 .deck-card.passport .dc-cta {
+  /* "Start a property passport" is the longest CTA label in the deck —
+     the shared 212px cap above (sized for the other cards' shorter
+     text) wraps it onto two lines, so this card needs its own wider
+     cap to keep it on one line. */
+  width: min(100%, 300px);
+  white-space: nowrap;
   background: rgba(103, 83, 170, 0.62);
   color: #fff;
 }
