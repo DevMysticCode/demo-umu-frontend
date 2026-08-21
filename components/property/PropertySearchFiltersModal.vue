@@ -312,6 +312,7 @@ function onSearch() {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  overflow-x: hidden;
 }
 .psm-head {
   flex-shrink: 0;
@@ -346,7 +347,16 @@ function onSearch() {
 .psm-body {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 4px 20px;
+  /* Hide the scrollbar chrome while keeping the scroll behavior — this
+     is a compact popup, not a page, and a visible track/thumb reads as
+     clutter rather than a real navigation aid. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.psm-body::-webkit-scrollbar {
+  display: none;
 }
 .psm-footer-row {
   flex-shrink: 0;
@@ -447,15 +457,26 @@ function onSearch() {
   align-items: center;
   gap: 10px;
 }
+/* .psm-range-field (price £ inputs) and .psm-select (bedrooms/radius
+   dropdowns) sit side by side in the same rows and must read as the
+   same control — same box height, padding, border, radius and type
+   scale. A native <select> has its own intrinsic sizing that a plain
+   flex row doesn't, so both get an explicit height/box-sizing here
+   rather than relying on padding alone to end up equal. */
+.psm-range-field,
+.psm-select {
+  box-sizing: border-box;
+  height: 44px;
+  background: #f4f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
 .psm-range-field {
   flex: 1;
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #f4f4f6;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 10px 12px;
+  padding: 0 12px;
 }
 .psm-range-prefix {
   font-size: 13px;
@@ -465,6 +486,7 @@ function onSearch() {
 .psm-range-input {
   flex: 1;
   min-width: 0;
+  height: 100%;
   border: none;
   background: transparent;
   outline: none;
@@ -481,14 +503,21 @@ function onSearch() {
 .psm-select {
   flex: 1;
   min-width: 0;
-  background: #f4f4f6;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 10px 12px;
+  padding: 0 30px 0 12px;
   font-family: inherit;
   font-size: 13.5px;
   font-weight: 700;
   color: #231d45;
+  cursor: pointer;
+  /* Native select chrome (arrow, inset) varies by browser/OS enough to
+     throw off the match with .psm-range-field above — replace it with
+     one consistent chevron everywhere this class is used. */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%239c98ad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
 }
 .psm-select-full {
   width: 100%;

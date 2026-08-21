@@ -16,7 +16,7 @@
           </svg>
           Filters
         </button>
-        <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
+        <div class="feed-see-all" @click="navigateTo('/dashboard')">All</div>
       </div>
     </div>
     <div v-if="loading" class="skeletons">
@@ -184,7 +184,8 @@ const emit = defineEmits<{ (e: 'open-filters'): void }>()
   display: none;
 }
 .prop-card-horiz {
-  min-width: 270px;
+  min-width: 200px;
+  max-width: 200px;
   flex-shrink: 0;
   margin-bottom: 0;
 }
@@ -202,7 +203,7 @@ const emit = defineEmits<{ (e: 'open-filters'): void }>()
   transform: scale(0.99);
 }
 .prop-img-wrap {
-  height: 120px;
+  height: 100px;
   position: relative;
   display: flex;
   align-items: center;
