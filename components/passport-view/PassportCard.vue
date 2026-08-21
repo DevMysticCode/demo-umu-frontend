@@ -51,11 +51,11 @@ const props = defineProps({
   },
 })
 
-const passportImage = computed(() =>
-  props.type === 'LANDLORD'
-    ? '/op-icons/passportview/landlordPassport.png'
-    : '/op-icons/misc/sellerPassport.png',
-)
+const passportImage = computed(() => {
+  if (props.type === 'LANDLORD') return '/op-icons/passportview/landlordPassport.png'
+  if (props.type === 'BUYER') return '/op-icons/misc/buyerPassport.png'
+  return '/op-icons/misc/sellerPassport.png'
+})
 </script>
 
 <style scoped>
