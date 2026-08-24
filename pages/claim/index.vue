@@ -15,7 +15,7 @@
 
     <!-- Search screen -->
     <div class="cl-screen">
-      <div class="cl-icon-square">🏠</div>
+      <img src="/op-icons/landing/homeScoreCard.png" alt="" class="cl-search-hero-img" loading="lazy" />
       <h1 class="cl-h2 cl-center">Which property are you claiming?</h1>
       <p class="cl-body cl-center cl-mb-lg">
         Enter your postcode and select your address. We'll verify ownership via
@@ -25,18 +25,23 @@
       <div class="cl-field-wrap">
         <div class="cl-field-label">Postcode or address</div>
         <PropertySearchInput
-          placeholder="e.g. SK7 4BL"
+          placeholder="e.g. CV1 2EH or 123 High Street"
           variant="light"
           @select="onPropertySelect"
         />
       </div>
 
       <div class="cl-lock-note">
-        <div class="cl-lock-ic">🔒</div>
+        <div class="cl-lock-ic"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
         <div class="cl-lock-body">
           We verify ownership via
           <strong>HM Land Registry</strong> — encrypted and never sold.
         </div>
+      </div>
+
+      <div class="cl-private-bar">
+        <img src="/op-icons/investment/padlock.png" alt="" loading="lazy" />
+        Your data is private and secure
       </div>
 
       <div v-if="resolving" class="cl-resolving">
@@ -134,16 +139,12 @@ const onBack = useGoBack('/dashboard')
   margin: 0 auto;
 }
 
-.cl-icon-square {
-  width: 64px;
-  height: 64px;
-  background: var(--brand-pale);
-  border: 2px solid var(--brand-soft);
-  border-radius: 20px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 18px;
-  font-size: 30px;
+.cl-search-hero-img {
+  width: 168px;
+  height: 168px;
+  object-fit: contain;
+  display: block;
+  margin: 8px auto 18px;
 }
 .cl-h2 {
   font-size: 20px;
@@ -180,13 +181,37 @@ const onBack = useGoBack('/dashboard')
   border: 1px solid var(--brand-soft);
   border-radius: 12px;
 }
-.cl-lock-ic { font-size: 18px; flex-shrink: 0; }
+.cl-lock-ic {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.cl-lock-ic img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .cl-lock-body {
   font-size: 12px;
   color: var(--ink-soft);
   line-height: 1.5;
 }
 .cl-lock-body strong { color: var(--ink); }
+
+.cl-private-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: #f5f6fa;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.cl-private-bar img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
 
 .cl-resolving {
   margin-top: 24px;

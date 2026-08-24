@@ -18,7 +18,7 @@
 
     <!-- ════════════════════════════ SEARCH ════════════════════════════ -->
     <div v-if="step === 'search'" class="cl-screen">
-      <div class="cl-icon-square"><img src="/op-icons/investment/house.png" alt="" loading="lazy" /></div>
+      <img src="/op-icons/landing/homeScoreCard.png" alt="" class="cl-search-hero-img" loading="lazy" />
       <h1 class="cl-h2 cl-center">Which property are you claiming?</h1>
       <p class="cl-body cl-center cl-mb-lg">
         Enter your postcode and select your address. We'll verify ownership via
@@ -28,7 +28,7 @@
       <div class="cl-field-wrap">
         <div class="cl-field-label">Postcode or address</div>
         <PropertySearchInput
-          placeholder="e.g. SK7 4BL"
+          placeholder="e.g. CV1 2EH or 123 High Street"
           variant="light"
           @select="onPropertySelect"
         />
@@ -49,6 +49,11 @@
           We verify ownership via
           <strong>HM Land Registry</strong> — encrypted and never sold.
         </div>
+      </div>
+
+      <div class="cl-private-bar">
+        <img src="/op-icons/investment/padlock.png" alt="" loading="lazy" />
+        Your data is private and secure
       </div>
     </div>
 
@@ -76,7 +81,7 @@
             </div>
           </div>
           <img
-            src="/op-icons/claim/houseWithPin.png"
+            src="/op-icons/landing/homeScoreCard.png"
             alt=""
             class="cl-lr-card-illus"
             loading="lazy"
@@ -84,14 +89,7 @@
         </div>
         <div class="cl-lr-tile-grid">
           <div class="cl-lr-tile">
-            <span class="cl-lr-tile-ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="9" y1="13" x2="15" y2="13" />
-                <line x1="9" y1="17" x2="15" y2="17" />
-              </svg>
-            </span>
+            <span class="cl-lr-tile-ic"><img src="/op-icons/buyer-passport/tenure.png" alt="" loading="lazy" /></span>
             <div>
               <div class="cl-lr-tile-l">Tenure</div>
               <select
@@ -109,14 +107,7 @@
             </div>
           </div>
           <div class="cl-lr-tile">
-            <span class="cl-lr-tile-ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="4" y1="9" x2="20" y2="9" />
-                <line x1="4" y1="15" x2="20" y2="15" />
-                <line x1="10" y1="3" x2="8" y2="21" />
-                <line x1="16" y1="3" x2="14" y2="21" />
-              </svg>
-            </span>
+            <span class="cl-lr-tile-ic"><img src="/op-icons/buyer-passport/titleNumber.png" alt="" loading="lazy" /></span>
             <div>
               <div class="cl-lr-tile-l">Title number</div>
               <div v-if="titleDisplay" class="cl-lr-tile-v">{{ titleDisplay }}</div>
@@ -124,14 +115,9 @@
             </div>
           </div>
           <div class="cl-lr-tile">
-            <span class="cl-lr-tile-ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-            </span>
+            <span class="cl-lr-tile-ic"><img src="/op-icons/buyer-passport/propertyType.png" alt="" loading="lazy" /></span>
             <div>
-              <div class="cl-lr-tile-l">Type</div>
+              <div class="cl-lr-tile-l">Property type</div>
               <select
                 v-if="typeDisplay === '—'"
                 class="cl-lr-tile-select"
@@ -151,14 +137,7 @@
             </div>
           </div>
           <div class="cl-lr-tile">
-            <span class="cl-lr-tile-ic">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-            </span>
+            <span class="cl-lr-tile-ic"><img src="/op-icons/explore/calendar.png" alt="" loading="lazy" /></span>
             <div>
               <div class="cl-lr-tile-l">Registered</div>
               <div class="cl-lr-tile-v">{{ registeredDisplay }}</div>
@@ -170,10 +149,7 @@
       <!-- Lock note -->
       <div class="cl-lock-note">
         <div class="cl-lock-note-ic">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="5" y="11" width="14" height="10" rx="2" />
-            <path d="M8 11V7a4 4 0 018 0v4" />
-          </svg>
+          <img src="/op-icons/investment/padlock.png" alt="" loading="lazy" />
         </div>
         <div class="cl-lock-note-body">
           Next we'll verify <strong>your identity</strong> to confirm you're
@@ -804,61 +780,14 @@
     <!-- ── Auth-required popup ─────────────────────────────────────
          Guests can search, pick a passport type and see "Is this your
          property?" freely — this only appears when they tap "Yes, this
-         is my property". Same create-account/sign-in choice used on the
-         HomeScore Build-Passport page. -->
-    <Teleport to="body">
-      <Transition name="authd">
-        <div
-          v-if="authPromptOpen"
-          class="authd-overlay"
-          @click.self="authPromptOpen = false"
-        >
-          <div class="authd-card" @click.stop>
-            <div class="authd-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-            </div>
-            <div class="authd-title">Sign in to confirm ownership</div>
-            <div class="authd-body">
-              You'll need a free account to verify your identity and confirm
-              you own this property. Takes about a minute.
-            </div>
-            <div class="authd-actions">
-              <button
-                class="authd-btn primary"
-                type="button"
-                @click="goAuth('signup')"
-              >
-                Create free account
-              </button>
-              <button
-                class="authd-btn secondary"
-                type="button"
-                @click="goAuth('signin')"
-              >
-                I already have an account
-              </button>
-              <button
-                class="authd-btn ghost"
-                type="button"
-                @click="authPromptOpen = false"
-              >
-                Not now
-              </button>
-            </div>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
+         is my property". Same shared create-account/sign-in choice used
+         on HomeScore, Discover and the Buyer Passport get-started page. -->
+    <AuthGateModal
+      v-model="authPromptOpen"
+      title="Sign in to confirm ownership"
+      body="You'll need a free account to verify your identity and confirm you own this property. Takes about a minute."
+      :redirect-target="`/claim/${propertyId}?resumeConfirm=1`"
+    />
   </div>
 </template>
 
@@ -888,6 +817,7 @@ type ClaimStep =
   | 'payment'
 
 import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDrawer.vue'
+import AuthGateModal from '~/components/ui/AuthGateModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -976,22 +906,11 @@ function authHeaders() {
   }
 }
 
-// ── Auth-required popup — same "create account / sign in / not now"
-//    choice used on the HomeScore Build-Passport page, shown when a
-//    guest taps "Yes, this is my property". Remembers this exact
-//    property + a resume marker so onMounted can pick straight back up
-//    at confirmProperty() once they're signed in (see onMounted below). ──
+// ── Auth-required popup — shown when a guest taps "Yes, this is my
+//    property". AuthGateModal stores the redirectAfterLogin target
+//    itself so onMounted can pick straight back up at confirmProperty()
+//    once they're signed in (see onMounted below). ──
 const authPromptOpen = ref(false)
-function goAuth(mode: 'signin' | 'signup') {
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem(
-      'redirectAfterLogin',
-      `/claim/${propertyId}?resumeConfirm=1`,
-    )
-  }
-  authPromptOpen.value = false
-  navigateTo(mode === 'signup' ? '/onboarding/signup' : '/onboarding/signin')
-}
 
 async function loadProperty() {
   if (!propertyId || propertyId === 'new') return
@@ -1120,12 +1039,26 @@ onMounted(async () => {
     } catch { /* corrupt localStorage — fall through to the normal ask */ }
   }
 
+  // Arriving from property/[id].vue's own "Choose your Passport" drawer
+  // (?type=seller|landlord&hmo=1) — that page already asked, so honor its
+  // choice instead of asking again here.
+  let typeFromQuery = false
+  const queryType = url.searchParams.get('type')
+  if (!resumingConfirm && (queryType === 'seller' || queryType === 'landlord')) {
+    chosenPassportType.value = queryType
+    chosenIsHmo.value = url.searchParams.get('hmo') === '1'
+    typeFromQuery = true
+    url.searchParams.delete('type')
+    url.searchParams.delete('hmo')
+    window.history.replaceState({}, '', url.toString())
+  }
+
   // First thing: ask the user which type of passport they're claiming.
   // Always shown — even if their profile role suggests one — so they can
   // override per-property (a landlord might still claim a seller passport).
-  // Skipped when resuming: they already chose, and are signed in now, so
-  // just carry on into confirmProperty() once the property has loaded.
-  showTypeDrawer.value = !resumingConfirm
+  // Skipped when resuming or when the type already arrived via query: they
+  // already chose, so just carry on.
+  showTypeDrawer.value = !resumingConfirm && !typeFromQuery
   await Promise.all([loadProperty(), loadProfile()])
   if (resumingConfirm) confirmProperty()
 })
@@ -1296,7 +1229,7 @@ function onIdFile(ev: Event) {
 const ctaLabel = computed(() => {
   switch (step.value) {
     case 'search':
-      return 'Confirm address →'
+      return 'Continue →'
     case 'confirm':
       return verifyLoading.value ? 'Starting…' : 'Yes, this is my property →'
     case 'kyc-explainer':
@@ -2007,6 +1940,13 @@ onBeforeUnmount(() => {
   min-height: 100vh;
 }
 
+.cl-search-hero-img {
+  width: 168px;
+  height: 168px;
+  object-fit: contain;
+  display: block;
+  margin: 8px auto 18px;
+}
 .cl-icon-square {
   width: 64px;
   height: 64px;
@@ -2712,7 +2652,8 @@ onBeforeUnmount(() => {
 /* ── Screen 1: Confirm property ─────────────────────────────────── */
 .cl-lr-card {
   position: relative;
-  background: linear-gradient(160deg, #E9F6F5 0%, #F3FAF9 100%);
+  background: #fff;
+  border: 1.5px solid #eef0f6;
   border-radius: 20px;
   padding: 20px 20px 22px;
   margin: 4px 0 16px;
@@ -2774,15 +2715,16 @@ onBeforeUnmount(() => {
 .cl-lr-tile-ic {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  background: #E9F6F5;
-  color: #00817C;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.cl-lr-tile-ic svg { width: 18px; height: 18px; }
+.cl-lr-tile-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .cl-lr-tile-l {
   font-size: 12px;
   font-weight: 600;
@@ -2830,15 +2772,12 @@ onBeforeUnmount(() => {
 .cl-lock-note-ic {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
-  background: #E9F6F5;
-  color: #00817C;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.cl-lock-note-ic svg { width: 20px; height: 20px; }
+.cl-lock-note-ic img { width: 100%; height: 100%; object-fit: contain; }
 .cl-lock-note-body {
   font-size: 13px;
   color: #4A5876;
@@ -3192,114 +3131,23 @@ onBeforeUnmount(() => {
   display: inline-flex;
 }
 
-/* ── Auth-required popup (sits above everything else) ── */
-.authd-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(20, 17, 42, 0.62);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 1200;
+.cl-private-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-}
-.authd-card {
-  width: 100%;
-  max-width: 22rem;
-  background: #fff;
-  border-radius: 18px;
-  padding: 22px 22px 18px;
-  box-shadow: 0 24px 60px rgba(35, 29, 69, 0.45);
-  text-align: center;
-  color: #231d45;
-}
-.authd-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: rgba(0, 161, 154, 0.12);
-  color: #007e78;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 14px;
-}
-.authd-icon svg {
-  width: 24px;
-  height: 24px;
-}
-.authd-title {
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  margin-bottom: 8px;
-  line-height: 1.25;
-}
-.authd-body {
-  font-size: 13px;
-  font-weight: 500;
-  color: #6b7089;
-  line-height: 1.55;
-  margin-bottom: 18px;
-}
-.authd-actions {
-  display: flex;
-  flex-direction: column;
   gap: 8px;
-}
-.authd-btn {
-  width: 100%;
-  padding: 13px;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 800;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.15s;
-  border: none;
-  letter-spacing: -0.1px;
-}
-.authd-btn.primary {
-  background: linear-gradient(135deg, #00a19a, #008a84);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
-}
-.authd-btn.primary:hover {
-  filter: brightness(1.06);
-}
-.authd-btn.secondary {
-  background: #fff;
-  border: 1.5px solid #e4e5ed;
-  color: #231d45;
-}
-.authd-btn.secondary:hover {
+  margin-top: 14px;
+  padding: 12px 14px;
   background: #f5f6fa;
-}
-.authd-btn.ghost {
-  background: transparent;
-  color: #6b7089;
+  border-radius: 12px;
+  font-size: 12.5px;
   font-weight: 700;
-  padding: 8px;
-}
-.authd-btn.ghost:hover {
   color: #231d45;
 }
-.authd-enter-active,
-.authd-leave-active {
-  transition: opacity 0.22s ease;
+.cl-private-bar img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
 }
-.authd-enter-active .authd-card,
-.authd-leave-active .authd-card {
-  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.authd-enter-from,
-.authd-leave-to {
-  opacity: 0;
-}
-.authd-enter-from .authd-card,
-.authd-leave-to .authd-card {
-  transform: scale(0.94);
-}
+
 </style>
