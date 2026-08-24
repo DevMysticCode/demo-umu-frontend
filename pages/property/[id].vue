@@ -168,11 +168,14 @@
       </div>
 
       <!-- Floating claim box — overlaps roughly the bottom third of the
-           hero photo (left-aligned with it, per the latest prototype),
-           rather than the small full-width "peek" this used to be.
-           Unclaimed state only — progress/published keep the in-flow CTA
-           below, which already covers their case. -->
-      <div v-if="pageState === 'unclaimed'" class="pps-float-claim">
+           hero photo (left-aligned with it, per the latest prototype).
+           Shown for all three passport states now, so unclaimed/
+           in-progress/published all get the same treatment here instead
+           of only unclaimed getting this card and the other two only
+           getting the plainer in-flow PassportClaimBox banner below.
+           Hidden (not shown as a confident "unclaimed") when the status
+           fetch genuinely failed — see passportStatusUnknown above. -->
+      <div v-if="!passportStatusUnknown" class="pps-float-claim">
         <div class="pps-float-claim-top">
           <img
             src="/op-icons/passportview/umu-passport.png"
@@ -181,24 +184,19 @@
             loading="lazy"
           />
           <div class="pps-float-claim-body">
-            <div class="pps-float-claim-title">
-              No Passport yet — be the first
-            </div>
-            <div class="pps-float-claim-sub">
-              Create your Property Passport to store, verify and share
-              everything about your home.
-            </div>
+            <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
+            <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
           </div>
         </div>
         <div class="pps-float-claim-cta">
           <button
             type="button"
             class="pps-float-claim-btn"
-            @click="onClaimClick"
+            @click="onFloatClaimCtaClick"
           >
-            Claim this property
+            {{ floatClaimCta }}
           </button>
-          <div class="pps-float-claim-price">£15 one-off</div>
+          <div v-if="floatClaimMeta" class="pps-float-claim-price">{{ floatClaimMeta }}</div>
         </div>
       </div>
 
@@ -4242,6 +4240,12 @@ const { recordExplored } = useRecentlyExplored()
 const config = useRuntimeConfig()
 const property = ref<any>(null)
 const passportStatus = ref<any>(null)
+// True only once the passport-status fetch has genuinely failed (after
+// retrying) — distinct from passportStatus being null because it just
+// hasn't loaded yet. Gates the floating claim card so a fetch failure
+// renders as "we don't know yet" rather than a confident (and possibly
+// wrong) "unclaimed" that could prompt an existing owner to pay again.
+const passportStatusUnknown = ref(false)
 const enrichment = ref<any>(null)
 const pageLoading = ref(true)
 const loadError = ref('')
@@ -6005,6 +6009,51 @@ const isPassportOwnerOrCollab = computed<boolean>(() => {
   const s = passportStatus.value
   return !!(s?.isOwner || s?.isCollaborator)
 })
+
+// Content for the floating photo-overlap card — same card now covers all
+// three passport states (previously unclaimed-only), so copy/CTA/meta
+// swap here rather than the card itself only existing for one state.
+const floatClaimTitle = computed<string>(() => {
+  if (pageState.value === 'published') return 'Verified Passport available'
+  if (pageState.value === 'progress') return 'Passport being built'
+  return 'No Passport yet — be the first'
+})
+const floatClaimSub = computed<string>(() => {
+  if (pageState.value === 'published') {
+    return 'View the full verified record — certificates, history & more.'
+  }
+  if (pageState.value === 'progress') {
+    return 'The owner is preparing a verified record — be ready before it goes live.'
+  }
+  return 'Create your Property Passport to store, verify and share everything about your home.'
+})
+const floatClaimCta = computed<string>(() => {
+  if (pageState.value === 'published') {
+    return isPassportOwnerOrCollab.value ? 'View my Passport' : 'View Passport'
+  }
+  if (pageState.value === 'progress') {
+    return isPassportOwnerOrCollab.value ? 'Continue building' : 'Get notified'
+  }
+  return 'Claim this property'
+})
+const floatClaimMeta = computed<string>(() => {
+  if (pageState.value === 'published') {
+    return isPassportOwnerOrCollab.value || passportStatus.value?.canAccess ? '' : '£99'
+  }
+  if (pageState.value === 'progress') {
+    return `${progressPct.value}% complete`
+  }
+  return '£15 one-off'
+})
+function onFloatClaimCtaClick() {
+  if (pageState.value === 'unclaimed') {
+    onClaimClick()
+  } else if (pageState.value === 'progress') {
+    onProgressCtaClick()
+  } else {
+    routeForPassportState()
+  }
+}
 
 // Owner/collaborator → open the passport so they can keep filling sections.
 // Everyone else → open the Watch sheet (notify-me flow). Single click handler
@@ -7883,6 +7932,24 @@ onMounted(async () => {
       })
     }
     passportStatus.value = statusData
+
+    // getPassportStatus() returns null on a genuine fetch failure (not a
+    // "no passport" result). For a logged-in user that's worth a retry —
+    // showing a confidently-wrong "unclaimed" card to someone who already
+    // owns/published this passport could prompt them to pay again. Guests
+    // are excluded: this endpoint is JWT-gated, so it always returns null
+    // for them regardless of the real status — that's an existing,
+    // separate limitation, not a fetch failure worth retrying.
+    const hasToken =
+      typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
+    if (hasToken && statusData === null) {
+      const retryData = await getPassportStatus(propertyId)
+      if (retryData !== null) {
+        passportStatus.value = retryData
+      } else {
+        passportStatusUnknown.value = true
+      }
+    }
   } catch (err) {
     loadError.value = 'Failed to load property details.'
     console.error(err)

@@ -39,13 +39,17 @@
             :show-caption="false"
             class="prop-img"
           />
-          <div v-if="prop.hasPassport" class="prop-badge-pp">
+          <div
+            v-if="prop.hasPassport"
+            class="prop-badge-pp"
+            :class="prop.passportPublished ? 'published' : 'in-progress'"
+          >
             <img
               src="/op-icons/passportview/umu-passport.png"
               alt=""
               class="pp-emoji-ic"
             />
-            Passport
+            {{ prop.passportPublished ? 'Published' : 'In Progress' }}
           </div>
           <div class="prop-price-tag">
             {{
@@ -227,6 +231,12 @@ const emit = defineEmits<{ (e: 'open-filters'): void }>()
   display: inline-flex;
   align-items: center;
   gap: 4px;
+}
+.prop-badge-pp.in-progress {
+  background: #00a19a;
+}
+.prop-badge-pp.published {
+  background: #b8791f;
 }
 .pp-emoji-ic {
   width: 11px;
