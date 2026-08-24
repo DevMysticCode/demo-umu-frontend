@@ -33,7 +33,7 @@
     <div class="discover-hero">
       <!-- ── Hero: eyebrow/title/sub/badge on the left, illustration
            on the right ─────────────────────────────────────────── -->
-      <div class="exp-hero-row">
+      <div v-if="!searchMode" class="exp-hero-row">
         <div class="exp-hero-text">
           <div class="exp-hero-eyebrow">Explore</div>
           <div class="exp-hero-title">Discover any UK property.</div>
@@ -66,20 +66,22 @@
         />
       </div>
 
-      <!-- Type-ahead search — selecting an address navigates straight to
-           that property (matches /claim's search behavior). -->
-      <PropertySearchInput
+      <!-- Restored filter-pill + Search-button experience: inline
+           "Distance & filters" sheet, Search shows a results list on the
+           page itself. A deliberate fork (PropertySearchExperienceClassic)
+           from the component Explore now uses, so Explore's own search is
+           untouched. -->
+      <PropertySearchExperienceClassic
         placeholder="Enter postcode or address"
-        variant="light"
-        @select="onResultSelect"
+        @update:search-mode="searchMode = $event"
       />
-      <div class="exp-search-hint">
+      <div v-if="!searchMode" class="exp-search-hint">
         Try a postcode like <b>CV1 2WT</b> or an address like
         <b>10 Downing Street, London</b>
       </div>
 
       <!-- ── Three entry-point cards ─────────────────────────────── -->
-      <div class="exp-cards-row">
+      <div v-if="!searchMode" class="exp-cards-row">
         <button
           type="button"
           class="exp-card exp-card--teal"
@@ -130,7 +132,7 @@
       </div>
 
       <!-- ── HomeScore / Property Passport ─────────────────────────── -->
-      <div class="exp-more">
+      <div v-if="!searchMode" class="exp-more">
         <div class="exp-more-grid">
           <button
             type="button"
@@ -214,7 +216,7 @@
       </div>
 
       <!-- ── Recently explored ───────────────────────────────────── -->
-      <div v-if="recentlyExplored.length" class="exp-recent">
+      <div v-if="!searchMode && recentlyExplored.length" class="exp-recent">
         <div class="exp-recent-header">
           <div class="exp-recent-title">Recently explored</div>
         </div>
@@ -272,7 +274,7 @@ definePageMeta({ title: 'Explore - UmovingU' })
 
 import OPIcon from '~/components/ui/OPIcon.vue'
 import AuthGateModal from '~/components/ui/AuthGateModal.vue'
-import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
+import PropertySearchExperienceClassic from '~/components/property/PropertySearchExperienceClassic.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
 import { usePropertySearch } from '~/composables/usePropertySearch'
 import {
@@ -284,15 +286,11 @@ const router = useRouter()
 const { formatPrice } = usePropertySearch()
 const { getRecentlyExplored } = useRecentlyExplored()
 const recentlyExplored = ref<RecentlyExploredEntry[]>([])
+const searchMode = ref(false)
 
 onMounted(() => {
   recentlyExplored.value = getRecentlyExplored()
 })
-
-function onResultSelect(property: any) {
-  if (!property?.id) return
-  router.push(`/property/${property.id}`)
-}
 
 // Watched Properties still uses the generic "Create account / Sign in"
 // gate the HomeScore flow already uses, instead of being dropped
@@ -455,8 +453,9 @@ function lastSoldLabel(dateStr: string): string {
   margin-top: -4px;
 }
 
-/* ── Search — PropertySearchInput.vue owns its own styling; nothing
-   to style here. ── */
+/* ── Search — PropertySearchExperienceClassic.vue owns its own
+   styling (search bar, filter sheet, results list); nothing to style
+   here. ── */
 .exp-search-hint {
   font-size: 11.5px;
   font-weight: 500;

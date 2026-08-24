@@ -37,13 +37,12 @@
         </div>
       </div>
 
-      <PropertySearchInput
+      <PropertySearchExperienceClassic
         placeholder="Search by postcode, address or area"
-        variant="light"
-        @select="onResultSelect"
+        @update:search-mode="searchMode = $event"
       />
 
-      <template v-if="roleResolved && role === 'buy'">
+      <template v-if="!searchMode && roleResolved && role === 'buy'">
         <div v-if="loadingBuyerProfile" class="skeleton-card" style="height: 220px; margin-bottom: 20px" />
 
         <template v-else>
@@ -221,7 +220,7 @@
         </template>
       </template>
 
-      <template v-else-if="roleResolved">
+      <template v-else-if="!searchMode && roleResolved">
         <div v-if="loadingPassport" class="skeleton-card" style="height: 220px; margin-bottom: 20px" />
 
         <template v-else>
@@ -410,20 +409,15 @@ import UserAvatar from '~/components/ui/UserAvatar.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import PassportCard from '~/components/passport-view/PassportCard.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
-import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
+import PropertySearchExperienceClassic from '~/components/property/PropertySearchExperienceClassic.vue'
 import ForYouFeed from '~/components/property/ForYouFeed.vue'
 import PropertySearchFiltersModal from '~/components/property/PropertySearchFiltersModal.vue'
 import { usePropertyForYou } from '~/composables/usePropertyForYou'
 
 const config = useRuntimeConfig()
-const router = useRouter()
 const { profile, fetchProfile } = useProfile()
 
-function onResultSelect(property: any) {
-  if (!property?.id) return
-  router.push(`/property/${property.id}`)
-}
-
+const searchMode = ref(false)
 const roleResolved = ref(false)
 const role = ref<string>('buy')
 
