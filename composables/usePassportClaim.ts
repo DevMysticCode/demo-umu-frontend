@@ -21,21 +21,20 @@ export const usePassportClaim = () => {
     canAccess?: boolean
   }
 
+  // Returns null on failure — NOT a fake "unclaimed" result. A network
+  // blip or expired token here used to silently render as "no passport",
+  // which could prompt someone who's already claimed/published to pay
+  // again. Callers must treat null as "status unknown", not "unclaimed".
   const getPassportStatus = async (
     propertyId: string,
-  ): Promise<PassportStatus> => {
+  ): Promise<PassportStatus | null> => {
     try {
       return await $fetch<PassportStatus>(
         `${base}/property/${propertyId}/passport-status`,
         { headers: headers() },
       )
     } catch {
-      return {
-        hasPassport: false,
-        passportId: null,
-        isOwner: false,
-        isCollaborator: false,
-      }
+      return null
     }
   }
 

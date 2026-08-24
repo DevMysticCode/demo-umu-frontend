@@ -5073,7 +5073,13 @@ async function claimOrAccessPassport() {
     const { getPassportStatus } = usePassportClaim()
     const status = await getPassportStatus(propertyId)
 
-    if (status.hasPassport && status.passportId) {
+    if (!status) {
+      // Status genuinely unknown (fetch failed) — don't guess "no
+      // passport" and risk sending an already-claimed owner back through
+      // claim/KYC. Land them on the property page instead, same as any
+      // other failure here.
+      router.push(`/property/${propertyId}`)
+    } else if (status.hasPassport && status.passportId) {
       if (
         status.isOwner ||
         status.isBuyer ||
@@ -6053,21 +6059,26 @@ onMounted(async () => {
     if (token) {
       const { getPassportStatus } = usePassportClaim()
       const status = await getPassportStatus(propertyId)
-      isPropertyOwner.value = status.isOwner ?? false
-      isPassportCollaborator.value = status.isCollaborator ?? false
-      hasOtherOwnerPassport.value =
-        !!status.hasPassport && !status.isOwner && !status.isCollaborator
-      isOtherPassportPublished.value = !!(
-        status.hasPassport && status.isPublished
-      )
-      // Capture this user's passport id so the ?screen=publish / ?screen=quick-wins
-      // handler below can short-circuit straight to the passport view when the
-      // user has already claimed (e.g. returning from the claim chain).
-      if (status.hasPassport && status.passportId && (status.isOwner || status.isCollaborator)) {
-        ownedPassportId.value = status.passportId
-      }
-      if ((status as any).passportProgress) {
-        passportProgress.value = (status as any).passportProgress
+      // status is null when the fetch genuinely failed — leave the
+      // ownership/passport refs at their defaults rather than guessing,
+      // same reasoning as the goToClaimFlow() null-check above.
+      if (status) {
+        isPropertyOwner.value = status.isOwner ?? false
+        isPassportCollaborator.value = status.isCollaborator ?? false
+        hasOtherOwnerPassport.value =
+          !!status.hasPassport && !status.isOwner && !status.isCollaborator
+        isOtherPassportPublished.value = !!(
+          status.hasPassport && status.isPublished
+        )
+        // Capture this user's passport id so the ?screen=publish / ?screen=quick-wins
+        // handler below can short-circuit straight to the passport view when the
+        // user has already claimed (e.g. returning from the claim chain).
+        if (status.hasPassport && status.passportId && (status.isOwner || status.isCollaborator)) {
+          ownedPassportId.value = status.passportId
+        }
+        if ((status as any).passportProgress) {
+          passportProgress.value = (status as any).passportProgress
+        }
       }
     }
 

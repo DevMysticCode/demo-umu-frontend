@@ -51,9 +51,13 @@
               :show-caption="false"
               class="prop-img"
             />
-            <div v-if="prop.hasPassport" class="prop-badge-pp">
+            <div
+              v-if="prop.hasPassport"
+              class="prop-badge-pp"
+              :class="prop.passportPublished ? 'published' : 'in-progress'"
+            >
               <img src="/op-icons/passportview/umu-passport.png" alt="" class="pp-emoji-ic" />
-              Passport
+              {{ prop.passportPublished ? 'Published' : 'In Progress' }}
             </div>
             <div class="prop-price-tag">
               {{ prop.estimatedPrice ? '£' + Math.round(prop.estimatedPrice).toLocaleString() : prop.priceDisplay || 'POA' }}
@@ -374,6 +378,16 @@ function epcColor(rating: string): string {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+}
+/* In progress = teal (matches the property page's in-progress accent),
+   Published = gold (matches the property page's published "champagne"
+   band) — so this badge's color actually means something instead of
+   every claimed property looking identical regardless of status. */
+.prop-badge-pp.in-progress {
+  background: #00a19a;
+}
+.prop-badge-pp.published {
+  background: #b8791f;
 }
 .pp-emoji-ic {
   width: 11px;
