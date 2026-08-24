@@ -3,7 +3,7 @@
     <div v-if="modelValue" class="agm-overlay" @click.self="close">
       <div class="agm-card">
         <div class="agm-ic">
-          <img src="/op-icons/investment/padlock.png" alt="" loading="lazy" />
+          <img src="/op-icons/claim/padlock.png" alt="" loading="lazy" />
         </div>
         <div class="agm-title">{{ title }}</div>
         <div class="agm-sub">{{ body }}</div>
@@ -75,8 +75,8 @@ function go(mode: 'signup' | 'signin') {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
 }
 .agm-ic {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: #f0fdfa;
   display: grid;
@@ -85,8 +85,8 @@ function go(mode: 'signup' | 'signin') {
   overflow: hidden;
 }
 .agm-ic img {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
   display: block;
 }
