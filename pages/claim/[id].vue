@@ -868,7 +868,7 @@
         >
           Add phone number →
         </NuxtLink>
-        <button v-else class="cl-err-retry" @click="issuePassport">
+        <button v-else class="cl-err-retry" @click="finalizeAfterVerification">
           Retry
         </button>
       </div>
@@ -934,17 +934,17 @@
           loading="lazy"
         />
         <div>
-          <div class="cl-owned-t">One more step</div>
+          <div class="cl-owned-t">Before we verify your ownership</div>
           <div class="cl-owned-s">{{ claimPriceReason }}</div>
         </div>
       </div>
 
       <div class="cl-card cl-mb-sm">
-        <div class="cl-eyebrow cl-mb-sm">Why there's a fee</div>
+        <div class="cl-eyebrow cl-mb-sm">What this fee covers</div>
         <p class="cl-body" style="margin: 0">
           Identity checks and HM Land Registry ownership lookups cost us real
-          money per property. This one-off fee covers exactly what this claim
-          used — {{ claimPriceReason }}.
+          money per property, so we ask for this one-off fee upfront —
+          {{ claimPriceReason }}. Once it's paid, we'll run those checks next.
         </p>
       </div>
 
@@ -1057,11 +1057,13 @@ function onPassportTypeConfirmed(payload: {
     )
   }
   showTypeDrawer.value = false
-  // Resume the claim only if the user is already at the final step. When the
-  // drawer is shown at mount-time (the common case), the user still needs to
-  // walk through search → confirm → KYC; their choice is just persisted.
-  if (step.value === 'lr-found') {
-    issuePassport()
+  // Resume the claim only if the user is already on the confirm step and
+  // hit the "type required" wall in confirmProperty() below (dismissed the
+  // drawer without choosing at mount, then tapped Continue anyway). When
+  // the drawer is shown at mount-time (the common case), the user still
+  // needs to walk through search → confirm; their choice is just persisted.
+  if (step.value === 'confirm') {
+    confirmProperty()
   }
 }
 const base = config.public.apiBase as string
@@ -1133,7 +1135,11 @@ async function loadProperty() {
     const data = await $fetch<any>(`${base}/property/${propertyId}`)
     if (data && data.id) {
       selectedProperty.value = data
-      step.value = 'confirm'
+      // Only the default fresh-mount case advances to 'confirm' here — a
+      // resumed step (e.g. 'kyc-explainer' after the Persona redirect
+      // round-trip, restored above) must not get clobbered back by this
+      // resolving after that resume already moved the step forward.
+      if (step.value === 'search') step.value = 'confirm'
       ensurePropertyEnriched()
     }
   } catch {
@@ -1214,6 +1220,7 @@ onMounted(async () => {
   // marker is stale (different property, or older than 30 min) we
   // ignore it and fall through to the normal claim flow.
   const url = new URL(window.location.href)
+  let resumedFromKyc = false
   if (url.searchParams.get('kycreturn') === '1') {
     try {
       const raw = localStorage.getItem('umu_persona_return')
@@ -1223,6 +1230,36 @@ onMounted(async () => {
         if (fresh && saved?.propertyId === propertyId && saved?.inquiryId) {
           personaInquiryId.value = saved.inquiryId
           step.value = 'kyc-explainer'
+          resumedFromKyc = true
+          // Payment now happens BEFORE Persona, so by this point the
+          // passport-type pick and the already-created, already-paid
+          // passport id both predate this redirect — restore them too
+          // (this component fully remounts on return, losing plain refs).
+          // finalizeAfterVerification() needs claimPassportId once HMLR
+          // comes back VERIFIED; chosenPassportType drives finishAndNavigate.
+          try {
+            const typeRaw = localStorage.getItem('umu_claim_passport_type')
+            if (typeRaw) {
+              const savedType = JSON.parse(typeRaw)
+              if (savedType?.propertyId === propertyId && savedType?.type) {
+                chosenPassportType.value = savedType.type
+                chosenIsHmo.value = !!savedType.isHmo
+              }
+            }
+          } catch {
+            /* corrupt localStorage — chosenPassportType stays unset */
+          }
+          try {
+            const idRaw = localStorage.getItem('umu_claim_passport_id')
+            if (idRaw) {
+              const savedId = JSON.parse(idRaw)
+              if (savedId?.propertyId === propertyId && savedId?.passportId) {
+                claimPassportId.value = savedId.passportId
+              }
+            }
+          } catch {
+            /* corrupt localStorage — claimPassportId stays unset */
+          }
           // Strip the query param so a refresh doesn't re-enter this path.
           url.searchParams.delete('kycreturn')
           window.history.replaceState({}, '', url.toString())
@@ -1279,9 +1316,9 @@ onMounted(async () => {
   // First thing: ask the user which type of passport they're claiming.
   // Always shown — even if their profile role suggests one — so they can
   // override per-property (a landlord might still claim a seller passport).
-  // Skipped when resuming or when the type already arrived via query: they
-  // already chose, so just carry on.
-  showTypeDrawer.value = !resumingConfirm && !typeFromQuery
+  // Skipped when resuming, when the type already arrived via query, or
+  // when resuming from Persona (already chose long before that redirect).
+  showTypeDrawer.value = !resumingConfirm && !typeFromQuery && !resumedFromKyc
   await Promise.all([loadProperty(), loadProfile()])
   if (resumingConfirm) confirmProperty()
 })
@@ -1408,7 +1445,9 @@ function onBack() {
       step.value = 'kyc-verified'
       return
     case 'payment':
-      step.value = 'lr-found'
+      // Payment now runs right after 'confirm' (before KYC/HMLR), so
+      // that's the only step before it in the new order.
+      step.value = 'confirm'
       return
     default:
       router.back()
@@ -1505,12 +1544,16 @@ function onPrimary() {
       step.value = 'lr-searching'
       return
     case 'lr-found':
-      issuePassport()
+      finalizeAfterVerification()
       return
   }
 }
 
-// ── confirm → start-verification → kyc-explainer (or skip if already verified) ─────────────
+// ── confirm → start-verification → create (paid) claim → payment ──────
+// Payment now happens BEFORE KYC/HM Land Registry run (not after), so we
+// don't incur either cost on a user who confirms then never pays. The
+// KYC-explainer / HMLR-search steps happen once payClaimFee() below
+// confirms the charge succeeded.
 async function confirmProperty() {
   verificationError.value = ''
   // "Yes, this is my property" is the first moment this flow actually
@@ -1525,30 +1568,58 @@ async function confirmProperty() {
     step.value = 'kyc-explainer'
     return
   }
+  // The passport needs a type before it can be created — normally already
+  // picked via the drawer shown at mount, but if it was dismissed without
+  // choosing, ask now and resume here via onPassportTypeConfirmed above.
+  if (!chosenPassportType.value) {
+    showTypeDrawer.value = true
+    return
+  }
   verifyLoading.value = true
   try {
+    // Snapshots whether KYC was already approved before this claim, for
+    // pricing (see createOwnerClaimPaymentIntent) — read again after
+    // payment to decide whether the explainer screen can be skipped.
     await $fetch(
       `${base}/property/${selectedProperty.value.id}/start-verification`,
       { method: 'POST', headers: authHeaders() },
     )
 
-    // Per-user KYC: if the user has already passed Persona on a previous
-    // claim, jump straight past identity verification.
-    try {
-      const { getKycStatus } = useKyc()
-      const r = await getKycStatus()
-      if (r.status === 'approved') {
-        step.value = 'kyc-verified'
-        return
+    const { claimPassport } = usePassportClaim()
+    const res = await claimPassport(
+      selectedProperty.value.id,
+      selectedProperty.value?.addressLine1 ?? '',
+      selectedProperty.value?.postcode ?? '',
+      { type: chosenPassportType.value, isHmo: chosenIsHmo.value },
+    )
+    const passportId = res.passportId
+    if (!passportId) throw new Error('Passport could not be created')
+
+    if (res.status === 'PENDING_PAYMENT') {
+      claimPassportId.value = passportId
+      // Persisted so finalizeAfterVerification() can still find it after
+      // Persona's hosted KYC flow does a same-tab redirect away and back
+      // (see the `kycreturn=1` branch in onMounted) — that round-trip
+      // fully remounts this component, losing plain refs, and by then
+      // payment has already succeeded so the passport id must survive.
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(
+          'umu_claim_passport_id',
+          JSON.stringify({ propertyId, passportId }),
+        )
       }
-    } catch {
-      // If status lookup fails, fall through to the explainer screen.
+      await openPaymentStep(passportId)
+      return
     }
 
-    step.value = 'kyc-explainer'
+    // Already active — a resumed or previously-completed claim on this
+    // property/type. No fresh payment or verification needed.
+    finishAndNavigate(passportId)
   } catch (e: any) {
     verificationError.value =
-      e?.data?.message || 'Could not start verification. Please try again.'
+      e?.data?.message ||
+      e?.message ||
+      'Could not start verification. Please try again.'
   } finally {
     verifyLoading.value = false
   }
@@ -1879,13 +1950,13 @@ function describeLrFailure(lr: {
 }
 
 // ── Issue passport (HM Land Registry verification + claim) ────────
-async function issuePassport() {
+// ── lr-found → activate the already-paid passport, then navigate ──────
+// The passport was created and paid for back in confirmProperty() /
+// payClaimFee() above (payment now runs BEFORE this point) — this just
+// confirms HM Land Registry came back VERIFIED and KYC is approved, then
+// seeds the passport's sections.
+async function finalizeAfterVerification() {
   issueError.value = ''
-  const pId = selectedProperty.value?.id
-  if (!pId) {
-    issueError.value = 'No property selected.'
-    return
-  }
   issueLoading.value = true
   try {
     // HM Land Registry verification has already run during the lr-searching
@@ -1895,43 +1966,17 @@ async function issuePassport() {
     if (lrResult.value?.status !== 'VERIFIED') {
       issueError.value =
         'Ownership has not been verified against HM Land Registry yet.'
-      issueLoading.value = false
+      return
+    }
+    if (!claimPassportId.value) {
+      issueError.value =
+        'Something went wrong with your claim — please start again.'
       return
     }
 
-    // Gate the claim on the user's passport-type pick.
-    // We deliberately do NOT short-circuit on getPassportStatus() here:
-    // that endpoint only returns SELLER passports (it's buyer-facing), so
-    // reusing its id would land a landlord claim on a seller passport.
-    // The backend's createPassport dedupes per (owner, property, type)
-    // and returns the existing same-type passport if one already exists.
-    if (!chosenPassportType.value) {
-      issueLoading.value = false
-      showTypeDrawer.value = true
-      return
-    }
-    const { claimPassport } = usePassportClaim()
-    const res = await claimPassport(
-      pId,
-      selectedProperty.value?.addressLine1 ?? '',
-      selectedProperty.value?.postcode ?? '',
-      { type: chosenPassportType.value, isHmo: chosenIsHmo.value },
-    )
-    const passportId = res.passportId
-    if (!passportId) throw new Error('Passport could not be created')
-
-    // KYC + HM Land Registry checks both cost us real money — a fresh
-    // property claim comes back PENDING_PAYMENT and needs the owner-claim
-    // fee paid before its sections are seeded. An already-active passport
-    // (resumed draft, or the free manual/convert path) skips straight to
-    // navigation.
-    if (res.status === 'PENDING_PAYMENT') {
-      claimPassportId.value = passportId
-      await openPaymentStep(passportId)
-      return
-    }
-
-    finishAndNavigate(passportId)
+    const { activatePassport } = usePassportClaim()
+    await activatePassport(claimPassportId.value)
+    finishAndNavigate(claimPassportId.value)
   } catch (e: any) {
     issueError.value =
       e?.data?.message ||
@@ -2065,11 +2110,23 @@ async function payClaimFee() {
       return
     }
 
-    // The webhook may not have fired yet; activatePassport re-checks
-    // Stripe directly via hasSuccessfulPayment so this is safe either way.
-    const { activatePassport } = usePassportClaim()
-    await activatePassport(claimPassportId.value)
-    finishAndNavigate(claimPassportId.value)
+    // Payment's confirmed — the passport stays PENDING_PAYMENT until
+    // activatePassport() (called from finalizeAfterVerification, once HM
+    // Land Registry comes back VERIFIED below) also sees KYC approved.
+    // Skip straight to the HMLR check if this user already had approved
+    // KYC before this claim (same check confirmProperty() used to make
+    // pre-payment) — otherwise walk them through the Persona explainer.
+    try {
+      const { getKycStatus } = useKyc()
+      const r = await getKycStatus()
+      if (r.status === 'approved') {
+        step.value = 'lr-searching'
+        return
+      }
+    } catch {
+      // If status lookup fails, fall through to the explainer screen.
+    }
+    step.value = 'kyc-explainer'
   } catch (e: any) {
     paymentError.value =
       e?.data?.message ||
