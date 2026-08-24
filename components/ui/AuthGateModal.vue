@@ -75,8 +75,8 @@ function go(mode: 'signup' | 'signin') {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
 }
 .agm-ic {
-  width: 64px;
-  height: 64px;
+  width: 85px;
+  height: 85px;
   border-radius: 50%;
   background: #f0fdfa;
   display: grid;
@@ -85,8 +85,8 @@ function go(mode: 'signup' | 'signin') {
   overflow: hidden;
 }
 .agm-ic img {
-  width: 40px;
-  height: 40px;
+  width: 65px;
+  height: 65px;
   object-fit: contain;
   display: block;
 }

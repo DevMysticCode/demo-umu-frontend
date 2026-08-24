@@ -182,8 +182,8 @@ const onBack = useGoBack('/dashboard')
   border-radius: 12px;
 }
 .cl-lock-ic {
-  width: 24px;
-  height: 24px;
+  width: 65px;
+  height: 65px;
   flex-shrink: 0;
 }
 .cl-lock-ic img { width: 100%; height: 100%; object-fit: contain; display: block; }
@@ -208,8 +208,8 @@ const onBack = useGoBack('/dashboard')
   color: var(--navy);
 }
 .cl-private-bar img {
-  width: 18px;
-  height: 18px;
+  width: 25px;
+  height: 25px;
   object-fit: contain;
 }
 

@@ -1,10 +1,7 @@
 <template>
-  <div class="claim-root  mobile-container min-h-screen">
+  <div class="claim-root mobile-container min-h-screen">
     <!-- ── Sticky topbar + progress (not shown on fullscreen steps) ── -->
-    <div
-      v-if="!isFullscreenStep"
-      class="cl-topbar"
-    >
+    <div v-if="!isFullscreenStep" class="cl-topbar">
       <button class="cl-back" @click="onBack" aria-label="Back">‹</button>
       <div class="cl-top-text">
         <div class="cl-top-title">{{ topbarTitle }}</div>
@@ -18,7 +15,12 @@
 
     <!-- ════════════════════════════ SEARCH ════════════════════════════ -->
     <div v-if="step === 'search'" class="cl-screen">
-      <img src="/op-icons/landing/homeScoreCard.png" alt="" class="cl-search-hero-img" loading="lazy" />
+      <img
+        src="/op-icons/landing/homeScoreCard.png"
+        alt=""
+        class="cl-search-hero-img"
+        loading="lazy"
+      />
       <h1 class="cl-h2 cl-center">Which property are you claiming?</h1>
       <p class="cl-body cl-center cl-mb-lg">
         Enter your postcode and select your address. We'll verify ownership via
@@ -36,15 +38,23 @@
 
       <div v-if="selectedProperty" class="cl-sel-card">
         <div class="cl-sel-eyebrow">Selected address</div>
-        <div class="cl-sel-line1">{{ selectedProperty.addressLine1 || '—' }}</div>
+        <div class="cl-sel-line1">
+          {{ selectedProperty.addressLine1 || '—' }}
+        </div>
         <div class="cl-sel-line2">
-          {{ [selectedProperty.city, selectedProperty.postcode].filter(Boolean).join(', ') }}
+          {{
+            [selectedProperty.city, selectedProperty.postcode]
+              .filter(Boolean)
+              .join(', ')
+          }}
         </div>
         <div class="cl-sel-change" @click="clearSelection">Change address</div>
       </div>
 
       <div class="cl-lock-note">
-        <div class="cl-lock-ic"><img src="/op-icons/claim/padlock.png" alt="" loading="lazy" /></div>
+        <div class="cl-lock-ic">
+          <img src="/op-icons/claim/padlock.png" alt="" loading="lazy" />
+        </div>
         <div class="cl-lock-body">
           We verify ownership via
           <strong>HM Land Registry</strong> — encrypted and never sold.
@@ -69,15 +79,28 @@
         <div class="cl-lr-card-header">
           <div class="cl-lr-card-text">
             <div class="cl-lr-eyebrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 <polyline points="9 12 11 14 15 10" />
               </svg>
               FOUND ON LAND REGISTRY
             </div>
-            <div class="cl-lr-addr1">{{ selectedProperty?.addressLine1 || '—' }}</div>
+            <div class="cl-lr-addr1">
+              {{ selectedProperty?.addressLine1 || '—' }}
+            </div>
             <div class="cl-lr-addr2">
-              {{ [selectedProperty?.city, selectedProperty?.postcode].filter(Boolean).join(', ') || '—' }}
+              {{
+                [selectedProperty?.city, selectedProperty?.postcode]
+                  .filter(Boolean)
+                  .join(', ') || '—'
+              }}
             </div>
           </div>
           <img
@@ -89,14 +112,24 @@
         </div>
         <div class="cl-lr-tile-grid">
           <div class="cl-lr-tile">
-            <span class="cl-lr-tile-ic"><img src="/op-icons/buyer-passport/tenure.png" alt="" loading="lazy" /></span>
+            <span class="cl-lr-tile-ic"
+              ><img
+                src="/op-icons/buyer-passport/tenure.png"
+                alt=""
+                loading="lazy"
+            /></span>
             <div>
               <div class="cl-lr-tile-l">Tenure</div>
               <select
                 v-if="tenureDisplay === '—'"
                 class="cl-lr-tile-select"
                 :disabled="savingSelfDeclare"
-                @change="onSelfDeclare('tenure', ($event.target as HTMLSelectElement).value)"
+                @change="
+                  onSelfDeclare(
+                    'tenure',
+                    ($event.target as HTMLSelectElement).value,
+                  )
+                "
               >
                 <option value="" disabled selected>Select…</option>
                 <option value="Freehold">Freehold</option>
@@ -107,22 +140,41 @@
             </div>
           </div>
           <div class="cl-lr-tile">
-            <span class="cl-lr-tile-ic"><img src="/op-icons/buyer-passport/titleNumber.png" alt="" loading="lazy" /></span>
+            <span class="cl-lr-tile-ic"
+              ><img
+                src="/op-icons/buyer-passport/titleNumber.png"
+                alt=""
+                loading="lazy"
+            /></span>
             <div>
               <div class="cl-lr-tile-l">Title number</div>
-              <div v-if="titleDisplay" class="cl-lr-tile-v">{{ titleDisplay }}</div>
-              <div v-else class="cl-lr-tile-v cl-lr-tile-v--pending">Confirmed next step</div>
+              <div v-if="titleDisplay" class="cl-lr-tile-v">
+                {{ titleDisplay }}
+              </div>
+              <div v-else class="cl-lr-tile-v cl-lr-tile-v--pending">
+                Confirmed next step
+              </div>
             </div>
           </div>
           <div class="cl-lr-tile">
-            <span class="cl-lr-tile-ic"><img src="/op-icons/buyer-passport/propertyType.png" alt="" loading="lazy" /></span>
+            <span class="cl-lr-tile-ic"
+              ><img
+                src="/op-icons/buyer-passport/propertyType.png"
+                alt=""
+                loading="lazy"
+            /></span>
             <div>
               <div class="cl-lr-tile-l">Property type</div>
               <select
                 v-if="typeDisplay === '—'"
                 class="cl-lr-tile-select"
                 :disabled="savingSelfDeclare"
-                @change="onSelfDeclare('propertyType', ($event.target as HTMLSelectElement).value)"
+                @change="
+                  onSelfDeclare(
+                    'propertyType',
+                    ($event.target as HTMLSelectElement).value,
+                  )
+                "
               >
                 <option value="" disabled selected>Select…</option>
                 <option value="Detached">Detached</option>
@@ -137,7 +189,9 @@
             </div>
           </div>
           <div class="cl-lr-tile">
-            <span class="cl-lr-tile-ic"><img src="/op-icons/explore/calendar.png" alt="" loading="lazy" /></span>
+            <span class="cl-lr-tile-ic"
+              ><img src="/op-icons/explore/calendar.png" alt="" loading="lazy"
+            /></span>
             <div>
               <div class="cl-lr-tile-l">Registered</div>
               <div class="cl-lr-tile-v">{{ registeredDisplay }}</div>
@@ -152,13 +206,23 @@
           <img src="/op-icons/claim/padlock.png" alt="" loading="lazy" />
         </div>
         <div class="cl-lock-note-body">
-          Next we'll verify <strong>your identity</strong> to confirm you're
-          the registered owner. Takes about 2 minutes.
+          Next we'll verify <strong>your identity</strong> to confirm you're the
+          registered owner. Takes about 2 minutes.
         </div>
       </div>
 
       <div class="cl-link-center" @click="step = 'search'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="vertical-align: -2px; margin-right: 4px"
+        >
           <polyline points="23 4 23 10 17 10" />
           <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
         </svg>
@@ -173,7 +237,13 @@
 
     <!-- ════════════════════════════ KYC EXPLAINER ════════════════════════════ -->
     <div v-else-if="step === 'kyc-explainer'" class="cl-screen cl-center-col">
-      <div class="cl-icon-square cl-icon-lg"><img src="/op-icons/buyer-profile-build/idCard.png" alt="" loading="lazy" /></div>
+      <div class="cl-icon-square cl-icon-lg">
+        <img
+          src="/op-icons/buyer-profile-build/idCard.png"
+          alt=""
+          loading="lazy"
+        />
+      </div>
       <h1 class="cl-h1">Before we build your Passport</h1>
       <p class="cl-body cl-mb-lg">
         We need to confirm who you are and that you own the property. Takes
@@ -184,21 +254,31 @@
         <div class="cl-eyebrow">What's involved</div>
         <div class="cl-row-list">
           <div class="cl-step-row">
-            <div class="cl-step-ic"><img src="/op-icons/buyer-profile-build/idCard.png" alt="" loading="lazy" /></div>
+            <div class="cl-step-ic">
+              <img
+                src="/op-icons/buyer-profile-build/idCard.png"
+                alt=""
+                loading="lazy"
+              />
+            </div>
             <div>
               <div class="cl-step-t">Photo ID</div>
               <div class="cl-step-s">Passport or driving licence</div>
             </div>
           </div>
           <div class="cl-step-row">
-            <div class="cl-step-ic"><img src="/op-icons/misc/phoneSelfie.png" alt="" loading="lazy" /></div>
+            <div class="cl-step-ic">
+              <img src="/op-icons/misc/phoneSelfie.png" alt="" loading="lazy" />
+            </div>
             <div>
               <div class="cl-step-t">Liveness check</div>
               <div class="cl-step-s">Quick selfie to confirm it's you</div>
             </div>
           </div>
           <div class="cl-step-row">
-            <div class="cl-step-ic"><img src="/op-icons/calendar/shield.png" alt="" loading="lazy" /></div>
+            <div class="cl-step-ic">
+              <img src="/op-icons/calendar/shield.png" alt="" loading="lazy" />
+            </div>
             <div>
               <div class="cl-step-t">AML screening</div>
               <div class="cl-step-s">Automatic check — takes seconds</div>
@@ -209,7 +289,13 @@
 
       <div class="cl-card-pale cl-text-l">
         <div class="cl-pale-row">
-          <div class="cl-pale-ic"><img src="/op-icons/buyer-profile-build/stopwatch.png" alt="" loading="lazy" /></div>
+          <div class="cl-pale-ic">
+            <img
+              src="/op-icons/buyer-profile-build/stopwatch.png"
+              alt=""
+              loading="lazy"
+            />
+          </div>
           <div>
             <div class="cl-pale-t">Usually under 2 minutes</div>
             <div class="cl-pale-s">
@@ -220,7 +306,11 @@
       </div>
 
       <!-- Polling state — shown after the user opens the Persona hosted flow -->
-      <div v-if="personaPolling || personaInquiryId" class="cl-info-pale" style="margin-top: 14px;">
+      <div
+        v-if="personaPolling || personaInquiryId"
+        class="cl-info-pale"
+        style="margin-top: 14px"
+      >
         <div class="cl-info-ic">{{ personaPolling ? '⏳' : '👋' }}</div>
         <div class="cl-info-body">
           <template v-if="personaPolling">
@@ -230,7 +320,9 @@
           <template v-else>
             Finished in the verification tab? Tap <strong>Check now</strong>.
           </template>
-          <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <div
+            style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap"
+          >
             <button
               type="button"
               class="cl-err-retry"
@@ -243,7 +335,7 @@
               v-if="!personaPolling"
               type="button"
               class="cl-err-retry"
-              style="background: transparent; color: #008a84;"
+              style="background: transparent; color: #008a84"
               @click="runPolling"
             >
               Resume auto-check
@@ -253,7 +345,7 @@
       </div>
 
       <!-- Persona error banner -->
-      <div v-if="personaError" class="cl-err-banner" style="margin-top: 12px;">
+      <div v-if="personaError" class="cl-err-banner" style="margin-top: 12px">
         {{ personaError }}
         <button class="cl-err-retry" @click="startPersonaKyc">Retry</button>
       </div>
@@ -319,7 +411,14 @@
     <div v-else-if="step === 'kyc-liveness'" class="cl-screen cl-center-col">
       <div class="cl-live-wrap">
         <svg width="160" height="160" viewBox="0 0 160 160" class="cl-live-svg">
-          <circle cx="80" cy="80" r="74" fill="none" stroke="#cff4f2" stroke-width="4" />
+          <circle
+            cx="80"
+            cy="80"
+            r="74"
+            fill="none"
+            stroke="#cff4f2"
+            stroke-width="4"
+          />
           <circle
             cx="80"
             cy="80"
@@ -332,7 +431,9 @@
             class="cl-live-ring"
           />
         </svg>
-        <div class="cl-live-inner"><img src="/op-icons/misc/phoneSelfie.png" alt="" loading="lazy" /></div>
+        <div class="cl-live-inner">
+          <img src="/op-icons/misc/phoneSelfie.png" alt="" loading="lazy" />
+        </div>
       </div>
 
       <h1 class="cl-h1">Quick selfie check</h1>
@@ -360,7 +461,9 @@
 
     <!-- ════════════════════════════ KYC AML ════════════════════════════ -->
     <div v-else-if="step === 'kyc-aml'" class="cl-screen cl-center-col">
-      <div class="cl-icon-square cl-icon-lg"><img src="/op-icons/calendar/shield.png" alt="" loading="lazy" /></div>
+      <div class="cl-icon-square cl-icon-lg">
+        <img src="/op-icons/calendar/shield.png" alt="" loading="lazy" />
+      </div>
       <h1 class="cl-h1">Almost there</h1>
       <p class="cl-body cl-mb-lg">
         Automatic check against sanctions lists and PEP registers. Happens
@@ -386,7 +489,9 @@
 
       <div class="cl-card-pale cl-text-l">
         <div class="cl-pale-row">
-          <div class="cl-pale-ic-sm"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
+          <div class="cl-pale-ic-sm">
+            <img src="/op-icons/investment/padlock.png" alt="" loading="lazy" />
+          </div>
           <div class="cl-pale-s">
             AML checks are required by UK regulations. Data processed securely.
           </div>
@@ -409,19 +514,40 @@
       </p>
       <div class="cl-pill-row">
         <span class="cl-pill-good">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
           ID validated
         </span>
         <span class="cl-pill-good">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
           Liveness passed
         </span>
         <span class="cl-pill-good">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
           AML clear
@@ -470,14 +596,24 @@
           }"
         >
           <div class="cl-lr-tdot">
-            <svg v-if="lrStep >= 1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              v-if="lrStep >= 1"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
             <span v-else class="cl-lr-tdot-inner" />
           </div>
           <div class="cl-lr-tbody">
             <div class="cl-lr-tt">Address matched to title number</div>
-            <div class="cl-lr-ts">{{ lrStep >= 1 ? lrStamp(1) : 'Pending' }}</div>
+            <div class="cl-lr-ts">
+              {{ lrStep >= 1 ? lrStamp(1) : 'Pending' }}
+            </div>
           </div>
         </div>
         <div
@@ -488,7 +624,15 @@
           }"
         >
           <div class="cl-lr-tdot">
-            <svg v-if="lrStep >= 2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              v-if="lrStep >= 2"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
             <span v-else-if="lrStep === 1" class="cl-lr-tdot-inner" />
@@ -496,7 +640,13 @@
           <div class="cl-lr-tbody">
             <div class="cl-lr-tt">Title register retrieved</div>
             <div class="cl-lr-ts">
-              {{ lrStep >= 2 ? lrStamp(2) : lrStep === 1 ? 'In progress…' : 'Pending' }}
+              {{
+                lrStep >= 2
+                  ? lrStamp(2)
+                  : lrStep === 1
+                  ? 'In progress…'
+                  : 'Pending'
+              }}
             </div>
           </div>
         </div>
@@ -508,7 +658,15 @@
           }"
         >
           <div class="cl-lr-tdot">
-            <svg v-if="lrStep >= 3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              v-if="lrStep >= 3"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
             <span v-else-if="lrStep === 2" class="cl-lr-tdot-inner" />
@@ -516,7 +674,13 @@
           <div class="cl-lr-tbody">
             <div class="cl-lr-tt">Matching proprietor to identity</div>
             <div class="cl-lr-ts">
-              {{ lrStep >= 3 ? lrStamp(3) : lrStep === 2 ? 'In progress…' : 'Pending' }}
+              {{
+                lrStep >= 3
+                  ? lrStamp(3)
+                  : lrStep === 2
+                  ? 'In progress…'
+                  : 'Pending'
+              }}
             </div>
           </div>
         </div>
@@ -525,7 +689,14 @@
       <!-- Your data is secure card -->
       <div class="cl-secure cl-w-full">
         <div class="cl-secure-lock">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <rect x="5" y="11" width="14" height="10" rx="2" />
             <path d="M8 11V7a4 4 0 018 0v4" />
           </svg>
@@ -538,7 +709,14 @@
           </div>
         </div>
         <div class="cl-secure-shield">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             <polyline points="9 12 11 14 15 10" />
           </svg>
@@ -577,28 +755,50 @@
       <div class="cl-data-rows">
         <div class="cl-data-row">
           <span class="cl-data-ic cl-data-ic--img">
-            <img src="/op-icons/buyer-passport/titleNumber.png" alt="" loading="lazy" />
+            <img
+              src="/op-icons/buyer-passport/titleNumber.png"
+              alt=""
+              loading="lazy"
+            />
           </span>
           <span class="cl-data-l">Title number</span>
           <span class="cl-data-v">{{ titleDisplay }}</span>
         </div>
         <div class="cl-data-row">
           <span class="cl-data-ic cl-data-ic--img">
-            <img src="/op-icons/buyer-passport/tenure.png" alt="" loading="lazy" />
+            <img
+              src="/op-icons/buyer-passport/tenure.png"
+              alt=""
+              loading="lazy"
+            />
           </span>
           <span class="cl-data-l">Tenure</span>
           <span class="cl-data-v">{{ tenureDisplay }}</span>
         </div>
         <div class="cl-data-row">
           <span class="cl-data-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <circle cx="12" cy="8" r="4" />
               <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8" />
             </svg>
           </span>
           <span class="cl-data-l">Proprietor</span>
           <span class="cl-data-v cl-data-v--good">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
             {{ proprietorDisplay }}
@@ -606,7 +806,14 @@
         </div>
         <div class="cl-data-row">
           <span class="cl-data-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <rect x="3" y="4" width="18" height="18" rx="2" />
               <line x1="16" y1="2" x2="16" y2="6" />
               <line x1="8" y1="2" x2="8" y2="6" />
@@ -618,7 +825,14 @@
         </div>
         <div class="cl-data-row cl-data-row--last">
           <span class="cl-data-ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <rect x="5" y="11" width="14" height="10" rx="2" />
               <path d="M8 11V7a4 4 0 018 0v4" />
             </svg>
@@ -654,22 +868,32 @@
         >
           Add phone number →
         </NuxtLink>
-        <button v-else class="cl-err-retry" @click="issuePassport">Retry</button>
+        <button v-else class="cl-err-retry" @click="issuePassport">
+          Retry
+        </button>
       </div>
     </div>
 
     <!-- ════════════════════════════ LR FAILED ════════════════════════════ -->
     <div v-else-if="step === 'lr-failed'" class="cl-screen cl-center-full">
       <div class="cl-lr-pulse-wrap">
-        <div class="cl-lr-inner" style="background: #fef2f2; color: #b91c1c">⚠️</div>
+        <div class="cl-lr-inner" style="background: #fef2f2; color: #b91c1c">
+          ⚠️
+        </div>
       </div>
       <h1 class="cl-h1 cl-center">Ownership not confirmed</h1>
       <p class="cl-body cl-center cl-mb-lg" style="max-width: 320px">
-        {{ lrErrorMessage || 'HM Land Registry could not confirm you own this property.' }}
+        {{
+          lrErrorMessage ||
+          'HM Land Registry could not confirm you own this property.'
+        }}
       </p>
 
       <div
-        v-if="lrResult?.status === 'ADDITIONAL_INFO_NEEDED' || lrResult?.matchResult === 'NO_MATCHES'"
+        v-if="
+          lrResult?.status === 'ADDITIONAL_INFO_NEEDED' ||
+          lrResult?.matchResult === 'NO_MATCHES'
+        "
         class="cl-card cl-mb-sm cl-w-full"
         style="max-width: 360px"
       >
@@ -691,18 +915,10 @@
       </div>
 
       <div class="cl-w-full" style="max-width: 360px; display: flex; gap: 8px">
-        <button
-          class="cl-btn-ghost"
-          style="flex: 1"
-          @click="step = 'search'"
-        >
+        <button class="cl-btn-ghost" style="flex: 1" @click="step = 'search'">
           Try another property
         </button>
-        <button
-          class="cl-btn-brand"
-          style="flex: 1"
-          @click="runLrSearch()"
-        >
+        <button class="cl-btn-brand" style="flex: 1" @click="runLrSearch()">
           Retry
         </button>
       </div>
@@ -726,9 +942,9 @@
       <div class="cl-card cl-mb-sm">
         <div class="cl-eyebrow cl-mb-sm">Why there's a fee</div>
         <p class="cl-body" style="margin: 0">
-          Identity checks and HM Land Registry ownership lookups cost us
-          real money per property. This one-off fee covers exactly what
-          this claim used — {{ claimPriceReason }}.
+          Identity checks and HM Land Registry ownership lookups cost us real
+          money per property. This one-off fee covers exactly what this claim
+          used — {{ claimPriceReason }}.
         </p>
       </div>
 
@@ -762,11 +978,7 @@
 
     <!-- ════════════════════════════ BOTTOM CTA BAR ════════════════════════════ -->
     <div v-if="showCta" class="cl-cta-bar">
-      <button
-        class="cl-btn-brand"
-        :disabled="ctaDisabled"
-        @click="onPrimary"
-      >
+      <button class="cl-btn-brand" :disabled="ctaDisabled" @click="onPrimary">
         <span v-if="ctaLoading" class="cl-btn-spinner" />
         {{ ctaLabel }}
       </button>
@@ -829,7 +1041,10 @@ const { checkForCelebrations } = usePassportAchievement()
 const showTypeDrawer = ref(false)
 const chosenPassportType = ref<'seller' | 'landlord' | null>(null)
 const chosenIsHmo = ref(false)
-function onPassportTypeConfirmed(payload: { type: 'seller' | 'landlord'; isHmo: boolean }) {
+function onPassportTypeConfirmed(payload: {
+  type: 'seller' | 'landlord'
+  isHmo: boolean
+}) {
   chosenPassportType.value = payload.type
   chosenIsHmo.value = payload.isHmo
   // Persisted so the choice survives the guest sign-in round-trip from
@@ -967,7 +1182,8 @@ async function ensurePropertyEnriched() {
     if (epc && typeof epc === 'object' && selectedProperty.value?.id === id) {
       selectedProperty.value = {
         ...selectedProperty.value,
-        propertyType: selectedProperty.value.propertyType || epc.propertyType || null,
+        propertyType:
+          selectedProperty.value.propertyType || epc.propertyType || null,
         tenure: selectedProperty.value.tenure || epc.tenure || null,
         sqft: selectedProperty.value.sqft || epc.sqft || null,
         yearBuilt: selectedProperty.value.yearBuilt || epc.yearBuilt || null,
@@ -1015,7 +1231,9 @@ onMounted(async () => {
           runPolling()
         }
       }
-    } catch { /* corrupt localStorage — fall through to normal flow */ }
+    } catch {
+      /* corrupt localStorage — fall through to normal flow */
+    }
   }
 
   // Resuming from the guest sign-in round-trip confirmProperty() below
@@ -1036,7 +1254,9 @@ onMounted(async () => {
           resumingConfirm = true
         }
       }
-    } catch { /* corrupt localStorage — fall through to the normal ask */ }
+    } catch {
+      /* corrupt localStorage — fall through to the normal ask */
+    }
   }
 
   // Arriving from property/[id].vue's own "Choose your Passport" drawer
@@ -1044,7 +1264,10 @@ onMounted(async () => {
   // choice instead of asking again here.
   let typeFromQuery = false
   const queryType = url.searchParams.get('type')
-  if (!resumingConfirm && (queryType === 'seller' || queryType === 'landlord')) {
+  if (
+    !resumingConfirm &&
+    (queryType === 'seller' || queryType === 'landlord')
+  ) {
     chosenPassportType.value = queryType
     chosenIsHmo.value = url.searchParams.get('hmo') === '1'
     typeFromQuery = true
@@ -1064,9 +1287,7 @@ onMounted(async () => {
 })
 
 // ── Topbar logic ──────────────────────────────────────────────
-const isFullscreenStep = computed(() =>
-  ['lr-searching'].includes(step.value),
-)
+const isFullscreenStep = computed(() => ['lr-searching'].includes(step.value))
 const showCta = computed(
   () => !['lr-searching', 'lr-failed', 'payment'].includes(step.value),
 )
@@ -1109,9 +1330,7 @@ const lrResult = ref<LrCheckResult | null>(null)
 const lrErrorMessage = ref('')
 
 // ── Display fields (prefer live HMLR result, fall back to selectedProperty) ──
-const tenureDisplay = computed(
-  () => selectedProperty.value?.tenure || '—',
-)
+const tenureDisplay = computed(() => selectedProperty.value?.tenure || '—')
 // null (not '—') on purpose: a real title number only ever exists once
 // HMLR's Ownership Verification search confirms one — see
 // no-synthetic-title-number.spec.ts on the backend, which guards against
@@ -1120,13 +1339,9 @@ const tenureDisplay = computed(
 // instead of a bare dash that reads as broken.
 const titleDisplay = computed(
   () =>
-    lrResult.value?.titleNumber ||
-    selectedProperty.value?.titleNumber ||
-    null,
+    lrResult.value?.titleNumber || selectedProperty.value?.titleNumber || null,
 )
-const typeDisplay = computed(
-  () => selectedProperty.value?.propertyType || '—',
-)
+const typeDisplay = computed(() => selectedProperty.value?.propertyType || '—')
 const registeredDisplay = computed(() => {
   const d = selectedProperty.value?.createdAt
   if (!d) return '—'
@@ -1137,12 +1352,8 @@ const registeredDisplay = computed(() => {
     return '—'
   }
 })
-const proprietorDisplay = computed(
-  () => userFullName.value || 'Property owner',
-)
-const ownershipDisplay = computed(
-  () => lrResult.value?.ownership || '—',
-)
+const proprietorDisplay = computed(() => userFullName.value || 'Property owner')
+const ownershipDisplay = computed(() => lrResult.value?.ownership || '—')
 const lrAddressDisplay = computed(() => {
   const a1 = selectedProperty.value?.addressLine1 || 'your property'
   const pc = selectedProperty.value?.postcode || ''
@@ -1285,7 +1496,7 @@ function onPrimary() {
       // Real Persona flow — opens hosted page in a new tab and polls for completion.
       startPersonaKyc()
       return
-    case 'kyc-id':       // Legacy simulated screens — unreachable when Persona is wired.
+    case 'kyc-id': // Legacy simulated screens — unreachable when Persona is wired.
     case 'kyc-liveness':
     case 'kyc-aml':
       step.value = 'kyc-verified'
@@ -1390,11 +1601,15 @@ async function startPersonaKyc() {
             startedAt: Date.now(),
           }),
         )
-      } catch { /* localStorage may be full; polling will still work */ }
+      } catch {
+        /* localStorage may be full; polling will still work */
+      }
     }
     const returnUrl = `${window.location.origin}/claim/${propertyId}?kycreturn=1`
     const separator = start.hostedUrl.includes('?') ? '&' : '?'
-    const hostedWithReturn = `${start.hostedUrl}${separator}redirect-uri=${encodeURIComponent(returnUrl)}`
+    const hostedWithReturn = `${
+      start.hostedUrl
+    }${separator}redirect-uri=${encodeURIComponent(returnUrl)}`
     window.location.href = hostedWithReturn
   } catch (e: any) {
     personaError.value =
@@ -1434,7 +1649,7 @@ async function runPolling() {
   } catch (e: any) {
     if (e?.message === 'timeout') {
       personaError.value =
-        "We're still waiting for the verification result. If you've finished, tap \"Check now\"."
+        'We\'re still waiting for the verification result. If you\'ve finished, tap "Check now".'
     } else if (e?.message !== 'Polling aborted') {
       personaError.value =
         e?.data?.message || e?.message || 'Could not check status.'
@@ -1469,7 +1684,8 @@ async function checkPersonaNow() {
       personaError.value = "We haven't received a verification result yet."
     }
   } catch (e: any) {
-    personaError.value = e?.data?.message || e?.message || 'Could not check status.'
+    personaError.value =
+      e?.data?.message || e?.message || 'Could not check status.'
   } finally {
     personaCheckingNow.value = false
   }
@@ -1614,7 +1830,7 @@ function describeLrFailure(lr: {
   if (lr.status === 'IN_PROGRESS') {
     const eta = lr.acknowledgement?.expectedResponseDateTime
     return (
-      'HM Land Registry is currently out of service hours — we\'ve queued ' +
+      "HM Land Registry is currently out of service hours — we've queued " +
       'your ownership check' +
       (eta ? ` (expected back by ${eta})` : '') +
       '. Please try again shortly.'
@@ -1623,15 +1839,15 @@ function describeLrFailure(lr: {
   if (lr.status === 'ADDITIONAL_INFO_NEEDED') {
     if (lr.matchResult === 'MULTIPLE_MATCHES') {
       return (
-        "HM Land Registry returned multiple possible titles for this " +
-        "address. Please contact support so we can confirm the right one."
+        'HM Land Registry returned multiple possible titles for this ' +
+        'address. Please contact support so we can confirm the right one.'
       )
     }
     if (lr.historical) {
       return (
         'HM Land Registry shows your name on this title historically, but ' +
         "you're no longer listed as the current owner. If you've recently " +
-        'sold or transferred this property, that\'s expected.'
+        "sold or transferred this property, that's expected."
       )
     }
     return (
@@ -1642,10 +1858,10 @@ function describeLrFailure(lr: {
   }
   if (lr.status === 'FAILED') {
     if (lr.rejection?.code === 'bg.postcode.invalid') {
-      return 'HM Land Registry didn\'t accept the property postcode. Please correct it on the property and try again.'
+      return "HM Land Registry didn't accept the property postcode. Please correct it on the property and try again."
     }
     if (lr.rejection?.code === 'bg.properties.nopropertyfound') {
-      return 'HM Land Registry couldn\'t find a title at this address. Double-check the address details.'
+      return "HM Land Registry couldn't find a title at this address. Double-check the address details."
     }
     if (lr.rejection?.reason) {
       return `HM Land Registry rejected the check: ${lr.rejection.reason}`
@@ -1653,7 +1869,7 @@ function describeLrFailure(lr: {
     if (lr.matchResult === 'NO_MATCHES') {
       return (
         "Your name doesn't match the registered owner of this property on " +
-        "HM Land Registry. If this is wrong (e.g. you bought it recently " +
+        'HM Land Registry. If this is wrong (e.g. you bought it recently ' +
         "and the register hasn't updated), please contact support."
       )
     }
@@ -1763,7 +1979,9 @@ let stripeInstance: Stripe | null = null
 let cardElement: StripeCardElement | null = null
 
 const claimPriceDisplay = computed(() =>
-  claimAmountPence.value != null ? `£${(claimAmountPence.value / 100).toFixed(2)}` : '',
+  claimAmountPence.value != null
+    ? `£${(claimAmountPence.value / 100).toFixed(2)}`
+    : '',
 )
 // The backend picks the tier — infer which one just from the amount so the
 // copy explains what's being charged without duplicating the pricing logic.
@@ -1786,7 +2004,9 @@ async function openPaymentStep(passportId: string) {
     await mountClaimStripe()
   } catch (e: any) {
     paymentError.value =
-      e?.data?.message || e?.message || 'Could not start payment. Please try again.'
+      e?.data?.message ||
+      e?.message ||
+      'Could not start payment. Please try again.'
   }
 }
 
@@ -1820,7 +2040,12 @@ async function mountClaimStripe() {
 }
 
 async function payClaimFee() {
-  if (!stripeInstance || !cardElement || !claimClientSecret.value || !claimPassportId.value) {
+  if (
+    !stripeInstance ||
+    !cardElement ||
+    !claimClientSecret.value ||
+    !claimPassportId.value
+  ) {
     paymentError.value = 'Card form not ready. Please try again.'
     return
   }
@@ -1847,7 +2072,9 @@ async function payClaimFee() {
     finishAndNavigate(claimPassportId.value)
   } catch (e: any) {
     paymentError.value =
-      e?.data?.message || e?.message || 'Could not confirm payment. Please try again.'
+      e?.data?.message ||
+      e?.message ||
+      'Could not confirm payment. Please try again.'
   } finally {
     paymentLoading.value = false
   }
@@ -1891,7 +2118,10 @@ onBeforeUnmount(() => {
   place-items: center;
   cursor: pointer;
 }
-.cl-top-text { flex: 1; text-align: center; }
+.cl-top-text {
+  flex: 1;
+  text-align: center;
+}
 .cl-top-title {
   font-size: 14px;
   font-weight: 700;
@@ -1902,7 +2132,9 @@ onBeforeUnmount(() => {
   color: #64748b;
   margin-top: 2px;
 }
-.cl-spacer { width: 32px; }
+.cl-spacer {
+  width: 32px;
+}
 
 .cl-prog-strip {
   height: 3px;
@@ -1986,16 +2218,32 @@ onBeforeUnmount(() => {
   line-height: 1.55;
   margin: 0 0 14px;
 }
-.cl-center { text-align: center; }
-.cl-mb-xs { margin-bottom: 8px; }
-.cl-mb-sm { margin-bottom: 14px; }
-.cl-mb-md { margin-bottom: 18px; }
-.cl-mb-lg { margin-bottom: 24px; }
-.cl-w-full { width: 100%; }
-.cl-text-l { text-align: left; }
+.cl-center {
+  text-align: center;
+}
+.cl-mb-xs {
+  margin-bottom: 8px;
+}
+.cl-mb-sm {
+  margin-bottom: 14px;
+}
+.cl-mb-md {
+  margin-bottom: 18px;
+}
+.cl-mb-lg {
+  margin-bottom: 24px;
+}
+.cl-w-full {
+  width: 100%;
+}
+.cl-text-l {
+  text-align: left;
+}
 
 /* ── Field ─────────────────────────────────────────── */
-.cl-field-wrap { margin-bottom: 14px; }
+.cl-field-wrap {
+  margin-bottom: 14px;
+}
 .cl-field-label {
   font-size: 11px;
   font-weight: 700;
@@ -2048,13 +2296,17 @@ onBeforeUnmount(() => {
   border: 1px solid #cff4f2;
   border-radius: 12px;
 }
-.cl-lock-ic { font-size: 18px; }
+.cl-lock-ic {
+  font-size: 18px;
+}
 .cl-lock-body {
   font-size: 12px;
   color: #475569;
   line-height: 1.5;
 }
-.cl-lock-body strong { color: #231d45; }
+.cl-lock-body strong {
+  color: #231d45;
+}
 
 /* ── Confirm navy card ─────────────────────────────── */
 .cl-navy-card {
@@ -2129,13 +2381,18 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 10px;
 }
-.cl-info-ic { font-size: 20px; flex-shrink: 0; }
+.cl-info-ic {
+  font-size: 20px;
+  flex-shrink: 0;
+}
 .cl-info-body {
   font-size: 12.5px;
   color: #475569;
   line-height: 1.5;
 }
-.cl-info-body strong { color: #231d45; }
+.cl-info-body strong {
+  color: #231d45;
+}
 
 .cl-link-center {
   text-align: center;
@@ -2174,7 +2431,9 @@ onBeforeUnmount(() => {
   flex-direction: column;
   gap: 13px;
 }
-.cl-gap-sm { gap: 11px; }
+.cl-gap-sm {
+  gap: 11px;
+}
 
 .cl-step-row {
   display: flex;
@@ -2223,7 +2482,10 @@ onBeforeUnmount(() => {
   object-fit: contain;
   display: block;
 }
-.cl-pale-ic-sm { font-size: 18px; flex-shrink: 0; }
+.cl-pale-ic-sm {
+  font-size: 18px;
+  flex-shrink: 0;
+}
 .cl-pale-t {
   font-size: 13.5px;
   font-weight: 700;
@@ -2271,14 +2533,20 @@ onBeforeUnmount(() => {
   border: 2px solid #00a19a !important;
   background: #fff !important;
 }
-.cl-slot-ic { font-size: 32px; }
-.cl-slot-ic-muted { opacity: 0.4; }
+.cl-slot-ic {
+  font-size: 32px;
+}
+.cl-slot-ic-muted {
+  opacity: 0.4;
+}
 .cl-slot-text {
   font-size: 13px;
   font-weight: 600;
   color: #008a84;
 }
-.cl-slot-text-muted { color: #94a3b8; }
+.cl-slot-text-muted {
+  color: #94a3b8;
+}
 .cl-slot-thumb {
   width: 100%;
   height: 100%;
@@ -2340,8 +2608,12 @@ onBeforeUnmount(() => {
   animation: clLiveRing 2s ease-in-out infinite alternate;
 }
 @keyframes clLiveRing {
-  from { stroke-dashoffset: 464; }
-  to { stroke-dashoffset: 116; }
+  from {
+    stroke-dashoffset: 464;
+  }
+  to {
+    stroke-dashoffset: 116;
+  }
 }
 .cl-live-inner {
   position: absolute;
@@ -2425,8 +2697,14 @@ onBeforeUnmount(() => {
   animation: clLrPulse 1.5s ease-out infinite;
 }
 @keyframes clLrPulse {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.5); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
 }
 .cl-lr-inner {
   position: absolute;
@@ -2520,10 +2798,20 @@ onBeforeUnmount(() => {
   padding-bottom: 10px;
   border-bottom: 1px solid #eef2f7;
 }
-.cl-lrf-row-last { border-bottom: none; padding-bottom: 0; }
-.cl-lrf-l { color: #94a3b8; }
-.cl-lrf-v { font-weight: 700; color: #231d45; }
-.cl-lrf-v-good { color: #008a84; }
+.cl-lrf-row-last {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.cl-lrf-l {
+  color: #94a3b8;
+}
+.cl-lrf-v {
+  font-weight: 700;
+  color: #231d45;
+}
+.cl-lrf-v-good {
+  color: #008a84;
+}
 .cl-big-tick {
   width: 44px;
   height: 44px;
@@ -2609,7 +2897,9 @@ onBeforeUnmount(() => {
   gap: 8px;
   transition: opacity 0.15s, filter 0.15s;
 }
-.cl-btn-brand:hover:not(:disabled) { filter: brightness(1.05); }
+.cl-btn-brand:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
 .cl-btn-brand:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -2625,7 +2915,9 @@ onBeforeUnmount(() => {
   font-weight: 800;
   cursor: pointer;
 }
-.cl-btn-ghost:hover { background: #f7fafa; }
+.cl-btn-ghost:hover {
+  background: #f7fafa;
+}
 .cl-btn-spinner {
   width: 14px;
   height: 14px;
@@ -2634,7 +2926,11 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   animation: cl-spin 0.7s linear infinite;
 }
-@keyframes cl-spin { to { transform: rotate(360deg); } }
+@keyframes cl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 .cl-stripe-box {
   background: #fff;
   border: 1.5px solid #e5e7eb;
@@ -2642,7 +2938,9 @@ onBeforeUnmount(() => {
   padding: 14px 16px;
   transition: border-color 0.2s;
 }
-.cl-stripe-box:focus-within { border-color: #00a19a; }
+.cl-stripe-box:focus-within {
+  border-color: #00a19a;
+}
 
 /* ─────────────────────────────────────────────────────────────────
    KYC screens redesign (Confirm / Identity verified / Searching LR /
@@ -2665,7 +2963,10 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 12px;
 }
-.cl-lr-card-text { flex: 1; min-width: 0; }
+.cl-lr-card-text {
+  flex: 1;
+  min-width: 0;
+}
 .cl-lr-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -2673,21 +2974,24 @@ onBeforeUnmount(() => {
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.4px;
-  color: #00817C;
+  color: #00817c;
   margin-bottom: 12px;
 }
-.cl-lr-eyebrow svg { width: 16px; height: 16px; }
+.cl-lr-eyebrow svg {
+  width: 16px;
+  height: 16px;
+}
 .cl-lr-addr1 {
   font-size: 22px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   letter-spacing: -0.5px;
   line-height: 1.15;
 }
 .cl-lr-addr2 {
   font-size: 15px;
   font-weight: 500;
-  color: #4A5876;
+  color: #4a5876;
   margin-top: 4px;
 }
 .cl-lr-card-illus {
@@ -2708,7 +3012,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 2px 6px rgba(31, 44, 76, 0.04);
 }
@@ -2728,12 +3032,12 @@ onBeforeUnmount(() => {
 .cl-lr-tile-l {
   font-size: 12px;
   font-weight: 600;
-  color: #75757C;
+  color: #75757c;
 }
 .cl-lr-tile-v {
   font-size: 14.5px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   margin-top: 1px;
   word-break: break-all;
 }
@@ -2741,13 +3045,13 @@ onBeforeUnmount(() => {
   font-size: 12.5px;
   font-weight: 600;
   font-style: italic;
-  color: #8A8A94;
+  color: #8a8a94;
 }
 
 .cl-lr-tile-select {
   font-size: 12.5px;
   font-weight: 700;
-  color: #231D45;
+  color: #231d45;
   margin-top: 2px;
   border: 1.5px solid #00534f;
   border-radius: 6px;
@@ -2764,32 +3068,39 @@ onBeforeUnmount(() => {
   gap: 14px;
   align-items: center;
   padding: 14px 16px;
-  background: #F0F9F8;
-  border: 1px solid #DCF0EE;
+  background: #f0f9f8;
+  border: 1px solid #dcf0ee;
   border-radius: 14px;
   margin-bottom: 22px;
 }
 .cl-lock-note-ic {
-  width: 40px;
-  height: 40px;
+  width: 65px;
+  height: 65px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.cl-lock-note-ic img { width: 100%; height: 100%; object-fit: contain; }
+.cl-lock-note-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .cl-lock-note-body {
   font-size: 13px;
-  color: #4A5876;
+  color: #4a5876;
   line-height: 1.45;
   font-weight: 500;
 }
-.cl-lock-note-body strong { color: #00817C; font-weight: 800; }
+.cl-lock-note-body strong {
+  color: #00817c;
+  font-weight: 800;
+}
 
 .cl-link-center {
   display: block;
   text-align: center;
-  color: #00817C;
+  color: #00817c;
   font-size: 14px;
   font-weight: 700;
   padding: 8px 0;
@@ -2817,20 +3128,23 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  background: #E9F6F5;
-  color: #00817C;
+  background: #e9f6f5;
+  color: #00817c;
   border-radius: 100px;
   font-size: 13px;
   font-weight: 700;
 }
-.cl-pill-good svg { width: 14px; height: 14px; }
+.cl-pill-good svg {
+  width: 14px;
+  height: 14px;
+}
 .cl-next-card {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 18px;
-  background: #F0F9F8;
-  border: 1px solid #DCF0EE;
+  background: #f0f9f8;
+  border: 1px solid #dcf0ee;
   border-radius: 18px;
 }
 .cl-next-card-illus {
@@ -2842,12 +3156,12 @@ onBeforeUnmount(() => {
 .cl-next-card-t {
   font-size: 16px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   letter-spacing: -0.2px;
 }
 .cl-next-card-s {
   font-size: 13px;
-  color: #4A5876;
+  color: #4a5876;
   font-weight: 500;
   line-height: 1.45;
   margin-top: 3px;
@@ -2865,7 +3179,7 @@ onBeforeUnmount(() => {
   filter: drop-shadow(0 6px 14px rgba(0, 161, 154, 0.15));
 }
 .cl-lr-timeline {
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 20px;
   padding: 20px 22px;
   box-shadow: 0 3px 10px rgba(31, 44, 76, 0.05);
@@ -2885,47 +3199,56 @@ onBeforeUnmount(() => {
   top: 40px;
   bottom: 0;
   width: 2px;
-  background: #E7EAEE;
+  background: #e7eaee;
 }
-.cl-lr-tstep--last { padding-bottom: 0; }
-.cl-lr-tstep--last::before { display: none; }
-.cl-lr-tstep--done::before { background: #00A19A; }
+.cl-lr-tstep--last {
+  padding-bottom: 0;
+}
+.cl-lr-tstep--last::before {
+  display: none;
+}
+.cl-lr-tstep--done::before {
+  background: #00a19a;
+}
 .cl-lr-tdot {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #D4D9E3;
-  background: #FFFFFF;
+  border: 2px solid #d4d9e3;
+  background: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #FFFFFF;
+  color: #ffffff;
   z-index: 1;
 }
 .cl-lr-tstep--active .cl-lr-tdot {
-  border-color: #00A19A;
+  border-color: #00a19a;
 }
 .cl-lr-tstep--done .cl-lr-tdot {
-  background: #00A19A;
-  border-color: #00A19A;
+  background: #00a19a;
+  border-color: #00a19a;
 }
-.cl-lr-tdot svg { width: 18px; height: 18px; }
+.cl-lr-tdot svg {
+  width: 18px;
+  height: 18px;
+}
 .cl-lr-tdot-inner {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #00A19A;
+  background: #00a19a;
 }
 .cl-lr-tt {
   font-size: 15px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   letter-spacing: -0.2px;
   margin-top: 8px;
 }
 .cl-lr-ts {
   font-size: 13px;
-  color: #A8B0C2;
+  color: #a8b0c2;
   font-weight: 500;
   margin-top: 2px;
 }
@@ -2934,7 +3257,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 12px;
   padding: 14px 18px;
-  background: #E9F6F5;
+  background: #e9f6f5;
   border-radius: 16px;
 }
 .cl-secure-lock {
@@ -2942,23 +3265,29 @@ onBeforeUnmount(() => {
   height: 46px;
   border-radius: 12px;
   background: rgba(0, 161, 154, 0.14);
-  color: #00817C;
+  color: #00817c;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.cl-secure-lock svg { width: 24px; height: 24px; }
-.cl-secure-body { flex: 1; min-width: 0; }
+.cl-secure-lock svg {
+  width: 24px;
+  height: 24px;
+}
+.cl-secure-body {
+  flex: 1;
+  min-width: 0;
+}
 .cl-secure-t {
   font-size: 14px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   letter-spacing: -0.2px;
 }
 .cl-secure-s {
   font-size: 12.5px;
-  color: #4A5876;
+  color: #4a5876;
   font-weight: 500;
   line-height: 1.4;
   margin-top: 3px;
@@ -2966,13 +3295,16 @@ onBeforeUnmount(() => {
 .cl-secure-shield {
   width: 40px;
   height: 40px;
-  color: #00A19A;
+  color: #00a19a;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.cl-secure-shield svg { width: 30px; height: 30px; }
+.cl-secure-shield svg {
+  width: 30px;
+  height: 30px;
+}
 
 /* ── Screen 4: Ownership confirmed ──────────────────────────────── */
 .cl-owned {
@@ -2990,12 +3322,12 @@ onBeforeUnmount(() => {
 .cl-owned-t {
   font-size: 20px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   letter-spacing: -0.3px;
 }
 .cl-owned-s {
   font-size: 14px;
-  color: #75757C;
+  color: #75757c;
   font-weight: 500;
   margin-top: 3px;
 }
@@ -3014,55 +3346,69 @@ onBeforeUnmount(() => {
 .cl-owned-header-t {
   font-size: 19px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   letter-spacing: -0.3px;
 }
-.cl-data-rows { margin: 4px 0 24px; }
+.cl-data-rows {
+  margin: 4px 0 24px;
+}
 .cl-data-row {
   display: grid;
   grid-template-columns: 42px 1fr auto;
   align-items: center;
   gap: 12px;
   padding: 14px 0;
-  border-bottom: 1px solid #E7EAEE;
+  border-bottom: 1px solid #e7eaee;
 }
-.cl-data-row--last { border-bottom: 0; }
+.cl-data-row--last {
+  border-bottom: 0;
+}
 .cl-data-ic {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: #E9F6F5;
-  color: #00817C;
+  background: #e9f6f5;
+  color: #00817c;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
-.cl-data-ic svg { width: 20px; height: 20px; }
+.cl-data-ic svg {
+  width: 20px;
+  height: 20px;
+}
 .cl-data-ic--img {
   background: #fff;
   border: 1px solid #e2f1ea;
 }
-.cl-data-ic--img img { width: 30px; height: 30px; object-fit: contain; }
+.cl-data-ic--img img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
 .cl-data-l {
   font-size: 15px;
   font-weight: 600;
-  color: #75757C;
+  color: #75757c;
 }
 .cl-data-v {
   font-size: 15px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   justify-self: end;
   text-align: right;
   word-break: break-all;
 }
 .cl-data-v--good {
-  color: #00A19A;
+  color: #00a19a;
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
-.cl-data-v--good svg { width: 14px; height: 14px; }
+.cl-data-v--good svg {
+  width: 14px;
+  height: 14px;
+}
 
 .cl-name-card {
   display: flex;
@@ -3080,12 +3426,12 @@ onBeforeUnmount(() => {
 .cl-name-card-t {
   font-size: 17px;
   font-weight: 800;
-  color: #231D45;
+  color: #231d45;
   letter-spacing: -0.3px;
 }
 .cl-name-card-s {
   font-size: 14px;
-  color: #75757C;
+  color: #75757c;
   font-weight: 500;
   line-height: 1.5;
   margin-top: 4px;
@@ -3103,8 +3449,8 @@ onBeforeUnmount(() => {
   height: 46px;
 }
 .cl-lock-ic {
-  width: 24px;
-  height: 24px;
+  width: 65px;
+  height: 65px;
   display: inline-flex;
   flex-shrink: 0;
 }
@@ -3145,9 +3491,8 @@ onBeforeUnmount(() => {
   color: #231d45;
 }
 .cl-private-bar img {
-  width: 18px;
-  height: 18px;
+  width: 25px;
+  height: 25px;
   object-fit: contain;
 }
-
 </style>
