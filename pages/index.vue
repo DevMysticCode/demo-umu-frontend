@@ -1022,17 +1022,30 @@ const cards = [
     cta: 'Read the case',
   },
 ]
-const stack = ref<string[]>(cards.map((c) => c.id))
+// Fixed reference order the deck always rotates around — never mutated,
+// so every rotation (manual click or tour step) is relative to this same
+// circle rather than whatever order a previous click left `stack` in.
+// Without that, "bring X to front" by splicing X out and prepending it
+// only preserves the OTHER cards' relative order, not the full circular
+// order (e.g. clicking the 2nd card would put the 1st card 2nd instead
+// of sending it to the back, behind everything that followed it).
+const CANONICAL_IDS = cards.map((c) => c.id)
+const stack = ref<string[]>([...CANONICAL_IDS])
 
 function positionOf(id: string) {
   return stack.value.indexOf(id) + 1
+}
+function rotateStackTo(id: string) {
+  const idx = CANONICAL_IDS.indexOf(id)
+  if (idx === -1) return
+  stack.value = [...CANONICAL_IDS.slice(idx), ...CANONICAL_IDS.slice(0, idx)]
 }
 function bringToFront(id: string) {
   if (stack.value[0] === id) {
     onCardCta(id)
     return
   }
-  stack.value = [id, ...stack.value.filter((x) => x !== id)]
+  rotateStackTo(id)
 }
 function onCardCta(id: string) {
   if (id === 'explore') navigateTo('/discover')
@@ -1103,7 +1116,7 @@ watch(
     if (!landingTour.active.value) return
     const cardId = tourStepCardId(i)
     if (cardId && stack.value[0] !== cardId) {
-      stack.value = [cardId, ...stack.value.filter((x) => x !== cardId)]
+      rotateStackTo(cardId)
     }
   },
   { immediate: false },
@@ -1115,7 +1128,7 @@ watch(
     if (!on) return
     const cardId = tourStepCardId(landingTour.idx.value)
     if (cardId && stack.value[0] !== cardId) {
-      stack.value = [cardId, ...stack.value.filter((x) => x !== cardId)]
+      rotateStackTo(cardId)
     }
   },
 )

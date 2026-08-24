@@ -55,9 +55,15 @@ export function useHomescoreTour(opts: UseHomescoreTourOptions) {
       return idx.value < steps.length ? show() : end()
     }
     targetEl.value = el
-    // Center the highlighted card on screen.
+    // Rough first pass — get the target roughly into view. TourCoach.vue
+    // then measures its own inject card's REAL rendered height (which
+    // varies step to step with body-text length) and does a second,
+    // precise corrective scroll to open up exactly enough room above the
+    // target — see ensureRoomAbove() there. A fixed guess here previously
+    // caused either a big empty gap (guess too generous for a short card)
+    // or overlap (guess too small for a tall one).
     requestAnimationFrame(() => {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
     })
   }
 

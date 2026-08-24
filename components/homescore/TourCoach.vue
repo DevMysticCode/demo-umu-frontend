@@ -9,6 +9,7 @@
 
       <div
         v-if="tour.currentStep.value && injectPos"
+        ref="injectEl"
         class="cm-inject"
         :style="injectStyle"
       >
@@ -37,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue'
+import { ref, computed, watch, nextTick, onUnmounted } from 'vue'
 import type { HomescoreTour } from '~/composables/useHomescoreTour'
 
 const props = defineProps<{ tour: HomescoreTour }>()
@@ -45,7 +46,17 @@ const props = defineProps<{ tour: HomescoreTour }>()
 interface Rect { top: number; left: number; width: number; height: number }
 const targetRect = ref<Rect | null>(null)
 
-function measure() {
+// Real footprint of the inject card, measured off the actual DOM element —
+// body-text length varies step to step, so a hardcoded height estimate was
+// either too generous (a big empty gap above short cards) or too small
+// (overlapping tall cards). Falls back to a reasonable guess before the
+// card has rendered for the very first measurement.
+const injectEl = ref<HTMLElement | null>(null)
+const injectHeight = ref(190)
+const GAP = 20
+const EDGE_MARGIN = 16
+
+async function measure() {
   const el = props.tour.targetEl.value
   if (!el) {
     targetRect.value = null
@@ -53,6 +64,22 @@ function measure() {
   }
   const r = el.getBoundingClientRect()
   targetRect.value = { top: r.top, left: r.left, width: r.width, height: r.height }
+  await nextTick()
+  const h = injectEl.value?.getBoundingClientRect().height
+  if (h) injectHeight.value = h
+}
+
+// If the target doesn't currently have enough clear space above it for the
+// inject card's REAL height, nudge the page up by exactly the shortfall —
+// deterministic, no guessing, so the gap above is always just `GAP`, never
+// more (looks "far away") or less (overlaps the target).
+function ensureRoomAbove() {
+  const r = targetRect.value
+  if (!r || typeof window === 'undefined') return
+  const idealTop = r.top - injectHeight.value - GAP
+  if (idealTop < EDGE_MARGIN) {
+    window.scrollBy({ top: -(EDGE_MARGIN - idealTop), behavior: 'smooth' })
+  }
 }
 
 // Re-measure when the active step or visibility changes.
@@ -60,7 +87,10 @@ watch(
   () => [props.tour.active.value, props.tour.idx.value, props.tour.targetEl.value],
   () => {
     // Allow the scrollIntoView animation to settle.
-    setTimeout(measure, 380)
+    setTimeout(async () => {
+      await measure()
+      ensureRoomAbove()
+    }, 380)
   },
   { immediate: true },
 )
@@ -97,13 +127,14 @@ const injectStyle = computed(() => {
   // Prefer ABOVE the highlighted element — on phone screens the target is
   // often lower on the page, so anchoring below pushed the card's bottom
   // off the visible viewport. Only fall back to below when there's
-  // genuinely not enough room above.
-  const cardEstHeight = 200
-  const gap = 16
-  const wantAbove = r.top - cardEstHeight - gap > 12
+  // genuinely not enough room above even after ensureRoomAbove()'s
+  // corrective scroll (e.g. a target taller than the viewport itself).
+  // Uses the card's REAL measured height, not a guess.
+  const cardHeight = injectHeight.value
+  const wantAbove = r.top - cardHeight - GAP > EDGE_MARGIN
   const top = wantAbove
-    ? Math.max(r.top - cardEstHeight - gap, 12)
-    : Math.min(r.top + r.height + gap, vh - cardEstHeight - 12)
+    ? Math.max(r.top - cardHeight - GAP, EDGE_MARGIN)
+    : Math.min(r.top + r.height + GAP, vh - cardHeight - EDGE_MARGIN)
   const left = Math.max(16, Math.min(vw - cardWidth - 16, r.left + r.width / 2 - cardWidth / 2))
   return {
     top: `${top}px`,
