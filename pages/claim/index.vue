@@ -32,7 +32,7 @@
       </div>
 
       <div class="cl-lock-note">
-        <div class="cl-lock-ic"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
+        <div class="cl-lock-ic"><img src="/op-icons/claim/padlock.png" alt="" loading="lazy" /></div>
         <div class="cl-lock-body">
           We verify ownership via
           <strong>HM Land Registry</strong> — encrypted and never sold.
@@ -40,7 +40,7 @@
       </div>
 
       <div class="cl-private-bar">
-        <img src="/op-icons/investment/padlock.png" alt="" loading="lazy" />
+        <img src="/op-icons/claim/padlock.png" alt="" loading="lazy" />
         Your data is private and secure
       </div>
 
