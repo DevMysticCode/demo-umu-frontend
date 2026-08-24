@@ -33,7 +33,7 @@
     <div class="discover-hero">
       <!-- ── Hero: eyebrow/title/sub/badge on the left, illustration
            on the right ─────────────────────────────────────────── -->
-      <div v-if="!searchMode" class="exp-hero-row">
+      <div class="exp-hero-row">
         <div class="exp-hero-text">
           <div class="exp-hero-eyebrow">Explore</div>
           <div class="exp-hero-title">Discover any UK property.</div>
@@ -66,26 +66,20 @@
         />
       </div>
 
-      <!-- Explore's whole search experience — search bar, filters modal
-           and paginated results list — reused verbatim (components/
-           property/PropertySearchExperience.vue) so this is the literal
-           same component, not a lookalike. It calls /property/search
-           directly, which has no auth guard, so this works for guests;
-           only "Properties you're watching" below needs an account,
-           since that reads the user's own saved list. Discover now gets
-           the same results-list view as Explore (previously it navigated
-           straight to a property on selecting an address). -->
-      <PropertySearchExperience
+      <!-- Type-ahead search — selecting an address navigates straight to
+           that property (matches /claim's search behavior). -->
+      <PropertySearchInput
         placeholder="Enter postcode or address"
-        @update:search-mode="searchMode = $event"
+        variant="light"
+        @select="onResultSelect"
       />
-      <div v-if="!searchMode" class="exp-search-hint">
+      <div class="exp-search-hint">
         Try a postcode like <b>CV1 2WT</b> or an address like
         <b>10 Downing Street, London</b>
       </div>
 
       <!-- ── Three entry-point cards ─────────────────────────────── -->
-      <div v-if="!searchMode" class="exp-cards-row">
+      <div class="exp-cards-row">
         <button
           type="button"
           class="exp-card exp-card--teal"
@@ -136,7 +130,7 @@
       </div>
 
       <!-- ── HomeScore / Property Passport ─────────────────────────── -->
-      <div v-if="!searchMode" class="exp-more">
+      <div class="exp-more">
         <div class="exp-more-grid">
           <button
             type="button"
@@ -220,7 +214,7 @@
       </div>
 
       <!-- ── Recently explored ───────────────────────────────────── -->
-      <div v-if="!searchMode && recentlyExplored.length" class="exp-recent">
+      <div v-if="recentlyExplored.length" class="exp-recent">
         <div class="exp-recent-header">
           <div class="exp-recent-title">Recently explored</div>
         </div>
@@ -278,7 +272,7 @@ definePageMeta({ title: 'Explore - UmovingU' })
 
 import OPIcon from '~/components/ui/OPIcon.vue'
 import AuthGateModal from '~/components/ui/AuthGateModal.vue'
-import PropertySearchExperience from '~/components/property/PropertySearchExperience.vue'
+import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
 import { usePropertySearch } from '~/composables/usePropertySearch'
 import {
@@ -295,9 +289,10 @@ onMounted(() => {
   recentlyExplored.value = getRecentlyExplored()
 })
 
-// True while PropertySearchExperience is showing results — hides the
-// marketing hero, entry-point cards and Recently explored below it.
-const searchMode = ref(false)
+function onResultSelect(property: any) {
+  if (!property?.id) return
+  router.push(`/property/${property.id}`)
+}
 
 // Watched Properties still uses the generic "Create account / Sign in"
 // gate the HomeScore flow already uses, instead of being dropped
@@ -460,8 +455,8 @@ function lastSoldLabel(dateStr: string): string {
   margin-top: -4px;
 }
 
-/* ── Search — PropertySearchExperience.vue owns its own styling
-   (search bar, filters modal, results list); nothing to style here. ── */
+/* ── Search — PropertySearchInput.vue owns its own styling; nothing
+   to style here. ── */
 .exp-search-hint {
   font-size: 11.5px;
   font-weight: 500;
