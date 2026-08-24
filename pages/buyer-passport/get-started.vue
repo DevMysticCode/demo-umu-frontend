@@ -28,30 +28,21 @@
     <div class="bpg-benefits">
       <div class="bpg-benefit">
         <div class="bpg-benefit-ic">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" />
-            <polyline points="9 12 11 14 15 10" />
-          </svg>
+          <img src="/op-icons/onboarding/trustShield.png" alt="" loading="lazy" />
         </div>
         <div class="bpg-benefit-title">Verified identity</div>
         <div class="bpg-benefit-sub">Show you're a serious buyer</div>
       </div>
       <div class="bpg-benefit">
         <div class="bpg-benefit-ic">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
-            <rect x="9" y="3" width="6" height="4" rx="1" />
-            <path d="M9 12l2 2 4-4" />
-          </svg>
+          <img src="/op-icons/buyer-profile-build/verifiedDoc.png" alt="" loading="lazy" />
         </div>
         <div class="bpg-benefit-title">Stronger offers</div>
         <div class="bpg-benefit-sub">Stand out to sellers with confidence</div>
       </div>
       <div class="bpg-benefit">
         <div class="bpg-benefit-ic">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
-          </svg>
+          <img src="/op-icons/profile/savedProperties.jpeg" alt="" loading="lazy" />
         </div>
         <div class="bpg-benefit-title">Save &amp; track</div>
         <div class="bpg-benefit-sub">Keep your progress in one place</div>
@@ -172,9 +163,12 @@ const showPassword = ref(false)
 const loginError = ref('')
 const loginLoading = ref(false)
 
-function handleBack() {
-  navigateTo('/discover')
-}
+// router.back() pops the real history entry instead of pushing a new
+// "/discover" one — pushing meant Back-on-this-page → Back-on-discover
+// ping-ponged between the two forever (each "back" tap grew the history
+// stack instead of unwinding it) rather than reaching whatever the user
+// was on before Discover.
+const handleBack = useGoBack('/discover')
 
 async function handleLogin() {
   loginError.value = ''
@@ -283,7 +277,6 @@ function goCreateAccount() {
   width: 108px;
   flex-shrink: 0;
   object-fit: contain;
-  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.18));
 }
 
 /* ── Benefits row ── */
@@ -300,11 +293,14 @@ function goCreateAccount() {
   width: 48px;
   height: 48px;
   margin: 0 auto 10px;
-  border-radius: 50%;
-  background: #eaf7f6;
-  color: #00a19a;
   display: grid;
   place-items: center;
+}
+.bpg-benefit-ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
 }
 .bpg-benefit-title {
   font-size: 12.5px;
