@@ -52,9 +52,11 @@ const props = defineProps({
 })
 
 const passportImage = computed(() => {
-  if (props.type === 'LANDLORD') return '/op-icons/passport-covers/landlord_front_no_tile.png'
-  if (props.type === 'BUYER') return '/op-icons/passport-covers/buyer_front_no_tile.png'
-  return '/op-icons/passport-covers/seller_front_no_tile.png'
+  if (props.type === 'LANDLORD')
+    return '/op-icons/passport-covers/landlord_front_no_tile_no_tilt.png'
+  if (props.type === 'BUYER')
+    return '/op-icons/passport-covers/buyer_front_no_tile_no_tilt.png'
+  return '/op-icons/passport-covers/seller_front_no_tile_no_tilt.png'
 })
 </script>
 
@@ -142,7 +144,7 @@ const passportImage = computed(() => {
 
 .passport-address {
   position: absolute;
-  bottom: 14%;
+  bottom: 31%;
   left: 50%;
   transform: translateX(-50%);
   width: 76%;
@@ -160,8 +162,8 @@ const passportImage = computed(() => {
    clamp() pins it between sensible min/max so a tiny resume tile stays
    readable and a large grid tile doesn't blow up. */
 .address-line {
-  font-size: clamp(8px, 7.5cqi, 14px);
-  font-weight: 700;
+  font-size: clamp(4px, 6cqi, 14px);
+  font-weight: 400;
   margin: 0;
   letter-spacing: -0.01em;
   word-break: break-word;
@@ -173,7 +175,7 @@ const passportImage = computed(() => {
 }
 
 .address-line-small {
-  font-size: clamp(7px, 5.5cqi, 11px);
+  font-size: clamp(5px, 3.5cqi, 11px);
   font-weight: 600;
   opacity: 0.9;
   letter-spacing: 0.04em;

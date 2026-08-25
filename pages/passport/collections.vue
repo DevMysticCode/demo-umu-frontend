@@ -254,19 +254,11 @@
             class="stacked-book"
             :style="stackStyle(bi, collection.items.length)"
           >
-            <!-- With property image: photo background + brand overlay -->
-            <div
-              v-if="item.passport.property?.imageUrl"
-              class="passport-book-card"
-              :style="`background-image: url(${item.passport.property.imageUrl})`"
-            >
-              <div class="book-overlay" />
-              <div class="book-brand">Property Passport</div>
-              <img src="/op-icons/logo.svg" class="book-logo" alt="" />
-              <div class="book-addr">{{ item.passport.addressLine1 }}</div>
-            </div>
-            <!-- No image: fall back to the real Property Passport book -->
-            <div v-else class="passport-book-fallback">
+            <!-- Always the real Property Passport book — kept plain
+                 (seller/landlord art + address overlay), no property-photo
+                 alternative, so every card in the grid renders identically
+                 to the passport view / dashboard. -->
+            <div class="passport-book-fallback">
               <PassportCard
                 :line1="item.passport.addressLine1"
                 :line2="item.passport.postcode"
@@ -296,64 +288,20 @@
       >
         <div class="book-stack">
           <div class="stacked-book">
-            <!-- With property image: photo background + brand overlay -->
-            <div
-              v-if="passport.property?.imageUrl"
-              class="passport-book-card"
-              :style="`background-image: url(${passport.property.imageUrl})`"
-            >
-              <div class="book-overlay" />
-              <div class="book-brand">Property Passport</div>
-              <img src="/op-icons/logo.svg" class="book-logo" alt="" />
-              <div class="book-addr">{{ passport.addressLine1 }}</div>
-              <!-- Trash icon — shown on hover. Only rendered for the
-                   passport owner (see backend GET /passport/my which
-                   tags each row with isOwner). Collaborators can edit
-                   sections but never delete the whole passport. -->
-              <button
-                v-if="passport.isOwner"
-                class="book-trash-btn"
-                @click.stop="confirmDelete(passport)"
-                title="Delete passport"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                  <polyline
-                    points="3,6 5,6 21,6"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M10 11v6M14 11v6"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-            <!-- No image: fall back to the real Property Passport book -->
-            <div v-else class="passport-book-fallback">
+            <!-- Always the real Property Passport book — kept plain
+                 (seller/landlord art + address overlay), no property-photo
+                 alternative, so every card in the grid renders identically
+                 to the passport view / dashboard. -->
+            <div class="passport-book-fallback">
               <PassportCard
                 :line1="passport.addressLine1"
                 :line2="passport.postcode"
                 :type="passport.type"
               />
+              <!-- Trash icon — shown on hover. Only rendered for the
+                   passport owner (see backend GET /passport/my which tags
+                   each row with isOwner). Collaborators can edit sections
+                   but never delete the whole passport. -->
               <button
                 v-if="passport.isOwner"
                 class="book-trash-btn book-trash-btn--fallback"
@@ -1372,80 +1320,6 @@ const executeDelete = async () => {
   border-radius: 8px;
 }
 
-/* The actual passport book card */
-.passport-book-card {
-  width: 110px;
-  height: 145px;
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-  background: linear-gradient(160deg, #1a4a5a 0%, #0d2d3a 100%);
-  background-size: cover;
-  background-position: center;
-  box-shadow: 3px 4px 14px rgba(0, 0, 0, 0.35);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.passport-book-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 8px;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 2;
-  border-radius: 8px 0 0 8px;
-}
-
-.empty-book {
-  background: linear-gradient(160deg, #2a5a6a 0%, #1a3d4a 100%);
-}
-
-.book-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgb(0 161 154 / 20%);
-  z-index: 1;
-}
-
-.book-brand {
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  right: 4px;
-  z-index: 3;
-  color: white;
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  text-align: center;
-}
-
-.book-logo {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
-  position: relative;
-  z-index: 3;
-  filter: brightness(0) invert(1);
-}
-
-.book-addr {
-  position: absolute;
-  bottom: 10px;
-  left: 12px;
-  right: 6px;
-  z-index: 3;
-  color: white;
-  font-size: 7.5px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
 /* Trash button — always visible on every device. Previously the
    reveal was gated by `@media (hover: hover)` but that query
    mis-reports on some phones with a connected keyboard/mouse and
@@ -1473,9 +1347,10 @@ const executeDelete = async () => {
 .book-trash-btn:hover { background: rgba(229, 62, 62, 1); }
 .book-trash-btn:active { transform: scale(0.9); }
 
-/* When there's no property image, use the real Property Passport book.
-   The PassportCard component renders the full umu-passport.png with the
-   address overlaid; we just need to size + position it inside the cell. */
+/* Every grid tile uses the real Property Passport book (seller/landlord
+   art + address overlaid via the shared PassportCard component) — no
+   property-photo alternative. We just need to size + position it inside
+   the cell. */
 .passport-book-fallback {
   position: relative;
   width: 100%;

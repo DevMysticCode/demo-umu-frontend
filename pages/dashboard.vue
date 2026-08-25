@@ -236,7 +236,7 @@
               <div class="apc-main">
                 <div class="apc-passport-slot">
                   <PassportCard
-                    :line1="(passports[0].address || passports[0].addressLine1 || '').split(',')[0]"
+                    :line1="passports[0].address || passports[0].addressLine1 || ''"
                     :line2="passports[0].postcode || ''"
                     :type="passports[0].type || 'SELLER'"
                   />
