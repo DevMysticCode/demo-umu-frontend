@@ -122,7 +122,12 @@
                 /></span>
                 +0pts
               </div>
-              <h3 class="task-title">{{ toSmartTitleCase(task.title) }}</h3>
+              <h3 class="task-title">
+                {{ toSmartTitleCase(task.title) }}
+                <span v-if="task.hasPublishRequired" class="task-required-badge"
+                  >Required to publish</span
+                >
+              </h3>
               <p class="task-description">{{ task.description }}</p>
               <div class="task-meta">
                 <span>
@@ -677,6 +682,22 @@ const goBack = () => {
 
 .task-card.completed {
   opacity: 0.7;
+}
+
+.task-required-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 7px;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #b45309;
+  background: #fff3dc;
+  border: 1px solid #fbe4bd;
+  border-radius: 999px;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 .task-status {

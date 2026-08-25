@@ -1297,8 +1297,6 @@ const SectionCard = defineComponent({
   width: 110px;
 }
 .pp-hero-book :deep(.passport-image) {
-  width: 110px;
-  height: auto;
   filter: drop-shadow(0 10px 24px rgba(14, 40, 64, 0.3));
 }
 

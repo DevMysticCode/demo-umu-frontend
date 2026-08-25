@@ -140,6 +140,22 @@ const loadSectionQuestions = async (stepId, startAtTaskId = null) => {
   }
 }
 
+// Jumps straight to a known question within whatever's already loaded into
+// currentQuestions (via loadSectionQuestions) — used for deep-linking from
+// the publish-readiness checklist. No-ops (returns false) if the question
+// isn't part of the currently loaded set, so callers can fall back to
+// whatever loadSectionQuestions already picked.
+const goToQuestion = (questionId) => {
+  const info = questionTaskMap.value[questionId]
+  if (!info) return false
+  currentQuestionIndex.value = info.questionIndex
+  if (currentStep.value) {
+    currentTask.value =
+      currentStep.value.tasks.find((t) => t.id === info.taskId) || currentTask.value
+  }
+  return true
+}
+
 const saveAnswer = async (questionId, value) => {
   const res: any = await getApi().answerQuestion(questionId, value)
 
@@ -226,6 +242,7 @@ export const usePassportRuntime = () => {
     setCurrentTask,
     loadQuestions,
     loadSectionQuestions,
+    goToQuestion,
     saveAnswer,
     moveToNextQuestion,
     moveToPreviousQuestion,

@@ -76,6 +76,34 @@
               Passport issued
             </div>
           </div>
+
+          <!-- ── Publish-readiness bar — separate from overall completion
+               above: this tracks only the disclosures required before the
+               passport can go public, so it can hit 100% well before the
+               passport itself is fully filled in. ── -->
+          <button
+            v-if="readiness && !readiness.canPublish"
+            type="button"
+            class="pp-hero-dash pp-hero-dash--ready"
+            @click="openReadinessChecklist"
+          >
+            <div class="pp-hero-dash-row">
+              <span class="pp-hero-dash-label">Ready to publish</span>
+              <span class="pp-hero-dash-pct">{{ readiness.readinessPct }}%</span>
+            </div>
+            <div class="pp-hero-dash-bar">
+              <div
+                class="pp-hero-dash-fill pp-hero-dash-fill--ready"
+                :style="{ width: readiness.readinessPct + '%' }"
+              />
+            </div>
+            <div class="pp-hero-dash-issued pp-hero-dash-issued--ready">
+              {{ readiness.missingBlockers.length }}
+              required {{ readiness.missingBlockers.length === 1 ? 'question' : 'questions' }}
+              left before you can publish — tap to see them
+              <OPIcon name="caretRight" class="w-[10px] h-[10px]" />
+            </div>
+          </button>
         </div>
       </div>
 
@@ -98,7 +126,7 @@
           @click="onPublishClick"
         >
           <OPIcon name="published" class="w-[15px] h-[15px]" />
-          {{ publishLoading ? '...' : isPublished ? 'Unpublish Passport' : 'Publish Passport' }}
+          {{ publishButtonLabel }}
         </button>
       </div>
 
@@ -500,8 +528,10 @@
     <PublishPassportDrawer
       :open="publishDrawerOpen"
       :submitting="publishLoading"
+      :readiness="readiness"
       @close="publishDrawerOpen = false"
       @publish="onPublishConfirm"
+      @go-to-question="onGoToChecklistItem"
     />
 
     <!-- Bottom navigation bar — keeps the passportview consistent with the
@@ -582,6 +612,10 @@ const passportAddress = ref({ line1: '', line2: '' })
 const passportType = ref('SELLER')
 const isPublished = ref(false)
 const publishLoading = ref(false)
+// Publish-readiness — null until first loaded. Separate from overall
+// completion (overallProgress below): only tracks the disclosures required
+// before a buyer can be charged for this passport.
+const readiness = ref(null)
 const propertyHomeScore = ref(null)
 
 // Resume state — populated by GET /passport/:id/resume on mount and after
@@ -627,6 +661,7 @@ onMounted(async () => {
   }
 
   loadPassport(route.params.id)
+  fetchReadiness()
   await loadCollaborators()
   try {
     const token =
@@ -914,14 +949,74 @@ function formatStamp(iso) {
 
 // ── Publish confirmation drawer ────────────────────────────────
 const publishDrawerOpen = ref(false)
+
+async function fetchReadiness() {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  try {
+    readiness.value = await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}/readiness`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+  } catch (e) {
+    console.error('Failed to load publish readiness', e)
+  }
+}
+
+function onGoToChecklistItem(item) {
+  publishDrawerOpen.value = false
+  // System-fact checks (title number / EPC) aren't tied to a section the
+  // seller answers directly — the EPC one has an upload fallback in
+  // Environmental, so send them there; title number has nothing to action.
+  if (!item?.taskId || !item?.sectionId) {
+    if (item?.question?.toLowerCase().includes('epc')) {
+      const envStep = steps.value.find((s) => s.key === 'environmental')
+      if (envStep) navigateToStep(envStep.id)
+    }
+    return
+  }
+  // Deep-links straight to the exact question (not just its section) —
+  // steps/tasks/[id].vue reads ?questionId= and jumps to it directly.
+  router.push({
+    path: `/passportview/steps/tasks/${item.taskId}`,
+    query: {
+      stepId: item.sectionId,
+      propertyId: route.params.id,
+      ...(item.questionId ? { questionId: item.questionId } : {}),
+    },
+  })
+}
+
 function onPublishClick() {
   // Unpublishing stays a one-tap action; publishing shows the explainer first.
   if (isPublished.value) {
     togglePublish()
   } else {
     publishDrawerOpen.value = true
+    fetchReadiness()
   }
 }
+
+// The "Ready to publish" bar itself is tappable — lets a seller see exactly
+// what's outstanding without first tapping the (possibly disabled-reading)
+// Publish button.
+function openReadinessChecklist() {
+  publishDrawerOpen.value = true
+  fetchReadiness()
+}
+
+// Reflects readiness state right on the button so a seller isn't surprised
+// by the drawer — "Publish Passport" only shows once we know they're ready
+// (or haven't checked yet, to avoid a loading flash).
+const publishButtonLabel = computed(() => {
+  if (publishLoading.value) return '...'
+  if (isPublished.value) return 'Unpublish Passport'
+  if (readiness.value && !readiness.value.canPublish) {
+    return `Publish Passport — ${readiness.value.readinessPct}% ready`
+  }
+  return 'Publish Passport'
+})
 async function onPublishConfirm() {
   await togglePublish()
   publishDrawerOpen.value = false
@@ -960,8 +1055,16 @@ async function togglePublish() {
       { method: 'PUT', headers: { Authorization: `Bearer ${token}` } },
     )
     isPublished.value = !isPublished.value
+    fetchReadiness()
   } catch (e) {
     console.error('Failed to toggle publish state', e)
+    // The backend gates publish on readiness — a 403 for that carries the
+    // full result, so surface the checklist instead of failing silently.
+    const gate = e?.data?.readiness
+    if (gate) {
+      readiness.value = gate
+      publishDrawerOpen.value = true
+    }
   } finally {
     publishLoading.value = false
   }
@@ -2089,10 +2192,6 @@ const onRoleSwitch = (role) => {
   width: 100%;
   height: 140px;
 }
-.pp-hero-book :deep(.passport-image) {
-  width: 100%;
-  height: 100%;
-}
 .pp-hero-info {
   flex: 1;
   min-width: 0;
@@ -2236,6 +2335,40 @@ const onRoleSwitch = (role) => {
   border-radius: 50%;
   background: #00a19a;
   box-shadow: 0 0 0 2.5px #f1f9f4;
+}
+
+/* ── Publish-readiness bar — amber, distinct from the teal completion bar
+     above so "ready to publish" reads as its own, narrower metric ── */
+.pp-hero-dash--ready {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #e2e5ee;
+  /* It's a <button> now (tappable — opens the readiness checklist) */
+  display: block;
+  width: 100%;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  padding-left: 0;
+  padding-right: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pp-hero-dash-issued--ready svg {
+  vertical-align: -1px;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+.pp-hero-dash--ready .pp-hero-dash-pct {
+  color: #d97706;
+}
+.pp-hero-dash-fill--ready {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+.pp-hero-dash-issued--ready {
+  color: #b45309;
 }
 
 /* ── Action row (Match to Buyers + Publish) ────────────────────── */

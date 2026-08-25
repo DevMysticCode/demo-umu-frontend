@@ -236,7 +236,7 @@
               <div class="apc-main">
                 <div class="apc-passport-slot">
                   <PassportCard
-                    :line1="passports[0].address || passports[0].addressLine1 || ''"
+                    :line1="passports[0].addressLine1 || passports[0].address || ''"
                     :line2="passports[0].postcode || ''"
                     :type="passports[0].type || 'SELLER'"
                   />
@@ -789,21 +789,6 @@ onMounted(async () => {
 .apc-passport-slot :deep(.passport-container) {
   width: 100%;
   max-width: none;
-}
-.apc-passport-slot :deep(.passport-image) {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.apc-passport-slot :deep(.address-line) {
-  font-size: 7px !important;
-  font-weight: 600;
-  line-height: 1.15;
-}
-.apc-passport-slot :deep(.address-line-small) {
-  font-size: 6px !important;
-  font-weight: 500;
-  line-height: 1.15;
 }
 .apc-info {
   flex: 1;
