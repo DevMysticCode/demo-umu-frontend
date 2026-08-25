@@ -111,8 +111,8 @@ const emit = defineEmits(['close', 'navigate', 'updated'])
 // behind it.
 function passportImage(type) {
   return type === 'LANDLORD'
-    ? '/op-icons/passportview/landlordPassport.png'
-    : '/op-icons/misc/sellerPassport.png'
+    ? '/op-icons/passport-covers/landlord_front_no_tile.png'
+    : '/op-icons/passport-covers/seller_front_no_tile.png'
 }
 
 const config = useRuntimeConfig()

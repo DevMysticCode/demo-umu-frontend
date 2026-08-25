@@ -88,7 +88,7 @@
           @click="goToBuyerPassport"
         >
           <img
-            src="/op-icons/misc/buyerPassport.png"
+            src="/op-icons/passport-covers/buyer_front_no_tile.png"
             alt=""
             class="exp-card-ic exp-card-ic--book"
             loading="lazy"
@@ -119,7 +119,7 @@
         </button>
         <div class="exp-card exp-card--gray exp-card--soon">
           <img
-            src="/op-icons/misc/tenantPassport.png"
+            src="/op-icons/passport-covers/tenant_front_no_tile.png"
             alt=""
             class="exp-card-ic exp-card-ic--book"
             loading="lazy"

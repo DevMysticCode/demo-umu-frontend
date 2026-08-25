@@ -54,7 +54,7 @@
     <div class="bph-hero-wrap">
       <div class="bph-hero-card" @click="goToBuild">
         <img
-          src="/op-icons/misc/buyerPassport.png"
+          src="/op-icons/passport-covers/buyer_tilted_right_on_tile.png"
           alt=""
           class="bph-hero-icon"
           loading="lazy"

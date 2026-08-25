@@ -39,10 +39,12 @@ export const usePassportClaim = () => {
   }
 
   // Property claims (propertyId set) come back with status:'PENDING_PAYMENT'
-  // — KYC and/or HM Land Registry cost real money, so the claim isn't
-  // active until createClaimPaymentIntent + activatePassport complete.
-  // Manual passports / landlord→seller converts come back already
-  // 'IN_PROGRESS' (no HMLR involved, free as before).
+  // and no type yet — type is chosen later via setPassportType(), once HM
+  // Land Registry has verified ownership (see that function below). The
+  // claim isn't active until createClaimPaymentIntent + setPassportType +
+  // activatePassport all complete. Manual passports / landlord→seller
+  // converts (opts.type provided, no propertyId flow involved) come back
+  // already 'IN_PROGRESS' (no HMLR involved, free as before).
   const claimPassport = async (
     propertyId: string,
     addressLine1: string,
@@ -56,7 +58,7 @@ export const usePassportClaim = () => {
         propertyId,
         addressLine1,
         postcode,
-        type: opts.type ?? 'seller',
+        ...(opts.type ? { type: opts.type } : {}),
         ...(opts.isHmo ? { isHmo: true } : {}),
       },
     })
@@ -75,9 +77,27 @@ export const usePassportClaim = () => {
     })
   }
 
+  // Sets the seller/landlord choice on a paid property claim — call once HM
+  // Land Registry has verified ownership, right before activatePassport().
+  const setPassportType = async (
+    passportId: string,
+    type: 'seller' | 'landlord',
+    isHmo = false,
+  ): Promise<{ passportId: string; status: string }> => {
+    return $fetch<{ passportId: string; status: string }>(
+      `${base}/passport/${passportId}/set-type`,
+      {
+        method: 'POST',
+        headers: headers(),
+        body: { type, ...(isHmo ? { isHmo: true } : {}) },
+      },
+    )
+  }
+
   // Seeds the passport's sections once createClaimPaymentIntent's Stripe
-  // charge has succeeded. Safe to call again if it somehow gets retried —
-  // the backend no-ops once the passport is already active.
+  // charge has succeeded and setPassportType() has set a type. Safe to call
+  // again if it somehow gets retried — the backend no-ops once the
+  // passport is already active.
   const activatePassport = async (passportId: string): Promise<{ passportId: string }> => {
     return $fetch<{ passportId: string }>(`${base}/passport/${passportId}/activate`, {
       method: 'POST',
@@ -106,6 +126,7 @@ export const usePassportClaim = () => {
     getPassportStatus,
     claimPassport,
     createClaimPaymentIntent,
+    setPassportType,
     activatePassport,
     unlockPassport,
     convertLandlordToSeller,

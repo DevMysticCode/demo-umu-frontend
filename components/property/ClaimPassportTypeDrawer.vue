@@ -17,7 +17,7 @@
           <div class="cpt-opts">
             <div class="cpt-opt seller">
               <div class="cpt-opt-ico">
-                <img src="/op-icons/misc/sellerPassport.png" alt="Seller passport" />
+                <img src="/op-icons/passport-covers/seller_front_no_tile.png" alt="Seller passport" />
               </div>
               <div class="cpt-opt-title">Seller Passport</div>
               <div class="cpt-opt-sub">For homeowners who want to sell or are thinking of selling.</div>
@@ -28,7 +28,7 @@
 
             <div class="cpt-opt landlord">
               <div class="cpt-opt-ico">
-                <img src="/op-icons/passportview/landlordPassport.png" alt="Landlord passport" />
+                <img src="/op-icons/passport-covers/landlord_front_no_tile.png" alt="Landlord passport" />
               </div>
               <div class="cpt-opt-title">Landlord Passport</div>
               <div class="cpt-opt-sub">For landlords who own rental properties.</div>
