@@ -2470,17 +2470,12 @@ onMounted(async () => {
   width: 100%;
   max-width: none;
 }
-.psc-passport-slot :deep(.passport-image) {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-/* Address on the mini-passport reads too bold + too high at this size —
-   nudge down 2px and drop weight to normal. Applied via :deep() so the
-   shared PassportCard component styling stays untouched elsewhere. */
-.psc-passport-slot :deep(.passport-address) {
-  bottom: calc(14% - 2px);
-}
+/* Address on the mini-passport reads too bold at this size — drop weight
+   to normal. The old override also nudged `bottom` down to compensate for
+   PassportCard's old too-high default (31%) — that's now fixed at the
+   component level (20%, tuned for exactly this kind of width-only,
+   natural-aspect-ratio rendering), so this tile no longer needs its own
+   position override. */
 /* Force the address type well below PassportCard's clamp minimum —
    at 64px width the shared component's clamp(8px, 7.5cqi, 14px)
    floors at 8px which visually overflowed the cover. Explicit tiny

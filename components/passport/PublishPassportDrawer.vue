@@ -22,49 +22,92 @@
             </div>
           </div>
 
-          <div class="ppd-list">
-            <div class="ppd-row">
-              <span class="ppd-ico on">🔒</span>
-              <div>
-                <div class="ppd-row-t">Today — private</div>
-                <div class="ppd-row-s">
-                  Only buyers you contact can see it. Good for testing
-                  interest first.
+          <template v-if="!notReady">
+            <div class="ppd-list">
+              <div class="ppd-row">
+                <span class="ppd-ico on">🔒</span>
+                <div>
+                  <div class="ppd-row-t">Today — private</div>
+                  <div class="ppd-row-s">
+                    Only buyers you contact can see it. Good for testing
+                    interest first.
+                  </div>
+                </div>
+              </div>
+              <div class="ppd-row">
+                <span class="ppd-ico">🌐</span>
+                <div>
+                  <div class="ppd-row-t">After publishing — public</div>
+                  <div class="ppd-row-s">
+                    Listed to all matching verified buyers. They can view &amp;
+                    request a viewing.
+                  </div>
+                </div>
+              </div>
+              <div class="ppd-row">
+                <span class="ppd-ico">↩️</span>
+                <div>
+                  <div class="ppd-row-t">You stay in control</div>
+                  <div class="ppd-row-s">
+                    Unpublish any time. Your contact details stay hidden until
+                    you choose to share.
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="ppd-row">
-              <span class="ppd-ico">🌐</span>
-              <div>
-                <div class="ppd-row-t">After publishing — public</div>
-                <div class="ppd-row-s">
-                  Listed to all matching verified buyers. They can view &amp;
-                  request a viewing.
-                </div>
-              </div>
-            </div>
-            <div class="ppd-row">
-              <span class="ppd-ico">↩️</span>
-              <div>
-                <div class="ppd-row-t">You stay in control</div>
-                <div class="ppd-row-s">
-                  Unpublish any time. Your contact details stay hidden until
-                  you choose to share.
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="ppd-tip">
-            💡 Tip: <b>match &amp; make contact first</b> — gauge interest
-            privately, then publish to open it up to everyone.
-          </div>
+            <div class="ppd-tip">
+              💡 Tip: <b>match &amp; make contact first</b> — gauge interest
+              privately, then publish to open it up to everyone.
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="ppd-gate">
+              <div class="ppd-gate-head">
+                <span class="ppd-gate-pct">{{ readiness?.readinessPct ?? 0 }}%</span>
+                <span class="ppd-gate-lbl">Upfront Ready</span>
+                <span class="ppd-gate-count">
+                  {{ readiness?.requiredDone ?? 0 }}/{{ readiness?.requiredTotal ?? 0 }} done
+                </span>
+              </div>
+              <p class="ppd-gate-sub">
+                Buyers pay to unlock this passport, so these disclosures are
+                required before it can go public. Tap any item to jump
+                straight to it — done ones are shown too, so you can see
+                exactly where things stand.
+              </p>
+              <div class="ppd-gate-list">
+                <button
+                  v-for="(item, idx) in readiness?.checklist ?? []"
+                  :key="idx"
+                  type="button"
+                  class="ppd-gate-item"
+                  :class="{ done: item.satisfied }"
+                  @click="$emit('go-to-question', item)"
+                >
+                  <span v-if="item.satisfied" class="ppd-gate-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="12" height="12">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
+                  <span v-else class="ppd-gate-dot" />
+                  <span class="ppd-gate-item-text">
+                    <span class="ppd-gate-item-section">{{ item.section }}</span>
+                    {{ item.question }}
+                  </span>
+                  <OPIcon name="caretRight" class="w-[11px] h-[11px]" />
+                </button>
+              </div>
+            </div>
+          </template>
 
           <div class="ppd-cta-row">
             <button class="ppd-btn secondary" type="button" @click="$emit('close')">
               Not yet
             </button>
             <button
+              v-if="!notReady"
               class="ppd-btn primary"
               type="button"
               :disabled="submitting"
@@ -81,14 +124,40 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+import OPIcon from '~/components/ui/OPIcon.vue'
+
+interface ChecklistItem {
+  section: string
+  sectionId: string | null
+  task: string
+  taskId: string | null
+  question: string
+  questionId: string | null
+  milestone: number
+  satisfied: boolean
+}
+
+const props = defineProps<{
   open: boolean
   submitting?: boolean
+  readiness?: {
+    canPublish: boolean
+    readinessPct: number
+    requiredDone: number
+    requiredTotal: number
+    checklist: ChecklistItem[]
+  } | null
 }>()
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'publish'): void
+  (e: 'go-to-question', item: ChecklistItem): void
 }>()
+
+// readiness is null while still loading — don't flash the "not ready" gate
+// before we actually know; only show it once we have a real, not-ready result.
+const notReady = computed(() => props.readiness != null && props.readiness.canPublish === false)
 
 const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
   onDismiss: () => emit('close'),
@@ -129,6 +198,25 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 
 .ppd-tip { margin: 14px 22px 0; padding: 11px 13px; background: var(--accent-paler); border: 1px solid var(--accent-pale); border-radius: 11px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); line-height: 1.5; }
 .ppd-tip b { color: var(--accent-dark); font-weight: 800; }
+
+.ppd-gate { padding: 4px 22px 0; }
+.ppd-gate-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ppd-gate-pct { font-size: 22px; font-weight: 800; color: #d97706; }
+.ppd-gate-lbl { font-size: 11.5px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+.ppd-gate-count { font-size: 11px; font-weight: 700; color: var(--text-faint); margin-left: auto; }
+.ppd-gate-sub { margin: 6px 0 0; font-size: 12px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; }
+.ppd-gate-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; }
+.ppd-gate-item { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: #fff8ed; border: 1px solid #fbe4bd; border-radius: 10px; padding: 10px 12px; font-family: inherit; cursor: pointer; }
+.ppd-gate-item:active { background: #fdecd2; }
+.ppd-gate-item.done { background: var(--accent-paler); border-color: var(--accent-pale); }
+.ppd-gate-item.done:active { background: var(--accent-pale); }
+.ppd-gate-dot { width: 7px; height: 7px; border-radius: 50%; background: #d97706; flex-shrink: 0; }
+.ppd-gate-check { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ppd-gate-item-text { flex: 1; font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.ppd-gate-item.done .ppd-gate-item-text { color: var(--text-secondary); }
+.ppd-gate-item-section { display: block; font-size: 10px; font-weight: 800; color: #d97706; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 1px; }
+.ppd-gate-item.done .ppd-gate-item-section { color: var(--accent-dark); }
+.ppd-gate-item svg { flex-shrink: 0; color: var(--text-faint); }
 
 .ppd-cta-row { padding: 18px 22px 6px; display: flex; gap: 8px; }
 .ppd-btn { flex: 1; padding: 14px; font-family: inherit; font-size: 13.5px; font-weight: 800; border-radius: 12px; cursor: pointer; border: none; transition: filter 0.15s; }

@@ -1068,11 +1068,6 @@ const executeDelete = async () => {
   height: 100%;
   max-width: none;
 }
-.coll-resume-book :deep(.passport-image) {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 .coll-resume-content {
   flex: 1;
   min-width: 0;
@@ -1371,11 +1366,6 @@ const executeDelete = async () => {
   width: 100%;
   height: 100%;
   max-width: none;
-}
-.passport-book-fallback :deep(.passport-image) {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 .book-trash-btn--fallback {
   bottom: 8px;

@@ -235,7 +235,6 @@ const insuranceGroup: SampleSection[] = [
 .pp-hero-book :deep(.passport-card) { margin: 0; padding: 0; }
 .pp-hero-book :deep(.passport-container) { max-width: 110px; width: 110px; }
 .pp-hero-book :deep(.passport-image) {
-  width: 110px; height: auto;
   filter: drop-shadow(0 10px 24px rgba(14, 40, 64, 0.3));
 }
 

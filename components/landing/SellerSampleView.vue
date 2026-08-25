@@ -193,7 +193,6 @@ const steps = [
 }
 .pp-hero-book :deep(.passport-card) { padding: 0; margin: 0; width: 100%; min-width: 0; }
 .pp-hero-book :deep(.passport-container) { width: 100%; height: 140px; }
-.pp-hero-book :deep(.passport-image) { width: 100%; height: 100%; }
 
 .pp-hero-info {
   flex: 1; min-width: 0;

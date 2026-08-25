@@ -359,6 +359,7 @@ const {
   loadPassport,
   loadQuestions,
   loadSectionQuestions,
+  goToQuestion,
   saveAnswer: apiSaveAnswer,
   completeTask,
   moveToNextQuestion,
@@ -573,6 +574,14 @@ onMounted(async () => {
   setCurrentTask(taskId)
   // Load all questions from the entire section, starting at the clicked task
   await loadSectionQuestions(stepId, taskId)
+
+  // Deep-linked from the publish-readiness checklist ("21 required
+  // questions left") — jump straight to that exact question instead of
+  // wherever loadSectionQuestions would otherwise land (first unanswered
+  // in this task).
+  if (route.query.questionId) {
+    goToQuestion(String(route.query.questionId))
+  }
 
   // Load property images for the home story task
   await loadPropertyImages()
