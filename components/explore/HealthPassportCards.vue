@@ -61,7 +61,7 @@
       <div class="feat-main">
         <div class="feat-hero">
           <img
-            src="/op-icons/explore/samplePassportImage.png"
+            src="/op-icons/passport-covers/seller_tilted_right_on_tile.png"
             alt=""
             class="feat-hero-img"
             loading="lazy"

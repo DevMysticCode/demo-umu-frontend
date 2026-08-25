@@ -1036,8 +1036,11 @@ const router = useRouter()
 const config = useRuntimeConfig()
 const { checkForCelebrations } = usePassportAchievement()
 
-// Passport-type gate. Always shown before the actual claim happens, even if
-// the user's role preference suggests one or the other.
+// Passport-type gate. Asked only once HM Land Registry has verified
+// ownership (see the 'lr-found' branch in the step watcher below) — not
+// upfront. Payment and verification no longer depend on knowing seller vs
+// landlord; the backend defers that choice the same way (see
+// setPassportType in usePassportClaim.ts).
 const showTypeDrawer = ref(false)
 const chosenPassportType = ref<'seller' | 'landlord' | null>(null)
 const chosenIsHmo = ref(false)
@@ -1047,23 +1050,11 @@ function onPassportTypeConfirmed(payload: {
 }) {
   chosenPassportType.value = payload.type
   chosenIsHmo.value = payload.isHmo
-  // Persisted so the choice survives the guest sign-in round-trip from
-  // confirmProperty() below — this component fully remounts on return,
-  // losing plain refs.
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem(
-      'umu_claim_passport_type',
-      JSON.stringify({ propertyId, type: payload.type, isHmo: payload.isHmo }),
-    )
-  }
   showTypeDrawer.value = false
-  // Resume the claim only if the user is already on the confirm step and
-  // hit the "type required" wall in confirmProperty() below (dismissed the
-  // drawer without choosing at mount, then tapped Continue anyway). When
-  // the drawer is shown at mount-time (the common case), the user still
-  // needs to walk through search → confirm; their choice is just persisted.
-  if (step.value === 'confirm') {
-    confirmProperty()
+  // The drawer only ever opens at (or after) 'lr-found' now — apply the
+  // choice and finish issuing the passport straight away.
+  if (step.value === 'lr-found') {
+    finalizeAfterVerification()
   }
 }
 const base = config.public.apiBase as string
@@ -1220,7 +1211,6 @@ onMounted(async () => {
   // marker is stale (different property, or older than 30 min) we
   // ignore it and fall through to the normal claim flow.
   const url = new URL(window.location.href)
-  let resumedFromKyc = false
   if (url.searchParams.get('kycreturn') === '1') {
     try {
       const raw = localStorage.getItem('umu_persona_return')
@@ -1230,25 +1220,13 @@ onMounted(async () => {
         if (fresh && saved?.propertyId === propertyId && saved?.inquiryId) {
           personaInquiryId.value = saved.inquiryId
           step.value = 'kyc-explainer'
-          resumedFromKyc = true
-          // Payment now happens BEFORE Persona, so by this point the
-          // passport-type pick and the already-created, already-paid
-          // passport id both predate this redirect — restore them too
+          // Payment happens before Persona, so the already-created,
+          // already-paid passport id predates this redirect — restore it
           // (this component fully remounts on return, losing plain refs).
-          // finalizeAfterVerification() needs claimPassportId once HMLR
-          // comes back VERIFIED; chosenPassportType drives finishAndNavigate.
-          try {
-            const typeRaw = localStorage.getItem('umu_claim_passport_type')
-            if (typeRaw) {
-              const savedType = JSON.parse(typeRaw)
-              if (savedType?.propertyId === propertyId && savedType?.type) {
-                chosenPassportType.value = savedType.type
-                chosenIsHmo.value = !!savedType.isHmo
-              }
-            }
-          } catch {
-            /* corrupt localStorage — chosenPassportType stays unset */
-          }
+          // finalizeAfterVerification() needs it once HMLR comes back
+          // VERIFIED. The passport type isn't asked until after that (see
+          // the 'lr-found' watcher below), so there's nothing to restore
+          // for it at this point.
           try {
             const idRaw = localStorage.getItem('umu_claim_passport_id')
             if (idRaw) {
@@ -1263,8 +1241,8 @@ onMounted(async () => {
           // Strip the query param so a refresh doesn't re-enter this path.
           url.searchParams.delete('kycreturn')
           window.history.replaceState({}, '', url.toString())
-          // Fire polling without awaiting so the type drawer + property
-          // load below still happen in parallel.
+          // Fire polling without awaiting so the property load below still
+          // happens in parallel.
           runPolling()
         }
       }
@@ -1274,51 +1252,16 @@ onMounted(async () => {
   }
 
   // Resuming from the guest sign-in round-trip confirmProperty() below
-  // triggers? Restore the passport-type choice made before they left and
-  // skip straight back into "Yes, this is my property" — don't re-show
-  // the type drawer or make them re-confirm.
+  // triggers? Skip straight back into "Yes, this is my property" — don't
+  // make them re-confirm. Passport type isn't asked until well after this
+  // point (post-HMLR), so there's nothing to restore for it here either.
   let resumingConfirm = false
   if (url.searchParams.get('resumeConfirm') === '1') {
     url.searchParams.delete('resumeConfirm')
     window.history.replaceState({}, '', url.toString())
-    try {
-      const raw = localStorage.getItem('umu_claim_passport_type')
-      if (raw) {
-        const saved = JSON.parse(raw)
-        if (saved?.propertyId === propertyId && saved?.type) {
-          chosenPassportType.value = saved.type
-          chosenIsHmo.value = !!saved.isHmo
-          resumingConfirm = true
-        }
-      }
-    } catch {
-      /* corrupt localStorage — fall through to the normal ask */
-    }
+    resumingConfirm = true
   }
 
-  // Arriving from property/[id].vue's own "Choose your Passport" drawer
-  // (?type=seller|landlord&hmo=1) — that page already asked, so honor its
-  // choice instead of asking again here.
-  let typeFromQuery = false
-  const queryType = url.searchParams.get('type')
-  if (
-    !resumingConfirm &&
-    (queryType === 'seller' || queryType === 'landlord')
-  ) {
-    chosenPassportType.value = queryType
-    chosenIsHmo.value = url.searchParams.get('hmo') === '1'
-    typeFromQuery = true
-    url.searchParams.delete('type')
-    url.searchParams.delete('hmo')
-    window.history.replaceState({}, '', url.toString())
-  }
-
-  // First thing: ask the user which type of passport they're claiming.
-  // Always shown — even if their profile role suggests one — so they can
-  // override per-property (a landlord might still claim a seller passport).
-  // Skipped when resuming, when the type already arrived via query, or
-  // when resuming from Persona (already chose long before that redirect).
-  showTypeDrawer.value = !resumingConfirm && !typeFromQuery && !resumedFromKyc
   await Promise.all([loadProperty(), loadProfile()])
   if (resumingConfirm) confirmProperty()
 })
@@ -1568,13 +1511,6 @@ async function confirmProperty() {
     step.value = 'kyc-explainer'
     return
   }
-  // The passport needs a type before it can be created — normally already
-  // picked via the drawer shown at mount, but if it was dismissed without
-  // choosing, ask now and resume here via onPassportTypeConfirmed above.
-  if (!chosenPassportType.value) {
-    showTypeDrawer.value = true
-    return
-  }
   verifyLoading.value = true
   try {
     // Snapshots whether KYC was already approved before this claim, for
@@ -1585,12 +1521,14 @@ async function confirmProperty() {
       { method: 'POST', headers: authHeaders() },
     )
 
+    // No passport type yet — that's asked once HM Land Registry verifies
+    // ownership (see the 'lr-found' step further down). The backend
+    // creates this as an untyped PENDING_PAYMENT record.
     const { claimPassport } = usePassportClaim()
     const res = await claimPassport(
       selectedProperty.value.id,
       selectedProperty.value?.addressLine1 ?? '',
       selectedProperty.value?.postcode ?? '',
-      { type: chosenPassportType.value, isHmo: chosenIsHmo.value },
     )
     const passportId = res.passportId
     if (!passportId) throw new Error('Passport could not be created')
@@ -1824,6 +1762,9 @@ watch(
       personaAbort?.abort()
     }
     if (s === 'lr-searching') runLrSearch()
+    // Ownership just got verified — this is the first point the flow
+    // actually knows what to ask, so ask now rather than upfront.
+    if (s === 'lr-found' && !chosenPassportType.value) showTypeDrawer.value = true
   },
 )
 async function runLrSearch() {
@@ -1949,12 +1890,13 @@ function describeLrFailure(lr: {
   return 'Ownership check did not succeed. Please try again.'
 }
 
-// ── Issue passport (HM Land Registry verification + claim) ────────
-// ── lr-found → activate the already-paid passport, then navigate ──────
+// ── lr-found → pick a type, set it, activate the already-paid passport,
+//    then navigate ──────────────────────────────────────────────────
 // The passport was created and paid for back in confirmProperty() /
-// payClaimFee() above (payment now runs BEFORE this point) — this just
-// confirms HM Land Registry came back VERIFIED and KYC is approved, then
-// seeds the passport's sections.
+// payClaimFee() above (payment now runs BEFORE this point) — this
+// confirms HM Land Registry came back VERIFIED and KYC is approved, sets
+// the seller/landlord choice (asked for the first time only now — see the
+// step watcher above), then seeds the passport's sections.
 async function finalizeAfterVerification() {
   issueError.value = ''
   issueLoading.value = true
@@ -1973,8 +1915,20 @@ async function finalizeAfterVerification() {
         'Something went wrong with your claim — please start again.'
       return
     }
+    if (!chosenPassportType.value) {
+      // Shouldn't normally happen — the step watcher above opens the type
+      // drawer as soon as this step is reached — but guard in case it was
+      // dismissed without choosing.
+      showTypeDrawer.value = true
+      return
+    }
 
-    const { activatePassport } = usePassportClaim()
+    const { setPassportType, activatePassport } = usePassportClaim()
+    await setPassportType(
+      claimPassportId.value,
+      chosenPassportType.value,
+      chosenIsHmo.value,
+    )
     await activatePassport(claimPassportId.value)
     finishAndNavigate(claimPassportId.value)
   } catch (e: any) {

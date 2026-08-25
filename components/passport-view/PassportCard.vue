@@ -52,9 +52,9 @@ const props = defineProps({
 })
 
 const passportImage = computed(() => {
-  if (props.type === 'LANDLORD') return '/op-icons/passportview/landlordPassport.png'
-  if (props.type === 'BUYER') return '/op-icons/misc/buyerPassport.png'
-  return '/op-icons/misc/sellerPassport.png'
+  if (props.type === 'LANDLORD') return '/op-icons/passport-covers/landlord_front_no_tile.png'
+  if (props.type === 'BUYER') return '/op-icons/passport-covers/buyer_front_no_tile.png'
+  return '/op-icons/passport-covers/seller_front_no_tile.png'
 })
 </script>
 

@@ -77,7 +77,7 @@
           </div>
           <div class="bp-hero-body">
             <img
-              src="/op-icons/misc/buyerPassport.png"
+              src="/op-icons/passport-covers/buyer_tilted_right_on_tile.png"
               alt=""
               class="bph-hero-icon"
               loading="lazy"

@@ -22,7 +22,13 @@
           your identity and show sellers you're a serious buyer.
         </div>
       </div>
-      <img src="/op-icons/misc/buyerPassport.png" alt="" class="bpg-hero-img" loading="lazy" />
+      <!-- Text is on the LEFT here, so this needs a buyer passport tilted
+           LEFT (toward the text) — that asset doesn't exist yet (only
+           front/no-tile and tilted-right have been provided). Using the
+           renamed-aside legacy image as a placeholder until it's ready;
+           swap to /op-icons/passport-covers/buyer_tilted_left_on_tile.png
+           once available. -->
+      <img src="/op-icons/misc/buyerPassport_legacy.png" alt="" class="bpg-hero-img" loading="lazy" />
     </div>
 
     <div class="bpg-benefits">

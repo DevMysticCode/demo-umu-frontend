@@ -783,12 +783,6 @@
       @claimed="onPassportUnlocked"
     />
 
-    <!-- "Choose your Passport" drawer (owner claim entry-point). Opens via the
-         ?claim=1 query param (e.g. from a HomeScore "claim property" CTA). -->
-    <ClaimPassportTypeDrawer
-      v-model="showChooseTypeDrawer"
-      @confirm="onChooseTypeConfirm"
-    />
     <BaseDrawer
       v-model="showRegisterInterest"
       title="Register Interest"
@@ -4196,7 +4190,6 @@ import RegisterInterestContent from '~/components/property/RegisterInterestConte
 import ClaimPassportDrawer from '~/components/property/ClaimPassportDrawer.vue'
 import LlcChargesCard from '~/components/property/LlcChargesCard.vue'
 import PassportClaimBox from '~/components/property/PassportClaimBox.vue'
-import ClaimPassportTypeDrawer from '~/components/property/ClaimPassportTypeDrawer.vue'
 import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import Toast from '~/components/ui/Toast.vue'
@@ -7056,20 +7049,6 @@ function onPassportUnlocked(passportId: string) {
   router.push(`/buyer-passport/${passportId}`)
 }
 
-// "Choose your Passport" type-picker drawer — opens via ?claim=1 from a
-// HomeScore "claim property" CTA. On confirm, hand off to the global
-// /claim/[id] KYC flow with the chosen type as a query so it skips the
-// in-page picker and goes straight into verification.
-const showChooseTypeDrawer = ref(false)
-function onChooseTypeConfirm(payload: {
-  type: 'seller' | 'landlord'
-  isHmo: boolean
-}) {
-  const qs = new URLSearchParams({ type: payload.type })
-  if (payload.isHmo) qs.set('hmo', '1')
-  router.push(`/claim/${propertyId}?${qs.toString()}`)
-}
-
 // ─── Make Contact form state ───────────────────────────────────────────────
 type ContactRole = 'Potential buyer' | 'Neighbour' | 'Agent'
 type ContactReplyPref = 'Email' | 'Phone' | 'Either'
@@ -7990,9 +7969,12 @@ onMounted(async () => {
       showToast({ message: '❤️ Saved to your properties', duration: 2200 })
     }
   } else if (route.query?.claim === '1') {
-    // Unclaimed claim CTA arrives here — open the "Choose your Passport" drawer.
+    // Unclaimed claim CTA (from a HomeScore "claim property" link) arrives
+    // here — go straight into the claim flow, same as goToClaim() below.
+    // Passport type is no longer asked upfront: /claim/[id] now asks for
+    // it once HM Land Registry has verified ownership.
     router.replace({ path: route.path }).catch(() => {})
-    showChooseTypeDrawer.value = true
+    goToClaim()
   } else if (route.query?.unlock === '1') {
     // In-progress / published "buy the Passport" CTA arrives here — open
     // the £99 unlock drawer.
