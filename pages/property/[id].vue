@@ -663,7 +663,11 @@
       </div>
 
       <!-- ─── SECTION 8: Running Costs ─────────────────────────────── -->
-      <div v-if="costsBoxes.length > 0" class="pps-costs-card">
+      <!-- Hidden for now, may come back later — disabled via v-if="false"
+           rather than an HTML comment because this block already contains
+           its own inner <!-- --> comments, which can't nest safely inside
+           an outer one. -->
+      <div v-if="false && costsBoxes.length > 0" class="pps-costs-card">
         <div class="pps-costs-header">
           <span class="pps-costs-header-title">Estimated running costs</span>
           <span class="pps-costs-header-sub">EPC estimate</span>
@@ -723,7 +727,10 @@
 
       <!-- EPC fabric breakdown (restored from old version) — only when we
            have at least one component-level rating from the EPC API. -->
-      <div v-if="epcComponents.length > 0" class="pps-details-card">
+      <!-- Hidden for now, may come back later — see the v-if="false" note
+           on the Running Costs section above for why this isn't a plain
+           HTML comment. -->
+      <div v-if="false && epcComponents.length > 0" class="pps-details-card">
         <div class="pps-details-header">EPC fabric breakdown</div>
         <div class="pps-details-sub">
           How each part of the building scores in the latest Energy Performance
@@ -7978,7 +7985,17 @@ onMounted(async () => {
     // here — go straight into the claim flow, same as goToClaim() below.
     // Passport type is no longer asked upfront: /claim/[id] now asks for
     // it once HM Land Registry has verified ownership.
-    router.replace({ path: route.path }).catch(() => {})
+    //
+    // Awaited (unlike the save/unlock branches below, which don't chain
+    // into a second navigation): goToClaim() immediately pushes /claim/
+    // [id] on top of this history entry, and firing that push before this
+    // replace has actually committed lets Vue Router's navigation queue
+    // drop or reorder the replace — leaving the stale ?claim=1 URL sitting
+    // in history instead of the clean one. Back from /claim/[id] would
+    // then land on /property/[id]?claim=1, which re-triggers this exact
+    // branch and bounces straight back into the claim flow instead of
+    // showing the property page.
+    await router.replace({ path: route.path }).catch(() => {})
     goToClaim()
   } else if (route.query?.unlock === '1') {
     // In-progress / published "buy the Passport" CTA arrives here — open
