@@ -295,6 +295,11 @@
         <div class="pps-score-top">
           <div class="pps-score-blob-tr" />
           <div class="pps-score-blob-bl" />
+          <span class="pps-score-tap-hint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 6l6 6-6 6" />
+            </svg>
+          </span>
 
           <div class="pps-gauge-wrap">
             <svg class="pps-gauge-svg" viewBox="0 0 100 100">
@@ -8629,6 +8634,37 @@ function formatSaleDate(dateStr: string): string {
 .pps-score-card--clickable:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(35, 29, 69, 0.14);
+}
+/* Gentle "tap for more" nudge — the card has no hover state on touch, so
+   without this there was nothing telling a mobile visitor it links
+   through to the full HomeScore. Small and slow on purpose: a persistent
+   badge on a card people may sit and read for a while shouldn't nag. */
+.pps-score-tap-hint {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  display: grid;
+  place-items: center;
+  color: #00857f;
+  z-index: 1;
+  animation: pps-tap-hint-nudge 2.2s ease-in-out infinite;
+}
+.pps-score-tap-hint svg {
+  width: 13px;
+  height: 13px;
+}
+@keyframes pps-tap-hint-nudge {
+  0%, 20%, 100% { transform: translateX(0); opacity: 0.85; }
+  10% { transform: translateX(3px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pps-score-tap-hint {
+    animation: none;
+  }
 }
 .pps-score-top {
   background: linear-gradient(135deg, #f2faf8 0%, #e5f4f2 100%);
