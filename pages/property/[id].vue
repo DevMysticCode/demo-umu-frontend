@@ -6063,7 +6063,7 @@ const floatClaimMeta = computed<string>(() => {
   if (pageState.value === 'progress') {
     return `${progressPct.value}% complete`
   }
-  return '£15 one-off'
+  return ''
 })
 function onFloatClaimCtaClick() {
   if (pageState.value === 'unclaimed') {
@@ -8292,13 +8292,17 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-hero-card-top {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 14px;
 }
 .pps-hero-photo {
   position: relative;
   flex: 0 0 46%;
-  aspect-ratio: 2 / 3;
+  /* No aspect-ratio — stretches (align-items:stretch above) to match
+     the identity column's full height, including the floating claim
+     card nested at the bottom of it, so the photo always covers the
+     hero card's full height rather than being a fixed-ratio box that
+     may fall short or run long depending on that column's content. */
   border-radius: 14px;
   overflow: hidden;
   background: radial-gradient(
@@ -8973,24 +8977,26 @@ function formatSaleDate(dateStr: string): string {
   flex: 1;
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
 }
 .pps-keepgoing-card-ic {
-  width: 58px;
-  height: 58px;
+  width: 72px;
+  height: 72px;
   object-fit: contain;
-  margin-bottom: 10px;
+  flex-shrink: 0;
 }
 .pps-keepgoing-card-ic--fan {
-  width: 68px;
-  height: 68px;
+  width: 84px;
+  height: 84px;
 }
 .pps-keepgoing-card-body {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 .pps-keepgoing-card-title {
   font-size: 12.5px;
@@ -8999,14 +9005,15 @@ function formatSaleDate(dateStr: string): string {
   letter-spacing: -0.1px;
 }
 .pps-keepgoing-card-sub {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 500;
   color: #6b6a82;
-  line-height: 1.4;
+  line-height: 1.35;
   margin-top: 4px;
 }
 .pps-keepgoing-card-btn {
-  margin-top: 10px;
+  margin-top: 8px;
+  align-self: flex-start;
   background: #231d45;
   color: #fff;
   border: none;
