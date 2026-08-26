@@ -57,7 +57,8 @@ const skipToApp = () => {
     redirectPath = localStorage.getItem('redirectAfterLogin')
     if (redirectPath) localStorage.removeItem('redirectAfterLogin')
   }
-  return navigateTo(redirectPath || '/dashboard')
+  // replace: true — see the matching note in signin.vue.
+  return navigateTo(redirectPath || '/dashboard', { replace: true })
 }
 </script>
 
