@@ -167,42 +167,8 @@
         </div>
       </div>
 
-      <!-- Floating claim box — overlaps roughly the bottom third of the
-           hero photo (left-aligned with it, per the latest prototype).
-           Shown for all three passport states now, so unclaimed/
-           in-progress/published all get the same treatment here instead
-           of only unclaimed getting this card and the other two only
-           getting the plainer in-flow PassportClaimBox banner below.
-           Hidden (not shown as a confident "unclaimed") when the status
-           fetch genuinely failed — see passportStatusUnknown above. -->
-      <div v-if="!passportStatusUnknown" class="pps-float-claim">
-        <div class="pps-float-claim-top">
-          <img
-            src="/op-icons/passportview/umu-passport.png"
-            alt=""
-            class="pps-float-claim-ic"
-            loading="lazy"
-          />
-          <div class="pps-float-claim-body">
-            <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
-            <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
-          </div>
-        </div>
-        <div class="pps-float-claim-cta">
-          <button
-            type="button"
-            class="pps-float-claim-btn"
-            @click="onFloatClaimCtaClick"
-          >
-            {{ floatClaimCta }}
-          </button>
-          <div v-if="floatClaimMeta" class="pps-float-claim-price">{{ floatClaimMeta }}</div>
-        </div>
-      </div>
-
-      <!-- ─── Watch / Ask — back to its own standalone section (as it was
-           before the image-left/text-right hero redesign), not the small
-           pills that briefly lived inside the identity column. ─── -->
+      <!-- ─── Watch / Ask — moved up above the floating claim card per the
+           prototype (was previously below it). ─── -->
       <div class="pps-secondary-row">
         <button type="button" class="pps-secondary-btn" @click="onWatchClick">
           <img
@@ -238,6 +204,48 @@
         </button>
       </div>
 
+      <!-- Floating claim box — overlaps roughly the bottom third of the
+           hero photo (left-aligned with it, per the latest prototype).
+           Shown for all three passport states now, so unclaimed/
+           in-progress/published all get the same treatment here instead
+           of only unclaimed getting this card and the other two only
+           getting the plainer in-flow PassportClaimBox banner below.
+           Hidden (not shown as a confident "unclaimed") when the status
+           fetch genuinely failed — see passportStatusUnknown above. -->
+      <div v-if="!passportStatusUnknown" class="pps-float-claim-wrap">
+      <div class="pps-float-claim">
+        <div v-if="streetClaimLabel" class="pps-float-claim-streetpill">
+          <span class="pps-float-claim-streetpill-dot" />
+          {{ streetClaimLabel }}
+        </div>
+        <div class="pps-float-claim-top">
+          <img
+            src="/op-icons/passportview/umu-passport.png"
+            alt=""
+            class="pps-float-claim-ic"
+            loading="lazy"
+          />
+          <div class="pps-float-claim-body">
+            <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
+            <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
+            <div v-if="watcherCountLabel" class="pps-float-claim-watchers">
+              👀 {{ watcherCountLabel }}
+            </div>
+          </div>
+        </div>
+        <div class="pps-float-claim-cta">
+          <button
+            type="button"
+            class="pps-float-claim-btn"
+            @click="onFloatClaimCtaClick"
+          >
+            {{ floatClaimCta }}
+          </button>
+          <div v-if="floatClaimMeta" class="pps-float-claim-price">{{ floatClaimMeta }}</div>
+        </div>
+      </div>
+      </div>
+
       <!-- ─── SECTION 3: Action Bar ────────────────────────────────── -->
       <!-- The actual PassportClaimBox visible box (teal in-progress ring /
            gold "champagne band" published card) — NOT headless here, so
@@ -256,36 +264,6 @@
         @watch="onWatchClick"
         @buy="routeForPassportState"
       />
-
-      <!-- ─── SECTION 4: Live Signal Bar ──────────────────────────── -->
-      <div class="pps-signal-bar">
-        <div class="pps-signal-left">
-          <span
-            v-if="pageState === 'unclaimed'"
-            class="pps-pulse-dot"
-            style="background: #9c98ad; animation: none"
-          />
-          <span
-            v-else-if="pageState === 'progress'"
-            class="pps-pulse-dot"
-            style="background: #e6a23c"
-          />
-          <span v-else class="pps-pulse-dot" />
-          <span
-            class="pps-signal-viewing"
-            :style="
-              pageState === 'unclaimed'
-                ? { color: '#9c98ad' }
-                : pageState === 'progress'
-                ? { color: '#b07a1c' }
-                : undefined
-            "
-          >
-            {{ signalLeftLabel }}
-          </span>
-        </div>
-        <span class="pps-signal-count">{{ signalCountLabel }}</span>
-      </div>
 
       <!-- ─── SECTION 5: HomeScore ─────────────────────────────────── -->
       <div
@@ -407,26 +385,52 @@
         </div>
       </div>
 
-      <!-- ─── SECTION 7: Passport Card ─────────────────────────────── -->
-      <div v-if="pageState === 'unclaimed'" class="pps-pc2">
-        <img
-          src="/op-icons/misc/passportFan.png"
-          alt=""
-          class="pps-pc2-fan"
-          loading="lazy"
-        />
-        <div class="pps-pc2-text">
-          <div class="pps-pc2-title">Your Property Passport</div>
-          <div class="pps-pc2-sub">
-            The permanent record for this home. Build it today. Keep it for
-            life. Ready when you let or sell.
-          </div>
+      <!-- ─── SECTION 7: Keep going with umovingu ──────────────────── -->
+      <div v-if="pageState === 'unclaimed'" class="pps-keepgoing">
+        <div class="pps-keepgoing-title">Keep going with umovingu</div>
+        <div class="pps-keepgoing-sub">
+          More tools. More insight. More ways to get move-ready.
         </div>
-        <div class="pps-pc2-cta-col">
-          <button type="button" class="pps-pc2-cta-btn" @click="onClaimClick">
-            Create Passport
-          </button>
-          <div class="pps-pc2-cta-price">£15 one-off</div>
+        <div class="pps-keepgoing-cards">
+          <div class="pps-keepgoing-card">
+            <img
+              src="/op-icons/misc/explorePassport.png"
+              alt=""
+              class="pps-keepgoing-card-ic"
+              loading="lazy"
+            />
+            <div class="pps-keepgoing-card-title">Explore passports</div>
+            <div class="pps-keepgoing-card-sub">
+              Discover how Property, Buyer and Tenant Passports keep your
+              information organised and reusable.
+            </div>
+            <button
+              type="button"
+              class="pps-keepgoing-card-btn"
+              @click="router.push('/passport/collections')"
+            >
+              Explore passports
+            </button>
+          </div>
+          <div class="pps-keepgoing-card">
+            <img
+              src="/op-icons/misc/exploreLocation.png"
+              alt=""
+              class="pps-keepgoing-card-ic"
+              loading="lazy"
+            />
+            <div class="pps-keepgoing-card-title">Explore more homes</div>
+            <div class="pps-keepgoing-card-sub">
+              Compare more homes, HomeScores and neighbourhood data.
+            </div>
+            <button
+              type="button"
+              class="pps-keepgoing-card-btn"
+              @click="router.push('/explore')"
+            >
+              Back to Explore
+            </button>
+          </div>
         </div>
       </div>
 
@@ -665,8 +669,7 @@
       <!-- ─── SECTION 8: Running Costs ─────────────────────────────── -->
       <!-- Hidden for now, may come back later — disabled via v-if="false"
            rather than an HTML comment because this block already contains
-           its own inner <!-- --> comments, which can't nest safely inside
-           an outer one. -->
+           its own inner HTML comments, and HTML comments can't nest. -->
       <div v-if="false && costsBoxes.length > 0" class="pps-costs-card">
         <div class="pps-costs-header">
           <span class="pps-costs-header-title">Estimated running costs</span>
@@ -5800,17 +5803,6 @@ const costsBoxes = computed(() => {
   ]
 })
 
-// FOMO signal-bar copy
-const signalLeftLabel = computed<string>(() => {
-  if (pageState.value === 'unclaimed') return 'No Passport on this address yet'
-  if (pageState.value === 'progress') return 'Owner building a Passport'
-  return 'Passport live · verified data'
-})
-const signalCountLabel = computed<string>(() => {
-  // We don't have live stats wired here yet — show a generic searches line.
-  return 'View live activity in Passport'
-})
-
 // ── Handlers wired to existing drawers/refs ───────────────────────────────────
 // Heart = save the property to the user's profile (UserSavedProperty), which
 // is what the profile's "Saved Properties" page reads.
@@ -6021,7 +6013,25 @@ const isPassportOwnerOrCollab = computed<boolean>(() => {
 const floatClaimTitle = computed<string>(() => {
   if (pageState.value === 'published') return 'Verified Passport available'
   if (pageState.value === 'progress') return 'Passport being built'
-  return 'No Passport yet — be the first'
+  return (property.value?.streetClaimedCount ?? 0) > 0
+    ? 'Be one of the first on your street'
+    : 'Be the first on your street'
+})
+// "1 of 8 homes on Oakleigh Avenue claimed" pill above the claim card —
+// only meaningful once we've actually matched at least one other property
+// on the same street (streetTotalCount includes this property itself).
+const streetClaimLabel = computed<string | null>(() => {
+  if (pageState.value !== 'unclaimed') return null
+  const total = property.value?.streetTotalCount ?? 0
+  if (total <= 1) return null
+  const claimed = property.value?.streetClaimedCount ?? 0
+  const street = property.value?.streetName || 'your street'
+  return `${claimed} of ${total} homes on ${street} claimed`
+})
+const watcherCountLabel = computed<string>(() => {
+  const n = property.value?.watcherCount ?? 0
+  if (n <= 0) return ''
+  return `${n} ${n === 1 ? 'person' : 'people'} watching`
 })
 const floatClaimSub = computed<string>(() => {
   if (pageState.value === 'published') {
@@ -8519,10 +8529,21 @@ function formatSaleDate(dateStr: string): string {
    — see the sizing note on .pps-hero-photo. On a device where the text
    column still ends up taller (e.g. a very long address wrapping to 3
    lines), this will under-overlap rather than break anything. */
-.pps-float-claim {
+.pps-float-claim-wrap {
+  /* Zero-height so this card's overlap doesn't push the NEXT sibling
+     (the HomeScore card) down — without this, moving the secondary
+     button row above the float-claim card left the float-claim's
+     large negative top margin also dragging the HomeScore card up
+     over the button row, hiding it. Absolute-positioning the card
+     inside this zero-height wrapper keeps the overlap purely visual. */
   position: relative;
+  height: 0;
+}
+.pps-float-claim {
+  position: absolute;
+  top: -264px;
+  right: 14px;
   z-index: 2;
-  margin: -90px 14px 0;
   padding: 14px 16px;
   background: white;
   border-radius: 14px;
@@ -8532,7 +8553,25 @@ function formatSaleDate(dateStr: string): string {
   flex-direction: column;
   gap: 12px;
   width: 70%;
-  margin-left: auto;
+}
+.pps-float-claim-streetpill {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  background: #231d45;
+  color: white;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+.pps-float-claim-streetpill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f0b429;
+  flex-shrink: 0;
 }
 .pps-float-claim-top {
   display: flex;
@@ -8563,6 +8602,12 @@ function formatSaleDate(dateStr: string): string {
   line-height: 1.4;
   margin-top: 3px;
 }
+.pps-float-claim-watchers {
+  font-size: 10px;
+  font-weight: 700;
+  color: #00857f;
+  margin-top: 5px;
+}
 .pps-float-claim-cta {
   display: flex;
   flex-wrap: wrap;
@@ -8588,51 +8633,6 @@ function formatSaleDate(dateStr: string): string {
   font-size: 11px;
   font-weight: 700;
   color: #00a19a;
-}
-
-/* ─── Signal bar ────────────────────────────────────────────── */
-.pps-signal-bar {
-  background: #f2faf8;
-  border-top: 1px solid #e5f4f2;
-  border-bottom: 1px solid #e5f4f2;
-  padding: 10px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.pps-signal-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.pps-pulse-dot {
-  width: 6px;
-  height: 6px;
-  background: #00a19a;
-  border-radius: 50%;
-  flex-shrink: 0;
-  animation: pps-pulse 1.8s infinite;
-  display: inline-block;
-}
-@keyframes pps-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.6);
-  }
-  70% {
-    box-shadow: 0 0 0 6px rgba(0, 161, 154, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0);
-  }
-}
-.pps-signal-viewing {
-  font-size: 13px;
-  font-weight: 600;
-  color: #00897b;
-}
-.pps-signal-count {
-  font-size: 12px;
-  color: #aaa;
 }
 
 /* ─── Score card ────────────────────────────────────────────── */
@@ -8969,64 +8969,76 @@ function formatSaleDate(dateStr: string): string {
   line-height: 1;
 }
 
-/* ─── Passport card v2 (unclaimed) — compact fanned-books banner ── */
-.pps-pc2 {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* ─── Keep going with umovingu (unclaimed) ─────────────────────── */
+.pps-keepgoing {
   margin: 16px 14px 0;
-  padding: 14px;
-  background: #fafafd;
-  border: 1px solid #ececef;
+  padding: 16px;
+  background: #f4f5f9;
+  border: 1px solid #e7e8f0;
   border-radius: 18px;
 }
-.pps-pc2-fan {
-  width: 78px;
-  height: auto;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-.pps-pc2-text {
-  flex: 1;
-  min-width: 0;
-}
-.pps-pc2-title {
-  font-size: 14px;
+.pps-keepgoing-title {
+  font-size: 15px;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
 }
-.pps-pc2-sub {
-  font-size: 11px;
+.pps-keepgoing-sub {
+  font-size: 11.5px;
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.4;
   margin-top: 3px;
 }
-.pps-pc2-cta-col {
-  flex-shrink: 0;
+.pps-keepgoing-cards {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.pps-keepgoing-card {
+  flex: 1;
+  min-width: 0;
+  background: #fff;
+  border: 1px solid #ececef;
+  border-radius: 14px;
+  padding: 14px 12px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 5px;
+  align-items: flex-start;
 }
-.pps-pc2-cta-btn {
+.pps-keepgoing-card-ic {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+.pps-keepgoing-card-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.1px;
+}
+.pps-keepgoing-card-sub {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #6b6a82;
+  line-height: 1.4;
+  margin-top: 4px;
+  flex: 1;
+}
+.pps-keepgoing-card-btn {
+  margin-top: 10px;
+  width: 100%;
   background: #231d45;
   color: #fff;
   border: none;
   border-radius: 100px;
-  padding: 10px 16px;
+  padding: 9px 10px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(35, 29, 69, 0.3);
-}
-.pps-pc2-cta-price {
-  font-size: 11px;
-  font-weight: 800;
-  color: #00a19a;
 }
 
 /* ─── Passport card ─────────────────────────────────────────── */
