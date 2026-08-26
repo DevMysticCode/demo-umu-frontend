@@ -191,7 +191,9 @@
                   class="pps-hero-quick-ic"
                   loading="lazy"
                 />
-                {{ pageState === 'published' ? 'Make contact' : 'Ask a question' }}
+                {{
+                  pageState === 'published' ? 'Make contact' : 'Ask a question'
+                }}
               </button>
             </div>
 
@@ -227,7 +229,10 @@
                 <div class="pps-float-claim-body">
                   <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
                   <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
-                  <div v-if="watcherCountLabel" class="pps-float-claim-watchers">
+                  <div
+                    v-if="watcherCountLabel"
+                    class="pps-float-claim-watchers"
+                  >
                     👀 {{ watcherCountLabel }}
                   </div>
                 </div>
@@ -240,7 +245,9 @@
                 >
                   {{ floatClaimCta }}
                 </button>
-                <div v-if="floatClaimMeta" class="pps-float-claim-price">{{ floatClaimMeta }}</div>
+                <div v-if="floatClaimMeta" class="pps-float-claim-price">
+                  {{ floatClaimMeta }}
+                </div>
               </div>
             </div>
           </div>
@@ -275,7 +282,14 @@
           <div class="pps-score-blob-tr" />
           <div class="pps-score-blob-bl" />
           <span class="pps-score-tap-hint" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path d="M9 6l6 6-6 6" />
             </svg>
           </span>
@@ -3715,7 +3729,10 @@
               <button
                 class="pps-sheet-cta"
                 style="background: #231d45"
-                @click="closeSheet(); onClaimClick()"
+                @click="
+                  closeSheet();
+                  onClaimClick()
+                "
               >
                 Claim this property — it's free →
               </button>
@@ -6058,7 +6075,9 @@ const floatClaimCta = computed<string>(() => {
 })
 const floatClaimMeta = computed<string>(() => {
   if (pageState.value === 'published') {
-    return isPassportOwnerOrCollab.value || passportStatus.value?.canAccess ? '' : '£99'
+    return isPassportOwnerOrCollab.value || passportStatus.value?.canAccess
+      ? ''
+      : '£99'
   }
   if (pageState.value === 'progress') {
     return `${progressPct.value}% complete`
@@ -8297,7 +8316,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-hero-photo {
   position: relative;
-  flex: 0 0 46%;
+  flex: 0 0 40%;
   /* No aspect-ratio — stretches (align-items:stretch above) to match
      the identity column's full height, including the floating claim
      card nested at the bottom of it, so the photo always covers the
@@ -8593,7 +8612,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-float-claim-btn {
   flex-shrink: 0;
-  padding: 10px 18px;
+  padding: 5px 18px;
   border-radius: 100px;
   background: #231d45;
   color: white;
@@ -8651,8 +8670,16 @@ function formatSaleDate(dateStr: string): string {
   height: 13px;
 }
 @keyframes pps-tap-hint-nudge {
-  0%, 20%, 100% { transform: translateX(0); opacity: 0.85; }
-  10% { transform: translateX(3px); opacity: 1; }
+  0%,
+  20%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.85;
+  }
+  10% {
+    transform: translateX(3px);
+    opacity: 1;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .pps-score-tap-hint {
@@ -9018,7 +9045,7 @@ function formatSaleDate(dateStr: string): string {
   color: #fff;
   border: none;
   border-radius: 100px;
-  padding: 9px 10px;
+  padding: 5px 10px;
   font-family: inherit;
   font-size: 11px;
   font-weight: 800;
