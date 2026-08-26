@@ -163,57 +163,54 @@
               {{ floodBadgeLabel }}
             </div>
 
+            <!-- Watch / Ask — sits in the identity column below the price,
+                 per the prototype (was previously a separate full-width
+                 section below the whole hero card). -->
+            <div class="pps-hero-quick-actions">
+              <button
+                type="button"
+                class="pps-hero-quick-btn"
+                @click="onWatchClick"
+              >
+                <img
+                  src="/op-icons/property/watchThis.jpeg"
+                  alt=""
+                  class="pps-hero-quick-ic"
+                  loading="lazy"
+                />
+                {{ pageState === 'progress' ? 'Get notified' : 'Watch this' }}
+              </button>
+              <button
+                type="button"
+                class="pps-hero-quick-btn"
+                @click="onContactClick"
+              >
+                <img
+                  src="/op-icons/property/askAQuestion.jpeg"
+                  alt=""
+                  class="pps-hero-quick-ic"
+                  loading="lazy"
+                />
+                {{ pageState === 'published' ? 'Make contact' : 'Ask a question' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- ─── Watch / Ask — moved up above the floating claim card per the
-           prototype (was previously below it). ─── -->
-      <div class="pps-secondary-row">
-        <button type="button" class="pps-secondary-btn" @click="onWatchClick">
-          <img
-            src="/op-icons/property/watchThis.jpeg"
-            alt=""
-            class="pps-secondary-btn-img"
-            loading="lazy"
-          />
-          <span class="pps-secondary-btn-label">{{
-            pageState === 'progress' ? 'Get notified' : 'Watch this'
-          }}</span>
-          <span class="pps-secondary-btn-sub">{{
-            pageState === 'progress'
-              ? 'Alert when Passport is live'
-              : 'Save & get alerts'
-          }}</span>
-        </button>
-        <button type="button" class="pps-secondary-btn" @click="onContactClick">
-          <img
-            src="/op-icons/property/askAQuestion.jpeg"
-            alt=""
-            class="pps-secondary-btn-img"
-            loading="lazy"
-          />
-          <span class="pps-secondary-btn-label">{{
-            pageState === 'published' ? 'Make contact' : 'Ask a question'
-          }}</span>
-          <span class="pps-secondary-btn-sub">{{
-            pageState === 'published'
-              ? 'Owner or neighbour'
-              : 'Neighbour or curious buyer'
-          }}</span>
-        </button>
-      </div>
-
-      <!-- Floating claim box — overlaps roughly the bottom third of the
-           hero photo (left-aligned with it, per the latest prototype).
-           Shown for all three passport states now, so unclaimed/
-           in-progress/published all get the same treatment here instead
-           of only unclaimed getting this card and the other two only
-           getting the plainer in-flow PassportClaimBox banner below.
-           Hidden (not shown as a confident "unclaimed") when the status
-           fetch genuinely failed — see passportStatusUnknown above. -->
-      <div v-if="!passportStatusUnknown" class="pps-float-claim-wrap">
-      <div class="pps-float-claim">
+      <!-- Floating claim box — a page-level sibling right after the hero
+           card, pulled up with a small negative top margin for a subtle
+           "floating" overlap over the bottom of the hero card. Kept
+           modest (not a large overlap) because the Watch/Ask buttons now
+           live inside the hero card's identity column (see above) — a
+           bigger overlap would visually cover them. Shown for all three
+           passport states now, so unclaimed/in-progress/published all get
+           the same treatment here instead of only unclaimed getting this
+           card and the other two only getting the plainer in-flow
+           PassportClaimBox banner below. Hidden (not shown as a confident
+           "unclaimed") when the status fetch genuinely failed — see
+           passportStatusUnknown above. -->
+      <div v-if="!passportStatusUnknown" class="pps-float-claim">
         <div v-if="streetClaimLabel" class="pps-float-claim-streetpill">
           <span class="pps-float-claim-streetpill-dot" />
           {{ streetClaimLabel }}
@@ -243,7 +240,6 @@
           </button>
           <div v-if="floatClaimMeta" class="pps-float-claim-price">{{ floatClaimMeta }}</div>
         </div>
-      </div>
       </div>
 
       <!-- ─── SECTION 3: Action Bar ────────────────────────────────── -->
@@ -394,9 +390,9 @@
         <div class="pps-keepgoing-cards">
           <div class="pps-keepgoing-card">
             <img
-              src="/op-icons/misc/explorePassport.png"
+              src="/op-icons/misc/passportFan.png"
               alt=""
-              class="pps-keepgoing-card-ic"
+              class="pps-keepgoing-card-ic pps-keepgoing-card-ic--fan"
               loading="lazy"
             />
             <div class="pps-keepgoing-card-title">Explore passports</div>
@@ -8468,82 +8464,62 @@ function formatSaleDate(dateStr: string): string {
   align-items: center;
   gap: 5px;
 }
-.pps-secondary-row {
-  margin: 14px 14px 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.pps-secondary-btn {
-  background: white;
-  border: 1.5px solid #ececef;
-  border-radius: 12px;
-  padding: 12px 10px;
-  text-align: center;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s ease;
+.pps-hero-quick-actions {
+  /* The identity column is narrow (photo takes 46% of the card), so
+     these read better stacked full-width than squeezed side by side —
+     both still sit above the floating claim card, satisfying the
+     "move to the top" ask without truncating either label. */
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
+  gap: 8px;
+}
+.pps-hero-quick-btn {
+  width: 100%;
+  background: white;
+  border: 1.5px solid #ececef;
+  border-radius: 100px;
+  padding: 8px 12px;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1a1535;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.pps-secondary-btn-img {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  object-fit: cover;
-  display: block;
-  margin-bottom: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-.pps-secondary-btn:hover {
+.pps-hero-quick-btn:hover {
   border-color: #231d45;
   box-shadow: 0 4px 12px rgba(35, 29, 69, 0.1);
 }
-.pps-secondary-btn-label {
-  font-size: 15px;
-  font-weight: 700;
-  color: #1a1535;
-  display: block;
-}
-.pps-secondary-btn-sub {
-  font-size: 11px;
-  color: #999;
-  display: block;
-  margin-top: 2px;
+.pps-hero-quick-ic {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 /* ─── Floating claim box ────────────────────────────────────────
-   Page-level sibling right after the hero card, pulled up with a large
-   negative top margin so it overlaps roughly the bottom third of the
-   hero photo (left-aligned with it — both share the same 14px page
-   margin, so their left edges already line up) rather than the small
-   "peek" this used to be. Two rows internally (icon+text on top,
-   button+price below, both full box width) rather than one row with 3
-   flex items — on real (~360-400px) phone widths a single row left too
-   little space for the text column and collapsed into unreadable
-   word-by-word wrapping.
-   -68px assumes the photo (46% width, 2:3 aspect) is the taller of the
-   two hero columns, so the card's bottom edge ≈ the photo's bottom edge
-   — see the sizing note on .pps-hero-photo. On a device where the text
-   column still ends up taller (e.g. a very long address wrapping to 3
-   lines), this will under-overlap rather than break anything. */
-.pps-float-claim-wrap {
-  /* Zero-height so this card's overlap doesn't push the NEXT sibling
-     (the HomeScore card) down — without this, moving the secondary
-     button row above the float-claim card left the float-claim's
-     large negative top margin also dragging the HomeScore card up
-     over the button row, hiding it. Absolute-positioning the card
-     inside this zero-height wrapper keeps the overlap purely visual. */
-  position: relative;
-  height: 0;
-}
+   Full-width, normal-flow card right after the hero card, pulled up
+   with a small negative top margin for a subtle floating overlap —
+   kept deliberately modest since the Watch/Ask buttons live inside the
+   hero card's identity column now (a bigger overlap, like the old
+   design that pulled this card up over most of the hero photo, would
+   visually cover those buttons). Two rows internally (icon+text on
+   top, button+price below, both full box width) rather than one row
+   with 3 flex items — on real (~360-400px) phone widths a single row
+   left too little space for the text column and collapsed into
+   unreadable word-by-word wrapping. */
 .pps-float-claim {
-  position: absolute;
-  top: -264px;
-  right: 14px;
+  position: relative;
   z-index: 2;
+  margin: -14px 14px 0;
   padding: 14px 16px;
   background: white;
   border-radius: 14px;
@@ -8552,7 +8528,6 @@ function formatSaleDate(dateStr: string): string {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 70%;
 }
 .pps-float-claim-streetpill {
   display: inline-flex;
@@ -8998,10 +8973,6 @@ function formatSaleDate(dateStr: string): string {
 .pps-keepgoing-card {
   flex: 1;
   min-width: 0;
-  background: #fff;
-  border: 1px solid #ececef;
-  border-radius: 14px;
-  padding: 14px 12px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -9011,6 +8982,10 @@ function formatSaleDate(dateStr: string): string {
   height: 40px;
   object-fit: contain;
   margin-bottom: 8px;
+}
+.pps-keepgoing-card-ic--fan {
+  width: 52px;
+  height: 52px;
 }
 .pps-keepgoing-card-title {
   font-size: 12.5px;
@@ -9028,7 +9003,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-keepgoing-card-btn {
   margin-top: 10px;
-  width: 100%;
+  align-self: flex-start;
   background: #231d45;
   color: #fff;
   border: none;
