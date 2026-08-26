@@ -306,14 +306,15 @@ onMounted(async () => {
   padding: 12px 18px 0;
 }
 .bph-hero-card {
-  background: linear-gradient(140deg, #00b6ae 0%, #00a19a 50%, #00514d 100%);
+  background: #fff;
+  border: 1.5px solid #e2f1ea;
   border-radius: 20px;
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
   cursor: pointer;
-  box-shadow: 0 12px 28px -12px rgba(35, 29, 69, 0.5);
+  box-shadow: 0 10px 28px -12px rgba(0, 40, 38, 0.14);
 }
 .bph-hero-icon {
   width: 76px;
@@ -326,14 +327,14 @@ onMounted(async () => {
   min-width: 0;
 }
 .bph-hero-title {
-  color: #fff;
+  color: #231d45;
   font-size: 17px;
   font-weight: 800;
   letter-spacing: -0.2px;
   margin-bottom: 4px;
 }
 .bph-hero-sub {
-  color: rgba(255, 255, 255, 0.68);
+  color: #6b7089;
   font-size: 12.5px;
   line-height: 1.4;
   margin-bottom: 12px;
@@ -342,8 +343,9 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
+  background: #f2faf8;
+  border: 1px solid #d7ece9;
+  color: #00857f;
   font-size: 11px;
   font-weight: 700;
   padding: 5px 11px;
@@ -353,7 +355,7 @@ onMounted(async () => {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #9d97b8;
+  background: #9c98ad;
 }
 .bph-status-pill--progress .bph-status-dot,
 .bph-status-pill--complete .bph-status-dot {

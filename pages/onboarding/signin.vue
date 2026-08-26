@@ -318,11 +318,17 @@ const loginLoading = ref(false)
 
 const redirectAfterAuth = async () => {
   const redirectPath = localStorage.getItem('redirectAfterLogin')
+  // replace: true — sign-in is a detour, not a page the user should ever
+  // land back on by pressing back. Without this, a guest who tapped
+  // "Claim this property", signed in, and then changed their mind would
+  // press back straight into the sign-in screen (or whatever its own
+  // guest-only redirect bounces them to next) instead of the property
+  // page they actually started from.
   if (redirectPath) {
     localStorage.removeItem('redirectAfterLogin')
-    await navigateTo(redirectPath)
+    await navigateTo(redirectPath, { replace: true })
   } else {
-    await navigateTo('/dashboard')
+    await navigateTo('/dashboard', { replace: true })
   }
 }
 

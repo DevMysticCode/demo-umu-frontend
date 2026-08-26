@@ -86,11 +86,14 @@ onMounted(async () => {
 
 const continueToApp = async () => {
   const redirectPath = typeof localStorage !== 'undefined' ? localStorage.getItem('redirectAfterLogin') : null
+  // replace: true — this whole onboarding detour (welcome/thank-you/etc.)
+  // shouldn't be something a user can land back on by pressing back once
+  // they're through it; see the matching note in signin.vue.
   if (redirectPath) {
     localStorage.removeItem('redirectAfterLogin')
-    await navigateTo(redirectPath)
+    await navigateTo(redirectPath, { replace: true })
   } else {
-    await navigateTo('/dashboard')
+    await navigateTo('/dashboard', { replace: true })
   }
 }
 
