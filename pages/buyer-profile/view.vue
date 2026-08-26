@@ -565,9 +565,15 @@ const strength = computed(() => {
 const animatedStrength = ref(0)
 let strengthRaf = 0
 function tweenStrength(to: number) {
-  const reduce =
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  // requestAnimationFrame/cancelAnimationFrame don't exist during SSR —
+  // this watcher fires immediately on setup, which runs server-side too.
+  // Nothing needs animating there anyway; just set the value directly and
+  // let the client-side re-run (on hydration) do the real tween.
+  if (typeof window === 'undefined') {
+    animatedStrength.value = to
+    return
+  }
+  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   if (reduce) {
     animatedStrength.value = to
     return
@@ -951,12 +957,12 @@ function goEdit() {
   }
 }
 .hero-card {
-  background: linear-gradient(140deg, #00b6ae 0%, #00a19a 50%, #00514d 100%);
-  box-shadow: 0 12px 32px -10px rgba(0, 161, 154, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  background: #fff;
+  border: 1.5px solid #e2f1ea;
+  box-shadow: 0 10px 28px -12px rgba(0, 40, 38, 0.14);
   border-radius: 20px;
   padding: 18px 20px 20px;
-  color: white;
+  color: #231d45;
   position: relative;
   overflow: hidden;
 }
@@ -970,7 +976,7 @@ function goEdit() {
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.16) 0%,
+    rgba(0, 161, 154, 0.08) 0%,
     transparent 65%
   );
   pointer-events: none;
@@ -989,13 +995,13 @@ function goEdit() {
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 1.2px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #00a19a;
 }
 .bp-hero-strength {
   font-size: 9px;
   font-weight: 800;
-  background: rgba(255, 255, 255, 0.95);
-  color: #00a19a;
+  background: #e5f4f2;
+  color: #00857f;
   border-radius: 100px;
   padding: 4px 10px;
   letter-spacing: 0.4px;
@@ -1015,13 +1021,13 @@ function goEdit() {
 .bp-hero-name {
   font-size: 17px;
   font-weight: 800;
-  color: white;
+  color: #231d45;
   margin-bottom: 2px;
   letter-spacing: -0.2px;
 }
 .bp-hero-ref {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.65);
+  color: #6b7089;
   margin-bottom: 10px;
 }
 .bp-hero-pills {
@@ -1032,10 +1038,11 @@ function goEdit() {
 .hero-pill {
   font-size: 9px;
   font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid #d7ece9;
+  background: #f2faf8;
   border-radius: 100px;
   padding: 4px 9px;
-  color: white;
+  color: #00857f;
   white-space: nowrap;
 }
 

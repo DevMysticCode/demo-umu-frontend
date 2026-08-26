@@ -2657,26 +2657,18 @@ onBeforeUnmount(() => {
 }
 .bp-funds-row { display: flex; align-items: center; gap: 12px; }
 .bp-funds-ic {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: #f1f9f4;
-  border: 1px solid #e2f1ea;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
   color: #00a19a;
-  overflow: hidden;
 }
 .bp-funds-ic img {
-  width: 24px;
-  height: 24px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   display: block;
-}
-.bp-funds-card.selected .bp-funds-ic {
-  background: #fff;
-  border-color: #e2f1ea;
 }
 .bp-funds-body { flex: 1; min-width: 0; }
 .bp-funds-title {
@@ -3083,10 +3075,8 @@ onBeforeUnmount(() => {
   box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.1);
 }
 .bp-doctype-ic {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: #f6f7fa;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3094,8 +3084,8 @@ onBeforeUnmount(() => {
   font-size: 18px;
 }
 .bp-doctype-ic img {
-  width: 24px;
-  height: 24px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 .bp-doctype-body {

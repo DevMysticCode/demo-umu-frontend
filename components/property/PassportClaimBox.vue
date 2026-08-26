@@ -458,17 +458,7 @@
         >
           <div class="authd-card" @click.stop>
             <div class="authd-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
+              <img src="/op-icons/claim/padlock.png" alt="" loading="lazy" />
             </div>
             <div class="authd-title">{{ authPromptCopy.title }}</div>
             <div class="authd-body">{{ authPromptCopy.body }}</div>
@@ -1638,19 +1628,21 @@ function onPrimary(action: PrimaryAction) {
   color: #231d45;
 }
 .authd-icon {
-  width: 52px;
-  height: 52px;
+  width: 85px;
+  height: 85px;
   border-radius: 50%;
-  background: rgba(0, 161, 154, 0.12);
-  color: #007e78;
+  background: #f0fdfa;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 14px;
+  overflow: hidden;
 }
-.authd-icon svg {
-  width: 24px;
-  height: 24px;
+.authd-icon img {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+  display: block;
 }
 .authd-title {
   font-size: 17px;

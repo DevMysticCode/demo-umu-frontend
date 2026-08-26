@@ -2586,7 +2586,7 @@
       @click.self="closeAuthGate"
     >
       <div class="hs-authgate-card">
-        <div class="hs-authgate-ic"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></div>
+        <div class="hs-authgate-ic"><img src="/op-icons/claim/padlock.png" alt="" loading="lazy" /></div>
         <div class="hs-authgate-title">{{ authGateCopy.title }}</div>
         <div class="hs-authgate-sub">{{ authGateCopy.body }}</div>
         <button class="hs-authgate-primary" @click="goAuthGate('signup')">
@@ -10370,8 +10370,8 @@ watch(screen, (s) => {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
 }
 .hs-authgate-ic {
-  width: 56px;
-  height: 56px;
+  width: 85px;
+  height: 85px;
   border-radius: 50%;
   background: #f0fdfa;
   display: grid;
@@ -10381,8 +10381,8 @@ watch(screen, (s) => {
   overflow: hidden;
 }
 .hs-authgate-ic img {
-  width: 32px;
-  height: 32px;
+  width: 65px;
+  height: 65px;
   object-fit: contain;
   display: block;
 }
