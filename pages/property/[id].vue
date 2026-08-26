@@ -194,52 +194,55 @@
                 {{ pageState === 'published' ? 'Make contact' : 'Ask a question' }}
               </button>
             </div>
-          </div>
-        </div>
 
-        <!-- Floating claim box — anchored to the bottom-right of this hero
-             card (position:absolute against .pps-hero-card's own
-             position:relative), so its bottom edge always lines up with
-             the card's bottom edge and it stays narrow/right-aligned,
-             overlapping the photo rather than spanning full width. The
-             hero photo is sized tall enough (see .pps-hero-photo) that
-             the identity column (address/price/pills/Watch-Ask buttons)
-             ends before this card's top, so it doesn't cover them. Shown
-             for all three passport states now, so unclaimed/in-progress/
-             published all get the same treatment here instead of only
-             unclaimed getting this card and the other two only getting
-             the plainer in-flow PassportClaimBox banner below. Hidden
-             (not shown as a confident "unclaimed") when the status fetch
-             genuinely failed — see passportStatusUnknown above. -->
-        <div v-if="!passportStatusUnknown" class="pps-float-claim">
-          <div v-if="streetClaimLabel" class="pps-float-claim-streetpill">
-            <span class="pps-float-claim-streetpill-dot" />
-            {{ streetClaimLabel }}
-          </div>
-          <div class="pps-float-claim-top">
-            <img
-              src="/op-icons/passportview/umu-passport.png"
-              alt=""
-              class="pps-float-claim-ic"
-              loading="lazy"
-            />
-            <div class="pps-float-claim-body">
-              <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
-              <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
-              <div v-if="watcherCountLabel" class="pps-float-claim-watchers">
-                👀 {{ watcherCountLabel }}
+            <!-- Floating claim box — normal-flow block right after the
+                 Watch/Ask buttons in the identity column, so it always
+                 sits directly below them with no gap that depends on
+                 guessing how tall the address/pills/badges above happen
+                 to be for a given property (a fixed-height photo overlap
+                 trick was tried here and broke for shorter addresses —
+                 the gap size varied with content length). Widened past
+                 the identity column via a negative left margin so it
+                 still overlaps the photo on the left, matching the
+                 prototype, while its vertical position is fully
+                 content-driven. Shown for all three passport states now,
+                 so unclaimed/in-progress/published all get the same
+                 treatment here instead of only unclaimed getting this
+                 card and the other two only getting the plainer in-flow
+                 PassportClaimBox banner below. Hidden (not shown as a
+                 confident "unclaimed") when the status fetch genuinely
+                 failed — see passportStatusUnknown above. -->
+            <div v-if="!passportStatusUnknown" class="pps-float-claim">
+              <div v-if="streetClaimLabel" class="pps-float-claim-streetpill">
+                <span class="pps-float-claim-streetpill-dot" />
+                {{ streetClaimLabel }}
+              </div>
+              <div class="pps-float-claim-top">
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="pps-float-claim-ic"
+                  loading="lazy"
+                />
+                <div class="pps-float-claim-body">
+                  <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
+                  <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
+                  <div v-if="watcherCountLabel" class="pps-float-claim-watchers">
+                    👀 {{ watcherCountLabel }}
+                  </div>
+                </div>
+              </div>
+              <div class="pps-float-claim-cta">
+                <button
+                  type="button"
+                  class="pps-float-claim-btn"
+                  @click="onFloatClaimCtaClick"
+                >
+                  {{ floatClaimCta }}
+                </button>
+                <div v-if="floatClaimMeta" class="pps-float-claim-price">{{ floatClaimMeta }}</div>
               </div>
             </div>
-          </div>
-          <div class="pps-float-claim-cta">
-            <button
-              type="button"
-              class="pps-float-claim-btn"
-              @click="onFloatClaimCtaClick"
-            >
-              {{ floatClaimCta }}
-            </button>
-            <div v-if="floatClaimMeta" class="pps-float-claim-price">{{ floatClaimMeta }}</div>
           </div>
         </div>
       </div>
@@ -8292,19 +8295,10 @@ function formatSaleDate(dateStr: string): string {
   align-items: flex-start;
   gap: 14px;
 }
-/* Sized generously enough (46% wide, 2:4.35 — taller than the 2:3 this
-   used before Watch/Ask moved into the identity column below) that its
-   rendered height reliably exceeds the text column's (address + badge,
-   suburb, price, type pills, Watch/Ask buttons) even with a 2-line
-   address. That matters because .pps-float-claim is anchored to this
-   CARD's bottom-right corner — the card's height is set by whichever
-   column is taller, so the photo needs to stay clearly the taller one
-   for the claim card to land on the photo (and below the buttons)
-   instead of covering them. */
 .pps-hero-photo {
   position: relative;
   flex: 0 0 46%;
-  aspect-ratio: 2 / 4.35;
+  aspect-ratio: 2 / 3;
   border-radius: 14px;
   overflow: hidden;
   background: radial-gradient(
@@ -8508,21 +8502,21 @@ function formatSaleDate(dateStr: string): string {
 }
 
 /* ─── Floating claim box ────────────────────────────────────────
-   Absolutely positioned against .pps-hero-card (bottom:0; right:0), so
-   it overlaps the bottom-right of the hero photo, stays narrow rather
-   than spanning full width, and its bottom edge always lines up
-   exactly with the card's bottom edge. The hero photo's aspect ratio
-   (see .pps-hero-photo) is tuned tall enough that the identity column
-   — address/price/pills/Watch-Ask buttons — ends above where this card
-   starts. Two rows internally (icon+text on top, button+price below,
-   both full box width) rather than one row with 3 flex items — on real
-   (~360-400px) phone widths a single row left too little space for the
-   text column and collapsed into unreadable word-by-word wrapping. */
+   Normal-flow block inside the identity column, right after the
+   Watch/Ask buttons — its vertical position is purely content-driven
+   (no gap-guessing tied to a fixed photo height, which broke for
+   shorter addresses). Widened past the identity column via a negative
+   left margin so it still overlaps the photo on the left, matching the
+   prototype. Two rows internally (icon+text on top, button+price
+   below, both full box width) rather than one row with 3 flex items —
+   on real (~360-400px) phone widths a single row left too little space
+   for the text column and collapsed into unreadable word-by-word
+   wrapping. */
 .pps-float-claim {
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  position: relative;
   z-index: 2;
+  margin: 12px 0 0 -60px;
+  width: calc(100% + 60px);
   padding: 14px 16px;
   background: white;
   border-radius: 14px;
@@ -8531,7 +8525,6 @@ function formatSaleDate(dateStr: string): string {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 70%;
 }
 .pps-float-claim-streetpill {
   display: inline-flex;
@@ -8961,6 +8954,7 @@ function formatSaleDate(dateStr: string): string {
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
+  text-align: center;
 }
 .pps-keepgoing-sub {
   font-size: 11.5px;
@@ -8968,6 +8962,7 @@ function formatSaleDate(dateStr: string): string {
   color: #6b6a82;
   line-height: 1.4;
   margin-top: 3px;
+  text-align: center;
 }
 .pps-keepgoing-cards {
   display: flex;
@@ -8978,25 +8973,24 @@ function formatSaleDate(dateStr: string): string {
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 .pps-keepgoing-card-ic {
-  width: 34px;
-  height: 34px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
-  flex-shrink: 0;
+  margin-bottom: 10px;
 }
 .pps-keepgoing-card-ic--fan {
-  width: 44px;
-  height: 44px;
+  width: 68px;
+  height: 68px;
 }
 .pps-keepgoing-card-body {
-  flex: 1;
-  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
 .pps-keepgoing-card-title {
   font-size: 12.5px;
@@ -9013,7 +9007,6 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-keepgoing-card-btn {
   margin-top: 10px;
-  align-self: flex-start;
   background: #231d45;
   color: #fff;
   border: none;
