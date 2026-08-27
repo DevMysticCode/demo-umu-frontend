@@ -220,12 +220,20 @@
                 {{ streetClaimLabel }}
               </div>
               <div class="pps-float-claim-top">
-                <img
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt=""
-                  class="pps-float-claim-ic"
-                  loading="lazy"
-                />
+                <div class="pps-float-claim-ic-wrap">
+                  <img
+                    src="/op-icons/passport-covers/seller_tilted_right_on_tile.png"
+                    alt=""
+                    class="pps-float-claim-ic"
+                    loading="lazy"
+                  />
+                  <div
+                    class="pps-float-claim-gauge"
+                    :style="{ '--pct': progressPct }"
+                  >
+                    <span>{{ progressPct }}%</span>
+                  </div>
+                </div>
                 <div class="pps-float-claim-body">
                   <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
                   <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
@@ -409,7 +417,7 @@
         <div class="pps-keepgoing-cards">
           <div class="pps-keepgoing-card">
             <img
-              src="/op-icons/misc/passportFan.png"
+              src="/op-icons/misc/passportFanReversed.png"
               alt=""
               class="pps-keepgoing-card-ic pps-keepgoing-card-ic--fan"
               loading="lazy"
@@ -417,8 +425,8 @@
             <div class="pps-keepgoing-card-body">
               <div class="pps-keepgoing-card-title">Explore passports</div>
               <div class="pps-keepgoing-card-sub">
-                Discover how Property, Buyer and Tenant Passports keep your
-                information organised and reusable.
+                Discover how Property, Buyer, and Tenant Passports keep key
+                information organized, verified, and reusable.
               </div>
               <button
                 type="button"
@@ -439,7 +447,8 @@
             <div class="pps-keepgoing-card-body">
               <div class="pps-keepgoing-card-title">Explore more homes</div>
               <div class="pps-keepgoing-card-sub">
-                Compare more homes, HomeScores and neighbourhood data.
+                Compare property listings, review HomeScores, and analyze
+                comprehensive neighborhood data near you.
               </div>
               <button
                 type="button"
@@ -5324,10 +5333,14 @@ const epcBars = computed(() => {
 })
 
 const progressPct = computed<number>(() => {
-  // Prefer the real-time passport progress returned by /passport-status.
-  // Falls back to the EPC-signals proxy only when no passport exists yet
-  // (so the "Unclaimed" state still shows a meaningful progress bar).
-  const realPct = passportStatus.value?.passportProgress?.completionPct
+  // Prefer the real-time passport progress returned by /passport-status
+  // (logged-in viewers), then the same field on the public property
+  // response (guests — that endpoint needs no JWT). Falls back to the
+  // EPC-signals proxy only when no passport exists yet (so the
+  // "Unclaimed" state still shows a meaningful progress bar).
+  const realPct =
+    passportStatus.value?.passportProgress?.completionPct ??
+    property.value?.passportProgress?.completionPct
   if (typeof realPct === 'number') return realPct
   const p = property.value
   if (!p) return 0
@@ -6046,18 +6059,39 @@ const isPassportOwnerOrCollab = computed<boolean>(() => {
 // Content for the floating photo-overlap card — same card now covers all
 // three passport states (previously unclaimed-only), so copy/CTA/meta
 // swap here rather than the card itself only existing for one state.
+// A finer-grained state than `pageState`, used ONLY by the floating
+// claim card — everything else on the page (PassportClaimBox, the
+// "Keep going" section, quick-action button copy, etc.) still reads
+// `pageState` unchanged. `pageState === 'unclaimed'` conflates two
+// genuinely different situations now that the backend distinguishes
+// them: nobody has claimed this property at all, vs. it's been claimed
+// (verified owner) but there's no seller passport with real progress
+// to show yet. Same split applies to `pageState === 'progress'` — a
+// passport that exists but is still at 0% reads as "nothing public"
+// rather than "in progress".
+const floatClaimState = computed<
+  'unclaimed' | 'noPublicPassport' | 'progress' | 'published'
+>(() => {
+  if (pageState.value === 'published') return 'published'
+  if (pageState.value === 'progress') {
+    return progressPct.value > 0 ? 'progress' : 'noPublicPassport'
+  }
+  const claimed = passportStatus.value?.isClaimed ?? property.value?.isClaimed ?? false
+  return claimed ? 'noPublicPassport' : 'unclaimed'
+})
 const floatClaimTitle = computed<string>(() => {
-  if (pageState.value === 'published') return 'Verified Passport available'
-  if (pageState.value === 'progress') return 'Passport being built'
+  if (floatClaimState.value === 'published') return 'Property Passport available'
+  if (floatClaimState.value === 'progress') return 'Passport in progress'
+  if (floatClaimState.value === 'noPublicPassport') return 'No public Passport available'
   return (property.value?.streetClaimedCount ?? 0) > 0
-    ? 'Be one of the first on your street'
-    : 'Be the first on your street'
+    ? 'Be one of the first on this street'
+    : 'Be the first on this street'
 })
 // "1 of 8 homes on Oakleigh Avenue claimed" pill above the claim card —
 // only meaningful once we've actually matched at least one other property
 // on the same street (streetTotalCount includes this property itself).
 const streetClaimLabel = computed<string | null>(() => {
-  if (pageState.value !== 'unclaimed') return null
+  if (floatClaimState.value !== 'unclaimed') return null
   const total = property.value?.streetTotalCount ?? 0
   if (total <= 1) return null
   const claimed = property.value?.streetClaimedCount ?? 0
@@ -6070,38 +6104,53 @@ const watcherCountLabel = computed<string>(() => {
   return `${n} ${n === 1 ? 'person' : 'people'} watching`
 })
 const floatClaimSub = computed<string>(() => {
-  if (pageState.value === 'published') {
-    return 'View the full verified record — certificates, history & more.'
+  if (floatClaimState.value === 'published') {
+    return 'Verified information about this home is ready to explore.'
   }
-  if (pageState.value === 'progress') {
-    return 'The owner is preparing a verified record — be ready before it goes live.'
+  if (floatClaimState.value === 'progress') {
+    return 'The owner has chosen to build this Property Passport in public, bringing key information together and getting it verified.'
+  }
+  if (floatClaimState.value === 'noPublicPassport') {
+    return "There isn't a published Property Passport available for this home right now."
   }
   return 'Create your Property Passport to store, verify and share everything about your home.'
 })
 const floatClaimCta = computed<string>(() => {
-  if (pageState.value === 'published') {
-    return isPassportOwnerOrCollab.value ? 'View my Passport' : 'View Passport'
+  if (floatClaimState.value === 'published') {
+    return isPassportOwnerOrCollab.value ? 'View my Passport' : 'View Property Passport'
   }
-  if (pageState.value === 'progress') {
-    return isPassportOwnerOrCollab.value ? 'Continue building' : 'Get notified'
+  if (floatClaimState.value === 'progress') {
+    return isPassportOwnerOrCollab.value ? 'Continue building' : 'See Passport progress'
+  }
+  if (floatClaimState.value === 'noPublicPassport') {
+    return 'Watch this property'
   }
   return 'Claim this property'
 })
 const floatClaimMeta = computed<string>(() => {
-  if (pageState.value === 'published') {
+  if (floatClaimState.value === 'published') {
     return isPassportOwnerOrCollab.value || passportStatus.value?.canAccess
       ? ''
       : '£99'
   }
-  if (pageState.value === 'progress') {
+  if (floatClaimState.value === 'progress') {
     return `${progressPct.value}% complete`
   }
   return ''
 })
 function onFloatClaimCtaClick() {
-  if (pageState.value === 'unclaimed') {
+  // Keyed on floatClaimState, not pageState — "no public Passport" can
+  // arise from either a genuinely unclaimed property with pageState
+  // 'unclaimed' still active, or a claimed one with a passport stuck at
+  // 0% (pageState 'progress'). onProgressCtaClick already degrades
+  // correctly for both: owner+passportId → continue building, else →
+  // watch — which is exactly "Watch this property"'s job either way.
+  if (floatClaimState.value === 'unclaimed') {
     onClaimClick()
-  } else if (pageState.value === 'progress') {
+  } else if (
+    floatClaimState.value === 'noPublicPassport' ||
+    floatClaimState.value === 'progress'
+  ) {
     onProgressCtaClick()
   } else {
     routeForPassportState()
@@ -8587,12 +8636,46 @@ function formatSaleDate(dateStr: string): string {
   align-items: flex-start;
   gap: 10px;
 }
+.pps-float-claim-ic-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
 .pps-float-claim-ic {
   width: 40px;
-  height: 40px;
+  height: auto;
   object-fit: contain;
-  flex-shrink: 0;
   filter: drop-shadow(0 6px 10px rgba(35, 29, 69, 0.2));
+}
+/* Small circular completion gauge pinned to the top-right corner of the
+   passport cover, per the prototype — a conic-gradient ring (no SVG
+   needed) driven by the same --pct custom property the template sets
+   from progressPct. */
+.pps-float-claim-gauge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: conic-gradient(#00958f calc(var(--pct) * 1%), #e4e5ed 0);
+  box-shadow: 0 2px 6px rgba(35, 29, 69, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pps-float-claim-gauge::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #fff;
+}
+.pps-float-claim-gauge span {
+  position: relative;
+  z-index: 1;
+  font-size: 7.5px;
+  font-weight: 800;
+  color: #00858a;
 }
 .pps-float-claim-body {
   flex: 1;
