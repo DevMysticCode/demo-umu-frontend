@@ -423,7 +423,7 @@
               <button
                 type="button"
                 class="pps-keepgoing-card-btn"
-                @click="router.push('/passport/collections')"
+                @click="passportEcosystemOpen = true"
               >
                 Explore passports
               </button>
@@ -3729,10 +3729,7 @@
               <button
                 class="pps-sheet-cta"
                 style="background: #231d45"
-                @click="
-                  closeSheet();
-                  onClaimClick()
-                "
+                @click="onClaimSheetCtaClick"
               >
                 Claim this property — it's free →
               </button>
@@ -4215,6 +4212,11 @@
       @close="watchConfirmedOpen = false"
       @create-passport="onWatchConfirmedCreatePassport"
     />
+
+    <PassportEcosystemDrawer
+      :open="passportEcosystemOpen"
+      @close="passportEcosystemOpen = false"
+    />
   </div>
 </template>
 
@@ -4233,6 +4235,7 @@ import Toast from '~/components/ui/Toast.vue'
 import ShareContent from '~/components/property/ShareContent.vue'
 import WatchPropertyDrawer from '~/components/property/WatchPropertyDrawer.vue'
 import WatchConfirmedDrawer from '~/components/property/WatchConfirmedDrawer.vue'
+import PassportEcosystemDrawer from '~/components/property/PassportEcosystemDrawer.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import NotificationBell from '~/components/ui/NotificationBell.vue'
@@ -5863,6 +5866,16 @@ function onClaimClick() {
   claimExplainerSheet.value = 'unclaimed'
 }
 
+// Plain method reference (not an inline multi-statement expression) —
+// a `@click="closeSheet(); onClaimClick()"` string kept getting
+// reformatted (by an editor's format-on-save) into a multi-line
+// expression that silently dropped the semicolon, breaking the Vue
+// template compiler. A method reference has nothing for that to mangle.
+function onClaimSheetCtaClick() {
+  closeSheet()
+  onClaimClick()
+}
+
 // Single source of truth for "tap to do the right thing with the Passport"
 // — used by every Passport CTA on this page. Branches on the (ownership ×
 // passport state) matrix:
@@ -5980,6 +5993,7 @@ const DEFAULT_WATCH_PREFS: Record<string, boolean> = {
 
 const watchConfirmedOpen = ref(false)
 const watchConfirmedPrefs = ref<Record<string, boolean> | null>(null)
+const passportEcosystemOpen = ref(false)
 
 async function postWatchPrefs(prefs: Record<string, boolean>) {
   const token =
@@ -9004,7 +9018,7 @@ function formatSaleDate(dateStr: string): string {
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   text-align: left;
 }
