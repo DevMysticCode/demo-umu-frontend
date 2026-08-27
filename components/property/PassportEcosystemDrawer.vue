@@ -26,30 +26,26 @@
           <div class="pe-scroll">
             <!-- ── Hero ─────────────────────────────────────────── -->
             <div class="pe-hero">
-              <h2 class="pe-hero-title">One home.<br />Many passports.</h2>
-              <div class="pe-hero-sub">One permanent record.<br />Built for every journey.</div>
-              <p class="pe-hero-desc">
-                Your Property Passport is the foundation. When life changes,
-                unlock new roles with the right passport for the next chapter.
-              </p>
-              <div class="pe-hero-books">
-                <img src="/op-icons/passport-covers/seller_tilted_right_on_tile.png" alt="Seller Passport" class="pe-hero-book" loading="lazy" />
-                <img src="/op-icons/passport-covers/landlord_tilted_right_on_tile.png" alt="Landlord Passport" class="pe-hero-book" loading="lazy" />
-                <img src="/op-icons/passport-covers/buyer_tilted_right_on_tile.png" alt="Buyer Passport" class="pe-hero-book" loading="lazy" />
-                <img src="/op-icons/passport-covers/tenant_tilted_right_on_tile.png" alt="Tenant Passport" class="pe-hero-book" loading="lazy" />
+              <div class="pe-hero-text">
+                <h2 class="pe-hero-title">One home.<br />Many passports.</h2>
+                <div class="pe-hero-sub">One permanent record.<br />Built for every journey.</div>
+                <p class="pe-hero-desc">
+                  Your Property Passport is the foundation. When life
+                  changes, unlock new roles with the right passport for the
+                  next chapter.
+                </p>
               </div>
+              <img
+                src="/op-icons/misc/passportGroupOnTile.png"
+                alt="Seller, Landlord, Buyer and Tenant Passport covers"
+                class="pe-hero-group"
+                loading="lazy"
+              />
             </div>
 
             <!-- ── Ecosystem blurb ──────────────────────────────── -->
             <div class="pe-blurb">
-              <div class="pe-blurb-ic" aria-hidden="true">
-                <svg viewBox="0 0 48 48" fill="none">
-                  <rect x="6" y="40" width="36" height="4" rx="2" fill="#e3f5f3" />
-                  <path d="M10 22L24 10l14 12v16a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2V22z" fill="#fff" stroke="#00958f" stroke-width="2.2" stroke-linejoin="round" />
-                  <path d="M19 40V29h10v11" stroke="#231d45" stroke-width="2.2" stroke-linejoin="round" />
-                  <path d="M6 24l18-15 18 15" stroke="#00958f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </div>
+              <img src="/op-icons/homescore/house.png" alt="" class="pe-blurb-ic" loading="lazy" />
               <div class="pe-blurb-body">
                 <div class="pe-blurb-eyebrow">A passport ecosystem that moves with you</div>
                 <p class="pe-blurb-desc">
@@ -73,18 +69,16 @@
             <!-- ── Power of the ecosystem ───────────────────────── -->
             <div class="pe-power">
               <div class="pe-power-title">The power of the ecosystem</div>
-              <div class="pe-power-list">
-                <div v-for="(item, i) in powerItems" :key="item.title" class="pe-power-row">
-                  <div class="pe-power-ic-col">
-                    <div class="pe-power-ic">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#00958f" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" v-html="item.svg" />
+              <div class="pe-power-scroll">
+                <div class="pe-power-list">
+                  <template v-for="(item, i) in powerItems" :key="item.title">
+                    <div class="pe-power-col">
+                      <img :src="item.img" alt="" class="pe-power-ic" loading="lazy" />
+                      <div class="pe-power-item-title">{{ item.title }}</div>
+                      <div class="pe-power-item-desc">{{ item.desc }}</div>
                     </div>
                     <span v-if="i < powerItems.length - 1" class="pe-power-connector" />
-                  </div>
-                  <div class="pe-power-body">
-                    <div class="pe-power-item-title">{{ item.title }}</div>
-                    <div class="pe-power-item-desc">{{ item.desc }}</div>
-                  </div>
+                  </template>
                 </div>
               </div>
             </div>
@@ -170,33 +164,62 @@ const passportCards = [
   },
 ]
 
+// img: existing 3D icon assets reused from elsewhere in the app.
+// "Save time & money" and "More value for you" don't have an existing
+// icon in the same "on a white tile" style as the other three (their
+// closest matches — calendar/clock.png and investment/growthChart.png —
+// are flat/floating, not tile-mounted, and growthChart is blue not
+// teal) — see the ChatGPT prompts left for the design team below to
+// generate matching ones.
 const powerItems = [
   {
     title: 'One verified foundation',
     desc: 'Maximise trust, reduce rework and eliminate lost information.',
-    svg: '<path d="M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6z" /><path d="m9 12 2 2 4-4" />',
+    img: '/op-icons/onboarding/trustShield.png',
   },
   {
     title: 'Reuse across roles',
     desc: "Move your data wherever you're heading next.",
-    svg: '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3" /><path d="M18 3v4h-4M6 21v-4h4" />',
+    img: '/op-icons/investment/refreshArrows.png',
   },
   {
     title: 'Save time & money',
     desc: 'Fewer forms. Faster decisions. More wins.',
-    svg: '<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3.5 2" />',
+    img: '/op-icons/calendar/clock.png',
   },
   {
     title: 'Secure for life',
     desc: 'Your data. Your control. Encrypted and always yours.',
-    svg: '<rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" />',
+    img: '/op-icons/matched-buyers/lock-big.png',
   },
   {
     title: 'More value for you',
     desc: 'Unlock stronger offers and a stronger property outcome.',
-    svg: '<path d="M4 18l5-6 4 3 6-8" /><path d="M15 6h4v4" />',
+    img: '/op-icons/investment/growthChart.png',
   },
 ]
+
+/* ── ChatGPT / DALL·E prompts for the two missing "on tile" icons ──
+   Paste either of these into ChatGPT (with image generation) to get a
+   matching asset, then save it as the filename noted and swap the
+   `img` path above.
+
+   1) Save as: public/op-icons/ecosystem/clockOnTile.png
+   "A 3D rendered clock icon in a glossy plastic/soft-toy material
+   style, teal (#00958f) face with white clock hands and dashes, sitting
+   on a small square white pedestal/tile base, isometric perspective,
+   soft ambient shadow, transparent background, matching the style of a
+   3D refresh-arrows icon and a 3D checkmark-shield icon on the same
+   kind of white tile base. Centered, no text, no watermark."
+
+   2) Save as: public/op-icons/ecosystem/growthChartOnTile.png
+   "A 3D rendered bar chart icon with an upward-trending arrow above
+   the bars, glossy plastic/soft-toy material style, teal (#00958f)
+   bars and arrow, sitting on a small square white pedestal/tile base,
+   isometric perspective, soft ambient shadow, transparent background,
+   matching the style of a 3D refresh-arrows icon and a 3D
+   checkmark-shield icon on the same kind of white tile base. Centered,
+   no text, no watermark." */
 </script>
 
 <style scoped>
@@ -257,43 +280,40 @@ const powerItems = [
 }
 .pe-close svg { width: 15px; height: 15px; }
 
-/* Hero */
+/* Hero — text and passport group image side by side, per the prototype */
 .pe-hero {
-  padding: 18px 22px 4px;
-  text-align: center;
+  padding: 20px 16px 4px 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
+.pe-hero-text { flex: 1.1; min-width: 0; }
 .pe-hero-title {
   margin: 0;
-  font-size: 24px;
+  font-size: 19px;
   font-weight: 800;
   color: #1a1535;
-  line-height: 1.2;
-  letter-spacing: -0.3px;
+  line-height: 1.18;
+  letter-spacing: -0.2px;
 }
 .pe-hero-sub {
-  margin-top: 10px;
-  font-size: 14px;
+  margin-top: 8px;
+  font-size: 11.5px;
   font-weight: 700;
   color: #00858a;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 .pe-hero-desc {
-  margin: 12px auto 0;
-  max-width: 32ch;
-  font-size: 12.5px;
+  margin: 8px 0 0;
+  font-size: 10.5px;
   font-weight: 500;
   color: #6b6a82;
-  line-height: 1.55;
+  line-height: 1.5;
 }
-.pe-hero-books {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-}
-.pe-hero-book {
-  width: 25%;
-  max-width: 92px;
+.pe-hero-group {
+  flex: 1;
+  min-width: 0;
+  max-width: 44%;
   height: auto;
   object-fit: contain;
 }
@@ -309,8 +329,12 @@ const powerItems = [
   gap: 12px;
   align-items: flex-start;
 }
-.pe-blurb-ic { flex-shrink: 0; width: 40px; height: 40px; }
-.pe-blurb-ic svg { width: 100%; height: 100%; }
+.pe-blurb-ic {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
 .pe-blurb-eyebrow {
   font-size: 10.5px;
   font-weight: 800;
@@ -330,43 +354,45 @@ const powerItems = [
 .pe-cards {
   margin: 16px 18px 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
 }
 .pe-card {
   background: #fff;
   border: 1px solid #ececef;
-  border-radius: 14px;
-  padding: 14px 12px 12px;
+  border-radius: 12px;
+  padding: 8px 6px 8px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 .pe-card-book {
-  width: 56px;
+  width: 100%;
+  max-width: 40px;
   height: auto;
   object-fit: contain;
-  margin-bottom: 8px;
+  margin: 0 auto 6px;
 }
 .pe-card-title {
-  font-size: 12.5px;
+  font-size: 9.5px;
   font-weight: 800;
   letter-spacing: -0.1px;
+  line-height: 1.2;
 }
 .pe-card-desc {
-  margin: 4px 0 0;
-  font-size: 10.5px;
+  margin: 3px 0 0;
+  font-size: 8px;
   font-weight: 500;
   color: #6b6a82;
-  line-height: 1.45;
+  line-height: 1.35;
   flex: 1;
 }
 .pe-card-pill {
-  margin-top: 10px;
-  font-size: 8.5px;
+  margin-top: 8px;
+  font-size: 6.5px;
   font-weight: 800;
-  letter-spacing: 0.03em;
-  padding: 4px 8px;
+  letter-spacing: 0.02em;
+  padding: 3px 5px;
   border-radius: 100px;
   white-space: nowrap;
 }
@@ -374,10 +400,12 @@ const powerItems = [
 .pe-card-pill--now { background: #edebf7; color: #4b2e83; }
 .pe-card-pill--soon { background: #f1effa; color: #6b6a82; }
 
-/* Power of the ecosystem */
+/* Power of the ecosystem — single horizontal row, per the prototype.
+   Scrolls horizontally on very narrow phones rather than squeezing 5
+   columns + connectors into illegibly small text. */
 .pe-power {
   margin: 24px 18px 0;
-  padding: 16px;
+  padding: 16px 0;
   background: #f7f6fb;
   border-radius: 16px;
 }
@@ -389,46 +417,48 @@ const powerItems = [
   color: #231d45;
   text-align: center;
   margin-bottom: 14px;
+  padding: 0 16px;
 }
-.pe-power-row {
+.pe-power-scroll {
+  overflow-x: auto;
+  padding: 0 16px;
+}
+.pe-power-list {
   display: flex;
-  gap: 12px;
+  align-items: flex-start;
+  min-width: max-content;
 }
-.pe-power-ic-col {
+.pe-power-col {
+  width: 96px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-shrink: 0;
+  text-align: center;
 }
 .pe-power-ic {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #fff;
-  border: 1.5px solid #d9f0ee;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
-.pe-power-ic svg { width: 17px; height: 17px; }
 .pe-power-connector {
-  width: 1.5px;
-  flex: 1;
-  min-height: 14px;
-  margin: 2px 0;
-  background-image: linear-gradient(180deg, #c7c4dc 50%, transparent 50%);
-  background-size: 1.5px 8px;
+  width: 22px;
+  height: 1.5px;
+  flex-shrink: 0;
+  margin-top: 20px;
+  background-image: linear-gradient(90deg, #c7c4dc 50%, transparent 50%);
+  background-size: 8px 1.5px;
 }
-.pe-power-body { padding-bottom: 16px; }
 .pe-power-item-title {
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 800;
   color: #231d45;
-  padding-top: 6px;
+  padding-top: 8px;
+  line-height: 1.25;
 }
 .pe-power-item-desc {
   margin-top: 3px;
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.5;
