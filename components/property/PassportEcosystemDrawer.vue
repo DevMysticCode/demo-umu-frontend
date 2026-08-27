@@ -2,7 +2,16 @@
   <Teleport to="body">
     <Transition name="pe-modal">
       <div v-if="open" class="pe-overlay" @click.self="$emit('close')">
-        <div class="pe-sheet" @click.stop>
+        <div
+          class="pe-sheet"
+          :style="dragStyle"
+          @click.stop
+          @touchstart.passive="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
+          @touchcancel="onTouchEnd"
+        >
+          <div class="pe-grip" />
           <button
             type="button"
             class="pe-close"
@@ -17,20 +26,18 @@
           <div class="pe-scroll">
             <!-- ── Hero ─────────────────────────────────────────── -->
             <div class="pe-hero">
-              <div class="pe-hero-books">
-                <div class="pe-book-stand">
-                  <img src="/op-icons/misc/sellerPassport_legacy.png" alt="" class="pe-book pe-book--seller" loading="lazy" />
-                  <img src="/op-icons/misc/landlordPassport.png" alt="" class="pe-book pe-book--landlord" loading="lazy" />
-                  <img src="/op-icons/misc/buyerPassport_legacy.png" alt="" class="pe-book pe-book--buyer" loading="lazy" />
-                  <img src="/op-icons/misc/tenantPassport_old.png" alt="" class="pe-book pe-book--tenant" loading="lazy" />
-                </div>
-              </div>
               <h2 class="pe-hero-title">One home.<br />Many passports.</h2>
               <div class="pe-hero-sub">One permanent record.<br />Built for every journey.</div>
               <p class="pe-hero-desc">
                 Your Property Passport is the foundation. When life changes,
                 unlock new roles with the right passport for the next chapter.
               </p>
+              <div class="pe-hero-books">
+                <img src="/op-icons/passport-covers/seller_tilted_right_on_tile.png" alt="Seller Passport" class="pe-hero-book" loading="lazy" />
+                <img src="/op-icons/passport-covers/landlord_tilted_right_on_tile.png" alt="Landlord Passport" class="pe-hero-book" loading="lazy" />
+                <img src="/op-icons/passport-covers/buyer_tilted_right_on_tile.png" alt="Buyer Passport" class="pe-hero-book" loading="lazy" />
+                <img src="/op-icons/passport-covers/tenant_tilted_right_on_tile.png" alt="Tenant Passport" class="pe-hero-book" loading="lazy" />
+              </div>
             </div>
 
             <!-- ── Ecosystem blurb ──────────────────────────────── -->
@@ -56,7 +63,7 @@
             <!-- ── 4 passport cards ─────────────────────────────── -->
             <div class="pe-cards">
               <div v-for="c in passportCards" :key="c.key" class="pe-card">
-                <img :src="c.img" :alt="`${c.title} cover`" class="pe-card-book" :class="c.imgClass" loading="lazy" />
+                <img :src="c.img" :alt="`${c.title} cover`" class="pe-card-book" loading="lazy" />
                 <div class="pe-card-title" :style="{ color: c.color }">{{ c.title }}</div>
                 <p class="pe-card-desc">{{ c.desc }}</p>
                 <span class="pe-card-pill" :class="`pe-card-pill--${c.status}`">{{ c.statusLabel }}</span>
@@ -104,19 +111,30 @@ defineProps<{
   open: boolean
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'close'): void
 }>()
+
+const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
+  onDismiss: () => emit('close'),
+  handleSelector: '.pe-grip',
+})
 
 // "you-are-here" is fixed to Seller for now since this drawer is opened
 // from the Property Passport journey — if it's ever opened from a
 // buyer/landlord/tenant context, pass the current passport type in as a
 // prop instead of hardcoding which card gets the "You are here" pill.
+//
+// Cover art note: seller/landlord use the *_tilted_right_on_tile.png
+// asset, which is only branded "Property Passport" on the cover (not
+// "Seller"/"Landlord") — buyer/tenant have role-specific cover art in
+// the same style, seller/landlord don't exist yet. The on-screen title
+// below each cover is still correct either way. Swap the `img` paths
+// here once role-specific seller/landlord cover art exists.
 const passportCards = [
   {
     key: 'seller',
-    img: '/op-icons/misc/sellerPassport_legacy.png',
-    imgClass: '',
+    img: '/op-icons/passport-covers/seller_tilted_right_on_tile.png',
     title: 'Seller Passport',
     color: '#00858a',
     desc: 'Prove accuracy and promote. Gain buyer confidence. Streamline every step to settlement.',
@@ -125,8 +143,7 @@ const passportCards = [
   },
   {
     key: 'landlord',
-    img: '/op-icons/misc/landlordPassport.png',
-    imgClass: '',
+    img: '/op-icons/passport-covers/landlord_tilted_right_on_tile.png',
     title: 'Landlord Passport',
     color: '#4b2e83',
     desc: 'Proof of trust and care of your asset. Stronger tenants. Fewer surprises.',
@@ -135,8 +152,7 @@ const passportCards = [
   },
   {
     key: 'buyer',
-    img: '/op-icons/misc/buyerPassport_legacy.png',
-    imgClass: 'pe-card-book--crop',
+    img: '/op-icons/passport-covers/buyer_tilted_right_on_tile.png',
     title: 'Buyer Passport',
     color: '#c9601a',
     desc: 'A clear, confident purchase journey with less stress, more certainty.',
@@ -145,8 +161,7 @@ const passportCards = [
   },
   {
     key: 'tenant',
-    img: '/op-icons/misc/tenantPassport_old.png',
-    imgClass: '',
+    img: '/op-icons/passport-covers/tenant_tilted_right_on_tile.png',
     title: 'Tenant Passport',
     color: '#4a4a52',
     desc: 'Your trusted profile simplifies rental applications and makes life easier.',
@@ -193,9 +208,8 @@ const powerItems = [
   -webkit-backdrop-filter: blur(4px);
   z-index: 1200;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 18px;
   font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -205,15 +219,24 @@ const powerItems = [
   max-width: 30rem;
   max-height: 92dvh;
   background: #fff;
-  border-radius: 22px;
-  box-shadow: 0 20px 60px rgba(35, 29, 69, 0.35);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -8px 30px rgba(35, 29, 69, 0.25);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
+.pe-grip {
+  width: 42px;
+  height: 4px;
+  background: #e4e5ed;
+  border-radius: 100px;
+  margin: 10px auto 0;
+  touch-action: none;
+  flex-shrink: 0;
+}
 .pe-scroll {
   overflow-y: auto;
-  padding-bottom: 22px;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 22px);
 }
 .pe-close {
   position: absolute;
@@ -236,40 +259,9 @@ const powerItems = [
 
 /* Hero */
 .pe-hero {
-  padding: 44px 24px 20px;
+  padding: 18px 22px 4px;
   text-align: center;
 }
-.pe-hero-books {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 22px;
-}
-.pe-book-stand {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  gap: -6px;
-  padding: 8px 10px 14px;
-  background: linear-gradient(180deg, transparent 60%, #f4f5f9 60%);
-  border-radius: 0 0 100px 100px;
-}
-.pe-book {
-  width: 56px;
-  height: 74px;
-  object-fit: contain;
-  filter: drop-shadow(0 6px 10px rgba(35, 29, 69, 0.18));
-  margin-left: -8px;
-}
-.pe-book:first-child { margin-left: 0; }
-.pe-book--seller { position: relative; z-index: 4; }
-.pe-book--landlord { z-index: 3; transform: translateY(2px); }
-.pe-book--buyer {
-  z-index: 2;
-  transform: translateY(1px);
-  object-position: top;
-  height: 68px;
-}
-.pe-book--tenant { z-index: 1; transform: translateY(3px); }
 .pe-hero-title {
   margin: 0;
   font-size: 24px;
@@ -287,16 +279,28 @@ const powerItems = [
 }
 .pe-hero-desc {
   margin: 12px auto 0;
-  max-width: 30ch;
+  max-width: 32ch;
   font-size: 12.5px;
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.55;
 }
+.pe-hero-books {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+.pe-hero-book {
+  width: 25%;
+  max-width: 92px;
+  height: auto;
+  object-fit: contain;
+}
 
 /* Blurb */
 .pe-blurb {
-  margin: 4px 18px 0;
+  margin: 20px 18px 0;
   padding: 14px;
   background: #f7f6fb;
   border: 1px solid #ececf5;
@@ -339,15 +343,10 @@ const powerItems = [
   align-items: flex-start;
 }
 .pe-card-book {
-  width: 44px;
-  height: 58px;
+  width: 56px;
+  height: auto;
   object-fit: contain;
   margin-bottom: 8px;
-  filter: drop-shadow(0 4px 8px rgba(35, 29, 69, 0.14));
-}
-.pe-card-book--crop {
-  object-position: top;
-  height: 52px;
 }
 .pe-card-title {
   font-size: 12.5px;
@@ -458,14 +457,14 @@ const powerItems = [
   color: #9c98ad;
 }
 
-/* Transition */
+/* Slide-up transition */
 .pe-modal-enter-active,
 .pe-modal-leave-active {
-  transition: opacity 0.22s ease;
+  transition: opacity 0.25s ease;
 }
 .pe-modal-enter-active .pe-sheet,
 .pe-modal-leave-active .pe-sheet {
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pe-modal-enter-from,
 .pe-modal-leave-to {
@@ -473,7 +472,6 @@ const powerItems = [
 }
 .pe-modal-enter-from .pe-sheet,
 .pe-modal-leave-to .pe-sheet {
-  transform: scale(0.96) translateY(8px);
-  opacity: 0;
+  transform: translateY(100%);
 }
 </style>
