@@ -1,10 +1,12 @@
 <template>
   <div class="pse-root">
     <SearchFilterBar
+      ref="searchFilterBarEl"
       v-model="searchQuery"
       :placeholder="placeholder"
       style="margin-bottom: 6px"
       :lightweight-mode="false"
+      :use-typewriter-placeholder="useTypewriterPlaceholder"
       @enter="onEnterQuery"
       @select="onAddressSelect"
       @filtersChange="onFiltersChange"
@@ -125,8 +127,9 @@ import PropertyImage from '~/components/property/PropertyImage.vue'
 withDefaults(
   defineProps<{
     placeholder?: string
+    useTypewriterPlaceholder?: boolean
   }>(),
-  { placeholder: 'Search by postcode, address or area' },
+  { placeholder: 'Search by postcode, address or area', useTypewriterPlaceholder: false },
 )
 
 const emit = defineEmits<{
@@ -134,6 +137,11 @@ const emit = defineEmits<{
   // results are showing, same contract PropertySearchExperience uses.
   (e: 'update:searchMode', v: boolean): void
 }>()
+
+const searchFilterBarEl = ref<{ focus: () => void } | null>(null)
+defineExpose({
+  focus: () => searchFilterBarEl.value?.focus(),
+})
 
 const config = useRuntimeConfig()
 

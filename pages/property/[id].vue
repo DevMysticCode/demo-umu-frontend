@@ -466,7 +466,7 @@
               <button
                 type="button"
                 class="pps-keepgoing-card-btn"
-                @click="router.push('/explore')"
+                @click="goBack"
               >
                 Back to Explore
               </button>
@@ -8254,8 +8254,14 @@ function onClaimCtaClick() {
   goToClaim()
 }
 
+// "Back to Explore" is a fixed destination, not literal browser-back —
+// logged-out visitors land on the public Discover search; logged-in
+// users go to their own Dashboard with its search bar focused (and its
+// typewriter placeholder running) so the next thing they do is search,
+// same as a logged-out user landing on Discover's search would.
 function goBack() {
-  router.back()
+  const isAuthed = typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
+  navigateTo(isAuthed ? '/dashboard?focusSearch=1' : '/discover')
 }
 
 function openRegisterInterest() {
@@ -8712,10 +8718,10 @@ function formatSaleDate(dateStr: string): string {
    from progressPct. */
 .pps-float-claim-gauge {
   position: absolute;
-  top: -8px;
-  right: -10px;
+  top: -4px;
+  right: 0;
   width: 25px;
-  height: 24px;
+  height: 25px;
   border-radius: 50%;
   background: conic-gradient(#00958f calc(var(--pct) * 1%), #e4e5ed 0);
   box-shadow: 0 2px 6px rgba(35, 29, 69, 0.18);
@@ -8740,6 +8746,7 @@ function formatSaleDate(dateStr: string): string {
 .pps-float-claim-body {
   flex: 1;
   min-width: 0;
+  padding-left: 10px;
 }
 .pps-float-claim-title {
   font-size: 13px;
