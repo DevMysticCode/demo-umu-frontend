@@ -228,6 +228,7 @@
                     loading="lazy"
                   />
                   <div
+                    v-if="floatClaimState !== 'unclaimed'"
                     class="pps-float-claim-gauge"
                     :style="{ '--pct': progressPct }"
                   >
@@ -277,17 +278,15 @@
       </div>
 
       <!-- ─── SECTION 3: Action Bar ────────────────────────────────── -->
-      <!-- The actual PassportClaimBox visible box (teal in-progress ring /
-           gold "champagne band" published card) — NOT headless here, so
-           tapping it opens its own drawer directly via its own internal
-           click handler, same as it always has. Was previously
-           reconstructed by hand as static buttons (and before that,
-           hard-disabled with v-if="false"); this is the real component.
-           Unclaimed is skipped: .pps-float-claim above already covers it
-           with its own box, and owners/collaborators get their own
-           "Continue building" CTA in SECTION 7 instead of a buyer pitch. -->
+      <!-- The visible PassportClaimBox box (teal in-progress ring / gold
+           "champagne band" published card) is hidden — kept in code, not
+           deleted, in case it's wanted back — since .pps-float-claim
+           above now covers the same ground: same info, same CTA, and
+           opens the identical headless drawer (see the other
+           PassportClaimBox instance further down). Showing both here
+           was pure duplication. -->
       <PassportClaimBox
-        v-if="pageState !== 'unclaimed' && !isPassportOwnerOrCollab"
+        v-if="false && pageState !== 'unclaimed' && !isPassportOwnerOrCollab"
         :state="pageState === 'progress' ? 'inProgress' : 'published'"
         :progress-pct="progressPct"
         :property-id="propertyId"
