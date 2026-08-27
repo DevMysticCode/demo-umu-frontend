@@ -24,21 +24,10 @@
     </div>
 
     <div class="dash-scroll">
-      <div v-if="roleResolved && role === 'buy'" class="explore-intro-card">
-        <div class="eic-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="7" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-        </div>
-        <div class="eic-body">
-          <div class="eic-title">Explore a property</div>
-          <div class="eic-sub">Search any UK address and see the property report.</div>
-        </div>
-      </div>
-
       <PropertySearchExperienceClassic
+        ref="searchExperienceEl"
         placeholder="Search by postcode, address or area"
+        use-typewriter-placeholder
         @update:search-mode="searchMode = $event"
       />
 
@@ -153,6 +142,20 @@
             </div>
           </div>
 
+          <!-- ── HomeScore explore entry ── -->
+          <div class="dash-section">
+            <div class="homescore-explore-card" @click="navigateTo('/homescore')">
+              <img src="/op-icons/homescore/house.png" alt="" class="hec-house-img" loading="lazy" />
+              <div class="hec-body">
+                <div class="hec-title">Check any home's HomeScore</div>
+                <div class="hec-sub">
+                  Instant insight on energy, running costs and value — for any UK property, not just your own.
+                </div>
+                <span class="hec-cta">Run a free HomeScore <span>&rarr;</span></span>
+              </div>
+            </div>
+          </div>
+
           <!-- ── Watching ── -->
           <div class="dash-section">
             <div class="dash-eyebrow-row">
@@ -217,6 +220,16 @@
               <span class="npc-chevron">&rsaquo;</span>
             </div>
           </div>
+
+          <ForYouFeed
+            class="dash-section"
+            style="margin-top: 20px"
+            :properties="properties"
+            :loading="loadingProperties"
+            :needs-postcode="needsPostcode"
+            :has-filters="hasAnyForYouFilters"
+            @open-filters="openForYouFilters"
+          />
         </template>
       </template>
 
@@ -363,6 +376,20 @@
             </div>
           </div>
 
+          <!-- ── HomeScore explore entry ── -->
+          <div class="dash-section">
+            <div class="homescore-explore-card" @click="navigateTo('/homescore')">
+              <img src="/op-icons/homescore/house.png" alt="" class="hec-house-img" loading="lazy" />
+              <div class="hec-body">
+                <div class="hec-title">Check any home's HomeScore</div>
+                <div class="hec-sub">
+                  Curious about a neighbour's home or somewhere you're eyeing up? Run a free HomeScore on any UK property.
+                </div>
+                <span class="hec-cta">Run a free HomeScore <span>&rarr;</span></span>
+              </div>
+            </div>
+          </div>
+
           <!-- ── Add another property ── -->
           <div class="add-property-row" @click="startClaimFlow">
             <div class="apr-icon">+</div>
@@ -403,7 +430,7 @@
 // untouched by this page.
 definePageMeta({ title: 'Dashboard - UmovingU', middleware: 'auth' })
 
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import NotificationBell from '~/components/ui/NotificationBell.vue'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
@@ -416,10 +443,12 @@ import { usePropertyForYou } from '~/composables/usePropertyForYou'
 
 const config = useRuntimeConfig()
 const { profile, fetchProfile } = useProfile()
+const route = useRoute()
 
 const searchMode = ref(false)
 const roleResolved = ref(false)
 const role = ref<string>('buy')
+const searchExperienceEl = ref<{ focus: () => void } | null>(null)
 
 const passports = ref<any[]>([])
 const loadingPassport = ref(true)
@@ -518,7 +547,34 @@ function isDashboardRole(r: string): boolean {
   return r === 'sell' || r === 'both' || r === 'buy'
 }
 
+// Fired independently (not awaited alongside the rest of onMounted) —
+// /property/for-you does live EPC/OS enrichment per candidate property
+// and can take several seconds. Bundling it into the same
+// Promise.allSettled as the fast profile/passport calls meant the WHOLE
+// dashboard sat on its loading skeleton until the slowest of the two
+// finished. ForYouFeed has its own :loading state, so it can show its
+// own skeleton while everything above it is already interactive.
+async function fetchForYou(token: string) {
+  const result = await $fetch<{ items: any[]; needsPostcode?: boolean }>(
+    `${config.public.apiBase}/property/for-you`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  ).catch(() => null)
+  properties.value = result?.items ?? []
+  needsPostcode.value = result?.needsPostcode === true
+  loadingProperties.value = false
+}
+
 onMounted(async () => {
+  // Arriving from property/[id].vue's "Back to Explore" (logged-in path)
+  // via ?focusSearch=1 — focus the search bar immediately so its
+  // typewriter placeholder starts right away, matching what a logged-out
+  // user gets by landing on Discover's own search. Independent of the
+  // role/profile fetch below since the search bar renders for every role.
+  if (route.query.focusSearch) {
+    await nextTick()
+    searchExperienceEl.value?.focus()
+  }
+
   if (!profile.value) await fetchProfile()
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) return
@@ -554,6 +610,8 @@ onMounted(async () => {
   roleResolved.value = true
 
   if (role.value === 'buy') {
+    fetchForYou(token) // not awaited — see fetchForYou's own comment
+
     const [buyerResult, savedResult] = await Promise.allSettled([
       $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -575,17 +633,14 @@ onMounted(async () => {
     return
   }
 
-  const [passportResult, propResult] = await Promise.allSettled([
-    $fetch<any[]>(`${config.public.apiBase}/profile/passports`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
-    $fetch<{ items: any[]; needsPostcode?: boolean }>(`${config.public.apiBase}/property/for-you`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
-  ])
+  fetchForYou(token) // not awaited — see fetchForYou's own comment
 
-  if (passportResult.status === 'fulfilled') {
-    const all = passportResult.value ?? []
+  const passportResult = await $fetch<any[]>(`${config.public.apiBase}/profile/passports`, {
+    headers: { Authorization: `Bearer ${token}` },
+  }).catch(() => null)
+
+  if (passportResult) {
+    const all = passportResult ?? []
     // /profile/passports returns every passport the user owns, any type,
     // most-recently-visited first. A 'both' user could have a BUYER
     // passport ahead of their SELLER one — this card is seller-specific,
@@ -595,12 +650,6 @@ onMounted(async () => {
     passports.value = seller.length ? seller : all
   }
   loadingPassport.value = false
-
-  if (propResult.status === 'fulfilled') {
-    properties.value = propResult.value?.items ?? []
-    needsPostcode.value = propResult.value?.needsPostcode === true
-  }
-  loadingProperties.value = false
 
   if (passports.value.length) {
     const sections = await $fetch<any[]>(
@@ -725,43 +774,6 @@ onMounted(async () => {
   font-weight: 700;
   color: #00a19a;
   cursor: pointer;
-}
-
-/* ── Explore a property (buyer intro card) ── */
-.explore-intro-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #f4f4f6;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
-}
-.eic-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: #e0f4f1;
-  color: #00a19a;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-.eic-body {
-  flex: 1;
-  min-width: 0;
-}
-.eic-title {
-  font-size: 14px;
-  font-weight: 800;
-  color: #231d45;
-  margin-bottom: 2px;
-}
-.eic-sub {
-  font-size: 12px;
-  color: #6b7089;
-  line-height: 1.4;
 }
 
 /* ── Your Active Passport ── */
@@ -1078,6 +1090,48 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   gap: 6px;
+}
+
+/* ── HomeScore explore entry (any property, not the user's own) ── */
+.homescore-explore-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, #f1faf8 0%, #e4f5f0 100%);
+  border: 1px solid #d5efe8;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+}
+.hec-house-img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.hec-body {
+  flex: 1;
+  min-width: 0;
+}
+.hec-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+  margin-bottom: 3px;
+}
+.hec-sub {
+  font-size: 12px;
+  color: #6b7089;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+.hec-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #00817c;
 }
 
 /* ── Add another property ── */

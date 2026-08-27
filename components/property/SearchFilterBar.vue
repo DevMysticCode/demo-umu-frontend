@@ -15,14 +15,16 @@
         <line x1="21" y1="21" x2="16.65" y2="16.65" />
       </svg>
       <input
+        ref="inputEl"
         :value="modelValue"
         type="text"
-        :placeholder="placeholder"
+        :placeholder="displayPlaceholder"
         class="search-input"
         :class="{ 'lightweight-input': lightweightMode }"
         @input="handleInput(($event.target as HTMLInputElement).value)"
         @keyup.enter="onEnter"
-        @blur="showDropdown = false"
+        @focus="isFocused = true"
+        @blur="showDropdown = false; isFocused = false"
       />
       <!-- Unified distance + filters pill (Explore's .exp-dist-btn). Not in
            lightweightMode — that page opens its own filters modal after a
@@ -313,8 +315,19 @@ const props = withDefaults(
     // its own post-search filters modal instead. Discover doesn't pass
     // this, so it keeps today's behavior byte-for-byte.
     lightweightMode?: boolean
+    // Cycles the placeholder through "Type postcode" / "Type address" /
+    // "Type street name" (type-then-erase, looping) whenever this field
+    // is focused and empty — makes it obvious the field is for exploring
+    // properties. Opt-in per consumer (see useTypewriterPlaceholder.ts);
+    // Discover doesn't pass this, so it keeps its plain static
+    // placeholder unchanged.
+    useTypewriterPlaceholder?: boolean
   }>(),
-  { placeholder: 'Search by postcode, address or area', lightweightMode: false },
+  {
+    placeholder: 'Search by postcode, address or area',
+    lightweightMode: false,
+    useTypewriterPlaceholder: false,
+  },
 )
 
 const emit = defineEmits<{
@@ -325,6 +338,20 @@ const emit = defineEmits<{
 }>()
 
 const config = useRuntimeConfig()
+
+const inputEl = ref<HTMLInputElement | null>(null)
+const isFocused = ref(false)
+const typewriterActive = computed(
+  () => props.useTypewriterPlaceholder && isFocused.value && !props.modelValue,
+)
+const { text: typewriterText } = useTypewriterPlaceholder(typewriterActive)
+const displayPlaceholder = computed(() =>
+  typewriterActive.value ? typewriterText.value : props.placeholder,
+)
+
+defineExpose({
+  focus: () => inputEl.value?.focus(),
+})
 
 const showDropdown = ref(false)
 const results = ref<any[]>([])
