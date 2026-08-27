@@ -173,7 +173,7 @@
                   </div>
                 </div>
                 <img
-                  src="/op-icons/misc/car.png"
+                  src="/op-icons/misc/carWithLogBook.png"
                   alt=""
                   class="cx-callout-car"
                   loading="lazy"
@@ -204,15 +204,15 @@
                 </template>
               </div>
               <div class="cx-step-detail">
+                <div class="cx-step-detail-icon">
+                  <img :src="activeStepData.icon" alt="" loading="lazy" />
+                </div>
                 <div class="cx-step-detail-body">
                   <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
                   <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
                   <div class="cx-step-detail-happens">
                     <strong>What happens:</strong> {{ activeStepData.happens }}
                   </div>
-                </div>
-                <div class="cx-step-detail-icon">
-                  <img src="/op-icons/verify-identity/idCardChecked.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cx2-secure">
@@ -266,11 +266,14 @@
                   <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
                 </div>
               </div>
-              <div class="cx-callout">
-                <div class="cx-callout-h">Not every Passport is public</div>
-                <div class="cx-callout-v">
-                  Homeowners decide what they share and when they share it.
-                  Information that has not been published remains private.
+              <div class="cx-callout cx-callout--icon">
+                <img src="/op-icons/claim/padlock.png" alt="" class="cx-callout-icon" loading="lazy" />
+                <div class="cx-callout-body">
+                  <div class="cx-callout-h">Not every Passport is public</div>
+                  <div class="cx-callout-v">
+                    Homeowners decide what they share and when they share it.
+                    Information that has not been published remains private.
+                  </div>
                 </div>
               </div>
               <div class="cx-stats cx-stats--3col">
@@ -308,15 +311,15 @@
                 </template>
               </div>
               <div class="cx-step-detail">
+                <div class="cx-step-detail-icon">
+                  <img :src="activeStepData.icon" alt="" loading="lazy" />
+                </div>
                 <div class="cx-step-detail-body">
                   <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
                   <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
                   <div class="cx-step-detail-happens">
                     <strong>What happens:</strong> {{ activeStepData.happens }}
                   </div>
-                </div>
-                <div class="cx-step-detail-icon">
-                  <img src="/op-icons/verify-identity/idCardChecked.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cxd-cta-col">
@@ -420,15 +423,15 @@
                 </template>
               </div>
               <div class="cx-step-detail">
+                <div class="cx-step-detail-icon">
+                  <img :src="activeStepData.icon" alt="" loading="lazy" />
+                </div>
                 <div class="cx-step-detail-body">
                   <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
                   <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
                   <div class="cx-step-detail-happens">
                     <strong>What happens:</strong> {{ activeStepData.happens }}
                   </div>
-                </div>
-                <div class="cx-step-detail-icon">
-                  <img src="/op-icons/homescore/house.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cxd-cta-col">
@@ -464,10 +467,13 @@
                   <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
                 </div>
               </div>
-              <div class="cx-callout">
-                <div class="cx-callout-h">{{ publishedDateLabel }}</div>
-                <div class="cx-callout-v">
-                  The information shown has been verified by the owner.
+              <div class="cx-callout cx-callout--icon">
+                <img src="/op-icons/onboarding/trustShield.png" alt="" class="cx-callout-icon" loading="lazy" />
+                <div class="cx-callout-body">
+                  <div class="cx-callout-h">{{ publishedDateLabel }}</div>
+                  <div class="cx-callout-v">
+                    The information shown has been verified by the owner.
+                  </div>
                 </div>
               </div>
               <div class="cx-section-h">Passport journey · all steps completed</div>
@@ -486,15 +492,15 @@
                 </template>
               </div>
               <div class="cx-step-detail">
+                <div class="cx-step-detail-icon">
+                  <img :src="activeStepData.icon" alt="" loading="lazy" />
+                </div>
                 <div class="cx-step-detail-body">
                   <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
                   <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
                   <div class="cx-step-detail-happens">
                     <strong>What happens:</strong> {{ activeStepData.happens }}
                   </div>
-                </div>
-                <div class="cx-step-detail-icon">
-                  <img src="/op-icons/verify-identity/idCardChecked.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cx-section-h">Included in this published Passport</div>
@@ -764,26 +770,33 @@ const unclaimedSteps = [
 // (unclaimed / noPublicPassport / progress / published); only which
 // step is active by default differs per drawer (see openSheet watcher
 // below).
-const stepDetails: Record<number, { h: string; v: string; happens: string }> = {
+const stepDetails: Record<
+  number,
+  { h: string; v: string; happens: string; icon: string }
+> = {
   1: {
     h: '1 · Claim your home',
     v: "We confirm that you're authorised to manage this property. A quick identity and ownership check confirms that the home is yours and helps prevent a property from being claimed by someone who shouldn't have access to it.",
     happens: 'Identity checked · Ownership confirmed · Property securely claimed',
+    icon: '/op-icons/verify-identity/idCardChecked.png',
   },
   2: {
     h: '2 · Verify the property',
     v: 'We connect the Passport to the correct property and trusted records. Ownership and key property details can be checked against trusted sources so the Passport is linked to the home itself — not simply to the person who created it.',
     happens: 'Ownership verified · Property record matched · Trusted data connected',
+    icon: '/op-icons/homescore/clipboard.png',
   },
   3: {
     h: '3 · Build your Passport',
     v: 'Bring the important information about your home together in one place. Add property details, documents, certificates, guarantees, improvements and other important information. Where possible, information can be checked against trusted sources and marked as verified. The Passport can continue to grow and stay up to date over time.',
     happens: 'Information added · Documents stored · Verification builds over time',
+    icon: '/op-icons/investment/clipboardChecklist.png',
   },
   4: {
     h: '4 · Publish or keep private',
     v: "You decide what happens next. Keep your Property Passport private while you continue building it, or choose to publish approved information when you're ready. Publishing does not mean everything in the Passport becomes public. The homeowner controls what information is shared. A Passport also does not need to be 100% complete before it can be published — it only needs to meet the required publication threshold.",
     happens: 'You control visibility · Choose what is shared · Keep updating after publication',
+    icon: '/op-icons/misc/eye.png',
   },
 }
 const activeStep = ref(1)
@@ -1381,6 +1394,21 @@ function onPrimary(action: PrimaryAction) {
   height: 40px;
   object-fit: contain;
   flex-shrink: 0;
+}
+/* Small icon + text variant — "Not every Passport is public" (lock),
+   "Published on {date}" (shield) — matches the prototype, which shows
+   a leading icon on every callout, not just the car one. */
+.cx-callout--icon {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.cx-callout-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 .cx-callout.purple {
   border-left-color: #5b3795;
