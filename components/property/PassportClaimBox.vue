@@ -135,7 +135,7 @@
                   </div>
                 </div>
                 <div class="cx2-header-illustration">
-                  <img src="/op-icons/landing/propertyPassportCard.png" alt="" loading="lazy" />
+                  <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cx-stats cx-stats--4col">
@@ -1400,15 +1400,14 @@ function onPrimary(action: PrimaryAction) {
    a leading icon on every callout, not just the car one. */
 .cx-callout--icon {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
 }
 .cx-callout-icon {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
   object-fit: contain;
   flex-shrink: 0;
-  margin-top: 1px;
 }
 .cx-callout.purple {
   border-left-color: #5b3795;
