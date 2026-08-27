@@ -207,6 +207,9 @@
                 <div class="cx-step-detail-body">
                   <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
                   <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                  <div class="cx-step-detail-happens">
+                    <strong>What happens:</strong> {{ activeStepData.happens }}
+                  </div>
                 </div>
                 <div class="cx-step-detail-icon">
                   <img src="/op-icons/verify-identity/idCardChecked.png" alt="" loading="lazy" />
@@ -259,9 +262,8 @@
                     this home right now.
                   </div>
                 </div>
-                <div class="cx2-header-illustration cx2-illustration--badged">
-                  <img src="/op-icons/passportview/umu-passport.png" alt="" loading="lazy" />
-                  <img src="/op-icons/claim/padlock.png" alt="" class="cx2-illustration-badge" loading="lazy" />
+                <div class="cx2-header-illustration">
+                  <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cx-callout">
@@ -293,7 +295,12 @@
               </div>
               <div class="cx-steps">
                 <template v-for="(s, i) in noPublicPassportJourneySteps" :key="s.n">
-                  <div class="cx-step">
+                  <div
+                    class="cx-step cx-step-tap"
+                    :class="{ active: activeStep === s.n }"
+                    :style="{ '--cx-step-i': i }"
+                    @click="activeStep = s.n"
+                  >
                     <div class="cx-step-num" :class="s.filled ? 'filled-teal' : 'off'">{{ s.n }}</div>
                     <div class="cx-step-name" :class="{ off: !s.filled }">{{ s.name }}</div>
                   </div>
@@ -302,11 +309,10 @@
               </div>
               <div class="cx-step-detail">
                 <div class="cx-step-detail-body">
-                  <div class="cx-step-detail-h">1 · Claim</div>
-                  <div class="cx-step-detail-v">
-                    A homeowner can claim a property after completing
-                    identity and ownership verification. This creates a
-                    secure link between the Passport and the property.
+                  <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
+                  <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                  <div class="cx-step-detail-happens">
+                    <strong>What happens:</strong> {{ activeStepData.happens }}
                   </div>
                 </div>
                 <div class="cx-step-detail-icon">
@@ -350,7 +356,7 @@
                   </div>
                 </div>
                 <div class="cx2-header-illustration">
-                  <img src="/op-icons/passportview/umu-passport.png" alt="" loading="lazy" />
+                  <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cx-section-h">Build progress</div>
@@ -399,7 +405,12 @@
               <div class="cx-section-h">Passport journey · tap a step to see what's done</div>
               <div class="cx-steps">
                 <template v-for="(s, i) in progressJourneySteps" :key="s.n">
-                  <div class="cx-step">
+                  <div
+                    class="cx-step cx-step-tap"
+                    :class="{ active: activeStep === s.n }"
+                    :style="{ '--cx-step-i': i }"
+                    @click="activeStep = s.n"
+                  >
                     <div class="cx-step-num" :class="s.filled ? 'filled-teal' : 'off'">
                       <span v-if="s.done">✓</span><span v-else>{{ s.n }}</span>
                     </div>
@@ -410,11 +421,10 @@
               </div>
               <div class="cx-step-detail">
                 <div class="cx-step-detail-body">
-                  <div class="cx-step-detail-h">3 · Build your Passport</div>
-                  <div class="cx-step-detail-v">
-                    The owner is adding documents, certificates and property
-                    information. Each item is verified where possible. Once
-                    complete, they can choose to publish.
+                  <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
+                  <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                  <div class="cx-step-detail-happens">
+                    <strong>What happens:</strong> {{ activeStepData.happens }}
                   </div>
                 </div>
                 <div class="cx-step-detail-icon">
@@ -450,26 +460,42 @@
                     information you've chosen to share.
                   </div>
                 </div>
-                <div class="cx2-header-illustration cx2-illustration--badged">
-                  <img src="/op-icons/passportview/umu-passport.png" alt="" loading="lazy" />
-                  <img src="/op-icons/misc/globe.png" alt="" class="cx2-illustration-badge" loading="lazy" />
+                <div class="cx2-header-illustration">
+                  <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
                 </div>
               </div>
-              <div class="cx-callout purple">
+              <div class="cx-callout">
                 <div class="cx-callout-h">{{ publishedDateLabel }}</div>
                 <div class="cx-callout-v">
                   The information shown has been verified by the owner.
                 </div>
               </div>
               <div class="cx-section-h">Passport journey · all steps completed</div>
-              <div class="cx-steps cx-steps--purple">
+              <div class="cx-steps">
                 <template v-for="(s, i) in publishedJourneySteps" :key="s.n">
-                  <div class="cx-step">
-                    <div class="cx-step-num filled-purple">✓</div>
+                  <div
+                    class="cx-step cx-step-tap"
+                    :class="{ active: activeStep === s.n }"
+                    :style="{ '--cx-step-i': i }"
+                    @click="activeStep = s.n"
+                  >
+                    <div class="cx-step-num filled-teal">✓</div>
                     <div class="cx-step-name">{{ s.name }}</div>
                   </div>
-                  <div v-if="i < publishedJourneySteps.length - 1" class="cx-step-line cx-step-line--purple" />
+                  <div v-if="i < publishedJourneySteps.length - 1" class="cx-step-line" />
                 </template>
+              </div>
+              <div class="cx-step-detail">
+                <div class="cx-step-detail-body">
+                  <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
+                  <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                  <div class="cx-step-detail-happens">
+                    <strong>What happens:</strong> {{ activeStepData.happens }}
+                  </div>
+                </div>
+                <div class="cx-step-detail-icon">
+                  <img src="/op-icons/verify-identity/idCardChecked.png" alt="" loading="lazy" />
+                </div>
               </div>
               <div class="cx-section-h">Included in this published Passport</div>
               <div class="cx-item-grid">
@@ -508,7 +534,7 @@
               </div>
               <div class="cxd-cta-col">
                 <button
-                  class="cxd-btn purple"
+                  class="cxd-btn primary"
                   type="button"
                   @click="isOwnerOrCollaborator ? onOwnerContinue() : onPrimary('buy')"
                 >
@@ -516,7 +542,7 @@
                 </button>
                 <button
                   v-if="isOwnerOrCollaborator"
-                  class="cxd-btn outline-purple"
+                  class="cxd-btn outline-accent"
                   type="button"
                   @click="onOwnerContinue"
                 >
@@ -579,7 +605,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -733,27 +759,47 @@ const unclaimedSteps = [
   { n: 3, name: 'Build' },
   { n: 4, name: 'Publish' },
 ]
-const stepDetails: Record<number, { h: string; v: string }> = {
+// Master Property Passport journey copy — the developer-provided text
+// for the 1·2·3·4 step details. Shared verbatim across every drawer
+// (unclaimed / noPublicPassport / progress / published); only which
+// step is active by default differs per drawer (see openSheet watcher
+// below).
+const stepDetails: Record<number, { h: string; v: string; happens: string }> = {
   1: {
     h: '1 · Claim your home',
-    v: "We run a quick identity and ownership check (KYC) to confirm it's really you. This one-off verification costs £15 and is required before we can create your Property Passport.",
+    v: "We confirm that you're authorised to manage this property. A quick identity and ownership check confirms that the home is yours and helps prevent a property from being claimed by someone who shouldn't have access to it.",
+    happens: 'Identity checked · Ownership confirmed · Property securely claimed',
   },
   2: {
-    h: '2 · Verify',
-    v: "Choose what you're building it for — a selling passport or a landlord passport. You can add the other later off the same claim.",
+    h: '2 · Verify the property',
+    v: 'We connect the Passport to the correct property and trusted records. Ownership and key property details can be checked against trusted sources so the Passport is linked to the home itself — not simply to the person who created it.',
+    happens: 'Ownership verified · Property record matched · Trusted data connected',
   },
   3: {
-    h: '3 · Build',
-    v: 'Add your certificates and property information. We verify each against the official source and tick it off your Passport.',
+    h: '3 · Build your Passport',
+    v: 'Bring the important information about your home together in one place. Add property details, documents, certificates, guarantees, improvements and other important information. Where possible, information can be checked against trusted sources and marked as verified. The Passport can continue to grow and stay up to date over time.',
+    happens: 'Information added · Documents stored · Verification builds over time',
   },
   4: {
-    h: '4 · Publish',
-    v: 'Publish or share your Passport and control who can access it — buyers, tenants, agents or your solicitor, whoever you choose. It stays with the property for life.',
+    h: '4 · Publish or keep private',
+    v: "You decide what happens next. Keep your Property Passport private while you continue building it, or choose to publish approved information when you're ready. Publishing does not mean everything in the Passport becomes public. The homeowner controls what information is shared. A Passport also does not need to be 100% complete before it can be published — it only needs to meet the required publication threshold.",
+    happens: 'You control visibility · Choose what is shared · Keep updating after publication',
   },
 }
 const activeStep = ref(1)
 const activeStepData = computed(
   () => stepDetails[activeStep.value] ?? stepDetails[1],
+)
+// Each drawer opens with a different step pre-selected — whichever one
+// is most relevant to that state — while still using the exact same
+// tappable stepper + shared master copy for all four steps.
+watch(
+  () => props.openSheet,
+  (v) => {
+    if (v === 'progress') activeStep.value = 3
+    else if (v === 'published') activeStep.value = 4
+    else if (v) activeStep.value = 1
+  },
 )
 
 // Step-circle fill states for the noPublicPassport / progress / published
@@ -1712,6 +1758,17 @@ function onPrimary(action: PrimaryAction) {
   font-weight: 500;
   color: var(--text);
   line-height: 1.55;
+}
+.cx-step-detail-happens {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent-dark);
+  line-height: 1.5;
+}
+.cx-step-detail-happens strong {
+  color: var(--text);
+  font-weight: 800;
 }
 .cx-progress-track {
   height: 8px;
