@@ -824,9 +824,12 @@
       state="unclaimed"
       :property-id="propertyId"
       :progress-pct="progressPct"
+      :is-owner-or-collaborator="isPassportOwnerOrCollab"
+      :published-at="passportStatus?.publishedAt ?? null"
       @claim-passport="goToClaim"
       @watch="onWatchClick"
       @buy="routeForPassportState"
+      @continue-building="onProgressCtaClick"
     />
 
     <!-- Owner-claim (free) goes through the global /claim/[id] flow which
@@ -4369,9 +4372,9 @@ const goToClaim = () => router.push(`/claim/${propertyId}`)
 // CTA so guests see the same four-step explainer + auth gate the homescore
 // page uses. Authed users hit "Claim it" and goToClaim() routes them to
 // the existing /claim/[id] KYC + HMLR flow.
-const claimExplainerSheet = ref<'unclaimed' | 'progress' | 'published' | null>(
-  null,
-)
+const claimExplainerSheet = ref<
+  'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null
+>(null)
 const showUnpublishedModal = ref(false)
 type LocTab =
   | 'map'
@@ -6088,7 +6091,18 @@ const floatClaimState = computed<
 >(() => {
   if (pageState.value === 'published') return 'published'
   if (pageState.value === 'progress') {
-    return progressPct.value > 0 ? 'progress' : 'noPublicPassport'
+    // 60% matches the milestone the passport-readiness system (see
+    // src/common/passport-readiness.ts on the backend) treats as the
+    // first "evidence ready" tier — below it there isn't yet a
+    // meaningful record worth surfacing publicly, even though a
+    // passport row technically exists. NOTE: this reads the flat
+    // task-count completionPct, not that readiness system's own
+    // canPublish/milestonePct (which additionally requires every
+    // blocking question answered) — the readiness endpoint is
+    // access-gated (owner/collaborator/unlocked buyer only) and can't
+    // be called for a public/un-unlocked viewer today. Revisit if a
+    // public-safe readiness summary gets added.
+    return progressPct.value >= 60 ? 'progress' : 'noPublicPassport'
   }
   const claimed =
     passportStatus.value?.isClaimed ?? property.value?.isClaimed ?? false
@@ -6194,23 +6208,14 @@ const floatClaimMeta = computed<string>(() => {
   }
   return ''
 })
+// Every floatClaimState's main button opens its matching explainer
+// drawer — same pattern "Claim this property" already used for
+// unclaimed. The drawer's own buttons (see PassportClaimBox.vue) do the
+// real routing, including the owner-vs-buyer branch for progress/
+// published, so this click handler doesn't need to know about ownership
+// at all — it just picks which drawer to show.
 function onFloatClaimCtaClick() {
-  // Keyed on floatClaimState, not pageState — "no public Passport" can
-  // arise from either a genuinely unclaimed property with pageState
-  // 'unclaimed' still active, or a claimed one with a passport stuck at
-  // 0% (pageState 'progress'). onProgressCtaClick already degrades
-  // correctly for both: owner+passportId → continue building, else →
-  // watch — which is exactly "Watch this property"'s job either way.
-  if (floatClaimState.value === 'unclaimed') {
-    onClaimClick()
-  } else if (
-    floatClaimState.value === 'noPublicPassport' ||
-    floatClaimState.value === 'progress'
-  ) {
-    onProgressCtaClick()
-  } else {
-    routeForPassportState()
-  }
+  claimExplainerSheet.value = floatClaimState.value
 }
 
 // Owner/collaborator → open the passport so they can keep filling sections.

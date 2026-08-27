@@ -248,31 +248,109 @@
             </template>
 
             <!-- IN PROGRESS -->
-            <template v-else-if="openSheet === 'progress'">
-              <div class="cx-hero teal">
-                <div class="cx-hero-eyebrow">
-                  Property Passport™ · In Progress
+            <template v-else-if="openSheet === 'noPublicPassport'">
+              <div class="cx2-header">
+                <div class="cx2-header-text">
+                  <div class="cx2-eyebrow">Property Passport™</div>
+                  <div class="cx2-title">Nothing public yet.</div>
+                  <div class="cx2-subtitle">Want to know if that changes?</div>
+                  <div class="cx2-body">
+                    There isn't a published Property Passport available for
+                    this home right now.
+                  </div>
                 </div>
-                <div class="cx-hero-title">
-                  This owner is building something that removes 150 days of
-                  uncertainty.
-                </div>
-                <div class="cx-hero-sub">
-                  A permanent verified record for this property. When it
-                  publishes, you get instant access to everything — before you
-                  even make an offer.
+                <div class="cx2-header-illustration cx2-illustration--badged">
+                  <img src="/op-icons/passportview/umu-passport.png" alt="" loading="lazy" />
+                  <img src="/op-icons/claim/padlock.png" alt="" class="cx2-illustration-badge" loading="lazy" />
                 </div>
               </div>
               <div class="cx-callout">
-                <div class="cx-callout-h">Why this matters</div>
+                <div class="cx-callout-h">Not every Passport is public</div>
                 <div class="cx-callout-v">
-                  People fall for a house in 20 minutes, then spend ~150 days
-                  chasing solicitors and documents that already exist somewhere.
-                  This Passport collects it all upfront.
-                  <b
-                    ><img src="/op-icons/misc/eye.png" alt="" class="inline-ic" loading="lazy" /> Watch this property to be first in the door the moment
-                    it publishes.</b
-                  >
+                  Homeowners decide what they share and when they share it.
+                  Information that has not been published remains private.
+                </div>
+              </div>
+              <div class="cx-stats cx-stats--3col">
+                <div class="cx-stat">
+                  <img src="/op-icons/claim/padlock.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <div class="cx-stat-num">Private by default</div>
+                  <div class="cx-stat-label">Owner controlled</div>
+                </div>
+                <div class="cx-stat">
+                  <img src="/op-icons/misc/exploreWatching.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <div class="cx-stat-num">Watch quietly</div>
+                  <div class="cx-stat-label">No unnecessary alerts</div>
+                </div>
+                <div class="cx-stat">
+                  <img src="/op-icons/misc/bell.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <div class="cx-stat-num">Know when it changes</div>
+                  <div class="cx-stat-label">Get notified</div>
+                </div>
+              </div>
+              <div class="cx-section-h">
+                How a Property Passport works · tap a step to understand the journey
+              </div>
+              <div class="cx-steps">
+                <template v-for="(s, i) in noPublicPassportJourneySteps" :key="s.n">
+                  <div class="cx-step">
+                    <div class="cx-step-num" :class="s.filled ? 'filled-teal' : 'off'">{{ s.n }}</div>
+                    <div class="cx-step-name" :class="{ off: !s.filled }">{{ s.name }}</div>
+                  </div>
+                  <div v-if="i < noPublicPassportJourneySteps.length - 1" class="cx-step-line" />
+                </template>
+              </div>
+              <div class="cx-step-detail">
+                <div class="cx-step-detail-body">
+                  <div class="cx-step-detail-h">1 · Claim</div>
+                  <div class="cx-step-detail-v">
+                    A homeowner can claim a property after completing
+                    identity and ownership verification. This creates a
+                    secure link between the Passport and the property.
+                  </div>
+                </div>
+                <div class="cx-step-detail-icon">
+                  <img src="/op-icons/verify-identity/idCardChecked.png" alt="" loading="lazy" />
+                </div>
+              </div>
+              <div class="cxd-cta-col">
+                <button
+                  class="cxd-btn primary"
+                  type="button"
+                  @click="onPrimary('watch')"
+                >
+                  <img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Notify me when a Passport is published
+                </button>
+                <button
+                  class="cxd-btn secondary"
+                  type="button"
+                  @click="openSheet = null"
+                >
+                  Not now
+                </button>
+              </div>
+              <div class="cx-foot">
+                <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" />
+                Secure verification · Encrypted data · You're in control
+              </div>
+            </template>
+
+            <!-- IN PROGRESS -->
+            <template v-else-if="openSheet === 'progress'">
+              <div class="cx2-header">
+                <div class="cx2-header-text">
+                  <div class="cx2-eyebrow">Property Passport™</div>
+                  <div class="cx2-title">This Passport is in progress.</div>
+                  <div class="cx2-subtitle">
+                    We're building a permanent record for this property.
+                  </div>
+                  <div class="cx2-body">
+                    The owner is adding information and verifying it against
+                    trusted sources.
+                  </div>
+                </div>
+                <div class="cx2-header-illustration">
+                  <img src="/op-icons/passportview/umu-passport.png" alt="" loading="lazy" />
                 </div>
               </div>
               <div class="cx-section-h">Build progress</div>
@@ -283,163 +361,171 @@
               <div class="cx-progress-track">
                 <div class="cx-progress-fill" :style="{ width: pct + '%' }" />
               </div>
-              <div class="cx-section-h">Already verified</div>
-              <div class="cx-item">
-                <div class="cx-item-ico"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
-                <div class="cx-item-body">
-                  <div class="cx-item-title">EPC Certificate</div>
-                  <div class="cx-item-sub">
-                    Energy rating · lodged on the public register
+              <div class="cx-section-h">Completed so far</div>
+              <div class="cx-item-grid">
+                <div class="cx-item">
+                  <div class="cx-item-ico"><img src="/op-icons/onboarding/trustShield.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-body">
+                    <div class="cx-item-title">Ownership verified</div>
+                    <div class="cx-item-sub">Land Registry</div>
+                  </div>
+                  <div class="cx-item-tick">✓</div>
+                </div>
+                <div class="cx-item">
+                  <div class="cx-item-ico"><img src="/op-icons/buyer-passport/epcRating.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-body">
+                    <div class="cx-item-title">EPC Certificate</div>
+                    <div class="cx-item-sub">Grade C · Expires 2032</div>
+                  </div>
+                  <div class="cx-item-tick">✓</div>
+                </div>
+                <div class="cx-item">
+                  <div class="cx-item-ico"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-body">
+                    <div class="cx-item-title">Property details</div>
+                    <div class="cx-item-sub">Address, type, tenure</div>
+                  </div>
+                  <div class="cx-item-tick">✓</div>
+                </div>
+                <div class="cx-item">
+                  <div class="cx-item-ico"><img src="/op-icons/buyer-passport/titleNumber.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-body">
+                    <div class="cx-item-title">Title register</div>
+                    <div class="cx-item-sub">Title number added</div>
+                  </div>
+                  <div class="cx-item-tick">✓</div>
+                </div>
+              </div>
+              <div class="cx-section-h">Passport journey · tap a step to see what's done</div>
+              <div class="cx-steps">
+                <template v-for="(s, i) in progressJourneySteps" :key="s.n">
+                  <div class="cx-step">
+                    <div class="cx-step-num" :class="s.filled ? 'filled-teal' : 'off'">
+                      <span v-if="s.done">✓</span><span v-else>{{ s.n }}</span>
+                    </div>
+                    <div class="cx-step-name" :class="{ off: !s.filled }">{{ s.name }}</div>
+                  </div>
+                  <div v-if="i < progressJourneySteps.length - 1" class="cx-step-line" />
+                </template>
+              </div>
+              <div class="cx-step-detail">
+                <div class="cx-step-detail-body">
+                  <div class="cx-step-detail-h">3 · Build your Passport</div>
+                  <div class="cx-step-detail-v">
+                    The owner is adding documents, certificates and property
+                    information. Each item is verified where possible. Once
+                    complete, they can choose to publish.
                   </div>
                 </div>
-                <div class="cx-item-tick">✓</div>
-              </div>
-              <div class="cx-item">
-                <div class="cx-item-ico"><img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" /></div>
-                <div class="cx-item-body">
-                  <div class="cx-item-title">
-                    Land Registry Title &amp; Plan
-                  </div>
-                  <div class="cx-item-sub">Ownership confirmed</div>
+                <div class="cx-step-detail-icon">
+                  <img src="/op-icons/homescore/house.png" alt="" loading="lazy" />
                 </div>
-                <div class="cx-item-tick">✓</div>
               </div>
-              <div class="cx-item">
-                <div class="cx-item-ico"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
-                <div class="cx-item-body">
-                  <div class="cx-item-title">TA6 — Property Information</div>
-                  <div class="cx-item-sub">Boundaries, disputes, utilities</div>
-                </div>
-                <div class="cx-item-tick">✓</div>
-              </div>
-              <div class="cxd-cta-row">
+              <div class="cxd-cta-col">
                 <button
-                  class="cxd-btn secondary"
+                  class="cxd-btn outline-accent"
                   type="button"
-                  @click="openSheet = null"
+                  @click="isOwnerOrCollaborator ? onOwnerContinue() : onPrimary('watch')"
                 >
-                  Close
-                </button>
-                <button
-                  class="cxd-btn primary"
-                  type="button"
-                  @click="onPrimary('watch')"
-                >
-                  <img src="/op-icons/misc/eye.png" alt="" class="inline-ic" loading="lazy" /> Watch this property
+                  View progress
                 </button>
               </div>
               <div class="cx-foot">
-                The way people buy homes is changing — we're building that
-                future with government.
+                <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" />
+                Secure verification · Encrypted data · You're in control
               </div>
             </template>
 
             <!-- PUBLISHED -->
             <template v-else>
-              <div class="cx-hero purple">
-                <div class="cx-hero-eyebrow">Property Passport™</div>
-                <div class="cx-hero-title">
-                  The biggest purchase of your life — and you're doing it blind.
+              <div class="cx2-header">
+                <div class="cx2-header-text">
+                  <div class="cx2-eyebrow">Property Passport™</div>
+                  <div class="cx2-title">This Passport is published.</div>
+                  <div class="cx2-subtitle">
+                    A verified record for this property is now live.
+                  </div>
+                  <div class="cx2-body">
+                    Buyers, tenants, agents and your solicitor can access the
+                    information you've chosen to share.
+                  </div>
                 </div>
-                <div class="cx-hero-sub">
-                  You wouldn't buy a £15,000 car without its service history.
-                  This is the verified record that should always have existed
-                  for every home.
-                </div>
-              </div>
-              <div class="cx-callout">
-                <div class="cx-callout-h">Why this exists</div>
-                <div class="cx-callout-v">
-                  Conveyancing takes 150 days on average — nearly half spent
-                  chasing documents that already exist. The Passport ends that.
-                  Everything verified by the owner, ready before solicitors are
-                  even instructed. <b>⏱ Average sale cut by 6–8 weeks.</b>
+                <div class="cx2-header-illustration cx2-illustration--badged">
+                  <img src="/op-icons/passportview/umu-passport.png" alt="" loading="lazy" />
+                  <img src="/op-icons/misc/globe.png" alt="" class="cx2-illustration-badge" loading="lazy" />
                 </div>
               </div>
               <div class="cx-callout purple">
-                <div class="cx-callout-h">Not just for buying this home</div>
+                <div class="cx-callout-h">{{ publishedDateLabel }}</div>
                 <div class="cx-callout-v">
-                  The environmental, flood and planning data applies to the
-                  whole street. Solicitors charge £300–500 for searches thrown
-                  away after every transaction. This data stays.
+                  The information shown has been verified by the owner.
                 </div>
               </div>
-              <div class="cx-stats">
-                <div class="cx-stat">
-                  <div class="cx-stat-num">150</div>
-                  <div class="cx-stat-label">Avg. days in conveyancing</div>
-                </div>
-                <div class="cx-stat">
-                  <div class="cx-stat-num">£99</div>
-                  <div class="cx-stat-label">One-off · no subscription</div>
-                </div>
-                <div class="cx-stat">
-                  <div class="cx-stat-num">23×</div>
-                  <div class="cx-stat-label">Same search bought / street</div>
-                </div>
-                <div class="cx-stat">
-                  <div class="cx-stat-num">100%</div>
-                  <div class="cx-stat-label">Owner-verified · HMLR backed</div>
-                </div>
-              </div>
-              <div class="cx-section-h">What's inside</div>
-              <div class="cx-item">
-                <div class="cx-item-ico"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
-                <div class="cx-item-body">
-                  <div class="cx-item-title">TA6, TA7 &amp; TA10 forms</div>
-                  <div class="cx-item-sub">
-                    All conveyancing questions answered upfront
+              <div class="cx-section-h">Passport journey · all steps completed</div>
+              <div class="cx-steps cx-steps--purple">
+                <template v-for="(s, i) in publishedJourneySteps" :key="s.n">
+                  <div class="cx-step">
+                    <div class="cx-step-num filled-purple">✓</div>
+                    <div class="cx-step-name">{{ s.name }}</div>
                   </div>
-                </div>
-                <div class="cx-item-tick">✓</div>
+                  <div v-if="i < publishedJourneySteps.length - 1" class="cx-step-line cx-step-line--purple" />
+                </template>
               </div>
-              <div class="cx-item">
-                <div class="cx-item-ico"><img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" /></div>
-                <div class="cx-item-body">
-                  <div class="cx-item-title">
-                    Land Registry Title &amp; Plan
+              <div class="cx-section-h">Included in this published Passport</div>
+              <div class="cx-item-grid">
+                <div class="cx-item">
+                  <div class="cx-item-ico"><img src="/op-icons/onboarding/trustShield.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-body">
+                    <div class="cx-item-title">Ownership &amp; Title</div>
+                    <div class="cx-item-sub">Land Registry verified</div>
                   </div>
-                  <div class="cx-item-sub">
-                    Verified ownership · boundary map
+                  <div class="cx-item-tick">✓</div>
+                </div>
+                <div class="cx-item">
+                  <div class="cx-item-ico"><img src="/op-icons/buyer-passport/epcRating.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-body">
+                    <div class="cx-item-title">EPC Certificate</div>
+                    <div class="cx-item-sub">Grade C · Expires 2032</div>
                   </div>
+                  <div class="cx-item-tick">✓</div>
                 </div>
-                <div class="cx-item-tick">✓</div>
-              </div>
-              <div class="cx-item">
-                <div class="cx-item-ico"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></div>
-                <div class="cx-item-body">
-                  <div class="cx-item-title">Gas, Electrical &amp; EPC</div>
-                  <div class="cx-item-sub">All certificates verified</div>
+                <div class="cx-item">
+                  <div class="cx-item-ico"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-body">
+                    <div class="cx-item-title">Property Information</div>
+                    <div class="cx-item-sub">Address, type, tenure</div>
+                  </div>
+                  <div class="cx-item-tick">✓</div>
                 </div>
-                <div class="cx-item-tick">✓</div>
-              </div>
-              <div class="cx-item">
-                <div class="cx-item-ico"><img src="/op-icons/calendar/calendar.png" alt="" loading="lazy" /></div>
-                <div class="cx-item-body">
-                  <div class="cx-item-title">Planning History</div>
-                  <div class="cx-item-sub">Extensions, permissions, works</div>
+                <div class="cx-item">
+                  <div class="cx-item-ico"><img src="/op-icons/buyer-passport/titleNumber.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-body">
+                    <div class="cx-item-title">Certificates &amp; Guarantees</div>
+                    <div class="cx-item-sub">5 documents included</div>
+                  </div>
+                  <div class="cx-item-tick">✓</div>
                 </div>
-                <div class="cx-item-tick">✓</div>
               </div>
-              <div class="cxd-cta-row">
+              <div class="cxd-cta-col">
                 <button
-                  class="cxd-btn secondary"
+                  class="cxd-btn purple"
                   type="button"
-                  @click="openSheet = null"
+                  @click="isOwnerOrCollaborator ? onOwnerContinue() : onPrimary('buy')"
                 >
-                  Not now
+                  View Passport
                 </button>
                 <button
-                  class="cxd-btn primary"
+                  v-if="isOwnerOrCollaborator"
+                  class="cxd-btn outline-purple"
                   type="button"
-                  @click="onPrimary('buy')"
+                  @click="onOwnerContinue"
                 >
-                  Get the Passport · £99
+                  👤 Manage access &amp; sharing
                 </button>
               </div>
               <div class="cx-foot">
-                The way people buy homes is changing — we're building that
-                future with government.
+                <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" />
+                Secure verification · Encrypted data · You're in control
               </div>
             </template>
           </div>
@@ -513,7 +599,16 @@ const props = withDefaults(
     /** External control of which sheet is open. Used in headless mode so
      *  the parent can open `'unclaimed'` / `'progress'` / `'published'`
      *  from its own button. Two-way bound via `update:openSheet`. */
-    openSheet?: 'unclaimed' | 'progress' | 'published' | null
+    openSheet?: 'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null
+    /** True when the current viewer owns (or collaborates on) this
+     *  passport — flips the progress/published drawers' primary action
+     *  from a buyer-facing "watch/buy" to the owner's own "continue
+     *  building" route, and shows the owner-only "Manage access &
+     *  sharing" button on the published drawer. */
+    isOwnerOrCollaborator?: boolean
+    /** ISO date string for the "Published on {date}" line on the
+     *  published drawer. Falls back to a generic label when not given. */
+    publishedAt?: string | null
   }>(),
   {
     progressPct: 60,
@@ -522,6 +617,8 @@ const props = withDefaults(
     propertyId: null,
     headless: false,
     openSheet: null,
+    isOwnerOrCollaborator: false,
+    publishedAt: null,
   },
 )
 
@@ -531,18 +628,34 @@ const emit = defineEmits<{
   (e: 'claim-passport'): void
   (e: 'watch'): void
   (e: 'buy'): void
-  (e: 'update:openSheet', v: 'unclaimed' | 'progress' | 'published' | null): void
+  // Owner/collaborator's own "View progress" / "View Passport" action on
+  // the progress/published drawers — no auth-gate needed (they're already
+  // signed in and own the thing), so this bypasses onPrimary entirely.
+  (e: 'continue-building'): void
+  (e: 'update:openSheet', v: 'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null): void
 }>()
 
 const pct = computed(() =>
   Math.max(0, Math.min(100, Math.round(props.progressPct ?? 0))),
 )
 
+const publishedDateLabel = computed(() => {
+  if (!props.publishedAt) return 'Published'
+  const d = new Date(props.publishedAt)
+  if (Number.isNaN(d.getTime())) return 'Published'
+  const dateStr = d.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+  return `Published on ${dateStr}`
+})
+
 // In standard (non-headless) mode the component owns `openSheet` locally —
 // tapping the colored box flips it. In headless mode the parent drives it
 // via v-model so the colored box can be replaced by the parent's own CTA.
-const localOpenSheet = ref<'unclaimed' | 'progress' | 'published' | null>(null)
-const openSheet = computed<'unclaimed' | 'progress' | 'published' | null>({
+const localOpenSheet = ref<'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null>(null)
+const openSheet = computed<'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null>({
   get: () => (props.headless ? props.openSheet : localOpenSheet.value),
   set: (v) => {
     if (props.headless) emit('update:openSheet', v)
@@ -642,6 +755,39 @@ const activeStep = ref(1)
 const activeStepData = computed(
   () => stepDetails[activeStep.value] ?? stepDetails[1],
 )
+
+// Step-circle fill states for the noPublicPassport / progress / published
+// drawers — distinct from `unclaimedSteps` above (which stays tap-to-switch
+// with its own on/off/active styling) since these three are a static
+// read-out of what's actually done, not an interactive chooser. `done`
+// draws a checkmark instead of the step number; `filled` colors the
+// circle (teal, or purple on the published drawer via cx-steps--purple).
+const noPublicPassportJourneySteps = unclaimedSteps.map((s) => ({
+  ...s,
+  filled: s.n === 1,
+  done: false,
+}))
+const progressJourneySteps = [
+  { n: 1, name: 'Claim', filled: true, done: true },
+  { n: 2, name: 'Verify', filled: true, done: true },
+  { n: 3, name: 'Build', filled: true, done: false },
+  { n: 4, name: 'Publish', filled: false, done: false },
+]
+const publishedJourneySteps = [
+  { n: 1, name: 'Claim', filled: true, done: true },
+  { n: 2, name: 'Verify', filled: true, done: true },
+  { n: 3, name: 'Build', filled: true, done: true },
+  { n: 4, name: 'Publish', filled: true, done: true },
+]
+
+// Owner/collaborator's own path on the progress/published drawers — they're
+// already signed in and it's their own passport, so skip the buyer-facing
+// auth-gated onPrimary entirely and let the parent route them straight to
+// continuing/viewing it.
+function onOwnerContinue() {
+  openSheet.value = null
+  emit('continue-building')
+}
 
 function onPrimary(action: PrimaryAction) {
   // Authed users → straight through to the parent's existing routing.
@@ -1016,6 +1162,21 @@ function onPrimary(action: PrimaryAction) {
   height: auto;
   object-fit: contain;
 }
+.cx2-illustration--badged {
+  position: relative;
+}
+.cx2-illustration-badge {
+  position: absolute !important;
+  width: 34px !important;
+  height: 34px !important;
+  right: -4px;
+  bottom: 4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(35, 29, 69, 0.2);
+  padding: 6px;
+  box-sizing: border-box;
+}
 .cx2-eyebrow {
   font-size: 9px;
   font-weight: 800;
@@ -1290,6 +1451,23 @@ function onPrimary(action: PrimaryAction) {
 .cx-stats--4col .cx-stat-label {
   font-size: 8.5px;
 }
+/* 3-across variant — noPublicPassport's "Private by default / Watch
+   quietly / Know when it changes" row. Same icon-plus-label shape as
+   --4col, just one column wider each. */
+.cx-stats--3col {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.cx-stats--3col .cx-stat {
+  padding: 10px 6px;
+}
+.cx-stats--3col .cx-stat-num {
+  font-size: 11.5px;
+  letter-spacing: -0.2px;
+}
+.cx-stats--3col .cx-stat-label {
+  font-size: 8.5px;
+}
 .cx-section-h {
   font-size: 10px;
   font-weight: 800;
@@ -1343,6 +1521,19 @@ function onPrimary(action: PrimaryAction) {
   font-weight: 800;
   font-size: 13px;
 }
+/* 2-column layout for the progress/published drawers' checklist —
+   .cx-item itself is unchanged (still the icon+text+tick row), this
+   just arranges several of them side by side instead of stacking
+   full-width like the single-column usages elsewhere. */
+.cx-item-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0 22px 14px;
+}
+.cx-item-grid .cx-item {
+  margin: 0;
+}
 .cx-steps {
   display: flex;
   align-items: flex-start;
@@ -1373,6 +1564,18 @@ function onPrimary(action: PrimaryAction) {
   background: var(--border);
   color: var(--text-faint);
 }
+/* Static (non-tap) fill states for the noPublicPassport/progress/
+   published journey steppers — teal or purple depending on the drawer,
+   independent of the tap-to-switch .on/.off/.active states above (which
+   stay exclusive to the original interactive "unclaimed" stepper). */
+.cx-step-num.filled-teal {
+  background: var(--accent);
+  color: white;
+}
+.cx-step-num.filled-purple {
+  background: #5b3795;
+  color: white;
+}
 .cx-step-name {
   font-size: 10px;
   font-weight: 700;
@@ -1387,6 +1590,9 @@ function onPrimary(action: PrimaryAction) {
   height: 2px;
   background: var(--border);
   margin-top: 17px;
+}
+.cx-step-line--purple {
+  background: #5b3795;
 }
 .cx-step-tap {
   cursor: pointer;
@@ -1578,6 +1784,24 @@ function onPrimary(action: PrimaryAction) {
   background: var(--card);
   border: 1.5px solid var(--border);
   color: var(--text-secondary);
+}
+.cxd-btn.outline-accent {
+  background: var(--card);
+  border: 1.5px solid var(--accent);
+  color: var(--accent-dark);
+}
+.cxd-btn.purple {
+  background: linear-gradient(135deg, #5b3795, #3f2569);
+  color: white;
+  box-shadow: 0 4px 14px rgba(91, 55, 149, 0.3);
+}
+.cxd-btn.purple:hover {
+  filter: brightness(1.06);
+}
+.cxd-btn.outline-purple {
+  background: var(--card);
+  border: 1.5px solid #5b3795;
+  color: #5b3795;
 }
 
 .cxd-enter-active,
