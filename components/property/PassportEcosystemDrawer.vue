@@ -12,27 +12,35 @@
           @touchcancel="onTouchEnd"
         >
           <div class="pe-grip" />
-          <button
+          <!-- <button
             type="button"
             class="pe-close"
             aria-label="Close"
             @click="$emit('close')"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
-          </button>
+          </button> -->
 
           <div class="pe-scroll">
             <!-- ── Hero ─────────────────────────────────────────── -->
             <div class="pe-hero">
               <div class="pe-hero-text">
                 <h2 class="pe-hero-title">One home.<br />Many passports.</h2>
-                <div class="pe-hero-sub">One permanent record.<br />Built for every journey.</div>
+                <div class="pe-hero-sub">
+                  One permanent record.<br />Built for every journey.
+                </div>
                 <p class="pe-hero-desc">
-                  Your Property Passport is the foundation. When life
-                  changes, unlock new roles with the right passport for the
-                  next chapter.
+                  Your Property Passport is the foundation. When life changes,
+                  unlock new roles with the right passport for the next chapter.
                 </p>
               </div>
               <img
@@ -45,9 +53,16 @@
 
             <!-- ── Ecosystem blurb ──────────────────────────────── -->
             <div class="pe-blurb">
-              <img src="/op-icons/homescore/house.png" alt="" class="pe-blurb-ic" loading="lazy" />
+              <img
+                src="/op-icons/homescore/house.png"
+                alt=""
+                class="pe-blurb-ic"
+                loading="lazy"
+              />
               <div class="pe-blurb-body">
-                <div class="pe-blurb-eyebrow">A passport ecosystem that moves with you</div>
+                <div class="pe-blurb-eyebrow">
+                  A passport ecosystem that moves with you
+                </div>
                 <p class="pe-blurb-desc">
                   Built once. Reuse always. Your verified information flows
                   seamlessly between passports, saving you time, effort and
@@ -59,10 +74,21 @@
             <!-- ── 4 passport cards ─────────────────────────────── -->
             <div class="pe-cards">
               <div v-for="c in passportCards" :key="c.key" class="pe-card">
-                <img :src="c.img" :alt="`${c.title} cover`" class="pe-card-book" loading="lazy" />
-                <div class="pe-card-title" :style="{ color: c.color }">{{ c.title }}</div>
+                <img
+                  :src="c.img"
+                  :alt="`${c.title} cover`"
+                  class="pe-card-book"
+                  loading="lazy"
+                />
+                <div class="pe-card-title" :style="{ color: c.color }">
+                  {{ c.title }}
+                </div>
                 <p class="pe-card-desc">{{ c.desc }}</p>
-                <span class="pe-card-pill" :class="`pe-card-pill--${c.status}`">{{ c.statusLabel }}</span>
+                <span
+                  class="pe-card-pill"
+                  :class="`pe-card-pill--${c.status}`"
+                  >{{ c.statusLabel }}</span
+                >
               </div>
             </div>
 
@@ -73,11 +99,19 @@
                 <div class="pe-power-list">
                   <template v-for="(item, i) in powerItems" :key="item.title">
                     <div class="pe-power-col">
-                      <img :src="item.img" alt="" class="pe-power-ic" loading="lazy" />
+                      <img
+                        :src="item.img"
+                        alt=""
+                        class="pe-power-ic"
+                        loading="lazy"
+                      />
                       <div class="pe-power-item-title">{{ item.title }}</div>
                       <div class="pe-power-item-desc">{{ item.desc }}</div>
                     </div>
-                    <span v-if="i < powerItems.length - 1" class="pe-power-connector" />
+                    <span
+                      v-if="i < powerItems.length - 1"
+                      class="pe-power-connector"
+                    />
                   </template>
                 </div>
               </div>
@@ -85,7 +119,9 @@
 
             <!-- ── Footer ────────────────────────────────────────── -->
             <div class="pe-footer">
-              <div class="pe-footer-tag">Your journey. <span>Our ecosystem.</span></div>
+              <div class="pe-footer-tag">
+                Your journey. <span>Our ecosystem.</span>
+              </div>
               <div class="pe-footer-links">
                 <span>🛡️ Secure by design</span>
                 <span>umovingu.com</span>
@@ -233,7 +269,8 @@ const powerItems = [
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 .pe-sheet {
@@ -278,7 +315,10 @@ const powerItems = [
   color: #231d45;
   cursor: pointer;
 }
-.pe-close svg { width: 15px; height: 15px; }
+.pe-close svg {
+  width: 15px;
+  height: 15px;
+}
 
 /* Hero — text and passport group image side by side, per the prototype */
 .pe-hero {
@@ -287,7 +327,10 @@ const powerItems = [
   align-items: center;
   gap: 10px;
 }
-.pe-hero-text { flex: 1.1; min-width: 0; }
+.pe-hero-text {
+  flex: 1.1;
+  min-width: 0;
+}
 .pe-hero-title {
   margin: 0;
   font-size: 19px;
@@ -331,9 +374,10 @@ const powerItems = [
 }
 .pe-blurb-ic {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 55px;
+  height: 55px;
   object-fit: contain;
+  margin: auto;
 }
 .pe-blurb-eyebrow {
   font-size: 10.5px;
@@ -395,10 +439,21 @@ const powerItems = [
   padding: 3px 5px;
   border-radius: 100px;
   white-space: nowrap;
+  margin-left: auto;
+  margin-right: auto;
 }
-.pe-card-pill--here { background: #e3f5f3; color: #00706b; }
-.pe-card-pill--now { background: #edebf7; color: #4b2e83; }
-.pe-card-pill--soon { background: #f1effa; color: #6b6a82; }
+.pe-card-pill--here {
+  background: #e3f5f3;
+  color: #00706b;
+}
+.pe-card-pill--now {
+  background: #edebf7;
+  color: #4b2e83;
+}
+.pe-card-pill--soon {
+  background: #f1effa;
+  color: #6b6a82;
+}
 
 /* Power of the ecosystem — single horizontal row, per the prototype.
    Scrolls horizontally on very narrow phones rather than squeezing 5
@@ -475,7 +530,9 @@ const powerItems = [
   font-weight: 800;
   color: #231d45;
 }
-.pe-footer-tag span { color: #00858a; }
+.pe-footer-tag span {
+  color: #00858a;
+}
 .pe-footer-links {
   margin-top: 12px;
   display: flex;
