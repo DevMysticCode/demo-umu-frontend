@@ -237,6 +237,20 @@
                 <div class="pps-float-claim-body">
                   <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
                   <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
+                  <div v-if="floatClaimEmphasis" class="pps-float-claim-emphasis">
+                    {{ floatClaimEmphasis }}
+                  </div>
+                  <div v-if="floatClaimSub2" class="pps-float-claim-sub2">
+                    {{ floatClaimSub2 }}
+                  </div>
+                  <span
+                    v-if="floatClaimExplainerLabel"
+                    class="pps-float-claim-explain"
+                    @click.stop="onFloatClaimExplainerClick"
+                  >
+                    {{ floatClaimExplainerLabel }}
+                    <span class="pps-float-claim-explain-q">?</span>
+                  </span>
                   <div
                     v-if="watcherCountLabel"
                     class="pps-float-claim-watchers"
@@ -6076,13 +6090,16 @@ const floatClaimState = computed<
   if (pageState.value === 'progress') {
     return progressPct.value > 0 ? 'progress' : 'noPublicPassport'
   }
-  const claimed = passportStatus.value?.isClaimed ?? property.value?.isClaimed ?? false
+  const claimed =
+    passportStatus.value?.isClaimed ?? property.value?.isClaimed ?? false
   return claimed ? 'noPublicPassport' : 'unclaimed'
 })
 const floatClaimTitle = computed<string>(() => {
-  if (floatClaimState.value === 'published') return 'Property Passport available'
+  if (floatClaimState.value === 'published')
+    return 'Property Passport available'
   if (floatClaimState.value === 'progress') return 'Passport in progress'
-  if (floatClaimState.value === 'noPublicPassport') return 'No public Passport available'
+  if (floatClaimState.value === 'noPublicPassport')
+    return 'No public Passport available'
   return (property.value?.streetClaimedCount ?? 0) > 0
     ? 'Be one of the first on this street'
     : 'Be the first on this street'
@@ -6115,12 +6132,51 @@ const floatClaimSub = computed<string>(() => {
   }
   return 'Create your Property Passport to store, verify and share everything about your home.'
 })
-const floatClaimCta = computed<string>(() => {
+// Second, highlighted line under floatClaimSub — matches the prototype's
+// extra teal/bold line for each non-unclaimed state (unclaimed's card has
+// no second line in the prototype, so it returns '' there).
+const floatClaimSub2 = computed<string>(() => {
   if (floatClaimState.value === 'published') {
-    return isPassportOwnerOrCollab.value ? 'View my Passport' : 'View Property Passport'
+    return 'See more before you view, offer or commit.'
   }
   if (floatClaimState.value === 'progress') {
-    return isPassportOwnerOrCollab.value ? 'Continue building' : 'See Passport progress'
+    return 'This home could be getting ready for its next chapter.'
+  }
+  if (floatClaimState.value === 'noPublicPassport') {
+    return 'Want to know if that changes?'
+  }
+  return ''
+})
+// Published's prototype has a bold lead-in line before floatClaimSub2
+// ("Buying blind stops here.") that the other states don't have.
+const floatClaimEmphasis = computed<string>(() =>
+  floatClaimState.value === 'published' ? 'Buying blind stops here.' : '',
+)
+// "What is a Passport in progress? / What's inside the Passport?" —
+// same copy and same explainer drawer as the PassportClaimBox cards
+// below, now surfaced on the floating claim card too. Only progress/
+// published have a matching explainer sheet to open; unclaimed and
+// noPublicPassport don't get this link (no reference design shows one
+// for either).
+const floatClaimExplainerLabel = computed<string>(() => {
+  if (floatClaimState.value === 'progress') return 'What is a Passport in progress?'
+  if (floatClaimState.value === 'published') return "What's inside the Passport?"
+  return ''
+})
+function onFloatClaimExplainerClick() {
+  if (floatClaimState.value === 'progress') claimExplainerSheet.value = 'progress'
+  else if (floatClaimState.value === 'published') claimExplainerSheet.value = 'published'
+}
+const floatClaimCta = computed<string>(() => {
+  if (floatClaimState.value === 'published') {
+    return isPassportOwnerOrCollab.value
+      ? 'View my Passport'
+      : 'View Property Passport'
+  }
+  if (floatClaimState.value === 'progress') {
+    return isPassportOwnerOrCollab.value
+      ? 'Continue building'
+      : 'See Passport progress'
   }
   if (floatClaimState.value === 'noPublicPassport') {
     return 'Watch this property'
@@ -8641,8 +8697,8 @@ function formatSaleDate(dateStr: string): string {
   flex-shrink: 0;
 }
 .pps-float-claim-ic {
-  width: 40px;
-  height: auto;
+  width: 52px;
+  height: 78px;
   object-fit: contain;
   filter: drop-shadow(0 6px 10px rgba(35, 29, 69, 0.2));
 }
@@ -8654,8 +8710,8 @@ function formatSaleDate(dateStr: string): string {
   position: absolute;
   top: -8px;
   right: -10px;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 24px;
   border-radius: 50%;
   background: conic-gradient(#00958f calc(var(--pct) * 1%), #e4e5ed 0);
   box-shadow: 0 2px 6px rgba(35, 29, 69, 0.18);
@@ -8693,6 +8749,43 @@ function formatSaleDate(dateStr: string): string {
   color: #6b6783;
   line-height: 1.4;
   margin-top: 3px;
+}
+.pps-float-claim-emphasis {
+  font-size: 11px;
+  font-weight: 800;
+  color: #231d45;
+  line-height: 1.4;
+  margin-top: 6px;
+}
+.pps-float-claim-sub2 {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #00857f;
+  line-height: 1.4;
+  margin-top: 3px;
+}
+.pps-float-claim-explain {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #6b6783;
+  cursor: pointer;
+}
+.pps-float-claim-explain-q {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.3px solid #c0bdcc;
+  color: #9c98ad;
+  font-size: 9px;
+  font-weight: 800;
+  flex-shrink: 0;
 }
 .pps-float-claim-watchers {
   font-size: 10px;
