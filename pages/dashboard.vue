@@ -418,6 +418,49 @@
             </div>
           </div>
 
+          <!-- ── Also buying (role === 'both' only) ── -->
+          <div v-if="role === 'both'" class="dash-section">
+            <div class="dash-eyebrow">Also buying?</div>
+            <div v-if="loadingBuyerSummary" class="skeleton-card" style="height: 100px" />
+            <div v-else class="buyer-summary-strip">
+              <div
+                class="bss-row"
+                @click="navigateTo(buyerProfile ? '/buyer-profile/view' : '/buyer-profile/build')"
+              >
+                <div class="bss-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <div class="bss-body">
+                  <div class="bss-title">
+                    {{ buyerProfile ? 'Your Buyer Passport' : 'Start your Buyer Passport' }}
+                  </div>
+                  <div class="bss-sub">
+                    {{ buyerProfile ? `Finance ${financePercent}% complete` : 'Verify your identity and buying position.' }}
+                  </div>
+                </div>
+                <span class="bss-chevron">&rsaquo;</span>
+              </div>
+              <div class="bss-row" @click="navigateTo('/profile/saved-properties')">
+                <div class="bss-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                  </svg>
+                </div>
+                <div class="bss-body">
+                  <div class="bss-title">Watching</div>
+                  <div class="bss-sub">
+                    {{ savedProperties.length ? `${savedProperties.length} propert${savedProperties.length === 1 ? 'y' : 'ies'} saved` : 'Nothing saved yet' }}
+                  </div>
+                </div>
+                <span class="bss-chevron">&rsaquo;</span>
+              </div>
+            </div>
+          </div>
+
           <!-- ── Add another property ── -->
           <div class="add-property-row" @click="startClaimFlow">
             <div class="apr-icon">+</div>
@@ -486,6 +529,12 @@ const buyerProfile = ref<any>(null)
 const loadingBuyerProfile = ref(true)
 const savedProperties = ref<any[]>([])
 const loadingSaved = ref(true)
+// Separate loading flag for the 'both'-role buyer summary strip on the
+// seller dashboard — reuses buyerProfile/savedProperties (never populated
+// by the seller branch otherwise) but needs its own loading state since
+// loadingBuyerProfile/loadingSaved default to true and are only ever
+// flipped false by the pure-buyer branch.
+const loadingBuyerSummary = ref(true)
 
 const {
   properties,
@@ -592,6 +641,24 @@ async function fetchForYou(token: string) {
   loadingProperties.value = false
 }
 
+// 'both'-role users get a compact buyer summary strip on their (seller-
+// branch) dashboard — same two calls the pure-buyer branch makes, fired
+// independently so they never gate the seller passport/HomeScore content
+// above them.
+async function fetchBuyerSummary(token: string) {
+  const [buyerResult, savedResult] = await Promise.allSettled([
+    $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+    $fetch<any[]>(`${config.public.apiBase}/property/saved`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  ])
+  if (buyerResult.status === 'fulfilled') buyerProfile.value = buyerResult.value ?? null
+  if (savedResult.status === 'fulfilled') savedProperties.value = savedResult.value ?? []
+  loadingBuyerSummary.value = false
+}
+
 onMounted(async () => {
   // Arriving from property/[id].vue's "Back to Explore" (logged-in path)
   // via ?focusSearch=1 — focus the search bar immediately so its
@@ -662,6 +729,7 @@ onMounted(async () => {
   }
 
   fetchForYou(token) // not awaited — see fetchForYou's own comment
+  if (role.value === 'both') fetchBuyerSummary(token) // not awaited — see its own comment
 
   const passportResult = await $fetch<any[]>(`${config.public.apiBase}/profile/passports`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -1188,6 +1256,54 @@ onMounted(async () => {
   font-size: 12.5px;
   font-weight: 800;
   color: #00817c;
+}
+
+/* ── Also buying (role === 'both') ── */
+.buyer-summary-strip {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 18px;
+  overflow: hidden;
+}
+.bss-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #eef0f6;
+}
+.bss-row:last-child {
+  border-bottom: none;
+}
+.bss-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #eef0fb;
+  color: #4b3fa0;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.bss-body {
+  flex: 1;
+  min-width: 0;
+}
+.bss-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #231d45;
+  margin-bottom: 2px;
+}
+.bss-sub {
+  font-size: 12.5px;
+  color: #6b7089;
+}
+.bss-chevron {
+  font-size: 18px;
+  color: #c7c5d6;
+  flex-shrink: 0;
 }
 
 /* ── Add another property ── */
