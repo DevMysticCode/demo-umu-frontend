@@ -145,7 +145,21 @@
           <!-- ── HomeScore explore entry ── -->
           <div class="dash-section">
             <div class="homescore-explore-card" @click="navigateTo('/homescore')">
-              <img src="/op-icons/homescore/house.png" alt="" class="hec-house-img" loading="lazy" />
+              <div class="hec-gauge">
+                <svg viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="hecGaugeGrad" x1="1" y1="0" x2="0" y2="0">
+                      <stop offset="0%" stop-color="#00BB93" />
+                      <stop offset="100%" stop-color="#016F84" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="hec-gauge-bg" cx="50" cy="50" r="42" />
+                  <circle class="hec-gauge-fill" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="47.5" />
+                </svg>
+                <div class="hec-gauge-label">
+                  <span class="hec-gauge-num">82</span>
+                </div>
+              </div>
               <div class="hec-body">
                 <div class="hec-title">Check any home's HomeScore</div>
                 <div class="hec-sub">
@@ -379,7 +393,21 @@
           <!-- ── HomeScore explore entry ── -->
           <div class="dash-section">
             <div class="homescore-explore-card" @click="navigateTo('/homescore')">
-              <img src="/op-icons/homescore/house.png" alt="" class="hec-house-img" loading="lazy" />
+              <div class="hec-gauge">
+                <svg viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="hecGaugeGrad" x1="1" y1="0" x2="0" y2="0">
+                      <stop offset="0%" stop-color="#00BB93" />
+                      <stop offset="100%" stop-color="#016F84" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="hec-gauge-bg" cx="50" cy="50" r="42" />
+                  <circle class="hec-gauge-fill" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="47.5" />
+                </svg>
+                <div class="hec-gauge-label">
+                  <span class="hec-gauge-num">82</span>
+                </div>
+              </div>
               <div class="hec-body">
                 <div class="hec-title">Check any home's HomeScore</div>
                 <div class="hec-sub">
@@ -1103,11 +1131,39 @@ onMounted(async () => {
   padding: 16px;
   cursor: pointer;
 }
-.hec-house-img {
+.hec-gauge {
+  position: relative;
   width: 46px;
   height: 46px;
-  object-fit: contain;
   flex-shrink: 0;
+}
+.hec-gauge svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.hec-gauge-bg {
+  fill: none;
+  stroke: #d5efe8;
+  stroke-width: 10;
+}
+.hec-gauge-fill {
+  fill: none;
+  stroke: url(#hecGaugeGrad);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+.hec-gauge-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hec-gauge-num {
+  font-size: 13px;
+  font-weight: 800;
+  color: #016f84;
 }
 .hec-body {
   flex: 1;
