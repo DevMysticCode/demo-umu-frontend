@@ -35,6 +35,8 @@
         <div v-if="loadingBuyerProfile" class="skeleton-card" style="height: 220px; margin-bottom: 20px" />
 
         <template v-else>
+          <RecentlyViewedFeed :properties="recentlyViewed" :loading="loadingRecentlyViewed" />
+
           <!-- ── Your Active (Buyer) Passport ── -->
           <div class="dash-section">
             <div class="dash-eyebrow">Your active passport</div>
@@ -509,6 +511,7 @@ import PassportCard from '~/components/passport-view/PassportCard.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
 import PropertySearchExperienceClassic from '~/components/property/PropertySearchExperienceClassic.vue'
 import ForYouFeed from '~/components/property/ForYouFeed.vue'
+import RecentlyViewedFeed from '~/components/property/RecentlyViewedFeed.vue'
 import PropertySearchFiltersModal from '~/components/property/PropertySearchFiltersModal.vue'
 import { usePropertyForYou } from '~/composables/usePropertyForYou'
 
@@ -535,6 +538,9 @@ const loadingSaved = ref(true)
 // loadingBuyerProfile/loadingSaved default to true and are only ever
 // flipped false by the pure-buyer branch.
 const loadingBuyerSummary = ref(true)
+
+const recentlyViewed = ref<any[]>([])
+const loadingRecentlyViewed = ref(true)
 
 const {
   properties,
@@ -659,6 +665,17 @@ async function fetchBuyerSummary(token: string) {
   loadingBuyerSummary.value = false
 }
 
+// Buyer-only "Recently viewed" strip — fired independently, same reason
+// as fetchForYou above (own loading state, never gates the rest of the
+// dashboard).
+async function fetchRecentlyViewed(token: string) {
+  const result = await $fetch<any[]>(`${config.public.apiBase}/property/recently-viewed`, {
+    headers: { Authorization: `Bearer ${token}` },
+  }).catch(() => null)
+  recentlyViewed.value = result ?? []
+  loadingRecentlyViewed.value = false
+}
+
 onMounted(async () => {
   // Arriving from property/[id].vue's "Back to Explore" (logged-in path)
   // via ?focusSearch=1 — focus the search bar immediately so its
@@ -706,6 +723,7 @@ onMounted(async () => {
 
   if (role.value === 'buy') {
     fetchForYou(token) // not awaited — see fetchForYou's own comment
+    fetchRecentlyViewed(token) // not awaited — see its own comment
 
     const [buyerResult, savedResult] = await Promise.allSettled([
       $fetch<any>(`${config.public.apiBase}/buyer-profile`, {

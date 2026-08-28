@@ -8078,6 +8078,16 @@ onMounted(async () => {
         lastSoldDate: propData.lastSoldDate ?? null,
         image: propData.images?.[0] ?? propData.imageUrl ?? null,
       })
+      // Backend-side "recently viewed" for the buyer dashboard strip —
+      // separate from recordExplored above (that's localStorage, feeds
+      // discover.vue only, and isn't gated on login). Fire-and-forget;
+      // guests have no user row to attach this to.
+      if (typeof localStorage !== 'undefined' && localStorage.getItem('token')) {
+        fetch(`${apiBase}/property/${propertyId}/record-view`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }).catch(() => {})
+      }
     }
     passportStatus.value = statusData
 
