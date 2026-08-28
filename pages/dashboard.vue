@@ -95,6 +95,13 @@
           <div v-if="buyerProfile" class="dash-section">
             <div class="dash-eyebrow">Next for you</div>
             <div class="next-for-you-card">
+              <div v-if="buyerStalenessCopy" class="nfy-stale-banner">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                {{ buyerStalenessCopy }}
+              </div>
               <div
                 v-if="buyerIncompleteCount > 0"
                 class="nfy-row"
@@ -315,6 +322,13 @@
           <div v-if="passports.length" class="dash-section">
             <div class="dash-eyebrow">Next for you</div>
             <div class="next-for-you-card">
+              <div v-if="sellerStalenessCopy" class="nfy-stale-banner">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                {{ sellerStalenessCopy }}
+              </div>
               <div
                 v-if="incompleteItemCount > 0"
                 class="nfy-row"
@@ -611,6 +625,32 @@ const incompleteItemCount = computed(() => {
     }
   }
   return total
+})
+
+// Real "started/last touched N days ago" nudge — not a fabricated
+// deadline (there isn't one anywhere in the data; see
+// plans/dashboard-ux-additions.md for why). Only shown once something's
+// actually gone stale (3+ days), and only while the record is genuinely
+// incomplete — a finished passport/profile has nothing to nudge toward.
+function stalenessCopy(createdAt?: string | null, lastTouchedAt?: string | null): string | null {
+  const source = lastTouchedAt || createdAt
+  if (!source) return null
+  const days = Math.floor((Date.now() - new Date(source).getTime()) / 86_400_000)
+  if (days < 3) return null
+  const verb = lastTouchedAt ? 'Last touched' : 'Started'
+  const when = days === 1 ? 'yesterday' : `${days} days ago`
+  return `${verb} ${when} — pick up where you left off.`
+}
+
+const sellerStalenessCopy = computed(() => {
+  if (!passports.value.length || incompleteItemCount.value === 0) return null
+  const p = passports.value[0]
+  return stalenessCopy(p.createdAt, p.lastVisitedAt)
+})
+
+const buyerStalenessCopy = computed(() => {
+  if (!buyerProfile.value || buyerIncompleteCount.value === 0) return null
+  return stalenessCopy(buyerProfile.value.createdAt, buyerProfile.value.updatedAt)
 })
 
 function startClaimFlow() {
@@ -1049,6 +1089,20 @@ onMounted(async () => {
   border: 1.5px solid #e5e7eb;
   border-radius: 18px;
   overflow: hidden;
+}
+.nfy-stale-banner {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px;
+  background: #fdf3e4;
+  color: #9a6a1a;
+  font-size: 12px;
+  font-weight: 700;
+  border-bottom: 1px solid #eef0f6;
+}
+.nfy-stale-banner svg {
+  flex-shrink: 0;
 }
 .nfy-row {
   display: flex;
