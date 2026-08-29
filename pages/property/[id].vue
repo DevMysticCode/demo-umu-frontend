@@ -227,8 +227,13 @@
                     class="pps-float-claim-ic"
                     loading="lazy"
                   />
+                  <!-- Completion % stays owner-only under the
+                       Private/Partially Public/Public model — a public
+                       viewer never sees how built-out the passport is,
+                       only whether anything is published at all. See
+                       plans/watch-visibility-strategy-audit.md. -->
                   <div
-                    v-if="floatClaimState !== 'unclaimed'"
+                    v-if="false && floatClaimState !== 'unclaimed'"
                     class="pps-float-claim-gauge"
                     :style="{ '--pct': progressPct }"
                   >
@@ -422,7 +427,13 @@
       </div>
 
       <!-- ─── SECTION 7: Keep going with umovingu ──────────────────── -->
-      <div v-if="pageState === 'unclaimed'" class="pps-keepgoing">
+      <!-- Now shown for every pageState, not just unclaimed — the
+           progress/published "Passport being built" / "This home's
+           Passport" cards below (both of which also showed a live
+           completion %, which the Private/Partially Public/Public model
+           keeps owner-only) are superseded by this section and hidden via
+           v-if="false" rather than removed. -->
+      <div class="pps-keepgoing">
         <div class="pps-keepgoing-title">Keep going with umovingu</div>
         <div class="pps-keepgoing-sub">
           More tools. More insight. More ways to get move-ready.
@@ -475,7 +486,8 @@
         </div>
       </div>
 
-      <div v-else-if="pageState === 'progress'" class="pps-passport-card">
+      <template v-if="false">
+      <div v-if="pageState === 'progress'" class="pps-passport-card">
         <div class="pps-score-blob-tr" />
         <div class="pps-score-blob-bl" />
         <div class="pps-passport-eyebrow-row">
@@ -706,6 +718,7 @@
           Secure payment · Instant access · No subscription
         </div>
       </div>
+      </template>
 
       <!-- ─── SECTION 8: Running Costs ─────────────────────────────── -->
       <!-- Hidden for now, may come back later — disabled via v-if="false"
@@ -4372,7 +4385,7 @@ const goToClaim = () => router.push(`/claim/${propertyId}`)
 // page uses. Authed users hit "Claim it" and goToClaim() routes them to
 // the existing /claim/[id] KYC + HMLR flow.
 const claimExplainerSheet = ref<
-  'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null
+  'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null
 >(null)
 const showUnpublishedModal = ref(false)
 type LocTab =
@@ -6078,41 +6091,35 @@ const isPassportOwnerOrCollab = computed<boolean>(() => {
 // A finer-grained state than `pageState`, used ONLY by the floating
 // claim card — everything else on the page (PassportClaimBox, the
 // "Keep going" section, quick-action button copy, etc.) still reads
-// `pageState` unchanged. `pageState === 'unclaimed'` conflates two
-// genuinely different situations now that the backend distinguishes
-// them: nobody has claimed this property at all, vs. it's been claimed
-// (verified owner) but there's no seller passport with real progress
-// to show yet. Same split applies to `pageState === 'progress'` — a
-// passport that exists but is still at 0% reads as "nothing public"
-// rather than "in progress".
+// `pageState` unchanged.
+//
+// 4-state public model (Unclaimed / Claimed · Private /
+// Claimed · Partially Public / Claimed · Public) — 'private' is simply
+// "claimed but not yet published", regardless of completion %; there's
+// no separate completion threshold for entering Private, since a
+// passport below the publish-readiness bar can't be published anyway,
+// and one above it that just hasn't been published yet is still
+// private either way. The Partial/Public split only kicks in once
+// actually published, and reuses the SAME readiness system that gates
+// publishPassport() itself (milestonePct from
+// src/common/passport-readiness.ts, surfaced publicly via
+// GET /property/:id/passport-status) — not the flat task-count
+// completionPct, which is exactly the naive metric that system was
+// built to replace.
 const floatClaimState = computed<
-  'unclaimed' | 'noPublicPassport' | 'progress' | 'published'
+  'unclaimed' | 'private' | 'partiallyPublic' | 'public'
 >(() => {
-  if (pageState.value === 'published') return 'published'
-  if (pageState.value === 'progress') {
-    // 60% matches the milestone the passport-readiness system (see
-    // src/common/passport-readiness.ts on the backend) treats as the
-    // first "evidence ready" tier — below it there isn't yet a
-    // meaningful record worth surfacing publicly, even though a
-    // passport row technically exists. NOTE: this reads the flat
-    // task-count completionPct, not that readiness system's own
-    // canPublish/milestonePct (which additionally requires every
-    // blocking question answered) — the readiness endpoint is
-    // access-gated (owner/collaborator/unlocked buyer only) and can't
-    // be called for a public/un-unlocked viewer today. Revisit if a
-    // public-safe readiness summary gets added.
-    return progressPct.value >= 60 ? 'progress' : 'noPublicPassport'
-  }
-  const claimed =
-    passportStatus.value?.isClaimed ?? property.value?.isClaimed ?? false
-  return claimed ? 'noPublicPassport' : 'unclaimed'
+  const s = passportStatus.value
+  const isPublished = s?.isPublished ?? pageState.value === 'published'
+  const claimed = s?.isClaimed ?? property.value?.isClaimed ?? false
+  if (!claimed) return 'unclaimed'
+  if (!isPublished) return 'private'
+  return (s?.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
 })
 const floatClaimTitle = computed<string>(() => {
-  if (floatClaimState.value === 'published')
-    return 'Property Passport available'
-  if (floatClaimState.value === 'progress') return 'Passport in progress'
-  if (floatClaimState.value === 'noPublicPassport')
-    return 'No public Passport available'
+  if (floatClaimState.value === 'public') return 'Property Passport available'
+  if (floatClaimState.value === 'partiallyPublic') return 'Property Passport partially public'
+  if (floatClaimState.value === 'private') return 'No public Passport available'
   return (property.value?.streetClaimedCount ?? 0) > 0
     ? 'Be one of the first on this street'
     : 'Be the first on this street'
@@ -6134,28 +6141,32 @@ const watcherCountLabel = computed<string>(() => {
   return `${n} ${n === 1 ? 'person' : 'people'} watching`
 })
 const floatClaimSub = computed<string>(() => {
-  if (floatClaimState.value === 'published') {
+  if (floatClaimState.value === 'public') {
     return 'Verified information about this home is ready to explore.'
   }
-  if (floatClaimState.value === 'progress') {
-    return 'The owner has chosen to build this Property Passport in public, bringing key information together and getting it verified.'
+  if (floatClaimState.value === 'partiallyPublic') {
+    return 'Some verified information about this home is available to view.'
   }
-  if (floatClaimState.value === 'noPublicPassport') {
+  if (floatClaimState.value === 'private') {
     return "There isn't a published Property Passport available for this home right now."
   }
   return "Create your Property Passport to store and verify your home's information — and choose what you share"
 })
 // Second, highlighted line under floatClaimSub — matches the prototype's
 // extra teal/bold line for each non-unclaimed state (unclaimed's card has
-// no second line in the prototype, so it returns '' there).
+// no second line in the prototype, so it returns '' there). Deliberately
+// no mention of completion % or "why" it's only partial here — the
+// product decision (see plans/watch-visibility-strategy-audit.md) is to
+// keep this state factual and un-explained, not walk the viewer through
+// the readiness mechanics.
 const floatClaimSub2 = computed<string>(() => {
-  if (floatClaimState.value === 'published') {
+  if (floatClaimState.value === 'public') {
     return 'See more before you view, offer or commit.'
   }
-  if (floatClaimState.value === 'progress') {
-    return 'This home could be getting ready for its next chapter.'
+  if (floatClaimState.value === 'partiallyPublic') {
+    return 'More may be added as the owner continues building it.'
   }
-  if (floatClaimState.value === 'noPublicPassport') {
+  if (floatClaimState.value === 'private') {
     return 'Want to know if that changes?'
   }
   return ''
@@ -6163,47 +6174,48 @@ const floatClaimSub2 = computed<string>(() => {
 // Published's prototype has a bold lead-in line before floatClaimSub2
 // ("Buying blind stops here.") that the other states don't have.
 const floatClaimEmphasis = computed<string>(() =>
-  floatClaimState.value === 'published' ? 'Buying blind stops here.' : '',
+  floatClaimState.value === 'public' ? 'Buying blind stops here.' : '',
 )
-// "What is a Passport in progress? / What's inside the Passport?" —
-// same copy and same explainer drawer as the PassportClaimBox cards
-// below, now surfaced on the floating claim card too. Only progress/
-// published have a matching explainer sheet to open; unclaimed and
-// noPublicPassport don't get this link (no reference design shows one
-// for either).
+// "What's inside the Passport?" — same copy and same explainer drawer as
+// the PassportClaimBox cards below, now surfaced on the floating claim
+// card too. Partially-public and public share the same explainer (both
+// have real content to describe); unclaimed and private don't get this
+// link (no reference design shows one for either).
 const floatClaimExplainerLabel = computed<string>(() => {
-  if (floatClaimState.value === 'progress') return 'What is a Passport in progress?'
-  if (floatClaimState.value === 'published') return "What's inside the Passport?"
+  if (floatClaimState.value === 'partiallyPublic' || floatClaimState.value === 'public') {
+    return "What's inside the Passport?"
+  }
   return ''
 })
 function onFloatClaimExplainerClick() {
-  if (floatClaimState.value === 'progress') claimExplainerSheet.value = 'progress'
-  else if (floatClaimState.value === 'published') claimExplainerSheet.value = 'published'
+  if (floatClaimState.value === 'partiallyPublic' || floatClaimState.value === 'public') {
+    claimExplainerSheet.value = floatClaimState.value
+  }
 }
 const floatClaimCta = computed<string>(() => {
-  if (floatClaimState.value === 'published') {
+  if (floatClaimState.value === 'public') {
     return isPassportOwnerOrCollab.value
       ? 'View my Passport'
       : 'View Property Passport'
   }
-  if (floatClaimState.value === 'progress') {
+  if (floatClaimState.value === 'partiallyPublic') {
     return isPassportOwnerOrCollab.value
       ? 'Continue building'
-      : 'See Passport progress'
+      : 'View Property Passport'
   }
-  if (floatClaimState.value === 'noPublicPassport') {
+  if (floatClaimState.value === 'private') {
     return 'Watch this property'
   }
   return 'Claim this property'
 })
 const floatClaimMeta = computed<string>(() => {
-  if (floatClaimState.value === 'published') {
+  // Deliberately no completion % surfaced here in any state — that stays
+  // owner-only. Partially-public and public share the same access price;
+  // there's no cheaper tier for an incomplete Passport today.
+  if (floatClaimState.value === 'public' || floatClaimState.value === 'partiallyPublic') {
     return isPassportOwnerOrCollab.value || passportStatus.value?.canAccess
       ? ''
       : '£99'
-  }
-  if (floatClaimState.value === 'progress') {
-    return `${progressPct.value}% complete`
   }
   return ''
 })

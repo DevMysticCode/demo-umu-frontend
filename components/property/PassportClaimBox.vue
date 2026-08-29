@@ -251,7 +251,12 @@
             </template>
 
             <!-- IN PROGRESS -->
-            <template v-else-if="openSheet === 'noPublicPassport'">
+            <!-- PRIVATE — claimed but not yet published, regardless of how
+                 much has actually been built. No completion % anywhere in
+                 this drawer (owner or not) — that stays owner-only,
+                 surfaced on the owner's own dashboard, not here. See
+                 plans/watch-visibility-strategy-audit.md. -->
+            <template v-else-if="openSheet === 'private'">
               <div class="cx2-header">
                 <div class="cx2-header-text">
                   <div class="cx2-eyebrow">Property Passport™</div>
@@ -297,7 +302,7 @@
                 How a Property Passport works · tap a step to understand the journey
               </div>
               <div class="cx-steps">
-                <template v-for="(s, i) in noPublicPassportJourneySteps" :key="s.n">
+                <template v-for="(s, i) in privateJourneySteps" :key="s.n">
                   <div
                     class="cx-step cx-step-tap"
                     :class="{ active: activeStep === s.n }"
@@ -307,7 +312,7 @@
                     <div class="cx-step-num" :class="s.filled ? 'filled-teal' : 'off'">{{ s.n }}</div>
                     <div class="cx-step-name" :class="{ off: !s.filled }">{{ s.name }}</div>
                   </div>
-                  <div v-if="i < noPublicPassportJourneySteps.length - 1" class="cx-step-line" />
+                  <div v-if="i < privateJourneySteps.length - 1" class="cx-step-line" />
                 </template>
               </div>
               <div class="cx-step-detail">
@@ -323,7 +328,19 @@
                 </div>
               </div>
               <div class="cxd-cta-col">
+                <!-- Owner/collaborator viewing their own still-private
+                     passport → straight to continue building it; everyone
+                     else → the buyer-facing notify-me watch flow. -->
                 <button
+                  v-if="isOwnerOrCollaborator"
+                  class="cxd-btn primary"
+                  type="button"
+                  @click="onOwnerContinue"
+                >
+                  <img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Continue building your Passport
+                </button>
+                <button
+                  v-else
                   class="cxd-btn primary"
                   type="button"
                   @click="onPrimary('watch')"
@@ -344,119 +361,33 @@
               </div>
             </template>
 
-            <!-- IN PROGRESS -->
-            <template v-else-if="openSheet === 'progress'">
-              <div class="cx2-header">
-                <div class="cx2-header-text">
-                  <div class="cx2-eyebrow">Property Passport™</div>
-                  <div class="cx2-title">This Passport is in progress.</div>
-                  <div class="cx2-subtitle">
-                    We're building a permanent record for this property.
-                  </div>
-                  <div class="cx2-body">
-                    The owner is adding information and verifying it against
-                    trusted sources.
-                  </div>
-                </div>
-                <div class="cx2-header-illustration">
-                  <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
-                </div>
-              </div>
-              <div class="cx-section-h">Build progress</div>
-              <div class="cx-progress-row">
-                <span>{{ pct }}% complete</span
-                ><span>{{ sectionsDone }} of {{ sectionsTotal }} verified</span>
-              </div>
-              <div class="cx-progress-track">
-                <div class="cx-progress-fill" :style="{ width: pct + '%' }" />
-              </div>
-              <div class="cx-section-h">Completed so far</div>
-              <div class="cx-item-grid">
-                <div class="cx-item">
-                  <div class="cx-item-ico"><img src="/op-icons/onboarding/trustShield.png" alt="" loading="lazy" /></div>
-                  <div class="cx-item-body">
-                    <div class="cx-item-title">Ownership verified</div>
-                    <div class="cx-item-sub">Land Registry</div>
-                  </div>
-                  <div class="cx-item-tick">✓</div>
-                </div>
-                <div class="cx-item">
-                  <div class="cx-item-ico"><img src="/op-icons/buyer-passport/epcRating.png" alt="" loading="lazy" /></div>
-                  <div class="cx-item-body">
-                    <div class="cx-item-title">EPC Certificate</div>
-                    <div class="cx-item-sub">Grade C · Expires 2032</div>
-                  </div>
-                  <div class="cx-item-tick">✓</div>
-                </div>
-                <div class="cx-item">
-                  <div class="cx-item-ico"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></div>
-                  <div class="cx-item-body">
-                    <div class="cx-item-title">Property details</div>
-                    <div class="cx-item-sub">Address, type, tenure</div>
-                  </div>
-                  <div class="cx-item-tick">✓</div>
-                </div>
-                <div class="cx-item">
-                  <div class="cx-item-ico"><img src="/op-icons/buyer-passport/titleNumber.png" alt="" loading="lazy" /></div>
-                  <div class="cx-item-body">
-                    <div class="cx-item-title">Title register</div>
-                    <div class="cx-item-sub">Title number added</div>
-                  </div>
-                  <div class="cx-item-tick">✓</div>
-                </div>
-              </div>
-              <div class="cx-section-h">Passport journey · tap a step to see what's done</div>
-              <div class="cx-steps">
-                <template v-for="(s, i) in progressJourneySteps" :key="s.n">
-                  <div
-                    class="cx-step cx-step-tap"
-                    :class="{ active: activeStep === s.n }"
-                    :style="{ '--cx-step-i': i }"
-                    @click="activeStep = s.n"
-                  >
-                    <div class="cx-step-num" :class="s.filled ? 'filled-teal' : 'off'">
-                      <span v-if="s.done">✓</span><span v-else>{{ s.n }}</span>
-                    </div>
-                    <div class="cx-step-name" :class="{ off: !s.filled }">{{ s.name }}</div>
-                  </div>
-                  <div v-if="i < progressJourneySteps.length - 1" class="cx-step-line" />
-                </template>
-              </div>
-              <div class="cx-step-detail">
-                <div class="cx-step-detail-icon">
-                  <img :src="activeStepData.icon" alt="" loading="lazy" />
-                </div>
-                <div class="cx-step-detail-body">
-                  <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
-                  <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
-                  <div class="cx-step-detail-happens">
-                    <strong>What happens:</strong> {{ activeStepData.happens }}
-                  </div>
-                </div>
-              </div>
-              <div class="cxd-cta-col">
-                <button
-                  class="cxd-btn outline-accent"
-                  type="button"
-                  @click="isOwnerOrCollaborator ? onOwnerContinue() : onPrimary('watch')"
-                >
-                  View progress
-                </button>
-              </div>
-              <div class="cx-foot">
-                <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" />
-                Secure verification · Encrypted data · You're in control
-              </div>
-            </template>
+            <!-- The old "IN PROGRESS" drawer (openSheet === 'progress') was
+                 removed here — superseded by PRIVATE above, which now
+                 covers every pre-publish state regardless of completion
+                 (see the model note near privateJourneySteps). Its
+                 markup showed a live completion % and a "Completed so
+                 far" checklist to any viewer, which the Private/Partially
+                 Public/Public model keeps owner-only — see
+                 plans/watch-visibility-strategy-audit.md. -->
 
-            <!-- PUBLISHED -->
+            <!-- PARTIALLY PUBLIC / PUBLIC — reaching either one means the
+                 owner has been through all four journey phases; what
+                 differs is only how much of the built content is
+                 currently shared, which this drawer deliberately doesn't
+                 quantify (no "X% complete", no per-step done/not-done
+                 breakdown) — see plans/watch-visibility-strategy-audit.md
+                 for why. -->
             <template v-else>
               <div class="cx2-header">
                 <div class="cx2-header-text">
                   <div class="cx2-eyebrow">Property Passport™</div>
-                  <div class="cx2-title">This Passport is published.</div>
+                  <div class="cx2-title">
+                    {{ openSheet === 'public' ? 'This Passport is published.' : 'This Passport is partially public.' }}
+                  </div>
                   <div class="cx2-subtitle">
-                    A verified record for this property is now live.
+                    {{ openSheet === 'public'
+                      ? 'A verified record for this property is now live.'
+                      : 'Some verified information for this property is now available.' }}
                   </div>
                   <div class="cx2-body">
                     Buyers, tenants, agents and your solicitor can access the
@@ -476,7 +407,7 @@
                   </div>
                 </div>
               </div>
-              <div class="cx-section-h">Passport journey · all steps completed</div>
+              <div class="cx-section-h">Passport journey</div>
               <div class="cx-steps">
                 <template v-for="(s, i) in publishedJourneySteps" :key="s.n">
                   <div
@@ -503,7 +434,9 @@
                   </div>
                 </div>
               </div>
-              <div class="cx-section-h">Included in this published Passport</div>
+              <div class="cx-section-h">
+                {{ openSheet === 'public' ? 'Included in this published Passport' : 'Included so far' }}
+              </div>
               <div class="cx-item-grid">
                 <div class="cx-item">
                   <div class="cx-item-ico"><img src="/op-icons/onboarding/trustShield.png" alt="" loading="lazy" /></div>
@@ -629,9 +562,10 @@ const props = withDefaults(
      *  to control the drawer programmatically. */
     headless?: boolean
     /** External control of which sheet is open. Used in headless mode so
-     *  the parent can open `'unclaimed'` / `'progress'` / `'published'`
-     *  from its own button. Two-way bound via `update:openSheet`. */
-    openSheet?: 'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null
+     *  the parent can open `'unclaimed'` / `'private'` / `'partiallyPublic'`
+     *  / `'public'` from its own button. Two-way bound via
+     *  `update:openSheet`. */
+    openSheet?: 'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null
     /** True when the current viewer owns (or collaborates on) this
      *  passport — flips the progress/published drawers' primary action
      *  from a buyer-facing "watch/buy" to the owner's own "continue
@@ -664,7 +598,7 @@ const emit = defineEmits<{
   // the progress/published drawers — no auth-gate needed (they're already
   // signed in and own the thing), so this bypasses onPrimary entirely.
   (e: 'continue-building'): void
-  (e: 'update:openSheet', v: 'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null): void
+  (e: 'update:openSheet', v: 'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null): void
 }>()
 
 const pct = computed(() =>
@@ -686,8 +620,8 @@ const publishedDateLabel = computed(() => {
 // In standard (non-headless) mode the component owns `openSheet` locally —
 // tapping the colored box flips it. In headless mode the parent drives it
 // via v-model so the colored box can be replaced by the parent's own CTA.
-const localOpenSheet = ref<'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null>(null)
-const openSheet = computed<'unclaimed' | 'noPublicPassport' | 'progress' | 'published' | null>({
+const localOpenSheet = ref<'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null>(null)
+const openSheet = computed<'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null>({
   get: () => (props.headless ? props.openSheet : localOpenSheet.value),
   set: (v) => {
     if (props.headless) emit('update:openSheet', v)
@@ -767,9 +701,8 @@ const unclaimedSteps = [
 ]
 // Master Property Passport journey copy — the developer-provided text
 // for the 1·2·3·4 step details. Shared verbatim across every drawer
-// (unclaimed / noPublicPassport / progress / published); only which
-// step is active by default differs per drawer (see openSheet watcher
-// below).
+// (unclaimed / private / partiallyPublic / public); only which step is
+// active by default differs per drawer (see openSheet watcher below).
 const stepDetails: Record<
   number,
   { h: string; v: string; happens: string; icon: string }
@@ -809,29 +742,34 @@ const activeStepData = computed(
 watch(
   () => props.openSheet,
   (v) => {
-    if (v === 'progress') activeStep.value = 3
-    else if (v === 'published') activeStep.value = 4
+    if (v === 'private') activeStep.value = 3
+    else if (v === 'partiallyPublic' || v === 'public') activeStep.value = 4
     else if (v) activeStep.value = 1
   },
 )
 
-// Step-circle fill states for the noPublicPassport / progress / published
+// Step-circle fill states for the private / partiallyPublic / public
 // drawers — distinct from `unclaimedSteps` above (which stays tap-to-switch
-// with its own on/off/active styling) since these three are a static
-// read-out of what's actually done, not an interactive chooser. `done`
-// draws a checkmark instead of the step number; `filled` colors the
-// circle (teal, or purple on the published drawer via cx-steps--purple).
-const noPublicPassportJourneySteps = unclaimedSteps.map((s) => ({
+// with its own on/off/active styling) since these are a static read-out
+// of what's happened, not an interactive chooser. `done` draws a
+// checkmark instead of the step number; `filled` colors the circle.
+//
+// privateJourneySteps deliberately doesn't try to reflect real build
+// progress (it's the same generic "just claimed" read-out regardless of
+// how much has actually been filled in) — the Private/Partially Public/
+// Public model keeps completion % owner-only, and a decorative step
+// diagram that quietly varied with it would leak the same information
+// back out through a side door.
+const privateJourneySteps = unclaimedSteps.map((s) => ({
   ...s,
   filled: s.n === 1,
   done: false,
 }))
-const progressJourneySteps = [
-  { n: 1, name: 'Claim', filled: true, done: true },
-  { n: 2, name: 'Verify', filled: true, done: true },
-  { n: 3, name: 'Build', filled: true, done: false },
-  { n: 4, name: 'Publish', filled: false, done: false },
-]
+// Shared by both partiallyPublic and public — reaching either one means
+// the owner has been through all four phases (claim, verify, build,
+// publish); "partially public" only describes how much of the built
+// content is currently shared, not which phases happened. See
+// plans/watch-visibility-strategy-audit.md.
 const publishedJourneySteps = [
   { n: 1, name: 'Claim', filled: true, done: true },
   { n: 2, name: 'Verify', filled: true, done: true },
