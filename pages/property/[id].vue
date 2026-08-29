@@ -104,15 +104,17 @@
               <div
                 class="pps-badge-passport"
                 :class="{
-                  'pps-badge-passport--unclaimed': pageState === 'unclaimed',
-                  'pps-badge-passport--progress': pageState === 'progress',
+                  'pps-badge-passport--unclaimed': floatClaimState === 'unclaimed',
+                  'pps-badge-passport--private': floatClaimState === 'private',
+                  'pps-badge-passport--partial': floatClaimState === 'partiallyPublic',
                 }"
               >
-                <template v-if="pageState === 'unclaimed'">UNCLAIMED</template>
-                <template v-else-if="pageState === 'progress'"
-                  >IN PROGRESS</template
+                <template v-if="floatClaimState === 'unclaimed'">UNCLAIMED</template>
+                <template v-else-if="floatClaimState === 'private'">PRIVATE</template>
+                <template v-else-if="floatClaimState === 'partiallyPublic'"
+                  >PARTIALLY PUBLIC</template
                 >
-                <template v-else>✓ AVAILABLE</template>
+                <template v-else>✓ PUBLIC</template>
               </div>
             </div>
             <div class="pps-identity-suburb">
@@ -6119,7 +6121,7 @@ const floatClaimState = computed<
 const floatClaimTitle = computed<string>(() => {
   if (floatClaimState.value === 'public') return 'Property Passport available'
   if (floatClaimState.value === 'partiallyPublic') return 'Property Passport partially public'
-  if (floatClaimState.value === 'private') return 'No public Passport available'
+  if (floatClaimState.value === 'private') return 'This Passport is private'
   return (property.value?.streetClaimedCount ?? 0) > 0
     ? 'Be one of the first on this street'
     : 'Be the first on this street'
@@ -8533,9 +8535,13 @@ function formatSaleDate(dateStr: string): string {
   background: #eeedf5;
   color: #6b6783;
 }
-.pps-badge-passport--progress {
+.pps-badge-passport--private {
   background: #fbefd9;
   color: #b07a1c;
+}
+.pps-badge-passport--partial {
+  background: #e0f4f1;
+  color: #00817c;
 }
 .pps-badge-flood img {
   width: 15px;

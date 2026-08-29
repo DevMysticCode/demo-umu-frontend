@@ -106,8 +106,8 @@
                   class="prop-thumb"
                 />
                 <div class="prop-badge-pp" :class="stateOf(prop)">
-                  <svg v-if="stateOf(prop) === 'published'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
-                  <svg v-else-if="stateOf(prop) === 'no-public'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                  <svg v-if="stateOf(prop) === 'public' || stateOf(prop) === 'partiallyPublic'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
+                  <svg v-else-if="stateOf(prop) === 'private'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
                   {{ badgeLabel(prop) }}
                 </div>
                 <div v-if="prop.images?.length" class="prop-photo-count">
@@ -160,14 +160,11 @@
                     <div class="fp-title">{{ stateTitle(prop) }}</div>
                     <div class="fp-sub">{{ stateSub(prop) }}</div>
                   </div>
-                  <div v-if="stateOf(prop) === 'progress'" class="fp-mini-ring">
-                    <svg viewBox="0 0 40 40">
-                      <circle class="mini-ring-bg" cx="20" cy="20" r="16" />
-                      <circle class="mini-ring-fill" cx="20" cy="20" r="16" stroke="#00a19a" :stroke-dasharray="100.5" :stroke-dashoffset="100.5 - (Math.min(prop.passportCompletion ?? 0, 100) / 100) * 100.5" />
-                    </svg>
-                    <span class="fp-mini-ring-num">{{ prop.passportCompletion ?? 0 }}%</span>
-                  </div>
-                  <svg v-else-if="stateOf(prop) === 'published'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#231d45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /><path d="m9 12 2 2 4-4" /></svg>
+                  <!-- No completion % anywhere on this card, in any state
+                       — matches property/[id].vue's floatClaimState (see
+                       plans/watch-visibility-strategy-audit.md). -->
+                  <svg v-if="stateOf(prop) === 'public'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#231d45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /><path d="m9 12 2 2 4-4" /></svg>
+                  <svg v-else-if="stateOf(prop) === 'partiallyPublic'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
                   <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b8791f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
                 </div>
               </div>
@@ -535,36 +532,38 @@ function epcColor(rating: string): string {
 }
 
 // ── 4-state passport derivation (client-side) ───────────────────────────
-// Matches property/[id].vue's floatClaimState rule exactly: below 60%
-// complete, a claimed-but-unpublished passport reads as "no public
-// passport" rather than "in progress" — a passport nobody would find
-// useful yet isn't advertised as one. 'unclaimed' and 'no-public' share a
-// badge (from a buyer's view both mean "nothing public to see"); their
-// footer copy/insight differ because one has an owner and one doesn't.
-type ResultState = 'unclaimed' | 'no-public' | 'progress' | 'published'
+// Private / Partially Public / Public — same model as the property detail
+// page (property/[id].vue's floatClaimState) and driven by the same
+// signal: milestonePct from the real publish-readiness system (see
+// PropertyService.searchProperties), not a flat completion ratio. Private
+// covers ANY claimed-but-unpublished passport regardless of how built-out
+// it is — no completion % is shown anywhere on this card, matching that
+// page. See plans/watch-visibility-strategy-audit.md.
+type ResultState = 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
 function stateOf(p: any): ResultState {
-  if (p.passportPublished) return 'published'
-  if (p.hasPassport) {
-    return (p.passportCompletion ?? 0) >= 60 ? 'progress' : 'no-public'
-  }
-  return 'unclaimed'
+  if (!p.hasPassport) return 'unclaimed'
+  if (!p.passportPublished) return 'private'
+  return (p.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
 }
 function badgeLabel(p: any): string {
   const s = stateOf(p)
-  if (s === 'progress') return 'In Progress'
-  if (s === 'published') return 'Published'
-  return 'No Public Passport'
+  if (s === 'unclaimed') return 'Unclaimed'
+  if (s === 'partiallyPublic') return 'Partially Public'
+  if (s === 'public') return 'Public'
+  return 'Private'
 }
 function stateTitle(p: any): string {
   const s = stateOf(p)
-  if (s === 'published') return 'Property Passport available'
-  if (s === 'progress') return 'Passport in progress'
-  return 'No public Passport yet'
+  if (s === 'public') return 'Property Passport available'
+  if (s === 'partiallyPublic') return 'Property Passport partially public'
+  if (s === 'unclaimed') return 'This property hasn’t been claimed'
+  return 'This Passport is private'
 }
 function stateSub(p: any): string {
   const s = stateOf(p)
-  if (s === 'published') return 'Verified information'
-  if (s === 'progress') return `${p.passportCompletion ?? 0}% complete`
+  if (s === 'public') return 'Verified information'
+  if (s === 'partiallyPublic') return 'Some verified information available'
+  if (s === 'unclaimed') return 'No owner has claimed it yet'
   return 'Watch for updates'
 }
 function homeScoreOf(p: any): number | null {
@@ -625,13 +624,13 @@ const sortLabel = computed(
   () => sortOptions.find((o) => o.value === sortBy.value)?.label.replace(/:.*/, '') ?? 'Sort',
 )
 
-const ALL_STATES: ResultState[] = ['unclaimed', 'no-public', 'progress', 'published']
+const ALL_STATES: ResultState[] = ['unclaimed', 'private', 'partiallyPublic', 'public']
 const passportStates = ref<Set<ResultState>>(new Set(ALL_STATES))
 const passportStateOptions: { value: ResultState; label: string }[] = [
   { value: 'unclaimed', label: 'Unclaimed' },
-  { value: 'no-public', label: 'No public Passport' },
-  { value: 'progress', label: 'In progress' },
-  { value: 'published', label: 'Published' },
+  { value: 'private', label: 'Private' },
+  { value: 'partiallyPublic', label: 'Partially public' },
+  { value: 'public', label: 'Public' },
 ]
 function togglePassportState(v: ResultState) {
   const next = new Set(passportStates.value)
@@ -789,9 +788,9 @@ function renderMapMarkers(mapboxgl: any) {
     if (prop.latitude == null || prop.longitude == null) continue
     const stateColor: Record<ResultState, string> = {
       unclaimed: '#b8791f',
-      'no-public': '#b8791f',
-      progress: '#00a19a',
-      published: '#231d45',
+      private: '#b8791f',
+      partiallyPublic: '#00a19a',
+      public: '#231d45',
     }
     const el = document.createElement('div')
     el.style.cssText = `width:16px;height:16px;border-radius:50%;background:${stateColor[stateOf(prop)]};border:2.5px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.35);cursor:pointer;`
@@ -986,13 +985,13 @@ watch(displayedProperties, () => {
   gap: 3px;
   text-transform: uppercase;
 }
-.prop-badge-pp.progress {
+.prop-badge-pp.partiallyPublic {
   background: #00a19a;
 }
-.prop-badge-pp.published {
+.prop-badge-pp.public {
   background: #231d45;
 }
-.prop-badge-pp.no-public,
+.prop-badge-pp.private,
 .prop-badge-pp.unclaimed {
   background: #b8791f;
 }

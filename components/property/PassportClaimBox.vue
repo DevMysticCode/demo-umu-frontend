@@ -260,11 +260,11 @@
               <div class="cx2-header">
                 <div class="cx2-header-text">
                   <div class="cx2-eyebrow">Property Passport™</div>
-                  <div class="cx2-title">Nothing public yet.</div>
+                  <div class="cx2-title">This Passport is private.</div>
                   <div class="cx2-subtitle">Want to know if that changes?</div>
                   <div class="cx2-body">
-                    There isn't a published Property Passport available for
-                    this home right now.
+                    The owner hasn't published any information from this
+                    home's Property Passport yet.
                   </div>
                 </div>
                 <div class="cx2-header-illustration">
