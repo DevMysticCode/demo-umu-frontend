@@ -1,6 +1,6 @@
 <template>
   <div class="mobile-container expert-page bg-umu-gradient">
-    <AppHeader :showBack="true" />
+    <AppHeader :showBack="true" back-to="/dashboard" />
 
     <div class="expert-content">
       <!-- Profile card -->
