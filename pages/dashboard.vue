@@ -366,13 +366,6 @@
             <div class="dash-eyebrow">HomeScore</div>
             <div class="homescore-card">
               <div class="hsc-top">
-                <img src="/op-icons/homescore/house.png" alt="" class="hsc-house-img" loading="lazy" />
-                <div class="hsc-info">
-                  <div class="hsc-title">Your home today</div>
-                  <div class="hsc-sub">
-                    See how your home performs on energy, running costs, value and more.
-                  </div>
-                </div>
                 <div class="hsc-ring">
                   <svg viewBox="0 0 100 100">
                     <defs>
@@ -394,6 +387,13 @@
                     <span class="hsc-ring-den">/100</span>
                   </div>
                 </div>
+                <div class="hsc-info">
+                  <div class="hsc-title">Your home today</div>
+                  <div class="hsc-sub">
+                    See how your home performs on energy, running costs, value and more.
+                  </div>
+                </div>
+                <img src="/op-icons/landing/homeScoreCard.png" alt="" class="hsc-house-img" loading="lazy" />
               </div>
               <div v-if="passports[0].homeScorePotential != null" class="hsc-potential-row">
                 <span>Potential score</span>
