@@ -94,43 +94,49 @@
             class="prop-card"
             @click="navigateTo('/property/' + prop.id)"
           >
-            <div
-              class="prop-img-wrap"
-              :style="{ background: prop.imgGradient || 'linear-gradient(135deg,#dff4f0,#c8ebe6)' }"
-            >
-              <PropertyImage
-                :src="prop.imageUrl || prop.image"
-                :alt="prop.addressLine1 || prop.address"
-                :show-caption="false"
-                class="prop-img"
-              />
-              <div class="prop-badge-pp" :class="stateOf(prop)">
-                <svg v-if="stateOf(prop) === 'published'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
-                <svg v-else-if="stateOf(prop) === 'no-public'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
-                {{ badgeLabel(prop) }}
+            <div class="prop-card-top">
+              <div
+                class="prop-thumb-wrap"
+                :style="{ background: prop.imgGradient || 'linear-gradient(135deg,#dff4f0,#c8ebe6)' }"
+              >
+                <PropertyImage
+                  :src="prop.imageUrl || prop.image"
+                  :alt="prop.addressLine1 || prop.address"
+                  :show-caption="false"
+                  class="prop-thumb"
+                />
+                <div class="prop-badge-pp" :class="stateOf(prop)">
+                  <svg v-if="stateOf(prop) === 'published'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
+                  <svg v-else-if="stateOf(prop) === 'no-public'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                  {{ badgeLabel(prop) }}
+                </div>
+                <div v-if="prop.images?.length" class="prop-photo-count">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="12" cy="12" r="3.5" /></svg>
+                  {{ prop.images.length }}
+                </div>
               </div>
-              <div class="prop-price-tag">
-                {{ prop.estimatedPrice ? '£' + Math.round(prop.estimatedPrice).toLocaleString() : prop.priceDisplay || 'POA' }}
-              </div>
-            </div>
-            <div class="prop-body">
-              <div class="prop-row-top">
-                <div class="prop-title-col">
-                  <div class="prop-address">{{ prop.addressLine1 || prop.address }}</div>
-                  <div class="prop-area">
-                    {{ prop.city ? prop.city + ', ' + prop.postcode : prop.area || prop.postcode || '' }}
+              <div class="prop-top-info">
+                <div class="prop-top-price-row">
+                  <div class="prop-price">
+                    {{ prop.estimatedPrice ? '£' + Math.round(prop.estimatedPrice).toLocaleString() : prop.priceDisplay || 'POA' }}
+                  </div>
+                  <div v-if="prop.epcRating" class="epc-badge" :style="{ background: epcColor(prop.epcRating) }">
+                    <div class="epc-badge-label">EPC</div>
+                    <div class="epc-badge-rating">{{ prop.epcRating }}</div>
                   </div>
                 </div>
-                <div v-if="prop.epcRating" class="epc-badge" :style="{ background: epcColor(prop.epcRating) }">
-                  <div class="epc-badge-label">EPC</div>
-                  <div class="epc-badge-rating">{{ prop.epcRating }}</div>
+                <div class="prop-address">{{ prop.addressLine1 || prop.address }}</div>
+                <div class="prop-area">
+                  {{ prop.city ? prop.city + ', ' + prop.postcode : prop.area || prop.postcode || '' }}
+                </div>
+                <div class="prop-pills">
+                  <span v-if="prop.propertyType || prop.type" class="pill-grey">{{ prop.propertyType || prop.type }}</span>
+                  <span v-if="prop.tenure" class="pill-grey">{{ prop.tenure }}</span>
                 </div>
               </div>
-              <div class="prop-pills">
-                <span v-if="prop.propertyType || prop.type" class="pill-grey">{{ prop.propertyType || prop.type }}</span>
-                <span v-if="prop.tenure" class="pill-grey">{{ prop.tenure }}</span>
-              </div>
+            </div>
 
+            <div class="prop-body">
               <div class="prop-footer-row">
                 <div v-if="homeScoreOf(prop) != null" class="footer-hs">
                   <div class="mini-ring">
@@ -166,14 +172,14 @@
                 </div>
               </div>
 
-              <div v-if="insightFor(prop)" class="prop-insight" :class="insightFor(prop)!.tone">
-                <svg v-if="insightFor(prop)!.tone === 'good'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
-                <svg v-else-if="insightFor(prop)!.tone === 'warn'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01" /><path d="M10.3 3.9 2 18a1.5 1.5 0 0 0 1.3 2.2h17.4A1.5 1.5 0 0 0 22 18L13.7 3.9a1.5 1.5 0 0 0-2.6 0z" /></svg>
-                <svg v-else width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
-                {{ insightFor(prop)!.text }}
-              </div>
-
               <div class="prop-actions-row">
+                <div v-if="insightFor(prop)" class="prop-insight" :class="insightFor(prop)!.tone">
+                  <svg v-if="insightFor(prop)!.tone === 'good'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+                  <svg v-else-if="insightFor(prop)!.tone === 'warn'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01" /><path d="M10.3 3.9 2 18a1.5 1.5 0 0 0 1.3 2.2h17.4A1.5 1.5 0 0 0 22 18L13.7 3.9a1.5 1.5 0 0 0-2.6 0z" /></svg>
+                  <svg v-else width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
+                  {{ insightFor(prop)!.text }}
+                </div>
+                <span v-else />
                 <button
                   type="button"
                   class="watch-btn"
@@ -183,7 +189,6 @@
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /></svg>
                   {{ watchedIds.has(prop.id) ? 'Watching' : 'Watch' }}
                 </button>
-                <span class="prop-passport-btn">View →</span>
               </div>
             </div>
           </div>
@@ -946,31 +951,39 @@ watch(displayedProperties, () => {
 .prop-card:active {
   transform: scale(0.99);
 }
-.prop-img-wrap {
-  height: 120px;
-  position: relative;
+/* ── Top: thumbnail + info, side by side (matches prototype exactly —
+   NOT a full-width photo banner) ── */
+.prop-card-top {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: 12px;
+  padding: 12px 14px;
 }
-.prop-img {
+.prop-thumb-wrap {
+  position: relative;
+  width: 108px;
+  height: 108px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.prop-thumb {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 .prop-badge-pp {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 7px;
+  left: 7px;
   color: #fff;
-  font-size: 10.5px;
+  font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.02em;
-  padding: 4px 9px;
+  padding: 3px 7px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   text-transform: uppercase;
 }
 .prop-badge-pp.progress {
@@ -983,60 +996,68 @@ watch(displayedProperties, () => {
 .prop-badge-pp.unclaimed {
   background: #b8791f;
 }
-.prop-price-tag {
+.prop-photo-count {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  bottom: 6px;
+  left: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 15px;
-  font-weight: 800;
-  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
   border-radius: 999px;
 }
-.prop-body {
-  padding: 12px 14px;
-}
-.prop-row-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-.prop-title-col {
+.prop-top-info {
   flex: 1;
   min-width: 0;
 }
+.prop-top-price-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.prop-price {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1f2024;
+  letter-spacing: -0.3px;
+}
+.prop-body {
+  padding: 0 14px 12px;
+}
 .prop-address {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 700;
   color: #1f2024;
-  margin-bottom: 1px;
+  margin-top: 4px;
 }
 .prop-area {
-  font-size: 13px;
+  font-size: 12.5px;
   color: #94a3b8;
-  margin-bottom: 8px;
+  margin-top: 1px;
 }
 .epc-badge {
-  min-width: 44px;
-  padding: 5px 8px;
-  border-radius: 8px;
+  min-width: 38px;
+  padding: 4px 7px;
+  border-radius: 7px;
   color: #fff;
   text-align: center;
   flex-shrink: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 .epc-badge-label {
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.08em;
   opacity: 0.85;
   line-height: 1;
 }
 .epc-badge-rating {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 900;
   line-height: 1.1;
   margin-top: 1px;
@@ -1045,14 +1066,14 @@ watch(displayedProperties, () => {
   display: flex;
   gap: 5px;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-top: 6px;
 }
 .pill-grey {
   background: #f1f5f9;
   color: #64748b;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: 999px;
 }
 
@@ -1162,14 +1183,14 @@ watch(displayedProperties, () => {
   color: #00817c;
 }
 
-/* ── Insight row ── */
+/* ── Insight row (lives inline in .prop-actions-row, left of Watch) ── */
 .prop-insight {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 12px;
   font-weight: 700;
-  margin-top: 10px;
+  min-width: 0;
 }
 .prop-insight.good {
   color: #00817c;
@@ -1207,15 +1228,6 @@ watch(displayedProperties, () => {
   border-color: #00a19a;
   background: #f0fdfa;
 }
-.prop-passport-btn {
-  background: #231d45;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 999px;
-}
-
 /* ── Map view ── */
 .map-wrap {
   position: relative;
