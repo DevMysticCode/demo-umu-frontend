@@ -6143,7 +6143,7 @@ const floatClaimSub = computed<string>(() => {
   if (floatClaimState.value === 'noPublicPassport') {
     return "There isn't a published Property Passport available for this home right now."
   }
-  return 'Create your Property Passport to store, verify and share everything about your home.'
+  return "Create your Property Passport to store and verify your home's information — and choose what you share"
 })
 // Second, highlighted line under floatClaimSub — matches the prototype's
 // extra teal/bold line for each non-unclaimed state (unclaimed's card has
