@@ -567,12 +567,28 @@ const {
   onForYouFiltersSearch,
 } = usePropertyForYou()
 
+// Late-night visits (11pm-5am) get a warmer, more personal line instead of
+// a flat "Good evening"/"Good morning" — a small ChatGPT-style touch that
+// makes the app read as paying attention to when you're actually opening
+// it, not just what the clock says. Picked deterministically from the date
+// (NOT Math.random()) — this page renders on the server first and then
+// hydrates on the client, and a real random pick would very likely choose
+// a different line each time, causing a hydration mismatch every night.
+const LATE_NIGHT_LINES = ['Having a late one', 'Burning the midnight oil', 'Still up']
+
 const greeting = computed(() => {
-  const h = new Date().getHours()
-  const timeOfDay = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
+  const now = new Date()
+  const h = now.getHours()
   const first = profile.value?.firstName?.trim()
   const emailLocal = profile.value?.email?.split('@')[0]?.trim()
   const name = first || emailLocal || ''
+
+  if (h >= 23 || h < 5) {
+    const line = LATE_NIGHT_LINES[now.getDate() % LATE_NIGHT_LINES.length]
+    return name ? `${line}, ${name}? 🌙` : `${line}? 🌙`
+  }
+
+  const timeOfDay = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
   return name ? `${timeOfDay}, ${name} 👋` : `${timeOfDay} 👋`
 })
 
