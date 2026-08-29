@@ -252,6 +252,7 @@
             :needs-postcode="needsPostcode"
             :has-filters="hasAnyForYouFilters"
             @open-filters="openForYouFilters"
+            @postcode-saved="refetchForYou"
           />
         </template>
       </template>
@@ -496,6 +497,7 @@
           :needs-postcode="needsPostcode"
           :has-filters="hasAnyForYouFilters"
           @open-filters="openForYouFilters"
+          @postcode-saved="refetchForYou"
         />
       </template>
     </div>
@@ -701,6 +703,14 @@ async function fetchForYou(token: string) {
   properties.value = result?.items ?? []
   needsPostcode.value = result?.needsPostcode === true
   loadingProperties.value = false
+}
+
+// Fired by ForYouFeed's postcode sheet once a postcode is actually saved —
+// re-reads the token fresh rather than closing over onMounted's local copy,
+// since this can fire long after mount.
+function refetchForYou() {
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  if (token) fetchForYou(token)
 }
 
 // 'both'-role users get a compact buyer summary strip on their (seller-

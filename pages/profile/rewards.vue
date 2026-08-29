@@ -136,8 +136,13 @@
           class="rw-stamp-cell"
           :class="{ 'rw-stamp-cell--locked': !earnedStampIds.has(def.id) }"
         >
+          <!-- No :title here — the grid already shows the full title in
+               .rw-stamp-label below. StampFrame's title-inside-the-ring
+               text is meant for the single, bigger (120px) celebration
+               stamp in PassportAchievement.vue; at this grid's 76px it has
+               no room to wrap a longer achievement name and spills past
+               the ring (e.g. "Planning & Building Control Complete"). -->
           <StampFrame
-            :title="def.title"
             :icon-asset="earnedStampIds.has(def.id) ? def.iconAsset : null"
             :size="76"
           />
