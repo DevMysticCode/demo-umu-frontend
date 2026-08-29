@@ -163,9 +163,10 @@
                   <!-- No completion % anywhere on this card, in any state
                        — matches property/[id].vue's floatClaimState (see
                        plans/watch-visibility-strategy-audit.md). -->
-                  <svg v-if="stateOf(prop) === 'public'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#231d45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /><path d="m9 12 2 2 4-4" /></svg>
-                  <svg v-else-if="stateOf(prop) === 'partiallyPublic'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
-                  <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b8791f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                  <svg v-if="stateOf(prop) === 'public'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /><path d="m9 12 2 2 4-4" /></svg>
+                  <svg v-else-if="stateOf(prop) === 'partiallyPublic'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
+                  <svg v-else-if="stateOf(prop) === 'unclaimed'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                  <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
                 </div>
               </div>
 
@@ -787,10 +788,10 @@ function renderMapMarkers(mapboxgl: any) {
   for (const prop of displayedProperties.value) {
     if (prop.latitude == null || prop.longitude == null) continue
     const stateColor: Record<ResultState, string> = {
-      unclaimed: '#b8791f',
-      private: '#b8791f',
-      partiallyPublic: '#00a19a',
-      public: '#231d45',
+      unclaimed: '#06b6d4',
+      private: '#f59e0b',
+      partiallyPublic: '#3b82f6',
+      public: '#1e3a8a',
     }
     const el = document.createElement('div')
     el.style.cssText = `width:16px;height:16px;border-radius:50%;background:${stateColor[stateOf(prop)]};border:2.5px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.35);cursor:pointer;`
@@ -985,15 +986,17 @@ watch(displayedProperties, () => {
   gap: 3px;
   text-transform: uppercase;
 }
+.prop-badge-pp.unclaimed {
+  background: #06b6d4;
+}
+.prop-badge-pp.private {
+  background: #f59e0b;
+}
 .prop-badge-pp.partiallyPublic {
-  background: #00a19a;
+  background: #3b82f6;
 }
 .prop-badge-pp.public {
-  background: #231d45;
-}
-.prop-badge-pp.private,
-.prop-badge-pp.unclaimed {
-  background: #b8791f;
+  background: #1e3a8a;
 }
 .prop-photo-count {
   position: absolute;
