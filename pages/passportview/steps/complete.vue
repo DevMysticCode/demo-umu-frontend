@@ -1,6 +1,6 @@
 <template>
   <div class="mobile-container p-4">
-    <AppHeader title="Step complete" showBack />
+    <AppHeader title="Step complete" showBack back-to="/dashboard" />
     <div class="mt-8 text-center">
       <h2 class="text-2xl font-semibold">
         <img src="/op-icons/misc/confetti.png" alt="" class="inline-block w-6 h-6 align-middle mr-1" loading="lazy" /> Well done

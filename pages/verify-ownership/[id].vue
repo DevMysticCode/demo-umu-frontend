@@ -1,7 +1,7 @@
 <template>
   <div class="verify-page mobile-container min-h-screen bg-umu-gradient">
     <!-- Header with back button -->
-    <AppHeader :show-back="true" />
+    <AppHeader :show-back="true" back-to="/dashboard" />
 
     <!-- VERIFIED STATE -->
     <template v-if="verificationState === 'verified'">

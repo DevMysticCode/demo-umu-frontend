@@ -4,6 +4,7 @@
       <AppHeader
         title="Passport"
         :showBack="true"
+        back-to="/dashboard"
         right="profile"
         :show-tour="true"
         @tour="passportTourRef?.start?.()"
