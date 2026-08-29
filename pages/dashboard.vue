@@ -569,29 +569,66 @@ const {
   onForYouFiltersSearch,
 } = usePropertyForYou()
 
-// Late-night visits (11pm-5am) get a warmer, more personal line instead of
-// a flat "Good evening"/"Good morning" — a small ChatGPT-style touch that
-// makes the app read as paying attention to when you're actually opening
-// it, not just what the clock says. Picked deterministically from the date
-// (NOT Math.random()) — this page renders on the server first and then
-// hydrates on the client, and a real random pick would very likely choose
-// a different line each time, causing a hydration mismatch every night.
-const LATE_NIGHT_LINES = ['Having a late one', 'Burning the midnight oil', 'Still up']
+// Every daypart gets a bit of personality instead of a flat "Good X" —
+// a small ChatGPT-style touch that makes the app read as paying attention
+// to when you're actually opening it, not just stamping the clock. Late
+// night and early morning get a warmer, question-style line (the two the
+// user specifically asked for); the three standard dayparts get light
+// rotation between two familiar phrasings so it doesn't feel robotic on
+// every single visit either.
+//
+// Line choice is deterministic — derived from the date, NOT Math.random()
+// — because this page renders on the server first and then hydrates on
+// the client; a real random pick would very likely disagree between the
+// two passes and throw a hydration-mismatch warning on every visit.
+type Daypart = 'lateNight' | 'earlyMorning' | 'morning' | 'afternoon' | 'evening'
+
+function daypartOf(hour: number): Daypart {
+  if (hour >= 23 || hour < 5) return 'lateNight'
+  if (hour < 8) return 'earlyMorning'
+  if (hour < 12) return 'morning'
+  if (hour < 17) return 'afternoon'
+  return 'evening'
+}
+
+const GREETING_LINES: Record<Daypart, string[]> = {
+  lateNight: ['Having a late one', 'Burning the midnight oil', 'Still up'],
+  earlyMorning: ['Up bright and early', 'Early start', 'Rise and shine'],
+  morning: ['Good morning', 'Morning'],
+  afternoon: ['Good afternoon', 'Afternoon'],
+  evening: ['Good evening', 'Evening'],
+}
+// Late night / early morning read as a warm question ("Still up, Alex?");
+// the three daytime dayparts stay a plain statement ("Good morning, Alex").
+const GREETING_IS_QUESTION: Record<Daypart, boolean> = {
+  lateNight: true,
+  earlyMorning: true,
+  morning: false,
+  afternoon: false,
+  evening: false,
+}
+const GREETING_EMOJI: Record<Daypart, string> = {
+  lateNight: '🌙',
+  earlyMorning: '☀️',
+  morning: '👋',
+  afternoon: '👋',
+  evening: '👋',
+}
 
 const greeting = computed(() => {
   const now = new Date()
-  const h = now.getHours()
+  const daypart = daypartOf(now.getHours())
+  const lines = GREETING_LINES[daypart]
+  const line = lines[now.getDate() % lines.length]
+  const emoji = GREETING_EMOJI[daypart]
   const first = profile.value?.firstName?.trim()
   const emailLocal = profile.value?.email?.split('@')[0]?.trim()
   const name = first || emailLocal || ''
 
-  if (h >= 23 || h < 5) {
-    const line = LATE_NIGHT_LINES[now.getDate() % LATE_NIGHT_LINES.length]
-    return name ? `${line}, ${name}? 🌙` : `${line}? 🌙`
+  if (GREETING_IS_QUESTION[daypart]) {
+    return name ? `${line}, ${name}? ${emoji}` : `${line}? ${emoji}`
   }
-
-  const timeOfDay = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
-  return name ? `${timeOfDay}, ${name} 👋` : `${timeOfDay} 👋`
+  return name ? `${line}, ${name} ${emoji}` : `${line} ${emoji}`
 })
 
 const homeScoreDashoffset = computed(() => {
