@@ -201,87 +201,86 @@
                 }}
               </button>
             </div>
+          </div>
+        </div>
 
-            <!-- Floating claim box — normal-flow block right after the
-                 Watch/Ask buttons in the identity column, so it always
-                 sits directly below them with no gap that depends on
-                 guessing how tall the address/pills/badges above happen
-                 to be for a given property (a fixed-height photo overlap
-                 trick was tried here and broke for shorter addresses —
-                 the gap size varied with content length). Widened past
-                 the identity column via a negative left margin so it
-                 still overlaps the photo on the left, matching the
-                 prototype, while its vertical position is fully
-                 content-driven. Shown for all three passport states now,
-                 so unclaimed/in-progress/published all get the same
-                 treatment here instead of only unclaimed getting this
-                 card and the other two only getting the plainer in-flow
-                 PassportClaimBox banner below. Hidden (not shown as a
-                 confident "unclaimed") when the status fetch genuinely
-                 failed — see passportStatusUnknown above. -->
-            <div v-if="!passportStatusUnknown" class="pps-float-claim">
-              <div v-if="streetClaimLabel" class="pps-float-claim-streetpill">
-                <span class="pps-float-claim-streetpill-dot" />
-                {{ streetClaimLabel }}
+        <!-- Floating claim box — moved to sit as a full-width sibling
+             below the photo+identity row, not nested inside the identity
+             column. Previously lived inside that column with a negative
+             left margin to fake overlapping the photo, matching an
+             earlier prototype reference — the user has since asked for
+             it full-width instead, and (as a side effect) the photo is
+             no longer artificially stretched by align-items:stretch to
+             match this card's height, so it settles back to its natural,
+             shorter size alongside just the address/price/buttons.
+             Shown for all three passport states now, so unclaimed/
+             in-progress/published all get the same treatment here
+             instead of only unclaimed getting this card and the other
+             two only getting the plainer in-flow PassportClaimBox
+             banner below. Hidden (not shown as a confident "unclaimed")
+             when the status fetch genuinely failed — see
+             passportStatusUnknown above. -->
+        <div v-if="!passportStatusUnknown" class="pps-float-claim">
+          <div v-if="streetClaimLabel" class="pps-float-claim-streetpill">
+            <span class="pps-float-claim-streetpill-dot" />
+            {{ streetClaimLabel }}
+          </div>
+          <div class="pps-float-claim-top">
+            <div class="pps-float-claim-ic-wrap">
+              <img
+                src="/op-icons/passport-covers/seller_tilted_right_on_tile.png"
+                alt=""
+                class="pps-float-claim-ic"
+                loading="lazy"
+              />
+              <!-- Completion % stays owner-only under the
+                   Private/Partially Public/Public model — a public
+                   viewer never sees how built-out the passport is,
+                   only whether anything is published at all. See
+                   plans/watch-visibility-strategy-audit.md. -->
+              <div
+                v-if="false && floatClaimState !== 'unclaimed'"
+                class="pps-float-claim-gauge"
+                :style="{ '--pct': progressPct }"
+              >
+                <span>{{ progressPct }}%</span>
               </div>
-              <div class="pps-float-claim-top">
-                <div class="pps-float-claim-ic-wrap">
-                  <img
-                    src="/op-icons/passport-covers/seller_tilted_right_on_tile.png"
-                    alt=""
-                    class="pps-float-claim-ic"
-                    loading="lazy"
-                  />
-                  <!-- Completion % stays owner-only under the
-                       Private/Partially Public/Public model — a public
-                       viewer never sees how built-out the passport is,
-                       only whether anything is published at all. See
-                       plans/watch-visibility-strategy-audit.md. -->
-                  <div
-                    v-if="false && floatClaimState !== 'unclaimed'"
-                    class="pps-float-claim-gauge"
-                    :style="{ '--pct': progressPct }"
-                  >
-                    <span>{{ progressPct }}%</span>
-                  </div>
-                </div>
-                <div class="pps-float-claim-body">
-                  <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
-                  <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
-                  <div v-if="floatClaimEmphasis" class="pps-float-claim-emphasis">
-                    {{ floatClaimEmphasis }}
-                  </div>
-                  <div v-if="floatClaimSub2" class="pps-float-claim-sub2">
-                    {{ floatClaimSub2 }}
-                  </div>
-                  <span
-                    v-if="floatClaimExplainerLabel"
-                    class="pps-float-claim-explain"
-                    @click.stop="onFloatClaimExplainerClick"
-                  >
-                    {{ floatClaimExplainerLabel }}
-                    <span class="pps-float-claim-explain-q">?</span>
-                  </span>
-                  <div
-                    v-if="watcherCountLabel"
-                    class="pps-float-claim-watchers"
-                  >
-                    👀 {{ watcherCountLabel }}
-                  </div>
-                </div>
+            </div>
+            <div class="pps-float-claim-body">
+              <div class="pps-float-claim-title">{{ floatClaimTitle }}</div>
+              <div class="pps-float-claim-sub">{{ floatClaimSub }}</div>
+              <div v-if="floatClaimEmphasis" class="pps-float-claim-emphasis">
+                {{ floatClaimEmphasis }}
               </div>
-              <div class="pps-float-claim-cta">
-                <button
-                  type="button"
-                  class="pps-float-claim-btn"
-                  @click="onFloatClaimCtaClick"
-                >
-                  {{ floatClaimCta }}
-                </button>
-                <div v-if="floatClaimMeta" class="pps-float-claim-price">
-                  {{ floatClaimMeta }}
-                </div>
+              <div v-if="floatClaimSub2" class="pps-float-claim-sub2">
+                {{ floatClaimSub2 }}
               </div>
+              <span
+                v-if="floatClaimExplainerLabel"
+                class="pps-float-claim-explain"
+                @click.stop="onFloatClaimExplainerClick"
+              >
+                {{ floatClaimExplainerLabel }}
+                <span class="pps-float-claim-explain-q">?</span>
+              </span>
+              <div
+                v-if="watcherCountLabel"
+                class="pps-float-claim-watchers"
+              >
+                👀 {{ watcherCountLabel }}
+              </div>
+            </div>
+          </div>
+          <div class="pps-float-claim-cta">
+            <button
+              type="button"
+              class="pps-float-claim-btn"
+              @click="onFloatClaimCtaClick"
+            >
+              {{ floatClaimCta }}
+            </button>
+            <div v-if="floatClaimMeta" class="pps-float-claim-price">
+              {{ floatClaimMeta }}
             </div>
           </div>
         </div>
@@ -8747,15 +8746,12 @@ function formatSaleDate(dateStr: string): string {
    for the text column and collapsed into unreadable word-by-word
    wrapping. */
 .pps-float-claim {
-  position: relative;
-  z-index: 2;
-  margin: 12px 0 0 -60px;
-  width: calc(100% + 60px);
+  margin: 14px 0 0;
   padding: 14px 16px;
   background: white;
   border-radius: 14px;
   border: 1px solid #ececef;
-  box-shadow: 0 8px 24px rgba(35, 29, 69, 0.14);
+  box-shadow: 0 4px 16px rgba(35, 29, 69, 0.08);
   display: flex;
   flex-direction: column;
   gap: 12px;
