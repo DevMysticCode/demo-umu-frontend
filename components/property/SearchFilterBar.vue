@@ -92,31 +92,35 @@
             <span v-if="addr.city">{{ addr.city }} · </span
             >{{ addr.postcode || addr.addressLine2 || addr.line2 || '' }}
           </div>
-          <div class="addr-badges">
-            <span
-              v-if="addr.epcRating"
-              class="addr-badge"
-              :style="{ background: epcDropColor(addr.epcRating) }"
-            >
-              ⚡ EPC {{ addr.epcRating }}
-            </span>
-          </div>
           <!-- Colored line, not a pill — "Property Passport claimed · X"
                is too long for a chip, and a plain line wraps gracefully
-               instead of fighting a pill's fixed padding (see
-               plans/passport-status-wording-clarity.md). -->
-          <div class="addr-passport-line" :class="'addr-passport-line--' + passportStateOf(addr)">
+               instead of fighting a pill's fixed padding. One consistent
+               color regardless of state, not per-state, so a dense list
+               of results doesn't read as a wall of different colors (see
+               plans/passport-status-wording-clarity.md). EPC dropped from
+               this row entirely — HomeScore below already folds EPC in
+               as a fallback, so showing both was redundant here. -->
+          <div class="addr-passport-line">
             <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
             {{ passportStateFullLabel(addr) }}
           </div>
         </div>
-        <div
-          v-if="(addr.homeScore ?? addr.epcScore) != null"
-          class="addr-hs"
-          :style="{ color: hsDropColor(addr.homeScore ?? addr.epcScore) }"
-        >
-          <span class="addr-hs-num">{{ addr.homeScore ?? addr.epcScore }}</span>
-          <span class="addr-hs-lbl">HS</span>
+        <div v-if="(addr.homeScore ?? addr.epcScore) != null" class="addr-hs-gauge">
+          <svg viewBox="0 0 40 40">
+            <circle class="addr-hs-gauge-bg" cx="20" cy="20" r="16" />
+            <circle
+              class="addr-hs-gauge-fill"
+              cx="20"
+              cy="20"
+              r="16"
+              :stroke="hsDropColor(addr.homeScore ?? addr.epcScore)"
+              stroke-dasharray="100.5"
+              :stroke-dashoffset="100.5 - (Math.min(addr.homeScore ?? addr.epcScore, 100) / 100) * 100.5"
+            />
+          </svg>
+          <span class="addr-hs-gauge-num" :style="{ color: hsDropColor(addr.homeScore ?? addr.epcScore) }">{{
+            addr.homeScore ?? addr.epcScore
+          }}</span>
         </div>
       </div>
     </div>
@@ -847,30 +851,40 @@ function clearAllFilters() {
   color: #94a3b8;
   margin-top: 1px;
 }
-.addr-hs {
+/* HomeScore gauge — replaces the old bare "55 / HS" number+label pair
+   with an actual ring, matching the mini-ring pattern used on the
+   search-list card footer. */
+.addr-hs-gauge {
+  position: relative;
+  width: 38px;
+  height: 38px;
   flex-shrink: 0;
+}
+.addr-hs-gauge svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.addr-hs-gauge-bg {
+  fill: none;
+  stroke: #ededf3;
+  stroke-width: 4;
+}
+.addr-hs-gauge-fill {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s;
+}
+.addr-hs-gauge-num {
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  white-space: nowrap;
-  letter-spacing: -0.4px;
-  text-align: center;
-  min-width: 40px;
-}
-.addr-hs-num {
-  font-size: 22px;
+  font-size: 12px;
   font-weight: 800;
-  line-height: 1;
   font-feature-settings: 'tnum';
-}
-.addr-hs-lbl {
-  font-size: 9px;
-  font-weight: 800;
-  color: #9c98ad;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin-top: 2px;
 }
 .addr-badges {
   display: flex;
@@ -899,7 +913,10 @@ function clearAllFilters() {
 }
 /* Passport-state line — colored icon + text, not a pill. "Property
    Passport claimed · Partially Public" is too long for a chip; a plain
-   line wraps gracefully on its own row instead. */
+   line wraps gracefully on its own row instead. One consistent color
+   regardless of state — a dense scrolling list of 4 different colors
+   per row read as noisy; the state word itself already carries the
+   meaning. */
 .addr-passport-line {
   display: flex;
   align-items: center;
@@ -908,21 +925,7 @@ function clearAllFilters() {
   font-weight: 700;
   letter-spacing: 0.01em;
   margin-top: 4px;
-}
-.addr-passport-line .addr-badge-ic {
-  filter: none;
-}
-.addr-passport-line--unclaimed {
-  color: #00a19a;
-}
-.addr-passport-line--private {
-  color: #f5510b;
-}
-.addr-passport-line--partiallyPublic {
-  color: #9185d6;
-}
-.addr-passport-line--public {
-  color: #231d45;
+  color: #00817c;
 }
 
 /* ── Distance & filters sheet ── */

@@ -183,7 +183,7 @@
                   class="pps-hero-quick-ic"
                   loading="lazy"
                 />
-                {{ pageState === 'progress' ? 'Get notified' : 'Watch this' }}
+                Watch this
               </button>
               <button
                 type="button"
@@ -6181,19 +6181,23 @@ const floatClaimSub2 = computed<string>(() => {
 const floatClaimEmphasis = computed<string>(() =>
   floatClaimState.value === 'public' ? 'Buying blind stops here.' : '',
 )
-// "What's inside the Passport?" — same copy and same explainer drawer as
-// the PassportClaimBox cards below, now surfaced on the floating claim
-// card too. Partially-public and public share the same explainer (both
-// have real content to describe); unclaimed and private don't get this
-// link (no reference design shows one for either).
+// "What's inside the Passport?" / "What is claimed · Private?" — same
+// copy and same explainer drawer as the PassportClaimBox cards below,
+// now surfaced on the floating claim card too. Every non-unclaimed
+// state gets one now — private previously had none (see plans/
+// passport-status-wording-clarity.md for why that's worth fixing:
+// the state name alone isn't self-explanatory to a first-time viewer).
 const floatClaimExplainerLabel = computed<string>(() => {
   if (floatClaimState.value === 'partiallyPublic' || floatClaimState.value === 'public') {
     return "What's inside the Passport?"
   }
+  if (floatClaimState.value === 'private') {
+    return 'What is claimed · Private?'
+  }
   return ''
 })
 function onFloatClaimExplainerClick() {
-  if (floatClaimState.value === 'partiallyPublic' || floatClaimState.value === 'public') {
+  if (floatClaimState.value === 'partiallyPublic' || floatClaimState.value === 'public' || floatClaimState.value === 'private') {
     claimExplainerSheet.value = floatClaimState.value
   }
 }
