@@ -1026,7 +1026,7 @@ const executeDelete = async () => {
 /* ── Resume card ─────────────────────────────────────────── */
 .coll-resume {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
   width: calc(100% - 32px);
   margin: 8px 16px 16px;
@@ -1126,6 +1126,7 @@ const executeDelete = async () => {
 }
 .coll-resume-cta {
   flex-shrink: 0;
+  align-self: center;
   width: 44px;
   height: 44px;
   border-radius: 50%;
