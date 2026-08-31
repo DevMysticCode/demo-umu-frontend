@@ -9342,7 +9342,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-keepgoing-card-btn {
   margin-top: 8px;
-  align-self: flex-start;
+  align-self: center;
   background: #231d45;
   color: #fff;
   border: none;
