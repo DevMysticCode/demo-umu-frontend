@@ -15,14 +15,24 @@
     <template v-if="searchMode">
       <div class="search-back-row">
         <button class="search-back-btn" @click="exitSearch">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
             <polyline points="15 18 9 12 15 6" />
           </svg>
           Back
         </button>
         <div class="search-result-label">
           <template v-if="!searchLoading">
-            <div class="srl-count">{{ searchTotal }} {{ searchTotal === 1 ? 'home' : 'homes' }} found</div>
+            <div class="srl-count">
+              {{ searchTotal }} {{ searchTotal === 1 ? 'home' : 'homes' }} found
+            </div>
             <div class="srl-query">"{{ searchQuery }}"</div>
           </template>
           <span v-else>Searching "{{ searchQuery }}"…</span>
@@ -34,9 +44,22 @@
             :class="{ active: viewMode === 'list' }"
             @click="viewMode = 'list'"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
-              <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
             </svg>
             List
           </button>
@@ -46,9 +69,19 @@
             :class="{ active: viewMode === 'map' }"
             @click="viewMode = 'map'"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
-              <line x1="8" y1="2" x2="8" y2="18" /><line x1="16" y1="6" x2="16" y2="22" />
+              <line x1="8" y1="2" x2="8" y2="18" />
+              <line x1="16" y1="6" x2="16" y2="22" />
             </svg>
             Map
           </button>
@@ -62,21 +95,59 @@
            the backend has no sort concept and only a coarse 3-bucket
            passport status, not the 60%-threshold 4-state split used here. -->
       <div class="chip-row">
-        <button type="button" class="quick-chip" :class="{ active: sortBy !== 'newest' }" @click="openPopover('sort')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4" /></svg>
+        <button
+          type="button"
+          class="quick-chip"
+          :class="{ active: sortBy !== 'newest' }"
+          @click="openPopover('sort')"
+        >
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 6h18M6 12h12M10 18h4" />
+          </svg>
           {{ sortLabel }}
         </button>
-        <button type="button" class="quick-chip" :class="{ active: passportStates.size < 4 }" @click="openPopover('passport')">
+        <button
+          type="button"
+          class="quick-chip"
+          :class="{ active: passportStates.size < 4 }"
+          @click="openPopover('passport')"
+        >
           Passport
-          <span v-if="passportStates.size < 4" class="chip-count">{{ passportStates.size }}</span>
+          <span v-if="passportStates.size < 4" class="chip-count">{{
+            passportStates.size
+          }}</span>
         </button>
-        <button type="button" class="quick-chip" :class="{ active: minHomeScore > 0 }" @click="openPopover('homescore')">
+        <button
+          type="button"
+          class="quick-chip"
+          :class="{ active: minHomeScore > 0 }"
+          @click="openPopover('homescore')"
+        >
           HomeScore{{ minHomeScore > 0 ? ` ${minHomeScore}+` : '' }}
         </button>
-        <button type="button" class="quick-chip" :class="{ active: propertyTypes[0] !== 'any' }" @click="openPopover('ptype')">
+        <button
+          type="button"
+          class="quick-chip"
+          :class="{ active: propertyTypes[0] !== 'any' }"
+          @click="openPopover('ptype')"
+        >
           Property type
         </button>
-        <button type="button" class="quick-chip" :class="{ active: minBeds != null || minEpc != null }" @click="openPopover('more')">
+        <button
+          type="button"
+          class="quick-chip"
+          :class="{ active: minBeds != null || minEpc != null }"
+          @click="openPopover('more')"
+        >
           More
         </button>
       </div>
@@ -97,7 +168,11 @@
             <div class="prop-card-top">
               <div
                 class="prop-thumb-wrap"
-                :style="{ background: prop.imgGradient || 'linear-gradient(135deg,#dff4f0,#c8ebe6)' }"
+                :style="{
+                  background:
+                    prop.imgGradient ||
+                    'linear-gradient(135deg,#dff4f0,#c8ebe6)',
+                }"
               >
                 <PropertyImage
                   :src="prop.imageUrl || prop.image"
@@ -106,29 +181,92 @@
                   class="prop-thumb"
                 />
                 <div v-if="prop.images?.length" class="prop-photo-count">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="12" cy="12" r="3.5" /></svg>
+                  <svg
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <circle cx="12" cy="12" r="3.5" />
+                  </svg>
                   {{ prop.images.length }}
                 </div>
               </div>
               <div class="prop-top-info">
                 <div class="prop-top-price-row">
                   <div class="prop-price">
-                    {{ prop.estimatedPrice ? '£' + Math.round(prop.estimatedPrice).toLocaleString() : prop.priceDisplay || 'POA' }}
+                    {{
+                      prop.estimatedPrice
+                        ? '£' + Math.round(prop.estimatedPrice).toLocaleString()
+                        : prop.priceDisplay || 'POA'
+                    }}
                   </div>
                   <div class="prop-badge-pp" :class="stateOf(prop)">
-                    <svg v-if="stateOf(prop) === 'public' || stateOf(prop) === 'partiallyPublic'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
-                    <svg v-else-if="stateOf(prop) === 'private'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                    <svg
+                      v-if="
+                        stateOf(prop) === 'public' ||
+                        stateOf(prop) === 'partiallyPublic'
+                      "
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z"
+                      />
+                    </svg>
+                    <svg
+                      v-else-if="stateOf(prop) === 'private'"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect x="4" y="10" width="16" height="10" rx="2" />
+                      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                    </svg>
                     {{ badgeLabel(prop) }}
                   </div>
                 </div>
-                <div class="prop-address">{{ prop.addressLine1 || prop.address }}</div>
+                <div class="prop-address">
+                  {{ prop.addressLine1 || prop.address }}
+                </div>
                 <div class="prop-area">
-                  {{ prop.city ? prop.city + ', ' + prop.postcode : prop.area || prop.postcode || '' }}
+                  {{
+                    prop.city
+                      ? prop.city + ', ' + prop.postcode
+                      : prop.area || prop.postcode || ''
+                  }}
                 </div>
                 <div class="prop-pills">
-                  <span v-if="prop.propertyType || prop.type" class="pill-grey">{{ prop.propertyType || prop.type }}</span>
-                  <span v-if="prop.tenure" class="pill-grey">{{ prop.tenure }}</span>
-                  <span v-if="prop.epcRating" class="epc-pill" :style="{ background: epcColor(prop.epcRating) }">EPC {{ prop.epcRating }}</span>
+                  <span
+                    v-if="prop.propertyType || prop.type"
+                    class="pill-grey"
+                    >{{ prop.propertyType || prop.type }}</span
+                  >
+                  <span v-if="prop.tenure" class="pill-grey">{{
+                    prop.tenure
+                  }}</span>
+                  <span
+                    v-if="prop.epcRating"
+                    class="epc-pill"
+                    :style="{ background: epcColor(prop.epcRating) }"
+                    >EPC {{ prop.epcRating }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -141,15 +279,25 @@
                       <circle class="mini-ring-bg" cx="20" cy="20" r="16" />
                       <circle
                         class="mini-ring-fill"
-                        cx="20" cy="20" r="16"
+                        cx="20"
+                        cy="20"
+                        r="16"
                         :stroke="hsColor(homeScoreOf(prop))"
                         :stroke-dasharray="100.5"
-                        :stroke-dashoffset="100.5 - (Math.min(homeScoreOf(prop), 100) / 100) * 100.5"
+                        :stroke-dashoffset="
+                          100.5 -
+                          (Math.min(homeScoreOf(prop), 100) / 100) * 100.5
+                        "
                       />
                     </svg>
                     <span class="mini-ring-num">{{ homeScoreOf(prop) }}</span>
                   </div>
-                  <div class="mini-hs-label">HomeScore<br /><b :style="{ color: hsColor(homeScoreOf(prop)) }">{{ hsLabel(homeScoreOf(prop)) }}</b></div>
+                  <div class="mini-hs-label">
+                    HomeScore<br /><b
+                      :style="{ color: hsColor(homeScoreOf(prop)) }"
+                      >{{ hsLabel(homeScoreOf(prop)) }}</b
+                    >
+                  </div>
                 </div>
                 <div class="footer-divider" />
                 <div class="footer-passport">
@@ -160,18 +308,118 @@
                   <!-- No completion % anywhere on this card, in any state
                        — matches property/[id].vue's floatClaimState (see
                        plans/watch-visibility-strategy-audit.md). -->
-                  <svg v-if="stateOf(prop) === 'public'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /><path d="m9 12 2 2 4-4" /></svg>
-                  <svg v-else-if="stateOf(prop) === 'partiallyPublic'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
-                  <svg v-else-if="stateOf(prop) === 'unclaimed'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
-                  <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                  <svg
+                    v-if="stateOf(prop) === 'public'"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#231d45"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z"
+                    />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <svg
+                    v-else-if="stateOf(prop) === 'partiallyPublic'"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#9185d6"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z"
+                    />
+                  </svg>
+                  <svg
+                    v-else-if="stateOf(prop) === 'unclaimed'"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#00a19a"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="4" y="10" width="16" height="10" rx="2" />
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                  </svg>
+                  <svg
+                    v-else
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#f5510b"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="4" y="10" width="16" height="10" rx="2" />
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                  </svg>
                 </div>
               </div>
 
               <div class="prop-actions-row">
-                <div v-if="insightFor(prop)" class="prop-insight" :class="insightFor(prop)!.tone">
-                  <svg v-if="insightFor(prop)!.tone === 'good'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
-                  <svg v-else-if="insightFor(prop)!.tone === 'warn'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01" /><path d="M10.3 3.9 2 18a1.5 1.5 0 0 0 1.3 2.2h17.4A1.5 1.5 0 0 0 22 18L13.7 3.9a1.5 1.5 0 0 0-2.6 0z" /></svg>
-                  <svg v-else width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
+                <div
+                  v-if="insightFor(prop)"
+                  class="prop-insight"
+                  :class="insightFor(prop)!.tone"
+                >
+                  <svg
+                    v-if="insightFor(prop)!.tone === 'good'"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <svg
+                    v-else-if="insightFor(prop)!.tone === 'warn'"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 9v4M12 17h.01" />
+                    <path
+                      d="M10.3 3.9 2 18a1.5 1.5 0 0 0 1.3 2.2h17.4A1.5 1.5 0 0 0 22 18L13.7 3.9a1.5 1.5 0 0 0-2.6 0z"
+                    />
+                  </svg>
+                  <svg
+                    v-else
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4M12 8h.01" />
+                  </svg>
                   {{ insightFor(prop)!.text }}
                 </div>
                 <span v-else />
@@ -181,21 +429,50 @@
                   :class="{ active: watchedIds.has(prop.id) }"
                   @click.stop="onWatchClick(prop)"
                 >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /></svg>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                      d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"
+                    />
+                  </svg>
                   {{ watchedIds.has(prop.id) ? 'Watching' : 'Watch' }}
                 </button>
               </div>
             </div>
           </div>
 
-          <div v-if="hasMoreResults" ref="loadMoreSentinel" class="load-more-sentinel">
+          <div
+            v-if="hasMoreResults"
+            ref="loadMoreSentinel"
+            class="load-more-sentinel"
+          >
             <div v-if="searchLoadingMore" class="load-more-spinner" />
             <button v-else class="load-more-btn" @click="loadMoreResults">
-              Load {{ Math.min(SEARCH_PAGE_SIZE, searchTotal - searchProperties.length) }} more
+              Load
+              {{
+                Math.min(
+                  SEARCH_PAGE_SIZE,
+                  searchTotal - searchProperties.length,
+                )
+              }}
+              more
             </button>
           </div>
           <div v-else class="load-more-end">
-            {{ displayedProperties.length === 1 ? '1 result shown' : displayedProperties.length + ' results shown' }}
+            {{
+              displayedProperties.length === 1
+                ? '1 result shown'
+                : displayedProperties.length + ' results shown'
+            }}
           </div>
         </template>
 
@@ -207,7 +484,9 @@
       </template>
 
       <div v-else class="no-results-msg">
-        <div class="no-results-icon"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
+        <div class="no-results-icon">
+          <img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" />
+        </div>
         <div class="no-results-text">No properties found</div>
         <div class="no-results-sub">Try a different postcode or area</div>
       </div>
@@ -215,9 +494,20 @@
 
     <!-- ── Quick-filter popovers ── -->
     <Teleport to="body">
-      <div class="psr-sheet-backdrop" :class="{ open: activePopover !== null }" @click="activePopover = null" />
-      <div class="psr-sheet" :class="{ open: activePopover !== null }" role="dialog" aria-modal="true">
-        <div class="psr-sheet-grabber-wrap" @click="activePopover = null"><div class="psr-sheet-grabber" /></div>
+      <div
+        class="psr-sheet-backdrop"
+        :class="{ open: activePopover !== null }"
+        @click="activePopover = null"
+      />
+      <div
+        class="psr-sheet"
+        :class="{ open: activePopover !== null }"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div class="psr-sheet-grabber-wrap" @click="activePopover = null">
+          <div class="psr-sheet-grabber" />
+        </div>
 
         <template v-if="activePopover === 'sort'">
           <div class="psr-sheet-title">Sort by</div>
@@ -244,13 +534,28 @@
               class="psr-option-row psr-checkbox-row"
               @click="togglePassportState(opt.value)"
             >
-              <span class="psr-checkbox" :class="{ checked: passportStates.has(opt.value) }" />
+              <span
+                class="psr-checkbox"
+                :class="{ checked: passportStates.has(opt.value) }"
+              />
               {{ opt.label }}
             </div>
           </div>
           <div class="psr-sheet-foot">
-            <button type="button" class="psr-btn-secondary" @click="passportStates = new Set(ALL_STATES)">Select all</button>
-            <button type="button" class="psr-btn-primary" @click="activePopover = null">Done</button>
+            <button
+              type="button"
+              class="psr-btn-secondary"
+              @click="passportStates = new Set(ALL_STATES)"
+            >
+              Select all
+            </button>
+            <button
+              type="button"
+              class="psr-btn-primary"
+              @click="activePopover = null"
+            >
+              Done
+            </button>
           </div>
         </template>
 
@@ -258,16 +563,38 @@
           <div class="psr-sheet-title">Minimum HomeScore</div>
           <div class="psr-slider-row">
             <input
-              type="range" class="psr-slider" min="0" max="90" step="5"
+              type="range"
+              class="psr-slider"
+              min="0"
+              max="90"
+              step="5"
               :value="minHomeScore"
               :style="{ '--fill': (minHomeScore / 90) * 100 + '%' }"
-              @input="minHomeScore = parseInt(($event.target as HTMLInputElement).value, 10) || 0"
+              @input="
+                minHomeScore =
+                  parseInt(($event.target as HTMLInputElement).value, 10) || 0
+              "
             />
-            <div class="psr-slider-scale"><span>Any</span><span>30</span><span>50</span><span>70</span><span>90</span></div>
+            <div class="psr-slider-scale">
+              <span>Any</span><span>30</span><span>50</span><span>70</span
+              ><span>90</span>
+            </div>
           </div>
           <div class="psr-sheet-foot">
-            <button type="button" class="psr-btn-secondary" @click="minHomeScore = 0">Reset</button>
-            <button type="button" class="psr-btn-primary" @click="activePopover = null">Done</button>
+            <button
+              type="button"
+              class="psr-btn-secondary"
+              @click="minHomeScore = 0"
+            >
+              Reset
+            </button>
+            <button
+              type="button"
+              class="psr-btn-primary"
+              @click="activePopover = null"
+            >
+              Done
+            </button>
           </div>
         </template>
 
@@ -286,7 +613,14 @@
             </button>
           </div>
           <div class="psr-sheet-foot">
-            <button type="button" class="psr-btn-primary" style="flex: 1" @click="applyServerFilters(); activePopover = null">Apply</button>
+            <button
+              type="button"
+              class="psr-btn-primary"
+              style="flex: 1"
+              @click="applyServerFilters(); activePopover = null"
+            >
+              Apply
+            </button>
           </div>
         </template>
 
@@ -305,9 +639,18 @@
               {{ opt.label }}
             </button>
           </div>
-          <div class="psr-sheet-section-title" style="margin-top: 14px">EPC rating (min)</div>
+          <div class="psr-sheet-section-title" style="margin-top: 14px">
+            EPC rating (min)
+          </div>
           <div class="psr-chip-group">
-            <button type="button" class="psr-chip" :class="{ active: minEpc === null }" @click="minEpc = null">Any</button>
+            <button
+              type="button"
+              class="psr-chip"
+              :class="{ active: minEpc === null }"
+              @click="minEpc = null"
+            >
+              Any
+            </button>
             <button
               v-for="opt in epcOptions"
               :key="opt.value"
@@ -320,7 +663,14 @@
             </button>
           </div>
           <div class="psr-sheet-foot">
-            <button type="button" class="psr-btn-primary" style="flex: 1" @click="applyServerFilters(); activePopover = null">Apply</button>
+            <button
+              type="button"
+              class="psr-btn-primary"
+              style="flex: 1"
+              @click="applyServerFilters(); activePopover = null"
+            >
+              Apply
+            </button>
           </div>
         </template>
       </div>
@@ -354,7 +704,9 @@
 // property/[id].vue's floatClaimState). Property type / bedrooms / EPC /
 // HomeScore stay server-side filters (already-supported query params).
 import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
-import SearchFilterBar, { type CommittedFilters } from '~/components/property/SearchFilterBar.vue'
+import SearchFilterBar, {
+  type CommittedFilters,
+} from '~/components/property/SearchFilterBar.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
 import AuthGateModal from '~/components/ui/AuthGateModal.vue'
 
@@ -363,7 +715,10 @@ withDefaults(
     placeholder?: string
     useTypewriterPlaceholder?: boolean
   }>(),
-  { placeholder: 'Search by postcode, address or area', useTypewriterPlaceholder: false },
+  {
+    placeholder: 'Search by postcode, address or area',
+    useTypewriterPlaceholder: false,
+  },
 )
 
 const emit = defineEmits<{
@@ -436,7 +791,10 @@ function buildSearchUrl(offset: number): string {
   })
   const f = activeFilters.value
   if (f.radius != null) params.set('radius', String(f.radius))
-  if (f.propertyType.length && !(f.propertyType.length === 1 && f.propertyType[0] === 'any')) {
+  if (
+    f.propertyType.length &&
+    !(f.propertyType.length === 1 && f.propertyType[0] === 'any')
+  ) {
     params.set('propertyType', f.propertyType.join(','))
   }
   if (f.minBedrooms != null) params.set('minBedrooms', String(f.minBedrooms))
@@ -456,7 +814,8 @@ async function doSearch() {
   searchProperties.value = []
   searchTotal.value = 0
   try {
-    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    const token =
+      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
     const results = await $fetch<any>(buildSearchUrl(0), {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -476,10 +835,14 @@ async function loadMoreResults() {
   if (searchProperties.value.length >= searchTotal.value) return
   searchLoadingMore.value = true
   try {
-    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-    const results = await $fetch<any>(buildSearchUrl(searchProperties.value.length), {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const token =
+      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    const results = await $fetch<any>(
+      buildSearchUrl(searchProperties.value.length),
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
     const newItems = results?.items ?? []
     const existingIds = new Set(searchProperties.value.map((p) => p.id))
     for (const item of newItems) {
@@ -493,14 +856,17 @@ async function loadMoreResults() {
   }
 }
 
-const hasMoreResults = computed(() => searchTotal.value > searchProperties.value.length)
+const hasMoreResults = computed(
+  () => searchTotal.value > searchProperties.value.length,
+)
 
 function attachLoadMoreObserver() {
   if (loadMoreObserver) {
     loadMoreObserver.disconnect()
     loadMoreObserver = null
   }
-  if (!loadMoreSentinel.value || typeof IntersectionObserver === 'undefined') return
+  if (!loadMoreSentinel.value || typeof IntersectionObserver === 'undefined')
+    return
   loadMoreObserver = new IntersectionObserver(
     (entries) => {
       if (entries[0]?.isIntersecting) loadMoreResults()
@@ -523,8 +889,13 @@ function exitSearch() {
 
 function epcColor(rating: string): string {
   const map: Record<string, string> = {
-    A: '#00b050', B: '#33b800', C: '#92d050', D: '#a39200',
-    E: '#e08a00', F: '#ff6600', G: '#ff0000',
+    A: '#00b050',
+    B: '#33b800',
+    C: '#92d050',
+    D: '#a39200',
+    E: '#e08a00',
+    F: '#ff6600',
+    G: '#ff0000',
   }
   return map[(rating ?? '').toUpperCase()] ?? '#8e8e93'
 }
@@ -582,14 +953,21 @@ function hsColor(score: number): string {
 // page (this batch of results, or the property's own EPC/HomeScore), not
 // invented. No "N schools within 1 mile" style line: there's no schools
 // data anywhere in this app to back that claim honestly. ──
-interface Insight { text: string; tone: 'good' | 'warn' | 'info' }
+interface Insight {
+  text: string
+  tone: 'good' | 'warn' | 'info'
+}
 function insightFor(p: any): Insight | null {
   const s = stateOf(p)
   if (s === 'unclaimed') {
     const pool = displayedProperties.value
     const claimedCount = pool.filter((x) => x.hasPassport).length
-    if (claimedCount === 0) return { text: 'Be the first on this street', tone: 'info' }
-    return { text: `${claimedCount} of ${pool.length} homes here claimed`, tone: 'info' }
+    if (claimedCount === 0)
+      return { text: 'Be the first on this street', tone: 'info' }
+    return {
+      text: `${claimedCount} of ${pool.length} homes here claimed`,
+      tone: 'info',
+    }
   }
   const hs = homeScoreOf(p)
   if (hs == null) return null
@@ -619,10 +997,18 @@ const sortOptions: { value: SortKey; label: string }[] = [
   { value: 'homescore_desc', label: 'HomeScore: high to low' },
 ]
 const sortLabel = computed(
-  () => sortOptions.find((o) => o.value === sortBy.value)?.label.replace(/:.*/, '') ?? 'Sort',
+  () =>
+    sortOptions
+      .find((o) => o.value === sortBy.value)
+      ?.label.replace(/:.*/, '') ?? 'Sort',
 )
 
-const ALL_STATES: ResultState[] = ['unclaimed', 'private', 'partiallyPublic', 'public']
+const ALL_STATES: ResultState[] = [
+  'unclaimed',
+  'private',
+  'partiallyPublic',
+  'public',
+]
 const passportStates = ref<Set<ResultState>>(new Set(ALL_STATES))
 const passportStateOptions: { value: ResultState; label: string }[] = [
   { value: 'unclaimed', label: 'Unclaimed' },
@@ -660,7 +1046,9 @@ function togglePropertyType(v: string) {
   }
   const cur = propertyTypes.value.filter((x) => x !== 'any')
   propertyTypes.value = cur.includes(v)
-    ? (cur.filter((x) => x !== v).length ? cur.filter((x) => x !== v) : ['any'])
+    ? cur.filter((x) => x !== v).length
+      ? cur.filter((x) => x !== v)
+      : ['any']
     : [...cur, v]
 }
 const bedsOptions: { value: number | null; label: string }[] = [
@@ -673,8 +1061,10 @@ const bedsOptions: { value: number | null; label: string }[] = [
 ]
 const minBeds = ref<number | null>(null)
 const epcOptions = [
-  { value: 'A', label: 'A' }, { value: 'B', label: 'B+' },
-  { value: 'C', label: 'C+' }, { value: 'D', label: 'D+' },
+  { value: 'A', label: 'A' },
+  { value: 'B', label: 'B+' },
+  { value: 'C', label: 'C+' },
+  { value: 'D', label: 'D+' },
 ]
 const minEpc = ref<string | null>(null)
 
@@ -693,19 +1083,29 @@ function applyServerFilters() {
   if (searchQuery.value.trim()) doSearch()
 }
 watch(minHomeScore, () => {
-  activeFilters.value = { ...activeFilters.value, minHomeScore: minHomeScore.value }
+  activeFilters.value = {
+    ...activeFilters.value,
+    minHomeScore: minHomeScore.value,
+  }
   if (searchQuery.value.trim()) doSearch()
 })
 
 // Sort + passport-state filter apply to whatever's currently loaded —
 // re-derived whenever the underlying list, sort, or filter changes.
 const displayedProperties = computed(() => {
-  let list = searchProperties.value.filter((p) => passportStates.value.has(stateOf(p)))
+  let list = searchProperties.value.filter((p) =>
+    passportStates.value.has(stateOf(p)),
+  )
   const sorted = [...list]
   if (sortBy.value === 'price_asc') {
-    sorted.sort((a, b) => (a.estimatedPrice ?? Infinity) - (b.estimatedPrice ?? Infinity))
+    sorted.sort(
+      (a, b) => (a.estimatedPrice ?? Infinity) - (b.estimatedPrice ?? Infinity),
+    )
   } else if (sortBy.value === 'price_desc') {
-    sorted.sort((a, b) => (b.estimatedPrice ?? -Infinity) - (a.estimatedPrice ?? -Infinity))
+    sorted.sort(
+      (a, b) =>
+        (b.estimatedPrice ?? -Infinity) - (a.estimatedPrice ?? -Infinity),
+    )
   } else if (sortBy.value === 'homescore_desc') {
     sorted.sort((a, b) => (homeScoreOf(b) ?? -1) - (homeScoreOf(a) ?? -1))
   }
@@ -717,7 +1117,8 @@ const displayedProperties = computed(() => {
 const watchedIds = ref<Set<string>>(new Set())
 const authGateOpen = ref(false)
 async function onWatchClick(prop: any) {
-  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) {
     authGateOpen.value = true
     return
@@ -760,7 +1161,9 @@ async function initResultsMap() {
   }
   mapboxgl.accessToken = (config.public.mapboxToken as string) || ''
 
-  const withCoords = displayedProperties.value.filter((p) => p.latitude != null && p.longitude != null)
+  const withCoords = displayedProperties.value.filter(
+    (p) => p.latitude != null && p.longitude != null,
+  )
   const centre = withCoords[0]
     ? [withCoords[0].longitude, withCoords[0].latitude]
     : [-1.5491, 52.4068] // Coventry-ish fallback so an empty/no-coords batch still renders a map
@@ -785,15 +1188,19 @@ function renderMapMarkers(mapboxgl: any) {
   for (const prop of displayedProperties.value) {
     if (prop.latitude == null || prop.longitude == null) continue
     const stateColor: Record<ResultState, string> = {
-      unclaimed: '#06b6d4',
-      private: '#f59e0b',
-      partiallyPublic: '#3b82f6',
-      public: '#1e3a8a',
+      unclaimed: '#00a19a',
+      private: '#f5510b',
+      partiallyPublic: '#9185d6',
+      public: '#231d45',
     }
     const el = document.createElement('div')
-    el.style.cssText = `width:16px;height:16px;border-radius:50%;background:${stateColor[stateOf(prop)]};border:2.5px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.35);cursor:pointer;`
+    el.style.cssText = `width:16px;height:16px;border-radius:50%;background:${
+      stateColor[stateOf(prop)]
+    };border:2.5px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.35);cursor:pointer;`
     el.addEventListener('click', () => navigateTo('/property/' + prop.id))
-    const marker = new mapboxgl.Marker({ element: el }).setLngLat([prop.longitude, prop.latitude]).addTo(mapInstance)
+    const marker = new mapboxgl.Marker({ element: el })
+      .setLngLat([prop.longitude, prop.latitude])
+      .addTo(mapInstance)
     mapMarkers.push(marker)
   }
 }
@@ -984,16 +1391,16 @@ watch(displayedProperties, () => {
   margin-top: 1px;
 }
 .prop-badge-pp.unclaimed {
-  background: #06b6d4;
+  background: #00a19a;
 }
 .prop-badge-pp.private {
-  background: #f59e0b;
+  background: #f5510b;
 }
 .prop-badge-pp.partiallyPublic {
-  background: #3b82f6;
+  background: #9185d6;
 }
 .prop-badge-pp.public {
-  background: #1e3a8a;
+  background: #231d45;
 }
 .prop-photo-count {
   position: absolute;
@@ -1447,7 +1854,13 @@ watch(displayedProperties, () => {
 .psr-slider::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 999px;
-  background: linear-gradient(to right, #00a19a 0%, #00a19a var(--fill, 0%), #e5e7eb var(--fill, 0%), #e5e7eb 100%);
+  background: linear-gradient(
+    to right,
+    #00a19a 0%,
+    #00a19a var(--fill, 0%),
+    #e5e7eb var(--fill, 0%),
+    #e5e7eb 100%
+  );
 }
 .psr-slider::-webkit-slider-thumb {
   -webkit-appearance: none;

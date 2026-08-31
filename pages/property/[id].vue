@@ -8521,8 +8521,8 @@ function formatSaleDate(dateStr: string): string {
    with the address title, not as a photo overlay. */
 .pps-badge-passport {
   flex-shrink: 0;
-  background: #e3e8f7;
-  color: #1e3a8a;
+  background: #e5e3ee;
+  color: #231d45;
   border-radius: 20px;
   padding: 5px 11px;
   font-size: 10px;
@@ -8532,16 +8532,16 @@ function formatSaleDate(dateStr: string): string {
   margin-top: 3px;
 }
 .pps-badge-passport--unclaimed {
-  background: #d3f3f8;
-  color: #0e7490;
+  background: #e0f4f1;
+  color: #00817c;
 }
 .pps-badge-passport--private {
-  background: #fef3e2;
-  color: #b45309;
+  background: #fde8de;
+  color: #c2410c;
 }
 .pps-badge-passport--partial {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #ece9fa;
+  color: #5b4fc4;
 }
 .pps-badge-flood img {
   width: 15px;
