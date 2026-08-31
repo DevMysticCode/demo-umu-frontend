@@ -105,11 +105,6 @@
                   :show-caption="false"
                   class="prop-thumb"
                 />
-                <div class="prop-badge-pp" :class="stateOf(prop)">
-                  <svg v-if="stateOf(prop) === 'public' || stateOf(prop) === 'partiallyPublic'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
-                  <svg v-else-if="stateOf(prop) === 'private'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
-                  {{ badgeLabel(prop) }}
-                </div>
                 <div v-if="prop.images?.length" class="prop-photo-count">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="12" cy="12" r="3.5" /></svg>
                   {{ prop.images.length }}
@@ -120,9 +115,10 @@
                   <div class="prop-price">
                     {{ prop.estimatedPrice ? '£' + Math.round(prop.estimatedPrice).toLocaleString() : prop.priceDisplay || 'POA' }}
                   </div>
-                  <div v-if="prop.epcRating" class="epc-badge" :style="{ background: epcColor(prop.epcRating) }">
-                    <div class="epc-badge-label">EPC</div>
-                    <div class="epc-badge-rating">{{ prop.epcRating }}</div>
+                  <div class="prop-badge-pp" :class="stateOf(prop)">
+                    <svg v-if="stateOf(prop) === 'public' || stateOf(prop) === 'partiallyPublic'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" /></svg>
+                    <svg v-else-if="stateOf(prop) === 'private'" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                    {{ badgeLabel(prop) }}
                   </div>
                 </div>
                 <div class="prop-address">{{ prop.addressLine1 || prop.address }}</div>
@@ -132,6 +128,7 @@
                 <div class="prop-pills">
                   <span v-if="prop.propertyType || prop.type" class="pill-grey">{{ prop.propertyType || prop.type }}</span>
                   <span v-if="prop.tenure" class="pill-grey">{{ prop.tenure }}</span>
+                  <span v-if="prop.epcRating" class="epc-pill" :style="{ background: epcColor(prop.epcRating) }">EPC {{ prop.epcRating }}</span>
                 </div>
               </div>
             </div>
@@ -972,19 +969,19 @@ watch(displayedProperties, () => {
   object-fit: cover;
 }
 .prop-badge-pp {
-  position: absolute;
-  top: 7px;
-  left: 7px;
+  flex-shrink: 0;
   color: #fff;
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.02em;
-  padding: 3px 7px;
+  padding: 4px 8px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   gap: 3px;
   text-transform: uppercase;
+  white-space: nowrap;
+  margin-top: 1px;
 }
 .prop-badge-pp.unclaimed {
   background: #06b6d4;
@@ -1018,7 +1015,7 @@ watch(displayedProperties, () => {
 }
 .prop-top-price-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
@@ -1042,32 +1039,11 @@ watch(displayedProperties, () => {
   color: #94a3b8;
   margin-top: 1px;
 }
-.epc-badge {
-  min-width: 38px;
-  padding: 4px 7px;
-  border-radius: 7px;
-  color: #fff;
-  text-align: center;
-  flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-}
-.epc-badge-label {
-  font-size: 7px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  opacity: 0.85;
-  line-height: 1;
-}
-.epc-badge-rating {
-  font-size: 14px;
-  font-weight: 900;
-  line-height: 1.1;
-  margin-top: 1px;
-}
 .prop-pills {
   display: flex;
   gap: 5px;
   flex-wrap: wrap;
+  align-items: center;
   margin-top: 6px;
 }
 .pill-grey {
@@ -1077,6 +1053,15 @@ watch(displayedProperties, () => {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 999px;
+}
+.epc-pill {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
 /* ── Footer: HomeScore ring + passport status ── */
