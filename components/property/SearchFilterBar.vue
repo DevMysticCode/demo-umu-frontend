@@ -100,10 +100,14 @@
             >
               ⚡ EPC {{ addr.epcRating }}
             </span>
-            <span class="addr-badge" :class="'addr-badge--' + passportStateOf(addr)">
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
-              {{ passportStateLabel(addr) }}
-            </span>
+          </div>
+          <!-- Colored line, not a pill — "Property Passport claimed · X"
+               is too long for a chip, and a plain line wraps gracefully
+               instead of fighting a pill's fixed padding (see
+               plans/passport-status-wording-clarity.md). -->
+          <div class="addr-passport-line" :class="'addr-passport-line--' + passportStateOf(addr)">
+            <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
+            {{ passportStateFullLabel(addr) }}
           </div>
         </div>
         <div
@@ -410,12 +414,16 @@ function passportStateOf(addr: any): 'unclaimed' | 'private' | 'partiallyPublic'
   if (!addr.passportPublished) return 'private'
   return (addr.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
 }
-function passportStateLabel(addr: any): string {
+// Full "Property Passport claimed · X" phrasing — this line has real
+// room (its own row under the address), so it's where a first-time
+// viewer actually learns what the state means, rather than a bare
+// word that reads as "the property is private".
+function passportStateFullLabel(addr: any): string {
   const s = passportStateOf(addr)
-  if (s === 'unclaimed') return 'Unclaimed'
-  if (s === 'partiallyPublic') return 'Partially Public'
-  if (s === 'public') return 'Public'
-  return 'Private'
+  if (s === 'unclaimed') return 'Property Passport unclaimed'
+  if (s === 'partiallyPublic') return 'Property Passport claimed · Partially Public'
+  if (s === 'public') return 'Property Passport claimed · Public'
+  return 'Property Passport claimed · Private'
 }
 
 function epcDropColor(rating: string): string {
@@ -889,21 +897,32 @@ function clearAllFilters() {
   object-fit: contain;
   flex-shrink: 0;
 }
-.addr-badge--unclaimed {
-  background: #00a19a;
-  color: #fff;
+/* Passport-state line — colored icon + text, not a pill. "Property
+   Passport claimed · Partially Public" is too long for a chip; a plain
+   line wraps gracefully on its own row instead. */
+.addr-passport-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin-top: 4px;
 }
-.addr-badge--private {
-  background: #f5510b;
-  color: #fff;
+.addr-passport-line .addr-badge-ic {
+  filter: none;
 }
-.addr-badge--partiallyPublic {
-  background: #9185d6;
-  color: #fff;
+.addr-passport-line--unclaimed {
+  color: #00a19a;
 }
-.addr-badge--public {
-  background: #231d45;
-  color: #fff;
+.addr-passport-line--private {
+  color: #f5510b;
+}
+.addr-passport-line--partiallyPublic {
+  color: #9185d6;
+}
+.addr-passport-line--public {
+  color: #231d45;
 }
 
 /* ── Distance & filters sheet ── */
