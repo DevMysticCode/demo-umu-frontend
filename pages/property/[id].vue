@@ -1059,6 +1059,30 @@
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
 
+          <!-- ── About this estimate (the "i" beside the price) ──────
+               This sheet had a working trigger (openSheet('price-info'))
+               but no matching template branch and 'price-info' wasn't
+               even in the SheetKey union — clicking it opened an empty
+               overlay. -->
+          <template v-else-if="activeSheet === 'price-info'">
+            <div class="pps-sheet-icon">
+              <img src="/op-icons/investment/house.png" alt="" loading="lazy" />
+            </div>
+            <div class="pps-sheet-title">About this estimate</div>
+            <div class="pps-sheet-sub">
+              {{ priceSourceLabel }} — {{ property?.city || 'the local area'
+              }}'s House Price Index applied to the property's last known
+              sale price (or, where there's no recorded sale, to
+              comparable local sales) to reflect roughly what it could be
+              worth today.
+            </div>
+            <p class="pps-ds-info-note">
+              This isn't a formal valuation. For an accurate figure, get a
+              surveyor's report or a local estate agent's assessment.
+            </p>
+            <button class="pps-sheet-cancel" @click="closeSheet">Got it</button>
+          </template>
+
           <!-- ── History (Land Registry) ─────────────────────────── -->
           <template v-else-if="activeSheet === 'history'">
             <div
@@ -6213,7 +6237,12 @@ const floatClaimCta = computed<string>(() => {
       : 'View Property Passport'
   }
   if (floatClaimState.value === 'private') {
-    return 'Watch this property'
+    // "Watch this property" was a mislabel — this button (like every
+    // other state's here) just opens the explainer drawer, it doesn't
+    // watch anything directly. The real Watch action lives inside that
+    // drawer / the top "Watch this" button. "Learn More" says what it
+    // actually does.
+    return 'Learn More'
   }
   return 'Claim this property'
 })
@@ -6261,6 +6290,7 @@ function onScoreCardTap() {
 // ─── Bottom-sheet system (prototype's openSheet/closeSheet) ────────────────
 type SheetKey =
   | 'property-details'
+  | 'price-info'
   | 'history'
   | 'street'
   | 'schools'
