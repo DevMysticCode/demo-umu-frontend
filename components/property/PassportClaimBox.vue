@@ -191,7 +191,7 @@
                     class="cx-step cx-step-tap"
                     :class="{ active: activeStep === s.n }"
                     :style="{ '--cx-step-i': i }"
-                    @click="activeStep = s.n"
+                    @click="activeStep = activeStep === s.n ? null : s.n"
                   >
                     <div class="cx-step-num" :class="s.n === 1 ? 'on' : 'off'">
                       {{ s.n }}
@@ -206,18 +206,20 @@
                   />
                 </template>
               </div>
-              <div class="cx-step-detail">
-                <div class="cx-step-detail-icon">
-                  <img :src="activeStepData.icon" alt="" loading="lazy" />
-                </div>
-                <div class="cx-step-detail-body">
-                  <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
-                  <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
-                  <div class="cx-step-detail-happens">
-                    <strong>What happens:</strong> {{ activeStepData.happens }}
+              <Transition name="cx-detail">
+                <div v-if="activeStepData" class="cx-step-detail">
+                  <div class="cx-step-detail-icon">
+                    <img :src="activeStepData.icon" alt="" loading="lazy" />
+                  </div>
+                  <div class="cx-step-detail-body">
+                    <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
+                    <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                    <div class="cx-step-detail-happens">
+                      <strong>What happens:</strong> {{ activeStepData.happens }}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Transition>
               <div class="cx2-secure">
                 <div class="cx2-secure-ic-wrap">
                   <img src="/op-icons/investment/padlock.png" alt="" class="cx2-secure-ic" loading="lazy" />
@@ -313,7 +315,7 @@
                     class="cx-step cx-step-tap"
                     :class="{ active: activeStep === s.n }"
                     :style="{ '--cx-step-i': i }"
-                    @click="activeStep = s.n"
+                    @click="activeStep = activeStep === s.n ? null : s.n"
                   >
                     <div class="cx-step-num" :class="s.filled ? 'filled-teal' : 'off'">{{ s.n }}</div>
                     <div class="cx-step-name" :class="{ off: !s.filled }">{{ s.name }}</div>
@@ -321,18 +323,20 @@
                   <div v-if="i < privateJourneySteps.length - 1" class="cx-step-line" />
                 </template>
               </div>
-              <div class="cx-step-detail">
-                <div class="cx-step-detail-icon">
-                  <img :src="activeStepData.icon" alt="" loading="lazy" />
-                </div>
-                <div class="cx-step-detail-body">
-                  <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
-                  <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
-                  <div class="cx-step-detail-happens">
-                    <strong>What happens:</strong> {{ activeStepData.happens }}
+              <Transition name="cx-detail">
+                <div v-if="activeStepData" class="cx-step-detail">
+                  <div class="cx-step-detail-icon">
+                    <img :src="activeStepData.icon" alt="" loading="lazy" />
+                  </div>
+                  <div class="cx-step-detail-body">
+                    <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
+                    <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                    <div class="cx-step-detail-happens">
+                      <strong>What happens:</strong> {{ activeStepData.happens }}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Transition>
               <div class="cxd-cta-col">
                 <!-- Owner/collaborator viewing their own still-private
                      passport → straight to continue building it; everyone
@@ -394,18 +398,9 @@
                       >{{ openSheet === 'public' ? 'Claimed · Public' : 'Claimed · Partially Public' }}</span
                     >
                   </div>
-                  <div class="cx2-title">
-                    {{ openSheet === 'public' ? 'This Passport is published.' : 'This Passport is partially public.' }}
-                  </div>
-                  <div class="cx2-subtitle">
-                    {{ openSheet === 'public'
-                      ? 'A verified record for this property is now live.'
-                      : 'Some verified information for this property is now available.' }}
-                  </div>
-                  <div class="cx2-body">
-                    Buyers, tenants, agents and your solicitor can access the
-                    information you've chosen to share.
-                  </div>
+                  <div class="cx2-title">{{ publicDrawerHero.title }}</div>
+                  <div class="cx2-subtitle">{{ publicDrawerHero.subtitle }}</div>
+                  <div class="cx2-body">{{ publicDrawerBody }}</div>
                 </div>
                 <div class="cx2-header-illustration">
                   <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
@@ -420,6 +415,16 @@
                   </div>
                 </div>
               </div>
+              <!-- Owner vs. buyer framing — the one thing this drawer was
+                   entirely missing before: same content shown to everyone,
+                   whoever they were. See
+                   plans/passport-drawer-owner-vs-public.md. -->
+              <div class="cx-section-h">{{ publicDrawerReasons.title }}</div>
+              <div class="cx-reasons">
+                <div v-for="r in publicDrawerReasons.items" :key="r" class="cx-reason">
+                  <span class="cx-reason-tick">✓</span>{{ r }}
+                </div>
+              </div>
               <div class="cx-section-h">Passport journey</div>
               <div class="cx-steps">
                 <template v-for="(s, i) in publishedJourneySteps" :key="s.n">
@@ -427,7 +432,7 @@
                     class="cx-step cx-step-tap"
                     :class="{ active: activeStep === s.n }"
                     :style="{ '--cx-step-i': i }"
-                    @click="activeStep = s.n"
+                    @click="activeStep = activeStep === s.n ? null : s.n"
                   >
                     <div class="cx-step-num filled-teal">✓</div>
                     <div class="cx-step-name">{{ s.name }}</div>
@@ -435,18 +440,20 @@
                   <div v-if="i < publishedJourneySteps.length - 1" class="cx-step-line" />
                 </template>
               </div>
-              <div class="cx-step-detail">
-                <div class="cx-step-detail-icon">
-                  <img :src="activeStepData.icon" alt="" loading="lazy" />
-                </div>
-                <div class="cx-step-detail-body">
-                  <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
-                  <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
-                  <div class="cx-step-detail-happens">
-                    <strong>What happens:</strong> {{ activeStepData.happens }}
+              <Transition name="cx-detail">
+                <div v-if="activeStepData" class="cx-step-detail">
+                  <div class="cx-step-detail-icon">
+                    <img :src="activeStepData.icon" alt="" loading="lazy" />
+                  </div>
+                  <div class="cx-step-detail-body">
+                    <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
+                    <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                    <div class="cx-step-detail-happens">
+                      <strong>What happens:</strong> {{ activeStepData.happens }}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Transition>
               <div class="cx-section-h">
                 {{ openSheet === 'public' ? 'Included in this published Passport' : 'Included so far' }}
               </div>
@@ -618,6 +625,74 @@ const pct = computed(() =>
   Math.max(0, Math.min(100, Math.round(props.progressPct ?? 0))),
 )
 
+// Owner vs. buyer framing for the partiallyPublic/public drawer — this
+// used to be the exact same copy for everyone regardless of who was
+// looking, which was the core critique in
+// plans/passport-drawer-owner-vs-public.md. Same structure either way
+// (hero + one supporting line + a 3-line reasons block), just written
+// for who's actually reading it.
+const publicDrawerHero = computed(() => {
+  const isPublic = openSheet.value === 'public'
+  if (props.isOwnerOrCollaborator) {
+    return isPublic
+      ? {
+          title: 'Your Property Passport is now live',
+          subtitle: 'Your verified property record has been published.',
+        }
+      : {
+          title: 'Your Property Passport is partially public',
+          subtitle: 'Some of your verified information is now live.',
+        }
+  }
+  return isPublic
+    ? {
+        title: 'This property has a live Property Passport',
+        subtitle: 'Verified information shared by the homeowner.',
+      }
+    : {
+        title: 'This property has partial Passport information',
+        subtitle: 'Some verified information has been shared by the homeowner.',
+      }
+})
+const publicDrawerBody = computed(() =>
+  props.isOwnerOrCollaborator
+    ? 'You control exactly what buyers, tenants, agents and your solicitor can see.'
+    : "Buyers, tenants, agents and solicitors can access the information the owner has chosen to share.",
+)
+const publicDrawerReasons = computed(() => {
+  const isPublic = openSheet.value === 'public'
+  if (props.isOwnerOrCollaborator) {
+    return {
+      title: 'What happens now',
+      items: isPublic
+        ? [
+            'Buyers can view your published information',
+            "You stay in control of what's shared",
+            'You can keep updating your Passport anytime',
+          ]
+        : [
+            "Buyers can see what you've shared so far",
+            "You stay in control of what's shared",
+            "Publish more, or the full record, whenever you're ready",
+          ],
+    }
+  }
+  return {
+    title: 'Why this matters',
+    items: isPublic
+      ? [
+          'See key property information sooner',
+          'Understand more before you make contact',
+          'Watch for future updates',
+        ]
+      : [
+          "See what's available so far",
+          'Understand more before you make contact',
+          'Get notified as more is added',
+        ],
+  }
+})
+
 const publishedDateLabel = computed(() => {
   if (!props.publishedAt) return 'Published'
   const d = new Date(props.publishedAt)
@@ -745,21 +820,21 @@ const stepDetails: Record<
     icon: '/op-icons/misc/eye.png',
   },
 }
-const activeStep = ref(1)
-const activeStepData = computed(
-  () => stepDetails[activeStep.value] ?? stepDetails[1],
+// No step pre-selected — the detail panel starts collapsed on every
+// drawer and only appears once the visitor taps a step number
+// themselves (previously a step was auto-highlighted per state with
+// its detail always showing; now it's opt-in and animated in).
+const activeStep = ref<number | null>(null)
+const activeStepData = computed(() =>
+  activeStep.value != null ? (stepDetails[activeStep.value] ?? null) : null,
 )
-// Each drawer opens with a different step pre-selected — whichever one
-// is most relevant to that state — while still using the exact same
-// tappable stepper + shared master copy for all four steps.
-watch(
-  () => props.openSheet,
-  (v) => {
-    if (v === 'private') activeStep.value = 3
-    else if (v === 'partiallyPublic' || v === 'public') activeStep.value = 4
-    else if (v) activeStep.value = 1
-  },
-)
+// Collapse back to nothing every time a drawer opens (covers both
+// headless mode, where the parent drives `openSheet`, and normal mode,
+// where tapping the colored box drives it locally) — otherwise a step
+// left open from a previous visit would still show on the next open.
+watch(openSheet, (v) => {
+  if (v) activeStep.value = null
+})
 
 // Step-circle fill states for the private / partiallyPublic / public
 // drawers — distinct from `unclaimedSteps` above (which stays tap-to-switch
@@ -1529,6 +1604,36 @@ function onPrimary(action: PrimaryAction) {
 .cx-stats--3col .cx-stat-label {
   font-size: 8.5px;
 }
+/* "Why this matters" / "What happens now" — owner vs. buyer framing on
+   the partiallyPublic/public drawer. */
+.cx-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 22px 4px;
+}
+.cx-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.35;
+}
+.cx-reason-tick {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-pale);
+  color: var(--accent-dark);
+  font-size: 10px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  margin-top: 1px;
+}
 .cx-section-h {
   font-size: 10px;
   font-weight: 800;
@@ -1745,6 +1850,29 @@ function onPrimary(action: PrimaryAction) {
   background: var(--accent-paler);
   border: 1px solid var(--accent-pale);
   border-radius: 14px;
+}
+/* Collapsed by default, animates open when a step is tapped. max-height
+   is an approximate cap (generous enough for the longest step copy) —
+   the usual trick for animating an intrinsically-sized block since
+   height:auto can't be transitioned directly. */
+.cx-detail-enter-active,
+.cx-detail-leave-active {
+  transition: opacity 0.22s ease, max-height 0.28s ease, transform 0.22s ease,
+    margin 0.28s ease;
+  overflow: hidden;
+}
+.cx-detail-enter-from,
+.cx-detail-leave-to {
+  opacity: 0;
+  max-height: 0;
+  margin-top: -4px;
+  margin-bottom: -4px;
+  transform: translateY(-6px);
+}
+.cx-detail-enter-to,
+.cx-detail-leave-from {
+  opacity: 1;
+  max-height: 300px;
 }
 .cx-step-detail-icon {
   width: 68px;
