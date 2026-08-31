@@ -178,7 +178,7 @@
                 @click="onWatchClick"
               >
                 <img
-                  src="/op-icons/property/watchThis.jpeg"
+                  src="/op-icons/misc/exploreWatching.png"
                   alt=""
                   class="pps-hero-quick-ic"
                   loading="lazy"
@@ -269,19 +269,20 @@
               >
                 👀 {{ watcherCountLabel }}
               </div>
+              <div class="pps-float-claim-cta">
+                <button
+                  type="button"
+                  class="pps-float-claim-btn"
+                  @click="onFloatClaimCtaClick"
+                >
+                  {{ floatClaimCta }}
+                </button>
+                <div v-if="floatClaimMeta" class="pps-float-claim-price">
+                  {{ floatClaimMeta }}
+              </div>
             </div>
           </div>
-          <div class="pps-float-claim-cta">
-            <button
-              type="button"
-              class="pps-float-claim-btn"
-              @click="onFloatClaimCtaClick"
-            >
-              {{ floatClaimCta }}
-            </button>
-            <div v-if="floatClaimMeta" class="pps-float-claim-price">
-              {{ floatClaimMeta }}
-            </div>
+          
           </div>
         </div>
       </div>
