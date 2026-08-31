@@ -100,20 +100,9 @@
             >
               ⚡ EPC {{ addr.epcRating }}
             </span>
-            <span
-              v-if="addr.hasPassport && addr.passportPublished"
-              class="addr-badge addr-badge--pub"
-            >
+            <span class="addr-badge" :class="'addr-badge--' + passportStateOf(addr)">
               <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
-              Passport Published
-            </span>
-            <span v-else-if="addr.hasPassport" class="addr-badge addr-badge--prog">
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
-              Passport In Progress
-            </span>
-            <span v-else class="addr-badge addr-badge--unclaimed">
-              <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
-              Unclaimed · Claim yours? →
+              {{ passportStateLabel(addr) }}
             </span>
           </div>
         </div>
@@ -410,6 +399,23 @@ function selectAddress(addr: any) {
 function onEnter() {
   showDropdown.value = false
   emit('enter', props.modelValue)
+}
+
+// Same 4-state model as PropertySearchExperienceClassic.vue's
+// stateOf()/badgeLabel() — this dropdown hits the same /property/search
+// endpoint, so milestonePct is already on every result; this was just
+// never updated to read it after that model shipped.
+function passportStateOf(addr: any): 'unclaimed' | 'private' | 'partiallyPublic' | 'public' {
+  if (!addr.hasPassport) return 'unclaimed'
+  if (!addr.passportPublished) return 'private'
+  return (addr.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
+}
+function passportStateLabel(addr: any): string {
+  const s = passportStateOf(addr)
+  if (s === 'unclaimed') return 'Unclaimed'
+  if (s === 'partiallyPublic') return 'Partially Public'
+  if (s === 'public') return 'Public'
+  return 'Private'
 }
 
 function epcDropColor(rating: string): string {
@@ -883,18 +889,21 @@ function clearAllFilters() {
   object-fit: contain;
   flex-shrink: 0;
 }
-.addr-badge--pub {
-  background: #231d45;
+.addr-badge--unclaimed {
+  background: #00a19a;
   color: #fff;
 }
-.addr-badge--prog {
-  background: #fef3c7;
-  color: #92400e;
+.addr-badge--private {
+  background: #f5510b;
+  color: #fff;
 }
-.addr-badge--unclaimed {
-  background: #f0fdfa;
-  color: #00a19a;
-  border: 1px solid #e2f1ea;
+.addr-badge--partiallyPublic {
+  background: #9185d6;
+  color: #fff;
+}
+.addr-badge--public {
+  background: #231d45;
+  color: #fff;
 }
 
 /* ── Distance & filters sheet ── */
