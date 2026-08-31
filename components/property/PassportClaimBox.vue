@@ -125,7 +125,10 @@
             <template v-if="openSheet === 'unclaimed'">
               <div class="cx2-header">
                 <div class="cx2-header-text">
-                  <div class="cx2-eyebrow">Property Passport™</div>
+                  <div class="cx2-eyebrow-row">
+                    <div class="cx2-eyebrow">Property Passport™</div>
+                    <span class="cx2-state-pill cx2-state-pill--unclaimed">Unclaimed</span>
+                  </div>
                   <div class="cx2-title">Your home's permanent record.</div>
                   <div class="cx2-subtitle">Build it once. Keep it for life.</div>
                   <div class="cx2-body">
@@ -259,7 +262,10 @@
             <template v-else-if="openSheet === 'private'">
               <div class="cx2-header">
                 <div class="cx2-header-text">
-                  <div class="cx2-eyebrow">Property Passport™</div>
+                  <div class="cx2-eyebrow-row">
+                    <div class="cx2-eyebrow">Property Passport™</div>
+                    <span class="cx2-state-pill cx2-state-pill--private">Claimed · Private</span>
+                  </div>
                   <div class="cx2-title">This Passport is private.</div>
                   <div class="cx2-subtitle">Want to know if that changes?</div>
                   <div class="cx2-body">
@@ -380,7 +386,14 @@
             <template v-else>
               <div class="cx2-header">
                 <div class="cx2-header-text">
-                  <div class="cx2-eyebrow">Property Passport™</div>
+                  <div class="cx2-eyebrow-row">
+                    <div class="cx2-eyebrow">Property Passport™</div>
+                    <span
+                      class="cx2-state-pill"
+                      :class="openSheet === 'public' ? 'cx2-state-pill--public' : 'cx2-state-pill--partial'"
+                      >{{ openSheet === 'public' ? 'Claimed · Public' : 'Claimed · Partially Public' }}</span
+                    >
+                  </div>
                   <div class="cx2-title">
                     {{ openSheet === 'public' ? 'This Passport is published.' : 'This Passport is partially public.' }}
                   </div>
@@ -1174,6 +1187,16 @@ function onPrimary(action: PrimaryAction) {
   padding: 6px;
   box-sizing: border-box;
 }
+.cx2-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.cx2-eyebrow-row .cx2-eyebrow {
+  margin-bottom: 0;
+}
 .cx2-eyebrow {
   font-size: 9px;
   font-weight: 800;
@@ -1181,6 +1204,33 @@ function onPrimary(action: PrimaryAction) {
   text-transform: uppercase;
   color: var(--accent-dark);
   margin-bottom: 6px;
+}
+/* Explicit state label beside the eyebrow — spells out "claimed" +
+   the visibility state right at the top of the drawer, rather than
+   leaving it implied by the narrative title below (see
+   plans/passport-status-wording-clarity.md). */
+.cx2-state-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: #fff;
+  white-space: nowrap;
+}
+.cx2-state-pill--unclaimed {
+  background: #00a19a;
+}
+.cx2-state-pill--private {
+  background: #f5510b;
+}
+.cx2-state-pill--partial {
+  background: #9185d6;
+}
+.cx2-state-pill--public {
+  background: #231d45;
 }
 .cx2-title {
   font-size: 21px;

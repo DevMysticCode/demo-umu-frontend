@@ -109,12 +109,15 @@
                   'pps-badge-passport--partial': floatClaimState === 'partiallyPublic',
                 }"
               >
-                <template v-if="floatClaimState === 'unclaimed'">UNCLAIMED</template>
-                <template v-else-if="floatClaimState === 'private'">PRIVATE</template>
-                <template v-else-if="floatClaimState === 'partiallyPublic'"
-                  >PARTIALLY PUBLIC</template
-                >
-                <template v-else>✓ PUBLIC</template>
+                <div class="pps-badge-passport-cap">Passport</div>
+                <div class="pps-badge-passport-val">
+                  <template v-if="floatClaimState === 'unclaimed'">Unclaimed</template>
+                  <template v-else-if="floatClaimState === 'private'">Private</template>
+                  <template v-else-if="floatClaimState === 'partiallyPublic'"
+                    >Partially Public</template
+                  >
+                  <template v-else>Public</template>
+                </div>
               </div>
             </div>
             <div class="pps-identity-suburb">
@@ -6119,9 +6122,9 @@ const floatClaimState = computed<
   return (s?.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
 })
 const floatClaimTitle = computed<string>(() => {
-  if (floatClaimState.value === 'public') return 'Property Passport available'
-  if (floatClaimState.value === 'partiallyPublic') return 'Property Passport partially public'
-  if (floatClaimState.value === 'private') return 'This Passport is private'
+  if (floatClaimState.value === 'public') return 'Property Passport claimed · Public'
+  if (floatClaimState.value === 'partiallyPublic') return 'Property Passport claimed · Partially Public'
+  if (floatClaimState.value === 'private') return 'Property Passport claimed · Private'
   return (property.value?.streetClaimedCount ?? 0) > 0
     ? 'Be one of the first on this street'
     : 'Be the first on this street'
@@ -8519,17 +8522,34 @@ function formatSaleDate(dateStr: string): string {
 }
 /* Colour-inverted variant for the price pill/state badge — used inline
    with the address title, not as a photo overlay. */
+/* Two-row badge — "Passport" caption on top, state word below — so it
+   reads as "the PASSPORT is private", never "the property is private".
+   See plans/passport-status-wording-clarity.md. */
 .pps-badge-passport {
   flex-shrink: 0;
   background: #e5e3ee;
   color: #231d45;
-  border-radius: 20px;
-  padding: 5px 11px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.4px;
+  border-radius: 12px;
+  padding: 4px 10px 5px;
   white-space: nowrap;
   margin-top: 3px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+.pps-badge-passport-cap {
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+.pps-badge-passport-val {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  line-height: 1.1;
 }
 .pps-badge-passport--unclaimed {
   background: #e0f4f1;

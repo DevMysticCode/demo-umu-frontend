@@ -207,39 +207,42 @@
                     }}
                   </div>
                   <div class="prop-badge-pp" :class="stateOf(prop)">
-                    <svg
-                      v-if="
-                        stateOf(prop) === 'public' ||
-                        stateOf(prop) === 'partiallyPublic'
-                      "
-                      width="10"
-                      height="10"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z"
-                      />
-                    </svg>
-                    <svg
-                      v-else-if="stateOf(prop) === 'private'"
-                      width="10"
-                      height="10"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <rect x="4" y="10" width="16" height="10" rx="2" />
-                      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                    </svg>
-                    {{ badgeLabel(prop) }}
+                    <div class="prop-badge-pp-cap">
+                      <svg
+                        v-if="
+                          stateOf(prop) === 'public' ||
+                          stateOf(prop) === 'partiallyPublic'
+                        "
+                        width="8"
+                        height="8"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z"
+                        />
+                      </svg>
+                      <svg
+                        v-else-if="stateOf(prop) === 'private'"
+                        width="8"
+                        height="8"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <rect x="4" y="10" width="16" height="10" rx="2" />
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                      </svg>
+                      Passport
+                    </div>
+                    <div class="prop-badge-pp-val">{{ badgeLabel(prop) }}</div>
                   </div>
                 </div>
                 <div class="prop-address">
@@ -921,12 +924,16 @@ function badgeLabel(p: any): string {
   if (s === 'public') return 'Public'
   return 'Private'
 }
+// Full "Property Passport claimed · X" phrasing — the compact corner
+// badge above only has room for the bare state word, so this line is
+// where a first-time viewer actually learns what it means (see
+// plans/passport-status-wording-clarity.md).
 function stateTitle(p: any): string {
   const s = stateOf(p)
-  if (s === 'public') return 'Property Passport available'
-  if (s === 'partiallyPublic') return 'Property Passport partially public'
-  if (s === 'unclaimed') return 'This property hasn’t been claimed'
-  return 'This Passport is private'
+  if (s === 'public') return 'Property Passport claimed · Public'
+  if (s === 'partiallyPublic') return 'Property Passport claimed · Partially Public'
+  if (s === 'unclaimed') return 'Property Passport unclaimed'
+  return 'Property Passport claimed · Private'
 }
 function stateSub(p: any): string {
   const s = stateOf(p)
@@ -1375,20 +1382,39 @@ watch(displayedProperties, () => {
   height: 100%;
   object-fit: cover;
 }
+/* Two-row badge — "Passport" caption on top, state word below — so the
+   compact badge reads as "the PASSPORT is private", never "the property
+   is private". Each row is its own non-wrapping line; the capsule's
+   width auto-fits whichever row is longer per state (Partially Public
+   is the widest), so nothing wraps internally regardless of state. */
 .prop-badge-pp {
   flex-shrink: 0;
   color: #fff;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  padding: 4px 8px;
-  border-radius: 999px;
+  border-radius: 10px;
+  padding: 3px 8px 4px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+.prop-badge-pp-cap {
   display: inline-flex;
   align-items: center;
   gap: 3px;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  white-space: nowrap;
-  margin-top: 1px;
+  opacity: 0.85;
+}
+.prop-badge-pp-val {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.1;
 }
 .prop-badge-pp.unclaimed {
   background: #00a19a;
@@ -1546,9 +1572,7 @@ watch(displayedProperties, () => {
   font-size: 12.5px;
   font-weight: 700;
   color: #231d45;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3;
 }
 .fp-sub {
   font-size: 11.5px;
