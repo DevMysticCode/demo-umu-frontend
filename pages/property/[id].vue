@@ -104,15 +104,21 @@
               <div
                 class="pps-badge-passport"
                 :class="{
-                  'pps-badge-passport--unclaimed': floatClaimState === 'unclaimed',
+                  'pps-badge-passport--unclaimed':
+                    floatClaimState === 'unclaimed',
                   'pps-badge-passport--private': floatClaimState === 'private',
-                  'pps-badge-passport--partial': floatClaimState === 'partiallyPublic',
+                  'pps-badge-passport--partial':
+                    floatClaimState === 'partiallyPublic',
                 }"
               >
                 <div class="pps-badge-passport-cap">Passport</div>
                 <div class="pps-badge-passport-val">
-                  <template v-if="floatClaimState === 'unclaimed'">Unclaimed</template>
-                  <template v-else-if="floatClaimState === 'private'">Private</template>
+                  <template v-if="floatClaimState === 'unclaimed'"
+                    >Unclaimed</template
+                  >
+                  <template v-else-if="floatClaimState === 'private'"
+                    >Private</template
+                  >
                   <template v-else-if="floatClaimState === 'partiallyPublic'"
                     >Partially Public</template
                   >
@@ -263,10 +269,7 @@
                 {{ floatClaimExplainerLabel }}
                 <span class="pps-float-claim-explain-q">?</span>
               </span>
-              <div
-                v-if="watcherCountLabel"
-                class="pps-float-claim-watchers"
-              >
+              <div v-if="watcherCountLabel" class="pps-float-claim-watchers">
                 👀 {{ watcherCountLabel }}
               </div>
               <div class="pps-float-claim-cta">
@@ -279,10 +282,9 @@
                 </button>
                 <div v-if="floatClaimMeta" class="pps-float-claim-price">
                   {{ floatClaimMeta }}
+                </div>
               </div>
             </div>
-          </div>
-          
           </div>
         </div>
       </div>
@@ -492,237 +494,239 @@
       </div>
 
       <template v-if="false">
-      <div v-if="pageState === 'progress'" class="pps-passport-card">
-        <div class="pps-score-blob-tr" />
-        <div class="pps-score-blob-bl" />
-        <div class="pps-passport-eyebrow-row">
-          <span class="pps-passport-eyebrow"
-            ><span
-              class="pps-passport-eyebrow-dot"
-              style="background: #00a19a"
-            />Property Passport</span
-          >
-          <span
-            class="pps-passport-price-pill"
-            style="background: #e6f7f6; color: #007e78; border-color: #b2e4e1"
-            >In progress</span
-          >
-        </div>
-        <div class="pps-passport-title" style="color: #00a19a">
-          Passport being built
-        </div>
-        <div class="pps-passport-explain pps-passport-explain--progress">
-          <div style="flex: 1">
-            <div class="pps-passport-explain-eyebrow" style="color: #007e78">
-              Stop buying blind
-            </div>
-            <div class="pps-passport-explain-body" style="color: #2a5c58">
-              This Passport is being built right now — so when you make your
-              move, the answers are already there.
-            </div>
-          </div>
-          <button
-            type="button"
-            class="pps-explain-btn"
-            style="background: #00a19a"
-            @click.stop="openSheet('explain-progress')"
-            aria-label="Why a Property Passport"
-          >
-            ?
-          </button>
-        </div>
-
-        <div class="pps-progress-bar-wrap">
-          <div
-            class="pps-progress-bar-fill"
-            :style="{
-              width: progressPct + '%',
-              background: 'linear-gradient(90deg, #00a19a, #4DD4CE)',
-            }"
-          />
-        </div>
-        <div class="pps-progress-label">{{ progressPct }}% complete</div>
-
-        <div class="pps-passport-features">
-          <div
-            v-for="f in passportFeatures"
-            :key="f.title"
-            class="pps-passport-feature"
-          >
-            <div
-              class="pps-feature-icon"
-              :class="
-                f.verified
-                  ? 'pps-feature-icon--verified'
-                  : 'pps-feature-icon--locked'
-              "
+        <div v-if="pageState === 'progress'" class="pps-passport-card">
+          <div class="pps-score-blob-tr" />
+          <div class="pps-score-blob-bl" />
+          <div class="pps-passport-eyebrow-row">
+            <span class="pps-passport-eyebrow"
+              ><span
+                class="pps-passport-eyebrow-dot"
+                style="background: #00a19a"
+              />Property Passport</span
             >
-              <svg
-                v-if="f.verified"
-                width="14"
-                height="11"
-                viewBox="0 0 14 11"
-                fill="none"
-              >
-                <path
-                  d="M1.5 5.5L5.5 9.5L12.5 1.5"
-                  stroke="#00b6ae"
-                  stroke-width="2.2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <svg
-                v-else
-                width="12"
-                height="14"
-                viewBox="0 0 12 14"
-                fill="none"
-                stroke="#c0bdcc"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="1.5" y="6" width="9" height="7" rx="2" />
-                <path d="M3.5 6V4a2.5 2.5 0 0 1 5 0v2" />
-              </svg>
+            <span
+              class="pps-passport-price-pill"
+              style="background: #e6f7f6; color: #007e78; border-color: #b2e4e1"
+              >In progress</span
+            >
+          </div>
+          <div class="pps-passport-title" style="color: #00a19a">
+            Passport being built
+          </div>
+          <div class="pps-passport-explain pps-passport-explain--progress">
+            <div style="flex: 1">
+              <div class="pps-passport-explain-eyebrow" style="color: #007e78">
+                Stop buying blind
+              </div>
+              <div class="pps-passport-explain-body" style="color: #2a5c58">
+                This Passport is being built right now — so when you make your
+                move, the answers are already there.
+              </div>
             </div>
-            <div>
+            <button
+              type="button"
+              class="pps-explain-btn"
+              style="background: #00a19a"
+              @click.stop="openSheet('explain-progress')"
+              aria-label="Why a Property Passport"
+            >
+              ?
+            </button>
+          </div>
+
+          <div class="pps-progress-bar-wrap">
+            <div
+              class="pps-progress-bar-fill"
+              :style="{
+                width: progressPct + '%',
+                background: 'linear-gradient(90deg, #00a19a, #4DD4CE)',
+              }"
+            />
+          </div>
+          <div class="pps-progress-label">{{ progressPct }}% complete</div>
+
+          <div class="pps-passport-features">
+            <div
+              v-for="f in passportFeatures"
+              :key="f.title"
+              class="pps-passport-feature"
+            >
               <div
+                class="pps-feature-icon"
                 :class="
                   f.verified
-                    ? 'pps-feature-text-title--verified'
-                    : 'pps-feature-text-title--locked'
+                    ? 'pps-feature-icon--verified'
+                    : 'pps-feature-icon--locked'
                 "
               >
-                {{ f.title }}
-              </div>
-              <div class="pps-feature-text-sub">{{ f.sub }}</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CTA: owner/collaborator gets a "continue building" path; everyone
-             else sees the original "notify me on publish" watch CTA. -->
-        <button
-          type="button"
-          class="pps-passport-cta"
-          style="
-            background: #00a19a;
-            box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
-            color: white;
-          "
-          @click="onProgressCtaClick"
-        >
-          <template v-if="isPassportOwnerOrCollab">
-            <img
-              src="/op-icons/homescore/clipboard.png"
-              alt=""
-              class="inline-ic"
-              loading="lazy"
-            />
-            Continue building your Passport →
-          </template>
-          <template v-else
-            ><img
-              src="/op-icons/misc/bell.png"
-              alt=""
-              class="inline-ic"
-              loading="lazy"
-            />
-            Get notified when published →</template
-          >
-        </button>
-        <div class="pps-passport-cta-sub">
-          <template v-if="isPassportOwnerOrCollab">
-            <template v-if="progressPct > 0">
-              You're {{ progressPct }}% complete — tap to finish your remaining
-              sections.
-            </template>
-            <template v-else>
-              Open your Passport to start filling in sections.
-            </template>
-          </template>
-          <template v-else>
-            We'll alert you the moment this Passport goes live.
-          </template>
-        </div>
-      </div>
-
-      <div
-        v-else
-        class="pps-passport-card pps-passport-card--clickable"
-        role="button"
-        tabindex="0"
-        @click="onAccessPassport"
-      >
-        <div class="pps-score-blob-tr" />
-        <div class="pps-score-blob-bl" />
-        <div class="pps-passport-eyebrow-row">
-          <span class="pps-passport-eyebrow"
-            ><span class="pps-passport-eyebrow-dot" />Property Passport</span
-          >
-          <span class="pps-passport-price-pill">£99 →</span>
-        </div>
-
-        <div class="pps-passport-title">This home's Passport</div>
-        <div class="pps-passport-explain pps-passport-explain--published">
-          <div style="flex: 1">
-            <div class="pps-passport-explain-eyebrow" style="color: #b07a1c">
-              The HPI check for your home
-            </div>
-            <div class="pps-passport-explain-body" style="color: #6b4c1a">
-              The verified record that should have always existed — and now it
-              does.
-            </div>
-          </div>
-          <button
-            type="button"
-            class="pps-explain-btn"
-            style="background: #d4822a"
-            @click.stop="openSheet('explain-published')"
-            aria-label="Why a Property Passport"
-          >
-            ?
-          </button>
-        </div>
-
-        <div class="pps-progress-bar-wrap">
-          <div class="pps-progress-bar-fill" style="width: 100%" />
-        </div>
-        <div class="pps-progress-label">100% complete — Passport live</div>
-
-        <div class="pps-passport-features">
-          <div
-            v-for="f in publishedFeatures"
-            :key="f.title"
-            class="pps-passport-feature"
-          >
-            <div class="pps-feature-icon pps-feature-icon--verified">
-              <svg width="14" height="11" viewBox="0 0 14 11" fill="none">
-                <path
-                  d="M1.5 5.5L5.5 9.5L12.5 1.5"
-                  stroke="#00b6ae"
-                  stroke-width="2.2"
+                <svg
+                  v-if="f.verified"
+                  width="14"
+                  height="11"
+                  viewBox="0 0 14 11"
+                  fill="none"
+                >
+                  <path
+                    d="M1.5 5.5L5.5 9.5L12.5 1.5"
+                    stroke="#00b6ae"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <svg
+                  v-else
+                  width="12"
+                  height="14"
+                  viewBox="0 0 12 14"
+                  fill="none"
+                  stroke="#c0bdcc"
+                  stroke-width="1.6"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                />
-              </svg>
+                >
+                  <rect x="1.5" y="6" width="9" height="7" rx="2" />
+                  <path d="M3.5 6V4a2.5 2.5 0 0 1 5 0v2" />
+                </svg>
+              </div>
+              <div>
+                <div
+                  :class="
+                    f.verified
+                      ? 'pps-feature-text-title--verified'
+                      : 'pps-feature-text-title--locked'
+                  "
+                >
+                  {{ f.title }}
+                </div>
+                <div class="pps-feature-text-sub">{{ f.sub }}</div>
+              </div>
             </div>
-            <div>
-              <div class="pps-feature-text-title--verified">{{ f.title }}</div>
-              <div class="pps-feature-text-sub">{{ f.sub }}</div>
-            </div>
+          </div>
+
+          <!-- CTA: owner/collaborator gets a "continue building" path; everyone
+             else sees the original "notify me on publish" watch CTA. -->
+          <button
+            type="button"
+            class="pps-passport-cta"
+            style="
+              background: #00a19a;
+              box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
+              color: white;
+            "
+            @click="onProgressCtaClick"
+          >
+            <template v-if="isPassportOwnerOrCollab">
+              <img
+                src="/op-icons/homescore/clipboard.png"
+                alt=""
+                class="inline-ic"
+                loading="lazy"
+              />
+              Continue building your Passport →
+            </template>
+            <template v-else
+              ><img
+                src="/op-icons/misc/bell.png"
+                alt=""
+                class="inline-ic"
+                loading="lazy"
+              />
+              Get notified when published →</template
+            >
+          </button>
+          <div class="pps-passport-cta-sub">
+            <template v-if="isPassportOwnerOrCollab">
+              <template v-if="progressPct > 0">
+                You're {{ progressPct }}% complete — tap to finish your
+                remaining sections.
+              </template>
+              <template v-else>
+                Open your Passport to start filling in sections.
+              </template>
+            </template>
+            <template v-else>
+              We'll alert you the moment this Passport goes live.
+            </template>
           </div>
         </div>
 
         <div
-          class="pps-passport-cta-sub"
-          style="margin-top: 14px; text-align: left"
+          v-else
+          class="pps-passport-card pps-passport-card--clickable"
+          role="button"
+          tabindex="0"
+          @click="onAccessPassport"
         >
-          Secure payment · Instant access · No subscription
+          <div class="pps-score-blob-tr" />
+          <div class="pps-score-blob-bl" />
+          <div class="pps-passport-eyebrow-row">
+            <span class="pps-passport-eyebrow"
+              ><span class="pps-passport-eyebrow-dot" />Property Passport</span
+            >
+            <span class="pps-passport-price-pill">£99 →</span>
+          </div>
+
+          <div class="pps-passport-title">This home's Passport</div>
+          <div class="pps-passport-explain pps-passport-explain--published">
+            <div style="flex: 1">
+              <div class="pps-passport-explain-eyebrow" style="color: #b07a1c">
+                The HPI check for your home
+              </div>
+              <div class="pps-passport-explain-body" style="color: #6b4c1a">
+                The verified record that should have always existed — and now it
+                does.
+              </div>
+            </div>
+            <button
+              type="button"
+              class="pps-explain-btn"
+              style="background: #d4822a"
+              @click.stop="openSheet('explain-published')"
+              aria-label="Why a Property Passport"
+            >
+              ?
+            </button>
+          </div>
+
+          <div class="pps-progress-bar-wrap">
+            <div class="pps-progress-bar-fill" style="width: 100%" />
+          </div>
+          <div class="pps-progress-label">100% complete — Passport live</div>
+
+          <div class="pps-passport-features">
+            <div
+              v-for="f in publishedFeatures"
+              :key="f.title"
+              class="pps-passport-feature"
+            >
+              <div class="pps-feature-icon pps-feature-icon--verified">
+                <svg width="14" height="11" viewBox="0 0 14 11" fill="none">
+                  <path
+                    d="M1.5 5.5L5.5 9.5L12.5 1.5"
+                    stroke="#00b6ae"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div>
+                <div class="pps-feature-text-title--verified">
+                  {{ f.title }}
+                </div>
+                <div class="pps-feature-text-sub">{{ f.sub }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="pps-passport-cta-sub"
+            style="margin-top: 14px; text-align: left"
+          >
+            Secure payment · Instant access · No subscription
+          </div>
         </div>
-      </div>
       </template>
 
       <!-- ─── SECTION 8: Running Costs ─────────────────────────────── -->
@@ -1070,11 +1074,11 @@
             </div>
             <div class="pps-sheet-title">About this estimate</div>
             <div class="pps-sheet-sub">
-              {{ priceSourceLabel }} — {{ property?.city || 'the local area'
-              }}'s House Price Index applied to the property's last known
-              sale price (or, where there's no recorded sale, to
-              comparable local sales) to reflect roughly what it could be
-              worth today.
+              {{ priceSourceLabel }} —
+              {{ property?.city || 'the local area' }}'s House Price Index
+              applied to the property's last known sale price (or, where there's
+              no recorded sale, to comparable local sales) to reflect roughly
+              what it could be worth today.
             </div>
             <p class="pps-ds-info-note">
               This isn't a formal valuation. For an accurate figure, get a
@@ -6146,9 +6150,12 @@ const floatClaimState = computed<
   return (s?.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
 })
 const floatClaimTitle = computed<string>(() => {
-  if (floatClaimState.value === 'public') return 'Property Passport claimed · Public'
-  if (floatClaimState.value === 'partiallyPublic') return 'Property Passport claimed · Partially Public'
-  if (floatClaimState.value === 'private') return 'Property Passport claimed · Private'
+  if (floatClaimState.value === 'public')
+    return 'Property Passport claimed · Public'
+  if (floatClaimState.value === 'partiallyPublic')
+    return 'Property Passport claimed · Partially Public'
+  if (floatClaimState.value === 'private')
+    return 'Property Passport claimed · Private'
   return (property.value?.streetClaimedCount ?? 0) > 0
     ? 'Be one of the first on this street'
     : 'Be the first on this street'
@@ -6212,7 +6219,10 @@ const floatClaimEmphasis = computed<string>(() =>
 // passport-status-wording-clarity.md for why that's worth fixing:
 // the state name alone isn't self-explanatory to a first-time viewer).
 const floatClaimExplainerLabel = computed<string>(() => {
-  if (floatClaimState.value === 'partiallyPublic' || floatClaimState.value === 'public') {
+  if (
+    floatClaimState.value === 'partiallyPublic' ||
+    floatClaimState.value === 'public'
+  ) {
     return "What's inside the Passport?"
   }
   if (floatClaimState.value === 'private') {
@@ -6221,7 +6231,11 @@ const floatClaimExplainerLabel = computed<string>(() => {
   return ''
 })
 function onFloatClaimExplainerClick() {
-  if (floatClaimState.value === 'partiallyPublic' || floatClaimState.value === 'public' || floatClaimState.value === 'private') {
+  if (
+    floatClaimState.value === 'partiallyPublic' ||
+    floatClaimState.value === 'public' ||
+    floatClaimState.value === 'private'
+  ) {
     claimExplainerSheet.value = floatClaimState.value
   }
 }
@@ -6250,7 +6264,10 @@ const floatClaimMeta = computed<string>(() => {
   // Deliberately no completion % surfaced here in any state — that stays
   // owner-only. Partially-public and public share the same access price;
   // there's no cheaper tier for an incomplete Passport today.
-  if (floatClaimState.value === 'public' || floatClaimState.value === 'partiallyPublic') {
+  if (
+    floatClaimState.value === 'public' ||
+    floatClaimState.value === 'partiallyPublic'
+  ) {
     return isPassportOwnerOrCollab.value || passportStatus.value?.canAccess
       ? ''
       : '£99'
@@ -8133,7 +8150,10 @@ onMounted(async () => {
       // separate from recordExplored above (that's localStorage, feeds
       // discover.vue only, and isn't gated on login). Fire-and-forget;
       // guests have no user row to attach this to.
-      if (typeof localStorage !== 'undefined' && localStorage.getItem('token')) {
+      if (
+        typeof localStorage !== 'undefined' &&
+        localStorage.getItem('token')
+      ) {
         fetch(`${apiBase}/property/${propertyId}/record-view`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -8321,7 +8341,8 @@ function onClaimCtaClick() {
 // typewriter placeholder running) so the next thing they do is search,
 // same as a logged-out user landing on Discover's search would.
 function goBack() {
-  const isAuthed = typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
+  const isAuthed =
+    typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
   navigateTo(isAuthed ? '/dashboard?focusSearch=1' : '/discover')
 }
 
@@ -8889,6 +8910,7 @@ function formatSaleDate(dateStr: string): string {
   align-items: center;
   justify-content: space-between;
   gap: 6px 10px;
+  margin-top: 10px;
 }
 .pps-float-claim-btn {
   flex-shrink: 0;
