@@ -4276,6 +4276,7 @@
       :open="watchDrawerOpen"
       :address-label="property?.addressLine1 || ''"
       :submitting="watchSubmitting"
+      :passport-state="floatClaimState"
       @close="watchDrawerOpen = false"
       @submit="onWatchDrawerSubmit"
     />

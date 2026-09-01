@@ -1176,6 +1176,7 @@
     <WatchPropertyDrawer
       :open="watchDrawerOpen"
       :address-label="property?.addressLine1 || ''"
+      :passport-state="watchDrawerPassportState"
       @close="watchDrawerOpen = false"
       @submit="onWatchSubmit"
     />
@@ -1349,6 +1350,25 @@ const passportState = computed<'unclaimed' | 'progress' | 'published'>(() => {
   if (claimed) return 'progress'
   return 'unclaimed'
 })
+
+// Separate, finer-grained state just for WatchPropertyDrawer's toggle
+// filtering — deliberately not merged into `passportState` above, which
+// drives several other template branches on this page under the older
+// 3-way model and shouldn't change meaning. Mirrors property/[id].vue's
+// floatClaimState computed exactly.
+const watchDrawerPassportState = computed<
+  'unclaimed' | 'private' | 'partiallyPublic' | 'public'
+>(() => {
+  const s = passportStatus.value
+  const p: any = property.value
+  const claimed = s?.isClaimed || p?.isClaimed || s?.hasPassport || p?.hasPassport || false
+  if (!claimed) return 'unclaimed'
+  const isPublished =
+    s?.isPublished || s?.passportStatus === 'PUBLISHED' || p?.passportPublished || false
+  if (!isPublished) return 'private'
+  return (s?.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
+})
+
 const passportProgressPct = computed(() => {
   const p = passportStatus.value?.passportProgress
   return p?.completionPct ?? 0
