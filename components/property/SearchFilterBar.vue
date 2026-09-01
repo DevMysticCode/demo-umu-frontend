@@ -105,22 +105,25 @@
             {{ passportStateFullLabel(addr) }}
           </div>
         </div>
-        <div v-if="(addr.homeScore ?? addr.epcScore) != null" class="addr-hs-gauge">
-          <svg viewBox="0 0 40 40">
-            <circle class="addr-hs-gauge-bg" cx="20" cy="20" r="16" />
-            <circle
-              class="addr-hs-gauge-fill"
-              cx="20"
-              cy="20"
-              r="16"
-              :stroke="hsDropColor(addr.homeScore ?? addr.epcScore)"
-              stroke-dasharray="100.5"
-              :stroke-dashoffset="100.5 - (Math.min(addr.homeScore ?? addr.epcScore, 100) / 100) * 100.5"
-            />
-          </svg>
-          <span class="addr-hs-gauge-num" :style="{ color: hsDropColor(addr.homeScore ?? addr.epcScore) }">{{
-            addr.homeScore ?? addr.epcScore
-          }}</span>
+        <div v-if="(addr.homeScore ?? addr.epcScore) != null" class="addr-hs-col">
+          <span class="addr-hs-caption">HomeScore</span>
+          <div class="addr-hs-gauge">
+            <svg viewBox="0 0 40 40">
+              <circle class="addr-hs-gauge-bg" cx="20" cy="20" r="16" />
+              <circle
+                class="addr-hs-gauge-fill"
+                cx="20"
+                cy="20"
+                r="16"
+                :stroke="hsDropColor(addr.homeScore ?? addr.epcScore)"
+                stroke-dasharray="100.5"
+                :stroke-dashoffset="100.5 - (Math.min(addr.homeScore ?? addr.epcScore, 100) / 100) * 100.5"
+              />
+            </svg>
+            <span class="addr-hs-gauge-num" :style="{ color: hsDropColor(addr.homeScore ?? addr.epcScore) }">{{
+              addr.homeScore ?? addr.epcScore
+            }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -853,7 +856,22 @@ function clearAllFilters() {
 }
 /* HomeScore gauge — replaces the old bare "55 / HS" number+label pair
    with an actual ring, matching the mini-ring pattern used on the
-   search-list card footer. */
+   search-list card footer. Captioned "HomeScore" above so the ring
+   isn't a mystery number with no label. */
+.addr-hs-col {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.addr-hs-caption {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #9c98ad;
+}
 .addr-hs-gauge {
   position: relative;
   width: 38px;
