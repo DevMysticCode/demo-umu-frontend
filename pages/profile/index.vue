@@ -505,6 +505,7 @@ const logout = async () => {
       localStorage.removeItem('token')
       localStorage.removeItem('redirectAfterLogin')
     }
+    clearSessionFlag()
     showLogoutModal.value = false
     isLoggingOut.value = false
     await navigateTo('/onboarding/signin?reason=logout', { replace: true })
@@ -530,6 +531,7 @@ const deleteAccount = async () => {
       localStorage.removeItem('redirectAfterLogin')
       sessionStorage.clear()
     }
+    clearSessionFlag()
     showDeleteModal.value = false
     isDeletingAccount.value = false
     await navigateTo('/onboarding/signup', { replace: true })
