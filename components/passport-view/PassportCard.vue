@@ -195,7 +195,7 @@ const aspectRatio = computed(() => ASPECT_RATIOS[props.type] ?? ASPECT_RATIOS.SE
      high, overlapping the house icon) anywhere that rendered the cover at
      its natural proportions instead. */
   position: absolute;
-  bottom: 20%;
+  bottom: 23%;
   left: 50%;
   transform: translateX(-50%);
   width: 76%;
