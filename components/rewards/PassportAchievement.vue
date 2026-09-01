@@ -48,7 +48,7 @@
                 />
                 <Transition name="pa-fade">
                   <div v-if="stampStep === 'lifting' || stampStep === 'done'" class="pa-impression">
-                    <StampFrame :title="achievementTitle" :size="120" />
+                    <StampFrame :title="achievementTitle" :size="96" />
                   </div>
                 </Transition>
               </div>
@@ -438,18 +438,18 @@ onBeforeUnmount(() => {
   display: block;
 }
 
-/* Stamp lands on the right-hand page of the opened passport (measured
-   against the opening video's actual last frame: the right page spans
-   roughly x 52-89%, y 16-82% of the frame — this box sits inset within
-   that). Horizontally centered on the whole spread rather than the right
-   page specifically, nudged slightly left of dead-center per feedback. */
+/* Stamp lands on the LEFT-hand page of the opened passport (measured
+   against the opening video's actual last frame: the left page spans
+   roughly x 11-48%, y 16-82% of the frame — this box sits inset within
+   that, so the stamp reads as fully on the left page rather than
+   straddling the spine into the middle of the spread). */
 .pa-stamp-area {
   position: absolute;
   z-index: 4;
   top: 20%;
-  bottom: 22%;
-  left: 26%;
-  right: 40%;
+  bottom: 30%;
+  left: 14%;
+  right: 54%;
   display: flex;
   align-items: center;
   justify-content: center;
