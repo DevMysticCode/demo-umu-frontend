@@ -7,7 +7,7 @@
           <path d="M19 12H5M12 5l-7 7 7 7" />
         </svg>
       </button>
-      <div class="sd-nav-centre">Sign your Profile</div>
+      <div class="sd-nav-centre">Sign your Passport</div>
       <span
         class="sd-nav-right"
         :class="{ disabled: !canClear }"
@@ -20,7 +20,7 @@
     <!-- Intro -->
     <div class="sd-intro">
       <p>
-        Sign below to confirm this profile is accurate and you authorise its
+        Sign below to confirm this passport is accurate and you authorise its
         sharing. Your signature will be embedded in the PDF.
       </p>
     </div>
@@ -69,7 +69,7 @@
 
     <!-- Legal note -->
     <div class="sd-legal">
-      By signing you confirm this profile is accurate. Your digital signature
+      By signing you confirm this passport is accurate. Your digital signature
       is timestamp-verified by UMU and embedded in the PDF as a legally
       recognised electronic signature under eIDAS regulation.
     </div>
@@ -96,7 +96,7 @@ import {
 } from '~/composables/useBuyerProfile'
 import { useProfile } from '~/composables/useProfile'
 
-definePageMeta({ title: 'Sign Profile — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Sign Passport — UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile, signProfile } = useBuyerProfile()

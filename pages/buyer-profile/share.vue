@@ -7,7 +7,7 @@
           <path d="M19 12H5M12 5l-7 7 7 7" />
         </svg>
       </button>
-      <div class="sh-nav-centre">Share Profile</div>
+      <div class="sh-nav-centre">Share Passport</div>
       <span class="sh-nav-right" @click="goView">Done</span>
     </div>
 
@@ -157,7 +157,7 @@
       <span class="sec-label">DOWNLOAD YOUR PROFILE</span>
       <!-- Preview card -->
       <div class="sh-pdf-preview">
-        <div class="sh-pdf-eyebrow">UMU BUYER PROFILE</div>
+        <div class="sh-pdf-eyebrow">UMU BUYER PASSPORT</div>
         <div class="sh-pdf-tagline">"Trusted, ready, chain-free."</div>
         <div class="sh-pdf-name">{{ displayName }}</div>
         <div class="sh-pdf-pills">
@@ -187,7 +187,7 @@ import {
 import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 
-definePageMeta({ title: 'Share Profile — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Share Passport — UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile, listShares, revokeShare, createShare } = useBuyerProfile()
@@ -426,7 +426,7 @@ async function downloadQr() {
   }
   const a = document.createElement('a')
   a.href = qrDataUrl.value
-  a.download = `umu-buyer-profile-qr-${linkShareToken.value ?? 'share'}.png`
+  a.download = `umu-buyer-passport-qr-${linkShareToken.value ?? 'share'}.png`
   a.click()
   showToast({ message: 'QR saved', iconEmoji: '📥' })
 }

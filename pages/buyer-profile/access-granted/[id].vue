@@ -46,7 +46,7 @@
 
     <!-- Actions -->
     <div class="ag-actions">
-      <button class="cta-btn" @click="goView">Back to my profile</button>
+      <button class="cta-btn" @click="goView">Back to my passport</button>
       <button class="cta-btn outline" @click="goShare">
         Manage all access →
       </button>

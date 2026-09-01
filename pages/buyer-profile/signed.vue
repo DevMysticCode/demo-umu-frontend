@@ -3,7 +3,7 @@
     <!-- Celebration hero -->
     <div class="sn-hero">
       <div class="sn-emoji"><img src="/op-icons/misc/signature.png" alt="" loading="lazy" /></div>
-      <h2 class="sn-title">Profile signed</h2>
+      <h2 class="sn-title">Passport signed</h2>
       <p class="sn-sub">
         Your digital signature has been embedded. The PDF is now ready to share
         or download.
@@ -40,7 +40,7 @@
       <button class="cta-btn outline" @click="goSendAgent">
         ⤴ Share with agent
       </button>
-      <button class="sn-ghost" @click="goView">Back to my profile</button>
+      <button class="sn-ghost" @click="goView">Back to my passport</button>
     </div>
   </div>
 </template>
@@ -53,7 +53,7 @@ import {
 } from '~/composables/useBuyerProfile'
 import { useProfile } from '~/composables/useProfile'
 
-definePageMeta({ title: 'Profile Signed — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Passport Signed — UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile } = useBuyerProfile()

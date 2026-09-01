@@ -92,7 +92,7 @@
         </div>
       </div>
       <div class="ar-revoke-note">
-        You can revoke access at any time from your profile
+        You can revoke access at any time from your passport
       </div>
 
       <!-- Actions (only when pending) -->
@@ -115,7 +115,7 @@
 
       <!-- Actions (post-decision) -->
       <div v-else class="ar-actions">
-        <button class="cta-btn" @click="goView">Back to my profile</button>
+        <button class="cta-btn" @click="goView">Back to my passport</button>
       </div>
     </template>
   </div>
