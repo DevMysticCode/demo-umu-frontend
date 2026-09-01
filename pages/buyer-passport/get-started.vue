@@ -186,7 +186,16 @@ async function handleLogin() {
     // has a JWT — drain the cached one now that we do.
     const { syncTokenAfterSignin } = usePushNotifications()
     await syncTokenAfterSignin()
-    await navigateTo(REDIRECT_TARGET)
+    // replace, not push — this page has `middleware: 'guest'`, which
+    // force-redirects any authenticated visit away (to /dashboard, via a
+    // full external reload). Leaving get-started reachable by a later
+    // back-tap means that reload can fire mid-back-navigation, which
+    // browsers handle inconsistently and can strand the user with no way
+    // forward (reported: build -> view -> back -> stuck). Replacing here
+    // removes get-started from history the moment login succeeds, so
+    // back from /buyer-profile/view falls through to its own
+    // useGoBack('/profile') fallback instead.
+    await navigateTo(REDIRECT_TARGET, { replace: true })
   } catch {
     loginError.value = 'Incorrect email or password. Please try again.'
   } finally {
