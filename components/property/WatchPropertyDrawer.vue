@@ -125,9 +125,9 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 // after) — no backend change needed for any of this.
 const ALL_TRIGGERS = {
   claimed: { key: 'claimed', icon: 'ownerClaim', title: 'Owner claims this property', sub: "You'll be notified the moment they verify ownership." },
-  progress: { key: 'progress', icon: 'passportProgress', title: 'Passport progress milestones', sub: 'Get a ping at 25% / 50% / 75% as their Passport is built.' },
+  progress: { key: 'progress', icon: 'passportProgress', title: 'Passport goes Partially Public', sub: "We'll let you know as soon as it's live to view — even before every section is finished." },
   updated: { key: 'progress', icon: 'passportProgress', title: 'Passport updated', sub: "We'll let you know if the owner adds or changes anything." },
-  published: { key: 'published', icon: 'passportPublished', title: 'Passport published', sub: "We'll notify you when it goes live and you can access it." },
+  published: { key: 'published', icon: 'passportPublished', title: 'Passport becomes Public', sub: "We'll notify you when it's fully public and you can access everything." },
   comparables: { key: 'comparables', icon: 'comparableSales', title: 'Comparable sales nearby', sub: "Weekly update if there's new Land Registry data." },
   homescore: { key: 'homescore', icon: 'homescoreChanges', title: 'HomeScore changes', sub: "We'll let you know if the public HomeScore goes up or down." },
 } as const
@@ -136,8 +136,10 @@ const ALL_TRIGGERS = {
 // - unclaimed: nothing's been built yet, so no progress/updated toggle;
 //   claiming and publishing are both still real future events.
 // - private: claimed already (no 'claimed' toggle); still pre-publish, so
-//   the original 25/50/75% build-progress framing fits, and publishing is
-//   still a real future event.
+//   both "goes Partially Public" and "becomes Public" are real future
+//   events — no build-progress % pings exist on the backend, so the
+//   'progress' toggle is worded around the actual Partially Public state
+//   instead of a fake 25/50/75% milestone ping.
 // - partiallyPublic: already claimed AND already published (that's what
 //   "partially public" means under the Private/Partially Public/Public
 //   model — live, just incomplete) — so neither 'claimed' nor 'published'
