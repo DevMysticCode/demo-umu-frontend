@@ -163,6 +163,7 @@ export const useCreateAccountData = () => {
 
       if (response.token) {
         localStorage.setItem('token', response.token)
+        setSessionFlag()
         // Drain any pre-login push token cache so new signups also
         // get notifications without waiting for an app restart.
         const { syncTokenAfterSignin } = usePushNotifications()

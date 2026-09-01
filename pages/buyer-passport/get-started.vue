@@ -182,6 +182,7 @@ async function handleLogin() {
   try {
     const response: any = await login(emailInput.value, passwordInput.value)
     localStorage.setItem('token', response.token)
+    setSessionFlag()
     // Native push tokens are registered on app boot, before the user
     // has a JWT — drain the cached one now that we do.
     const { syncTokenAfterSignin } = usePushNotifications()

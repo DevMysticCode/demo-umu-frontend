@@ -98,6 +98,7 @@ export const useVerificationCode = () => {
           password,
         })
         localStorage.setItem('token', regRes.token)
+        setSessionFlag()
         sessionStorage.removeItem('umu-pending-email')
         // OTP-driven signup completes here too — flush any cached push
         // token so notifications work on the very first session.

@@ -218,6 +218,7 @@ const logout = async () => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("token");
   }
+  clearSessionFlag();
   await navigateTo("/onboarding/signin");
 };
 </script>

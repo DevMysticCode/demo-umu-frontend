@@ -402,6 +402,7 @@ async function confirmDeleteAccount() {
       localStorage.removeItem('redirectAfterLogin')
       sessionStorage.clear()
     }
+    clearSessionFlag()
     await navigateTo('/onboarding/signup', { replace: true })
   } catch (err: any) {
     deleteError.value = err?.data?.message ?? err?.message ?? 'Could not delete account'
