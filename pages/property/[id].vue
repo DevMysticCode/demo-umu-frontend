@@ -447,48 +447,52 @@
         </div>
         <div class="pps-keepgoing-cards">
           <div class="pps-keepgoing-card">
-            <img
-              src="/op-icons/misc/passportFanReversed.png"
-              alt=""
-              class="pps-keepgoing-card-ic pps-keepgoing-card-ic--fan"
-              loading="lazy"
-            />
-            <div class="pps-keepgoing-card-body">
-              <div class="pps-keepgoing-card-title">Explore passports</div>
-              <div class="pps-keepgoing-card-sub">
-                Discover how Property, Buyer, and Tenant Passports keep key
-                information organized, verified, and reusable.
+            <div class="pps-keepgoing-card-top">
+              <img
+                src="/op-icons/misc/passportFanReversed.png"
+                alt=""
+                class="pps-keepgoing-card-ic pps-keepgoing-card-ic--fan"
+                loading="lazy"
+              />
+              <div class="pps-keepgoing-card-body">
+                <div class="pps-keepgoing-card-title">Explore passports</div>
+                <div class="pps-keepgoing-card-sub">
+                  Discover how Property, Buyer, and Tenant Passports keep key
+                  information organized, verified, and reusable.
+                </div>
               </div>
-              <button
-                type="button"
-                class="pps-keepgoing-card-btn"
-                @click="passportEcosystemOpen = true"
-              >
-                Explore passports
-              </button>
             </div>
+            <button
+              type="button"
+              class="pps-keepgoing-card-btn"
+              @click="passportEcosystemOpen = true"
+            >
+              Explore passports
+            </button>
           </div>
           <div class="pps-keepgoing-card">
-            <img
-              src="/op-icons/misc/exploreLocation.png"
-              alt=""
-              class="pps-keepgoing-card-ic"
-              loading="lazy"
-            />
-            <div class="pps-keepgoing-card-body">
-              <div class="pps-keepgoing-card-title">Explore more homes</div>
-              <div class="pps-keepgoing-card-sub">
-                Compare property listings, review HomeScores, and analyze
-                comprehensive neighborhood data near you.
+            <div class="pps-keepgoing-card-top">
+              <img
+                src="/op-icons/misc/exploreLocation.png"
+                alt=""
+                class="pps-keepgoing-card-ic"
+                loading="lazy"
+              />
+              <div class="pps-keepgoing-card-body">
+                <div class="pps-keepgoing-card-title">Explore more homes</div>
+                <div class="pps-keepgoing-card-sub">
+                  Compare property listings, review HomeScores, and analyze
+                  comprehensive neighborhood data near you.
+                </div>
               </div>
-              <button
-                type="button"
-                class="pps-keepgoing-card-btn"
-                @click="goBack"
-              >
-                Back to Explore
-              </button>
             </div>
+            <button
+              type="button"
+              class="pps-keepgoing-card-btn"
+              @click="goBack"
+            >
+              Back to Explore
+            </button>
           </div>
         </div>
       </div>
@@ -8736,7 +8740,7 @@ function formatSaleDate(dateStr: string): string {
   align-items: center;
   gap: 5px;
   font-family: inherit;
-  font-size: 10.5px;
+  font-size: 13.5px;
   font-weight: 700;
   line-height: 1.2;
   color: #1a1535;
@@ -9306,9 +9310,16 @@ function formatSaleDate(dateStr: string): string {
   flex: 1;
   min-width: 0;
   display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+/* Icon + title/description row — the button below sits as its own
+   full-width row, so centering it centers under the icon+text
+   together, not just under the text column. */
+.pps-keepgoing-card-top {
+  display: flex;
   align-items: center;
   gap: 10px;
-  text-align: left;
 }
 .pps-keepgoing-card-ic {
   width: 72px;
