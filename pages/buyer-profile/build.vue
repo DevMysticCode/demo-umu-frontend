@@ -834,7 +834,7 @@
                 ? 'Drafting…'
                 : statement.trim()
                   ? 'Rewrite my story to be warmer and clearer'
-                  : 'Let AI write a compelling story based on your profile'
+                  : 'Let AI write a compelling story based on your passport'
             }}
           </span>
           <span class="bp-ai-try">Try it ›</span>
@@ -1593,7 +1593,7 @@ async function submit() {
     }
     step.value = 8
   } catch (err: any) {
-    const msg = err?.data?.message || err?.message || 'Could not publish profile'
+    const msg = err?.data?.message || err?.message || 'Could not publish passport'
     showToast({ message: msg, iconEmoji: '⚠️' })
   } finally {
     publishing.value = false

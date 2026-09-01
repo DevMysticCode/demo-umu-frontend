@@ -7,7 +7,7 @@
           <path d="M19 12H5M12 5l-7 7 7 7" />
         </svg>
       </button>
-      <div class="pv-nav-centre">Profile PDF</div>
+      <div class="pv-nav-centre">Passport PDF</div>
       <span class="pv-nav-right" @click="goSign">
         <template v-if="passport?.signedAt">✓ Signed</template>
         <template v-else><img src="/op-icons/misc/signature.png" alt="" class="inline-ic" loading="lazy" /> Sign</template>
@@ -22,7 +22,7 @@
 
         <!-- Header (navy) -->
         <div class="pdf-header">
-          <div class="pdf-header-title">UMU BUYER PROFILE · VERIFIED DOCUMENT</div>
+          <div class="pdf-header-title">UMU BUYER PASSPORT · VERIFIED DOCUMENT</div>
           <div class="pdf-header-name">{{ displayName }}</div>
           <div class="pdf-header-ref">Ref: {{ publicRef }}</div>
           <div class="pdf-header-pills">
@@ -194,7 +194,7 @@ import {
 import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 
-definePageMeta({ title: 'Profile PDF — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Passport PDF — UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile } = useBuyerProfile()
@@ -230,7 +230,7 @@ const displayName = computed(() => {
 const publicRef = computed(
   () => (passport.value as any)?.publicRef || '—',
 )
-const canonicalShareUrl = computed(() => `umu.co/profile/${publicRef.value}`)
+const canonicalShareUrl = computed(() => `umu.co/passport/${publicRef.value}`)
 // ── Validity period ──────────────────────────────────────
 // A buyer profile is treated as fresh for 30 days from issuance. After
 // that the doc is shown as expired (still verifiable via QR — the buyer

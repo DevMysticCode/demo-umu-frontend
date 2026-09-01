@@ -87,14 +87,14 @@
     <div v-if="sentId" class="sa-confirm-wrap">
       <div class="sent-confirm">
         <div class="sent-emoji">✅</div>
-        <div class="sent-title">Profile sent!</div>
+        <div class="sent-title">Passport sent!</div>
         <div class="sent-sub">{{ sentSubLine }}</div>
         <div class="sent-foot">
           They'll receive a secure link to view your verified credentials.
         </div>
       </div>
       <div class="sa-back-cta-wrap">
-        <button class="cta-btn outline" @click="goView">Back to my profile</button>
+        <button class="cta-btn outline" @click="goView">Back to my passport</button>
       </div>
       <!-- Add another -->
       <button class="sa-add-another" @click="resetForm">+ Send to another agent</button>
@@ -152,7 +152,7 @@ function resetForm() {
 
 async function onSend() {
   if (!published.value) {
-    showToast({ message: 'Publish your profile first', iconEmoji: '⚠️' })
+    showToast({ message: 'Publish your passport first', iconEmoji: '⚠️' })
     return
   }
   if (!canSubmit.value) return

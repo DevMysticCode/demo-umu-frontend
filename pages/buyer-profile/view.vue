@@ -62,7 +62,7 @@
       <div class="bp-eyebrow-wrap">
         <div class="eyebrow-pill">
           <div class="pulse-dot" />
-          BUYER PROFILE
+          BUYER PASSPORT
         </div>
       </div>
 
@@ -105,7 +105,7 @@
       <!-- Profile completion -->
       <div class="bp-pb-wrap">
         <div class="bp-pb-row">
-          <span class="bp-pb-label">Profile completion</span>
+          <span class="bp-pb-label">Passport completion</span>
           <span class="bp-pb-pct">{{ Math.round(animatedStrength) }}%</span>
         </div>
         <div class="pb-track">
@@ -131,7 +131,7 @@
         <div class="persist-banner">
           <div class="persist-icon">♾️</div>
           <div>
-            <div class="persist-title">Your profile carries forward</div>
+            <div class="persist-title">Your passport carries forward</div>
             <div class="persist-sub">
               When you buy your next home, your verified identity and documents
               come with you — no need to reverify.
@@ -433,7 +433,7 @@
           </div>
           <div class="action-text">
             <div class="action-title">Download PDF</div>
-            <div class="action-sub">Certified profile document</div>
+            <div class="action-sub">Certified passport document</div>
           </div>
           <span class="doc-chev">›</span>
         </button>
@@ -448,7 +448,7 @@
           <div class="action-text">
             <div class="action-title">
               {{
-                passport.signedAt ? 'Re-sign profile' : 'Add digital signature'
+                passport.signedAt ? 'Re-sign passport' : 'Add digital signature'
               }}
             </div>
             <div class="action-sub">
@@ -470,7 +470,7 @@
             />
           </div>
           <div class="action-text">
-            <div class="action-title">Edit Profile</div>
+            <div class="action-title">Edit Passport</div>
             <div class="action-sub">Update your information</div>
           </div>
           <span class="doc-chev">›</span>
@@ -671,9 +671,9 @@ const hasMortgageAip = computed(() => !!passport.value?.mortgageAipVerified)
 const completionTip = computed(() => {
   if (animatedStrength.value >= 95) return ''
   if (!hasMortgageAip.value)
-    return '+ Add Mortgage AIP to strengthen your profile'
+    return '+ Add Mortgage AIP to strengthen your passport'
   if (!passport.value?.statement)
-    return '+ Add your story to strengthen your profile'
+    return '+ Add your story to strengthen your passport'
   return ''
 })
 
@@ -992,12 +992,14 @@ function goEdit() {
   margin-bottom: 14px;
 }
 .bp-hero-eyebrow {
+  font-style: normal;
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 1.2px;
   color: #00a19a;
 }
 .bp-hero-strength {
+  font-style: normal;
   font-size: 9px;
   font-weight: 800;
   background: #e5f4f2;
@@ -1036,6 +1038,7 @@ function goEdit() {
   gap: 5px;
 }
 .hero-pill {
+  font-style: normal;
   font-size: 9px;
   font-weight: 700;
   border: 1px solid #d7ece9;
