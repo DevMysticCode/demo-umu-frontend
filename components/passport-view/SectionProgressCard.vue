@@ -3,10 +3,23 @@
     <div class="spc">
       <div class="spc-row">
         <img src="/op-icons/rewards/pointsStar.png" alt="" class="spc-icon" />
-        <div class="spc-balance">{{ balance }} <em>pts</em></div>
+        <div class="spc-balance-col">
+          <div class="spc-balance">{{ balance }} <em>pts</em></div>
+          <p class="spc-balance-caption">Account total</p>
+        </div>
       </div>
       <h3 class="spc-h3">{{ sectionTitle }}</h3>
       <p class="spc-sub">{{ completedCount }} of {{ totalCount }} complete</p>
+
+      <div v-if="pointsTotal > 0" class="spc-section-points">
+        <div class="spc-section-points-row">
+          <span class="spc-section-points-label">Points in this section</span>
+          <span class="spc-section-points-value">{{ pointsEarned }} / {{ pointsTotal }} pts</span>
+        </div>
+        <div class="spc-section-points-bar">
+          <div class="spc-section-points-fill" :style="{ width: sectionPointsPercent + '%' }" />
+        </div>
+      </div>
 
       <template v-if="!sectionComplete && sectionBonusPoints > 0">
         <div class="spc-divider" />
@@ -27,11 +40,21 @@
       </template>
 
       <div class="spc-level">
+        <p class="spc-level-caption">Your overall level</p>
         <div class="spc-level-track">
           <div class="spc-level-bar">
             <div class="spc-level-fill" :style="{ width: level.progressPercent + '%' }" />
           </div>
-          <span class="spc-level-marker" :style="{ left: level.progressPercent + '%' }">★</span>
+          <svg
+            class="spc-level-marker"
+            :style="{ left: level.progressPercent + '%' }"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M12 2l2.9 6.3 6.9.8-5.1 4.8 1.4 6.8L12 17.3 5.9 20.7l1.4-6.8L2.2 9.1l6.9-.8L12 2z" />
+          </svg>
         </div>
         <p class="spc-level-text">
           <template v-if="level.next">
@@ -61,13 +84,22 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   balance: { type: Number, required: true },
   sectionTitle: { type: String, default: '' },
   completedCount: { type: Number, default: 0 },
   totalCount: { type: Number, default: 0 },
   sectionComplete: { type: Boolean, default: false },
   sectionBonusPoints: { type: Number, default: 30 },
+  // Points earned/available for just THIS section — separate from
+  // `balance`/`level` below, which are account-wide totals across every
+  // section. Without this the card only had "0 of 7 complete" (a task
+  // count) next to an account-level bar that reads as full/maxed
+  // regardless of this section's own progress once the account has
+  // leveled up from other sections — confusing, since the two numbers
+  // look related but answer different questions.
+  pointsEarned: { type: Number, default: 0 },
+  pointsTotal: { type: Number, default: 0 },
   level: {
     type: Object,
     default: () => ({ level: 1, name: 'Property Novice', progressPercent: 0, next: null }),
@@ -79,6 +111,12 @@ defineProps({
 })
 
 defineEmits(['finish-section'])
+
+const sectionPointsPercent = computed(() =>
+  props.pointsTotal > 0
+    ? Math.min(100, Math.round((props.pointsEarned / props.pointsTotal) * 100))
+    : 0,
+)
 </script>
 
 <style scoped>
@@ -117,6 +155,11 @@ defineEmits(['finish-section'])
   flex-shrink: 0;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
 }
+.spc-balance-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 .spc-balance {
   font-size: 30px;
   font-weight: 800;
@@ -129,6 +172,17 @@ defineEmits(['finish-section'])
   font-weight: 600;
   font-size: 16px;
   margin-left: 4px;
+}
+/* Clarifies this is the account-wide total, not points from just this
+   section — without it the number sits directly above "0 of 7 complete"
+   and reads as if it belongs to the section. */
+.spc-balance-caption {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .spc-h3 {
@@ -147,6 +201,47 @@ defineEmits(['finish-section'])
   color: rgba(255, 255, 255, 0.6);
   position: relative;
   z-index: 1;
+}
+
+/* Section-scoped points bar — deliberately a flat fill (not the
+   account-level bar's gradient below) and its own solid brand teal, so
+   the two bars stay visually distinguishable at a glance, not just by
+   their labels. */
+.spc-section-points {
+  margin-top: 12px;
+  position: relative;
+  z-index: 1;
+}
+.spc-section-points-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.spc-section-points-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+}
+.spc-section-points-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #5eead4;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.spc-section-points-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+.spc-section-points-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #00a19a;
+  transition: width 0.4s ease;
 }
 
 .spc-divider {
@@ -208,6 +303,16 @@ defineEmits(['finish-section'])
   position: relative;
   z-index: 1;
 }
+/* Labels the bar below as account-wide, not this section's — without it
+   "Max level reached" next to "0 of 7 complete" read as contradictory. */
+.spc-level-caption {
+  margin: 0 0 8px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
 .spc-level-track {
   position: relative;
 }
@@ -223,13 +328,15 @@ defineEmits(['finish-section'])
   background: linear-gradient(90deg, #14b8a6, #5eead4);
   transition: width 0.4s ease;
 }
+/* Gold, matching pointsStar.png and the bonus-icon star above — the
+   marker used to be a plain white text glyph with a mismatched teal
+   glow, reading as generic rather than "the same star" used everywhere
+   else points/rewards show up in this app. */
 .spc-level-marker {
   position: absolute;
   top: 50%;
-  font-size: 13px;
-  line-height: 1;
-  color: #fff;
-  text-shadow: 0 0 4px rgba(94, 234, 212, 0.9);
+  color: #fbbf24;
+  filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.7));
   transform: translate(-50%, -50%);
   transition: left 0.4s ease;
   pointer-events: none;
