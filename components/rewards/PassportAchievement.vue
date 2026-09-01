@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <Transition name="pa-overlay-fade">
-      <div v-if="visible" class="pa-overlay" role="dialog" aria-modal="true" :aria-label="achievementTitle">
+      <div v-if="visible" class="pa-overlay" :style="{ background: overlayBg }" role="dialog" aria-modal="true" :aria-label="achievementTitle">
         <!-- Reduced motion: spec §17 — skip the ceremony entirely, show a
              plain accessible confirmation instead of the book/stamp visual. -->
         <div v-if="reducedMotion" class="pa-static">
@@ -12,7 +12,7 @@
         </div>
 
         <template v-else>
-          <button class="pa-skip" type="button" aria-label="Skip" @click="skip">Skip</button>
+          <button class="pa-skip" :class="{ 'pa-skip--dark': overlayIsDark }" type="button" aria-label="Skip" @click="skip">Skip</button>
 
           <div class="pa-scene">
             <div class="pa-book">
@@ -104,6 +104,86 @@ const reducedMotion = ref(false)
 
 const openingVideoEl = ref<HTMLVideoElement | null>(null)
 
+// The opening video isn't full-bleed (capped by .pa-scene's max-width and
+// centered), so it sits as a boxed clip on the overlay. The video's own
+// footage fades its backdrop from white to black a couple of seconds in —
+// without this, the flat white .pa-overlay behind it never follows, so the
+// clip visibly "pops" into a dark box floating on a white screen instead of
+// reading as part of the same scene.
+//
+// Fixed by live-sampling a corner pixel of the actual decoded video frame
+// every animation frame and mirroring it onto the overlay's background —
+// rather than a fixed-timing CSS transition, which would drift out of sync
+// whenever autoplay is delayed by buffering (slow connection, cold cache).
+// Reading real pixels also means this keeps matching automatically if the
+// source video is ever re-exported with different timing.
+const overlayBg = ref('#ffffff')
+// Tracks whether the sampled backdrop has gone dark, so the Skip button
+// (a dark-on-light chip, legible on the white start frame) can switch to a
+// light-on-dark treatment once the overlay follows the video to black —
+// otherwise it'd fade to near-invisible for most of the ceremony.
+const overlayIsDark = ref(false)
+let sampleCanvas: HTMLCanvasElement | null = null
+let sampleCtx: CanvasRenderingContext2D | null = null
+let sampleRafId: number | null = null
+// Guards the loop rather than relying solely on cancelAnimationFrame — a
+// direct one-shot call (see the final sample in runSequence below) can
+// still have an earlier loop iteration's frame in flight, and that stray
+// callback would otherwise keep rescheduling itself forever once its id is
+// no longer the one stopSampling() knows about.
+let sampling = false
+
+// Draws a 1x1 crop of the video's top-left corner (inset from the edge,
+// clear of the book/stamp artwork at every point in the clip) into an
+// offscreen canvas and reads that pixel back — the actual decoded backdrop
+// color, not a guess. Returns false if the video has no frame data yet.
+function sampleOnce(el: HTMLVideoElement): boolean {
+  if (el.readyState < 2 || !el.videoWidth) return false
+  if (!sampleCanvas) {
+    sampleCanvas = document.createElement('canvas')
+    sampleCanvas.width = 1
+    sampleCanvas.height = 1
+    sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true })
+  }
+  if (!sampleCtx) return false
+  try {
+    const sx = el.videoWidth * 0.03
+    const sy = el.videoHeight * 0.03
+    sampleCtx.drawImage(el, sx, sy, 2, 2, 0, 0, 1, 1)
+    const [r, g, b] = sampleCtx.getImageData(0, 0, 1, 1).data
+    overlayBg.value = `rgb(${r}, ${g}, ${b})`
+    overlayIsDark.value = 0.299 * r + 0.587 * g + 0.114 * b < 128
+    return true
+  } catch {
+    /* frame not decoded yet this tick */
+    return false
+  }
+}
+
+function sampleLoop() {
+  if (!sampling) return
+  const el = openingVideoEl.value
+  if (el) sampleOnce(el)
+  sampleRafId = requestAnimationFrame(sampleLoop)
+}
+
+function startSampling() {
+  sampling = true
+  sampleRafId = requestAnimationFrame(sampleLoop)
+}
+
+// Stops the loop and takes one last direct sample so the overlay locks in
+// the video's true final color (it holds its last frame from 'ended'
+// onward) instead of whatever partial color the loop happened to leave.
+function stopSampling() {
+  sampling = false
+  if (sampleRafId != null) {
+    cancelAnimationFrame(sampleRafId)
+    sampleRafId = null
+  }
+  if (openingVideoEl.value) sampleOnce(openingVideoEl.value)
+}
+
 // Counts up 0 -> pointsAwarded (not a running balance total — the
 // redesigned points display shows just "+N Points Earned", matching the
 // reference: no card, no balance line).
@@ -145,7 +225,12 @@ async function runSequence() {
 
   phase.value = 'opening'
   await nextTick()
+  startSampling()
   await waitForVideo(openingVideoEl.value)
+  // No need to keep sampling every frame through the rest of the
+  // stamp/points/hold phases — the video holds its last frame from here on
+  // (see comment below), so the color is already settled.
+  stopSampling()
   if (cancelled) return
 
   // The opening video's element naturally holds on its final frame once
@@ -192,6 +277,11 @@ function finish() {
 
 function skip() {
   cancelled = true
+  sampling = false
+  if (sampleRafId != null) {
+    cancelAnimationFrame(sampleRafId)
+    sampleRafId = null
+  }
   openingVideoEl.value?.pause?.()
   finish()
 }
@@ -199,6 +289,8 @@ function skip() {
 function resetState() {
   phase.value = 'idle'
   stampStep.value = 'idle'
+  overlayBg.value = '#ffffff'
+  overlayIsDark.value = false
 }
 
 watch(
@@ -210,11 +302,21 @@ watch(
       if (!reducedMotion.value) runSequence()
     } else {
       cancelled = true
+      sampling = false
+      if (sampleRafId != null) {
+        cancelAnimationFrame(sampleRafId)
+        sampleRafId = null
+      }
       resetState()
     }
   },
   { immediate: true },
 )
+
+onBeforeUnmount(() => {
+  sampling = false
+  if (sampleRafId != null) cancelAnimationFrame(sampleRafId)
+})
 </script>
 
 <style scoped>
@@ -222,6 +324,9 @@ watch(
   position: fixed;
   inset: 0;
   z-index: 500;
+  /* Default/fallback — overridden by the inline :style binding (overlayBg),
+     which live-tracks the opening video's own backdrop color so the screen
+     darkens in step with the clip instead of staying flat white behind it. */
   background: #ffffff;
   display: flex;
   align-items: center;
@@ -252,6 +357,11 @@ watch(
   font-family: inherit;
   cursor: pointer;
   z-index: 2;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.pa-skip--dark {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
 }
 
 /* ── Reduced-motion static confirmation ── */
