@@ -65,6 +65,8 @@
 
       <SectionProgressCard
         :balance="progressBalance"
+        :points-earned="stepEarnedPoints"
+        :points-total="stepTotalPoints"
         :section-title="currentStep?.title || ''"
         :completed-count="completedTaskCount"
         :total-count="totalTaskCount"
@@ -270,6 +272,10 @@ const stepProgress = computed(() => {
 const stepEarnedPoints = computed(() => {
   if (!currentStep.value) return 0
   return currentStep.value.tasks.reduce((sum, task) => sum + (task.earnedPoints || 0), 0)
+})
+const stepTotalPoints = computed(() => {
+  if (!currentStep.value) return 0
+  return currentStep.value.tasks.reduce((sum, task) => sum + (task.totalPoints || 0), 0)
 })
 
 const hasNextTask = computed(() => {
