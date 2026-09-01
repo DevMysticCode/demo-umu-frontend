@@ -1361,7 +1361,14 @@ const watchDrawerPassportState = computed<
 >(() => {
   const s = passportStatus.value
   const p: any = property.value
-  const claimed = s?.isClaimed || p?.isClaimed || s?.hasPassport || p?.hasPassport || false
+  // `isClaimed` alone isn't enough — the backend sets it true the moment
+  // ownership verification succeeds, even with no passport ever created
+  // (dropped off mid-flow). That's not "claimed" in this UI's sense: there's
+  // no passport to be Private/Partial/Public about, so it must still read
+  // as Unclaimed — matching `passportState` above, which already keys
+  // purely off hasPassport for exactly this reason. Mirrors the identical
+  // fix in property/[id].vue's floatClaimState.
+  const claimed = s?.hasPassport || p?.hasPassport || false
   if (!claimed) return 'unclaimed'
   const isPublished =
     s?.isPublished || s?.passportStatus === 'PUBLISHED' || p?.passportPublished || false

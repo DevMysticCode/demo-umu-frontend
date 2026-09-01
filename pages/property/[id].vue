@@ -6149,7 +6149,14 @@ const floatClaimState = computed<
 >(() => {
   const s = passportStatus.value
   const isPublished = s?.isPublished ?? pageState.value === 'published'
-  const claimed = s?.isClaimed ?? property.value?.isClaimed ?? false
+  // `isClaimed` alone isn't enough here — the backend sets it true the
+  // moment ownership verification succeeds, even if the owner never went
+  // on to create a passport (e.g. dropped off mid-flow). That's a real,
+  // separate state from "claimed" in this UI's sense: there's no passport
+  // to be Private/Partial/Public about yet, so it must still read as
+  // Unclaimed, matching the search dropdown badge (which keys off
+  // hasPassport for exactly this reason).
+  const claimed = s?.hasPassport ?? property.value?.hasPassport ?? false
   if (!claimed) return 'unclaimed'
   if (!isPublished) return 'private'
   return (s?.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
