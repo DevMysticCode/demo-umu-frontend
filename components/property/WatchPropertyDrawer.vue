@@ -87,7 +87,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
+
+type PassportWatchState = 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
 
 const props = defineProps<{
   open: boolean
@@ -98,6 +100,13 @@ const props = defineProps<{
    *  without this the toggles always reset to the hardcoded defaults below,
    *  discarding whatever the user actually chose last time. */
   initialPrefs?: Record<string, boolean> | null
+  /** Drives which toggles actually make sense to show. Without this, every
+   *  toggle showed regardless of the property's real state — "Owner claims
+   *  this property" on an already-claimed property, "Passport published"
+   *  on an already-published one, both describing events that can never
+   *  fire again. Optional and defaults to showing everything, so a caller
+   *  that hasn't been updated yet still works exactly as before. */
+  passportState?: PassportWatchState | null
 }>()
 
 const emit = defineEmits<{
@@ -110,13 +119,44 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
   handleSelector: '.watch-grip',
 })
 
-const triggers = [
-  { key: 'claimed', icon: 'ownerClaim', title: 'Owner claims this property', sub: "You'll be notified the moment they verify ownership." },
-  { key: 'progress', icon: 'passportProgress', title: 'Passport progress milestones', sub: 'Get a ping at 25% / 50% / 75% as their Passport is built.' },
-  { key: 'published', icon: 'passportPublished', title: 'Passport published', sub: "We'll notify you when it goes live and you can access it." },
-  { key: 'comparables', icon: 'comparableSales', title: 'Comparable sales nearby', sub: "Weekly update if there's new Land Registry data." },
-  { key: 'homescore', icon: 'homescoreChanges', title: 'HomeScore changes', sub: "We'll let you know if the public HomeScore goes up or down." },
-] as const
+// 'updated' reuses the same `progress` preference key as 'progress' — it's
+// the identical underlying PropertyWatch field, just relabeled per state
+// (build-progress framing before publish, "anything changed" framing
+// after) — no backend change needed for any of this.
+const ALL_TRIGGERS = {
+  claimed: { key: 'claimed', icon: 'ownerClaim', title: 'Owner claims this property', sub: "You'll be notified the moment they verify ownership." },
+  progress: { key: 'progress', icon: 'passportProgress', title: 'Passport progress milestones', sub: 'Get a ping at 25% / 50% / 75% as their Passport is built.' },
+  updated: { key: 'progress', icon: 'passportProgress', title: 'Passport updated', sub: "We'll let you know if the owner adds or changes anything." },
+  published: { key: 'published', icon: 'passportPublished', title: 'Passport published', sub: "We'll notify you when it goes live and you can access it." },
+  comparables: { key: 'comparables', icon: 'comparableSales', title: 'Comparable sales nearby', sub: "Weekly update if there's new Land Registry data." },
+  homescore: { key: 'homescore', icon: 'homescoreChanges', title: 'HomeScore changes', sub: "We'll let you know if the public HomeScore goes up or down." },
+} as const
+
+// Which toggles apply to each real property state:
+// - unclaimed: nothing's been built yet, so no progress/updated toggle;
+//   claiming and publishing are both still real future events.
+// - private: claimed already (no 'claimed' toggle); still pre-publish, so
+//   the original 25/50/75% build-progress framing fits, and publishing is
+//   still a real future event.
+// - partiallyPublic: already claimed AND already published (that's what
+//   "partially public" means under the Private/Partially Public/Public
+//   model — live, just incomplete) — so neither 'claimed' nor 'published'
+//   applies. It can still change, though, so 'updated' replaces 'progress'.
+// - public: claimed, published, and complete — none of claimed/published/
+//   progress/updated describe a real future event; only the
+//   state-independent toggles are left.
+const TRIGGERS_BY_STATE: Record<PassportWatchState, (keyof typeof ALL_TRIGGERS)[]> = {
+  unclaimed: ['claimed', 'published', 'comparables', 'homescore'],
+  private: ['progress', 'published', 'comparables', 'homescore'],
+  partiallyPublic: ['updated', 'comparables', 'homescore'],
+  public: ['comparables', 'homescore'],
+}
+
+const triggers = computed(() => {
+  const state = props.passportState
+  const keys = state ? TRIGGERS_BY_STATE[state] : (Object.keys(ALL_TRIGGERS) as (keyof typeof ALL_TRIGGERS)[])
+  return keys.map((k) => ALL_TRIGGERS[k])
+})
 
 const DEFAULT_PREFS: Record<string, boolean> = {
   claimed: true,
