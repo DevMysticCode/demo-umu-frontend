@@ -124,6 +124,25 @@
             <SegmentedSwitch v-model="complianceView" :options="viewOptions" />
           </div>
 
+          <!-- Legislation & news rail (prototype's news-rail) — a
+               deliberately small, editorially-curated set (see NEWS_ITEMS
+               below) rather than a live feed: keeping this current is an
+               ongoing editorial commitment, not a one-time build — flagged
+               to the client alongside the rest of the passport-view report.
+               Each item links to a real, current source. -->
+          <div class="section-heading">Legislation &amp; news</div>
+          <div class="lp-news-rail">
+            <a v-for="n in NEWS_ITEMS" :key="n.url" class="lp-news-card" :href="n.url" target="_blank" rel="noopener">
+              <div class="lp-news-band" :class="`lp-news-band--${n.tag}`" />
+              <div class="lp-news-bd">
+                <span class="lp-news-tag" :class="`lp-news-tag--${n.tag}`">{{ n.tagLabel }}</span>
+                <div class="lp-news-t">{{ n.title }}</div>
+                <div class="lp-news-s">{{ n.summary }}</div>
+                <div class="lp-news-src">{{ n.source }}</div>
+              </div>
+            </a>
+          </div>
+
           <!-- LIST VIEW (existing grouped sections) -->
           <template v-if="complianceView === 'list'">
           <template v-for="group in complianceGroups" :key="group.label">
@@ -1710,6 +1729,51 @@ const drawerUploadNounCap = computed(
 // thresholds, and the conditional-action rules all ported 1:1).
 interface LegOption { t: string; d: string; ic: string; w: number; flagPro?: boolean; flagWarn?: boolean }
 interface LegQuestion { num: string; key: string; h: string; s: string; opts: LegOption[] }
+// Legislation & news rail — 5 real, current items (researched live, not
+// fabricated), each linking to its actual source. This is a curated
+// snapshot, not a live feed: someone has to keep this list current going
+// forward, or it goes stale and shows outdated law to landlords — flagged
+// to the client as an ongoing editorial commitment, separate from every
+// other item on the passport-view report, which are one-time builds.
+interface NewsItem { tag: 'law' | 'update' | 'news'; tagLabel: string; title: string; summary: string; source: string; url: string }
+const NEWS_ITEMS: NewsItem[] = [
+  {
+    tag: 'law', tagLabel: 'Law change',
+    title: "Renters' Rights Act — implementation roadmap published",
+    summary: 'Confirmed 1 May 2026 for the abolition of Section 21 and the switch to periodic tenancies. The PRS Database and Ombudsman follow in a later phase.',
+    source: 'Hogan Lovells',
+    url: 'https://www.hoganlovells.com/en/publications/renters-rights-act-implementation-roadmap-now-published',
+  },
+  {
+    tag: 'update', tagLabel: 'EPC update',
+    title: 'EPC minimum rises to C — but not until 2030',
+    summary: 'Confirmed in the Warm Homes Plan: EPC C required from 1 October 2030, under a new assessment methodology, with a £10,000 cost cap.',
+    source: 'The Independent Landlord',
+    url: 'https://theindependentlandlord.com/new-epc-rules/',
+  },
+  {
+    tag: 'update', tagLabel: 'Electrical safety',
+    title: 'Mandatory electrical checks extend to social housing',
+    summary: "Private landlords' 2021 EICRs are now hitting their 5-year expiry. Social landlords have until 1 November 2026 for their first round of checks.",
+    source: 'Browne Jacobson',
+    url: 'https://www.brownejacobson.com/insights/mandatory-electrical-safety-checks-for-social-housing-tenancies',
+  },
+  {
+    tag: 'law', tagLabel: 'Deposit rules',
+    title: 'Deposit protection now gates your Section 8 grounds',
+    summary: "Since Section 21's abolition, most Section 8 grounds can't be used unless the deposit was protected correctly — a compliance failure can now block eviction outright.",
+    source: 'NRLA',
+    url: 'https://www.nrla.org.uk/news/10-deposit-dos-and-donts-every-landlord-should-know-in-2026',
+  },
+  {
+    tag: 'news', tagLabel: 'Right to Rent',
+    title: 'New Right to Rent Code of Practice from 1 October 2026',
+    summary: "The Home Office's 7th-edition code takes effect for tenancies starting on or after 1 October 2026. Checks, methods and penalties are otherwise unchanged.",
+    source: 'GOV.UK',
+    url: 'https://www.gov.uk/government/publications/right-to-rent-landlords-code-of-practice/code-of-practice-for-landlords-and-their-agents-the-right-to-rent-scheme-for-landlords-and-their-agents-1-october-2026',
+  },
+]
+
 const LEG_QUESTIONS: LegQuestion[] = [
   {
     num: 'Water system', key: 'system',
@@ -4087,6 +4151,40 @@ const SectionCard = defineComponent({
 .lp-tn-clause { font-size: 11.5px; color: #3a3a48; margin-bottom: 7px; }
 .lp-tn-docver { text-align: center; font-size: 10px; color: #a8a9ad; font-weight: 600; margin-top: 16px; border-top: 1px solid #f0f0f4; padding-top: 10px; }
 .lp-tn-legalnote { margin: 14px 0 0; padding: 13px 15px; background: #fbf1df; border: 1px solid #f0d9a8; border-radius: 12px; font-size: 11.5px; font-weight: 600; color: #7a5500; line-height: 1.5; }
+
+/* Legislation & news rail */
+.lp-news-rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 2px 0 10px;
+  margin-bottom: 4px;
+  scroll-snap-type: x mandatory;
+}
+.lp-news-rail::-webkit-scrollbar { height: 0; }
+.lp-news-card {
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(35, 29, 65, 0.05);
+  overflow: hidden;
+  text-decoration: none;
+  display: block;
+}
+.lp-news-band { height: 5px; }
+.lp-news-band--law { background: linear-gradient(90deg, #c0492f, #992e1a); }
+.lp-news-band--update { background: linear-gradient(90deg, #00a19a, #008a84); }
+.lp-news-band--news { background: linear-gradient(90deg, #3d63c9, #2c4aa0); }
+.lp-news-bd { padding: 12px 13px 14px; }
+.lp-news-tag { font-size: 9.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 100px; }
+.lp-news-tag--law { background: #fbeae5; color: #992e1a; }
+.lp-news-tag--update { background: #f2faf8; color: #008a84; }
+.lp-news-tag--news { background: #e8edfb; color: #3d63c9; }
+.lp-news-t { font-size: 13.5px; font-weight: 700; color: #0e2840; line-height: 1.25; margin-top: 9px; letter-spacing: -0.2px; }
+.lp-news-s { font-size: 11.5px; font-weight: 500; color: #6b7089; line-height: 1.4; margin-top: 5px; }
+.lp-news-src { font-size: 10.5px; font-weight: 700; color: #a8a9ad; margin-top: 9px; }
 .lp-warn-icon {
   width: 30px; height: 30px;
   border-radius: 50%;
