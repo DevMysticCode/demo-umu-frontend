@@ -434,6 +434,13 @@ const profileItems = [
     iconImage: '/op-icons/profile/learnAdnAskAi.jpeg',
     route: '/profile/learn',
   },
+  {
+    title: 'News',
+    description: 'Property law and compliance updates that affect you.',
+    icon: 'news',
+    iconImage: '/op-icons/profile/news.png',
+    route: '/profile/news',
+  },
 ]
 
 const filteredItems = computed(() => {

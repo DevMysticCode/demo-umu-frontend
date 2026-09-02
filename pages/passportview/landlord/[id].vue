@@ -132,7 +132,7 @@
                Each item links to a real, current source. -->
           <div class="section-heading">Legislation &amp; news</div>
           <div class="lp-news-rail">
-            <a v-for="n in NEWS_ITEMS" :key="n.url" class="lp-news-card" :href="n.url" target="_blank" rel="noopener">
+            <a v-for="n in NEWS_RAIL_ITEMS" :key="n.url" class="lp-news-card" :href="n.url" target="_blank" rel="noopener">
               <div class="lp-news-band" :class="`lp-news-band--${n.tag}`" />
               <div class="lp-news-bd">
                 <span class="lp-news-tag" :class="`lp-news-tag--${n.tag}`">{{ n.tagLabel }}</span>
@@ -142,6 +142,7 @@
               </div>
             </a>
           </div>
+          <NuxtLink to="/profile/news" class="lp-news-all">See all updates ›</NuxtLink>
 
           <!-- LIST VIEW (existing grouped sections) -->
           <template v-if="complianceView === 'list'">
@@ -1729,50 +1730,11 @@ const drawerUploadNounCap = computed(
 // thresholds, and the conditional-action rules all ported 1:1).
 interface LegOption { t: string; d: string; ic: string; w: number; flagPro?: boolean; flagWarn?: boolean }
 interface LegQuestion { num: string; key: string; h: string; s: string; opts: LegOption[] }
-// Legislation & news rail — 5 real, current items (researched live, not
-// fabricated), each linking to its actual source. This is a curated
-// snapshot, not a live feed: someone has to keep this list current going
-// forward, or it goes stale and shows outdated law to landlords — flagged
-// to the client as an ongoing editorial commitment, separate from every
-// other item on the passport-view report, which are one-time builds.
-interface NewsItem { tag: 'law' | 'update' | 'news'; tagLabel: string; title: string; summary: string; source: string; url: string }
-const NEWS_ITEMS: NewsItem[] = [
-  {
-    tag: 'law', tagLabel: 'Law change',
-    title: "Renters' Rights Act — implementation roadmap published",
-    summary: 'Confirmed 1 May 2026 for the abolition of Section 21 and the switch to periodic tenancies. The PRS Database and Ombudsman follow in a later phase.',
-    source: 'Hogan Lovells',
-    url: 'https://www.hoganlovells.com/en/publications/renters-rights-act-implementation-roadmap-now-published',
-  },
-  {
-    tag: 'update', tagLabel: 'EPC update',
-    title: 'EPC minimum rises to C — but not until 2030',
-    summary: 'Confirmed in the Warm Homes Plan: EPC C required from 1 October 2030, under a new assessment methodology, with a £10,000 cost cap.',
-    source: 'The Independent Landlord',
-    url: 'https://theindependentlandlord.com/new-epc-rules/',
-  },
-  {
-    tag: 'update', tagLabel: 'Electrical safety',
-    title: 'Mandatory electrical checks extend to social housing',
-    summary: "Private landlords' 2021 EICRs are now hitting their 5-year expiry. Social landlords have until 1 November 2026 for their first round of checks.",
-    source: 'Browne Jacobson',
-    url: 'https://www.brownejacobson.com/insights/mandatory-electrical-safety-checks-for-social-housing-tenancies',
-  },
-  {
-    tag: 'law', tagLabel: 'Deposit rules',
-    title: 'Deposit protection now gates your Section 8 grounds',
-    summary: "Since Section 21's abolition, most Section 8 grounds can't be used unless the deposit was protected correctly — a compliance failure can now block eviction outright.",
-    source: 'NRLA',
-    url: 'https://www.nrla.org.uk/news/10-deposit-dos-and-donts-every-landlord-should-know-in-2026',
-  },
-  {
-    tag: 'news', tagLabel: 'Right to Rent',
-    title: 'New Right to Rent Code of Practice from 1 October 2026',
-    summary: "The Home Office's 7th-edition code takes effect for tenancies starting on or after 1 October 2026. Checks, methods and penalties are otherwise unchanged.",
-    source: 'GOV.UK',
-    url: 'https://www.gov.uk/government/publications/right-to-rent-landlords-code-of-practice/code-of-practice-for-landlords-and-their-agents-the-right-to-rent-scheme-for-landlords-and-their-agents-1-october-2026',
-  },
-]
+// Legislation & news rail — a 5-item teaser of the shared dataset (see
+// utils/landlordNews.ts, also used in full by the News page under
+// Profile). Kept as a slice here rather than its own list so the two
+// surfaces can never drift out of sync with each other.
+const NEWS_RAIL_ITEMS = NEWS_ITEMS.slice(0, 5)
 
 const LEG_QUESTIONS: LegQuestion[] = [
   {
@@ -4157,7 +4119,7 @@ const SectionCard = defineComponent({
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  padding: 2px 0 10px;
+  padding: 2px 22px 10px;
   margin-bottom: 4px;
   scroll-snap-type: x mandatory;
 }
@@ -4185,6 +4147,7 @@ const SectionCard = defineComponent({
 .lp-news-t { font-size: 13.5px; font-weight: 700; color: #0e2840; line-height: 1.25; margin-top: 9px; letter-spacing: -0.2px; }
 .lp-news-s { font-size: 11.5px; font-weight: 500; color: #6b7089; line-height: 1.4; margin-top: 5px; }
 .lp-news-src { font-size: 10.5px; font-weight: 700; color: #a8a9ad; margin-top: 9px; }
+.lp-news-all { display: block; margin: 2px 22px 4px; text-align: center; font-size: 12.5px; font-weight: 700; color: #008a84; text-decoration: none; padding: 6px; }
 .lp-warn-icon {
   width: 30px; height: 30px;
   border-radius: 50%;
