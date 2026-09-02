@@ -460,11 +460,50 @@
               <p class="lp-modal-hint">If status is unlimited (British/Irish citizen or settled status), leave "Recheck by" blank — no follow-up needed. We'll remind you 30 days before any recheck date.</p>
             </template>
 
+            <!-- Multi-copy certificate retention (client feedback 1a/3) —
+                 every uploaded copy stays on file instead of being
+                 overwritten, since a landlord may need to keep previous
+                 certificates for compliance history. -->
+            <template v-else-if="isMultiCopySection">
+              <div v-for="doc in copyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+                <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+                <div class="lp-doc-preview-info">
+                  <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                  <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}{{ doc.size ? ' · ' + doc.size : '' }}</div>
+                </div>
+                <button type="button" class="btn-secondary lp-doc-preview-btn" @click="window.open(doc.fileUrl, '_blank', 'noopener')">
+                  View
+                </button>
+                <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
+              </div>
+
+              <label class="lp-upload-row">
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+                  class="lp-upload-input"
+                  :disabled="copyUploading"
+                  @change="onCopyFilePicked"
+                />
+                <span class="lp-upload-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                </span>
+                <span class="lp-upload-text">
+                  {{ copyUploading ? 'Uploading…' : (copyDocs.length ? ('Add another ' + drawerUploadNoun) : ('Upload ' + drawerUploadNoun)) }}
+                  <small>PDF, JPG, PNG, DOCX up to 20MB</small>
+                </span>
+              </label>
+            </template>
+
             <!-- Existing document preview -->
             <div v-else-if="drawerFileUrl" class="lp-doc-preview">
               <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
               <div class="lp-doc-preview-info">
-                <div class="lp-doc-preview-name">{{ drawerDocName || 'Certificate on file' }}</div>
+                <div class="lp-doc-preview-name">{{ drawerDocName || (drawerUploadNounCap + ' on file') }}</div>
                 <div class="lp-doc-preview-meta">
                   {{ drawerExpiryLabel ? 'Expires ' + drawerExpiryLabel : 'No expiry set' }}
                 </div>
@@ -474,14 +513,14 @@
               </button>
             </div>
 
-            <template v-if="!isAlarmsSection && !isRtrSection">
+            <template v-if="!isAlarmsSection && !isRtrSection && !isMultiCopySection">
               <!-- Expiring-soon banner -->
               <div v-if="drawerExpiringSoon" class="lp-warn-banner">
                 <div class="lp-warn-icon">⚠</div>
                 <div>
                   <div class="lp-warn-title">Renewal due in {{ drawerDaysLeft }} day{{ drawerDaysLeft === 1 ? '' : 's' }}</div>
                   <div class="lp-warn-meta">
-                    Replace the certificate before {{ drawerExpiryLabel }} to stay compliant.
+                    Replace the {{ drawerUploadNoun }} before {{ drawerExpiryLabel }} to stay compliant.
                   </div>
                 </div>
               </div>
@@ -515,7 +554,7 @@
                   </svg>
                 </span>
                 <span class="lp-upload-text">
-                  {{ drawerFileUrl ? 'Replace certificate' : 'Upload certificate' }}
+                  {{ drawerFileUrl ? ('Replace ' + drawerUploadNoun) : ('Upload ' + drawerUploadNoun) }}
                   <small>PDF, JPG, PNG, DOCX up to 20MB</small>
                 </span>
               </label>
@@ -530,9 +569,13 @@
                   placeholder="e.g. Gas Safety 2026"
                 />
               </div>
+            </template>
 
-              <!-- Expiry -->
-              <div v-if="drawerDateQuestion || pendingFile" class="mform-section">
+            <!-- Expiry — shown for the generic single-slot flow (pendingFile
+                 or an existing DATE question) AND for multi-copy sections,
+                 which still track one expiry per section independent of
+                 how many certificate copies are on file. -->
+            <div v-if="drawerDateQuestion || pendingFile" class="mform-section">
                 <div class="mform-label">Expiry / next renewal date</div>
                 <input
                   v-model="drawerExpiryDraft"
@@ -544,13 +587,12 @@
                   <template v-if="drawerCadenceLabel"><b>{{ drawerCadenceLabel }}</b> — </template>we'll remind you 30 days before this date so you can stay compliant.
                 </p>
               </div>
-            </template>
 
             <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
           </div>
           <div class="lp-modal-footer">
             <button
-              v-if="pendingFile && !isAlarmsSection && !isRtrSection"
+              v-if="pendingFile && !isAlarmsSection && !isRtrSection && !isMultiCopySection"
               class="btn-secondary"
               type="button"
               :disabled="drawerUploading"
@@ -567,6 +609,16 @@
               @click="saveDrawerList"
             >
               {{ drawerListSaving ? 'Saving…' : 'Save' }}
+            </button>
+            <button
+              v-else-if="isMultiCopySection"
+              class="btn-primary"
+              type="button"
+              style="flex: 1;"
+              :disabled="drawerListSaving"
+              @click="saveMultiCopyExpiry"
+            >
+              {{ drawerListSaving ? 'Saving…' : 'Done' }}
             </button>
             <button
               v-else-if="pendingFile"
@@ -895,11 +947,22 @@ const drawerExpiryDraft = ref('')
 // storage, just holding a JSON array instead of a file.
 const isAlarmsSection = computed(() => drawerSection.value?.key === 'landlord_alarms')
 const isRtrSection = computed(() => drawerSection.value?.key === 'landlord_right_to_rent')
+const isMultiCopySection = computed(() => MULTI_COPY_SECTIONS.has(drawerSection.value?.key))
 const alarmRows = ref<
   { type: 'smoke' | 'co'; location: string; tested: string; expiry: string; present: boolean; ok: boolean }[]
 >([])
 const occupierRows = ref<{ name: string; status: string; recheckBy: string }[]>([])
 const drawerListSaving = ref(false)
+
+// Multi-copy certificate retention (client feedback 1a/3) — Gas Safety
+// and EPC specifically for now; extend this set as the same fix is
+// wanted for EICR/Insurance. Reuses UserDocument (the same signed-URL
+// upload/delete machinery as the general /documents vault) via new
+// question-scoped endpoints, rather than the single QuestionAnswer
+// .fileUrl slot the generic drawer flow overwrites on every upload.
+const MULTI_COPY_SECTIONS = new Set(['landlord_gas_safety', 'landlord_epc'])
+const copyDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
+const copyUploading = ref(false)
 
 const todayDateStr = computed(() => new Date().toISOString().slice(0, 10))
 
@@ -975,6 +1038,26 @@ const CADENCE_LABEL: Record<string, string> = {
 }
 const drawerCadenceLabel = computed(() => CADENCE_LABEL[drawerSection.value?.key] ?? '')
 
+// The generic drawer's upload button hardcoded "certificate", which is
+// only accurate for the true certificate sections. Sections whose real
+// document type isn't a certificate (a guide, an agreement, a report) get
+// their own bespoke screen once built (Legionella/Tenancy/Deposit/
+// Inventory — see the passport-view report); until each of those lands,
+// this drawer is still what they fall through to, so it needs to at
+// least name the document correctly rather than call everything a
+// "certificate". No entry here = falls back to "certificate", correct
+// for gas safety / EICR / EPC / insurance / deposit-protection cert.
+const UPLOAD_NOUN: Record<string, string> = {
+  landlord_how_to_rent: 'document',
+  landlord_ast: 'signed agreement',
+  landlord_inventory: 'document',
+  landlord_legionella: 'assessment',
+}
+const drawerUploadNoun = computed(() => UPLOAD_NOUN[drawerSection.value?.key] ?? 'certificate')
+const drawerUploadNounCap = computed(
+  () => drawerUploadNoun.value.charAt(0).toUpperCase() + drawerUploadNoun.value.slice(1),
+)
+
 // EPC auto-pull (client feedback item #3) — the property's own EPC data
 // (same enrichment pipeline used everywhere else in the app) rather than
 // asking the landlord to upload a certificate we may already have.
@@ -998,7 +1081,106 @@ function openSection(s: any) {
   const storedList = drawerUploadQuestion.value?.answer?.answerJson
   alarmRows.value = s.key === 'landlord_alarms' && Array.isArray(storedList) ? storedList : []
   occupierRows.value = s.key === 'landlord_right_to_rent' && Array.isArray(storedList) ? storedList : []
+  copyDocs.value = []
+  if (MULTI_COPY_SECTIONS.has(s.key)) loadCopyDocs()
   showSectionDrawer.value = true
+}
+
+async function loadCopyDocs() {
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    copyDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    copyDocs.value = []
+  }
+}
+
+async function onCopyFilePicked(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  ;(e.target as HTMLInputElement).value = ''
+  if (!file) return
+  const q = drawerUploadQuestion.value
+  if (!q) {
+    drawerError.value =
+      'No upload slot found for this section — this passport was created before the latest fix. Re-claim a fresh landlord passport.'
+    return
+  }
+  copyUploading.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('name', file.name.replace(/\.[^.]+$/, ''))
+    await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    await loadCopyDocs()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Upload failed'
+  } finally {
+    copyUploading.value = false
+  }
+}
+
+async function removeCopyDoc(docId: string) {
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    /* non-critical — refresh below shows current server state either way */
+  }
+  await loadCopyDocs()
+}
+
+// Multi-copy sections still track one expiry per section, independent of
+// how many certificate copies are on file — same DATE-question slot and
+// Calendar-mirroring the generic single-slot flow already uses.
+async function saveMultiCopyExpiry() {
+  if (!drawerExpiryDraft.value || !drawerDateQuestion.value) {
+    showSectionDrawer.value = false
+    return
+  }
+  drawerListSaving.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    await $fetch(`${config.public.apiBase}/questions/${drawerDateQuestion.value.id}/answer`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { value: drawerExpiryDraft.value },
+    })
+    const addr = passport.value?.addressLine1
+    await $fetch(`${config.public.apiBase}/calendar`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: {
+        title: `${drawerSection.value?.title ?? 'Compliance'} renewal due${addr ? ` — ${addr}` : ''}`,
+        date: drawerExpiryDraft.value,
+        type: 'compliance-renewal',
+        notes: 'Auto-added from your Landlord Passport compliance section.',
+        sourceRef: `landlord-compliance:${drawerSection.value?.id}`,
+      },
+    }).catch(() => {})
+    await loadPassport()
+    if (drawerSection.value) {
+      drawerSection.value = sections.value.find((s) => s.id === drawerSection.value.id) ?? drawerSection.value
+    }
+    showSectionDrawer.value = false
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Save failed'
+  } finally {
+    drawerListSaving.value = false
+  }
 }
 
 function addAlarmRow(type: 'smoke' | 'co') {
