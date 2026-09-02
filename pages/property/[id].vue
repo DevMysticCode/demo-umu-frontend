@@ -8953,10 +8953,21 @@ function formatSaleDate(dateStr: string): string {
 .pps-score-card--clickable {
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  /* Ambient "you can tap this" glow — hover alone says nothing on a
+     touch device, so the card needs to signal it's interactive on its
+     own. Slow and gentle since it runs continuously. */
+  animation: ppsScoreGlow 2.6s ease-in-out infinite;
 }
 .pps-score-card--clickable:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(35, 29, 69, 0.14);
+}
+@keyframes ppsScoreGlow {
+  0%, 100% { box-shadow: 0 4px 20px rgba(35, 29, 69, 0.1); }
+  50% { box-shadow: 0 6px 28px rgba(35, 29, 69, 0.28); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pps-score-card--clickable { animation: none; }
 }
 /* Gentle "tap for more" nudge — the card has no hover state on touch, so
    without this there was nothing telling a mobile visitor it links
@@ -9206,6 +9217,9 @@ function formatSaleDate(dateStr: string): string {
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
+  /* Same ambient tap affordance as the HomeScore card above — these
+     tiles have no hover state on a touch device either. */
+  animation: ppsTileGlow 3s ease-in-out infinite;
 }
 .pps-tile:hover {
   transform: scale(1.03);
@@ -9214,6 +9228,13 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-tile:active {
   transform: scale(0.97);
+}
+@keyframes ppsTileGlow {
+  0%, 100% { box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06); }
+  50% { box-shadow: 0 5px 18px rgba(35, 29, 69, 0.18); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pps-tile { animation: none; }
 }
 .pps-tile-icon {
   width: 32px;

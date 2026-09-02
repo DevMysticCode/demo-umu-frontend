@@ -39,17 +39,13 @@
             :show-caption="false"
             class="prop-img"
           />
-          <div
-            v-if="prop.hasPassport"
-            class="prop-badge-pp"
-            :class="prop.passportPublished ? 'published' : 'in-progress'"
-          >
+          <div class="prop-badge-pp" :class="stateOf(prop)">
             <img
               src="/op-icons/passportview/umu-passport.png"
               alt=""
               class="pp-emoji-ic"
             />
-            {{ prop.passportPublished ? 'Published' : 'In Progress' }}
+            {{ stateLabel(prop) }}
           </div>
           <div class="prop-price-tag">
             {{
@@ -165,6 +161,24 @@ const emit = defineEmits<{
 }>()
 
 const { updateProfile } = useProfile()
+
+// Same 4-state passport model as PropertySearchExperienceClassic.vue's
+// stateOf/stateTitle — was previously just "In Progress"/"Published" (and
+// hidden entirely for unclaimed), which drifted from the wording used
+// everywhere else in the app.
+type PassportCardState = 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
+function stateOf(p: any): PassportCardState {
+  if (!p.hasPassport) return 'unclaimed'
+  if (!p.passportPublished) return 'private'
+  return (p.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
+}
+function stateLabel(p: any): string {
+  const s = stateOf(p)
+  if (s === 'unclaimed') return 'Unclaimed'
+  if (s === 'partiallyPublic') return 'Claimed · Partially Public'
+  if (s === 'public') return 'Claimed · Public'
+  return 'Claimed · Private'
+}
 
 const postcodeSheetOpen = ref(false)
 const postcodeDraft = ref('')
@@ -309,11 +323,11 @@ async function savePostcode() {
   align-items: center;
   gap: 4px;
 }
-.prop-badge-pp.in-progress {
-  background: #00a19a;
-}
-.prop-badge-pp.published {
-  background: #b8791f;
+.prop-badge-pp.unclaimed,
+.prop-badge-pp.private,
+.prop-badge-pp.partiallyPublic,
+.prop-badge-pp.public {
+  background: #231d45;
 }
 .pp-emoji-ic {
   width: 11px;
