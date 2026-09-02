@@ -465,16 +465,16 @@
                  overwritten, since a landlord may need to keep previous
                  certificates for compliance history. -->
             <template v-else-if="isMultiCopySection">
-              <div v-for="doc in copyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+              <div v-for="doc in mergedCopyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
                 <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
                 <div class="lp-doc-preview-info">
                   <div class="lp-doc-preview-name">{{ doc.name }}</div>
                   <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}{{ doc.size ? ' · ' + doc.size : '' }}</div>
                 </div>
-                <button type="button" class="btn-secondary lp-doc-preview-btn" @click="window.open(doc.fileUrl, '_blank', 'noopener')">
+                <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">
                   View
                 </button>
-                <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
+                <button v-if="doc.id !== '__legacy__'" type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
               </div>
 
               <label class="lp-upload-row">
@@ -493,7 +493,7 @@
                   </svg>
                 </span>
                 <span class="lp-upload-text">
-                  {{ copyUploading ? 'Uploading…' : (copyDocs.length ? ('Add another ' + drawerUploadNoun) : ('Upload ' + drawerUploadNoun)) }}
+                  {{ copyUploading ? 'Uploading…' : (mergedCopyDocs.length ? ('Add another ' + drawerUploadNoun) : ('Upload ' + drawerUploadNoun)) }}
                   <small>PDF, JPG, PNG, DOCX up to 20MB</small>
                 </span>
               </label>
@@ -948,6 +948,28 @@ const drawerExpiryDraft = ref('')
 const isAlarmsSection = computed(() => drawerSection.value?.key === 'landlord_alarms')
 const isRtrSection = computed(() => drawerSection.value?.key === 'landlord_right_to_rent')
 const isMultiCopySection = computed(() => MULTI_COPY_SECTIONS.has(drawerSection.value?.key))
+
+// A passport that already had a certificate uploaded via the old
+// single-slot flow (before multi-copy existed) still has it sitting on
+// QuestionAnswer.fileUrl — the new copies list (UserDocument-backed)
+// knows nothing about it. Without this, switching a section to
+// multi-copy mode would make that existing file silently disappear from
+// the drawer, even though it's still there and still valid. Shown
+// first, view-only (no remove — clearing the legacy single-file slot is
+// a different, not-yet-built code path; re-uploading via "Upload
+// certificate" below adds a new copy alongside it rather than touching
+// it).
+const mergedCopyDocs = computed(() => {
+  if (!drawerFileUrl.value) return copyDocs.value
+  const legacy = {
+    id: '__legacy__',
+    name: drawerDocName.value || (drawerUploadNounCap.value + ' on file'),
+    fileUrl: drawerFileUrl.value,
+    size: '',
+    uploadedAt: 'previously',
+  }
+  return [legacy, ...copyDocs.value]
+})
 const alarmRows = ref<
   { type: 'smoke' | 'co'; location: string; tested: string; expiry: string; present: boolean; ok: boolean }[]
 >([])
@@ -960,7 +982,12 @@ const drawerListSaving = ref(false)
 // upload/delete machinery as the general /documents vault) via new
 // question-scoped endpoints, rather than the single QuestionAnswer
 // .fileUrl slot the generic drawer flow overwrites on every upload.
-const MULTI_COPY_SECTIONS = new Set(['landlord_gas_safety', 'landlord_epc'])
+const MULTI_COPY_SECTIONS = new Set([
+  'landlord_gas_safety',
+  'landlord_epc',
+  'landlord_eicr',
+  'landlord_insurance',
+])
 const copyDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
 const copyUploading = ref(false)
 
@@ -1322,6 +1349,15 @@ async function saveDrawerForm() {
 function downloadDrawerFile() {
   if (!drawerFileUrl.value) return
   window.open(drawerFileUrl.value, '_blank', 'noopener')
+}
+
+// `window` isn't in scope inside a template expression the way it is in
+// plain script — an inline `@click="window.open(...)"` throws "Cannot
+// read properties of undefined (reading 'open')". Found live-testing the
+// multi-copy list's View button.
+function viewCopyDoc(url: string) {
+  if (!url) return
+  window.open(url, '_blank', 'noopener')
 }
 
 async function onConvertConfirm() {
