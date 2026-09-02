@@ -466,7 +466,7 @@
                 :min="todayDateStr"
               />
               <p class="lp-modal-hint">
-                We'll remind you 30 days before this date so you can stay compliant.
+                <template v-if="drawerCadenceLabel"><b>{{ drawerCadenceLabel }}</b> — </template>we'll remind you 30 days before this date so you can stay compliant.
               </p>
             </div>
 
@@ -860,6 +860,19 @@ const drawerExpiryLabel = computed(() => {
   const d = new Date(drawerExpiry.value)
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 })
+
+// Renewal cadence per section — client feedback: the reminder hint said
+// only "we'll remind you before this date", with no sense of how often
+// that actually recurs. Sections without a fixed cycle (tenancy, deposit,
+// right to rent, etc.) intentionally have no entry here and fall back to
+// the plain hint.
+const CADENCE_LABEL: Record<string, string> = {
+  landlord_gas_safety: 'Annual renewal',
+  landlord_eicr: 'Renew every 5 years',
+  landlord_epc: 'Valid for up to 10 years',
+  landlord_insurance: 'Annual renewal',
+}
+const drawerCadenceLabel = computed(() => CADENCE_LABEL[drawerSection.value?.key] ?? '')
 
 function openSection(s: any) {
   if (!s) return
