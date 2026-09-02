@@ -386,6 +386,35 @@
           <div class="lp-modal-body">
             <p v-if="drawerSection.subtitle" class="lp-modal-intro">{{ drawerSection.subtitle }}</p>
 
+            <!-- Renters' Rights Act Information Sheet — legislation links
+                 (client feedback item #9, prototype's leg-note + legLink
+                 list). Shown above the upload flow, which stays as the
+                 landlord's record of proof-of-service. -->
+            <div v-if="isInfoSheetSection" class="lp-leg-note">
+              <div class="lp-leg-note-t">⚖️ The law changed on 1 May 2026</div>
+              <div class="lp-leg-note-s">
+                The <b>How to Rent guide was withdrawn</b> under the Renters' Rights Act 2025. Landlords now serve <b>The Renters' Rights Act Information Sheet 2026</b>. You must give the <b>official GOV.UK PDF</b> (a link on its own is not valid) — as a printed copy or attached to an email/text. Fines reach £7,000 for non-compliance.
+              </div>
+            </div>
+            <template v-if="isInfoSheetSection">
+              <a
+                v-for="link in INFO_SHEET_LINKS"
+                :key="link.url"
+                class="lp-leg-link"
+                :href="link.url"
+                target="_blank"
+                rel="noopener"
+              >
+                <div class="lp-leg-link-ic">🔗</div>
+                <div class="lp-leg-link-bd">
+                  <div class="lp-leg-link-t">{{ link.title }}</div>
+                  <div class="lp-leg-link-s">{{ link.sub }}</div>
+                </div>
+                <div class="lp-leg-link-go">↗</div>
+              </a>
+              <div class="lp-modal-hint" style="margin-bottom:12px">Once you've served the Information Sheet, record it below — proof of service matters if a tenancy is ever challenged.</div>
+            </template>
+
             <!-- EPC auto-pull banner — client feedback #3: "pulled straight
                  through from land registry too". Shown alongside the normal
                  upload flow below, not instead of it — a landlord can still
@@ -497,6 +526,55 @@
                   <small>PDF, JPG, PNG, DOCX up to 20MB</small>
                 </span>
               </label>
+
+              <!-- Deposit Protection: a second, legally distinct document —
+                   the signed prescribed information actually SERVED to the
+                   tenant, tracked separately from the scheme certificate
+                   above (client feedback item #7). -->
+              <template v-if="isDepositSection">
+                <div class="mlabel" style="margin-top:16px">Served prescribed information</div>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Upload the signed copy of the prescribed information you actually <b>served to the tenant</b> — your proof it was given within 30 days.</p>
+                <div v-for="doc in piCopyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+                  <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+                  <div class="lp-doc-preview-info">
+                    <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                    <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}{{ doc.size ? ' · ' + doc.size : '' }}</div>
+                  </div>
+                  <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
+                  <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removePiCopyDoc(doc.id)">✕</button>
+                </div>
+                <label class="lp-upload-row">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+                    class="lp-upload-input"
+                    :disabled="piCopyUploading"
+                    @change="onPiCopyFilePicked"
+                  />
+                  <span class="lp-upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                  </span>
+                  <span class="lp-upload-text">
+                    {{ piCopyUploading ? 'Uploading…' : (piCopyDocs.length ? 'Add another copy' : 'Upload served prescribed information') }}
+                    <small>Signed copy given to the tenant · PDF up to 20MB</small>
+                  </span>
+                </label>
+
+                <div class="mlabel" style="margin-top:16px">What the prescribed information must contain</div>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:6px">The law requires you give the tenant this within 30 days of receiving the deposit — check, serve, then upload the signed copy above.</p>
+                <div v-for="item in PI_CHECKLIST" :key="item.t" class="lp-pi-item">
+                  <div class="lp-pi-check">✓</div>
+                  <div class="lp-pi-tx">
+                    <div class="lp-pi-t">{{ item.t }}</div>
+                    <div class="lp-pi-s">{{ item.s }}</div>
+                  </div>
+                </div>
+                <p class="lp-modal-hint" style="margin-top:12px"><b>Why it matters:</b> if the prescribed information isn't served correctly, the tenant can claim up to 3× the deposit and possession can be affected.</p>
+              </template>
             </template>
 
             <!-- Existing document preview -->
@@ -576,14 +654,16 @@
                  which still track one expiry per section independent of
                  how many certificate copies are on file. -->
             <div v-if="drawerDateQuestion || pendingFile" class="mform-section">
-                <div class="mform-label">Expiry / next renewal date</div>
+                <div class="mform-label">{{ isDepositSection ? 'Date protected' : 'Expiry / next renewal date' }}</div>
                 <input
                   v-model="drawerExpiryDraft"
                   type="date"
                   class="mform-input"
-                  :min="todayDateStr"
+                  :max="isDepositSection ? todayDateStr : undefined"
+                  :min="isDepositSection ? undefined : todayDateStr"
                 />
-                <p class="lp-modal-hint">
+                <p v-if="isDepositSection" class="lp-modal-hint">The date the deposit was registered with the scheme — must be within 30 days of receiving it.</p>
+                <p v-else class="lp-modal-hint">
                   <template v-if="drawerCadenceLabel"><b>{{ drawerCadenceLabel }}</b> — </template>we'll remind you 30 days before this date so you can stay compliant.
                 </p>
               </div>
@@ -992,7 +1072,9 @@ const MULTI_COPY_SECTIONS = new Set([
   'landlord_epc',
   'landlord_eicr',
   'landlord_insurance',
+  'landlord_deposit',
 ])
+const isDepositSection = computed(() => drawerSection.value?.key === 'landlord_deposit')
 const copyDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
 const copyUploading = ref(false)
 
@@ -1084,7 +1166,23 @@ const UPLOAD_NOUN: Record<string, string> = {
   landlord_ast: 'signed agreement',
   landlord_inventory: 'document',
   landlord_legionella: 'assessment',
+  landlord_deposit: 'protection certificate',
 }
+// Deposit Protection's 7-item legal checklist (client feedback item #7,
+// prototype's piItem list) — what the prescribed information MUST
+// contain by law. Static/informational rather than auto-filled from
+// tenancy data: there's no structured tenancy record to pull from yet
+// (the Tenancy Agreement is still upload-only, not generated — see the
+// passport-view report's item #6). Revisit once that exists.
+const PI_CHECKLIST = [
+  { t: 'Amount of the deposit & the property address', s: 'Confirm it matches what you actually collected' },
+  { t: "The scheme's name & contact details", s: 'mydeposits / DPS / TDS — whichever you used' },
+  { t: 'Landlord (or agent) name & contact details', s: 'So the tenant can reach you in writing' },
+  { t: 'Tenant name(s) & anyone who paid the deposit', s: 'Everyone with an interest in the deposit' },
+  { t: 'When all/part of the deposit may be retained', s: 'The deductions clause from the tenancy' },
+  { t: "What to do if there's a dispute", s: "The scheme's free dispute (ADR) process" },
+  { t: 'Confirmation the information is accurate', s: 'Signed by you and the tenant' },
+]
 const drawerUploadNoun = computed(() => UPLOAD_NOUN[drawerSection.value?.key] ?? 'certificate')
 const drawerUploadNounCap = computed(
   () => drawerUploadNoun.value.charAt(0).toUpperCase() + drawerUploadNoun.value.slice(1),
@@ -1094,6 +1192,32 @@ const drawerUploadNounCap = computed(
 // (same enrichment pipeline used everywhere else in the app) rather than
 // asking the landlord to upload a certificate we may already have.
 const isEpcSection = computed(() => drawerSection.value?.key === 'landlord_epc')
+
+// Renters' Rights Act Information Sheet legislation links (client
+// feedback item #9, prototype's legLink list).
+const isInfoSheetSection = computed(() => drawerSection.value?.key === 'landlord_how_to_rent')
+const INFO_SHEET_LINKS = [
+  {
+    title: "The Renters' Rights Act Information Sheet 2026",
+    sub: 'Official GOV.UK PDF — serve this to tenants',
+    url: 'https://www.gov.uk/guidance/the-renters-rights-act-information-sheet-2026-alternative-formats',
+  },
+  {
+    title: "Renters' Rights Act 2025",
+    sub: 'The Act itself on legislation.gov.uk',
+    url: 'https://www.legislation.gov.uk/ukpga/2025/renters-rights',
+  },
+  {
+    title: 'Renting out your property: landlord guidance',
+    sub: 'GOV.UK — what you must do from 1 May 2026',
+    url: 'https://www.gov.uk/renting-out-a-property',
+  },
+  {
+    title: 'How to Rent guide (withdrawn)',
+    sub: 'Only for tenancies with a valid pre-1 May 2026 s21',
+    url: 'https://www.gov.uk/government/publications/how-to-rent',
+  },
+]
 const propertyEpc = computed(() => passport.value?.property ?? null)
 const epcValidUntilLabel = computed(() => {
   const lodged = propertyEpc.value?.lodgementDate
@@ -1114,7 +1238,9 @@ function openSection(s: any) {
   alarmRows.value = s.key === 'landlord_alarms' && Array.isArray(storedList) ? storedList : []
   occupierRows.value = s.key === 'landlord_right_to_rent' && Array.isArray(storedList) ? storedList : []
   copyDocs.value = []
+  piCopyDocs.value = []
   if (MULTI_COPY_SECTIONS.has(s.key)) loadCopyDocs()
+  if (s.key === 'landlord_deposit') loadPiCopyDocs()
   showSectionDrawer.value = true
 }
 
@@ -1195,6 +1321,71 @@ async function removeCopyDoc(docId: string) {
   await refreshSectionData()
 }
 
+// Deposit Protection (client feedback item #7) tracks two legally
+// distinct documents under the same question — the scheme's protection
+// certificate (copyDocs/copyUploading above) and the served
+// prescribed-information copy (this second, independently-tracked list,
+// using the backend's `kind` parameter so both stay separate under one
+// question rather than needing a second QuestionTemplate).
+const piCopyDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
+const piCopyUploading = ref(false)
+
+async function loadPiCopyDocs() {
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    piCopyDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      query: { kind: 'pi' },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    piCopyDocs.value = []
+  }
+}
+
+async function onPiCopyFilePicked(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  ;(e.target as HTMLInputElement).value = ''
+  if (!file) return
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  piCopyUploading.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('name', file.name.replace(/\.[^.]+$/, ''))
+    fd.append('kind', 'pi')
+    await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    await loadPiCopyDocs()
+    await refreshSectionData()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Upload failed'
+  } finally {
+    piCopyUploading.value = false
+  }
+}
+
+async function removePiCopyDoc(docId: string) {
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    /* non-critical */
+  }
+  await loadPiCopyDocs()
+  await refreshSectionData()
+}
+
 // Multi-copy sections still track one expiry per section, independent of
 // how many certificate copies are on file — same DATE-question slot and
 // Calendar-mirroring the generic single-slot flow already uses.
@@ -1212,18 +1403,23 @@ async function saveMultiCopyExpiry() {
       headers: { Authorization: `Bearer ${token}` },
       body: { value: drawerExpiryDraft.value },
     })
-    const addr = passport.value?.addressLine1
-    await $fetch(`${config.public.apiBase}/calendar`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: {
-        title: `${drawerSection.value?.title ?? 'Compliance'} renewal due${addr ? ` — ${addr}` : ''}`,
-        date: drawerExpiryDraft.value,
-        type: 'compliance-renewal',
-        notes: 'Auto-added from your Landlord Passport compliance section.',
-        sourceRef: `landlord-compliance:${drawerSection.value?.id}`,
-      },
-    }).catch(() => {})
+    // Deposit Protection's date is a record of a past event ("date
+    // protected"), not a future deadline — no renewal reminder makes
+    // sense for it, unlike every other multi-copy section's expiry date.
+    if (!isDepositSection.value) {
+      const addr = passport.value?.addressLine1
+      await $fetch(`${config.public.apiBase}/calendar`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: {
+          title: `${drawerSection.value?.title ?? 'Compliance'} renewal due${addr ? ` — ${addr}` : ''}`,
+          date: drawerExpiryDraft.value,
+          type: 'compliance-renewal',
+          notes: 'Auto-added from your Landlord Passport compliance section.',
+          sourceRef: `landlord-compliance:${drawerSection.value?.id}`,
+        },
+      }).catch(() => {})
+    }
     await loadPassport()
     if (drawerSection.value) {
       drawerSection.value = sections.value.find((s) => s.id === drawerSection.value.id) ?? drawerSection.value
@@ -2541,6 +2737,62 @@ const SectionCard = defineComponent({
   border-radius: 12px;
   margin-bottom: 14px;
 }
+
+/* Renters' Rights Act Information Sheet legislation links */
+.lp-leg-note {
+  padding: 14px;
+  background: #fbf1df;
+  border: 1px solid #f0d9a8;
+  border-radius: 13px;
+  margin-bottom: 14px;
+}
+.lp-leg-note-t { font-size: 13px; font-weight: 800; color: #7a5500; }
+.lp-leg-note-s { font-size: 12px; font-weight: 500; color: #8a6420; line-height: 1.5; margin-top: 6px; }
+.lp-leg-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 12px;
+  margin-bottom: 9px;
+  text-decoration: none;
+}
+.lp-leg-link:active { background: #f6f8f7; }
+.lp-leg-link-ic {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: #e8edfb;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.lp-leg-link-bd { flex: 1; min-width: 0; }
+.lp-leg-link-t { font-size: 13.5px; font-weight: 700; color: #0e2840; }
+.lp-leg-link-s { font-size: 11px; font-weight: 500; color: #6b7089; margin-top: 1px; }
+.lp-leg-link-go { font-size: 15px; color: #a8a9ad; flex-shrink: 0; }
+
+/* Deposit Protection's prescribed-information checklist */
+.lp-pi-item {
+  display: flex;
+  gap: 11px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f0f0f4;
+}
+.lp-pi-item:last-child { border-bottom: none; }
+.lp-pi-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #e7f6ef;
+  color: #0f8a6e;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+  flex-shrink: 0;
+}
+.lp-pi-tx { flex: 1; }
+.lp-pi-t { font-size: 13.5px; font-weight: 700; color: #0e2840; }
+.lp-pi-s { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 1px; line-height: 1.4; }
 .lp-warn-icon {
   width: 30px; height: 30px;
   border-radius: 50%;
