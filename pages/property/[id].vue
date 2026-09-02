@@ -8593,9 +8593,12 @@ function formatSaleDate(dateStr: string): string {
    reads as "the PASSPORT is private", never "the property is private".
    See plans/passport-status-wording-clarity.md. */
 .pps-badge-passport {
+  /* Unified dark-navy/white treatment for every state, per client
+     feedback — replaces the earlier per-state teal/amber/purple palette
+     (kept as dead modifier classes below in case that's revisited). */
   flex-shrink: 0;
-  background: #e5e3ee;
-  color: #231d45;
+  background: #231d45;
+  color: #fff;
   border-radius: 12px;
   padding: 4px 10px 5px;
   white-space: nowrap;
@@ -8608,8 +8611,7 @@ function formatSaleDate(dateStr: string): string {
 .pps-badge-passport-cap {
   font-size: 7.5px;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
   opacity: 0.75;
 }
 .pps-badge-passport-val {
@@ -8618,17 +8620,11 @@ function formatSaleDate(dateStr: string): string {
   letter-spacing: 0.3px;
   line-height: 1.1;
 }
-.pps-badge-passport--unclaimed {
-  background: #e0f4f1;
-  color: #00817c;
-}
-.pps-badge-passport--private {
-  background: #fde8de;
-  color: #c2410c;
-}
+.pps-badge-passport--unclaimed,
+.pps-badge-passport--private,
 .pps-badge-passport--partial {
-  background: #ece9fa;
-  color: #5b4fc4;
+  background: #231d45;
+  color: #fff;
 }
 .pps-badge-flood img {
   width: 15px;
@@ -8743,12 +8739,12 @@ function formatSaleDate(dateStr: string): string {
   background: white;
   border: 1.5px solid #ececef;
   border-radius: 12px;
-  padding: 7px 8px;
+  padding: 11px 10px;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 7px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.2;
   color: #1a1535;
@@ -8761,9 +8757,9 @@ function formatSaleDate(dateStr: string): string {
   box-shadow: 0 4px 12px rgba(35, 29, 69, 0.1);
 }
 .pps-hero-quick-ic {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
   object-fit: cover;
   flex-shrink: 0;
 }

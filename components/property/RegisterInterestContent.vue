@@ -42,7 +42,7 @@
             </svg>
           </div>
           <div class="ri-row__text">
-            <div class="ri-row__title">Your buyer profile</div>
+            <div class="ri-row__title">Your buyer passport</div>
             <div class="ri-row__subtitle">Name, contact, chain position — from your account</div>
           </div>
           <div class="ri-chip ri-chip--teal">Auto</div>

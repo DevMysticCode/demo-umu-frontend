@@ -1050,7 +1050,11 @@ function bringToFront(id: string) {
 function onCardCta(id: string) {
   if (id === 'explore') navigateTo('/discover')
   else if (id === 'HomeScore') navigateTo('/homescore')
-  else if (id === 'passport') navigateTo('/claim')
+  // Was '/claim' — a single-property claim flow, wrong for a landing card
+  // that's introducing the whole Property Passport ecosystem rather than
+  // one specific claim. Routes to the dashboard's passport home instead,
+  // matching where "Passport" already lands from the main nav.
+  else if (id === 'passport') navigateTo('/dashboard')
   else if (id === 'aisha') screen.value = 'aisha'
   else if (id === 'market') screen.value = 'market'
 }

@@ -95,8 +95,8 @@
           />
           <div class="exp-card-title">Buyer Passport</div>
           <div class="exp-card-sub">
-            Create your verified buyer profile, KYC, proof of funds and buying
-            readiness.
+            Create your verified buyer passport, KYC, proof of funds and
+            buying readiness.
           </div>
           <span class="exp-card-arrow exp-card-arrow--purple">→</span>
         </button>
@@ -187,7 +187,7 @@
           <button
             type="button"
             class="exp-more-card exp-more-card--amber"
-            @click="navigateTo('/claim')"
+            @click="navigateTo('/dashboard')"
           >
             <div class="exp-more-top-row">
               <div class="exp-more-eyebrow-col">

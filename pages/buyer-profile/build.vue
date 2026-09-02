@@ -74,18 +74,19 @@
         <!-- Identity intro + document picker card (prototype-exact) -->
         <div class="bp-id-panel">
           <div class="bp-id-panel-head">
-            <img
-              src="/op-icons/passportview/umu-passport.png"
-              alt=""
-              class="bp-id-panel-icon"
-              loading="lazy"
-            />
             <div>
               <div class="bp-id-panel-title">Let's verify who you are</div>
               <div class="bp-id-panel-body">
                 This helps build trust with sellers when you choose to show
                 them you're a verified buyer.
               </div>
+            </div>
+            <div class="bp-id-panel-ic-tile">
+              <img
+                src="/op-icons/passportview/umu-passport.png"
+                alt=""
+                loading="lazy"
+              />
             </div>
           </div>
 
@@ -537,6 +538,7 @@
                 <div class="bp-upload-title">Tap to upload your document</div>
                 <div class="bp-upload-meta">PDF, JPG or PNG · max 10MB · encrypted</div>
               </div>
+              <div v-if="fundsUploadError" class="bp-upload-error">{{ fundsUploadError }}</div>
             </div>
           </div>
           </div>
@@ -571,7 +573,7 @@
             <div class="bp-sheet-sub">
               For {{ currentFundsLabel.toLowerCase() }} — choose how you'd like to share your document.
             </div>
-            <button class="bp-method" @click="simulateFundsUpload('camera')">
+            <button class="bp-method" @click="pickFundsFile('camera')">
               <div class="bp-method-ic">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
@@ -584,7 +586,7 @@
               </div>
               <div class="bp-method-chev">›</div>
             </button>
-            <button class="bp-method" @click="simulateFundsUpload('photos')">
+            <button class="bp-method" @click="pickFundsFile('photos')">
               <div class="bp-method-ic">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -598,7 +600,7 @@
               </div>
               <div class="bp-method-chev">›</div>
             </button>
-            <button class="bp-method" @click="simulateFundsUpload('files')">
+            <button class="bp-method" @click="pickFundsFile('files')">
               <div class="bp-method-ic">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -611,7 +613,7 @@
               </div>
               <div class="bp-method-chev">›</div>
             </button>
-            <button class="bp-method" @click="simulateFundsUpload('cloud')">
+            <button class="bp-method" @click="pickFundsFile('files')">
               <div class="bp-method-ic">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
@@ -619,12 +621,25 @@
               </div>
               <div class="bp-method-body">
                 <div class="bp-method-title">Import from cloud</div>
-                <div class="bp-method-sub">Drive, Dropbox or iCloud</div>
+                <div class="bp-method-sub">Drive, Dropbox or iCloud — via your device's file picker</div>
               </div>
               <div class="bp-method-chev">›</div>
             </button>
             <button class="bp-cancel" @click="closeFundsSheet">Cancel</button>
           </div>
+
+          <!-- Hidden real file input backing every "upload" method above —
+               replaces the old fully-simulated flow (fake filename + fake
+               progress bar, no file ever touched the server). `capture` is
+               set dynamically only for the "Take a photo" method so the
+               other methods open the normal file/photo picker. -->
+          <input
+            ref="fundsFileInputEl"
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png,image/*,application/pdf"
+            style="display: none"
+            @change="onFundsFileChosen"
+          />
         </Teleport>
       </div>
 
@@ -1331,22 +1346,63 @@ function openFundsSheet() {
 function closeFundsSheet() {
   fundsSheetOpen.value = false
 }
-function simulateFundsUpload(_method: string) {
-  const id = fundsType.value
-  if (!id) return
+
+// Real upload, replacing the old fully-simulated flow (which faked a
+// filename and a progress bar and never touched the server — the "Add
+// proof of funds" button did nothing real). Backed by the existing
+// POST /buyer-profile/documents/:kind endpoint, same as everywhere else
+// in the app that already does real uploads (see useDocuments.ts).
+const fundsFileInputEl = ref<HTMLInputElement | null>(null)
+const fundsPickMethod = ref<'camera' | 'photos' | 'files'>('files')
+const fundsUploadError = ref('')
+function pickFundsFile(method: 'camera' | 'photos' | 'files') {
+  if (!fundsType.value) return
+  fundsPickMethod.value = method
   closeFundsSheet()
+  const el = fundsFileInputEl.value
+  if (!el) return
+  // Only the "Take a photo" method opens the camera directly; the others
+  // open the normal file/photo picker (which on most phones also exposes
+  // cloud storage apps via the OS share sheet).
+  if (method === 'camera') el.setAttribute('capture', 'environment')
+  else el.removeAttribute('capture')
+  el.value = ''
+  el.click()
+}
+async function onFundsFileChosen(e: Event) {
+  const id = fundsType.value
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!id || !file) return
+  fundsUploadError.value = ''
   fundsUploadingType.value = id
-  fundsUploadPct.value = 0
-  setTimeout(() => { fundsUploadPct.value = 35 }, 100)
-  setTimeout(() => { fundsUploadPct.value = 70 }, 600)
-  setTimeout(() => { fundsUploadPct.value = 100 }, 1100)
-  setTimeout(() => {
+  fundsUploadPct.value = 40
+  try {
+    const config = useRuntimeConfig()
+    const token =
+      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    const kind = id === 'mortgage' ? 'mortgage' : 'funds'
+    const form = new FormData()
+    form.append('file', file)
+    const res = await fetch(
+      `${config.public.apiBase}/buyer-profile/documents/${kind}`,
+      {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: form,
+      },
+    )
+    if (!res.ok) throw new Error(`Upload failed (${res.status})`)
+    fundsUploadPct.value = 100
     fundsUploads.value[id] = {
-      name: fundsLabels[id]?.file ?? 'document.pdf',
-      size: '1.2 MB · file',
+      name: file.name,
+      size: `${(file.size / (1024 * 1024)).toFixed(1)} MB · file`,
     }
+  } catch (err: any) {
+    fundsUploadError.value = err?.message || 'Upload failed — try again.'
+  } finally {
     fundsUploadingType.value = null
-  }, 1500)
+  }
 }
 function removeFundsUpload() {
   if (!fundsType.value) return
@@ -2129,6 +2185,10 @@ onBeforeUnmount(() => {
 .bp-ai-err {
   font-size: 11.5px; font-weight: 600;
   color: #c73e36; margin: -4px 0 8px;
+}
+.bp-upload-error {
+  font-size: 11.5px; font-weight: 600;
+  color: #c73e36; margin-top: 8px; text-align: center;
 }
 .bp-skip {
   width: 100%;
@@ -3028,11 +3088,22 @@ onBeforeUnmount(() => {
   gap: 14px;
   margin-bottom: 18px;
 }
-.bp-id-panel-icon {
+.bp-id-panel-ic-tile {
   width: 52px;
-  height: auto;
-  object-fit: contain;
+  height: 52px;
+  border-radius: 16px;
+  background: #f0fdfa;
+  border: 2px solid #99f6e4;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
+  order: 2;
+  overflow: hidden;
+}
+.bp-id-panel-ic-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .bp-id-panel-title {
   font-size: 15.5px;

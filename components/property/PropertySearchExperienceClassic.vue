@@ -208,11 +208,10 @@
                   </div>
                   <div class="prop-badge-pp" :class="stateOf(prop)">
                     <div class="prop-badge-pp-cap">
+                      <!-- Unlocked: unclaimed and public(-ish) — nothing
+                           private is being withheld. Locked: private only. -->
                       <svg
-                        v-if="
-                          stateOf(prop) === 'public' ||
-                          stateOf(prop) === 'partiallyPublic'
-                        "
+                        v-if="stateOf(prop) !== 'private'"
                         width="8"
                         height="8"
                         viewBox="0 0 24 24"
@@ -222,12 +221,11 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                       >
-                        <path
-                          d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z"
-                        />
+                        <rect x="4" y="10" width="16" height="10" rx="2" />
+                        <path d="M8 10V7a4 4 0 0 1 7.5-1.5" />
                       </svg>
                       <svg
-                        v-else-if="stateOf(prop) === 'private'"
+                        v-else
                         width="8"
                         height="8"
                         viewBox="0 0 24 24"
@@ -354,7 +352,7 @@
                     stroke-linejoin="round"
                   >
                     <rect x="4" y="10" width="16" height="10" rx="2" />
-                    <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                    <path d="M8 10V7a4 4 0 0 1 7.5-1.5" />
                   </svg>
                   <svg
                     v-else
@@ -1405,26 +1403,20 @@ watch(displayedProperties, () => {
   gap: 3px;
   font-size: 7px;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
   opacity: 0.85;
 }
 .prop-badge-pp-val {
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
   line-height: 1.1;
 }
-.prop-badge-pp.unclaimed {
-  background: #00a19a;
-}
-.prop-badge-pp.private {
-  background: #f5510b;
-}
-.prop-badge-pp.partiallyPublic {
-  background: #9185d6;
-}
+/* Unified dark-navy/white treatment for every state, per client feedback
+   — replaces the earlier per-state teal/amber/purple palette. */
+.prop-badge-pp.unclaimed,
+.prop-badge-pp.private,
+.prop-badge-pp.partiallyPublic,
 .prop-badge-pp.public {
   background: #231d45;
 }

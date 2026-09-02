@@ -9,7 +9,7 @@
     </div>
 
     <!-- ── Loading / error states ── -->
-    <div v-if="loading" class="sb-loading">Loading buyer profile…</div>
+    <div v-if="loading" class="sb-loading">Loading buyer passport…</div>
 
     <div v-else-if="error" class="sb-error-card">
       <div class="sb-error-emoji">
@@ -187,7 +187,7 @@
 
       <!-- Footer -->
       <div class="sb-foot">
-        Buyer profile shared via UMU · expires {{ formatDate(data.expiresAt) }}
+        Buyer passport shared via UMU · expires {{ formatDate(data.expiresAt) }}
       </div>
     </div>
   </div>
