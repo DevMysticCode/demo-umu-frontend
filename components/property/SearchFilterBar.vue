@@ -99,41 +99,20 @@
                of results doesn't read as a wall of different colors (see
                plans/passport-status-wording-clarity.md). EPC dropped from
                this row entirely — HomeScore below already folds EPC in
-               as a fallback, so showing both was redundant here. Icon is
-               a real lock/unlock padlock now — locked only for 'private'
-               (nothing withheld in every other state), matching the same
-               shapes used on the property page and results grid. -->
+               as a fallback, so showing both was redundant here. Real
+               lock/unlock padlock artwork — locked only for 'private'
+               (nothing withheld in every other state). Sized up (and the
+               label with it) from the original icon so it actually reads
+               at this row's density, not the design's original 10px. -->
           <div class="addr-passport-line">
-            <svg
-              v-if="passportStateOf(addr) !== 'private'"
-              width="10"
-              height="10"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+            <img
+              :src="passportStateOf(addr) !== 'private'
+                ? '/op-icons/claim/padlockUnlocked.png'
+                : '/op-icons/claim/padlock.png'"
+              alt=""
               class="addr-badge-ic"
-            >
-              <rect x="4" y="10" width="16" height="10" rx="2" />
-              <path d="M8 10V7a4 4 0 0 1 7.5-1.5" />
-            </svg>
-            <svg
-              v-else
-              width="10"
-              height="10"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="addr-badge-ic"
-            >
-              <rect x="4" y="10" width="16" height="10" rx="2" />
-              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-            </svg>
+              loading="lazy"
+            />
             {{ passportStateFullLabel(addr) }}
           </div>
         </div>
@@ -956,8 +935,9 @@ function clearAllFilters() {
   letter-spacing: 0.01em;
 }
 .addr-badge-ic {
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 /* Passport-state line — colored icon + text, not a pill. "Property
@@ -965,12 +945,13 @@ function clearAllFilters() {
    line wraps gracefully on its own row instead. One consistent color
    regardless of state — a dense scrolling list of 4 different colors
    per row read as noisy; the state word itself already carries the
-   meaning. */
+   meaning. Icon and text both sized up from the original 10px/11px —
+   the real padlock artwork was hard to make out at that size. */
 .addr-passport-line {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
+  gap: 6px;
+  font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.01em;
   margin-top: 4px;

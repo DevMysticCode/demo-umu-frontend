@@ -210,34 +210,14 @@
                     <div class="prop-badge-pp-cap">
                       <!-- Unlocked: unclaimed and public(-ish) — nothing
                            private is being withheld. Locked: private only. -->
-                      <svg
-                        v-if="stateOf(prop) !== 'private'"
-                        width="8"
-                        height="8"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <rect x="4" y="10" width="16" height="10" rx="2" />
-                        <path d="M8 10V7a4 4 0 0 1 7.5-1.5" />
-                      </svg>
-                      <svg
-                        v-else
-                        width="8"
-                        height="8"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <rect x="4" y="10" width="16" height="10" rx="2" />
-                        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                      </svg>
+                      <img
+                        :src="stateOf(prop) !== 'private'
+                          ? '/op-icons/claim/padlockUnlocked.png'
+                          : '/op-icons/claim/padlock.png'"
+                        alt=""
+                        class="prop-badge-pp-lock"
+                        loading="lazy"
+                      />
                       Passport
                     </div>
                     <div class="prop-badge-pp-val">{{ badgeLabel(prop) }}</div>
@@ -340,34 +320,20 @@
                       d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z"
                     />
                   </svg>
-                  <svg
+                  <img
                     v-else-if="stateOf(prop) === 'unclaimed'"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#00a19a"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <rect x="4" y="10" width="16" height="10" rx="2" />
-                    <path d="M8 10V7a4 4 0 0 1 7.5-1.5" />
-                  </svg>
-                  <svg
+                    src="/op-icons/claim/padlockUnlocked.png"
+                    alt=""
+                    class="footer-passport-lock"
+                    loading="lazy"
+                  />
+                  <img
                     v-else
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#f5510b"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <rect x="4" y="10" width="16" height="10" rx="2" />
-                    <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                  </svg>
+                    src="/op-icons/claim/padlock.png"
+                    alt=""
+                    class="footer-passport-lock"
+                    loading="lazy"
+                  />
                 </div>
               </div>
 
@@ -1406,6 +1372,12 @@ watch(displayedProperties, () => {
   letter-spacing: 0.04em;
   opacity: 0.85;
 }
+.prop-badge-pp-lock {
+  width: 8px;
+  height: 8px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 .prop-badge-pp-val {
   font-size: 10px;
   font-weight: 800;
@@ -1556,6 +1528,12 @@ watch(displayedProperties, () => {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+}
+.footer-passport-lock {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .fp-text {
   min-width: 0;

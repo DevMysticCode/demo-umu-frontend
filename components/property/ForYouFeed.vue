@@ -9,7 +9,15 @@
           :class="{ active: hasFilters }"
           @click="emit('open-filters')"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="12" height="12">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            width="12"
+            height="12"
+          >
             <line x1="4" y1="6" x2="20" y2="6" />
             <line x1="7" y1="12" x2="17" y2="12" />
             <line x1="10" y1="18" x2="14" y2="18" />
@@ -40,11 +48,11 @@
             class="prop-img"
           />
           <div class="prop-badge-pp" :class="stateOf(prop)">
-            <img
+            <!-- <img
               src="/op-icons/passportview/umu-passport.png"
               alt=""
               class="pp-emoji-ic"
-            />
+            /> -->
             {{ stateLabel(prop) }}
           </div>
           <div class="prop-price-tag">
@@ -89,22 +97,26 @@
       </div>
     </div>
     <div v-else-if="needsPostcode" class="foryou-empty">
-      <div class="foryou-empty-ic foryou-empty-ic-img"><img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" /></div>
+      <div class="foryou-empty-ic foryou-empty-ic-img">
+        <img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" />
+      </div>
       <div class="foryou-empty-title">Add a postcode to see matches</div>
       <div class="foryou-empty-sub">
-        We'll tailor properties to your budget, preferred types and
-        must-have features.
+        We'll tailor properties to your budget, preferred types and must-have
+        features.
       </div>
       <button class="foryou-empty-btn" @click="openPostcodeSheet">
         Set postcode
       </button>
     </div>
     <div v-else class="foryou-empty">
-      <div class="foryou-empty-ic"><img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" /></div>
+      <div class="foryou-empty-ic">
+        <img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" />
+      </div>
       <div class="foryou-empty-title">No matches yet</div>
       <div class="foryou-empty-sub">
-        Nothing in your area matches your saved preferences. Try
-        broadening your filters or refreshing your postcode.
+        Nothing in your area matches your saved preferences. Try broadening your
+        filters or refreshing your postcode.
       </div>
       <button class="foryou-empty-btn" @click="navigateTo('/profile')">
         Update preferences
@@ -118,9 +130,20 @@
          Capacitor as on web, since this is the same Vue component either
          way. -->
     <Teleport to="body">
-      <div class="pcs-backdrop" :class="{ open: postcodeSheetOpen }" @click="closePostcodeSheet" />
-      <div class="pcs-sheet" :class="{ open: postcodeSheetOpen }" role="dialog" aria-modal="true">
-        <div class="pcs-grabber-wrap" @click="closePostcodeSheet"><div class="pcs-grabber" /></div>
+      <div
+        class="pcs-backdrop"
+        :class="{ open: postcodeSheetOpen }"
+        @click="closePostcodeSheet"
+      />
+      <div
+        class="pcs-sheet"
+        :class="{ open: postcodeSheetOpen }"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div class="pcs-grabber-wrap" @click="closePostcodeSheet">
+          <div class="pcs-grabber" />
+        </div>
         <div class="pcs-title">Set your postcode</div>
         <div class="pcs-sub">We'll use this to find properties near you.</div>
         <input
@@ -133,7 +156,12 @@
           @keyup.enter="savePostcode"
         />
         <div v-if="postcodeError" class="pcs-error">{{ postcodeError }}</div>
-        <button type="button" class="pcs-save-btn" :disabled="postcodeSaving" @click="savePostcode">
+        <button
+          type="button"
+          class="pcs-save-btn"
+          :disabled="postcodeSaving"
+          @click="savePostcode"
+        >
           {{ postcodeSaving ? 'Saving…' : 'Save postcode' }}
         </button>
       </div>
