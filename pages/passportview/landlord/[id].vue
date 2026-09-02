@@ -151,7 +151,7 @@
                     <div class="lp-sec-pills">
                       <span class="lp-sec-pill lp-sec-pill--doc">
                         <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-sec-pill-ic" loading="lazy" />
-                        {{ cardData(section).docCount }}/{{ cardData(section).docTotal }} doc
+                        {{ cardData(section).rowLabel ?? (cardData(section).docCount + '/' + cardData(section).docTotal + ' doc') }}
                       </span>
                       <span class="lp-sec-pill" :class="`lp-sec-pill--${cardData(section).tone}`">
                         {{ cardData(section).statusLabel }}
@@ -209,7 +209,7 @@
                     <div class="lp-sec-pills">
                       <span class="lp-sec-pill lp-sec-pill--doc">
                         <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-sec-pill-ic" loading="lazy" />
-                        {{ cardData(section).docCount }}/{{ cardData(section).docTotal }} doc
+                        {{ cardData(section).rowLabel ?? (cardData(section).docCount + '/' + cardData(section).docTotal + ' doc') }}
                       </span>
                       <span class="lp-sec-pill" :class="`lp-sec-pill--${cardData(section).tone}`">
                         {{ cardData(section).statusLabel }}
@@ -303,7 +303,7 @@
                   <div class="lp-sec-pills">
                     <span class="lp-sec-pill lp-sec-pill--doc">
                       <img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-sec-pill-ic" loading="lazy" />
-                      {{ cardData(section).docCount }}/{{ cardData(section).docTotal }} doc
+                      {{ cardData(section).rowLabel ?? (cardData(section).docCount + '/' + cardData(section).docTotal + ' doc') }}
                     </span>
                     <span class="lp-sec-pill" :class="`lp-sec-pill--${cardData(section).tone}`">
                       {{ cardData(section).statusLabel }}
@@ -725,9 +725,14 @@ async function loadPassport() {
   loading.value = true
   try {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    // cache: 'no-store' — the response carries an ETag with no
+    // Cache-Control, so the browser was silently serving a stale cached
+    // copy on every re-call (upload/save a certificate, refresh the
+    // passport, still see the old status/doc count until a full page
+    // reload). Found live-testing the multi-copy completion fix.
     const data = await $fetch<any>(
       `${config.public.apiBase}/passport/${passportId.value}`,
-      { headers: { Authorization: `Bearer ${token}` } },
+      { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' },
     )
     passport.value = data
     // Defensive filter — only render landlord-prefixed sections regardless
@@ -1149,10 +1154,27 @@ async function onCopyFilePicked(e: Event) {
       body: fd,
     })
     await loadCopyDocs()
+    // The backend marks the question COMPLETED on the first copy — the
+    // compliance card list (sections.value) needs a refresh too, or it
+    // keeps showing "Pending"/0 doc until a full page reload even though
+    // the certificate genuinely saved.
+    await refreshSectionData()
   } catch (err: any) {
     drawerError.value = err?.data?.message ?? 'Upload failed'
   } finally {
     copyUploading.value = false
+  }
+}
+
+// Re-fetches the passport and re-points drawerSection/drawerUploadQuestion
+// at the freshly-loaded copy, so the section card grid behind the open
+// drawer reflects a completion-status change without needing a full page
+// reload. Used by both the multi-copy upload/remove flow above and the
+// list-based (alarms/RTR) save flow already using the same pattern inline.
+async function refreshSectionData() {
+  await loadPassport()
+  if (drawerSection.value) {
+    drawerSection.value = sections.value.find((s) => s.id === drawerSection.value.id) ?? drawerSection.value
   }
 }
 
@@ -1167,6 +1189,10 @@ async function removeCopyDoc(docId: string) {
     /* non-critical — refresh below shows current server state either way */
   }
   await loadCopyDocs()
+  // Removing a landlord's last copy can revert the question to PENDING
+  // server-side (see deleteQuestionCopy) — refresh so the card grid
+  // reflects that immediately too.
+  await refreshSectionData()
 }
 
 // Multi-copy sections still track one expiry per section, independent of
@@ -1423,6 +1449,37 @@ function cardData(section: any) {
   let earliestExpiry: Date | null = null
   const now = Date.now()
 
+  // Alarms and Right to Rent don't produce a document at all — they're
+  // repeatable structured rows (client feedback #4/#8), not uploads.
+  // Treating them through the doc-count pill below is what produced
+  // "100% · 0/1 doc" on the card: technically consistent with the old
+  // per-question logic, but confusing since there was never a document
+  // to find. Count rows instead.
+  const rowCountKeys: Record<string, string> = {
+    landlord_alarms: 'alarm',
+    landlord_right_to_rent: 'occupier',
+  }
+  const rowNoun = rowCountKeys[section?.key]
+  if (rowNoun) {
+    let rowCount = 0
+    for (const t of tasks) {
+      for (const q of (t.passportQuestions ?? []) as any[]) {
+        if (Array.isArray(q.answer?.answerJson)) rowCount = q.answer.answerJson.length
+      }
+    }
+    const tone: 'good' | 'pending' = rowCount > 0 ? 'good' : 'pending'
+    return {
+      tone,
+      statusLabel: rowCount > 0 ? '✓ Recorded' : 'Pending',
+      actionByLabel: '',
+      subtitleLine: section?.subtitle ?? '',
+      docCount: rowCount,
+      docTotal: rowCount,
+      pct: rowCount > 0 ? 100 : 0,
+      rowLabel: `${rowCount} ${rowNoun}${rowCount === 1 ? '' : 's'}`,
+    }
+  }
+
   for (const t of tasks) {
     const qs = (t.passportQuestions ?? []) as any[]
     for (const q of qs) {
@@ -1431,7 +1488,17 @@ function cardData(section: any) {
         !!(q.answer?.fileUrl ?? q.answer?.answerJson?.fileUrl ?? q.answer?.url)
       if (isUpload) {
         docTotal++
-        const file = q.answer?.fileUrl ?? q.answer?.answerJson?.fileUrl ?? q.answer?.url
+        // Multi-copy sections (client feedback 1a/3) never touch
+        // QuestionAnswer.fileUrl at all — their certificates live on
+        // UserDocument instead (see the /copies endpoints). The backend
+        // marks the question COMPLETED once at least one copy exists
+        // (uploadQuestionCopy), so treat that as equivalent to "has a
+        // file" here — otherwise a passport whose certificates were
+        // ALL uploaded via multi-copy (no legacy single-slot file ever
+        // set) would show 0/1 doc forever despite having real
+        // certificates on file.
+        const file =
+          q.answer?.fileUrl ?? q.answer?.answerJson?.fileUrl ?? q.answer?.url ?? (q.status === 'COMPLETED' ? true : null)
         if (file) docCount++
       }
       const v = q.answer?.answerText ?? q.answer?.value
@@ -1483,7 +1550,7 @@ function cardData(section: any) {
 
   const pct = docTotal === 0 ? 0 : Math.round((docCount / docTotal) * 100)
 
-  return { tone, statusLabel, actionByLabel, subtitleLine, docCount, docTotal, pct }
+  return { tone, statusLabel, actionByLabel, subtitleLine, docCount, docTotal, pct, rowLabel: undefined as string | undefined }
 }
 
 // Stub kept for backward compatibility with old refs to <SectionCard />.
