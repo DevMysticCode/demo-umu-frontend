@@ -12,6 +12,7 @@
     </div>
 
     <main class="nw-body">
+      <div class="atm-bg teal" />
       <p class="nw-intro">Property law and compliance updates that affect your Passport — curated, not automated. New items are added as the law actually changes.</p>
 
       <!-- Featured — the single most significant item, shown big -->
@@ -77,10 +78,11 @@ function iconForTag(tag: string) {
 
 <style scoped>
 .nw-page {
-  min-height: 100vh;
-  background: #f4f4f8;
-  display: flex;
-  flex-direction: column;
+  min-height: 100dvh;
+  background: #fafaf8;
+  color: #0e2840;
+  position: relative;
+  padding-bottom: 32px;
 }
 .nw-nav-bar {
   display: flex;
@@ -88,32 +90,53 @@ function iconForTag(tag: string) {
   padding: 10px 22px 8px;
   padding-top: calc(10px + env(safe-area-inset-top));
   gap: 8px;
-  background: #f4f4f8;
+  position: relative;
+  z-index: 2;
 }
 .nw-nav-icon-btn {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #fff;
-  border: 1px solid #e8eceb;
+  border: none;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0e2840;
   cursor: pointer;
+  color: #0e2840;
   flex-shrink: 0;
+  transition: background 0.2s;
 }
+.nw-nav-icon-btn:hover { background: #f0f2f1; }
 .nw-nav-icon-btn svg { width: 18px; height: 18px; }
 .nw-nav-title {
   flex: 1;
   text-align: center;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
   color: #0e2840;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.4px;
 }
-.nw-body { flex: 1; padding: 4px 22px 0; }
+.nw-body { position: relative; padding: 4px 22px 0; }
+.atm-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  pointer-events: none;
+  z-index: 0;
+}
+.atm-bg.teal {
+  background: radial-gradient(
+    ellipse 60% 80% at 50% 0%,
+    rgba(61, 189, 163, 0.14),
+    transparent 65%
+  );
+}
 .nw-intro {
+  position: relative;
+  z-index: 1;
   font-size: 12.5px;
   font-weight: 500;
   color: #6b7089;
