@@ -74,19 +74,18 @@
         <!-- Identity intro + document picker card (prototype-exact) -->
         <div class="bp-id-panel">
           <div class="bp-id-panel-head">
+            <img
+              src="/op-icons/passportview/umu-passport.png"
+              alt=""
+              class="bp-id-panel-icon"
+              loading="lazy"
+            />
             <div>
               <div class="bp-id-panel-title">Let's verify who you are</div>
               <div class="bp-id-panel-body">
                 This helps build trust with sellers when you choose to show
                 them you're a verified buyer.
               </div>
-            </div>
-            <div class="bp-id-panel-ic-tile">
-              <img
-                src="/op-icons/passportview/umu-passport.png"
-                alt=""
-                loading="lazy"
-              />
             </div>
           </div>
 
@@ -3088,22 +3087,11 @@ onBeforeUnmount(() => {
   gap: 14px;
   margin-bottom: 18px;
 }
-.bp-id-panel-ic-tile {
+.bp-id-panel-icon {
   width: 52px;
-  height: 52px;
-  border-radius: 16px;
-  background: #f0fdfa;
-  border: 2px solid #99f6e4;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  order: 2;
-  overflow: hidden;
-}
-.bp-id-panel-ic-tile img {
-  width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: contain;
+  flex-shrink: 0;
 }
 .bp-id-panel-title {
   font-size: 15.5px;

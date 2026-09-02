@@ -99,9 +99,41 @@
                of results doesn't read as a wall of different colors (see
                plans/passport-status-wording-clarity.md). EPC dropped from
                this row entirely — HomeScore below already folds EPC in
-               as a fallback, so showing both was redundant here. -->
+               as a fallback, so showing both was redundant here. Icon is
+               a real lock/unlock padlock now — locked only for 'private'
+               (nothing withheld in every other state), matching the same
+               shapes used on the property page and results grid. -->
           <div class="addr-passport-line">
-            <img src="/op-icons/passportview/umu-passport.png" alt="" class="addr-badge-ic" />
+            <svg
+              v-if="passportStateOf(addr) !== 'private'"
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="addr-badge-ic"
+            >
+              <rect x="4" y="10" width="16" height="10" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 7.5-1.5" />
+            </svg>
+            <svg
+              v-else
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="addr-badge-ic"
+            >
+              <rect x="4" y="10" width="16" height="10" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
             {{ passportStateFullLabel(addr) }}
           </div>
         </div>
@@ -926,7 +958,6 @@ function clearAllFilters() {
 .addr-badge-ic {
   width: 10px;
   height: 10px;
-  object-fit: contain;
   flex-shrink: 0;
 }
 /* Passport-state line — colored icon + text, not a pill. "Property
