@@ -494,6 +494,29 @@
                  overwritten, since a landlord may need to keep previous
                  certificates for compliance history. -->
             <template v-else-if="isMultiCopySection">
+              <!-- Legionella: guided assessment OR upload your own (client
+                   feedback item #5 — "start guided assesment and upload as
+                   assesement - so they can either do it inside the
+                   application or add thier own"). -->
+              <template v-if="isLegionellaSection">
+                <div v-if="!legSavedResult" class="lp-leg-cta" @click="openLegAssess">
+                  <div class="lp-leg-cta-ic">💧</div>
+                  <div class="lp-leg-cta-bd">
+                    <div class="lp-leg-cta-t">Start guided assessment</div>
+                    <div class="lp-leg-cta-s">Six quick questions — no professional needed for a standard home</div>
+                  </div>
+                  <div class="lp-leg-cta-go">›</div>
+                </div>
+                <div v-else class="lp-leg-result" :class="`lp-leg-result--${legSavedResult.level.toLowerCase()}`">
+                  <div class="lp-leg-result-eyebrow">Assessed risk level</div>
+                  <div class="lp-leg-result-level">{{ legSavedResult.level }} risk</div>
+                  <div class="lp-leg-result-meta">Assessed {{ new Date(legSavedResult.assessedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) }} · next review {{ new Date(legSavedResult.nextReview).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }) }}</div>
+                  <button type="button" class="lp-leg-retake" @click="openLegAssess">Retake assessment</button>
+                </div>
+                <div class="mlabel" style="margin-top:16px">Or add your own</div>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already had a professional assessment done? Upload it here instead.</p>
+              </template>
+
               <div v-for="doc in mergedCopyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
                 <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
                 <div class="lp-doc-preview-info">
@@ -652,8 +675,12 @@
             <!-- Expiry — shown for the generic single-slot flow (pendingFile
                  or an existing DATE question) AND for multi-copy sections,
                  which still track one expiry per section independent of
-                 how many certificate copies are on file. -->
-            <div v-if="drawerDateQuestion || pendingFile" class="mform-section">
+                 how many certificate copies are on file. Every landlord
+                 section is seeded with a DATE question by design (see
+                 seed.ts), including Alarms/RTR/Legionella — excluded here
+                 since each of those has its own dedicated UI that already
+                 covers dates in a way that makes sense for it. -->
+            <div v-if="(drawerDateQuestion || pendingFile) && !isAlarmsSection && !isRtrSection && !isLegionellaSection" class="mform-section">
                 <div class="mform-label">{{ isDepositSection ? 'Date protected' : 'Expiry / next renewal date' }}</div>
                 <input
                   v-model="drawerExpiryDraft"
@@ -712,6 +739,133 @@
             <button v-else class="btn-primary" type="button" style="flex: 1;" @click="showSectionDrawer = false">
               Done
             </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Legionella guided risk assessment (client feedback item #5) — a
+         full-screen wizard, not the compact section drawer, matching the
+         prototype: intro -> 6 questions -> scored result -> saved. -->
+    <Teleport to="body">
+      <div v-if="legAssessOpen" class="lp-assess">
+        <!-- Intro -->
+        <div v-if="legScreen === 'intro'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Close" @click="closeLegAssess">‹</button>
+            <div class="lp-assess-title">Risk assessment</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-intro-ic">💧</div>
+            <div class="lp-assess-intro-h">You can usually do this yourself</div>
+            <div class="lp-assess-intro-s">For a standard home, the law lets a competent landlord carry out their own Legionella risk assessment — there's no such thing as a required "Legionella certificate". We'll guide you through it.</div>
+            <div class="lp-assess-info">
+              <div class="lp-assess-info-t">What you'll get</div>
+              <div class="lp-assess-info-s">Six short questions on your water system → a scored risk level → tailored control actions → a dated record on the Passport with a 2-year review reminder.</div>
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="legStartQuestions">Start the assessment →</button>
+          </div>
+        </div>
+
+        <!-- Questions -->
+        <div v-else-if="legScreen === 'q'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="legBack">‹</button>
+            <div class="lp-assess-title">Assessment</div>
+            <div class="lp-assess-count">{{ legStep + 1 }} / {{ LEG_QUESTIONS.length }}</div>
+          </div>
+          <div class="lp-assess-steps">
+            <div v-for="(q, i) in LEG_QUESTIONS" :key="q.key" class="lp-assess-step" :class="{ on: i <= legStep }" />
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-qnum">{{ LEG_QUESTIONS[legStep].num }}</div>
+            <div class="lp-assess-qh">{{ LEG_QUESTIONS[legStep].h }}</div>
+            <div class="lp-assess-qs">{{ LEG_QUESTIONS[legStep].s }}</div>
+            <div
+              v-for="(o, i) in LEG_QUESTIONS[legStep].opts"
+              :key="i"
+              class="lp-assess-opt"
+              :class="{ on: legAnswers[LEG_QUESTIONS[legStep].key] === i }"
+              @click="legPick(i)"
+            >
+              <div class="lp-assess-opt-ic">{{ o.ic }}</div>
+              <div class="lp-assess-opt-bd">
+                <div class="lp-assess-opt-t">{{ o.t }}</div>
+                <div class="lp-assess-opt-d">{{ o.d }}</div>
+              </div>
+              <div class="lp-assess-opt-r" />
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button
+              class="btn-primary"
+              type="button"
+              style="width:100%"
+              :disabled="legAnswers[LEG_QUESTIONS[legStep].key] == null"
+              @click="legNext"
+            >
+              {{ legStep === LEG_QUESTIONS.length - 1 ? 'See my result →' : 'Continue' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div v-else-if="legScreen === 'result'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="legScreen = 'q'">‹</button>
+            <div class="lp-assess-title">Your assessment</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-resband" :class="`lp-assess-resband--${legLevel.toLowerCase()}`">
+              <div class="lp-assess-res-eyebrow">Assessed risk level</div>
+              <div class="lp-assess-res-level">{{ legLevel }} risk</div>
+              <div class="lp-assess-res-desc">{{ legLevelDesc }}</div>
+            </div>
+            <div v-for="(f, i) in legFlags" :key="i" class="lp-assess-flag" :class="`lp-assess-flag--${f.type}`">
+              <div class="lp-assess-flag-ic">{{ f.ic }}</div>
+              <div class="lp-assess-flag-t">{{ f.t }}</div>
+            </div>
+            <div class="lp-assess-sech">Your control actions</div>
+            <div v-for="(a, i) in legActions" :key="i" class="lp-assess-action">
+              <div class="lp-assess-action-ic">{{ a.ic }}</div>
+              <div class="lp-assess-action-bd">
+                <div class="lp-assess-action-t">{{ a.t }}</div>
+                <div class="lp-assess-action-s">{{ a.s }}</div>
+                <span class="lp-assess-action-freq">{{ a.f }}</span>
+              </div>
+            </div>
+            <div class="lp-assess-sech">Assessment record</div>
+            <div class="lp-assess-sum">
+              <div class="lp-assess-sum-row"><span>Property</span><span>{{ passport?.addressLine1 || passport?.property?.addressLine1 }}</span></div>
+              <div class="lp-assess-sum-row"><span>Water system</span><span>{{ LEG_QUESTIONS[0].opts[legAnswers.system]?.t }}</span></div>
+              <div class="lp-assess-sum-row"><span>Assessed risk</span><span>{{ legLevel }}</span></div>
+              <div class="lp-assess-sum-row"><span>Assessed by</span><span>You (landlord)</span></div>
+            </div>
+            <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" :disabled="legSaving" @click="saveLegAssessment">
+              {{ legSaving ? 'Saving…' : 'Save to Passport' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Done -->
+        <div v-else-if="legScreen === 'done'" class="lp-assess-screen">
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-ok">✓</div>
+            <div class="lp-assess-intro-h">Assessment complete</div>
+            <div class="lp-assess-intro-s">Dated, recorded and stored on the Property Passport. Your Legionella card is now marked complete.</div>
+            <div class="lp-assess-sum" style="margin-top:20px">
+              <div class="lp-assess-sum-row"><span>Assessed by</span><span>You (landlord)</span></div>
+              <div class="lp-assess-sum-row"><span>Date</span><span>{{ new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) }}</span></div>
+              <div class="lp-assess-sum-row"><span>Next review</span><span>reminder set</span></div>
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="legAssessOpen = false; showSectionDrawer = false">Back to compliance</button>
           </div>
         </div>
       </div>
@@ -1073,8 +1227,10 @@ const MULTI_COPY_SECTIONS = new Set([
   'landlord_eicr',
   'landlord_insurance',
   'landlord_deposit',
+  'landlord_legionella',
 ])
 const isDepositSection = computed(() => drawerSection.value?.key === 'landlord_deposit')
+const isLegionellaSection = computed(() => drawerSection.value?.key === 'landlord_legionella')
 const copyDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
 const copyUploading = ref(false)
 
@@ -1187,6 +1343,224 @@ const drawerUploadNoun = computed(() => UPLOAD_NOUN[drawerSection.value?.key] ??
 const drawerUploadNounCap = computed(
   () => drawerUploadNoun.value.charAt(0).toUpperCase() + drawerUploadNoun.value.slice(1),
 )
+
+// ── Legionella guided risk assessment (client feedback item #5) ──────
+// The law lets a competent landlord do this themselves — there's no
+// such thing as a required "Legionella certificate" (HSE ACOP L8). Six
+// weighted questions -> a scored risk band -> tailored control actions,
+// matching the prototype exactly (question text, weights, scoring
+// thresholds, and the conditional-action rules all ported 1:1).
+interface LegOption { t: string; d: string; ic: string; w: number; flagPro?: boolean; flagWarn?: boolean }
+interface LegQuestion { num: string; key: string; h: string; s: string; opts: LegOption[] }
+const LEG_QUESTIONS: LegQuestion[] = [
+  {
+    num: 'Water system', key: 'system',
+    h: 'What kind of hot water system does the property have?',
+    s: 'Stored and recirculated water is the biggest Legionella factor. Mains-fed combi systems with no storage are lowest risk.',
+    opts: [
+      { t: 'Combi boiler — no stored water', d: 'Heated on demand, cold straight off the mains', ic: '🔥', w: 0 },
+      { t: 'Hot water cylinder / tank', d: 'Stored hot water in a cylinder', ic: '🛢️', w: 2 },
+      { t: 'Cold water storage / header tank', d: 'A tank in the loft feeds the system', ic: '💧', w: 3 },
+      { t: 'Not sure', d: "We'll treat it as higher risk to be safe", ic: '❓', w: 2, flagPro: true },
+    ],
+  },
+  {
+    num: 'Stagnation', key: 'stag',
+    h: 'Are there taps, showers or outlets that are rarely used?',
+    s: 'Water sitting still in pipes lets bacteria grow — especially in spare rooms, outbuildings, or between tenancies.',
+    opts: [
+      { t: 'No — everything is used regularly', d: 'Water turns over across the system', ic: '✅', w: 0 },
+      { t: 'One or two rarely-used outlets', d: 'e.g. a spare bathroom or outside tap', ic: '🚿', w: 1 },
+      { t: 'Yes — or empty between lets', d: 'Void periods let water stagnate', ic: '🕳️', w: 2 },
+    ],
+  },
+  {
+    num: 'Showers', key: 'shower',
+    h: 'Are there showers, and what condition are the heads in?',
+    s: 'Showers create fine droplets (aerosols) that can be inhaled — the main route of exposure. Scaled heads harbour bacteria.',
+    opts: [
+      { t: 'No showers, or descaled recently', d: 'Low aerosol risk', ic: '🧼', w: 0 },
+      { t: 'Showers present, condition unknown', d: 'Not descaled recently', ic: '🚿', w: 1 },
+      { t: 'Visibly scaled or grimy heads', d: 'Needs descaling & disinfecting', ic: '⚠️', w: 2 },
+    ],
+  },
+  {
+    num: 'Temperatures', key: 'temp',
+    h: 'Do you know the water temperatures?',
+    s: 'Bacteria thrive between 20–45°C. Cold should stay below 20°C; hot should reach 50°C+ within a minute.',
+    opts: [
+      { t: 'Yes — hot ≥50°C, cold <20°C', d: 'Outside the danger range', ic: '🌡️', w: 0 },
+      { t: 'Not measured yet', d: 'We\'ll add "check temperatures" to your actions', ic: '❓', w: 1 },
+      { t: 'Hot lukewarm / cold runs warm', d: 'In the range bacteria grow', ic: '🔴', w: 2 },
+    ],
+  },
+  {
+    num: 'Occupants', key: 'occ',
+    h: 'Is anyone in the property in a higher-risk group?',
+    s: 'People over 65, or with weakened immunity or respiratory conditions, are more susceptible. This raises priority, not necessarily system risk.',
+    opts: [
+      { t: 'No / not to my knowledge', d: 'Standard occupancy', ic: '👥', w: 0 },
+      { t: 'Yes — older or vulnerable occupant', d: 'Take extra care with controls', ic: '🧓', w: 1, flagWarn: true },
+    ],
+  },
+  {
+    num: 'Condition', key: 'cond',
+    h: 'Any rust, sludge, scale or debris in tanks?',
+    s: 'Rust, scale and sediment feed the bacteria. If you have a cold tank, is it covered and clean?',
+    opts: [
+      { t: 'No — clean, clear, tanks covered', d: 'No obvious nutrient sources', ic: '✨', w: 0 },
+      { t: "Some scale / can't inspect tank", d: 'Worth a closer look', ic: '🔍', w: 1 },
+      { t: 'Visible rust, sludge or debris', d: 'Nutrient source present', ic: '🟤', w: 2 },
+    ],
+  },
+]
+
+const legAssessOpen = ref(false)
+const legScreen = ref<'intro' | 'q' | 'result' | 'done'>('intro')
+const legStep = ref(0)
+const legAnswers = ref<Record<string, number>>({})
+const legSaving = ref(false)
+// A previously-saved assessment, read back from the DATE question's
+// answerJson (see saveLegAssessment) — shown as a summary on the
+// section card and in the drawer instead of the generic doc pill,
+// which doesn't apply here any more than it does to Alarms/RTR.
+const legSavedResult = computed<{ level: string; assessedAt: string; nextReview: string } | null>(() => {
+  const section = sections.value.find((s) => s.key === 'landlord_legionella')
+  for (const t of section?.tasks ?? []) {
+    for (const q of t.passportQuestions ?? []) {
+      if (q.questionTemplate?.type === 'DATE' && q.answer?.answerJson?.level) {
+        return q.answer.answerJson
+      }
+    }
+  }
+  return null
+})
+
+const legScore = computed(() =>
+  LEG_QUESTIONS.reduce((sum, q) => {
+    const idx = legAnswers.value[q.key]
+    return sum + (idx != null ? q.opts[idx].w : 0)
+  }, 0),
+)
+const legLevel = computed<'Low' | 'Medium' | 'Higher'>(() => {
+  if (legScore.value <= 2) return 'Low'
+  if (legScore.value <= 6) return 'Medium'
+  return 'Higher'
+})
+const legLevelDesc = computed(() => {
+  if (legLevel.value === 'Low') return 'A typical, well-run domestic system. Keep up simple controls and review in 2 years — no professional needed.'
+  if (legLevel.value === 'Medium') return 'Some factors need managing. Do the actions below, keep the record, and review sooner if anything changes.'
+  return 'Several risk factors are present. Do the actions below now, and consider a one-off professional assessment.'
+})
+const legFlags = computed(() => {
+  const flags: { type: 'pro' | 'warn'; ic: string; t: string }[] = []
+  const seen = new Set<string>()
+  for (const q of LEG_QUESTIONS) {
+    const idx = legAnswers.value[q.key]
+    if (idx == null) continue
+    const o = q.opts[idx]
+    if (o.flagPro) {
+      const t = "Consider a professional: you weren't sure about the water system. If it turns out to be stored/tanked or complex, a one-off professional assessment may be worth it."
+      if (!seen.has(t)) { seen.add(t); flags.push({ type: 'pro', ic: '👷', t }) }
+    }
+    if (o.flagWarn) {
+      const t = "Higher-risk occupant: take extra care — keep temperatures right, descale shower heads, and flush after any void. Tell the tenant what you've done."
+      if (!seen.has(t)) { seen.add(t); flags.push({ type: 'warn', ic: '⚠️', t }) }
+    }
+  }
+  return flags
+})
+const legActions = computed(() => {
+  const A: { ic: string; t: string; s: string; f: string }[] = []
+  A.push({ ic: '🚿', t: 'Flush unused outlets weekly', s: 'Run rarely-used taps and showers for a couple of minutes to stop water stagnating — and always before a new tenant moves in.', f: 'Weekly + before every let' })
+  A.push({ ic: '🌡️', t: 'Keep hot hot, cold cold', s: 'Hot water should reach 50°C within a minute; cold should stay below 20°C.', f: 'Ongoing' })
+  if ((legAnswers.value.shower ?? 0) > 0) A.push({ ic: '🧼', t: 'Descale & disinfect shower heads', s: 'Remove, soak and clean shower heads and hoses to clear scale and biofilm.', f: 'Every 3 months' })
+  if ((legAnswers.value.temp ?? 0) > 0) A.push({ ic: '📏', t: 'Measure your water temperatures', s: 'Run the taps and check hot and cold, so your next assessment records real figures.', f: 'Do this now' })
+  if ((legAnswers.value.system ?? 0) >= 2 || (legAnswers.value.cond ?? 0) > 0) A.push({ ic: '🔍', t: 'Inspect & keep the tank clean', s: 'Check any storage/header tank has a close-fitting lid and no rust, sludge or debris.', f: 'At each review' })
+  A.push({ ic: '📣', t: 'Tell your tenant', s: "Ask them to flush taps and showers if the home's been empty for a week or more.", f: 'At move-in' })
+  return A
+})
+
+function openLegAssess() {
+  legAnswers.value = {}
+  legStep.value = 0
+  legScreen.value = 'intro'
+  legAssessOpen.value = true
+}
+function closeLegAssess() {
+  legAssessOpen.value = false
+}
+function legStartQuestions() {
+  legStep.value = 0
+  legScreen.value = 'q'
+}
+function legPick(idx: number) {
+  legAnswers.value[LEG_QUESTIONS[legStep.value].key] = idx
+}
+function legNext() {
+  if (legAnswers.value[LEG_QUESTIONS[legStep.value].key] == null) return
+  if (legStep.value < LEG_QUESTIONS.length - 1) {
+    legStep.value++
+  } else {
+    legScreen.value = 'result'
+  }
+}
+function legBack() {
+  if (legStep.value > 0) {
+    legStep.value--
+  } else {
+    legScreen.value = 'intro'
+  }
+}
+
+async function saveLegAssessment() {
+  const section = sections.value.find((s) => s.key === 'landlord_legionella')
+  const dateQ = section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
+  if (!dateQ) {
+    drawerError.value = 'No record slot found for this section — this passport was created before the latest fix.'
+    return
+  }
+  legSaving.value = true
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const today = new Date()
+    const assessedAt = today.toISOString().slice(0, 10)
+    const nextReview = new Date(today)
+    nextReview.setFullYear(nextReview.getFullYear() + 2)
+    const nextReviewStr = nextReview.toISOString().slice(0, 10)
+    const record = {
+      answers: legAnswers.value,
+      score: legScore.value,
+      level: legLevel.value,
+      assessedAt,
+      nextReview: nextReviewStr,
+    }
+    await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { value: record },
+    })
+    const addr = passport.value?.addressLine1
+    await $fetch(`${config.public.apiBase}/calendar`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: {
+        title: `Legionella risk assessment review due${addr ? ` — ${addr}` : ''}`,
+        date: nextReviewStr,
+        type: 'compliance-renewal',
+        notes: 'Auto-added from your Landlord Passport compliance section.',
+        sourceRef: `landlord-compliance:${section?.id}`,
+      },
+    }).catch(() => {})
+    await loadPassport()
+    legScreen.value = 'done'
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Save failed'
+    legScreen.value = 'result'
+  } finally {
+    legSaving.value = false
+  }
+}
 
 // EPC auto-pull (client feedback item #3) — the property's own EPC data
 // (same enrichment pipeline used everywhere else in the app) rather than
@@ -1673,6 +2047,33 @@ function cardData(section: any) {
       docTotal: rowCount,
       pct: rowCount > 0 ? 100 : 0,
       rowLabel: `${rowCount} ${rowNoun}${rowCount === 1 ? '' : 's'}`,
+    }
+  }
+
+  // Legionella (client feedback #5) — a guided assessment writes its
+  // result to the DATE question's answerJson, not a file, so the same
+  // doc-count logic below would never see it as "done". Recognise the
+  // saved-assessment shape and show the risk level instead — but only
+  // when the assessment is the real reason it's complete: someone could
+  // have used the "add your own" upload path instead, which the
+  // multi-copy logic further down already handles correctly.
+  if (section?.key === 'landlord_legionella') {
+    for (const t of tasks) {
+      for (const q of (t.passportQuestions ?? []) as any[]) {
+        const rec = q.answer?.answerJson
+        if (q.questionTemplate?.type === 'DATE' && rec?.level) {
+          return {
+            tone: 'good' as const,
+            statusLabel: '✓ Assessed',
+            actionByLabel: '',
+            subtitleLine: section?.subtitle ?? '',
+            docCount: 1,
+            docTotal: 1,
+            pct: 100,
+            rowLabel: `${rec.level} risk`,
+          }
+        }
+      }
     }
   }
 
@@ -2793,6 +3194,142 @@ const SectionCard = defineComponent({
 .lp-pi-tx { flex: 1; }
 .lp-pi-t { font-size: 13.5px; font-weight: 700; color: #0e2840; }
 .lp-pi-s { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 1px; line-height: 1.4; }
+
+/* Legionella — drawer entry point (CTA card / saved-result summary) */
+.lp-leg-cta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: #f2faf8;
+  border: 1.5px dashed #00a19a;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+.lp-leg-cta-ic { font-size: 26px; flex-shrink: 0; }
+.lp-leg-cta-bd { flex: 1; }
+.lp-leg-cta-t { font-size: 14.5px; font-weight: 700; color: #0e2840; }
+.lp-leg-cta-s { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.4; }
+.lp-leg-cta-go { font-size: 18px; color: #00a19a; flex-shrink: 0; }
+.lp-leg-result {
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  color: #fff;
+  background: linear-gradient(140deg, #0f8a6e, #0c6e58);
+}
+.lp-leg-result--medium { background: linear-gradient(140deg, #c98a2c, #a9761c); }
+.lp-leg-result--higher { background: linear-gradient(140deg, #c0492f, #992e1a); }
+.lp-leg-result-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.85; }
+.lp-leg-result-level { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-top: 4px; }
+.lp-leg-result-meta { font-size: 11.5px; font-weight: 500; opacity: 0.9; margin-top: 4px; }
+.lp-leg-retake {
+  margin-top: 12px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Legionella — full-screen guided assessment wizard */
+.lp-assess {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #f4f4f8;
+  display: flex;
+  flex-direction: column;
+}
+.lp-assess-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #f4f4f8;
+}
+.lp-assess-hdr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 10px;
+  flex-shrink: 0;
+}
+.lp-assess-back {
+  background: none;
+  border: none;
+  color: #008a84;
+  font-size: 24px;
+  font-weight: 500;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 2px;
+}
+.lp-assess-title { flex: 1; font-size: 17px; font-weight: 700; color: #0e2840; letter-spacing: -0.3px; }
+.lp-assess-count { font-size: 14px; font-weight: 600; color: #a8a9ad; }
+.lp-assess-scroll { flex: 1; overflow-y: auto; padding: 6px 20px 20px; }
+.lp-assess-foot { padding: 12px 16px calc(14px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid #e8eceb; flex-shrink: 0; }
+.lp-assess-steps { display: flex; gap: 5px; padding: 6px 20px 12px; }
+.lp-assess-step { flex: 1; height: 4px; border-radius: 100px; background: #e7e7ee; }
+.lp-assess-step.on { background: #00a19a; }
+.lp-assess-qnum { font-size: 11px; font-weight: 800; color: #008a84; letter-spacing: 1px; text-transform: uppercase; }
+.lp-assess-qh { font-size: 21px; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; margin-top: 8px; line-height: 1.2; }
+.lp-assess-qs { font-size: 13.5px; font-weight: 500; color: #6b7089; line-height: 1.5; margin-top: 8px; margin-bottom: 20px; }
+.lp-assess-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 15px;
+  border: 1.5px solid #e8eceb;
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  margin-bottom: 11px;
+  transition: all 0.12s;
+}
+.lp-assess-opt.on { border-color: #00a19a; background: #f2faf8; }
+.lp-assess-opt-ic { width: 42px; height: 42px; border-radius: 11px; background: #f1f4f3; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.lp-assess-opt.on .lp-assess-opt-ic { background: #fff; }
+.lp-assess-opt-bd { flex: 1; }
+.lp-assess-opt-t { font-size: 14.5px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
+.lp-assess-opt-d { font-size: 12px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.4; }
+.lp-assess-opt-r { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #e8eceb; flex-shrink: 0; align-self: center; position: relative; }
+.lp-assess-opt.on .lp-assess-opt-r { border-color: #00a19a; }
+.lp-assess-opt.on .lp-assess-opt-r::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: #00a19a; }
+.lp-assess-resband { padding: 20px; border-radius: 18px; color: #fff; margin-bottom: 10px; background: linear-gradient(140deg, #0f8a6e, #0c6e58); }
+.lp-assess-resband--medium { background: linear-gradient(140deg, #c98a2c, #a9761c); }
+.lp-assess-resband--higher { background: linear-gradient(140deg, #c0492f, #992e1a); }
+.lp-assess-res-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.8; }
+.lp-assess-res-level { font-size: 30px; font-weight: 800; letter-spacing: -0.8px; margin-top: 6px; }
+.lp-assess-res-desc { font-size: 13px; font-weight: 500; opacity: 0.9; margin-top: 6px; line-height: 1.5; }
+.lp-assess-flag { display: flex; gap: 11px; margin-top: 10px; padding: 14px; border-radius: 13px; }
+.lp-assess-flag--warn { background: #fbf1df; border: 1px solid #f0d9a8; }
+.lp-assess-flag--pro { background: #fbeae5; border: 1px solid #f0c3b8; }
+.lp-assess-flag-ic { font-size: 17px; flex-shrink: 0; }
+.lp-assess-flag-t { font-size: 12.5px; font-weight: 600; line-height: 1.5; color: #4a5868; }
+.lp-assess-sech { font-size: 11px; font-weight: 800; color: #6b7089; letter-spacing: 1.4px; text-transform: uppercase; padding: 20px 0 10px; }
+.lp-assess-action { display: flex; gap: 12px; margin-bottom: 10px; padding: 15px; background: #fff; border: 1px solid #e8eceb; border-radius: 14px; }
+.lp-assess-action-ic { width: 38px; height: 38px; border-radius: 10px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.lp-assess-action-bd { flex: 1; }
+.lp-assess-action-t { font-size: 14px; font-weight: 700; color: #0e2840; }
+.lp-assess-action-s { font-size: 12px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.45; }
+.lp-assess-action-freq { font-size: 10.5px; font-weight: 800; color: #008a84; background: #f2faf8; padding: 3px 8px; border-radius: 100px; margin-top: 7px; display: inline-block; }
+.lp-assess-sum { background: #fff; border: 1px solid #e8eceb; border-radius: 14px; overflow: hidden; }
+.lp-assess-sum-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f0f0f4; font-size: 13px; }
+.lp-assess-sum-row:last-child { border-bottom: none; }
+.lp-assess-sum-row span:first-child { color: #6b7089; font-weight: 500; }
+.lp-assess-sum-row span:last-child { color: #0e2840; font-weight: 700; text-align: right; max-width: 60%; }
+.lp-assess-intro-ic { width: 70px; height: 70px; border-radius: 20px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 8px auto 0; }
+.lp-assess-intro-h { font-size: 23px; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; text-align: center; margin-top: 16px; padding: 0 22px; }
+.lp-assess-intro-s { font-size: 14px; font-weight: 500; color: #6b7089; line-height: 1.55; text-align: center; margin: 10px 0 0; }
+.lp-assess-info { margin: 20px 0 0; padding: 16px; background: #e7f6ef; border: 1px solid #bfe6d5; border-radius: 14px; }
+.lp-assess-info-t { font-size: 13.5px; font-weight: 800; color: #0c6e58; }
+.lp-assess-info-s { font-size: 12.5px; font-weight: 500; color: #0c6e58; line-height: 1.5; margin-top: 6px; }
+.lp-assess-ok { width: 80px; height: 80px; border-radius: 50%; background: #e7f6ef; display: flex; align-items: center; justify-content: center; margin: 20px auto 0; font-size: 38px; color: #0f8a6e; }
 .lp-warn-icon {
   width: 30px; height: 30px;
   border-radius: 50%;
