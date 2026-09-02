@@ -386,8 +386,82 @@
           <div class="lp-modal-body">
             <p v-if="drawerSection.subtitle" class="lp-modal-intro">{{ drawerSection.subtitle }}</p>
 
+            <!-- EPC auto-pull banner — client feedback #3: "pulled straight
+                 through from land registry too". Shown alongside the normal
+                 upload flow below, not instead of it — a landlord can still
+                 attach the certificate PDF itself. -->
+            <div v-if="isEpcSection && propertyEpc?.epcRating" class="lp-doc-preview" style="margin-bottom:12px">
+              <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/environmental.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+              <div class="lp-doc-preview-info">
+                <div class="lp-doc-preview-name">EPC rating {{ propertyEpc.epcRating }}{{ propertyEpc.epcScore ? ` (${propertyEpc.epcScore}/100)` : '' }}</div>
+                <div class="lp-doc-preview-meta">
+                  Pulled automatically{{ epcValidUntilLabel ? ' · valid until ' + epcValidUntilLabel : '' }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Smoke & CO Alarms — no certificate; a repeatable row per
+                 physical alarm (client feedback #4, prototype's datesBody). -->
+            <template v-if="isAlarmsSection">
+              <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">
+                <b>No certificate required.</b> Record each alarm separately — where it is, when it was tested, and when the unit expires. Alarms must be tested on the first day of every new tenancy.
+              </p>
+              <div v-for="(row, i) in alarmRows" :key="i" class="lp-repeat-block">
+                <div class="lp-repeat-head">
+                  <span>{{ row.type === 'co' ? 'CO alarm' : 'Smoke alarm' }} {{ i + 1 }}</span>
+                  <button type="button" class="lp-repeat-rm" aria-label="Remove" @click="removeAlarmRow(i)">✕</button>
+                </div>
+                <div class="mform-section">
+                  <div class="mform-label">Location</div>
+                  <input v-model="row.location" type="text" class="mform-input" placeholder="e.g. Hallway, ground floor" />
+                </div>
+                <div class="lp-two-col">
+                  <div class="mform-section">
+                    <div class="mform-label">Date tested</div>
+                    <input v-model="row.tested" type="date" class="mform-input" />
+                  </div>
+                  <div class="mform-section">
+                    <div class="mform-label">Expiry / replace by</div>
+                    <input v-model="row.expiry" type="date" class="mform-input" />
+                  </div>
+                </div>
+                <div class="lp-two-col">
+                  <button type="button" class="lp-toggle-chip" :class="{ on: row.present }" @click="row.present = !row.present">Present</button>
+                  <button type="button" class="lp-toggle-chip" :class="{ on: row.ok }" @click="row.ok = !row.ok">Tested ✓</button>
+                </div>
+              </div>
+              <button type="button" class="lp-add-row" @click="addAlarmRow('smoke')">＋ Add a smoke alarm</button>
+              <button type="button" class="lp-add-row" @click="addAlarmRow('co')">＋ Add a CO alarm</button>
+              <p class="lp-modal-hint">We'll remind you 30 days before any alarm expires.</p>
+            </template>
+
+            <!-- Right to Rent — per-occupier ID checks, not a flat upload
+                 (client feedback #8, prototype's occupier list). -->
+            <template v-else-if="isRtrSection">
+              <div v-for="(occ, i) in occupierRows" :key="i" class="lp-repeat-block">
+                <div class="lp-repeat-head">
+                  <span>Occupier {{ i + 1 }}</span>
+                  <button type="button" class="lp-repeat-rm" aria-label="Remove" @click="removeOccupierRow(i)">✕</button>
+                </div>
+                <div class="mform-section">
+                  <div class="mform-label">Name</div>
+                  <input v-model="occ.name" type="text" class="mform-input" placeholder="Full name" />
+                </div>
+                <div class="mform-section">
+                  <div class="mform-label">ID status</div>
+                  <input v-model="occ.status" type="text" class="mform-input" placeholder="e.g. British citizen, BRP, Settled status" />
+                </div>
+                <div class="mform-section">
+                  <div class="mform-label">Recheck by (leave blank if unlimited)</div>
+                  <input v-model="occ.recheckBy" type="date" class="mform-input" />
+                </div>
+              </div>
+              <button type="button" class="lp-add-row" @click="addOccupierRow()">＋ Add another occupier</button>
+              <p class="lp-modal-hint">If status is unlimited (British/Irish citizen or settled status), leave "Recheck by" blank — no follow-up needed. We'll remind you 30 days before any recheck date.</p>
+            </template>
+
             <!-- Existing document preview -->
-            <div v-if="drawerFileUrl" class="lp-doc-preview">
+            <div v-else-if="drawerFileUrl" class="lp-doc-preview">
               <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
               <div class="lp-doc-preview-info">
                 <div class="lp-doc-preview-name">{{ drawerDocName || 'Certificate on file' }}</div>
@@ -400,81 +474,83 @@
               </button>
             </div>
 
-            <!-- Expiring-soon banner -->
-            <div v-if="drawerExpiringSoon" class="lp-warn-banner">
-              <div class="lp-warn-icon">⚠</div>
-              <div>
-                <div class="lp-warn-title">Renewal due in {{ drawerDaysLeft }} day{{ drawerDaysLeft === 1 ? '' : 's' }}</div>
-                <div class="lp-warn-meta">
-                  Replace the certificate before {{ drawerExpiryLabel }} to stay compliant.
+            <template v-if="!isAlarmsSection && !isRtrSection">
+              <!-- Expiring-soon banner -->
+              <div v-if="drawerExpiringSoon" class="lp-warn-banner">
+                <div class="lp-warn-icon">⚠</div>
+                <div>
+                  <div class="lp-warn-title">Renewal due in {{ drawerDaysLeft }} day{{ drawerDaysLeft === 1 ? '' : 's' }}</div>
+                  <div class="lp-warn-meta">
+                    Replace the certificate before {{ drawerExpiryLabel }} to stay compliant.
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Pending file -->
-            <div v-if="pendingFile" class="lp-doc-preview lp-doc-preview--pending">
-              <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
-              <div class="lp-doc-preview-info">
-                <div class="lp-doc-preview-name">{{ pendingFile.name }}</div>
-                <div class="lp-doc-preview-meta">{{ pendingFileSizeLabel }} · ready to save</div>
+              <!-- Pending file -->
+              <div v-if="pendingFile" class="lp-doc-preview lp-doc-preview--pending">
+                <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+                <div class="lp-doc-preview-info">
+                  <div class="lp-doc-preview-name">{{ pendingFile.name }}</div>
+                  <div class="lp-doc-preview-meta">{{ pendingFileSizeLabel }} · ready to save</div>
+                </div>
+                <button type="button" class="btn-secondary lp-doc-preview-btn" @click="pendingFile = null">
+                  Change
+                </button>
               </div>
-              <button type="button" class="btn-secondary lp-doc-preview-btn" @click="pendingFile = null">
-                Change
-              </button>
-            </div>
 
-            <!-- File picker -->
-            <label v-else class="lp-upload-row">
-              <input
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
-                class="lp-upload-input"
-                :disabled="drawerUploading"
-                @change="onDrawerFilePicked"
-              />
-              <span class="lp-upload-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="17 8 12 3 7 8" />
-                  <line x1="12" y1="3" x2="12" y2="15" />
-                </svg>
-              </span>
-              <span class="lp-upload-text">
-                {{ drawerFileUrl ? 'Replace certificate' : 'Upload certificate' }}
-                <small>PDF, JPG, PNG, DOCX up to 20MB</small>
-              </span>
-            </label>
+              <!-- File picker -->
+              <label v-else class="lp-upload-row">
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+                  class="lp-upload-input"
+                  :disabled="drawerUploading"
+                  @change="onDrawerFilePicked"
+                />
+                <span class="lp-upload-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                </span>
+                <span class="lp-upload-text">
+                  {{ drawerFileUrl ? 'Replace certificate' : 'Upload certificate' }}
+                  <small>PDF, JPG, PNG, DOCX up to 20MB</small>
+                </span>
+              </label>
 
-            <!-- Document name -->
-            <div v-if="pendingFile" class="mform-section">
-              <div class="mform-label">Document name</div>
-              <input
-                v-model="drawerDocName"
-                type="text"
-                class="mform-input"
-                placeholder="e.g. Gas Safety 2026"
-              />
-            </div>
+              <!-- Document name -->
+              <div v-if="pendingFile" class="mform-section">
+                <div class="mform-label">Document name</div>
+                <input
+                  v-model="drawerDocName"
+                  type="text"
+                  class="mform-input"
+                  placeholder="e.g. Gas Safety 2026"
+                />
+              </div>
 
-            <!-- Expiry -->
-            <div v-if="drawerDateQuestion || pendingFile" class="mform-section">
-              <div class="mform-label">Expiry / next renewal date</div>
-              <input
-                v-model="drawerExpiryDraft"
-                type="date"
-                class="mform-input"
-                :min="todayDateStr"
-              />
-              <p class="lp-modal-hint">
-                <template v-if="drawerCadenceLabel"><b>{{ drawerCadenceLabel }}</b> — </template>we'll remind you 30 days before this date so you can stay compliant.
-              </p>
-            </div>
+              <!-- Expiry -->
+              <div v-if="drawerDateQuestion || pendingFile" class="mform-section">
+                <div class="mform-label">Expiry / next renewal date</div>
+                <input
+                  v-model="drawerExpiryDraft"
+                  type="date"
+                  class="mform-input"
+                  :min="todayDateStr"
+                />
+                <p class="lp-modal-hint">
+                  <template v-if="drawerCadenceLabel"><b>{{ drawerCadenceLabel }}</b> — </template>we'll remind you 30 days before this date so you can stay compliant.
+                </p>
+              </div>
+            </template>
 
             <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
           </div>
           <div class="lp-modal-footer">
             <button
-              v-if="pendingFile"
+              v-if="pendingFile && !isAlarmsSection && !isRtrSection"
               class="btn-secondary"
               type="button"
               :disabled="drawerUploading"
@@ -483,7 +559,17 @@
               Cancel
             </button>
             <button
-              v-if="pendingFile"
+              v-if="isAlarmsSection || isRtrSection"
+              class="btn-primary"
+              type="button"
+              style="flex: 1;"
+              :disabled="drawerListSaving"
+              @click="saveDrawerList"
+            >
+              {{ drawerListSaving ? 'Saving…' : 'Save' }}
+            </button>
+            <button
+              v-else-if="pendingFile"
               class="btn-primary"
               type="button"
               :disabled="drawerUploading"
@@ -800,6 +886,21 @@ const pendingFile = ref<File | null>(null)
 const drawerDocName = ref('')
 const drawerExpiryDraft = ref('')
 
+// Alarms and Right to Rent aren't certificate uploads — the prototype
+// (client feedback items #4 and #8) models them as repeatable structured
+// entries instead: one row per physical alarm, one row per occupier. No
+// schema change needed — the existing generic answer endpoint already
+// routes an array `value` into answerJson (question.service.ts), so both
+// reuse the section's existing UPLOAD-type question slot as their
+// storage, just holding a JSON array instead of a file.
+const isAlarmsSection = computed(() => drawerSection.value?.key === 'landlord_alarms')
+const isRtrSection = computed(() => drawerSection.value?.key === 'landlord_right_to_rent')
+const alarmRows = ref<
+  { type: 'smoke' | 'co'; location: string; tested: string; expiry: string; present: boolean; ok: boolean }[]
+>([])
+const occupierRows = ref<{ name: string; status: string; recheckBy: string }[]>([])
+const drawerListSaving = ref(false)
+
 const todayDateStr = computed(() => new Date().toISOString().slice(0, 10))
 
 const pendingFileSizeLabel = computed(() => {
@@ -874,6 +975,19 @@ const CADENCE_LABEL: Record<string, string> = {
 }
 const drawerCadenceLabel = computed(() => CADENCE_LABEL[drawerSection.value?.key] ?? '')
 
+// EPC auto-pull (client feedback item #3) — the property's own EPC data
+// (same enrichment pipeline used everywhere else in the app) rather than
+// asking the landlord to upload a certificate we may already have.
+const isEpcSection = computed(() => drawerSection.value?.key === 'landlord_epc')
+const propertyEpc = computed(() => passport.value?.property ?? null)
+const epcValidUntilLabel = computed(() => {
+  const lodged = propertyEpc.value?.lodgementDate
+  if (!lodged) return ''
+  const d = new Date(lodged)
+  d.setFullYear(d.getFullYear() + 10)
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+})
+
 function openSection(s: any) {
   if (!s) return
   drawerSection.value = s
@@ -881,7 +995,74 @@ function openSection(s: any) {
   pendingFile.value = null
   drawerDocName.value = ''
   drawerExpiryDraft.value = drawerExpiry.value || ''
+  const storedList = drawerUploadQuestion.value?.answer?.answerJson
+  alarmRows.value = s.key === 'landlord_alarms' && Array.isArray(storedList) ? storedList : []
+  occupierRows.value = s.key === 'landlord_right_to_rent' && Array.isArray(storedList) ? storedList : []
   showSectionDrawer.value = true
+}
+
+function addAlarmRow(type: 'smoke' | 'co') {
+  alarmRows.value.push({ type, location: '', tested: '', expiry: '', present: false, ok: false })
+}
+function removeAlarmRow(i: number) {
+  alarmRows.value.splice(i, 1)
+}
+function addOccupierRow() {
+  occupierRows.value.push({ name: '', status: '', recheckBy: '' })
+}
+function removeOccupierRow(i: number) {
+  occupierRows.value.splice(i, 1)
+}
+
+async function saveDrawerList() {
+  const q = drawerUploadQuestion.value
+  if (!q) {
+    drawerError.value =
+      'No slot found for this section — this passport was created before the latest fix. Re-claim a fresh landlord passport.'
+    return
+  }
+  drawerListSaving.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const value = isAlarmsSection.value ? alarmRows.value : occupierRows.value
+    await $fetch(`${config.public.apiBase}/questions/${q.id}/answer`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { value },
+    })
+
+    // Right to Rent recheck dates work the same way certificate expiries
+    // do — mirror any set recheck date onto the Calendar so the "we'll
+    // remind you 30 days before" promise in the hint actually fires.
+    if (isRtrSection.value) {
+      const addr = passport.value?.addressLine1
+      for (const occ of occupierRows.value) {
+        if (!occ.recheckBy) continue
+        await $fetch(`${config.public.apiBase}/calendar`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: {
+            title: `Right to Rent recheck due — ${occ.name || 'occupier'}${addr ? ` · ${addr}` : ''}`,
+            date: occ.recheckBy,
+            type: 'compliance-renewal',
+            notes: 'Auto-added from your Landlord Passport Right to Rent section.',
+            sourceRef: `landlord-rtr:${q.id}:${occ.name || occupierRows.value.indexOf(occ)}`,
+          },
+        }).catch(() => {})
+      }
+    }
+
+    await loadPassport()
+    if (drawerSection.value) {
+      drawerSection.value = sections.value.find((s) => s.id === drawerSection.value.id) ?? drawerSection.value
+    }
+    showSectionDrawer.value = false
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Save failed'
+  } finally {
+    drawerListSaving.value = false
+  }
 }
 
 function onDrawerFilePicked(e: Event) {
@@ -1990,6 +2171,74 @@ const SectionCard = defineComponent({
   color: #4a5868;
   margin-top: 6px;
   line-height: 1.4;
+}
+
+/* Repeatable rows — Smoke & CO Alarms, Right to Rent occupiers */
+.lp-repeat-block {
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.lp-repeat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0e2840;
+  margin-bottom: 10px;
+}
+.lp-repeat-rm {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f1f4f3;
+  color: #6b7089;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.lp-repeat-rm:active { background: #fbeae5; color: #c0492f; }
+.lp-two-col { display: flex; gap: 10px; }
+.lp-two-col > .mform-section { flex: 1; }
+.lp-two-col > .lp-toggle-chip { flex: 1; }
+.lp-toggle-chip {
+  padding: 9px;
+  border-radius: 9px;
+  border: 1.5px solid #e8eceb;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7089;
+  cursor: pointer;
+  text-align: center;
+}
+.lp-toggle-chip.on {
+  background: #e7f6ef;
+  border-color: #0f8a6e;
+  color: #0f8a6e;
+}
+.lp-add-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 13px;
+  border: 1.5px dashed #00a19a;
+  background: #f2faf8;
+  border-radius: 12px;
+  color: #008a84;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .lp-doc-preview--pending {
