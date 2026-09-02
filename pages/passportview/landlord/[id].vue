@@ -538,6 +538,27 @@
                 <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already have an inventory report? Upload it here instead — or attach photos alongside the one you build above.</p>
               </template>
 
+              <!-- Tenancy Agreement — generate in umovingu, or upload an
+                   existing signed agreement (client feedback item #6). -->
+              <template v-if="isTenancySection">
+                <div v-if="!tnSavedRecord" class="lp-leg-cta" @click="openTnWizard">
+                  <div class="lp-leg-cta-ic">📝</div>
+                  <div class="lp-leg-cta-bd">
+                    <div class="lp-leg-cta-t">Create a tenancy agreement</div>
+                    <div class="lp-leg-cta-s">Assured periodic tenancy — the written statement built in</div>
+                  </div>
+                  <div class="lp-leg-cta-go">›</div>
+                </div>
+                <div v-else class="lp-leg-result lp-leg-result--medium" style="background: linear-gradient(140deg,#2d2466,#231d45 60%,#15102e)">
+                  <div class="lp-leg-result-eyebrow">Tenancy agreement ready</div>
+                  <div class="lp-leg-result-level">{{ tnSavedRecord.tenantName || 'Agreement generated' }}</div>
+                  <div class="lp-leg-result-meta">Created {{ new Date(tnSavedRecord.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) }}</div>
+                  <button type="button" class="lp-leg-retake" @click="openTnWizard">Create a new agreement</button>
+                </div>
+                <div class="mlabel" style="margin-top:16px">Or add your own</div>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already have a signed tenancy agreement? Upload it here instead.</p>
+              </template>
+
               <div v-for="doc in mergedCopyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
                 <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
                 <div class="lp-doc-preview-info">
@@ -1075,6 +1096,125 @@
       </div>
     </Teleport>
 
+    <!-- Tenancy Agreement generator (client feedback item #6) — intro
+         (mandatory terms explainer) -> details -> document preview ->
+         saved. Clause text is a TEMPLATE pending legal review — see the
+         comment on TN_CLAUSES/tnDocText in the script. -->
+    <Teleport to="body">
+      <div v-if="tnOpen" class="lp-assess">
+        <!-- Intro -->
+        <div v-if="tnScreen === 'intro'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Close" @click="closeTnWizard">‹</button>
+            <div class="lp-assess-title">Tenancy agreement</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-intro-ic">📝</div>
+            <div class="lp-assess-intro-h">Build your tenancy agreement</div>
+            <div class="lp-assess-intro-s">Since 1 May 2026 every new tenancy is an assured periodic tenancy, and you must give the tenant a written statement of the key terms before they sign. umovingu builds it and folds the written statement in.</div>
+            <div class="lp-tn-verbadge">🛡️ <b>Template v3.1</b> — reviewed for the Renters' Rights Act. <span class="lp-tn-pending">Placeholder pending legal review.</span></div>
+            <div class="mlabel" style="margin-top:20px">What we fill in for you</div>
+            <div class="lp-tn-mand">
+              <div class="lp-tn-mand-t">📋 Mandatory written-statement terms</div>
+              <div class="lp-tn-mand-item">✓ Names of landlord and tenant(s)</div>
+              <div class="lp-tn-mand-item">✓ The property address</div>
+              <div class="lp-tn-mand-item">✓ Rent amount, frequency and how it's paid</div>
+              <div class="lp-tn-mand-item">✓ That it's an assured periodic tenancy (no fixed term)</div>
+              <div class="lp-tn-mand-item">✓ How rent can be increased (once a year, s13 notice)</div>
+              <div class="lp-tn-mand-item">✓ Notice periods to end the tenancy</div>
+              <div class="lp-tn-mand-item">✓ Deposit amount and the scheme protecting it</div>
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="tnScreen = 'wiz'">Start — takes 3 minutes →</button>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div v-else-if="tnScreen === 'wiz'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="tnScreen = 'intro'">‹</button>
+            <div class="lp-assess-title">Tenancy details</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="mform-section">
+              <div class="mform-label">Tenant name(s)</div>
+              <input v-model="tnTenantName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves" />
+            </div>
+            <div class="mform-section">
+              <div class="mform-label">Tenancy start date</div>
+              <input v-model="tnStartDate" type="date" class="mform-input" />
+            </div>
+            <div class="lp-two-col">
+              <div class="mform-section">
+                <div class="mform-label">Rent amount</div>
+                <input v-model="tnRentAmount" type="text" class="mform-input" placeholder="1,150" />
+              </div>
+              <div class="mform-section">
+                <div class="mform-label">Frequency</div>
+                <div class="lp-two-col">
+                  <button type="button" class="lp-toggle-chip" :class="{ on: tnRentFrequency === 'month' }" @click="tnRentFrequency = 'month'">Monthly</button>
+                  <button type="button" class="lp-toggle-chip" :class="{ on: tnRentFrequency === 'week' }" @click="tnRentFrequency = 'week'">Weekly</button>
+                </div>
+              </div>
+            </div>
+            <div class="lp-two-col">
+              <div class="mform-section">
+                <div class="mform-label">Deposit amount</div>
+                <input v-model="tnDepositAmount" type="text" class="mform-input" placeholder="1,325" />
+              </div>
+              <div class="mform-section">
+                <div class="mform-label">Deposit scheme</div>
+                <input v-model="tnDepositScheme" type="text" class="mform-input" placeholder="mydeposits" />
+              </div>
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="tnScreen = 'preview'">Continue</button>
+          </div>
+        </div>
+
+        <!-- Document preview -->
+        <div v-else-if="tnScreen === 'preview'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="tnScreen = 'wiz'">‹</button>
+            <div class="lp-assess-title">Preview</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="lp-tn-doc">
+              <h1>Assured Periodic Tenancy Agreement</h1>
+              <div class="lp-tn-docsub">incorporating the Written Statement of Terms · Housing Act 1988 (as amended by the Renters' Rights Act 2025)</div>
+              <template v-for="(line, i) in tnDocText" :key="i">
+                <h2 v-if="line.h">{{ line.h }}</h2>
+                <div v-else-if="line.k" class="lp-tn-kvr"><span class="k">{{ line.k }}</span><span class="v">{{ line.v }}</span></div>
+                <p v-else-if="line.clause" class="lp-tn-clause">{{ line.clause }}</p>
+              </template>
+              <div class="lp-tn-docver">Generated by umovingu · Template v3.1 (placeholder, pending legal review)<br />Based on a template. Not legal advice.</div>
+            </div>
+            <div class="lp-tn-legalnote"><b>Before you use this:</b> check the details suit your situation. The template reflects current law but doesn't replace legal advice on anything unusual (company lets, high rent, HMOs, lodgers) — and hasn't yet had its clause wording reviewed by a solicitor.</div>
+            <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" :disabled="tnSaving" @click="saveTenancyAgreement">
+              {{ tnSaving ? 'Saving…' : 'Looks good — save to Passport' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Done -->
+        <div v-else-if="tnScreen === 'done'" class="lp-assess-screen">
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-ok">✓</div>
+            <div class="lp-assess-intro-h">Your agreement is ready</div>
+            <div class="lp-assess-intro-s">Stored on the Property Passport, versioned and linked to your compliance docs.</div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="tnOpen = false; showSectionDrawer = false">Back to compliance</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- Tenant share modal -->
     <Teleport to="body">
       <div v-if="showTenantShare" class="lp-overlay" @click.self="showTenantShare = false">
@@ -1433,6 +1573,7 @@ const MULTI_COPY_SECTIONS = new Set([
   'landlord_deposit',
   'landlord_legionella',
   'landlord_inventory',
+  'landlord_ast',
 ])
 const isDepositSection = computed(() => drawerSection.value?.key === 'landlord_deposit')
 const isLegionellaSection = computed(() => drawerSection.value?.key === 'landlord_legionella')
@@ -1890,6 +2031,130 @@ async function saveInventory() {
     invScreen.value = 'review'
   } finally {
     invSaving.value = false
+  }
+}
+
+// ── Tenancy Agreement generator (client feedback item #6) ────────────
+// "Current passport limits to only being able to upload a current
+// tenancy not create one." Assembles a real Assured Periodic Tenancy
+// Agreement + written statement of terms from a short wizard, matching
+// the prototype's document structure and clause wording.
+//
+// IMPORTANT — clause text is a TEMPLATE, ported from the client's own
+// prototype, explicitly agreed as a placeholder pending legal review
+// before this goes live (referencing live law — Housing Act 1988 as
+// amended by the Renters' Rights Act 2025 — is a legal-accuracy
+// question, not an engineering one). The disclaimer on the generated
+// document and the "not legal advice" note below are NOT decorative —
+// leave them in place until that review happens.
+//
+// Deliberately NOT full parity with the prototype's e-signature/audit-
+// trail flow, template-version-history dashboard, or cross-linked-
+// documents screen — each is a real, separately-justifiable feature in
+// its own right (a genuine e-sign flow needs its own audit/legal
+// design), not something to bolt on inside this generator's scope.
+// This delivers the actual document; those are natural next builds.
+const isTenancySection = computed(() => drawerSection.value?.key === 'landlord_ast')
+const tnOpen = ref(false)
+const tnScreen = ref<'intro' | 'wiz' | 'preview' | 'done'>('intro')
+const tnTenantName = ref('')
+const tnStartDate = ref('')
+const tnRentAmount = ref('')
+const tnRentFrequency = ref<'month' | 'week'>('month')
+const tnDepositAmount = ref('')
+const tnDepositScheme = ref('')
+const tnSaving = ref(false)
+
+const tnSavedRecord = computed<{ tenantName: string; completedAt: string } | null>(() => {
+  const section = sections.value.find((s) => s.key === 'landlord_ast')
+  for (const t of section?.tasks ?? []) {
+    for (const q of t.passportQuestions ?? []) {
+      if (q.questionTemplate?.type === 'DATE' && q.answer?.answerJson?.docText) {
+        return q.answer.answerJson
+      }
+    }
+  }
+  return null
+})
+
+const TN_CLAUSES = [
+  'This is a periodic tenancy with no fixed end date. It continues until ended in line with the law.',
+  "The rent may be increased no more than once a year, by serving a Section 13 notice giving at least two months' notice.",
+  "The tenant may end the tenancy by giving two months' notice in writing.",
+  'The landlord may only seek possession on a valid Section 8 ground. Section 21 notices cannot be used.',
+  'The tenant has the right to request a pet; the landlord will not unreasonably refuse.',
+]
+
+function tnFormatDate(iso: string) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
+const tnDocText = computed(() => {
+  const addr = passport.value?.addressLine1 ?? passport.value?.property?.addressLine1 ?? ''
+  const lines: { h?: string; k?: string; v?: string; clause?: string }[] = [
+    { h: 'The parties' },
+    { k: 'Landlord', v: 'You (landlord)' },
+    { k: 'Tenant', v: tnTenantName.value || '—' },
+    { k: 'Property', v: addr },
+    { h: 'The tenancy' },
+    { k: 'Type', v: 'Assured periodic tenancy' },
+    { k: 'Starts', v: tnFormatDate(tnStartDate.value) || '—' },
+    { k: 'Rent', v: tnRentAmount.value ? `£${tnRentAmount.value} / ${tnRentFrequency.value}` : '—' },
+    { k: 'Deposit', v: tnDepositAmount.value ? `£${tnDepositAmount.value}${tnDepositScheme.value ? ' · ' + tnDepositScheme.value : ''}` : '—' },
+    { h: 'Key terms (written statement)' },
+    ...TN_CLAUSES.map((clause) => ({ clause })),
+    { h: 'Deposit & compliance' },
+    { clause: 'The deposit is protected in an approved scheme and the prescribed information has been given.' },
+  ]
+  return lines
+})
+
+function openTnWizard() {
+  tnTenantName.value = ''
+  tnStartDate.value = ''
+  tnRentAmount.value = ''
+  tnDepositAmount.value = ''
+  tnDepositScheme.value = ''
+  tnScreen.value = 'intro'
+  tnOpen.value = true
+}
+function closeTnWizard() {
+  tnOpen.value = false
+}
+async function saveTenancyAgreement() {
+  const section = sections.value.find((s) => s.key === 'landlord_ast')
+  const dateQ = section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
+  if (!dateQ) {
+    drawerError.value = 'No record slot found for this section — this passport was created before the latest fix.'
+    return
+  }
+  tnSaving.value = true
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const record = {
+      tenantName: tnTenantName.value,
+      startDate: tnStartDate.value,
+      rentAmount: tnRentAmount.value,
+      rentFrequency: tnRentFrequency.value,
+      depositAmount: tnDepositAmount.value,
+      depositScheme: tnDepositScheme.value,
+      docText: tnDocText.value,
+      templateVersion: 'v3.1 (placeholder — pending legal review)',
+      completedAt: new Date().toISOString().slice(0, 10),
+    }
+    await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { value: record },
+    })
+    await loadPassport()
+    tnScreen.value = 'done'
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Save failed'
+    tnScreen.value = 'preview'
+  } finally {
+    tnSaving.value = false
   }
 }
 
@@ -2424,6 +2689,28 @@ function cardData(section: any) {
             docTotal: 1,
             pct: 100,
             rowLabel: `${rec.rooms.length} rooms`,
+          }
+        }
+      }
+    }
+  }
+
+  // Tenancy Agreement — a generated agreement lives in the DATE
+  // question's answerJson too, same reasoning as Legionella/Inventory.
+  if (section?.key === 'landlord_ast') {
+    for (const t of tasks) {
+      for (const q of (t.passportQuestions ?? []) as any[]) {
+        const rec = q.answer?.answerJson
+        if (q.questionTemplate?.type === 'DATE' && rec?.docText) {
+          return {
+            tone: 'good' as const,
+            statusLabel: '✓ Generated',
+            actionByLabel: '',
+            subtitleLine: section?.subtitle ?? '',
+            docCount: 1,
+            docTotal: 1,
+            pct: 100,
+            rowLabel: 'Agreement ready',
           }
         }
       }
@@ -3760,6 +4047,46 @@ const SectionCard = defineComponent({
   height: 38px;
 }
 .lp-inv-note:focus { border-color: #00a19a; height: 56px; }
+
+/* Tenancy Agreement generator */
+.lp-tn-verbadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 13px 15px;
+  background: #e7f6ef;
+  border: 1px solid #bfe6d5;
+  border-radius: 13px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0c6e58;
+  line-height: 1.4;
+}
+.lp-tn-pending { display: block; color: #8a6420; font-weight: 700; margin-top: 4px; }
+.lp-tn-mand { padding: 14px; background: #e8edfb; border: 1px solid #c7d3f0; border-radius: 13px; }
+.lp-tn-mand-t { font-size: 12.5px; font-weight: 800; color: #3d63c9; }
+.lp-tn-mand-item { display: flex; gap: 9px; padding: 5px 0; font-size: 12px; font-weight: 600; color: #2c4aa0; }
+.lp-tn-doc {
+  margin: 8px 0 0;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(35, 29, 65, 0.07);
+  padding: 22px 20px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #2a2a38;
+}
+.lp-tn-doc h1 { font-size: 16px; font-weight: 800; color: #0e2840; text-align: center; letter-spacing: -0.2px; }
+.lp-tn-docsub { text-align: center; font-size: 10.5px; color: #6b7089; font-weight: 600; margin-top: 3px; margin-bottom: 16px; }
+.lp-tn-doc h2 { font-size: 11px; font-weight: 800; color: #008a84; letter-spacing: 0.6px; text-transform: uppercase; margin: 16px 0 6px; border-bottom: 1px solid #f0f0f4; padding-bottom: 4px; }
+.lp-tn-kvr { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
+.lp-tn-kvr .k { color: #6b7089; font-weight: 600; }
+.lp-tn-kvr .v { color: #0e2840; font-weight: 700; text-align: right; }
+.lp-tn-clause { font-size: 11.5px; color: #3a3a48; margin-bottom: 7px; }
+.lp-tn-docver { text-align: center; font-size: 10px; color: #a8a9ad; font-weight: 600; margin-top: 16px; border-top: 1px solid #f0f0f4; padding-top: 10px; }
+.lp-tn-legalnote { margin: 14px 0 0; padding: 13px 15px; background: #fbf1df; border: 1px solid #f0d9a8; border-radius: 12px; font-size: 11.5px; font-weight: 600; color: #7a5500; line-height: 1.5; }
 .lp-warn-icon {
   width: 30px; height: 30px;
   border-radius: 50%;
