@@ -4285,6 +4285,7 @@
       :open="watchConfirmedOpen"
       :address-label="property?.addressLine1 || ''"
       :prefs="watchConfirmedPrefs"
+      :passport-state="floatClaimState"
       @close="watchConfirmedOpen = false"
       @create-passport="onWatchConfirmedCreatePassport"
     />

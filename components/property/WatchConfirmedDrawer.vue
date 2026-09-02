@@ -59,7 +59,7 @@
                 class="wc-notif-ic"
                 loading="lazy"
               />
-              <div class="wc-notif-label">{{ t.label }}</div>
+              <div class="wc-notif-label">{{ t.title }}</div>
               <svg
                 v-if="prefs?.[t.key]"
                 class="wc-notif-state wc-notif-state--on"
@@ -82,7 +82,7 @@
 
           <div class="wc-upsell">
             <div class="wc-upsell-icon">
-              <img src="/op-icons/landing/propertyPassportCard.png" alt="" class="wc-upsell-img" loading="lazy" />
+              <img src="/op-icons/passport-covers/buyer_tilted_right_on_tile.png" alt="" class="wc-upsell-img" loading="lazy" />
               <span class="wc-upsell-badge">
                 <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
                   <circle cx="12" cy="8" r="3.6" />
@@ -127,7 +127,11 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+
+type PassportWatchState = 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
+
+const props = defineProps<{
   open: boolean
   /** Short address label, e.g. "10 Bates Road". */
   addressLabel?: string
@@ -135,6 +139,13 @@ defineProps<{
    *  check / dash state per row so this reflects what they actually
    *  chose, not a fixed mockup list. */
   prefs?: Record<string, boolean> | null
+  /** Same purpose as WatchPropertyDrawer's `passportState` — without it
+   *  every row showed regardless of the property's real state, e.g.
+   *  "Owner claims this property" still listed (and checked) on an
+   *  already-claimed/private property, which can never fire again.
+   *  Optional and defaults to showing everything, matching the drawer
+   *  this was ported from. */
+  passportState?: PassportWatchState | null
 }>()
 
 const emit = defineEmits<{
@@ -147,15 +158,31 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
   handleSelector: '.watch-grip',
 })
 
-// Same trigger set/copy as WatchPropertyDrawer.vue, kept in sync manually
-// since both live show the same 5 notification types.
-const triggers = [
-  { key: 'claimed', icon: 'ownerClaim', label: 'Owner claims this property' },
-  { key: 'progress', icon: 'passportProgress', label: 'Passport progress milestones' },
-  { key: 'published', icon: 'passportPublished', label: 'Passport published' },
-  { key: 'comparables', icon: 'comparableSales', label: 'Comparable sales nearby' },
-  { key: 'homescore', icon: 'homescoreChanges', label: 'HomeScore changes' },
-] as const
+// Same trigger set + per-state filtering as WatchPropertyDrawer.vue, kept
+// in sync manually since both drawers show the same underlying notification
+// types — see that file's ALL_TRIGGERS/TRIGGERS_BY_STATE comments for why
+// each state excludes what it excludes.
+const ALL_TRIGGERS = {
+  claimed: { key: 'claimed', icon: 'ownerClaim', title: 'Owner claims this property' },
+  progress: { key: 'progress', icon: 'passportProgress', title: 'Passport goes Partially Public' },
+  updated: { key: 'progress', icon: 'passportProgress', title: 'Passport updated' },
+  published: { key: 'published', icon: 'passportPublished', title: 'Passport becomes Public' },
+  comparables: { key: 'comparables', icon: 'comparableSales', title: 'Comparable sales nearby' },
+  homescore: { key: 'homescore', icon: 'homescoreChanges', title: 'HomeScore changes' },
+} as const
+
+const TRIGGERS_BY_STATE: Record<PassportWatchState, (keyof typeof ALL_TRIGGERS)[]> = {
+  unclaimed: ['claimed', 'published', 'comparables', 'homescore'],
+  private: ['progress', 'published', 'comparables', 'homescore'],
+  partiallyPublic: ['updated', 'comparables', 'homescore'],
+  public: ['comparables', 'homescore'],
+}
+
+const triggers = computed(() => {
+  const state = props.passportState
+  const keys = state ? TRIGGERS_BY_STATE[state] : (Object.keys(ALL_TRIGGERS) as (keyof typeof ALL_TRIGGERS)[])
+  return keys.map((k) => ALL_TRIGGERS[k])
+})
 </script>
 
 <style scoped>
