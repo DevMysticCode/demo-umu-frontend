@@ -517,6 +517,27 @@
                 <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already had a professional assessment done? Upload it here instead.</p>
               </template>
 
+              <!-- Inventory & Schedule of Condition — build in umovingu, or
+                   upload an existing one (client feedback item #10). -->
+              <template v-if="isInventorySection">
+                <div v-if="!invSavedRecord" class="lp-leg-cta" @click="openInvWizard">
+                  <div class="lp-leg-cta-ic">📋</div>
+                  <div class="lp-leg-cta-bd">
+                    <div class="lp-leg-cta-t">Build inventory in umovingu</div>
+                    <div class="lp-leg-cta-s">Room-by-room · condition + cleanliness · notes</div>
+                  </div>
+                  <div class="lp-leg-cta-go">›</div>
+                </div>
+                <div v-else class="lp-leg-result lp-leg-result--medium" style="background: linear-gradient(140deg,#2d2466,#231d45 60%,#15102e)">
+                  <div class="lp-leg-result-eyebrow">Inventory complete</div>
+                  <div class="lp-leg-result-level">{{ invSavedRecord.rooms.length }} rooms recorded</div>
+                  <div class="lp-leg-result-meta">Completed {{ new Date(invSavedRecord.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) }}</div>
+                  <button type="button" class="lp-leg-retake" @click="openInvWizard">Build a new inventory</button>
+                </div>
+                <div class="mlabel" style="margin-top:16px">Or add your own</div>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already have an inventory report? Upload it here instead — or attach photos alongside the one you build above.</p>
+              </template>
+
               <div v-for="doc in mergedCopyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
                 <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
                 <div class="lp-doc-preview-info">
@@ -866,6 +887,189 @@
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="legAssessOpen = false; showSectionDrawer = false">Back to compliance</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Inventory & Schedule of Condition (client feedback item #10) —
+         setup wizard -> room list -> per-room condition record -> review
+         -> saved. -->
+    <Teleport to="body">
+      <div v-if="invOpen" class="lp-assess">
+        <!-- Setup, step 1: furnishing / type / prepared by -->
+        <div v-if="invScreen === 'setup' && invWizStep === 1" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Close" @click="closeInvWizard">‹</button>
+            <div class="lp-assess-title">New inventory</div>
+            <div class="lp-assess-count">1 / 2</div>
+          </div>
+          <div class="lp-assess-steps"><div class="lp-assess-step on" /><div class="lp-assess-step" /></div>
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-qh" style="font-size:19px">Type &amp; furnishing</div>
+            <div class="lp-assess-qs">The property is already on your Passport — we just need how it's let.</div>
+            <div class="mlabel">Furnishing</div>
+            <div class="lp-inv-chiprow">
+              <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'furnished' }" @click="invFurnishing = 'furnished'">🛋️<span>Furnished</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'part' }" @click="invFurnishing = 'part'">🪑<span>Part-furn.</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'unfurnished' }" @click="invFurnishing = 'unfurnished'">📦<span>Unfurnished</span></button>
+            </div>
+            <div class="mlabel" style="margin-top:16px">Inventory type</div>
+            <div class="lp-inv-chiprow">
+              <button type="button" class="lp-inv-chip" :class="{ on: invType === 'checkin' }" @click="invType = 'checkin'">📥<span>Check-in</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invType === 'interim' }" @click="invType = 'interim'">🔍<span>Interim</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invType === 'checkout' }" @click="invType = 'checkout'">📤<span>Check-out</span></button>
+            </div>
+            <div class="mlabel" style="margin-top:16px">Prepared by</div>
+            <div class="lp-inv-chiprow">
+              <button type="button" class="lp-inv-chip" :class="{ on: invPreparedBy === 'landlord' }" @click="invPreparedBy = 'landlord'">🔑<span>Landlord</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invPreparedBy === 'agent' }" @click="invPreparedBy = 'agent'">🏢<span>Agent</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invPreparedBy === 'clerk' }" @click="invPreparedBy = 'clerk'">📋<span>Ind. clerk</span></button>
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="invWizNext">Continue</button>
+          </div>
+        </div>
+
+        <!-- Setup, step 2: tenancy & handover -->
+        <div v-else-if="invScreen === 'setup' && invWizStep === 2" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="invWizBack">‹</button>
+            <div class="lp-assess-title">New inventory</div>
+            <div class="lp-assess-count">2 / 2</div>
+          </div>
+          <div class="lp-assess-steps"><div class="lp-assess-step on" /><div class="lp-assess-step on" /></div>
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-qh" style="font-size:19px">Tenancy &amp; handover</div>
+            <div class="lp-assess-qs">Ties the report to the tenant, deposit and keys.</div>
+            <div class="mform-section">
+              <div class="mform-label">Tenant name(s)</div>
+              <input v-model="invTenantName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves" />
+            </div>
+            <div class="lp-two-col">
+              <div class="mform-section">
+                <div class="mform-label">Move-in date</div>
+                <input v-model="invMoveInDate" type="date" class="mform-input" />
+              </div>
+              <div class="mform-section">
+                <div class="mform-label">Deposit held</div>
+                <input v-model="invDeposit" type="text" class="mform-input" placeholder="£1,325" />
+              </div>
+            </div>
+            <div class="mform-section">
+              <div class="mform-label">Keys / fobs handed over</div>
+              <input v-model="invKeys" type="text" class="mform-input" placeholder="e.g. 2 door keys · 1 fob" />
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="invWizNext">Start capturing →</button>
+          </div>
+        </div>
+
+        <!-- Room list overview -->
+        <div v-else-if="invScreen === 'rooms'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Close" @click="closeInvWizard">‹</button>
+            <div class="lp-assess-title">New inventory</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="lp-inv-prog">
+              <div class="lp-inv-pbar"><div class="lp-inv-pfill" :style="{ width: (invDoneCount / invRooms.length * 100) + '%' }" /></div>
+              <div class="lp-inv-ptext"><span><b>{{ invDoneCount }}</b> of {{ invRooms.length }} rooms done</span><span>{{ Math.round(invDoneCount / invRooms.length * 100) }}%</span></div>
+            </div>
+            <div v-for="r in invRooms" :key="r.id" class="lp-inv-room" @click="invOpenRoom(r.id)">
+              <div class="lp-inv-room-ic">{{ r.icon }}</div>
+              <div class="lp-inv-room-bd">
+                <div class="lp-inv-room-n">{{ r.name }}</div>
+                <div class="lp-inv-room-m">{{ roomIsDone(r) ? r.items.length + ' items rated' : r.items.length + ' items to check' }}</div>
+              </div>
+              <span class="lp-inv-badge" :class="roomIsDone(r) ? 'done' : 'todo'">{{ roomIsDone(r) ? 'Done' : 'To do' }}</span>
+              <span class="lp-assess-back" style="font-size:20px">›</span>
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" :disabled="!invAllDone" @click="invScreen = 'review'">
+              {{ invAllDone ? 'Review report →' : `Finish all rooms (${invDoneCount}/${invRooms.length})` }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Single room: fixtures + contents condition record -->
+        <div v-else-if="invScreen === 'room' && invCurRoom" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="invScreen = 'rooms'">‹</button>
+            <div class="lp-assess-title">{{ invCurRoom.icon }} {{ invCurRoom.name }}</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div v-for="item in invCurRoom.items" :key="item.name" class="lp-inv-item">
+              <div class="lp-inv-item-n">{{ item.name }}</div>
+              <div class="lp-inv-rl">Condition</div>
+              <div class="lp-inv-crow">
+                <button type="button" class="lp-inv-cd g" :class="{ on: item.condition === 'good' }" @click="invSetCondition(item, 'good')">Good</button>
+                <button type="button" class="lp-inv-cd f" :class="{ on: item.condition === 'fair' }" @click="invSetCondition(item, 'fair')">Fair</button>
+                <button type="button" class="lp-inv-cd p" :class="{ on: item.condition === 'poor' }" @click="invSetCondition(item, 'poor')">Poor</button>
+              </div>
+              <div class="lp-inv-rl">Cleanliness</div>
+              <div class="lp-inv-crow">
+                <button type="button" class="lp-inv-cd cl" :class="{ on: item.cleanliness === 'clean' }" @click="invSetCleanliness(item, 'clean')">Clean</button>
+                <button type="button" class="lp-inv-cd mk" :class="{ on: item.cleanliness === 'marked' }" @click="invSetCleanliness(item, 'marked')">Marked</button>
+                <button type="button" class="lp-inv-cd dt" :class="{ on: item.cleanliness === 'dirty' }" @click="invSetCleanliness(item, 'dirty')">Dirty</button>
+              </div>
+              <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="invScreen = 'rooms'">Save room</button>
+          </div>
+        </div>
+
+        <!-- Review + evidence photos + save -->
+        <div v-else-if="invScreen === 'review'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="invScreen = 'rooms'">‹</button>
+            <div class="lp-assess-title">Review report</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-sum">
+              <div v-for="r in invRooms" :key="r.id" class="lp-assess-sum-row"><span>{{ r.icon }} {{ r.name }}</span><span>✓ {{ r.items.length }} items</span></div>
+            </div>
+            <div class="mlabel" style="margin-top:16px">Evidence photos (optional)</div>
+            <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Attach photos to back up the condition record above.</p>
+            <div v-for="doc in copyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+              <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+              <div class="lp-doc-preview-info">
+                <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}</div>
+              </div>
+              <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
+              <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
+            </div>
+            <label class="lp-upload-row">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="copyUploading" @change="onCopyFilePicked" />
+              <span class="lp-upload-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+              </span>
+              <span class="lp-upload-text">{{ copyUploading ? 'Uploading…' : 'Add a photo' }}<small>JPG, PNG, PDF up to 20MB</small></span>
+            </label>
+            <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" :disabled="invSaving" @click="saveInventory">
+              {{ invSaving ? 'Saving…' : 'Sign & save to Passport' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Done -->
+        <div v-else-if="invScreen === 'done'" class="lp-assess-screen">
+          <div class="lp-assess-scroll">
+            <div class="lp-assess-ok">✓</div>
+            <div class="lp-assess-intro-h">Inventory complete</div>
+            <div class="lp-assess-intro-s">Stored on the Property Passport — real evidence if a deposit dispute ever comes up.</div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="invOpen = false; showSectionDrawer = false">Back to compliance</button>
           </div>
         </div>
       </div>
@@ -1228,9 +1432,22 @@ const MULTI_COPY_SECTIONS = new Set([
   'landlord_insurance',
   'landlord_deposit',
   'landlord_legionella',
+  'landlord_inventory',
 ])
 const isDepositSection = computed(() => drawerSection.value?.key === 'landlord_deposit')
 const isLegionellaSection = computed(() => drawerSection.value?.key === 'landlord_legionella')
+const isInventorySection = computed(() => drawerSection.value?.key === 'landlord_inventory')
+const invSavedRecord = computed<{ rooms: InvRoom[]; completedAt: string; type: string } | null>(() => {
+  const section = sections.value.find((s) => s.key === 'landlord_inventory')
+  for (const t of section?.tasks ?? []) {
+    for (const q of t.passportQuestions ?? []) {
+      if (q.questionTemplate?.type === 'DATE' && q.answer?.answerJson?.rooms) {
+        return q.answer.answerJson
+      }
+    }
+  }
+  return null
+})
 const copyDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
 const copyUploading = ref(false)
 
@@ -1559,6 +1776,120 @@ async function saveLegAssessment() {
     legScreen.value = 'result'
   } finally {
     legSaving.value = false
+  }
+}
+
+// ── Inventory & Schedule of Condition (client feedback item #10) ─────
+// Scoped to the part that actually matters for a deposit dispute: a
+// structured, room-by-room condition + cleanliness record with notes
+// per fixture/content, not a flat single-file upload. Deliberately NOT
+// full parity with the prototype's per-item photo capture — that's a
+// materially bigger and separately-justifiable build (a real camera/
+// gallery flow per fixture); evidence photos are instead attached once
+// per inventory via the existing multi-copy upload pattern, alongside
+// the structured record. Extend to per-item photos later if the
+// structured record alone doesn't prove enough in practice.
+interface InvItem { name: string; condition: string; cleanliness: string; note: string }
+interface InvRoom { id: string; name: string; icon: string; fixtures: string[]; contents: string[]; items: InvItem[] }
+const INVENTORY_ROOM_TEMPLATE: Omit<InvRoom, 'items'>[] = [
+  { id: 'living', name: 'Living Room', icon: '🛋️', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Doors & handles', 'Skirting boards', 'Light fittings & switches', 'Radiator'], contents: ['Sofa', 'Coffee table', 'TV unit', 'Curtains'] },
+  { id: 'kitchen', name: 'Kitchen', icon: '🍳', fixtures: ['Worktops & units', 'Sink & taps', 'Oven & hob', 'Extractor fan', 'Tiling / splashback', 'Flooring', 'Walls & ceiling'], contents: ['Fridge / freezer', 'Washing machine', 'Microwave'] },
+  { id: 'bed1', name: 'Bedroom 1', icon: '🛏️', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Built-in wardrobe', 'Radiator'], contents: ['Double bed & mattress', 'Bedside tables', 'Chest of drawers'] },
+  { id: 'bed2', name: 'Bedroom 2', icon: '🛏️', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Radiator'], contents: ['Single bed & mattress', 'Wardrobe'] },
+  { id: 'bath', name: 'Bathroom', icon: '🛁', fixtures: ['Bath / shower', 'Toilet', 'Basin & taps', 'Tiling, grout & sealant', 'Extractor fan', 'Flooring'], contents: ['Mirror cabinet'] },
+  { id: 'hall', name: 'Hallway & entrance', icon: '🚪', fixtures: ['Front door, frame & locks', 'Walls & ceiling', 'Flooring', 'Light fittings'], contents: [] },
+]
+function freshInventoryRooms(): InvRoom[] {
+  return INVENTORY_ROOM_TEMPLATE.map((r) => ({
+    ...r,
+    items: [...r.fixtures, ...r.contents].map((name) => ({ name, condition: '', cleanliness: '', note: '' })),
+  }))
+}
+
+const invOpen = ref(false)
+const invScreen = ref<'setup' | 'rooms' | 'room' | 'review' | 'done'>('setup')
+const invWizStep = ref(1)
+const invFurnishing = ref<'furnished' | 'part' | 'unfurnished'>('furnished')
+const invType = ref<'checkin' | 'interim' | 'checkout'>('checkin')
+const invPreparedBy = ref<'landlord' | 'agent' | 'clerk'>('landlord')
+const invTenantName = ref('')
+const invMoveInDate = ref('')
+const invDeposit = ref('')
+const invKeys = ref('')
+const invRooms = ref<InvRoom[]>(freshInventoryRooms())
+const invCurRoomId = ref<string | null>(null)
+const invSaving = ref(false)
+
+const invCurRoom = computed(() => invRooms.value.find((r) => r.id === invCurRoomId.value) ?? null)
+function roomIsDone(r: InvRoom) {
+  return r.items.length > 0 && r.items.every((i) => i.condition && i.cleanliness)
+}
+const invDoneCount = computed(() => invRooms.value.filter(roomIsDone).length)
+const invAllDone = computed(() => invDoneCount.value === invRooms.value.length)
+
+function openInvWizard() {
+  invRooms.value = freshInventoryRooms()
+  invWizStep.value = 1
+  invScreen.value = 'setup'
+  invOpen.value = true
+}
+function closeInvWizard() {
+  invOpen.value = false
+}
+function invWizNext() {
+  if (invWizStep.value < 2) {
+    invWizStep.value++
+  } else {
+    invScreen.value = 'rooms'
+  }
+}
+function invWizBack() {
+  if (invWizStep.value > 1) invWizStep.value--
+}
+function invOpenRoom(id: string) {
+  invCurRoomId.value = id
+  invScreen.value = 'room'
+}
+function invSetCondition(item: InvItem, val: string) {
+  item.condition = val
+}
+function invSetCleanliness(item: InvItem, val: string) {
+  item.cleanliness = val
+}
+
+async function saveInventory() {
+  const section = sections.value.find((s) => s.key === 'landlord_inventory')
+  const dateQ = section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
+  if (!dateQ) {
+    drawerError.value = 'No record slot found for this section — this passport was created before the latest fix.'
+    return
+  }
+  invSaving.value = true
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const record = {
+      furnishing: invFurnishing.value,
+      type: invType.value,
+      preparedBy: invPreparedBy.value,
+      tenantName: invTenantName.value,
+      moveInDate: invMoveInDate.value,
+      deposit: invDeposit.value,
+      keys: invKeys.value,
+      rooms: invRooms.value,
+      completedAt: new Date().toISOString().slice(0, 10),
+    }
+    await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { value: record },
+    })
+    await loadPassport()
+    invScreen.value = 'done'
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Save failed'
+    invScreen.value = 'review'
+  } finally {
+    invSaving.value = false
   }
 }
 
@@ -2071,6 +2402,28 @@ function cardData(section: any) {
             docTotal: 1,
             pct: 100,
             rowLabel: `${rec.level} risk`,
+          }
+        }
+      }
+    }
+  }
+
+  // Inventory — same reasoning as Legionella above: a saved inventory
+  // record lives in the DATE question's answerJson, not a file.
+  if (section?.key === 'landlord_inventory') {
+    for (const t of tasks) {
+      for (const q of (t.passportQuestions ?? []) as any[]) {
+        const rec = q.answer?.answerJson
+        if (q.questionTemplate?.type === 'DATE' && Array.isArray(rec?.rooms)) {
+          return {
+            tone: 'good' as const,
+            statusLabel: '✓ Recorded',
+            actionByLabel: '',
+            subtitleLine: section?.subtitle ?? '',
+            docCount: 1,
+            docTotal: 1,
+            pct: 100,
+            rowLabel: `${rec.rooms.length} rooms`,
           }
         }
       }
@@ -3330,6 +3683,83 @@ const SectionCard = defineComponent({
 .lp-assess-info-t { font-size: 13.5px; font-weight: 800; color: #0c6e58; }
 .lp-assess-info-s { font-size: 12.5px; font-weight: 500; color: #0c6e58; line-height: 1.5; margin-top: 6px; }
 .lp-assess-ok { width: 80px; height: 80px; border-radius: 50%; background: #e7f6ef; display: flex; align-items: center; justify-content: center; margin: 20px auto 0; font-size: 38px; color: #0f8a6e; }
+
+/* Inventory & Schedule of Condition */
+.lp-inv-chiprow { display: flex; gap: 9px; }
+.lp-inv-chip {
+  flex: 1;
+  padding: 12px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 1.5px solid #e8eceb;
+  border-radius: 14px;
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #6b7089;
+  cursor: pointer;
+}
+.lp-inv-chip.on { border-color: #00a19a; background: #f2faf8; color: #0e2840; }
+.lp-inv-prog { margin-bottom: 14px; }
+.lp-inv-pbar { height: 8px; background: #e7e7ee; border-radius: 100px; overflow: hidden; }
+.lp-inv-pfill { height: 100%; background: linear-gradient(90deg, #00a19a, #00c4bc); border-radius: 100px; transition: width 0.5s cubic-bezier(.22,1,.36,1); }
+.lp-inv-ptext { display: flex; justify-content: space-between; margin-top: 7px; font-size: 12px; font-weight: 600; color: #6b7089; }
+.lp-inv-ptext b { color: #0e2840; }
+.lp-inv-room {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 10px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 15px;
+  cursor: pointer;
+}
+.lp-inv-room-ic { width: 44px; height: 44px; border-radius: 12px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 21px; flex-shrink: 0; }
+.lp-inv-room-bd { flex: 1; min-width: 0; }
+.lp-inv-room-n { font-size: 15px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
+.lp-inv-room-m { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 2px; }
+.lp-inv-badge { font-size: 10.5px; font-weight: 800; padding: 5px 10px; border-radius: 100px; }
+.lp-inv-badge.done { background: #e7f6ef; color: #0f8a6e; }
+.lp-inv-badge.todo { background: #f1f4f3; color: #a8a9ad; }
+.lp-inv-item { background: #fff; border: 1px solid #e8eceb; border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+.lp-inv-item-n { font-size: 14.5px; font-weight: 700; color: #0e2840; }
+.lp-inv-rl { font-size: 10px; font-weight: 800; color: #a8a9ad; letter-spacing: 0.5px; text-transform: uppercase; margin: 11px 0 6px; }
+.lp-inv-crow { display: flex; gap: 6px; }
+.lp-inv-cd {
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: 9px;
+  border: 1.5px solid #e8eceb;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7089;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.12s;
+}
+.lp-inv-cd.g.on, .lp-inv-cd.cl.on { background: #e7f6ef; border-color: #0f8a6e; color: #0f8a6e; }
+.lp-inv-cd.f.on, .lp-inv-cd.mk.on { background: #fbf1df; border-color: #c98a2c; color: #c98a2c; }
+.lp-inv-cd.p.on, .lp-inv-cd.dt.on { background: #fbeae5; border-color: #c0492f; color: #c0492f; }
+.lp-inv-note {
+  margin-top: 11px;
+  width: 100%;
+  border: 1px solid #e8eceb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #0e2840;
+  outline: none;
+  resize: none;
+  height: 38px;
+}
+.lp-inv-note:focus { border-color: #00a19a; height: 56px; }
 .lp-warn-icon {
   width: 30px; height: 30px;
   border-radius: 50%;
