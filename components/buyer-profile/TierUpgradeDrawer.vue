@@ -78,7 +78,7 @@
             {{ tier.title }} unlocked
           </div>
           <div class="tu-sub" style="text-align: center">
-            Your buyer profile is now {{ tier.title }}. The new credentials
+            Your buyer passport is now {{ tier.title }}. The new credentials
             will appear on the next step.
           </div>
           <button class="tu-cta" @click="finish">Continue →</button>

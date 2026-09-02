@@ -12,7 +12,7 @@
       >
         <div class="sd-handle" />
 
-        <div class="sd-eyebrow">Share your buyer profile</div>
+        <div class="sd-eyebrow">Share your buyer passport</div>
         <div class="sd-title">Send to an agent or seller</div>
 
         <!-- Tabs -->

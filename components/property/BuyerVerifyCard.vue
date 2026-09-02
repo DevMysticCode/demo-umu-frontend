@@ -48,10 +48,10 @@
       </div>
 
       <button type="button" class="vb-btn vb-btn--primary" @click="onView">
-        Take me to my buyer profile →
+        Take me to my buyer passport →
       </button>
       <button type="button" class="vb-btn vb-btn--ghost" @click="onEdit">
-        Edit my buyer profile
+        Edit my buyer passport
       </button>
     </template>
 
