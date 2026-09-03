@@ -280,9 +280,6 @@
                 >
                   {{ floatClaimCta }}
                 </button>
-                <div v-if="floatClaimMeta" class="pps-float-claim-price">
-                  {{ floatClaimMeta }}
-                </div>
               </div>
             </div>
           </div>
@@ -6273,20 +6270,6 @@ const floatClaimCta = computed<string>(() => {
   }
   return 'Claim this property'
 })
-const floatClaimMeta = computed<string>(() => {
-  // Deliberately no completion % surfaced here in any state — that stays
-  // owner-only. Partially-public and public share the same access price;
-  // there's no cheaper tier for an incomplete Passport today.
-  if (
-    floatClaimState.value === 'public' ||
-    floatClaimState.value === 'partiallyPublic'
-  ) {
-    return isPassportOwnerOrCollab.value || passportStatus.value?.canAccess
-      ? ''
-      : '£99'
-  }
-  return ''
-})
 // Every floatClaimState's main button opens its matching explainer
 // drawer — same pattern "Claim this property" already used for
 // unclaimed. The drawer's own buttons (see PassportClaimBox.vue) do the
@@ -8934,13 +8917,6 @@ function formatSaleDate(dateStr: string): string {
   cursor: pointer;
   white-space: nowrap;
 }
-.pps-float-claim-price {
-  flex-shrink: 0;
-  font-size: 11px;
-  font-weight: 700;
-  color: #00a19a;
-}
-
 /* ─── Score card ────────────────────────────────────────────── */
 .pps-score-card {
   margin: 14px 14px 0;
