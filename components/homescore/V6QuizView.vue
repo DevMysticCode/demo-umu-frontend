@@ -379,7 +379,7 @@ interface Props {
   /** Number of users watching this property (wishlist + saved). */
   watchersCount?: number
   /** Passport status — drives the claim box, same as the score screen. */
-  passportState?: 'unclaimed' | 'inProgress' | 'published'
+  passportState?: 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
   passportProgressPct?: number
   passportSectionsDone?: number
   passportSectionsTotal?: number

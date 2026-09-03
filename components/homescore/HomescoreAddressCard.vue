@@ -162,9 +162,9 @@
         </div>
       </div>
 
-      <!-- Social proof: live interest (published) or watchers (others) -->
+      <!-- Social proof: live interest (public/partially public) or watchers (others) -->
       <div
-        v-if="passportState === 'published'"
+        v-if="passportState === 'public' || passportState === 'partiallyPublic'"
         class="hsc-viewers hsc-viewers--live"
       >
         <span class="hsc-live-bars" aria-hidden="true">
@@ -257,7 +257,7 @@ const props = withDefaults(
     homeScore?: number | null
     searchesToday?: number
     watchersCount?: number
-    passportState?: 'unclaimed' | 'inProgress' | 'published'
+    passportState?: 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
     /** Single-line EPC row, no HomeScore tile, no social-proof rows —
      *  used by the score-result screen (V6ScoreView). */
     compact?: boolean
@@ -372,9 +372,14 @@ const epcHook = computed(() => {
 })
 // Report-mode passport pill — mirrors the state vocab passed in via
 // passportState (already used by the social-proof "live interest" row).
+// Same wording as everywhere else in the app (Claimed · Private /
+// Partially Public / Public) — this used to be its own 3-state
+// vocabulary ("Passport in progress"/"ready to view") left over from
+// before the sitewide 4-state model.
 const passportPillLabel = computed(() => {
-  if (props.passportState === 'published') return 'Passport ready to view'
-  if (props.passportState === 'inProgress') return 'Passport in progress'
+  if (props.passportState === 'public') return 'Claimed · Public'
+  if (props.passportState === 'partiallyPublic') return 'Claimed · Partially Public'
+  if (props.passportState === 'private') return 'Claimed · Private'
   return 'No Passport yet'
 })
 

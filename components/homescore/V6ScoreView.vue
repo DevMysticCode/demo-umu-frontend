@@ -1352,7 +1352,7 @@ const props = withDefaults(
     watchersCount?: number
     /** Passport status of the property — drives the claim box so we don't
      *  pitch "claim" on a home that's already claimed. */
-    passportState?: 'unclaimed' | 'inProgress' | 'published'
+    passportState?: 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
     /** Passport build progress (drives the in-progress ring + drawer). */
     passportProgressPct?: number
     passportSectionsDone?: number
