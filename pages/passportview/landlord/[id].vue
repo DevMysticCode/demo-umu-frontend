@@ -124,25 +124,11 @@
             <SegmentedSwitch v-model="complianceView" :options="viewOptions" />
           </div>
 
-          <!-- Legislation & news rail (prototype's news-rail) — a
-               deliberately small, editorially-curated set (see NEWS_ITEMS
-               below) rather than a live feed: keeping this current is an
-               ongoing editorial commitment, not a one-time build — flagged
-               to the client alongside the rest of the passport-view report.
-               Each item links to a real, current source. -->
-          <div class="section-heading">Legislation &amp; news</div>
-          <div class="lp-news-rail">
-            <a v-for="n in NEWS_RAIL_ITEMS" :key="n.url" class="lp-news-card" :href="n.url" target="_blank" rel="noopener">
-              <div class="lp-news-band" :class="`lp-news-band--${n.tag}`" />
-              <div class="lp-news-bd">
-                <span class="lp-news-tag" :class="`lp-news-tag--${n.tag}`">{{ n.tagLabel }}</span>
-                <div class="lp-news-t">{{ n.title }}</div>
-                <div class="lp-news-s">{{ n.summary }}</div>
-                <div class="lp-news-src">{{ n.source }}</div>
-              </div>
-            </a>
-          </div>
-          <NuxtLink to="/profile/news" class="lp-news-all">See all updates ›</NuxtLink>
+          <!-- Legislation & news rail — moved to the landlord dashboard
+               (pages/dashboard.vue), which now owns this section since
+               it's account-wide, not tied to one property's passport.
+               Still driven by the same shared dataset (see
+               utils/landlordNews.ts) so it can't drift between the two. -->
 
           <!-- LIST VIEW (existing grouped sections) -->
           <template v-if="complianceView === 'list'">
@@ -1757,11 +1743,6 @@ const drawerUploadNounCap = computed(
 // thresholds, and the conditional-action rules all ported 1:1).
 interface LegOption { t: string; d: string; ic: string; w: number; flagPro?: boolean; flagWarn?: boolean }
 interface LegQuestion { num: string; key: string; h: string; s: string; opts: LegOption[] }
-// Legislation & news rail — a 5-item teaser of the shared dataset (see
-// utils/landlordNews.ts, also used in full by the News page under
-// Profile). Kept as a slice here rather than its own list so the two
-// surfaces can never drift out of sync with each other.
-const NEWS_RAIL_ITEMS = NEWS_ITEMS.slice(0, 5)
 
 const LEG_QUESTIONS: LegQuestion[] = [
   {
@@ -4215,40 +4196,7 @@ const SectionCard = defineComponent({
 .lp-tn-docver { text-align: center; font-size: 10px; color: #a8a9ad; font-weight: 600; margin-top: 16px; border-top: 1px solid #f0f0f4; padding-top: 10px; }
 .lp-tn-legalnote { margin: 14px 0 0; padding: 13px 15px; background: #fbf1df; border: 1px solid #f0d9a8; border-radius: 12px; font-size: 11.5px; font-weight: 600; color: #7a5500; line-height: 1.5; }
 
-/* Legislation & news rail */
-.lp-news-rail {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 2px 22px 10px;
-  margin-bottom: 4px;
-  scroll-snap-type: x mandatory;
-}
-.lp-news-rail::-webkit-scrollbar { height: 0; }
-.lp-news-card {
-  flex: 0 0 240px;
-  scroll-snap-align: start;
-  background: #fff;
-  border: 1px solid #e8eceb;
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(35, 29, 65, 0.05);
-  overflow: hidden;
-  text-decoration: none;
-  display: block;
-}
-.lp-news-band { height: 5px; }
-.lp-news-band--law { background: linear-gradient(90deg, #c0492f, #992e1a); }
-.lp-news-band--update { background: linear-gradient(90deg, #00a19a, #008a84); }
-.lp-news-band--news { background: linear-gradient(90deg, #3d63c9, #2c4aa0); }
-.lp-news-bd { padding: 12px 13px 14px; }
-.lp-news-tag { font-size: 9.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 100px; }
-.lp-news-tag--law { background: #fbeae5; color: #992e1a; }
-.lp-news-tag--update { background: #f2faf8; color: #008a84; }
-.lp-news-tag--news { background: #e8edfb; color: #3d63c9; }
-.lp-news-t { font-size: 13.5px; font-weight: 700; color: #0e2840; line-height: 1.25; margin-top: 9px; letter-spacing: -0.2px; }
-.lp-news-s { font-size: 11.5px; font-weight: 500; color: #6b7089; line-height: 1.4; margin-top: 5px; }
-.lp-news-src { font-size: 10.5px; font-weight: 700; color: #a8a9ad; margin-top: 9px; }
-.lp-news-all { display: block; margin: 2px 22px 4px; text-align: center; font-size: 12.5px; font-weight: 700; color: #008a84; text-decoration: none; padding: 6px; }
+/* Legislation & news rail moved to pages/dashboard.vue (.dash-news-*) */
 .lp-warn-icon {
   width: 30px; height: 30px;
   border-radius: 50%;
