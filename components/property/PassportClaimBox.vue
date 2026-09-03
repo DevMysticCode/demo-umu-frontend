@@ -1039,14 +1039,56 @@ const stepDetails: Record<
     icon: '/op-icons/misc/eye.png',
   },
 }
+// Same four steps, but for a viewer who ISN'T the one claiming — the
+// unclaimedSteps copy above is written second-person ("you're
+// authorised...", "the home is yours"), which is only correct in the
+// `unclaimed` drawer where the visitor genuinely is about to claim it.
+// The `private`/`partiallyPublic`/`public` journey steppers show this
+// same walkthrough to someone watching a property that's already been
+// claimed by somebody else — third person throughout, per the
+// client-provided prototype (claimedPropertyWatchDrawer.jpeg).
+const claimedStepDetails: Record<
+  number,
+  { h: string; v: string; happens: string; icon: string }
+> = {
+  1: {
+    h: '1 · Claim',
+    v: "The property is claimed. The homeowner confirms they're authorised to manage this Property Passport. This securely connects the Passport to the person responsible for the home.",
+    happens:
+      'Identity checked · Ownership confirmed · Passport securely claimed',
+    icon: '/op-icons/verify-identity/idCardChecked.png',
+  },
+  2: {
+    h: '2 · Verify',
+    v: 'Property details are verified. Key property details can be checked against trusted sources, helping connect the Passport to the correct home and build a more reliable property record.',
+    happens:
+      'Property record matched · Trusted data connected · Key details verified',
+    icon: '/op-icons/homescore/clipboard.png',
+  },
+  3: {
+    h: '3 · Build',
+    v: 'The Passport is built. The homeowner can add property details, documents, certificates, guarantees and improvements over time. The Passport can continue to grow as the home changes.',
+    happens: 'Property details added · Documents stored · Record kept up to date',
+    icon: '/op-icons/investment/clipboardChecklist.png',
+  },
+  4: {
+    h: '4 · Publish',
+    v: 'The homeowner chooses what to share. The homeowner decides if and when parts of the Property Passport become public. A Passport can remain completely private, and publishing does not mean everything inside is shared.',
+    happens:
+      'Visibility controlled by the homeowner · Selected details can be published · Private details stay private',
+    icon: '/op-icons/misc/eye.png',
+  },
+}
 // No step pre-selected — the detail panel starts collapsed on every
 // drawer and only appears once the visitor taps a step number
 // themselves (previously a step was auto-highlighted per state with
 // its detail always showing; now it's opt-in and animated in).
 const activeStep = ref<number | null>(null)
-const activeStepData = computed(() =>
-  activeStep.value != null ? stepDetails[activeStep.value] ?? null : null,
-)
+const activeStepData = computed(() => {
+  if (activeStep.value == null) return null
+  const details = openSheet.value === 'unclaimed' ? stepDetails : claimedStepDetails
+  return details[activeStep.value] ?? null
+})
 // Collapse back to nothing every time a drawer opens (covers both
 // headless mode, where the parent drives `openSheet`, and normal mode,
 // where tapping the colored box drives it locally) — otherwise a step
