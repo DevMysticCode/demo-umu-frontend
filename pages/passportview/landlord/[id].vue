@@ -1770,7 +1770,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     s: 'Stored and recirculated water is the biggest Legionella factor. Mains-fed combi systems with no storage are lowest risk.',
     opts: [
       { t: 'Combi boiler — no stored water', d: 'Heated on demand, cold straight off the mains', ic: '/op-icons/homescore/boiler.png', w: 0 },
-      { t: 'Hot water cylinder / tank', d: 'Stored hot water in a cylinder', ic: '🛢️', w: 2 },
+      { t: 'Hot water cylinder / tank', d: 'Stored hot water in a cylinder', ic: '/op-icons/legionella/hotWaterCylinder.png', w: 2 },
       { t: 'Cold water storage / header tank', d: 'A tank in the loft feeds the system', ic: '/op-icons/misc/waterDroplet.png', w: 3 },
       { t: 'Not sure', d: "We'll treat it as higher risk to be safe", ic: '/op-icons/misc/question.png', w: 2, flagPro: true },
     ],
@@ -1782,7 +1782,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     opts: [
       { t: 'No — everything is used regularly', d: 'Water turns over across the system', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
       { t: 'One or two rarely-used outlets', d: 'e.g. a spare bathroom or outside tap', ic: '/op-icons/homescore/tap.png', w: 1 },
-      { t: 'Yes — or empty between lets', d: 'Void periods let water stagnate', ic: '🕳️', w: 2 },
+      { t: 'Yes — or empty between lets', d: 'Void periods let water stagnate', ic: '/op-icons/legionella/voidPeriod.png', w: 2 },
     ],
   },
   {
@@ -1792,7 +1792,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     opts: [
       { t: 'No showers, or descaled recently', d: 'Low aerosol risk', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
       { t: 'Showers present, condition unknown', d: 'Not descaled recently', ic: '/op-icons/homescore/tap.png', w: 1 },
-      { t: 'Visibly scaled or grimy heads', d: 'Needs descaling & disinfecting', ic: '⚠️', w: 2 },
+      { t: 'Visibly scaled or grimy heads', d: 'Needs descaling & disinfecting', ic: '/op-icons/legionella/scaledShowerhead.png', w: 2 },
     ],
   },
   {
@@ -1800,9 +1800,9 @@ const LEG_QUESTIONS: LegQuestion[] = [
     h: 'Do you know the water temperatures?',
     s: 'Bacteria thrive between 20–45°C. Cold should stay below 20°C; hot should reach 50°C+ within a minute.',
     opts: [
-      { t: 'Yes — hot ≥50°C, cold <20°C', d: 'Outside the danger range', ic: '🌡️', w: 0 },
+      { t: 'Yes — hot ≥50°C, cold <20°C', d: 'Outside the danger range', ic: '/op-icons/legionella/waterThermometer.png', w: 0 },
       { t: 'Not measured yet', d: 'We\'ll add "check temperatures" to your actions', ic: '/op-icons/misc/question.png', w: 1 },
-      { t: 'Hot lukewarm / cold runs warm', d: 'In the range bacteria grow', ic: '🔴', w: 2 },
+      { t: 'Hot lukewarm / cold runs warm', d: 'In the range bacteria grow', ic: '/op-icons/legionella/tempWarning.png', w: 2 },
     ],
   },
   {
@@ -1811,7 +1811,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     s: 'People over 65, or with weakened immunity or respiratory conditions, are more susceptible. This raises priority, not necessarily system risk.',
     opts: [
       { t: 'No / not to my knowledge', d: 'Standard occupancy', ic: '/op-icons/verify-identity/people.png', w: 0 },
-      { t: 'Yes — older or vulnerable occupant', d: 'Take extra care with controls', ic: '🧓', w: 1, flagWarn: true },
+      { t: 'Yes — older or vulnerable occupant', d: 'Take extra care with controls', ic: '/op-icons/legionella/vulnerableOccupant.png', w: 1, flagWarn: true },
     ],
   },
   {
@@ -1821,7 +1821,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     opts: [
       { t: 'No — clean, clear, tanks covered', d: 'No obvious nutrient sources', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
       { t: "Some scale / can't inspect tank", d: 'Worth a closer look', ic: '/op-icons/homescore/magnifier.png', w: 1 },
-      { t: 'Visible rust, sludge or debris', d: 'Nutrient source present', ic: '🟤', w: 2 },
+      { t: 'Visible rust, sludge or debris', d: 'Nutrient source present', ic: '/op-icons/legionella/rustSludge.png', w: 2 },
     ],
   },
 ]
