@@ -3035,6 +3035,10 @@ const ownedPassportId = ref<string | null>(null)
 const hasOtherOwnerPassport = ref(false)
 const isPassportCollaborator = ref(false)
 const isOtherPassportPublished = ref(false)
+// Only meaningful once isOtherPassportPublished is true — distinguishes
+// Partially Public (<100) from fully Public, same field/threshold every
+// other passport-state computed in the app already uses.
+const otherPassportMilestonePct = ref(0)
 const publicOwnerScore = ref<any>(null)
 const notifiedOfPublish = ref(false)
 
@@ -3172,14 +3176,16 @@ const passportSectionsTotal = computed(() => passportProgress.value?.totalSectio
 // for the result UI we want the real status (published / in-progress / unclaimed)
 // no matter whether the viewer is the owner, a buyer, or a guest.
 const resolvedPassportState = computed<
-  'unclaimed' | 'inProgress' | 'published'
+  'unclaimed' | 'private' | 'partiallyPublic' | 'public'
 >(() => {
   const p: any = property.value
   // Server payload may expose these directly OR via the loaded score-state.
-  if (p?.passportPublished) return 'published'
-  if (isOtherPassportPublished.value) return 'published'
-  if (p?.hasPassport) return 'inProgress'
-  if (hasOtherOwnerPassport.value) return 'inProgress'
+  const published = !!p?.passportPublished || isOtherPassportPublished.value
+  if (published) {
+    const pct = p?.milestonePct ?? otherPassportMilestonePct.value ?? 0
+    return pct >= 100 ? 'public' : 'partiallyPublic'
+  }
+  if (p?.hasPassport || hasOtherOwnerPassport.value) return 'private'
   return 'unclaimed'
 })
 
@@ -5983,6 +5989,7 @@ onMounted(async () => {
       if (p?.hasPassport) {
         hasOtherOwnerPassport.value = true
         isOtherPassportPublished.value = !!p.passportPublished
+        otherPassportMilestonePct.value = p.milestonePct ?? 0
       }
 
       // Diagnostic: log EPC enrichment status so we can verify what real
@@ -6070,6 +6077,7 @@ onMounted(async () => {
         isOtherPassportPublished.value = !!(
           status.hasPassport && status.isPublished
         )
+        otherPassportMilestonePct.value = (status as any).milestonePct ?? 0
         // Capture this user's passport id so the ?screen=publish / ?screen=quick-wins
         // handler below can short-circuit straight to the passport view when the
         // user has already claimed (e.g. returning from the claim chain).

@@ -41,7 +41,7 @@
         :home-score="displayScore"
         :searches-today="searchStats?.today ?? 0"
         :watchers-count="searchStats?.watchers ?? 0"
-        :passport-state="passportClaimState"
+        :passport-state="passportState"
         report-mode
         @passport-pill-click="onPassportPillClick"
       />
@@ -989,15 +989,15 @@
       /> -->
     </template>
 
-    <!-- ─── IN PROGRESS ─── -->
-    <template v-else-if="passportState === 'progress'">
+    <!-- ─── CLAIMED · PRIVATE ─── -->
+    <template v-else-if="passportState === 'private'">
       <div class="state-banner in-progress anim-3">
         <div class="state-banner-ico">
           <img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" />
         </div>
         <div class="state-banner-body">
           <div class="state-banner-title">
-            Passport in progress
+            Claimed · Private
             <span class="state-banner-pill">Owner verified</span>
           </div>
           <div class="state-banner-sub">
@@ -1086,7 +1086,7 @@
         <div class="state-banner-ico"><img src="/op-icons/misc/confetti.png" alt="" loading="lazy" /></div>
         <div class="state-banner-body">
           <div class="state-banner-title">
-            Passport published
+            {{ passportState === 'public' ? 'Claimed · Public' : 'Claimed · Partially Public' }}
             <span class="state-banner-pill">Solicitor-grade</span>
           </div>
           <div class="state-banner-sub">
@@ -1176,7 +1176,7 @@
     <WatchPropertyDrawer
       :open="watchDrawerOpen"
       :address-label="property?.addressLine1 || ''"
-      :passport-state="watchDrawerPassportState"
+      :passport-state="passportState"
       @close="watchDrawerOpen = false"
       @submit="onWatchSubmit"
     />
@@ -1335,45 +1335,35 @@ const searchesTodayDisplay = computed(() => {
 })
 
 // ── State-aware buyer sections ──
-// unclaimed → no seller passport; progress → claimed but not published;
-// published → full verified pack live.
-const passportState = computed<'unclaimed' | 'progress' | 'published'>(() => {
-  const s = passportStatus.value
-  const p: any = property.value
-  // Prefer the authed status; fall back to the public property payload so the
-  // state is correct for guests too (the /passport-status endpoint is
-  // JWT-only, but /property/:id exposes hasPassport / passportPublished).
-  const published =
-    s?.isPublished || s?.passportStatus === 'PUBLISHED' || p?.passportPublished
-  const claimed = s?.hasPassport || p?.hasPassport
-  if (published) return 'published'
-  if (claimed) return 'progress'
-  return 'unclaimed'
-})
-
-// Separate, finer-grained state just for WatchPropertyDrawer's toggle
-// filtering — deliberately not merged into `passportState` above, which
-// drives several other template branches on this page under the older
-// 3-way model and shouldn't change meaning. Mirrors property/[id].vue's
-// floatClaimState computed exactly.
-const watchDrawerPassportState = computed<
+// unclaimed → no seller passport; private → claimed but nothing published;
+// partiallyPublic/public → live, split by milestonePct. Same 4-state model
+// as everywhere else in the app now (used to be a 3-way unclaimed/progress/
+// published model — "progress" collapsed into 'private' below, and the
+// template's old single "published" branch now covers partiallyPublic and
+// public together, distinguished only by label — see the state-banner
+// title below). Mirrors property/[id].vue's floatClaimState computed
+// exactly; this used to be a second, separate computed
+// (watchDrawerPassportState) kept apart from the one driving this page's
+// main template deliberately, to avoid touching that page's wording at
+// the time — now merged since that wording is being brought in line too.
+const passportState = computed<
   'unclaimed' | 'private' | 'partiallyPublic' | 'public'
 >(() => {
   const s = passportStatus.value
   const p: any = property.value
+  // Prefer the authed status; fall back to the public property payload so
+  // the state is correct for guests too (the /passport-status endpoint is
+  // JWT-only, but /property/:id exposes hasPassport / passportPublished).
   // `isClaimed` alone isn't enough — the backend sets it true the moment
   // ownership verification succeeds, even with no passport ever created
-  // (dropped off mid-flow). That's not "claimed" in this UI's sense: there's
-  // no passport to be Private/Partial/Public about, so it must still read
-  // as Unclaimed — matching `passportState` above, which already keys
-  // purely off hasPassport for exactly this reason. Mirrors the identical
-  // fix in property/[id].vue's floatClaimState.
+  // (dropped off mid-flow) — that's still Unclaimed in this UI's sense.
   const claimed = s?.hasPassport || p?.hasPassport || false
   if (!claimed) return 'unclaimed'
-  const isPublished =
+  const published =
     s?.isPublished || s?.passportStatus === 'PUBLISHED' || p?.passportPublished || false
-  if (!isPublished) return 'private'
-  return (s?.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
+  if (!published) return 'private'
+  const pct = s?.milestonePct ?? p?.milestonePct ?? 0
+  return pct >= 100 ? 'public' : 'partiallyPublic'
 })
 
 const passportProgressPct = computed(() => {
@@ -2075,13 +2065,6 @@ const confidenceTitle = computed(() => {
   if (score >= 60) return 'Above average public record'
   if (score >= 40) return 'Worth investigating'
   return 'Investigate before offering'
-})
-
-// Map the costs page's state vocab ('progress') to the claim-box's vocab.
-const passportClaimState = computed<'unclaimed' | 'inProgress' | 'published'>(() => {
-  if (passportState.value === 'published') return 'published'
-  if (passportState.value === 'progress') return 'inProgress'
-  return 'unclaimed'
 })
 
 // Unclaimed claim CTA → property page with the "Choose your Passport" drawer

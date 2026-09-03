@@ -136,7 +136,7 @@
                 ⚡ EPC {{ r.epcRating }}
               </span>
               <span
-                v-if="r.hasPassport && r.passportPublished"
+                v-if="r.hasPassport && r.passportPublished && (r.milestonePct ?? 0) >= 100"
                 class="psi-drop-badge psi-drop-badge--pub"
               >
                 <img
@@ -144,7 +144,18 @@
                   alt=""
                   class="psi-drop-badge-ic"
                 />
-                Passport Published
+                Claimed · Public
+              </span>
+              <span
+                v-else-if="r.hasPassport && r.passportPublished"
+                class="psi-drop-badge psi-drop-badge--pub"
+              >
+                <img
+                  src="/op-icons/passportview/umu-passport.png"
+                  alt=""
+                  class="psi-drop-badge-ic"
+                />
+                Claimed · Partially Public
               </span>
               <span
                 v-else-if="r.hasPassport"
@@ -155,7 +166,7 @@
                   alt=""
                   class="psi-drop-badge-ic"
                 />
-                Passport In Progress
+                Claimed · Private
               </span>
               <span v-else class="psi-drop-badge psi-drop-badge--unclaimed">
                 <img
