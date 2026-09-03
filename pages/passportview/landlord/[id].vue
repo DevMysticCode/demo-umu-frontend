@@ -852,7 +852,10 @@
               :class="{ on: legAnswers[LEG_QUESTIONS[legStep].key] === i }"
               @click="legPick(i)"
             >
-              <div class="lp-assess-opt-ic">{{ o.ic }}</div>
+              <div class="lp-assess-opt-ic">
+                <img v-if="o.ic.startsWith('/')" :src="o.ic" alt="" class="lp-assess-opt-ic-img" loading="lazy" />
+                <template v-else>{{ o.ic }}</template>
+              </div>
               <div class="lp-assess-opt-bd">
                 <div class="lp-assess-opt-t">{{ o.t }}</div>
                 <div class="lp-assess-opt-d">{{ o.d }}</div>
@@ -1026,7 +1029,31 @@
                 <div class="lp-inv-room-m">{{ roomIsDone(r) ? r.items.length + ' items rated' : r.items.length + ' items to check' }}</div>
               </div>
               <span class="lp-inv-badge" :class="roomIsDone(r) ? 'done' : 'todo'">{{ roomIsDone(r) ? 'Done' : 'To do' }}</span>
-              <span class="lp-assess-back" style="font-size:20px">›</span>
+              <button
+                v-if="r.custom"
+                type="button"
+                class="lp-inv-room-remove"
+                aria-label="Remove room"
+                @click.stop="removeCustomRoom(r.id)"
+              >×</button>
+              <span v-else class="lp-assess-back" style="font-size:20px">›</span>
+            </div>
+
+            <!-- Add a room the 6 defaults don't cover (study, garage,
+                 conservatory, etc.) — client feedback: no way to add
+                 extra rooms. Gets the same generic fixture checklist
+                 every custom room needs (CUSTOM_ROOM_FIXTURES). -->
+            <div class="lp-inv-addroom">
+              <input
+                v-model="invNewRoomName"
+                type="text"
+                class="lp-inv-addroom-input"
+                placeholder="e.g. Study, Garage, Conservatory"
+                @keyup.enter="addCustomRoom"
+              />
+              <button type="button" class="lp-inv-addroom-btn" :disabled="!invNewRoomName.trim()" @click="addCustomRoom">
+                + Add room
+              </button>
             </div>
           </div>
           <div class="lp-assess-foot">
@@ -1742,10 +1769,10 @@ const LEG_QUESTIONS: LegQuestion[] = [
     h: 'What kind of hot water system does the property have?',
     s: 'Stored and recirculated water is the biggest Legionella factor. Mains-fed combi systems with no storage are lowest risk.',
     opts: [
-      { t: 'Combi boiler — no stored water', d: 'Heated on demand, cold straight off the mains', ic: '🔥', w: 0 },
+      { t: 'Combi boiler — no stored water', d: 'Heated on demand, cold straight off the mains', ic: '/op-icons/homescore/boiler.png', w: 0 },
       { t: 'Hot water cylinder / tank', d: 'Stored hot water in a cylinder', ic: '🛢️', w: 2 },
-      { t: 'Cold water storage / header tank', d: 'A tank in the loft feeds the system', ic: '💧', w: 3 },
-      { t: 'Not sure', d: "We'll treat it as higher risk to be safe", ic: '❓', w: 2, flagPro: true },
+      { t: 'Cold water storage / header tank', d: 'A tank in the loft feeds the system', ic: '/op-icons/misc/waterDroplet.png', w: 3 },
+      { t: 'Not sure', d: "We'll treat it as higher risk to be safe", ic: '/op-icons/misc/question.png', w: 2, flagPro: true },
     ],
   },
   {
@@ -1753,8 +1780,8 @@ const LEG_QUESTIONS: LegQuestion[] = [
     h: 'Are there taps, showers or outlets that are rarely used?',
     s: 'Water sitting still in pipes lets bacteria grow — especially in spare rooms, outbuildings, or between tenancies.',
     opts: [
-      { t: 'No — everything is used regularly', d: 'Water turns over across the system', ic: '✅', w: 0 },
-      { t: 'One or two rarely-used outlets', d: 'e.g. a spare bathroom or outside tap', ic: '🚿', w: 1 },
+      { t: 'No — everything is used regularly', d: 'Water turns over across the system', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
+      { t: 'One or two rarely-used outlets', d: 'e.g. a spare bathroom or outside tap', ic: '/op-icons/homescore/tap.png', w: 1 },
       { t: 'Yes — or empty between lets', d: 'Void periods let water stagnate', ic: '🕳️', w: 2 },
     ],
   },
@@ -1763,8 +1790,8 @@ const LEG_QUESTIONS: LegQuestion[] = [
     h: 'Are there showers, and what condition are the heads in?',
     s: 'Showers create fine droplets (aerosols) that can be inhaled — the main route of exposure. Scaled heads harbour bacteria.',
     opts: [
-      { t: 'No showers, or descaled recently', d: 'Low aerosol risk', ic: '🧼', w: 0 },
-      { t: 'Showers present, condition unknown', d: 'Not descaled recently', ic: '🚿', w: 1 },
+      { t: 'No showers, or descaled recently', d: 'Low aerosol risk', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
+      { t: 'Showers present, condition unknown', d: 'Not descaled recently', ic: '/op-icons/homescore/tap.png', w: 1 },
       { t: 'Visibly scaled or grimy heads', d: 'Needs descaling & disinfecting', ic: '⚠️', w: 2 },
     ],
   },
@@ -1774,7 +1801,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     s: 'Bacteria thrive between 20–45°C. Cold should stay below 20°C; hot should reach 50°C+ within a minute.',
     opts: [
       { t: 'Yes — hot ≥50°C, cold <20°C', d: 'Outside the danger range', ic: '🌡️', w: 0 },
-      { t: 'Not measured yet', d: 'We\'ll add "check temperatures" to your actions', ic: '❓', w: 1 },
+      { t: 'Not measured yet', d: 'We\'ll add "check temperatures" to your actions', ic: '/op-icons/misc/question.png', w: 1 },
       { t: 'Hot lukewarm / cold runs warm', d: 'In the range bacteria grow', ic: '🔴', w: 2 },
     ],
   },
@@ -1783,7 +1810,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     h: 'Is anyone in the property in a higher-risk group?',
     s: 'People over 65, or with weakened immunity or respiratory conditions, are more susceptible. This raises priority, not necessarily system risk.',
     opts: [
-      { t: 'No / not to my knowledge', d: 'Standard occupancy', ic: '👥', w: 0 },
+      { t: 'No / not to my knowledge', d: 'Standard occupancy', ic: '/op-icons/verify-identity/people.png', w: 0 },
       { t: 'Yes — older or vulnerable occupant', d: 'Take extra care with controls', ic: '🧓', w: 1, flagWarn: true },
     ],
   },
@@ -1792,8 +1819,8 @@ const LEG_QUESTIONS: LegQuestion[] = [
     h: 'Any rust, sludge, scale or debris in tanks?',
     s: 'Rust, scale and sediment feed the bacteria. If you have a cold tank, is it covered and clean?',
     opts: [
-      { t: 'No — clean, clear, tanks covered', d: 'No obvious nutrient sources', ic: '✨', w: 0 },
-      { t: "Some scale / can't inspect tank", d: 'Worth a closer look', ic: '🔍', w: 1 },
+      { t: 'No — clean, clear, tanks covered', d: 'No obvious nutrient sources', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
+      { t: "Some scale / can't inspect tank", d: 'Worth a closer look', ic: '/op-icons/homescore/magnifier.png', w: 1 },
       { t: 'Visible rust, sludge or debris', d: 'Nutrient source present', ic: '🟤', w: 2 },
     ],
   },
@@ -1957,7 +1984,12 @@ async function saveLegAssessment() {
 // the structured record. Extend to per-item photos later if the
 // structured record alone doesn't prove enough in practice.
 interface InvItem { name: string; condition: string; cleanliness: string; note: string }
-interface InvRoom { id: string; name: string; icon: string; fixtures: string[]; contents: string[]; items: InvItem[] }
+interface InvRoom { id: string; name: string; icon: string; fixtures: string[]; contents: string[]; items: InvItem[]; custom?: boolean }
+// Generic fixture checklist for a room the landlord adds themselves
+// (study, garage, conservatory, etc.) — the 6 default rooms above have
+// their own tailored lists, but any extra room still needs something
+// sensible to check rather than an empty list.
+const CUSTOM_ROOM_FIXTURES = ['Walls & ceiling', 'Flooring', 'Windows & coverings', 'Doors & handles', 'Light fittings & switches']
 const INVENTORY_ROOM_TEMPLATE: Omit<InvRoom, 'items'>[] = [
   { id: 'living', name: 'Living Room', icon: '🛋️', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Doors & handles', 'Skirting boards', 'Light fittings & switches', 'Radiator'], contents: ['Sofa', 'Coffee table', 'TV unit', 'Curtains'] },
   { id: 'kitchen', name: 'Kitchen', icon: '🍳', fixtures: ['Worktops & units', 'Sink & taps', 'Oven & hob', 'Extractor fan', 'Tiling / splashback', 'Flooring', 'Walls & ceiling'], contents: ['Fridge / freezer', 'Washing machine', 'Microwave'] },
@@ -1986,6 +2018,25 @@ const invKeys = ref('')
 const invRooms = ref<InvRoom[]>(freshInventoryRooms())
 const invCurRoomId = ref<string | null>(null)
 const invSaving = ref(false)
+const invNewRoomName = ref('')
+
+function addCustomRoom() {
+  const name = invNewRoomName.value.trim()
+  if (!name) return
+  invRooms.value.push({
+    id: `custom-${Date.now()}`,
+    name,
+    icon: '🏠',
+    fixtures: CUSTOM_ROOM_FIXTURES,
+    contents: [],
+    items: CUSTOM_ROOM_FIXTURES.map((n) => ({ name: n, condition: '', cleanliness: '', note: '' })),
+    custom: true,
+  })
+  invNewRoomName.value = ''
+}
+function removeCustomRoom(id: string) {
+  invRooms.value = invRooms.value.filter((r) => r.id !== id)
+}
 
 const invCurRoom = computed(() => invRooms.value.find((r) => r.id === invCurRoomId.value) ?? null)
 function roomIsDone(r: InvRoom) {
@@ -2207,11 +2258,6 @@ const INFO_SHEET_LINKS = [
     title: 'Renting out your property: landlord guidance',
     sub: 'GOV.UK — what you must do from 1 May 2026',
     url: 'https://www.gov.uk/renting-out-a-property',
-  },
-  {
-    title: 'How to Rent guide (withdrawn)',
-    sub: 'Only for tenancies with a valid pre-1 May 2026 s21',
-    url: 'https://www.gov.uk/government/publications/how-to-rent',
   },
 ]
 const propertyEpc = computed(() => passport.value?.property ?? null)
@@ -3960,6 +4006,7 @@ const SectionCard = defineComponent({
 .lp-assess-opt.on { border-color: #00a19a; background: #f2faf8; }
 .lp-assess-opt-ic { width: 42px; height: 42px; border-radius: 11px; background: #f1f4f3; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
 .lp-assess-opt.on .lp-assess-opt-ic { background: #fff; }
+.lp-assess-opt-ic-img { width: 30px; height: 30px; object-fit: contain; }
 .lp-assess-opt-bd { flex: 1; }
 .lp-assess-opt-t { font-size: 14.5px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
 .lp-assess-opt-d { font-size: 12px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.4; }
@@ -4039,6 +4086,60 @@ const SectionCard = defineComponent({
 .lp-inv-badge { font-size: 10.5px; font-weight: 800; padding: 5px 10px; border-radius: 100px; }
 .lp-inv-badge.done { background: #e7f6ef; color: #0f8a6e; }
 .lp-inv-badge.todo { background: #f1f4f3; color: #a8a9ad; }
+.lp-inv-room-remove {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #fbeae5;
+  color: #c2410c;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.lp-inv-addroom {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.lp-inv-addroom-input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1.5px dashed #d4d8d7;
+  border-radius: 13px;
+  background: #fafaf8;
+  font-size: 13px;
+  font-family: inherit;
+  color: #0e2840;
+}
+.lp-inv-addroom-input:focus {
+  outline: none;
+  border-color: #00a19a;
+  border-style: solid;
+  background: #fff;
+}
+.lp-inv-addroom-btn {
+  flex-shrink: 0;
+  padding: 0 16px;
+  border: none;
+  border-radius: 13px;
+  background: #0e2840;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+}
+.lp-inv-addroom-btn:disabled {
+  background: #d4d8d7;
+  cursor: not-allowed;
+}
 .lp-inv-item { background: #fff; border: 1px solid #e8eceb; border-radius: 14px; padding: 14px; margin-bottom: 10px; }
 .lp-inv-item-n { font-size: 14.5px; font-weight: 700; color: #0e2840; }
 .lp-inv-rl { font-size: 10px; font-weight: 800; color: #a8a9ad; letter-spacing: 0.5px; text-transform: uppercase; margin: 11px 0 6px; }
