@@ -304,6 +304,35 @@
             </div>
           </div>
 
+          <!-- ── Legislation & News (landlord only) ──────────────────
+               Moved here from the landlord passport's own compliance
+               screen — same curated dataset (utils/landlordNews.ts),
+               so the two never drift apart. See that file's own
+               comment for why this is a curated snapshot, not a live
+               feed. -->
+          <div v-if="role === 'landlord'" class="dash-section">
+            <div class="dash-eyebrow">Legislation &amp; news</div>
+            <div class="dash-news-rail">
+              <a
+                v-for="n in dashNewsItems"
+                :key="n.url"
+                class="dash-news-card"
+                :href="n.url"
+                target="_blank"
+                rel="noopener"
+              >
+                <div class="dash-news-band" :class="`dash-news-band--${n.tag}`" />
+                <div class="dash-news-bd">
+                  <span class="dash-news-tag" :class="`dash-news-tag--${n.tag}`">{{ n.tagLabel }}</span>
+                  <div class="dash-news-t">{{ n.title }}</div>
+                  <div class="dash-news-s">{{ n.summary }}</div>
+                  <div class="dash-news-src">{{ n.source }}</div>
+                </div>
+              </a>
+            </div>
+            <NuxtLink to="/profile/news" class="dash-news-all">See all updates ›</NuxtLink>
+          </div>
+
           <!-- ── Next For You ── -->
           <div v-if="passports.length" class="dash-section">
             <div class="dash-eyebrow">Next for you</div>
@@ -648,6 +677,11 @@ const buyerIncompleteCount = computed(() => {
   return Math.max(0, 5 - steps)
 })
 
+// Legislation & News rail (landlord only) — same 5-item teaser slice
+// as the landlord passport page used to show, now that it's moved
+// here. NEWS_ITEMS is auto-imported from utils/landlordNews.ts.
+const dashNewsItems = computed(() => NEWS_ITEMS.slice(0, 5))
+
 // Sum of unanswered questions across every task in every section — the
 // "Complete N items in your Passport" count. Nothing to derive this
 // server-side yet, so it's computed here from GET /passport/:id/sections,
@@ -699,10 +733,14 @@ function normalizeRole(r: unknown): string {
 
 // 'both' users still have a seller passport to manage and there's no
 // buy+sell dashboard yet, so they see the seller branch here too —
-// just without any buyer-specific content until that's built. Pure
-// 'landlord' is the only role still bounced to /explore.
+// just without any buyer-specific content until that's built.
+// 'landlord' shares that same branch too — /profile/passports already
+// returns LANDLORD-type passports and the fallback below already
+// anticipated this (see its own comment), so this was mostly wiring,
+// not a new build. The one landlord-only addition is the Legislation
+// & News rail, moved here from the passport page itself.
 function isDashboardRole(r: string): boolean {
-  return r === 'sell' || r === 'both' || r === 'buy'
+  return r === 'sell' || r === 'both' || r === 'buy' || r === 'landlord'
 }
 
 // Fired independently (not awaited alongside the rest of onMounted) —
@@ -774,16 +812,10 @@ onMounted(async () => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) return
 
-  // A cached role from a previous visit lets landlord users bounce back
-  // to Explore immediately, without waiting on the network round trip.
-  //
-  // Deliberate exception to "Explore is retired everywhere": landlord
-  // has no dashboard content built yet, so this is the one remaining
-  // live target for /explore in the app — pointing it at /dashboard
-  // instead would just redirect a landlord user back to this same
-  // check, in a page with nothing for their role to render. Every
-  // other /explore reference in the app has been replaced; this one
-  // stays until a landlord dashboard exists.
+  // Every real role (sell/buy/both/landlord) now has dashboard content,
+  // so isDashboardRole() is effectively always true post-normalization —
+  // kept as a guard rather than deleted, in case a future role is added
+  // here before its own dashboard branch exists.
   const cachedRole = typeof window !== 'undefined' ? localStorage.getItem('umu_role') : null
   if (cachedRole && !isDashboardRole(normalizeRole(cachedRole))) {
     navigateTo('/explore', { replace: true })
@@ -798,7 +830,6 @@ onMounted(async () => {
   if (typeof window !== 'undefined') localStorage.setItem('umu_role', role.value)
 
   if (!isDashboardRole(role.value)) {
-    // Same landlord exception as above.
     navigateTo('/explore', { replace: true })
     return
   }
@@ -942,6 +973,43 @@ onMounted(async () => {
   color: #00a19a;
   margin-bottom: 10px;
 }
+
+/* Legislation & News rail (landlord dashboard) — bleeds past
+   .dash-scroll's 20px side padding to scroll edge-to-edge, same as the
+   landlord passport page's version this was moved from. */
+.dash-news-rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  margin: 0 -20px;
+  padding: 2px 20px 10px;
+  scroll-snap-type: x mandatory;
+}
+.dash-news-rail::-webkit-scrollbar { height: 0; }
+.dash-news-card {
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+  background: #fff;
+  border: 1px solid #e8eceb;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(35, 29, 65, 0.05);
+  overflow: hidden;
+  text-decoration: none;
+  display: block;
+}
+.dash-news-band { height: 5px; }
+.dash-news-band--law { background: linear-gradient(90deg, #c0492f, #992e1a); }
+.dash-news-band--update { background: linear-gradient(90deg, #00a19a, #008a84); }
+.dash-news-band--news { background: linear-gradient(90deg, #3d63c9, #2c4aa0); }
+.dash-news-bd { padding: 12px 13px 14px; }
+.dash-news-tag { font-size: 9.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 100px; }
+.dash-news-tag--law { background: #fbeae5; color: #992e1a; }
+.dash-news-tag--update { background: #f2faf8; color: #008a84; }
+.dash-news-tag--news { background: #e8edfb; color: #3d63c9; }
+.dash-news-t { font-size: 13.5px; font-weight: 700; color: #0e2840; line-height: 1.25; margin-top: 9px; letter-spacing: -0.2px; }
+.dash-news-s { font-size: 11.5px; font-weight: 500; color: #6b7089; line-height: 1.4; margin-top: 5px; }
+.dash-news-src { font-size: 10.5px; font-weight: 700; color: #a8a9ad; margin-top: 9px; }
+.dash-news-all { display: block; margin: 2px 0 4px; text-align: center; font-size: 12.5px; font-weight: 700; color: #008a84; text-decoration: none; padding: 6px; }
 .dash-eyebrow-row {
   display: flex;
   align-items: baseline;
