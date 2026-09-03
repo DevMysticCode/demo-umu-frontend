@@ -91,7 +91,9 @@
     >
       <div class="pcb-pub">
         <div class="pcb-pub-body">
-          <div class="pcb-pub-title">This property has a published Passport</div>
+          <div class="pcb-pub-title">
+            This property has a published Passport
+          </div>
           <div class="pcb-pub-sub">
             Gain access to the full verified record — certificates, history
             &amp; more.
@@ -127,38 +129,66 @@
                 <div class="cx2-header-text">
                   <div class="cx2-eyebrow-row">
                     <div class="cx2-eyebrow">Property Passport™</div>
-                    <span class="cx2-state-pill cx2-state-pill--unclaimed">Unclaimed</span>
+                    <span class="cx2-state-pill cx2-state-pill--unclaimed"
+                      >Unclaimed</span
+                    >
                   </div>
                   <div class="cx2-title">Your home's permanent record.</div>
-                  <div class="cx2-subtitle">Build it once. Keep it for life.</div>
+                  <div class="cx2-subtitle">
+                    Build it once. Keep it for life.
+                  </div>
                   <div class="cx2-body">
                     A Property Passport brings all your important information
-                    together in one secure, verified record that stays with
-                    your home.
+                    together in one secure, verified record that stays with your
+                    home.
                   </div>
                 </div>
                 <div class="cx2-header-illustration">
-                  <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
+                  <img
+                    src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png"
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div class="cx-stats cx-stats--4col">
                 <div class="cx-stat">
-                  <img src="/op-icons/investment/priceTagPound2.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <img
+                    src="/op-icons/investment/priceTagPound2.png"
+                    alt=""
+                    class="cx-stat-ic"
+                    loading="lazy"
+                  />
                   <div class="cx-stat-num">Free</div>
                   <div class="cx-stat-label">Property Passport</div>
                 </div>
                 <div class="cx-stat">
-                  <img src="/op-icons/calendar/clock.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <img
+                    src="/op-icons/calendar/clock.png"
+                    alt=""
+                    class="cx-stat-ic"
+                    loading="lazy"
+                  />
                   <div class="cx-stat-num">2 min</div>
                   <div class="cx-stat-label">To claim your home</div>
                 </div>
                 <div class="cx-stat">
-                  <img src="/op-icons/calendar/shield.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <img
+                    src="/op-icons/calendar/shield.png"
+                    alt=""
+                    class="cx-stat-ic"
+                    loading="lazy"
+                  />
                   <div class="cx-stat-num">For life</div>
                   <div class="cx-stat-label">Stays with the property</div>
                 </div>
                 <div class="cx-stat">
-                  <img src="/op-icons/investment/key.png" alt="" class="cx-stat-ic" loading="lazy" />
+                  <img
+                    src="/op-icons/investment/key.png"
+                    alt=""
+                    class="cx-stat-ic"
+                    loading="lazy"
+                  />
                   <div class="cx-stat-num">Ready</div>
                   <div class="cx-stat-label">When you sell or let</div>
                 </div>
@@ -215,21 +245,29 @@
                     <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
                     <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
                     <div class="cx-step-detail-happens">
-                      <strong>What happens:</strong> {{ activeStepData.happens }}
+                      <strong>What happens:</strong>
+                      {{ activeStepData.happens }}
                     </div>
                   </div>
                 </div>
               </Transition>
               <div class="cx2-secure">
                 <div class="cx2-secure-ic-wrap">
-                  <img src="/op-icons/investment/padlock.png" alt="" class="cx2-secure-ic" loading="lazy" />
+                  <img
+                    src="/op-icons/investment/padlock.png"
+                    alt=""
+                    class="cx2-secure-ic"
+                    loading="lazy"
+                  />
                 </div>
                 <div>
-                  <div class="cx2-secure-h">Secure. Verified. Yours forever.</div>
+                  <div class="cx2-secure-h">
+                    Secure. Verified. Yours forever.
+                  </div>
                   <div class="cx2-secure-v">
-                    Your Passport is securely linked to your property, not
-                    just you. It stays with the property through owning,
-                    letting and selling.
+                    Your Passport is securely linked to your property, not just
+                    you. It stays with the property through owning, letting and
+                    selling.
                   </div>
                 </div>
               </div>
@@ -250,7 +288,12 @@
                 </button>
               </div>
               <div class="cx-foot">
-                <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" />
+                <img
+                  src="/op-icons/investment/padlock.png"
+                  alt=""
+                  class="inline-ic"
+                  loading="lazy"
+                />
                 Secure KYC · Encrypted data · You're in control
               </div>
             </template>
@@ -266,77 +309,142 @@
                 <div class="cx2-header-text">
                   <div class="cx2-eyebrow-row">
                     <div class="cx2-eyebrow">Property Passport™</div>
-                    <span class="cx2-state-pill cx2-state-pill--private">Claimed · Private</span>
+                    <span class="cx2-state-pill cx2-state-pill--private"
+                      >Claimed · Private</span
+                    >
                   </div>
-                  <div class="cx2-title">This Passport is private.</div>
-                  <div class="cx2-subtitle">Want to know if that changes?</div>
-                  <div class="cx2-body">
-                    The owner hasn't published any information from this
-                    home's Property Passport yet.
+                  <div class="cx2-title">{{ privateDrawerHero.title }}</div>
+                  <div v-if="privateDrawerHero.subtitle" class="cx2-subtitle">
+                    {{ privateDrawerHero.subtitle }}
                   </div>
+                  <div class="cx2-body">{{ privateDrawerBody }}</div>
                 </div>
                 <div class="cx2-header-illustration">
-                  <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
+                  <img
+                    src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png"
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
               </div>
-              <div class="cx-callout cx-callout--icon">
-                <img src="/op-icons/claim/padlock.png" alt="" class="cx-callout-icon" loading="lazy" />
-                <div class="cx-callout-body">
-                  <div class="cx-callout-h">Not every Passport is public</div>
-                  <div class="cx-callout-v">
-                    Homeowners decide what they share and when they share it.
-                    Information that has not been published remains private.
-                  </div>
-                </div>
-              </div>
-              <div class="cx-stats cx-stats--3col">
-                <div class="cx-stat">
-                  <img src="/op-icons/claim/padlock.png" alt="" class="cx-stat-ic" loading="lazy" />
-                  <div class="cx-stat-num">Private by default</div>
-                  <div class="cx-stat-label">Owner controlled</div>
-                </div>
-                <div class="cx-stat">
-                  <img src="/op-icons/misc/exploreWatching.png" alt="" class="cx-stat-ic" loading="lazy" />
-                  <div class="cx-stat-num">Watch quietly</div>
-                  <div class="cx-stat-label">No unnecessary alerts</div>
-                </div>
-                <div class="cx-stat">
-                  <img src="/op-icons/misc/bell.png" alt="" class="cx-stat-ic" loading="lazy" />
-                  <div class="cx-stat-num">Know when it changes</div>
-                  <div class="cx-stat-label">Get notified</div>
-                </div>
-              </div>
-              <div class="cx-section-h">
-                How a Property Passport works · tap a step to understand the journey
-              </div>
-              <div class="cx-steps">
-                <template v-for="(s, i) in privateJourneySteps" :key="s.n">
-                  <div
-                    class="cx-step cx-step-tap"
-                    :class="{ active: activeStep === s.n }"
-                    :style="{ '--cx-step-i': i }"
-                    @click="activeStep = activeStep === s.n ? null : s.n"
-                  >
-                    <div class="cx-step-num" :class="s.filled ? 'filled-teal' : 'off'">{{ s.n }}</div>
-                    <div class="cx-step-name" :class="{ off: !s.filled }">{{ s.name }}</div>
-                  </div>
-                  <div v-if="i < privateJourneySteps.length - 1" class="cx-step-line" />
-                </template>
-              </div>
-              <Transition name="cx-detail">
-                <div v-if="activeStepData" class="cx-step-detail">
-                  <div class="cx-step-detail-icon">
-                    <img :src="activeStepData.icon" alt="" loading="lazy" />
-                  </div>
-                  <div class="cx-step-detail-body">
-                    <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
-                    <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
-                    <div class="cx-step-detail-happens">
-                      <strong>What happens:</strong> {{ activeStepData.happens }}
+
+              <!-- Owner: their own passport, short "keep building" nudge —
+                   no buyer-framed reassurance/stat row/journey stepper below,
+                   that content explains what happens to someone who doesn't
+                   control the Passport, which isn't the person reading this.
+                   See plans/passport-drawer-owner-vs-public.md. -->
+              <template v-if="isOwnerOrCollaborator">
+                <div class="cx-callout cx-callout--icon">
+                  <img
+                    src="/op-icons/homescore/clipboard.png"
+                    alt=""
+                    class="cx-callout-icon"
+                    loading="lazy"
+                  />
+                  <div class="cx-callout-body">
+                    <div class="cx-callout-h">Keep building your Passport</div>
+                    <div class="cx-callout-v">
+                      Add information, documents and verification at your own
+                      pace. You decide if and when anything becomes public.
                     </div>
                   </div>
                 </div>
-              </Transition>
+              </template>
+
+              <!-- Non-owner: unchanged — matches the prototype exactly. -->
+              <template v-else>
+                <div class="cx-callout cx-callout--icon">
+                  <img
+                    src="/op-icons/claim/padlock.png"
+                    alt=""
+                    class="cx-callout-icon"
+                    loading="lazy"
+                  />
+                  <div class="cx-callout-body">
+                    <div class="cx-callout-h">Not every Passport is public</div>
+                    <div class="cx-callout-v">
+                      Homeowners decide what they share and when they share it.
+                      Information that has not been published remains private.
+                    </div>
+                  </div>
+                </div>
+                <div class="cx-stats cx-stats--3col">
+                  <div class="cx-stat">
+                    <img
+                      src="/op-icons/claim/padlock.png"
+                      alt=""
+                      class="cx-stat-ic"
+                      loading="lazy"
+                    />
+                    <div class="cx-stat-num">Private by default</div>
+                    <div class="cx-stat-label">Owner controlled</div>
+                  </div>
+                  <div class="cx-stat">
+                    <img
+                      src="/op-icons/misc/exploreWatching.png"
+                      alt=""
+                      class="cx-stat-ic"
+                      loading="lazy"
+                    />
+                    <div class="cx-stat-num">Watch quietly</div>
+                    <div class="cx-stat-label">No unnecessary alerts</div>
+                  </div>
+                  <div class="cx-stat">
+                    <img
+                      src="/op-icons/misc/bell.png"
+                      alt=""
+                      class="cx-stat-ic"
+                      loading="lazy"
+                    />
+                    <div class="cx-stat-num">Know when it changes</div>
+                    <div class="cx-stat-label">Get notified</div>
+                  </div>
+                </div>
+                <div class="cx-section-h">
+                  How a Property Passport works · tap a step to understand the
+                  journey
+                </div>
+                <div class="cx-steps">
+                  <template v-for="(s, i) in privateJourneySteps" :key="s.n">
+                    <div
+                      class="cx-step cx-step-tap"
+                      :class="{ active: activeStep === s.n }"
+                      :style="{ '--cx-step-i': i }"
+                      @click="activeStep = activeStep === s.n ? null : s.n"
+                    >
+                      <div
+                        class="cx-step-num"
+                        :class="s.filled ? 'filled-teal' : 'off'"
+                      >
+                        {{ s.n }}
+                      </div>
+                      <div class="cx-step-name" :class="{ off: !s.filled }">
+                        {{ s.name }}
+                      </div>
+                    </div>
+                    <div
+                      v-if="i < privateJourneySteps.length - 1"
+                      class="cx-step-line"
+                    />
+                  </template>
+                </div>
+                <Transition name="cx-detail">
+                  <div v-if="activeStepData" class="cx-step-detail">
+                    <div class="cx-step-detail-icon">
+                      <img :src="activeStepData.icon" alt="" loading="lazy" />
+                    </div>
+                    <div class="cx-step-detail-body">
+                      <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
+                      <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
+                      <div class="cx-step-detail-happens">
+                        <strong>What happens:</strong>
+                        {{ activeStepData.happens }}
+                      </div>
+                    </div>
+                  </div>
+                </Transition>
+              </template>
+
               <div class="cxd-cta-col">
                 <!-- Owner/collaborator viewing their own still-private
                      passport → straight to continue building it; everyone
@@ -347,7 +455,13 @@
                   type="button"
                   @click="onOwnerContinue"
                 >
-                  <img src="/op-icons/homescore/clipboard.png" alt="" class="inline-ic" loading="lazy" /> Continue building your Passport
+                  <img
+                    src="/op-icons/homescore/clipboard.png"
+                    alt=""
+                    class="inline-ic"
+                    loading="lazy"
+                  />
+                  Continue building your Passport
                 </button>
                 <button
                   v-else
@@ -355,7 +469,13 @@
                   type="button"
                   @click="onPrimary('watch')"
                 >
-                  <img src="/op-icons/misc/bell.png" alt="" class="inline-ic" loading="lazy" /> Notify me when a Passport is published
+                  <img
+                    src="/op-icons/misc/bell.png"
+                    alt=""
+                    class="inline-ic"
+                    loading="lazy"
+                  />
+                  Notify me when a Passport is published
                 </button>
                 <button
                   class="cxd-btn secondary"
@@ -366,7 +486,12 @@
                 </button>
               </div>
               <div class="cx-foot">
-                <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" />
+                <img
+                  src="/op-icons/investment/padlock.png"
+                  alt=""
+                  class="inline-ic"
+                  loading="lazy"
+                />
                 Secure verification · Encrypted data · You're in control
               </div>
             </template>
@@ -394,20 +519,39 @@
                     <div class="cx2-eyebrow">Property Passport™</div>
                     <span
                       class="cx2-state-pill"
-                      :class="openSheet === 'public' ? 'cx2-state-pill--public' : 'cx2-state-pill--partial'"
-                      >{{ openSheet === 'public' ? 'Claimed · Public' : 'Claimed · Partially Public' }}</span
+                      :class="
+                        openSheet === 'public'
+                          ? 'cx2-state-pill--public'
+                          : 'cx2-state-pill--partial'
+                      "
+                      >{{
+                        openSheet === 'public'
+                          ? 'Claimed · Public'
+                          : 'Claimed · Partially Public'
+                      }}</span
                     >
                   </div>
                   <div class="cx2-title">{{ publicDrawerHero.title }}</div>
-                  <div class="cx2-subtitle">{{ publicDrawerHero.subtitle }}</div>
+                  <div class="cx2-subtitle">
+                    {{ publicDrawerHero.subtitle }}
+                  </div>
                   <div class="cx2-body">{{ publicDrawerBody }}</div>
                 </div>
                 <div class="cx2-header-illustration">
-                  <img src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png" alt="" loading="lazy" />
+                  <img
+                    src="/op-icons/passport-covers/property_passport_teal_tilted_left_on_tile.png"
+                    alt=""
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div class="cx-callout cx-callout--icon">
-                <img src="/op-icons/onboarding/trustShield.png" alt="" class="cx-callout-icon" loading="lazy" />
+                <img
+                  src="/op-icons/onboarding/trustShield.png"
+                  alt=""
+                  class="cx-callout-icon"
+                  loading="lazy"
+                />
                 <div class="cx-callout-body">
                   <div class="cx-callout-h">{{ publishedDateLabel }}</div>
                   <div class="cx-callout-v">
@@ -421,7 +565,11 @@
                    plans/passport-drawer-owner-vs-public.md. -->
               <div class="cx-section-h">{{ publicDrawerReasons.title }}</div>
               <div class="cx-reasons">
-                <div v-for="r in publicDrawerReasons.items" :key="r" class="cx-reason">
+                <div
+                  v-for="r in publicDrawerReasons.items"
+                  :key="r"
+                  class="cx-reason"
+                >
                   <span class="cx-reason-tick">✓</span>{{ r }}
                 </div>
               </div>
@@ -437,7 +585,10 @@
                     <div class="cx-step-num filled-teal">✓</div>
                     <div class="cx-step-name">{{ s.name }}</div>
                   </div>
-                  <div v-if="i < publishedJourneySteps.length - 1" class="cx-step-line" />
+                  <div
+                    v-if="i < publishedJourneySteps.length - 1"
+                    class="cx-step-line"
+                  />
                 </template>
               </div>
               <Transition name="cx-detail">
@@ -449,17 +600,28 @@
                     <div class="cx-step-detail-h">{{ activeStepData.h }}</div>
                     <div class="cx-step-detail-v">{{ activeStepData.v }}</div>
                     <div class="cx-step-detail-happens">
-                      <strong>What happens:</strong> {{ activeStepData.happens }}
+                      <strong>What happens:</strong>
+                      {{ activeStepData.happens }}
                     </div>
                   </div>
                 </div>
               </Transition>
               <div class="cx-section-h">
-                {{ openSheet === 'public' ? 'Included in this published Passport' : 'Included so far' }}
+                {{
+                  openSheet === 'public'
+                    ? 'Included in this published Passport'
+                    : 'Included so far'
+                }}
               </div>
               <div class="cx-item-grid">
                 <div class="cx-item">
-                  <div class="cx-item-ico"><img src="/op-icons/onboarding/trustShield.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-ico">
+                    <img
+                      src="/op-icons/onboarding/trustShield.png"
+                      alt=""
+                      loading="lazy"
+                    />
+                  </div>
                   <div class="cx-item-body">
                     <div class="cx-item-title">Ownership &amp; Title</div>
                     <div class="cx-item-sub">Land Registry verified</div>
@@ -467,7 +629,13 @@
                   <div class="cx-item-tick">✓</div>
                 </div>
                 <div class="cx-item">
-                  <div class="cx-item-ico"><img src="/op-icons/buyer-passport/epcRating.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-ico">
+                    <img
+                      src="/op-icons/buyer-passport/epcRating.png"
+                      alt=""
+                      loading="lazy"
+                    />
+                  </div>
                   <div class="cx-item-body">
                     <div class="cx-item-title">EPC Certificate</div>
                     <div class="cx-item-sub">Grade C · Expires 2032</div>
@@ -475,7 +643,13 @@
                   <div class="cx-item-tick">✓</div>
                 </div>
                 <div class="cx-item">
-                  <div class="cx-item-ico"><img src="/op-icons/homescore/house.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-ico">
+                    <img
+                      src="/op-icons/homescore/house.png"
+                      alt=""
+                      loading="lazy"
+                    />
+                  </div>
                   <div class="cx-item-body">
                     <div class="cx-item-title">Property Information</div>
                     <div class="cx-item-sub">Address, type, tenure</div>
@@ -483,9 +657,17 @@
                   <div class="cx-item-tick">✓</div>
                 </div>
                 <div class="cx-item">
-                  <div class="cx-item-ico"><img src="/op-icons/buyer-passport/titleNumber.png" alt="" loading="lazy" /></div>
+                  <div class="cx-item-ico">
+                    <img
+                      src="/op-icons/buyer-passport/titleNumber.png"
+                      alt=""
+                      loading="lazy"
+                    />
+                  </div>
                   <div class="cx-item-body">
-                    <div class="cx-item-title">Certificates &amp; Guarantees</div>
+                    <div class="cx-item-title">
+                      Certificates &amp; Guarantees
+                    </div>
                     <div class="cx-item-sub">5 documents included</div>
                   </div>
                   <div class="cx-item-tick">✓</div>
@@ -495,7 +677,9 @@
                 <button
                   class="cxd-btn primary"
                   type="button"
-                  @click="isOwnerOrCollaborator ? onOwnerContinue() : onPrimary('buy')"
+                  @click="
+                    isOwnerOrCollaborator ? onOwnerContinue() : onPrimary('buy')
+                  "
                 >
                   View Passport
                 </button>
@@ -509,7 +693,12 @@
                 </button>
               </div>
               <div class="cx-foot">
-                <img src="/op-icons/investment/padlock.png" alt="" class="inline-ic" loading="lazy" />
+                <img
+                  src="/op-icons/investment/padlock.png"
+                  alt=""
+                  class="inline-ic"
+                  loading="lazy"
+                />
                 Secure verification · Encrypted data · You're in control
               </div>
             </template>
@@ -618,7 +807,10 @@ const emit = defineEmits<{
   // the progress/published drawers — no auth-gate needed (they're already
   // signed in and own the thing), so this bypasses onPrimary entirely.
   (e: 'continue-building'): void
-  (e: 'update:openSheet', v: 'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null): void
+  (
+    e: 'update:openSheet',
+    v: 'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null,
+  ): void
 }>()
 
 const pct = computed(() =>
@@ -657,7 +849,26 @@ const publicDrawerHero = computed(() => {
 const publicDrawerBody = computed(() =>
   props.isOwnerOrCollaborator
     ? 'You control exactly what buyers, tenants, agents and your solicitor can see.'
-    : "Buyers, tenants, agents and solicitors can access the information the owner has chosen to share.",
+    : 'Buyers, tenants, agents and solicitors can access the information the owner has chosen to share.',
+)
+
+// Same owner-vs-buyer split as publicDrawerHero/publicDrawerBody above,
+// for the 'private' drawer. Previously this whole drawer was one shared,
+// buyer-voiced block ("Want to know if that changes?", "The owner hasn't
+// published...") shown to the owner too — see
+// plans/passport-drawer-owner-vs-public.md.
+const privateDrawerHero = computed(() =>
+  props.isOwnerOrCollaborator
+    ? { title: 'Your Property Passport is private', subtitle: '' }
+    : {
+        title: 'This Passport is private.',
+        subtitle: 'Want to know if that changes?',
+      },
+)
+const privateDrawerBody = computed(() =>
+  props.isOwnerOrCollaborator
+    ? 'Only you can see the information in your Passport.'
+    : "The owner hasn't published any information from this home's Property Passport yet.",
 )
 const publicDrawerReasons = computed(() => {
   const isPublic = openSheet.value === 'public'
@@ -708,8 +919,12 @@ const publishedDateLabel = computed(() => {
 // In standard (non-headless) mode the component owns `openSheet` locally —
 // tapping the colored box flips it. In headless mode the parent drives it
 // via v-model so the colored box can be replaced by the parent's own CTA.
-const localOpenSheet = ref<'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null>(null)
-const openSheet = computed<'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null>({
+const localOpenSheet = ref<
+  'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null
+>(null)
+const openSheet = computed<
+  'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null
+>({
   get: () => (props.headless ? props.openSheet : localOpenSheet.value),
   set: (v) => {
     if (props.headless) emit('update:openSheet', v)
@@ -757,8 +972,8 @@ function redirectTargetFor(action: PrimaryAction): string | null {
     action === 'claim-passport'
       ? 'claim=1'
       : action === 'watch'
-        ? 'watched=1'
-        : 'unlock=1'
+      ? 'watched=1'
+      : 'unlock=1'
   return `/property/${props.propertyId}?${flag}`
 }
 
@@ -798,25 +1013,29 @@ const stepDetails: Record<
   1: {
     h: '1 · Claim your home',
     v: "We confirm that you're authorised to manage this property. A quick identity and ownership check confirms that the home is yours and helps prevent a property from being claimed by someone who shouldn't have access to it.",
-    happens: 'Identity checked · Ownership confirmed · Property securely claimed',
+    happens:
+      'Identity checked · Ownership confirmed · Property securely claimed',
     icon: '/op-icons/verify-identity/idCardChecked.png',
   },
   2: {
     h: '2 · Verify the property',
     v: 'We connect the Passport to the correct property and trusted records. Ownership and key property details can be checked against trusted sources so the Passport is linked to the home itself — not simply to the person who created it.',
-    happens: 'Ownership verified · Property record matched · Trusted data connected',
+    happens:
+      'Ownership verified · Property record matched · Trusted data connected',
     icon: '/op-icons/homescore/clipboard.png',
   },
   3: {
     h: '3 · Build your Passport',
     v: 'Bring the important information about your home together in one place. Add property details, documents, certificates, guarantees, improvements and other important information. Where possible, information can be checked against trusted sources and marked as verified. The Passport can continue to grow and stay up to date over time.',
-    happens: 'Information added · Documents stored · Verification builds over time',
+    happens:
+      'Information added · Documents stored · Verification builds over time',
     icon: '/op-icons/investment/clipboardChecklist.png',
   },
   4: {
     h: '4 · Publish or keep private',
     v: "You decide what happens next. Keep your Property Passport private while you continue building it, or choose to publish approved information when you're ready. Publishing does not mean everything in the Passport becomes public. The homeowner controls what information is shared. A Passport also does not need to be 100% complete before it can be published — it only needs to meet the required publication threshold.",
-    happens: 'You control visibility · Choose what is shared · Keep updating after publication',
+    happens:
+      'You control visibility · Choose what is shared · Keep updating after publication',
     icon: '/op-icons/misc/eye.png',
   },
 }
@@ -826,7 +1045,7 @@ const stepDetails: Record<
 // its detail always showing; now it's opt-in and animated in).
 const activeStep = ref<number | null>(null)
 const activeStepData = computed(() =>
-  activeStep.value != null ? (stepDetails[activeStep.value] ?? null) : null,
+  activeStep.value != null ? stepDetails[activeStep.value] ?? null : null,
 )
 // Collapse back to nothing every time a drawer opens (covers both
 // headless mode, where the parent drives `openSheet`, and normal mode,
@@ -1031,10 +1250,14 @@ function onPrimary(action: PrimaryAction) {
   animation: pcbPubSpin 4.6s linear infinite;
 }
 @keyframes pcbPubSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pcb-pubwrap::before { animation: none; }
+  .pcb-pubwrap::before {
+    animation: none;
+  }
 }
 .pcb-pub {
   position: relative;
@@ -1065,11 +1288,18 @@ function onPrimary(action: PrimaryAction) {
   animation: pcbPubSheen 5.6s ease-in-out 1.6s infinite;
 }
 @keyframes pcbPubSheen {
-  0%        { transform: translateX(-220%) skewX(-18deg); }
-  24%, 100% { transform: translateX(360%)  skewX(-18deg); }
+  0% {
+    transform: translateX(-220%) skewX(-18deg);
+  }
+  24%,
+  100% {
+    transform: translateX(360%) skewX(-18deg);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pcb-pub::after { animation: none; }
+  .pcb-pub::after {
+    animation: none;
+  }
 }
 .pcb-pub-body {
   flex: 1;
@@ -1134,11 +1364,18 @@ function onPrimary(action: PrimaryAction) {
   animation: pcbPubNudge 1.6s ease-in-out infinite;
 }
 @keyframes pcbPubNudge {
-  0%, 100% { transform: translateX(0); }
-  50%      { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pcb-pub-arrow { animation: none; }
+  .pcb-pub-arrow {
+    animation: none;
+  }
 }
 .pcb-ring {
   position: relative;
@@ -1184,13 +1421,8 @@ function onPrimary(action: PrimaryAction) {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  font-family:
-    'SF Pro Display',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   --primary: #231d45;
   --accent: #00a19a;
@@ -1296,13 +1528,13 @@ function onPrimary(action: PrimaryAction) {
   white-space: nowrap;
 }
 .cx2-state-pill--unclaimed {
-  background: #00a19a;
+  background: #231d45;
 }
 .cx2-state-pill--private {
-  background: #f5510b;
+  background: #231d45;
 }
 .cx2-state-pill--partial {
-  background: #9185d6;
+  background: #231d45;
 }
 .cx2-state-pill--public {
   background: #231d45;
@@ -1801,13 +2033,30 @@ function onPrimary(action: PrimaryAction) {
   animation: cx-step-ripple 1.8s ease-out infinite;
 }
 @keyframes cx-step-pulse {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.15); }
-  50%      { box-shadow: 0 0 0 6px rgba(0, 161, 154, 0.05); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(0, 161, 154, 0.05);
+  }
 }
 @keyframes cx-step-ripple {
-  0%   { transform: scale(1);   opacity: 0.55; border-width: 2px; }
-  80%  { transform: scale(1.6); opacity: 0;    border-width: 1px; }
-  100% { transform: scale(1.6); opacity: 0;    border-width: 1px; }
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+    border-width: 2px;
+  }
+  80% {
+    transform: scale(1.6);
+    opacity: 0;
+    border-width: 1px;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+    border-width: 1px;
+  }
 }
 
 /* First-load "attention bounce" on the whole stepper — a single wave
@@ -1819,15 +2068,22 @@ function onPrimary(action: PrimaryAction) {
   animation-fill-mode: both;
 }
 @keyframes cx-step-nudge {
-  0%, 100% { transform: translateY(0); }
-  40%      { transform: translateY(-4px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
 }
 
 /* Respect user reduced-motion preference — animations off entirely. */
 @media (prefers-reduced-motion: reduce) {
   .cx-step-tap.active .cx-step-num,
   .cx-step-tap.active .cx-step-num::after,
-  .cx-steps .cx-step-tap { animation: none; }
+  .cx-steps .cx-step-tap {
+    animation: none;
+  }
 }
 .cx-step-tap.active .cx-step-num.off {
   background: var(--accent);
@@ -2033,13 +2289,8 @@ function onPrimary(action: PrimaryAction) {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  font-family:
-    'SF Pro Display',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif;
 }
 .authd-card {
   width: 100%;
