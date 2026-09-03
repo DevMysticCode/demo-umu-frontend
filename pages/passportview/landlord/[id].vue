@@ -411,7 +411,7 @@
                 target="_blank"
                 rel="noopener"
               >
-                <div class="lp-leg-link-ic">🔗</div>
+                <div class="lp-leg-link-ic"><img src="/op-icons/matched-buyers/link.png" alt="" class="lp-leg-link-ic-img" loading="lazy" /></div>
                 <div class="lp-leg-link-bd">
                   <div class="lp-leg-link-t">{{ link.title }}</div>
                   <div class="lp-leg-link-s">{{ link.sub }}</div>
@@ -506,7 +506,7 @@
                    application or add thier own"). -->
               <template v-if="isLegionellaSection">
                 <div v-if="!legSavedResult" class="lp-leg-cta" @click="openLegAssess">
-                  <div class="lp-leg-cta-ic">💧</div>
+                  <img src="/op-icons/misc/waterDroplet.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
                   <div class="lp-leg-cta-bd">
                     <div class="lp-leg-cta-t">Start guided assessment</div>
                     <div class="lp-leg-cta-s">Six quick questions — no professional needed for a standard home</div>
@@ -527,7 +527,7 @@
                    upload an existing one (client feedback item #10). -->
               <template v-if="isInventorySection">
                 <div v-if="!invSavedRecord" class="lp-leg-cta" @click="openInvWizard">
-                  <div class="lp-leg-cta-ic">📋</div>
+                  <img src="/op-icons/investment/clipboardChecklist.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
                   <div class="lp-leg-cta-bd">
                     <div class="lp-leg-cta-t">Build inventory in umovingu</div>
                     <div class="lp-leg-cta-s">Room-by-room · condition + cleanliness · notes</div>
@@ -548,7 +548,7 @@
                    existing signed agreement (client feedback item #6). -->
               <template v-if="isTenancySection">
                 <div v-if="!tnSavedRecord" class="lp-leg-cta" @click="openTnWizard">
-                  <div class="lp-leg-cta-ic">📝</div>
+                  <img src="/op-icons/misc/signature.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
                   <div class="lp-leg-cta-bd">
                     <div class="lp-leg-cta-t">Create a tenancy agreement</div>
                     <div class="lp-leg-cta-s">Assured periodic tenancy — the written statement built in</div>
@@ -804,7 +804,7 @@
             <div class="lp-assess-title">Risk assessment</div>
           </div>
           <div class="lp-assess-scroll">
-            <div class="lp-assess-intro-ic">💧</div>
+            <div class="lp-assess-intro-ic"><img src="/op-icons/misc/waterDroplet.png" alt="" class="lp-assess-intro-ic-img" loading="lazy" /></div>
             <div class="lp-assess-intro-h">You can usually do this yourself</div>
             <div class="lp-assess-intro-s">For a standard home, the law lets a competent landlord carry out their own Legionella risk assessment — there's no such thing as a required "Legionella certificate". We'll guide you through it.</div>
             <div class="lp-assess-info">
@@ -875,12 +875,18 @@
               <div class="lp-assess-res-desc">{{ legLevelDesc }}</div>
             </div>
             <div v-for="(f, i) in legFlags" :key="i" class="lp-assess-flag" :class="`lp-assess-flag--${f.type}`">
-              <div class="lp-assess-flag-ic">{{ f.ic }}</div>
+              <div class="lp-assess-flag-ic">
+                <img v-if="f.ic.startsWith('/')" :src="f.ic" alt="" class="lp-assess-flag-ic-img" loading="lazy" />
+                <template v-else>{{ f.ic }}</template>
+              </div>
               <div class="lp-assess-flag-t">{{ f.t }}</div>
             </div>
             <div class="lp-assess-sech">Your control actions</div>
             <div v-for="(a, i) in legActions" :key="i" class="lp-assess-action">
-              <div class="lp-assess-action-ic">{{ a.ic }}</div>
+              <div class="lp-assess-action-ic">
+                <img v-if="a.ic.startsWith('/')" :src="a.ic" alt="" class="lp-assess-action-ic-img" loading="lazy" />
+                <template v-else>{{ a.ic }}</template>
+              </div>
               <div class="lp-assess-action-bd">
                 <div class="lp-assess-action-t">{{ a.t }}</div>
                 <div class="lp-assess-action-s">{{ a.s }}</div>
@@ -940,21 +946,21 @@
             <div class="lp-assess-qs">The property is already on your Passport — we just need how it's let.</div>
             <div class="mlabel">Furnishing</div>
             <div class="lp-inv-chiprow">
-              <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'furnished' }" @click="invFurnishing = 'furnished'">🛋️<span>Furnished</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'furnished' }" @click="invFurnishing = 'furnished'"><img src="/op-icons/investment/armchair.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Furnished</span></button>
               <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'part' }" @click="invFurnishing = 'part'">🪑<span>Part-furn.</span></button>
               <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'unfurnished' }" @click="invFurnishing = 'unfurnished'">📦<span>Unfurnished</span></button>
             </div>
             <div class="mlabel" style="margin-top:16px">Inventory type</div>
             <div class="lp-inv-chiprow">
               <button type="button" class="lp-inv-chip" :class="{ on: invType === 'checkin' }" @click="invType = 'checkin'">📥<span>Check-in</span></button>
-              <button type="button" class="lp-inv-chip" :class="{ on: invType === 'interim' }" @click="invType = 'interim'">🔍<span>Interim</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invType === 'interim' }" @click="invType = 'interim'"><img src="/op-icons/homescore/magnifier.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Interim</span></button>
               <button type="button" class="lp-inv-chip" :class="{ on: invType === 'checkout' }" @click="invType = 'checkout'">📤<span>Check-out</span></button>
             </div>
             <div class="mlabel" style="margin-top:16px">Prepared by</div>
             <div class="lp-inv-chiprow">
-              <button type="button" class="lp-inv-chip" :class="{ on: invPreparedBy === 'landlord' }" @click="invPreparedBy = 'landlord'">🔑<span>Landlord</span></button>
-              <button type="button" class="lp-inv-chip" :class="{ on: invPreparedBy === 'agent' }" @click="invPreparedBy = 'agent'">🏢<span>Agent</span></button>
-              <button type="button" class="lp-inv-chip" :class="{ on: invPreparedBy === 'clerk' }" @click="invPreparedBy = 'clerk'">📋<span>Ind. clerk</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invPreparedBy === 'landlord' }" @click="invPreparedBy = 'landlord'"><img src="/op-icons/investment/key.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Landlord</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invPreparedBy === 'agent' }" @click="invPreparedBy = 'agent'"><img src="/op-icons/investment/officeBuilding.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Agent</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invPreparedBy === 'clerk' }" @click="invPreparedBy = 'clerk'"><img src="/op-icons/investment/clipboardChecklist.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Ind. clerk</span></button>
             </div>
           </div>
           <div class="lp-assess-foot">
@@ -1009,7 +1015,10 @@
               <div class="lp-inv-ptext"><span><b>{{ invDoneCount }}</b> of {{ invRooms.length }} rooms done</span><span>{{ Math.round(invDoneCount / invRooms.length * 100) }}%</span></div>
             </div>
             <div v-for="r in invRooms" :key="r.id" class="lp-inv-room" @click="invOpenRoom(r.id)">
-              <div class="lp-inv-room-ic">{{ r.icon }}</div>
+              <div class="lp-inv-room-ic">
+                <img v-if="r.icon.startsWith('/')" :src="r.icon" alt="" class="lp-inv-room-ic-img" loading="lazy" />
+                <template v-else>{{ r.icon }}</template>
+              </div>
               <div class="lp-inv-room-bd">
                 <div class="lp-inv-room-n">{{ r.name }}</div>
                 <div class="lp-inv-room-m">{{ roomIsDone(r) ? r.items.length + ' items rated' : r.items.length + ' items to check' }}</div>
@@ -1053,7 +1062,11 @@
         <div v-else-if="invScreen === 'room' && invCurRoom" class="lp-assess-screen">
           <div class="lp-assess-hdr">
             <button class="lp-assess-back" type="button" aria-label="Back" @click="invScreen = 'rooms'">‹</button>
-            <div class="lp-assess-title">{{ invCurRoom.icon }} {{ invCurRoom.name }}</div>
+            <div class="lp-assess-title lp-assess-title--iconrow">
+              <img v-if="invCurRoom.icon.startsWith('/')" :src="invCurRoom.icon" alt="" class="lp-assess-title-ic-img" loading="lazy" />
+              <template v-else>{{ invCurRoom.icon }}</template>
+              {{ invCurRoom.name }}
+            </div>
           </div>
           <div class="lp-assess-scroll">
             <div v-for="item in invCurRoom.items" :key="item.name" class="lp-inv-item">
@@ -1142,7 +1155,7 @@
             <div class="lp-assess-title">Tenancy agreement</div>
           </div>
           <div class="lp-assess-scroll">
-            <div class="lp-assess-intro-ic">📝</div>
+            <div class="lp-assess-intro-ic"><img src="/op-icons/misc/signature.png" alt="" class="lp-assess-intro-ic-img" loading="lazy" /></div>
             <div class="lp-assess-intro-h">Build your tenancy agreement</div>
             <div class="lp-assess-intro-s">Since 1 May 2026 every new tenancy is an assured periodic tenancy, and you must give the tenant a written statement of the key terms before they sign. umovingu builds it and folds the written statement in.</div>
             <div class="lp-tn-verbadge">🛡️ <b>Template v3.1</b> — reviewed for the Renters' Rights Act. <span class="lp-tn-pending">Placeholder pending legal review.</span></div>
@@ -1857,18 +1870,18 @@ const legFlags = computed(() => {
     }
     if (o.flagWarn) {
       const t = "Higher-risk occupant: take extra care — keep temperatures right, descale shower heads, and flush after any void. Tell the tenant what you've done."
-      if (!seen.has(t)) { seen.add(t); flags.push({ type: 'warn', ic: '⚠️', t }) }
+      if (!seen.has(t)) { seen.add(t); flags.push({ type: 'warn', ic: '/op-icons/legionella/vulnerableOccupant.png', t }) }
     }
   }
   return flags
 })
 const legActions = computed(() => {
   const A: { ic: string; t: string; s: string; f: string }[] = []
-  A.push({ ic: '🚿', t: 'Flush unused outlets weekly', s: 'Run rarely-used taps and showers for a couple of minutes to stop water stagnating — and always before a new tenant moves in.', f: 'Weekly + before every let' })
-  A.push({ ic: '🌡️', t: 'Keep hot hot, cold cold', s: 'Hot water should reach 50°C within a minute; cold should stay below 20°C.', f: 'Ongoing' })
+  A.push({ ic: '/op-icons/homescore/tap.png', t: 'Flush unused outlets weekly', s: 'Run rarely-used taps and showers for a couple of minutes to stop water stagnating — and always before a new tenant moves in.', f: 'Weekly + before every let' })
+  A.push({ ic: '/op-icons/legionella/waterThermometer.png', t: 'Keep hot hot, cold cold', s: 'Hot water should reach 50°C within a minute; cold should stay below 20°C.', f: 'Ongoing' })
   if ((legAnswers.value.shower ?? 0) > 0) A.push({ ic: '🧼', t: 'Descale & disinfect shower heads', s: 'Remove, soak and clean shower heads and hoses to clear scale and biofilm.', f: 'Every 3 months' })
-  if ((legAnswers.value.temp ?? 0) > 0) A.push({ ic: '📏', t: 'Measure your water temperatures', s: 'Run the taps and check hot and cold, so your next assessment records real figures.', f: 'Do this now' })
-  if ((legAnswers.value.system ?? 0) >= 2 || (legAnswers.value.cond ?? 0) > 0) A.push({ ic: '🔍', t: 'Inspect & keep the tank clean', s: 'Check any storage/header tank has a close-fitting lid and no rust, sludge or debris.', f: 'At each review' })
+  if ((legAnswers.value.temp ?? 0) > 0) A.push({ ic: '/op-icons/legionella/waterThermometer.png', t: 'Measure your water temperatures', s: 'Run the taps and check hot and cold, so your next assessment records real figures.', f: 'Do this now' })
+  if ((legAnswers.value.system ?? 0) >= 2 || (legAnswers.value.cond ?? 0) > 0) A.push({ ic: '/op-icons/homescore/magnifier.png', t: 'Inspect & keep the tank clean', s: 'Check any storage/header tank has a close-fitting lid and no rust, sludge or debris.', f: 'At each review' })
   A.push({ ic: '📣', t: 'Tell your tenant', s: "Ask them to flush taps and showers if the home's been empty for a week or more.", f: 'At move-in' })
   return A
 })
@@ -1972,10 +1985,10 @@ interface InvRoom { id: string; name: string; icon: string; fixtures: string[]; 
 // sensible to check rather than an empty list.
 const CUSTOM_ROOM_FIXTURES = ['Walls & ceiling', 'Flooring', 'Windows & coverings', 'Doors & handles', 'Light fittings & switches']
 const INVENTORY_ROOM_TEMPLATE: Omit<InvRoom, 'items'>[] = [
-  { id: 'living', name: 'Living Room', icon: '🛋️', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Doors & handles', 'Skirting boards', 'Light fittings & switches', 'Radiator'], contents: ['Sofa', 'Coffee table', 'TV unit', 'Curtains'] },
+  { id: 'living', name: 'Living Room', icon: '/op-icons/investment/armchair.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Doors & handles', 'Skirting boards', 'Light fittings & switches', 'Radiator'], contents: ['Sofa', 'Coffee table', 'TV unit', 'Curtains'] },
   { id: 'kitchen', name: 'Kitchen', icon: '🍳', fixtures: ['Worktops & units', 'Sink & taps', 'Oven & hob', 'Extractor fan', 'Tiling / splashback', 'Flooring', 'Walls & ceiling'], contents: ['Fridge / freezer', 'Washing machine', 'Microwave'] },
-  { id: 'bed1', name: 'Bedroom 1', icon: '🛏️', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Built-in wardrobe', 'Radiator'], contents: ['Double bed & mattress', 'Bedside tables', 'Chest of drawers'] },
-  { id: 'bed2', name: 'Bedroom 2', icon: '🛏️', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Radiator'], contents: ['Single bed & mattress', 'Wardrobe'] },
+  { id: 'bed1', name: 'Bedroom 1', icon: '/op-icons/misc/bed.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Built-in wardrobe', 'Radiator'], contents: ['Double bed & mattress', 'Bedside tables', 'Chest of drawers'] },
+  { id: 'bed2', name: 'Bedroom 2', icon: '/op-icons/misc/bed.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Radiator'], contents: ['Single bed & mattress', 'Wardrobe'] },
   { id: 'bath', name: 'Bathroom', icon: '🛁', fixtures: ['Bath / shower', 'Toilet', 'Basin & taps', 'Tiling, grout & sealant', 'Extractor fan', 'Flooring'], contents: ['Mirror cabinet'] },
   { id: 'hall', name: 'Hallway & entrance', icon: '🚪', fixtures: ['Front door, frame & locks', 'Walls & ceiling', 'Flooring', 'Light fittings'], contents: [] },
 ]
@@ -2007,7 +2020,7 @@ function addCustomRoom() {
   invRooms.value.push({
     id: `custom-${Date.now()}`,
     name,
-    icon: '🏠',
+    icon: '/op-icons/investment/house.png',
     fixtures: CUSTOM_ROOM_FIXTURES,
     contents: [],
     items: CUSTOM_ROOM_FIXTURES.map((n) => ({ name: n, condition: '', cleanliness: '', note: '' })),
@@ -3862,6 +3875,7 @@ const SectionCard = defineComponent({
   font-size: 16px;
   flex-shrink: 0;
 }
+.lp-leg-link-ic-img { width: 22px; height: 22px; object-fit: contain; }
 .lp-leg-link-bd { flex: 1; min-width: 0; }
 .lp-leg-link-t { font-size: 13.5px; font-weight: 700; color: #0e2840; }
 .lp-leg-link-s { font-size: 11px; font-weight: 500; color: #6b7089; margin-top: 1px; }
@@ -3901,6 +3915,7 @@ const SectionCard = defineComponent({
   cursor: pointer;
 }
 .lp-leg-cta-ic { font-size: 26px; flex-shrink: 0; }
+.lp-leg-cta-ic-img { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
 .lp-leg-cta-bd { flex: 1; }
 .lp-leg-cta-t { font-size: 14.5px; font-weight: 700; color: #0e2840; }
 .lp-leg-cta-s { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.4; }
@@ -4004,10 +4019,12 @@ const SectionCard = defineComponent({
 .lp-assess-flag--warn { background: #fbf1df; border: 1px solid #f0d9a8; }
 .lp-assess-flag--pro { background: #fbeae5; border: 1px solid #f0c3b8; }
 .lp-assess-flag-ic { font-size: 17px; flex-shrink: 0; }
+.lp-assess-flag-ic-img { width: 24px; height: 24px; object-fit: contain; }
 .lp-assess-flag-t { font-size: 12.5px; font-weight: 600; line-height: 1.5; color: #4a5868; }
 .lp-assess-sech { font-size: 11px; font-weight: 800; color: #6b7089; letter-spacing: 1.4px; text-transform: uppercase; padding: 20px 0 10px; }
 .lp-assess-action { display: flex; gap: 12px; margin-bottom: 10px; padding: 15px; background: #fff; border: 1px solid #e8eceb; border-radius: 14px; }
 .lp-assess-action-ic { width: 38px; height: 38px; border-radius: 10px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.lp-assess-action-ic-img { width: 26px; height: 26px; object-fit: contain; }
 .lp-assess-action-bd { flex: 1; }
 .lp-assess-action-t { font-size: 14px; font-weight: 700; color: #0e2840; }
 .lp-assess-action-s { font-size: 12px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.45; }
@@ -4018,6 +4035,7 @@ const SectionCard = defineComponent({
 .lp-assess-sum-row span:first-child { color: #6b7089; font-weight: 500; }
 .lp-assess-sum-row span:last-child { color: #0e2840; font-weight: 700; text-align: right; max-width: 60%; }
 .lp-assess-intro-ic { width: 70px; height: 70px; border-radius: 20px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 8px auto 0; }
+.lp-assess-intro-ic-img { width: 42px; height: 42px; object-fit: contain; }
 .lp-assess-intro-h { font-size: 23px; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; text-align: center; margin-top: 16px; padding: 0 22px; }
 .lp-assess-intro-s { font-size: 14px; font-weight: 500; color: #6b7089; line-height: 1.55; text-align: center; margin: 10px 0 0; }
 .lp-assess-info { margin: 20px 0 0; padding: 16px; background: #e7f6ef; border: 1px solid #bfe6d5; border-radius: 14px; }
@@ -4043,6 +4061,7 @@ const SectionCard = defineComponent({
   color: #6b7089;
   cursor: pointer;
 }
+.lp-inv-chip-ic { width: 22px; height: 22px; object-fit: contain; }
 .lp-inv-chip.on { border-color: #00a19a; background: #f2faf8; color: #0e2840; }
 .lp-inv-prog { margin-bottom: 14px; }
 .lp-inv-pbar { height: 8px; background: #e7e7ee; border-radius: 100px; overflow: hidden; }
@@ -4061,6 +4080,9 @@ const SectionCard = defineComponent({
   cursor: pointer;
 }
 .lp-inv-room-ic { width: 44px; height: 44px; border-radius: 12px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 21px; flex-shrink: 0; }
+.lp-inv-room-ic-img { width: 30px; height: 30px; object-fit: contain; }
+.lp-assess-title--iconrow { display: flex; align-items: center; gap: 7px; }
+.lp-assess-title-ic-img { width: 22px; height: 22px; object-fit: contain; }
 .lp-inv-room-bd { flex: 1; min-width: 0; }
 .lp-inv-room-n { font-size: 15px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
 .lp-inv-room-m { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 2px; }
