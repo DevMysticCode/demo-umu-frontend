@@ -470,12 +470,12 @@
                   @click="onPrimary('watch')"
                 >
                   <img
-                    src="/op-icons/misc/bell.png"
+                    src="/op-icons/misc/exploreWatching.png"
                     alt=""
                     class="inline-ic"
                     loading="lazy"
                   />
-                  Notify me when a Passport is published
+                  Watch this property
                 </button>
                 <button
                   class="cxd-btn secondary"

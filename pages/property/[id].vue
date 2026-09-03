@@ -111,8 +111,9 @@
                     floatClaimState === 'partiallyPublic',
                 }"
               >
-                <div class="pps-badge-passport-cap">Passport</div>
+                <!-- <div class="pps-badge-passport-cap"></div> -->
                 <div class="pps-badge-passport-val">
+                  Passport
                   <template v-if="floatClaimState === 'unclaimed'"
                     >Unclaimed</template
                   >
