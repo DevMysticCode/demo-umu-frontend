@@ -17,7 +17,7 @@
       <div v-if="loading" class="lp-loading">Loading…</div>
 
       <template v-else-if="passport">
-        <!-- Premium hero — book on left, dashboard on right (mirrors seller passport) -->
+        <!-- Premium hero - book on left, dashboard on right (mirrors seller passport) -->
         <div class="pp-hero">
           <div class="pp-hero-glow" />
           <div class="pp-hero-book">
@@ -117,14 +117,14 @@
 
         <!-- COMPLIANCE -->
         <div v-show="activeTab === 'compliance'">
-          <!-- List / Map view toggle — uses the same SegmentedSwitch the
+          <!-- List / Map view toggle - uses the same SegmentedSwitch the
                seller passport uses, so both passport types feel like the
                same product. -->
           <div class="lp-view-toggle">
             <SegmentedSwitch v-model="complianceView" :options="viewOptions" />
           </div>
 
-          <!-- Legislation & news rail — moved to the landlord dashboard
+          <!-- Legislation & news rail - moved to the landlord dashboard
                (pages/dashboard.vue), which now owns this section since
                it's account-wide, not tied to one property's passport.
                Still driven by the same shared dataset (see
@@ -236,7 +236,7 @@
           </template>
           </template>
 
-          <!-- MAP VIEW — landlord-specific clone of PassportMapView.
+          <!-- MAP VIEW - landlord-specific clone of PassportMapView.
                Same isometric path, roads, decorations and walking-lady
                as the seller's map; only the section icons are swapped
                for the rental-passport SVG set. -->
@@ -343,7 +343,7 @@
           <div class="lp-modal-body">
             <p class="lp-modal-intro">
               We'll create a separate seller passport on the same property and transfer the docs you already
-              hold for letting. Both passports stay live — you can keep letting in parallel.
+              hold for letting. Both passports stay live - you can keep letting in parallel.
             </p>
             <div class="lp-modal-section">
               <div class="lp-modal-label">Will transfer</div>
@@ -392,14 +392,14 @@
           <div class="lp-modal-body">
             <p v-if="drawerSection.subtitle" class="lp-modal-intro">{{ drawerSection.subtitle }}</p>
 
-            <!-- Renters' Rights Act Information Sheet — legislation links
+            <!-- Renters' Rights Act Information Sheet - legislation links
                  (client feedback item #9, prototype's leg-note + legLink
                  list). Shown above the upload flow, which stays as the
                  landlord's record of proof-of-service. -->
             <div v-if="isInfoSheetSection" class="lp-leg-note">
               <div class="lp-leg-note-t">⚖️ The law changed on 1 May 2026</div>
               <div class="lp-leg-note-s">
-                The <b>How to Rent guide was withdrawn</b> under the Renters' Rights Act 2025. Landlords now serve <b>The Renters' Rights Act Information Sheet 2026</b>. You must give the <b>official GOV.UK PDF</b> (a link on its own is not valid) — as a printed copy or attached to an email/text. Fines reach £7,000 for non-compliance.
+                The <b>How to Rent guide was withdrawn</b> under the Renters' Rights Act 2025. Landlords now serve <b>The Renters' Rights Act Information Sheet 2026</b>. You must give the <b>official GOV.UK PDF</b> (a link on its own is not valid) - as a printed copy or attached to an email/text. Fines reach £7,000 for non-compliance.
               </div>
             </div>
             <template v-if="isInfoSheetSection">
@@ -418,12 +418,12 @@
                 </div>
                 <div class="lp-leg-link-go">↗</div>
               </a>
-              <div class="lp-modal-hint" style="margin-bottom:12px">Once you've served the Information Sheet, record it below — proof of service matters if a tenancy is ever challenged.</div>
+              <div class="lp-modal-hint" style="margin-bottom:12px">Once you've served the Information Sheet, record it below - proof of service matters if a tenancy is ever challenged.</div>
             </template>
 
-            <!-- EPC auto-pull banner — client feedback #3: "pulled straight
+            <!-- EPC auto-pull banner - client feedback #3: "pulled straight
                  through from land registry too". Shown alongside the normal
-                 upload flow below, not instead of it — a landlord can still
+                 upload flow below, not instead of it - a landlord can still
                  attach the certificate PDF itself. -->
             <div v-if="isEpcSection && propertyEpc?.epcRating" class="lp-doc-preview" style="margin-bottom:12px">
               <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/environmental.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
@@ -435,11 +435,11 @@
               </div>
             </div>
 
-            <!-- Smoke & CO Alarms — no certificate; a repeatable row per
+            <!-- Smoke & CO Alarms - no certificate; a repeatable row per
                  physical alarm (client feedback #4, prototype's datesBody). -->
             <template v-if="isAlarmsSection">
               <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">
-                <b>No certificate required.</b> Record each alarm separately — where it is, when it was tested, and when the unit expires. Alarms must be tested on the first day of every new tenancy.
+                <b>No certificate required.</b> Record each alarm separately - where it is, when it was tested, and when the unit expires. Alarms must be tested on the first day of every new tenancy.
               </p>
               <div v-for="(row, i) in alarmRows" :key="i" class="lp-repeat-block">
                 <div class="lp-repeat-head">
@@ -469,7 +469,7 @@
               <button type="button" class="lp-add-row" @click="addAlarmRow('co')">＋ Add a CO alarm</button>
               <p class="lp-modal-hint" style="margin-bottom:10px">We'll remind you 30 days before any alarm expires. Optional: attach a photo or test log.</p>
 
-              <!-- Evidence photo / test log — prototype's "Attach photo /
+              <!-- Evidence photo / test log - prototype's "Attach photo /
                    test log (optional)" (client feedback: we had the alarm
                    rows but not this). Kind-scoped multi-copy off the same
                    alarms_check UPLOAD question, same pattern as the other
@@ -492,7 +492,7 @@
               </label>
             </template>
 
-            <!-- Right to Rent — per-occupier ID checks, not a flat upload
+            <!-- Right to Rent - per-occupier ID checks, not a flat upload
                  (client feedback #8, prototype's occupier list). -->
             <template v-else-if="isRtrSection">
               <div v-for="(occ, i) in occupierRows" :key="i" class="lp-repeat-block">
@@ -512,7 +512,7 @@
                   <div class="mform-label">Recheck by (leave blank if unlimited)</div>
                   <input v-model="occ.recheckBy" type="date" class="mform-input" />
                 </div>
-                <!-- Per-occupier ID-check evidence — client feedback: need
+                <!-- Per-occupier ID-check evidence - client feedback: need
                      proof the check was actually carried out, not just a
                      status/date record. -->
                 <div v-for="doc in (rtrOccDocs[i] || [])" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
@@ -546,16 +546,16 @@
                 </label>
               </div>
               <button type="button" class="lp-add-row" @click="addOccupierRow()">＋ Add another occupier</button>
-              <p class="lp-modal-hint">If status is unlimited (British/Irish citizen or settled status), leave "Recheck by" blank — no follow-up needed. We'll remind you 30 days before any recheck date.</p>
+              <p class="lp-modal-hint">If status is unlimited (British/Irish citizen or settled status), leave "Recheck by" blank - no follow-up needed. We'll remind you 30 days before any recheck date.</p>
             </template>
 
-            <!-- Multi-copy certificate retention (client feedback 1a/3) —
+            <!-- Multi-copy certificate retention (client feedback 1a/3) -
                  every uploaded copy stays on file instead of being
                  overwritten, since a landlord may need to keep previous
                  certificates for compliance history. -->
             <template v-else-if="isMultiCopySection">
               <!-- Legionella: guided assessment OR upload your own (client
-                   feedback item #5 — "start guided assesment and upload as
+                   feedback item #5 - "start guided assesment and upload as
                    assesement - so they can either do it inside the
                    application or add thier own"). -->
               <template v-if="isLegionellaSection">
@@ -563,7 +563,7 @@
                   <img src="/op-icons/misc/waterDroplet.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
                   <div class="lp-leg-cta-bd">
                     <div class="lp-leg-cta-t">Start guided assessment</div>
-                    <div class="lp-leg-cta-s">Six quick questions — no professional needed for a standard home</div>
+                    <div class="lp-leg-cta-s">Six quick questions - no professional needed for a standard home</div>
                   </div>
                   <div class="lp-leg-cta-go">›</div>
                 </div>
@@ -577,7 +577,7 @@
                 <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already had a professional assessment done? Upload it here instead.</p>
               </template>
 
-              <!-- Inventory & Schedule of Condition — build in umovingu, or
+              <!-- Inventory & Schedule of Condition - build in umovingu, or
                    upload an existing one (client feedback item #10). -->
               <template v-if="isInventorySection">
                 <div v-if="!invSavedRecord" class="lp-leg-cta" @click="openInvWizard">
@@ -595,17 +595,17 @@
                   <button type="button" class="lp-leg-retake" @click="openInvWizard">Build a new inventory</button>
                 </div>
                 <div class="mlabel" style="margin-top:16px">Or add your own</div>
-                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already have an inventory report? Upload it here instead — or attach photos alongside the one you build above.</p>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already have an inventory report? Upload it here instead - or attach photos alongside the one you build above.</p>
               </template>
 
-              <!-- Tenancy Agreement — generate in umovingu, or upload an
+              <!-- Tenancy Agreement - generate in umovingu, or upload an
                    existing signed agreement (client feedback item #6). -->
               <template v-if="isTenancySection">
                 <div v-if="!tnSavedRecord" class="lp-leg-cta" @click="openTnWizard">
                   <img src="/op-icons/misc/signature.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
                   <div class="lp-leg-cta-bd">
                     <div class="lp-leg-cta-t">Create a tenancy agreement</div>
-                    <div class="lp-leg-cta-s">Assured periodic tenancy — the written statement built in</div>
+                    <div class="lp-leg-cta-s">Assured periodic tenancy - the written statement built in</div>
                   </div>
                   <div class="lp-leg-cta-go">›</div>
                 </div>
@@ -621,7 +621,7 @@
 
               <!-- White Goods has its own two dedicated doc lists (Manuals/
                    Warranties, below) instead of one generic "certificate"
-                   slot — this shared multi-copy upload row doesn't apply
+                   slot - this shared multi-copy upload row doesn't apply
                    to it the way it does to Gas Safety/EICR/EPC/Insurance/
                    Deposit/Legionella/Inventory/Tenancy's own-copy uploads. -->
               <template v-if="!isWhiteGoodsSection">
@@ -659,13 +659,13 @@
                 </label>
               </template>
 
-              <!-- Deposit Protection: a second, legally distinct document —
+              <!-- Deposit Protection: a second, legally distinct document -
                    the signed prescribed information actually SERVED to the
                    tenant, tracked separately from the scheme certificate
                    above (client feedback item #7). -->
               <template v-if="isDepositSection">
                 <div class="mlabel" style="margin-top:16px">Served prescribed information</div>
-                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Upload the signed copy of the prescribed information you actually <b>served to the tenant</b> — your proof it was given within 30 days.</p>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Upload the signed copy of the prescribed information you actually <b>served to the tenant</b> - your proof it was given within 30 days.</p>
                 <div v-for="doc in piCopyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
                   <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
                   <div class="lp-doc-preview-info">
@@ -712,7 +712,7 @@
                 </div>
 
                 <div class="mlabel" style="margin-top:16px">What the prescribed information must contain</div>
-                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:6px">The law requires you give the tenant this within 30 days of receiving the deposit — check, serve, then upload the signed copy above.</p>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:6px">The law requires you give the tenant this within 30 days of receiving the deposit - check, serve, then upload the signed copy above.</p>
                 <div v-for="item in PI_CHECKLIST" :key="item.t" class="lp-pi-item">
                   <div class="lp-pi-check">✓</div>
                   <div class="lp-pi-tx">
@@ -723,14 +723,14 @@
                 <p class="lp-modal-hint" style="margin-top:12px"><b>Why it matters:</b> if the prescribed information isn't served correctly, the tenant can claim up to 3× the deposit and possession can be affected.</p>
               </template>
 
-              <!-- White Goods & Appliances — new section (client feedback:
+              <!-- White Goods & Appliances - new section (client feedback:
                    not in the original 11 items, but fully specified in the
                    prototype's whitegoodsBody). Appliances list, manuals +
                    warranties (two kind-scoped doc lists off the same
                    upload question), tenant-facing notes, and appliance
                    cover/breakdown insurance details. -->
               <template v-if="isWhiteGoodsSection">
-                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">Keep everything for the white goods you provide — so the tenant can use them, and you're covered if one fails.</p>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">Keep everything for the white goods you provide - so the tenant can use them, and you're covered if one fails.</p>
 
                 <div class="mlabel">Appliances provided</div>
                 <div v-for="(a, i) in wgAppliances" :key="i" class="lp-repeat-block">
@@ -793,12 +793,12 @@
 
                 <div class="mform-section" style="margin-top:18px">
                   <div class="mform-label">How things work (optional)</div>
-                  <textarea v-model="wgHowItWorks" class="lp-inv-note" style="min-height:80px" placeholder="Instructions for the tenant — e.g. 'The washing machine door needs a firm push to lock. Dishwasher salt is under the sink.'" />
+                  <textarea v-model="wgHowItWorks" class="lp-inv-note" style="min-height:80px" placeholder="Instructions for the tenant - e.g. 'The washing machine door needs a firm push to lock. Dishwasher salt is under the sink.'" />
                 </div>
 
                 <div class="mlabel" style="margin-top:18px">Appliance cover / breakdown insurance</div>
                 <div class="mform-section">
-                  <input v-model="wgCoverProvider" type="text" class="mform-input" placeholder="Provider — e.g. Domestic &amp; General" />
+                  <input v-model="wgCoverProvider" type="text" class="mform-input" placeholder="Provider - e.g. Domestic &amp; General" />
                 </div>
                 <div class="lp-two-col">
                   <input v-model="wgCoverPolicyNumber" type="text" class="mform-input" placeholder="Policy number" />
@@ -884,12 +884,12 @@
               </div>
             </template>
 
-            <!-- Expiry — shown for the generic single-slot flow (pendingFile
+            <!-- Expiry - shown for the generic single-slot flow (pendingFile
                  or an existing DATE question) AND for multi-copy sections,
                  which still track one expiry per section independent of
                  how many certificate copies are on file. Every landlord
                  section is seeded with a DATE question by design (see
-                 seed.ts), including Alarms/RTR/Legionella — excluded here
+                 seed.ts), including Alarms/RTR/Legionella - excluded here
                  since each of those has its own dedicated UI that already
                  covers dates in a way that makes sense for it. -->
             <div v-if="(drawerDateQuestion || pendingFile) && !isAlarmsSection && !isRtrSection && !isLegionellaSection && !isWhiteGoodsSection" class="mform-section">
@@ -901,9 +901,9 @@
                   :max="isDepositSection ? todayDateStr : undefined"
                   :min="isDepositSection ? undefined : todayDateStr"
                 />
-                <p v-if="isDepositSection" class="lp-modal-hint">The date the deposit was registered with the scheme — must be within 30 days of receiving it.</p>
+                <p v-if="isDepositSection" class="lp-modal-hint">The date the deposit was registered with the scheme - must be within 30 days of receiving it.</p>
                 <p v-else class="lp-modal-hint">
-                  <template v-if="drawerCadenceLabel"><b>{{ drawerCadenceLabel }}</b> — </template>we'll remind you 30 days before this date so you can stay compliant.
+                  <template v-if="drawerCadenceLabel"><b>{{ drawerCadenceLabel }}</b> - </template>we'll remind you 30 days before this date so you can stay compliant.
                 </p>
               </div>
 
@@ -966,7 +966,7 @@
       </div>
     </Teleport>
 
-    <!-- Legionella guided risk assessment (client feedback item #5) — a
+    <!-- Legionella guided risk assessment (client feedback item #5) - a
          full-screen wizard, not the compact section drawer, matching the
          prototype: intro -> 6 questions -> scored result -> saved. -->
     <Teleport to="body">
@@ -980,7 +980,7 @@
           <div class="lp-assess-scroll">
             <div class="lp-assess-intro-ic"><img src="/op-icons/misc/waterDroplet.png" alt="" class="lp-assess-intro-ic-img" loading="lazy" /></div>
             <div class="lp-assess-intro-h">You can usually do this yourself</div>
-            <div class="lp-assess-intro-s">For a standard home, the law lets a competent landlord carry out their own Legionella risk assessment — there's no such thing as a required "Legionella certificate". We'll guide you through it.</div>
+            <div class="lp-assess-intro-s">For a standard home, the law lets a competent landlord carry out their own Legionella risk assessment - there's no such thing as a required "Legionella certificate". We'll guide you through it.</div>
             <div class="lp-assess-info">
               <div class="lp-assess-info-t">What you'll get</div>
               <div class="lp-assess-info-s">Six short questions on your water system → a scored risk level → tailored control actions → a dated record on the Passport with a 2-year review reminder.</div>
@@ -1102,7 +1102,7 @@
       </div>
     </Teleport>
 
-    <!-- Inventory & Schedule of Condition (client feedback item #10) —
+    <!-- Inventory & Schedule of Condition (client feedback item #10) -
          setup wizard -> room list -> per-room condition record -> review
          -> saved. -->
     <Teleport to="body">
@@ -1117,7 +1117,7 @@
           <div class="lp-assess-steps"><div class="lp-assess-step on" /><div class="lp-assess-step" /></div>
           <div class="lp-assess-scroll">
             <div class="lp-assess-qh" style="font-size:19px">Type &amp; furnishing</div>
-            <div class="lp-assess-qs">The property is already on your Passport — we just need how it's let.</div>
+            <div class="lp-assess-qs">The property is already on your Passport - we just need how it's let.</div>
             <div class="mlabel">Furnishing</div>
             <div class="lp-inv-chiprow">
               <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'furnished' }" @click="invFurnishing = 'furnished'"><img src="/op-icons/investment/armchair.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Furnished</span></button>
@@ -1240,7 +1240,7 @@
             </div>
 
             <!-- Add a room the 6 defaults don't cover (study, garage,
-                 conservatory, etc.) — client feedback: no way to add
+                 conservatory, etc.) - client feedback: no way to add
                  extra rooms. Gets the same generic fixture checklist
                  every custom room needs (CUSTOM_ROOM_FIXTURES). -->
             <div class="lp-inv-addroom">
@@ -1274,7 +1274,7 @@
             </div>
           </div>
           <div class="lp-assess-scroll">
-            <div class="section-heading">Fixtures — condition &amp; cleanliness</div>
+            <div class="section-heading">Fixtures - condition &amp; cleanliness</div>
             <div v-for="item in invCurRoom.items.filter((i) => i.type === 'fixture')" :key="item.name" class="lp-inv-item">
               <div class="lp-inv-item-n">{{ item.name }}</div>
               <div class="lp-inv-rl">Condition</div>
@@ -1292,7 +1292,7 @@
               <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
             </div>
 
-            <!-- Hidden entirely for an unfurnished let — client feedback:
+            <!-- Hidden entirely for an unfurnished let - client feedback:
                  selecting Unfurnished still asked furniture questions. -->
             <template v-if="invFurnishing !== 'unfurnished' && invCurRoom.items.some((i) => i.type === 'content')">
               <div class="section-heading">Furnishings &amp; contents</div>
@@ -1345,7 +1345,7 @@
             <div class="lp-assess-title">Safety &amp; compliance</div>
           </div>
           <div class="lp-assess-scroll">
-            <div class="section-heading">Alarms — present &amp; tested</div>
+            <div class="section-heading">Alarms - present &amp; tested</div>
             <div v-for="(row, i) in invAlarmRows" :key="i" class="lp-repeat-block">
               <div class="lp-repeat-head">
                 <span>{{ row.type === 'co' ? 'CO alarm' : 'Smoke alarm' }} {{ i + 1 }}</span>
@@ -1484,7 +1484,7 @@
           <div class="lp-assess-scroll">
             <div class="lp-assess-ok">✓</div>
             <div class="lp-assess-intro-h">Inventory complete</div>
-            <div class="lp-assess-intro-s">Stored on the Property Passport — real evidence if a deposit dispute ever comes up.</div>
+            <div class="lp-assess-intro-s">Stored on the Property Passport - real evidence if a deposit dispute ever comes up.</div>
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="invOpen = false; showSectionDrawer = false">Back to compliance</button>
@@ -1493,9 +1493,9 @@
       </div>
     </Teleport>
 
-    <!-- Tenancy Agreement generator (client feedback item #6) — intro
+    <!-- Tenancy Agreement generator (client feedback item #6) - intro
          (mandatory terms explainer) -> details -> document preview ->
-         saved. Clause text is a TEMPLATE pending legal review — see the
+         saved. Clause text is a TEMPLATE pending legal review - see the
          comment on TN_CLAUSES/tnDocText in the script. -->
     <Teleport to="body">
       <div v-if="tnOpen" class="lp-assess">
@@ -1509,7 +1509,7 @@
             <div class="lp-assess-intro-ic"><img src="/op-icons/misc/signature.png" alt="" class="lp-assess-intro-ic-img" loading="lazy" /></div>
             <div class="lp-assess-intro-h">Build your tenancy agreement</div>
             <div class="lp-assess-intro-s">Since 1 May 2026 every new tenancy is an assured periodic tenancy, and you must give the tenant a written statement of the key terms before they sign. umovingu builds it and folds the written statement in.</div>
-            <div class="lp-tn-verbadge">🛡️ <b>Template v3.1</b> — reviewed for the Renters' Rights Act. <span class="lp-tn-pending">Placeholder pending legal review.</span></div>
+            <div class="lp-tn-verbadge">🛡️ <b>Template v3.1</b> - reviewed for the Renters' Rights Act. <span class="lp-tn-pending">Placeholder pending legal review.</span></div>
             <div class="mlabel" style="margin-top:20px">What we fill in for you</div>
             <div class="lp-tn-mand">
               <div class="lp-tn-mand-t">📋 Mandatory written-statement terms</div>
@@ -1523,11 +1523,11 @@
             </div>
           </div>
           <div class="lp-assess-foot">
-            <button class="btn-primary" type="button" style="width:100%" @click="startTnWizard">Start — takes 3 minutes →</button>
+            <button class="btn-primary" type="button" style="width:100%" @click="startTnWizard">Start - takes 3 minutes →</button>
           </div>
         </div>
 
-        <!-- Details — 3-step wizard (prototype's TNQ): The tenancy →
+        <!-- Details - 3-step wizard (prototype's TNQ): The tenancy →
              Rent & deposit → Anything specific?, each pre-filled from
              data already on the Passport where we have it (client
              feedback: "We've pre-filled what's already on your
@@ -1561,7 +1561,7 @@
             <template v-else-if="tnStep === 1">
               <div class="lp-tn-mand" style="margin-left:0;margin-right:0">
                 <div class="lp-tn-mand-t">📋 Added automatically</div>
-                <div class="lp-tn-mand-s">Because it's an assured periodic tenancy we fold in the required terms — rolling tenancy, rent increase once a year by s13 notice, notice periods, no Section 21, pet requests.</div>
+                <div class="lp-tn-mand-s">Because it's an assured periodic tenancy we fold in the required terms - rolling tenancy, rent increase once a year by s13 notice, notice periods, no Section 21, pet requests.</div>
               </div>
               <div class="lp-two-col">
                 <div class="mform-section">
@@ -1621,12 +1621,12 @@
               </template>
               <div class="lp-tn-docver">Generated by umovingu · Template v3.1 (placeholder, pending legal review)<br />Based on a template. Not legal advice.</div>
             </div>
-            <div class="lp-tn-legalnote"><b>Before you use this:</b> check the details suit your situation. The template reflects current law but doesn't replace legal advice on anything unusual (company lets, high rent, HMOs, lodgers) — and hasn't yet had its clause wording reviewed by a solicitor.</div>
+            <div class="lp-tn-legalnote"><b>Before you use this:</b> check the details suit your situation. The template reflects current law but doesn't replace legal advice on anything unusual (company lets, high rent, HMOs, lodgers) - and hasn't yet had its clause wording reviewed by a solicitor.</div>
             <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" :disabled="tnSaving" @click="saveTenancyAgreement">
-              {{ tnSaving ? 'Saving…' : 'Looks good — save to Passport' }}
+              {{ tnSaving ? 'Saving…' : 'Looks good - save to Passport' }}
             </button>
           </div>
         </div>
@@ -1656,7 +1656,7 @@
           </div>
           <div class="lp-modal-body">
             <p class="lp-modal-intro">
-              A 3-hour read-only link. The tenant sees only the documents they're entitled to —
+              A 3-hour read-only link. The tenant sees only the documents they're entitled to -
               AST, deposit certificate, How-to-Rent, Right-to-Rent confirmation, gas / EICR / EPC.
             </p>
             <div v-if="!tenantShareUrl" class="lp-share-empty">Tap "Generate link" to create one.</div>
@@ -1683,7 +1683,7 @@
       </div>
     </Teleport>
 
-    <!-- Bottom navigation — same component the rest of the authed app
+    <!-- Bottom navigation - same component the rest of the authed app
          uses, so the landlord passport stays consistent. -->
     <BottomNav />
   </div>
@@ -1697,7 +1697,7 @@ import LandlordPassportMapView from '~/components/passport-view/LandlordPassport
 import SegmentedSwitch from '~/components/core/SegmentedSwitch.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 
-definePageMeta({ title: 'Landlord Passport — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Landlord Passport - UmovingU', middleware: 'auth' })
 
 const route = useRoute()
 const config = useRuntimeConfig()
@@ -1711,7 +1711,7 @@ const sections = ref<any[]>([])
 const siblingSellerId = ref<string | null>(null)
 
 const activeTab = ref<'compliance' | 'vault' | 'tenancy'>('compliance')
-// List vs map view for the Compliance tab — mirrors the seller passport
+// List vs map view for the Compliance tab - mirrors the seller passport
 // pattern, including the same SegmentedSwitch options shape.
 const complianceView = ref<'list' | 'map'>('list')
 const viewOptions = [
@@ -1733,7 +1733,7 @@ async function loadPassport() {
   loading.value = true
   try {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    // cache: 'no-store' — the response carries an ETag with no
+    // cache: 'no-store' - the response carries an ETag with no
     // Cache-Control, so the browser was silently serving a stale cached
     // copy on every re-call (upload/save a certificate, refresh the
     // passport, still see the old status/doc count until a full page
@@ -1743,7 +1743,7 @@ async function loadPassport() {
       { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' },
     )
     passport.value = data
-    // Defensive filter — only render landlord-prefixed sections regardless
+    // Defensive filter - only render landlord-prefixed sections regardless
     // of what the backend sent. Older landlord passports created before the
     // server-side prefix filter was added still carry seller sections in
     // the DB; dropping them here keeps the UI clean for those legacy
@@ -1760,7 +1760,7 @@ async function loadPassport() {
     console.log('[landlord] kept (landlord_*):', sections.value.map((s) => s.key))
     if (sections.value.length === 0 && allSections.length > 0) {
       console.warn(
-        '[landlord] This passport has no landlord_* sections — it was likely created before the seed/service fix. Delete it and claim a fresh landlord passport.',
+        '[landlord] This passport has no landlord_* sections - it was likely created before the seed/service fix. Delete it and claim a fresh landlord passport.',
       )
     }
   } catch (err: any) {
@@ -1787,7 +1787,7 @@ const ungroupedSections = computed(() =>
 )
 
 const complianceGroups = computed(() => [
-  { label: 'Statutory — annual / 5-yearly', sections: safetySections.value },
+  { label: 'Statutory - annual / 5-yearly', sections: safetySections.value },
   { label: 'Tenancy & deposit', sections: tenancySections.value },
   { label: 'Insurance & HMO', sections: insuranceSections.value },
 ])
@@ -1902,7 +1902,7 @@ const transferDocs = [
 ]
 
 // Map a section key to one of the rental-passport icon slugs. Falls back
-// to `tenancy-agreement` (a generic document) when nothing matches — the
+// to `tenancy-agreement` (a generic document) when nothing matches - the
 // only sections without a dedicated icon are uncommon edge cases.
 function iconSlugForSection(key: string): string {
   const k = key.toLowerCase()
@@ -1911,7 +1911,7 @@ function iconSlugForSection(key: string): string {
   if (k.includes('epc') || k.includes('energy')) return 'energy-performance'
   if (k.includes('alarm') || k.includes('smoke') || k.includes('co_')) return 'smoke-co-alarms'
   if (k.includes('legionella')) return 'legionella'
-  // No dedicated 3D icon generated yet for White Goods — reuses the
+  // No dedicated 3D icon generated yet for White Goods - reuses the
   // Landlord Insurance asset as a placeholder (same group, same
   // 🧊-vs-🛡️ visual weight) rather than showing a broken image.
   if (k.includes('white_goods')) return 'landlord-insurance'
@@ -1955,10 +1955,10 @@ const pendingFile = ref<File | null>(null)
 const drawerDocName = ref('')
 const drawerExpiryDraft = ref('')
 
-// Alarms and Right to Rent aren't certificate uploads — the prototype
+// Alarms and Right to Rent aren't certificate uploads - the prototype
 // (client feedback items #4 and #8) models them as repeatable structured
 // entries instead: one row per physical alarm, one row per occupier. No
-// schema change needed — the existing generic answer endpoint already
+// schema change needed - the existing generic answer endpoint already
 // routes an array `value` into answerJson (question.service.ts), so both
 // reuse the section's existing UPLOAD-type question slot as their
 // storage, just holding a JSON array instead of a file.
@@ -1968,11 +1968,11 @@ const isMultiCopySection = computed(() => MULTI_COPY_SECTIONS.has(drawerSection.
 
 // A passport that already had a certificate uploaded via the old
 // single-slot flow (before multi-copy existed) still has it sitting on
-// QuestionAnswer.fileUrl — the new copies list (UserDocument-backed)
+// QuestionAnswer.fileUrl - the new copies list (UserDocument-backed)
 // knows nothing about it. Without this, switching a section to
 // multi-copy mode would make that existing file silently disappear from
 // the drawer, even though it's still there and still valid. Shown
-// first, view-only (no remove — clearing the legacy single-file slot is
+// first, view-only (no remove - clearing the legacy single-file slot is
 // a different, not-yet-built code path; re-uploading via "Upload
 // certificate" below adds a new copy alongside it rather than touching
 // it).
@@ -1993,7 +1993,7 @@ const alarmRows = ref<
 const occupierRows = ref<{ name: string; status: string; recheckBy: string }[]>([])
 const drawerListSaving = ref(false)
 
-// Multi-copy certificate retention (client feedback 1a/3) — Gas Safety
+// Multi-copy certificate retention (client feedback 1a/3) - Gas Safety
 // and EPC specifically for now; extend this set as the same fix is
 // wanted for EICR/Insurance. Reuses UserDocument (the same signed-URL
 // upload/delete machinery as the general /documents vault) via new
@@ -2011,12 +2011,12 @@ const MULTI_COPY_SECTIONS = new Set([
   'landlord_white_goods',
 ])
 const isDepositSection = computed(() => drawerSection.value?.key === 'landlord_deposit')
-// Scheme / Date PI served / Method — three fields the prototype has
+// Scheme / Date PI served / Method - three fields the prototype has
 // (depositBody's Scheme+Date-protected row, Date-PI-served+Method row)
 // that were missing from our build. Attached to the same deposit_upload
 // task as everything else in this section (see
 // add-deposit-protection-fields.ts), so found the same way the generic
-// upload/date questions are — by scanning the section's questions.
+// upload/date questions are - by scanning the section's questions.
 const depositScheme = ref('')
 const depositPiDate = ref('')
 const depositMethod = ref('')
@@ -2035,7 +2035,7 @@ const depositMethodQuestion = computed(() => findDepositQuestion('Method'))
 const isLegionellaSection = computed(() => drawerSection.value?.key === 'landlord_legionella')
 const isInventorySection = computed(() => drawerSection.value?.key === 'landlord_inventory')
 const isWhiteGoodsSection = computed(() => drawerSection.value?.key === 'landlord_white_goods')
-// White Goods & Appliances — appliances/notes/cover details stored as one
+// White Goods & Appliances - appliances/notes/cover details stored as one
 // JSON blob on the section's DATE question (same convention Inventory/
 // Tenancy Agreement use for their own record slot), manuals + warranties
 // as two kind-scoped multi-copy doc lists off the UPLOAD question.
@@ -2129,7 +2129,7 @@ async function saveWhiteGoods() {
   const section = sections.value.find((s) => s.key === 'landlord_white_goods')
   const dateQ = section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
   if (!dateQ) {
-    drawerError.value = 'No record slot found for this section — this passport was created before the latest fix.'
+    drawerError.value = 'No record slot found for this section - this passport was created before the latest fix.'
     return
   }
   wgSaving.value = true
@@ -2234,7 +2234,7 @@ const drawerExpiryLabel = computed(() => {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 })
 
-// Renewal cadence per section — client feedback: the reminder hint said
+// Renewal cadence per section - client feedback: the reminder hint said
 // only "we'll remind you before this date", with no sense of how often
 // that actually recurs. Sections without a fixed cycle (tenancy, deposit,
 // right to rent, etc.) intentionally have no entry here and fall back to
@@ -2251,7 +2251,7 @@ const drawerCadenceLabel = computed(() => CADENCE_LABEL[drawerSection.value?.key
 // only accurate for the true certificate sections. Sections whose real
 // document type isn't a certificate (a guide, an agreement, a report) get
 // their own bespoke screen once built (Legionella/Tenancy/Deposit/
-// Inventory — see the passport-view report); until each of those lands,
+// Inventory - see the passport-view report); until each of those lands,
 // this drawer is still what they fall through to, so it needs to at
 // least name the document correctly rather than call everything a
 // "certificate". No entry here = falls back to "certificate", correct
@@ -2264,14 +2264,14 @@ const UPLOAD_NOUN: Record<string, string> = {
   landlord_deposit: 'protection certificate',
 }
 // Deposit Protection's 7-item legal checklist (client feedback item #7,
-// prototype's piItem list) — what the prescribed information MUST
+// prototype's piItem list) - what the prescribed information MUST
 // contain by law. Static/informational rather than auto-filled from
 // tenancy data: there's no structured tenancy record to pull from yet
-// (the Tenancy Agreement is still upload-only, not generated — see the
+// (the Tenancy Agreement is still upload-only, not generated - see the
 // passport-view report's item #6). Revisit once that exists.
 const PI_CHECKLIST = [
   { t: 'Amount of the deposit & the property address', s: 'Confirm it matches what you actually collected' },
-  { t: "The scheme's name & contact details", s: 'mydeposits / DPS / TDS — whichever you used' },
+  { t: "The scheme's name & contact details", s: 'mydeposits / DPS / TDS - whichever you used' },
   { t: 'Landlord (or agent) name & contact details', s: 'So the tenant can reach you in writing' },
   { t: 'Tenant name(s) & anyone who paid the deposit', s: 'Everyone with an interest in the deposit' },
   { t: 'When all/part of the deposit may be retained', s: 'The deductions clause from the tenancy' },
@@ -2284,7 +2284,7 @@ const drawerUploadNounCap = computed(
 )
 
 // ── Legionella guided risk assessment (client feedback item #5) ──────
-// The law lets a competent landlord do this themselves — there's no
+// The law lets a competent landlord do this themselves - there's no
 // such thing as a required "Legionella certificate" (HSE ACOP L8). Six
 // weighted questions -> a scored risk band -> tailored control actions,
 // matching the prototype exactly (question text, weights, scoring
@@ -2298,7 +2298,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     h: 'What kind of hot water system does the property have?',
     s: 'Stored and recirculated water is the biggest Legionella factor. Mains-fed combi systems with no storage are lowest risk.',
     opts: [
-      { t: 'Combi boiler — no stored water', d: 'Heated on demand, cold straight off the mains', ic: '/op-icons/homescore/boiler.png', w: 0 },
+      { t: 'Combi boiler - no stored water', d: 'Heated on demand, cold straight off the mains', ic: '/op-icons/homescore/boiler.png', w: 0 },
       { t: 'Hot water cylinder / tank', d: 'Stored hot water in a cylinder', ic: '/op-icons/legionella/hotWaterCylinder.png', w: 2 },
       { t: 'Cold water storage / header tank', d: 'A tank in the loft feeds the system', ic: '/op-icons/misc/waterDroplet.png', w: 3 },
       { t: 'Not sure', d: "We'll treat it as higher risk to be safe", ic: '/op-icons/misc/question.png', w: 2, flagPro: true },
@@ -2307,17 +2307,17 @@ const LEG_QUESTIONS: LegQuestion[] = [
   {
     num: 'Stagnation', key: 'stag',
     h: 'Are there taps, showers or outlets that are rarely used?',
-    s: 'Water sitting still in pipes lets bacteria grow — especially in spare rooms, outbuildings, or between tenancies.',
+    s: 'Water sitting still in pipes lets bacteria grow - especially in spare rooms, outbuildings, or between tenancies.',
     opts: [
-      { t: 'No — everything is used regularly', d: 'Water turns over across the system', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
+      { t: 'No - everything is used regularly', d: 'Water turns over across the system', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
       { t: 'One or two rarely-used outlets', d: 'e.g. a spare bathroom or outside tap', ic: '/op-icons/homescore/tap.png', w: 1 },
-      { t: 'Yes — or empty between lets', d: 'Void periods let water stagnate', ic: '/op-icons/legionella/voidPeriod.png', w: 2 },
+      { t: 'Yes - or empty between lets', d: 'Void periods let water stagnate', ic: '/op-icons/legionella/voidPeriod.png', w: 2 },
     ],
   },
   {
     num: 'Showers', key: 'shower',
     h: 'Are there showers, and what condition are the heads in?',
-    s: 'Showers create fine droplets (aerosols) that can be inhaled — the main route of exposure. Scaled heads harbour bacteria.',
+    s: 'Showers create fine droplets (aerosols) that can be inhaled - the main route of exposure. Scaled heads harbour bacteria.',
     opts: [
       { t: 'No showers, or descaled recently', d: 'Low aerosol risk', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
       { t: 'Showers present, condition unknown', d: 'Not descaled recently', ic: '/op-icons/homescore/tap.png', w: 1 },
@@ -2329,7 +2329,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     h: 'Do you know the water temperatures?',
     s: 'Bacteria thrive between 20–45°C. Cold should stay below 20°C; hot should reach 50°C+ within a minute.',
     opts: [
-      { t: 'Yes — hot ≥50°C, cold <20°C', d: 'Outside the danger range', ic: '/op-icons/legionella/waterThermometer.png', w: 0 },
+      { t: 'Yes - hot ≥50°C, cold <20°C', d: 'Outside the danger range', ic: '/op-icons/legionella/waterThermometer.png', w: 0 },
       { t: 'Not measured yet', d: 'We\'ll add "check temperatures" to your actions', ic: '/op-icons/misc/question.png', w: 1 },
       { t: 'Hot lukewarm / cold runs warm', d: 'In the range bacteria grow', ic: '/op-icons/legionella/tempWarning.png', w: 2 },
     ],
@@ -2340,7 +2340,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     s: 'People over 65, or with weakened immunity or respiratory conditions, are more susceptible. This raises priority, not necessarily system risk.',
     opts: [
       { t: 'No / not to my knowledge', d: 'Standard occupancy', ic: '/op-icons/verify-identity/people.png', w: 0 },
-      { t: 'Yes — older or vulnerable occupant', d: 'Take extra care with controls', ic: '/op-icons/legionella/vulnerableOccupant.png', w: 1, flagWarn: true },
+      { t: 'Yes - older or vulnerable occupant', d: 'Take extra care with controls', ic: '/op-icons/legionella/vulnerableOccupant.png', w: 1, flagWarn: true },
     ],
   },
   {
@@ -2348,7 +2348,7 @@ const LEG_QUESTIONS: LegQuestion[] = [
     h: 'Any rust, sludge, scale or debris in tanks?',
     s: 'Rust, scale and sediment feed the bacteria. If you have a cold tank, is it covered and clean?',
     opts: [
-      { t: 'No — clean, clear, tanks covered', d: 'No obvious nutrient sources', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
+      { t: 'No - clean, clear, tanks covered', d: 'No obvious nutrient sources', ic: '/op-icons/rewards/pointsCheck.png', w: 0 },
       { t: "Some scale / can't inspect tank", d: 'Worth a closer look', ic: '/op-icons/homescore/magnifier.png', w: 1 },
       { t: 'Visible rust, sludge or debris', d: 'Nutrient source present', ic: '/op-icons/legionella/rustSludge.png', w: 2 },
     ],
@@ -2361,7 +2361,7 @@ const legStep = ref(0)
 const legAnswers = ref<Record<string, number>>({})
 const legSaving = ref(false)
 // A previously-saved assessment, read back from the DATE question's
-// answerJson (see saveLegAssessment) — shown as a summary on the
+// answerJson (see saveLegAssessment) - shown as a summary on the
 // section card and in the drawer instead of the generic doc pill,
 // which doesn't apply here any more than it does to Alarms/RTR.
 const legSavedResult = computed<{ level: string; assessedAt: string; nextReview: string } | null>(() => {
@@ -2388,7 +2388,7 @@ const legLevel = computed<'Low' | 'Medium' | 'Higher'>(() => {
   return 'Higher'
 })
 const legLevelDesc = computed(() => {
-  if (legLevel.value === 'Low') return 'A typical, well-run domestic system. Keep up simple controls and review in 2 years — no professional needed.'
+  if (legLevel.value === 'Low') return 'A typical, well-run domestic system. Keep up simple controls and review in 2 years - no professional needed.'
   if (legLevel.value === 'Medium') return 'Some factors need managing. Do the actions below, keep the record, and review sooner if anything changes.'
   return 'Several risk factors are present. Do the actions below now, and consider a one-off professional assessment.'
 })
@@ -2404,7 +2404,7 @@ const legFlags = computed(() => {
       if (!seen.has(t)) { seen.add(t); flags.push({ type: 'pro', ic: '👷', t }) }
     }
     if (o.flagWarn) {
-      const t = "Higher-risk occupant: take extra care — keep temperatures right, descale shower heads, and flush after any void. Tell the tenant what you've done."
+      const t = "Higher-risk occupant: take extra care - keep temperatures right, descale shower heads, and flush after any void. Tell the tenant what you've done."
       if (!seen.has(t)) { seen.add(t); flags.push({ type: 'warn', ic: '/op-icons/legionella/vulnerableOccupant.png', t }) }
     }
   }
@@ -2412,7 +2412,7 @@ const legFlags = computed(() => {
 })
 const legActions = computed(() => {
   const A: { ic: string; t: string; s: string; f: string }[] = []
-  A.push({ ic: '/op-icons/homescore/tap.png', t: 'Flush unused outlets weekly', s: 'Run rarely-used taps and showers for a couple of minutes to stop water stagnating — and always before a new tenant moves in.', f: 'Weekly + before every let' })
+  A.push({ ic: '/op-icons/homescore/tap.png', t: 'Flush unused outlets weekly', s: 'Run rarely-used taps and showers for a couple of minutes to stop water stagnating - and always before a new tenant moves in.', f: 'Weekly + before every let' })
   A.push({ ic: '/op-icons/legionella/waterThermometer.png', t: 'Keep hot hot, cold cold', s: 'Hot water should reach 50°C within a minute; cold should stay below 20°C.', f: 'Ongoing' })
   if ((legAnswers.value.shower ?? 0) > 0) A.push({ ic: '🧼', t: 'Descale & disinfect shower heads', s: 'Remove, soak and clean shower heads and hoses to clear scale and biofilm.', f: 'Every 3 months' })
   if ((legAnswers.value.temp ?? 0) > 0) A.push({ ic: '/op-icons/legionella/waterThermometer.png', t: 'Measure your water temperatures', s: 'Run the taps and check hot and cold, so your next assessment records real figures.', f: 'Do this now' })
@@ -2457,7 +2457,7 @@ async function saveLegAssessment() {
   const section = sections.value.find((s) => s.key === 'landlord_legionella')
   const dateQ = section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
   if (!dateQ) {
-    drawerError.value = 'No record slot found for this section — this passport was created before the latest fix.'
+    drawerError.value = 'No record slot found for this section - this passport was created before the latest fix.'
     return
   }
   legSaving.value = true
@@ -2485,7 +2485,7 @@ async function saveLegAssessment() {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: {
-        title: `Legionella risk assessment review due${addr ? ` — ${addr}` : ''}`,
+        title: `Legionella risk assessment review due${addr ? ` - ${addr}` : ''}`,
         date: nextReviewStr,
         type: 'compliance-renewal',
         notes: 'Auto-added from your Landlord Passport compliance section.',
@@ -2506,7 +2506,7 @@ async function saveLegAssessment() {
 // Scoped to the part that actually matters for a deposit dispute: a
 // structured, room-by-room condition + cleanliness record with notes
 // per fixture/content, not a flat single-file upload. Deliberately NOT
-// full parity with the prototype's per-item photo capture — that's a
+// full parity with the prototype's per-item photo capture - that's a
 // materially bigger and separately-justifiable build (a real camera/
 // gallery flow per fixture); evidence photos are instead attached once
 // per inventory via the existing multi-copy upload pattern, alongside
@@ -2515,7 +2515,7 @@ async function saveLegAssessment() {
 interface InvItem { name: string; condition: string; cleanliness: string; note: string; type: 'fixture' | 'content' }
 interface InvRoom { id: string; name: string; icon: string; fixtures: string[]; contents: string[]; items: InvItem[]; custom?: boolean }
 // Generic fixture checklist for a room the landlord adds themselves
-// (study, garage, conservatory, etc.) — the 6 default rooms above have
+// (study, garage, conservatory, etc.) - the 6 default rooms above have
 // their own tailored lists, but any extra room still needs something
 // sensible to check rather than an empty list.
 const CUSTOM_ROOM_FIXTURES = ['Walls & ceiling', 'Flooring', 'Windows & coverings', 'Doors & handles', 'Light fittings & switches']
@@ -2557,9 +2557,9 @@ const invCurRoomId = ref<string | null>(null)
 const invSaving = ref(false)
 const invNewRoomName = ref('')
 
-// Property-wide — Safety & compliance (prototype iv-safety): alarms
+// Property-wide - Safety & compliance (prototype iv-safety): alarms
 // present/tested + fixed key-location fields. Separate from the
-// landlord_alarms compliance section — this is a per-inventory record
+// landlord_alarms compliance section - this is a per-inventory record
 // of what's physically in the property, not the certificate tracker.
 const invAlarmRows = ref<{ type: 'smoke' | 'co'; location: string }[]>([])
 const invKeyStopcock = ref('')
@@ -2574,7 +2574,7 @@ function removeInvAlarmRow(i: number) {
   invAlarmRows.value.splice(i, 1)
 }
 
-// Property-wide — Bins & refuse (prototype iv-bins): dated photos of
+// Property-wide - Bins & refuse (prototype iv-bins): dated photos of
 // the bins + fixed refuse-detail fields. Photos reuse the same
 // kind-scoped multi-copy endpoint as RTR's per-occupier docs, off the
 // same landlord_inventory `inventory_upload` question, kind: 'bins'.
@@ -2644,7 +2644,7 @@ function openInvBins() {
 }
 
 // Per-room photo grid (prototype iv-room's "Photos · dated &
-// timestamped" grid) — same kind-scoped copies pattern, keyed by room
+// timestamped" grid) - same kind-scoped copies pattern, keyed by room
 // id rather than array index (room ids are stable strings, not
 // reshuffled the way occupier rows are).
 const roomPhotoDocs = ref<Record<string, { id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>>({})
@@ -2725,7 +2725,7 @@ function removeCustomRoom(id: string) {
 }
 
 const invCurRoom = computed(() => invRooms.value.find((r) => r.id === invCurRoomId.value) ?? null)
-// Content/furnishing items don't apply to an unfurnished let — client
+// Content/furnishing items don't apply to an unfurnished let - client
 // feedback: selecting "Unfurnished" still asked furniture questions.
 // Fixtures (walls, flooring, doors...) always apply regardless of
 // furnishing status; only content items are skipped.
@@ -2786,7 +2786,7 @@ async function saveInventory() {
   const section = sections.value.find((s) => s.key === 'landlord_inventory')
   const dateQ = section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
   if (!dateQ) {
-    drawerError.value = 'No record slot found for this section — this passport was created before the latest fix.'
+    drawerError.value = 'No record slot found for this section - this passport was created before the latest fix.'
     return
   }
   invSaving.value = true
@@ -2847,17 +2847,17 @@ async function saveInventory() {
 // Agreement + written statement of terms from a short wizard, matching
 // the prototype's document structure and clause wording.
 //
-// IMPORTANT — clause text is a TEMPLATE, ported from the client's own
+// IMPORTANT - clause text is a TEMPLATE, ported from the client's own
 // prototype, explicitly agreed as a placeholder pending legal review
-// before this goes live (referencing live law — Housing Act 1988 as
-// amended by the Renters' Rights Act 2025 — is a legal-accuracy
+// before this goes live (referencing live law - Housing Act 1988 as
+// amended by the Renters' Rights Act 2025 - is a legal-accuracy
 // question, not an engineering one). The disclaimer on the generated
-// document and the "not legal advice" note below are NOT decorative —
+// document and the "not legal advice" note below are NOT decorative -
 // leave them in place until that review happens.
 //
 // Deliberately NOT full parity with the prototype's e-signature/audit-
 // trail flow, template-version-history dashboard, or cross-linked-
-// documents screen — each is a real, separately-justifiable feature in
+// documents screen - each is a real, separately-justifiable feature in
 // its own right (a genuine e-sign flow needs its own audit/legal
 // design), not something to bolt on inside this generator's scope.
 // This delivers the actual document; those are natural next builds.
@@ -2928,13 +2928,13 @@ const tnDocText = computed(() => {
   const lines: { h?: string; k?: string; v?: string; clause?: string }[] = [
     { h: 'The parties' },
     { k: 'Landlord', v: 'You (landlord)' },
-    { k: 'Tenant', v: tnTenantName.value || '—' },
+    { k: 'Tenant', v: tnTenantName.value || '-' },
     { k: 'Property', v: addr },
     { h: 'The tenancy' },
     { k: 'Type', v: 'Assured periodic tenancy' },
-    { k: 'Starts', v: tnFormatDate(tnStartDate.value) || '—' },
-    { k: 'Rent', v: tnRentAmount.value ? `£${tnRentAmount.value} / ${tnRentFrequency.value}` : '—' },
-    { k: 'Deposit', v: tnDepositAmount.value ? `£${tnDepositAmount.value}${tnDepositScheme.value ? ' · ' + tnDepositScheme.value : ''}` : '—' },
+    { k: 'Starts', v: tnFormatDate(tnStartDate.value) || '-' },
+    { k: 'Rent', v: tnRentAmount.value ? `£${tnRentAmount.value} / ${tnRentFrequency.value}` : '-' },
+    { k: 'Deposit', v: tnDepositAmount.value ? `£${tnDepositAmount.value}${tnDepositScheme.value ? ' · ' + tnDepositScheme.value : ''}` : '-' },
     { h: 'Key terms (written statement)' },
     ...TN_CLAUSES.map((clause) => ({ clause })),
     { h: 'Deposit & compliance' },
@@ -2948,7 +2948,7 @@ const tnDocText = computed(() => {
 
 // Pre-fills whatever the wizard's step 1/2 fields already have a real
 // source for elsewhere on the Passport (client feedback: the prototype
-// pre-fills these and shows a "pulled from your Passport" tag — ours
+// pre-fills these and shows a "pulled from your Passport" tag - ours
 // didn't pull anything). Only the Inventory record currently holds
 // structured tenant-name/move-in-date/deposit data; rent amount and
 // deposit scheme have no other seller-question source yet, so they
@@ -2973,7 +2973,7 @@ async function saveTenancyAgreement() {
   const section = sections.value.find((s) => s.key === 'landlord_ast')
   const dateQ = section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
   if (!dateQ) {
-    drawerError.value = 'No record slot found for this section — this passport was created before the latest fix.'
+    drawerError.value = 'No record slot found for this section - this passport was created before the latest fix.'
     return
   }
   tnSaving.value = true
@@ -2988,7 +2988,7 @@ async function saveTenancyAgreement() {
       depositScheme: tnDepositScheme.value,
       notes: tnNotes.value,
       docText: tnDocText.value,
-      templateVersion: 'v3.1 (placeholder — pending legal review)',
+      templateVersion: 'v3.1 (placeholder - pending legal review)',
       completedAt: new Date().toISOString().slice(0, 10),
     }
     await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
@@ -3006,7 +3006,7 @@ async function saveTenancyAgreement() {
   }
 }
 
-// EPC auto-pull (client feedback item #3) — the property's own EPC data
+// EPC auto-pull (client feedback item #3) - the property's own EPC data
 // (same enrichment pipeline used everywhere else in the app) rather than
 // asking the landlord to upload a certificate we may already have.
 const isEpcSection = computed(() => drawerSection.value?.key === 'landlord_epc')
@@ -3017,7 +3017,7 @@ const isInfoSheetSection = computed(() => drawerSection.value?.key === 'landlord
 const INFO_SHEET_LINKS = [
   {
     title: "The Renters' Rights Act Information Sheet 2026",
-    sub: 'Official GOV.UK PDF — serve this to tenants',
+    sub: 'Official GOV.UK PDF - serve this to tenants',
     url: 'https://www.gov.uk/guidance/the-renters-rights-act-information-sheet-2026-alternative-formats',
   },
   {
@@ -3027,7 +3027,7 @@ const INFO_SHEET_LINKS = [
   },
   {
     title: 'Renting out your property: landlord guidance',
-    sub: 'GOV.UK — what you must do from 1 May 2026',
+    sub: 'GOV.UK - what you must do from 1 May 2026',
     url: 'https://www.gov.uk/renting-out-a-property',
   },
 ]
@@ -3107,7 +3107,7 @@ async function onCopyFilePicked(e: Event) {
   const q = drawerUploadQuestion.value
   if (!q) {
     drawerError.value =
-      'No upload slot found for this section — this passport was created before the latest fix. Re-claim a fresh landlord passport.'
+      'No upload slot found for this section - this passport was created before the latest fix. Re-claim a fresh landlord passport.'
     return
   }
   copyUploading.value = true
@@ -3123,7 +3123,7 @@ async function onCopyFilePicked(e: Event) {
       body: fd,
     })
     await loadCopyDocs()
-    // The backend marks the question COMPLETED on the first copy — the
+    // The backend marks the question COMPLETED on the first copy - the
     // compliance card list (sections.value) needs a refresh too, or it
     // keeps showing "Pending"/0 doc until a full page reload even though
     // the certificate genuinely saved.
@@ -3155,17 +3155,17 @@ async function removeCopyDoc(docId: string) {
       headers: { Authorization: `Bearer ${token}` },
     })
   } catch {
-    /* non-critical — refresh below shows current server state either way */
+    /* non-critical - refresh below shows current server state either way */
   }
   await loadCopyDocs()
   // Removing a landlord's last copy can revert the question to PENDING
-  // server-side (see deleteQuestionCopy) — refresh so the card grid
+  // server-side (see deleteQuestionCopy) - refresh so the card grid
   // reflects that immediately too.
   await refreshSectionData()
 }
 
 // Deposit Protection (client feedback item #7) tracks two legally
-// distinct documents under the same question — the scheme's protection
+// distinct documents under the same question - the scheme's protection
 // certificate (copyDocs/copyUploading above) and the served
 // prescribed-information copy (this second, independently-tracked list,
 // using the backend's `kind` parameter so both stay separate under one
@@ -3229,11 +3229,11 @@ async function removePiCopyDoc(docId: string) {
   await refreshSectionData()
 }
 
-// Right to Rent — per-occupier ID-check evidence (client feedback: "need
+// Right to Rent - per-occupier ID-check evidence (client feedback: "need
 // to be able to upload proof we have carried the check out"). Reuses the
 // same kind-scoped multi-copy endpoint Deposit Protection's PI docs use
 // (questions/:id/copies?kind=X), keyed per occupier by array index, so
-// this needed no backend/schema change — landlord_right_to_rent already
+// this needed no backend/schema change - landlord_right_to_rent already
 // seeds an UPLOAD question (rtr_upload) that drawerUploadQuestion
 // resolves to; the custom occupier-list UI below just never used it
 // until now.
@@ -3301,11 +3301,11 @@ async function removeRtrOccDoc(i: number, docId: string) {
 }
 
 // Multi-copy sections still track one expiry per section, independent of
-// how many certificate copies are on file — same DATE-question slot and
+// how many certificate copies are on file - same DATE-question slot and
 // Calendar-mirroring the generic single-slot flow already uses.
 async function saveMultiCopyExpiry() {
   // Deposit Protection has three extra fields (Scheme/Date PI served/
-  // Method) that must save even when "Date protected" itself is blank —
+  // Method) that must save even when "Date protected" itself is blank -
   // the old early-return here skipped the whole function (and so those
   // three fields too) whenever drawerExpiryDraft was empty.
   const hasDepositExtras =
@@ -3350,7 +3350,7 @@ async function saveMultiCopyExpiry() {
       }
     }
     // Deposit Protection's date is a record of a past event ("date
-    // protected"), not a future deadline — no renewal reminder makes
+    // protected"), not a future deadline - no renewal reminder makes
     // sense for it, unlike every other multi-copy section's expiry date.
     if (drawerExpiryDraft.value && drawerDateQuestion.value && !isDepositSection.value) {
       const addr = passport.value?.addressLine1
@@ -3358,7 +3358,7 @@ async function saveMultiCopyExpiry() {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: {
-          title: `${drawerSection.value?.title ?? 'Compliance'} renewal due${addr ? ` — ${addr}` : ''}`,
+          title: `${drawerSection.value?.title ?? 'Compliance'} renewal due${addr ? ` - ${addr}` : ''}`,
           date: drawerExpiryDraft.value,
           type: 'compliance-renewal',
           notes: 'Auto-added from your Landlord Passport compliance section.',
@@ -3445,7 +3445,7 @@ function addOccupierRow() {
 }
 function removeOccupierRow(i: number) {
   occupierRows.value.splice(i, 1)
-  // Doc lists are keyed by array index (rtrOccKind) — removing a row
+  // Doc lists are keyed by array index (rtrOccKind) - removing a row
   // shifts every later occupier's index, so re-fetch the whole set
   // against the reshuffled positions rather than leaving stale entries.
   loadAllRtrOccDocs()
@@ -3455,7 +3455,7 @@ async function saveDrawerList() {
   const q = drawerUploadQuestion.value
   if (!q) {
     drawerError.value =
-      'No slot found for this section — this passport was created before the latest fix. Re-claim a fresh landlord passport.'
+      'No slot found for this section - this passport was created before the latest fix. Re-claim a fresh landlord passport.'
     return
   }
   drawerListSaving.value = true
@@ -3470,7 +3470,7 @@ async function saveDrawerList() {
     })
 
     // Right to Rent recheck dates work the same way certificate expiries
-    // do — mirror any set recheck date onto the Calendar so the "we'll
+    // do - mirror any set recheck date onto the Calendar so the "we'll
     // remind you 30 days before" promise in the hint actually fires.
     if (isRtrSection.value) {
       const addr = passport.value?.addressLine1
@@ -3480,7 +3480,7 @@ async function saveDrawerList() {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
           body: {
-            title: `Right to Rent recheck due — ${occ.name || 'occupier'}${addr ? ` · ${addr}` : ''}`,
+            title: `Right to Rent recheck due - ${occ.name || 'occupier'}${addr ? ` · ${addr}` : ''}`,
             date: occ.recheckBy,
             type: 'compliance-renewal',
             notes: 'Auto-added from your Landlord Passport Right to Rent section.',
@@ -3517,7 +3517,7 @@ async function saveDrawerForm() {
   const q = drawerUploadQuestion.value
   if (!q) {
     drawerError.value =
-      'No upload slot found for this section — this passport was created before the latest fix. Re-claim a fresh landlord passport.'
+      'No upload slot found for this section - this passport was created before the latest fix. Re-claim a fresh landlord passport.'
     return
   }
   drawerUploading.value = true
@@ -3541,7 +3541,7 @@ async function saveDrawerForm() {
         body: { value: drawerExpiryDraft.value },
       })
 
-      // Mirror the renewal date onto the Calendar tab — the drawer promises
+      // Mirror the renewal date onto the Calendar tab - the drawer promises
       // "we'll remind you before this date" but nothing ever created the
       // reminder. sourceRef keys it to this section so re-saving a later
       // date moves the same entry instead of leaving a stale duplicate.
@@ -3550,14 +3550,14 @@ async function saveDrawerForm() {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: {
-          title: `${drawerSection.value?.title ?? 'Compliance'} renewal due${addr ? ` — ${addr}` : ''}`,
+          title: `${drawerSection.value?.title ?? 'Compliance'} renewal due${addr ? ` - ${addr}` : ''}`,
           date: drawerExpiryDraft.value,
           type: 'compliance-renewal',
           notes: 'Auto-added from your Landlord Passport compliance section.',
           sourceRef: `landlord-compliance:${drawerSection.value?.id}`,
         },
       }).catch(() => {
-        /* non-critical — certificate is already saved either way */
+        /* non-critical - certificate is already saved either way */
       })
     }
 
@@ -3580,7 +3580,7 @@ function downloadDrawerFile() {
 }
 
 // `window` isn't in scope inside a template expression the way it is in
-// plain script — an inline `@click="window.open(...)"` throws "Cannot
+// plain script - an inline `@click="window.open(...)"` throws "Cannot
 // read properties of undefined (reading 'open')". Found live-testing the
 // multi-copy list's View button.
 function viewCopyDoc(url: string) {
@@ -3651,7 +3651,7 @@ function cardData(section: any) {
   let earliestExpiry: Date | null = null
   const now = Date.now()
 
-  // Alarms and Right to Rent don't produce a document at all — they're
+  // Alarms and Right to Rent don't produce a document at all - they're
   // repeatable structured rows (client feedback #4/#8), not uploads.
   // Treating them through the doc-count pill below is what produced
   // "100% · 0/1 doc" on the card: technically consistent with the old
@@ -3682,10 +3682,10 @@ function cardData(section: any) {
     }
   }
 
-  // Legionella (client feedback #5) — a guided assessment writes its
+  // Legionella (client feedback #5) - a guided assessment writes its
   // result to the DATE question's answerJson, not a file, so the same
   // doc-count logic below would never see it as "done". Recognise the
-  // saved-assessment shape and show the risk level instead — but only
+  // saved-assessment shape and show the risk level instead - but only
   // when the assessment is the real reason it's complete: someone could
   // have used the "add your own" upload path instead, which the
   // multi-copy logic further down already handles correctly.
@@ -3709,7 +3709,7 @@ function cardData(section: any) {
     }
   }
 
-  // Inventory — same reasoning as Legionella above: a saved inventory
+  // Inventory - same reasoning as Legionella above: a saved inventory
   // record lives in the DATE question's answerJson, not a file.
   if (section?.key === 'landlord_inventory') {
     for (const t of tasks) {
@@ -3731,7 +3731,7 @@ function cardData(section: any) {
     }
   }
 
-  // Tenancy Agreement — a generated agreement lives in the DATE
+  // Tenancy Agreement - a generated agreement lives in the DATE
   // question's answerJson too, same reasoning as Legionella/Inventory.
   if (section?.key === 'landlord_ast') {
     for (const t of tasks) {
@@ -3762,11 +3762,11 @@ function cardData(section: any) {
       if (isUpload) {
         docTotal++
         // Multi-copy sections (client feedback 1a/3) never touch
-        // QuestionAnswer.fileUrl at all — their certificates live on
+        // QuestionAnswer.fileUrl at all - their certificates live on
         // UserDocument instead (see the /copies endpoints). The backend
         // marks the question COMPLETED once at least one copy exists
         // (uploadQuestionCopy), so treat that as equivalent to "has a
-        // file" here — otherwise a passport whose certificates were
+        // file" here - otherwise a passport whose certificates were
         // ALL uploaded via multi-copy (no legacy single-slot file ever
         // set) would show 0/1 doc forever despite having real
         // certificates on file.
@@ -3956,7 +3956,7 @@ const SectionCard = defineComponent({
   background: #fafaf8;
   color: #0e2840;
   position: relative;
-  /* BottomNav is position:fixed and doesn't push content — needs enough
+  /* BottomNav is position:fixed and doesn't push content - needs enough
      clearance below the last card to not sit under it. Matches the
      seller passport's .passport-content padding-bottom (same fixed nav,
      same problem, same fix) rather than the old 32px which wasn't
@@ -4246,7 +4246,7 @@ const SectionCard = defineComponent({
 }
 .lp-tab:not(.active) .lp-tab-count { background: #f0f2f1; color: #4a5868; }
 
-/* List / Map view toggle wrapper — matches `.view-toggle` on the
+/* List / Map view toggle wrapper - matches `.view-toggle` on the
    seller passport page so the SegmentedSwitch lays out identically. */
 .lp-view-toggle {
   display: flex;
@@ -4269,7 +4269,7 @@ const SectionCard = defineComponent({
   z-index: 1;
 }
 
-/* Section card — prototype look (icon tile + double pills + progress bar) */
+/* Section card - prototype look (icon tile + double pills + progress bar) */
 .lp-sec {
   width: calc(100% - 44px);
   margin: 0 22px 10px;
@@ -4731,7 +4731,7 @@ const SectionCard = defineComponent({
   line-height: 1.4;
 }
 
-/* Repeatable rows — Smoke & CO Alarms, Right to Rent occupiers */
+/* Repeatable rows - Smoke & CO Alarms, Right to Rent occupiers */
 .lp-repeat-block {
   background: #fff;
   border: 1px solid #e8eceb;
@@ -4872,7 +4872,7 @@ const SectionCard = defineComponent({
 .lp-pi-t { font-size: 13.5px; font-weight: 700; color: #0e2840; }
 .lp-pi-s { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 1px; line-height: 1.4; }
 
-/* Legionella — drawer entry point (CTA card / saved-result summary) */
+/* Legionella - drawer entry point (CTA card / saved-result summary) */
 .lp-leg-cta {
   display: flex;
   align-items: center;
@@ -4914,10 +4914,10 @@ const SectionCard = defineComponent({
   cursor: pointer;
 }
 
-/* Legionella — full-screen guided assessment wizard */
+/* Legionella - full-screen guided assessment wizard */
 .lp-assess {
   /* Constrained to the app's .mobile-container width (max-w-md, 28rem)
-     — client feedback: this full-screen wizard (Legionella/Inventory/
+     - client feedback: this full-screen wizard (Legionella/Inventory/
      Tenancy Agreement) was spilling to the full browser width on wider
      viewports instead of staying "inside the app size". `inset:0` alone
      stretches edge-to-edge regardless of max-width since it pins both
