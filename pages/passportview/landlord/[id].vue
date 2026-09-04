@@ -1171,6 +1171,25 @@
                 <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
               </div>
             </template>
+
+            <div class="section-heading" style="margin-top:20px">Photos <span class="lp-modal-hint" style="display:inline;margin:0">· dated &amp; timestamped</span></div>
+            <div class="pgrid">
+              <div v-for="doc in (roomPhotoDocs[invCurRoom.id] || [])" :key="doc.id" class="pgrid-item">
+                <img :src="doc.fileUrl" alt="" class="pgrid-img" loading="lazy" @click="viewCopyDoc(doc.fileUrl)" />
+                <button type="button" class="pgrid-rm" aria-label="Remove photo" @click="removeRoomPhotoDoc(invCurRoom.id, doc.id)">✕</button>
+              </div>
+              <label class="pgrid-add">
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  class="lp-upload-input"
+                  :disabled="roomPhotoUploading === invCurRoom.id"
+                  @change="onRoomPhotoPicked(invCurRoom.id, $event)"
+                />
+                <span v-if="roomPhotoUploading === invCurRoom.id">…</span>
+                <span v-else>📷<br />Add photo</span>
+              </label>
+            </div>
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="invScreen = 'rooms'">Save room</button>
@@ -2298,6 +2317,69 @@ function openInvBins() {
   loadBinDocs()
 }
 
+// Per-room photo grid (prototype iv-room's "Photos · dated &
+// timestamped" grid) — same kind-scoped copies pattern, keyed by room
+// id rather than array index (room ids are stable strings, not
+// reshuffled the way occupier rows are).
+const roomPhotoDocs = ref<Record<string, { id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>>({})
+const roomPhotoUploading = ref<string | null>(null)
+function roomPhotoKind(roomId: string) {
+  return `room-${roomId}`
+}
+async function loadRoomPhotoDocs(roomId: string) {
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    roomPhotoDocs.value[roomId] = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      query: { kind: roomPhotoKind(roomId) },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    roomPhotoDocs.value[roomId] = []
+  }
+}
+async function onRoomPhotoPicked(roomId: string, e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  ;(e.target as HTMLInputElement).value = ''
+  if (!file) return
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  roomPhotoUploading.value = roomId
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('name', file.name.replace(/\.[^.]+$/, ''))
+    fd.append('kind', roomPhotoKind(roomId))
+    await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    await loadRoomPhotoDocs(roomId)
+    await refreshSectionData()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Upload failed'
+  } finally {
+    roomPhotoUploading.value = null
+  }
+}
+async function removeRoomPhotoDoc(roomId: string, docId: string) {
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    /* non-critical */
+  }
+  await loadRoomPhotoDocs(roomId)
+  await refreshSectionData()
+}
+
 function addCustomRoom() {
   const name = invNewRoomName.value.trim()
   if (!name) return
@@ -2347,6 +2429,7 @@ function openInvWizard() {
   invBinFoodGarden.value = ''
   invBinCollectionDay.value = ''
   binDocs.value = []
+  roomPhotoDocs.value = {}
 }
 function closeInvWizard() {
   invOpen.value = false
@@ -2364,6 +2447,7 @@ function invWizBack() {
 function invOpenRoom(id: string) {
   invCurRoomId.value = id
   invScreen.value = 'room'
+  loadRoomPhotoDocs(id)
 }
 function invSetCondition(item: InvItem, val: string) {
   item.condition = val
@@ -4468,6 +4552,12 @@ const SectionCard = defineComponent({
 .lp-inv-chip-ic { width: 22px; height: 22px; object-fit: contain; }
 .lp-inv-chip.on { border-color: #00a19a; background: #f2faf8; color: #0e2840; }
 .lp-inv-pw-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7089; margin: 18px 0 8px; }
+.pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
+.pgrid-item { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #f2faf8; }
+.pgrid-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+.pgrid-rm { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(14,40,64,0.65); color: #fff; border: none; font-size: 11px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.pgrid-add { aspect-ratio: 1; border-radius: 12px; border: 1.5px dashed #b9c3c1; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 10.5px; font-weight: 700; color: #6b7089; position: relative; cursor: pointer; }
+.pgrid-add span { pointer-events: none; }
 .lp-inv-prog { margin-bottom: 14px; }
 .lp-inv-pbar { height: 8px; background: #e7e7ee; border-radius: 100px; overflow: hidden; }
 .lp-inv-pfill { height: 100%; background: linear-gradient(90deg, #00a19a, #00c4bc); border-radius: 100px; transition: width 0.5s cubic-bezier(.22,1,.36,1); }
