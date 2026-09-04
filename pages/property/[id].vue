@@ -48,21 +48,94 @@
           </div>
         </div>
       </div>
-      <button class="pps-back-link" type="button" @click="goBack">
-        <svg
-          width="9"
-          height="14"
-          viewBox="0 0 10 16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M8 1L2 8l6 7" />
-        </svg>
-        Back to Explore
-      </button>
+      <div class="pps-top-bar">
+        <button class="pps-back-link" type="button" @click="goBack">
+          <svg
+            width="9"
+            height="14"
+            viewBox="0 0 10 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M8 1L2 8l6 7" />
+          </svg>
+          Back to Explore
+        </button>
+
+        <!-- Heart / Save / Share — restored top-of-page actions (client
+             feedback: these existed on the older UI and were dropped in
+             the redesign). Heart = wishlist (UserWishlist), Save =
+             bookmark to profile (UserSavedProperty) — two distinct,
+             already-backed lists, see usePropertyActions. -->
+        <div class="pps-top-icons">
+          <button
+            type="button"
+            class="pps-top-icon-btn"
+            :class="{ 'pps-top-icon-btn--active': wishlisted }"
+            aria-label="Add to wishlist"
+            @click="onWishlistToggle"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              :fill="wishlisted ? 'currentColor' : 'none'"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="pps-top-icon-btn"
+            :class="{ 'pps-top-icon-btn--active-teal': saved }"
+            aria-label="Save property"
+            @click="onSaveToggle"
+          >
+            <svg
+              width="17"
+              height="18"
+              viewBox="0 0 24 26"
+              :fill="saved ? 'currentColor' : 'none'"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 3.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v20l-7-5.5-7 5.5z" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="pps-top-icon-btn"
+            aria-label="Share property"
+            @click="showShare = true"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+          </button>
+        </div>
+      </div>
 
       <!-- ─── SECTION 1+2: Hero Card (photo + identity, side-by-side,
            mirrors the prototype's single-card layout exactly) ────────── -->
@@ -4341,7 +4414,8 @@ const propertyId = route.params.id as string
 const { getPropertyDetails, formatPrice } = usePropertySearch()
 const { getPassportStatus } = usePassportClaim()
 const { toastState, showToast, hideToast } = useAppToast()
-const { saved, toggleSave, fetchActions } = usePropertyActions()
+const { saved, wishlisted, toggleSave, toggleWishlist, fetchActions } =
+  usePropertyActions()
 const { profile, fetchProfile } = useProfile()
 const { recordExplored } = useRecentlyExplored()
 
@@ -5908,9 +5982,10 @@ const costsBoxes = computed(() => {
 })
 
 // ── Handlers wired to existing drawers/refs ───────────────────────────────────
-// Heart = save the property to the user's profile (UserSavedProperty), which
-// is what the profile's "Saved Properties" page reads.
-async function onWishlistToggle() {
+// Save = bookmark the property to the user's profile (UserSavedProperty),
+// which is what the profile's "Saved Properties" page reads. Distinct from
+// the heart/wishlist below (a separate list, UserWishlist).
+async function onSaveToggle() {
   const result = await toggleSave(propertyId)
   if (result === 'unauthenticated') {
     if (typeof localStorage !== 'undefined') {
@@ -5931,8 +6006,36 @@ async function onWishlistToggle() {
   }
   showToast({
     message: result.saved
-      ? '❤️ Saved to your properties'
+      ? '🔖 Saved to your properties'
       : 'Removed from saved',
+    duration: 2000,
+  })
+}
+
+// Heart = wishlist the property (separate from Save above).
+async function onWishlistToggle() {
+  const result = await toggleWishlist(propertyId)
+  if (result === 'unauthenticated') {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(
+        'redirectAfterLogin',
+        `/property/${propertyId}?wishlist=1`,
+      )
+    }
+    router.push('/onboarding/signin')
+    return
+  }
+  if (result === 'error') {
+    showToast({
+      message: 'Something went wrong — please try again',
+      duration: 2000,
+    })
+    return
+  }
+  showToast({
+    message: result.wishlisted
+      ? '❤️ Added to your wishlist'
+      : 'Removed from wishlist',
     duration: 2000,
   })
 }
@@ -8493,11 +8596,17 @@ function formatSaleDate(dateStr: string): string {
   cursor: pointer;
   display: flex;
 }
+.pps-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 14px 0 4px;
+}
 .pps-back-link {
   display: flex;
   align-items: center;
   gap: 7px;
-  margin: 4px 0 0 18px;
+  margin: 0 0 0 14px;
   padding: 6px 0;
   background: none;
   border: none;
@@ -8506,6 +8615,38 @@ function formatSaleDate(dateStr: string): string {
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+}
+.pps-top-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pps-top-icon-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1.5px solid #ececef;
+  border-radius: 50%;
+  color: #6b7089;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pps-top-icon-btn:hover {
+  border-color: #231d45;
+  color: #231d45;
+}
+.pps-top-icon-btn--active {
+  color: #e84c6a;
+  border-color: #f6d3da;
+  background: #fdeef1;
+}
+.pps-top-icon-btn--active-teal {
+  color: #00a19a;
+  border-color: #bfe9e6;
+  background: #e6f7f6;
 }
 
 /* ─── Hero card (photo + identity side-by-side, one card) ────── */
@@ -8724,16 +8865,18 @@ function formatSaleDate(dateStr: string): string {
   background: white;
   border: 1.5px solid #ececef;
   border-radius: 12px;
-  padding: 11px 10px;
-  display: inline-flex;
+  padding: 12px 6px 10px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 7px;
+  justify-content: center;
+  gap: 6px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 11.5px;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
   color: #1a1535;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -8742,9 +8885,9 @@ function formatSaleDate(dateStr: string): string {
   box-shadow: 0 4px 12px rgba(35, 29, 69, 0.1);
 }
 .pps-hero-quick-ic {
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
   object-fit: cover;
   flex-shrink: 0;
 }
