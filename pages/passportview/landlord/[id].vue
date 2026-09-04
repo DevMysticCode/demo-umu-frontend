@@ -467,7 +467,29 @@
               </div>
               <button type="button" class="lp-add-row" @click="addAlarmRow('smoke')">＋ Add a smoke alarm</button>
               <button type="button" class="lp-add-row" @click="addAlarmRow('co')">＋ Add a CO alarm</button>
-              <p class="lp-modal-hint">We'll remind you 30 days before any alarm expires.</p>
+              <p class="lp-modal-hint" style="margin-bottom:10px">We'll remind you 30 days before any alarm expires. Optional: attach a photo or test log.</p>
+
+              <!-- Evidence photo / test log — prototype's "Attach photo /
+                   test log (optional)" (client feedback: we had the alarm
+                   rows but not this). Kind-scoped multi-copy off the same
+                   alarms_check UPLOAD question, same pattern as the other
+                   per-purpose photo lists this session. -->
+              <div v-for="doc in alarmEvidenceDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+                <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+                <div class="lp-doc-preview-info">
+                  <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                  <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}</div>
+                </div>
+                <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
+                <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeAlarmEvidenceDoc(doc.id)">✕</button>
+              </div>
+              <label class="lp-upload-row">
+                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="alarmEvidenceUploading" @change="onAlarmEvidenceFilePicked" />
+                <span class="lp-upload-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+                </span>
+                <span class="lp-upload-text">{{ alarmEvidenceUploading ? 'Uploading…' : 'Attach photo / test log (optional)' }}</span>
+              </label>
             </template>
 
             <!-- Right to Rent — per-occupier ID checks, not a flat upload
@@ -3026,7 +3048,20 @@ function openSection(s: any) {
   drawerDocName.value = ''
   drawerExpiryDraft.value = drawerExpiry.value || ''
   const storedList = drawerUploadQuestion.value?.answer?.answerJson
-  alarmRows.value = s.key === 'landlord_alarms' && Array.isArray(storedList) ? storedList : []
+  if (s.key === 'landlord_alarms') {
+    // Prototype opens with a smoke + CO alarm row already in place, ready
+    // to fill in, rather than a blank list the landlord has to click
+    // "+ Add" twice just to get started (client feedback).
+    alarmRows.value = Array.isArray(storedList) && storedList.length
+      ? storedList
+      : [
+          { type: 'smoke', location: '', tested: '', expiry: '', present: false, ok: false },
+          { type: 'co', location: '', tested: '', expiry: '', present: false, ok: false },
+        ]
+    loadAlarmEvidenceDocs()
+  } else {
+    alarmRows.value = []
+  }
   occupierRows.value = s.key === 'landlord_right_to_rent' && Array.isArray(storedList) ? storedList : []
   copyDocs.value = []
   piCopyDocs.value = []
@@ -3348,6 +3383,62 @@ function addAlarmRow(type: 'smoke' | 'co') {
 }
 function removeAlarmRow(i: number) {
   alarmRows.value.splice(i, 1)
+}
+
+const alarmEvidenceDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
+const alarmEvidenceUploading = ref(false)
+async function loadAlarmEvidenceDocs() {
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    alarmEvidenceDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      query: { kind: 'alarm-evidence' },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    alarmEvidenceDocs.value = []
+  }
+}
+async function onAlarmEvidenceFilePicked(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  ;(e.target as HTMLInputElement).value = ''
+  if (!file) return
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  alarmEvidenceUploading.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('name', file.name.replace(/\.[^.]+$/, ''))
+    fd.append('kind', 'alarm-evidence')
+    await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    await loadAlarmEvidenceDocs()
+    await refreshSectionData()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Upload failed'
+  } finally {
+    alarmEvidenceUploading.value = false
+  }
+}
+async function removeAlarmEvidenceDoc(docId: string) {
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    /* non-critical */
+  }
+  await loadAlarmEvidenceDocs()
+  await refreshSectionData()
 }
 function addOccupierRow() {
   occupierRows.value.push({ name: '', status: '', recheckBy: '' })
@@ -4825,8 +4916,19 @@ const SectionCard = defineComponent({
 
 /* Legionella — full-screen guided assessment wizard */
 .lp-assess {
+  /* Constrained to the app's .mobile-container width (max-w-md, 28rem)
+     — client feedback: this full-screen wizard (Legionella/Inventory/
+     Tenancy Agreement) was spilling to the full browser width on wider
+     viewports instead of staying "inside the app size". `inset:0` alone
+     stretches edge-to-edge regardless of max-width since it pins both
+     left and right; centering via left:50%+translateX instead. */
   position: fixed;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100%;
+  max-width: 28rem;
+  transform: translateX(-50%);
   z-index: 100;
   background: #f4f4f8;
   display: flex;
