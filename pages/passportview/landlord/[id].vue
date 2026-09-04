@@ -835,7 +835,7 @@
             <template v-if="!isAlarmsSection && !isRtrSection && !isMultiCopySection">
               <!-- Expiring-soon banner -->
               <div v-if="drawerExpiringSoon" class="lp-warn-banner">
-                <div class="lp-warn-icon">⚠</div>
+                <img src="/op-icons/legionella/renewalWarning.png" alt="" class="lp-warn-icon-img" loading="lazy" />
                 <div>
                   <div class="lp-warn-title">Renewal due in {{ drawerDaysLeft }} day{{ drawerDaysLeft === 1 ? '' : 's' }}</div>
                   <div class="lp-warn-meta">
@@ -1127,14 +1127,14 @@
             <div class="mlabel">Furnishing</div>
             <div class="lp-inv-chiprow">
               <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'furnished' }" @click="invFurnishing = 'furnished'"><img src="/op-icons/investment/armchair.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Furnished</span></button>
-              <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'part' }" @click="invFurnishing = 'part'">🪑<span>Part-furn.</span></button>
-              <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'unfurnished' }" @click="invFurnishing = 'unfurnished'">📦<span>Unfurnished</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'part' }" @click="invFurnishing = 'part'"><img src="/op-icons/legionella/partFurnished.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Part-furn.</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invFurnishing === 'unfurnished' }" @click="invFurnishing = 'unfurnished'"><img src="/op-icons/legionella/unfurnished.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Unfurnished</span></button>
             </div>
             <div class="mlabel" style="margin-top:16px">Inventory type</div>
             <div class="lp-inv-chiprow">
-              <button type="button" class="lp-inv-chip" :class="{ on: invType === 'checkin' }" @click="invType = 'checkin'">📥<span>Check-in</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invType === 'checkin' }" @click="invType = 'checkin'"><img src="/op-icons/legionella/checkIn.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Check-in</span></button>
               <button type="button" class="lp-inv-chip" :class="{ on: invType === 'interim' }" @click="invType = 'interim'"><img src="/op-icons/homescore/magnifier.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Interim</span></button>
-              <button type="button" class="lp-inv-chip" :class="{ on: invType === 'checkout' }" @click="invType = 'checkout'">📤<span>Check-out</span></button>
+              <button type="button" class="lp-inv-chip" :class="{ on: invType === 'checkout' }" @click="invType = 'checkout'"><img src="/op-icons/legionella/checkOut.png" alt="" class="lp-inv-chip-ic" loading="lazy" /><span>Check-out</span></button>
             </div>
             <div class="mlabel" style="margin-top:16px">Prepared by</div>
             <div class="lp-inv-chiprow">
@@ -2599,7 +2599,7 @@ const legFlags = computed(() => {
     const o = q.opts[idx]
     if (o.flagPro) {
       const t = "Consider a professional: you weren't sure about the water system. If it turns out to be stored/tanked or complex, a one-off professional assessment may be worth it."
-      if (!seen.has(t)) { seen.add(t); flags.push({ type: 'pro', ic: '👷', t }) }
+      if (!seen.has(t)) { seen.add(t); flags.push({ type: 'pro', ic: '/op-icons/legionella/legProfessional.png', t }) }
     }
     if (o.flagWarn) {
       const t = "Higher-risk occupant: take extra care - keep temperatures right, descale shower heads, and flush after any void. Tell the tenant what you've done."
@@ -2612,10 +2612,10 @@ const legActions = computed(() => {
   const A: { ic: string; t: string; s: string; f: string }[] = []
   A.push({ ic: '/op-icons/homescore/tap.png', t: 'Flush unused outlets weekly', s: 'Run rarely-used taps and showers for a couple of minutes to stop water stagnating - and always before a new tenant moves in.', f: 'Weekly + before every let' })
   A.push({ ic: '/op-icons/legionella/waterThermometer.png', t: 'Keep hot hot, cold cold', s: 'Hot water should reach 50°C within a minute; cold should stay below 20°C.', f: 'Ongoing' })
-  if ((legAnswers.value.shower ?? 0) > 0) A.push({ ic: '🧼', t: 'Descale & disinfect shower heads', s: 'Remove, soak and clean shower heads and hoses to clear scale and biofilm.', f: 'Every 3 months' })
+  if ((legAnswers.value.shower ?? 0) > 0) A.push({ ic: '/op-icons/legionella/descaleClean.png', t: 'Descale & disinfect shower heads', s: 'Remove, soak and clean shower heads and hoses to clear scale and biofilm.', f: 'Every 3 months' })
   if ((legAnswers.value.temp ?? 0) > 0) A.push({ ic: '/op-icons/legionella/waterThermometer.png', t: 'Measure your water temperatures', s: 'Run the taps and check hot and cold, so your next assessment records real figures.', f: 'Do this now' })
   if ((legAnswers.value.system ?? 0) >= 2 || (legAnswers.value.cond ?? 0) > 0) A.push({ ic: '/op-icons/homescore/magnifier.png', t: 'Inspect & keep the tank clean', s: 'Check any storage/header tank has a close-fitting lid and no rust, sludge or debris.', f: 'At each review' })
-  A.push({ ic: '📣', t: 'Tell your tenant', s: "Ask them to flush taps and showers if the home's been empty for a week or more.", f: 'At move-in' })
+  A.push({ ic: '/op-icons/legionella/tellTenant.png', t: 'Tell your tenant', s: "Ask them to flush taps and showers if the home's been empty for a week or more.", f: 'At move-in' })
   return A
 })
 
@@ -2719,11 +2719,11 @@ interface InvRoom { id: string; name: string; icon: string; fixtures: string[]; 
 const CUSTOM_ROOM_FIXTURES = ['Walls & ceiling', 'Flooring', 'Windows & coverings', 'Doors & handles', 'Light fittings & switches']
 const INVENTORY_ROOM_TEMPLATE: Omit<InvRoom, 'items'>[] = [
   { id: 'living', name: 'Living Room', icon: '/op-icons/investment/armchair.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Doors & handles', 'Skirting boards', 'Light fittings & switches', 'Radiator'], contents: ['Sofa', 'Coffee table', 'TV unit', 'Curtains'] },
-  { id: 'kitchen', name: 'Kitchen', icon: '🍳', fixtures: ['Worktops & units', 'Sink & taps', 'Oven & hob', 'Extractor fan', 'Tiling / splashback', 'Flooring', 'Walls & ceiling'], contents: ['Fridge / freezer', 'Washing machine', 'Microwave'] },
+  { id: 'kitchen', name: 'Kitchen', icon: '/op-icons/legionella/kitchenRoom.png', fixtures: ['Worktops & units', 'Sink & taps', 'Oven & hob', 'Extractor fan', 'Tiling / splashback', 'Flooring', 'Walls & ceiling'], contents: ['Fridge / freezer', 'Washing machine', 'Microwave'] },
   { id: 'bed1', name: 'Bedroom 1', icon: '/op-icons/misc/bed.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Built-in wardrobe', 'Radiator'], contents: ['Double bed & mattress', 'Bedside tables', 'Chest of drawers'] },
   { id: 'bed2', name: 'Bedroom 2', icon: '/op-icons/misc/bed.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Radiator'], contents: ['Single bed & mattress', 'Wardrobe'] },
-  { id: 'bath', name: 'Bathroom', icon: '🛁', fixtures: ['Bath / shower', 'Toilet', 'Basin & taps', 'Tiling, grout & sealant', 'Extractor fan', 'Flooring'], contents: ['Mirror cabinet'] },
-  { id: 'hall', name: 'Hallway & entrance', icon: '🚪', fixtures: ['Front door, frame & locks', 'Walls & ceiling', 'Flooring', 'Light fittings'], contents: [] },
+  { id: 'bath', name: 'Bathroom', icon: '/op-icons/legionella/bathroomRoom.png', fixtures: ['Bath / shower', 'Toilet', 'Basin & taps', 'Tiling, grout & sealant', 'Extractor fan', 'Flooring'], contents: ['Mirror cabinet'] },
+  { id: 'hall', name: 'Hallway & entrance', icon: '/op-icons/legionella/hallwayDoor.png', fixtures: ['Front door, frame & locks', 'Walls & ceiling', 'Flooring', 'Light fittings'], contents: [] },
 ]
 function freshInventoryRooms(): InvRoom[] {
   return INVENTORY_ROOM_TEMPLATE.map((r) => ({
@@ -5669,18 +5669,7 @@ const SectionCard = defineComponent({
 .lp-tn-legalnote { margin: 14px 0 0; padding: 13px 15px; background: #fbf1df; border: 1px solid #f0d9a8; border-radius: 12px; font-size: 11.5px; font-weight: 600; color: #7a5500; line-height: 1.5; }
 
 /* Legislation & news rail moved to pages/dashboard.vue (.dash-news-*) */
-.lp-warn-icon {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: #d4a659;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
+.lp-warn-icon-img { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
 .lp-warn-title {
   font-size: 13px;
   font-weight: 800;
