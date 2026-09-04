@@ -1029,6 +1029,17 @@
               <div class="mform-label">Keys / fobs handed over</div>
               <input v-model="invKeys" type="text" class="mform-input" placeholder="e.g. 2 door keys · 1 fob" />
             </div>
+            <div class="mlabel" style="margin-top:12px">Meter readings at start</div>
+            <div class="lp-two-col">
+              <input v-model="invMeterGas" type="text" class="mform-input" placeholder="Gas" />
+              <input v-model="invMeterElectric" type="text" class="mform-input" placeholder="Electric" />
+            </div>
+            <div style="height:8px" />
+            <input v-model="invMeterWater" type="text" class="mform-input" placeholder="Water" />
+            <div class="mlabel" style="margin-top:12px">Smart meter serial numbers</div>
+            <input v-model="invSmartMeterGas" type="text" class="mform-input" placeholder="Gas smart meter serial" />
+            <div style="height:8px" />
+            <input v-model="invSmartMeterElectric" type="text" class="mform-input" placeholder="Electricity smart meter serial" />
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="invWizNext">Start capturing →</button>
@@ -1064,6 +1075,26 @@
                 @click.stop="removeCustomRoom(r.id)"
               >×</button>
               <span v-else class="lp-assess-back" style="font-size:20px">›</span>
+            </div>
+
+            <div class="lp-inv-pw-heading">Property-wide</div>
+            <div class="lp-inv-room" @click="invScreen = 'safety'">
+              <div class="lp-inv-room-ic">
+                <img src="/op-icons/landlordPassport/smokeCOAlarms.png" alt="" class="lp-inv-room-ic-img" loading="lazy" />
+              </div>
+              <div class="lp-inv-room-bd">
+                <div class="lp-inv-room-n">Safety &amp; compliance</div>
+                <div class="lp-inv-room-m">Alarms, meters &amp; key locations</div>
+              </div>
+              <span class="lp-assess-back" style="font-size:20px">›</span>
+            </div>
+            <div class="lp-inv-room" @click="openInvBins">
+              <div class="lp-inv-room-ic">🗑️</div>
+              <div class="lp-inv-room-bd">
+                <div class="lp-inv-room-n">Bins &amp; refuse</div>
+                <div class="lp-inv-room-m">Photograph bins, colours, collection day</div>
+              </div>
+              <span class="lp-assess-back" style="font-size:20px">›</span>
             </div>
 
             <!-- Add a room the 6 defaults don't cover (study, garage,
@@ -1143,6 +1174,103 @@
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="invScreen = 'rooms'">Save room</button>
+          </div>
+        </div>
+
+        <!-- Property-wide: Safety & compliance -->
+        <div v-else-if="invScreen === 'safety'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="invScreen = 'rooms'">‹</button>
+            <div class="lp-assess-title">Safety &amp; compliance</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="section-heading">Alarms — present &amp; tested</div>
+            <div v-for="(row, i) in invAlarmRows" :key="i" class="lp-repeat-block">
+              <div class="lp-repeat-head">
+                <span>{{ row.type === 'co' ? 'CO alarm' : 'Smoke alarm' }} {{ i + 1 }}</span>
+                <button type="button" class="lp-repeat-rm" aria-label="Remove" @click="removeInvAlarmRow(i)">✕</button>
+              </div>
+              <div class="mform-section">
+                <div class="mform-label">Location</div>
+                <input v-model="row.location" type="text" class="mform-input" placeholder="e.g. Hallway, ground floor" />
+              </div>
+            </div>
+            <button type="button" class="lp-add-row" @click="addInvAlarmRow('smoke')">＋ Add a smoke alarm</button>
+            <button type="button" class="lp-add-row" @click="addInvAlarmRow('co')">＋ Add a CO alarm</button>
+
+            <div class="section-heading" style="margin-top:20px">Key locations</div>
+            <div class="mform-section">
+              <div class="mform-label">🚰 Stopcock</div>
+              <input v-model="invKeyStopcock" type="text" class="mform-input" placeholder="e.g. Under kitchen sink" />
+            </div>
+            <div class="mform-section">
+              <div class="mform-label">💧 Water meter</div>
+              <input v-model="invKeyWaterMeter" type="text" class="mform-input" placeholder="e.g. External chamber, front path" />
+            </div>
+            <div class="mform-section">
+              <div class="mform-label">⚡ Fuse box / consumer unit</div>
+              <input v-model="invKeyFuseBox" type="text" class="mform-input" placeholder="e.g. Hallway cupboard" />
+            </div>
+            <div class="mform-section">
+              <div class="mform-label">🔥 Gas meter</div>
+              <input v-model="invKeyGasMeter" type="text" class="mform-input" placeholder="e.g. External box, front" />
+            </div>
+            <div class="mform-section">
+              <div class="mform-label">💡 Electricity meter</div>
+              <input v-model="invKeyElectricityMeter" type="text" class="mform-input" placeholder="e.g. Hallway cupboard" />
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="invScreen = 'rooms'">Save safety &amp; compliance</button>
+          </div>
+        </div>
+
+        <!-- Property-wide: Bins & refuse -->
+        <div v-else-if="invScreen === 'bins'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="invScreen = 'rooms'">‹</button>
+            <div class="lp-assess-title">Bins &amp; refuse</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="section-heading">Photos of bins <span class="lp-modal-hint" style="display:inline;margin:0">· dated</span></div>
+            <div v-for="doc in binDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+              <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+              <div class="lp-doc-preview-info">
+                <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}</div>
+              </div>
+              <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
+              <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeBinDoc(doc.id)">✕</button>
+            </div>
+            <label class="lp-upload-row">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="binUploading" @change="onBinFilePicked" />
+              <span class="lp-upload-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+              </span>
+              <span class="lp-upload-text">{{ binUploading ? 'Uploading…' : 'Add a photo' }}<small>JPG, PNG, PDF up to 20MB</small></span>
+            </label>
+
+            <div class="section-heading" style="margin-top:20px">Refuse details</div>
+            <div class="mform-section">
+              <div class="mform-label">🗑️ General waste</div>
+              <input v-model="invBinGeneral" type="text" class="mform-input" placeholder="Colour / location" />
+            </div>
+            <div class="mform-section">
+              <div class="mform-label">♻️ Recycling</div>
+              <input v-model="invBinRecycling" type="text" class="mform-input" placeholder="Colour / location" />
+            </div>
+            <div class="mform-section">
+              <div class="mform-label">🍃 Food / garden waste</div>
+              <input v-model="invBinFoodGarden" type="text" class="mform-input" placeholder="Colour / location (if provided)" />
+            </div>
+            <div class="mform-section">
+              <div class="mform-label">📅 Collection day</div>
+              <input v-model="invBinCollectionDay" type="text" class="mform-input" placeholder="e.g. General Tue · Recycling alt Wed" />
+            </div>
+            <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="invScreen = 'rooms'">Save bins &amp; refuse</button>
           </div>
         </div>
 
@@ -2065,7 +2193,7 @@ function freshInventoryRooms(): InvRoom[] {
 }
 
 const invOpen = ref(false)
-const invScreen = ref<'setup' | 'rooms' | 'room' | 'review' | 'done'>('setup')
+const invScreen = ref<'setup' | 'rooms' | 'room' | 'safety' | 'bins' | 'review' | 'done'>('setup')
 const invWizStep = ref(1)
 const invFurnishing = ref<'furnished' | 'part' | 'unfurnished'>('furnished')
 const invType = ref<'checkin' | 'interim' | 'checkout'>('checkin')
@@ -2074,10 +2202,101 @@ const invTenantName = ref('')
 const invMoveInDate = ref('')
 const invDeposit = ref('')
 const invKeys = ref('')
+const invMeterGas = ref('')
+const invMeterElectric = ref('')
+const invMeterWater = ref('')
+const invSmartMeterGas = ref('')
+const invSmartMeterElectric = ref('')
 const invRooms = ref<InvRoom[]>(freshInventoryRooms())
 const invCurRoomId = ref<string | null>(null)
 const invSaving = ref(false)
 const invNewRoomName = ref('')
+
+// Property-wide — Safety & compliance (prototype iv-safety): alarms
+// present/tested + fixed key-location fields. Separate from the
+// landlord_alarms compliance section — this is a per-inventory record
+// of what's physically in the property, not the certificate tracker.
+const invAlarmRows = ref<{ type: 'smoke' | 'co'; location: string }[]>([])
+const invKeyStopcock = ref('')
+const invKeyWaterMeter = ref('')
+const invKeyFuseBox = ref('')
+const invKeyGasMeter = ref('')
+const invKeyElectricityMeter = ref('')
+function addInvAlarmRow(type: 'smoke' | 'co') {
+  invAlarmRows.value.push({ type, location: '' })
+}
+function removeInvAlarmRow(i: number) {
+  invAlarmRows.value.splice(i, 1)
+}
+
+// Property-wide — Bins & refuse (prototype iv-bins): dated photos of
+// the bins + fixed refuse-detail fields. Photos reuse the same
+// kind-scoped multi-copy endpoint as RTR's per-occupier docs, off the
+// same landlord_inventory `inventory_upload` question, kind: 'bins'.
+const invBinGeneral = ref('')
+const invBinRecycling = ref('')
+const invBinFoodGarden = ref('')
+const invBinCollectionDay = ref('')
+const BIN_PHOTO_KIND = 'bins'
+const binDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
+const binUploading = ref(false)
+async function loadBinDocs() {
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    binDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      query: { kind: BIN_PHOTO_KIND },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    binDocs.value = []
+  }
+}
+async function onBinFilePicked(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  ;(e.target as HTMLInputElement).value = ''
+  if (!file) return
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  binUploading.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('name', file.name.replace(/\.[^.]+$/, ''))
+    fd.append('kind', BIN_PHOTO_KIND)
+    await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    await loadBinDocs()
+    await refreshSectionData()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Upload failed'
+  } finally {
+    binUploading.value = false
+  }
+}
+async function removeBinDoc(docId: string) {
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    /* non-critical */
+  }
+  await loadBinDocs()
+  await refreshSectionData()
+}
+function openInvBins() {
+  invScreen.value = 'bins'
+  loadBinDocs()
+}
 
 function addCustomRoom() {
   const name = invNewRoomName.value.trim()
@@ -2117,6 +2336,17 @@ function openInvWizard() {
   invWizStep.value = 1
   invScreen.value = 'setup'
   invOpen.value = true
+  invAlarmRows.value = []
+  invKeyStopcock.value = ''
+  invKeyWaterMeter.value = ''
+  invKeyFuseBox.value = ''
+  invKeyGasMeter.value = ''
+  invKeyElectricityMeter.value = ''
+  invBinGeneral.value = ''
+  invBinRecycling.value = ''
+  invBinFoodGarden.value = ''
+  invBinCollectionDay.value = ''
+  binDocs.value = []
 }
 function closeInvWizard() {
   invOpen.value = false
@@ -2160,6 +2390,29 @@ async function saveInventory() {
       moveInDate: invMoveInDate.value,
       deposit: invDeposit.value,
       keys: invKeys.value,
+      meters: {
+        gas: invMeterGas.value,
+        electric: invMeterElectric.value,
+        water: invMeterWater.value,
+        smartMeterGasSerial: invSmartMeterGas.value,
+        smartMeterElectricSerial: invSmartMeterElectric.value,
+      },
+      safety: {
+        alarms: invAlarmRows.value,
+        keyLocations: {
+          stopcock: invKeyStopcock.value,
+          waterMeter: invKeyWaterMeter.value,
+          fuseBox: invKeyFuseBox.value,
+          gasMeter: invKeyGasMeter.value,
+          electricityMeter: invKeyElectricityMeter.value,
+        },
+      },
+      bins: {
+        generalWaste: invBinGeneral.value,
+        recycling: invBinRecycling.value,
+        foodGardenWaste: invBinFoodGarden.value,
+        collectionDay: invBinCollectionDay.value,
+      },
       rooms: invRooms.value,
       completedAt: new Date().toISOString().slice(0, 10),
     }
@@ -4214,6 +4467,7 @@ const SectionCard = defineComponent({
 }
 .lp-inv-chip-ic { width: 22px; height: 22px; object-fit: contain; }
 .lp-inv-chip.on { border-color: #00a19a; background: #f2faf8; color: #0e2840; }
+.lp-inv-pw-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7089; margin: 18px 0 8px; }
 .lp-inv-prog { margin-bottom: 14px; }
 .lp-inv-pbar { height: 8px; background: #e7e7ee; border-radius: 100px; overflow: hidden; }
 .lp-inv-pfill { height: 100%; background: linear-gradient(90deg, #00a19a, #00c4bc); border-radius: 100px; transition: width 0.5s cubic-bezier(.22,1,.36,1); }
