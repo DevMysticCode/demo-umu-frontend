@@ -613,7 +613,10 @@
                   <div class="lp-leg-result-eyebrow">Tenancy agreement ready</div>
                   <div class="lp-leg-result-level">{{ tnSavedRecord.tenantName || 'Agreement generated' }}</div>
                   <div class="lp-leg-result-meta">Created {{ new Date(tnSavedRecord.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) }}</div>
-                  <button type="button" class="lp-leg-retake" @click="openTnWizard">Create a new agreement</button>
+                  <div class="lp-two-col" style="margin-top:10px">
+                    <button type="button" class="lp-leg-retake" style="flex:1" @click="openTnSigningStatus">Signing status</button>
+                    <button type="button" class="lp-leg-retake" style="flex:1" @click="openTnWizard">New agreement</button>
+                  </div>
                 </div>
                 <div class="mlabel" style="margin-top:16px">Or add your own</div>
                 <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already have a signed tenancy agreement? Upload it here instead.</p>
@@ -1631,12 +1634,111 @@
           </div>
         </div>
 
-        <!-- Done -->
+        <!-- Done / Next steps (prototype's tn-ready screen: e-sign, saved,
+             kept up to date) - client feedback: build this and make
+             "Send to tenant to e-sign" functional. -->
         <div v-else-if="tnScreen === 'done'" class="lp-assess-screen">
           <div class="lp-assess-scroll">
-            <div class="lp-assess-ok">✓</div>
-            <div class="lp-assess-intro-h">Your agreement is ready</div>
-            <div class="lp-assess-intro-s">Stored on the Property Passport, versioned and linked to your compliance docs.</div>
+            <div class="lp-tn-readydoc">
+              <div class="lp-tn-readydoc-ic">📄</div>
+              <div class="lp-tn-readydoc-bd">
+                <div class="lp-tn-readydoc-t">Assured Periodic Tenancy</div>
+                <div class="lp-tn-readydoc-s">{{ passport?.addressLine1 }}{{ tnSavedRecord?.tenantName ? ' · ' + tnSavedRecord.tenantName : '' }}</div>
+              </div>
+              <span class="lp-tn-readydoc-v">v3.1</span>
+            </div>
+
+            <div class="mform-label" style="margin-top:20px">Next steps</div>
+
+            <div class="lp-tn-step" @click="openTnNextStep">
+              <div class="lp-tn-step-ic">✍️</div>
+              <div class="lp-tn-step-bd">
+                <div class="lp-tn-step-t">{{ tnTenantSigned ? 'Signed by both parties' : tnLandlordSigned ? 'Send to tenant to e-sign' : 'Sign the agreement' }}</div>
+                <div class="lp-tn-step-s">Both parties sign in-app, with a full audit trail</div>
+                <span class="lp-tn-step-pill" :class="{ done: tnTenantSigned }">{{ tnTenantSigned ? 'Complete' : 'Action needed' }}</span>
+              </div>
+              <div class="lp-tn-step-go">›</div>
+            </div>
+
+            <div class="lp-tn-step lp-tn-step--plain">
+              <div class="lp-tn-step-ic">🏠</div>
+              <div class="lp-tn-step-bd">
+                <div class="lp-tn-step-t">Stored on the Property Passport</div>
+                <div class="lp-tn-step-s">Versioned, linked to your compliance docs</div>
+                <span class="lp-tn-step-pill done">Saved ✓</span>
+              </div>
+            </div>
+
+            <div class="lp-tn-step lp-tn-step--plain">
+              <div class="lp-tn-step-ic">🔄</div>
+              <div class="lp-tn-step-bd">
+                <div class="lp-tn-step-t">Kept up to date</div>
+                <div class="lp-tn-step-s">Create a new agreement here any time rent or terms change</div>
+              </div>
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="tnOpen = false; showSectionDrawer = false">Back to compliance</button>
+          </div>
+        </div>
+
+        <!-- Landlord signs first (in-app - they're already authenticated) -->
+        <div v-else-if="tnScreen === 'landlord-sign'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="tnScreen = 'done'">‹</button>
+            <div class="lp-assess-title">Your signature</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="mform-section">
+              <div class="mform-label">Your full name</div>
+              <input v-model="tnLandlordName" type="text" class="mform-input" placeholder="e.g. Alex Morgan" />
+            </div>
+            <div class="mform-label" style="margin-top:16px">Draw your signature</div>
+            <SignaturePad ref="tnLandlordPadRef" />
+            <label class="lp-tn-consent">
+              <input v-model="tnLandlordConsent" type="checkbox" />
+              <span>I, {{ tnLandlordName || 'the landlord' }}, agree this is my signature and I accept the terms of this tenancy agreement.</span>
+            </label>
+            <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" :disabled="tnLandlordSigning" @click="submitLandlordSignature">
+              {{ tnLandlordSigning ? 'Signing…' : 'Sign & continue' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Share the tenant's magic link -->
+        <div v-else-if="tnScreen === 'send-tenant'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="tnScreen = 'done'">‹</button>
+            <div class="lp-assess-title">Send to tenant</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <template v-if="tnTenantSigned">
+              <div class="lp-assess-ok">✓</div>
+              <div class="lp-assess-intro-h">Signed by {{ tnSavedRecord?.audit?.tenant?.name }}</div>
+              <div class="lp-assess-intro-s">{{ new Date(tnSavedRecord?.audit?.tenant?.signedAt ?? '').toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' }) }}</div>
+            </template>
+            <template v-else>
+              <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">Share this link with your tenant. No account needed - they'll review the agreement and sign with a drawn signature.</p>
+              <div v-if="tnGeneratingLink" class="lp-modal-hint">Generating link…</div>
+              <template v-else-if="tnTenantLinkUrl">
+                <div class="lp-tn-linkbox">{{ tnTenantLinkUrl }}</div>
+                <button type="button" class="btn-primary" style="width:100%;margin-top:12px" @click="copyTenantSignLink">Copy link</button>
+              </template>
+            </template>
+            <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
+
+            <div class="mform-label" style="margin-top:20px">Audit trail</div>
+            <div class="lp-tn-audit-row">
+              <span class="lp-tn-audit-dot done" />
+              <span>Landlord signed{{ tnSavedRecord?.audit?.landlord ? ' · ' + new Date(tnSavedRecord.audit.landlord.signedAt).toLocaleDateString('en-GB') : '' }}</span>
+            </div>
+            <div class="lp-tn-audit-row">
+              <span class="lp-tn-audit-dot" :class="{ done: tnTenantSigned }" />
+              <span>Tenant signed{{ tnSavedRecord?.audit?.tenant ? ' · ' + new Date(tnSavedRecord.audit.tenant.signedAt).toLocaleDateString('en-GB') : ' - pending'}}</span>
+            </div>
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="tnOpen = false; showSectionDrawer = false">Back to compliance</button>
@@ -1696,6 +1798,7 @@ import PassportCard from '~/components/passport-view/PassportCard.vue'
 import LandlordPassportMapView from '~/components/passport-view/LandlordPassportMapView.vue'
 import SegmentedSwitch from '~/components/core/SegmentedSwitch.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
+import SignaturePad from '~/components/ui/SignaturePad.vue'
 
 definePageMeta({ title: 'Landlord Passport - UmovingU', middleware: 'auth' })
 
@@ -2863,7 +2966,7 @@ async function saveInventory() {
 // This delivers the actual document; those are natural next builds.
 const isTenancySection = computed(() => drawerSection.value?.key === 'landlord_ast')
 const tnOpen = ref(false)
-const tnScreen = ref<'intro' | 'wiz' | 'preview' | 'done'>('intro')
+const tnScreen = ref<'intro' | 'wiz' | 'preview' | 'done' | 'landlord-sign' | 'send-tenant'>('intro')
 const tnTenantName = ref('')
 const tnStartDate = ref('')
 const tnRentAmount = ref('')
@@ -2898,7 +3001,13 @@ function startTnWizard() {
   tnScreen.value = 'wiz'
 }
 
-const tnSavedRecord = computed<{ tenantName: string; completedAt: string } | null>(() => {
+interface TnAuditEntry { name: string; signatureDataUrl: string; signedAt: string; ip?: string | null }
+interface TnRecord {
+  tenantName: string
+  completedAt: string
+  audit?: { landlord?: TnAuditEntry; tenant?: TnAuditEntry }
+}
+const tnSavedRecord = computed<TnRecord | null>(() => {
   const section = sections.value.find((s) => s.key === 'landlord_ast')
   for (const t of section?.tasks ?? []) {
     for (const q of t.passportQuestions ?? []) {
@@ -2909,6 +3018,10 @@ const tnSavedRecord = computed<{ tenantName: string; completedAt: string } | nul
   }
   return null
 })
+function tnAstQuestion() {
+  const section = sections.value.find((s) => s.key === 'landlord_ast')
+  return section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
+}
 
 const TN_CLAUSES = [
   'This is a periodic tenancy with no fixed end date. It continues until ended in line with the law.',
@@ -2954,6 +3067,15 @@ const tnDocText = computed(() => {
 // deposit scheme have no other seller-question source yet, so they
 // stay blank (and simply show no badge, same as the prototype's own
 // v ? badge : '' logic for an unfilled field).
+// Reopen the Next steps / e-signature screen for an already-generated
+// agreement, without restarting the wizard (client feedback fix: there
+// was no way back into the signing status once the drawer was closed
+// and reopened - only "Create a new agreement", which starts over).
+function openTnSigningStatus() {
+  tnScreen.value = 'done'
+  tnOpen.value = true
+}
+
 function openTnWizard() {
   const inv = invSavedRecord.value as any
   tnTenantName.value = inv?.tenantName ?? ''
@@ -2963,6 +3085,9 @@ function openTnWizard() {
   tnDepositScheme.value = ''
   tnNotes.value = ''
   tnStep.value = 0
+  tnLandlordName.value = ''
+  tnLandlordConsent.value = false
+  tnTenantLinkUrl.value = ''
   tnScreen.value = 'intro'
   tnOpen.value = true
 }
@@ -3003,6 +3128,102 @@ async function saveTenancyAgreement() {
     tnScreen.value = 'preview'
   } finally {
     tnSaving.value = false
+  }
+}
+
+// ── Tenancy Agreement e-signature (client feedback: build the prototype's
+// "Next steps" screen and make "Send to tenant to e-sign" functional —
+// magic link + drawn signature, approved after an earlier hold). Landlord
+// signs first (in-app, they're already authenticated); once signed, a
+// magic link is generated for the tenant to sign at /sign/tenancy/:token
+// with no account needed. Both signatures land in the same record's
+// `audit` object via the existing generic answer endpoint.
+const tnLandlordName = ref('')
+const tnLandlordPadRef = ref<any>(null)
+const tnLandlordConsent = ref(false)
+const tnLandlordSigning = ref(false)
+const tnTenantLinkUrl = ref('')
+const tnGeneratingLink = ref(false)
+
+const tnLandlordSigned = computed(() => !!tnSavedRecord.value?.audit?.landlord)
+const tnTenantSigned = computed(() => !!tnSavedRecord.value?.audit?.tenant)
+
+function openTnNextStep() {
+  if (!tnLandlordSigned.value) {
+    tnLandlordName.value = tnSavedRecord.value?.tenantName ? '' : ''
+    tnLandlordConsent.value = false
+    tnScreen.value = 'landlord-sign'
+  } else {
+    tnScreen.value = 'send-tenant'
+    if (!tnTenantSigned.value && !tnTenantLinkUrl.value) generateTenantSignLink()
+  }
+}
+
+async function submitLandlordSignature() {
+  const signatureDataUrl = tnLandlordPadRef.value?.getDataUrl()
+  if (!tnLandlordName.value.trim() || !tnLandlordConsent.value || !signatureDataUrl) {
+    drawerError.value = 'Please enter your name, draw your signature, and tick the consent box.'
+    return
+  }
+  const dateQ = tnAstQuestion()
+  if (!dateQ || !tnSavedRecord.value) {
+    drawerError.value = 'No record slot found for this section - this passport was created before the latest fix.'
+    return
+  }
+  tnLandlordSigning.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const record = { ...tnSavedRecord.value }
+    record.audit = {
+      ...record.audit,
+      landlord: {
+        name: tnLandlordName.value.trim(),
+        signatureDataUrl,
+        signedAt: new Date().toISOString(),
+      },
+    }
+    await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { value: record },
+    })
+    await loadPassport()
+    tnScreen.value = 'send-tenant'
+    await generateTenantSignLink()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Save failed'
+  } finally {
+    tnLandlordSigning.value = false
+  }
+}
+
+async function generateTenantSignLink() {
+  const dateQ = tnAstQuestion()
+  if (!dateQ) return
+  tnGeneratingLink.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const res: any = await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/tenancy-sign-link`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    tnTenantLinkUrl.value = res.url
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Could not generate a link - please try again.'
+  } finally {
+    tnGeneratingLink.value = false
+  }
+}
+
+async function copyTenantSignLink() {
+  if (!tnTenantLinkUrl.value) return
+  try {
+    await navigator.clipboard.writeText(tnTenantLinkUrl.value)
+    showToast({ message: 'Link copied', duration: 1500 })
+  } catch {
+    /* clipboard API unavailable - link is still visible to copy manually */
   }
 }
 
@@ -5188,6 +5409,48 @@ const SectionCard = defineComponent({
 .lp-tn-mand-item { display: flex; gap: 9px; padding: 5px 0; font-size: 12px; font-weight: 600; color: #2c4aa0; }
 .lp-tn-mand-s { font-size: 11.5px; font-weight: 500; color: #2c4aa0; margin-top: 5px; line-height: 1.5; }
 .lp-tn-pulled { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; color: #008a84; margin-top: 6px; }
+
+/* Tenancy Agreement — Next steps / e-signature */
+.lp-tn-readydoc {
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; border-radius: 14px; padding: 14px;
+  box-shadow: 0 4px 18px rgba(35, 29, 69, 0.06);
+}
+.lp-tn-readydoc-ic { width: 40px; height: 40px; border-radius: 10px; background: #f1f9f4; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+.lp-tn-readydoc-bd { flex: 1; min-width: 0; }
+.lp-tn-readydoc-t { font-size: 14px; font-weight: 800; color: #0e2840; }
+.lp-tn-readydoc-s { font-size: 11.5px; font-weight: 600; color: #6b7089; margin-top: 2px; }
+.lp-tn-readydoc-v { font-size: 10px; font-weight: 800; color: #008a84; background: #e6f7f6; padding: 4px 8px; border-radius: 100px; flex-shrink: 0; }
+
+.lp-tn-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: #fff; border-radius: 14px; padding: 14px; margin-top: 10px;
+  box-shadow: 0 4px 18px rgba(35, 29, 69, 0.06);
+  cursor: pointer;
+}
+.lp-tn-step--plain { cursor: default; }
+.lp-tn-step-ic { width: 36px; height: 36px; border-radius: 10px; background: #f4f4f8; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.lp-tn-step-bd { flex: 1; min-width: 0; }
+.lp-tn-step-t { font-size: 13.5px; font-weight: 800; color: #0e2840; }
+.lp-tn-step-s { font-size: 11.5px; font-weight: 600; color: #6b7089; margin-top: 2px; }
+.lp-tn-step-pill { display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 800; padding: 4px 9px; border-radius: 100px; background: #fdf1dc; color: #a06b1a; }
+.lp-tn-step-pill.done { background: #e7f6ef; color: #0f8a6e; }
+.lp-tn-step-go { color: #b9b9c4; font-size: 18px; align-self: center; flex-shrink: 0; }
+
+.lp-tn-consent {
+  display: flex; align-items: flex-start; gap: 10px; margin: 16px 0;
+  font-size: 12px; font-weight: 500; color: #3a3f52; line-height: 1.5; cursor: pointer;
+}
+.lp-tn-consent input { margin-top: 2px; flex-shrink: 0; }
+
+.lp-tn-linkbox {
+  background: #f4f4f8; border: 1px solid #e8eceb; border-radius: 10px;
+  padding: 10px 12px; font-size: 12px; font-weight: 600; color: #0e2840;
+  word-break: break-all;
+}
+.lp-tn-audit-row { display: flex; align-items: center; gap: 9px; padding: 6px 0; font-size: 12.5px; font-weight: 600; color: #3a3f52; }
+.lp-tn-audit-dot { width: 8px; height: 8px; border-radius: 50%; background: #e8eceb; flex-shrink: 0; }
+.lp-tn-audit-dot.done { background: #0f8a6e; }
 .lp-tn-doc {
   margin: 8px 0 0;
   background: #fff;
