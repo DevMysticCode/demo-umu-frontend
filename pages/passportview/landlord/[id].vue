@@ -667,6 +667,21 @@
                   </span>
                 </label>
 
+                <div class="mform-section" style="margin-top:16px">
+                  <div class="mform-label">Scheme</div>
+                  <input v-model="depositScheme" type="text" class="mform-input" placeholder="e.g. mydeposits" />
+                </div>
+                <div class="lp-two-col">
+                  <div class="mform-section">
+                    <div class="mform-label">Date PI served</div>
+                    <input v-model="depositPiDate" type="date" class="mform-input" />
+                  </div>
+                  <div class="mform-section">
+                    <div class="mform-label">Method</div>
+                    <input v-model="depositMethod" type="text" class="mform-input" placeholder="e.g. Email + hard copy" />
+                  </div>
+                </div>
+
                 <div class="mlabel" style="margin-top:16px">What the prescribed information must contain</div>
                 <p class="lp-modal-hint" style="margin-top:0;margin-bottom:6px">The law requires you give the tenant this within 30 days of receiving the deposit — check, serve, then upload the signed copy above.</p>
                 <div v-for="item in PI_CHECKLIST" :key="item.t" class="lp-pi-item">
@@ -1864,6 +1879,27 @@ const MULTI_COPY_SECTIONS = new Set([
   'landlord_ast',
 ])
 const isDepositSection = computed(() => drawerSection.value?.key === 'landlord_deposit')
+// Scheme / Date PI served / Method — three fields the prototype has
+// (depositBody's Scheme+Date-protected row, Date-PI-served+Method row)
+// that were missing from our build. Attached to the same deposit_upload
+// task as everything else in this section (see
+// add-deposit-protection-fields.ts), so found the same way the generic
+// upload/date questions are — by scanning the section's questions.
+const depositScheme = ref('')
+const depositPiDate = ref('')
+const depositMethod = ref('')
+function findDepositQuestion(title: string) {
+  if (!drawerSection.value) return null
+  for (const t of drawerSection.value.tasks ?? []) {
+    for (const q of t.passportQuestions ?? []) {
+      if (q.questionTemplate?.title === title) return q
+    }
+  }
+  return null
+}
+const depositSchemeQuestion = computed(() => findDepositQuestion('Scheme'))
+const depositPiDateQuestion = computed(() => findDepositQuestion('Date PI served'))
+const depositMethodQuestion = computed(() => findDepositQuestion('Method'))
 const isLegionellaSection = computed(() => drawerSection.value?.key === 'landlord_legionella')
 const isInventorySection = computed(() => drawerSection.value?.key === 'landlord_inventory')
 const invSavedRecord = computed<{ rooms: InvRoom[]; completedAt: string; type: string } | null>(() => {
@@ -2761,7 +2797,12 @@ function openSection(s: any) {
   piCopyDocs.value = []
   rtrOccDocs.value = {}
   if (MULTI_COPY_SECTIONS.has(s.key)) loadCopyDocs()
-  if (s.key === 'landlord_deposit') loadPiCopyDocs()
+  if (s.key === 'landlord_deposit') {
+    loadPiCopyDocs()
+    depositScheme.value = depositSchemeQuestion.value?.answer?.answerText ?? ''
+    depositPiDate.value = (depositPiDateQuestion.value?.answer?.answerText ?? '').slice(0, 10)
+    depositMethod.value = depositMethodQuestion.value?.answer?.answerText ?? ''
+  }
   if (s.key === 'landlord_right_to_rent') loadAllRtrOccDocs()
   showSectionDrawer.value = true
 }
@@ -2983,7 +3024,13 @@ async function removeRtrOccDoc(i: number, docId: string) {
 // how many certificate copies are on file — same DATE-question slot and
 // Calendar-mirroring the generic single-slot flow already uses.
 async function saveMultiCopyExpiry() {
-  if (!drawerExpiryDraft.value || !drawerDateQuestion.value) {
+  // Deposit Protection has three extra fields (Scheme/Date PI served/
+  // Method) that must save even when "Date protected" itself is blank —
+  // the old early-return here skipped the whole function (and so those
+  // three fields too) whenever drawerExpiryDraft was empty.
+  const hasDepositExtras =
+    isDepositSection.value && (depositScheme.value || depositPiDate.value || depositMethod.value)
+  if (!drawerExpiryDraft.value && !hasDepositExtras) {
     showSectionDrawer.value = false
     return
   }
@@ -2991,15 +3038,41 @@ async function saveMultiCopyExpiry() {
   drawerError.value = ''
   try {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    await $fetch(`${config.public.apiBase}/questions/${drawerDateQuestion.value.id}/answer`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: { value: drawerExpiryDraft.value },
-    })
+    const authHeaders = { Authorization: `Bearer ${token}` }
+    if (drawerExpiryDraft.value && drawerDateQuestion.value) {
+      await $fetch(`${config.public.apiBase}/questions/${drawerDateQuestion.value.id}/answer`, {
+        method: 'POST',
+        headers: authHeaders,
+        body: { value: drawerExpiryDraft.value },
+      })
+    }
+    if (isDepositSection.value) {
+      if (depositSchemeQuestion.value) {
+        await $fetch(`${config.public.apiBase}/questions/${depositSchemeQuestion.value.id}/answer`, {
+          method: 'POST',
+          headers: authHeaders,
+          body: { value: depositScheme.value },
+        })
+      }
+      if (depositPiDateQuestion.value) {
+        await $fetch(`${config.public.apiBase}/questions/${depositPiDateQuestion.value.id}/answer`, {
+          method: 'POST',
+          headers: authHeaders,
+          body: { value: depositPiDate.value },
+        })
+      }
+      if (depositMethodQuestion.value) {
+        await $fetch(`${config.public.apiBase}/questions/${depositMethodQuestion.value.id}/answer`, {
+          method: 'POST',
+          headers: authHeaders,
+          body: { value: depositMethod.value },
+        })
+      }
+    }
     // Deposit Protection's date is a record of a past event ("date
     // protected"), not a future deadline — no renewal reminder makes
     // sense for it, unlike every other multi-copy section's expiry date.
-    if (!isDepositSection.value) {
+    if (drawerExpiryDraft.value && drawerDateQuestion.value && !isDepositSection.value) {
       const addr = passport.value?.addressLine1
       await $fetch(`${config.public.apiBase}/calendar`, {
         method: 'POST',
