@@ -490,6 +490,38 @@
                   <div class="mform-label">Recheck by (leave blank if unlimited)</div>
                   <input v-model="occ.recheckBy" type="date" class="mform-input" />
                 </div>
+                <!-- Per-occupier ID-check evidence — client feedback: need
+                     proof the check was actually carried out, not just a
+                     status/date record. -->
+                <div v-for="doc in (rtrOccDocs[i] || [])" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+                  <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+                  <div class="lp-doc-preview-info">
+                    <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                    <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}{{ doc.size ? ' · ' + doc.size : '' }}</div>
+                  </div>
+                  <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
+                  <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeRtrOccDoc(i, doc.id)">✕</button>
+                </div>
+                <label class="lp-upload-row">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.webp"
+                    class="lp-upload-input"
+                    :disabled="rtrOccUploading === i"
+                    @change="onRtrOccFilePicked(i, $event)"
+                  />
+                  <span class="lp-upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                  </span>
+                  <span class="lp-upload-text">
+                    {{ rtrOccUploading === i ? 'Uploading…' : ((rtrOccDocs[i]?.length ?? 0) ? 'Add another copy' : 'Upload ID check') }}
+                    <small>Share code result or ID copy · PDF/JPG/PNG up to 20MB</small>
+                  </span>
+                </label>
               </div>
               <button type="button" class="lp-add-row" @click="addOccupierRow()">＋ Add another occupier</button>
               <p class="lp-modal-hint">If status is unlimited (British/Irish citizen or settled status), leave "Recheck by" blank — no follow-up needed. We'll remind you 30 days before any recheck date.</p>
@@ -1069,7 +1101,8 @@
             </div>
           </div>
           <div class="lp-assess-scroll">
-            <div v-for="item in invCurRoom.items" :key="item.name" class="lp-inv-item">
+            <div class="section-heading">Fixtures — condition &amp; cleanliness</div>
+            <div v-for="item in invCurRoom.items.filter((i) => i.type === 'fixture')" :key="item.name" class="lp-inv-item">
               <div class="lp-inv-item-n">{{ item.name }}</div>
               <div class="lp-inv-rl">Condition</div>
               <div class="lp-inv-crow">
@@ -1085,6 +1118,28 @@
               </div>
               <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
             </div>
+
+            <!-- Hidden entirely for an unfurnished let — client feedback:
+                 selecting Unfurnished still asked furniture questions. -->
+            <template v-if="invFurnishing !== 'unfurnished' && invCurRoom.items.some((i) => i.type === 'content')">
+              <div class="section-heading">Furnishings &amp; contents</div>
+              <div v-for="item in invCurRoom.items.filter((i) => i.type === 'content')" :key="item.name" class="lp-inv-item">
+                <div class="lp-inv-item-n">{{ item.name }}</div>
+                <div class="lp-inv-rl">Condition</div>
+                <div class="lp-inv-crow">
+                  <button type="button" class="lp-inv-cd g" :class="{ on: item.condition === 'good' }" @click="invSetCondition(item, 'good')">Good</button>
+                  <button type="button" class="lp-inv-cd f" :class="{ on: item.condition === 'fair' }" @click="invSetCondition(item, 'fair')">Fair</button>
+                  <button type="button" class="lp-inv-cd p" :class="{ on: item.condition === 'poor' }" @click="invSetCondition(item, 'poor')">Poor</button>
+                </div>
+                <div class="lp-inv-rl">Cleanliness</div>
+                <div class="lp-inv-crow">
+                  <button type="button" class="lp-inv-cd cl" :class="{ on: item.cleanliness === 'clean' }" @click="invSetCleanliness(item, 'clean')">Clean</button>
+                  <button type="button" class="lp-inv-cd mk" :class="{ on: item.cleanliness === 'marked' }" @click="invSetCleanliness(item, 'marked')">Marked</button>
+                  <button type="button" class="lp-inv-cd dt" :class="{ on: item.cleanliness === 'dirty' }" @click="invSetCleanliness(item, 'dirty')">Dirty</button>
+                </div>
+                <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
+              </div>
+            </template>
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="invScreen = 'rooms'">Save room</button>
@@ -1099,7 +1154,14 @@
           </div>
           <div class="lp-assess-scroll">
             <div class="lp-assess-sum">
-              <div v-for="r in invRooms" :key="r.id" class="lp-assess-sum-row"><span>{{ r.icon }} {{ r.name }}</span><span>✓ {{ r.items.length }} items</span></div>
+              <div v-for="r in invRooms" :key="r.id" class="lp-assess-sum-row">
+                <span>
+                  <img v-if="r.icon.startsWith('/')" :src="r.icon" alt="" class="lp-assess-sum-ic-img" loading="lazy" />
+                  <template v-else>{{ r.icon }}</template>
+                  {{ r.name }}
+                </span>
+                <span>✓ {{ roomItemsThatApply(r).length }} items</span>
+              </div>
             </div>
             <div class="mlabel" style="margin-top:16px">Evidence photos (optional)</div>
             <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Attach photos to back up the condition record above.</p>
@@ -1977,7 +2039,7 @@ async function saveLegAssessment() {
 // per inventory via the existing multi-copy upload pattern, alongside
 // the structured record. Extend to per-item photos later if the
 // structured record alone doesn't prove enough in practice.
-interface InvItem { name: string; condition: string; cleanliness: string; note: string }
+interface InvItem { name: string; condition: string; cleanliness: string; note: string; type: 'fixture' | 'content' }
 interface InvRoom { id: string; name: string; icon: string; fixtures: string[]; contents: string[]; items: InvItem[]; custom?: boolean }
 // Generic fixture checklist for a room the landlord adds themselves
 // (study, garage, conservatory, etc.) — the 6 default rooms above have
@@ -1995,7 +2057,10 @@ const INVENTORY_ROOM_TEMPLATE: Omit<InvRoom, 'items'>[] = [
 function freshInventoryRooms(): InvRoom[] {
   return INVENTORY_ROOM_TEMPLATE.map((r) => ({
     ...r,
-    items: [...r.fixtures, ...r.contents].map((name) => ({ name, condition: '', cleanliness: '', note: '' })),
+    items: [
+      ...r.fixtures.map((name) => ({ name, condition: '', cleanliness: '', note: '', type: 'fixture' as const })),
+      ...r.contents.map((name) => ({ name, condition: '', cleanliness: '', note: '', type: 'content' as const })),
+    ],
   }))
 }
 
@@ -2023,7 +2088,7 @@ function addCustomRoom() {
     icon: '/op-icons/investment/house.png',
     fixtures: CUSTOM_ROOM_FIXTURES,
     contents: [],
-    items: CUSTOM_ROOM_FIXTURES.map((n) => ({ name: n, condition: '', cleanliness: '', note: '' })),
+    items: CUSTOM_ROOM_FIXTURES.map((n) => ({ name: n, condition: '', cleanliness: '', note: '', type: 'fixture' as const })),
     custom: true,
   })
   invNewRoomName.value = ''
@@ -2033,8 +2098,16 @@ function removeCustomRoom(id: string) {
 }
 
 const invCurRoom = computed(() => invRooms.value.find((r) => r.id === invCurRoomId.value) ?? null)
+// Content/furnishing items don't apply to an unfurnished let — client
+// feedback: selecting "Unfurnished" still asked furniture questions.
+// Fixtures (walls, flooring, doors...) always apply regardless of
+// furnishing status; only content items are skipped.
+function roomItemsThatApply(r: InvRoom) {
+  return invFurnishing.value === 'unfurnished' ? r.items.filter((i) => i.type === 'fixture') : r.items
+}
 function roomIsDone(r: InvRoom) {
-  return r.items.length > 0 && r.items.every((i) => i.condition && i.cleanliness)
+  const items = roomItemsThatApply(r)
+  return items.length > 0 && items.every((i) => i.condition && i.cleanliness)
 }
 const invDoneCount = computed(() => invRooms.value.filter(roomIsDone).length)
 const invAllDone = computed(() => invDoneCount.value === invRooms.value.length)
@@ -2275,8 +2348,10 @@ function openSection(s: any) {
   occupierRows.value = s.key === 'landlord_right_to_rent' && Array.isArray(storedList) ? storedList : []
   copyDocs.value = []
   piCopyDocs.value = []
+  rtrOccDocs.value = {}
   if (MULTI_COPY_SECTIONS.has(s.key)) loadCopyDocs()
   if (s.key === 'landlord_deposit') loadPiCopyDocs()
+  if (s.key === 'landlord_right_to_rent') loadAllRtrOccDocs()
   showSectionDrawer.value = true
 }
 
@@ -2422,6 +2497,77 @@ async function removePiCopyDoc(docId: string) {
   await refreshSectionData()
 }
 
+// Right to Rent — per-occupier ID-check evidence (client feedback: "need
+// to be able to upload proof we have carried the check out"). Reuses the
+// same kind-scoped multi-copy endpoint Deposit Protection's PI docs use
+// (questions/:id/copies?kind=X), keyed per occupier by array index, so
+// this needed no backend/schema change — landlord_right_to_rent already
+// seeds an UPLOAD question (rtr_upload) that drawerUploadQuestion
+// resolves to; the custom occupier-list UI below just never used it
+// until now.
+const rtrOccDocs = ref<Record<number, { id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>>({})
+const rtrOccUploading = ref<number | null>(null)
+
+function rtrOccKind(i: number) {
+  return `occ-${i}`
+}
+async function loadRtrOccDocs(i: number) {
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    rtrOccDocs.value[i] = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      query: { kind: rtrOccKind(i) },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    rtrOccDocs.value[i] = []
+  }
+}
+async function loadAllRtrOccDocs() {
+  await Promise.all(occupierRows.value.map((_, i) => loadRtrOccDocs(i)))
+}
+async function onRtrOccFilePicked(i: number, e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  ;(e.target as HTMLInputElement).value = ''
+  if (!file) return
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  rtrOccUploading.value = i
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('name', file.name.replace(/\.[^.]+$/, ''))
+    fd.append('kind', rtrOccKind(i))
+    await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    await loadRtrOccDocs(i)
+    await refreshSectionData()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Upload failed'
+  } finally {
+    rtrOccUploading.value = null
+  }
+}
+async function removeRtrOccDoc(i: number, docId: string) {
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    /* non-critical */
+  }
+  await loadRtrOccDocs(i)
+  await refreshSectionData()
+}
+
 // Multi-copy sections still track one expiry per section, independent of
 // how many certificate copies are on file — same DATE-question slot and
 // Calendar-mirroring the generic single-slot flow already uses.
@@ -2479,6 +2625,10 @@ function addOccupierRow() {
 }
 function removeOccupierRow(i: number) {
   occupierRows.value.splice(i, 1)
+  // Doc lists are keyed by array index (rtrOccKind) — removing a row
+  // shifts every later occupier's index, so re-fetch the whole set
+  // against the reshuffled positions rather than leaving stale entries.
+  loadAllRtrOccDocs()
 }
 
 async function saveDrawerList() {
@@ -4032,7 +4182,8 @@ const SectionCard = defineComponent({
 .lp-assess-sum { background: #fff; border: 1px solid #e8eceb; border-radius: 14px; overflow: hidden; }
 .lp-assess-sum-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f0f0f4; font-size: 13px; }
 .lp-assess-sum-row:last-child { border-bottom: none; }
-.lp-assess-sum-row span:first-child { color: #6b7089; font-weight: 500; }
+.lp-assess-sum-row span:first-child { color: #6b7089; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+.lp-assess-sum-ic-img { width: 16px; height: 16px; object-fit: contain; }
 .lp-assess-sum-row span:last-child { color: #0e2840; font-weight: 700; text-align: right; max-width: 60%; }
 .lp-assess-intro-ic { width: 70px; height: 70px; border-radius: 20px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 8px auto 0; }
 .lp-assess-intro-ic-img { width: 42px; height: 42px; object-fit: contain; }
