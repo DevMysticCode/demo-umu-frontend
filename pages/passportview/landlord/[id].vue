@@ -597,38 +597,45 @@
                 <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already have a signed tenancy agreement? Upload it here instead.</p>
               </template>
 
-              <div v-for="doc in mergedCopyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
-                <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
-                <div class="lp-doc-preview-info">
-                  <div class="lp-doc-preview-name">{{ doc.name }}</div>
-                  <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}{{ doc.size ? ' · ' + doc.size : '' }}</div>
+              <!-- White Goods has its own two dedicated doc lists (Manuals/
+                   Warranties, below) instead of one generic "certificate"
+                   slot — this shared multi-copy upload row doesn't apply
+                   to it the way it does to Gas Safety/EICR/EPC/Insurance/
+                   Deposit/Legionella/Inventory/Tenancy's own-copy uploads. -->
+              <template v-if="!isWhiteGoodsSection">
+                <div v-for="doc in mergedCopyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+                  <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+                  <div class="lp-doc-preview-info">
+                    <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                    <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}{{ doc.size ? ' · ' + doc.size : '' }}</div>
+                  </div>
+                  <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">
+                    View
+                  </button>
+                  <button v-if="doc.id !== '__legacy__'" type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
                 </div>
-                <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">
-                  View
-                </button>
-                <button v-if="doc.id !== '__legacy__'" type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
-              </div>
 
-              <label class="lp-upload-row">
-                <input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
-                  class="lp-upload-input"
-                  :disabled="copyUploading"
-                  @change="onCopyFilePicked"
-                />
-                <span class="lp-upload-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
-                </span>
-                <span class="lp-upload-text">
-                  {{ copyUploading ? 'Uploading…' : (mergedCopyDocs.length ? ('Add another ' + drawerUploadNoun) : ('Upload ' + drawerUploadNoun)) }}
-                  <small>PDF, JPG, PNG, DOCX up to 20MB</small>
-                </span>
-              </label>
+                <label class="lp-upload-row">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+                    class="lp-upload-input"
+                    :disabled="copyUploading"
+                    @change="onCopyFilePicked"
+                  />
+                  <span class="lp-upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                  </span>
+                  <span class="lp-upload-text">
+                    {{ copyUploading ? 'Uploading…' : (mergedCopyDocs.length ? ('Add another ' + drawerUploadNoun) : ('Upload ' + drawerUploadNoun)) }}
+                    <small>PDF, JPG, PNG, DOCX up to 20MB</small>
+                  </span>
+                </label>
+              </template>
 
               <!-- Deposit Protection: a second, legally distinct document —
                    the signed prescribed information actually SERVED to the
@@ -692,6 +699,94 @@
                   </div>
                 </div>
                 <p class="lp-modal-hint" style="margin-top:12px"><b>Why it matters:</b> if the prescribed information isn't served correctly, the tenant can claim up to 3× the deposit and possession can be affected.</p>
+              </template>
+
+              <!-- White Goods & Appliances — new section (client feedback:
+                   not in the original 11 items, but fully specified in the
+                   prototype's whitegoodsBody). Appliances list, manuals +
+                   warranties (two kind-scoped doc lists off the same
+                   upload question), tenant-facing notes, and appliance
+                   cover/breakdown insurance details. -->
+              <template v-if="isWhiteGoodsSection">
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">Keep everything for the white goods you provide — so the tenant can use them, and you're covered if one fails.</p>
+
+                <div class="mlabel">Appliances provided</div>
+                <div v-for="(a, i) in wgAppliances" :key="i" class="lp-repeat-block">
+                  <div class="lp-repeat-head">
+                    <span>Appliance {{ i + 1 }}</span>
+                    <button v-if="wgAppliances.length > 1" type="button" class="lp-repeat-rm" aria-label="Remove" @click="removeWgAppliance(i)">✕</button>
+                  </div>
+                  <div class="mform-section">
+                    <div class="mform-label">Appliance</div>
+                    <input v-model="a.name" type="text" class="mform-input" placeholder="e.g. Fridge / freezer" />
+                  </div>
+                  <div class="lp-two-col">
+                    <div class="mform-section">
+                      <div class="mform-label">Model</div>
+                      <input v-model="a.model" type="text" class="mform-input" placeholder="Model" />
+                    </div>
+                    <div class="mform-section">
+                      <div class="mform-label">Serial no.</div>
+                      <input v-model="a.serial" type="text" class="mform-input" placeholder="Serial" />
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="lp-add-row" @click="addWgAppliance">＋ Add another appliance</button>
+
+                <div class="mlabel" style="margin-top:18px">Manuals</div>
+                <div v-for="doc in copyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+                  <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+                  <div class="lp-doc-preview-info">
+                    <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                    <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}</div>
+                  </div>
+                  <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
+                  <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
+                </div>
+                <label class="lp-upload-row">
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="copyUploading" @change="onCopyFilePicked" />
+                  <span class="lp-upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+                  </span>
+                  <span class="lp-upload-text">{{ copyUploading ? 'Uploading…' : (copyDocs.length ? 'Add another manual' : 'Upload a manual') }}<small>User / instruction manual · PDF up to 20MB</small></span>
+                </label>
+
+                <div class="mlabel" style="margin-top:18px">Warranties</div>
+                <div v-for="doc in warrantyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
+                  <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+                  <div class="lp-doc-preview-info">
+                    <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                    <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}</div>
+                  </div>
+                  <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
+                  <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeWarrantyDoc(doc.id)">✕</button>
+                </div>
+                <label class="lp-upload-row">
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="warrantyUploading" @change="onWarrantyFilePicked" />
+                  <span class="lp-upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+                  </span>
+                  <span class="lp-upload-text">{{ warrantyUploading ? 'Uploading…' : (warrantyDocs.length ? 'Add another warranty' : 'Upload a warranty') }}<small>Warranty / guarantee · PDF up to 20MB</small></span>
+                </label>
+
+                <div class="mform-section" style="margin-top:18px">
+                  <div class="mform-label">How things work (optional)</div>
+                  <textarea v-model="wgHowItWorks" class="lp-inv-note" style="min-height:80px" placeholder="Instructions for the tenant — e.g. 'The washing machine door needs a firm push to lock. Dishwasher salt is under the sink.'" />
+                </div>
+
+                <div class="mlabel" style="margin-top:18px">Appliance cover / breakdown insurance</div>
+                <div class="mform-section">
+                  <input v-model="wgCoverProvider" type="text" class="mform-input" placeholder="Provider — e.g. Domestic &amp; General" />
+                </div>
+                <div class="lp-two-col">
+                  <input v-model="wgCoverPolicyNumber" type="text" class="mform-input" placeholder="Policy number" />
+                  <input v-model="wgCoverRenewalDate" type="date" class="mform-input" />
+                </div>
+                <div class="mform-section" style="margin-top:10px">
+                  <input v-model="wgCoverContact" type="text" class="mform-input" placeholder="Contact for claims / repairs" />
+                </div>
+                <p class="lp-modal-hint" style="margin-top:8px">If an appliance breaks mid-tenancy, these details get a repair booked fast.</p>
+                <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
               </template>
             </template>
 
@@ -775,7 +870,7 @@
                  seed.ts), including Alarms/RTR/Legionella — excluded here
                  since each of those has its own dedicated UI that already
                  covers dates in a way that makes sense for it. -->
-            <div v-if="(drawerDateQuestion || pendingFile) && !isAlarmsSection && !isRtrSection && !isLegionellaSection" class="mform-section">
+            <div v-if="(drawerDateQuestion || pendingFile) && !isAlarmsSection && !isRtrSection && !isLegionellaSection && !isWhiteGoodsSection" class="mform-section">
                 <div class="mform-label">{{ isDepositSection ? 'Date protected' : 'Expiry / next renewal date' }}</div>
                 <input
                   v-model="drawerExpiryDraft"
@@ -811,6 +906,16 @@
               @click="saveDrawerList"
             >
               {{ drawerListSaving ? 'Saving…' : 'Save' }}
+            </button>
+            <button
+              v-else-if="isWhiteGoodsSection"
+              class="btn-primary"
+              type="button"
+              style="flex: 1;"
+              :disabled="wgSaving"
+              @click="saveWhiteGoods"
+            >
+              {{ wgSaving ? 'Saving…' : 'Done' }}
             </button>
             <button
               v-else-if="isMultiCopySection"
@@ -1646,7 +1751,7 @@ async function loadPassport() {
 // ── Section grouping (key-substring based, falls back gracefully) ────────
 const SAFETY_HINTS = ['gas', 'eicr', 'electric', 'epc', 'energy', 'alarm', 'smoke', 'co_', 'legionella']
 const TENANCY_HINTS = ['ast', 'tenancy', 'deposit', 'rent', 'right_to_rent', 'rtr', 'how_to_rent', 'inventory', 'occup']
-const INSURANCE_HINTS = ['insurance', 'pat', 'hmo']
+const INSURANCE_HINTS = ['insurance', 'pat', 'hmo', 'white_goods']
 
 function isSafety(k: string)    { return SAFETY_HINTS.some((h) => k.toLowerCase().includes(h)) }
 function isTenancy(k: string)   { return TENANCY_HINTS.some((h) => k.toLowerCase().includes(h)) }
@@ -1784,6 +1889,10 @@ function iconSlugForSection(key: string): string {
   if (k.includes('epc') || k.includes('energy')) return 'energy-performance'
   if (k.includes('alarm') || k.includes('smoke') || k.includes('co_')) return 'smoke-co-alarms'
   if (k.includes('legionella')) return 'legionella'
+  // No dedicated 3D icon generated yet for White Goods — reuses the
+  // Landlord Insurance asset as a placeholder (same group, same
+  // 🧊-vs-🛡️ visual weight) rather than showing a broken image.
+  if (k.includes('white_goods')) return 'landlord-insurance'
   if (k.includes('insurance')) return 'landlord-insurance'
   if (k.includes('deposit')) return 'deposit-protection'
   if (k.includes('right_to_rent') || k.includes('rtr')) return 'right-to-rent'
@@ -1877,6 +1986,7 @@ const MULTI_COPY_SECTIONS = new Set([
   'landlord_legionella',
   'landlord_inventory',
   'landlord_ast',
+  'landlord_white_goods',
 ])
 const isDepositSection = computed(() => drawerSection.value?.key === 'landlord_deposit')
 // Scheme / Date PI served / Method — three fields the prototype has
@@ -1902,6 +2012,131 @@ const depositPiDateQuestion = computed(() => findDepositQuestion('Date PI served
 const depositMethodQuestion = computed(() => findDepositQuestion('Method'))
 const isLegionellaSection = computed(() => drawerSection.value?.key === 'landlord_legionella')
 const isInventorySection = computed(() => drawerSection.value?.key === 'landlord_inventory')
+const isWhiteGoodsSection = computed(() => drawerSection.value?.key === 'landlord_white_goods')
+// White Goods & Appliances — appliances/notes/cover details stored as one
+// JSON blob on the section's DATE question (same convention Inventory/
+// Tenancy Agreement use for their own record slot), manuals + warranties
+// as two kind-scoped multi-copy doc lists off the UPLOAD question.
+interface WgAppliance { name: string; model: string; serial: string }
+const WG_DEFAULT_APPLIANCES: WgAppliance[] = [
+  { name: 'Fridge / freezer', model: '', serial: '' },
+  { name: 'Washing machine', model: '', serial: '' },
+  { name: 'Oven & hob', model: '', serial: '' },
+]
+const wgAppliances = ref<WgAppliance[]>([])
+const wgHowItWorks = ref('')
+const wgCoverProvider = ref('')
+const wgCoverPolicyNumber = ref('')
+const wgCoverRenewalDate = ref('')
+const wgCoverContact = ref('')
+const wgSaving = ref(false)
+const wgSavedRecord = computed<{ appliances: WgAppliance[]; howItWorks: string; cover: { provider: string; policyNumber: string; renewalDate: string; contact: string } } | null>(() => {
+  const section = sections.value.find((s) => s.key === 'landlord_white_goods')
+  for (const t of section?.tasks ?? []) {
+    for (const q of t.passportQuestions ?? []) {
+      if (q.questionTemplate?.type === 'DATE' && q.answer?.answerJson?.appliances) {
+        return q.answer.answerJson
+      }
+    }
+  }
+  return null
+})
+function addWgAppliance() {
+  wgAppliances.value.push({ name: '', model: '', serial: '' })
+}
+function removeWgAppliance(i: number) {
+  if (wgAppliances.value.length <= 1) return
+  wgAppliances.value.splice(i, 1)
+}
+const warrantyDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
+const warrantyUploading = ref(false)
+async function loadWarrantyDocs() {
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    warrantyDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      query: { kind: 'warranties' },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    warrantyDocs.value = []
+  }
+}
+async function onWarrantyFilePicked(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  ;(e.target as HTMLInputElement).value = ''
+  if (!file) return
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  warrantyUploading.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('name', file.name.replace(/\.[^.]+$/, ''))
+    fd.append('kind', 'warranties')
+    await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    await loadWarrantyDocs()
+    await refreshSectionData()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Upload failed'
+  } finally {
+    warrantyUploading.value = false
+  }
+}
+async function removeWarrantyDoc(docId: string) {
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    /* non-critical */
+  }
+  await loadWarrantyDocs()
+  await refreshSectionData()
+}
+async function saveWhiteGoods() {
+  const section = sections.value.find((s) => s.key === 'landlord_white_goods')
+  const dateQ = section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
+  if (!dateQ) {
+    drawerError.value = 'No record slot found for this section — this passport was created before the latest fix.'
+    return
+  }
+  wgSaving.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const record = {
+      appliances: wgAppliances.value,
+      howItWorks: wgHowItWorks.value,
+      cover: {
+        provider: wgCoverProvider.value,
+        policyNumber: wgCoverPolicyNumber.value,
+        renewalDate: wgCoverRenewalDate.value,
+        contact: wgCoverContact.value,
+      },
+    }
+    await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { value: record },
+    })
+    await loadPassport()
+    showSectionDrawer.value = false
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Save failed'
+  } finally {
+    wgSaving.value = false
+  }
+}
 const invSavedRecord = computed<{ rooms: InvRoom[]; completedAt: string; type: string } | null>(() => {
   const section = sections.value.find((s) => s.key === 'landlord_inventory')
   for (const t of section?.tasks ?? []) {
@@ -2804,6 +3039,16 @@ function openSection(s: any) {
     depositMethod.value = depositMethodQuestion.value?.answer?.answerText ?? ''
   }
   if (s.key === 'landlord_right_to_rent') loadAllRtrOccDocs()
+  if (s.key === 'landlord_white_goods') {
+    loadWarrantyDocs()
+    const saved = wgSavedRecord.value
+    wgAppliances.value = saved?.appliances?.length ? saved.appliances : WG_DEFAULT_APPLIANCES.map((a) => ({ ...a }))
+    wgHowItWorks.value = saved?.howItWorks ?? ''
+    wgCoverProvider.value = saved?.cover?.provider ?? ''
+    wgCoverPolicyNumber.value = saved?.cover?.policyNumber ?? ''
+    wgCoverRenewalDate.value = saved?.cover?.renewalDate ?? ''
+    wgCoverContact.value = saved?.cover?.contact ?? ''
+  }
   showSectionDrawer.value = true
 }
 
