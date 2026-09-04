@@ -592,7 +592,10 @@
                   <div class="lp-leg-result-eyebrow">Inventory complete</div>
                   <div class="lp-leg-result-level">{{ invSavedRecord.rooms.length }} rooms recorded</div>
                   <div class="lp-leg-result-meta">Completed {{ new Date(invSavedRecord.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) }}</div>
-                  <button type="button" class="lp-leg-retake" @click="openInvWizard">Build a new inventory</button>
+                  <div class="lp-two-col" style="margin-top:10px">
+                    <button type="button" class="lp-leg-retake" style="flex:1" @click="openInvSigningStatus">Signing status</button>
+                    <button type="button" class="lp-leg-retake" style="flex:1" @click="openInvWizard">New inventory</button>
+                  </div>
                 </div>
                 <div class="mlabel" style="margin-top:16px">Or add your own</div>
                 <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already have an inventory report? Upload it here instead - or attach photos alongside the one you build above.</p>
@@ -1485,9 +1488,97 @@
         <!-- Done -->
         <div v-else-if="invScreen === 'done'" class="lp-assess-screen">
           <div class="lp-assess-scroll">
-            <div class="lp-assess-ok">✓</div>
-            <div class="lp-assess-intro-h">Inventory complete</div>
-            <div class="lp-assess-intro-s">Stored on the Property Passport - real evidence if a deposit dispute ever comes up.</div>
+            <div class="lp-tn-readydoc">
+              <div class="lp-tn-readydoc-ic">📋</div>
+              <div class="lp-tn-readydoc-bd">
+                <div class="lp-tn-readydoc-t">Inventory &amp; Schedule of Condition</div>
+                <div class="lp-tn-readydoc-s">{{ passport?.addressLine1 }}{{ invSavedRecord?.rooms ? ' · ' + invSavedRecord.rooms.length + ' rooms' : '' }}</div>
+              </div>
+            </div>
+
+            <div class="mform-label" style="margin-top:20px">Next steps</div>
+
+            <div class="lp-tn-step" @click="openInvNextStep">
+              <div class="lp-tn-step-ic">✍️</div>
+              <div class="lp-tn-step-bd">
+                <div class="lp-tn-step-t">{{ invTenantSigned ? 'Signed by both parties' : invLandlordSigned ? 'Send to tenant to e-sign' : 'Sign the inventory' }}</div>
+                <div class="lp-tn-step-s">Both parties sign in-app, with a full audit trail</div>
+                <span class="lp-tn-step-pill" :class="{ done: invTenantSigned }">{{ invTenantSigned ? 'Complete' : 'Action needed' }}</span>
+              </div>
+              <div class="lp-tn-step-go">›</div>
+            </div>
+
+            <div class="lp-tn-step lp-tn-step--plain">
+              <div class="lp-tn-step-ic">🏠</div>
+              <div class="lp-tn-step-bd">
+                <div class="lp-tn-step-t">Stored on the Property Passport</div>
+                <div class="lp-tn-step-s">Real evidence if a deposit dispute ever comes up</div>
+                <span class="lp-tn-step-pill done">Saved ✓</span>
+              </div>
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" @click="invOpen = false; showSectionDrawer = false">Back to compliance</button>
+          </div>
+        </div>
+
+        <!-- Landlord signs first (in-app - they're already authenticated) -->
+        <div v-else-if="invScreen === 'landlord-sign'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="invScreen = 'done'">‹</button>
+            <div class="lp-assess-title">Your signature</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="mform-section">
+              <div class="mform-label">Your full name</div>
+              <input v-model="invLandlordName" type="text" class="mform-input" placeholder="e.g. Alex Morgan" />
+            </div>
+            <div class="mform-label" style="margin-top:16px">Draw your signature</div>
+            <SignaturePad ref="invLandlordPadRef" />
+            <label class="lp-tn-consent">
+              <input v-model="invLandlordConsent" type="checkbox" />
+              <span>I, {{ invLandlordName || 'the landlord' }}, agree this is my signature and confirm this inventory record is accurate.</span>
+            </label>
+            <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
+          </div>
+          <div class="lp-assess-foot">
+            <button class="btn-primary" type="button" style="width:100%" :disabled="invLandlordSigning" @click="submitInvLandlordSignature">
+              {{ invLandlordSigning ? 'Signing…' : 'Sign & continue' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Share the tenant's magic link -->
+        <div v-else-if="invScreen === 'send-tenant'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="invScreen = 'done'">‹</button>
+            <div class="lp-assess-title">Send to tenant</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <template v-if="invTenantSigned">
+              <div class="lp-assess-ok">✓</div>
+              <div class="lp-assess-intro-h">Signed by {{ invSavedRecord?.audit?.tenant?.name }}</div>
+              <div class="lp-assess-intro-s">{{ new Date(invSavedRecord?.audit?.tenant?.signedAt ?? '').toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' }) }}</div>
+            </template>
+            <template v-else>
+              <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">Share this link with your tenant. No account needed - they'll review the inventory and sign with a drawn signature.</p>
+              <div v-if="invGeneratingLink" class="lp-modal-hint">Generating link…</div>
+              <template v-else-if="invTenantLinkUrl">
+                <div class="lp-tn-linkbox">{{ invTenantLinkUrl }}</div>
+                <button type="button" class="btn-primary" style="width:100%;margin-top:12px" @click="copyInvTenantSignLink">Copy link</button>
+              </template>
+            </template>
+            <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
+
+            <div class="mform-label" style="margin-top:20px">Audit trail</div>
+            <div class="lp-tn-audit-row">
+              <span class="lp-tn-audit-dot done" />
+              <span>Landlord signed{{ invSavedRecord?.audit?.landlord ? ' · ' + new Date(invSavedRecord.audit.landlord.signedAt).toLocaleDateString('en-GB') : '' }}</span>
+            </div>
+            <div class="lp-tn-audit-row">
+              <span class="lp-tn-audit-dot" :class="{ done: invTenantSigned }" />
+              <span>Tenant signed{{ invSavedRecord?.audit?.tenant ? ' · ' + new Date(invSavedRecord.audit.tenant.signedAt).toLocaleDateString('en-GB') : ' - pending' }}</span>
+            </div>
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="invOpen = false; showSectionDrawer = false">Back to compliance</button>
@@ -2262,7 +2353,7 @@ async function saveWhiteGoods() {
     wgSaving.value = false
   }
 }
-const invSavedRecord = computed<{ rooms: InvRoom[]; completedAt: string; type: string } | null>(() => {
+const invSavedRecord = computed<{ rooms: InvRoom[]; completedAt: string; type: string; audit?: { landlord?: TnAuditEntry; tenant?: TnAuditEntry } } | null>(() => {
   const section = sections.value.find((s) => s.key === 'landlord_inventory')
   for (const t of section?.tasks ?? []) {
     for (const q of t.passportQuestions ?? []) {
@@ -2273,6 +2364,10 @@ const invSavedRecord = computed<{ rooms: InvRoom[]; completedAt: string; type: s
   }
   return null
 })
+function invDateQuestion() {
+  const section = sections.value.find((s) => s.key === 'landlord_inventory')
+  return section?.tasks?.flatMap((t: any) => t.passportQuestions ?? []).find((q: any) => q.questionTemplate?.type === 'DATE')
+}
 const copyDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
 const copyUploading = ref(false)
 
@@ -2641,7 +2736,7 @@ function freshInventoryRooms(): InvRoom[] {
 }
 
 const invOpen = ref(false)
-const invScreen = ref<'setup' | 'rooms' | 'room' | 'safety' | 'bins' | 'review' | 'done'>('setup')
+const invScreen = ref<'setup' | 'rooms' | 'room' | 'safety' | 'bins' | 'review' | 'done' | 'landlord-sign' | 'send-tenant'>('setup')
 const invWizStep = ref(1)
 const invFurnishing = ref<'furnished' | 'part' | 'unfurnished'>('furnished')
 const invType = ref<'checkin' | 'interim' | 'checkout'>('checkin')
@@ -2859,6 +2954,9 @@ function openInvWizard() {
   invBinCollectionDay.value = ''
   binDocs.value = []
   roomPhotoDocs.value = {}
+  invLandlordName.value = ''
+  invLandlordConsent.value = false
+  invTenantLinkUrl.value = ''
 }
 function closeInvWizard() {
   invOpen.value = false
@@ -2942,6 +3040,104 @@ async function saveInventory() {
   } finally {
     invSaving.value = false
   }
+}
+
+// ── Inventory e-signature (client feedback: extend the Tenancy
+// Agreement e-sign pattern to Inventory's move-in sign-off too — same
+// magic link + drawn signature, same shared TenancySignLink model with
+// kind: 'inventory'). Mirrors the tn* functions above exactly.
+const invLandlordName = ref('')
+const invLandlordPadRef = ref<any>(null)
+const invLandlordConsent = ref(false)
+const invLandlordSigning = ref(false)
+const invTenantLinkUrl = ref('')
+const invGeneratingLink = ref(false)
+
+const invLandlordSigned = computed(() => !!invSavedRecord.value?.audit?.landlord)
+const invTenantSigned = computed(() => !!invSavedRecord.value?.audit?.tenant)
+
+function openInvNextStep() {
+  if (!invLandlordSigned.value) {
+    invLandlordConsent.value = false
+    invScreen.value = 'landlord-sign'
+  } else {
+    invScreen.value = 'send-tenant'
+    if (!invTenantSigned.value && !invTenantLinkUrl.value) generateInvTenantSignLink()
+  }
+}
+
+async function submitInvLandlordSignature() {
+  const signatureDataUrl = invLandlordPadRef.value?.getDataUrl()
+  if (!invLandlordName.value.trim() || !invLandlordConsent.value || !signatureDataUrl) {
+    drawerError.value = 'Please enter your name, draw your signature, and tick the consent box.'
+    return
+  }
+  const dateQ = invDateQuestion()
+  if (!dateQ || !invSavedRecord.value) {
+    drawerError.value = 'No record slot found for this section - this passport was created before the latest fix.'
+    return
+  }
+  invLandlordSigning.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const record = { ...invSavedRecord.value }
+    record.audit = {
+      ...record.audit,
+      landlord: {
+        name: invLandlordName.value.trim(),
+        signatureDataUrl,
+        signedAt: new Date().toISOString(),
+      },
+    }
+    await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { value: record },
+    })
+    await loadPassport()
+    invScreen.value = 'send-tenant'
+    await generateInvTenantSignLink()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Save failed'
+  } finally {
+    invLandlordSigning.value = false
+  }
+}
+
+async function generateInvTenantSignLink() {
+  const dateQ = invDateQuestion()
+  if (!dateQ) return
+  invGeneratingLink.value = true
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const res: any = await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/tenancy-sign-link`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: { kind: 'inventory' },
+    })
+    invTenantLinkUrl.value = res.url
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Could not generate a link - please try again.'
+  } finally {
+    invGeneratingLink.value = false
+  }
+}
+
+async function copyInvTenantSignLink() {
+  if (!invTenantLinkUrl.value) return
+  try {
+    await navigator.clipboard.writeText(invTenantLinkUrl.value)
+    showToast({ message: 'Link copied', duration: 1500 })
+  } catch {
+    /* clipboard API unavailable - link is still visible to copy manually */
+  }
+}
+
+function openInvSigningStatus() {
+  invScreen.value = 'done'
+  invOpen.value = true
 }
 
 // ── Tenancy Agreement generator (client feedback item #6) ────────────
