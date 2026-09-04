@@ -1381,51 +1381,84 @@
             </div>
           </div>
           <div class="lp-assess-foot">
-            <button class="btn-primary" type="button" style="width:100%" @click="tnScreen = 'wiz'">Start — takes 3 minutes →</button>
+            <button class="btn-primary" type="button" style="width:100%" @click="startTnWizard">Start — takes 3 minutes →</button>
           </div>
         </div>
 
-        <!-- Details -->
+        <!-- Details — 3-step wizard (prototype's TNQ): The tenancy →
+             Rent & deposit → Anything specific?, each pre-filled from
+             data already on the Passport where we have it (client
+             feedback: "We've pre-filled what's already on your
+             Passport" was missing text/structure in our build). -->
         <div v-else-if="tnScreen === 'wiz'" class="lp-assess-screen">
           <div class="lp-assess-hdr">
-            <button class="lp-assess-back" type="button" aria-label="Back" @click="tnScreen = 'intro'">‹</button>
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="tnBack">‹</button>
             <div class="lp-assess-title">Tenancy details</div>
+            <div class="lp-assess-count">{{ tnStep + 1 }} / {{ TN_STEP_TITLES.length }}</div>
+          </div>
+          <div class="lp-assess-steps">
+            <div v-for="i in TN_STEP_TITLES.length" :key="i" class="lp-assess-step" :class="{ on: i - 1 <= tnStep }" />
           </div>
           <div class="lp-assess-scroll">
-            <div class="mform-section">
-              <div class="mform-label">Tenant name(s)</div>
-              <input v-model="tnTenantName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves" />
-            </div>
-            <div class="mform-section">
-              <div class="mform-label">Tenancy start date</div>
-              <input v-model="tnStartDate" type="date" class="mform-input" />
-            </div>
-            <div class="lp-two-col">
+            <div class="lp-assess-qh">{{ TN_STEP_TITLES[tnStep] }}</div>
+            <div class="lp-assess-qs">{{ TN_STEP_SUBS[tnStep] }}</div>
+
+            <template v-if="tnStep === 0">
               <div class="mform-section">
-                <div class="mform-label">Rent amount</div>
-                <input v-model="tnRentAmount" type="text" class="mform-input" placeholder="1,150" />
+                <div class="mform-label">Tenant name(s)</div>
+                <input v-model="tnTenantName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves" />
+                <div v-if="tnTenantName" class="lp-tn-pulled">✓ pulled from your Passport</div>
               </div>
               <div class="mform-section">
-                <div class="mform-label">Frequency</div>
-                <div class="lp-two-col">
-                  <button type="button" class="lp-toggle-chip" :class="{ on: tnRentFrequency === 'month' }" @click="tnRentFrequency = 'month'">Monthly</button>
-                  <button type="button" class="lp-toggle-chip" :class="{ on: tnRentFrequency === 'week' }" @click="tnRentFrequency = 'week'">Weekly</button>
+                <div class="mform-label">Tenancy start date</div>
+                <input v-model="tnStartDate" type="date" class="mform-input" />
+                <div v-if="tnStartDate" class="lp-tn-pulled">✓ pulled from your Passport</div>
+              </div>
+            </template>
+
+            <template v-else-if="tnStep === 1">
+              <div class="lp-tn-mand" style="margin-left:0;margin-right:0">
+                <div class="lp-tn-mand-t">📋 Added automatically</div>
+                <div class="lp-tn-mand-s">Because it's an assured periodic tenancy we fold in the required terms — rolling tenancy, rent increase once a year by s13 notice, notice periods, no Section 21, pet requests.</div>
+              </div>
+              <div class="lp-two-col">
+                <div class="mform-section">
+                  <div class="mform-label">Rent amount</div>
+                  <input v-model="tnRentAmount" type="text" class="mform-input" placeholder="1,150" />
+                  <div v-if="tnRentAmount" class="lp-tn-pulled">✓ pulled from your Passport</div>
+                </div>
+                <div class="mform-section">
+                  <div class="mform-label">Frequency</div>
+                  <div class="lp-two-col">
+                    <button type="button" class="lp-toggle-chip" :class="{ on: tnRentFrequency === 'month' }" @click="tnRentFrequency = 'month'">Monthly</button>
+                    <button type="button" class="lp-toggle-chip" :class="{ on: tnRentFrequency === 'week' }" @click="tnRentFrequency = 'week'">Weekly</button>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="lp-two-col">
-              <div class="mform-section">
-                <div class="mform-label">Deposit amount</div>
-                <input v-model="tnDepositAmount" type="text" class="mform-input" placeholder="1,325" />
+              <div class="lp-two-col">
+                <div class="mform-section">
+                  <div class="mform-label">Deposit amount</div>
+                  <input v-model="tnDepositAmount" type="text" class="mform-input" placeholder="1,325" />
+                  <div v-if="tnDepositAmount" class="lp-tn-pulled">✓ pulled from your Passport</div>
+                </div>
+                <div class="mform-section">
+                  <div class="mform-label">Deposit scheme</div>
+                  <input v-model="tnDepositScheme" type="text" class="mform-input" placeholder="mydeposits" />
+                </div>
               </div>
+            </template>
+
+            <template v-else-if="tnStep === 2">
               <div class="mform-section">
-                <div class="mform-label">Deposit scheme</div>
-                <input v-model="tnDepositScheme" type="text" class="mform-input" placeholder="mydeposits" />
+                <div class="mform-label">Notes / house rules (optional)</div>
+                <textarea v-model="tnNotes" class="lp-inv-note" placeholder="e.g. No smoking indoors. Tenant maintains the garden." />
               </div>
-            </div>
+            </template>
           </div>
           <div class="lp-assess-foot">
-            <button class="btn-primary" type="button" style="width:100%" @click="tnScreen = 'preview'">Continue</button>
+            <button class="btn-primary" type="button" style="width:100%" @click="tnNext">
+              {{ tnStep === TN_STEP_TITLES.length - 1 ? 'Generate document →' : 'Continue' }}
+            </button>
           </div>
         </div>
 
@@ -2544,7 +2577,33 @@ const tnRentAmount = ref('')
 const tnRentFrequency = ref<'month' | 'week'>('month')
 const tnDepositAmount = ref('')
 const tnDepositScheme = ref('')
+const tnNotes = ref('')
 const tnSaving = ref(false)
+const tnStep = ref(0)
+const TN_STEP_TITLES = ['The tenancy', 'Rent & deposit', 'Anything specific?']
+const TN_STEP_SUBS = [
+  "The basics of the let. We've pre-filled what's already on your Passport.",
+  "How much, how often, and the deposit you're protecting.",
+  'Optional house rules. The mandatory legal terms are added automatically.',
+]
+function tnNext() {
+  if (tnStep.value < TN_STEP_TITLES.length - 1) {
+    tnStep.value++
+  } else {
+    tnScreen.value = 'preview'
+  }
+}
+function tnBack() {
+  if (tnStep.value > 0) {
+    tnStep.value--
+  } else {
+    tnScreen.value = 'intro'
+  }
+}
+function startTnWizard() {
+  tnStep.value = 0
+  tnScreen.value = 'wiz'
+}
 
 const tnSavedRecord = computed<{ tenantName: string; completedAt: string } | null>(() => {
   const section = sections.value.find((s) => s.key === 'landlord_ast')
@@ -2588,15 +2647,29 @@ const tnDocText = computed(() => {
     { h: 'Deposit & compliance' },
     { clause: 'The deposit is protected in an approved scheme and the prescribed information has been given.' },
   ]
+  if (tnNotes.value.trim()) {
+    lines.push({ h: 'House rules' }, { clause: tnNotes.value.trim() })
+  }
   return lines
 })
 
+// Pre-fills whatever the wizard's step 1/2 fields already have a real
+// source for elsewhere on the Passport (client feedback: the prototype
+// pre-fills these and shows a "pulled from your Passport" tag — ours
+// didn't pull anything). Only the Inventory record currently holds
+// structured tenant-name/move-in-date/deposit data; rent amount and
+// deposit scheme have no other seller-question source yet, so they
+// stay blank (and simply show no badge, same as the prototype's own
+// v ? badge : '' logic for an unfilled field).
 function openTnWizard() {
-  tnTenantName.value = ''
-  tnStartDate.value = ''
+  const inv = invSavedRecord.value as any
+  tnTenantName.value = inv?.tenantName ?? ''
+  tnStartDate.value = inv?.moveInDate ?? ''
   tnRentAmount.value = ''
-  tnDepositAmount.value = ''
+  tnDepositAmount.value = inv?.deposit ? String(inv.deposit).replace(/[^0-9.]/g, '') : ''
   tnDepositScheme.value = ''
+  tnNotes.value = ''
+  tnStep.value = 0
   tnScreen.value = 'intro'
   tnOpen.value = true
 }
@@ -2620,6 +2693,7 @@ async function saveTenancyAgreement() {
       rentFrequency: tnRentFrequency.value,
       depositAmount: tnDepositAmount.value,
       depositScheme: tnDepositScheme.value,
+      notes: tnNotes.value,
       docText: tnDocText.value,
       templateVersion: 'v3.1 (placeholder — pending legal review)',
       completedAt: new Date().toISOString().slice(0, 10),
@@ -4692,6 +4766,8 @@ const SectionCard = defineComponent({
 .lp-tn-mand { padding: 14px; background: #e8edfb; border: 1px solid #c7d3f0; border-radius: 13px; }
 .lp-tn-mand-t { font-size: 12.5px; font-weight: 800; color: #3d63c9; }
 .lp-tn-mand-item { display: flex; gap: 9px; padding: 5px 0; font-size: 12px; font-weight: 600; color: #2c4aa0; }
+.lp-tn-mand-s { font-size: 11.5px; font-weight: 500; color: #2c4aa0; margin-top: 5px; line-height: 1.5; }
+.lp-tn-pulled { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; color: #008a84; margin-top: 6px; }
 .lp-tn-doc {
   margin: 8px 0 0;
   background: #fff;
