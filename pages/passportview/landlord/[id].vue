@@ -589,13 +589,25 @@
                   <div class="lp-leg-cta-go">›</div>
                 </div>
                 <div v-else class="lp-leg-result lp-leg-result--medium" style="background: linear-gradient(140deg,#2d2466,#231d45 60%,#15102e)">
-                  <div class="lp-leg-result-eyebrow">Inventory complete</div>
+                  <div class="lp-leg-result-eyebrow">{{ invSavedRecord.type === 'checkout' ? 'Check-out complete' : 'Inventory complete' }}</div>
                   <div class="lp-leg-result-level">{{ invSavedRecord.rooms.length }} rooms recorded</div>
                   <div class="lp-leg-result-meta">Completed {{ new Date(invSavedRecord.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) }}</div>
                   <div class="lp-two-col" style="margin-top:10px">
                     <button type="button" class="lp-leg-retake" style="flex:1" @click="openInvSigningStatus">Signing status</button>
                     <button type="button" class="lp-leg-retake" style="flex:1" @click="openInvWizard">New inventory</button>
                   </div>
+                </div>
+                <!-- The whole point of a signed check-in is to compare the
+                     property's condition against it at the end of the
+                     tenancy - a distinct action from starting a fresh
+                     inventory, not a variant of "New inventory". -->
+                <div v-if="invCheckinRecord && !invHasCheckoutForCurrentCheckin" class="lp-leg-cta" style="border-color:#f0d9a8;background:#fbf1df" @click="openInvCheckout">
+                  <img src="/op-icons/investment/clipboardChecklist.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
+                  <div class="lp-leg-cta-bd">
+                    <div class="lp-leg-cta-t" style="color:#7a5500">Run check-out</div>
+                    <div class="lp-leg-cta-s" style="color:#8a6420">At end of tenancy - compares against the check-in above</div>
+                  </div>
+                  <div class="lp-leg-cta-go" style="color:#a06b1a">›</div>
                 </div>
                 <div class="mlabel" style="margin-top:16px">Or add your own</div>
                 <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Already have an inventory report? Upload it here instead - or attach photos alongside the one you build above.</p>
@@ -1198,7 +1210,7 @@
         <div v-else-if="invScreen === 'rooms'" class="lp-assess-screen">
           <div class="lp-assess-hdr">
             <button class="lp-assess-back" type="button" aria-label="Close" @click="closeInvWizard">‹</button>
-            <div class="lp-assess-title">New inventory</div>
+            <div class="lp-assess-title">{{ invType === 'checkout' ? 'Check-out' : 'New inventory' }}</div>
           </div>
           <div class="lp-assess-scroll">
             <div class="lp-inv-prog">
@@ -1283,6 +1295,7 @@
             <div class="section-heading">Fixtures - condition &amp; cleanliness</div>
             <div v-for="item in invCurRoom.items.filter((i) => i.type === 'fixture')" :key="item.name" class="lp-inv-item">
               <div class="lp-inv-item-n">{{ item.name }}</div>
+              <div v-if="item.wasCondition || item.wasCleanliness" class="lp-inv-was">Was: {{ item.wasCondition || '-' }} · {{ item.wasCleanliness || '-' }}</div>
               <div class="lp-inv-rl">Condition</div>
               <div class="lp-inv-crow">
                 <button type="button" class="lp-inv-cd g" :class="{ on: item.condition === 'good' }" @click="invSetCondition(item, 'good')">Good</button>
@@ -1458,6 +1471,25 @@
                 <span>✓ {{ roomItemsThatApply(r).length }} items</span>
               </div>
             </div>
+
+            <!-- The actual dispute-resolution payoff of a check-out: only
+                 the items that got worse (or picked up a new note) since
+                 the check-in, not the whole room-by-room record again. -->
+            <template v-if="invType === 'checkout' && invConditionChanges.length">
+              <div class="mlabel" style="margin-top:16px">Condition changes since check-in</div>
+              <div class="lp-inv-changes">
+                <div v-for="c in invConditionChanges" :key="c.room + c.name" class="lp-inv-change-row">
+                  <div class="lp-inv-change-t">{{ c.room }} · {{ c.name }}</div>
+                  <div class="lp-inv-change-s">
+                    <span v-if="c.conditionChanged">Condition: {{ c.wasCondition || '-' }} → {{ c.condition || '-' }}</span>
+                    <span v-if="c.conditionChanged && c.cleanlinessChanged"> · </span>
+                    <span v-if="c.cleanlinessChanged">Cleanliness: {{ c.wasCleanliness || '-' }} → {{ c.cleanliness || '-' }}</span>
+                  </div>
+                  <div v-if="c.note" class="lp-inv-change-note">"{{ c.note }}"</div>
+                </div>
+              </div>
+            </template>
+
             <div class="mlabel" style="margin-top:16px">Evidence photos (optional)</div>
             <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Attach photos to back up the condition record above.</p>
             <div v-for="doc in copyDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
@@ -1603,7 +1635,7 @@
             <div class="lp-assess-intro-ic"><img src="/op-icons/misc/signature.png" alt="" class="lp-assess-intro-ic-img" loading="lazy" /></div>
             <div class="lp-assess-intro-h">Build your tenancy agreement</div>
             <div class="lp-assess-intro-s">Since 1 May 2026 every new tenancy is an assured periodic tenancy, and you must give the tenant a written statement of the key terms before they sign. umovingu builds it and folds the written statement in.</div>
-            <div class="lp-tn-verbadge">🛡️ <b>Template v3.1</b> - reviewed for the Renters' Rights Act. <span class="lp-tn-pending">Placeholder pending legal review.</span></div>
+            <div class="lp-tn-verbadge">🛡️ <b>Template {{ TN_TEMPLATE_VERSION }}</b> - reviewed for the Renters' Rights Act. <span class="lp-tn-pending">Placeholder pending legal review.</span></div>
             <div class="mlabel" style="margin-top:20px">What we fill in for you</div>
             <div class="lp-tn-mand">
               <div class="lp-tn-mand-t">📋 Mandatory written-statement terms</div>
@@ -1713,7 +1745,7 @@
                 <div v-else-if="line.k" class="lp-tn-kvr"><span class="k">{{ line.k }}</span><span class="v">{{ line.v }}</span></div>
                 <p v-else-if="line.clause" class="lp-tn-clause">{{ line.clause }}</p>
               </template>
-              <div class="lp-tn-docver">Generated by umovingu · Template v3.1 (placeholder, pending legal review)<br />Based on a template. Not legal advice.</div>
+              <div class="lp-tn-docver">Generated by umovingu · Template {{ TN_TEMPLATE_VERSION }} (placeholder, pending legal review)<br />Based on a template. Not legal advice.</div>
             </div>
             <div class="lp-tn-legalnote"><b>Before you use this:</b> check the details suit your situation. The template reflects current law but doesn't replace legal advice on anything unusual (company lets, high rent, HMOs, lodgers) - and hasn't yet had its clause wording reviewed by a solicitor.</div>
             <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
@@ -1736,7 +1768,7 @@
                 <div class="lp-tn-readydoc-t">Assured Periodic Tenancy</div>
                 <div class="lp-tn-readydoc-s">{{ passport?.addressLine1 }}{{ tnSavedRecord?.tenantName ? ' · ' + tnSavedRecord.tenantName : '' }}</div>
               </div>
-              <span class="lp-tn-readydoc-v">v3.1</span>
+              <span class="lp-tn-readydoc-v">{{ tnSavedRecord?.templateVersion ?? TN_TEMPLATE_VERSION }}</span>
             </div>
 
             <div class="mform-label" style="margin-top:20px">Next steps</div>
@@ -1760,16 +1792,60 @@
               </div>
             </div>
 
-            <div class="lp-tn-step lp-tn-step--plain">
+            <div class="lp-tn-step" @click="tnScreen = 'update'">
               <div class="lp-tn-step-ic">🔄</div>
               <div class="lp-tn-step-bd">
                 <div class="lp-tn-step-t">Kept up to date</div>
-                <div class="lp-tn-step-s">Create a new agreement here any time rent or terms change</div>
+                <div class="lp-tn-step-s">{{ tnUpToDate ? 'Built on the current template' : 'Built on an older template - review and re-issue' }}</div>
+                <span class="lp-tn-step-pill" :class="{ done: tnUpToDate }">{{ tnUpToDate ? 'Up to date' : 'Review needed' }}</span>
               </div>
+              <div class="lp-tn-step-go">›</div>
             </div>
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="tnOpen = false; showSectionDrawer = false">Back to compliance</button>
+          </div>
+        </div>
+
+        <!-- Template version history + re-issue (prototype's tn-update
+             screen). "Kept up to date" here means "built on the current
+             template version", checked via TN_TEMPLATE_VERSION - not live
+             legislation monitoring, which the tenancy text itself isn't
+             ready for yet (still pending legal review, see the disclaimer
+             above). -->
+        <div v-else-if="tnScreen === 'update'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Back" @click="tnScreen = 'done'">‹</button>
+            <div class="lp-assess-title">Kept up to date</div>
+          </div>
+          <div class="lp-assess-scroll">
+            <div class="lp-tn-status-band" :class="{ current: tnUpToDate, action: !tnUpToDate }">
+              <div class="lp-tn-status-ic">{{ tnUpToDate ? '✓' : '⚠️' }}</div>
+              <div class="lp-tn-step-bd">
+                <div class="lp-tn-status-t">{{ tnUpToDate ? 'Your agreement is up to date' : 'A newer template is available' }}</div>
+                <div class="lp-tn-status-s">
+                  {{ tnUpToDate
+                    ? `Built on Template ${TN_TEMPLATE_VERSION}, the current version. Nothing to do.`
+                    : `Your agreement was built on Template ${tnSavedRecord?.templateVersion ?? '-'}. Template ${TN_TEMPLATE_VERSION} is current - review and re-issue below.` }}
+                </div>
+              </div>
+            </div>
+
+            <div class="mform-label" style="margin-top:20px">Template history</div>
+            <div class="lp-tn-history">
+              <div v-for="h in TN_TEMPLATE_HISTORY" :key="h.version" class="lp-tn-history-row">
+                <div class="lp-tn-history-dot" :class="{ current: h.version === TN_TEMPLATE_VERSION }" />
+                <div class="lp-tn-step-bd">
+                  <div class="lp-tn-history-v">{{ h.version }}{{ h.version === TN_TEMPLATE_VERSION ? ' - current' : '' }}</div>
+                  <div v-if="h.date" class="lp-tn-history-date">{{ h.date }}</div>
+                  <div class="lp-tn-history-changes">{{ h.changes }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lp-assess-foot">
+            <button v-if="!tnUpToDate" class="btn-primary" type="button" style="width:100%" @click="openTnWizard">Review &amp; re-issue on {{ TN_TEMPLATE_VERSION }} →</button>
+            <button class="btn-secondary" type="button" style="width:100%" :style="!tnUpToDate ? 'margin-top:10px' : ''" @click="tnScreen = 'done'">Back</button>
           </div>
         </div>
 
@@ -2368,16 +2444,44 @@ async function saveWhiteGoods() {
     wgSaving.value = false
   }
 }
-const invSavedRecord = computed<{ rooms: InvRoom[]; completedAt: string; type: string; audit?: { landlord?: TnAuditEntry; tenant?: TnAuditEntry } } | null>(() => {
+// A completed inventory/tenancy record used to overwrite the single JSON
+// slot on save, so a check-out destroyed the check-in and a re-issued
+// tenancy agreement destroyed the one before it. Both now save
+// `{ records: [...] }` and append - this reads either shape, so existing
+// passports with the old single-object slot still load correctly.
+function normalizeRecordHistory<T>(raw: any, isValid: (r: any) => boolean): T[] {
+  if (!raw) return []
+  if (Array.isArray(raw.records)) return raw.records.filter(isValid)
+  return isValid(raw) ? [raw] : []
+}
+
+interface InvRecord { type: string; rooms: InvRoom[]; completedAt: string; comparedTo?: string; audit?: { landlord?: TnAuditEntry; tenant?: TnAuditEntry } }
+const invRecords = computed<InvRecord[]>(() => {
   const section = sections.value.find((s) => s.key === 'landlord_inventory')
   for (const t of section?.tasks ?? []) {
     for (const q of t.passportQuestions ?? []) {
-      if (q.questionTemplate?.type === 'DATE' && q.answer?.answerJson?.rooms) {
-        return q.answer.answerJson
+      if (q.questionTemplate?.type === 'DATE' && q.answer?.answerJson) {
+        return normalizeRecordHistory<InvRecord>(q.answer.answerJson, (r) => !!r?.rooms)
       }
     }
   }
-  return null
+  return []
+})
+const invSavedRecord = computed<InvRecord | null>(() => invRecords.value[invRecords.value.length - 1] ?? null)
+// The most recent check-in (or interim) - the baseline a check-out
+// compares against. Distinct from invSavedRecord, which is just "the
+// latest record of any type" (used for the card summary).
+const invCheckinRecord = computed<InvRecord | null>(() => {
+  const checkins = invRecords.value.filter((r) => r.type === 'checkin' || r.type === 'interim')
+  return checkins[checkins.length - 1] ?? null
+})
+// True once a check-out has been run against the current check-in - the
+// "Run check-out" CTA disappears until a new check-in makes it relevant
+// again.
+const invHasCheckoutForCurrentCheckin = computed(() => {
+  const checkin = invCheckinRecord.value
+  if (!checkin) return false
+  return invRecords.value.some((r) => r.type === 'checkout' && r.comparedTo === checkin.completedAt)
 })
 function invDateQuestion() {
   const section = sections.value.find((s) => s.key === 'landlord_inventory')
@@ -2725,7 +2829,7 @@ async function saveLegAssessment() {
 // per inventory via the existing multi-copy upload pattern, alongside
 // the structured record. Extend to per-item photos later if the
 // structured record alone doesn't prove enough in practice.
-interface InvItem { name: string; condition: string; cleanliness: string; note: string; type: 'fixture' | 'content' }
+interface InvItem { name: string; condition: string; cleanliness: string; note: string; type: 'fixture' | 'content'; wasCondition?: string; wasCleanliness?: string }
 interface InvRoom { id: string; name: string; icon: string; fixtures: string[]; contents: string[]; items: InvItem[]; custom?: boolean }
 // Generic fixture checklist for a room the landlord adds themselves
 // (study, garage, conservatory, etc.) - the 6 default rooms above have
@@ -2952,6 +3056,44 @@ function roomIsDone(r: InvRoom) {
 const invDoneCount = computed(() => invRooms.value.filter(roomIsDone).length)
 const invAllDone = computed(() => invDoneCount.value === invRooms.value.length)
 
+// Ordinal rank so "Poor" reads as worse than "Good" - a plain string
+// compare would say nothing about direction. Anything unranked (blank,
+// or a value that doesn't match) is treated as neutral/no comparison.
+const CONDITION_RANK: Record<string, number> = { good: 2, fair: 1, poor: 0 }
+const CLEANLINESS_RANK: Record<string, number> = { clean: 2, marked: 1, dirty: 0 }
+function rankOf(table: Record<string, number>, val: string) {
+  return table[val?.toLowerCase()] ?? null
+}
+function worsened(table: Record<string, number>, was: string, now: string) {
+  const w = rankOf(table, was)
+  const n = rankOf(table, now)
+  return w !== null && n !== null && n < w
+}
+const invConditionChanges = computed(() => {
+  const out: { room: string; name: string; wasCondition: string; condition: string; wasCleanliness: string; cleanliness: string; conditionChanged: boolean; cleanlinessChanged: boolean; note: string }[] = []
+  for (const r of invRooms.value) {
+    for (const i of r.items) {
+      if (i.wasCondition === undefined && i.wasCleanliness === undefined) continue
+      const conditionChanged = worsened(CONDITION_RANK, i.wasCondition ?? '', i.condition)
+      const cleanlinessChanged = worsened(CLEANLINESS_RANK, i.wasCleanliness ?? '', i.cleanliness)
+      if (conditionChanged || cleanlinessChanged || i.note) {
+        out.push({
+          room: r.name,
+          name: i.name,
+          wasCondition: i.wasCondition ?? '',
+          condition: i.condition,
+          wasCleanliness: i.wasCleanliness ?? '',
+          cleanliness: i.cleanliness,
+          conditionChanged,
+          cleanlinessChanged,
+          note: i.note,
+        })
+      }
+    }
+  }
+  return out
+})
+
 function openInvWizard() {
   invRooms.value = freshInventoryRooms()
   invWizStep.value = 1
@@ -2973,6 +3115,58 @@ function openInvWizard() {
   invLandlordConsent.value = false
   invTenantLinkUrl.value = ''
 }
+// Seeds the room/item structure from the check-in baseline rather than a
+// blank template, so a check-out is a re-inspection of the SAME rooms
+// and items rather than a freeform new list - and carries each item's
+// check-in condition/cleanliness across as `was*` fields purely for
+// reference (roomIsDone/room capture below only look at the new
+// condition/cleanliness, never the was* fields).
+function openInvCheckout() {
+  const baseline = invCheckinRecord.value
+  if (!baseline) return openInvWizard()
+  invRooms.value = baseline.rooms.map((r) => ({
+    ...r,
+    items: r.items.map((i) => ({
+      name: i.name,
+      type: i.type,
+      condition: '',
+      cleanliness: '',
+      note: '',
+      wasCondition: i.condition,
+      wasCleanliness: i.cleanliness,
+    })),
+  }))
+  invFurnishing.value = (baseline as any).furnishing ?? invFurnishing.value
+  invType.value = 'checkout'
+  invPreparedBy.value = (baseline as any).preparedBy ?? invPreparedBy.value
+  invTenantName.value = (baseline as any).tenantName ?? ''
+  invMoveInDate.value = (baseline as any).moveInDate ?? ''
+  invDeposit.value = (baseline as any).deposit ?? ''
+  invKeys.value = ''
+  invMeterGas.value = ''
+  invMeterElectric.value = ''
+  invMeterWater.value = ''
+  invSmartMeterGas.value = ''
+  invSmartMeterElectric.value = ''
+  invAlarmRows.value = []
+  invKeyStopcock.value = ''
+  invKeyWaterMeter.value = ''
+  invKeyFuseBox.value = ''
+  invKeyGasMeter.value = ''
+  invKeyElectricityMeter.value = ''
+  invBinGeneral.value = ''
+  invBinRecycling.value = ''
+  invBinFoodGarden.value = ''
+  invBinCollectionDay.value = ''
+  binDocs.value = []
+  roomPhotoDocs.value = {}
+  invLandlordName.value = ''
+  invLandlordConsent.value = false
+  invTenantLinkUrl.value = ''
+  invScreen.value = 'rooms'
+  invOpen.value = true
+}
+
 function closeInvWizard() {
   invOpen.value = false
 }
@@ -3041,11 +3235,15 @@ async function saveInventory() {
       },
       rooms: invRooms.value,
       completedAt: new Date().toISOString().slice(0, 10),
+      ...(invType.value === 'checkout' && invCheckinRecord.value ? { comparedTo: invCheckinRecord.value.completedAt } : {}),
     }
+    // Append, don't overwrite - a check-out must keep the check-in it's
+    // compared against, and a fresh check-in for a new tenancy shouldn't
+    // erase the property's inventory history.
     await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
-      body: { value: record },
+      body: { value: { records: [...invRecords.value, record] } },
     })
     await loadPassport()
     invScreen.value = 'done'
@@ -3096,7 +3294,11 @@ async function submitInvLandlordSignature() {
   drawerError.value = ''
   try {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    const record = { ...invSavedRecord.value }
+    // Enriching the record just created in saveInventory() with a
+    // signature, not starting a new one - replace the LAST array entry
+    // rather than appending.
+    const records = [...invRecords.value]
+    const record = { ...records[records.length - 1] }
     record.audit = {
       ...record.audit,
       landlord: {
@@ -3105,10 +3307,11 @@ async function submitInvLandlordSignature() {
         signedAt: new Date().toISOString(),
       },
     }
+    records[records.length - 1] = record
     await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
-      body: { value: record },
+      body: { value: { records } },
     })
     await loadPassport()
     invScreen.value = 'send-tenant'
@@ -3169,15 +3372,13 @@ function openInvSigningStatus() {
 // document and the "not legal advice" note below are NOT decorative -
 // leave them in place until that review happens.
 //
-// Deliberately NOT full parity with the prototype's e-signature/audit-
-// trail flow, template-version-history dashboard, or cross-linked-
-// documents screen - each is a real, separately-justifiable feature in
-// its own right (a genuine e-sign flow needs its own audit/legal
-// design), not something to bolt on inside this generator's scope.
-// This delivers the actual document; those are natural next builds.
+// E-signature (magic link + drawn signature, see below) and the
+// template-version-history "kept up to date" screen (TN_TEMPLATE_VERSION/
+// TN_TEMPLATE_HISTORY, tnScreen === 'update') were the natural next
+// builds flagged here and have since been added.
 const isTenancySection = computed(() => drawerSection.value?.key === 'landlord_ast')
 const tnOpen = ref(false)
-const tnScreen = ref<'intro' | 'wiz' | 'preview' | 'done' | 'landlord-sign' | 'send-tenant'>('intro')
+const tnScreen = ref<'intro' | 'wiz' | 'preview' | 'done' | 'landlord-sign' | 'send-tenant' | 'update'>('intro')
 const tnTenantName = ref('')
 const tnStartDate = ref('')
 const tnRentAmount = ref('')
@@ -3216,18 +3417,36 @@ interface TnAuditEntry { name: string; signatureDataUrl: string; signedAt: strin
 interface TnRecord {
   tenantName: string
   completedAt: string
+  templateVersion?: string
   audit?: { landlord?: TnAuditEntry; tenant?: TnAuditEntry }
 }
-const tnSavedRecord = computed<TnRecord | null>(() => {
+const tnRecords = computed<TnRecord[]>(() => {
   const section = sections.value.find((s) => s.key === 'landlord_ast')
   for (const t of section?.tasks ?? []) {
     for (const q of t.passportQuestions ?? []) {
-      if (q.questionTemplate?.type === 'DATE' && q.answer?.answerJson?.docText) {
-        return q.answer.answerJson
+      if (q.questionTemplate?.type === 'DATE' && q.answer?.answerJson) {
+        return normalizeRecordHistory<TnRecord>(q.answer.answerJson, (r) => !!r?.docText)
       }
     }
   }
-  return null
+  return []
+})
+const tnSavedRecord = computed<TnRecord | null>(() => tnRecords.value[tnRecords.value.length - 1] ?? null)
+// No agreement yet counts as "up to date" - there's nothing to re-issue,
+// and the "Kept up to date" row shouldn't nag before a first agreement
+// even exists.
+// Compares just the leading version token (e.g. "v3.1"), not the whole
+// string - agreements saved before TN_TEMPLATE_VERSION was trimmed down
+// to a bare version still carry the old "v3.1 (placeholder - pending
+// legal review)" wording in their templateVersion field, which must
+// still read as version 3.1, not as an unrecognised/older version.
+function versionToken(v: string | undefined) {
+  return v?.match(/^v?[\d.]+/)?.[0]?.replace(/^v/, '') ?? ''
+}
+const tnUpToDate = computed(() => {
+  if (!tnSavedRecord.value) return true
+  const saved = versionToken(tnSavedRecord.value.templateVersion)
+  return !saved || saved === versionToken(TN_TEMPLATE_VERSION)
 })
 function tnAstQuestion() {
   const section = sections.value.find((s) => s.key === 'landlord_ast')
@@ -3240,6 +3459,24 @@ const TN_CLAUSES = [
   "The tenant may end the tenancy by giving two months' notice in writing.",
   'The landlord may only seek possession on a valid Section 8 ground. Section 21 notices cannot be used.',
   'The tenant has the right to request a pet; the landlord will not unreasonably refuse.',
+]
+
+// Single source of truth for the template version shown on the generated
+// document, the "ready" screen and the record saved on sign - bump this
+// (and add one entry to TN_TEMPLATE_HISTORY) whenever the clause text
+// above changes, rather than editing the four places that used to each
+// hardcode 'v3.1' separately. Kept bare (no caveat text) so a saved
+// record's templateVersion can be compared against it directly to know
+// whether a re-issue is needed.
+const TN_TEMPLATE_VERSION = 'v3.1'
+// Real legal review hasn't happened yet (see the disclaimer wherever this
+// version renders) - that's a standing caveat on the template as a whole,
+// not a fact about any one version, so it isn't folded into the version
+// string itself. `date` is the calendar date each version actually
+// shipped - leave it '' until this template goes live with a real date
+// rather than a placeholder ("Current" would misread as a date).
+const TN_TEMPLATE_HISTORY: { version: string; date: string; changes: string }[] = [
+  { version: 'v3.1', date: '', changes: 'Initial assured periodic tenancy template with the written statement of terms folded in.' },
 ]
 
 function tnFormatDate(iso: string) {
@@ -3288,13 +3525,20 @@ function openTnSigningStatus() {
 }
 
 function openTnWizard() {
+  // Re-issuing an existing agreement (e.g. onto a newer template)
+  // pre-fills from that agreement's own answers, not the inventory - a
+  // landlord re-issuing shouldn't have to retype rent, deposit scheme or
+  // house-rule notes they already entered. Only the very first agreement
+  // (no tnSavedRecord yet) falls back to whatever the Inventory captured.
+  const existing = tnSavedRecord.value as any
   const inv = invSavedRecord.value as any
-  tnTenantName.value = inv?.tenantName ?? ''
-  tnStartDate.value = inv?.moveInDate ?? ''
-  tnRentAmount.value = ''
-  tnDepositAmount.value = inv?.deposit ? String(inv.deposit).replace(/[^0-9.]/g, '') : ''
-  tnDepositScheme.value = ''
-  tnNotes.value = ''
+  tnTenantName.value = existing?.tenantName ?? inv?.tenantName ?? ''
+  tnStartDate.value = existing?.startDate ?? inv?.moveInDate ?? ''
+  tnRentAmount.value = existing?.rentAmount ?? ''
+  tnRentFrequency.value = existing?.rentFrequency ?? 'month'
+  tnDepositAmount.value = existing?.depositAmount ?? (inv?.deposit ? String(inv.deposit).replace(/[^0-9.]/g, '') : '')
+  tnDepositScheme.value = existing?.depositScheme ?? ''
+  tnNotes.value = existing?.notes ?? ''
   tnStep.value = 0
   tnLandlordName.value = ''
   tnLandlordConsent.value = false
@@ -3324,13 +3568,15 @@ async function saveTenancyAgreement() {
       depositScheme: tnDepositScheme.value,
       notes: tnNotes.value,
       docText: tnDocText.value,
-      templateVersion: 'v3.1 (placeholder - pending legal review)',
+      templateVersion: TN_TEMPLATE_VERSION,
       completedAt: new Date().toISOString().slice(0, 10),
     }
+    // Append, don't overwrite - a re-issued agreement must keep the
+    // previously-signed version in history rather than erasing it.
     await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
-      body: { value: record },
+      body: { value: { records: [...tnRecords.value, record] } },
     })
     await loadPassport()
     tnScreen.value = 'done'
@@ -3385,7 +3631,11 @@ async function submitLandlordSignature() {
   drawerError.value = ''
   try {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    const record = { ...tnSavedRecord.value }
+    // Enriching the record just created in saveTenancyAgreement() with a
+    // signature, not starting a new one - replace the LAST array entry
+    // rather than appending.
+    const records = [...tnRecords.value]
+    const record = { ...records[records.length - 1] }
     record.audit = {
       ...record.audit,
       landlord: {
@@ -3394,10 +3644,11 @@ async function submitLandlordSignature() {
         signedAt: new Date().toISOString(),
       },
     }
+    records[records.length - 1] = record
     await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
-      body: { value: record },
+      body: { value: { records } },
     })
     await loadPassport()
     tnScreen.value = 'send-tenant'
@@ -5589,7 +5840,15 @@ const SectionCard = defineComponent({
 }
 .lp-inv-item { background: #fff; border: 1px solid #e8eceb; border-radius: 14px; padding: 14px; margin-bottom: 10px; }
 .lp-inv-item-n { font-size: 14.5px; font-weight: 700; color: #0e2840; }
+.lp-inv-was { font-size: 11px; font-weight: 600; color: #a06b1a; background: #fbf1df; display: inline-block; padding: 2px 8px; border-radius: 100px; margin-top: 4px; text-transform: capitalize; }
 .lp-inv-rl { font-size: 10px; font-weight: 800; color: #a8a9ad; letter-spacing: 0.5px; text-transform: uppercase; margin: 11px 0 6px; }
+
+.lp-inv-changes { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(35, 29, 69, 0.06); }
+.lp-inv-change-row { padding: 12px 15px; border-bottom: 1px solid #f0f0f4; }
+.lp-inv-change-row:last-child { border-bottom: none; }
+.lp-inv-change-t { font-size: 13px; font-weight: 800; color: #0e2840; }
+.lp-inv-change-s { font-size: 12px; font-weight: 600; color: #c0492f; margin-top: 3px; text-transform: capitalize; }
+.lp-inv-change-note { font-size: 11.5px; font-weight: 500; color: #6b7089; font-style: italic; margin-top: 4px; }
 .lp-inv-crow { display: flex; gap: 6px; }
 .lp-inv-cd {
   flex: 1;
@@ -5670,6 +5929,33 @@ const SectionCard = defineComponent({
 .lp-tn-step-pill { display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 800; padding: 4px 9px; border-radius: 100px; background: #fdf1dc; color: #a06b1a; }
 .lp-tn-step-pill.done { background: #e7f6ef; color: #0f8a6e; }
 .lp-tn-step-go { color: #b9b9c4; font-size: 18px; align-self: center; flex-shrink: 0; }
+
+/* "Kept up to date" - status band + template history */
+.lp-tn-status-band {
+  display: flex; gap: 14px; align-items: flex-start;
+  border-radius: 16px; padding: 16px;
+}
+.lp-tn-status-band.current { background: #e7f6ef; border: 1px solid #bfe6d5; }
+.lp-tn-status-band.action { background: #fbf1df; border: 1px solid #f0d9a8; }
+.lp-tn-status-ic { width: 40px; height: 40px; border-radius: 12px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+.lp-tn-status-t { font-size: 15px; font-weight: 800; }
+.lp-tn-status-band.current .lp-tn-status-t { color: #0c6e58; }
+.lp-tn-status-band.action .lp-tn-status-t { color: #7a5500; }
+.lp-tn-status-s { font-size: 12px; font-weight: 600; margin-top: 4px; line-height: 1.5; }
+.lp-tn-status-band.current .lp-tn-status-s { color: #0c6e58; }
+.lp-tn-status-band.action .lp-tn-status-s { color: #8a6420; }
+
+.lp-tn-history {
+  background: #fff; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 4px 18px rgba(35, 29, 69, 0.06);
+}
+.lp-tn-history-row { display: flex; gap: 12px; padding: 13px 15px; border-bottom: 1px solid #f0f0f4; }
+.lp-tn-history-row:last-child { border-bottom: none; }
+.lp-tn-history-dot { width: 10px; height: 10px; border-radius: 50%; background: #b9b9c4; flex-shrink: 0; margin-top: 5px; }
+.lp-tn-history-dot.current { background: #00a19a; }
+.lp-tn-history-v { font-size: 13px; font-weight: 800; color: #0e2840; }
+.lp-tn-history-date { font-size: 11px; font-weight: 600; color: #a8a9ad; margin-top: 1px; }
+.lp-tn-history-changes { font-size: 12px; font-weight: 500; color: #6b7089; line-height: 1.45; margin-top: 5px; }
 
 .lp-tn-consent {
   display: flex; align-items: flex-start; gap: 10px; margin: 16px 0;
