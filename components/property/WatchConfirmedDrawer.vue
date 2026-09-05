@@ -18,7 +18,6 @@
           <div class="watch-grip" />
 
           <div class="wc-hero">
-            <span v-for="(c, i) in confetti" :key="i" class="wc-confetti-piece" :class="c.shape" :style="c.style" />
             <div class="wc-hero-icon">
               <img src="/op-icons/landing/propertyPassportCard.png" alt="" class="wc-hero-img" loading="lazy" />
               <span class="wc-hero-badge">
@@ -92,13 +91,7 @@
                 interested in.
               </div>
               <button class="wc-upsell-btn" type="button" @click="$emit('create-passport')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none">
-                  <path d="M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6z" />
-                </svg>
                 Create my Buyer Passport
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
               </button>
             </div>
           </div>
@@ -176,23 +169,22 @@ const triggers = computed(() => {
   return keys.map((k) => ALL_TRIGGERS[k])
 })
 
-// Richer celebration confetti (client feedback: "put a confetti here like
-// we have at other places in the app") - same mix of rotated rect pieces
-// + sparkle characters as SectionCompleteCelebration.vue, scaled down for
-// this smaller hero area. Fixed positions (not random) for a stable,
-// testable layout.
-const confetti = [
-  { shape: 'rect', style: 'left:10%; top:8%; background:#14b8a6; transform:rotate(-18deg);' },
-  { shape: 'rect', style: 'left:24%; top:0%; background:#7c5cff; transform:rotate(24deg);' },
-  { shape: 'spark', style: 'left:16%; top:24%; color:#00a19a;' },
-  { shape: 'rect', style: 'left:4%; top:38%; background:#ff9f43; transform:rotate(10deg);' },
-  { shape: 'spark', style: 'left:32%; top:44%; color:#fbbf24;' },
-  { shape: 'rect', style: 'right:10%; top:10%; background:#38bdf8; transform:rotate(16deg);' },
-  { shape: 'rect', style: 'right:24%; top:-2%; background:#7c5cff; transform:rotate(-20deg);' },
-  { shape: 'spark', style: 'right:14%; top:26%; color:#ff9f43;' },
-  { shape: 'rect', style: 'right:4%; top:40%; background:#14b8a6; transform:rotate(-12deg);' },
-  { shape: 'spark', style: 'right:30%; top:46%; color:#00a19a;' },
-]
+// Real animated confetti (client feedback: "add real animated confetti
+// here like we have on the owner quiz") - the static scattered dots
+// this replaces weren't actually animated. Reuses the same canvas burst
+// V6LevelUpView.vue fires on the HomeScore level-up screen, so the
+// celebration reads consistently across the app. Fires on open (and
+// re-fires if the same drawer instance is reopened for a different
+// property) rather than on mount, since this component is Teleported
+// and kept alive/toggled via `open` rather than created fresh each time.
+const { runConfetti } = useConfetti()
+watch(
+  () => props.open,
+  (isOpen) => {
+    if (isOpen) setTimeout(() => runConfetti(), 150)
+  },
+  { immediate: true },
+)
 </script>
 
 <style scoped>
@@ -274,24 +266,6 @@ const confetti = [
   width: 15px;
   height: 15px;
 }
-.wc-confetti-piece {
-  position: absolute;
-  pointer-events: none;
-}
-.wc-confetti-piece.rect {
-  width: 7px;
-  height: 12px;
-  border-radius: 2px;
-  opacity: 0.9;
-}
-.wc-confetti-piece.spark {
-  font-size: 12px;
-  color: inherit;
-}
-.wc-confetti-piece.spark::before {
-  content: '✦';
-}
-
 .wc-title-row {
   display: flex;
   align-items: center;
@@ -449,11 +423,6 @@ const confetti = [
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
 }
-.wc-upsell-btn svg {
-  width: 15px;
-  height: 15px;
-}
-
 .wc-maybe-row {
   padding: 16px 22px 0;
 }

@@ -207,20 +207,19 @@
                     }}
                   </div>
                   <div class="prop-badge-pp" :class="stateOf(prop)">
-                    <div class="prop-badge-pp-cap">
-                      <!-- Unlocked: unclaimed and public(-ish) — nothing
-                           private is being withheld. Locked: private only. -->
-                      <img
-                        :src="stateOf(prop) !== 'private'
-                          ? '/op-icons/claim/padlockUnlocked.png'
-                          : '/op-icons/claim/padlock.png'"
-                        alt=""
-                        class="prop-badge-pp-lock"
-                        loading="lazy"
-                      />
-                      Passport
-                    </div>
-                    <div class="prop-badge-pp-val">{{ badgeLabel(prop) }}</div>
+                    <!-- Single line (client feedback) - lock icon +
+                         "Passport" caption + state value all in one row,
+                         was stacked cap/value across two lines before. -->
+                    <img
+                      :src="stateOf(prop) !== 'private'
+                        ? '/op-icons/claim/padlockUnlocked.png'
+                        : '/op-icons/claim/padlock.png'"
+                      alt=""
+                      class="prop-badge-pp-lock"
+                      loading="lazy"
+                    />
+                    <span class="prop-badge-pp-cap">Passport</span>
+                    <span class="prop-badge-pp-val">{{ badgeLabel(prop) }}</span>
                   </div>
                 </div>
                 <div class="prop-address">
@@ -248,6 +247,31 @@
                     :style="{ background: epcColor(prop.epcRating) }"
                     >EPC {{ prop.epcRating }}</span
                   >
+                  <!-- Moved up from the footer actions row, right-aligned
+                       under the Passport badge (client feedback). -->
+                  <button
+                    type="button"
+                    class="watch-btn watch-btn--top"
+                    :class="{ active: watchedIds.has(prop.id) }"
+                    @click.stop="onWatchClick(prop)"
+                  >
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="3" />
+                      <path
+                        d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"
+                      />
+                    </svg>
+                    {{ watchedIds.has(prop.id) ? 'Watching' : 'Watch' }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -337,9 +361,8 @@
                 </div>
               </div>
 
-              <div class="prop-actions-row">
+              <div v-if="insightFor(prop)" class="prop-actions-row">
                 <div
-                  v-if="insightFor(prop)"
                   class="prop-insight"
                   :class="insightFor(prop)!.tone"
                 >
@@ -389,30 +412,6 @@
                   </svg>
                   {{ insightFor(prop)!.text }}
                 </div>
-                <span v-else />
-                <button
-                  type="button"
-                  class="watch-btn"
-                  :class="{ active: watchedIds.has(prop.id) }"
-                  @click.stop="onWatchClick(prop)"
-                >
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="3" />
-                    <path
-                      d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"
-                    />
-                  </svg>
-                  {{ watchedIds.has(prop.id) ? 'Watching' : 'Watch' }}
-                </button>
               </div>
             </div>
           </div>
@@ -1355,22 +1354,19 @@ watch(displayedProperties, () => {
   flex-shrink: 0;
   color: #fff;
   border-radius: 12px;
-  padding: 4px 10px 5px;
+  padding: 6px 10px;
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1px;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
   white-space: nowrap;
   margin-top: 1px;
 }
 .prop-badge-pp-cap {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 7.5px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  opacity: 0.85;
+  opacity: 0.75;
 }
 .prop-badge-pp-lock {
   width: 13px;
@@ -1379,7 +1375,7 @@ watch(displayedProperties, () => {
   flex-shrink: 0;
 }
 .prop-badge-pp-val {
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1.1;
@@ -1442,6 +1438,9 @@ watch(displayedProperties, () => {
   flex-wrap: wrap;
   align-items: center;
   margin-top: 6px;
+}
+.watch-btn--top {
+  margin-left: auto;
 }
 .pill-grey {
   background: #f1f5f9;
