@@ -408,15 +408,14 @@
                 :key="link.url"
                 class="lp-leg-link"
                 :href="link.url"
-                target="_blank"
-                rel="noopener"
+                v-bind="link.download ? { download: link.download } : { target: '_blank', rel: 'noopener' }"
               >
                 <div class="lp-leg-link-ic"><img src="/op-icons/matched-buyers/link.png" alt="" class="lp-leg-link-ic-img" loading="lazy" /></div>
                 <div class="lp-leg-link-bd">
                   <div class="lp-leg-link-t">{{ link.title }}</div>
                   <div class="lp-leg-link-s">{{ link.sub }}</div>
                 </div>
-                <div class="lp-leg-link-go">↗</div>
+                <div class="lp-leg-link-go">{{ link.download ? '⬇' : '↗' }}</div>
               </a>
               <div class="lp-modal-hint" style="margin-bottom:12px">Once you've served the Information Sheet, record it below - proof of service matters if a tenancy is ever challenged.</div>
             </template>
@@ -1228,13 +1227,12 @@
               </div>
               <span class="lp-inv-badge" :class="roomIsDone(r) ? 'done' : 'todo'">{{ roomIsDone(r) ? 'Done' : 'To do' }}</span>
               <button
-                v-if="r.custom"
                 type="button"
                 class="lp-inv-room-remove"
                 aria-label="Remove room"
-                @click.stop="removeCustomRoom(r.id)"
+                @click.stop="removeInvRoom(r.id)"
               >×</button>
-              <span v-else class="lp-assess-back" style="font-size:20px">›</span>
+              <span class="lp-assess-back" style="font-size:20px">›</span>
             </div>
 
             <div class="lp-inv-pw-heading">Property-wide</div>
@@ -1294,7 +1292,10 @@
           <div class="lp-assess-scroll">
             <div class="section-heading">Fixtures - condition &amp; cleanliness</div>
             <div v-for="item in invCurRoom.items.filter((i) => i.type === 'fixture')" :key="item.name" class="lp-inv-item">
-              <div class="lp-inv-item-n">{{ item.name }}</div>
+              <div class="lp-inv-item-top">
+                <div class="lp-inv-item-n">{{ item.name }}</div>
+                <button type="button" class="lp-inv-item-rm" aria-label="Remove item" @click="removeRoomItem(invCurRoom, item)">✕</button>
+              </div>
               <div v-if="item.wasCondition || item.wasCleanliness" class="lp-inv-was">Was: {{ item.wasCondition || '-' }} · {{ item.wasCleanliness || '-' }}</div>
               <div class="lp-inv-rl">Condition</div>
               <div class="lp-inv-crow">
@@ -1310,13 +1311,37 @@
               </div>
               <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
             </div>
+            <!-- Fixtures don't depend on furnishing - always present, so
+                 this add-row is always available (client feedback: no way
+                 to record something the template didn't anticipate, like
+                 a fireplace or a skylight). -->
+            <div class="lp-inv-addroom">
+              <input
+                v-model="newFixtureName"
+                type="text"
+                class="lp-inv-addroom-input"
+                placeholder="e.g. Fireplace, Skylight"
+                @keyup.enter="addRoomItem(invCurRoom, 'fixture')"
+              />
+              <button type="button" class="lp-inv-addroom-btn" :disabled="!newFixtureName.trim()" @click="addRoomItem(invCurRoom, 'fixture')">
+                + Add fixture
+              </button>
+            </div>
 
             <!-- Hidden entirely for an unfurnished let - client feedback:
-                 selecting Unfurnished still asked furniture questions. -->
-            <template v-if="invFurnishing !== 'unfurnished' && invCurRoom.items.some((i) => i.type === 'content')">
+                 selecting Unfurnished still asked furniture questions.
+                 Shown (even with zero items yet) for furnished AND
+                 part-furnished, since part-furnished starts with an
+                 empty list the landlord builds via "+ Add furnishing"
+                 rather than the full furnished set. -->
+            <template v-if="invFurnishing !== 'unfurnished'">
               <div class="section-heading">Furnishings &amp; contents</div>
               <div v-for="item in invCurRoom.items.filter((i) => i.type === 'content')" :key="item.name" class="lp-inv-item">
-                <div class="lp-inv-item-n">{{ item.name }}</div>
+                <div class="lp-inv-item-top">
+                  <div class="lp-inv-item-n">{{ item.name }}</div>
+                  <button type="button" class="lp-inv-item-rm" aria-label="Remove item" @click="removeRoomItem(invCurRoom, item)">✕</button>
+                </div>
+                <div v-if="item.wasCondition || item.wasCleanliness" class="lp-inv-was">Was: {{ item.wasCondition || '-' }} · {{ item.wasCleanliness || '-' }}</div>
                 <div class="lp-inv-rl">Condition</div>
                 <div class="lp-inv-crow">
                   <button type="button" class="lp-inv-cd g" :class="{ on: item.condition === 'good' }" @click="invSetCondition(item, 'good')">Good</button>
@@ -1330,6 +1355,18 @@
                   <button type="button" class="lp-inv-cd dt" :class="{ on: item.cleanliness === 'dirty' }" @click="invSetCleanliness(item, 'dirty')">Dirty</button>
                 </div>
                 <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
+              </div>
+              <div class="lp-inv-addroom">
+                <input
+                  v-model="newContentName"
+                  type="text"
+                  class="lp-inv-addroom-input"
+                  placeholder="e.g. Sofa, Wardrobe"
+                  @keyup.enter="addRoomItem(invCurRoom, 'content')"
+                />
+                <button type="button" class="lp-inv-addroom-btn" :disabled="!newContentName.trim()" @click="addRoomItem(invCurRoom, 'content')">
+                  + Add furnishing
+                </button>
               </div>
             </template>
 
@@ -2844,12 +2881,20 @@ const INVENTORY_ROOM_TEMPLATE: Omit<InvRoom, 'items'>[] = [
   { id: 'bath', name: 'Bathroom', icon: '/op-icons/legionella/bathroomRoom.png', fixtures: ['Bath / shower', 'Toilet', 'Basin & taps', 'Tiling, grout & sealant', 'Extractor fan', 'Flooring'], contents: ['Mirror cabinet'] },
   { id: 'hall', name: 'Hallway & entrance', icon: '/op-icons/legionella/hallwayDoor.png', fixtures: ['Front door, frame & locks', 'Walls & ceiling', 'Flooring', 'Light fittings'], contents: [] },
 ]
-function freshInventoryRooms(): InvRoom[] {
+// Fixtures always apply regardless of furnishing - only the default
+// CONTENTS pre-fill depends on it. A fully furnished let pre-fills the
+// typical contents list; part-furnished has no single "typical" subset
+// (every property differs in what's actually left), so it starts empty
+// and the landlord adds exactly what's there via the room screen's own
+// "+ Add furnishing" (client feedback: part-furnished showed the same
+// full list as furnished, which wasn't right for either case - either
+// too much to remove, or nothing to add from).
+function freshInventoryRooms(furnishing: 'furnished' | 'part' | 'unfurnished' = 'furnished'): InvRoom[] {
   return INVENTORY_ROOM_TEMPLATE.map((r) => ({
     ...r,
     items: [
       ...r.fixtures.map((name) => ({ name, condition: '', cleanliness: '', note: '', type: 'fixture' as const })),
-      ...r.contents.map((name) => ({ name, condition: '', cleanliness: '', note: '', type: 'content' as const })),
+      ...(furnishing === 'furnished' ? r.contents.map((name) => ({ name, condition: '', cleanliness: '', note: '', type: 'content' as const })) : []),
     ],
   }))
 }
@@ -2873,6 +2918,8 @@ const invRooms = ref<InvRoom[]>(freshInventoryRooms())
 const invCurRoomId = ref<string | null>(null)
 const invSaving = ref(false)
 const invNewRoomName = ref('')
+const newFixtureName = ref('')
+const newContentName = ref('')
 
 // Property-wide - Safety & compliance (prototype iv-safety): alarms
 // present/tested + fixed key-location fields. Separate from the
@@ -3037,11 +3084,35 @@ function addCustomRoom() {
   })
   invNewRoomName.value = ''
 }
-function removeCustomRoom(id: string) {
+// Any room can be removed now, not just landlord-added ones - client
+// feedback: a 3-bed template with only 2 real bedrooms had no way to
+// drop the room that doesn't exist. Keeps at least one room so the
+// inventory can never end up with nothing left to capture.
+function removeInvRoom(id: string) {
+  if (invRooms.value.length <= 1) {
+    showToast({ message: 'Keep at least one room.', duration: 1800 })
+    return
+  }
   invRooms.value = invRooms.value.filter((r) => r.id !== id)
 }
 
 const invCurRoom = computed(() => invRooms.value.find((r) => r.id === invCurRoomId.value) ?? null)
+// Per-room fixture/content items are editable too - client feedback: the
+// fixed lists don't match every property (a room might lack "Windows &
+// coverings", or have something the template never anticipated like a
+// fireplace). Mirrors addCustomRoom/removeInvRoom's shape at the item
+// level rather than the room level.
+function removeRoomItem(room: InvRoom, item: InvItem) {
+  const idx = room.items.indexOf(item)
+  if (idx > -1) room.items.splice(idx, 1)
+}
+function addRoomItem(room: InvRoom, type: 'fixture' | 'content') {
+  const nameRef = type === 'fixture' ? newFixtureName : newContentName
+  const name = nameRef.value.trim()
+  if (!name) return
+  room.items.push({ name, type, condition: '', cleanliness: '', note: '' })
+  nameRef.value = ''
+}
 // Content/furnishing items don't apply to an unfurnished let - client
 // feedback: selecting "Unfurnished" still asked furniture questions.
 // Fixtures (walls, flooring, doors...) always apply regardless of
@@ -3095,7 +3166,8 @@ const invConditionChanges = computed(() => {
 })
 
 function openInvWizard() {
-  invRooms.value = freshInventoryRooms()
+  invFurnishing.value = 'furnished'
+  invRooms.value = freshInventoryRooms(invFurnishing.value)
   invWizStep.value = 1
   invScreen.value = 'setup'
   invOpen.value = true
@@ -3174,6 +3246,10 @@ function invWizNext() {
   if (invWizStep.value < 2) {
     invWizStep.value++
   } else {
+    // Rooms are (re)built here, not at openInvWizard() - furnishing is
+    // still whatever it defaulted to at that point, since step 1 (where
+    // the landlord actually picks it) hasn't run yet.
+    invRooms.value = freshInventoryRooms(invFurnishing.value)
     invScreen.value = 'rooms'
   }
 }
@@ -3183,6 +3259,8 @@ function invWizBack() {
 function invOpenRoom(id: string) {
   invCurRoomId.value = id
   invScreen.value = 'room'
+  newFixtureName.value = ''
+  newContentName.value = ''
   loadRoomPhotoDocs(id)
 }
 function invSetCondition(item: InvItem, val: string) {
@@ -3701,7 +3779,12 @@ const INFO_SHEET_LINKS = [
   {
     title: "The Renters' Rights Act Information Sheet 2026",
     sub: 'Official GOV.UK PDF - serve this to tenants',
-    url: 'https://www.gov.uk/guidance/the-renters-rights-act-information-sheet-2026-alternative-formats',
+    // Downloads our own hosted copy of the official PDF directly, rather
+    // than sending the landlord to a GOV.UK guidance page they'd then
+    // have to find the PDF on themselves - the whole point of this link
+    // is "serve this exact document to your tenant".
+    url: '/legal/renters-rights-act-information-sheet-2026.pdf',
+    download: 'Renters-Rights-Act-Information-Sheet-2026.pdf',
   },
   {
     title: "Renters' Rights Act 2025",
@@ -3712,6 +3795,11 @@ const INFO_SHEET_LINKS = [
     title: 'Renting out your property: landlord guidance',
     sub: 'GOV.UK - what you must do from 1 May 2026',
     url: 'https://www.gov.uk/renting-out-a-property',
+  },
+  {
+    title: 'How to Rent guide (withdrawn)',
+    sub: 'Only for tenancies with a valid pre-1 May 2026 s21',
+    url: 'https://www.gov.uk/government/publications/how-to-rent',
   },
 ]
 const propertyEpc = computed(() => passport.value?.property ?? null)
@@ -5839,7 +5927,25 @@ const SectionCard = defineComponent({
   cursor: not-allowed;
 }
 .lp-inv-item { background: #fff; border: 1px solid #e8eceb; border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+.lp-inv-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .lp-inv-item-n { font-size: 14.5px; font-weight: 700; color: #0e2840; }
+.lp-inv-item-rm {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f4f3;
+  color: #a8a9ad;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.lp-inv-item-rm:active { background: #fbeae5; color: #c2410c; }
 .lp-inv-was { font-size: 11px; font-weight: 600; color: #a06b1a; background: #fbf1df; display: inline-block; padding: 2px 8px; border-radius: 100px; margin-top: 4px; text-transform: capitalize; }
 .lp-inv-rl { font-size: 10px; font-weight: 800; color: #a8a9ad; letter-spacing: 0.5px; text-transform: uppercase; margin: 11px 0 6px; }
 
