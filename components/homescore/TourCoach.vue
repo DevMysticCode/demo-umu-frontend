@@ -79,45 +79,90 @@ async function measure() {
   if (h) injectHeight.value = h
 }
 
-// If the target doesn't currently have enough clear space above it for the
-// inject card's REAL height, nudge the page up by exactly the shortfall —
-// deterministic, no guessing, so the gap above is always just `GAP`, never
-// more (looks "far away") or less (overlaps the target).
+// Re-reads the target's real on-screen position after an instant scroll,
+// rather than trusting the requested delta - scrollBy clamps at the
+// document's edges, so a target near the top (or bottom) of the page may
+// only move part of the way, or not at all. Trusting the requested delta
+// in that case invents a targetRect that doesn't match reality, which
+// then feeds a wrong "there's room here" decision into injectStyle below.
+function refreshTargetRect() {
+  const el = props.tour.targetEl.value
+  if (!el) return
+  const nr = el.getBoundingClientRect()
+  targetRect.value = { top: nr.top, left: nr.left, width: nr.width, height: nr.height }
+  return targetRect.value
+}
+
+// Secures clear space for the inject card without overlapping the
+// target - tries ABOVE first (matches injectStyle's own preference,
+// below), scrolling up by the exact shortfall. On a short viewport with
+// a tall target close to the top of the whole page, that scroll can be
+// clamped before it opens up enough room (there's simply nothing further
+// up to reveal) - when that happens, fall back to BELOW and scroll DOWN
+// to secure that instead, rather than letting injectStyle's viewport
+// clamp overlap the card onto the target (which is what a purely passive
+// clamp does: it keeps the card on-screen, but says nothing about
+// clearing the target it's supposed to sit next to).
 //
 // Instant, not smooth: this runs right before the card is revealed (see
 // the watcher below), while it's still hidden. A `behavior: 'smooth'`
 // scroll here doesn't finish within this same tick — it keeps animating
 // after injectVisible flips true, so the card pops in and then visibly
-// slides as the page keeps scrolling underneath it. Instant means the
+// slides as the page keeps scrolling underneath it. Instant means any
 // nudge is done by the time anything is shown, so there's nothing left
 // to animate.
-function ensureRoomAbove() {
-  const r = targetRect.value
+function ensureRoomForCard() {
+  let r = targetRect.value
   if (!r || typeof window === 'undefined') return
-  const idealTop = r.top - injectHeight.value - GAP
-  if (idealTop < EDGE_MARGIN) {
-    const delta = EDGE_MARGIN - idealTop
-    window.scrollBy({ top: -delta, behavior: 'auto' })
-    // The browser dispatches 'scroll' (which would re-run measure())
-    // asynchronously, after this function returns - not synchronously
-    // as part of scrollBy() itself. Waiting for that listener would
-    // reveal the card at the PRE-scroll position for a moment, then
-    // jump once it fires. Apply the known delta immediately instead, so
-    // targetRect is already correct before injectVisible flips true.
-    targetRect.value = { ...r, top: r.top + delta }
+  const needed = injectHeight.value + GAP
+
+  const shortfallAbove = needed + EDGE_MARGIN - r.top
+  if (shortfallAbove > 0) {
+    window.scrollBy({ top: -shortfallAbove, behavior: 'auto' })
+    r = refreshTargetRect() ?? r
+  }
+
+  if (r.top - needed < EDGE_MARGIN) {
+    const vh = window.innerHeight
+    // Rect has no .bottom - it's top + height, not a separate field.
+    const shortfallBelow = needed + EDGE_MARGIN - (vh - (r.top + r.height))
+    if (shortfallBelow > 0) {
+      window.scrollBy({ top: shortfallBelow, behavior: 'auto' })
+      refreshTargetRect()
+    }
   }
 }
+
+// True while a step's position is being settled - see the scroll
+// listener below.
+let correcting = false
+
+// Guards against two settle sequences overlapping - if the step changes
+// again before the previous 380ms timeout has fired (e.g. rapid Next
+// clicks, or the callback merely running late under load), the stale
+// one's measure()/ensureRoomForCard()/injectVisible.value=true would
+// still fire after it, using a target/rect that's no longer current and
+// flipping `correcting` back off in the middle of the NEW sequence's own
+// corrective scrolling - reopening the exact race the scroll-listener
+// guard above exists to close. Each run captures its own token and bails
+// at every await point once a newer step has superseded it.
+let settleToken = 0
 
 // Re-measure when the active step or visibility changes.
 watch(
   () => [props.tour.active.value, props.tour.idx.value, props.tour.targetEl.value],
   () => {
     injectVisible.value = false
+    correcting = true
+    const myToken = ++settleToken
     // Allow the scrollIntoView animation to settle.
     setTimeout(async () => {
       await measure()
-      ensureRoomAbove()
+      if (myToken !== settleToken) return
+      ensureRoomForCard()
+      if (myToken !== settleToken) return
       injectVisible.value = true
+      correcting = false
     }, 380)
   },
   { immediate: true },
@@ -125,10 +170,21 @@ watch(
 
 if (typeof window !== 'undefined') {
   window.addEventListener('resize', measure)
-  window.addEventListener('scroll', measure, true)
+  // Ignored while `correcting`: ensureRoomForCard()'s own scrollBy calls
+  // fire 'scroll' events too, each of which would otherwise kick off a
+  // competing, uncoordinated measure() - since measure() is async
+  // (awaits nextTick before reading the card's real height), one of
+  // these can still be in flight when ensureRoomForCard() finishes and
+  // reveals the card, resolving moments later and overwriting the
+  // carefully-corrected targetRect with a mid-correction snapshot -
+  // exactly the kind of post-reveal reposition this component exists to
+  // prevent. Once revealed, the listener resumes for genuine user
+  // scrolling (keeping the card tracking the target as the page moves).
+  const onScroll = () => { if (!correcting) measure() }
+  window.addEventListener('scroll', onScroll, true)
   onUnmounted(() => {
     window.removeEventListener('resize', measure)
-    window.removeEventListener('scroll', measure, true)
+    window.removeEventListener('scroll', onScroll, true)
   })
 }
 
@@ -155,11 +211,22 @@ const injectStyle = computed(() => {
   // Prefer ABOVE the highlighted element — on phone screens the target is
   // often lower on the page, so anchoring below pushed the card's bottom
   // off the visible viewport. Only fall back to below when there's
-  // genuinely not enough room above even after ensureRoomAbove()'s
-  // corrective scroll (e.g. a target taller than the viewport itself).
-  // Uses the card's REAL measured height, not a guess.
+  // genuinely not enough room above even after ensureRoomForCard()'s
+  // corrective scroll - which itself falls back to securing room BELOW
+  // instead when above turns out to be unreachable (target near the top
+  // of the whole page), so this same wantAbove check stays accurate
+  // either way. Uses the card's REAL measured height, not a guess.
   const cardHeight = injectHeight.value
-  const wantAbove = r.top - cardHeight - GAP > EDGE_MARGIN
+  // >= , not > : ensureRoomForCard()'s own "is above already secured?"
+  // check (below) is r.top - needed < EDGE_MARGIN, and its scroll target
+  // lands EXACTLY on that boundary by construction. A strict > here
+  // disagreed with that at the boundary - ensureRoomForCard considered
+  // the correction successful while this recomputed "not quite" and fell
+  // through to the un-secured below branch anyway, overlapping the
+  // target on any step where the correction was needed at all. >= is the
+  // exact logical complement of ensureRoomForCard's < check, so the two
+  // can never disagree.
+  const wantAbove = r.top - cardHeight - GAP >= EDGE_MARGIN
   const top = wantAbove
     ? Math.max(r.top - cardHeight - GAP, EDGE_MARGIN)
     : Math.min(r.top + r.height + GAP, vh - cardHeight - EDGE_MARGIN)
