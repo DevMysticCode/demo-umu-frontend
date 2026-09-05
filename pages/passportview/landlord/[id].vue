@@ -32,7 +32,7 @@
             <div class="pp-hero-addr-row">
               <div class="pp-hero-addr-text">
                 <div class="pp-hero-addr-l1">{{ passport.addressLine1 }}</div>
-                <div class="pp-hero-addr-l2">{{ passport.postcode }}</div>
+                <div class="pp-hero-addr-l2">{{ passport.postcode }}{{ tenancySummary.tenant ? ' · Let to ' + tenancySummary.tenant : '' }}</div>
               </div>
             </div>
             <div class="pp-hero-stats">
@@ -2073,8 +2073,23 @@ const tenancySummary = computed(() => {
   const deposit = findByHint(['deposit'])
   const rtr = findByHint(['right_to_rent', 'rtr'])
 
+  // Tenant name isn't its own field anywhere on the passport - pull it
+  // from wherever it was actually captured: the signed tenancy agreement
+  // first, falling back to the first Right to Rent occupier.
+  let tenantName = tnSavedRecord.value?.tenantName ?? ''
+  if (!tenantName) {
+    outer: for (const t of rtr?.tasks ?? []) {
+      for (const q of t.passportQuestions ?? []) {
+        if (q.questionTemplate?.type === 'UPLOAD' && Array.isArray(q.answer?.answerJson)) {
+          tenantName = q.answer.answerJson[0]?.name ?? ''
+          break outer
+        }
+      }
+    }
+  }
+
   return {
-    tenant: '',
+    tenant: tenantName,
     depositOk: deposit?.status === 'COMPLETED',
     depositLabel: deposit?.status === 'COMPLETED' ? '✓ Protected' : 'Add certificate',
     rtrOk: rtr?.status === 'COMPLETED',
@@ -3902,6 +3917,29 @@ async function saveDrawerList() {
             type: 'compliance-renewal',
             notes: 'Auto-added from your Landlord Passport Right to Rent section.',
             sourceRef: `landlord-rtr:${q.id}:${occ.name || occupierRows.value.indexOf(occ)}`,
+          },
+        }).catch(() => {})
+      }
+    }
+
+    // Alarm expiry dates make the same "we'll remind you 30 days before
+    // any alarm expires" promise (the section hint) - mirror them the
+    // same way, keyed per-row so re-saving a changed date moves the
+    // existing entry instead of leaving a stale duplicate.
+    if (isAlarmsSection.value) {
+      const addr = passport.value?.addressLine1
+      for (const row of alarmRows.value) {
+        if (!row.expiry) continue
+        const label = row.type === 'co' ? 'CO alarm' : 'Smoke alarm'
+        await $fetch(`${config.public.apiBase}/calendar`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: {
+            title: `${label} due for replacement${row.location ? ` - ${row.location}` : ''}${addr ? ` · ${addr}` : ''}`,
+            date: row.expiry,
+            type: 'compliance-renewal',
+            notes: 'Auto-added from your Landlord Passport Alarms section.',
+            sourceRef: `landlord-alarm:${q.id}:${alarmRows.value.indexOf(row)}`,
           },
         }).catch(() => {})
       }
