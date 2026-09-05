@@ -18,10 +18,7 @@
       <!-- Step 2: success -->
       <div v-if="step === 2" class="cp__body cp__body--center">
         <div class="cp__book-circle">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-          </svg>
+          <img src="/op-icons/landing/propertyPassportCard.png" alt="" class="cp__book-circle-img" loading="lazy" />
         </div>
         <div class="cp__success-title">Passport unlocked!</div>
         <div class="cp__success-desc">
@@ -29,11 +26,11 @@
         </div>
         <div class="cp__success-card">
           <div class="cp__pills">
-            <span class="cp__pill">📄 TA10</span>
-            <span class="cp__pill">📋 Title</span>
-            <span class="cp__pill">📅 Planning</span>
-            <span class="cp__pill">🗺 Boundaries</span>
-            <span class="cp__pill">🏷 Certificates</span>
+            <span class="cp__pill"><img src="/op-icons/passportview/fixturesAndFittings.png" alt="" class="cp__pill-ic" loading="lazy" /> TA10</span>
+            <span class="cp__pill"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="cp__pill-ic" loading="lazy" /> Title</span>
+            <span class="cp__pill"><img src="/op-icons/passportview/alterationsAndPlanning.png" alt="" class="cp__pill-ic" loading="lazy" /> Planning</span>
+            <span class="cp__pill"><img src="/op-icons/passportview/boundariesMap.png" alt="" class="cp__pill-ic" loading="lazy" /> Boundaries</span>
+            <span class="cp__pill"><img src="/op-icons/passportview/gurantessAndWarranties.png" alt="" class="cp__pill-ic" loading="lazy" /> Certificates</span>
           </div>
         </div>
         <button class="cp__success-cta" @click="viewPassport">View the Passport →</button>
@@ -677,6 +674,9 @@ onUnmounted(() => {
 }
 
 .cp__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   background: #fff;
   border: 1px solid var(--brand-soft);
   border-radius: 999px;
@@ -684,6 +684,17 @@ onUnmounted(() => {
   font-size: 11px;
   font-weight: 700;
   color: var(--brand);
+}
+.cp__pill-ic {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.cp__book-circle-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
 
 .cp__success-cta {
