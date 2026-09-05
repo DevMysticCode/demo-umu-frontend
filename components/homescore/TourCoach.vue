@@ -11,6 +11,7 @@
         v-if="tour.currentStep.value && injectPos"
         ref="injectEl"
         class="cm-inject"
+        :class="{ 'cm-inject--visible': injectVisible }"
         :style="injectStyle"
       >
         <div class="cm-inject-step">{{ tour.idx.value + 1 }} of {{ tour.total }}</div>
@@ -56,6 +57,15 @@ const injectHeight = ref(190)
 const GAP = 20
 const EDGE_MARGIN = 16
 
+// Hidden until a step's position has settled - the very first measure()
+// for a new step positions the card using the PREVIOUS step's height
+// (or the 190px guess, on the first step ever), then corrects itself a
+// tick later once the real height is known. Without this, that
+// correction is visible as the card popping in low and jumping to its
+// final spot. Kept false while mid-measurement so the reposition happens
+// off-screen from the user's perspective, then revealed already correct.
+const injectVisible = ref(false)
+
 async function measure() {
   const el = props.tour.targetEl.value
   if (!el) {
@@ -86,10 +96,12 @@ function ensureRoomAbove() {
 watch(
   () => [props.tour.active.value, props.tour.idx.value, props.tour.targetEl.value],
   () => {
+    injectVisible.value = false
     // Allow the scrollIntoView animation to settle.
     setTimeout(async () => {
       await measure()
       ensureRoomAbove()
+      injectVisible.value = true
     }, 380)
   },
   { immediate: true },
@@ -208,6 +220,16 @@ const injectStyle = computed(() => {
   font-family: inherit;
   color: #231d45;
   z-index: 1001;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.cm-inject--visible {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-inject {
+    transition: none;
+  }
 }
 .cm-inject-step {
   font-size: 9px;
