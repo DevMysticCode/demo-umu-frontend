@@ -950,7 +950,7 @@
               Passport published · property goes live
             </div>
             <div class="watch-trigger-sub">
-              Buy access for <b>£15</b> — or <b>free</b> if you're a verified
+              Buy access for <b>£15</b> - or <b>free</b> if you're a verified
               buyer.
             </div>
           </div>
@@ -960,7 +960,7 @@
           <div class="watch-trigger-body">
             <div class="watch-trigger-title">Comparable sales nearby</div>
             <div class="watch-trigger-sub">
-              New Land Registry data on {{ property?.postcode }} — keeps your
+              New Land Registry data on {{ property?.postcode }} - keeps your
               estimated value fresh.
             </div>
           </div>
