@@ -58,12 +58,30 @@ export function useHomescoreTour(opts: UseHomescoreTourOptions) {
     // Rough first pass — get the target roughly into view. TourCoach.vue
     // then measures its own inject card's REAL rendered height (which
     // varies step to step with body-text length) and does a second,
-    // precise corrective scroll to open up exactly enough room above the
-    // target — see ensureRoomAbove() there. A fixed guess here previously
-    // caused either a big empty gap (guess too generous for a short card)
-    // or overlap (guess too small for a tall one).
+    // precise corrective scroll to open up exactly enough room above (or
+    // below) the target — see ensureRoomForCard() there. A fixed guess
+    // here previously caused either a big empty gap (guess too generous
+    // for a short card) or overlap (guess too small for a tall one).
+    //
+    // Instant, not smooth: TourCoach's own corrective scroll runs on a
+    // fixed delay after this (long enough to expect this one to have
+    // settled) and is itself instant. A smooth scroll here can still be
+    // mid-animation when that fires — the corrective scroll computes the
+    // right answer for the position at that moment, but the still-moving
+    // smooth scroll then keeps going afterward, re-triggering measure()
+    // via the scroll listener and silently overwriting the correction
+    // with wherever the animation happens to land. The inject card is
+    // hidden until everything settles either way, so there's no visible
+    // scroll animation to lose by making this instant too.
+    //
+    // Still deferred to the next animation frame (not called inline
+    // here): a caller like the landing page reorders a stack of cards in
+    // response to the same step change (bringing the right card to the
+    // front) via its own watcher, which flushes as a microtask before
+    // rAF but after this synchronous call - scrolling immediately here
+    // could target the card's pre-reorder position.
     requestAnimationFrame(() => {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.scrollIntoView({ behavior: 'auto', block: 'center' })
     })
   }
 
