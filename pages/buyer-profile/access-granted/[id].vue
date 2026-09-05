@@ -62,7 +62,7 @@ import {
 } from '~/composables/useVerifierAccess'
 
 definePageMeta({
-  title: 'Access Granted — UmovingU',
+  title: 'Access Granted - UmovingU',
   middleware: 'auth',
 })
 

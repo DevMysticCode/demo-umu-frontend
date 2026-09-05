@@ -114,7 +114,7 @@
       <p class="bes-p">
         Your <b>street rank and the public register</b> still read
         {{ officialPublicRating }}·{{ officialPublicScore }} from
-        {{ officialPublicYear }} — so the work you've done isn't showing
+        {{ officialPublicYear }} - so the work you've done isn't showing
         where it counts. A new EPC syncs the public record to your verified
         score.
       </p>
@@ -326,7 +326,7 @@
         </label>
 
         <div class="bd-upload-note">
-          🔒 We read the key details only — the file is stored against your
+          🔒 We read the key details only - the file is stored against your
           property and never shared without your say-so.
         </div>
 
@@ -361,12 +361,12 @@ interface Props {
   homeScore: number
   /** Passed through so the utility-bill upload can call the real OCR
    *  endpoint (POST /property/:id/bill-parse). Without it we can't
-   *  verify the bill and would revert to a fake boost — see
+   *  verify the bill and would revert to a fake boost - see
    *  confirmUpload() below for the branch that requires this. */
   propertyId?: string | null
   moveReadyStart?: number
   passportStart?: number
-  /** Public-register EPC fields — drive the "Make it official" card.
+  /** Public-register EPC fields - drive the "Make it official" card.
    *  Falls back to the prototype's example values when missing. */
   publicEpcRating?: string | null
   publicEpcScore?: number | null
@@ -412,7 +412,7 @@ const docs = [
     iconImage: '/op-icons/boostYourScore/utilityBills.png',
     tone: 'yellow',
     title: 'Utility bills',
-    sub: 'See your actual spend vs your EPC estimate — most impactful first step',
+    sub: 'See your actual spend vs your EPC estimate - most impactful first step',
     mrDelta: 22,
     ppDelta: 12,
   },
@@ -722,10 +722,10 @@ const isLastDoc = computed(
 const docImpacts: Record<string, string> = {
   bills:
     "Real annual spend extracted from your bill. Buyers see this verified figure, not the older EPC estimate.",
-  gas: 'Uploaded — kept on file against your property. Buyer-side visibility, and a marker for solicitors that annual gas safety is in place.',
-  eicr: 'Uploaded — buyers see the EICR is on file against your property. Full verification runs at conveyancing.',
+  gas: 'Uploaded - kept on file against your property. Buyer-side visibility, and a marker for solicitors that annual gas safety is in place.',
+  eicr: 'Uploaded - buyers see the EICR is on file against your property. Full verification runs at conveyancing.',
   boiler:
-    'Uploaded — service history stored against the property. Buyers can see maintenance is up-to-date.',
+    'Uploaded - service history stored against the property. Buyers can see maintenance is up-to-date.',
 }
 const celebrateImpact = computed(() => {
   const id = celebrateDoc.value?.id

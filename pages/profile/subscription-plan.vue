@@ -53,7 +53,7 @@
           </div>
           <div class="bl-empty-text">
             <div class="bl-empty-title">View past invoices</div>
-            <div class="bl-empty-meta">All receipts live on the Stripe portal — tap to open.</div>
+            <div class="bl-empty-meta">All receipts live on the Stripe portal - tap to open.</div>
           </div>
         </div>
       </div>

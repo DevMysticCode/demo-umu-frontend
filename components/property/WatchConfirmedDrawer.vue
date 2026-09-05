@@ -18,12 +18,7 @@
           <div class="watch-grip" />
 
           <div class="wc-hero">
-            <span class="wc-confetti wc-confetti--1" />
-            <span class="wc-confetti wc-confetti--2" />
-            <span class="wc-confetti wc-confetti--3" />
-            <span class="wc-confetti wc-confetti--4" />
-            <span class="wc-confetti wc-confetti--5" />
-            <span class="wc-confetti wc-confetti--6" />
+            <span v-for="(c, i) in confetti" :key="i" class="wc-confetti-piece" :class="c.shape" :style="c.style" />
             <div class="wc-hero-icon">
               <img src="/op-icons/landing/propertyPassportCard.png" alt="" class="wc-hero-img" loading="lazy" />
               <span class="wc-hero-badge">
@@ -42,8 +37,8 @@
             </svg>
           </div>
           <div class="wc-sub">
-            We'll notify you about the updates you've chosen. You can change
-            these anytime in your account.
+            We'll notify you if the updates you've chosen happen. You can
+            change these anytime in your account.
           </div>
 
           <div class="wc-notif-card">
@@ -84,10 +79,7 @@
             <div class="wc-upsell-icon">
               <img src="/op-icons/passport-covers/buyer_tilted_right_on_tile.png" alt="" class="wc-upsell-img" loading="lazy" />
               <span class="wc-upsell-badge">
-                <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
-                  <circle cx="12" cy="8" r="3.6" />
-                  <path d="M4.5 20c0-3.6 3.4-6.2 7.5-6.2s7.5 2.6 7.5 6.2" />
-                </svg>
+                <img src="/op-icons/verify-identity/idBadge.png" alt="" class="wc-upsell-badge-img" loading="lazy" />
               </span>
             </div>
             <div class="wc-upsell-body">
@@ -118,7 +110,7 @@
           </div>
           <div class="watch-privacy">
             <span class="watch-privacy-icon">🔒</span>
-            <span>Watching is private. The owner won't see your name — only a count of buyers watching.</span>
+            <span>Watching is private. The owner won't see your name - only a count of buyers watching.</span>
           </div>
         </div>
       </div>
@@ -135,11 +127,11 @@ const props = defineProps<{
   open: boolean
   /** Short address label, e.g. "10 Bates Road". */
   addressLabel?: string
-  /** The prefs the buyer just saved in WatchPropertyDrawer — drives the
+  /** The prefs the buyer just saved in WatchPropertyDrawer - drives the
    *  check / dash state per row so this reflects what they actually
    *  chose, not a fixed mockup list. */
   prefs?: Record<string, boolean> | null
-  /** Same purpose as WatchPropertyDrawer's `passportState` — without it
+  /** Same purpose as WatchPropertyDrawer's `passportState` - without it
    *  every row showed regardless of the property's real state, e.g.
    *  "Owner claims this property" still listed (and checked) on an
    *  already-claimed/private property, which can never fire again.
@@ -183,6 +175,24 @@ const triggers = computed(() => {
   const keys = state ? TRIGGERS_BY_STATE[state] : (Object.keys(ALL_TRIGGERS) as (keyof typeof ALL_TRIGGERS)[])
   return keys.map((k) => ALL_TRIGGERS[k])
 })
+
+// Richer celebration confetti (client feedback: "put a confetti here like
+// we have at other places in the app") - same mix of rotated rect pieces
+// + sparkle characters as SectionCompleteCelebration.vue, scaled down for
+// this smaller hero area. Fixed positions (not random) for a stable,
+// testable layout.
+const confetti = [
+  { shape: 'rect', style: 'left:10%; top:8%; background:#14b8a6; transform:rotate(-18deg);' },
+  { shape: 'rect', style: 'left:24%; top:0%; background:#7c5cff; transform:rotate(24deg);' },
+  { shape: 'spark', style: 'left:16%; top:24%; color:#00a19a;' },
+  { shape: 'rect', style: 'left:4%; top:38%; background:#ff9f43; transform:rotate(10deg);' },
+  { shape: 'spark', style: 'left:32%; top:44%; color:#fbbf24;' },
+  { shape: 'rect', style: 'right:10%; top:10%; background:#38bdf8; transform:rotate(16deg);' },
+  { shape: 'rect', style: 'right:24%; top:-2%; background:#7c5cff; transform:rotate(-20deg);' },
+  { shape: 'spark', style: 'right:14%; top:26%; color:#ff9f43;' },
+  { shape: 'rect', style: 'right:4%; top:40%; background:#14b8a6; transform:rotate(-12deg);' },
+  { shape: 'spark', style: 'right:30%; top:46%; color:#00a19a;' },
+]
 </script>
 
 <style scoped>
@@ -264,18 +274,23 @@ const triggers = computed(() => {
   width: 15px;
   height: 15px;
 }
-.wc-confetti {
+.wc-confetti-piece {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
+  pointer-events: none;
 }
-.wc-confetti--1 { top: 6px; left: 22%; background: #7c5cff; transform: rotate(20deg); }
-.wc-confetti--2 { top: 40px; left: 14%; background: #ff9f43; transform: rotate(-15deg); width: 6px; height: 6px; border-radius: 50%; }
-.wc-confetti--3 { top: 10px; right: 20%; background: #ff9f43; transform: rotate(35deg); }
-.wc-confetti--4 { top: 46px; right: 16%; background: #7c5cff; width: 6px; height: 6px; border-radius: 50%; }
-.wc-confetti--5 { bottom: 4px; left: 30%; background: var(--accent); width: 6px; height: 6px; border-radius: 50%; }
-.wc-confetti--6 { bottom: 10px; right: 28%; background: #7c5cff; transform: rotate(-25deg); }
+.wc-confetti-piece.rect {
+  width: 7px;
+  height: 12px;
+  border-radius: 2px;
+  opacity: 0.9;
+}
+.wc-confetti-piece.spark {
+  font-size: 12px;
+  color: inherit;
+}
+.wc-confetti-piece.spark::before {
+  content: '✦';
+}
 
 .wc-title-row {
   display: flex;
@@ -381,16 +396,19 @@ const triggers = computed(() => {
 }
 .wc-upsell-badge {
   position: absolute;
-  right: -3px;
-  bottom: -3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid #fff;
+  right: -8px;
+  bottom: -6px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 2px 4px rgba(35, 29, 69, 0.25));
+}
+.wc-upsell-badge-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .wc-upsell-badge svg {
   width: 11px;

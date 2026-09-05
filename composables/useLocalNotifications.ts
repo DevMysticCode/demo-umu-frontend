@@ -13,7 +13,7 @@ export interface NotifReminder {
   id: string       // DB UUID
   title: string
   date: string     // "YYYY-MM-DD"
-  time?: string | null  // "HH:MM" — if absent, defaults to 09:00
+  time?: string | null  // "HH:MM" - if absent, defaults to 09:00
   notes?: string | null
 }
 
@@ -35,7 +35,7 @@ export function useLocalNotifications() {
 
   /**
    * Returns true when running in a Capacitor native shell (iOS/Android).
-   * Always false on web — avoids importing Capacitor on SSR.
+   * Always false on web - avoids importing Capacitor on SSR.
    */
   const isNative = (): boolean => {
     if (typeof window === 'undefined') return false

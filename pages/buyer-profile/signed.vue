@@ -13,7 +13,7 @@
     <!-- Signed document preview (teal-bordered card) -->
     <div class="sn-doc-card">
       <div class="sn-doc-eyebrow">SIGNED DOCUMENT</div>
-      <div class="sn-doc-title">UMU Buyer Passport — {{ displayName }}</div>
+      <div class="sn-doc-title">UMU Buyer Passport - {{ displayName }}</div>
 
       <!-- Signature — image OR typed -->
       <div class="sn-sig-wrap">
@@ -53,7 +53,7 @@ import {
 } from '~/composables/useBuyerProfile'
 import { useProfile } from '~/composables/useProfile'
 
-definePageMeta({ title: 'Passport Signed — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Passport Signed - UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile } = useBuyerProfile()
@@ -81,7 +81,7 @@ const displayName = computed(() => {
   return passport.value?.signedName || 'Buyer'
 })
 const publicRef = computed(
-  () => (passport.value as any)?.publicRef || '—',
+  () => (passport.value as any)?.publicRef || '-',
 )
 const sigStamp = computed(() => {
   if (!passport.value?.signedAt) return ''
@@ -158,7 +158,7 @@ function goView() { router.push('/buyer-profile/view') }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Signed document card — teal border, white bg */
+/* Signed document card - teal border, white bg */
 .sn-doc-card {
   margin: 24px 22px 0;
   background: white;

@@ -17,7 +17,7 @@
           <div class="tu-eyebrow">Buyer Passport</div>
           <div class="tu-title">Identity Verified</div>
           <div class="tu-sub">
-            One-off payment — proves your identity, funds and buying position
+            One-off payment - proves your identity, funds and buying position
             to sellers and agents. No subscription.
           </div>
 

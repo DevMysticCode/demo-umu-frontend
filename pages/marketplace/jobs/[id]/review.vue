@@ -184,7 +184,7 @@
 import { computed, ref } from 'vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 
-definePageMeta({ title: 'Leave a review — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Leave a review - Marketplace', middleware: 'auth' })
 
 const route = useRoute()
 const router = useRouter()
@@ -310,7 +310,7 @@ async function submit() {
           }
         : {}),
     })
-    showToast({ message: 'Review posted — thanks for the feedback', iconEmoji: '⭐' })
+    showToast({ message: 'Review posted - thanks for the feedback', iconEmoji: '⭐' })
     router.replace(`/marketplace/jobs/${jobId.value}`)
   } catch (err: any) {
     submitError.value = err?.data?.message ?? 'Could not post review.'

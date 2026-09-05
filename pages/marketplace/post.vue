@@ -218,7 +218,7 @@
         <div class="pj-insight-icon">💡</div>
         <div class="pj-insight-text">
           <b>Posting is free.</b>
-          You're only charged when you accept an offer — funds held in
+          You're only charged when you accept an offer - funds held in
           UProtect escrow until the job's complete.
         </div>
       </div>
@@ -282,7 +282,7 @@
         :disabled="!canSubmit || submitting"
         @click="submit"
       >
-        {{ submitting ? 'Posting…' : 'Post job — Free' }}
+        {{ submitting ? 'Posting…' : 'Post job - Free' }}
       </button>
     </div>
 
@@ -299,7 +299,7 @@ import type {
   MarketplaceUrgency,
 } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Post a job — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Post a job - Marketplace', middleware: 'auth' })
 
 const router = useRouter()
 const { showToast } = useAppToast()

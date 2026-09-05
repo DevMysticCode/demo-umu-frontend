@@ -38,7 +38,7 @@
           <div class="exp-hero-eyebrow">Explore</div>
           <div class="exp-hero-title">Discover any UK property.</div>
           <div class="exp-hero-sub">
-            Search any UK address and see what the property is telling you —
+            Search any UK address and see what the property is telling you -
             before you buy, sell or even view it.
           </div>
           <div class="exp-hero-badge">
@@ -453,7 +453,7 @@ function lastSoldLabel(dateStr: string): string {
   margin-top: -4px;
 }
 
-/* ── Search — PropertySearchExperienceClassic.vue owns its own
+/* ── Search - PropertySearchExperienceClassic.vue owns its own
    styling (search bar, filter sheet, results list); nothing to style
    here. ── */
 .exp-search-hint {
@@ -507,7 +507,7 @@ function lastSoldLabel(dateStr: string): string {
   margin: 0 auto 12px;
 }
 /* Buyer/Tenant Passport book art is portrait (~255x395), not square like
-   the other card icons — height-constrained instead of width-constrained
+   the other card icons - height-constrained instead of width-constrained
    so it reads as a small standing book, not a squashed square. */
 .exp-card-ic--book {
   width: auto;

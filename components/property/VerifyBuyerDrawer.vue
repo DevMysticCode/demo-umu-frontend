@@ -15,7 +15,7 @@
           <div class="vb-head">
             <div class="vb-eyebrow">🛡 Verified buyer · Onfido</div>
             <div class="vb-title">Be the buyer sellers want to call back.</div>
-            <div class="vb-sub">15-min ID check + proof of funds + chain check. Reusable across every UmovingU listing — verify once, use forever.</div>
+            <div class="vb-sub">15-min ID check + proof of funds + chain check. Reusable across every UmovingU listing - verify once, use forever.</div>
           </div>
 
           <div class="vb-price-pill">
@@ -23,7 +23,7 @@
               <div class="vb-price-amt">£35<small> one-off</small></div>
               <div class="vb-price-note">ID + proof of funds, done once</div>
             </div>
-            <div class="vb-price-text">It's the same checks your conveyancer will need anyway — done upfront, so there's <b>no scramble or back-and-forth</b> chasing ID &amp; funds when you're ready to offer.</div>
+            <div class="vb-price-text">It's the same checks your conveyancer will need anyway - done upfront, so there's <b>no scramble or back-and-forth</b> chasing ID &amp; funds when you're ready to offer.</div>
           </div>
 
           <div class="vb-benefits">

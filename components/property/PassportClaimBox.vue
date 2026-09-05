@@ -44,7 +44,7 @@
       <div class="pcb-left">
         <div class="pcb-main">A Passport is being built for this home</div>
         <div class="pcb-sub">
-          The owner is preparing a verified record — be ready before it goes
+          The owner is preparing a verified record - be ready before it goes
           live.
         </div>
         <span class="pcb-explain" @click.stop="openSheet = 'progress'">
@@ -95,7 +95,7 @@
             This property has a published Passport
           </div>
           <div class="pcb-pub-sub">
-            Gain access to the full verified record — certificates, history
+            Gain access to the full verified record - certificates, history
             &amp; more.
           </div>
           <span class="pcb-pub-inside" @click.stop="openSheet = 'published'">
@@ -196,7 +196,7 @@
               <div class="cx-callout navy cx-callout--car">
                 <div class="cx-callout-body">
                   <div class="cx-callout-h">
-                    Every car has a logbook — your home should too
+                    Every car has a logbook - your home should too
                   </div>
                   <div class="cx-callout-v">
                     A car's history follows it from owner to owner. Your home's
@@ -776,7 +776,7 @@ const props = withDefaults(
      *  `update:openSheet`. */
     openSheet?: 'unclaimed' | 'private' | 'partiallyPublic' | 'public' | null
     /** True when the current viewer owns (or collaborates on) this
-     *  passport — flips the progress/published drawers' primary action
+     *  passport - flips the progress/published drawers' primary action
      *  from a buyer-facing "watch/buy" to the owner's own "continue
      *  building" route, and shows the owner-only "Manage access &
      *  sharing" button on the published drawer. */
@@ -1019,7 +1019,7 @@ const stepDetails: Record<
   },
   2: {
     h: '2 · Verify the property',
-    v: 'We connect the Passport to the correct property and trusted records. Ownership and key property details can be checked against trusted sources so the Passport is linked to the home itself — not simply to the person who created it.',
+    v: 'We connect the Passport to the correct property and trusted records. Ownership and key property details can be checked against trusted sources so the Passport is linked to the home itself - not simply to the person who created it.',
     happens:
       'Ownership verified · Property record matched · Trusted data connected',
     icon: '/op-icons/homescore/clipboard.png',
@@ -1033,7 +1033,7 @@ const stepDetails: Record<
   },
   4: {
     h: '4 · Publish or keep private',
-    v: "You decide what happens next. Keep your Property Passport private while you continue building it, or choose to publish approved information when you're ready. Publishing does not mean everything in the Passport becomes public. The homeowner controls what information is shared. A Passport also does not need to be 100% complete before it can be published — it only needs to meet the required publication threshold.",
+    v: "You decide what happens next. Keep your Property Passport private while you continue building it, or choose to publish approved information when you're ready. Publishing does not mean everything in the Passport becomes public. The homeowner controls what information is shared. A Passport also does not need to be 100% complete before it can be published - it only needs to meet the required publication threshold.",
     happens:
       'You control visibility · Choose what is shared · Keep updating after publication',
     icon: '/op-icons/misc/eye.png',
@@ -1261,7 +1261,7 @@ function onPrimary(action: PrimaryAction) {
 /* ── Published "champagne band" ──────────────────────────────────
    White card framed by a spinning gold conic-gradient border + sheen
    sweep. Mirrors prisma/published-band-standalone.html so the verified
-   passport reads as a premium, document-like surface — distinct from
+   passport reads as a premium, document-like surface - distinct from
    the dark unclaimed / in-progress bands. */
 .pcb-pubwrap {
   position: relative;
@@ -1498,7 +1498,7 @@ function onPrimary(action: PrimaryAction) {
   margin: 10px auto 0;
 }
 
-/* ── cx2-* — plain white-background variant of the drawer header, used
+/* ── cx2-* - plain white-background variant of the drawer header, used
    by the "unclaimed" sheet's redesigned prototype instead of the dark
    .cx-hero band the other sheets still use. ── */
 .cx2-header {
@@ -1554,7 +1554,7 @@ function onPrimary(action: PrimaryAction) {
   color: var(--accent-dark);
   margin-bottom: 6px;
 }
-/* Explicit state label beside the eyebrow — spells out "claimed" +
+/* Explicit state label beside the eyebrow - spells out "claimed" +
    the visibility state right at the top of the drawer, rather than
    leaving it implied by the narrative title below (see
    plans/passport-status-wording-clarity.md). */
@@ -1665,7 +1665,7 @@ function onPrimary(action: PrimaryAction) {
 .cx-hero.amber {
   background: linear-gradient(135deg, #f0b460 0%, #d4822a 45%, #7a3a05 100%);
 }
-/* Champagne / gold drawer hero — same palette as the published band on
+/* Champagne / gold drawer hero - same palette as the published band on
    the card so the drawer reads as a continuation of the surface you
    tapped. Dark text on a warm gold base to keep the "premium document"
    feel; the band itself is white-on-gold-border, the drawer hero is
@@ -1732,8 +1732,8 @@ function onPrimary(action: PrimaryAction) {
   object-fit: contain;
   flex-shrink: 0;
 }
-/* Small icon + text variant — "Not every Passport is public" (lock),
-   "Published on {date}" (shield) — matches the prototype, which shows
+/* Small icon + text variant - "Not every Passport is public" (lock),
+   "Published on {date}" (shield) - matches the prototype, which shows
    a leading icon on every callout, not just the car one. */
 .cx-callout--icon {
   display: flex;
@@ -1838,7 +1838,7 @@ function onPrimary(action: PrimaryAction) {
   font-weight: 600;
   line-height: 1.3;
 }
-/* 4-across variant used by the redesigned "unclaimed" sheet — smaller
+/* 4-across variant used by the redesigned "unclaimed" sheet - smaller
    type + an icon per stat so four fit comfortably in one row. */
 .cx-stats--4col {
   grid-template-columns: repeat(4, 1fr);
@@ -1861,7 +1861,7 @@ function onPrimary(action: PrimaryAction) {
 .cx-stats--4col .cx-stat-label {
   font-size: 8.5px;
 }
-/* 3-across variant — noPublicPassport's "Private by default / Watch
+/* 3-across variant - noPublicPassport's "Private by default / Watch
    quietly / Know when it changes" row. Same icon-plus-label shape as
    --4col, just one column wider each. */
 .cx-stats--3col {
@@ -1878,7 +1878,7 @@ function onPrimary(action: PrimaryAction) {
 .cx-stats--3col .cx-stat-label {
   font-size: 8.5px;
 }
-/* "Why this matters" / "What happens now" — owner vs. buyer framing on
+/* "Why this matters" / "What happens now" - owner vs. buyer framing on
    the partiallyPublic/public drawer. */
 .cx-reasons {
   display: flex;
@@ -1961,7 +1961,7 @@ function onPrimary(action: PrimaryAction) {
   font-weight: 800;
   font-size: 13px;
 }
-/* 2-column layout for the progress/published drawers' checklist —
+/* 2-column layout for the progress/published drawers' checklist -
    .cx-item itself is unchanged (still the icon+text+tick row), this
    just arranges several of them side by side instead of stacking
    full-width like the single-column usages elsewhere. */
@@ -2005,7 +2005,7 @@ function onPrimary(action: PrimaryAction) {
   color: var(--text-faint);
 }
 /* Static (non-tap) fill states for the noPublicPassport/progress/
-   published journey steppers — teal or purple depending on the drawer,
+   published journey steppers - teal or purple depending on the drawer,
    independent of the tap-to-switch .on/.off/.active states above (which
    stay exclusive to the original interactive "unclaimed" stepper). */
 .cx-step-num.filled-teal {
@@ -2068,7 +2068,7 @@ function onPrimary(action: PrimaryAction) {
   box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.15);
   animation: cx-step-pulse 1.8s ease-in-out infinite;
 }
-/* Radiating tap-ripple on the active step — the primary "you can tap
+/* Radiating tap-ripple on the active step - the primary "you can tap
    these" cue. Sits behind the circle so it doesn't obscure the number. */
 .cx-step-tap.active .cx-step-num::after {
   border-color: rgba(0, 161, 154, 0.5);
@@ -2101,7 +2101,7 @@ function onPrimary(action: PrimaryAction) {
   }
 }
 
-/* First-load "attention bounce" on the whole stepper — a single wave
+/* First-load "attention bounce" on the whole stepper - a single wave
    from left to right so testers immediately see it responding to
    nothing, hinting the row is interactive. Fires once, then quiet. */
 .cx-steps .cx-step-tap {
@@ -2119,7 +2119,7 @@ function onPrimary(action: PrimaryAction) {
   }
 }
 
-/* Respect user reduced-motion preference — animations off entirely. */
+/* Respect user reduced-motion preference - animations off entirely. */
 @media (prefers-reduced-motion: reduce) {
   .cx-step-tap.active .cx-step-num,
   .cx-step-tap.active .cx-step-num::after,
@@ -2150,7 +2150,7 @@ function onPrimary(action: PrimaryAction) {
   border-radius: 14px;
 }
 /* Collapsed by default, animates open when a step is tapped. max-height
-   is an approximate cap (generous enough for the longest step copy) —
+   is an approximate cap (generous enough for the longest step copy) -
    the usual trick for animating an intrinsically-sized block since
    height:auto can't be transitioned directly. */
 .cx-detail-enter-active,

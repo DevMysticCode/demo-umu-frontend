@@ -32,15 +32,15 @@
       </div>
       <div class="mp-sup-stats">
         <div class="mp-sup-stat">
-          <div class="mp-sup-stat-num">{{ supplier.onTime ?? '—' }}%</div>
+          <div class="mp-sup-stat-num">{{ supplier.onTime ?? '-' }}%</div>
           <div class="mp-sup-stat-label">On time</div>
         </div>
         <div class="mp-sup-stat">
-          <div class="mp-sup-stat-num">{{ supplier.onBudget ?? '—' }}%</div>
+          <div class="mp-sup-stat-num">{{ supplier.onBudget ?? '-' }}%</div>
           <div class="mp-sup-stat-label">On budget</div>
         </div>
         <div class="mp-sup-stat">
-          <div class="mp-sup-stat-num">{{ supplier.quality ?? '—' }}★</div>
+          <div class="mp-sup-stat-num">{{ supplier.quality ?? '-' }}★</div>
           <div class="mp-sup-stat-label">Quality</div>
         </div>
       </div>

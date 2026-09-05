@@ -125,7 +125,7 @@ function go(path: string) {
   transform: scale(1.1);
 }
 
-/* Center "Post" — circular raised button that pokes above the bar */
+/* Center "Post" - circular raised button that pokes above the bar */
 .mp-tab-btn.center .mp-tab-btn-icon {
   width: 44px;
   height: 44px;

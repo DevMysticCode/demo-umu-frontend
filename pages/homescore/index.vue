@@ -190,7 +190,7 @@ const router = useRouter()
 // scroll-into-view so it actually animates in front of the user, not
 // silently above the fold while the page is still loading.
 const realStoryQuote =
-  '"My neighbour was being charged £150 a month extra — her supplier thought she had a swimming pool."'
+  '"My neighbour was being charged £150 a month extra - her supplier thought she had a swimming pool."'
 const typedQuote = ref('')
 const typingDone = ref(false)
 const realStoryEl = ref<HTMLElement | null>(null)
@@ -443,10 +443,10 @@ onMounted(async () => {
 .hs-search-wrap:focus-within {
   border-color: #00a19a;
   box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.1);
-  /* Stop pulsing once the user starts typing — the halo's job is done. */
+  /* Stop pulsing once the user starts typing - the halo's job is done. */
   animation: none;
 }
-/* Make the embedded PropertySearchInput visually flat — the outer wrap is the shell */
+/* Make the embedded PropertySearchInput visually flat - the outer wrap is the shell */
 .hs-search-wrap :deep(> div),
 .hs-search-wrap :deep(.property-search) {
   flex: 1;
@@ -730,7 +730,7 @@ onMounted(async () => {
   text-transform: uppercase;
 }
 
-/* Steps — icon + numbered title, connecting dotted line between numbers */
+/* Steps - icon + numbered title, connecting dotted line between numbers */
 .hs-steps-list {
   padding: 4px 22px 0;
   display: flex;

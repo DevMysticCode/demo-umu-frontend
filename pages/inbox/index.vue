@@ -146,7 +146,7 @@ function lastMessagePreview(c: ConversationRow): string {
     case 'viewing_request': return 'Sent a viewing invite'
     case 'viewing_response': return 'Responded to a viewing invite'
     case 'share_passport': return 'Shared a passport'
-    default: return '—'
+    default: return '-'
   }
 }
 

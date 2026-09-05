@@ -43,7 +43,7 @@
           class="hsc-epc-badge hsc-epc-badge--compact"
           :class="{ 'hsc-epc-badge--none': isNoEpc }"
           :style="!isNoEpc ? { background: epcColor(epcRating) } : {}"
-          >{{ isNoEpc ? 'None' : epcRating || '—' }}</span
+          >{{ isNoEpc ? 'None' : epcRating || '-' }}</span
         >
         <span class="hsc-compact-label"
           >EPC rating {{ isNoEpc ? 'unavailable' : epcRating }}</span
@@ -63,7 +63,7 @@
           class="hsc-epc-badge hsc-epc-badge--compact"
           :class="{ 'hsc-epc-badge--none': isNoEpc }"
           :style="!isNoEpc ? { background: epcColor(epcRating) } : {}"
-          >{{ isNoEpc ? 'None' : epcRating || '—' }}</span
+          >{{ isNoEpc ? 'None' : epcRating || '-' }}</span
         >
         <span class="hsc-compact-label"
           >EPC rating {{ isNoEpc ? 'unavailable' : epcRating }}</span
@@ -85,7 +85,7 @@
               class="hsc-epc-badge"
               :class="{ 'hsc-epc-badge--none': isNoEpc }"
               :style="!isNoEpc ? { background: epcColor(epcRating) } : {}"
-              >{{ isNoEpc ? 'None' : epcRating || '—' }}</span
+              >{{ isNoEpc ? 'None' : epcRating || '-' }}</span
             >
           </div>
           <div v-if="!isNoEpc" class="hsc-bar">
@@ -258,18 +258,18 @@ const props = withDefaults(
     searchesToday?: number
     watchersCount?: number
     passportState?: 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
-    /** Single-line EPC row, no HomeScore tile, no social-proof rows —
+    /** Single-line EPC row, no HomeScore tile, no social-proof rows -
      *  used by the score-result screen (V6ScoreView). */
     compact?: boolean
     /** Hides both "checked today" and "watching" rows while keeping full
-     *  EPC + HomeScore tiles — used by the Property Report page, whose
+     *  EPC + HomeScore tiles - used by the Property Report page, whose
      *  prototype doesn't show these rows in the header card (the costs
      *  page has its own separate claim/watch UI below instead). Defaults
      *  to true so V6ScoreView/V6QuizView keep their existing rows. */
     showSocialProof?: boolean
     /** Stacked EPC row (bigger badge + title + hook, no HomeScore tile)
      *  plus a passport-status pill instead of the tiles/social-proof rows
-     *  — matches the Property Report prototype's header exactly. Takes
+     *  - matches the Property Report prototype's header exactly. Takes
      *  priority over `compact` when both are set. */
     reportMode?: boolean
   }>(),
@@ -542,7 +542,7 @@ const watchersDisplay = computed(() => {
   align-items: center;
   justify-content: center;
 }
-/* No-EPC variant — reads as "empty state" rather than a low band. */
+/* No-EPC variant - reads as "empty state" rather than a low band. */
 .hsc-epc-badge--none {
   background: rgba(255, 255, 255, 0.28);
   color: #fff;
@@ -679,16 +679,17 @@ const watchersDisplay = computed(() => {
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* Passport-status box — same "hsc-viewers" box language, but a real
-   button (width:100%, no UA button chrome) since it's tappable. */
+/* Passport-status row - client feedback: the solid aqua button chrome
+   didn't look good; just text + icon like the rest of this card's rows,
+   still tappable (no visual button treatment). */
 .hsc-passport-box {
-  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  border: none;
   font-family: inherit;
   cursor: pointer;
   text-align: left;
   width: auto;
-  background: #00a19a;
-  padding: 10px 8px;
+  background: none;
+  padding: 0;
 }
 .hsc-passport-box-ic {
   width: 20px;
@@ -706,7 +707,7 @@ const watchersDisplay = computed(() => {
   flex-shrink: 0;
 }
 
-/* Animated signal-bars variant — shown for published passports. */
+/* Animated signal-bars variant - shown for published passports. */
 .hsc-viewers--live {
   gap: 10px;
 }

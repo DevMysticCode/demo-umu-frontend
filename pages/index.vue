@@ -88,7 +88,7 @@
               <div class="dc-header-text-col">
                 <div class="dc-headline">Explore any<br />UK property</div>
                 <div class="dc-sub">
-                  See what we already know — value, history, energy, planning,
+                  See what we already know - value, history, energy, planning,
                   local area and more.
                 </div>
               </div>
@@ -368,7 +368,7 @@
         <div class="market-title">UK home sales<br />are broken.</div>
         <div class="market-sub">
           A third of all sales collapse before they reach completion. Of the
-          ones that do, the average takes nearly six months — almost all of it
+          ones that do, the average takes nearly six months - almost all of it
           spent waiting for paperwork that could have been ready on day one.
           Here's what's actually going wrong, what's being done about it, and
           why we built UMU.
@@ -391,7 +391,7 @@
         <div class="market-stat-text">
           The average UK home sale takes <strong>179 days</strong> from offer
           accepted to completion. Almost all of that time is the buyer's
-          solicitor asking for documents the seller didn't have ready — title
+          solicitor asking for documents the seller didn't have ready - title
           deeds, planning permissions, FENSA certificates, surveys, fittings
           forms. With a Property Passport in place from day one, that drops to
           around <strong>14 days</strong>.
@@ -405,7 +405,7 @@
         <div class="market-stat-text">
           <strong>Roughly 33% of agreed UK property sales fall through</strong>
           before completion. The most common cause is a problem revealed in the
-          buyer's solicitor's enquiries weeks into the transaction — something
+          buyer's solicitor's enquiries weeks into the transaction - something
           the seller didn't know about, or didn't think mattered. By that point
           both sides have spent thousands.
         </div>
@@ -417,7 +417,7 @@
         <div class="market-stat-headline">Per failed sale, on average</div>
         <div class="market-stat-text">
           The average buyer or seller burns about
-          <strong>£2,700 per fall-through</strong> — survey fees, legal fees,
+          <strong>£2,700 per fall-through</strong> - survey fees, legal fees,
           mortgage application fees, removal deposits, and the personal cost of
           stress and time off work. Multiply across the country and the figure
           is roughly <strong>£900 million a year</strong> in waste.
@@ -430,15 +430,15 @@
       <p class="market-para">
         The English property system has a quiet design flaw at its heart:
         <strong>everything important is revealed at the wrong time.</strong> A
-        buyer falls in love with a house, makes an offer, gets it accepted — and
+        buyer falls in love with a house, makes an offer, gets it accepted - and
         only then do the questions begin. Where are the title deeds? Has the
         loft conversion got building regs? Is there a covenant on the boundary?
         When was the boiler last serviced?
       </p>
 
       <p class="market-para">
-        The seller scrambles. Most of these answers exist somewhere — in a
-        drawer, an old email, a council archive — but finding them takes weeks.
+        The seller scrambles. Most of these answers exist somewhere - in a
+        drawer, an old email, a council archive - but finding them takes weeks.
         While the seller hunts, the buyer waits. Their mortgage offer expires.
         Their patience runs out. Or worse, a survey reveals damp, or a search
         flags a planning issue, or a leasehold condition turns out to be more
@@ -449,12 +449,12 @@
         The system assumes
         <strong>discovery should happen during the transaction.</strong>
         That's the design flaw. By the time problems surface, they're expensive,
-        emotional, and binary — fix it now or lose the sale. Most sellers had no
+        emotional, and binary - fix it now or lose the sale. Most sellers had no
         idea anything was wrong. They just wanted to move.
       </p>
 
       <div class="market-pull-quote">
-        "You don't know what you don't know — until you're three weeks in and
+        "You don't know what you don't know - until you're three weeks in and
         the buyer's solicitor asks for something you can't find."
         <div class="market-pull-attr">
           Industry observation
@@ -470,7 +470,7 @@
         <div class="govt-headline">The government is acting.</div>
         <div class="govt-text">
           The case for upfront information has been understood at a policy level
-          for some time. <strong>Mandation is coming</strong> — every UK
+          for some time. <strong>Mandation is coming</strong> - every UK
           property will be required to have a Property Passport-equivalent
           record before being put on the market. The aim is to surface what
           buyers' solicitors will inevitably ask for, before the offer stage
@@ -497,7 +497,7 @@
           to lose, lose months of their lives to a process that promised to
           deliver and didn't. I've watched buyers and sellers alike feel
           completely <strong>out of control</strong>
-          — because every answer they need only arrives after they've already
+          - because every answer they need only arrives after they've already
           committed.
         </div>
 
@@ -506,7 +506,7 @@
           revealed something the seller genuinely didn't know about. The
           leasehold condition that wasn't flagged until exchange. The chain that
           broke because the third party in it had paperwork they couldn't find.
-          None of these are dramatic stories on their own — they're the quiet,
+          None of these are dramatic stories on their own - they're the quiet,
           ordinary failures that happen tens of thousands of times a year in
           this country.
         </div>
@@ -516,7 +516,7 @@
           <strong>none of it has to be like this.</strong> The information the
           buyer's solicitor will ask for is, almost without exception, already
           discoverable. It's just discovered too late. If we surface it on day
-          one — verified, transferable, owned by the seller — the whole rhythm
+          one - verified, transferable, owned by the seller - the whole rhythm
           of the transaction changes. The seller stays in control of their own
           home's record. The buyer makes informed decisions. The system finally
           serves the people inside it instead of testing them.
@@ -593,7 +593,7 @@
           type="button"
           @click="navigateTo('/onboarding/signup')"
         >
-          Get started — it's free
+          Get started - it's free
           <svg
             width="13"
             height="13"
@@ -684,7 +684,7 @@
           "I didn't want my house to fall through because the buyer's solicitor
           needed a bit of paper I couldn't find."
         </div>
-        <div class="aisha-pull-attr">— Aisha</div>
+        <div class="aisha-pull-attr">- Aisha</div>
       </div>
 
       <!-- Chapter 2 -->
@@ -700,7 +700,7 @@
         Aisha set up her Property Passport in late February. Title deeds came
         through automatically from HM Land Registry. The Coventry council's
         planning portal returned her search results in three days. The 2019
-        FENSA certificate — the one her mother couldn't find — was already on
+        FENSA certificate - the one her mother couldn't find - was already on
         file with the installer.
       </p>
       <p class="aisha-para">
@@ -721,7 +721,7 @@
       <p class="aisha-para">
         Two viewings on the first weekend. An offer at the asking price by
         Wednesday. The buyer's solicitor downloaded Aisha's Passport on Thursday
-        morning — and by Thursday afternoon, they'd raised exactly two
+        morning - and by Thursday afternoon, they'd raised exactly two
         enquiries, both about the loft conversion.
       </p>
       <p class="aisha-para">
@@ -736,7 +736,7 @@
           solicitor had everything they needed in a day. No surveys lost, no
           fall-through."
         </div>
-        <div class="aisha-pull-attr">— Aisha</div>
+        <div class="aisha-pull-attr">- Aisha</div>
       </div>
 
       <!-- Closing CTA -->
@@ -790,7 +790,7 @@
       <div class="sample-banner">
         <div class="sample-banner-tag">Sample</div>
         <div class="sample-banner-text">
-          A demo passport for an illustrative property — not a real listing.
+          A demo passport for an illustrative property - not a real listing.
         </div>
       </div>
 
@@ -1077,27 +1077,27 @@ const landingTour = useHomescoreTour({
     {
       sel: '[data-tour="explore"]',
       title: 'Explore any UK property',
-      body: 'See what we already know — value, history, energy, planning, local area and more. Free, no account needed.',
+      body: 'See what we already know - value, history, energy, planning, local area and more. Free, no account needed.',
     },
     {
       sel: '[data-tour="HomeScore"]',
-      title: 'HomeScore — free in 60 seconds',
+      title: 'HomeScore - free in 60 seconds',
       body: 'A quick read on how your home compares to the street: running costs, EPC rating, where you could save. No signup needed.',
     },
     {
       sel: '[data-tour="passport"]',
-      title: 'Property Passport — solicitor-grade',
-      body: "A verified record of everything a buyer's solicitor will ask for — deeds, planning, surveys, fittings. Ready from day one, not three weeks into a sale.",
+      title: 'Property Passport - solicitor-grade',
+      body: "A verified record of everything a buyer's solicitor will ask for - deeds, planning, surveys, fittings. Ready from day one, not three weeks into a sale.",
     },
     {
       sel: '[data-tour="aisha"]',
-      title: 'A real story — Aisha, Coventry',
+      title: 'A real story - Aisha, Coventry',
       body: 'A two-bed semi sold in 14 days with no fall-throughs, because the paperwork was ready before the first viewing. Tap to read how.',
     },
     {
       sel: '[data-tour="market"]',
       title: 'Why we built this',
-      body: "A third of UK sales collapse. The ones that complete take almost six months. Here's the case for fixing it — and the numbers behind it.",
+      body: "A third of UK sales collapse. The ones that complete take almost six months. Here's the case for fixing it - and the numbers behind it.",
     },
   ],
 })
@@ -1246,7 +1246,7 @@ const samples: Record<SampleType, any> = {
     pills: ['🏠 3 bed', 'Mid-terrace', '🪪 Tenant verified'],
     recordsHeading: 'Compliance & tenancy',
     recordsSub:
-      'Statutory documents for letting plus tenancy paperwork — kept current and shareable.',
+      'Statutory documents for letting plus tenancy paperwork - kept current and shareable.',
     recordStats: [
       { tone: 'green', num: '9', label: 'Valid' },
       { tone: 'amber', num: '1', label: 'Renew<br/>soon' },
@@ -1669,7 +1669,7 @@ const currentSample = computed(() => samples[sampleType.value])
   line-height: 1.5;
 }
 
-/* ── Explore card — the one light-background card in the deck; every
+/* ── Explore card - the one light-background card in the deck; every
    other card assumes white-on-dark text, so eyebrow/pill/headline/sub
    all need dark-text overrides here. ── */
 .deck-card.explore {
@@ -1698,7 +1698,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #6b7089;
 }
 /* Text column sits alongside the illustration in .dc-header-block, with
-   .dc-sub directly under the headline — otherwise .dc-sub sat below the
+   .dc-sub directly under the headline - otherwise .dc-sub sat below the
    whole (taller) image row, leaving a slab of empty space under the
    shorter two-line headline before any text continued. */
 .dc-header-text-col {
@@ -1737,7 +1737,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .dc-explore-badge-sep {
   color: #c7c5d6;
 }
-/* ── Peek state (card stacked behind another) — same white-on-dark
+/* ── Peek state (card stacked behind another) - same white-on-dark
    assumption as the front-facing overrides above, needs the same
    dark-on-light treatment for the explore card specifically. ── */
 .deck-card.explore .dc-peek-label {
@@ -1981,7 +1981,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: rgba(255, 255, 255, 0.92);
 }
 /* Explore card is light-background (every other card is dark), so its
-   button needs to be the one solid/dark-enough surface for contrast —
+   button needs to be the one solid/dark-enough surface for contrast -
    same rgba(255,255,255,...) treatment the others use would be
    invisible on white. */
 .deck-card.explore .dc-cta {
@@ -1992,7 +1992,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: #00918b;
 }
 .deck-card.passport .dc-cta {
-  /* "Start a property passport" is the longest CTA label in the deck —
+  /* "Start a property passport" is the longest CTA label in the deck -
      the shared 212px cap above (sized for the other cards' shorter
      text) wraps it onto two lines, so this card needs its own wider
      cap to keep it on one line. */
@@ -2303,7 +2303,7 @@ const currentSample = computed(() => samples[sampleType.value])
   text-transform: none;
 }
 
-/* Government section — navy strip */
+/* Government section - navy strip */
 .govt-card {
   margin: 0 22px 14px;
   background: #231d45;
@@ -2350,7 +2350,7 @@ const currentSample = computed(() => samples[sampleType.value])
   font-weight: 800;
 }
 
-/* Founder section — soft cream */
+/* Founder section - soft cream */
 .founder-card {
   margin: 0 22px 14px;
   background: #f7f2e8;
@@ -2422,7 +2422,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-left: 0;
 }
 
-/* With/without comparison — joined grid */
+/* With/without comparison - joined grid */
 .compare-grid {
   margin: 0 22px 18px;
   display: grid;

@@ -263,7 +263,7 @@ function runConfetti() {
   text-align: center;
 }
 
-/* House wrapper — prototype-exact 240 px container (auth-flow.html L582). */
+/* House wrapper - prototype-exact 240 px container (auth-flow.html L582). */
 .welcome-house-wrap {
   position: relative;
   width: 240px;

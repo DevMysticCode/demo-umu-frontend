@@ -1,13 +1,13 @@
 import { computed } from 'vue'
 
 /**
- * Cheap "who am I" — decodes the JWT stored in localStorage and returns
+ * Cheap "who am I" - decodes the JWT stored in localStorage and returns
  * the user id. Never hits the network. Safe to call from any component
  * that needs to compare `senderId`, filter participants, etc.
  *
  * JWT payload shape (see backend auth.service): { sub, email, iat, exp }.
  * We only need `sub` = userId. If the token is missing, malformed, or
- * expired we return `null` — callers should treat that as "not logged
+ * expired we return `null` - callers should treat that as "not logged
  * in" and route to sign-in as they normally would.
  */
 

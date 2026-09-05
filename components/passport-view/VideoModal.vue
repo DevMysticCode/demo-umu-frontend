@@ -51,7 +51,7 @@
                 </div>
                 <h3 class="video-coming-soon-title">Video Coming Soon</h3>
                 <p class="video-coming-soon-sub">
-                  We're producing an explanation video for this topic. Check back soon — or use the Help button for a written guide.
+                  We're producing an explanation video for this topic. Check back soon - or use the Help button for a written guide.
                 </p>
               </div>
             </template>

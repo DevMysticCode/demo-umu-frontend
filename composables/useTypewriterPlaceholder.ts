@@ -4,7 +4,7 @@ import { ref, watch, onBeforeUnmount, type Ref } from 'vue'
  * Cycles a placeholder through a list of words with a type-then-erase
  * animation, e.g. "Type postcode" → "Type address" → "Type street name"
  * → back to "Type postcode", looping. Used to make it obvious a focused,
- * empty search field is for exploring properties — see dashboard.vue's
+ * empty search field is for exploring properties - see dashboard.vue's
  * search bar, the first (and so far only) consumer.
  *
  * `active` (typically `isFocused && !modelValue`) controls the whole

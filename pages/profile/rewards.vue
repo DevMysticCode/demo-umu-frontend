@@ -119,7 +119,7 @@
         <div v-if="!readyRewards.length && !lockedRewards.length" class="rw-empty">
           <div class="rw-empty-ic">🎁</div>
           <div class="rw-empty-title">Rewards catalogue coming soon</div>
-          <p class="rw-empty-sub">Keep earning points — offers will appear here.</p>
+          <p class="rw-empty-sub">Keep earning points - offers will appear here.</p>
         </div>
       </template>
 
@@ -169,7 +169,7 @@
       <div v-else-if="previewEntries.length === 0" class="rw-empty">
         <div class="rw-empty-ic">🎁</div>
         <div class="rw-empty-title">No points yet</div>
-        <p class="rw-empty-sub">Complete useful steps — like verifying your identity or claiming a property — to start earning.</p>
+        <p class="rw-empty-sub">Complete useful steps - like verifying your identity or claiming a property - to start earning.</p>
       </div>
 
       <div v-else class="rw-list">
@@ -403,7 +403,7 @@ async function loadPassportFlag() {
     const res: any = await $fetch(`${config.public.apiBase}/passport/my`, { headers: authHeaders() })
     hasPassport.value = Array.isArray(res) ? res.length > 0 : Array.isArray(res?.passports) && res.passports.length > 0
   } catch {
-    /* stays false — falls back to generic "UMU Member" label */
+    /* stays false - falls back to generic "UMU Member" label */
   }
 }
 
@@ -424,7 +424,7 @@ onMounted(() => {
 <style scoped>
 .rw-page { --navy: #231d45; --teal: #00a19a; --muted: #6e6879; --line: #e7e4ec; }
 
-/* Nav bar — matches the rest of the profile section (transparent bar,
+/* Nav bar - matches the rest of the profile section (transparent bar,
    plain navy back button, centered title) rather than a colour block. */
 .rw-nav-bar {
   display: flex;
@@ -498,7 +498,7 @@ onMounted(() => {
 .rw-reward-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
 .rw-reward-tile { height: 92px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 12px; text-align: center; letter-spacing: 0.2px; overflow: hidden; }
 /* The source icons are isometric renders with a lot of transparent margin
-   baked in around the object (platform + breathing room) — at 1:1 scale
+   baked in around the object (platform + breathing room) - at 1:1 scale
    they read as a small floating icon rather than a tile-filling image.
    Scaling up and letting overflow:hidden crop the excess margin makes the
    object itself fill most of the tile, closer to the mockup's wordmark
@@ -516,14 +516,14 @@ onMounted(() => {
 .rw-stamps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 8px; padding: 4px 0 6px; }
 .rw-stamp-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
 /* Locked stamps get a subtle faded outline rather than a dominant grey
-   padlock — StampFrame with no iconAsset already renders a plain
+   padlock - StampFrame with no iconAsset already renders a plain
    checkmark placeholder, so locked cells just dial the whole badge back
    with opacity + a lighter ring rather than overlaying a lock icon. */
 .rw-stamp-cell--locked { opacity: 0.4; }
 .rw-stamp-label { font-size: 10.5px; font-weight: 700; color: var(--navy); line-height: 1.25; }
 .rw-stamp-cell--locked .rw-stamp-label { color: var(--muted); }
 
-/* TEMPORARY — remove alongside the button in the template. Dashed amber
+/* TEMPORARY - remove alongside the button in the template. Dashed amber
    border deliberately reads as "test-only", not a real product button. */
 .rw-test-simulate-btn {
   width: 100%;
@@ -553,7 +553,7 @@ onMounted(() => {
 .rw-loadmore { width: 100%; padding: 13px; border-radius: 14px; border: 1.5px solid var(--line); background: #fff; color: var(--navy); font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 4px; }
 .rw-loadmore:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Full history drawer — same slide-up pattern as HelpDrawer.vue */
+/* Full history drawer - same slide-up pattern as HelpDrawer.vue */
 .rw-drawer-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 1000; display: flex; align-items: flex-end; }
 .rw-drawer { width: 100%; max-height: 85vh; background: #fff; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; overflow: hidden; }
 .rw-drawer-handle { width: 36px; height: 4px; background: #e0e0e0; border-radius: 2px; margin: 12px auto 4px; flex-shrink: 0; }

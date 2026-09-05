@@ -362,7 +362,7 @@ const headline = computed(() => {
   }
   return {
     title: 'Your HomeScore is confirmed',
-    sub: "Your answers match what's on your public EPC record — no change to your score.",
+    sub: "Your answers match what's on your public EPC record - no change to your score.",
   }
 })
 
@@ -396,7 +396,7 @@ const carbonSavedDisplay = computed(() => {
   // real co2Now/co2Potential figures for this property. Only reach for
   // the CO2 data when there's an actual delta to translate into a share.
   if (props.delta <= 0) return '0 tonnes/year'
-  if (props.co2Now == null || props.co2Potential == null) return '—'
+  if (props.co2Now == null || props.co2Potential == null) return '-'
   const totalGap = props.co2Now - props.co2Potential
   const scoreGap = Math.max(1, 100 - props.fromScore)
   const share = Math.max(0, Math.min(1, props.delta / scoreGap))
@@ -571,7 +571,7 @@ const refinedStats = computed(() => {
   animation: hs-v6-fadeUp 0.35s 0.08s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Intro — title/sub + house illustration, sits directly on page bg */
+/* Intro - title/sub + house illustration, sits directly on page bg */
 .levelup-intro {
   position: relative;
   z-index: 2;
@@ -1099,7 +1099,7 @@ const refinedStats = computed(() => {
   background: var(--accent-paler);
   color: var(--accent-dark);
 }
-/* Outlined variant — transparent background, accent border (v6-2) */
+/* Outlined variant - transparent background, accent border (v6-2) */
 .bottom-cta-secondary.outlined {
   background: transparent;
   border: 1.5px solid var(--accent);
@@ -1108,7 +1108,7 @@ const refinedStats = computed(() => {
 .bottom-cta-secondary.outlined:hover {
   background: var(--accent-paler);
 }
-/* 3D illustration inside the two bottom CTAs — replaces the 🎯 and ⚡
+/* 3D illustration inside the two bottom CTAs - replaces the 🎯 and ⚡
    emoji at the front of each button. Sized to sit neatly next to the
    label without overwhelming the button height. */
 .bottom-cta-ic {

@@ -747,7 +747,7 @@ const onPrimary = () => {
 .btn-text:hover { color: #231d45; }
 .btn-text:disabled { opacity: 0.65; cursor: not-allowed; }
 
-/* Confirm state — used for "sent" and "success" */
+/* Confirm state - used for "sent" and "success" */
 .confirm-state {
   padding: 28px 24px;
   text-align: center;

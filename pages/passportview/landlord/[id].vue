@@ -5606,7 +5606,7 @@ const SectionCard = defineComponent({
 .lp-tn-mand-s { font-size: 11.5px; font-weight: 500; color: #2c4aa0; margin-top: 5px; line-height: 1.5; }
 .lp-tn-pulled { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; color: #008a84; margin-top: 6px; }
 
-/* Tenancy Agreement — Next steps / e-signature */
+/* Tenancy Agreement - Next steps / e-signature */
 .lp-tn-readydoc {
   display: flex; align-items: center; gap: 12px;
   background: #fff; border-radius: 14px; padding: 14px;

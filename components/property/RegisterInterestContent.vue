@@ -43,7 +43,7 @@
           </div>
           <div class="ri-row__text">
             <div class="ri-row__title">Your buyer passport</div>
-            <div class="ri-row__subtitle">Name, contact, chain position — from your account</div>
+            <div class="ri-row__subtitle">Name, contact, chain position - from your account</div>
           </div>
           <div class="ri-chip ri-chip--teal">Auto</div>
         </div>
@@ -80,7 +80,7 @@
       <div class="ri-privacy">
         <span class="ri-privacy__emoji">🔒</span>
         <div class="ri-privacy__text">
-          Your contact details are only shared with the agent — not the owner. We never share your data with third parties.
+          Your contact details are only shared with the agent - not the owner. We never share your data with third parties.
         </div>
       </div>
 

@@ -491,7 +491,7 @@ const buyQuestions: Question[] = [
     type: 'locations',
     label: 'WHERE ARE YOU LOOKING?',
     placeholder: 'Add a city, area or postcode…',
-    hint: 'Add as many as you like — we\'ll search all of them.',
+    hint: 'Add as many as you like - we\'ll search all of them.',
   },
   {
     id: 'buyBudget',
@@ -557,7 +557,7 @@ const buyQuestions: Question[] = [
     id: 'buyTenure',
     type: 'chips',
     label: 'TENURE PREFERENCE',
-    hint: 'Leasehold properties carry extra risk — we surface this in every listing',
+    hint: 'Leasehold properties carry extra risk - we surface this in every listing',
     opts: [{ v: 'Freehold' }, { v: 'Leasehold' }, { v: 'Either' }],
   },
   {
@@ -598,7 +598,7 @@ const buyQuestions: Question[] = [
     label: 'HOW IMPORTANT IS ENERGY EFFICIENCY?',
     hint: 'Affects HomeScore weighting and running cost estimates',
     opts: [
-      { v: 'Very — low bills matter' },
+      { v: 'Very - low bills matter' },
       { v: 'Somewhat' },
       { v: 'Not a priority' },
     ],
@@ -611,7 +611,7 @@ const passportQuestion: Question = {
   label: 'WOULD YOU BUY WITHOUT A PROPERTY PASSPORT?',
   hint: 'Helps us calibrate how much we flag unverified listings',
   opts: [
-    { v: 'No — I need one' },
+    { v: 'No - I need one' },
     { v: 'Depends on price' },
     { v: 'Yes, if the deal is right' },
   ],
@@ -672,7 +672,7 @@ const sellQuestions: Question[] = [
     id: 'sellChain',
     type: 'chips',
     label: 'CHAIN POSITION',
-    hint: 'Buyers pay more for chain-free — this appears on your Passport',
+    hint: 'Buyers pay more for chain-free - this appears on your Passport',
     opts: [
       { v: 'Chain-free', icon: '/op-icons/investment/chainLink.png' },
       { v: 'Buying onward' },
@@ -720,7 +720,7 @@ const landlordQuestions: Question[] = [
     type: 'chips',
     label: 'HOW MANY PROPERTIES DO YOU CURRENTLY OWN?',
     opts: [
-      { v: 'None — first purchase', icon: '/op-icons/investment/house.png' },
+      { v: 'None - first purchase', icon: '/op-icons/investment/house.png' },
       { v: '1–2', icon: '/op-icons/investment/housesCluster.png' },
       { v: '3–5', icon: '/op-icons/investment/apartmentBlock.png' },
       { v: '6–10', icon: '/op-icons/investment/crane.png' },
@@ -812,7 +812,7 @@ const landlordQuestions: Question[] = [
     type: 'chips',
     label: 'WORK APPETITE',
     opts: [
-      { v: 'Turnkey — ready to let', icon: '/op-icons/investment/paintPalette.png' },
+      { v: 'Turnkey - ready to let', icon: '/op-icons/investment/paintPalette.png' },
       { v: 'Light cosmetic work', icon: '/op-icons/investment/paintRoller.png' },
       { v: 'Full refurb', icon: '/op-icons/investment/hammerClaw.png' },
       { v: 'Structural / development', icon: '/op-icons/investment/craneTower.png' },
@@ -854,7 +854,7 @@ const landlordQuestions: Question[] = [
       { v: 'No chain', icon: '/op-icons/investment/chainLink.png' },
       { v: 'EPC D or above', icon: '/op-icons/investment/plantSprout.png' },
       { v: 'Planning potential', icon: '/op-icons/investment/clipboardChecklist.png' },
-      { v: 'BMV — below market value', icon: '/op-icons/investment/priceTagPound2.png' },
+      { v: 'BMV - below market value', icon: '/op-icons/investment/priceTagPound2.png' },
       { v: 'Off-market deals', icon: '/op-icons/investment/smileyFace.png' },
     ],
   },
@@ -885,10 +885,10 @@ const activeQuestions = computed((): Question[] => {
 const headerLabel = computed(() => {
   if (phase.value === 'role') return 'One quick question'
   const map: Record<string, string> = {
-    buy: 'Step 2 of 2 — Your preferences',
-    sell: 'Step 2 of 2 — Your property',
-    landlord: 'Step 2 of 2 — Investment criteria',
-    both: 'Step 2 of 2 — Your move',
+    buy: 'Step 2 of 2 - Your preferences',
+    sell: 'Step 2 of 2 - Your property',
+    landlord: 'Step 2 of 2 - Investment criteria',
+    both: 'Step 2 of 2 - Your move',
   }
   return map[selectedRole.value] ?? ''
 })
@@ -958,18 +958,18 @@ const headerTitle = computed(() => {
     buy: 'Tell us about your search',
     sell: 'About your property',
     landlord: 'Your investment profile',
-    both: 'Your move — buying & selling',
+    both: 'Your move - buying & selling',
   }
   return map[selectedRole.value] ?? ''
 })
 const headerSub = computed(() => {
   if (phase.value === 'role')
-    return "We'll set up the right journey for you — takes 30 seconds."
+    return "We'll set up the right journey for you - takes 30 seconds."
   const map: Record<string, string> = {
     buy: "We'll match you with properties and flag risk before you offer.",
     sell: "We'll get your Passport started and connect you with the right people.",
     landlord:
-      "Tell us what you're after — we'll surface the right deals and data.",
+      "Tell us what you're after - we'll surface the right deals and data.",
     both: 'Tell us about both sides so we can coordinate everything.',
   }
   return map[selectedRole.value] ?? ''
@@ -1531,7 +1531,7 @@ onMounted(() => {
   font-weight: 500;
 }
 
-/* Location autocomplete dropdown — sits below the input. Anchored to
+/* Location autocomplete dropdown - sits below the input. Anchored to
    .pref-section so we don't need a wrapper. */
 .pref-section {
   position: relative;

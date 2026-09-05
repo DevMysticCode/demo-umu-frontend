@@ -127,7 +127,7 @@
       <div class="pathway-empty-title">No improvements on this EPC</div>
       <div class="pathway-empty-sub">
         The certificate for this property doesn't list any energy-saving
-        steps — usually means it's already in good shape.
+        steps - usually means it's already in good shape.
       </div>
     </div>
 
@@ -155,7 +155,7 @@
             </div>
             <div class="mission-meta">
               <template v-if="m.done">
-                You said this is in place — upload {{ m.docLabel }} to verify it on your Passport.
+                You said this is in place - upload {{ m.docLabel }} to verify it on your Passport.
               </template>
               <template v-else>Recommended in your EPC</template>
             </div>
@@ -169,11 +169,11 @@
           </div>
           <div class="mission-stat">
             <div class="mission-stat-label">Save</div>
-            <div class="mission-stat-val mission-stat-val--save">{{ m.save || '—' }}</div>
+            <div class="mission-stat-val mission-stat-val--save">{{ m.save || '-' }}</div>
           </div>
           <div class="mission-stat">
             <div class="mission-stat-label">Est. cost</div>
-            <div class="mission-stat-val mission-stat-val--cost">{{ m.cost || '—' }}</div>
+            <div class="mission-stat-val mission-stat-val--cost">{{ m.cost || '-' }}</div>
           </div>
         </div>
         <div class="mission-actions">
@@ -393,7 +393,7 @@ onMounted(async () => {
       }
     }
   } catch {
-    /* non-critical — pathway still renders, just without done-state */
+    /* non-critical - pathway still renders, just without done-state */
   }
   // Pop the verify-documents modal on first visit when the user has at
   // least one "already done" mission. We only auto-open once per visit;
@@ -832,7 +832,7 @@ function onBack() {
   margin-top: 1px;
 }
 
-/* Intro — current score + headline + house illustration */
+/* Intro - current score + headline + house illustration */
 .pathway-intro {
   display: flex;
   align-items: center;
@@ -1373,7 +1373,7 @@ function onBack() {
   filter: brightness(1.06);
 }
 
-/* Phase-1 'Coming soon' state — dialled-back grey badge so the mission
+/* Phase-1 'Coming soon' state - dialled-back grey badge so the mission
    card still says "this is where you'll book work" without the loud
    teal CTA that would imply the flow is live. Removed when the
    marketplace launches (see the <template v-else> in mission-actions). */
@@ -1388,7 +1388,7 @@ function onBack() {
   filter: none;
 }
 
-/* "Already done" mission state — derived from quiz answers. Dialled
+/* "Already done" mission state - derived from quiz answers. Dialled
    back colours + a tick icon instead of the loud priority gradient. */
 .mission-card--done {
   background: linear-gradient(135deg, #f2faf8, #fff);
@@ -1448,7 +1448,7 @@ function onBack() {
   background: #e2f1ea;
 }
 
-/* Floating "Verify N answers" pill — appears at the bottom of the
+/* Floating "Verify N answers" pill - appears at the bottom of the
    pathway when at least one mission is marked done. */
 .verify-pill {
   position: fixed;

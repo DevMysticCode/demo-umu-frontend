@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class="psm-hint">
-        Estimated price — blends registry data with an automated
+        Estimated price - blends registry data with an automated
         valuation, so coverage varies by property.
       </div>
     </div>
@@ -347,7 +347,7 @@ function onSearch() {
   overflow-y: auto;
   overflow-x: hidden;
   padding: 4px 20px;
-  /* Hide the scrollbar chrome while keeping the scroll behavior — this
+  /* Hide the scrollbar chrome while keeping the scroll behavior - this
      is a compact popup, not a page, and a visible track/thumb reads as
      clutter rather than a real navigation aid. */
   scrollbar-width: none;
@@ -458,7 +458,7 @@ function onSearch() {
 }
 /* .psm-range-field (price £ inputs) and .psm-select (bedrooms/radius
    dropdowns) sit side by side in the same rows and must read as the
-   same control — same box height, padding, border, radius and type
+   same control - same box height, padding, border, radius and type
    scale. A native <select> has its own intrinsic sizing that a plain
    flex row doesn't, so both get an explicit height/box-sizing here
    rather than relying on padding alone to end up equal. */
@@ -505,7 +505,7 @@ function onSearch() {
   color: #231d45;
   cursor: pointer;
   /* Native select chrome (arrow, inset) varies by browser/OS enough to
-     throw off the match with .psm-range-field above — replace it with
+     throw off the match with .psm-range-field above - replace it with
      one consistent chevron everywhere this class is used. */
   appearance: none;
   -webkit-appearance: none;

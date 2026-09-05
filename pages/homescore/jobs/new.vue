@@ -103,7 +103,7 @@ import { ref } from 'vue'
 const router = useRouter()
 
 const category = ref('insulation')
-const title = ref('Cavity wall insulation — 15 Woodfield Rd')
+const title = ref('Cavity wall insulation - 15 Woodfield Rd')
 const description = ref(
   'Detached 3-bed, EPC E (52). Cavity walls currently uninsulated per EPC. Want quotes for full cavity fill, including any ECO4 grant assistance. Property has loft access; happy to combine with loft top-up if cost-effective.'
 )

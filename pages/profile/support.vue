@@ -133,7 +133,7 @@ function toggleFaq(idx: number) {
 const faqs = [
   {
     q: 'What is a Property Passport and why do I need one?',
-    a: 'A Property Passport is a verified, legally-backed dossier of every important detail about a property — title deeds, EPC, floor plan, surveys, certificates. It speeds up sales and lettings dramatically by giving buyers and tenants everything they need upfront.',
+    a: 'A Property Passport is a verified, legally-backed dossier of every important detail about a property - title deeds, EPC, floor plan, surveys, certificates. It speeds up sales and lettings dramatically by giving buyers and tenants everything they need upfront.',
   },
   {
     q: 'How does identity verification work?',
@@ -141,7 +141,7 @@ const faqs = [
   },
   {
     q: 'Can I share my Buyer Passport with someone outside UMU?',
-    a: 'Yes — generate a secure share link from your Buyer Passport. The recipient sees a verified read-only view in their browser; no UMU account required.',
+    a: 'Yes - generate a secure share link from your Buyer Passport. The recipient sees a verified read-only view in their browser; no UMU account required.',
   },
   {
     q: "What happens if a seller doesn't have a passport yet?",
@@ -149,15 +149,15 @@ const faqs = [
   },
   {
     q: 'How is my data protected?',
-    a: 'Documents are stored encrypted at rest, transferred over TLS, and never sold. You control who sees what — every share is auditable and revocable.',
+    a: 'Documents are stored encrypted at rest, transferred over TLS, and never sold. You control who sees what - every share is auditable and revocable.',
   },
   {
     q: 'How does the £49 passport unlock work?',
-    a: 'A one-time payment per passport. It gives you full access to that passport — documents, AI summaries, and direct messaging with the owner.',
+    a: 'A one-time payment per passport. It gives you full access to that passport - documents, AI summaries, and direct messaging with the owner.',
   },
   {
     q: 'Can I delete my account?',
-    a: 'Yes — Settings → Delete account. Your passports, documents, and personal data are removed within 30 days; verifiable share links are revoked immediately.',
+    a: 'Yes - Settings → Delete account. Your passports, documents, and personal data are removed within 30 days; verifiable share links are revoked immediately.',
   },
 ]
 

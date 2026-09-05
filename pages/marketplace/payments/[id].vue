@@ -130,7 +130,7 @@
         <div class="rc-trust-text">
           <b>UProtect escrow.</b>
           The platform holds the funds while the work happens. The
-          supplier is only paid once you say the job's done — full
+          supplier is only paid once you say the job's done - full
           refund path coming alongside disputes.
         </div>
       </div>
@@ -147,7 +147,7 @@ import { computed, ref } from 'vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 import type { MarketplacePayment } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'UProtect receipt — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'UProtect receipt - Marketplace', middleware: 'auth' })
 
 const route = useRoute()
 const router = useRouter()
@@ -192,7 +192,7 @@ const statusLabel = computed(() => {
     case 'released': return 'Released'
     case 'refunded': return 'Refunded'
     case 'pending':  return 'Pending'
-    default:         return '—'
+    default:         return '-'
   }
 })
 const statusIcon = computed(() => {
@@ -265,7 +265,7 @@ async function onRelease() {
   releasing.value = true
   try {
     payment.value = await releasePayment(payment.value.id)
-    showToast({ message: 'Funds released — job complete', iconEmoji: '✅' })
+    showToast({ message: 'Funds released - job complete', iconEmoji: '✅' })
   } catch (err: any) {
     releaseError.value = err?.data?.message ?? 'Could not release funds.'
   } finally {

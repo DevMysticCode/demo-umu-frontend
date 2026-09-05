@@ -293,7 +293,7 @@ const propertyAccessLabel = computed(() => {
 
 const permissionChip = computed(() => {
   if (!collaborator.value) return "";
-  return { all: "All Properties", specific: "Specific", later: "Assign Later" }[collaborator.value.permission] || "—";
+  return { all: "All Properties", specific: "Specific", later: "Assign Later" }[collaborator.value.permission] || "-";
 });
 
 const clientAccessLabels = {
@@ -303,12 +303,12 @@ const clientAccessLabels = {
 };
 
 const clientAccessLabel = computed(() =>
-  collaborator.value ? (clientAccessLabels[collaborator.value.clientAccess] || "—") : "",
+  collaborator.value ? (clientAccessLabels[collaborator.value.clientAccess] || "-") : "",
 );
 
 const accessDurationLabel = computed(() => {
   if (!collaborator.value) return "";
-  if (collaborator.value.accessDuration === "permanent") return "Permanent — Until Cancelled";
+  if (collaborator.value.accessDuration === "permanent") return "Permanent - Until Cancelled";
   if (collaborator.value.expiresAt) {
     const d = new Date(collaborator.value.expiresAt);
     return `Expires ${d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`;

@@ -60,7 +60,7 @@ function epcProxy(property: any): any {
   })
 }
 
-/** The 5-pillar "before" breakdown (icon/label/value/max/pct/tone only —
+/** The 5-pillar "before" breakdown (icon/label/value/max/pct/tone only -
  *  no per-row expand content, callers that need the richer expand data
  *  layer it on top of this using the same `id`). */
 export function computeHomeScorePillars(property: any): PillarBase[] {

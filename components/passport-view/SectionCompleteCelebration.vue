@@ -52,7 +52,7 @@
 
         <p class="scc-tip">
           <span class="scc-tip-icon">✦</span>
-          Great progress — another section complete.
+          Great progress - another section complete.
         </p>
       </div>
 
@@ -190,7 +190,7 @@ onBeforeUnmount(() => {
 .scc-icon {
   /* Tailwind Preflight sets img { display: block }, which makes the
      ancestor's text-align: center a no-op for this element (block boxes
-     don't center themselves via text-align) — margin-inline:auto is what
+     don't center themselves via text-align) - margin-inline:auto is what
      actually centers it. */
   display: block;
   width: 132px;

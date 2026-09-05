@@ -34,7 +34,7 @@
           component, you agree to these terms. Users must be at least 18 years old.
         </p>
 
-        <h2>03 · What we provide — and what we do not</h2>
+        <h2>03 · What we provide - and what we do not</h2>
         <p>
           umovingu provides a platform for organising, storing and sharing property-related documents and
           information. The company is not solicitors, conveyancers, financial advisers, surveyors or
@@ -95,8 +95,8 @@
 
         <h2>10 · Intellectual property</h2>
         <p>
-          All website and platform content — including text, design, graphics, software and the Property
-          Passport concept — belongs to umovingu Limited or licensors. The umovingu name, logo and
+          All website and platform content - including text, design, graphics, software and the Property
+          Passport concept - belongs to umovingu Limited or licensors. The umovingu name, logo and
           branding are protected. Use requires prior written consent.
         </p>
 

@@ -185,7 +185,7 @@ import AppHeader from '~/components/core/AppHeader.vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 import type { MarketplaceJobDetail } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Job — Marketplace' })
+definePageMeta({ title: 'Job - Marketplace' })
 
 const route = useRoute()
 const router = useRouter()
@@ -303,7 +303,7 @@ function goBack() {
 }
 
 function notImplemented(label: string) {
-  showToast({ message: `${label} — coming next step`, iconEmoji: '🚧' })
+  showToast({ message: `${label} - coming next step`, iconEmoji: '🚧' })
 }
 
 function onSave() { notImplemented('Save job') }
@@ -564,7 +564,7 @@ const statusCtaLabel = computed(() => {
 }
 .jd-star { color: #f5a623; }
 
-/* Trust strip — reuse the styles from home */
+/* Trust strip - reuse the styles from home */
 .mp-trust-strip {
   display: flex;
   align-items: flex-start;

@@ -267,7 +267,7 @@
             </div>
             <div class="verified-empty-title">Be among the first</div>
             <div class="verified-empty-sub">
-              No verified passports nearby yet — claim yours and help shape a
+              No verified passports nearby yet - claim yours and help shape a
               more transparent market.
             </div>
             <button class="verified-empty-btn" @click="navigateTo('/explore')">
@@ -373,7 +373,7 @@
             </div>
             <div class="verified-empty-title">Be among the first</div>
             <div class="verified-empty-sub">
-              No verified passports nearby yet — claim yours and help shape a
+              No verified passports nearby yet - claim yours and help shape a
               more transparent market.
             </div>
             <button class="verified-empty-btn" @click="navigateTo('/explore')">
@@ -448,7 +448,7 @@
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
-                <div class="psc-gauge-num">{{ passportScore ?? '—' }}</div>
+                <div class="psc-gauge-num">{{ passportScore ?? '-' }}</div>
                 <div class="psc-gauge-lbl">HomeScore</div>
               </div>
             </div>
@@ -647,7 +647,7 @@
             <div class="my-passport-body">
               <div class="my-passport-title">My Buyer Passport</div>
               <div class="my-passport-sub">
-                Prove you're a verified buyer — share with any agent or seller
+                Prove you're a verified buyer - share with any agent or seller
               </div>
             </div>
             <div class="my-passport-arrow">→</div>
@@ -672,7 +672,7 @@
             </div>
             <div v-if="marketPulseLoading && !pulseHasAny" class="pulse-grid">
               <div class="pulse-cell">
-                <div class="pulse-val">—</div>
+                <div class="pulse-val">-</div>
                 <div class="pulse-lbl">loading</div>
               </div>
             </div>
@@ -880,7 +880,7 @@
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
-                <div class="psc-gauge-num">{{ passportScore ?? '—' }}</div>
+                <div class="psc-gauge-num">{{ passportScore ?? '-' }}</div>
                 <div class="psc-gauge-lbl">HomeScore</div>
               </div>
             </div>
@@ -982,7 +982,7 @@
                 Set your buy preferences
               </div>
               <div style="font-size: 13px; color: #4a5568; line-height: 1.4">
-                Area, budget, property type — we'll find matches.
+                Area, budget, property type - we'll find matches.
               </div>
             </div>
             <div
@@ -1185,7 +1185,7 @@
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
-                <div class="psc-gauge-num">{{ passportScore ?? '—' }}</div>
+                <div class="psc-gauge-num">{{ passportScore ?? '-' }}</div>
                 <div class="psc-gauge-lbl">HomeScore</div>
               </div>
             </div>
@@ -1327,7 +1327,7 @@ const exploreTourSteps = [
   {
     selector: '[data-tour="filter-pill"]',
     title: 'Distance & filters',
-    body: 'Tap the pill next to Search to set radius (Exact → 10 miles) and narrow by property type, bedrooms, EPC, HomeScore or Passport status — all in one place.',
+    body: 'Tap the pill next to Search to set radius (Exact → 10 miles) and narrow by property type, bedrooms, EPC, HomeScore or Passport status - all in one place.',
   },
   {
     selector: '[data-tour="avatar"]',
@@ -1337,7 +1337,7 @@ const exploreTourSteps = [
   {
     selector: '[data-tour="claim-banner"]',
     title: 'Claim your Property Passport',
-    body: 'Verify your ownership, build your record, sell faster. £0 to get started — sellers see up to 12× faster exchanges.',
+    body: 'Verify your ownership, build your record, sell faster. £0 to get started - sellers see up to 12× faster exchanges.',
   },
   {
     selector: '[data-tour="passport-status"]',
@@ -1352,7 +1352,7 @@ const exploreTourSteps = [
   {
     selector: '[data-tour="saved-search"]',
     title: 'Saved search',
-    body: 'Set your area, budget and must-haves once — we match new listings to you automatically.',
+    body: 'Set your area, budget and must-haves once - we match new listings to you automatically.',
   },
   {
     selector: '[data-tour="buyer-profile"]',
@@ -1362,12 +1362,12 @@ const exploreTourSteps = [
   {
     selector: '[data-tour="market-pulse"]',
     title: 'Market pulse',
-    body: 'Days-on-market, year-on-year price movement and live Passport listings for your area — pulled from Land Registry.',
+    body: 'Days-on-market, year-on-year price movement and live Passport listings for your area - pulled from Land Registry.',
   },
   {
     selector: '.feat-card.homescore',
-    title: 'HomeScore — free, 60 seconds',
-    body: 'Bills, value, energy efficiency and street comparisons for any address — scored 0–100 from public records.',
+    title: 'HomeScore - free, 60 seconds',
+    body: 'Bills, value, energy efficiency and street comparisons for any address - scored 0–100 from public records.',
   },
   {
     selector: '.feat-card.passport',
@@ -1377,22 +1377,22 @@ const exploreTourSteps = [
   {
     selector: '[data-tour="pro-card"]',
     title: 'Book a Pro',
-    body: 'Gas, EICR, EPC and other certs — book a vetted tradesperson; the certificate lands in your Passport automatically.',
+    body: 'Gas, EICR, EPC and other certs - book a vetted tradesperson; the certificate lands in your Passport automatically.',
   },
   {
     selector: '[data-tour="verified-feed"]',
     title: 'Verified Passport properties',
-    body: 'Real homes with a published Passport — full records, EPC, planning history, fewer surprises.',
+    body: 'Real homes with a published Passport - full records, EPC, planning history, fewer surprises.',
   },
   {
     selector: '[data-tour="foryou-feed"]',
     title: 'For You',
-    body: 'Properties matched to your saved search — tap any card to see EPC, HomeScore and the full Passport (if published).',
+    body: 'Properties matched to your saved search - tap any card to see EPC, HomeScore and the full Passport (if published).',
   },
   {
     selector: '.prop-card',
     title: 'Tap any property',
-    body: "You'll see EPC, HomeScore and — for verified ones — the full Property Passport.",
+    body: "You'll see EPC, HomeScore and - for verified ones - the full Property Passport.",
   },
   {
     selector: '[data-tour="tour-btn"]',
@@ -1603,7 +1603,7 @@ const passportDaysActive = computed(() => {
 const nextActionLabel = computed(() => {
   const pct = passports.value[0]?.completionPercentage ?? 0
   if (pct >= 100) return 'Publish your passport'
-  if (pct >= 80) return 'Almost there — finish your passport'
+  if (pct >= 80) return 'Almost there - finish your passport'
   if (pct >= 40) return 'Continue your passport'
   return 'Pick up where you left off'
 })
@@ -1949,7 +1949,7 @@ onMounted(async () => {
 }
 /* The greeting/title column shrinks freely so the avatar + tour button on
    the right never get pushed past the viewport edge. `min-width:0` is the
-   key — flex children default to `min-width:auto` which prevents them
+   key - flex children default to `min-width:auto` which prevents them
    from shrinking below their intrinsic text width and causes the row to
    blow past its parent. */
 .hero-row1 > :first-child {
@@ -2454,7 +2454,7 @@ onMounted(async () => {
   border: 1px solid #b2e4e1;
 }
 
-/* Real Property Passport cover — hosts the shared <PassportCard>
+/* Real Property Passport cover - hosts the shared <PassportCard>
    component (same one the /passport/collections page uses). Overrides
    the component's default 32px vertical margin and 360px max-width so
    it renders as a compact ~64px tile inside this tighter tile slot. */
@@ -2470,13 +2470,13 @@ onMounted(async () => {
   width: 100%;
   max-width: none;
 }
-/* Address on the mini-passport reads too bold at this size — drop weight
+/* Address on the mini-passport reads too bold at this size - drop weight
    to normal. The old override also nudged `bottom` down to compensate for
-   PassportCard's old too-high default (31%) — that's now fixed at the
+   PassportCard's old too-high default (31%) - that's now fixed at the
    component level (20%, tuned for exactly this kind of width-only,
    natural-aspect-ratio rendering), so this tile no longer needs its own
    position override. */
-/* Force the address type well below PassportCard's clamp minimum —
+/* Force the address type well below PassportCard's clamp minimum -
    at 64px width the shared component's clamp(8px, 7.5cqi, 14px)
    floors at 8px which visually overflowed the cover. Explicit tiny
    sizes match the client's 5-6px ask; !important is needed because
@@ -2521,7 +2521,7 @@ onMounted(async () => {
   flex-shrink: 0;
   text-align: center;
   position: relative;
-  /* SVG is 54px, label sits below — total container height ~68px so
+  /* SVG is 54px, label sits below - total container height ~68px so
      the score number can be absolutely centred inside the ring. */
   width: 54px;
 }

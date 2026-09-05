@@ -256,14 +256,14 @@ async function submitAdds() {
     if (failures.length === 0) {
       success.value =
         added.length === 1
-          ? 'Collaborator added — they\'ll receive an email invitation.'
-          : `${added.length} collaborators added — they\'ll receive email invitations.`
+          ? 'Collaborator added - they\'ll receive an email invitation.'
+          : `${added.length} collaborators added - they\'ll receive email invitations.`
       selected.value = []
     } else {
       error.value =
         failures.length === selected.value.length
           ? `Couldn't add ${failures[0].user.email}: ${failures[0].message}`
-          : `Added ${added.length}. ${failures.length} failed — first error: ${failures[0].message}`
+          : `Added ${added.length}. ${failures.length} failed - first error: ${failures[0].message}`
       // Keep the failed ones in the chip row so the owner can retry.
       selected.value = failures.map((f) => f.user)
     }
@@ -547,7 +547,7 @@ function initials(name) {
   cursor: not-allowed;
 }
 
-/* footer submit — pinned by BaseDrawer's #footer slot */
+/* footer submit - pinned by BaseDrawer's #footer slot */
 .ac-submit {
   width: 100%;
   padding: 14px;

@@ -369,7 +369,7 @@ async function downloadData() {
     a.download = `umu-my-data-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
-    showToast('Data ready — check your downloads')
+    showToast('Data ready - check your downloads')
   } catch {
     showToast('Could not export your data')
   } finally {

@@ -17,7 +17,7 @@
       <div class="thankyou-page__text">
         <h1 class="thankyou-page__title">Welcome to UmovingU.</h1>
         <div class="thankyou-page__description">
-          <p>Congratulations — you’re officially part of the UMU community!</p>
+          <p>Congratulations - you’re officially part of the UMU community!</p>
         </div>
       </div>
 

@@ -34,7 +34,7 @@
             <span class="cursor" />
           </div>
           <div class="hs-addr-meta">
-            {{ property?.postcode || '—' }}
+            {{ property?.postcode || '-' }}
             <template v-if="property?.propertyType">
               · {{ property.propertyType }}</template
             >
@@ -134,7 +134,7 @@
             </div>
             <div class="street-rank-body">
               <div class="street-rank-addr">
-                {{ r.addr }}<template v-if="r.you"> — this property</template>
+                {{ r.addr }}<template v-if="r.you"> - this property</template>
               </div>
               <div class="street-rank-meta">{{ r.meta }}</div>
             </div>
@@ -170,7 +170,7 @@
       <div class="renters-icon">🏠</div>
       <div class="renters-text">
         <b>Renting?</b> You can still check your street and challenge your
-        supplier. You don't need to own the property — just know your address.
+        supplier. You don't need to own the property - just know your address.
       </div>
     </div>
 
@@ -573,7 +573,7 @@ const tour = useHomescoreTour({
   box-shadow: 0 0 0 3px #e2f1ea;
 }
 
-/* Amber/orange address card — prototype-exact */
+/* Amber/orange address card - prototype-exact */
 .hs-addr-card {
   margin: 16px 22px 0;
   padding: 22px 22px 18px;
@@ -727,7 +727,7 @@ const tour = useHomescoreTour({
   }
 }
 
-/* Saving hero — white card with mint border, gradient save section */
+/* Saving hero - white card with mint border, gradient save section */
 .hs-saving-wrap {
   margin: 12px 16px 0;
   background: #fff;

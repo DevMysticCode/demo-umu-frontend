@@ -127,7 +127,7 @@ const { unreadCount } = useNotifications()
 .bottom-nav-row {
   background: #ffffff;
 }
-/* 3D illustration nav icons — sized just slightly larger than the
+/* 3D illustration nav icons - sized just slightly larger than the
    old SVG glyphs because the artwork carries more detail per pixel
    and reads better at 26px than 20px. Aspect kept natural so passport
    book / calendar / chat bubble all stay proportional. */
@@ -138,7 +138,7 @@ const { unreadCount } = useNotifications()
   display: block;
 }
 
-/* Small red dot on the Inbox tab whenever the user has unread items —
+/* Small red dot on the Inbox tab whenever the user has unread items -
    mirrors the top-bell badge without stealing space for a count. */
 .inbox-tab-dot {
   position: absolute;

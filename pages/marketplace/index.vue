@@ -196,7 +196,7 @@
     <div class="mp-trust-strip mp-anim-5">
       <div class="mp-trust-strip-icon">🛡</div>
       <div class="mp-trust-strip-text">
-        <b>UProtect — Secure escrow payments.</b> You're never charged when
+        <b>UProtect - Secure escrow payments.</b> You're never charged when
         posting a job. Funds are only taken when you accept an offer.
         <span class="mp-trust-strip-link" @click="onLearnUprotect">
           How it works →
@@ -214,7 +214,7 @@ import { computed, ref } from 'vue'
 import MarketplaceAppBack from '~/components/marketplace/MarketplaceAppBack.vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 
-definePageMeta({ title: 'Marketplace — UmovingU' })
+definePageMeta({ title: 'Marketplace - UmovingU' })
 
 const router = useRouter()
 const { profile } = useProfile()
@@ -360,7 +360,7 @@ function onOpenJob(id: string) {
   router.push(`/marketplace/jobs/${id}`)
 }
 function notImplemented(msg: string) {
-  showToast({ message: `${msg} — coming next step`, iconEmoji: '🚧' })
+  showToast({ message: `${msg} - coming next step`, iconEmoji: '🚧' })
 }
 function onPostJob() {
   if (!isAuthed.value) {
@@ -390,7 +390,7 @@ function onLearnUprotect() {
 </script>
 
 <style scoped>
-/* Marketplace home — sized for the mobile-container (28rem max) frame.
+/* Marketplace home - sized for the mobile-container (28rem max) frame.
    Spacing / layout / animations are ported 1:1 from the prototype
    (prisma/umovingu-marketplace-latest.html). Typography intentionally
    inherits from the app (no page-level font-family) so the marketplace

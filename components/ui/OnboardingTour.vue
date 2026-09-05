@@ -51,7 +51,7 @@ import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 const props = defineProps({
   /** Array of `{ selector, title, body, padding? }`. */
   steps: { type: Array, required: true },
-  /** localStorage key — when set, the tour auto-runs once per browser. */
+  /** localStorage key - when set, the tour auto-runs once per browser. */
   storageKey: { type: String, default: '' },
   /** Force the tour to start on mount, ignoring storageKey. */
   autoStart: { type: Boolean, default: true },
@@ -453,7 +453,7 @@ defineExpose({ start, finish, skip })
   opacity: 0;
 }
 
-/* Subtle ring pulse on the spotlight — adds a "look here" cue without
+/* Subtle ring pulse on the spotlight - adds a "look here" cue without
    modifying the dim, so the target image stays rock-still. */
 .tour-spotlight-pulse {
   animation: tour-spotlightPulse 1.9s ease-in-out infinite;

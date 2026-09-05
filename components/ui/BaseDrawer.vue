@@ -202,7 +202,7 @@ const onDragEnd = () => {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  /* Above the bottom-nav's z-50 — otherwise the nav's fixed bar
+  /* Above the bottom-nav's z-50 - otherwise the nav's fixed bar
      paints over the drawer's pinned #footer slot and the primary
      CTA (Add Collaborators, etc.) becomes invisible + untappable. */
   z-index: 100;
@@ -224,7 +224,7 @@ const onDragEnd = () => {
   transform: none;
 }
 
-/* Drawer Container — constrained to the app's `.mobile-container`
+/* Drawer Container - constrained to the app's `.mobile-container`
    max-width (28rem ≈ Tailwind's max-w-md) so the sheet doesn't spill
    past the chrome on desktop / wider viewports. Centered via the
    overlay's flex centering above. */
@@ -269,7 +269,7 @@ const onDragEnd = () => {
 .drawer-leave-active .drawer {
   transition: transform 0.32s cubic-bezier(0.32, 0.72, 0.24, 1);
 }
-/* Starting / ending states — overlay fades to transparent, sheet
+/* Starting / ending states - overlay fades to transparent, sheet
    slides fully off-screen. The `.drawer--open` class rule above
    handles the resting position. */
 .drawer-enter-from,
@@ -281,7 +281,7 @@ const onDragEnd = () => {
   transform: translateY(100%) !important;
 }
 
-/* Grab handle at the top of the sheet — iOS-native drag affordance. */
+/* Grab handle at the top of the sheet - iOS-native drag affordance. */
 .drawer__handle {
   width: 40px;
   height: 4px;
@@ -406,7 +406,7 @@ const onDragEnd = () => {
   min-height: 300px;
 }
 
-/* Footer — must stay pinned to the drawer bottom regardless of
+/* Footer - must stay pinned to the drawer bottom regardless of
    content overflow. `flex-shrink: 0` stops the flex column from
    squeezing the buttons out when `.drawer__content` gets tall;
    before this rule existed the footer only had padding from a

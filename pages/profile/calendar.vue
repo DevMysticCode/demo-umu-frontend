@@ -498,7 +498,7 @@ const confirmDelete = async (id: string) => {
 // ─── Search icon (top-right) — kept as no-op placeholder to match the
 //     previous filter/search behaviour; wire real search in a follow-up.
 function onSearchTap() {
-  /* no-op — preserves parity with the previous tap-handler */
+  /* no-op - preserves parity with the previous tap-handler */
 }
 
 // ─── Add drawer ────────────────────────────────────────────────────────────
@@ -1075,7 +1075,7 @@ onMounted(async () => {
 }
 .ne-input::placeholder { color: var(--navy-40); font-weight: 500; }
 
-/* TYPE — 2×2 card grid */
+/* TYPE - 2×2 card grid */
 .ne-type-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1120,7 +1120,7 @@ onMounted(async () => {
 }
 .ne-type-check svg { width: 12px; height: 12px; }
 
-/* Active states — mockup uses lilac for Personal; the other three
+/* Active states - mockup uses lilac for Personal; the other three
    inherit their tone colour so the drawer is legible for all types. */
 .ne-type--active { border-width: 2px; }
 .ne-type.personal.ne-type--active {
@@ -1147,7 +1147,7 @@ onMounted(async () => {
 .ne-type.compliance.ne-type--active .ne-type-label { color: #B45A2C; }
 .ne-type.compliance.ne-type--active .ne-type-check { background: #E37B4E; }
 
-/* WHEN — 2×2 pill cells with hidden native input for interaction */
+/* WHEN - 2×2 pill cells with hidden native input for interaction */
 .ne-when-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

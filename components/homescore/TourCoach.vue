@@ -145,7 +145,7 @@ const injectStyle = computed(() => {
 </script>
 
 <style scoped>
-/* Click-capture only — fully transparent so the spotlight underneath dims
+/* Click-capture only - fully transparent so the spotlight underneath dims
    only the area *outside* the target rect (via its inverted box-shadow).
    No backdrop-filter here: blurring the whole viewport hides what the
    tour is actually pointing at. */

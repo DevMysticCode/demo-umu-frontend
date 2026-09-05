@@ -40,7 +40,7 @@
                 v-model="note"
                 class="bad-textarea"
                 rows="3"
-                placeholder="e.g. Front door has a green wreath — can meet you outside"
+                placeholder="e.g. Front door has a green wreath - can meet you outside"
               />
             </div>
             <div class="bad-actions">
@@ -65,12 +65,12 @@
                 <p>
                   We'll share this passport with <b>{{ buyer?.name }}</b>. They'll
                   see the property and be prompted to
-                  <b>unlock full access</b> — the paid buyer-unlock flow you already
+                  <b>unlock full access</b> - the paid buyer-unlock flow you already
                   have. If they've already unlocked, they'll get a direct link to
                   view.
                 </p>
                 <p class="muted">
-                  You stay in control — this doesn't grant free access.
+                  You stay in control - this doesn't grant free access.
                 </p>
               </div>
               <div class="bad-label">Add a note (optional)</div>
@@ -105,7 +105,7 @@
                 class="bad-textarea"
                 rows="5"
                 autofocus
-                placeholder="Hi — I saw you matched to my property. Wanted to say hello…"
+                placeholder="Hi - I saw you matched to my property. Wanted to say hello…"
               />
               <p class="bad-info-note">
                 They'll be notified in-app and by push. You can carry on the
@@ -164,7 +164,7 @@ const note = ref('')
 const messageText = ref('')
 const chosenStartISOs = ref<Set<string>>(new Set())
 
-/** Default proposed slots — next 3 weekdays at 6pm local. Cheap for the
+/** Default proposed slots - next 3 weekdays at 6pm local. Cheap for the
  *  seller to accept as-is or tweak; matches how estate agents typically
  *  suggest evening viewings mid-week. */
 const slotOptions = computed(() => {

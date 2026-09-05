@@ -940,7 +940,7 @@ function downloadFile(url: string, name: string) {
 .task-content { padding: 0 20px 40px; }
 
 /* Hero */
-/* Hero — mirrors passportview/steps/tasks/[id].vue qhero */
+/* Hero - mirrors passportview/steps/tasks/[id].vue qhero */
 .qhero {
   margin: 8px 0 14px;
   border-radius: 24px;
@@ -1115,7 +1115,7 @@ function downloadFile(url: string, name: string) {
   margin: 0 0 5px; line-height: 1.4;
 }
 
-/* Status badge — now below title */
+/* Status badge - now below title */
 .task-item-status {
   display: inline-block;
   font-size: 11px; font-weight: 700;
@@ -1130,7 +1130,7 @@ function downloadFile(url: string, name: string) {
 .status--answered { background: #eef2ff; color: #4f46e5; }
 .status--unanswered { background: #f9fafb; color: #d1d5db; }
 
-/* Section help/video strip — right aligned, seller style */
+/* Section help/video strip - right aligned, seller style */
 .task-help-strip {
   display: flex; gap: 4px; margin-bottom: 14px; justify-content: end;
 }
@@ -1146,7 +1146,7 @@ function downloadFile(url: string, name: string) {
 .task-help-btn--video { background: #00a19a; color: white; border: 2px solid #00a19a; }
 .task-play-icon { font-size: 12px; }
 
-/* Answer area — always visible, no expand */
+/* Answer area - always visible, no expand */
 .task-item-detail { padding: 0 16px 16px; }
 
 /* Selected answer pill (radio / multipart radio) */

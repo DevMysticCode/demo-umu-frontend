@@ -18,7 +18,7 @@
         :class="{ empty }"
         :style="meta ? 'font-size:11.5px; color:#4a5868; font-weight:600;' : ''"
       >
-        <slot>{{ value || '—' }}</slot>
+        <slot>{{ value || '-' }}</slot>
       </div>
     </div>
 

@@ -43,7 +43,7 @@
             <template v-if="request.reason">"{{ request.reason }}"</template>
             <template v-else>
               "We'd like to access your verified financial data to speed up
-              your application. You control exactly what we can see — approve
+              your application. You control exactly what we can see - approve
               or decline below."
             </template>
           </div>
@@ -132,7 +132,7 @@ import {
 import { useAppToast } from '~/composables/useCustomToast'
 
 definePageMeta({
-  title: 'Access Request — UmovingU',
+  title: 'Access Request - UmovingU',
   middleware: 'auth',
 })
 
@@ -235,7 +235,7 @@ const statusBannerText = computed(() => {
 })
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—'
+  if (!iso) return '-'
   return new Date(iso).toLocaleDateString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric',
   })
@@ -391,7 +391,7 @@ function goView() { router.push('/buyer-profile/view') }
 .notif-pill--teal { background: #f2faf8; color: #007e78; }
 .notif-pill--navy { background: #f6f5fb; color: #4a4566; }
 
-/* Status banner — when not pending */
+/* Status banner - when not pending */
 .ar-status-banner {
   display: flex; align-items: center; gap: 10px;
   margin: 12px 22px 0;
@@ -448,7 +448,7 @@ function goView() { router.push('/buyer-profile/view') }
   font-size: 11px; color: #6b6783; margin-top: 1px;
 }
 
-/* Toggle — pill switch */
+/* Toggle - pill switch */
 .scope-toggle {
   width: 42px; height: 24px; border-radius: 100px;
   background: #ececef; border: none;

@@ -194,7 +194,7 @@ import {
 import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 
-definePageMeta({ title: 'Passport PDF — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Passport PDF - UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile } = useBuyerProfile()
@@ -228,7 +228,7 @@ const displayName = computed(() => {
   return profile.value?.email?.split('@')[0] || 'Buyer'
 })
 const publicRef = computed(
-  () => (passport.value as any)?.publicRef || '—',
+  () => (passport.value as any)?.publicRef || '-',
 )
 const canonicalShareUrl = computed(() => `umu.co/passport/${publicRef.value}`)
 // ── Validity period ──────────────────────────────────────
@@ -246,7 +246,7 @@ const expiresAtMs = computed<number | null>(() =>
   issuedAtMs.value ? issuedAtMs.value + VALIDITY_DAYS * 86_400_000 : null,
 )
 function fmtDate(ms: number | null): string {
-  if (ms == null) return '—'
+  if (ms == null) return '-'
   return new Date(ms).toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'short',
@@ -277,7 +277,7 @@ const chainShort = computed(() => {
   if (c === 'sold') return 'Chain free'
   if (c === 'selling') return 'Property to sell'
   if (c === 'ftb') return 'First-time buyer'
-  return '—'
+  return '-'
 })
 const idTypeLabel = computed(() => {
   const t = passport.value?.idDocumentType
@@ -391,7 +391,7 @@ function downloadPdf() {
   isolation: isolate;
 }
 
-/* Diagonal repeating watermark — drawn behind every page region except
+/* Diagonal repeating watermark - drawn behind every page region except
    the navy header (which sits above via z-index). Uses an inline SVG so
    it survives "print to PDF" cleanly without external assets. */
 .pdf-watermark-layer {
@@ -438,7 +438,7 @@ function downloadPdf() {
   color: white;
 }
 
-/* Validity period band — sits directly under the navy header */
+/* Validity period band - sits directly under the navy header */
 .pdf-validity {
   display: flex;
   align-items: center;
@@ -623,7 +623,7 @@ function downloadPdf() {
   font-size: 13px; padding: 13px;
 }
 
-/* Print styles — when user prints to PDF, hide the chrome and keep the
+/* Print styles - when user prints to PDF, hide the chrome and keep the
    navy header / teal validity band / diagonal watermark visible.
    `print-color-adjust: exact` is required for Chromium-based browsers. */
 @media print {

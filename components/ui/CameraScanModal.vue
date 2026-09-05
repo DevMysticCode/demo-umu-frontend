@@ -33,7 +33,7 @@
             </div>
             <p v-if="error" class="cs-fallback-msg">{{ error }}</p>
             <p v-else class="cs-fallback-msg">
-              Take a photo with your device camera — we'll pick it up here.
+              Take a photo with your device camera - we'll pick it up here.
             </p>
             <button class="cs-fallback-btn" type="button" @click="triggerFallbackInput">
               Open camera

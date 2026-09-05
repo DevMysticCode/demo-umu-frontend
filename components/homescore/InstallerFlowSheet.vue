@@ -178,7 +178,7 @@
             </div>
 
             <span class="ifs-indicative"
-              >⚠️ Indicative only — your installer confirms at survey</span
+              >⚠️ Indicative only - your installer confirms at survey</span
             >
             <button class="ifs-back-link" @click="backFromElig">
               ‹ Back
@@ -200,7 +200,7 @@
               <h3>No means-tested grants flagged</h3>
               <p>
                 You may not qualify for the income-based schemes, but installers
-                can still check local offers — and paying direct is always an
+                can still check local offers - and paying direct is always an
                 option. We'll match either way.
               </p>
             </div>
@@ -242,7 +242,7 @@
             <div class="ifs-eyebrow">Get matched</div>
             <h3 class="ifs-title">Line up installers</h3>
             <p class="ifs-lede">
-              Just the basics — we'll come back with vetted installers. No
+              Just the basics - we'll come back with vetted installers. No
               obligation.
             </p>
 
@@ -360,7 +360,7 @@
                   <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
                 </svg>
               </div>
-              <h3>Marketplace — early access</h3>
+              <h3>Marketplace - early access</h3>
               <p>
                 We're building your local marketplace around real homeowner
                 demand. Join early access and we'll let you know as soon as
@@ -432,7 +432,7 @@
               <img src="/op-icons/misc/addressPin.png" alt="" class="ifs-pl-ic" loading="lazy" />
               <div>
                 <div class="ifs-pl-label">Postcode area</div>
-                <div class="ifs-pl-val">{{ postcode || '—' }}</div>
+                <div class="ifs-pl-val">{{ postcode || '-' }}</div>
               </div>
             </div>
 
@@ -573,7 +573,7 @@ const props = withDefaults(
     address?: string
     initialState?: StateName
     /** When true, this sheet only ever shows the grant-check flow (elig →
-     *  result → its "get matched" continuation) — there's no 'routes'
+     *  result → its "get matched" continuation) - there's no 'routes'
      *  screen to fall back to, so back/start-over stay within that flow
      *  instead of surfacing the generic measure/installer options. */
     hideRoutes?: boolean
@@ -647,7 +647,7 @@ onMounted(() => {
       if (Array.isArray(parsed)) requests.value = parsed as TrackedRequest[]
     }
   } catch {
-    /* corrupt LS is fine — leave empty */
+    /* corrupt LS is fine - leave empty */
   }
 })
 function persistRequests() {
@@ -667,7 +667,7 @@ onMounted(() => {
   try {
     earlyAccessJoined.value = localStorage.getItem(EARLY_ACCESS_LS_KEY) === '1'
   } catch {
-    /* corrupt/inaccessible LS is fine — leave false */
+    /* corrupt/inaccessible LS is fine - leave false */
   }
 })
 
@@ -740,7 +740,7 @@ const TRADES = {
     acc: "<b>A new EPC must be carried out by an accredited domestic energy assessor.</b> We'll match you with accredited assessors for this property.",
     self: {
       t: 'Arrange it yourself',
-      s: 'GOV.UK — book an accredited assessor directly.',
+      s: 'GOV.UK - book an accredited assessor directly.',
       href: 'https://www.gov.uk/get-new-energy-certificate',
     },
   },
@@ -806,7 +806,7 @@ function computeGrants() {
     g.push({
       ic: '/op-icons/homescore/houseSearch.png',
       name: 'Great British Insulation Scheme',
-      desc: 'Not fully means-tested — Council Tax band & EPC based.',
+      desc: 'Not fully means-tested - Council Tax band & EPC based.',
       tag: 'Possible',
     })
   }
@@ -816,7 +816,7 @@ function computeGrants() {
 
 const grantLine = computed(() =>
   answers.tenure && (answers.benefits === 'yes' || answers.income === 'low')
-    ? " — and we'll factor in the grants you may qualify for"
+    ? " - and we'll factor in the grants you may qualify for"
     : '',
 )
 
@@ -997,7 +997,7 @@ watch(
   justify-content: center;
 }
 
-/* ── Enter/leave — Transition wrapper so the sheet slides down and the
+/* ── Enter/leave - Transition wrapper so the sheet slides down and the
    scrim fades out on close instead of vanishing instantly. Symmetric
    with the enter animation so open/close feel the same. ── */
 .ifs-enter-active,
@@ -1023,7 +1023,7 @@ watch(
   background: #fff;
   border-radius: 26px 26px 0 0;
   box-shadow: 0 -12px 40px rgba(35, 29, 69, 0.2);
-  /* dvh = dynamic viewport height, respects mobile browser chrome —
+  /* dvh = dynamic viewport height, respects mobile browser chrome -
      avoids the drawer being clipped below the address bar which is
      what vh reports on iOS Safari. */
   max-height: 85dvh;
@@ -1032,7 +1032,7 @@ watch(
   font-family: inherit;
   color: #231d45;
   /* Leave room for the iOS home indicator inside the scrollable
-     content area — the sheet itself sits flush at the bottom. */
+     content area - the sheet itself sits flush at the bottom. */
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 .ifs-handle {
@@ -1160,7 +1160,7 @@ watch(
   background: #fbf1e1;
 }
 /* When the icon slot holds a real illustration (not an emoji) drop
-   the pastel background — the artwork carries its own tile look. */
+   the pastel background - the artwork carries its own tile look. */
 .ifs-r-ic:has(.ifs-r-img) {
   background: transparent;
 }

@@ -160,7 +160,7 @@
               <div class="hec-body">
                 <div class="hec-title">Check any home's HomeScore</div>
                 <div class="hec-sub">
-                  Instant insight on energy, running costs and value — for any UK property, not just your own.
+                  Instant insight on energy, running costs and value - for any UK property, not just your own.
                 </div>
                 <span class="hec-cta">Run a free HomeScore <span>&rarr;</span></span>
               </div>
@@ -393,7 +393,7 @@
                     />
                   </svg>
                   <div class="hsc-ring-label">
-                    <span class="hsc-ring-num">{{ passports[0].homeScore ?? '—' }}</span>
+                    <span class="hsc-ring-num">{{ passports[0].homeScore ?? '-' }}</span>
                     <span class="hsc-ring-den">/100</span>
                   </div>
                 </div>
@@ -708,7 +708,7 @@ function stalenessCopy(createdAt?: string | null, lastTouchedAt?: string | null)
   if (days < 3) return null
   const verb = lastTouchedAt ? 'Last touched' : 'Started'
   const when = days === 1 ? 'yesterday' : `${days} days ago`
-  return `${verb} ${when} — pick up where you left off.`
+  return `${verb} ${when} - pick up where you left off.`
 }
 
 const sellerStalenessCopy = computed(() => {
@@ -836,8 +836,8 @@ onMounted(async () => {
   roleResolved.value = true
 
   if (role.value === 'buy') {
-    fetchForYou(token) // not awaited — see fetchForYou's own comment
-    fetchRecentlyViewed(token) // not awaited — see its own comment
+    fetchForYou(token) // not awaited - see fetchForYou's own comment
+    fetchRecentlyViewed(token) // not awaited - see its own comment
 
     const [buyerResult, savedResult] = await Promise.allSettled([
       $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
@@ -860,8 +860,8 @@ onMounted(async () => {
     return
   }
 
-  fetchForYou(token) // not awaited — see fetchForYou's own comment
-  if (role.value === 'both') fetchBuyerSummary(token) // not awaited — see its own comment
+  fetchForYou(token) // not awaited - see fetchForYou's own comment
+  if (role.value === 'both') fetchBuyerSummary(token) // not awaited - see its own comment
 
   const passportResult = await $fetch<any[]>(`${config.public.apiBase}/profile/passports`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -974,7 +974,7 @@ onMounted(async () => {
   margin-bottom: 10px;
 }
 
-/* Legislation & News rail (landlord dashboard) — bleeds past
+/* Legislation & News rail (landlord dashboard) - bleeds past
    .dash-scroll's 20px side padding to scroll edge-to-edge, same as the
    landlord passport page's version this was moved from. */
 .dash-news-rail {

@@ -207,7 +207,7 @@
                 <div>
                   <p class="prop-detail-label">Property type</p>
                   <p class="prop-detail-value">
-                    {{ property.propertyType ?? '—' }}
+                    {{ property.propertyType ?? '-' }}
                   </p>
                 </div>
               </div>
@@ -218,7 +218,7 @@
                 <div>
                   <p class="prop-detail-label">Title number</p>
                   <p class="prop-detail-value">
-                    {{ property.titleNumber ?? '—' }}
+                    {{ property.titleNumber ?? '-' }}
                   </p>
                 </div>
               </div>
@@ -229,7 +229,7 @@
                 <div>
                   <p class="prop-detail-label">UPRN</p>
                   <p class="prop-detail-value prop-detail-mono">
-                    {{ property.uprn ?? '—' }}
+                    {{ property.uprn ?? '-' }}
                   </p>
                 </div>
               </div>
@@ -241,7 +241,7 @@
                   <p class="prop-detail-label">Floor Area</p>
                   <p class="prop-detail-value">
                     {{
-                      prop?.sqft ? `${prop.sqft.toLocaleString()} sqft` : '—'
+                      prop?.sqft ? `${prop.sqft.toLocaleString()} sqft` : '-'
                     }}
                   </p>
                   <p v-if="prop?.floorAreaSqm" class="prop-detail-sub">
@@ -256,7 +256,7 @@
                 <div>
                   <p class="prop-detail-label">EPC Rating</p>
                   <p class="prop-detail-value">
-                    {{ prop?.epcRating ?? '—' }}
+                    {{ prop?.epcRating ?? '-' }}
                   </p>
                 </div>
               </div>
@@ -266,7 +266,7 @@
                 </div>
                 <div>
                   <p class="prop-detail-label">Tenure</p>
-                  <p class="prop-detail-value">{{ prop?.tenure ?? '—' }}</p>
+                  <p class="prop-detail-value">{{ prop?.tenure ?? '-' }}</p>
                 </div>
               </div>
               <div class="prop-detail-item">
@@ -276,7 +276,7 @@
                 <div>
                   <p class="prop-detail-label">Year Built</p>
                   <p class="prop-detail-value">
-                    {{ prop?.yearBuilt ?? '—' }}
+                    {{ prop?.yearBuilt ?? '-' }}
                   </p>
                 </div>
               </div>
@@ -997,7 +997,7 @@
             <div class="prop-bb-speeds">
               <div class="prop-bb-speed-item">
                 <span class="prop-bb-speed-val">{{
-                  enrichment.broadband.maxDownload ?? '—'
+                  enrichment.broadband.maxDownload ?? '-'
                 }}</span>
                 <span class="prop-bb-speed-unit">Mbps</span>
                 <span class="prop-bb-speed-label">Max Download</span>
@@ -1005,7 +1005,7 @@
               <div class="prop-bb-divider" />
               <div class="prop-bb-speed-item">
                 <span class="prop-bb-speed-val">{{
-                  enrichment.broadband.maxUpload ?? '—'
+                  enrichment.broadband.maxUpload ?? '-'
                 }}</span>
                 <span class="prop-bb-speed-unit">Mbps</span>
                 <span class="prop-bb-speed-label">Max Upload</span>
@@ -1171,7 +1171,7 @@
                   >Not in an Environment Agency flood warning area.</template
                 >
                 <template v-else-if="enrichment.floodRisk === 'Low'"
-                  >Within an EA flood warning area — no active warnings. River
+                  >Within an EA flood warning area - no active warnings. River
                   or surface water flooding possible in extreme
                   events.</template
                 >
@@ -1184,7 +1184,7 @@
                   is expected.</template
                 >
                 <template v-else-if="enrichment.floodRisk === 'Severe'"
-                  >Severe flood warning — danger to life. Immediate action
+                  >Severe flood warning - danger to life. Immediate action
                   required.</template
                 >
                 <template v-else
@@ -1853,7 +1853,7 @@ const quickSections = [
 let mapInitialised = false
 function toggleSection(id: string) {
   if (activeSection.value === id) {
-    return // don't collapse — always keep one open
+    return // don't collapse - always keep one open
   }
   activeSection.value = id
   nextTick(() => {
@@ -2664,7 +2664,7 @@ function planningDecisionClass(decision: string) {
 }
 
 function formatSaleDate(dateStr: string): string {
-  if (!dateStr) return '—'
+  if (!dateStr) return '-'
   const d = new Date(dateStr)
   return d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
 }

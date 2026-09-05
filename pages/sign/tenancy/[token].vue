@@ -104,7 +104,7 @@ async function onSubmit() {
     })
     alreadySigned.value = true
   } catch (err: any) {
-    submitError.value = err?.data?.message ?? 'Something went wrong — please try again.'
+    submitError.value = err?.data?.message ?? 'Something went wrong - please try again.'
   } finally {
     submitting.value = false
   }

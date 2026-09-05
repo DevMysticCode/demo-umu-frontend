@@ -14,7 +14,7 @@
             <p class="cdm-section-label">In this collection</p>
 
             <div v-if="localItems.length === 0" class="cdm-empty">
-              No passports yet — add some below
+              No passports yet - add some below
             </div>
 
             <div

@@ -160,7 +160,7 @@
               <button
                 class="counter-btn"
                 @click.prevent="decrementCounter(part.partKey)"
-              >—</button>
+              >-</button>
               <span class="counter-divider">|</span>
               <button
                 class="counter-btn"
