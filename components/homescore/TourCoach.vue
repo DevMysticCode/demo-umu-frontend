@@ -83,12 +83,28 @@ async function measure() {
 // inject card's REAL height, nudge the page up by exactly the shortfall —
 // deterministic, no guessing, so the gap above is always just `GAP`, never
 // more (looks "far away") or less (overlaps the target).
+//
+// Instant, not smooth: this runs right before the card is revealed (see
+// the watcher below), while it's still hidden. A `behavior: 'smooth'`
+// scroll here doesn't finish within this same tick — it keeps animating
+// after injectVisible flips true, so the card pops in and then visibly
+// slides as the page keeps scrolling underneath it. Instant means the
+// nudge is done by the time anything is shown, so there's nothing left
+// to animate.
 function ensureRoomAbove() {
   const r = targetRect.value
   if (!r || typeof window === 'undefined') return
   const idealTop = r.top - injectHeight.value - GAP
   if (idealTop < EDGE_MARGIN) {
-    window.scrollBy({ top: -(EDGE_MARGIN - idealTop), behavior: 'smooth' })
+    const delta = EDGE_MARGIN - idealTop
+    window.scrollBy({ top: -delta, behavior: 'auto' })
+    // The browser dispatches 'scroll' (which would re-run measure())
+    // asynchronously, after this function returns - not synchronously
+    // as part of scrollBy() itself. Waiting for that listener would
+    // reveal the card at the PRE-scroll position for a moment, then
+    // jump once it fires. Apply the known delta immediately instead, so
+    // targetRect is already correct before injectVisible flips true.
+    targetRect.value = { ...r, top: r.top + delta }
   }
 }
 
