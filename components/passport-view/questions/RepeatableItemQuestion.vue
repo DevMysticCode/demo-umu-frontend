@@ -12,7 +12,7 @@
       </div>
       <div v-if="displayedHelp" class="help-section">
         <div class="help-content">
-          <h4 class="help-title"><span class="help-icon">💡</span>What is this?</h4>
+          <h4 class="help-title"><img src="/op-icons/homescore/lightbulb.png" alt="" class="help-icon-img" />What is this?</h4>
           <p class="help-text">
             {{ displayedHelp }}
             <span v-if="showHelpCursor" class="typing-cursor typing-cursor--small">|</span>
@@ -305,6 +305,7 @@ const itemSubtext = (item) => {
 }
 .help-text { color: #3c3c4399; margin: 0; font-size: 13px; }
 .help-icon { font-size: 12px; }
+.help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
 .typing-cursor { margin-left: 2px; color: #00a19a; animation: blink 1s infinite; }
 .typing-cursor--small { margin-left: 2px; }
 @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }

@@ -23,7 +23,7 @@
         <div v-if="displayedHelp" class="help-section">
           <div class="help-content">
             <h4 class="help-title">
-              <span class="help-icon">💡</span>What is this?
+              <img src="/op-icons/homescore/lightbulb.png" alt="" class="help-icon-img" />What is this?
             </h4>
             <p class="help-text">
               {{ displayedHelp }}
@@ -393,6 +393,7 @@ const handleDrawerClose = () => {
   font-size: 12px;
   flex-shrink: 0;
 }
+.help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
 
 .help-content {
   flex: 1;
