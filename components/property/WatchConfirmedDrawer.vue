@@ -16,6 +16,7 @@
           @touchcancel="onTouchEnd"
         >
           <div class="watch-grip" />
+          <canvas ref="confettiCanvas" class="wc-confetti-canvas" aria-hidden="true" />
 
           <div class="wc-hero">
             <div class="wc-hero-icon">
@@ -171,17 +172,81 @@ const triggers = computed(() => {
 
 // Real animated confetti (client feedback: "add real animated confetti
 // here like we have on the owner quiz") - the static scattered dots
-// this replaces weren't actually animated. Reuses the same canvas burst
-// V6LevelUpView.vue fires on the HomeScore level-up screen, so the
-// celebration reads consistently across the app. Fires on open (and
-// re-fires if the same drawer instance is reopened for a different
-// property) rather than on mount, since this component is Teleported
-// and kept alive/toggled via `open` rather than created fresh each time.
-const { runConfetti } = useConfetti()
+// this replaced weren't actually animated. NOT the shared useConfetti()
+// composable - that one deliberately covers the full viewport (right
+// for a full-screen celebration like V6LevelUpView), but here it read
+// as "confetti on the whole app" instead of being part of this drawer.
+// This is a local burst: a canvas scoped to the top of the sheet only,
+// particles spawn at the sheet's top edge and fall/fade within it.
+const confettiCanvas = ref<HTMLCanvasElement | null>(null)
+
+function runLocalConfetti() {
+  const canvas = confettiCanvas.value
+  if (!canvas || typeof window === 'undefined') return
+  if (prefersReducedMotion()) return
+
+  const parent = canvas.parentElement
+  if (!parent) return
+  const width = parent.clientWidth
+  const height = 260
+  const dpr = window.devicePixelRatio || 1
+  canvas.width = width * dpr
+  canvas.height = height * dpr
+  canvas.style.width = `${width}px`
+  canvas.style.height = `${height}px`
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  ctx.scale(dpr, dpr)
+
+  const colors = ['#00A19A', '#231d45', '#00b5ad', '#7c5cff', '#ff9f43', '#fbbf24']
+  const pieces = Array.from({ length: 60 }, () => ({
+    x: Math.random() * width,
+    y: -10 - Math.random() * 40,
+    w: 5 + Math.random() * 7,
+    h: 4 + Math.random() * 6,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    angle: Math.random() * Math.PI * 2,
+    spin: (Math.random() - 0.5) * 0.2,
+    vx: (Math.random() - 0.5) * 2.2,
+    vy: 2 + Math.random() * 2.4,
+    isCircle: Math.random() > 0.5,
+    opacity: 1,
+  }))
+
+  let frame = 0
+  const FRAMES = 110
+  const draw = () => {
+    ctx.clearRect(0, 0, width, height)
+    for (const p of pieces) {
+      p.x += p.vx
+      p.y += p.vy
+      p.angle += p.spin
+      if (frame > 55) p.opacity = Math.max(0, p.opacity - 0.02)
+      ctx.save()
+      ctx.globalAlpha = p.opacity
+      ctx.translate(p.x, p.y)
+      ctx.rotate(p.angle)
+      ctx.fillStyle = p.color
+      if (p.isCircle) {
+        ctx.beginPath()
+        ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2)
+        ctx.fill()
+      } else {
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h)
+      }
+      ctx.restore()
+    }
+    frame++
+    if (frame < FRAMES) requestAnimationFrame(draw)
+    else ctx.clearRect(0, 0, width, height)
+  }
+  requestAnimationFrame(draw)
+}
+
 watch(
   () => props.open,
   (isOpen) => {
-    if (isOpen) setTimeout(() => runConfetti(), 150)
+    if (isOpen) nextTick(() => setTimeout(runLocalConfetti, 150))
   },
   { immediate: true },
 )
@@ -214,6 +279,7 @@ watch(
   color: var(--text);
 }
 .watch-sheet {
+  position: relative;
   width: 100%;
   max-width: 28rem;
   background: var(--card);
@@ -230,6 +296,13 @@ watch(
   border-radius: 100px;
   margin: 10px auto 0;
   touch-action: none;
+}
+.wc-confetti-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* Hero icon + confetti */

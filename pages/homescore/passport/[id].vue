@@ -298,39 +298,14 @@
       <div class="bpp-claim-checks">
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z"
-              />
-              <polyline points="8.5 12.3 11 14.8 15.5 9.8" />
-            </svg>
+            <img src="/op-icons/claim/ownershipCheck.png" alt="" class="bpp-claim-check-ic-img" loading="lazy" />
           </span>
           <div class="bpp-claim-check-title">Confirm ownership</div>
           <div class="bpp-claim-check-sub">Verify you own this property</div>
         </div>
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z"
-              />
-              <circle cx="12" cy="10.5" r="2.1" />
-              <path d="M8.7 15.5a3.6 3.6 0 0 1 6.6 0" />
-            </svg>
+            <img src="/op-icons/verify-identity/idBadge.png" alt="" class="bpp-claim-check-ic-img" loading="lazy" />
           </span>
           <div class="bpp-claim-check-title">ID &amp; security step</div>
           <div class="bpp-claim-check-sub">
@@ -339,19 +314,7 @@
         </div>
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z"
-              />
-              <polyline points="8.5 12.3 11 14.8 15.5 9.8" />
-            </svg>
+            <img src="/op-icons/verify-identity/shield.png" alt="" class="bpp-claim-check-ic-img" loading="lazy" />
           </span>
           <div class="bpp-claim-check-title">Secure &amp; private</div>
           <div class="bpp-claim-check-sub">
@@ -1122,19 +1085,17 @@ function goAuth(mode: 'signin' | 'signup') {
   gap: 6px;
 }
 .bpp-claim-check-ic {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  background: var(--accent-paler);
-  color: var(--accent-dark);
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.bpp-claim-check-ic svg {
-  width: 14px;
-  height: 14px;
+.bpp-claim-check-ic-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .bpp-claim-check-title {
   font-size: 11.5px;
