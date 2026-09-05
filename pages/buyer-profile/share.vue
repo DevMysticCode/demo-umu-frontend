@@ -41,7 +41,7 @@
         </div>
         <div v-if="passport?.fundsAmount" class="scope-row">
           <div class="scope-check"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></div>
-          Budget — up to {{ fundsShort }}
+          Budget - up to {{ fundsShort }}
         </div>
         <div class="scope-row">
           <div class="scope-check"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></div>
@@ -63,7 +63,7 @@
         <div class="recipient-empty-emoji"><img src="/op-icons/helpAndSupport/email.jpeg" alt="" loading="lazy" /></div>
         <div class="recipient-empty-title">Send to your agent</div>
         <div class="recipient-empty-sub">
-          Enter their name + email — we'll deliver a secure link that
+          Enter their name + email - we'll deliver a secure link that
           expires in 30 days.
         </div>
         <button class="cta-btn" @click="goSendAgent">Open send form →</button>
@@ -110,7 +110,7 @@
           >
             Revoke
           </button>
-          <span v-else class="revoke-disabled">—</span>
+          <span v-else class="revoke-disabled">-</span>
         </div>
       </div>
       <p class="sh-expires-note">
@@ -187,7 +187,7 @@ import {
 import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 
-definePageMeta({ title: 'Share Passport — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Share Passport - UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile, listShares, revokeShare, createShare } = useBuyerProfile()
@@ -398,7 +398,7 @@ async function drawQr() {
     qrCanvasEl.value.innerHTML = `<img src="${qrDataUrl.value}" alt="Share QR code" width="220" height="220" />`
   } catch {
     qrCanvasEl.value.innerHTML =
-      '<div style="font-size:11px;color:#6b6783;padding:24px;text-align:center;">QR library missing — run <code>npm i qrcode</code></div>'
+      '<div style="font-size:11px;color:#6b6783;padding:24px;text-align:center;">QR library missing - run <code>npm i qrcode</code></div>'
   }
 }
 

@@ -174,7 +174,7 @@ const sectionPointsPercent = computed(() =>
   margin-left: 4px;
 }
 /* Clarifies this is the account-wide total, not points from just this
-   section — without it the number sits directly above "0 of 7 complete"
+   section - without it the number sits directly above "0 of 7 complete"
    and reads as if it belongs to the section. */
 .spc-balance-caption {
   margin: 0;
@@ -203,7 +203,7 @@ const sectionPointsPercent = computed(() =>
   z-index: 1;
 }
 
-/* Section-scoped points bar — deliberately a flat fill (not the
+/* Section-scoped points bar - deliberately a flat fill (not the
    account-level bar's gradient below) and its own solid brand teal, so
    the two bars stay visually distinguishable at a glance, not just by
    their labels. */
@@ -303,7 +303,7 @@ const sectionPointsPercent = computed(() =>
   position: relative;
   z-index: 1;
 }
-/* Labels the bar below as account-wide, not this section's — without it
+/* Labels the bar below as account-wide, not this section's - without it
    "Max level reached" next to "0 of 7 complete" read as contradictory. */
 .spc-level-caption {
   margin: 0 0 8px;
@@ -328,7 +328,7 @@ const sectionPointsPercent = computed(() =>
   background: linear-gradient(90deg, #14b8a6, #5eead4);
   transition: width 0.4s ease;
 }
-/* Gold, matching pointsStar.png and the bonus-icon star above — the
+/* Gold, matching pointsStar.png and the bonus-icon star above - the
    marker used to be a plain white text glyph with a mismatched teal
    glow, reading as generic rather than "the same star" used everywhere
    else points/rewards show up in this app. */

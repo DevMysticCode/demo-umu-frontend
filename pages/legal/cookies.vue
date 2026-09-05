@@ -83,15 +83,15 @@
         <h2>04 · Your choices</h2>
         <ul>
           <li>
-            <strong>Cookie banner</strong> — accept or decline analytics cookies when you first visit.
+            <strong>Cookie banner</strong> - accept or decline analytics cookies when you first visit.
             Change your preference at any time by clearing your cookies and revisiting.
           </li>
           <li>
-            <strong>Browser settings</strong> — all modern browsers allow you to block or delete cookies.
+            <strong>Browser settings</strong> - all modern browsers allow you to block or delete cookies.
             Blocking essential cookies will prevent some features from working.
           </li>
           <li>
-            <strong>Contact us</strong> — email
+            <strong>Contact us</strong> - email
             <a href="mailto:hello@umovingu.io">hello@umovingu.io</a> with any questions about specific cookies.
           </li>
         </ul>

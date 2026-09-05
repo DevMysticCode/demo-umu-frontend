@@ -467,7 +467,7 @@ function formatWhen(iso: string): string {
   line-height: 1.4;
 }
 
-/* footer — required for approved-user display terms */
+/* footer - required for approved-user display terms */
 .llc-footer {
   margin-top: 16px;
   padding-top: 12px;

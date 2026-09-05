@@ -729,7 +729,7 @@ const sectionFiles = computed(
 // Fixtures & Fittings stats
 const stats = computed(() => {
   if (!section.value)
-    return { included: 0, excluded: 0, offered: 0, lastUpdated: '—' }
+    return { included: 0, excluded: 0, offered: 0, lastUpdated: '-' }
   let included = 0,
     excluded = 0,
     offered = 0
@@ -779,7 +779,7 @@ const stats = computed(() => {
         month: 'short',
         year: 'numeric',
       })
-    : '—'
+    : '-'
   return { included, excluded, offered, lastUpdated }
 })
 
@@ -951,7 +951,7 @@ function downloadAllFiles() {
   padding: 0 20px 40px;
 }
 
-/* Hero — mirrors passportview/steps/[id].vue */
+/* Hero - mirrors passportview/steps/[id].vue */
 .hero {
   margin: 8px 0 16px;
   border-radius: 24px;
@@ -1081,7 +1081,7 @@ function downloadAllFiles() {
   font-weight: 500;
 }
 
-/* Help / Video strip — right aligned below hero */
+/* Help / Video strip - right aligned below hero */
 .section-help-strip {
   display: flex;
   justify-content: end;

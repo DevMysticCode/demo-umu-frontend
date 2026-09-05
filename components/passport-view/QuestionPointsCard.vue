@@ -37,11 +37,11 @@
       </div>
       <p class="qpc-footer">
         {{ questionNumber }} of {{ totalQuestions }} ·
-        {{ remaining > 0 ? `Great progress — ${remaining} question${remaining === 1 ? '' : 's'} to go` : 'All done — nice work!' }}
+        {{ remaining > 0 ? `Great progress - ${remaining} question${remaining === 1 ? '' : 's'} to go` : 'All done - nice work!' }}
       </p>
     </template>
     <template v-else>
-      <p class="qpc-footer">{{ questionNumber }} of {{ totalQuestions }} · Keep going — you're making progress</p>
+      <p class="qpc-footer">{{ questionNumber }} of {{ totalQuestions }} · Keep going - you're making progress</p>
     </template>
   </div>
 </template>

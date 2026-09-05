@@ -30,7 +30,7 @@
       <div class="hs-noepc-cta anim-1">
         <div class="hs-noepc-cta-title">This property has no EPC</div>
         <div class="hs-noepc-cta-body">
-          No problem — answer 20 quick questions about the home and we'll build
+          No problem - answer 20 quick questions about the home and we'll build
           an <b>estimated HomeScore</b>, the same way an assessor fills gaps
           using the property's age.
         </div>
@@ -46,7 +46,7 @@
         <div class="hs-noepc-info-i">i</div>
         <div>
           Where you're not sure, we assume what's
-          <b>typical for the property's age</b> — exactly like the official
+          <b>typical for the property's age</b> - exactly like the official
           RdSAP method. Every confident answer tightens your estimate.
         </div>
       </div>
@@ -133,7 +133,7 @@
                 <line x1="12" y1="8" x2="12.01" y2="8" />
               </svg>
               <div>
-                Based on a <b>{{ epcYear || '—' }} EPC</b>. Made improvements
+                Based on a <b>{{ epcYear || '-' }} EPC</b>. Made improvements
                 since then? Your actual HomeScore could be higher.
               </div>
             </div>
@@ -425,7 +425,7 @@
           <div class="ssp-head-info">
             <div class="ssp-head-title">Your street, ranked by energy cost</div>
             <div class="ssp-head-sub">
-              {{ property?.postcode || '—' }} · {{ streetTotal || 18 }} homes ·
+              {{ property?.postcode || '-' }} · {{ streetTotal || 18 }} homes ·
               estimated from EPC data
             </div>
           </div>
@@ -804,7 +804,7 @@
         <!-- Selected house tooltip -->
         <div class="ssp-street-tooltip" :class="{ you: selectedHouse.isYou }">
           <span class="ssp-street-tooltip-num">
-            No. {{ selectedHouse.num }}{{ selectedHouse.isYou ? ' — You' : '' }}
+            No. {{ selectedHouse.num }}{{ selectedHouse.isYou ? ' - You' : '' }}
           </span>
           <span
             class="ssp-street-tooltip-rating"
@@ -885,7 +885,7 @@
                   class="stat-expand-meta-num"
                   :class="s.steps > 0 ? 'cost' : 'save'"
                 >
-                  {{ s.steps > 0 ? s.steps : '—' }}
+                  {{ s.steps > 0 ? s.steps : '-' }}
                 </div>
                 <div class="stat-expand-meta-sub">
                   {{ s.steps > 0 ? 'recommended' : 'none recommended' }}
@@ -900,7 +900,7 @@
                       >/yr</span
                     >
                   </template>
-                  <template v-else>—</template>
+                  <template v-else>-</template>
                 </div>
                 <div class="stat-expand-meta-sub">
                   {{ s.saving > 0 ? s.savingSub : 'nothing to gain' }}
@@ -911,7 +911,7 @@
                   {{ s.thirdTileLabel }}
                 </div>
                 <div class="stat-expand-meta-num">
-                  {{ s.thirdTileNum || '—' }}
+                  {{ s.thirdTileNum || '-' }}
                 </div>
                 <div class="stat-expand-meta-sub">{{ s.thirdTileSub }}</div>
               </div>
@@ -983,7 +983,7 @@
           <div class="epc-summary">
             <div class="epc-grade">
               <div class="epc-grade-letter" :style="{ background: epcColor }">
-                {{ epcRating || '—' }}
+                {{ epcRating || '-' }}
               </div>
               <div class="epc-grade-sub">Current · {{ displayScore }}</div>
             </div>
@@ -993,10 +993,10 @@
                 class="epc-grade-letter"
                 :style="{ background: epcPotentialColor }"
               >
-                {{ epcPotentialRating || '—' }}
+                {{ epcPotentialRating || '-' }}
               </div>
               <div class="epc-grade-sub">
-                Potential · {{ epcPotentialScore ?? '—' }}
+                Potential · {{ epcPotentialScore ?? '-' }}
               </div>
             </div>
             <div class="epc-saving">
@@ -1077,7 +1077,7 @@
               <div class="fork-opt-body">
                 <div class="fork-opt-title">Go to your dashboard</div>
                 <div class="fork-opt-sub">
-                  Your home base — Passport, docs &amp; everything in one place.
+                  Your home base - Passport, docs &amp; everything in one place.
                 </div>
               </div>
               <div class="fork-opt-chev">›</div>
@@ -1350,7 +1350,7 @@ const props = withDefaults(
     /** Number of users actively watching this property (wishlist + saved).
      *  Drives the "people watching" social-proof row under the address. */
     watchersCount?: number
-    /** Passport status of the property — drives the claim box so we don't
+    /** Passport status of the property - drives the claim box so we don't
      *  pitch "claim" on a home that's already claimed. */
     passportState?: 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
     /** Passport build progress (drives the in-progress ring + drawer). */
@@ -1360,7 +1360,7 @@ const props = withDefaults(
     /** Set by parent to auto-pop the claim drawer (e.g. when the user
      *  has just returned from sign-in with ?claim=1) */
     autoOpenClaim?: boolean
-    /** Auth + ownership flags — drive the fork-section branching at the
+    /** Auth + ownership flags - drive the fork-section branching at the
      *  bottom of the score view (guest / owner / non-owner). */
     isLoggedIn?: boolean
     isPropertyOwner?: boolean
@@ -1414,7 +1414,7 @@ const billsSplitDisplay = computed(() => {
 const streetRankLabel = computed(() => {
   const r = props.streetRank
   const t = props.streetTotal
-  if (r == null || t == null || t <= 0) return '—'
+  if (r == null || t == null || t <= 0) return '-'
   const ratio = r / t
   if (ratio <= 0.33) return 'top of street'
   if (ratio <= 0.5) return 'above avg'
@@ -1448,11 +1448,11 @@ const emit = defineEmits<{
   (e: 'open-pathway'): void
   (e: 'see-running-costs'): void
   (e: 'see-street'): void
-  /** Property already claimed — parent navigates to the passport/property. */
+  /** Property already claimed - parent navigates to the passport/property. */
   (e: 'view-passport'): void
   /** Open the £99 unlock drawer on the property page (in-progress/published). */
   (e: 'buy-passport'): void
-  /** "This property is unclaimed" arrow / cxUnclaimed drawer CTA —
+  /** "This property is unclaimed" arrow / cxUnclaimed drawer CTA -
    *  login (if needed) → property page with the Choose Passport drawer. */
   (e: 'claim-passport'): void
   /** Fires when the user dismisses the claim modal so the parent can
@@ -2097,7 +2097,7 @@ const stats = computed<StatRow[]>(() => {
         ? `<b>${heatRecs.length} EPC step${
             heatRecs.length > 1 ? 's' : ''
           }</b> can lift heating →`
-        : '<b>Your strongest stat.</b> No EPC recommendations live here — heating is sorted.',
+        : '<b>Your strongest stat.</b> No EPC recommendations live here - heating is sorted.',
     },
     {
       id: 'structure',
@@ -2220,7 +2220,7 @@ const stats = computed<StatRow[]>(() => {
               sub:
                 elecRecs[0]?.description ||
                 "EPC's final step. Crosses you into Band C.",
-              amt: fmtSaving(elecRecs[0]) || '—',
+              amt: fmtSaving(elecRecs[0]) || '-',
               amtSub: elecRecs[0]?.costRange || '',
             },
           ]
@@ -2269,7 +2269,7 @@ const stats = computed<StatRow[]>(() => {
                 sub:
                   plumbRecs[0]?.description ||
                   'Roof collector pre-heats water from the sun.',
-                amt: fmtSaving(plumbRecs[0]) || '—',
+                amt: fmtSaving(plumbRecs[0]) || '-',
                 amtSub: plumbRecs[0]?.costRange || '',
               },
             ]
@@ -2595,7 +2595,7 @@ const epcItems = computed<EpcItem[]>(() => {
       ratingClass: 'nodata',
       flagOk: false,
       flagText:
-        'Listed as a recommended improvement — generates electricity from sunlight.',
+        'Listed as a recommended improvement - generates electricity from sunlight.',
       fix: {
         label: '✨ EPC recommendation',
         text: `${pvRec.description || pvRec.title}. ${
@@ -3012,7 +3012,7 @@ const watchersDisplay = computed(() => {
 .claim-cta-btn:hover {
   filter: brightness(1.06);
 }
-/* Already-claimed variants — informational, not a "claim" pitch. */
+/* Already-claimed variants - informational, not a "claim" pitch. */
 .claim-cta-btn.published {
   background: white;
   color: #8b4e0a;
@@ -3757,7 +3757,7 @@ const watchersDisplay = computed(() => {
   font-style: italic;
 }
 
-/* Walking figure overlay — animates between selected houses */
+/* Walking figure overlay - animates between selected houses */
 .ssp-street-walker {
   position: absolute;
   pointer-events: none;
@@ -4151,7 +4151,7 @@ const watchersDisplay = computed(() => {
   flex-shrink: 0;
   margin-top: 1px;
 }
-/* Illustrated variant — 3D icon fills the slot cleanly; drop the pale
+/* Illustrated variant - 3D icon fills the slot cleanly; drop the pale
    grey card background so the illustration's own pedestal reads. */
 .stat-cost-bullet:has(> img) {
   background: transparent;
@@ -4844,7 +4844,7 @@ const watchersDisplay = computed(() => {
   border-top: 1px solid var(--border-soft);
 }
 
-/* ── No-EPC — prototype UX (amber hero + navy CTA + quiz entry) ──
+/* ── No-EPC - prototype UX (amber hero + navy CTA + quiz entry) ──
    Ported from prisma/homescore-no-epc-prototype.html so the empty
    state feels like a considered path, not an error. */
 .hs-noepc-hero {
@@ -5007,7 +5007,7 @@ const watchersDisplay = computed(() => {
 
 /* ── Claim-it-free modal ────────────────────────────────────── */
 .claim-overlay {
-  /* Re-declare design tokens locally — the modal is teleported to
+  /* Re-declare design tokens locally - the modal is teleported to
      <body> so it loses access to the CSS custom properties defined on
      `.hs-v6-score`. Without these, the white sheet renders transparent. */
   --accent: #00a19a;

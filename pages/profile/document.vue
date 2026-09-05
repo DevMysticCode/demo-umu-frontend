@@ -690,7 +690,7 @@ const goBack = useGoBack('/profile')
   text-align: left;
 }
 .dc-cat:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(14, 40, 64, 0.06); }
-/* Category tone overrides removed — every tile now uses the base
+/* Category tone overrides removed - every tile now uses the base
    white background from .dc-cat above so the whole page reads as
    one consistent surface, matching the property-details tile look.
    Border stays neutral; the illustration inside carries the visual
@@ -813,7 +813,7 @@ const goBack = useGoBack('/profile')
   gap: 8px;
   min-width: 0;
 }
-/* Visibility pill — inline with the doc title. Aqua for public,
+/* Visibility pill - inline with the doc title. Aqua for public,
    slate for private. Small enough that it doesn't crowd the row
    but readable at a glance. */
 .dc-vis-pill {

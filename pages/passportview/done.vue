@@ -95,8 +95,8 @@
     <div class="pd-next">
       <div class="pd-next-eyebrow">What happens next</div>
       <ul class="pd-next-list">
-        <li><strong>Your agent</strong> can use the Passport in marketing — properties with Passports sell ~12 weeks faster on average.</li>
-        <li><strong>Buyers</strong> get instant access to all the data they'd otherwise wait weeks for — title, surveys, EPC, planning history.</li>
+        <li><strong>Your agent</strong> can use the Passport in marketing - properties with Passports sell ~12 weeks faster on average.</li>
+        <li><strong>Buyers</strong> get instant access to all the data they'd otherwise wait weeks for - title, surveys, EPC, planning history.</li>
         <li><strong>You</strong> can update or unshare at any time from <NuxtLink to="/passport/collections" class="pd-link">your Passport collection</NuxtLink>.</li>
       </ul>
     </div>
@@ -165,7 +165,7 @@ onMounted(async () => {
       sections: sections.length,
     }
   } catch {
-    /* non-fatal — hide the stats card */
+    /* non-fatal - hide the stats card */
   }
 })
 

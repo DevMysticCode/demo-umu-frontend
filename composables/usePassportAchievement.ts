@@ -66,7 +66,7 @@ async function checkForCelebrations() {
       showNext()
     }
   } catch {
-    /* non-critical — celebration is a nice-to-have, never block the app */
+    /* non-critical - celebration is a nice-to-have, never block the app */
   } finally {
     checking.value = false
   }
@@ -122,7 +122,7 @@ async function acknowledge() {
       headers: authHeaders(),
     })
   } catch {
-    /* non-critical — worst case it re-celebrates next check */
+    /* non-critical - worst case it re-celebrates next check */
   }
   // Small gap before the next queued celebration (if any) so they never
   // feel like they're stacking on top of each other.

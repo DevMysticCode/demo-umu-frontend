@@ -47,7 +47,7 @@
           <div class="cp__hero-blob" />
           <div class="cp__hero-eyebrow">Property Passport</div>
           <div class="cp__hero-heading">Everything verified.<br />Nothing hidden.</div>
-          <div class="cp__hero-caption">Trusted legal, planning and ownership records — all in one place.</div>
+          <div class="cp__hero-caption">Trusted legal, planning and ownership records - all in one place.</div>
         </div>
 
         <!-- Features list -->
@@ -118,7 +118,7 @@
               <rect x="1" y="4" width="22" height="16" rx="2" />
               <line x1="1" y1="10" x2="23" y2="10" />
             </svg>
-            <span>{{ showCardForm ? 'Pay £99 securely' : 'Pay £99 — instant access' }}</span>
+            <span>{{ showCardForm ? 'Pay £99 securely' : 'Pay £99 - instant access' }}</span>
           </template>
         </button>
         <div class="cp__foot-note">Secure payment · Instant access · No subscription</div>

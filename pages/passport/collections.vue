@@ -717,7 +717,7 @@ const collectionsTourSteps = [
   {
     selector: '[data-tour="resume"]',
     title: 'Pick up where you left off',
-    body: 'Tap this card to jump straight back to your most recently edited passport — exactly where you stopped.',
+    body: 'Tap this card to jump straight back to your most recently edited passport - exactly where you stopped.',
   },
   {
     selector: '[data-tour="tour-btn"]',
@@ -880,14 +880,14 @@ const executeDelete = async () => {
   margin: 0;
 }
 
-/* ── Header — tour-button alignment ─────────────────────── */
+/* ── Header - tour-button alignment ─────────────────────── */
 .coll-header-right {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* Compact search lives in the navbar — collapses to a 32 px circular
+/* Compact search lives in the navbar - collapses to a 32 px circular
    button, expands to a pill-shaped input that pushes the avatar/help
    buttons out of frame on tap. */
 .coll-nav-search {
@@ -1235,7 +1235,7 @@ const executeDelete = async () => {
   color: #fff;
 }
 
-/* Passport-type chip row — second filter row, type-coloured dot per chip. */
+/* Passport-type chip row - second filter row, type-coloured dot per chip. */
 .coll-types { margin-top: 6px; }
 .coll-type-dot {
   width: 8px;
@@ -1316,7 +1316,7 @@ const executeDelete = async () => {
   border-radius: 8px;
 }
 
-/* Trash button — always visible on every device. Previously the
+/* Trash button - always visible on every device. Previously the
    reveal was gated by `@media (hover: hover)` but that query
    mis-reports on some phones with a connected keyboard/mouse and
    left the button hidden on touch. Unconditional visibility is the
@@ -1344,7 +1344,7 @@ const executeDelete = async () => {
 .book-trash-btn:active { transform: scale(0.9); }
 
 /* Every grid tile uses the real Property Passport book (seller/landlord
-   art + address overlaid via the shared PassportCard component) — no
+   art + address overlaid via the shared PassportCard component) - no
    property-photo alternative. We just need to size + position it inside
    the cell. */
 .passport-book-fallback {
@@ -1537,7 +1537,7 @@ const executeDelete = async () => {
   }
 }
 
-/* Watching section — buyer's purchased Passport access cards */
+/* Watching section - buyer's purchased Passport access cards */
 .watching-section {
   padding: 0 16px 80px;
   margin-top: -8px;

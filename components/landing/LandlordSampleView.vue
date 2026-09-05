@@ -79,7 +79,7 @@
     </div>
 
     <!-- Compliance — Statutory group -->
-    <div class="section-heading">Statutory — annual / 5-yearly</div>
+    <div class="section-heading">Statutory - annual / 5-yearly</div>
     <div v-for="section in safetyGroup" :key="section.name" class="lp-sec" :class="`lp-sec--${section.tone}`">
       <div class="lp-sec-icon" :class="`lp-sec-icon--${section.tone}`"><img :src="section.icon" alt="" class="lp-sec-icon-img" loading="lazy" /></div>
       <div class="lp-sec-content">
@@ -444,7 +444,7 @@ const insuranceGroup: SampleSection[] = [
 }
 .lp-sec-chev { color: #8a95a0; font-size: 22px; flex-shrink: 0; line-height: 1; padding-top: 2px; }
 
-/* "+ N more sections" footer hint — sample only */
+/* "+ N more sections" footer hint - sample only */
 .sec-more {
   margin: 14px 16px 0;
   padding: 14px 16px;

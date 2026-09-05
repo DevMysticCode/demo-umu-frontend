@@ -134,7 +134,7 @@
             <div class="persist-title">Your passport carries forward</div>
             <div class="persist-sub">
               When you buy your next home, your verified identity and documents
-              come with you — no need to reverify.
+              come with you - no need to reverify.
             </div>
           </div>
         </div>
@@ -495,7 +495,7 @@ import {
 import { useProfile } from '~/composables/useProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 
-definePageMeta({ title: 'Buyer Passport — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Buyer Passport - UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile } = useBuyerProfile()
@@ -645,8 +645,8 @@ const mortgageMetaText = computed(() => {
   if (passport.value?.mortgageAipReviewStatus === 'pending')
     return 'AIP uploaded · awaiting review'
   if (passport.value?.mortgageAipReviewStatus === 'rejected')
-    return "Couldn't verify that AIP — please re-upload"
-  return 'Upload your AIP — lender will be verified'
+    return "Couldn't verify that AIP - please re-upload"
+  return 'Upload your AIP - lender will be verified'
 })
 
 const chainShortLabel = computed(() => {
@@ -722,10 +722,10 @@ async function onDocFileChosen(e: Event) {
       body: form,
     })
     passport.value = await getBuyerProfile()
-    showToast({ message: 'Uploaded — awaiting review', iconEmoji: '📄' })
+    showToast({ message: 'Uploaded - awaiting review', iconEmoji: '📄' })
   } catch (e: any) {
     showToast({
-      message: e?.data?.message ?? 'Upload failed — try again',
+      message: e?.data?.message ?? 'Upload failed - try again',
       iconEmoji: '⚠️',
     })
   } finally {

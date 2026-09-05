@@ -185,7 +185,7 @@
                 <div>
                   <p class="buyer-detail-label">Property type</p>
                   <p class="buyer-detail-value">
-                    {{ data.property.propertyType || '—' }}
+                    {{ data.property.propertyType || '-' }}
                   </p>
                 </div>
               </div>
@@ -196,7 +196,7 @@
                 <div>
                   <p class="buyer-detail-label">Title number</p>
                   <p class="buyer-detail-value">
-                    {{ data.property.titleNumber || '—' }}
+                    {{ data.property.titleNumber || '-' }}
                   </p>
                 </div>
               </div>
@@ -210,7 +210,7 @@
                     {{
                       data.property.sqft
                         ? data.property.sqft.toLocaleString() + ' sqft'
-                        : '—'
+                        : '-'
                     }}
                   </p>
                 </div>
@@ -222,7 +222,7 @@
                 <div>
                   <p class="buyer-detail-label">EPC Rating</p>
                   <p class="buyer-detail-value">
-                    {{ data.property.epcRating || '—' }}
+                    {{ data.property.epcRating || '-' }}
                   </p>
                 </div>
               </div>
@@ -244,7 +244,7 @@
                 <div>
                   <p class="buyer-detail-label">Year Built</p>
                   <p class="buyer-detail-value">
-                    {{ data.property.yearBuilt || '—' }}
+                    {{ data.property.yearBuilt || '-' }}
                   </p>
                 </div>
               </div>
@@ -271,7 +271,7 @@
           <div class="buyer-pdf-info">
             <p class="buyer-pdf-title">Full Property Report</p>
             <p class="buyer-pdf-sub">
-              All questions &amp; answers — share with solicitors
+              All questions &amp; answers - share with solicitors
             </p>
           </div>
           <button
@@ -313,7 +313,7 @@
           <div class="buyer-pdf-info">
             <p class="buyer-pdf-title">TA6 Property Information Form</p>
             <p class="buyer-pdf-sub">
-              Law Society 6th edition — pre-filled with passport data
+              Law Society 6th edition - pre-filled with passport data
             </p>
           </div>
           <button
@@ -365,7 +365,7 @@
           <div class="buyer-pdf-info">
             <p class="buyer-pdf-title">TA7 Leasehold Information Form</p>
             <p class="buyer-pdf-sub">
-              Law Society 5th edition — lease, ground rent &amp; service charge
+              Law Society 5th edition - lease, ground rent &amp; service charge
               details
             </p>
           </div>
@@ -415,7 +415,7 @@
           <div class="buyer-pdf-info">
             <p class="buyer-pdf-title">TA10 Fixtures &amp; Fittings Form</p>
             <p class="buyer-pdf-sub">
-              What stays, what goes — pre-filled from seller's passport
+              What stays, what goes - pre-filled from seller's passport
             </p>
           </div>
           <button
@@ -846,7 +846,7 @@
 
           <div v-if="!shareUrl" class="share-intro">
             <p class="share-hint">
-              Generate a link that lets anyone view this passport for 3 hours —
+              Generate a link that lets anyone view this passport for 3 hours -
               no login required.
             </p>
             <button
@@ -935,7 +935,7 @@ const buyerTourSteps = [
   {
     selector: '.buyer-card',
     title: 'Everything in one place',
-    body: 'Documents, surveys, the seller\'s answers and the property history — no more chasing for paperwork.',
+    body: 'Documents, surveys, the seller\'s answers and the property history - no more chasing for paperwork.',
   },
   {
     selector: '[data-tour="records"]',
@@ -1086,7 +1086,7 @@ const cityLine = computed(() => {
 // Normalize tenure — EPC returns occupancy type, not legal tenure (freehold/leasehold)
 const displayTenure = computed(() => {
   const raw = (data.value?.property?.tenure || '').trim()
-  if (!raw) return '—'
+  if (!raw) return '-'
   const lower = raw.toLowerCase()
   if (lower === 'f' || lower === 'freehold') return 'Freehold'
   if (lower === 'l' || lower === 'leasehold') return 'Leasehold'
@@ -1096,7 +1096,7 @@ const displayTenure = computed(() => {
     lower.includes('rented') ||
     lower.includes('unknown')
   )
-    return '—'
+    return '-'
   return raw
 })
 
@@ -1121,7 +1121,7 @@ const overallProgressPct = computed(() => passportProgress.value)
 const heroHsScore = computed(() => {
   const score =
     data.value?.property?.homeScore ?? data.value?.property?.epcScore
-  return typeof score === 'number' ? score : '—'
+  return typeof score === 'number' ? score : '-'
 })
 const heroDocsCount = computed(() => {
   if (!data.value?.sections) return 0
@@ -1232,7 +1232,7 @@ function askSeller() {
   if (propertyId) {
     router.push(
       `/owner/${propertyId}?prefill=${encodeURIComponent(
-        "I've reviewed the Passport — I'd like to ask about…",
+        "I've reviewed the Passport - I'd like to ask about…",
       )}`,
     )
   }
@@ -1640,7 +1640,7 @@ async function deleteNote(noteId: string) {
   justify-content: center;
   backdrop-filter: blur(4px);
 }
-/* Owner-only pill — surfaces the seller view without competing with
+/* Owner-only pill - surfaces the seller view without competing with
    the circular icon buttons. Uses the same translucent chrome pattern
    as .hero-btn so it reads as part of the same row. */
 .hero-owner-switch {
@@ -1659,7 +1659,7 @@ async function deleteNote(noteId: string) {
 .hero-owner-switch:hover { background: rgba(0, 0, 0, 0.6) }
 .hero-owner-switch:active { transform: scale(0.98) }
 
-/* ── Card / page surface — matches passportview theme ─────── */
+/* ── Card / page surface - matches passportview theme ─────── */
 .buyer-card {
   position: relative;
   padding: 22px 20px 0;
@@ -1668,7 +1668,7 @@ async function deleteNote(noteId: string) {
 }
 
 /* Title block. Extra top margin so the address heading has room
-   to breathe after the passport hero card — testers flagged the
+   to breathe after the passport hero card - testers flagged the
    two blocks sitting so close they read as one dense strip. */
 .buyer-title-block {
   margin-top: 20px;
@@ -1707,7 +1707,7 @@ async function deleteNote(noteId: string) {
   letter-spacing: 0.06em;
 }
 
-/* Badges — pale brand pills (matches passportview's section-pct pill) */
+/* Badges - pale brand pills (matches passportview's section-pct pill) */
 .buyer-badges {
   display: flex;
   gap: 6px;
@@ -1728,7 +1728,7 @@ async function deleteNote(noteId: string) {
   letter-spacing: -0.01em;
 }
 
-/* Section heading — passportview typography */
+/* Section heading - passportview typography */
 .buyer-section {
   margin-bottom: 24px;
 }
@@ -1747,7 +1747,7 @@ async function deleteNote(noteId: string) {
   line-height: 1.45;
 }
 
-/* Details card — brand-pale gradient with brand-soft border */
+/* Details card - brand-pale gradient with brand-soft border */
 .buyer-details-card {
   background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
   border: 1px solid #e2f1ea;
@@ -1844,7 +1844,7 @@ async function deleteNote(noteId: string) {
   cursor: pointer;
 }
 
-/* Records list — passportview-style cards with description + progress */
+/* Records list - passportview-style cards with description + progress */
 .buyer-records-list {
   display: flex;
   flex-direction: column;
@@ -1907,7 +1907,7 @@ async function deleteNote(noteId: string) {
   line-height: 1.45;
 }
 
-/* Status pill — sits above the progress bar */
+/* Status pill - sits above the progress bar */
 .buyer-record-meta {
   margin-bottom: 6px;
 }
@@ -2215,7 +2215,7 @@ async function deleteNote(noteId: string) {
   border: 1.5px solid #9ca3af;
 }
 
-/* ── Comparables — passportview-themed list ──────────────────────────── */
+/* ── Comparables - passportview-themed list ──────────────────────────── */
 .buyer-comparables-list {
   border-radius: 14px;
   overflow: hidden;
@@ -2572,7 +2572,7 @@ async function deleteNote(noteId: string) {
   background: #00877f;
 }
 
-/* ── Premium hero card — passport book + identity + stats strip ── */
+/* ── Premium hero card - passport book + identity + stats strip ── */
 .buyer-hero-card {
   position: relative;
   display: flex;
@@ -2601,7 +2601,7 @@ async function deleteNote(noteId: string) {
   pointer-events: none;
 }
 .buyer-hero-book {
-  /* Matched to pp-hero-book's 104x140 (passportview/[id].vue) — at the
+  /* Matched to pp-hero-book's 104x140 (passportview/[id].vue) - at the
      old 84x110, PassportCard's address text (which has a font-size
      floor and doesn't shrink further) routinely crowded the card edges. */
   width: 104px;
@@ -2899,7 +2899,7 @@ async function deleteNote(noteId: string) {
   padding-bottom: calc(150px + env(safe-area-inset-bottom, 0));
 }
 
-/* Save toast — slides down from the top */
+/* Save toast - slides down from the top */
 .buyer-save-toast {
   position: fixed;
   left: 50%;

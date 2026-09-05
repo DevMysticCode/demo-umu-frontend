@@ -140,7 +140,7 @@ import type {
   MarketplaceJobListItem,
 } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Browse jobs — Marketplace' })
+definePageMeta({ title: 'Browse jobs - Marketplace' })
 
 const route = useRoute()
 const router = useRouter()
@@ -260,8 +260,8 @@ function openJob(id: string) {
 </script>
 
 <style scoped>
-/* Browse inherits the home page's design language — same chrome,
-   tile, and card styles — with a denser 3-column category grid and
+/* Browse inherits the home page's design language - same chrome,
+   tile, and card styles - with a denser 3-column category grid and
    a chip row above the listings. Typography inherits from the app. */
 .mp-browse {
   min-height: 100vh;
@@ -330,7 +330,7 @@ function openJob(id: string) {
   color: #fff;
 }
 
-/* Section headers — same as home */
+/* Section headers - same as home */
 .mp-section-h {
   display: flex;
   align-items: baseline;
@@ -344,7 +344,7 @@ function openJob(id: string) {
   font-size: 12px; font-weight: 700; color: #00a19a; cursor: pointer;
 }
 
-/* 3-col category grid (Browse-specific — Home uses 4). */
+/* 3-col category grid (Browse-specific - Home uses 4). */
 .mp-cat-grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -395,7 +395,7 @@ function openJob(id: string) {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-/* Job list cards — identical to home page */
+/* Job list cards - identical to home page */
 .mp-job-list {
   padding: 0 20px;
   display: flex;

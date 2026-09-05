@@ -145,7 +145,7 @@
         <div class="of-trust-strip-icon">🛡</div>
         <div class="of-trust-strip-text">
           <b>UProtect escrow.</b> Your payment is held safely on the
-          platform until you release the funds — usually once you've
+          platform until you release the funds - usually once you've
           verified the job's been done.
         </div>
       </div>
@@ -164,7 +164,7 @@ import { computed, ref } from 'vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 import type { MarketplaceOffer } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Review offers — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Review offers - Marketplace', middleware: 'auth' })
 
 const route = useRoute()
 const router = useRouter()

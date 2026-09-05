@@ -81,7 +81,7 @@ import MarketplaceAppBack from '~/components/marketplace/MarketplaceAppBack.vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 import type { MarketplaceJobListItem } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Your projects — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Your projects - Marketplace', middleware: 'auth' })
 
 const router = useRouter()
 const { fetchMyJobs, fetchThreads, resolvePhotoUrl } = useMarketplace()

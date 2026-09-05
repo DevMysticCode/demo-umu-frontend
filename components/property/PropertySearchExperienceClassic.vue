@@ -291,8 +291,8 @@
                        plans/watch-visibility-strategy-audit.md). -->
                   <svg
                     v-if="stateOf(prop) === 'public'"
-                    width="20"
-                    height="20"
+                    width="26"
+                    height="26"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="#231d45"
@@ -307,8 +307,8 @@
                   </svg>
                   <svg
                     v-else-if="stateOf(prop) === 'partiallyPublic'"
-                    width="20"
-                    height="20"
+                    width="26"
+                    height="26"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="#9185d6"
@@ -1104,7 +1104,7 @@ async function onWatchClick(prop: any) {
     else next.delete(prop.id)
     watchedIds.value = next
   } catch {
-    /* non-critical — card just doesn't reflect the toggle */
+    /* non-critical - card just doesn't reflect the toggle */
   }
 }
 
@@ -1326,7 +1326,7 @@ watch(displayedProperties, () => {
 .prop-card:active {
   transform: scale(0.99);
 }
-/* ── Top: thumbnail + info, side by side (matches prototype exactly —
+/* ── Top: thumbnail + info, side by side (matches prototype exactly -
    NOT a full-width photo banner) ── */
 .prop-card-top {
   display: flex;
@@ -1346,7 +1346,7 @@ watch(displayedProperties, () => {
   height: 100%;
   object-fit: cover;
 }
-/* Two-row badge — "Passport" caption on top, state word below — so the
+/* Two-row badge - "Passport" caption on top, state word below - so the
    compact badge reads as "the PASSPORT is private", never "the property
    is private". Each row is its own non-wrapping line; the capsule's
    width auto-fits whichever row is longer per state (Partially Public
@@ -1354,8 +1354,8 @@ watch(displayedProperties, () => {
 .prop-badge-pp {
   flex-shrink: 0;
   color: #fff;
-  border-radius: 10px;
-  padding: 3px 8px 4px;
+  border-radius: 12px;
+  padding: 4px 10px 5px;
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
@@ -1366,15 +1366,15 @@ watch(displayedProperties, () => {
 .prop-badge-pp-cap {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  font-size: 7px;
+  gap: 4px;
+  font-size: 7.5px;
   font-weight: 700;
   letter-spacing: 0.04em;
   opacity: 0.85;
 }
 .prop-badge-pp-lock {
-  width: 8px;
-  height: 8px;
+  width: 13px;
+  height: 13px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -1385,7 +1385,7 @@ watch(displayedProperties, () => {
   line-height: 1.1;
 }
 /* Unified dark-navy/white treatment for every state, per client feedback
-   — replaces the earlier per-state teal/amber/purple palette. */
+   - replaces the earlier per-state teal/amber/purple palette. */
 .prop-badge-pp.unclaimed,
 .prop-badge-pp.private,
 .prop-badge-pp.partiallyPublic,
@@ -1530,8 +1530,8 @@ watch(displayedProperties, () => {
   gap: 8px;
 }
 .footer-passport-lock {
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -1710,7 +1710,7 @@ watch(displayedProperties, () => {
   color: #94a3b8;
 }
 
-/* ── Quick-filter popover sheet (own namespace — psr- — so it can't
+/* ── Quick-filter popover sheet (own namespace - psr- - so it can't
      collide with SearchFilterBar's own .sheet/.chip classes even though
      both are Teleported to <body> at the same time). ── */
 .psr-sheet-backdrop {

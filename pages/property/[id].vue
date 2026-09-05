@@ -594,7 +594,7 @@
                 Stop buying blind
               </div>
               <div class="pps-passport-explain-body" style="color: #2a5c58">
-                This Passport is being built right now — so when you make your
+                This Passport is being built right now - so when you make your
                 move, the answers are already there.
               </div>
             </div>
@@ -713,7 +713,7 @@
           <div class="pps-passport-cta-sub">
             <template v-if="isPassportOwnerOrCollab">
               <template v-if="progressPct > 0">
-                You're {{ progressPct }}% complete — tap to finish your
+                You're {{ progressPct }}% complete - tap to finish your
                 remaining sections.
               </template>
               <template v-else>
@@ -749,7 +749,7 @@
                 The HPI check for your home
               </div>
               <div class="pps-passport-explain-body" style="color: #6b4c1a">
-                The verified record that should have always existed — and now it
+                The verified record that should have always existed - and now it
                 does.
               </div>
             </div>
@@ -767,7 +767,7 @@
           <div class="pps-progress-bar-wrap">
             <div class="pps-progress-bar-fill" style="width: 100%" />
           </div>
-          <div class="pps-progress-label">100% complete — Passport live</div>
+          <div class="pps-progress-label">100% complete - Passport live</div>
 
           <div class="pps-passport-features">
             <div
@@ -1123,7 +1123,7 @@
                 No property details on file yet
               </div>
               <div class="pps-ds-placeholder-sub">
-                We'll backfill on the next enrichment pass — this usually
+                We'll backfill on the next enrichment pass - this usually
                 happens once the property has been through EPC lookup and OS
                 Places verification.
               </div>
@@ -1149,7 +1149,7 @@
             </div>
             <div class="pps-sheet-title">About this estimate</div>
             <div class="pps-sheet-sub">
-              {{ priceSourceLabel }} —
+              {{ priceSourceLabel }} -
               {{ property?.city || 'the local area' }}'s House Price Index
               applied to the property's last known sale price (or, where there's
               no recorded sale, to comparable local sales) to reflect roughly
@@ -1321,7 +1321,7 @@
               </div>
               <div class="pps-ds-placeholder-sub">
                 HM Land Registry has no transaction records for this address yet
-                — this can happen with new builds, exchange of parts, or
+                - this can happen with new builds, exchange of parts, or
                 unregistered land.
               </div>
             </div>
@@ -1329,7 +1329,7 @@
             <template v-if="nearbySales.length > 0">
               <h2 class="pps-tr-sec">Nearby sold prices</h2>
               <p class="pps-tr-secsub">
-                Recent transactions on the same road or postcode — useful for a
+                Recent transactions on the same road or postcode - useful for a
                 sanity check against the estimate above.
               </p>
               <div class="pps-tr-list">
@@ -1581,7 +1581,7 @@
                   Within ~2&nbsp;km of this address<template
                     v-if="schoolStats.primariesNearby"
                   >
-                    —
+                    -
                     <em
                       >{{ schoolStats.primariesNearby }} primar{{
                         schoolStats.primariesNearby === 1 ? 'y' : 'ies'
@@ -1604,7 +1604,7 @@
                       {{ schoolStats.nearestPrimaryKm.toFixed(1)
                       }}<small>&nbsp;km</small>
                     </b>
-                    <b v-else>—</b>
+                    <b v-else>-</b>
                     <span>To nearest primary</span>
                   </div>
                 </div>
@@ -1703,7 +1703,7 @@
                 No schools data on file
               </div>
               <div class="pps-ds-placeholder-sub">
-                We couldn't retrieve nearby schools for this address yet — it
+                We couldn't retrieve nearby schools for this address yet - it
                 will be backfilled on the next enrichment pass.
               </div>
             </div>
@@ -1711,7 +1711,7 @@
             <p class="pps-ds-info-note">
               <b>Sample proximity only.</b> Walking times are estimated from
               straight-line distance at 12 minutes per kilometre. Being close to
-              a school doesn't guarantee a place — admissions are decided by the
+              a school doesn't guarantee a place - admissions are decided by the
               local authority on the year's actual applications.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
@@ -1817,7 +1817,7 @@
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
-                  We couldn't load nearby stations — please try again in a
+                  We couldn't load nearby stations - please try again in a
                   moment.
                 </template>
                 <template v-else>
@@ -1859,7 +1859,7 @@
             <p class="pps-ds-info-note">
               <b>Not a timetable.</b> Walking times are typical
               door-to-platform, not straight-line distance. Services vary by
-              time of day and are subject to timetable changes — check National
+              time of day and are subject to timetable changes - check National
               Rail before relying on a specific connection.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
@@ -1941,7 +1941,7 @@
                     About
                     <b>{{ walkMinutes(t.distanceKm) }} minutes' walk</b> from
                     this address at a normal pace ({{ t.distanceKm.toFixed(1) }}
-                    km straight-line). Journey times and connections vary —
+                    km straight-line). Journey times and connections vary -
                     check National Rail for live timetables.
                   </div>
                 </button>
@@ -1959,7 +1959,7 @@
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
-                  We couldn't load nearby stations — please try again in a
+                  We couldn't load nearby stations - please try again in a
                   moment.
                 </template>
                 <template v-else>
@@ -2048,7 +2048,7 @@
               </div>
               <p class="pps-tr-secsub">
                 Both directions are shown together. Route numbers and
-                frequencies vary by stop — check Traveline for live timetables.
+                frequencies vary by stop - check Traveline for live timetables.
               </p>
 
               <div class="pps-tr-list">
@@ -2110,7 +2110,7 @@
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="transportLookupFailed">
-                  We couldn't load nearby stops — please try again in a moment.
+                  We couldn't load nearby stops - please try again in a moment.
                 </template>
                 <template v-else>
                   We couldn't find a bus stop within walking distance of this
@@ -2123,7 +2123,7 @@
               <b>Frequencies drop off-peak.</b> Bus stop locations come from
               OpenStreetMap; timetables come from the Bus Open Data Service (not
               yet wired). Weekday daytime frequencies drop substantially in the
-              evening and on Sundays — worth checking if anyone would rely on
+              evening and on Sundays - worth checking if anyone would rely on
               the bus for a commute.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
@@ -2208,7 +2208,7 @@
               </div>
               <div class="pps-ds-placeholder-sub">
                 <template v-if="airportsLookupFailed">
-                  We couldn't load nearby airports — please try again in a
+                  We couldn't load nearby airports - please try again in a
                   moment.
                 </template>
                 <template v-else>
@@ -2220,7 +2220,7 @@
 
             <p class="pps-ds-info-note">
               <b>Straight-line only.</b> Actual drive to the terminal is longer,
-              and airport noise varies with wind direction and time of day —
+              and airport noise varies with wind direction and time of day -
               worth checking flight-path maps if the address is close to a
               runway approach.
             </p>
@@ -2383,7 +2383,7 @@
               <h2 class="pps-fl-sec">Live status today</h2>
               <p class="pps-fl-secsub">
                 Real-time Environment Agency warnings for nearby watercourses.
-                This is a live snapshot — not a long-term risk measure.
+                This is a live snapshot - not a long-term risk measure.
               </p>
               <button
                 class="pps-fl-livehead"
@@ -2438,7 +2438,7 @@
               >
                 <div>
                   <div class="pps-fl-lname">Radon</div>
-                  <div class="pps-fl-lsub">UKHSA — not checked</div>
+                  <div class="pps-fl-lsub">UKHSA - not checked</div>
                 </div>
                 <span class="pps-fl-go">Look up →</span>
               </a>
@@ -2453,7 +2453,7 @@
                     Subsidence &amp; clay shrink-swell
                   </div>
                   <div class="pps-fl-lsub">
-                    British Geological Survey — not checked
+                    British Geological Survey - not checked
                   </div>
                 </div>
                 <span class="pps-fl-go">Look up →</span>
@@ -2466,7 +2466,7 @@
               >
                 <div>
                   <div class="pps-fl-lname">Ground stability</div>
-                  <div class="pps-fl-lsub">BGS GeoSure — not checked</div>
+                  <div class="pps-fl-lsub">BGS GeoSure - not checked</div>
                 </div>
                 <span class="pps-fl-go">Look up →</span>
               </a>
@@ -2482,7 +2482,7 @@
               >
                 <div>
                   <div class="pps-fl-lname">Air quality</div>
-                  <div class="pps-fl-lsub">DEFRA UK-AIR — not checked</div>
+                  <div class="pps-fl-lsub">DEFRA UK-AIR - not checked</div>
                 </div>
                 <span class="pps-fl-go">Look up →</span>
               </a>
@@ -2491,7 +2491,7 @@
             <p class="pps-ds-info-note">
               <b>Not a substitute for a full flood report.</b> Environment
               Agency mapping gives a statistical likelihood for an area, not a
-              prediction for an individual building — ground levels, defences
+              prediction for an individual building - ground levels, defences
               and property-level protection all vary within a postcode.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
@@ -2604,7 +2604,7 @@
                         {{
                           a.decisionDate
                             ? new Date(a.decisionDate).getFullYear()
-                            : '—'
+                            : '-'
                         }}
                       </span>
                     </div>
@@ -2661,7 +2661,7 @@
 
             <p class="pps-ds-info-note">
               <b>Not exhaustive.</b> Constraints come from the national Planning
-              Data platform. Applications are matched by UPRN — older paper
+              Data platform. Applications are matched by UPRN - older paper
               records held only by the local authority may be missing.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
@@ -2948,7 +2948,7 @@
 
             <p class="pps-ds-info-note">
               <b>Modelled at postcode level.</b> Ofcom figures may differ from
-              what an individual property gets — particularly on older copper
+              what an individual property gets - particularly on older copper
               lines where distance from the cabinet matters. Full fibre
               availability does not mean it is already installed at the
               property; installation may still be needed.
@@ -3111,7 +3111,7 @@
                 <span>{{
                   b.amount
                     ? '£' + (b.slice || 0).toLocaleString() + ' of your price'
-                    : '—'
+                    : '-'
                 }}</span>
               </div>
             </div>
@@ -3176,7 +3176,7 @@
                 </div>
                 <p class="pps-tr-sub">
                   Nearby listed buildings and scheduled monuments.
-                  <b>Designations affect what alterations you can make</b> —
+                  <b>Designations affect what alterations you can make</b> -
                   check with the local conservation officer before any exterior
                   work.
                 </p>
@@ -3226,7 +3226,7 @@
             <p class="pps-ds-info-note">
               <b>Heritage designations matter.</b> Being near a listed building
               doesn't affect this property directly, but if it or its neighbours
-              ARE listed, conservation rules apply — always check with the local
+              ARE listed, conservation rules apply - always check with the local
               conservation officer before any exterior work.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
@@ -3545,7 +3545,7 @@
               <div class="mkc-head-text">
                 <div class="mkc-head-title">Make contact</div>
                 <div class="mkc-head-sub">
-                  Drop a note to the owner — whether you're a neighbour with a
+                  Drop a note to the owner - whether you're a neighbour with a
                   question or a buyer making a quiet approach.
                 </div>
               </div>
@@ -3842,7 +3842,7 @@
                 This home hasn't claimed its Passport yet
               </div>
               <p class="pps-passport-sheet-empty">
-                A Passport is the verified record of this property — TA6 / TA7 /
+                A Passport is the verified record of this property - TA6 / TA7 /
                 TA10 forms, certificates, planning, alterations, services and
                 history. It stays with the address for life. Anyone who owns
                 this property can claim it.
@@ -3877,7 +3877,7 @@
                 style="background: #231d45"
                 @click="onClaimSheetCtaClick"
               >
-                Claim this property — it's free →
+                Claim this property - it's free →
               </button>
               <div
                 style="
@@ -3906,11 +3906,11 @@
                 Property Passport™
               </div>
               <div class="pps-explain-title">
-                Your home's permanent record — not just for selling, for owning.
+                Your home's permanent record - not just for selling, for owning.
               </div>
               <div class="pps-explain-body">
                 A Passport stays with this property for life. Build it now, keep
-                it updated, and when you do decide to sell — the hard work is
+                it updated, and when you do decide to sell - the hard work is
                 already done.
               </div>
             </div>
@@ -3922,11 +3922,11 @@
                 You wouldn't buy a £15,000 car without an HPI check, its MOT
                 history, and a service record. Yet every day people spend
                 £300,000, £400,000, £500,000 on a home with almost no verified
-                information at all. A Property Passport changes that —
+                information at all. A Property Passport changes that -
                 permanently.
               </div>
               <div class="pps-explain-callout-foot">
-                🏡 The biggest financial investment anyone makes — and it's done
+                🏡 The biggest financial investment anyone makes - and it's done
                 almost completely blind
               </div>
             </div>
@@ -3940,7 +3940,7 @@
                 A Passport isn't a transaction tool. It's property
                 infrastructure. Claim it now, add your gas certificate when it's
                 renewed, upload planning permission when you do the extension.
-                By the time you sell — in 5, 10, 20 years — everything is
+                By the time you sell - in 5, 10, 20 years - everything is
                 already there.
               </div>
             </div>
@@ -4007,7 +4007,7 @@
             </div>
 
             <div class="pps-explain-footer">
-              The way people buy homes is changing — and we're building that
+              The way people buy homes is changing - and we're building that
               future with government.
             </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Got it</button>
@@ -4025,7 +4025,7 @@
               </div>
               <div class="pps-explain-body">
                 A permanent verified record for this property. When it
-                publishes, you get instant access to everything — before you
+                publishes, you get instant access to everything - before you
                 even make an offer.
               </div>
             </div>
@@ -4035,7 +4035,7 @@
               </div>
               <div class="pps-explain-callout-body">
                 People fall in love with a house in 20 minutes, then spend an
-                average of 150 days hanging off a cliff — chasing solicitors,
+                average of 150 days hanging off a cliff - chasing solicitors,
                 waiting on documents that already exist somewhere. This Passport
                 collects all of that upfront, so by the time you make an offer,
                 the hard work is already done.
@@ -4047,7 +4047,7 @@
                   class="inline-ic"
                   loading="lazy"
                 />
-                Get notified the moment it publishes — be first in the door
+                Get notified the moment it publishes - be first in the door
               </div>
             </div>
 
@@ -4109,7 +4109,7 @@
             </div>
 
             <div class="pps-explain-footer">
-              The way people buy homes is changing — and we're building that
+              The way people buy homes is changing - and we're building that
               future with government.
             </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Got it</button>
@@ -4120,7 +4120,7 @@
             <div class="pps-explain-hero pps-explain-hero--published">
               <div class="pps-explain-eyebrow">Property Passport™</div>
               <div class="pps-explain-title">
-                The biggest purchase of your life — and you're doing it blind.
+                The biggest purchase of your life - and you're doing it blind.
               </div>
               <div class="pps-explain-body">
                 You wouldn't buy a £15,000 car without its service history. This
@@ -4134,7 +4134,7 @@
               </div>
               <div class="pps-explain-callout-body">
                 Conveyancing takes 150 days on average. Nearly half that time is
-                spent chasing documents that already exist somewhere — just not
+                spent chasing documents that already exist somewhere - just not
                 in one place. The Property Passport ends that. Everything
                 verified by the owner, ready before solicitors are even
                 instructed.
@@ -4153,7 +4153,7 @@
                 The environmental data, flood risk, and planning history in this
                 Passport applies to the whole street. Solicitors charge £300–500
                 for searches that get thrown away after every transaction. This
-                data stays — and you can use it even if you're interested in a
+                data stays - and you can use it even if you're interested in a
                 neighbouring property.
               </div>
             </div>
@@ -4271,7 +4271,7 @@
             </div>
 
             <div class="pps-explain-footer">
-              The way people buy homes is changing — and we're building that
+              The way people buy homes is changing - and we're building that
               future with government.
             </div>
             <button class="pps-sheet-cancel" @click="closeSheet">Got it</button>
@@ -4321,12 +4321,12 @@
               />
             </div>
             <div class="unpub-eyebrow">
-              <span style="color: #00a19a">●</span> Property Passport — In
+              <span style="color: #00a19a">●</span> Property Passport - In
               Progress
             </div>
             <h3 class="unpub-title">This home's Passport is being built</h3>
             <p class="unpub-body">
-              You're seeing public EPC data for now — we'll alert you when the
+              You're seeing public EPC data for now - we'll alert you when the
               full record is published.
             </p>
             <button class="unpub-cta" @click="openRegisterInterest">
@@ -4608,7 +4608,7 @@ const gaugeDesc = computed(() => {
   if (s >= 60)
     return 'Solid overall, with some areas where improvements could add value.'
   if (s >= 40)
-    return "Many homes at this rating have been improved to a B or C — see what's possible."
+    return "Many homes at this rating have been improved to a B or C - see what's possible."
   return "Significant improvements could transform this property's efficiency and value."
 })
 
@@ -4722,7 +4722,7 @@ const runningCosts = computed(() => {
 const hasRunningCosts = computed(() => runningCosts.value.total !== null)
 
 function formatCost(val: number | null): string {
-  if (val === null) return '—'
+  if (val === null) return '-'
   return new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: 'GBP',
@@ -4876,13 +4876,13 @@ const floodRiskDescription = computed(() => {
   if (r === 'Very Low')
     return 'Not in an Environment Agency flood warning area.'
   if (r === 'Low')
-    return 'Within an EA flood warning area — no active warnings. River or surface water flooding possible in extreme events.'
+    return 'Within an EA flood warning area - no active warnings. River or surface water flooding possible in extreme events.'
   if (r === 'Medium')
     return 'Flood alert active nearby. Some risk of flooding from rivers or sea.'
   if (r === 'High')
     return 'Flood warning issued nearby. Flooding of homes and businesses is expected.'
   if (r === 'Severe')
-    return 'Severe flood warning — danger to life. Immediate action required.'
+    return 'Severe flood warning - danger to life. Immediate action required.'
   return 'Source: Environment Agency flood monitoring.'
 })
 
@@ -5399,7 +5399,7 @@ const scoreDesc = computed<string>(() => {
     return 'Refined by the owner. Tap to explore the full Passport.'
   }
   if (pageState.value === 'progress') {
-    return 'Owner is building a verified Passport — this score will sharpen as data lands.'
+    return 'Owner is building a verified Passport - this score will sharpen as data lands.'
   }
   return 'Score from public EPC data. Owner can run a full HomeScore for a verified picture.'
 })
@@ -5545,12 +5545,12 @@ const passportFeatures = computed(() => {
       verified: !!p?.titleNumber,
     },
     {
-      title: 'TA6 — Property Information',
+      title: 'TA6 - Property Information',
       sub: 'Boundaries, disputes, utilities',
       verified: false,
     },
     {
-      title: 'TA10 — Fittings & Contents',
+      title: 'TA10 - Fittings & Contents',
       sub: "What's included in the sale",
       verified: false,
     },
@@ -5561,7 +5561,7 @@ const passportFeatures = computed(() => {
       verified: false,
     },
     {
-      title: 'TA7 — Leasehold Information',
+      title: 'TA7 - Leasehold Information',
       sub: 'Service charges, lease terms',
       verified: false,
     },
@@ -5596,11 +5596,11 @@ const passportVerifiedItems = computed(() => {
       bg: '#e6f7f6',
     },
     'Title Plan': { icon: '🗺️', bg: '#e6f7f6' },
-    'TA6 — Property Information': {
+    'TA6 - Property Information': {
       icon: '/op-icons/homescore/clipboard.png',
       bg: '#fff3e0',
     },
-    'TA10 — Fittings & Contents': {
+    'TA10 - Fittings & Contents': {
       icon: '/op-icons/misc/wrench.png',
       bg: '#fff3e0',
     },
@@ -5612,7 +5612,7 @@ const passportVerifiedItems = computed(() => {
       icon: '/op-icons/homescore/lightning.png',
       bg: '#e6f7f6',
     },
-    'TA7 — Leasehold Information': {
+    'TA7 - Leasehold Information': {
       icon: '/op-icons/passportview/titleDeedsAndPlan.png',
       bg: '#f3e5f5',
     },
@@ -5641,7 +5641,7 @@ const exploreTiles = computed(() => {
     ? `EPC ${p.epcRating}${p.epcScore ? ` · ${p.epcScore}` : ''}`
     : p.propertyType
     ? p.propertyType
-    : '—'
+    : '-'
   const detailsSub = p.uprn
     ? `UPRN ${p.uprn}`
     : p.propertyType && p.epcRating
@@ -5699,7 +5699,7 @@ const exploreTiles = computed(() => {
       )}k median`
     : p.postcode
     ? p.postcode.split(' ')[0]
-    : '—'
+    : '-'
   const streetSub = nearbyPrices.length
     ? `${nearbyPrices.length} nearby sale${
         nearbyPrices.length === 1 ? '' : 's'
@@ -5761,7 +5761,7 @@ const exploreTiles = computed(() => {
       : enrichmentPending
       ? 'Loading nearest stations'
       : tFailed
-      ? 'Couldn’t load right now — tap to retry'
+      ? 'Couldn’t load right now - tap to retry'
       : 'No stations found nearby',
   })
   // Bus stops
@@ -5784,7 +5784,7 @@ const exploreTiles = computed(() => {
       : enrichmentPending
       ? 'Loading nearest stops'
       : tFailed
-      ? 'Couldn’t load right now — tap to retry'
+      ? 'Couldn’t load right now - tap to retry'
       : 'No stops found within 700 m',
   })
   // Airports — independent failure flag
@@ -5807,7 +5807,7 @@ const exploreTiles = computed(() => {
       : enrichmentPending
       ? 'Loading nearest airports'
       : aFailed
-      ? 'Couldn’t load right now — tap to retry'
+      ? 'Couldn’t load right now - tap to retry'
       : 'No airports within 150 km',
   })
   // Location & map
@@ -5817,7 +5817,7 @@ const exploreTiles = computed(() => {
     iconBg: '#E8F5E9',
     iconImage: '/op-icons/property/locationAndMap.jpeg',
     title: 'Location & map',
-    value: p.postcode || '—',
+    value: p.postcode || '-',
     sub: p.city || 'View on map',
   })
   // Flood risk — always show, prefer live enrichment value
@@ -5857,7 +5857,7 @@ const exploreTiles = computed(() => {
       iconImage: '/op-icons/property/planning.jpeg',
       title: 'Planning',
       pip: count > 0 ? null : 'New',
-      value: count > 0 ? `${count} on file` : '—',
+      value: count > 0 ? `${count} on file` : '-',
       sub:
         constraints.length > 0
           ? `${constraints.length} constraint${
@@ -5999,7 +5999,7 @@ async function onSaveToggle() {
   }
   if (result === 'error') {
     showToast({
-      message: 'Something went wrong — please try again',
+      message: 'Something went wrong - please try again',
       duration: 2000,
     })
     return
@@ -6027,7 +6027,7 @@ async function onWishlistToggle() {
   }
   if (result === 'error') {
     showToast({
-      message: 'Something went wrong — please try again',
+      message: 'Something went wrong - please try again',
       duration: 2000,
     })
     return
@@ -6300,7 +6300,7 @@ const floatClaimSub = computed<string>(() => {
   if (floatClaimState.value === 'private') {
     return "There isn't a published Property Passport available for this home right now."
   }
-  return "Create your Property Passport to store and verify your home's information — and choose what you share"
+  return "Create your Property Passport to store and verify your home's information - and choose what you share"
 })
 // Second, highlighted line under floatClaimSub — matches the prototype's
 // extra teal/bold line for each non-unclaimed state (unclaimed's card has
@@ -6621,7 +6621,7 @@ const sdAlert = computed<{ title: string; body: string } | null>(() => {
   if (sdType.value === 'first' && price > 600000 && price <= 625000) {
     return {
       title: "You're close to the £625,000 cliff edge.",
-      body: 'One pound over and first-time relief disappears entirely — the bill jumps sharply for a small increase in price.',
+      body: 'One pound over and first-time relief disappears entirely - the bill jumps sharply for a small increase in price.',
     }
   }
   if (sdType.value === 'additional' && price >= 40000) {
@@ -6745,7 +6745,7 @@ const floodOverall = computed(() => {
   if (!raw) {
     return {
       label: 'Not yet checked',
-      sub: "We haven't been able to retrieve an Environment Agency classification for this address. Nothing here should be read as a low risk — it simply hasn't been checked.",
+      sub: "We haven't been able to retrieve an Environment Agency classification for this address. Nothing here should be read as a low risk - it simply hasn't been checked.",
       stamp,
     }
   }
@@ -6824,7 +6824,7 @@ const floodRows = computed(() => {
           riversS === 'High'
             ? '<b>Get a flood report before you offer.</b> Expect insurers to ask for a Flood Re declaration and some lenders to require a specialist survey. Ask the seller whether the property has flooded and whether a claim was made.'
             : riversS === 'Medium'
-            ? 'Check whether the property has property-level protection fitted — flood doors, airbrick covers, non-return valves. <b>These reduce premiums materially.</b>'
+            ? 'Check whether the property has property-level protection fitted - flood doors, airbrick covers, non-return valves. <b>These reduce premiums materially.</b>'
             : riversS === 'Low' || riversS === 'Very low'
             ? nearest
               ? `Nearest watercourse: <b>${nearest}</b>. Distance and elevation both matter more than the postcode-level rating.`
@@ -7111,7 +7111,7 @@ const CRIME_NOTES: Record<string, string> = {
   'public-order':
     'Disturbances and harassment reports, weighted to weekend evenings.',
   'anti-social-behaviour':
-    'Under-reported nationally — treat the count as a floor rather than a total.',
+    'Under-reported nationally - treat the count as a floor rather than a total.',
   'other-crime':
     'Offences that do not fit the standard Home Office categories.',
   robbery:
@@ -7123,12 +7123,12 @@ const CRIME_NOTES: Record<string, string> = {
   'possession-of-weapons':
     'Includes carrying prohibited items in public. Rare in absolute terms.',
   'theft-from-the-person':
-    'Pickpocketing and similar — concentrated in busy public spaces.',
+    'Pickpocketing and similar - concentrated in busy public spaces.',
 }
 function crimeNoteFor(category: string): string {
   return (
     CRIME_NOTES[category] ??
-    'A relative indicator only — reporting rates vary and small absolute numbers can shift the ranking materially.'
+    'A relative indicator only - reporting rates vary and small absolute numbers can shift the ranking materially.'
   )
 }
 
@@ -7419,12 +7419,12 @@ const contactReplyChoices: Array<{
 const contactPlaceholder = computed(() => {
   switch (contactRole.value) {
     case 'Neighbour':
-      return "Hi — I'm at number 23. Just wanted to introduce myself / mention the front hedge / ask if you'd consider repainting the shared fence."
+      return "Hi - I'm at number 23. Just wanted to introduce myself / mention the front hedge / ask if you'd consider repainting the shared fence."
     case 'Agent':
-      return "Hi — I represent buyers looking on this road. I'd be happy to have a no-pressure conversation about a future sale."
+      return "Hi - I represent buyers looking on this road. I'd be happy to have a no-pressure conversation about a future sale."
     case 'Potential buyer':
     default:
-      return "Hi — I've been following this road for a while and would love to know if you'd ever consider selling. No pressure at all."
+      return "Hi - I've been following this road for a while and would love to know if you'd ever consider selling. No pressure at all."
   }
 })
 
@@ -7487,18 +7487,18 @@ async function submitWatch() {
       },
     )
     if (!res.ok) {
-      watchError.value = "Couldn't save right now — please try again."
+      watchError.value = "Couldn't save right now - please try again."
       return
     }
     closeSheet()
     showToast({
-      message: "Saved — we'll keep you posted",
+      message: "Saved - we'll keep you posted",
       icon: '/op-icons/misc/bell.png',
     })
     watchName.value = ''
     watchEmail.value = ''
   } catch {
-    watchError.value = 'Network error — please try again.'
+    watchError.value = 'Network error - please try again.'
   } finally {
     watchSubmitting.value = false
   }
@@ -7561,7 +7561,7 @@ async function submitOwnerContact() {
     contactMessage.value = ''
     showToast({ message: 'Message sent to the owner', iconEmoji: '✉️' })
   } catch {
-    contactError.value = 'Network error — please try again.'
+    contactError.value = 'Network error - please try again.'
   } finally {
     contactSubmitting.value = false
   }
@@ -7621,7 +7621,7 @@ const broadbandPlaceholder = computed<{ title: string; sub: string }>(() => {
   if (reason === 'not_found' || reason === 'no_premises') {
     return {
       title: 'No coverage on file for this postcode',
-      sub: 'Ofcom has no entries for this postcode yet — check their official checker below.',
+      sub: 'Ofcom has no entries for this postcode yet - check their official checker below.',
     }
   }
   return {
@@ -7746,7 +7746,7 @@ const broadbandBig = computed(() => {
   let sub = ''
   if (bb?.fttp) {
     sub =
-      '<b>Full fibre (FTTP)</b> is available here — a direct fibre connection to the property.'
+      '<b>Full fibre (FTTP)</b> is available here - a direct fibre connection to the property.'
   } else if (bb?.cable) {
     sub = '<b>Cable</b> is available here from Virgin Media (DOCSIS).'
   } else if (bb?.ultrafast) {
@@ -7756,7 +7756,7 @@ const broadbandBig = computed(() => {
   } else if (bb?.fttc) {
     sub = 'The fastest option is <b>a copper line from the street cabinet</b>.'
   } else {
-    sub = 'Standard broadband is listed — an upgrade may be possible.'
+    sub = 'Standard broadband is listed - an upgrade may be possible.'
   }
   return { value, unit, sub, pos }
 })
@@ -7835,7 +7835,7 @@ const broadbandImpact = computed<string[]>(() => {
     )
     if (bb.fttp) {
       out.push(
-        'Full fibre is <b>symmetric on some packages</b> — relevant if anyone uploads large files or runs a home server.',
+        'Full fibre is <b>symmetric on some packages</b> - relevant if anyone uploads large files or runs a home server.',
       )
     }
     out.push(
@@ -7843,7 +7843,7 @@ const broadbandImpact = computed<string[]>(() => {
     )
   } else if (speed >= 60) {
     out.push(
-      '<b>Handles most households comfortably</b> — one 4K stream plus HD calls should be fine.',
+      '<b>Handles most households comfortably</b> - one 4K stream plus HD calls should be fine.',
     )
     out.push('Not gigabit but rarely a bottleneck for day-to-day use.')
   } else if (speed >= 30) {
@@ -7858,7 +7858,7 @@ const broadbandImpact = computed<string[]>(() => {
       '<b>Standard broadband only.</b> Streaming and video calls will be limited.',
     )
     out.push(
-      'Ask the seller what they actually get, and <b>check whether a fibre build is planned</b> — altnets often publish rollout maps.',
+      'Ask the seller what they actually get, and <b>check whether a fibre build is planned</b> - altnets often publish rollout maps.',
     )
   }
   return out
@@ -8471,7 +8471,7 @@ function handleClaimed(passportId: string) {
 }
 
 function formatSaleDate(dateStr: string): string {
-  if (!dateStr) return '—'
+  if (!dateStr) return '-'
   const d = new Date(dateStr)
   return d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
 }
@@ -8666,7 +8666,7 @@ function formatSaleDate(dateStr: string): string {
 .pps-hero-photo {
   position: relative;
   flex: 0 0 40%;
-  /* No aspect-ratio — stretches (align-items:stretch above) to match
+  /* No aspect-ratio - stretches (align-items:stretch above) to match
      the identity column's full height, including the floating claim
      card nested at the bottom of it, so the photo always covers the
      hero card's full height rather than being a fixed-ratio box that
@@ -8713,14 +8713,14 @@ function formatSaleDate(dateStr: string): string {
   margin-top: 10px;
   display: inline-flex;
 }
-/* Colour-inverted variant for the price pill/state badge — used inline
+/* Colour-inverted variant for the price pill/state badge - used inline
    with the address title, not as a photo overlay. */
-/* Two-row badge — "Passport" caption on top, state word below — so it
+/* Two-row badge - "Passport" caption on top, state word below - so it
    reads as "the PASSPORT is private", never "the property is private".
    See plans/passport-status-wording-clarity.md. */
 .pps-badge-passport {
   /* Unified dark-navy/white treatment for every state, per client
-     feedback — replaces the earlier per-state teal/amber/purple palette
+     feedback - replaces the earlier per-state teal/amber/purple palette
      (kept as dead modifier classes below in case that's revisited). */
   flex-shrink: 0;
   background: #231d45;
@@ -8894,12 +8894,12 @@ function formatSaleDate(dateStr: string): string {
 
 /* ─── Floating claim box ────────────────────────────────────────
    Normal-flow block inside the identity column, right after the
-   Watch/Ask buttons — its vertical position is purely content-driven
+   Watch/Ask buttons - its vertical position is purely content-driven
    (no gap-guessing tied to a fixed photo height, which broke for
    shorter addresses). Widened past the identity column via a negative
    left margin so it still overlaps the photo on the left, matching the
    prototype. Two rows internally (icon+text on top, button+price
-   below, both full box width) rather than one row with 3 flex items —
+   below, both full box width) rather than one row with 3 flex items -
    on real (~360-400px) phone widths a single row left too little space
    for the text column and collapsed into unreadable word-by-word
    wrapping. */
@@ -8949,7 +8949,7 @@ function formatSaleDate(dateStr: string): string {
   filter: drop-shadow(0 6px 10px rgba(35, 29, 69, 0.2));
 }
 /* Small circular completion gauge pinned to the top-right corner of the
-   passport cover, per the prototype — a conic-gradient ring (no SVG
+   passport cover, per the prototype - a conic-gradient ring (no SVG
    needed) driven by the same --pct custom property the template sets
    from progressPct. */
 .pps-float-claim-gauge {
@@ -9073,7 +9073,7 @@ function formatSaleDate(dateStr: string): string {
 .pps-score-card--clickable {
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  /* Ambient "you can tap this" glow — hover alone says nothing on a
+  /* Ambient "you can tap this" glow - hover alone says nothing on a
      touch device, so the card needs to signal it's interactive on its
      own. Slow and gentle since it runs continuously. */
   animation: ppsScoreGlow 2.6s ease-in-out infinite;
@@ -9089,7 +9089,7 @@ function formatSaleDate(dateStr: string): string {
 @media (prefers-reduced-motion: reduce) {
   .pps-score-card--clickable { animation: none; }
 }
-/* Gentle "tap for more" nudge — the card has no hover state on touch, so
+/* Gentle "tap for more" nudge - the card has no hover state on touch, so
    without this there was nothing telling a mobile visitor it links
    through to the full HomeScore. Small and slow on purpose: a persistent
    badge on a card people may sit and read for a while shouldn't nag. */
@@ -9337,7 +9337,7 @@ function formatSaleDate(dateStr: string): string {
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
-  /* Same ambient tap affordance as the HomeScore card above — these
+  /* Same ambient tap affordance as the HomeScore card above - these
      tiles have no hover state on a touch device either. */
   animation: ppsTileGlow 3s ease-in-out infinite;
 }
@@ -9459,7 +9459,7 @@ function formatSaleDate(dateStr: string): string {
   flex-direction: column;
   text-align: left;
 }
-/* Icon + title/description row — the button below sits as its own
+/* Icon + title/description row - the button below sits as its own
    full-width row, so centering it centers under the icon+text
    together, not just under the text column. */
 .pps-keepgoing-card-top {
@@ -9887,7 +9887,7 @@ function formatSaleDate(dateStr: string): string {
 /* ── Property Details bottom-sheet content ──────────────────────
    Rendered inside the shared .pps-sheet container when the
    'property-details' explore tile is tapped. Rows follow the same
-   pattern as ProfileRow — icon + label/value stack — so the sheet
+   pattern as ProfileRow - icon + label/value stack - so the sheet
    feels familiar. */
 .pps-pd-list {
   display: flex;
@@ -10044,7 +10044,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   BOTTOM SHEETS — single overlay, swaps body by activeSheet
+   BOTTOM SHEETS - single overlay, swaps body by activeSheet
    ════════════════════════════════════════════════════════════════ */
 .pps-sheet-overlay {
   position: fixed;
@@ -10861,7 +10861,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   position: relative;
   height: 10px;
   border-radius: 99px;
-  /* Cool → warm gradient — teal (quiet) through amber to rose (busy).
+  /* Cool → warm gradient - teal (quiet) through amber to rose (busy).
      Matches the reference exactly. */
   background: linear-gradient(
     90deg,
@@ -12305,11 +12305,11 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   padding: 16px 18px;
   margin-bottom: 16px;
 }
-/* Unclaimed: neutral grey gradient — no need to imply value already there */
+/* Unclaimed: neutral grey gradient - no need to imply value already there */
 .pps-passport-sheet-header--unclaimed {
   background: linear-gradient(135deg, #f6f5fb 0%, #eeedf5 100%);
 }
-/* Progress: teal gradient — Passport is actively being built */
+/* Progress: teal gradient - Passport is actively being built */
 .pps-passport-sheet-header--progress {
   background: linear-gradient(135deg, #e6f7f6 0%, #b2e4e1 100%);
 }
@@ -12521,7 +12521,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 600;
 }
 
-/* New explain components — lifetime callout, search-reuse callout, steps, checklist, progress, footer */
+/* New explain components - lifetime callout, search-reuse callout, steps, checklist, progress, footer */
 .pps-explain-callout--lifetime {
   background: #f0f0ff;
   border-left-color: #5b52a0;
@@ -12815,7 +12815,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 
 /* Chip rows (role + reply preference). This row is reused for two
    different label sets ("Potential buyer"/"Neighbour"/"Agent" and
-   "Email"/"Phone"/"Either") — a 1.7fr-weighted first column tuned for
+   "Email"/"Phone"/"Either") - a 1.7fr-weighted first column tuned for
    one set's longest label just squeezed the OTHER set's longest label
    (e.g. "Neighbour" in a 1fr column) into overflow, and made same-length
    labels in the other row render at visibly different widths. Equal
@@ -12861,7 +12861,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   flex-shrink: 0;
   transition: background 0.18s;
 }
-/* Full-colour 3D PNGs now — no currentColor recolour, just size them
+/* Full-colour 3D PNGs now - no currentColor recolour, just size them
    to fill the chip's icon slot. */
 .mkc-chip-ic img {
   width: 22px;

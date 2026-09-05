@@ -98,17 +98,17 @@ const aspectRatio = computed(() => ASPECT_RATIOS[props.type] ?? ASPECT_RATIOS.SE
   width: 100%;
   max-width: 360px;
   /* Only takes effect when a page constrains width alone (e.g. the
-     dashboard's 92px auto-height slot) — aspect-ratio is what gives the
+     dashboard's 92px auto-height slot) - aspect-ratio is what gives the
      container a height in that case. Pages that instead give this a fixed
      width AND height (a hero book, a grid cell) make both dimensions
-     already-definite, so this is simply ignored there — .passport-frame's
+     already-definite, so this is simply ignored there - .passport-frame's
      own aspect-ratio is what matters in that case. */
   aspect-ratio: v-bind(aspectRatio);
 }
 
 .passport-frame {
   /* The book, at its true shape, centered within .passport-container no
-     matter what shape that container ends up being — the standard
+     matter what shape that container ends up being - the standard
      "letterboxed content" recipe: absolutely positioned, inset 0, auto
      margins, and its own aspect-ratio capped by max-width/max-height. */
   position: absolute;
@@ -118,7 +118,7 @@ const aspectRatio = computed(() => ASPECT_RATIOS[props.type] ?? ASPECT_RATIOS.SE
   max-width: 100%;
   max-height: 100%;
   /* Become a size container so the address text below scales with the
-     book's own rendered width (cqi = 1% of container's inline size) —
+     book's own rendered width (cqi = 1% of container's inline size) -
      tied to the true book width, not whatever shape the outer wrapper is. */
   container-type: inline-size;
 }
@@ -187,7 +187,7 @@ const aspectRatio = computed(() => ASPECT_RATIOS[props.type] ?? ASPECT_RATIOS.SE
 
 .passport-address {
   /* Empirically placed against the cover art's blank zone below the house
-     icon and above the corner camera glyph — verified against all three
+     icon and above the corner camera glyph - verified against all three
      covers (seller/landlord/buyer share the same layout, just recolored).
      Only meaningful now that .passport-frame guarantees this sits over the
      undistorted book at its true aspect ratio; the old 31% value was
@@ -237,7 +237,7 @@ const aspectRatio = computed(() => ASPECT_RATIOS[props.type] ?? ASPECT_RATIOS.SE
 }
 
 /* Browsers without container-query support fall back to a small fixed
-   size — not perfect, but never broken. */
+   size - not perfect, but never broken. */
 @supports not (container-type: inline-size) {
   .address-line {
     font-size: 11px;

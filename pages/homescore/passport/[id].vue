@@ -210,17 +210,7 @@
         <div class="bpp-tile-title">{{ t.title }}</div>
         <div class="bpp-tile-sub">{{ t.sub }}</div>
         <span class="bpp-tile-lock" aria-hidden="true">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="3" y="11" width="18" height="11" rx="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
+          <img src="/op-icons/claim/padlock.png" alt="" class="bpp-tile-lock-img" loading="lazy" />
         </span>
       </div>
     </div>
@@ -999,13 +989,11 @@ function goAuth(mode: 'signin' | 'signup') {
   justify-content: center;
   width: 26px;
   height: 26px;
-  border-radius: 50%;
-  background: #5b3795;
-  color: #fff;
 }
-.bpp-tile-lock svg {
-  width: 12px;
-  height: 12px;
+.bpp-tile-lock-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .bpp-note {
@@ -1224,7 +1212,7 @@ function goAuth(mode: 'signin' | 'signup') {
   color: var(--accent-dark);
 }
 
-/* Auth-required popup — mirrors PassportClaimBox.vue's authd-* prompt */
+/* Auth-required popup - mirrors PassportClaimBox.vue's authd-* prompt */
 .authd-overlay {
   position: fixed;
   inset: 0;

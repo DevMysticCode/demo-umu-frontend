@@ -250,20 +250,20 @@ onBeforeUnmount(() => cancelAnimationFrame(raf))
 
 // ── Label helpers ──
 function idTypeLabel(t: string | null | undefined) {
-  if (!t) return '—'
+  if (!t) return '-'
   return ({ passport: 'Passport', drivingLicence: 'Driving licence', nationalId: 'Biometric Residence Permit' } as any)[t] || t
 }
 function fundsTypeLabel(t: string | null | undefined) {
-  return ({ mortgage: 'Mortgage', cash: 'Cash buyer', help: 'Help to Buy' } as any)[t || ''] || '—'
+  return ({ mortgage: 'Mortgage', cash: 'Cash buyer', help: 'Help to Buy' } as any)[t || ''] || '-'
 }
 function chainLabel(t: string | null | undefined) {
-  return ({ ftb: 'First-time buyer', selling: 'Property to sell', sold: 'Already sold', renting: 'Renting' } as any)[t || ''] || '—'
+  return ({ ftb: 'First-time buyer', selling: 'Property to sell', sold: 'Already sold', renting: 'Renting' } as any)[t || ''] || '-'
 }
 function timelineLabel(t: string | null | undefined) {
-  return ({ asap: 'Ready now', '3m': '1–3 months', '6m': '3–6 months', flex: 'Flexible' } as any)[t || ''] || '—'
+  return ({ asap: 'Ready now', '3m': '1–3 months', '6m': '3–6 months', flex: 'Flexible' } as any)[t || ''] || '-'
 }
 function solicitorLabel(t: string | null | undefined) {
-  return ({ yes: 'Instructed', looking: 'Looking', notsure: 'Not yet sure' } as any)[t || ''] || '—'
+  return ({ yes: 'Instructed', looking: 'Looking', notsure: 'Not yet sure' } as any)[t || ''] || '-'
 }
 function formatDate(iso: string | null | undefined) {
   if (!iso) return ''

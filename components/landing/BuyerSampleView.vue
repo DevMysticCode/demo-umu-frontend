@@ -131,7 +131,7 @@
         <div class="buyer-pdf-info">
           <p class="buyer-pdf-title">Full Property Report</p>
           <p class="buyer-pdf-sub">
-            All questions &amp; answers — share with solicitors
+            All questions &amp; answers - share with solicitors
           </p>
         </div>
         <button class="buyer-pdf-btn" type="button">
@@ -149,7 +149,7 @@
         <div class="buyer-pdf-info">
           <p class="buyer-pdf-title">TA6 Property Information Form</p>
           <p class="buyer-pdf-sub">
-            Law Society 6th edition — pre-filled with passport data
+            Law Society 6th edition - pre-filled with passport data
           </p>
         </div>
         <button class="buyer-pdf-btn buyer-ta6-btn" type="button">
@@ -166,7 +166,7 @@
         <div class="buyer-pdf-info">
           <p class="buyer-pdf-title">TA10 Fixtures &amp; Fittings Form</p>
           <p class="buyer-pdf-sub">
-            What stays, what goes — pre-filled from seller's passport
+            What stays, what goes - pre-filled from seller's passport
           </p>
         </div>
         <button class="buyer-pdf-btn buyer-ta10-btn" type="button">
@@ -309,7 +309,7 @@ const sections = [
   color: #231d45;
 }
 
-/* ── Premium hero card — passport book + identity + stats strip ── */
+/* ── Premium hero card - passport book + identity + stats strip ── */
 .buyer-hero-card {
   position: relative;
   display: flex;
@@ -335,7 +335,7 @@ const sections = [
 }
 .buyer-hero-book {
   /* PassportCard's address text has a font-size floor (clamp min) that
-     doesn't shrink further to fit a smaller container — at 84x110 the
+     doesn't shrink further to fit a smaller container - at 84x110 the
      two-line address routinely crowded the card's edges. Matched to the
      seller sample's 104x140 (pp-hero-book in SellerSampleView.vue) so
      the same text gets the room it was actually designed for. */
@@ -830,7 +830,7 @@ const sections = [
   line-height: 1.5;
 }
 
-/* "+ N more sections" footer hint — sample only */
+/* "+ N more sections" footer hint - sample only */
 .sec-more {
   margin-top: 4px;
   padding: 14px 16px;

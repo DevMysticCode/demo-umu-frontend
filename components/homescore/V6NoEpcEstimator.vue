@@ -258,7 +258,7 @@ interface Question {
   w: number           // weight
   opts: Opt[]
 }
-const U = "Not sure — use typical for this home's age"
+const U = "Not sure - use typical for this home's age"
 const QS: Question[] = [
   { s: '🏠 Property basics', t: 'What type of property is it?', cat: 'structure', w: 1, opts: [
     ['Detached house', '🏡', 0.5],
@@ -286,8 +286,8 @@ const QS: Question[] = [
   ] },
   { s: '🏠 Property basics', t: 'Any extensions?', cat: 'structure', w: 1, opts: [
     ['No extensions', '', 0.7],
-    ['Yes — built after 2000', '', 0.8],
-    ['Yes — older extension', '', 0.5],
+    ['Yes - built after 2000', '', 0.8],
+    ['Yes - older extension', '', 0.5],
     [U, '🤷', 0.6, 1],
   ] },
   { s: '🧱 Walls, roof & floor', t: 'What are the external walls?', sub: 'Tip: bricks in an alternating long/short pattern usually means solid walls.', cat: 'structure', w: 5, opts: [
@@ -298,7 +298,7 @@ const QS: Question[] = [
     [U, '🤷', 0.45, 1],
   ] },
   { s: '🧱 Walls, roof & floor', t: 'Have the walls been insulated?', cat: 'structure', w: 4, opts: [
-    ['Yes — cavity or solid-wall insulation', '✅', 0.9],
+    ['Yes - cavity or solid-wall insulation', '✅', 0.9],
     ['No', '❌', 0.3],
     ['No cavity to fill (solid walls)', '', 0.2],
     [U, '🤷', 0.5, 1],
@@ -313,8 +313,8 @@ const QS: Question[] = [
   ] },
   { s: '🧱 Walls, roof & floor', t: 'Is there a loft conversion?', cat: 'structure', w: 1, opts: [
     ['No conversion', '', 0.7],
-    ['Yes — insulated when converted', '✅', 0.8],
-    ['Yes — not insulated', '❌', 0.3],
+    ['Yes - insulated when converted', '✅', 0.8],
+    ['Yes - not insulated', '❌', 0.3],
     [U, '🤷', 0.55, 1],
   ] },
   { s: '🧱 Walls, roof & floor', t: "What's under the ground floor?", cat: 'structure', w: 2, opts: [
@@ -362,7 +362,7 @@ const QS: Question[] = [
     [U, '🤷', 0.5, 1],
   ] },
   { s: '🔥 Heating & hot water', t: 'How is hot water heated?', cat: 'plumbing', w: 20, opts: [
-    ['Combi boiler — no cylinder', '🚿', 0.85],
+    ['Combi boiler - no cylinder', '🚿', 0.85],
     ['Cylinder with factory foam insulation', '', 0.7],
     ['Cylinder with a loose jacket', '', 0.55],
     ['Cylinder, uninsulated', '❌', 0.25],
@@ -494,7 +494,7 @@ const livePillText = computed(() => {
   const hi = band(est.lo)
   const rangeTxt = lo === hi ? `likely ${lo}` : `${lo}–${hi}`
   const anyAnswered = answers.value.some((a) => a !== null)
-  if (!anyAnswered) return 'Current estimate: —'
+  if (!anyAnswered) return 'Current estimate: -'
   return `Current estimate: ${est.lo}–${est.hi} · ${rangeTxt}`
 })
 
@@ -575,7 +575,7 @@ const resultNote = computed(() => {
   const unsurePart = unsure
     ? `${unsure} answer${unsure > 1 ? 's' : ''} used age-typical defaults; confirming them tightens the range. `
     : ''
-  return `Estimated from <b>your answers today</b> — no EPC exists for this property. ${unsurePart}Book an accredited assessment to make it official.`
+  return `Estimated from <b>your answers today</b> - no EPC exists for this property. ${unsurePart}Book an accredited assessment to make it official.`
 })
 
 const estBills = computed(() =>

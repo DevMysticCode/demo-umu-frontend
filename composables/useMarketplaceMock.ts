@@ -262,7 +262,7 @@ export function useMarketplaceMock() {
       name: 'BetterHome Insulation',
       initial: 'B',
       gradient: ['#4A7FBF', '#2D5A8E'],
-      preview: "Hi Maxine — we've checked ECO4 eligibility, you qualify…",
+      preview: "Hi Maxine - we've checked ECO4 eligibility, you qualify…",
       time: '2h',
       unread: true,
       jobTitle: 'Cavity wall insulation',
@@ -281,7 +281,7 @@ export function useMarketplaceMock() {
       name: "Martin's Plumbing",
       initial: 'M',
       gradient: ['#00B8B0', '#008A84'],
-      preview: 'Quote sent — £4,200 inc VAT. Valid 28 days.',
+      preview: 'Quote sent - £4,200 inc VAT. Valid 28 days.',
       time: '3d',
     },
   ]
@@ -301,7 +301,7 @@ export function useMarketplaceMock() {
     { rank: 1, medal: '🥇', name: 'No. 7 · A · 92', pts: 920 },
     { rank: 2, medal: '🥈', name: 'No. 13 · B · 84', pts: 810 },
     { rank: 3, medal: '🥉', name: 'No. 4 · C · 76', pts: 680 },
-    { rank: 8, medal: '✦', name: 'No. 15 — You', pts: 240, isYou: true },
+    { rank: 8, medal: '✦', name: 'No. 15 - You', pts: 240, isYou: true },
   ]
 
   function getSupplier(id: string): MockSupplier | undefined {

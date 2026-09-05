@@ -82,7 +82,7 @@
           <b>Photos are your protection.</b>
           Take clear shots of every area and angle so the whole room is fully
           covered. If the finished work is ever disputed, these are the
-          evidence used to resolve it — so take as many as you can.
+          evidence used to resolve it - so take as many as you can.
         </div>
       </div>
 
@@ -185,7 +185,7 @@ import { computed, ref } from 'vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 import type { MarketplaceContract } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Job contract — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Job contract - Marketplace', middleware: 'auth' })
 
 const route = useRoute()
 const router = useRouter()
@@ -254,7 +254,7 @@ const timelineSteps = computed(() => {
       'Payment authorised',
       p.heldAt
         ? `${formatMoney(p.total)} charged & held in UProtect escrow · ${formatDate(p.heldAt)}`
-        : `${formatMoney(p.total)} pending — awaiting confirmation`,
+        : `${formatMoney(p.total)} pending - awaiting confirmation`,
       p.status === 'pending' ? 'active' : 'done',
     ),
     step(
@@ -349,7 +349,7 @@ async function onRelease() {
       payment: { ...contract.value.payment, ...updated },
       job: { ...contract.value.job, status: 'completed' },
     }
-    showToast({ message: 'Funds released — job complete', iconEmoji: '✅' })
+    showToast({ message: 'Funds released - job complete', iconEmoji: '✅' })
   } catch (err: any) {
     releaseError.value = err?.data?.message ?? 'Could not release funds.'
   } finally {

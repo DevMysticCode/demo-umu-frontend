@@ -545,7 +545,7 @@ const handleCurrencyBlur = (event) => {
   margin-bottom: 20px;
 }
 
-/* External Link — pill style matching Figma */
+/* External Link - pill style matching Figma */
 .external-link {
   display: flex;
   align-items: center;

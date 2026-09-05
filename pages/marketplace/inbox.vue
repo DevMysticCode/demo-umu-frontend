@@ -49,7 +49,7 @@
               · {{ t.jobTitle }}
             </div>
             <div class="ib-preview">
-              {{ t.lastMessageBody || 'No messages yet — say hi.' }}
+              {{ t.lastMessageBody || 'No messages yet - say hi.' }}
             </div>
           </div>
           <div v-if="t.unreadCount > 0" class="ib-badge">{{ t.unreadCount }}</div>
@@ -66,7 +66,7 @@
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 import type { MarketplaceThreadListItem } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Inbox — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Inbox - Marketplace', middleware: 'auth' })
 
 const router = useRouter()
 const { fetchThreads } = useMarketplace()

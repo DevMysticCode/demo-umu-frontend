@@ -101,7 +101,7 @@
             <div class="pp-hero-dash-issued pp-hero-dash-issued--ready">
               {{ readiness.missingBlockers.length }}
               required {{ readiness.missingBlockers.length === 1 ? 'question' : 'questions' }}
-              left before you can publish — tap to see them
+              left before you can publish - tap to see them
               <OPIcon name="caretRight" class="w-[10px] h-[10px]" />
             </div>
           </button>
@@ -306,7 +306,7 @@
 
         <div v-if="streetStats" class="pp-street-stats">
           <div class="pp-stats-title">
-            {{ passportAddress.line2 }} — Street Overview
+            {{ passportAddress.line2 }} - Street Overview
           </div>
           <div class="pp-stats-grid">
             <div class="pp-stat brand">
@@ -349,7 +349,7 @@
             <div style="width: 40px; height: 40px; margin: 0 auto 8px"><img src="/op-icons/misc/fileCabinet.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
             <p>Your vault is empty</p>
             <p style="font-size: 11.5px; margin-top: 6px; color: #94a3b8">
-              As you complete sections, the verified documents are stored here —
+              As you complete sections, the verified documents are stored here -
               and you choose which are private and which publish with your
               passport.
             </p>
@@ -362,15 +362,15 @@
             <div class="vault-legend-row">
               <span class="vault-legend-ico private"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
               <div>
-                <b>Private</b> — only you. Kept out of the passport when you
-                publish — for personal documents you're not required to
+                <b>Private</b> - only you. Kept out of the passport when you
+                publish - for personal documents you're not required to
                 disclose.
               </div>
             </div>
             <div class="vault-legend-row">
               <span class="vault-legend-ico public"><img src="/op-icons/misc/globe.png" alt="" loading="lazy" /></span>
               <div>
-                <b>Public</b> — published with your passport. Visible to
+                <b>Public</b> - published with your passport. Visible to
                 everyone once you publish (it doesn't go to anyone before
                 then).
               </div>
@@ -393,8 +393,8 @@
               <div class="vault-vis-meta">
                 {{
                   s.visibility === 'PRIVATE'
-                    ? 'Verified · Private — only you. Not included when you publish.'
-                    : 'Verified · Public — published with your passport when you go live.'
+                    ? 'Verified · Private - only you. Not included when you publish.'
+                    : 'Verified · Public - published with your passport when you go live.'
                 }}
               </div>
             </div>
@@ -420,7 +420,7 @@
         <div class="tl-intro">
           <span class="lockico"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
           <div>
-            An <b>immutable, time-stamped record</b> of every step — so
+            An <b>immutable, time-stamped record</b> of every step - so
             everyone in the chain can see exactly where the sale is, and trust
             nothing has been altered.
           </div>
@@ -456,7 +456,7 @@
 
           <div class="tl-list-h">Verified activity</div>
           <div v-if="timelineEvents.length === 0" class="pp-empty" style="margin: 0 18px">
-            No activity yet — events will appear here as your Passport progresses.
+            No activity yet - events will appear here as your Passport progresses.
           </div>
           <div v-for="e in timelineEvents" :key="e.id" class="tl-item">
             <div class="tl-rail">
@@ -800,7 +800,7 @@ const buyerActionTarget = ref(null)
 function onBuyerAction(kind) {
   if (!selectedBuyer.value?.userId) {
     console.warn(
-      '[buyer-action] Selected buyer has no userId — cannot invite/share/message. ' +
+      '[buyer-action] Selected buyer has no userId - cannot invite/share/message. ' +
         'Backend /property/:id/matched-buyers must return { userId } (see property.service.ts).',
     )
     return
@@ -815,10 +815,10 @@ function onBuyerActionDone(kind, _result) {
   buyerActionTarget.value = null
   const msg =
     kind === 'invite'
-      ? '📅 Invite sent — buyer will be notified'
+      ? '📅 Invite sent - buyer will be notified'
       : kind === 'share'
-        ? '🔗 Passport shared — buyer can preview + unlock'
-        : '💬 Message sent — carry on in the Inbox'
+        ? '🔗 Passport shared - buyer can preview + unlock'
+        : '💬 Message sent - carry on in the Inbox'
   if (typeof window !== 'undefined' && window?.dispatchEvent) {
     // Reuse the existing toast bus if the page has one; console
     // fallback keeps this useful during Ticket 5 (which adds the
@@ -1014,7 +1014,7 @@ const publishButtonLabel = computed(() => {
   if (publishLoading.value) return '...'
   if (isPublished.value) return 'Unpublish Passport'
   if (readiness.value && !readiness.value.canPublish) {
-    return `Publish Passport — ${readiness.value.readinessPct}% ready`
+    return `Publish Passport - ${readiness.value.readinessPct}% ready`
   }
   return 'Publish Passport'
 })
@@ -1132,7 +1132,7 @@ const overallProgress = computed(() => {
 
 // ── Hero stat strip (HS / Docs / Sections / Ready) ───────────────
 const heroHsScore = computed(() =>
-  typeof propertyHomeScore.value === 'number' ? propertyHomeScore.value : '—',
+  typeof propertyHomeScore.value === 'number' ? propertyHomeScore.value : '-',
 )
 const heroDocsCount = computed(() =>
   steps.value.reduce(
@@ -1197,7 +1197,7 @@ const getStepExpiringDoc = (step) => {
       if (diff < 0) {
         return {
           expired: true,
-          label: `${t.title || 'A document'} has expired — please re-upload`,
+          label: `${t.title || 'A document'} has expired - please re-upload`,
         }
       }
       if (diff <= SOON_MS) {
@@ -2080,7 +2080,7 @@ const onRoleSwitch = (role) => {
   text-align: right;
 }
 
-/* ── Pick up where you left off — resume CTA ──────────────────────── */
+/* ── Pick up where you left off - resume CTA ──────────────────────── */
 .pp-resume-cta {
   display: flex;
   align-items: center;
@@ -2338,13 +2338,13 @@ const onRoleSwitch = (role) => {
   box-shadow: 0 0 0 2.5px #f1f9f4;
 }
 
-/* ── Publish-readiness bar — amber, distinct from the teal completion bar
+/* ── Publish-readiness bar - amber, distinct from the teal completion bar
      above so "ready to publish" reads as its own, narrower metric ── */
 .pp-hero-dash--ready {
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px dashed #e2e5ee;
-  /* It's a <button> now (tappable — opens the readiness checklist) */
+  /* It's a <button> now (tappable - opens the readiness checklist) */
   display: block;
   width: 100%;
   background: none;

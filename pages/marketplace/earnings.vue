@@ -19,7 +19,7 @@
         <div class="er-empty-title">No earnings yet</div>
         <div class="er-empty-sub">
           Submit offers on open jobs. Customers see your reviews + completed
-          job count — both grow as you finish work here.
+          job count - both grow as you finish work here.
         </div>
         <button class="er-empty-btn" type="button" @click="goBrowse">Browse jobs</button>
       </div>
@@ -91,7 +91,7 @@ import { computed, ref } from 'vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 import type { MarketplaceEarnings, MarketplacePayout } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Earnings — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Earnings - Marketplace', middleware: 'auth' })
 
 const router = useRouter()
 const { fetchEarnings, fetchPayouts } = useMarketplace()

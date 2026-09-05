@@ -16,7 +16,7 @@
             <div class="ppd-eyebrow"><img src="/op-icons/misc/rocket.png" alt="" style="height:1.4em;display:inline-block;vertical-align:-0.3em;margin-right:4px" loading="lazy" />Publish your passport</div>
             <div class="ppd-title">Go public to every matching buyer.</div>
             <div class="ppd-sub">
-              Right now your passport is private — you choose who sees it.
+              Right now your passport is private - you choose who sees it.
               Publishing lists it openly so any verified buyer searching this
               area can find and request it.
             </div>
@@ -27,7 +27,7 @@
               <div class="ppd-row">
                 <span class="ppd-ico on">🔒</span>
                 <div>
-                  <div class="ppd-row-t">Today — private</div>
+                  <div class="ppd-row-t">Today - private</div>
                   <div class="ppd-row-s">
                     Only buyers you contact can see it. Good for testing
                     interest first.
@@ -37,7 +37,7 @@
               <div class="ppd-row">
                 <span class="ppd-ico">🌐</span>
                 <div>
-                  <div class="ppd-row-t">After publishing — public</div>
+                  <div class="ppd-row-t">After publishing - public</div>
                   <div class="ppd-row-s">
                     Listed to all matching verified buyers. They can view &amp;
                     request a viewing.
@@ -57,7 +57,7 @@
             </div>
 
             <div class="ppd-tip">
-              💡 Tip: <b>match &amp; make contact first</b> — gauge interest
+              💡 Tip: <b>match &amp; make contact first</b> - gauge interest
               privately, then publish to open it up to everyone.
             </div>
           </template>
@@ -74,7 +74,7 @@
               <p class="ppd-gate-sub">
                 Buyers pay to unlock this passport, so these disclosures are
                 required before it can go public. Tap any item to jump
-                straight to it — done ones are shown too, so you can see
+                straight to it - done ones are shown too, so you can see
                 exactly where things stand.
               </p>
               <div class="ppd-gate-list">

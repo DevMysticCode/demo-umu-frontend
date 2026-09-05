@@ -36,7 +36,7 @@
 withDefaults(
   defineProps<{
     title?: string | null
-    /** Unused now that every stamp shows the UMU mark — kept so existing
+    /** Unused now that every stamp shows the UMU mark - kept so existing
         callers passing a per-achievement icon don't need updating. */
     iconAsset?: string | null
     size?: number

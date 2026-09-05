@@ -686,7 +686,7 @@ function clearAllFilters() {
 .search-input:focus {
   border-color: #00a19a;
 }
-/* No distance/filters pill in lightweight mode — the Search button sits
+/* No distance/filters pill in lightweight mode - the Search button sits
    right after the text instead of leaving the pill's ghost space. */
 .search-input.lightweight-input {
   padding-right: 82px;
@@ -865,7 +865,7 @@ function clearAllFilters() {
   color: #94a3b8;
   margin-top: 1px;
 }
-/* HomeScore gauge — replaces the old bare "55 / HS" number+label pair
+/* HomeScore gauge - replaces the old bare "55 / HS" number+label pair
    with an actual ring, matching the mini-ring pattern used on the
    search-list card footer. Captioned "HomeScore" above so the ring
    isn't a mystery number with no label. */
@@ -935,17 +935,17 @@ function clearAllFilters() {
   letter-spacing: 0.01em;
 }
 .addr-badge-ic {
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
   flex-shrink: 0;
 }
-/* Passport-state line — colored icon + text, not a pill. "Property
+/* Passport-state line - colored icon + text, not a pill. "Property
    Passport claimed · Partially Public" is too long for a chip; a plain
    line wraps gracefully on its own row instead. One consistent color
-   regardless of state — a dense scrolling list of 4 different colors
+   regardless of state - a dense scrolling list of 4 different colors
    per row read as noisy; the state word itself already carries the
-   meaning. Icon and text both sized up from the original 10px/11px —
+   meaning. Icon and text both sized up from the original 10px/11px -
    the real padlock artwork was hard to make out at that size. */
 .addr-passport-line {
   display: flex;

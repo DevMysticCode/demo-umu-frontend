@@ -108,7 +108,7 @@ import { computed, ref } from 'vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 import type { CreateOfferPayload } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Make an offer — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Make an offer - Marketplace', middleware: 'auth' })
 
 const route = useRoute()
 const router = useRouter()

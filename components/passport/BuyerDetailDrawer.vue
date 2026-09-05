@@ -65,21 +65,21 @@
               <img src="/op-icons/matched-buyers/pin.png" alt="" class="bdd-crit-ic" loading="lazy" />
               <div>
                 <div class="bdd-crit-label">AREA</div>
-                <div class="bdd-crit-val">{{ buyer.area || '—' }}</div>
+                <div class="bdd-crit-val">{{ buyer.area || '-' }}</div>
               </div>
             </div>
             <div class="bdd-crit-tile">
               <img src="/op-icons/matched-buyers/wallet.png" alt="" class="bdd-crit-ic" loading="lazy" />
               <div>
                 <div class="bdd-crit-label">BUDGET</div>
-                <div class="bdd-crit-val">{{ buyer.budget || '—' }}</div>
+                <div class="bdd-crit-val">{{ buyer.budget || '-' }}</div>
               </div>
             </div>
             <div class="bdd-crit-tile">
               <img src="/op-icons/calendar/calendar.png" alt="" class="bdd-crit-ic" loading="lazy" />
               <div>
                 <div class="bdd-crit-label">TIMELINE</div>
-                <div class="bdd-crit-val">{{ buyer.timeline || '—' }}</div>
+                <div class="bdd-crit-val">{{ buyer.timeline || '-' }}</div>
               </div>
             </div>
             <div class="bdd-crit-tile">
@@ -150,7 +150,7 @@
             <div class="bdd-anon-body">
               <div class="bdd-anon-title">Stays anonymous until you reach out.</div>
               <div class="bdd-anon-sub">
-                The buyer sees the property you've matched — never your name — until
+                The buyer sees the property you've matched - never your name - until
                 you tap <span class="bdd-anon-link">Invite to view</span> or
                 <span class="bdd-anon-link">Share Passport</span>.
               </div>
@@ -261,7 +261,7 @@ const factors = computed(() => {
   } else {
     out.push({
       title: 'Property type may differ',
-      sub: "Buyer hasn't pinned a strict type — open to similar homes.",
+      sub: "Buyer hasn't pinned a strict type - open to similar homes.",
       tone: 'warn',
     })
   }
@@ -447,7 +447,7 @@ const factors = computed(() => {
 }
 .bdd-sec-badge svg { width: 16px; height: 16px; }
 
-/* What they're looking for — 2x2 grid of illustrated cards */
+/* What they're looking for - 2x2 grid of illustrated cards */
 .bdd-crit {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -493,7 +493,7 @@ const factors = computed(() => {
   flex-shrink: 0;
 }
 
-/* Why this is a strong match — factor bullets */
+/* Why this is a strong match - factor bullets */
 .bdd-factors {
   margin: 0 22px;
 }
@@ -535,7 +535,7 @@ const factors = computed(() => {
   line-height: 1.4;
 }
 
-/* How ready they are — single pill */
+/* How ready they are - single pill */
 .bdd-ready-row {
   margin: 0 22px;
 }

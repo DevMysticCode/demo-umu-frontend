@@ -28,7 +28,7 @@ function writeAll(entries: RecentlyExploredEntry[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
   } catch {
-    /* storage full / disabled — fine, just don't persist */
+    /* storage full / disabled - fine, just don't persist */
   }
 }
 

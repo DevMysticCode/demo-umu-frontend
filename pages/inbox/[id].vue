@@ -17,7 +17,7 @@
       </div>
       <div v-else-if="error" class="thread-error">{{ error }}</div>
       <div v-else-if="messages.length === 0" class="thread-empty">
-        No messages yet — say hello.
+        No messages yet - say hello.
       </div>
       <div v-else class="thread-msgs">
         <template v-for="m in messages" :key="m.id">
@@ -366,7 +366,7 @@ function viewingResponseFor(cardMsg: MessageRow): MessageRow | undefined {
   )
 }
 
-/** Only the invited user can accept/decline — and only while the
+/** Only the invited user can accept/decline - and only while the
  *  request is still pending. Same guard as the backend so the buttons
  *  don't render when they'd fail. */
 function canRespondToViewing(cardMsg: MessageRow): boolean {
@@ -522,7 +522,7 @@ function openPassport(payload: any) {
   line-height: 1;
 }
 .thread-bubble--theirs .thread-bubble-meta { color: #a8a9ad; opacity: 1; }
-/* Ticks — grey (delivered) → sky-blue (read). Sits inside the aqua
+/* Ticks - grey (delivered) → sky-blue (read). Sits inside the aqua
    "mine" bubble, so we override the mine-bubble text colour just for
    the tick when it's flipped to read. */
 .thread-tick {

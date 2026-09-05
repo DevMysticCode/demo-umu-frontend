@@ -39,7 +39,7 @@
       <div v-if="selectedProperty" class="cl-sel-card">
         <div class="cl-sel-eyebrow">Selected address</div>
         <div class="cl-sel-line1">
-          {{ selectedProperty.addressLine1 || '—' }}
+          {{ selectedProperty.addressLine1 || '-' }}
         </div>
         <div class="cl-sel-line2">
           {{
@@ -57,7 +57,7 @@
         </div>
         <div class="cl-lock-body">
           We verify ownership via
-          <strong>HM Land Registry</strong> — encrypted and never sold.
+          <strong>HM Land Registry</strong> - encrypted and never sold.
         </div>
       </div>
 
@@ -93,13 +93,13 @@
               FOUND ON LAND REGISTRY
             </div>
             <div class="cl-lr-addr1">
-              {{ selectedProperty?.addressLine1 || '—' }}
+              {{ selectedProperty?.addressLine1 || '-' }}
             </div>
             <div class="cl-lr-addr2">
               {{
                 [selectedProperty?.city, selectedProperty?.postcode]
                   .filter(Boolean)
-                  .join(', ') || '—'
+                  .join(', ') || '-'
               }}
             </div>
           </div>
@@ -121,7 +121,7 @@
             <div>
               <div class="cl-lr-tile-l">Tenure</div>
               <select
-                v-if="tenureDisplay === '—'"
+                v-if="tenureDisplay === '-'"
                 class="cl-lr-tile-select"
                 :disabled="savingSelfDeclare"
                 @change="
@@ -166,7 +166,7 @@
             <div>
               <div class="cl-lr-tile-l">Property type</div>
               <select
-                v-if="typeDisplay === '—'"
+                v-if="typeDisplay === '-'"
                 class="cl-lr-tile-select"
                 :disabled="savingSelfDeclare"
                 @change="
@@ -247,7 +247,7 @@
       <h1 class="cl-h1">Before we build your Passport</h1>
       <p class="cl-body cl-mb-lg">
         We need to confirm who you are and that you own the property. Takes
-        around 2 minutes — done once only.
+        around 2 minutes - done once only.
       </p>
 
       <div class="cl-card cl-text-l cl-mb-sm">
@@ -281,7 +281,7 @@
             </div>
             <div>
               <div class="cl-step-t">AML screening</div>
-              <div class="cl-step-s">Automatic check — takes seconds</div>
+              <div class="cl-step-s">Automatic check - takes seconds</div>
             </div>
           </div>
         </div>
@@ -299,7 +299,7 @@
           <div>
             <div class="cl-pale-t">Usually under 2 minutes</div>
             <div class="cl-pale-s">
-              Powered by Persona — used by major UK fintechs.
+              Powered by Persona - used by major UK fintechs.
             </div>
           </div>
         </div>
@@ -453,7 +453,7 @@
           </div>
           <div class="cl-num-row">
             <div class="cl-num">3</div>
-            Hold still — we'll capture automatically
+            Hold still - we'll capture automatically
           </div>
         </div>
       </div>
@@ -851,7 +851,7 @@
           loading="lazy"
         />
         <div>
-          <div class="cl-name-card-t">{{ proprietorDisplay }} — confirmed</div>
+          <div class="cl-name-card-t">{{ proprietorDisplay }} - confirmed</div>
           <div class="cl-name-card-s">
             Your KYC-verified name matches the registered proprietor.<br />
             Your Passport is ready.
@@ -943,7 +943,7 @@
         <div class="cl-eyebrow cl-mb-sm">What this fee covers</div>
         <p class="cl-body" style="margin: 0">
           Identity checks and HM Land Registry ownership lookups cost us real
-          money per property, so we ask for this one-off fee upfront —
+          money per property, so we ask for this one-off fee upfront -
           {{ claimPriceReason }}. Once it's paid, we'll run those checks next.
         </p>
       </div>
@@ -1236,7 +1236,7 @@ onMounted(async () => {
               }
             }
           } catch {
-            /* corrupt localStorage — claimPassportId stays unset */
+            /* corrupt localStorage - claimPassportId stays unset */
           }
           // Strip the query param so a refresh doesn't re-enter this path.
           url.searchParams.delete('kycreturn')
@@ -1247,7 +1247,7 @@ onMounted(async () => {
         }
       }
     } catch {
-      /* corrupt localStorage — fall through to normal flow */
+      /* corrupt localStorage - fall through to normal flow */
     }
   }
 
@@ -1310,7 +1310,7 @@ const lrResult = ref<LrCheckResult | null>(null)
 const lrErrorMessage = ref('')
 
 // ── Display fields (prefer live HMLR result, fall back to selectedProperty) ──
-const tenureDisplay = computed(() => selectedProperty.value?.tenure || '—')
+const tenureDisplay = computed(() => selectedProperty.value?.tenure || '-')
 // null (not '—') on purpose: a real title number only ever exists once
 // HMLR's Ownership Verification search confirms one — see
 // no-synthetic-title-number.spec.ts on the backend, which guards against
@@ -1321,19 +1321,19 @@ const titleDisplay = computed(
   () =>
     lrResult.value?.titleNumber || selectedProperty.value?.titleNumber || null,
 )
-const typeDisplay = computed(() => selectedProperty.value?.propertyType || '—')
+const typeDisplay = computed(() => selectedProperty.value?.propertyType || '-')
 const registeredDisplay = computed(() => {
   const d = selectedProperty.value?.createdAt
-  if (!d) return '—'
+  if (!d) return '-'
   try {
     const date = new Date(d)
     return date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
   } catch {
-    return '—'
+    return '-'
   }
 })
 const proprietorDisplay = computed(() => userFullName.value || 'Property owner')
-const ownershipDisplay = computed(() => lrResult.value?.ownership || '—')
+const ownershipDisplay = computed(() => lrResult.value?.ownership || '-')
 const lrAddressDisplay = computed(() => {
   const a1 = selectedProperty.value?.addressLine1 || 'your property'
   const pc = selectedProperty.value?.postcode || ''
@@ -1478,7 +1478,7 @@ function onPrimary() {
       // Real Persona flow — opens hosted page in a new tab and polls for completion.
       startPersonaKyc()
       return
-    case 'kyc-id': // Legacy simulated screens — unreachable when Persona is wired.
+    case 'kyc-id': // Legacy simulated screens - unreachable when Persona is wired.
     case 'kyc-liveness':
     case 'kyc-aml':
       step.value = 'kyc-verified'
@@ -1653,7 +1653,7 @@ async function runPolling() {
         'Identity verification failed. Please retry or contact support.'
     } else if (finalStatus === 'needs_review') {
       personaError.value =
-        "Your details need a manual review — we'll email you when it's done."
+        "Your details need a manual review - we'll email you when it's done."
     }
   } catch (e: any) {
     if (e?.message === 'timeout') {
@@ -1685,10 +1685,10 @@ async function checkPersonaNow() {
         'Identity verification failed. Please retry or contact support.'
     } else if (r.status === 'needs_review') {
       personaError.value =
-        "Your details need a manual review — we'll email you when it's done."
+        "Your details need a manual review - we'll email you when it's done."
     } else if (r.status === 'pending') {
       personaError.value =
-        "We can't see your result yet — Persona usually takes a few seconds. Try again in a moment."
+        "We can't see your result yet - Persona usually takes a few seconds. Try again in a moment."
     } else {
       personaError.value = "We haven't received a verification result yet."
     }
@@ -1842,7 +1842,7 @@ function describeLrFailure(lr: {
   if (lr.status === 'IN_PROGRESS') {
     const eta = lr.acknowledgement?.expectedResponseDateTime
     return (
-      "HM Land Registry is currently out of service hours — we've queued " +
+      "HM Land Registry is currently out of service hours - we've queued " +
       'your ownership check' +
       (eta ? ` (expected back by ${eta})` : '') +
       '. Please try again shortly.'
@@ -1912,7 +1912,7 @@ async function finalizeAfterVerification() {
     }
     if (!claimPassportId.value) {
       issueError.value =
-        'Something went wrong with your claim — please start again.'
+        'Something went wrong with your claim - please start again.'
       return
     }
     if (!chosenPassportType.value) {
@@ -2727,7 +2727,7 @@ onBeforeUnmount(() => {
   font-size: 28px;
   padding: 8px;
 }
-/* Land Registry illustration inside the pulsing loader — larger than
+/* Land Registry illustration inside the pulsing loader - larger than
    the emoji so the 3D building fills the pulse circle cleanly. */
 .cl-lr-img {
   width: 100%;

@@ -320,7 +320,7 @@ const powerItems = [
   height: 15px;
 }
 
-/* Hero — text and passport group image side by side, per the prototype */
+/* Hero - text and passport group image side by side, per the prototype */
 .pe-hero {
   padding: 20px 16px 4px 22px;
   display: flex;
@@ -455,7 +455,7 @@ const powerItems = [
   color: #6b6a82;
 }
 
-/* Power of the ecosystem — single horizontal row, per the prototype.
+/* Power of the ecosystem - single horizontal row, per the prototype.
    Scrolls horizontally on very narrow phones rather than squeezing 5
    columns + connectors into illegibly small text. */
 .pe-power {

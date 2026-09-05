@@ -421,7 +421,7 @@ async function loadRunningBalance() {
     })
     runningBalance.value = res?.balance ?? 0
   } catch {
-    /* card just starts at 0 — non-critical */
+    /* card just starts at 0 - non-critical */
   }
 }
 
@@ -607,7 +607,7 @@ async function recordLastVisited() {
       body: { taskId },
     })
   } catch {
-    /* non-critical — silent */
+    /* non-critical - silent */
   }
 }
 
@@ -1555,7 +1555,7 @@ const handleContinue = () => {
   background: linear-gradient(90deg, #14b8a6 0%, #14b8a6 50%, transparent 50%);
 }
 
-/* ── "What is this?" tip — kept on aqua per request ─────────── */
+/* ── "What is this?" tip - kept on aqua per request ─────────── */
 .qtip {
   background: #e6f9f7;
   border: 1px solid #e2f1ea;

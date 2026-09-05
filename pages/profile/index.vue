@@ -336,7 +336,7 @@ async function setRole(key) {
   } catch (err) {
     console.error('[setRole] failed:', err)
     roleError.value =
-      'Failed to save — ' +
+      'Failed to save - ' +
       (err?.data?.message || err?.message || 'unknown error')
     currentRole.value = prevRole // revert on error
   } finally {
@@ -355,7 +355,7 @@ const profileItems = [
   {
     title: 'Your Buyer Passport',
     description:
-      'Verified ID, proof of funds and chain position — share with sellers, agents and solicitors.',
+      'Verified ID, proof of funds and chain position - share with sellers, agents and solicitors.',
     icon: 'personalInformation',
     iconImage: '/op-icons/profile/buyerProfile.jpeg',
     route: '/buyer-profile',
@@ -505,7 +505,7 @@ const logout = async () => {
       await $fetch(`${config.public.apiBase}/auth/logout`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
-      }).catch(() => {}) // ignore network errors — still log out locally
+      }).catch(() => {}) // ignore network errors - still log out locally
     }
   } finally {
     if (typeof window !== 'undefined') {
@@ -556,7 +556,7 @@ const deleteAccount = async () => {
 
 /* When a profile row's icon slot contains a JPEG illustration, strip
    the aqua backdrop and enlarge the container so the 3D artwork is
-   legible. Uses :has() (supported on all target platforms — Android
+   legible. Uses :has() (supported on all target platforms - Android
    WebView 105+, iOS Safari 15.4+, modern Chrome/Firefox). */
 .profile-row-list :deep(.prow-icon:has(.profile-tile-img)) {
   width: 50px;

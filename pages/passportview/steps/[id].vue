@@ -235,7 +235,7 @@ async function loadProgress() {
     progressLevel.value = res?.level ?? progressLevel.value
     progressStreak.value = res?.streak ?? progressStreak.value
   } catch {
-    /* card just falls back to its defaults — non-critical */
+    /* card just falls back to its defaults - non-critical */
   }
 }
 

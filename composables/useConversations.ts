@@ -2,7 +2,7 @@ import { ref } from 'vue'
 
 /**
  * Thin API wrapper for the shared conversations service.
- * Not a global store — every page gets its own instance and manages
+ * Not a global store - every page gets its own instance and manages
  * its own reactive state. Notifications composable handles the badge.
  */
 
@@ -130,7 +130,7 @@ export function useConversations() {
         headers: authHeaders(),
       })
     } catch {
-      /* non-critical — will re-mark on next open */
+      /* non-critical - will re-mark on next open */
     }
   }
 

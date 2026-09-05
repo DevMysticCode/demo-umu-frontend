@@ -63,7 +63,7 @@
             </div>
             <div class="watch-read-text">
               <b>You'll be among the first to know.</b> Sellers see that buyers
-              are watching this property when they claim it — it's a helpful
+              are watching this property when they claim it - it's a helpful
               nudge.
             </div>
           </div>
@@ -78,7 +78,7 @@
           </div>
           <div class="watch-privacy">
             <span class="watch-privacy-icon">🔒</span>
-            <span>Saved to your account. The owner won't see your name — only a count of buyers watching.</span>
+            <span>Saved to your account. The owner won't see your name - only a count of buyers watching.</span>
           </div>
         </div>
       </div>
@@ -96,12 +96,12 @@ const props = defineProps<{
   /** Short address label shown in the eyebrow, e.g. "9 Woodfield Rd". */
   addressLabel?: string
   submitting?: boolean
-  /** Existing prefs to prefill with (e.g. from GET /property/:id/watch) —
+  /** Existing prefs to prefill with (e.g. from GET /property/:id/watch) -
    *  without this the toggles always reset to the hardcoded defaults below,
    *  discarding whatever the user actually chose last time. */
   initialPrefs?: Record<string, boolean> | null
   /** Drives which toggles actually make sense to show. Without this, every
-   *  toggle showed regardless of the property's real state — "Owner claims
+   *  toggle showed regardless of the property's real state - "Owner claims
    *  this property" on an already-claimed property, "Passport published"
    *  on an already-published one, both describing events that can never
    *  fire again. Optional and defaults to showing everything, so a caller
@@ -125,7 +125,7 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 // after) — no backend change needed for any of this.
 const ALL_TRIGGERS = {
   claimed: { key: 'claimed', icon: 'ownerClaim', title: 'Owner claims this property', sub: "You'll be notified the moment they verify ownership." },
-  progress: { key: 'progress', icon: 'passportProgress', title: 'Passport goes Partially Public', sub: "We'll let you know as soon as it's live to view — even before every section is finished." },
+  progress: { key: 'progress', icon: 'passportProgress', title: 'Passport goes Partially Public', sub: "We'll let you know as soon as it's live to view - even before every section is finished." },
   updated: { key: 'progress', icon: 'passportProgress', title: 'Passport updated', sub: "We'll let you know if the owner adds or changes anything." },
   published: { key: 'published', icon: 'passportPublished', title: 'Passport becomes Public', sub: "We'll notify you when it's fully public and you can access everything." },
   comparables: { key: 'comparables', icon: 'comparableSales', title: 'Comparable sales nearby', sub: "Weekly update if there's new Land Registry data." },

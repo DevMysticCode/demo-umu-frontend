@@ -33,7 +33,7 @@ export function useHomeScorePropertyData() {
             }
           }
         } catch {
-          /* self-heal is best-effort — keep the un-refreshed property */
+          /* self-heal is best-effort - keep the un-refreshed property */
         }
       }
       return property.value

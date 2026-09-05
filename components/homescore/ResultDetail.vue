@@ -187,7 +187,7 @@
         <span class="rd-cta-text">
           <span class="rd-cta-label">See full running costs</span>
           <span class="rd-cta-sub"
-            >Heating, hot water &amp; lighting — monthly and annual
+            >Heating, hot water &amp; lighting - monthly and annual
             breakdowns</span
           >
         </span>
@@ -244,7 +244,7 @@
               <span
                 class="rd-epc-letter-big"
                 :style="{ background: epcColor }"
-                >{{ epcRating || '—' }}</span
+                >{{ epcRating || '-' }}</span
               >
               <span class="rd-epc-text">Current · {{ epcCurrentSap }} SAP</span>
             </div>
@@ -332,7 +332,7 @@
           <span class="rd-intent-body">
             <span class="rd-intent-title">I own this property</span>
             <span class="rd-intent-sub"
-              >Tell us what's been done since the EPC — we'll update the score
+              >Tell us what's been done since the EPC - we'll update the score
               and cut your estimated bills.</span
             >
           </span>
@@ -349,10 +349,10 @@
             <span class="rd-intent-title">Go to my dashboard</span>
             <span class="rd-intent-sub">
               <template v-if="state === 'published'"
-                >Your Passport is published — manage your record.</template
+                >Your Passport is published - manage your record.</template
               >
               <template v-else
-                >Your Passport is in progress — pick up where you left
+                >Your Passport is in progress - pick up where you left
                 off.</template
               >
             </span>
@@ -370,7 +370,7 @@
           <span class="rd-intent-body">
             <span class="rd-intent-title">Refine my HomeScore</span>
             <span class="rd-intent-sub">
-              Retake the {{ '2-min' }} quiz — tell us what's been done since the
+              Retake the {{ '2-min' }} quiz - tell us what's been done since the
               EPC to update your saved score.
             </span>
           </span>
@@ -387,11 +387,11 @@
             <span class="rd-intent-title">I'm interested in this property</span>
             <span class="rd-intent-sub">
               <template v-if="state === 'published'"
-                >The verified Passport is live — purchase access to see
+                >The verified Passport is live - purchase access to see
                 everything.</template
               >
               <template v-else-if="state === 'inProgress'"
-                >Save it — we'll notify you when the Passport is
+                >Save it - we'll notify you when the Passport is
                 published.</template
               >
               <template v-else
@@ -717,12 +717,12 @@ const scoreExplainer = computed(() => {
     return 'Better than most UK homes. A few targeted upgrades could push this into the top tier.'
   if (props.score >= 40)
     return 'Plenty of room to improve. Targeted upgrades could meaningfully cut your bills.'
-  return 'This puts the property in the <b>bottom 15%</b> for energy efficiency. Significant room to improve — and to save.'
+  return 'This puts the property in the <b>bottom 15%</b> for energy efficiency. Significant room to improve - and to save.'
 })
 const dataNote = computed(() => {
   if (props.state === 'published') return null
   if (props.state === 'inProgress')
-    return 'Verified Passport not yet published — refining as the owner adds data.'
+    return 'Verified Passport not yet published - refining as the owner adds data.'
   if (props.epcYear)
     return `Based on a <b>${props.epcYear} EPC</b>. The real score may be higher if improvements have been made since.`
   return 'Based on public EPC data. The real score may be higher if improvements have been made since the EPC was lodged.'
@@ -749,7 +749,7 @@ function formatNum(n: number): string {
 <style scoped>
 .rd-page {
   background: #fafafa;
-  /* No horizontal padding here — each card sets its own 22px side margin
+  /* No horizontal padding here - each card sets its own 22px side margin
      to match the prototype's per-card spacing rhythm. */
   padding: 4px 0 0;
 }
@@ -950,7 +950,7 @@ function formatNum(n: number): string {
 }
 
 /* ── Overpay hero ──────────────────────────────────────────── */
-/* Overpay hero — prototype-exact vibrant 3-stop teal gradient. */
+/* Overpay hero - prototype-exact vibrant 3-stop teal gradient. */
 .rd-overpay {
   background: linear-gradient(140deg, #00b6ae 0%, #00a19a 50%, #00514d 100%);
   color: #fff;
@@ -1154,7 +1154,7 @@ function formatNum(n: number): string {
   justify-content: space-between;
   margin-bottom: 14px;
 }
-/* "HOMESCORE" eyebrow — uppercase, teal-dark, with a green rounded
+/* "HOMESCORE" eyebrow - uppercase, teal-dark, with a green rounded
    gradient square to the left of the text (prototype-exact). */
 .rd-score-eyebrow .left {
   font-size: 11px;
@@ -1244,7 +1244,7 @@ function formatNum(n: number): string {
   letter-spacing: -0.3px;
   margin-bottom: 4px;
 }
-/* Score-band tone — mirrors prototype's `.score-card.low/.mid/.high .score-band`. */
+/* Score-band tone - mirrors prototype's `.score-card.low/.mid/.high .score-band`. */
 .rd-score-card.low .rd-score-band {
   color: #c73e36;
 }
@@ -1472,7 +1472,7 @@ function formatNum(n: number): string {
 }
 
 /* ── Intent picker ─────────────────────────────────────────── */
-/* Intent card — 2px navy border, soft navy-tinted gradient (prototype-exact). */
+/* Intent card - 2px navy border, soft navy-tinted gradient (prototype-exact). */
 .rd-intent {
   background:
     radial-gradient(

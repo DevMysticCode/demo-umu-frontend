@@ -23,7 +23,7 @@
               <h2 class="mbd-title">Buyers are already waiting for this home.</h2>
               <p class="mbd-sub">
                 As your Passport fills out, we match it to verified buyers. Reach
-                out privately and gauge interest first — then publish when you're
+                out privately and gauge interest first - then publish when you're
                 ready to go public.
               </p>
             </div>

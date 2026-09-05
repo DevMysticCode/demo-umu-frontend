@@ -1,7 +1,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 /**
- * Global notifications state — one shared instance across the whole app
+ * Global notifications state - one shared instance across the whole app
  * so the bell badge, the tray, and the (future) settings screen all
  * agree on unread count without duplicating fetches.
  *

@@ -346,7 +346,7 @@ const handleFileSelect = async (event) => {
 
   const questionId = props.question?.id
   if (!questionId) {
-    uploadError.value = "Couldn't identify this question — please refresh and try again."
+    uploadError.value = "Couldn't identify this question - please refresh and try again."
     return
   }
 

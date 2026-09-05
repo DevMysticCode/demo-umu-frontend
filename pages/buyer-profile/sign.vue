@@ -28,7 +28,7 @@
     <!-- Document summary -->
     <div class="sd-doc-summary">
       <div class="sd-doc-label">SIGNING</div>
-      <div class="sd-doc-title">UMU Buyer Passport — {{ displayName }}</div>
+      <div class="sd-doc-title">UMU Buyer Passport - {{ displayName }}</div>
       <div class="sd-doc-meta">
         Ref: {{ publicRef }} · {{ todayLabel }} · Passport + Financial Credentials
       </div>
@@ -57,7 +57,7 @@
 
     <!-- Or type name -->
     <div class="sd-type-wrap">
-      <div class="sd-type-divider">— or type your name instead —</div>
+      <div class="sd-type-divider">- or type your name instead -</div>
       <input
         v-model="typedName"
         type="text"
@@ -96,7 +96,7 @@ import {
 } from '~/composables/useBuyerProfile'
 import { useProfile } from '~/composables/useProfile'
 
-definePageMeta({ title: 'Sign Passport — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Sign Passport - UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile, signProfile } = useBuyerProfile()
@@ -227,7 +227,7 @@ const displayName = computed(() => {
   return profile.value?.email?.split('@')[0] || 'Buyer'
 })
 const publicRef = computed(
-  () => (passport.value as any)?.publicRef || '—',
+  () => (passport.value as any)?.publicRef || '-',
 )
 const todayLabel = computed(() =>
   new Date().toLocaleDateString('en-GB', {
@@ -343,7 +343,7 @@ const goBack = useGoBack('/buyer-profile/pdf')
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Signature pad — dashed when empty, solid teal when signed (prototype). */
+/* Signature pad - dashed when empty, solid teal when signed (prototype). */
 .sig-pad {
   position: relative;
   margin: 0 22px;

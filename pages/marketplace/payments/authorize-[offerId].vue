@@ -25,7 +25,7 @@
         <div class="au-hero-icon">🛡</div>
         <div class="au-hero-title">Authorise payment</div>
         <div class="au-hero-sub">
-          You'll be charged now — but funds are held in escrow until
+          You'll be charged now - but funds are held in escrow until
           the job is verified complete.
         </div>
       </div>
@@ -54,7 +54,7 @@
         <div class="au-step">
           <div class="au-step-icon done">🔒</div>
           <div class="au-step-text">
-            <div class="au-step-title">Charged now — held in UProtect escrow</div>
+            <div class="au-step-title">Charged now - held in UProtect escrow</div>
             <div class="au-step-sub">
               Funds are <b>not</b> sent to the supplier yet. Safe with us.
             </div>
@@ -109,7 +109,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 
-definePageMeta({ title: 'Authorise payment — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Authorise payment - Marketplace', middleware: 'auth' })
 
 const route = useRoute()
 const router = useRouter()
@@ -244,7 +244,7 @@ async function submit() {
     }
     const status = paymentIntent?.status
     if (status === 'requires_action' || status === 'requires_confirmation') {
-      cardError.value = 'We need an extra verification step from your bank — tap Authorise again to retry.'
+      cardError.value = 'We need an extra verification step from your bank - tap Authorise again to retry.'
       submitting.value = false
       return
     }

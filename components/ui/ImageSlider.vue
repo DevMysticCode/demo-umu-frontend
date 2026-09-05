@@ -14,7 +14,7 @@
         </svg>
       </div>
       <p class="no-image-title">No image available</p>
-      <p class="no-image-sub">The owner hasn't added photos for this property yet — check back soon.</p>
+      <p class="no-image-sub">The owner hasn't added photos for this property yet - check back soon.</p>
       <slot name="overlay"></slot>
     </div>
 

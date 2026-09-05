@@ -18,7 +18,7 @@
     <div class="auth-hero">
       <div class="auth-hero-eyebrow">Create your account</div>
       <div class="auth-hero-title">Start with your home.</div>
-      <div class="auth-hero-sub">A few details and you're in. Your details stay with us — we never share them with third parties.</div>
+      <div class="auth-hero-sub">A few details and you're in. Your details stay with us - we never share them with third parties.</div>
     </div>
 
     <form class="auth-form" @submit.prevent="handleSubmit">
@@ -86,7 +86,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
-          <span>We only text you about <strong>your Passport</strong> — never marketing.</span>
+          <span>We only text you about <strong>your Passport</strong> - never marketing.</span>
         </div>
       </div>
 
@@ -108,7 +108,7 @@
         />
         <div class="postcode-prompt">
           <div class="postcode-prompt-h">See your home's HomeScore the moment you sign in</div>
-          <div class="postcode-prompt-text">Add your postcode and we'll show you what your home tells us — bills, value, comparisons. You can skip this and add it later.</div>
+          <div class="postcode-prompt-text">Add your postcode and we'll show you what your home tells us - bills, value, comparisons. You can skip this and add it later.</div>
         </div>
       </div>
 
@@ -117,7 +117,7 @@
         <span class="checkbox-box" :class="{ checked: form.marketingOptIn }">
           <input v-model="form.marketingOptIn" type="checkbox" hidden />
         </span>
-        <span class="checkbox-text">Email me occasional product updates and tips. We won't spam you — and you can unsubscribe in one tap.</span>
+        <span class="checkbox-text">Email me occasional product updates and tips. We won't spam you - and you can unsubscribe in one tap.</span>
       </label>
 
       <button type="submit" class="btn-primary" :disabled="isLoading">
@@ -540,7 +540,7 @@ const handleSubmit = async () => {
   letter-spacing: -0.05px;
 }
 
-/* Primary button — teal pill */
+/* Primary button - teal pill */
 .btn-primary {
   width: 100%;
   background: #00a19a;

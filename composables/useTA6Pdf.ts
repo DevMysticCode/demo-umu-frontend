@@ -258,7 +258,7 @@ export function useTA6Pdf() {
 
 <!-- ══ IMPORTANT NOTICE ════════════════════════════════════════════════════ -->
 <div class="notice-box">
-  <strong>Important:</strong> This form must be completed by the seller to the best of their knowledge. Where a question is not applicable, write N/A. The seller must promptly notify their solicitor of any change. <span style="color:#00534f;font-weight:700">Green text</span> indicates data pre-filled from the umu Property Passport — verify before signing. Blank lines require manual completion.
+  <strong>Important:</strong> This form must be completed by the seller to the best of their knowledge. Where a question is not applicable, write N/A. The seller must promptly notify their solicitor of any change. <span style="color:#00534f;font-weight:700">Green text</span> indicates data pre-filled from the umu Property Passport - verify before signing. Blank lines require manual completion.
 </div>
 
 <!-- ══ SECTION 1: SELLER DETAILS ══════════════════════════════════════════ -->
@@ -293,7 +293,7 @@ export function useTA6Pdf() {
     <div class="row">
       <div class="row-num">1.6</div>
       <div class="row-q">Number of bedrooms &nbsp;/&nbsp; bathrooms</div>
-      <div class="row-a">${(property?.bedrooms || property?.bathrooms) ? `<span class="filled">${property?.bedrooms ?? '—'} bed / ${property?.bathrooms ?? '—'} bath</span>` : blank('140px')}</div>
+      <div class="row-a">${(property?.bedrooms || property?.bathrooms) ? `<span class="filled">${property?.bedrooms ?? '-'} bed / ${property?.bathrooms ?? '-'} bath</span>` : blank('140px')}</div>
     </div>
     <div class="row">
       <div class="row-num">1.7</div>
@@ -680,7 +680,7 @@ export function useTA6Pdf() {
     <div class="sig-grid">
       <div>
         <div class="sig-field"></div>
-        <div class="sig-label">Seller 1 — full name (print)</div>
+        <div class="sig-label">Seller 1 - full name (print)</div>
         <div style="margin-top:10px">
           <div class="sig-field" style="padding-bottom:32px"></div>
           <div class="sig-label">Seller 1 signature</div>
@@ -689,7 +689,7 @@ export function useTA6Pdf() {
       </div>
       <div>
         <div class="sig-field"></div>
-        <div class="sig-label">Seller 2 — full name (print) &nbsp;<em style="color:#aaa">(if applicable)</em></div>
+        <div class="sig-label">Seller 2 - full name (print) &nbsp;<em style="color:#aaa">(if applicable)</em></div>
         <div style="margin-top:10px">
           <div class="sig-field" style="padding-bottom:32px"></div>
           <div class="sig-label">Seller 2 signature &nbsp;<em style="color:#aaa">(if applicable)</em></div>

@@ -1,5 +1,5 @@
 /**
- * HomeScore V2 — EPC-data-driven scoring formula.
+ * HomeScore V2 - EPC-data-driven scoring formula.
  * 6 weighted components derived from EPC certificate fields.
  * V1 question-based scoring (homescoreScoring.ts) remains for Tier 2 enhancement.
  */

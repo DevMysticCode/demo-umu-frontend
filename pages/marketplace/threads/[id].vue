@@ -34,7 +34,7 @@
     <template v-else>
       <div class="th-messages" ref="messagesEl">
         <div v-if="!thread.messages.length" class="th-no-messages">
-          Send the first message — say hi 👋
+          Send the first message - say hi 👋
         </div>
         <div
           v-for="(m, idx) in thread.messages"
@@ -83,7 +83,7 @@ import { computed, nextTick, onMounted, ref } from 'vue'
 import MarketplaceBottomNav from '~/components/marketplace/MarketplaceBottomNav.vue'
 import type { MarketplaceMessage, MarketplaceThreadDetail } from '~/composables/useMarketplace'
 
-definePageMeta({ title: 'Conversation — Marketplace', middleware: 'auth' })
+definePageMeta({ title: 'Conversation - Marketplace', middleware: 'auth' })
 
 const route = useRoute()
 const router = useRouter()

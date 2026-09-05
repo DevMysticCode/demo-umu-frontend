@@ -242,7 +242,7 @@ async function savePostcode() {
     postcodeSheetOpen.value = false
     emit('postcode-saved')
   } catch {
-    postcodeError.value = 'Could not save your postcode — try again.'
+    postcodeError.value = 'Could not save your postcode - try again.'
   } finally {
     postcodeSaving.value = false
   }

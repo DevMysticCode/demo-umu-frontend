@@ -144,7 +144,7 @@
         <h3 class="bph-sheet-title">What is a Buyer Passport?</h3>
         <p class="bph-sheet-body">
           A verified profile that shows sellers and agents you're a serious,
-          ready buyer — your identity, buying position, finances and chain
+          ready buyer - your identity, buying position, finances and chain
           position, all confirmed up front. Verified buyers get 3× more offers
           accepted.
         </p>
@@ -237,7 +237,7 @@ onMounted(async () => {
       router.replace('/buyer-profile/view')
     }
   } catch {
-    /* token may be missing — stay on the checklist */
+    /* token may be missing - stay on the checklist */
   }
 })
 </script>

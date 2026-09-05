@@ -31,7 +31,7 @@
                 <div class="bpd-step-num">Step 1</div>
                 <div class="bpd-step-title">Search yourself</div>
                 <div class="bpd-step-copy">
-                  We find vetted {{ tradeName }}s near your postcode — sorted by
+                  We find vetted {{ tradeName }}s near your postcode - sorted by
                   availability, price, and buyer reviews.
                 </div>
               </div>
@@ -75,7 +75,7 @@
             <span class="bpd-info-icon">💷</span>
             <div>
               <div class="bpd-info-title">No booking fee</div>
-              <div class="bpd-info-sub">You pay the pro's quote — nothing on top.</div>
+              <div class="bpd-info-sub">You pay the pro's quote - nothing on top.</div>
             </div>
           </div>
 
@@ -115,7 +115,7 @@ const emit = defineEmits<{
   (e: 'find-pro', proKey: string): void
 }>()
 
-/** Human-readable trade name derived from the pro key — powers the
+/** Human-readable trade name derived from the pro key - powers the
  *  step-1 copy ("we find vetted gas engineers near you"). Keeps the
  *  copy sharp without needing a separate field on qwPros. */
 const tradeName = computed(() => {
@@ -127,7 +127,7 @@ const tradeName = computed(() => {
   }
 })
 
-/** Step 3 differs by trade — the safety-check illustration works for
+/** Step 3 differs by trade - the safety-check illustration works for
  *  every case; the copy just reframes what "safety check" means for
  *  the specific job. */
 const step3Title = computed(() => {
@@ -141,7 +141,7 @@ const step3Title = computed(() => {
 const step3Copy = computed(() => {
   switch (props.pro?.key) {
     case 'gassafe':
-      return 'The engineer completes the annual gas safety check. Your Gas Safety Certificate lands directly in your Passport — no scanning, no chasing.'
+      return 'The engineer completes the annual gas safety check. Your Gas Safety Certificate lands directly in your Passport - no scanning, no chasing.'
     case 'electrician':
       return 'The electrician issues an EICR (Electrical Installation Condition Report). It auto-attaches to your Passport when signed off.'
     case 'epcassess':

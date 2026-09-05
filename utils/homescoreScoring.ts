@@ -39,7 +39,7 @@ export const QUESTIONS: Question[] = [
         delta: +4,
         carbonDelta: -400,
         category: 'structure',
-        narr: 'Two shared walls — naturally more efficient.',
+        narr: 'Two shared walls - naturally more efficient.',
       },
       {
         label: 'Flat / apartment',
@@ -70,7 +70,7 @@ export const QUESTIONS: Question[] = [
         delta: -6,
         carbonDelta: +800,
         category: 'structure',
-        narr: 'Pre-1930 homes typically have solid walls and no cavity — hardest to insulate.',
+        narr: 'Pre-1930 homes typically have solid walls and no cavity - hardest to insulate.',
       },
       {
         label: '1930–1966',
@@ -94,7 +94,7 @@ export const QUESTIONS: Question[] = [
         delta: +3,
         carbonDelta: 0,
         category: 'structure',
-        narr: 'Improved building regs — better baseline.',
+        narr: 'Improved building regs - better baseline.',
       },
       {
         label: '2007–2015',
@@ -102,7 +102,7 @@ export const QUESTIONS: Question[] = [
         delta: +5,
         carbonDelta: -300,
         category: 'structure',
-        narr: 'Modern standards — well insulated by design.',
+        narr: 'Modern standards - well insulated by design.',
       },
       {
         label: '2016 or newer',
@@ -110,7 +110,7 @@ export const QUESTIONS: Question[] = [
         delta: +8,
         carbonDelta: -600,
         category: 'structure',
-        narr: 'Built to current Part L standards — high efficiency.',
+        narr: 'Built to current Part L standards - high efficiency.',
       },
     ],
   },
@@ -151,7 +151,7 @@ export const QUESTIONS: Question[] = [
         delta: +2,
         carbonDelta: +300,
         category: 'heating',
-        narr: 'Efficiency falling — nearing end of life.',
+        narr: 'Efficiency falling - nearing end of life.',
       },
       {
         label: 'Old gas boiler (> 20 yrs)',
@@ -159,7 +159,7 @@ export const QUESTIONS: Question[] = [
         delta: -4,
         carbonDelta: +900,
         category: 'heating',
-        narr: 'Older boilers can drop to 60% efficiency — a major carbon emitter.',
+        narr: 'Older boilers can drop to 60% efficiency - a major carbon emitter.',
       },
       {
         label: 'Oil boiler',
@@ -175,7 +175,7 @@ export const QUESTIONS: Question[] = [
         delta: -2,
         carbonDelta: +200,
         category: 'heating',
-        narr: 'Carbon depends on the grid — improving as renewables grow.',
+        narr: 'Carbon depends on the grid - improving as renewables grow.',
       },
       {
         label: 'No central heating',
@@ -198,7 +198,7 @@ export const QUESTIONS: Question[] = [
         delta: +3,
         carbonDelta: -100,
         category: 'heating',
-        narr: 'Efficient — heats on demand, no cylinder losses.',
+        narr: 'Efficient - heats on demand, no cylinder losses.',
       },
       {
         label: 'Solar thermal + cylinder',
@@ -214,7 +214,7 @@ export const QUESTIONS: Question[] = [
         delta: +7,
         carbonDelta: -600,
         category: 'heating',
-        narr: 'Highly efficient — extracts heat from air.',
+        narr: 'Highly efficient - extracts heat from air.',
       },
       {
         label: 'Gas cylinder (separate)',
@@ -253,7 +253,7 @@ export const QUESTIONS: Question[] = [
         delta: +1,
         carbonDelta: 0,
         category: 'heating',
-        narr: 'Annual servicing is recommended — overdue but not critical.',
+        narr: 'Annual servicing is recommended - overdue but not critical.',
       },
       {
         label: 'Over 3 years ago',
@@ -261,7 +261,7 @@ export const QUESTIONS: Question[] = [
         delta: -2,
         carbonDelta: +200,
         category: 'heating',
-        narr: 'Long overdue — efficiency drops and warranty may be void.',
+        narr: 'Long overdue - efficiency drops and warranty may be void.',
       },
       {
         label: 'Never / not sure',
@@ -292,7 +292,7 @@ export const QUESTIONS: Question[] = [
         delta: -2,
         carbonDelta: +500,
         category: 'heating',
-        narr: 'Open fires are very inefficient — most heat goes up the chimney.',
+        narr: 'Open fires are very inefficient - most heat goes up the chimney.',
       },
       {
         label: 'Electric panel heaters',
@@ -300,7 +300,7 @@ export const QUESTIONS: Question[] = [
         delta: -1,
         carbonDelta: +200,
         category: 'heating',
-        narr: 'Cheap to install but expensive to run — high carbon per kWh.',
+        narr: 'Cheap to install but expensive to run - high carbon per kWh.',
       },
       {
         label: 'No secondary heating',
@@ -308,7 +308,7 @@ export const QUESTIONS: Question[] = [
         delta: 0,
         carbonDelta: 0,
         category: 'heating',
-        narr: 'Primary heating does all the work — no penalty.',
+        narr: 'Primary heating does all the work - no penalty.',
       },
     ],
   },
@@ -320,7 +320,7 @@ export const QUESTIONS: Question[] = [
     title: 'What are the external walls made of?',
     options: [
       {
-        label: 'Cavity wall — insulated',
+        label: 'Cavity wall - insulated',
         value: 'cavity_ins',
         delta: +7,
         carbonDelta: -500,
@@ -328,7 +328,7 @@ export const QUESTIONS: Question[] = [
         narr: 'Insulated cavity walls are one of the best upgrades.',
       },
       {
-        label: 'Solid wall — insulated (internal or external)',
+        label: 'Solid wall - insulated (internal or external)',
         value: 'solid_ins',
         delta: +5,
         carbonDelta: -400,
@@ -336,15 +336,15 @@ export const QUESTIONS: Question[] = [
         narr: 'Insulated solid walls perform close to modern cavity standards.',
       },
       {
-        label: 'Cavity wall — uninsulated',
+        label: 'Cavity wall - uninsulated',
         value: 'cavity_unins',
         delta: -3,
         carbonDelta: +500,
         category: 'structure',
-        narr: 'Cavity fill is cheap and quick — biggest bang for buck.',
+        narr: 'Cavity fill is cheap and quick - biggest bang for buck.',
       },
       {
-        label: 'Solid wall — uninsulated',
+        label: 'Solid wall - uninsulated',
         value: 'solid_unins',
         delta: -6,
         carbonDelta: +900,
@@ -372,7 +372,7 @@ export const QUESTIONS: Question[] = [
         delta: +6,
         carbonDelta: -500,
         category: 'efficiency',
-        narr: 'Meets current building regs — roof heat loss is minimal.',
+        narr: 'Meets current building regs - roof heat loss is minimal.',
       },
       {
         label: 'Partial (100–270mm)',
@@ -406,7 +406,7 @@ export const QUESTIONS: Question[] = [
     title: 'Is the ground floor insulated?',
     options: [
       {
-        label: 'Yes — suspended floor insulated',
+        label: 'Yes - suspended floor insulated',
         value: 'floor_ins',
         delta: +4,
         carbonDelta: -300,
@@ -422,7 +422,7 @@ export const QUESTIONS: Question[] = [
         narr: 'Solid floors lose less heat than uninsulated suspended floors.',
       },
       {
-        label: 'Suspended floor — not insulated',
+        label: 'Suspended floor - not insulated',
         value: 'floor_unins',
         delta: -3,
         carbonDelta: +400,
@@ -458,7 +458,7 @@ export const QUESTIONS: Question[] = [
         delta: +5,
         carbonDelta: -200,
         category: 'structure',
-        narr: 'Modern A-rated double glazing — performs well year-round.',
+        narr: 'Modern A-rated double glazing - performs well year-round.',
       },
       {
         label: 'Double glazed (10+ yrs)',
@@ -466,7 +466,7 @@ export const QUESTIONS: Question[] = [
         delta: +2,
         carbonDelta: 0,
         category: 'structure',
-        narr: 'Seals degrade over time — check for misting or draughts.',
+        narr: 'Seals degrade over time - check for misting or draughts.',
       },
       {
         label: 'Mix of single and double',
@@ -523,7 +523,7 @@ export const QUESTIONS: Question[] = [
         delta: 0,
         carbonDelta: 0,
         category: 'efficiency',
-        narr: 'No renewables yet — biggest improvement opportunity.',
+        narr: 'No renewables yet - biggest improvement opportunity.',
       },
     ],
   },
@@ -546,7 +546,7 @@ export const QUESTIONS: Question[] = [
         delta: 0,
         carbonDelta: 0,
         category: 'efficiency',
-        narr: 'Default grid mix — switching to a green tariff is free in minutes.',
+        narr: 'Default grid mix - switching to a green tariff is free in minutes.',
       },
       {
         label: 'Economy 7 (off-peak electric)',
@@ -554,7 +554,7 @@ export const QUESTIONS: Question[] = [
         delta: +1,
         carbonDelta: -200,
         category: 'efficiency',
-        narr: 'Cheaper overnight rates — ideal with storage heaters or EV charging.',
+        narr: 'Cheaper overnight rates - ideal with storage heaters or EV charging.',
       },
       {
         label: 'Not sure',
@@ -562,7 +562,7 @@ export const QUESTIONS: Question[] = [
         delta: 0,
         carbonDelta: +100,
         category: 'efficiency',
-        narr: 'Check a recent bill — the tariff name is printed near the top.',
+        narr: 'Check a recent bill - the tariff name is printed near the top.',
       },
     ],
   },
@@ -593,7 +593,7 @@ export const QUESTIONS: Question[] = [
         delta: +1,
         carbonDelta: -100,
         category: 'electrics',
-        narr: 'Worth installing a charger now — OZEV grant can cover part of the cost.',
+        narr: 'Worth installing a charger now - OZEV grant can cover part of the cost.',
       },
       {
         label: 'No / not applicable',
@@ -634,7 +634,7 @@ export const QUESTIONS: Question[] = [
         delta: 0,
         carbonDelta: 0,
         category: 'efficiency',
-        narr: 'Around half your bulbs are still energy-hungry — room to improve.',
+        narr: 'Around half your bulbs are still energy-hungry - room to improve.',
       },
       {
         label: 'Mostly halogen or older',
@@ -673,7 +673,7 @@ export const QUESTIONS: Question[] = [
         delta: 0,
         carbonDelta: 0,
         category: 'efficiency',
-        narr: 'One central thermostat — adding TRVs is a cheap next step.',
+        narr: 'One central thermostat - adding TRVs is a cheap next step.',
       },
       {
         label: 'No thermostat / manual',
@@ -712,7 +712,7 @@ export const QUESTIONS: Question[] = [
         delta: 0,
         carbonDelta: 0,
         category: 'efficiency',
-        narr: 'Standard setup — effective when fans are used in bathrooms and kitchens.',
+        narr: 'Standard setup - effective when fans are used in bathrooms and kitchens.',
       },
       {
         label: 'Natural only (windows / vents)',
@@ -737,7 +737,7 @@ export const QUESTIONS: Question[] = [
         delta: +4,
         carbonDelta: 0,
         category: 'electrics',
-        narr: 'Individual RCBO protection per circuit — safest current standard.',
+        narr: 'Individual RCBO protection per circuit - safest current standard.',
       },
       {
         label: 'Standard modern (10–20 yrs)',
@@ -745,7 +745,7 @@ export const QUESTIONS: Question[] = [
         delta: +1,
         carbonDelta: 0,
         category: 'electrics',
-        narr: 'Compliant with 17th edition regs — typically fine for now.',
+        narr: 'Compliant with 17th edition regs - typically fine for now.',
       },
       {
         label: 'Old fuse box (> 20 yrs)',
@@ -753,7 +753,7 @@ export const QUESTIONS: Question[] = [
         delta: -3,
         carbonDelta: 0,
         category: 'electrics',
-        narr: 'Older boards may fail EICR — a requirement for lettings.',
+        narr: 'Older boards may fail EICR - a requirement for lettings.',
       },
       {
         label: 'Very old / needs rewire',
@@ -761,7 +761,7 @@ export const QUESTIONS: Question[] = [
         delta: -6,
         carbonDelta: 0,
         category: 'electrics',
-        narr: 'Rewire likely needed — can flag on surveys and affect mortgage offers.',
+        narr: 'Rewire likely needed - can flag on surveys and affect mortgage offers.',
       },
     ],
   },
@@ -786,7 +786,7 @@ export const QUESTIONS: Question[] = [
         delta: 0,
         carbonDelta: 0,
         category: 'plumbing',
-        narr: 'Copper still in use — keep an eye on joints and pressure.',
+        narr: 'Copper still in use - keep an eye on joints and pressure.',
       },
       {
         label: 'Old lead or galvanised pipes',
@@ -809,7 +809,7 @@ export const QUESTIONS: Question[] = [
         delta: +3,
         carbonDelta: 0,
         category: 'plumbing',
-        narr: 'Strong mains pressure — great for combi boilers and multiple outlets.',
+        narr: 'Strong mains pressure - great for combi boilers and multiple outlets.',
       },
       {
         label: 'Good',
@@ -833,7 +833,7 @@ export const QUESTIONS: Question[] = [
         delta: -4,
         carbonDelta: 0,
         category: 'plumbing',
-        narr: 'Often signals old pipework or mains supply issues — worth a plumber check.',
+        narr: 'Often signals old pipework or mains supply issues - worth a plumber check.',
       },
     ],
   },
@@ -1053,7 +1053,7 @@ const WIN_MAP: Record<string, (optValue: string) => WinCandidate | null> = {
     if (v === 'cavity_unins')
       return {
         title: 'Cavity wall insulation',
-        sub: 'Cheap and quick — biggest bang for buck',
+        sub: 'Cheap and quick - biggest bang for buck',
         savingPerYear: 220,
         points: 5,
       }
@@ -1127,7 +1127,7 @@ const WIN_MAP: Record<string, (optValue: string) => WinCandidate | null> = {
     if (v === 'halogen')
       return {
         title: 'Switch all bulbs to LED',
-        sub: 'LEDs use 90% less energy — quick payback',
+        sub: 'LEDs use 90% less energy - quick payback',
         savingPerYear: 70,
         points: 3,
       }
@@ -1185,13 +1185,13 @@ export function getOpportunities(answers: Partial<Answers>): Opportunity[] {
     opps.push({
       icon: '⚙️',
       title: 'Ageing gas boiler (> 20 yrs)',
-      sub: 'Running at reduced efficiency — consider replacement.',
+      sub: 'Running at reduced efficiency - consider replacement.',
     })
   if (answers.wallType === 'solid_unins')
     opps.push({
       icon: '🧱',
       title: 'Uninsulated solid walls',
-      sub: 'Major heat loss — insulation would significantly cut bills.',
+      sub: 'Major heat loss - insulation would significantly cut bills.',
     })
   if (answers.controls === 'none')
     opps.push({
@@ -1203,7 +1203,7 @@ export function getOpportunities(answers: Partial<Answers>): Opportunity[] {
     opps.push({
       icon: '🚰',
       title: 'Old lead / galvanised pipes',
-      sub: 'Health concern and mortgage risk — survey recommended.',
+      sub: 'Health concern and mortgage risk - survey recommended.',
     })
   return opps.slice(0, 4)
 }

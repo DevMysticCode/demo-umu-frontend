@@ -18,7 +18,7 @@
           </div>
           <div class="feat-headline">Every property has a story.</div>
           <div class="feat-sub">
-            Bills, value, comparisons, energy rating —
+            Bills, value, comparisons, energy rating -
             scored 0–100 from public records.
             <b>Done in 60 seconds.</b>
           </div>
@@ -75,7 +75,7 @@
           <div class="feat-headline">Every property has a history.</div>
           <div class="feat-sub">
             Title, planning, surveys, certificates,
-            warranties and fittings — verified,
+            warranties and fittings - verified,
             organised and ready before any offer.
           </div>
           <ul class="feat-checks">
@@ -388,8 +388,8 @@ function goToPassportSample() {
     max-height: 150px;
   }
 
-  /* Footer stays a row (meta on left, CTA pill on right) — same as
-     desktop — but the meta text can wrap under the icon if needed. */
+  /* Footer stays a row (meta on left, CTA pill on right) - same as
+     desktop - but the meta text can wrap under the icon if needed. */
   .feat-footer {
     padding: 12px 14px 14px;
     gap: 10px;
@@ -402,7 +402,7 @@ function goToPassportSample() {
   .feat-cta svg { width: 14px; height: 14px; }
 
   /* If the viewport really is tiny (<360px), we still can't fit
-     everything on one row cleanly — collapse only the footer to
+     everything on one row cleanly - collapse only the footer to
      stack the CTA below the meta, but keep illustration + body
      side-by-side above. */
   @media (max-width: 360px) {

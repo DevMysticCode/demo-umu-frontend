@@ -212,7 +212,7 @@ function waitForVideo(el: HTMLVideoElement | null, fallbackMs = 8000): Promise<v
     el.addEventListener('ended', finishOnce, { once: true })
     setTimeout(finishOnce, fallbackMs)
     el.play?.().catch(() => {
-      /* autoplay attribute already asked for this — the fallback timer
+      /* autoplay attribute already asked for this - the fallback timer
          covers a WebView that silently refuses both */
     })
   })
@@ -324,7 +324,7 @@ onBeforeUnmount(() => {
   position: fixed;
   inset: 0;
   z-index: 500;
-  /* Default/fallback — overridden by the inline :style binding (overlayBg),
+  /* Default/fallback - overridden by the inline :style binding (overlayBg),
      which live-tracks the opening video's own backdrop color so the screen
      darkens in step with the clip instead of staying flat white behind it. */
   background: #ffffff;
@@ -429,7 +429,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
 }
-/* No fixed aspect-ratio, no card treatment — sized by the video's own
+/* No fixed aspect-ratio, no card treatment - sized by the video's own
    intrinsic dimensions, no border-radius/shadow so it sits directly on
    the overlay's own background rather than reading as a boxed card. */
 .pa-video {
@@ -440,7 +440,7 @@ onBeforeUnmount(() => {
 
 /* Stamp lands on the LEFT-hand page of the opened passport (measured
    against the opening video's actual last frame: the left page spans
-   roughly x 11-48%, y 16-82% of the frame — this box sits inset within
+   roughly x 11-48%, y 16-82% of the frame - this box sits inset within
    that, so the stamp reads as fully on the left page rather than
    straddling the spine into the middle of the spread). */
 .pa-stamp-area {
@@ -455,7 +455,7 @@ onBeforeUnmount(() => {
   justify-content: center;
 }
 
-/* Stamp tool + impression — centered explicitly via top/left/translate(-50%,-50%)
+/* Stamp tool + impression - centered explicitly via top/left/translate(-50%,-50%)
    baked into every transform value, rather than relying on the (spec-correct
    but inconsistently-supported on older WebViews) static-position-of-an-
    absolute-flex-child behavior. Every keyframe below starts from that same
@@ -535,7 +535,7 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
-/* Points — plain glowing text, no card/background/shadow (per the
+/* Points - plain glowing text, no card/background/shadow (per the
    reference: a big chunky "+N" with a soft glow behind it, floating
    directly on the scene, "POINTS EARNED" underneath). The 3D-bevel look
    is approximated with a gradient fill + stacked text-shadows, since a
@@ -557,7 +557,7 @@ onBeforeUnmount(() => {
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.01em;
-  /* Solid, dark app-aqua fill — the previous pale gradient (near-white at
+  /* Solid, dark app-aqua fill - the previous pale gradient (near-white at
      the top) washed out against the white overlay background and was
      hard to read. */
   color: #00817c;

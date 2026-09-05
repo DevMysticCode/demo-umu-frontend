@@ -13,7 +13,7 @@
 
     <main class="nw-body">
       <div class="atm-bg teal" />
-      <p class="nw-intro">Property law and compliance updates that affect your Passport — curated, not automated. New items are added as the law actually changes.</p>
+      <p class="nw-intro">Property law and compliance updates that affect your Passport - curated, not automated. New items are added as the law actually changes.</p>
 
       <!-- Featured — the single most significant item, shown big -->
       <a v-if="featured" class="nw-hero" :href="featured.url" target="_blank" rel="noopener">

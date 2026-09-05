@@ -418,7 +418,7 @@ const steps = [
   color: #94a3b8;
 }
 
-/* "+ N more sections" footer hint — sample only */
+/* "+ N more sections" footer hint - sample only */
 .sec-more {
   margin-top: 4px;
   padding: 14px 16px;

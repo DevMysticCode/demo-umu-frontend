@@ -39,10 +39,10 @@
         >
         <div>
           <div class="vb-benefit__head">
-            Passport unlocked — free on day one
+            Passport unlocked - free on day one
           </div>
           <div class="vb-benefit__sub">
-            It's yours free when you start viewing — no £35 charge.
+            It's yours free when you start viewing - no £35 charge.
           </div>
         </div>
       </div>
@@ -132,7 +132,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  /** Tapped on the unverified CTA — parent decides whether to navigate
+  /** Tapped on the unverified CTA - parent decides whether to navigate
    *  to sign-in (guests) or /buyer-profile/build (logged-in). */
   (e: 'start-verification'): void
   /** Verified user wants to view their buyer profile. */

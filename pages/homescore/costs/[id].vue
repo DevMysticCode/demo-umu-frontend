@@ -56,7 +56,7 @@
             BUYER SNAPSHOT
           </div>
           <div class="buyer-conf-title">
-            HomeScore {{ displayScore || '—' }} · <span>Based on public data</span>
+            HomeScore {{ displayScore || '-' }} · <span>Based on public data</span>
           </div>
           <div class="buyer-conf-desc">{{ confidenceTitle }}</div>
         </div>
@@ -89,7 +89,7 @@
               </linearGradient>
             </defs>
           </svg>
-          <div class="buyer-conf-dial-num">{{ displayScore || '—' }}</div>
+          <div class="buyer-conf-dial-num">{{ displayScore || '-' }}</div>
         </div>
       </div>
 
@@ -112,7 +112,7 @@
           <img src="/op-icons/investment/growthChart.png" alt="" class="buyer-conf-stat-ic" loading="lazy" />
           <div class="buyer-conf-stat-text">
             <div class="buyer-conf-stat-label">Compared to area</div>
-            <div class="buyer-conf-stat-val">{{ bsAreaLabel ?? '—' }}</div>
+            <div class="buyer-conf-stat-val">{{ bsAreaLabel ?? '-' }}</div>
             <div v-if="bsAreaSubtext" class="buyer-conf-stat-sub">{{ bsAreaSubtext }}</div>
           </div>
         </div>
@@ -245,7 +245,7 @@
         <div class="tab-note">
           Water &amp; sewerage is your water company's
           <b v-if="waterInfo?.company">{{ waterInfo.company }}</b> 2024/25
-          regional average — water companies don't expose a per-property metered
+          regional average - water companies don't expose a per-property metered
           bill, so this is the published area figure.
         </div>
       </div>
@@ -413,7 +413,7 @@
           <div v-if="openCards.has('flood')" class="risk-drill">
             <b>Overall rating:</b> {{ floodLabel }}.<br />
             <span class="risk-drill-note">
-              The Environment Agency returns a combined assessment — we don't
+              The Environment Agency returns a combined assessment - we don't
               get rivers / surface-water / reservoir split separately.
             </span>
           </div>
@@ -488,7 +488,7 @@
               :key="i"
               style="margin-bottom: 4px"
             >
-              · <b>{{ a.dateLabel }}</b> — {{ a.description }}
+              · <b>{{ a.dateLabel }}</b> - {{ a.description }}
               <span :style="{ color: a.statusColor }">{{ a.status }}</span>
             </div>
             <div class="risk-drill-note">Source: Planning.data.gov.uk</div>
@@ -517,7 +517,7 @@
               this point.
               <div class="risk-drill-note">
                 Full coal-mining subsidence needs a paid Coal Authority CON29M
-                report (~£25) — there's no free per-property API.
+                report (~£25) - there's no free per-property API.
               </div>
             </template>
           </div>
@@ -550,7 +550,7 @@
         <div class="tab-hero-stat">
           <div>
             <div class="tab-hero-stat-big">
-              {{ crime ? crimePerMonth : '—' }}<small> /mo</small>
+              {{ crime ? crimePerMonth : '-' }}<small> /mo</small>
             </div>
             <div class="tab-hero-stat-label">Crimes within 1 mile</div>
           </div>
@@ -649,7 +649,7 @@
             <div class="br-card-body-inner">
               <template v-if="schools.length">
                 <div v-for="(s, i) in schools" :key="i" class="school-row">
-                  <div class="school-ofsted nodata"><big>—</big></div>
+                  <div class="school-ofsted nodata"><big>-</big></div>
                   <div class="school-info">
                     <div class="school-name">{{ s.name }}</div>
                     <div class="school-meta">{{ s.meta }}</div>
@@ -700,7 +700,7 @@
                 <div class="bb-card">
                   <div class="bb-speed">
                     <span class="bb-num">{{
-                      broadband.maxDownload ?? '—'
+                      broadband.maxDownload ?? '-'
                     }}</span>
                     <span class="bb-unit">Mb/s</span>
                   </div>
@@ -762,7 +762,7 @@
                   :key="i"
                   style="margin-bottom: 4px"
                 >
-                  <b>{{ t.name }}</b> — {{ t.dist }} ({{ t.kind }})
+                  <b>{{ t.name }}</b> - {{ t.dist }} ({{ t.kind }})
                 </div>
               </template>
               <div v-else class="br-empty-note">
@@ -800,7 +800,7 @@
                   :key="i"
                   style="margin-bottom: 4px"
                 >
-                  <b>{{ h.name }}</b> — {{ h.dist }} ({{ h.kind }})
+                  <b>{{ h.name }}</b> - {{ h.dist }} ({{ h.kind }})
                 </div>
               </template>
               <div v-else class="br-empty-note">
@@ -862,10 +862,10 @@
       <div v-if="activeTab === 'street'" class="tab-panel active">
         <div class="street-rank-hero">
           <div class="street-rank-big">
-            {{ streetRank ?? '—'
+            {{ streetRank ?? '-'
             }}<span
               >{{ streetRank ? ordinalSuffix(streetRank) : '' }} of
-              {{ streetTotal ?? '—' }}</span
+              {{ streetTotal ?? '-' }}</span
             >
           </div>
           <div class="street-rank-small">{{ streetRankLabel }}</div>
@@ -1002,7 +1002,7 @@
           </div>
           <div class="state-banner-sub">
             The owner has claimed this home and is building a verified Passport
-            —
+            -
             <b
               >{{ passportSectionsDone }} of
               {{ passportSectionsTotal }} sections</b
@@ -1039,7 +1039,7 @@
           Get in the queue before it goes live.
         </div>
         <div class="watch-card-sub">
-          Registering interest tells the owner a real buyer is waiting — and
+          Registering interest tells the owner a real buyer is waiting - and
           puts you <b>first in line</b> for a viewing the moment the Passport
           publishes.
         </div>
@@ -1061,7 +1061,7 @@
               Free Passport the moment it publishes
             </div>
             <div class="watch-trigger-sub">
-              Verified buyers get the full sales pack free on publish — worth
+              Verified buyers get the full sales pack free on publish - worth
               £15.
             </div>
           </div>
@@ -1091,7 +1091,7 @@
           </div>
           <div class="state-banner-sub">
             Full verified sales pack ready<span v-if="passportSectionsTotal">
-              —
+              -
               <b
                 >{{ passportSectionsDone }} of
                 {{ passportSectionsTotal }} sections</b
@@ -1108,7 +1108,7 @@
           </div>
           <span class="buy-pp-grade">Solicitor-grade</span>
         </div>
-        <div class="buy-pp-title">The full story on this home — verified.</div>
+        <div class="buy-pp-title">The full story on this home - verified.</div>
         <div class="buy-pp-sub">
           Everything a buyer's solicitor needs, gathered &amp; checked upfront.
           Homes with a Passport sell
@@ -1139,7 +1139,7 @@
             <div class="buy-pp-price">£15<small> one-off</small></div>
           </div>
           <div class="buy-pp-pricenote">
-            Instant access to the full pack. <b>Free for verified buyers</b> —
+            Instant access to the full pack. <b>Free for verified buyers</b> -
             verify once, open every Passport.
           </div>
         </div>
@@ -1153,7 +1153,7 @@
         <div class="qoffer-title">Make an offer the seller sees first.</div>
         <div class="qoffer-sub">
           Verified buyers can submit a qualified offer straight from the
-          Passport — ID &amp; funds already checked, so the seller knows it's
+          Passport - ID &amp; funds already checked, so the seller knows it's
           real.
           <b style="color: #ffd58a">You need to be verified to make one.</b>
         </div>
@@ -1551,13 +1551,13 @@ const askQuestions = computed<AskRow[]>(() => {
     id: 'gas-safety',
     icon: '/op-icons/homescore/flame.png',
     title: 'Do you have a Gas Safety certificate?',
-    sub: 'A CP12 from a Gas Safe registered engineer confirms the boiler and gas appliances are safe — ask for the latest one.',
+    sub: 'A CP12 from a Gas Safe registered engineer confirms the boiler and gas appliances are safe - ask for the latest one.',
   })
   out.push({
     id: 'eicr',
     icon: '/op-icons/homescore/lightning.png',
     title: 'Do you have an EICR certificate?',
-    sub: 'Electrical Installation Condition Report — not legally required, but worth asking.',
+    sub: 'Electrical Installation Condition Report - not legally required, but worth asking.',
   })
   return out
 })
@@ -1805,7 +1805,7 @@ const crimeHeadline = computed(() => {
   if (m === 0) return 'No reported crime data'
   if (m < 25) return 'Low for an urban area'
   if (m < 60) return 'Around average for area type'
-  return 'Higher than average — worth a look'
+  return 'Higher than average - worth a look'
 })
 const crimeTrendText = computed(() => {
   const c: any = crime.value
@@ -2059,9 +2059,9 @@ const confidenceTitle = computed(() => {
   // Match the prototype's cautious framing: whenever the EPC flags fabric
   // issues, lead with "Worth investigating — N insulation flag(s)".
   if (flagCount) {
-    return `Worth investigating — ${flagCount} insulation flag${flagCount > 1 ? 's' : ''}`
+    return `Worth investigating - ${flagCount} insulation flag${flagCount > 1 ? 's' : ''}`
   }
-  if (score >= 80) return 'Strong public record — minimal flags'
+  if (score >= 80) return 'Strong public record - minimal flags'
   if (score >= 60) return 'Above average public record'
   if (score >= 40) return 'Worth investigating'
   return 'Investigate before offering'

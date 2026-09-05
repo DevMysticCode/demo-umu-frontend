@@ -122,7 +122,7 @@
           <!-- Body column: title + sub + badges -->
           <div class="psi-drop-body">
             <div class="psi-drop-title">
-              {{ r.addressLine1 || r.address || '—' }}
+              {{ r.addressLine1 || r.address || '-' }}
             </div>
             <div class="psi-drop-sub">
               <span v-if="r.city">{{ r.city }} · </span>{{ r.postcode || '' }}
@@ -379,7 +379,7 @@ function onLocateClick() {
     (err) => {
       locateError.value =
         err?.code === 1
-          ? 'Location access denied — allow location access in your device settings.'
+          ? 'Location access denied - allow location access in your device settings.'
           : 'Could not determine your location. Try typing a postcode instead.'
       locating.value = false
     },
@@ -682,7 +682,7 @@ defineExpose({ clearQuery })
   margin-top: 2px;
 }
 
-/* Badge strip — now inside .psi-drop-body so no left-padding needed. */
+/* Badge strip - now inside .psi-drop-body so no left-padding needed. */
 .psi-drop-badges {
   display: flex;
   gap: 4px;

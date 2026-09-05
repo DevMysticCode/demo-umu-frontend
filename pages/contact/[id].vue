@@ -137,7 +137,7 @@ onMounted(async () => {
       `${config.public.apiBase}/property/${propertyId}`,
     )
   } catch {
-    errorMsg.value = "Couldn't load property — try again."
+    errorMsg.value = "Couldn't load property - try again."
   }
 })
 
@@ -164,7 +164,7 @@ const sendMessage = async () => {
       },
     )
     showToast({
-      message: 'Sent — the owner has been notified',
+      message: 'Sent - the owner has been notified',
       iconEmoji: '✅',
     })
     // Give the toast a moment, then send the user back to the property.
@@ -174,7 +174,7 @@ const sendMessage = async () => {
     const msg =
       err?.data?.message ||
       err?.message ||
-      "Couldn't send — please try again."
+      "Couldn't send - please try again."
     errorMsg.value = msg
   } finally {
     sending.value = false

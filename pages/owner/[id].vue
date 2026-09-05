@@ -44,7 +44,7 @@
         </div>
         <div class="to-sent__title">Message sent!</div>
         <div class="to-sent__desc">
-          Your message has been delivered privately to the owner. We'll notify you if they respond — usually within a few days.
+          Your message has been delivered privately to the owner. We'll notify you if they respond - usually within a few days.
         </div>
 
         <div class="to-sent__card">
@@ -74,7 +74,7 @@
           <div class="to-hero__emoji">💡</div>
           <div class="to-hero__title">Reach the owner directly</div>
           <div class="to-hero__desc">
-            Sometimes the best deals happen before a property is listed. Send a message — we'll deliver it privately. Your identity stays hidden unless they respond.
+            Sometimes the best deals happen before a property is listed. Send a message - we'll deliver it privately. Your identity stays hidden unless they respond.
           </div>
         </div>
 

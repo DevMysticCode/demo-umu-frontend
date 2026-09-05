@@ -381,7 +381,7 @@ function epcColor(rating: string): string {
 }
 /* In progress = teal (matches the property page's in-progress accent),
    Published = gold (matches the property page's published "champagne"
-   band) — so this badge's color actually means something instead of
+   band) - so this badge's color actually means something instead of
    every claimed property looking identical regardless of status. */
 .prop-badge-pp.in-progress {
   background: #00a19a;

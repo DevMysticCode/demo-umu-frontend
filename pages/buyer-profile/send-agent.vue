@@ -47,7 +47,7 @@
       <label class="sa-field">
         <span class="sa-field-label">
           Email
-          <span class="sa-field-hint">— the secure link is sent here</span>
+          <span class="sa-field-hint">- the secure link is sent here</span>
         </span>
         <input
           v-model="form.email"
@@ -61,7 +61,7 @@
       <label class="sa-field">
         <span class="sa-field-label">
           Firm
-          <span class="sa-field-hint">— optional</span>
+          <span class="sa-field-hint">- optional</span>
         </span>
         <input
           v-model="form.firm"
@@ -107,7 +107,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useBuyerProfile } from '~/composables/useBuyerProfile'
 import { useAppToast } from '~/composables/useCustomToast'
 
-definePageMeta({ title: 'Share with Agent — UmovingU', middleware: 'auth' })
+definePageMeta({ title: 'Share with Agent - UmovingU', middleware: 'auth' })
 
 const router = useRouter()
 const { getBuyerProfile, createShare } = useBuyerProfile()
@@ -219,7 +219,7 @@ function goView() { router.push('/buyer-profile/view') }
   cursor: pointer; padding: 8px 4px; white-space: nowrap;
 }
 
-/* Scope panel — same as share */
+/* Scope panel - same as share */
 .scope-panel {
   background: #f2faf8;
   border: 1.5px solid #e5f4f2;

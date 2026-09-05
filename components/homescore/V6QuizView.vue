@@ -260,7 +260,7 @@
               type="button"
               @click="needAnswerModalOpen = false"
             >
-              Got it — let's answer
+              Got it - let's answer
             </button>
           </div>
         </div>
@@ -281,7 +281,7 @@
             <div class="modal-grip" />
             <div class="modal-head">
               <div class="modal-eyebrow">⚡ Shortcut</div>
-              <div class="modal-title">Upload a bill — skip the quiz</div>
+              <div class="modal-title">Upload a bill - skip the quiz</div>
               <div class="modal-sub">
                 Your last gas or electricity bill tells us your real running
                 cost in seconds. More accurate than the EPC estimate.
@@ -316,7 +316,7 @@
             <div class="modal-read-row">
               <div class="modal-read-icon">🔎</div>
               <div class="modal-read-text">
-                We'll read your <b>kWh</b>, <b>tariff</b> and <b>supplier</b> —
+                We'll read your <b>kWh</b>, <b>tariff</b> and <b>supplier</b> -
                 that's all. The bill itself isn't stored after extraction.
               </div>
             </div>
@@ -378,7 +378,7 @@ interface Props {
   searchesToday?: number
   /** Number of users watching this property (wishlist + saved). */
   watchersCount?: number
-  /** Passport status — drives the claim box, same as the score screen. */
+  /** Passport status - drives the claim box, same as the score screen. */
   passportState?: 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
   passportProgressPct?: number
   passportSectionsDone?: number
@@ -464,7 +464,7 @@ const FALLBACK_QUESTS: Quest[] = [
     n: 2,
     title: 'Cavity wall insulation',
     summary: 'Recommended on EPC',
-    desc: 'Fill cavity walls to cut heat loss — usually the biggest single annual saving.',
+    desc: 'Fill cavity walls to cut heat loss - usually the biggest single annual saving.',
     stat: 'structure',
     pts: 8,
     save: 224,
@@ -488,7 +488,7 @@ const FALLBACK_QUESTS: Quest[] = [
     n: 4,
     title: 'Low energy lighting',
     summary: 'Recommended on EPC',
-    desc: 'Swap remaining fittings to LED — the cheapest single EPC step.',
+    desc: 'Swap remaining fittings to LED - the cheapest single EPC step.',
     stat: 'efficiency',
     pts: 1,
     save: 45,
@@ -531,7 +531,7 @@ function classifyStat(title: string, improvementType: string | null): string {
   if (/(boiler|heating|heat pump|radiator|thermostat|controls|trv)/.test(t))
     return 'heating'
   if (/(led|lighting|light)/.test(t)) return 'efficiency'
-  return 'structure' // walls, roof, floor, windows, draught — default catch-all
+  return 'structure' // walls, roof, floor, windows, draught - default catch-all
 }
 
 // SAP score (0-100) → EPC grade letter (A–G)
@@ -553,7 +553,7 @@ const QUESTS = computed<Quest[]>(() => {
   if (!Array.isArray(recs) || recs.length === 0) {
     // eslint-disable-next-line no-console
     console.warn(
-      '[V6QuizView] No epcRecommendations on property — using fallback quests.',
+      '[V6QuizView] No epcRecommendations on property - using fallback quests.',
       'Property id:',
       (props.property as any)?.id,
       'Postcode:',
@@ -615,7 +615,7 @@ const QUESTS = computed<Quest[]>(() => {
       stat,
       pts,
       save: Number(r?.typicalSaving ?? 0) || 0,
-      cost: r?.costRange || '—',
+      cost: r?.costRange || '-',
       grant,
       resultingSap,
       resultingGrade: resultingSap != null ? sapToGrade(resultingSap) : null,
@@ -1037,7 +1037,7 @@ watch(
   font-size: 9px;
   font-weight: 800;
 }
-/* Claim CTA + views row — consistent with the Score screen */
+/* Claim CTA + views row - consistent with the Score screen */
 .claim-cta-btn {
   display: flex;
   width: 100%;
@@ -1101,7 +1101,7 @@ watch(
   color: white;
 }
 
-/* Pill background — matches V6ScoreView so both surfaces (results + quiz)
+/* Pill background - matches V6ScoreView so both surfaces (results + quiz)
    share the exact same social-proof treatment. */
 .hs-addr-stat-row .hs-live-pill {
   display: inline-flex;
@@ -1857,7 +1857,7 @@ watch(
 
 /* ── Bill upload drawer ─────────────────────────────────────── */
 .modal-overlay {
-  /* Re-declare design tokens locally — the modal is teleported to
+  /* Re-declare design tokens locally - the modal is teleported to
      <body> so it loses access to the CSS custom properties defined on
      `.hs-v6-quiz`. Without these, the white sheet renders transparent
      and the supplier tiles / buttons lose their tinted backgrounds. */
