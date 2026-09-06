@@ -7,11 +7,11 @@
     @close="handleClose"
   >
     <div class="cp">
-      <!-- Sub-header address + price chip -->
+      <!-- Sub-header: address, then the price pill on its own line below
+           it - the prototype stacks these, it doesn't float the pill to
+           the right of the address. -->
       <div class="cp__subheader">
-        <div class="cp__sub-text">
-          <div class="cp__sub-address">{{ displayAddressPiped }}</div>
-        </div>
+        <div class="cp__sub-address">{{ displayAddressPiped }}</div>
         <div class="cp__price-chip">One-time £99</div>
       </div>
 
@@ -39,33 +39,43 @@
 
       <!-- Step 1: info / pay -->
       <div v-else class="cp__body">
-        <!-- Hero -->
+        <!-- Hero - the prototype sits the book beside the heading (desktop
+             two-column); stacked here for mobile width, but keeps the same
+             soft circular halo behind the book. -->
         <div class="cp__hero">
-          <img src="/op-icons/landing/propertyPassportCard.png" alt="" class="cp__hero-img" loading="lazy" />
+          <div class="cp__hero-halo">
+            <img src="/op-icons/landing/propertyPassportCard.png" alt="" class="cp__hero-img" loading="lazy" />
+          </div>
           <div class="cp__hero-heading">Everything verified.<br />Nothing hidden.</div>
           <div class="cp__hero-caption">Trusted legal, planning and ownership records - all in one place.</div>
         </div>
 
-        <!-- 3-icon strip -->
+        <!-- 3-icon strip, with thin dividers between items like the
+             prototype. -->
         <div class="cp__value-row">
-          <div v-for="v in valueProps" :key="v.label" class="cp__value">
-            <img :src="v.icon" alt="" class="cp__value-icon-img" loading="lazy" />
-            <div class="cp__value-label">{{ v.label }}</div>
-          </div>
+          <template v-for="(v, i) in valueProps" :key="v.label">
+            <div v-if="i > 0" class="cp__value-sep" />
+            <div class="cp__value">
+              <img :src="v.icon" alt="" class="cp__value-icon-img" loading="lazy" />
+              <div class="cp__value-label">{{ v.label }}</div>
+            </div>
+          </template>
         </div>
 
-        <!-- Features list -->
-        <div class="cp__features-title">What's included</div>
+        <!-- Features list - "What's included" is the card's own heading,
+             not a separate label above a second card, matching the
+             prototype's single bordered card containing both. -->
         <div class="cp__features">
+          <div class="cp__features-title">What's included</div>
           <div v-for="feat in features" :key="feat.label" class="cp__feature">
             <span class="cp__feature-check">✓</span>
             <div class="cp__feature-label">{{ feat.label }}</div>
           </div>
         </div>
 
-        <!-- Price summary -->
-        <div class="cp__features-title">Payment summary</div>
+        <!-- Price summary - same "heading inside the card" structure. -->
         <div class="cp__price-card">
+          <div class="cp__features-title">Payment summary</div>
           <div class="cp__price-row">
             <span class="cp__price-label">Property Passport access</span>
             <span class="cp__price-value">£99.00</span>
@@ -349,33 +359,28 @@ onUnmounted(() => {
   color: var(--ink);
 }
 
+/* Address, then the price pill below it on its own line - the
+   prototype stacks these rather than floating the pill to the right. */
 .cp__subheader {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 20px 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 20px 16px;
   border-bottom: 1px solid var(--line);
 }
 
-.cp__sub-text {
-  flex: 1;
-  min-width: 0;
-}
-
 .cp__sub-address {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-faint);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .cp__price-chip {
   background: var(--brand-pale);
   border: 1px solid var(--brand-soft);
   border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 10px;
+  padding: 5px 12px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--brand);
   flex-shrink: 0;
@@ -397,11 +402,20 @@ onUnmounted(() => {
   text-align: center;
 }
 
-.cp__hero-img {
-  width: 96px;
-  height: 96px;
-  object-fit: contain;
+.cp__hero-halo {
+  width: 168px;
+  height: 168px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--brand-pale) 0%, rgba(230, 251, 250, 0) 72%);
+  display: grid;
+  place-items: center;
   margin: 0 auto 14px;
+}
+
+.cp__hero-img {
+  width: 128px;
+  height: 128px;
+  object-fit: contain;
   display: block;
 }
 
@@ -423,9 +437,9 @@ onUnmounted(() => {
 /* 3-icon value strip */
 .cp__value-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  padding: 16px 6px;
+  padding: 18px 4px;
   margin-bottom: 20px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -437,13 +451,20 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
+  gap: 10px;
   padding: 0 4px;
 }
 
+.cp__value-sep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--line);
+  flex-shrink: 0;
+}
+
 .cp__value-icon-img {
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -455,38 +476,48 @@ onUnmounted(() => {
   line-height: 1.3;
 }
 
-/* Features */
+/* Features - "What's included" is this card's own heading (its first
+   grid item, spanning both columns), not a separate label sitting
+   above a second card. */
 .cp__features-title {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
-  color: var(--ink);
-  margin-bottom: 12px;
+  color: var(--navy);
+  margin-bottom: 8px;
 }
 
 .cp__features {
   background: #fff;
   border: 1.5px solid var(--line);
   border-radius: 16px;
-  padding: 14px 16px;
+  padding: 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px 14px;
   margin-bottom: 20px;
 }
+.cp__features > .cp__features-title {
+  grid-column: 1 / -1;
+}
 
 .cp__feature {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+  /* Each item sits on its own light pill, matching the prototype -
+     these read as distinct rows within the card, not plain text. */
+  background: #f5f6fa;
+  border-radius: 10px;
+  padding: 10px 12px;
 }
 
 .cp__feature-check {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--brand);
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -502,13 +533,18 @@ onUnmounted(() => {
   line-height: 1.35;
 }
 
-/* Price card */
+/* Price card - "Payment summary" is this card's own heading (its first
+   child), same reasoning as .cp__features above. */
 .cp__price-card {
   background: #fff;
   border: 1.5px solid var(--line);
   border-radius: 16px;
   overflow: hidden;
   margin-bottom: 20px;
+}
+.cp__price-card > .cp__features-title {
+  padding: 16px 16px 4px;
+  margin-bottom: 0;
 }
 
 .cp__price-row {
