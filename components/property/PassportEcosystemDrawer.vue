@@ -73,7 +73,15 @@
 
             <!-- ── 4 passport cards ─────────────────────────────── -->
             <div class="pe-cards">
-              <div v-for="c in passportCards" :key="c.key" class="pe-card">
+              <button
+                v-for="c in passportCards"
+                :key="c.key"
+                type="button"
+                class="pe-card"
+                :class="{ 'pe-card--disabled': c.status === 'soon' }"
+                :disabled="c.status === 'soon'"
+                @click="onCardClick(c)"
+              >
                 <img
                   :src="c.img"
                   :alt="`${c.title} cover`"
@@ -89,7 +97,7 @@
                   :class="`pe-card-pill--${c.status}`"
                   >{{ c.statusLabel }}</span
                 >
-              </div>
+              </button>
             </div>
 
             <!-- ── Power of the ecosystem ───────────────────────── -->
@@ -133,10 +141,18 @@
         </div>
       </div>
     </Transition>
+    <AuthGateModal
+      v-model="authGateOpen"
+      :title="authGateCopy.title"
+      :body="authGateCopy.body"
+      redirect-target="/dashboard"
+    />
   </Teleport>
 </template>
 
 <script setup lang="ts">
+import AuthGateModal from '~/components/ui/AuthGateModal.vue'
+
 defineProps<{
   open: boolean
 }>()
@@ -144,6 +160,45 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
+
+// Tapping a card takes over from here whether or not the drawer's caller
+// is itself behind auth (discover.vue's version isn't) - a guest picking
+// Seller/Landlord/Buyer here needs to create an account or sign in
+// first, with copy naming the role they picked, then land on the
+// dashboard's property search to actually start that journey. Already
+// signed in just goes straight there.
+const authGateOpen = ref(false)
+const authGateCopy = ref({ title: '', body: '' })
+const ROLE_COPY: Record<string, { title: string; body: string }> = {
+  seller: {
+    title: 'Sign in to start your Seller Passport',
+    body: 'Create a free account to verify your home and build a Seller Passport buyers can trust.',
+  },
+  landlord: {
+    title: 'Sign in to start your Landlord Passport',
+    body: 'Create a free account to build a Landlord Passport - compliance, tenancy documents and more, all in one place.',
+  },
+  buyer: {
+    title: 'Sign in to start your Buyer Passport',
+    body: 'Create a free account to build a verified Buyer Passport and move with more confidence.',
+  },
+}
+function hasToken(): boolean {
+  return typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
+}
+function onCardClick(card: { key: string; status: string }) {
+  if (card.status === 'soon') return
+  emit('close')
+  if (hasToken()) {
+    navigateTo('/dashboard')
+    return
+  }
+  authGateCopy.value = ROLE_COPY[card.key] ?? {
+    title: 'Sign in to continue',
+    body: 'Create a free account to get started.',
+  }
+  authGateOpen.value = true
+}
 
 const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
   onDismiss: () => emit('close'),
@@ -409,6 +464,19 @@ const powerItems = [
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+.pe-card:active {
+  background: #f7f6fb;
+}
+.pe-card--disabled {
+  cursor: default;
+}
+.pe-card--disabled:active {
+  background: #fff;
 }
 .pe-card-book {
   width: 100%;

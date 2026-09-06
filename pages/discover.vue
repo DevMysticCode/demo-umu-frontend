@@ -187,7 +187,7 @@
           <button
             type="button"
             class="exp-more-card exp-more-card--amber"
-            @click="navigateTo('/dashboard')"
+            @click="passportEcosystemOpen = true"
           >
             <div class="exp-more-top-row">
               <div class="exp-more-eyebrow-col">
@@ -262,6 +262,11 @@
       :body="authGateCopy.body"
       :redirect-target="authGateRedirect"
     />
+
+    <PassportEcosystemDrawer
+      :open="passportEcosystemOpen"
+      @close="passportEcosystemOpen = false"
+    />
   </div>
 </template>
 
@@ -274,6 +279,7 @@ definePageMeta({ title: 'Explore - UmovingU' })
 
 import OPIcon from '~/components/ui/OPIcon.vue'
 import AuthGateModal from '~/components/ui/AuthGateModal.vue'
+import PassportEcosystemDrawer from '~/components/property/PassportEcosystemDrawer.vue'
 import PropertySearchExperienceClassic from '~/components/property/PropertySearchExperienceClassic.vue'
 import PropertyImage from '~/components/property/PropertyImage.vue'
 import { usePropertySearch } from '~/composables/usePropertySearch'
@@ -297,6 +303,7 @@ onMounted(() => {
 // straight onto the sign-in page — Buyer Passport gets its own
 // dedicated screen instead (see goToBuyerPassport below).
 const authGateOpen = ref(false)
+const passportEcosystemOpen = ref(false)
 
 const authGateCopy = {
   title: 'Sign in to see watched properties',
@@ -324,7 +331,12 @@ function goToWatching() {
     authGateOpen.value = true
     return
   }
-  navigateTo('/passport/collections')
+  // There's no dedicated "watched properties" list yet (only per-property
+  // watch on/off via WatchPropertyDrawer) - Saved Properties is the
+  // closest existing page until that's built. Was wrongly pointing at
+  // Property Collections (the seller passport grouping feature), which
+  // has nothing to do with watching properties as a buyer.
+  navigateTo('/profile/saved-properties')
 }
 
 // "2h ago" / "Yesterday" / "3d ago" style label for a recently-explored
@@ -569,18 +581,58 @@ function lastSoldLabel(dateStr: string): string {
   display: flex;
   flex-direction: column;
   text-align: left;
-  border: 1px solid #eef0f6;
+  border: 1px solid transparent;
   border-radius: 16px;
   padding: 14px 12px 16px 14px;
   font-family: inherit;
   cursor: pointer;
-  overflow: hidden;
+}
+/* Animated ring - a spinning conic-gradient sits behind the card, with
+   a second layer mirroring the card's own background covering all but
+   a thin rim of it, so the "border" itself appears to travel round the
+   card indefinitely. Layered via z-index rather than clipped with
+   overflow:hidden, which would also crop the ring at the card edge. */
+.exp-more-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: exp-more-spin 4s linear infinite;
+  z-index: 0;
+}
+.exp-more-card::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 13px;
+  background: inherit;
+  z-index: 0;
+}
+.exp-more-card > * {
+  position: relative;
+  z-index: 1;
+}
+@keyframes exp-more-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exp-more-card::before {
+    animation: none;
+  }
 }
 .exp-more-card--teal {
   background: linear-gradient(160deg, #eaf6f5 0%, #f8fcfb 100%);
 }
+.exp-more-card--teal::before {
+  background: conic-gradient(from 0deg, transparent 0%, #00a19a 12%, transparent 28%);
+}
 .exp-more-card--amber {
   background: linear-gradient(160deg, #fdf3e4 0%, #fdf9f2 100%);
+}
+.exp-more-card--amber::before {
+  background: conic-gradient(from 0deg, transparent 0%, #c9861a 12%, transparent 28%);
 }
 .exp-more-top-row {
   display: flex;
