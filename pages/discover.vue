@@ -331,12 +331,7 @@ function goToWatching() {
     authGateOpen.value = true
     return
   }
-  // There's no dedicated "watched properties" list yet (only per-property
-  // watch on/off via WatchPropertyDrawer) - Saved Properties is the
-  // closest existing page until that's built. Was wrongly pointing at
-  // Property Collections (the seller passport grouping feature), which
-  // has nothing to do with watching properties as a buyer.
-  navigateTo('/profile/saved-properties')
+  navigateTo('/profile/watched-properties')
 }
 
 // "2h ago" / "Yesterday" / "3d ago" style label for a recently-explored

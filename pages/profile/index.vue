@@ -398,6 +398,13 @@ const profileItems = [
     iconImage: '/op-icons/profile/savedProperties.jpeg',
     route: '/profile/saved-properties',
   },
+  {
+    title: 'Watched Properties',
+    description: 'Homes you\'re getting alerts for - claims, price and HomeScore changes.',
+    icon: 'watchedProperties',
+    iconImage: '/op-icons/misc/exploreWatching.png',
+    route: '/profile/watched-properties',
+  },
   // Billing & Payment History — hidden for now; route still exists at
   // /profile/subscription-plan if we re-introduce it later.
   // {

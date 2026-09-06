@@ -1236,16 +1236,6 @@
             </div>
 
             <div class="lp-inv-pw-heading">Property-wide</div>
-            <div class="lp-inv-room" @click="invScreen = 'safety'">
-              <div class="lp-inv-room-ic">
-                <img src="/op-icons/landlordPassport/smokeCOAlarms.png" alt="" class="lp-inv-room-ic-img" loading="lazy" />
-              </div>
-              <div class="lp-inv-room-bd">
-                <div class="lp-inv-room-n">Safety &amp; compliance</div>
-                <div class="lp-inv-room-m">Alarms, meters &amp; key locations</div>
-              </div>
-              <span class="lp-assess-back" style="font-size:20px">›</span>
-            </div>
             <div class="lp-inv-room" @click="openInvBins">
               <div class="lp-inv-room-ic">🗑️</div>
               <div class="lp-inv-room-bd">
@@ -1391,54 +1381,6 @@
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="invScreen = 'rooms'">Save room</button>
-          </div>
-        </div>
-
-        <!-- Property-wide: Safety & compliance -->
-        <div v-else-if="invScreen === 'safety'" class="lp-assess-screen">
-          <div class="lp-assess-hdr">
-            <button class="lp-assess-back" type="button" aria-label="Back" @click="invScreen = 'rooms'">‹</button>
-            <div class="lp-assess-title">Safety &amp; compliance</div>
-          </div>
-          <div class="lp-assess-scroll">
-            <div class="section-heading">Alarms - present &amp; tested</div>
-            <div v-for="(row, i) in invAlarmRows" :key="i" class="lp-repeat-block">
-              <div class="lp-repeat-head">
-                <span>{{ row.type === 'co' ? 'CO alarm' : 'Smoke alarm' }} {{ i + 1 }}</span>
-                <button type="button" class="lp-repeat-rm" aria-label="Remove" @click="removeInvAlarmRow(i)">✕</button>
-              </div>
-              <div class="mform-section">
-                <div class="mform-label">Location</div>
-                <input v-model="row.location" type="text" class="mform-input" placeholder="e.g. Hallway, ground floor" />
-              </div>
-            </div>
-            <button type="button" class="lp-add-row" @click="addInvAlarmRow('smoke')">＋ Add a smoke alarm</button>
-            <button type="button" class="lp-add-row" @click="addInvAlarmRow('co')">＋ Add a CO alarm</button>
-
-            <div class="section-heading" style="margin-top:20px">Key locations</div>
-            <div class="mform-section">
-              <div class="mform-label">🚰 Stopcock</div>
-              <input v-model="invKeyStopcock" type="text" class="mform-input" placeholder="e.g. Under kitchen sink" />
-            </div>
-            <div class="mform-section">
-              <div class="mform-label">💧 Water meter</div>
-              <input v-model="invKeyWaterMeter" type="text" class="mform-input" placeholder="e.g. External chamber, front path" />
-            </div>
-            <div class="mform-section">
-              <div class="mform-label">⚡ Fuse box / consumer unit</div>
-              <input v-model="invKeyFuseBox" type="text" class="mform-input" placeholder="e.g. Hallway cupboard" />
-            </div>
-            <div class="mform-section">
-              <div class="mform-label">🔥 Gas meter</div>
-              <input v-model="invKeyGasMeter" type="text" class="mform-input" placeholder="e.g. External box, front" />
-            </div>
-            <div class="mform-section">
-              <div class="mform-label">💡 Electricity meter</div>
-              <input v-model="invKeyElectricityMeter" type="text" class="mform-input" placeholder="e.g. Hallway cupboard" />
-            </div>
-          </div>
-          <div class="lp-assess-foot">
-            <button class="btn-primary" type="button" style="width:100%" @click="invScreen = 'rooms'">Save safety &amp; compliance</button>
           </div>
         </div>
 
@@ -2873,22 +2815,29 @@ interface InvRoom { id: string; name: string; icon: string; fixtures: string[]; 
 // their own tailored lists, but any extra room still needs something
 // sensible to check rather than an empty list.
 const CUSTOM_ROOM_FIXTURES = ['Walls & ceiling', 'Flooring', 'Windows & coverings', 'Doors & handles', 'Light fittings & switches']
+// Client feedback: the default fixture/content lists were too generous -
+// items like Skirting boards / Built-in wardrobe / Mirror cabinet / a
+// microwave aren't present in every let, and defaulting a full furniture
+// set (sofa, beds, wardrobes...) meant most landlords were removing more
+// than they kept. Contents now start empty for every room (the landlord
+// adds exactly what's actually there via "+ Add furnishing" - see
+// freshInventoryRooms below), and "Radiator" is "Heating" since not every
+// property is radiator-heated.
 const INVENTORY_ROOM_TEMPLATE: Omit<InvRoom, 'items'>[] = [
-  { id: 'living', name: 'Living Room', icon: '/op-icons/investment/armchair.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Doors & handles', 'Skirting boards', 'Light fittings & switches', 'Radiator'], contents: ['Sofa', 'Coffee table', 'TV unit', 'Curtains'] },
-  { id: 'kitchen', name: 'Kitchen', icon: '/op-icons/legionella/kitchenRoom.png', fixtures: ['Worktops & units', 'Sink & taps', 'Oven & hob', 'Extractor fan', 'Tiling / splashback', 'Flooring', 'Walls & ceiling'], contents: ['Fridge / freezer', 'Washing machine', 'Microwave'] },
-  { id: 'bed1', name: 'Bedroom 1', icon: '/op-icons/misc/bed.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Built-in wardrobe', 'Radiator'], contents: ['Double bed & mattress', 'Bedside tables', 'Chest of drawers'] },
-  { id: 'bed2', name: 'Bedroom 2', icon: '/op-icons/misc/bed.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Radiator'], contents: ['Single bed & mattress', 'Wardrobe'] },
-  { id: 'bath', name: 'Bathroom', icon: '/op-icons/legionella/bathroomRoom.png', fixtures: ['Bath / shower', 'Toilet', 'Basin & taps', 'Tiling, grout & sealant', 'Extractor fan', 'Flooring'], contents: ['Mirror cabinet'] },
+  { id: 'living', name: 'Living Room', icon: '/op-icons/investment/armchair.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Doors & handles', 'Light fittings & switches', 'Heating'], contents: [] },
+  { id: 'kitchen', name: 'Kitchen', icon: '/op-icons/legionella/kitchenRoom.png', fixtures: ['Worktops & units', 'Sink & taps', 'Oven & hob', 'Extractor fan', 'Tiling / splashback', 'Flooring', 'Walls & ceiling'], contents: ['Fridge / freezer', 'Washing machine'] },
+  { id: 'bed1', name: 'Bedroom 1', icon: '/op-icons/misc/bed.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Heating'], contents: [] },
+  { id: 'bed2', name: 'Bedroom 2', icon: '/op-icons/misc/bed.png', fixtures: ['Walls & ceiling', 'Flooring / carpet', 'Windows & coverings', 'Heating'], contents: [] },
+  { id: 'bath', name: 'Bathroom', icon: '/op-icons/legionella/bathroomRoom.png', fixtures: ['Bath / shower', 'Toilet', 'Basin & taps', 'Extractor fan', 'Flooring'], contents: [] },
   { id: 'hall', name: 'Hallway & entrance', icon: '/op-icons/legionella/hallwayDoor.png', fixtures: ['Front door, frame & locks', 'Walls & ceiling', 'Flooring', 'Light fittings'], contents: [] },
 ]
-// Fixtures always apply regardless of furnishing - only the default
-// CONTENTS pre-fill depends on it. A fully furnished let pre-fills the
-// typical contents list; part-furnished has no single "typical" subset
-// (every property differs in what's actually left), so it starts empty
-// and the landlord adds exactly what's there via the room screen's own
-// "+ Add furnishing" (client feedback: part-furnished showed the same
-// full list as furnished, which wasn't right for either case - either
-// too much to remove, or nothing to add from).
+// Fixtures always apply regardless of furnishing. Contents start empty
+// for every room template now (see INVENTORY_ROOM_TEMPLATE above) - the
+// `furnishing` param is kept so a room template that DOES carry default
+// contents in future stays furnishing-aware (a fully furnished let would
+// pre-fill them; part-furnished/unfurnished wouldn't, since there's no
+// single "typical" subset for a partly-furnished home), but today it's
+// a no-op either way since there's nothing to pre-fill.
 function freshInventoryRooms(furnishing: 'furnished' | 'part' | 'unfurnished' = 'furnished'): InvRoom[] {
   return INVENTORY_ROOM_TEMPLATE.map((r) => ({
     ...r,

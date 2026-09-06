@@ -65,34 +65,13 @@
           Back to Explore
         </button>
 
-        <!-- Heart / Save / Share — restored top-of-page actions (client
-             feedback: these existed on the older UI and were dropped in
-             the redesign). Heart = wishlist (UserWishlist), Save =
-             bookmark to profile (UserSavedProperty) — two distinct,
-             already-backed lists, see usePropertyActions. -->
+        <!-- Save / Share — restored top-of-page actions (client feedback:
+             these existed on the older UI and were dropped in the
+             redesign). The wishlist heart button was removed - it was a
+             second, functionally-identical "save this property" action
+             (UserWishlist) sitting right next to the real Save button
+             (UserSavedProperty); one is enough. -->
         <div class="pps-top-icons">
-          <button
-            type="button"
-            class="pps-top-icon-btn"
-            :class="{ 'pps-top-icon-btn--active': wishlisted }"
-            aria-label="Add to wishlist"
-            @click="onWishlistToggle"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              :fill="wishlisted ? 'currentColor' : 'none'"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"
-              />
-            </svg>
-          </button>
           <button
             type="button"
             class="pps-top-icon-btn"
@@ -4416,8 +4395,7 @@ const propertyId = route.params.id as string
 const { getPropertyDetails, formatPrice } = usePropertySearch()
 const { getPassportStatus } = usePassportClaim()
 const { toastState, showToast, hideToast } = useAppToast()
-const { saved, wishlisted, toggleSave, toggleWishlist, fetchActions } =
-  usePropertyActions()
+const { saved, toggleSave, fetchActions } = usePropertyActions()
 const { profile, fetchProfile } = useProfile()
 const { recordExplored } = useRecentlyExplored()
 
@@ -6010,34 +5988,6 @@ async function onSaveToggle() {
     message: result.saved
       ? '🔖 Saved to your properties'
       : 'Removed from saved',
-    duration: 2000,
-  })
-}
-
-// Heart = wishlist the property (separate from Save above).
-async function onWishlistToggle() {
-  const result = await toggleWishlist(propertyId)
-  if (result === 'unauthenticated') {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(
-        'redirectAfterLogin',
-        `/property/${propertyId}?wishlist=1`,
-      )
-    }
-    router.push('/onboarding/signin')
-    return
-  }
-  if (result === 'error') {
-    showToast({
-      message: 'Something went wrong - please try again',
-      duration: 2000,
-    })
-    return
-  }
-  showToast({
-    message: result.wishlisted
-      ? '❤️ Added to your wishlist'
-      : 'Removed from wishlist',
     duration: 2000,
   })
 }
