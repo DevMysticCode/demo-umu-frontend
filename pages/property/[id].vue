@@ -9070,6 +9070,12 @@ function formatSaleDate(dateStr: string): string {
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(35, 29, 69, 0.1);
   background: white;
+  /* .op-glow-ring's visible rim needs an actual gap to show through -
+     .pps-score-top/.pps-score-bottom paint their own backgrounds edge
+     to edge with no margin of their own, so without this padding they
+     fully covered the ring underneath them (unlike .pps-tile, which has
+     no such full-bleed children and showed the ring fine as-is). */
+  padding: var(--glow-thickness, 0);
 }
 .pps-score-card--clickable {
   cursor: pointer;
@@ -9137,6 +9143,15 @@ function formatSaleDate(dateStr: string): string {
   display: flex;
   align-items: center;
   gap: 20px;
+  /* Matches the outer card's own radius now that .op-glow-ring's padding
+     insets this from the edge - otherwise a square corner shows against
+     the ring's rounded rim. Rounded on all 4 corners by default (this is
+     the only section when there's no EPC data to show below it); flattened
+     on the bottom when .pps-score-bottom follows it instead. */
+  border-radius: 18px;
+}
+.pps-score-top:has(+ .pps-score-bottom) {
+  border-radius: 18px 18px 0 0;
 }
 .pps-score-blob-tr {
   position: absolute;
@@ -9256,6 +9271,7 @@ function formatSaleDate(dateStr: string): string {
 .pps-score-bottom {
   background: white;
   padding: 16px 18px;
+  border-radius: 0 0 18px 18px;
 }
 .pps-epc-header {
   font-size: 9px;
