@@ -147,7 +147,7 @@
     <!-- Watching list — published passports the user has bought access to -->
     <div v-if="watchingList.length > 0" class="watching-section">
       <div class="watching-header">
-        <span class="watching-title">Watching</span>
+        <span class="watching-title">Unlocked Passports</span>
         <span class="watching-count">{{ watchingList.length }}</span>
       </div>
       <div class="watching-list">
