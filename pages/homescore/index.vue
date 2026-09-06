@@ -37,19 +37,19 @@
       />
     </div>
 
-    <!-- ── Search ───────────────────────────────────────────────────── -->
+    <!-- ── Search - same dropdown UI as dashboard/discover (dropped in
+         bare, no custom shell around it, so it looks identical there),
+         not the lighter-weight PropertySearchInput this page used to
+         have. Results still land on /homescore/[id] (this page's own
+         purpose), not the normal property page. -->
     <div class="hs-search-block">
-      <div class="hs-search-wrap">
-        <PropertySearchInput
-          placeholder="Postcode or address"
-          variant="light"
-          :show-passport-status="true"
-          @select="onResultSelect"
-          @enter="onSearchEnter"
-        />
-      </div>
+      <PropertySearchExperienceClassic
+        placeholder="Postcode or address"
+        result-base-path="/homescore/"
+        @update:search-mode="searchMode = $event"
+      />
 
-      <div class="hs-meta-row">
+      <div v-if="!searchMode" class="hs-meta-row">
         <span class="hs-meta-item">
           <svg
             viewBox="0 0 24 24"
@@ -92,6 +92,10 @@
       </div>
     </div>
 
+    <!-- Everything below the search is marketing content, not part of the
+         search results - hidden while a search is active, matching
+         discover.vue's own pattern for this exact component. -->
+    <template v-if="!searchMode">
     <!-- ── Real story card ─────────────────────────────────────────── -->
     <div ref="realStoryEl" class="hs-real-story">
       <div class="hs-real-story-bar" />
@@ -175,14 +179,16 @@
     </div>
 
     <div style="height: 24px" />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
+import PropertySearchExperienceClassic from '~/components/property/PropertySearchExperienceClassic.vue'
 
 const router = useRouter()
+const searchMode = ref(false)
 
 // ── Typewriter for the "Real story" quote ────────────────────────────
 // Drives attention to the most important piece of social proof on the
@@ -240,17 +246,6 @@ onBeforeUnmount(() => {
   if (typerTimer) clearTimeout(typerTimer)
   observer?.disconnect()
 })
-
-function onResultSelect(property: any) {
-  // HomeScore detail is the page's main purpose — go there directly.
-  // Street compare is reachable from the "See street comparison" button on
-  // the detail page itself.
-  router.push(`/homescore/${property.id}`)
-}
-
-function onSearchEnter(_q: string) {
-  // PropertySearchInput already opens its dropdown on enter.
-}
 
 // function onCheckClick() {
 //   const input = document.querySelector<HTMLInputElement>(
@@ -396,78 +391,6 @@ onMounted(async () => {
   padding: 8px 24px 0;
 }
 
-.hs-search-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #fff;
-  border: 1.5px solid #00a19a;
-  border-radius: 14px;
-  padding: 4px 4px 4px 10px;
-  transition: all 0.15s;
-  /* Pulsing teal halo to draw the eye to the primary CTA. Pauses once the
-     user focuses the field so the highlight doesn't fight the cursor. */
-  animation: hsSearchPulse 2.2s ease-in-out infinite;
-}
-@keyframes hsSearchPulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 161, 154, 0.55), 0 0 0 0 rgba(0, 161, 154, 0.18);
-    border-color: #00a19a;
-  }
-  50% {
-    box-shadow: 0 0 0 6px rgba(0, 161, 154, 0),
-      0 0 18px 4px rgba(0, 161, 154, 0.28);
-    border-color: #00c4bc;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hs-search-wrap {
-    animation: none;
-  }
-}
-/* Make the dropdown span the full width of the outer search shell, not just
-   the inner input's narrower column. We do this by making .psi-wrap
-   non-positioned so the dropdown's `position: absolute` resolves against
-   .hs-search-wrap instead. */
-.hs-search-wrap :deep(.psi-wrap) {
-  position: static !important;
-}
-.hs-search-wrap :deep(.psi-drop) {
-  left: 0;
-  right: 0;
-  width: auto;
-  top: calc(100% + 8px);
-}
-.hs-search-wrap:focus-within {
-  border-color: #00a19a;
-  box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.1);
-  /* Stop pulsing once the user starts typing - the halo's job is done. */
-  animation: none;
-}
-/* Make the embedded PropertySearchInput visually flat - the outer wrap is the shell */
-.hs-search-wrap :deep(> div),
-.hs-search-wrap :deep(.property-search) {
-  flex: 1;
-  min-width: 0;
-}
-.hs-search-wrap :deep(input) {
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  /* Keep ~38px left padding so the absolutely-positioned .psi-icon at left:14px
-     doesn't overlap the typed text. */
-  padding: 11px 4px 11px 38px !important;
-  font-size: 14px;
-  font-weight: 600;
-  color: #231d45;
-  outline: none !important;
-}
-.hs-search-wrap :deep(input::placeholder) {
-  color: #9c98ad;
-  font-weight: 500;
-}
 .hs-search-go {
   display: inline-flex;
   align-items: center;

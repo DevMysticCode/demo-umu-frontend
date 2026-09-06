@@ -163,7 +163,7 @@
             v-for="prop in displayedProperties"
             :key="prop.id"
             class="prop-card"
-            @click="navigateTo('/property/' + prop.id)"
+            @click="navigateTo(props.resultBasePath + prop.id)"
           >
             <div class="prop-card-top">
               <div
@@ -676,14 +676,20 @@ import SearchFilterBar, {
 import PropertyImage from '~/components/property/PropertyImage.vue'
 import AuthGateModal from '~/components/ui/AuthGateModal.vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     placeholder?: string
     useTypewriterPlaceholder?: boolean
+    // Where a result click navigates - defaults to the normal property
+    // page. HomeScore's own search reuses this whole component for its
+    // dropdown UI but needs results to land on /homescore/[id] instead
+    // (its own detail view), not /property/[id].
+    resultBasePath?: string
   }>(),
   {
     placeholder: 'Search by postcode, address or area',
     useTypewriterPlaceholder: false,
+    resultBasePath: '/property/',
   },
 )
 
@@ -741,7 +747,7 @@ function onFiltersChange(filters: CommittedFilters) {
 // navigate" behavior; it does not enter search-results mode.
 function onAddressSelect(prop: any) {
   if (!prop?.id) return
-  navigateTo('/property/' + prop.id)
+  navigateTo(props.resultBasePath + prop.id)
 }
 
 function onEnterQuery(q: string) {
@@ -1167,7 +1173,7 @@ function renderMapMarkers(mapboxgl: any) {
     el.style.cssText = `width:16px;height:16px;border-radius:50%;background:${
       stateColor[stateOf(prop)]
     };border:2.5px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.35);cursor:pointer;`
-    el.addEventListener('click', () => navigateTo('/property/' + prop.id))
+    el.addEventListener('click', () => navigateTo(props.resultBasePath + prop.id))
     const marker = new mapboxgl.Marker({ element: el })
       .setLngLat([prop.longitude, prop.latitude])
       .addTo(mapInstance)
