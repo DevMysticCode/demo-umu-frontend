@@ -172,49 +172,49 @@
             <div class="dash-eyebrow-row">
               <div class="dash-eyebrow">
                 Watching
-                <span v-if="savedProperties.length" class="watching-badge">{{ savedProperties.length }}</span>
+                <span v-if="watchedProperties.length" class="watching-badge">{{ watchedProperties.length }}</span>
               </div>
-              <div class="dash-view-all" @click="navigateTo('/profile/saved-properties')">View all</div>
+              <div class="dash-view-all" @click="navigateTo('/profile/watched-properties')">View all</div>
             </div>
 
-            <div v-if="loadingSaved" class="skeleton-card" style="height: 100px" />
+            <div v-if="loadingWatched" class="skeleton-card" style="height: 100px" />
 
-            <div v-else-if="savedProperties.length" class="watching-card">
-              <div class="watch-row" @click="navigateTo('/property/' + savedProperties[0].id)">
+            <div v-else-if="watchedProperties.length" class="watching-card">
+              <div class="watch-row" @click="navigateTo('/property/' + watchedProperties[0].id)">
                 <div class="watch-img-wrap">
                   <PropertyImage
-                    :src="savedProperties[0].imageUrl"
-                    :alt="savedProperties[0].addressLine1"
+                    :src="watchedProperties[0].imageUrl"
+                    :alt="watchedProperties[0].addressLine1"
                     :show-caption="false"
                     class="watch-img"
                   />
                 </div>
                 <div class="watch-body">
-                  <div class="watch-address">{{ savedProperties[0].addressLine1 }}</div>
-                  <div class="watch-postcode">{{ savedProperties[0].postcode }}</div>
-                  <div v-if="savedProperties[0].homeScore != null" class="watch-hs">
-                    HomeScore <strong>{{ savedProperties[0].homeScore }}/100</strong>
+                  <div class="watch-address">{{ watchedProperties[0].addressLine1 }}</div>
+                  <div class="watch-postcode">{{ watchedProperties[0].postcode }}</div>
+                  <div v-if="watchedProperties[0].homeScore != null" class="watch-hs">
+                    HomeScore <strong>{{ watchedProperties[0].homeScore }}/100</strong>
                   </div>
                 </div>
                 <button
                   type="button"
                   class="watch-updates-btn"
-                  @click.stop="navigateTo('/property/' + savedProperties[0].id)"
+                  @click.stop="navigateTo('/property/' + watchedProperties[0].id)"
                 >
                   <img src="/op-icons/misc/bell.png" alt="" class="watch-updates-ic" loading="lazy" />
                   Updates
                 </button>
               </div>
               <div
-                v-if="savedProperties.length > 1"
+                v-if="watchedProperties.length > 1"
                 class="watch-more-link"
-                @click="navigateTo('/profile/saved-properties')"
+                @click="navigateTo('/profile/watched-properties')"
               >
-                {{ savedProperties.length - 1 }} more propert{{ savedProperties.length - 1 === 1 ? 'y' : 'ies' }} watching
+                {{ watchedProperties.length - 1 }} more propert{{ watchedProperties.length - 1 === 1 ? 'y' : 'ies' }} watching
               </div>
             </div>
 
-            <div v-else class="no-passport-card" @click="navigateTo('/dashboard')">
+            <div v-else class="no-passport-card" @click="navigateTo('/discover')">
               <div class="npc-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="11" cy="11" r="7" />
@@ -222,8 +222,8 @@
                 </svg>
               </div>
               <div class="npc-body">
-                <div class="npc-title">Nothing saved yet</div>
-                <div class="npc-sub">Explore properties and save the ones you like.</div>
+                <div class="npc-title">Nothing watched yet</div>
+                <div class="npc-sub">Explore properties and watch the ones you like.</div>
               </div>
               <span class="npc-chevron">&rsaquo;</span>
             </div>
@@ -469,7 +469,7 @@
                 </div>
                 <span class="bss-chevron">&rsaquo;</span>
               </div>
-              <div class="bss-row" @click="navigateTo('/profile/saved-properties')">
+              <div class="bss-row" @click="navigateTo('/profile/watched-properties')">
                 <div class="bss-icon">
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
@@ -479,7 +479,7 @@
                 <div class="bss-body">
                   <div class="bss-title">Watching</div>
                   <div class="bss-sub">
-                    {{ savedProperties.length ? `${savedProperties.length} propert${savedProperties.length === 1 ? 'y' : 'ies'} saved` : 'Nothing saved yet' }}
+                    {{ watchedProperties.length ? `${watchedProperties.length} propert${watchedProperties.length === 1 ? 'y' : 'ies'} watched` : 'Nothing watched yet' }}
                   </div>
                 </div>
                 <span class="bss-chevron">&rsaquo;</span>
@@ -557,6 +557,11 @@ const buyerProfile = ref<any>(null)
 const loadingBuyerProfile = ref(true)
 const savedProperties = ref<any[]>([])
 const loadingSaved = ref(true)
+// Real watch list (PropertyWatch rows), distinct from savedProperties above
+// — feeds the "Watching" section; savedProperties keeps feeding the
+// separately-labelled "Saved" summary strip further down.
+const watchedProperties = ref<any[]>([])
+const loadingWatched = ref(true)
 // Separate loading flag for the 'both'-role buyer summary strip on the
 // seller dashboard — reuses buyerProfile/savedProperties (never populated
 // by the seller branch otherwise) but needs its own loading state since
@@ -773,17 +778,22 @@ function refetchForYou() {
 // independently so they never gate the seller passport/HomeScore content
 // above them.
 async function fetchBuyerSummary(token: string) {
-  const [buyerResult, savedResult] = await Promise.allSettled([
+  const [buyerResult, savedResult, watchedResult] = await Promise.allSettled([
     $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
       headers: { Authorization: `Bearer ${token}` },
     }),
     $fetch<any[]>(`${config.public.apiBase}/property/saved`, {
       headers: { Authorization: `Bearer ${token}` },
     }),
+    $fetch<any[]>(`${config.public.apiBase}/property/watches`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
   ])
   if (buyerResult.status === 'fulfilled') buyerProfile.value = buyerResult.value ?? null
   if (savedResult.status === 'fulfilled') savedProperties.value = savedResult.value ?? []
+  if (watchedResult.status === 'fulfilled') watchedProperties.value = watchedResult.value ?? []
   loadingBuyerSummary.value = false
+  loadingWatched.value = false
 }
 
 // Buyer-only "Recently viewed" strip — fired independently, same reason
@@ -839,11 +849,14 @@ onMounted(async () => {
     fetchForYou(token) // not awaited - see fetchForYou's own comment
     fetchRecentlyViewed(token) // not awaited - see its own comment
 
-    const [buyerResult, savedResult] = await Promise.allSettled([
+    const [buyerResult, savedResult, watchedResult] = await Promise.allSettled([
       $fetch<any>(`${config.public.apiBase}/buyer-profile`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
       $fetch<any[]>(`${config.public.apiBase}/property/saved`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      $fetch<any[]>(`${config.public.apiBase}/property/watches`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
     ])
@@ -857,6 +870,11 @@ onMounted(async () => {
       savedProperties.value = savedResult.value ?? []
     }
     loadingSaved.value = false
+
+    if (watchedResult.status === 'fulfilled') {
+      watchedProperties.value = watchedResult.value ?? []
+    }
+    loadingWatched.value = false
     return
   }
 

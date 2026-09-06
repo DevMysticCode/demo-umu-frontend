@@ -134,20 +134,18 @@ watch(
 }
 
 .toast-check {
-  width: 34px;
-  height: 34px;
-  background: #FFFFFF;
-  border-radius: 50%;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #231D45;
+  color: #FFFFFF;
   margin-right: 4px;
 }
 .toast-check svg {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
 }
 
 .slide-up-enter-active,
