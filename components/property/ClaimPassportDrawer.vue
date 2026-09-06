@@ -49,9 +49,7 @@
         <!-- 3-icon strip -->
         <div class="cp__value-row">
           <div v-for="v in valueProps" :key="v.label" class="cp__value">
-            <div class="cp__value-icon">
-              <span v-html="v.icon" />
-            </div>
+            <img :src="v.icon" alt="" class="cp__value-icon-img" loading="lazy" />
             <div class="cp__value-label">{{ v.label }}</div>
           </div>
         </div>
@@ -193,20 +191,13 @@ const displayAddressPiped = computed(() => {
 })
 
 // 3-icon value strip above "What's included" (prototype: Verified data /
-// All in one place / Make confident decisions).
+// All in one place / Make confident decisions) - real 3D icons from the
+// app's existing library, matching every other icon in the app, not
+// hand-drawn flat SVGs.
 const valueProps = [
-  {
-    label: 'Verified data',
-    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><polyline points="9 12 11 14 15 10"/></svg>',
-  },
-  {
-    label: 'All in one place',
-    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
-  },
-  {
-    label: 'Make confident decisions',
-    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>',
-  },
+  { label: 'Verified data', icon: '/op-icons/verify-identity/shield.png' },
+  { label: 'All in one place', icon: '/op-icons/misc/folder.png' },
+  { label: 'Make confident decisions', icon: '/op-icons/homescore/house.png' },
 ]
 
 // "What's included" checklist - order matches the prototype exactly.
@@ -450,13 +441,10 @@ onUnmounted(() => {
   padding: 0 4px;
 }
 
-.cp__value-icon {
-  width: 40px;
-  height: 40px;
-  background: var(--brand-pale);
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
+.cp__value-icon-img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 

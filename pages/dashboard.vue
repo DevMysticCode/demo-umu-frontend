@@ -1226,25 +1226,19 @@ onMounted(async () => {
 .nfy-row:last-child {
   border-bottom: none;
 }
+/* No colored circle backdrop - these are real 3D icons with their own
+   built-in floating base (same convention as everywhere else in the
+   app), so a flat color-pill behind them just doubled up the "icon
+   container" look and made them read smaller than they are. Sized to
+   match .hec-gauge just below in the HomeScore explore card. */
 .nfy-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
   display: grid;
   place-items: center;
   flex-shrink: 0;
 }
-.nfy-icon-teal {
-  background: #e0f4f1;
-  color: #00a19a;
-}
-.nfy-icon-amber {
-  background: #fdf3e4;
-  color: #d4922a;
-}
 .nfy-icon-img {
-  width: 24px;
-  height: 24px;
+  width: 46px;
+  height: 46px;
   object-fit: contain;
 }
 .nfy-body {
