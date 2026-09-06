@@ -39,6 +39,22 @@
               <div v-if="item.note" class="sg-room-item-note">{{ item.note }}</div>
             </div>
           </template>
+
+          <template v-if="data.photos?.length">
+            <h2>Evidence photos</h2>
+            <div class="sg-photo-grid">
+              <a
+                v-for="photo in data.photos"
+                :key="photo.fileUrl"
+                :href="photo.fileUrl"
+                target="_blank"
+                rel="noopener"
+                class="sg-photo-tile"
+              >
+                <img :src="photo.fileUrl" :alt="photo.name" loading="lazy" />
+              </a>
+            </div>
+          </template>
         </div>
 
         <div class="sg-signblock">
@@ -82,6 +98,7 @@ const data = ref<{
   furnishing: string
   completedAt: string
   rooms: { name: string; items: { name: string; condition: string; cleanliness: string; note: string }[] }[]
+  photos: { name: string; fileUrl: string }[]
   landlordSigned: boolean
   tenantSigned: boolean
 } | null>(null)
@@ -196,6 +213,16 @@ async function onSubmit() {
 .sg-room-item-cc { display: flex; gap: 6px; margin-top: 4px; }
 .sg-tag { font-size: 10px; font-weight: 700; text-transform: capitalize; background: #f4f4f8; color: #6b7089; padding: 3px 8px; border-radius: 100px; }
 .sg-room-item-note { font-size: 11.5px; color: #6b7089; margin-top: 4px; font-style: italic; }
+
+.sg-photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.sg-photo-tile {
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f4f4f8;
+}
+.sg-photo-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .mform-label {
   font-size: 10px;

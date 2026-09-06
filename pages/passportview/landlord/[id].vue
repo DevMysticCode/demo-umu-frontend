@@ -1570,14 +1570,21 @@
               <div class="lp-assess-ok">✓</div>
               <div class="lp-assess-intro-h">Signed by {{ invSavedRecord?.audit?.tenant?.name }}</div>
               <div class="lp-assess-intro-s">{{ new Date(invSavedRecord?.audit?.tenant?.signedAt ?? '').toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' }) }}</div>
+              <button type="button" class="btn-secondary" style="width:100%;margin-top:14px" @click="downloadInventoryPdf">
+                Download signed PDF
+              </button>
             </template>
             <template v-else>
-              <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">Share this link with your tenant. No account needed - they'll review the inventory and sign with a drawn signature.</p>
+              <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">Share this link with your tenant. No account needed - they'll review the inventory (including any evidence photos) and sign with a drawn signature.</p>
               <div v-if="invGeneratingLink" class="lp-modal-hint">Generating link…</div>
               <template v-else-if="invTenantLinkUrl">
                 <div class="lp-tn-linkbox">{{ invTenantLinkUrl }}</div>
                 <button type="button" class="btn-primary" style="width:100%;margin-top:12px" @click="copyInvTenantSignLink">Copy link</button>
               </template>
+              <button type="button" class="btn-secondary" style="width:100%;margin-top:8px" @click="downloadInventoryPdf">
+                Download PDF instead
+              </button>
+              <p class="lp-modal-hint" style="margin-top:6px;margin-bottom:0">Prefer to send it yourself - by email, WhatsApp or in person for a wet-ink signature? Download a full report with the room-by-room record and evidence photos.</p>
             </template>
             <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
 
@@ -1951,6 +1958,7 @@ definePageMeta({ title: 'Landlord Passport - UmovingU', middleware: 'auth' })
 const route = useRoute()
 const config = useRuntimeConfig()
 const { convertLandlordToSeller } = usePassportClaim()
+const { generateInventoryPdf } = useInventoryPdf()
 
 const passportId = computed(() => String(route.params.id))
 
@@ -3378,6 +3386,19 @@ async function copyInvTenantSignLink() {
   } catch {
     /* clipboard API unavailable - link is still visible to copy manually */
   }
+}
+
+// Alternative to the magic link — a full downloadable report (room-by-room
+// record + evidence photos + any signatures already collected) the
+// landlord can send however they like, or print for a wet-ink signature.
+function downloadInventoryPdf() {
+  const record = invSavedRecord.value
+  if (!record) return
+  generateInventoryPdf({
+    propertyAddress: passport.value?.addressLine1 ?? '',
+    record: record as any,
+    photos: copyDocs.value,
+  })
 }
 
 function openInvSigningStatus() {
