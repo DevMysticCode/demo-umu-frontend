@@ -2,6 +2,62 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Traveling-shine border - a thin ring around a tile that draws a
+   bright highlight around its own edge on a loop, used to mark cards
+   that open something on tap (property/[id].vue's HomeScore card and
+   "Explore this property" tiles). NOT a spinning wash of color across
+   the whole border (that read as "wrong place, wrong animation" when
+   tried on discover.vue's cards) - the ring itself stays a solid
+   --glow-color at all times, with only a bright --glow-shine band
+   sweeping round it, matching the "published Passport" band reference.
+   Technique: an oversized (inset:-60%) conic gradient behind the tile,
+   clipped to the tile's own rounded rect by overflow:hidden, rotating;
+   a second layer a few px in front of it mirrors the tile's own
+   background, covering everything but a thin rim of the gradient. */
+.op-glow-ring {
+  position: relative;
+  overflow: hidden;
+}
+.op-glow-ring::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(
+    from 0deg,
+    var(--glow-color, #00a19a) 0%,
+    var(--glow-color, #00a19a) 58%,
+    var(--glow-shine, #baf3ef) 70%,
+    #ffffff 75%,
+    var(--glow-shine, #baf3ef) 80%,
+    var(--glow-color, #00a19a) 92%,
+    var(--glow-color, #00a19a) 100%
+  );
+  animation: op-glow-spin 4.6s linear infinite;
+  z-index: 0;
+}
+.op-glow-ring::after {
+  content: '';
+  position: absolute;
+  inset: var(--glow-thickness, 2px);
+  border-radius: inherit;
+  background: inherit;
+  z-index: 0;
+}
+.op-glow-ring > * {
+  position: relative;
+  z-index: 1;
+}
+@keyframes op-glow-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .op-glow-ring::before {
+    animation: none;
+  }
+}
+
 @font-face {
   font-family: 'SF Pro Display';
   src: url('@/assets/fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF')

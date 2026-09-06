@@ -379,7 +379,8 @@
 
       <!-- ─── SECTION 5: HomeScore ─────────────────────────────────── -->
       <div
-        class="pps-score-card pps-score-card--clickable"
+        class="pps-score-card pps-score-card--clickable op-glow-ring"
+        style="--glow-thickness: 2.5px"
         @click="onScoreCardTap"
       >
         <div class="pps-score-top">
@@ -467,7 +468,8 @@
         <div
           v-for="tile in exploreTiles"
           :key="tile.key"
-          class="pps-tile"
+          class="pps-tile op-glow-ring"
+          style="--glow-thickness: 2px"
           @click="onExploreTileClick(tile.key)"
         >
           <div
@@ -9066,7 +9068,6 @@ function formatSaleDate(dateStr: string): string {
   margin: 14px 14px 0;
   border-radius: 20px;
   overflow: hidden;
-  border: 2px solid #231d45;
   box-shadow: 0 4px 20px rgba(35, 29, 69, 0.1);
   background: white;
 }

@@ -581,58 +581,18 @@ function lastSoldLabel(dateStr: string): string {
   display: flex;
   flex-direction: column;
   text-align: left;
-  border: 1px solid transparent;
+  border: 1px solid #eef0f6;
   border-radius: 16px;
   padding: 14px 12px 16px 14px;
   font-family: inherit;
   cursor: pointer;
-}
-/* Animated ring - a spinning conic-gradient sits behind the card, with
-   a second layer mirroring the card's own background covering all but
-   a thin rim of it, so the "border" itself appears to travel round the
-   card indefinitely. Layered via z-index rather than clipped with
-   overflow:hidden, which would also crop the ring at the card edge. */
-.exp-more-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  animation: exp-more-spin 4s linear infinite;
-  z-index: 0;
-}
-.exp-more-card::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  border-radius: 13px;
-  background: inherit;
-  z-index: 0;
-}
-.exp-more-card > * {
-  position: relative;
-  z-index: 1;
-}
-@keyframes exp-more-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .exp-more-card::before {
-    animation: none;
-  }
+  overflow: hidden;
 }
 .exp-more-card--teal {
   background: linear-gradient(160deg, #eaf6f5 0%, #f8fcfb 100%);
 }
-.exp-more-card--teal::before {
-  background: conic-gradient(from 0deg, transparent 0%, #00a19a 12%, transparent 28%);
-}
 .exp-more-card--amber {
   background: linear-gradient(160deg, #fdf3e4 0%, #fdf9f2 100%);
-}
-.exp-more-card--amber::before {
-  background: conic-gradient(from 0deg, transparent 0%, #c9861a 12%, transparent 28%);
 }
 .exp-more-top-row {
   display: flex;
