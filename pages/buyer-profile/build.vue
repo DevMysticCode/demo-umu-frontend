@@ -1111,26 +1111,12 @@
 
       <!-- ── DONE: Celebration screen (prototype `complete`) ── -->
       <div v-if="step === 8" class="bp-step bp-complete">
-        <!-- Celebration hero -->
+        <!-- Celebration hero - real confetti (runConfetti(), fired when
+             this screen is reached) replaces the static confetti PNG
+             that used to sit here. -->
         <div class="bp-complete-hero">
-          <div class="bp-complete-emoji">
-            <img src="/op-icons/misc/confetti.png" alt="" loading="lazy" />
-          </div>
           <h2 class="bp-complete-title">You're a Trusted Buyer!</h2>
           <p class="bp-complete-sub">Your passport is live.</p>
-        </div>
-
-        <!-- XP row -->
-        <div class="bp-xp-row">
-          <div class="bp-xp-icon">⭐</div>
-          <div class="bp-xp-body">
-            <div class="bp-xp-title">Passport badge earned</div>
-            <div class="bp-xp-sub">
-              {{ Math.round(completeStrength) }}% strength ·
-              {{ completeTierLabel }} tier
-            </div>
-          </div>
-          <div class="bp-xp-points">+100 XP</div>
         </div>
 
         <!-- Teal hero card -->
@@ -1218,6 +1204,7 @@ import { useBuyerProfile } from '~/composables/useBuyerProfile'
 import { useProfile } from '~/composables/useProfile'
 import { useKyc } from '~/composables/useKyc'
 import { useAppToast } from '~/composables/useCustomToast'
+import { useConfetti } from '~/composables/useConfetti'
 import TierUpgradeDrawer from '~/components/buyer-profile/TierUpgradeDrawer.vue'
 
 // No free tier — VERIFIED ("Identity Verified", £19.99) is the only
@@ -1229,6 +1216,7 @@ const router = useRouter()
 const { getBuyerProfile, updateBuyerProfile, publishBuyerProfile } =
   useBuyerProfile()
 const { showToast } = useAppToast()
+const { runConfetti } = useConfetti()
 
 // step=8 is the post-publish celebration screen (matches prototype `complete`).
 // Steps 1-4 are the core Buyer Passport flow (Identity / Buying position /
@@ -1968,6 +1956,10 @@ async function submit() {
       completeStrength.value = published.strengthScore
     }
     step.value = 8
+    // Real confetti (same burst used elsewhere in the app) rather than a
+    // static confetti PNG sitting in the hero - client feedback: the
+    // icon "isn't looking good".
+    setTimeout(() => runConfetti(), 200)
   } catch (err: any) {
     const msg =
       err?.data?.message || err?.message || 'Could not publish passport'

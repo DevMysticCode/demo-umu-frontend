@@ -81,15 +81,27 @@
             <span v-if="prop.tenure" class="pill-grey">{{ prop.tenure }}</span>
           </div>
           <div class="prop-footer">
+            <!-- This is the same score HomeScore shows elsewhere from
+                 public EPC data (client feedback: labelled "EPC" here
+                 read as a different, unrelated number) - a small gauge
+                 matching the ring style used for HomeScore everywhere
+                 else, not a plain progress bar. -->
             <div v-if="prop.epcScore" class="prop-score-row">
-              <span class="prop-score-lbl">EPC</span>
-              <div class="prop-score-bar">
-                <div
-                  class="prop-score-fill"
-                  :style="{ width: prop.epcScore + '%' }"
-                ></div>
+              <div class="prop-score-gauge">
+                <svg viewBox="0 0 44 44">
+                  <circle class="prop-score-gauge-bg" cx="22" cy="22" r="18" />
+                  <circle
+                    class="prop-score-gauge-fill"
+                    cx="22"
+                    cy="22"
+                    r="18"
+                    :stroke-dasharray="113.1"
+                    :stroke-dashoffset="113.1 - (prop.epcScore / 100) * 113.1"
+                  />
+                </svg>
+                <span class="prop-score-gauge-num">{{ prop.epcScore }}</span>
               </div>
-              <span class="prop-score-num">{{ prop.epcScore }}</span>
+              <span class="prop-score-lbl">HomeScore</span>
             </div>
             <span class="prop-passport-btn">View</span>
           </div>
@@ -414,28 +426,44 @@ async function savePostcode() {
 .prop-score-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 .prop-score-lbl {
   font-size: 12px;
   color: #94a3b8;
   font-weight: 600;
 }
-.prop-score-bar {
-  width: 54px;
-  height: 4px;
-  background: #e5e7eb;
-  border-radius: 4px;
-  overflow: hidden;
+.prop-score-gauge {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
 }
-.prop-score-fill {
+.prop-score-gauge svg {
+  width: 100%;
   height: 100%;
-  background: #00a19a;
-  border-radius: 4px;
+  transform: rotate(-90deg);
 }
-.prop-score-num {
-  font-size: 15px;
-  font-weight: 700;
+.prop-score-gauge-bg {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 5;
+}
+.prop-score-gauge-fill {
+  fill: none;
+  stroke: #00a19a;
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+.prop-score-gauge-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
   color: #1f2024;
 }
 .prop-passport-btn {

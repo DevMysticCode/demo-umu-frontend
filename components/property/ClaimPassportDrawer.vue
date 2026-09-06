@@ -10,7 +10,7 @@
       <!-- Sub-header address + price chip -->
       <div class="cp__subheader">
         <div class="cp__sub-text">
-          <div class="cp__sub-address">{{ displayAddress }}</div>
+          <div class="cp__sub-address">{{ displayAddressPiped }}</div>
         </div>
         <div class="cp__price-chip">One-time £99</div>
       </div>
@@ -41,25 +41,32 @@
       <div v-else class="cp__body">
         <!-- Hero -->
         <div class="cp__hero">
-          <div class="cp__hero-blob" />
-          <div class="cp__hero-eyebrow">Property Passport</div>
+          <img src="/op-icons/landing/propertyPassportCard.png" alt="" class="cp__hero-img" loading="lazy" />
           <div class="cp__hero-heading">Everything verified.<br />Nothing hidden.</div>
           <div class="cp__hero-caption">Trusted legal, planning and ownership records - all in one place.</div>
+        </div>
+
+        <!-- 3-icon strip -->
+        <div class="cp__value-row">
+          <div v-for="v in valueProps" :key="v.label" class="cp__value">
+            <div class="cp__value-icon">
+              <span v-html="v.icon" />
+            </div>
+            <div class="cp__value-label">{{ v.label }}</div>
+          </div>
         </div>
 
         <!-- Features list -->
         <div class="cp__features-title">What's included</div>
         <div class="cp__features">
           <div v-for="feat in features" :key="feat.label" class="cp__feature">
-            <div class="cp__feature-icon">
-              <span v-html="feat.icon" />
-            </div>
+            <span class="cp__feature-check">✓</span>
             <div class="cp__feature-label">{{ feat.label }}</div>
-            <div class="cp__feature-chip">Included</div>
           </div>
         </div>
 
         <!-- Price summary -->
+        <div class="cp__features-title">Payment summary</div>
         <div class="cp__price-card">
           <div class="cp__price-row">
             <span class="cp__price-label">Property Passport access</span>
@@ -115,10 +122,14 @@
               <rect x="1" y="4" width="22" height="16" rx="2" />
               <line x1="1" y1="10" x2="23" y2="10" />
             </svg>
-            <span>{{ showCardForm ? 'Pay £99 securely' : 'Pay £99 - instant access' }}</span>
+            <span>{{ showCardForm ? 'Pay £99 securely' : 'Pay £99 - instant access →' }}</span>
           </template>
         </button>
-        <div class="cp__foot-note">Secure payment · Instant access · No subscription</div>
+        <div class="cp__foot-badges">
+          <span class="cp__foot-badge">🔒 Secure payment powered by Stripe</span>
+          <span class="cp__foot-badge-sep" />
+          <span class="cp__foot-badge">🛡️ Your data is safe with us</span>
+        </div>
       </div>
     </div>
   </BaseDrawer>
@@ -174,34 +185,38 @@ let cardElement: StripeCardElement | null = null
 
 const isBuyerMode = computed(() => !!props.existingPassportId)
 
-const displayAddress = computed(() => {
+// "Address | Area | Postcode" - matches the prototype's separator.
+const displayAddressPiped = computed(() => {
   const p = props.property
   if (!p) return ''
-  return [p.addressLine1, p.area, p.postcode].filter(Boolean).join(' · ')
+  return [p.addressLine1, p.area, p.postcode].filter(Boolean).join(' | ')
 })
 
-const features = computed(() => [
+// 3-icon value strip above "What's included" (prototype: Verified data /
+// All in one place / Make confident decisions).
+const valueProps = [
   {
-    label: 'Fittings & Contents (TA10)',
-    icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>',
+    label: 'Verified data',
+    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><polyline points="9 12 11 14 15 10"/></svg>',
   },
   {
-    label: 'Title Register & Plan',
-    icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    label: 'All in one place',
+    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
   },
   {
-    label: 'Planning & Building',
-    icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+    label: 'Make confident decisions',
+    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>',
   },
-  {
-    label: 'Boundaries & Ownership',
-    icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>',
-  },
-  {
-    label: 'Certificates & Warranties',
-    icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a19a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>',
-  },
-])
+]
+
+// "What's included" checklist - order matches the prototype exactly.
+const features = [
+  { label: 'Fittings & Contents (TA10)' },
+  { label: 'Title Register & Plan' },
+  { label: 'Planning & Building' },
+  { label: 'Boundaries & Ownership' },
+  { label: 'Certificates & Warranties' },
+]
 
 const handleShowCardForm = async () => {
   showCardForm.value = true
@@ -365,13 +380,13 @@ onUnmounted(() => {
 }
 
 .cp__price-chip {
-  background: #fef3c7;
-  border: 1px solid #fef3c7;
+  background: var(--brand-pale);
+  border: 1px solid var(--brand-soft);
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 10px;
   font-weight: 700;
-  color: #92400e;
+  color: var(--brand);
   flex-shrink: 0;
 }
 
@@ -383,49 +398,73 @@ onUnmounted(() => {
   text-align: center;
 }
 
-/* Hero */
+/* Hero - plain white ground with the passport-cover illustration, per
+   the prototype (previously a dark navy card - this section reads as
+   the page's own hero there, not a highlighted callout). */
 .cp__hero {
-  background: linear-gradient(135deg, var(--navy) 0%, #1e1b4b 100%);
-  border-radius: 20px;
-  padding: 22px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
+  padding: 4px 0 22px;
+  text-align: center;
 }
 
-.cp__hero-blob {
-  position: absolute;
-  right: -10px;
-  top: -10px;
-  width: 90px;
-  height: 90px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 50%;
-}
-
-.cp__hero-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 6px;
+.cp__hero-img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  margin: 0 auto 14px;
+  display: block;
 }
 
 .cp__hero-heading {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
-  color: #fff;
+  color: var(--navy);
   line-height: 1.2;
   margin-bottom: 10px;
   letter-spacing: -0.02em;
 }
 
 .cp__hero-caption {
-  font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.65);
+  font-size: 13px;
+  color: var(--ink-soft);
   line-height: 1.55;
-  position: relative;
+}
+
+/* 3-icon value strip */
+.cp__value-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16px 6px;
+  margin-bottom: 20px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.cp__value {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 0 4px;
+}
+
+.cp__value-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--brand-pale);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.cp__value-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
 }
 
 /* Features */
@@ -440,47 +479,39 @@ onUnmounted(() => {
   background: #fff;
   border: 1.5px solid var(--line);
   border-radius: 16px;
-  overflow: hidden;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
   margin-bottom: 20px;
 }
 
 .cp__feature {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--line);
+  align-items: flex-start;
+  gap: 8px;
 }
 
-.cp__feature:last-child {
-  border-bottom: none;
-}
-
-.cp__feature-icon {
-  width: 40px;
-  height: 40px;
-  background: var(--brand-pale);
-  border-radius: 12px;
+.cp__feature-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
   display: grid;
   place-items: center;
   flex-shrink: 0;
+  margin-top: 1px;
 }
 
 .cp__feature-label {
   flex: 1;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--ink);
-}
-
-.cp__feature-chip {
-  background: var(--brand-pale);
-  border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--brand);
-  flex-shrink: 0;
+  line-height: 1.35;
 }
 
 /* Price card */
@@ -625,10 +656,27 @@ onUnmounted(() => {
   to { transform: rotate(360deg); }
 }
 
-.cp__foot-note {
+.cp__foot-badges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
   text-align: center;
+}
+
+.cp__foot-badge {
   font-size: 11px;
+  font-weight: 600;
   color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.cp__foot-badge-sep {
+  width: 1px;
+  height: 12px;
+  background: var(--line);
+  flex-shrink: 0;
 }
 
 /* Success */
