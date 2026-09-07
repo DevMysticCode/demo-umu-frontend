@@ -43,3 +43,7 @@ public/op-icons/**/*.zip
 # commit the derived per-icon PNGs.
 public/op-icons/**/source/
 
+# scripts/responsive-audit.cjs --screenshot output — local debugging
+# artifacts, never committed.
+.responsive-audit/
+
