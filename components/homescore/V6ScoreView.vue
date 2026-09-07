@@ -3330,6 +3330,11 @@ const watchersDisplay = computed(() => {
   letter-spacing: -0.4px;
   line-height: 1.1;
   margin-bottom: 10px;
+  /* Same right-hand reserve as .score-strip-eyebrow below — on a narrow
+     screen (two of these side by side eat into a small share of the
+     viewport each) the value text is long enough (e.g. "12.0 t /year")
+     to run under the absolutely-positioned icon without this. */
+  padding-right: 56px;
 }
 .strip-unit {
   font-weight: 600;
@@ -3341,11 +3346,13 @@ const watchersDisplay = computed(() => {
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: 2px;
+  padding-right: 56px;
 }
 .score-strip-sub-val {
   font-size: 13px;
   font-weight: 800;
   color: var(--accent-dark);
+  padding-right: 56px;
 }
 .score-strip-item.clickable {
   cursor: pointer;
