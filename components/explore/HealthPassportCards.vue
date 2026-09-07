@@ -172,6 +172,11 @@ function goToPassportSample() {
   display: flex;
   flex-direction: column;
   gap: 11px;
+  /* Grid items default to min-width:auto, which refuses to shrink below
+     the widest unbreakable child (the nowrap "Solicitor-grade" pill,
+     via .feat-top below) - on a narrow phone that pushed this whole
+     column past the viewport edge instead of wrapping. */
+  min-width: 0;
 }
 
 .feat-top {
@@ -180,6 +185,11 @@ function goToPassportSample() {
   justify-content: space-between;
   gap: 10px;
   min-height: 28px;
+  /* Safety net once .feat-body can actually shrink: if the eyebrow +
+     pill still can't both fit on one line at the narrowest widths, drop
+     the pill to its own line instead of forcing an overflow. */
+  flex-wrap: wrap;
+  row-gap: 6px;
 }
 
 .feat-eyebrow {
