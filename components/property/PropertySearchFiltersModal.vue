@@ -157,7 +157,7 @@ export interface PropertySearchFilters {
   minEpc: string | null
   minPrice: number | null
   maxPrice: number | null
-  // 'unclaimed' | 'in_progress' | 'claimed'
+  // 'unclaimed' | 'private' | 'partiallyPublic' | 'public'
   passportStatus: string[]
 }
 
@@ -230,10 +230,15 @@ const epcOptions = [
   { value: 'C', label: 'C+', color: '#93C949' },
   { value: 'D', label: 'D+', color: '#F4D63A' },
 ]
+// Same 4-state vocab used everywhere else in the app (search dropdown's
+// passportStateOf/passportStateFullLabel, HomescoreAddressCard's
+// passportPillLabel) — was still the old 3-state "In progress"/"Claimed"
+// wording here.
 const passportStatusOptions: { value: string; label: string }[] = [
   { value: 'unclaimed', label: 'Unclaimed' },
-  { value: 'in_progress', label: 'In progress' },
-  { value: 'claimed', label: 'Claimed' },
+  { value: 'private', label: 'Claimed · Private' },
+  { value: 'partiallyPublic', label: 'Claimed · Partially Public' },
+  { value: 'public', label: 'Claimed · Public' },
 ]
 
 function isPtypeActive(value: string): boolean {

@@ -178,28 +178,15 @@
         </div>
       </div>
       <div v-else class="hsc-viewers">
-        <!-- Binoculars-style watching glyph. The earlier eye-with-pupil
-             icon was too close to the "show password" eye used in form
-             fields; this one reads as "spotting / monitoring" — much
-             closer to the actual meaning of "watching this property". -->
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="rgba(255,255,255,.92)"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          style="flex: none"
-        >
-          <circle cx="6" cy="15" r="4" />
-          <circle cx="18" cy="15" r="4" />
-          <path d="M10 15h4" />
-          <path d="M4.5 11l1.5 -5h2l1 5" />
-          <path d="M19.5 11l-1.5 -5h-2l-1 5" />
-        </svg>
+        <!-- Real 3D binoculars icon — same asset used for "watching"
+             everywhere else in the app (Discover, profile menu), instead
+             of a hand-drawn line glyph. -->
+        <img
+          src="/op-icons/misc/exploreWatching.png"
+          alt=""
+          class="hsc-viewers-ic"
+          loading="lazy"
+        />
         <div class="hsc-vtxt">
           <b>{{ watchersDisplay }}</b>
           <span
@@ -220,7 +207,7 @@
       @click="emit('passport-pill-click')"
     >
       <img
-        src="/op-icons/homescore/clipboard.png"
+        :src="passportPillIcon"
         alt=""
         class="hsc-passport-box-ic"
         loading="lazy"
@@ -382,6 +369,15 @@ const passportPillLabel = computed(() => {
   if (props.passportState === 'private') return 'Claimed · Private'
   return 'No Passport yet'
 })
+
+// Locked padlock for private/unclaimed, unlocked for anything with a
+// public-facing passport — same lock/unlock artwork used for this exact
+// state distinction in the search dropdown (SearchFilterBar.vue).
+const passportPillIcon = computed(() =>
+  props.passportState === 'public' || props.passportState === 'partiallyPublic'
+    ? '/op-icons/claim/padlockUnlocked.png'
+    : '/op-icons/claim/padlock.png',
+)
 
 const homeScoreHook = computed(() => {
   if (isNoEpc.value) return 'Answer 20 questions'
@@ -667,6 +663,12 @@ const watchersDisplay = computed(() => {
 }
 .hsc-idc:nth-child(n + 2) {
   margin-left: -8px;
+}
+.hsc-viewers-ic {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .hsc-vtxt {
   font-size: 12.5px;

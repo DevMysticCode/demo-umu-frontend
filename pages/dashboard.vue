@@ -454,10 +454,7 @@
                 @click="navigateTo(buyerProfile ? '/buyer-profile/view' : '/buyer-profile/build')"
               >
                 <div class="bss-icon">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
+                  <img src="/op-icons/passport-covers/buyer_front_no_tile_no_tilt.png" alt="" class="bss-icon-img" loading="lazy" />
                 </div>
                 <div class="bss-body">
                   <div class="bss-title">
@@ -471,10 +468,7 @@
               </div>
               <div class="bss-row" @click="navigateTo('/profile/watched-properties')">
                 <div class="bss-icon">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                  </svg>
+                  <img src="/op-icons/misc/exploreWatching.png" alt="" class="bss-icon-img" loading="lazy" />
                 </div>
                 <div class="bss-body">
                   <div class="bss-title">Watching</div>
@@ -1477,14 +1471,17 @@ onMounted(async () => {
   border-bottom: none;
 }
 .bss-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #eef0fb;
-  color: #4b3fa0;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
+}
+.bss-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .bss-body {
   flex: 1;
