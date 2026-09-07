@@ -31,24 +31,23 @@
 
       <div class="welcome-eyebrow-big">You're all set</div>
       <div class="welcome-headline-big">Welcome, {{ firstName }}.</div>
-      <div class="welcome-sub-big">
-        Your home's already telling us things. Tap below to see what we found.
-      </div>
 
-      <button class="welcome-cta" @click="continueToApp">
-        Let's start exploring
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg>
-      </button>
+      <!-- No CTA to tap — there's nowhere else useful to send someone
+           mid-onboarding, and a dead "explore" destination just confuses.
+           Instead: an engaging status line while we finish setting things
+           up, then an automatic hand-off straight into the dashboard. -->
+      <div class="welcome-status">
+        <span class="welcome-status-dot" />
+        {{ statusText }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, onBeforeUnmount } from 'vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
+import { useTypewriterPlaceholder } from '~/composables/useTypewriterPlaceholder'
 
 definePageMeta({
   title: 'Welcome - UmovingU',
@@ -65,7 +64,24 @@ const firstName = computed(() => {
   return first || 'friend'
 })
 
-onMounted(async () => {
+// Status line cycles through these while the hand-off timer runs — always
+// active (never toggled off), so it just keeps typing/erasing until the
+// page navigates away underneath it.
+const statusActive = ref(true)
+const { text: statusText } = useTypewriterPlaceholder(
+  statusActive,
+  [
+    'Setting up your account…',
+    'Preparing your dashboard…',
+    'Getting your home ready…',
+  ],
+  '',
+  { typeMs: 30, eraseMs: 16, holdMs: 750, pauseMs: 250 },
+)
+
+let navTimer: ReturnType<typeof setTimeout> | null = null
+
+onMounted(() => {
   // Fire the top-of-screen confetti shower once on mount. Same canvas
   // implementation we use after the onboarding-preferences flow — pieces
   // start above the viewport and fall straight down through the page,
@@ -73,15 +89,32 @@ onMounted(async () => {
   // of the chimney.
   runConfetti()
 
-  try {
-    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-    if (!token) return
-    profile.value = await $fetch(`${config.public.apiBase}/profile/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-  } catch {
-    // ignore — non-blocking decoration only
-  }
+  // Real background work: warm the profile fetch (for the firstName
+  // above) while the status line plays. Deliberately NOT awaited before
+  // scheduling the nav timer below — a slow network shouldn't push the
+  // hand-off past its own ~2.4s window (it would if this were awaited
+  // first: total delay = fetch time + 2.4s, not max(fetch time, 2.4s)).
+  ;(async () => {
+    try {
+      const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      if (token) {
+        profile.value = await $fetch(`${config.public.apiBase}/profile/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      }
+    } catch {
+      // ignore — non-blocking decoration only
+    }
+  })()
+
+  // Auto hand-off — no button to tap. There's no sensible "explore"
+  // destination left post-onboarding; the dashboard is the destination,
+  // so we just take the user there once the celebration's had its moment.
+  navTimer = setTimeout(continueToApp, 2400)
+})
+
+onBeforeUnmount(() => {
+  if (navTimer) clearTimeout(navTimer)
 })
 
 const continueToApp = async () => {
@@ -297,48 +330,37 @@ function runConfetti() {
   max-width: 300px;
   animation: welcome-fade-up 0.65s 0.35s both;
 }
-.welcome-sub-big {
-  font-size: 14.5px;
-  font-weight: 500;
-  color: #6b6783;
-  line-height: 1.5;
-  letter-spacing: -0.05px;
-  max-width: 260px;
-  margin-bottom: 32px;
-  animation: welcome-fade-up 0.55s 0.5s both;
-}
 @keyframes welcome-fade-up {
   from { transform: translateY(12px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
-.welcome-cta {
+/* Status line — replaces the old CTA button. No click target; the page
+   navigates itself once the celebration's had its moment. Fixed min-height
+   + monospace-ish tabular sizing isn't needed since it's short phrases,
+   but a min-width keeps the pulsing dot from jittering left/right as the
+   text beneath it types/erases at different lengths. */
+.welcome-status {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 800;
-  color: #fff;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #4a5568;
+  letter-spacing: -0.1px;
+  min-height: 20px;
+  animation: welcome-fade-up 0.55s 0.5s both;
+}
+.welcome-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
   background: #00a19a;
-  border: none;
-  padding: 17px 32px;
-  border-radius: 100px;
-  cursor: pointer;
-  letter-spacing: -0.2px;
-  box-shadow: 0 12px 30px rgba(0, 161, 154, 0.30), 0 2px 6px rgba(0, 161, 154, 0.14);
-  transition: all 0.18s;
-  animation:
-    welcome-fade-up 0.55s 0.65s both,
-    welcome-cta-pulse 2.4s 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+  animation: welcome-status-pulse 1.2s ease-in-out infinite;
 }
-.welcome-cta:hover {
-  transform: translateY(-2px);
-  background: #00b6ae;
-}
-.welcome-cta svg { width: 14px; height: 14px; }
-@keyframes welcome-cta-pulse {
-  0%, 100% { box-shadow: 0 12px 30px rgba(0, 161, 154, 0.30), 0 2px 6px rgba(0, 161, 154, 0.14), 0 0 0 0 rgba(0, 161, 154, 0); }
-  50% { box-shadow: 0 12px 30px rgba(0, 161, 154, 0.30), 0 2px 6px rgba(0, 161, 154, 0.14), 0 0 0 14px rgba(0, 161, 154, 0.08); }
+@keyframes welcome-status-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
 }
 </style>
