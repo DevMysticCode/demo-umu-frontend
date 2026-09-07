@@ -358,16 +358,6 @@
                 </div>
                 <span class="nfy-chevron">&rsaquo;</span>
               </div>
-              <div class="nfy-row" @click="navigateTo(homeScoreHref)">
-                <div class="nfy-icon nfy-icon-amber">
-                  <img src="/op-icons/buyer-passport/epcRating.png" alt="" class="nfy-icon-img" loading="lazy" />
-                </div>
-                <div class="nfy-body">
-                  <div class="nfy-title">Improve your EPC</div>
-                  <div class="nfy-sub">See how you could improve your score and save.</div>
-                </div>
-                <span class="nfy-chevron">&rsaquo;</span>
-              </div>
             </div>
           </div>
 
