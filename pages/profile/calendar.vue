@@ -36,21 +36,21 @@
       <div class="cal-stats">
         <div class="cal-stat">
           <img src="/op-icons/calendar/calendar.png" alt="" class="cal-stat-ic" loading="lazy" />
-          <div>
+          <div class="cal-stat-body">
             <div class="cal-stat-num">{{ countThisWeek }}</div>
             <div class="cal-stat-label">this week</div>
           </div>
         </div>
         <div class="cal-stat">
           <img src="/op-icons/calendar/eye.png" alt="" class="cal-stat-ic" loading="lazy" />
-          <div>
+          <div class="cal-stat-body">
             <div class="cal-stat-num">{{ countViewings }}</div>
             <div class="cal-stat-label">viewings</div>
           </div>
         </div>
         <div class="cal-stat">
           <img src="/op-icons/calendar/clock.png" alt="" class="cal-stat-ic" loading="lazy" />
-          <div>
+          <div class="cal-stat-body">
             <div class="cal-stat-num">{{ countDeadlines }}</div>
             <div class="cal-stat-label">deadlines</div>
           </div>
@@ -721,12 +721,24 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
   box-shadow: 0 2px 6px rgba(31, 44, 76, 0.05);
+  /* Grid items ALSO default to min-width:auto (same trap as flex items) -
+     the fix on .cal-stat-body below only shrinks what's inside this
+     card; the card itself, as a grid-track item, needed its own
+     min-width:0 or the 3rd column still refused to shrink to fit. */
+  min-width: 0;
 }
 .cal-stat-ic {
   width: 40px;
   height: 40px;
   object-fit: contain;
   flex-shrink: 0;
+}
+.cal-stat-body {
+  /* Flex items default to min-width:auto, which won't shrink below an
+     unbreakable label's full width ("deadlines") - on a narrow 3-up
+     grid that pushed the third card (and the whole row) past the
+     viewport edge instead of letting the label just sit tight. */
+  min-width: 0;
 }
 .cal-stat-num {
   font-size: 22px;
