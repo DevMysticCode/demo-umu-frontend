@@ -36,10 +36,11 @@
       <div v-if="!searchMode" class="exp-hero-row">
         <div class="exp-hero-text">
           <div class="exp-hero-eyebrow">Explore</div>
-          <div class="exp-hero-title">Discover any UK property.</div>
+          <div class="exp-hero-title">Explore any UK property</div>
           <div class="exp-hero-sub">
-            Search any UK address and see what the property is telling you -
-            before you buy, sell or even view it.
+            Search any UK address to see what we already know - value,
+            history, energy, planning, local area, available Property
+            Passport information and more.
           </div>
           <div class="exp-hero-badge">
             <svg

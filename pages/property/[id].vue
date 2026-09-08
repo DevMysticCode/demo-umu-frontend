@@ -250,7 +250,7 @@
                 @click="onContactClick"
               >
                 <img
-                  src="/op-icons/property/askAQuestion.jpeg"
+                  src="/op-icons/property/askAQuestion.png"
                   alt=""
                   class="pps-hero-quick-ic"
                   loading="lazy"
@@ -976,7 +976,7 @@
               style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
-                ><img src="/op-icons/property/type.jpeg" alt="" loading="lazy"
+                ><img src="/op-icons/property/type.png" alt="" loading="lazy"
               /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Property details</div>
@@ -1151,7 +1151,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/propertyHistory.jpeg"
+                  src="/op-icons/property/propertyHistory.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -1392,7 +1392,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/streetData.jpeg"
+                  src="/op-icons/property/streetData.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -1539,7 +1539,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/schools.jpeg"
+                  src="/op-icons/property/schools.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -1706,7 +1706,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/trainstations.jpeg"
+                  src="/op-icons/property/trainstations.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -1854,7 +1854,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/trainstations.jpeg"
+                  src="/op-icons/property/trainstations.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -1966,7 +1966,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/busStops.jpeg"
+                  src="/op-icons/property/busStops.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -2118,7 +2118,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/airports.jpeg"
+                  src="/op-icons/property/airports.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -2213,7 +2213,7 @@
             <div class="pps-ds-header" style="background: #e8f5e9">
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/locationAndMap.jpeg"
+                  src="/op-icons/property/locationAndMap.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -2304,7 +2304,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/floodAndRisj.jpeg"
+                  src="/op-icons/property/floodAndRisj.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -2486,7 +2486,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/planning.jpeg"
+                  src="/op-icons/property/planning.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -2663,7 +2663,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/councilTax.jpeg"
+                  src="/op-icons/property/councilTax.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -2781,7 +2781,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/broadband.jpeg"
+                  src="/op-icons/property/broadband.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -2945,7 +2945,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/stampDuty.jpeg"
+                  src="/op-icons/property/stampDuty.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -3135,7 +3135,7 @@
             >
               <span class="pps-ds-header-icon"
                 ><img
-                  src="/op-icons/property/listedBuildings.jpeg"
+                  src="/op-icons/property/listedBuildings.png"
                   alt=""
                   loading="lazy"
               /></span>
@@ -3217,7 +3217,7 @@
           <template v-else-if="activeSheet === 'crime'">
             <div class="pps-ds-header" style="background: #eeedf5">
               <span class="pps-ds-header-icon"
-                ><img src="/op-icons/property/crime.jpeg" alt="" loading="lazy"
+                ><img src="/op-icons/property/crime.png" alt="" loading="lazy"
               /></span>
               <div class="pps-ds-header-text">
                 <div class="pps-ds-header-title">Crime in this area</div>
@@ -5631,7 +5631,7 @@ const exploreTiles = computed(() => {
     key: 'property-details',
     icon: '🏷️',
     iconBg: '#EEF3F7',
-    iconImage: '/op-icons/property/type.jpeg',
+    iconImage: '/op-icons/property/type.png',
     title: 'Property details',
     value: epcValue,
     sub: detailsSub,
@@ -5655,7 +5655,7 @@ const exploreTiles = computed(() => {
     key: 'history',
     icon: '',
     iconBg: '#FFF3E0',
-    iconImage: '/op-icons/property/propertyHistory.jpeg',
+    iconImage: '/op-icons/property/propertyHistory.png',
     title: 'Property history',
     value: soldPrice ? `£${Number(soldPrice).toLocaleString()}` : 'No sales',
     sub: soldDate
@@ -5689,7 +5689,7 @@ const exploreTiles = computed(() => {
     key: 'street',
     icon: '',
     iconBg: '#E8F5E9',
-    iconImage: '/op-icons/property/streetData.jpeg',
+    iconImage: '/op-icons/property/streetData.png',
     title: 'Street data',
     value: streetValue,
     sub: streetSub,
@@ -5704,7 +5704,7 @@ const exploreTiles = computed(() => {
     key: 'schools',
     icon: '',
     iconBg: '#E3F2FD',
-    iconImage: '/op-icons/property/schools.jpeg',
+    iconImage: '/op-icons/property/schools.png',
     title: 'Schools',
     value: schoolsCount > 0 ? `${schoolsCount} nearby` : 'Check Ofsted',
     sub: nearestSchool
@@ -5727,7 +5727,7 @@ const exploreTiles = computed(() => {
     key: 'trains',
     icon: '',
     iconBg: '#F3E5F5',
-    iconImage: '/op-icons/property/trainstations.jpeg',
+    iconImage: '/op-icons/property/trainstations.png',
     title: 'Train stations',
     value: nearestTrain
       ? `${nearestTrain.distanceKm.toFixed(1)} km`
@@ -5750,7 +5750,7 @@ const exploreTiles = computed(() => {
     key: 'buses',
     icon: '',
     iconBg: '#FFF3E0',
-    iconImage: '/op-icons/property/busStops.jpeg',
+    iconImage: '/op-icons/property/busStops.png',
     title: 'Bus stops',
     value: nearestBus
       ? `${nearestBus.distanceKm.toFixed(2)} km`
@@ -5773,7 +5773,7 @@ const exploreTiles = computed(() => {
     key: 'airports',
     icon: '',
     iconBg: '#E1F5FE',
-    iconImage: '/op-icons/property/airports.jpeg',
+    iconImage: '/op-icons/property/airports.png',
     title: 'Airports',
     value: nearestAirport
       ? `${nearestAirport.distanceKm.toFixed(0)} km`
@@ -5795,7 +5795,7 @@ const exploreTiles = computed(() => {
     key: 'map',
     icon: '',
     iconBg: '#E8F5E9',
-    iconImage: '/op-icons/property/locationAndMap.jpeg',
+    iconImage: '/op-icons/property/locationAndMap.png',
     title: 'Location & map',
     value: p.postcode || '-',
     sub: p.city || 'View on map',
@@ -5812,7 +5812,7 @@ const exploreTiles = computed(() => {
       key: 'flood',
       icon: '💧',
       iconBg: '#FFF8E1',
-      iconImage: '/op-icons/property/floodAndRisj.jpeg',
+      iconImage: '/op-icons/property/floodAndRisj.png',
       title: 'Flood & risk',
       pip: isHigh ? '!' : null,
       value,
@@ -5834,7 +5834,7 @@ const exploreTiles = computed(() => {
       key: 'planning',
       icon: '',
       iconBg: '#FAFAFA',
-      iconImage: '/op-icons/property/planning.jpeg',
+      iconImage: '/op-icons/property/planning.png',
       title: 'Planning',
       pip: count > 0 ? null : 'New',
       value: count > 0 ? `${count} on file` : '-',
@@ -5854,7 +5854,7 @@ const exploreTiles = computed(() => {
     key: 'llc',
     icon: '',
     iconBg: '#F3EFFB',
-    iconImage: '/op-icons/property/landCharges.jpeg',
+    iconImage: '/op-icons/property/landCharges.png',
     title: 'Land charges',
     value: 'Check LLC',
     sub: 'HM Land Registry',
@@ -5871,7 +5871,7 @@ const exploreTiles = computed(() => {
         key: 'council',
         icon: '🏛️',
         iconBg: '#E8F5E9',
-        iconImage: '/op-icons/property/councilTax.jpeg',
+        iconImage: '/op-icons/property/councilTax.png',
         title: 'Council tax',
         value: `Band ${band}`,
         sub: 'Local authority',
@@ -5883,7 +5883,7 @@ const exploreTiles = computed(() => {
     key: 'broadband',
     icon: '',
     iconBg: '#E3F2FD',
-    iconImage: '/op-icons/property/broadband.jpeg',
+    iconImage: '/op-icons/property/broadband.png',
     title: 'Broadband',
     value: 'Check speeds',
     sub: 'Full fibre availability',
@@ -5894,7 +5894,7 @@ const exploreTiles = computed(() => {
       key: 'stamp-duty',
       icon: '',
       iconBg: '#FCE4EC',
-      iconImage: '/op-icons/property/stampDuty.jpeg',
+      iconImage: '/op-icons/property/stampDuty.png',
       title: 'Stamp duty',
       value: `${formatPrice(stampDutyEstimate.value)}`,
       sub: 'On estimated value',
@@ -5906,7 +5906,7 @@ const exploreTiles = computed(() => {
       key: 'listed',
       icon: '',
       iconBg: '#FBEFD9',
-      iconImage: '/op-icons/property/listedBuildings.jpeg',
+      iconImage: '/op-icons/property/listedBuildings.png',
       title: 'Heritage sites',
       value: `${enrichmentListedBuildings.value.length} nearby`,
       sub: 'Listed buildings & monuments',
@@ -5923,7 +5923,7 @@ const exploreTiles = computed(() => {
       key: 'crime',
       icon: '',
       iconBg: '#EEEDF5',
-      iconImage: '/op-icons/property/crime.jpeg',
+      iconImage: '/op-icons/property/crime.png',
       title: 'Safety',
       value: hasData
         ? total > 0
