@@ -1288,19 +1288,26 @@ onMounted(async () => {
   margin-bottom: 10px;
 }
 
-/* Legislation & News rail (landlord + seller dashboard) - a 2-column
-   grid, not a horizontal scroll strip, so both cards are visible at
-   once without swiping. One consistent mint-teal banner background
-   regardless of tag (was 3 tag colors incl. a coral/pink one) - the
-   small tag pill below still carries its own accent color, so the
-   category is still legible, just not via 3 different banner hues. */
+/* Legislation & News rail (landlord + seller dashboard) - horizontal
+   scroll strip (back to the original behavior; a 2-column grid briefly
+   replaced it but that stacked every card in one long list instead of
+   staying a scrollable rail). Cards keep the bigger banner/icon and the
+   one consistent mint-teal banner background regardless of tag (was 3
+   tag colors incl. a coral/pink one) - the small tag pill still carries
+   its own accent color, so the category is still legible. */
 .dash-news-rail {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 12px;
+  overflow-x: auto;
   padding: 2px 0 10px;
+  scroll-snap-type: x mandatory;
+}
+.dash-news-rail::-webkit-scrollbar {
+  height: 0;
 }
 .dash-news-card {
+  flex: 0 0 200px;
+  scroll-snap-align: start;
   background: #fff;
   border: 1px solid #e8eceb;
   border-radius: 16px;
