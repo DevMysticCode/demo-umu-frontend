@@ -1,13 +1,15 @@
 /**
  * useInventoryPdf
- * Generates a print-ready HTML "Inventory & Schedule of Condition" report -
- * the room-by-room record, evidence photos and (once collected) both
- * signatures - so a landlord has a real downloadable PDF to send a tenant
- * for signature outside the app, alongside the in-app magic-link e-sign
- * flow. Same print-to-PDF pattern as useTA6Pdf/useTA7Pdf/useFixturesFittingsPdf.
+ * Generates an "Inventory & Schedule of Condition" report - the
+ * room-by-room record, evidence photos (grouped per room) and (once
+ * collected) both signatures - as a REAL downloadable PDF file, so a
+ * landlord has something to send a tenant for signature outside the app.
+ * Client feedback: the previous print-dialog approach (shared by
+ * useTA6Pdf/useTA7Pdf/useFixturesFittingsPdf) wasn't a real download and
+ * didn't work inside the native app - see useDownloadablePdf for why.
  */
 export function useInventoryPdf() {
-  const { printHtmlDocument } = usePrintDocument()
+  const { downloadPdf } = useDownloadablePdf()
 
   function esc(v: any): string {
     if (v == null) return ''
@@ -70,21 +72,32 @@ export function useInventoryPdf() {
     </div>`
   }
 
-  function generateInventoryPdf(data: {
+  async function generateInventoryPdf(data: {
     propertyAddress: string
     record: {
       type?: string
       completedAt?: string
       furnishing?: string
       tenantName?: string
-      rooms: { name: string; items: { name: string; condition: string; cleanliness: string; note?: string }[] }[]
+      rooms: { id?: string; name: string; items: { name: string; condition: string; cleanliness: string; note?: string }[] }[]
       audit?: { landlord?: any; tenant?: any }
     }
     photos?: { name: string; fileUrl: string }[]
-  }): void {
-    const { propertyAddress, record, photos = [] } = data
+    // Per-room evidence photos (client feedback: a photo added while
+    // working through a room should show up in the PDF under that same
+    // room, not in one flat gallery at the end) - keyed by room id.
+    photosByRoom?: Record<string, { name: string; fileUrl: string }[]>
+  }): Promise<void> {
+    const { propertyAddress, record, photos = [], photosByRoom = {} } = data
     const typeLabel = TYPE_LABELS[record.type ?? ''] ?? record.type ?? 'Check-in'
     const furnishingLabel = FURNISHING_LABELS[record.furnishing ?? ''] ?? record.furnishing ?? '-'
+
+    function photoGrid(list: { name: string; fileUrl: string }[]): string {
+      if (!list.length) return ''
+      return `<div class="photo-grid">${list
+        .map((p) => `<img src="${esc(p.fileUrl)}" alt="${esc(p.name)}" />`)
+        .join('')}</div>`
+    }
 
     const roomsHtml = (record.rooms ?? [])
       .map((room) => {
@@ -102,15 +115,17 @@ export function useInventoryPdf() {
           </div>`,
           )
           .join('')
-        if (!items) return ''
-        return `<h2>${esc(room.name)}</h2>${items}`
+        const roomPhotos = photoGrid(photosByRoom[room.id ?? ''] ?? [])
+        // A room with everything "good/clean" (no items rendered) can
+        // still have photos attached - render it for those alone rather
+        // than dropping the room (and its photos) entirely.
+        if (!items && !roomPhotos) return ''
+        return `<h2>${esc(room.name)}</h2>${items}${roomPhotos}`
       })
       .join('')
 
     const photosHtml = photos.length
-      ? `<h2>Evidence photos</h2><div class="photo-grid">${photos
-          .map((p) => `<img src="${esc(p.fileUrl)}" alt="${esc(p.name)}" />`)
-          .join('')}</div>`
+      ? `<h2>Evidence photos</h2>${photoGrid(photos)}`
       : ''
 
     const html = `<!DOCTYPE html>
@@ -168,7 +183,8 @@ export function useInventoryPdf() {
 </body>
 </html>`
 
-    printHtmlDocument(html, 'Pop-ups are blocked. Please allow pop-ups for this site to download the inventory PDF.')
+    const addrSlug = (propertyAddress || 'Inventory').replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '')
+    await downloadPdf(html, `Inventory-${addrSlug}.pdf`)
   }
 
   return { generateInventoryPdf }

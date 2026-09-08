@@ -38,6 +38,18 @@
               </div>
               <div v-if="item.note" class="sg-room-item-note">{{ item.note }}</div>
             </div>
+            <div v-if="room.photos?.length" class="sg-photo-grid">
+              <a
+                v-for="photo in room.photos"
+                :key="photo.fileUrl"
+                :href="photo.fileUrl"
+                target="_blank"
+                rel="noopener"
+                class="sg-photo-tile"
+              >
+                <img :src="photo.fileUrl" :alt="photo.name" loading="lazy" />
+              </a>
+            </div>
           </template>
 
           <template v-if="data.photos?.length">
@@ -97,7 +109,7 @@ const data = ref<{
   inventoryType: string
   furnishing: string
   completedAt: string
-  rooms: { name: string; items: { name: string; condition: string; cleanliness: string; note: string }[] }[]
+  rooms: { name: string; items: { name: string; condition: string; cleanliness: string; note: string }[]; photos: { name: string; fileUrl: string }[] }[]
   photos: { name: string; fileUrl: string }[]
   landlordSigned: boolean
   tenantSigned: boolean
