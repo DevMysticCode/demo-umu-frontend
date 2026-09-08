@@ -470,6 +470,11 @@
         :class="{ open: activePopover !== null }"
         role="dialog"
         aria-modal="true"
+        :style="popoverDragStyle"
+        @touchstart.passive="onPopoverTouchStart"
+        @touchmove="onPopoverTouchMove"
+        @touchend="onPopoverTouchEnd"
+        @touchcancel="onPopoverTouchEnd"
       >
         <div class="psr-sheet-grabber-wrap" @click="activePopover = null">
           <div class="psr-sheet-grabber" />
@@ -963,6 +968,15 @@ const activePopover = ref<PopoverKey>(null)
 function openPopover(k: PopoverKey) {
   activePopover.value = k
 }
+const {
+  dragStyle: popoverDragStyle,
+  onTouchStart: onPopoverTouchStart,
+  onTouchMove: onPopoverTouchMove,
+  onTouchEnd: onPopoverTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: () => (activePopover.value = null),
+  handleSelector: '.psr-sheet-grabber-wrap',
+})
 
 type SortKey = 'newest' | 'price_asc' | 'price_desc' | 'homescore_desc'
 const sortBy = ref<SortKey>('newest')

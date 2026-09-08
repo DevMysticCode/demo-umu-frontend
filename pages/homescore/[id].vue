@@ -2608,7 +2608,14 @@
          is rendering. Driven by `qwDrawerOpen` / `qwDrawerDocKey`.       -->
     <Teleport to="body">
       <div v-if="qwDrawerOpen" class="qw-overlay" @click.self="closeDrawer">
-        <div class="qw-modal">
+        <div
+          class="qw-modal"
+          :style="qwDragStyle"
+          @touchstart.passive="onQwTouchStart"
+          @touchmove="onQwTouchMove"
+          @touchend="onQwTouchEnd"
+          @touchcancel="onQwTouchEnd"
+        >
           <div class="qw-modal-handle" />
           <div class="qw-modal-header">
             <div class="qw-modal-title">
@@ -2731,7 +2738,14 @@
         class="qw-overlay"
         @click.self="closeSimBillDrawer"
       >
-        <div class="qw-modal">
+        <div
+          class="qw-modal"
+          :style="simBillDragStyle"
+          @touchstart.passive="onSimBillTouchStart"
+          @touchmove="onSimBillTouchMove"
+          @touchend="onSimBillTouchEnd"
+          @touchcancel="onSimBillTouchEnd"
+        >
           <div class="qw-modal-handle" />
           <div class="qw-modal-header">
             <div class="qw-modal-title">Upload an energy bill</div>
@@ -4312,6 +4326,15 @@ function closeSimBillDrawer() {
   simBillError.value = ''
   simBillFile.value = null
 }
+const {
+  dragStyle: simBillDragStyle,
+  onTouchStart: onSimBillTouchStart,
+  onTouchMove: onSimBillTouchMove,
+  onTouchEnd: onSimBillTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: closeSimBillDrawer,
+  handleSelector: '.qw-modal-handle, .qw-modal-header',
+})
 function onSimBillFilePicked(e: Event) {
   const input = e.target as HTMLInputElement
   const file = input.files?.[0]
@@ -5814,6 +5837,15 @@ function closeDrawer() {
   qwDrawerFile.value = null
   qwDrawerError.value = ''
 }
+const {
+  dragStyle: qwDragStyle,
+  onTouchStart: onQwTouchStart,
+  onTouchMove: onQwTouchMove,
+  onTouchEnd: onQwTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: closeDrawer,
+  handleSelector: '.qw-modal-handle, .qw-modal-header',
+})
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`

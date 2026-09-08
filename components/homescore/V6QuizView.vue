@@ -247,7 +247,15 @@
           class="modal-overlay hs-v6-quiz-modal"
           @click.self="needAnswerModalOpen = false"
         >
-          <div class="need-answer-sheet" @click.stop>
+          <div
+            class="need-answer-sheet"
+            :style="needAnswerDragStyle"
+            @click.stop
+            @touchstart.passive="onNeedAnswerTouchStart"
+            @touchmove="onNeedAnswerTouchMove"
+            @touchend="onNeedAnswerTouchEnd"
+            @touchcancel="onNeedAnswerTouchEnd"
+          >
             <div class="need-answer-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
             <div class="need-answer-title">Answer at least one question</div>
             <div class="need-answer-sub">
@@ -277,7 +285,15 @@
           class="modal-overlay hs-v6-quiz-modal"
           @click.self="closeBillModal"
         >
-          <div class="modal-sheet" @click.stop>
+          <div
+            class="modal-sheet"
+            :style="billDragStyle"
+            @click.stop
+            @touchstart.passive="onBillTouchStart"
+            @touchmove="onBillTouchMove"
+            @touchend="onBillTouchEnd"
+            @touchcancel="onBillTouchEnd"
+          >
             <div class="modal-grip" />
             <div class="modal-head">
               <div class="modal-eyebrow">⚡ Shortcut</div>
@@ -723,6 +739,14 @@ function resetQuests() {
 
 // Require at least one answer before we can compute an updated EPC/HomeScore.
 const needAnswerModalOpen = ref(false)
+const {
+  dragStyle: needAnswerDragStyle,
+  onTouchStart: onNeedAnswerTouchStart,
+  onTouchMove: onNeedAnswerTouchMove,
+  onTouchEnd: onNeedAnswerTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: () => (needAnswerModalOpen.value = false),
+})
 function onFinish() {
   if (answeredCount.value === 0) {
     needAnswerModalOpen.value = true
@@ -770,6 +794,15 @@ function closeBillModal() {
   selectedFile.value = null
   mode.value = 'quiz'
 }
+const {
+  dragStyle: billDragStyle,
+  onTouchStart: onBillTouchStart,
+  onTouchMove: onBillTouchMove,
+  onTouchEnd: onBillTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: closeBillModal,
+  handleSelector: '.modal-grip, .modal-head',
+})
 
 function onFileSelected(e: Event) {
   const input = e.target as HTMLInputElement

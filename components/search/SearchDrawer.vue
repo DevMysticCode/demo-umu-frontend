@@ -280,7 +280,14 @@
             class="sd-filters-backdrop"
             @click.self="showFilters = false"
           >
-            <div class="sd-filters-sheet">
+            <div
+              class="sd-filters-sheet"
+              :style="filtersDragStyle"
+              @touchstart.passive="onFiltersTouchStart"
+              @touchmove="onFiltersTouchMove"
+              @touchend="onFiltersTouchEnd"
+              @touchcancel="onFiltersTouchEnd"
+            >
               <div class="sd-filters-handle" />
               <FiltersModal
                 @close="showFilters = false"
@@ -321,6 +328,15 @@ const locationError = ref('')
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 const showFilters = ref(false)
+const {
+  dragStyle: filtersDragStyle,
+  onTouchStart: onFiltersTouchStart,
+  onTouchMove: onFiltersTouchMove,
+  onTouchEnd: onFiltersTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: () => (showFilters.value = false),
+  handleSelector: '.sd-filters-handle',
+})
 const activeFilters = ref({
   exploreType: 'ready-to-sell',
   priceRange: { min: 50, max: 350 },

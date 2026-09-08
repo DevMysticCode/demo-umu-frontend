@@ -131,7 +131,15 @@
           class="sheet-backdrop"
           @click.self="drawerStep = null"
         >
-          <div class="sheet" @click.stop>
+          <div
+            class="sheet"
+            :style="drawerDragStyle"
+            @click.stop
+            @touchstart.passive="onDrawerTouchStart"
+            @touchmove="onDrawerTouchMove"
+            @touchend="onDrawerTouchEnd"
+            @touchcancel="onDrawerTouchEnd"
+          >
             <div class="grabber" />
             <div class="sheet-head">
               <div class="sheet-icon-wrap">
@@ -274,6 +282,15 @@ const currentStepCompletedTasks = computed(
 
 // ── Bottom drawer ──────────────────────────────────────────────
 const drawerStep = ref(null)
+const {
+  dragStyle: drawerDragStyle,
+  onTouchStart: onDrawerTouchStart,
+  onTouchMove: onDrawerTouchMove,
+  onTouchEnd: onDrawerTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: () => (drawerStep.value = null),
+  handleSelector: '.grabber, .sheet-head',
+})
 const drawerStepCompletedTasks = computed(
   () => drawerStep.value?.tasks?.filter((t) => t.completed).length ?? 0,
 )
