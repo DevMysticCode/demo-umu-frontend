@@ -156,7 +156,17 @@
          Not rendered in lightweightMode. -->
     <Teleport v-if="!lightweightMode" to="body">
       <div class="sheet-backdrop" :class="{ open: showFilters }" @click="closeFilterSheet" />
-      <div class="sheet" :class="{ open: showFilters }" role="dialog" aria-modal="true">
+      <div
+        class="sheet"
+        :class="{ open: showFilters }"
+        role="dialog"
+        aria-modal="true"
+        :style="filterDragStyle"
+        @touchstart.passive="onFilterTouchStart"
+        @touchmove="onFilterTouchMove"
+        @touchend="onFilterTouchEnd"
+        @touchcancel="onFilterTouchEnd"
+      >
         <div class="sheet-grabber-wrap" @click="closeFilterSheet">
           <div class="sheet-grabber" />
         </div>
@@ -621,6 +631,16 @@ function openFilterSheet() {
 function closeFilterSheet() {
   showFilters.value = false
 }
+const {
+  dragStyle: filterDragStyle,
+  onTouchStart: onFilterTouchStart,
+  onTouchMove: onFilterTouchMove,
+  onTouchEnd: onFilterTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: closeFilterSheet,
+  handleSelector: '.sheet-grabber-wrap, .sheet-head',
+  contentSelector: '.sheet-body',
+})
 function resetDraft() {
   draft.value = { distance: null, ptype: ['any'], beds: null, epc: null, hs: 0, passport: false }
 }

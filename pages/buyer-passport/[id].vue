@@ -747,7 +747,14 @@
         class="sheet-backdrop"
         @click.self="showNotesSheet = false"
       >
-        <div class="sheet-panel">
+        <div
+          class="sheet-panel"
+          :style="notesDragStyle"
+          @touchstart.passive="onNotesTouchStart"
+          @touchmove="onNotesTouchMove"
+          @touchend="onNotesTouchEnd"
+          @touchcancel="onNotesTouchEnd"
+        >
           <div class="sheet-handle" />
           <div class="sheet-header">
             <h3 class="sheet-title">My Notes</h3>
@@ -828,7 +835,14 @@
         class="sheet-backdrop"
         @click.self="showShareSheet = false"
       >
-        <div class="sheet-panel">
+        <div
+          class="sheet-panel"
+          :style="shareDragStyle"
+          @touchstart.passive="onShareTouchStart"
+          @touchmove="onShareTouchMove"
+          @touchend="onShareTouchEnd"
+          @touchcancel="onShareTouchEnd"
+        >
           <div class="sheet-handle" />
           <div class="sheet-header">
             <h3 class="sheet-title">Share Passport</h3>
@@ -982,6 +996,15 @@ const shareUrl = ref('')
 const shareExpiry = ref('')
 const sharing = ref(false)
 const shareCopied = ref(false)
+const {
+  dragStyle: shareDragStyle,
+  onTouchStart: onShareTouchStart,
+  onTouchMove: onShareTouchMove,
+  onTouchEnd: onShareTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: () => (showShareSheet.value = false),
+  handleSelector: '.sheet-handle, .sheet-header',
+})
 
 // Comparables
 const comparables = ref<any[]>([])
@@ -996,6 +1019,16 @@ const showNotesSheet = ref(false)
 const notes = ref<any[]>([])
 const newNoteText = ref('')
 const savingNote = ref(false)
+const {
+  dragStyle: notesDragStyle,
+  onTouchStart: onNotesTouchStart,
+  onTouchMove: onNotesTouchMove,
+  onTouchEnd: onNotesTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: () => (showNotesSheet.value = false),
+  handleSelector: '.sheet-handle, .sheet-header',
+  contentSelector: '.notes-list',
+})
 
 onMounted(async () => {
   try {

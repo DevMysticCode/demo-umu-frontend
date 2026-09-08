@@ -482,7 +482,7 @@
                 target="_blank"
                 rel="noopener"
               >
-                <div class="dash-news-img" :class="`dash-news-img--${n.tag}`">
+                <div class="dash-news-img">
                   <img :src="n.icon" alt="" loading="lazy" />
                 </div>
                 <div class="dash-news-bd">
@@ -1288,50 +1288,38 @@ onMounted(async () => {
   margin-bottom: 10px;
 }
 
-/* Legislation & News rail (landlord dashboard) - bleeds past
-   .dash-scroll's 20px side padding to scroll edge-to-edge, same as the
-   landlord passport page's version this was moved from. */
+/* Legislation & News rail (landlord + seller dashboard) - a 2-column
+   grid, not a horizontal scroll strip, so both cards are visible at
+   once without swiping. One consistent mint-teal banner background
+   regardless of tag (was 3 tag colors incl. a coral/pink one) - the
+   small tag pill below still carries its own accent color, so the
+   category is still legible, just not via 3 different banner hues. */
 .dash-news-rail {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
-  overflow-x: auto;
-  /* margin: 0 -20px; */
-  padding: 2px 20px 10px;
-  scroll-snap-type: x mandatory;
-}
-.dash-news-rail::-webkit-scrollbar {
-  height: 0;
+  padding: 2px 0 10px;
 }
 .dash-news-card {
-  flex: 0 0 200px;
-  scroll-snap-align: start;
   background: #fff;
   border: 1px solid #e8eceb;
-  border-radius: 15px;
+  border-radius: 16px;
   box-shadow: 0 2px 8px rgba(35, 29, 65, 0.05);
   overflow: hidden;
   text-decoration: none;
   display: block;
 }
 .dash-news-img {
-  height: 92px;
+  height: 140px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.dash-news-img img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-}
-.dash-news-img--law {
-  background: linear-gradient(135deg, #fbeae5 0%, #f6dbd3 100%);
-}
-.dash-news-img--update {
   background: linear-gradient(135deg, #f1faf8 0%, #e4f5f0 100%);
 }
-.dash-news-img--news {
-  background: linear-gradient(135deg, #eaeffb 0%, #dfe6f9 100%);
+.dash-news-img img {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
 }
 .dash-news-bd {
   padding: 12px 13px 14px;

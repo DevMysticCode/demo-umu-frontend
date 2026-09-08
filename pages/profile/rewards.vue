@@ -185,7 +185,14 @@
     <Teleport to="body">
       <Transition name="drawer">
         <div v-if="historyDrawerOpen" class="rw-drawer-overlay" @click.self="historyDrawerOpen = false">
-          <div class="rw-drawer">
+          <div
+            class="rw-drawer"
+            :style="historyDragStyle"
+            @touchstart.passive="onHistoryTouchStart"
+            @touchmove="onHistoryTouchMove"
+            @touchend="onHistoryTouchEnd"
+            @touchcancel="onHistoryTouchEnd"
+          >
             <div class="rw-drawer-handle" />
             <div class="rw-drawer-header">
               <h2 class="rw-drawer-title">Full history</h2>
@@ -239,6 +246,16 @@ const nextCursor = ref<string | null>(null)
 const loadingHistory = ref(true)
 const historyDrawerOpen = ref(false)
 const fullHistoryLoaded = ref(false)
+const {
+  dragStyle: historyDragStyle,
+  onTouchStart: onHistoryTouchStart,
+  onTouchMove: onHistoryTouchMove,
+  onTouchEnd: onHistoryTouchEnd,
+} = useSwipeToDismiss({
+  onDismiss: () => (historyDrawerOpen.value = false),
+  handleSelector: '.rw-drawer-handle, .rw-drawer-header',
+  contentSelector: '.rw-drawer-body',
+})
 
 interface CatalogueItem {
   id: string
