@@ -178,14 +178,27 @@
               </span>
             </div>
           </div>
-          <!-- HS score — vertically centered with the entire row -->
-          <div
-            v-if="(r.homeScore ?? r.epcScore) != null"
-            class="psi-drop-hs"
-            :style="{ color: hsColor(r.homeScore ?? r.epcScore) }"
-          >
-            <span class="psi-drop-hs-num">{{ r.homeScore ?? r.epcScore }}</span>
-            <span class="psi-drop-hs-lbl">HS</span>
+          <!-- HS score — same circular gauge as the dashboard/discover
+               search dropdown (SearchFilterBar.vue), not a bare number. -->
+          <div v-if="(r.homeScore ?? r.epcScore) != null" class="psi-drop-hs">
+            <span class="psi-drop-hs-caption">HomeScore</span>
+            <div class="psi-drop-hs-gauge">
+              <svg viewBox="0 0 40 40">
+                <circle class="psi-drop-hs-gauge-bg" cx="20" cy="20" r="16" />
+                <circle
+                  class="psi-drop-hs-gauge-fill"
+                  cx="20"
+                  cy="20"
+                  r="16"
+                  :stroke="hsColor(r.homeScore ?? r.epcScore)"
+                  stroke-dasharray="100.5"
+                  :stroke-dashoffset="100.5 - (Math.min(r.homeScore ?? r.epcScore, 100) / 100) * 100.5"
+                />
+              </svg>
+              <span class="psi-drop-hs-gauge-num" :style="{ color: hsColor(r.homeScore ?? r.epcScore) }">{{
+                r.homeScore ?? r.epcScore
+              }}</span>
+            </div>
           </div>
         </div>
         <!-- Loading more indicator -->
@@ -661,25 +674,46 @@ defineExpose({ clearQuery })
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  letter-spacing: -0.4px;
-  text-align: center;
-  min-width: 40px;
+  gap: 3px;
 }
-.psi-drop-hs-num {
-  font-size: 22px;
+.psi-drop-hs-caption {
+  font-size: 8px;
   font-weight: 800;
-  line-height: 1;
-  font-feature-settings: 'tnum';
-}
-.psi-drop-hs-lbl {
-  font-size: 9px;
-  font-weight: 800;
-  color: #9c98ad;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  margin-top: 2px;
+  color: #9c98ad;
+}
+.psi-drop-hs-gauge {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+.psi-drop-hs-gauge svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.psi-drop-hs-gauge-bg {
+  fill: none;
+  stroke: #ededf3;
+  stroke-width: 4;
+}
+.psi-drop-hs-gauge-fill {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s;
+}
+.psi-drop-hs-gauge-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  font-feature-settings: 'tnum';
 }
 
 /* Badge strip - now inside .psi-drop-body so no left-padding needed. */

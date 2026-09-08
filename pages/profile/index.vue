@@ -566,19 +566,23 @@ const deleteAccount = async () => {
    legible. Uses :has() (supported on all target platforms - Android
    WebView 105+, iOS Safari 15.4+, modern Chrome/Firefox). */
 .profile-row-list :deep(.prow-icon:has(.profile-tile-img)) {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 0;
   background: transparent;
   border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
+  box-shadow: none;
+  overflow: visible;
   padding: 0;
 }
 .profile-tile-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* object-fit: cover was cropping non-square icons (client feedback:
+     "some images are getting cut off") - contain shows the whole icon,
+     and with the background box/shadow gone every icon just reads as a
+     same-size image, not a card. */
+  object-fit: contain;
   display: block;
 }
 </style>
