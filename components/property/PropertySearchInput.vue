@@ -83,7 +83,9 @@
       {{ locateError }}
     </p>
 
-    <!-- Dropdown -->
+    <!-- Dropdown — same markup/classes as SearchFilterBar.vue's address
+         dropdown (dashboard/discover), so every address picker in the app
+         renders one consistent design instead of two hand-synced ones. -->
     <Transition name="psi-drop">
       <div
         v-if="showDropdown && results.length > 0"
@@ -91,35 +93,21 @@
         class="psi-drop"
         @scroll="onDropdownScroll"
       >
+        <div class="psi-drop-header">Select an address</div>
         <div
           v-for="r in results"
           :key="r.id"
           class="psi-drop-item"
           @mousedown.prevent="select(r)"
         >
-          <!-- Leading icon -->
-          <div
-            class="psi-drop-ic"
-            style="
-              width: 44px;
-              height: 44px;
-              border-radius: 12px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              flex-shrink: 0;
-              background: transparent;
-              overflow: hidden;
-            "
-          >
+          <div class="psi-drop-ic">
             <img
               src="/op-icons/homescore/houseSearch.png"
               alt=""
-              style="width: 100%; height: 100%; object-fit: contain;"
+              style="width: 100%; height: 100%; object-fit: contain"
               loading="lazy"
             />
           </div>
-          <!-- Body column: title + sub + badges -->
           <div class="psi-drop-body">
             <div class="psi-drop-title">
               {{ r.addressLine1 || r.address || '-' }}
@@ -127,55 +115,16 @@
             <div class="psi-drop-sub">
               <span v-if="r.city">{{ r.city }} · </span>{{ r.postcode || '' }}
             </div>
-            <div class="psi-drop-badges">
-              <span
-                v-if="r.epcRating"
-                class="psi-drop-badge"
-                :style="{ background: epcColor(r.epcRating) }"
-              >
-                ⚡ EPC {{ r.epcRating }}
-              </span>
-              <span
-                v-if="r.hasPassport && r.passportPublished && (r.milestonePct ?? 0) >= 100"
-                class="psi-drop-badge psi-drop-badge--pub"
-              >
-                <img
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt=""
-                  class="psi-drop-badge-ic"
-                />
-                Claimed · Public
-              </span>
-              <span
-                v-else-if="r.hasPassport && r.passportPublished"
-                class="psi-drop-badge psi-drop-badge--pub"
-              >
-                <img
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt=""
-                  class="psi-drop-badge-ic"
-                />
-                Claimed · Partially Public
-              </span>
-              <span
-                v-else-if="r.hasPassport"
-                class="psi-drop-badge psi-drop-badge--prog"
-              >
-                <img
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt=""
-                  class="psi-drop-badge-ic"
-                />
-                Claimed · Private
-              </span>
-              <span v-else class="psi-drop-badge psi-drop-badge--unclaimed">
-                <img
-                  src="/op-icons/passportview/umu-passport.png"
-                  alt=""
-                  class="psi-drop-badge-ic"
-                />
-                Unclaimed · Claim yours? →
-              </span>
+            <div class="psi-drop-passport-line">
+              <img
+                :src="passportStateOf(r) !== 'private'
+                  ? '/op-icons/claim/padlockUnlocked.png'
+                  : '/op-icons/claim/padlock.png'"
+                alt=""
+                class="psi-drop-badge-ic"
+                loading="lazy"
+              />
+              {{ passportStateFullLabel(r) }}
             </div>
           </div>
           <!-- HS score — same circular gauge as the dashboard/discover
@@ -400,22 +349,24 @@ function onLocateClick() {
   )
 }
 
-function epcColor(rating: string): string {
-  const map: Record<string, string> = {
-    A: '#00b050',
-    B: '#33b800',
-    C: '#92d050',
-    D: '#a39200',
-    E: '#e08a00',
-    F: '#ff6600',
-    G: '#ff0000',
-  }
-  return map[(rating ?? '').toUpperCase()] ?? '#8e8e93'
+// Same 4-state model + phrasing as SearchFilterBar.vue's dropdown, so
+// both address pickers read identically rather than drifting apart again.
+function passportStateOf(addr: any): 'unclaimed' | 'private' | 'partiallyPublic' | 'public' {
+  if (!addr.hasPassport) return 'unclaimed'
+  if (!addr.passportPublished) return 'private'
+  return (addr.milestonePct ?? 0) >= 100 ? 'public' : 'partiallyPublic'
+}
+function passportStateFullLabel(addr: any): string {
+  const s = passportStateOf(addr)
+  if (s === 'unclaimed') return 'Property Passport unclaimed'
+  if (s === 'partiallyPublic') return 'Property Passport claimed · Partially Public'
+  if (s === 'public') return 'Property Passport claimed · Public'
+  return 'Property Passport claimed · Private'
 }
 
 function hsColor(score: number | null | undefined): string {
   if (score == null) return '#8e8e93'
-  if (score >= 75) return '#00a19a'
+  if (score >= 75) return '#008a84'
   if (score >= 60) return '#65a30d'
   if (score >= 45) return '#ca8a04'
   if (score >= 30) return '#92400e'
@@ -611,7 +562,7 @@ defineExpose({ clearQuery })
   left: 0;
   right: 0;
   background: #fff;
-  border: 1.5px solid #e5e7eb;
+  border: 1.5px solid #e2f1ea;
   border-radius: 14px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
   overflow: hidden;
@@ -620,8 +571,19 @@ defineExpose({ clearQuery })
   overflow-y: auto;
 }
 
+.psi-drop-header {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 14px 4px;
+}
+
 .psi-drop-item {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 11px 14px;
   cursor: pointer;
   border-bottom: 1px solid #f1f5f9;
@@ -635,20 +597,14 @@ defineExpose({ clearQuery })
   background: #f0fdfa;
 }
 
-/* The dropdown item itself is now the horizontal flex row, so the HS score
-   sits next to the entire body column (title + sub + badges) and is
-   therefore vertically centered with all of it. */
-.psi-drop-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .psi-drop-ic {
+  width: 28px;
+  height: 28px;
   color: #00a19a;
   display: grid;
   place-items: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .psi-drop-body {
@@ -656,7 +612,7 @@ defineExpose({ clearQuery })
   min-width: 0;
 }
 .psi-drop-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #231d45;
   white-space: nowrap;
@@ -664,9 +620,19 @@ defineExpose({ clearQuery })
   text-overflow: ellipsis;
 }
 .psi-drop-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: #94a3b8;
   margin-top: 1px;
+}
+.psi-drop-passport-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin-top: 4px;
+  color: #00817c;
 }
 
 .psi-drop-hs {
@@ -716,49 +682,11 @@ defineExpose({ clearQuery })
   font-feature-settings: 'tnum';
 }
 
-/* Badge strip - now inside .psi-drop-body so no left-padding needed. */
-.psi-drop-badges {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  margin-top: 5px;
-}
-.psi-drop-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 9.5px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 999px;
-  white-space: nowrap;
-  line-height: 1.4;
-  color: #fff;
-  letter-spacing: 0.01em;
-}
 .psi-drop-badge-ic {
-  width: 10px;
-  height: 10px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
   flex-shrink: 0;
-}
-.psi-drop-badge--pub {
-  background: #231d45;
-  color: #fff;
-}
-.psi-drop-badge--prog {
-  background: #fef3c7;
-  color: #92400e;
-}
-.psi-drop-badge--unclaimed {
-  background: #f0fdfa;
-  color: #00a19a;
-  border: 1px solid #e2f1ea;
-}
-.psi-drop-badge--hs {
-  background: #f0fdfa;
-  color: #008a84;
-  border: 1px solid #ccfbf1;
 }
 
 .psi-drop-loading {
