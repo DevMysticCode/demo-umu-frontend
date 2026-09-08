@@ -59,18 +59,27 @@ definePageMeta({ title: 'News - UmovingU', middleware: 'auth' })
 
 const goBack = useGoBack('/profile')
 
-const featured = computed(() => NEWS_ITEMS.find((n) => n.featured) ?? NEWS_ITEMS[0])
-const rest = computed(() => NEWS_ITEMS.filter((n) => n.id !== featured.value?.id))
+// Same cached role the dashboard uses (set there after normalizeRole()) -
+// picks the seller-focused dataset instead of the landlord one, so this
+// full list matches whichever teaser rail the user came from.
+const cachedRole =
+  typeof window !== 'undefined' ? localStorage.getItem('umu_role') : null
+const newsSource = computed(() =>
+  cachedRole === 'sell' ? SELLER_NEWS_ITEMS : NEWS_ITEMS,
+)
+const featured = computed(
+  () => newsSource.value.find((n) => n.featured) ?? newsSource.value[0],
+)
+const rest = computed(() =>
+  newsSource.value.filter((n) => n.id !== featured.value?.id),
+)
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
 // 3D-isometric icon per tag, matching the compliance section icons
-// elsewhere in the app. These filenames don't exist yet — see the
-// icon-generation prompts handed to the client; falls back to the
-// browser's default broken-image box until they're added, same as any
-// other missing icon in this codebase.
+// elsewhere in the app (public/op-icons/news/{law,update,news}.png).
 function iconForTag(tag: string) {
   return `/op-icons/news/${tag}.png`
 }

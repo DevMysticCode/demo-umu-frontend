@@ -4,7 +4,11 @@
       <div class="hero-row1">
         <div>
           <div class="dash-greeting-sub">{{ greeting }}</div>
-          <div class="dash-title">{{ role === 'buy' ? 'Your move at a glance' : 'Your home at a glance' }}</div>
+          <div class="dash-title">
+            {{
+              role === 'buy' ? 'Your move at a glance' : 'Your home at a glance'
+            }}
+          </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px">
           <button class="dash-tour-btn" type="button" aria-label="Help">
@@ -32,10 +36,17 @@
       />
 
       <template v-if="!searchMode && roleResolved && role === 'buy'">
-        <div v-if="loadingBuyerProfile" class="skeleton-card" style="height: 220px; margin-bottom: 20px" />
+        <div
+          v-if="loadingBuyerProfile"
+          class="skeleton-card"
+          style="height: 220px; margin-bottom: 20px"
+        />
 
         <template v-else>
-          <RecentlyViewedFeed :properties="recentlyViewed" :loading="loadingRecentlyViewed" />
+          <RecentlyViewedFeed
+            :properties="recentlyViewed"
+            :loading="loadingRecentlyViewed"
+          />
 
           <!-- ── Your Active (Buyer) Passport ── -->
           <div class="dash-section">
@@ -54,7 +65,16 @@
                   <span class="apc-pill">BUYER PASSPORT</span>
                   <div class="apc-address">Buyer Passport</div>
                   <div v-if="buyerIdVerified" class="apc-verified-row">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                     Identity verified
@@ -63,7 +83,10 @@
                     Finance <strong>{{ financePercent }}%</strong> complete
                   </div>
                   <div class="apc-progress-track">
-                    <div class="apc-progress-fill" :style="{ width: financePercent + '%' }" />
+                    <div
+                      class="apc-progress-fill"
+                      :style="{ width: financePercent + '%' }"
+                    />
                   </div>
                 </div>
               </div>
@@ -75,17 +98,26 @@
                 Continue my Buyer Passport
                 <span>&rarr;</span>
               </button>
-              <div class="apc-viewall-link" @click.stop="navigateTo('/passport/collections')">
+              <div
+                class="apc-viewall-link"
+                @click.stop="navigateTo('/passport/collections')"
+              >
                 View all Passports
                 <span>&rsaquo;</span>
               </div>
             </div>
 
-            <div v-else class="no-passport-card" @click="navigateTo('/buyer-profile/build')">
+            <div
+              v-else
+              class="no-passport-card"
+              @click="navigateTo('/buyer-profile/build')"
+            >
               <div class="npc-icon">+</div>
               <div class="npc-body">
                 <div class="npc-title">Start your Buyer Passport</div>
-                <div class="npc-sub">Verify your identity and buying position.</div>
+                <div class="npc-sub">
+                  Verify your identity and buying position.
+                </div>
               </div>
               <span class="npc-chevron">&rsaquo;</span>
             </div>
@@ -96,7 +128,16 @@
             <div class="dash-eyebrow">Next for you</div>
             <div class="next-for-you-card">
               <div v-if="buyerStalenessCopy" class="nfy-stale-banner">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
@@ -108,31 +149,54 @@
                 @click="navigateTo('/buyer-profile/build')"
               >
                 <div class="nfy-icon nfy-icon-teal">
-                  <img src="/op-icons/investment/clipboardChecklist.png" alt="" class="nfy-icon-img" loading="lazy" />
+                  <img
+                    src="/op-icons/investment/clipboardChecklist.png"
+                    alt=""
+                    class="nfy-icon-img"
+                    loading="lazy"
+                  />
                 </div>
                 <div class="nfy-body">
-                  <div class="nfy-title">Complete {{ buyerIncompleteCount }} items in your Passport</div>
-                  <div class="nfy-sub">Add documents and details to build your record.</div>
+                  <div class="nfy-title">
+                    Complete {{ buyerIncompleteCount }} items in your Passport
+                  </div>
+                  <div class="nfy-sub">
+                    Add documents and details to build your record.
+                  </div>
                 </div>
                 <span class="nfy-chevron">&rsaquo;</span>
               </div>
               <div class="nfy-row" @click="navigateTo('/buyer-profile/build')">
                 <div class="nfy-icon nfy-icon-teal">
-                  <img src="/op-icons/buyer-profile-build/bank.png" alt="" class="nfy-icon-img" loading="lazy" />
+                  <img
+                    src="/op-icons/buyer-profile-build/bank.png"
+                    alt=""
+                    class="nfy-icon-img"
+                    loading="lazy"
+                  />
                 </div>
                 <div class="nfy-body">
                   <div class="nfy-title">Upload proof of funds or AIP</div>
-                  <div class="nfy-sub">Strengthen your position and unlock more.</div>
+                  <div class="nfy-sub">
+                    Strengthen your position and unlock more.
+                  </div>
                 </div>
                 <span class="nfy-chevron">&rsaquo;</span>
               </div>
               <div class="nfy-row" @click="navigateTo('/buyer-profile/build')">
                 <div class="nfy-icon nfy-icon-amber">
-                  <img src="/op-icons/investment/chainLink.png" alt="" class="nfy-icon-img" loading="lazy" />
+                  <img
+                    src="/op-icons/investment/chainLink.png"
+                    alt=""
+                    class="nfy-icon-img"
+                    loading="lazy"
+                  />
                 </div>
                 <div class="nfy-body">
                   <div class="nfy-title">Confirm your buying position</div>
-                  <div class="nfy-sub">Let agents and sellers know where you are in the chain.</div>
+                  <div class="nfy-sub">
+                    Let agents and sellers know where you are in the chain.
+                  </div>
                 </div>
                 <span class="nfy-chevron">&rsaquo;</span>
               </div>
@@ -141,17 +205,33 @@
 
           <!-- ── HomeScore explore entry ── -->
           <div class="dash-section">
-            <div class="homescore-explore-card" @click="navigateTo('/homescore')">
+            <div
+              class="homescore-explore-card"
+              @click="navigateTo('/homescore')"
+            >
               <div class="hec-gauge">
                 <svg viewBox="0 0 100 100">
                   <defs>
-                    <linearGradient id="hecGaugeGrad" x1="1" y1="0" x2="0" y2="0">
+                    <linearGradient
+                      id="hecGaugeGrad"
+                      x1="1"
+                      y1="0"
+                      x2="0"
+                      y2="0"
+                    >
                       <stop offset="0%" stop-color="#00BB93" />
                       <stop offset="100%" stop-color="#016F84" />
                     </linearGradient>
                   </defs>
                   <circle class="hec-gauge-bg" cx="50" cy="50" r="42" />
-                  <circle class="hec-gauge-fill" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="47.5" />
+                  <circle
+                    class="hec-gauge-fill"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    stroke-dasharray="263.9"
+                    stroke-dashoffset="47.5"
+                  />
                 </svg>
                 <div class="hec-gauge-label">
                   <span class="hec-gauge-num">82</span>
@@ -160,11 +240,19 @@
               <div class="hec-body">
                 <div class="hec-title">Check any home's HomeScore</div>
                 <div class="hec-sub">
-                  Instant insight on energy, running costs and value - for any UK property, not just your own.
+                  Instant insight on energy, running costs and value - for any
+                  UK property, not just your own.
                 </div>
-                <span class="hec-cta">Run a free HomeScore <span>&rarr;</span></span>
+                <span class="hec-cta"
+                  >Run a free HomeScore <span>&rarr;</span></span
+                >
               </div>
-              <img src="/op-icons/landing/homeScoreCard.png" alt="" class="hec-house-img" loading="lazy" />
+              <img
+                src="/op-icons/landing/homeScoreCard.png"
+                alt=""
+                class="hec-house-img"
+                loading="lazy"
+              />
             </div>
           </div>
 
@@ -173,15 +261,29 @@
             <div class="dash-eyebrow-row">
               <div class="dash-eyebrow">
                 Watching
-                <span v-if="watchedProperties.length" class="watching-badge">{{ watchedProperties.length }}</span>
+                <span v-if="watchedProperties.length" class="watching-badge">{{
+                  watchedProperties.length
+                }}</span>
               </div>
-              <div class="dash-view-all" @click="navigateTo('/profile/watched-properties')">View all</div>
+              <div
+                class="dash-view-all"
+                @click="navigateTo('/profile/watched-properties')"
+              >
+                View all
+              </div>
             </div>
 
-            <div v-if="loadingWatched" class="skeleton-card" style="height: 100px" />
+            <div
+              v-if="loadingWatched"
+              class="skeleton-card"
+              style="height: 100px"
+            />
 
             <div v-else-if="watchedProperties.length" class="watching-card">
-              <div class="watch-row" @click="navigateTo('/property/' + watchedProperties[0].id)">
+              <div
+                class="watch-row"
+                @click="navigateTo('/property/' + watchedProperties[0].id)"
+              >
                 <div class="watch-img-wrap">
                   <PropertyImage
                     :src="watchedProperties[0].imageUrl"
@@ -191,18 +293,33 @@
                   />
                 </div>
                 <div class="watch-body">
-                  <div class="watch-address">{{ watchedProperties[0].addressLine1 }}</div>
-                  <div class="watch-postcode">{{ watchedProperties[0].postcode }}</div>
-                  <div v-if="watchedProperties[0].homeScore != null" class="watch-hs">
-                    HomeScore <strong>{{ watchedProperties[0].homeScore }}/100</strong>
+                  <div class="watch-address">
+                    {{ watchedProperties[0].addressLine1 }}
+                  </div>
+                  <div class="watch-postcode">
+                    {{ watchedProperties[0].postcode }}
+                  </div>
+                  <div
+                    v-if="watchedProperties[0].homeScore != null"
+                    class="watch-hs"
+                  >
+                    HomeScore
+                    <strong>{{ watchedProperties[0].homeScore }}/100</strong>
                   </div>
                 </div>
                 <button
                   type="button"
                   class="watch-updates-btn"
-                  @click.stop="navigateTo('/property/' + watchedProperties[0].id)"
+                  @click.stop="
+                    navigateTo('/property/' + watchedProperties[0].id)
+                  "
                 >
-                  <img src="/op-icons/misc/bell.png" alt="" class="watch-updates-ic" loading="lazy" />
+                  <img
+                    src="/op-icons/misc/bell.png"
+                    alt=""
+                    class="watch-updates-ic"
+                    loading="lazy"
+                  />
                   Updates
                 </button>
               </div>
@@ -211,20 +328,38 @@
                 class="watch-more-link"
                 @click="navigateTo('/profile/watched-properties')"
               >
-                {{ watchedProperties.length - 1 }} more propert{{ watchedProperties.length - 1 === 1 ? 'y' : 'ies' }} watching
+                {{ watchedProperties.length - 1 }} more propert{{
+                  watchedProperties.length - 1 === 1 ? 'y' : 'ies'
+                }}
+                watching
               </div>
             </div>
 
-            <div v-else class="no-passport-card" @click="navigateTo('/discover')">
+            <div
+              v-else
+              class="no-passport-card"
+              @click="navigateTo('/discover')"
+            >
               <div class="npc-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
                   <circle cx="11" cy="11" r="7" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
               </div>
               <div class="npc-body">
                 <div class="npc-title">Nothing watched yet</div>
-                <div class="npc-sub">Explore properties and watch the ones you like.</div>
+                <div class="npc-sub">
+                  Explore properties and watch the ones you like.
+                </div>
               </div>
               <span class="npc-chevron">&rsaquo;</span>
             </div>
@@ -244,7 +379,11 @@
       </template>
 
       <template v-else-if="!searchMode && roleResolved">
-        <div v-if="loadingPassport" class="skeleton-card" style="height: 220px; margin-bottom: 20px" />
+        <div
+          v-if="loadingPassport"
+          class="skeleton-card"
+          style="height: 220px; margin-bottom: 20px"
+        />
 
         <template v-else>
           <!-- ── Your Active Passport ── -->
@@ -259,24 +398,34 @@
               <div class="apc-main">
                 <div class="apc-passport-slot">
                   <PassportCard
-                    :line1="passports[0].addressLine1 || passports[0].address || ''"
+                    :line1="
+                      passports[0].addressLine1 || passports[0].address || ''
+                    "
                     :line2="passports[0].postcode || ''"
                     :type="passports[0].type || 'SELLER'"
                   />
                 </div>
                 <div class="apc-info">
-                  <span class="apc-pill">{{ (passports[0].type || 'SELLER') }} PASSPORT</span>
+                  <span class="apc-pill"
+                    >{{ passports[0].type || 'SELLER' }} PASSPORT</span
+                  >
                   <div class="apc-address">
                     {{ passports[0].address || passports[0].addressLine1 }}
                   </div>
                   <div class="apc-postcode">{{ passports[0].postcode }}</div>
                   <div class="apc-progress-row">
-                    Passport <strong>{{ passports[0].completionPercentage ?? 0 }}%</strong> complete
+                    Passport
+                    <strong
+                      >{{ passports[0].completionPercentage ?? 0 }}%</strong
+                    >
+                    complete
                   </div>
                   <div class="apc-progress-track">
                     <div
                       class="apc-progress-fill"
-                      :style="{ width: (passports[0].completionPercentage ?? 0) + '%' }"
+                      :style="{
+                        width: (passports[0].completionPercentage ?? 0) + '%',
+                      }"
                     />
                   </div>
                 </div>
@@ -289,7 +438,10 @@
                 Continue my Passport
                 <span>&rarr;</span>
               </button>
-              <div class="apc-viewall-link" @click.stop="navigateTo('/passport/collections')">
+              <div
+                class="apc-viewall-link"
+                @click.stop="navigateTo('/passport/collections')"
+              >
                 View all Passports
                 <span>&rsaquo;</span>
               </div>
@@ -299,19 +451,24 @@
               <div class="npc-icon">+</div>
               <div class="npc-body">
                 <div class="npc-title">Start your Property Passport</div>
-                <div class="npc-sub">Verify ownership and build your record.</div>
+                <div class="npc-sub">
+                  Verify ownership and build your record.
+                </div>
               </div>
               <span class="npc-chevron">&rsaquo;</span>
             </div>
           </div>
 
-          <!-- ── Legislation & News (landlord only) ──────────────────
+          <!-- ── Legislation & News (landlord + seller) ──────────────
                Moved here from the landlord passport's own compliance
-               screen — same curated dataset (utils/landlordNews.ts),
-               so the two never drift apart. See that file's own
-               comment for why this is a curated snapshot, not a live
-               feed. -->
-          <div v-if="role === 'landlord'" class="dash-section">
+               screen — same curated datasets (utils/landlordNews.ts /
+               utils/sellerNews.ts), so this rail and the full News page
+               never drift apart. See those files' own comments for why
+               this is a curated snapshot, not a live feed. Each card
+               leads with a tag icon rather than a paragraph of summary
+               text, so the rail reads as a quick scan, not a wall of
+               text - the full story is one tap away via "Read more". -->
+          <div v-if="role === 'landlord' || role === 'sell'" class="dash-section">
             <div class="dash-eyebrow">Legislation &amp; news</div>
             <div class="dash-news-rail">
               <a
@@ -322,16 +479,23 @@
                 target="_blank"
                 rel="noopener"
               >
-                <div class="dash-news-band" :class="`dash-news-band--${n.tag}`" />
+                <div class="dash-news-img" :class="`dash-news-img--${n.tag}`">
+                  <img :src="`/op-icons/news/${n.tag}.png`" alt="" loading="lazy" />
+                </div>
                 <div class="dash-news-bd">
-                  <span class="dash-news-tag" :class="`dash-news-tag--${n.tag}`">{{ n.tagLabel }}</span>
+                  <span
+                    class="dash-news-tag"
+                    :class="`dash-news-tag--${n.tag}`"
+                    >{{ n.tagLabel }}</span
+                  >
                   <div class="dash-news-t">{{ n.title }}</div>
-                  <div class="dash-news-s">{{ n.summary }}</div>
-                  <div class="dash-news-src">{{ n.source }}</div>
+                  <span class="dash-news-more">Read more <span>&rarr;</span></span>
                 </div>
               </a>
             </div>
-            <NuxtLink to="/profile/news" class="dash-news-all">See all updates ›</NuxtLink>
+            <NuxtLink to="/profile/news" class="dash-news-all"
+              >See all updates ›</NuxtLink
+            >
           </div>
 
           <!-- ── Next For You ── -->
@@ -339,7 +503,16 @@
             <div class="dash-eyebrow">Next for you</div>
             <div class="next-for-you-card">
               <div v-if="sellerStalenessCopy" class="nfy-stale-banner">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
@@ -351,11 +524,20 @@
                 @click="navigateTo('/passportview/' + passports[0].id)"
               >
                 <div class="nfy-icon nfy-icon-teal">
-                  <img src="/op-icons/investment/clipboardChecklist.png" alt="" class="nfy-icon-img" loading="lazy" />
+                  <img
+                    src="/op-icons/investment/clipboardChecklist.png"
+                    alt=""
+                    class="nfy-icon-img"
+                    loading="lazy"
+                  />
                 </div>
                 <div class="nfy-body">
-                  <div class="nfy-title">Complete {{ incompleteItemCount }} items in your Passport</div>
-                  <div class="nfy-sub">Add documents and details to build your record.</div>
+                  <div class="nfy-title">
+                    Complete {{ incompleteItemCount }} items in your Passport
+                  </div>
+                  <div class="nfy-sub">
+                    Add documents and details to build your record.
+                  </div>
                 </div>
                 <span class="nfy-chevron">&rsaquo;</span>
               </div>
@@ -370,7 +552,13 @@
                 <div class="hsc-ring">
                   <svg viewBox="0 0 100 100">
                     <defs>
-                      <linearGradient id="dashHomescoreGrad" x1="1" y1="0" x2="0" y2="0">
+                      <linearGradient
+                        id="dashHomescoreGrad"
+                        x1="1"
+                        y1="0"
+                        x2="0"
+                        y2="0"
+                      >
                         <stop offset="0%" stop-color="#00BB93" />
                         <stop offset="100%" stop-color="#016F84" />
                       </linearGradient>
@@ -378,29 +566,46 @@
                     <circle class="hsc-ring-bg" cx="50" cy="50" r="42" />
                     <circle
                       class="hsc-ring-fill"
-                      cx="50" cy="50" r="42"
+                      cx="50"
+                      cy="50"
+                      r="42"
                       :stroke-dasharray="263.9"
                       :stroke-dashoffset="homeScoreDashoffset"
                     />
                   </svg>
                   <div class="hsc-ring-label">
-                    <span class="hsc-ring-num">{{ passports[0].homeScore ?? '-' }}</span>
+                    <span class="hsc-ring-num">{{
+                      passports[0].homeScore ?? '-'
+                    }}</span>
                     <span class="hsc-ring-den">/100</span>
                   </div>
                 </div>
                 <div class="hsc-info">
                   <div class="hsc-title">Your home today</div>
                   <div class="hsc-sub">
-                    See how your home performs on energy, running costs, value and more.
+                    See how your home performs on energy, running costs, value
+                    and more.
                   </div>
                 </div>
-                <img src="/op-icons/landing/homeScoreCard.png" alt="" class="hsc-house-img" loading="lazy" />
+                <img
+                  src="/op-icons/landing/homeScoreCard.png"
+                  alt=""
+                  class="hsc-house-img"
+                  loading="lazy"
+                />
               </div>
-              <div v-if="passports[0].homeScorePotential != null" class="hsc-potential-row">
+              <div
+                v-if="passports[0].homeScorePotential != null"
+                class="hsc-potential-row"
+              >
                 <span>Potential score</span>
                 <strong>{{ passports[0].homeScorePotential }}/100</strong>
               </div>
-              <button class="hsc-cta" type="button" @click="navigateTo(homeScoreHref)">
+              <button
+                class="hsc-cta"
+                type="button"
+                @click="navigateTo(homeScoreHref)"
+              >
                 See my HomeScore
                 <span>&rarr;</span>
               </button>
@@ -409,17 +614,33 @@
 
           <!-- ── HomeScore explore entry ── -->
           <div class="dash-section">
-            <div class="homescore-explore-card" @click="navigateTo('/homescore')">
+            <div
+              class="homescore-explore-card"
+              @click="navigateTo('/homescore')"
+            >
               <div class="hec-gauge">
                 <svg viewBox="0 0 100 100">
                   <defs>
-                    <linearGradient id="hecGaugeGrad" x1="1" y1="0" x2="0" y2="0">
+                    <linearGradient
+                      id="hecGaugeGrad"
+                      x1="1"
+                      y1="0"
+                      x2="0"
+                      y2="0"
+                    >
                       <stop offset="0%" stop-color="#00BB93" />
                       <stop offset="100%" stop-color="#016F84" />
                     </linearGradient>
                   </defs>
                   <circle class="hec-gauge-bg" cx="50" cy="50" r="42" />
-                  <circle class="hec-gauge-fill" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="47.5" />
+                  <circle
+                    class="hec-gauge-fill"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    stroke-dasharray="263.9"
+                    stroke-dashoffset="47.5"
+                  />
                 </svg>
                 <div class="hec-gauge-label">
                   <span class="hec-gauge-num">82</span>
@@ -428,44 +649,89 @@
               <div class="hec-body">
                 <div class="hec-title">Check any home's HomeScore</div>
                 <div class="hec-sub">
-                  Curious about a neighbour's home or somewhere you're eyeing up? Run a free HomeScore on any UK property.
+                  Curious about a neighbour's home or somewhere you're eyeing
+                  up? Run a free HomeScore on any UK property.
                 </div>
-                <span class="hec-cta">Run a free HomeScore <span>&rarr;</span></span>
+                <span class="hec-cta"
+                  >Run a free HomeScore <span>&rarr;</span></span
+                >
               </div>
-              <img src="/op-icons/landing/homeScoreCard.png" alt="" class="hec-house-img" loading="lazy" />
+              <img
+                src="/op-icons/landing/homeScoreCard.png"
+                alt=""
+                class="hec-house-img"
+                loading="lazy"
+              />
             </div>
           </div>
 
           <!-- ── Also buying (role === 'both' only) ── -->
           <div v-if="role === 'both'" class="dash-section">
             <div class="dash-eyebrow">Also buying?</div>
-            <div v-if="loadingBuyerSummary" class="skeleton-card" style="height: 100px" />
+            <div
+              v-if="loadingBuyerSummary"
+              class="skeleton-card"
+              style="height: 100px"
+            />
             <div v-else class="buyer-summary-strip">
               <div
                 class="bss-row"
-                @click="navigateTo(buyerProfile ? '/buyer-profile/view' : '/buyer-profile/build')"
+                @click="
+                  navigateTo(
+                    buyerProfile
+                      ? '/buyer-profile/view'
+                      : '/buyer-profile/build',
+                  )
+                "
               >
                 <div class="bss-icon">
-                  <img src="/op-icons/passport-covers/buyer_front_no_tile_no_tilt.png" alt="" class="bss-icon-img" loading="lazy" />
+                  <img
+                    src="/op-icons/passport-covers/buyer_front_no_tile_no_tilt.png"
+                    alt=""
+                    class="bss-icon-img"
+                    loading="lazy"
+                  />
                 </div>
                 <div class="bss-body">
                   <div class="bss-title">
-                    {{ buyerProfile ? 'Your Buyer Passport' : 'Start your Buyer Passport' }}
+                    {{
+                      buyerProfile
+                        ? 'Your Buyer Passport'
+                        : 'Start your Buyer Passport'
+                    }}
                   </div>
                   <div class="bss-sub">
-                    {{ buyerProfile ? `Finance ${financePercent}% complete` : 'Verify your identity and buying position.' }}
+                    {{
+                      buyerProfile
+                        ? `Finance ${financePercent}% complete`
+                        : 'Verify your identity and buying position.'
+                    }}
                   </div>
                 </div>
                 <span class="bss-chevron">&rsaquo;</span>
               </div>
-              <div class="bss-row" @click="navigateTo('/profile/watched-properties')">
+              <div
+                class="bss-row"
+                @click="navigateTo('/profile/watched-properties')"
+              >
                 <div class="bss-icon">
-                  <img src="/op-icons/misc/exploreWatching.png" alt="" class="bss-icon-img" loading="lazy" />
+                  <img
+                    src="/op-icons/misc/exploreWatching.png"
+                    alt=""
+                    class="bss-icon-img"
+                    loading="lazy"
+                  />
                 </div>
                 <div class="bss-body">
                   <div class="bss-title">Watching</div>
                   <div class="bss-sub">
-                    {{ watchedProperties.length ? `${watchedProperties.length} propert${watchedProperties.length === 1 ? 'y' : 'ies'} watched` : 'Nothing watched yet' }}
+                    {{
+                      watchedProperties.length
+                        ? `${watchedProperties.length} propert${
+                            watchedProperties.length === 1 ? 'y' : 'ies'
+                          } watched`
+                        : 'Nothing watched yet'
+                    }}
                   </div>
                 </div>
                 <span class="bss-chevron">&rsaquo;</span>
@@ -478,7 +744,9 @@
             <div class="apr-icon">+</div>
             <div class="apr-body">
               <div class="apr-title">Add another property</div>
-              <div class="apr-sub">Verify ownership, then choose Rental or Seller Passport.</div>
+              <div class="apr-sub">
+                Verify ownership, then choose Rental or Seller Passport.
+              </div>
             </div>
             <span class="apr-chevron">&rsaquo;</span>
           </div>
@@ -581,7 +849,12 @@ const {
 // — because this page renders on the server first and then hydrates on
 // the client; a real random pick would very likely disagree between the
 // two passes and throw a hydration-mismatch warning on every visit.
-type Daypart = 'lateNight' | 'earlyMorning' | 'morning' | 'afternoon' | 'evening'
+type Daypart =
+  | 'lateNight'
+  | 'earlyMorning'
+  | 'morning'
+  | 'afternoon'
+  | 'evening'
 
 function daypartOf(hour: number): Daypart {
   if (hour >= 23 || hour < 5) return 'lateNight'
@@ -668,10 +941,13 @@ const buyerIncompleteCount = computed(() => {
   return Math.max(0, 5 - steps)
 })
 
-// Legislation & News rail (landlord only) — same 5-item teaser slice
-// as the landlord passport page used to show, now that it's moved
-// here. NEWS_ITEMS is auto-imported from utils/landlordNews.ts.
-const dashNewsItems = computed(() => NEWS_ITEMS.slice(0, 5))
+// Legislation & News rail (landlord + seller) — same 5-item teaser
+// slice the landlord passport page used to show, now that it's moved
+// here, plus a seller-focused equivalent. NEWS_ITEMS / SELLER_NEWS_ITEMS
+// are auto-imported from utils/landlordNews.ts / utils/sellerNews.ts.
+const dashNewsItems = computed(() =>
+  (role.value === 'sell' ? SELLER_NEWS_ITEMS : NEWS_ITEMS).slice(0, 5),
+)
 
 // Sum of unanswered questions across every task in every section — the
 // "Complete N items in your Passport" count. Nothing to derive this
@@ -681,7 +957,10 @@ const incompleteItemCount = computed(() => {
   let total = 0
   for (const section of passportSections.value) {
     for (const task of section?.tasks ?? []) {
-      total += Math.max(0, (task.totalQuestions ?? 0) - (task.answeredQuestions ?? 0))
+      total += Math.max(
+        0,
+        (task.totalQuestions ?? 0) - (task.answeredQuestions ?? 0),
+      )
     }
   }
   return total
@@ -692,10 +971,15 @@ const incompleteItemCount = computed(() => {
 // plans/dashboard-ux-additions.md for why). Only shown once something's
 // actually gone stale (3+ days), and only while the record is genuinely
 // incomplete — a finished passport/profile has nothing to nudge toward.
-function stalenessCopy(createdAt?: string | null, lastTouchedAt?: string | null): string | null {
+function stalenessCopy(
+  createdAt?: string | null,
+  lastTouchedAt?: string | null,
+): string | null {
   const source = lastTouchedAt || createdAt
   if (!source) return null
-  const days = Math.floor((Date.now() - new Date(source).getTime()) / 86_400_000)
+  const days = Math.floor(
+    (Date.now() - new Date(source).getTime()) / 86_400_000,
+  )
   if (days < 3) return null
   const verb = lastTouchedAt ? 'Last touched' : 'Started'
   const when = days === 1 ? 'yesterday' : `${days} days ago`
@@ -710,7 +994,10 @@ const sellerStalenessCopy = computed(() => {
 
 const buyerStalenessCopy = computed(() => {
   if (!buyerProfile.value || buyerIncompleteCount.value === 0) return null
-  return stalenessCopy(buyerProfile.value.createdAt, buyerProfile.value.updatedAt)
+  return stalenessCopy(
+    buyerProfile.value.createdAt,
+    buyerProfile.value.updatedAt,
+  )
 })
 
 function startClaimFlow() {
@@ -755,7 +1042,8 @@ async function fetchForYou(token: string) {
 // re-reads the token fresh rather than closing over onMounted's local copy,
 // since this can fire long after mount.
 function refetchForYou() {
-  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
   if (token) fetchForYou(token)
 }
 
@@ -775,9 +1063,12 @@ async function fetchBuyerSummary(token: string) {
       headers: { Authorization: `Bearer ${token}` },
     }),
   ])
-  if (buyerResult.status === 'fulfilled') buyerProfile.value = buyerResult.value ?? null
-  if (savedResult.status === 'fulfilled') savedProperties.value = savedResult.value ?? []
-  if (watchedResult.status === 'fulfilled') watchedProperties.value = watchedResult.value ?? []
+  if (buyerResult.status === 'fulfilled')
+    buyerProfile.value = buyerResult.value ?? null
+  if (savedResult.status === 'fulfilled')
+    savedProperties.value = savedResult.value ?? []
+  if (watchedResult.status === 'fulfilled')
+    watchedProperties.value = watchedResult.value ?? []
   loadingBuyerSummary.value = false
   loadingWatched.value = false
 }
@@ -786,9 +1077,12 @@ async function fetchBuyerSummary(token: string) {
 // as fetchForYou above (own loading state, never gates the rest of the
 // dashboard).
 async function fetchRecentlyViewed(token: string) {
-  const result = await $fetch<any[]>(`${config.public.apiBase}/property/recently-viewed`, {
-    headers: { Authorization: `Bearer ${token}` },
-  }).catch(() => null)
+  const result = await $fetch<any[]>(
+    `${config.public.apiBase}/property/recently-viewed`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  ).catch(() => null)
   recentlyViewed.value = result ?? []
   loadingRecentlyViewed.value = false
 }
@@ -805,25 +1099,33 @@ onMounted(async () => {
   }
 
   if (!profile.value) await fetchProfile()
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) return
 
   // Every real role (sell/buy/both/landlord) now has dashboard content,
   // so isDashboardRole() is effectively always true post-normalization —
   // kept as a guard rather than deleted, in case a future role is added
   // here before its own dashboard branch exists.
-  const cachedRole = typeof window !== 'undefined' ? localStorage.getItem('umu_role') : null
+  const cachedRole =
+    typeof window !== 'undefined' ? localStorage.getItem('umu_role') : null
   if (cachedRole && !isDashboardRole(normalizeRole(cachedRole))) {
     navigateTo('/explore', { replace: true })
     return
   }
 
-  const prefResult = await $fetch<any>(`${config.public.apiBase}/profile/preferences`, {
-    headers: { Authorization: `Bearer ${token}` },
-  }).catch(() => null)
+  const prefResult = await $fetch<any>(
+    `${config.public.apiBase}/profile/preferences`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  ).catch(() => null)
 
-  role.value = normalizeRole((prefResult?.purpose as string[])?.[0] ?? cachedRole)
-  if (typeof window !== 'undefined') localStorage.setItem('umu_role', role.value)
+  role.value = normalizeRole(
+    (prefResult?.purpose as string[])?.[0] ?? cachedRole,
+  )
+  if (typeof window !== 'undefined')
+    localStorage.setItem('umu_role', role.value)
 
   if (!isDashboardRole(role.value)) {
     navigateTo('/explore', { replace: true })
@@ -867,9 +1169,12 @@ onMounted(async () => {
   fetchForYou(token) // not awaited - see fetchForYou's own comment
   if (role.value === 'both') fetchBuyerSummary(token) // not awaited - see its own comment
 
-  const passportResult = await $fetch<any[]>(`${config.public.apiBase}/profile/passports`, {
-    headers: { Authorization: `Bearer ${token}` },
-  }).catch(() => null)
+  const passportResult = await $fetch<any[]>(
+    `${config.public.apiBase}/profile/passports`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  ).catch(() => null)
 
   if (passportResult) {
     const all = passportResult ?? []
@@ -989,7 +1294,9 @@ onMounted(async () => {
   padding: 2px 20px 10px;
   scroll-snap-type: x mandatory;
 }
-.dash-news-rail::-webkit-scrollbar { height: 0; }
+.dash-news-rail::-webkit-scrollbar {
+  height: 0;
+}
 .dash-news-card {
   flex: 0 0 240px;
   scroll-snap-align: start;
@@ -1001,19 +1308,78 @@ onMounted(async () => {
   text-decoration: none;
   display: block;
 }
-.dash-news-band { height: 5px; }
-.dash-news-band--law { background: linear-gradient(90deg, #c0492f, #992e1a); }
-.dash-news-band--update { background: linear-gradient(90deg, #00a19a, #008a84); }
-.dash-news-band--news { background: linear-gradient(90deg, #3d63c9, #2c4aa0); }
-.dash-news-bd { padding: 12px 13px 14px; }
-.dash-news-tag { font-size: 9.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 100px; }
-.dash-news-tag--law { background: #fbeae5; color: #992e1a; }
-.dash-news-tag--update { background: #f2faf8; color: #008a84; }
-.dash-news-tag--news { background: #e8edfb; color: #3d63c9; }
-.dash-news-t { font-size: 13.5px; font-weight: 700; color: #0e2840; line-height: 1.25; margin-top: 9px; letter-spacing: -0.2px; }
-.dash-news-s { font-size: 11.5px; font-weight: 500; color: #6b7089; line-height: 1.4; margin-top: 5px; }
-.dash-news-src { font-size: 10.5px; font-weight: 700; color: #a8a9ad; margin-top: 9px; }
-.dash-news-all { display: block; margin: 2px 0 4px; text-align: center; font-size: 12.5px; font-weight: 700; color: #008a84; text-decoration: none; padding: 6px; }
+.dash-news-img {
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dash-news-img img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+.dash-news-img--law {
+  background: linear-gradient(135deg, #fbeae5 0%, #f6dbd3 100%);
+}
+.dash-news-img--update {
+  background: linear-gradient(135deg, #f1faf8 0%, #e4f5f0 100%);
+}
+.dash-news-img--news {
+  background: linear-gradient(135deg, #eaeffb 0%, #dfe6f9 100%);
+}
+.dash-news-bd {
+  padding: 12px 13px 14px;
+}
+.dash-news-tag {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 100px;
+}
+.dash-news-tag--law {
+  background: #fbeae5;
+  color: #992e1a;
+}
+.dash-news-tag--update {
+  background: #f2faf8;
+  color: #008a84;
+}
+.dash-news-tag--news {
+  background: #e8edfb;
+  color: #3d63c9;
+}
+.dash-news-t {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0e2840;
+  line-height: 1.25;
+  margin-top: 9px;
+  letter-spacing: -0.2px;
+}
+.dash-news-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #008a84;
+  margin-top: 10px;
+}
+.dash-news-all {
+  display: block;
+  margin: 2px 0 4px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #008a84;
+  text-decoration: none;
+  padding: 6px;
+}
 .dash-eyebrow-row {
   display: flex;
   align-items: baseline;
@@ -1444,8 +1810,8 @@ onMounted(async () => {
   color: #00817c;
 }
 .hec-house-img {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
   flex-shrink: 0;
 }
