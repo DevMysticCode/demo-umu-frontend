@@ -440,7 +440,7 @@
               <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">
                 <b>No certificate required.</b> Record each alarm separately - where it is, when it was tested, and when the unit expires. Alarms must be tested on the first day of every new tenancy.
               </p>
-              <div v-for="(row, i) in alarmRows" :key="i" class="lp-repeat-block">
+              <div v-for="(row, i) in alarmRows" :key="row.rid" class="lp-repeat-block">
                 <div class="lp-repeat-head">
                   <span>{{ row.type === 'co' ? 'CO alarm' : 'Smoke alarm' }} {{ i + 1 }}</span>
                   <button type="button" class="lp-repeat-rm" aria-label="Remove" @click="removeAlarmRow(i)">✕</button>
@@ -463,37 +463,61 @@
                   <button type="button" class="lp-toggle-chip" :class="{ on: row.present }" @click="row.present = !row.present">Present</button>
                   <button type="button" class="lp-toggle-chip" :class="{ on: row.ok }" @click="row.ok = !row.ok">Tested ✓</button>
                 </div>
+
+                <!-- Evidence photo / test log for THIS alarm specifically
+                     (client feedback: a shared pool at the bottom didn't
+                     say which alarm each photo was of) - kind-scoped by
+                     the row's own rid. -->
+                <div v-for="doc in (alarmRowDocs[row.rid] || [])" :key="doc.id" class="lp-doc-preview" style="margin-top:10px">
+                  <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
+                  <div class="lp-doc-preview-info">
+                    <div class="lp-doc-preview-name">{{ doc.name }}</div>
+                    <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}</div>
+                  </div>
+                  <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
+                  <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeAlarmRowDoc(doc.id)">✕</button>
+                </div>
+                <label class="lp-upload-row" style="margin-top:10px">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.webp"
+                    class="lp-upload-input"
+                    :disabled="alarmEvidenceUploading[row.rid]"
+                    @change="onAlarmRowFilePicked($event, row.rid)"
+                  />
+                  <span class="lp-upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+                  </span>
+                  <span class="lp-upload-text">{{ alarmEvidenceUploading[row.rid] ? 'Uploading…' : 'Attach photo / test log (optional)' }}</span>
+                </label>
               </div>
               <button type="button" class="lp-add-row" @click="addAlarmRow('smoke')">＋ Add a smoke alarm</button>
               <button type="button" class="lp-add-row" @click="addAlarmRow('co')">＋ Add a CO alarm</button>
-              <p class="lp-modal-hint" style="margin-bottom:10px">We'll remind you 30 days before any alarm expires. Optional: attach a photo or test log.</p>
-
-              <!-- Evidence photo / test log - prototype's "Attach photo /
-                   test log (optional)" (client feedback: we had the alarm
-                   rows but not this). Kind-scoped multi-copy off the same
-                   alarms_check UPLOAD question, same pattern as the other
-                   per-purpose photo lists this session. -->
-              <div v-for="doc in alarmEvidenceDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
-                <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
-                <div class="lp-doc-preview-info">
-                  <div class="lp-doc-preview-name">{{ doc.name }}</div>
-                  <div class="lp-doc-preview-meta">Uploaded {{ doc.uploadedAt }}</div>
-                </div>
-                <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
-                <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeAlarmEvidenceDoc(doc.id)">✕</button>
-              </div>
-              <label class="lp-upload-row">
-                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="alarmEvidenceUploading" @change="onAlarmEvidenceFilePicked" />
-                <span class="lp-upload-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
-                </span>
-                <span class="lp-upload-text">{{ alarmEvidenceUploading ? 'Uploading…' : 'Attach photo / test log (optional)' }}</span>
-              </label>
+              <p class="lp-modal-hint" style="margin-bottom:10px">We'll remind you 30 days before any alarm expires.</p>
             </template>
 
             <!-- Right to Rent - per-occupier ID checks, not a flat upload
                  (client feedback #8, prototype's occupier list). -->
             <template v-else-if="isRtrSection">
+              <a
+                href="https://www.gov.uk/view-right-to-rent"
+                target="_blank"
+                rel="noopener"
+                class="lp-rtr-govlink"
+              >
+                <span>Check a tenant's right to rent on GOV.UK</span>
+                <span class="lp-rtr-govlink-go">↗</span>
+              </a>
+              <a
+                href="https://www.gov.uk/prove-right-to-rent"
+                target="_blank"
+                rel="noopener"
+                class="lp-rtr-govlink"
+                style="margin-top:8px"
+              >
+                <span>Share this with your tenant to prove their right to rent</span>
+                <span class="lp-rtr-govlink-go">↗</span>
+              </a>
               <div v-for="(occ, i) in occupierRows" :key="i" class="lp-repeat-block">
                 <div class="lp-repeat-head">
                   <span>Occupier {{ i + 1 }}</span>
@@ -1029,10 +1053,6 @@
               :class="{ on: legAnswers[LEG_QUESTIONS[legStep].key] === i }"
               @click="legPick(i)"
             >
-              <div class="lp-assess-opt-ic">
-                <img v-if="o.ic.startsWith('/')" :src="o.ic" alt="" class="lp-assess-opt-ic-img" loading="lazy" />
-                <template v-else>{{ o.ic }}</template>
-              </div>
               <div class="lp-assess-opt-bd">
                 <div class="lp-assess-opt-t">{{ o.t }}</div>
                 <div class="lp-assess-opt-d">{{ o.d }}</div>
@@ -1217,10 +1237,6 @@
               <div class="lp-inv-ptext"><span><b>{{ invDoneCount }}</b> of {{ invRooms.length }} rooms done</span><span>{{ Math.round(invDoneCount / invRooms.length * 100) }}%</span></div>
             </div>
             <div v-for="r in invRooms" :key="r.id" class="lp-inv-room" @click="invOpenRoom(r.id)">
-              <div class="lp-inv-room-ic">
-                <img v-if="r.icon.startsWith('/')" :src="r.icon" alt="" class="lp-inv-room-ic-img" loading="lazy" />
-                <template v-else>{{ r.icon }}</template>
-              </div>
               <div class="lp-inv-room-bd">
                 <div class="lp-inv-room-n">{{ r.name }}</div>
                 <div class="lp-inv-room-m">{{ roomIsDone(r) ? r.items.length + ' items rated' : r.items.length + ' items to check' }}</div>
@@ -1237,7 +1253,6 @@
 
             <div class="lp-inv-pw-heading">Property-wide</div>
             <div class="lp-inv-room" @click="openInvBins">
-              <div class="lp-inv-room-ic">🗑️</div>
               <div class="lp-inv-room-bd">
                 <div class="lp-inv-room-n">Bins &amp; refuse</div>
                 <div class="lp-inv-room-m">Photograph bins, colours, collection day</div>
@@ -1263,7 +1278,7 @@
             </div>
           </div>
           <div class="lp-assess-foot">
-            <button class="btn-primary" type="button" style="width:100%" :disabled="!invAllDone" @click="invScreen = 'review'">
+            <button class="btn-primary" type="button" style="width:100%" :disabled="!invAllDone" @click="goToInvReview">
               {{ invAllDone ? 'Review report →' : `Finish all rooms (${invDoneCount}/${invRooms.length})` }}
             </button>
           </div>
@@ -1441,13 +1456,30 @@
           </div>
           <div class="lp-assess-scroll">
             <div class="lp-assess-sum">
-              <div v-for="r in invRooms" :key="r.id" class="lp-assess-sum-row">
-                <span>
-                  <img v-if="r.icon.startsWith('/')" :src="r.icon" alt="" class="lp-assess-sum-ic-img" loading="lazy" />
-                  <template v-else>{{ r.icon }}</template>
-                  {{ r.name }}
-                </span>
-                <span>✓ {{ roomItemsThatApply(r).length }} items</span>
+              <div v-for="r in invRooms" :key="r.id" class="lp-assess-sum-block">
+                <div class="lp-assess-sum-row">
+                  <span>
+                    <img v-if="r.icon.startsWith('/')" :src="r.icon" alt="" class="lp-assess-sum-ic-img" loading="lazy" />
+                    <template v-else>{{ r.icon }}</template>
+                    {{ r.name }}
+                  </span>
+                  <span>✓ {{ roomItemsThatApply(r).length }} items</span>
+                </div>
+                <!-- Photos added while working through this room (client
+                     feedback: photos uploaded per room never resurfaced
+                     in the review preview) - shown right under that
+                     room's own row, not lumped into one flat gallery. -->
+                <div v-if="(roomPhotoDocs[r.id] || []).length" class="lp-assess-sum-photos">
+                  <img
+                    v-for="doc in roomPhotoDocs[r.id]"
+                    :key="doc.id"
+                    :src="doc.fileUrl"
+                    alt=""
+                    class="lp-assess-sum-photo"
+                    loading="lazy"
+                    @click="viewCopyDoc(doc.fileUrl)"
+                  />
+                </div>
               </div>
             </div>
 
@@ -1500,7 +1532,7 @@
         <div v-else-if="invScreen === 'done'" class="lp-assess-screen">
           <div class="lp-assess-scroll">
             <div class="lp-tn-readydoc">
-              <div class="lp-tn-readydoc-ic">📋</div>
+              <div class="lp-tn-readydoc-ic"><img src="/op-icons/investment/clipboardChecklist.png" alt="" class="lp-tn-readydoc-ic-img" loading="lazy" /></div>
               <div class="lp-tn-readydoc-bd">
                 <div class="lp-tn-readydoc-t">Inventory &amp; Schedule of Condition</div>
                 <div class="lp-tn-readydoc-s">{{ passport?.addressLine1 }}{{ invSavedRecord?.rooms ? ' · ' + invSavedRecord.rooms.length + ' rooms' : '' }}</div>
@@ -1570,8 +1602,8 @@
               <div class="lp-assess-ok">✓</div>
               <div class="lp-assess-intro-h">Signed by {{ invSavedRecord?.audit?.tenant?.name }}</div>
               <div class="lp-assess-intro-s">{{ new Date(invSavedRecord?.audit?.tenant?.signedAt ?? '').toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' }) }}</div>
-              <button type="button" class="btn-secondary" style="width:100%;margin-top:14px" @click="downloadInventoryPdf">
-                Download signed PDF
+              <button type="button" class="btn-secondary" style="width:100%;margin-top:14px" :disabled="invPdfGenerating" @click="downloadInventoryPdf">
+                {{ invPdfGenerating ? 'Preparing PDF…' : 'Download signed PDF' }}
               </button>
             </template>
             <template v-else>
@@ -1581,8 +1613,8 @@
                 <div class="lp-tn-linkbox">{{ invTenantLinkUrl }}</div>
                 <button type="button" class="btn-primary" style="width:100%;margin-top:12px" @click="copyInvTenantSignLink">Copy link</button>
               </template>
-              <button type="button" class="btn-secondary" style="width:100%;margin-top:8px" @click="downloadInventoryPdf">
-                Download PDF instead
+              <button type="button" class="btn-secondary" style="width:100%;margin-top:8px" :disabled="invPdfGenerating" @click="downloadInventoryPdf">
+                {{ invPdfGenerating ? 'Preparing PDF…' : 'Download PDF instead' }}
               </button>
               <p class="lp-modal-hint" style="margin-top:6px;margin-bottom:0">Prefer to send it yourself - by email, WhatsApp or in person for a wet-ink signature? Download a full report with the room-by-room record and evidence photos.</p>
             </template>
@@ -1621,10 +1653,10 @@
             <div class="lp-assess-intro-ic"><img src="/op-icons/misc/signature.png" alt="" class="lp-assess-intro-ic-img" loading="lazy" /></div>
             <div class="lp-assess-intro-h">Build your tenancy agreement</div>
             <div class="lp-assess-intro-s">Since 1 May 2026 every new tenancy is an assured periodic tenancy, and you must give the tenant a written statement of the key terms before they sign. umovingu builds it and folds the written statement in.</div>
-            <div class="lp-tn-verbadge">🛡️ <b>Template {{ TN_TEMPLATE_VERSION }}</b> - reviewed for the Renters' Rights Act. <span class="lp-tn-pending">Placeholder pending legal review.</span></div>
+            <div class="lp-tn-verbadge"><img src="/op-icons/onboarding/trustShield.png" alt="" class="lp-tn-verbadge-ic" loading="lazy" /> <b>Template {{ TN_TEMPLATE_VERSION }}</b> - reviewed for the Renters' Rights Act. <span class="lp-tn-pending">Placeholder pending legal review.</span></div>
             <div class="mlabel" style="margin-top:20px">What we fill in for you</div>
             <div class="lp-tn-mand">
-              <div class="lp-tn-mand-t">📋 Mandatory written-statement terms</div>
+              <div class="lp-tn-mand-t"><img src="/op-icons/investment/clipboardChecklist.png" alt="" class="lp-tn-mand-ic" loading="lazy" /> Mandatory written-statement terms</div>
               <div class="lp-tn-mand-item">✓ Names of landlord and tenant(s)</div>
               <div class="lp-tn-mand-item">✓ The property address</div>
               <div class="lp-tn-mand-item">✓ Rent amount, frequency and how it's paid</div>
@@ -1672,7 +1704,7 @@
 
             <template v-else-if="tnStep === 1">
               <div class="lp-tn-mand" style="margin-left:0;margin-right:0">
-                <div class="lp-tn-mand-t">📋 Added automatically</div>
+                <div class="lp-tn-mand-t"><img src="/op-icons/investment/clipboardChecklist.png" alt="" class="lp-tn-mand-ic" loading="lazy" /> Added automatically</div>
                 <div class="lp-tn-mand-s">Because it's an assured periodic tenancy we fold in the required terms - rolling tenancy, rent increase once a year by s13 notice, notice periods, no Section 21, pet requests.</div>
               </div>
               <div class="lp-two-col">
@@ -1749,7 +1781,7 @@
         <div v-else-if="tnScreen === 'done'" class="lp-assess-screen">
           <div class="lp-assess-scroll">
             <div class="lp-tn-readydoc">
-              <div class="lp-tn-readydoc-ic">📄</div>
+              <div class="lp-tn-readydoc-ic"><img src="/op-icons/misc/signature.png" alt="" class="lp-tn-readydoc-ic-img" loading="lazy" /></div>
               <div class="lp-tn-readydoc-bd">
                 <div class="lp-tn-readydoc-t">Assured Periodic Tenancy</div>
                 <div class="lp-tn-readydoc-s">{{ passport?.addressLine1 }}{{ tnSavedRecord?.tenantName ? ' · ' + tnSavedRecord.tenantName : '' }}</div>
@@ -2260,7 +2292,7 @@ const mergedCopyDocs = computed(() => {
   return [legacy, ...copyDocs.value]
 })
 const alarmRows = ref<
-  { type: 'smoke' | 'co'; location: string; tested: string; expiry: string; present: boolean; ok: boolean }[]
+  { rid: string; type: 'smoke' | 'co'; location: string; tested: string; expiry: string; present: boolean; ok: boolean }[]
 >([])
 const occupierRows = ref<{ name: string; status: string; recheckBy: string }[]>([])
 const drawerListSaving = ref(false)
@@ -3013,6 +3045,18 @@ async function onRoomPhotoPicked(roomId: string, e: Event) {
     roomPhotoUploading.value = null
   }
 }
+// Client feedback: the review report only showed the room-by-room
+// condition record - photos added while working through each room never
+// surfaced again, in the review preview OR the downloadable PDF. Load
+// every room's photos (already tagged room-<roomId> from the room
+// capture screen above) before showing the review screen, so it can
+// display them grouped by room, and so downloadInventoryPdf() below has
+// them ready to embed the same way.
+async function goToInvReview() {
+  await Promise.all(invRooms.value.map((r) => loadRoomPhotoDocs(r.id)))
+  invScreen.value = 'review'
+}
+
 async function removeRoomPhotoDoc(roomId: string, docId: string) {
   try {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
@@ -3391,14 +3435,45 @@ async function copyInvTenantSignLink() {
 // Alternative to the magic link — a full downloadable report (room-by-room
 // record + evidence photos + any signatures already collected) the
 // landlord can send however they like, or print for a wet-ink signature.
-function downloadInventoryPdf() {
+const invPdfGenerating = ref(false)
+async function downloadInventoryPdf() {
   const record = invSavedRecord.value
-  if (!record) return
-  generateInventoryPdf({
-    propertyAddress: passport.value?.addressLine1 ?? '',
-    record: record as any,
-    photos: copyDocs.value,
-  })
+  if (!record || invPdfGenerating.value) return
+  invPdfGenerating.value = true
+  try {
+  // Re-fetch per-room photos fresh (client feedback: photos added while
+  // building a room should show up in the PDF, grouped under that room) -
+  // invRooms/roomPhotoDocs may be stale or already cleared by the time
+  // this is called from the send-tenant/signing-status screens, so read
+  // straight off the saved record's own room list instead.
+  const q = drawerUploadQuestion.value
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const entries = q
+    ? await Promise.all(
+        (record.rooms ?? []).map(async (r: any) => {
+          try {
+            const docs = await $fetch<any[]>(`${config.public.apiBase}/questions/${q.id}/copies`, {
+              query: { kind: `room-${r.id}` },
+              headers: { Authorization: `Bearer ${token}` },
+            })
+            return [r.id, docs] as const
+          } catch {
+            return [r.id, []] as const
+          }
+        }),
+      )
+    : []
+    await generateInventoryPdf({
+      propertyAddress: passport.value?.addressLine1 ?? '',
+      record: record as any,
+      photos: copyDocs.value,
+      photosByRoom: Object.fromEntries(entries),
+    })
+  } catch (err: any) {
+    drawerError.value = err?.message ?? 'Could not generate the PDF - please try again.'
+  } finally {
+    invPdfGenerating.value = false
+  }
 }
 
 function openInvSigningStatus() {
@@ -3793,13 +3868,17 @@ function openSection(s: any) {
     // Prototype opens with a smoke + CO alarm row already in place, ready
     // to fill in, rather than a blank list the landlord has to click
     // "+ Add" twice just to get started (client feedback).
-    alarmRows.value = Array.isArray(storedList) && storedList.length
+    const loadedRows = Array.isArray(storedList) && storedList.length
       ? storedList
       : [
           { type: 'smoke', location: '', tested: '', expiry: '', present: false, ok: false },
           { type: 'co', location: '', tested: '', expiry: '', present: false, ok: false },
         ]
-    loadAlarmEvidenceDocs()
+    // Backfill a stable rid for rows saved before per-row photos existed -
+    // the tag each row's evidence photo is stored under, so it survives
+    // reordering/removal (an array index wouldn't).
+    alarmRows.value = loadedRows.map((r: any) => ({ rid: r.rid ?? genRid(), ...r }))
+    loadAllAlarmRowDocs()
   } else {
     alarmRows.value = []
   }
@@ -4119,56 +4198,74 @@ async function saveMultiCopyExpiry() {
   }
 }
 
+// Short random id - just needs to be stable and unique per row, not
+// cryptographically strong.
+function genRid(): string {
+  return Math.random().toString(36).slice(2, 10)
+}
+
 function addAlarmRow(type: 'smoke' | 'co') {
-  alarmRows.value.push({ type, location: '', tested: '', expiry: '', present: false, ok: false })
+  alarmRows.value.push({ rid: genRid(), type, location: '', tested: '', expiry: '', present: false, ok: false })
 }
 function removeAlarmRow(i: number) {
   alarmRows.value.splice(i, 1)
 }
 
-const alarmEvidenceDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
-const alarmEvidenceUploading = ref(false)
-async function loadAlarmEvidenceDocs() {
+// Evidence photo per alarm row (client feedback: a shared photo pool at
+// the bottom didn't say which alarm each photo was actually of - each
+// row now gets its own kind-scoped slot, tagged by the row's stable rid
+// rather than its array index so it survives reordering/removal.
+type AlarmDoc = { id: string; name: string; fileUrl: string; size: string; uploadedAt: string }
+const alarmRowDocs = ref<Record<string, AlarmDoc[]>>({})
+const alarmEvidenceUploading = ref<Record<string, boolean>>({})
+
+async function loadAllAlarmRowDocs() {
   const q = drawerUploadQuestion.value
   if (!q) return
-  try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    alarmEvidenceDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
-      query: { kind: 'alarm-evidence' },
-      headers: { Authorization: `Bearer ${token}` },
-    })
-  } catch {
-    alarmEvidenceDocs.value = []
-  }
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const entries = await Promise.all(
+    alarmRows.value.map(async (row) => {
+      try {
+        const docs = await $fetch<AlarmDoc[]>(`${config.public.apiBase}/questions/${q.id}/copies`, {
+          query: { kind: `alarm-row:${row.rid}` },
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        return [row.rid, docs] as const
+      } catch {
+        return [row.rid, []] as const
+      }
+    }),
+  )
+  alarmRowDocs.value = Object.fromEntries(entries)
 }
-async function onAlarmEvidenceFilePicked(e: Event) {
+async function onAlarmRowFilePicked(e: Event, rid: string) {
   const file = (e.target as HTMLInputElement).files?.[0]
   ;(e.target as HTMLInputElement).value = ''
   if (!file) return
   const q = drawerUploadQuestion.value
   if (!q) return
-  alarmEvidenceUploading.value = true
+  alarmEvidenceUploading.value = { ...alarmEvidenceUploading.value, [rid]: true }
   drawerError.value = ''
   try {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
-    fd.append('kind', 'alarm-evidence')
+    fd.append('kind', `alarm-row:${rid}`)
     await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: fd,
     })
-    await loadAlarmEvidenceDocs()
+    await loadAllAlarmRowDocs()
     await refreshSectionData()
   } catch (err: any) {
     drawerError.value = err?.data?.message ?? 'Upload failed'
   } finally {
-    alarmEvidenceUploading.value = false
+    alarmEvidenceUploading.value = { ...alarmEvidenceUploading.value, [rid]: false }
   }
 }
-async function removeAlarmEvidenceDoc(docId: string) {
+async function removeAlarmRowDoc(docId: string) {
   try {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
@@ -4178,7 +4275,7 @@ async function removeAlarmEvidenceDoc(docId: string) {
   } catch {
     /* non-critical */
   }
-  await loadAlarmEvidenceDocs()
+  await loadAllAlarmRowDocs()
   await refreshSectionData()
 }
 function addOccupierRow() {
@@ -5495,6 +5592,24 @@ const SectionCard = defineComponent({
   line-height: 1.4;
 }
 
+/* Right to Rent - GOV.UK check/prove links (client feedback item #8) */
+.lp-rtr-govlink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #f0fdfa;
+  border: 1px solid #b2e4e1;
+  border-radius: 12px;
+  color: #007e78;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: 14px;
+}
+.lp-rtr-govlink-go { font-size: 14px; flex-shrink: 0; }
+
 /* Repeatable rows - Smoke & CO Alarms, Right to Rent occupiers */
 .lp-repeat-block {
   background: #fff;
@@ -5734,24 +5849,24 @@ const SectionCard = defineComponent({
 .lp-assess-qs { font-size: 13.5px; font-weight: 500; color: #6b7089; line-height: 1.5; margin-top: 8px; margin-bottom: 20px; }
 .lp-assess-opt {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 13px;
-  padding: 15px;
+  /* Enlarged now that the icon-in-a-box is gone (client feedback: the 3D
+     icons inside these boxes should be removed and the boxes made
+     bigger) - more padding + bigger type instead of the icon column. */
+  padding: 20px 18px;
   border: 1.5px solid #e8eceb;
-  border-radius: 14px;
+  border-radius: 16px;
   background: #fff;
   cursor: pointer;
-  margin-bottom: 11px;
+  margin-bottom: 12px;
   transition: all 0.12s;
 }
 .lp-assess-opt.on { border-color: #00a19a; background: #f2faf8; }
-.lp-assess-opt-ic { width: 42px; height: 42px; border-radius: 11px; background: #f1f4f3; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-.lp-assess-opt.on .lp-assess-opt-ic { background: #fff; }
-.lp-assess-opt-ic-img { width: 30px; height: 30px; object-fit: contain; }
 .lp-assess-opt-bd { flex: 1; }
-.lp-assess-opt-t { font-size: 14.5px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
-.lp-assess-opt-d { font-size: 12px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.4; }
-.lp-assess-opt-r { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #e8eceb; flex-shrink: 0; align-self: center; position: relative; }
+.lp-assess-opt-t { font-size: 16px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
+.lp-assess-opt-d { font-size: 13px; font-weight: 500; color: #6b7089; margin-top: 3px; line-height: 1.45; }
+.lp-assess-opt-r { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #e8eceb; flex-shrink: 0; align-self: center; position: relative; }
 .lp-assess-opt.on .lp-assess-opt-r { border-color: #00a19a; }
 .lp-assess-opt.on .lp-assess-opt-r::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: #00a19a; }
 .lp-assess-resband { padding: 20px; border-radius: 18px; color: #fff; margin-bottom: 10px; background: linear-gradient(140deg, #0f8a6e, #0c6e58); }
@@ -5775,11 +5890,14 @@ const SectionCard = defineComponent({
 .lp-assess-action-s { font-size: 12px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.45; }
 .lp-assess-action-freq { font-size: 10.5px; font-weight: 800; color: #008a84; background: #f2faf8; padding: 3px 8px; border-radius: 100px; margin-top: 7px; display: inline-block; }
 .lp-assess-sum { background: #fff; border: 1px solid #e8eceb; border-radius: 14px; overflow: hidden; }
-.lp-assess-sum-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f0f0f4; font-size: 13px; }
-.lp-assess-sum-row:last-child { border-bottom: none; }
+.lp-assess-sum-block { border-bottom: 1px solid #f0f0f4; }
+.lp-assess-sum-block:last-child { border-bottom: none; }
+.lp-assess-sum-row { display: flex; justify-content: space-between; padding: 12px 15px; font-size: 13px; }
 .lp-assess-sum-row span:first-child { color: #6b7089; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
 .lp-assess-sum-ic-img { width: 16px; height: 16px; object-fit: contain; }
 .lp-assess-sum-row span:last-child { color: #0e2840; font-weight: 700; text-align: right; max-width: 60%; }
+.lp-assess-sum-photos { display: flex; gap: 6px; padding: 0 15px 12px; overflow-x: auto; }
+.lp-assess-sum-photo { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; cursor: pointer; }
 .lp-assess-intro-ic { width: 70px; height: 70px; border-radius: 20px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 8px auto 0; }
 .lp-assess-intro-ic-img { width: 42px; height: 42px; object-fit: contain; }
 .lp-assess-intro-h { font-size: 23px; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; text-align: center; margin-top: 16px; padding: 0 22px; }
@@ -5825,20 +5943,20 @@ const SectionCard = defineComponent({
   display: flex;
   align-items: center;
   gap: 13px;
-  margin-bottom: 10px;
-  padding: 14px;
+  margin-bottom: 11px;
+  /* Enlarged now that the icon-in-a-box is gone (client feedback: remove
+     the icons from inside these boxes, increase the sizes). */
+  padding: 18px;
   background: #fff;
   border: 1px solid #e8eceb;
-  border-radius: 15px;
+  border-radius: 16px;
   cursor: pointer;
 }
-.lp-inv-room-ic { width: 44px; height: 44px; border-radius: 12px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 21px; flex-shrink: 0; }
-.lp-inv-room-ic-img { width: 30px; height: 30px; object-fit: contain; }
 .lp-assess-title--iconrow { display: flex; align-items: center; gap: 7px; }
 .lp-assess-title-ic-img { width: 22px; height: 22px; object-fit: contain; }
 .lp-inv-room-bd { flex: 1; min-width: 0; }
-.lp-inv-room-n { font-size: 15px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
-.lp-inv-room-m { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 2px; }
+.lp-inv-room-n { font-size: 16.5px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
+.lp-inv-room-m { font-size: 12.5px; font-weight: 500; color: #6b7089; margin-top: 3px; }
 .lp-inv-badge { font-size: 10.5px; font-weight: 800; padding: 5px 10px; border-radius: 100px; }
 .lp-inv-badge.done { background: #e7f6ef; color: #0f8a6e; }
 .lp-inv-badge.todo { background: #f1f4f3; color: #a8a9ad; }
@@ -5974,7 +6092,9 @@ const SectionCard = defineComponent({
 }
 .lp-tn-pending { display: block; color: #8a6420; font-weight: 700; margin-top: 4px; }
 .lp-tn-mand { padding: 14px; background: #e8edfb; border: 1px solid #c7d3f0; border-radius: 13px; }
-.lp-tn-mand-t { font-size: 12.5px; font-weight: 800; color: #3d63c9; }
+.lp-tn-mand-t { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 800; color: #3d63c9; }
+.lp-tn-mand-ic { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+.lp-tn-verbadge-ic { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
 .lp-tn-mand-item { display: flex; gap: 9px; padding: 5px 0; font-size: 12px; font-weight: 600; color: #2c4aa0; }
 .lp-tn-mand-s { font-size: 11.5px; font-weight: 500; color: #2c4aa0; margin-top: 5px; line-height: 1.5; }
 .lp-tn-pulled { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; color: #008a84; margin-top: 6px; }
@@ -5985,7 +6105,8 @@ const SectionCard = defineComponent({
   background: #fff; border-radius: 14px; padding: 14px;
   box-shadow: 0 4px 18px rgba(35, 29, 69, 0.06);
 }
-.lp-tn-readydoc-ic { width: 40px; height: 40px; border-radius: 10px; background: #f1f9f4; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+.lp-tn-readydoc-ic { width: 40px; height: 40px; border-radius: 10px; background: #f1f9f4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.lp-tn-readydoc-ic-img { width: 26px; height: 26px; object-fit: contain; }
 .lp-tn-readydoc-bd { flex: 1; min-width: 0; }
 .lp-tn-readydoc-t { font-size: 14px; font-weight: 800; color: #0e2840; }
 .lp-tn-readydoc-s { font-size: 11.5px; font-weight: 600; color: #6b7089; margin-top: 2px; }
