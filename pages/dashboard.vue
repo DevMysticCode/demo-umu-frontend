@@ -468,7 +468,10 @@
                leads with a tag icon rather than a paragraph of summary
                text, so the rail reads as a quick scan, not a wall of
                text - the full story is one tap away via "Read more". -->
-          <div v-if="role === 'landlord' || role === 'sell'" class="dash-section">
+          <div
+            v-if="role === 'landlord' || role === 'sell'"
+            class="dash-section"
+          >
             <div class="dash-eyebrow">Legislation &amp; news</div>
             <div class="dash-news-rail">
               <a
@@ -480,7 +483,7 @@
                 rel="noopener"
               >
                 <div class="dash-news-img" :class="`dash-news-img--${n.tag}`">
-                  <img :src="`/op-icons/news/${n.tag}.png`" alt="" loading="lazy" />
+                  <img :src="n.icon" alt="" loading="lazy" />
                 </div>
                 <div class="dash-news-bd">
                   <span
@@ -489,7 +492,9 @@
                     >{{ n.tagLabel }}</span
                   >
                   <div class="dash-news-t">{{ n.title }}</div>
-                  <span class="dash-news-more">Read more <span>&rarr;</span></span>
+                  <span class="dash-news-more"
+                    >Read more <span>&rarr;</span></span
+                  >
                 </div>
               </a>
             </div>
@@ -1290,7 +1295,7 @@ onMounted(async () => {
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  margin: 0 -20px;
+  /* margin: 0 -20px; */
   padding: 2px 20px 10px;
   scroll-snap-type: x mandatory;
 }
@@ -1298,7 +1303,7 @@ onMounted(async () => {
   height: 0;
 }
 .dash-news-card {
-  flex: 0 0 240px;
+  flex: 0 0 200px;
   scroll-snap-align: start;
   background: #fff;
   border: 1px solid #e8eceb;

@@ -19,6 +19,10 @@ export interface NewsItem {
   url: string
   date: string // ISO yyyy-mm-dd
   featured?: boolean
+  /** Topic-specific icon (public/op-icons/...) — every item gets its own,
+      rather than sharing one of 3 generic tag icons, so the rail/list
+      is scannable by picture, not just by color. */
+  icon: string
 }
 
 export const NEWS_ITEMS: NewsItem[] = [
@@ -32,6 +36,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     url: 'https://www.hoganlovells.com/en/publications/renters-rights-act-implementation-roadmap-now-published',
     date: '2025-11-13',
     featured: true,
+    icon: '/op-icons/landlordPassport/tenancyAgreement.png',
   },
   {
     id: 'rent-bidding-ban',
@@ -42,6 +47,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     source: 'The Independent Landlord',
     url: 'https://theindependentlandlord.com/rental-bidding/',
     date: '2026-05-01',
+    icon: '/op-icons/investment/priceTagPound.png',
   },
   {
     id: 'deposit-s8-gate',
@@ -52,6 +58,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     source: 'NRLA',
     url: 'https://www.nrla.org.uk/news/10-deposit-dos-and-donts-every-landlord-should-know-in-2026',
     date: '2026-05-01',
+    icon: '/op-icons/landlordPassport/depositProtection.png',
   },
   {
     id: 'epc-2030',
@@ -62,6 +69,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     source: 'The Independent Landlord',
     url: 'https://theindependentlandlord.com/new-epc-rules/',
     date: '2026-01-15',
+    icon: '/op-icons/landlordPassport/epc.png',
   },
   {
     id: 'electrical-social',
@@ -72,6 +80,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     source: 'Browne Jacobson',
     url: 'https://www.brownejacobson.com/insights/mandatory-electrical-safety-checks-for-social-housing-tenancies',
     date: '2026-05-01',
+    icon: '/op-icons/landlordPassport/electricalSafety.png',
   },
   {
     id: 'awaabs-law-prs',
@@ -82,6 +91,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     source: 'August',
     url: 'https://www.augustapp.com/blog/awaabs-law-private-landlords',
     date: '2026-11-30',
+    icon: '/op-icons/misc/waterDroplet.png',
   },
   {
     id: 'hmo-licensing',
@@ -92,6 +102,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     source: 'RealYield',
     url: 'https://www.realyield.co.uk/insights/hmo-licensing-england-2026',
     date: '2026-05-01',
+    icon: '/op-icons/investment/housesCluster.png',
   },
   {
     id: 'right-to-rent-code',
@@ -102,5 +113,6 @@ export const NEWS_ITEMS: NewsItem[] = [
     source: 'GOV.UK',
     url: 'https://www.gov.uk/government/publications/right-to-rent-landlords-code-of-practice/code-of-practice-for-landlords-and-their-agents-the-right-to-rent-scheme-for-landlords-and-their-agents-1-october-2026',
     date: '2026-10-01',
+    icon: '/op-icons/landlordPassport/rightToRent.png',
   },
 ]
