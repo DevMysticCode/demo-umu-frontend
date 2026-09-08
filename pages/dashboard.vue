@@ -164,6 +164,7 @@
                 </div>
                 <span class="hec-cta">Run a free HomeScore <span>&rarr;</span></span>
               </div>
+              <img src="/op-icons/landing/homeScoreCard.png" alt="" class="hec-house-img" loading="lazy" />
             </div>
           </div>
 
@@ -431,6 +432,7 @@
                 </div>
                 <span class="hec-cta">Run a free HomeScore <span>&rarr;</span></span>
               </div>
+              <img src="/op-icons/landing/homeScoreCard.png" alt="" class="hec-house-img" loading="lazy" />
             </div>
           </div>
 
@@ -1440,6 +1442,12 @@ onMounted(async () => {
   font-size: 12.5px;
   font-weight: 800;
   color: #00817c;
+}
+.hec-house-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 /* ── Also buying (role === 'both') ── */
