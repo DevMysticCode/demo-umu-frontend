@@ -18,7 +18,7 @@
       <!-- Featured — the single most significant item, shown big -->
       <a v-if="featured" class="nw-hero" :href="featured.url" target="_blank" rel="noopener">
         <div class="nw-hero-ic" :class="`nw-ic--${featured.tag}`">
-          <img :src="iconForTag(featured.tag)" alt="" class="nw-hero-ic-img" loading="lazy" />
+          <img :src="featured.icon" alt="" class="nw-hero-ic-img" loading="lazy" />
         </div>
         <span class="nw-tag" :class="`nw-tag--${featured.tag}`">{{ featured.tagLabel }}</span>
         <div class="nw-hero-t">{{ featured.title }}</div>
@@ -34,7 +34,7 @@
       <div class="section-heading">More updates</div>
       <a v-for="n in rest" :key="n.id" class="nw-row" :href="n.url" target="_blank" rel="noopener">
         <div class="nw-row-ic" :class="`nw-ic--${n.tag}`">
-          <img :src="iconForTag(n.tag)" alt="" class="nw-row-ic-img" loading="lazy" />
+          <img :src="n.icon" alt="" class="nw-row-ic-img" loading="lazy" />
         </div>
         <div class="nw-row-bd">
           <span class="nw-tag nw-tag--sm" :class="`nw-tag--${n.tag}`">{{ n.tagLabel }}</span>
@@ -78,11 +78,6 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-// 3D-isometric icon per tag, matching the compliance section icons
-// elsewhere in the app (public/op-icons/news/{law,update,news}.png).
-function iconForTag(tag: string) {
-  return `/op-icons/news/${tag}.png`
-}
 </script>
 
 <style scoped>
@@ -183,8 +178,8 @@ function iconForTag(tag: string) {
   background: radial-gradient(circle, rgba(0, 196, 188, 0.18), transparent 65%);
 }
 .nw-hero-ic {
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.1);
   display: flex;
@@ -194,7 +189,7 @@ function iconForTag(tag: string) {
   position: relative;
   z-index: 1;
 }
-.nw-hero-ic-img { width: 30px; height: 30px; object-fit: contain; }
+.nw-hero-ic-img { width: 46px; height: 46px; object-fit: contain; }
 .nw-hero-t {
   font-size: 21px;
   font-weight: 700;
@@ -261,15 +256,15 @@ function iconForTag(tag: string) {
   text-decoration: none;
 }
 .nw-row-ic {
-  width: 42px;
-  height: 42px;
+  width: 52px;
+  height: 52px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.nw-row-ic-img { width: 24px; height: 24px; object-fit: contain; }
+.nw-row-ic-img { width: 38px; height: 38px; object-fit: contain; }
 .nw-ic--law { background: #fbeae5; }
 .nw-ic--update { background: #f2faf8; }
 .nw-ic--news { background: #e8edfb; }

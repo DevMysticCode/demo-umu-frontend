@@ -12,6 +12,10 @@ export interface NewsItem {
   url: string
   date: string // ISO yyyy-mm-dd
   featured?: boolean
+  /** Topic-specific icon (public/op-icons/...) — every item gets its own,
+      rather than sharing one of 3 generic tag icons, so the rail/list
+      is scannable by picture, not just by color. */
+  icon: string
 }
 
 export const SELLER_NEWS_ITEMS: NewsItem[] = [
@@ -25,6 +29,7 @@ export const SELLER_NEWS_ITEMS: NewsItem[] = [
     url: 'https://questions-statements.parliament.uk/written-statements/detail/2026-06-22/hlws134',
     date: '2026-06-19',
     featured: true,
+    icon: '/op-icons/investment/signpost.png',
   },
   {
     id: 'ta6-6th-edition',
@@ -35,6 +40,7 @@ export const SELLER_NEWS_ITEMS: NewsItem[] = [
     source: 'The Law Society',
     url: 'https://www.lawsociety.org.uk/topics/property/ta6-6th-edition',
     date: '2026-03-30',
+    icon: '/op-icons/investment/clipboardChecklist.png',
   },
   {
     id: 'material-information-scrutiny',
@@ -45,6 +51,7 @@ export const SELLER_NEWS_ITEMS: NewsItem[] = [
     source: 'National Trading Standards',
     url: 'https://www.nationaltradingstandards.uk/news/full-material-information-guidance-published/',
     date: '2025-10-01',
+    icon: '/op-icons/misc/eye.png',
   },
   {
     id: 'ground-rent-cap-draft',
@@ -55,5 +62,6 @@ export const SELLER_NEWS_ITEMS: NewsItem[] = [
     source: 'HomeOwners Alliance',
     url: 'https://hoa.org.uk/advice/guides-for-homeowners/for-owners/leasehold-reform/',
     date: '2026-01-27',
+    icon: '/op-icons/investment/moneyBagPound.png',
   },
 ]
