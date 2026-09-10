@@ -103,6 +103,13 @@ const SpeechRecognitionAPI =
     : null
 
 let recognition = null
+// Text already in the field when the current dictation started. Each
+// onresult fire recomputes `base + full-final-transcript` rather than
+// appending — the previous "append event.results[0][0]" logic double-
+// counted every time the engine fired a refined result, producing
+// "One One two One two three One two three…" from a single "one two
+// three".
+let dictationBase = ''
 
 if (SpeechRecognitionAPI) {
   recognition = new SpeechRecognitionAPI()
@@ -110,12 +117,22 @@ if (SpeechRecognitionAPI) {
   recognition.interimResults = false
   recognition.lang = 'en-GB'
 
+  recognition.onstart = () => {
+    dictationBase = inputText.value.trim()
+  }
+
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript
-    inputText.value = inputText.value
-      ? inputText.value + ' ' + transcript
-      : transcript
-    isRecording.value = false
+    let finalTranscript = ''
+    for (let i = 0; i < event.results.length; i++) {
+      const res = event.results[i]
+      if (res.isFinal || !recognition.interimResults) {
+        finalTranscript += res[0].transcript
+      }
+    }
+    finalTranscript = finalTranscript.trim()
+    inputText.value = dictationBase
+      ? `${dictationBase} ${finalTranscript}`.trim()
+      : finalTranscript
     emit('update', inputText.value)
   }
 

@@ -4,49 +4,42 @@
       {{ question.description }}
     </h3>
 
-    <div class="address-input">
-      <input
-        :placeholder="question.placeholder || 'Start typing address...'"
-        v-model="text"
-        @input="onInput"
-        class="text-field"
-      />
-      <button class="btn" type="button" @click="onFindUprn">Find UPRN</button>
-    </div>
-
-    <p v-if="prefilled" class="prefill-note">
-      ✓ pre-filled from your property record
-    </p>
-
-    <!-- Known reference numbers from the enrichment pipeline (OS Places /
-         HM Land Registry). Shown on demand so the owner can confirm we
-         already hold them and doesn't have to look them up. -->
-    <div v-if="lookedUp" class="uprn-panel">
-      <div class="uprn-panel-h">From HM Land Registry &amp; Ordnance Survey</div>
-      <template v-if="hasKnownRefs">
-        <div v-if="facts.uprn" class="uprn-row">
-          <span class="uprn-label">UPRN</span>
-          <span class="uprn-val">{{ facts.uprn }}</span>
+    <!-- The property was claimed, so the address / UPRN / title number are
+         already known and won't change - shown read-only for confirmation
+         rather than as an editable field. -->
+    <div class="addr-confirm">
+      <div class="addr-confirm-line">{{ displayAddress || 'Address on file' }}</div>
+      <div class="uprn-panel">
+        <div class="uprn-panel-h">From HM Land Registry &amp; Ordnance Survey</div>
+        <template v-if="hasKnownRefs">
+          <div v-if="facts.uprn" class="uprn-row">
+            <span class="uprn-label">UPRN</span>
+            <span class="uprn-val">{{ facts.uprn }}</span>
+          </div>
+          <div v-if="facts.titleNumber" class="uprn-row">
+            <span class="uprn-label">Title number</span>
+            <span class="uprn-val">{{ facts.titleNumber }}</span>
+          </div>
+          <div v-if="facts.propertyType" class="uprn-row">
+            <span class="uprn-label">Type</span>
+            <span class="uprn-val">{{ facts.propertyType }}</span>
+          </div>
+        </template>
+        <div v-else class="uprn-empty">
+          UPRN and title number are still being confirmed — we'll add them
+          once the property has been through Land Registry lookup.
         </div>
-        <div v-if="facts.titleNumber" class="uprn-row">
-          <span class="uprn-label">Title number</span>
-          <span class="uprn-val">{{ facts.titleNumber }}</span>
-        </div>
-        <div v-if="facts.propertyType" class="uprn-row">
-          <span class="uprn-label">Type</span>
-          <span class="uprn-val">{{ facts.propertyType }}</span>
-        </div>
-      </template>
-      <div v-else class="uprn-empty">
-        No UPRN or title number on record yet — we'll back-fill these once
-        the property has been through address and Land Registry lookup.
       </div>
+      <p class="addr-confirm-note">
+        Something not right? Your solicitor can correct the record during the
+        transaction.
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { computed, watch, onMounted } from 'vue'
 const props = defineProps({
   question: { type: Object, required: true },
   answer: { type: String, default: '' },
@@ -58,89 +51,42 @@ const facts = computed(() => props.propertyFacts || {})
 
 const knownAddress = computed(() => {
   const f = facts.value
-  const parts = [f.addressLine1, f.city, f.postcode].filter(Boolean)
-  return parts.join(', ')
+  return [f.addressLine1, f.city, f.postcode].filter(Boolean).join(', ')
 })
 
-const text = ref(props.answer || '')
-const prefilled = ref(false)
-const lookedUp = ref(false)
-
-// Pre-fill the address from what we already hold, but only when the owner
-// hasn't answered yet — never clobber a real answer.
-onMounted(() => {
-  if (!text.value.trim() && knownAddress.value) {
-    text.value = knownAddress.value
-    prefilled.value = true
-    emit('update', text.value)
-  }
-})
-
-watch(
-  () => props.answer,
-  (v) => {
-    if ((v || '') !== text.value) text.value = v || ''
-  },
-)
-watch(knownAddress, (addr) => {
-  if (addr && !text.value.trim()) {
-    text.value = addr
-    prefilled.value = true
-    emit('update', text.value)
-  }
-})
+// Prefer what's already saved as the answer; fall back to the known
+// property address.
+const displayAddress = computed(() => props.answer?.trim() || knownAddress.value)
 
 const hasKnownRefs = computed(
   () => !!(facts.value.uprn || facts.value.titleNumber || facts.value.propertyType),
 )
 
-const onInput = () => {
-  prefilled.value = false
-  emit('update', text.value)
+// Record the confirmed address as the answer so the question counts as
+// answered (there's nothing for the user to type). Never clobber an
+// existing answer.
+function syncAnswer() {
+  if (!props.answer?.trim() && knownAddress.value) {
+    emit('update', knownAddress.value)
+  }
 }
-
-const onFindUprn = () => {
-  lookedUp.value = true
-  // Still record whatever's in the field as the answer.
-  emit('update', text.value)
-}
+onMounted(syncAnswer)
+watch(knownAddress, syncAnswer)
 </script>
 
 <style scoped>
-.address-input {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.text-field {
-  flex: 1;
-  min-width: 0;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-}
-.btn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: #00a19a;
-  color: white;
-  border: none;
-  white-space: nowrap;
-  cursor: pointer;
-}
 .section-title {
   font-size: 15px;
   margin-bottom: 8px;
   color: #111;
 }
-.prefill-note {
-  font-size: 12px;
-  font-weight: 700;
-  color: #00a19a;
-  margin: 6px 0 0;
+.addr-confirm-line {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0e2840;
+  margin-bottom: 10px;
 }
 .uprn-panel {
-  margin-top: 10px;
   padding: 12px 14px;
   background: #f2faf8;
   border: 1px solid #d5efe8;
@@ -175,5 +121,11 @@ const onFindUprn = () => {
   font-size: 12px;
   color: #6b7089;
   line-height: 1.5;
+}
+.addr-confirm-note {
+  font-size: 11.5px;
+  color: #9c98ad;
+  line-height: 1.5;
+  margin: 10px 0 0;
 }
 </style>
