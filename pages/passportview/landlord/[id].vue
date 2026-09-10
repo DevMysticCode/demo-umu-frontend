@@ -1625,6 +1625,10 @@
 
         <!-- Done -->
         <div v-else-if="invScreen === 'done'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Close" @click="invOpen = false; showSectionDrawer = false">‹</button>
+            <div class="lp-assess-title">Saved to Passport</div>
+          </div>
           <div class="lp-assess-scroll">
             <div class="lp-tn-readydoc">
               <div class="lp-tn-readydoc-ic"><img src="/op-icons/investment/clipboardChecklist.png" alt="" class="lp-tn-readydoc-ic-img" loading="lazy" /></div>
