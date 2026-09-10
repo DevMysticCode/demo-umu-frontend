@@ -801,12 +801,37 @@
                       <input v-model="a.serial" type="text" class="mform-input" placeholder="Serial" />
                     </div>
                   </div>
-                  <div v-if="wgCoverPlans.length" class="mform-section" style="margin-top:10px">
-                    <div class="mform-label">Breakdown cover</div>
-                    <div class="lp-inv-chiprow" style="flex-wrap:wrap">
-                      <button type="button" class="lp-toggle-chip" :class="{ on: !a.coverPlanId }" @click="a.coverPlanId = ''">Not covered</button>
-                      <button v-for="p in wgCoverPlans" :key="p.id" type="button" class="lp-toggle-chip" :class="{ on: a.coverPlanId === p.id }" @click="a.coverPlanId = p.id">{{ p.provider || 'Unnamed plan' }}</button>
+                  <div class="lp-wg-cover">
+                    <div class="lp-wg-cover-head">
+                      <span class="mform-label" style="margin:0">Breakdown cover</span>
+                      <button type="button" class="lp-wg-cover-toggle" @click="a.cover.on = !a.cover.on">{{ a.cover.on ? 'Remove' : '＋ Add' }}</button>
                     </div>
+                    <template v-if="a.cover.on">
+                      <div class="mform-section" style="margin-top:8px">
+                        <div class="mform-label">Provider</div>
+                        <input v-model="a.cover.provider" type="text" class="mform-input" placeholder="e.g. Domestic &amp; General" />
+                      </div>
+                      <div class="lp-two-col">
+                        <div class="mform-section">
+                          <div class="mform-label">Policy number</div>
+                          <input v-model="a.cover.policyNumber" type="text" class="mform-input" placeholder="Policy no." />
+                        </div>
+                        <div class="mform-section">
+                          <div class="mform-label">Phone</div>
+                          <input v-model="a.cover.phone" type="tel" class="mform-input" placeholder="0800 …" />
+                        </div>
+                      </div>
+                      <div class="mform-section" style="margin-top:10px">
+                        <div class="mform-label">What's covered</div>
+                        <div class="lp-inv-chiprow" style="flex-wrap:wrap">
+                          <button v-for="opt in WG_COVER_OPTIONS" :key="opt.value" type="button" class="lp-toggle-chip" :class="{ on: a.cover.covers.includes(opt.value) }" @click="toggleWgCover(a.cover, opt.value)">{{ opt.label }}</button>
+                        </div>
+                      </div>
+                      <div class="mform-section" style="margin-top:10px">
+                        <div class="mform-label">Renewal date</div>
+                        <input v-model="a.cover.renewalDate" type="date" class="mform-input" />
+                      </div>
+                    </template>
                   </div>
                 </div>
                 <button type="button" class="lp-add-row" @click="addWgAppliance">＋ Add another appliance</button>
@@ -852,42 +877,8 @@
                   <textarea v-model="wgHowItWorks" class="lp-inv-note" style="min-height:80px" placeholder="Instructions for the tenant - e.g. 'The washing machine door needs a firm push to lock. Dishwasher salt is under the sink.'" />
                 </div>
 
-                <div class="mlabel" style="margin-top:18px">Breakdown cover / appliance insurance</div>
-                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">Add each plan once, then tag the appliances it covers above. If an appliance breaks mid-tenancy the tenant rings the provider with the policy number and books the repair.</p>
-
-                <div v-for="(plan, pi) in wgCoverPlans" :key="plan.id" class="lp-repeat-block">
-                  <div class="lp-repeat-head">
-                    <span>{{ plan.provider || 'Cover plan ' + (pi + 1) }}</span>
-                    <button type="button" class="lp-repeat-rm" aria-label="Remove" @click="removeWgCoverPlan(plan.id)">✕</button>
-                  </div>
-                  <div class="mform-section">
-                    <div class="mform-label">Provider</div>
-                    <input v-model="plan.provider" type="text" class="mform-input" placeholder="e.g. Domestic &amp; General" />
-                  </div>
-                  <div class="lp-two-col">
-                    <div class="mform-section">
-                      <div class="mform-label">Policy number</div>
-                      <input v-model="plan.policyNumber" type="text" class="mform-input" placeholder="Policy no." />
-                    </div>
-                    <div class="mform-section">
-                      <div class="mform-label">Phone</div>
-                      <input v-model="plan.phone" type="tel" class="mform-input" placeholder="0800 …" />
-                    </div>
-                  </div>
-                  <div class="mform-section" style="margin-top:10px">
-                    <div class="mform-label">What's covered</div>
-                    <div class="lp-inv-chiprow" style="flex-wrap:wrap">
-                      <button v-for="opt in WG_COVER_OPTIONS" :key="opt.value" type="button" class="lp-toggle-chip" :class="{ on: plan.covers.includes(opt.value) }" @click="toggleWgCover(plan, opt.value)">{{ opt.label }}</button>
-                    </div>
-                  </div>
-                  <div class="mform-section" style="margin-top:10px">
-                    <div class="mform-label">Renewal date</div>
-                    <input v-model="plan.renewalDate" type="date" class="mform-input" />
-                  </div>
-                </div>
-                <button type="button" class="lp-add-row" @click="addWgCoverPlan">＋ Add a cover plan</button>
-
                 <div class="mlabel" style="margin-top:18px">Policy documents</div>
+                <p class="lp-modal-hint" style="margin-top:0;margin-bottom:10px">The cover schedule / certificate for any appliance breakdown plans above.</p>
                 <div v-for="doc in coverDocs" :key="doc.id" class="lp-doc-preview" style="margin-bottom:10px">
                   <div class="lp-doc-preview-icon"><img src="/op-icons/passportview/titleDeedsAndPlan.png" alt="" class="lp-doc-preview-icon-img" loading="lazy" /></div>
                   <div class="lp-doc-preview-info">
@@ -2490,17 +2481,24 @@ const isWhiteGoodsSection = computed(() => drawerSection.value?.key === 'landlor
 // JSON blob on the section's DATE question (same convention Inventory/
 // Tenancy Agreement use for their own record slot), manuals + warranties
 // as two kind-scoped multi-copy doc lists off the UPLOAD question.
-interface WgAppliance { name: string; model: string; serial: string; coverPlanId: string }
-// One breakdown-cover plan (e.g. a Domestic & General policy) - usually
-// covers several appliances, so it's stored once and each appliance points
-// at it by id. `covers` holds WG_COVER_OPTIONS values.
-interface WgCoverPlan {
-  id: string
+// UK appliance breakdown cover is almost always sold per appliance
+// (Domestic & General, manufacturer care plans, Currys Care & Repair -
+// each with its own plan number and helpline), so cover lives on the
+// appliance. `on` just drives the expand/collapse of the sub-form.
+interface WgApplianceCover {
+  on: boolean
   provider: string
   policyNumber: string
   phone: string
   covers: string[]
   renewalDate: string
+}
+interface WgAppliance {
+  id: string
+  name: string
+  model: string
+  serial: string
+  cover: WgApplianceCover
 }
 const WG_COVER_OPTIONS: { value: string; label: string }[] = [
   { value: 'breakdown', label: 'Breakdown' },
@@ -2508,20 +2506,21 @@ const WG_COVER_OPTIONS: { value: string; label: string }[] = [
   { value: 'accidental', label: 'Accidental damage' },
   { value: 'service', label: 'Annual service' },
 ]
-const WG_DEFAULT_APPLIANCES: WgAppliance[] = [
-  { name: 'Fridge / freezer', model: '', serial: '', coverPlanId: '' },
-  { name: 'Washing machine', model: '', serial: '', coverPlanId: '' },
-  { name: 'Oven & hob', model: '', serial: '', coverPlanId: '' },
-]
+function blankWgCover(): WgApplianceCover {
+  return { on: false, provider: '', policyNumber: '', phone: '', covers: [], renewalDate: '' }
+}
+function blankWgAppliance(name = ''): WgAppliance {
+  return { id: genRid(), name, model: '', serial: '', cover: blankWgCover() }
+}
+const WG_DEFAULT_APPLIANCE_NAMES = ['Fridge / freezer', 'Washing machine', 'Oven & hob']
 const wgAppliances = ref<WgAppliance[]>([])
 const wgHowItWorks = ref('')
-const wgCoverPlans = ref<WgCoverPlan[]>([])
 const wgSaving = ref(false)
 const wgSavedRecord = computed<{
-  appliances: (WgAppliance & Record<string, any>)[]
+  appliances: any[]
   howItWorks: string
-  coverPlans?: WgCoverPlan[]
-  // legacy single-cover shape, still read for back-compat on load
+  // pre-per-appliance shapes, still read for back-compat on load
+  coverPlans?: any[]
   cover?: { provider: string; policyNumber: string; renewalDate: string; contact: string }
 } | null>(() => {
   const section = sections.value.find((s) => s.key === 'landlord_white_goods')
@@ -2535,23 +2534,16 @@ const wgSavedRecord = computed<{
   return null
 })
 function addWgAppliance() {
-  wgAppliances.value.push({ name: '', model: '', serial: '', coverPlanId: '' })
+  wgAppliances.value.push(blankWgAppliance())
 }
 function removeWgAppliance(i: number) {
   if (wgAppliances.value.length <= 1) return
   wgAppliances.value.splice(i, 1)
 }
-function addWgCoverPlan() {
-  wgCoverPlans.value.push({ id: genRid(), provider: '', policyNumber: '', phone: '', covers: [], renewalDate: '' })
-}
-function removeWgCoverPlan(id: string) {
-  wgCoverPlans.value = wgCoverPlans.value.filter((p) => p.id !== id)
-  for (const a of wgAppliances.value) if (a.coverPlanId === id) a.coverPlanId = ''
-}
-function toggleWgCover(plan: WgCoverPlan, val: string) {
-  const i = plan.covers.indexOf(val)
-  if (i === -1) plan.covers.push(val)
-  else plan.covers.splice(i, 1)
+function toggleWgCover(cover: WgApplianceCover, val: string) {
+  const i = cover.covers.indexOf(val)
+  if (i === -1) cover.covers.push(val)
+  else cover.covers.splice(i, 1)
 }
 const coverDocs = ref<{ id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>([])
 const coverUploading = ref(false)
@@ -2677,7 +2669,6 @@ async function saveWhiteGoods() {
     const record = {
       appliances: wgAppliances.value,
       howItWorks: wgHowItWorks.value,
-      coverPlans: wgCoverPlans.value,
     }
     await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/answer`, {
       method: 'POST',
@@ -2685,22 +2676,23 @@ async function saveWhiteGoods() {
       body: { value: record },
     })
 
-    // Mirror each cover plan's renewal date onto the Calendar so breakdown
-    // cover doesn't quietly lapse mid-tenancy - same 30-day-before reminder
-    // the alarms / EICR sections make, keyed per plan so re-saving a moved
-    // date updates the entry instead of leaving a stale duplicate.
+    // Mirror each appliance's cover renewal date onto the Calendar so
+    // breakdown cover doesn't quietly lapse mid-tenancy - same 30-day-before
+    // reminder the alarms / EICR sections make, keyed per appliance so
+    // re-saving a moved date updates the entry instead of duplicating it.
     const addr = passport.value?.addressLine1
-    for (const plan of wgCoverPlans.value) {
-      if (!plan.renewalDate) continue
+    for (const a of wgAppliances.value) {
+      if (!a.cover?.on || !a.cover.renewalDate) continue
+      const what = a.name || 'appliance'
       await $fetch(`${config.public.apiBase}/calendar`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: {
-          title: `Appliance cover renewal - ${plan.provider || 'breakdown cover'}${addr ? ` · ${addr}` : ''}`,
-          date: plan.renewalDate,
+          title: `Appliance cover renewal - ${what}${a.cover.provider ? ` (${a.cover.provider})` : ''}${addr ? ` · ${addr}` : ''}`,
+          date: a.cover.renewalDate,
           type: 'compliance-renewal',
           notes: 'Auto-added from your Landlord Passport White Goods & Appliances section.',
-          sourceRef: `landlord-wgcover:${dateQ.id}:${plan.id}`,
+          sourceRef: `landlord-wgcover:${dateQ.id}:${a.id}`,
         },
       }).catch(() => {})
     }
@@ -3805,38 +3797,39 @@ async function downloadInventoryPdf() {
       }
     }
   }
-    // White goods & breakdown cover appendix - resolve each appliance's
-    // plan to its provider name so the tenant can see who to call.
+    // White goods & breakdown cover appendix - each appliance carries its
+    // own cover (provider / policy / phone). Older records kept cover in a
+    // `coverPlans` list or one flat `cover` object; fold those onto the
+    // appliance so historic PDFs still render.
     const wg = wgSavedRecord.value
     let appliancesPayload: any = undefined
     if (wg && (wg.appliances?.length || wg.coverPlans?.length || (wg as any).cover)) {
-      const plans = wg.coverPlans?.length
-        ? wg.coverPlans
-        : (wg as any).cover && ((wg as any).cover.provider || (wg as any).cover.policyNumber)
-          ? [{
-              id: 'legacy',
-              provider: (wg as any).cover.provider ?? '',
-              policyNumber: (wg as any).cover.policyNumber ?? '',
-              phone: (wg as any).cover.contact ?? '',
-              covers: [],
-              renewalDate: (wg as any).cover.renewalDate ?? '',
-            }]
-          : []
-      const planName = (id: string) => plans.find((p: any) => p.id === id)?.provider || ''
+      const planById: Record<string, any> = {}
+      for (const p of wg.coverPlans ?? []) if (p?.id) planById[p.id] = p
+      const flat =
+        (wg as any).cover && ((wg as any).cover.provider || (wg as any).cover.policyNumber)
+          ? (wg as any).cover
+          : null
+      const norm = (src: any) =>
+        src
+          ? {
+              provider: src.provider ?? '',
+              policyNumber: src.policyNumber ?? '',
+              phone: src.phone ?? src.contact ?? '',
+              covers: Array.isArray(src.covers) ? src.covers : [],
+              renewalDate: src.renewalDate ?? '',
+            }
+          : undefined
       appliancesPayload = {
-        items: (wg.appliances ?? []).map((a: any) => ({
-          name: a.name,
-          model: a.model,
-          serial: a.serial,
-          cover: a.coverPlanId ? (planName(a.coverPlanId) || 'Covered') : '',
-        })),
-        plans: plans.map((p: any) => ({
-          provider: p.provider,
-          policyNumber: p.policyNumber,
-          phone: p.phone ?? p.contact ?? '',
-          covers: p.covers ?? [],
-          renewalDate: p.renewalDate ?? '',
-        })),
+        items: (wg.appliances ?? []).map((a: any) => {
+          const src =
+            a.cover && typeof a.cover === 'object'
+              ? (a.cover.on === false ? null : a.cover)
+              : a.coverPlanId
+                ? planById[a.coverPlanId] ?? flat
+                : flat
+          return { name: a.name, model: a.model, serial: a.serial, cover: norm(src) }
+        }),
         howItWorks: wg.howItWorks ?? '',
       }
     }
@@ -4277,37 +4270,43 @@ function openSection(s: any) {
     loadWarrantyDocs()
     loadCoverDocs()
     const saved = wgSavedRecord.value
-    const rawApps = saved?.appliances?.length ? saved.appliances : WG_DEFAULT_APPLIANCES
-    wgAppliances.value = rawApps.map((a: any) => ({
-      name: a.name ?? '',
-      model: a.model ?? '',
-      serial: a.serial ?? '',
-      coverPlanId: a.coverPlanId ?? '',
-    }))
+    // Older records kept cover separately (a `coverPlans` list, or one flat
+    // `cover` object) - fold whatever's there back onto the appliance so
+    // nothing the landlord entered is lost.
+    const legacyPlanById: Record<string, any> = {}
+    for (const p of saved?.coverPlans ?? []) if (p?.id) legacyPlanById[p.id] = p
+    const legacyFlat =
+      saved?.cover && (saved.cover.provider || saved.cover.policyNumber) ? saved.cover : null
+    const rawApps: any[] = saved?.appliances?.length
+      ? saved.appliances
+      : WG_DEFAULT_APPLIANCE_NAMES.map((n) => ({ name: n }))
+    wgAppliances.value = rawApps.map((a: any) => {
+      const src =
+        a.cover && typeof a.cover === 'object'
+          ? a.cover
+          : a.coverPlanId && legacyPlanById[a.coverPlanId]
+            ? legacyPlanById[a.coverPlanId]
+            : legacyFlat
+      const cover = blankWgCover()
+      if (src) {
+        cover.provider = src.provider ?? ''
+        cover.policyNumber = src.policyNumber ?? ''
+        cover.phone = src.phone ?? src.contact ?? ''
+        cover.covers = Array.isArray(src.covers) ? [...src.covers] : []
+        cover.renewalDate = src.renewalDate ?? ''
+        cover.on =
+          (typeof src.on === 'boolean' ? src.on : false) ||
+          !!(cover.provider || cover.policyNumber || cover.phone || cover.renewalDate || cover.covers.length)
+      }
+      return {
+        id: a.id || genRid(),
+        name: a.name ?? '',
+        model: a.model ?? '',
+        serial: a.serial ?? '',
+        cover,
+      }
+    })
     wgHowItWorks.value = saved?.howItWorks ?? ''
-    if (saved?.coverPlans?.length) {
-      wgCoverPlans.value = saved.coverPlans.map((p: any) => ({
-        id: p.id || genRid(),
-        provider: p.provider ?? '',
-        policyNumber: p.policyNumber ?? '',
-        phone: p.phone ?? p.contact ?? '',
-        covers: Array.isArray(p.covers) ? p.covers : [],
-        renewalDate: p.renewalDate ?? '',
-      }))
-    } else if (saved?.cover && (saved.cover.provider || saved.cover.policyNumber)) {
-      // Pre-"cover plans" records kept a single flat cover object - lift it
-      // into one plan so the landlord doesn't lose what they'd entered.
-      wgCoverPlans.value = [{
-        id: 'legacy',
-        provider: saved.cover.provider ?? '',
-        policyNumber: saved.cover.policyNumber ?? '',
-        phone: saved.cover.contact ?? '',
-        covers: [],
-        renewalDate: saved.cover.renewalDate ?? '',
-      }]
-    } else {
-      wgCoverPlans.value = []
-    }
   }
   showSectionDrawer.value = true
 }
@@ -6021,6 +6020,26 @@ const SectionCard = defineComponent({
   font-weight: 700;
   color: #0e2840;
   margin-bottom: 10px;
+}
+.lp-wg-cover {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #e0e5e4;
+}
+.lp-wg-cover-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lp-wg-cover-toggle {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  color: #008a84;
+  cursor: pointer;
+  padding: 2px 4px;
 }
 .lp-repeat-rm {
   width: 24px;
