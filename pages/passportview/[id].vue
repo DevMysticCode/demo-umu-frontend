@@ -593,7 +593,7 @@ import { onMounted, ref, computed } from 'vue'
 import { toSmartTitleCase } from '~/utils/titleCase'
 
 definePageMeta({
-  middleware: 'auth',
+  middleware: ['auth', 'passport-type'],
 })
 
 const { steps, loadPassport } = usePassportRuntime()

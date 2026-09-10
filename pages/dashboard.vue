@@ -1324,8 +1324,8 @@ onMounted(async () => {
   background: linear-gradient(135deg, #f1faf8 0%, #e4f5f0 100%);
 }
 .dash-news-img img {
-  width: 84px;
-  height: 84px;
+  width: 110px;
+  height: 110px;
   object-fit: contain;
 }
 .dash-news-bd {
@@ -1342,16 +1342,16 @@ onMounted(async () => {
   border-radius: 100px;
 }
 .dash-news-tag--law {
-  background: #fbeae5;
-  color: #992e1a;
+  background: #f2faf8;
+  color: #008a84;
 }
 .dash-news-tag--update {
   background: #f2faf8;
   color: #008a84;
 }
 .dash-news-tag--news {
-  background: #e8edfb;
-  color: #3d63c9;
+  background: #f2faf8;
+  color: #008a84;
 }
 .dash-news-t {
   font-size: 13.5px;
@@ -1646,8 +1646,8 @@ onMounted(async () => {
   margin-bottom: 12px;
 }
 .hsc-house-img {
-  width: 64px;
-  height: 64px;
+  width: 84px;
+  height: 84px;
   object-fit: contain;
   flex-shrink: 0;
 }
