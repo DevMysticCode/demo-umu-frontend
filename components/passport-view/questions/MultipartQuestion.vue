@@ -177,6 +177,7 @@
           :answer="getPartAnswer(part)"
           :display="getPartDisplay(part)"
           :passport-id="part.passportId || ''"
+          :property-facts="propertyFacts"
           :hide-question-display="true"
           @update="(val) => updatePartAnswer(part.partKey, val)"
         />
@@ -285,6 +286,10 @@ const props = defineProps({
   question: { type: Object, required: true },
   answer: { type: [Object, String], default: () => ({}) },
   passportId: { type: String, default: '' },
+  // { addressLine1, city, postcode, uprn, titleNumber, propertyType } for
+  // this passport's property - lets an `address` part pre-fill + surface
+  // the known UPRN / title number instead of asking for them.
+  propertyFacts: { type: Object, default: null },
   displayedQuestion: { type: String, default: '' },
   showQuestionCursor: { type: Boolean, default: false },
   displayedDescription: { type: String, default: '' },

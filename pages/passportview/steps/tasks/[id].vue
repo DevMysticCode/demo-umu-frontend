@@ -240,6 +240,7 @@
                   currentQuestion.display || currentQuestion.type?.toLowerCase()
                 "
                 :passport-id="route.query.propertyId || ''"
+                :property-facts="propertyFacts"
                 :displayed-question="displayedQuestion"
                 :show-question-cursor="showQuestionCursor"
                 :displayed-description="displayedDescription"
@@ -259,6 +260,7 @@
                 currentQuestion.display || currentQuestion.type?.toLowerCase()
               "
               :passport-id="route.query.propertyId || ''"
+              :property-facts="propertyFacts"
               :displayed-question="displayedQuestion"
               :show-question-cursor="showQuestionCursor"
               :displayed-description="displayedDescription"
@@ -566,6 +568,10 @@ async function removePropertyImage(index) {
 // })
 
 onMounted(async () => {
+  // Kick off up front (not gated behind the question-load await chain) so
+  // the address question can pre-fill as soon as it mounts.
+  loadPropertyFacts()
+
   if (!currentStep.value) {
     await loadPassport(route.query.propertyId)
   }
@@ -592,6 +598,27 @@ onMounted(async () => {
   // left off" CTA on the passport view routes them straight back here.
   recordLastVisited()
 })
+
+// Address / UPRN / title number we already hold for this passport's
+// property (from OS Places / EPC / HM Land Registry enrichment). Passed
+// down to the question components so the "address of the property"
+// question can pre-fill instead of asking the owner to re-type it.
+const propertyFacts = ref(null)
+async function loadPropertyFacts() {
+  const passportId = route.query.propertyId
+  if (!passportId) return
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  try {
+    propertyFacts.value = await $fetch(
+      `${apiBase}/passport/${passportId}/property-facts`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+  } catch {
+    // non-critical - the question just won't pre-fill
+  }
+}
 
 async function recordLastVisited() {
   const passportId = route.query.propertyId
