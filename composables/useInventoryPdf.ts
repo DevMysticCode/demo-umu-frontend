@@ -143,6 +143,21 @@ export function useInventoryPdf() {
     photosByRoom?: Record<string, { name: string; fileUrl: string }[]>
     /** Per-item photos, keyed `<roomId>::<item-slug>`. */
     photosByItem?: Record<string, { name: string; fileUrl: string }[]>
+    /**
+     * White goods & appliance breakdown cover, rendered as an appendix so
+     * the tenant knows what to do if an appliance fails mid-tenancy.
+     */
+    appliances?: {
+      items: { name: string; model?: string; serial?: string; cover?: string }[]
+      plans: {
+        provider: string
+        policyNumber?: string
+        phone?: string
+        covers?: string[]
+        renewalDate?: string
+      }[]
+      howItWorks?: string
+    }
   }): Promise<void> {
     const {
       propertyAddress,
@@ -150,6 +165,7 @@ export function useInventoryPdf() {
       photos = [],
       photosByRoom = {},
       photosByItem = {},
+      appliances,
     } = data
     const typeLabel = TYPE_LABELS[record.type ?? ''] ?? record.type ?? 'Check-in Inventory'
     const furnishingLabel =
@@ -383,6 +399,65 @@ export function useInventoryPdf() {
          </div>`
       : ''
 
+    // ── White goods & appliance breakdown cover (appendix) ──────────
+    const COVER_LABELS: Record<string, string> = {
+      breakdown: 'Breakdown',
+      parts_labour: 'Parts & labour',
+      accidental: 'Accidental damage',
+      service: 'Annual service',
+    }
+    const appliancesHtml =
+      appliances && (appliances.items.length || appliances.plans.length)
+        ? `<div class="break"></div>
+      <h2>White Goods &amp; Appliance Cover</h2>
+      <p class="muted">Appliances provided with the property, and how to get a repair booked if one fails during the tenancy.</p>
+      ${
+        appliances.items.length
+          ? `<table class="info-table">
+        <tr><th>Appliance</th><th>Model</th><th>Serial no.</th><th>Breakdown cover</th></tr>
+        ${appliances.items
+          .map(
+            (a) => `<tr>
+          <td>${esc(a.name) || '-'}</td>
+          <td>${esc(a.model) || '-'}</td>
+          <td>${esc(a.serial) || '-'}</td>
+          <td>${esc(a.cover) || 'Not covered'}</td>
+        </tr>`,
+          )
+          .join('')}
+      </table>`
+          : ''
+      }
+      ${
+        appliances.plans.length
+          ? `<h3>If an appliance breaks, call the cover provider</h3>
+        ${appliances.plans
+          .map(
+            (p) => `<table class="info-table" style="margin-bottom:10px">
+          <tr><td class="info-label">Provider</td><td>${esc(p.provider) || '-'}</td></tr>
+          <tr><td class="info-label">Policy number</td><td>${esc(p.policyNumber) || '-'}</td></tr>
+          <tr><td class="info-label">Phone</td><td>${esc(p.phone) || '-'}</td></tr>
+          <tr><td class="info-label">Covers</td><td>${
+            (p.covers ?? []).map((c) => esc(COVER_LABELS[c] ?? c)).join(', ') || '-'
+          }</td></tr>
+          <tr><td class="info-label">Renews</td><td>${
+            p.renewalDate
+              ? esc(new Date(p.renewalDate).toLocaleDateString('en-GB'))
+              : '-'
+          }</td></tr>
+        </table>`,
+          )
+          .join('')}`
+          : ''
+      }
+      ${
+        appliances.howItWorks
+          ? `<h3>How things work</h3><p class="disclaimer">${esc(appliances.howItWorks)}</p>`
+          : ''
+      }
+    `
+        : ''
+
     // ── Declaration + disclaimer + guidance ─────────────────────────
     const declarationHtml = `
       <div class="break"></div>
@@ -438,6 +513,7 @@ export function useInventoryPdf() {
   ${roomDetailHtml}
   ${photoPagesHtml}
   ${loosePhotosHtml}
+  ${appliancesHtml}
   ${declarationHtml}
   <div class="footer">
     <span>${esc(typeLabel)} Report &mdash; ${esc(propertyAddress)}</span>
