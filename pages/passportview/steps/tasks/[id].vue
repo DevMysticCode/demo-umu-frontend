@@ -14,7 +14,7 @@
         </div>
         <h1 class="qhero-title">{{ currentStep?.title || '' }}</h1>
         <p class="qhero-sub">{{ currentTask?.title || '' }}</p>
-        <div class="qhero-meta">
+        <div class="qhero-meta" data-tour="q-progress">
           <div class="qring" :style="{ '--p': taskProgress }">
             <span>{{ taskAnsweredCount }}/{{ totalQuestions }}</span>
           </div>
@@ -27,10 +27,18 @@
               <em>· ~{{ estimatedMinutesLeft }} min left</em>
             </strong>
           </div>
+          <button
+            class="q-tour-btn"
+            type="button"
+            aria-label="How this works"
+            @click="questionTourRef?.start?.()"
+          >
+            ?
+          </button>
         </div>
       </section>
 
-      <div class="action-buttons">
+      <div class="action-buttons" data-tour="q-help-video">
         <button class="qpill ghost" @click="openHelp">
           <svg
             width="16"
@@ -56,16 +64,18 @@
         </button>
       </div>
 
-      <QuestionPointsCard
-        ref="pointsCardEl"
-        :balance="runningBalance"
-        :question-points="currentQuestion?.points || 0"
-        :question-number="currentQuestionIndex + 1"
-        :total-questions="totalQuestions"
-        :saved="justSaved"
-        :saved-points="lastSavedPoints"
-        :balance-before="balanceBeforeSave"
-      />
+      <div data-tour="q-points">
+        <QuestionPointsCard
+          ref="pointsCardEl"
+          :balance="runningBalance"
+          :question-points="currentQuestion?.points || 0"
+          :question-number="currentQuestionIndex + 1"
+          :total-questions="totalQuestions"
+          :saved="justSaved"
+          :saved-points="lastSavedPoints"
+          :balance-before="balanceBeforeSave"
+        />
+      </div>
 
       <!-- Property photos upload — only for "What we love about our home?" task -->
       <div
@@ -142,7 +152,7 @@
         </div>
       </div>
 
-      <div class="qheader">
+      <div class="qheader" data-tour="q-nav">
         <div>
           <h2 class="qheader-h2">Question {{ currentQuestionIndex + 1 }}</h2>
           <div class="qheader-sub">
@@ -290,12 +300,19 @@
       <button
         v-if="currentQuestion?.type?.toLowerCase() !== 'radio'"
         class="submit-btn"
+        data-tour="q-save"
         @click="saveAnswer"
         :disabled="!isAnswerValid"
       >
         Save and go to next question
       </button>
     </div>
+
+    <OnboardingTour
+      ref="questionTourRef"
+      :steps="questionTourSteps"
+      storage-key="umu_tour_question_v1"
+    />
   </div>
 
   <div v-if="showSectionComplete">
@@ -342,6 +359,7 @@ import BoundaryResponsibilityQuestion from '~/components/passport-view/questions
 import AppHeader from '@/components/core/AppHeader.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
+import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 import HelpDrawer from '~/components/passport-view/HelpDrawer.vue'
 import VideoModal from '~/components/passport-view/VideoModal.vue'
 
@@ -383,6 +401,37 @@ const lastSavedPoints = ref(0)
 const balanceBeforeSave = ref(0)
 const pointsCardEl = ref(null)
 let justSavedTimeout = null
+
+// One-time walkthrough of how a question screen works — auto-runs once
+// per browser (storage-key), replays from the "?" in the hero.
+const questionTourRef = ref(null)
+const questionTourSteps = [
+  {
+    selector: '[data-tour="q-progress"]',
+    title: 'Your progress',
+    body: 'Each section is a set of short questions. This ring tracks how many you have answered and roughly how long is left.',
+  },
+  {
+    selector: '[data-tour="q-help-video"]',
+    title: 'Stuck on a question?',
+    body: 'Help opens plain-English guidance for the question you are on. Play Video is a short explainer for the whole section.',
+  },
+  {
+    selector: '[data-tour="q-points"]',
+    title: 'Earn as you go',
+    body: 'You collect Passport Points for every answer you save. They build up across the whole passport.',
+  },
+  {
+    selector: '[data-tour="q-nav"]',
+    title: 'Move around',
+    body: 'Use Previous and Skip to jump between questions. Skipped questions stay open — you can always come back.',
+  },
+  {
+    selector: '[data-tour="q-save"]',
+    title: 'Save and continue',
+    body: 'When your answer looks right, save it here and the next question loads automatically. Finish every question in a section to unlock the next one.',
+  },
+]
 
 // The points card sits at the top of the page, but the question someone's
 // answering can be well below the fold (long forms, multipart questions,
@@ -1428,6 +1477,22 @@ const handleContinue = () => {
   margin-top: 8px;
   position: relative;
   z-index: 1;
+}
+.q-tour-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  background: rgba(255, 255, 255, 0.85);
+  color: #0f766e;
+  font-size: 14px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
 }
 .qring {
   --p: 0;
