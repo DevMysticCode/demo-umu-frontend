@@ -1375,13 +1375,13 @@
               </div>
             </template>
 
-            <div class="section-heading" style="margin-top:20px">Photos <span class="lp-modal-hint" style="display:inline;margin:0">· dated &amp; timestamped</span></div>
+            <div class="section-heading" style="margin-top:20px">Photos <span class="lp-modal-hint" style="display:inline;margin:0">· dated &amp; timestamped · up to 10</span></div>
             <div class="pgrid">
               <div v-for="doc in (roomPhotoDocs[invCurRoom.id] || [])" :key="doc.id" class="pgrid-item">
                 <img :src="doc.fileUrl" alt="" class="pgrid-img" loading="lazy" @click="viewCopyDoc(doc.fileUrl)" />
                 <button type="button" class="pgrid-rm" aria-label="Remove photo" @click="removeRoomPhotoDoc(invCurRoom.id, doc.id)">✕</button>
               </div>
-              <label class="pgrid-add">
+              <label v-if="(roomPhotoDocs[invCurRoom.id] || []).length < 10" class="pgrid-add">
                 <input
                   type="file"
                   accept=".jpg,.jpeg,.png,.webp"
@@ -1392,6 +1392,15 @@
                 <span v-if="roomPhotoUploading === invCurRoom.id">…</span>
                 <span v-else>📷<br />Add photo</span>
               </label>
+              <!-- Empty slots so the row never looks bare - always at least
+                   two placeholders + the Add tile visible until real photos
+                   fill them, hinting that several photos are expected. -->
+              <div
+                v-for="n in Math.max(0, 2 - (roomPhotoDocs[invCurRoom.id] || []).length)"
+                :key="'ph' + n"
+                class="pgrid-slot"
+                aria-hidden="true"
+              />
             </div>
           </div>
           <div class="lp-assess-foot">
@@ -5572,6 +5581,12 @@ const SectionCard = defineComponent({
 }
 .mform-input {
   width: 100%;
+  /* Without border-box the 12px side padding + 1px border pushed the
+     input ~26px past its column - full-width fields ran off the right
+     edge, and the two-up .lp-two-col row's inputs overlapped. */
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
   background: #fff;
   border: 1px solid #e8eceb;
   border-radius: 10px;
@@ -5642,9 +5657,10 @@ const SectionCard = defineComponent({
   flex-shrink: 0;
 }
 .lp-repeat-rm:active { background: #fbeae5; color: #c0492f; }
-.lp-two-col { display: flex; gap: 10px; }
-.lp-two-col > .mform-section { flex: 1; }
-.lp-two-col > .lp-toggle-chip { flex: 1; }
+.lp-two-col { display: flex; gap: 10px; min-width: 0; }
+.lp-two-col > .mform-section { flex: 1 1 0; min-width: 0; }
+.lp-two-col > .mform-input { flex: 1 1 0; min-width: 0; }
+.lp-two-col > .lp-toggle-chip { flex: 1 1 0; min-width: 0; }
 .lp-toggle-chip {
   padding: 9px;
   border-radius: 9px;
@@ -5927,7 +5943,7 @@ const SectionCard = defineComponent({
   color: #6b7089;
   cursor: pointer;
 }
-.lp-inv-chip-ic { width: 22px; height: 22px; object-fit: contain; }
+.lp-inv-chip-ic { width: 44px; height: 44px; object-fit: contain; }
 .lp-inv-chip.on { border-color: #00a19a; background: #f2faf8; color: #0e2840; }
 .lp-inv-pw-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7089; margin: 18px 0 8px; }
 .pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
@@ -5936,6 +5952,9 @@ const SectionCard = defineComponent({
 .pgrid-rm { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(14,40,64,0.65); color: #fff; border: none; font-size: 11px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .pgrid-add { aspect-ratio: 1; border-radius: 12px; border: 1.5px dashed #b9c3c1; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 10.5px; font-weight: 700; color: #6b7089; position: relative; cursor: pointer; }
 .pgrid-add span { pointer-events: none; }
+/* Non-interactive filler tiles so the photo row reads as "add several",
+   not "one optional photo". */
+.pgrid-slot { aspect-ratio: 1; border-radius: 12px; border: 1.5px dashed #dfe5e3; background: #fafbfb; }
 .lp-inv-prog { margin-bottom: 14px; }
 .lp-inv-pbar { height: 8px; background: #e7e7ee; border-radius: 100px; overflow: hidden; }
 .lp-inv-pfill { height: 100%; background: linear-gradient(90deg, #00a19a, #00c4bc); border-radius: 100px; transition: width 0.5s cubic-bezier(.22,1,.36,1); }

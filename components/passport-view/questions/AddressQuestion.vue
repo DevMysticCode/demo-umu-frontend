@@ -11,7 +11,7 @@
         @input="onInput"
         class="text-field"
       />
-      <button class="btn" @click="$emit('update', text)">Find URN</button>
+      <button class="btn" @click="$emit('update', text)">Find UPRN</button>
     </div>
   </div>
 </template>
