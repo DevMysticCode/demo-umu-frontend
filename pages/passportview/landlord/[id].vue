@@ -1315,6 +1315,34 @@
                 <button type="button" class="lp-inv-cd dt" :class="{ on: item.cleanliness === 'dirty' }" @click="invSetCleanliness(item, 'dirty')">Dirty</button>
               </div>
               <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
+              <div class="lp-inv-rl">Photos of this item</div>
+              <div class="pgrid pgrid--sm">
+                <div
+                  v-for="doc in (itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || [])"
+                  :key="doc.id"
+                  class="pgrid-item"
+                >
+                  <img :src="doc.fileUrl" alt="" class="pgrid-img" loading="lazy" @click="viewCopyDoc(doc.fileUrl)" />
+                  <button type="button" class="pgrid-rm" aria-label="Remove photo" @click="removeItemPhotoDoc(invCurRoom.id, item.name, doc.id)">✕</button>
+                </div>
+                <label v-if="(itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || []).length < 8" class="pgrid-add">
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    class="lp-upload-input"
+                    :disabled="itemPhotoUploading === itemPhotoKey(invCurRoom.id, item.name)"
+                    @change="onItemPhotoPicked(invCurRoom.id, item.name, $event)"
+                  />
+                  <span v-if="itemPhotoUploading === itemPhotoKey(invCurRoom.id, item.name)">…</span>
+                  <span v-else>📷<br />Add</span>
+                </label>
+                <div
+                  v-for="n in Math.max(0, 2 - (itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || []).length)"
+                  :key="'iph' + n"
+                  class="pgrid-slot"
+                  aria-hidden="true"
+                />
+              </div>
             </div>
             <!-- Fixtures don't depend on furnishing - always present, so
                  this add-row is always available (client feedback: no way
@@ -1360,6 +1388,34 @@
                   <button type="button" class="lp-inv-cd dt" :class="{ on: item.cleanliness === 'dirty' }" @click="invSetCleanliness(item, 'dirty')">Dirty</button>
                 </div>
                 <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
+                <div class="lp-inv-rl">Photos of this item</div>
+                <div class="pgrid pgrid--sm">
+                  <div
+                    v-for="doc in (itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || [])"
+                    :key="doc.id"
+                    class="pgrid-item"
+                  >
+                    <img :src="doc.fileUrl" alt="" class="pgrid-img" loading="lazy" @click="viewCopyDoc(doc.fileUrl)" />
+                    <button type="button" class="pgrid-rm" aria-label="Remove photo" @click="removeItemPhotoDoc(invCurRoom.id, item.name, doc.id)">✕</button>
+                  </div>
+                  <label v-if="(itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || []).length < 8" class="pgrid-add">
+                    <input
+                      type="file"
+                      accept=".jpg,.jpeg,.png,.webp"
+                      class="lp-upload-input"
+                      :disabled="itemPhotoUploading === itemPhotoKey(invCurRoom.id, item.name)"
+                      @change="onItemPhotoPicked(invCurRoom.id, item.name, $event)"
+                    />
+                    <span v-if="itemPhotoUploading === itemPhotoKey(invCurRoom.id, item.name)">…</span>
+                    <span v-else>📷<br />Add</span>
+                  </label>
+                  <div
+                    v-for="n in Math.max(0, 2 - (itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || []).length)"
+                    :key="'iph' + n"
+                    class="pgrid-slot"
+                    aria-hidden="true"
+                  />
+                </div>
               </div>
               <div class="lp-inv-addroom">
                 <input
@@ -1474,20 +1530,42 @@
                   </span>
                   <span>✓ {{ roomItemsThatApply(r).length }} items</span>
                 </div>
-                <!-- Photos added while working through this room (client
-                     feedback: photos uploaded per room never resurfaced
-                     in the review preview) - shown right under that
-                     room's own row, not lumped into one flat gallery. -->
-                <div v-if="(roomPhotoDocs[r.id] || []).length" class="lp-assess-sum-photos">
-                  <img
-                    v-for="doc in roomPhotoDocs[r.id]"
-                    :key="doc.id"
-                    :src="doc.fileUrl"
-                    alt=""
-                    class="lp-assess-sum-photo"
-                    loading="lazy"
-                    @click="viewCopyDoc(doc.fileUrl)"
-                  />
+                <!-- Photos grouped by the item they belong to (walls,
+                     washing machine, ...) plus a "General / room" strip -
+                     mirrors how they'll read in the PDF, so the tenant
+                     can tell what each photo shows. -->
+                <div v-if="(roomPhotoDocs[r.id] || []).length" class="lp-assess-sum-itemgrp">
+                  <div class="lp-assess-sum-itemlbl">General / room</div>
+                  <div class="lp-assess-sum-photos">
+                    <img
+                      v-for="doc in roomPhotoDocs[r.id]"
+                      :key="doc.id"
+                      :src="doc.fileUrl"
+                      alt=""
+                      class="lp-assess-sum-photo"
+                      loading="lazy"
+                      @click="viewCopyDoc(doc.fileUrl)"
+                    />
+                  </div>
+                </div>
+                <div
+                  v-for="it in r.items"
+                  :key="it.name"
+                  v-show="(itemPhotoDocs[itemPhotoKey(r.id, it.name)] || []).length"
+                  class="lp-assess-sum-itemgrp"
+                >
+                  <div class="lp-assess-sum-itemlbl">{{ it.name }}</div>
+                  <div class="lp-assess-sum-photos">
+                    <img
+                      v-for="doc in (itemPhotoDocs[itemPhotoKey(r.id, it.name)] || [])"
+                      :key="doc.id"
+                      :src="doc.fileUrl"
+                      alt=""
+                      class="lp-assess-sum-photo"
+                      loading="lazy"
+                      @click="viewCopyDoc(doc.fileUrl)"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -3062,7 +3140,10 @@ async function onRoomPhotoPicked(roomId: string, e: Event) {
 // display them grouped by room, and so downloadInventoryPdf() below has
 // them ready to embed the same way.
 async function goToInvReview() {
-  await Promise.all(invRooms.value.map((r) => loadRoomPhotoDocs(r.id)))
+  await Promise.all([
+    ...invRooms.value.map((r) => loadRoomPhotoDocs(r.id)),
+    ...invRooms.value.map((r) => loadAllItemPhotoDocs(r)),
+  ])
   invScreen.value = 'review'
 }
 
@@ -3077,6 +3158,83 @@ async function removeRoomPhotoDoc(roomId: string, docId: string) {
     /* non-critical */
   }
   await loadRoomPhotoDocs(roomId)
+  await refreshSectionData()
+}
+
+// ── Per-item photos ────────────────────────────────────────────────
+// Client feedback: room photos landed in one undifferentiated pile - a
+// tenant reading the report couldn't tell which photo was the washing
+// machine vs the kitchen units vs a wall. Each fixture/content item now
+// carries its own photo strip, tagged `room-<roomId>::<item-slug>` on
+// the same copies endpoint, and the review + PDF render them grouped
+// under the item they belong to (matches the pro Inventory Hive layout).
+const itemPhotoDocs = ref<Record<string, { id: string; name: string; fileUrl: string; size: string; uploadedAt: string }[]>>({})
+const itemPhotoUploading = ref<string | null>(null)
+function itemSlug(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'item'
+}
+function itemPhotoKey(roomId: string, name: string) {
+  return `${roomId}::${itemSlug(name)}`
+}
+function itemPhotoKind(roomId: string, name: string) {
+  return `room-${roomId}::${itemSlug(name)}`
+}
+async function loadItemPhotoDocs(roomId: string, name: string) {
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  const key = itemPhotoKey(roomId, name)
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    itemPhotoDocs.value[key] = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      query: { kind: itemPhotoKind(roomId, name) },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    itemPhotoDocs.value[key] = []
+  }
+}
+async function loadAllItemPhotoDocs(room: InvRoom) {
+  await Promise.all(room.items.map((it) => loadItemPhotoDocs(room.id, it.name)))
+}
+async function onItemPhotoPicked(roomId: string, name: string, e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  ;(e.target as HTMLInputElement).value = ''
+  if (!file) return
+  const q = drawerUploadQuestion.value
+  if (!q) return
+  const key = itemPhotoKey(roomId, name)
+  itemPhotoUploading.value = key
+  drawerError.value = ''
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('name', file.name.replace(/\.[^.]+$/, ''))
+    fd.append('kind', itemPhotoKind(roomId, name))
+    await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    await loadItemPhotoDocs(roomId, name)
+    await refreshSectionData()
+  } catch (err: any) {
+    drawerError.value = err?.data?.message ?? 'Upload failed'
+  } finally {
+    itemPhotoUploading.value = null
+  }
+}
+async function removeItemPhotoDoc(roomId: string, name: string, docId: string) {
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    /* non-critical */
+  }
+  await loadItemPhotoDocs(roomId, name)
   await refreshSectionData()
 }
 
@@ -3272,6 +3430,8 @@ function invOpenRoom(id: string) {
   newFixtureName.value = ''
   newContentName.value = ''
   loadRoomPhotoDocs(id)
+  const room = invRooms.value.find((r) => r.id === id)
+  if (room) loadAllItemPhotoDocs(room)
 }
 function invSetCondition(item: InvItem, val: string) {
   item.condition = val
@@ -3457,26 +3617,37 @@ async function downloadInventoryPdf() {
   // straight off the saved record's own room list instead.
   const q = drawerUploadQuestion.value
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const fetchKind = async (kind: string) => {
+    try {
+      return await $fetch<any[]>(`${config.public.apiBase}/questions/${q!.id}/copies`, {
+        query: { kind },
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    } catch {
+      return []
+    }
+  }
   const entries = q
     ? await Promise.all(
-        (record.rooms ?? []).map(async (r: any) => {
-          try {
-            const docs = await $fetch<any[]>(`${config.public.apiBase}/questions/${q.id}/copies`, {
-              query: { kind: `room-${r.id}` },
-              headers: { Authorization: `Bearer ${token}` },
-            })
-            return [r.id, docs] as const
-          } catch {
-            return [r.id, []] as const
-          }
-        }),
+        (record.rooms ?? []).map(async (r: any) => [r.id, await fetchKind(`room-${r.id}`)] as const),
       )
     : []
+  // Per-item photos, keyed `<roomId>::<item-slug>` - one fetch per item.
+  const itemEntries: [string, any[]][] = []
+  if (q) {
+    for (const r of record.rooms ?? []) {
+      for (const it of r.items ?? []) {
+        const key = `${r.id}::${itemSlug(it.name)}`
+        itemEntries.push([key, await fetchKind(`room-${r.id}::${itemSlug(it.name)}`)])
+      }
+    }
+  }
     await generateInventoryPdf({
       propertyAddress: passport.value?.addressLine1 ?? '',
       record: record as any,
       photos: copyDocs.value,
       photosByRoom: Object.fromEntries(entries),
+      photosByItem: Object.fromEntries(itemEntries.filter(([, v]) => v.length)),
     })
   } catch (err: any) {
     drawerError.value = err?.message ?? 'Could not generate the PDF - please try again.'
@@ -5916,6 +6087,8 @@ const SectionCard = defineComponent({
 .lp-assess-sum-row span:last-child { color: #0e2840; font-weight: 700; text-align: right; max-width: 60%; }
 .lp-assess-sum-photos { display: flex; gap: 6px; padding: 0 15px 12px; overflow-x: auto; }
 .lp-assess-sum-photo { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; cursor: pointer; }
+.lp-assess-sum-itemgrp { padding-top: 2px; }
+.lp-assess-sum-itemlbl { font-size: 10.5px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: #9c98ad; padding: 2px 15px 4px; }
 .lp-assess-intro-ic { display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 8px auto 0; }
 .lp-assess-intro-ic-img { width: 84px; height: 84px; object-fit: contain; }
 .lp-assess-intro-h { font-size: 23px; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; text-align: center; margin-top: 16px; padding: 0 22px; }
@@ -5947,6 +6120,10 @@ const SectionCard = defineComponent({
 .lp-inv-chip.on { border-color: #00a19a; background: #f2faf8; color: #0e2840; }
 .lp-inv-pw-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7089; margin: 18px 0 8px; }
 .pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
+/* Tighter 4-up grid for the per-item photo strips inside each fixture /
+   furnishing card. */
+.pgrid--sm { grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 4px; }
+.pgrid--sm .pgrid-add { font-size: 9px; }
 .pgrid-item { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #f2faf8; }
 .pgrid-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
 .pgrid-rm { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(14,40,64,0.65); color: #fff; border: none; font-size: 11px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
