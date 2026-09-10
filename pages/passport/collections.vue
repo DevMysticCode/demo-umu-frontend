@@ -324,40 +324,36 @@
     </div>
 
     <!-- Buyer Passports you've purchased — published seller passports the
-         user has bought access to (GET /passport/buyer-access). Kept as
-         its own section below the owned-passport grid so the two groups
-         read as clearly separate: what you built vs. what you bought. -->
+         user has bought access to (GET /passport/buyer-access). Rendered
+         as a grid of passport-cover cards, the same shape as the owned
+         passports above, using the tilted Buyer Passport cover art. -->
     <div v-if="!loading && watchingList.length > 0" class="watching-section">
       <div class="watching-header">
         <span class="watching-title">Buyer Passports you've purchased</span>
         <span class="watching-count">{{ watchingList.length }}</span>
       </div>
-      <div class="watching-list">
+      <div class="passport-grid px-0 pb-4">
         <div
           v-for="w in watchingList"
           :key="w.id"
-          class="watching-card"
+          class="grid-cell"
           @click="router.push(`/buyer-passport/${w.passportId}`)"
         >
-          <div class="watching-card-ic"><img src="/op-icons/misc/book.png" alt="" loading="lazy" /></div>
-          <div class="watching-card-body">
-            <div class="watching-card-addr">{{ w.addressLine1 }}</div>
-            <div class="watching-card-sub">
-              {{ w.postcode
-              }}<template v-if="w.property?.epcRating">
-                · EPC {{ w.property.epcRating }}</template
-              >
-            </div>
-            <div class="watching-card-meta">
-              <span class="watching-pill watching-pill-published"
-                >📘 Published</span
-              >
-              <span class="watching-purchased">
-                Unlocked {{ formatPurchasedAt(w.purchasedAt) }}
-              </span>
+          <div class="book-stack">
+            <div class="stacked-book">
+              <img
+                src="/op-icons/passport-covers/buyer_tilted_right_on_tile.png"
+                alt="Buyer Passport"
+                class="buyer-cover-img"
+                loading="lazy"
+              />
             </div>
           </div>
-          <div class="watching-card-arrow">→</div>
+          <p class="cell-name">{{ shortAddress(w.addressLine1) }}</p>
+          <p class="cell-sub">
+            {{ w.postcode }}<template v-if="w.property?.epcRating"> · EPC {{ w.property.epcRating }}</template>
+          </p>
+          <span class="buyer-cover-pill">Published · Unlocked {{ formatPurchasedAt(w.purchasedAt) }}</span>
         </div>
       </div>
     </div>
@@ -1575,10 +1571,26 @@ const executeDelete = async () => {
   }
 }
 
-/* Watching section - buyer's purchased Passport access cards */
+/* Buyer Passports you've purchased - grid of cover cards below the
+   owned-passport grid. */
 .watching-section {
   padding: 0 16px 80px;
   margin-top: -8px;
+}
+.buyer-cover-img {
+  width: 110px;
+  height: 145px;
+  object-fit: contain;
+}
+.buyer-cover-pill {
+  font-size: 10px;
+  font-weight: 700;
+  color: #00817c;
+  background: #e0f4f1;
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-top: 2px;
+  text-align: center;
 }
 .watching-header {
   display: flex;
