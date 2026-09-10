@@ -973,7 +973,6 @@
           <template v-if="activeSheet === 'property-details'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img src="/op-icons/property/type.png" alt="" loading="lazy"
@@ -1057,7 +1056,9 @@
               </div>
               <div v-if="property?.uprn" class="pps-tr-row pps-tr-row--static">
                 <div class="pps-tr-strow">
-                  <span class="pps-tr-stname">UPRN</span>
+                  <span class="pps-tr-stname"
+                    >Unique Property Reference Number (UPRN)</span
+                  >
                   <span class="pps-tr-stwalk pps-pd-row-value--mono">{{
                     property.uprn
                   }}</span>
@@ -1113,8 +1114,8 @@
             <p class="pps-ds-info-note">
               <b>Cross-referenced.</b> Type, size and EPC come from the Energy
               Performance Certificate register; tenure and title number are from
-              HM Land Registry. UPRN identifies the property uniquely across all
-              official sources.
+              HM Land Registry. The Unique Property Reference Number (UPRN)
+              identifies the property uniquely across all official sources.
             </p>
             <button class="pps-sheet-cancel" @click="closeSheet">Close</button>
           </template>
@@ -1147,7 +1148,6 @@
           <template v-else-if="activeSheet === 'history'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -1366,7 +1366,9 @@
                   class="pps-tr-row pps-tr-row--static"
                 >
                   <div class="pps-tr-strow">
-                    <span class="pps-tr-stname">UPRN</span>
+                    <span class="pps-tr-stname"
+                    >Unique Property Reference Number (UPRN)</span
+                  >
                     <span class="pps-tr-stwalk pps-pd-row-value--mono">{{
                       property.uprn
                     }}</span>
@@ -1388,7 +1390,6 @@
           <template v-else-if="activeSheet === 'street'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -1535,7 +1536,6 @@
           <template v-else-if="activeSheet === 'schools'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -1702,7 +1702,6 @@
           <template v-else-if="activeSheet === 'transport'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -1850,7 +1849,6 @@
           <template v-else-if="activeSheet === 'trains'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -1962,7 +1960,6 @@
           <template v-else-if="activeSheet === 'buses'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -2114,7 +2111,6 @@
           <template v-else-if="activeSheet === 'airports'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -2300,7 +2296,6 @@
           <template v-else-if="activeSheet === 'flood'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -2482,7 +2477,6 @@
           <template v-else-if="activeSheet === 'planning'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -2659,7 +2653,6 @@
           <template v-else-if="activeSheet === 'council'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -2777,7 +2770,6 @@
           <template v-else-if="activeSheet === 'broadband'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -2941,7 +2933,6 @@
           <template v-else-if="activeSheet === 'stamp-duty'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -3131,7 +3122,6 @@
           <template v-else-if="activeSheet === 'listed'">
             <div
               class="pps-ds-header"
-              style="background: var(--teal-wash, #e9f6f5)"
             >
               <span class="pps-ds-header-icon"
                 ><img
@@ -10119,37 +10109,42 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 
 /* Header strip at top of a data-source sheet */
+/* Centred column, no card background — the icon leads at a readable
+   size, then the title + source line centred under it. (Was a small
+   44px icon + left-aligned text inside a teal-wash box that read as
+   cramped on a phone.) */
 .pps-ds-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 14px;
-  border-radius: 14px;
-  padding: 14px 16px;
+  text-align: center;
+  gap: 8px;
+  padding: 2px 12px 6px;
   margin-bottom: 18px;
 }
 .pps-ds-header-icon {
-  font-size: 26px;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 .pps-ds-header-icon img {
-  width: 44px;
-  height: 44px;
+  width: 92px;
+  height: 92px;
   object-fit: contain;
   display: block;
 }
 .pps-ds-header-title {
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
 }
 .pps-ds-header-meta {
-  font-size: 12px;
+  font-size: 12.5px;
   color: #9c98ad;
-  margin-top: 2px;
+  margin-top: 3px;
+  line-height: 1.4;
 }
 
 .pps-ds-section-title {

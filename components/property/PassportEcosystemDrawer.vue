@@ -125,18 +125,6 @@
               </div>
             </div>
 
-            <!-- ── Footer ────────────────────────────────────────── -->
-            <div class="pe-footer">
-              <div class="pe-footer-tag">
-                Your journey. <span>Our ecosystem.</span>
-              </div>
-              <div class="pe-footer-links">
-                <span>🛡️ Secure by design</span>
-                <span>umovingu.com</span>
-                <span>legal@umu.com</span>
-                <span>Terms &amp; conditions</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -585,31 +573,6 @@ const powerItems = [
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.5;
-}
-
-/* Footer */
-.pe-footer {
-  margin-top: 24px;
-  padding: 0 18px;
-  text-align: center;
-}
-.pe-footer-tag {
-  font-size: 16px;
-  font-weight: 800;
-  color: #231d45;
-}
-.pe-footer-tag span {
-  color: #00858a;
-}
-.pe-footer-links {
-  margin-top: 12px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px 14px;
-  font-size: 10px;
-  font-weight: 600;
-  color: #9c98ad;
 }
 
 /* Slide-up transition */

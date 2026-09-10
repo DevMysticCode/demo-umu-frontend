@@ -144,42 +144,6 @@
       <div class="coll-resume-cta">→</div>
     </button>
 
-    <!-- Watching list — published passports the user has bought access to -->
-    <div v-if="watchingList.length > 0" class="watching-section">
-      <div class="watching-header">
-        <span class="watching-title">Unlocked Passports</span>
-        <span class="watching-count">{{ watchingList.length }}</span>
-      </div>
-      <div class="watching-list">
-        <div
-          v-for="w in watchingList"
-          :key="w.id"
-          class="watching-card"
-          @click="router.push(`/buyer-passport/${w.passportId}`)"
-        >
-          <div class="watching-card-ic"><img src="/op-icons/misc/book.png" alt="" loading="lazy" /></div>
-          <div class="watching-card-body">
-            <div class="watching-card-addr">{{ w.addressLine1 }}</div>
-            <div class="watching-card-sub">
-              {{ w.postcode
-              }}<template v-if="w.property?.epcRating">
-                · EPC {{ w.property.epcRating }}</template
-              >
-            </div>
-            <div class="watching-card-meta">
-              <span class="watching-pill watching-pill-published"
-                >📘 Published</span
-              >
-              <span class="watching-purchased">
-                Unlocked {{ formatPurchasedAt(w.purchasedAt) }}
-              </span>
-            </div>
-          </div>
-          <div class="watching-card-arrow">→</div>
-        </div>
-      </div>
-    </div>
-
     <!-- Location chips — derived from each passport's city/town -->
     <div v-if="cityChips.length > 1" class="coll-cities">
       <button
@@ -238,8 +202,19 @@
       />
     </div>
 
+    <!-- Your own passports (Seller / Landlord you created) -->
+    <div
+      v-if="!loading && (filteredCollections.length || filteredPassports.length)"
+      class="grid-section-head px-4"
+    >
+      <span class="grid-section-title">Passports you own</span>
+      <span class="grid-section-count">{{
+        filteredCollections.length + filteredPassports.length
+      }}</span>
+    </div>
+
     <!-- Grid -->
-    <div v-else class="passport-grid px-4 pb-24">
+    <div v-if="!loading" class="passport-grid px-4 pb-24">
       <!-- Collections first -->
       <div
         v-for="collection in filteredCollections"
@@ -345,6 +320,45 @@
         </div>
         <p class="cell-name add-name">Add New</p>
         <p class="cell-sub">Add Passport</p>
+      </div>
+    </div>
+
+    <!-- Buyer Passports you've purchased — published seller passports the
+         user has bought access to (GET /passport/buyer-access). Kept as
+         its own section below the owned-passport grid so the two groups
+         read as clearly separate: what you built vs. what you bought. -->
+    <div v-if="!loading && watchingList.length > 0" class="watching-section">
+      <div class="watching-header">
+        <span class="watching-title">Buyer Passports you've purchased</span>
+        <span class="watching-count">{{ watchingList.length }}</span>
+      </div>
+      <div class="watching-list">
+        <div
+          v-for="w in watchingList"
+          :key="w.id"
+          class="watching-card"
+          @click="router.push(`/buyer-passport/${w.passportId}`)"
+        >
+          <div class="watching-card-ic"><img src="/op-icons/misc/book.png" alt="" loading="lazy" /></div>
+          <div class="watching-card-body">
+            <div class="watching-card-addr">{{ w.addressLine1 }}</div>
+            <div class="watching-card-sub">
+              {{ w.postcode
+              }}<template v-if="w.property?.epcRating">
+                · EPC {{ w.property.epcRating }}</template
+              >
+            </div>
+            <div class="watching-card-meta">
+              <span class="watching-pill watching-pill-published"
+                >📘 Published</span
+              >
+              <span class="watching-purchased">
+                Unlocked {{ formatPurchasedAt(w.purchasedAt) }}
+              </span>
+            </div>
+          </div>
+          <div class="watching-card-arrow">→</div>
+        </div>
       </div>
     </div>
 
@@ -1285,6 +1299,30 @@ const executeDelete = async () => {
   font-weight: 600;
   color: #1a1a1a;
   cursor: pointer;
+}
+
+/* Section header above the owned-passport grid — mirrors .watching-header
+   so "Passports you own" and "Buyer Passports you've purchased" read as a
+   matched pair of section labels. */
+.grid-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.grid-section-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1f2024;
+  letter-spacing: -0.01em;
+}
+.grid-section-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: #231d45;
+  padding: 2px 8px;
+  border-radius: 999px;
 }
 
 /* Grid */
