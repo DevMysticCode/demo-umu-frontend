@@ -148,13 +148,17 @@ export function useInventoryPdf() {
      * the tenant knows what to do if an appliance fails mid-tenancy.
      */
     appliances?: {
-      items: { name: string; model?: string; serial?: string; cover?: string }[]
-      plans: {
-        provider: string
-        policyNumber?: string
-        phone?: string
-        covers?: string[]
-        renewalDate?: string
+      items: {
+        name: string
+        model?: string
+        serial?: string
+        cover?: {
+          provider?: string
+          policyNumber?: string
+          phone?: string
+          covers?: string[]
+          renewalDate?: string
+        }
       }[]
       howItWorks?: string
     }
@@ -406,14 +410,14 @@ export function useInventoryPdf() {
       accidental: 'Accidental damage',
       service: 'Annual service',
     }
+    const hasCover = (c?: { provider?: string; policyNumber?: string; phone?: string }) =>
+      !!(c && (c.provider || c.policyNumber || c.phone))
     const appliancesHtml =
-      appliances && (appliances.items.length || appliances.plans.length)
+      appliances && appliances.items.length
         ? `<div class="break"></div>
       <h2>White Goods &amp; Appliance Cover</h2>
       <p class="muted">Appliances provided with the property, and how to get a repair booked if one fails during the tenancy.</p>
-      ${
-        appliances.items.length
-          ? `<table class="info-table">
+      <table class="info-table">
         <tr><th>Appliance</th><th>Model</th><th>Serial no.</th><th>Breakdown cover</th></tr>
         ${appliances.items
           .map(
@@ -421,28 +425,28 @@ export function useInventoryPdf() {
           <td>${esc(a.name) || '-'}</td>
           <td>${esc(a.model) || '-'}</td>
           <td>${esc(a.serial) || '-'}</td>
-          <td>${esc(a.cover) || 'Not covered'}</td>
+          <td>${hasCover(a.cover) ? (esc(a.cover!.provider) || 'Covered') : 'Not covered'}</td>
         </tr>`,
           )
           .join('')}
-      </table>`
-          : ''
-      }
+      </table>
       ${
-        appliances.plans.length
+        appliances.items.some((a) => hasCover(a.cover))
           ? `<h3>If an appliance breaks, call the cover provider</h3>
-        ${appliances.plans
+        ${appliances.items
+          .filter((a) => hasCover(a.cover))
           .map(
-            (p) => `<table class="info-table" style="margin-bottom:10px">
-          <tr><td class="info-label">Provider</td><td>${esc(p.provider) || '-'}</td></tr>
-          <tr><td class="info-label">Policy number</td><td>${esc(p.policyNumber) || '-'}</td></tr>
-          <tr><td class="info-label">Phone</td><td>${esc(p.phone) || '-'}</td></tr>
+            (a) => `<table class="info-table" style="margin-bottom:10px">
+          <tr><td class="info-label">Appliance</td><td>${esc(a.name) || '-'}</td></tr>
+          <tr><td class="info-label">Provider</td><td>${esc(a.cover!.provider) || '-'}</td></tr>
+          <tr><td class="info-label">Policy number</td><td>${esc(a.cover!.policyNumber) || '-'}</td></tr>
+          <tr><td class="info-label">Phone</td><td>${esc(a.cover!.phone) || '-'}</td></tr>
           <tr><td class="info-label">Covers</td><td>${
-            (p.covers ?? []).map((c) => esc(COVER_LABELS[c] ?? c)).join(', ') || '-'
+            (a.cover!.covers ?? []).map((c) => esc(COVER_LABELS[c] ?? c)).join(', ') || '-'
           }</td></tr>
           <tr><td class="info-label">Renews</td><td>${
-            p.renewalDate
-              ? esc(new Date(p.renewalDate).toLocaleDateString('en-GB'))
+            a.cover!.renewalDate
+              ? esc(new Date(a.cover!.renewalDate).toLocaleDateString('en-GB'))
               : '-'
           }</td></tr>
         </table>`,
