@@ -237,7 +237,7 @@
                 @click="onWatchClick"
               >
                 <img
-                  src="/op-icons/misc/exploreWatching.png"
+                  src="/op-icons/misc/exploreWatchingReversed.png"
                   alt=""
                   class="pps-hero-quick-ic"
                   loading="lazy"
@@ -250,7 +250,7 @@
                 @click="onContactClick"
               >
                 <img
-                  src="/op-icons/property/askAQuestion.png"
+                  src="/op-icons/property/askAQuestionReversed.png"
                   alt=""
                   class="pps-hero-quick-ic"
                   loading="lazy"
@@ -1050,7 +1050,7 @@
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
-                    {{ epcDownloading ? 'Opening…' : 'View EPC certificate' }}
+                    {{ epcDownloading ? 'Preparing PDF…' : 'Download EPC certificate' }}
                   </button>
                 </div>
               </div>
@@ -4404,41 +4404,31 @@ const loadError = ref('')
 const showRegisterInterest = ref(false)
 const showShare = ref(false)
 
-// EPC certificate — open the official gov.uk cert page in a new tab.
-// The old opendatacommunities.org/files/{lmk} endpoint was retired
-// with the EPC API migration, and the new API doesn't expose a PDF
-// download. The find-energy-certificate.service.gov.uk consumer
-// page serves the cert HTML with a "Print or download" flow —
-// same URL every UK property portal uses.
-//
-// Fast path: property already has epcLmkKey persisted → link
-// straight to it.
-// Slow path: no lmk on file → hit the backend once to resolve it
-// via UPRN, then open the resulting URL.
+// EPC certificate — download the official gov.uk certificate as a PDF
+// without leaving the app. The backend fetches the cert's own print
+// page from find-energy-certificate.service.gov.uk (CSS + images
+// inlined so it renders faithfully) and hands back self-contained HTML;
+// we turn that into a real PDF via useDownloadablePdf (an actual file
+// download on web, the OS share sheet on native).
+const { downloadPdf: downloadEpcPdf } = useDownloadablePdf()
 const epcDownloading = ref(false)
 async function downloadEpc() {
   if (epcDownloading.value) return
   epcDownloading.value = true
   try {
-    const openCert = (lmk: string) => {
-      const url = `https://find-energy-certificate.service.gov.uk/energy-certificate/${lmk}`
-      window.open(url, '_blank', 'noopener,noreferrer')
-    }
-    const stored = property.value?.epcLmkKey
-    if (stored) {
-      openCert(stored)
-      return
-    }
-    // Fall back to backend UPRN lookup for older cache rows that
-    // don't have the lmk-key persisted.
     const apiBase = config.public.apiBase as string
     const res = await fetch(
-      `${apiBase}/property/${propertyId}/epc-download-info`,
+      `${apiBase}/property/${propertyId}/epc-certificate`,
     ).catch(() => null)
-    const info = res && res.ok ? await res.json().catch(() => null) : null
-    if (info?.lmkKey) {
-      openCert(info.lmkKey)
-      return
+    if (res && res.ok) {
+      const data = await res.json().catch(() => null)
+      if (data?.html) {
+        const slug = (property.value?.addressLine1 || 'EPC')
+          .replace(/[^a-z0-9]+/gi, '-')
+          .replace(/^-+|-+$/g, '')
+        await downloadEpcPdf(data.html, `EPC-Certificate-${slug}.pdf`)
+        return
+      }
     }
     showToast({
       message: 'No EPC certificate is on file for this property.',
@@ -4446,7 +4436,7 @@ async function downloadEpc() {
     })
   } catch {
     showToast({
-      message: 'Could not open the EPC certificate. Please try again.',
+      message: 'Could not download the EPC certificate. Please try again.',
       duration: 3000,
     })
   } finally {
@@ -8827,8 +8817,8 @@ function formatSaleDate(dateStr: string): string {
   box-shadow: 0 4px 12px rgba(35, 29, 69, 0.1);
 }
 .pps-hero-quick-ic {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   border-radius: 7px;
   object-fit: cover;
   flex-shrink: 0;
