@@ -5879,12 +5879,14 @@ const SectionCard = defineComponent({
 .lp-assess-flag--warn { background: #fbf1df; border: 1px solid #f0d9a8; }
 .lp-assess-flag--pro { background: #fbeae5; border: 1px solid #f0c3b8; }
 .lp-assess-flag-ic { font-size: 17px; flex-shrink: 0; }
-.lp-assess-flag-ic-img { width: 24px; height: 24px; object-fit: contain; }
+.lp-assess-flag-ic-img { width: 34px; height: 34px; object-fit: contain; }
 .lp-assess-flag-t { font-size: 12.5px; font-weight: 600; line-height: 1.5; color: #4a5868; }
 .lp-assess-sech { font-size: 11px; font-weight: 800; color: #6b7089; letter-spacing: 1.4px; text-transform: uppercase; padding: 20px 0 10px; }
-.lp-assess-action { display: flex; gap: 12px; margin-bottom: 10px; padding: 15px; background: #fff; border: 1px solid #e8eceb; border-radius: 14px; }
-.lp-assess-action-ic { width: 38px; height: 38px; border-radius: 10px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
-.lp-assess-action-ic-img { width: 26px; height: 26px; object-fit: contain; }
+.lp-assess-action { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; padding: 15px; background: #fff; border: 1px solid #e8eceb; border-radius: 14px; }
+/* Icon sits free (no tinted box) and reads at a proper size - the boxed
+   38px version looked cramped on a phone. */
+.lp-assess-action-ic { display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.lp-assess-action-ic-img { width: 48px; height: 48px; object-fit: contain; }
 .lp-assess-action-bd { flex: 1; }
 .lp-assess-action-t { font-size: 14px; font-weight: 700; color: #0e2840; }
 .lp-assess-action-s { font-size: 12px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.45; }
@@ -5898,8 +5900,8 @@ const SectionCard = defineComponent({
 .lp-assess-sum-row span:last-child { color: #0e2840; font-weight: 700; text-align: right; max-width: 60%; }
 .lp-assess-sum-photos { display: flex; gap: 6px; padding: 0 15px 12px; overflow-x: auto; }
 .lp-assess-sum-photo { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; cursor: pointer; }
-.lp-assess-intro-ic { width: 70px; height: 70px; border-radius: 20px; background: #f2faf8; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 8px auto 0; }
-.lp-assess-intro-ic-img { width: 42px; height: 42px; object-fit: contain; }
+.lp-assess-intro-ic { display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 8px auto 0; }
+.lp-assess-intro-ic-img { width: 84px; height: 84px; object-fit: contain; }
 .lp-assess-intro-h { font-size: 23px; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; text-align: center; margin-top: 16px; padding: 0 22px; }
 .lp-assess-intro-s { font-size: 14px; font-weight: 500; color: #6b7089; line-height: 1.55; text-align: center; margin: 10px 0 0; }
 .lp-assess-info { margin: 20px 0 0; padding: 16px; background: #e7f6ef; border: 1px solid #bfe6d5; border-radius: 14px; }

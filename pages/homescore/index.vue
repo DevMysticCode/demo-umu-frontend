@@ -361,8 +361,9 @@ onMounted(async () => {
   min-width: 0;
 }
 .hs-hero-house {
-  width: 164px;
-  height: 164px;
+  width: clamp(104px, 32vw, 164px);
+  height: auto;
+  aspect-ratio: 1 / 1;
   object-fit: contain;
   flex-shrink: 0;
   margin-top: 2px;
@@ -374,6 +375,24 @@ onMounted(async () => {
   line-height: 1.15;
   color: #231d45;
   margin-bottom: 12px;
+}
+
+/* Narrow phones (iPhone SE / mini): the 164px image was eating ~half the
+   row and cramping the headline into a 3-4 word-per-line column. Shrink
+   the whole hero so the title reads in 2 lines and nothing overlaps. */
+@media (max-width: 380px) {
+  .hs-hero {
+    padding: 14px 18px 12px;
+    gap: 10px;
+  }
+  .hs-hero-title {
+    font-size: 21px;
+    margin-bottom: 8px;
+  }
+  .hs-hero-sub {
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
 }
 .hs-hero-title .lt-teal {
   color: #00a19a;
