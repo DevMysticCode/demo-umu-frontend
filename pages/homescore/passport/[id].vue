@@ -25,16 +25,24 @@
           Turn what you know about your home into a verified record.
         </div>
       </div>
-      <button class="app-icon-btn" type="button" aria-label="How this works">
+      <button
+        class="app-icon-btn"
+        type="button"
+        aria-label="How this works"
+        @click="tour.restart()"
+      >
         ?
       </button>
     </div>
 
+    <!-- Tour overlay (renders only when active) -->
+    <TourCoach :tour="tour" />
+
     <!-- Passport progress card -->
-    <div class="bpp-progress-card anim-1">
+    <div class="bpp-progress-card anim-1" data-tour="progress">
       <div class="bpp-progress-eyebrow-row">
         <div class="bpp-progress-eyebrow">
-          <svg
+          <!-- <svg
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -45,7 +53,7 @@
             <path
               d="M12 2l8 3.5v5.3c0 4.9-3.4 9.4-8 10.7-4.6-1.3-8-5.8-8-10.7V5.5L12 2z"
             />
-          </svg>
+          </svg> -->
           Your Passport progress
         </div>
         <div class="bpp-progress-pill">
@@ -155,8 +163,8 @@
           </svg>
         </span>
         <span>
-        Add documents and evidence to build your Passport and unlock
-        <b>Upfront Ready</b>.
+          Add documents and evidence to build your Passport and unlock
+          <b>Upfront Ready</b>.
         </span>
       </div>
     </div>
@@ -204,13 +212,18 @@
         Add to your Passport (after claiming your property)
       </div>
     </div>
-    <div class="bpp-tile-grid anim-2">
+    <div class="bpp-tile-grid anim-2" data-tour="add">
       <div v-for="t in addTiles" :key="t.title" class="bpp-tile">
         <img :src="t.icon" alt="" class="bpp-tile-ic" loading="lazy" />
         <div class="bpp-tile-title">{{ t.title }}</div>
         <div class="bpp-tile-sub">{{ t.sub }}</div>
         <span class="bpp-tile-lock" aria-hidden="true">
-          <img src="/op-icons/claim/padlock.png" alt="" class="bpp-tile-lock-img" loading="lazy" />
+          <img
+            src="/op-icons/claim/padlock.png"
+            alt=""
+            class="bpp-tile-lock-img"
+            loading="lazy"
+          />
         </span>
       </div>
     </div>
@@ -246,7 +259,7 @@
         Hire a professional
       </div>
     </div>
-    <div class="bpp-list anim-2">
+    <div class="bpp-list anim-2" data-tour="evidence">
       <button
         v-for="b in evidenceBookings"
         :key="b.title"
@@ -278,7 +291,7 @@
     </div>
 
     <!-- Claim your Passport -->
-    <div class="bpp-claim-card anim-2">
+    <div class="bpp-claim-card anim-2" data-tour="claim">
       <div class="bpp-claim-top">
         <img
           src="/op-icons/passportview/passportClaim.png"
@@ -298,14 +311,24 @@
       <div class="bpp-claim-checks">
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <img src="/op-icons/claim/ownershipCheck.png" alt="" class="bpp-claim-check-ic-img" loading="lazy" />
+            <img
+              src="/op-icons/claim/ownershipCheck.png"
+              alt=""
+              class="bpp-claim-check-ic-img"
+              loading="lazy"
+            />
           </span>
           <div class="bpp-claim-check-title">Confirm ownership</div>
           <div class="bpp-claim-check-sub">Verify you own this property</div>
         </div>
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <img src="/op-icons/verify-identity/idBadge.png" alt="" class="bpp-claim-check-ic-img" loading="lazy" />
+            <img
+              src="/op-icons/verify-identity/idBadge.png"
+              alt=""
+              class="bpp-claim-check-ic-img"
+              loading="lazy"
+            />
           </span>
           <div class="bpp-claim-check-title">ID &amp; security step</div>
           <div class="bpp-claim-check-sub">
@@ -314,7 +337,12 @@
         </div>
         <div class="bpp-claim-check">
           <span class="bpp-claim-check-ic">
-            <img src="/op-icons/verify-identity/shield.png" alt="" class="bpp-claim-check-ic-img" loading="lazy" />
+            <img
+              src="/op-icons/verify-identity/shield.png"
+              alt=""
+              class="bpp-claim-check-ic-img"
+              loading="lazy"
+            />
           </span>
           <div class="bpp-claim-check-title">Secure &amp; private</div>
           <div class="bpp-claim-check-sub">
@@ -431,10 +459,42 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import InstallerFlowSheet from '~/components/homescore/InstallerFlowSheet.vue'
+import TourCoach from '~/components/homescore/TourCoach.vue'
+import { useHomescoreTour } from '~/composables/useHomescoreTour'
 
 const router = useRouter()
 const route = useRoute()
 const propertyId = computed(() => String(route.params.id))
+
+// ── Guided tour — the "?" button had no handler at all (client feedback:
+// "the tour here does not work"). Same TourCoach/useHomescoreTour pattern
+// as the other homescore/* pages (e.g. street/[id].vue).
+const tour = useHomescoreTour({
+  storageKey: `umu-tour-bpp-${propertyId.value}`,
+  autoStart: true,
+  steps: [
+    {
+      sel: '[data-tour="progress"]',
+      title: 'Your Passport progress',
+      body: 'The left ring is your HomeScore, the right is how much of your Passport is built. Add documents to raise it and unlock Upfront Ready.',
+    },
+    {
+      sel: '[data-tour="add"]',
+      title: 'What you can add',
+      body: "These slots unlock once you've claimed the property - certificates, warranties and other evidence that build out your Passport.",
+    },
+    {
+      sel: '[data-tour="evidence"]',
+      title: 'Hire a professional',
+      body: "Don't have a document yet? Book a certified professional here and it links straight to your Passport once claimed.",
+    },
+    {
+      sel: '[data-tour="claim"]',
+      title: 'Claim your Passport',
+      body: 'A one-off ownership and ID check activates everything above - your Passport, free, verified and yours to control.',
+    },
+  ],
+})
 
 const { property, loadProperty, epcField } = useHomeScorePropertyData()
 

@@ -452,7 +452,7 @@ const watchersDisplay = computed(() => {
 }
 .hsc-addr {
   font-size: 18px;
-  font-weight: 700;
+  /* font-weight: 700; */
   line-height: 1.15;
   color: #fff;
   letter-spacing: -0.2px;
