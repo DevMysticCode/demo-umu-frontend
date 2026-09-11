@@ -944,7 +944,7 @@
           property?.postcode ?? ''
         }`"
         :property-price="estimatedPrice ? formatPrice(estimatedPrice) : ''"
-        :property-image="propertyImages[0]"
+        :property-image="heroImageRaw || DUMMY_PROPERTY_IMAGE"
       />
     </BaseDrawer>
 
@@ -3516,32 +3516,10 @@
               <div class="mkc-head-text">
                 <div class="mkc-head-title">Make contact</div>
                 <div class="mkc-head-sub">
-                  Drop a note to the owner - whether you're a neighbour with a
-                  question or a buyer making a quiet approach.
+                  Send a message about this property. Your message will be
+                  sent securely through Umovingu to the verified Property
+                  Passport holder.
                 </div>
-              </div>
-            </div>
-
-            <div class="mkc-section">
-              <div class="mkc-label">I AM A…</div>
-              <div class="mkc-chip-row">
-                <button
-                  v-for="r in contactRoles"
-                  :key="r.value"
-                  type="button"
-                  class="mkc-chip"
-                  :class="{ 'mkc-chip--active': contactRole === r.value }"
-                  @click="contactRole = r.value"
-                >
-                  <span class="mkc-chip-ic" aria-hidden="true">
-                    <img
-                      :src="`/op-icons/makeContact/${r.icon}.png`"
-                      alt=""
-                      loading="lazy"
-                    />
-                  </span>
-                  {{ r.label }}
-                </button>
               </div>
             </div>
 
@@ -3595,7 +3573,7 @@
             </div>
 
             <div class="mkc-section">
-              <div class="mkc-label">HOW SHOULD THEY REPLY?</div>
+              <div class="mkc-label">HOW WOULD YOU LIKE A REPLY?</div>
               <div class="mkc-chip-row">
                 <button
                   v-for="r in contactReplyChoices"
@@ -3626,11 +3604,11 @@
               />
               <div class="mkc-privacy-body">
                 <div class="mkc-privacy-title">
-                  Your details go only to the verified owner.
+                  Your details stay private.
                 </div>
                 <div class="mkc-privacy-sub">
-                  We never share with third parties or agents without your
-                  consent.
+                  They're only shared with the verified Passport holder when
+                  you choose to make contact.
                 </div>
               </div>
             </div>
@@ -3874,7 +3852,7 @@
                 class="pps-explain-eyebrow"
                 style="color: rgba(255, 255, 255, 0.55)"
               >
-                Property Passport™
+                Property Passport
               </div>
               <div class="pps-explain-title">
                 Your home's permanent record - not just for selling, for owning.
@@ -3988,7 +3966,7 @@
           <template v-else-if="activeSheet === 'explain-progress'">
             <div class="pps-explain-hero pps-explain-hero--progress">
               <div class="pps-explain-eyebrow">
-                Property Passport™ · In Progress
+                Property Passport · In Progress
               </div>
               <div class="pps-explain-title">
                 This owner is building something that removes 150 days of
@@ -4089,7 +4067,7 @@
           <!-- ── Explain: Published ────────────────────────────────── -->
           <template v-else-if="activeSheet === 'explain-published'">
             <div class="pps-explain-hero pps-explain-hero--published">
-              <div class="pps-explain-eyebrow">Property Passport™</div>
+              <div class="pps-explain-eyebrow">Property Passport</div>
               <div class="pps-explain-title">
                 The biggest purchase of your life - and you're doing it blind.
               </div>
@@ -7319,22 +7297,18 @@ function onPassportUnlocked(passportId: string) {
 }
 
 // ─── Make Contact form state ───────────────────────────────────────────────
-type ContactRole = 'Potential buyer' | 'Neighbour' | 'Agent'
+// Deliberately no "I am a…" role picker (buyer/neighbour/agent) - client
+// feedback: at this stage umovingu is about the Property Passport, not an
+// off-market marketplace. Anyone viewing a Passport can message its verified
+// holder; their role isn't asked for. See the header copy below too.
 type ContactReplyPref = 'Email' | 'Phone' | 'Either'
-const contactRole = ref<ContactRole>('Potential buyer')
 const contactName = ref('')
 const contactMessage = ref('')
 const contactReplyPref = ref<ContactReplyPref>('Email')
 const contactSubmitting = ref(false)
 const contactError = ref('')
 
-// Contact chip option lists — icon name maps to a PNG in /op-icons/makeContact.
-const contactRoles: Array<{ value: ContactRole; label: string; icon: string }> =
-  [
-    { value: 'Potential buyer', label: 'Potential buyer', icon: 'buyer' },
-    { value: 'Neighbour', label: 'Neighbour', icon: 'neighbour' },
-    { value: 'Agent', label: 'Agent', icon: 'agent' },
-  ]
+// Contact chip option list — icon name maps to a PNG in /op-icons/makeContact.
 const contactReplyChoices: Array<{
   value: ContactReplyPref
   label: string
@@ -7345,20 +7319,7 @@ const contactReplyChoices: Array<{
   { value: 'Either', label: 'Either', icon: 'either' },
 ]
 
-// Message placeholder swaps based on the picked role so the textarea gives a
-// natural starting point ("Hi — I've been following this road…" for buyers,
-// "Hi — your hedge is hanging over my driveway…" for neighbours, etc.).
-const contactPlaceholder = computed(() => {
-  switch (contactRole.value) {
-    case 'Neighbour':
-      return "Hi - I'm at number 23. Just wanted to introduce myself / mention the front hedge / ask if you'd consider repainting the shared fence."
-    case 'Agent':
-      return "Hi - I represent buyers looking on this road. I'd be happy to have a no-pressure conversation about a future sale."
-    case 'Potential buyer':
-    default:
-      return "Hi - I've been following this road for a while and would love to know if you'd ever consider selling. No pressure at all."
-  }
-})
+const contactPlaceholder = 'What would you like to ask about this property?'
 
 // Reset the form whenever the sheet is closed so we don't re-show stale state.
 watch(activeSheet, (s) => {
@@ -7460,7 +7421,6 @@ async function submitOwnerContact() {
   contactSubmitting.value = true
   try {
     const fullMessage = [
-      `Role: ${contactRole.value}`,
       contactName.value.trim() ? `From: ${contactName.value.trim()}` : null,
       `Reply preference: ${contactReplyPref.value}`,
       '',
@@ -12720,9 +12680,10 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 
 /* ── Make Contact (mkc-*) ────────────────────────────────────────────
-   Matches the new "Make contact" mockup: 3D chat-multi header, role/
-   reply chips with 2D SVG icons, icon-prefixed inputs, lock-illustrated
-   privacy card, gradient-teal Send button. */
+   3D chat-multi header, reply-preference chips with 2D SVG icons,
+   icon-prefixed inputs, lock-illustrated privacy card, gradient-teal
+   Send button. No role picker (buyer/neighbour/agent) - this is a
+   message to the Passport holder, not a marketplace approach. */
 .mkc-head {
   display: flex;
   align-items: center;
@@ -12765,14 +12726,9 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 10px;
 }
 
-/* Chip rows (role + reply preference). This row is reused for two
-   different label sets ("Potential buyer"/"Neighbour"/"Agent" and
-   "Email"/"Phone"/"Either") - a 1.7fr-weighted first column tuned for
-   one set's longest label just squeezed the OTHER set's longest label
-   (e.g. "Neighbour" in a 1fr column) into overflow, and made same-length
-   labels in the other row render at visibly different widths. Equal
-   columns + wrapping text (no nowrap) sizes correctly for both, and
-   for any label length without per-row tuning. */
+/* Reply-preference chip row (Email / Phone / Either). Equal columns +
+   wrapping text (no nowrap) so any label length sizes correctly without
+   per-row tuning. */
 .mkc-chip-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

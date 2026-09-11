@@ -65,6 +65,9 @@
               <b>You'll be among the first to know.</b> Sellers see that buyers
               are watching this property when they claim it - it's a helpful
               nudge.
+              <br /><br />
+              Stay connected to this property. Watch it now and we'll let you
+              know when new Passport information becomes available.
             </div>
           </div>
 
@@ -78,7 +81,7 @@
           </div>
           <div class="watch-privacy">
             <span class="watch-privacy-icon">🔒</span>
-            <span>Saved to your account. The owner won't see your name - only a count of buyers watching.</span>
+            <span>Saved to your account. Watching is private.</span>
           </div>
         </div>
       </div>
