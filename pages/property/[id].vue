@@ -489,55 +489,44 @@
         <div class="pps-keepgoing-sub">
           More tools. More insight. More ways to get move-ready.
         </div>
-        <div class="pps-keepgoing-cards">
-          <div class="pps-keepgoing-card">
-            <div class="pps-keepgoing-card-top">
-              <img
-                src="/op-icons/misc/passportFanReversed.png"
-                alt=""
-                class="pps-keepgoing-card-ic pps-keepgoing-card-ic--fan"
-                loading="lazy"
-              />
-              <div class="pps-keepgoing-card-body">
-                <div class="pps-keepgoing-card-title">Explore passports</div>
-                <div class="pps-keepgoing-card-sub">
-                  Discover how Property, Buyer, and Tenant Passports keep key
-                  information organized, verified, and reusable.
-                </div>
+        <div class="pps-keepgoing-panel">
+          <button
+            type="button"
+            class="pps-keepgoing-row"
+            @click="passportEcosystemOpen = true"
+          >
+            <img
+              src="/op-icons/misc/passportFanReversed.png"
+              alt=""
+              class="pps-keepgoing-row-ic pps-keepgoing-row-ic--fan"
+              loading="lazy"
+            />
+            <div class="pps-keepgoing-row-body">
+              <div class="pps-keepgoing-row-title">Explore passports</div>
+              <div class="pps-keepgoing-row-sub">
+                See how Property, Buyer, Tenant and other Passports keep key
+                information organised, verified and reusable.
               </div>
             </div>
-            <button
-              type="button"
-              class="pps-keepgoing-card-btn"
-              @click="passportEcosystemOpen = true"
-            >
-              Explore passports
-            </button>
-          </div>
-          <div class="pps-keepgoing-card">
-            <div class="pps-keepgoing-card-top">
-              <img
-                src="/op-icons/misc/exploreLocation.png"
-                alt=""
-                class="pps-keepgoing-card-ic"
-                loading="lazy"
-              />
-              <div class="pps-keepgoing-card-body">
-                <div class="pps-keepgoing-card-title">Explore more homes</div>
-                <div class="pps-keepgoing-card-sub">
-                  Compare property listings, review HomeScores, and analyze
-                  comprehensive neighborhood data near you.
-                </div>
+            <span class="pps-keepgoing-row-chev" aria-hidden="true">›</span>
+          </button>
+          <div class="pps-keepgoing-divider" />
+          <button type="button" class="pps-keepgoing-row" @click="goBack">
+            <img
+              src="/op-icons/misc/exploreLocation.png"
+              alt=""
+              class="pps-keepgoing-row-ic"
+              loading="lazy"
+            />
+            <div class="pps-keepgoing-row-body">
+              <div class="pps-keepgoing-row-title">Explore more homes</div>
+              <div class="pps-keepgoing-row-sub">
+                Search another address and explore property information,
+                compare HomeScores and view neighbourhood data near you.
               </div>
             </div>
-            <button
-              type="button"
-              class="pps-keepgoing-card-btn"
-              @click="goBack"
-            >
-              Back to Explore
-            </button>
-          </div>
+            <span class="pps-keepgoing-row-chev" aria-hidden="true">›</span>
+          </button>
         </div>
       </div>
 
@@ -9289,69 +9278,68 @@ function formatSaleDate(dateStr: string): string {
   margin-top: 3px;
   text-align: center;
 }
-.pps-keepgoing-cards {
-  display: flex;
-  gap: 12px;
+.pps-keepgoing-panel {
   margin-top: 14px;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
 }
-.pps-keepgoing-card {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
-/* Icon + title/description row - the button below sits as its own
-   full-width row, so centering it centers under the icon+text
-   together, not just under the text column. */
-.pps-keepgoing-card-top {
+.pps-keepgoing-row {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
+  padding: 14px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
 }
-.pps-keepgoing-card-ic {
-  width: 72px;
-  height: 72px;
+.pps-keepgoing-divider {
+  height: 1px;
+  margin: 0 14px;
+  background: #ececf2;
+}
+.pps-keepgoing-row-ic {
+  width: 64px;
+  height: 64px;
   object-fit: contain;
   flex-shrink: 0;
 }
-.pps-keepgoing-card-ic--fan {
-  width: 84px;
-  height: 84px;
+.pps-keepgoing-row-ic--fan {
+  width: 76px;
+  height: 76px;
 }
-.pps-keepgoing-card-body {
+.pps-keepgoing-row-body {
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 }
-.pps-keepgoing-card-title {
-  font-size: 12.5px;
+.pps-keepgoing-row-title {
+  font-size: 14px;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
 }
-.pps-keepgoing-card-sub {
-  font-size: 10px;
+.pps-keepgoing-row-sub {
+  font-size: 11px;
   font-weight: 500;
   color: #6b6a82;
-  line-height: 1.35;
-  margin-top: 4px;
+  line-height: 1.4;
+  margin-top: 3px;
 }
-.pps-keepgoing-card-btn {
-  margin-top: 8px;
-  align-self: center;
-  background: #231d45;
-  color: #fff;
-  border: none;
-  border-radius: 100px;
-  padding: 5px 10px;
-  font-family: inherit;
-  font-size: 11px;
+.pps-keepgoing-row-chev {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e7f6f2;
+  color: #00857f;
+  font-size: 16px;
   font-weight: 800;
-  white-space: nowrap;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ─── Passport card ─────────────────────────────────────────── */
