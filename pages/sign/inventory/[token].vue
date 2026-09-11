@@ -17,8 +17,8 @@
 
       <div v-if="alreadySigned" class="sg-done">
         <div class="sg-done-ic">✓</div>
-        <div class="sg-done-t">You've already signed this inventory</div>
-        <div class="sg-done-s">A copy is stored on the landlord's Property Passport.</div>
+        <div class="sg-done-t">Thank you for signing</div>
+        <div class="sg-done-s">Your copy is stored on the landlord's Property Passport.</div>
       </div>
 
       <template v-else>

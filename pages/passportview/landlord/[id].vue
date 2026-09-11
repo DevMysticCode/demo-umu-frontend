@@ -342,7 +342,14 @@
     <!-- Convert modal -->
     <Teleport to="body">
       <div v-if="showConvertModal" class="lp-overlay" @click.self="showConvertModal = false">
-        <div class="lp-modal">
+        <div
+          class="lp-modal"
+          :style="lpModalDragStyle"
+          @touchstart.passive="onLpModalDragStart"
+          @touchmove="onLpModalDragMove"
+          @touchend="onLpModalDragEnd"
+          @touchcancel="onLpModalDragEnd"
+        >
           <div class="lp-modal-handle" />
           <div class="lp-modal-header">
             <div class="lp-modal-title">Convert to seller passport</div>
@@ -391,7 +398,14 @@
     <!-- Section certificate drawer -->
     <Teleport to="body">
       <div v-if="showSectionDrawer && drawerSection" class="lp-overlay" @click.self="showSectionDrawer = false">
-        <div class="lp-modal">
+        <div
+          class="lp-modal"
+          :style="lpModalDragStyle"
+          @touchstart.passive="onLpModalDragStart"
+          @touchmove="onLpModalDragMove"
+          @touchend="onLpModalDragEnd"
+          @touchcancel="onLpModalDragEnd"
+        >
           <div class="lp-modal-handle" />
           <div class="lp-modal-header">
             <div class="lp-modal-title">{{ drawerSection.title }}</div>
@@ -1679,7 +1693,7 @@
             <div class="mform-label" style="margin-top:20px">Next steps</div>
 
             <div class="lp-tn-step" @click="openInvNextStep">
-              <div class="lp-tn-step-ic">✍️</div>
+              <img src="/op-icons/misc/signature.png" alt="" class="lp-tn-step-ic-img" loading="lazy" />
               <div class="lp-tn-step-bd">
                 <div class="lp-tn-step-t">{{ invTenantSigned ? 'Signed by both parties' : invLandlordSigned ? 'Send to tenant to e-sign' : 'Sign the inventory' }}</div>
                 <div class="lp-tn-step-s">Both parties sign in-app, with a full audit trail</div>
@@ -1689,7 +1703,7 @@
             </div>
 
             <div class="lp-tn-step lp-tn-step--plain">
-              <div class="lp-tn-step-ic">🏠</div>
+              <img src="/op-icons/investment/houseDetached.png" alt="" class="lp-tn-step-ic-img" loading="lazy" />
               <div class="lp-tn-step-bd">
                 <div class="lp-tn-step-t">Stored on the Property Passport</div>
                 <div class="lp-tn-step-s">Real evidence if a deposit dispute ever comes up</div>
@@ -1916,6 +1930,10 @@
              kept up to date) - client feedback: build this and make
              "Send to tenant to e-sign" functional. -->
         <div v-else-if="tnScreen === 'done'" class="lp-assess-screen">
+          <div class="lp-assess-hdr">
+            <button class="lp-assess-back" type="button" aria-label="Close" @click="tnOpen = false; showSectionDrawer = false">‹</button>
+            <div class="lp-assess-title">Tenancy Agreement</div>
+          </div>
           <div class="lp-assess-scroll">
             <div class="lp-tn-readydoc">
               <div class="lp-tn-readydoc-ic"><img src="/op-icons/misc/signature.png" alt="" class="lp-tn-readydoc-ic-img" loading="lazy" /></div>
@@ -1929,7 +1947,7 @@
             <div class="mform-label" style="margin-top:20px">Next steps</div>
 
             <div class="lp-tn-step" @click="openTnNextStep">
-              <div class="lp-tn-step-ic">✍️</div>
+              <img src="/op-icons/misc/signature.png" alt="" class="lp-tn-step-ic-img" loading="lazy" />
               <div class="lp-tn-step-bd">
                 <div class="lp-tn-step-t">{{ tnTenantSigned ? 'Signed by both parties' : tnLandlordSigned ? 'Send to tenant to e-sign' : 'Sign the agreement' }}</div>
                 <div class="lp-tn-step-s">Both parties sign in-app, with a full audit trail</div>
@@ -1939,7 +1957,7 @@
             </div>
 
             <div class="lp-tn-step lp-tn-step--plain">
-              <div class="lp-tn-step-ic">🏠</div>
+              <img src="/op-icons/investment/houseDetached.png" alt="" class="lp-tn-step-ic-img" loading="lazy" />
               <div class="lp-tn-step-bd">
                 <div class="lp-tn-step-t">Stored on the Property Passport</div>
                 <div class="lp-tn-step-s">Versioned, linked to your compliance docs</div>
@@ -1948,7 +1966,7 @@
             </div>
 
             <div class="lp-tn-step" @click="tnScreen = 'update'">
-              <div class="lp-tn-step-ic">🔄</div>
+              <img src="/op-icons/investment/refreshArrows.png" alt="" class="lp-tn-step-ic-img" loading="lazy" />
               <div class="lp-tn-step-bd">
                 <div class="lp-tn-step-t">Kept up to date</div>
                 <div class="lp-tn-step-s">{{ tnUpToDate ? 'Built on the current template' : 'Built on an older template - review and re-issue' }}</div>
@@ -2072,7 +2090,14 @@
     <!-- Tenant share modal -->
     <Teleport to="body">
       <div v-if="showTenantShare" class="lp-overlay" @click.self="showTenantShare = false">
-        <div class="lp-modal">
+        <div
+          class="lp-modal"
+          :style="lpModalDragStyle"
+          @touchstart.passive="onLpModalDragStart"
+          @touchmove="onLpModalDragMove"
+          @touchend="onLpModalDragEnd"
+          @touchcancel="onLpModalDragEnd"
+        >
           <div class="lp-modal-handle" />
           <div class="lp-modal-header">
             <div class="lp-modal-title">Share with your tenant</div>
@@ -2149,6 +2174,65 @@ const viewOptions = [
 const showConvertModal = ref(false)
 const converting = ref(false)
 const convertError = ref('')
+
+// ── Swipe-to-dismiss for the .lp-modal bottom sheets ────────────────
+// The .lp-modal-handle grip looked draggable but had no touch handlers on
+// any of the three sheets that share this markup (convert / section /
+// tenant-share). Same iOS-style pull-down as PassportClaimBox.vue and
+// BaseDrawer.vue: only takes over when the gesture starts on the handle/
+// header, or the sheet's own scrolling body (.lp-modal-body) is already
+// at the top.
+const lpModalDragY = ref(0)
+const lpModalDragging = ref(false)
+let lpModalDragStartY = 0
+let lpModalDragStartTime = 0
+let lpModalDragStartOnHandle = false
+let lpModalDragStartScrollTop = 0
+
+const lpModalDragStyle = computed(() => {
+  if (lpModalDragY.value <= 0) return undefined
+  return {
+    transform: `translateY(${lpModalDragY.value}px)`,
+    transition: lpModalDragging.value ? 'none' : 'transform 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+  }
+})
+function closeLpModal() {
+  showConvertModal.value = false
+  showSectionDrawer.value = false
+  showTenantShare.value = false
+}
+function onLpModalDragStart(e: TouchEvent) {
+  const target = e.target as HTMLElement | null
+  lpModalDragStartOnHandle = !!(
+    target && target.closest &&
+    (target.closest('.lp-modal-handle') || target.closest('.lp-modal-header'))
+  )
+  const body = (e.currentTarget as HTMLElement).querySelector('.lp-modal-body')
+  lpModalDragStartScrollTop = body?.scrollTop ?? 0
+  lpModalDragStartY = e.touches[0].clientY
+  lpModalDragStartTime = Date.now()
+  lpModalDragging.value = true
+  lpModalDragY.value = 0
+}
+function onLpModalDragMove(e: TouchEvent) {
+  if (!lpModalDragging.value) return
+  const dy = e.touches[0].clientY - lpModalDragStartY
+  if (dy > 0 && (lpModalDragStartOnHandle || lpModalDragStartScrollTop <= 0)) {
+    e.preventDefault()
+    lpModalDragY.value = dy
+  } else {
+    lpModalDragY.value = 0
+  }
+}
+function onLpModalDragEnd() {
+  if (!lpModalDragging.value) return
+  lpModalDragging.value = false
+  const elapsed = Date.now() - lpModalDragStartTime
+  const velocity = lpModalDragY.value / Math.max(elapsed, 1)
+  const shouldClose = lpModalDragY.value > 120 || velocity > 0.6
+  if (shouldClose) closeLpModal()
+  lpModalDragY.value = 0
+}
 
 const showTenantShare = ref(false)
 const tenantShareUrl = ref('')
@@ -5730,8 +5814,8 @@ const SectionCard = defineComponent({
   animation: lp-up 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @keyframes lp-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.lp-modal-handle { width: 36px; height: 4px; background: #d9dae0; border-radius: 100px; margin: 8px auto 0; }
-.lp-modal-header { display: flex; align-items: center; padding: 12px 18px 10px; }
+.lp-modal-handle { width: 36px; height: 4px; background: #d9dae0; border-radius: 100px; margin: 8px auto 0; touch-action: none; }
+.lp-modal-header { display: flex; align-items: center; padding: 12px 18px 10px; touch-action: none; }
 .lp-modal-title { flex: 1; font-size: 16px; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
 .lp-modal-close {
   width: 30px; height: 30px;
@@ -6544,7 +6628,7 @@ const SectionCard = defineComponent({
   cursor: pointer;
 }
 .lp-tn-step--plain { cursor: default; }
-.lp-tn-step-ic { width: 36px; height: 36px; border-radius: 10px; background: #f4f4f8; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.lp-tn-step-ic-img { width: 34px; height: 34px; object-fit: contain; flex-shrink: 0; }
 .lp-tn-step-bd { flex: 1; min-width: 0; }
 .lp-tn-step-t { font-size: 13.5px; font-weight: 800; color: #0e2840; }
 .lp-tn-step-s { font-size: 11.5px; font-weight: 600; color: #6b7089; margin-top: 2px; }
