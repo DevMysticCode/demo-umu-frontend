@@ -1042,7 +1042,7 @@
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
-                    {{ epcDownloading ? 'Preparing PDF…' : 'Download EPC certificate' }}
+                    {{ epcDownloading ? 'Opening…' : 'Download EPC certificate' }}
                   </button>
                 </div>
               </div>
@@ -4374,13 +4374,27 @@ const loadError = ref('')
 const showRegisterInterest = ref(false)
 const showShare = ref(false)
 
-// EPC certificate — download the official gov.uk certificate as a PDF
-// without leaving the app. The backend fetches the cert's own print
-// page from find-energy-certificate.service.gov.uk (CSS + images
-// inlined so it renders faithfully) and hands back self-contained HTML;
-// we turn that into a real PDF via useDownloadablePdf (an actual file
-// download on web, the OS share sheet on native).
+// EPC certificate — show the official gov.uk certificate without leaving
+// the app. The backend fetches the cert's own print page from
+// find-energy-certificate.service.gov.uk (CSS + images inlined so it
+// renders faithfully) and hands back self-contained HTML.
+//
+// That HTML used to be rasterised into a PDF via html2canvas
+// (useDownloadablePdf) — client feedback: the result was misaligned,
+// because html2canvas can't faithfully reproduce gov.uk's own layout
+// (the energy-rating chart, grid spacing, etc. all came out wrong). It's
+// verified-correct HTML (screenshotted with a real browser during
+// testing), so on web we instead hand it to usePrintDocument, which opens
+// it in a same-origin popup — real browser layout, not a canvas
+// screenshot, and the user prints/Saves as PDF themselves from there
+// (still our own domain, never gov.uk). Native keeps the html2canvas path:
+// the fetch below breaks the synchronous user-gesture chain WebKit
+// requires for window.print() to fire on a native WKWebView, so
+// usePrintDocument's native branch can't be trusted here — the Filesystem
+// + Share-sheet download at least reliably produces a saved file, even if
+// not pixel-perfect.
 const { downloadPdf: downloadEpcPdf } = useDownloadablePdf()
+const { printHtmlDocument } = usePrintDocument()
 const epcDownloading = ref(false)
 async function downloadEpc() {
   if (epcDownloading.value) return
@@ -4393,10 +4407,20 @@ async function downloadEpc() {
     if (res && res.ok) {
       const data = await res.json().catch(() => null)
       if (data?.html) {
-        const slug = (property.value?.addressLine1 || 'EPC')
-          .replace(/[^a-z0-9]+/gi, '-')
-          .replace(/^-+|-+$/g, '')
-        await downloadEpcPdf(data.html, `EPC-Certificate-${slug}.pdf`)
+        const isNative =
+          typeof window !== 'undefined' &&
+          !!(window as any).Capacitor?.isNativePlatform?.()
+        if (isNative) {
+          const slug = (property.value?.addressLine1 || 'EPC')
+            .replace(/[^a-z0-9]+/gi, '-')
+            .replace(/^-+|-+$/g, '')
+          await downloadEpcPdf(data.html, `EPC-Certificate-${slug}.pdf`)
+        } else {
+          printHtmlDocument(
+            data.html,
+            'Pop-ups are blocked - please allow pop-ups to view the EPC certificate.',
+          )
+        }
         return
       }
     }
@@ -4406,7 +4430,7 @@ async function downloadEpc() {
     })
   } catch {
     showToast({
-      message: 'Could not download the EPC certificate. Please try again.',
+      message: 'Could not open the EPC certificate. Please try again.',
       duration: 3000,
     })
   } finally {
