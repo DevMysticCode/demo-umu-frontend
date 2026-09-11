@@ -53,24 +53,6 @@
       </button>
     </div>
 
-    <!-- Secondary actions — Print + Save as PDF both use the browser's
-         built-in print dialog which lets the user pick either. -->
-    <div class="share-actions">
-      <button type="button" class="share-action" @click="onPrint">
-        <div class="share-action-ic"><img src="/op-icons/misc/printer.png" alt="" loading="lazy" /></div>
-        <div class="share-action-body">
-          <div class="share-action-title">Print</div>
-          <div class="share-action-sub">Send this page to a printer</div>
-        </div>
-      </button>
-      <button type="button" class="share-action" @click="onSavePdf">
-        <div class="share-action-ic">📄</div>
-        <div class="share-action-body">
-          <div class="share-action-title">Save as PDF</div>
-          <div class="share-action-sub">Uses your device's Save to PDF option</div>
-        </div>
-      </button>
-    </div>
   </div>
 </template>
 
@@ -156,17 +138,6 @@ function selectLink(e) {
   sel?.addRange(range)
 }
 
-function onPrint() {
-  if (typeof window === 'undefined') return
-  window.print()
-}
-
-function onSavePdf() {
-  // iOS Safari and Chrome both expose "Save as PDF" as one of the
-  // destinations inside the standard print dialog — same handler
-  // works for both actions with a clarifying tap target on the UI.
-  onPrint()
-}
 </script>
 
 <style scoped>
@@ -292,59 +263,5 @@ function onSavePdf() {
 .share-copy-btn.copied {
   background: #e5f4f2;
   color: #008a84;
-}
-
-/* Secondary actions */
-.share-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
-}
-.share-action {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 12px;
-  background: #fff;
-  border: 1px solid #eaeaef;
-  border-radius: 12px;
-  cursor: pointer;
-  font-family: inherit;
-  text-align: left;
-  transition: background 0.14s, border-color 0.14s;
-}
-.share-action:hover {
-  background: #f8f7fc;
-  border-color: #ded9ea;
-}
-.share-action:active { transform: scale(0.998) }
-.share-action-ic img {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  display: block;
-}
-.share-action-ic {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: #e5f4f2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-.share-action-body { flex: 1; min-width: 0 }
-.share-action-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #231d45;
-}
-.share-action-sub {
-  font-size: 12px;
-  color: #6b7089;
-  margin-top: 2px;
 }
 </style>

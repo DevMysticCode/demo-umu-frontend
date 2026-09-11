@@ -136,7 +136,7 @@
               <div class="cx2-header">
                 <div class="cx2-header-text">
                   <div class="cx2-eyebrow-row">
-                    <div class="cx2-eyebrow">Property Passport™</div>
+                    <div class="cx2-eyebrow">Property Passport</div>
                     <span class="cx2-state-pill cx2-state-pill--unclaimed"
                       >Unclaimed</span
                     >
@@ -316,7 +316,7 @@
               <div class="cx2-header">
                 <div class="cx2-header-text">
                   <div class="cx2-eyebrow-row">
-                    <div class="cx2-eyebrow">Property Passport™</div>
+                    <div class="cx2-eyebrow">Property Passport</div>
                     <span class="cx2-state-pill cx2-state-pill--private"
                       >Claimed · Private</span
                     >
@@ -524,7 +524,7 @@
               <div class="cx2-header">
                 <div class="cx2-header-text">
                   <div class="cx2-eyebrow-row">
-                    <div class="cx2-eyebrow">Property Passport™</div>
+                    <div class="cx2-eyebrow">Property Passport</div>
                     <span
                       class="cx2-state-pill"
                       :class="
