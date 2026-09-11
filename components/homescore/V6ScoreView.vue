@@ -1135,14 +1135,18 @@
         <template v-else-if="isLoggedIn && passportState !== 'unclaimed'">
           <div class="fork-eyebrow">What you can do here</div>
           <div class="fork-options">
+            <!-- Same navy styling + icon + copy as the buyer tile below
+                 (.fork-tile--buyer), just laid out full-width/horizontal
+                 (icon left, text right) since there's only one option here
+                 - no "I own this property" tile to sit beside. -->
             <button
-              class="fork-opt primary"
+              class="fork-opt buyer"
               type="button"
               @click="$emit('interested')"
             >
               <div class="fork-opt-icon">
                 <img
-                  src="/op-icons/homescore/magnifier.png"
+                  src="/op-icons/homescore/houseSearch.png"
                   alt=""
                   loading="lazy"
                 />
@@ -1152,8 +1156,8 @@
                   I'm interested in this property
                 </div>
                 <div class="fork-opt-sub">
-                  Full running costs, risks and questions to ask before you
-                  offer.
+                  Explore its running costs, risks and the questions worth
+                  asking before you buy.
                 </div>
               </div>
               <div class="fork-opt-chev">›</div>
@@ -4581,6 +4585,23 @@ const watchersDisplay = computed(() => {
 }
 .fork-opt.primary:hover {
   filter: brightness(1.04);
+}
+.fork-opt.buyer {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+.fork-opt.buyer:hover {
+  filter: brightness(1.08);
+}
+.fork-opt.buyer .fork-opt-title {
+  color: white;
+}
+.fork-opt.buyer .fork-opt-sub {
+  color: rgba(255, 255, 255, 0.75);
+}
+.fork-opt.buyer .fork-opt-chev {
+  color: rgba(255, 255, 255, 0.7);
 }
 .fork-opt-icon {
   font-size: 22px;
