@@ -311,30 +311,22 @@
               <div v-if="floatClaimEmphasis" class="pps-float-claim-emphasis">
                 {{ floatClaimEmphasis }}
               </div>
-              <div v-if="floatClaimSub2" class="pps-float-claim-sub2">
-                {{ floatClaimSub2 }}
-              </div>
-              <span
-                v-if="floatClaimExplainerLabel"
-                class="pps-float-claim-explain"
-                @click.stop="onFloatClaimExplainerClick"
-              >
-                {{ floatClaimExplainerLabel }}
-                <span class="pps-float-claim-explain-q">?</span>
-              </span>
               <div v-if="watcherCountLabel" class="pps-float-claim-watchers">
                 👀 {{ watcherCountLabel }}
               </div>
-              <div class="pps-float-claim-cta">
-                <button
-                  type="button"
-                  class="pps-float-claim-btn"
-                  @click="onFloatClaimCtaClick"
-                >
-                  {{ floatClaimCta }}
-                </button>
-              </div>
             </div>
+          </div>
+          <!-- Centered on the whole card (icon + text combined), not just
+               the text column — moved out of .pps-float-claim-body so it
+               isn't pulled right by the icon's width. -->
+          <div class="pps-float-claim-cta">
+            <button
+              type="button"
+              class="pps-float-claim-btn"
+              @click="onFloatClaimCtaClick"
+            >
+              {{ floatClaimCta }}
+            </button>
           </div>
         </div>
       </div>
@@ -6212,57 +6204,11 @@ const floatClaimSub = computed<string>(() => {
   }
   return "Create your Property Passport to store and verify your home's information - and choose what you share"
 })
-// Second, highlighted line under floatClaimSub — matches the prototype's
-// extra teal/bold line for each non-unclaimed state (unclaimed's card has
-// no second line in the prototype, so it returns '' there). Deliberately
-// no mention of completion % or "why" it's only partial here — the
-// product decision (see plans/watch-visibility-strategy-audit.md) is to
-// keep this state factual and un-explained, not walk the viewer through
-// the readiness mechanics.
-const floatClaimSub2 = computed<string>(() => {
-  if (floatClaimState.value === 'public') {
-    return 'See more before you view, offer or commit.'
-  }
-  if (floatClaimState.value === 'partiallyPublic') {
-    return 'More may be added as the owner continues building it.'
-  }
-  if (floatClaimState.value === 'private') {
-    return 'Want to know if that changes?'
-  }
-  return ''
-})
-// Published's prototype has a bold lead-in line before floatClaimSub2
+// Published's prototype has a bold lead-in line before floatClaimSub
 // ("Buying blind stops here.") that the other states don't have.
 const floatClaimEmphasis = computed<string>(() =>
   floatClaimState.value === 'public' ? 'Buying blind stops here.' : '',
 )
-// "What's inside the Passport?" / "What is claimed · Private?" — same
-// copy and same explainer drawer as the PassportClaimBox cards below,
-// now surfaced on the floating claim card too. Every non-unclaimed
-// state gets one now — private previously had none (see plans/
-// passport-status-wording-clarity.md for why that's worth fixing:
-// the state name alone isn't self-explanatory to a first-time viewer).
-const floatClaimExplainerLabel = computed<string>(() => {
-  if (
-    floatClaimState.value === 'partiallyPublic' ||
-    floatClaimState.value === 'public'
-  ) {
-    return "What's inside the Passport?"
-  }
-  if (floatClaimState.value === 'private') {
-    return 'What is claimed · Private?'
-  }
-  return ''
-})
-function onFloatClaimExplainerClick() {
-  if (
-    floatClaimState.value === 'partiallyPublic' ||
-    floatClaimState.value === 'public' ||
-    floatClaimState.value === 'private'
-  ) {
-    claimExplainerSheet.value = floatClaimState.value
-  }
-}
 const floatClaimCta = computed<string>(() => {
   if (floatClaimState.value === 'public') {
     return isPassportOwnerOrCollab.value
@@ -6278,9 +6224,8 @@ const floatClaimCta = computed<string>(() => {
     // "Watch this property" was a mislabel — this button (like every
     // other state's here) just opens the explainer drawer, it doesn't
     // watch anything directly. The real Watch action lives inside that
-    // drawer / the top "Watch this" button. "Learn More" says what it
-    // actually does.
-    return 'Learn More'
+    // drawer / the top "Watch this" button.
+    return 'About this Passport'
   }
   return 'Claim this property'
 })
@@ -8896,36 +8841,6 @@ function formatSaleDate(dateStr: string): string {
   line-height: 1.4;
   margin-top: 6px;
 }
-.pps-float-claim-sub2 {
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #00857f;
-  line-height: 1.4;
-  margin-top: 3px;
-}
-.pps-float-claim-explain {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 7px;
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #6b6783;
-  cursor: pointer;
-}
-.pps-float-claim-explain-q {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1.3px solid #c0bdcc;
-  color: #9c98ad;
-  font-size: 9px;
-  font-weight: 800;
-  flex-shrink: 0;
-}
 .pps-float-claim-watchers {
   font-size: 10px;
   font-weight: 700;
@@ -8934,11 +8849,7 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-float-claim-cta {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px 10px;
-  margin-top: 10px;
+  justify-content: center;
 }
 .pps-float-claim-btn {
   flex-shrink: 0;
