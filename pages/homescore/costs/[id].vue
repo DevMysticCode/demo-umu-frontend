@@ -1043,26 +1043,30 @@
           puts you <b>first in line</b> for a viewing the moment the Passport
           publishes.
         </div>
+        <!-- Same two real, state-based events WatchPropertyDrawer.vue was
+             reworded to (see 832367c) - no build-progress % pings exist on
+             the backend, and verified buyers don't get a free Passport, so
+             this mirrors the drawer's copy instead of repeating either
+             discredited claim. -->
         <div class="watch-trigger">
           <div class="watch-trigger-ico">
             <img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" />
           </div>
           <div class="watch-trigger-body">
-            <div class="watch-trigger-title">Milestone pings</div>
+            <div class="watch-trigger-title">Passport goes Partially Public</div>
             <div class="watch-trigger-sub">
-              Get pinged at 75%, 90%, and published.
+              We'll let you know as soon as it's live to view - even before
+              every section is finished.
             </div>
           </div>
         </div>
         <div class="watch-trigger">
-          <div class="watch-trigger-ico"><img src="/op-icons/misc/confetti.png" alt="" loading="lazy" /></div>
+          <div class="watch-trigger-ico"><img src="/op-icons/misc/bell.png" alt="" loading="lazy" /></div>
           <div class="watch-trigger-body">
-            <div class="watch-trigger-title">
-              Free Passport the moment it publishes
-            </div>
+            <div class="watch-trigger-title">Passport becomes Public</div>
             <div class="watch-trigger-sub">
-              Verified buyers get the full sales pack free on publish - worth
-              £15.
+              We'll notify you when it's fully public and you can access
+              everything.
             </div>
           </div>
         </div>
