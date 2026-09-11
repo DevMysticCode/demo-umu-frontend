@@ -117,7 +117,15 @@
           class="cxd-overlay"
           @click.self="openSheet = null"
         >
-          <div class="cxd-sheet" @click.stop>
+          <div
+            class="cxd-sheet"
+            :style="dragStyle"
+            @click.stop
+            @touchstart.passive="onSheetDragStart"
+            @touchmove="onSheetDragMove"
+            @touchend="onSheetDragEnd"
+            @touchcancel="onSheetDragEnd"
+          >
             <div class="cxd-grip" />
 
             <!-- UNCLAIMED — content mirrors prisma/property-passport-let-it-prototype.html
@@ -932,6 +940,55 @@ const openSheet = computed<
   },
 })
 
+// ── Swipe-to-dismiss ─────────────────────────────────────────────
+// The grip handle looked draggable but had no touch handlers wired up.
+// Same iOS-style pull-down-to-close as BaseDrawer.vue: only takes over the
+// gesture when it starts on the grip, or the sheet is already scrolled to
+// the top - otherwise a downward swipe just scrolls the sheet's content.
+const dragY = ref(0)
+const dragging = ref(false)
+let dragStartY = 0
+let dragStartTime = 0
+let dragStartOnGrip = false
+let dragStartScrollTop = 0
+
+const dragStyle = computed(() => {
+  if (dragY.value <= 0) return undefined
+  return {
+    transform: `translateY(${dragY.value}px)`,
+    transition: dragging.value ? 'none' : 'transform 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+  }
+})
+
+function onSheetDragStart(e: TouchEvent) {
+  const target = e.target as HTMLElement | null
+  dragStartOnGrip = !!(target && target.closest && target.closest('.cxd-grip'))
+  dragStartScrollTop = (e.currentTarget as HTMLElement).scrollTop
+  dragStartY = e.touches[0].clientY
+  dragStartTime = Date.now()
+  dragging.value = true
+  dragY.value = 0
+}
+function onSheetDragMove(e: TouchEvent) {
+  if (!dragging.value) return
+  const dy = e.touches[0].clientY - dragStartY
+  if (dy > 0 && (dragStartOnGrip || dragStartScrollTop <= 0)) {
+    e.preventDefault()
+    dragY.value = dy
+  } else {
+    dragY.value = 0
+  }
+}
+function onSheetDragEnd() {
+  if (!dragging.value) return
+  dragging.value = false
+  const elapsed = Date.now() - dragStartTime
+  const velocity = dragY.value / Math.max(elapsed, 1)
+  const shouldClose = dragY.value > 120 || velocity > 0.6
+  if (shouldClose) openSheet.value = null
+  dragY.value = 0
+}
+
 // Auth gate state — which primary action the guest tried to take from
 // inside the drawer. Null = no prompt visible.
 type PrimaryAction = 'claim-passport' | 'watch' | 'buy'
@@ -1496,6 +1553,7 @@ function onPrimary(action: PrimaryAction) {
   background: var(--border);
   border-radius: 100px;
   margin: 10px auto 0;
+  touch-action: none;
 }
 
 /* ── cx2-* - plain white-background variant of the drawer header, used
