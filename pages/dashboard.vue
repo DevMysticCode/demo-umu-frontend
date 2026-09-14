@@ -1251,7 +1251,7 @@ onMounted(async () => {
 
 .dash-greeting-sub {
   font-size: 0.8125rem;
-  color: #94a3b8;
+  color: #475569;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -1359,15 +1359,15 @@ onMounted(async () => {
 }
 .dash-news-tag--law {
   background: #f2faf8;
-  color: #008a84;
+  color: #00726c;
 }
 .dash-news-tag--update {
   background: #f2faf8;
-  color: #008a84;
+  color: #00726c;
 }
 .dash-news-tag--news {
   background: #f2faf8;
-  color: #008a84;
+  color: #00726c;
 }
 .dash-news-t {
   font-size: 0.8438rem;
@@ -1383,7 +1383,7 @@ onMounted(async () => {
   gap: 4px;
   font-size: 0.7188rem;
   font-weight: 800;
-  color: #008a84;
+  color: #00726c;
   margin-top: 10px;
 }
 .dash-news-all {
@@ -1392,7 +1392,7 @@ onMounted(async () => {
   text-align: center;
   font-size: 0.7813rem;
   font-weight: 700;
-  color: #008a84;
+  color: #00726c;
   text-decoration: none;
   padding: 6px;
 }
@@ -1414,7 +1414,7 @@ onMounted(async () => {
   padding: 0 4px;
   margin-left: 5px;
   background: #e0f4f1;
-  color: #00817c;
+  color: #006b66;
   border-radius: 999px;
   font-size: 0.6563rem;
   font-weight: 800;
@@ -1462,7 +1462,7 @@ onMounted(async () => {
   font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.4px;
-  color: #00817c;
+  color: #006b66;
   background: #e0f4f1;
   padding: 3px 10px;
   border-radius: 999px;
@@ -1486,7 +1486,7 @@ onMounted(async () => {
   gap: 5px;
   font-size: 0.7813rem;
   font-weight: 700;
-  color: #00817c;
+  color: #006b66;
   margin-bottom: 10px;
 }
 .apc-progress-row {
@@ -1495,7 +1495,7 @@ onMounted(async () => {
   margin-bottom: 6px;
 }
 .apc-progress-row strong {
-  color: #00817c;
+  color: #006b66;
   font-weight: 800;
 }
 .apc-progress-track {
@@ -1593,7 +1593,7 @@ onMounted(async () => {
   gap: 7px;
   padding: 10px 16px;
   background: #fdf3e4;
-  color: #9a6a1a;
+  color: #7a4f0f;
   font-size: 0.75rem;
   font-weight: 700;
   border-bottom: 1px solid #eef0f6;
@@ -1734,7 +1734,7 @@ onMounted(async () => {
   color: #6b7089;
 }
 .hsc-potential-row strong {
-  color: #00817c;
+  color: #006b66;
   font-weight: 800;
   font-size: 0.875rem;
 }
@@ -1823,7 +1823,7 @@ onMounted(async () => {
   gap: 5px;
   font-size: 0.7813rem;
   font-weight: 800;
-  color: #00817c;
+  color: #006b66;
 }
 .hec-house-img {
   width: 64px;
@@ -1974,7 +1974,7 @@ onMounted(async () => {
   margin-top: 3px;
 }
 .watch-hs strong {
-  color: #00817c;
+  color: #006b66;
   font-weight: 800;
 }
 .watch-updates-btn {

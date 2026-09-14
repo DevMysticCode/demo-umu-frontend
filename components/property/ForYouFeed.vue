@@ -152,11 +152,12 @@
         :class="{ open: postcodeSheetOpen }"
         role="dialog"
         aria-modal="true"
+        aria-labelledby="pcs-sheet-title"
       >
         <div class="pcs-grabber-wrap" @click="closePostcodeSheet" role="button" tabindex="0" @keydown.enter="closePostcodeSheet" @keydown.space.prevent="closePostcodeSheet">
           <div class="pcs-grabber" />
         </div>
-        <div class="pcs-title">Set your postcode</div>
+        <div id="pcs-sheet-title" class="pcs-title">Set your postcode</div>
         <div class="pcs-sub">We'll use this to find properties near you.</div>
         <input
           ref="postcodeInputEl"
@@ -291,7 +292,7 @@ async function savePostcode() {
   font-family: inherit;
   font-size: 0.7188rem;
   font-weight: 700;
-  color: #6b7089;
+  color: #52566d;
   background: #f4f4f6;
   border: 1px solid #e5e7eb;
   border-radius: 999px;
@@ -399,7 +400,7 @@ async function savePostcode() {
 }
 .prop-area {
   font-size: 0.8125rem;
-  color: #94a3b8;
+  color: #475569;
   margin-bottom: 8px;
 }
 .prop-pills {
@@ -410,7 +411,7 @@ async function savePostcode() {
 }
 .pill-grey {
   background: #f1f5f9;
-  color: #64748b;
+  color: #475569;
   font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 8px;
@@ -430,7 +431,7 @@ async function savePostcode() {
 }
 .prop-score-lbl {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #475569;
   font-weight: 600;
 }
 .prop-score-gauge {
@@ -572,7 +573,7 @@ async function savePostcode() {
 }
 .pcs-sub {
   font-size: 0.8125rem;
-  color: #6b7089;
+  color: #52566d;
   margin-top: 4px;
   margin-bottom: 16px;
 }

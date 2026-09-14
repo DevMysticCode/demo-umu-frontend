@@ -1,6 +1,8 @@
 <template>
   <div class="app">
-    <NuxtPage />
+    <main>
+      <NuxtPage />
+    </main>
     <!-- Toast — mounted once here (not per-page). showToast() is a global
          reactive singleton (useCustomToast.ts), but nothing rendered it
          outside 4 pages that happened to include <Toast> locally

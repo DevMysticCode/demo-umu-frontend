@@ -2,9 +2,9 @@
   <Teleport to="body">
     <Transition name="psm-fade">
       <div v-if="modelValue" class="psm-overlay" @click.self="close">
-        <div class="psm-card" role="dialog" aria-modal="true">
+        <div class="psm-card" role="dialog" aria-modal="true" aria-labelledby="psm-filters-title">
           <div class="psm-head">
-            <div class="psm-title">Filters</div>
+            <div id="psm-filters-title" class="psm-title">Filters</div>
             <button type="button" class="psm-close" aria-label="Close" @click="close">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
                 <path d="M18 6L6 18M6 6l12 12" />
