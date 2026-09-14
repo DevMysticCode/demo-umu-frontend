@@ -14,13 +14,19 @@
       @click.self="handleClose"
     >
     <div
+      ref="drawerEl"
       class="drawer"
+      role="dialog"
+      aria-modal="true"
+      :aria-labelledby="title ? drawerTitleId : undefined"
+      tabindex="-1"
       :class="{ 'drawer--open': modelValue, 'drawer--fullscreen': fullscreen }"
       :style="dragStyle"
       @touchstart.passive="onDragStart"
       @touchmove="onDragMove"
       @touchend="onDragEnd"
       @touchcancel="onDragEnd"
+      @keydown="onDrawerKeydown"
     >
       <!-- Grab handle — signals swipe-to-dismiss affordance. Hidden on
            fullscreen drawers since they have their own back button. -->
@@ -29,17 +35,17 @@
       <!-- Header -->
       <div class="drawer__header">
         <button v-if="showBackButton" @click="handleClose" class="drawer__back">
-          <span class="drawer__back-icon"
+          <span class="drawer__back-icon" aria-hidden="true"
             ><OPIcon name="leftChevron" class="w-[15px] h-[15px]"
           /></span>
           <span class="drawer__back-text">Back</span>
         </button>
         <div v-else class="drawer__back-placeholder"></div>
 
-        <h3 class="drawer__title">{{ title }}</h3>
+        <h3 :id="drawerTitleId" class="drawer__title">{{ title }}</h3>
 
-        <button @click="handleClose" class="drawer__close">
-          <span class="drawer__close-icon">✕</span>
+        <button @click="handleClose" class="drawer__close" aria-label="Close">
+          <span class="drawer__close-icon" aria-hidden="true">✕</span>
         </button>
       </div>
 
@@ -68,7 +74,7 @@
 
 <script setup>
 import OPIcon from './OPIcon.vue'
-import { computed, ref, watch, onUnmounted } from 'vue'
+import { computed, ref, watch, onUnmounted, useId, nextTick } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -111,11 +117,64 @@ const lockScroll = (lock) => {
   }
 }
 
+// ── Accessibility: focus management ─────────────────────────────────
+// WCAG 2.4.3 (Focus Order) / 4.1.2 (Name, Role, Value) for dialogs: on
+// open, focus must move into the drawer (not stay on whatever was behind
+// it); Tab must stay trapped inside while it's open; on close, focus must
+// return to whatever triggered it, not get lost at the top of the page.
+const drawerEl = ref(null)
+const drawerTitleId = `drawer-title-${useId()}`
+let triggerEl = null
+
+function focusables() {
+  if (!drawerEl.value) return []
+  return Array.from(
+    drawerEl.value.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((el) => el.offsetParent !== null)
+}
+
+function onDrawerKeydown(e) {
+  if (e.key === 'Escape') {
+    e.stopPropagation()
+    handleClose()
+    return
+  }
+  if (e.key !== 'Tab') return
+  const items = focusables()
+  if (!items.length) {
+    e.preventDefault()
+    return
+  }
+  const first = items[0]
+  const last = items[items.length - 1]
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault()
+    first.focus()
+  }
+}
+
 watch(
   () => props.modelValue,
   (isOpen) => {
-    if (typeof document !== 'undefined') {
-      lockScroll(isOpen)
+    if (typeof document === 'undefined') return
+    lockScroll(isOpen)
+    if (isOpen) {
+      // Remember what had focus so it can be restored on close - a modal
+      // that never gives focus back strands keyboard/VoiceOver users at
+      // the top of the page.
+      triggerEl = document.activeElement
+      nextTick(() => {
+        const items = focusables()
+        ;(items[0] || drawerEl.value)?.focus()
+      })
+    } else if (triggerEl && typeof triggerEl.focus === 'function') {
+      triggerEl.focus()
+      triggerEl = null
     }
   },
 )
@@ -241,6 +300,15 @@ const onDragEnd = () => {
   transform: translateY(100%);
   transition: transform 0.3s ease-out;
   overflow: hidden;
+}
+/* The drawer itself is only ever a focus target when it has no focusable
+   content to land on instead (see focusables() in the script) - a plain
+   browser outline in that fallback case reads as a stray box around the
+   whole sheet, so give it an inset ring instead. Real controls inside
+   (buttons, inputs, links) keep their own default focus ring. */
+.drawer:focus-visible {
+  outline: 2px solid #00726c;
+  outline-offset: -2px;
 }
 
 .drawer--fullscreen {

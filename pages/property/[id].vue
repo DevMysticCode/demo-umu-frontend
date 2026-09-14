@@ -2187,7 +2187,7 @@
 
           <!-- ── Map (light Leaflet via existing pps-map-iframe) ───── -->
           <template v-else-if="activeSheet === 'map'">
-            <div class="pps-ds-header" style="background: #e8f5e9">
+            <div class="pps-ds-header">
               <span class="pps-ds-header-icon"
                 ><img
                   src="/op-icons/property/locationAndMap.png"
@@ -3186,7 +3186,7 @@
 
           <!-- ── Crime / safety (data.police.uk) ────────────────────── -->
           <template v-else-if="activeSheet === 'crime'">
-            <div class="pps-ds-header" style="background: #eeedf5">
+            <div class="pps-ds-header">
               <span class="pps-ds-header-icon"
                 ><img src="/op-icons/property/crime.png" alt="" loading="lazy"
               /></span>
@@ -4210,15 +4210,9 @@
       </div>
     </Teleport>
 
-    <!-- ── Toast (restored — was orphaned import, never mounted) ────────── -->
-    <Toast
-      :is-visible="toastState.isVisible"
-      :message="toastState.message"
-      :icon="toastState.icon"
-      :icon-emoji="toastState.iconEmoji"
-      :duration="toastState.duration"
-      @close="hideToast"
-    />
+    <!-- Toast: now mounted once globally in app.vue (was locally mounted
+         only here + 3 other pages, so showToast() silently did nothing
+         everywhere else it was called - see app.vue). -->
 
     <!-- ── Unpublished-passport modal (restored) ─────────────────────────
          Fires when a buyer taps an in-progress passport — gives them a clear
@@ -5757,7 +5751,7 @@ const exploreTiles = computed(() => {
   tiles.push({
     key: 'map',
     icon: '',
-    iconBg: '#E8F5E9',
+    iconBg: '',
     iconImage: '/op-icons/property/locationAndMap.png',
     title: 'Location & map',
     value: p.postcode || '-',

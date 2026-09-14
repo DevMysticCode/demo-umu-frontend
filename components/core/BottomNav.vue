@@ -1,11 +1,13 @@
 <template>
   <nav
+    aria-label="Primary"
     class="fixed bottom-0 w-full max-w-app border-t border-gray-200 bottom-nav-safe"
   >
     <div class="flex justify-around py-2 bottom-nav-row">
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('explore')"
+        :aria-current="props.active === 'explore' ? 'page' : undefined"
         @click="router.push('/dashboard')"
       >
         <img src="/op-icons/explore/explore.png" alt="" class="nav-icon" />
@@ -15,6 +17,7 @@
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('passport')"
+        :aria-current="props.active === 'passport' ? 'page' : undefined"
         @click="router.push('/passport/collections')"
       >
         <img src="/op-icons/explore/passport.png" alt="" class="nav-icon" />
@@ -27,13 +30,14 @@
       <button
         class="flex flex-col items-center py-2 relative"
         :class="isActive('inbox')"
+        :aria-current="props.active === 'inbox' ? 'page' : undefined"
         @click="router.push('/inbox')"
       >
         <span class="relative inline-flex">
           <img src="/op-icons/explore/inbox.png" alt="" class="nav-icon" />
           <span v-if="unreadCount > 0" class="inbox-tab-dot" aria-hidden="true" />
         </span>
-        <span class="text-xs mt-1">Inbox</span>
+        <span class="text-xs mt-1">Inbox{{ unreadCount > 0 ? ` (${unreadCount} unread)` : '' }}</span>
       </button>
 
       <!-- Marketplace hidden for Phase 1 launch. The route + backend
@@ -54,6 +58,7 @@
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('calendar')"
+        :aria-current="props.active === 'calendar' ? 'page' : undefined"
         @click="router.push('/profile/calendar')"
       >
         <img src="/op-icons/explore/calendar.png" alt="" class="nav-icon" />
@@ -63,6 +68,7 @@
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('ai')"
+        :aria-current="props.active === 'ai' ? 'page' : undefined"
         @click="router.push('/profile/chat')"
       >
         <img src="/op-icons/explore/ai.png" alt="" class="nav-icon" />
@@ -72,6 +78,7 @@
       <button
         class="flex flex-col items-center py-2"
         :class="isActive('rewards')"
+        :aria-current="props.active === 'rewards' ? 'page' : undefined"
         @click="router.push('/profile/rewards')"
       >
         <img src="/op-icons/profile/rewards.png" alt="" class="nav-icon" />
@@ -96,7 +103,10 @@ const props = defineProps({
 const router = useRouter()
 const iconSize = 'w-[18px] h-[18px]'
 const isActive = (key) => {
-  return props.active === key ? 'text-brand-aqua' : 'text-gray-400'
+  // text-brand-aqua (#00a19a) measures 3.2:1 at this label's 12px size -
+  // fails WCAG's 4.5:1 for normal text. text-brand-aqua-text is the same
+  // teal darkened until it passes (5.8:1).
+  return props.active === key ? 'text-brand-aqua-text' : 'text-gray-400'
 }
 
 // Shared unread badge — mounting the composable here means the poll

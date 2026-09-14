@@ -1635,14 +1635,8 @@
       @claimed="handleClaimed"
     />
 
-    <Toast
-      :is-visible="toastState.isVisible"
-      :message="toastState.message"
-      :icon="toastState.icon"
-      :icon-emoji="toastState.iconEmoji"
-      :duration="toastState.duration"
-      @close="hideToast"
-    />
+    <!-- Toast now mounted once globally in app.vue -->
+
 
     <PropertyActionBar
       v-if="property && !pageLoading"
