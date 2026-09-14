@@ -242,8 +242,8 @@ const navigateToPayment = async () => {
 .back-btn {
   background: none;
   border: none;
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -252,7 +252,7 @@ const navigateToPayment = async () => {
 }
 
 .back-arrow {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .close-btn {
@@ -261,7 +261,7 @@ const navigateToPayment = async () => {
   border-radius: 50%;
   background: #e0e0e0;
   border: none;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #666;
   cursor: pointer;
   display: flex;
@@ -276,7 +276,7 @@ const navigateToPayment = async () => {
 }
 
 .title {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
   margin: 16px 0 8px;
@@ -284,7 +284,7 @@ const navigateToPayment = async () => {
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   text-align: center;
   margin-bottom: 32px;
@@ -339,7 +339,7 @@ const navigateToPayment = async () => {
 }
 
 .passport-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   text-align: center;
   margin-bottom: 20px;
@@ -347,7 +347,7 @@ const navigateToPayment = async () => {
 }
 
 .house-icon {
-  font-size: 64px;
+  font-size: 4rem;
   margin: 20px 0;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
@@ -358,13 +358,13 @@ const navigateToPayment = async () => {
 }
 
 .address-line {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
 .address-line-small {
-  font-size: 11px;
+  font-size: 0.6875rem;
   opacity: 0.9;
 }
 
@@ -375,15 +375,15 @@ const navigateToPayment = async () => {
 }
 
 .completion-status p {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #666;
   line-height: 1.5;
 }
 
 .percentage {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .key-visual {
@@ -399,7 +399,7 @@ const navigateToPayment = async () => {
 }
 
 .section-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   text-align: center;
   margin: 32px 0 24px;
@@ -424,7 +424,7 @@ const navigateToPayment = async () => {
 }
 
 .benefit-icon {
-  font-size: 24px;
+  font-size: 1.5rem;
   flex-shrink: 0;
 }
 .benefit-icon img {
@@ -435,13 +435,13 @@ const navigateToPayment = async () => {
 }
 
 .benefit-text {
-  font-size: 15px;
-  color: #00a19a;
+  font-size: 0.9375rem;
+  color: #00726c;
   font-weight: 500;
 }
 
 .claim-error {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #e53e3e;
   text-align: center;
   margin: 0 0 8px;
@@ -450,15 +450,15 @@ const navigateToPayment = async () => {
 .claim-error-link {
   display: inline-block;
   margin-top: 6px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   text-decoration: none;
   border-bottom: 1.5px solid #e2f1ea;
   padding-bottom: 1px;
 }
 .claim-error-link:hover {
-  color: #00a19a;
+  color: #00726c;
   border-bottom-color: #00a19a;
 }
 
@@ -469,7 +469,7 @@ const navigateToPayment = async () => {
   color: white;
   border: none;
   border-radius: 28px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   margin: 32px 0;
@@ -492,7 +492,7 @@ const navigateToPayment = async () => {
 }
 
 .pricing-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   margin-bottom: 16px;
   color: #1a1a1a;
@@ -519,14 +519,14 @@ const navigateToPayment = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .feature-text {
-  font-size: 14px;
-  color: #00a19a;
+  font-size: 0.875rem;
+  color: #00726c;
   font-weight: 500;
 }
 
@@ -545,7 +545,7 @@ const navigateToPayment = async () => {
   padding: 16px;
   background: #f8f8f8;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .header-col {
@@ -554,12 +554,12 @@ const navigateToPayment = async () => {
 }
 
 .header-col.highlight {
-  color: #00a19a;
+  color: #00726c;
 }
 
 .header-subtitle {
   display: block;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 400;
   color: #666;
   margin-top: 4px;
@@ -567,9 +567,9 @@ const navigateToPayment = async () => {
 
 .header-subtitle-highlight {
   display: block;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   margin-top: 4px;
 }
 
@@ -592,17 +592,17 @@ const navigateToPayment = async () => {
 }
 
 .row-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #1a1a1a;
 }
 
 .row-value {
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .check {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
 }
 
@@ -618,7 +618,7 @@ const navigateToPayment = async () => {
   color: white;
   border: none;
   border-radius: 12px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   margin: 32px 0;

@@ -263,7 +263,7 @@ function runConfetti() {
   z-index: 5;
   text-align: center;
   padding: 24px 28px 12px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: 1.6px;
@@ -312,7 +312,7 @@ function runConfetti() {
 }
 
 .welcome-eyebrow-big {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: 2px;
@@ -321,7 +321,7 @@ function runConfetti() {
   animation: welcome-fade-up 0.55s 0.25s both;
 }
 .welcome-headline-big {
-  font-size: 40px;
+  font-size: 2.5rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -1.4px;
@@ -344,7 +344,7 @@ function runConfetti() {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #4a5568;
   letter-spacing: -0.1px;

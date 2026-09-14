@@ -391,7 +391,7 @@ const handleCurrencyBlur = (event) => {
 }
 
 .budget_helper_text {
-  font-size: 17px;
+  font-size: 1.0625rem;
   margin-bottom: 1rem;
 }
 
@@ -424,7 +424,7 @@ const handleCurrencyBlur = (event) => {
   border-radius: 20px;
   white-space: nowrap;
   z-index: 10;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0, 161, 154, 0.3);
 }
@@ -523,7 +523,7 @@ const handleCurrencyBlur = (event) => {
 
 .label-item {
   font-size: 0.875rem;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 500;
 }
 
@@ -531,14 +531,14 @@ const handleCurrencyBlur = (event) => {
   color: #000000;
   margin: 0 0 20px 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -551,8 +551,8 @@ const handleCurrencyBlur = (event) => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #00a19a;
-  font-size: 15px;
+  color: #00726c;
+  font-size: 0.9375rem;
   font-weight: 500;
   text-decoration: none;
   margin: auto;
@@ -588,16 +588,16 @@ const handleCurrencyBlur = (event) => {
 }
 
 .currency-box__label {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 400;
   color: #3c3c43;
   flex: 1;
 }
 
 .currency-box__value {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   background: #f0f0f0;
   border: none;
   border-radius: 8px;
@@ -622,7 +622,7 @@ const handleCurrencyBlur = (event) => {
 }
 
 .help-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
@@ -633,9 +633,9 @@ const handleCurrencyBlur = (event) => {
 
 .help-title {
   margin: 0px 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -644,19 +644,19 @@ const handleCurrencyBlur = (event) => {
   color: #3c3c4399;
   margin: 0;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
 
 .typing-cursor {
   margin-left: 2px;
-  color: #00a19a;
+  color: #00726c;
   animation: blink 1s infinite;
 }
 
 .typing-cursor--small {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 @keyframes blink {

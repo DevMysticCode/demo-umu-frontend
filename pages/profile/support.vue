@@ -82,7 +82,7 @@
         class="faq-item"
         :class="{ open: openIdx === idx || openIdx === -2 }"
         @click="toggleFaq(idx)"
-      >
+       role="button" tabindex="0" @keydown.enter="toggleFaq(idx)" @keydown.space.prevent="toggleFaq(idx)">
         <div class="faq-q">
           <span class="faq-num">{{ String(idx + 1).padStart(2, '0') }}</span>
           <span class="faq-text">{{ item.q }}</span>
@@ -200,7 +200,7 @@ const goBack = useGoBack('/profile')
 .hs-nav-icon-btn svg { width: 18px; height: 18px; }
 .hs-nav-title {
   flex: 1; text-align: center;
-  font-size: 16px; font-weight: 800;
+  font-size: 1rem; font-weight: 800;
   color: #0e2840; letter-spacing: -0.4px;
 }
 
@@ -219,13 +219,13 @@ const goBack = useGoBack('/profile')
 /* Hero */
 .hs-hero { padding: 8px 22px 14px; position: relative; z-index: 1; }
 .hero-greeting {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #94a3b8;
   margin-bottom: 4px;
 }
 .hs-h1 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -1.2px;
@@ -286,13 +286,13 @@ const goBack = useGoBack('/profile')
 }
 .ss-info { flex: 1; min-width: 0; }
 .ss-headline {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
 }
 .ss-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #4a5868;
   margin-top: 1px;
@@ -300,7 +300,7 @@ const goBack = useGoBack('/profile')
 
 /* Section heading */
 .section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -314,7 +314,7 @@ const goBack = useGoBack('/profile')
 }
 .sh-action {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #008a84;
   text-transform: none;
@@ -382,14 +382,14 @@ const goBack = useGoBack('/profile')
   mix-blend-mode: multiply;
 }
 .contact-card-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
   margin-bottom: 1px;
 }
 .contact-card-meta {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: #4a5868;
   line-height: 1.3;
@@ -417,14 +417,14 @@ const goBack = useGoBack('/profile')
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
   line-height: 1.3;
 }
 .faq-num {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #008a84;
   font-weight: 700;
   flex-shrink: 0;
@@ -433,7 +433,7 @@ const goBack = useGoBack('/profile')
 .faq-text { flex: 1; }
 .faq-chev {
   color: #8a95a0;
-  font-size: 14px;
+  font-size: 0.875rem;
   flex-shrink: 0;
   transition: transform 0.2s;
 }
@@ -443,7 +443,7 @@ const goBack = useGoBack('/profile')
 }
 .faq-a {
   padding: 0 14px 12px 36px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #4a5868;
   line-height: 1.5;
@@ -475,7 +475,7 @@ const goBack = useGoBack('/profile')
 .hs-status-icon svg { width: 16px; height: 16px; }
 .hs-status-content { flex: 1; min-width: 0; }
 .hs-status-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
@@ -485,16 +485,16 @@ const goBack = useGoBack('/profile')
   flex-wrap: wrap;
 }
 .hs-status-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #4a5868;
   margin-top: 1px;
 }
-.hs-status-arrow { color: #8a95a0; font-size: 18px; flex-shrink: 0; }
+.hs-status-arrow { color: #8a95a0; font-size: 1.125rem; flex-shrink: 0; }
 
 /* Pills */
 .pill-tag {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;

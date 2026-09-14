@@ -65,7 +65,7 @@
               <polyline points="22,6 12,13 2,6" />
             </svg>
           </span>
-          <input v-model="emailInput" type="email" placeholder="Enter your email address" class="form-input with-icon" autocomplete="email" />
+          <input v-model="emailInput" type="email" placeholder="Enter your email address" class="form-input with-icon" autocomplete="email"  aria-label="Enter your email address" />
         </div>
       </div>
 
@@ -87,7 +87,7 @@
             placeholder="Your password"
             class="form-input with-icon with-action"
             autocomplete="current-password"
-          />
+           aria-label="Your password" />
           <button type="button" class="form-input-action" @click="showPassword = !showPassword">
             <svg v-if="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
@@ -244,7 +244,7 @@ function goCreateAccount() {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
@@ -266,7 +266,7 @@ function goCreateAccount() {
 }
 .bpg-pill {
   display: inline-block;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   color: #6b6783;
@@ -276,7 +276,7 @@ function goCreateAccount() {
   margin-bottom: 10px;
 }
 .bpg-title {
-  font-size: 25px;
+  font-size: 1.5625rem;
   font-weight: 900;
   color: #231d45;
   letter-spacing: -0.6px;
@@ -284,7 +284,7 @@ function goCreateAccount() {
   margin-bottom: 10px;
 }
 .bpg-sub {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.55;
@@ -319,14 +319,14 @@ function goCreateAccount() {
   border-radius: 8px;
 }
 .bpg-benefit-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 3px;
   letter-spacing: -0.1px;
 }
 .bpg-benefit-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.35;
@@ -341,7 +341,7 @@ function goCreateAccount() {
 }
 .form-label {
   display: block;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
@@ -357,9 +357,9 @@ function goCreateAccount() {
   margin-bottom: 0;
 }
 .bpg-forgot-link {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   text-decoration: none;
 }
 .bpg-forgot-link:hover {
@@ -375,7 +375,7 @@ function goCreateAccount() {
   border-radius: 12px;
   padding: 13px 14px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #231d45;
   letter-spacing: -0.1px;
@@ -434,13 +434,13 @@ function goCreateAccount() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b6783;
   margin-top: 8px;
 }
 .bpg-pw-hint svg {
-  color: #00a19a;
+  color: #00726c;
   flex-shrink: 0;
 }
 
@@ -451,7 +451,7 @@ function goCreateAccount() {
   border: 1px solid rgba(220, 38, 38, 0.25);
   border-radius: 12px;
   color: #dc2626;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.5;
 }
 
@@ -462,7 +462,7 @@ function goCreateAccount() {
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 14px 18px;
   border-radius: 100px;
@@ -503,7 +503,7 @@ function goCreateAccount() {
   gap: 12px;
   padding: 18px 20px 0;
   color: #9c98ad;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
@@ -519,7 +519,7 @@ function goCreateAccount() {
   color: #231d45;
   border: 1.5px solid #00a19a;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 13px 18px;
   border-radius: 100px;
@@ -539,13 +539,13 @@ function goCreateAccount() {
   margin-top: auto;
   padding: 24px 24px calc(20px + env(safe-area-inset-bottom));
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #9c98ad;
   line-height: 1.6;
 }
 .bpg-legal a {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
   text-decoration: none;
 }

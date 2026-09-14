@@ -262,7 +262,7 @@
                 v-model="formName"
                 type="text"
                 placeholder="e.g. Maxine Wilson"
-              />
+               aria-label="e.g. Maxine Wilson" />
             </div>
             <div class="ifs-field">
               <label>Email or mobile</label>
@@ -270,7 +270,7 @@
                 v-model="formContact"
                 type="text"
                 placeholder="So installers can reach you"
-              />
+               aria-label="So installers can reach you" />
             </div>
 
             <button class="ifs-submit" @click="goConfirm">
@@ -486,7 +486,7 @@
                 v-model="eaContact"
                 :type="contactMethod === 'email' ? 'email' : 'tel'"
                 :placeholder="contactMethod === 'email' ? 'e.g. maxine.wilson@email.com' : 'e.g. 07700 900123'"
-              />
+               aria-label="contactMethod === 'email' ? 'e.g. maxine.wilson@email.com' : 'e.g. 07700 900123'" />
             </div>
 
             <button class="ifs-submit" @click="submitEarly">
@@ -1054,7 +1054,7 @@ watch(
 }
 
 .ifs-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   color: #00857f;
@@ -1062,14 +1062,14 @@ watch(
   margin-bottom: 6px;
 }
 .ifs-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.01em;
   line-height: 1.2;
   color: #231d45;
 }
 .ifs-lede {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: #6b6880;
   font-weight: 500;
   line-height: 1.55;
@@ -1086,7 +1086,7 @@ watch(
   margin-top: 16px;
 }
 .ifs-acc-ic {
-  font-size: 18px;
+  font-size: 1.125rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1102,7 +1102,7 @@ watch(
   display: block;
 }
 .ifs-acc p {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #4a3f6b;
   font-weight: 500;
   line-height: 1.5;
@@ -1148,7 +1148,7 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
 }
 .ifs-route--grant .ifs-r-ic {
   background: #e4f4ec;
@@ -1177,7 +1177,7 @@ watch(
   flex-direction: column;
 }
 .ifs-r-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   letter-spacing: -0.01em;
   display: inline-flex;
@@ -1186,7 +1186,7 @@ watch(
   color: #231d45;
 }
 .ifs-badge {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   padding: 3px 7px;
@@ -1202,7 +1202,7 @@ watch(
   color: #fff;
 }
 .ifs-r-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b6880;
   font-weight: 500;
   margin-top: 3px;
@@ -1210,14 +1210,14 @@ watch(
 }
 .ifs-r-arrow {
   color: #bdb8cc;
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 .ifs-route:hover .ifs-r-arrow {
-  color: #00a19a;
+  color: #00726c;
 }
 .ifs-foot {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #9994ab;
   text-align: center;
   margin-top: 18px;
@@ -1241,13 +1241,13 @@ watch(
   background: #00a19a;
 }
 .ifs-q h4 {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   margin-top: 18px;
   letter-spacing: -0.01em;
 }
 .ifs-qhint {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b6880;
   font-weight: 500;
   margin-top: 5px;
@@ -1263,7 +1263,7 @@ watch(
   border-radius: 14px;
   padding: 15px 16px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #231d45;
   background: #fff;
@@ -1284,7 +1284,7 @@ watch(
   gap: 6px;
   background: #fff7e8;
   color: #c18a38;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   padding: 5px 10px;
   border-radius: 20px;
@@ -1294,7 +1294,7 @@ watch(
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #6b6880;
   cursor: pointer;
@@ -1320,7 +1320,7 @@ watch(
   background: linear-gradient(135deg, #6b6880, #4a4760);
 }
 .ifs-rh-ic {
-  font-size: 30px;
+  font-size: 1.875rem;
 }
 .ifs-rh-ic-img {
   width: 52px;
@@ -1335,12 +1335,12 @@ watch(
 }
 .ifs-result-hero h3 {
   color: #fff;
-  font-size: 20px;
+  font-size: 1.25rem;
   margin-top: 10px;
   font-weight: 800;
 }
 .ifs-result-hero p {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.9);
   font-weight: 500;
   line-height: 1.5;
@@ -1369,7 +1369,7 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -1384,18 +1384,18 @@ watch(
   min-width: 0;
 }
 .ifs-gi-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
 }
 .ifs-gi-desc {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6880;
   font-weight: 500;
   margin-top: 2px;
 }
 .ifs-gi-tag {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: #2e9e6b;
   background: #e4f4ec;
@@ -1421,14 +1421,14 @@ watch(
   flex-shrink: 0;
 }
 .ifs-pl-label {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   color: #00857f;
   text-transform: uppercase;
 }
 .ifs-pl-val {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
   margin-top: 1px;
@@ -1439,7 +1439,7 @@ watch(
   margin-top: 14px;
 }
 .ifs-field label {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #231d45;
   display: block;
@@ -1451,7 +1451,7 @@ watch(
   border-radius: 13px;
   padding: 14px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #231d45;
   background: #fbfafe;
@@ -1475,7 +1475,7 @@ watch(
   border-radius: 15px;
   padding: 16px;
   font-family: inherit;
-  font-size: 15.5px;
+  font-size: 0.9688rem;
   font-weight: 800;
   cursor: pointer;
   margin-top: 20px;
@@ -1547,7 +1547,7 @@ watch(
 .ifs-tick-sparkle--1 {
   top: -10px;
   left: -14px;
-  color: #00a19a;
+  color: #00726c;
 }
 .ifs-tick-sparkle--2 {
   bottom: -6px;
@@ -1560,7 +1560,7 @@ watch(
   right: -22px;
   width: 7px;
   height: 7px;
-  color: #00a19a;
+  color: #00726c;
 }
 @keyframes ifs-pulse {
   0% {
@@ -1573,11 +1573,11 @@ watch(
   }
 }
 .ifs-confirm h3 {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 800;
 }
 .ifs-confirm p {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: #6b6880;
   font-weight: 500;
   line-height: 1.6;
@@ -1614,7 +1614,7 @@ watch(
 .ifs-passport-ic img { width: 22px; height: 22px; object-fit: contain; display: block; }
 .ifs-passport p {
   margin: 0;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #4a3f6b;
   line-height: 1.5;
   font-weight: 500;
@@ -1623,7 +1623,7 @@ watch(
   color: #231d45;
 }
 .ifs-passport-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 3px;
@@ -1661,12 +1661,12 @@ watch(
   display: block;
 }
 .ifs-t-name {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: #231d45;
 }
 .ifs-t-date {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6880;
   font-weight: 600;
   margin-top: 2px;
@@ -1675,7 +1675,7 @@ watch(
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   padding: 5px 10px;
   border-radius: 20px;
@@ -1707,7 +1707,7 @@ watch(
   padding: 30px 10px;
 }
 .ifs-empty-ic {
-  font-size: 40px;
+  font-size: 2.5rem;
   width: 48px;
   height: 48px;
   margin: 0 auto;
@@ -1719,12 +1719,12 @@ watch(
   display: block;
 }
 .ifs-empty h4 {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   margin-top: 12px;
 }
 .ifs-empty p {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6880;
   font-weight: 500;
   margin-top: 6px;
@@ -1744,7 +1744,7 @@ watch(
   margin-top: 4px;
 }
 .ifs-ea-ic {
-  font-size: 36px;
+  font-size: 2.25rem;
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -1753,12 +1753,12 @@ watch(
 .ifs-ea-ic svg { width: 46px; height: 46px; }
 .ifs-ea-hero h3 {
   color: #fff;
-  font-size: 21px;
+  font-size: 1.3125rem;
   margin-top: 12px;
   font-weight: 800;
 }
 .ifs-ea-hero p {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
   line-height: 1.55;
@@ -1783,7 +1783,7 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 .ifs-p-ic--img {
@@ -1804,18 +1804,18 @@ watch(
   height: 22px;
 }
 .ifs-p-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
 }
 .ifs-p-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b6880;
   font-weight: 500;
   margin-top: 2px;
 }
 .ifs-ea-q {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   margin-top: 20px;
@@ -1835,7 +1835,7 @@ watch(
   border-radius: 22px;
   padding: 8px 14px 8px 10px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -1884,7 +1884,7 @@ watch(
   border-radius: 9px;
   background: transparent;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #6b6880;
   cursor: pointer;

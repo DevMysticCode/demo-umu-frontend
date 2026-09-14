@@ -300,20 +300,20 @@ function goBack() {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px; font-weight: 800; line-height: 1;
+  font-size: 1.375rem; font-weight: 800; line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
 }
 .rc-header-title {
   flex: 1;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   text-align: center;
 }
 .rc-pill {
   flex-shrink: 0;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -328,7 +328,7 @@ function goBack() {
 .rc-loading, .rc-empty {
   padding: 40px 20px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
@@ -350,20 +350,20 @@ function goBack() {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 26px;
+  font-size: 1.625rem;
   box-shadow: 0 8px 18px rgba(0, 161, 154, 0.28);
 }
 .rc-hero-icon-released { background: linear-gradient(135deg, #00a19a, #008a84); }
 .rc-hero-icon-pending  { background: linear-gradient(135deg, #f5a623, #b07a13); }
 .rc-hero-icon-refunded { background: linear-gradient(135deg, #4A4566, #231D45); }
 .rc-hero-amt {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.6px;
 }
 .rc-hero-label {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: #6b7089;
   letter-spacing: 0.4px;
@@ -381,7 +381,7 @@ function goBack() {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .rc-card-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -392,7 +392,7 @@ function goBack() {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
   padding: 5px 0;
@@ -403,7 +403,7 @@ function goBack() {
   margin-top: 4px;
   color: #231d45;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 /* ── Timeline ──────────────────────────────────────────────── */
@@ -425,12 +425,12 @@ function goBack() {
   box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.12);
 }
 .rc-tl-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
 }
 .rc-tl-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 2px;
@@ -445,13 +445,13 @@ function goBack() {
   border-radius: 16px;
 }
 .rc-release-h {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
 }
 .rc-release-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 4px;
@@ -467,7 +467,7 @@ function goBack() {
   border-radius: 14px;
   padding: 13px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
@@ -499,24 +499,24 @@ function goBack() {
   border-radius: 10px;
   background: linear-gradient(135deg, #00a19a, #008a84);
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .rc-contract-link-body { flex: 1; min-width: 0; }
 .rc-contract-link-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.2px;
 }
 .rc-contract-link-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.72);
   margin-top: 2px;
 }
 .rc-contract-link-arrow {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #fff;
   opacity: 0.7;
@@ -540,11 +540,11 @@ function goBack() {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .rc-trust-text {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.5;
@@ -557,7 +557,7 @@ function goBack() {
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 10px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #c43c3c;
 }

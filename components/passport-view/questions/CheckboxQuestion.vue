@@ -43,7 +43,7 @@
         class="checkbox-option"
         :class="{ selected: isSelected(option.value) }"
         @click="toggleOption(option.value)"
-      >
+       role="button" tabindex="0" @keydown.enter="toggleOption(option.value)" @keydown.space.prevent="toggleOption(option.value)">
         <div class="checkbox" :class="{ checked: isSelected(option.value) }">
           <span v-if="isSelected(option.value)" class="check-mark">✓</span>
         </div>
@@ -59,7 +59,7 @@
       :placeholder="question.otherPlaceholder"
       class="other-text-input"
       rows="3"
-    ></textarea>
+     aria-label="question.otherPlaceholder"></textarea>
   </div>
 </template>
 
@@ -164,14 +164,14 @@ const onOtherTextInput = (event) => {
   color: #000000;
   margin: 0 0 20px 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -189,7 +189,7 @@ const onOtherTextInput = (event) => {
 }
 
 .help-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
@@ -200,9 +200,9 @@ const onOtherTextInput = (event) => {
 
 .help-title {
   margin: 0px 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -211,14 +211,14 @@ const onOtherTextInput = (event) => {
   color: #3c3c4399;
   margin: 0;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
 
 .typing-cursor {
   margin-left: 2px;
-  color: #00a19a;
+  color: #00726c;
   animation: blink 1s infinite;
 }
 
@@ -284,12 +284,12 @@ const onOtherTextInput = (event) => {
 
 .check-mark {
   color: white;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
 }
 
 .option-label {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #1a1a1a;
 }
@@ -300,7 +300,7 @@ const onOtherTextInput = (event) => {
   padding: 12px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   resize: none;
   background: #f9f9f9;

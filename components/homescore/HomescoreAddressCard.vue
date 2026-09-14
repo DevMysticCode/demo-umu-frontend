@@ -451,14 +451,14 @@ const watchersDisplay = computed(() => {
   flex: none;
 }
 .hsc-addr {
-  font-size: 18px;
+  font-size: 1.125rem;
   /* font-weight: 700; */
   line-height: 1.15;
   color: #fff;
   letter-spacing: -0.2px;
 }
 .hsc-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.82);
   margin-top: 3px;
 }
@@ -484,21 +484,21 @@ const watchersDisplay = computed(() => {
   width: 26px;
   height: 26px;
   border-radius: 7px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   flex-shrink: 0;
 }
 .hsc-compact-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   color: #fff;
   flex-shrink: 0;
 }
 .hsc-compact-sep {
   color: rgba(255, 255, 255, 0.35);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .hsc-compact-hook {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.82);
 }
@@ -518,7 +518,7 @@ const watchersDisplay = computed(() => {
   color: #fff;
 }
 .hsc-tlabel {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.88);
   display: inline-flex;
@@ -529,7 +529,7 @@ const watchersDisplay = computed(() => {
 .hsc-epc-badge {
   background: #4d7c1f;
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   width: 22px;
   height: 22px;
@@ -544,7 +544,7 @@ const watchersDisplay = computed(() => {
   color: #fff;
   width: auto;
   padding: 2px 10px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   border-radius: 8px;
 }
@@ -555,11 +555,11 @@ const watchersDisplay = computed(() => {
   background: rgba(255, 255, 255, 0.14);
 }
 .hsc-hs-num {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 .hsc-hs-num b {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
 }
 .hsc-hs-num span {
@@ -630,7 +630,7 @@ const watchersDisplay = computed(() => {
   }
 }
 .hsc-hook {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: rgba(255, 255, 255, 0.92);
   line-height: 1.35;
 }
@@ -671,7 +671,7 @@ const watchersDisplay = computed(() => {
   flex-shrink: 0;
 }
 .hsc-vtxt {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.35;
 }
 .hsc-vtxt b {

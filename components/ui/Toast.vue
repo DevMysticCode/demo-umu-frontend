@@ -123,7 +123,7 @@ watch(
 }
 
 .default-icon {
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1;
   color: #fff;
 }
@@ -131,7 +131,7 @@ watch(
 .toast-message {
   flex: 1;
   color: white;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   margin: 0;
   line-height: 1.35;

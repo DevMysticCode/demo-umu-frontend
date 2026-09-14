@@ -133,7 +133,7 @@
       </div>
 
       <!-- ── Collaborators row ── -->
-      <div class="pp-collab-row" @click="openCollaboratorModal">
+      <div class="pp-collab-row" @click="openCollaboratorModal" role="button" tabindex="0" @keydown.enter="openCollaboratorModal" @keydown.space.prevent="openCollaboratorModal">
         <button class="pp-collab-add" type="button">+</button>
         <div class="pp-collab-stack">
           <div
@@ -213,7 +213,7 @@
             class="step-card"
             :data-tour-section="step.id"
             @click="navigateToStep(step.id)"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateToStep(step.id)" @keydown.space.prevent="navigateToStep(step.id)">
             <div class="step-icon-container">
               <div class="step-icon-bg">
                 <OPIcon :name="step.key" class="w-[80px] h-[80px]" />
@@ -242,7 +242,7 @@
                 v-if="getStepExpiringDoc(step)"
                 class="step-expiry"
                 @click.stop="navigateToStep(step.id)"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateToStep(step.id)" @keydown.space.prevent="navigateToStep(step.id)">
                 ⚠ {{ getStepExpiringDoc(step).label }}
               </div>
               <div class="step-progress">
@@ -276,7 +276,7 @@
             :key="sp.id"
             class="pp-street-row"
             @click="navigateToProperty(sp.id)"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateToProperty(sp.id)" @keydown.space.prevent="navigateToProperty(sp.id)">
             <div class="pp-street-icon">
               <img src="/op-icons/homescore/house.png" alt="" loading="lazy" />
             </div>
@@ -350,7 +350,7 @@
           <div class="pp-empty">
             <div style="width: 40px; height: 40px; margin: 0 auto 8px"><img src="/op-icons/misc/fileCabinet.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
             <p>Your vault is empty</p>
-            <p style="font-size: 11.5px; margin-top: 6px; color: #94a3b8">
+            <p style="font-size: 0.7188rem; margin-top: 6px; color: #94a3b8">
               As you complete sections, the verified documents are stored here -
               and you choose which are private and which publish with your
               passport.
@@ -1300,7 +1300,7 @@ const onRoleSwitch = (role) => {
 }
 
 .title {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
   color: #1a1a1a;
@@ -1317,7 +1317,7 @@ const onRoleSwitch = (role) => {
   border-radius: 50%;
   background: #f0f0f0;
   border: none;
-  font-size: 18px;
+  font-size: 1.125rem;
   cursor: pointer;
 }
 
@@ -1332,7 +1332,7 @@ const onRoleSwitch = (role) => {
   border: 2px solid #e0e0e0;
   background: white;
   border-radius: 24px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -1349,7 +1349,7 @@ const onRoleSwitch = (role) => {
 }
 
 .btn-icon {
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .passport-content {
@@ -1379,7 +1379,7 @@ const onRoleSwitch = (role) => {
   background: rgba(255, 255, 255, 0.25);
   padding: 6px 12px;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 
@@ -1395,14 +1395,14 @@ const onRoleSwitch = (role) => {
 }
 
 .card-address {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   text-align: center;
   margin-bottom: 4px;
 }
 
 .card-location {
-  font-size: 13px;
+  font-size: 0.8125rem;
   text-align: center;
   opacity: 0.9;
 }
@@ -1426,12 +1426,12 @@ const onRoleSwitch = (role) => {
 }
 
 .pin-icon {
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .property-address-small {
   flex: 1;
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 25px;
   letter-spacing: -0.45px;
   font-weight: 590;
@@ -1440,7 +1440,7 @@ const onRoleSwitch = (role) => {
 }
 .property-address-small-sub {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -1448,14 +1448,14 @@ const onRoleSwitch = (role) => {
 .dropdown-btn {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
   color: #999;
   padding: 4px;
 }
 
 .progress-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #999;
   margin: 0 0 8px;
   font-weight: 600;
@@ -1515,8 +1515,8 @@ const onRoleSwitch = (role) => {
 }
 
 .progress-percentage {
-  font-size: 11px;
-  color: #00a19a;
+  font-size: 0.6875rem;
+  color: #00726c;
   font-weight: 700;
   min-width: 35px;
   text-align: right;
@@ -1565,7 +1565,7 @@ const onRoleSwitch = (role) => {
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -1578,7 +1578,7 @@ const onRoleSwitch = (role) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #666;
   cursor: pointer;
   margin-left: -8px;
@@ -1586,7 +1586,7 @@ const onRoleSwitch = (role) => {
 
 .collaborators-label {
   flex: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #666;
 }
 
@@ -1596,8 +1596,8 @@ const onRoleSwitch = (role) => {
   border-radius: 50%;
   background: none;
   border: none;
-  font-size: 24px;
-  color: #00a19a;
+  font-size: 1.5rem;
+  color: #00726c;
   cursor: pointer;
 }
 
@@ -1613,7 +1613,7 @@ const onRoleSwitch = (role) => {
   border: 1px solid #e0e0e0;
   background: white;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -1668,7 +1668,7 @@ const onRoleSwitch = (role) => {
 }
 
 .step-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 400;
   line-height: 20px;
   letter-spacing: -0.23px;
@@ -1676,9 +1676,9 @@ const onRoleSwitch = (role) => {
 }
 
 .step-points {
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 16px;
-  color: #00a19a;
+  color: #00726c;
   /* margin: 0 0 8px; */
   font-weight: 400;
 }
@@ -1699,7 +1699,7 @@ const onRoleSwitch = (role) => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 999px;
@@ -1709,7 +1709,7 @@ const onRoleSwitch = (role) => {
 }
 .step-count-docs {
   background: #f1f9f4;
-  color: #00a19a;
+  color: #00726c;
   border: 1px solid #e2f1ea;
 }
 .step-count-q {
@@ -1722,7 +1722,7 @@ const onRoleSwitch = (role) => {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   background: #fef3c7;
   color: #92400e;
@@ -1753,7 +1753,7 @@ const onRoleSwitch = (role) => {
   border-radius: 50%;
   background: #f9f9fd;
   border: 0.5px solid #d2d1e4;
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #999;
   display: flex;
   align-items: center;
@@ -1777,10 +1777,10 @@ const onRoleSwitch = (role) => {
   border: none;
   border-radius: 12px;
   font-weight: 400;
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 22px;
   letter-spacing: -0.43px;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
 }
 
@@ -1791,8 +1791,8 @@ const onRoleSwitch = (role) => {
 
 .pp-match-badge {
   background: #fff;
-  color: #00a19a;
-  font-size: 10px;
+  color: #00726c;
+  font-size: 0.625rem;
   font-weight: 700;
   padding: 1px 5px;
   border-radius: 999px;
@@ -1815,7 +1815,7 @@ const onRoleSwitch = (role) => {
   border: none;
   border-radius: 10px;
   padding: 9px 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #64748b;
   cursor: pointer;
@@ -1837,16 +1837,16 @@ const onRoleSwitch = (role) => {
     0 0 0 1px rgba(15, 23, 42, 0.04);
 }
 .pp-tab-icon {
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1;
 }
 .pp-tab-label {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .pp-tab-badge {
   background: #008a84;
   color: white;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   padding: 1px 5px;
   border-radius: 999px;
@@ -1861,7 +1861,7 @@ const onRoleSwitch = (role) => {
 
 /* ── Street tab ──────────────────────────────────────── */
 .pp-vm-header {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #475569;
   line-height: 1.5;
   margin: 0 0 12px;
@@ -1899,12 +1899,12 @@ const onRoleSwitch = (role) => {
   display: block;
 }
 .pp-street-addr {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #0f172a;
 }
 .pp-street-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #64748b;
   margin-top: 2px;
   display: flex;
@@ -1913,7 +1913,7 @@ const onRoleSwitch = (role) => {
   flex-wrap: wrap;
 }
 .pp-street-epc {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: #fff;
   padding: 1px 5px;
@@ -1921,7 +1921,7 @@ const onRoleSwitch = (role) => {
   margin-left: 4px;
 }
 .pp-street-badge {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 999px;
@@ -1946,7 +1946,7 @@ const onRoleSwitch = (role) => {
   align-items: center;
   padding: 40px 20px;
   color: #64748b;
-  font-size: 13px;
+  font-size: 0.8125rem;
   text-align: center;
 }
 .pp-street-stats {
@@ -1957,7 +1957,7 @@ const onRoleSwitch = (role) => {
   border: 1px solid #e2e8e8;
 }
 .pp-stats-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 12px;
@@ -1985,7 +1985,7 @@ const onRoleSwitch = (role) => {
   background: #f8fafc;
 }
 .pp-stat-val {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #0f172a;
 }
@@ -1999,12 +1999,12 @@ const onRoleSwitch = (role) => {
   color: #92400e;
 }
 .pp-stat-lbl {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #64748b;
   margin-top: 1px;
 }
 .pp-street-tip {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #475569;
   line-height: 1.5;
   padding: 10px;
@@ -2020,13 +2020,13 @@ const onRoleSwitch = (role) => {
   margin-bottom: 12px;
 }
 .pp-buyers-count {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #0f172a;
   font-weight: 600;
   margin-bottom: 2px;
 }
 .pp-buyers-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #64748b;
 }
 .pp-buyer-list {
@@ -2057,7 +2057,7 @@ const onRoleSwitch = (role) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -2066,12 +2066,12 @@ const onRoleSwitch = (role) => {
   min-width: 0;
 }
 .pp-buyer-name {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #0f172a;
 }
 .pp-buyer-criteria {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #475569;
   margin-top: 2px;
   line-height: 1.4;
@@ -2083,7 +2083,7 @@ const onRoleSwitch = (role) => {
   margin-top: 6px;
 }
 .pp-buyer-tag {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   padding: 2px 7px;
   border-radius: 999px;
@@ -2099,7 +2099,7 @@ const onRoleSwitch = (role) => {
   color: #92400e;
 }
 .pp-buyer-score {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   flex-shrink: 0;
   min-width: 38px;
@@ -2135,7 +2135,7 @@ const onRoleSwitch = (role) => {
   background: rgba(255, 255, 255, 0.2);
   display: grid;
   place-items: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -2152,12 +2152,12 @@ const onRoleSwitch = (role) => {
   flex-direction: column;
 }
 .pp-resume-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.01em;
 }
 .pp-resume-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: rgba(255, 255, 255, 0.78);
   margin-top: 1px;
   overflow: hidden;
@@ -2165,7 +2165,7 @@ const onRoleSwitch = (role) => {
   white-space: nowrap;
 }
 .pp-resume-chev {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   opacity: 0.7;
   flex-shrink: 0;
@@ -2229,11 +2229,11 @@ const onRoleSwitch = (role) => {
   z-index: 1;
 }
 .pp-hero-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 4px;
 }
 .pp-hero-addr-row {
@@ -2246,14 +2246,14 @@ const onRoleSwitch = (role) => {
   min-width: 0;
 }
 .pp-hero-addr-l1 {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
 .pp-hero-addr-l2 {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #94a3b8;
   margin-top: 2px;
 }
@@ -2263,7 +2263,7 @@ const onRoleSwitch = (role) => {
   border-radius: 50%;
   background: #f1f9f4;
   border: 1px solid #e2f1ea;
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -2283,17 +2283,17 @@ const onRoleSwitch = (role) => {
   border-left: 1px solid rgba(35, 29, 69, 0.08);
 }
 .pp-hero-stat-val {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   line-height: 1;
   letter-spacing: -0.01em;
 }
 .pp-hero-stat-val--ready {
-  color: #00a19a;
+  color: #00726c;
 }
 .pp-hero-stat-lbl {
-  font-size: 7.5px;
+  font-size: 0.4688rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -2311,16 +2311,16 @@ const onRoleSwitch = (role) => {
   margin-bottom: 6px;
 }
 .pp-hero-dash-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #4a5568;
 }
 .pp-hero-dash-pct {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 0.8125rem;
   letter-spacing: -0.01em;
 }
 .pp-hero-dash-bar {
@@ -2350,7 +2350,7 @@ const onRoleSwitch = (role) => {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   color: #94a3b8;
   font-weight: 600;
   margin-top: 7px;
@@ -2411,7 +2411,7 @@ const onRoleSwitch = (role) => {
   padding: 11px 12px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -2447,7 +2447,7 @@ const onRoleSwitch = (role) => {
 .pp-action-badge {
   background: #00a19a;
   color: #fff;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   padding: 1px 6px;
   border-radius: 999px;
@@ -2478,8 +2478,8 @@ const onRoleSwitch = (role) => {
   border: 1px solid #e2f1ea;
   display: grid;
   place-items: center;
-  color: #00a19a;
-  font-size: 16px;
+  color: #00726c;
+  font-size: 1rem;
   font-weight: 600;
   flex-shrink: 0;
   cursor: pointer;
@@ -2497,7 +2497,7 @@ const onRoleSwitch = (role) => {
   border-radius: 50%;
   background: linear-gradient(135deg, #00b5ad, #00a19a);
   color: #fff;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -2505,14 +2505,14 @@ const onRoleSwitch = (role) => {
   margin-left: -8px;
 }
 .pp-collab-text {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #4a5568;
   font-weight: 600;
   flex: 1;
 }
 .pp-collab-chev {
   color: #94a3b8;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
 }
 
@@ -2533,7 +2533,7 @@ const onRoleSwitch = (role) => {
   border-radius: 9px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #94a3b8;
   display: flex;
@@ -2551,8 +2551,8 @@ const onRoleSwitch = (role) => {
 }
 .pp-subtab-badge {
   background: #fff;
-  color: #00a19a;
-  font-size: 10px;
+  color: #00726c;
+  font-size: 0.625rem;
   font-weight: 800;
   padding: 1px 6px;
   border-radius: 999px;
@@ -2603,7 +2603,7 @@ const onRoleSwitch = (role) => {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #00a19a;
+  color: #00726c;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 .pp-section-body {
@@ -2611,12 +2611,12 @@ const onRoleSwitch = (role) => {
   min-width: 0;
 }
 .pp-section-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #231d45;
 }
 .pp-section-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #94a3b8;
   margin-top: 2px;
 }
@@ -2628,10 +2628,10 @@ const onRoleSwitch = (role) => {
   flex-shrink: 0;
 }
 .pp-section-pct {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   background: #f1f9f4;
-  color: #00a19a;
+  color: #00726c;
   border: 1px solid #e2f1ea;
   padding: 3px 9px;
   border-radius: 999px;
@@ -2648,71 +2648,71 @@ const onRoleSwitch = (role) => {
 }
 .pp-section-chev {
   color: #94a3b8;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   flex-shrink: 0;
 }
 
 /* ── Vault tab ───────────────────────────────────────────────── */
 .vault-legend { margin: 8px 18px 6px; padding: 12px 14px; background: #f5f6fa; border: 1px solid #e4e5ed; border-radius: 13px; }
-.vault-legend-t { font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: #a8a9ad; margin-bottom: 8px; }
-.vault-legend-row { display: flex; align-items: flex-start; gap: 9px; font-size: 11px; font-weight: 600; color: #6b7089; line-height: 1.45; }
+.vault-legend-t { font-size: 0.625rem; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: #a8a9ad; margin-bottom: 8px; }
+.vault-legend-row { display: flex; align-items: flex-start; gap: 9px; font-size: 0.6875rem; font-weight: 600; color: #6b7089; line-height: 1.45; }
 .vault-legend-row + .vault-legend-row { margin-top: 7px; }
-.vault-legend-ico { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; flex-shrink: 0; overflow: hidden; }
+.vault-legend-ico { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.6875rem; color: #fff; flex-shrink: 0; overflow: hidden; }
 .vault-legend-ico img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .vault-legend-ico.private { background: #6b7089; }
 .vault-legend-ico.public { background: #00a19a; }
 .vault-legend-row b { color: #231d45; font-weight: 800; }
-.vault-count { padding: 6px 18px 4px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #6b7089; }
+.vault-count { padding: 6px 18px 4px; font-size: 0.6875rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #6b7089; }
 .vault-row { display: flex; align-items: flex-start; gap: 12px; margin: 0 18px 10px; padding: 14px; background: #fff; border: 1px solid #e4e5ed; border-radius: 14px; box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05); }
-.vault-ico { width: 40px; height: 40px; border-radius: 11px; background: #e5f4f2; color: #008a84; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; overflow: hidden; }
+.vault-ico { width: 40px; height: 40px; border-radius: 11px; background: #e5f4f2; color: #008a84; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; flex-shrink: 0; overflow: hidden; }
 .vault-ico img { width: 26px; height: 26px; object-fit: contain; display: block; }
 .vault-info { flex: 1; min-width: 0; }
-.vault-name { font-size: 14px; font-weight: 800; color: #231d45; }
-.vault-vis-meta { font-size: 10.5px; font-weight: 700; margin-top: 3px; line-height: 1.35; }
+.vault-name { font-size: 0.875rem; font-weight: 800; color: #231d45; }
+.vault-vis-meta { font-size: 0.6563rem; font-weight: 700; margin-top: 3px; line-height: 1.35; }
 .vault-row.public .vault-vis-meta { color: #008a84; }
 .vault-row.private .vault-vis-meta { color: #6b7089; }
 .vis-seg { display: flex; gap: 2px; background: #f5f6fa; border: 1px solid #e4e5ed; border-radius: 100px; padding: 3px; flex-shrink: 0; align-self: center; }
-.vis-opt { display: flex; align-items: center; gap: 4px; padding: 6px 11px; border-radius: 100px; font-size: 11px; font-weight: 800; color: #6b7089; cursor: pointer; transition: all 0.12s; }
+.vis-opt { display: flex; align-items: center; gap: 4px; padding: 6px 11px; border-radius: 100px; font-size: 0.6875rem; font-weight: 800; color: #6b7089; cursor: pointer; transition: all 0.12s; }
 .vis-opt:hover { color: #231d45; }
 .vis-opt.on { color: #fff; }
 .vis-opt.on.private { background: #6b7089; }
 .vis-opt.on.public { background: #00a19a; }
 
 /* ── Timeline tab ────────────────────────────────────────────── */
-.tl-intro { margin: 8px 18px 0; padding: 13px 15px; background: #f2faf8; border: 1px solid #e5f4f2; border-radius: 13px; font-size: 12px; font-weight: 600; color: #6b7089; line-height: 1.55; display: flex; gap: 9px; align-items: flex-start; }
-.tl-intro .lockico { font-size: 16px; flex-shrink: 0; }
+.tl-intro { margin: 8px 18px 0; padding: 13px 15px; background: #f2faf8; border: 1px solid #e5f4f2; border-radius: 13px; font-size: 0.75rem; font-weight: 600; color: #6b7089; line-height: 1.55; display: flex; gap: 9px; align-items: flex-start; }
+.tl-intro .lockico { font-size: 1rem; flex-shrink: 0; }
 .tl-intro b { color: #008a84; font-weight: 800; }
 .tl-stage { margin: 14px 18px 0; padding: 16px 14px 12px; background: #fff; border: 1px solid #e4e5ed; border-radius: 16px; box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05); }
-.tl-stage-h { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #a8a9ad; margin-bottom: 14px; }
+.tl-stage-h { font-size: 0.625rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #a8a9ad; margin-bottom: 14px; }
 .tl-steps { display: flex; align-items: flex-start; }
 .tl-step { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
 .tl-step::before { content: ''; position: absolute; top: 9px; left: -50%; width: 100%; height: 2.5px; background: #e4e5ed; z-index: 0; }
 .tl-step:first-child::before { display: none; }
 .tl-step.done::before,
 .tl-step.now::before { background: #00a19a; }
-.tl-dot { width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2.5px solid #e4e5ed; z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: #a8a9ad; }
+.tl-dot { width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2.5px solid #e4e5ed; z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 0.625rem; font-weight: 900; color: #a8a9ad; }
 .tl-step.done .tl-dot { background: #00a19a; border-color: #00a19a; color: #fff; }
 .tl-step.now .tl-dot { border-color: #00a19a; color: #008a84; box-shadow: 0 0 0 4px #e5f4f2; }
-.tl-step-lbl { font-size: 9px; font-weight: 800; color: #a8a9ad; margin-top: 7px; text-align: center; line-height: 1.2; letter-spacing: 0.2px; }
+.tl-step-lbl { font-size: 0.5625rem; font-weight: 800; color: #a8a9ad; margin-top: 7px; text-align: center; line-height: 1.2; letter-spacing: 0.2px; }
 .tl-step.done .tl-step-lbl,
 .tl-step.now .tl-step-lbl { color: #231d45; }
-.tl-list-h { padding: 18px 20px 6px; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #a8a9ad; }
+.tl-list-h { padding: 18px 20px 6px; font-size: 0.625rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #a8a9ad; }
 .tl-item { display: flex; gap: 12px; margin: 0 18px; padding: 4px 0; position: relative; }
 .tl-rail { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-.tl-rail-dot { width: 34px; height: 34px; border-radius: 11px; background: #e5f4f2; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; z-index: 1; }
+.tl-rail-dot { width: 34px; height: 34px; border-radius: 11px; background: #e5f4f2; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; z-index: 1; }
 .tl-rail-line { width: 2px; flex: 1; background: #e4e5ed; margin: 4px 0; min-height: 14px; }
 .tl-item:last-child .tl-rail-line { display: none; }
 .tl-card { flex: 1; min-width: 0; background: #fff; border: 1px solid #e4e5ed; border-radius: 14px; box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05); padding: 12px 14px; margin-bottom: 12px; }
 .tl-card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.tl-title { font-size: 13.5px; font-weight: 800; color: #231d45; letter-spacing: -0.2px; line-height: 1.25; }
-.tl-time { font-size: 10px; font-weight: 700; color: #a8a9ad; white-space: nowrap; flex-shrink: 0; }
-.tl-who { font-size: 11px; font-weight: 600; color: #6b7089; margin-top: 2px; }
+.tl-title { font-size: 0.8438rem; font-weight: 800; color: #231d45; letter-spacing: -0.2px; line-height: 1.25; }
+.tl-time { font-size: 0.625rem; font-weight: 700; color: #a8a9ad; white-space: nowrap; flex-shrink: 0; }
+.tl-who { font-size: 0.6875rem; font-weight: 600; color: #6b7089; margin-top: 2px; }
 .tl-stamp { display: inline-flex; align-items: center; gap: 6px; margin-top: 9px; padding: 5px 9px; background: #f2faf8; border: 1px solid #e5f4f2; border-radius: 8px; }
-.tl-stamp-lock { font-size: 11px; display: inline-flex; width: 12px; height: 12px; }
+.tl-stamp-lock { font-size: 0.6875rem; display: inline-flex; width: 12px; height: 12px; }
 .tl-stamp-lock img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .lockico { display: inline-flex; width: 26px; height: 26px; flex-shrink: 0; }
 .lockico img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.tl-stamp-txt { font-family: 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 10px; font-weight: 700; color: #008a84; letter-spacing: 0.3px; }
-.tl-stamp-verif { font-size: 9px; font-weight: 800; color: #008a84; letter-spacing: 0.4px; text-transform: uppercase; margin-left: 2px; }
+.tl-stamp-txt { font-family: 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 0.625rem; font-weight: 700; color: #008a84; letter-spacing: 0.3px; }
+.tl-stamp-verif { font-size: 0.5625rem; font-weight: 800; color: #008a84; letter-spacing: 0.4px; text-transform: uppercase; margin-left: 2px; }
 </style>

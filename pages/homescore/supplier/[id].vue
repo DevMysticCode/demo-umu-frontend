@@ -201,12 +201,12 @@ function goMessages() {
 .back-btn svg { width: 16px; height: 16px; }
 .app-header-info { flex: 1; min-width: 0; }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -233,14 +233,14 @@ function goMessages() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: white;
   flex-shrink: 0;
 }
 .mp-sup-hero-info { flex: 1; min-width: 0; }
 .mp-sup-hero-name {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   line-height: 1.1;
@@ -249,7 +249,7 @@ function goMessages() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   margin-top: 3px;
@@ -262,7 +262,7 @@ function goMessages() {
 .mp-sup-verified {
   display: inline-block;
   margin-top: 6px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.3px;
   padding: 3px 9px;
@@ -280,13 +280,13 @@ function goMessages() {
 }
 .mp-sup-stat { text-align: center; }
 .mp-sup-stat-num {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.4px;
   line-height: 1;
 }
 .mp-sup-stat-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.7);
   letter-spacing: 0.8px;
@@ -304,7 +304,7 @@ function goMessages() {
   box-shadow: var(--shadow-card);
 }
 .mp-sup-section-h {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.2px;
@@ -317,14 +317,14 @@ function goMessages() {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 4px;
 }
-.mp-sup-review-stars { color: #f5a623; font-size: 12px; letter-spacing: 0.5px; }
+.mp-sup-review-stars { color: #f5a623; font-size: 0.75rem; letter-spacing: 0.5px; }
 .mp-sup-review-body {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -335,7 +335,7 @@ function goMessages() {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
 }
 .mp-sup-cert-row .check {
   color: var(--accent-dark);
@@ -351,7 +351,7 @@ function goMessages() {
   gap: 6px;
 }
 .match-chip {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   padding: 4px 9px;
   border-radius: 100px;
@@ -370,7 +370,7 @@ function goMessages() {
   border: none;
   border-radius: 14px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.3);
@@ -383,7 +383,7 @@ function goMessages() {
   border: 1.5px solid var(--border);
   border-radius: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 8px;

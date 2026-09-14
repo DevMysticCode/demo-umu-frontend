@@ -533,12 +533,12 @@ const tour = useHomescoreTour({
   border-radius: 50%;
   background: #f1f9f4;
   border: 1px solid #e2f1ea;
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   cursor: pointer;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
 }
 .back-btn:hover,
@@ -559,10 +559,10 @@ const tour = useHomescoreTour({
   border: 1px solid #e2f1ea;
   padding: 5px 11px;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.06em;
-  color: #00a19a;
+  color: #00726c;
   text-transform: uppercase;
 }
 .eyebrow-pill .dot {
@@ -626,7 +626,7 @@ const tour = useHomescoreTour({
   min-width: 0;
 }
 .hs-addr-line {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.2;
@@ -645,7 +645,7 @@ const tour = useHomescoreTour({
   animation: cursorBlink 0.7s ease-in-out infinite;
 }
 .hs-addr-meta {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.78);
   letter-spacing: -0.05px;
@@ -659,7 +659,7 @@ const tour = useHomescoreTour({
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: rgba(255, 255, 255, 0.8);
 }
 .hs-addr-stat-count {
@@ -741,7 +741,7 @@ const tour = useHomescoreTour({
   border-bottom: 1px solid #f5f5f7;
 }
 .hs-hero-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -759,11 +759,11 @@ const tour = useHomescoreTour({
   animation: cursorBlink 0.7s ease-in-out infinite;
 }
 .hs-hero-title :deep(.hs-hero-num-inline) {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
 }
 .hs-hero-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #6b6783;
   margin-top: 5px;
@@ -777,7 +777,7 @@ const tour = useHomescoreTour({
   transition: box-shadow 0.3s;
 }
 .hs-save-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: 1.4px;
@@ -785,15 +785,15 @@ const tour = useHomescoreTour({
   margin-bottom: 6px;
 }
 .hs-save-num {
-  font-size: 52px;
+  font-size: 3.25rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: -2px;
   line-height: 1;
   display: inline-block;
 }
 .hs-save-foot {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b6783;
   margin-top: 5px;
@@ -845,7 +845,7 @@ const tour = useHomescoreTour({
   border-left: 1px solid #f5f5f7;
 }
 .hs-save-cell-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1px;
@@ -853,7 +853,7 @@ const tour = useHomescoreTour({
   margin-bottom: 3px;
 }
 .hs-save-cell-num {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   letter-spacing: -0.5px;
 }
@@ -864,7 +864,7 @@ const tour = useHomescoreTour({
   color: #e6a23c;
 }
 .hs-save-cell-meta {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #6b6783;
   margin-top: 1px;
 }
@@ -882,14 +882,14 @@ const tour = useHomescoreTour({
   padding: 16px 18px 12px;
 }
 .street-card-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
   line-height: 1.2;
 }
 .street-card-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #6b6783;
   margin-top: 6px;
@@ -902,7 +902,7 @@ const tour = useHomescoreTour({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 0.08em;
@@ -919,7 +919,7 @@ const tour = useHomescoreTour({
   border-radius: 999px;
 }
 .street-rank-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: #9c98ad;
   margin-bottom: 8px;
@@ -952,7 +952,7 @@ const tour = useHomescoreTour({
   color: #6b6783;
   display: grid;
   place-items: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -965,7 +965,7 @@ const tour = useHomescoreTour({
   min-width: 0;
 }
 .street-rank-addr {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
@@ -974,19 +974,19 @@ const tour = useHomescoreTour({
   text-overflow: ellipsis;
 }
 .street-rank-meta {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: #6b6783;
   margin-top: 1px;
 }
 .street-rank-cost {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   flex-shrink: 0;
 }
 .street-rank-cost.low {
-  color: #00a19a;
+  color: #00726c;
 }
 .street-rank-cost.mid {
   color: #e6a23c;
@@ -1009,7 +1009,7 @@ const tour = useHomescoreTour({
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: #6b6783;
 }
@@ -1046,18 +1046,18 @@ const tour = useHomescoreTour({
   background: #00b6ae;
 }
 .cta-head {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
 }
 .cta-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   opacity: 0.85;
 }
 .cta-foot {
   text-align: center;
   margin-top: 7px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #9c98ad;
 }
@@ -1075,12 +1075,12 @@ const tour = useHomescoreTour({
   animation: fadeSlideUp 0.45s 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .renters-icon {
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
 }
 .renters-text {
   flex: 1;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #4a3a1a;
   line-height: 1.5;
@@ -1097,7 +1097,7 @@ const tour = useHomescoreTour({
   border: 1px solid #ececef;
   border-radius: 12px;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #6b6783;
   cursor: pointer;

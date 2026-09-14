@@ -94,7 +94,7 @@ const handleContinue = (address) => {
           type="text"
           class="address-modal__search-input"
           placeholder="Enter postcode"
-        />
+         aria-label="Enter postcode" />
 
         <!-- Button -->
         <button @click="handleSearch" class="address-modal__search-button">
@@ -126,7 +126,7 @@ const handleContinue = (address) => {
         :class="{
           'address-modal__result--selected': selectedAddressId === address.id,
         }"
-      >
+       role="button" tabindex="0" @keydown.enter="selectAddress(address)" @keydown.space.prevent="selectAddress(address)">
         <!-- Radio icon -->
         <div class="address-modal__radio">
           <svg v-if="selectedAddressId !== address.id" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -222,7 +222,7 @@ const handleContinue = (address) => {
   left: 1rem;
   width: 1.2rem;
   height: 1.2rem;
-  color: #00a19a; /* aqua */
+  color: #00726c; /* aqua */
 }
 .address-modal__search-input {
   flex: 1;
@@ -249,7 +249,7 @@ const handleContinue = (address) => {
   height: 2.5rem;
   padding: 0 1rem;
   background-color: #e6f9f8; /* light aqua background */
-  color: #00a19a; /* aqua text/icon */
+  color: #00726c; /* aqua text/icon */
   border: none;
   border-radius: 9999px;
   font-size: 0.875rem;
@@ -303,7 +303,7 @@ const handleContinue = (address) => {
   min-width: 0;
 }
 .address-modal__address-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #000;
   margin: 0;
   font-weight: 500;
@@ -311,7 +311,7 @@ const handleContinue = (address) => {
   letter-spacing: -0.08px;
 }
 .address-modal__address-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b7280;
   margin: 2px 0 0;
   line-height: 16px;

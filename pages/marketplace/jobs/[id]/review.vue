@@ -156,7 +156,7 @@
           rows="4"
           maxlength="4000"
           placeholder="Tell other customers what they were like to work with…"
-        />
+         aria-label="Tell other customers what they were like to work with…" />
         <div class="rv-field-help">{{ form.body.length }} / 4000 chars</div>
       </div>
 
@@ -383,13 +383,13 @@ function goToReceipt() {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px; font-weight: 800; line-height: 1;
+  font-size: 1.375rem; font-weight: 800; line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
 }
 .rv-header-title {
   flex: 1;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   text-align: center;
@@ -399,7 +399,7 @@ function goToReceipt() {
 .rv-loading {
   padding: 40px 20px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
@@ -407,17 +407,17 @@ function goToReceipt() {
 .rv-empty {
   padding: 60px 24px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
-.rv-empty-emoji { font-size: 40px; margin-bottom: 8px; }
-.rv-empty-title { font-size: 16px; font-weight: 800; color: #231d45; margin-bottom: 4px; }
+.rv-empty-emoji { font-size: 2.5rem; margin-bottom: 8px; }
+.rv-empty-title { font-size: 1rem; font-weight: 800; color: #231d45; margin-bottom: 4px; }
 .rv-empty-sub { margin-bottom: 16px; }
 .rv-empty-btn {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff; border: none; border-radius: 12px;
-  padding: 12px 18px; font-family: inherit; font-size: 13px; font-weight: 800;
+  padding: 12px 18px; font-family: inherit; font-size: 0.8125rem; font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
 }
@@ -432,13 +432,13 @@ function goToReceipt() {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .rv-hero-job {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
   letter-spacing: -0.1px;
 }
 .rv-hero-prompt {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -456,7 +456,7 @@ function goToReceipt() {
   box-shadow: 0 14px 32px -8px rgba(0, 161, 154, 0.3);
 }
 .rv-celebrate-icon {
-  font-size: 40px;
+  font-size: 2.5rem;
   margin-bottom: 8px;
   animation: rvShimmer 1.8s ease-in-out infinite;
 }
@@ -465,14 +465,14 @@ function goToReceipt() {
   50%      { transform: scale(1.08); }
 }
 .rv-celebrate-head {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #008a84;
   letter-spacing: -0.3px;
   margin-bottom: 4px;
 }
 .rv-celebrate-amt {
-  font-size: 34px;
+  font-size: 2.125rem;
   font-weight: 800;
   color: #008a84;
   letter-spacing: -1px;
@@ -480,7 +480,7 @@ function goToReceipt() {
   margin: 6px 0 8px;
 }
 .rv-celebrate-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b7089;
   line-height: 1.5;
@@ -497,7 +497,7 @@ function goToReceipt() {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .rv-card-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -517,17 +517,17 @@ function goToReceipt() {
   background: linear-gradient(135deg, #352D5C, #008A84);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   flex-shrink: 0;
 }
 .rv-counter-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
 }
 .rv-counter-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 2px;
@@ -544,7 +544,7 @@ function goToReceipt() {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 36px;
+  font-size: 2.25rem;
   color: #d8dae6;
   padding: 4px;
   transition: color 0.15s, transform 0.15s;
@@ -557,7 +557,7 @@ function goToReceipt() {
 }
 .rv-stars-label {
   text-align: center;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #6b7089;
   margin-top: 6px;
@@ -573,12 +573,12 @@ function goToReceipt() {
   margin-bottom: 6px;
 }
 .rv-slider-label {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
 }
 .rv-slider-stars {
-  font-size: 14px;
+  font-size: 0.875rem;
   letter-spacing: 1px;
   color: #f5a623;
 }
@@ -627,7 +627,7 @@ function goToReceipt() {
   align-items: center;
   gap: 5px;
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #231d45;
   background: #fff;
@@ -652,7 +652,7 @@ function goToReceipt() {
 /* ── Field ──────────────────────────────────────────────────── */
 .rv-field { padding: 14px 20px 0; }
 .rv-field-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -666,7 +666,7 @@ function goToReceipt() {
   border-radius: 12px;
   padding: 11px 13px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #231d45;
   outline: none;
@@ -674,7 +674,7 @@ function goToReceipt() {
 }
 .rv-field-input:focus { border-color: #00a19a; }
 .rv-field-help {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #6b7089;
   margin-top: 4px;
@@ -686,7 +686,7 @@ function goToReceipt() {
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #c43c3c;
 }
@@ -701,7 +701,7 @@ function goToReceipt() {
   border-radius: 14px;
   padding: 15px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);

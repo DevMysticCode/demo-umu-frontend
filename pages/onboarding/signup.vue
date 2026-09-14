@@ -35,7 +35,7 @@
               <polyline points="22,6 12,13 2,6" />
             </svg>
           </span>
-          <input v-model="form.email" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email" />
+          <input v-model="form.email" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email"  aria-label="you@example.com" />
         </div>
       </div>
 
@@ -49,7 +49,7 @@
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
           </span>
-          <input v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="At least 8 characters" class="form-input with-icon with-action" autocomplete="new-password" />
+          <input v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="At least 8 characters" class="form-input with-icon with-action" autocomplete="new-password"  aria-label="At least 8 characters" />
           <button type="button" class="form-input-action" @click="showPassword = !showPassword">
             <svg v-if="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
@@ -74,7 +74,7 @@
               <circle cx="12" cy="7" r="4" />
             </svg>
           </span>
-          <input v-model="form.fullName" type="text" placeholder="Jane Smith" class="form-input with-icon" autocomplete="name" />
+          <input v-model="form.fullName" type="text" placeholder="Jane Smith" class="form-input with-icon" autocomplete="name"  aria-label="Jane Smith" />
         </div>
       </div>
 
@@ -308,7 +308,7 @@ const handleSubmit = async () => {
   padding: 18px 24px 4px;
 }
 .auth-hero-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: 2px;
@@ -316,7 +316,7 @@ const handleSubmit = async () => {
   margin-bottom: 10px;
 }
 .auth-hero-title {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -1px;
@@ -324,7 +324,7 @@ const handleSubmit = async () => {
   margin-bottom: 10px;
 }
 .auth-hero-sub {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.55;
@@ -338,14 +338,14 @@ const handleSubmit = async () => {
 
 .form-label {
   display: block;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
   margin-bottom: 6px;
 }
 .form-label .opt {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #9c98ad;
   margin-left: 4px;
@@ -360,7 +360,7 @@ const handleSubmit = async () => {
   border-radius: 12px;
   padding: 13px 14px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #231d45;
   letter-spacing: -0.1px;
@@ -406,7 +406,7 @@ const handleSubmit = async () => {
 .form-input-action svg { width: 16px; height: 16px; }
 
 .form-help {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #9c98ad;
   margin-top: 6px;
@@ -419,7 +419,7 @@ const handleSubmit = async () => {
 .form-help svg {
   width: 12px;
   height: 12px;
-  color: #00a19a;
+  color: #00726c;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -436,7 +436,7 @@ const handleSubmit = async () => {
   border-color: #00a19a;
   box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.10);
 }
-:deep(.number-input) { font-size: 16px; color: #231d45; font-weight: 600; }
+:deep(.number-input) { font-size: 1rem; color: #231d45; font-weight: 600; }
 :deep(.country-dial) { color: #231d45; }
 
 /* Postcode prompt callout */
@@ -448,14 +448,14 @@ const handleSubmit = async () => {
   margin-top: 8px;
 }
 .postcode-prompt-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #007e78;
   margin-bottom: 4px;
   letter-spacing: -0.05px;
 }
 .postcode-prompt-text {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #231d45;
   line-height: 1.45;
@@ -474,7 +474,7 @@ const handleSubmit = async () => {
 }
 .address-selected-body { flex: 1; min-width: 0; }
 .address-selected-line1 {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
   white-space: nowrap;
@@ -482,16 +482,16 @@ const handleSubmit = async () => {
   text-overflow: ellipsis;
 }
 .address-selected-line2 {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a5568;
   margin-top: 2px;
 }
 .address-edit-btn {
   background: transparent;
   border: none;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
   padding: 4px 8px;
   flex-shrink: 0;
@@ -533,7 +533,7 @@ const handleSubmit = async () => {
   transform: rotate(-45deg) translate(1px, -1px);
 }
 .checkbox-text {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b6783;
   line-height: 1.45;
@@ -547,7 +547,7 @@ const handleSubmit = async () => {
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 14px 18px;
   border-radius: 100px;
@@ -564,7 +564,7 @@ const handleSubmit = async () => {
 .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
 
 .terms-text {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #9c98ad;
   text-align: center;
@@ -580,7 +580,7 @@ const handleSubmit = async () => {
 }
 
 .auth-footer {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b6783;
   text-align: center;
@@ -588,7 +588,7 @@ const handleSubmit = async () => {
   letter-spacing: -0.05px;
 }
 .auth-footer a {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
   cursor: pointer;
   text-decoration: none;
@@ -602,7 +602,7 @@ const handleSubmit = async () => {
   border: 1px solid rgba(220, 38, 38, 0.25);
   border-radius: 12px;
   color: #dc2626;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.5;
 }
 

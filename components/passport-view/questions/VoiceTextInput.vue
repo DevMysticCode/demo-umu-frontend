@@ -8,7 +8,7 @@
         :placeholder="placeholder"
         @keydown.enter.prevent="submit"
         @input="onInput"
-      />
+       aria-label="placeholder" />
       <button
         class="voice-btn"
         :class="{ recording: isRecording }"
@@ -185,7 +185,7 @@ onUnmounted(() => {
   border: 0.33px solid #e0e0e0;
   padding: 9px 12px;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   color: #1a1a1a;
   background: transparent;
   font-family: inherit;
@@ -213,7 +213,7 @@ onUnmounted(() => {
 }
 
 .voice-btn:hover {
-  color: #00a19a;
+  color: #00726c;
 }
 
 .voice-btn.recording {

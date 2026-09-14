@@ -52,7 +52,7 @@
     </div>
 
     <!-- Daily quest -->
-    <div class="mp-quest anim-2" @click="goPostJob">
+    <div class="mp-quest anim-2" @click="goPostJob" role="button" tabindex="0" @keydown.enter="goPostJob" @keydown.space.prevent="goPostJob">
       <div class="mp-quest-icon">📨</div>
       <div class="mp-quest-body">
         <div class="mp-quest-eyebrow">Today's quest</div>
@@ -72,12 +72,12 @@
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
-        <input v-model="searchQuery" class="hs-search-input" type="text" placeholder="Search trades, services, suppliers" />
+        <input v-model="searchQuery" class="hs-search-input" type="text" placeholder="Search trades, services, suppliers"  aria-label="Search trades, services, suppliers" />
       </div>
     </div>
 
     <!-- EPC pathway match banner -->
-    <div class="mp-match-banner anim-2" @click="goPathway">
+    <div class="mp-match-banner anim-2" @click="goPathway" role="button" tabindex="0" @keydown.enter="goPathway" @keydown.space.prevent="goPathway">
       <div class="mp-match-icon">🎯</div>
       <div class="mp-match-body">
         <div class="mp-match-eyebrow">From your EPC pathway</div>
@@ -144,7 +144,7 @@
         :key="s.id"
         class="supplier-card"
         @click="goSupplier(s.id)"
-      >
+       role="button" tabindex="0" @keydown.enter="goSupplier(s.id)" @keydown.space.prevent="goSupplier(s.id)">
         <div class="sc-top">
           <div class="sc-avatar" :style="{ background: `linear-gradient(135deg, ${s.gradient[0]}, ${s.gradient[1]})` }">{{ s.initial }}</div>
           <div class="sc-info">
@@ -175,7 +175,7 @@
     <!-- Your activity -->
     <div class="section-h-row">
       <div class="section-h">Your activity</div>
-      <div class="section-h-sub" @click="goJobs">See all</div>
+      <div class="section-h-sub" @click="goJobs" role="button" tabindex="0" @keydown.enter="goJobs" @keydown.space.prevent="goJobs">See all</div>
     </div>
     <div class="mp-activity-wrap">
       <div
@@ -183,7 +183,7 @@
         :key="j.id"
         class="mp-activity-card"
         @click="goJobs"
-      >
+       role="button" tabindex="0" @keydown.enter="goJobs" @keydown.space.prevent="goJobs">
         <div class="mp-activity-icon" :class="j.status">{{ j.icon }}</div>
         <div class="mp-activity-body">
           <div class="mp-activity-title">{{ j.title }}</div>
@@ -352,7 +352,7 @@ function goMatched(category: string) {
   border-bottom: 1px solid var(--border);
 }
 .app-header-logo {
-  font-size: 22px;
+  font-size: 1.375rem;
   width: 36px;
   height: 36px;
   display: flex;
@@ -364,14 +364,14 @@ function goMatched(category: string) {
   min-width: 0;
 }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
   line-height: 1.15;
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -406,20 +406,20 @@ function goMatched(category: string) {
   border: none;
   color: white;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 /* Greeting */
 .mp-greet { padding: 14px 20px 4px; }
 .mp-greet-hi {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.4px;
   line-height: 1.1;
 }
 .mp-greet-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 3px;
@@ -459,7 +459,7 @@ function goMatched(category: string) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -480,7 +480,7 @@ function goMatched(category: string) {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   padding: 5px 11px;
   border-radius: 100px;
@@ -493,13 +493,13 @@ function goMatched(category: string) {
   display: inline-block;
 }
 .mp-hero-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   line-height: 1.15;
 }
 .mp-hero-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   margin-top: 3px;
@@ -519,16 +519,16 @@ function goMatched(category: string) {
   text-align: center;
   backdrop-filter: blur(6px);
 }
-.mp-hero-stat-ico { font-size: 16px; margin-bottom: 3px; }
+.mp-hero-stat-ico { font-size: 1rem; margin-bottom: 3px; }
 .mp-hero-stat-num {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.4px;
   line-height: 1;
   color: white;
 }
 .mp-hero-stat-label {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.7);
   letter-spacing: 0.6px;
@@ -559,7 +559,7 @@ function goMatched(category: string) {
   top: 8px;
   right: 14px;
   color: #5b3795;
-  font-size: 14px;
+  font-size: 0.875rem;
   opacity: 0.4;
   animation: mpSparkle 2.2s ease-in-out infinite;
 }
@@ -571,13 +571,13 @@ function goMatched(category: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 21px;
+  font-size: 1.3125rem;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(91, 55, 149, 0.3);
 }
 .mp-quest-body { flex: 1; min-width: 0; }
 .mp-quest-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   color: #5b3795;
   letter-spacing: 1.2px;
@@ -585,7 +585,7 @@ function goMatched(category: string) {
   line-height: 1.1;
 }
 .mp-quest-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -593,7 +593,7 @@ function goMatched(category: string) {
   line-height: 1.2;
 }
 .mp-quest-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -604,14 +604,14 @@ function goMatched(category: string) {
   padding-left: 6px;
 }
 .mp-quest-reward-num {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #5b3795;
   letter-spacing: -0.3px;
   line-height: 1;
 }
 .mp-quest-reward-label {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   color: #5b3795;
   letter-spacing: 0.6px;
@@ -648,7 +648,7 @@ function goMatched(category: string) {
   border: none;
   padding: 14px 0;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text);
   outline: none;
@@ -671,7 +671,7 @@ function goMatched(category: string) {
   cursor: pointer;
 }
 .mp-match-icon {
-  font-size: 20px;
+  font-size: 1.25rem;
   width: 36px;
   height: 36px;
   border-radius: 10px;
@@ -684,21 +684,21 @@ function goMatched(category: string) {
 }
 .mp-match-body { flex: 1; min-width: 0; }
 .mp-match-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 .mp-match-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
   margin-top: 3px;
 }
 .mp-match-arrow {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--accent-dark);
   font-weight: 800;
   flex-shrink: 0;
@@ -729,19 +729,19 @@ function goMatched(category: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 300;
   flex-shrink: 0;
 }
 .mp-cta-big-text { flex: 1; min-width: 0; }
-.mp-cta-big-title { font-size: 15px; font-weight: 800; letter-spacing: -0.2px; }
+.mp-cta-big-title { font-size: 0.9375rem; font-weight: 800; letter-spacing: -0.2px; }
 .mp-cta-big-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
   margin-top: 2px;
 }
-.mp-cta-big-arrow { font-size: 18px; opacity: 0.7; }
+.mp-cta-big-arrow { font-size: 1.125rem; opacity: 0.7; }
 
 /* Section heading */
 .section-h-row {
@@ -751,14 +751,14 @@ function goMatched(category: string) {
   padding: 18px 20px 10px;
 }
 .section-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 .section-h-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--accent-dark);
   cursor: pointer;
@@ -786,9 +786,9 @@ function goMatched(category: string) {
   border-color: var(--accent-pale);
   transform: translateY(-1px);
 }
-.mp-cat-icon { font-size: 22px; margin-bottom: 4px; line-height: 1.1; }
+.mp-cat-icon { font-size: 1.375rem; margin-bottom: 4px; line-height: 1.1; }
 .mp-cat-name {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: 0.1px;
@@ -829,14 +829,14 @@ function goMatched(category: string) {
   padding: 2px 6px;
   background: var(--accent);
   color: white;
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   border-radius: 100px;
   letter-spacing: 0.4px;
 }
-.mp-badge-ico { font-size: 26px; line-height: 1; margin-bottom: 5px; display: block; }
+.mp-badge-ico { font-size: 1.625rem; line-height: 1; margin-bottom: 5px; display: block; }
 .mp-badge-name {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   color: var(--text);
   line-height: 1.2;
@@ -867,7 +867,7 @@ function goMatched(category: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: white;
   flex-shrink: 0;
@@ -880,9 +880,9 @@ function goMatched(category: string) {
   margin-bottom: 3px;
   flex-wrap: wrap;
 }
-.sc-name { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+.sc-name { font-size: 0.875rem; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
 .verified-badge {
-  font-size: 10px;
+  font-size: 0.625rem;
   background: var(--accent-paler);
   color: var(--accent-dark);
   border: 1px solid var(--accent-pale);
@@ -891,15 +891,15 @@ function goMatched(category: string) {
   font-weight: 800;
 }
 .sc-rating {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text-secondary);
   font-weight: 600;
 }
 .sc-rating b { color: var(--text); font-weight: 800; }
-.sc-spec { font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-top: 3px; }
+.sc-spec { font-size: 0.6875rem; font-weight: 600; color: var(--text-secondary); margin-top: 3px; }
 .sc-match { padding: 0 16px 12px; }
 .sc-match-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: 1px;
@@ -908,7 +908,7 @@ function goMatched(category: string) {
 }
 .sc-match-items { display: flex; gap: 6px; flex-wrap: wrap; }
 .match-chip {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   padding: 4px 9px;
   border-radius: 100px;
@@ -924,7 +924,7 @@ function goMatched(category: string) {
   border-top: 1px solid var(--border-soft);
   background: var(--bg);
 }
-.sc-price { font-size: 13px; font-weight: 800; color: var(--text); }
+.sc-price { font-size: 0.8125rem; font-weight: 800; color: var(--text); }
 .sc-price span { font-weight: 500; color: var(--text-secondary); }
 .sc-cta {
   padding: 9px 16px;
@@ -933,7 +933,7 @@ function goMatched(category: string) {
   border: none;
   border-radius: 10px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 161, 154, 0.25);
@@ -959,27 +959,27 @@ function goMatched(category: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
 }
 .mp-activity-icon.live { background: var(--accent-paler); }
 .mp-activity-icon.awaiting { background: var(--warning-pale); }
 .mp-activity-body { flex: 1; min-width: 0; }
 .mp-activity-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.1px;
   line-height: 1.2;
 }
 .mp-activity-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
 }
 .mp-activity-status {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   padding: 3px 8px;
   border-radius: 100px;
@@ -1014,14 +1014,14 @@ function goMatched(category: string) {
   margin-bottom: 10px;
 }
 .mp-leaderboard-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 .mp-leaderboard-link {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--accent-dark);
   cursor: pointer;
@@ -1031,7 +1031,7 @@ function goMatched(category: string) {
   align-items: center;
   gap: 10px;
   padding: 7px 0;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
 }
 .mp-lb-row + .mp-lb-row { border-top: 1px solid var(--border-soft); }
 .mp-lb-row.you {
@@ -1042,7 +1042,7 @@ function goMatched(category: string) {
   border: 1px solid var(--accent-pale);
 }
 .mp-lb-row.you + .mp-lb-row { border-top: none; }
-.mp-lb-medal { font-size: 13px; flex-shrink: 0; }
+.mp-lb-medal { font-size: 0.8125rem; flex-shrink: 0; }
 .mp-lb-rank {
   width: 24px;
   font-weight: 800;
@@ -1067,7 +1067,7 @@ function goMatched(category: string) {
   box-shadow: 0 8px 22px rgba(35, 29, 69, 0.18);
 }
 .mp-uprotect-icon {
-  font-size: 24px;
+  font-size: 1.5rem;
   width: 42px;
   height: 42px;
   border-radius: 10px;
@@ -1079,13 +1079,13 @@ function goMatched(category: string) {
 }
 .mp-uprotect-body { flex: 1; min-width: 0; }
 .mp-uprotect-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   letter-spacing: -0.1px;
   margin-bottom: 3px;
 }
 .mp-uprotect-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.82);
   line-height: 1.5;
@@ -1096,7 +1096,7 @@ function goMatched(category: string) {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   padding: 3px 9px;
   border-radius: 100px;
@@ -1125,7 +1125,7 @@ function goMatched(category: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   flex-shrink: 0;
 }
 .mp-tier-medal.silver {
@@ -1134,14 +1134,14 @@ function goMatched(category: string) {
 }
 .mp-tier-body { flex: 1; min-width: 0; }
 .mp-tier-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 .mp-tier-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -1163,7 +1163,7 @@ function goMatched(category: string) {
   width: 48%;
 }
 .mp-tier-progress-text {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: var(--text-secondary);
   white-space: nowrap;
@@ -1172,5 +1172,5 @@ function goMatched(category: string) {
   color: var(--accent-dark);
   font-weight: 800;
 }
-.mp-tier-chev { font-size: 18px; color: var(--text-faint); }
+.mp-tier-chev { font-size: 1.125rem; color: var(--text-faint); }
 </style>

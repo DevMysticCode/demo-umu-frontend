@@ -182,12 +182,12 @@ function onPost() {
 .back-btn svg { width: 16px; height: 16px; }
 .app-header-info { flex: 1; min-width: 0; }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -197,7 +197,7 @@ function onPost() {
 .mp-form-field { margin-bottom: 16px; }
 .mp-form-label {
   display: block;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.3px;
@@ -215,7 +215,7 @@ function onPost() {
   border: 1.5px solid var(--border);
   border-radius: 100px;
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: var(--text-secondary);
   cursor: pointer;
@@ -233,7 +233,7 @@ function onPost() {
   border: 1.5px solid var(--border);
   border-radius: 12px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text);
   outline: none;
@@ -256,7 +256,7 @@ function onPost() {
 .mp-budget-to {
   color: var(--text-secondary);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .mp-photo-row {
   display: flex;
@@ -272,7 +272,7 @@ function onPost() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   color: var(--text-faint);
   cursor: pointer;
 }
@@ -289,7 +289,7 @@ function onPost() {
   box-shadow: 0 8px 22px rgba(35, 29, 69, 0.18);
 }
 .mp-uprotect-icon {
-  font-size: 22px;
+  font-size: 1.375rem;
   width: 38px;
   height: 38px;
   border-radius: 10px;
@@ -301,13 +301,13 @@ function onPost() {
 }
 .mp-uprotect-body { flex: 1; min-width: 0; }
 .mp-uprotect-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.1px;
   margin-bottom: 3px;
 }
 .mp-uprotect-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.82);
   line-height: 1.5;
@@ -322,7 +322,7 @@ function onPost() {
   border: none;
   border-radius: 14px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.3);
@@ -335,7 +335,7 @@ function onPost() {
   border: 1.5px solid var(--border);
   border-radius: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 8px;

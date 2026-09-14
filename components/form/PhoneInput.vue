@@ -32,7 +32,7 @@
         @focus="isFocused = true"
         @blur="isFocused = false"
         @input="emitValue"
-      />
+       aria-label="selectedCountry.placeholder || 'Phone number'" />
     </div>
 
     <!-- Country dropdown -->
@@ -51,7 +51,7 @@
             placeholder="Search country or code..."
             class="dropdown-search"
             @click.stop
-          />
+           aria-label="Search country or code..." />
         </div>
         <div class="country-list">
           <button
@@ -301,12 +301,12 @@ watch(() => props.modelValue, (val) => {
 }
 
 .country-flag {
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 1;
 }
 
 .country-dial {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #1f2024;
   letter-spacing: -0.2px;
@@ -338,7 +338,7 @@ watch(() => props.modelValue, (val) => {
   background: transparent;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   color: #1f2024;
   min-width: 0;
 }
@@ -384,7 +384,7 @@ watch(() => props.modelValue, (val) => {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #1f2024;
   background: transparent;
 }
@@ -419,14 +419,14 @@ watch(() => props.modelValue, (val) => {
 }
 
 .item-flag {
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
   width: 24px;
 }
 
 .item-name {
   flex: 1;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #1f2024;
   white-space: nowrap;
   overflow: hidden;
@@ -434,7 +434,7 @@ watch(() => props.modelValue, (val) => {
 }
 
 .item-dial {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #8e8e93;
   flex-shrink: 0;
 }

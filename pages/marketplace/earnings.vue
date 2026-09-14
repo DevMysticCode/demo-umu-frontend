@@ -160,13 +160,13 @@ function onRefresh() {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px; font-weight: 800; line-height: 1;
+  font-size: 1.375rem; font-weight: 800; line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
 }
 .er-header-title {
   flex: 1;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   text-align: center;
@@ -176,17 +176,17 @@ function onRefresh() {
 .er-loading, .er-empty {
   padding: 60px 24px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
-.er-empty-emoji { font-size: 40px; margin-bottom: 8px; }
-.er-empty-title { font-size: 16px; font-weight: 800; color: #231d45; margin-bottom: 4px; }
+.er-empty-emoji { font-size: 2.5rem; margin-bottom: 8px; }
+.er-empty-title { font-size: 1rem; font-weight: 800; color: #231d45; margin-bottom: 4px; }
 .er-empty-sub { margin-bottom: 16px; }
 .er-empty-btn {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff; border: none; border-radius: 12px;
-  padding: 12px 18px; font-family: inherit; font-size: 13px; font-weight: 800;
+  padding: 12px 18px; font-family: inherit; font-size: 0.8125rem; font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
 }
@@ -216,21 +216,21 @@ function onRefresh() {
 }
 .er-hero > * { position: relative; z-index: 1; }
 .er-hero-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
 }
 .er-hero-amt {
-  font-size: 36px;
+  font-size: 2.25rem;
   font-weight: 800;
   letter-spacing: -1px;
   color: #fff;
   margin-top: 6px;
 }
 .er-hero-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 4px;
@@ -253,16 +253,16 @@ function onRefresh() {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .er-pending-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
 }
 .er-pending-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 2px;
@@ -275,8 +275,8 @@ function onRefresh() {
   justify-content: space-between;
   padding: 20px 20px 10px;
 }
-.er-section-title { font-size: 14px; font-weight: 800; color: #231d45; letter-spacing: -0.2px; }
-.er-section-link { font-size: 12px; font-weight: 700; color: #00a19a; cursor: pointer; }
+.er-section-title { font-size: 0.875rem; font-weight: 800; color: #231d45; letter-spacing: -0.2px; }
+.er-section-link { font-size: 0.75rem; font-weight: 700; color: #00726c; cursor: pointer; }
 
 /* ── Payout rows ────────────────────────────────────────────── */
 .er-list {
@@ -306,30 +306,30 @@ function onRefresh() {
   background: linear-gradient(135deg, #4A4566, #231D45);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 800; letter-spacing: -0.2px;
+  font-size: 0.8125rem; font-weight: 800; letter-spacing: -0.2px;
   flex-shrink: 0;
 }
 .er-row-body { flex: 1; min-width: 0; }
 .er-row-title {
-  font-size: 13.5px; font-weight: 800;
+  font-size: 0.8438rem; font-weight: 800;
   color: #231d45; letter-spacing: -0.2px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .er-row-meta {
-  font-size: 11px; font-weight: 600;
+  font-size: 0.6875rem; font-weight: 600;
   color: #6b7089; margin-top: 2px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .er-row-amt { flex-shrink: 0; text-align: right; }
 .er-row-amount {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: -0.3px;
 }
 .er-row-status {
   margin-top: 2px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;

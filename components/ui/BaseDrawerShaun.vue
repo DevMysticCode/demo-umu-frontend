@@ -100,7 +100,7 @@ const handleClose = () => {
   align-items: center;
   background: transparent;
   border: none;
-  color: #00a19a;
+  color: #00726c;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;

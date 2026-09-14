@@ -355,16 +355,16 @@ const statusCtaLabel = computed(() => {
 .jd-empty {
   padding: 60px 24px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
-.jd-empty-emoji { font-size: 40px; margin-bottom: 8px; }
-.jd-empty-title { font-size: 16px; font-weight: 800; color: #231d45; margin-bottom: 4px; }
+.jd-empty-emoji { font-size: 2.5rem; margin-bottom: 8px; }
+.jd-empty-title { font-size: 1rem; font-weight: 800; color: #231d45; margin-bottom: 4px; }
 .jd-empty-sub { margin-bottom: 16px; }
 .jd-empty-btn {
   background: #00a19a; color: #fff; border: none; border-radius: 12px;
-  padding: 12px 18px; font-family: inherit; font-size: 13px; font-weight: 800;
+  padding: 12px 18px; font-family: inherit; font-size: 0.8125rem; font-weight: 800;
   cursor: pointer;
 }
 
@@ -391,13 +391,13 @@ const statusCtaLabel = computed(() => {
   border: none;
   background: rgba(255, 255, 255, 0.95);
   color: #231d45;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   line-height: 1;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
-.jd-back-btn.jd-icon { width: 36px; font-size: 16px; }
+.jd-back-btn.jd-icon { width: 36px; font-size: 1rem; }
 .jd-photo-bottom {
   position: absolute;
   bottom: 14px;
@@ -408,13 +408,13 @@ const statusCtaLabel = computed(() => {
   flex-wrap: wrap;
 }
 .jd-photo-counter {
-  font-size: 11px; font-weight: 700;
+  font-size: 0.6875rem; font-weight: 700;
   padding: 5px 10px; border-radius: 100px;
   color: #fff; background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
 }
 .jd-photo-pill {
-  font-size: 10.5px; font-weight: 800;
+  font-size: 0.6563rem; font-weight: 800;
   letter-spacing: 0.6px; text-transform: uppercase;
   padding: 5px 10px; border-radius: 100px;
   color: #fff;
@@ -432,14 +432,14 @@ const statusCtaLabel = computed(() => {
   padding: 18px 20px 6px;
 }
 .jd-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.4px;
   line-height: 1.2;
   color: #231d45;
 }
 .jd-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 6px;
@@ -458,36 +458,36 @@ const statusCtaLabel = computed(() => {
   box-shadow: 0 4px 14px rgba(35, 29, 69, 0.06);
 }
 .jd-budget-label {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   letter-spacing: 0.8px; text-transform: uppercase;
   color: #6b7089;
 }
 .jd-budget-amt {
-  font-size: 22px; font-weight: 800;
-  color: #00a19a; letter-spacing: -0.5px;
+  font-size: 1.375rem; font-weight: 800;
+  color: #00726c; letter-spacing: -0.5px;
   margin-top: 4px;
 }
 .jd-budget-side {
-  font-size: 11px; font-weight: 600;
+  font-size: 0.6875rem; font-weight: 600;
   color: #6b7089; text-align: right;
   line-height: 1.4;
 }
 .jd-budget-side b {
-  display: block; font-size: 16px;
+  display: block; font-size: 1rem;
   font-weight: 800; color: #231d45;
 }
 
 /* ── Sections ────────────────────────────────────────────────── */
 .jd-section { margin: 18px 20px 0; }
 .jd-section-h {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   color: #231d45;
   margin-bottom: 8px;
 }
 .jd-desc {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #4a4566;
   line-height: 1.55;
@@ -503,7 +503,7 @@ const statusCtaLabel = computed(() => {
   background: #fff;
   border: 1px solid #e4e5ed;
   border-radius: 100px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
 }
@@ -545,19 +545,19 @@ const statusCtaLabel = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   letter-spacing: -0.2px;
 }
 .jd-cust-info { flex: 1; min-width: 0; }
 .jd-cust-name {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #231d45;
 }
 .jd-verified { color: #008A84; }
 .jd-cust-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 2px;
@@ -583,12 +583,12 @@ const statusCtaLabel = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
   box-shadow: 0 4px 10px rgba(0, 161, 154, 0.28);
 }
 .mp-trust-strip-text {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.5;
@@ -607,7 +607,7 @@ const statusCtaLabel = computed(() => {
   border-radius: 14px;
   padding: 15px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
@@ -628,7 +628,7 @@ const statusCtaLabel = computed(() => {
   border-radius: 14px;
   padding: 13px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   cursor: pointer;
   transition: background 0.15s;

@@ -425,13 +425,13 @@ function formatDateTime(iso: string): string {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px; font-weight: 800; line-height: 1;
+  font-size: 1.375rem; font-weight: 800; line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
 }
 .cn-header-title {
   flex: 1;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   text-align: center;
@@ -442,7 +442,7 @@ function formatDateTime(iso: string): string {
 .cn-empty {
   padding: 40px 20px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
@@ -473,7 +473,7 @@ function formatDateTime(iso: string): string {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 1.4px;
@@ -485,17 +485,17 @@ function formatDateTime(iso: string): string {
   border-radius: 6px;
   background: linear-gradient(135deg, #00a19a, #008a84);
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 .cn-contract-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.4px;
   line-height: 1.2;
   margin-bottom: 6px;
 }
 .cn-contract-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.45;
@@ -510,7 +510,7 @@ function formatDateTime(iso: string): string {
   border-radius: 12px;
 }
 .cn-contract-amt-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.70);
   letter-spacing: 0.5px;
@@ -518,7 +518,7 @@ function formatDateTime(iso: string): string {
   margin-bottom: 3px;
 }
 .cn-contract-amt-val {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.3px;
@@ -541,7 +541,7 @@ function formatDateTime(iso: string): string {
   text-align: center;
 }
 .cn-duo-card-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   color: #6b7089;
   letter-spacing: 0.6px;
@@ -554,7 +554,7 @@ function formatDateTime(iso: string): string {
   margin: 0 auto 6px;
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -564,12 +564,12 @@ function formatDateTime(iso: string): string {
   background: linear-gradient(135deg, #352D5C, #008A84);
 }
 .cn-duo-card-name {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
 }
 .cn-duo-card-meta {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 2px;
@@ -585,7 +585,7 @@ function formatDateTime(iso: string): string {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .cn-step-list-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #6b7089;
   letter-spacing: 1.2px;
@@ -603,7 +603,7 @@ function formatDateTime(iso: string): string {
   border-radius: 10px;
   background: linear-gradient(135deg, #f2faf8, #e5f4f2);
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   flex-shrink: 0;
   color: #00635E;
 }
@@ -623,14 +623,14 @@ function formatDateTime(iso: string): string {
 }
 .cn-step-row-text { flex: 1; min-width: 0; padding-top: 2px; }
 .cn-step-row-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
   line-height: 1.25;
 }
 .cn-step-row-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #6b7089;
   margin-top: 2px;
@@ -654,13 +654,13 @@ function formatDateTime(iso: string): string {
   background: linear-gradient(135deg, #F5A623, #B07A13);
   display: flex; align-items: center; justify-content: center;
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   flex-shrink: 0;
   box-shadow: 0 4px 10px rgba(245, 166, 35, 0.25);
 }
 .cn-trust-strip-text {
   flex: 1;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #6b7089;
   line-height: 1.45;
@@ -699,7 +699,7 @@ function formatDateTime(iso: string): string {
   flex: 1;
   padding: 14px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   border-radius: 14px;
   cursor: pointer;
@@ -740,13 +740,13 @@ function formatDateTime(iso: string): string {
   border-radius: 16px;
 }
 .cn-release-h {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
 }
 .cn-release-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 4px;
@@ -762,7 +762,7 @@ function formatDateTime(iso: string): string {
   border-radius: 14px;
   padding: 13px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
@@ -784,7 +784,7 @@ function formatDateTime(iso: string): string {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .cn-kv-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #6b7089;
   letter-spacing: 1.2px;
@@ -792,7 +792,7 @@ function formatDateTime(iso: string): string {
   margin-bottom: 10px;
 }
 .cn-kv-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #231d45;
   line-height: 1.5;
@@ -803,7 +803,7 @@ function formatDateTime(iso: string): string {
   justify-content: space-between;
   align-items: center;
   padding: 9px 0 0;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   border-top: 1px solid #f0f1f5;
   margin-top: 4px;
@@ -818,7 +818,7 @@ function formatDateTime(iso: string): string {
   background: transparent;
   border: none;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #6b7089;
   cursor: pointer;
@@ -831,7 +831,7 @@ function formatDateTime(iso: string): string {
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #c43c3c;
 }

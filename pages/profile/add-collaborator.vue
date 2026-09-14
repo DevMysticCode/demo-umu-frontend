@@ -65,7 +65,7 @@
             class="ac-search-input"
             placeholder="Search by name or email"
             @input="onSearchInput"
-          />
+           aria-label="Search by name or email" />
           <span v-if="searching" class="ac-search-spin" />
         </div>
 
@@ -139,21 +139,21 @@
           type="text"
           class="mform-input"
           placeholder="Full name"
-        />
+         aria-label="Full name" />
         <div class="ac-spacer" />
         <input
           v-model="inviteOrg"
           type="text"
           class="mform-input"
           placeholder="Firm or company"
-        />
+         aria-label="Firm or company" />
         <div class="ac-spacer" />
         <input
           v-model="inviteEmail"
           type="email"
           class="mform-input"
           placeholder="Email address"
-        />
+         aria-label="Email address" />
         <p class="ac-hint">
           If you can't find them in UMU, we'll send an invite to join.
         </p>
@@ -510,7 +510,7 @@ onMounted(loadPassports)
 .ac-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.4px;
@@ -543,13 +543,13 @@ onMounted(loadPassports)
   z-index: 1;
 }
 .ac-greeting {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #94a3b8;
   margin-bottom: 4px;
 }
 .ac-h1 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -1px;
@@ -557,7 +557,7 @@ onMounted(loadPassports)
 }
 
 .section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -571,7 +571,7 @@ onMounted(loadPassports)
 }
 .sh-action {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #008a84;
   cursor: pointer;
@@ -599,7 +599,7 @@ onMounted(loadPassports)
   border-radius: 10px;
   padding: 10px 12px 10px 38px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -692,7 +692,7 @@ onMounted(loadPassports)
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   flex-shrink: 0;
@@ -708,13 +708,13 @@ onMounted(loadPassports)
   min-width: 0;
 }
 .ac-result-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
 }
 .ac-result-email {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #4a5868;
   margin-top: 1px;
@@ -726,7 +726,7 @@ onMounted(loadPassports)
   border: none;
   background: #f0f2f1;
   color: #4a5868;
-  font-size: 18px;
+  font-size: 1.125rem;
   cursor: pointer;
   font-family: inherit;
   flex-shrink: 0;
@@ -736,14 +736,14 @@ onMounted(loadPassports)
 }
 .ac-no-results {
   margin-top: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #8a95a0;
 }
 
 .ac-hint {
   margin-top: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #4a5868;
 }
@@ -756,7 +756,7 @@ onMounted(loadPassports)
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -782,7 +782,7 @@ onMounted(loadPassports)
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #0e2840;
   cursor: pointer;
@@ -898,7 +898,7 @@ onMounted(loadPassports)
   min-width: 0;
 }
 .ac-property-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
@@ -907,7 +907,7 @@ onMounted(loadPassports)
   white-space: nowrap;
 }
 .ac-property-meta {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: #8a95a0;
   margin-top: 1px;
@@ -939,7 +939,7 @@ onMounted(loadPassports)
   border: 1px solid #e8eceb;
   border-radius: 12px;
   padding: 14px 16px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #4a5868;
   text-align: center;
@@ -956,7 +956,7 @@ onMounted(loadPassports)
   justify-content: space-between;
 }
 .ac-toggle-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
@@ -994,7 +994,7 @@ onMounted(loadPassports)
 .ac-error {
   text-align: center;
   color: #b85b36;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 8px 22px 0;
 }
@@ -1015,7 +1015,7 @@ onMounted(loadPassports)
   border-radius: 12px;
   padding: 13px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;
@@ -1031,7 +1031,7 @@ onMounted(loadPassports)
   border-radius: 12px;
   padding: 13px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;

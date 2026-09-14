@@ -1,11 +1,19 @@
 <template>
   <Teleport to="body">
     <div v-if="modelValue" class="agm-overlay" @click.self="close">
-      <div class="agm-card">
+      <div
+        ref="cardEl"
+        class="agm-card"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="titleId"
+        tabindex="-1"
+        @keydown="onKeydown"
+      >
         <div class="agm-ic">
           <img src="/op-icons/claim/padlock.png" alt="" loading="lazy" />
         </div>
-        <div class="agm-title">{{ title }}</div>
+        <div :id="titleId" class="agm-title">{{ title }}</div>
         <div class="agm-sub">{{ body }}</div>
         <button type="button" class="agm-primary" @click="go('signup')">
           Create free account
@@ -13,13 +21,15 @@
         <button type="button" class="agm-secondary" @click="go('signin')">
           I already have an account
         </button>
-        <button type="button" class="agm-ghost" @click="close">Not now</button>
+        <button type="button" class="agm-ghost" @click="close" aria-label="Not now, close dialog">Not now</button>
       </div>
     </div>
   </Teleport>
 </template>
 
 <script setup lang="ts">
+import { ref, watch, nextTick, useId } from 'vue'
+
 // Shared "Create account / Sign in" gate — same overlay pattern already
 // used inline on pages/homescore/[id].vue (.hs-authgate-*) and
 // components/property/PassportClaimBox.vue (.authd-*), factored out so
@@ -39,6 +49,59 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', v: boolean): void
 }>()
+
+const titleId = `agm-title-${useId()}`
+const cardEl = ref<HTMLElement | null>(null)
+let triggerEl: HTMLElement | null = null
+
+function focusables() {
+  if (!cardEl.value) return []
+  return Array.from(
+    cardEl.value.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((el) => el.offsetParent !== null)
+}
+
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') {
+    e.stopPropagation()
+    close()
+    return
+  }
+  if (e.key !== 'Tab') return
+  const items = focusables()
+  if (!items.length) {
+    e.preventDefault()
+    return
+  }
+  const first = items[0]
+  const last = items[items.length - 1]
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault()
+    first.focus()
+  }
+}
+
+watch(
+  () => props.modelValue,
+  (isOpen) => {
+    if (typeof document === 'undefined') return
+    if (isOpen) {
+      triggerEl = document.activeElement as HTMLElement
+      nextTick(() => {
+        const items = focusables()
+        ;(items[0] || cardEl.value)?.focus()
+      })
+    } else if (triggerEl && typeof triggerEl.focus === 'function') {
+      triggerEl.focus()
+      triggerEl = null
+    }
+  },
+)
 
 function close() {
   emit('update:modelValue', false)
@@ -74,6 +137,10 @@ function go(mode: 'signup' | 'signin') {
   text-align: center;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
 }
+.agm-card:focus-visible {
+  outline: 2px solid #00726c;
+  outline-offset: -2px;
+}
 .agm-ic {
   width: 85px;
   height: 85px;
@@ -91,13 +158,13 @@ function go(mode: 'signup' | 'signin') {
   display: block;
 }
 .agm-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #1f2024;
   margin-bottom: 6px;
 }
 .agm-sub {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #64748b;
   line-height: 1.55;
   margin-bottom: 18px;
@@ -109,7 +176,7 @@ function go(mode: 'signup' | 'signin') {
   border-radius: 12px;
   background: #00a19a;
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   font-family: inherit;
@@ -122,7 +189,7 @@ function go(mode: 'signup' | 'signin') {
   border-radius: 12px;
   background: #fff;
   color: #231d45;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   font-family: inherit;
@@ -139,7 +206,7 @@ function go(mode: 'signup' | 'signin') {
   border-radius: 12px;
   background: transparent;
   color: #64748b;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;

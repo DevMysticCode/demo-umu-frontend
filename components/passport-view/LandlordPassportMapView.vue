@@ -81,7 +81,7 @@
               class="step-platform"
               :class="getStepStatusClass(step)"
               @click="onStepClick(step)"
-            >
+             role="button" tabindex="0" @keydown.enter="onStepClick(step)" @keydown.space.prevent="onStepClick(step)">
               <OPIcon name="mapBackgroundTile" class="map-shadow-tile" />
               <OPIcon name="mapBackgroundTile" class="map-background-tile" />
               <div class="step-illustration">
@@ -586,7 +586,7 @@ const ladyPosition = computed(() => {
   background: #fff;
   color: #4a5568;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 7px 12px;
   border-radius: 999px;
@@ -605,10 +605,10 @@ const ladyPosition = computed(() => {
   box-shadow: 0 2px 8px rgba(0, 161, 154, 0.28);
 }
 .map-filter-count {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   background: rgba(0, 161, 154, 0.12);
-  color: #00a19a;
+  color: #00726c;
   padding: 1px 7px;
   border-radius: 999px;
 }
@@ -627,11 +627,11 @@ const ladyPosition = computed(() => {
   box-shadow: 0 1px 3px rgba(35, 29, 69, 0.06);
 }
 .map-now-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 6px;
 }
 .map-now-row {
@@ -648,7 +648,7 @@ const ladyPosition = computed(() => {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #00a19a;
+  color: #00726c;
   overflow: hidden;
 }
 .map-now-icon-img {
@@ -661,7 +661,7 @@ const ladyPosition = computed(() => {
   min-width: 0;
 }
 .map-now-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
@@ -670,7 +670,7 @@ const ladyPosition = computed(() => {
   text-overflow: ellipsis;
 }
 .map-now-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #94a3b8;
   margin-top: 2px;
 }
@@ -680,7 +680,7 @@ const ladyPosition = computed(() => {
   color: #fff;
   border-radius: 9px;
   padding: 7px 12px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
@@ -740,12 +740,12 @@ const ladyPosition = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
 }
 .map-step-ring-text--done {
   color: #008a84;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 </style>

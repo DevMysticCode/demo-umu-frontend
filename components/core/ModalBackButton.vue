@@ -9,7 +9,7 @@
     @click="$emit('close')"
   >
     <OPIcon name="leftChevron" class="w-[15px] h-[15px]" />
-    <span :class="['text-base font-medium text-brand-aqua', colorClass]"
+    <span :class="['text-base font-medium text-brand-aqua-text', colorClass]"
       >Back</span
     >
   </UButton>

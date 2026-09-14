@@ -38,7 +38,7 @@
           type="text"
           placeholder="Ask a question…"
           @keydown.enter.prevent="askWith(question)"
-        />
+         aria-label="Ask a question…" />
         <button type="submit" class="ai-send" aria-label="Send" :disabled="!question.trim()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="19" x2="12" y2="5" />
@@ -146,7 +146,7 @@ const goBack = useGoBack('/profile')
 .ai-nav-icon-btn svg { width: 18px; height: 18px; }
 .ai-nav-title {
   flex: 1; text-align: center;
-  font-size: 16px; font-weight: 800;
+  font-size: 1rem; font-weight: 800;
   color: #0e2840; letter-spacing: -0.4px;
 }
 
@@ -200,18 +200,18 @@ const goBack = useGoBack('/profile')
   content: '✨';
   position: absolute;
   top: -2px; right: -2px;
-  font-size: 14px;
+  font-size: 0.875rem;
   filter: drop-shadow(0 2px 4px rgba(61, 189, 163, 0.4));
 }
 
 .ai-greeting {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #94a3b8;
   margin-bottom: 4px;
 }
 .ai-headline {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.8px;
@@ -225,7 +225,7 @@ const goBack = useGoBack('/profile')
   color: #008a84;
 }
 .ai-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #4a5868;
   line-height: 1.45;
@@ -261,7 +261,7 @@ const goBack = useGoBack('/profile')
   background: transparent;
   padding: 12px 14px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   min-width: 0;
@@ -308,7 +308,7 @@ const goBack = useGoBack('/profile')
 
 /* Section heading */
 .section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -322,7 +322,7 @@ const goBack = useGoBack('/profile')
 }
 .sh-action {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #008a84;
   text-transform: none;
@@ -370,14 +370,14 @@ const goBack = useGoBack('/profile')
 }
 .ai-prompt-icon svg { width: 13px; height: 13px; }
 .ai-prompt-text {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #0e2840;
   letter-spacing: -0.1px;
   line-height: 1.3;
   flex: 1;
 }
-.ai-prompt-arrow { color: #008a84; font-size: 14px; flex-shrink: 0; }
+.ai-prompt-arrow { color: #008a84; font-size: 0.875rem; flex-shrink: 0; }
 
 /* Article card */
 .article-card {
@@ -407,7 +407,7 @@ const goBack = useGoBack('/profile')
 .article-icon svg { width: 16px; height: 16px; }
 .article-info { flex: 1; min-width: 0; }
 .article-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
@@ -418,13 +418,13 @@ const goBack = useGoBack('/profile')
   flex-wrap: wrap;
 }
 .article-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #8a95a0;
   margin-top: 2px;
 }
 .pill-tag {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;

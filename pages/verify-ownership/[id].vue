@@ -455,7 +455,7 @@ onMounted(async () => {
   text-align: center;
 }
 .build-error-msg {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #856404;
   margin: 0;
   line-height: 1.5;
@@ -466,7 +466,7 @@ onMounted(async () => {
 .progress-card-header-info-title {
   font-weight: 590;
   font-style: Semibold;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   vertical-align: middle;
@@ -475,16 +475,16 @@ onMounted(async () => {
 
 .progress-card-header-info-date {
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
   vertical-align: middle;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .progress-card-header-info-subheading {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   vertical-align: middle;
@@ -503,10 +503,10 @@ onMounted(async () => {
   padding-left: 14px;
   border: 0.33px solid #3c3c432e;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
-  color: #00a19a;
+  color: #00726c;
   width: 100%;
 }
 
@@ -531,7 +531,7 @@ onMounted(async () => {
 }
 
 .verify-subtext {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #555;
   text-align: center;
   line-height: 1.6;
@@ -544,7 +544,7 @@ onMounted(async () => {
   display: inline-block;
   padding: 5px 14px;
   border-radius: 100px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -560,7 +560,7 @@ onMounted(async () => {
 
 .badge-verified {
   background: rgba(0, 161, 154, 0.15);
-  color: #00a19a;
+  color: #00726c;
 }
 
 /* ── Info card ───────────────────────────────────────────────────────────── */
@@ -580,13 +580,13 @@ onMounted(async () => {
 }
 
 .info-card-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #1a1a1a;
 }
 
 .info-card-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #555;
   line-height: 1.6;
   margin: 0 0 14px;
@@ -604,11 +604,11 @@ onMounted(async () => {
   align-items: center;
   gap: 10px;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   vertical-align: middle;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .step-num {
@@ -616,8 +616,8 @@ onMounted(async () => {
   height: 22px;
   border-radius: 50%;
   /* background: rgba(0, 161, 154, 0.12); */
-  color: #00a19a;
-  font-size: 11px;
+  color: #00726c;
+  font-size: 0.6875rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -626,8 +626,8 @@ onMounted(async () => {
 }
 
 .info-step span {
-  font-size: 15px;
-  color: #00a19a;
+  font-size: 0.9375rem;
+  color: #00726c;
 }
 
 /* ── Progress card ───────────────────────────────────────────────────────── */
@@ -646,15 +646,15 @@ onMounted(async () => {
 }
 
 .progress-card-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1a1a1a;
 }
 
 .progress-pct {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .progress-track {
@@ -703,7 +703,7 @@ onMounted(async () => {
 }
 
 .progress-step span {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #888;
 }
 
@@ -720,7 +720,7 @@ onMounted(async () => {
   color: white;
   border: none;
   border-radius: 100px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 400;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -754,14 +754,14 @@ onMounted(async () => {
   color: #000000;
   margin: 0 0 3px;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   vertical-align: middle;
 }
 
 .notif-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #8e8e93;
   margin: 0;
 }

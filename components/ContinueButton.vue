@@ -39,8 +39,8 @@ defineEmits(['continue'])
   color: white;
   border: none;
   border-radius: 1rem;
-  font-size: 17px;
-  font-size: 17px;
+  font-size: 1.0625rem;
+  font-size: 1.0625rem;
   font-style: normal;
   font-weight: 400;
   line-height: 22px; /* 129.412% */

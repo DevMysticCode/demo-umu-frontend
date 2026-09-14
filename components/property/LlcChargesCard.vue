@@ -284,12 +284,12 @@ function formatWhen(iso: string): string {
 }
 .llc-header-body { flex: 1; min-width: 0 }
 .llc-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   letter-spacing: -0.01em;
 }
 .llc-header-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6880;
   font-weight: 500;
   margin-top: 2px;
@@ -316,13 +316,13 @@ function formatWhen(iso: string): string {
 .llc-empty-ic { width: 42px; height: 42px; margin: 0 auto; }
 .llc-empty-ic img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .llc-empty-title {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   margin-top: 8px;
   color: #231d45;
 }
 .llc-empty-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b6880;
   font-weight: 500;
   margin-top: 6px;
@@ -335,7 +335,7 @@ function formatWhen(iso: string): string {
   width: 46px; height: 46px;
   border-radius: 50%;
   display: inline-flex; align-items: center; justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   margin: 0 auto;
 }
 .llc-empty--warn .llc-empty-title { color: #7a5b1a }
@@ -355,12 +355,12 @@ function formatWhen(iso: string): string {
   text-align: center;
 }
 .llc-summary-num {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #231d45;
 }
 .llc-summary-lbl {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6880;
   font-weight: 700;
   margin-top: 2px;
@@ -370,7 +370,7 @@ function formatWhen(iso: string): string {
 
 /* section titles */
 .llc-section-title {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -398,7 +398,7 @@ function formatWhen(iso: string): string {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   padding: 4px 9px;
   border-radius: 8px;
@@ -411,18 +411,18 @@ function formatWhen(iso: string): string {
 .llc-cat--other     { background: #f3effb; color: #5a4790 }
 .llc-charge-date {
   margin-left: auto;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6880;
   font-weight: 700;
 }
 .llc-charge-loc {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b6880;
   font-weight: 600;
   margin-top: 8px;
 }
 .llc-charge-desc {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #2f2a4a;
   line-height: 1.5;
   margin-top: 8px;
@@ -441,13 +441,13 @@ function formatWhen(iso: string): string {
   gap: 10px;
   flex-wrap: wrap;
   margin-top: 8px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6880;
   font-weight: 600;
 }
 .llc-charge-law { color: #8a86a3; font-style: italic; font-weight: 500 }
 .llc-charge-ref {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6880;
   font-weight: 500;
   margin-top: 6px;
@@ -461,7 +461,7 @@ function formatWhen(iso: string): string {
   border: 1px solid #f0e2a8;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #7a5b1a;
   font-weight: 600;
   line-height: 1.4;
@@ -474,14 +474,14 @@ function formatWhen(iso: string): string {
   border-top: 1px solid #f0eff5;
 }
 .llc-disclaimer {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6880;
   font-weight: 500;
   line-height: 1.5;
 }
 .llc-disclaimer b { color: #231d45 }
 .llc-attribution {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: #8a86a3;
   font-weight: 500;
   margin-top: 6px;

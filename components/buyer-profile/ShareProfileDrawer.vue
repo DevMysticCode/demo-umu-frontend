@@ -44,7 +44,7 @@
               v-model="form.recipientName"
               class="sd-input"
               placeholder="e.g. Hamilton Court Estates"
-            />
+             aria-label="e.g. Hamilton Court Estates" />
           </div>
 
           <div class="sd-field">
@@ -54,7 +54,7 @@
               type="email"
               class="sd-input"
               placeholder="agent@example.com"
-            />
+             aria-label="agent@example.com" />
             <div class="sd-hint">
               If provided, we'll email the link directly. Otherwise you can copy
               it from the Active tab once created.
@@ -81,7 +81,7 @@
                   max="365"
                   class="sd-input sd-input--small"
                   placeholder="e.g. 14"
-                />
+                 aria-label="e.g. 14" />
                 <button
                   class="sd-chip sd-chip--apply"
                   :disabled="!isCustomValid"
@@ -378,7 +378,7 @@ async function drawQr() {
   } catch {
     // qrcode library not installed yet — show a fallback message.
     qrCanvasEl.value.innerHTML =
-      '<div style="font-size:11px;color:#6b6783;padding:24px 12px;text-align:center;">QR code library not installed. Run <code>npm i qrcode</code>.</div>'
+      '<div style="font-size: 0.6875rem;color:#6b6783;padding:24px 12px;text-align:center;">QR code library not installed. Run <code>npm i qrcode</code>.</div>'
   }
 }
 
@@ -427,11 +427,11 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
   touch-action: none;
 }
 .sd-eyebrow {
-  font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
-  color: #00a19a; text-transform: uppercase;
+  font-size: 0.625rem; font-weight: 800; letter-spacing: 1.5px;
+  color: #00726c; text-transform: uppercase;
 }
 .sd-title {
-  font-size: 20px; font-weight: 900; color: #231d45;
+  font-size: 1.25rem; font-weight: 900; color: #231d45;
   letter-spacing: -0.5px; margin: 2px 0 14px;
 }
 
@@ -443,33 +443,33 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 .sd-tab {
   flex: 1; background: transparent; border: none; cursor: pointer;
   padding: 9px 10px; border-radius: 10px;
-  font-family: inherit; font-size: 12px; font-weight: 800;
+  font-family: inherit; font-size: 0.75rem; font-weight: 800;
   color: #6b6783; letter-spacing: -0.1px;
 }
-.sd-tab.active { background: #fff; color: #00a19a; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.sd-tab.active { background: #fff; color: #00726c; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
 .sd-tab-count {
   display: inline-block; min-width: 16px; padding: 0 5px; margin-left: 4px;
   background: #00a19a; color: #fff; border-radius: 100px;
-  font-size: 10px; font-weight: 800; line-height: 16px;
+  font-size: 0.625rem; font-weight: 800; line-height: 16px;
 }
 
 .sd-pane { display: flex; flex-direction: column; gap: 14px; }
 .sd-field { display: flex; flex-direction: column; gap: 6px; }
-.sd-label { font-size: 11px; font-weight: 800; color: #231d45; letter-spacing: 0.3px; }
+.sd-label { font-size: 0.6875rem; font-weight: 800; color: #231d45; letter-spacing: 0.3px; }
 .sd-input {
   border: 1.5px solid #ececef; border-radius: 12px;
-  padding: 12px 14px; font-family: inherit; font-size: 16px;
+  padding: 12px 14px; font-family: inherit; font-size: 1rem;
   background: #fafafa;
 }
 .sd-input:focus { outline: none; border-color: #00a19a; background: #fff; }
-.sd-input--small { padding: 8px 10px; font-size: 16px; max-width: 80px; }
-.sd-hint { font-size: 11px; font-weight: 500; color: #6b6783; line-height: 1.5; }
+.sd-input--small { padding: 8px 10px; font-size: 1rem; max-width: 80px; }
+.sd-hint { font-size: 0.6875rem; font-weight: 500; color: #6b6783; line-height: 1.5; }
 .sd-hint b { color: #231d45; font-weight: 800; }
 
 .sd-chip-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .sd-chip {
   background: #fff; border: 1.5px solid #ececef; border-radius: 100px;
-  padding: 7px 13px; font-family: inherit; font-size: 12px; font-weight: 700;
+  padding: 7px 13px; font-family: inherit; font-size: 0.75rem; font-weight: 700;
   color: #4a4560; cursor: pointer;
 }
 .sd-chip.active { background: #00a19a; border-color: #00a19a; color: #fff; }
@@ -484,33 +484,33 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
   padding: 10px 12px; cursor: pointer;
 }
 .sd-scope-row input { margin-top: 2px; accent-color: #00a19a; }
-.sd-scope-title { font-size: 13px; font-weight: 800; color: #231d45; }
-.sd-scope-sub { font-size: 11px; font-weight: 500; color: #6b6783; }
+.sd-scope-title { font-size: 0.8125rem; font-weight: 800; color: #231d45; }
+.sd-scope-sub { font-size: 0.6875rem; font-weight: 500; color: #6b6783; }
 
 .sd-publish-warn {
   background: #fef3c7; color: #92400e;
   border: 1px solid #fcd34d; border-radius: 10px;
-  padding: 10px 12px; font-size: 12px; font-weight: 600; line-height: 1.5;
+  padding: 10px 12px; font-size: 0.75rem; font-weight: 600; line-height: 1.5;
 }
-.sd-err { color: #c73e36; font-size: 12px; font-weight: 600; }
+.sd-err { color: #c73e36; font-size: 0.75rem; font-weight: 600; }
 
 .sd-cta {
   width: 100%; padding: 14px 18px; border-radius: 100px;
   background: #00a19a; color: #fff; border: none;
-  font-family: inherit; font-size: 14px; font-weight: 800;
+  font-family: inherit; font-size: 0.875rem; font-weight: 800;
   cursor: pointer; margin-top: 4px;
 }
 .sd-cta:disabled { opacity: 0.55; cursor: not-allowed; }
 .sd-cancel {
   width: 100%; background: transparent; border: none;
-  color: #6b6783; font-size: 12.5px; font-weight: 700;
+  color: #6b6783; font-size: 0.7813rem; font-weight: 700;
   padding: 12px; cursor: pointer; margin-top: 8px;
   font-family: inherit;
 }
 
 .sd-empty {
   text-align: center; padding: 28px 12px;
-  color: #6b6783; font-size: 12.5px; font-weight: 600;
+  color: #6b6783; font-size: 0.7813rem; font-weight: 600;
 }
 
 .sd-share-list { display: flex; flex-direction: column; gap: 10px; }
@@ -521,16 +521,16 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 .sd-share-row.revoked,
 .sd-share-row.expired { opacity: 0.6; }
 .sd-share-head { display: flex; justify-content: space-between; align-items: center; }
-.sd-share-name { font-size: 13px; font-weight: 800; color: #231d45; }
-.sd-share-meta { font-size: 11px; color: #6b6783; margin-top: 2px; }
+.sd-share-name { font-size: 0.8125rem; font-weight: 800; color: #231d45; }
+.sd-share-meta { font-size: 0.6875rem; color: #6b6783; margin-top: 2px; }
 .sd-share-actions { display: flex; gap: 8px; margin-top: 10px; }
 .sd-link-btn {
   background: #f5f5f7; border: none; padding: 7px 12px; border-radius: 100px;
-  font-family: inherit; font-size: 11.5px; font-weight: 800; color: #231d45;
+  font-family: inherit; font-size: 0.7188rem; font-weight: 800; color: #231d45;
   cursor: pointer;
 }
 .sd-link-btn--danger { background: #fee2e2; color: #991b1b; }
-.sd-pill { font-size: 9px; font-weight: 800; padding: 3px 9px; border-radius: 100px; letter-spacing: 0.5px; }
+.sd-pill { font-size: 0.5625rem; font-weight: 800; padding: 3px 9px; border-radius: 100px; letter-spacing: 0.5px; }
 .sd-pill--ok { background: #e6f7f6; color: #00857f; }
 .sd-pill--err { background: #fee2e2; color: #991b1b; }
 
@@ -540,10 +540,10 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 }
 .sd-qr-canvas { display: inline-block; }
 .sd-qr-url {
-  font-family: 'SF Mono', Menlo, monospace; font-size: 11px;
+  font-family: 'SF Mono', Menlo, monospace; font-size: 0.6875rem;
   color: #6b6783; word-break: break-all;
   background: #fff; border: 1px solid #ececef; border-radius: 8px;
   padding: 8px 10px; margin: 10px 0;
 }
-.sd-qr-meta { font-size: 11px; color: #6b6783; margin-bottom: 14px; }
+.sd-qr-meta { font-size: 0.6875rem; color: #6b6783; margin-bottom: 14px; }
 </style>

@@ -36,7 +36,7 @@
               placeholder="City, area or postcode"
               @keyup.enter="doSearch"
               @input="onInput"
-            />
+             aria-label="City, area or postcode" />
             <button v-if="query" class="sd-clear-x" @click="clearSearch">
               <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
                 <path
@@ -113,7 +113,7 @@
             :key="s.postcode"
             class="sd-sug-row"
             @click="selectSuggestion(s.postcode)"
-          >
+           role="button" tabindex="0" @keydown.enter="selectSuggestion(s.postcode)" @keydown.space.prevent="selectSuggestion(s.postcode)">
             <div class="sd-sug-ic">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                 <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
@@ -156,7 +156,7 @@
               :key="r.id"
               class="sd-result-row"
               @click="selectProperty(r.id)"
-            >
+             role="button" tabindex="0" @keydown.enter="selectProperty(r.id)" @keydown.space.prevent="selectProperty(r.id)">
               <div class="sd-result-body">
                 <h3 class="sd-result-name">{{ r.address }}</h3>
                 <p class="sd-result-loc">{{ r.area || r.postcode }}</p>
@@ -233,7 +233,7 @@
                 :key="r.id"
                 class="sd-result-row"
                 @click="selectProperty(r.id)"
-              >
+               role="button" tabindex="0" @keydown.enter="selectProperty(r.id)" @keydown.space.prevent="selectProperty(r.id)">
                 <div class="sd-result-body">
                   <h3 class="sd-result-name">{{ r.address }}</h3>
                   <p class="sd-result-loc">{{ r.area || r.postcode }}</p>
@@ -640,7 +640,7 @@ watch(
   background: transparent;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   color: #1a1a1a;
 }
 .sd-input::placeholder {
@@ -691,9 +691,9 @@ watch(
   border-radius: 20px;
   border: 0.33px solid #3c3c432e;
   background: white;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 400;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
   flex-shrink: 0;
   letter-spacing: -0.23px;
@@ -702,7 +702,7 @@ watch(
 .sd-chip-active {
   background: rgba(0, 161, 154, 0.08);
   border-color: #00a19a;
-  color: #00a19a;
+  color: #00726c;
 }
 
 /* ── Scroll area ─────────────────────────────────────────────────────────── */
@@ -720,7 +720,7 @@ watch(
 
 /* ── Section labels ──────────────────────────────────────────────────────── */
 .sd-section-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 22px;
   color: #3c3c4399;
@@ -731,7 +731,7 @@ watch(
 }
 
 .sd-results-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 22px;
   color: #3c3c4399;
@@ -752,7 +752,7 @@ watch(
 }
 
 .sd-sug-ic {
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -767,7 +767,7 @@ watch(
 }
 
 .sd-sug-addr {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 400;
   color: #000000;
   line-height: 20px;
@@ -775,7 +775,7 @@ watch(
 }
 
 .sd-sug-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #3c3c4399;
   line-height: 18px;
   letter-spacing: -0.08px;
@@ -813,7 +813,7 @@ watch(
   color: #000000;
   margin: 0 0 2px;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   vertical-align: middle;
@@ -823,17 +823,17 @@ watch(
   color: #3c3c4399;
   margin: 0 0 4px;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
   vertical-align: middle;
 }
 
 .sd-result-price {
-  color: #00a19a;
+  color: #00726c;
   margin: 0 0 8px;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
   vertical-align: middle;
@@ -859,7 +859,7 @@ watch(
 }
 
 .badge-pct {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 400;
   background: #00a19a;
   color: white;
@@ -871,8 +871,8 @@ watch(
   display: flex;
   align-items: center;
   gap: 3px;
-  font-size: 11px;
-  color: #00a19a;
+  font-size: 0.6875rem;
+  color: #00726c;
   background: #00a19a1a;
   padding: 2px 8px;
   border-radius: 4px;
@@ -884,8 +884,8 @@ watch(
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   font-weight: 400;
   max-width: fit-content;
 }
@@ -913,7 +913,7 @@ watch(
 }
 
 .sd-empty-msg {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #aaa;
   padding: 40px 0;
   text-align: center;
@@ -1036,8 +1036,8 @@ watch(
   border-radius: 24px;
   border: 1.5px solid #00a19a;
   background: white;
-  color: #00a19a;
-  font-size: 14px;
+  color: #00726c;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
@@ -1079,7 +1079,7 @@ watch(
   flex-shrink: 0;
 }
 .sd-loc-error {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #ef4444;
   padding: 4px 16px 0;
   margin: 0;

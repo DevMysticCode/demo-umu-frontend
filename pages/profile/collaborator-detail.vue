@@ -26,13 +26,13 @@
 
     <!-- Loading -->
     <div v-if="loading" class="flex items-center justify-center pt-24">
-      <Icon name="i-heroicons-arrow-path" class="w-10 h-10 text-brand-aqua animate-spin" />
+      <Icon name="i-heroicons-arrow-path" class="w-10 h-10 text-brand-aqua-text animate-spin" />
     </div>
 
     <!-- Error -->
     <div v-else-if="loadError" class="px-4 pt-16 text-center">
       <p class="text-red-500 text-[15px]">{{ loadError }}</p>
-      <button type="button" class="mt-4 text-brand-aqua text-[15px]" @click="load">Try again</button>
+      <button type="button" class="mt-4 text-brand-aqua-text text-[15px]" @click="load">Try again</button>
     </div>
 
     <main v-else-if="collaborator" class="px-4 pb-8">
@@ -51,11 +51,11 @@
             </p>
             <div class="mt-5 flex items-center gap-3 flex-wrap">
               <span
-                class="h-9 px-4 rounded-full bg-gray-200 text-brand-aqua text-[11px] leading-[13px] font-semibold inline-flex items-center"
+                class="h-9 px-4 rounded-full bg-gray-200 text-brand-aqua-text text-[11px] leading-[13px] font-semibold inline-flex items-center"
               >
                 ACTIVE
               </span>
-              <span class="text-brand-aqua text-[11px] leading-[13px] tracking-[0.06px] font-semibold uppercase">
+              <span class="text-brand-aqua-text text-[11px] leading-[13px] tracking-[0.06px] font-semibold uppercase">
                 {{ roleLabel }}
               </span>
             </div>
@@ -78,7 +78,7 @@
             class="w-[50px] h-[50px] rounded-full bg-white flex items-center justify-center shrink-0"
             aria-label="Message"
           >
-            <Icon name="i-heroicons-chat-bubble-left-ellipsis" class="w-6 h-6 text-brand-aqua" />
+            <Icon name="i-heroicons-chat-bubble-left-ellipsis" class="w-6 h-6 text-brand-aqua-text" />
           </button>
 
           <button
@@ -86,7 +86,7 @@
             class="w-[50px] h-[50px] rounded-full bg-white flex items-center justify-center shrink-0"
             aria-label="Call"
           >
-            <Icon name="i-heroicons-phone-arrow-up-right" class="w-6 h-6 text-brand-aqua" />
+            <Icon name="i-heroicons-phone-arrow-up-right" class="w-6 h-6 text-brand-aqua-text" />
           </button>
 
           <button
@@ -167,7 +167,7 @@
                 {{ propertyAccessLabel }}
               </p>
             </div>
-            <span class="h-8 px-3 rounded-full bg-brand-aqua/10 text-brand-aqua text-[12px] font-medium inline-flex items-center">
+            <span class="h-8 px-3 rounded-full bg-brand-aqua/10 text-brand-aqua-text text-[12px] font-medium inline-flex items-center">
               {{ permissionChip }}
             </span>
           </div>
@@ -175,7 +175,7 @@
           <!-- Client Access -->
           <div class="bg-white rounded-3xl px-6 py-5 flex items-center justify-between">
             <p class="text-[15px] leading-[20px] tracking-[-0.23px] text-black">Client Access</p>
-            <span class="h-8 px-3 rounded-full bg-brand-aqua/10 text-brand-aqua text-[12px] font-medium inline-flex items-center">
+            <span class="h-8 px-3 rounded-full bg-brand-aqua/10 text-brand-aqua-text text-[12px] font-medium inline-flex items-center">
               {{ clientAccessLabel }}
             </span>
           </div>
@@ -185,7 +185,7 @@
             <p class="text-[15px] leading-[20px] tracking-[-0.23px] text-black">Communications</p>
             <span
               class="h-8 px-3 rounded-full text-[12px] font-medium inline-flex items-center"
-              :class="collaborator.allowComms ? 'bg-brand-aqua/10 text-brand-aqua' : 'bg-gray-100 text-gray-500'"
+              :class="collaborator.allowComms ? 'bg-brand-aqua/10 text-brand-aqua-text' : 'bg-gray-100 text-gray-500'"
             >
               {{ collaborator.allowComms ? 'Allowed' : 'Disabled' }}
             </span>
@@ -201,7 +201,7 @@
             </div>
             <button
               type="button"
-              class="h-10 px-5 rounded-full bg-teal-50 text-brand-aqua text-[13px] font-medium"
+              class="h-10 px-5 rounded-full bg-teal-50 text-brand-aqua-text text-[13px] font-medium"
             >
               Edit
             </button>

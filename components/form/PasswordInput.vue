@@ -76,7 +76,7 @@ const togglePassword = () => {
 .password-input__label {
   @apply mb-2;
   color: rgba(60, 60, 67, 0.6);
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .password-input__container {
@@ -85,7 +85,7 @@ const togglePassword = () => {
 
 .password-input__field {
   @apply w-full pr-12 bg-white border placeholder-gray-400 transition-all duration-200;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 400;
   line-height: 22px;
   letter-spacing: -0.43px;
@@ -111,7 +111,7 @@ const togglePassword = () => {
 }
 
 .password-input__toggle {
-  @apply absolute right-3 top-1/2 transform -translate-y-1/2 bg-transparent border-0 text-brand-aqua cursor-pointer p-1 transition-colors duration-200;
+  @apply absolute right-3 top-1/2 transform -translate-y-1/2 bg-transparent border-0 text-brand-aqua-text cursor-pointer p-1 transition-colors duration-200;
 }
 
 .password-input__toggle:hover:not(:disabled) {

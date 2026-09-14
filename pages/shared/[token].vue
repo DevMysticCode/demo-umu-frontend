@@ -169,7 +169,7 @@ function formatPrice(price: number) {
   min-height: 60vh;
   gap: 16px;
   color: #666;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .shared-spinner {
@@ -195,14 +195,14 @@ function formatPrice(price: number) {
 }
 
 .shared-error h2 {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #1a1a1a;
   margin: 0;
 }
 
 .shared-error p {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   margin: 0;
 }
@@ -213,7 +213,7 @@ function formatPrice(price: number) {
   border: none;
   border-radius: 12px;
   padding: 12px 28px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   margin-top: 8px;
@@ -272,7 +272,7 @@ function formatPrice(price: number) {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   color: white;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   padding: 5px 12px;
   border-radius: 20px;
@@ -289,27 +289,27 @@ function formatPrice(price: number) {
 }
 
 .shared-address {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 590;
   color: #000;
   margin: 0 0 2px;
 }
 
 .shared-city {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #3c3c4399;
   margin: 0 0 4px;
 }
 
 .shared-price {
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   font-weight: 400;
   margin: 0;
 }
 
 .shared-estimated {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #999;
   margin-left: 5px;
 }
@@ -324,7 +324,7 @@ function formatPrice(price: number) {
 .shared-badge-pill {
   background: #00a19a;
   color: white;
-  font-size: 11px;
+  font-size: 0.6875rem;
   padding: 5px 12px;
   border-radius: 4px;
 }
@@ -339,7 +339,7 @@ function formatPrice(price: number) {
 }
 
 .shared-cta-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
   margin: 0 0 12px;
   line-height: 1.5;
@@ -352,7 +352,7 @@ function formatPrice(price: number) {
   border: none;
   border-radius: 10px;
   padding: 13px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -363,14 +363,14 @@ function formatPrice(price: number) {
 }
 
 .shared-section-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 590;
   color: #000;
   margin: 0 0 4px;
 }
 
 .shared-section-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #3c3c4399;
   margin: 0 0 12px;
 }
@@ -410,14 +410,14 @@ function formatPrice(price: number) {
 }
 
 .shared-section-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 590;
   color: #1a1a1a;
   margin: 0 0 2px;
 }
 
 .shared-section-desc {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #999;
   margin: 0;
   white-space: nowrap;
@@ -430,7 +430,7 @@ function formatPrice(price: number) {
 }
 
 .shared-footer-note {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #bbb;
   text-align: center;
   padding: 20px 0 40px;

@@ -218,7 +218,7 @@ function goBack() {
 .pd-top-title {
   flex: 1;
   text-align: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
@@ -274,7 +274,7 @@ function goBack() {
   display: inline-block;
 }
 .pd-emoji {
-  font-size: 56px;
+  font-size: 3.5rem;
   margin-bottom: 14px;
   animation: pd-pop 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.2) both;
   position: relative;
@@ -286,7 +286,7 @@ function goBack() {
   100% { transform: scale(1); opacity: 1; }
 }
 .pd-h1 {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
@@ -294,7 +294,7 @@ function goBack() {
   margin: 0 0 10px;
 }
 .pd-sub {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   color: #4a4566;
   line-height: 1.5;
   max-width: 320px;
@@ -309,7 +309,7 @@ function goBack() {
   background: #f2faf8;
   border: 1px solid #e5f4f2;
   color: #007e78;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -363,7 +363,7 @@ function goBack() {
   color: #231d45;
 }
 .pd-cta-emoji {
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1;
   flex-shrink: 0;
 }
@@ -373,18 +373,18 @@ function goBack() {
 }
 .pd-cta-title {
   display: block;
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   letter-spacing: -0.1px;
 }
 .pd-cta-sub {
   display: block;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   margin-top: 2px;
   opacity: 0.85;
 }
 .pd-cta-chev {
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
   opacity: 0.6;
 }
@@ -403,7 +403,7 @@ function goBack() {
   text-align: center;
 }
 .pd-stat-num {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #00514d;
   letter-spacing: -0.5px;
@@ -411,7 +411,7 @@ function goBack() {
 }
 .pd-stat-lbl {
   margin-top: 4px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -430,7 +430,7 @@ function goBack() {
   padding: 18px 18px 8px;
 }
 .pd-next-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -446,7 +446,7 @@ function goBack() {
   gap: 12px;
 }
 .pd-next-list li {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: #4a4566;
   line-height: 1.55;
   position: relative;
@@ -457,7 +457,7 @@ function goBack() {
   position: absolute;
   left: 0;
   top: 0;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
 }
 .pd-next-list li strong {

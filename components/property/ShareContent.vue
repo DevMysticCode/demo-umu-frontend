@@ -40,7 +40,7 @@
     <!-- Link row — always visible so the owner can see the link and
          copy it manually even when the OS share sheet is available. -->
     <div class="share-link-row">
-      <div class="share-link-input" @click="selectLink">
+      <div class="share-link-input" @click="selectLink" role="button" tabindex="0" @keydown.enter="selectLink" @keydown.space.prevent="selectLink">
         {{ shareLink }}
       </div>
       <button
@@ -170,14 +170,14 @@ function selectLink(e) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
 }
 .share-property-info {
   flex: 1;
   min-width: 0;
 }
 .share-property-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
@@ -187,7 +187,7 @@ function selectLink(e) {
   white-space: nowrap;
 }
 .share-property-address {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b7089;
   margin-top: 2px;
   overflow: hidden;
@@ -195,7 +195,7 @@ function selectLink(e) {
   white-space: nowrap;
 }
 .share-property-price {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #00857f;
   margin-top: 4px;
@@ -210,7 +210,7 @@ function selectLink(e) {
   background: #00a19a;
   color: #fff;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
@@ -236,7 +236,7 @@ function selectLink(e) {
 .share-link-input {
   flex: 1;
   min-width: 0;
-  font-size: 16px;
+  font-size: 1rem;
   color: #4a5868;
   font-family: 'SF Mono', ui-monospace, Menlo, monospace;
   overflow: hidden;
@@ -253,7 +253,7 @@ function selectLink(e) {
   padding: 8px 14px;
   border-radius: 8px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;

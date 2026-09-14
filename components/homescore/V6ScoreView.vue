@@ -150,7 +150,7 @@
           class="score-strip-item clickable"
           :class="{ active: activePanel === 'bills' }"
           @click="togglePanel('bills')"
-        >
+         role="button" tabindex="0" @keydown.enter="togglePanel('bills')" @keydown.space.prevent="togglePanel('bills')">
           <img
             src="/op-icons/homescore/wallet.png"
             alt=""
@@ -171,7 +171,7 @@
           class="score-strip-item clickable"
           :class="{ active: activePanel === 'co2' }"
           @click="togglePanel('co2')"
-        >
+         role="button" tabindex="0" @keydown.enter="togglePanel('co2')" @keydown.space.prevent="togglePanel('co2')">
           <img
             src="/op-icons/passportview/environmental.png"
             alt=""
@@ -196,7 +196,7 @@
         class="hs-street-hero anim-3"
         :class="{ active: activePanel === 'street' }"
         @click="togglePanel('street')"
-      >
+       role="button" tabindex="0" @keydown.enter="togglePanel('street')" @keydown.space.prevent="togglePanel('street')">
         <div class="hsh-eyebrow">
           <img
             src="/op-icons/homescore/houseSearch.png"
@@ -263,7 +263,7 @@
               EPC figure · heating, hot water &amp; lighting only
             </div>
           </div>
-          <div class="ssp-head-close" @click="activePanel = null">×</div>
+          <div class="ssp-head-close" @click="activePanel = null" role="button" tabindex="0" @keydown.enter="activePanel = null" @keydown.space.prevent="activePanel = null">×</div>
         </div>
         <div class="ssp-divider">Where it goes</div>
         <div class="ssp-bar-row">
@@ -322,7 +322,7 @@
           Standing charges, cooking and appliances are <b>not included</b> in
           the EPC figure.
         </div>
-        <div class="ssp-foot" @click="$emit('open-pathway')">
+        <div class="ssp-foot" @click="$emit('open-pathway')" role="button" tabindex="0" @keydown.enter="$emit('open-pathway')" @keydown.space.prevent="$emit('open-pathway')">
           <div class="ssp-foot-text">
             All 6 EPC steps cut bills by
             <b>£{{ formatNum(potentialSaving) }}/yr</b> →
@@ -350,7 +350,7 @@
               after all 6 EPC steps
             </div>
           </div>
-          <div class="ssp-head-close" @click="activePanel = null">×</div>
+          <div class="ssp-head-close" @click="activePanel = null" role="button" tabindex="0" @keydown.enter="activePanel = null" @keydown.space.prevent="activePanel = null">×</div>
         </div>
         <div class="ssp-divider">Now vs potential</div>
         <div class="ssp-bar-row">
@@ -409,7 +409,7 @@
             <b>driving 12,000 miles in a petrol car</b>.
           </div>
         </div>
-        <div class="ssp-foot" @click="$emit('open-pathway')">
+        <div class="ssp-foot" @click="$emit('open-pathway')" role="button" tabindex="0" @keydown.enter="$emit('open-pathway')" @keydown.space.prevent="$emit('open-pathway')">
           <div class="ssp-foot-text">
             All 6 EPC steps cut emissions by
             <b>{{ (co2NowDisplay - co2Potential).toFixed(1) }}t/yr</b> →
@@ -429,7 +429,7 @@
               estimated from EPC data
             </div>
           </div>
-          <div class="ssp-head-close" @click="activePanel = null">×</div>
+          <div class="ssp-head-close" @click="activePanel = null" role="button" tabindex="0" @keydown.enter="activePanel = null" @keydown.space.prevent="activePanel = null">×</div>
         </div>
         <div class="ssp-rank-hero">
           <div class="ssp-rank-num">#{{ streetRank ?? 8 }}</div>
@@ -817,7 +817,7 @@
         </div>
 
         <!-- Pathway projection -->
-        <div class="ssp-street-projection" @click="$emit('open-pathway')">
+        <div class="ssp-street-projection" @click="$emit('open-pathway')" role="button" tabindex="0" @keydown.enter="$emit('open-pathway')" @keydown.space.prevent="$emit('open-pathway')">
           <div class="ssp-street-projection-icon">📈</div>
           <div class="ssp-street-projection-body">
             <div class="ssp-street-projection-label">
@@ -856,7 +856,7 @@
             class="stat-row clickable"
             :class="{ open: expandedStat === s.id }"
             @click="toggleStat(s.id)"
-          >
+           role="button" tabindex="0" @keydown.enter="toggleStat(s.id)" @keydown.space.prevent="toggleStat(s.id)">
             <div class="stat-icon">
               <img
                 v-if="s.icon && s.icon.startsWith('/')"
@@ -896,7 +896,7 @@
                 <div class="stat-expand-meta-num save">
                   <template v-if="s.saving > 0">
                     £{{ s.saving
-                    }}<span style="font-size: 9px; color: var(--text-secondary)"
+                    }}<span style="font-size: 0.5625rem; color: var(--text-secondary)"
                       >/yr</span
                     >
                   </template>
@@ -948,7 +948,7 @@
                 </div>
               </div>
             </div>
-            <div class="stat-expand-foot" @click.stop="$emit('open-pathway')">
+            <div class="stat-expand-foot" @click.stop="$emit('open-pathway')" role="button" tabindex="0" @keydown.enter="$emit('open-pathway')" @keydown.space.prevent="$emit('open-pathway')">
               <div class="stat-expand-foot-text" v-html="s.footText" />
               <div class="stat-expand-foot-arrow">›</div>
             </div>
@@ -962,7 +962,7 @@
         class="epc-drawer anim-3"
         :class="{ open: epcDrawerOpen }"
       >
-        <div class="epc-drawer-head" @click="toggleEpcDrawer">
+        <div class="epc-drawer-head" @click="toggleEpcDrawer" role="button" tabindex="0" @keydown.enter="toggleEpcDrawer" @keydown.space.prevent="toggleEpcDrawer">
           <div class="epc-drawer-info">
             <div class="epc-drawer-title">Full HomeScore breakdown</div>
             <div class="epc-drawer-sub">
@@ -1009,7 +1009,7 @@
 
           <!-- 12 EPC items, each clickable to expand -->
           <template v-for="item in epcItems" :key="item.id">
-            <div class="epc-item" @click="toggleEpcItem(item.id)">
+            <div class="epc-item" @click="toggleEpcItem(item.id)" role="button" tabindex="0" @keydown.enter="toggleEpcItem(item.id)" @keydown.space.prevent="toggleEpcItem(item.id)">
               <div class="epc-item-icon">
                 <img
                   v-if="item.icon && item.icon.startsWith('/')"
@@ -2793,14 +2793,14 @@ const watchersDisplay = computed(() => {
   min-width: 0;
 }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
   line-height: 1.15;
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -2946,7 +2946,7 @@ const watchersDisplay = computed(() => {
   min-width: 0;
 }
 .hs-addr-line {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: white;
   letter-spacing: -0.5px;
@@ -2954,7 +2954,7 @@ const watchersDisplay = computed(() => {
   margin-bottom: 2px;
 }
 .hs-addr-meta {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.85);
 }
@@ -2970,7 +2970,7 @@ const watchersDisplay = computed(() => {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   padding: 5px 10px 5px 7px;
   border-radius: 100px;
@@ -2990,7 +2990,7 @@ const watchersDisplay = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
 }
 .claim-cta-btn {
@@ -3003,7 +3003,7 @@ const watchersDisplay = computed(() => {
   border: none;
   color: white;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   align-items: center;
@@ -3032,7 +3032,7 @@ const watchersDisplay = computed(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
   margin-top: 14px;
@@ -3122,7 +3122,7 @@ const watchersDisplay = computed(() => {
   }
 }
 .hs-live-text {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   letter-spacing: -0.05px;
   line-height: 1.25;
@@ -3183,7 +3183,7 @@ const watchersDisplay = computed(() => {
   margin-bottom: 14px;
 }
 .score-eyebrow-mark {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: 1.4px;
@@ -3191,7 +3191,7 @@ const watchersDisplay = computed(() => {
 }
 .score-eyebrow-mark sup {
   color: var(--accent);
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0;
 }
@@ -3229,7 +3229,7 @@ const watchersDisplay = computed(() => {
   justify-content: center;
 }
 .gn-big {
-  font-size: 44px;
+  font-size: 2.75rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -1.4px;
@@ -3237,7 +3237,7 @@ const watchersDisplay = computed(() => {
   font-feature-settings: 'tnum';
 }
 .gn-small {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-faint);
   margin-top: 3px;
@@ -3247,7 +3247,7 @@ const watchersDisplay = computed(() => {
   min-width: 0;
 }
 .score-band {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: -0.5px;
@@ -3255,7 +3255,7 @@ const watchersDisplay = computed(() => {
   line-height: 1.1;
 }
 .score-explainer {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -3269,7 +3269,7 @@ const watchersDisplay = computed(() => {
   align-items: flex-start;
   gap: 6px;
   margin-top: 10px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -3319,7 +3319,7 @@ const watchersDisplay = computed(() => {
   object-fit: contain;
 }
 .score-strip-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: var(--primary);
   letter-spacing: 0.6px;
@@ -3328,7 +3328,7 @@ const watchersDisplay = computed(() => {
   padding-right: 56px;
 }
 .score-strip-num {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.4px;
@@ -3342,18 +3342,18 @@ const watchersDisplay = computed(() => {
 }
 .strip-unit {
   font-weight: 600;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-secondary);
 }
 .score-strip-sub-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: 2px;
   padding-right: 56px;
 }
 .score-strip-sub-val {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--accent-dark);
   padding-right: 56px;
@@ -3443,20 +3443,20 @@ const watchersDisplay = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .ssp-head-info {
   flex: 1;
 }
 .ssp-head-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .ssp-head-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -3470,7 +3470,7 @@ const watchersDisplay = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-secondary);
   cursor: pointer;
   flex-shrink: 0;
@@ -3482,7 +3482,7 @@ const watchersDisplay = computed(() => {
   color: var(--error);
 }
 .ssp-divider {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: 1.2px;
@@ -3496,17 +3496,17 @@ const watchersDisplay = computed(() => {
   align-items: center;
   gap: 10px;
   padding: 6px 0;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
 }
 .ssp-bar-icon {
-  font-size: 14px;
+  font-size: 0.875rem;
   width: 20px;
   text-align: center;
   flex-shrink: 0;
 }
 .ssp-bar-label {
   width: 80px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text);
   flex-shrink: 0;
@@ -3543,7 +3543,7 @@ const watchersDisplay = computed(() => {
   background: var(--warning);
 }
 .ssp-bar-amt {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text);
   width: 62px;
@@ -3551,7 +3551,7 @@ const watchersDisplay = computed(() => {
   flex-shrink: 0;
 }
 .ssp-bar-amt-pct {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 600;
   color: var(--text-faint);
   margin-top: 1px;
@@ -3567,14 +3567,14 @@ const watchersDisplay = computed(() => {
   border-radius: 10px;
 }
 .ssp-total-label {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 0.8px;
   text-transform: uppercase;
 }
 .ssp-total-num {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -3585,7 +3585,7 @@ const watchersDisplay = computed(() => {
   background: var(--bg);
   border: 1px solid var(--border-soft);
   border-radius: 8px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: var(--text-secondary);
   font-weight: 500;
   line-height: 1.4;
@@ -3603,12 +3603,12 @@ const watchersDisplay = computed(() => {
   background: #f5f0e8;
   border: 1px solid #e8dec8;
   border-radius: 10px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #7a5500;
 }
 .ssp-equiv-icon {
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .ssp-foot {
@@ -3629,7 +3629,7 @@ const watchersDisplay = computed(() => {
 }
 .ssp-foot-text {
   flex: 1;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: var(--accent-dark);
   line-height: 1.35;
@@ -3639,7 +3639,7 @@ const watchersDisplay = computed(() => {
 }
 .ssp-foot-arrow {
   color: var(--accent-dark);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -3656,7 +3656,7 @@ const watchersDisplay = computed(() => {
   border-radius: 10px;
 }
 .ssp-rank-num {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: -1px;
@@ -3666,14 +3666,14 @@ const watchersDisplay = computed(() => {
   flex: 1;
 }
 .ssp-rank-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.1px;
   line-height: 1.1;
 }
 .ssp-rank-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -3695,7 +3695,7 @@ const watchersDisplay = computed(() => {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: var(--text-secondary);
 }
@@ -3752,7 +3752,7 @@ const watchersDisplay = computed(() => {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: var(--text-faint);
   margin-top: -2px;
@@ -3760,7 +3760,7 @@ const watchersDisplay = computed(() => {
 }
 .ssp-street-tip {
   text-align: center;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   color: var(--text-faint);
   margin-top: -2px;
@@ -3861,13 +3861,13 @@ const watchersDisplay = computed(() => {
   background: var(--accent-paler);
 }
 .ssp-street-tooltip-num {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .ssp-street-tooltip-rating {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   padding: 3px 8px;
   border-radius: 6px;
@@ -3878,7 +3878,7 @@ const watchersDisplay = computed(() => {
 }
 .ssp-street-tooltip-cost {
   margin-left: auto;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.3px;
@@ -3910,7 +3910,7 @@ const watchersDisplay = computed(() => {
   filter: brightness(0.98);
 }
 .ssp-street-projection-icon {
-  font-size: 24px;
+  font-size: 1.5rem;
   flex-shrink: 0;
   width: 38px;
   height: 38px;
@@ -3926,7 +3926,7 @@ const watchersDisplay = computed(() => {
   min-width: 0;
 }
 .ssp-street-projection-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: 1px;
@@ -3934,7 +3934,7 @@ const watchersDisplay = computed(() => {
   line-height: 1.1;
 }
 .ssp-street-projection-num {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.4px;
@@ -3942,13 +3942,13 @@ const watchersDisplay = computed(() => {
   margin-top: 3px;
 }
 .ssp-street-projection-num span {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-left: 1px;
 }
 .ssp-street-projection-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -3965,14 +3965,14 @@ const watchersDisplay = computed(() => {
   border-left: 1px solid var(--accent-pale);
 }
 .ssp-street-projection-saving-num {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: -0.4px;
   line-height: 1;
 }
 .ssp-street-projection-saving-sub {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: var(--accent-dark);
   margin-top: 2px;
@@ -3987,14 +3987,14 @@ const watchersDisplay = computed(() => {
   padding: 18px 20px 5px;
 }
 .section-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--primary);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 .section-h-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--accent-dark);
 }
@@ -4018,7 +4018,7 @@ const watchersDisplay = computed(() => {
   padding: 5px 0;
 }
 .stat-icon {
-  font-size: 14px;
+  font-size: 0.875rem;
   width: 34px;
   height: 34px;
   text-align: center;
@@ -4035,7 +4035,7 @@ const watchersDisplay = computed(() => {
 }
 .stat-label {
   width: 70px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text);
   flex-shrink: 0;
@@ -4066,7 +4066,7 @@ const watchersDisplay = computed(() => {
 .stat-value {
   width: 46px;
   text-align: right;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text);
   flex-shrink: 0;
@@ -4082,7 +4082,7 @@ const watchersDisplay = computed(() => {
   background: var(--accent-paler);
 }
 .stat-row-chev {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-faint);
   transition: transform 0.2s;
   flex-shrink: 0;
@@ -4113,7 +4113,7 @@ const watchersDisplay = computed(() => {
   text-align: center;
 }
 .stat-expand-meta-eyebrow {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: 0.7px;
@@ -4122,7 +4122,7 @@ const watchersDisplay = computed(() => {
   margin-bottom: 3px;
 }
 .stat-expand-meta-num {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -4135,7 +4135,7 @@ const watchersDisplay = computed(() => {
   color: var(--text);
 }
 .stat-expand-meta-sub {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -4158,7 +4158,7 @@ const watchersDisplay = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
   margin-top: 1px;
 }
@@ -4178,14 +4178,14 @@ const watchersDisplay = computed(() => {
   min-width: 0;
 }
 .stat-cost-title {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 2px;
   letter-spacing: -0.1px;
 }
 .stat-cost-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -4199,7 +4199,7 @@ const watchersDisplay = computed(() => {
   flex-shrink: 0;
 }
 .stat-cost-amt-big {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: -0.2px;
@@ -4207,7 +4207,7 @@ const watchersDisplay = computed(() => {
   white-space: nowrap;
 }
 .stat-cost-amt-sub {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 600;
   color: var(--text-faint);
   margin-top: 2px;
@@ -4231,7 +4231,7 @@ const watchersDisplay = computed(() => {
 }
 .stat-expand-foot-text {
   flex: 1;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: var(--accent-dark);
   line-height: 1.35;
@@ -4241,7 +4241,7 @@ const watchersDisplay = computed(() => {
 }
 .stat-expand-foot-arrow {
   color: var(--accent-dark);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -4271,13 +4271,13 @@ const watchersDisplay = computed(() => {
   min-width: 0;
 }
 .epc-drawer-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: -0.2px;
 }
 .epc-drawer-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 3px;
@@ -4288,7 +4288,7 @@ const watchersDisplay = computed(() => {
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: var(--accent-dark);
   white-space: nowrap;
@@ -4324,12 +4324,12 @@ const watchersDisplay = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: white;
 }
 .epc-grade-sub {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 0.6px;
@@ -4337,7 +4337,7 @@ const watchersDisplay = computed(() => {
 }
 .epc-arrow {
   color: var(--text-faint);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
 }
 .epc-saving {
@@ -4345,13 +4345,13 @@ const watchersDisplay = computed(() => {
   text-align: right;
 }
 .epc-saving-num {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: -0.2px;
 }
 .epc-saving-sub {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -4372,7 +4372,7 @@ const watchersDisplay = computed(() => {
   background: var(--accent-paler);
 }
 .epc-item-icon {
-  font-size: 16px;
+  font-size: 1rem;
   width: 34px;
   height: 34px;
   text-align: center;
@@ -4394,19 +4394,19 @@ const watchersDisplay = computed(() => {
   padding-right: 6px;
 }
 .epc-item-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 2px;
 }
 .epc-item-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-secondary);
   font-weight: 500;
   line-height: 1.4;
 }
 .epc-item-rating {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   padding: 3px 8px;
   border-radius: 100px;
@@ -4435,7 +4435,7 @@ const watchersDisplay = computed(() => {
   border: 1px solid var(--border);
 }
 .epc-item-chev {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-faint);
   transition: transform 0.2s;
   flex-shrink: 0;
@@ -4454,7 +4454,7 @@ const watchersDisplay = computed(() => {
   padding: 10px 12px;
   border-radius: 10px;
   margin-bottom: 8px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   line-height: 1.55;
 }
 .epc-flag {
@@ -4474,7 +4474,7 @@ const watchersDisplay = computed(() => {
 }
 .epc-flag-label,
 .epc-fix-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 1.2px;
   text-transform: uppercase;
@@ -4501,7 +4501,7 @@ const watchersDisplay = computed(() => {
   align-items: center;
   gap: 4px;
   margin-top: 6px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   color: var(--accent-dark);
   cursor: pointer;
@@ -4526,7 +4526,7 @@ const watchersDisplay = computed(() => {
 }
 .epc-drawer-cta-text {
   flex: 1;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--accent-dark);
   line-height: 1.4;
@@ -4536,7 +4536,7 @@ const watchersDisplay = computed(() => {
 }
 .epc-drawer-cta-arrow {
   color: var(--accent-dark);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
 }
 
@@ -4545,7 +4545,7 @@ const watchersDisplay = computed(() => {
   padding: 20px 20px 0;
 }
 .fork-eyebrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: 0.4px;
@@ -4604,7 +4604,7 @@ const watchersDisplay = computed(() => {
   color: rgba(255, 255, 255, 0.7);
 }
 .fork-opt-icon {
-  font-size: 22px;
+  font-size: 1.375rem;
   width: 56px;
   height: 56px;
   display: flex;
@@ -4623,7 +4623,7 @@ const watchersDisplay = computed(() => {
   min-width: 0;
 }
 .fork-opt-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   margin-bottom: 3px;
@@ -4633,7 +4633,7 @@ const watchersDisplay = computed(() => {
   color: white;
 }
 .fork-opt-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -4642,7 +4642,7 @@ const watchersDisplay = computed(() => {
   color: rgba(255, 255, 255, 0.85);
 }
 .fork-opt-chev {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--text-faint);
   flex-shrink: 0;
 }
@@ -4698,7 +4698,7 @@ const watchersDisplay = computed(() => {
   justify-content: flex-end;
 }
 .fork-tile-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -4709,7 +4709,7 @@ const watchersDisplay = computed(() => {
   color: #fff;
 }
 .fork-tile-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -4719,7 +4719,7 @@ const watchersDisplay = computed(() => {
   color: rgba(255, 255, 255, 0.75);
 }
 .fork-tile-lock {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: var(--accent-dark);
 }
@@ -4731,7 +4731,7 @@ const watchersDisplay = computed(() => {
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -4749,7 +4749,7 @@ const watchersDisplay = computed(() => {
   gap: 6px;
   margin: 16px 24px 0;
   padding-bottom: 4px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-faint);
   text-align: center;
@@ -4784,13 +4784,13 @@ const watchersDisplay = computed(() => {
   min-width: 0;
 }
 .hs-noepc-prop-line {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .hs-noepc-prop-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -4806,12 +4806,12 @@ const watchersDisplay = computed(() => {
   text-align: center;
 }
 .hs-noepc-icon {
-  font-size: 38px;
+  font-size: 2.375rem;
   line-height: 1;
   margin-bottom: 10px;
 }
 .hs-noepc-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.3px;
@@ -4819,7 +4819,7 @@ const watchersDisplay = computed(() => {
   line-height: 1.25;
 }
 .hs-noepc-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.55;
@@ -4840,7 +4840,7 @@ const watchersDisplay = computed(() => {
   padding: 13px 14px;
   border-radius: 12px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   text-align: center;
@@ -4864,7 +4864,7 @@ const watchersDisplay = computed(() => {
   color: var(--accent-dark);
 }
 .hs-noepc-help {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-faint);
   line-height: 1.5;
@@ -4886,16 +4886,16 @@ const watchersDisplay = computed(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   letter-spacing: -0.3px;
 }
 .hs-noepc-hero-pin {
-  font-size: 16px;
+  font-size: 1rem;
   opacity: 0.9;
 }
 .hs-noepc-hero-meta {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   opacity: 0.9;
   margin: 4px 0 14px;
 }
@@ -4916,7 +4916,7 @@ const watchersDisplay = computed(() => {
   padding: 14px;
 }
 .hs-noepc-hero-tile-lbl {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   opacity: 0.95;
   margin-bottom: 10px;
@@ -4926,21 +4926,21 @@ const watchersDisplay = computed(() => {
   padding: 3px 10px;
   border-radius: 7px;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 0.9375rem;
   background: rgba(255, 255, 255, 0.25);
   color: #fff;
 }
 .hs-noepc-hero-tile-big {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
 }
 .hs-noepc-hero-tile-big small {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   opacity: 0.8;
 }
 .hs-noepc-hero-tile-cap {
-  font-size: 12px;
+  font-size: 0.75rem;
   opacity: 0.85;
   margin-top: 8px;
 }
@@ -4953,13 +4953,13 @@ const watchersDisplay = computed(() => {
   color: #fff;
 }
 .hs-noepc-cta-title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   margin-bottom: 6px;
   letter-spacing: -0.3px;
 }
 .hs-noepc-cta-body {
-  font-size: 14px;
+  font-size: 0.875rem;
   opacity: 0.9;
   line-height: 1.45;
 }
@@ -4971,7 +4971,7 @@ const watchersDisplay = computed(() => {
   display: block;
   width: 100%;
   padding: 16px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   border: none;
   border-radius: 999px;
@@ -4985,7 +4985,7 @@ const watchersDisplay = computed(() => {
   transform: scale(0.99);
 }
 .hs-noepc-cta-note {
-  font-size: 12px;
+  font-size: 0.75rem;
   text-align: center;
   opacity: 0.7;
   margin-top: 10px;
@@ -4999,7 +4999,7 @@ const watchersDisplay = computed(() => {
   padding: 12px 14px;
   background: var(--card);
   border-radius: 14px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
   line-height: 1.45;
   box-shadow: var(--shadow-card);
@@ -5010,7 +5010,7 @@ const watchersDisplay = computed(() => {
   height: 20px;
   border-radius: 50%;
   border: 1.5px solid var(--text-secondary);
-  font-size: 11px;
+  font-size: 0.6875rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5026,7 +5026,7 @@ const watchersDisplay = computed(() => {
   margin: 14px 24px 24px;
   padding: 12px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--accent-dark);
   text-decoration: none;
@@ -5082,13 +5082,13 @@ const watchersDisplay = computed(() => {
   margin: 0 auto 14px;
 }
 .claim-icon {
-  font-size: 40px;
+  font-size: 2.5rem;
   line-height: 1;
   text-align: center;
   margin-bottom: 8px;
 }
 .claim-title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.4px;
@@ -5096,7 +5096,7 @@ const watchersDisplay = computed(() => {
   margin-bottom: 6px;
 }
 .claim-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.55;
@@ -5128,7 +5128,7 @@ const watchersDisplay = computed(() => {
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   color: white;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -5140,13 +5140,13 @@ const watchersDisplay = computed(() => {
   min-width: 0;
 }
 .claim-step-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .claim-step-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -5161,7 +5161,7 @@ const watchersDisplay = computed(() => {
   padding: 14px;
   border-radius: 12px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   cursor: pointer;
   border: none;
@@ -5181,7 +5181,7 @@ const watchersDisplay = computed(() => {
   gap: 6px;
   align-items: center;
   justify-content: center;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-faint);
 }
@@ -5257,7 +5257,7 @@ const watchersDisplay = computed(() => {
 }
 
 .hsh-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   letter-spacing: 1.3px;
   text-transform: uppercase;
   font-weight: 800;
@@ -5285,13 +5285,13 @@ const watchersDisplay = computed(() => {
   gap: 10px;
 }
 .hsh-big {
-  font-size: 40px;
+  font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: -2px;
   line-height: 0.9;
 }
 .hsh-rmeta {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #fff;
 }
@@ -5359,7 +5359,7 @@ const watchersDisplay = computed(() => {
 }
 
 .hsh-desc {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.5;
@@ -5376,7 +5376,7 @@ const watchersDisplay = computed(() => {
   flex: 1;
   display: flex;
   align-items: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   line-height: 1.4;
   color: #0c1f1a;
@@ -5397,7 +5397,7 @@ const watchersDisplay = computed(() => {
   background: #fff;
   color: #231d45;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   align-items: center;
   justify-content: center;

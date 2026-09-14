@@ -37,7 +37,7 @@
         </div>
       </template>
 
-      <div class="summary" @click="openDrawer">
+      <div class="summary" @click="openDrawer" role="button" tabindex="0" @keydown.enter="openDrawer" @keydown.space.prevent="openDrawer">
         <template v-if="isGenericTemplate">
           <div class="summary-full">
             <div class="summary-line">{{ shortGenericContent }}</div>
@@ -365,14 +365,14 @@ const handleDrawerClose = () => {
   color: #000000;
   margin: 0 0 20px 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -390,7 +390,7 @@ const handleDrawerClose = () => {
 }
 
 .help-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
@@ -401,9 +401,9 @@ const handleDrawerClose = () => {
 
 .help-title {
   margin: 0px 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -412,14 +412,14 @@ const handleDrawerClose = () => {
   color: #3c3c4399;
   margin: 0;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
 
 .typing-cursor {
   margin-left: 2px;
-  color: #00a19a;
+  color: #00726c;
   animation: blink 1s infinite;
 }
 
@@ -459,14 +459,14 @@ const handleDrawerClose = () => {
 }
 
 .note-question .summary-title {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b7280;
   margin-bottom: 6px;
 }
 
 .note-question .summary-line {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #111827;
   line-height: 1.4;
   overflow: hidden;
@@ -498,7 +498,7 @@ const handleDrawerClose = () => {
   border-radius: 100px;
   cursor: pointer;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
   text-align: center;
@@ -530,7 +530,7 @@ const handleDrawerClose = () => {
 .template-body {
   color: #4b5563;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 23px;
   letter-spacing: 0px;
 }
@@ -546,7 +546,7 @@ const handleDrawerClose = () => {
   margin-bottom: 10px;
   color: #4b5563;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 23px;
 }
 
@@ -556,7 +556,7 @@ const handleDrawerClose = () => {
 
 /* Typed block content styles */
 .note-heading {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: #111827;
   margin: 16px 0 8px 0;
@@ -568,7 +568,7 @@ const handleDrawerClose = () => {
 }
 
 .note-paragraph {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #4b5563;
   font-weight: 400;
   line-height: 22px;
@@ -576,7 +576,7 @@ const handleDrawerClose = () => {
 }
 
 .note-bold-paragraph {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #111827;
   font-weight: 700;
   line-height: 22px;
@@ -594,15 +594,15 @@ const handleDrawerClose = () => {
 }
 
 .note-callout__icon {
-  font-size: 18px;
-  color: #00a19a;
+  font-size: 1.125rem;
+  color: #00726c;
   flex-shrink: 0;
   line-height: 1.3;
 }
 
 .note-callout__text {
-  font-size: 15px;
-  color: #00a19a;
+  font-size: 0.9375rem;
+  color: #00726c;
   font-weight: 500;
   line-height: 22px;
 }
@@ -629,22 +629,22 @@ const handleDrawerClose = () => {
 }
 
 .info-card__title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #000;
   margin: 0 0 6px;
 }
 
 .info-card__description {
-  font-size: 13px;
-  color: #00a19a;
+  font-size: 0.8125rem;
+  color: #00726c;
   margin: 0 0 4px;
   line-height: 18px;
 }
 
 .info-card__link {
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   text-decoration: underline;
 }
 
@@ -655,15 +655,15 @@ const handleDrawerClose = () => {
 }
 
 .info-card__section-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #000;
   margin: 0 0 6px;
 }
 
 .info-card__section-content {
-  font-size: 13px;
-  color: #00a19a;
+  font-size: 0.8125rem;
+  color: #00726c;
   margin: 0;
   line-height: 18px;
 }
@@ -704,7 +704,7 @@ const handleDrawerClose = () => {
 }
 
 .link-card__title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1a1a1a;
   line-height: 1.4;
@@ -712,8 +712,8 @@ const handleDrawerClose = () => {
 }
 
 .link-card__url {
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   text-decoration: none;
   word-break: break-all;
   line-height: 1.4;
@@ -728,7 +728,7 @@ const handleDrawerClose = () => {
   padding: 10px 16px;
   background: #00a19a;
   color: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   border-radius: 8px;
   text-decoration: none;

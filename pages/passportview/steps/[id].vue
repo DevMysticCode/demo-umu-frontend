@@ -96,7 +96,7 @@
             class="task-card"
             :class="{ completed: task.completed }"
             @click="navigateToTask(task.id)"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateToTask(task.id)" @keydown.space.prevent="navigateToTask(task.id)">
             <div class="task-status">
               <div
                 class="status-circle"
@@ -369,8 +369,8 @@ const goBack = () => {
 .back-btn {
   background: none;
   border: none;
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -380,7 +380,7 @@ const goBack = () => {
 }
 
 .back-arrow {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .menu-btn {
@@ -389,7 +389,7 @@ const goBack = () => {
   border-radius: 50%;
   background: #5a54d6;
   border: none;
-  font-size: 20px;
+  font-size: 1.25rem;
   color: white;
   cursor: pointer;
 }
@@ -428,7 +428,7 @@ const goBack = () => {
   backdrop-filter: blur(6px);
   border: 1px solid rgba(15, 118, 110, 0.15);
   color: #0f766e;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -451,7 +451,7 @@ const goBack = () => {
   z-index: 1;
 }
 .hero-title {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -462,7 +462,7 @@ const goBack = () => {
 }
 .hero-sub {
   color: #115e59;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.4;
   margin: 0 0 16px;
@@ -502,7 +502,7 @@ const goBack = () => {
 .ring span {
   grid-area: 1 / 1;
   z-index: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0a0f2c;
   line-height: 1;
@@ -510,14 +510,14 @@ const goBack = () => {
 .meta-text small {
   display: block;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: #115e59;
   margin-bottom: 4px;
 }
 .meta-text strong {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.2;
   color: #0a0f2c;
@@ -535,12 +535,12 @@ const goBack = () => {
 }
 
 .step-icon-large {
-  font-size: 100px;
+  font-size: 6.25rem;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
 }
 
 .step-title {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   text-align: center;
   margin: 0 0 8px;
@@ -548,7 +548,7 @@ const goBack = () => {
 }
 
 .step-subtitle {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   text-align: center;
   margin-bottom: 24px;
@@ -579,7 +579,7 @@ const goBack = () => {
 }
 
 .progress-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #3c3c4399;
   font-weight: 400;
   letter-spacing: 0.06px;
@@ -587,8 +587,8 @@ const goBack = () => {
 }
 
 .progress-value {
-  font-size: 11px;
-  color: #00a19a;
+  font-size: 0.6875rem;
+  color: #00726c;
   font-weight: 590;
 }
 
@@ -605,7 +605,7 @@ const goBack = () => {
   border: 1px solid #e5e7eb;
   background: white;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
@@ -631,7 +631,7 @@ const goBack = () => {
 }
 
 .play-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .tasks-section {
@@ -646,7 +646,7 @@ const goBack = () => {
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 590;
   margin: 0;
   color: #000000;
@@ -656,8 +656,8 @@ const goBack = () => {
   background: white;
   border: 0.33px solid #3c3c432e;
   border-radius: 40px;
-  color: #00a19a;
-  font-size: 13px;
+  color: #00726c;
+  font-size: 0.8125rem;
   font-weight: 400;
   cursor: pointer;
   padding: 4px 8px;
@@ -694,7 +694,7 @@ const goBack = () => {
   display: inline-block;
   margin-left: 6px;
   padding: 2px 7px;
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -749,13 +749,13 @@ const goBack = () => {
 
 .check-icon {
   color: white;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
 }
 
 .progress-percentage {
-  color: #00a19a;
-  font-size: 9px;
+  color: #00726c;
+  font-size: 0.5625rem;
   font-weight: 400;
   position: relative;
   z-index: 1;
@@ -769,7 +769,7 @@ const goBack = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 1.5rem;
   flex-shrink: 0;
 }
 
@@ -779,7 +779,7 @@ const goBack = () => {
 }
 
 .task-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 400;
   margin: 0 0 4px;
   color: #000000;
@@ -788,7 +788,7 @@ const goBack = () => {
 }
 
 .task-description {
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
   color: #3c3c4399;
@@ -800,7 +800,7 @@ const goBack = () => {
   gap: 10px;
   align-items: center;
   margin-top: 8px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #64748b;
 }
@@ -816,16 +816,16 @@ const goBack = () => {
 
 .task-completed-info {
   margin-top: 8px;
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   font-weight: 600;
 }
 
 .task-points {
   background: #00a19a1a;
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 13px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 400;
   display: flex;
   align-items: center;
@@ -836,7 +836,7 @@ const goBack = () => {
 }
 
 .points-icon {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .task-arrow {
@@ -845,7 +845,7 @@ const goBack = () => {
   border-radius: 50%;
   background: #f9f9fd;
   border: 0.5px solid #d2d1e4;
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #999;
   display: flex;
   align-items: center;

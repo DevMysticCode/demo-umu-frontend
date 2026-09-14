@@ -91,7 +91,7 @@
                     :placeholder="part.placeholder"
                     :value="currentItem[part.partKey] || ''"
                     @input="(e) => setField(part.partKey, e.target.value)"
-                  />
+                   aria-label="part.placeholder" />
                 </template>
 
                 <!-- Textarea (description / comments — no title or empty title) -->
@@ -102,7 +102,7 @@
                     :placeholder="part.placeholder"
                     :value="currentItem[part.partKey] || ''"
                     @input="(e) => setField(part.partKey, e.target.value)"
-                  />
+                   aria-label="part.placeholder" />
                 </template>
 
                 <!-- Radio -->
@@ -113,7 +113,7 @@
                     class="radio-opt"
                     :class="{ 'radio-opt--selected': currentItem[part.partKey] === opt.value }"
                     @click="setField(part.partKey, opt.value)"
-                  >
+                   role="button" tabindex="0" @keydown.enter="setField(part.partKey, opt.value)" @keydown.space.prevent="setField(part.partKey, opt.value)">
                     <div
                       class="radio-circle"
                       :class="{ 'radio-circle--checked': currentItem[part.partKey] === opt.value }"
@@ -277,12 +277,12 @@ const itemSubtext = (item) => {
   color: #000;
   margin: 0 0 20px;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 .question-description {
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   color: #3c3c4399;
   margin-bottom: 20px;
@@ -299,14 +299,14 @@ const itemSubtext = (item) => {
 .help-content { flex: 1; }
 .help-title {
   margin: 0 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
-.help-text { color: #3c3c4399; margin: 0; font-size: 13px; }
-.help-icon { font-size: 12px; }
+.help-text { color: #3c3c4399; margin: 0; font-size: 0.8125rem; }
+.help-icon { font-size: 0.75rem; }
 .help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
-.typing-cursor { margin-left: 2px; color: #00a19a; animation: blink 1s infinite; }
+.typing-cursor { margin-left: 2px; color: #00726c; animation: blink 1s infinite; }
 .typing-cursor--small { margin-left: 2px; }
 @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
 
@@ -321,21 +321,21 @@ const itemSubtext = (item) => {
   border: 2px dashed #00a19a;
   border-radius: 12px;
   background: transparent;
-  color: #00a19a;
-  font-size: 16px;
+  color: #00726c;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
 .add-btn:active { background: #e6f9f7; }
-.add-btn__icon { font-size: 20px; font-weight: 700; line-height: 1; }
+.add-btn__icon { font-size: 1.25rem; font-weight: 700; line-height: 1; }
 
 /* Items List */
 .items-list { margin-top: 20px; }
 .items-list__heading {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   margin: 0 0 12px;
 }
 .item-card {
@@ -349,8 +349,8 @@ const itemSubtext = (item) => {
   margin-bottom: 8px;
 }
 .item-card__info { display: flex; flex-direction: column; gap: 2px; }
-.item-card__name { font-size: 15px; font-weight: 500; color: #1a1a1a; }
-.item-card__sub { font-size: 13px; color: #00a19a; font-weight: 500; }
+.item-card__name { font-size: 0.9375rem; font-weight: 500; color: #1a1a1a; }
+.item-card__sub { font-size: 0.8125rem; color: #00726c; font-weight: 500; }
 .item-card__actions { display: flex; gap: 10px; }
 .item-card__edit {
   width: 32px; height: 32px;
@@ -414,14 +414,14 @@ const itemSubtext = (item) => {
 }
 .modal-sheet__title {
   text-align: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 6px;
 }
 .modal-sheet__subtitle {
   text-align: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #3c3c4399;
   margin: 0 0 24px;
 }
@@ -437,25 +437,25 @@ const itemSubtext = (item) => {
   gap: 12px;
 }
 .form-section__title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
 }
 .form-section__desc {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #3c3c4399;
   margin: -8px 0 0;
 }
 .form-field { display: flex; flex-direction: column; gap: 6px; }
-.form-label { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+.form-label { font-size: 0.875rem; font-weight: 500; color: #1a1a1a; }
 .form-input {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   background: white;
-  font-size: 16px;
+  font-size: 1rem;
   color: #1a1a1a;
   box-sizing: border-box;
   outline: none;
@@ -467,7 +467,7 @@ const itemSubtext = (item) => {
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   background: white;
-  font-size: 16px;
+  font-size: 1rem;
   color: #1a1a1a;
   min-height: 80px;
   resize: none;
@@ -499,8 +499,8 @@ const itemSubtext = (item) => {
   background: white;
 }
 .radio-circle--checked { background: #00a19a; border-color: #00a19a; }
-.radio-check { color: white; font-size: 16px; font-weight: 700; line-height: 1; }
-.radio-label { font-size: 15px; font-weight: 500; color: #1a1a1a; }
+.radio-check { color: white; font-size: 1rem; font-weight: 700; line-height: 1; }
+.radio-label { font-size: 0.9375rem; font-weight: 500; color: #1a1a1a; }
 
 /* Currency Field */
 .currency-field {
@@ -512,7 +512,7 @@ const itemSubtext = (item) => {
   border: 1px solid #e0e0e0;
   border-radius: 10px;
 }
-.currency-label { font-size: 15px; font-weight: 500; color: #1a1a1a; }
+.currency-label { font-size: 0.9375rem; font-weight: 500; color: #1a1a1a; }
 .currency-badge {
   padding: 6px 14px;
   background: #e6f9f7;
@@ -522,8 +522,8 @@ const itemSubtext = (item) => {
   min-width: 80px;
   text-align: center;
 }
-.currency-value { font-size: 15px; font-weight: 600; color: #00a19a; position: relative; z-index: 1; pointer-events: none; }
-.currency-placeholder { font-size: 13px; color: #999; position: relative; z-index: 1; pointer-events: none; }
+.currency-value { font-size: 0.9375rem; font-weight: 600; color: #00726c; position: relative; z-index: 1; pointer-events: none; }
+.currency-placeholder { font-size: 0.8125rem; color: #999; position: relative; z-index: 1; pointer-events: none; }
 .currency-overlay {
   position: absolute;
   top: 0; left: 0;
@@ -531,7 +531,7 @@ const itemSubtext = (item) => {
   opacity: 0;
   cursor: pointer;
   z-index: 2;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 /* Footer */
@@ -543,7 +543,7 @@ const itemSubtext = (item) => {
   color: white;
   border: none;
   border-radius: 14px;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;

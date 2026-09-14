@@ -79,9 +79,9 @@ const toggle = (value) => {
   border-radius: 999px;
   border: 1px solid #00a19a1a;
   background: #00a19a1a;
-  font-size: 13px;
+  font-size: 0.8125rem;
   cursor: pointer;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .chip.selected {
@@ -90,7 +90,7 @@ const toggle = (value) => {
   border-color: #00a19a;
 }
 .question-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #3c3c43;
   margin: 0 0 8px 0;
@@ -99,7 +99,7 @@ const toggle = (value) => {
 }
 
 .question-description {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #3c3c4399;
   margin: 0 0 12px 0;
   line-height: 1.4;

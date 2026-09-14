@@ -41,7 +41,7 @@
         class="text-input"
         :placeholder="question?.placeholder || 'Enter Name'"
         @keyup.enter="addItem"
-      />
+       aria-label="question?.placeholder || 'Enter Name'" />
       <button class="add-btn" @click="addItem">
         <span class="add-icon">+</span>
         {{ question?.buttonText || 'Add More Sellers' }}
@@ -163,7 +163,7 @@ const cancelEdit = () => {
 }
 
 .question-text {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #3c3c43;
   margin: 0 0 20px 0;
@@ -172,7 +172,7 @@ const cancelEdit = () => {
 }
 
 .question-description {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #3c3c4399;
   margin: 0 0 16px 0;
   line-height: 1.4;
@@ -185,14 +185,14 @@ const cancelEdit = () => {
   background-color: #00a19a1a;
   border-radius: 12px;
   margin: 0 0 20px 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #3c3c43;
 }
 
 .help-icon {
   flex-shrink: 0;
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
 }
 
 .help-text {
@@ -243,7 +243,7 @@ const cancelEdit = () => {
 }
 
 .item-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #1a1a1a;
 }
@@ -253,9 +253,9 @@ const cancelEdit = () => {
   background: #e3f2fd;
   border: none;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
   transition: background-color 0.2s;
   flex-shrink: 0;
@@ -278,7 +278,7 @@ const cancelEdit = () => {
   padding: 12px 16px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   transition: border-color 0.2s;
   box-sizing: border-box;
@@ -298,9 +298,9 @@ const cancelEdit = () => {
   background: #e8f5f3;
   border: none;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -316,7 +316,7 @@ const cancelEdit = () => {
 }
 
 .add-icon {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
 }
 
@@ -352,7 +352,7 @@ const cancelEdit = () => {
 
 .modal-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #1a1a1a;
 }
@@ -360,7 +360,7 @@ const cancelEdit = () => {
 .close-btn {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #999;
   cursor: pointer;
   padding: 0;
@@ -375,7 +375,7 @@ const cancelEdit = () => {
   width: 100%;
   padding: 12px 16px;
   border: none;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   box-sizing: border-box;
 }
@@ -397,7 +397,7 @@ const cancelEdit = () => {
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;

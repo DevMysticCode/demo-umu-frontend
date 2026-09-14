@@ -7,7 +7,7 @@
         @click="handleNavigation(item)"
         class="bottom-navigation__item"
         :class="{ 'bottom-navigation__item--active': activeTab === item.id }"
-      >
+       role="button" tabindex="0" @keydown.enter="handleNavigation(item)" @keydown.space.prevent="handleNavigation(item)">
         <div class="bottom-navigation__icon">
           <img :src="item.icon" :alt="item.label" />
         </div>
@@ -104,11 +104,11 @@ const handleNavigation = (item: NavigationItem) => {
 }
 
 .bottom-navigation__item--active .bottom-navigation__label {
-  @apply text-brand-aqua;
+  @apply text-brand-aqua-text;
 }
 
 .bottom-navigation__item--active .bottom-navigation__icon {
-  @apply text-brand-aqua;
+  @apply text-brand-aqua-text;
 }
 </style>
 

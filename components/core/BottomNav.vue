@@ -103,7 +103,7 @@ const props = defineProps({
 const router = useRouter()
 const iconSize = 'w-[18px] h-[18px]'
 const isActive = (key) => {
-  // text-brand-aqua (#00a19a) measures 3.2:1 at this label's 12px size -
+  // text-brand-aqua-text (#00a19a) measures 3.2:1 at this label's 12px size -
   // fails WCAG's 4.5:1 for normal text. text-brand-aqua-text is the same
   // teal darkened until it passes (5.8:1).
   return props.active === key ? 'text-brand-aqua-text' : 'text-gray-400'

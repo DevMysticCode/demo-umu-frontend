@@ -126,7 +126,7 @@ function goView() { router.push('/buyer-profile/view') }
   text-align: center;
 }
 .sn-emoji {
-  font-size: 56px;
+  font-size: 3.5rem;
   line-height: 1;
   margin-bottom: 14px;
   display: inline-block;
@@ -144,13 +144,13 @@ function goView() { router.push('/buyer-profile/view') }
   100% { transform: scale(1); opacity: 1; }
 }
 .sn-title {
-  font-size: 22px; font-weight: 800; color: #231d45;
+  font-size: 1.375rem; font-weight: 800; color: #231d45;
   letter-spacing: -0.5px;
   margin-bottom: 6px;
   animation: sn-fadeUp 0.4s 0.15s both;
 }
 .sn-sub {
-  font-size: 13px; color: #6b6783; line-height: 1.5;
+  font-size: 0.8125rem; color: #6b6783; line-height: 1.5;
   animation: sn-fadeUp 0.4s 0.2s both;
 }
 @keyframes sn-fadeUp {
@@ -168,12 +168,12 @@ function goView() { router.push('/buyer-profile/view') }
   animation: sn-fadeUp 0.4s 0.25s both;
 }
 .sn-doc-eyebrow {
-  font-size: 10px; font-weight: 800; letter-spacing: 1px;
+  font-size: 0.625rem; font-weight: 800; letter-spacing: 1px;
   color: #007e78;
   margin-bottom: 10px;
 }
 .sn-doc-title {
-  font-size: 13px; font-weight: 800; color: #231d45;
+  font-size: 0.8125rem; font-weight: 800; color: #231d45;
   margin-bottom: 4px;
 }
 .sn-sig-wrap {
@@ -185,7 +185,7 @@ function goView() { router.push('/buyer-profile/view') }
 }
 .sn-sig-typed {
   font-family: Georgia, serif;
-  font-size: 20px; font-style: italic;
+  font-size: 1.25rem; font-style: italic;
   color: #231d45;
 }
 .sn-sig-img-frame {
@@ -199,14 +199,14 @@ function goView() { router.push('/buyer-profile/view') }
   display: block;
 }
 .sn-doc-meta {
-  font-size: 10px; color: #9c98ad;
+  font-size: 0.625rem; color: #9c98ad;
 }
 .sn-doc-hash {
   margin-top: 10px;
   background: #f2faf8;
   border-radius: 8px;
   padding: 8px 10px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-family: 'SF Mono', Menlo, monospace;
   color: #007e78;
   word-break: break-all;
@@ -224,7 +224,7 @@ function goView() { router.push('/buyer-profile/view') }
   background: #00a19a; color: white; border: none;
   border-radius: 14px;
   padding: 16px;
-  font-family: inherit; font-size: 14px; font-weight: 800;
+  font-family: inherit; font-size: 0.875rem; font-weight: 800;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.35);
   cursor: pointer; transition: all 0.15s;
 }
@@ -233,12 +233,12 @@ function goView() { router.push('/buyer-profile/view') }
   background: white; color: #231d45;
   border: 1.5px solid #231d45;
   box-shadow: none;
-  font-size: 13px; padding: 13px;
+  font-size: 0.8125rem; padding: 13px;
 }
 .sn-ghost {
   background: none; border: none;
   font-family: inherit;
-  font-size: 12px; font-weight: 700;
+  font-size: 0.75rem; font-weight: 700;
   color: #6b6783;
   cursor: pointer;
   padding: 8px;

@@ -194,7 +194,7 @@ function onCta() {
 }
 .bpd-head { padding: 14px 22px 6px; }
 .bpd-eyebrow {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   color: #008a84;
   letter-spacing: 1.4px; text-transform: uppercase;
   margin-bottom: 6px;
@@ -208,13 +208,13 @@ function onCta() {
   margin-right: 2px;
 }
 .bpd-title {
-  font-size: 20px; font-weight: 800;
+  font-size: 1.25rem; font-weight: 800;
   color: #231d45;
   letter-spacing: -0.4px; line-height: 1.2;
   margin-bottom: 4px;
 }
 .bpd-sub {
-  font-size: 12.5px; font-weight: 500;
+  font-size: 0.7813rem; font-weight: 500;
   color: #6b7089;
   line-height: 1.5;
 }
@@ -240,18 +240,18 @@ function onCta() {
 }
 .bpd-step-body { flex: 1; min-width: 0; }
 .bpd-step-num {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   color: #008a84;
   letter-spacing: 1px; text-transform: uppercase;
 }
 .bpd-step-title {
-  font-size: 14px; font-weight: 800;
+  font-size: 0.875rem; font-weight: 800;
   color: #231d45;
   margin-top: 2px;
   letter-spacing: -0.15px;
 }
 .bpd-step-copy {
-  font-size: 12px; font-weight: 500;
+  font-size: 0.75rem; font-weight: 500;
   color: #4b5169;
   line-height: 1.5;
   margin-top: 4px;
@@ -266,15 +266,15 @@ function onCta() {
   border-radius: 12px;
 }
 .bpd-info-icon {
-  font-size: 22px;
+  font-size: 1.375rem;
   flex-shrink: 0;
 }
 .bpd-info-title {
-  font-size: 12.5px; font-weight: 800;
+  font-size: 0.7813rem; font-weight: 800;
   color: #008a84;
 }
 .bpd-info-sub {
-  font-size: 11.5px; font-weight: 500;
+  font-size: 0.7188rem; font-weight: 500;
   color: #4b5169;
   margin-top: 2px;
   line-height: 1.45;
@@ -287,7 +287,7 @@ function onCta() {
 }
 .bpd-btn {
   padding: 13px;
-  font: inherit; font-size: 13px; font-weight: 800;
+  font: inherit; font-size: 0.8125rem; font-weight: 800;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.15s;
@@ -306,7 +306,7 @@ function onCta() {
 .bpd-foot {
   padding: 6px 24px 18px;
   text-align: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a8a9ad;
   line-height: 1.45;
 }

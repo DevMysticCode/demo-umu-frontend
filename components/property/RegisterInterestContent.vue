@@ -209,13 +209,13 @@ const registerInterest = async () => {
 }
 
 .ri-header__title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--navy);
 }
 
 .ri-header__address {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--ink-faint);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -251,7 +251,7 @@ const registerInterest = async () => {
 }
 
 .ri-hero__eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -260,7 +260,7 @@ const registerInterest = async () => {
 }
 
 .ri-hero__heading {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #fff;
   line-height: 1.25;
@@ -279,7 +279,7 @@ const registerInterest = async () => {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -293,7 +293,7 @@ const registerInterest = async () => {
 
 /* Section */
 .ri-section-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--ink);
   margin-bottom: 12px;
@@ -349,13 +349,13 @@ const registerInterest = async () => {
 }
 
 .ri-row__title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--ink);
 }
 
 .ri-row__subtitle {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--ink-faint);
   margin-top: 2px;
 }
@@ -363,7 +363,7 @@ const registerInterest = async () => {
 .ri-chip {
   border-radius: 999px;
   padding: 2px 8px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -396,18 +396,18 @@ const registerInterest = async () => {
 }
 
 .ri-privacy__emoji {
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
 .ri-privacy__text {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #008a84;
   line-height: 1.55;
 }
 
 .ri-error {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #ef4444;
   text-align: center;
   margin: 0 0 12px;
@@ -421,7 +421,7 @@ const registerInterest = async () => {
   border-radius: 14px;
   background: var(--brand);
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   letter-spacing: -0.01em;
@@ -455,7 +455,7 @@ const registerInterest = async () => {
 
 .ri-foot-note {
   text-align: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--ink-faint);
   margin-top: 8px;
 }
@@ -472,7 +472,7 @@ const registerInterest = async () => {
 }
 
 .ri-success-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--navy);
   margin-bottom: 8px;
@@ -480,7 +480,7 @@ const registerInterest = async () => {
 }
 
 .ri-success-desc {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink-soft);
   line-height: 1.65;
   margin-bottom: 24px;
@@ -513,7 +513,7 @@ const registerInterest = async () => {
 }
 
 .ri-summary__address {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--navy);
   line-height: 1.35;
@@ -530,7 +530,7 @@ const registerInterest = async () => {
   border: 1px solid var(--brand-soft);
   border-radius: 999px;
   padding: 4px 10px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: var(--brand);
 }
@@ -542,7 +542,7 @@ const registerInterest = async () => {
   border-radius: 14px;
   background: var(--navy);
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;

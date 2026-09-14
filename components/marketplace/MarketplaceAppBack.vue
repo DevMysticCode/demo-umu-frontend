@@ -40,7 +40,7 @@ function onBack() {
   background: #fff;
   color: #6b7089;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(35, 29, 69, 0.04);
@@ -50,7 +50,7 @@ function onBack() {
   transform: scale(0.96);
 }
 .mp-app-back-chev {
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 1;
   color: #008a84;
   margin-top: -2px;

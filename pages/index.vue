@@ -55,7 +55,7 @@
           :data-pos="positionOf(card.id)"
           :data-tour="card.id"
           @click="bringToFront(card.id)"
-        >
+         role="button" tabindex="0" @keydown.enter="bringToFront(card.id)" @keydown.space.prevent="bringToFront(card.id)">
           <div class="dc-peek">
             <div class="dc-peek-row">
               <span class="dc-peek-label">{{ card.peekLabel }}</span>
@@ -1355,7 +1355,7 @@ const currentSample = computed(() => samples[sampleType.value])
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -1364,15 +1364,15 @@ const currentSample = computed(() => samples[sampleType.value])
   width: 32px;
   height: 32px;
   flex-shrink: 0;
-  color: #00a19a;
+  color: #00726c;
 }
 .brand-spacer {
   flex: 1;
 }
 .beta-pill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: 1.4px;
   padding: 4px 10px;
   border-radius: 100px;
@@ -1384,7 +1384,7 @@ const currentSample = computed(() => samples[sampleType.value])
   padding: 22px 22px 0;
 }
 .hero-title {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -1px;
@@ -1392,10 +1392,10 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 8px;
 }
 .hero-title .lt-teal {
-  color: #00a19a;
+  color: #00726c;
 }
 .hero-sub {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.5;
@@ -1406,9 +1406,9 @@ const currentSample = computed(() => samples[sampleType.value])
   gap: 6px;
   background: none;
   border: none;
-  color: #00a19a;
+  color: #00726c;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: -0.1px;
   padding: 10px 0 0;
@@ -1513,7 +1513,7 @@ const currentSample = computed(() => samples[sampleType.value])
   gap: 8px;
 }
 .dc-peek-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -1533,7 +1533,7 @@ const currentSample = computed(() => samples[sampleType.value])
   flex-shrink: 0;
 }
 .dc-peek-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.35;
@@ -1548,7 +1548,7 @@ const currentSample = computed(() => samples[sampleType.value])
   flex-shrink: 0;
 }
 .dc-peek-pill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   background: rgba(255, 255, 255, 0.18);
   color: #fff;
@@ -1582,7 +1582,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .see-a-sample {
   margin-top: 20px;
   display: inline-block;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   color: inherit;
   border: 0.5px solid #00a19a;
@@ -1603,7 +1603,7 @@ const currentSample = computed(() => samples[sampleType.value])
   z-index: 2;
 }
 .dc-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 2.2px;
   text-transform: uppercase;
@@ -1619,7 +1619,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: #bdf4f0;
 }
 .dc-pill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
@@ -1655,7 +1655,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .dc-headline {
   flex: 1 1 auto;
   min-width: 0;
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.5px;
@@ -1663,7 +1663,7 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .dc-sub {
   margin-top: 10px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.5;
@@ -1719,7 +1719,7 @@ const currentSample = computed(() => samples[sampleType.value])
   align-items: center;
   gap: 8px;
   margin-top: 16px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
 }
@@ -1731,7 +1731,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #fff;
   display: grid;
   place-items: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .dc-explore-badge-sep {
@@ -1760,7 +1760,7 @@ const currentSample = computed(() => samples[sampleType.value])
 
 .deck-card.HomeScore .dc-headline,
 .deck-card.passport .dc-headline {
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1.08;
   max-width: 64%;
 }
@@ -1783,7 +1783,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-top: 8px;
   max-width: 60%;
   color: rgba(255, 255, 255, 0.9);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.32;
 }
@@ -1821,14 +1821,14 @@ const currentSample = computed(() => samples[sampleType.value])
   justify-content: center;
 }
 .gn-big {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -1px;
   line-height: 1;
 }
 .gn-small {
-  font-size: 7.5px;
+  font-size: 0.4688rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.65);
   letter-spacing: 1px;
@@ -1846,7 +1846,7 @@ const currentSample = computed(() => samples[sampleType.value])
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.88);
   line-height: 1.3;
@@ -1869,7 +1869,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-top: 16px;
 }
 .dc-ai-num {
-  font-size: 56px;
+  font-size: 3.5rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -2px;
@@ -1877,14 +1877,14 @@ const currentSample = computed(() => samples[sampleType.value])
   flex-shrink: 0;
 }
 .dc-ai-num .unit {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: rgba(255, 255, 255, 0.55);
   font-weight: 800;
   margin-left: 4px;
 }
 .dc-ai-text {
   flex: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.5;
@@ -1908,7 +1908,7 @@ const currentSample = computed(() => samples[sampleType.value])
   text-align: center;
 }
 .dc-mk-num {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.5px;
@@ -1916,13 +1916,13 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 4px;
 }
 .dc-mk-num .unit {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.55);
   font-weight: 800;
   margin-left: 2px;
 }
 .dc-mk-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.6);
   letter-spacing: 0.3px;
@@ -1943,7 +1943,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 12px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 11px 14px;
   cursor: pointer;
@@ -1971,7 +1971,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border: 0;
   border-radius: 999px;
   padding: 13px 18px;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 .deck-card.HomeScore .dc-cta {
   background: #fff;
@@ -2082,7 +2082,7 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .cta-card-link {
   min-width: 0;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: #231d45;
   font-weight: 800;
   letter-spacing: -0.2px;
@@ -2121,7 +2121,7 @@ const currentSample = computed(() => samples[sampleType.value])
   height: 14px;
 }
 .back-bar-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
@@ -2134,15 +2134,15 @@ const currentSample = computed(() => samples[sampleType.value])
   border-bottom: 1px solid #f5f5f7;
 }
 .market-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 10px;
 }
 .market-title {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -1.1px;
@@ -2150,14 +2150,14 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 12px;
 }
 .market-sub {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.55;
 }
 
 .market-section-h {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 2px;
@@ -2196,7 +2196,7 @@ const currentSample = computed(() => samples[sampleType.value])
   );
 }
 .market-stat-num {
-  font-size: 48px;
+  font-size: 3rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -2px;
@@ -2210,24 +2210,24 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .ms-d,
 .ms-target-unit {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: rgba(255, 255, 255, 0.55);
   font-weight: 800;
   margin-left: 4px;
 }
 .ms-arrow {
-  font-size: 20px;
+  font-size: 1.25rem;
   color: rgba(255, 255, 255, 0.45);
   font-weight: 700;
 }
 .ms-target {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: rgba(255, 255, 255, 0.72);
   letter-spacing: -0.6px;
   font-weight: 800;
 }
 .market-stat-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.72);
   letter-spacing: 1.6px;
@@ -2237,7 +2237,7 @@ const currentSample = computed(() => samples[sampleType.value])
   z-index: 1;
 }
 .market-stat-headline {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.4px;
@@ -2247,7 +2247,7 @@ const currentSample = computed(() => samples[sampleType.value])
   z-index: 1;
 }
 .market-stat-text {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.55;
@@ -2262,7 +2262,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .market-para {
   padding: 0 22px;
   margin-bottom: 14px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #231d45;
   line-height: 1.6;
@@ -2277,14 +2277,14 @@ const currentSample = computed(() => samples[sampleType.value])
   margin: 22px 22px;
   padding: 16px 0 16px 18px;
   border-left: 3px solid #00a19a;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: #231d45;
   line-height: 1.35;
   letter-spacing: -0.3px;
 }
 .market-pull-attr {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #9c98ad;
   letter-spacing: 0.4px;
@@ -2294,7 +2294,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .illustrative-tag {
   display: inline-block;
   margin-left: 6px;
-  font-size: 9px;
+  font-size: 0.5625rem;
   background: #fafafa;
   color: #6b6783;
   padding: 2px 6px;
@@ -2314,9 +2314,9 @@ const currentSample = computed(() => samples[sampleType.value])
   overflow: hidden;
 }
 .govt-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: 1.6px;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -2331,7 +2331,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: #00a19a;
 }
 .govt-headline {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.4px;
   line-height: 1.2;
@@ -2339,7 +2339,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #fff;
 }
 .govt-text {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.55;
@@ -2359,7 +2359,7 @@ const currentSample = computed(() => samples[sampleType.value])
   padding: 20px 18px;
 }
 .founder-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #6b6783;
   letter-spacing: 1.6px;
@@ -2376,7 +2376,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: #9c98ad;
 }
 .founder-headline {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.15;
@@ -2384,7 +2384,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #231d45;
 }
 .founder-para {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #231d45;
   line-height: 1.6;
@@ -2401,7 +2401,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px solid rgba(35, 29, 69, 0.1);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b6783;
   letter-spacing: 0.4px;
@@ -2411,7 +2411,7 @@ const currentSample = computed(() => samples[sampleType.value])
   gap: 8px;
 }
 .founder-sig .illustrative-tag {
-  font-size: 9px;
+  font-size: 0.5625rem;
   background: rgba(35, 29, 69, 0.06);
   color: #6b6783;
   padding: 3px 7px;
@@ -2441,7 +2441,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: #fafafa;
 }
 .compare-cell-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -2451,7 +2451,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #6b6783;
 }
 .compare-cell.with .compare-cell-label {
-  color: #00a19a;
+  color: #00726c;
 }
 .compare-row {
   display: flex;
@@ -2459,7 +2459,7 @@ const currentSample = computed(() => samples[sampleType.value])
   gap: 8px;
   padding: 6px 0;
   border-top: 1px solid #f5f5f7;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #231d45;
   line-height: 1.4;
@@ -2470,7 +2470,7 @@ const currentSample = computed(() => samples[sampleType.value])
   padding-top: 0;
 }
 .compare-row .day {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 0.4px;
@@ -2485,7 +2485,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #b85b36;
 }
 .compare-row.good .what {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
 }
 
@@ -2511,9 +2511,9 @@ const currentSample = computed(() => samples[sampleType.value])
   pointer-events: none;
 }
 .mfc-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -2521,7 +2521,7 @@ const currentSample = computed(() => samples[sampleType.value])
   z-index: 2;
 }
 .mfc-headline {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   letter-spacing: -0.6px;
   line-height: 1.15;
@@ -2530,7 +2530,7 @@ const currentSample = computed(() => samples[sampleType.value])
   z-index: 2;
 }
 .mfc-sub {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.65);
   line-height: 1.5;
@@ -2544,7 +2544,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   padding: 14px 16px;
   border-radius: 12px;
@@ -2571,7 +2571,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border-bottom: 1px solid #f5f5f7;
 }
 .aisha-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: 2px;
@@ -2579,7 +2579,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 14px;
 }
 .aisha-title {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -1px;
@@ -2588,7 +2588,7 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .aisha-title em {
   font-style: normal;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
   letter-spacing: -1px;
 }
@@ -2596,7 +2596,7 @@ const currentSample = computed(() => samples[sampleType.value])
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
   letter-spacing: -0.1px;
 }
@@ -2609,7 +2609,7 @@ const currentSample = computed(() => samples[sampleType.value])
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -2644,7 +2644,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: #c18a38;
 }
 .aisha-num-big {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -1.5px;
@@ -2652,14 +2652,14 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 10px;
 }
 .aisha-num-big .unit {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.55);
   letter-spacing: -0.1px;
   margin-left: 3px;
 }
 .aisha-num-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.88);
   letter-spacing: 1.4px;
@@ -2675,9 +2675,9 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .aisha-section-num {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
 }
 .aisha-section-rule {
   flex: 1;
@@ -2685,7 +2685,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: #ececef;
 }
 .aisha-section-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.4px;
@@ -2694,13 +2694,13 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .aisha-section-title em {
   font-style: normal;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
 }
 .aisha-para {
   padding: 0 22px;
   margin-bottom: 14px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #231d45;
   line-height: 1.6;
@@ -2716,7 +2716,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border-left: 3px solid #00a19a;
 }
 .aisha-pull-quote {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: #231d45;
   line-height: 1.4;
@@ -2724,7 +2724,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 10px;
 }
 .aisha-pull-attr {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1.4px;
@@ -2742,7 +2742,7 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .afc-eyebrow-pill {
   display: inline-block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #007e78;
   background: #f2faf8;
@@ -2754,7 +2754,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 14px;
 }
 .afc-headline {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
@@ -2762,7 +2762,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin-bottom: 8px;
 }
 .afc-sub {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.55;
@@ -2776,7 +2776,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 11px 22px;
   border-radius: 100px;
@@ -2807,7 +2807,7 @@ const currentSample = computed(() => samples[sampleType.value])
   gap: 10px;
 }
 .sample-banner-tag {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   background: #c18a38;
   color: #fff;
@@ -2818,7 +2818,7 @@ const currentSample = computed(() => samples[sampleType.value])
 }
 .sample-banner-text {
   flex: 1;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #6b4e9f;
   line-height: 1.4;
@@ -2836,7 +2836,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border-radius: 100px;
   padding: 9px 12px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #6b6783;
   cursor: pointer;
@@ -2901,7 +2901,7 @@ const currentSample = computed(() => samples[sampleType.value])
   background: rgba(255, 255, 255, 0.4);
 }
 .ph-book-label-top {
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -2913,7 +2913,7 @@ const currentSample = computed(() => samples[sampleType.value])
   margin: 0 0 8px 8px;
 }
 .ph-book-addr {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   text-align: center;
   margin-top: auto;
@@ -2927,22 +2927,22 @@ const currentSample = computed(() => samples[sampleType.value])
   min-width: 0;
 }
 .ph-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: 1.4px;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
 .ph-addr {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
   line-height: 1.1;
 }
 .ph-postcode {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #6b6783;
   margin-top: 2px;
@@ -2958,18 +2958,18 @@ const currentSample = computed(() => samples[sampleType.value])
   text-align: left;
 }
 .phs-num {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.4px;
 }
 .phs-pct {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b6783;
   margin-left: 1px;
 }
 .phs-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 0.8px;
@@ -2990,13 +2990,13 @@ const currentSample = computed(() => samples[sampleType.value])
   border-radius: 18px;
 }
 .addr-h {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.6px;
 }
 .addr-sub {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #6b6783;
   margin-top: 2px;
@@ -3010,13 +3010,13 @@ const currentSample = computed(() => samples[sampleType.value])
   flex-wrap: wrap;
 }
 .addr-value {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: -0.6px;
 }
 .addr-value-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #9c98ad;
   letter-spacing: 0.4px;
@@ -3027,7 +3027,7 @@ const currentSample = computed(() => samples[sampleType.value])
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   background: #e2f1ea;
   color: #007e78;
@@ -3040,7 +3040,7 @@ const currentSample = computed(() => samples[sampleType.value])
   flex-wrap: wrap;
 }
 .addr-pill {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   background: #f5f5f7;
   color: #4a4566;
@@ -3055,14 +3055,14 @@ const currentSample = computed(() => samples[sampleType.value])
   padding: 22px 22px 8px;
 }
 .or-h {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.4px;
   margin-bottom: 4px;
 }
 .or-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.5;
@@ -3092,13 +3092,13 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #6b6783;
 }
 .ors-num {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1;
 }
 .ors-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -3126,7 +3126,7 @@ const currentSample = computed(() => samples[sampleType.value])
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   flex-shrink: 0;
 }
 .sec-info {
@@ -3134,13 +3134,13 @@ const currentSample = computed(() => samples[sampleType.value])
   min-width: 0;
 }
 .sec-name {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
 }
 .sec-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b6783;
   margin-top: 1px;
@@ -3148,7 +3148,7 @@ const currentSample = computed(() => samples[sampleType.value])
 .sec-status-pill {
   display: inline-block;
   margin-top: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   padding: 3px 8px;
   border-radius: 100px;
@@ -3183,15 +3183,15 @@ const currentSample = computed(() => samples[sampleType.value])
   transition: width 0.3s;
 }
 .sec-pct {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   text-align: right;
   margin-top: 4px;
 }
 .sec-arrow {
   color: #9c98ad;
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
 }
 
@@ -3204,12 +3204,12 @@ const currentSample = computed(() => samples[sampleType.value])
   text-align: center;
 }
 .sec-more-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #4a4566;
 }
 .sec-more-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #9c98ad;
   margin-top: 4px;
@@ -3226,14 +3226,14 @@ const currentSample = computed(() => samples[sampleType.value])
   box-shadow: 0 16px 36px rgba(0, 161, 154, 0.4);
 }
 .scb-headline {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.1;
   margin-bottom: 6px;
 }
 .scb-sub {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.5;
@@ -3245,7 +3245,7 @@ const currentSample = computed(() => samples[sampleType.value])
   color: #00857f;
   border: none;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   padding: 13px 18px;
   border-radius: 14px;
@@ -3280,7 +3280,7 @@ const currentSample = computed(() => samples[sampleType.value])
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
   box-shadow: 0 2px 6px rgba(157, 123, 255, 0.2);
 }
@@ -3289,13 +3289,13 @@ const currentSample = computed(() => samples[sampleType.value])
   min-width: 0;
 }
 .bas-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
 }
 .bas-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b4e9f;
   margin-top: 2px;
@@ -3318,7 +3318,7 @@ const currentSample = computed(() => samples[sampleType.value])
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 12px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   padding: 10px 6px;
   cursor: pointer;

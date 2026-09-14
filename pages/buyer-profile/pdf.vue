@@ -138,7 +138,7 @@
             v-if="!passport?.signedAt"
             class="pdf-sig-placeholder"
             @click="goSign"
-          >
+           role="button" tabindex="0" @keydown.enter="goSign" @keydown.space.prevent="goSign">
             <img src="/op-icons/misc/signature.png" alt="" class="inline-ic" loading="lazy" /> Tap to add your digital signature
           </div>
           <!-- Signed -->
@@ -365,10 +365,10 @@ function downloadPdf() {
 }
 .pv-nav-centre {
   flex: 1; text-align: center;
-  font-size: 14px; font-weight: 800; color: #231d45;
+  font-size: 0.875rem; font-weight: 800; color: #231d45;
 }
 .pv-nav-right {
-  font-size: 13px; font-weight: 700; color: #00a19a;
+  font-size: 0.8125rem; font-weight: 700; color: #00726c;
   cursor: pointer; padding: 8px 4px; white-space: nowrap;
 }
 
@@ -413,17 +413,17 @@ function downloadPdf() {
   padding: 18px 20px;
 }
 .pdf-header-title {
-  font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+  font-size: 0.625rem; font-weight: 800; letter-spacing: 1.5px;
   color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   margin-bottom: 8px;
 }
 .pdf-header-name {
-  font-size: 20px; font-weight: 800; color: white;
+  font-size: 1.25rem; font-weight: 800; color: white;
   margin-bottom: 4px;
 }
 .pdf-header-ref {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: rgba(255, 255, 255, 0.5);
 }
 .pdf-header-pills {
@@ -431,7 +431,7 @@ function downloadPdf() {
   margin-top: 10px;
 }
 .pdf-h-pill {
-  font-size: 9px; font-weight: 700;
+  font-size: 0.5625rem; font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 100px;
   padding: 3px 9px;
@@ -465,7 +465,7 @@ function downloadPdf() {
   background: rgba(199, 62, 54, 0.2);
 }
 .pdf-validity-lbl {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 1.1px;
   text-transform: uppercase;
@@ -473,7 +473,7 @@ function downloadPdf() {
   margin-bottom: 2px;
 }
 .pdf-validity-val {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
@@ -499,7 +499,7 @@ function downloadPdf() {
   box-shadow: 0 0 0 3px rgba(199, 62, 54, 0.18);
 }
 .pdf-validity-status-text {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: -0.05px;
@@ -515,7 +515,7 @@ function downloadPdf() {
 }
 .pdf-section:last-child { border-bottom: none; }
 .pdf-section-title {
-  font-size: 9px; font-weight: 800; letter-spacing: 1px;
+  font-size: 0.5625rem; font-weight: 800; letter-spacing: 1px;
   color: #6b6783;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -527,14 +527,14 @@ function downloadPdf() {
 }
 .pdf-cred-row:last-child { margin-bottom: 0; }
 .pdf-cred-label {
-  font-size: 12px; font-weight: 700; color: #6b6783;
+  font-size: 0.75rem; font-weight: 700; color: #6b6783;
 }
 .pdf-cred-value {
-  font-size: 12px; font-weight: 800; color: #231d45;
+  font-size: 0.75rem; font-weight: 800; color: #231d45;
   text-align: right;
 }
 .pdf-pill {
-  font-size: 9px; font-weight: 800;
+  font-size: 0.5625rem; font-weight: 800;
   background: #f2faf8; color: #007e78;
   border: 1px solid #e5f4f2;
   border-radius: 100px;
@@ -549,7 +549,7 @@ function downloadPdf() {
   padding: 14px;
   text-align: center;
   cursor: pointer;
-  font-size: 12px; font-weight: 700;
+  font-size: 0.75rem; font-weight: 700;
   color: #9c98ad;
   transition: all 0.15s;
 }
@@ -564,7 +564,7 @@ function downloadPdf() {
   padding: 12px;
 }
 .pdf-sig-done-label {
-  font-size: 13px; font-weight: 800; color: #007e78;
+  font-size: 0.8125rem; font-weight: 800; color: #007e78;
   margin-bottom: 4px;
 }
 .pdf-sig-img-wrap {
@@ -580,18 +580,18 @@ function downloadPdf() {
 }
 .pdf-sig-typed {
   font-family: Georgia, serif;
-  font-size: 18px; font-style: italic;
+  font-size: 1.125rem; font-style: italic;
   color: #231d45;
   margin-bottom: 6px;
 }
 .pdf-sig-meta {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #9c98ad;
   margin-top: 6px;
 }
 
 .pdf-watermark {
-  font-size: 9px;
+  font-size: 0.5625rem;
   color: #9c98ad;
   font-weight: 600;
   padding: 12px 18px;
@@ -610,7 +610,7 @@ function downloadPdf() {
   width: 100%;
   background: #00a19a; color: white; border: none;
   border-radius: 14px; padding: 16px;
-  font-family: inherit; font-size: 14px; font-weight: 800;
+  font-family: inherit; font-size: 0.875rem; font-weight: 800;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.35);
   cursor: pointer; transition: all 0.15s;
 }
@@ -620,7 +620,7 @@ function downloadPdf() {
   background: white; color: #231d45;
   border: 1.5px solid #231d45;
   box-shadow: none;
-  font-size: 13px; padding: 13px;
+  font-size: 0.8125rem; padding: 13px;
 }
 
 /* Print styles - when user prints to PDF, hide the chrome and keep the

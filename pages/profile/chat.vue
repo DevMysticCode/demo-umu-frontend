@@ -35,7 +35,7 @@
 
       <button
         type="button"
-        class="text-brand-aqua font-sf-pro text-[15px]"
+        class="text-brand-aqua-text font-sf-pro text-[15px]"
         @click="clearChat"
       >
         Clear
@@ -69,7 +69,7 @@
             What would you like to know?
           </p>
           <div
-            class="mt-3 inline-flex items-center gap-1 text-brand-aqua font-sf-pro text-[12px]"
+            class="mt-3 inline-flex items-center gap-1 text-brand-aqua-text font-sf-pro text-[12px]"
           >
             <Icon name="i-heroicons-sparkles" class="w-3 h-3" />
             Powered by UMovingU AI
@@ -165,7 +165,7 @@
           placeholder="Ask anything related to your property"
           class="flex-1 bg-transparent outline-none font-sf-pro text-[15px] text-[#1f2024] placeholder:text-[#8f9094]"
           @keydown.enter.prevent="handleSend"
-        />
+         aria-label="Ask anything related to your property" />
 
         <button
           v-if="inputText.trim()"

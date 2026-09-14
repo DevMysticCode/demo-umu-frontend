@@ -24,7 +24,7 @@
           </svg>
           Filters
         </button>
-        <div class="feed-see-all" @click="navigateTo('/dashboard')">All</div>
+        <div class="feed-see-all" @click="navigateTo('/dashboard')" role="button" tabindex="0" @keydown.enter="navigateTo('/dashboard')" @keydown.space.prevent="navigateTo('/dashboard')">All</div>
       </div>
     </div>
     <div v-if="loading" class="skeletons">
@@ -36,7 +36,7 @@
         :key="prop.id"
         class="prop-card prop-card-horiz"
         @click="navigateTo('/property/' + prop.id)"
-      >
+       role="button" tabindex="0" @keydown.enter="navigateTo('/property/' + prop.id)" @keydown.space.prevent="navigateTo('/property/' + prop.id)">
         <div
           class="prop-img-wrap"
           :style="{ background: 'linear-gradient(135deg,#dff4f0,#c8ebe6)' }"
@@ -153,7 +153,7 @@
         role="dialog"
         aria-modal="true"
       >
-        <div class="pcs-grabber-wrap" @click="closePostcodeSheet">
+        <div class="pcs-grabber-wrap" @click="closePostcodeSheet" role="button" tabindex="0" @keydown.enter="closePostcodeSheet" @keydown.space.prevent="closePostcodeSheet">
           <div class="pcs-grabber" />
         </div>
         <div class="pcs-title">Set your postcode</div>
@@ -166,7 +166,7 @@
           placeholder="e.g. CV5 6AJ"
           autocapitalize="characters"
           @keyup.enter="savePostcode"
-        />
+         aria-label="e.g. CV5 6AJ" />
         <div v-if="postcodeError" class="pcs-error">{{ postcodeError }}</div>
         <button
           type="button"
@@ -269,14 +269,14 @@ async function savePostcode() {
   margin-bottom: 8px;
 }
 .feed-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #1f2024;
 }
 .feed-see-all {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
 }
 .feed-header-actions {
@@ -289,7 +289,7 @@ async function savePostcode() {
   align-items: center;
   gap: 4px;
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: #6b7089;
   background: #f4f4f6;
@@ -355,7 +355,7 @@ async function savePostcode() {
   left: 10px;
   background: #231d45;
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 999px;
@@ -383,7 +383,7 @@ async function savePostcode() {
   right: 10px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 3px 10px;
   border-radius: 999px;
@@ -392,13 +392,13 @@ async function savePostcode() {
   padding: 12px 14px;
 }
 .prop-address {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #1f2024;
   margin-bottom: 1px;
 }
 .prop-area {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
   margin-bottom: 8px;
 }
@@ -411,7 +411,7 @@ async function savePostcode() {
 .pill-grey {
   background: #f1f5f9;
   color: #64748b;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
@@ -429,7 +429,7 @@ async function savePostcode() {
   gap: 7px;
 }
 .prop-score-lbl {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   font-weight: 600;
 }
@@ -462,14 +462,14 @@ async function savePostcode() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #1f2024;
 }
 .prop-passport-btn {
   background: #231d45;
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 5px 12px;
   border-radius: 999px;
@@ -485,7 +485,7 @@ async function savePostcode() {
   margin-bottom: 12px;
 }
 .foryou-empty-ic {
-  font-size: 32px;
+  font-size: 2rem;
   margin-bottom: 8px;
 }
 .foryou-empty-ic-img {
@@ -500,13 +500,13 @@ async function savePostcode() {
   display: block;
 }
 .foryou-empty-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 4px;
 }
 .foryou-empty-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #4a5568;
   line-height: 1.5;
   margin-bottom: 12px;
@@ -515,7 +515,7 @@ async function savePostcode() {
   background: #00a19a;
   color: #fff;
   border: none;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 12px;
@@ -565,13 +565,13 @@ async function savePostcode() {
   border-radius: 999px;
 }
 .pcs-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
 }
 .pcs-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b7089;
   margin-top: 4px;
   margin-bottom: 16px;
@@ -583,7 +583,7 @@ async function savePostcode() {
   border-radius: 12px;
   border: 1.5px solid #e5e7eb;
   background: #f8f7fc;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #231d45;
   letter-spacing: 0.4px;
@@ -595,7 +595,7 @@ async function savePostcode() {
   border-color: #00a19a;
 }
 .pcs-error {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #dc2626;
   font-weight: 600;
   margin-top: 8px;
@@ -606,7 +606,7 @@ async function savePostcode() {
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 13px;
   border-radius: 12px;

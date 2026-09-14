@@ -77,7 +77,7 @@
                 :value="priceRange.min"
                 placeholder="Min"
                 @change="setMin($event.target.value)"
-              />
+               aria-label="Min" />
             </div>
             <div class="fm-minmax-sep" />
             <div class="fm-minmax-box">
@@ -87,7 +87,7 @@
                 :value="priceRange.max"
                 placeholder="Max"
                 @change="setMax($event.target.value)"
-              />
+               aria-label="Max" />
             </div>
           </div>
         </div>
@@ -212,7 +212,7 @@ const apply = () => {
 }
 
 .fm-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
@@ -259,14 +259,14 @@ const apply = () => {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #8e8e93;
 }
 
 .fm-reset {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   background: none;
   border: none;
   cursor: pointer;
@@ -289,10 +289,10 @@ const apply = () => {
 
 .fm-price-tag {
   background: rgba(0, 161, 154, 0.12);
-  color: #00a19a;
+  color: #00726c;
   padding: 5px 12px;
   border-radius: 100px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
 }
 
@@ -324,13 +324,13 @@ const apply = () => {
   background: transparent;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
-  color: #00a19a;
+  color: #00726c;
   text-align: center;
 }
 .fm-minmax-input::placeholder {
-  color: #00a19a;
+  color: #00726c;
   opacity: 0.6;
 }
 .fm-minmax-input::-webkit-inner-spin-button,
@@ -357,8 +357,8 @@ const apply = () => {
   border-radius: 100px;
   border: 1.5px solid rgba(0, 161, 154, 0.2);
   background: white;
-  color: #00a19a;
-  font-size: 13px;
+  color: #00726c;
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s;
@@ -384,7 +384,7 @@ const apply = () => {
   border: none;
   border-radius: 14px;
   padding: 16px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
 }

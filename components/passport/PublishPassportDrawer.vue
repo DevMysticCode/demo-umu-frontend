@@ -185,26 +185,26 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 .ppd-sheet { width: 100%; max-width: 28rem; background: var(--card); border-radius: 22px 22px 0 0; box-shadow: 0 -8px 30px rgba(35, 29, 69, 0.25); max-height: 90dvh; overflow-y: auto; padding-bottom: env(safe-area-inset-bottom); }
 .ppd-grip { width: 42px; height: 4px; background: var(--border); border-radius: 100px; margin: 10px auto 0; touch-action: none; }
 .ppd-head { padding: 14px 22px 6px; }
-.ppd-eyebrow { font-size: 10px; font-weight: 800; color: var(--accent-dark); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 6px; }
-.ppd-title { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 4px; }
-.ppd-sub { font-size: 12.5px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; }
+.ppd-eyebrow { font-size: 0.625rem; font-weight: 800; color: var(--accent-dark); letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 6px; }
+.ppd-title { font-size: 1.25rem; font-weight: 800; color: var(--text); letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 4px; }
+.ppd-sub { font-size: 0.7813rem; font-weight: 500; color: var(--text-secondary); line-height: 1.5; }
 
 .ppd-list { padding: 8px 22px 0; display: flex; flex-direction: column; gap: 10px; }
 .ppd-row { display: flex; gap: 12px; align-items: flex-start; }
-.ppd-ico { width: 34px; height: 34px; border-radius: 10px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.ppd-ico { width: 34px; height: 34px; border-radius: 10px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
 .ppd-ico.on { background: var(--accent-pale); }
-.ppd-row-t { font-size: 13px; font-weight: 800; color: var(--text); }
-.ppd-row-s { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); line-height: 1.5; margin-top: 1px; }
+.ppd-row-t { font-size: 0.8125rem; font-weight: 800; color: var(--text); }
+.ppd-row-s { font-size: 0.7188rem; font-weight: 600; color: var(--text-secondary); line-height: 1.5; margin-top: 1px; }
 
-.ppd-tip { margin: 14px 22px 0; padding: 11px 13px; background: var(--accent-paler); border: 1px solid var(--accent-pale); border-radius: 11px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); line-height: 1.5; }
+.ppd-tip { margin: 14px 22px 0; padding: 11px 13px; background: var(--accent-paler); border: 1px solid var(--accent-pale); border-radius: 11px; font-size: 0.7188rem; font-weight: 600; color: var(--text-secondary); line-height: 1.5; }
 .ppd-tip b { color: var(--accent-dark); font-weight: 800; }
 
 .ppd-gate { padding: 4px 22px 0; }
 .ppd-gate-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.ppd-gate-pct { font-size: 22px; font-weight: 800; color: #d97706; }
-.ppd-gate-lbl { font-size: 11.5px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
-.ppd-gate-count { font-size: 11px; font-weight: 700; color: var(--text-faint); margin-left: auto; }
-.ppd-gate-sub { margin: 6px 0 0; font-size: 12px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; }
+.ppd-gate-pct { font-size: 1.375rem; font-weight: 800; color: #d97706; }
+.ppd-gate-lbl { font-size: 0.7188rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+.ppd-gate-count { font-size: 0.6875rem; font-weight: 700; color: var(--text-faint); margin-left: auto; }
+.ppd-gate-sub { margin: 6px 0 0; font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); line-height: 1.5; }
 .ppd-gate-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; }
 .ppd-gate-item { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: #fff8ed; border: 1px solid #fbe4bd; border-radius: 10px; padding: 10px 12px; font-family: inherit; cursor: pointer; }
 .ppd-gate-item:active { background: #fdecd2; }
@@ -212,14 +212,14 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 .ppd-gate-item.done:active { background: var(--accent-pale); }
 .ppd-gate-dot { width: 7px; height: 7px; border-radius: 50%; background: #d97706; flex-shrink: 0; }
 .ppd-gate-check { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.ppd-gate-item-text { flex: 1; font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.ppd-gate-item-text { flex: 1; font-size: 0.75rem; font-weight: 600; color: var(--text); line-height: 1.4; }
 .ppd-gate-item.done .ppd-gate-item-text { color: var(--text-secondary); }
-.ppd-gate-item-section { display: block; font-size: 10px; font-weight: 800; color: #d97706; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 1px; }
+.ppd-gate-item-section { display: block; font-size: 0.625rem; font-weight: 800; color: #d97706; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 1px; }
 .ppd-gate-item.done .ppd-gate-item-section { color: var(--accent-dark); }
 .ppd-gate-item svg { flex-shrink: 0; color: var(--text-faint); }
 
 .ppd-cta-row { padding: 18px 22px 6px; display: flex; gap: 8px; }
-.ppd-btn { flex: 1; padding: 14px; font-family: inherit; font-size: 13.5px; font-weight: 800; border-radius: 12px; cursor: pointer; border: none; transition: filter 0.15s; }
+.ppd-btn { flex: 1; padding: 14px; font-family: inherit; font-size: 0.8438rem; font-weight: 800; border-radius: 12px; cursor: pointer; border: none; transition: filter 0.15s; }
 .ppd-btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; box-shadow: 0 4px 14px rgba(0, 161, 154, 0.30); }
 .ppd-btn.primary:hover:not(:disabled) { filter: brightness(1.06); }
 .ppd-btn.primary:disabled { opacity: 0.55; cursor: default; box-shadow: none; }

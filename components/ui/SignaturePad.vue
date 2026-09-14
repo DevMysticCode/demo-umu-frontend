@@ -120,7 +120,7 @@ defineExpose({ getDataUrl, clear, isEmpty })
   align-items: center;
   justify-content: center;
   color: #b9b9c4;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   pointer-events: none;
 }
@@ -132,7 +132,7 @@ defineExpose({ getDataUrl, clear, isEmpty })
   border: none;
   border-radius: 100px;
   padding: 5px 12px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #6b7089;
   cursor: pointer;

@@ -63,7 +63,7 @@
               @input="
                 updateFieldValue(formIndex, field.key, $event.target.value)
               "
-            />
+             aria-label="field.placeholder || ''" />
           </div>
         </div>
       </div>
@@ -203,7 +203,7 @@ const emitUpdate = () => {
 }
 
 .question-text {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #3c3c43;
   margin: 0 0 20px 0;
@@ -212,7 +212,7 @@ const emitUpdate = () => {
 }
 
 .question-description {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #3c3c4399;
   margin: 0 0 16px 0;
   line-height: 1.4;
@@ -225,14 +225,14 @@ const emitUpdate = () => {
   background-color: #00a19a1a;
   border-radius: 12px;
   margin: 0 0 20px 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #3c3c43;
 }
 
 .help-icon {
   flex-shrink: 0;
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
 }
 
 .help-text {
@@ -271,7 +271,7 @@ const emitUpdate = () => {
 }
 
 .form-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #3c3c43;
   margin: 0;
@@ -301,7 +301,7 @@ const emitUpdate = () => {
   border-radius: 50%;
   color: #c62828;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
   transition: background-color 0.2s;
 }
 
@@ -323,7 +323,7 @@ const emitUpdate = () => {
 }
 
 .field-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #1a1a1a;
   margin: 0;
@@ -333,7 +333,7 @@ const emitUpdate = () => {
   padding: 12px 14px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   transition: border-color 0.2s;
   box-sizing: border-box;
@@ -351,14 +351,14 @@ const emitUpdate = () => {
 
 .add-form-btn {
   font-weight: 400;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 18px;
   letter-spacing: -0.08px;
   padding: 16px 12px;
   background: #eafffc;
   border: none;
   border-radius: 16px;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -375,7 +375,7 @@ const emitUpdate = () => {
 }
 
 .add-icon {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
 }
 </style>

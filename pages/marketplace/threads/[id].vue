@@ -62,7 +62,7 @@
           placeholder="Type a message…"
           rows="1"
           @keydown.enter.exact.prevent="onSend"
-        />
+         aria-label="Type a message…" />
         <button
           class="th-send-btn"
           type="button"
@@ -215,7 +215,7 @@ function openJob() {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px; font-weight: 800; line-height: 1;
+  font-size: 1.375rem; font-weight: 800; line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -224,13 +224,13 @@ function openJob() {
   min-width: 0;
 }
 .th-header-name {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
 }
 .th-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 2px;
@@ -243,7 +243,7 @@ function openJob() {
   border-radius: 12px;
   border: 1px solid #e4e5ed;
   background: #fff;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -262,7 +262,7 @@ function openJob() {
   flex: 1;
   text-align: center;
   padding: 60px 24px;
-  font-size: 13px; font-weight: 600;
+  font-size: 0.8125rem; font-weight: 600;
   color: #6b7089;
 }
 
@@ -281,7 +281,7 @@ function openJob() {
   border-radius: 18px;
   background: #fff;
   border: 1px solid #eef0f6;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 500;
   color: #231d45;
   line-height: 1.45;
@@ -295,7 +295,7 @@ function openJob() {
   border-color: transparent;
 }
 .th-time {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #a8a9ad;
   margin: 4px 4px 8px;
@@ -324,7 +324,7 @@ function openJob() {
   border-radius: 18px;
   padding: 10px 14px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #231d45;
   outline: none;
@@ -339,7 +339,7 @@ function openJob() {
   border: none;
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -359,7 +359,7 @@ function openJob() {
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 10px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #c43c3c;
   text-align: center;

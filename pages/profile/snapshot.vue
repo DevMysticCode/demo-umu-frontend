@@ -63,7 +63,7 @@
               stroke-linecap="round"
             />
           </svg>
-          <input v-model="search" type="text" placeholder="Search Snapshots" />
+          <input v-model="search" type="text" placeholder="Search Snapshots"  aria-label="Search Snapshots" />
         </div>
 
         <button class="snapshot-filter-btn" aria-label="Filter snapshots">
@@ -239,7 +239,7 @@ const goBack = () => {
 .snapshot-title {
   margin: 0;
   text-align: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 25px;
   letter-spacing: -0.45px;
   font-weight: 590;
@@ -250,7 +250,7 @@ const goBack = () => {
 .snapshot-subtitle {
   margin: 0 auto 20px;
   text-align: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   letter-spacing: -0.23px;
   line-height: 20px;
   color: #3c3c4399;
@@ -280,7 +280,7 @@ const goBack = () => {
   border: 0;
   outline: 0;
   background: transparent;
-  font-size: 16px;
+  font-size: 1rem;
   color: #000;
 }
 
@@ -307,7 +307,7 @@ const goBack = () => {
 
 .snapshot-list-title {
   margin: 0 4px 12px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   font-weight: 590;
@@ -346,7 +346,7 @@ const goBack = () => {
 
 .snapshot-card-title {
   margin: 0 0 2px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   font-weight: 400;
@@ -355,7 +355,7 @@ const goBack = () => {
 
 .snapshot-card-city {
   margin: 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
   color: #3c3c4399;
@@ -364,7 +364,7 @@ const goBack = () => {
 
 .snapshot-card-region {
   margin: 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
   color: #3c3c4399;
@@ -373,7 +373,7 @@ const goBack = () => {
 
 .snapshot-card-postcode {
   margin: 0 0 6px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
   color: #3c3c4399;
@@ -382,10 +382,10 @@ const goBack = () => {
 
 .snapshot-card-date {
   margin: 0;
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 13px;
   letter-spacing: 0.06px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 400;
 }
 
@@ -397,7 +397,7 @@ const goBack = () => {
 .snapshot-empty {
   text-align: center;
   padding: 32px 16px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #9c9ca6;
   line-height: 1.6;
 }

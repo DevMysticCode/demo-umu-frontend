@@ -80,7 +80,7 @@
               class="step-platform"
               :class="getStepStatusClass(step)"
               @click="onStepClick(step)"
-            >
+             role="button" tabindex="0" @keydown.enter="onStepClick(step)" @keydown.space.prevent="onStepClick(step)">
               <OPIcon name="mapBackgroundTile" class="map-shadow-tile" />
               <OPIcon name="mapBackgroundTile" class="map-background-tile" />
               <div class="step-illustration">
@@ -736,7 +736,7 @@ const navigateToStep = (stepId) => {
   background: #fff;
   color: #4a5568;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 7px 12px;
   border-radius: 999px;
@@ -755,10 +755,10 @@ const navigateToStep = (stepId) => {
   box-shadow: 0 2px 8px rgba(0, 161, 154, 0.28);
 }
 .map-filter-count {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   background: rgba(0, 161, 154, 0.12);
-  color: #00a19a;
+  color: #00726c;
   padding: 1px 7px;
   border-radius: 999px;
 }
@@ -777,11 +777,11 @@ const navigateToStep = (stepId) => {
   box-shadow: 0 1px 3px rgba(35, 29, 69, 0.06);
 }
 .map-now-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 6px;
 }
 .map-now-row {
@@ -798,14 +798,14 @@ const navigateToStep = (stepId) => {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #00a19a;
+  color: #00726c;
 }
 .map-now-body {
   flex: 1;
   min-width: 0;
 }
 .map-now-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
@@ -814,7 +814,7 @@ const navigateToStep = (stepId) => {
   text-overflow: ellipsis;
 }
 .map-now-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #94a3b8;
   margin-top: 2px;
 }
@@ -824,7 +824,7 @@ const navigateToStep = (stepId) => {
   color: #fff;
   border-radius: 9px;
   padding: 7px 12px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
@@ -885,13 +885,13 @@ const navigateToStep = (stepId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
 }
 .map-step-ring-text--done {
   color: #008a84;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 /* ── Sheet drawer (prototype-matching) ─────────────────────── */
@@ -947,7 +947,7 @@ const navigateToStep = (stepId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #00a19a;
+  color: #00726c;
 }
 .sheet-meta {
   flex: 1;
@@ -955,12 +955,12 @@ const navigateToStep = (stepId) => {
 }
 .sheet-title {
   font-weight: 800;
-  font-size: 17px;
+  font-size: 1.0625rem;
   color: #0e2840;
   letter-spacing: -0.01em;
 }
 .sheet-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b7c8e;
   margin-top: 2px;
 }
@@ -970,8 +970,8 @@ const navigateToStep = (stepId) => {
   align-items: center;
   gap: 4px;
   background: rgba(61, 189, 163, 0.12);
-  color: #00a19a;
-  font-size: 10px;
+  color: #00726c;
+  font-size: 0.625rem;
   font-weight: 800;
   padding: 2px 8px;
   border-radius: 100px;
@@ -1001,9 +1001,9 @@ const navigateToStep = (stepId) => {
   transition: width 0.6s ease;
 }
 .sheet-progress .pgr-text {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   white-space: nowrap;
 }
 
@@ -1014,14 +1014,14 @@ const navigateToStep = (stepId) => {
   margin-bottom: 8px;
 }
 .task-list-head .lbl {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: #6b7c8e;
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
 .task-list-head .sort {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #6b7c8e;
 }
@@ -1061,9 +1061,9 @@ const navigateToStep = (stepId) => {
   align-items: center;
   justify-content: center;
   background: #fff;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   transition: all 0.3s;
 }
 .task-row.done .task-status {
@@ -1073,19 +1073,19 @@ const navigateToStep = (stepId) => {
 }
 .task-row.done .task-status::before {
   content: '✓';
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .task-info {
   flex: 1;
   min-width: 0;
 }
 .task-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0e2840;
 }
 .task-description {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b7c8e;
   line-height: 1.45;
   margin: 3px 0 0;
@@ -1098,7 +1098,7 @@ const navigateToStep = (stepId) => {
   text-decoration: line-through;
 }
 .task-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b7c8e;
   margin-top: 3px;
   display: flex;
@@ -1112,7 +1112,7 @@ const navigateToStep = (stepId) => {
   color: #c1cad3;
 }
 .task-meta .points {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
 }
 .task-meta-mins,
@@ -1129,14 +1129,14 @@ const navigateToStep = (stepId) => {
 }
 .task-arrow {
   color: #6b7c8e;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
 .sheet-empty {
   padding: 24px 0;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
 }
 

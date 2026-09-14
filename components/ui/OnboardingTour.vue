@@ -361,7 +361,7 @@ defineExpose({ start, finish, skip })
   margin-bottom: 6px;
 }
 .step-text {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -383,14 +383,14 @@ defineExpose({ start, finish, skip })
   border-radius: 999px;
 }
 .tour-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
   margin-bottom: 4px;
 }
 .tour-body {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #4a5568;
   line-height: 1.5;
   margin-bottom: 12px;
@@ -403,7 +403,7 @@ defineExpose({ start, finish, skip })
 .tour-skip {
   background: transparent;
   border: none;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #94a3b8;
   cursor: pointer;
@@ -417,7 +417,7 @@ defineExpose({ start, finish, skip })
 .tour-back {
   background: transparent;
   border: none;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #4a5568;
   cursor: pointer;
@@ -433,7 +433,7 @@ defineExpose({ start, finish, skip })
   border: none;
   border-radius: 10px;
   padding: 8px 14px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   cursor: pointer;
   margin-left: auto;

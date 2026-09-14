@@ -41,7 +41,7 @@
                 class="bad-textarea"
                 rows="3"
                 placeholder="e.g. Front door has a green wreath - can meet you outside"
-              />
+               aria-label="e.g. Front door has a green wreath - can meet you outside" />
             </div>
             <div class="bad-actions">
               <button class="bad-btn ghost" type="button" :disabled="submitting" @click="close">
@@ -79,7 +79,7 @@
                 class="bad-textarea"
                 rows="3"
                 placeholder="e.g. Thought you might want the full picture before we chat"
-              />
+               aria-label="e.g. Thought you might want the full picture before we chat" />
             </div>
             <div class="bad-actions">
               <button class="bad-btn ghost" type="button" :disabled="submitting" @click="close">
@@ -106,7 +106,7 @@
                 rows="5"
                 autofocus
                 placeholder="Hi - I saw you matched to my property. Wanted to say hello…"
-              />
+               aria-label="Hi - I saw you matched to my property. Wanted to say hello…" />
               <p class="bad-info-note">
                 They'll be notified in-app and by push. You can carry on the
                 conversation from the Inbox.
@@ -368,24 +368,24 @@ function friendlyError(err: any, fallback: string): string {
 }
 .bad-head { padding: 14px 22px 6px; }
 .bad-eyebrow {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   color: #008a84;
   letter-spacing: 1.4px; text-transform: uppercase;
   margin-bottom: 6px;
 }
 .bad-title {
-  font-size: 20px; font-weight: 800;
+  font-size: 1.25rem; font-weight: 800;
   color: #231d45;
   letter-spacing: -0.4px; line-height: 1.2;
   margin-bottom: 4px;
 }
 .bad-sub {
-  font-size: 12.5px; font-weight: 500;
+  font-size: 0.7813rem; font-weight: 500;
   color: #6b7089;
 }
 .bad-body { padding: 12px 22px 4px; }
 .bad-label {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   color: #a8a9ad;
   letter-spacing: 1.2px; text-transform: uppercase;
   margin: 10px 0 6px;
@@ -412,12 +412,12 @@ function friendlyError(err: any, fallback: string): string {
   box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.15);
 }
 .bad-slot-day {
-  font-size: 11px; font-weight: 800;
+  font-size: 0.6875rem; font-weight: 800;
   color: #008a84;
   letter-spacing: 0.2px; text-transform: uppercase;
 }
 .bad-slot-time {
-  font-size: 14px; font-weight: 800;
+  font-size: 0.875rem; font-weight: 800;
   color: #231d45;
 }
 .bad-textarea {
@@ -425,7 +425,7 @@ function friendlyError(err: any, fallback: string): string {
   padding: 10px 12px;
   border: 1.5px solid #e4e5ed;
   border-radius: 10px;
-  font: inherit; font-size: 16px;
+  font: inherit; font-size: 1rem;
   color: #231d45;
   resize: vertical;
   outline: none;
@@ -437,16 +437,16 @@ function friendlyError(err: any, fallback: string): string {
   background: #f2faf8;
   border: 1px solid #e5f4f2;
   border-radius: 12px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #231d45;
   line-height: 1.5;
 }
 .bad-info p { margin: 0 0 6px; }
 .bad-info p:last-child { margin: 0; }
-.bad-info .muted { color: #6b7089; font-size: 11.5px; }
+.bad-info .muted { color: #6b7089; font-size: 0.7188rem; }
 .bad-info-note {
   margin: 8px 0 0;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b7089;
   line-height: 1.5;
 }
@@ -457,7 +457,7 @@ function friendlyError(err: any, fallback: string): string {
 }
 .bad-btn {
   padding: 13px;
-  font: inherit; font-size: 13px; font-weight: 800;
+  font: inherit; font-size: 0.8125rem; font-weight: 800;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.15s;
@@ -479,7 +479,7 @@ function friendlyError(err: any, fallback: string): string {
 .bad-error {
   padding: 8px 22px 12px;
   color: #c73e36;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
 }
 

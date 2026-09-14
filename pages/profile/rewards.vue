@@ -471,7 +471,7 @@ onMounted(() => {
 .rw-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.4px;
@@ -486,34 +486,34 @@ onMounted(() => {
 .atm-bg.teal { background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(0, 161, 154, 0.12), transparent 65%); }
 
 .rw-hero { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px 0 22px; }
-.rw-hero-name { font-size: 19px; font-weight: 800; color: var(--navy); letter-spacing: -0.3px; margin-top: 12px; }
-.rw-hero-role { font-size: 13px; font-weight: 600; color: var(--teal); margin-top: 2px; }
+.rw-hero-name { font-size: 1.1875rem; font-weight: 800; color: var(--navy); letter-spacing: -0.3px; margin-top: 12px; }
+.rw-hero-role { font-size: 0.8125rem; font-weight: 600; color: var(--teal); margin-top: 2px; }
 
 .rw-stat-card { display: flex; align-items: center; background: #fff; border-radius: 20px; padding: 20px 18px; box-shadow: 0 14px 30px rgba(35, 29, 69, 0.16); }
 .rw-stat { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; }
 .rw-stat-divider { width: 1px; align-self: stretch; background: var(--line); margin: 0 14px; }
 .rw-stat-ic { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
-.rw-stat-num { font-size: 24px; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; line-height: 1.15; }
+.rw-stat-num { font-size: 1.5rem; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; line-height: 1.15; }
 .rw-stat-skel { height: 24px; width: 60px; border-radius: 6px; background: var(--line); }
-.rw-stat-lab { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 1px; }
+.rw-stat-lab { font-size: 0.75rem; color: var(--muted); font-weight: 600; margin-top: 1px; }
 
 .rw-progress-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; margin-top: 12px; }
-.rw-progress-lab { font-size: 15px; font-weight: 800; color: var(--navy); }
-.rw-progress-sub { font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+.rw-progress-lab { font-size: 0.9375rem; font-weight: 800; color: var(--navy); }
+.rw-progress-sub { font-size: 0.7813rem; color: var(--muted); margin-top: 1px; }
 .rw-progress-track { height: 8px; border-radius: 5px; background: var(--line); margin-top: 12px; overflow: hidden; }
 .rw-progress-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, #00a19a, #00c2b8); transition: width 0.3s ease; }
 
 .rw-launch-card { display: flex; align-items: center; gap: 14px; background: #eafaf7; border: 1px solid #cdeee8; border-radius: 20px; padding: 18px; margin-top: 14px; }
 .rw-launch-ic { width: 64px; height: 64px; object-fit: contain; flex-shrink: 0; }
-.rw-launch-title { font-size: 15px; font-weight: 800; color: var(--navy); }
-.rw-launch-sub { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: 4px 0 0; }
+.rw-launch-title { font-size: 0.9375rem; font-weight: 800; color: var(--navy); }
+.rw-launch-sub { font-size: 0.7813rem; color: var(--muted); line-height: 1.5; margin: 4px 0 0; }
 
 .rw-sec-row { display: flex; align-items: center; justify-content: space-between; margin: 22px 4px 10px; }
-.rw-sec-title { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
+.rw-sec-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
 
 .rw-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .rw-reward-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
-.rw-reward-tile { height: 92px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 12px; text-align: center; letter-spacing: 0.2px; overflow: hidden; }
+.rw-reward-tile { height: 92px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 0.75rem; text-align: center; letter-spacing: 0.2px; overflow: hidden; }
 /* The source icons are isometric renders with a lot of transparent margin
    baked in around the object (platform + breathing room) - at 1:1 scale
    they read as a small floating icon rather than a tile-filling image.
@@ -524,10 +524,10 @@ onMounted(() => {
 .rw-reward-tile-img--locked { filter: grayscale(1) opacity(0.55); }
 .rw-reward-tile--locked { background: #f1eff5; color: var(--muted); position: relative; }
 .rw-reward-tile-lock { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; }
-.rw-reward-title { font-size: 13.5px; font-weight: 700; color: var(--navy); margin-top: 10px; line-height: 1.3; }
-.rw-reward-pill { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; padding: 3px 9px; border-radius: 999px; font-size: 10.5px; font-weight: 700; }
+.rw-reward-title { font-size: 0.8438rem; font-weight: 700; color: var(--navy); margin-top: 10px; line-height: 1.3; }
+.rw-reward-pill { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; padding: 3px 9px; border-radius: 999px; font-size: 0.6563rem; font-weight: 700; }
 .rw-reward-pill--unlocked { background: #dff2e9; color: #186b48; }
-.rw-reward-note { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+.rw-reward-note { font-size: 0.6875rem; color: var(--muted); margin-top: 6px; line-height: 1.4; }
 .rw-reward-card--locked .rw-reward-title { color: #8a8594; }
 
 .rw-stamps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 8px; padding: 4px 0 6px; }
@@ -537,7 +537,7 @@ onMounted(() => {
    checkmark placeholder, so locked cells just dial the whole badge back
    with opacity + a lighter ring rather than overlaying a lock icon. */
 .rw-stamp-cell--locked { opacity: 0.4; }
-.rw-stamp-label { font-size: 10.5px; font-weight: 700; color: var(--navy); line-height: 1.25; }
+.rw-stamp-label { font-size: 0.6563rem; font-weight: 700; color: var(--navy); line-height: 1.25; }
 .rw-stamp-cell--locked .rw-stamp-label { color: var(--muted); }
 
 /* TEMPORARY - remove alongside the button in the template. Dashed amber
@@ -550,7 +550,7 @@ onMounted(() => {
   border-radius: 12px;
   background: #fdf6ea;
   color: #93630f;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
@@ -561,13 +561,13 @@ onMounted(() => {
 @keyframes rw-spin { to { transform: rotate(360deg); } }
 
 .rw-empty { text-align: center; padding: 50px 20px; }
-.rw-empty-ic { font-size: 34px; margin-bottom: 10px; }
-.rw-empty-title { font-weight: 700; font-size: 16px; color: var(--navy); }
-.rw-empty-sub { font-size: 13.5px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+.rw-empty-ic { font-size: 2.125rem; margin-bottom: 10px; }
+.rw-empty-title { font-weight: 700; font-size: 1rem; color: var(--navy); }
+.rw-empty-sub { font-size: 0.8438rem; color: var(--muted); margin-top: 6px; line-height: 1.45; }
 
 .rw-list { display: flex; flex-direction: column; gap: 10px; }
 
-.rw-loadmore { width: 100%; padding: 13px; border-radius: 14px; border: 1.5px solid var(--line); background: #fff; color: var(--navy); font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 4px; }
+.rw-loadmore { width: 100%; padding: 13px; border-radius: 14px; border: 1.5px solid var(--line); background: #fff; color: var(--navy); font-weight: 700; font-size: 0.875rem; cursor: pointer; margin-top: 4px; }
 .rw-loadmore:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Full history drawer - same slide-up pattern as HelpDrawer.vue */
@@ -575,7 +575,7 @@ onMounted(() => {
 .rw-drawer { width: 100%; max-height: 85vh; background: #fff; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; overflow: hidden; }
 .rw-drawer-handle { width: 36px; height: 4px; background: #e0e0e0; border-radius: 2px; margin: 12px auto 4px; flex-shrink: 0; }
 .rw-drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
-.rw-drawer-title { font-size: 16px; font-weight: 700; color: var(--navy); margin: 0; }
+.rw-drawer-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin: 0; }
 .rw-drawer-close { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: #f5f5f5; border: none; cursor: pointer; flex-shrink: 0; }
 .rw-drawer-body { flex: 1; overflow-y: auto; padding: 16px 20px 24px; -webkit-overflow-scrolling: touch; }
 

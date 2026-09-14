@@ -199,7 +199,7 @@ function relativeTime(iso: string | null): string {
 .inbox-nav-back svg { width: 18px; height: 18px; }
 .inbox-title {
   flex: 1; text-align: center;
-  font-size: 17px; font-weight: 800;
+  font-size: 1.0625rem; font-weight: 800;
   color: #231d45;
   margin: 0;
 }
@@ -209,17 +209,17 @@ function relativeTime(iso: string | null): string {
   text-align: center;
   color: #6b7089;
 }
-.inbox-empty-icon { font-size: 42px; margin-bottom: 12px; width: 56px; height: 56px; margin-left: auto; margin-right: auto; }
+.inbox-empty-icon { font-size: 2.625rem; margin-bottom: 12px; width: 56px; height: 56px; margin-left: auto; margin-right: auto; }
 .inbox-empty-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.inbox-empty-title { font-size: 16px; font-weight: 800; color: #231d45; margin-bottom: 6px; }
-.inbox-empty-sub { font-size: 13px; color: #6b7089; max-width: 300px; margin: 0 auto; line-height: 1.5; }
+.inbox-empty-title { font-size: 1rem; font-weight: 800; color: #231d45; margin-bottom: 6px; }
+.inbox-empty-sub { font-size: 0.8125rem; color: #6b7089; max-width: 300px; margin: 0 auto; line-height: 1.5; }
 .inbox-error {
   margin: 24px;
   padding: 12px 14px;
   background: #fdecea;
   color: #c73e36;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 .inbox-list { display: flex; flex-direction: column; }
@@ -240,7 +240,7 @@ function relativeTime(iso: string | null): string {
   background: linear-gradient(135deg, #00b8b0, #008a84);
   color: #fff;
   display: inline-flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: 800;
+  font-size: 1rem; font-weight: 800;
   flex-shrink: 0;
 }
 .inbox-row-body { flex: 1; min-width: 0; }
@@ -249,25 +249,25 @@ function relativeTime(iso: string | null): string {
   gap: 8px;
 }
 .inbox-row-name {
-  font-size: 14px; font-weight: 800;
+  font-size: 0.875rem; font-weight: 800;
   color: #231d45;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .inbox-row-time {
-  font-size: 11px; font-weight: 600;
+  font-size: 0.6875rem; font-weight: 600;
   color: #a8a9ad;
   flex-shrink: 0;
 }
 .inbox-row-context {
   margin-top: 2px;
-  font-size: 10.5px; font-weight: 800;
+  font-size: 0.6563rem; font-weight: 800;
   color: #008a84;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 .inbox-row-preview {
   margin-top: 3px;
-  font-size: 12.5px; font-weight: 500;
+  font-size: 0.7813rem; font-weight: 500;
   color: #6b7089;
   line-height: 1.4;
   overflow: hidden;

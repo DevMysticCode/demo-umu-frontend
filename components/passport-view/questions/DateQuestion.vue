@@ -101,7 +101,7 @@
           'multi-input-option': isMultiInputMode,
         }"
         @click="handleOptionClick(option.value)"
-      >
+       role="button" tabindex="0" @keydown.enter="handleOptionClick(option.value)" @keydown.space.prevent="handleOptionClick(option.value)">
         <div
           v-if="question.options.length > 1 && !isMultiInputMode"
           class="radio-btn"
@@ -428,14 +428,14 @@ const formatValue = (rawValue, option) => {
   color: #000000;
   margin: 0 0 20px 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -453,7 +453,7 @@ const formatValue = (rawValue, option) => {
 }
 
 .help-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
@@ -464,9 +464,9 @@ const formatValue = (rawValue, option) => {
 
 .help-title {
   margin: 0px 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -475,14 +475,14 @@ const formatValue = (rawValue, option) => {
   color: #3c3c4399;
   margin: 0;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
 
 .typing-cursor {
   margin-left: 2px;
-  color: #00a19a;
+  color: #00726c;
   animation: blink 1s infinite;
 }
 
@@ -553,13 +553,13 @@ const formatValue = (rawValue, option) => {
 
 .check-icon {
   color: white;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   line-height: 1;
 }
 
 .option-label {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #1a1a1a;
   flex: 1;
@@ -580,16 +580,16 @@ const formatValue = (rawValue, option) => {
 }
 
 .date-text {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   position: relative;
   z-index: 1;
   pointer-events: none;
 }
 
 .date-placeholder {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #999;
   position: relative;
   z-index: 1;
@@ -636,14 +636,14 @@ const formatValue = (rawValue, option) => {
 }
 
 .mi-label {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #1a1a1a;
   white-space: nowrap;
 }
 
 .mi-sep {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 400;
   color: #3c3c4399;
 }
@@ -658,13 +658,13 @@ const formatValue = (rawValue, option) => {
   border-top: 1px solid #f0f0f0;
 }
 .selection-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #3c3c4399;
 }
 .selection-value {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
 }
 </style>
 

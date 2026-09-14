@@ -120,7 +120,7 @@
           type="text"
           maxlength="120"
           placeholder="e.g. Full bathroom replumb & refit"
-        />
+         aria-label="e.g. Full bathroom replumb & refit" />
       </div>
 
       <div class="pj-field-group">
@@ -131,7 +131,7 @@
           rows="5"
           maxlength="4000"
           placeholder="Describe the work, access details, materials provided, etc."
-        />
+         aria-label="Describe the work, access details, materials provided, etc." />
         <div class="pj-field-help-inline">
           {{ form.description.length }} / 4000 chars
         </div>
@@ -145,7 +145,7 @@
             class="pj-field-input"
             type="text"
             placeholder="Bristol BS1"
-          />
+           aria-label="Bristol BS1" />
         </div>
         <div>
           <div class="pj-field-label">Urgency</div>
@@ -198,7 +198,7 @@
             min="1"
             step="1"
             placeholder="0"
-          />
+           aria-label="0" />
         </label>
         <label class="pj-budget-pill">
           <div class="pj-budget-pill-label">Maximum (£) · optional</div>
@@ -210,7 +210,7 @@
             min="1"
             step="1"
             placeholder="-"
-          />
+           aria-label="-" />
         </label>
       </div>
 
@@ -509,7 +509,7 @@ async function submit() {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   line-height: 1;
   cursor: pointer;
@@ -517,7 +517,7 @@ async function submit() {
 }
 .pj-header-title {
   flex: 1;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -525,7 +525,7 @@ async function submit() {
 }
 .pj-header-pill {
   flex-shrink: 0;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -561,14 +561,14 @@ async function submit() {
   padding: 18px 20px 4px;
 }
 .pj-section-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
 }
 .pj-field-help {
   padding: 0 20px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.5;
@@ -576,7 +576,7 @@ async function submit() {
 }
 .pj-field-help b { color: #231d45; }
 .pj-field-help-inline {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #6b7089;
   margin-top: 4px;
@@ -630,7 +630,7 @@ async function submit() {
   left: 10px;
   right: 10px;
   z-index: 2;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   text-align: left;
   letter-spacing: -0.1px;
@@ -646,7 +646,7 @@ async function submit() {
   border-radius: 50%;
   background: #00a19a;
   color: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -665,13 +665,13 @@ async function submit() {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .pj-photo-checklist-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 6px;
 }
 .pj-photo-checklist-row {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b7089;
   padding: 4px 0;
@@ -686,7 +686,7 @@ async function submit() {
   border-radius: 50%;
   background: #f0f2f8;
   color: #6b7089;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
@@ -712,7 +712,7 @@ async function submit() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
   color: #00635E;
   cursor: pointer;
@@ -729,7 +729,7 @@ async function submit() {
   border: 1.5px solid transparent;
   background-color: transparent;
 }
-.pj-photo-tile.uploading { color: #00a19a; }
+.pj-photo-tile.uploading { color: #00726c; }
 .pj-photo-input { display: none; }
 .pj-photo-remove {
   position: absolute;
@@ -740,7 +740,7 @@ async function submit() {
   border: none;
   background: rgba(0, 0, 0, 0.55);
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   line-height: 1;
   cursor: pointer;
@@ -751,7 +751,7 @@ async function submit() {
   padding: 12px 20px 0;
 }
 .pj-field-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   color: #6b7089;
@@ -765,7 +765,7 @@ async function submit() {
   border-radius: 12px;
   padding: 11px 13px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #231d45;
   outline: none;
@@ -792,7 +792,7 @@ async function submit() {
   border: 1px solid #e4e5ed;
   border-radius: 100px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
   cursor: pointer;
@@ -820,7 +820,7 @@ async function submit() {
   display: block;
 }
 .pj-budget-pill-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -832,7 +832,7 @@ async function submit() {
   outline: none;
   background: transparent;
   font-family: inherit;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   margin-top: 4px;
@@ -854,11 +854,11 @@ async function submit() {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .pj-insight-text {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.5;
@@ -875,21 +875,21 @@ async function submit() {
   box-shadow: 0 4px 14px rgba(35, 29, 69, 0.08);
 }
 .pj-review-cat {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #00635E;
   letter-spacing: 0.4px;
   text-transform: uppercase;
 }
 .pj-review-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
   margin-top: 4px;
 }
 .pj-review-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 4px;
@@ -912,7 +912,7 @@ async function submit() {
   align-items: baseline;
   justify-content: space-between;
   padding-top: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
   border-top: 1px solid #f0f1f5;
@@ -921,7 +921,7 @@ async function submit() {
 .pj-review-row b { color: #231d45; font-weight: 800; }
 .pj-review-desc {
   margin-top: 10px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: #4a4566;
   line-height: 1.55;
@@ -940,7 +940,7 @@ async function submit() {
   border-radius: 14px;
   padding: 15px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
@@ -959,7 +959,7 @@ async function submit() {
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #c43c3c;
 }

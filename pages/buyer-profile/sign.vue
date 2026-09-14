@@ -64,7 +64,7 @@
         class="sd-type-input"
         :placeholder="displayName"
         @input="onTypeNameInput"
-      />
+       aria-label="displayName" />
     </div>
 
     <!-- Legal note -->
@@ -288,10 +288,10 @@ const goBack = useGoBack('/buyer-profile/pdf')
 }
 .sd-nav-centre {
   flex: 1; text-align: center;
-  font-size: 14px; font-weight: 800; color: #231d45;
+  font-size: 0.875rem; font-weight: 800; color: #231d45;
 }
 .sd-nav-right {
-  font-size: 13px; font-weight: 700; color: #c73e36;
+  font-size: 0.8125rem; font-weight: 700; color: #c73e36;
   cursor: pointer; padding: 8px 4px; white-space: nowrap;
   transition: opacity 0.15s;
 }
@@ -307,7 +307,7 @@ const goBack = useGoBack('/buyer-profile/pdf')
   to { opacity: 1; transform: translateY(0); }
 }
 .sd-intro p {
-  font-size: 13px; color: #6b6783; line-height: 1.5;
+  font-size: 0.8125rem; color: #6b6783; line-height: 1.5;
 }
 
 .sd-doc-summary {
@@ -319,19 +319,19 @@ const goBack = useGoBack('/buyer-profile/pdf')
   animation: sd-fadeUp 0.4s 0.08s both;
 }
 .sd-doc-label {
-  font-size: 10px; font-weight: 800; letter-spacing: 0.8px;
+  font-size: 0.625rem; font-weight: 800; letter-spacing: 0.8px;
   color: #9c98ad;
   margin-bottom: 8px;
 }
 .sd-doc-title {
-  font-size: 13px; font-weight: 800; color: #231d45;
+  font-size: 0.8125rem; font-weight: 800; color: #231d45;
 }
 .sd-doc-meta {
-  font-size: 11px; color: #6b6783; margin-top: 2px;
+  font-size: 0.6875rem; color: #6b6783; margin-top: 2px;
 }
 
 .sec-label {
-  font-size: 11px; font-weight: 800;
+  font-size: 0.6875rem; font-weight: 800;
   color: #6b6783; letter-spacing: 1px;
   text-transform: uppercase;
   padding: 16px 22px 8px;
@@ -373,7 +373,7 @@ const goBack = useGoBack('/buyer-profile/pdf')
   pointer-events: none;
 }
 .sig-placeholder-text {
-  font-size: 12px; font-weight: 700; color: #9c98ad;
+  font-size: 0.75rem; font-weight: 700; color: #9c98ad;
 }
 
 .sd-type-wrap {
@@ -381,7 +381,7 @@ const goBack = useGoBack('/buyer-profile/pdf')
   animation: sd-fadeUp 0.4s 0.15s both;
 }
 .sd-type-divider {
-  font-size: 11px; font-weight: 700; color: #9c98ad;
+  font-size: 0.6875rem; font-weight: 700; color: #9c98ad;
   text-align: center; margin-bottom: 8px;
 }
 .sd-type-input {
@@ -390,7 +390,7 @@ const goBack = useGoBack('/buyer-profile/pdf')
   border-radius: 12px;
   padding: 13px 14px;
   font-family: 'Plus Jakarta Sans', inherit;
-  font-size: 18px; font-style: italic;
+  font-size: 1.125rem; font-style: italic;
   color: #231d45;
   outline: none;
   text-align: center;
@@ -404,7 +404,7 @@ const goBack = useGoBack('/buyer-profile/pdf')
   padding: 10px 12px;
   background: #f6f5fb;
   border-radius: 10px;
-  font-size: 10.5px; color: #6b6783; line-height: 1.4;
+  font-size: 0.6563rem; color: #6b6783; line-height: 1.4;
   animation: sd-fadeUp 0.4s 0.18s both;
 }
 
@@ -416,7 +416,7 @@ const goBack = useGoBack('/buyer-profile/pdf')
   width: 100%;
   background: #00a19a; color: white; border: none;
   border-radius: 14px; padding: 16px;
-  font-family: inherit; font-size: 14px; font-weight: 800;
+  font-family: inherit; font-size: 0.875rem; font-weight: 800;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.35);
   cursor: pointer; transition: all 0.15s;
 }
@@ -426,7 +426,7 @@ const goBack = useGoBack('/buyer-profile/pdf')
 }
 .sd-err {
   margin-top: 8px;
-  font-size: 12px; font-weight: 600; color: #c73e36;
+  font-size: 0.75rem; font-weight: 600; color: #c73e36;
   text-align: center;
 }
 </style>

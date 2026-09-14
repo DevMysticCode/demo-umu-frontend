@@ -54,7 +54,7 @@
         class="radio-option"
         :class="{ selected: answer === option.value }"
         @click="selectOption(option.value)"
-      >
+       role="button" tabindex="0" @keydown.enter="selectOption(option.value)" @keydown.space.prevent="selectOption(option.value)">
         <div class="radio-btn" :class="{ checked: answer === option.value }">
           <span v-if="answer === option.value" class="check-icon">✓</span>
         </div>
@@ -112,7 +112,7 @@ const selectOption = (value) => {
 
 <style scoped>
 .input-instruction {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
   margin: 0 0 12px 0;
   font-weight: 500;
@@ -122,14 +122,14 @@ const selectOption = (value) => {
   color: #000000;
   margin: 0 0 20px 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -147,7 +147,7 @@ const selectOption = (value) => {
 }
 
 .help-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
@@ -158,9 +158,9 @@ const selectOption = (value) => {
 
 .help-title {
   margin: 0px 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -169,14 +169,14 @@ const selectOption = (value) => {
   color: #3c3c4399;
   margin: 0;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
 
 .typing-cursor {
   margin-left: 2px;
-  color: #00a19a;
+  color: #00726c;
   animation: blink 1s infinite;
 }
 
@@ -247,7 +247,7 @@ const selectOption = (value) => {
 
 .check-icon {
   color: white;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -255,7 +255,7 @@ const selectOption = (value) => {
 .option-label {
   color: #000000;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }

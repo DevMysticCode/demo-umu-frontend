@@ -333,7 +333,7 @@
             :key="task.id"
             class="section-task-row"
             @click="goToTask(task.id)"
-          >
+           role="button" tabindex="0" @keydown.enter="goToTask(task.id)" @keydown.space.prevent="goToTask(task.id)">
             <div class="section-task-icon">
               <OPIcon
                 :name="section.imageKey || 'fittingsContents'"
@@ -981,7 +981,7 @@ function downloadAllFiles() {
   backdrop-filter: blur(6px);
   border: 1px solid rgba(15, 118, 110, 0.15);
   color: #0f766e;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1004,7 +1004,7 @@ function downloadAllFiles() {
   z-index: 1;
 }
 .hero-title {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -1015,7 +1015,7 @@ function downloadAllFiles() {
 }
 .hero-sub {
   color: #115e59;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.4;
   margin: 0 0 16px;
@@ -1055,7 +1055,7 @@ function downloadAllFiles() {
 .ring span {
   grid-area: 1 / 1;
   z-index: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0a0f2c;
   line-height: 1;
@@ -1063,14 +1063,14 @@ function downloadAllFiles() {
 .meta-text small {
   display: block;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: #115e59;
   margin-bottom: 4px;
 }
 .meta-text strong {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.2;
   color: #0a0f2c;
@@ -1095,7 +1095,7 @@ function downloadAllFiles() {
   gap: 6px;
   padding: 8px 16px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.15s;
@@ -1103,7 +1103,7 @@ function downloadAllFiles() {
 
 .action-btn--help {
   background: white;
-  color: #00a19a;
+  color: #00726c;
   border: 2px solid #e0e0e0;
   padding-left: 20px;
   padding-right: 20px;
@@ -1116,7 +1116,7 @@ function downloadAllFiles() {
 }
 
 .action-btn-play {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 /* Preview / Download row */
@@ -1134,7 +1134,7 @@ function downloadAllFiles() {
   gap: 8px;
   padding: 12px;
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -1148,7 +1148,7 @@ function downloadAllFiles() {
 .section-btn--outline {
   background: white;
   border: 1.5px solid #00a19a;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .section-btn--filled {
@@ -1176,21 +1176,21 @@ function downloadAllFiles() {
 }
 
 .section-stat-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #3c3c4399;
   margin: 0 0 2px;
   line-height: 1.3;
 }
 
 .section-stat-value {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #333;
   margin: 0;
 }
 
 .section-stat-value--green {
-  color: #00a19a;
+  color: #00726c;
 }
 .section-stat-value--red {
   color: #e53e3e;
@@ -1213,7 +1213,7 @@ function downloadAllFiles() {
 }
 
 .section-details-label {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 590;
   color: #000;
 }
@@ -1262,7 +1262,7 @@ function downloadAllFiles() {
 }
 
 .section-task-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 590;
   color: #000;
   margin: 0 0 4px;
@@ -1279,7 +1279,7 @@ function downloadAllFiles() {
 }
 
 .section-task-tag {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   padding: 2px 6px;
   border-radius: 4px;
@@ -1289,7 +1289,7 @@ function downloadAllFiles() {
   color: #666;
 }
 .tag--included {
-  color: #00a19a;
+  color: #00726c;
 }
 .tag--excluded {
   color: #e53e3e;
@@ -1349,7 +1349,7 @@ function downloadAllFiles() {
 }
 
 .files-sheet-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #1a1a1a;
   margin: 0;
@@ -1376,7 +1376,7 @@ function downloadAllFiles() {
 
 .files-empty {
   color: #888;
-  font-size: 14px;
+  font-size: 0.875rem;
   text-align: center;
   padding: 20px 0;
 }
@@ -1410,7 +1410,7 @@ function downloadAllFiles() {
 }
 
 .file-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #1a1a1a;
   margin: 0 0 2px;
@@ -1420,7 +1420,7 @@ function downloadAllFiles() {
 }
 
 .file-from {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #9ca3af;
   margin: 0;
   white-space: nowrap;
@@ -1437,7 +1437,7 @@ function downloadAllFiles() {
 .file-btn {
   padding: 6px 10px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -1445,7 +1445,7 @@ function downloadAllFiles() {
 
 .file-btn--preview {
   background: #f0faf9;
-  color: #00a19a;
+  color: #00726c;
   border: 1px solid #b2e4e1;
 }
 
@@ -1457,7 +1457,7 @@ function downloadAllFiles() {
 }
 
 .file-pending-badge {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #999;
   background: #f3f3f3;
   border: 1px solid #e0e0e0;
@@ -1492,14 +1492,14 @@ function downloadAllFiles() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #92400e;
   margin-bottom: 8px;
 }
 
 .ai-summary-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
   line-height: 1.6;
   margin: 0;
@@ -1570,7 +1570,7 @@ function downloadAllFiles() {
 
 .lightbox-unsupported p {
   color: #ccc;
-  font-size: 15px;
+  font-size: 0.9375rem;
   margin: 0;
 }
 
@@ -1580,7 +1580,7 @@ function downloadAllFiles() {
   border: none;
   border-radius: 10px;
   padding: 12px 24px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -1594,7 +1594,7 @@ function downloadAllFiles() {
 
 .lightbox-filename {
   flex: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #ccc;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1608,7 +1608,7 @@ function downloadAllFiles() {
   border-radius: 8px;
   width: 36px;
   height: 36px;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;

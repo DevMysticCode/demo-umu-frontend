@@ -24,7 +24,7 @@
           placeholder="City, area or postcode"
           class="flex-1 bg-transparent text-gray-900 placeholder-gray-500 outline-none"
           readonly
-        />
+         aria-label="City, area or postcode" />
         <button
           @click="$emit('show-filters')"
           class="w-10 h-10 bg-brand-aqua rounded-lg flex items-center justify-center hover:bg-brand-aqua/90 transition"
@@ -115,7 +115,7 @@
           :key="result.id || index"
           class="bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-brand-aqua hover:shadow-lg cursor-pointer transition"
           @click="viewProperty(result.id)"
-        >
+         role="button" tabindex="0" @keydown.enter="viewProperty(result.id)" @keydown.space.prevent="viewProperty(result.id)">
           <!-- Property Image -->
           <div class="relative overflow-hidden bg-gray-200 h-40">
             <PropertyImage :src="result.image" :alt="result.address" />
@@ -173,13 +173,13 @@
               </span>
 
               <!-- Bedroom -->
-              <div class="flex items-center gap-1 text-brand-aqua">
+              <div class="flex items-center gap-1 text-brand-aqua-text">
                 <Icon name="i-heroicons-building-office" class="w-4 h-4" />
                 <span class="text-sm font-medium">{{ result.bedrooms }}</span>
               </div>
 
               <!-- Bathroom -->
-              <div class="flex items-center gap-1 text-brand-aqua">
+              <div class="flex items-center gap-1 text-brand-aqua-text">
                 <Icon name="i-heroicons-home" class="w-4 h-4" />
                 <span class="text-sm font-medium">{{ result.bathrooms }}</span>
               </div>
@@ -194,7 +194,7 @@
 
             <!-- Square Footage -->
             <div
-              class="flex items-center text-brand-aqua text-sm pt-3 border-t border-gray-100"
+              class="flex items-center text-brand-aqua-text text-sm pt-3 border-t border-gray-100"
             >
               <Icon name="i-heroicons-squares-2x2" class="w-4 h-4 mr-2" />
               <span class="font-medium">{{ result.sqftDisplay }}</span>

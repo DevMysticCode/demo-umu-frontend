@@ -51,7 +51,7 @@
             class="journey-card"
             :class="{ selected: selectedRole === r.key }"
             @click="selectRole(r.key)"
-          >
+           role="button" tabindex="0" @keydown.enter="selectRole(r.key)" @keydown.space.prevent="selectRole(r.key)">
             <div class="j-icon">
               <img :src="r.icon" alt="" loading="lazy" />
             </div>
@@ -114,7 +114,7 @@
                   type="text"
                   :placeholder="q.placeholder"
                   @input="(e: any) => ((a as any)[q.id] = e.target.value)"
-                />
+                 aria-label="q.placeholder" />
               </div>
             </div>
 
@@ -135,7 +135,7 @@
                   @input="(e: any) => onLocInput(q.id, e.target.value)"
                   @keydown.enter.prevent="commitLocFreeText(q.id)"
                   @keydown.backspace="onLocBackspace(q.id, $event)"
-                />
+                 aria-label="q.placeholder" />
               </div>
               <div
                 v-if="locOpen[q.id] && locSuggestions[q.id]?.length"
@@ -1189,7 +1189,7 @@ onMounted(() => {
   height: 14px;
 }
 .ob-step {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: 1.4px;
@@ -1199,7 +1199,7 @@ onMounted(() => {
   flex: 1;
 }
 .ob-skip {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--text-soft);
   background: none;
@@ -1235,7 +1235,7 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--teal-dark);
   background: var(--teal-paler);
@@ -1254,7 +1254,7 @@ onMounted(() => {
   box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.18);
 }
 .ob-title {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.9px;
@@ -1262,7 +1262,7 @@ onMounted(() => {
   margin-bottom: 8px;
 }
 .ob-sub {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 500;
   color: var(--text-soft);
   letter-spacing: -0.1px;
@@ -1317,7 +1317,7 @@ onMounted(() => {
   min-width: 0;
 }
 .j-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.3px;
@@ -1325,7 +1325,7 @@ onMounted(() => {
   margin-bottom: 3px;
 }
 .j-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-soft);
   letter-spacing: -0.05px;
@@ -1384,7 +1384,7 @@ onMounted(() => {
   object-fit: contain;
 }
 .info-stripe-text {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--navy-soft);
   letter-spacing: -0.05px;
@@ -1423,7 +1423,7 @@ onMounted(() => {
   object-fit: contain;
 }
 .trust-title {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.15px;
@@ -1431,7 +1431,7 @@ onMounted(() => {
   margin-bottom: 3px;
 }
 .trust-sub {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   color: var(--text-soft);
   letter-spacing: -0.05px;
@@ -1448,11 +1448,11 @@ onMounted(() => {
   gap: 8px;
 }
 .section-group-emoji {
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 1;
 }
 .section-group-h {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.3px;
@@ -1466,7 +1466,7 @@ onMounted(() => {
   padding: 16px 22px 4px;
 }
 .pref-label {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: 1.6px;
@@ -1478,11 +1478,11 @@ onMounted(() => {
   color: var(--text-faint);
   text-transform: none;
   letter-spacing: -0.05px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   margin-left: 4px;
 }
 .pref-help {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-soft);
   letter-spacing: -0.05px;
@@ -1517,7 +1517,7 @@ onMounted(() => {
   border: none;
   padding: 10px 4px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--navy);
   letter-spacing: -0.1px;
@@ -1566,7 +1566,7 @@ onMounted(() => {
   background: var(--teal-paler);
 }
 .loc-drop-ic {
-  font-size: 14px;
+  font-size: 0.875rem;
   flex-shrink: 0;
 }
 .loc-drop-text {
@@ -1575,12 +1575,12 @@ onMounted(() => {
   min-width: 0;
 }
 .loc-drop-text strong {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--navy);
 }
 .loc-drop-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-faint);
   margin-top: 1px;
 }
@@ -1593,7 +1593,7 @@ onMounted(() => {
 }
 .chip {
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--navy);
   background: #fff;
@@ -1622,7 +1622,7 @@ onMounted(() => {
   color: var(--text-faint);
 }
 .chip-emoji {
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1;
 }
 .chip-emoji-img {
@@ -1653,7 +1653,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text-soft);
   letter-spacing: -0.05px;
@@ -1670,7 +1670,7 @@ onMounted(() => {
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   padding: 16px 18px;
   border-radius: 100px;

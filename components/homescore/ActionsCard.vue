@@ -24,7 +24,7 @@ defineProps<{ actions: Action[] }>()
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 .hs-card-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 16px;
@@ -48,7 +48,7 @@ defineProps<{ actions: Action[] }>()
   border-radius: 50%;
   background: #00a19a;
   color: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -57,14 +57,14 @@ defineProps<{ actions: Action[] }>()
 }
 .hs-action-text {
   flex: 1;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
   font-weight: 500;
 }
 .hs-action-points {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   background: #e8f8f7;
   border-radius: 20px;
   padding: 3px 10px;

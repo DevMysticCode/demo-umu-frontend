@@ -376,7 +376,7 @@ const powerItems = [
 }
 .pe-hero-title {
   margin: 0;
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   color: #1a1535;
   line-height: 1.18;
@@ -384,14 +384,14 @@ const powerItems = [
 }
 .pe-hero-sub {
   margin-top: 8px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: #00858a;
   line-height: 1.35;
 }
 .pe-hero-desc {
   margin: 8px 0 0;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.5;
@@ -423,7 +423,7 @@ const powerItems = [
   margin: auto;
 }
 .pe-blurb-eyebrow {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -431,7 +431,7 @@ const powerItems = [
 }
 .pe-blurb-desc {
   margin: 5px 0 0;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.5;
@@ -474,14 +474,14 @@ const powerItems = [
   margin: 0 auto 6px;
 }
 .pe-card-title {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: -0.1px;
   line-height: 1.2;
 }
 .pe-card-desc {
   margin: 3px 0 0;
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.35;
@@ -489,7 +489,7 @@ const powerItems = [
 }
 .pe-card-pill {
   margin-top: 8px;
-  font-size: 6.5px;
+  font-size: 0.4063rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   padding: 3px 5px;
@@ -521,7 +521,7 @@ const powerItems = [
   border-radius: 16px;
 }
 .pe-power-title {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -561,7 +561,7 @@ const powerItems = [
   background-size: 8px 1.5px;
 }
 .pe-power-item-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #231d45;
   padding-top: 8px;
@@ -569,7 +569,7 @@ const powerItems = [
 }
 .pe-power-item-desc {
   margin-top: 3px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.5;

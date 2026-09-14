@@ -333,13 +333,13 @@ async function onDecline(offerId: string) {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px; font-weight: 800; line-height: 1;
+  font-size: 1.375rem; font-weight: 800; line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
 }
 .of-header-title {
   flex: 1;
-  font-size: 16px; font-weight: 800;
+  font-size: 1rem; font-weight: 800;
   color: #231d45; letter-spacing: -0.3px;
   text-align: center;
 }
@@ -348,21 +348,21 @@ async function onDecline(offerId: string) {
 .of-loading, .of-no-offers {
   padding: 40px 20px;
   text-align: center;
-  font-size: 13px; font-weight: 600;
+  font-size: 0.8125rem; font-weight: 600;
   color: #6b7089;
 }
 .of-empty {
   padding: 60px 24px;
   text-align: center;
-  font-size: 13px; font-weight: 600;
+  font-size: 0.8125rem; font-weight: 600;
   color: #6b7089;
 }
-.of-empty-emoji { font-size: 40px; margin-bottom: 8px; }
-.of-empty-title { font-size: 16px; font-weight: 800; color: #231d45; margin-bottom: 4px; }
+.of-empty-emoji { font-size: 2.5rem; margin-bottom: 8px; }
+.of-empty-title { font-size: 1rem; font-weight: 800; color: #231d45; margin-bottom: 4px; }
 .of-empty-sub { margin-bottom: 16px; }
 .of-empty-btn {
   background: #00a19a; color: #fff; border: none; border-radius: 12px;
-  padding: 12px 18px; font-family: inherit; font-size: 13px; font-weight: 800;
+  padding: 12px 18px; font-family: inherit; font-size: 0.8125rem; font-weight: 800;
   cursor: pointer;
 }
 
@@ -376,11 +376,11 @@ async function onDecline(offerId: string) {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .of-recap-title {
-  font-size: 14px; font-weight: 800;
+  font-size: 0.875rem; font-weight: 800;
   color: #231d45; letter-spacing: -0.2px;
 }
 .of-recap-meta {
-  font-size: 11.5px; font-weight: 600;
+  font-size: 0.7188rem; font-weight: 600;
   color: #6b7089; margin-top: 4px;
 }
 .of-recap-meta b { color: #231d45; font-weight: 800; }
@@ -393,12 +393,12 @@ async function onDecline(offerId: string) {
   padding: 16px 20px 8px;
 }
 .of-totals-count {
-  font-size: 13px; font-weight: 600;
+  font-size: 0.8125rem; font-weight: 600;
   color: #6b7089;
 }
-.of-totals-count b { color: #231d45; font-weight: 800; font-size: 18px; margin-right: 4px; }
+.of-totals-count b { color: #231d45; font-weight: 800; font-size: 1.125rem; margin-right: 4px; }
 .of-totals-status {
-  font-size: 10.5px; font-weight: 800;
+  font-size: 0.6563rem; font-weight: 800;
   letter-spacing: 0.4px; text-transform: uppercase;
   padding: 5px 10px;
   border-radius: 100px;
@@ -438,20 +438,20 @@ async function onDecline(offerId: string) {
   background: linear-gradient(135deg, #4A4566, #231D45);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 800; letter-spacing: -0.2px;
+  font-size: 0.75rem; font-weight: 800; letter-spacing: -0.2px;
   flex-shrink: 0;
 }
 .of-supplier { flex: 1; min-width: 0; }
 .of-supplier-name {
-  font-size: 13.5px; font-weight: 800;
+  font-size: 0.8438rem; font-weight: 800;
   color: #231d45; letter-spacing: -0.2px;
 }
 .of-supplier-meta {
-  font-size: 11px; font-weight: 600;
+  font-size: 0.6875rem; font-weight: 600;
   color: #6b7089; margin-top: 2px;
 }
 .of-status {
-  font-size: 9.5px; font-weight: 800;
+  font-size: 0.5938rem; font-weight: 800;
   letter-spacing: 0.6px; text-transform: uppercase;
   padding: 3px 7px; border-radius: 100px;
 }
@@ -461,7 +461,7 @@ async function onDecline(offerId: string) {
 .of-status-withdrawn { background: #f5f6fa; color: #6b7089; }
 .of-when { margin-left: 4px; }
 .of-rep {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #6b7089;
   margin-top: 3px;
@@ -470,18 +470,18 @@ async function onDecline(offerId: string) {
 .of-rep-count { color: #6b7089; font-weight: 600; margin-left: 2px; }
 .of-rep-jobs { color: #6b7089; }
 .of-price {
-  font-size: 18px; font-weight: 800;
-  color: #00a19a; letter-spacing: -0.4px;
+  font-size: 1.125rem; font-weight: 800;
+  color: #00726c; letter-spacing: -0.4px;
 }
 
 .of-message {
-  font-size: 12.5px; font-weight: 500;
+  font-size: 0.7813rem; font-weight: 500;
   color: #4a4566; line-height: 1.55;
   margin-top: 10px;
   white-space: pre-wrap;
 }
 .of-date {
-  font-size: 11.5px; font-weight: 700;
+  font-size: 0.7188rem; font-weight: 700;
   color: #6b7089;
   margin-top: 10px;
 }
@@ -496,7 +496,7 @@ async function onDecline(offerId: string) {
   width: 44px;
   padding: 11px 0;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   border-radius: 12px;
   cursor: pointer;
   background: #fff;
@@ -508,7 +508,7 @@ async function onDecline(offerId: string) {
   flex: 1;
   padding: 11px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   border-radius: 12px;
   cursor: pointer;
@@ -520,7 +520,7 @@ async function onDecline(offerId: string) {
   flex: 1;
   padding: 11px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   border-radius: 12px;
   cursor: pointer;
@@ -534,7 +534,7 @@ async function onDecline(offerId: string) {
   flex: 1;
   padding: 11px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   border-radius: 12px;
   cursor: pointer;
@@ -571,11 +571,11 @@ async function onDecline(offerId: string) {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .of-trust-strip-text {
-  font-size: 11.5px; font-weight: 500;
+  font-size: 0.7188rem; font-weight: 500;
   color: #6b7089; line-height: 1.5;
 }
 .of-trust-strip-text b { font-weight: 800; color: #231d45; }
@@ -586,7 +586,7 @@ async function onDecline(offerId: string) {
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #c43c3c;
 }

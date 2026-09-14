@@ -87,7 +87,7 @@
             class="to-msg-option"
             :class="{ 'to-msg-option--selected': selectedPreset === i }"
             @click="selectPreset(i)"
-          >
+           role="button" tabindex="0" @keydown.enter="selectPreset(i)" @keydown.space.prevent="selectPreset(i)">
             💬 "{{ preset.short }}"
           </div>
         </div>
@@ -101,7 +101,7 @@
             placeholder="Write a personal message to the owner…"
             rows="4"
             @input="onCustomInput"
-          />
+           aria-label="Write a personal message to the owner…" />
         </div>
 
         <!-- Privacy -->
@@ -309,13 +309,13 @@ const sendMessage = async () => {
 }
 
 .to-header__title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--navy);
 }
 
 .to-header__subtitle {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--ink-faint);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -327,7 +327,7 @@ const sendMessage = async () => {
   border: 1px solid var(--brand-soft);
   border-radius: 999px;
   padding: 4px 10px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: var(--brand);
   flex-shrink: 0;
@@ -391,14 +391,14 @@ const sendMessage = async () => {
 }
 
 .to-blocker__title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--navy);
   margin: 0 0 12px;
 }
 
 .to-blocker__desc {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--ink-soft);
   line-height: 1.55;
   margin: 0 0 32px;
@@ -411,7 +411,7 @@ const sendMessage = async () => {
   color: #fff;
   border: none;
   border-radius: 14px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   font-family: inherit;
@@ -438,13 +438,13 @@ const sendMessage = async () => {
 }
 
 .to-hero__emoji {
-  font-size: 18px;
+  font-size: 1.125rem;
   margin-bottom: 8px;
   position: relative;
 }
 
 .to-hero__title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #fff;
   margin-bottom: 6px;
@@ -453,7 +453,7 @@ const sendMessage = async () => {
 }
 
 .to-hero__desc {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.6;
   position: relative;
@@ -461,7 +461,7 @@ const sendMessage = async () => {
 
 /* Section */
 .to-section-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--ink);
   margin-bottom: 10px;
@@ -480,7 +480,7 @@ const sendMessage = async () => {
   border: 2px solid var(--line);
   border-radius: 14px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink);
   line-height: 1.5;
   transition: all 0.15s;
@@ -501,7 +501,7 @@ const sendMessage = async () => {
 }
 
 .to-custom__label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--ink-soft);
   margin-bottom: 6px;
@@ -514,7 +514,7 @@ const sendMessage = async () => {
   padding: 14px;
   border: 2px solid var(--line);
   border-radius: 14px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-family: inherit;
   resize: none;
   outline: none;
@@ -542,25 +542,25 @@ const sendMessage = async () => {
 }
 
 .to-privacy__emoji {
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
 .to-privacy__title {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #008a84;
   margin-bottom: 2px;
 }
 
 .to-privacy__desc {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #008a84;
   line-height: 1.55;
 }
 
 .to-error {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #ef4444;
   text-align: center;
   margin: 0 0 12px;
@@ -574,7 +574,7 @@ const sendMessage = async () => {
   border-radius: 14px;
   background: var(--brand);
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   font-family: inherit;
@@ -593,7 +593,7 @@ const sendMessage = async () => {
 
 .to-foot-note {
   text-align: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--ink-faint);
   margin-top: 8px;
 }
@@ -616,7 +616,7 @@ const sendMessage = async () => {
 }
 
 .to-sent__title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--navy);
   margin-bottom: 8px;
@@ -624,7 +624,7 @@ const sendMessage = async () => {
 }
 
 .to-sent__desc {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink-soft);
   line-height: 1.65;
   margin-bottom: 24px;
@@ -640,7 +640,7 @@ const sendMessage = async () => {
 }
 
 .to-sent__label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--brand);
   margin-bottom: 6px;
@@ -649,7 +649,7 @@ const sendMessage = async () => {
 }
 
 .to-sent__preview {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink);
   line-height: 1.6;
   font-style: italic;
@@ -665,7 +665,7 @@ const sendMessage = async () => {
 }
 
 .to-whatsapp__label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--ink);
   margin-bottom: 10px;
@@ -683,7 +683,7 @@ const sendMessage = async () => {
   color: #fff;
   border: none;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   text-decoration: none;
   transition: opacity 0.15s;
@@ -700,7 +700,7 @@ const sendMessage = async () => {
   border-radius: 14px;
   background: var(--navy);
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;

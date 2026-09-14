@@ -164,7 +164,7 @@
             :key="prop.id"
             class="prop-card"
             @click="navigateTo(props.resultBasePath + prop.id)"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo(props.resultBasePath + prop.id)" @keydown.space.prevent="navigateTo(props.resultBasePath + prop.id)">
             <div class="prop-card-top">
               <div
                 class="prop-thumb-wrap"
@@ -476,7 +476,7 @@
         @touchend="onPopoverTouchEnd"
         @touchcancel="onPopoverTouchEnd"
       >
-        <div class="psr-sheet-grabber-wrap" @click="activePopover = null">
+        <div class="psr-sheet-grabber-wrap" @click="activePopover = null" role="button" tabindex="0" @keydown.enter="activePopover = null" @keydown.space.prevent="activePopover = null">
           <div class="psr-sheet-grabber" />
         </div>
 
@@ -489,7 +489,7 @@
               class="psr-option-row"
               :class="{ active: sortBy === opt.value }"
               @click="sortBy = opt.value; activePopover = null"
-            >
+             role="button" tabindex="0" @keydown.enter="sortBy = opt.value; activePopover = null" @keydown.space.prevent="sortBy = opt.value; activePopover = null">
               <span class="psr-radio" />
               {{ opt.label }}
             </div>
@@ -504,7 +504,7 @@
               :key="opt.value"
               class="psr-option-row psr-checkbox-row"
               @click="togglePassportState(opt.value)"
-            >
+             role="button" tabindex="0" @keydown.enter="togglePassportState(opt.value)" @keydown.space.prevent="togglePassportState(opt.value)">
               <span
                 class="psr-checkbox"
                 :class="{ checked: passportStates.has(opt.value) }"
@@ -1233,7 +1233,7 @@ watch(displayedProperties, () => {
   border: none;
   border-radius: 999px;
   padding: 7px 14px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -1248,13 +1248,13 @@ watch(displayedProperties, () => {
   min-width: 0;
 }
 .srl-count {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
 }
 .srl-query {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   font-weight: 500;
   white-space: nowrap;
@@ -1274,7 +1274,7 @@ watch(displayedProperties, () => {
   align-items: center;
   gap: 4px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
   background: #fff;
@@ -1283,7 +1283,7 @@ watch(displayedProperties, () => {
   cursor: pointer;
 }
 .view-toggle-btn.active {
-  color: #00a19a;
+  color: #00726c;
   background: #f0fdfa;
 }
 .view-toggle-btn:first-child {
@@ -1307,7 +1307,7 @@ watch(displayedProperties, () => {
   align-items: center;
   gap: 5px;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #231d45;
   background: #f4f4f6;
@@ -1325,7 +1325,7 @@ watch(displayedProperties, () => {
 }
 .chip-count {
   background: rgba(255, 255, 255, 0.3);
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   padding: 1px 6px;
   border-radius: 999px;
@@ -1383,7 +1383,7 @@ watch(displayedProperties, () => {
   margin-top: 1px;
 }
 .prop-badge-pp-cap {
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   opacity: 0.75;
@@ -1395,7 +1395,7 @@ watch(displayedProperties, () => {
   flex-shrink: 0;
 }
 .prop-badge-pp-val {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1.1;
@@ -1417,7 +1417,7 @@ watch(displayedProperties, () => {
   gap: 3px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   padding: 2px 6px;
   border-radius: 999px;
@@ -1433,7 +1433,7 @@ watch(displayedProperties, () => {
   gap: 8px;
 }
 .prop-price {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #1f2024;
   letter-spacing: -0.3px;
@@ -1442,13 +1442,13 @@ watch(displayedProperties, () => {
   padding: 0 14px 12px;
 }
 .prop-address {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 700;
   color: #1f2024;
   margin-top: 4px;
 }
 .prop-area {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #94a3b8;
   margin-top: 1px;
 }
@@ -1465,14 +1465,14 @@ watch(displayedProperties, () => {
 .pill-grey {
   background: #f1f5f9;
   color: #64748b;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 999px;
 }
 .epc-pill {
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   padding: 2px 8px;
@@ -1521,12 +1521,12 @@ watch(displayedProperties, () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #231d45;
 }
 .mini-hs-label {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: #94a3b8;
   line-height: 1.3;
   font-weight: 600;
@@ -1558,13 +1558,13 @@ watch(displayedProperties, () => {
   min-width: 0;
 }
 .fp-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #231d45;
   line-height: 1.3;
 }
 .fp-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b7089;
   margin-top: 1px;
 }
@@ -1585,7 +1585,7 @@ watch(displayedProperties, () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #00817c;
 }
@@ -1595,7 +1595,7 @@ watch(displayedProperties, () => {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   min-width: 0;
 }
@@ -1621,7 +1621,7 @@ watch(displayedProperties, () => {
   align-items: center;
   gap: 5px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #231d45;
   background: #fff;
@@ -1631,7 +1631,7 @@ watch(displayedProperties, () => {
   cursor: pointer;
 }
 .watch-btn.active {
-  color: #00a19a;
+  color: #00726c;
   border-color: #00a19a;
   background: #f0fdfa;
 }
@@ -1657,7 +1657,7 @@ watch(displayedProperties, () => {
   justify-content: center;
   background: #f4f4f6;
   color: #6b7089;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 
@@ -1670,8 +1670,8 @@ watch(displayedProperties, () => {
 .load-more-btn {
   background: #fff;
   border: 1.5px solid #e5e7eb;
-  color: #00a19a;
-  font-size: 15px;
+  color: #00726c;
+  font-size: 0.9375rem;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 999px;
@@ -1696,7 +1696,7 @@ watch(displayedProperties, () => {
 }
 .load-more-end {
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   padding: 12px 0 8px;
   font-weight: 600;
@@ -1719,13 +1719,13 @@ watch(displayedProperties, () => {
   display: block;
 }
 .no-results-text {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #231d45;
   margin-bottom: 4px;
 }
 .no-results-sub {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #94a3b8;
 }
 
@@ -1775,14 +1775,14 @@ watch(displayedProperties, () => {
   border-radius: 999px;
 }
 .psr-sheet-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
   margin-bottom: 12px;
 }
 .psr-sheet-section-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #6b6783;
   letter-spacing: 1.2px;
@@ -1799,7 +1799,7 @@ watch(displayedProperties, () => {
   align-items: center;
   gap: 12px;
   padding: 12px 6px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -1837,7 +1837,7 @@ watch(displayedProperties, () => {
 }
 .psr-chip {
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #231d45;
   background: #f4f4f6;
@@ -1890,7 +1890,7 @@ watch(displayedProperties, () => {
 .psr-slider-scale {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #9c98ad;
   margin-top: 2px;
@@ -1903,7 +1903,7 @@ watch(displayedProperties, () => {
 }
 .psr-btn-secondary {
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   background: #f4f4f6;
@@ -1914,7 +1914,7 @@ watch(displayedProperties, () => {
 }
 .psr-btn-primary {
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #fff;
   background: #00a19a;

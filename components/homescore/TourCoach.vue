@@ -315,7 +315,7 @@ const injectStyle = computed(() => {
   }
 }
 .cm-inject-step {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -323,7 +323,7 @@ const injectStyle = computed(() => {
   margin-bottom: 6px;
 }
 .cm-inject-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   color: #231d45;
@@ -331,7 +331,7 @@ const injectStyle = computed(() => {
   line-height: 1.25;
 }
 .cm-inject-body {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: #4a4566;
   line-height: 1.55;
@@ -362,7 +362,7 @@ const injectStyle = computed(() => {
   background: transparent;
   border: none;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b6783;
   cursor: pointer;
@@ -374,7 +374,7 @@ const injectStyle = computed(() => {
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   padding: 8px 14px;
   border-radius: 999px;

@@ -215,14 +215,14 @@ function onEdit() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   letter-spacing: 0.8px;
   font-weight: 600;
   color: #c9c4e8;
   margin-bottom: 12px;
 }
 .vb-badge__icon {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .vb-badge__sep {
   color: #6f689c;
@@ -235,7 +235,7 @@ function onEdit() {
 }
 
 .vb-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: #ffffff;
   margin: 0 0 6px;
@@ -243,7 +243,7 @@ function onEdit() {
   letter-spacing: -0.2px;
 }
 .vb-lede {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.5;
   color: #c4bfe0;
   margin: 0 0 14px;
@@ -262,7 +262,7 @@ function onEdit() {
   margin-bottom: 14px;
 }
 .vb-benefit__icon {
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.3;
   flex: 0 0 auto;
 }
@@ -273,13 +273,13 @@ function onEdit() {
   color: #5dcaa5;
 }
 .vb-benefit__head {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #ffffff;
   line-height: 1.3;
 }
 .vb-benefit__sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #b3aed6;
   line-height: 1.45;
   margin-top: 2px;
@@ -287,7 +287,7 @@ function onEdit() {
 
 .vb-btn {
   width: 100%;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   padding: 12px;
   border-radius: 10px;
@@ -313,7 +313,7 @@ function onEdit() {
   border: 0.5px solid #4a4480;
   background: transparent;
   color: #d8d4ef;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   padding: 10px;
 }
 .vb-btn--ghost:hover {

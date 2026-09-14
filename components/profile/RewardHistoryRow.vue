@@ -60,16 +60,16 @@ const formattedDate = computed(() => {
 
 <style scoped>
 .rhr-row { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #e7e4ec; border-radius: 16px; padding: 14px; }
-.rhr-icon { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 16px; flex-shrink: 0; }
+.rhr-icon { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1rem; flex-shrink: 0; }
 .rhr-icon--credit { background: #dff2e9; color: #186b48; }
 .rhr-icon--debit { background: #f7eaea; color: #8a3a3a; }
 .rhr-body { flex: 1; min-width: 0; }
-.rhr-desc { font-size: 13.5px; font-weight: 600; color: #231d45; line-height: 1.35; }
-.rhr-date { font-size: 11.5px; color: #6e6879; margin-top: 3px; }
+.rhr-desc { font-size: 0.8438rem; font-weight: 600; color: #231d45; line-height: 1.35; }
+.rhr-date { font-size: 0.7188rem; color: #6e6879; margin-top: 3px; }
 .rhr-pending { color: #a17b1f; font-weight: 700; }
 .rhr-right { text-align: right; flex-shrink: 0; }
-.rhr-amount { font-weight: 800; font-size: 15px; }
+.rhr-amount { font-weight: 800; font-size: 0.9375rem; }
 .rhr-amount--credit { color: #1f8f62; }
 .rhr-amount--debit { color: #a13a3a; }
-.rhr-balance { font-size: 10.5px; color: #6e6879; margin-top: 2px; }
+.rhr-balance { font-size: 0.6563rem; color: #6e6879; margin-top: 2px; }
 </style>

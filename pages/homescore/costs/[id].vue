@@ -271,7 +271,7 @@
 
         <!-- Sale history -->
         <div class="br-card" :class="{ open: openCards.has('sales') }">
-          <div class="br-card-head" @click="toggleCard('sales')">
+          <div class="br-card-head" @click="toggleCard('sales')" role="button" tabindex="0" @keydown.enter="toggleCard('sales')" @keydown.space.prevent="toggleCard('sales')">
             <div class="br-card-ico teal">
               <img
                 src="/op-icons/passportview/titleDeedsAndPlan.png"
@@ -319,7 +319,7 @@
 
         <!-- Comparable sales -->
         <div class="br-card" :class="{ open: openCards.has('comps') }">
-          <div class="br-card-head" @click="toggleCard('comps')">
+          <div class="br-card-head" @click="toggleCard('comps')" role="button" tabindex="0" @keydown.enter="toggleCard('comps')" @keydown.space.prevent="toggleCard('comps')">
             <div class="br-card-ico teal"><img src="/op-icons/investment/housesCluster.png" alt="" loading="lazy" /></div>
             <div class="br-card-info">
               <div class="br-card-title">Comparable sales nearby</div>
@@ -361,7 +361,7 @@
 
         <!-- Title summary -->
         <div class="br-card" :class="{ open: openCards.has('title') }">
-          <div class="br-card-head" @click="toggleCard('title')">
+          <div class="br-card-head" @click="toggleCard('title')" role="button" tabindex="0" @keydown.enter="toggleCard('title')" @keydown.space.prevent="toggleCard('title')">
             <div class="br-card-ico teal">
               <img
                 src="/op-icons/passportview/titleDeedsAndPlan.png"
@@ -401,7 +401,7 @@
         </div>
 
         <!-- Flood -->
-        <div class="risk-item col" @click="toggleCard('flood')">
+        <div class="risk-item col" @click="toggleCard('flood')" role="button" tabindex="0" @keydown.enter="toggleCard('flood')" @keydown.space.prevent="toggleCard('flood')">
           <div class="risk-item-top">
             <div class="risk-icon" :class="floodTone"><img src="/op-icons/misc/waterDroplet.png" alt="" loading="lazy" /></div>
             <div class="risk-body">
@@ -420,7 +420,7 @@
         </div>
 
         <!-- Listed / conservation -->
-        <div class="risk-item col" @click="toggleCard('listed')">
+        <div class="risk-item col" @click="toggleCard('listed')" role="button" tabindex="0" @keydown.enter="toggleCard('listed')" @keydown.space.prevent="toggleCard('listed')">
           <div class="risk-item-top">
             <div class="risk-icon" :class="listedTone">
               <img src="/op-icons/investment/landmarks.png" alt="" loading="lazy" />
@@ -449,7 +449,7 @@
         </div>
 
         <!-- Planning -->
-        <div class="risk-item col" @click="toggleCard('planning')">
+        <div class="risk-item col" @click="toggleCard('planning')" role="button" tabindex="0" @keydown.enter="toggleCard('planning')" @keydown.space.prevent="toggleCard('planning')">
           <div class="risk-item-top">
             <div
               class="risk-icon"
@@ -496,7 +496,7 @@
         </div>
 
         <!-- Ground stability — real contaminated-land + mineral data -->
-        <div class="risk-item col" @click="toggleCard('ground')">
+        <div class="risk-item col" @click="toggleCard('ground')" role="button" tabindex="0" @keydown.enter="toggleCard('ground')" @keydown.space.prevent="toggleCard('ground')">
           <div class="risk-item-top">
             <div class="risk-icon" :class="groundTone">⛏️</div>
             <div class="risk-body">
@@ -581,7 +581,7 @@
         </div>
 
         <div class="br-card" :class="{ open: openCards.has('crime') }">
-          <div class="br-card-head" @click="toggleCard('crime')">
+          <div class="br-card-head" @click="toggleCard('crime')" role="button" tabindex="0" @keydown.enter="toggleCard('crime')" @keydown.space.prevent="toggleCard('crime')">
             <div class="br-card-ico teal">👮</div>
             <div class="br-card-info">
               <div class="br-card-title">Crime breakdown</div>
@@ -625,7 +625,7 @@
 
         <!-- Schools -->
         <div class="br-card" :class="{ open: openCards.has('schools') }">
-          <div class="br-card-head" @click="toggleCard('schools')">
+          <div class="br-card-head" @click="toggleCard('schools')" role="button" tabindex="0" @keydown.enter="toggleCard('schools')" @keydown.space.prevent="toggleCard('schools')">
             <div class="br-card-ico teal">
               <img
                 src="/op-icons/investment/graduationCap.png"
@@ -675,7 +675,7 @@
 
         <!-- Broadband + mobile -->
         <div class="br-card" :class="{ open: openCards.has('bb') }">
-          <div class="br-card-head" @click="toggleCard('bb')">
+          <div class="br-card-head" @click="toggleCard('bb')" role="button" tabindex="0" @keydown.enter="toggleCard('bb')" @keydown.space.prevent="toggleCard('bb')">
             <div class="br-card-ico teal">📶</div>
             <div class="br-card-info">
               <div class="br-card-title">Broadband &amp; mobile</div>
@@ -743,7 +743,7 @@
 
         <!-- Transport -->
         <div class="br-card" :class="{ open: openCards.has('transport') }">
-          <div class="br-card-head" @click="toggleCard('transport')">
+          <div class="br-card-head" @click="toggleCard('transport')" role="button" tabindex="0" @keydown.enter="toggleCard('transport')" @keydown.space.prevent="toggleCard('transport')">
             <div class="br-card-ico teal">🚆</div>
             <div class="br-card-info">
               <div class="br-card-title">Transport</div>
@@ -782,7 +782,7 @@
 
         <!-- Healthcare -->
         <div class="br-card" :class="{ open: openCards.has('health') }">
-          <div class="br-card-head" @click="toggleCard('health')">
+          <div class="br-card-head" @click="toggleCard('health')" role="button" tabindex="0" @keydown.enter="toggleCard('health')" @keydown.space.prevent="toggleCard('health')">
             <div class="br-card-ico teal">⚕️</div>
             <div class="br-card-info">
               <div class="br-card-title">Healthcare nearby</div>
@@ -820,7 +820,7 @@
 
         <!-- Neighbourhood -->
         <div class="br-card" :class="{ open: openCards.has('hood') }">
-          <div class="br-card-head" @click="toggleCard('hood')">
+          <div class="br-card-head" @click="toggleCard('hood')" role="button" tabindex="0" @keydown.enter="toggleCard('hood')" @keydown.space.prevent="toggleCard('hood')">
             <div class="br-card-ico teal"><img src="/op-icons/investment/housesCluster.png" alt="" loading="lazy" /></div>
             <div class="br-card-info">
               <div class="br-card-title">Neighbourhood</div>
@@ -2330,12 +2330,12 @@ function onBuyPassport() {
   flex-shrink: 0;
 }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-secondary);
   margin-top: 1px;
   overflow: hidden;
@@ -2398,14 +2398,14 @@ function onBuyPassport() {
   min-width: 0;
 }
 .hs-addr-line {
-  font-size: 20px;
+  font-size: 1.25rem;
   color: white;
   letter-spacing: -0.5px;
   line-height: 1.2;
   margin-bottom: 2px;
 }
 .hs-addr-meta {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
 }
@@ -2421,7 +2421,7 @@ function onBuyPassport() {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   padding: 5px 10px 5px 7px;
   border-radius: 100px;
@@ -2441,7 +2441,7 @@ function onBuyPassport() {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
 }
 .claim-cta-btn {
@@ -2454,7 +2454,7 @@ function onBuyPassport() {
   border: none;
   color: white;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   align-items: center;
@@ -2485,7 +2485,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
   margin-top: 14px;
@@ -2518,7 +2518,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 .buyer-conf-info {
@@ -2528,7 +2528,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.2px;
@@ -2541,7 +2541,7 @@ function onBuyPassport() {
   object-fit: contain;
 }
 .buyer-conf-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.3px;
@@ -2551,14 +2551,14 @@ function onBuyPassport() {
   color: var(--text-secondary);
 }
 .buyer-conf-desc {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
   margin-top: 5px;
 }
 .buyer-conf-num {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--warning-deep);
   letter-spacing: -0.3px;
 }
@@ -2592,24 +2592,24 @@ function onBuyPassport() {
   margin-top: 1px;
 }
 .buyer-conf-stat-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.3;
 }
 .buyer-conf-stat-val {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   margin-top: 3px;
 }
 .buyer-conf-stat-val span {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 600;
   color: var(--text-secondary);
 }
 .buyer-conf-stat-sub {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.3;
@@ -2634,7 +2634,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: -0.3px;
@@ -2664,7 +2664,7 @@ function onBuyPassport() {
 .tab-btn {
   flex: 0 0 auto;
   padding: 9px 14px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   border: none;
   background: transparent;
@@ -2691,7 +2691,7 @@ function onBuyPassport() {
   background: var(--bg);
   border: 1px solid var(--border-soft);
   border-radius: 12px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -2702,7 +2702,7 @@ function onBuyPassport() {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   padding: 3px 8px;
   background: var(--bg);
@@ -2712,7 +2712,7 @@ function onBuyPassport() {
 }
 .src-tag::before {
   content: '🔗';
-  font-size: 9px;
+  font-size: 0.5625rem;
 }
 .src-tag.teal {
   background: var(--accent-paler);
@@ -2740,14 +2740,14 @@ function onBuyPassport() {
   margin-bottom: 8px;
 }
 .stats-card-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 .stats-card-intro {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   line-height: 1.5;
   margin-bottom: 12px;
@@ -2759,14 +2759,14 @@ function onBuyPassport() {
   padding: 5px 0;
 }
 .stat-icon {
-  font-size: 14px;
+  font-size: 0.875rem;
   width: 22px;
   text-align: center;
   flex-shrink: 0;
 }
 .stat-label {
   width: 70px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text);
   flex-shrink: 0;
@@ -2796,7 +2796,7 @@ function onBuyPassport() {
 .stat-value {
   width: 46px;
   text-align: right;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text);
   flex-shrink: 0;
 }
@@ -2815,14 +2815,14 @@ function onBuyPassport() {
   border: 1px solid rgba(245, 166, 35, 0.3);
   border-radius: 10px;
   margin-top: 12px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--warning-deep);
   font-weight: 500;
   line-height: 1.4;
 }
 .section-h {
   margin-top: 14px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-secondary);
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -2832,7 +2832,7 @@ function onBuyPassport() {
   padding-bottom: 2px;
 }
 .section-h-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   padding-bottom: 10px;
@@ -2854,17 +2854,17 @@ function onBuyPassport() {
   border-bottom: none;
 }
 .ask-icon {
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
 }
 .ask-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 2px;
 }
 .ask-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-secondary);
   line-height: 1.4;
 }
@@ -2903,7 +2903,7 @@ function onBuyPassport() {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 0.625rem;
   color: rgba(255, 255, 255, 0.78);
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -2921,17 +2921,17 @@ function onBuyPassport() {
   background: white;
 }
 .cost-total-num {
-  font-size: 32px;
+  font-size: 2rem;
   letter-spacing: -1px;
   line-height: 1;
 }
 .cost-total-num span {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
 }
 .cost-total-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.85);
   margin-top: 6px;
 }
@@ -2962,7 +2962,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .cost-line-info {
@@ -2970,22 +2970,22 @@ function onBuyPassport() {
   min-width: 0;
 }
 .cost-line-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
 }
 .cost-line-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: var(--text-secondary);
   margin-top: 1px;
 }
 .cost-line-amt {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   letter-spacing: -0.2px;
   text-align: right;
 }
 .cost-line-amt-sub {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   color: var(--text-faint);
   margin-top: 1px;
   text-align: right;
@@ -3022,7 +3022,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 17px;
+  font-size: 1.0625rem;
   flex-shrink: 0;
 }
 .br-card-ico.teal {
@@ -3034,18 +3034,18 @@ function onBuyPassport() {
   min-width: 0;
 }
 .br-card-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .br-card-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
 }
 .br-card-val {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
   letter-spacing: -0.3px;
   text-align: right;
@@ -3055,7 +3055,7 @@ function onBuyPassport() {
   color: var(--accent-dark);
 }
 .br-card-chev {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-faint);
   font-weight: 700;
   margin-left: 6px;
@@ -3076,7 +3076,7 @@ function onBuyPassport() {
 }
 .br-card-body-inner {
   padding: 12px 16px 14px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.55;
@@ -3096,7 +3096,7 @@ function onBuyPassport() {
   border-top: 1px dashed var(--border-soft);
 }
 .br-card-srcrow-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: var(--text-faint);
   letter-spacing: 0.8px;
@@ -3118,19 +3118,19 @@ function onBuyPassport() {
   align-items: baseline;
 }
 .sold-chart-h-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 .sold-chart-h-est {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--accent-dark);
   letter-spacing: -0.4px;
 }
 .sold-chart-h-est small {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-secondary);
   display: block;
@@ -3151,23 +3151,23 @@ function onBuyPassport() {
   min-width: 0;
 }
 .comp-row-addr {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text);
 }
 .comp-row-meta {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 1px;
 }
 .comp-row-price {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--accent-dark);
   letter-spacing: -0.2px;
   text-align: right;
 }
 .comp-row-date {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: var(--text-faint);
   text-align: right;
@@ -3209,7 +3209,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
 }
 .risk-icon.clear {
@@ -3229,17 +3229,17 @@ function onBuyPassport() {
   min-width: 0;
 }
 .risk-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
 }
 .risk-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-secondary);
   margin-top: 2px;
   line-height: 1.4;
 }
 .risk-status {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -3259,7 +3259,7 @@ function onBuyPassport() {
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px dashed var(--border-soft);
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -3271,7 +3271,7 @@ function onBuyPassport() {
 .risk-drill-note {
   margin-top: 6px;
   color: var(--text-faint);
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 /* Area · hero stat */
@@ -3287,18 +3287,18 @@ function onBuyPassport() {
   margin-bottom: 12px;
 }
 .tab-hero-stat-big {
-  font-size: 30px;
+  font-size: 1.875rem;
   color: var(--accent-dark);
   letter-spacing: -1px;
   line-height: 1;
 }
 .tab-hero-stat-big small {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text-secondary);
 }
 .tab-hero-stat-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 0.6px;
@@ -3312,13 +3312,13 @@ function onBuyPassport() {
   border-left: 1px solid var(--border-soft);
 }
 .tab-hero-stat-headline {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1.3;
 }
 .tab-hero-stat-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 3px;
@@ -3343,7 +3343,7 @@ function onBuyPassport() {
   border-top: 1px dashed var(--border-soft);
 }
 .crime-name {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--text);
   flex: 1;
@@ -3369,7 +3369,7 @@ function onBuyPassport() {
   background: linear-gradient(90deg, #f87171, var(--error));
 }
 .crime-count {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--text);
   min-width: 34px;
@@ -3394,7 +3394,7 @@ function onBuyPassport() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 700;
   color: white;
   flex-shrink: 0;
@@ -3407,7 +3407,7 @@ function onBuyPassport() {
   color: var(--text-faint);
 }
 .school-ofsted big {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   line-height: 1;
 }
@@ -3416,18 +3416,18 @@ function onBuyPassport() {
   min-width: 0;
 }
 .school-name {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
   letter-spacing: -0.1px;
 }
 .school-meta {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 1px;
 }
 .school-dist {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--accent-dark);
   text-align: right;
@@ -3448,13 +3448,13 @@ function onBuyPassport() {
   margin-bottom: 8px;
 }
 .bb-num {
-  font-size: 28px;
+  font-size: 1.75rem;
   color: #1a1f71;
   letter-spacing: -0.7px;
   line-height: 1;
 }
 .bb-unit {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #2d68c4;
 }
@@ -3473,7 +3473,7 @@ function onBuyPassport() {
 }
 .bb-mobile-h {
   margin-top: 14px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 0.8px;
@@ -3484,7 +3484,7 @@ function onBuyPassport() {
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: var(--text);
 }
@@ -3521,25 +3521,25 @@ function onBuyPassport() {
   text-align: center;
 }
 .street-rank-big {
-  font-size: 42px;
+  font-size: 2.625rem;
   color: var(--error);
   letter-spacing: -1.5px;
   line-height: 1;
 }
 .street-rank-big span {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-secondary);
   margin-left: 4px;
 }
 .street-rank-small {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-secondary);
   margin-top: 6px;
   font-weight: 500;
 }
 .street-rank-callout {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   margin-top: 8px;
   padding-top: 10px;
@@ -3569,7 +3569,7 @@ function onBuyPassport() {
   margin: 2px -2px;
 }
 .street-bar-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: var(--text-secondary);
   width: 50px;
@@ -3604,7 +3604,7 @@ function onBuyPassport() {
   background: var(--warning);
 }
 .street-bar-amt {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   width: 52px;
   flex-shrink: 0;
   text-align: right;
@@ -3616,7 +3616,7 @@ function onBuyPassport() {
 
 /* Empty-state note inside cards */
 .br-empty-note {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -3657,7 +3657,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 17px;
+  font-size: 1.0625rem;
   flex-shrink: 0;
   box-shadow: 0 4px 10px rgba(245, 166, 35, 0.25);
 }
@@ -3674,7 +3674,7 @@ function onBuyPassport() {
   min-width: 0;
 }
 .state-banner-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: var(--warning-deep);
   letter-spacing: -0.1px;
@@ -3690,7 +3690,7 @@ function onBuyPassport() {
   color: #1a1f71;
 }
 .state-banner-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -3701,7 +3701,7 @@ function onBuyPassport() {
   font-weight: 700;
 }
 .state-banner-pill {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   padding: 3px 8px;
   background: white;
@@ -3719,7 +3719,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 1.4px;
@@ -3727,7 +3727,7 @@ function onBuyPassport() {
   margin-bottom: 8px;
 }
 .watch-card-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.4px;
@@ -3735,7 +3735,7 @@ function onBuyPassport() {
   margin-bottom: 6px;
 }
 .watch-card-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -3762,20 +3762,20 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   flex-shrink: 0;
 }
 .watch-trigger-body {
   flex: 1;
 }
 .watch-trigger-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.1px;
 }
 .watch-trigger-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -3793,7 +3793,7 @@ function onBuyPassport() {
   color: white;
   border: none;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   border-radius: 12px;
   cursor: pointer;
@@ -3809,7 +3809,7 @@ function onBuyPassport() {
 }
 .watch-cta-note {
   margin-top: 10px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -3845,7 +3845,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 1.4px;
@@ -3859,14 +3859,14 @@ function onBuyPassport() {
   margin-bottom: 4px;
 }
 .pp-progress-pct {
-  font-size: 34px;
+  font-size: 2.125rem;
   font-weight: 700;
   letter-spacing: -1px;
   line-height: 1;
   color: #5eead4;
 }
 .pp-progress-frac {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.78);
 }
@@ -3884,7 +3884,7 @@ function onBuyPassport() {
   transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pp-progress-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.72);
   line-height: 1.45;
@@ -3933,12 +3933,12 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: white;
   box-shadow: 0 4px 10px rgba(0, 161, 154, 0.3);
 }
 .buy-pp-grade {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   padding: 6px 11px;
   background: var(--primary);
@@ -3949,7 +3949,7 @@ function onBuyPassport() {
   box-shadow: 0 4px 10px rgba(35, 29, 69, 0.25);
 }
 .buy-pp-title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.5px;
@@ -3957,7 +3957,7 @@ function onBuyPassport() {
   margin-bottom: 6px;
 }
 .buy-pp-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -3976,7 +3976,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: var(--text);
   padding: 8px 10px;
@@ -4000,19 +4000,19 @@ function onBuyPassport() {
   margin-bottom: 14px;
 }
 .buy-pp-price {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--accent-dark);
   letter-spacing: -0.6px;
 }
 .buy-pp-price small {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text-secondary);
 }
 .buy-pp-pricenote {
   flex: 1;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -4028,7 +4028,7 @@ function onBuyPassport() {
   color: white;
   border: none;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   border-radius: 12px;
   cursor: pointer;
@@ -4075,7 +4075,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 1.4px;
@@ -4083,14 +4083,14 @@ function onBuyPassport() {
   margin-bottom: 8px;
 }
 .qoffer-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.3px;
   line-height: 1.2;
   margin-bottom: 5px;
 }
 .qoffer-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.45;
@@ -4106,7 +4106,7 @@ function onBuyPassport() {
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   border-radius: 12px;
   cursor: pointer;
@@ -4153,7 +4153,7 @@ function onBuyPassport() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 1.4px;
@@ -4161,14 +4161,14 @@ function onBuyPassport() {
   margin-bottom: 8px;
 }
 .verify-card-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   letter-spacing: -0.4px;
   line-height: 1.2;
   margin-bottom: 6px;
 }
 .verify-card-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.5;
@@ -4191,14 +4191,14 @@ function onBuyPassport() {
   text-align: center;
 }
 .verify-stat-num {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: #ffd58a;
   letter-spacing: -0.4px;
   line-height: 1;
 }
 .verify-stat-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.78);
   letter-spacing: 0.4px;
@@ -4213,7 +4213,7 @@ function onBuyPassport() {
   color: white;
   border: none;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   border-radius: 12px;
   cursor: pointer;

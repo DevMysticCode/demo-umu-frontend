@@ -1297,7 +1297,7 @@
                 placeholder="Enter property price"
                 class="prop-sdlt-input"
                 @input="onSdltInput"
-              />
+               aria-label="Enter property price" />
             </div>
             <div class="prop-sdlt-options">
               <button
@@ -2082,7 +2082,7 @@ const initMap = async () => {
   function makeDivIcon(color: string, emoji: string) {
     return L.divIcon({
       className: '',
-      html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size:13px;">${emoji}</div>`,
+      html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size: 0.8125rem;">${emoji}</div>`,
       iconSize: [30, 30],
       iconAnchor: [15, 15],
     })
@@ -2690,7 +2690,7 @@ function handleClaimed(passportId: string) {
   min-height: 60vh;
   gap: 16px;
   color: #666;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .prop-spinner {
@@ -2714,7 +2714,7 @@ function handleClaimed(passportId: string) {
   border: none;
   border-radius: 24px;
   padding: 10px 24px;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
 }
 
@@ -2773,7 +2773,7 @@ function handleClaimed(passportId: string) {
 .prop-address {
   color: #000000;
   font-weight: 590;
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 22px;
   letter-spacing: -0.43px;
   vertical-align: middle;
@@ -2782,23 +2782,23 @@ function handleClaimed(passportId: string) {
 .prop-city {
   color: #3c3c4399;
   font-weight: 400;
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 22px;
   letter-spacing: -0.43px;
   vertical-align: middle;
 }
 
 .prop-price {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 400;
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 22px;
   letter-spacing: -0.43px;
   vertical-align: middle;
 }
 
 .prop-estimated {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   color: #999;
   margin-left: 6px;
@@ -2820,7 +2820,7 @@ function handleClaimed(passportId: string) {
   color: #ffffff;
   padding: 6px 12px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 /* ── Section ─────────────────────────────────────────────────────────────── */
@@ -2829,7 +2829,7 @@ function handleClaimed(passportId: string) {
 }
 
 .prop-section-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 400;
   color: #000000;
   margin: 0 0 14px;
@@ -2855,7 +2855,7 @@ function handleClaimed(passportId: string) {
   border-radius: 100px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   text-align: center;
   color: #000;
@@ -2889,7 +2889,7 @@ function handleClaimed(passportId: string) {
 
 .prop-tick-label {
   position: absolute;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #aaa;
 }
 
@@ -2897,8 +2897,8 @@ function handleClaimed(passportId: string) {
   background: white;
   border-radius: 100px;
   padding: 8px 18px;
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   font-weight: 500;
   text-align: center;
   margin: 10px 0 8px;
@@ -2909,7 +2909,7 @@ function handleClaimed(passportId: string) {
   background: #f5f5f8;
   border-radius: 100px;
   padding: 6px 14px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
   font-weight: 500;
   text-align: center;
@@ -2918,7 +2918,7 @@ function handleClaimed(passportId: string) {
 }
 
 .prop-score-note {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #aaa;
   text-align: center;
   line-height: 1.4;
@@ -2931,7 +2931,7 @@ function handleClaimed(passportId: string) {
   border: none;
   border-radius: 14px;
   padding: 12px 24px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 8px;
@@ -2971,22 +2971,22 @@ function handleClaimed(passportId: string) {
 .prop-detail-label {
   font-weight: 400;
   font-style: Regular;
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 13px;
   letter-spacing: 0.06px;
   color: #3c3c4399;
 }
 
 .prop-detail-value {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 .prop-detail-mono {
   font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 13px;
+  font-size: 0.8125rem;
   letter-spacing: 0;
 }
 
@@ -3025,14 +3025,14 @@ function handleClaimed(passportId: string) {
   border-color: #00a19a;
 }
 .prop-quick-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 500;
   color: #636366;
   white-space: nowrap;
   line-height: 1;
 }
 .prop-quick-btn.active .prop-quick-label {
-  color: #00a19a;
+  color: #00726c;
 }
 
 /* ── Floor plan ──────────────────────────────────────────────────────────── */
@@ -3069,7 +3069,7 @@ function handleClaimed(passportId: string) {
 
 /* ── Map ─────────────────────────────────────────────────────────────────── */
 .prop-map-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #8e8e93;
   text-transform: uppercase;
@@ -3105,7 +3105,7 @@ function handleClaimed(passportId: string) {
   right: 12px;
   background: rgba(0, 0, 0, 0.55);
   color: white;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   padding: 7px 12px;
   border-radius: 20px;
@@ -3122,7 +3122,7 @@ function handleClaimed(passportId: string) {
   background: #f8f8fa;
   border-radius: 16px;
   color: #aaa;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 /* ── Nearby tabs ─────────────────────────────────────────────────────────── */
@@ -3153,8 +3153,8 @@ function handleClaimed(passportId: string) {
   flex: 1;
   border: none;
   background: #e8f7f6;
-  color: #00a19a;
-  font-size: 13px;
+  color: #00726c;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -3219,15 +3219,15 @@ function handleClaimed(passportId: string) {
 }
 
 .prop-station-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #00a19a;
+  color: #00726c;
   margin: 0 0 3px;
 }
 
 .prop-station-dist {
-  font-size: 11px;
-  color: #00a19a;
+  font-size: 0.6875rem;
+  color: #00726c;
   margin: 0;
   width: fit-content;
   background: #00a19a1a;
@@ -3235,14 +3235,14 @@ function handleClaimed(passportId: string) {
 }
 
 .prop-nearby-empty {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #aeaeb2;
   text-align: center;
   padding: 20px 0;
 }
 
 .prop-nearby-source {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #b0b0b8;
   margin: -6px 0 10px;
   text-transform: uppercase;
@@ -3250,7 +3250,7 @@ function handleClaimed(passportId: string) {
 }
 
 .prop-school-cat-badge {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   color: #3b82f6;
   background: #eff6ff;
@@ -3260,9 +3260,9 @@ function handleClaimed(passportId: string) {
 }
 
 .prop-dist-pill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   background: #00a19a1a;
   border-radius: 10px;
   padding: 2px 8px;
@@ -3291,7 +3291,7 @@ function handleClaimed(passportId: string) {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #555;
 }
 
@@ -3307,7 +3307,7 @@ function handleClaimed(passportId: string) {
 
 .prop-footprint-row {
   margin-top: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #555;
   background: rgba(0, 161, 154, 0.06);
   border-radius: 8px;
@@ -3316,7 +3316,7 @@ function handleClaimed(passportId: string) {
 
 .prop-footprint-src {
   color: #b0b0b8;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 /* ── EPC ─────────────────────────────────────────────────────────────────── */
@@ -3330,7 +3330,7 @@ function handleClaimed(passportId: string) {
   display: grid;
   grid-template-columns: 52px 1fr 40px 40px;
   gap: 4px;
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #8e8e93;
   font-weight: 600;
   text-transform: uppercase;
@@ -3347,7 +3347,7 @@ function handleClaimed(passportId: string) {
 }
 
 .prop-epc-range {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
 }
 
@@ -3363,7 +3363,7 @@ function handleClaimed(passportId: string) {
   align-items: center;
   justify-content: flex-end;
   padding-right: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: white;
   min-width: 32px;
@@ -3400,7 +3400,7 @@ function handleClaimed(passportId: string) {
 
 /* ── Detail sub-label (m² under sqft) ───────────────────────────────────── */
 .prop-detail-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
   margin-top: 1px;
 }
@@ -3416,8 +3416,8 @@ function handleClaimed(passportId: string) {
   margin-bottom: 0;
 }
 .prop-epc-cert-link {
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   font-weight: 500;
   text-decoration: none;
   border: 1px solid #00a19a;
@@ -3436,9 +3436,9 @@ function handleClaimed(passportId: string) {
   margin-bottom: 0;
 }
 .prop-sales-badge {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   background: #e8f8f7;
   border-radius: 20px;
   padding: 3px 10px;
@@ -3499,12 +3499,12 @@ function handleClaimed(passportId: string) {
   margin-bottom: 5px;
 }
 .prop-sale-card-price {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
 }
 .prop-sale-card-date {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #8e8e93;
   font-weight: 500;
   white-space: nowrap;
@@ -3515,7 +3515,7 @@ function handleClaimed(passportId: string) {
   gap: 4px;
 }
 .prop-sale-tag {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #636366;
   background: #f2f2f7;
   border-radius: 6px;
@@ -3529,7 +3529,7 @@ function handleClaimed(passportId: string) {
   color: #8e8e93;
 }
 .prop-sales-source {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #aeaeb2;
   margin-top: 10px;
   text-align: right;
@@ -3538,10 +3538,10 @@ function handleClaimed(passportId: string) {
   text-align: center;
   padding: 24px 0 8px;
   color: #636366;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .prop-sales-empty-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #aeaeb2;
   margin-top: 4px;
 }
@@ -3551,7 +3551,7 @@ function handleClaimed(passportId: string) {
   justify-content: center;
   background: #00a19a;
   color: #fff;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   border-radius: 10px;
   min-width: 18px;
@@ -3562,15 +3562,15 @@ function handleClaimed(passportId: string) {
 }
 .prop-cov-tab.active .prop-sales-tab-count {
   background: #fff;
-  color: #00a19a;
+  color: #00726c;
 }
 .prop-sale-card-addr {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #636366;
   margin: 2px 0 4px;
 }
 .prop-sales-nearby-note {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #aeaeb2;
   margin-top: 10px;
 }
@@ -3587,7 +3587,7 @@ function handleClaimed(passportId: string) {
   border-radius: 10px;
   border: 1.5px solid #e0e0e0;
   background: white;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #8e8e93;
   cursor: pointer;
@@ -3595,11 +3595,11 @@ function handleClaimed(passportId: string) {
 }
 .prop-cov-tab.active {
   border-color: #00a19a;
-  color: #00a19a;
+  color: #00726c;
   background: rgba(0, 161, 154, 0.06);
 }
 .prop-cov-source {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #b0b0b8;
   margin-top: 10px;
   text-align: right;
@@ -3608,15 +3608,15 @@ function handleClaimed(passportId: string) {
   background: #f8f8fa;
   border-radius: 14px;
   padding: 20px 16px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #8e8e93;
   text-align: center;
 }
 .prop-cov-link {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 500;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 /* ── Mobile signal ───────────────────────────────────────────────────────── */
@@ -3636,7 +3636,7 @@ function handleClaimed(passportId: string) {
   border-bottom: none;
 }
 .prop-mobile-op {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1a1a1a;
   width: 80px;
@@ -3666,14 +3666,14 @@ function handleClaimed(passportId: string) {
   background: #d1d1d6;
 }
 .prop-mobile-sig-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #8e8e93;
 }
 .prop-mobile-legend {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
   margin-top: 12px;
   padding-top: 10px;
@@ -3697,11 +3697,11 @@ function handleClaimed(passportId: string) {
   border-bottom: none;
 }
 .prop-tv-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #1a1a1a;
 }
 .prop-tv-badge {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 20px;
@@ -3735,9 +3735,9 @@ function handleClaimed(passportId: string) {
   border-color: #00a19a;
 }
 .prop-sdlt-currency {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   margin-right: 6px;
   flex-shrink: 0;
 }
@@ -3745,7 +3745,7 @@ function handleClaimed(passportId: string) {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   color: #1a1a1a;
   padding: 13px 0;
@@ -3755,7 +3755,7 @@ function handleClaimed(passportId: string) {
 .prop-sdlt-input::placeholder {
   color: #c7c7cc;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 1rem;
 }
 .prop-sdlt-options {
   display: flex;
@@ -3770,7 +3770,7 @@ function handleClaimed(passportId: string) {
   border-radius: 10px;
   border: 1.5px solid #e0e0e0;
   background: white;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #8e8e93;
   cursor: pointer;
@@ -3779,7 +3779,7 @@ function handleClaimed(passportId: string) {
 }
 .prop-sdlt-opt.active {
   border-color: #00a19a;
-  color: #00a19a;
+  color: #00726c;
   background: rgba(0, 161, 154, 0.06);
 }
 .prop-sdlt-breakdown {
@@ -3794,7 +3794,7 @@ function handleClaimed(passportId: string) {
   align-items: center;
   padding: 9px 12px;
   border-bottom: 1px solid #f0f0f5;
-  font-size: 12px;
+  font-size: 0.75rem;
   gap: 4px;
 }
 .prop-sdlt-band-row:last-child {
@@ -3821,17 +3821,17 @@ function handleClaimed(passportId: string) {
   margin-top: 4px;
 }
 .prop-sdlt-total-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1a1a1a;
 }
 .prop-sdlt-total-val {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
 }
 .prop-sdlt-note {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #b0b0b8;
   margin-top: 10px;
   line-height: 1.5;
@@ -3857,18 +3857,18 @@ function handleClaimed(passportId: string) {
   gap: 2px;
 }
 .prop-bb-speed-val {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   line-height: 1;
 }
 .prop-bb-speed-unit {
-  font-size: 11px;
-  color: #00a19a;
+  font-size: 0.6875rem;
+  color: #00726c;
   font-weight: 500;
 }
 .prop-bb-speed-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
   margin-top: 2px;
 }
@@ -3886,14 +3886,14 @@ function handleClaimed(passportId: string) {
 .prop-bb-type {
   padding: 5px 12px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   background: #e8e8ed;
   color: #8e8e93;
 }
 .prop-bb-type--on {
   background: rgba(0, 161, 154, 0.1);
-  color: #00a19a;
+  color: #00726c;
 }
 
 /* ── Flood Risk ──────────────────────────────────────────────────────────── */
@@ -3911,7 +3911,7 @@ function handleClaimed(passportId: string) {
 .prop-flood-badge {
   padding: 6px 14px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -3933,7 +3933,7 @@ function handleClaimed(passportId: string) {
   color: white;
 }
 .prop-flood-desc {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #8e8e93;
   line-height: 1.4;
 }
@@ -3950,12 +3950,12 @@ function handleClaimed(passportId: string) {
   align-items: flex-start;
 }
 .prop-flood-zone-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #1a1a1a;
   font-weight: 500;
 }
 .prop-flood-zone-sev {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
   margin-top: 2px;
 }
@@ -3979,7 +3979,7 @@ function handleClaimed(passportId: string) {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #555;
 }
 .prop-flood-dot {
@@ -3990,7 +3990,7 @@ function handleClaimed(passportId: string) {
   flex-shrink: 0;
 }
 .prop-flood-map-src {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #aaa;
   margin-top: 6px;
 }
@@ -4016,8 +4016,8 @@ function handleClaimed(passportId: string) {
   height: 36px;
   border-radius: 8px;
   background: rgba(0, 161, 154, 0.1);
-  color: #00a19a;
-  font-size: 11px;
+  color: #00726c;
+  font-size: 0.6875rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -4025,12 +4025,12 @@ function handleClaimed(passportId: string) {
   flex-shrink: 0;
 }
 .prop-listed-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #1a1a1a;
 }
 .prop-listed-loc {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
   margin-top: 2px;
   white-space: nowrap;
@@ -4038,8 +4038,8 @@ function handleClaimed(passportId: string) {
   text-overflow: ellipsis;
 }
 .prop-listed-link {
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   font-weight: 500;
   text-decoration: none;
   flex-shrink: 0;
@@ -4064,7 +4064,7 @@ function handleClaimed(passportId: string) {
   border-radius: 14px;
   background: linear-gradient(135deg, #00a19a, #007a74);
   color: white;
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -4072,18 +4072,18 @@ function handleClaimed(passportId: string) {
   flex-shrink: 0;
 }
 .prop-ct-label {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #1a1a1a;
 }
 .prop-ct-amount {
-  font-size: 13px;
-  color: #00a19a;
+  font-size: 0.8125rem;
+  color: #00726c;
   margin-top: 2px;
   font-weight: 500;
 }
 .prop-ct-council {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
   margin-top: 3px;
 }
@@ -4091,7 +4091,7 @@ function handleClaimed(passportId: string) {
   margin-bottom: 14px;
 }
 .prop-ct-explainer {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #8e8e93;
   line-height: 1.5;
   margin-bottom: 14px;
@@ -4099,18 +4099,18 @@ function handleClaimed(passportId: string) {
   border-bottom: 1px solid #eeeeee;
 }
 .prop-ct-unknown-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #8e8e93;
 }
 .prop-ct-approx-note {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #b0b0b8;
   margin-top: 4px;
   line-height: 1.4;
 }
 .prop-ct-link {
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   font-weight: 500;
   text-decoration: none;
   border: 1px solid #00a19a;
@@ -4145,7 +4145,7 @@ function handleClaimed(passportId: string) {
   border-radius: 8px;
   background: #e8e8ed;
   color: #8e8e93;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -4156,13 +4156,13 @@ function handleClaimed(passportId: string) {
   color: white;
 }
 .prop-ct-bands-range {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3c3c43;
 }
 .prop-ct-bands-est {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   white-space: nowrap;
 }
 
@@ -4184,7 +4184,7 @@ function handleClaimed(passportId: string) {
   border-bottom: none;
 }
 .prop-ct-nearby-addr {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #1a1a1a;
   flex: 1;
   min-width: 0;
@@ -4200,12 +4200,12 @@ function handleClaimed(passportId: string) {
   gap: 2px;
 }
 .prop-ct-nearby-band {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
 }
 .prop-ct-nearby-est {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #8e8e93;
 }
 
@@ -4216,7 +4216,7 @@ function handleClaimed(passportId: string) {
   padding: 16px;
 }
 .prop-planning-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #8e8e93;
   text-transform: uppercase;
@@ -4237,8 +4237,8 @@ function handleClaimed(passportId: string) {
 .prop-planning-type-badge {
   display: inline-block;
   background: rgba(0, 161, 154, 0.1);
-  color: #00a19a;
-  font-size: 10px;
+  color: #00726c;
+  font-size: 0.625rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -4247,17 +4247,17 @@ function handleClaimed(passportId: string) {
   margin-bottom: 4px;
 }
 .prop-planning-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #1a1a1a;
 }
 .prop-planning-ref {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
   margin-top: 2px;
 }
 .prop-planning-none {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #8e8e93;
   margin-bottom: 4px;
 }
@@ -4270,7 +4270,7 @@ function handleClaimed(passportId: string) {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #3c3c43;
   margin-bottom: 6px;
@@ -4303,7 +4303,7 @@ function handleClaimed(passportId: string) {
   margin-bottom: 4px;
 }
 .prop-planning-app-desc {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #1a1a1a;
   line-height: 1.4;
   margin-bottom: 6px;
@@ -4319,24 +4319,24 @@ function handleClaimed(passportId: string) {
   margin-bottom: 4px;
 }
 .prop-planning-app-type {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #8e8e93;
   background: #f0f0f5;
   padding: 2px 8px;
   border-radius: 10px;
 }
 .prop-planning-app-date {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #8e8e93;
 }
 .prop-planning-app-link {
-  font-size: 11px;
-  color: #00a19a;
+  font-size: 0.6875rem;
+  color: #00726c;
   text-decoration: none;
   font-weight: 500;
 }
 .prop-planning-decision {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 10px;
@@ -4389,13 +4389,13 @@ function handleClaimed(passportId: string) {
   margin-bottom: 4px;
 }
 .unpub-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: #1c1c1e;
   margin: 0;
 }
 .unpub-body {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #636366;
   line-height: 1.55;
   margin: 0;
@@ -4411,8 +4411,8 @@ function handleClaimed(passportId: string) {
   border-radius: 14px;
   border: 1.5px solid #00a19a;
   background: transparent;
-  color: #00a19a;
-  font-size: 15px;
+  color: #00726c;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -4423,7 +4423,7 @@ function handleClaimed(passportId: string) {
   border: none;
   background: #00a19a;
   color: white;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
 }

@@ -27,7 +27,7 @@
           placeholder="Search by name or email"
           :disabled="isLoading"
           @input="onSearchInput"
-        />
+         aria-label="Search by name or email" />
         <span v-if="searching" class="ac-search-spin" />
       </div>
 
@@ -304,7 +304,7 @@ function initials(name) {
 }
 .ac-lede {
   color: #4a5868;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   line-height: 1.55;
   margin: 0 0 16px;
 }
@@ -336,7 +336,7 @@ function initials(name) {
   border: 1.5px solid #e5e7eb;
   border-radius: 12px;
   background: #f8f7fc;
-  font-size: 16px;
+  font-size: 1rem;
   color: #231d45;
   font-family: inherit;
 }
@@ -397,7 +397,7 @@ function initials(name) {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 0.8125rem;
   flex-shrink: 0;
 }
 .ac-result-body {
@@ -405,7 +405,7 @@ function initials(name) {
   min-width: 0;
 }
 .ac-result-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #231d45;
   overflow: hidden;
@@ -413,7 +413,7 @@ function initials(name) {
   white-space: nowrap;
 }
 .ac-result-email {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b7089;
   margin-top: 2px;
   overflow: hidden;
@@ -422,7 +422,7 @@ function initials(name) {
 }
 .ac-result-add {
   color: #008a84;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 5px 10px;
   border-radius: 8px;
@@ -434,7 +434,7 @@ function initials(name) {
 .ac-empty {
   padding: 12px;
   color: #6b7089;
-  font-size: 13px;
+  font-size: 0.8125rem;
   background: #f8f7fc;
   border-radius: 12px;
   margin-bottom: 12px;
@@ -445,7 +445,7 @@ function initials(name) {
   margin-bottom: 12px;
 }
 .ac-selected-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
   margin-bottom: 6px;
@@ -465,7 +465,7 @@ function initials(name) {
   background: #e5f4f2;
   border: 1px solid #b8e0dc;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #008a84;
 }
@@ -473,7 +473,7 @@ function initials(name) {
   border: none;
   background: transparent;
   color: #008a84;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
   cursor: pointer;
   padding: 0 8px;
@@ -490,7 +490,7 @@ function initials(name) {
   border: 1px solid #fecaca;
   border-radius: 10px;
   color: #b91c1c;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   margin-bottom: 12px;
 }
@@ -500,7 +500,7 @@ function initials(name) {
   border: 1px solid #b8e0dc;
   border-radius: 10px;
   color: #008a84;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   margin-bottom: 12px;
 }
@@ -512,7 +512,7 @@ function initials(name) {
   border-top: 1px solid #f0f2f5;
 }
 .ac-existing-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
   margin-bottom: 10px;
@@ -533,7 +533,7 @@ function initials(name) {
   background: #fff;
   border: 1px solid #fecaca;
   color: #b91c1c;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   border-radius: 8px;
   cursor: pointer;
@@ -556,7 +556,7 @@ function initials(name) {
   border: none;
   border-radius: 12px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
   transition: background 0.15s;

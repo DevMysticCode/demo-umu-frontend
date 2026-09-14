@@ -57,7 +57,7 @@ defineEmits(['visitLink'])
 }
 
 .link-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
@@ -65,8 +65,8 @@ defineEmits(['visitLink'])
 }
 
 .link-url {
-  font-size: 13px;
-  color: #00a19a;
+  font-size: 0.8125rem;
+  color: #00726c;
   margin: 8px 0 0 0;
   line-height: 16px;
   letter-spacing: -0.06px;
@@ -104,7 +104,7 @@ defineEmits(['visitLink'])
   color: white;
   border: none;
   border-radius: 50px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -116,7 +116,7 @@ defineEmits(['visitLink'])
 }
 
 .check-icon {
-  font-size: 14px;
+  font-size: 0.875rem;
   display: inline-flex;
   align-items: center;
 }

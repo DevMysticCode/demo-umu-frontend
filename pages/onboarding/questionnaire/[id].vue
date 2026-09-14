@@ -2,7 +2,7 @@
   <div class="mobile-container questionnaire-page">
     <!-- Header with Back Button -->
     <div class="questionnaire-page__header">
-      <BackButton customClass="text-brand-aqua" />
+      <BackButton customClass="text-brand-aqua-text" />
     </div>
 
     <!-- Main Content -->
@@ -50,7 +50,7 @@
                 option.value
               ),
             }"
-          >
+           role="button" tabindex="0" @keydown.enter="selectOption(option)" @keydown.space.prevent="selectOption(option)">
             <div class="questionnaire-page__option-content">
               <!-- Only show icon if it exists -->
               <span v-if="option.icon" class="questionnaire-page__option-icon">
@@ -292,7 +292,7 @@ if (typeof definePageMeta === 'function') {
   align-items: center;
   background: transparent;
   border: none;
-  color: #00a19a;
+  color: #00726c;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -317,9 +317,9 @@ if (typeof definePageMeta === 'function') {
 }
 
 .questionnaire-page__title {
-  font-size: 34px;
+  font-size: 2.125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 24px;
   margin-top: 32px;
   min-height: 4.5rem; /* Reserve space for typewriter effect */
@@ -331,7 +331,7 @@ if (typeof definePageMeta === 'function') {
 
 /* Typewriter Cursor */
 .questionnaire-page__cursor {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 300;
   animation: none;
 }
@@ -414,13 +414,13 @@ if (typeof definePageMeta === 'function') {
 
 .questionnaire-page__option-icon {
   font-size: 1.25rem;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .questionnaire-page__option-label {
-  font-size: 13px;
-  color: #00a19a;
-  font-size: 13px;
+  font-size: 0.8125rem;
+  color: #00726c;
+  font-size: 0.8125rem;
   font-style: normal;
   font-weight: 400;
   line-height: 18px; /* 138.462% */

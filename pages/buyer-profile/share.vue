@@ -398,7 +398,7 @@ async function drawQr() {
     qrCanvasEl.value.innerHTML = `<img src="${qrDataUrl.value}" alt="Share QR code" width="220" height="220" />`
   } catch {
     qrCanvasEl.value.innerHTML =
-      '<div style="font-size:11px;color:#6b6783;padding:24px;text-align:center;">QR library missing - run <code>npm i qrcode</code></div>'
+      '<div style="font-size: 0.6875rem;color:#6b6783;padding:24px;text-align:center;">QR library missing - run <code>npm i qrcode</code></div>'
   }
 }
 
@@ -473,10 +473,10 @@ function goSign() { router.push('/buyer-profile/sign') }
 }
 .sh-nav-centre {
   flex: 1; text-align: center;
-  font-size: 15px; font-weight: 800; color: #231d45;
+  font-size: 0.9375rem; font-weight: 800; color: #231d45;
 }
 .sh-nav-right {
-  font-size: 13px; font-weight: 700; color: #00a19a;
+  font-size: 0.8125rem; font-weight: 700; color: #00726c;
   cursor: pointer; padding: 8px 4px; white-space: nowrap;
 }
 
@@ -497,7 +497,7 @@ function goSign() { router.push('/buyer-profile/sign') }
 }
 .how-tab {
   font-family: inherit;
-  font-size: 12px; font-weight: 700;
+  font-size: 0.75rem; font-weight: 700;
   color: #6b6783; background: transparent; border: none;
   padding: 8px 14px; border-radius: 100px;
   cursor: pointer; transition: all 0.15s;
@@ -524,13 +524,13 @@ function goSign() { router.push('/buyer-profile/sign') }
   margin: 14px 22px 0;
 }
 .scope-title {
-  font-size: 11px; font-weight: 800;
+  font-size: 0.6875rem; font-weight: 800;
   color: #007e78; letter-spacing: 0.5px;
   margin-bottom: 7px;
 }
 .scope-row {
   display: flex; align-items: center; gap: 7px;
-  font-size: 11.5px; font-weight: 700; color: #231d45;
+  font-size: 0.7188rem; font-weight: 700; color: #231d45;
   margin-bottom: 4px;
 }
 .scope-row:last-of-type { margin-bottom: 0; }
@@ -541,7 +541,7 @@ function goSign() { router.push('/buyer-profile/sign') }
   flex-shrink: 0;
 }
 .scope-hidden {
-  font-size: 10px; font-weight: 700; color: #9c98ad;
+  font-size: 0.625rem; font-weight: 700; color: #9c98ad;
   margin-top: 7px;
   padding-top: 7px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
@@ -549,7 +549,7 @@ function goSign() { router.push('/buyer-profile/sign') }
 
 /* Section label */
 .sec-label {
-  font-size: 11px; font-weight: 800;
+  font-size: 0.6875rem; font-weight: 800;
   color: #6b6783; letter-spacing: 1px;
   text-transform: uppercase;
   padding: 16px 22px 8px;
@@ -578,14 +578,14 @@ function goSign() { router.push('/buyer-profile/sign') }
   display: block;
 }
 .recipient-empty-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
   margin-bottom: 4px;
 }
 .recipient-empty-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.45;
@@ -606,20 +606,20 @@ function goSign() { router.push('/buyer-profile/sign') }
   width: 32px; height: 32px; border-radius: 50%;
   background: #231d45; color: white;
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 800; flex-shrink: 0;
+  font-size: 0.6875rem; font-weight: 800; flex-shrink: 0;
 }
 .recipient-meta { flex: 1; min-width: 0; }
 .recipient-firm {
-  font-size: 12px; font-weight: 800; color: #231d45;
+  font-size: 0.75rem; font-weight: 800; color: #231d45;
 }
 .recipient-name {
-  font-size: 11px; color: #6b6783;
+  font-size: 0.6875rem; color: #6b6783;
 }
 .send-btn {
   background: #00a19a; color: white; border: none;
   border-radius: 100px;
   padding: 7px 13px;
-  font-family: inherit; font-size: 11px; font-weight: 800;
+  font-family: inherit; font-size: 0.6875rem; font-weight: 800;
   cursor: pointer; white-space: nowrap;
 }
 .send-btn:disabled { opacity: 0.55; cursor: not-allowed; }
@@ -627,7 +627,7 @@ function goSign() { router.push('/buyer-profile/sign') }
   background: #e8f5ee; color: #2eab55;
   border: 1px solid #b8e8c8; border-radius: 100px;
   padding: 6px 12px;
-  font-size: 11px; font-weight: 800; white-space: nowrap;
+  font-size: 0.6875rem; font-weight: 800; white-space: nowrap;
 }
 
 .sh-link-instead {
@@ -635,7 +635,7 @@ function goSign() { router.push('/buyer-profile/sign') }
   margin: 14px auto;
   background: none; border: none;
   font-family: inherit;
-  font-size: 12px; font-weight: 700;
+  font-size: 0.75rem; font-weight: 700;
   color: #007e78;
   cursor: pointer; padding: 8px 22px;
 }
@@ -660,33 +660,33 @@ function goSign() { router.push('/buyer-profile/sign') }
 .share-entry.revoked { opacity: 0.55; }
 .share-meta { flex: 1; min-width: 0; }
 .share-name {
-  font-size: 12px; font-weight: 800; color: #231d45;
+  font-size: 0.75rem; font-weight: 800; color: #231d45;
 }
 .share-scope {
-  font-size: 10.5px; color: #6b6783; margin-top: 1px;
+  font-size: 0.6563rem; color: #6b6783; margin-top: 1px;
 }
 .share-expiry {
-  font-size: 10px; font-weight: 700; color: #c4821a;
+  font-size: 0.625rem; font-weight: 700; color: #c4821a;
   margin-top: 2px;
 }
 .revoke-btn {
   background: #fcebea; color: #c73e36;
   border: 1px solid #f5c6c4; border-radius: 100px;
   padding: 6px 12px;
-  font-family: inherit; font-size: 10.5px; font-weight: 800;
+  font-family: inherit; font-size: 0.6563rem; font-weight: 800;
   cursor: pointer;
 }
 .revoke-disabled {
-  color: #c0bdcc; font-size: 14px; font-weight: 800;
+  color: #c0bdcc; font-size: 0.875rem; font-weight: 800;
   padding: 0 8px;
 }
 .sh-empty {
   padding: 28px 22px; text-align: center;
-  color: #6b6783; font-size: 12.5px; font-weight: 600;
+  color: #6b6783; font-size: 0.7813rem; font-weight: 600;
 }
 .sh-expires-note {
   padding: 14px 22px 0;
-  font-size: 11px; color: #9c98ad;
+  font-size: 0.6875rem; color: #9c98ad;
   text-align: center; line-height: 1.5;
 }
 .sh-cta-wrap { margin: 14px 22px 0; }
@@ -700,7 +700,7 @@ function goSign() { router.push('/buyer-profile/sign') }
 }
 .sh-link-url {
   flex: 1; min-width: 0;
-  font-size: 13px; font-weight: 700; color: #231d45;
+  font-size: 0.8125rem; font-weight: 700; color: #231d45;
   font-family: 'SF Mono', Menlo, monospace;
   word-break: break-all;
 }
@@ -708,7 +708,7 @@ function goSign() { router.push('/buyer-profile/sign') }
   background: #00a19a; color: white; border: none;
   border-radius: 100px;
   padding: 8px 14px;
-  font-family: inherit; font-size: 11px; font-weight: 800;
+  font-family: inherit; font-size: 0.6875rem; font-weight: 800;
   cursor: pointer; flex-shrink: 0;
 }
 .navy-card {
@@ -752,7 +752,7 @@ function goSign() { router.push('/buyer-profile/sign') }
   100% { background-position: -200% 0; }
 }
 .sh-qr-meta {
-  font-size: 11px; color: #6b6783;
+  font-size: 0.6875rem; color: #6b6783;
   margin-top: 10px; font-weight: 600;
 }
 .sh-qr-save {
@@ -763,7 +763,7 @@ function goSign() { router.push('/buyer-profile/sign') }
   border-radius: 999px;
   padding: 8px 18px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   cursor: pointer;
 }
@@ -776,23 +776,23 @@ function goSign() { router.push('/buyer-profile/sign') }
   padding: 20px; color: white;
 }
 .sh-pdf-eyebrow {
-  font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+  font-size: 0.5625rem; font-weight: 800; letter-spacing: 1.5px;
   opacity: 0.5; text-transform: uppercase;
   margin-bottom: 8px;
 }
 .sh-pdf-tagline {
-  font-size: 16px; font-weight: 800; font-style: italic;
+  font-size: 1rem; font-weight: 800; font-style: italic;
   margin-bottom: 10px;
 }
 .sh-pdf-name {
-  font-size: 12px; font-weight: 700;
+  font-size: 0.75rem; font-weight: 700;
   margin-bottom: 10px;
 }
 .sh-pdf-pills {
   display: flex; flex-wrap: wrap; gap: 5px;
 }
 .sh-pdf-pill {
-  font-size: 9px; font-weight: 700;
+  font-size: 0.5625rem; font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 100px;
   padding: 4px 8px;
@@ -803,12 +803,12 @@ function goSign() { router.push('/buyer-profile/sign') }
   margin-top: 12px;
   background: none; border: none;
   font-family: inherit;
-  font-size: 13px; font-weight: 800; color: #007e78;
+  font-size: 0.8125rem; font-weight: 800; color: #007e78;
   cursor: pointer; padding: 8px 22px; width: 100%;
 }
 .sh-pdf-note {
   text-align: center;
-  font-size: 11px; color: #9c98ad;
+  font-size: 0.6875rem; color: #9c98ad;
   padding: 10px 22px;
 }
 
@@ -817,7 +817,7 @@ function goSign() { router.push('/buyer-profile/sign') }
   width: 100%;
   background: #00a19a; color: white; border: none;
   border-radius: 14px; padding: 16px;
-  font-family: inherit; font-size: 14px; font-weight: 800;
+  font-family: inherit; font-size: 0.875rem; font-weight: 800;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.35);
   cursor: pointer; transition: all 0.15s;
 }

@@ -352,7 +352,7 @@ onBeforeUnmount(() => {
   border: none;
   border-radius: 100px;
   padding: 8px 16px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
@@ -381,20 +381,20 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   background: #00a19a;
   color: #fff;
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   display: grid;
   place-items: center;
   margin: 0 auto 16px;
 }
 .pa-static-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 8px;
 }
 .pa-static-points {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #00817c;
   margin-bottom: 20px;
@@ -406,7 +406,7 @@ onBeforeUnmount(() => {
   border: none;
   border-radius: 14px;
   padding: 14px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
@@ -565,7 +565,7 @@ onBeforeUnmount(() => {
 }
 .pa-points-label {
   margin-top: 4px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;

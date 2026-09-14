@@ -52,7 +52,7 @@
 
     <!-- Hero card -->
     <div class="bph-hero-wrap">
-      <div class="bph-hero-card" @click="goToBuild">
+      <div class="bph-hero-card" @click="goToBuild" role="button" tabindex="0" @keydown.enter="goToBuild" @keydown.space.prevent="goToBuild">
         <img
           src="/op-icons/passport-covers/buyer_tilted_right_on_tile.png"
           alt=""
@@ -96,7 +96,7 @@
         :key="item.key"
         class="bph-check-row"
         @click="goToBuild"
-      >
+       role="button" tabindex="0" @keydown.enter="goToBuild" @keydown.space.prevent="goToBuild">
         <div class="bph-check-icon" :class="{ 'is-done': item.done }">
           <img :src="item.icon" alt="" loading="lazy" />
         </div>
@@ -272,7 +272,7 @@ onMounted(async () => {
   gap: 6px;
 }
 .bph-header-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
@@ -328,14 +328,14 @@ onMounted(async () => {
 }
 .bph-hero-title {
   color: #231d45;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   margin-bottom: 4px;
 }
 .bph-hero-sub {
   color: #6b7089;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.4;
   margin-bottom: 12px;
 }
@@ -346,7 +346,7 @@ onMounted(async () => {
   background: #f2faf8;
   border: 1px solid #d7ece9;
   color: #00857f;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   padding: 5px 11px;
   border-radius: 100px;
@@ -373,12 +373,12 @@ onMounted(async () => {
   margin-bottom: 8px;
 }
 .bph-progress-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
 }
 .bph-progress-pct {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #94a3b8;
 }
@@ -395,7 +395,7 @@ onMounted(async () => {
   transition: width 0.3s ease;
 }
 .bph-progress-hint {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b6783;
   line-height: 1.5;
   margin: 10px 0 0;
@@ -448,14 +448,14 @@ onMounted(async () => {
   min-width: 0;
 }
 .bph-check-title {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
   margin-bottom: 2px;
 }
 .bph-check-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b6783;
   line-height: 1.4;
 }
@@ -484,13 +484,13 @@ onMounted(async () => {
   margin-top: 1px;
 }
 .bph-secure-h {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #007e78;
   line-height: 1.4;
 }
 .bph-secure-v {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #4b8c87;
   line-height: 1.4;
   margin-top: 2px;
@@ -523,13 +523,13 @@ onMounted(async () => {
   margin: 0 auto 16px;
 }
 .bph-sheet-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   margin: 0 0 8px;
 }
 .bph-sheet-body {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: #6b6783;
   line-height: 1.55;
   margin: 0 0 18px;
@@ -541,7 +541,7 @@ onMounted(async () => {
   border: none;
   border-radius: 14px;
   padding: 14px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;

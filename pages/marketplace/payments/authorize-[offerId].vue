@@ -307,20 +307,20 @@ function goBack() {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px; font-weight: 800; line-height: 1;
+  font-size: 1.375rem; font-weight: 800; line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
 }
 .au-header-title {
   flex: 1;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   text-align: center;
 }
 .au-pill {
   flex-shrink: 0;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   padding: 5px 10px;
@@ -333,7 +333,7 @@ function goBack() {
 .au-loading, .au-empty {
   padding: 40px 20px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
@@ -349,18 +349,18 @@ function goBack() {
   box-shadow: 0 4px 14px rgba(35, 29, 69, 0.06);
 }
 .au-hero-icon {
-  font-size: 36px;
+  font-size: 2.25rem;
   margin-bottom: 6px;
 }
 .au-hero-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.4px;
   margin-bottom: 4px;
 }
 .au-hero-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b7089;
   line-height: 1.5;
@@ -380,7 +380,7 @@ function goBack() {
   align-items: baseline;
   justify-content: space-between;
   padding: 6px 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
@@ -390,12 +390,12 @@ function goBack() {
   margin-top: 4px;
   color: #231d45;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .au-breakdown-row.total .au-amt {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: -0.5px;
 }
 
@@ -409,7 +409,7 @@ function goBack() {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .au-steps-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -426,7 +426,7 @@ function goBack() {
   border-radius: 10px;
   background: #f5f6fa;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   flex-shrink: 0;
 }
 .au-step-icon.done {
@@ -434,12 +434,12 @@ function goBack() {
   color: #fff;
 }
 .au-step-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
 }
 .au-step-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #6b7089;
   margin-top: 2px;
@@ -457,7 +457,7 @@ function goBack() {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .au-card-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -471,7 +471,7 @@ function goBack() {
   padding: 14px;
 }
 .au-card-error {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #c43c3c;
   margin-top: 6px;
@@ -483,7 +483,7 @@ function goBack() {
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #c43c3c;
 }
@@ -498,7 +498,7 @@ function goBack() {
   border-radius: 14px;
   padding: 15px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);

@@ -148,7 +148,7 @@
           answered: !!questState[q.id],
         }"
       >
-        <div class="quest-summary" @click="toggleQuest(q.id)">
+        <div class="quest-summary" @click="toggleQuest(q.id)" role="button" tabindex="0" @keydown.enter="toggleQuest(q.id)" @keydown.space.prevent="toggleQuest(q.id)">
           <div class="quest-num-circle">{{ q.n }}</div>
           <div class="quest-summary-info">
             <div class="quest-summary-title">{{ q.title }}</div>
@@ -235,7 +235,7 @@
         above to see your score.
       </div>
     </div>
-    <div class="quiz-reset" @click="resetQuests">↺ Start again</div>
+    <div class="quiz-reset" @click="resetQuests" role="button" tabindex="0" @keydown.enter="resetQuests" @keydown.space.prevent="resetQuests">↺ Start again</div>
 
     <div style="height: 32px" />
 
@@ -926,14 +926,14 @@ watch(
   min-width: 0;
 }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
   line-height: 1.15;
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -1023,7 +1023,7 @@ watch(
   min-width: 0;
 }
 .hs-addr-line {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: white;
   letter-spacing: -0.5px;
@@ -1031,7 +1031,7 @@ watch(
   margin-bottom: 2px;
 }
 .hs-addr-meta {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.85);
 }
@@ -1047,7 +1047,7 @@ watch(
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   padding: 5px 10px 5px 7px;
   border-radius: 100px;
@@ -1067,7 +1067,7 @@ watch(
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
 }
 /* Claim CTA + views row - consistent with the Score screen */
@@ -1081,7 +1081,7 @@ watch(
   border: none;
   color: white;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   align-items: center;
@@ -1113,7 +1113,7 @@ watch(
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
   margin-top: 14px;
@@ -1199,7 +1199,7 @@ watch(
   }
 }
 .hs-live-text {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   letter-spacing: -0.05px;
   line-height: 1.25;
@@ -1232,7 +1232,7 @@ watch(
   margin-bottom: 14px;
 }
 .score-eyebrow-mark {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.4px;
@@ -1240,12 +1240,12 @@ watch(
 }
 .score-eyebrow-mark sup {
   color: var(--accent);
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0;
 }
 .quiz-live-delta-pill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   padding: 4px 10px;
   border-radius: 100px;
@@ -1289,14 +1289,14 @@ watch(
   justify-content: center;
 }
 .gn-big {
-  font-size: 44px;
+  font-size: 2.75rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -1.4px;
   line-height: 1;
 }
 .gn-small {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-faint);
   margin-top: 3px;
@@ -1306,7 +1306,7 @@ watch(
   min-width: 0;
 }
 .score-band {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: -0.5px;
@@ -1314,7 +1314,7 @@ watch(
   line-height: 1.1;
 }
 .score-explainer {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -1330,7 +1330,7 @@ watch(
   padding-top: 14px;
   margin-top: 14px;
   border-top: 1px solid var(--border-soft);
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
 }
@@ -1348,7 +1348,7 @@ watch(
   transition: width 0.4s ease;
 }
 .quiz-progress-label {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: var(--text-secondary);
   margin-top: 6px;
@@ -1364,7 +1364,7 @@ watch(
   box-shadow: var(--shadow-card);
 }
 .two-ways-title {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: 1.4px;
@@ -1379,7 +1379,7 @@ watch(
   gap: 10px;
 }
 .two-ways-or {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text-secondary);
 }
@@ -1401,11 +1401,11 @@ watch(
   box-shadow: 0 2px 8px rgba(0, 161, 154, 0.15);
 }
 .two-ways-opt-icon {
-  font-size: 22px;
+  font-size: 1.375rem;
   margin-bottom: 5px;
 }
 .two-ways-opt-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 2px;
@@ -1415,7 +1415,7 @@ watch(
   color: var(--accent-dark);
 }
 .two-ways-opt-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.3;
@@ -1429,14 +1429,14 @@ watch(
   padding: 18px 20px 10px;
 }
 .section-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 .section-h-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--accent-dark);
 }
@@ -1472,7 +1472,7 @@ watch(
   min-width: 0;
 }
 .quiz-changed-title {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -1480,7 +1480,7 @@ watch(
   margin-bottom: 4px;
 }
 .quiz-changed-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -1490,7 +1490,7 @@ watch(
   text-align: right;
 }
 .quiz-changed-count {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--accent-dark);
   white-space: nowrap;
@@ -1576,7 +1576,7 @@ watch(
   border-radius: 50%;
   background: var(--accent);
   color: white;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -1594,7 +1594,7 @@ watch(
   border-radius: 50%;
   background: var(--bg);
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -1617,7 +1617,7 @@ watch(
   min-width: 0;
 }
 .quest-summary-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -1625,13 +1625,13 @@ watch(
   margin-bottom: 2px;
 }
 .quest-summary-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text-secondary);
   font-weight: 500;
   line-height: 1.35;
 }
 .quest-summary-chev {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--text-faint);
   transition: transform 0.2s;
   line-height: 1;
@@ -1648,7 +1648,7 @@ watch(
   animation: fadeSlideUp 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .quest-desc {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text-secondary);
   line-height: 1.55;
   margin-bottom: 10px;
@@ -1658,7 +1658,7 @@ watch(
   background: var(--accent-paler);
   border: 1px solid var(--accent-pale);
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--accent-dark);
   margin-bottom: 14px;
@@ -1684,7 +1684,7 @@ watch(
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: 0.3px;
@@ -1699,7 +1699,7 @@ watch(
   color: var(--text-faint);
 }
 .quest-stat-val {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -1707,7 +1707,7 @@ watch(
   text-align: center;
 }
 .quest-stat-note {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -1722,7 +1722,7 @@ watch(
   background: var(--bg);
   border: 1px solid var(--border-soft);
   border-radius: 10px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: 14px;
@@ -1733,7 +1733,7 @@ watch(
   gap: 4px;
   padding: 3px 9px;
   border-radius: 100px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: white;
   letter-spacing: 0.2px;
@@ -1761,7 +1761,7 @@ watch(
 }
 
 .quest-question {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 8px;
@@ -1778,7 +1778,7 @@ watch(
   border: 1.5px solid var(--border);
   border-radius: 12px;
   font-family: inherit;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: var(--text);
   text-align: center;
@@ -1802,7 +1802,7 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: white;
   flex-shrink: 0;
 }
@@ -1853,7 +1853,7 @@ watch(
   border: none;
   border-radius: 14px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.3);
@@ -1870,7 +1870,7 @@ watch(
   margin-top: 8px;
   padding: 0 4px;
   text-align: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -1882,7 +1882,7 @@ watch(
 .quiz-reset {
   padding: 10px 20px 0;
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
@@ -1958,17 +1958,17 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 1.625rem;
 }
 .need-answer-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.3px;
   margin-bottom: 8px;
 }
 .need-answer-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.55;
@@ -1986,7 +1986,7 @@ watch(
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   color: white;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(0, 161, 154, 0.35);
@@ -2010,7 +2010,7 @@ watch(
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: var(--accent-dark);
   background: var(--accent-paler);
@@ -2022,14 +2022,14 @@ watch(
   margin-bottom: 10px;
 }
 .modal-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.4px;
   margin-bottom: 6px;
 }
 .modal-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -2058,13 +2058,13 @@ watch(
   display: none;
 }
 .drop-zone-icon {
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 1;
   margin-bottom: 8px;
   color: var(--accent-dark);
 }
 .drop-zone-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -2072,7 +2072,7 @@ watch(
   word-break: break-word;
 }
 .drop-zone-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-secondary);
 }
@@ -2081,7 +2081,7 @@ watch(
   font-weight: 700;
 }
 .drop-zone-formats {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: var(--text-faint);
   letter-spacing: 0.4px;
@@ -2099,12 +2099,12 @@ watch(
   margin-bottom: 14px;
 }
 .modal-read-icon {
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .modal-read-text {
   flex: 1;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -2117,7 +2117,7 @@ watch(
   margin-bottom: 14px;
 }
 .modal-suppliers-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 1.2px;
@@ -2135,7 +2135,7 @@ watch(
   border: 1px solid var(--border);
   border-radius: 10px;
   text-align: center;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: var(--text-secondary);
 }
@@ -2149,7 +2149,7 @@ watch(
   padding: 14px;
   border-radius: 12px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
@@ -2180,7 +2180,7 @@ watch(
   display: flex;
   gap: 6px;
   align-items: flex-start;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-faint);
   line-height: 1.5;

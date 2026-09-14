@@ -121,7 +121,7 @@ const {
 }
 
 .find-property-header__title-highlight {
-  @apply text-brand-aqua;
+  @apply text-brand-aqua-text;
 }
 
 /* Info Cards */

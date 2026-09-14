@@ -109,25 +109,25 @@ const onCameraCapture = async (file) => {
 
 <style scoped>
 .upload-section { display: flex; flex-direction: column; gap: 16px; }
-.section-title { font-size: 16px; font-weight: 700; color: #00a19a; margin: 0; }
+.section-title { font-size: 1rem; font-weight: 700; color: #00726c; margin: 0; }
 .upload-container { background: white; border: 2px solid #e0e0e0; border-radius: 12px; padding: 16px; }
-.instruction-text { font-size: 14px; color: #1a1a1a; margin: 0 0 16px; font-weight: 500; line-height: 1.5; }
+.instruction-text { font-size: 0.875rem; color: #1a1a1a; margin: 0 0 16px; font-weight: 500; line-height: 1.5; }
 .upload-options { display: flex; flex-direction: row; align-items: center; gap: 16px; }
 .upload-btn {
   width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px;
   padding: 24px 16px; border: 2px solid #e0e0e0; border-radius: 12px; background: white;
-  cursor: pointer; transition: all 0.2s; font-size: 13px; font-weight: 600; color: #1a1a1a;
+  cursor: pointer; transition: all 0.2s; font-size: 0.8125rem; font-weight: 600; color: #1a1a1a;
 }
 .upload-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .upload-btn:active:not(:disabled) { transform: scale(0.98); border-color: #00a19a; background: #f0fffe; }
-.upload-icon { font-size: 32px; }
-.upload-error { font-size: 13px; color: #e53e3e; margin: 8px 0 0; }
+.upload-icon { font-size: 2rem; }
+.upload-error { font-size: 0.8125rem; color: #e53e3e; margin: 8px 0 0; }
 .uploaded-files { display: flex; flex-direction: column; gap: 8px; padding: 16px; background: #f9f9f9; border-radius: 12px; margin-top: 16px; }
-.files-title { font-size: 14px; font-weight: 700; margin: 0 0 12px; color: #1a1a1a; }
+.files-title { font-size: 0.875rem; font-weight: 700; margin: 0 0 12px; color: #1a1a1a; }
 .file-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: white; border-radius: 8px; }
-.file-icon { font-size: 16px; flex-shrink: 0; }
+.file-icon { font-size: 1rem; flex-shrink: 0; }
 .file-meta { flex: 1; min-width: 0; }
-.file-name { font-size: 13px; color: #666; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.file-ready { font-size: 11px; color: #00a19a; font-weight: 600; }
-.remove-btn { background: none; border: none; color: #999; font-size: 16px; cursor: pointer; padding: 4px 8px; flex-shrink: 0; }
+.file-name { font-size: 0.8125rem; color: #666; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-ready { font-size: 0.6875rem; color: #00726c; font-weight: 600; }
+.remove-btn { background: none; border: none; color: #999; font-size: 1rem; cursor: pointer; padding: 4px 8px; flex-shrink: 0; }
 </style>

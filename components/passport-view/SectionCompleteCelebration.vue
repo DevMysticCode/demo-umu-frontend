@@ -147,7 +147,7 @@ onBeforeUnmount(() => {
   background: none;
   border: none;
   color: #00817c;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
   opacity: 0.9;
 }
 .scc-confetti-piece.spark {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: inherit;
 }
 .scc-confetti-piece.spark::before {
@@ -205,7 +205,7 @@ onBeforeUnmount(() => {
 .scc-title {
   position: relative;
   z-index: 1;
-  font-size: 34px;
+  font-size: 2.125rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.5px;
@@ -215,7 +215,7 @@ onBeforeUnmount(() => {
 .scc-sub {
   position: relative;
   z-index: 1;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
   margin: 0 0 20px;
@@ -270,20 +270,20 @@ onBeforeUnmount(() => {
   color: #5eead4;
 }
 .scc-stat-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #fff;
 }
 .scc-stat-value {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #5eead4;
 }
 .scc-stat-value--total {
-  font-size: 24px;
+  font-size: 1.5rem;
 }
 .scc-stat-was {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.4);
 }
@@ -295,7 +295,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.75);
   margin: 4px 0 0;
@@ -327,12 +327,12 @@ onBeforeUnmount(() => {
   }
 }
 .scc-redirect-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #231d45;
 }
 .scc-redirect-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #6b7280;
   margin-top: 2px;

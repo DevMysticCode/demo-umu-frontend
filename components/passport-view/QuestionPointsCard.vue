@@ -131,7 +131,7 @@ watch(
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
 }
 .qpc-balance {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1;
@@ -140,7 +140,7 @@ watch(
   font-style: normal;
   color: #99f6e4;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 1rem;
   margin-left: 4px;
 }
 .qpc-pill {
@@ -150,7 +150,7 @@ watch(
   border: 1px solid rgba(94, 234, 212, 0.35);
   padding: 5px 12px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -160,13 +160,13 @@ watch(
   gap: 2px;
 }
 .qpc-saved-title {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.01em;
   line-height: 1.1;
 }
 .qpc-saved-pts {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #5eead4;
   line-height: 1.1;
@@ -174,7 +174,7 @@ watch(
 
 .qpc-h3 {
   margin: 8px 0 2px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.3;
   color: #fff;
@@ -183,7 +183,7 @@ watch(
 }
 .qpc-sub {
   margin: 0 0 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.7);
@@ -207,18 +207,18 @@ watch(
   color: rgba(255, 255, 255, 0.5);
 }
 .qpc-before {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
 }
 .qpc-after {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #5eead4;
 }
 
 .qpc-footer {
   margin: 6px 0 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #5eead4;
   position: relative;

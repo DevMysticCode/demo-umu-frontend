@@ -210,7 +210,7 @@ function matchStrokeColor(score: number): string {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--teal-dk);
   letter-spacing: 1.4px;
@@ -224,7 +224,7 @@ function matchStrokeColor(score: number): string {
   flex-shrink: 0;
 }
 .mbd-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.5px;
@@ -232,7 +232,7 @@ function matchStrokeColor(score: number): string {
   margin: 0 0 10px;
 }
 .mbd-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--navy-70);
   font-weight: 500;
   line-height: 1.5;
@@ -244,7 +244,7 @@ function matchStrokeColor(score: number): string {
   align-items: center;
   gap: 10px;
   margin: 14px 22px 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--navy-70);
   font-weight: 500;
 }
@@ -273,7 +273,7 @@ function matchStrokeColor(score: number): string {
 }
 .mbd-empty-ic { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
 .mbd-empty-text {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--navy-70);
   font-weight: 500;
   line-height: 1.5;
@@ -304,7 +304,7 @@ function matchStrokeColor(score: number): string {
   border-radius: 50%;
   background: linear-gradient(135deg, #00B8B0, var(--teal-dk));
   color: #fff;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -314,14 +314,14 @@ function matchStrokeColor(score: number): string {
 }
 .mbd-info { flex: 1; min-width: 0; }
 .mbd-name {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.3px;
   line-height: 1.15;
 }
 .mbd-meta {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--navy-70);
   margin-top: 4px;
@@ -334,7 +334,7 @@ function matchStrokeColor(score: number): string {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 100px;
@@ -365,12 +365,12 @@ function matchStrokeColor(score: number): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 900;
   color: var(--teal-dk);
   letter-spacing: -0.3px;
 }
-.mbd-gauge-num small { font-size: 8px; font-weight: 800; margin-left: 1px; }
+.mbd-gauge-num small { font-size: 0.5rem; font-weight: 800; margin-left: 1px; }
 .mbd-chev {
   width: 18px;
   height: 18px;

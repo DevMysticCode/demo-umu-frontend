@@ -116,7 +116,7 @@ function formatDate(iso: string) {
 .nw-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.4px;
@@ -141,7 +141,7 @@ function formatDate(iso: string) {
 .nw-intro {
   position: relative;
   z-index: 1;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.5;
@@ -149,7 +149,7 @@ function formatDate(iso: string) {
 }
 
 .section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -191,7 +191,7 @@ function formatDate(iso: string) {
 }
 .nw-hero-ic-img { width: 46px; height: 46px; object-fit: contain; }
 .nw-hero-t {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: -0.4px;
@@ -201,7 +201,7 @@ function formatDate(iso: string) {
   z-index: 1;
 }
 .nw-hero-s {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.55;
@@ -220,16 +220,16 @@ function formatDate(iso: string) {
   position: relative;
   z-index: 1;
 }
-.nw-src { font-size: 11px; font-weight: 700; color: rgba(255, 255, 255, 0.6); }
-.nw-dot { color: rgba(255, 255, 255, 0.35); font-size: 11px; }
-.nw-date { font-size: 11px; font-weight: 600; color: rgba(255, 255, 255, 0.6); }
-.nw-go { margin-left: auto; font-size: 11.5px; font-weight: 800; color: #5eead4; }
+.nw-src { font-size: 0.6875rem; font-weight: 700; color: rgba(255, 255, 255, 0.6); }
+.nw-dot { color: rgba(255, 255, 255, 0.35); font-size: 0.6875rem; }
+.nw-date { font-size: 0.6875rem; font-weight: 600; color: rgba(255, 255, 255, 0.6); }
+.nw-go { margin-left: auto; font-size: 0.7188rem; font-weight: 800; color: #5eead4; }
 
 /* Tag pill */
 .nw-tag {
   display: inline-flex;
   align-items: center;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -273,7 +273,7 @@ function formatDate(iso: string) {
 .nw-row-bd .nw-tag--update { background: #f2faf8; color: #008a84; }
 .nw-row-bd .nw-tag--news { background: #e8edfb; color: #3d63c9; }
 .nw-row-t {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 700;
   color: #0e2840;
   letter-spacing: -0.2px;
@@ -281,7 +281,7 @@ function formatDate(iso: string) {
   margin-top: 8px;
 }
 .nw-row-s {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.45;
@@ -291,5 +291,5 @@ function formatDate(iso: string) {
 .nw-row-foot .nw-src { color: #a8a9ad; }
 .nw-row-foot .nw-dot { color: #d4d4d8; }
 .nw-row-foot .nw-date { color: #a8a9ad; font-weight: 500; }
-.nw-chev { font-size: 18px; color: #d4d4d8; flex-shrink: 0; align-self: center; }
+.nw-chev { font-size: 1.125rem; color: #d4d4d8; flex-shrink: 0; align-self: center; }
 </style>

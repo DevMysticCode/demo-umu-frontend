@@ -24,7 +24,7 @@
             class="hero-avatar"
             data-tour="avatar"
             @click="navigateTo('/profile')"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/profile')" @keydown.space.prevent="navigateTo('/profile')">
             <UserAvatar
               :src="profile?.avatarUrl"
               :firstName="profile?.firstName"
@@ -54,10 +54,10 @@
           <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
           <circle cx="12" cy="10" r="3" />
         </svg>
-        <div style="flex: 1; font-size: 13px; font-weight: 700; color: #231d45">
+        <div style="flex: 1; font-size: 0.8125rem; font-weight: 700; color: #231d45">
           {{ selectedAddressText }}
         </div>
-        <div class="search-clear-btn" @click="clearSearch">x</div>
+        <div class="search-clear-btn" @click="clearSearch" role="button" tabindex="0" @keydown.enter="clearSearch" @keydown.space.prevent="clearSearch">x</div>
       </div>
     </div>
 
@@ -104,7 +104,7 @@
           <div style="margin-bottom: 16px">
             <div
               style="
-                font-size: 15px;
+                font-size: 0.9375rem;
                 font-weight: 700;
                 color: #1f2024;
                 margin-bottom: 10px;
@@ -116,7 +116,7 @@
               <div class="step-num">1</div>
               <div
                 style="
-                  font-size: 14px;
+                  font-size: 0.875rem;
                   color: #4a5568;
                   line-height: 1.5;
                   padding-top: 2px;
@@ -129,7 +129,7 @@
               <div class="step-num">2</div>
               <div
                 style="
-                  font-size: 14px;
+                  font-size: 0.875rem;
                   color: #4a5568;
                   line-height: 1.5;
                   padding-top: 2px;
@@ -142,7 +142,7 @@
               <div class="step-num">3</div>
               <div
                 style="
-                  font-size: 14px;
+                  font-size: 0.875rem;
                   color: #4a5568;
                   line-height: 1.5;
                   padding-top: 2px;
@@ -159,7 +159,7 @@
             data-tour="pro-card"
             style="margin-bottom: 16px"
             @click="openGasSafetySheet"
-          >
+           role="button" tabindex="0" @keydown.enter="openGasSafetySheet" @keydown.space.prevent="openGasSafetySheet">
             <div class="pro-dark-icon"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></div>
             <div class="pro-dark-body">
               <div class="pro-dark-title">Need certs? Find a Pro</div>
@@ -178,7 +178,7 @@
               v-if="verifiedPassportDisplay.length"
               class="feed-see-all"
               @click="navigateTo('/explore')"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/explore')" @keydown.space.prevent="navigateTo('/explore')">
               See all
             </div>
           </div>
@@ -195,7 +195,7 @@
               :key="prop.id"
               class="prop-card prop-card-horiz"
               @click="navigateTo('/property/' + prop.id)"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/property/' + prop.id)" @keydown.space.prevent="navigateTo('/property/' + prop.id)">
               <div
                 class="prop-img-wrap"
                 :style="{
@@ -285,7 +285,7 @@
               v-if="verifiedPassportDisplay.length"
               class="feed-see-all"
               @click="navigateTo('/explore')"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/explore')" @keydown.space.prevent="navigateTo('/explore')">
               See all
             </div>
           </div>
@@ -303,7 +303,7 @@
               :key="prop.id"
               class="prop-card prop-card-horiz"
               @click="navigateTo('/property/' + prop.id)"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/property/' + prop.id)" @keydown.space.prevent="navigateTo('/property/' + prop.id)">
               <div
                 class="prop-img-wrap"
                 :style="{
@@ -395,7 +395,7 @@
             class="passport-status-card"
             data-tour="passport-status"
             @click="navigateTo('/passportview/' + passports[0].id)"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/passportview/' + passports[0].id)" @keydown.space.prevent="navigateTo('/passportview/' + passports[0].id)">
             <div class="psc-glow"></div>
             <div class="psc-main" style="position: relative; z-index: 1">
               <div class="psc-left">
@@ -472,7 +472,7 @@
             class="no-passport-card"
             data-tour="passport-status"
             @click="startClaimFlow"
-          >
+           role="button" tabindex="0" @keydown.enter="startClaimFlow" @keydown.space.prevent="startClaimFlow">
             <div class="no-pp-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
             <div class="no-pp-body">
               <div class="no-pp-title">No passport yet</div>
@@ -493,7 +493,19 @@
                   : '/explore',
               )
             "
-          >
+           role="button" tabindex="0" @keydown.enter="
+              navigateTo(
+                passports.length
+                  ? '/passportview/' + passports[0].id
+                  : '/explore',
+              )
+            " @keydown.space.prevent="
+              navigateTo(
+                passports.length
+                  ? '/passportview/' + passports[0].id
+                  : '/explore',
+              )
+            ">
             <div class="na-icon"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
             <div class="na-body">
               <div class="na-title">{{ nextActionLabel }}</div>
@@ -508,7 +520,7 @@
             class="pro-dark-card"
             data-tour="pro-card"
             @click="openGasSafetySheet"
-          >
+           role="button" tabindex="0" @keydown.enter="openGasSafetySheet" @keydown.space.prevent="openGasSafetySheet">
             <div class="pro-dark-icon"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></div>
             <div class="pro-dark-body">
               <div class="pro-dark-title">Book a gas safety check</div>
@@ -519,12 +531,12 @@
             <div class="pro-dark-badge">Book</div>
           </div>
 
-          <div class="add-property-card" @click="startClaimFlow">
-            <div style="font-size: 22px; flex-shrink: 0">➕</div>
+          <div class="add-property-card" @click="startClaimFlow" role="button" tabindex="0" @keydown.enter="startClaimFlow" @keydown.space.prevent="startClaimFlow">
+            <div style="font-size: 1.375rem; flex-shrink: 0">➕</div>
             <div style="flex: 1">
               <div
                 style="
-                  font-size: 14px;
+                  font-size: 0.875rem;
                   font-weight: 700;
                   color: #231d45;
                   margin-bottom: 2px;
@@ -532,15 +544,15 @@
               >
                 Add another property
               </div>
-              <div style="font-size: 13px; color: #4a5568">
+              <div style="font-size: 0.8125rem; color: #4a5568">
                 Verify ownership, then choose Rental or Seller Passport
               </div>
             </div>
             <div
               style="
-                font-size: 13px;
+                font-size: 0.8125rem;
                 font-weight: 700;
-                color: #00a19a;
+                color: #00726c;
                 flex-shrink: 0;
               "
             >
@@ -556,18 +568,18 @@
             data-tour="saved-search"
           >
             <div class="saved-search-top">
-              <div style="font-size: 15px; font-weight: 700; color: #231d45">
+              <div style="font-size: 0.9375rem; font-weight: 700; color: #231d45">
                 Your saved search
               </div>
               <div
                 style="
-                  font-size: 12px;
+                  font-size: 0.75rem;
                   font-weight: 700;
-                  color: #00a19a;
+                  color: #00726c;
                   cursor: pointer;
                 "
                 @click="navigateTo('/profile')"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateTo('/profile')" @keydown.space.prevent="navigateTo('/profile')">
                 Edit
               </div>
             </div>
@@ -581,7 +593,7 @@
             </div>
             <div
               v-if="properties.length"
-              style="margin-top: 10px; font-size: 13px; color: #4a5568"
+              style="margin-top: 10px; font-size: 0.8125rem; color: #4a5568"
             >
               <strong style="color: #231d45"
                 >{{ properties.length }}
@@ -595,23 +607,23 @@
             class="saved-search-card saved-search-card--empty"
             data-tour="saved-search"
             @click="navigateTo('/profile')"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/profile')" @keydown.space.prevent="navigateTo('/profile')">
             <div class="saved-search-top">
-              <div style="font-size: 15px; font-weight: 700; color: #231d45">
+              <div style="font-size: 0.9375rem; font-weight: 700; color: #231d45">
                 Set up your search
               </div>
               <div
                 style="
-                  font-size: 12px;
+                  font-size: 0.75rem;
                   font-weight: 700;
-                  color: #00a19a;
+                  color: #00726c;
                   cursor: pointer;
                 "
               >
                 Add →
               </div>
             </div>
-            <div style="font-size: 13px; color: #4a5568; line-height: 1.5">
+            <div style="font-size: 0.8125rem; color: #4a5568; line-height: 1.5">
               Tell us your area, budget and must-haves. We'll match you to homes
               that fit.
             </div>
@@ -625,7 +637,7 @@
             class="my-passport-card my-passport-card--published"
             data-tour="buyer-profile"
             @click="navigateTo('/buyer-profile/view')"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/buyer-profile/view')" @keydown.space.prevent="navigateTo('/buyer-profile/view')">
             <div class="my-passport-ic">✓</div>
             <div class="my-passport-body">
               <div class="my-passport-title">Buyer Passport · Published</div>
@@ -642,7 +654,7 @@
             class="my-passport-card"
             data-tour="buyer-profile"
             @click="navigateTo('/buyer-profile')"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/buyer-profile')" @keydown.space.prevent="navigateTo('/buyer-profile')">
             <div class="my-passport-ic"><img src="/op-icons/profile/buyerProfile.jpeg" alt="" loading="lazy" /></div>
             <div class="my-passport-body">
               <div class="my-passport-title">My Buyer Passport</div>
@@ -660,7 +672,7 @@
           >
             <div
               style="
-                font-size: 15px;
+                font-size: 0.9375rem;
                 font-weight: 700;
                 color: #1f2024;
                 margin-bottom: 8px;
@@ -714,7 +726,7 @@
                 </svg>
                 Filters
               </button>
-              <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
+              <div class="feed-see-all" @click="navigateTo('/explore')" role="button" tabindex="0" @keydown.enter="navigateTo('/explore')" @keydown.space.prevent="navigateTo('/explore')">All</div>
             </div>
           </div>
           <div v-if="loadingProperties" class="skeletons">
@@ -726,7 +738,7 @@
               :key="prop.id"
               class="prop-card prop-card-horiz"
               @click="navigateTo('/property/' + prop.id)"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/property/' + prop.id)" @keydown.space.prevent="navigateTo('/property/' + prop.id)">
               <div
                 class="prop-img-wrap"
                 :style="{
@@ -827,7 +839,7 @@
             class="passport-status-card"
             data-tour="passport-status"
             @click="navigateTo('/passportview/' + passports[0].id)"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/passportview/' + passports[0].id)" @keydown.space.prevent="navigateTo('/passportview/' + passports[0].id)">
             <div class="psc-glow"></div>
             <div class="psc-main" style="position: relative; z-index: 1">
               <div class="psc-left">
@@ -904,7 +916,7 @@
             class="no-passport-card"
             data-tour="passport-status"
             @click="startClaimFlow"
-          >
+           role="button" tabindex="0" @keydown.enter="startClaimFlow" @keydown.space.prevent="startClaimFlow">
             <div class="no-pp-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
             <div class="no-pp-body">
               <div class="no-pp-title">No passport yet</div>
@@ -919,14 +931,14 @@
             v-if="hasSavedSearch"
             class="saved-search-compact"
             @click="navigateTo('/profile')"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/profile')" @keydown.space.prevent="navigateTo('/profile')">
             <div style="width: 24px; height: 24px; flex-shrink: 0">
               <img src="/op-icons/homescore/magnifier.png" alt="" loading="lazy" style="width: 100%; height: 100%; object-fit: contain; display: block" />
             </div>
             <div style="flex: 1; min-width: 0">
               <div
                 style="
-                  font-size: 14px;
+                  font-size: 0.875rem;
                   font-weight: 700;
                   color: #231d45;
                   margin-bottom: 2px;
@@ -940,7 +952,7 @@
               </div>
               <div
                 style="
-                  font-size: 13px;
+                  font-size: 0.8125rem;
                   color: #4a5568;
                   line-height: 1.4;
                   white-space: nowrap;
@@ -953,9 +965,9 @@
             </div>
             <div
               style="
-                font-size: 13px;
+                font-size: 0.8125rem;
                 font-weight: 700;
-                color: #00a19a;
+                color: #00726c;
                 flex-shrink: 0;
               "
             >
@@ -966,14 +978,14 @@
             v-else
             class="saved-search-compact"
             @click="navigateTo('/profile')"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/profile')" @keydown.space.prevent="navigateTo('/profile')">
             <div style="width: 24px; height: 24px; flex-shrink: 0">
               <img src="/op-icons/misc/addressPin.png" alt="" loading="lazy" style="width: 100%; height: 100%; object-fit: contain; display: block" />
             </div>
             <div style="flex: 1; min-width: 0">
               <div
                 style="
-                  font-size: 14px;
+                  font-size: 0.875rem;
                   font-weight: 700;
                   color: #231d45;
                   margin-bottom: 2px;
@@ -981,15 +993,15 @@
               >
                 Set your buy preferences
               </div>
-              <div style="font-size: 13px; color: #4a5568; line-height: 1.4">
+              <div style="font-size: 0.8125rem; color: #4a5568; line-height: 1.4">
                 Area, budget, property type - we'll find matches.
               </div>
             </div>
             <div
               style="
-                font-size: 13px;
+                font-size: 0.8125rem;
                 font-weight: 700;
-                color: #00a19a;
+                color: #00726c;
                 flex-shrink: 0;
               "
             >
@@ -1019,7 +1031,7 @@
                 </svg>
                 Filters
               </button>
-              <div class="feed-see-all" @click="navigateTo('/explore')">All</div>
+              <div class="feed-see-all" @click="navigateTo('/explore')" role="button" tabindex="0" @keydown.enter="navigateTo('/explore')" @keydown.space.prevent="navigateTo('/explore')">All</div>
             </div>
           </div>
           <div v-if="loadingProperties" class="skeletons">
@@ -1031,7 +1043,7 @@
               :key="prop.id"
               class="prop-card prop-card-horiz"
               @click="navigateTo('/property/' + prop.id)"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/property/' + prop.id)" @keydown.space.prevent="navigateTo('/property/' + prop.id)">
               <div
                 class="prop-img-wrap"
                 :style="{
@@ -1132,7 +1144,7 @@
             class="passport-status-card"
             data-tour="passport-status"
             @click="navigateTo('/passportview/' + passports[0].id)"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/passportview/' + passports[0].id)" @keydown.space.prevent="navigateTo('/passportview/' + passports[0].id)">
             <div class="psc-glow"></div>
             <div class="psc-main" style="position: relative; z-index: 1">
               <div class="psc-left">
@@ -1209,7 +1221,7 @@
             class="no-passport-card"
             data-tour="passport-status"
             @click="startClaimFlow"
-          >
+           role="button" tabindex="0" @keydown.enter="startClaimFlow" @keydown.space.prevent="startClaimFlow">
             <div class="no-pp-icon"><img src="/op-icons/homescore/clipboard.png" alt="" loading="lazy" /></div>
             <div class="no-pp-body">
               <div class="no-pp-title">No passport yet</div>
@@ -1226,7 +1238,7 @@
             class="next-action-card"
             data-tour="next-action"
             @click="navigateTo('/passportview/' + passports[0].id)"
-          >
+           role="button" tabindex="0" @keydown.enter="navigateTo('/passportview/' + passports[0].id)" @keydown.space.prevent="navigateTo('/passportview/' + passports[0].id)">
             <div class="na-icon"><img src="/op-icons/homescore/lightning.png" alt="" loading="lazy" /></div>
             <div class="na-body">
               <div class="na-title">{{ nextActionLabel }}</div>
@@ -1237,7 +1249,7 @@
 
           <HealthPassportCards />
 
-          <div class="pro-dark-card" @click="openGasSafetySheet">
+          <div class="pro-dark-card" @click="openGasSafetySheet" role="button" tabindex="0" @keydown.enter="openGasSafetySheet" @keydown.space.prevent="openGasSafetySheet">
             <div class="pro-dark-icon"><img src="/op-icons/misc/wrench.png" alt="" loading="lazy" /></div>
             <div class="pro-dark-body">
               <div class="pro-dark-title">Book a gas safety engineer</div>
@@ -1246,12 +1258,12 @@
             <div class="pro-dark-badge">Book</div>
           </div>
 
-          <div class="add-property-card" @click="startClaimFlow">
-            <div style="font-size: 22px; flex-shrink: 0">➕</div>
+          <div class="add-property-card" @click="startClaimFlow" role="button" tabindex="0" @keydown.enter="startClaimFlow" @keydown.space.prevent="startClaimFlow">
+            <div style="font-size: 1.375rem; flex-shrink: 0">➕</div>
             <div style="flex: 1">
               <div
                 style="
-                  font-size: 14px;
+                  font-size: 0.875rem;
                   font-weight: 700;
                   color: #231d45;
                   margin-bottom: 2px;
@@ -1259,15 +1271,15 @@
               >
                 Add another property
               </div>
-              <div style="font-size: 13px; color: #4a5568">
+              <div style="font-size: 0.8125rem; color: #4a5568">
                 Verify ownership, then choose Rental or Seller Passport
               </div>
             </div>
             <div
               style="
-                font-size: 13px;
+                font-size: 0.8125rem;
                 font-weight: 700;
-                color: #00a19a;
+                color: #00726c;
                 flex-shrink: 0;
               "
             >
@@ -1961,7 +1973,7 @@ onMounted(async () => {
 }
 
 .greeting-text {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.02em;
@@ -1978,8 +1990,8 @@ onMounted(async () => {
   border-radius: 50%;
   background: #f1f9f4;
   border: 1px solid #e2f1ea;
-  color: #00a19a;
-  font-size: 14px;
+  color: #00726c;
+  font-size: 0.875rem;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -2021,18 +2033,18 @@ onMounted(async () => {
 }
 
 .eyebrow-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .eyebrow-label.teal {
-  color: #00a19a;
+  color: #00726c;
 }
 
 .badge-free {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   background: #00a19a;
   color: #fff;
@@ -2041,17 +2053,17 @@ onMounted(async () => {
 }
 
 .badge-pp-price {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   background: rgba(255, 255, 255, 0.12);
-  color: #00a19a;
+  color: #00726c;
   border: 1px solid rgba(94, 234, 212, 0.3);
   border-radius: 999px;
   padding: 3px 10px;
 }
 
 .card-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 900;
   line-height: 1.2;
   margin-bottom: 6px;
@@ -2063,7 +2075,7 @@ onMounted(async () => {
 }
 
 .card-body-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #4a5568;
   line-height: 1.55;
   margin-bottom: 14px;
@@ -2108,7 +2120,7 @@ onMounted(async () => {
   border-radius: 12px;
   border: 1.5px solid #e2f1ea;
   background: #fff;
-  font-size: 16px;
+  font-size: 1rem;
   color: #1f2024;
   outline: none;
   font-family: inherit;
@@ -2131,7 +2143,7 @@ onMounted(async () => {
   border: none;
   padding: 13px;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   background: #00a19a;
@@ -2149,7 +2161,7 @@ onMounted(async () => {
   border: none;
   padding: 13px;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   background: #00a19a;
@@ -2171,15 +2183,15 @@ onMounted(async () => {
 }
 
 .feed-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #1f2024;
 }
 
 .feed-see-all {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
 }
 
@@ -2193,7 +2205,7 @@ onMounted(async () => {
   align-items: center;
   gap: 4px;
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: #6b7089;
   background: #f4f4f6;
@@ -2209,7 +2221,7 @@ onMounted(async () => {
 }
 
 .feed-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
   margin-bottom: 14px;
   line-height: 1.5;
@@ -2250,7 +2262,7 @@ onMounted(async () => {
 }
 
 .prop-emoji {
-  font-size: 46px;
+  font-size: 2.875rem;
 }
 
 .prop-badge-pp {
@@ -2259,7 +2271,7 @@ onMounted(async () => {
   left: 10px;
   background: #231d45;
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 999px;
@@ -2287,7 +2299,7 @@ onMounted(async () => {
   top: 10px;
   right: 10px;
   background: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 999px;
@@ -2308,7 +2320,7 @@ onMounted(async () => {
   right: 10px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 3px 10px;
   border-radius: 999px;
@@ -2319,14 +2331,14 @@ onMounted(async () => {
 }
 
 .prop-address {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #1f2024;
   margin-bottom: 1px;
 }
 
 .prop-area {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
   margin-bottom: 8px;
 }
@@ -2341,7 +2353,7 @@ onMounted(async () => {
 .pill-grey {
   background: #f1f5f9;
   color: #64748b;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
@@ -2362,7 +2374,7 @@ onMounted(async () => {
 }
 
 .prop-score-lbl {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   font-weight: 600;
 }
@@ -2382,7 +2394,7 @@ onMounted(async () => {
 }
 
 .prop-score-num {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #1f2024;
 }
@@ -2390,7 +2402,7 @@ onMounted(async () => {
 .prop-passport-btn {
   background: #231d45;
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 5px 12px;
   border-radius: 999px;
@@ -2482,29 +2494,29 @@ onMounted(async () => {
    sizes match the client's 5-6px ask; !important is needed because
    the source rule uses clamp() which otherwise wins the cascade tie. */
 .psc-passport-slot :deep(.address-line) {
-  font-size: 6px !important;
+  font-size: 0.375rem !important;
   font-weight: 400;
   line-height: 1.15;
   letter-spacing: 0;
 }
 .psc-passport-slot :deep(.address-line-small) {
-  font-size: 5px !important;
+  font-size: 0.3125rem !important;
   font-weight: 400;
   line-height: 1.15;
   letter-spacing: 0.02em;
 }
 
 .psc-label-small {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 2px;
 }
 
 .psc-address {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #0e2840;
   white-space: nowrap;
@@ -2513,7 +2525,7 @@ onMounted(async () => {
 }
 
 .psc-postcode {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b7c8e;
 }
 
@@ -2536,7 +2548,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   line-height: 1;
@@ -2545,7 +2557,7 @@ onMounted(async () => {
 
 .psc-gauge-lbl {
   margin-top: 4px;
-  font-size: 9px;
+  font-size: 0.5625rem;
   color: #8f9094;
   font-weight: 700;
   text-transform: uppercase;
@@ -2567,7 +2579,7 @@ onMounted(async () => {
 }
 
 .psc-stat {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b7c8e;
   font-weight: 600;
 }
@@ -2578,7 +2590,7 @@ onMounted(async () => {
 }
 
 .psc-view-cta {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #fff;
   background: #00a19a;
@@ -2601,26 +2613,26 @@ onMounted(async () => {
 }
 
 .no-pp-icon {
-  font-size: 28px;
+  font-size: 1.75rem;
   flex-shrink: 0;
 }
 .no-pp-body {
   flex: 1;
 }
 .no-pp-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #1f2024;
   margin-bottom: 2px;
 }
 .no-pp-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
 }
 .no-pp-cta {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   flex-shrink: 0;
 }
 
@@ -2642,25 +2654,25 @@ onMounted(async () => {
 }
 
 .na-icon {
-  font-size: 22px;
+  font-size: 1.375rem;
   flex-shrink: 0;
 }
 .na-body {
   flex: 1;
 }
 .na-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #92400e;
   margin-bottom: 2px;
 }
 .na-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #92400e;
   line-height: 1.4;
 }
 .na-cta {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #92400e;
   flex-shrink: 0;
@@ -2684,27 +2696,27 @@ onMounted(async () => {
 }
 
 .hs-quick-icon {
-  font-size: 22px;
+  font-size: 1.375rem;
   flex-shrink: 0;
 }
 .hs-quick-body {
   flex: 1;
 }
 .hs-quick-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #231d45;
   margin-bottom: 2px;
 }
 .hs-quick-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #4a5568;
   line-height: 1.4;
 }
 .hs-quick-cta {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   flex-shrink: 0;
 }
 
@@ -2725,7 +2737,7 @@ onMounted(async () => {
 }
 
 .pro-dark-icon {
-  font-size: 26px;
+  font-size: 1.625rem;
   flex-shrink: 0;
   width: 36px;
   height: 36px;
@@ -2740,13 +2752,13 @@ onMounted(async () => {
   flex: 1;
 }
 .pro-dark-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #fff;
   margin-bottom: 2px;
 }
 .pro-dark-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
   line-height: 1.4;
 }
@@ -2756,15 +2768,15 @@ onMounted(async () => {
   border: 1px solid rgba(94, 234, 212, 0.3);
   border-radius: 999px;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .explore-greeting-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
   font-weight: 500;
   /* Single line + ellipsis. Long names like "Good afternoon, Christopher"
@@ -2776,7 +2788,7 @@ onMounted(async () => {
 }
 
 .explore-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.02em;
@@ -2805,7 +2817,7 @@ onMounted(async () => {
   background: #e5e7eb;
   display: grid;
   place-items: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -2831,7 +2843,7 @@ onMounted(async () => {
 }
 
 .claim-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2840,7 +2852,7 @@ onMounted(async () => {
 }
 
 .claim-title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   color: #fff;
   line-height: 1.2;
@@ -2849,7 +2861,7 @@ onMounted(async () => {
 }
 
 .claim-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.55;
   margin-bottom: 16px;
@@ -2871,13 +2883,13 @@ onMounted(async () => {
 }
 
 .claim-stat-val {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .claim-stat-lbl {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: rgba(255, 255, 255, 0.5);
   margin-top: 2px;
   line-height: 1.3;
@@ -2888,7 +2900,7 @@ onMounted(async () => {
   border: none;
   padding: 14px;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   background: #00a19a;
@@ -2913,7 +2925,7 @@ onMounted(async () => {
   border-radius: 50%;
   background: #00a19a;
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -2949,11 +2961,11 @@ onMounted(async () => {
 
 .pill-brand {
   background: #f1f9f4;
-  color: #00a19a;
+  color: #00726c;
   border: 1px solid #e2f1ea;
   border-radius: 999px;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -3015,7 +3027,7 @@ onMounted(async () => {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -3030,19 +3042,19 @@ onMounted(async () => {
   min-width: 0;
 }
 .my-passport-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #231d45;
 }
 .my-passport-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #64748b;
   margin-top: 2px;
   line-height: 1.4;
 }
 .my-passport-arrow {
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -3063,13 +3075,13 @@ onMounted(async () => {
 }
 
 .pulse-val {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
 }
 
 .pulse-lbl {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #94a3b8;
   margin-top: 2px;
   line-height: 1.3;
@@ -3100,7 +3112,7 @@ onMounted(async () => {
 }
 
 .portfolio-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -3189,7 +3201,7 @@ onMounted(async () => {
   border: none;
   border-radius: 999px;
   padding: 7px 14px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -3201,7 +3213,7 @@ onMounted(async () => {
 }
 
 .search-result-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
   font-weight: 500;
   flex: 1;
@@ -3216,19 +3228,19 @@ onMounted(async () => {
 }
 
 .no-results-icon {
-  font-size: 40px;
+  font-size: 2.5rem;
   margin-bottom: 12px;
 }
 
 .no-results-text {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #231d45;
   margin-bottom: 4px;
 }
 
 .no-results-sub {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #94a3b8;
 }
 
@@ -3242,7 +3254,7 @@ onMounted(async () => {
   margin-bottom: 12px;
 }
 .foryou-empty-ic {
-  font-size: 32px;
+  font-size: 2rem;
   margin-bottom: 8px;
 }
 .foryou-empty-ic-img {
@@ -3257,13 +3269,13 @@ onMounted(async () => {
   display: block;
 }
 .foryou-empty-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--navy);
   margin-bottom: 4px;
 }
 .foryou-empty-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink-soft);
   line-height: 1.5;
   margin-bottom: 12px;
@@ -3272,7 +3284,7 @@ onMounted(async () => {
   background: var(--brand);
   color: #fff;
   border: none;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 12px;
@@ -3290,17 +3302,17 @@ onMounted(async () => {
   margin-bottom: 12px;
 }
 .verified-empty-ic {
-  font-size: 32px;
+  font-size: 2rem;
   margin-bottom: 8px;
 }
 .verified-empty-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--navy);
   margin-bottom: 4px;
 }
 .verified-empty-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink-soft);
   line-height: 1.5;
   margin-bottom: 12px;
@@ -3309,7 +3321,7 @@ onMounted(async () => {
   background: var(--brand);
   color: #fff;
   border: none;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 12px;
@@ -3339,14 +3351,14 @@ onMounted(async () => {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 .epc-badge-label {
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   opacity: 0.85;
   line-height: 1;
 }
 .epc-badge-rating {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 900;
   line-height: 1.1;
   margin-top: 1px;
@@ -3362,7 +3374,7 @@ onMounted(async () => {
   background: #fff;
   border: 1.5px solid var(--line);
   color: var(--brand);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 999px;
@@ -3387,7 +3399,7 @@ onMounted(async () => {
 }
 .load-more-end {
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   padding: 12px 0 8px;
   font-weight: 600;

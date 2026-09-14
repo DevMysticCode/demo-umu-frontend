@@ -487,7 +487,7 @@
                 </div>
                 <div class="mform-section">
                   <div class="mform-label">Location</div>
-                  <input v-model="row.location" type="text" class="mform-input" placeholder="e.g. Hallway, ground floor" />
+                  <input v-model="row.location" type="text" class="mform-input" placeholder="e.g. Hallway, ground floor"  aria-label="e.g. Hallway, ground floor" />
                 </div>
                 <div class="lp-two-col">
                   <div class="mform-section">
@@ -565,11 +565,11 @@
                 </div>
                 <div class="mform-section">
                   <div class="mform-label">Name</div>
-                  <input v-model="occ.name" type="text" class="mform-input" placeholder="Full name" />
+                  <input v-model="occ.name" type="text" class="mform-input" placeholder="Full name"  aria-label="Full name" />
                 </div>
                 <div class="mform-section">
                   <div class="mform-label">ID status</div>
-                  <input v-model="occ.status" type="text" class="mform-input" placeholder="e.g. British citizen, BRP, Settled status" />
+                  <input v-model="occ.status" type="text" class="mform-input" placeholder="e.g. British citizen, BRP, Settled status"  aria-label="e.g. British citizen, BRP, Settled status" />
                 </div>
                 <div class="mform-section">
                   <div class="mform-label">Recheck by (leave blank if unlimited)</div>
@@ -622,7 +622,7 @@
                    assesement - so they can either do it inside the
                    application or add thier own"). -->
               <template v-if="isLegionellaSection">
-                <div v-if="!legSavedResult" class="lp-leg-cta" @click="openLegAssess">
+                <div v-if="!legSavedResult" class="lp-leg-cta" @click="openLegAssess" role="button" tabindex="0" @keydown.enter="openLegAssess" @keydown.space.prevent="openLegAssess">
                   <img src="/op-icons/misc/waterDroplet.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
                   <div class="lp-leg-cta-bd">
                     <div class="lp-leg-cta-t">Start guided assessment</div>
@@ -643,7 +643,7 @@
               <!-- Inventory & Schedule of Condition - build in umovingu, or
                    upload an existing one (client feedback item #10). -->
               <template v-if="isInventorySection">
-                <div v-if="!invSavedRecord" class="lp-leg-cta" @click="openInvWizard">
+                <div v-if="!invSavedRecord" class="lp-leg-cta" @click="openInvWizard" role="button" tabindex="0" @keydown.enter="openInvWizard" @keydown.space.prevent="openInvWizard">
                   <img src="/op-icons/investment/clipboardChecklist.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
                   <div class="lp-leg-cta-bd">
                     <div class="lp-leg-cta-t">Build inventory in umovingu</div>
@@ -664,7 +664,7 @@
                      property's condition against it at the end of the
                      tenancy - a distinct action from starting a fresh
                      inventory, not a variant of "New inventory". -->
-                <div v-if="invCheckinRecord && !invHasCheckoutForCurrentCheckin" class="lp-leg-cta" style="border-color:#f0d9a8;background:#fbf1df" @click="openInvCheckout">
+                <div v-if="invCheckinRecord && !invHasCheckoutForCurrentCheckin" class="lp-leg-cta" style="border-color:#f0d9a8;background:#fbf1df" @click="openInvCheckout" role="button" tabindex="0" @keydown.enter="openInvCheckout" @keydown.space.prevent="openInvCheckout">
                   <img src="/op-icons/investment/clipboardChecklist.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
                   <div class="lp-leg-cta-bd">
                     <div class="lp-leg-cta-t" style="color:#7a5500">Run check-out</div>
@@ -679,7 +679,7 @@
               <!-- Tenancy Agreement - generate in umovingu, or upload an
                    existing signed agreement (client feedback item #6). -->
               <template v-if="isTenancySection">
-                <div v-if="!tnSavedRecord" class="lp-leg-cta" @click="openTnWizard">
+                <div v-if="!tnSavedRecord" class="lp-leg-cta" @click="openTnWizard" role="button" tabindex="0" @keydown.enter="openTnWizard" @keydown.space.prevent="openTnWizard">
                   <img src="/op-icons/misc/signature.png" alt="" class="lp-leg-cta-ic-img" loading="lazy" />
                   <div class="lp-leg-cta-bd">
                     <div class="lp-leg-cta-t">Create a tenancy agreement</div>
@@ -779,7 +779,7 @@
 
                 <div class="mform-section" style="margin-top:16px">
                   <div class="mform-label">Scheme</div>
-                  <input v-model="depositScheme" type="text" class="mform-input" placeholder="e.g. mydeposits" />
+                  <input v-model="depositScheme" type="text" class="mform-input" placeholder="e.g. mydeposits"  aria-label="e.g. mydeposits" />
                 </div>
                 <div class="lp-two-col">
                   <div class="mform-section">
@@ -788,7 +788,7 @@
                   </div>
                   <div class="mform-section">
                     <div class="mform-label">Method</div>
-                    <input v-model="depositMethod" type="text" class="mform-input" placeholder="e.g. Email + hard copy" />
+                    <input v-model="depositMethod" type="text" class="mform-input" placeholder="e.g. Email + hard copy"  aria-label="e.g. Email + hard copy" />
                   </div>
                 </div>
 
@@ -821,16 +821,16 @@
                   </div>
                   <div class="mform-section">
                     <div class="mform-label">Appliance</div>
-                    <input v-model="a.name" type="text" class="mform-input" placeholder="e.g. Fridge / freezer" />
+                    <input v-model="a.name" type="text" class="mform-input" placeholder="e.g. Fridge / freezer"  aria-label="e.g. Fridge / freezer" />
                   </div>
                   <div class="lp-two-col">
                     <div class="mform-section">
                       <div class="mform-label">Model</div>
-                      <input v-model="a.model" type="text" class="mform-input" placeholder="Model" />
+                      <input v-model="a.model" type="text" class="mform-input" placeholder="Model"  aria-label="Model" />
                     </div>
                     <div class="mform-section">
                       <div class="mform-label">Serial no.</div>
-                      <input v-model="a.serial" type="text" class="mform-input" placeholder="Serial" />
+                      <input v-model="a.serial" type="text" class="mform-input" placeholder="Serial"  aria-label="Serial" />
                     </div>
                   </div>
                   <div class="lp-wg-cover">
@@ -841,16 +841,16 @@
                     <template v-if="a.cover.on">
                       <div class="mform-section" style="margin-top:8px">
                         <div class="mform-label">Provider</div>
-                        <input v-model="a.cover.provider" type="text" class="mform-input" placeholder="e.g. Domestic &amp; General" />
+                        <input v-model="a.cover.provider" type="text" class="mform-input" placeholder="e.g. Domestic &amp; General"  aria-label="e.g. Domestic &amp; General" />
                       </div>
                       <div class="lp-two-col">
                         <div class="mform-section">
                           <div class="mform-label">Policy number</div>
-                          <input v-model="a.cover.policyNumber" type="text" class="mform-input" placeholder="Policy no." />
+                          <input v-model="a.cover.policyNumber" type="text" class="mform-input" placeholder="Policy no."  aria-label="Policy no." />
                         </div>
                         <div class="mform-section">
                           <div class="mform-label">Phone</div>
-                          <input v-model="a.cover.phone" type="tel" class="mform-input" placeholder="0800 …" />
+                          <input v-model="a.cover.phone" type="tel" class="mform-input" placeholder="0800 …"  aria-label="0800 …" />
                         </div>
                       </div>
                       <div class="mform-section" style="margin-top:10px">
@@ -906,7 +906,7 @@
 
                 <div class="mform-section" style="margin-top:18px">
                   <div class="mform-label">How things work (optional)</div>
-                  <textarea v-model="wgHowItWorks" class="lp-inv-note" style="min-height:80px" placeholder="Instructions for the tenant - e.g. 'The washing machine door needs a firm push to lock. Dishwasher salt is under the sink.'" />
+                  <textarea v-model="wgHowItWorks" class="lp-inv-note" style="min-height:80px" placeholder="Instructions for the tenant - e.g. 'The washing machine door needs a firm push to lock. Dishwasher salt is under the sink.'"  aria-label="Instructions for the tenant - e.g. 'The washing machine door needs a firm push to lock. Dishwasher salt is under the sink.'" />
                 </div>
 
                 <div class="mlabel" style="margin-top:18px">Policy documents</div>
@@ -999,7 +999,7 @@
                   type="text"
                   class="mform-input"
                   placeholder="e.g. Gas Safety 2026"
-                />
+                 aria-label="e.g. Gas Safety 2026" />
               </div>
             </template>
 
@@ -1130,7 +1130,7 @@
               class="lp-assess-opt"
               :class="{ on: legAnswers[LEG_QUESTIONS[legStep].key] === i }"
               @click="legPick(i)"
-            >
+             role="button" tabindex="0" @keydown.enter="legPick(i)" @keydown.space.prevent="legPick(i)">
               <div class="lp-assess-opt-bd">
                 <div class="lp-assess-opt-t">{{ o.t }}</div>
                 <div class="lp-assess-opt-d">{{ o.d }}</div>
@@ -1231,7 +1231,7 @@
           </div>
           <div class="lp-assess-steps"><div class="lp-assess-step on" /><div class="lp-assess-step" /></div>
           <div class="lp-assess-scroll">
-            <div class="lp-assess-qh" style="font-size:19px">Type &amp; furnishing</div>
+            <div class="lp-assess-qh" style="font-size: 1.1875rem">Type &amp; furnishing</div>
             <div class="lp-assess-qs">The property is already on your Passport - we just need how it's let.</div>
             <div class="mlabel">Furnishing</div>
             <div class="lp-inv-chiprow">
@@ -1266,11 +1266,11 @@
           </div>
           <div class="lp-assess-steps"><div class="lp-assess-step on" /><div class="lp-assess-step on" /></div>
           <div class="lp-assess-scroll">
-            <div class="lp-assess-qh" style="font-size:19px">Tenancy &amp; handover</div>
+            <div class="lp-assess-qh" style="font-size: 1.1875rem">Tenancy &amp; handover</div>
             <div class="lp-assess-qs">Ties the report to the tenant, deposit and keys.</div>
             <div class="mform-section">
               <div class="mform-label">Tenant name(s)</div>
-              <input v-model="invTenantName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves" />
+              <input v-model="invTenantName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves"  aria-label="e.g. Jordan Reeves" />
             </div>
             <div class="lp-two-col">
               <div class="mform-section">
@@ -1279,24 +1279,24 @@
               </div>
               <div class="mform-section">
                 <div class="mform-label">Deposit held</div>
-                <input v-model="invDeposit" type="text" class="mform-input" placeholder="£1,325" />
+                <input v-model="invDeposit" type="text" class="mform-input" placeholder="£1,325"  aria-label="£1,325" />
               </div>
             </div>
             <div class="mform-section">
               <div class="mform-label">Keys / fobs handed over</div>
-              <input v-model="invKeys" type="text" class="mform-input" placeholder="e.g. 2 door keys · 1 fob" />
+              <input v-model="invKeys" type="text" class="mform-input" placeholder="e.g. 2 door keys · 1 fob"  aria-label="e.g. 2 door keys · 1 fob" />
             </div>
             <div class="mlabel" style="margin-top:12px">Meter readings at start</div>
             <div class="lp-two-col">
-              <input v-model="invMeterGas" type="text" class="mform-input" placeholder="Gas" />
-              <input v-model="invMeterElectric" type="text" class="mform-input" placeholder="Electric" />
+              <input v-model="invMeterGas" type="text" class="mform-input" placeholder="Gas"  aria-label="Gas" />
+              <input v-model="invMeterElectric" type="text" class="mform-input" placeholder="Electric"  aria-label="Electric" />
             </div>
             <div style="height:8px" />
-            <input v-model="invMeterWater" type="text" class="mform-input" placeholder="Water" />
+            <input v-model="invMeterWater" type="text" class="mform-input" placeholder="Water"  aria-label="Water" />
             <div class="mlabel" style="margin-top:12px">Smart meter serial numbers</div>
-            <input v-model="invSmartMeterGas" type="text" class="mform-input" placeholder="Gas smart meter serial" />
+            <input v-model="invSmartMeterGas" type="text" class="mform-input" placeholder="Gas smart meter serial"  aria-label="Gas smart meter serial" />
             <div style="height:8px" />
-            <input v-model="invSmartMeterElectric" type="text" class="mform-input" placeholder="Electricity smart meter serial" />
+            <input v-model="invSmartMeterElectric" type="text" class="mform-input" placeholder="Electricity smart meter serial"  aria-label="Electricity smart meter serial" />
           </div>
           <div class="lp-assess-foot">
             <button class="btn-primary" type="button" style="width:100%" @click="invWizNext">Start capturing →</button>
@@ -1314,7 +1314,7 @@
               <div class="lp-inv-pbar"><div class="lp-inv-pfill" :style="{ width: (invDoneCount / invRooms.length * 100) + '%' }" /></div>
               <div class="lp-inv-ptext"><span><b>{{ invDoneCount }}</b> of {{ invRooms.length }} rooms done</span><span>{{ Math.round(invDoneCount / invRooms.length * 100) }}%</span></div>
             </div>
-            <div v-for="r in invRooms" :key="r.id" class="lp-inv-room" @click="invOpenRoom(r.id)">
+            <div v-for="r in invRooms" :key="r.id" class="lp-inv-room" @click="invOpenRoom(r.id)" role="button" tabindex="0" @keydown.enter="invOpenRoom(r.id)" @keydown.space.prevent="invOpenRoom(r.id)">
               <div class="lp-inv-room-bd">
                 <div class="lp-inv-room-n">{{ r.name }}</div>
                 <div class="lp-inv-room-m">{{ roomIsDone(r) ? r.items.length + ' items rated' : r.items.length + ' items to check' }}</div>
@@ -1326,16 +1326,16 @@
                 aria-label="Remove room"
                 @click.stop="removeInvRoom(r.id)"
               >×</button>
-              <span class="lp-assess-back" style="font-size:20px">›</span>
+              <span class="lp-assess-back" style="font-size: 1.25rem">›</span>
             </div>
 
             <div class="lp-inv-pw-heading">Property-wide</div>
-            <div class="lp-inv-room" @click="openInvBins">
+            <div class="lp-inv-room" @click="openInvBins" role="button" tabindex="0" @keydown.enter="openInvBins" @keydown.space.prevent="openInvBins">
               <div class="lp-inv-room-bd">
                 <div class="lp-inv-room-n">Bins &amp; refuse</div>
                 <div class="lp-inv-room-m">Photograph bins, colours, collection day</div>
               </div>
-              <span class="lp-assess-back" style="font-size:20px">›</span>
+              <span class="lp-assess-back" style="font-size: 1.25rem">›</span>
             </div>
 
             <!-- Add a room the 6 defaults don't cover (study, garage,
@@ -1349,7 +1349,7 @@
                 class="lp-inv-addroom-input"
                 placeholder="e.g. Study, Garage, Conservatory"
                 @keyup.enter="addCustomRoom"
-              />
+               aria-label="e.g. Study, Garage, Conservatory" />
               <button type="button" class="lp-inv-addroom-btn" :disabled="!invNewRoomName.trim()" @click="addCustomRoom">
                 + Add room
               </button>
@@ -1392,7 +1392,7 @@
                 <button type="button" class="lp-inv-cd mk" :class="{ on: item.cleanliness === 'marked' }" @click="invSetCleanliness(item, 'marked')">Marked</button>
                 <button type="button" class="lp-inv-cd dt" :class="{ on: item.cleanliness === 'dirty' }" @click="invSetCleanliness(item, 'dirty')">Dirty</button>
               </div>
-              <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
+              <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)"  aria-label="Note any existing defect (protects the tenant)" />
               <div class="lp-inv-rl">Photos of this item</div>
               <div class="pgrid pgrid--sm">
                 <div
@@ -1433,7 +1433,7 @@
                 class="lp-inv-addroom-input"
                 placeholder="e.g. Fireplace, Skylight"
                 @keyup.enter="addRoomItem(invCurRoom, 'fixture')"
-              />
+               aria-label="e.g. Fireplace, Skylight" />
               <button type="button" class="lp-inv-addroom-btn" :disabled="!newFixtureName.trim()" @click="addRoomItem(invCurRoom, 'fixture')">
                 + Add fixture
               </button>
@@ -1465,7 +1465,7 @@
                   <button type="button" class="lp-inv-cd mk" :class="{ on: item.cleanliness === 'marked' }" @click="invSetCleanliness(item, 'marked')">Marked</button>
                   <button type="button" class="lp-inv-cd dt" :class="{ on: item.cleanliness === 'dirty' }" @click="invSetCleanliness(item, 'dirty')">Dirty</button>
                 </div>
-                <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)" />
+                <textarea v-model="item.note" class="lp-inv-note" placeholder="Note any existing defect (protects the tenant)"  aria-label="Note any existing defect (protects the tenant)" />
                 <div class="lp-inv-rl">Photos of this item</div>
                 <div class="pgrid pgrid--sm">
                   <div
@@ -1502,7 +1502,7 @@
                   class="lp-inv-addroom-input"
                   placeholder="e.g. Sofa, Wardrobe"
                   @keyup.enter="addRoomItem(invCurRoom, 'content')"
-                />
+                 aria-label="e.g. Sofa, Wardrobe" />
                 <button type="button" class="lp-inv-addroom-btn" :disabled="!newContentName.trim()" @click="addRoomItem(invCurRoom, 'content')">
                   + Add furnishing
                 </button>
@@ -1570,19 +1570,19 @@
             <div class="section-heading" style="margin-top:20px">Refuse details</div>
             <div class="mform-section">
               <div class="mform-label">🗑️ General waste</div>
-              <input v-model="invBinGeneral" type="text" class="mform-input" placeholder="Colour / location" />
+              <input v-model="invBinGeneral" type="text" class="mform-input" placeholder="Colour / location"  aria-label="Colour / location" />
             </div>
             <div class="mform-section">
               <div class="mform-label">♻️ Recycling</div>
-              <input v-model="invBinRecycling" type="text" class="mform-input" placeholder="Colour / location" />
+              <input v-model="invBinRecycling" type="text" class="mform-input" placeholder="Colour / location"  aria-label="Colour / location" />
             </div>
             <div class="mform-section">
               <div class="mform-label">🍃 Food / garden waste</div>
-              <input v-model="invBinFoodGarden" type="text" class="mform-input" placeholder="Colour / location (if provided)" />
+              <input v-model="invBinFoodGarden" type="text" class="mform-input" placeholder="Colour / location (if provided)"  aria-label="Colour / location (if provided)" />
             </div>
             <div class="mform-section">
               <div class="mform-label">📅 Collection day</div>
-              <input v-model="invBinCollectionDay" type="text" class="mform-input" placeholder="e.g. General Tue · Recycling alt Wed" />
+              <input v-model="invBinCollectionDay" type="text" class="mform-input" placeholder="e.g. General Tue · Recycling alt Wed"  aria-label="e.g. General Tue · Recycling alt Wed" />
             </div>
             <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
           </div>
@@ -1710,7 +1710,7 @@
 
             <div class="mform-label" style="margin-top:20px">Next steps</div>
 
-            <div class="lp-tn-step" @click="openInvNextStep">
+            <div class="lp-tn-step" @click="openInvNextStep" role="button" tabindex="0" @keydown.enter="openInvNextStep" @keydown.space.prevent="openInvNextStep">
               <img src="/op-icons/misc/signature.png" alt="" class="lp-tn-step-ic-img" loading="lazy" />
               <div class="lp-tn-step-bd">
                 <div class="lp-tn-step-t">{{ invTenantSigned ? 'Signed by both parties' : invLandlordSigned ? 'Send to tenant to e-sign' : 'Sign the inventory' }}</div>
@@ -1743,7 +1743,7 @@
           <div class="lp-assess-scroll">
             <div class="mform-section">
               <div class="mform-label">Your full name</div>
-              <input v-model="invLandlordName" type="text" class="mform-input" placeholder="e.g. Alex Morgan" />
+              <input v-model="invLandlordName" type="text" class="mform-input" placeholder="e.g. Alex Morgan"  aria-label="e.g. Alex Morgan" />
             </div>
             <div class="mform-label" style="margin-top:16px">Draw your signature</div>
             <SignaturePad ref="invLandlordPadRef" />
@@ -1861,7 +1861,7 @@
             <template v-if="tnStep === 0">
               <div class="mform-section">
                 <div class="mform-label">Tenant name(s)</div>
-                <input v-model="tnTenantName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves" />
+                <input v-model="tnTenantName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves"  aria-label="e.g. Jordan Reeves" />
                 <div v-if="tnTenantName" class="lp-tn-pulled">✓ pulled from your Passport</div>
               </div>
               <div class="mform-section">
@@ -1879,7 +1879,7 @@
               <div class="lp-two-col mt-5">
                 <div class="mform-section">
                   <div class="mform-label">Rent amount</div>
-                  <input v-model="tnRentAmount" type="text" class="mform-input" placeholder="1,150" />
+                  <input v-model="tnRentAmount" type="text" class="mform-input" placeholder="1,150"  aria-label="1,150" />
                   <div v-if="tnRentAmount" class="lp-tn-pulled">✓ pulled from your Passport</div>
                 </div>
                 <div class="mform-section">
@@ -1893,12 +1893,12 @@
               <div class="lp-two-col">
                 <div class="mform-section">
                   <div class="mform-label">Deposit amount</div>
-                  <input v-model="tnDepositAmount" type="text" class="mform-input" placeholder="1,325" />
+                  <input v-model="tnDepositAmount" type="text" class="mform-input" placeholder="1,325"  aria-label="1,325" />
                   <div v-if="tnDepositAmount" class="lp-tn-pulled">✓ pulled from your Passport</div>
                 </div>
                 <div class="mform-section">
                   <div class="mform-label">Deposit scheme</div>
-                  <input v-model="tnDepositScheme" type="text" class="mform-input" placeholder="mydeposits" />
+                  <input v-model="tnDepositScheme" type="text" class="mform-input" placeholder="mydeposits"  aria-label="mydeposits" />
                 </div>
               </div>
             </template>
@@ -1906,7 +1906,7 @@
             <template v-else-if="tnStep === 2">
               <div class="mform-section">
                 <div class="mform-label">Notes / house rules (optional)</div>
-                <textarea v-model="tnNotes" class="lp-inv-note" placeholder="e.g. No smoking indoors. Tenant maintains the garden." />
+                <textarea v-model="tnNotes" class="lp-inv-note" placeholder="e.g. No smoking indoors. Tenant maintains the garden."  aria-label="e.g. No smoking indoors. Tenant maintains the garden." />
               </div>
             </template>
           </div>
@@ -1964,7 +1964,7 @@
 
             <div class="mform-label" style="margin-top:20px">Next steps</div>
 
-            <div class="lp-tn-step" @click="openTnNextStep">
+            <div class="lp-tn-step" @click="openTnNextStep" role="button" tabindex="0" @keydown.enter="openTnNextStep" @keydown.space.prevent="openTnNextStep">
               <img src="/op-icons/misc/signature.png" alt="" class="lp-tn-step-ic-img" loading="lazy" />
               <div class="lp-tn-step-bd">
                 <div class="lp-tn-step-t">{{ tnTenantSigned ? 'Signed by both parties' : tnLandlordSigned ? 'Send to tenant to e-sign' : 'Sign the agreement' }}</div>
@@ -1983,7 +1983,7 @@
               </div>
             </div>
 
-            <div class="lp-tn-step" @click="tnScreen = 'update'">
+            <div class="lp-tn-step" @click="tnScreen = 'update'" role="button" tabindex="0" @keydown.enter="tnScreen = 'update'" @keydown.space.prevent="tnScreen = 'update'">
               <img src="/op-icons/investment/refreshArrows.png" alt="" class="lp-tn-step-ic-img" loading="lazy" />
               <div class="lp-tn-step-bd">
                 <div class="lp-tn-step-t">Kept up to date</div>
@@ -2049,7 +2049,7 @@
           <div class="lp-assess-scroll">
             <div class="mform-section">
               <div class="mform-label">Your full name</div>
-              <input v-model="tnLandlordName" type="text" class="mform-input" placeholder="e.g. Alex Morgan" />
+              <input v-model="tnLandlordName" type="text" class="mform-input" placeholder="e.g. Alex Morgan"  aria-label="e.g. Alex Morgan" />
             </div>
             <div class="mform-label" style="margin-top:16px">Draw your signature</div>
             <SignaturePad ref="tnLandlordPadRef" />
@@ -5431,7 +5431,7 @@ const SectionCard = defineComponent({
 .lp-hero-share {
   flex-shrink: 0;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #008a84;
   background: #e7f6ef;
@@ -5445,7 +5445,7 @@ const SectionCard = defineComponent({
   cursor: not-allowed;
 }
 .pp-hero-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -5455,14 +5455,14 @@ const SectionCard = defineComponent({
 .pp-hero-addr-row { display: flex; align-items: center; gap: 6px; }
 .pp-hero-addr-text { flex: 1; min-width: 0; }
 .pp-hero-addr-l1 {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.5px;
   line-height: 1.1;
 }
 .pp-hero-addr-l2 {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #4a5868;
   margin-top: 2px;
@@ -5474,17 +5474,17 @@ const SectionCard = defineComponent({
 }
 .pp-hero-stat { flex: 1; min-width: 0; }
 .pp-hero-stat-val {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.5px;
   font-feature-settings: 'tnum';
   line-height: 1;
 }
-.pp-hero-stat-val small { font-size: 11px; color: #4a5868; font-weight: 700; }
-.pp-hero-stat-of { font-size: 12px; color: #8a95a0; font-weight: 700; }
+.pp-hero-stat-val small { font-size: 0.6875rem; color: #4a5868; font-weight: 700; }
+.pp-hero-stat-of { font-size: 0.75rem; color: #8a95a0; font-weight: 700; }
 .pp-hero-stat-lbl {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -5496,7 +5496,7 @@ const SectionCard = defineComponent({
 .pp-hero-dash-row {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -5534,7 +5534,7 @@ const SectionCard = defineComponent({
   align-items: center;
   gap: 6px;
   margin-top: 8px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: -0.1px;
 }
@@ -5586,10 +5586,10 @@ const SectionCard = defineComponent({
 }
 .lp-convert-icon svg { width: 18px; height: 18px; }
 .lp-convert-body { flex: 1; min-width: 0; }
-.lp-convert-title { font-size: 14px; font-weight: 800; letter-spacing: -0.3px; }
-.lp-convert-sub { font-size: 11px; font-weight: 700; opacity: 0.85; margin-top: 2px; }
+.lp-convert-title { font-size: 0.875rem; font-weight: 800; letter-spacing: -0.3px; }
+.lp-convert-sub { font-size: 0.6875rem; font-weight: 700; opacity: 0.85; margin-top: 2px; }
 .lp-convert-card--linked .lp-convert-sub { color: #4a5868; opacity: 1; }
-.lp-convert-chev { font-size: 20px; flex-shrink: 0; }
+.lp-convert-chev { font-size: 1.25rem; flex-shrink: 0; }
 
 /* Tabs */
 .lp-tabs {
@@ -5606,7 +5606,7 @@ const SectionCard = defineComponent({
   border-radius: 100px;
   padding: 9px 12px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #4a5868;
   letter-spacing: -0.2px;
@@ -5622,7 +5622,7 @@ const SectionCard = defineComponent({
   border-color: #0e2840;
 }
 .lp-tab-count {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   background: rgba(255, 255, 255, 0.18);
   padding: 1px 6px;
@@ -5644,7 +5644,7 @@ const SectionCard = defineComponent({
 
 /* Section heading */
 .section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -5696,14 +5696,14 @@ const SectionCard = defineComponent({
 }
 .lp-sec-row-top > div:first-child { flex: 1; min-width: 0; }
 .lp-sec-name {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.3px;
   line-height: 1.2;
 }
 .lp-sec-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #4a5868;
   margin-top: 2px;
@@ -5717,7 +5717,7 @@ const SectionCard = defineComponent({
   flex-wrap: wrap;
 }
 .lp-sec-pill {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: -0.1px;
   padding: 4px 9px;
@@ -5751,7 +5751,7 @@ const SectionCard = defineComponent({
 
 .lp-sec-pct {
   text-align: right;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: #4a5868;
   margin-top: 4px;
@@ -5762,14 +5762,14 @@ const SectionCard = defineComponent({
 
 .lp-sec-actionby {
   text-align: right;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #b85b36;
   margin-top: 4px;
   letter-spacing: -0.1px;
 }
 
-.lp-sec-chev { color: #8a95a0; font-size: 22px; flex-shrink: 0; line-height: 1; padding-top: 2px; }
+.lp-sec-chev { color: #8a95a0; font-size: 1.375rem; flex-shrink: 0; line-height: 1; padding-top: 2px; }
 
 /* Vault */
 .lp-doc {
@@ -5797,7 +5797,7 @@ const SectionCard = defineComponent({
 .lp-doc-icon-img { width: 18px; height: 18px; object-fit: contain; }
 .lp-doc-info { flex: 1; min-width: 0; }
 .lp-doc-name {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
@@ -5805,8 +5805,8 @@ const SectionCard = defineComponent({
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.lp-doc-meta { font-size: 10px; font-weight: 600; color: #8a95a0; margin-top: 1px; }
-.lp-doc-action { color: #8a95a0; font-size: 16px; flex-shrink: 0; text-decoration: none; }
+.lp-doc-meta { font-size: 0.625rem; font-weight: 600; color: #8a95a0; margin-top: 1px; }
+.lp-doc-action { color: #8a95a0; font-size: 1rem; flex-shrink: 0; text-decoration: none; }
 
 .lp-empty {
   margin: 0 22px;
@@ -5814,7 +5814,7 @@ const SectionCard = defineComponent({
   border: 1px solid #e8eceb;
   border-radius: 12px;
   padding: 14px 16px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #4a5868;
   text-align: center;
@@ -5836,7 +5836,7 @@ const SectionCard = defineComponent({
   display: flex;
   justify-content: space-between;
   padding: 6px 0;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
 }
 .lp-tenancy-row:not(:last-child) { border-bottom: 1px solid #f0f2f1; }
 .lp-tenancy-lbl { color: #4a5868; font-weight: 600; }
@@ -5868,14 +5868,14 @@ const SectionCard = defineComponent({
 @keyframes lp-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .lp-modal-handle { width: 36px; height: 4px; background: #d9dae0; border-radius: 100px; margin: 8px auto 0; touch-action: none; }
 .lp-modal-header { display: flex; align-items: center; padding: 12px 18px 10px; touch-action: none; }
-.lp-modal-title { flex: 1; font-size: 16px; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
+.lp-modal-title { flex: 1; font-size: 1rem; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
 .lp-modal-close {
   width: 30px; height: 30px;
   border-radius: 50%;
   border: none;
   background: #f0f2f1;
   color: #4a5868;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
   font-family: inherit;
   display: flex; align-items: center; justify-content: center;
@@ -5888,10 +5888,10 @@ const SectionCard = defineComponent({
   display: flex;
   gap: 8px;
 }
-.lp-modal-intro { font-size: 12.5px; font-weight: 600; color: #4a5868; line-height: 1.5; margin-bottom: 14px; }
+.lp-modal-intro { font-size: 0.7813rem; font-weight: 600; color: #4a5868; line-height: 1.5; margin-bottom: 14px; }
 .lp-modal-section { margin-bottom: 14px; }
 .lp-modal-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -5919,10 +5919,10 @@ const SectionCard = defineComponent({
   flex-shrink: 0;
 }
 .lp-modal-doc-tick svg { width: 12px; height: 12px; }
-.lp-modal-doc-name { flex: 1; font-size: 12.5px; font-weight: 800; color: #0e2840; }
-.lp-modal-doc-meta { font-size: 10.5px; font-weight: 700; color: #8a95a0; }
+.lp-modal-doc-name { flex: 1; font-size: 0.7813rem; font-weight: 800; color: #0e2840; }
+.lp-modal-doc-meta { font-size: 0.6563rem; font-weight: 700; color: #8a95a0; }
 .lp-modal-legal {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #4a5868;
   line-height: 1.55;
@@ -5931,7 +5931,7 @@ const SectionCard = defineComponent({
   border-radius: 10px;
   padding: 10px 12px;
 }
-.lp-modal-error { color: #b85b36; font-size: 12px; font-weight: 700; text-align: center; }
+.lp-modal-error { color: #b85b36; font-size: 0.75rem; font-weight: 700; text-align: center; }
 
 /* Tenant share */
 .lp-share-link { display: flex; gap: 6px; align-items: center; }
@@ -5942,14 +5942,14 @@ const SectionCard = defineComponent({
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   outline: none;
 }
 .lp-share-copy { flex: 0 0 auto; }
 .lp-share-empty {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #4a5868;
   font-weight: 600;
   text-align: center;
@@ -5965,7 +5965,7 @@ const SectionCard = defineComponent({
   border-radius: 10px;
   padding: 11px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;
@@ -5978,7 +5978,7 @@ const SectionCard = defineComponent({
   border-radius: 10px;
   padding: 11px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;
@@ -6011,18 +6011,18 @@ const SectionCard = defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 .lp-doc-preview-info { flex: 1; min-width: 0; }
 .lp-doc-preview-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
 }
 .lp-doc-preview-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #008a84;
   margin-top: 2px;
@@ -6030,7 +6030,7 @@ const SectionCard = defineComponent({
 .lp-doc-preview-btn {
   flex: 0 0 auto;
   padding: 8px 14px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .lp-doc-empty {
   margin-bottom: 14px;
@@ -6039,7 +6039,7 @@ const SectionCard = defineComponent({
   border: 1px dashed #d9dee2;
   border-radius: 14px;
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #4a5868;
 }
@@ -6072,14 +6072,14 @@ const SectionCard = defineComponent({
 }
 .lp-upload-icon svg { width: 18px; height: 18px; }
 .lp-upload-text {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
 }
 .lp-upload-text small {
   display: block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #4a5868;
   margin-top: 2px;
@@ -6087,7 +6087,7 @@ const SectionCard = defineComponent({
 
 .mform-section { margin-bottom: 14px; }
 .mform-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -6107,7 +6107,7 @@ const SectionCard = defineComponent({
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -6115,7 +6115,7 @@ const SectionCard = defineComponent({
 }
 .mform-input:focus { border-color: #00a19a; box-shadow: 0 0 0 3px rgba(61, 189, 163, 0.18); }
 .lp-modal-hint {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #4a5868;
   margin-top: 6px;
@@ -6133,12 +6133,12 @@ const SectionCard = defineComponent({
   border: 1px solid #b2e4e1;
   border-radius: 12px;
   color: #007e78;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   text-decoration: none;
   margin-bottom: 14px;
 }
-.lp-rtr-govlink-go { font-size: 14px; flex-shrink: 0; }
+.lp-rtr-govlink-go { font-size: 0.875rem; flex-shrink: 0; }
 
 /* Repeatable rows - Smoke & CO Alarms, Right to Rent occupiers */
 .lp-repeat-block {
@@ -6152,7 +6152,7 @@ const SectionCard = defineComponent({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0e2840;
   margin-bottom: 10px;
@@ -6171,7 +6171,7 @@ const SectionCard = defineComponent({
   border: none;
   background: transparent;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #008a84;
   cursor: pointer;
@@ -6184,7 +6184,7 @@ const SectionCard = defineComponent({
   background: #f1f4f3;
   color: #6b7089;
   border: none;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -6201,7 +6201,7 @@ const SectionCard = defineComponent({
   border-radius: 9px;
   border: 1.5px solid #e8eceb;
   background: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
   cursor: pointer;
@@ -6223,7 +6223,7 @@ const SectionCard = defineComponent({
   background: #f2faf8;
   border-radius: 12px;
   color: #008a84;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
   margin-bottom: 10px;
@@ -6253,8 +6253,8 @@ const SectionCard = defineComponent({
   border-radius: 13px;
   margin-bottom: 14px;
 }
-.lp-leg-note-t { font-size: 13px; font-weight: 800; color: #7a5500; }
-.lp-leg-note-s { font-size: 12px; font-weight: 500; color: #8a6420; line-height: 1.5; margin-top: 6px; }
+.lp-leg-note-t { font-size: 0.8125rem; font-weight: 800; color: #7a5500; }
+.lp-leg-note-s { font-size: 0.75rem; font-weight: 500; color: #8a6420; line-height: 1.5; margin-top: 6px; }
 .lp-leg-link {
   display: flex;
   align-items: center;
@@ -6272,14 +6272,14 @@ const SectionCard = defineComponent({
   border-radius: 10px;
   background: #e8edfb;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .lp-leg-link-ic-img { width: 22px; height: 22px; object-fit: contain; }
 .lp-leg-link-bd { flex: 1; min-width: 0; }
-.lp-leg-link-t { font-size: 13.5px; font-weight: 700; color: #0e2840; }
-.lp-leg-link-s { font-size: 11px; font-weight: 500; color: #6b7089; margin-top: 1px; }
-.lp-leg-link-go { font-size: 15px; color: #a8a9ad; flex-shrink: 0; }
+.lp-leg-link-t { font-size: 0.8438rem; font-weight: 700; color: #0e2840; }
+.lp-leg-link-s { font-size: 0.6875rem; font-weight: 500; color: #6b7089; margin-top: 1px; }
+.lp-leg-link-go { font-size: 0.9375rem; color: #a8a9ad; flex-shrink: 0; }
 
 /* Deposit Protection's prescribed-information checklist */
 .lp-pi-item {
@@ -6295,12 +6295,12 @@ const SectionCard = defineComponent({
   background: #e7f6ef;
   color: #0f8a6e;
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 800;
+  font-size: 0.75rem; font-weight: 800;
   flex-shrink: 0;
 }
 .lp-pi-tx { flex: 1; }
-.lp-pi-t { font-size: 13.5px; font-weight: 700; color: #0e2840; }
-.lp-pi-s { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 1px; line-height: 1.4; }
+.lp-pi-t { font-size: 0.8438rem; font-weight: 700; color: #0e2840; }
+.lp-pi-s { font-size: 0.7188rem; font-weight: 500; color: #6b7089; margin-top: 1px; line-height: 1.4; }
 
 /* Legionella - drawer entry point (CTA card / saved-result summary) */
 .lp-leg-cta {
@@ -6314,12 +6314,12 @@ const SectionCard = defineComponent({
   margin-bottom: 12px;
   cursor: pointer;
 }
-.lp-leg-cta-ic { font-size: 26px; flex-shrink: 0; }
+.lp-leg-cta-ic { font-size: 1.625rem; flex-shrink: 0; }
 .lp-leg-cta-ic-img { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
 .lp-leg-cta-bd { flex: 1; }
-.lp-leg-cta-t { font-size: 14.5px; font-weight: 700; color: #0e2840; }
-.lp-leg-cta-s { font-size: 11.5px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.4; }
-.lp-leg-cta-go { font-size: 18px; color: #00a19a; flex-shrink: 0; }
+.lp-leg-cta-t { font-size: 0.9063rem; font-weight: 700; color: #0e2840; }
+.lp-leg-cta-s { font-size: 0.7188rem; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.4; }
+.lp-leg-cta-go { font-size: 1.125rem; color: #00726c; flex-shrink: 0; }
 .lp-leg-result {
   padding: 16px;
   border-radius: 16px;
@@ -6329,9 +6329,9 @@ const SectionCard = defineComponent({
 }
 .lp-leg-result--medium { background: linear-gradient(140deg, #c98a2c, #a9761c); }
 .lp-leg-result--higher { background: linear-gradient(140deg, #c0492f, #992e1a); }
-.lp-leg-result-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.85; }
-.lp-leg-result-level { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-top: 4px; }
-.lp-leg-result-meta { font-size: 11.5px; font-weight: 500; opacity: 0.9; margin-top: 4px; }
+.lp-leg-result-eyebrow { font-size: 0.625rem; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.85; }
+.lp-leg-result-level { font-size: 1.375rem; font-weight: 800; letter-spacing: -0.5px; margin-top: 4px; }
+.lp-leg-result-meta { font-size: 0.7188rem; font-weight: 500; opacity: 0.9; margin-top: 4px; }
 .lp-leg-retake {
   margin-top: 12px;
   padding: 9px 14px;
@@ -6339,7 +6339,7 @@ const SectionCard = defineComponent({
   border: 1px solid rgba(255, 255, 255, 0.4);
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -6382,22 +6382,22 @@ const SectionCard = defineComponent({
   background: none;
   border: none;
   color: #008a84;
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 500;
   cursor: pointer;
   line-height: 1;
   padding: 0 2px;
 }
-.lp-assess-title { flex: 1; font-size: 17px; font-weight: 700; color: #0e2840; letter-spacing: -0.3px; }
-.lp-assess-count { font-size: 14px; font-weight: 600; color: #a8a9ad; }
+.lp-assess-title { flex: 1; font-size: 1.0625rem; font-weight: 700; color: #0e2840; letter-spacing: -0.3px; }
+.lp-assess-count { font-size: 0.875rem; font-weight: 600; color: #a8a9ad; }
 .lp-assess-scroll { flex: 1; overflow-y: auto; padding: 6px 20px 20px; }
 .lp-assess-foot { padding: 12px 16px calc(14px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid #e8eceb; flex-shrink: 0; }
 .lp-assess-steps { display: flex; gap: 5px; padding: 6px 20px 12px; }
 .lp-assess-step { flex: 1; height: 4px; border-radius: 100px; background: #e7e7ee; }
 .lp-assess-step.on { background: #00a19a; }
-.lp-assess-qnum { font-size: 11px; font-weight: 800; color: #008a84; letter-spacing: 1px; text-transform: uppercase; }
-.lp-assess-qh { font-size: 21px; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; margin-top: 8px; line-height: 1.2; }
-.lp-assess-qs { font-size: 13.5px; font-weight: 500; color: #6b7089; line-height: 1.5; margin-top: 8px; margin-bottom: 20px; }
+.lp-assess-qnum { font-size: 0.6875rem; font-weight: 800; color: #008a84; letter-spacing: 1px; text-transform: uppercase; }
+.lp-assess-qh { font-size: 1.3125rem; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; margin-top: 8px; line-height: 1.2; }
+.lp-assess-qs { font-size: 0.8438rem; font-weight: 500; color: #6b7089; line-height: 1.5; margin-top: 8px; margin-bottom: 20px; }
 .lp-assess-opt {
   display: flex;
   align-items: center;
@@ -6415,52 +6415,52 @@ const SectionCard = defineComponent({
 }
 .lp-assess-opt.on { border-color: #00a19a; background: #f2faf8; }
 .lp-assess-opt-bd { flex: 1; }
-.lp-assess-opt-t { font-size: 16px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
-.lp-assess-opt-d { font-size: 13px; font-weight: 500; color: #6b7089; margin-top: 3px; line-height: 1.45; }
+.lp-assess-opt-t { font-size: 1rem; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
+.lp-assess-opt-d { font-size: 0.8125rem; font-weight: 500; color: #6b7089; margin-top: 3px; line-height: 1.45; }
 .lp-assess-opt-r { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #e8eceb; flex-shrink: 0; align-self: center; position: relative; }
 .lp-assess-opt.on .lp-assess-opt-r { border-color: #00a19a; }
 .lp-assess-opt.on .lp-assess-opt-r::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: #00a19a; }
 .lp-assess-resband { padding: 20px; border-radius: 18px; color: #fff; margin-bottom: 10px; background: linear-gradient(140deg, #0f8a6e, #0c6e58); }
 .lp-assess-resband--medium { background: linear-gradient(140deg, #c98a2c, #a9761c); }
 .lp-assess-resband--higher { background: linear-gradient(140deg, #c0492f, #992e1a); }
-.lp-assess-res-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.8; }
-.lp-assess-res-level { font-size: 30px; font-weight: 800; letter-spacing: -0.8px; margin-top: 6px; }
-.lp-assess-res-desc { font-size: 13px; font-weight: 500; opacity: 0.9; margin-top: 6px; line-height: 1.5; }
+.lp-assess-res-eyebrow { font-size: 0.625rem; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.8; }
+.lp-assess-res-level { font-size: 1.875rem; font-weight: 800; letter-spacing: -0.8px; margin-top: 6px; }
+.lp-assess-res-desc { font-size: 0.8125rem; font-weight: 500; opacity: 0.9; margin-top: 6px; line-height: 1.5; }
 .lp-assess-flag { display: flex; gap: 11px; margin-top: 10px; padding: 14px; border-radius: 13px; }
 .lp-assess-flag--warn { background: #fbf1df; border: 1px solid #f0d9a8; }
 .lp-assess-flag--pro { background: #fbeae5; border: 1px solid #f0c3b8; }
-.lp-assess-flag-ic { font-size: 17px; flex-shrink: 0; }
+.lp-assess-flag-ic { font-size: 1.0625rem; flex-shrink: 0; }
 .lp-assess-flag-ic-img { width: 34px; height: 34px; object-fit: contain; }
-.lp-assess-flag-t { font-size: 12.5px; font-weight: 600; line-height: 1.5; color: #4a5868; }
-.lp-assess-sech { font-size: 11px; font-weight: 800; color: #6b7089; letter-spacing: 1.4px; text-transform: uppercase; padding: 20px 0 10px; }
+.lp-assess-flag-t { font-size: 0.7813rem; font-weight: 600; line-height: 1.5; color: #4a5868; }
+.lp-assess-sech { font-size: 0.6875rem; font-weight: 800; color: #6b7089; letter-spacing: 1.4px; text-transform: uppercase; padding: 20px 0 10px; }
 .lp-assess-action { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; padding: 15px; background: #fff; border: 1px solid #e8eceb; border-radius: 14px; }
 /* Icon sits free (no tinted box) and reads at a proper size - the boxed
    38px version looked cramped on a phone. */
-.lp-assess-action-ic { display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.lp-assess-action-ic { display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
 .lp-assess-action-ic-img { width: 48px; height: 48px; object-fit: contain; }
 .lp-assess-action-bd { flex: 1; }
-.lp-assess-action-t { font-size: 14px; font-weight: 700; color: #0e2840; }
-.lp-assess-action-s { font-size: 12px; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.45; }
-.lp-assess-action-freq { font-size: 10.5px; font-weight: 800; color: #008a84; background: #f2faf8; padding: 3px 8px; border-radius: 100px; margin-top: 7px; display: inline-block; }
+.lp-assess-action-t { font-size: 0.875rem; font-weight: 700; color: #0e2840; }
+.lp-assess-action-s { font-size: 0.75rem; font-weight: 500; color: #6b7089; margin-top: 2px; line-height: 1.45; }
+.lp-assess-action-freq { font-size: 0.6563rem; font-weight: 800; color: #008a84; background: #f2faf8; padding: 3px 8px; border-radius: 100px; margin-top: 7px; display: inline-block; }
 .lp-assess-sum { background: #fff; border: 1px solid #e8eceb; border-radius: 14px; overflow: hidden; }
 .lp-assess-sum-block { border-bottom: 1px solid #f0f0f4; }
 .lp-assess-sum-block:last-child { border-bottom: none; }
-.lp-assess-sum-row { display: flex; justify-content: space-between; padding: 12px 15px; font-size: 13px; }
+.lp-assess-sum-row { display: flex; justify-content: space-between; padding: 12px 15px; font-size: 0.8125rem; }
 .lp-assess-sum-row span:first-child { color: #6b7089; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
 .lp-assess-sum-ic-img { width: 16px; height: 16px; object-fit: contain; }
 .lp-assess-sum-row span:last-child { color: #0e2840; font-weight: 700; text-align: right; max-width: 60%; }
 .lp-assess-sum-photos { display: flex; gap: 6px; padding: 0 15px 12px; overflow-x: auto; }
 .lp-assess-sum-photo { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; cursor: pointer; }
 .lp-assess-sum-itemgrp { padding-top: 2px; }
-.lp-assess-sum-itemlbl { font-size: 10.5px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: #9c98ad; padding: 2px 15px 4px; }
-.lp-assess-intro-ic { display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 8px auto 0; }
+.lp-assess-sum-itemlbl { font-size: 0.6563rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: #9c98ad; padding: 2px 15px 4px; }
+.lp-assess-intro-ic { display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 8px auto 0; }
 .lp-assess-intro-ic-img { width: 84px; height: 84px; object-fit: contain; }
-.lp-assess-intro-h { font-size: 23px; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; text-align: center; margin-top: 16px; padding: 0 22px; }
-.lp-assess-intro-s { font-size: 14px; font-weight: 500; color: #6b7089; line-height: 1.55; text-align: center; margin: 10px 0 0; }
+.lp-assess-intro-h { font-size: 1.4375rem; font-weight: 700; letter-spacing: -0.5px; color: #0e2840; text-align: center; margin-top: 16px; padding: 0 22px; }
+.lp-assess-intro-s { font-size: 0.875rem; font-weight: 500; color: #6b7089; line-height: 1.55; text-align: center; margin: 10px 0 0; }
 .lp-assess-info { margin: 20px 0 0; padding: 16px; background: #e7f6ef; border: 1px solid #bfe6d5; border-radius: 14px; }
-.lp-assess-info-t { font-size: 13.5px; font-weight: 800; color: #0c6e58; }
-.lp-assess-info-s { font-size: 12.5px; font-weight: 500; color: #0c6e58; line-height: 1.5; margin-top: 6px; }
-.lp-assess-ok { width: 80px; height: 80px; border-radius: 50%; background: #e7f6ef; display: flex; align-items: center; justify-content: center; margin: 20px auto 0; font-size: 38px; color: #0f8a6e; }
+.lp-assess-info-t { font-size: 0.8438rem; font-weight: 800; color: #0c6e58; }
+.lp-assess-info-s { font-size: 0.7813rem; font-weight: 500; color: #0c6e58; line-height: 1.5; margin-top: 6px; }
+.lp-assess-ok { width: 80px; height: 80px; border-radius: 50%; background: #e7f6ef; display: flex; align-items: center; justify-content: center; margin: 20px auto 0; font-size: 2.375rem; color: #0f8a6e; }
 
 /* Inventory & Schedule of Condition */
 .lp-inv-chiprow { display: flex; gap: 9px; }
@@ -6475,23 +6475,23 @@ const SectionCard = defineComponent({
   border: 1.5px solid #e8eceb;
   border-radius: 14px;
   background: #fff;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #6b7089;
   cursor: pointer;
 }
 .lp-inv-chip-ic { width: 44px; height: 44px; object-fit: contain; }
 .lp-inv-chip.on { border-color: #00a19a; background: #f2faf8; color: #0e2840; }
-.lp-inv-pw-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7089; margin: 18px 0 8px; }
+.lp-inv-pw-heading { font-size: 0.7188rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7089; margin: 18px 0 8px; }
 .pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
 /* Tighter 4-up grid for the per-item photo strips inside each fixture /
    furnishing card. */
 .pgrid--sm { grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 4px; }
-.pgrid--sm .pgrid-add { font-size: 9px; }
+.pgrid--sm .pgrid-add { font-size: 0.5625rem; }
 .pgrid-item { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #f2faf8; }
 .pgrid-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
-.pgrid-rm { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(14,40,64,0.65); color: #fff; border: none; font-size: 11px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.pgrid-add { aspect-ratio: 1; border-radius: 12px; border: 1.5px dashed #b9c3c1; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 10.5px; font-weight: 700; color: #6b7089; position: relative; cursor: pointer; }
+.pgrid-rm { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(14,40,64,0.65); color: #fff; border: none; font-size: 0.6875rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.pgrid-add { aspect-ratio: 1; border-radius: 12px; border: 1.5px dashed #b9c3c1; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.6563rem; font-weight: 700; color: #6b7089; position: relative; cursor: pointer; }
 .pgrid-add span { pointer-events: none; }
 /* Non-interactive filler tiles so the photo row reads as "add several",
    not "one optional photo". */
@@ -6499,7 +6499,7 @@ const SectionCard = defineComponent({
 .lp-inv-prog { margin-bottom: 14px; }
 .lp-inv-pbar { height: 8px; background: #e7e7ee; border-radius: 100px; overflow: hidden; }
 .lp-inv-pfill { height: 100%; background: linear-gradient(90deg, #00a19a, #00c4bc); border-radius: 100px; transition: width 0.5s cubic-bezier(.22,1,.36,1); }
-.lp-inv-ptext { display: flex; justify-content: space-between; margin-top: 7px; font-size: 12px; font-weight: 600; color: #6b7089; }
+.lp-inv-ptext { display: flex; justify-content: space-between; margin-top: 7px; font-size: 0.75rem; font-weight: 600; color: #6b7089; }
 .lp-inv-ptext b { color: #0e2840; }
 .lp-inv-room {
   display: flex;
@@ -6517,9 +6517,9 @@ const SectionCard = defineComponent({
 .lp-assess-title--iconrow { display: flex; align-items: center; gap: 7px; }
 .lp-assess-title-ic-img { width: 22px; height: 22px; object-fit: contain; }
 .lp-inv-room-bd { flex: 1; min-width: 0; }
-.lp-inv-room-n { font-size: 16.5px; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
-.lp-inv-room-m { font-size: 12.5px; font-weight: 500; color: #6b7089; margin-top: 3px; }
-.lp-inv-badge { font-size: 10.5px; font-weight: 800; padding: 5px 10px; border-radius: 100px; }
+.lp-inv-room-n { font-size: 1.0313rem; font-weight: 700; color: #0e2840; letter-spacing: -0.2px; }
+.lp-inv-room-m { font-size: 0.7813rem; font-weight: 500; color: #6b7089; margin-top: 3px; }
+.lp-inv-badge { font-size: 0.6563rem; font-weight: 800; padding: 5px 10px; border-radius: 100px; }
 .lp-inv-badge.done { background: #e7f6ef; color: #0f8a6e; }
 .lp-inv-badge.todo { background: #f1f4f3; color: #a8a9ad; }
 .lp-inv-room-remove {
@@ -6529,7 +6529,7 @@ const SectionCard = defineComponent({
   border: none;
   background: #fbeae5;
   color: #c2410c;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1;
   display: flex;
@@ -6550,7 +6550,7 @@ const SectionCard = defineComponent({
   border: 1.5px dashed #d4d8d7;
   border-radius: 13px;
   background: #fafaf8;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   color: #0e2840;
 }
@@ -6567,7 +6567,7 @@ const SectionCard = defineComponent({
   border-radius: 13px;
   background: #0e2840;
   color: #fff;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
@@ -6578,7 +6578,7 @@ const SectionCard = defineComponent({
 }
 .lp-inv-item { background: #fff; border: 1px solid #e8eceb; border-radius: 14px; padding: 14px; margin-bottom: 10px; }
 .lp-inv-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-.lp-inv-item-n { font-size: 14.5px; font-weight: 700; color: #0e2840; }
+.lp-inv-item-n { font-size: 0.9063rem; font-weight: 700; color: #0e2840; }
 .lp-inv-item-rm {
   width: 22px;
   height: 22px;
@@ -6586,7 +6586,7 @@ const SectionCard = defineComponent({
   border: none;
   background: #f1f4f3;
   color: #a8a9ad;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   line-height: 1;
   display: flex;
@@ -6596,15 +6596,15 @@ const SectionCard = defineComponent({
   cursor: pointer;
 }
 .lp-inv-item-rm:active { background: #fbeae5; color: #c2410c; }
-.lp-inv-was { font-size: 11px; font-weight: 600; color: #a06b1a; background: #fbf1df; display: inline-block; padding: 2px 8px; border-radius: 100px; margin-top: 4px; text-transform: capitalize; }
-.lp-inv-rl { font-size: 10px; font-weight: 800; color: #a8a9ad; letter-spacing: 0.5px; text-transform: uppercase; margin: 11px 0 6px; }
+.lp-inv-was { font-size: 0.6875rem; font-weight: 600; color: #a06b1a; background: #fbf1df; display: inline-block; padding: 2px 8px; border-radius: 100px; margin-top: 4px; text-transform: capitalize; }
+.lp-inv-rl { font-size: 0.625rem; font-weight: 800; color: #a8a9ad; letter-spacing: 0.5px; text-transform: uppercase; margin: 11px 0 6px; }
 
 .lp-inv-changes { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(35, 29, 69, 0.06); }
 .lp-inv-change-row { padding: 12px 15px; border-bottom: 1px solid #f0f0f4; }
 .lp-inv-change-row:last-child { border-bottom: none; }
-.lp-inv-change-t { font-size: 13px; font-weight: 800; color: #0e2840; }
-.lp-inv-change-s { font-size: 12px; font-weight: 600; color: #c0492f; margin-top: 3px; text-transform: capitalize; }
-.lp-inv-change-note { font-size: 11.5px; font-weight: 500; color: #6b7089; font-style: italic; margin-top: 4px; }
+.lp-inv-change-t { font-size: 0.8125rem; font-weight: 800; color: #0e2840; }
+.lp-inv-change-s { font-size: 0.75rem; font-weight: 600; color: #c0492f; margin-top: 3px; text-transform: capitalize; }
+.lp-inv-change-note { font-size: 0.7188rem; font-weight: 500; color: #6b7089; font-style: italic; margin-top: 4px; }
 .lp-inv-crow { display: flex; gap: 6px; }
 .lp-inv-cd {
   flex: 1;
@@ -6612,7 +6612,7 @@ const SectionCard = defineComponent({
   border-radius: 9px;
   border: 1.5px solid #e8eceb;
   background: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #6b7089;
   cursor: pointer;
@@ -6629,7 +6629,7 @@ const SectionCard = defineComponent({
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #0e2840;
   outline: none;
   resize: none;
@@ -6647,18 +6647,18 @@ const SectionCard = defineComponent({
   background: #e7f6ef;
   border: 1px solid #bfe6d5;
   border-radius: 13px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #0c6e58;
   line-height: 1.4;
 }
 .lp-tn-mand { padding: 14px; background: #e8edfb; border: 1px solid #c7d3f0; border-radius: 13px; }
-.lp-tn-mand-t { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 800; color: #3d63c9; }
+.lp-tn-mand-t { display: flex; align-items: center; gap: 7px; font-size: 0.7813rem; font-weight: 800; color: #3d63c9; }
 .lp-tn-mand-ic { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
 .lp-tn-verbadge-ic { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
-.lp-tn-mand-item { display: flex; gap: 9px; padding: 5px 0; font-size: 12px; font-weight: 600; color: #2c4aa0; }
-.lp-tn-mand-s { font-size: 11.5px; font-weight: 500; color: #2c4aa0; margin-top: 5px; line-height: 1.5; }
-.lp-tn-pulled { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; color: #008a84; margin-top: 6px; }
+.lp-tn-mand-item { display: flex; gap: 9px; padding: 5px 0; font-size: 0.75rem; font-weight: 600; color: #2c4aa0; }
+.lp-tn-mand-s { font-size: 0.7188rem; font-weight: 500; color: #2c4aa0; margin-top: 5px; line-height: 1.5; }
+.lp-tn-pulled { display: flex; align-items: center; gap: 7px; font-size: 0.6875rem; font-weight: 700; color: #008a84; margin-top: 6px; }
 
 /* Tenancy Agreement - Next steps / e-signature */
 .lp-tn-readydoc {
@@ -6669,9 +6669,9 @@ const SectionCard = defineComponent({
 .lp-tn-readydoc-ic { width: 40px; height: 40px; border-radius: 10px; background: #f1f9f4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .lp-tn-readydoc-ic-img { width: 26px; height: 26px; object-fit: contain; }
 .lp-tn-readydoc-bd { flex: 1; min-width: 0; }
-.lp-tn-readydoc-t { font-size: 14px; font-weight: 800; color: #0e2840; }
-.lp-tn-readydoc-s { font-size: 11.5px; font-weight: 600; color: #6b7089; margin-top: 2px; }
-.lp-tn-readydoc-v { font-size: 10px; font-weight: 800; color: #008a84; background: #e6f7f6; padding: 4px 8px; border-radius: 100px; flex-shrink: 0; }
+.lp-tn-readydoc-t { font-size: 0.875rem; font-weight: 800; color: #0e2840; }
+.lp-tn-readydoc-s { font-size: 0.7188rem; font-weight: 600; color: #6b7089; margin-top: 2px; }
+.lp-tn-readydoc-v { font-size: 0.625rem; font-weight: 800; color: #008a84; background: #e6f7f6; padding: 4px 8px; border-radius: 100px; flex-shrink: 0; }
 
 .lp-tn-step {
   display: flex; align-items: flex-start; gap: 12px;
@@ -6682,11 +6682,11 @@ const SectionCard = defineComponent({
 .lp-tn-step--plain { cursor: default; }
 .lp-tn-step-ic-img { width: 34px; height: 34px; object-fit: contain; flex-shrink: 0; }
 .lp-tn-step-bd { flex: 1; min-width: 0; }
-.lp-tn-step-t { font-size: 13.5px; font-weight: 800; color: #0e2840; }
-.lp-tn-step-s { font-size: 11.5px; font-weight: 600; color: #6b7089; margin-top: 2px; }
-.lp-tn-step-pill { display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 800; padding: 4px 9px; border-radius: 100px; background: #fdf1dc; color: #a06b1a; }
+.lp-tn-step-t { font-size: 0.8438rem; font-weight: 800; color: #0e2840; }
+.lp-tn-step-s { font-size: 0.7188rem; font-weight: 600; color: #6b7089; margin-top: 2px; }
+.lp-tn-step-pill { display: inline-block; margin-top: 8px; font-size: 0.625rem; font-weight: 800; padding: 4px 9px; border-radius: 100px; background: #fdf1dc; color: #a06b1a; }
 .lp-tn-step-pill.done { background: #e7f6ef; color: #0f8a6e; }
-.lp-tn-step-go { color: #b9b9c4; font-size: 18px; align-self: center; flex-shrink: 0; }
+.lp-tn-step-go { color: #b9b9c4; font-size: 1.125rem; align-self: center; flex-shrink: 0; }
 
 /* "Kept up to date" - status band + template history */
 .lp-tn-status-band {
@@ -6695,11 +6695,11 @@ const SectionCard = defineComponent({
 }
 .lp-tn-status-band.current { background: #e7f6ef; border: 1px solid #bfe6d5; }
 .lp-tn-status-band.action { background: #fbf1df; border: 1px solid #f0d9a8; }
-.lp-tn-status-ic { width: 40px; height: 40px; border-radius: 12px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
-.lp-tn-status-t { font-size: 15px; font-weight: 800; }
+.lp-tn-status-ic { width: 40px; height: 40px; border-radius: 12px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1875rem; flex-shrink: 0; }
+.lp-tn-status-t { font-size: 0.9375rem; font-weight: 800; }
 .lp-tn-status-band.current .lp-tn-status-t { color: #0c6e58; }
 .lp-tn-status-band.action .lp-tn-status-t { color: #7a5500; }
-.lp-tn-status-s { font-size: 12px; font-weight: 600; margin-top: 4px; line-height: 1.5; }
+.lp-tn-status-s { font-size: 0.75rem; font-weight: 600; margin-top: 4px; line-height: 1.5; }
 .lp-tn-status-band.current .lp-tn-status-s { color: #0c6e58; }
 .lp-tn-status-band.action .lp-tn-status-s { color: #8a6420; }
 
@@ -6711,22 +6711,22 @@ const SectionCard = defineComponent({
 .lp-tn-history-row:last-child { border-bottom: none; }
 .lp-tn-history-dot { width: 10px; height: 10px; border-radius: 50%; background: #b9b9c4; flex-shrink: 0; margin-top: 5px; }
 .lp-tn-history-dot.current { background: #00a19a; }
-.lp-tn-history-v { font-size: 13px; font-weight: 800; color: #0e2840; }
-.lp-tn-history-date { font-size: 11px; font-weight: 600; color: #a8a9ad; margin-top: 1px; }
-.lp-tn-history-changes { font-size: 12px; font-weight: 500; color: #6b7089; line-height: 1.45; margin-top: 5px; }
+.lp-tn-history-v { font-size: 0.8125rem; font-weight: 800; color: #0e2840; }
+.lp-tn-history-date { font-size: 0.6875rem; font-weight: 600; color: #a8a9ad; margin-top: 1px; }
+.lp-tn-history-changes { font-size: 0.75rem; font-weight: 500; color: #6b7089; line-height: 1.45; margin-top: 5px; }
 
 .lp-tn-consent {
   display: flex; align-items: flex-start; gap: 10px; margin: 16px 0;
-  font-size: 12px; font-weight: 500; color: #3a3f52; line-height: 1.5; cursor: pointer;
+  font-size: 0.75rem; font-weight: 500; color: #3a3f52; line-height: 1.5; cursor: pointer;
 }
 .lp-tn-consent input { margin-top: 2px; flex-shrink: 0; }
 
 .lp-tn-linkbox {
   background: #f4f4f8; border: 1px solid #e8eceb; border-radius: 10px;
-  padding: 10px 12px; font-size: 12px; font-weight: 600; color: #0e2840;
+  padding: 10px 12px; font-size: 0.75rem; font-weight: 600; color: #0e2840;
   word-break: break-all;
 }
-.lp-tn-audit-row { display: flex; align-items: center; gap: 9px; padding: 6px 0; font-size: 12.5px; font-weight: 600; color: #3a3f52; }
+.lp-tn-audit-row { display: flex; align-items: center; gap: 9px; padding: 6px 0; font-size: 0.7813rem; font-weight: 600; color: #3a3f52; }
 .lp-tn-audit-dot { width: 8px; height: 8px; border-radius: 50%; background: #e8eceb; flex-shrink: 0; }
 .lp-tn-audit-dot.done { background: #0f8a6e; }
 .lp-tn-doc {
@@ -6736,30 +6736,30 @@ const SectionCard = defineComponent({
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(35, 29, 65, 0.07);
   padding: 22px 20px;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.6;
   color: #2a2a38;
 }
-.lp-tn-doc h1 { font-size: 16px; font-weight: 800; color: #0e2840; text-align: center; letter-spacing: -0.2px; }
-.lp-tn-docsub { text-align: center; font-size: 10.5px; color: #6b7089; font-weight: 600; margin-top: 3px; margin-bottom: 16px; }
-.lp-tn-doc h2 { font-size: 11px; font-weight: 800; color: #008a84; letter-spacing: 0.6px; text-transform: uppercase; margin: 16px 0 6px; border-bottom: 1px solid #f0f0f4; padding-bottom: 4px; }
+.lp-tn-doc h1 { font-size: 1rem; font-weight: 800; color: #0e2840; text-align: center; letter-spacing: -0.2px; }
+.lp-tn-docsub { text-align: center; font-size: 0.6563rem; color: #6b7089; font-weight: 600; margin-top: 3px; margin-bottom: 16px; }
+.lp-tn-doc h2 { font-size: 0.6875rem; font-weight: 800; color: #008a84; letter-spacing: 0.6px; text-transform: uppercase; margin: 16px 0 6px; border-bottom: 1px solid #f0f0f4; padding-bottom: 4px; }
 .lp-tn-kvr { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
 .lp-tn-kvr .k { color: #6b7089; font-weight: 600; }
 .lp-tn-kvr .v { color: #0e2840; font-weight: 700; text-align: right; }
-.lp-tn-clause { font-size: 11.5px; color: #3a3a48; margin-bottom: 7px; }
-.lp-tn-docver { text-align: center; font-size: 10px; color: #a8a9ad; font-weight: 600; margin-top: 16px; border-top: 1px solid #f0f0f4; padding-top: 10px; }
-.lp-tn-legalnote { margin: 14px 0 0; padding: 13px 15px; background: #fbf1df; border: 1px solid #f0d9a8; border-radius: 12px; font-size: 11.5px; font-weight: 600; color: #7a5500; line-height: 1.5; }
+.lp-tn-clause { font-size: 0.7188rem; color: #3a3a48; margin-bottom: 7px; }
+.lp-tn-docver { text-align: center; font-size: 0.625rem; color: #a8a9ad; font-weight: 600; margin-top: 16px; border-top: 1px solid #f0f0f4; padding-top: 10px; }
+.lp-tn-legalnote { margin: 14px 0 0; padding: 13px 15px; background: #fbf1df; border: 1px solid #f0d9a8; border-radius: 12px; font-size: 0.7188rem; font-weight: 600; color: #7a5500; line-height: 1.5; }
 
 /* Legislation & news rail moved to pages/dashboard.vue (.dash-news-*) */
 .lp-warn-icon-img { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
 .lp-warn-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #6f4d14;
   letter-spacing: -0.2px;
 }
 .lp-warn-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: #92400e;
   margin-top: 2px;

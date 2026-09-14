@@ -20,7 +20,7 @@
           :class="{
             'property-result--selected': selectedPropertyId === property.id,
           }"
-        >
+         role="button" tabindex="0" @keydown.enter="selectProperty(property)" @keydown.space.prevent="selectProperty(property)">
           <div class="property-result__ic">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
               <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
@@ -131,7 +131,7 @@ const handleContinue = () => {
 }
 
 .property-result__ic {
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -142,11 +142,11 @@ const handleContinue = () => {
 }
 
 .property-result--selected .property-result__address {
-  @apply text-brand-aqua;
+  @apply text-brand-aqua-text;
 }
 
 .property-result__check {
-  @apply w-5 h-5 text-brand-aqua;
+  @apply w-5 h-5 text-brand-aqua-text;
 }
 
 /* Continue Button */

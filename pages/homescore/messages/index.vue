@@ -94,12 +94,12 @@ const unreadCount = computed(() => messages.filter((m) => m.unread).length)
 .back-btn svg { width: 16px; height: 16px; }
 .app-header-info { flex: 1; min-width: 0; }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -138,19 +138,19 @@ const unreadCount = computed(() => messages.filter((m) => m.unread).length)
   justify-content: center;
   color: white;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 0.875rem;
   flex-shrink: 0;
 }
 .mp-msg-body { flex: 1; min-width: 0; }
 .mp-msg-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
   margin-bottom: 2px;
 }
 .mp-msg-preview {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text-secondary);
   font-weight: 500;
   line-height: 1.4;
@@ -161,7 +161,7 @@ const unreadCount = computed(() => messages.filter((m) => m.unread).length)
   -webkit-box-orient: vertical;
 }
 .mp-msg-time {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: var(--text-faint);
   flex-shrink: 0;

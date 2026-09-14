@@ -3,7 +3,7 @@
     class="flex items-center gap-4 p-4 rounded-2xl border cursor-pointer transition"
     :class="selected ? 'border-brand-aqua bg-brand-aqua/5' : 'border-gray-200'"
     @click="$emit('select')"
-  >
+   role="button" tabindex="0" @keydown.enter="$emit('select')" @keydown.space.prevent="$emit('select')">
     <div class="text-3xl">{{ option.icon }}</div>
 
     <div class="flex-1">

@@ -29,7 +29,7 @@
           @input="handleInput(($event.target as HTMLInputElement).value)"
           @focus="onFocus"
           @keyup.enter="onEnter"
-        />
+         aria-label="placeholder" />
         <div v-if="loading" class="psi-spinner" />
         <button
           v-else-if="query"
@@ -406,7 +406,7 @@ defineExpose({ clearQuery })
   padding: 12px 40px 12px 38px;
   border-radius: 12px;
   border: 1.5px solid transparent;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s;
@@ -533,7 +533,7 @@ defineExpose({ clearQuery })
 }
 .psi-locate-error {
   margin: 6px 4px 0;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #dc2626;
   line-height: 1.4;
@@ -544,7 +544,7 @@ defineExpose({ clearQuery })
   border: none;
   border-radius: 999px;
   padding: 13px 26px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
@@ -572,7 +572,7 @@ defineExpose({ clearQuery })
 }
 
 .psi-drop-header {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
@@ -600,7 +600,7 @@ defineExpose({ clearQuery })
 .psi-drop-ic {
   width: 28px;
   height: 28px;
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -612,7 +612,7 @@ defineExpose({ clearQuery })
   min-width: 0;
 }
 .psi-drop-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #231d45;
   white-space: nowrap;
@@ -620,7 +620,7 @@ defineExpose({ clearQuery })
   text-overflow: ellipsis;
 }
 .psi-drop-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   margin-top: 1px;
 }
@@ -628,7 +628,7 @@ defineExpose({ clearQuery })
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   letter-spacing: 0.01em;
   margin-top: 4px;
@@ -643,7 +643,7 @@ defineExpose({ clearQuery })
   gap: 3px;
 }
 .psi-drop-hs-caption {
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -677,7 +677,7 @@ defineExpose({ clearQuery })
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   font-feature-settings: 'tnum';
 }
@@ -704,7 +704,7 @@ defineExpose({ clearQuery })
 }
 .psi-drop-end {
   text-align: center;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: #94a3b8;
   padding: 10px 12px;

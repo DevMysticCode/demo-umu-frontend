@@ -377,7 +377,7 @@ const onDragEnd = () => {
   align-items: center;
   background: transparent;
   border: none;
-  color: #00a19a;
+  color: #00726c;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -422,7 +422,7 @@ const onDragEnd = () => {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 16px;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 590;
   line-height: 21px;

@@ -970,7 +970,7 @@ function downloadFile(url: string, name: string) {
   backdrop-filter: blur(6px);
   border: 1px solid rgba(15, 118, 110, 0.15);
   color: #0f766e;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -993,7 +993,7 @@ function downloadFile(url: string, name: string) {
   z-index: 1;
 }
 .qhero-title {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -1004,7 +1004,7 @@ function downloadFile(url: string, name: string) {
 }
 .qhero-sub {
   color: #115e59;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.4;
   margin: 0 0 16px;
@@ -1044,7 +1044,7 @@ function downloadFile(url: string, name: string) {
 .qring span {
   grid-area: 1 / 1;
   z-index: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0a0f2c;
   line-height: 1;
@@ -1052,14 +1052,14 @@ function downloadFile(url: string, name: string) {
 .qmeta-text small {
   display: block;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: #115e59;
   margin-bottom: 4px;
 }
 .qmeta-text strong {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.2;
   color: #0a0f2c;
@@ -1077,16 +1077,16 @@ function downloadFile(url: string, name: string) {
 }
 .question-nav-counter {}
 .question-nav-num {
-  font-size: 18px; font-weight: 590; color: #000; margin: 0;
+  font-size: 1.125rem; font-weight: 590; color: #000; margin: 0;
 }
 .question-nav-sub {
-  font-size: 13px; color: #999; font-weight: 500; margin-top: 1px;
+  font-size: 0.8125rem; color: #999; font-weight: 500; margin-top: 1px;
 }
 .question-nav-actions { display: flex; gap: 8px; }
 .nav-btn {
   background: white; border: 0.33px solid #3c3c432e;
-  border-radius: 40px; color: #00a19a;
-  font-size: 13px; font-weight: 400; cursor: pointer;
+  border-radius: 40px; color: #00726c;
+  font-size: 0.8125rem; font-weight: 400; cursor: pointer;
   padding: 4px 12px;
 }
 .nav-btn:disabled { color: #ccc; cursor: not-allowed; }
@@ -1111,19 +1111,19 @@ function downloadFile(url: string, name: string) {
 .task-item-left { flex: 1; min-width: 0; }
 
 .task-item-title {
-  font-size: 15px; font-weight: 500; color: #1a1a1a;
+  font-size: 0.9375rem; font-weight: 500; color: #1a1a1a;
   margin: 0 0 5px; line-height: 1.4;
 }
 
 /* Status badge - now below title */
 .task-item-status {
   display: inline-block;
-  font-size: 11px; font-weight: 700;
+  font-size: 0.6875rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.4px;
   padding: 2px 8px; border-radius: 20px;
 }
 
-.status--included { background: #e6f9f7; color: #00a19a; }
+.status--included { background: #e6f9f7; color: #00726c; }
 .status--excluded { background: #fef2f2; color: #e53e3e; }
 .status--offered  { background: #fff7ed; color: #c2780a; }
 .status--neutral  { background: #f3f4f6; color: #6b7280; }
@@ -1136,15 +1136,15 @@ function downloadFile(url: string, name: string) {
 }
 .task-help-btn {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600;
+  padding: 8px 16px; border-radius: 50px; font-size: 0.8125rem; font-weight: 600;
   cursor: pointer;
 }
 .task-help-btn--help {
-  background: white; color: #00a19a; border: 2px solid #e0e0e0;
+  background: white; color: #00726c; border: 2px solid #e0e0e0;
   padding-left: 20px; padding-right: 20px;
 }
 .task-help-btn--video { background: #00a19a; color: white; border: 2px solid #00a19a; }
-.task-play-icon { font-size: 12px; }
+.task-play-icon { font-size: 0.75rem; }
 
 /* Answer area - always visible, no expand */
 .task-item-detail { padding: 0 16px 16px; }
@@ -1152,7 +1152,7 @@ function downloadFile(url: string, name: string) {
 /* Selected answer pill (radio / multipart radio) */
 .detail-answer-pill {
   display: inline-block;
-  font-size: 14px; font-weight: 600; color: #1a1a1a;
+  font-size: 0.875rem; font-weight: 600; color: #1a1a1a;
   background: #f0faf9; border: 1.5px solid #b2e4e1; border-radius: 20px;
   padding: 6px 16px; margin-top: 2px;
 }
@@ -1163,48 +1163,48 @@ function downloadFile(url: string, name: string) {
   margin-top: 8px; padding: 8px 12px;
   background: #fffbeb; border-radius: 8px; border: 1px solid #fef3c7;
 }
-.detail-currency-label { font-size: 12px; color: #92400e; }
-.detail-currency-value { font-size: 15px; font-weight: 700; color: #92400e; }
+.detail-currency-label { font-size: 0.75rem; color: #92400e; }
+.detail-currency-value { font-size: 0.9375rem; font-weight: 700; color: #92400e; }
 
 /* Answer block (label + value inline) */
 .detail-answer-block {
   display: flex; align-items: center; gap: 10px;
   padding: 8px 12px; background: #f9fafb; border-radius: 8px; margin-top: 4px;
 }
-.detail-answer-label { font-size: 12px; color: #9ca3af; }
-.detail-answer-value { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+.detail-answer-label { font-size: 0.75rem; color: #9ca3af; }
+.detail-answer-value { font-size: 0.875rem; font-weight: 500; color: #1a1a1a; }
 
 /* Text answer */
 .detail-text-answer {
-  font-size: 14px; color: #1a1a1a;
+  font-size: 0.875rem; color: #1a1a1a;
   background: #f9fafb; border-radius: 8px;
   padding: 10px 12px; line-height: 1.5; white-space: pre-line; margin-top: 4px;
 }
 
 .detail-part-label {
-  font-size: 12px; font-weight: 600; color: #6b7280;
+  font-size: 0.75rem; font-weight: 600; color: #6b7280;
   margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.4px;
 }
 
 /* No answer */
-.detail-no-answer { font-size: 13px; color: #d1d5db; font-style: italic; margin: 6px 0; }
+.detail-no-answer { font-size: 0.8125rem; color: #d1d5db; font-style: italic; margin: 6px 0; }
 
 /* Scale */
 .detail-scale { display: inline-flex; padding: 8px 16px; background: #f0faf9; border-radius: 20px; border: 1px solid #b2e4e1; }
-.detail-scale-value { font-size: 18px; font-weight: 700; color: #00a19a; }
+.detail-scale-value { font-size: 1.125rem; font-weight: 700; color: #00726c; }
 
 /* Chips */
 .detail-chips { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 4px; }
-.detail-chip { font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 20px; background: #f0faf9; color: #00a19a; border: 1px solid #b2e4e1; }
+.detail-chip { font-size: 0.8125rem; font-weight: 500; padding: 4px 12px; border-radius: 20px; background: #f0faf9; color: #00726c; border: 1px solid #b2e4e1; }
 
 /* List */
 .detail-list { display: flex; flex-direction: column; gap: 4px; }
-.detail-list-item { font-size: 14px; color: #1a1a1a; padding: 6px 10px; background: #f9fafb; border-radius: 6px; border-left: 3px solid #00a19a; }
+.detail-list-item { font-size: 0.875rem; color: #1a1a1a; padding: 6px 10px; background: #f9fafb; border-radius: 6px; border-left: 3px solid #00a19a; }
 
 /* Field form */
 .detail-fields { display: flex; flex-direction: column; gap: 8px; }
 .detail-field-entry { background: #f9fafb; border-radius: 8px; padding: 10px 12px; }
-.detail-field-row { display: flex; gap: 8px; padding: 3px 0; font-size: 13px; }
+.detail-field-row { display: flex; gap: 8px; padding: 3px 0; font-size: 0.8125rem; }
 .detail-field-key { color: #9ca3af; min-width: 90px; flex-shrink: 0; }
 .detail-field-val { color: #1a1a1a; font-weight: 500; flex: 1; }
 
@@ -1219,23 +1219,23 @@ function downloadFile(url: string, name: string) {
 }
 .detail-note-bar { width: 3px; min-height: 20px; background: #00a19a; border-radius: 2px; flex-shrink: 0; align-self: stretch; }
 .detail-note-body { flex: 1; }
-.detail-note-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #00a19a; display: block; margin-bottom: 3px; }
-.detail-note-text { font-size: 13px; color: #1a6b66; margin: 0; line-height: 1.5; }
+.detail-note-label { font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #00726c; display: block; margin-bottom: 3px; }
+.detail-note-text { font-size: 0.8125rem; color: #1a6b66; margin: 0; line-height: 1.5; }
 
 /* File attachments */
 .detail-files { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
 .detail-file-row { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #f5f5f5; border-radius: 10px; }
 .detail-file-icon { flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
-.detail-file-name { flex: 1; font-size: 13px; color: #444; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.detail-file-name { flex: 1; font-size: 0.8125rem; color: #444; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .detail-file-actions { flex-shrink: 0; }
 .detail-file-btn {
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  padding: 7px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
   border: none; cursor: pointer;
 }
 .detail-file-btn--download { background: #00a19a; color: white; }
-.detail-file-pending { font-size: 11px; color: #9ca3af; font-style: italic; padding: 5px 8px; }
+.detail-file-pending { font-size: 0.6875rem; color: #9ca3af; font-style: italic; padding: 5px 8px; }
 
 /* Empty */
-.task-empty { padding: 40px; text-align: center; color: #999; font-size: 14px; }
+.task-empty { padding: 40px; text-align: center; color: #999; font-size: 0.875rem; }
 </style>

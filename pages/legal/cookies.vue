@@ -146,7 +146,7 @@ const goBack = useGoBack('/profile/settings')
 }
 .lg-nav-icon-btn:hover { background: #f0f2f1; }
 .lg-nav-icon-btn svg { width: 18px; height: 18px; }
-.lg-nav-title { flex: 1; text-align: center; font-size: 16px; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
+.lg-nav-title { flex: 1; text-align: center; font-size: 1rem; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
 
 .lg-body { position: relative; }
 .atm-bg { position: absolute; top: 0; left: 0; right: 0; height: 240px; pointer-events: none; z-index: 0; }
@@ -156,25 +156,25 @@ const goBack = useGoBack('/profile/settings')
 .lg-greeting {
   font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   font-style: italic;
-  font-size: 16px;
+  font-size: 1rem;
   color: #008a84;
   margin-bottom: 4px;
 }
-.lg-h1 { font-size: 28px; font-weight: 800; color: #0e2840; letter-spacing: -1px; line-height: 1.05; }
-.lg-meta { font-size: 11.5px; font-weight: 700; color: #4a5868; margin-top: 6px; }
+.lg-h1 { font-size: 1.75rem; font-weight: 800; color: #0e2840; letter-spacing: -1px; line-height: 1.05; }
+.lg-meta { font-size: 0.7188rem; font-weight: 700; color: #4a5868; margin-top: 6px; }
 
 .lg-content { position: relative; z-index: 1; padding: 0 22px; max-width: 720px; margin: 0 auto; }
-.lg-content h2 { font-size: 14px; font-weight: 800; color: #0e2840; letter-spacing: -0.3px; margin: 22px 0 8px; }
-.lg-content p { font-size: 13px; font-weight: 500; color: #4a5868; line-height: 1.6; margin-bottom: 10px; }
+.lg-content h2 { font-size: 0.875rem; font-weight: 800; color: #0e2840; letter-spacing: -0.3px; margin: 22px 0 8px; }
+.lg-content p { font-size: 0.8125rem; font-weight: 500; color: #4a5868; line-height: 1.6; margin-bottom: 10px; }
 .lg-content ul { margin: 0 0 10px 18px; padding: 0; }
-.lg-content li { font-size: 13px; font-weight: 500; color: #4a5868; line-height: 1.55; margin-bottom: 6px; }
+.lg-content li { font-size: 0.8125rem; font-weight: 500; color: #4a5868; line-height: 1.55; margin-bottom: 6px; }
 .lg-content a { color: #008a84; font-weight: 700; text-decoration: none; border-bottom: 1px dashed #008a84; }
 .lg-content strong { color: #0e2840; font-weight: 800; }
 .lg-content code {
   background: #f1f9f4;
   color: #008a84;
   font-family: 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   padding: 1px 6px;
   border-radius: 6px;
 }
@@ -185,7 +185,7 @@ const goBack = useGoBack('/profile/settings')
   border-radius: 12px;
   overflow: hidden;
   margin: 12px 0 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .lg-table-row {
   display: grid;
@@ -200,14 +200,14 @@ const goBack = useGoBack('/profile/settings')
   background: #f5f4f0;
   font-weight: 800;
   color: #4a5868;
-  font-size: 10px;
+  font-size: 0.625rem;
   letter-spacing: 0.4px;
   text-transform: uppercase;
 }
 .lg-table-row > div { color: #4a5868; line-height: 1.45; }
 .pill {
   display: inline-block;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.3px;
   padding: 2px 8px;
@@ -218,7 +218,7 @@ const goBack = useGoBack('/profile/settings')
 .pill.ana { background: #fdf4dc; color: #6f4d14; }
 
 .lg-note {
-  font-size: 11.5px !important;
+  font-size: 0.7188rem !important;
   font-weight: 700 !important;
   color: #008a84 !important;
 }
@@ -226,14 +226,14 @@ const goBack = useGoBack('/profile/settings')
   margin-top: 28px;
   padding-top: 14px;
   border-top: 1px solid #e8eceb;
-  font-size: 11px !important;
+  font-size: 0.6875rem !important;
   color: #8a95a0 !important;
   font-weight: 600 !important;
   text-align: center;
 }
 
 @media (max-width: 480px) {
-  .lg-table { font-size: 11px; }
+  .lg-table { font-size: 0.6875rem; }
   .lg-table-row {
     grid-template-columns: 1fr;
     gap: 4px;

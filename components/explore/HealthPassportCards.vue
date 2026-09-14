@@ -1,7 +1,7 @@
 <template>
   <div class="feature-stack">
     <!-- ── HomeScore card ── -->
-    <div class="feat-card homescore" @click="router.push('/homescore')">
+    <div class="feat-card homescore" @click="router.push('/homescore')" role="button" tabindex="0" @keydown.enter="router.push('/homescore')" @keydown.space.prevent="router.push('/homescore')">
       <div class="feat-main">
         <div class="feat-hero">
           <img
@@ -57,7 +57,7 @@
     </div>
 
     <!-- ── Property Passport card ── -->
-    <div class="feat-card passport" @click="goToPassportSample">
+    <div class="feat-card passport" @click="goToPassportSample" role="button" tabindex="0" @keydown.enter="goToPassportSample" @keydown.space.prevent="goToPassportSample">
       <div class="feat-main">
         <div class="feat-hero">
           <img
@@ -193,21 +193,21 @@ function goToPassportSample() {
 }
 
 .feat-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 1;
   font-weight: 900;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 .feat-eyebrow--passport {
-  font-size: 11px;
+  font-size: 0.6875rem;
   letter-spacing: 0.1em;
   line-height: 1;
 }
 
 .feat-pill {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 900;
   letter-spacing: 0.12em;
   padding: 6px 12px;
@@ -228,7 +228,7 @@ function goToPassportSample() {
 }
 
 .feat-headline {
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 1.12;
   font-weight: 900;
   color: #1c2558;
@@ -236,14 +236,14 @@ function goToPassportSample() {
 }
 
 .feat-sub {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   line-height: 1.32;
   font-weight: 500;
   color: #5f6579;
 }
 
 .feat-sub b {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
 }
 
@@ -260,14 +260,14 @@ function goToPassportSample() {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #1c2558;
 }
 
 .feat-checks li b {
   font-weight: 900;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .feat-check {
@@ -312,7 +312,7 @@ function goToPassportSample() {
   height: 38px;
   border-radius: 50%;
   border: 2px solid #00a19a;
-  color: #00a19a;
+  color: #00726c;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -325,14 +325,14 @@ function goToPassportSample() {
 }
 
 .feat-meta-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.16;
   font-weight: 800;
   color: #1d2556;
 }
 
 .feat-meta-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.14;
   color: #5f6579;
   font-weight: 500;
@@ -350,7 +350,7 @@ function goToPassportSample() {
   background: #00a19a;
   color: #fff;
   font: inherit;
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   line-height: 1;
   font-weight: 800;
   letter-spacing: -0.1px;
@@ -407,7 +407,7 @@ function goToPassportSample() {
 
   .feat-cta {
     padding: 10px 16px;
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
   .feat-cta svg { width: 14px; height: 14px; }
 

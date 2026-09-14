@@ -15,7 +15,7 @@
             ?
           </button>
           <NotificationBell />
-          <div class="hero-avatar" @click="navigateTo('/profile')">
+          <div class="hero-avatar" @click="navigateTo('/profile')" role="button" tabindex="0" @keydown.enter="navigateTo('/profile')" @keydown.space.prevent="navigateTo('/profile')">
             <UserAvatar
               :src="profile?.avatarUrl"
               :firstName="profile?.firstName"
@@ -56,7 +56,7 @@
               v-if="buyerProfile"
               class="active-passport-card"
               @click="navigateTo('/buyer-profile/view')"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/buyer-profile/view')" @keydown.space.prevent="navigateTo('/buyer-profile/view')">
               <div class="apc-main">
                 <div class="apc-passport-slot">
                   <PassportCard line1="" line2="" type="BUYER" />
@@ -101,7 +101,7 @@
               <div
                 class="apc-viewall-link"
                 @click.stop="navigateTo('/passport/collections')"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateTo('/passport/collections')" @keydown.space.prevent="navigateTo('/passport/collections')">
                 View all Passports
                 <span>&rsaquo;</span>
               </div>
@@ -111,7 +111,7 @@
               v-else
               class="no-passport-card"
               @click="navigateTo('/buyer-profile/build')"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/buyer-profile/build')" @keydown.space.prevent="navigateTo('/buyer-profile/build')">
               <div class="npc-icon">+</div>
               <div class="npc-body">
                 <div class="npc-title">Start your Buyer Passport</div>
@@ -147,7 +147,7 @@
                 v-if="buyerIncompleteCount > 0"
                 class="nfy-row"
                 @click="navigateTo('/buyer-profile/build')"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateTo('/buyer-profile/build')" @keydown.space.prevent="navigateTo('/buyer-profile/build')">
                 <div class="nfy-icon nfy-icon-teal">
                   <img
                     src="/op-icons/investment/clipboardChecklist.png"
@@ -166,7 +166,7 @@
                 </div>
                 <span class="nfy-chevron">&rsaquo;</span>
               </div>
-              <div class="nfy-row" @click="navigateTo('/buyer-profile/build')">
+              <div class="nfy-row" @click="navigateTo('/buyer-profile/build')" role="button" tabindex="0" @keydown.enter="navigateTo('/buyer-profile/build')" @keydown.space.prevent="navigateTo('/buyer-profile/build')">
                 <div class="nfy-icon nfy-icon-teal">
                   <img
                     src="/op-icons/buyer-profile-build/bank.png"
@@ -183,7 +183,7 @@
                 </div>
                 <span class="nfy-chevron">&rsaquo;</span>
               </div>
-              <div class="nfy-row" @click="navigateTo('/buyer-profile/build')">
+              <div class="nfy-row" @click="navigateTo('/buyer-profile/build')" role="button" tabindex="0" @keydown.enter="navigateTo('/buyer-profile/build')" @keydown.space.prevent="navigateTo('/buyer-profile/build')">
                 <div class="nfy-icon nfy-icon-amber">
                   <img
                     src="/op-icons/investment/chainLink.png"
@@ -208,7 +208,7 @@
             <div
               class="homescore-explore-card"
               @click="navigateTo('/homescore')"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/homescore')" @keydown.space.prevent="navigateTo('/homescore')">
               <div class="hec-gauge">
                 <svg viewBox="0 0 100 100">
                   <defs>
@@ -268,7 +268,7 @@
               <div
                 class="dash-view-all"
                 @click="navigateTo('/profile/watched-properties')"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateTo('/profile/watched-properties')" @keydown.space.prevent="navigateTo('/profile/watched-properties')">
                 View all
               </div>
             </div>
@@ -283,7 +283,7 @@
               <div
                 class="watch-row"
                 @click="navigateTo('/property/' + watchedProperties[0].id)"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateTo('/property/' + watchedProperties[0].id)" @keydown.space.prevent="navigateTo('/property/' + watchedProperties[0].id)">
                 <div class="watch-img-wrap">
                   <PropertyImage
                     :src="watchedProperties[0].imageUrl"
@@ -327,7 +327,7 @@
                 v-if="watchedProperties.length > 1"
                 class="watch-more-link"
                 @click="navigateTo('/profile/watched-properties')"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateTo('/profile/watched-properties')" @keydown.space.prevent="navigateTo('/profile/watched-properties')">
                 {{ watchedProperties.length - 1 }} more propert{{
                   watchedProperties.length - 1 === 1 ? 'y' : 'ies'
                 }}
@@ -339,7 +339,7 @@
               v-else
               class="no-passport-card"
               @click="navigateTo('/discover')"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/discover')" @keydown.space.prevent="navigateTo('/discover')">
               <div class="npc-icon">
                 <svg
                   width="16"
@@ -394,7 +394,7 @@
               v-if="passports.length"
               class="active-passport-card"
               @click="navigateTo('/passportview/' + passports[0].id)"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/passportview/' + passports[0].id)" @keydown.space.prevent="navigateTo('/passportview/' + passports[0].id)">
               <div class="apc-main">
                 <div class="apc-passport-slot">
                   <PassportCard
@@ -441,13 +441,13 @@
               <div
                 class="apc-viewall-link"
                 @click.stop="navigateTo('/passport/collections')"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateTo('/passport/collections')" @keydown.space.prevent="navigateTo('/passport/collections')">
                 View all Passports
                 <span>&rsaquo;</span>
               </div>
             </div>
 
-            <div v-else class="no-passport-card" @click="startClaimFlow">
+            <div v-else class="no-passport-card" @click="startClaimFlow" role="button" tabindex="0" @keydown.enter="startClaimFlow" @keydown.space.prevent="startClaimFlow">
               <div class="npc-icon">+</div>
               <div class="npc-body">
                 <div class="npc-title">Start your Property Passport</div>
@@ -527,7 +527,7 @@
                 v-if="incompleteItemCount > 0"
                 class="nfy-row"
                 @click="navigateTo('/passportview/' + passports[0].id)"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateTo('/passportview/' + passports[0].id)" @keydown.space.prevent="navigateTo('/passportview/' + passports[0].id)">
                 <div class="nfy-icon nfy-icon-teal">
                   <img
                     src="/op-icons/investment/clipboardChecklist.png"
@@ -622,7 +622,7 @@
             <div
               class="homescore-explore-card"
               @click="navigateTo('/homescore')"
-            >
+             role="button" tabindex="0" @keydown.enter="navigateTo('/homescore')" @keydown.space.prevent="navigateTo('/homescore')">
               <div class="hec-gauge">
                 <svg viewBox="0 0 100 100">
                   <defs>
@@ -688,7 +688,19 @@
                       : '/buyer-profile/build',
                   )
                 "
-              >
+               role="button" tabindex="0" @keydown.enter="
+                  navigateTo(
+                    buyerProfile
+                      ? '/buyer-profile/view'
+                      : '/buyer-profile/build',
+                  )
+                " @keydown.space.prevent="
+                  navigateTo(
+                    buyerProfile
+                      ? '/buyer-profile/view'
+                      : '/buyer-profile/build',
+                  )
+                ">
                 <div class="bss-icon">
                   <img
                     src="/op-icons/passport-covers/buyer_front_no_tile_no_tilt.png"
@@ -718,7 +730,7 @@
               <div
                 class="bss-row"
                 @click="navigateTo('/profile/watched-properties')"
-              >
+               role="button" tabindex="0" @keydown.enter="navigateTo('/profile/watched-properties')" @keydown.space.prevent="navigateTo('/profile/watched-properties')">
                 <div class="bss-icon">
                   <img
                     src="/op-icons/misc/exploreWatching.png"
@@ -745,7 +757,7 @@
           </div>
 
           <!-- ── Add another property ── -->
-          <div class="add-property-row" @click="startClaimFlow">
+          <div class="add-property-row" @click="startClaimFlow" role="button" tabindex="0" @keydown.enter="startClaimFlow" @keydown.space.prevent="startClaimFlow">
             <div class="apr-icon">+</div>
             <div class="apr-body">
               <div class="apr-title">Add another property</div>
@@ -1234,7 +1246,7 @@ onMounted(async () => {
 }
 
 .dash-greeting-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
   font-weight: 500;
   white-space: nowrap;
@@ -1243,7 +1255,7 @@ onMounted(async () => {
   max-width: 100%;
 }
 .dash-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 900;
   color: #231d45;
   letter-spacing: -0.4px;
@@ -1260,8 +1272,8 @@ onMounted(async () => {
   border-radius: 50%;
   background: #f1f9f4;
   border: 1px solid #e2f1ea;
-  color: #00a19a;
-  font-size: 14px;
+  color: #00726c;
+  font-size: 0.875rem;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -1280,11 +1292,11 @@ onMounted(async () => {
   margin-bottom: 20px;
 }
 .dash-eyebrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 1.3px;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 10px;
 }
 
@@ -1332,7 +1344,7 @@ onMounted(async () => {
   padding: 12px 13px 14px;
 }
 .dash-news-tag {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -1354,7 +1366,7 @@ onMounted(async () => {
   color: #008a84;
 }
 .dash-news-t {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #0e2840;
   line-height: 1.25;
@@ -1365,7 +1377,7 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   color: #008a84;
   margin-top: 10px;
@@ -1374,7 +1386,7 @@ onMounted(async () => {
   display: block;
   margin: 2px 0 4px;
   text-align: center;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #008a84;
   text-decoration: none;
@@ -1400,14 +1412,14 @@ onMounted(async () => {
   background: #e0f4f1;
   color: #00817c;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0;
 }
 .dash-view-all {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
 }
 
@@ -1443,7 +1455,7 @@ onMounted(async () => {
 }
 .apc-pill {
   display: inline-block;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   color: #00817c;
@@ -1453,14 +1465,14 @@ onMounted(async () => {
   margin-bottom: 8px;
 }
 .apc-address {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   line-height: 1.25;
   letter-spacing: -0.2px;
 }
 .apc-postcode {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b7089;
   margin-bottom: 10px;
 }
@@ -1468,13 +1480,13 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #00817c;
   margin-bottom: 10px;
 }
 .apc-progress-row {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #4a5568;
   margin-bottom: 6px;
 }
@@ -1500,7 +1512,7 @@ onMounted(async () => {
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 13px;
   border-radius: 12px;
@@ -1516,9 +1528,9 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   gap: 2px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
   padding: 4px;
 }
@@ -1538,8 +1550,8 @@ onMounted(async () => {
   height: 38px;
   border-radius: 50%;
   background: #e0f4f1;
-  color: #00a19a;
-  font-size: 18px;
+  color: #00726c;
+  font-size: 1.125rem;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -1550,16 +1562,16 @@ onMounted(async () => {
   min-width: 0;
 }
 .npc-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
 }
 .npc-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b7089;
 }
 .npc-chevron {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #c7c5d6;
   flex-shrink: 0;
 }
@@ -1578,7 +1590,7 @@ onMounted(async () => {
   padding: 10px 16px;
   background: #fdf3e4;
   color: #9a6a1a;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   border-bottom: 1px solid #eef0f6;
 }
@@ -1616,18 +1628,18 @@ onMounted(async () => {
   min-width: 0;
 }
 .nfy-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 2px;
 }
 .nfy-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b7089;
   line-height: 1.4;
 }
 .nfy-chevron {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #c7c5d6;
   flex-shrink: 0;
 }
@@ -1656,13 +1668,13 @@ onMounted(async () => {
   min-width: 0;
 }
 .hsc-title {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 4px;
 }
 .hsc-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b7089;
   line-height: 1.45;
 }
@@ -1698,13 +1710,13 @@ onMounted(async () => {
   justify-content: center;
 }
 .hsc-ring-num {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 900;
   color: #231d45;
   line-height: 1;
 }
 .hsc-ring-den {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 700;
   color: #9c98ad;
 }
@@ -1714,13 +1726,13 @@ onMounted(async () => {
   justify-content: space-between;
   padding: 10px 0;
   border-top: 1px solid #eef0f6;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b7089;
 }
 .hsc-potential-row strong {
   color: #00817c;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .hsc-cta {
   width: 100%;
@@ -1728,7 +1740,7 @@ onMounted(async () => {
   color: #00514d;
   border: none;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   padding: 11px;
   border-radius: 12px;
@@ -1781,7 +1793,7 @@ onMounted(async () => {
   justify-content: center;
 }
 .hec-gauge-num {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #016f84;
 }
@@ -1790,13 +1802,13 @@ onMounted(async () => {
   min-width: 0;
 }
 .hec-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 3px;
 }
 .hec-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b7089;
   line-height: 1.45;
   margin-bottom: 8px;
@@ -1805,7 +1817,7 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #00817c;
 }
@@ -1852,17 +1864,17 @@ onMounted(async () => {
   min-width: 0;
 }
 .bss-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 2px;
 }
 .bss-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b7089;
 }
 .bss-chevron {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #c7c5d6;
   flex-shrink: 0;
 }
@@ -1883,8 +1895,8 @@ onMounted(async () => {
   height: 38px;
   border-radius: 50%;
   background: #e0f4f1;
-  color: #00a19a;
-  font-size: 18px;
+  color: #00726c;
+  font-size: 1.125rem;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -1895,16 +1907,16 @@ onMounted(async () => {
   min-width: 0;
 }
 .apr-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
 }
 .apr-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b7089;
 }
 .apr-chevron {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #c7c5d6;
   flex-shrink: 0;
 }
@@ -1940,7 +1952,7 @@ onMounted(async () => {
   min-width: 0;
 }
 .watch-address {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   white-space: nowrap;
@@ -1948,12 +1960,12 @@ onMounted(async () => {
   text-overflow: ellipsis;
 }
 .watch-postcode {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b7089;
   margin-top: 1px;
 }
 .watch-hs {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b7089;
   margin-top: 3px;
 }
@@ -1971,7 +1983,7 @@ onMounted(async () => {
   border-radius: 12px;
   padding: 8px 10px;
   font-family: inherit;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: #6b7089;
   cursor: pointer;
@@ -1987,9 +1999,9 @@ onMounted(async () => {
   padding-top: 10px;
   border-top: 1px solid #eef0f6;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
 }
 </style>

@@ -65,7 +65,7 @@ defineEmits(['update:modelValue'])
   padding: 16px;
   height: 56px;
   min-height: 56px;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 400;
   line-height: 22px;
   letter-spacing: -0.43px;
@@ -83,7 +83,7 @@ defineEmits(['update:modelValue'])
 
 /* Override any conflicting styles */
 .form-input__field {
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
 }
 

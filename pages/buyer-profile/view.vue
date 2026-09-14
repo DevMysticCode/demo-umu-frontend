@@ -266,7 +266,7 @@
             <span class="doc-chev">›</span>
           </div>
         </div>
-        <div class="doc-row" @click="triggerUpload('funds')">
+        <div class="doc-row" @click="triggerUpload('funds')" role="button" tabindex="0" @keydown.enter="triggerUpload('funds')" @keydown.space.prevent="triggerUpload('funds')">
           <div class="doc-icon">
             <img
               src="/op-icons/buyer-profile/moneyBag.png"
@@ -299,7 +299,7 @@
           </div>
           <span class="doc-chev">›</span>
         </div>
-        <div class="doc-row" @click="triggerUpload('mortgage')">
+        <div class="doc-row" @click="triggerUpload('mortgage')" role="button" tabindex="0" @keydown.enter="triggerUpload('mortgage')" @keydown.space.prevent="triggerUpload('mortgage')">
           <div class="doc-icon">
             <img
               src="/op-icons/buyer-profile/mortgageHouse.png"
@@ -787,14 +787,14 @@ function goEdit() {
 .bp-nav-centre {
   flex: 1;
   text-align: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
 }
 .bp-nav-right {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
   white-space: nowrap;
   padding: 8px 4px;
@@ -805,7 +805,7 @@ function goEdit() {
   padding: 80px 22px;
   text-align: center;
   color: #6b6783;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 .bp-empty {
@@ -824,13 +824,13 @@ function goEdit() {
   display: block;
 }
 .bp-empty-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 8px;
 }
 .bp-empty-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
   line-height: 1.55;
   max-width: 22rem;
@@ -861,7 +861,7 @@ function goEdit() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
   box-shadow: 0 2px 6px rgba(212, 130, 42, 0.18);
 }
@@ -870,17 +870,17 @@ function goEdit() {
   min-width: 0;
 }
 .bp-access-banner-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
 }
 .bp-access-banner-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
   margin-top: 1px;
 }
 .bp-access-banner-chev {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #c4821a;
 }
@@ -903,7 +903,7 @@ function goEdit() {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #007e78;
   background: #f2faf8;
@@ -993,14 +993,14 @@ function goEdit() {
 }
 .bp-hero-eyebrow {
   font-style: normal;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 1.2px;
-  color: #00a19a;
+  color: #00726c;
 }
 .bp-hero-strength {
   font-style: normal;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   background: #e5f4f2;
   color: #00857f;
@@ -1021,14 +1021,14 @@ function goEdit() {
   min-width: 0;
 }
 .bp-hero-name {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 2px;
   letter-spacing: -0.2px;
 }
 .bp-hero-ref {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b7089;
   margin-bottom: 10px;
 }
@@ -1039,7 +1039,7 @@ function goEdit() {
 }
 .hero-pill {
   font-style: normal;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   border: 1px solid #d7ece9;
   background: #f2faf8;
@@ -1061,14 +1061,14 @@ function goEdit() {
   margin-bottom: 8px;
 }
 .bp-pb-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #231d45;
 }
 .bp-pb-pct {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
 }
 .pb-track {
   height: 10px;
@@ -1083,7 +1083,7 @@ function goEdit() {
   transition: width 1s 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .bp-pb-tip {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #007e78;
   margin-top: 7px;
@@ -1104,7 +1104,7 @@ function goEdit() {
 .dvs-badge {
   background: #231d45;
   color: white;
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   padding: 3px 7px;
@@ -1112,7 +1112,7 @@ function goEdit() {
   flex-shrink: 0;
 }
 .dvs-text {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: #4a4566;
   line-height: 1.35;
@@ -1133,18 +1133,18 @@ function goEdit() {
   gap: 12px;
 }
 .persist-icon {
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 1;
   flex-shrink: 0;
 }
 .persist-title {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 2px;
 }
 .persist-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
   line-height: 1.4;
 }
@@ -1172,7 +1172,7 @@ function goEdit() {
   border-color: #fbefd9;
 }
 .upgrade-star {
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 .upgrade-body {
@@ -1180,17 +1180,17 @@ function goEdit() {
   min-width: 0;
 }
 .upgrade-title {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
 }
 .upgrade-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
   margin-top: 1px;
 }
 .upgrade-arrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #c4821a;
 }
@@ -1215,13 +1215,13 @@ function goEdit() {
   flex-shrink: 0;
 }
 .sec-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: 0.5px;
 }
 .sec-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6783;
 }
 
@@ -1263,21 +1263,21 @@ function goEdit() {
   display: block;
 }
 .tile-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 2px;
 }
 .tile-value {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
 }
 .tile-value.amber {
   color: #c4821a;
 }
 .tile-prov {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   color: #007e78;
   background: #f2faf8;
@@ -1340,12 +1340,12 @@ function goEdit() {
   min-width: 0;
 }
 .doc-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #231d45;
 }
 .doc-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
   margin-top: 1px;
 }
@@ -1363,11 +1363,11 @@ function goEdit() {
 .doc-chev {
   color: #9c98ad;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .risk-pill {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   padding: 4px 8px;
   border-radius: 100px;
@@ -1403,7 +1403,7 @@ function goEdit() {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #007e78;
   margin-top: 3px;
@@ -1463,12 +1463,12 @@ function goEdit() {
   min-width: 0;
 }
 .action-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #231d45;
 }
 .action-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
 }
 
@@ -1480,7 +1480,7 @@ function goEdit() {
   border: none;
   border-radius: 14px;
   padding: 16px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   font-family: inherit;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.35);

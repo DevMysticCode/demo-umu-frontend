@@ -30,7 +30,7 @@ defineProps<{ flags: RiskFlag[] }>()
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 .hs-card-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 16px;
@@ -56,15 +56,15 @@ defineProps<{ flags: RiskFlag[] }>()
 }
 .hs-flag-icon--high { background: #fef2f2; color: #ef4444; }
 .hs-flag-icon--medium { background: #fffbeb; color: #f59e0b; }
-.hs-flag-icon--low { background: #f0fdf4; color: #00a19a; }
+.hs-flag-icon--low { background: #f0fdf4; color: #00726c; }
 .hs-flag-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1a1a1a;
   margin-bottom: 2px;
 }
 .hs-flag-detail {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #636366;
   line-height: 1.45;
 }

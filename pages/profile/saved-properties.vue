@@ -29,7 +29,7 @@
         class="sp-nav-search-input"
         placeholder="Search saved properties…"
         @keyup.escape="searchOpen = false"
-      />
+       aria-label="Search saved properties…" />
       <button
         v-if="search"
         class="sp-nav-search-clear"
@@ -96,7 +96,7 @@
               class="sp-photo-img-wrap"
             />
 
-            <div class="sp-heart" @click.stop="onUnsave(item)">
+            <div class="sp-heart" @click.stop="onUnsave(item)" role="button" tabindex="0" @keydown.enter="onUnsave(item)" @keydown.space.prevent="onUnsave(item)">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
@@ -308,7 +308,7 @@ const filteredProperties = computed(() => {
 .sp-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.4px;
@@ -325,7 +325,7 @@ const filteredProperties = computed(() => {
   border-radius: 100px;
   padding: 9px 36px 9px 14px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -345,7 +345,7 @@ const filteredProperties = computed(() => {
   border-radius: 50%;
   background: #f1f5f9;
   color: #4a5868;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -370,14 +370,14 @@ const filteredProperties = computed(() => {
   z-index: 1;
 }
 .hero-greeting {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0;
   color: #94a3b8;
   margin-bottom: 4px;
 }
 .sp-h1 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -1.2px;
@@ -386,9 +386,9 @@ const filteredProperties = computed(() => {
 }
 .sp-h1-count {
   display: inline-block;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   vertical-align: 8px;
   margin-left: 6px;
   letter-spacing: -0.5px;
@@ -396,7 +396,7 @@ const filteredProperties = computed(() => {
 .hero-stats {
   display: inline-flex;
   align-items: center;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #4a5868;
   letter-spacing: -0.2px;
@@ -424,7 +424,7 @@ const filteredProperties = computed(() => {
   border: 1px solid #e8eceb;
   border-radius: 100px;
   padding: 7px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   font-family: inherit;
   white-space: nowrap;
@@ -442,7 +442,7 @@ const filteredProperties = computed(() => {
   border-color: #0e2840;
 }
 .sp-chip-num {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: #8a95a0;
   font-feature-settings: 'tnum';
@@ -453,7 +453,7 @@ const filteredProperties = computed(() => {
   text-align: center;
   padding: 40px 22px;
   color: #8a95a0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   position: relative;
   z-index: 1;
@@ -526,7 +526,7 @@ const filteredProperties = computed(() => {
   background: rgba(15, 46, 41, 0.85);
   backdrop-filter: blur(6px);
   color: #f5c44c;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   padding: 3px 7px;
   border-radius: 100px;
@@ -547,7 +547,7 @@ const filteredProperties = computed(() => {
   left: 8px;
   background: #ff8b5a;
   color: #fff;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   padding: 3px 7px;
   border-radius: 100px;
@@ -572,11 +572,11 @@ const filteredProperties = computed(() => {
   color: #4a5868;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-.sp-flag-ic { font-size: 10px; }
+.sp-flag-ic { font-size: 0.625rem; }
 
 .sp-info { padding: 0 2px; }
 .sp-addr {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.3px;
@@ -584,13 +584,13 @@ const filteredProperties = computed(() => {
   margin-bottom: 2px;
 }
 .sp-locality {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: #8a95a0;
   margin-bottom: 4px;
 }
 .sp-price {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #008a84;
   font-feature-settings: 'tnum';

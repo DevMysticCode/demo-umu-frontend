@@ -808,7 +808,7 @@ function formatNum(n: number): string {
   min-width: 0;
 }
 .rd-addr-line {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.2;
@@ -827,7 +827,7 @@ function formatNum(n: number): string {
   }
 }
 .rd-addr-meta {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.78);
   margin-top: 2px;
@@ -849,7 +849,7 @@ function formatNum(n: number): string {
   color: #fff;
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: -0.05px;
 }
@@ -863,7 +863,7 @@ function formatNum(n: number): string {
   height: 18px;
   border-radius: 4px;
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
 }
 .rd-state-unclaimed {
@@ -887,7 +887,7 @@ function formatNum(n: number): string {
   color: #00514d;
 }
 .rd-arrow {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .rd-addr-stats {
@@ -900,7 +900,7 @@ function formatNum(n: number): string {
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.92);
 }
@@ -999,7 +999,7 @@ function formatNum(n: number): string {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 1.2px;
@@ -1014,7 +1014,7 @@ function formatNum(n: number): string {
   box-shadow: 0 0 0 3px rgba(107, 212, 205, 0.25);
 }
 .rd-overpay-num {
-  font-size: 44px;
+  font-size: 2.75rem;
   font-weight: 800;
   letter-spacing: -1.6px;
   line-height: 1;
@@ -1022,14 +1022,14 @@ function formatNum(n: number): string {
   font-feature-settings: 'tnum';
 }
 .rd-overpay-num .rd-unit {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.78);
   letter-spacing: -0.5px;
   margin-left: 2px;
 }
 .rd-overpay-sub {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.5;
@@ -1076,7 +1076,7 @@ function formatNum(n: number): string {
   transform: scale(0.99);
 }
 .rd-cta-emoji {
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
   flex-shrink: 0;
 }
@@ -1088,13 +1088,13 @@ function formatNum(n: number): string {
   min-width: 0;
 }
 .rd-cta-label {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   letter-spacing: -0.1px;
   line-height: 1.2;
 }
 .rd-cta-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   line-height: 1.4;
 }
@@ -1157,7 +1157,7 @@ function formatNum(n: number): string {
 /* "HOMESCORE" eyebrow - uppercase, teal-dark, with a green rounded
    gradient square to the left of the text (prototype-exact). */
 .rd-score-eyebrow .left {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -1176,7 +1176,7 @@ function formatNum(n: number): string {
   flex-shrink: 0;
 }
 .rd-score-eyebrow .right {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #6b6783;
   background: #fafafa;
@@ -1218,7 +1218,7 @@ function formatNum(n: number): string {
   justify-content: center;
 }
 .rd-g-num .gn-big {
-  font-size: 50px;
+  font-size: 3.125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -1.6px;
@@ -1226,7 +1226,7 @@ function formatNum(n: number): string {
   font-feature-settings: 'tnum';
 }
 .rd-g-num .gn-small {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1.2px;
@@ -1238,7 +1238,7 @@ function formatNum(n: number): string {
   min-width: 0;
 }
 .rd-score-band {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -1255,7 +1255,7 @@ function formatNum(n: number): string {
   color: #007e78;
 }
 .rd-score-explainer {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #6b6783;
   margin-top: 5px;
@@ -1273,7 +1273,7 @@ function formatNum(n: number): string {
   padding: 10px 12px;
   background: #fafafa;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.45;
@@ -1317,7 +1317,7 @@ function formatNum(n: number): string {
   flex: 1;
 }
 .rd-epc-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 0.08em;
@@ -1340,13 +1340,13 @@ function formatNum(n: number): string {
   justify-content: center;
   border-radius: 6px;
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 3px 10px;
   line-height: 1;
 }
 .rd-epc-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b6783;
 }
@@ -1359,13 +1359,13 @@ function formatNum(n: number): string {
   flex-shrink: 0;
 }
 .rd-epc-saving-num {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: -0.5px;
 }
 .rd-epc-saving-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
 }
 
@@ -1384,7 +1384,7 @@ function formatNum(n: number): string {
   border-left: 1px solid #f5f5f7;
 }
 .rd-energy-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 0.08em;
@@ -1392,7 +1392,7 @@ function formatNum(n: number): string {
   margin-bottom: 3px;
 }
 .rd-energy-num {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
 }
 .rd-energy-num.red {
@@ -1402,7 +1402,7 @@ function formatNum(n: number): string {
   color: #231d45;
 }
 .rd-energy-meta {
-  font-size: 9px;
+  font-size: 0.5625rem;
   color: #6b6783;
   margin-top: 1px;
 }
@@ -1414,7 +1414,7 @@ function formatNum(n: number): string {
   padding: 13px 14px;
 }
 .rd-env-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: 0.08em;
@@ -1428,7 +1428,7 @@ function formatNum(n: number): string {
   gap: 8px;
 }
 .rd-env-num {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
@@ -1438,7 +1438,7 @@ function formatNum(n: number): string {
   color: #007e78;
 }
 .rd-env-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
   margin-top: 2px;
 }
@@ -1447,7 +1447,7 @@ function formatNum(n: number): string {
   font-weight: 700;
 }
 .rd-env-arrow {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #9c98ad;
   align-self: center;
 }
@@ -1465,7 +1465,7 @@ function formatNum(n: number): string {
   transition: width 0.5s ease;
 }
 .rd-env-foot {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #007e78;
   margin-top: 5px;
   font-weight: 700;
@@ -1547,7 +1547,7 @@ function formatNum(n: number): string {
 }
 /* Eyebrow: centered, uppercase, letter-spaced (prototype-exact). */
 .rd-intent-eyebrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #6b6783;
   letter-spacing: 1.5px;
@@ -1604,7 +1604,7 @@ function formatNum(n: number): string {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
 }
 .rd-intent-icon img {
@@ -1623,14 +1623,14 @@ function formatNum(n: number): string {
 }
 .rd-intent-title {
   display: block;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   margin-bottom: 1px;
 }
 .rd-intent-sub {
   display: block;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: -0.05px;
   line-height: 1.35;
@@ -1649,7 +1649,7 @@ function formatNum(n: number): string {
   color: #6b6783;
 }
 .rd-intent-chev {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   opacity: 0.6;
   flex-shrink: 0;
@@ -1662,7 +1662,7 @@ function formatNum(n: number): string {
   padding: 10px 12px;
   background: #fafafa;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b6783;
 }

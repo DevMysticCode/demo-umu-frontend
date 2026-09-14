@@ -295,15 +295,15 @@ onBeforeUnmount(() => {
   touch-action: none;
 }
 .tu-eyebrow {
-  font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
-  color: #00a19a; text-transform: uppercase;
+  font-size: 0.625rem; font-weight: 800; letter-spacing: 1.5px;
+  color: #00726c; text-transform: uppercase;
 }
 .tu-title {
-  font-size: 22px; font-weight: 900; color: #231d45;
+  font-size: 1.375rem; font-weight: 900; color: #231d45;
   letter-spacing: -0.5px; margin: 4px 0 6px;
 }
 .tu-sub {
-  font-size: 13px; font-weight: 500; color: #6b6783;
+  font-size: 0.8125rem; font-weight: 500; color: #6b6783;
   line-height: 1.5; margin-bottom: 16px;
 }
 
@@ -315,33 +315,33 @@ onBeforeUnmount(() => {
 }
 .tu-card.active { border-color: #00a19a; box-shadow: 0 4px 16px rgba(0,161,154,0.18); }
 .tu-corner {
-  position: absolute; top: 12px; right: 14px; font-size: 18px; font-weight: 900;
+  position: absolute; top: 12px; right: 14px; font-size: 1.125rem; font-weight: 900;
 }
-.tu-card.active .tu-corner { color: #00a19a; }
+.tu-card.active .tu-corner { color: #00726c; }
 .tu-badge {
   display: inline-block; padding: 3px 9px; border-radius: 6px;
-  font-size: 9px; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 8px;
+  font-size: 0.5625rem; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 8px;
 }
 .tu-badge--verified { background: #e6f7f6; color: #00857f; }
-.tu-card-title { font-size: 14px; font-weight: 800; color: #231d45; }
-.tu-card-sub { font-size: 11.5px; font-weight: 500; color: #6b6783; line-height: 1.45; margin-top: 2px; }
-.tu-price { font-size: 22px; font-weight: 900; color: #231d45; letter-spacing: -0.5px; margin-top: 8px; }
+.tu-card-title { font-size: 0.875rem; font-weight: 800; color: #231d45; }
+.tu-card-sub { font-size: 0.7188rem; font-weight: 500; color: #6b6783; line-height: 1.45; margin-top: 2px; }
+.tu-price { font-size: 1.375rem; font-weight: 900; color: #231d45; letter-spacing: -0.5px; margin-top: 8px; }
 .tu-features { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 3px; }
-.tu-features li { font-size: 11.5px; color: #4a4560; display: flex; gap: 6px; align-items: flex-start; }
-.tu-check { color: #00a19a; font-weight: 900; }
+.tu-features li { font-size: 0.7188rem; color: #4a4560; display: flex; gap: 6px; align-items: flex-start; }
+.tu-check { color: #00726c; font-weight: 900; }
 .tu-dash { color: #c0bdcc; font-weight: 900; }
 
 .tu-cta {
   width: 100%; padding: 14px 18px; border-radius: 100px;
   background: #00a19a; color: #fff; border: none;
-  font-family: inherit; font-size: 14px; font-weight: 800;
+  font-family: inherit; font-size: 0.875rem; font-weight: 800;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   gap: 8px; letter-spacing: -0.2px; margin-top: 4px;
 }
 .tu-cta:disabled { opacity: 0.55; cursor: not-allowed; }
 .tu-cancel {
   width: 100%; background: transparent; border: none;
-  color: #6b6783; font-size: 12.5px; font-weight: 700;
+  color: #6b6783; font-size: 0.7813rem; font-weight: 700;
   padding: 12px; cursor: pointer; margin-top: 8px;
   font-family: inherit;
 }
@@ -352,8 +352,8 @@ onBeforeUnmount(() => {
   background: #fafafa;
 }
 .tu-err {
-  color: #c73e36; font-size: 12px; font-weight: 600;
+  color: #c73e36; font-size: 0.75rem; font-weight: 600;
   margin: 6px 0 12px;
 }
-.tu-success-emoji { font-size: 56px; text-align: center; margin: 16px 0 8px; }
+.tu-success-emoji { font-size: 3.5rem; text-align: center; margin: 16px 0 8px; }
 </style>

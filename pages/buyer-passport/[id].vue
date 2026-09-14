@@ -51,7 +51,7 @@
                   :aria-label="loading ? 'Tour loading…' : 'Take a quick tour'"
                   @click="buyerTourRef?.start?.()"
                 >
-                  <span style="font-weight:800;font-size:13px">?</span>
+                  <span style="font-weight:800;font-size: 0.8125rem">?</span>
                 </button>
                 <button class="hero-btn">
                   <OPIcon name="wishlist" class="w-[18px] h-[18px]" />
@@ -558,7 +558,7 @@
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search Records..."
-              />
+               aria-label="Search Records..." />
             </div>
             <button class="buyer-sort-btn">
               <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
@@ -613,7 +613,7 @@
               :class="'state-' + sectionCompletion(section)"
               :data-tour-section="section.id"
               @click="goToSection(section.id)"
-            >
+             role="button" tabindex="0" @keydown.enter="goToSection(section.id)" @keydown.space.prevent="goToSection(section.id)">
               <div class="buyer-record-icon">
                 <OPIcon
                   :name="section.imageKey || 'fittingsContents'"
@@ -780,7 +780,7 @@
               placeholder="Type a note about this property..."
               class="notes-textarea"
               rows="3"
-            />
+             aria-label="Type a note about this property..." />
             <button
               class="notes-save-btn"
               :disabled="!newNoteText.trim() || savingNote"
@@ -1582,7 +1582,7 @@ async function deleteNote(noteId: string) {
   min-height: 60vh;
   gap: 16px;
   color: #666;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .buyer-spinner {
@@ -1628,7 +1628,7 @@ async function deleteNote(noteId: string) {
 .buyer-hero__placeholder-text {
   text-align: center;
   color: #3a4a48;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: -0.2px;
@@ -1665,7 +1665,7 @@ async function deleteNote(noteId: string) {
   align-items: center;
   gap: 5px;
   color: white;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 .buyer-hero__nav {
@@ -1706,7 +1706,7 @@ async function deleteNote(noteId: string) {
   border-radius: 20px;
   padding: 8px 12px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
   backdrop-filter: blur(4px);
@@ -1733,7 +1733,7 @@ async function deleteNote(noteId: string) {
 .buyer-address {
   color: #231d45;
   font-weight: 800;
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1.2;
   letter-spacing: -0.02em;
   margin: 0 0 4px;
@@ -1741,14 +1741,14 @@ async function deleteNote(noteId: string) {
 .buyer-city {
   color: #94a3b8;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 0.8125rem;
   letter-spacing: -0.01em;
   margin: 0 0 8px;
 }
 .buyer-price {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 1.125rem;
   letter-spacing: -0.01em;
   margin: 0;
   display: inline-flex;
@@ -1756,7 +1756,7 @@ async function deleteNote(noteId: string) {
   gap: 8px;
 }
 .buyer-estimated {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
@@ -1775,11 +1775,11 @@ async function deleteNote(noteId: string) {
   align-items: center;
   gap: 5px;
   background: #f1f9f4;
-  color: #00a19a;
+  color: #00726c;
   border: 1px solid #e2f1ea;
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -1789,7 +1789,7 @@ async function deleteNote(noteId: string) {
   margin-bottom: 24px;
 }
 .buyer-section-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
@@ -1797,7 +1797,7 @@ async function deleteNote(noteId: string) {
   line-height: 1.3;
 }
 .buyer-section-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #94a3b8;
   margin: 0 0 12px;
   line-height: 1.45;
@@ -1830,14 +1830,14 @@ async function deleteNote(noteId: string) {
   border-radius: 11px;
   background: #fff;
   border: 1px solid #e2f1ea;
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   flex-shrink: 0;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 .buyer-detail-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #94a3b8;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -1846,7 +1846,7 @@ async function deleteNote(noteId: string) {
   line-height: 1.3;
 }
 .buyer-detail-value {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
   margin: 0;
@@ -1875,7 +1875,7 @@ async function deleteNote(noteId: string) {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   color: #333;
   background: transparent;
 }
@@ -1948,7 +1948,7 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-record-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
@@ -1957,7 +1957,7 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-record-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   margin: 0 0 8px;
   line-height: 1.45;
@@ -1971,7 +1971,7 @@ async function deleteNote(noteId: string) {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   padding: 3px 9px;
   border-radius: 999px;
@@ -2023,7 +2023,7 @@ async function deleteNote(noteId: string) {
   background: #e2e8f0;
 }
 .buyer-record-pct {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #4a5568;
   min-width: 32px;
@@ -2047,7 +2047,7 @@ async function deleteNote(noteId: string) {
 .buyer-record-row:hover .buyer-record-arrow {
   background: #f1f9f4;
   border-color: #e2f1ea;
-  color: #00a19a;
+  color: #00726c;
 }
 
 /* PDF download row */
@@ -2069,14 +2069,14 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-pdf-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1a1a1a;
   margin: 0 0 2px;
 }
 
 .buyer-pdf-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #666;
   margin: 0;
 }
@@ -2090,7 +2090,7 @@ async function deleteNote(noteId: string) {
   border: none;
   border-radius: 10px;
   padding: 10px 16px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
@@ -2171,16 +2171,16 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-progress-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
 }
 
 .buyer-progress-pct {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: -0.01em;
 }
 
@@ -2200,7 +2200,7 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-progress-hint {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #94a3b8;
   margin: 0;
   line-height: 1.45;
@@ -2222,7 +2222,7 @@ async function deleteNote(noteId: string) {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #92400e;
   letter-spacing: -0.01em;
@@ -2238,7 +2238,7 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-redflags-list li {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #78350f;
   line-height: 1.5;
 }
@@ -2303,7 +2303,7 @@ async function deleteNote(noteId: string) {
   border-radius: 12px;
   background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
   border: 1px solid #e2f1ea;
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -2316,7 +2316,7 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-comp-address {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
@@ -2327,15 +2327,15 @@ async function deleteNote(noteId: string) {
 }
 
 .buyer-comp-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #94a3b8;
   margin: 0;
 }
 
 .buyer-comp-price {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: -0.01em;
   flex-shrink: 0;
 }
@@ -2376,7 +2376,7 @@ async function deleteNote(noteId: string) {
   border-radius: 50%;
   background: #ef4444;
   color: white;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -2441,7 +2441,7 @@ async function deleteNote(noteId: string) {
 }
 
 .sheet-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 600;
   color: #1a1a1a;
   margin: 0;
@@ -2472,7 +2472,7 @@ async function deleteNote(noteId: string) {
   border: 1.5px solid #e0e0e0;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 16px;
+  font-size: 1rem;
   color: #333;
   resize: none;
   outline: none;
@@ -2491,7 +2491,7 @@ async function deleteNote(noteId: string) {
   border: none;
   border-radius: 10px;
   padding: 10px 20px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -2511,7 +2511,7 @@ async function deleteNote(noteId: string) {
 .notes-empty {
   text-align: center;
   color: #999;
-  font-size: 14px;
+  font-size: 0.875rem;
   padding: 24px 0;
 }
 
@@ -2523,7 +2523,7 @@ async function deleteNote(noteId: string) {
 }
 
 .note-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
   margin: 0 0 8px;
   line-height: 1.5;
@@ -2536,7 +2536,7 @@ async function deleteNote(noteId: string) {
 }
 
 .note-date {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #999;
 }
 
@@ -2558,7 +2558,7 @@ async function deleteNote(noteId: string) {
 }
 
 .share-hint {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #555;
   margin: 0;
   line-height: 1.5;
@@ -2570,7 +2570,7 @@ async function deleteNote(noteId: string) {
   border: none;
   border-radius: 12px;
   padding: 14px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   width: 100%;
@@ -2583,12 +2583,12 @@ async function deleteNote(noteId: string) {
 
 .share-regenerate {
   background: #e6f9f7;
-  color: #00a19a;
+  color: #00726c;
   border: 1.5px solid #b2e4e1;
 }
 
 .share-expires {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #999;
   margin: 0;
 }
@@ -2604,7 +2604,7 @@ async function deleteNote(noteId: string) {
 
 .share-url-text {
   flex: 1;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #333;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2617,7 +2617,7 @@ async function deleteNote(noteId: string) {
   border: none;
   border-radius: 8px;
   padding: 6px 14px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   flex-shrink: 0;
@@ -2681,22 +2681,22 @@ async function deleteNote(noteId: string) {
   z-index: 1;
 }
 .buyer-hero-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 4px;
 }
 .buyer-hero-addr {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
 .buyer-hero-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #94a3b8;
   margin: 2px 0 10px;
 }
@@ -2715,20 +2715,20 @@ async function deleteNote(noteId: string) {
   border-left: 1px solid rgba(0, 140, 134, 0.08);
 }
 .buyer-hero-stat-val {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   line-height: 1;
   letter-spacing: -0.01em;
 }
 .buyer-hero-stat-val--brand {
-  color: #00a19a;
+  color: #00726c;
 }
 .buyer-hero-stat-val--ready {
-  color: #00a19a;
+  color: #00726c;
 }
 .buyer-hero-stat-lbl {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -2744,7 +2744,7 @@ async function deleteNote(noteId: string) {
   gap: 5px;
   margin-top: 8px;
   padding: 5px 11px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   border-radius: 999px;
   cursor: pointer;
@@ -2797,7 +2797,7 @@ async function deleteNote(noteId: string) {
   background: rgba(255, 255, 255, 0.2);
   display: grid;
   place-items: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -2806,20 +2806,20 @@ async function deleteNote(noteId: string) {
   min-width: 0;
 }
 .buyer-resume-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.78);
 }
 .buyer-resume-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   margin-top: 2px;
   letter-spacing: -0.01em;
 }
 .buyer-resume-chev {
-  font-size: 22px;
+  font-size: 1.375rem;
   opacity: 0.7;
   flex-shrink: 0;
 }
@@ -2849,7 +2849,7 @@ async function deleteNote(noteId: string) {
   border-left: 1px solid rgba(0, 140, 134, 0.12);
 }
 .buyer-summary-num {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -2864,7 +2864,7 @@ async function deleteNote(noteId: string) {
   color: #94a3b8;
 }
 .buyer-summary-lbl {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
@@ -2872,7 +2872,7 @@ async function deleteNote(noteId: string) {
   margin-top: 4px;
 }
 .buyer-summary-hint {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a5568;
   line-height: 1.5;
   margin: 0;
@@ -2908,7 +2908,7 @@ async function deleteNote(noteId: string) {
   border: 1.5px solid #eef0f6;
   color: #4a5568;
   font-weight: 700;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   padding: 11px 14px;
   border-radius: 999px;
   cursor: pointer;
@@ -2924,7 +2924,7 @@ async function deleteNote(noteId: string) {
   color: #be123c;
 }
 .buyer-action-heart {
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1;
 }
 .buyer-action-ask {
@@ -2933,7 +2933,7 @@ async function deleteNote(noteId: string) {
   border: none;
   border-radius: 999px;
   padding: 11px 16px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   letter-spacing: -0.01em;
   cursor: pointer;
@@ -2964,7 +2964,7 @@ async function deleteNote(noteId: string) {
   z-index: 40;
   background: #231d45;
   color: #fff;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   padding: 10px 16px;
   border-radius: 999px;

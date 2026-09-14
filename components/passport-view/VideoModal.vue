@@ -116,7 +116,7 @@ function requestFullscreen() {
 }
 
 .video-modal-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #fff;
   margin: 0;
@@ -165,7 +165,7 @@ function requestFullscreen() {
   border: none;
   border-radius: 50px;
   padding: 8px 18px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
 }
@@ -175,7 +175,7 @@ function requestFullscreen() {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #888;
   margin: 10px 0 0;
   text-align: center;
@@ -195,14 +195,14 @@ function requestFullscreen() {
 }
 
 .video-coming-soon-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 600;
   color: #fff;
   margin: 0 0 10px;
 }
 
 .video-coming-soon-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #999;
   line-height: 1.6;
   margin: 0;
