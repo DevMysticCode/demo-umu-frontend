@@ -154,7 +154,7 @@
         aria-modal="true"
         aria-labelledby="pcs-sheet-title"
       >
-        <div class="pcs-grabber-wrap" @click="closePostcodeSheet" role="button" tabindex="0" @keydown.enter="closePostcodeSheet" @keydown.space.prevent="closePostcodeSheet">
+        <div class="pcs-grabber-wrap" @click="closePostcodeSheet" role="button" tabindex="0" aria-label="Close" @keydown.enter="closePostcodeSheet" @keydown.space.prevent="closePostcodeSheet">
           <div class="pcs-grabber" />
         </div>
         <div id="pcs-sheet-title" class="pcs-title">Set your postcode</div>

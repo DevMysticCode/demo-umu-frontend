@@ -1512,7 +1512,7 @@ onMounted(async () => {
 }
 .apc-continue-btn {
   width: 100%;
-  background: #00a19a;
+  background: #00726c;
   color: #fff;
   border: none;
   font-family: inherit;

@@ -470,14 +470,14 @@
         :class="{ open: activePopover !== null }"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="psr-sheet-title"
+        :aria-label="popoverTitle"
         :style="popoverDragStyle"
         @touchstart.passive="onPopoverTouchStart"
         @touchmove="onPopoverTouchMove"
         @touchend="onPopoverTouchEnd"
         @touchcancel="onPopoverTouchEnd"
       >
-        <div class="psr-sheet-grabber-wrap" @click="activePopover = null" role="button" tabindex="0" @keydown.enter="activePopover = null" @keydown.space.prevent="activePopover = null">
+        <div class="psr-sheet-grabber-wrap" @click="activePopover = null" role="button" tabindex="0" aria-label="Close" @keydown.enter="activePopover = null" @keydown.space.prevent="activePopover = null">
           <div class="psr-sheet-grabber" />
         </div>
 
@@ -969,6 +969,20 @@ const activePopover = ref<PopoverKey>(null)
 function openPopover(k: PopoverKey) {
   activePopover.value = k
 }
+// Static aria-label instead of aria-labelledby: the sheet's role="dialog"
+// element stays mounted (just hidden via the "open" class) even when no
+// popover is active, so an aria-labelledby pointing at one of the
+// per-popover title divs below would reference a nonexistent id whenever
+// none of them are rendered - a dangling IDREF, not a missing-but-present
+// element. A always-available computed sidesteps that entirely.
+const POPOVER_TITLES: Record<Exclude<PopoverKey, null>, string> = {
+  sort: 'Sort by',
+  passport: 'Passport status',
+  homescore: 'Minimum HomeScore',
+  ptype: 'Property type',
+  more: 'More filters',
+}
+const popoverTitle = computed(() => (activePopover.value ? POPOVER_TITLES[activePopover.value] : 'Filters'))
 const {
   dragStyle: popoverDragStyle,
   onTouchStart: onPopoverTouchStart,

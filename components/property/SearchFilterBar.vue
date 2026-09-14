@@ -168,7 +168,7 @@
         @touchend="onFilterTouchEnd"
         @touchcancel="onFilterTouchEnd"
       >
-        <div class="sheet-grabber-wrap" @click="closeFilterSheet" role="button" tabindex="0" @keydown.enter="closeFilterSheet" @keydown.space.prevent="closeFilterSheet">
+        <div class="sheet-grabber-wrap" @click="closeFilterSheet" role="button" tabindex="0" aria-label="Close" @keydown.enter="closeFilterSheet" @keydown.space.prevent="closeFilterSheet">
           <div class="sheet-grabber" />
         </div>
         <div class="sheet-head">
