@@ -6,6 +6,7 @@
         class="ifs-sheet"
         role="dialog"
         aria-modal="true"
+        aria-labelledby="ifs-sheet-title"
         :style="dragStyle"
         @touchstart.passive="onTouchStart"
         @touchmove="onTouchMove"
@@ -17,7 +18,7 @@
           <!-- STATE: routes (per-measure entry) -->
           <div v-if="state === 'routes'" class="ifs-state">
             <div class="ifs-eyebrow">{{ trade.eyebrow }}</div>
-            <h3 class="ifs-title">{{ trade.title }}</h3>
+            <h3 id="ifs-sheet-title" class="ifs-title">{{ trade.title }}</h3>
             <p class="ifs-lede">
               We're building our vetted network in your area. Here's what you
               can do right now for this measure.
@@ -240,7 +241,7 @@
           <!-- STATE: capture form -->
           <div v-else-if="state === 'form'" class="ifs-state">
             <div class="ifs-eyebrow">Get matched</div>
-            <h3 class="ifs-title">Line up installers</h3>
+            <h3 id="ifs-sheet-title" class="ifs-title">Line up installers</h3>
             <p class="ifs-lede">
               Just the basics - we'll come back with vetted installers. No
               obligation.
@@ -312,7 +313,7 @@
           <!-- STATE: requests tracker -->
           <div v-else-if="state === 'tracker'" class="ifs-state">
             <div class="ifs-eyebrow">Your requests</div>
-            <h3 class="ifs-title">Match requests</h3>
+            <h3 id="ifs-sheet-title" class="ifs-title">Match requests</h3>
             <p class="ifs-lede">
               Where each of your match requests has got to. We're sourcing
               vetted installers for these measures.
@@ -418,7 +419,7 @@
           <!-- STATE: early-access form -->
           <div v-else-if="state === 'ea-form'" class="ifs-state">
             <div class="ifs-eyebrow">Early access</div>
-            <h3 class="ifs-title">
+            <h3 id="ifs-sheet-title" class="ifs-title">
               Help us build the right network for
               {{ postcode || 'your area' }}
             </h3>

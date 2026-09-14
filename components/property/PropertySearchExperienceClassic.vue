@@ -470,6 +470,7 @@
         :class="{ open: activePopover !== null }"
         role="dialog"
         aria-modal="true"
+        aria-labelledby="psr-sheet-title"
         :style="popoverDragStyle"
         @touchstart.passive="onPopoverTouchStart"
         @touchmove="onPopoverTouchMove"
@@ -481,7 +482,7 @@
         </div>
 
         <template v-if="activePopover === 'sort'">
-          <div class="psr-sheet-title">Sort by</div>
+          <div id="psr-sheet-title" class="psr-sheet-title">Sort by</div>
           <div class="psr-option-list">
             <div
               v-for="opt in sortOptions"
@@ -497,7 +498,7 @@
         </template>
 
         <template v-else-if="activePopover === 'passport'">
-          <div class="psr-sheet-title">Passport status</div>
+          <div id="psr-sheet-title" class="psr-sheet-title">Passport status</div>
           <div class="psr-option-list">
             <div
               v-for="opt in passportStateOptions"
@@ -531,7 +532,7 @@
         </template>
 
         <template v-else-if="activePopover === 'homescore'">
-          <div class="psr-sheet-title">Minimum HomeScore</div>
+          <div id="psr-sheet-title" class="psr-sheet-title">Minimum HomeScore</div>
           <div class="psr-slider-row">
             <input
               type="range"
@@ -570,7 +571,7 @@
         </template>
 
         <template v-else-if="activePopover === 'ptype'">
-          <div class="psr-sheet-title">Property type</div>
+          <div id="psr-sheet-title" class="psr-sheet-title">Property type</div>
           <div class="psr-chip-group">
             <button
               v-for="opt in propertyTypeOptions"
@@ -596,7 +597,7 @@
         </template>
 
         <template v-else-if="activePopover === 'more'">
-          <div class="psr-sheet-title">More filters</div>
+          <div id="psr-sheet-title" class="psr-sheet-title">More filters</div>
           <div class="psr-sheet-section-title">Bedrooms (min)</div>
           <div class="psr-chip-group">
             <button

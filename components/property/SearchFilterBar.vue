@@ -161,6 +161,7 @@
         :class="{ open: showFilters }"
         role="dialog"
         aria-modal="true"
+        aria-labelledby="sfb-sheet-title"
         :style="filterDragStyle"
         @touchstart.passive="onFilterTouchStart"
         @touchmove="onFilterTouchMove"
@@ -171,7 +172,7 @@
           <div class="sheet-grabber" />
         </div>
         <div class="sheet-head">
-          <div class="sheet-title">Distance &amp; filters</div>
+          <div id="sfb-sheet-title" class="sheet-title">Distance &amp; filters</div>
           <button type="button" class="sheet-reset" :disabled="isDraftDefault" @click="resetDraft">
             Reset
           </button>
@@ -276,6 +277,7 @@
                 step="5"
                 :value="draft.hs"
                 :style="{ '--fill': (draft.hs / 90) * 100 + '%' }"
+                :aria-label="`Minimum HomeScore: ${draft.hs === 0 ? 'Any' : draft.hs + '+'}`"
                 @input="onHsInput(($event.target as HTMLInputElement).value)"
               />
               <div class="slider-scale">
@@ -718,7 +720,7 @@ function clearAllFilters() {
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  background: #00a19a;
+  background: #00726c;
   color: #fff;
   font-size: 0.75rem;
   font-weight: 700;
