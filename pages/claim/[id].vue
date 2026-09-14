@@ -229,7 +229,7 @@
         Not the right property? Search again
       </div>
 
-      <div v-if="verificationError" class="cl-err-banner">
+      <div v-if="verificationError" class="cl-err-banner" role="alert">
         {{ verificationError }}
         <button class="cl-err-retry" @click="confirmProperty">Retry</button>
       </div>
@@ -345,7 +345,7 @@
       </div>
 
       <!-- Persona error banner -->
-      <div v-if="personaError" class="cl-err-banner" style="margin-top: 12px">
+      <div v-if="personaError" class="cl-err-banner" style="margin-top: 12px" role="alert">
         {{ personaError }}
         <button class="cl-err-retry" @click="startPersonaKyc">Retry</button>
       </div>
@@ -409,7 +409,7 @@
 
     <!-- ════════════════════════════ KYC LIVENESS ════════════════════════════ -->
     <div v-else-if="step === 'kyc-liveness'" class="cl-screen cl-center-col">
-      <div class="cl-live-wrap">
+      <div class="cl-live-wrap" aria-hidden="true">
         <svg width="160" height="160" viewBox="0 0 160 160" class="cl-live-svg">
           <circle
             cx="80"
@@ -859,7 +859,7 @@
         </div>
       </div>
 
-      <div v-if="issueError" class="cl-err-banner">
+      <div v-if="issueError" class="cl-err-banner" role="alert">
         <span>{{ issueError }}</span>
         <NuxtLink
           v-if="issueError.toLowerCase().includes('phone')"
@@ -962,7 +962,7 @@
         <div id="claim-stripe-card-element" class="cl-stripe-box" />
       </div>
 
-      <div v-if="paymentError" class="cl-err-banner">
+      <div v-if="paymentError" class="cl-err-banner" role="alert">
         <span>{{ paymentError }}</span>
       </div>
 

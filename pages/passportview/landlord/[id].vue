@@ -517,14 +517,14 @@
                   <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
                   <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeAlarmRowDoc(doc.id)">✕</button>
                 </div>
-                <label class="lp-upload-row" style="margin-top:10px">
+                <label class="lp-upload-row" style="margin-top:10px" for="a11y-field-id-28">
                   <input
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png,.webp"
                     class="lp-upload-input"
                     :disabled="alarmEvidenceUploading[row.rid]"
                     @change="onAlarmRowFilePicked($event, row.rid)"
-                  />
+                   id="a11y-field-id-28"/>
                   <span class="lp-upload-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                   </span>
@@ -587,14 +587,14 @@
                   <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
                   <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeRtrOccDoc(i, doc.id)">✕</button>
                 </div>
-                <label class="lp-upload-row">
+                <label class="lp-upload-row" for="a11y-field-id-29">
                   <input
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png,.webp"
                     class="lp-upload-input"
                     :disabled="rtrOccUploading === i"
                     @change="onRtrOccFilePicked(i, $event)"
-                  />
+                   id="a11y-field-id-29"/>
                   <span class="lp-upload-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -718,14 +718,14 @@
                   <button v-if="doc.id !== '__legacy__'" type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
                 </div>
 
-                <label class="lp-upload-row">
+                <label class="lp-upload-row" for="a11y-field-id-30">
                   <input
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
                     class="lp-upload-input"
                     :disabled="copyUploading"
                     @change="onCopyFilePicked"
-                  />
+                   id="a11y-field-id-30"/>
                   <span class="lp-upload-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -756,14 +756,14 @@
                   <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
                   <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removePiCopyDoc(doc.id)">✕</button>
                 </div>
-                <label class="lp-upload-row">
+                <label class="lp-upload-row" for="a11y-field-id-31">
                   <input
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
                     class="lp-upload-input"
                     :disabled="piCopyUploading"
                     @change="onPiCopyFilePicked"
-                  />
+                   id="a11y-field-id-31"/>
                   <span class="lp-upload-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -878,8 +878,8 @@
                   <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
                   <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
                 </div>
-                <label class="lp-upload-row">
-                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="copyUploading" @change="onCopyFilePicked" />
+                <label class="lp-upload-row" for="a11y-field-id-32">
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="copyUploading" @change="onCopyFilePicked"  id="a11y-field-id-32"/>
                   <span class="lp-upload-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                   </span>
@@ -896,8 +896,8 @@
                   <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
                   <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeWarrantyDoc(doc.id)">✕</button>
                 </div>
-                <label class="lp-upload-row">
-                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="warrantyUploading" @change="onWarrantyFilePicked" />
+                <label class="lp-upload-row" for="a11y-field-id-33">
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="warrantyUploading" @change="onWarrantyFilePicked"  id="a11y-field-id-33"/>
                   <span class="lp-upload-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                   </span>
@@ -920,8 +920,8 @@
                   <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
                   <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCoverDoc(doc.id)">✕</button>
                 </div>
-                <label class="lp-upload-row">
-                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="coverUploading" @change="onCoverFilePicked" />
+                <label class="lp-upload-row" for="a11y-field-id-34">
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="coverUploading" @change="onCoverFilePicked"  id="a11y-field-id-34"/>
                   <span class="lp-upload-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                   </span>
@@ -970,14 +970,14 @@
               </div>
 
               <!-- File picker -->
-              <label v-else class="lp-upload-row">
+              <label v-else class="lp-upload-row" for="a11y-field-id-35">
                 <input
                   type="file"
                   accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
                   class="lp-upload-input"
                   :disabled="drawerUploading"
                   @change="onDrawerFilePicked"
-                />
+                 id="a11y-field-id-35"/>
                 <span class="lp-upload-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -1403,14 +1403,14 @@
                   <img :src="doc.fileUrl" alt="" class="pgrid-img" loading="lazy" @click="viewCopyDoc(doc.fileUrl)" />
                   <button type="button" class="pgrid-rm" aria-label="Remove photo" @click="removeItemPhotoDoc(invCurRoom.id, item.name, doc.id)">✕</button>
                 </div>
-                <label v-if="(itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || []).length < 8" class="pgrid-add">
+                <label v-if="(itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || []).length < 8" class="pgrid-add" for="a11y-field-id-36">
                   <input
                     type="file"
                     accept=".jpg,.jpeg,.png,.webp"
                     class="lp-upload-input"
                     :disabled="itemPhotoUploading === itemPhotoKey(invCurRoom.id, item.name)"
                     @change="onItemPhotoPicked(invCurRoom.id, item.name, $event)"
-                  />
+                   id="a11y-field-id-36"/>
                   <span v-if="itemPhotoUploading === itemPhotoKey(invCurRoom.id, item.name)">…</span>
                   <span v-else>📷<br />Add</span>
                 </label>
@@ -1476,14 +1476,14 @@
                     <img :src="doc.fileUrl" alt="" class="pgrid-img" loading="lazy" @click="viewCopyDoc(doc.fileUrl)" />
                     <button type="button" class="pgrid-rm" aria-label="Remove photo" @click="removeItemPhotoDoc(invCurRoom.id, item.name, doc.id)">✕</button>
                   </div>
-                  <label v-if="(itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || []).length < 8" class="pgrid-add">
+                  <label v-if="(itemPhotoDocs[itemPhotoKey(invCurRoom.id, item.name)] || []).length < 8" class="pgrid-add" for="a11y-field-id-37">
                     <input
                       type="file"
                       accept=".jpg,.jpeg,.png,.webp"
                       class="lp-upload-input"
                       :disabled="itemPhotoUploading === itemPhotoKey(invCurRoom.id, item.name)"
                       @change="onItemPhotoPicked(invCurRoom.id, item.name, $event)"
-                    />
+                     id="a11y-field-id-37"/>
                     <span v-if="itemPhotoUploading === itemPhotoKey(invCurRoom.id, item.name)">…</span>
                     <span v-else>📷<br />Add</span>
                   </label>
@@ -1515,14 +1515,14 @@
                 <img :src="doc.fileUrl" alt="" class="pgrid-img" loading="lazy" @click="viewCopyDoc(doc.fileUrl)" />
                 <button type="button" class="pgrid-rm" aria-label="Remove photo" @click="removeRoomPhotoDoc(invCurRoom.id, doc.id)">✕</button>
               </div>
-              <label v-if="(roomPhotoDocs[invCurRoom.id] || []).length < 10" class="pgrid-add">
+              <label v-if="(roomPhotoDocs[invCurRoom.id] || []).length < 10" class="pgrid-add" for="a11y-field-id-38">
                 <input
                   type="file"
                   accept=".jpg,.jpeg,.png,.webp"
                   class="lp-upload-input"
                   :disabled="roomPhotoUploading === invCurRoom.id"
                   @change="onRoomPhotoPicked(invCurRoom.id, $event)"
-                />
+                 id="a11y-field-id-38"/>
                 <span v-if="roomPhotoUploading === invCurRoom.id">…</span>
                 <span v-else>📷<br />Add photo</span>
               </label>
@@ -1559,8 +1559,8 @@
               <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
               <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeBinDoc(doc.id)">✕</button>
             </div>
-            <label class="lp-upload-row">
-              <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="binUploading" @change="onBinFilePicked" />
+            <label class="lp-upload-row" for="a11y-field-id-39">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="binUploading" @change="onBinFilePicked"  id="a11y-field-id-39"/>
               <span class="lp-upload-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
               </span>
@@ -1677,8 +1677,8 @@
               <button type="button" class="btn-secondary lp-doc-preview-btn" @click="viewCopyDoc(doc.fileUrl)">View</button>
               <button type="button" class="lp-repeat-rm" style="margin-left:8px" aria-label="Remove" @click="removeCopyDoc(doc.id)">✕</button>
             </div>
-            <label class="lp-upload-row">
-              <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="copyUploading" @change="onCopyFilePicked" />
+            <label class="lp-upload-row" for="a11y-field-id-40">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="lp-upload-input" :disabled="copyUploading" @change="onCopyFilePicked"  id="a11y-field-id-40"/>
               <span class="lp-upload-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
               </span>
@@ -1747,8 +1747,8 @@
             </div>
             <div class="mform-label" style="margin-top:16px">Draw your signature</div>
             <SignaturePad ref="invLandlordPadRef" />
-            <label class="lp-tn-consent">
-              <input v-model="invLandlordConsent" type="checkbox" />
+            <label class="lp-tn-consent" for="a11y-field-id-41">
+              <input v-model="invLandlordConsent" type="checkbox"  id="a11y-field-id-41"/>
               <span>I, {{ invLandlordName || 'the landlord' }}, agree this is my signature and confirm this inventory record is accurate.</span>
             </label>
             <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
@@ -2053,8 +2053,8 @@
             </div>
             <div class="mform-label" style="margin-top:16px">Draw your signature</div>
             <SignaturePad ref="tnLandlordPadRef" />
-            <label class="lp-tn-consent">
-              <input v-model="tnLandlordConsent" type="checkbox" />
+            <label class="lp-tn-consent" for="a11y-field-id-42">
+              <input v-model="tnLandlordConsent" type="checkbox"  id="a11y-field-id-42"/>
               <span>I, {{ tnLandlordName || 'the landlord' }}, agree this is my signature and I accept the terms of this tenancy agreement.</span>
             </label>
             <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>

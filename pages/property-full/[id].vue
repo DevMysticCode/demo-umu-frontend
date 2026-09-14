@@ -80,6 +80,8 @@
               width="170"
               height="170"
               class="prop-gauge-svg"
+              role="img"
+              :aria-label="`Home Score: ${homeScore.total} out of 100. Rating: ${homeScore.rating}.`"
             >
               <circle
                 cx="100"
@@ -148,6 +150,8 @@
               width="170"
               height="170"
               class="prop-gauge-svg"
+              role="img"
+              aria-label="Home Score not yet calculated."
             >
               <circle
                 cx="100"

@@ -84,25 +84,25 @@
 
                 <!-- Single-line text (item name) -->
                 <template v-if="part.type === 'text' && part.title">
-                  <label class="form-label">{{ part.title }}</label>
+                  <label class="form-label" for="a11y-field-RepeatableItemQuestion-68">{{ part.title }}</label>
                   <input
                     type="text"
                     class="form-input"
                     :placeholder="part.placeholder"
                     :value="currentItem[part.partKey] || ''"
                     @input="(e) => setField(part.partKey, e.target.value)"
-                   aria-label="part.placeholder" />
+                   aria-label="part.placeholder"  id="a11y-field-RepeatableItemQuestion-68"/>
                 </template>
 
                 <!-- Textarea (description / comments — no title or empty title) -->
                 <template v-else-if="part.type === 'text'">
-                  <label v-if="part.title" class="form-label">{{ part.title }}</label>
+                  <label v-if="part.title" class="form-label" for="a11y-field-RepeatableItemQuestion-69">{{ part.title }}</label>
                   <textarea
                     class="form-textarea"
                     :placeholder="part.placeholder"
                     :value="currentItem[part.partKey] || ''"
                     @input="(e) => setField(part.partKey, e.target.value)"
-                   aria-label="part.placeholder" />
+                   aria-label="part.placeholder"  id="a11y-field-RepeatableItemQuestion-69"/>
                 </template>
 
                 <!-- Radio -->

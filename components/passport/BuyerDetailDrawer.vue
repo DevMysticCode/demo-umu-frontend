@@ -33,7 +33,7 @@
               </div>
             </div>
             <div class="bdd-hero-gauge">
-              <svg viewBox="0 0 80 80">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
                 <circle class="bg-track" cx="40" cy="40" r="34" stroke-width="6" fill="none" />
                 <circle
                   class="bg-fill" cx="40" cy="40" r="34"

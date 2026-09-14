@@ -37,8 +37,8 @@
           <div class="mform-label" style="margin-top:16px">Your signature</div>
           <SignaturePad ref="padRef" />
 
-          <label class="sg-consent">
-            <input v-model="consent" type="checkbox" />
+          <label class="sg-consent" for="a11y-field-token-58">
+            <input v-model="consent" type="checkbox"  id="a11y-field-token-58"/>
             <span>I, {{ signerName || 'the undersigned' }}, agree this is my signature and I accept the terms of this tenancy agreement.</span>
           </label>
 

@@ -1882,7 +1882,7 @@
                 costs, risks and potential.
               </div>
             </div>
-            <div class="bv-snapshot-gauge-wrap">
+            <div class="bv-snapshot-gauge-wrap" aria-hidden="true">
               <svg class="bv-snapshot-gauge-svg" viewBox="0 0 100 100">
                 <defs>
                   <linearGradient id="bvGrad" x1="1" y1="0" x2="0" y2="0">
@@ -2676,13 +2676,13 @@
             </div>
 
             <!-- File picker (only shown when nothing pending) -->
-            <label v-if="!qwDrawerFile" class="qw-upload-row">
+            <label v-if="!qwDrawerFile" class="qw-upload-row" for="a11y-field-id-7">
               <input
                 type="file"
                 accept=".pdf,image/*"
                 class="qw-upload-input"
                 @change="onDrawerFilePicked"
-              />
+               id="a11y-field-id-7"/>
               <span class="qw-upload-icon">
                 <svg
                   viewBox="0 0 24 24"
@@ -2787,13 +2787,13 @@
             </div>
 
             <!-- File picker -->
-            <label v-if="!simBillFile" class="qw-upload-row">
+            <label v-if="!simBillFile" class="qw-upload-row" for="a11y-field-id-8">
               <input
                 type="file"
                 accept=".pdf,image/*"
                 class="qw-upload-input"
                 @change="onSimBillFilePicked"
-              />
+               id="a11y-field-id-8"/>
               <span class="qw-upload-icon">
                 <svg
                   viewBox="0 0 24 24"

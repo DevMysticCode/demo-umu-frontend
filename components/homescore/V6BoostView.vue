@@ -43,7 +43,7 @@
         >
           <!-- <div class="gauge-emoji">{{ g.emoji }}</div> -->
           <div class="boost-gauge-ring">
-            <svg viewBox="0 0 90 90">
+            <svg viewBox="0 0 90 90" aria-hidden="true">
               <circle cx="45" cy="45" r="36" stroke-width="7" fill="none" />
               <circle
                 cx="45"
@@ -302,14 +302,14 @@
           <div class="bd-upload-sub">{{ activeDoc.sub }}</div>
         </div>
 
-        <label class="bd-dropzone" :class="{ 'has-file': !!selectedFile }">
+        <label class="bd-dropzone" :class="{ 'has-file': !!selectedFile }" for="a11y-field-V6BoostView-65">
           <input
             ref="fileInputRef"
             type="file"
             accept="application/pdf,image/png,image/jpeg"
             class="bd-dropzone-input"
             @change="onFileChange"
-          />
+           id="a11y-field-V6BoostView-65"/>
           <div class="bd-dropzone-icon">{{ selectedFile ? '✓' : '📄' }}</div>
           <div class="bd-dropzone-title">
             {{ selectedFile ? selectedFile.name : 'Drop your document here' }}
@@ -333,7 +333,7 @@
         <!-- Error line shown when OCR fails to find a legible spend
              on the bill (returned annualSpend=null). The user needs
              actionable copy telling them what to try next. -->
-        <div v-if="uploadError" class="bd-upload-err">{{ uploadError }}</div>
+        <div v-if="uploadError" class="bd-upload-err" role="alert">{{ uploadError }}</div>
       </div>
 
       <template #footer>

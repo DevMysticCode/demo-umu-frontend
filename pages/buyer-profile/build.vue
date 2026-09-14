@@ -722,7 +722,7 @@
                   PDF, JPG or PNG · max 10MB · encrypted
                 </div>
               </div>
-              <div v-if="fundsUploadError" class="bp-upload-error">
+              <div v-if="fundsUploadError" class="bp-upload-error" role="alert">
                 {{ fundsUploadError }}
               </div>
             </div>
@@ -1101,7 +1101,7 @@
           </span>
           <span class="bp-ai-try">Try it ›</span>
         </button>
-        <div v-if="aiError" class="bp-ai-err">{{ aiError }}</div>
+        <div v-if="aiError" class="bp-ai-err" role="alert">{{ aiError }}</div>
 
         <button class="bp-generate" :disabled="publishing" @click="submit">
           {{ publishing ? 'Generating…' : '✓ Generate my Passport' }}

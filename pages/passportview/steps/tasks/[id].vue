@@ -130,7 +130,7 @@
         </div>
 
         <div class="property-photos-actions">
-          <label class="add-photos-btn" :class="{ disabled: uploadingImages }">
+          <label class="add-photos-btn" :class="{ disabled: uploadingImages }" for="a11y-field-id-43">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path
                 d="M12 5v14M5 12h14"
@@ -147,7 +147,7 @@
               class="hidden-file-input"
               :disabled="uploadingImages"
               @change="handlePropertyImageUpload"
-            />
+             id="a11y-field-id-43"/>
           </label>
         </div>
       </div>

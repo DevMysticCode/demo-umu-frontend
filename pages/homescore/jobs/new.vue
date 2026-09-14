@@ -31,13 +31,13 @@
       </div>
 
       <div class="mp-form-field">
-        <label class="mp-form-label">Job title</label>
-        <input v-model="title" type="text" class="mp-form-input" />
+        <label class="mp-form-label" for="a11y-field-new-5">Job title</label>
+        <input v-model="title" type="text" class="mp-form-input"  id="a11y-field-new-5"/>
       </div>
 
       <div class="mp-form-field">
-        <label class="mp-form-label">Detailed description</label>
-        <textarea v-model="description" class="mp-form-input mp-form-textarea" />
+        <label class="mp-form-label" for="a11y-field-new-6">Detailed description</label>
+        <textarea v-model="description" class="mp-form-input mp-form-textarea"  id="a11y-field-new-6"/>
       </div>
 
       <div class="mp-form-field">

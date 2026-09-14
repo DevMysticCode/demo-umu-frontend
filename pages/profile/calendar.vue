@@ -193,7 +193,7 @@
               <div class="ne-section">
                 <div class="ne-label">When</div>
                 <div class="ne-when-grid">
-                  <label class="ne-cell">
+                  <label class="ne-cell" for="a11y-field-calendar-44">
                     <img src="/op-icons/calendar/calendar.png" alt="" class="ne-cell-ic" loading="lazy" />
                     <span class="ne-cell-value">{{ formatCellDate(form.date) }}</span>
                     <input
@@ -201,9 +201,9 @@
                       type="date"
                       class="ne-cell-native"
                       aria-label="Date"
-                    />
+                     id="a11y-field-calendar-44"/>
                   </label>
-                  <label class="ne-cell">
+                  <label class="ne-cell" for="a11y-field-calendar-45">
                     <img src="/op-icons/calendar/clock.png" alt="" class="ne-cell-ic" loading="lazy" />
                     <span class="ne-cell-value">{{ form.allDay ? 'All day' : (form.time || 'Set time') }}</span>
                     <svg class="ne-cell-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
@@ -213,12 +213,12 @@
                       v-model="timeSelect"
                       class="ne-cell-native"
                       aria-label="Time"
-                    >
+                     id="a11y-field-calendar-45">
                       <option value="all-day">All day</option>
                       <option value="custom">Custom time…</option>
                     </select>
                   </label>
-                  <label class="ne-cell">
+                  <label class="ne-cell" for="a11y-field-calendar-46">
                     <img src="/op-icons/calendar/hourglass.png" alt="" class="ne-cell-ic" loading="lazy" />
                     <span class="ne-cell-value">{{ durationLabel(form.duration) }}</span>
                     <svg class="ne-cell-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
@@ -228,7 +228,7 @@
                       v-model="form.duration"
                       class="ne-cell-native"
                       aria-label="Duration"
-                    >
+                     id="a11y-field-calendar-46">
                       <option value="">No duration</option>
                       <option value="15">15 min</option>
                       <option value="30">30 min</option>
@@ -237,7 +237,7 @@
                       <option value="120">2 hours</option>
                     </select>
                   </label>
-                  <label class="ne-cell">
+                  <label class="ne-cell" for="a11y-field-calendar-47">
                     <img src="/op-icons/calendar/repeat.png" alt="" class="ne-cell-ic" loading="lazy" />
                     <span class="ne-cell-value">{{ repeatLabel(form.repeats) }}</span>
                     <svg class="ne-cell-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
@@ -247,7 +247,7 @@
                       v-model="form.repeats"
                       class="ne-cell-native"
                       aria-label="Repeat"
-                    >
+                     id="a11y-field-calendar-47">
                       <option value="never">Doesn't repeat</option>
                       <option value="daily">Repeat daily</option>
                       <option value="weekly">Repeat weekly</option>

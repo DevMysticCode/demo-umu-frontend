@@ -209,7 +209,7 @@
               class="homescore-explore-card"
               @click="navigateTo('/homescore')"
              role="button" tabindex="0" @keydown.enter="navigateTo('/homescore')" @keydown.space.prevent="navigateTo('/homescore')">
-              <div class="hec-gauge">
+              <div class="hec-gauge" aria-hidden="true">
                 <svg viewBox="0 0 100 100">
                   <defs>
                     <linearGradient
@@ -554,8 +554,12 @@
             <div class="dash-eyebrow">HomeScore</div>
             <div class="homescore-card">
               <div class="hsc-top">
-                <div class="hsc-ring">
-                  <svg viewBox="0 0 100 100">
+                <div
+                  class="hsc-ring"
+                  role="img"
+                  :aria-label="passports[0].homeScore != null ? `Home Score: ${passports[0].homeScore} out of 100.` : 'Home Score not yet available'"
+                >
+                  <svg viewBox="0 0 100 100" aria-hidden="true">
                     <defs>
                       <linearGradient
                         id="dashHomescoreGrad"
@@ -578,7 +582,7 @@
                       :stroke-dashoffset="homeScoreDashoffset"
                     />
                   </svg>
-                  <div class="hsc-ring-label">
+                  <div class="hsc-ring-label" aria-hidden="true">
                     <span class="hsc-ring-num">{{
                       passports[0].homeScore ?? '-'
                     }}</span>
@@ -623,7 +627,7 @@
               class="homescore-explore-card"
               @click="navigateTo('/homescore')"
              role="button" tabindex="0" @keydown.enter="navigateTo('/homescore')" @keydown.space.prevent="navigateTo('/homescore')">
-              <div class="hec-gauge">
+              <div class="hec-gauge" aria-hidden="true">
                 <svg viewBox="0 0 100 100">
                   <defs>
                     <linearGradient

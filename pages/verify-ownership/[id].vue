@@ -21,7 +21,7 @@
           your full Property Passport.
         </p> -->
 
-        <div v-if="buildError" class="build-error-box">
+        <div v-if="buildError" class="build-error-box" role="alert">
           <p class="build-error-msg">{{ buildError }}</p>
           <button
             v-if="buildError.toLowerCase().includes('phone')"

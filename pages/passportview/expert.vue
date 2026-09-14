@@ -76,20 +76,20 @@
 
         <form v-else class="enquiry-form" @submit.prevent="submitEnquiry">
           <div class="form-field">
-            <label class="form-label">Your Name</label>
-            <input v-model="form.name" class="form-input" type="text" placeholder="Full name" required  aria-label="Full name" />
+            <label class="form-label" for="a11y-field-expert-23">Your Name</label>
+            <input v-model="form.name" class="form-input" type="text" placeholder="Full name" required  aria-label="Full name"  id="a11y-field-expert-23"/>
           </div>
           <div class="form-field">
-            <label class="form-label">Email Address</label>
-            <input v-model="form.email" class="form-input" type="email" placeholder="your@email.com" required  aria-label="your@email.com" />
+            <label class="form-label" for="a11y-field-expert-24">Email Address</label>
+            <input v-model="form.email" class="form-input" type="email" placeholder="your@email.com" required  aria-label="your@email.com"  id="a11y-field-expert-24"/>
           </div>
           <div class="form-field">
-            <label class="form-label">Property Address (optional)</label>
-            <input v-model="form.property" class="form-input" type="text" placeholder="e.g. 12 Oak Street, TW18 1AB"  aria-label="e.g. 12 Oak Street, TW18 1AB" />
+            <label class="form-label" for="a11y-field-expert-25">Property Address (optional)</label>
+            <input v-model="form.property" class="form-input" type="text" placeholder="e.g. 12 Oak Street, TW18 1AB"  aria-label="e.g. 12 Oak Street, TW18 1AB"  id="a11y-field-expert-25"/>
           </div>
           <div class="form-field">
-            <label class="form-label">Topic</label>
-            <select v-model="form.topic" class="form-input form-select" required>
+            <label class="form-label" for="a11y-field-expert-26">Topic</label>
+            <select v-model="form.topic" class="form-input form-select" required id="a11y-field-expert-26">
               <option value="">Select a topic…</option>
               <option value="boundaries">Boundaries &amp; disputes</option>
               <option value="fixtures">Fixtures &amp; fittings</option>
@@ -101,14 +101,14 @@
             </select>
           </div>
           <div class="form-field">
-            <label class="form-label">Your Question</label>
+            <label class="form-label" for="a11y-field-expert-27">Your Question</label>
             <textarea
               v-model="form.message"
               class="form-input form-textarea"
               placeholder="Describe your question or concern in as much detail as possible…"
               rows="5"
               required
-             aria-label="Describe your question or concern in as much detail as possible…" />
+             aria-label="Describe your question or concern in as much detail as possible…"  id="a11y-field-expert-27"/>
           </div>
 
           <p v-if="formError" class="form-error">{{ formError }}</p>

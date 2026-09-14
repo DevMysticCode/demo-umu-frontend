@@ -121,7 +121,7 @@
               your property is really telling you.
             </div>
             <div class="dc-hs-row">
-              <div class="dc-hs-gauge">
+              <div class="dc-hs-gauge" aria-hidden="true">
                 <svg viewBox="0 0 88 88">
                   <circle
                     class="g-bg"

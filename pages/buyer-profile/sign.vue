@@ -83,7 +83,7 @@
       >
         {{ applying ? 'Applying…' : 'Apply signature →' }}
       </button>
-      <div v-if="errorMsg" class="sd-err">{{ errorMsg }}</div>
+      <div v-if="errorMsg" class="sd-err" role="alert">{{ errorMsg }}</div>
     </div>
   </div>
 </template>

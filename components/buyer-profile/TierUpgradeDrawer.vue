@@ -54,8 +54,8 @@
           </div>
 
           <div id="tier-stripe-card-element" class="tu-card-element" />
-          <div v-if="stripeError" class="tu-err">{{ stripeError }}</div>
-          <div v-if="errorMsg" class="tu-err">{{ errorMsg }}</div>
+          <div v-if="stripeError" class="tu-err" role="alert">{{ stripeError }}</div>
+          <div v-if="errorMsg" class="tu-err" role="alert">{{ errorMsg }}</div>
 
           <button
             class="tu-cta"

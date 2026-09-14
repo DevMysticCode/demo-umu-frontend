@@ -77,7 +77,7 @@
             Only release once you've checked the job's been done well.
             This transfers <b>{{ formatMoney(payment.amount) }}</b> to the supplier.
           </div>
-          <div v-if="releaseError" class="rc-error">{{ releaseError }}</div>
+          <div v-if="releaseError" class="rc-error" role="alert">{{ releaseError }}</div>
           <button
             class="rc-release-btn"
             type="button"

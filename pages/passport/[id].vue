@@ -54,7 +54,7 @@
         </div>
       </div>
 
-      <div v-if="claimError" class="claim-error">
+      <div v-if="claimError" class="claim-error" role="alert">
         <p>{{ claimError }}</p>
         <NuxtLink
           v-if="claimError.toLowerCase().includes('phone')"

@@ -103,7 +103,7 @@
       </div>
       <div class="rd-score-gauge-wrap">
         <div class="rd-gauge">
-          <svg viewBox="0 0 120 120">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
             <defs>
               <linearGradient id="rdGrad" x1="1" y1="0" x2="0" y2="0">
                 <stop offset="0%" stop-color="#00BB93" />

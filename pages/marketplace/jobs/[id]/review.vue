@@ -160,7 +160,7 @@
         <div class="rv-field-help">{{ form.body.length }} / 4000 chars</div>
       </div>
 
-      <div v-if="submitError" class="rv-error">{{ submitError }}</div>
+      <div v-if="submitError" class="rv-error" role="alert">{{ submitError }}</div>
 
       <div class="rv-cta-row rv-anim-4">
         <button

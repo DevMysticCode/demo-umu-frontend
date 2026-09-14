@@ -145,7 +145,7 @@
                 <div class="exp-more-eyebrow">HomeScore&trade;</div>
                 <span class="exp-more-pill">FREE</span>
               </div>
-              <div class="exp-more-ring">
+              <div class="exp-more-ring" aria-hidden="true">
                 <svg viewBox="0 0 100 100">
                   <defs>
                     <linearGradient

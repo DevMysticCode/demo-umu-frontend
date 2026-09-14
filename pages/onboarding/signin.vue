@@ -39,7 +39,7 @@
         <!-- ── Sign in ── -->
         <template v-if="resetStep === 'idle'">
           <div class="form-field">
-            <label class="form-label">Email address</label>
+            <label class="form-label" for="a11y-field-signin-14">Email address</label>
             <div class="form-input-wrap">
               <span class="form-input-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -47,12 +47,12 @@
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
               </span>
-              <input v-model="emailInput" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email"  aria-label="you@example.com" />
+              <input v-model="emailInput" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email"  aria-label="you@example.com"  id="a11y-field-signin-14"/>
             </div>
           </div>
 
           <div class="form-field">
-            <label class="form-label">Password</label>
+            <label class="form-label" for="a11y-field-signin-15">Password</label>
             <div class="form-input-wrap">
               <span class="form-input-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -66,7 +66,7 @@
                 placeholder="Your password"
                 class="form-input with-icon with-action"
                 autocomplete="current-password"
-               aria-label="Your password" />
+               aria-label="Your password"  id="a11y-field-signin-15"/>
               <button type="button" class="form-input-action" @click="showPassword = !showPassword">
                 <svg v-if="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
@@ -81,7 +81,7 @@
             </div>
           </div>
 
-          <div v-if="loginError" class="error-banner">{{ loginError }}</div>
+          <div v-if="loginError" class="error-banner" role="alert">{{ loginError }}</div>
 
           <button type="submit" class="btn-primary" :disabled="loginLoading">
             <span v-if="loginLoading" class="spinner" />
@@ -94,7 +94,7 @@
         <!-- ── Forgot password: enter email ── -->
         <template v-else-if="resetStep === 'email'">
           <div class="form-field">
-            <label class="form-label">Email address</label>
+            <label class="form-label" for="a11y-field-signin-16">Email address</label>
             <div class="form-input-wrap">
               <span class="form-input-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -102,11 +102,11 @@
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
               </span>
-              <input v-model="resetEmail" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email"  aria-label="you@example.com" />
+              <input v-model="resetEmail" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email"  aria-label="you@example.com"  id="a11y-field-signin-16"/>
             </div>
           </div>
 
-          <div v-if="resetError" class="error-banner">{{ resetError }}</div>
+          <div v-if="resetError" class="error-banner" role="alert">{{ resetError }}</div>
 
           <button type="submit" class="btn-primary" :disabled="resetLoading">
             <span v-if="resetLoading" class="spinner" />
@@ -139,7 +139,7 @@
             />
           </div>
 
-          <div v-if="resetError" class="error-banner">{{ resetError }}</div>
+          <div v-if="resetError" class="error-banner" role="alert">{{ resetError }}</div>
 
           <button type="submit" class="btn-primary" :disabled="resetLoading || otpValue.length < 6">
             <span v-if="resetLoading" class="spinner" />
@@ -155,7 +155,7 @@
         <!-- ── Forgot password: new password ── -->
         <template v-else-if="resetStep === 'newPassword'">
           <div class="form-field">
-            <label class="form-label">New password</label>
+            <label class="form-label" for="a11y-field-signin-17">New password</label>
             <div class="form-input-wrap">
               <span class="form-input-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -168,7 +168,7 @@
                 :type="showNewPassword ? 'text' : 'password'"
                 placeholder="New password"
                 class="form-input with-icon with-action"
-               aria-label="New password" />
+               aria-label="New password"  id="a11y-field-signin-17"/>
               <button type="button" class="form-input-action" @click="showNewPassword = !showNewPassword">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -179,7 +179,7 @@
           </div>
 
           <div class="form-field">
-            <label class="form-label">Confirm new password</label>
+            <label class="form-label" for="a11y-field-signin-18">Confirm new password</label>
             <div class="form-input-wrap">
               <span class="form-input-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -192,7 +192,7 @@
                 :type="showConfirmPassword ? 'text' : 'password'"
                 placeholder="Confirm new password"
                 class="form-input with-icon with-action"
-               aria-label="Confirm new password" />
+               aria-label="Confirm new password"  id="a11y-field-signin-18"/>
               <button type="button" class="form-input-action" @click="showConfirmPassword = !showConfirmPassword">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -209,7 +209,7 @@
             <p :style="{ color: strengthColor }">{{ strengthLabel }}</p>
           </div>
 
-          <div v-if="resetError" class="error-banner">{{ resetError }}</div>
+          <div v-if="resetError" class="error-banner" role="alert">{{ resetError }}</div>
 
           <button type="submit" class="btn-primary" :disabled="resetLoading || !passwordsMatch">
             <span v-if="resetLoading" class="spinner" />

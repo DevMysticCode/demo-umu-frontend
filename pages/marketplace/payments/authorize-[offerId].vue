@@ -82,10 +82,10 @@
       <div class="au-card-form au-anim-4">
         <div class="au-card-label">Card details</div>
         <div id="mp-stripe-card-element" class="au-card-mount" />
-        <div v-if="cardError" class="au-card-error">{{ cardError }}</div>
+        <div v-if="cardError" class="au-card-error" role="alert">{{ cardError }}</div>
       </div>
 
-      <div v-if="topError" class="au-error">{{ topError }}</div>
+      <div v-if="topError" class="au-error" role="alert">{{ topError }}</div>
 
       <div class="au-cta-row au-anim-4">
         <button

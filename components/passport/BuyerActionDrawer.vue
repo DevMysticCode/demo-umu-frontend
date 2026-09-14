@@ -127,7 +127,7 @@
             </div>
           </template>
 
-          <div v-if="error" class="bad-error">{{ error }}</div>
+          <div v-if="error" class="bad-error" role="alert">{{ error }}</div>
         </div>
       </div>
     </Transition>

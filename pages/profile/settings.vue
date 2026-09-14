@@ -214,32 +214,32 @@
               For your security, enter your current password before choosing a new one.
             </p>
             <div class="st-field">
-              <label class="st-field-label">Current password</label>
+              <label class="st-field-label" for="a11y-field-settings-52">Current password</label>
               <input
                 v-model="cpForm.current"
                 type="password"
                 class="st-field-input"
                 autocomplete="current-password"
-              />
+               id="a11y-field-settings-52"/>
             </div>
             <div class="st-field">
-              <label class="st-field-label">New password</label>
+              <label class="st-field-label" for="a11y-field-settings-53">New password</label>
               <input
                 v-model="cpForm.next"
                 type="password"
                 class="st-field-input"
                 autocomplete="new-password"
                 placeholder="At least 8 characters"
-               aria-label="At least 8 characters" />
+               aria-label="At least 8 characters"  id="a11y-field-settings-53"/>
             </div>
             <div class="st-field">
-              <label class="st-field-label">Confirm new password</label>
+              <label class="st-field-label" for="a11y-field-settings-54">Confirm new password</label>
               <input
                 v-model="cpForm.confirm"
                 type="password"
                 class="st-field-input"
                 autocomplete="new-password"
-              />
+               id="a11y-field-settings-54"/>
             </div>
             <p v-if="cpError" class="st-modal-error">{{ cpError }}</p>
           </div>

@@ -80,7 +80,7 @@
               </span>
             </div>
             <div class="mbd-gauge">
-              <svg viewBox="0 0 80 80">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
                 <circle class="mg-track" cx="40" cy="40" r="32" stroke-width="6" fill="none" />
                 <circle
                   class="mg-fill" cx="40" cy="40" r="32"
