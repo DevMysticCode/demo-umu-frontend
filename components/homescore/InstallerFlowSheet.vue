@@ -6,7 +6,7 @@
         class="ifs-sheet"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="ifs-sheet-title"
+        :aria-label="sheetTitle"
         :style="dragStyle"
         @touchstart.passive="onTouchStart"
         @touchmove="onTouchMove"
@@ -596,6 +596,27 @@ const emit = defineEmits<{
 }>()
 
 const state = ref<StateName>('routes')
+// Static per-state aria-label for the sheet's role="dialog" - safer than
+// aria-labelledby pointing at a heading inside the active v-if branch,
+// since several states (elig/result/confirm/market/ea-confirm) don't have
+// a heading with a stable id, which would leave the dialog with a
+// dangling IDREF and no accessible name in those states.
+const SHEET_STATE_TITLES: Record<StateName, string> = {
+  routes: '',
+  elig: 'Grant eligibility check',
+  result: '',
+  form: 'Line up installers',
+  confirm: "You're on the list",
+  tracker: 'Match requests',
+  market: 'Marketplace - early access',
+  'ea-form': 'Early access',
+  'ea-confirm': "You're on the early access list",
+}
+const sheetTitle = computed(() => {
+  if (state.value === 'routes') return trade.value.title
+  if (state.value === 'result') return grants.value.length ? 'You may qualify for funding' : 'Funding results'
+  return SHEET_STATE_TITLES[state.value]
+})
 const eligStep = ref(1)
 const answers = reactive<{
   tenure?: string
