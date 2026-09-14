@@ -938,6 +938,7 @@
 import OPIcon from '~/components/ui/OPIcon.vue'
 import ImageSlider from '~/components/ui/ImageSlider.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
+import { sectionTourBody } from '~/utils/passportSectionTourCopy'
 import BottomNav from '~/components/core/BottomNav.vue'
 import PassportCard from '~/components/passport-view/PassportCard.vue'
 
@@ -954,7 +955,7 @@ const sectionTourSteps = computed(() =>
   (data.value?.sections ?? []).map((s: any) => ({
     selector: `[data-tour-section="${s.id}"]`,
     title: s.title,
-    body: s.subtitle || s.description || 'Tap to see what the seller has shared here.',
+    body: sectionTourBody(s),
   })),
 )
 const buyerTourSteps = computed(() => [
