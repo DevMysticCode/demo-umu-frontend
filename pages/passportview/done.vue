@@ -104,12 +104,10 @@
     <div style="height: 100px" />
     <BottomNav active="passport" />
 
-    <Toast
-      v-if="toastState.visible"
-      :message="toastState.message"
-      :icon-emoji="toastState.iconEmoji"
-      @close="hideToast"
-    />
+    <!-- Toast now mounted once globally in app.vue - this local instance
+         referenced toastState.visible, which doesn't exist on the shared
+         state (the real field is isVisible), so it never actually
+         rendered anyway. -->
   </div>
 </template>
 

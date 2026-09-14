@@ -14,6 +14,13 @@ export default <Config>{
     extend: {
       colors: {
         'brand-aqua': '#00a19a',
+        // #00a19a measures 3.2:1 for white/normal-size text against a
+        // light background - fails WCAG 4.5:1. This is the same teal,
+        // darkened until it passes (5.8:1) - use for any teal *text*
+        // below large-text size (≥24px / ≥18.66px bold); '#00a19a' stays
+        // fine for large text, icon fills and backgrounds under white
+        // text. See the accessibility audit.
+        'brand-aqua-text': '#00726c',
         'purple-main': '#7C3AED',
         'purple-light': 'var(--purple-main0)',
         'gray-dark': 'var(--gray-900)',

@@ -2,12 +2,14 @@
   <Teleport to="body">
     <Transition name="slide-up">
       <div v-if="isVisible" class="toast-container">
-        <div class="toast">
+        <div class="toast" role="status" aria-live="polite" aria-atomic="true">
           <!-- Icon slot on the left. When a 3D image path is supplied we
                render it directly (no white circle around it — the icon
                brings its own pedestal); otherwise fall back to the
-               emoji glyph in a lighter chip. -->
-          <div class="toast-icon" :class="{ 'toast-icon--img': !!icon }">
+               emoji glyph in a lighter chip. Decorative either way - the
+               message text alone is the accessible name, so both stay
+               aria-hidden. -->
+          <div class="toast-icon" :class="{ 'toast-icon--img': !!icon }" aria-hidden="true">
             <img v-if="icon" :src="icon" alt="" class="icon-img" />
             <span v-else class="default-icon">{{ iconEmoji || '✓' }}</span>
           </div>
@@ -74,15 +76,18 @@ watch(
 }
 
 .toast {
-  background: #00A19A;
+  /* #00A19A (the brand teal) measures 3.2:1 for white text - fails WCAG's
+     4.5:1 for normal-size text. #00726c is the same family, darkened
+     until it passes (5.8:1), per the accessibility audit. */
+  background: #00726c;
   border-radius: 100px;
   padding: 8px 8px 8px 8px;
   display: flex;
   align-items: center;
   gap: 12px;
   box-shadow:
-    0 10px 26px rgba(0, 161, 154, 0.42),
-    0 3px 8px rgba(0, 129, 124, 0.35);
+    0 10px 26px rgba(0, 114, 108, 0.42),
+    0 3px 8px rgba(0, 90, 86, 0.35);
   min-width: 280px;
   max-width: 420px;
   pointer-events: all;

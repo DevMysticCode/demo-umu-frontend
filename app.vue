@@ -1,6 +1,22 @@
 <template>
   <div class="app">
     <NuxtPage />
+    <!-- Toast — mounted once here (not per-page). showToast() is a global
+         reactive singleton (useCustomToast.ts), but nothing rendered it
+         outside 4 pages that happened to include <Toast> locally
+         themselves (one with a typo'd prop that meant it never actually
+         showed) - every other showToast() call in the app silently did
+         nothing. Global mount + aria-live inside Toast.vue itself is also
+         what makes status changes ("Watching this property", a save
+         confirmation, etc.) audible to screen readers app-wide. -->
+    <Toast
+      :is-visible="toastState.isVisible"
+      :message="toastState.message"
+      :icon="toastState.icon"
+      :icon-emoji="toastState.iconEmoji"
+      :duration="toastState.duration"
+      @close="hideToast"
+    />
     <PassportAchievement
       v-if="currentAchievement"
       :visible="achievementVisible"
@@ -22,6 +38,10 @@
 import { Capacitor } from '@capacitor/core'
 import { useRouter } from 'vue-router'
 import PassportAchievement from '~/components/rewards/PassportAchievement.vue'
+import Toast from '~/components/ui/Toast.vue'
+import { useAppToast } from '~/composables/useCustomToast'
+
+const { toastState, hideToast } = useAppToast()
 
 // Global app configuration
 useHead({
