@@ -46,7 +46,9 @@
                 </button>
                 <button
                   class="hero-btn"
-                  aria-label="Take a quick tour"
+                  :class="{ 'hero-btn--disabled': loading }"
+                  :disabled="loading"
+                  :aria-label="loading ? 'Tour loading…' : 'Take a quick tour'"
                   @click="buyerTourRef?.start?.()"
                 >
                   <span style="font-weight:800;font-size:13px">?</span>
@@ -609,6 +611,7 @@
               :key="section.id"
               class="buyer-record-row"
               :class="'state-' + sectionCompletion(section)"
+              :data-tour-section="section.id"
               @click="goToSection(section.id)"
             >
               <div class="buyer-record-icon">
@@ -940,7 +943,21 @@ import PassportCard from '~/components/passport-view/PassportCard.vue'
 
 // Guided tour for buyers — surfaces the things they care about most.
 const buyerTourRef = ref<any>(null)
-const buyerTourSteps = [
+// Per-section steps generated from the loaded data (title/subtitle), same
+// approach as the seller passportview - covers whichever sections this
+// passport actually has instead of a hardcoded list. Sections arrive as
+// part of the single buyer-view fetch below, so they're always present by
+// the time `loading` flips false - the hero "?" button is disabled until
+// then (see :disabled="loading" below) so the tour never starts before
+// they exist in the DOM.
+const sectionTourSteps = computed(() =>
+  (data.value?.sections ?? []).map((s: any) => ({
+    selector: `[data-tour-section="${s.id}"]`,
+    title: s.title,
+    body: s.subtitle || s.description || 'Tap to see what the seller has shared here.',
+  })),
+)
+const buyerTourSteps = computed(() => [
   {
     selector: '[data-tour="hero"]',
     title: 'Verified property record',
@@ -956,6 +973,7 @@ const buyerTourSteps = [
     title: 'Tap any section',
     body: 'See exactly what the seller has shared. Green means fully answered, amber is partial.',
   },
+  ...sectionTourSteps.value,
   {
     selector: '[data-tour="redflags"]',
     title: 'Red flags surface here',
@@ -966,7 +984,7 @@ const buyerTourSteps = [
     title: 'Ask the seller',
     body: 'Open a pre-filled chat with anything you want to clarify before you offer.',
   },
-]
+])
 import UnderReview from '~/components/passport-view/UnderReview.vue'
 
 definePageMeta({ middleware: 'auth' })
@@ -1672,6 +1690,10 @@ async function deleteNote(noteId: string) {
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(4px);
+}
+.hero-btn--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 /* Owner-only pill - surfaces the seller view without competing with
    the circular icon buttons. Uses the same translucent chrome pattern

@@ -7,6 +7,7 @@
         back-to="/dashboard"
         right="profile"
         :show-tour="true"
+        :tour-disabled="sectionsLoading || steps.length === 0"
         @tour="passportTourRef?.start?.()"
       />
 
@@ -210,6 +211,7 @@
             v-for="step in steps"
             :key="step.id"
             class="step-card"
+            :data-tour-section="step.id"
             @click="navigateToStep(step.id)"
           >
             <div class="step-icon-container">
@@ -560,7 +562,32 @@ import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 
 // Guided tour — auto-runs once per browser, replays from the "?" button.
 const passportTourRef = ref(null)
-const passportTourSteps = [
+import { usePassportRuntime } from '~/composables/usePassportRuntime'
+import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
+import { onMounted, ref, computed } from 'vue'
+import { toSmartTitleCase } from '~/utils/titleCase'
+
+definePageMeta({
+  middleware: ['auth', 'passport-type'],
+})
+
+const { steps, loading: sectionsLoading, loadPassport } = usePassportRuntime()
+
+// Fixed chrome steps, always present. Each real passport section gets its
+// own step too (see sectionTourSteps below) - generated from the loaded
+// data (title/subtitle) rather than hardcoded, so it stays correct as
+// sections are added/renamed and covers whichever ones this passport
+// actually has. Sections load well after the rest of the page (a separate
+// GET /passport/:id/sections round-trip that only starts after this page's
+// own onMounted finishes an earlier passport-type probe, so
+// usePassportRuntime's `loading` alone is still false for that entire gap
+// too), so the "?" button in AppHeader is disabled via
+// :tour-disabled="sectionsLoading || steps.length === 0" until sections
+// have actually landed - starting the tour before then would either
+// spotlight nothing for those
+// steps or (per OnboardingTour's forward-only skip logic) silently drop
+// them from that run entirely.
+const passportTourSteps = computed(() => [
   {
     selector: '.pp-hero',
     title: 'Your Property Passport',
@@ -581,22 +608,20 @@ const passportTourSteps = [
     title: 'Sections, Street, Buyers',
     body: 'Three tabs: complete your sections, see how you compare to your street, and review matched buyers.',
   },
+  ...sectionTourSteps.value,
   {
     selector: '.view-toggle',
     title: 'List or Map view',
     body: 'Tap the map view for an isometric tour through every section of your Passport.',
   },
-]
-import { usePassportRuntime } from '~/composables/usePassportRuntime'
-import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
-import { onMounted, ref, computed } from 'vue'
-import { toSmartTitleCase } from '~/utils/titleCase'
-
-definePageMeta({
-  middleware: ['auth', 'passport-type'],
-})
-
-const { steps, loadPassport } = usePassportRuntime()
+])
+const sectionTourSteps = computed(() =>
+  steps.value.map((s) => ({
+    selector: `[data-tour-section="${s.id}"]`,
+    title: toSmartTitleCase(s.title),
+    body: s.subtitle || s.description || 'Tap to view and complete this section.',
+  })),
+)
 const { getCollaborators } = usePassportCollaborators()
 const route = useRoute()
 const router = useRouter()

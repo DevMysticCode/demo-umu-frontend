@@ -27,7 +27,9 @@
         v-if="showTour"
         type="button"
         class="tour-help-btn"
-        aria-label="Take a quick tour"
+        :class="{ 'tour-help-btn--disabled': tourDisabled }"
+        :disabled="tourDisabled"
+        :aria-label="tourDisabled ? 'Tour loading…' : 'Take a quick tour'"
         @click="emit('tour')"
       >
         ?
@@ -91,6 +93,12 @@ const props = defineProps({
   // When true, render a small "?" button that emits `tour` so the host
   // page can replay its OnboardingTour.
   showTour: { type: Boolean, default: false },
+  // When the tour includes steps that target content loaded after the
+  // initial page render (e.g. passport sections, which arrive well after
+  // the rest of the page), the host page sets this true until that data is
+  // in - tapping "?" before then would either spotlight nothing or quietly
+  // skip every not-yet-rendered step.
+  tourDisabled: { type: Boolean, default: false },
 })
 </script>
 
@@ -121,6 +129,16 @@ const props = defineProps({
 .tour-help-btn:hover,
 .tour-help-btn:active {
   background: #ccfbf1;
+}
+.tour-help-btn--disabled {
+  background: #f1f4f3;
+  border-color: #e8eceb;
+  color: #b9bdc4;
+  cursor: not-allowed;
+}
+.tour-help-btn--disabled:hover,
+.tour-help-btn--disabled:active {
+  background: #f1f4f3;
 }
 </style>
 
