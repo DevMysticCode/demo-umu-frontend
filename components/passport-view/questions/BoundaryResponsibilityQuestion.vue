@@ -168,6 +168,7 @@
       v-if="activeSelector"
       class="selector-overlay"
       @click="activeSelector = null"
+    >
       <div class="selector-modal" @click.stop>
         <div class="selector-header">
           <h4>
