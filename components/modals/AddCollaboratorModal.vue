@@ -336,7 +336,7 @@ function initials(name) {
   border: 1.5px solid #e5e7eb;
   border-radius: 12px;
   background: #f8f7fc;
-  font-size: 15px;
+  font-size: 16px;
   color: #231d45;
   font-family: inherit;
 }

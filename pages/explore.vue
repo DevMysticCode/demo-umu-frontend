@@ -2108,7 +2108,7 @@ onMounted(async () => {
   border-radius: 12px;
   border: 1.5px solid #e2f1ea;
   background: #fff;
-  font-size: 15px;
+  font-size: 16px;
   color: #1f2024;
   outline: none;
   font-family: inherit;

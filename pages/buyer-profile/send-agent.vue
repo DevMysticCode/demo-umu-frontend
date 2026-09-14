@@ -293,7 +293,7 @@ function goView() { router.push('/buyer-profile/view') }
   width: 100%;
   padding: 11px 12px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #231d45;
   background: #fafafa;

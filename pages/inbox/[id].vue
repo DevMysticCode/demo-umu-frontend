@@ -628,7 +628,7 @@ function openPassport(payload: any) {
   padding: 10px 14px;
   border: 1.5px solid #e4e5ed;
   border-radius: 20px;
-  font: inherit; font-size: 14px;
+  font: inherit; font-size: 16px;
   color: #231d45;
   background: #f5f6fa;
   resize: none;

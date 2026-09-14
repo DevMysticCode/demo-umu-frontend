@@ -648,7 +648,7 @@ function goMatched(category: string) {
   border: none;
   padding: 14px 0;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
   outline: none;

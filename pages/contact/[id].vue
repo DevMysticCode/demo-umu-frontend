@@ -283,7 +283,7 @@ const sendMessage = async () => {
   padding: 16px;
   border: 2px solid #e0e0e0;
   border-radius: 16px;
-  font-size: 15px;
+  font-size: 16px;
   font-family: inherit;
   resize: none;
   background: white;

@@ -314,7 +314,7 @@ async function submit() {
   border-radius: 12px;
   padding: 11px 13px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 600;
   color: #231d45;
   outline: none;

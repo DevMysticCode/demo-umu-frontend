@@ -12032,7 +12032,7 @@ watch(screen, (s) => {
   border-radius: 12px;
   padding: 12px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   color: #231d45;
   resize: none;
   height: 90px;

@@ -185,7 +185,7 @@ const submit = async () => {
   border: 1.5px solid #e0e0e0;
   border-radius: 12px;
   padding: 12px 14px;
-  font-size: 15px;
+  font-size: 16px;
   color: #1a1a1a;
   outline: none;
   width: 100%;

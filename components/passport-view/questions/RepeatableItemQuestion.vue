@@ -455,7 +455,7 @@ const itemSubtext = (item) => {
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   background: white;
-  font-size: 15px;
+  font-size: 16px;
   color: #1a1a1a;
   box-sizing: border-box;
   outline: none;
@@ -467,7 +467,7 @@ const itemSubtext = (item) => {
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   background: white;
-  font-size: 15px;
+  font-size: 16px;
   color: #1a1a1a;
   min-height: 80px;
   resize: none;

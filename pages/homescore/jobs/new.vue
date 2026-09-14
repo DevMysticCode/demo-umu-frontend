@@ -233,7 +233,7 @@ function onPost() {
   border: 1.5px solid var(--border);
   border-radius: 12px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
   outline: none;

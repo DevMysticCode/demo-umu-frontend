@@ -1875,7 +1875,7 @@ async function deleteNote(noteId: string) {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
   background: transparent;
 }
@@ -2472,7 +2472,7 @@ async function deleteNote(noteId: string) {
   border: 1.5px solid #e0e0e0;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
   resize: none;
   outline: none;

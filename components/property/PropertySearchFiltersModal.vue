@@ -496,7 +496,7 @@ function onSearch() {
   background: transparent;
   outline: none;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 700;
   color: #231d45;
 }

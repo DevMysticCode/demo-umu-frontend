@@ -333,7 +333,7 @@ const emitUpdate = () => {
   padding: 12px 14px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-family: inherit;
   transition: border-color 0.2s;
   box-sizing: border-box;

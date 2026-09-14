@@ -458,11 +458,11 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 .sd-label { font-size: 11px; font-weight: 800; color: #231d45; letter-spacing: 0.3px; }
 .sd-input {
   border: 1.5px solid #ececef; border-radius: 12px;
-  padding: 12px 14px; font-family: inherit; font-size: 14px;
+  padding: 12px 14px; font-family: inherit; font-size: 16px;
   background: #fafafa;
 }
 .sd-input:focus { outline: none; border-color: #00a19a; background: #fff; }
-.sd-input--small { padding: 8px 10px; font-size: 13px; max-width: 80px; }
+.sd-input--small { padding: 8px 10px; font-size: 16px; max-width: 80px; }
 .sd-hint { font-size: 11px; font-weight: 500; color: #6b6783; line-height: 1.5; }
 .sd-hint b { color: #231d45; font-weight: 800; }
 

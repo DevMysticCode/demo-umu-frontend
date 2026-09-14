@@ -280,7 +280,7 @@ const goBack = () => {
   border: 0;
   outline: 0;
   background: transparent;
-  font-size: 14px;
+  font-size: 16px;
   color: #000;
 }
 

@@ -3755,7 +3755,7 @@ function handleClaimed(passportId: string) {
 .prop-sdlt-input::placeholder {
   color: #c7c7cc;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 16px;
 }
 .prop-sdlt-options {
   display: flex;

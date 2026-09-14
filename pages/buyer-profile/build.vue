@@ -2421,7 +2421,7 @@ onBeforeUnmount(() => {
   padding: 14px;
   border: 2px solid #e5e7eb;
   border-radius: 14px;
-  font-size: 13px;
+  font-size: 16px;
   font-family: inherit;
   resize: none;
   outline: none;
@@ -3983,7 +3983,7 @@ onBeforeUnmount(() => {
   background: #fafafa;
   padding: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 16px;
   color: #231d45;
   line-height: 1.55;
   width: 100%;

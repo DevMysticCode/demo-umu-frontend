@@ -822,7 +822,7 @@ const securityLabel = computed(() => {
   border-radius: 10px;
   padding: 11px 12px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 16px;
   color: #0e2840;
   outline: none;
   transition: all 0.18s;

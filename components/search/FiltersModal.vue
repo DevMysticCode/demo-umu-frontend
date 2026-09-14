@@ -324,7 +324,7 @@ const apply = () => {
   background: transparent;
   border: none;
   outline: none;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: #00a19a;
   text-align: center;

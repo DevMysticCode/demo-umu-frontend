@@ -5942,7 +5942,7 @@ const SectionCard = defineComponent({
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -6107,7 +6107,7 @@ const SectionCard = defineComponent({
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -6550,7 +6550,7 @@ const SectionCard = defineComponent({
   border: 1.5px dashed #d4d8d7;
   border-radius: 13px;
   background: #fafaf8;
-  font-size: 13px;
+  font-size: 16px;
   font-family: inherit;
   color: #0e2840;
 }

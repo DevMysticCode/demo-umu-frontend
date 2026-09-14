@@ -406,7 +406,7 @@ defineExpose({ clearQuery })
   padding: 12px 40px 12px 38px;
   border-radius: 12px;
   border: 1.5px solid transparent;
-  font-size: 13.5px;
+  font-size: 16px;
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s;

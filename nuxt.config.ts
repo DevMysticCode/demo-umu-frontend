@@ -72,16 +72,19 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         {
-          // maximum-scale=1 + user-scalable=no fixes the iOS WebView
-          // stuck-zoom bug: iOS auto-zooms on inputs whose font-size is
-          // below 16px, and the "zoom back out" heuristic sometimes
-          // fails, leaving the app horizontally-scrolling. Native apps
-          // don't need pinch-zoom, so locking scale is standard for
-          // Capacitor shells. Web builds get the same treatment for
-          // consistency; VoiceOver + Dynamic Type still work.
+          // Pinch-zoom is required for WCAG 1.4.4 (Resize Text / 200%
+          // reflow) - it was previously locked (user-scalable=no,
+          // maximum-scale=1) to dodge the iOS WebView stuck-zoom bug,
+          // where focusing an input with font-size < 16px triggers an
+          // auto-zoom that sometimes fails to un-zoom afterwards. Every
+          // real <input>/<textarea> in the app is now audited to render
+          // at >=16px, which removes the auto-zoom trigger, so zoom can
+          // be re-enabled safely. maximum-scale=5 matches common mobile
+          // guidance (enough headroom for low-vision users, not so much
+          // that a stray pinch strands the layout).
           name: 'viewport',
           content:
-            'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover',
+            'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover',
         },
         {
           name: 'description',
