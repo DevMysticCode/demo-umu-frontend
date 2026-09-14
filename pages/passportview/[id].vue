@@ -566,6 +566,7 @@ import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
 import { onMounted, ref, computed } from 'vue'
 import { toSmartTitleCase } from '~/utils/titleCase'
+import { sectionTourBody } from '~/utils/passportSectionTourCopy'
 
 definePageMeta({
   middleware: ['auth', 'passport-type'],
@@ -619,7 +620,7 @@ const sectionTourSteps = computed(() =>
   steps.value.map((s) => ({
     selector: `[data-tour-section="${s.id}"]`,
     title: toSmartTitleCase(s.title),
-    body: s.subtitle || s.description || 'Tap to view and complete this section.',
+    body: sectionTourBody(s),
   })),
 )
 const { getCollaborators } = usePassportCollaborators()

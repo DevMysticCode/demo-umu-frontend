@@ -2166,6 +2166,7 @@ import BottomNav from '~/components/core/BottomNav.vue'
 import SignaturePad from '~/components/ui/SignaturePad.vue'
 import AppHeader from '~/components/core/AppHeader.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
+import { sectionTourBody } from '~/utils/passportSectionTourCopy'
 
 definePageMeta({ title: 'Landlord Passport - UmovingU', middleware: 'auth' })
 
@@ -2347,7 +2348,7 @@ const sectionTourSteps = computed(() =>
   allComplianceSections.value.map((s: any) => ({
     selector: `[data-tour-section="${s.id}"]`,
     title: s.title,
-    body: s.subtitle || s.description || 'Tap to view and complete this section.',
+    body: sectionTourBody(s),
   })),
 )
 const landlordTourSteps = computed(() => [
