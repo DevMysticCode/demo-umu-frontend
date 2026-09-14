@@ -44,7 +44,7 @@
             placeholder="Search Passports…"
             @keyup.escape="searchOpen = false"
             @blur="onSearchBlur"
-          />
+           aria-label="Search Passports…" />
           <button
             v-if="searchOpen && query"
             class="coll-nav-search-clear"
@@ -66,7 +66,7 @@
         <div
           class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 cursor-pointer"
           @click="navigateTo('/profile')"
-        >
+         role="button" tabindex="0" @keydown.enter="navigateTo('/profile')" @keydown.space.prevent="navigateTo('/profile')">
           <UserAvatar
             :src="profile?.avatarUrl"
             :firstName="profile?.firstName"
@@ -223,7 +223,7 @@
         :key="collection.id"
         class="grid-cell"
         @click="openCollection(collection)"
-      >
+       role="button" tabindex="0" @keydown.enter="openCollection(collection)" @keydown.space.prevent="openCollection(collection)">
         <div class="book-stack">
           <div
             v-for="(item, bi) in collection.items.slice(0, 3)"
@@ -262,7 +262,7 @@
         :key="passport.id"
         class="grid-cell"
         @click="openPassport(passport.id)"
-      >
+       role="button" tabindex="0" @keydown.enter="openPassport(passport.id)" @keydown.space.prevent="openPassport(passport.id)">
         <div class="book-stack">
           <div class="stacked-book">
             <!-- Always the real Property Passport book — kept plain
@@ -316,7 +316,7 @@
       </div>
 
       <!-- Add New -->
-      <div class="grid-cell" @click="router.push('/dashboard')">
+      <div class="grid-cell" @click="router.push('/dashboard')" role="button" tabindex="0" @keydown.enter="router.push('/dashboard')" @keydown.space.prevent="router.push('/dashboard')">
         <div class="add-new-box">
           <span class="add-new-plus">+</span>
         </div>
@@ -342,7 +342,7 @@
           :key="w.id"
           class="grid-cell"
           @click="router.push(`/buyer-passport/${w.passportId}`)"
-        >
+         role="button" tabindex="0" @keydown.enter="router.push(`/buyer-passport/${w.passportId}`)" @keydown.space.prevent="router.push(`/buyer-passport/${w.passportId}`)">
           <div class="book-stack">
             <div class="stacked-book">
               <img
@@ -883,8 +883,8 @@ const executeDelete = async () => {
   gap: 6px;
   background: none;
   border: none;
-  color: #00a19a;
-  font-size: 16px;
+  color: #00726c;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   padding: 0;
@@ -897,21 +897,21 @@ const executeDelete = async () => {
 }
 
 .coll-title {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 6px;
 }
 
 .coll-subtitle-colored {
-  color: #00a19a;
-  font-size: 15px;
+  color: #00726c;
+  font-size: 0.9375rem;
   margin: 0 0 4px;
 }
 
 .coll-subtitle {
   color: #8e8e93;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.4;
   margin: 0;
 }
@@ -956,7 +956,7 @@ const executeDelete = async () => {
   flex-shrink: 0;
 }
 .coll-nav-search.open .coll-nav-search-btn {
-  color: #00a19a;
+  color: #00726c;
 }
 .coll-nav-search-input {
   flex: 1;
@@ -964,7 +964,7 @@ const executeDelete = async () => {
   border: none;
   outline: none;
   background: transparent;
-  font-size: 16px;
+  font-size: 1rem;
   color: #231d45;
   padding: 0 6px 0 0;
   font-family: inherit;
@@ -979,7 +979,7 @@ const executeDelete = async () => {
   border-radius: 50%;
   background: #f1f5f9;
   color: #64748b;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   display: grid;
   place-items: center;
@@ -999,7 +999,7 @@ const executeDelete = async () => {
   background: #fff;
   border: 1.5px solid #eef0f6;
   color: #4a5568;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -1017,14 +1017,14 @@ const executeDelete = async () => {
   padding: 4px 16px 12px;
 }
 .coll-hero-eyebrow {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #94a3b8;
   letter-spacing: 0;
   margin-bottom: 6px;
 }
 .coll-hero-title {
-  font-size: 44px;
+  font-size: 2.75rem;
   font-weight: 900;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -1035,7 +1035,7 @@ const executeDelete = async () => {
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #4a5568;
   letter-spacing: -0.01em;
@@ -1105,15 +1105,15 @@ const executeDelete = async () => {
   min-width: 0;
 }
 .coll-resume-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 4px;
 }
 .coll-resume-name {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.01em;
@@ -1123,13 +1123,13 @@ const executeDelete = async () => {
   margin-bottom: 4px;
 }
 .coll-resume-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #4a5568;
   margin-bottom: 8px;
   line-height: 1.4;
 }
 .coll-resume-meta b {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
 }
 .coll-resume-progress {
@@ -1151,9 +1151,9 @@ const executeDelete = async () => {
   transition: width 0.5s ease;
 }
 .coll-resume-pct {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   flex-shrink: 0;
 }
 .coll-resume-cta {
@@ -1166,7 +1166,7 @@ const executeDelete = async () => {
   color: #fff;
   display: grid;
   place-items: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
   box-shadow: 0 4px 14px rgba(0, 161, 154, 0.36);
   transition: transform 0.15s ease;
@@ -1190,7 +1190,7 @@ const executeDelete = async () => {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   color: #333;
   background: transparent;
 }
@@ -1200,8 +1200,8 @@ const executeDelete = async () => {
 }
 
 .coll-search-btn {
-  color: #00a19a;
-  font-size: 15px;
+  color: #00726c;
+  font-size: 0.9375rem;
   font-weight: 600;
   background: none;
   border: none;
@@ -1235,7 +1235,7 @@ const executeDelete = async () => {
   border: 1.5px solid #eef0f6;
   border-radius: 999px;
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #4a5568;
   cursor: pointer;
@@ -1246,7 +1246,7 @@ const executeDelete = async () => {
 }
 .coll-city-chip:hover {
   border-color: #e2f1ea;
-  color: #00a19a;
+  color: #00726c;
 }
 .coll-city-chip.active {
   background: #00a19a;
@@ -1255,10 +1255,10 @@ const executeDelete = async () => {
   box-shadow: 0 2px 8px rgba(0, 161, 154, 0.28);
 }
 .coll-city-num {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   background: rgba(0, 161, 154, 0.12);
-  color: #00a19a;
+  color: #00726c;
   padding: 1px 7px;
   border-radius: 999px;
 }
@@ -1320,7 +1320,7 @@ const executeDelete = async () => {
   border: 1.5px solid #e0e0e0;
   border-radius: 24px;
   padding: 10px 18px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1a1a1a;
   cursor: pointer;
@@ -1336,13 +1336,13 @@ const executeDelete = async () => {
   margin-bottom: 12px;
 }
 .grid-section-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #1f2024;
   letter-spacing: -0.01em;
 }
 .grid-section-count {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #fff;
   background: #231d45;
@@ -1442,15 +1442,15 @@ const executeDelete = async () => {
 
 /* Cell labels */
 .cell-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   text-align: center;
   margin: 0;
 }
 
 .cell-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #8e8e93;
   text-align: center;
   margin: 0;
@@ -1470,14 +1470,14 @@ const executeDelete = async () => {
 }
 
 .add-new-plus {
-  font-size: 36px;
-  color: #00a19a;
+  font-size: 2.25rem;
+  color: #00726c;
   font-weight: 300;
   line-height: 1;
 }
 
 .add-name {
-  color: #00a19a;
+  color: #00726c;
 }
 
 /* Delete confirmation overlay */
@@ -1526,14 +1526,14 @@ const executeDelete = async () => {
 }
 
 .delete-modal-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 10px;
 }
 
 .delete-modal-body {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   line-height: 1.5;
   margin: 0 0 24px;
@@ -1554,7 +1554,7 @@ const executeDelete = async () => {
   border-radius: 12px;
   border: 1.5px solid #e0e0e0;
   background: white;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #666;
   cursor: pointer;
@@ -1571,7 +1571,7 @@ const executeDelete = async () => {
   border-radius: 12px;
   border: none;
   background: #e53e3e;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: white;
   cursor: pointer;
@@ -1616,7 +1616,7 @@ const executeDelete = async () => {
   object-fit: contain;
 }
 .buyer-cover-pill {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #00817c;
   background: #e0f4f1;
@@ -1634,13 +1634,13 @@ const executeDelete = async () => {
   border-top: 1px solid #e5e7eb;
 }
 .watching-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #1f2024;
   letter-spacing: -0.01em;
 }
 .watching-count {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #fff;
   background: #231d45;
@@ -1673,7 +1673,7 @@ const executeDelete = async () => {
   background: #f0fdfa;
   display: grid;
   place-items: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 .watching-card-ic img {
@@ -1687,13 +1687,13 @@ const executeDelete = async () => {
   min-width: 0;
 }
 .watching-card-addr {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #1f2024;
   line-height: 1.25;
 }
 .watching-card-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #64748b;
   margin-top: 1px;
 }
@@ -1705,7 +1705,7 @@ const executeDelete = async () => {
   flex-wrap: wrap;
 }
 .watching-pill {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   border-radius: 999px;
   padding: 2px 8px;
@@ -1716,13 +1716,13 @@ const executeDelete = async () => {
   color: #fff;
 }
 .watching-purchased {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #94a3b8;
   font-weight: 600;
 }
 .watching-card-arrow {
-  font-size: 18px;
-  color: #00a19a;
+  font-size: 1.125rem;
+  color: #00726c;
   font-weight: 700;
   flex-shrink: 0;
 }

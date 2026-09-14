@@ -154,7 +154,7 @@
       :key="currentDoc.id"
       class="boost-row boost-row--active"
       @click="onAddDoc(currentDoc.id)"
-    >
+     role="button" tabindex="0" @keydown.enter="onAddDoc(currentDoc.id)" @keydown.space.prevent="onAddDoc(currentDoc.id)">
       <div class="boost-row-icon" :class="[currentDoc.tone, { 'boost-row-icon--img': !!currentDoc.iconImage }]">
         <img v-if="currentDoc.iconImage" :src="currentDoc.iconImage" :alt="currentDoc.title" class="boost-row-icon-img" loading="lazy" />
         <template v-else>{{ currentDoc.icon }}</template>
@@ -244,7 +244,7 @@
       :key="b.id"
       class="boost-row"
       @click="$emit('open-marketplace', b.id)"
-    >
+     role="button" tabindex="0" @keydown.enter="$emit('open-marketplace', b.id)" @keydown.space.prevent="$emit('open-marketplace', b.id)">
       <div class="boost-row-icon" :class="[b.tone, { 'boost-row-icon--img': !!b.iconImage }]">
         <img
           v-if="b.iconImage"
@@ -861,7 +861,7 @@ function formatFileSize(bytes: number): string {
   color: var(--text);
   flex-shrink: 0;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
 }
 .boost-back svg {
@@ -873,13 +873,13 @@ function formatFileSize(bytes: number): string {
   text-align: center;
 }
 .boost-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .boost-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -952,14 +952,14 @@ function formatFileSize(bytes: number): string {
   margin-bottom: 18px;
 }
 .boost-journey-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.95);
   letter-spacing: 1.4px;
   text-transform: uppercase;
 }
 .boost-journey-update {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: white;
   padding: 3px 9px;
@@ -983,7 +983,7 @@ function formatFileSize(bytes: number): string {
   transform: translateY(-2px);
 }
 /* .gauge-emoji {
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1;
   margin-bottom: 8px;
   opacity: 0.9;
@@ -1019,13 +1019,13 @@ function formatFileSize(bytes: number): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.6px;
   color: white;
 }
 .boost-gauge-num.pct {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 .boost-gauge-num span {
   font-size: 0.7em;
@@ -1033,7 +1033,7 @@ function formatFileSize(bytes: number): string {
   opacity: 0.85;
 }
 .boost-gauge-cat {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: white;
   letter-spacing: 0.7px;
@@ -1041,7 +1041,7 @@ function formatFileSize(bytes: number): string {
   margin-top: 10px;
 }
 .boost-gauge-sub {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.6);
   margin-top: 2px;
@@ -1057,11 +1057,11 @@ function formatFileSize(bytes: number): string {
   border-radius: 10px;
 }
 .boost-journey-foot-icon {
-  font-size: 16px;
+  font-size: 1rem;
 }
 .boost-journey-foot-text {
   flex: 1;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.4;
@@ -1073,7 +1073,7 @@ function formatFileSize(bytes: number): string {
 
 /* Section heading */
 .boost-section-h {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 1.2px;
@@ -1084,7 +1084,7 @@ function formatFileSize(bytes: number): string {
   gap: 6px;
 }
 .boost-section-h .ico {
-  font-size: 12px;
+  font-size: 0.75rem;
   width: 16px;
   height: 16px;
   display: inline-flex;
@@ -1102,7 +1102,7 @@ function formatFileSize(bytes: number): string {
   color: var(--accent-dark);
   border: 1px solid var(--accent-pale);
   border-radius: 100px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
@@ -1166,7 +1166,7 @@ function formatFileSize(bytes: number): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   flex-shrink: 0;
 }
 .boost-row-icon.yellow {
@@ -1206,14 +1206,14 @@ function formatFileSize(bytes: number): string {
   min-width: 0;
 }
 .boost-row-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.2px;
   line-height: 1.2;
 }
 .boost-row-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 3px;
@@ -1228,7 +1228,7 @@ function formatFileSize(bytes: number): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 300;
   flex-shrink: 0;
   box-shadow: 0 4px 10px rgba(0, 161, 154, 0.35);
@@ -1242,12 +1242,12 @@ function formatFileSize(bytes: number): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 .boost-row-chev {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--text-faint);
   flex-shrink: 0;
 }
@@ -1265,20 +1265,20 @@ function formatFileSize(bytes: number): string {
   box-shadow: 0 12px 28px rgba(0, 120, 112, 0.3);
 }
 .ns-eye {
-  font-size: 10px;
+  font-size: 0.625rem;
   letter-spacing: 1.3px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
   font-weight: 800;
 }
 .ns-h {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 750;
   margin-top: 15px;
   letter-spacing: -0.3px;
 }
 .ns-p {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: rgba(255, 255, 255, 0.82);
   line-height: 1.5;
   margin-top: 8px;
@@ -1293,7 +1293,7 @@ function formatFileSize(bytes: number): string {
   background: #fff;
   color: #007E78;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   align-items: center;
   justify-content: center;
@@ -1336,7 +1336,7 @@ function formatFileSize(bytes: number): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   flex-shrink: 0;
 }
 .bd-upload-ico-img {
@@ -1359,7 +1359,7 @@ function formatFileSize(bytes: number): string {
 }
 .bd-upload-sub {
   flex: 1;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -1392,18 +1392,18 @@ function formatFileSize(bytes: number): string {
   display: none;
 }
 .bd-dropzone-icon {
-  font-size: 30px;
+  font-size: 1.875rem;
   line-height: 1;
 }
 .bd-dropzone-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.2px;
   word-break: break-word;
 }
 .bd-dropzone-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-faint);
 }
@@ -1413,7 +1413,7 @@ function formatFileSize(bytes: number): string {
 }
 .bd-upload-note {
   margin-top: 14px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -1425,7 +1425,7 @@ function formatFileSize(bytes: number): string {
   background: #fff2f2;
   border: 1px solid #f3c9c9;
   color: #a02c2c;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   line-height: 1.45;
 }
@@ -1437,7 +1437,7 @@ function formatFileSize(bytes: number): string {
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   color: white;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(0, 161, 154, 0.3);
@@ -1528,7 +1528,7 @@ function formatFileSize(bytes: number): string {
   margin: 0 auto 14px;
   display: grid;
   place-items: center;
-  font-size: 28px;
+  font-size: 1.75rem;
 }
 .bcv-ico--img {
   width: 72px;
@@ -1559,33 +1559,33 @@ function formatFileSize(bytes: number): string {
   background: #d4f2e0;
 }
 .bcv-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 2px;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 6px;
 }
 .bcv-headline {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 900;
   color: #231d45;
   letter-spacing: -0.4px;
   line-height: 1.15;
 }
 .bcv-subhead {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #b07afe;
   margin-top: 2px;
 }
 .bcv-doc-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #6b7089;
   margin: 10px 0 8px;
 }
 .bcv-impact {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.55;
@@ -1599,7 +1599,7 @@ function formatFileSize(bytes: number): string {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #ffffff !important;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   letter-spacing: -0.1px;
@@ -1631,14 +1631,14 @@ function formatFileSize(bytes: number): string {
   background: linear-gradient(180deg, #C18A38, #A9772A);
 }
 .bes-eye {
-  font-size: 10px;
+  font-size: 0.625rem;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   color: #A9772A;
   font-weight: 800;
 }
 .bes-h {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 750;
   color: #231D45;
   margin: 6px 0 14px;
@@ -1664,7 +1664,7 @@ function formatFileSize(bytes: number): string {
   border: 1px solid #BFE7DF;
 }
 .bes-bl {
-  font-size: 9px;
+  font-size: 0.5625rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   font-weight: 800;
@@ -1679,21 +1679,21 @@ function formatFileSize(bytes: number): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #fff;
 }
 .bes-badge.stale .bes-letter { background: #D86F4A; opacity: 0.65; }
 .bes-badge.ver   .bes-letter { background: #6F9A33; }
 .bes-num {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   margin-top: 6px;
 }
 .bes-badge.stale .bes-num { color: #7E7D93; }
 .bes-badge.ver   .bes-num { color: #231D45; }
 .bes-tagp {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   margin-top: 6px;
   display: inline-block;
@@ -1703,13 +1703,13 @@ function formatFileSize(bytes: number): string {
 .bes-badge.stale .bes-tagp { background: #E7E6F0; color: #8A8899; }
 .bes-badge.ver   .bes-tagp { background: #fff;    color: #007E78; }
 .bes-arrow {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #C18A38;
   font-weight: 700;
   flex: none;
 }
 .bes-p {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #7E7D93;
   line-height: 1.5;
   margin: 14px 0 0;
@@ -1725,7 +1725,7 @@ function formatFileSize(bytes: number): string {
   background: #fff;
   color: #007E78;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   align-items: center;
   justify-content: center;
@@ -1739,7 +1739,7 @@ function formatFileSize(bytes: number): string {
 }
 .bes-micro {
   text-align: center;
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #A9A8BC;
   margin-top: 9px;
 }

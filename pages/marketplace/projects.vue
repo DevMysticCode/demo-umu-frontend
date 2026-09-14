@@ -161,14 +161,14 @@ function goPost() { router.push('/marketplace/post') }
   padding: 10px 20px 6px;
 }
 .pj-header-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
   color: #6b7089;
 }
 .pj-header-title {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.6px;
@@ -178,7 +178,7 @@ function goPost() { router.push('/marketplace/post') }
 .pj-loading {
   padding: 40px 20px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
@@ -186,17 +186,17 @@ function goPost() { router.push('/marketplace/post') }
 .pj-empty {
   padding: 60px 24px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
-.pj-empty-emoji { font-size: 40px; margin-bottom: 8px; }
-.pj-empty-title { font-size: 16px; font-weight: 800; color: #231d45; margin-bottom: 4px; }
+.pj-empty-emoji { font-size: 2.5rem; margin-bottom: 8px; }
+.pj-empty-title { font-size: 1rem; font-weight: 800; color: #231d45; margin-bottom: 4px; }
 .pj-empty-sub { margin-bottom: 16px; }
 .pj-empty-btn {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff; border: none; border-radius: 12px;
-  padding: 12px 18px; font-family: inherit; font-size: 13px; font-weight: 800;
+  padding: 12px 18px; font-family: inherit; font-size: 0.8125rem; font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
 }
@@ -217,7 +217,7 @@ function goPost() { router.push('/marketplace/post') }
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .pj-stat-num {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
@@ -226,7 +226,7 @@ function goPost() { router.push('/marketplace/post') }
 .pj-stat-num.amber { color: #b07a13; }
 .pj-stat-num.mint  { color: #008A84; }
 .pj-stat-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: #6b7089;
   letter-spacing: 0.4px;
@@ -270,7 +270,7 @@ function goPost() { router.push('/marketplace/post') }
   position: absolute;
   bottom: 6px;
   left: 6px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   padding: 3px 7px;
   border-radius: 100px;
@@ -287,7 +287,7 @@ function goPost() { router.push('/marketplace/post') }
   padding: 2px 0;
 }
 .pj-row-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
@@ -298,7 +298,7 @@ function goPost() { router.push('/marketplace/post') }
   overflow: hidden;
 }
 .pj-row-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 2px;
@@ -310,7 +310,7 @@ function goPost() { router.push('/marketplace/post') }
   margin-top: 6px;
 }
 .pj-status {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -322,7 +322,7 @@ function goPost() { router.push('/marketplace/post') }
 .pj-status-completed   { background: linear-gradient(135deg, #00a19a, #008a84); color: #fff; }
 .pj-status-cancelled   { background: #f5f6fa; color: #6b7089; }
 .pj-row-offers {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #6b7089;
 }

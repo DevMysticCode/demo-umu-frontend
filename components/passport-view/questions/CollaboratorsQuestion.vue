@@ -89,7 +89,7 @@ const getInitials = (f, l) => ((f ? f[0] : '?') + (l ? l[0] : '')).toUpperCase()
   border: none;
 }
 .section-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   margin-bottom: 8px;
   color: #111;
 }

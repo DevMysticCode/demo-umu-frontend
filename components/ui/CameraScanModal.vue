@@ -1,10 +1,18 @@
 <template>
   <Teleport to="body">
     <div v-if="open" class="cs-overlay" @click.self="onCancel">
-      <div class="cs-modal">
+      <div
+        ref="modalEl"
+        class="cs-modal"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="titleId"
+        tabindex="-1"
+        @keydown="onModalKeydown"
+      >
         <!-- Header -->
         <div class="cs-header">
-          <div class="cs-title">Scan document</div>
+          <div :id="titleId" class="cs-title">Scan document</div>
           <button class="cs-close" type="button" aria-label="Close" @click="onCancel">✕</button>
         </div>
 
@@ -86,12 +94,48 @@
 </template>
 
 <script setup>
-import { ref, watch, onBeforeUnmount } from 'vue'
+import { ref, watch, onBeforeUnmount, nextTick, useId } from 'vue'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
 })
 const emit = defineEmits(['close', 'capture'])
+
+const titleId = `cs-title-${useId()}`
+const modalEl = ref(null)
+let triggerEl = null
+
+function focusables() {
+  if (!modalEl.value) return []
+  return Array.from(
+    modalEl.value.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((el) => el.offsetParent !== null)
+}
+
+function onModalKeydown(e) {
+  if (e.key === 'Escape') {
+    e.stopPropagation()
+    onCancel()
+    return
+  }
+  if (e.key !== 'Tab') return
+  const items = focusables()
+  if (!items.length) {
+    e.preventDefault()
+    return
+  }
+  const first = items[0]
+  const last = items[items.length - 1]
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault()
+    first.focus()
+  }
+}
 
 // ── Native document scanner (Capacitor plugin) ──────────────────
 // On iOS/Android inside the Capacitor shell we invoke Apple's
@@ -330,8 +374,10 @@ watch(
   () => props.open,
   async (isOpen) => {
     if (isOpen) {
+      triggerEl = typeof document !== 'undefined' ? document.activeElement : null
       mode.value = 'live'
       error.value = ''
+      nextTick(() => modalEl.value?.focus())
       // Native path first — bypasses the web modal entirely and hands
       // control to Apple / Google's document scanner. Returns true when
       // it handled the interaction (success OR cancel OR
@@ -344,6 +390,10 @@ watch(
       await startStream('environment')
     } else {
       stopStream()
+      if (triggerEl && typeof triggerEl.focus === 'function') {
+        triggerEl.focus()
+        triggerEl = null
+      }
     }
   },
 )
@@ -377,7 +427,7 @@ onBeforeUnmount(() => stopStream())
   padding-top: calc(12px + env(safe-area-inset-top, 0));
   color: #fff;
 }
-.cs-title { font-size: 15px; font-weight: 700; }
+.cs-title { font-size: 0.9375rem; font-weight: 700; }
 .cs-close {
   background: rgba(255, 255, 255, 0.12);
   border: none;
@@ -385,7 +435,7 @@ onBeforeUnmount(() => stopStream())
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
 }
 .cs-close:hover { background: rgba(255, 255, 255, 0.2); }
@@ -413,7 +463,7 @@ onBeforeUnmount(() => stopStream())
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .cs-spinner {
   width: 36px;
@@ -433,10 +483,10 @@ onBeforeUnmount(() => stopStream())
   padding: 32px 24px;
   max-width: 320px;
 }
-.cs-fallback-icon { font-size: 48px; margin-bottom: 12px; }
-.cs-fallback-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.cs-fallback-icon { font-size: 3rem; margin-bottom: 12px; }
+.cs-fallback-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
 .cs-fallback-msg {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.5;
   margin: 0 0 20px;
@@ -448,7 +498,7 @@ onBeforeUnmount(() => stopStream())
   padding: 12px 24px;
   border-radius: 100px;
   font: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
 }

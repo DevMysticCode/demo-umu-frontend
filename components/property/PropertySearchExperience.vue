@@ -40,7 +40,7 @@
           :key="prop.id"
           class="prop-card"
           @click="navigateTo('/property/' + prop.id)"
-        >
+         role="button" tabindex="0" @keydown.enter="navigateTo('/property/' + prop.id)" @keydown.space.prevent="navigateTo('/property/' + prop.id)">
           <div
             class="prop-img-wrap"
             :style="{ background: prop.imgGradient || 'linear-gradient(135deg,#dff4f0,#c8ebe6)' }"
@@ -320,7 +320,7 @@ function epcColor(rating: string): string {
   border: none;
   border-radius: 999px;
   padding: 7px 14px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -330,7 +330,7 @@ function epcColor(rating: string): string {
   transform: scale(0.97);
 }
 .search-result-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
   font-weight: 500;
   flex: 1;
@@ -371,7 +371,7 @@ function epcColor(rating: string): string {
   left: 10px;
   background: #231d45;
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 999px;
@@ -403,7 +403,7 @@ function epcColor(rating: string): string {
   right: 10px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 3px 10px;
   border-radius: 999px;
@@ -423,13 +423,13 @@ function epcColor(rating: string): string {
   min-width: 0;
 }
 .prop-address {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #1f2024;
   margin-bottom: 1px;
 }
 .prop-area {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #94a3b8;
   margin-bottom: 8px;
 }
@@ -443,14 +443,14 @@ function epcColor(rating: string): string {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 .epc-badge-label {
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   opacity: 0.85;
   line-height: 1;
 }
 .epc-badge-rating {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 900;
   line-height: 1.1;
   margin-top: 1px;
@@ -464,7 +464,7 @@ function epcColor(rating: string): string {
 .pill-grey {
   background: #f1f5f9;
   color: #64748b;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
@@ -482,7 +482,7 @@ function epcColor(rating: string): string {
   gap: 6px;
 }
 .prop-score-lbl {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   font-weight: 600;
 }
@@ -499,14 +499,14 @@ function epcColor(rating: string): string {
   border-radius: 4px;
 }
 .prop-score-num {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #1f2024;
 }
 .prop-passport-btn {
   background: #231d45;
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 5px 12px;
   border-radius: 999px;
@@ -521,8 +521,8 @@ function epcColor(rating: string): string {
 .load-more-btn {
   background: #fff;
   border: 1.5px solid #e5e7eb;
-  color: #00a19a;
-  font-size: 15px;
+  color: #00726c;
+  font-size: 0.9375rem;
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 999px;
@@ -547,7 +547,7 @@ function epcColor(rating: string): string {
 }
 .load-more-end {
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   padding: 12px 0 8px;
   font-weight: 600;
@@ -570,13 +570,13 @@ function epcColor(rating: string): string {
   display: block;
 }
 .no-results-text {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #231d45;
   margin-bottom: 4px;
 }
 .no-results-sub {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #94a3b8;
 }
 </style>

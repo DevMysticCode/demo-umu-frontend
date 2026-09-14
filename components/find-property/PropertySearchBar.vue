@@ -12,7 +12,7 @@
         type="text"
         :placeholder="placeholder"
         class="property-search__input"
-      />
+       aria-label="placeholder" />
       <!-- Voice Search Button -->
       <button
         v-if="isVoiceSupported"
@@ -115,11 +115,11 @@ const handleSearch = () => {
 }
 
 .property-search__voice-btn {
-  @apply absolute right-28 h-8 w-8 flex items-center justify-center text-gray-400 hover:text-brand-aqua transition-colors;
+  @apply absolute right-28 h-8 w-8 flex items-center justify-center text-gray-400 hover:text-brand-aqua-text transition-colors;
 }
 
 .property-search__voice-btn--active {
-  @apply text-brand-aqua animate-pulse;
+  @apply text-brand-aqua-text animate-pulse;
 }
 
 .property-search__button {

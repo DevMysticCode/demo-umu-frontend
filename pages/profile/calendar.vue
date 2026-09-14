@@ -67,7 +67,7 @@
               class="cal-day"
               :class="cellClasses(cell)"
               @click="selectDate(cell)"
-            >
+             role="button" tabindex="0" @keydown.enter="selectDate(cell)" @keydown.space.prevent="selectDate(cell)">
               <span class="cal-day-num">{{ cell.day }}</span>
             </div>
             <div v-else class="cal-day cal-day--empty" />
@@ -162,7 +162,7 @@
                     class="ne-input"
                     type="text"
                     placeholder="What's happening?"
-                  />
+                   aria-label="What's happening?" />
                 </div>
               </div>
 
@@ -268,7 +268,7 @@
                     class="ne-input"
                     type="time"
                     placeholder="HH:MM"
-                  />
+                   aria-label="HH:MM" />
                 </div>
               </div>
 
@@ -282,7 +282,7 @@
                     class="ne-input"
                     type="text"
                     placeholder="Any reminders or details…"
-                  />
+                   aria-label="Any reminders or details…" />
                 </div>
               </div>
             </div>
@@ -662,7 +662,7 @@ onMounted(async () => {
 .cal-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.3px;
@@ -683,7 +683,7 @@ onMounted(async () => {
 }
 .cal-monthpill h2 {
   flex: 1;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.4px;
@@ -741,7 +741,7 @@ onMounted(async () => {
   min-width: 0;
 }
 .cal-stat-num {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.5px;
@@ -749,7 +749,7 @@ onMounted(async () => {
   font-variant-numeric: tabular-nums;
 }
 .cal-stat-label {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: var(--navy-70);
   margin-top: 3px;
@@ -770,7 +770,7 @@ onMounted(async () => {
   gap: 2px;
 }
 .cal-dow {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--teal);
   text-align: center;
@@ -784,7 +784,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--navy);
   border-radius: 12px;
@@ -826,7 +826,7 @@ onMounted(async () => {
 /* ── Agenda ─────────────────────────────────────────────────────── */
 .cal-agenda-group { margin-bottom: 18px; }
 .cal-agenda-heading {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 1.4px;
   color: var(--teal);
@@ -874,20 +874,20 @@ onMounted(async () => {
   justify-content: center;
 }
 .cal-event-time-top {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--navy-70);
   line-height: 1.1;
 }
 .cal-event-time-sub {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   color: var(--navy-40);
   margin-top: 3px;
 }
 .cal-event-content { flex: 1; min-width: 0; }
 .cal-event-title {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.2px;
@@ -897,7 +897,7 @@ onMounted(async () => {
   text-overflow: ellipsis;
 }
 .cal-event-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--navy-70);
   margin-top: 2px;
@@ -905,7 +905,7 @@ onMounted(async () => {
 }
 .cal-event-tag {
   display: inline-block;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.9px;
   padding: 3px 10px;
@@ -934,7 +934,7 @@ onMounted(async () => {
   text-align: center;
   padding: 40px 22px;
   color: var(--navy-40);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 
@@ -1014,14 +1014,14 @@ onMounted(async () => {
 }
 .ne-head-text { flex: 1; min-width: 0; }
 .ne-head-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.5px;
   line-height: 1.15;
 }
 .ne-head-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--navy-70);
   font-weight: 500;
   margin-top: 4px;
@@ -1046,7 +1046,7 @@ onMounted(async () => {
 .ne-body { padding: 4px 22px 6px; }
 .ne-section { margin-bottom: 20px; }
 .ne-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   color: var(--teal);
@@ -1080,7 +1080,7 @@ onMounted(async () => {
   outline: 0;
   background: transparent;
   font: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--navy);
   min-width: 0;
@@ -1113,7 +1113,7 @@ onMounted(async () => {
   object-fit: contain;
 }
 .ne-type-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--navy);
 }
@@ -1187,7 +1187,7 @@ onMounted(async () => {
 }
 .ne-cell-value {
   flex: 1;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: var(--navy);
   white-space: nowrap;
@@ -1231,7 +1231,7 @@ onMounted(async () => {
   border-radius: 14px;
   padding: 15px 16px;
   font-family: inherit;
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   cursor: pointer;
   display: inline-flex;

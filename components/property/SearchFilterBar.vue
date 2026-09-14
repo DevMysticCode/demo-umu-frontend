@@ -25,7 +25,7 @@
         @keyup.enter="onEnter"
         @focus="isFocused = true"
         @blur="showDropdown = false; isFocused = false"
-      />
+       aria-label="displayPlaceholder" />
       <!-- Unified distance + filters pill (Explore's .exp-dist-btn). Not in
            lightweightMode — that page opens its own filters modal after a
            location is picked, instead of this inline sheet. -->
@@ -167,7 +167,7 @@
         @touchend="onFilterTouchEnd"
         @touchcancel="onFilterTouchEnd"
       >
-        <div class="sheet-grabber-wrap" @click="closeFilterSheet">
+        <div class="sheet-grabber-wrap" @click="closeFilterSheet" role="button" tabindex="0" @keydown.enter="closeFilterSheet" @keydown.space.prevent="closeFilterSheet">
           <div class="sheet-grabber" />
         </div>
         <div class="sheet-head">
@@ -189,7 +189,7 @@
                 class="dist-row"
                 :class="{ active: draft.distance === opt.value }"
                 @click="draft.distance = opt.value"
-              >
+               role="button" tabindex="0" @keydown.enter="draft.distance = opt.value" @keydown.space.prevent="draft.distance = opt.value">
                 <span class="dist-radio" />
                 <span class="dist-label-wrap">
                   <span class="dist-label">{{ opt.label }}</span>
@@ -285,7 +285,7 @@
           </div>
 
           <div class="sheet-section">
-            <div class="toggle-row" @click="draft.passport = !draft.passport">
+            <div class="toggle-row" @click="draft.passport = !draft.passport" role="button" tabindex="0" @keydown.enter="draft.passport = !draft.passport" @keydown.space.prevent="draft.passport = !draft.passport">
               <div class="tr-text">
                 <div class="tr-title">Verified Passport only</div>
                 <div class="tr-sub">
@@ -699,7 +699,7 @@ function clearAllFilters() {
   border-radius: 14px;
   border: 1.5px solid #e5e7eb;
   background: #f8f7fc;
-  font-size: 16px;
+  font-size: 1rem;
   color: #1f2024;
   outline: none;
   font-family: inherit;
@@ -720,7 +720,7 @@ function clearAllFilters() {
   transform: translateY(-50%);
   background: #00a19a;
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 6px 12px;
   border-radius: 9px;
@@ -737,7 +737,7 @@ function clearAllFilters() {
   align-items: center;
   gap: 4px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
   background: #f4f4f6;
@@ -755,7 +755,7 @@ function clearAllFilters() {
   color: #00514d;
 }
 .exp-dist-btn .arrow {
-  font-size: 8px;
+  font-size: 0.5rem;
   color: #9c98ad;
   transition: transform 0.2s;
 }
@@ -793,7 +793,7 @@ function clearAllFilters() {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #00514d;
   background: #e0f4f1;
@@ -811,13 +811,13 @@ function clearAllFilters() {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: 0.5625rem;
   cursor: pointer;
   margin-left: 2px;
   line-height: 1;
 }
 .fs-clear {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #6b6783;
   background: none;
@@ -838,7 +838,7 @@ function clearAllFilters() {
   margin-top: 8px;
 }
 .addr-drop-header {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
@@ -864,7 +864,7 @@ function clearAllFilters() {
 .addr-ic {
   width: 28px;
   height: 28px;
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -875,7 +875,7 @@ function clearAllFilters() {
   min-width: 0;
 }
 .addr-line1 {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #231d45;
   white-space: nowrap;
@@ -883,7 +883,7 @@ function clearAllFilters() {
   text-overflow: ellipsis;
 }
 .addr-line2 {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   margin-top: 1px;
 }
@@ -899,7 +899,7 @@ function clearAllFilters() {
   gap: 3px;
 }
 .addr-hs-caption {
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -933,7 +933,7 @@ function clearAllFilters() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   font-feature-settings: 'tnum';
 }
@@ -947,7 +947,7 @@ function clearAllFilters() {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 999px;
@@ -973,7 +973,7 @@ function clearAllFilters() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   letter-spacing: 0.01em;
   margin-top: 4px;
@@ -1031,7 +1031,7 @@ function clearAllFilters() {
   border-bottom: 1px solid #f3f4f6;
 }
 .sheet-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -1040,7 +1040,7 @@ function clearAllFilters() {
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #6b6783;
   cursor: pointer;
@@ -1068,14 +1068,14 @@ function clearAllFilters() {
   margin-bottom: 10px;
 }
 .sheet-section-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #6b6783;
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 .sheet-section-value {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #00514d;
   letter-spacing: -0.05px;
@@ -1140,7 +1140,7 @@ function clearAllFilters() {
 }
 .dist-label {
   display: block;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
   letter-spacing: -0.15px;
@@ -1148,7 +1148,7 @@ function clearAllFilters() {
 }
 .dist-hint {
   display: block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #6b6783;
   margin-top: 1px;
@@ -1165,7 +1165,7 @@ function clearAllFilters() {
 }
 .chip {
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #231d45;
   background: #f4f4f6;
@@ -1196,7 +1196,7 @@ function clearAllFilters() {
   width: 16px;
   height: 16px;
   border-radius: 3px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: #fff;
   display: inline-flex;
@@ -1265,7 +1265,7 @@ function clearAllFilters() {
 .slider-scale {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #9c98ad;
   margin-top: 2px;
@@ -1287,14 +1287,14 @@ function clearAllFilters() {
   min-width: 0;
 }
 .toggle-row .tr-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.15px;
   margin-bottom: 2px;
 }
 .toggle-row .tr-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #6b6783;
   letter-spacing: -0.05px;
@@ -1338,7 +1338,7 @@ function clearAllFilters() {
 }
 .sheet-cancel {
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   background: #f4f4f6;
@@ -1356,7 +1356,7 @@ function clearAllFilters() {
 .sheet-apply {
   flex: 1;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #fff;
   background: #00a19a;
@@ -1376,7 +1376,7 @@ function clearAllFilters() {
 }
 .sheet-apply .count {
   background: rgba(255, 255, 255, 0.22);
-  font-size: 11px;
+  font-size: 0.6875rem;
   padding: 2px 7px;
   border-radius: 999px;
   font-weight: 800;

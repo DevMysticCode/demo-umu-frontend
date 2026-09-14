@@ -10,7 +10,7 @@
       v-model="text"
       class="w-full p-3 rounded-lg border mt-2"
       placeholder="Please describe..."
-    ></textarea>
+     aria-label="Please describe..."></textarea>
   </div>
 </template>
 

@@ -108,7 +108,7 @@ const onBack = useGoBack('/dashboard')
   border-radius: 50%;
   border: 1px solid var(--line);
   background: #fff;
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1;
   color: var(--navy);
   cursor: pointer;
@@ -117,8 +117,8 @@ const onBack = useGoBack('/dashboard')
   padding-bottom: 3px;
 }
 .cl-top-text { flex: 1; min-width: 0; }
-.cl-top-title { font-size: 14px; font-weight: 800; color: var(--navy); letter-spacing: -0.01em; }
-.cl-top-sub { font-size: 11px; color: var(--ink-faint); margin-top: 1px; }
+.cl-top-title { font-size: 0.875rem; font-weight: 800; color: var(--navy); letter-spacing: -0.01em; }
+.cl-top-sub { font-size: 0.6875rem; color: var(--ink-faint); margin-top: 1px; }
 .cl-spacer { width: 32px; }
 
 .cl-prog-strip {
@@ -147,7 +147,7 @@ const onBack = useGoBack('/dashboard')
   margin: 8px auto 18px;
 }
 .cl-h2 {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.02em;
@@ -156,7 +156,7 @@ const onBack = useGoBack('/dashboard')
 }
 .cl-center { text-align: center; }
 .cl-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink-soft);
   line-height: 1.55;
   margin: 0 0 16px;
@@ -165,7 +165,7 @@ const onBack = useGoBack('/dashboard')
 
 .cl-field-wrap { margin-bottom: 16px; }
 .cl-field-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--ink-soft);
   margin-bottom: 6px;
@@ -188,7 +188,7 @@ const onBack = useGoBack('/dashboard')
 }
 .cl-lock-ic img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .cl-lock-body {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--ink-soft);
   line-height: 1.5;
 }
@@ -203,7 +203,7 @@ const onBack = useGoBack('/dashboard')
   padding: 12px 14px;
   background: #f5f6fa;
   border-radius: 12px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: var(--navy);
 }
@@ -220,7 +220,7 @@ const onBack = useGoBack('/dashboard')
   justify-content: center;
   gap: 10px;
   color: var(--ink-soft);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 .cl-resolving-spinner {

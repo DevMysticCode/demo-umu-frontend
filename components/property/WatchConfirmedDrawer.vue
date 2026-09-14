@@ -348,7 +348,7 @@ watch(
   text-align: center;
 }
 .wc-title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.3px;
@@ -360,7 +360,7 @@ watch(
   flex-shrink: 0;
 }
 .wc-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.55;
@@ -377,7 +377,7 @@ watch(
   box-shadow: 0 2px 10px rgba(35, 29, 69, 0.05);
 }
 .wc-notif-head {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 8px;
@@ -400,7 +400,7 @@ watch(
 }
 .wc-notif-label {
   flex: 1;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text);
 }
@@ -466,14 +466,14 @@ watch(
   min-width: 0;
 }
 .wc-upsell-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: var(--text);
   line-height: 1.3;
   margin-bottom: 4px;
 }
 .wc-upsell-desc {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -487,7 +487,7 @@ watch(
   gap: 8px;
   padding: 11px;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #fff;
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
@@ -503,7 +503,7 @@ watch(
   width: 100%;
   padding: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--text-secondary);
   background: var(--card);
@@ -516,14 +516,14 @@ watch(
   align-items: flex-start;
   gap: 8px;
   padding: 10px 22px 18px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-faint);
   line-height: 1.5;
 }
 .watch-privacy-icon {
   flex-shrink: 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 /* Slide-up transition */

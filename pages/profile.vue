@@ -50,7 +50,7 @@
         <button
           v-if="memberSince"
           type="button"
-          class="mt-6 h-14 px-8 rounded-full border border-brand-aqua text-brand-aqua text-xl leading-6 font-medium"
+          class="mt-6 h-14 px-8 rounded-full border border-brand-aqua text-brand-aqua-text text-xl leading-6 font-medium"
         >
           Member since {{ memberSince }}
         </button>
@@ -67,7 +67,7 @@
             type="text"
             placeholder="Search Preferences"
             class="ml-2 w-full bg-transparent outline-none text-lg placeholder:text-[#8f9094]"
-          />
+           aria-label="Search Preferences" />
         </div>
 
         <button

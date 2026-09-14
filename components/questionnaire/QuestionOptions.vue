@@ -6,7 +6,7 @@
       @click="selectOption(option)"
       class="question-option"
       :class="getOptionClasses(option)"
-    >
+     role="button" tabindex="0" @keydown.enter="selectOption(option)" @keydown.space.prevent="selectOption(option)">
       <!-- <span class="question-option__icon" :class="getIconClasses(option)">
         {{ getIconEmoji(option.icon) }}
       </span> -->

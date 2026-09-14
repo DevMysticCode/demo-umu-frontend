@@ -819,14 +819,14 @@ function onBack() {
   text-align: center;
 }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
   line-height: 1.15;
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -844,13 +844,13 @@ function onBack() {
   min-width: 0;
 }
 .pathway-intro-eyebrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--accent-dark);
   margin-bottom: 4px;
 }
 .pathway-intro-title {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.4px;
@@ -913,7 +913,7 @@ function onBack() {
   z-index: 1;
 }
 .pathway-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.8);
   letter-spacing: 1.4px;
@@ -972,7 +972,7 @@ function onBack() {
   object-fit: contain;
 }
 .pw-stat-text {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.35;
@@ -985,7 +985,7 @@ function onBack() {
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.4;
@@ -1029,7 +1029,7 @@ function onBack() {
   justify-content: center;
 }
 .pwc-big {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: -0.6px;
@@ -1037,17 +1037,17 @@ function onBack() {
 }
 .pwc-big--to {
   color: #ffffff;
-  font-size: 26px;
+  font-size: 1.625rem;
 }
 .pwc-small {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 2px;
 }
 .pathway-arrow {
   width: 20px;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: white;
   text-align: center;
@@ -1065,7 +1065,7 @@ function onBack() {
 .pw-clabel {
   width: 76px;
   text-align: center;
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -1096,14 +1096,14 @@ function onBack() {
   min-width: 0;
 }
 .grant-banner-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #fff;
   margin-bottom: 4px;
   letter-spacing: -0.1px;
 }
 .grant-banner-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.55;
@@ -1113,14 +1113,14 @@ function onBack() {
   font-weight: 800;
 }
 .grant-banner-note {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.55);
   margin-top: 4px;
   line-height: 1.4;
 }
 .grant-banner-chev {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.7);
   flex-shrink: 0;
@@ -1134,14 +1134,14 @@ function onBack() {
   padding: 18px 20px 10px;
 }
 .section-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 .section-h-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--accent-dark);
 }
@@ -1170,17 +1170,17 @@ function onBack() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
 }
 .pathway-empty-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 6px;
 }
 .pathway-empty-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -1215,7 +1215,7 @@ function onBack() {
   top: -9px;
   left: 14px;
   padding: 2px 8px;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.8px;
   background: var(--accent);
@@ -1236,7 +1236,7 @@ function onBack() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   flex-shrink: 0;
 }
 .mission-icon-img {
@@ -1256,7 +1256,7 @@ function onBack() {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -1269,7 +1269,7 @@ function onBack() {
   border-radius: 50%;
   background: var(--accent-dark);
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -1277,7 +1277,7 @@ function onBack() {
   flex-shrink: 0;
 }
 .mission-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text-secondary);
   font-weight: 500;
   line-height: 1.4;
@@ -1290,7 +1290,7 @@ function onBack() {
   border: 1.5px solid var(--border);
   background: var(--card);
   color: var(--accent-dark);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -1316,14 +1316,14 @@ function onBack() {
   text-align: center;
 }
 .mission-stat-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   color: var(--text-secondary);
   margin-bottom: 2px;
   line-height: 1.2;
 }
 .mission-stat-val {
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: -0.2px;
   line-height: 1.2;
 }
@@ -1354,7 +1354,7 @@ function onBack() {
   justify-content: center;
   gap: 8px;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -1397,7 +1397,7 @@ function onBack() {
 .mission-card--done .mission-icon {
   background: #00a19a;
   color: #fff;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -1413,7 +1413,7 @@ function onBack() {
   border-radius: 999px;
   background: rgba(0, 161, 154, 0.14);
   color: #007e78;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -1435,7 +1435,7 @@ function onBack() {
   border: 1.5px solid #00a19a;
   border-radius: 10px;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -1462,7 +1462,7 @@ function onBack() {
   border: none;
   border-radius: 999px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 8px 24px rgba(35, 29, 69, 0.32);
@@ -1508,7 +1508,7 @@ function onBack() {
   text-align: center;
 }
 .vd-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: 1.4px;
@@ -1516,14 +1516,14 @@ function onBack() {
   margin-bottom: 6px;
 }
 .vd-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
   margin-bottom: 6px;
 }
 .vd-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.55;
@@ -1558,30 +1558,30 @@ function onBack() {
   background: #fff;
   display: grid;
   place-items: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
 }
 .vd-row-body { flex: 1; min-width: 0; }
 .vd-row-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 2px;
 }
 .vd-row-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.4;
 }
 .vd-row-file {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #007e78;
   margin-top: 4px;
 }
 .vd-row-cta {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #007e78;
   flex-shrink: 0;
@@ -1601,7 +1601,7 @@ function onBack() {
   flex: 1;
   padding: 13px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   border-radius: 12px;
   cursor: pointer;
@@ -1626,7 +1626,7 @@ function onBack() {
   border: 1.5px solid var(--border);
   border-radius: 10px;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
@@ -1650,7 +1650,7 @@ function onBack() {
   gap: 12px;
 }
 .path-summary-icon {
-  font-size: 22px;
+  font-size: 1.375rem;
   flex-shrink: 0;
   width: 46px;
   height: 46px;
@@ -1670,13 +1670,13 @@ function onBack() {
   flex: 1;
 }
 .path-summary-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 2px;
 }
 .path-summary-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -1694,7 +1694,7 @@ function onBack() {
   border-radius: 14px;
 }
 .beyond-banner-ic {
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
 }
 .beyond-banner-body {
@@ -1702,13 +1702,13 @@ function onBack() {
   min-width: 0;
 }
 .beyond-banner-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 3px;
 }
 .beyond-banner-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.4;
@@ -1726,7 +1726,7 @@ function onBack() {
   border-radius: 100px;
   color: var(--accent-dark);
   font-family: inherit;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   line-height: 1.25;
   text-align: center;
@@ -1736,7 +1736,7 @@ function onBack() {
   background: var(--accent-paler);
 }
 .beyond-banner-btn-ar {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 /* Bottom CTA */
@@ -1751,7 +1751,7 @@ function onBack() {
   border: none;
   border-radius: 14px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.3);
@@ -1772,7 +1772,7 @@ function onBack() {
   border: 1.5px solid var(--border);
   border-radius: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 8px;

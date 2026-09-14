@@ -17,7 +17,7 @@
         @blur="focused = false"
         class="umu-search__input pl-12 pr-28"
         :placeholder="placeholder"
-      />
+       aria-label="placeholder" />
 
       <!-- Button -->
       <button
@@ -69,12 +69,12 @@ const handleFocus = () => {
 
 .umu-search__input {
   @apply w-full bg-transparent outline-none text-gray-900;
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .umu-search__button {
-  @apply bg-brand-aqua/10 text-brand-aqua rounded-full px-4 py-1 transition-all;
-  font-size: 15px;
+  @apply bg-brand-aqua/10 text-brand-aqua-text rounded-full px-4 py-1 transition-all;
+  font-size: 0.9375rem;
 }
 
 .umu-search__button:hover:not(:disabled) {

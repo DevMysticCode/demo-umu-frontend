@@ -47,7 +47,7 @@
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
               </span>
-              <input v-model="emailInput" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email" />
+              <input v-model="emailInput" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email"  aria-label="you@example.com" />
             </div>
           </div>
 
@@ -66,7 +66,7 @@
                 placeholder="Your password"
                 class="form-input with-icon with-action"
                 autocomplete="current-password"
-              />
+               aria-label="Your password" />
               <button type="button" class="form-input-action" @click="showPassword = !showPassword">
                 <svg v-if="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
@@ -102,7 +102,7 @@
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
               </span>
-              <input v-model="resetEmail" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email" />
+              <input v-model="resetEmail" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email"  aria-label="you@example.com" />
             </div>
           </div>
 
@@ -168,7 +168,7 @@
                 :type="showNewPassword ? 'text' : 'password'"
                 placeholder="New password"
                 class="form-input with-icon with-action"
-              />
+               aria-label="New password" />
               <button type="button" class="form-input-action" @click="showNewPassword = !showNewPassword">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -192,7 +192,7 @@
                 :type="showConfirmPassword ? 'text' : 'password'"
                 placeholder="Confirm new password"
                 class="form-input with-icon with-action"
-              />
+               aria-label="Confirm new password" />
               <button type="button" class="form-input-action" @click="showConfirmPassword = !showConfirmPassword">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -547,7 +547,7 @@ const onPrimary = () => {
 /* Hero */
 .auth-hero { padding: 18px 24px 4px; }
 .auth-hero-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: 2px;
@@ -555,7 +555,7 @@ const onPrimary = () => {
   margin-bottom: 10px;
 }
 .auth-hero-title {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -1px;
@@ -563,7 +563,7 @@ const onPrimary = () => {
   margin-bottom: 10px;
 }
 .auth-hero-sub {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.55;
@@ -575,7 +575,7 @@ const onPrimary = () => {
   margin: 6px 24px 0;
   padding: 10px 14px;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -598,7 +598,7 @@ const onPrimary = () => {
 .form-field { margin-bottom: 14px; }
 .form-label {
   display: block;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
@@ -612,7 +612,7 @@ const onPrimary = () => {
   border-radius: 12px;
   padding: 13px 14px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #231d45;
   letter-spacing: -0.1px;
@@ -656,7 +656,7 @@ const onPrimary = () => {
 
 /* Reset helper text above OTP */
 .reset-helper-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #6b6783;
   margin: 0 0 18px;
@@ -677,7 +677,7 @@ const onPrimary = () => {
   height: 54px;
   border: 1.5px solid #ececef;
   border-radius: 12px;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
   text-align: center;
   color: #231d45;
@@ -704,7 +704,7 @@ const onPrimary = () => {
   transition: background 0.2s;
 }
 .password-strength p {
-  font-size: 12px;
+  font-size: 0.75rem;
   margin: 0;
   font-weight: 700;
 }
@@ -716,7 +716,7 @@ const onPrimary = () => {
   color: #fff;
   border: none;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   padding: 14px 18px;
   border-radius: 100px;
@@ -735,7 +735,7 @@ const onPrimary = () => {
   background: transparent;
   border: none;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #6b6783;
   cursor: pointer;
@@ -767,18 +767,18 @@ const onPrimary = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #00a19a;
+  color: #00726c;
 }
 .confirm-icon svg { width: 28px; height: 28px; }
 .confirm-h {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
   margin-bottom: 8px;
 }
 .confirm-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.55;
@@ -790,7 +790,7 @@ const onPrimary = () => {
 
 /* Footer */
 .auth-footer {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b6783;
   text-align: center;
@@ -798,7 +798,7 @@ const onPrimary = () => {
   letter-spacing: -0.05px;
 }
 .auth-footer a {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
   cursor: pointer;
   text-decoration: none;
@@ -812,7 +812,7 @@ const onPrimary = () => {
   border: 1px solid rgba(220, 38, 38, 0.25);
   border-radius: 12px;
   color: #dc2626;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.5;
 }
 

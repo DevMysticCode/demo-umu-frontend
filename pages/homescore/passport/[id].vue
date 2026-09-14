@@ -714,14 +714,14 @@ function goAuth(mode: 'signin' | 'signup') {
   text-align: center;
 }
 .app-header-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.3px;
   line-height: 1.2;
 }
 .app-header-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 3px;
@@ -747,7 +747,7 @@ function goAuth(mode: 'signin' | 'signup') {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -765,7 +765,7 @@ function goAuth(mode: 'signin' | 'signup') {
   padding: 5px 10px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 100px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.8);
   white-space: nowrap;
@@ -813,20 +813,20 @@ function goAuth(mode: 'signin' | 'signup') {
   justify-content: center;
 }
 .bppc-big {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.6px;
 }
 .bpp-col-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.8px;
   color: rgba(255, 255, 255, 0.6);
   margin-top: 8px;
 }
 .bpp-col-hook {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   margin-top: 2px;
 }
@@ -848,7 +848,7 @@ function goAuth(mode: 'signin' | 'signup') {
 }
 .bpp-progress-copy p {
   margin: 0;
-  font-size: 16.5px;
+  font-size: 1.0313rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.82);
   line-height: 1.45;
@@ -867,7 +867,7 @@ function goAuth(mode: 'signin' | 'signup') {
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 100px;
   color: #fff;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   text-decoration: none;
 }
@@ -879,7 +879,7 @@ function goAuth(mode: 'signin' | 'signup') {
   padding: 12px 14px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.4;
@@ -920,12 +920,12 @@ function goAuth(mode: 'signin' | 'signup') {
   min-width: 0;
 }
 .bpp-epc-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: var(--text);
 }
 .bpp-epc-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 3px;
@@ -941,7 +941,7 @@ function goAuth(mode: 'signin' | 'signup') {
   border: 1.5px solid var(--accent);
   border-radius: 100px;
   color: var(--accent-dark);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   font-family: inherit;
   text-decoration: none;
@@ -957,7 +957,7 @@ function goAuth(mode: 'signin' | 'signup') {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1px;
@@ -993,14 +993,14 @@ function goAuth(mode: 'signin' | 'signup') {
   display: block;
 }
 .bpp-tile-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: var(--text);
   line-height: 1.25;
   margin-bottom: 3px;
 }
 .bpp-tile-sub {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.35;
@@ -1028,7 +1028,7 @@ function goAuth(mode: 'signin' | 'signup') {
   background: var(--accent-paler);
   border: 1px solid var(--accent-pale);
   border-radius: 100px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: var(--accent-dark);
 }
@@ -1077,18 +1077,18 @@ function goAuth(mode: 'signin' | 'signup') {
   min-width: 0;
 }
 .bpp-list-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: var(--text);
 }
 .bpp-list-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
 }
 .bpp-list-chev {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--text-faint);
   flex-shrink: 0;
 }
@@ -1118,14 +1118,14 @@ function goAuth(mode: 'signin' | 'signup') {
   min-width: 0;
 }
 .bpp-claim-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.3px;
   line-height: 1.25;
 }
 .bpp-claim-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -1158,13 +1158,13 @@ function goAuth(mode: 'signin' | 'signup') {
   object-fit: contain;
 }
 .bpp-claim-check-title {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   color: var(--text);
   line-height: 1.25;
 }
 .bpp-claim-check-sub {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.3;
@@ -1188,7 +1188,7 @@ function goAuth(mode: 'signin' | 'signup') {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
 }
 .bpp-claim-btn-left svg {
@@ -1199,7 +1199,7 @@ function goAuth(mode: 'signin' | 'signup') {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
   text-align: right;
@@ -1212,7 +1212,7 @@ function goAuth(mode: 'signin' | 'signup') {
   width: fit-content;
   margin: 12px auto 0;
   color: #5b3795;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   text-decoration: none;
 }
@@ -1223,7 +1223,7 @@ function goAuth(mode: 'signin' | 'signup') {
   justify-content: center;
   gap: 6px;
   margin: 18px 24px 0;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-faint);
   text-align: center;
@@ -1274,14 +1274,14 @@ function goAuth(mode: 'signin' | 'signup') {
   display: block;
 }
 .authd-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   margin-bottom: 8px;
   line-height: 1.25;
 }
 .authd-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.55;
@@ -1296,7 +1296,7 @@ function goAuth(mode: 'signin' | 'signup') {
   width: 100%;
   padding: 13px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   border-radius: 12px;
   cursor: pointer;

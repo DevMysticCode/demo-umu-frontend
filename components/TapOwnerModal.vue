@@ -34,11 +34,11 @@
                 class="message-input"
                 placeholder="e.g. who did your rendering...."
                 rows="6"
-              ></textarea>
+               aria-label="e.g. who did your rendering...."></textarea>
             </div>
 
             <div class="options-section">
-              <div class="option-item" @click="sharePhone = !sharePhone">
+              <div class="option-item" @click="sharePhone = !sharePhone" role="button" tabindex="0" @keydown.enter="sharePhone = !sharePhone" @keydown.space.prevent="sharePhone = !sharePhone">
                 <span class="option-text"
                   >Share my phone number with owner</span
                 >
@@ -46,7 +46,7 @@
                   <span v-if="sharePhone" class="check-icon">✓</span>
                 </div>
               </div>
-              <div class="option-item" @click="sendEmailCopy = !sendEmailCopy">
+              <div class="option-item" @click="sendEmailCopy = !sendEmailCopy" role="button" tabindex="0" @keydown.enter="sendEmailCopy = !sendEmailCopy" @keydown.space.prevent="sendEmailCopy = !sendEmailCopy">
                 <span class="option-text"
                   >Send me an email copy of the message</span
                 >
@@ -175,8 +175,8 @@ const sendMessage = () => {
 .back-btn {
   background: none;
   border: none;
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -185,7 +185,7 @@ const sendMessage = () => {
 }
 
 .back-arrow {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .close-btn {
@@ -194,7 +194,7 @@ const sendMessage = () => {
   border-radius: 50%;
   background: #e0e0e0;
   border: none;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #666;
   display: flex;
   align-items: center;
@@ -206,7 +206,7 @@ const sendMessage = () => {
 }
 
 .title {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   text-align: center;
   margin: 0 0 8px;
@@ -214,7 +214,7 @@ const sendMessage = () => {
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   text-align: center;
   margin-bottom: 32px;
@@ -233,8 +233,8 @@ const sendMessage = () => {
 }
 
 .description {
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   text-align: center;
   margin-bottom: 32px;
   font-weight: 500;
@@ -246,7 +246,7 @@ const sendMessage = () => {
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   margin-bottom: 12px;
   color: #1a1a1a;
@@ -257,7 +257,7 @@ const sendMessage = () => {
   padding: 16px;
   border: 2px solid #e0e0e0;
   border-radius: 16px;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   resize: none;
   background: white;
@@ -299,7 +299,7 @@ const sendMessage = () => {
 }
 
 .option-text {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #1a1a1a;
   font-weight: 500;
   flex: 1;
@@ -324,7 +324,7 @@ const sendMessage = () => {
 
 .check-icon {
   color: white;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -343,7 +343,7 @@ const sendMessage = () => {
 }
 
 .info-icon {
-  font-size: 32px;
+  font-size: 2rem;
   flex-shrink: 0;
 }
 
@@ -352,7 +352,7 @@ const sendMessage = () => {
 }
 
 .info-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 12px;
@@ -365,8 +365,8 @@ const sendMessage = () => {
 }
 
 .info-list li {
-  font-size: 14px;
-  color: #00a19a;
+  font-size: 0.875rem;
+  color: #00726c;
   padding: 4px 0;
   padding-left: 20px;
   position: relative;
@@ -377,7 +377,7 @@ const sendMessage = () => {
   content: '•';
   position: absolute;
   left: 0;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
 }
 
@@ -388,7 +388,7 @@ const sendMessage = () => {
   color: white;
   border: none;
   border-radius: 16px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(0, 184, 169, 0.3);
   transition: all 0.2s;

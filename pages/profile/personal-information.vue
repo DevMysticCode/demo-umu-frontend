@@ -484,7 +484,7 @@
               :type="contactEditInputType"
               :placeholder="`Enter new ${contactEditLabel}`"
               class="w-full bg-transparent outline-none text-[16px] leading-[22px] text-[#1f2024] placeholder:text-[#8e8e93]"
-            />
+             aria-label="`Enter new ${contactEditLabel}`" />
           </div>
         </label>
       </div>
@@ -517,7 +517,7 @@
             v-model="editingAddress[field.key]"
             :placeholder="field.label"
             class="w-full bg-transparent outline-none text-[15px] leading-[22px] text-[#0e2840] placeholder:text-[#8a95a0] font-semibold"
-          />
+           aria-label="field.label" />
         </div>
       </div>
       <template #footer>
@@ -549,7 +549,7 @@
             v-model="editingCompany[field.key]"
             :placeholder="field.label"
             class="w-full bg-transparent outline-none text-[15px] leading-[22px] text-[#0e2840] placeholder:text-[#8a95a0] font-semibold"
-          />
+           aria-label="field.label" />
         </div>
       </div>
       <template #footer>
@@ -669,7 +669,7 @@
             v-model="editingSolicitor[field.key]"
             :placeholder="field.label"
             class="w-full bg-transparent outline-none text-[15px] leading-[22px] text-[#0e2840] placeholder:text-[#8a95a0] font-semibold"
-          />
+           aria-label="field.label" />
         </div>
       </div>
       <template #footer>
@@ -992,7 +992,7 @@ const goBack = useGoBack('/profile')
 .pi-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.4px;
@@ -1040,7 +1040,7 @@ const goBack = useGoBack('/profile')
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   letter-spacing: 1px;
   box-shadow:
@@ -1078,14 +1078,14 @@ const goBack = useGoBack('/profile')
   height: 11px;
 }
 .pi-name {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.6px;
   margin-bottom: 2px;
 }
 .pi-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #4a5868;
   font-weight: 600;
   margin-bottom: 12px;
@@ -1098,7 +1098,7 @@ const goBack = useGoBack('/profile')
   border: 1px solid #e8eceb;
   border-radius: 100px;
   padding: 6px 12px 6px 8px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #4a5868;
 }
@@ -1124,7 +1124,7 @@ const goBack = useGoBack('/profile')
 
 /* Section heading */
 .section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -1138,7 +1138,7 @@ const goBack = useGoBack('/profile')
 }
 .sh-action {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #008a84;
   cursor: pointer;
@@ -1192,7 +1192,7 @@ const goBack = useGoBack('/profile')
   min-width: 0;
 }
 .pir-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -1203,7 +1203,7 @@ const goBack = useGoBack('/profile')
   color: #008a84;
 }
 .pir-value {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0e2840;
   letter-spacing: -0.2px;
@@ -1214,7 +1214,7 @@ const goBack = useGoBack('/profile')
   font-weight: 700;
 }
 .pir-hint {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a5868;
   font-weight: 600;
   margin-top: 1px;
@@ -1302,7 +1302,7 @@ const goBack = useGoBack('/profile')
   border-radius: 14px;
   background: #00a19a;
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   border: none;
@@ -1334,7 +1334,7 @@ const goBack = useGoBack('/profile')
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #0e2840;
   letter-spacing: -0.2px;

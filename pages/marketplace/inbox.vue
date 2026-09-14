@@ -120,13 +120,13 @@ function relativeTime(iso: string | null): string {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px; font-weight: 800; line-height: 1;
+  font-size: 1.375rem; font-weight: 800; line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
 }
 .ib-header-title {
   flex: 1;
-  font-size: 16px; font-weight: 800;
+  font-size: 1rem; font-weight: 800;
   color: #231d45; letter-spacing: -0.3px;
   text-align: center;
 }
@@ -135,7 +135,7 @@ function relativeTime(iso: string | null): string {
 .ib-loading {
   padding: 40px 20px;
   text-align: center;
-  font-size: 13px; font-weight: 600;
+  font-size: 0.8125rem; font-weight: 600;
   color: #6b7089;
 }
 
@@ -143,16 +143,16 @@ function relativeTime(iso: string | null): string {
 .ib-empty {
   padding: 60px 24px;
   text-align: center;
-  font-size: 13px; font-weight: 600;
+  font-size: 0.8125rem; font-weight: 600;
   color: #6b7089;
 }
-.ib-empty-emoji { font-size: 40px; margin-bottom: 8px; }
-.ib-empty-title { font-size: 16px; font-weight: 800; color: #231d45; margin-bottom: 4px; }
+.ib-empty-emoji { font-size: 2.5rem; margin-bottom: 8px; }
+.ib-empty-title { font-size: 1rem; font-weight: 800; color: #231d45; margin-bottom: 4px; }
 .ib-empty-sub { margin-bottom: 16px; }
 .ib-empty-btn {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff; border: none; border-radius: 12px;
-  padding: 12px 18px; font-family: inherit; font-size: 13px; font-weight: 800;
+  padding: 12px 18px; font-family: inherit; font-size: 0.8125rem; font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
 }
@@ -190,7 +190,7 @@ function relativeTime(iso: string | null): string {
   background: linear-gradient(135deg, #4A4566, #231D45);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 800; letter-spacing: -0.2px;
+  font-size: 0.8125rem; font-weight: 800; letter-spacing: -0.2px;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -202,22 +202,22 @@ function relativeTime(iso: string | null): string {
   gap: 8px;
 }
 .ib-name {
-  font-size: 13.5px; font-weight: 800;
+  font-size: 0.8438rem; font-weight: 800;
   color: #231d45; letter-spacing: -0.2px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .ib-when {
-  font-size: 11px; font-weight: 700;
+  font-size: 0.6875rem; font-weight: 700;
   color: #6b7089; flex-shrink: 0;
 }
 .ib-job {
-  font-size: 11px; font-weight: 600;
+  font-size: 0.6875rem; font-weight: 600;
   color: #6b7089; margin-top: 3px;
   display: flex; align-items: center; gap: 4px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .ib-role-pill {
-  font-size: 9px; font-weight: 800;
+  font-size: 0.5625rem; font-weight: 800;
   letter-spacing: 0.5px; text-transform: uppercase;
   padding: 2px 6px;
   border-radius: 100px;
@@ -226,7 +226,7 @@ function relativeTime(iso: string | null): string {
 .ib-role-supplier { background: #e5f4f2; color: #00635E; }
 
 .ib-preview {
-  font-size: 12px; font-weight: 600;
+  font-size: 0.75rem; font-weight: 600;
   color: #6b7089;
   margin-top: 4px;
   display: -webkit-box;
@@ -248,7 +248,7 @@ function relativeTime(iso: string | null): string {
   border-radius: 100px;
   background: #00a19a;
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   display: inline-flex;
   align-items: center;

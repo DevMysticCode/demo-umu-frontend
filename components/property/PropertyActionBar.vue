@@ -8,9 +8,9 @@
       :key="item.label"
       @click="$emit('action', item.label)"
     >
-      <!-- <Icon :name="item.icon" class="w-7 h-7 text-brand-aqua" /> -->
+      <!-- <Icon :name="item.icon" class="w-7 h-7 text-brand-aqua-text" /> -->
       <OPIcon :name="item.icon" class="w-[17px] h-[17px]" />
-      <span class="text-[10px] text-brand-aqua font-medium">{{
+      <span class="text-[10px] text-brand-aqua-text font-medium">{{
         item.label
       }}</span>
     </button>

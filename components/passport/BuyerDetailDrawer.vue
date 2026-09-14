@@ -344,7 +344,7 @@ const factors = computed(() => {
   border-radius: 50%;
   background: linear-gradient(135deg, #00BFB4, #00817C);
   color: #fff;
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -368,7 +368,7 @@ const factors = computed(() => {
 .bdd-hero-verified svg { width: 12px; height: 12px; }
 .bdd-hero-info { flex: 1; min-width: 0; }
 .bdd-hero-name {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   letter-spacing: -0.4px;
   line-height: 1.1;
@@ -377,7 +377,7 @@ const factors = computed(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.78);
   margin-top: 6px;
@@ -409,14 +409,14 @@ const factors = computed(() => {
   justify-content: center;
 }
 .bdd-hero-gauge-num b {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 900;
   color: #fff;
   line-height: 1;
   letter-spacing: -0.4px;
 }
 .bdd-hero-gauge-num span {
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.72);
   letter-spacing: 0.6px;
@@ -429,7 +429,7 @@ const factors = computed(() => {
   align-items: center;
   gap: 10px;
   margin: 22px 22px 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: 1.3px;
@@ -471,7 +471,7 @@ const factors = computed(() => {
   flex-shrink: 0;
 }
 .bdd-crit-label {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: var(--navy-40);
   letter-spacing: 0.9px;
@@ -480,7 +480,7 @@ const factors = computed(() => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--navy);
   margin-top: 3px;
@@ -522,13 +522,13 @@ const factors = computed(() => {
 .bdd-factor-ico--no   { background: var(--navy-40); }
 .bdd-factor-body { flex: 1; min-width: 0; padding-top: 2px; }
 .bdd-factor-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.2px;
 }
 .bdd-factor-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--navy-70);
   margin-top: 3px;
@@ -542,7 +542,7 @@ const factors = computed(() => {
 .bdd-ready-pill {
   display: inline-flex;
   align-items: center;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   padding: 8px 16px;
   border-radius: 100px;
@@ -568,14 +568,14 @@ const factors = computed(() => {
 }
 .bdd-anon-body { flex: 1; min-width: 0; }
 .bdd-anon-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--navy);
   letter-spacing: -0.2px;
   line-height: 1.25;
 }
 .bdd-anon-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--navy-70);
   margin-top: 4px;
@@ -597,7 +597,7 @@ const factors = computed(() => {
   border-radius: 16px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   box-shadow: 0 8px 22px rgba(0, 161, 154, 0.42);
@@ -635,7 +635,7 @@ const factors = computed(() => {
   border-radius: 16px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   box-shadow: 0 3px 8px rgba(35, 29, 69, 0.05);
@@ -654,7 +654,7 @@ const factors = computed(() => {
   justify-content: center;
   gap: 6px;
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--navy-70);
   font-weight: 500;
   line-height: 1.5;

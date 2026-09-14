@@ -16,7 +16,7 @@
           v-model="searchQuery"
           type="text"
           placeholder="Find jobs near you…"
-        />
+         aria-label="Find jobs near you…" />
       </div>
       <button class="mp-search-btn" type="button" @click="onClearFilters">
         Reset
@@ -290,14 +290,14 @@ function openJob(id: string) {
 .mp-search-input svg { width: 16px; height: 16px; color: #6b7089; flex-shrink: 0; }
 .mp-search-input input {
   flex: 1; border: none; outline: none; background: transparent;
-  font-family: inherit; font-size: 16px; font-weight: 600;
+  font-family: inherit; font-size: 1rem; font-weight: 600;
   color: #231d45; min-width: 0;
 }
 .mp-search-input input::placeholder { color: #a8a9ad; font-weight: 500; }
 .mp-search-btn {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff; border: none; border-radius: 14px;
-  padding: 0 18px; font-family: inherit; font-size: 13px;
+  padding: 0 18px; font-family: inherit; font-size: 0.8125rem;
   font-weight: 800; cursor: pointer; flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(0, 161, 154, 0.3);
 }
@@ -318,7 +318,7 @@ function openJob(id: string) {
   border: 1px solid #e4e5ed;
   border-radius: 100px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
   cursor: pointer;
@@ -338,10 +338,10 @@ function openJob(id: string) {
   padding: 18px 20px 10px;
 }
 .mp-section-title {
-  font-size: 14px; font-weight: 800; color: #231d45; letter-spacing: -0.2px;
+  font-size: 0.875rem; font-weight: 800; color: #231d45; letter-spacing: -0.2px;
 }
 .mp-section-link {
-  font-size: 12px; font-weight: 700; color: #00a19a; cursor: pointer;
+  font-size: 0.75rem; font-weight: 700; color: #00726c; cursor: pointer;
 }
 
 /* 3-col category grid (Browse-specific - Home uses 4). */
@@ -387,7 +387,7 @@ function openJob(id: string) {
   left: 8px;
   right: 8px;
   z-index: 2;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: -0.1px;
   text-align: left;
@@ -427,7 +427,7 @@ function openJob(id: string) {
 }
 .mp-job-list-urgency {
   position: absolute; top: 10px; left: 10px;
-  font-size: 9.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
+  font-size: 0.5938rem; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
   padding: 4px 9px; border-radius: 100px; color: #fff; backdrop-filter: blur(4px);
 }
 .urg-urgent   { background: rgba(231, 76, 94, 0.92); }
@@ -435,34 +435,34 @@ function openJob(id: string) {
 .urg-flexible { background: rgba(0, 161, 154, 0.86); }
 .mp-job-list-cat {
   position: absolute; top: 10px; right: 10px;
-  font-size: 10px; font-weight: 700; padding: 4px 9px;
+  font-size: 0.625rem; font-weight: 700; padding: 4px 9px;
   border-radius: 100px; color: #fff;
   background: rgba(0, 0, 0, 0.32); backdrop-filter: blur(4px);
 }
 .mp-job-list-distance {
   position: absolute; bottom: 10px; left: 10px;
-  font-size: 10.5px; font-weight: 700; padding: 4px 9px;
+  font-size: 0.6563rem; font-weight: 700; padding: 4px 9px;
   border-radius: 100px; color: #fff;
   background: rgba(0, 0, 0, 0.42); backdrop-filter: blur(4px);
 }
 .mp-job-list-body { padding: 12px 14px 14px; }
 .mp-job-list-title {
-  font-size: 14px; font-weight: 800; color: #231d45;
+  font-size: 0.875rem; font-weight: 800; color: #231d45;
   letter-spacing: -0.2px; line-height: 1.3;
 }
 .mp-job-list-meta {
-  font-size: 11px; font-weight: 600; color: #6b7089; margin-top: 4px;
+  font-size: 0.6875rem; font-weight: 600; color: #6b7089; margin-top: 4px;
 }
 .mp-job-list-foot {
   display: flex; align-items: baseline; justify-content: space-between;
   margin-top: 10px;
 }
 .mp-job-list-budget {
-  font-size: 16px; font-weight: 800; color: #00a19a; letter-spacing: -0.4px;
+  font-size: 1rem; font-weight: 800; color: #00726c; letter-spacing: -0.4px;
 }
-.mp-job-list-budget small { font-size: 13px; font-weight: 700; color: #6b7089; }
+.mp-job-list-budget small { font-size: 0.8125rem; font-weight: 700; color: #6b7089; }
 .mp-job-list-offers {
-  font-size: 11px; font-weight: 800; color: #6b7089;
+  font-size: 0.6875rem; font-weight: 800; color: #6b7089;
   background: #f5f6fa; padding: 4px 9px; border-radius: 100px;
 }
 
@@ -472,7 +472,7 @@ function openJob(id: string) {
   background: #fff;
   border: 1px dashed #d8dae6;
   border-radius: 14px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #6b7089;
   text-align: center;

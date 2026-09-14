@@ -226,7 +226,7 @@
           :key="item.id"
           class="exp-recent-item"
           @click="navigateTo(`/property/${item.id}`)"
-        >
+         role="button" tabindex="0" @keydown.enter="navigateTo(`/property/${item.id}`)" @keydown.space.prevent="navigateTo(`/property/${item.id}`)">
           <div class="exp-recent-photo">
             <PropertyImage
               :src="item.image"
@@ -392,7 +392,7 @@ function lastSoldLabel(dateStr: string): string {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
@@ -423,22 +423,22 @@ function lastSoldLabel(dateStr: string): string {
   min-width: 0;
 }
 .exp-hero-eyebrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 4px;
 }
 .exp-hero-title {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 900;
   color: #231d45;
   letter-spacing: -0.5px;
   line-height: 1.15;
 }
 .exp-hero-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.55;
@@ -449,7 +449,7 @@ function lastSoldLabel(dateStr: string): string {
   align-items: center;
   gap: 7px;
   margin-top: 12px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #00817c;
 }
@@ -465,7 +465,7 @@ function lastSoldLabel(dateStr: string): string {
    styling (search bar, filter sheet, results list); nothing to style
    here. ── */
 .exp-search-hint {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #9c98ad;
   text-align: center;
@@ -523,7 +523,7 @@ function lastSoldLabel(dateStr: string): string {
 }
 .exp-card-soon-pill {
   display: inline-block;
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   color: #6b7089;
@@ -533,14 +533,14 @@ function lastSoldLabel(dateStr: string): string {
   margin-top: 4px;
 }
 .exp-card-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
   line-height: 1.25;
   letter-spacing: -0.1px;
 }
 .exp-card-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.4;
@@ -550,11 +550,11 @@ function lastSoldLabel(dateStr: string): string {
   position: absolute;
   right: 12px;
   bottom: 12px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
 }
 .exp-card-arrow--teal {
-  color: #00a19a;
+  color: #00726c;
 }
 .exp-card-arrow--purple {
   color: #7c6fd6;
@@ -646,27 +646,27 @@ function lastSoldLabel(dateStr: string): string {
   justify-content: center;
 }
 .exp-more-ring-num {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 900;
   color: #231d45;
   line-height: 1;
 }
 .exp-more-ring-den {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 700;
   color: #9c98ad;
 }
 .exp-more-eyebrow {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.1px;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 6px;
 }
 .exp-more-pill {
   display: inline-block;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   color: #00817c;
@@ -676,14 +676,14 @@ function lastSoldLabel(dateStr: string): string {
   margin-bottom: 10px;
 }
 .exp-more-card-title {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: #231d45;
   line-height: 1.3;
   letter-spacing: -0.1px;
 }
 .exp-more-card-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.45;
@@ -692,12 +692,12 @@ function lastSoldLabel(dateStr: string): string {
 .exp-more-arrow {
   display: block;
   margin-top: 14px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   text-align: end;
 }
 .exp-more-arrow--teal {
-  color: #00a19a;
+  color: #00726c;
 }
 .exp-more-arrow--amber {
   color: #d4922a;
@@ -714,7 +714,7 @@ function lastSoldLabel(dateStr: string): string {
   margin-bottom: 10px;
 }
 .exp-recent-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
 }
@@ -742,18 +742,18 @@ function lastSoldLabel(dateStr: string): string {
   min-width: 0;
 }
 .exp-recent-address {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
 }
 .exp-recent-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #9c98ad;
   margin-top: 2px;
 }
 .exp-recent-price {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #00817c;
   margin-top: 4px;
@@ -765,7 +765,7 @@ function lastSoldLabel(dateStr: string): string {
   flex-shrink: 0;
 }
 .exp-recent-badge {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: #00817c;
   background: #eaf7f6;
@@ -774,7 +774,7 @@ function lastSoldLabel(dateStr: string): string {
   white-space: nowrap;
 }
 .exp-recent-chevron {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #c7c5d6;
 }
 </style>

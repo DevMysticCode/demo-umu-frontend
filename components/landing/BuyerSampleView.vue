@@ -207,7 +207,7 @@
               <circle cx="11" cy="11" r="8" stroke="#999" stroke-width="2" />
               <path d="M21 21l-4.35-4.35" stroke="#999" stroke-width="2" stroke-linecap="round" />
             </svg>
-            <input type="text" placeholder="Search Records..." />
+            <input type="text" placeholder="Search Records..."  aria-label="Search Records..." />
           </div>
           <button class="buyer-sort-btn" type="button">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
@@ -354,22 +354,22 @@ const sections = [
   z-index: 1;
 }
 .buyer-hero-eyebrow {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 4px;
 }
 .buyer-hero-addr {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
 .buyer-hero-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #94a3b8;
   margin: 2px 0 10px;
 }
@@ -388,16 +388,16 @@ const sections = [
   border-left: 1px solid rgba(0, 140, 134, 0.08);
 }
 .buyer-hero-stat-val {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   line-height: 1;
   letter-spacing: -0.01em;
 }
-.buyer-hero-stat-val--brand { color: #00a19a; }
-.buyer-hero-stat-val--ready { color: #00a19a; }
+.buyer-hero-stat-val--brand { color: #00726c; }
+.buyer-hero-stat-val--ready { color: #00726c; }
 .buyer-hero-stat-lbl {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -410,7 +410,7 @@ const sections = [
 .buyer-address {
   color: #231d45;
   font-weight: 800;
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1.2;
   letter-spacing: -0.02em;
   margin: 0 0 4px;
@@ -418,14 +418,14 @@ const sections = [
 .buyer-city {
   color: #94a3b8;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 0.8125rem;
   letter-spacing: -0.01em;
   margin: 0 0 8px;
 }
 .buyer-price {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 1.125rem;
   letter-spacing: -0.01em;
   margin: 0;
   display: inline-flex;
@@ -433,7 +433,7 @@ const sections = [
   gap: 8px;
 }
 .buyer-estimated {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
@@ -448,7 +448,7 @@ const sections = [
   gap: 5px;
   margin-top: 8px;
   padding: 5px 11px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   border-radius: 999px;
   cursor: pointer;
@@ -474,11 +474,11 @@ const sections = [
   align-items: center;
   gap: 5px;
   background: #f1f9f4;
-  color: #00a19a;
+  color: #00726c;
   border: 1px solid #e2f1ea;
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -486,7 +486,7 @@ const sections = [
 /* ── Section heading ─────────────────────────────────────────── */
 .buyer-section { margin-bottom: 24px; }
 .buyer-section-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
@@ -494,7 +494,7 @@ const sections = [
   line-height: 1.3;
 }
 .buyer-section-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #94a3b8;
   margin: 0 0 12px;
   line-height: 1.45;
@@ -525,14 +525,14 @@ const sections = [
   border-radius: 11px;
   background: #fff;
   border: 1px solid #e2f1ea;
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   flex-shrink: 0;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 .buyer-detail-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #94a3b8;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -541,7 +541,7 @@ const sections = [
   line-height: 1.3;
 }
 .buyer-detail-value {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
   margin: 0;
@@ -568,7 +568,7 @@ const sections = [
   flex: 1;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   color: #333;
   background: transparent;
 }
@@ -609,7 +609,7 @@ const sections = [
   border-left: 1px solid rgba(0, 140, 134, 0.12);
 }
 .buyer-summary-num {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -618,7 +618,7 @@ const sections = [
 .buyer-summary-num--partial { color: #92400e; }
 .buyer-summary-num--empty { color: #94a3b8; }
 .buyer-summary-lbl {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
@@ -626,7 +626,7 @@ const sections = [
   margin-top: 4px;
 }
 .buyer-summary-hint {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a5568;
   line-height: 1.5;
   margin: 0;
@@ -663,7 +663,7 @@ const sections = [
   min-width: 0;
 }
 .buyer-record-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
@@ -671,7 +671,7 @@ const sections = [
   margin: 0 0 3px;
 }
 .buyer-record-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   margin: 0 0 8px;
   line-height: 1.45;
@@ -681,7 +681,7 @@ const sections = [
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   padding: 3px 9px;
   border-radius: 999px;
@@ -713,7 +713,7 @@ const sections = [
 }
 .fill--complete { background: linear-gradient(90deg, #008a84, #00a19a); }
 .buyer-record-pct {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #4a5568;
   min-width: 32px;
@@ -748,13 +748,13 @@ const sections = [
 }
 .buyer-pdf-info { flex: 1; min-width: 0; }
 .buyer-pdf-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1a1a1a;
   margin: 0 0 2px;
 }
 .buyer-pdf-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #666;
   margin: 0;
 }
@@ -767,7 +767,7 @@ const sections = [
   border: none;
   border-radius: 10px;
   padding: 10px 16px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
@@ -800,15 +800,15 @@ const sections = [
   margin-bottom: 8px;
 }
 .buyer-progress-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.01em;
 }
 .buyer-progress-pct {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
 }
 .buyer-progress-track {
   height: 6px;
@@ -824,7 +824,7 @@ const sections = [
   transition: width 0.5s ease;
 }
 .buyer-progress-hint {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a5568;
   margin: 0;
   line-height: 1.5;
@@ -840,14 +840,14 @@ const sections = [
   text-align: center;
 }
 .sec-more-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: -0.2px;
   margin-bottom: 4px;
 }
 .sec-more-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #94a3b8;
   letter-spacing: -0.05px;

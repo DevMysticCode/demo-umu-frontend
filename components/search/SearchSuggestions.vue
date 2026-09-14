@@ -23,7 +23,7 @@
           @input="updateQuery"
           type="text"
           placeholder="City, area or postcode"
-          class="flex-1 bg-transparent text-gray-900 placeholder-gray-500 outline-none" />
+          class="flex-1 bg-transparent text-gray-900 placeholder-gray-500 outline-none"  aria-label="City, area or postcode" />
         <span v-if="searching" class="text-xs text-gray-400 mr-2">Searching...</span>
         <input style="display:none"
         />
@@ -52,7 +52,7 @@
 
     <!-- Voice Feedback -->
     <transition name="fade">
-      <p v-if="isVoiceListening" class="px-4 mb-4 text-sm text-brand-aqua">
+      <p v-if="isVoiceListening" class="px-4 mb-4 text-sm text-brand-aqua-text">
         <span class="inline-block animate-pulse"><img src="/op-icons/misc/microphone.png" alt="" style="height:1.05em;display:inline-block;vertical-align:-0.15em;margin-right:3px" loading="lazy" />Listening...</span>
       </p>
     </transition>
@@ -103,7 +103,7 @@
         <h2 class="text-lg font-semibold text-gray-900">Recent Searches</h2>
         <button
           @click="clearRecent"
-          class="ml-auto text-sm text-brand-aqua hover:underline"
+          class="ml-auto text-sm text-brand-aqua-text hover:underline"
         >
           Clear
         </button>
@@ -140,7 +140,7 @@
           :key="index"
           @click="handleSelect(suggestion)"
           class="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 hover:border-brand-aqua hover:shadow-md cursor-pointer transition"
-        >
+         role="button" tabindex="0" @keydown.enter="handleSelect(suggestion)" @keydown.space.prevent="handleSelect(suggestion)">
           <div class="flex-1">
             <h3 class="font-semibold text-gray-900">
               {{ suggestion.address }}

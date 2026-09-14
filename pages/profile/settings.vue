@@ -230,7 +230,7 @@
                 class="st-field-input"
                 autocomplete="new-password"
                 placeholder="At least 8 characters"
-              />
+               aria-label="At least 8 characters" />
             </div>
             <div class="st-field">
               <label class="st-field-label">Confirm new password</label>
@@ -498,7 +498,7 @@ const securityLabel = computed(() => {
 .st-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.4px;
@@ -531,13 +531,13 @@ const securityLabel = computed(() => {
   z-index: 1;
 }
 .hero-greeting {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #94a3b8;
   margin-bottom: 4px;
 }
 .st-h1 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -1.2px;
@@ -546,7 +546,7 @@ const securityLabel = computed(() => {
 
 /* Section heading */
 .st-section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -599,14 +599,14 @@ const securityLabel = computed(() => {
   min-width: 0;
 }
 .st-row-label {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #0e2840;
   letter-spacing: -0.2px;
   line-height: 1.3;
 }
 .st-row-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #4a5868;
   margin-top: 2px;
@@ -614,7 +614,7 @@ const securityLabel = computed(() => {
 }
 .st-row-chev {
   color: #8a95a0;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -680,13 +680,13 @@ const securityLabel = computed(() => {
   min-width: 0;
 }
 .st-strength-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
 }
 .st-strength-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a5868;
   font-weight: 600;
   margin-top: 2px;
@@ -705,7 +705,7 @@ const securityLabel = computed(() => {
   transition: width 0.4s ease;
 }
 .st-strength-meter {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #4a5868;
   font-feature-settings: 'tnum';
@@ -726,7 +726,7 @@ const securityLabel = computed(() => {
   z-index: 40;
   background: #0e2840;
   color: #fff;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   padding: 10px 16px;
   border-radius: 999px;
@@ -769,14 +769,14 @@ const securityLabel = computed(() => {
 @keyframes st-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .st-modal-handle { width: 36px; height: 4px; background: #d9dae0; border-radius: 100px; margin: 8px auto 0; }
 .st-modal-header { display: flex; align-items: center; padding: 12px 18px 10px; }
-.st-modal-title { flex: 1; font-size: 16px; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
+.st-modal-title { flex: 1; font-size: 1rem; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
 .st-modal-close {
   width: 30px; height: 30px;
   border-radius: 50%;
   border: none;
   background: #f0f2f1;
   color: #4a5868;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
   font-family: inherit;
   display: flex;
@@ -792,7 +792,7 @@ const securityLabel = computed(() => {
   gap: 8px;
 }
 .st-modal-intro {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #4a5868;
   line-height: 1.5;
@@ -800,7 +800,7 @@ const securityLabel = computed(() => {
 }
 .st-modal-error {
   color: #b85b36;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   text-align: center;
   margin-top: 4px;
@@ -808,7 +808,7 @@ const securityLabel = computed(() => {
 .st-field { margin-bottom: 12px; }
 .st-field-label {
   display: block;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -822,7 +822,7 @@ const securityLabel = computed(() => {
   border-radius: 10px;
   padding: 11px 12px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   color: #0e2840;
   outline: none;
   transition: all 0.18s;
@@ -839,7 +839,7 @@ const securityLabel = computed(() => {
   border-radius: 10px;
   padding: 11px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;
@@ -853,7 +853,7 @@ const securityLabel = computed(() => {
   border-radius: 10px;
   padding: 11px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;
@@ -868,7 +868,7 @@ const securityLabel = computed(() => {
   border-radius: 10px;
   padding: 11px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;

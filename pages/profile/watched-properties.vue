@@ -29,7 +29,7 @@
         class="sp-nav-search-input"
         placeholder="Search watched properties…"
         @keyup.escape="searchOpen = false"
-      />
+       aria-label="Search watched properties…" />
       <button
         v-if="search"
         class="sp-nav-search-clear"
@@ -235,7 +235,7 @@ const filteredProperties = computed(() => {
 .sp-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.4px;
@@ -252,7 +252,7 @@ const filteredProperties = computed(() => {
   border-radius: 100px;
   padding: 9px 36px 9px 14px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -272,7 +272,7 @@ const filteredProperties = computed(() => {
   border-radius: 50%;
   background: #f1f5f9;
   color: #4a5868;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -297,14 +297,14 @@ const filteredProperties = computed(() => {
   z-index: 1;
 }
 .hero-greeting {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0;
   color: #94a3b8;
   margin-bottom: 4px;
 }
 .sp-h1 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -1.2px;
@@ -313,9 +313,9 @@ const filteredProperties = computed(() => {
 }
 .sp-h1-count {
   display: inline-block;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   vertical-align: 8px;
   margin-left: 6px;
   letter-spacing: -0.5px;
@@ -323,7 +323,7 @@ const filteredProperties = computed(() => {
 .hero-stats {
   display: inline-flex;
   align-items: center;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #4a5868;
   letter-spacing: -0.2px;
@@ -337,19 +337,19 @@ const filteredProperties = computed(() => {
   text-align: center;
   padding: 40px 22px;
   color: #8a95a0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   position: relative;
   z-index: 1;
 }
 .sp-empty-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   margin-bottom: 6px;
 }
 .sp-empty-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #8a95a0;
   font-weight: 500;
   line-height: 1.5;
@@ -362,7 +362,7 @@ const filteredProperties = computed(() => {
   border: none;
   border-radius: 100px;
   padding: 11px 22px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
@@ -422,7 +422,7 @@ const filteredProperties = computed(() => {
   background: rgba(15, 46, 41, 0.85);
   backdrop-filter: blur(6px);
   color: #f5c44c;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   padding: 3px 7px;
   border-radius: 100px;
@@ -439,7 +439,7 @@ const filteredProperties = computed(() => {
 
 .sp-info { padding: 0 2px; }
 .sp-addr {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.3px;
@@ -447,13 +447,13 @@ const filteredProperties = computed(() => {
   margin-bottom: 2px;
 }
 .sp-locality {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: #8a95a0;
   margin-bottom: 4px;
 }
 .sp-hs {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #4a5868;
 }

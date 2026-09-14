@@ -17,7 +17,7 @@
               class="search-input"
               placeholder="Search Properties"
               type="text"
-            />
+             aria-label="Search Properties" />
           </div>
 
           <!-- List -->
@@ -28,7 +28,7 @@
               class="passport-row"
               :class="{ active: passport.id === currentId }"
               @click="select(passport.id)"
-            >
+             role="button" tabindex="0" @keydown.enter="select(passport.id)" @keydown.space.prevent="select(passport.id)">
               <!-- Thumbnail: scaled-down version of the real passport card -->
               <div class="thumb-wrap">
                 <div class="thumb-inner">
@@ -153,7 +153,7 @@ watch(
 }
 
 .sheet-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
   text-align: center;
   color: #1a1a1a;
@@ -180,7 +180,7 @@ watch(
   flex: 1;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   color: #333;
   background: transparent;
 }
@@ -256,12 +256,12 @@ watch(
 }
 
 .thumb-line1 {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 
 .thumb-line2 {
-  font-size: 11px;
+  font-size: 0.6875rem;
   opacity: 0.9;
 }
 
@@ -274,13 +274,13 @@ watch(
 }
 
 .row-line1 {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #1a1a1a;
 }
 
 .row-line2 {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #888;
 }
 
@@ -300,7 +300,7 @@ watch(
 .empty-msg {
   text-align: center;
   color: #aaa;
-  font-size: 14px;
+  font-size: 0.875rem;
   padding: 24px 0;
 }
 

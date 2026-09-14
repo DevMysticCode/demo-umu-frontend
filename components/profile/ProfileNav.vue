@@ -57,7 +57,7 @@ function onBack() {
 .pn-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.4px;
@@ -69,9 +69,9 @@ function onBack() {
   align-items: center;
 }
 .pn-action-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
   letter-spacing: -0.1px;
 }

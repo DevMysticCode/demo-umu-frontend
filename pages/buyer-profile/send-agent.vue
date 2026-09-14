@@ -42,7 +42,7 @@
           placeholder="e.g. James Cooper"
           required
           :disabled="sending || !!sentId"
-        />
+         aria-label="e.g. James Cooper" />
       </label>
       <label class="sa-field">
         <span class="sa-field-label">
@@ -56,7 +56,7 @@
           placeholder="agent@savills.co.uk"
           required
           :disabled="sending || !!sentId"
-        />
+         aria-label="agent@savills.co.uk" />
       </label>
       <label class="sa-field">
         <span class="sa-field-label">
@@ -69,7 +69,7 @@
           class="sa-input"
           placeholder="e.g. Savills, Knight Frank"
           :disabled="sending || !!sentId"
-        />
+         aria-label="e.g. Savills, Knight Frank" />
       </label>
 
       <button
@@ -212,10 +212,10 @@ function goView() { router.push('/buyer-profile/view') }
 }
 .sa-nav-centre {
   flex: 1; text-align: center;
-  font-size: 14px; font-weight: 800; color: #231d45;
+  font-size: 0.875rem; font-weight: 800; color: #231d45;
 }
 .sa-nav-right {
-  font-size: 13px; font-weight: 700; color: #00a19a;
+  font-size: 0.8125rem; font-weight: 700; color: #00726c;
   cursor: pointer; padding: 8px 4px; white-space: nowrap;
 }
 
@@ -228,13 +228,13 @@ function goView() { router.push('/buyer-profile/view') }
   margin: 10px 22px 0;
 }
 .scope-title {
-  font-size: 11px; font-weight: 800;
+  font-size: 0.6875rem; font-weight: 800;
   color: #007e78; letter-spacing: 0.5px;
   margin-bottom: 7px;
 }
 .scope-row {
   display: flex; align-items: center; gap: 7px;
-  font-size: 11.5px; font-weight: 700; color: #231d45;
+  font-size: 0.7188rem; font-weight: 700; color: #231d45;
   margin-bottom: 4px;
 }
 .scope-row:last-of-type { margin-bottom: 0; }
@@ -245,14 +245,14 @@ function goView() { router.push('/buyer-profile/view') }
   flex-shrink: 0;
 }
 .scope-hidden {
-  font-size: 10px; font-weight: 700; color: #9c98ad;
+  font-size: 0.625rem; font-weight: 700; color: #9c98ad;
   margin-top: 7px;
   padding-top: 7px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .sec-label {
-  font-size: 11px; font-weight: 800;
+  font-size: 0.6875rem; font-weight: 800;
   color: #6b6783; letter-spacing: 1px;
   text-transform: uppercase;
   padding: 16px 22px 8px;
@@ -279,7 +279,7 @@ function goView() { router.push('/buyer-profile/view') }
   gap: 5px;
 }
 .sa-field-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   color: #6b6783;
@@ -293,7 +293,7 @@ function goView() { router.push('/buyer-profile/view') }
   width: 100%;
   padding: 11px 12px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #231d45;
   background: #fafafa;
@@ -324,7 +324,7 @@ function goView() { router.push('/buyer-profile/view') }
   border-radius: 100px;
   padding: 12px 16px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   cursor: pointer;
   display: inline-flex;
@@ -364,16 +364,16 @@ function goView() { router.push('/buyer-profile/view') }
   margin: 0 22px;
   text-align: center;
 }
-.sent-emoji { font-size: 36px; margin-bottom: 8px; }
+.sent-emoji { font-size: 2.25rem; margin-bottom: 8px; }
 .sent-title {
-  font-size: 15px; font-weight: 800; color: #008a84;
+  font-size: 0.9375rem; font-weight: 800; color: #008a84;
   margin-bottom: 4px;
 }
 .sent-sub {
-  font-size: 12px; color: #008a84; opacity: 0.8;
+  font-size: 0.75rem; color: #008a84; opacity: 0.8;
 }
 .sent-foot {
-  font-size: 11px; color: #008a84; opacity: 0.6;
+  font-size: 0.6875rem; color: #008a84; opacity: 0.6;
   margin-top: 4px;
 }
 .sa-back-cta-wrap {
@@ -384,7 +384,7 @@ function goView() { router.push('/buyer-profile/view') }
   margin: 12px auto 0;
   background: none; border: none;
   font-family: inherit;
-  font-size: 12px; font-weight: 700; color: #007e78;
+  font-size: 0.75rem; font-weight: 700; color: #007e78;
   cursor: pointer; padding: 8px 22px; width: 100%;
 }
 
@@ -392,7 +392,7 @@ function goView() { router.push('/buyer-profile/view') }
   width: 100%;
   background: #00a19a; color: white; border: none;
   border-radius: 14px; padding: 13px;
-  font-family: inherit; font-size: 13px; font-weight: 800;
+  font-family: inherit; font-size: 0.8125rem; font-weight: 800;
   cursor: pointer;
 }
 .cta-btn.outline {

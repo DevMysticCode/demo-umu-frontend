@@ -239,7 +239,7 @@ function onSubmit() {
   padding: 14px 22px 6px;
 }
 .watch-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: 1.4px;
@@ -247,7 +247,7 @@ function onSubmit() {
   margin-bottom: 6px;
 }
 .watch-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.4px;
@@ -255,7 +255,7 @@ function onSubmit() {
   margin-bottom: 6px;
 }
 .watch-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.55;
@@ -296,13 +296,13 @@ function onSubmit() {
   min-width: 0;
 }
 .watch-trigger-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.1px;
 }
 .watch-trigger-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -360,7 +360,7 @@ function onSubmit() {
   display: block;
 }
 .watch-read-text {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -378,7 +378,7 @@ function onSubmit() {
   flex: 1;
   padding: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   border-radius: 12px;
   cursor: pointer;
@@ -407,14 +407,14 @@ function onSubmit() {
   align-items: flex-start;
   gap: 8px;
   padding: 6px 22px 18px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-faint);
   line-height: 1.5;
 }
 .watch-privacy-icon {
   flex-shrink: 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 /* Slide-up transition */

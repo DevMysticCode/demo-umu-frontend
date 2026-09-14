@@ -211,7 +211,7 @@
             @input="
               (e) => updateCurrencyPartInput(part.partKey, e.target.value)
             "
-          />
+           aria-label="£ 0000" />
         </div>
       </div>
     </div>
@@ -632,14 +632,14 @@ const getVisibleParts = () => {
   color: #000000;
   margin: 0 0 20px 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -657,7 +657,7 @@ const getVisibleParts = () => {
 }
 
 .help-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
@@ -668,9 +668,9 @@ const getVisibleParts = () => {
 
 .help-title {
   margin: 0px 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -679,14 +679,14 @@ const getVisibleParts = () => {
   color: #3c3c4399;
   margin: 0;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
 
 .typing-cursor {
   margin-left: 2px;
-  color: #00a19a;
+  color: #00726c;
   animation: blink 1s infinite;
 }
 
@@ -712,9 +712,9 @@ const getVisibleParts = () => {
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   margin: 0;
 }
 
@@ -733,7 +733,7 @@ const getVisibleParts = () => {
 }
 
 .part-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 400;
   color: #000;
   margin: 0;
@@ -744,7 +744,7 @@ const getVisibleParts = () => {
 }
 
 .part-text {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #3c3c43;
   margin: 0 0 12px 0;
@@ -753,7 +753,7 @@ const getVisibleParts = () => {
 }
 
 .part-description {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #3c3c4399;
   margin: 0 0 12px 0;
   line-height: 18px;
@@ -768,7 +768,7 @@ const getVisibleParts = () => {
 }
 
 .part-description-bullet-item {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #3c3c4399;
   line-height: 18px;
   letter-spacing: -0.08px;
@@ -782,7 +782,7 @@ const getVisibleParts = () => {
   position: absolute;
   left: -8px;
   color: #3c3c4399;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .part-external-link {
@@ -790,8 +790,8 @@ const getVisibleParts = () => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #00a19a;
-  font-size: 15px;
+  color: #00726c;
+  font-size: 0.9375rem;
   font-weight: 500;
   text-decoration: none;
   margin: auto;
@@ -821,7 +821,7 @@ const getVisibleParts = () => {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #ff6b6b;
   font-weight: 600;
   white-space: nowrap;
@@ -829,7 +829,7 @@ const getVisibleParts = () => {
 }
 
 .pending-icon {
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 .group-part + .group-part {
@@ -850,7 +850,7 @@ const getVisibleParts = () => {
 }
 
 .number-input-label {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #1a1a1a;
   flex: 1;
@@ -861,9 +861,9 @@ const getVisibleParts = () => {
   background: #e6f9f7;
   border-radius: 8px;
   border: none;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   text-align: center;
   width: 60px;
   outline: none;
@@ -899,9 +899,9 @@ const getVisibleParts = () => {
   padding: 8px 16px;
   background: #e6f9f7;
   border-radius: 8px 0 0 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   min-width: 52px;
   text-align: center;
 }
@@ -918,7 +918,7 @@ const getVisibleParts = () => {
   padding: 8px 14px;
   background: transparent;
   border: none;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 500;
   color: #3c3c43;
   cursor: pointer;
@@ -932,7 +932,7 @@ const getVisibleParts = () => {
 
 .counter-divider {
   color: #c0c0c0;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
   pointer-events: none;
 }
@@ -949,9 +949,9 @@ const getVisibleParts = () => {
 }
 
 .date-badge-value {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   position: relative;
   z-index: 1;
   pointer-events: none;
@@ -959,7 +959,7 @@ const getVisibleParts = () => {
 }
 
 .date-badge-placeholder {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #999;
   position: relative;
   z-index: 1;
@@ -1023,7 +1023,7 @@ const getVisibleParts = () => {
 }
 
 .question-link-card__description {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #1a1a1a;
   line-height: 1.5;
@@ -1031,7 +1031,7 @@ const getVisibleParts = () => {
 }
 
 .question-link-card__title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
@@ -1040,8 +1040,8 @@ const getVisibleParts = () => {
 }
 
 .question-link-card__url {
-  font-size: 13px;
-  color: #00a19a;
+  font-size: 0.8125rem;
+  color: #00726c;
   text-decoration: none;
   word-break: break-all;
   line-height: 1.4;
@@ -1054,7 +1054,7 @@ const getVisibleParts = () => {
   padding: 12px 20px;
   background: #00a19a;
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   border-radius: 100px;
   text-decoration: none;

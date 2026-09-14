@@ -108,14 +108,14 @@ function go(path: string) {
   padding: 6px 4px;
   color: #6b7089;
   font-family: inherit;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.2px;
   transition: color 0.15s;
   position: relative;
 }
 .mp-tab-btn-icon {
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
 }
 .mp-tab-btn.active {
@@ -135,7 +135,7 @@ function go(path: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
   box-shadow: 0 6px 16px rgba(0, 161, 154, 0.35);
   margin-top: -22px;
   margin-bottom: -2px;
@@ -155,7 +155,7 @@ function go(path: string) {
   border-radius: 100px;
   background: #e7444c;
   color: #fff;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   display: inline-flex;
   align-items: center;

@@ -54,7 +54,7 @@
             min="0"
             placeholder="Min"
             class="psm-range-input"
-          />
+           aria-label="Min" />
         </div>
         <div class="psm-range-field">
           <span class="psm-range-prefix">£</span>
@@ -65,7 +65,7 @@
             min="0"
             placeholder="Max"
             class="psm-range-input"
-          />
+           aria-label="Max" />
         </div>
       </div>
       <div class="psm-hint">
@@ -326,7 +326,7 @@ function onSearch() {
   border-bottom: 1px solid #f3f4f6;
 }
 .psm-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -398,7 +398,7 @@ function onSearch() {
   border-bottom: none;
 }
 .psm-section-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #6b6783;
   letter-spacing: 1.2px;
@@ -413,7 +413,7 @@ function onSearch() {
 }
 .chip {
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #231d45;
   background: #f4f4f6;
@@ -444,7 +444,7 @@ function onSearch() {
   width: 16px;
   height: 16px;
   border-radius: 3px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: #fff;
   display: inline-flex;
@@ -484,7 +484,7 @@ function onSearch() {
   padding: 0 12px;
 }
 .psm-range-prefix {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #9c98ad;
 }
@@ -496,7 +496,7 @@ function onSearch() {
   background: transparent;
   outline: none;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #231d45;
 }
@@ -505,7 +505,7 @@ function onSearch() {
   min-width: 0;
   padding: 0 30px 0 12px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -523,7 +523,7 @@ function onSearch() {
   width: 100%;
 }
 .psm-hint {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #9c98ad;
   line-height: 1.4;
   margin-top: 8px;
@@ -531,7 +531,7 @@ function onSearch() {
 
 .psm-reset-btn {
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   background: #f4f4f6;
@@ -547,7 +547,7 @@ function onSearch() {
 .psm-search-btn {
   flex: 1;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #fff;
   background: #00a19a;
@@ -565,7 +565,7 @@ function onSearch() {
 }
 .psm-count {
   background: rgba(255, 255, 255, 0.22);
-  font-size: 11px;
+  font-size: 0.6875rem;
   padding: 2px 7px;
   border-radius: 999px;
   font-weight: 800;

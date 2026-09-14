@@ -45,7 +45,10 @@
         "
         class="text-input"
         :rows="question.rows || 6"
-      ></textarea>
+       aria-label="
+          question.placeholder ||
+          'E.g., Back fence in the garden has been moved back 2 yards...'
+        "></textarea>
     </div>
   </div>
 </template>
@@ -108,9 +111,9 @@ const updateAnswer = (event) => {
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   margin: 0;
 }
 
@@ -129,17 +132,17 @@ const updateAnswer = (event) => {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #ff6b6b;
   font-weight: 600;
 }
 
 .pending-icon {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .input-instruction {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
   margin: 0 0 12px 0;
   font-weight: 500;
@@ -150,7 +153,7 @@ const updateAnswer = (event) => {
   padding: 12px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   resize: none;
   background: #f9f9f9;
@@ -174,14 +177,14 @@ const updateAnswer = (event) => {
   color: #000000;
   margin: 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -194,14 +197,14 @@ const updateAnswer = (event) => {
   background-color: #00a19a1a;
   border-radius: 12px;
   margin: 0 0 20px 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #3c3c43;
 }
 
 .help-icon {
   flex-shrink: 0;
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
 }
 
 .help-text {

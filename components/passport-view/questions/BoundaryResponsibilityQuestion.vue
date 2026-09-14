@@ -48,7 +48,7 @@
           class="side left-side"
           @click="openSelector('left')"
           :class="{ selected: selections.left }"
-        >
+         role="button" tabindex="0" @keydown.enter="openSelector('left')" @keydown.space.prevent="openSelector('left')">
           <span class="side-label">
             {{ selections.left ? formatLabel(selections.left) : 'LEFT' }}
           </span>
@@ -59,7 +59,7 @@
           class="side right-side"
           @click="openSelector('right')"
           :class="{ selected: selections.right }"
-        >
+         role="button" tabindex="0" @keydown.enter="openSelector('right')" @keydown.space.prevent="openSelector('right')">
           <span class="side-label">
             {{ selections.right ? formatLabel(selections.right) : 'RIGHT' }}
           </span>
@@ -75,7 +75,7 @@
           class="side rear-side"
           @click="openSelector('rear')"
           :class="{ selected: selections.rear }"
-        >
+         role="button" tabindex="0" @keydown.enter="openSelector('rear')" @keydown.space.prevent="openSelector('rear')">
           <span class="side-label">
             {{ selections.rear ? formatLabel(selections.rear) : 'REAR' }}
           </span>
@@ -86,7 +86,7 @@
           class="side front-side"
           @click="openSelector('front')"
           :class="{ selected: selections.front }"
-        >
+         role="button" tabindex="0" @keydown.enter="openSelector('front')" @keydown.space.prevent="openSelector('front')">
           <span class="side-label">
             {{ selections.front ? formatLabel(selections.front) : 'FRONT' }}
           </span>
@@ -168,7 +168,6 @@
       v-if="activeSelector"
       class="selector-overlay"
       @click="activeSelector = null"
-    >
       <div class="selector-modal" @click.stop>
         <div class="selector-header">
           <h4>
@@ -306,9 +305,9 @@ const emitUpdate = () => {
 }
 
 .tap-instruction {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 0.9375rem;
   text-align: start;
   margin: 0 0 16px;
   line-height: 20px;
@@ -318,14 +317,14 @@ const emitUpdate = () => {
   color: #000000;
   margin: 0 0 20px 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -343,7 +342,7 @@ const emitUpdate = () => {
 }
 
 .help-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
@@ -354,9 +353,9 @@ const emitUpdate = () => {
 
 .help-title {
   margin: 0px 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -365,14 +364,14 @@ const emitUpdate = () => {
   color: #3c3c4399;
   margin: 0;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
 
 .typing-cursor {
   margin-left: 2px;
-  color: #00a19a;
+  color: #00726c;
   animation: blink 1s infinite;
 }
 
@@ -415,7 +414,7 @@ const emitUpdate = () => {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  color: #00a19a;
+  color: #00726c;
   transition: all 0.2s;
   padding: 8px;
   min-height: 25px;
@@ -436,13 +435,13 @@ const emitUpdate = () => {
 }
 
 .side-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
 
 .selected-value {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 400;
   opacity: 0.9;
 }
@@ -508,7 +507,7 @@ const emitUpdate = () => {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #ff3b30;
   font-weight: 600;
   padding: 4px 8px;
@@ -524,7 +523,7 @@ const emitUpdate = () => {
 
 .summary-title {
   margin: 0 0 8px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   color: #000;
 }
@@ -550,15 +549,15 @@ const emitUpdate = () => {
 }
 
 .summary-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 400;
   color: #9ca3af;
 }
 
 .summary-value {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .summary-value.not-selected {
@@ -572,8 +571,8 @@ const emitUpdate = () => {
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 100px;
-  color: #00a19a;
-  font-size: 12px;
+  color: #00726c;
+  font-size: 0.75rem;
   font-weight: 400;
   cursor: pointer;
   display: flex;
@@ -590,7 +589,7 @@ const emitUpdate = () => {
 }
 
 .reset-icon {
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 /* Selector Modal */
@@ -654,7 +653,7 @@ const emitUpdate = () => {
 
 .selector-header h4 {
   margin: 0;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #000;
 }
@@ -662,7 +661,7 @@ const emitUpdate = () => {
 .close-btn {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #6b7280;
   cursor: pointer;
   padding: 0;
@@ -685,7 +684,7 @@ const emitUpdate = () => {
   background: white;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #000;
   cursor: pointer;
@@ -712,7 +711,7 @@ const emitUpdate = () => {
 }
 
 .checkmark {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
 }
 </style>

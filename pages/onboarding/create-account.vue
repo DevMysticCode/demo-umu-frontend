@@ -199,7 +199,7 @@ function onAddressSelect(property: any) {
 }
 
 .create-account-back {
-  @apply text-brand-aqua flex items-center hover:text-brand-aqua/80 transition-colors;
+  @apply text-brand-aqua-text flex items-center hover:text-brand-aqua-text/80 transition-colors;
 }
 
 /* Content */
@@ -219,7 +219,7 @@ function onAddressSelect(property: any) {
 }
 .address-search-label {
   display: block;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #1f2024;
   margin-bottom: 6px;
@@ -241,7 +241,7 @@ function onAddressSelect(property: any) {
   min-width: 0;
 }
 .address-selected-line1 {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
   white-space: nowrap;
@@ -249,16 +249,16 @@ function onAddressSelect(property: any) {
   text-overflow: ellipsis;
 }
 .address-selected-line2 {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a5568;
   margin-top: 2px;
 }
 .address-edit-btn {
   background: transparent;
   border: none;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
   padding: 4px 8px;
   flex-shrink: 0;
@@ -282,6 +282,6 @@ function onAddressSelect(property: any) {
 }
 
 .link {
-  @apply text-brand-aqua font-medium hover:text-brand-aqua/80 transition-colors;
+  @apply text-brand-aqua-text font-medium hover:text-brand-aqua-text/80 transition-colors;
 }
 </style>

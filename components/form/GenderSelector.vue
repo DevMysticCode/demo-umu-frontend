@@ -71,7 +71,7 @@ const options = [
 
 .gender-selector__option {
   @apply flex items-center justify-center bg-white border text-base cursor-pointer transition-all duration-200 select-none;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 400;
   line-height: 22px; /* 129.412% */
   letter-spacing: -0.43px;
@@ -87,7 +87,7 @@ const options = [
 }
 
 .gender-selector__option--unselected {
-  @apply hover:border-brand-aqua hover:text-brand-aqua;
+  @apply hover:border-brand-aqua hover:text-brand-aqua-text;
   color: #353b45;
 }
 

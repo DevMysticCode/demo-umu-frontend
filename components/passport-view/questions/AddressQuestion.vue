@@ -76,12 +76,12 @@ watch(knownAddress, syncAnswer)
 
 <style scoped>
 .section-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   margin-bottom: 8px;
   color: #111;
 }
 .addr-confirm-line {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #0e2840;
   margin-bottom: 10px;
@@ -93,7 +93,7 @@ watch(knownAddress, syncAnswer)
   border-radius: 10px;
 }
 .uprn-panel-h {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -106,7 +106,7 @@ watch(knownAddress, syncAnswer)
   align-items: baseline;
   gap: 12px;
   padding: 4px 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .uprn-label {
   font-weight: 600;
@@ -118,12 +118,12 @@ watch(knownAddress, syncAnswer)
   font-variant-numeric: tabular-nums;
 }
 .uprn-empty {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b7089;
   line-height: 1.5;
 }
 .addr-confirm-note {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #9c98ad;
   line-height: 1.5;
   margin: 10px 0 0;

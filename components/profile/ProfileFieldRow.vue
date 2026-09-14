@@ -1,5 +1,5 @@
 <template>
-  <div class="pi-row" :class="{ 'verified-row': verified }" @click="onClick">
+  <div class="pi-row" :class="{ 'verified-row': verified }" @click="onClick" role="button" tabindex="0" @keydown.enter="onClick" @keydown.space.prevent="onClick">
     <div v-if="verified" class="pir-verified-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12" />
@@ -16,7 +16,7 @@
       <div
         class="pir-value"
         :class="{ empty }"
-        :style="meta ? 'font-size:11.5px; color:#4a5868; font-weight:600;' : ''"
+        :style="meta ? 'font-size: 0.7188rem; color:#4a5868; font-weight:600;' : ''"
       >
         <slot>{{ value || '-' }}</slot>
       </div>
@@ -35,7 +35,7 @@
       v-else-if="!hideEdit"
       class="pir-edit"
       @click.stop="$emit('edit')"
-    >
+     role="button" tabindex="0" @keydown.enter="$emit('edit')" @keydown.space.prevent="$emit('edit')">
       <slot name="edit-icon">
         <svg
           v-if="empty"
@@ -105,7 +105,7 @@ function onClick(e) {
   min-width: 0;
 }
 .pir-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #8a95a0;
   letter-spacing: 0.2px;
@@ -113,7 +113,7 @@ function onClick(e) {
   text-transform: uppercase;
 }
 .pir-value {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #0e2840;
   letter-spacing: -0.2px;

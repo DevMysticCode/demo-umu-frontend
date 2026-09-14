@@ -158,7 +158,7 @@
         @keydown.enter.exact.prevent="onSend"
         @input="autosize"
         ref="inputEl"
-      />
+       aria-label="Type a message" />
       <button
         type="button"
         class="thread-input-send"
@@ -473,8 +473,8 @@ function openPassport(payload: any) {
 }
 .thread-nav-btn svg { width: 18px; height: 18px; }
 .thread-title { flex: 1; text-align: center; }
-.thread-title-name { font-size: 15px; font-weight: 800; color: #231d45; }
-.thread-title-sub { font-size: 11px; color: #6b7089; margin-top: 2px; }
+.thread-title-name { font-size: 0.9375rem; font-weight: 800; color: #231d45; }
+.thread-title-sub { font-size: 0.6875rem; color: #6b7089; margin-top: 2px; }
 .thread-body {
   flex: 1; overflow-y: auto;
   padding: 12px 16px 20px;
@@ -483,7 +483,7 @@ function openPassport(payload: any) {
   padding: 40px 20px;
   text-align: center;
   color: #6b7089;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .thread-msgs {
   display: flex; flex-direction: column; gap: 8px;
@@ -492,7 +492,7 @@ function openPassport(payload: any) {
   max-width: 78%;
   padding: 9px 12px;
   border-radius: 16px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   line-height: 1.4;
   word-break: break-word;
   overflow-wrap: anywhere;
@@ -515,7 +515,7 @@ function openPassport(payload: any) {
   margin-top: 4px;
   display: flex; align-items: center; gap: 4px;
   justify-content: flex-end;
-  font-size: 10px; font-weight: 600;
+  font-size: 0.625rem; font-weight: 600;
   opacity: 0.75;
 }
 .thread-bubble-time {
@@ -550,7 +550,7 @@ function openPassport(payload: any) {
 .thread-card--response.declined { border-left: 3px solid #c73e36; }
 .thread-card--passport { border-left: 3px solid #231d45; }
 .thread-card-eyebrow {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   color: #008a84;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -559,13 +559,13 @@ function openPassport(payload: any) {
 .thread-card--passport .thread-card-eyebrow { color: #231d45; }
 .thread-card--response.declined .thread-card-eyebrow { color: #c73e36; }
 .thread-card-title {
-  font-size: 14px; font-weight: 800;
+  font-size: 0.875rem; font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
 }
 .thread-card-body {
   margin-top: 4px;
-  font-size: 12.5px; font-weight: 500;
+  font-size: 0.7813rem; font-weight: 500;
   color: #4b5169;
   line-height: 1.45;
 }
@@ -578,7 +578,7 @@ function openPassport(payload: any) {
   background: #f5f6fa;
   border: 1px solid #e4e5ed;
   border-radius: 100px;
-  font-size: 11.5px; font-weight: 700;
+  font-size: 0.7188rem; font-weight: 700;
   color: #231d45;
 }
 .thread-card-slot.chosen {
@@ -588,7 +588,7 @@ function openPassport(payload: any) {
 }
 .thread-card-status {
   margin-top: 10px;
-  font-size: 12px; font-weight: 800;
+  font-size: 0.75rem; font-weight: 800;
   color: #008a84;
 }
 .thread-card-actions {
@@ -598,7 +598,7 @@ function openPassport(payload: any) {
 .thread-card-btn {
   padding: 10px 12px;
   border-radius: 10px;
-  font: inherit; font-size: 12.5px; font-weight: 800;
+  font: inherit; font-size: 0.7813rem; font-weight: 800;
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -628,7 +628,7 @@ function openPassport(payload: any) {
   padding: 10px 14px;
   border: 1.5px solid #e4e5ed;
   border-radius: 20px;
-  font: inherit; font-size: 16px;
+  font: inherit; font-size: 1rem;
   color: #231d45;
   background: #f5f6fa;
   resize: none;
@@ -643,7 +643,7 @@ function openPassport(payload: any) {
   border-radius: 100px;
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
-  font: inherit; font-size: 13px; font-weight: 800;
+  font: inherit; font-size: 0.8125rem; font-weight: 800;
   cursor: pointer;
   box-shadow: 0 3px 10px rgba(0, 161, 154, 0.25);
   transition: all 0.15s;

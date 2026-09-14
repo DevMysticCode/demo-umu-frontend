@@ -41,7 +41,7 @@ const pillars = [
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 .hs-card-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 16px;
@@ -65,12 +65,12 @@ const pillars = [
 }
 .hs-pillar-name {
   flex: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #1a1a1a;
 }
 .hs-pillar-score {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #1a1a1a;
 }

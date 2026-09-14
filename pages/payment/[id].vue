@@ -252,8 +252,8 @@ const processPayment = () => {
 .back-btn {
   background: none;
   border: none;
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -262,7 +262,7 @@ const processPayment = () => {
 }
 
 .back-arrow {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .content {
@@ -283,7 +283,7 @@ const processPayment = () => {
 }
 
 .title {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
   margin: 16px 0 8px;
@@ -291,15 +291,15 @@ const processPayment = () => {
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   text-align: center;
   margin-bottom: 4px;
 }
 
 .fee {
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   text-align: center;
   font-weight: 600;
   margin-bottom: 32px;
@@ -318,7 +318,7 @@ const processPayment = () => {
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   margin-bottom: 16px;
   color: #1a1a1a;
@@ -332,13 +332,13 @@ const processPayment = () => {
 }
 
 .summary-label {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #1a1a1a;
   font-weight: 500;
 }
 
 .summary-value {
-  font-size: 16px;
+  font-size: 1rem;
   color: #1a1a1a;
   font-weight: 700;
 }
@@ -352,8 +352,8 @@ const processPayment = () => {
 }
 
 .summary-benefits li {
-  font-size: 14px;
-  color: #00a19a;
+  font-size: 0.875rem;
+  color: #00726c;
   padding: 6px 0;
   padding-left: 20px;
   position: relative;
@@ -363,7 +363,7 @@ const processPayment = () => {
   content: '•';
   position: absolute;
   left: 0;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
 }
 
@@ -377,15 +377,15 @@ const processPayment = () => {
 }
 
 .total-label {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
 }
 
 .total-value {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .payment-method-group {
@@ -393,7 +393,7 @@ const processPayment = () => {
 }
 
 .method-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #666;
   font-weight: 600;
   margin-bottom: 12px;
@@ -434,7 +434,7 @@ const processPayment = () => {
 }
 
 .method-name {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #1a1a1a;
   margin-bottom: 4px;
@@ -443,14 +443,14 @@ const processPayment = () => {
 }
 
 .card-number {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   margin-bottom: 4px;
   letter-spacing: 1px;
 }
 
 .card-details {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #999;
 }
 
@@ -473,14 +473,14 @@ const processPayment = () => {
 }
 
 .credits-balance {
-  font-size: 13px;
-  color: #00a19a;
+  font-size: 0.8125rem;
+  color: #00726c;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
 .credits-required {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #666;
 }
 
@@ -493,7 +493,7 @@ const processPayment = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -510,8 +510,8 @@ const processPayment = () => {
   background: white;
   border: 2px dashed #00a19a;
   border-radius: 12px;
-  color: #00a19a;
-  font-size: 15px;
+  color: #00726c;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   margin: 16px 0 12px;
@@ -523,7 +523,7 @@ const processPayment = () => {
 }
 
 .payment-methods-info {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #999;
   text-align: center;
   margin: 12px 0 20px;
@@ -550,10 +550,10 @@ const processPayment = () => {
 .saved-address-badge {
   display: inline-block;
   background: #e6f9f7;
-  color: #00a19a;
+  color: #00726c;
   padding: 6px 16px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -574,14 +574,14 @@ const processPayment = () => {
 }
 
 .address-name {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 8px;
 }
 
 .address-details {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #666;
   line-height: 1.6;
 }
@@ -589,8 +589,8 @@ const processPayment = () => {
 .edit-address-btn {
   background: none;
   border: none;
-  color: #00a19a;
-  font-size: 14px;
+  color: #00726c;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   padding: 8px 0;
@@ -606,7 +606,7 @@ const processPayment = () => {
   background: white;
   border: 2px solid #e0e0e0;
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #1a1a1a;
   cursor: pointer;
@@ -641,14 +641,14 @@ const processPayment = () => {
 }
 
 .security-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 6px;
 }
 
 .security-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #666;
   line-height: 1.5;
 }
@@ -673,7 +673,7 @@ const processPayment = () => {
 
 .terms-content {
   flex: 1;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
 }
 
@@ -695,20 +695,20 @@ const processPayment = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .guarantee-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 6px;
 }
 
 .guarantee-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #666;
   line-height: 1.5;
 }
@@ -720,7 +720,7 @@ const processPayment = () => {
   color: white;
   border: none;
   border-radius: 12px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 32px;

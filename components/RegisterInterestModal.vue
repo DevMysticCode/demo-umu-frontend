@@ -34,7 +34,7 @@
                   class="interest-card"
                   :class="{ selected: selectedInterest === 'dream' }"
                   @click="selectedInterest = 'dream'"
-                >
+                 role="button" tabindex="0" @keydown.enter="selectedInterest = 'dream'" @keydown.space.prevent="selectedInterest = 'dream'">
                   <div class="interest-icon">🏡</div>
                   <div class="interest-content">
                     <h3 class="interest-name">Dream Home</h3>
@@ -57,7 +57,7 @@
                   class="interest-card"
                   :class="{ selected: selectedInterest === 'super' }"
                   @click="selectedInterest = 'super'"
-                >
+                 role="button" tabindex="0" @keydown.enter="selectedInterest = 'super'" @keydown.space.prevent="selectedInterest = 'super'">
                   <div class="interest-icon">🛋️</div>
                   <div class="interest-content">
                     <h3 class="interest-name">Super Keen</h3>
@@ -80,7 +80,7 @@
                   class="interest-card"
                   :class="{ selected: selectedInterest === 'browsing' }"
                   @click="selectedInterest = 'browsing'"
-                >
+                 role="button" tabindex="0" @keydown.enter="selectedInterest = 'browsing'" @keydown.space.prevent="selectedInterest = 'browsing'">
                   <div class="interest-icon">🌳</div>
                   <div class="interest-content">
                     <h3 class="interest-name">Just Browsing</h3>
@@ -192,8 +192,8 @@ const registerInterest = () => {
 .back-btn {
   background: none;
   border: none;
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -202,7 +202,7 @@ const registerInterest = () => {
 }
 
 .back-arrow {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .close-btn {
@@ -211,7 +211,7 @@ const registerInterest = () => {
   border-radius: 50%;
   background: #e0e0e0;
   border: none;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #666;
   display: flex;
   align-items: center;
@@ -223,7 +223,7 @@ const registerInterest = () => {
 }
 
 .title {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   text-align: center;
   margin: 0 0 8px;
@@ -231,7 +231,7 @@ const registerInterest = () => {
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   text-align: center;
   margin-bottom: 32px;
@@ -250,8 +250,8 @@ const registerInterest = () => {
 }
 
 .description {
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   text-align: center;
   margin-bottom: 32px;
   font-weight: 500;
@@ -263,7 +263,7 @@ const registerInterest = () => {
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   margin-bottom: 16px;
   color: #1a1a1a;
@@ -299,7 +299,7 @@ const registerInterest = () => {
 .interest-icon {
   width: 48px;
   height: 48px;
-  font-size: 32px;
+  font-size: 2rem;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -311,14 +311,14 @@ const registerInterest = () => {
 }
 
 .interest-name {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   margin: 0 0 4px;
   color: #1a1a1a;
 }
 
 .interest-desc {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #666;
   margin: 0;
   line-height: 1.4;
@@ -366,8 +366,8 @@ const registerInterest = () => {
 }
 
 .info-list li {
-  font-size: 14px;
-  color: #00a19a;
+  font-size: 0.875rem;
+  color: #00726c;
   padding: 6px 0;
   padding-left: 20px;
   position: relative;
@@ -378,9 +378,9 @@ const registerInterest = () => {
   content: '•';
   position: absolute;
   left: 0;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .register-btn {
@@ -390,7 +390,7 @@ const registerInterest = () => {
   color: white;
   border: none;
   border-radius: 16px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(0, 184, 169, 0.3);
   transition: all 0.2s;

@@ -22,7 +22,10 @@
         "
         class="text-input"
         rows="6"
-      ></textarea>
+       aria-label="
+          question.placeholder ||
+          'E.g., The irregular boundary near the stream at the rear of the property is owned by...'
+        "></textarea>
 
       <div class="or-divider"></div>
 
@@ -127,7 +130,10 @@
           "
           class="text-input"
           rows="6"
-        ></textarea>
+         aria-label="
+            question.placeholder ||
+            'E.g., Back fence in the garden has been moved back 2 yards...'
+          "></textarea>
       </div>
     </template>
 
@@ -439,14 +445,14 @@ onMounted(() => {
   color: #000000;
   margin: 0 0 20px 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -464,7 +470,7 @@ onMounted(() => {
 }
 
 .help-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 .help-icon-img { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; vertical-align: -2px; margin-right: 4px; }
@@ -475,9 +481,9 @@ onMounted(() => {
 
 .help-title {
   margin: 0px 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -486,14 +492,14 @@ onMounted(() => {
   color: #3c3c4399;
   margin: 0;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
 
 .typing-cursor {
   margin-left: 2px;
-  color: #00a19a;
+  color: #00726c;
   animation: blink 1s infinite;
 }
 
@@ -519,9 +525,9 @@ onMounted(() => {
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   margin: 0;
 }
 
@@ -542,7 +548,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 400;
   color: #000000;
   margin: 12px 0;
@@ -577,7 +583,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #ff3b30;
   font-weight: 600;
   padding: 4px 8px;
@@ -585,14 +591,14 @@ onMounted(() => {
 }
 
 .input-instruction {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
   margin: 0 0 12px 0;
   font-weight: 500;
 }
 
 .instruction-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
   margin: 0 0 12px 0;
   font-weight: 500;
@@ -604,7 +610,7 @@ onMounted(() => {
   padding: 12px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   resize: none;
   background: #f9f9f9;
@@ -645,13 +651,13 @@ onMounted(() => {
   background: white;
   cursor: pointer;
   transition: all 0.2s;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #1a1a1a;
 }
 
 .upload-error {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #ff3b30;
   margin: 0;
@@ -667,7 +673,7 @@ onMounted(() => {
 }
 
 .files-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   margin: 0 0 12px;
   color: #1a1a1a;
@@ -683,7 +689,7 @@ onMounted(() => {
 }
 
 .file-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #666;
   flex: 1;
   overflow: hidden;
@@ -695,7 +701,7 @@ onMounted(() => {
   background: none;
   border: none;
   color: #999;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   padding: 4px 8px;
   flex-shrink: 0;

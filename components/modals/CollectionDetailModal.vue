@@ -29,7 +29,7 @@
                 </div>
               </div>
 
-              <div class="cdm-addr" @click="$emit('navigate', item.passport.id)">
+              <div class="cdm-addr" @click="$emit('navigate', item.passport.id)" role="button" tabindex="0" @keydown.enter="$emit('navigate', item.passport.id)" @keydown.space.prevent="$emit('navigate', item.passport.id)">
                 <span class="cdm-addr1">{{ item.passport.addressLine1 }}</span>
                 <span class="cdm-addr2">{{ item.passport.postcode }}</span>
               </div>
@@ -208,7 +208,7 @@ const addPassport = async (passport) => {
 }
 
 .cdm-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 16px;
@@ -224,7 +224,7 @@ const addPassport = async (passport) => {
 .cdm-scroll::-webkit-scrollbar { display: none; }
 
 .cdm-section-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #8e8e93;
   text-transform: uppercase;
@@ -233,7 +233,7 @@ const addPassport = async (passport) => {
 }
 
 .cdm-empty {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #aaa;
   padding: 12px 4px 16px;
 }
@@ -283,7 +283,7 @@ const addPassport = async (passport) => {
 }
 
 .cdm-addr1 {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #1a1a1a;
   white-space: nowrap;
@@ -292,7 +292,7 @@ const addPassport = async (passport) => {
 }
 
 .cdm-addr2 {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
 }
 

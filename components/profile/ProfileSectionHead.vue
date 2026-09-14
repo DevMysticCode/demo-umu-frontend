@@ -24,7 +24,7 @@ defineEmits(['action'])
 <style scoped>
 /* Matches prototype `.section-heading` */
 .psh {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -36,7 +36,7 @@ defineEmits(['action'])
 }
 .psh-action {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #008a84;
   cursor: pointer;

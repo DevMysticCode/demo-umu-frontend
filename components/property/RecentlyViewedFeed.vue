@@ -10,7 +10,7 @@
         :key="prop.id"
         class="rv-card"
         @click="navigateTo('/property/' + prop.id)"
-      >
+       role="button" tabindex="0" @keydown.enter="navigateTo('/property/' + prop.id)" @keydown.space.prevent="navigateTo('/property/' + prop.id)">
         <div class="rv-img-wrap">
           <PropertyImage
             :src="prop.imageUrl || prop.image"
@@ -44,11 +44,11 @@ defineProps<{
   margin-bottom: 20px;
 }
 .dash-eyebrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 1.3px;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 10px;
 }
 .skeletons {
@@ -107,7 +107,7 @@ defineProps<{
   padding: 8px 10px 10px;
 }
 .rv-address {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #231d45;
   white-space: nowrap;
@@ -115,7 +115,7 @@ defineProps<{
   text-overflow: ellipsis;
 }
 .rv-area {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #94a3b8;
   margin-top: 1px;
   white-space: nowrap;

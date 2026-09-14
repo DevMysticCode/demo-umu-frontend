@@ -172,7 +172,7 @@ const aspectRatio = computed(() => ASPECT_RATIOS[props.type] ?? ASPECT_RATIOS.SE
 } */
 
 /* .passport-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   text-align: center;
   margin-bottom: 20px;
@@ -240,10 +240,10 @@ const aspectRatio = computed(() => ASPECT_RATIOS[props.type] ?? ASPECT_RATIOS.SE
    size - not perfect, but never broken. */
 @supports not (container-type: inline-size) {
   .address-line {
-    font-size: 11px;
+    font-size: 0.6875rem;
   }
   .address-line-small {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
 }
 </style>

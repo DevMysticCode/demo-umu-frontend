@@ -46,7 +46,7 @@ const onLogin = () => {
     border-radius: 12px;
     color: white;
     transition: background-color 0.15s ease;
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
 
   &__button--login {

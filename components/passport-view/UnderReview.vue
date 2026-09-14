@@ -83,7 +83,7 @@ defineEmits(['viewProfile'])
   color: #0f766e;
   padding: 5px 10px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   margin-bottom: 12px;
 }
@@ -111,14 +111,14 @@ defineEmits(['viewProfile'])
 }
 .expert-h3 {
   margin: 0 0 4px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #0a0f2c;
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
 .qcount {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   line-height: 1.4;
   color: #0f766e;
@@ -128,7 +128,7 @@ defineEmits(['viewProfile'])
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #64748b;
   background: #f1f5f9;
@@ -152,7 +152,7 @@ defineEmits(['viewProfile'])
   border: 0;
   border-radius: 999px;
   padding: 12px 18px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   justify-content: center;

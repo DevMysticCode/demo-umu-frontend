@@ -46,7 +46,7 @@
 
         <button
           type="button"
-          class="mt-6 py-2 px-4 rounded-full border border-brand-aqua text-brand-aqua inline-flex items-center justify-center font-sf-pro text-[15px] leading-[20px] tracking-[-0.4px] font-[590] border-color-[#00A19A] text-[#00A19A]"
+          class="mt-6 py-2 px-4 rounded-full border border-brand-aqua text-brand-aqua-text inline-flex items-center justify-center font-sf-pro text-[15px] leading-[20px] tracking-[-0.4px] font-[590] border-color-[#00A19A] text-[#00A19A]"
         >
           Member since {{ memberSince }}
         </button>
@@ -95,7 +95,7 @@
             type="text"
             placeholder="Find a setting"
             class="ml-2 w-full bg-transparent outline-none text-lg placeholder:text-[#8f9094]"
-          />
+           aria-label="Find a setting" />
           <button
             v-if="searchQuery"
             type="button"

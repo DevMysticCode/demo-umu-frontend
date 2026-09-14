@@ -38,7 +38,7 @@
             ?
           </button>
           <NotificationBell />
-          <div class="pps-app-header-avatar" @click="navigateTo('/profile')">
+          <div class="pps-app-header-avatar" @click="navigateTo('/profile')" role="button" tabindex="0" @keydown.enter="navigateTo('/profile')" @keydown.space.prevent="navigateTo('/profile')">
             <UserAvatar
               :src="profile?.avatarUrl"
               :firstName="profile?.firstName"
@@ -353,7 +353,7 @@
         class="pps-score-card pps-score-card--clickable op-glow-ring"
         style="--glow-thickness: 2.5px"
         @click="onScoreCardTap"
-      >
+       role="button" tabindex="0" @keydown.enter="onScoreCardTap" @keydown.space.prevent="onScoreCardTap">
         <div class="pps-score-top">
           <div class="pps-score-blob-tr" />
           <div class="pps-score-blob-bl" />
@@ -442,7 +442,7 @@
           class="pps-tile op-glow-ring"
           style="--glow-thickness: 2px"
           @click="onExploreTileClick(tile.key)"
-        >
+         role="button" tabindex="0" @keydown.enter="onExploreTileClick(tile.key)" @keydown.space.prevent="onExploreTileClick(tile.key)">
           <div
             class="pps-tile-icon"
             :class="{ 'pps-tile-icon--img': !!tile.iconImage }"
@@ -547,7 +547,7 @@
               >In progress</span
             >
           </div>
-          <div class="pps-passport-title" style="color: #00a19a">
+          <div class="pps-passport-title" style="color: #00726c">
             Passport being built
           </div>
           <div class="pps-passport-explain pps-passport-explain--progress">
@@ -1392,11 +1392,11 @@
                 <div class="pps-tr-lab">Energy rank on this street</div>
                 <div class="pps-tr-big">
                   {{ streetEnergyRank.rank
-                  }}<span style="font-size: 22px">{{
+                  }}<span style="font-size: 1.375rem">{{
                     ordinalSuffix(streetEnergyRank.rank)
                   }}</span>
                   <span
-                    style="font-size: 16px; font-weight: 700; color: #75757c"
+                    style="font-size: 1rem; font-weight: 700; color: #75757c"
                   >
                     of {{ streetEnergyRank.total }}
                   </span>
@@ -3419,7 +3419,7 @@
                   type="text"
                   class="pps-text-input"
                   placeholder="Alex Quinn"
-                />
+                 aria-label="Alex Quinn" />
               </div>
               <div class="pps-field">
                 <label class="pps-field-label">Email address</label>
@@ -3428,7 +3428,7 @@
                   type="email"
                   class="pps-text-input"
                   placeholder="alex@email.com"
-                />
+                 aria-label="alex@email.com" />
               </div>
               <div class="pps-field">
                 <label class="pps-field-label">Why are you watching?</label>
@@ -3525,7 +3525,7 @@
                   type="text"
                   class="mkc-input"
                   placeholder="Alex Quinn"
-                />
+                 aria-label="Alex Quinn" />
               </div>
             </div>
 
@@ -3549,7 +3549,7 @@
                   v-model="contactMessage"
                   class="mkc-input mkc-textarea"
                   :placeholder="contactPlaceholder"
-                />
+                 aria-label="contactPlaceholder" />
               </div>
             </div>
 
@@ -3812,7 +3812,7 @@
               <div
                 style="
                   text-align: center;
-                  font-size: 12px;
+                  font-size: 0.75rem;
                   color: #9c98ad;
                   margin-top: 8px;
                 "
@@ -3960,7 +3960,7 @@
               </div>
             </div>
             <div class="pps-explain-callout pps-explain-callout--progress">
-              <div class="pps-explain-callout-eyebrow" style="color: #00a19a">
+              <div class="pps-explain-callout-eyebrow" style="color: #00726c">
                 Why this matters
               </div>
               <div class="pps-explain-callout-body">
@@ -4059,7 +4059,7 @@
               </div>
             </div>
             <div class="pps-explain-callout pps-explain-callout--progress">
-              <div class="pps-explain-callout-eyebrow" style="color: #00a19a">
+              <div class="pps-explain-callout-eyebrow" style="color: #00726c">
                 Why this exists
               </div>
               <div class="pps-explain-callout-body">
@@ -4245,7 +4245,7 @@
               />
             </div>
             <div class="unpub-eyebrow">
-              <span style="color: #00a19a">●</span> Property Passport - In
+              <span style="color: #00726c">●</span> Property Passport - In
               Progress
             </div>
             <h3 class="unpub-title">This home's Passport is being built</h3>
@@ -7781,7 +7781,7 @@ async function initMap() {
   function makeDivIcon(color: string, emoji: string) {
     return L.divIcon({
       className: '',
-      html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size:15px;">${emoji}</div>`,
+      html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size: 0.9375rem;">${emoji}</div>`,
       iconSize: [30, 30],
       iconAnchor: [15, 15],
     })
@@ -8350,7 +8350,7 @@ function formatSaleDate(dateStr: string): string {
   justify-content: center;
   gap: 14px;
   color: #6b6783;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 .pps-loading-skel {
   min-height: 100dvh;
@@ -8388,7 +8388,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 9px;
   padding: 8px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -8406,7 +8406,7 @@ function formatSaleDate(dateStr: string): string {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -8427,9 +8427,9 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 50%;
   border: 1.5px solid #00a19a;
   background: none;
-  color: #00a19a;
+  color: #00726c;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -8454,9 +8454,9 @@ function formatSaleDate(dateStr: string): string {
   padding: 6px 0;
   background: none;
   border: none;
-  color: #00a19a;
+  color: #00726c;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -8488,7 +8488,7 @@ function formatSaleDate(dateStr: string): string {
   background: #fdeef1;
 }
 .pps-top-icon-btn--active-teal {
-  color: #00a19a;
+  color: #00726c;
   border-color: #bfe9e6;
   background: #e6f7f6;
 }
@@ -8545,7 +8545,7 @@ function formatSaleDate(dateStr: string): string {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   color: white;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
 }
 .pps-hero-card-identity {
@@ -8579,13 +8579,13 @@ function formatSaleDate(dateStr: string): string {
   gap: 1px;
 }
 .pps-badge-passport-cap {
-  font-size: 7.5px;
+  font-size: 0.4688rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   opacity: 0.75;
 }
 .pps-badge-passport-val {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.3px;
   line-height: 1.1;
@@ -8610,7 +8610,7 @@ function formatSaleDate(dateStr: string): string {
   color: #c73e36;
   border-radius: 20px;
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
@@ -8622,13 +8622,13 @@ function formatSaleDate(dateStr: string): string {
   gap: 10px;
 }
 .pps-identity-address {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #1a1535;
   line-height: 1.15;
 }
 .pps-identity-suburb {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #888;
   margin-top: 2px;
 }
@@ -8640,13 +8640,13 @@ function formatSaleDate(dateStr: string): string {
   flex-wrap: wrap;
 }
 .pps-price-value {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   line-height: 1.15;
 }
 .pps-price-source {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #aaa;
   margin-left: 6px;
   display: inline-flex;
@@ -8660,7 +8660,7 @@ function formatSaleDate(dateStr: string): string {
   border: 1.3px solid #c0bdcc;
   background: none;
   color: #9c98ad;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   font-style: italic;
   font-family: Georgia, serif;
@@ -8674,9 +8674,9 @@ function formatSaleDate(dateStr: string): string {
 .pps-price-edit {
   border: none;
   background: none;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
   padding: 0 0 0 6px;
   text-decoration: underline;
@@ -8691,7 +8691,7 @@ function formatSaleDate(dateStr: string): string {
   background: #f0f0f2;
   border-radius: 20px;
   padding: 5px 12px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #444;
   font-weight: 600;
   display: inline-flex;
@@ -8716,7 +8716,7 @@ function formatSaleDate(dateStr: string): string {
   justify-content: center;
   gap: 6px;
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   line-height: 1.25;
   color: #1a1535;
@@ -8765,7 +8765,7 @@ function formatSaleDate(dateStr: string): string {
   gap: 6px;
   background: #231d45;
   color: white;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 100px;
@@ -8819,7 +8819,7 @@ function formatSaleDate(dateStr: string): string {
 .pps-float-claim-gauge span {
   position: relative;
   z-index: 1;
-  font-size: 7.5px;
+  font-size: 0.4688rem;
   font-weight: 800;
   color: #00858a;
 }
@@ -8829,27 +8829,27 @@ function formatSaleDate(dateStr: string): string {
   padding-left: 10px;
 }
 .pps-float-claim-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   line-height: 1.25;
 }
 .pps-float-claim-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.4;
   margin-top: 3px;
 }
 .pps-float-claim-emphasis {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #231d45;
   line-height: 1.4;
   margin-top: 6px;
 }
 .pps-float-claim-watchers {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #00857f;
   margin-top: 5px;
@@ -8866,7 +8866,7 @@ function formatSaleDate(dateStr: string): string {
   color: white;
   border: none;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   cursor: pointer;
   white-space: nowrap;
@@ -9023,13 +9023,13 @@ function formatSaleDate(dateStr: string): string {
   line-height: 1;
 }
 .pps-gauge-num {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 900;
   color: #231d45;
   line-height: 1;
 }
 .pps-gauge-denom {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #9c98ad;
   margin-top: 1px;
 }
@@ -9038,7 +9038,7 @@ function formatSaleDate(dateStr: string): string {
   z-index: 1;
 }
 .pps-score-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #007e78;
   letter-spacing: 2px;
@@ -9046,13 +9046,13 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 6px;
 }
 .pps-score-verdict {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
 }
 .pps-score-desc {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
   margin-top: 5px;
   line-height: 1.5;
@@ -9066,7 +9066,7 @@ function formatSaleDate(dateStr: string): string {
   border: 1px solid #ececef;
   border-radius: 20px;
   padding: 5px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #444;
 }
 .pps-epc-dot {
@@ -9082,7 +9082,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 0 0 18px 18px;
 }
 .pps-epc-header {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #aaa;
   letter-spacing: 1.2px;
@@ -9100,7 +9100,7 @@ function formatSaleDate(dateStr: string): string {
   gap: 10px;
 }
 .pps-epc-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #333;
   width: 60px;
@@ -9121,7 +9121,7 @@ function formatSaleDate(dateStr: string): string {
   transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pps-epc-rating {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #555;
   width: 60px;
@@ -9137,13 +9137,13 @@ function formatSaleDate(dateStr: string): string {
   align-items: center;
 }
 .pps-explore-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #1a1535;
 }
 .pps-explore-sources {
-  font-size: 13px;
-  color: #00a19a;
+  font-size: 0.8125rem;
+  color: #00726c;
   font-weight: 700;
 }
 .pps-explore-grid {
@@ -9188,7 +9188,7 @@ function formatSaleDate(dateStr: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
 }
 .pps-tile-icon--img {
   width: 56px;
@@ -9206,24 +9206,24 @@ function formatSaleDate(dateStr: string): string {
   display: block;
 }
 .pps-tile-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #1a1535;
   margin-top: 10px;
 }
 .pps-tile-value {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   margin-top: 3px;
 }
 .pps-tile-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #999;
   margin-top: 2px;
 }
 .pps-tile-trend {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #2eab55;
   margin-top: 4px;
@@ -9232,7 +9232,7 @@ function formatSaleDate(dateStr: string): string {
   display: inline-block;
   background: #00a19a;
   color: white;
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   letter-spacing: 0.3px;
   border-radius: 4px;
@@ -9244,7 +9244,7 @@ function formatSaleDate(dateStr: string): string {
   position: absolute;
   bottom: 12px;
   right: 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #ccc;
   line-height: 1;
 }
@@ -9258,14 +9258,14 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 18px;
 }
 .pps-keepgoing-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
   text-align: center;
 }
 .pps-keepgoing-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.4;
@@ -9310,13 +9310,13 @@ function formatSaleDate(dateStr: string): string {
   min-width: 0;
 }
 .pps-keepgoing-row-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
 }
 .pps-keepgoing-row-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: #6b6a82;
   line-height: 1.4;
@@ -9329,7 +9329,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 50%;
   background: #e7f6f2;
   color: #00857f;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -9361,7 +9361,7 @@ function formatSaleDate(dateStr: string): string {
   align-items: center;
 }
 .pps-passport-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 2px;
@@ -9380,14 +9380,14 @@ function formatSaleDate(dateStr: string): string {
 .pps-passport-price-pill {
   background: #f2faf8;
   color: #007e78;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   border-radius: 20px;
   padding: 3px 10px;
   border: 1px solid #e5f4f2;
 }
 .pps-passport-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   margin-top: 8px;
@@ -9406,7 +9406,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 50%;
   border: none;
   color: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 900;
   cursor: pointer;
   flex-shrink: 0;
@@ -9434,7 +9434,7 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 14px;
 }
 .pps-passport-explain-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: 1.2px;
@@ -9442,7 +9442,7 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 3px;
 }
 .pps-passport-explain-body {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #4a4560;
   line-height: 1.5;
 }
@@ -9469,7 +9469,7 @@ function formatSaleDate(dateStr: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   transition: all 0.15s ease;
 }
@@ -9478,7 +9478,7 @@ function formatSaleDate(dateStr: string): string {
   color: white;
 }
 .pps-pp-step-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #9c98ad;
   margin-top: 6px;
@@ -9510,7 +9510,7 @@ function formatSaleDate(dateStr: string): string {
   transition: width 1s 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pps-progress-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #9c98ad;
   text-align: right;
 }
@@ -9543,17 +9543,17 @@ function formatSaleDate(dateStr: string): string {
   background: #f5f5f7;
 }
 .pps-feature-text-title--verified {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
 }
 .pps-feature-text-title--locked {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #c0bdcc;
 }
 .pps-feature-text-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #9c98ad;
   margin-top: 1px;
 }
@@ -9564,7 +9564,7 @@ function formatSaleDate(dateStr: string): string {
   border-radius: 14px;
   padding: 16px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -9580,7 +9580,7 @@ function formatSaleDate(dateStr: string): string {
   transform: translateY(-1px);
 }
 .pps-passport-cta-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #9c98ad;
   text-align: center;
   margin-top: 8px;
@@ -9604,12 +9604,12 @@ function formatSaleDate(dateStr: string): string {
   border-bottom: 1px solid #f0dc80;
 }
 .pps-costs-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #7a3a05;
 }
 .pps-costs-header-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #c18a38;
 }
 .pps-costs-body {
@@ -9656,7 +9656,7 @@ function formatSaleDate(dateStr: string): string {
   background: #231d45;
 }
 .pps-costs-box-back-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0.5px;
@@ -9664,7 +9664,7 @@ function formatSaleDate(dateStr: string): string {
   margin-bottom: 4px;
 }
 .pps-costs-box-back-val {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: white;
 }
@@ -9680,7 +9680,7 @@ function formatSaleDate(dateStr: string): string {
   background: #007e78;
 }
 .pps-costs-box-value {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
 }
@@ -9688,12 +9688,12 @@ function formatSaleDate(dateStr: string): string {
   color: #007e78;
 }
 .pps-costs-box-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #999;
   margin-top: 3px;
 }
 .pps-costs-attr {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #bbb;
   font-style: italic;
   margin-top: 12px;
@@ -9740,21 +9740,21 @@ function formatSaleDate(dateStr: string): string {
   min-width: 0;
 }
 .pps-pd-row-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: #aaa;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 .pps-pd-row-value {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #0e2840;
   margin-top: 2px;
   overflow-wrap: anywhere;
 }
 .pps-pd-row-value--mono {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
 }
 .pps-pd-download {
@@ -9768,7 +9768,7 @@ function formatSaleDate(dateStr: string): string {
   border: none;
   border-radius: 8px;
   font: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
   transition: background 0.15s;
@@ -9783,18 +9783,18 @@ function formatSaleDate(dateStr: string): string {
 .pps-pd-empty {
   padding: 24px 12px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #8f9094;
 }
 .pps-details-header {
   padding: 14px 16px 0;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #1a1535;
 }
 .pps-details-sub {
   padding: 4px 16px 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b6783;
   line-height: 1.45;
@@ -9830,7 +9830,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   box-shadow: 0 6px 18px rgba(35, 29, 69, 0.1);
 }
 .pps-detail-tile-icon {
-  font-size: 16px;
+  font-size: 1rem;
   margin-bottom: 6px;
   display: block;
 }
@@ -9844,14 +9844,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 .pps-detail-label {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #aaa;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 .pps-detail-value {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #1a1535;
   margin-top: 4px;
@@ -9861,7 +9861,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .pps-epc-badge {
   color: white;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   border-radius: 5px;
   padding: 1px 6px;
@@ -9932,7 +9932,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: block;
 }
 .pps-sheet-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 900;
   color: #231d45;
   text-align: center;
@@ -9940,7 +9940,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 6px;
 }
 .pps-sheet-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
   text-align: center;
   line-height: 1.5;
@@ -9954,7 +9954,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: none;
   border-radius: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 20px rgba(122, 58, 5, 0.3);
@@ -9968,7 +9968,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 1.5px solid #ececef;
   border-radius: 12px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #6b6783;
   cursor: pointer;
@@ -10002,20 +10002,20 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: block;
 }
 .pps-ds-header-title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
 }
 .pps-ds-header-meta {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #9c98ad;
   margin-top: 3px;
   line-height: 1.4;
 }
 
 .pps-ds-section-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1.5px;
@@ -10034,7 +10034,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   grid-template-columns: 1fr 1fr 1fr;
   padding: 10px 14px;
   border-bottom: 1px solid #ececef;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #231d45;
   align-items: center;
@@ -10043,7 +10043,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-bottom: none;
 }
 .pps-ds-row--header {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 0.5px;
@@ -10056,14 +10056,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .pps-ds-muted {
   color: #9c98ad;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .pps-ds-empty {
   background: #fafafa;
   border-radius: 12px;
   padding: 20px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
 }
 
@@ -10079,19 +10079,19 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   align-items: center;
 }
 .pps-ds-cagr-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 1px;
   color: #6b6783;
   text-transform: uppercase;
 }
 .pps-ds-cagr-val {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 900;
   letter-spacing: -0.4px;
 }
 .pps-ds-cagr-val--up {
-  color: #00a19a;
+  color: #00726c;
 }
 .pps-ds-cagr-val--down {
   color: #c73e36;
@@ -10116,7 +10116,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-bottom: none;
 }
 .pps-ds-tl-row--est .pps-ds-tl-price {
-  color: #00a19a;
+  color: #00726c;
 }
 .pps-ds-tl-bullet {
   position: absolute;
@@ -10138,7 +10138,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   min-width: 0;
 }
 .pps-ds-tl-price {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 900;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -10146,7 +10146,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 .pps-ds-tl-est-pill {
   display: inline-block;
   vertical-align: middle;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   background: #e6f7f6;
@@ -10157,12 +10157,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-left: 6px;
 }
 .pps-ds-tl-date {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #9c98ad;
   margin-top: 1px;
 }
 .pps-ds-tl-delta {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   white-space: nowrap;
   padding: 4px 8px;
@@ -10177,7 +10177,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #c73e36;
 }
 .pps-ds-tl-arrow {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .pps-ds-tl-pct {
   font-weight: 700;
@@ -10200,7 +10200,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 10px;
 }
 .pps-epc-comp-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #4a4566;
 }
@@ -10231,7 +10231,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #c0bdcc;
 }
 .pps-epc-comp-rating {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   text-align: right;
   white-space: nowrap;
@@ -10247,12 +10247,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #007e78;
   line-height: 1.4;
 }
 .pps-costs-upside-ic {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   width: 22px;
   height: 22px;
@@ -10309,11 +10309,11 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   height: 16px;
 }
 .unpub-icon {
-  font-size: 48px;
+  font-size: 3rem;
   margin-bottom: 12px;
 }
 .unpub-eyebrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   color: #007e78;
@@ -10321,7 +10321,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   text-transform: uppercase;
 }
 .unpub-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.4px;
@@ -10329,7 +10329,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   line-height: 1.25;
 }
 .unpub-body {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #6b6783;
   line-height: 1.55;
   margin-bottom: 18px;
@@ -10342,7 +10342,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 12px;
   padding: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);
   cursor: pointer;
@@ -10374,7 +10374,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   align-items: center;
   padding: 9px 0;
   border-bottom: 1px solid #f5f5f7;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 .pps-ds-kv:last-child {
   border-bottom: none;
@@ -10388,7 +10388,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-left: 6px;
   padding: 2px 6px;
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   color: #007e78;
@@ -10412,7 +10412,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 .pps-ds-v--muted {
   color: #8a8595;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .pps-ds-kv--link {
   text-decoration: none;
@@ -10423,7 +10423,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #f5f5f7;
 }
 .pps-ds-kv--link .pps-ds-v--muted {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 700;
 }
 .pps-ds-bar-list {
@@ -10438,18 +10438,18 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 10px;
 }
 .pps-ds-bar-item--active .pps-ds-bar-label {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 900;
 }
 .pps-ds-bar-item--active .pps-ds-bar-count {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 900;
 }
 .pps-ds-bar-label {
   font-weight: 800;
   color: #231d45;
   text-align: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 .pps-ds-bar-track {
   background: #f5f5f7;
@@ -10463,7 +10463,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   transition: width 0.4s ease;
 }
 .pps-ds-bar-count {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b6783;
   min-width: 56px;
@@ -10480,13 +10480,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 4px;
 }
 .pps-ds-highlight-num {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
 }
 .pps-ds-highlight-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
   margin-top: 4px;
 }
@@ -10500,14 +10500,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 4px;
 }
 .pps-ds-rank-big {
-  font-size: 38px;
+  font-size: 2.375rem;
   font-weight: 900;
   color: #231d45;
   letter-spacing: -1px;
   line-height: 1;
 }
 .pps-ds-rank-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
   margin-top: 6px;
 }
@@ -10535,7 +10535,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 1.5px solid #b8e8c8;
 }
 .pps-ds-risk-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 6px;
@@ -10547,7 +10547,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #c18a38;
 }
 .pps-ds-risk-desc {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #4a4560;
   line-height: 1.55;
 }
@@ -10565,15 +10565,15 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   padding: 4px 0;
 }
 .pps-ds-band-row--active .pps-ds-band-letter {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 900;
 }
 .pps-ds-band-row--active .pps-ds-band-amt {
-  color: #00a19a;
+  color: #00726c;
 }
 .pps-ds-band-letter {
   width: 32px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #6b6783;
 }
@@ -10593,7 +10593,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 .pps-ds-band-amt {
   width: 64px;
   text-align: right;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
 }
@@ -10605,7 +10605,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 0 8px 8px 0;
   padding: 10px 14px;
   margin-top: 14px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b6783;
   line-height: 1.55;
 }
@@ -10626,7 +10626,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 0;
   background: transparent;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #6b6685;
   padding: 8px 4px;
@@ -10652,7 +10652,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 10px;
 }
 .crime-rate {
-  font-size: 40px;
+  font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1;
@@ -10660,14 +10660,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #231d45;
 }
 .crime-rate-unit {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #6b6685;
   line-height: 1.3;
 }
 .crime-verdict {
   margin: 10px 0 0;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #231d45;
   line-height: 1.45;
@@ -10678,7 +10678,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .crime-raw {
   margin: 6px 0 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #9b97ad;
   font-weight: 500;
 }
@@ -10723,14 +10723,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   justify-content: space-between;
   margin-top: 9px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #9b97ad;
   letter-spacing: 0.03em;
 }
 .crime-scale-key {
   margin-top: 8px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6685;
   font-weight: 500;
   line-height: 1.4;
@@ -10749,14 +10749,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 10px;
 }
 .crime-trend-top > span:first-child {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #9b97ad;
 }
 .crime-chip {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 99px;
@@ -10777,13 +10777,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   justify-content: space-between;
   margin-top: 6px;
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #9b97ad;
   font-weight: 600;
 }
 
 .crime-section-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -10791,7 +10791,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 8px 0 4px;
 }
 .crime-section-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b6685;
   margin: 0 0 12px;
   font-weight: 500;
@@ -10823,12 +10823,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 7px;
 }
 .crime-cat-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #231d45;
 }
 .crime-cat-num {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   flex: none;
@@ -10847,7 +10847,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   transition: width 0.55s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .crime-cat-note {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b6685;
   line-height: 1.5;
   margin: 9px 0 2px;
@@ -10862,7 +10862,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #fff;
   border-radius: 12px;
   font: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -10876,7 +10876,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   padding: 14px;
   background: #f4f3f8;
   border-radius: 14px;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.55;
   color: #6b6685;
   font-weight: 500;
@@ -10887,7 +10887,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 
 .pps-ds-attribution {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #c0bdcc;
   text-align: center;
   margin-top: 16px;
@@ -10906,14 +10906,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: linear-gradient(160deg, #e9f6f5, #f7fbfb);
 }
 .pps-sx-lab {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #75757c;
 }
 .pps-sx-big {
-  font-size: 44px;
+  font-size: 2.75rem;
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.05;
@@ -10922,7 +10922,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-variant-numeric: tabular-nums;
 }
 .pps-sx-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #75757c;
   font-weight: 600;
   margin: 8px 0 0;
@@ -10944,14 +10944,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .pps-sx-eff b {
   display: block;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #231d45;
   font-variant-numeric: tabular-nums;
 }
 .pps-sx-eff span {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: #a2a2a9;
   font-weight: 600;
   display: block;
@@ -10971,7 +10971,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .pps-sx-field label {
   display: block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -10984,7 +10984,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 6px;
 }
 .pps-sx-cur {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
   color: #a2a2a9;
 }
@@ -10992,7 +10992,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 0;
   outline: 0;
   font: inherit;
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #231d45;
@@ -11020,7 +11020,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 0;
   background: transparent;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #75757c;
   padding: 9px 4px;
@@ -11042,14 +11042,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 18px;
 }
 .pps-sx-switch span {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 600;
   color: #231d45;
   display: block;
 }
 .pps-sx-switch small {
   display: block;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #a2a2a9;
   font-weight: 500;
   margin-top: 2px;
@@ -11090,7 +11090,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 16px;
   padding: 14px 16px;
   margin-bottom: 16px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.55;
   font-weight: 600;
 }
@@ -11102,7 +11102,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 18px;
 }
 .pps-sx-stack-lab {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -11131,7 +11131,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #75757c;
 }
@@ -11155,13 +11155,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 12px;
 }
 .pps-sx-brate {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: #231d45;
   font-variant-numeric: tabular-nums;
 }
 .pps-sx-bamt {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 700;
   color: #231d45;
   font-variant-numeric: tabular-nums;
@@ -11183,7 +11183,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   justify-content: space-between;
   margin-top: 7px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #a2a2a9;
   font-weight: 600;
 }
@@ -11192,12 +11192,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   justify-content: space-between;
   align-items: baseline;
   padding: 16px 0 4px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
 }
 .pps-sx-total span:last-child {
-  font-size: 19px;
+  font-size: 1.1875rem;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -11208,7 +11208,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   flex-wrap: wrap;
 }
 .pps-sx-links a {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #00817c;
   text-decoration: none;
@@ -11224,14 +11224,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   text-align: center;
 }
 .pps-sh-big {
-  font-size: 34px;
+  font-size: 2.125rem;
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1;
   color: #231d45;
 }
 .pps-sh-cap {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #75757c;
   font-weight: 600;
   margin: 8px 0 0;
@@ -11254,7 +11254,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .pps-sh-mini b {
   display: block;
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -11262,12 +11262,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-variant-numeric: tabular-nums;
 }
 .pps-sh-mini b small {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #75757c;
 }
 .pps-sh-mini span {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: #a2a2a9;
   font-weight: 600;
   line-height: 1.35;
@@ -11287,7 +11287,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 0;
   background: transparent;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #75757c;
   padding: 8px 4px;
@@ -11307,14 +11307,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 4px 0 2px;
 }
 .pps-sh-sortbar span:first-child {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #a2a2a9;
 }
 .pps-sh-sortnote {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #00817c;
 }
@@ -11339,14 +11339,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   align-items: baseline;
 }
 .pps-sh-name {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 600;
   flex: 1;
   line-height: 1.35;
   color: #231d45;
 }
 .pps-sh-dist {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 700;
   color: #231d45;
   flex: none;
@@ -11373,7 +11373,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   align-items: center;
 }
 .pps-sh-tag {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   padding: 3.5px 9px;
   border-radius: 99px;
@@ -11393,7 +11393,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #4a4468;
 }
 .pps-sh-walk {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #a2a2a9;
 }
@@ -11408,7 +11408,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 7px 14px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   margin: 0;
 }
 .pps-sh-dl dt {
@@ -11422,7 +11422,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .pps-sh-catch {
   margin: 12px 0 0;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.5;
   font-weight: 500;
   color: #75757c;
@@ -11446,14 +11446,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #f3f3f5;
 }
 .pps-fl-lab {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #75757c;
 }
 .pps-fl-big {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -11461,7 +11461,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #231d45;
 }
 .pps-fl-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #75757c;
   font-weight: 600;
   margin: 9px 0 0;
@@ -11472,14 +11472,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-weight: 800;
 }
 .pps-fl-stamp {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #a2a2a9;
   font-weight: 600;
   text-align: center;
   margin: 0 0 18px;
 }
 .pps-fl-sec {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -11487,7 +11487,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 22px 0 3px;
 }
 .pps-fl-secsub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #75757c;
   margin: 0 0 10px;
   font-weight: 500;
@@ -11515,12 +11515,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 12px;
 }
 .pps-fl-rname {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 600;
   color: #231d45;
 }
 .pps-fl-pill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   padding: 4px 10px;
   border-radius: 99px;
@@ -11545,7 +11545,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   box-shadow: inset 0 0 0 1px #e4e4e7;
 }
 .pps-fl-rmean {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #75757c;
   font-weight: 500;
   margin: 7px 0 0;
@@ -11557,7 +11557,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #f3f3f5;
   border-radius: 13px;
   border-left: 3px solid #00a19a;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.55;
   font-weight: 500;
   color: #75757c;
@@ -11588,12 +11588,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: inherit;
 }
 .pps-fl-livehead span {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
 }
 .pps-fl-livehead small {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #a2a2a9;
   font-weight: 600;
 }
@@ -11606,7 +11606,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 12px;
   padding: 9px 0;
   border-top: 1px solid #e4e4e7;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
 }
 .pps-fl-wrow span:first-child {
   font-weight: 600;
@@ -11624,7 +11624,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   padding: 16px;
 }
 .pps-fl-impact h3 {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   margin: 0 0 9px;
   color: #231d45;
@@ -11632,7 +11632,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 .pps-fl-impact ul {
   margin: 0;
   padding-left: 17px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.65;
   font-weight: 500;
   color: #75757c;
@@ -11657,18 +11657,18 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: inherit;
 }
 .pps-fl-lname {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 600;
   color: #231d45;
 }
 .pps-fl-lsub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #a2a2a9;
   font-weight: 600;
   margin-top: 3px;
 }
 .pps-fl-go {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #00817c;
   flex: none;
@@ -11685,14 +11685,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: linear-gradient(160deg, #e9f6f5, #f7fbfb);
 }
 .pps-tr-lab {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #75757c;
 }
 .pps-tr-big {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
@@ -11700,7 +11700,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #231d45;
 }
 .pps-tr-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #75757c;
   font-weight: 600;
   margin: 8px 0 0;
@@ -11722,14 +11722,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .pps-tr-eff b {
   display: block;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #231d45;
   font-variant-numeric: tabular-nums;
 }
 .pps-tr-eff span {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: #a2a2a9;
   font-weight: 600;
   display: block;
@@ -11737,7 +11737,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   line-height: 1.3;
 }
 .pps-tr-sec {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -11745,7 +11745,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 22px 0 3px;
 }
 .pps-tr-secsub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #75757c;
   margin: 0 0 10px;
   font-weight: 500;
@@ -11758,7 +11758,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 12px 0 2px;
 }
 .pps-tr-sortbar span {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -11768,7 +11768,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 0;
   background: none;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
   cursor: pointer;
@@ -11803,14 +11803,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 12px;
 }
 .pps-tr-stname {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 700;
   flex: 1;
   color: #231d45;
   line-height: 1.35;
 }
 .pps-tr-stwalk {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   flex: none;
   font-variant-numeric: tabular-nums;
@@ -11824,7 +11824,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   align-items: center;
 }
 .pps-tr-tag {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   padding: 3.5px 9px;
   border-radius: 99px;
@@ -11845,7 +11845,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #f3f3f5;
   border-radius: 13px;
   border-left: 3px solid #00a19a;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.55;
   font-weight: 500;
   color: #75757c;
@@ -11866,7 +11866,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   flex-wrap: wrap;
 }
 .pps-tr-links a {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #00817c;
   text-decoration: none;
@@ -11883,14 +11883,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: linear-gradient(160deg, #e9f6f5, #f7fbfb);
 }
 .pps-bb-lab {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #75757c;
 }
 .pps-bb-big {
-  font-size: 44px;
+  font-size: 2.75rem;
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1;
@@ -11899,13 +11899,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   font-variant-numeric: tabular-nums;
 }
 .pps-bb-big small {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0;
   color: #75757c;
 }
 .pps-bb-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #75757c;
   font-weight: 600;
   margin: 9px 0 0;
@@ -11945,13 +11945,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   justify-content: space-between;
   margin-top: 9px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #a2a2a9;
   letter-spacing: 0.02em;
 }
 .pps-bb-stamp {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #a2a2a9;
   font-weight: 600;
   text-align: center;
@@ -11971,20 +11971,20 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 12px;
 }
 .pps-bb-nname {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 600;
   color: #231d45;
 }
 .pps-bb-nname em {
   font-style: normal;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #a2a2a9;
   display: block;
   margin-top: 2px;
 }
 .pps-bb-nspeed {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   flex: none;
@@ -12007,14 +12007,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .pps-bb-mob > * {
   padding: 11px 0;
   border-bottom: 1px solid #e4e4e7;
 }
 .pps-bb-mob-h {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -12055,7 +12055,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   padding: 16px;
 }
 .pps-bb-impact h3 {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   margin: 0 0 9px;
   color: #231d45;
@@ -12063,7 +12063,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 .pps-bb-impact ul {
   margin: 0;
   padding-left: 17px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.65;
   font-weight: 500;
   color: #75757c;
@@ -12086,26 +12086,26 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 16px;
 }
 .pps-ds-placeholder-icon {
-  font-size: 36px;
+  font-size: 2.25rem;
   margin-bottom: 10px;
 }
 .pps-ds-placeholder-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 6px;
 }
 .pps-ds-placeholder-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
   line-height: 1.55;
 }
 .pps-ds-placeholder-link {
   display: inline-block;
   margin-top: 12px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   text-decoration: none;
   padding: 8px 14px;
   border: 1.5px solid #e5f4f2;
@@ -12143,7 +12143,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: linear-gradient(135deg, #e6f7f6 0%, #b2e4e1 100%);
 }
 .pps-passport-sheet-empty {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #6b6783;
   line-height: 1.55;
   padding: 0 2px;
@@ -12153,7 +12153,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #b07a1c;
   letter-spacing: 1.2px;
@@ -12166,19 +12166,19 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 2px;
 }
 .pps-passport-sheet-address {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 900;
   color: #231d45;
   letter-spacing: -0.3px;
   margin-top: 4px;
 }
 .pps-passport-sheet-meta {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b4c1a;
   margin-top: 2px;
 }
 .pps-passport-sheet-section-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1.5px;
@@ -12203,7 +12203,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   flex-shrink: 0;
 }
 .pps-psi-text {
@@ -12211,19 +12211,19 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   min-width: 0;
 }
 .pps-psi-name {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
 }
 .pps-psi-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #9c98ad;
   margin-top: 1px;
 }
 .pps-psi-check {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .pps-passport-price-breakdown {
@@ -12236,7 +12236,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #6b6783;
   padding: 4px 0;
@@ -12247,12 +12247,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin: 8px 0;
 }
 .pps-ppb-total {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 900;
   color: #231d45;
 }
 .pps-ppb-note {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #9c98ad;
   margin-top: 8px;
   text-align: center;
@@ -12279,7 +12279,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #fff;
 }
 .pps-explain-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.7);
   letter-spacing: 2px;
@@ -12287,7 +12287,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 6px;
 }
 .pps-explain-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 900;
   color: #fff;
   line-height: 1.25;
@@ -12295,7 +12295,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 8px;
 }
 .pps-explain-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.55;
 }
@@ -12313,7 +12313,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-left-color: #00a19a;
 }
 .pps-explain-callout-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: 1.5px;
@@ -12321,7 +12321,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 6px;
 }
 .pps-explain-callout-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #4a4560;
   line-height: 1.6;
 }
@@ -12338,13 +12338,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   text-align: center;
 }
 .pps-explain-stat-num {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 900;
   color: #231d45;
   letter-spacing: -0.5px;
 }
 .pps-explain-stat-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #9c98ad;
   margin-top: 2px;
   font-weight: 600;
@@ -12360,13 +12360,13 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-left-color: #d4822a;
 }
 .pps-explain-callout-foot {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
   margin-top: 8px;
 }
 .pps-explain-section-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #9c98ad;
   letter-spacing: 1.5px;
@@ -12392,7 +12392,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 50%;
   background: #ececef;
   color: #9c98ad;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -12403,7 +12403,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #fff;
 }
 .pps-explain-step-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #9c98ad;
 }
@@ -12411,7 +12411,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   color: #231d45;
 }
 .pps-explain-step-sub {
-  font-size: 9px;
+  font-size: 0.5625rem;
   color: #9c98ad;
   text-align: center;
   line-height: 1.4;
@@ -12444,7 +12444,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   flex-shrink: 0;
 }
 .pps-explain-checklist-text {
@@ -12452,19 +12452,19 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   min-width: 0;
 }
 .pps-explain-checklist-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
 }
 .pps-explain-checklist-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #9c98ad;
   margin-top: 1px;
 }
 .pps-explain-checklist-tick {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 .pps-explain-progress-row {
   display: flex;
@@ -12473,12 +12473,12 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 6px;
 }
 .pps-explain-progress-pct {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
 }
 .pps-explain-progress-frac {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #9c98ad;
 }
 .pps-explain-progress-track {
@@ -12496,7 +12496,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
 }
 .pps-explain-footer {
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #9c98ad;
   line-height: 1.6;
   padding: 0 8px 16px;
@@ -12515,7 +12515,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   gap: 6px;
 }
 .pps-field-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #6b6783;
   letter-spacing: 0.4px;
@@ -12527,7 +12527,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 10px;
   padding: 11px 13px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   color: #231d45;
   outline: none;
   background: #fff;
@@ -12556,7 +12556,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 999px;
   padding: 7px 13px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #6b6783;
   cursor: pointer;
@@ -12578,7 +12578,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   background: #f9f9fb;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b6783;
   line-height: 1.5;
   display: flex;
@@ -12587,7 +12587,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 10px;
 }
 .pps-form-error {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #c73e36;
   background: #fef2f2;
   border-radius: 8px;
@@ -12618,14 +12618,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   min-width: 0;
 }
 .mkc-head-title {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
   line-height: 1.1;
 }
 .mkc-head-sub {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: #4a5876;
   font-weight: 500;
   line-height: 1.45;
@@ -12636,7 +12636,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   margin-bottom: 18px;
 }
 .mkc-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #008a84;
   letter-spacing: 1.4px;
@@ -12661,7 +12661,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border: 1.5px solid #e7eaee;
   border-radius: 14px;
   font: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -12742,7 +12742,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   outline: 0;
   background: transparent;
   font: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #231d45;
   min-width: 0;
@@ -12779,14 +12779,14 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   min-width: 0;
 }
 .mkc-privacy-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
   line-height: 1.25;
 }
 .mkc-privacy-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: #4a5876;
   margin-top: 4px;
@@ -12806,7 +12806,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 16px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   box-shadow: 0 8px 22px rgba(0, 161, 154, 0.4);
@@ -12833,7 +12833,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 16px;
   color: #231d45;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;

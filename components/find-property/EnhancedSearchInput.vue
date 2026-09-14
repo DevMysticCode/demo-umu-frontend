@@ -12,7 +12,7 @@
         type="text"
         :placeholder="placeholder"
         class="enhanced-search__input"
-      />
+       aria-label="placeholder" />
 
       <!-- Voice Search Button -->
       <button

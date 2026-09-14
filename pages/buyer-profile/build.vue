@@ -110,7 +110,7 @@
               class="bp-doctype-row"
               :class="{ selected: idDocumentType === opt.value }"
               @click="idDocumentType = opt.value"
-            >
+             role="button" tabindex="0" @keydown.enter="idDocumentType = opt.value" @keydown.space.prevent="idDocumentType = opt.value">
               <div class="bp-doctype-ic">
                 <img v-if="opt.icon" :src="opt.icon" alt="" loading="lazy" />
                 <span v-else>{{ opt.emoji }}</span>
@@ -157,7 +157,7 @@
           class="bp-task"
           :class="{ active: kycActive === 'id' && !kycIdDone, done: kycIdDone }"
         >
-          <div class="bp-task-row" @click="setKycActive('id')">
+          <div class="bp-task-row" @click="setKycActive('id')" role="button" tabindex="0" @keydown.enter="setKycActive('id')" @keydown.space.prevent="setKycActive('id')">
             <div class="bp-task-ic bp-task-ic--illus">
               <img
                 src="/op-icons/verify-identity/idCard.png"
@@ -185,7 +185,7 @@
                 class="bp-id-tile"
                 :class="{ captured: kycIdFront }"
                 @click.stop="openKycSheet('id-front')"
-              >
+               role="button" tabindex="0" @keydown.enter="openKycSheet('id-front')" @keydown.space.prevent="openKycSheet('id-front')">
                 <template v-if="!kycIdFront">
                   <div class="bp-id-side">Front</div>
                   <div class="bp-id-iconbig bp-id-iconbig--illus">
@@ -220,7 +220,7 @@
                 class="bp-id-tile"
                 :class="{ captured: kycIdBack }"
                 @click.stop="openKycSheet('id-back')"
-              >
+               role="button" tabindex="0" @keydown.enter="openKycSheet('id-back')" @keydown.space.prevent="openKycSheet('id-back')">
                 <template v-if="!kycIdBack">
                   <div class="bp-id-side">Back</div>
                   <div class="bp-id-iconbig bp-id-iconbig--illus">
@@ -268,7 +268,7 @@
             done: kycSelfieDone,
           }"
         >
-          <div class="bp-task-row" @click="setKycActive('selfie')">
+          <div class="bp-task-row" @click="setKycActive('selfie')" role="button" tabindex="0" @keydown.enter="setKycActive('selfie')" @keydown.space.prevent="setKycActive('selfie')">
             <div class="bp-task-ic bp-task-ic--illus">
               <img
                 src="/op-icons/verify-identity/people.png"
@@ -294,7 +294,7 @@
             v-if="kycActive === 'selfie' && !kycSelfieDone"
             class="bp-task-extras"
           >
-            <div class="bp-selfie-box" @click.stop="runLiveness">
+            <div class="bp-selfie-box" @click.stop="runLiveness" role="button" tabindex="0" @keydown.enter="runLiveness" @keydown.space.prevent="runLiveness">
               <div class="bp-selfie-iconbig">
                 <img
                   src="/op-icons/misc/phoneSelfie.png"
@@ -318,7 +318,7 @@
             done: kycAmlDone,
           }"
         >
-          <div class="bp-task-row" @click="setKycActive('aml')">
+          <div class="bp-task-row" @click="setKycActive('aml')" role="button" tabindex="0" @keydown.enter="setKycActive('aml')" @keydown.space.prevent="setKycActive('aml')">
             <div class="bp-task-ic bp-task-ic--illus">
               <img
                 src="/op-icons/verify-identity/shield.png"
@@ -596,7 +596,7 @@
             class="bp-funds-card"
             :class="{ selected: fundsType === opt.value }"
             @click="selectFunds(opt.value)"
-          >
+           role="button" tabindex="0" @keydown.enter="selectFunds(opt.value)" @keydown.space.prevent="selectFunds(opt.value)">
             <div class="bp-funds-row">
               <div class="bp-funds-ic">
                 <img :src="opt.emoji" alt="" loading="lazy" />
@@ -702,7 +702,7 @@
                 </div>
               </div>
               <!-- Upload zone -->
-              <div v-else class="bp-upload-zone" @click.stop="openFundsSheet">
+              <div v-else class="bp-upload-zone" @click.stop="openFundsSheet" role="button" tabindex="0" @keydown.enter="openFundsSheet" @keydown.space.prevent="openFundsSheet">
                 <div class="bp-upload-ic">
                   <svg
                     viewBox="0 0 24 24"
@@ -738,7 +738,7 @@
             placeholder="350,000"
             class="bp-budget-input"
             inputmode="numeric"
-          />
+           aria-label="350,000" />
         </div>
 
         <button
@@ -1009,7 +1009,7 @@
           v-if="solicitorStatus === 'yes'"
           class="bp-sol-card"
           @click="solicitorStatus = null"
-        >
+         role="button" tabindex="0" @keydown.enter="solicitorStatus = null" @keydown.space.prevent="solicitorStatus = null">
           <div class="bp-sol-ic">🏛️</div>
           <div class="bp-sol-body">
             <div class="bp-sol-name">Solicitor instructed</div>
@@ -1080,7 +1080,7 @@
           class="bp-story-ta"
           rows="6"
           placeholder="Write something that shows sellers who you are and why you'd be the perfect owner of their home…"
-        />
+         aria-label="Write something that shows sellers who you are and why you'd be the perfect owner of their home…" />
 
         <!-- AI draft card -->
         <button
@@ -2081,12 +2081,12 @@ onBeforeUnmount(() => {
   flex: 1;
 }
 .bp-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
 }
 .bp-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #94a3b8;
 }
 
@@ -2137,7 +2137,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   background: #eef0f4;
   color: #94a3b8;
@@ -2149,10 +2149,10 @@ onBeforeUnmount(() => {
 }
 .bp-stepper-dot.done .bp-stepper-num {
   background: #d8f3ef;
-  color: #00a19a;
+  color: #00726c;
 }
 .bp-stepper-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: #94a3b8;
   line-height: 1.25;
@@ -2161,7 +2161,7 @@ onBeforeUnmount(() => {
   color: #231d45;
 }
 .bp-stepper-dot.done .bp-stepper-label {
-  color: #00a19a;
+  color: #00726c;
 }
 
 /* ── Scroll ────────────────────────────────────────────── */
@@ -2183,7 +2183,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   margin: 0 auto 14px;
-  font-size: 30px;
+  font-size: 1.875rem;
   border: 2px solid transparent;
   overflow: hidden;
 }
@@ -2222,19 +2222,19 @@ onBeforeUnmount(() => {
   border-color: #ddd6fe;
 }
 .bp-step-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 6px;
   letter-spacing: -0.02em;
 }
 .bp-optional {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #94a3b8;
 }
 .bp-step-body {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #334155;
   line-height: 1.6;
 }
@@ -2265,7 +2265,7 @@ onBeforeUnmount(() => {
   background: #f0fdfa;
 }
 .bp-option-emoji {
-  font-size: 26px;
+  font-size: 1.625rem;
   flex-shrink: 0;
 }
 /* Illustrated variant used inside .bp-option-card in place of the emoji
@@ -2290,12 +2290,12 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-option-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #1f2024;
 }
 .bp-option-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #94a3b8;
   margin-top: 2px;
 }
@@ -2326,7 +2326,7 @@ onBeforeUnmount(() => {
 
 /* ── Field label ───────────────────────────────────────── */
 .bp-field-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #334155;
   margin-bottom: 8px;
@@ -2346,7 +2346,7 @@ onBeforeUnmount(() => {
   margin-bottom: 20px;
 }
 .bp-budget-sign {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #334155;
 }
@@ -2354,7 +2354,7 @@ onBeforeUnmount(() => {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1f2024;
   font-family: inherit;
@@ -2379,24 +2379,24 @@ onBeforeUnmount(() => {
   cursor: pointer;
   transition: all 0.15s;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #1f2024;
 }
 .bp-tile-small {
   padding: 12px 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .bp-tile.selected {
   border-color: #00a19a;
   background: #f0fdfa;
 }
 .bp-tile-emoji {
-  font-size: 20px;
+  font-size: 1.25rem;
   margin-bottom: 4px;
 }
 .bp-tile-label {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
 }
 
 /* ── Prompts & textarea ────────────────────────────────── */
@@ -2411,9 +2411,9 @@ onBeforeUnmount(() => {
   border: 1px solid #99f6e4;
   border-radius: 999px;
   padding: 5px 12px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
 }
 .bp-textarea {
@@ -2421,7 +2421,7 @@ onBeforeUnmount(() => {
   padding: 14px;
   border: 2px solid #e5e7eb;
   border-radius: 14px;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   resize: none;
   outline: none;
@@ -2443,7 +2443,7 @@ onBeforeUnmount(() => {
   border-radius: 14px;
   background: #00a19a;
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   font-family: inherit;
@@ -2464,7 +2464,7 @@ onBeforeUnmount(() => {
   border-radius: 14px;
   background: #00a19a;
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   font-family: inherit;
@@ -2482,7 +2482,7 @@ onBeforeUnmount(() => {
   border-radius: 14px;
   background: #f2faf8;
   color: #00857f;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   cursor: pointer;
   font-family: inherit;
@@ -2503,13 +2503,13 @@ onBeforeUnmount(() => {
   cursor: progress;
 }
 .bp-ai-err {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #c73e36;
   margin: -4px 0 8px;
 }
 .bp-upload-error {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #c73e36;
   margin-top: 8px;
@@ -2522,7 +2522,7 @@ onBeforeUnmount(() => {
   border-radius: 14px;
   background: transparent;
   color: #334155;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -2538,7 +2538,7 @@ onBeforeUnmount(() => {
   border-radius: 11px;
   padding: 9px 12px;
   margin-bottom: 18px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a5568;
   line-height: 1.4;
 }
@@ -2599,7 +2599,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #00a19a;
+  color: #00726c;
   transition: all 0.18s;
 }
 .bp-task.done .bp-task-ic {
@@ -2632,18 +2632,18 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-task-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #231d45;
   letter-spacing: -0.01em;
 }
 .bp-task-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   margin-top: 2px;
 }
 .bp-task-status {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   padding: 4px 9px;
   border-radius: 999px;
@@ -2664,7 +2664,7 @@ onBeforeUnmount(() => {
 }
 .bp-status-running {
   background: #f1f9f4;
-  color: #00a19a;
+  color: #00726c;
   border: 1px solid #e2f1ea;
 }
 .bp-task-extras {
@@ -2701,11 +2701,11 @@ onBeforeUnmount(() => {
   padding: 10px 11px;
 }
 .bp-id-side {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-bottom: 6px;
 }
 .bp-id-iconbig {
@@ -2743,7 +2743,7 @@ onBeforeUnmount(() => {
   display: block;
 }
 .bp-id-prompt {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #231d45;
 }
@@ -2752,12 +2752,12 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-id-name {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: #231d45;
 }
 .bp-id-status {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #008a84;
   font-weight: 700;
   margin-top: 1px;
@@ -2770,7 +2770,7 @@ onBeforeUnmount(() => {
   justify-content: center;
 }
 .bp-id-pill {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   background: #fff;
   color: #4a5568;
@@ -2802,7 +2802,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   margin: 0 auto 10px;
-  font-size: 26px;
+  font-size: 1.625rem;
 }
 .bp-selfie-iconbig img {
   width: 34px;
@@ -2811,12 +2811,12 @@ onBeforeUnmount(() => {
   display: block;
 }
 .bp-selfie-prompt {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
 }
 .bp-selfie-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #94a3b8;
   margin-top: 3px;
 }
@@ -2833,7 +2833,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 9px;
   padding: 6px 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #4a5568;
   border-bottom: 1px solid #eef0f6;
 }
@@ -2858,7 +2858,7 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
   background: #eef0f6;
   color: #94a3b8;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   transition: all 0.4s;
 }
@@ -2906,13 +2906,13 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-kyc-pending-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #00514d;
   letter-spacing: -0.02em;
 }
 .bp-kyc-pending-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a4566;
   margin-top: 2px;
   line-height: 1.4;
@@ -2924,7 +2924,7 @@ onBeforeUnmount(() => {
   color: #00514d;
   border-radius: 999px;
   padding: 7px 12px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
@@ -2970,13 +2970,13 @@ onBeforeUnmount(() => {
   color: #fff;
   display: grid;
   place-items: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   flex-shrink: 0;
 }
 .bp-kyc-err-body {
   flex: 1;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #882019;
   line-height: 1.4;
 }
@@ -2987,7 +2987,7 @@ onBeforeUnmount(() => {
   color: #c73e36;
   border-radius: 999px;
   padding: 6px 12px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
@@ -3011,17 +3011,17 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   margin: 0 auto 8px;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
 }
 .bp-kyc-success-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #008a84;
   letter-spacing: -0.01em;
 }
 .bp-kyc-success-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #008a84;
   margin-top: 3px;
 }
@@ -3059,7 +3059,7 @@ onBeforeUnmount(() => {
   background: rgba(255, 255, 255, 0.06);
   display: grid;
   place-items: center;
-  font-size: 54px;
+  font-size: 3.375rem;
 }
 .bp-liveness-face img {
   width: 70px;
@@ -3068,23 +3068,23 @@ onBeforeUnmount(() => {
   display: block;
 }
 .bp-liveness-h1 {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   margin-bottom: 6px;
 }
 .bp-liveness-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: rgba(255, 255, 255, 0.65);
   max-width: 240px;
   line-height: 1.5;
 }
 .bp-liveness-step {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #00a19a;
+  color: #00726c;
   margin-top: 18px;
 }
 
@@ -3114,7 +3114,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #00a19a;
+  color: #00726c;
 }
 .bp-funds-ic img {
   width: 100%;
@@ -3127,18 +3127,18 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-funds-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #231d45;
   letter-spacing: -0.01em;
 }
 .bp-funds-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   margin-top: 2px;
 }
 .bp-funds-card.selected .bp-funds-meta {
-  color: #00a19a;
+  color: #00726c;
 }
 .bp-funds-radio {
   width: 22px;
@@ -3194,12 +3194,12 @@ onBeforeUnmount(() => {
   height: 18px;
 }
 .bp-upload-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #231d45;
 }
 .bp-upload-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #94a3b8;
   margin-top: 3px;
 }
@@ -3232,7 +3232,7 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-uploaded-name {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #231d45;
   overflow: hidden;
@@ -3240,7 +3240,7 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 .bp-uploaded-meta {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: #94a3b8;
   margin-top: 2px;
   display: flex;
@@ -3270,7 +3270,7 @@ onBeforeUnmount(() => {
 }
 .bp-uploaded-btn:hover {
   border-color: #e2f1ea;
-  color: #00a19a;
+  color: #00726c;
 }
 .bp-uploaded-btn.remove:hover {
   border-color: #fecaca;
@@ -3301,7 +3301,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #00a19a;
+  color: #00726c;
 }
 .bp-up-ic svg {
   width: 14px;
@@ -3318,12 +3318,12 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-up-name {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #231d45;
 }
 .bp-up-meta {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: #94a3b8;
   margin-top: 1px;
 }
@@ -3371,14 +3371,14 @@ onBeforeUnmount(() => {
   margin: 0 auto 14px;
 }
 .bp-sheet-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: -0.01em;
   margin-bottom: 4px;
   color: #231d45;
 }
 .bp-sheet-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #4a5568;
   margin-bottom: 16px;
   line-height: 1.45;
@@ -3411,7 +3411,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #00a19a;
+  color: #00726c;
 }
 .bp-method-ic svg {
   width: 18px;
@@ -3422,19 +3422,19 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-method-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
   letter-spacing: -0.01em;
 }
 .bp-method-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #94a3b8;
   margin-top: 1px;
 }
 .bp-method-chev {
   color: #94a3b8;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 .bp-cancel {
@@ -3443,7 +3443,7 @@ onBeforeUnmount(() => {
   border: none;
   padding: 14px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #4a5568;
   cursor: pointer;
@@ -3484,7 +3484,7 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.4px;
   color: #007e78;
@@ -3516,7 +3516,7 @@ onBeforeUnmount(() => {
   gap: 6px;
 }
 .bp-header-title3 {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
@@ -3576,19 +3576,19 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
 }
 .bp-id-panel-title {
-  font-size: 15.5px;
+  font-size: 0.9688rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
   margin-bottom: 4px;
 }
 .bp-id-panel-body {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #6b6783;
   line-height: 1.5;
 }
 .bp-id-panel-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -3622,7 +3622,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 .bp-doctype-ic img {
   width: 100%;
@@ -3634,17 +3634,17 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-doctype-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #231d45;
 }
 .bp-doctype-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #94a3b8;
   margin-top: 1px;
 }
 .bp-doctype-rec {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   letter-spacing: 0.6px;
   color: #007e78;
@@ -3711,7 +3711,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 1.625rem;
   margin: 0 0 12px;
   border: none;
   box-shadow: none;
@@ -3729,7 +3729,7 @@ onBeforeUnmount(() => {
   border: 1px solid #e5f4f2;
 }
 .bp-step-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
@@ -3737,12 +3737,12 @@ onBeforeUnmount(() => {
   margin-bottom: 6px;
 }
 .bp-step-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
   line-height: 1.5;
 }
 .bp-optional {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #9c98ad;
   letter-spacing: 0.3px;
@@ -3759,7 +3759,7 @@ onBeforeUnmount(() => {
   border-radius: 10px;
   padding: 10px 14px;
   margin: 0 0 16px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #4a4566;
   line-height: 1.4;
@@ -3774,7 +3774,7 @@ onBeforeUnmount(() => {
   background: #231d45;
   color: white;
   border-radius: 6px;
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   display: flex;
@@ -3807,17 +3807,17 @@ onBeforeUnmount(() => {
   box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.1);
 }
 .bp-option-emoji {
-  font-size: 20px;
+  font-size: 1.25rem;
   width: 36px;
   text-align: center;
 }
 .bp-option-title {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #231d45;
 }
 .bp-option-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
 }
 .bp-option-check {
@@ -3893,18 +3893,18 @@ onBeforeUnmount(() => {
   box-shadow: 0 0 0 3px rgba(0, 161, 154, 0.1);
 }
 .bp-tile-emoji {
-  font-size: 22px;
+  font-size: 1.375rem;
   margin-bottom: 4px;
 }
 .bp-tile-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
 }
 
 /* Sub-heading "Have you instructed…", "When are you looking…" */
 .bp-field-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 1px;
   color: #6b6783;
@@ -3920,7 +3920,7 @@ onBeforeUnmount(() => {
   border: none;
   border-radius: 14px;
   padding: 16px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   font-family: inherit;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.35);
@@ -3983,7 +3983,7 @@ onBeforeUnmount(() => {
   background: #fafafa;
   padding: 14px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   color: #231d45;
   line-height: 1.55;
   width: 100%;
@@ -3998,7 +3998,7 @@ onBeforeUnmount(() => {
   gap: 6px;
 }
 .bp-prompt {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   background: #f2faf8;
   color: #007e78;
@@ -4045,12 +4045,12 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 12px;
   right: 14px;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 900;
   opacity: 0.5;
 }
 .bp-tier-card.selected.verified .bp-tier-corner {
-  color: #00a19a;
+  color: #00726c;
   opacity: 1;
 }
 .bp-tier-card.selected.premium .bp-tier-corner {
@@ -4059,7 +4059,7 @@ onBeforeUnmount(() => {
 }
 .bp-tier-badge {
   display: inline-block;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 900;
   letter-spacing: 1.4px;
   padding: 3px 8px;
@@ -4075,13 +4075,13 @@ onBeforeUnmount(() => {
   color: #fff;
 }
 .bp-tier-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 2px;
 }
 .bp-tier-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b6783;
   line-height: 1.45;
@@ -4094,7 +4094,7 @@ onBeforeUnmount(() => {
   margin-bottom: 10px;
 }
 .bp-tier-price {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 900;
   color: #231d45;
   letter-spacing: -0.5px;
@@ -4103,7 +4103,7 @@ onBeforeUnmount(() => {
   color: #d4822a;
 }
 .bp-tier-paid-pill {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   background: #00a19a;
@@ -4120,7 +4120,7 @@ onBeforeUnmount(() => {
   gap: 4px;
 }
 .bp-tier-features li {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #4a4566;
   display: flex;
   gap: 6px;
@@ -4128,7 +4128,7 @@ onBeforeUnmount(() => {
   line-height: 1.4;
 }
 .bp-tier-tick {
-  color: #00a19a;
+  color: #00726c;
   font-weight: 900;
   flex-shrink: 0;
 }
@@ -4146,7 +4146,7 @@ onBeforeUnmount(() => {
   display: inline-block;
   background: #00a19a;
   color: #fff;
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 900;
   letter-spacing: 1px;
   padding: 3px 7px;
@@ -4155,7 +4155,7 @@ onBeforeUnmount(() => {
   vertical-align: middle;
 }
 .bp-funds-intro {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b6783;
   line-height: 1.5;
   margin: -4px 0 12px;
@@ -4168,7 +4168,7 @@ onBeforeUnmount(() => {
 
 /* Recommended pill (used in ID type picker) */
 .bp-rec-pill {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
   font-weight: 800;
   letter-spacing: 1px;
   background: #fef3c7;
@@ -4205,7 +4205,7 @@ onBeforeUnmount(() => {
   margin-bottom: 4px;
 }
 .bp-best-pill {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   background: #f2faf8;
@@ -4232,17 +4232,17 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 0.9375rem;
   flex-shrink: 0;
 }
 .bp-amber-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #231d45;
   margin-bottom: 4px;
 }
 .bp-amber-body {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b6783;
   line-height: 1.4;
 }
@@ -4252,7 +4252,7 @@ onBeforeUnmount(() => {
   display: none;
 }
 .bp-sec-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.5px;
   color: #6b6783;
@@ -4275,7 +4275,7 @@ onBeforeUnmount(() => {
   border-radius: 100px;
   padding: 9px 14px;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -4317,7 +4317,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
 }
 .bp-sol-body {
@@ -4325,17 +4325,17 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-sol-name {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   color: #231d45;
 }
 .bp-sol-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
   margin-top: 2px;
 }
 .bp-sol-pill {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   background: #e8f5ee;
@@ -4351,7 +4351,7 @@ onBeforeUnmount(() => {
   background: #fafafa;
   border: 1px solid #ececef;
   border-radius: 10px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6783;
   line-height: 1.45;
 }
@@ -4362,7 +4362,7 @@ onBeforeUnmount(() => {
   border: 1px solid #fbefd9 !important;
 }
 .bp-optional {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #c4821a;
   letter-spacing: -0.1px;
@@ -4380,7 +4380,7 @@ onBeforeUnmount(() => {
   border-radius: 100px;
   padding: 7px 12px;
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
@@ -4396,7 +4396,7 @@ onBeforeUnmount(() => {
   border-radius: 14px;
   padding: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #231d45;
   line-height: 1.55;
   resize: vertical;
@@ -4432,7 +4432,7 @@ onBeforeUnmount(() => {
 .bp-ai-pill {
   background: #00a19a;
   color: #fff;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   padding: 4px 8px;
   border-radius: 100px;
@@ -4442,19 +4442,19 @@ onBeforeUnmount(() => {
 .bp-ai-text {
   flex: 1;
   min-width: 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #231d45;
   line-height: 1.4;
 }
 .bp-ai-try {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #007e78;
   white-space: nowrap;
 }
 .bp-ai-err {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #c73e36;
   margin: 8px 0 0;
@@ -4465,7 +4465,7 @@ onBeforeUnmount(() => {
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b6783;
   padding: 12px;
@@ -4485,7 +4485,7 @@ onBeforeUnmount(() => {
   padding: 12px 0 16px;
 }
 .bp-complete-emoji {
-  font-size: 52px;
+  font-size: 3.25rem;
   line-height: 1;
   margin-bottom: 12px;
   display: inline-block;
@@ -4511,7 +4511,7 @@ onBeforeUnmount(() => {
   }
 }
 .bp-complete-title {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
@@ -4519,7 +4519,7 @@ onBeforeUnmount(() => {
   animation: bp-fadeSlideUp 0.4s 0.2s both;
 }
 .bp-complete-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b6783;
   animation: bp-fadeSlideUp 0.4s 0.25s both;
 }
@@ -4542,7 +4542,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
 }
 .bp-xp-body {
@@ -4550,17 +4550,17 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .bp-xp-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
 }
 .bp-xp-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b6783;
   margin-top: 1px;
 }
 .bp-xp-points {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #c4821a;
   flex-shrink: 0;
@@ -4606,14 +4606,14 @@ onBeforeUnmount(() => {
   margin-bottom: 12px;
 }
 .bp-complete-card-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 1.8px;
   text-transform: uppercase;
   opacity: 0.7;
 }
 .bp-complete-card-strength {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   background: rgba(255, 255, 255, 0.2);
   color: white;
@@ -4622,14 +4622,14 @@ onBeforeUnmount(() => {
   letter-spacing: 0.4px;
 }
 .bp-complete-tagline {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   font-style: italic;
   line-height: 1.25;
   margin-bottom: 12px;
 }
 .bp-complete-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   margin-bottom: 12px;
 }
@@ -4640,7 +4640,7 @@ onBeforeUnmount(() => {
   margin-bottom: 16px;
 }
 .bp-complete-pill {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 100px;
@@ -4654,7 +4654,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
 }
 .bp-complete-foot-text {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   opacity: 0.75;
 }
@@ -4688,7 +4688,7 @@ onBeforeUnmount(() => {
   border-radius: 14px;
   padding: 16px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
 }
@@ -4708,7 +4708,7 @@ onBeforeUnmount(() => {
   background: #fff;
 }
 .bp-budget-sign {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   margin-right: 4px;
@@ -4720,7 +4720,7 @@ onBeforeUnmount(() => {
   background: transparent;
   padding: 14px 0;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #231d45;
 }

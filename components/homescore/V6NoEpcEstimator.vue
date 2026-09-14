@@ -628,7 +628,7 @@ const splitRows = computed(() =>
   border-radius: 50%;
   background: #fff;
   border: none;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--ink);
   box-shadow: 0 2px 8px rgba(46, 42, 80, 0.08);
   cursor: pointer;
@@ -643,13 +643,13 @@ const splitRows = computed(() =>
   flex: 1;
 }
 .topbar-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--ink);
   margin: 0;
 }
 .topbar-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--grey);
   font-weight: 500;
   margin-top: 2px;
@@ -673,7 +673,7 @@ const splitRows = computed(() =>
 .progress-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--grey);
   margin-top: 7px;
   font-weight: 600;
@@ -686,7 +686,7 @@ const splitRows = computed(() =>
 .live-pill span {
   background: var(--teal-light);
   color: var(--teal-dark);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   padding: 8px 16px;
   border-radius: 99px;
@@ -696,7 +696,7 @@ const splitRows = computed(() =>
   padding: 0 20px;
 }
 .section-chip {
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   font-weight: 700;
   color: var(--grey);
@@ -704,14 +704,14 @@ const splitRows = computed(() =>
   margin-bottom: 8px;
 }
 .q-title {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 800;
   line-height: 1.3;
   margin-bottom: 4px;
   color: var(--ink);
 }
 .q-sub {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--grey);
   margin-bottom: 16px;
 }
@@ -725,7 +725,7 @@ const splitRows = computed(() =>
   border-radius: 18px;
   padding: 15px 16px;
   margin-bottom: 10px;
-  font-size: 15.5px;
+  font-size: 0.9688rem;
   font-weight: 600;
   color: var(--ink);
   cursor: pointer;
@@ -740,7 +740,7 @@ const splitRows = computed(() =>
   background: var(--teal-light);
 }
 .opt .em {
-  font-size: 20px;
+  font-size: 1.25rem;
   flex: none;
 }
 .opt.unsure {
@@ -760,7 +760,7 @@ const splitRows = computed(() =>
   border: none;
   border-radius: 999px;
   padding: 16px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   text-align: center;
@@ -798,19 +798,19 @@ const splitRows = computed(() =>
   margin-bottom: 16px;
 }
 .brandline {
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: 0.18em;
   font-weight: 800;
   color: var(--teal-dark);
 }
-.brandline sup { font-size: 8px; }
+.brandline sup { font-size: 0.5rem; }
 .estchip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   background: var(--navy);
   color: #fff;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   padding: 5px 11px;
@@ -837,25 +837,25 @@ const splitRows = computed(() =>
   justify-content: center;
 }
 .ring-val b {
-  font-size: 33px;
+  font-size: 2.0625rem;
   font-weight: 800;
   line-height: 1;
 }
 .ring-val span {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--grey);
   font-weight: 600;
   margin-top: 2px;
 }
 .result-side { flex: 1; }
 .result-title {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 800;
   margin-bottom: 6px;
   line-height: 1.2;
 }
 .result-body {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #5b5f75;
   line-height: 1.5;
 }
@@ -882,7 +882,7 @@ const splitRows = computed(() =>
 .range-labels {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--grey);
   font-weight: 700;
   margin-top: 6px;
@@ -894,7 +894,7 @@ const splitRows = computed(() =>
   gap: 10px;
   margin-top: 16px;
 }
-.conf-lbl { font-size: 13px; font-weight: 700; }
+.conf-lbl { font-size: 0.8125rem; font-weight: 700; }
 .conf-track {
   flex: 1;
   height: 8px;
@@ -909,7 +909,7 @@ const splitRows = computed(() =>
   transition: width 0.5s ease;
 }
 .conf-pct {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--navy);
 }
@@ -923,7 +923,7 @@ const splitRows = computed(() =>
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--grey);
   line-height: 1.45;
 }
@@ -933,7 +933,7 @@ const splitRows = computed(() =>
   height: 18px;
   border-radius: 50%;
   border: 1.5px solid var(--grey);
-  font-size: 11px;
+  font-size: 0.6875rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -956,7 +956,7 @@ const splitRows = computed(() =>
   text-align: center;
 }
 .tile .lbl {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   letter-spacing: 0.1em;
   font-weight: 700;
   color: var(--grey);
@@ -964,16 +964,16 @@ const splitRows = computed(() =>
   margin-bottom: 6px;
 }
 .tile .big {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
 }
 .tile .big small {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--grey);
 }
 .tile .cap {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--teal-dark);
   font-weight: 600;
   margin-top: 5px;
@@ -987,14 +987,14 @@ const splitRows = computed(() =>
   margin: 20px 24px 12px;
 }
 .sect-head .t {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   letter-spacing: 0.14em;
   font-weight: 700;
   color: #5b5f75;
   text-transform: uppercase;
 }
 .sect-head .a {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--teal-dark);
 }
@@ -1016,13 +1016,13 @@ const splitRows = computed(() =>
   border-top: 1px solid #f0f1f6;
 }
 .split-row .em {
-  font-size: 19px;
+  font-size: 1.1875rem;
   width: 26px;
   text-align: center;
 }
 .split-row .name {
   width: 86px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
 }
 .split-track {
@@ -1040,11 +1040,11 @@ const splitRows = computed(() =>
 .split-pts {
   width: 52px;
   text-align: right;
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
 }
 .split-est {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   color: var(--grey);
   font-weight: 600;
   display: block;
@@ -1060,21 +1060,21 @@ const splitRows = computed(() =>
   border-top: 1px solid #f0f1f6;
 }
 .step .em {
-  font-size: 19px;
+  font-size: 1.1875rem;
   width: 26px;
   text-align: center;
 }
 .step .txt { flex: 1; }
 .step .txt b {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   display: block;
 }
 .step .txt span {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--grey);
 }
 .step .pts {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--teal-dark);
   background: var(--teal-light);

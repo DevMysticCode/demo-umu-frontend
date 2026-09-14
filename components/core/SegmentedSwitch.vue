@@ -6,7 +6,7 @@
       class="switch-btn"
       :class="{ active: modelValue === option.value }"
       @click="selectOption(option.value)"
-    >
+     role="button" tabindex="0" @keydown.enter="selectOption(option.value)" @keydown.space.prevent="selectOption(option.value)">
       <span class="btn-icon" v-if="option.icon">
         <OPIcon :name="option.icon" class="w-[16px] h-[16px]" />
       </span>
@@ -56,7 +56,7 @@ const selectOption = (value) => emit('update:modelValue', value)
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   transition: all 0.25s ease;
   color: #00a89a;

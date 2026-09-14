@@ -1429,7 +1429,7 @@ const handleContinue = () => {
   backdrop-filter: blur(6px);
   border: 1px solid rgba(15, 118, 110, 0.15);
   color: #0f766e;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1452,7 +1452,7 @@ const handleContinue = () => {
   z-index: 1;
 }
 .qhero-title {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -1463,7 +1463,7 @@ const handleContinue = () => {
 }
 .qhero-sub {
   color: #115e59;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.4;
   margin: 0 0 16px;
@@ -1487,7 +1487,7 @@ const handleContinue = () => {
   border: 1px solid rgba(15, 118, 110, 0.2);
   background: rgba(255, 255, 255, 0.85);
   color: #0f766e;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
@@ -1519,7 +1519,7 @@ const handleContinue = () => {
 .qring span {
   grid-area: 1 / 1;
   z-index: 1;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #0a0f2c;
   line-height: 1;
@@ -1527,14 +1527,14 @@ const handleContinue = () => {
 .qmeta-text small {
   display: block;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: #115e59;
   margin-bottom: 4px;
 }
 .qmeta-text strong {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.2;
   color: #0a0f2c;
@@ -1554,7 +1554,7 @@ const handleContinue = () => {
   gap: 8px;
   padding: 13px 14px;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
@@ -1584,7 +1584,7 @@ const handleContinue = () => {
 }
 .qheader-h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.1;
   color: #0a0f2c;
@@ -1592,7 +1592,7 @@ const handleContinue = () => {
 }
 .qheader-sub {
   margin-top: 4px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #64748b;
 }
@@ -1609,7 +1609,7 @@ const handleContinue = () => {
   padding: 8px 14px;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   font-family: inherit;
   transition: transform 0.12s ease;
@@ -1674,7 +1674,7 @@ const handleContinue = () => {
 }
 .qtip-body strong {
   display: block;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   line-height: 1.2;
   color: #00756f;
@@ -1682,7 +1682,7 @@ const handleContinue = () => {
 }
 .qtip-body p {
   margin: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.5;
   color: #115e59;
@@ -1699,8 +1699,8 @@ const handleContinue = () => {
 .back-btn {
   background: none;
   border: none;
-  font-size: 16px;
-  color: #00a19a;
+  font-size: 1rem;
+  color: #00726c;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1710,7 +1710,7 @@ const handleContinue = () => {
 }
 
 .back-arrow {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .menu-btn {
@@ -1719,7 +1719,7 @@ const handleContinue = () => {
   border-radius: 50%;
   background: #5a54d6;
   border: none;
-  font-size: 20px;
+  font-size: 1.25rem;
   color: white;
   cursor: pointer;
 }
@@ -1735,12 +1735,12 @@ const handleContinue = () => {
 }
 
 .task-icon-large {
-  font-size: 100px;
+  font-size: 6.25rem;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
 }
 
 .task-title {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   text-align: center;
   margin: 0 0 8px;
@@ -1748,7 +1748,7 @@ const handleContinue = () => {
 }
 
 .task-subtitle {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   text-align: center;
   margin-bottom: 24px;
@@ -1779,7 +1779,7 @@ const handleContinue = () => {
 }
 
 .progress-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #3c3c4399;
   font-weight: 400;
   letter-spacing: 0.06px;
@@ -1787,8 +1787,8 @@ const handleContinue = () => {
 }
 
 .progress-remaining {
-  font-size: 11px;
-  color: #00a19a;
+  font-size: 0.6875rem;
+  color: #00726c;
   font-weight: 590;
 }
 
@@ -1806,7 +1806,7 @@ const handleContinue = () => {
   border: 2px solid #e0e0e0;
   background: white;
   border-radius: 50px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -1814,7 +1814,7 @@ const handleContinue = () => {
   justify-content: center;
   gap: 8px;
   transition: all 0.2s;
-  color: #00a19a;
+  color: #00726c;
   max-width: fit-content;
 }
 
@@ -1830,7 +1830,7 @@ const handleContinue = () => {
 }
 
 .play-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .question-section {
@@ -1857,8 +1857,8 @@ const handleContinue = () => {
   background: white;
   border: 0.33px solid #3c3c432e;
   border-radius: 40px;
-  color: #00a19a;
-  font-size: 13px;
+  color: #00726c;
+  font-size: 0.8125rem;
   font-weight: 400;
   cursor: pointer;
   padding: 4px 8px;
@@ -1870,14 +1870,14 @@ const handleContinue = () => {
 }
 
 .question-number {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 590;
   margin: 0;
   color: #000000;
 }
 
 .total {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #999;
   font-weight: 500;
 }
@@ -1886,8 +1886,8 @@ const handleContinue = () => {
   background: white;
   border: 0.33px solid #3c3c432e;
   border-radius: 40px;
-  color: #00a19a;
-  font-size: 13px;
+  color: #00726c;
+  font-size: 0.8125rem;
   font-weight: 400;
   cursor: pointer;
   padding: 4px 8px;
@@ -1903,14 +1903,14 @@ const handleContinue = () => {
   color: #000000;
   margin: 0;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
 }
 
 .question-description {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 20px;
   letter-spacing: -0.23px;
   color: #3c3c4399;
@@ -1926,7 +1926,7 @@ const handleContinue = () => {
 }
 
 .help-icon {
-  font-size: 12px;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 
@@ -1938,9 +1938,9 @@ const handleContinue = () => {
   display: flex;
   align-items: center;
   margin: 0px 0 8px -5px;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 590;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -1949,7 +1949,7 @@ const handleContinue = () => {
   color: #3c3c4399;
   margin: 0;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 18px;
   letter-spacing: -0.08px;
 }
@@ -1980,7 +1980,7 @@ const handleContinue = () => {
   color: white;
   border: none;
   border-radius: 12px;
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 22px;
   letter-spacing: -0.43px;
   font-weight: 400;
@@ -1994,14 +1994,14 @@ const handleContinue = () => {
 }
 
 .submit-btn:disabled {
-  color: #00a19a;
+  color: #00726c;
   background: #00a19a1a;
   cursor: not-allowed;
 }
 
 .typing-cursor {
   margin-left: 2px;
-  color: #00a19a;
+  color: #00726c;
   animation: blink 1s infinite;
 }
 
@@ -2036,14 +2036,14 @@ const handleContinue = () => {
 }
 
 .property-photos-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a2e2b;
   margin: 0 0 6px;
 }
 
 .property-photos-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b7c78;
   margin: 0 0 16px;
   line-height: 1.5;
@@ -2098,7 +2098,7 @@ const handleContinue = () => {
   background: #00a19a;
   color: #fff;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   user-select: none;

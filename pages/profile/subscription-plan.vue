@@ -115,7 +115,7 @@
                 Renews on Sep 15, 2024
               </p>
               <p
-                class="text-[11px]-regular leading-[13px] tracking-[-0.06px] text-brand-aqua font-sf-pro"
+                class="text-[11px]-regular leading-[13px] tracking-[-0.06px] text-brand-aqua-text font-sf-pro"
               >
                 Member since March 2024
               </p>
@@ -144,13 +144,13 @@
         <div class="mt-3 grid grid-cols-2 gap-2.5">
           <button
             type="button"
-            class="h-[50px] rounded-2xl bg-[#ffffff] border-[0.33px] border-[#3C3C43] opacity-80 text-[17px]-regular leading-[22px] font-sf-pro tracking-[-0.43px] text-brand-aqua"
+            class="h-[50px] rounded-2xl bg-[#ffffff] border-[0.33px] border-[#3C3C43] opacity-80 text-[17px]-regular leading-[22px] font-sf-pro tracking-[-0.43px] text-brand-aqua-text"
           >
             Benefits
           </button>
           <button
             type="button"
-            class="h-[50px] rounded-2xl bg-[#ffffff] border-[0.33px] border-[#3C3C43] opacity-80 text-[17px]-regular leading-[22px] font-sf-pro tracking-[-0.43px] text-brand-aqua"
+            class="h-[50px] rounded-2xl bg-[#ffffff] border-[0.33px] border-[#3C3C43] opacity-80 text-[17px]-regular leading-[22px] font-sf-pro tracking-[-0.43px] text-brand-aqua-text"
           >
             Manage
           </button>
@@ -175,8 +175,8 @@
                 class="inline-flex h-6 px-3 rounded-full items-center text-[11px]-regular font-sf-pro leading-[13px]"
                 :class="
                   method.primary
-                    ? 'bg-brand-aqua/15 text-brand-aqua'
-                    : 'bg-brand-aqua/15 text-brand-aqua'
+                    ? 'bg-brand-aqua/15 text-brand-aqua-text'
+                    : 'bg-brand-aqua/15 text-brand-aqua-text'
                 "
               >
                 {{ method.primary ? "Primary" : "Secondary" }}
@@ -209,7 +209,7 @@
           class="mt-2.5 bg-[#f8f8f8] border border-[#e7e8eb] rounded-2xl p-4"
         >
           <h3
-            class="text-[15px]-emphasized leading-[20px] tracking-[-0.23px] font-semibold text-brand-aqua"
+            class="text-[15px]-emphasized leading-[20px] tracking-[-0.23px] font-semibold text-brand-aqua-text"
           >
             Add New Payment Method
           </h3>
@@ -273,7 +273,7 @@
               <div class="min-w-0">
                 <span
                   v-if="transaction.badge"
-                  class="inline-flex h-6 px-3 rounded-full items-center text-[11px]-regular leading-[13px] bg-brand-aqua/15 text-brand-aqua"
+                  class="inline-flex h-6 px-3 rounded-full items-center text-[11px]-regular leading-[13px] bg-brand-aqua/15 text-brand-aqua-text"
                 >
                   {{ transaction.badge }}
                 </span>
@@ -288,7 +288,7 @@
                   {{ transaction.description }}
                 </p>
                 <p
-                  class="text-[11px]-regular font-sf-pro leading-[13px] text-brand-aqua"
+                  class="text-[11px]-regular font-sf-pro leading-[13px] text-brand-aqua-text"
                 >
                   £{{ transaction.amount }} · {{ transaction.date }}
                 </p>
@@ -326,7 +326,7 @@
               Kingston-upon-Thames Surrey KN51 78J
             </p>
             <p
-              class="text-[11px]-regular leading-[13px] tracking-[-0.06px] font-sf-pro text-brand-aqua"
+              class="text-[11px]-regular leading-[13px] tracking-[-0.06px] font-sf-pro text-brand-aqua-text"
             >
               Added: August 3, 2023
             </p>
@@ -340,7 +340,7 @@
 
         <button
           type="button"
-          class="mt-2.5 w-full h-[52px] rounded-2xl border border-dashed border-brand-aqua bg-brand-aqua/5 text-[13px]-regular leading-[18px] tracking-[-0.08px] font-sf-pro text-brand-aqua flex items-center justify-center gap-2"
+          class="mt-2.5 w-full h-[52px] rounded-2xl border border-dashed border-brand-aqua bg-brand-aqua/5 text-[13px]-regular leading-[18px] tracking-[-0.08px] font-sf-pro text-brand-aqua-text flex items-center justify-center gap-2"
         >
           <Icon name="i-heroicons-plus" class="w-[30px] h-[30px]" />
           Add New Billing Address
@@ -397,7 +397,7 @@
             </div>
             <button
               type="button"
-              class="h-10 px-4 rounded-xl bg-brand-aqua/10 text-brand-aqua text-[15px] leading-[20px] tracking-[-0.23px] font-sf-pro"
+              class="h-10 px-4 rounded-xl bg-brand-aqua/10 text-brand-aqua-text text-[15px] leading-[20px] tracking-[-0.23px] font-sf-pro"
             >
               Change
             </button>
@@ -429,7 +429,7 @@
           </div>
           <button
             type="button"
-            class="h-10 px-4 rounded-xl bg-brand-aqua/10 text-brand-aqua text-[15px] leading-[20px] tracking-[-0.23px] font-sf-pro"
+            class="h-10 px-4 rounded-xl bg-brand-aqua/10 text-brand-aqua-text text-[15px] leading-[20px] tracking-[-0.23px] font-sf-pro"
           >
             Change
           </button>
@@ -594,7 +594,7 @@ function openStripePortal() {
 .bl-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.4px;
@@ -615,13 +615,13 @@ function openStripePortal() {
 
 .bl-hero { padding: 8px 22px 14px; position: relative; z-index: 1; }
 .hero-greeting {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #94a3b8;
   margin-bottom: 4px;
 }
 .bl-h1 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -1.2px;
@@ -629,7 +629,7 @@ function openStripePortal() {
 }
 
 .bl-section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -643,7 +643,7 @@ function openStripePortal() {
 }
 .bl-sh-action {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #008a84;
   cursor: pointer;
@@ -678,19 +678,19 @@ function openStripePortal() {
 .bl-payment-icon svg { width: 18px; height: 18px; }
 .bl-payment-body { flex: 1; min-width: 0; }
 .bl-payment-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   letter-spacing: -0.2px;
 }
 .bl-payment-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 2px;
 }
 .bl-row-chev {
   color: rgba(255, 255, 255, 0.7);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -716,13 +716,13 @@ function openStripePortal() {
 .bl-empty-icon svg { width: 16px; height: 16px; }
 .bl-empty-text { flex: 1; min-width: 0; }
 .bl-empty-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
 }
 .bl-empty-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #4a5868;
   margin-top: 2px;

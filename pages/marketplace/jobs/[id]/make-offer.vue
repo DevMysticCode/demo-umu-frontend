@@ -37,7 +37,7 @@
           min="1"
           step="1"
           :placeholder="placeholderPrice"
-        />
+         aria-label="placeholderPrice" />
         <div class="mo-field-help">
           Customer's budget:
           <b>{{ formatBudget(job.budgetMin) }}<span v-if="job.budgetMax">
@@ -70,7 +70,7 @@
           rows="5"
           maxlength="4000"
           placeholder="Hi, I'd love to take on this job. I have…"
-        />
+         aria-label="Hi, I'd love to take on this job. I have…" />
         <div class="mo-field-help">{{ form.message.length }} / 4000 chars</div>
       </div>
 
@@ -212,7 +212,7 @@ async function submit() {
   border: 1px solid #e4e5ed;
   background: #fff;
   color: #231d45;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   line-height: 1;
   cursor: pointer;
@@ -220,7 +220,7 @@ async function submit() {
 }
 .mo-header-title {
   flex: 1;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -231,7 +231,7 @@ async function submit() {
 .mo-loading, .mo-empty {
   padding: 40px 20px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #6b7089;
 }
@@ -246,7 +246,7 @@ async function submit() {
   box-shadow: 0 2px 8px rgba(35, 29, 69, 0.05);
 }
 .mo-job-card-h {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -254,13 +254,13 @@ async function submit() {
   margin-bottom: 4px;
 }
 .mo-job-card-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
 }
 .mo-job-card-meta {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 4px;
@@ -269,7 +269,7 @@ async function submit() {
 /* ── Field groups ────────────────────────────────────────────── */
 .mo-field-group { padding: 16px 20px 0; }
 .mo-field-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -277,7 +277,7 @@ async function submit() {
   margin-bottom: 6px;
 }
 .mo-field-help {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b7089;
   margin-top: 6px;
@@ -292,7 +292,7 @@ async function submit() {
   border-radius: 14px;
   padding: 16px;
   font-family: inherit;
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   color: #008a84;
   text-align: center;
@@ -303,7 +303,7 @@ async function submit() {
 .mo-price-input::placeholder {
   color: #a8a9ad;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 1rem;
   letter-spacing: 0;
 }
 
@@ -314,7 +314,7 @@ async function submit() {
   border-radius: 12px;
   padding: 11px 13px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #231d45;
   outline: none;
@@ -333,7 +333,7 @@ async function submit() {
   border: 1px solid #e4e5ed;
   border-radius: 100px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
   cursor: pointer;
@@ -363,11 +363,11 @@ async function submit() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 .mo-trust-strip-text {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.5;
@@ -380,7 +380,7 @@ async function submit() {
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #c43c3c;
 }
@@ -395,7 +395,7 @@ async function submit() {
   border-radius: 14px;
   padding: 15px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 161, 154, 0.32);

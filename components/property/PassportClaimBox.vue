@@ -230,7 +230,7 @@
                     :class="{ active: activeStep === s.n }"
                     :style="{ '--cx-step-i': i }"
                     @click="activeStep = activeStep === s.n ? null : s.n"
-                  >
+                   role="button" tabindex="0" @keydown.enter="activeStep = activeStep === s.n ? null : s.n" @keydown.space.prevent="activeStep = activeStep === s.n ? null : s.n">
                     <div class="cx-step-num" :class="s.n === 1 ? 'on' : 'off'">
                       {{ s.n }}
                     </div>
@@ -419,7 +419,7 @@
                       :class="{ active: activeStep === s.n }"
                       :style="{ '--cx-step-i': i }"
                       @click="activeStep = activeStep === s.n ? null : s.n"
-                    >
+                     role="button" tabindex="0" @keydown.enter="activeStep = activeStep === s.n ? null : s.n" @keydown.space.prevent="activeStep = activeStep === s.n ? null : s.n">
                       <div
                         class="cx-step-num"
                         :class="s.filled ? 'filled-teal' : 'off'"
@@ -589,7 +589,7 @@
                     :class="{ active: activeStep === s.n }"
                     :style="{ '--cx-step-i': i }"
                     @click="activeStep = activeStep === s.n ? null : s.n"
-                  >
+                   role="button" tabindex="0" @keydown.enter="activeStep = activeStep === s.n ? null : s.n" @keydown.space.prevent="activeStep = activeStep === s.n ? null : s.n">
                     <div class="cx-step-num filled-teal">✓</div>
                     <div class="cx-step-name">{{ s.name }}</div>
                   </div>
@@ -1256,12 +1256,12 @@ function onPrimary(action: PrimaryAction) {
   flex: 1;
 }
 .pcb-main {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   letter-spacing: -0.3px;
 }
 .pcb-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   opacity: 0.78;
   margin-top: 4px;
@@ -1272,7 +1272,7 @@ function onPrimary(action: PrimaryAction) {
   align-items: center;
   gap: 6px;
   margin-top: 9px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.88);
   cursor: pointer;
@@ -1288,7 +1288,7 @@ function onPrimary(action: PrimaryAction) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 900;
   flex-shrink: 0;
 }
@@ -1300,12 +1300,12 @@ function onPrimary(action: PrimaryAction) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   flex-shrink: 0;
 }
 .pcb-right {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -1407,14 +1407,14 @@ function onPrimary(action: PrimaryAction) {
   min-width: 0;
 }
 .pcb-pub-title {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
   line-height: 1.2;
 }
 .pcb-pub-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: #6b6a82;
   line-height: 1.4;
   margin-top: 5px;
@@ -1424,7 +1424,7 @@ function onPrimary(action: PrimaryAction) {
   align-items: center;
   gap: 7px;
   margin-top: 7px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: #231d45;
   cursor: pointer;
@@ -1438,7 +1438,7 @@ function onPrimary(action: PrimaryAction) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   flex: none;
 }
@@ -1451,13 +1451,13 @@ function onPrimary(action: PrimaryAction) {
   flex: none;
 }
 .pcb-pub-amt {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.6px;
 }
 .pcb-pub-arrow {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #231d45;
   animation: pcbPubNudge 1.6s ease-in-out infinite;
@@ -1497,13 +1497,13 @@ function onPrimary(action: PrimaryAction) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.5px;
 }
 .pcb-ring span small {
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 700;
   opacity: 0.85;
   margin-left: 1px;
@@ -1605,7 +1605,7 @@ function onPrimary(action: PrimaryAction) {
   margin-bottom: 0;
 }
 .cx2-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -1619,7 +1619,7 @@ function onPrimary(action: PrimaryAction) {
 .cx2-state-pill {
   display: inline-flex;
   align-items: center;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.3px;
   padding: 3px 9px;
@@ -1640,20 +1640,20 @@ function onPrimary(action: PrimaryAction) {
   background: #231d45;
 }
 .cx2-title {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 900;
   color: var(--text);
   letter-spacing: -0.4px;
   line-height: 1.2;
 }
 .cx2-subtitle {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--accent-dark);
   margin-top: 2px;
 }
 .cx2-body {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text-secondary);
   line-height: 1.55;
   margin-top: 8px;
@@ -1683,13 +1683,13 @@ function onPrimary(action: PrimaryAction) {
   object-fit: contain;
 }
 .cx2-secure-h {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.1px;
 }
 .cx2-secure-v {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text-secondary);
   line-height: 1.5;
   margin-top: 3px;
@@ -1740,7 +1740,7 @@ function onPrimary(action: PrimaryAction) {
   color: #231d45;
 }
 .cx-hero-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -1750,7 +1750,7 @@ function onPrimary(action: PrimaryAction) {
   z-index: 1;
 }
 .cx-hero-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 900;
   line-height: 1.25;
   letter-spacing: -0.3px;
@@ -1759,7 +1759,7 @@ function onPrimary(action: PrimaryAction) {
   z-index: 1;
 }
 .cx-hero-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.55;
   position: relative;
@@ -1816,7 +1816,7 @@ function onPrimary(action: PrimaryAction) {
   background: #fef9f0;
 }
 .cx-callout-h {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: 1.5px;
@@ -1830,7 +1830,7 @@ function onPrimary(action: PrimaryAction) {
   color: #b07a1c;
 }
 .cx-callout-v {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   line-height: 1.6;
 }
@@ -1851,7 +1851,7 @@ function onPrimary(action: PrimaryAction) {
   text-align: center;
 }
 .cx-stat-num {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 900;
   color: var(--text);
   letter-spacing: -0.5px;
@@ -1890,7 +1890,7 @@ function onPrimary(action: PrimaryAction) {
   }
 }
 .cx-stat-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--text-faint);
   margin-top: 2px;
   font-weight: 600;
@@ -1913,11 +1913,11 @@ function onPrimary(action: PrimaryAction) {
   display: block;
 }
 .cx-stats--4col .cx-stat-num {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   letter-spacing: -0.2px;
 }
 .cx-stats--4col .cx-stat-label {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
 }
 /* 3-across variant - noPublicPassport's "Private by default / Watch
    quietly / Know when it changes" row. Same icon-plus-label shape as
@@ -1930,11 +1930,11 @@ function onPrimary(action: PrimaryAction) {
   padding: 10px 6px;
 }
 .cx-stats--3col .cx-stat-num {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   letter-spacing: -0.2px;
 }
 .cx-stats--3col .cx-stat-label {
-  font-size: 8.5px;
+  font-size: 0.5313rem;
 }
 /* "Why this matters" / "What happens now" - owner vs. buyer framing on
    the partiallyPublic/public drawer. */
@@ -1948,7 +1948,7 @@ function onPrimary(action: PrimaryAction) {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text);
   line-height: 1.35;
@@ -1960,14 +1960,14 @@ function onPrimary(action: PrimaryAction) {
   border-radius: 50%;
   background: var(--accent-pale);
   color: var(--accent-dark);
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   display: grid;
   place-items: center;
   margin-top: 1px;
 }
 .cx-section-h {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: 1.5px;
@@ -1997,7 +1997,7 @@ function onPrimary(action: PrimaryAction) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   flex-shrink: 0;
 }
 .cx-item-body {
@@ -2005,19 +2005,19 @@ function onPrimary(action: PrimaryAction) {
   min-width: 0;
 }
 .cx-item-title {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--text);
 }
 .cx-item-sub {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--text-faint);
   margin-top: 1px;
 }
 .cx-item-tick {
   color: var(--accent-dark);
   font-weight: 800;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 /* 2-column layout for the progress/published drawers' checklist -
    .cx-item itself is unchanged (still the icon+text+tick row), this
@@ -2048,7 +2048,7 @@ function onPrimary(action: PrimaryAction) {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -2075,7 +2075,7 @@ function onPrimary(action: PrimaryAction) {
   color: white;
 }
 .cx-step-name {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: var(--text);
 }
@@ -2246,21 +2246,21 @@ function onPrimary(action: PrimaryAction) {
   flex: 1;
 }
 .cx-step-detail-h {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--accent-dark);
   margin-bottom: 4px;
   letter-spacing: -0.1px;
 }
 .cx-step-detail-v {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--text);
   line-height: 1.55;
 }
 .cx-step-detail-happens {
   margin-top: 8px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--accent-dark);
   line-height: 1.5;
@@ -2289,17 +2289,17 @@ function onPrimary(action: PrimaryAction) {
   margin: 0 22px 6px;
 }
 .cx-progress-row span:first-child {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
 }
 .cx-progress-row span:last-child {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-faint);
 }
 .cx-foot {
   text-align: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-faint);
   line-height: 1.6;
   padding: 4px 30px 16px;
@@ -2321,7 +2321,7 @@ function onPrimary(action: PrimaryAction) {
   flex: 1;
   padding: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   border-radius: 12px;
   cursor: pointer;
@@ -2420,14 +2420,14 @@ function onPrimary(action: PrimaryAction) {
   display: block;
 }
 .authd-title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   margin-bottom: 8px;
   line-height: 1.25;
 }
 .authd-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.55;
@@ -2442,7 +2442,7 @@ function onPrimary(action: PrimaryAction) {
   width: 100%;
   padding: 13px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   border-radius: 12px;
   cursor: pointer;

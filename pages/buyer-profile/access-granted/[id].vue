@@ -175,7 +175,7 @@ function goShare() { router.push('/buyer-profile/share') }
   padding: 40px 22px 0; text-align: center;
 }
 .ag-emoji {
-  font-size: 56px; line-height: 1; margin-bottom: 14px;
+  font-size: 3.5rem; line-height: 1; margin-bottom: 14px;
   display: inline-block;
   animation: ag-pop 0.5s ease-out 0.05s both;
 }
@@ -185,13 +185,13 @@ function goShare() { router.push('/buyer-profile/share') }
   100% { transform: scale(1); opacity: 1; }
 }
 .ag-title {
-  font-size: 22px; font-weight: 800; color: #231d45;
+  font-size: 1.375rem; font-weight: 800; color: #231d45;
   letter-spacing: -0.5px;
   margin-bottom: 6px;
   animation: ag-fadeUp 0.4s 0.15s both;
 }
 .ag-sub {
-  font-size: 13px; color: #6b6783; line-height: 1.5;
+  font-size: 0.8125rem; color: #6b6783; line-height: 1.5;
   animation: ag-fadeUp 0.4s 0.2s both;
 }
 @keyframes ag-fadeUp {
@@ -208,14 +208,14 @@ function goShare() { router.push('/buyer-profile/share') }
   animation: ag-fadeUp 0.4s 0.25s both;
 }
 .ag-token-label {
-  font-size: 9px; font-weight: 800; letter-spacing: 1.2px;
+  font-size: 0.5625rem; font-weight: 800; letter-spacing: 1.2px;
   color: rgba(255, 255, 255, 0.4);
   margin-bottom: 8px;
   text-transform: uppercase;
 }
 .ag-token-value {
   font-family: 'SF Mono', Menlo, monospace;
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #5eead4;
   word-break: break-all;
   line-height: 1.6;
@@ -225,14 +225,14 @@ function goShare() { router.push('/buyer-profile/share') }
 }
 .ag-token-foot {
   margin-top: 10px;
-  font-size: 10px;
+  font-size: 0.625rem;
   color: rgba(255, 255, 255, 0.45);
   line-height: 1.4;
 }
 
 /* Section label */
 .sec-label {
-  font-size: 11px; font-weight: 800;
+  font-size: 0.6875rem; font-weight: 800;
   color: #6b6783; letter-spacing: 1px;
   text-transform: uppercase;
   padding: 16px 22px 8px;
@@ -263,7 +263,7 @@ function goShare() { router.push('/buyer-profile/share') }
   width: 32px; height: 32px; border-radius: 10px;
   background: #f2faf8;
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px; flex-shrink: 0;
+  font-size: 0.9375rem; flex-shrink: 0;
   overflow: hidden;
 }
 .doc-icon img {
@@ -274,13 +274,13 @@ function goShare() { router.push('/buyer-profile/share') }
 }
 .doc-body { flex: 1; min-width: 0; }
 .doc-title {
-  font-size: 13.5px; font-weight: 800; color: #231d45;
+  font-size: 0.8438rem; font-weight: 800; color: #231d45;
 }
 .doc-meta {
-  font-size: 11px; color: #6b6783; margin-top: 1px;
+  font-size: 0.6875rem; color: #6b6783; margin-top: 1px;
 }
 .risk-pill {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   padding: 4px 8px; border-radius: 100px;
   white-space: nowrap; letter-spacing: 0.3px;
 }
@@ -298,7 +298,7 @@ function goShare() { router.push('/buyer-profile/share') }
   width: 100%;
   background: #00a19a; color: white; border: none;
   border-radius: 14px; padding: 16px;
-  font-family: inherit; font-size: 14px; font-weight: 800;
+  font-family: inherit; font-size: 0.875rem; font-weight: 800;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.35);
   cursor: pointer; transition: all 0.15s;
 }
@@ -307,6 +307,6 @@ function goShare() { router.push('/buyer-profile/share') }
   background: white; color: #231d45;
   border: 1.5px solid #231d45;
   box-shadow: none;
-  font-size: 13px; padding: 13px;
+  font-size: 0.8125rem; padding: 13px;
 }
 </style>

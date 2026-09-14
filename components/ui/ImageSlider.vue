@@ -53,7 +53,7 @@
           class="dot"
           :class="{ active: index === currentIndex }"
           @click="goToSlide(index)"
-        ></div>
+         role="button" tabindex="0" @keydown.enter="goToSlide(index)" @keydown.space.prevent="goToSlide(index)"></div>
       </div>
     </div>
   </div>
@@ -215,7 +215,7 @@ defineExpose({
   color: white;
   padding: 6px 12px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   z-index: 10;
 }
@@ -273,7 +273,7 @@ defineExpose({
 }
 .no-image-logo {
   width: 96px;
-  color: #00a19a;
+  color: #00726c;
   filter: drop-shadow(0 6px 14px rgba(0, 161, 154, 0.22));
   position: relative;
   z-index: 1;
@@ -282,7 +282,7 @@ defineExpose({
 .no-image-title {
   text-align: center;
   color: #008a84;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: -0.3px;
   position: relative;
@@ -292,7 +292,7 @@ defineExpose({
 .no-image-sub {
   text-align: center;
   color: #4a5868;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   line-height: 1.45;
   max-width: 280px;

@@ -82,7 +82,7 @@ defineProps({
 }
 
 .hero-title__subColored {
-  @apply text-brand-aqua text-[15px];
+  @apply text-brand-aqua-text text-[15px];
   font-style: normal;
   font-weight: 400;
   line-height: 20px;

@@ -244,31 +244,31 @@ const insuranceGroup: SampleSection[] = [
   min-width: 0;
 }
 .pp-hero-eyebrow {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   letter-spacing: 1.4px; text-transform: uppercase;
   color: #008a84; margin-bottom: 4px;
 }
 .pp-hero-addr-row { display: flex; align-items: center; gap: 6px; }
 .pp-hero-addr-text { flex: 1; min-width: 0; }
 .pp-hero-addr-l1 {
-  font-size: 18px; font-weight: 800;
+  font-size: 1.125rem; font-weight: 800;
   color: #0e2840; letter-spacing: -0.5px; line-height: 1.1;
 }
 .pp-hero-addr-l2 {
-  font-size: 11px; font-weight: 700;
+  font-size: 0.6875rem; font-weight: 700;
   color: #4a5868; margin-top: 2px;
 }
 .pp-hero-stats { display: flex; gap: 8px; margin-top: 12px; }
 .pp-hero-stat { flex: 1; min-width: 0; }
 .pp-hero-stat-val {
-  font-size: 19px; font-weight: 800;
+  font-size: 1.1875rem; font-weight: 800;
   color: #0e2840; letter-spacing: -0.5px;
   font-feature-settings: 'tnum'; line-height: 1;
 }
-.pp-hero-stat-val small { font-size: 11px; color: #4a5868; font-weight: 700; }
-.pp-hero-stat-of { font-size: 12px; color: #8a95a0; font-weight: 700; }
+.pp-hero-stat-val small { font-size: 0.6875rem; color: #4a5868; font-weight: 700; }
+.pp-hero-stat-of { font-size: 0.75rem; color: #8a95a0; font-weight: 700; }
 .pp-hero-stat-lbl {
-  font-size: 9.5px; font-weight: 800;
+  font-size: 0.5938rem; font-weight: 800;
   letter-spacing: 1px; text-transform: uppercase;
   color: #8a95a0; margin-top: 4px;
 }
@@ -276,7 +276,7 @@ const insuranceGroup: SampleSection[] = [
 .pp-hero-dash { margin-top: 12px; }
 .pp-hero-dash-row {
   display: flex; justify-content: space-between;
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   letter-spacing: 1px; text-transform: uppercase;
   color: #4a5868; margin-bottom: 5px;
 }
@@ -302,7 +302,7 @@ const insuranceGroup: SampleSection[] = [
 .pp-hero-dash-warn {
   display: flex; align-items: center; gap: 6px;
   margin-top: 8px;
-  font-size: 10.5px; font-weight: 800;
+  font-size: 0.6563rem; font-weight: 800;
   color: #b85b36;
 }
 .pp-hero-dash-warn-dot {
@@ -335,9 +335,9 @@ const insuranceGroup: SampleSection[] = [
 }
 .lp-convert-icon svg { width: 18px; height: 18px; }
 .lp-convert-body { flex: 1; min-width: 0; }
-.lp-convert-title { font-size: 14px; font-weight: 800; letter-spacing: -0.3px; }
-.lp-convert-sub { font-size: 11px; font-weight: 700; opacity: 0.85; margin-top: 2px; }
-.lp-convert-chev { font-size: 20px; flex-shrink: 0; }
+.lp-convert-title { font-size: 0.875rem; font-weight: 800; letter-spacing: -0.3px; }
+.lp-convert-sub { font-size: 0.6875rem; font-weight: 700; opacity: 0.85; margin-top: 2px; }
+.lp-convert-chev { font-size: 1.25rem; flex-shrink: 0; }
 
 /* Tabs */
 .lp-tabs {
@@ -351,14 +351,14 @@ const insuranceGroup: SampleSection[] = [
   border: 1px solid #e8eceb;
   border-radius: 100px;
   padding: 9px 12px;
-  font-family: inherit; font-size: 12px; font-weight: 800;
+  font-family: inherit; font-size: 0.75rem; font-weight: 800;
   color: #4a5868; letter-spacing: -0.2px;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 .lp-tab.active { background: #0e2840; color: #fff; border-color: #0e2840; }
 .lp-tab-count {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   background: rgba(255, 255, 255, 0.18);
   padding: 1px 6px; border-radius: 100px;
   font-feature-settings: 'tnum';
@@ -367,7 +367,7 @@ const insuranceGroup: SampleSection[] = [
 
 /* Section heading */
 .section-heading {
-  font-size: 10.5px; font-weight: 800;
+  font-size: 0.6563rem; font-weight: 800;
   letter-spacing: 1.6px; text-transform: uppercase;
   color: #8a95a0;
   padding: 8px 22px;
@@ -397,16 +397,16 @@ const insuranceGroup: SampleSection[] = [
 .lp-sec-row-top { display: flex; align-items: flex-start; gap: 8px; }
 .lp-sec-row-top > div:first-child { flex: 1; min-width: 0; }
 .lp-sec-name {
-  font-size: 14.5px; font-weight: 800;
+  font-size: 0.9063rem; font-weight: 800;
   color: #0e2840; letter-spacing: -0.3px; line-height: 1.2;
 }
 .lp-sec-sub {
-  font-size: 11.5px; font-weight: 600;
+  font-size: 0.7188rem; font-weight: 600;
   color: #4a5868; margin-top: 2px; line-height: 1.35;
 }
 .lp-sec-pills { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
 .lp-sec-pill {
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   letter-spacing: -0.1px;
   padding: 4px 9px;
   border-radius: 100px;
@@ -430,7 +430,7 @@ const insuranceGroup: SampleSection[] = [
 .lp-sec-bar-fill--pending { background: #d9dee2; }
 .lp-sec-pct {
   text-align: right;
-  font-size: 10.5px; font-weight: 800;
+  font-size: 0.6563rem; font-weight: 800;
   color: #4a5868; margin-top: 4px;
   letter-spacing: -0.1px;
   font-feature-settings: 'tnum';
@@ -438,11 +438,11 @@ const insuranceGroup: SampleSection[] = [
 .lp-sec-pct--good { color: #008a84; }
 .lp-sec-actionby {
   text-align: right;
-  font-size: 11px; font-weight: 800;
+  font-size: 0.6875rem; font-weight: 800;
   color: #b85b36; margin-top: 4px;
   letter-spacing: -0.1px;
 }
-.lp-sec-chev { color: #8a95a0; font-size: 22px; flex-shrink: 0; line-height: 1; padding-top: 2px; }
+.lp-sec-chev { color: #8a95a0; font-size: 1.375rem; flex-shrink: 0; line-height: 1; padding-top: 2px; }
 
 /* "+ N more sections" footer hint - sample only */
 .sec-more {
@@ -454,13 +454,13 @@ const insuranceGroup: SampleSection[] = [
   text-align: center;
 }
 .sec-more-text {
-  font-size: 13px; font-weight: 800;
-  color: #00a19a;
+  font-size: 0.8125rem; font-weight: 800;
+  color: #00726c;
   letter-spacing: -0.2px;
   margin-bottom: 4px;
 }
 .sec-more-meta {
-  font-size: 11.5px; font-weight: 600;
+  font-size: 0.7188rem; font-weight: 600;
   color: #94a3b8;
   letter-spacing: -0.05px;
   line-height: 1.45;

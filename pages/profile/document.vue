@@ -44,7 +44,7 @@
           v-model="searchQuery"
           class="dc-search-input"
           placeholder="Search documents…"
-        />
+         aria-label="Search documents…" />
       </div>
 
       <!-- Categories grid -->
@@ -214,7 +214,7 @@
                 class="mform-input"
                 type="text"
                 placeholder="e.g. EPC Certificate"
-              />
+               aria-label="e.g. EPC Certificate" />
             </div>
 
             <!-- Tags -->
@@ -225,7 +225,7 @@
                 class="mform-input"
                 type="text"
                 placeholder="Comma separated, e.g. epc, energy"
-              />
+               aria-label="Comma separated, e.g. epc, energy" />
               <div v-if="parsedTags.length" class="up-tag-row">
                 <span v-for="tag in parsedTags" :key="tag" class="up-tag">#{{ tag }}</span>
               </div>
@@ -579,7 +579,7 @@ const goBack = useGoBack('/profile')
 .dc-nav-title {
   flex: 1;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.4px;
@@ -602,13 +602,13 @@ const goBack = useGoBack('/profile')
 /* Hero */
 .dc-hero { padding: 8px 22px 12px; position: relative; z-index: 1; }
 .hero-greeting {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #94a3b8;
   margin-bottom: 6px;
 }
 .dc-h1 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -1.2px;
@@ -617,9 +617,9 @@ const goBack = useGoBack('/profile')
 }
 .dc-h1-count {
   display: inline-block;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   vertical-align: 8px;
   margin-left: 6px;
   letter-spacing: -0.5px;
@@ -627,7 +627,7 @@ const goBack = useGoBack('/profile')
 .hero-stats {
   display: inline-flex;
   align-items: center;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #4a5868;
   letter-spacing: -0.2px;
@@ -647,7 +647,7 @@ const goBack = useGoBack('/profile')
   border-radius: 12px;
   padding: 11px 14px 11px 38px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -710,7 +710,7 @@ const goBack = useGoBack('/profile')
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
-  font-size: 16px;
+  font-size: 1rem;
 }
 .dc-cat-icon:has(.dc-cat-icon-img) {
   width: 52px;
@@ -727,14 +727,14 @@ const goBack = useGoBack('/profile')
   mix-blend-mode: multiply;
 }
 .dc-cat-name {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
   margin-bottom: 1px;
 }
 .dc-cat-count {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #4a5868;
   font-feature-settings: 'tnum';
@@ -742,7 +742,7 @@ const goBack = useGoBack('/profile')
 
 /* Section heading */
 .dc-section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -756,7 +756,7 @@ const goBack = useGoBack('/profile')
 }
 .dc-sh-action {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #008a84;
   cursor: pointer;
@@ -790,7 +790,7 @@ const goBack = useGoBack('/profile')
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   letter-spacing: 0.3px;
   position: relative;
@@ -823,7 +823,7 @@ const goBack = useGoBack('/profile')
   gap: 3px;
   padding: 3px 8px;
   border-radius: 100px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 0.2px;
   white-space: nowrap;
@@ -841,7 +841,7 @@ const goBack = useGoBack('/profile')
   border-color: #e4e5ed;
 }
 .dc-doc-name {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
@@ -851,14 +851,14 @@ const goBack = useGoBack('/profile')
   white-space: nowrap;
 }
 .dc-doc-meta {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   color: #8a95a0;
   margin-top: 1px;
 }
 .dc-doc-action {
   color: #8a95a0;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
@@ -867,7 +867,7 @@ const goBack = useGoBack('/profile')
   text-align: center;
   padding: 28px 22px;
   color: #8a95a0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   position: relative;
   z-index: 1;
@@ -923,14 +923,14 @@ const goBack = useGoBack('/profile')
 }
 .modal-handle { width: 36px; height: 4px; background: #d9dae0; border-radius: 100px; margin: 8px auto 0; }
 .modal-header { display: flex; align-items: center; padding: 12px 18px 10px; }
-.modal-title { flex: 1; font-size: 16px; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
+.modal-title { flex: 1; font-size: 1rem; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
 .modal-close {
   width: 30px; height: 30px;
   border-radius: 50%;
   border: none;
   background: #f0f2f1;
   color: #4a5868;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
   font-family: inherit;
   display: flex;
@@ -971,14 +971,14 @@ const goBack = useGoBack('/profile')
 }
 .up-drop-icon svg { width: 22px; height: 22px; }
 .up-drop-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
   margin-bottom: 2px;
 }
 .up-drop-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: #4a5868;
   margin-bottom: 10px;
@@ -986,7 +986,7 @@ const goBack = useGoBack('/profile')
 .up-drop-actions { display: flex; gap: 6px; justify-content: center; }
 .up-drop-actions .btn-secondary {
   padding: 7px 12px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
 }
 
 /* File preview */
@@ -1017,7 +1017,7 @@ const goBack = useGoBack('/profile')
 .up-file-thumb-icon { color: #6f4d14; }
 .up-file-thumb-icon svg { width: 22px; height: 22px; }
 .up-file-ext {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   color: #6f4d14;
@@ -1025,7 +1025,7 @@ const goBack = useGoBack('/profile')
 }
 .up-file-info { flex: 1; min-width: 0; }
 .up-file-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
@@ -1033,14 +1033,14 @@ const goBack = useGoBack('/profile')
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.up-file-meta { font-size: 11px; font-weight: 600; color: #8a95a0; margin-top: 2px; }
+.up-file-meta { font-size: 0.6875rem; font-weight: 600; color: #8a95a0; margin-top: 2px; }
 .up-file-clear {
   width: 28px; height: 28px;
   border-radius: 50%;
   border: none;
   background: #f0f2f1;
   color: #4a5868;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   font-family: inherit;
   flex-shrink: 0;
@@ -1052,7 +1052,7 @@ const goBack = useGoBack('/profile')
 /* Form */
 .mform-section { margin-bottom: 14px; }
 .mform-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -1066,7 +1066,7 @@ const goBack = useGoBack('/profile')
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -1085,7 +1085,7 @@ const goBack = useGoBack('/profile')
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #0e2840;
   cursor: pointer;
@@ -1112,7 +1112,7 @@ const goBack = useGoBack('/profile')
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   overflow: hidden;
 }
 .mfr-icon img {
@@ -1139,7 +1139,7 @@ const goBack = useGoBack('/profile')
 .up-tag {
   background: rgba(61, 189, 163, 0.12);
   color: #008a84;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: -0.1px;
   padding: 3px 9px;
@@ -1149,7 +1149,7 @@ const goBack = useGoBack('/profile')
 .up-error {
   text-align: center;
   color: #b85b36;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
@@ -1161,7 +1161,7 @@ const goBack = useGoBack('/profile')
   border-radius: 10px;
   padding: 11px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;
@@ -1178,7 +1178,7 @@ const goBack = useGoBack('/profile')
   border-radius: 10px;
   padding: 11px 14px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;

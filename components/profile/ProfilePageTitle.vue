@@ -31,7 +31,7 @@ defineProps({
   z-index: 1;
 }
 .ppt-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -39,7 +39,7 @@ defineProps({
   margin-bottom: 6px;
 }
 .ppt-h1 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -1.2px;
@@ -48,9 +48,9 @@ defineProps({
 }
 .ppt-count {
   display: inline-block;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   vertical-align: 8px;
   margin-left: 6px;
   letter-spacing: -0.5px;
@@ -58,7 +58,7 @@ defineProps({
 .ppt-stats {
   display: inline-flex;
   align-items: center;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #4a5868;
   letter-spacing: -0.2px;
@@ -85,7 +85,7 @@ defineProps({
   display: inline-block;
 }
 .ppt-sub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #6b7c8e;
   margin: 0;
   line-height: 1.5;

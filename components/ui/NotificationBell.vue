@@ -183,7 +183,7 @@ function relativeTime(iso: string): string {
   border-radius: 100px;
   background: #c73e36;
   color: #fff;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   display: inline-flex; align-items: center; justify-content: center;
   line-height: 1;
@@ -213,20 +213,20 @@ function relativeTime(iso: string): string {
   border-bottom: 1px solid #f0f1f5;
 }
 .nb-title {
-  font-size: 15px; font-weight: 800;
+  font-size: 0.9375rem; font-weight: 800;
   color: #231d45;
 }
 .nb-mark-all {
   background: none; border: none;
-  font: inherit; font-size: 12px; font-weight: 700;
-  color: #00a19a;
+  font: inherit; font-size: 0.75rem; font-weight: 700;
+  color: #00726c;
   cursor: pointer;
   padding: 4px 6px;
 }
 .nb-empty {
   padding: 32px 20px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #8f9094;
 }
 .nb-list {
@@ -254,7 +254,7 @@ function relativeTime(iso: string): string {
   border-radius: 50%;
   background: #f5f6fa;
   display: inline-flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -266,13 +266,13 @@ function relativeTime(iso: string): string {
 }
 .nb-item-body { flex: 1; min-width: 0; }
 .nb-item-title {
-  font-size: 13px; font-weight: 800;
+  font-size: 0.8125rem; font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
 }
 .nb-item-sub {
   margin-top: 2px;
-  font-size: 12px; font-weight: 500;
+  font-size: 0.75rem; font-weight: 500;
   color: #6b7089;
   line-height: 1.4;
   overflow: hidden;
@@ -283,7 +283,7 @@ function relativeTime(iso: string): string {
 }
 .nb-item-time {
   margin-top: 4px;
-  font-size: 11px; font-weight: 600;
+  font-size: 0.6875rem; font-weight: 600;
   color: #a8a9ad;
 }
 .nb-item-dot {
@@ -300,8 +300,8 @@ function relativeTime(iso: string): string {
 }
 .nb-see-all {
   background: none; border: none;
-  font: inherit; font-size: 12px; font-weight: 800;
-  color: #00a19a;
+  font: inherit; font-size: 0.75rem; font-weight: 800;
+  color: #00726c;
   cursor: pointer;
   padding: 6px 8px;
 }

@@ -161,7 +161,7 @@ const sectionPointsPercent = computed(() =>
   gap: 2px;
 }
 .spc-balance {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1;
@@ -170,7 +170,7 @@ const sectionPointsPercent = computed(() =>
   font-style: normal;
   color: #99f6e4;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 1rem;
   margin-left: 4px;
 }
 /* Clarifies this is the account-wide total, not points from just this
@@ -178,7 +178,7 @@ const sectionPointsPercent = computed(() =>
    and reads as if it belongs to the section. */
 .spc-balance-caption {
   margin: 0;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -187,7 +187,7 @@ const sectionPointsPercent = computed(() =>
 
 .spc-h3 {
   margin: 4px 0 2px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1.3;
   color: #fff;
@@ -196,7 +196,7 @@ const sectionPointsPercent = computed(() =>
 }
 .spc-sub {
   margin: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.6);
   position: relative;
@@ -220,12 +220,12 @@ const sectionPointsPercent = computed(() =>
   margin-bottom: 6px;
 }
 .spc-section-points-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.65);
 }
 .spc-section-points-value {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #5eead4;
   font-variant-numeric: tabular-nums;
@@ -283,13 +283,13 @@ const sectionPointsPercent = computed(() =>
   flex-direction: column;
 }
 .spc-bonus-text strong {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #fff;
 }
 .spc-bonus-text em {
   font-style: normal;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #5eead4;
 }
@@ -307,7 +307,7 @@ const sectionPointsPercent = computed(() =>
    "Max level reached" next to "0 of 7 complete" read as contradictory. */
 .spc-level-caption {
   margin: 0 0 8px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -343,7 +343,7 @@ const sectionPointsPercent = computed(() =>
 }
 .spc-level-text {
   margin: 8px 0 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #5eead4;
 }
@@ -374,13 +374,13 @@ const sectionPointsPercent = computed(() =>
   gap: 2px;
 }
 .spc-streak-text strong {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #00756f;
   line-height: 1.3;
 }
 .spc-streak-text span {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   color: #115e59;
 }

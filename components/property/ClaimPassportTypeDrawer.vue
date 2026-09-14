@@ -148,14 +148,14 @@ function choose(type: PassportType) {
   padding: 0 28px 20px;
 }
 .cpt-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.4px;
   margin-bottom: 6px;
 }
 .cpt-sub {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.5;
@@ -200,14 +200,14 @@ function choose(type: PassportType) {
   filter: drop-shadow(0 8px 12px rgba(35, 29, 69, 0.18));
 }
 .cpt-opt-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
   margin-bottom: 6px;
 }
 .cpt-opt-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.45;
@@ -218,7 +218,7 @@ function choose(type: PassportType) {
   width: 100%;
   padding: 12px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   border-radius: 999px;
   border: none;
@@ -258,12 +258,12 @@ function choose(type: PassportType) {
   flex-direction: column;
 }
 .cpt-hmo-title {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #231d45;
 }
 .cpt-hmo-meta {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 1px;

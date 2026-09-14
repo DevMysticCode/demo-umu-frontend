@@ -120,7 +120,7 @@ const {
 }
 
 .verification-content__resend-button {
-  @apply text-brand-aqua font-medium text-base hover:text-brand-aqua/80 transition-colors;
+  @apply text-brand-aqua-text font-medium text-base hover:text-brand-aqua-text/80 transition-colors;
 }
 
 .verification-content__resend-button--disabled {

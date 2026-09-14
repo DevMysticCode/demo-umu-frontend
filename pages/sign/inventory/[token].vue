@@ -71,7 +71,7 @@
 
         <div class="sg-signblock">
           <div class="mform-label">Your full name</div>
-          <input v-model="signerName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves" />
+          <input v-model="signerName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves"  aria-label="e.g. Jordan Reeves" />
 
           <div class="mform-label" style="margin-top:16px">Your signature</div>
           <SignaturePad ref="padRef" />
@@ -183,28 +183,28 @@ async function onSubmit() {
 }
 .sg-error-ic {
   width: 48px; height: 48px; border-radius: 50%; background: #fdeef1; color: #e84c6a;
-  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px;
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.375rem;
   margin: 0 auto 14px;
 }
-.sg-error h2 { font-size: 18px; color: #0e2840; margin-bottom: 6px; }
+.sg-error h2 { font-size: 1.125rem; color: #0e2840; margin-bottom: 6px; }
 
 .sg-hero {
   padding: 28px 22px 20px;
   background: linear-gradient(135deg, #231d45, #15102e);
   color: #fff;
 }
-.sg-brand { font-size: 12px; font-weight: 800; letter-spacing: 1px; color: #9d97c9; text-transform: uppercase; }
-.sg-h1 { font-size: 22px; font-weight: 800; margin-top: 6px; letter-spacing: -0.3px; }
-.sg-meta { font-size: 12.5px; font-weight: 600; color: #c5c0e8; margin-top: 4px; }
+.sg-brand { font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; color: #9d97c9; text-transform: uppercase; }
+.sg-h1 { font-size: 1.375rem; font-weight: 800; margin-top: 6px; letter-spacing: -0.3px; }
+.sg-meta { font-size: 0.7813rem; font-weight: 600; color: #c5c0e8; margin-top: 4px; }
 
 .sg-done { padding: 60px 24px; text-align: center; }
 .sg-done-ic {
   width: 56px; height: 56px; border-radius: 50%; background: #e7f6ef; color: #0f8a6e;
-  display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; font-size: 1.625rem; font-weight: 800;
   margin: 0 auto 16px;
 }
-.sg-done-t { font-size: 17px; font-weight: 800; color: #0e2840; }
-.sg-done-s { font-size: 13px; color: #6b7089; margin-top: 6px; }
+.sg-done-t { font-size: 1.0625rem; font-weight: 800; color: #0e2840; }
+.sg-done-s { font-size: 0.8125rem; color: #6b7089; margin-top: 6px; }
 
 .sg-doc {
   margin: 16px 16px 0;
@@ -213,18 +213,18 @@ async function onSubmit() {
   padding: 18px;
   box-shadow: 0 4px 18px rgba(35, 29, 69, 0.06);
 }
-.sg-doc h2 { font-size: 11px; font-weight: 800; color: #008a84; letter-spacing: 0.6px; text-transform: uppercase; margin: 16px 0 6px; border-bottom: 1px solid #f0f0f4; padding-bottom: 4px; }
+.sg-doc h2 { font-size: 0.6875rem; font-weight: 800; color: #008a84; letter-spacing: 0.6px; text-transform: uppercase; margin: 16px 0 6px; border-bottom: 1px solid #f0f0f4; padding-bottom: 4px; }
 .sg-doc h2:first-child { margin-top: 0; }
-.sg-kv { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 13px; }
+.sg-kv { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 0.8125rem; }
 .sg-kv .k { color: #6b7089; font-weight: 600; }
 .sg-kv .v { color: #0e2840; font-weight: 700; text-align: right; }
 
 .sg-room-item { padding: 8px 0; border-bottom: 1px solid #f4f4f8; }
 .sg-room-item:last-child { border-bottom: none; }
-.sg-room-item-n { font-size: 12.5px; font-weight: 700; color: #0e2840; }
+.sg-room-item-n { font-size: 0.7813rem; font-weight: 700; color: #0e2840; }
 .sg-room-item-cc { display: flex; gap: 6px; margin-top: 4px; }
-.sg-tag { font-size: 10px; font-weight: 700; text-transform: capitalize; background: #f4f4f8; color: #6b7089; padding: 3px 8px; border-radius: 100px; }
-.sg-room-item-note { font-size: 11.5px; color: #6b7089; margin-top: 4px; font-style: italic; }
+.sg-tag { font-size: 0.625rem; font-weight: 700; text-transform: capitalize; background: #f4f4f8; color: #6b7089; padding: 3px 8px; border-radius: 100px; }
+.sg-room-item-note { font-size: 0.7188rem; color: #6b7089; margin-top: 4px; font-style: italic; }
 
 .sg-photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .sg-photo-tile {
@@ -237,7 +237,7 @@ async function onSubmit() {
 .sg-photo-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .mform-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -251,7 +251,7 @@ async function onSubmit() {
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -265,7 +265,7 @@ async function onSubmit() {
   border-radius: 10px;
   padding: 13px 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   cursor: pointer;
@@ -277,8 +277,8 @@ async function onSubmit() {
 .sg-signblock { margin: 20px 16px 0; }
 .sg-consent {
   display: flex; align-items: flex-start; gap: 10px; margin: 16px 0 18px;
-  font-size: 12px; font-weight: 500; color: #3a3f52; line-height: 1.5; cursor: pointer;
+  font-size: 0.75rem; font-weight: 500; color: #3a3f52; line-height: 1.5; cursor: pointer;
 }
 .sg-consent input { margin-top: 2px; flex-shrink: 0; }
-.sg-err { color: #c0364a; font-size: 12.5px; font-weight: 600; margin-bottom: 10px; }
+.sg-err { color: #c0364a; font-size: 0.7813rem; font-weight: 600; margin-bottom: 10px; }
 </style>

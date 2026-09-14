@@ -200,18 +200,18 @@ const steps = [
   position: relative; z-index: 1;
 }
 .pp-hero-eyebrow {
-  font-size: 9.5px; font-weight: 800;
+  font-size: 0.5938rem; font-weight: 800;
   letter-spacing: 0.1em; text-transform: uppercase;
-  color: #00a19a; margin-bottom: 4px;
+  color: #00726c; margin-bottom: 4px;
 }
 .pp-hero-addr-row { display: flex; align-items: flex-start; gap: 6px; }
 .pp-hero-addr-text { flex: 1; min-width: 0; }
-.pp-hero-addr-l1 { font-size: 16px; font-weight: 800; color: #231d45; line-height: 1.2; }
-.pp-hero-addr-l2 { font-size: 11.5px; color: #94a3b8; margin-top: 2px; }
+.pp-hero-addr-l1 { font-size: 1rem; font-weight: 800; color: #231d45; line-height: 1.2; }
+.pp-hero-addr-l2 { font-size: 0.7188rem; color: #94a3b8; margin-top: 2px; }
 .pp-hero-switch {
   width: 26px; height: 26px;
   border-radius: 50%; background: #f1f9f4;
-  border: 1px solid #e2f1ea; color: #00a19a;
+  border: 1px solid #e2f1ea; color: #00726c;
   display: grid; place-items: center;
   flex-shrink: 0; cursor: pointer;
   font-family: inherit;
@@ -222,9 +222,9 @@ const steps = [
 }
 .pp-hero-stat { text-align: center; padding: 0 4px; }
 .pp-hero-stat + .pp-hero-stat { border-left: 1px solid rgba(35, 29, 69, 0.08); }
-.pp-hero-stat-val { font-size: 16px; font-weight: 800; color: #231d45; line-height: 1; }
+.pp-hero-stat-val { font-size: 1rem; font-weight: 800; color: #231d45; line-height: 1; }
 .pp-hero-stat-lbl {
-  font-size: 7.5px; color: #94a3b8;
+  font-size: 0.4688rem; color: #94a3b8;
   text-transform: uppercase; letter-spacing: 0.06em;
   margin-top: 3px; font-weight: 700;
 }
@@ -235,11 +235,11 @@ const steps = [
   margin-bottom: 6px;
 }
 .pp-hero-dash-label {
-  font-size: 9.5px; font-weight: 800;
+  font-size: 0.5938rem; font-weight: 800;
   letter-spacing: 0.06em; text-transform: uppercase;
   color: #4a5568;
 }
-.pp-hero-dash-pct { color: #00a19a; font-weight: 800; font-size: 13px; }
+.pp-hero-dash-pct { color: #00726c; font-weight: 800; font-size: 0.8125rem; }
 .pp-hero-dash-bar {
   height: 6px; background: #eef0f6;
   border-radius: 999px; position: relative; overflow: visible;
@@ -257,7 +257,7 @@ const steps = [
 }
 .pp-hero-dash-issued {
   display: flex; align-items: center; gap: 5px;
-  font-size: 9.5px; color: #94a3b8;
+  font-size: 0.5938rem; color: #94a3b8;
   font-weight: 600; margin-top: 7px;
 }
 .pp-hero-dash-dot {
@@ -274,17 +274,17 @@ const steps = [
 .pp-action-btn {
   border: none; border-radius: 12px;
   padding: 11px 12px; cursor: pointer;
-  font-family: inherit; font-size: 13px; font-weight: 700;
+  font-family: inherit; font-size: 0.8125rem; font-weight: 700;
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 .pp-action-outline { background: #fff; color: #231d45; border: 1.5px solid #eef0f6; }
 .pp-action-primary { background: #00a19a; color: #fff; box-shadow: 0 4px 14px rgba(0, 161, 154, 0.28); }
 .pp-action-badge {
   background: #00a19a; color: #fff;
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   padding: 1px 6px; border-radius: 999px;
 }
-.pp-action-primary .pp-action-badge { background: #fff; color: #00a19a; }
+.pp-action-primary .pp-action-badge { background: #fff; color: #00726c; }
 
 /* ── Collaborators ──────────────────────── */
 .pp-collab-row {
@@ -296,8 +296,8 @@ const steps = [
 .pp-collab-add {
   width: 28px; height: 28px;
   border-radius: 50%; background: #f1f9f4;
-  border: 1px solid #e2f1ea; color: #00a19a;
-  font-size: 16px; font-weight: 600;
+  border: 1px solid #e2f1ea; color: #00726c;
+  font-size: 1rem; font-weight: 600;
   display: grid; place-items: center;
   flex-shrink: 0; cursor: pointer;
   font-family: inherit; padding: 0; line-height: 1;
@@ -307,12 +307,12 @@ const steps = [
   width: 26px; height: 26px;
   border-radius: 50%;
   background: linear-gradient(135deg, #00b5ad, #00a19a);
-  color: #fff; font-size: 10px; font-weight: 800;
+  color: #fff; font-size: 0.625rem; font-weight: 800;
   display: grid; place-items: center;
   border: 2px solid #fff; margin-left: -8px;
 }
-.pp-collab-text { font-size: 12.5px; color: #4a5568; font-weight: 600; flex: 1; }
-.pp-collab-chev { color: #94a3b8; font-size: 18px; font-weight: 600; }
+.pp-collab-text { font-size: 0.7813rem; color: #4a5568; font-weight: 600; flex: 1; }
+.pp-collab-chev { color: #94a3b8; font-size: 1.125rem; font-weight: 600; }
 
 /* ── Sub-tabs ──────────────────────── */
 .pp-subtabs {
@@ -324,7 +324,7 @@ const steps = [
   flex: 1; border: none; background: transparent;
   padding: 9px 8px; border-radius: 9px;
   cursor: pointer; font-family: inherit;
-  font-size: 12px; font-weight: 700;
+  font-size: 0.75rem; font-weight: 700;
   color: #94a3b8;
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
@@ -334,10 +334,10 @@ const steps = [
 }
 .pp-subtab-badge {
   background: #00a19a; color: #fff;
-  font-size: 10px; font-weight: 800;
+  font-size: 0.625rem; font-weight: 800;
   padding: 1px 6px; border-radius: 999px; margin-left: 2px;
 }
-.pp-subtab.active .pp-subtab-badge { background: #fff; color: #00a19a; }
+.pp-subtab.active .pp-subtab-badge { background: #fff; color: #00726c; }
 
 /* ── View toggle ──────────────────────── */
 .view-toggle { display: flex; gap: 16px; margin: 16px 0 16px; }
@@ -345,7 +345,7 @@ const steps = [
   flex: 1; padding: 12px;
   border: 1px solid #e0e0e0; background: #fff;
   border-radius: 12px;
-  font-size: 14px; font-weight: 600; color: #666;
+  font-size: 0.875rem; font-weight: 600; color: #666;
   cursor: pointer; font-family: inherit;
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
@@ -368,20 +368,20 @@ const steps = [
 }
 .step-info { flex: 1; }
 .step-title {
-  font-size: 15px; font-weight: 400;
+  font-size: 0.9375rem; font-weight: 400;
   line-height: 20px; letter-spacing: -0.23px;
   color: #000;
 }
 .step-points {
-  font-size: 12px; line-height: 16px;
-  color: #00a19a; font-weight: 400;
+  font-size: 0.75rem; line-height: 16px;
+  color: #00726c; font-weight: 400;
 }
 .step-counts {
   display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;
 }
 .step-count-pill {
   display: inline-flex; align-items: center; gap: 4px;
-  font-size: 10.5px; font-weight: 700;
+  font-size: 0.6563rem; font-weight: 700;
   padding: 2px 8px; border-radius: 999px;
   white-space: nowrap; line-height: 1.4;
 }
@@ -391,7 +391,7 @@ const steps = [
   object-fit: contain;
   display: block;
 }
-.step-count-docs { background: #f1f9f4; color: #00a19a; border: 1px solid #e2f1ea; }
+.step-count-docs { background: #f1f9f4; color: #00726c; border: 1px solid #e2f1ea; }
 .step-count-q { background: #f1f5f9; color: #4a5568; border: 1px solid #eef0f6; }
 
 .step-progress {
@@ -408,7 +408,7 @@ const steps = [
   border-radius: 999px;
 }
 .progress-percentage {
-  font-size: 11px; font-weight: 800; color: #00a19a;
+  font-size: 0.6875rem; font-weight: 800; color: #00726c;
   flex-shrink: 0; min-width: 28px; text-align: right;
 }
 .step-arrow {
@@ -428,13 +428,13 @@ const steps = [
   text-align: center;
 }
 .sec-more-text {
-  font-size: 13px; font-weight: 800;
-  color: #00a19a;
+  font-size: 0.8125rem; font-weight: 800;
+  color: #00726c;
   letter-spacing: -0.2px;
   margin-bottom: 4px;
 }
 .sec-more-meta {
-  font-size: 11.5px; font-weight: 600;
+  font-size: 0.7188rem; font-weight: 600;
   color: #94a3b8;
   letter-spacing: -0.05px;
   line-height: 1.45;

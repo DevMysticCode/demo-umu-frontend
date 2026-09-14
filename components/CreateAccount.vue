@@ -183,7 +183,7 @@ const goBack = () => {
 }
 
 .create-account-back {
-  @apply text-brand-aqua flex items-center hover:text-brand-aqua/80 transition-colors;
+  @apply text-brand-aqua-text flex items-center hover:text-brand-aqua-text/80 transition-colors;
 }
 
 /* Hero Section */

@@ -15,7 +15,7 @@
               placeholder="e.g. Coventry, London Properties…"
               maxlength="60"
               @keyup.enter="goToStep2"
-            />
+             aria-label="e.g. Coventry, London Properties…" />
 
             <div class="ccm-actions">
               <button class="ccm-cancel" @click="$emit('close')">Cancel</button>
@@ -158,8 +158,8 @@ const submit = async () => {
 .ccm-back-btn {
   background: none;
   border: none;
-  color: #00a19a;
-  font-size: 14px;
+  color: #00726c;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   padding: 0;
@@ -167,7 +167,7 @@ const submit = async () => {
 }
 
 .ccm-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
@@ -175,7 +175,7 @@ const submit = async () => {
 }
 
 .ccm-subtitle {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #8e8e93;
   text-align: center;
   margin: 0;
@@ -185,7 +185,7 @@ const submit = async () => {
   border: 1.5px solid #e0e0e0;
   border-radius: 12px;
   padding: 12px 14px;
-  font-size: 16px;
+  font-size: 1rem;
   color: #1a1a1a;
   outline: none;
   width: 100%;
@@ -256,7 +256,7 @@ const submit = async () => {
 }
 
 .ccm-addr-line1 {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #1a1a1a;
   white-space: nowrap;
@@ -265,7 +265,7 @@ const submit = async () => {
 }
 
 .ccm-addr-line2 {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8e8e93;
 }
 
@@ -295,7 +295,7 @@ const submit = async () => {
 }
 
 .ccm-empty {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #aaa;
   text-align: center;
   padding: 16px 0;
@@ -315,7 +315,7 @@ const submit = async () => {
   border-radius: 14px;
   background: transparent;
   color: #666;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -327,7 +327,7 @@ const submit = async () => {
   border-radius: 14px;
   background: #00a19a;
   color: white;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.2s;

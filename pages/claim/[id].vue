@@ -48,7 +48,7 @@
               .join(', ')
           }}
         </div>
-        <div class="cl-sel-change" @click="clearSelection">Change address</div>
+        <div class="cl-sel-change" @click="clearSelection" role="button" tabindex="0" @keydown.enter="clearSelection" @keydown.space.prevent="clearSelection">Change address</div>
       </div>
 
       <div class="cl-lock-note">
@@ -211,7 +211,7 @@
         </div>
       </div>
 
-      <div class="cl-link-center" @click="step = 'search'">
+      <div class="cl-link-center" @click="step = 'search'" role="button" tabindex="0" @keydown.enter="step = 'search'" @keydown.space.prevent="step = 'search'">
         <svg
           width="14"
           height="14"
@@ -363,7 +363,7 @@
         class="cl-slot cl-slot-front"
         :class="{ 'cl-slot-filled': idFrontUrl }"
         @click="triggerUpload('front')"
-      >
+       role="button" tabindex="0" @keydown.enter="triggerUpload('front')" @keydown.space.prevent="triggerUpload('front')">
         <img v-if="idFrontUrl" :src="idFrontUrl" class="cl-slot-thumb" />
         <template v-else>
           <div class="cl-slot-ic">📷</div>
@@ -377,7 +377,7 @@
         class="cl-slot cl-slot-back"
         :class="{ 'cl-slot-filled': idBackUrl }"
         @click="triggerUpload('back')"
-      >
+       role="button" tabindex="0" @keydown.enter="triggerUpload('back')" @keydown.space.prevent="triggerUpload('back')">
         <img v-if="idBackUrl" :src="idBackUrl" class="cl-slot-thumb" />
         <template v-else>
           <div class="cl-slot-ic cl-slot-ic-muted">📷</div>
@@ -2118,7 +2118,7 @@ onBeforeUnmount(() => {
   gap: 8px;
 }
 .cl-back {
-  font-size: 26px;
+  font-size: 1.625rem;
   line-height: 1;
   color: #231d45;
   background: none;
@@ -2134,12 +2134,12 @@ onBeforeUnmount(() => {
   text-align: center;
 }
 .cl-top-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #231d45;
 }
 .cl-top-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #64748b;
   margin-top: 2px;
 }
@@ -2199,32 +2199,32 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   margin: 0 auto 18px;
-  font-size: 30px;
+  font-size: 1.875rem;
 }
 .cl-icon-square.cl-icon-lg {
   width: 72px;
   height: 72px;
   border-radius: 22px;
-  font-size: 34px;
+  font-size: 2.125rem;
   margin-bottom: 20px;
 }
 
 .cl-h1 {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #231d45;
   margin: 0 0 8px;
   letter-spacing: -0.01em;
 }
 .cl-h2 {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #231d45;
   margin: 0 0 6px;
   letter-spacing: -0.01em;
 }
 .cl-body {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: #475569;
   line-height: 1.55;
   margin: 0 0 14px;
@@ -2256,7 +2256,7 @@ onBeforeUnmount(() => {
   margin-bottom: 14px;
 }
 .cl-field-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #64748b;
   text-transform: uppercase;
@@ -2273,7 +2273,7 @@ onBeforeUnmount(() => {
   margin-bottom: 14px;
 }
 .cl-sel-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: #008a84;
   text-transform: uppercase;
@@ -2281,17 +2281,17 @@ onBeforeUnmount(() => {
   margin-bottom: 4px;
 }
 .cl-sel-line1 {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #231d45;
 }
 .cl-sel-line2 {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #475569;
 }
 .cl-sel-change {
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   font-weight: 700;
   cursor: pointer;
   margin-top: 8px;
@@ -2308,10 +2308,10 @@ onBeforeUnmount(() => {
   border-radius: 12px;
 }
 .cl-lock-ic {
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 .cl-lock-body {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #475569;
   line-height: 1.5;
 }
@@ -2338,7 +2338,7 @@ onBeforeUnmount(() => {
   border-radius: 50%;
 }
 .cl-navy-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -2347,14 +2347,14 @@ onBeforeUnmount(() => {
   position: relative;
 }
 .cl-navy-addr1 {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #fff;
   margin-bottom: 4px;
   position: relative;
 }
 .cl-navy-addr2 {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.65);
   margin-bottom: 16px;
   position: relative;
@@ -2371,12 +2371,12 @@ onBeforeUnmount(() => {
   padding: 10px 12px;
 }
 .cl-tile-l {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: rgba(255, 255, 255, 0.5);
   margin-bottom: 3px;
 }
 .cl-tile-v {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #fff;
 }
@@ -2393,11 +2393,11 @@ onBeforeUnmount(() => {
   gap: 10px;
 }
 .cl-info-ic {
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 .cl-info-body {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #475569;
   line-height: 1.5;
 }
@@ -2407,8 +2407,8 @@ onBeforeUnmount(() => {
 
 .cl-link-center {
   text-align: center;
-  font-size: 12px;
-  color: #00a19a;
+  font-size: 0.75rem;
+  color: #00726c;
   font-weight: 700;
   cursor: pointer;
   padding: 10px;
@@ -2429,7 +2429,7 @@ onBeforeUnmount(() => {
   padding: 14px;
 }
 .cl-eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #64748b;
   text-transform: uppercase;
@@ -2458,16 +2458,16 @@ onBeforeUnmount(() => {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  font-size: 19px;
+  font-size: 1.1875rem;
   flex-shrink: 0;
 }
 .cl-step-t {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
 }
 .cl-step-s {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   margin-top: 1px;
 }
@@ -2478,7 +2478,7 @@ onBeforeUnmount(() => {
   gap: 12px;
 }
 .cl-pale-ic {
-  font-size: 28px;
+  font-size: 1.75rem;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -2494,24 +2494,24 @@ onBeforeUnmount(() => {
   display: block;
 }
 .cl-pale-ic-sm {
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
 }
 .cl-pale-t {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #231d45;
   margin-bottom: 3px;
 }
 .cl-pale-s {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #475569;
   line-height: 1.5;
 }
 
 /* ── KYC ID upload slots ───────────────────────────── */
 .cl-slot-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #475569;
   text-transform: uppercase;
@@ -2545,13 +2545,13 @@ onBeforeUnmount(() => {
   background: #fff !important;
 }
 .cl-slot-ic {
-  font-size: 32px;
+  font-size: 2rem;
 }
 .cl-slot-ic-muted {
   opacity: 0.4;
 }
 .cl-slot-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #008a84;
 }
@@ -2574,7 +2574,7 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
 }
@@ -2587,7 +2587,7 @@ onBeforeUnmount(() => {
 .cl-pill {
   background: #f1f5f9;
   color: #475569;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   padding: 5px 10px;
   border-radius: 999px;
@@ -2595,7 +2595,7 @@ onBeforeUnmount(() => {
 .cl-pill-good {
   background: #dcfce7;
   color: #008a84;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 999px;
@@ -2633,7 +2633,7 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 60px;
+  font-size: 3.75rem;
 }
 .cl-live-inner img {
   width: 78px;
@@ -2646,7 +2646,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #231d45;
 }
 .cl-num {
@@ -2657,7 +2657,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -2669,7 +2669,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
 }
 .cl-aml-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #231d45;
   font-weight: 600;
 }
@@ -2724,7 +2724,7 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 28px;
+  font-size: 1.75rem;
   padding: 8px;
 }
 /* Land Registry illustration inside the pulsing loader - larger than
@@ -2745,7 +2745,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: #94a3b8;
   transition: color 0.3s;
 }
@@ -2785,15 +2785,15 @@ onBeforeUnmount(() => {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  font-size: 20px;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 .cl-lrf-banner-t {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 .cl-lrf-banner-s {
-  font-size: 12px;
+  font-size: 0.75rem;
   opacity: 0.85;
   margin-top: 2px;
 }
@@ -2805,7 +2805,7 @@ onBeforeUnmount(() => {
 .cl-lrf-row {
   display: flex;
   justify-content: space-between;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   padding-bottom: 10px;
   border-bottom: 1px solid #eef2f7;
 }
@@ -2831,7 +2831,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   color: #fff;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -2843,7 +2843,7 @@ onBeforeUnmount(() => {
   color: #b91c1c;
   padding: 12px 14px;
   border-radius: 12px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   margin-top: 14px;
   display: flex;
   align-items: center;
@@ -2856,7 +2856,7 @@ onBeforeUnmount(() => {
   border: none;
   padding: 6px 12px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -2866,7 +2866,7 @@ onBeforeUnmount(() => {
   text-decoration: none;
   padding: 6px 12px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   white-space: nowrap;
   flex-shrink: 0;
@@ -2899,7 +2899,7 @@ onBeforeUnmount(() => {
   color: #fff;
   border: none;
   border-radius: 14px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -2922,7 +2922,7 @@ onBeforeUnmount(() => {
   color: #0e2840;
   border: 1px solid #e2e8e8;
   border-radius: 14px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
 }
@@ -2982,7 +2982,7 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 1.4px;
   color: #00817c;
@@ -2993,14 +2993,14 @@ onBeforeUnmount(() => {
   height: 16px;
 }
 .cl-lr-addr1 {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.5px;
   line-height: 1.15;
 }
 .cl-lr-addr2 {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: #4a5876;
   margin-top: 4px;
@@ -3041,26 +3041,26 @@ onBeforeUnmount(() => {
   object-fit: contain;
 }
 .cl-lr-tile-l {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #75757c;
 }
 .cl-lr-tile-v {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 800;
   color: #231d45;
   margin-top: 1px;
   word-break: break-all;
 }
 .cl-lr-tile-v--pending {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   font-style: italic;
   color: #8a8a94;
 }
 
 .cl-lr-tile-select {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #231d45;
   margin-top: 2px;
@@ -3098,7 +3098,7 @@ onBeforeUnmount(() => {
   object-fit: contain;
 }
 .cl-lock-note-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #4a5876;
   line-height: 1.45;
   font-weight: 500;
@@ -3112,7 +3112,7 @@ onBeforeUnmount(() => {
   display: block;
   text-align: center;
   color: #00817c;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   padding: 8px 0;
   cursor: pointer;
@@ -3142,7 +3142,7 @@ onBeforeUnmount(() => {
   background: #e9f6f5;
   color: #00817c;
   border-radius: 100px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 .cl-pill-good svg {
@@ -3165,13 +3165,13 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
 }
 .cl-next-card-t {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
 }
 .cl-next-card-s {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #4a5876;
   font-weight: 500;
   line-height: 1.45;
@@ -3251,14 +3251,14 @@ onBeforeUnmount(() => {
   background: #00a19a;
 }
 .cl-lr-tt {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
   margin-top: 8px;
 }
 .cl-lr-ts {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #a8b0c2;
   font-weight: 500;
   margin-top: 2px;
@@ -3291,13 +3291,13 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .cl-secure-t {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
 }
 .cl-secure-s {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #4a5876;
   font-weight: 500;
   line-height: 1.4;
@@ -3306,7 +3306,7 @@ onBeforeUnmount(() => {
 .cl-secure-shield {
   width: 40px;
   height: 40px;
-  color: #00a19a;
+  color: #00726c;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3331,13 +3331,13 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
 }
 .cl-owned-t {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
 }
 .cl-owned-s {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #75757c;
   font-weight: 500;
   margin-top: 3px;
@@ -3355,7 +3355,7 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
 }
 .cl-owned-header-t {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
@@ -3398,12 +3398,12 @@ onBeforeUnmount(() => {
   object-fit: contain;
 }
 .cl-data-l {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #75757c;
 }
 .cl-data-v {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: #231d45;
   justify-self: end;
@@ -3411,7 +3411,7 @@ onBeforeUnmount(() => {
   word-break: break-all;
 }
 .cl-data-v--good {
-  color: #00a19a;
+  color: #00726c;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -3435,13 +3435,13 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
 }
 .cl-name-card-t {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
 }
 .cl-name-card-s {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #75757c;
   font-weight: 500;
   line-height: 1.5;
@@ -3497,7 +3497,7 @@ onBeforeUnmount(() => {
   padding: 12px 14px;
   background: #f5f6fa;
   border-radius: 12px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #231d45;
 }

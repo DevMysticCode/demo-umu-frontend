@@ -77,15 +77,15 @@
         <form v-else class="enquiry-form" @submit.prevent="submitEnquiry">
           <div class="form-field">
             <label class="form-label">Your Name</label>
-            <input v-model="form.name" class="form-input" type="text" placeholder="Full name" required />
+            <input v-model="form.name" class="form-input" type="text" placeholder="Full name" required  aria-label="Full name" />
           </div>
           <div class="form-field">
             <label class="form-label">Email Address</label>
-            <input v-model="form.email" class="form-input" type="email" placeholder="your@email.com" required />
+            <input v-model="form.email" class="form-input" type="email" placeholder="your@email.com" required  aria-label="your@email.com" />
           </div>
           <div class="form-field">
             <label class="form-label">Property Address (optional)</label>
-            <input v-model="form.property" class="form-input" type="text" placeholder="e.g. 12 Oak Street, TW18 1AB" />
+            <input v-model="form.property" class="form-input" type="text" placeholder="e.g. 12 Oak Street, TW18 1AB"  aria-label="e.g. 12 Oak Street, TW18 1AB" />
           </div>
           <div class="form-field">
             <label class="form-label">Topic</label>
@@ -108,7 +108,7 @@
               placeholder="Describe your question or concern in as much detail as possible…"
               rows="5"
               required
-            />
+             aria-label="Describe your question or concern in as much detail as possible…" />
           </div>
 
           <p v-if="formError" class="form-error">{{ formError }}</p>
@@ -201,41 +201,41 @@ async function submitEnquiry() {
 .expert-badge {
   position: absolute; bottom: -4px; right: -4px;
   background: #7c3aed; color: white; border-radius: 12px;
-  font-size: 10px; font-weight: 700; padding: 3px 8px;
+  font-size: 0.625rem; font-weight: 700; padding: 3px 8px;
   display: flex; align-items: center; gap: 3px;
   border: 2px solid white;
 }
-.expert-name { font-size: 20px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; }
-.expert-role { font-size: 13px; color: #666; margin: 0 0 14px; }
+.expert-name { font-size: 1.25rem; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; }
+.expert-role { font-size: 0.8125rem; color: #666; margin: 0 0 14px; }
 .expert-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 20px; }
 .expert-tag {
-  font-size: 11px; font-weight: 600; color: #00a19a;
+  font-size: 0.6875rem; font-weight: 600; color: #00726c;
   background: #e6f7f6; border-radius: 20px; padding: 4px 10px;
 }
 .expert-stats { display: flex; align-items: center; justify-content: center; gap: 16px; }
 .expert-stat { text-align: center; }
-.expert-stat-val { display: block; font-size: 16px; font-weight: 700; color: #1a1a1a; }
-.expert-stat-lbl { display: block; font-size: 10px; color: #999; margin-top: 2px; }
+.expert-stat-val { display: block; font-size: 1rem; font-weight: 700; color: #1a1a1a; }
+.expert-stat-lbl { display: block; font-size: 0.625rem; color: #999; margin-top: 2px; }
 .expert-stat-divider { width: 1px; height: 32px; background: #f0f0f0; }
 
 /* Sections */
 .expert-section { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-.expert-section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; }
-.expert-section-sub { font-size: 13px; color: #666; margin: 0 0 18px; line-height: 1.5; }
+.expert-section-title { font-size: 1rem; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; }
+.expert-section-sub { font-size: 0.8125rem; color: #666; margin: 0 0 18px; line-height: 1.5; }
 
 /* Specialisms */
 .specialism-list { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
 .specialism-item { display: flex; align-items: flex-start; gap: 12px; }
 .specialism-icon { width: 36px; height: 36px; background: #f0fffe; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.specialism-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 0 0 2px; }
-.specialism-desc { font-size: 12px; color: #888; margin: 0; }
+.specialism-title { font-size: 0.875rem; font-weight: 600; color: #1a1a1a; margin: 0 0 2px; }
+.specialism-desc { font-size: 0.75rem; color: #888; margin: 0; }
 
 /* Form */
 .enquiry-form { display: flex; flex-direction: column; gap: 14px; }
 .form-field { display: flex; flex-direction: column; gap: 5px; }
-.form-label { font-size: 13px; font-weight: 600; color: #444; }
+.form-label { font-size: 0.8125rem; font-weight: 600; color: #444; }
 .form-input {
-  width: 100%; padding: 12px 14px; font-size: 16px; color: #1a1a1a;
+  width: 100%; padding: 12px 14px; font-size: 1rem; color: #1a1a1a;
   border: 1.5px solid #e0e0e0; border-radius: 10px; outline: none;
   background: white; transition: border-color 0.15s;
   font-family: inherit;
@@ -243,11 +243,11 @@ async function submitEnquiry() {
 .form-input:focus { border-color: #00a19a; }
 .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23999' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 .form-textarea { resize: vertical; min-height: 100px; }
-.form-error { font-size: 13px; color: #e53e3e; margin: 0; }
+.form-error { font-size: 0.8125rem; color: #e53e3e; margin: 0; }
 
 .submit-btn {
   width: 100%; padding: 14px; background: #00a19a; color: white;
-  border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+  border: none; border-radius: 12px; font-size: 1rem; font-weight: 600;
   cursor: pointer; transition: background 0.15s;
   margin-top: 4px;
 }
@@ -259,8 +259,8 @@ async function submitEnquiry() {
   display: flex; flex-direction: column; align-items: center; gap: 12px;
   padding: 32px 16px; text-align: center;
 }
-.enquiry-success-title { font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 0; }
-.enquiry-success-sub { font-size: 13px; color: #666; margin: 0; line-height: 1.6; }
+.enquiry-success-title { font-size: 1.125rem; font-weight: 700; color: #1a1a1a; margin: 0; }
+.enquiry-success-sub { font-size: 0.8125rem; color: #666; margin: 0; line-height: 1.6; }
 
 /* Notice */
 .notice-card {
@@ -268,5 +268,5 @@ async function submitEnquiry() {
   background: #f0fffe; border: 1px solid #b2e4e1; border-radius: 12px;
   padding: 14px 16px;
 }
-.notice-text { font-size: 12px; color: #555; line-height: 1.6; margin: 0; }
+.notice-text { font-size: 0.75rem; color: #555; line-height: 1.6; margin: 0; }
 </style>

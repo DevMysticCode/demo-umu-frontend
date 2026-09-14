@@ -22,14 +22,14 @@
         </div>
         <div class="mp-page-title">Marketplace</div>
       </div>
-      <div class="mp-sc-avatar" @click="onAvatar">
+      <div class="mp-sc-avatar" @click="onAvatar" role="button" tabindex="0" @keydown.enter="onAvatar" @keydown.space.prevent="onAvatar">
         {{ avatarInitials }}
       </div>
     </div>
 
     <!-- Personal hero — stats card. Numbers are placeholders; will be
          driven by /me/jobs aggregates once Step 2 ships. -->
-    <div class="mp-hero-card mp-anim-1" @click="goToProjects">
+    <div class="mp-hero-card mp-anim-1" @click="goToProjects" role="button" tabindex="0" @keydown.enter="goToProjects" @keydown.space.prevent="goToProjects">
       <div class="mp-hero-top">
         <div class="mp-hero-eyebrow">📋 Your projects</div>
         <div class="mp-hero-update">{{ stats.inProgress }} active</div>
@@ -98,7 +98,7 @@
           type="text"
           placeholder="What do you need done?"
           @keyup.enter="onSearch"
-        />
+         aria-label="What do you need done?" />
       </div>
       <button class="mp-search-btn" type="button" @click="onSearch">Go</button>
     </div>
@@ -415,14 +415,14 @@ function onLearnUprotect() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6b7089;
   letter-spacing: -0.1px;
   margin-bottom: 2px;
 }
 .mp-page-title {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.8px;
@@ -437,7 +437,7 @@ function onLearnUprotect() {
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   box-shadow:
@@ -451,7 +451,7 @@ function onLearnUprotect() {
   display: inline-block;
   animation: mpWave 2.4s ease-in-out infinite;
   transform-origin: 70% 70%;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 @keyframes mpWave {
   0%, 90%, 100% { transform: rotate(0); }
@@ -497,14 +497,14 @@ function onLearnUprotect() {
   margin-bottom: 12px;
 }
 .mp-hero-eyebrow {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
 }
 .mp-hero-update {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   color: #fff;
   padding: 3px 10px;
@@ -513,7 +513,7 @@ function onLearnUprotect() {
   border-radius: 100px;
 }
 .mp-hero-headline {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.3px;
@@ -526,7 +526,7 @@ function onLearnUprotect() {
   font-weight: 900;
 }
 .mp-hero-sub {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.5;
@@ -545,7 +545,7 @@ function onLearnUprotect() {
   padding: 10px 6px;
 }
 .mp-hero-stat-num {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.5px;
@@ -561,7 +561,7 @@ function onLearnUprotect() {
   50%      { transform: scale(1.06); }
 }
 .mp-hero-stat-label {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.6);
   letter-spacing: 0.6px;
@@ -597,18 +597,18 @@ function onLearnUprotect() {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.18);
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight: 800; line-height: 1;
+  font-size: 1.125rem; font-weight: 800; line-height: 1;
   flex-shrink: 0;
 }
 .mp-post-cta-label {
   flex: 1;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 800;
   letter-spacing: -0.2px;
   text-align: left;
 }
 .mp-post-cta-meta {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 700;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -633,8 +633,8 @@ function onLearnUprotect() {
   transition: transform 0.15s, box-shadow 0.15s;
 }
 .mp-inbox-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(35, 29, 69, 0.1); }
-.mp-inbox-cta-icon { font-size: 20px; }
-.mp-inbox-cta-label { font-size: 13.5px; font-weight: 800; letter-spacing: -0.2px; }
+.mp-inbox-cta-icon { font-size: 1.25rem; }
+.mp-inbox-cta-label { font-size: 0.8438rem; font-weight: 800; letter-spacing: -0.2px; }
 .mp-inbox-cta-badge {
   position: absolute;
   top: 6px;
@@ -645,7 +645,7 @@ function onLearnUprotect() {
   border-radius: 100px;
   background: #e7444c;
   color: #fff;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
@@ -681,7 +681,7 @@ function onLearnUprotect() {
   outline: none;
   background: transparent;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #231d45;
   min-width: 0;
@@ -697,7 +697,7 @@ function onLearnUprotect() {
   border-radius: 14px;
   padding: 0 18px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   cursor: pointer;
   flex-shrink: 0;
@@ -712,15 +712,15 @@ function onLearnUprotect() {
   padding: 22px 20px 10px;
 }
 .mp-section-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
 }
 .mp-section-link {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   cursor: pointer;
 }
 
@@ -763,7 +763,7 @@ function onLearnUprotect() {
   left: 8px;
   right: 8px;
   z-index: 2;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: -0.1px;
   text-align: left;
@@ -805,7 +805,7 @@ function onLearnUprotect() {
   position: absolute;
   top: 10px;
   left: 10px;
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -821,7 +821,7 @@ function onLearnUprotect() {
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   padding: 4px 9px;
   border-radius: 100px;
@@ -833,7 +833,7 @@ function onLearnUprotect() {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   padding: 4px 9px;
   border-radius: 100px;
@@ -845,14 +845,14 @@ function onLearnUprotect() {
   padding: 12px 14px 14px;
 }
 .mp-job-list-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.2px;
   line-height: 1.3;
 }
 .mp-job-list-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #6b7089;
   margin-top: 4px;
@@ -864,18 +864,18 @@ function onLearnUprotect() {
   margin-top: 10px;
 }
 .mp-job-list-budget {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   letter-spacing: -0.4px;
 }
 .mp-job-list-budget small {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #6b7089;
 }
 .mp-job-list-offers {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: #6b7089;
   background: #f5f6fa;
@@ -890,7 +890,7 @@ function onLearnUprotect() {
   background: #fff;
   border: 1px dashed #d8dae6;
   border-radius: 14px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 600;
   color: #6b7089;
   text-align: center;
@@ -919,28 +919,28 @@ function onLearnUprotect() {
   background: linear-gradient(135deg, #00a19a, #008a84);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 17px;
+  font-size: 1.0625rem;
   flex-shrink: 0;
 }
 .mp-earnings-chip-body { flex: 1; display: flex; flex-direction: column; text-align: left; }
 .mp-earnings-chip-label {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: #6b7089;
 }
 .mp-earnings-chip-amt {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.3px;
   margin-top: 2px;
 }
 .mp-earnings-chip-arrow {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
-  color: #00a19a;
+  color: #00726c;
   flex-shrink: 0;
 }
 
@@ -964,12 +964,12 @@ function onLearnUprotect() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
   box-shadow: 0 4px 10px rgba(0, 161, 154, 0.28);
 }
 .mp-trust-strip-text {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: #6b7089;
   line-height: 1.5;

@@ -116,7 +116,7 @@ const skipToApp = () => {
   }
 
   &__button-secondary {
-    @apply w-full h-12 bg-white hover:bg-white/30 text-brand-aqua rounded-xl transition-colors backdrop-blur-sm;
+    @apply w-full h-12 bg-white hover:bg-white/30 text-brand-aqua-text rounded-xl transition-colors backdrop-blur-sm;
   }
 }
 </style>

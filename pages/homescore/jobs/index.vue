@@ -184,7 +184,7 @@ function newJob() {
   color: var(--text);
   flex-shrink: 0;
   font-family: inherit;
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 .back-btn svg { width: 16px; height: 16px; }
 .app-icon-btn.plus {
@@ -195,12 +195,12 @@ function newJob() {
 }
 .app-header-info { flex: 1; min-width: 0; }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -223,7 +223,7 @@ function newJob() {
   border: none;
   border-radius: 8px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: var(--text-secondary);
   cursor: pointer;
@@ -252,7 +252,7 @@ function newJob() {
   margin-bottom: 8px;
 }
 .mp-job-icon {
-  font-size: 18px;
+  font-size: 1.125rem;
   width: 38px;
   height: 38px;
   border-radius: 10px;
@@ -264,14 +264,14 @@ function newJob() {
 }
 .mp-job-info { flex: 1; min-width: 0; }
 .mp-job-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
   line-height: 1.2;
 }
 .mp-job-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 3px;
@@ -285,7 +285,7 @@ function newJob() {
   margin-top: 8px;
 }
 .mp-job-foot-text {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text-secondary);
 }
@@ -294,7 +294,7 @@ function newJob() {
   font-weight: 800;
 }
 .mp-activity-status {
-  font-size: 9.5px;
+  font-size: 0.5938rem;
   font-weight: 800;
   padding: 3px 8px;
   border-radius: 100px;

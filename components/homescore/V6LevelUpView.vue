@@ -533,14 +533,14 @@ const refinedStats = computed(() => {
   min-width: 0;
 }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
   line-height: 1.15;
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -620,7 +620,7 @@ const refinedStats = computed(() => {
   color: var(--accent-dark);
 }
 .levelup-title {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.6px;
@@ -628,7 +628,7 @@ const refinedStats = computed(() => {
   margin-bottom: 6px;
 }
 .levelup-sub {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -661,7 +661,7 @@ const refinedStats = computed(() => {
   text-align: center;
 }
 .levelup-col-label {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: 1.4px;
@@ -703,7 +703,7 @@ const refinedStats = computed(() => {
   justify-content: center;
 }
 .lc-big {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: -0.8px;
@@ -711,10 +711,10 @@ const refinedStats = computed(() => {
 }
 .lc-big--to {
   color: var(--accent-dark);
-  font-size: 28px;
+  font-size: 1.75rem;
 }
 .lc-small {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   color: var(--text-faint);
   margin-top: 2px;
@@ -723,14 +723,14 @@ const refinedStats = computed(() => {
   color: var(--accent-dark);
 }
 .levelup-arrow {
-  font-size: 22px;
+  font-size: 1.375rem;
   color: var(--accent);
   font-weight: 800;
   flex-shrink: 0;
   margin-top: 34px;
 }
 .levelup-col-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -740,7 +740,7 @@ const refinedStats = computed(() => {
   color: var(--accent-dark);
 }
 .levelup-col-sub {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
@@ -751,7 +751,7 @@ const refinedStats = computed(() => {
   padding: 3px 10px;
   background: #fdf1e7;
   color: #b5762f;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   border-radius: 100px;
 }
@@ -798,14 +798,14 @@ const refinedStats = computed(() => {
   min-width: 0;
 }
 .lu-stat-eyebrow {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 700;
   color: var(--text-secondary);
   line-height: 1.3;
   margin-bottom: 4px;
 }
 .lu-stat-val {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--accent-dark);
   letter-spacing: -0.2px;
@@ -824,7 +824,7 @@ const refinedStats = computed(() => {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   color: var(--text-secondary);
   letter-spacing: 1.5px;
@@ -839,7 +839,7 @@ const refinedStats = computed(() => {
   height: 12px;
 }
 .section-h-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--accent-dark);
 }
@@ -862,7 +862,7 @@ const refinedStats = computed(() => {
   padding: 5px 0;
 }
 .stat-icon {
-  font-size: 14px;
+  font-size: 0.875rem;
   width: 34px;
   height: 34px;
   text-align: center;
@@ -879,7 +879,7 @@ const refinedStats = computed(() => {
 }
 .stat-label {
   width: 70px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text);
   flex-shrink: 0;
@@ -909,7 +909,7 @@ const refinedStats = computed(() => {
 .stat-value {
   width: 62px;
   text-align: right;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--text);
   flex-shrink: 0;
@@ -921,7 +921,7 @@ const refinedStats = computed(() => {
   width: 30px;
   text-align: center;
   flex-shrink: 0;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   color: var(--accent-dark);
   background: var(--accent-paler);
@@ -947,7 +947,7 @@ const refinedStats = computed(() => {
   align-items: flex-start;
 }
 .kg-ic {
-  font-size: 18px;
+  font-size: 1.125rem;
   flex-shrink: 0;
   line-height: 1.2;
 }
@@ -956,13 +956,13 @@ const refinedStats = computed(() => {
   min-width: 0;
 }
 .kg-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--accent-dark);
   margin-bottom: 3px;
 }
 .kg-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -1016,7 +1016,7 @@ const refinedStats = computed(() => {
   margin: auto;
 }
 .lu-tile-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -1024,7 +1024,7 @@ const refinedStats = computed(() => {
   margin-bottom: 6px;
 }
 .lu-tile-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -1041,7 +1041,7 @@ const refinedStats = computed(() => {
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -1064,7 +1064,7 @@ const refinedStats = computed(() => {
   border: none;
   border-radius: 14px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.3);
@@ -1086,7 +1086,7 @@ const refinedStats = computed(() => {
   border: 1.5px solid var(--border);
   border-radius: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -1152,7 +1152,7 @@ const refinedStats = computed(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--accent-dark);
 }
@@ -1167,7 +1167,7 @@ const refinedStats = computed(() => {
   justify-content: center;
   gap: 6px;
   margin: 16px 24px 0;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 500;
   color: var(--text-faint);
   text-align: center;

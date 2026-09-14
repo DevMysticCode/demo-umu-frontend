@@ -225,7 +225,7 @@ const blocks = computed((): Block[] => {
 .help-drawer-icon { display: flex; align-items: center; }
 
 .help-drawer-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
@@ -254,7 +254,7 @@ const blocks = computed((): Block[] => {
 
 .help-empty {
   color: #999;
-  font-size: 14px;
+  font-size: 0.875rem;
   text-align: center;
   padding: 20px 0;
 }
@@ -264,7 +264,7 @@ const blocks = computed((): Block[] => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -275,7 +275,7 @@ const blocks = computed((): Block[] => {
 
 .help-audience-label--seller {
   background: #f0faf9;
-  color: #00a19a;
+  color: #00726c;
   border: 1px solid #b2e4e1;
 }
 
@@ -287,7 +287,7 @@ const blocks = computed((): Block[] => {
 
 /* ── Plain paragraph ───────────────────────────────────────────────────────── */
 .help-para {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #2c2c2c;
   line-height: 1.75;
   margin: 0 0 14px;
@@ -298,7 +298,7 @@ const blocks = computed((): Block[] => {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 20px 0 8px;
@@ -311,7 +311,7 @@ const blocks = computed((): Block[] => {
 .help-section-heading-icon {
   display: flex;
   align-items: center;
-  color: #00a19a;
+  color: #00726c;
   flex-shrink: 0;
 }
 
@@ -334,7 +334,7 @@ const blocks = computed((): Block[] => {
   display: flex;
   align-items: flex-start;
   gap: 9px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #3a3a3a;
   line-height: 1.6;
 }
@@ -352,7 +352,7 @@ const blocks = computed((): Block[] => {
 
 /* ── Disclaimer ────────────────────────────────────────────────────────────── */
 .help-disclaimer {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #b0b0b0;
   line-height: 1.5;
   margin: 20px 0 0;

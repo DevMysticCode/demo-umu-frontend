@@ -1,6 +1,10 @@
 <template>
-  <div class="hs-ring-wrap">
-    <svg viewBox="0 0 200 200" width="200" height="200">
+  <div
+    class="hs-ring-wrap"
+    role="img"
+    :aria-label="`Home Score: ${score} out of 100. Rating: ${rating}.`"
+  >
+    <svg viewBox="0 0 200 200" width="200" height="200" aria-hidden="true">
       <defs>
         <linearGradient id="hsRingGrad" x1="1" y1="0" x2="0" y2="0">
           <stop offset="0%" stop-color="#00BB93" />
@@ -30,7 +34,7 @@
         {{ rating }}
       </text>
     </svg>
-    <p class="hs-ring-label">out of 100</p>
+    <p class="hs-ring-label" aria-hidden="true">out of 100</p>
   </div>
 </template>
 
@@ -69,7 +73,7 @@ onMounted(() => {
   align-items: center;
 }
 .hs-ring-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #aeaeb2;
   margin-top: -8px;
 }

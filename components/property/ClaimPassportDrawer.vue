@@ -371,7 +371,7 @@ onUnmounted(() => {
 }
 
 .cp__sub-address {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink-faint);
 }
 
@@ -380,7 +380,7 @@ onUnmounted(() => {
   border: 1px solid var(--brand-soft);
   border-radius: 999px;
   padding: 5px 12px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--brand);
   flex-shrink: 0;
@@ -420,7 +420,7 @@ onUnmounted(() => {
 }
 
 .cp__hero-heading {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--navy);
   line-height: 1.2;
@@ -429,7 +429,7 @@ onUnmounted(() => {
 }
 
 .cp__hero-caption {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink-soft);
   line-height: 1.55;
 }
@@ -470,7 +470,7 @@ onUnmounted(() => {
 }
 
 .cp__value-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--ink);
   line-height: 1.3;
@@ -480,7 +480,7 @@ onUnmounted(() => {
    grid item, spanning both columns), not a separate label sitting
    above a second card. */
 .cp__features-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--navy);
   margin-bottom: 8px;
@@ -517,7 +517,7 @@ onUnmounted(() => {
   border-radius: 50%;
   background: var(--brand);
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   display: grid;
   place-items: center;
@@ -527,7 +527,7 @@ onUnmounted(() => {
 
 .cp__feature-label {
   flex: 1;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: var(--ink);
   line-height: 1.35;
@@ -560,12 +560,12 @@ onUnmounted(() => {
 }
 
 .cp__price-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink);
 }
 
 .cp__price-value {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--ink);
 }
@@ -576,17 +576,17 @@ onUnmounted(() => {
 }
 
 .cp__vat-note {
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 .cp__total-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--navy);
 }
 
 .cp__total-value {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--navy);
 }
@@ -597,7 +597,7 @@ onUnmounted(() => {
 }
 
 .cp__stripe-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--ink-soft);
   margin-bottom: 6px;
@@ -616,7 +616,7 @@ onUnmounted(() => {
 }
 
 .cp__error {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #e53e3e;
   margin: 8px 0 0;
 }
@@ -629,15 +629,15 @@ onUnmounted(() => {
 .cp__error-link {
   display: inline-block;
   margin-top: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #00a19a;
+  color: #00726c;
   text-decoration: none;
   border-bottom: 1.5px solid #e2f1ea;
   padding-bottom: 1px;
 }
 .cp__error-link:hover {
-  color: #00a19a;
+  color: #00726c;
   border-bottom-color: #00a19a;
 }
 
@@ -649,7 +649,7 @@ onUnmounted(() => {
   border-radius: 14px;
   background: var(--brand);
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   letter-spacing: -0.01em;
@@ -690,7 +690,7 @@ onUnmounted(() => {
 }
 
 .cp__foot-badge {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--ink-faint);
   white-space: nowrap;
@@ -716,7 +716,7 @@ onUnmounted(() => {
 }
 
 .cp__success-title {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--navy);
   margin-bottom: 8px;
@@ -724,7 +724,7 @@ onUnmounted(() => {
 }
 
 .cp__success-desc {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--ink-soft);
   line-height: 1.65;
   margin-bottom: 24px;
@@ -753,7 +753,7 @@ onUnmounted(() => {
   border: 1px solid var(--brand-soft);
   border-radius: 999px;
   padding: 5px 12px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--brand);
 }
@@ -776,7 +776,7 @@ onUnmounted(() => {
   border-radius: 14px;
   background: var(--navy);
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
@@ -790,7 +790,7 @@ onUnmounted(() => {
   border-radius: 14px;
   background: transparent;
   color: var(--ink-soft);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;

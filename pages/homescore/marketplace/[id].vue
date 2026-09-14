@@ -44,7 +44,7 @@
         :key="s.id"
         class="supplier-card"
         @click="goSupplier(s.id)"
-      >
+       role="button" tabindex="0" @keydown.enter="goSupplier(s.id)" @keydown.space.prevent="goSupplier(s.id)">
         <div class="sc-top">
           <div class="sc-avatar" :style="{ background: `linear-gradient(135deg, ${s.gradient[0]}, ${s.gradient[1]})` }">{{ s.initial }}</div>
           <div class="sc-info">
@@ -175,13 +175,13 @@ function goHub() {
 .back-btn svg { width: 16px; height: 16px; }
 .app-header-info { flex: 1; min-width: 0; }
 .app-header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .app-header-sub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 1px;
@@ -202,7 +202,7 @@ function goHub() {
   background: var(--card);
   color: var(--text-secondary);
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -225,14 +225,14 @@ function goHub() {
   box-shadow: var(--shadow-card);
 }
 .grant-banner-title {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 4px;
   letter-spacing: -0.1px;
 }
 .grant-banner-sub {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 500;
   color: var(--text-secondary);
   line-height: 1.55;
@@ -270,7 +270,7 @@ function goHub() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: white;
   flex-shrink: 0;
@@ -284,13 +284,13 @@ function goHub() {
   flex-wrap: wrap;
 }
 .sc-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .verified-badge {
-  font-size: 10px;
+  font-size: 0.625rem;
   background: var(--accent-paler);
   color: var(--accent-dark);
   border: 1px solid var(--accent-pale);
@@ -299,20 +299,20 @@ function goHub() {
   font-weight: 800;
 }
 .sc-rating {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text-secondary);
   font-weight: 600;
 }
 .sc-rating b { color: var(--text); font-weight: 800; }
 .sc-spec {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-top: 3px;
 }
 .sc-match { padding: 0 16px 12px; }
 .sc-match-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   color: var(--text-faint);
   letter-spacing: 1px;
@@ -321,7 +321,7 @@ function goHub() {
 }
 .sc-match-items { display: flex; gap: 6px; flex-wrap: wrap; }
 .match-chip {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   padding: 4px 9px;
   border-radius: 100px;
@@ -337,7 +337,7 @@ function goHub() {
   border-top: 1px solid var(--border-soft);
   background: var(--bg);
 }
-.sc-price { font-size: 13px; font-weight: 800; color: var(--text); }
+.sc-price { font-size: 0.8125rem; font-weight: 800; color: var(--text); }
 .sc-price span { font-weight: 500; color: var(--text-secondary); }
 .sc-cta {
   padding: 9px 16px;
@@ -346,7 +346,7 @@ function goHub() {
   border: none;
   border-radius: 10px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 161, 154, 0.25);
@@ -359,7 +359,7 @@ function goHub() {
   background: linear-gradient(135deg, var(--accent-paler), var(--card));
   border: 1px solid var(--accent-pale);
   border-radius: 14px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   color: var(--text-secondary);
   line-height: 1.6;
@@ -380,7 +380,7 @@ function goHub() {
   border: none;
   border-radius: 14px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 161, 154, 0.3);
@@ -393,7 +393,7 @@ function goHub() {
   border: 1.5px solid var(--border);
   border-radius: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 8px;

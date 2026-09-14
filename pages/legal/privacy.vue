@@ -166,7 +166,7 @@ const goBack = useGoBack('/profile/settings')
 }
 .lg-nav-icon-btn:hover { background: #f0f2f1; }
 .lg-nav-icon-btn svg { width: 18px; height: 18px; }
-.lg-nav-title { flex: 1; text-align: center; font-size: 16px; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
+.lg-nav-title { flex: 1; text-align: center; font-size: 1rem; font-weight: 800; color: #0e2840; letter-spacing: -0.4px; }
 
 .lg-body { position: relative; }
 .atm-bg {
@@ -184,25 +184,25 @@ const goBack = useGoBack('/profile/settings')
 .lg-greeting {
   font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   font-style: italic;
-  font-size: 16px;
+  font-size: 1rem;
   color: #008a84;
   margin-bottom: 4px;
 }
-.lg-h1 { font-size: 28px; font-weight: 800; color: #0e2840; letter-spacing: -1px; line-height: 1.05; }
-.lg-meta { font-size: 11.5px; font-weight: 700; color: #4a5868; margin-top: 6px; }
+.lg-h1 { font-size: 1.75rem; font-weight: 800; color: #0e2840; letter-spacing: -1px; line-height: 1.05; }
+.lg-meta { font-size: 0.7188rem; font-weight: 700; color: #4a5868; margin-top: 6px; }
 
 .lg-content { position: relative; z-index: 1; padding: 0 22px; max-width: 720px; margin: 0 auto; }
-.lg-content h2 { font-size: 14px; font-weight: 800; color: #0e2840; letter-spacing: -0.3px; margin: 22px 0 8px; }
-.lg-content p { font-size: 13px; font-weight: 500; color: #4a5868; line-height: 1.6; margin-bottom: 10px; }
+.lg-content h2 { font-size: 0.875rem; font-weight: 800; color: #0e2840; letter-spacing: -0.3px; margin: 22px 0 8px; }
+.lg-content p { font-size: 0.8125rem; font-weight: 500; color: #4a5868; line-height: 1.6; margin-bottom: 10px; }
 .lg-content ul { margin: 0 0 10px 18px; padding: 0; }
-.lg-content li { font-size: 13px; font-weight: 500; color: #4a5868; line-height: 1.55; margin-bottom: 4px; }
+.lg-content li { font-size: 0.8125rem; font-weight: 500; color: #4a5868; line-height: 1.55; margin-bottom: 4px; }
 .lg-content a { color: #008a84; font-weight: 700; text-decoration: none; border-bottom: 1px dashed #008a84; }
 .lg-content strong { color: #0e2840; font-weight: 800; }
 .lg-footer {
   margin-top: 28px;
   padding-top: 14px;
   border-top: 1px solid #e8eceb;
-  font-size: 11px !important;
+  font-size: 0.6875rem !important;
   color: #8a95a0 !important;
   font-weight: 600 !important;
   text-align: center;

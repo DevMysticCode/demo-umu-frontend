@@ -120,14 +120,14 @@ const closeModal = () => {
 }
 
 .title {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   margin: 0 0 16px;
   color: #1a1a1a;
 }
 
 .message {
-  font-size: 16px;
+  font-size: 1rem;
   color: #666;
   margin-bottom: 32px;
   line-height: 1.5;
@@ -154,7 +154,7 @@ const closeModal = () => {
   color: white;
   border: none;
   border-radius: 16px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(0, 184, 169, 0.3);
   transition: all 0.2s;

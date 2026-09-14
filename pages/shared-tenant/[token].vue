@@ -135,18 +135,18 @@ onMounted(async () => {
   padding: 60px 22px;
 }
 .st-error h2 {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: #0e2840;
   margin-bottom: 4px;
 }
-.st-error p { font-size: 13px; color: #4a5868; font-weight: 600; }
+.st-error p { font-size: 0.8125rem; color: #4a5868; font-weight: 600; }
 .st-error-ic {
   width: 48px; height: 48px;
   border-radius: 50%;
   background: #ffe9dd;
   color: #b85b36;
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
@@ -158,21 +158,21 @@ onMounted(async () => {
 .st-greeting {
   font-family: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   font-style: italic;
-  font-size: 16px;
+  font-size: 1rem;
   color: #008a84;
   margin-bottom: 4px;
 }
 .st-h1 {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.8px;
   line-height: 1.05;
 }
-.st-meta { font-size: 11.5px; font-weight: 700; color: #4a5868; margin-top: 4px; }
+.st-meta { font-size: 0.7188rem; font-weight: 700; color: #4a5868; margin-top: 4px; }
 
 .section-heading {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -188,7 +188,7 @@ onMounted(async () => {
   border: 1px solid #e8eceb;
   border-radius: 12px;
   padding: 14px 16px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #4a5868;
   text-align: center;
@@ -213,13 +213,13 @@ onMounted(async () => {
 }
 .st-card-title {
   flex: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
 }
 .st-card-pill {
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -228,7 +228,7 @@ onMounted(async () => {
 }
 .st-card-pill.good { background: #008a84; color: #fff; }
 .st-card-pill.pending { background: #f0f2f1; color: #4a5868; }
-.st-card-sub { font-size: 11px; font-weight: 600; color: #4a5868; margin-bottom: 8px; }
+.st-card-sub { font-size: 0.6875rem; font-weight: 600; color: #4a5868; margin-bottom: 8px; }
 
 .st-doc-row {
   display: flex;
@@ -249,16 +249,16 @@ onMounted(async () => {
 }
 .st-doc-info { flex: 1; min-width: 0; }
 .st-doc-name {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #0e2840;
   letter-spacing: -0.2px;
 }
-.st-doc-meta { font-size: 10px; font-weight: 600; color: #8a95a0; margin-top: 1px; }
+.st-doc-meta { font-size: 0.625rem; font-weight: 600; color: #8a95a0; margin-top: 1px; }
 .st-doc-action {
   background: #00a19a;
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   padding: 6px 12px;
   border-radius: 100px;
@@ -271,7 +271,7 @@ onMounted(async () => {
   border-top: 1px solid #f0f2f1;
 }
 .st-text-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -279,14 +279,14 @@ onMounted(async () => {
   margin-bottom: 2px;
 }
 .st-text-value {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: #0e2840;
 }
 
 .st-footnote {
   margin: 18px 22px 0;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #8a95a0;
   text-align: center;

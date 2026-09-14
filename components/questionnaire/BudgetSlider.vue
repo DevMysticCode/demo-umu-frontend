@@ -2,7 +2,7 @@
   <div class="budget-slider">
     <div v-if="showHelperText" class="budget_helper_text mb-7">
       <p>Please use the slider to specify starting and ending range.</p>
-      <p class="text-brand-aqua">
+      <p class="text-brand-aqua-text">
         Between £{{ budgetRange.min }}K and £{{ budgetRange.max }}K
       </p>
     </div>
@@ -200,7 +200,7 @@ const handleMaxInput = (event) => {
 }
 
 .budget_helper_text {
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .budget-slider__values {
@@ -216,16 +216,16 @@ const handleMaxInput = (event) => {
   background-color: rgba(0, 161, 154, 0.1);
   border-radius: 100px;
   padding: 6px 12px;
-  color: #00a19a;
+  color: #00726c;
 }
 
 .budget-slider__value-prefix {
-  font-size: 12px;
+  font-size: 0.75rem;
   margin-right: 0.25rem;
 }
 
 .budget-slider__value-amount {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .budget-slider__container {
@@ -332,7 +332,7 @@ const handleMaxInput = (event) => {
 
 .budget-slider__labels span {
   font-size: 0.875rem;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 500;
 }
 

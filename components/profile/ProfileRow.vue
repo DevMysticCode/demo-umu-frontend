@@ -78,7 +78,7 @@ function onClick(e) {
   border-radius: 11px;
   background: #f1f9f4;
   border: 1px solid #e2f1ea;
-  color: #00a19a;
+  color: #00726c;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -100,7 +100,7 @@ function onClick(e) {
   color: #4a5568;
 }
 .prow-emoji {
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
 }
 
@@ -109,14 +109,14 @@ function onClick(e) {
   min-width: 0;
 }
 .prow-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #0e2840;
   letter-spacing: -0.2px;
   line-height: 1.25;
 }
 .prow-meta {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6b7c8e;
   margin-top: 2px;
   line-height: 1.4;
@@ -129,13 +129,13 @@ function onClick(e) {
   flex-shrink: 0;
 }
 .prow-value {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #0e2840;
   font-weight: 600;
 }
 .prow-chev {
   color: #94a3b8;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
 }
 </style>

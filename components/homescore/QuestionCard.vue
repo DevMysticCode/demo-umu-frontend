@@ -49,7 +49,7 @@ const categoryColor = computed(() => PILLAR_COLORS[props.question.pillar] ?? '#0
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #8e8e93;
   text-transform: uppercase;
@@ -62,7 +62,7 @@ const categoryColor = computed(() => PILLAR_COLORS[props.question.pillar] ?? '#0
   border-radius: 50%;
 }
 .hs-question-text {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: #1a1a1a;
   line-height: 1.35;
@@ -81,7 +81,7 @@ const categoryColor = computed(() => PILLAR_COLORS[props.question.pillar] ?? '#0
   border-radius: 14px;
   border: 1.5px solid #e8e8ee;
   background: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #1a1a1a;
   cursor: pointer;
   text-align: left;
@@ -90,7 +90,7 @@ const categoryColor = computed(() => PILLAR_COLORS[props.question.pillar] ?? '#0
 .hs-option--selected {
   border-color: #00a19a;
   background: #f0fafa;
-  color: #00a19a;
+  color: #00726c;
   font-weight: 600;
 }
 .hs-option-radio {
