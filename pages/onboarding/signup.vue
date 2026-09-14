@@ -360,7 +360,7 @@ const handleSubmit = async () => {
   border-radius: 12px;
   padding: 13px 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #231d45;
   letter-spacing: -0.1px;
@@ -436,7 +436,7 @@ const handleSubmit = async () => {
   border-color: #00a19a;
   box-shadow: 0 0 0 4px rgba(0, 161, 154, 0.10);
 }
-:deep(.number-input) { font-size: 14px; color: #231d45; font-weight: 600; }
+:deep(.number-input) { font-size: 16px; color: #231d45; font-weight: 600; }
 :deep(.country-dial) { color: #231d45; }
 
 /* Postcode prompt callout */

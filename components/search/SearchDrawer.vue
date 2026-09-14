@@ -640,7 +640,7 @@ watch(
   background: transparent;
   border: none;
   outline: none;
-  font-size: 15px;
+  font-size: 16px;
   color: #1a1a1a;
 }
 .sd-input::placeholder {

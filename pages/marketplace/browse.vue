@@ -290,7 +290,7 @@ function openJob(id: string) {
 .mp-search-input svg { width: 16px; height: 16px; color: #6b7089; flex-shrink: 0; }
 .mp-search-input input {
   flex: 1; border: none; outline: none; background: transparent;
-  font-family: inherit; font-size: 13px; font-weight: 600;
+  font-family: inherit; font-size: 16px; font-weight: 600;
   color: #231d45; min-width: 0;
 }
 .mp-search-input input::placeholder { color: #a8a9ad; font-weight: 500; }

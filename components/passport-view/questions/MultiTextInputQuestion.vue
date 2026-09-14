@@ -278,7 +278,7 @@ const cancelEdit = () => {
   padding: 12px 16px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-family: inherit;
   transition: border-color 0.2s;
   box-sizing: border-box;
@@ -375,7 +375,7 @@ const cancelEdit = () => {
   width: 100%;
   padding: 12px 16px;
   border: none;
-  font-size: 14px;
+  font-size: 16px;
   font-family: inherit;
   box-sizing: border-box;
 }

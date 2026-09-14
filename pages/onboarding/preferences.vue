@@ -1517,7 +1517,7 @@ onMounted(() => {
   border: none;
   padding: 10px 4px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--navy);
   letter-spacing: -0.1px;

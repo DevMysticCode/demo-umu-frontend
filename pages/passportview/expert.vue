@@ -235,7 +235,7 @@ async function submitEnquiry() {
 .form-field { display: flex; flex-direction: column; gap: 5px; }
 .form-label { font-size: 13px; font-weight: 600; color: #444; }
 .form-input {
-  width: 100%; padding: 12px 14px; font-size: 14px; color: #1a1a1a;
+  width: 100%; padding: 12px 14px; font-size: 16px; color: #1a1a1a;
   border: 1.5px solid #e0e0e0; border-radius: 10px; outline: none;
   background: white; transition: border-color 0.15s;
   font-family: inherit;

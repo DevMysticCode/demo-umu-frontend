@@ -1080,7 +1080,7 @@ onMounted(async () => {
   outline: 0;
   background: transparent;
   font: inherit;
-  font-size: 14.5px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--navy);
   min-width: 0;

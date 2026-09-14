@@ -1451,7 +1451,7 @@ watch(
   border-radius: 13px;
   padding: 14px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: #231d45;
   background: #fbfafe;

@@ -425,7 +425,7 @@ function friendlyError(err: any, fallback: string): string {
   padding: 10px 12px;
   border: 1.5px solid #e4e5ed;
   border-radius: 10px;
-  font: inherit; font-size: 13px;
+  font: inherit; font-size: 16px;
   color: #231d45;
   resize: vertical;
   outline: none;

@@ -236,7 +236,7 @@ function selectLink(e) {
 .share-link-input {
   flex: 1;
   min-width: 0;
-  font-size: 13px;
+  font-size: 16px;
   color: #4a5868;
   font-family: 'SF Mono', ui-monospace, Menlo, monospace;
   overflow: hidden;

@@ -647,7 +647,7 @@ const goBack = useGoBack('/profile')
   border-radius: 12px;
   padding: 11px 14px 11px 38px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -1066,7 +1066,7 @@ const goBack = useGoBack('/profile')
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #0e2840;
   outline: none;

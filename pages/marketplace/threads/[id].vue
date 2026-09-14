@@ -324,7 +324,7 @@ function openJob() {
   border-radius: 18px;
   padding: 10px 14px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 500;
   color: #231d45;
   outline: none;

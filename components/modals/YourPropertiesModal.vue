@@ -180,7 +180,7 @@ watch(
   flex: 1;
   border: none;
   outline: none;
-  font-size: 15px;
+  font-size: 16px;
   color: #333;
   background: transparent;
 }

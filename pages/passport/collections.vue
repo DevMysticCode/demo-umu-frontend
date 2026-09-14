@@ -204,7 +204,9 @@
 
     <!-- Your own passports (Seller / Landlord you created) -->
     <div
-      v-if="!loading && (filteredCollections.length || filteredPassports.length)"
+      v-if="
+        !loading && (filteredCollections.length || filteredPassports.length)
+      "
       class="grid-section-head px-4"
     >
       <span class="grid-section-title">Passports you own</span>
@@ -353,9 +355,14 @@
           </div>
           <p class="cell-name">{{ shortAddress(w.addressLine1) }}</p>
           <p class="cell-sub">
-            {{ w.postcode }}<template v-if="w.property?.epcRating"> · EPC {{ w.property.epcRating }}</template>
+            {{ w.postcode
+            }}<template v-if="w.property?.epcRating">
+              · EPC {{ w.property.epcRating }}</template
+            >
           </p>
-          <span class="buyer-cover-pill">Published · Unlocked {{ formatPurchasedAt(w.purchasedAt) }}</span>
+          <span class="buyer-cover-pill"
+            >Published · Unlocked {{ formatPurchasedAt(w.purchasedAt) }}</span
+          >
         </div>
       </div>
     </div>
@@ -616,7 +623,12 @@ const typeChips = computed(() => {
       count,
     }))
   return [
-    { value: 'all', label: 'All types', tone: 'all', count: allPassports.value.length },
+    {
+      value: 'all',
+      label: 'All types',
+      tone: 'all',
+      count: allPassports.value.length,
+    },
     ...types,
   ]
 })
@@ -764,9 +776,11 @@ const load = async () => {
 // type→asset convention as PassportCard.vue. Defaults to seller since
 // that's the overwhelming majority of buyer-access purchases today.
 const purchasedPassportCover = (type) => {
-  if (type === 'LANDLORD') return '/op-icons/passport-covers/landlord_tilted_right_on_tile.png'
-  if (type === 'BUYER') return '/op-icons/passport-covers/buyer_tilted_right_on_tile.png'
-  return '/op-icons/passport-covers/seller_tilted_right_on_tile.png'
+  if (type === 'LANDLORD')
+    return '/op-icons/passport-covers/landlord_tilted_right_on_tile.png'
+  if (type === 'BUYER')
+    return '/op-icons/passport-covers/buyer_tilted_right_on_tile.png'
+  return '/op-icons/passport-covers/seller_front_no_tile_no_tilt.png'
 }
 
 const formatPurchasedAt = (iso) => {
@@ -920,9 +934,7 @@ const executeDelete = async () => {
   border-radius: 999px;
   height: 32px;
   overflow: hidden;
-  transition:
-    width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 0.18s,
+  transition: width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.18s,
     background 0.18s;
   width: 32px;
 }
@@ -952,7 +964,7 @@ const executeDelete = async () => {
   border: none;
   outline: none;
   background: transparent;
-  font-size: 13px;
+  font-size: 16px;
   color: #231d45;
   padding: 0 6px 0 0;
   font-family: inherit;
@@ -1060,9 +1072,7 @@ const executeDelete = async () => {
   text-align: left;
   position: relative;
   overflow: hidden;
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.2s ease;
+  transition: transform 0.18s ease, box-shadow 0.2s ease;
   box-shadow: 0 2px 10px rgba(31, 122, 102, 0.08);
 }
 .coll-resume:hover {
@@ -1180,7 +1190,7 @@ const executeDelete = async () => {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 15px;
+  font-size: 16px;
   color: #333;
   background: transparent;
 }
@@ -1258,7 +1268,9 @@ const executeDelete = async () => {
 }
 
 /* Passport-type chip row - second filter row, type-coloured dot per chip. */
-.coll-types { margin-top: 6px; }
+.coll-types {
+  margin-top: 6px;
+}
 .coll-type-dot {
   width: 8px;
   height: 8px;
@@ -1266,8 +1278,12 @@ const executeDelete = async () => {
   background: #00a19a;
   flex-shrink: 0;
 }
-.coll-type-chip.tone-seller .coll-type-dot { background: #00a19a; }
-.coll-type-chip.tone-landlord .coll-type-dot { background: #f0a020; }
+.coll-type-chip.tone-seller .coll-type-dot {
+  background: #00a19a;
+}
+.coll-type-chip.tone-landlord .coll-type-dot {
+  background: #f0a020;
+}
 .coll-type-chip.tone-seller.active {
   background: #00a19a;
   border-color: #00a19a;
@@ -1280,8 +1296,9 @@ const executeDelete = async () => {
 .coll-type-chip.tone-landlord.active .coll-city-num {
   background: rgba(255, 255, 255, 0.25);
 }
-.coll-type-chip.active .coll-type-dot { background: #fff; }
-
+.coll-type-chip.active .coll-type-dot {
+  background: #fff;
+}
 
 .sort-btn {
   width: 40px;
@@ -1386,8 +1403,12 @@ const executeDelete = async () => {
   backdrop-filter: blur(4px);
   box-shadow: 0 3px 10px rgba(229, 62, 62, 0.35);
 }
-.book-trash-btn:hover { background: rgba(229, 62, 62, 1); }
-.book-trash-btn:active { transform: scale(0.9); }
+.book-trash-btn:hover {
+  background: rgba(229, 62, 62, 1);
+}
+.book-trash-btn:active {
+  transform: scale(0.9);
+}
 
 /* Every grid tile uses the real Property Passport book (seller/landlord
    art + address overlaid via the shared PassportCard component) - no

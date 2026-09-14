@@ -699,7 +699,7 @@ function clearAllFilters() {
   border-radius: 14px;
   border: 1.5px solid #e5e7eb;
   background: #f8f7fc;
-  font-size: 14px;
+  font-size: 16px;
   color: #1f2024;
   outline: none;
   font-family: inherit;

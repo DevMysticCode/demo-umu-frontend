@@ -599,7 +599,7 @@ onMounted(loadPassports)
   border-radius: 10px;
   padding: 10px 12px 10px 38px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #0e2840;
   outline: none;
@@ -756,7 +756,7 @@ onMounted(loadPassports)
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #0e2840;
   outline: none;

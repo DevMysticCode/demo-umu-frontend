@@ -12527,7 +12527,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   border-radius: 10px;
   padding: 11px 13px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   color: #231d45;
   outline: none;
   background: #fff;
@@ -12742,7 +12742,7 @@ button.pps-detail-tile.pps-detail-tile--clickable:hover {
   outline: 0;
   background: transparent;
   font: inherit;
-  font-size: 14.5px;
+  font-size: 16px;
   font-weight: 500;
   color: #231d45;
   min-width: 0;
