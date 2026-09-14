@@ -7,6 +7,22 @@
       :showBack="true"
       back-to="/dashboard"
       right="profile"
+      :show-tour="true"
+      :tour-disabled="loading"
+      @tour="landlordTourRef?.start?.()"
+    />
+
+    <!-- Guided tour — explains the chrome plus one step per compliance
+         section (title comes from the loaded data, not hardcoded, so it
+         covers whichever sections this passport actually has). Sections
+         arrive on the same GET /passport/:id/sections round-trip loadPassport()
+         already awaits before flipping `loading` false, so gating the "?"
+         button on `loading` (above) is enough - no separate readiness flag
+         needed here. -->
+    <OnboardingTour
+      ref="landlordTourRef"
+      :steps="landlordTourSteps"
+      storage-key="umu_tour_landlord_passportview_v1"
     />
 
     <main class="lp-body">
@@ -148,6 +164,7 @@
               type="button"
               class="lp-sec"
               :class="`lp-sec--${cardData(section).tone}`"
+              :data-tour-section="section.id"
               @click="openSection(section)"
             >
               <div class="lp-sec-icon" :class="`lp-sec-icon--${cardData(section).tone}`">
@@ -206,6 +223,7 @@
               type="button"
               class="lp-sec"
               :class="`lp-sec--${cardData(section).tone}`"
+              :data-tour-section="section.id"
               @click="openSection(section)"
             >
               <div class="lp-sec-icon" :class="`lp-sec-icon--${cardData(section).tone}`">
@@ -2147,6 +2165,7 @@ import SegmentedSwitch from '~/components/core/SegmentedSwitch.vue'
 import BottomNav from '~/components/core/BottomNav.vue'
 import SignaturePad from '~/components/ui/SignaturePad.vue'
 import AppHeader from '~/components/core/AppHeader.vue'
+import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 
 definePageMeta({ title: 'Landlord Passport - UmovingU', middleware: 'auth' })
 
@@ -2311,6 +2330,38 @@ const allComplianceSections = computed(() => [
   ...tenancySections.value,
   ...insuranceSections.value,
   ...ungroupedSections.value,
+])
+
+// ── Guided tour ──
+// This page had no tour at all before - "?" in AppHeader now explains the
+// hero/tabs plus one step per compliance section, generated from the
+// loaded data (title/subtitle) so it covers whatever sections this
+// passport actually has rather than a hardcoded list (same approach as
+// the seller/buyer passport tours). Only the Compliance tab's cards carry
+// data-tour-section - the Tenancy tab re-renders a subset of the same
+// sections, and adding the attribute there too would create a duplicate
+// match; the tour assumes the default Compliance tab is active, same as
+// everywhere else here.
+const landlordTourRef = ref<any>(null)
+const sectionTourSteps = computed(() =>
+  allComplianceSections.value.map((s: any) => ({
+    selector: `[data-tour-section="${s.id}"]`,
+    title: s.title,
+    body: s.subtitle || s.description || 'Tap to view and complete this section.',
+  })),
+)
+const landlordTourSteps = computed(() => [
+  {
+    selector: '.pp-hero',
+    title: 'Your Landlord Passport',
+    body: 'Address, compliance %, document count and section progress at a glance.',
+  },
+  {
+    selector: '.lp-tabs',
+    title: 'Compliance, Vault, Tenancy',
+    body: "Three tabs: work through your compliance sections, browse every uploaded document in one place, and manage the current tenancy.",
+  },
+  ...sectionTourSteps.value,
 ])
 
 // ── Stats ─────────────────────────────────────────────────────────

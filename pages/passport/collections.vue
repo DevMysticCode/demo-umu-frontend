@@ -323,10 +323,12 @@
       </div>
     </div>
 
-    <!-- Buyer Passports you've purchased — published seller passports the
-         user has bought access to (GET /passport/buyer-access). Rendered
-         as a grid of passport-cover cards, the same shape as the owned
-         passports above, using the tilted Buyer Passport cover art. -->
+    <!-- Buyer Passports you've purchased — published seller/landlord
+         passports the user has bought buyer access to (GET
+         /passport/buyer-access). Rendered as a grid of passport-cover
+         cards, the same shape as the owned passports above. The cover
+         matches what was actually purchased (a Seller Passport unlock
+         shows the seller cover, not a generic Buyer Passport one). -->
     <div v-if="!loading && watchingList.length > 0" class="watching-section">
       <div class="watching-header">
         <span class="watching-title">Buyer Passports you've purchased</span>
@@ -342,8 +344,8 @@
           <div class="book-stack">
             <div class="stacked-book">
               <img
-                src="/op-icons/passport-covers/buyer_tilted_right_on_tile.png"
-                alt="Buyer Passport"
+                :src="purchasedPassportCover(w.type)"
+                alt="Passport"
                 class="buyer-cover-img"
                 loading="lazy"
               />
@@ -755,6 +757,16 @@ const load = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// Cover art for a purchased buyer-access row — matches what was actually
+// bought (a Seller Passport unlock shows the seller cover), same
+// type→asset convention as PassportCard.vue. Defaults to seller since
+// that's the overwhelming majority of buyer-access purchases today.
+const purchasedPassportCover = (type) => {
+  if (type === 'LANDLORD') return '/op-icons/passport-covers/landlord_tilted_right_on_tile.png'
+  if (type === 'BUYER') return '/op-icons/passport-covers/buyer_tilted_right_on_tile.png'
+  return '/op-icons/passport-covers/seller_tilted_right_on_tile.png'
 }
 
 const formatPurchasedAt = (iso) => {
