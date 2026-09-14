@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <div v-if="sendError" class="th-error">{{ sendError }}</div>
+      <div v-if="sendError" class="th-error" role="alert">{{ sendError }}</div>
 
       <div class="th-composer">
         <textarea

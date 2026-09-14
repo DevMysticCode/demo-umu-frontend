@@ -29,7 +29,7 @@
       </div>
       <div class="score-top">
         <div class="score-gauge">
-          <svg viewBox="0 0 120 120">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
             <defs>
               <linearGradient id="quizGrad" x1="1" y1="0" x2="0" y2="0">
                 <stop offset="0%" stop-color="#00BB93" />
@@ -304,14 +304,14 @@
               </div>
             </div>
 
-            <label class="drop-zone" :class="{ 'has-file': !!selectedFile }">
+            <label class="drop-zone" :class="{ 'has-file': !!selectedFile }" for="a11y-field-V6QuizView-66">
               <input
                 ref="fileInputRef"
                 type="file"
                 accept="application/pdf,image/png,image/jpeg"
                 class="drop-zone-input"
                 @change="onFileSelected"
-              />
+               id="a11y-field-V6QuizView-66"/>
               <div class="drop-zone-icon">{{ selectedFile ? '✓' : '📄' }}</div>
               <div class="drop-zone-title">
                 {{ selectedFile ? selectedFile.name : 'Drop your bill here' }}

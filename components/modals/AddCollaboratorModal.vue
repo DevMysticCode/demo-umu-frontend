@@ -80,7 +80,7 @@
       </div>
 
       <!-- Error / success banners -->
-      <div v-if="error" class="ac-error">{{ error }}</div>
+      <div v-if="error" class="ac-error" role="alert">{{ error }}</div>
       <div v-if="success" class="ac-success">{{ success }}</div>
 
       <!-- Existing collaborators — kept below so the owner sees the

@@ -257,20 +257,20 @@
             </div>
 
             <div class="ifs-field">
-              <label>Your name</label>
+              <label for="a11y-field-InstallerFlowSheet-63">Your name</label>
               <input
                 v-model="formName"
                 type="text"
                 placeholder="e.g. Maxine Wilson"
-               aria-label="e.g. Maxine Wilson" />
+               aria-label="e.g. Maxine Wilson"  id="a11y-field-InstallerFlowSheet-63"/>
             </div>
             <div class="ifs-field">
-              <label>Email or mobile</label>
+              <label for="a11y-field-InstallerFlowSheet-64">Email or mobile</label>
               <input
                 v-model="formContact"
                 type="text"
                 placeholder="So installers can reach you"
-               aria-label="So installers can reach you" />
+               aria-label="So installers can reach you"  id="a11y-field-InstallerFlowSheet-64"/>
             </div>
 
             <button class="ifs-submit" @click="goConfirm">

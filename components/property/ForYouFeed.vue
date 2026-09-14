@@ -88,7 +88,7 @@
                  else, not a plain progress bar. -->
             <div v-if="prop.epcScore" class="prop-score-row">
               <div class="prop-score-gauge">
-                <svg viewBox="0 0 44 44">
+                <svg viewBox="0 0 44 44" aria-hidden="true">
                   <circle class="prop-score-gauge-bg" cx="22" cy="22" r="18" />
                   <circle
                     class="prop-score-gauge-fill"
@@ -167,7 +167,7 @@
           autocapitalize="characters"
           @keyup.enter="savePostcode"
          aria-label="e.g. CV5 6AJ" />
-        <div v-if="postcodeError" class="pcs-error">{{ postcodeError }}</div>
+        <div v-if="postcodeError" class="pcs-error" role="alert">{{ postcodeError }}</div>
         <button
           type="button"
           class="pcs-save-btn"

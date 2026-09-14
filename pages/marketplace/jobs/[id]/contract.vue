@@ -104,19 +104,19 @@
         <button class="cn-btn-secondary" type="button" @click="openThread">
           💬 Message
         </button>
-        <label class="cn-btn-primary" :class="{ uploading }">
+        <label class="cn-btn-primary" :class="{ uploading }" for="a11y-field-contract-9">
           <input
             type="file"
             accept="image/*"
             multiple
             class="cn-file-input"
             @change="onEvidencePicked"
-          />
+           id="a11y-field-contract-9"/>
           <span v-if="uploading">Uploading…</span>
           <span v-else>📸 Upload evidence</span>
         </label>
       </div>
-      <div v-if="evidenceError" class="cn-error">{{ evidenceError }}</div>
+      <div v-if="evidenceError" class="cn-error" role="alert">{{ evidenceError }}</div>
 
       <!-- Release control — customer only, while held -->
       <div v-if="canRelease" class="cn-release-card cn-anim-4">
@@ -125,7 +125,7 @@
           Releasing transfers <b>{{ formatMoney(contract.payment.amount) }}</b>
           to {{ contract.parties.supplier.name }} and closes the contract.
         </div>
-        <div v-if="releaseError" class="cn-error">{{ releaseError }}</div>
+        <div v-if="releaseError" class="cn-error" role="alert">{{ releaseError }}</div>
         <button
           class="cn-release-btn"
           type="button"

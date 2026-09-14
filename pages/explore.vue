@@ -426,12 +426,16 @@
                   <div class="psc-postcode">{{ passports[0].postcode }}</div>
                 </div>
               </div>
-              <div class="psc-gauge">
+              <div
+                class="psc-gauge"
+                role="img"
+                :aria-label="passportScore != null ? `Home Score: ${passportScore} out of 100.` : 'Home Score not yet available'"
+              >
                 <!-- Full-circle progress ring — replaces the old
                      half-moon arc so the gauge matches the property
                      page's HomeScore ring and the boost-view rings.
                      Rotated -90deg so the fill starts from the top. -->
-                <svg width="54" height="54" viewBox="0 0 58 58" style="transform: rotate(-90deg)">
+                <svg width="54" height="54" viewBox="0 0 58 58" style="transform: rotate(-90deg)" aria-hidden="true">
                   <circle
                     cx="29" cy="29" r="24"
                     fill="none"
@@ -448,8 +452,8 @@
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
-                <div class="psc-gauge-num">{{ passportScore ?? '-' }}</div>
-                <div class="psc-gauge-lbl">HomeScore</div>
+                <div class="psc-gauge-num" aria-hidden="true">{{ passportScore ?? '-' }}</div>
+                <div class="psc-gauge-lbl" aria-hidden="true">HomeScore</div>
               </div>
             </div>
             <div class="psc-footer" style="position: relative; z-index: 1">
@@ -870,12 +874,16 @@
                   <div class="psc-postcode">{{ passports[0].postcode }}</div>
                 </div>
               </div>
-              <div class="psc-gauge">
+              <div
+                class="psc-gauge"
+                role="img"
+                :aria-label="passportScore != null ? `Home Score: ${passportScore} out of 100.` : 'Home Score not yet available'"
+              >
                 <!-- Full-circle progress ring — replaces the old
                      half-moon arc so the gauge matches the property
                      page's HomeScore ring and the boost-view rings.
                      Rotated -90deg so the fill starts from the top. -->
-                <svg width="54" height="54" viewBox="0 0 58 58" style="transform: rotate(-90deg)">
+                <svg width="54" height="54" viewBox="0 0 58 58" style="transform: rotate(-90deg)" aria-hidden="true">
                   <circle
                     cx="29" cy="29" r="24"
                     fill="none"
@@ -892,8 +900,8 @@
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
-                <div class="psc-gauge-num">{{ passportScore ?? '-' }}</div>
-                <div class="psc-gauge-lbl">HomeScore</div>
+                <div class="psc-gauge-num" aria-hidden="true">{{ passportScore ?? '-' }}</div>
+                <div class="psc-gauge-lbl" aria-hidden="true">HomeScore</div>
               </div>
             </div>
             <div class="psc-footer" style="position: relative; z-index: 1">
@@ -1175,12 +1183,16 @@
                   <div class="psc-postcode">{{ passports[0].postcode }}</div>
                 </div>
               </div>
-              <div class="psc-gauge">
+              <div
+                class="psc-gauge"
+                role="img"
+                :aria-label="passportScore != null ? `Home Score: ${passportScore} out of 100.` : 'Home Score not yet available'"
+              >
                 <!-- Full-circle progress ring — replaces the old
                      half-moon arc so the gauge matches the property
                      page's HomeScore ring and the boost-view rings.
                      Rotated -90deg so the fill starts from the top. -->
-                <svg width="54" height="54" viewBox="0 0 58 58" style="transform: rotate(-90deg)">
+                <svg width="54" height="54" viewBox="0 0 58 58" style="transform: rotate(-90deg)" aria-hidden="true">
                   <circle
                     cx="29" cy="29" r="24"
                     fill="none"
@@ -1197,8 +1209,8 @@
                     :stroke-dashoffset="passportDashoffset"
                   />
                 </svg>
-                <div class="psc-gauge-num">{{ passportScore ?? '-' }}</div>
-                <div class="psc-gauge-lbl">HomeScore</div>
+                <div class="psc-gauge-num" aria-hidden="true">{{ passportScore ?? '-' }}</div>
+                <div class="psc-gauge-lbl" aria-hidden="true">HomeScore</div>
               </div>
             </div>
             <div class="psc-footer" style="position: relative; z-index: 1">

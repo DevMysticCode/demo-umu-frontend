@@ -56,7 +56,7 @@
 
         <!-- Strength gauge -->
         <div class="sb-gauge-wrap">
-          <svg viewBox="0 0 120 120" class="sb-gauge">
+          <svg viewBox="0 0 120 120" class="sb-gauge" aria-hidden="true">
             <circle cx="60" cy="60" r="50" class="sb-gauge-track" />
             <circle
               cx="60"

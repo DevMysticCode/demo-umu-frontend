@@ -52,7 +52,7 @@
         </span>
       </div>
       <div class="pcb-ring">
-        <svg viewBox="0 0 50 50">
+        <svg viewBox="0 0 50 50" aria-hidden="true">
           <circle
             cx="25"
             cy="25"

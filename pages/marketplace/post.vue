@@ -90,20 +90,20 @@
           v-if="uploadedPhotos.length < MAX_PHOTOS"
           class="pj-photo-tile"
           :class="{ uploading: photoUploading }"
-        >
+         for="a11y-field-post-10">
           <input
             type="file"
             accept="image/*"
             multiple
             class="pj-photo-input"
             @change="onPhotoPicked"
-          />
+           id="a11y-field-post-10"/>
           <span v-if="photoUploading">…</span>
           <span v-else>+</span>
         </label>
       </div>
 
-      <div v-if="photoError" class="pj-error">{{ photoError }}</div>
+      <div v-if="photoError" class="pj-error" role="alert">{{ photoError }}</div>
     </template>
 
     <!-- ═════════════ STEP 3 · DETAILS ═════════════ -->
@@ -188,7 +188,7 @@
       </div>
 
       <div class="pj-budget-row pj-anim-1">
-        <label class="pj-budget-pill">
+        <label class="pj-budget-pill" for="a11y-field-post-11">
           <div class="pj-budget-pill-label">Minimum (£)</div>
           <input
             v-model.number="form.budgetMin"
@@ -198,9 +198,9 @@
             min="1"
             step="1"
             placeholder="0"
-           aria-label="0" />
+           aria-label="0"  id="a11y-field-post-11"/>
         </label>
-        <label class="pj-budget-pill">
+        <label class="pj-budget-pill" for="a11y-field-post-12">
           <div class="pj-budget-pill-label">Maximum (£) · optional</div>
           <input
             v-model.number="form.budgetMax"
@@ -210,7 +210,7 @@
             min="1"
             step="1"
             placeholder="-"
-           aria-label="-" />
+           aria-label="-"  id="a11y-field-post-12"/>
         </label>
       </div>
 
@@ -261,7 +261,7 @@
         <div class="pj-review-desc">{{ form.description }}</div>
       </div>
 
-      <div v-if="submitError" class="pj-error">{{ submitError }}</div>
+      <div v-if="submitError" class="pj-error" role="alert">{{ submitError }}</div>
     </template>
 
     <!-- ═════════════ FOOTER · CONTINUE / POST ═════════════ -->

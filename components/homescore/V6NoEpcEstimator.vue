@@ -103,7 +103,7 @@
         </div>
         <div class="result-top">
           <div class="ring">
-            <svg width="118" height="118" viewBox="0 0 118 118">
+            <svg width="118" height="118" viewBox="0 0 118 118" aria-hidden="true">
               <circle cx="59" cy="59" r="50" fill="none" stroke="#e3e6ee" stroke-width="11" />
               <circle
                 cx="59"

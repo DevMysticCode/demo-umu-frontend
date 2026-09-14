@@ -33,7 +33,7 @@
 
     <span class="sec-label">AGENT DETAILS</span>
     <form class="recipient-card recipient-form" @submit.prevent="onSend">
-      <label class="sa-field">
+      <label class="sa-field" for="a11y-field-sendagent-2">
         <span class="sa-field-label">Agent name</span>
         <input
           v-model="form.name"
@@ -42,9 +42,9 @@
           placeholder="e.g. James Cooper"
           required
           :disabled="sending || !!sentId"
-         aria-label="e.g. James Cooper" />
+         aria-label="e.g. James Cooper"  id="a11y-field-sendagent-2"/>
       </label>
-      <label class="sa-field">
+      <label class="sa-field" for="a11y-field-sendagent-3">
         <span class="sa-field-label">
           Email
           <span class="sa-field-hint">- the secure link is sent here</span>
@@ -56,9 +56,9 @@
           placeholder="agent@savills.co.uk"
           required
           :disabled="sending || !!sentId"
-         aria-label="agent@savills.co.uk" />
+         aria-label="agent@savills.co.uk"  id="a11y-field-sendagent-3"/>
       </label>
-      <label class="sa-field">
+      <label class="sa-field" for="a11y-field-sendagent-4">
         <span class="sa-field-label">
           Firm
           <span class="sa-field-hint">- optional</span>
@@ -69,7 +69,7 @@
           class="sa-input"
           placeholder="e.g. Savills, Knight Frank"
           :disabled="sending || !!sentId"
-         aria-label="e.g. Savills, Knight Frank" />
+         aria-label="e.g. Savills, Knight Frank"  id="a11y-field-sendagent-4"/>
       </label>
 
       <button

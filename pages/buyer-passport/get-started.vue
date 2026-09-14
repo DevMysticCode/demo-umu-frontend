@@ -57,7 +57,7 @@
 
     <form class="bpg-form" @submit.prevent="handleLogin">
       <div class="form-field">
-        <label class="form-label">Email address</label>
+        <label class="form-label" for="a11y-field-getstarted-1">Email address</label>
         <div class="form-input-wrap">
           <span class="form-input-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -65,7 +65,7 @@
               <polyline points="22,6 12,13 2,6" />
             </svg>
           </span>
-          <input v-model="emailInput" type="email" placeholder="Enter your email address" class="form-input with-icon" autocomplete="email"  aria-label="Enter your email address" />
+          <input v-model="emailInput" type="email" placeholder="Enter your email address" class="form-input with-icon" autocomplete="email"  aria-label="Enter your email address"  id="a11y-field-getstarted-1"/>
         </div>
       </div>
 
@@ -108,7 +108,7 @@
         </div>
       </div>
 
-      <div v-if="loginError" class="error-banner">{{ loginError }}</div>
+      <div v-if="loginError" class="error-banner" role="alert">{{ loginError }}</div>
 
       <button type="submit" class="btn-primary" :disabled="loginLoading">
         <span v-if="loginLoading" class="spinner" />

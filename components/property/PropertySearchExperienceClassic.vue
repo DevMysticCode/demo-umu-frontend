@@ -280,7 +280,7 @@
               <div class="prop-footer-row">
                 <div v-if="homeScoreOf(prop) != null" class="footer-hs">
                   <div class="mini-ring">
-                    <svg viewBox="0 0 40 40">
+                    <svg viewBox="0 0 40 40" aria-hidden="true">
                       <circle class="mini-ring-bg" cx="20" cy="20" r="16" />
                       <circle
                         class="mini-ring-fill"

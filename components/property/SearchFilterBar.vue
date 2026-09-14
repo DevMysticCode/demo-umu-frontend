@@ -121,7 +121,7 @@
         <div v-if="(addr.homeScore ?? addr.epcScore) != null" class="addr-hs-col">
           <span class="addr-hs-caption">HomeScore</span>
           <div class="addr-hs-gauge">
-            <svg viewBox="0 0 40 40">
+            <svg viewBox="0 0 40 40" aria-hidden="true">
               <circle class="addr-hs-gauge-bg" cx="20" cy="20" r="16" />
               <circle
                 class="addr-hs-gauge-fill"

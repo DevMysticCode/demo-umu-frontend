@@ -25,7 +25,7 @@
         </div>
 
         <!-- Error Message -->
-        <div v-if="error" class="verification-content__error">
+        <div v-if="error" class="verification-content__error" role="alert">
           {{ error }}
         </div>
 

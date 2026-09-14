@@ -471,7 +471,7 @@
             0.
           </p>
         </div>
-        <label v-else class="mt-6 block">
+        <label v-else class="mt-6 block" for="a11y-field-personalinformation-48">
           <div
             class="h-16 rounded-[20px] border border-[#e2e2e7] bg-[#f4f4f5] flex items-center gap-3 px-5"
           >
@@ -484,7 +484,7 @@
               :type="contactEditInputType"
               :placeholder="`Enter new ${contactEditLabel}`"
               class="w-full bg-transparent outline-none text-[16px] leading-[22px] text-[#1f2024] placeholder:text-[#8e8e93]"
-             aria-label="`Enter new ${contactEditLabel}`" />
+             aria-label="`Enter new ${contactEditLabel}`"  id="a11y-field-personalinformation-48"/>
           </div>
         </label>
       </div>
@@ -582,7 +582,7 @@
         />
       </div>
       <div class="space-y-3">
-        <label class="avatar-pick-row">
+        <label class="avatar-pick-row" for="a11y-field-personalinformation-49">
           <div class="apr-content">
             <Icon name="i-heroicons-camera" class="w-5 h-5 text-[#0e2840]" />
             <span>Take picture</span>
@@ -598,9 +598,9 @@
             capture="camera"
             class="sr-only"
             @change="onFileSelected"
-          />
+           id="a11y-field-personalinformation-49"/>
         </label>
-        <label class="avatar-pick-row">
+        <label class="avatar-pick-row" for="a11y-field-personalinformation-50">
           <div class="apr-content">
             <Icon name="i-heroicons-photo" class="w-5 h-5 text-[#0e2840]" />
             <span>Upload from gallery</span>
@@ -614,9 +614,9 @@
             accept="image/*"
             class="sr-only"
             @change="onFileSelected"
-          />
+           id="a11y-field-personalinformation-50"/>
         </label>
-        <label class="avatar-pick-row">
+        <label class="avatar-pick-row" for="a11y-field-personalinformation-51">
           <div class="apr-content">
             <Icon
               name="i-heroicons-folder-open"
@@ -633,7 +633,7 @@
             accept="image/jpeg,image/png,image/webp,image/gif"
             class="sr-only"
             @change="onFileSelected"
-          />
+           id="a11y-field-personalinformation-51"/>
         </label>
       </div>
       <p v-if="avatarError" class="mt-4 text-center text-red-500 text-[13px]">

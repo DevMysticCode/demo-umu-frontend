@@ -76,8 +76,8 @@
           <div class="mform-label" style="margin-top:16px">Your signature</div>
           <SignaturePad ref="padRef" />
 
-          <label class="sg-consent">
-            <input v-model="consent" type="checkbox" />
+          <label class="sg-consent" for="a11y-field-token-57">
+            <input v-model="consent" type="checkbox"  id="a11y-field-token-57"/>
             <span>I, {{ signerName || 'the undersigned' }}, agree this is my signature and confirm this inventory record is accurate to the best of my knowledge.</span>
           </label>
 

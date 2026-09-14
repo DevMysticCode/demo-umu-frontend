@@ -370,8 +370,12 @@
             </svg>
           </span>
 
-          <div class="pps-gauge-wrap">
-            <svg class="pps-gauge-svg" viewBox="0 0 100 100">
+          <div
+            class="pps-gauge-wrap"
+            role="img"
+            :aria-label="`Home Score: ${homescore} out of 100. Rating: ${scoreVerdict}.`"
+          >
+            <svg class="pps-gauge-svg" viewBox="0 0 100 100" aria-hidden="true">
               <defs>
                 <linearGradient id="ppsGrad" x1="1" y1="0" x2="0" y2="0">
                   <stop offset="0%" stop-color="#00BB93" />
@@ -388,7 +392,7 @@
                 :stroke-dashoffset="251.33 - (homescore / 100) * 251.33"
               />
             </svg>
-            <div class="pps-gauge-center">
+            <div class="pps-gauge-center" aria-hidden="true">
               <span class="pps-gauge-num">{{ homescore }}</span>
               <span class="pps-gauge-denom">/100</span>
             </div>
@@ -3413,22 +3417,22 @@
 
             <div class="pps-field-group">
               <div class="pps-field">
-                <label class="pps-field-label">Your name</label>
+                <label class="pps-field-label" for="a11y-field-id-55">Your name</label>
                 <input
                   v-model="watchName"
                   type="text"
                   class="pps-text-input"
                   placeholder="Alex Quinn"
-                 aria-label="Alex Quinn" />
+                 aria-label="Alex Quinn"  id="a11y-field-id-55"/>
               </div>
               <div class="pps-field">
-                <label class="pps-field-label">Email address</label>
+                <label class="pps-field-label" for="a11y-field-id-56">Email address</label>
                 <input
                   v-model="watchEmail"
                   type="email"
                   class="pps-text-input"
                   placeholder="alex@email.com"
-                 aria-label="alex@email.com" />
+                 aria-label="alex@email.com"  id="a11y-field-id-56"/>
               </div>
               <div class="pps-field">
                 <label class="pps-field-label">Why are you watching?</label>

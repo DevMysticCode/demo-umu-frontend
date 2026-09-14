@@ -97,7 +97,7 @@
           <p v-if="stripeError" class="cp__error">{{ stripeError }}</p>
         </div>
 
-        <div v-if="errorMsg" class="cp__error cp__error--centered">
+        <div v-if="errorMsg" class="cp__error cp__error--centered" role="alert">
           <p>{{ errorMsg }}</p>
           <NuxtLink
             v-if="errorMsg.toLowerCase().includes('phone')"

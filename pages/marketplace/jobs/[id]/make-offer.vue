@@ -83,7 +83,7 @@
         </div>
       </div>
 
-      <div v-if="submitError" class="mo-error">{{ submitError }}</div>
+      <div v-if="submitError" class="mo-error" role="alert">{{ submitError }}</div>
 
       <div class="mo-cta-row mo-anim-3">
         <button

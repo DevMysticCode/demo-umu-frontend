@@ -39,22 +39,22 @@
           </div>
 
           <div class="sd-field">
-            <label class="sd-label">Recipient name (optional)</label>
+            <label class="sd-label" for="a11y-field-ShareProfileDrawer-60">Recipient name (optional)</label>
             <input
               v-model="form.recipientName"
               class="sd-input"
               placeholder="e.g. Hamilton Court Estates"
-             aria-label="e.g. Hamilton Court Estates" />
+             aria-label="e.g. Hamilton Court Estates"  id="a11y-field-ShareProfileDrawer-60"/>
           </div>
 
           <div class="sd-field">
-            <label class="sd-label">Recipient email (optional)</label>
+            <label class="sd-label" for="a11y-field-ShareProfileDrawer-61">Recipient email (optional)</label>
             <input
               v-model="form.recipientEmail"
               type="email"
               class="sd-input"
               placeholder="agent@example.com"
-             aria-label="agent@example.com" />
+             aria-label="agent@example.com"  id="a11y-field-ShareProfileDrawer-61"/>
             <div class="sd-hint">
               If provided, we'll email the link directly. Otherwise you can copy
               it from the Active tab once created.
@@ -62,7 +62,7 @@
           </div>
 
           <div class="sd-field">
-            <label class="sd-label">Access window</label>
+            <label class="sd-label" for="a11y-field-ShareProfileDrawer-62">Access window</label>
             <div class="sd-chip-row">
               <button
                 v-for="opt in expiryOptions"
@@ -81,7 +81,7 @@
                   max="365"
                   class="sd-input sd-input--small"
                   placeholder="e.g. 14"
-                 aria-label="e.g. 14" />
+                 aria-label="e.g. 14"  id="a11y-field-ShareProfileDrawer-62"/>
                 <button
                   class="sd-chip sd-chip--apply"
                   :disabled="!isCustomValid"
@@ -118,7 +118,7 @@
             </div>
           </div>
 
-          <div v-if="errorMsg" class="sd-err">{{ errorMsg }}</div>
+          <div v-if="errorMsg" class="sd-err" role="alert">{{ errorMsg }}</div>
           <button
             class="sd-cta"
             :disabled="creating || !published"

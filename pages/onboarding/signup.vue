@@ -23,11 +23,11 @@
 
     <form class="auth-form" @submit.prevent="handleSubmit">
 
-      <div v-if="formError" class="error-banner">{{ formError }}</div>
+      <div v-if="formError" class="error-banner" role="alert">{{ formError }}</div>
 
       <!-- Email -->
       <div class="form-field">
-        <label class="form-label">Email address</label>
+        <label class="form-label" for="a11y-field-signup-19">Email address</label>
         <div class="form-input-wrap">
           <span class="form-input-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -35,13 +35,13 @@
               <polyline points="22,6 12,13 2,6" />
             </svg>
           </span>
-          <input v-model="form.email" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email"  aria-label="you@example.com" />
+          <input v-model="form.email" type="email" placeholder="you@example.com" class="form-input with-icon" autocomplete="email"  aria-label="you@example.com"  id="a11y-field-signup-19"/>
         </div>
       </div>
 
       <!-- Password -->
       <div class="form-field">
-        <label class="form-label">Password</label>
+        <label class="form-label" for="a11y-field-signup-20">Password</label>
         <div class="form-input-wrap">
           <span class="form-input-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -49,7 +49,7 @@
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
           </span>
-          <input v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="At least 8 characters" class="form-input with-icon with-action" autocomplete="new-password"  aria-label="At least 8 characters" />
+          <input v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="At least 8 characters" class="form-input with-icon with-action" autocomplete="new-password"  aria-label="At least 8 characters"  id="a11y-field-signup-20"/>
           <button type="button" class="form-input-action" @click="showPassword = !showPassword">
             <svg v-if="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
@@ -66,7 +66,7 @@
 
       <!-- Full name -->
       <div class="form-field">
-        <label class="form-label">Full name</label>
+        <label class="form-label" for="a11y-field-signup-21">Full name</label>
         <div class="form-input-wrap">
           <span class="form-input-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -74,7 +74,7 @@
               <circle cx="12" cy="7" r="4" />
             </svg>
           </span>
-          <input v-model="form.fullName" type="text" placeholder="Jane Smith" class="form-input with-icon" autocomplete="name"  aria-label="Jane Smith" />
+          <input v-model="form.fullName" type="text" placeholder="Jane Smith" class="form-input with-icon" autocomplete="name"  aria-label="Jane Smith"  id="a11y-field-signup-21"/>
         </div>
       </div>
 
@@ -113,9 +113,9 @@
       </div>
 
       <!-- Marketing opt-in -->
-      <label class="checkbox-row">
+      <label class="checkbox-row" for="a11y-field-signup-22">
         <span class="checkbox-box" :class="{ checked: form.marketingOptIn }">
-          <input v-model="form.marketingOptIn" type="checkbox" hidden />
+          <input v-model="form.marketingOptIn" type="checkbox" hidden  id="a11y-field-signup-22"/>
         </span>
         <span class="checkbox-text">Email me occasional product updates and tips. We won't spam you - and you can unsubscribe in one tap.</span>
       </label>

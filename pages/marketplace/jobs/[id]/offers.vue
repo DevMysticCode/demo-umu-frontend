@@ -150,7 +150,7 @@
         </div>
       </div>
 
-      <div v-if="opError" class="of-error">{{ opError }}</div>
+      <div v-if="opError" class="of-error" role="alert">{{ opError }}</div>
 
       <div style="height: 100px" />
     </template>

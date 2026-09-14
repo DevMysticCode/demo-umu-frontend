@@ -95,7 +95,7 @@
               <!-- Completion ring (prototype-matching): white circle with
                    teal stroke arc + % text or ✓ in the centre -->
               <div class="map-step-ring">
-                <svg viewBox="0 0 30 30">
+                <svg viewBox="0 0 30 30" aria-hidden="true">
                   <circle class="map-step-ring-bg" cx="15" cy="15" r="12" />
                   <circle
                     class="map-step-ring-fg"

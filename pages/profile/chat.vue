@@ -146,7 +146,7 @@
       </div>
 
       <!-- Error -->
-      <div v-if="error" class="text-center">
+      <div v-if="error" class="text-center" role="alert">
         <p class="font-sf-pro text-[13px] text-red-500">{{ error }}</p>
       </div>
 

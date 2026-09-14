@@ -54,7 +54,7 @@
             :key="field.key"
             class="form-field"
           >
-            <label class="field-label">{{ field.label }}</label>
+            <label class="field-label" for="a11y-field-MultiFieldFormQuestion-67">{{ field.label }}</label>
             <input
               :value="getFieldValue(formIndex, field.key)"
               type="text"
@@ -63,7 +63,7 @@
               @input="
                 updateFieldValue(formIndex, field.key, $event.target.value)
               "
-             aria-label="field.placeholder || ''" />
+             aria-label="field.placeholder || ''"  id="a11y-field-MultiFieldFormQuestion-67"/>
           </div>
         </div>
       </div>

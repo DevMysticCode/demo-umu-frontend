@@ -60,7 +60,7 @@
           </div>
           <div class="buyer-conf-desc">{{ confidenceTitle }}</div>
         </div>
-        <div class="buyer-conf-dial" aria-label="HomeScore">
+        <div class="buyer-conf-dial" role="img" :aria-label="`Home Score: ${displayScore || '-'} out of 100.`">
           <svg viewBox="0 0 60 60" aria-hidden="true">
             <circle
               cx="30"
@@ -89,7 +89,7 @@
               </linearGradient>
             </defs>
           </svg>
-          <div class="buyer-conf-dial-num">{{ displayScore || '-' }}</div>
+          <div class="buyer-conf-dial-num" aria-hidden="true">{{ displayScore || '-' }}</div>
         </div>
       </div>
 

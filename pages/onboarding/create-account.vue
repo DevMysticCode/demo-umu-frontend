@@ -94,12 +94,12 @@
 
           <!-- Terms Checkbox -->
           <div class="form-check mb-6">
-            <label>
+            <label for="a11y-field-createaccount-13">
               <input
                 type="checkbox"
                 :checked="termsAccepted"
                 @change="handleTermsCheckbox"
-              />
+               id="a11y-field-createaccount-13"/>
               I agree to the
               <span class="link cursor-pointer" @click="openTermsModal"
                 >terms and conditions</span

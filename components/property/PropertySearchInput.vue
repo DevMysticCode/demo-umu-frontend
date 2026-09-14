@@ -132,7 +132,7 @@
           <div v-if="(r.homeScore ?? r.epcScore) != null" class="psi-drop-hs">
             <span class="psi-drop-hs-caption">HomeScore</span>
             <div class="psi-drop-hs-gauge">
-              <svg viewBox="0 0 40 40">
+              <svg viewBox="0 0 40 40" aria-hidden="true">
                 <circle class="psi-drop-hs-gauge-bg" cx="20" cy="20" r="16" />
                 <circle
                   class="psi-drop-hs-gauge-fill"
