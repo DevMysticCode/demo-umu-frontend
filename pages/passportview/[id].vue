@@ -106,49 +106,44 @@
               <OPIcon name="caretRight" class="w-[10px] h-[10px]" />
             </div>
           </button>
-        </div>
-      </div>
 
-      <!-- ── Action row — Match to Buyers / Publish ── -->
-      <div class="pp-action-row">
-        <button
-          class="pp-action-btn pp-action-outline"
-          @click="openMatchDrawer"
-        >
-          <OPIcon name="matchToBuyers" class="w-[15px] h-[15px]" />
-          Match to Buyers
-          <span v-if="matchedBuyers.length" class="pp-action-badge">{{
-            matchedBuyers.length
-          }}</span>
-        </button>
-        <button
-          class="pp-action-btn pp-action-primary"
-          :class="{ 'pp-action-loading': publishLoading }"
-          :disabled="publishLoading"
-          @click="onPublishClick"
-        >
-          <OPIcon name="published" class="w-[15px] h-[15px]" />
-          {{ publishButtonLabel }}
-        </button>
-      </div>
-
-      <!-- ── Collaborators row ── -->
-      <div class="pp-collab-row" @click="openCollaboratorModal" role="button" tabindex="0" @keydown.enter="openCollaboratorModal" @keydown.space.prevent="openCollaboratorModal">
-        <button class="pp-collab-add" type="button">+</button>
-        <div class="pp-collab-stack">
-          <div
-            v-for="collaborator in displayCollaborators"
-            :key="collaborator.id"
-            class="pp-collab-avatar"
-          >
-            {{ getInitials(collaborator.firstName, collaborator.lastName) }}
+          <!-- ── Collaborators + Manage visibility, side by side in the
+               hero (client History handoff, 2026-09-25) — replaces the
+               separate collaborators row that used to sit below the hero
+               and the old bare "Publish"/Match-to-Buyers action row.
+               Underlying mechanism (togglePublish/PublishPassportDrawer,
+               openMatchDrawer) is unchanged; only the placement/framing
+               moved. ── -->
+          <div class="pp-action-row">
+            <button
+              class="pp-action-btn pp-action-outline"
+              @click="openCollaboratorModal"
+            >
+              <OPIcon name="matchToBuyers" class="w-[15px] h-[15px]" />
+              {{ collaborators.length }} {{ collaborators.length === 1 ? 'Collaborator' : 'Collaborators' }}
+            </button>
+            <button
+              class="pp-action-btn pp-action-primary"
+              :class="{ 'pp-action-loading': publishLoading }"
+              :disabled="publishLoading"
+              @click="onPublishClick"
+            >
+              <OPIcon name="published" class="w-[15px] h-[15px]" />
+              Manage visibility
+            </button>
           </div>
+          <button
+            class="pp-action-btn pp-action-outline"
+            style="width: 100%; margin-top: 8px"
+            @click="openMatchDrawer"
+          >
+            <OPIcon name="matchToBuyers" class="w-[15px] h-[15px]" />
+            Match to Buyers
+            <span v-if="matchedBuyers.length" class="pp-action-badge">{{
+              matchedBuyers.length
+            }}</span>
+          </button>
         </div>
-        <div class="pp-collab-text">
-          {{ collaborators.length }}
-          {{ collaborators.length === 1 ? 'Collaborator' : 'Collaborators' }}
-        </div>
-        <span class="pp-collab-chev">›</span>
       </div>
 
       <!-- ── Sub-tabs ── -->
@@ -176,12 +171,12 @@
           <span v-if="vaultStoredCount" class="pp-subtab-badge">{{ vaultStoredCount }}</span>
         </button>
         <button
-          :class="['pp-subtab', activeTab === 'timeline' ? 'active' : '']"
-          @click="setTab('timeline')"
+          :class="['pp-subtab', activeTab === 'history' ? 'active' : '']"
+          @click="setTab('history')"
         >
           <OPIcon name="timeline3d" class="w-[14px] h-[14px]" />
-          Timeline
-          <span v-if="timelineCount" class="pp-subtab-badge">{{ timelineCount }}</span>
+          History
+          <span v-if="historyCount" class="pp-subtab-badge">{{ historyCount }}</span>
         </button>
       </div>
 
@@ -417,70 +412,135 @@
         <div style="height: 80px" />
       </div>
 
-      <!-- Timeline tab — immutable activity ledger -->
-      <div v-if="activeTab === 'timeline'" class="pp-tab-content">
-        <div class="tl-intro">
-          <span class="lockico"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
-          <div>
-            An <b>immutable, time-stamped record</b> of every step - so
-            everyone in the chain can see exactly where the sale is, and trust
-            nothing has been altered.
+      <!-- History tab — replaces the old sale-stage Timeline (client handoff,
+           2026-09-25). A dated record of what was added or changed, who made
+           the change and what needs your attention — never described as
+           immutable/block-stamped, and never implies a sale-transaction
+           stage (a passport can exist and evolve for years before a sale). -->
+      <div v-if="activeTab === 'history'" class="pp-tab-content">
+        <div class="hist-intro">
+          <h3>Passport history</h3>
+          <p>A dated record of what was added or changed, who made the change and what needs your attention.</p>
+        </div>
+
+        <div class="hist-filters" role="group" aria-label="Filter history">
+          <button
+            v-for="f in historyFilters"
+            :key="f.key"
+            type="button"
+            :class="['hist-filter', historyCategory === f.key ? 'on' : '']"
+            @click="setHistoryCategory(f.key)"
+          >
+            {{ f.label }}
+          </button>
+        </div>
+
+        <div v-if="openActions.length" class="hist-panel hist-panel--attention">
+          <h3>Needs your attention</h3>
+          <div v-for="a in openActions" :key="a.id" class="hist-todo">
+            <span class="hist-todo-icon">!</span>
+            <div>
+              <b>{{ a.title }}</b>
+              <small>{{ a.status === 'REOPENED' ? 'Reopened' : 'To do' }}</small>
+            </div>
+            <button class="hist-link" type="button" @click="openAction(a)">View →</button>
           </div>
         </div>
 
-        <div v-if="timelineLoading" class="pp-empty">
-          <div style="width: 28px; height: 28px; margin: 0 auto 8px">
-            <img
-              src="/op-icons/matched-buyers/link.png"
-              alt=""
-              loading="lazy"
-              style="width: 100%; height: 100%; object-fit: contain; display: block"
-            />
-          </div>
-          <p>Loading timeline…</p>
+        <div v-if="historyLoading && historyEvents.length === 0" class="pp-empty">
+          <p>Loading history…</p>
+        </div>
+
+        <div v-else-if="historyEvents.length === 0" class="pp-empty" style="margin: 0 18px">
+          No {{ historyCategory === 'all' ? 'activity' : historyFilterLabel }} yet.
         </div>
 
         <template v-else>
-          <div class="tl-stage">
-            <div class="tl-stage-h">Where this sale is</div>
-            <div class="tl-steps">
-              <div
-                v-for="(stage, i) in timelineStages"
-                :key="stage"
-                class="tl-step"
-                :class="i < timelineStageIdx ? 'done' : (i === timelineStageIdx ? 'now' : 'todo')"
-              >
-                <div class="tl-dot">{{ i < timelineStageIdx ? '✓' : '' }}</div>
-                <div class="tl-step-lbl">{{ stage }}</div>
+          <div v-for="group in groupedHistory" :key="group.label">
+            <div class="hist-day">{{ group.label }}</div>
+            <article v-for="e in group.events" :key="e.id" class="hist-item">
+              <div class="hist-dot" :class="eventDisplay(e).dotClass">{{ eventDisplay(e).icon }}</div>
+              <div class="hist-entry">
+                <div class="hist-entry-top">
+                  <b>{{ eventDisplay(e).title }}</b>
+                  <span class="hist-time">{{ formatHistoryTime(e.occurredAt) }}</span>
+                </div>
+                <div class="hist-by">{{ eventDisplay(e).actorLabel }}</div>
+                <button class="hist-view" type="button" @click="openHistoryEvent(e)">
+                  {{ eventDisplay(e).isAction ? 'View action →' : 'View change →' }}
+                </button>
               </div>
-            </div>
+            </article>
           </div>
 
-          <div class="tl-list-h">Verified activity</div>
-          <div v-if="timelineEvents.length === 0" class="pp-empty" style="margin: 0 18px">
-            No activity yet - events will appear here as your Passport progresses.
-          </div>
-          <div v-for="e in timelineEvents" :key="e.id" class="tl-item">
-            <div class="tl-rail">
-              <div class="tl-rail-dot">{{ e.icon || '📕' }}</div>
-              <div class="tl-rail-line" />
-            </div>
-            <div class="tl-card">
-              <div class="tl-card-top">
-                <div class="tl-title">{{ e.title }}</div>
-                <div class="tl-time">{{ formatStamp(e.createdAt) }}</div>
-              </div>
-              <div class="tl-who">{{ e.actor }}</div>
-              <div class="tl-stamp">
-                <span class="tl-stamp-lock"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
-                <span class="tl-stamp-txt">{{ e.hash }}</span>
-                <span class="tl-stamp-verif">block-stamped</span>
-              </div>
-            </div>
-          </div>
+          <button
+            v-if="historyHasMore"
+            type="button"
+            class="hist-loadmore"
+            :disabled="historyLoading"
+            @click="fetchHistory(false)"
+          >
+            {{ historyLoading ? 'Loading…' : 'Load more' }}
+          </button>
         </template>
         <div style="height: 80px" />
       </div>
+    </div>
+
+    <!-- History event/action detail drawer -->
+    <div v-if="historyDrawerOpen" class="hist-overlay" @click.self="closeHistoryDrawer">
+      <section class="hist-drawer" role="dialog" aria-modal="true">
+        <div class="hist-drawer-head">
+          <h2>{{ historyDrawerTitle }}</h2>
+          <button class="hist-drawer-close" type="button" aria-label="Close" @click="closeHistoryDrawer">×</button>
+        </div>
+        <div class="hist-drawer-body">
+          <div v-if="historyDrawerLoading" class="pp-empty"><p>Loading…</p></div>
+          <template v-else-if="historyDrawerAction">
+            <p>{{ historyDrawerAction.explanation }}</p>
+            <div v-if="historyDrawerAction.suggestedSteps?.length" class="hist-steps">
+              <small>YOUR NEXT STEPS</small>
+              <label v-for="(step, i) in historyDrawerAction.suggestedSteps" :key="i">
+                <input type="checkbox" disabled />
+                {{ step }}
+              </label>
+            </div>
+            <div class="hist-row"><span>Status</span><b>{{ historyDrawerAction.status }}</b></div>
+            <div class="hist-row"><span>Who can see this</span><b>Private passport</b></div>
+            <button
+              v-if="historyDrawerAction.status === 'OPEN' || historyDrawerAction.status === 'REOPENED'"
+              class="hist-primary"
+              type="button"
+              @click="markActionAddressed(historyDrawerAction.id)"
+            >
+              Mark as addressed
+            </button>
+            <p class="hist-fineprint">Addressed means you've taken a step — it does not certify legal compliance.</p>
+          </template>
+          <template v-else-if="historyDrawerEvent">
+            <div class="hist-row"><span>Section</span><b>{{ formatSectionLabel(historyDrawerEvent.sectionId) }}</b></div>
+            <div v-if="historyDrawerEvent.beforeRef !== undefined" class="hist-record">
+              <small>PREVIOUS</small>
+              <strong>{{ formatRef(historyDrawerEvent.beforeRef) }}</strong>
+            </div>
+            <div class="hist-record">
+              <small>{{ historyDrawerEvent.afterRef ? 'NEW' : 'VALUE' }}</small>
+              <strong>{{ formatRef(historyDrawerEvent.afterRef) }}</strong>
+            </div>
+            <div class="hist-row"><span>Changed by</span><b>{{ eventDisplay(historyDrawerEvent).actorLabel }}</b></div>
+            <div class="hist-row"><span>Source</span><b>{{ historyDrawerEvent.sourceType || 'System' }}</b></div>
+            <div class="hist-row"><span>Who can see this</span><b>Private passport</b></div>
+            <button
+              v-if="historyDrawerEvent.linkedAction"
+              class="hist-primary"
+              type="button"
+              @click="openAction(historyDrawerEvent.linkedAction)"
+            >
+              View linked action →
+            </button>
+          </template>
+        </div>
+      </section>
     </div>
 
     <!-- Add Collaborator Modal -->
@@ -532,6 +592,7 @@
       :open="publishDrawerOpen"
       :submitting="publishLoading"
       :readiness="readiness"
+      :public-sections="publicSections"
       @close="publishDrawerOpen = false"
       @publish="onPublishConfirm"
       @go-to-question="onGoToChecklistItem"
@@ -799,8 +860,9 @@ function setTab(tab) {
   if (tab === 'vault' && vaultSections.value.length === 0) {
     fetchVault()
   }
-  if (tab === 'timeline' && timelineEvents.value.length === 0) {
-    fetchTimeline()
+  if (tab === 'history' && historyEvents.value.length === 0) {
+    fetchHistory(true)
+    fetchActions()
   }
 }
 
@@ -860,6 +922,12 @@ const completedVaultSections = computed(() =>
   vaultSections.value.filter((s) => s.status === 'COMPLETED'),
 )
 const vaultStoredCount = computed(() => completedVaultSections.value.length)
+// Fed into PublishPassportDrawer's manifest preview (client History
+// handoff, 2026-09-25) — sections the owner already set to Public in the
+// Vault tab, reviewed here before the whole Passport goes public.
+const publicSections = computed(() =>
+  vaultSections.value.filter((s) => s.visibility !== 'PRIVATE'),
+)
 
 async function fetchVault() {
   const token =
@@ -900,9 +968,9 @@ async function setVisibility(section, visibility) {
         body: { visibility },
       },
     )
-    // Activity ledger picks up the change server-side; refresh if user is on
-    // the timeline tab so the new row appears.
-    if (activeTab.value === 'timeline') fetchTimeline()
+    // History picks up the change server-side; refresh if user is on
+    // the history tab so the new row appears.
+    if (activeTab.value === 'history') fetchHistory(true)
   } catch (e) {
     console.error('Failed to set visibility', e)
     section.visibility = prev
@@ -933,46 +1001,243 @@ function sectionIcon(key, _imageKey) {
   return map[key] || '/op-icons/passportview/titleDeedsAndPlan.png'
 }
 
-// ── Timeline ───────────────────────────────────────────────────
-const timelineEvents = ref([])
-const timelineStages = ref(['Issued', 'Matched', 'Published', 'Offer', 'Exchange', 'Complete'])
-const timelineStageIdx = ref(0)
-const timelineLoading = ref(false)
-const timelineCount = computed(() => timelineEvents.value.length)
+// ── History ────────────────────────────────────────────────────
+// Replaces the old sale-stage Timeline (client handoff, 2026-09-25) —
+// a dated, permission-scoped record of passport events, not a claim of
+// cryptographic immutability and not a transaction-stage tracker.
+const historyEvents = ref([])
+const historyCursor = ref(null)
+const historyHasMore = ref(false)
+const historyLoading = ref(false)
+const historyCategory = ref('all')
+const historyCount = computed(() => historyEvents.value.length)
 
-async function fetchTimeline() {
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+const historyFilters = [
+  { key: 'all', label: 'All activity' },
+  { key: 'information', label: 'Information' },
+  { key: 'documents', label: 'Documents' },
+  { key: 'actions', label: 'Actions' },
+  { key: 'access', label: 'Access' },
+]
+const historyFilterLabel = computed(
+  () => historyFilters.find((f) => f.key === historyCategory.value)?.label.toLowerCase() ?? 'activity',
+)
+
+function setHistoryCategory(key) {
+  if (historyCategory.value === key) return
+  historyCategory.value = key
+  fetchHistory(true)
+}
+
+async function fetchHistory(reset = false) {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
   if (!token) return
-  timelineLoading.value = true
+  historyLoading.value = true
   try {
+    const params = new URLSearchParams()
+    if (historyCategory.value !== 'all') params.set('category', historyCategory.value)
+    if (!reset && historyCursor.value) params.set('cursor', historyCursor.value)
     const data = await $fetch(
-      `${config.public.apiBase}/passport/${route.params.id}/timeline`,
+      `${config.public.apiBase}/passport/${route.params.id}/history?${params.toString()}`,
       { headers: { Authorization: `Bearer ${token}` } },
     )
-    timelineEvents.value = data.events ?? []
-    timelineStages.value = data.stages ?? timelineStages.value
-    timelineStageIdx.value = data.stageIdx ?? 0
+    historyEvents.value = reset ? (data.events ?? []) : [...historyEvents.value, ...(data.events ?? [])]
+    historyCursor.value = data.nextCursor ?? null
+    historyHasMore.value = !!data.nextCursor
   } catch (e) {
-    console.error('Failed to load timeline', e)
+    console.error('Failed to load history', e)
   } finally {
-    timelineLoading.value = false
+    historyLoading.value = false
   }
 }
 
-function formatStamp(iso) {
+// ── Actions ("Needs your attention") ──────────────────────────────
+const passportActions = ref([])
+const openActions = computed(() =>
+  passportActions.value.filter((a) => a.status === 'OPEN' || a.status === 'REOPENED'),
+)
+const actionsById = computed(() => {
+  const map = {}
+  for (const a of passportActions.value) map[a.id] = a
+  return map
+})
+
+async function fetchActions() {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  try {
+    passportActions.value = await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}/actions`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+  } catch (e) {
+    console.error('Failed to load actions', e)
+  }
+}
+
+async function markActionAddressed(actionId) {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (!token) return
+  try {
+    await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}/actions/${actionId}/addressed`,
+      { method: 'PATCH', headers: { Authorization: `Bearer ${token}` } },
+    )
+    await fetchActions()
+    if (activeTab.value === 'history') fetchHistory(true)
+    closeHistoryDrawer()
+  } catch (e) {
+    console.error('Failed to mark action addressed', e)
+  }
+}
+
+// ── Event/action detail drawer ────────────────────────────────────
+const historyDrawerOpen = ref(false)
+const historyDrawerLoading = ref(false)
+const historyDrawerEvent = ref(null)
+const historyDrawerAction = ref(null)
+
+const historyDrawerTitle = computed(() => {
+  if (historyDrawerAction.value) return historyDrawerAction.value.title
+  if (historyDrawerEvent.value) return eventDisplay(historyDrawerEvent.value).title
+  return ''
+})
+
+async function openHistoryEvent(e) {
+  historyDrawerAction.value = null
+  historyDrawerEvent.value = null
+  historyDrawerOpen.value = true
+  historyDrawerLoading.value = true
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  try {
+    historyDrawerEvent.value = await $fetch(
+      `${config.public.apiBase}/passport/${route.params.id}/history/${e.id}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+    // Action-category events (created/superseded/reopened/addressed) open
+    // straight into the action's own detail rather than a raw before/after
+    // diff — entityId is the PassportAction id for these event types.
+    if (e.category === 'actions' && actionsById.value[e.entityId]) {
+      historyDrawerAction.value = actionsById.value[e.entityId]
+      historyDrawerEvent.value = null
+    }
+  } catch (err) {
+    console.error('Failed to load event detail', err)
+  } finally {
+    historyDrawerLoading.value = false
+  }
+}
+
+function openAction(action) {
+  historyDrawerEvent.value = null
+  historyDrawerAction.value = action
+  historyDrawerOpen.value = true
+}
+
+function closeHistoryDrawer() {
+  historyDrawerOpen.value = false
+  historyDrawerEvent.value = null
+  historyDrawerAction.value = null
+}
+
+// ── Display formatting ────────────────────────────────────────────
+const EVENT_DISPLAY = {
+  PASSPORT_CREATED: { title: 'Property Passport created', icon: '🏠', dotClass: 'navy' },
+  PASSPORT_CLAIM_SUBMITTED: { title: 'Ownership claim submitted', icon: '📝', dotClass: 'navy' },
+  PASSPORT_ACTIVATED: { title: 'Passport activated', icon: '✓', dotClass: 'navy' },
+  PASSPORT_ARCHIVED: { title: 'Passport archived', icon: '🗄', dotClass: 'navy' },
+  QUESTION_ANSWER_ADDED: { title: 'Information added', icon: '✎', dotClass: '' },
+  QUESTION_ANSWER_CHANGED: { title: 'Information updated', icon: '✎', dotClass: '' },
+  QUESTION_ANSWER_CLEARED: { title: 'Answer cleared', icon: '✎', dotClass: '' },
+  SECTION_COMPLETED: { title: 'Section completed', icon: '✓', dotClass: '' },
+  DOCUMENT_UPLOADED: { title: 'Document added', icon: '▣', dotClass: '' },
+  DOCUMENT_REPLACED: { title: 'Document replaced', icon: '▣', dotClass: '' },
+  DOCUMENT_REMOVED: { title: 'Document removed from view', icon: '▣', dotClass: '' },
+  ACTION_CREATED: { title: 'Action added', icon: '!', dotClass: 'gold', isAction: true },
+  ACTION_SUPERSEDED: { title: 'Action no longer applies', icon: '✓', dotClass: '', isAction: true },
+  ACTION_REOPENED: { title: 'Action reopened', icon: '!', dotClass: 'gold', isAction: true },
+  ACTION_ADDRESSED: { title: 'Action marked as addressed', icon: '✓', dotClass: '', isAction: true },
+  COLLABORATOR_INVITED: { title: 'Collaborator invited', icon: '👤', dotClass: 'navy' },
+  COLLABORATOR_REMOVED: { title: 'Collaborator removed', icon: '👤', dotClass: 'navy' },
+  COLLABORATOR_SCOPE_CHANGED: { title: 'Collaborator access changed', icon: '👤', dotClass: 'navy' },
+  SHARE_LINK_CREATED: { title: 'Share link created', icon: '🔗', dotClass: 'navy' },
+  BUYER_ACCESS_GRANTED: { title: 'Buyer access granted', icon: '🔑', dotClass: 'navy' },
+  PASSPORT_PUBLISHED: { title: 'Passport published — live to buyers', icon: '🚀', dotClass: 'navy' },
+  PASSPORT_UNPUBLISHED: { title: 'Passport unpublished — back to private', icon: '🔒', dotClass: 'navy' },
+  SECTION_VISIBILITY_CHANGED: { title: 'Section visibility changed', icon: '🌐', dotClass: 'navy' },
+}
+
+function formatSectionLabel(sectionId) {
+  if (!sectionId) return '—'
+  return sectionId
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/_/g, ' ')
+    .replace(/^./, (c) => c.toUpperCase())
+}
+
+function actorLabelFor(e) {
+  if (e.actorType === 'SYSTEM') return 'Umovingu · System'
+  if (e.actorType === 'ADMIN') return 'Umovingu · Admin'
+  if (e.actorType === 'SOURCE') return 'Umovingu · Source record'
+  if (e.actorType === 'COLLABORATOR') return 'Collaborator'
+  return 'You · Owner'
+}
+
+function eventDisplay(e) {
+  const base = EVENT_DISPLAY[e.eventType] || { title: e.eventType, icon: '•', dotClass: '' }
+  let title = base.title
+  if (e.sectionId && !base.isAction) title = `${formatSectionLabel(e.sectionId)} — ${base.title.toLowerCase()}`
+  if (base.isAction && actionsById.value[e.entityId]) {
+    title = `${actionsById.value[e.entityId].title}`
+  }
+  return { ...base, title, actorLabel: actorLabelFor(e) }
+}
+
+function formatRef(ref) {
+  if (ref === null || ref === undefined) return 'Not answered'
+  if (typeof ref === 'string') return ref
+  if (typeof ref === 'object') {
+    const val = ref.answerText ?? ref.answerJson ?? ref.fileUrl ?? ref
+    return typeof val === 'string' ? val : JSON.stringify(val)
+  }
+  return String(ref)
+}
+
+function formatHistoryTime(iso) {
   if (!iso) return ''
   try {
     const d = new Date(iso)
-    const day = d.getDate()
-    const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()]
     const hh = String(d.getHours()).padStart(2, '0')
     const mm = String(d.getMinutes()).padStart(2, '0')
-    return `${day} ${month} · ${hh}:${mm}`
+    return `${hh}:${mm}`
   } catch {
     return ''
   }
 }
+
+function dayLabelFor(iso) {
+  const d = new Date(iso)
+  const now = new Date()
+  const startOfDay = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate())
+  const diffDays = Math.round((startOfDay(now) - startOfDay(d)) / 86400000)
+  if (diffDays === 0) return `Today · ${d.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}`
+  if (diffDays === 1) return 'Yesterday'
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: d.getFullYear() !== now.getFullYear() ? 'numeric' : undefined })
+}
+
+const groupedHistory = computed(() => {
+  const groups = []
+  let current = null
+  for (const e of historyEvents.value) {
+    const label = dayLabelFor(e.occurredAt)
+    if (!current || current.label !== label) {
+      current = { label, events: [] }
+      groups.push(current)
+    }
+    current.events.push(e)
+  }
+  return groups
+})
 
 // ── Publish confirmation drawer ────────────────────────────────
 const publishDrawerOpen = ref(false)
@@ -1022,6 +1287,9 @@ function onPublishClick() {
   } else {
     publishDrawerOpen.value = true
     fetchReadiness()
+    // Ensure the "sections that will be public" preview has real data even
+    // if the owner never visited the Vault tab this session.
+    if (vaultSections.value.length === 0) fetchVault()
   }
 }
 
@@ -1032,24 +1300,12 @@ function openReadinessChecklist() {
   publishDrawerOpen.value = true
   fetchReadiness()
 }
-
-// Reflects readiness state right on the button so a seller isn't surprised
-// by the drawer — "Publish Passport" only shows once we know they're ready
-// (or haven't checked yet, to avoid a loading flash).
-const publishButtonLabel = computed(() => {
-  if (publishLoading.value) return '...'
-  if (isPublished.value) return 'Unpublish Passport'
-  if (readiness.value && !readiness.value.canPublish) {
-    return `Publish Passport - ${readiness.value.readinessPct}% ready`
-  }
-  return 'Publish Passport'
-})
 async function onPublishConfirm() {
   await togglePublish()
   publishDrawerOpen.value = false
-  // Refresh the timeline so the freshly-logged "Published" entry shows up.
-  if (activeTab.value === 'timeline') fetchTimeline()
-  else timelineEvents.value = [] // force re-fetch next time
+  // Refresh history so the freshly-logged "Published" entry shows up.
+  if (activeTab.value === 'history') fetchHistory(true)
+  else historyEvents.value = [] // force re-fetch next time
 }
 
 function navigateToProperty(pid) {
@@ -2454,68 +2710,6 @@ const onRoleSwitch = (role) => {
   margin-left: 2px;
 }
 
-/* ── Collaborators row ─────────────────────────────────────────── */
-.pp-collab-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #fff;
-  border: 1px solid #eef0f6;
-  border-radius: 12px;
-  padding: 10px 12px;
-  margin-bottom: 14px;
-  cursor: pointer;
-  transition: border-color 0.15s;
-}
-.pp-collab-row:hover {
-  border-color: #e2f1ea;
-}
-.pp-collab-add {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #f1f9f4;
-  border: 1px solid #e2f1ea;
-  display: grid;
-  place-items: center;
-  color: #00726c;
-  font-size: 1rem;
-  font-weight: 600;
-  flex-shrink: 0;
-  cursor: pointer;
-  font-family: inherit;
-  padding: 0;
-  line-height: 1;
-}
-.pp-collab-stack {
-  display: flex;
-  margin-left: -4px;
-}
-.pp-collab-avatar {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #00b5ad, #00a19a);
-  color: #fff;
-  font-size: 0.625rem;
-  font-weight: 800;
-  display: grid;
-  place-items: center;
-  border: 2px solid #fff;
-  margin-left: -8px;
-}
-.pp-collab-text {
-  font-size: 0.7813rem;
-  color: #4a5568;
-  font-weight: 600;
-  flex: 1;
-}
-.pp-collab-chev {
-  color: #94a3b8;
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-
 /* ── Sub-tabs ──────────────────────────────────────────────────── */
 .pp-subtabs {
   display: flex;
@@ -2715,4 +2909,50 @@ const onRoleSwitch = (role) => {
 .lockico img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .tl-stamp-txt { font-family: 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 0.625rem; font-weight: 700; color: #008a84; letter-spacing: 0.3px; }
 .tl-stamp-verif { font-size: 0.5625rem; font-weight: 800; color: #008a84; letter-spacing: 0.4px; text-transform: uppercase; margin-left: 2px; }
+
+/* ── History tab (replaces Timeline) ─────────────────────────────── */
+.hist-intro { margin: 8px 0 16px; }
+.hist-intro h3 { margin: 0 0 6px; font-size: 1.05rem; color: #231d45; letter-spacing: -0.3px; }
+.hist-intro p { margin: 0; font-size: 0.75rem; color: #6b7089; line-height: 1.6; }
+.hist-filters { display: flex; gap: 7px; flex-wrap: wrap; margin: 0 0 14px; overflow-x: auto; }
+.hist-filter { border: 1px solid #e4e5ed; border-radius: 22px; background: #fff; color: #686477; font-size: 0.65rem; font-weight: 700; padding: 7px 12px; white-space: nowrap; }
+.hist-filter.on { background: #231d45; color: #fff; border-color: #231d45; }
+.hist-panel { background: #fff; border: 1px solid #e4e5ed; border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+.hist-panel h3 { margin: 0 0 6px; font-size: 0.85rem; color: #231d45; }
+.hist-panel--attention { background: #fffaf0; border-color: #f0e4ca; }
+.hist-todo { display: flex; gap: 10px; margin-top: 10px; align-items: flex-start; }
+.hist-todo-icon { width: 20px; height: 20px; flex: none; border-radius: 7px; background: #fff4df; color: #98702b; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.7rem; }
+.hist-todo b { font-size: 0.7rem; line-height: 1.4; color: #231d45; display: block; }
+.hist-todo small { display: block; color: #6b7089; margin-top: 2px; font-size: 0.6rem; }
+.hist-todo .hist-link { margin-left: auto; margin-top: 0; flex-shrink: 0; }
+.hist-day { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 800; color: #a8a9ad; margin: 16px 0 8px; }
+.hist-day:first-child { margin-top: 0; }
+.hist-item { position: relative; display: flex; gap: 10px; padding: 0 0 12px; }
+.hist-dot { width: 24px; height: 24px; border-radius: 8px; background: #eaf8f7; color: #008b85; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
+.hist-dot.gold { background: #fff5e5; color: #a87d32; }
+.hist-dot.navy { background: #eeedf4; color: #231d45; }
+.hist-entry { flex: 1; min-width: 0; border: 1px solid #e4e5ed; border-radius: 12px; padding: 12px 14px; background: #fff; }
+.hist-entry-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.hist-entry-top b { color: #231d45; font-size: 0.75rem; line-height: 1.35; }
+.hist-time { white-space: nowrap; color: #a8a9ad; font-size: 0.6rem; font-weight: 700; flex-shrink: 0; }
+.hist-by { margin: 5px 0 0; color: #777382; font-size: 0.65rem; }
+.hist-view { border: 0; background: none; color: #007f79; padding: 0; font-size: 0.65rem; font-weight: 800; margin-top: 8px; }
+.hist-loadmore { display: block; margin: 8px auto 0; border: 1px solid #e4e5ed; background: #fff; color: #231d45; font-weight: 700; font-size: 0.7rem; padding: 9px 16px; border-radius: 10px; }
+.hist-link { border: 0; background: none; color: #007f79; font-size: 0.65rem; font-weight: 800; padding: 0; margin-top: 12px; }
+.hist-overlay { position: fixed; inset: 0; background: rgba(24, 19, 43, 0.66); z-index: 60; display: flex; justify-content: flex-end; }
+.hist-drawer { background: #fff; width: min(100%, 460px); height: 100%; overflow: auto; box-shadow: -12px 0 40px rgba(23, 19, 38, 0.23); padding: 22px 20px 36px; }
+.hist-drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; border-bottom: 1px solid #e4e5ed; padding-bottom: 14px; }
+.hist-drawer-head h2 { margin: 0; color: #231d45; font-size: 1.05rem; letter-spacing: -0.4px; }
+.hist-drawer-close { background: #f2f1f3; border: 0; border-radius: 9px; width: 30px; height: 30px; color: #231d45; font-size: 1rem; flex-shrink: 0; }
+.hist-drawer-body { padding-top: 16px; font-size: 0.75rem; line-height: 1.65; color: #5b5869; }
+.hist-record { border: 1px solid #e4e5ed; border-radius: 11px; padding: 12px 14px; margin: 10px 0; }
+.hist-record small { display: block; color: #87838f; font-weight: 700; margin-bottom: 4px; font-size: 0.6rem; letter-spacing: 0.4px; }
+.hist-record strong { color: #231d45; }
+.hist-row { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid #e4e5ed; font-size: 0.75rem; }
+.hist-row b { color: #231d45; text-align: right; }
+.hist-steps { border: 1px solid #f0e4ca; background: #fffaf0; border-radius: 10px; padding: 12px 14px; margin: 12px 0; }
+.hist-steps small { display: block; color: #87838f; font-weight: 700; margin-bottom: 8px; font-size: 0.6rem; letter-spacing: 0.4px; }
+.hist-steps label { display: flex; gap: 8px; align-items: flex-start; font-size: 0.7rem; margin: 7px 0; color: #5b5869; }
+.hist-primary { border: 0; background: #00a19a; color: #fff; font-weight: 800; padding: 11px 16px; border-radius: 10px; margin-top: 14px; width: 100%; }
+.hist-fineprint { font-size: 0.65rem; color: #a8a9ad; margin-top: 10px; }
 </style>

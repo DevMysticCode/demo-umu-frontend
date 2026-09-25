@@ -60,6 +60,31 @@
               💡 Tip: <b>match &amp; make contact first</b> - gauge interest
               privately, then publish to open it up to everyone.
             </div>
+
+            <!-- Section manifest — the owner already chose which sections
+                 are Public/Private in the Vault tab; this is a review of
+                 that standing choice before the whole Passport goes public
+                 (client History handoff, 2026-09-25: "exact public preview
+                 and explicit publication confirmation"). -->
+            <div v-if="publicSections?.length" class="ppd-docs">
+              <div class="ppd-docs-h">Sections that will be public</div>
+              <div class="ppd-docs-list">
+                <div v-for="s in publicSections" :key="s.id" class="ppd-docs-row">
+                  🌐
+                  {{ s.title }}
+                </div>
+              </div>
+              <p class="ppd-docs-note">
+                Set to Public in your Vault. Change any section's visibility
+                there before publishing if this isn't right.
+              </p>
+            </div>
+            <div v-else class="ppd-docs">
+              <p class="ppd-docs-note">
+                No sections are currently set to Public in your Vault — publishing
+                now would list the passport with nothing visible yet.
+              </p>
+            </div>
           </template>
 
           <template v-else>
@@ -148,6 +173,7 @@ const props = defineProps<{
     requiredTotal: number
     checklist: ChecklistItem[]
   } | null
+  publicSections?: { id: string; title: string }[]
 }>()
 const emit = defineEmits<{
   (e: 'close'): void
@@ -198,6 +224,12 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 
 .ppd-tip { margin: 14px 22px 0; padding: 11px 13px; background: var(--accent-paler); border: 1px solid var(--accent-pale); border-radius: 11px; font-size: 0.7188rem; font-weight: 600; color: var(--text-secondary); line-height: 1.5; }
 .ppd-tip b { color: var(--accent-dark); font-weight: 800; }
+
+.ppd-docs { margin: 14px 22px 0; }
+.ppd-docs-h { font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+.ppd-docs-list { display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow-y: auto; }
+.ppd-docs-row { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 700; color: var(--text); padding: 8px 10px; background: var(--bg); border-radius: 9px; }
+.ppd-docs-note { margin: 8px 0 0; font-size: 0.6875rem; font-weight: 500; color: var(--text-faint); line-height: 1.4; }
 
 .ppd-gate { padding: 4px 22px 0; }
 .ppd-gate-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }

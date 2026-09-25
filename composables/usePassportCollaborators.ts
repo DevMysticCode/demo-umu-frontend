@@ -7,11 +7,15 @@ export const usePassportCollaborators = () => {
     return token ? { Authorization: `Bearer ${token}` } : {}
   }
 
-  const addCollaborator = (passportId: string, email: string) => {
+  const addCollaborator = (
+    passportId: string,
+    email: string,
+    opts?: { role?: string; sectionKeys?: string[] | null; historyAccess?: boolean },
+  ) => {
     return $fetch(`${base}/passport/${passportId}/collaborators`, {
       method: 'POST',
       headers: getHeaders(),
-      body: { email },
+      body: { email, ...opts },
     })
   }
 
@@ -32,11 +36,27 @@ export const usePassportCollaborators = () => {
     )
   }
 
+  // Change an existing collaborator's role/section-scope/history-access
+  // (client History handoff, 2026-09-25).
+  const updateCollaboratorScope = (
+    passportId: string,
+    collaboratorId: string,
+    opts: { role?: string; sectionKeys?: string[] | null; historyAccess?: boolean },
+  ) => {
+    return $fetch(
+      `${base}/passport/${passportId}/collaborators/${collaboratorId}`,
+      {
+        method: 'PATCH',
+        headers: getHeaders(),
+        body: opts,
+      },
+    )
+  }
+
   return {
     addCollaborator,
     getCollaborators,
     removeCollaborator,
+    updateCollaboratorScope,
   }
 }
-
-

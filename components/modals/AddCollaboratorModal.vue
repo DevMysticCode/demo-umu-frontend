@@ -6,6 +6,25 @@
         collaborators on this passport.
       </p>
 
+      <!-- Role + history access — applied to everyone added in this batch -->
+      <div class="ac-batch-opts">
+        <label class="ac-field">
+          <span class="ac-field-label">Their role</span>
+          <select v-model="batchRole" class="ac-select" :disabled="isLoading">
+            <option value="">Not specified</option>
+            <option value="Solicitor">Solicitor</option>
+            <option value="Estate agent">Estate agent</option>
+            <option value="Co-owner">Co-owner</option>
+            <option value="Buyer">Buyer</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+        <label class="ac-checkbox-row">
+          <input type="checkbox" v-model="batchHistoryAccess" :disabled="isLoading" />
+          Give them passport history access
+        </label>
+      </div>
+
       <!-- Search input -->
       <div class="ac-search">
         <span class="ac-search-icon">
@@ -98,8 +117,18 @@
           <div class="ac-result-body">
             <div class="ac-result-name">
               {{ [c.firstName, c.lastName].filter(Boolean).join(' ') || c.email }}
+              <span v-if="c.role" class="ac-existing-role">· {{ c.role }}</span>
             </div>
             <div class="ac-result-email">{{ c.email }}</div>
+            <label class="ac-checkbox-row ac-checkbox-row--small">
+              <input
+                type="checkbox"
+                :checked="c.historyAccess"
+                :disabled="isLoading"
+                @change="toggleHistoryAccess(c)"
+              />
+              Passport history
+            </label>
           </div>
           <button
             type="button"
@@ -143,7 +172,7 @@ const props = defineProps({
 const emit = defineEmits(['update:show', 'added', 'removed'])
 
 const { searchUsers } = useProfile()
-const { addCollaborator, getCollaborators, removeCollaborator } =
+const { addCollaborator, getCollaborators, removeCollaborator, updateCollaboratorScope } =
   usePassportCollaborators()
 
 const isOpen = ref(props.show)
@@ -155,6 +184,9 @@ watch(() => props.show, (val) => {
   }
 })
 watch(isOpen, (val) => emit('update:show', val))
+
+const batchRole = ref('')
+const batchHistoryAccess = ref(true)
 
 const searchQuery = ref('')
 const searchResults = ref([])
@@ -184,6 +216,8 @@ function reset() {
   searchQuery.value = ''
   searchResults.value = []
   selected.value = []
+  batchRole.value = ''
+  batchHistoryAccess.value = true
   error.value = ''
   success.value = ''
 }
@@ -244,7 +278,10 @@ async function submitAdds() {
     // N (usually 1-5); latency is fine.
     for (const user of selected.value) {
       try {
-        const response = await addCollaborator(props.passportId, user.email)
+        const response = await addCollaborator(props.passportId, user.email, {
+          role: batchRole.value || undefined,
+          historyAccess: batchHistoryAccess.value,
+        })
         added.push(response.collaborator ?? user)
         emit('added', response.collaborator ?? user)
       } catch (err) {
@@ -271,6 +308,18 @@ async function submitAdds() {
     setTimeout(() => (success.value = ''), 4000)
   } finally {
     isLoading.value = false
+  }
+}
+
+async function toggleHistoryAccess(collaborator) {
+  error.value = ''
+  try {
+    await updateCollaboratorScope(props.passportId, collaborator.id, {
+      historyAccess: !collaborator.historyAccess,
+    })
+    await loadCollaborators()
+  } catch (err) {
+    error.value = err?.data?.message || 'Failed to update access'
   }
 }
 
@@ -307,6 +356,53 @@ function initials(name) {
   font-size: 0.8438rem;
   line-height: 1.55;
   margin: 0 0 16px;
+}
+
+/* role + history-access batch options */
+.ac-batch-opts {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ac-field {
+  display: block;
+}
+.ac-field-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7089;
+  margin-bottom: 6px;
+}
+.ac-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f8f7fc;
+  font-size: 0.875rem;
+  color: #231d45;
+  font-family: inherit;
+}
+.ac-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: #4a5868;
+}
+.ac-checkbox-row input {
+  accent-color: #00a19a;
+}
+.ac-checkbox-row--small {
+  font-size: 0.7188rem;
+  color: #6b7089;
+  margin-top: 4px;
+}
+.ac-existing-role {
+  font-weight: 400;
+  color: #6b7089;
 }
 
 /* search box */
