@@ -72,11 +72,37 @@
         v-if="
           !searching &&
           searchQuery.trim().length >= 2 &&
-          searchResults.length === 0
+          searchResults.length === 0 &&
+          !isLikelyEmail(searchQuery)
         "
         class="ac-empty"
       >
         No UMovingU users found for "{{ searchQuery }}".
+      </div>
+
+      <!-- Typed a full email with no match: offer to invite them instead
+           of a dead end. -->
+      <div
+        v-if="
+          !searching &&
+          searchResults.length === 0 &&
+          isLikelyEmail(searchQuery)
+        "
+        class="ac-invite-prompt"
+      >
+        <p>
+          We couldn't find an Umovingu account for <strong>{{ searchQuery }}</strong>.
+          You can invite them to join - they'll be added as a collaborator
+          automatically as soon as they sign up.
+        </p>
+        <button
+          type="button"
+          class="ac-invite-btn"
+          :disabled="inviteLoading"
+          @click="handleInviteEmail"
+        >
+          {{ inviteLoading ? 'Sending invite…' : `Invite ${searchQuery}` }}
+        </button>
       </div>
 
       <!-- Selected chips row -->
@@ -172,8 +198,13 @@ const props = defineProps({
 const emit = defineEmits(['update:show', 'added', 'removed'])
 
 const { searchUsers } = useProfile()
-const { addCollaborator, getCollaborators, removeCollaborator, updateCollaboratorScope } =
-  usePassportCollaborators()
+const {
+  addCollaborator,
+  inviteCollaborator,
+  getCollaborators,
+  removeCollaborator,
+  updateCollaboratorScope,
+} = usePassportCollaborators()
 
 const isOpen = ref(props.show)
 watch(() => props.show, (val) => {
@@ -197,8 +228,13 @@ const selected = ref([]) // UserSearchResult[]
 const collaborators = ref([]) // existing collaborators on this passport
 
 const isLoading = ref(false)
+const inviteLoading = ref(false)
 const error = ref('')
 const success = ref('')
+
+function isLikelyEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((value ?? '').trim())
+}
 
 // Drop already-selected + already-collaborators + the owner (self) so
 // the picker only surfaces genuinely-addable users.
@@ -308,6 +344,27 @@ async function submitAdds() {
     setTimeout(() => (success.value = ''), 4000)
   } finally {
     isLoading.value = false
+  }
+}
+
+async function handleInviteEmail() {
+  const targetEmail = searchQuery.value.trim()
+  if (!isLikelyEmail(targetEmail)) return
+  error.value = ''
+  success.value = ''
+  inviteLoading.value = true
+  try {
+    await inviteCollaborator(props.passportId, targetEmail, {
+      role: batchRole.value || undefined,
+      historyAccess: batchHistoryAccess.value,
+    })
+    success.value = `Invitation sent to ${targetEmail}.`
+    searchQuery.value = ''
+    setTimeout(() => (success.value = ''), 4000)
+  } catch (err) {
+    error.value = err?.data?.message || 'Failed to send invite'
+  } finally {
+    inviteLoading.value = false
   }
 }
 
@@ -534,6 +591,39 @@ function initials(name) {
   background: #f8f7fc;
   border-radius: 12px;
   margin-bottom: 12px;
+}
+
+.ac-invite-prompt {
+  padding: 14px 16px;
+  background: #f2fbfa;
+  border: 1px solid rgba(0, 161, 154, 0.25);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.ac-invite-prompt p {
+  margin: 0 0 10px;
+  color: #3d4a52;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.ac-invite-btn {
+  width: 100%;
+  padding: 10px 14px;
+  background: #00a19a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.8438rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ac-invite-btn:hover:not(:disabled) {
+  background: #008a84;
+}
+.ac-invite-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* selected chip row */
