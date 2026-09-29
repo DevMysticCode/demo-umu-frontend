@@ -435,15 +435,15 @@
           </button>
         </div>
 
-        <div v-if="openActions.length" class="hist-panel hist-panel--attention">
+        <div v-if="allFlags.length" class="hist-panel hist-panel--attention">
           <h3>Needs your attention</h3>
-          <div v-for="a in openActions" :key="a.id" class="hist-todo">
+          <div v-for="f in allFlags" :key="f.id" class="hist-todo">
             <span class="hist-todo-icon">!</span>
             <div>
-              <b>{{ a.title }}</b>
-              <small>{{ a.status === 'REOPENED' ? 'Reopened' : 'To do' }}</small>
+              <b>{{ f.title }}</b>
+              <small>{{ f.statusLabel }}</small>
             </div>
-            <button class="hist-link" type="button" @click="openAction(a)">View →</button>
+            <button v-if="f.kind === 'action'" class="hist-link" type="button" @click="openAction(f.source)">View →</button>
           </div>
         </div>
 
@@ -625,6 +625,7 @@ import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 const passportTourRef = ref(null)
 import { usePassportRuntime } from '~/composables/usePassportRuntime'
 import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
+import { usePathways } from '~/composables/usePathways'
 import { onMounted, ref, computed } from 'vue'
 import { toSmartTitleCase } from '~/utils/titleCase'
 import { sectionTourBody } from '~/utils/passportSectionTourCopy'
@@ -863,6 +864,7 @@ function setTab(tab) {
   if (tab === 'history' && historyEvents.value.length === 0) {
     fetchHistory(true)
     fetchActions()
+    fetchPathwayFlags()
   }
 }
 
@@ -1061,6 +1063,41 @@ const actionsById = computed(() => {
   for (const a of passportActions.value) map[a.id] = a
   return map
 })
+
+// Resolution-pathway flags (client handoff, 2026-09-29) — merged into the
+// same "Needs your attention" panel as the legacy PassportAction rule
+// engine above, since both mean the same thing to the homeowner: something
+// their answers raised that isn't resolved yet.
+const { listFlags } = usePathways()
+const pathwayFlags = ref([])
+const PATHWAY_STATUS_LABEL = {
+  CHECK: 'Check before you sell',
+  FLAG: 'For a conveyancer',
+  ESCALATE: 'Needs a conveyancer',
+}
+async function fetchPathwayFlags() {
+  try {
+    pathwayFlags.value = await listFlags(route.params.id)
+  } catch (e) {
+    console.error('Failed to load pathway flags', e)
+  }
+}
+const allFlags = computed(() => [
+  ...openActions.value.map((a) => ({
+    id: `action:${a.id}`,
+    title: a.title,
+    statusLabel: a.status === 'REOPENED' ? 'Reopened' : 'To do',
+    kind: 'action',
+    source: a,
+  })),
+  ...pathwayFlags.value.map((f) => ({
+    id: `pathway:${f.journeyId}`,
+    title: f.issue,
+    statusLabel: PATHWAY_STATUS_LABEL[f.status] ?? f.status,
+    kind: 'pathway',
+    source: f,
+  })),
+])
 
 async function fetchActions() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
