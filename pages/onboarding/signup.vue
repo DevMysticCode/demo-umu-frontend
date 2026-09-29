@@ -23,6 +23,11 @@
 
     <form class="auth-form" @submit.prevent="handleSubmit">
 
+      <div v-if="isCollaboratorInvite" class="invite-banner">
+        You've been invited to collaborate on a Property Passport. Create
+        your account with this email to get access automatically.
+      </div>
+
       <div v-if="formError" class="error-banner" role="alert">{{ formError }}</div>
 
       <!-- Email -->
@@ -178,6 +183,15 @@ const showPassword = ref(false)
 const formError = ref('')
 const isLoading = ref(false)
 const showTermsModal = ref(false)
+
+// Collaborator-invite emails link here with ?email=&ref=collaborator-invite
+// (see umu-backend PassportService.sendJoinUmovinguInviteEmail) so the
+// invitee doesn't have to retype the address the owner invited.
+const route = useRoute()
+const isCollaboratorInvite = route.query.ref === 'collaborator-invite'
+if (typeof route.query.email === 'string') {
+  form.email = route.query.email
+}
 
 const selectedAddress = ref<{ id: number; line1: string; line2: string; postcode?: string } | null>(null)
 
@@ -602,6 +616,17 @@ const handleSubmit = async () => {
   border: 1px solid rgba(220, 38, 38, 0.25);
   border-radius: 12px;
   color: #dc2626;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.invite-banner {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: rgba(0, 161, 154, 0.08);
+  border: 1px solid rgba(0, 161, 154, 0.3);
+  border-radius: 12px;
+  color: #00625d;
   font-size: 0.8125rem;
   line-height: 1.5;
 }
