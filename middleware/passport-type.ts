@@ -12,7 +12,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!token) return
 
   // Cheap cache: the passport type never changes, so remember it per id
-  // and skip the probe on repeat visits.
+  // and skip the probe on repeat visits. Status isn't cached - a
+  // PENDING_PAYMENT passport can finish payment at any time, and caching
+  // "pending" would keep bouncing someone who already paid.
   const cacheKey = `umu_passport_type_${id}`
   let type = ''
   try {
@@ -33,6 +35,16 @@ export default defineNuxtRouteMiddleware(async (to) => {
         if (type) sessionStorage.setItem(cacheKey, type)
       } catch {
         /* ignore */
+      }
+      // A passport still in PENDING_PAYMENT has no type and no seeded
+      // sections yet (payment happens before seller/landlord is chosen -
+      // see Passport.type's schema comment) - send them to finish the
+      // claim instead of a sectionless passportview page with nothing on
+      // it and no explanation. Root cause of a real user report, 2 Oct
+      // 2026: the dashboard's "go to my passport" button could land here
+      // for exactly this reason when this was someone's only passport.
+      if (probe?.status === 'PENDING_PAYMENT') {
+        return navigateTo(probe?.propertyId ? `/claim/${probe.propertyId}` : '/dashboard', { replace: true })
       }
     } catch {
       // Can't tell - let the page load and fall back to its own check.

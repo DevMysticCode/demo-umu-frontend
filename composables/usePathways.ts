@@ -35,15 +35,46 @@ export interface ResolutionPathway {
   contentVersion: number
 }
 
+// status is 'IN_PROGRESS' while a journey is open; once it reaches an
+// outcome it's either one of the 4 generic codes (RESOLVED/CHECK/FLAG/
+// ESCALATE, used by every pathway except the two below) or one of P09's 9
+// or P39's 7 fine-grained codes (e.g. 'dispute_mismatch', 'record_held') -
+// see umu-backend/src/passport/pathway-outcome-codes.ts, which is also
+// where `severity` (the same 4-tier classification, for styling/sorting)
+// comes from. Use `severity`, not `status`, to decide a badge colour or
+// whether to show the handover panel - `status` is for display copy only.
+export type PathwaySeverity = 'RESOLVED' | 'CHECK' | 'FLAG' | 'ESCALATE'
+
 export interface PathwayJourney {
   id: string
   passportId: string
   pathwayId: string
   currentStepId: string
   stepAnswers: Array<{ stepId: string; answerLabel: string; evidenceFileUrls: string[]; timestamp: string }>
-  status: 'IN_PROGRESS' | 'RESOLVED' | 'CHECK' | 'FLAG' | 'ESCALATE'
+  status: 'IN_PROGRESS' | string
+  severity?: PathwaySeverity | null
   startedAt: string
   completedAt: string | null
+}
+
+// The full structured panel (UMU_278 handoff, 2 Oct 2026) - preferred over
+// the flat ownerExplanation/ownerNextStep/etc fields below, which are a
+// lossy derived summary kept only for older call sites. See
+// umu-backend's QuestionAnswerGuidance.panel comment for the exact shape
+// each field comes from.
+export interface GuidancePanel {
+  title: string | null
+  style: string | null
+  meaning: string | null
+  why_now: string | null
+  owner_actions: string[]
+  possible_outcomes: Array<{ title: string; explanation: string }>
+  evidence: string[]
+  time: { preparation?: string; resolution_or_transaction_impact?: string; basis?: string } | string | null
+  completion: string | null
+  source_ids: string[]
+  professional_help: string | null
+  transaction_context: string | null
 }
 
 export interface AnswerGuidance {
@@ -52,13 +83,15 @@ export interface AnswerGuidance {
   ownerNextStep: string | null
   evidenceToAdd: string | null
   timeIfUnresolved: string | null
+  panel: GuidancePanel | null
   status: 'draft' | 'conveyancer_reviewed' | 'live'
 }
 
 export interface PathwayFlag {
   journeyId: string
   pathwayId: string
-  status: 'CHECK' | 'FLAG' | 'ESCALATE'
+  status: string
+  severity: PathwaySeverity
   issue: string
   updatedAt: string
 }

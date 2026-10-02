@@ -6,18 +6,40 @@
         collaborators on this passport.
       </p>
 
-      <!-- Role + history access — applied to everyone added in this batch -->
+      <!-- Role + permission + access duration + history access — applied
+           to everyone added in this batch -->
       <div class="ac-batch-opts">
         <label class="ac-field">
           <span class="ac-field-label">Their role</span>
           <select v-model="batchRole" class="ac-select" :disabled="isLoading">
             <option value="">Not specified</option>
-            <option value="Solicitor">Solicitor</option>
+            <option value="Solicitor / Conveyancer">Solicitor / Conveyancer</option>
             <option value="Estate agent">Estate agent</option>
             <option value="Co-owner">Co-owner</option>
+            <option value="Surveyor">Surveyor</option>
             <option value="Buyer">Buyer</option>
             <option value="Other">Other</option>
           </select>
+        </label>
+        <label class="ac-field">
+          <span class="ac-field-label">What can they do?</span>
+          <select v-model="batchPermission" class="ac-select" :disabled="isLoading">
+            <option value="view">View only — can see the information you share with them</option>
+            <option value="view_add">View &amp; add information — can add documents and information, but not change your information</option>
+            <option value="view_add_update_own">View, add &amp; update their own information — can amend things they've added, but not information added by others</option>
+          </select>
+        </label>
+        <label class="ac-field">
+          <span class="ac-field-label">Access duration</span>
+          <select v-model="batchAccessDuration" class="ac-select" :disabled="isLoading">
+            <option value="until_removed">Until I remove them</option>
+            <option value="until_completion">Until completion</option>
+            <option value="specific_date">Choose a date</option>
+          </select>
+        </label>
+        <label v-if="batchAccessDuration === 'specific_date'" class="ac-field">
+          <span class="ac-field-label">Access ends on</span>
+          <input v-model="batchExpiresAt" type="date" class="ac-select" :disabled="isLoading" />
         </label>
         <label class="ac-checkbox-row">
           <input type="checkbox" v-model="batchHistoryAccess" :disabled="isLoading" />
@@ -146,6 +168,13 @@
               <span v-if="c.role" class="ac-existing-role">· {{ c.role }}</span>
             </div>
             <div class="ac-result-email">{{ c.email }}</div>
+            <div class="ac-existing-meta">
+              {{ PERMISSION_LABEL[c.permission] || PERMISSION_LABEL.view }}
+              <template v-if="c.accessDuration === 'specific_date' && c.expiresAt">
+                · Until {{ new Date(c.expiresAt).toLocaleDateString() }}
+              </template>
+              <template v-else-if="c.accessDuration === 'until_completion'"> · Until completion</template>
+            </div>
             <label class="ac-checkbox-row ac-checkbox-row--small">
               <input
                 type="checkbox"
@@ -217,7 +246,16 @@ watch(() => props.show, (val) => {
 watch(isOpen, (val) => emit('update:show', val))
 
 const batchRole = ref('')
+const batchPermission = ref('view')
+const batchAccessDuration = ref('until_removed')
+const batchExpiresAt = ref('')
 const batchHistoryAccess = ref(true)
+
+const PERMISSION_LABEL = {
+  view: 'View only',
+  view_add: 'View & add information',
+  view_add_update_own: 'View, add & update own information',
+}
 
 const searchQuery = ref('')
 const searchResults = ref([])
@@ -253,6 +291,9 @@ function reset() {
   searchResults.value = []
   selected.value = []
   batchRole.value = ''
+  batchPermission.value = 'view'
+  batchAccessDuration.value = 'until_removed'
+  batchExpiresAt.value = ''
   batchHistoryAccess.value = true
   error.value = ''
   success.value = ''
@@ -317,6 +358,9 @@ async function submitAdds() {
         const response = await addCollaborator(props.passportId, user.email, {
           role: batchRole.value || undefined,
           historyAccess: batchHistoryAccess.value,
+          permission: batchPermission.value,
+          accessDuration: batchAccessDuration.value,
+          expiresAt: batchAccessDuration.value === 'specific_date' ? batchExpiresAt.value || undefined : undefined,
         })
         added.push(response.collaborator ?? user)
         emit('added', response.collaborator ?? user)
@@ -357,6 +401,9 @@ async function handleInviteEmail() {
     await inviteCollaborator(props.passportId, targetEmail, {
       role: batchRole.value || undefined,
       historyAccess: batchHistoryAccess.value,
+      permission: batchPermission.value,
+      accessDuration: batchAccessDuration.value,
+      expiresAt: batchAccessDuration.value === 'specific_date' ? batchExpiresAt.value || undefined : undefined,
     })
     success.value = `Invitation sent to ${targetEmail}.`
     searchQuery.value = ''
@@ -460,6 +507,11 @@ function initials(name) {
 .ac-existing-role {
   font-weight: 400;
   color: #6b7089;
+}
+.ac-existing-meta {
+  font-size: 0.7188rem;
+  color: #6b7089;
+  margin-top: 2px;
 }
 
 /* search box */

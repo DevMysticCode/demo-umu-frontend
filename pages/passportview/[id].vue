@@ -201,7 +201,28 @@
           <span class="pp-resume-chev">›</span>
         </button>
 
-        <div v-if="viewMode === 'list'" class="steps-list">
+        <!-- Previously this area just rendered nothing while loading or if
+             sections came back empty, with zero indication to the owner of
+             what was happening or why (real user report, 2 Oct 2026 - the
+             actual bug was the dashboard sending people to a passport with
+             no sections at all, now fixed at the source in
+             middleware/passport-type.ts, but this still covers any other
+             way someone could land here mid-load or on a genuinely empty
+             passport, e.g. a direct link or a slow connection). -->
+        <div v-if="sectionsLoading" class="pp-sections-loading">
+          <div class="pp-spinner" />
+          <p>Loading your passport sections…</p>
+        </div>
+        <div v-else-if="steps.length === 0" class="pp-sections-empty">
+          <div style="width: 40px; height: 40px; margin: 0 auto 10px"><img src="/op-icons/misc/fileCabinet.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
+          <p class="pp-sections-empty-title">No sections yet</p>
+          <p class="pp-sections-empty-sub">
+            This can happen if your passport setup didn't finish. Try reloading this page -
+            if sections still don't appear, contact support and we'll sort it out.
+          </p>
+          <button type="button" class="pp-sections-empty-retry" @click="loadPassport(route.params.id)">Try again</button>
+        </div>
+        <div v-else-if="viewMode === 'list'" class="steps-list">
           <div
             v-for="step in steps"
             :key="step.id"
@@ -336,6 +357,25 @@
       <!-- Buyers tab -->
       <!-- Vault tab — sections with per-section public/private toggle -->
       <div v-if="activeTab === 'vault'" class="pp-tab-content">
+        <div class="pp-vault-tiles">
+          <NuxtLink :to="`/vault/${route.params.id}`" class="pp-vault-tile">
+            <span class="pp-vault-tile-icon"><img src="/op-icons/investment/house.png" alt="" loading="lazy" /></span>
+            <span class="pp-vault-tile-label">Property documents</span>
+            <span class="pp-vault-tile-sub">Documents related to this property</span>
+          </NuxtLink>
+          <NuxtLink :to="`/vault/${route.params.id}?scope=private`" class="pp-vault-tile">
+            <span class="pp-vault-tile-icon"><img src="/op-icons/investment/padlock.png" alt="" loading="lazy" /></span>
+            <span class="pp-vault-tile-label">My private documents</span>
+            <span class="pp-vault-tile-sub">Personal documents, visible only to you</span>
+          </NuxtLink>
+        </div>
+        <NuxtLink :to="`/vault/${route.params.id}?scope=shared`" class="pp-vault-shared-row">
+          <span class="pp-vault-tile-icon"><img src="/op-icons/profile/collaborators.jpeg" alt="" loading="lazy" /></span>
+          <span style="flex:1">Shared with me</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:#c1c5d0"><polyline points="9 18 15 12 9 6" /></svg>
+        </NuxtLink>
+
+        <div class="vault-legend-t" style="margin:22px 0 10px">Section visibility</div>
         <div v-if="vaultLoading" class="pp-empty">
           <div style="width: 36px; height: 36px; margin: 0 auto 8px"><img src="/op-icons/misc/fileCabinet.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
           <p>Loading your vault…</p>
@@ -346,7 +386,7 @@
             <div style="width: 40px; height: 40px; margin: 0 auto 8px"><img src="/op-icons/misc/fileCabinet.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" /></div>
             <p>Your vault is empty</p>
             <p style="font-size: 0.7188rem; margin-top: 6px; color: #94a3b8">
-              As you complete sections, the verified documents are stored here -
+              As you complete sections, your documents are stored here -
               and you choose which are private and which publish with your
               passport.
             </p>
@@ -390,8 +430,8 @@
               <div class="vault-vis-meta">
                 {{
                   s.visibility === 'PRIVATE'
-                    ? 'Verified · Private - only you. Not included when you publish.'
-                    : 'Verified · Public - published with your passport when you go live.'
+                    ? 'Completed · Private - only you. Not included when you publish.'
+                    : 'Completed · Public - published with your passport when you go live.'
                 }}
               </div>
             </div>
@@ -1070,10 +1110,27 @@ const actionsById = computed(() => {
 // their answers raised that isn't resolved yet.
 const { listFlags } = usePathways()
 const pathwayFlags = ref([])
+// Generic 4-status labels, plus the fine-grained codes P09 (boundary) and
+// P39 (glazing) can now report instead (see pathway-outcome-codes.ts on the
+// backend) - listFlags() already filters to non-resolved severity tiers,
+// so every code that can land here needs a label rather than falling back
+// to the raw code string.
 const PATHWAY_STATUS_LABEL = {
   CHECK: 'Check before you sell',
   FLAG: 'For a conveyancer',
   ESCALATE: 'Needs a conveyancer',
+  check: 'Check before you sell',
+  conflict: 'Answers need reviewing',
+  mismatch: 'For a conveyancer',
+  historic: 'Check before you sell',
+  historic_mismatch: 'For a conveyancer',
+  dispute: 'Needs a conveyancer',
+  dispute_mismatch: 'Needs a conveyancer',
+  record_held: 'Check before you sell',
+  date_unknown: 'Check before you sell',
+  check_record: 'Check before you sell',
+  searching: 'Check before you sell',
+  missing_record: 'For a conveyancer',
 }
 async function fetchPathwayFlags() {
   try {
@@ -2242,6 +2299,56 @@ const onRoleSwitch = (role) => {
   font-size: 0.8125rem;
   text-align: center;
 }
+.pp-sections-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 60px 20px;
+  color: #6b7089;
+  font-size: 0.8438rem;
+}
+.pp-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5f4f2;
+  border-top-color: #00a19a;
+  border-radius: 50%;
+  animation: pp-spin 0.8s linear infinite;
+}
+@keyframes pp-spin {
+  to { transform: rotate(360deg); }
+}
+.pp-sections-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+.pp-sections-empty-title {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #231d45;
+  margin: 0 0 6px;
+}
+.pp-sections-empty-sub {
+  font-size: 0.8125rem;
+  color: #6b7089;
+  line-height: 1.5;
+  margin: 0 0 18px;
+  max-width: 280px;
+}
+.pp-sections-empty-retry {
+  padding: 10px 22px;
+  background: #00a19a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.8438rem;
+  cursor: pointer;
+}
 .pp-street-stats {
   background: white;
   border-radius: 16px;
@@ -2885,6 +2992,36 @@ const onRoleSwitch = (role) => {
 }
 
 /* ── Vault tab ───────────────────────────────────────────────── */
+.pp-vault-tiles { display: flex; gap: 10px; padding: 0 18px; margin-bottom: 10px; }
+.pp-vault-tile {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #f0f2f5;
+  border-radius: 14px;
+  text-decoration: none;
+}
+.pp-vault-tile-icon { display: inline-flex; width: 28px; height: 28px; }
+.pp-vault-tile-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.pp-vault-tile-label { font-size: 0.8125rem; font-weight: 700; color: #231d45; }
+.pp-vault-tile-sub { font-size: 0.6875rem; color: #6b7089; line-height: 1.4; }
+.pp-vault-shared-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 18px;
+  padding: 13px 14px;
+  background: #fff;
+  border: 1px solid #f0f2f5;
+  border-radius: 14px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #231d45;
+  text-decoration: none;
+}
 .vault-legend { margin: 8px 18px 6px; padding: 12px 14px; background: #f5f6fa; border: 1px solid #e4e5ed; border-radius: 13px; }
 .vault-legend-t { font-size: 0.625rem; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: #a8a9ad; margin-bottom: 8px; }
 .vault-legend-row { display: flex; align-items: flex-start; gap: 9px; font-size: 0.6875rem; font-weight: 600; color: #6b7089; line-height: 1.45; }
