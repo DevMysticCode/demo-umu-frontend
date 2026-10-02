@@ -312,13 +312,20 @@
               v-else-if="activePathway"
               :pathway="activePathway.pathway"
               :status="activePathway.journey.status"
+              :severity="activePathway.journey.severity"
               @continue="onPathwayContinue"
+            />
+            <QuestionGuidancePanel
+              v-else-if="activeGuidance"
+              :panel="activeGuidance.panel"
+              :draft="activeGuidance.status === 'draft'"
+              @continue="onGuidanceContinue"
             />
           </div>
         </div>
       </div>
       <button
-        v-if="currentQuestion?.type?.toLowerCase() !== 'radio' && !activePathway"
+        v-if="currentQuestion?.type?.toLowerCase() !== 'radio' && !activePathway && !activeGuidance"
         class="submit-btn"
         data-tour="q-save"
         @click="saveAnswer"
@@ -384,6 +391,7 @@ import HelpDrawer from '~/components/passport-view/HelpDrawer.vue'
 import VideoModal from '~/components/passport-view/VideoModal.vue'
 import PathwayStepCard from '~/components/passport-view/PathwayStepCard.vue'
 import PathwayOutcomeCard from '~/components/passport-view/PathwayOutcomeCard.vue'
+import QuestionGuidancePanel from '~/components/passport-view/QuestionGuidancePanel.vue'
 import { usePathways } from '~/composables/usePathways'
 
 const route = useRoute()
@@ -420,7 +428,19 @@ const isSaving = ref(false)
 // which aren't mapped to pathway content yet — see usePathways.ts.
 const { getGuidanceAndPathway, advanceJourney, deferJourney } = usePathways()
 const activePathway = ref(null) // { pathway, journey } | null
+// The inline "you answered X" panel (client handoff, 2 Oct 2026) - only
+// shown when it's actually worth pausing for: a flagged concern (yellow),
+// or routine copy that still has real actions/evidence to act on. A plain
+// "noted, nothing to do" confirmation auto-advances exactly like before,
+// per the handoff's own instruction not to interrupt the flow for those.
+const activeGuidance = ref(null) // AnswerGuidance | null
 let pendingFinishAfterSaveQuestionId = null
+
+function isGuidanceWorthShowing(guidance) {
+  const panel = guidance?.panel
+  if (!panel) return false
+  return panel.style === 'yellow' || !!panel.owner_actions?.length || !!panel.possible_outcomes?.length
+}
 
 async function onPathwayAnswer(payload) {
   if (!activePathway.value) return
@@ -455,6 +475,11 @@ async function onPathwayContinue() {
   await continueAfterPathway()
 }
 
+async function onGuidanceContinue() {
+  activeGuidance.value = null
+  await continueAfterPathway()
+}
+
 async function continueAfterPathway() {
   activePathway.value = null
   const questionId = pendingFinishAfterSaveQuestionId
@@ -468,9 +493,14 @@ async function checkPathwayThenFinish(questionId, answerValueForGuidance) {
       typeof answerValueForGuidance === 'string'
         ? answerValueForGuidance
         : JSON.stringify(answerValueForGuidance)
-    const { journey, pathway } = await getGuidanceAndPathway(questionId, value)
+    const { guidance, journey, pathway } = await getGuidanceAndPathway(questionId, value)
     if (journey && pathway) {
       activePathway.value = { pathway, journey }
+      pendingFinishAfterSaveQuestionId = questionId
+      return
+    }
+    if (isGuidanceWorthShowing(guidance)) {
+      activeGuidance.value = guidance
       pendingFinishAfterSaveQuestionId = questionId
       return
     }

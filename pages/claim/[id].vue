@@ -918,7 +918,7 @@
         <button class="cl-btn-ghost" style="flex: 1" @click="step = 'search'">
           Try another property
         </button>
-        <button class="cl-btn-brand" style="flex: 1" @click="runLrSearch()">
+        <button class="cl-btn-brand" style="flex: 1" @click="step = 'lr-searching'">
           Retry
         </button>
       </div>
@@ -1819,6 +1819,15 @@ async function runLrSearch() {
   if (result.status === 'VERIFIED') {
     lrStep.value = 3
     await new Promise((r) => setTimeout(r, 500))
+    // Guards against a stale/abandoned call landing here after the user
+    // has already navigated off this step. This function is only ever
+    // meant to run while step is 'lr-searching' - the lr-failed screen's
+    // "Retry" button sets step to 'lr-searching' (not a direct call here)
+    // specifically so this guard still holds, rather than silently never
+    // transitioning on a successful retry (real bug, 2 Oct 2026: the HMLR
+    // call would come back VERIFIED but the UI stayed on "Ownership not
+    // confirmed" forever, because the direct call left step stuck on
+    // 'lr-failed').
     if (step.value === 'lr-searching') step.value = 'lr-found'
     return
   }
@@ -1986,7 +1995,7 @@ const claimPriceDisplay = computed(() =>
 // copy explains what's being charged without duplicating the pricing logic.
 const claimPriceReason = computed(() => {
   if (claimAmountPence.value == null) return ''
-  return claimAmountPence.value >= 3599
+  return claimAmountPence.value >= 1999
     ? 'Identity verification (KYC) and HM Land Registry ownership check'
     : 'HM Land Registry ownership check'
 })
@@ -2170,7 +2179,11 @@ onBeforeUnmount(() => {
 .cl-center-col {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* stretch, not center - a block child with no explicit width (e.g.
+     .cl-card) must fill the panel, not shrink-wrap to its own content.
+     text-align still centers the actual text/inline content. Same bug
+     found and fixed in umu-website-integration's claim page. */
+  align-items: stretch;
   text-align: center;
 }
 .cl-center-full {
@@ -2440,7 +2453,7 @@ onBeforeUnmount(() => {
 .cl-row-list {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 10px;
 }
 .cl-gap-sm {
   gap: 11px;
@@ -2450,12 +2463,17 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 13px;
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid rgba(35, 29, 69, 0.08);
+  border-radius: 14px;
+  box-sizing: border-box;
 }
 .cl-step-ic {
-  width: 40px;
-  height: 40px;
-  background: #f1f9f4;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  background: #f2faf8;
+  border-radius: 50%;
   display: grid;
   place-items: center;
   font-size: 1.1875rem;
@@ -3475,8 +3493,8 @@ onBeforeUnmount(() => {
   display: block;
 }
 .cl-step-ic img {
-  width: 26px;
-  height: 26px;
+  width: 36px;
+  height: 36px;
 }
 .cl-pale-ic {
   width: 34px;

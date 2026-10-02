@@ -1,3 +1,23 @@
+// "view" (read-only), "view_add" (can add info to an unanswered question,
+// never change an existing answer), "view_add_update_own" (can also change
+// an answer THEY last wrote, never someone else's) - see
+// PassportService.checkWriteAccess on the backend for enforcement.
+export type CollaboratorPermission = 'view' | 'view_add' | 'view_add_update_own'
+// "until_removed" (default - stays until the owner removes them),
+// "until_completion" (intent only today - nothing yet revokes access
+// automatically when the passport completes/publishes), "specific_date"
+// (expiresAt is the actual, enforced cutoff).
+export type CollaboratorAccessDuration = 'until_removed' | 'until_completion' | 'specific_date'
+
+export interface CollaboratorOpts {
+  role?: string
+  sectionKeys?: string[] | null
+  historyAccess?: boolean
+  permission?: CollaboratorPermission
+  accessDuration?: CollaboratorAccessDuration
+  expiresAt?: string | null
+}
+
 export const usePassportCollaborators = () => {
   const config = useRuntimeConfig()
   const base = config.public.apiBase
@@ -10,7 +30,7 @@ export const usePassportCollaborators = () => {
   const addCollaborator = (
     passportId: string,
     email: string,
-    opts?: { role?: string; sectionKeys?: string[] | null; historyAccess?: boolean },
+    opts?: CollaboratorOpts,
   ) => {
     return $fetch(`${base}/passport/${passportId}/collaborators`, {
       method: 'POST',
@@ -39,7 +59,7 @@ export const usePassportCollaborators = () => {
   const inviteCollaborator = (
     passportId: string,
     email: string,
-    opts?: { role?: string; sectionKeys?: string[] | null; historyAccess?: boolean },
+    opts?: CollaboratorOpts,
   ) => {
     return $fetch(`${base}/passport/${passportId}/collaborators/invite`, {
       method: 'POST',
@@ -70,7 +90,7 @@ export const usePassportCollaborators = () => {
   const updateCollaboratorScope = (
     passportId: string,
     collaboratorId: string,
-    opts: { role?: string; sectionKeys?: string[] | null; historyAccess?: boolean },
+    opts: CollaboratorOpts,
   ) => {
     return $fetch(
       `${base}/passport/${passportId}/collaborators/${collaboratorId}`,
