@@ -22,119 +22,126 @@
       <!-- ── Premium Passport hero — book on left, dashboard on right ── -->
       <div class="pp-hero">
         <div class="pp-hero-glow" />
-        <div class="pp-hero-book">
-          <PassportCard
-            :line1="passportAddress.line1"
-            :line2="passportAddress.line2"
-            :type="passportType"
-          />
+        <div class="pp-hero-top">
+          <div class="pp-hero-book">
+            <PassportCard
+              :line1="passportAddress.line1"
+              :line2="passportAddress.line2"
+              :type="passportType"
+            />
+          </div>
+          <div class="pp-hero-info">
+            <div class="pp-hero-eyebrow">Property Passport</div>
+            <div class="pp-hero-addr-row">
+              <div class="pp-hero-addr-text">
+                <div class="pp-hero-addr-l1">{{ passportAddress.line1 }}</div>
+                <div class="pp-hero-addr-l2">{{ passportAddress.line2 }}</div>
+              </div>
+              <button class="pp-hero-switch" @click="showPropertiesModal = true">
+                <OPIcon name="caretDown" class="w-[16px] h-[16px]" />
+              </button>
+            </div>
+            <div class="pp-hero-stats">
+              <div class="pp-hero-stat">
+                <div class="pp-hero-stat-val">{{ heroHsScore }}</div>
+                <div class="pp-hero-stat-lbl">HS</div>
+              </div>
+              <div class="pp-hero-stat">
+                <div class="pp-hero-stat-val">{{ heroDocsCount }}</div>
+                <div class="pp-hero-stat-lbl">Docs</div>
+              </div>
+              <div class="pp-hero-stat">
+                <div class="pp-hero-stat-val">{{ heroSectionsLabel }}</div>
+                <div class="pp-hero-stat-lbl">Sections</div>
+              </div>
+              <!-- <div class="pp-hero-stat">
+                <div class="pp-hero-stat-val pp-hero-stat-val--ready">
+                  {{ heroReadyPct }}
+                </div>
+                <div class="pp-hero-stat-lbl">Ready</div>
+              </div> -->
+            </div>
+          </div>
         </div>
-        <div class="pp-hero-info">
-          <div class="pp-hero-eyebrow">Property Passport</div>
-          <div class="pp-hero-addr-row">
-            <div class="pp-hero-addr-text">
-              <div class="pp-hero-addr-l1">{{ passportAddress.line1 }}</div>
-              <div class="pp-hero-addr-l2">{{ passportAddress.line2 }}</div>
-            </div>
-            <button class="pp-hero-switch" @click="showPropertiesModal = true">
-              <OPIcon name="caretDown" class="w-[16px] h-[16px]" />
-            </button>
-          </div>
-          <div class="pp-hero-stats">
-            <div class="pp-hero-stat">
-              <div class="pp-hero-stat-val">{{ heroHsScore }}</div>
-              <div class="pp-hero-stat-lbl">HS</div>
-            </div>
-            <div class="pp-hero-stat">
-              <div class="pp-hero-stat-val">{{ heroDocsCount }}</div>
-              <div class="pp-hero-stat-lbl">Docs</div>
-            </div>
-            <div class="pp-hero-stat">
-              <div class="pp-hero-stat-val">{{ heroSectionsLabel }}</div>
-              <div class="pp-hero-stat-lbl">Sections</div>
-            </div>
-            <!-- <div class="pp-hero-stat">
-              <div class="pp-hero-stat-val pp-hero-stat-val--ready">
-                {{ heroReadyPct }}
-              </div>
-              <div class="pp-hero-stat-lbl">Ready</div>
-            </div> -->
-          </div>
-          <div class="pp-hero-dash">
-            <div class="pp-hero-dash-row">
-              <span class="pp-hero-dash-label">Passport progress</span>
-              <span class="pp-hero-dash-pct">{{ overallProgress }}%</span>
-            </div>
-            <div class="pp-hero-dash-bar">
-              <div
-                class="pp-hero-dash-fill"
-                :style="{ width: safeProgress + '%' }"
-              >
-                <OPIcon name="progressMan" class="pp-hero-dash-man" />
-              </div>
-            </div>
-            <div class="pp-hero-dash-issued">
-              <span class="pp-hero-dash-dot" />
-              Passport issued
-            </div>
-          </div>
 
-          <!-- ── Publish-readiness bar — separate from overall completion
-               above: this tracks only the disclosures required before the
-               passport can go public, so it can hit 100% well before the
-               passport itself is fully filled in. ── -->
-          <button
-            v-if="readiness && !readiness.canPublish"
-            type="button"
-            class="pp-hero-dash pp-hero-dash--ready"
-            @click="openReadinessChecklist"
-          >
-            <div class="pp-hero-dash-row">
-              <span class="pp-hero-dash-label">Ready to publish</span>
-              <span class="pp-hero-dash-pct">{{ readiness.readinessPct }}%</span>
-            </div>
-            <div class="pp-hero-dash-bar">
-              <div
-                class="pp-hero-dash-fill pp-hero-dash-fill--ready"
-                :style="{ width: readiness.readinessPct + '%' }"
-              />
-            </div>
-            <div class="pp-hero-dash-issued pp-hero-dash-issued--ready">
-              {{ readiness.missingBlockers.length }}
-              required {{ readiness.missingBlockers.length === 1 ? 'question' : 'questions' }}
-              left before you can publish - tap to see them
-              <OPIcon name="caretRight" class="w-[10px] h-[10px]" />
-            </div>
-          </button>
-
-          <!-- ── Collaborators + Manage visibility, side by side in the
-               hero (client History handoff, 2026-09-25) — replaces the
-               separate collaborators row that used to sit below the hero
-               and the old bare "Publish"/Match-to-Buyers action row.
-               Underlying mechanism (togglePublish/PublishPassportDrawer,
-               openMatchDrawer) is unchanged; only the placement/framing
-               moved. ── -->
-          <div class="pp-action-row">
-            <button
-              class="pp-action-btn pp-action-outline"
-              @click="openCollaboratorModal"
-            >
-              <OPIcon name="matchToBuyers" class="w-[15px] h-[15px]" />
-              {{ collaborators.length }} {{ collaborators.length === 1 ? 'Collaborator' : 'Collaborators' }}
-            </button>
-            <button
-              class="pp-action-btn pp-action-primary"
-              :class="{ 'pp-action-loading': publishLoading }"
-              :disabled="publishLoading"
-              @click="onPublishClick"
-            >
-              <OPIcon name="published" class="w-[15px] h-[15px]" />
-              Manage visibility
-            </button>
+        <!-- ── Progress, readiness and the action row all span the hero's
+             full width (client feedback, 2026-10-06: these used to live
+             inside the narrow info column beside the book cover, which
+             left a tall empty gap under the book once it ran out and
+             forced "Match to Buyers" onto its own second row even though
+             there was room for all three buttons on one). ── -->
+        <div class="pp-hero-dash">
+          <div class="pp-hero-dash-row">
+            <span class="pp-hero-dash-label">Passport progress</span>
+            <span class="pp-hero-dash-pct">{{ overallProgress }}%</span>
           </div>
+          <div class="pp-hero-dash-bar">
+            <div
+              class="pp-hero-dash-fill"
+              :style="{ width: safeProgress + '%' }"
+            >
+              <OPIcon name="progressMan" class="pp-hero-dash-man" />
+            </div>
+          </div>
+          <div class="pp-hero-dash-issued">
+            <span class="pp-hero-dash-dot" />
+            Passport issued
+          </div>
+        </div>
+
+        <!-- ── Publish-readiness bar — separate from overall completion
+             above: this tracks only the disclosures required before the
+             passport can go public, so it can hit 100% well before the
+             passport itself is fully filled in. ── -->
+        <button
+          v-if="readiness && !readiness.canPublish"
+          type="button"
+          class="pp-hero-dash pp-hero-dash--ready"
+          @click="openReadinessChecklist"
+        >
+          <div class="pp-hero-dash-row">
+            <span class="pp-hero-dash-label">Ready to publish</span>
+            <span class="pp-hero-dash-pct">{{ readiness.readinessPct }}%</span>
+          </div>
+          <div class="pp-hero-dash-bar">
+            <div
+              class="pp-hero-dash-fill pp-hero-dash-fill--ready"
+              :style="{ width: readiness.readinessPct + '%' }"
+            />
+          </div>
+          <div class="pp-hero-dash-issued pp-hero-dash-issued--ready">
+            {{ readiness.missingBlockers.length }}
+            required {{ readiness.missingBlockers.length === 1 ? 'question' : 'questions' }}
+            left before you can publish - tap to see them
+            <OPIcon name="caretRight" class="w-[10px] h-[10px]" />
+          </div>
+        </button>
+
+        <!-- ── Collaborators + Manage visibility + Match to Buyers, one
+             row (client History handoff, 2026-09-25; widened to a single
+             row of three on 2026-10-06 now this block has the hero's full
+             width to work with). Underlying mechanism
+             (togglePublish/PublishPassportDrawer, openMatchDrawer) is
+             unchanged; only the placement/framing moved. ── -->
+        <div class="pp-action-row">
           <button
             class="pp-action-btn pp-action-outline"
-            style="width: 100%; margin-top: 8px"
+            @click="openCollaboratorModal"
+          >
+            <OPIcon name="matchToBuyers" class="w-[15px] h-[15px]" />
+            {{ collaborators.length }} {{ collaborators.length === 1 ? 'Collaborator' : 'Collaborators' }}
+          </button>
+          <button
+            class="pp-action-btn pp-action-primary"
+            :class="{ 'pp-action-loading': publishLoading }"
+            :disabled="publishLoading"
+            @click="onPublishClick"
+          >
+            <OPIcon name="published" class="w-[15px] h-[15px]" />
+            Manage visibility
+          </button>
+          <button
+            class="pp-action-btn pp-action-outline"
             @click="openMatchDrawer"
           >
             <OPIcon name="matchToBuyers" class="w-[15px] h-[15px]" />
@@ -2588,10 +2595,18 @@ const onRoleSwitch = (role) => {
   padding: 18px 16px 16px;
   margin-bottom: 14px;
   display: flex;
-  align-items: stretch;
-  gap: 14px;
+  flex-direction: column;
   position: relative;
   overflow: hidden;
+}
+/* Book cover + address/stats only - everything below (progress, readiness,
+   action row) is a direct child of .pp-hero instead, so it spans the
+   hero's full width rather than being squeezed into the width left over
+   beside the book. */
+.pp-hero-top {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
 }
 .pp-hero-glow {
   position: absolute;
@@ -2803,22 +2818,24 @@ const onRoleSwitch = (role) => {
 /* ── Action row (Match to Buyers + Publish) ────────────────────── */
 .pp-action-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-top: 14px;
 }
 .pp-action-btn {
   border: none;
   border-radius: 12px;
-  padding: 11px 12px;
+  padding: 10px 6px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
+  text-align: center;
+  line-height: 1.25;
   transition:
     transform 0.1s,
     box-shadow 0.15s;
