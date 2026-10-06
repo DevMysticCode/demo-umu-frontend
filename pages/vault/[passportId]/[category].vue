@@ -65,7 +65,7 @@ const search = ref('')
 const loading = ref(true)
 const docs = ref([])
 
-const VISIBILITY_LABEL = { PRIVATE: 'Only you', SELECTED: 'Shared', PUBLISHED: 'Public' }
+const VISIBILITY_LABEL = { PRIVATE: 'Only you', SELECTED: 'Shared', ELIGIBLE: 'Included when shared', PUBLISHED: 'Public' }
 
 const filteredDocs = computed(() => {
   const q = search.value.trim().toLowerCase()
@@ -222,6 +222,7 @@ onMounted(async () => {
 }
 .vlt-visibility-pill--private { background: #f1f1f4; color: #6b7089; }
 .vlt-visibility-pill--selected { background: #e5f4f2; color: #008a84; }
+.vlt-visibility-pill--eligible { background: #fdf4dc; color: #92650d; }
 .vlt-visibility-pill--published { background: #e8f1fd; color: #2563eb; }
 .vlt-visibility-pill-ic { width: 12px; height: 12px; object-fit: contain; display: block; }
 

@@ -27,8 +27,8 @@
         <h3 class="vlt-card-title">Visibility</h3>
         <p class="vlt-section-sub">Choose who can see this document.</p>
         <div class="vlt-visibility-options">
-          <label v-for="opt in VISIBILITY_OPTIONS" :key="opt.value" :class="['vlt-vis-opt', accessLevel === opt.value ? 'selected' : '']">
-            <input type="radio" name="visibility" :value="opt.value" v-model="accessLevel" />
+          <label v-for="opt in VISIBILITY_OPTIONS" :key="opt.value" :class="['vlt-vis-opt', radioLevel === opt.value ? 'selected' : '']">
+            <input type="radio" name="visibility" :value="opt.value" v-model="radioLevel" />
             <span class="vlt-vis-icon"><img :src="opt.icon" alt="" loading="lazy" /></span>
             <span class="vlt-vis-body">
               <span class="vlt-vis-label">{{ opt.label }}</span>
@@ -36,6 +36,32 @@
             </span>
           </label>
         </div>
+
+        <!-- Selected-people picker - only when that tier is chosen -->
+        <div v-if="radioLevel === 'SELECTED'" class="vlt-grant-list">
+          <p v-if="!collaborators.length" class="vlt-grant-empty">
+            No collaborators on this passport yet — add one first before
+            granting document access.
+          </p>
+          <label v-for="c in collaborators" :key="c.id" class="vlt-grant-row">
+            <input
+              type="checkbox"
+              :checked="grantedIds.has(c.id)"
+              :disabled="grantBusy"
+              @change="toggleGrant(c)"
+            />
+            <span class="vlt-grant-avatar">{{ initials(c) }}</span>
+            <span class="vlt-grant-name">{{ c.firstName }} {{ c.lastName }}</span>
+          </label>
+        </div>
+
+        <label class="vlt-publish-row">
+          <input type="checkbox" v-model="published" />
+          <span class="vlt-vis-body">
+            <span class="vlt-vis-label">Show on published Passport</span>
+            <span class="vlt-vis-desc">Anyone viewing your published Passport could see this document.</span>
+          </span>
+        </label>
 
         <template v-if="doc.passport">
           <h3 class="vlt-card-title">Linked to</h3>
@@ -93,25 +119,38 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useVault, VAULT_CATEGORIES, VAULT_VISIBILITY_ICON } from '~/composables/useVault'
+import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
 
 const route = useRoute()
 const router = useRouter()
 const docId = route.params.docId
-const { getDocumentDetail, setDocumentAccess, updateDocumentMeta } = useVault()
+const { getDocumentDetail, setDocumentAccess, addDocumentGrant, removeDocumentGrant, updateDocumentMeta } = useVault()
+const { getCollaborators } = usePassportCollaborators()
 
 const loading = ref(true)
 const doc = ref(null)
-const accessLevel = ref('PRIVATE')
 const saving = ref(false)
 const activeTab = ref('Details')
 const tabs = ['Details', 'Sharing', 'History', 'Related']
 
 const categoryLabel = computed(() => VAULT_CATEGORIES.find((c) => c.key === doc.value?.category)?.label || 'Uncategorised')
 
+// The stored accessLevel is a single tier, but the UI splits "publish" out
+// as its own explicit toggle - publish needs its own confirmation, never
+// bundled into the private/selected/eligible choice (matches website-new's
+// DocumentAccessDrawer). radioLevel holds the non-publish tier; `published`
+// overrides it to PUBLISHED when checked, and reverts to radioLevel when
+// unchecked.
+const radioLevel = ref('PRIVATE')
+const published = ref(false)
+const collaborators = ref([])
+const grantedIds = ref(new Set())
+const grantBusy = ref(false)
+
 const VISIBILITY_OPTIONS = [
-  { value: 'PRIVATE', icon: VAULT_VISIBILITY_ICON.PRIVATE, label: 'Private', desc: 'Only you can see this document.' },
-  { value: 'SELECTED', icon: VAULT_VISIBILITY_ICON.SELECTED, label: 'Shared', desc: 'Only people you have given access to.' },
-  { value: 'PUBLISHED', icon: VAULT_VISIBILITY_ICON.PUBLISHED, label: 'Public', desc: 'Visible in your public property passport.' },
+  { value: 'PRIVATE', icon: VAULT_VISIBILITY_ICON.PRIVATE, label: 'Only me', desc: 'Keep this document private in your Vault.' },
+  { value: 'SELECTED', icon: VAULT_VISIBILITY_ICON.SELECTED, label: 'Selected people', desc: 'Choose specific collaborators, such as your solicitor or agent, to access this document.' },
+  { value: 'ELIGIBLE', icon: VAULT_VISIBILITY_ICON.ELIGIBLE, label: 'Include when I share', desc: "You'll confirm this document is included each time you share, on the review screen." },
 ]
 
 function fileIcon(mimeType) {
@@ -119,10 +158,33 @@ function fileIcon(mimeType) {
   return '/op-icons/misc/pdf.png'
 }
 
+function initials(c) {
+  return `${(c.firstName || '')[0] ?? ''}${(c.lastName || '')[0] ?? ''}`.toUpperCase() || '?'
+}
+
+async function toggleGrant(c) {
+  grantBusy.value = true
+  try {
+    if (grantedIds.value.has(c.id)) {
+      await removeDocumentGrant(docId, c.id)
+      grantedIds.value.delete(c.id)
+    } else {
+      await addDocumentGrant(docId, c.id)
+      grantedIds.value.add(c.id)
+    }
+    grantedIds.value = new Set(grantedIds.value)
+  } catch (e) {
+    console.error('Failed to update document access grant', e)
+  } finally {
+    grantBusy.value = false
+  }
+}
+
 async function save() {
   saving.value = true
   try {
-    await setDocumentAccess(docId, accessLevel.value)
+    const finalLevel = published.value ? 'PUBLISHED' : radioLevel.value
+    await setDocumentAccess(docId, finalLevel)
   } catch (e) {
     console.error('Failed to save document visibility', e)
   } finally {
@@ -142,7 +204,16 @@ async function unlink() {
 onMounted(async () => {
   try {
     doc.value = await getDocumentDetail(docId)
-    accessLevel.value = doc.value.accessLevel
+    published.value = doc.value.accessLevel === 'PUBLISHED'
+    radioLevel.value = doc.value.accessLevel === 'PUBLISHED' ? 'PRIVATE' : doc.value.accessLevel
+    grantedIds.value = new Set((doc.value.sharedWith ?? []).map((p) => p.id))
+    if (doc.value.passport?.id) {
+      try {
+        collaborators.value = await getCollaborators(doc.value.passport.id)
+      } catch (e) {
+        console.error('Failed to load passport collaborators', e)
+      }
+    }
   } catch (e) {
     console.error('Failed to load document detail', e)
   } finally {
@@ -181,6 +252,16 @@ onMounted(async () => {
 .vlt-vis-body { display: flex; flex-direction: column; }
 .vlt-vis-label { font-size: 0.875rem; font-weight: 700; color: #231d45; }
 .vlt-vis-desc { font-size: 0.75rem; color: #6b7089; margin-top: 2px; }
+
+.vlt-grant-list { margin: -2px 0 10px; padding: 10px 12px; background: #fafafa; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+.vlt-grant-empty { font-size: 0.75rem; color: #6b7089; margin: 4px 0; }
+.vlt-grant-row { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.vlt-grant-row input { accent-color: #00a19a; }
+.vlt-grant-avatar { width: 26px; height: 26px; border-radius: 50%; background: #00a19a; color: #fff; font-size: 0.6875rem; font-weight: 800; display: grid; place-items: center; flex-shrink: 0; }
+.vlt-grant-name { font-size: 0.8438rem; font-weight: 600; color: #231d45; }
+
+.vlt-publish-row { display: flex; align-items: flex-start; gap: 12px; padding: 14px; background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; margin-bottom: 10px; cursor: pointer; }
+.vlt-publish-row input { margin-top: 3px; accent-color: #00a19a; }
 
 .vlt-linked-card { display: flex; align-items: center; gap: 12px; padding: 14px; background: #fff; border: 1px solid #f0f2f5; border-radius: 14px; margin-bottom: 10px; }
 .vlt-linked-icon { width: 36px; height: 36px; flex-shrink: 0; }
