@@ -8120,7 +8120,19 @@ onMounted(async () => {
     const hasToken =
       typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
     if (hasToken && statusData === null) {
-      const retryData = await getPassportStatus(propertyId)
+      // A couple of retries with a short, growing gap rather than one
+      // immediate retry - an instant retry just hits the same not-yet-
+      // awake backend again (the Railway demo deploy's free tier sleeps
+      // and can take several seconds to wake on the first request after
+      // a while), so it almost never helped. Real bug, 3 Oct 2026: this
+      // showed up as the claim card intermittently missing entirely for
+      // logged-in users, specifically after a period of inactivity.
+      let retryData: Awaited<ReturnType<typeof getPassportStatus>> = null
+      for (const delayMs of [1500, 3000]) {
+        await new Promise((r) => setTimeout(r, delayMs))
+        retryData = await getPassportStatus(propertyId)
+        if (retryData !== null) break
+      }
       if (retryData !== null) {
         passportStatus.value = retryData
       } else {

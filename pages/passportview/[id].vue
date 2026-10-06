@@ -587,6 +587,7 @@
     <AddCollaboratorModal
       v-model:show="showCollaboratorModal"
       :passport-id="route.params.id"
+      :is-owner="isOwner"
       @added="handleCollaboratorAdded"
       @removed="handleCollaboratorRemoved"
     />
@@ -674,7 +675,7 @@ definePageMeta({
   middleware: ['auth', 'passport-type'],
 })
 
-const { steps, loading: sectionsLoading, loadPassport } = usePassportRuntime()
+const { steps, loading: sectionsLoading, loadPassport, loadAccess, isOwner } = usePassportRuntime()
 
 // Fixed chrome steps, always present. Each real passport section gets its
 // own step too (see sectionTourSteps below) - generated from the loaded
@@ -790,6 +791,7 @@ onMounted(async () => {
   }
 
   loadPassport(route.params.id)
+  loadAccess(route.params.id)
   fetchReadiness()
   await loadCollaborators()
   try {

@@ -13,6 +13,17 @@ export const usePassportApi = () => {
       headers: headers(),
     })
 
+  // Owner-only actions on the passport (add/remove collaborator, publish)
+  // reject a collaborator who otherwise has legitimate view access to
+  // /sections above - this tells the page which case it's looking at so it
+  // can hide/disable those actions instead of letting them hit a
+  // guaranteed rejection.
+  const getAccess = (passportId: string) =>
+    $fetch<{ isOwner: boolean; isCollaborator: boolean; permission: string | null }>(
+      `${base}/passport/${passportId}/access`,
+      { headers: headers() },
+    )
+
   const getQuestions = (taskId: string) =>
     $fetch(`${base}/tasks/${taskId}/questions`, {
       headers: headers(),
@@ -63,6 +74,7 @@ export const usePassportApi = () => {
 
   return {
     getSections,
+    getAccess,
     getQuestions,
     answerQuestion,
     completeTask,

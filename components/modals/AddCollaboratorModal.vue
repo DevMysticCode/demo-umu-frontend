@@ -1,9 +1,20 @@
 <template>
-  <BaseDrawer v-model="isOpen" title="Add Collaborators">
+  <BaseDrawer v-model="isOpen" :title="props.isOwner ? 'Add Collaborators' : 'Collaborators'">
     <div class="add-collab">
+      <!-- Only the owner can add collaborators (backend-enforced); a
+           collaborator with view access to this passport sees the same
+           page and used to get a confusing rejection if they tried. Client
+           bug report, 2026-10-06. -->
+      <p v-if="!props.isOwner" class="ac-owner-note">
+        Only the passport owner can add or remove collaborators. You can see
+        who already has access below.
+      </p>
+
+      <template v-if="props.isOwner">
       <p class="ac-lede">
-        Search UMovingU users by name or email and add one or more as
-        collaborators on this passport.
+        Enter the full email address of each person you want to add as a
+        collaborator on this passport. For privacy, we'll only confirm
+        whether that email has an account - not who it belongs to.
       </p>
 
       <!-- Role + permission + access duration + history access — applied
@@ -47,7 +58,18 @@
         </label>
       </div>
 
-      <!-- Search input -->
+      <!-- Email entry — full address only, no live name/partial-match
+           search. Checked against the backend one exact email at a time
+           (checkCollaboratorEmail), which only ever confirms whether an
+           account exists for that address - it was already built for
+           exactly this, just never wired up here. Privacy fix, 3 Oct
+           2026: the previous version searched-as-you-type against
+           /profile/users/search, which returns real names (and a masked
+           email) for any 2+ character match - typing "its" would surface
+           other users by name. It was also the cause of a real "can't
+           add" bug: the masked email it returned was being submitted as
+           the actual identifier, which obviously never matches a real
+           account. -->
       <div class="ac-search">
         <span class="ac-search-icon">
           <svg
@@ -62,83 +84,65 @@
           </svg>
         </span>
         <input
-          v-model="searchQuery"
-          type="text"
+          v-model="emailInput"
+          type="email"
           class="ac-search-input"
-          placeholder="Search by name or email"
+          placeholder="Enter their full email address"
           :disabled="isLoading"
-          @input="onSearchInput"
-         aria-label="Search by name or email" />
-        <span v-if="searching" class="ac-search-spin" />
+          @input="onEmailInput"
+          @keydown.enter.prevent="addCheckedEmail"
+         aria-label="Enter their full email address" />
+        <span v-if="checking" class="ac-search-spin" />
       </div>
 
-      <!-- Results dropdown — hidden when nothing to show -->
-      <div v-if="visibleResults.length > 0" class="ac-results">
-        <button
-          v-for="result in visibleResults"
-          :key="result.id"
-          type="button"
-          class="ac-result"
-          @click="pickUser(result)"
-        >
-          <div class="ac-avatar">{{ initials(result.name) }}</div>
-          <div class="ac-result-body">
-            <div class="ac-result-name">{{ result.name || result.email }}</div>
-            <div class="ac-result-email">{{ result.email }}</div>
+      <div v-if="checkResult" class="ac-check-result">
+        <template v-if="checkResult.status === 'found'">
+          <p class="ac-check-ok">✓ An account was found for this email.</p>
+          <button type="button" class="ac-invite-btn" @click="addCheckedEmail">
+            Add {{ checkResult.email }}
+          </button>
+        </template>
+        <template v-else-if="checkResult.status === 'already-collaborator'">
+          <p class="ac-check-note">This person is already a collaborator on this passport.</p>
+        </template>
+        <template v-else-if="checkResult.status === 'already-invited'">
+          <p class="ac-check-note">An invite is already pending for this email.</p>
+        </template>
+        <template v-else-if="checkResult.status === 'is-owner'">
+          <p class="ac-check-note">That's your own email - you already own this passport.</p>
+        </template>
+        <template v-else-if="checkResult.status === 'not-found'">
+          <div class="ac-invite-prompt">
+            <p>
+              No UMovingU account exists for <strong>{{ checkResult.email }}</strong>.
+              You can invite them to join - they'll be added as a collaborator
+              automatically as soon as they sign up.
+            </p>
+            <button
+              type="button"
+              class="ac-invite-btn"
+              :disabled="inviteLoading"
+              @click="handleInviteEmail"
+            >
+              {{ inviteLoading ? 'Sending invite…' : `Invite ${checkResult.email}` }}
+            </button>
           </div>
-          <span class="ac-result-add">+ Add</span>
-        </button>
+        </template>
       </div>
 
-      <div
-        v-if="
-          !searching &&
-          searchQuery.trim().length >= 2 &&
-          searchResults.length === 0 &&
-          !isLikelyEmail(searchQuery)
-        "
-        class="ac-empty"
-      >
-        No UMovingU users found for "{{ searchQuery }}".
-      </div>
-
-      <!-- Typed a full email with no match: offer to invite them instead
-           of a dead end. -->
-      <div
-        v-if="
-          !searching &&
-          searchResults.length === 0 &&
-          isLikelyEmail(searchQuery)
-        "
-        class="ac-invite-prompt"
-      >
-        <p>
-          We couldn't find an Umovingu account for <strong>{{ searchQuery }}</strong>.
-          You can invite them to join - they'll be added as a collaborator
-          automatically as soon as they sign up.
-        </p>
-        <button
-          type="button"
-          class="ac-invite-btn"
-          :disabled="inviteLoading"
-          @click="handleInviteEmail"
-        >
-          {{ inviteLoading ? 'Sending invite…' : `Invite ${searchQuery}` }}
-        </button>
-      </div>
-
-      <!-- Selected chips row -->
+      <!-- Selected chips row — real, full emails only (what the owner
+           typed), never a name. -->
       <div v-if="selected.length > 0" class="ac-selected-block">
         <div class="ac-selected-label">To add ({{ selected.length }})</div>
         <div class="ac-chips">
-          <div v-for="u in selected" :key="u.id" class="ac-chip">
-            <span class="ac-chip-name">{{ u.name || u.email }}</span>
+          <div v-for="email in selected" :key="email" class="ac-chip">
+            <span class="ac-chip-name">{{ email }}</span>
             <button
               type="button"
               class="ac-chip-x"
               aria-label="Remove"
               :disabled="isLoading"
-              @click="removeSelected(u.id)"
+              @click="removeSelected(email)"
             >
               ×
             </button>
@@ -149,9 +153,11 @@
       <!-- Error / success banners -->
       <div v-if="error" class="ac-error" role="alert">{{ error }}</div>
       <div v-if="success" class="ac-success">{{ success }}</div>
+      </template>
 
       <!-- Existing collaborators — kept below so the owner sees the
-           full list without needing to close and re-open. -->
+           full list without needing to close and re-open. Visible to a
+           non-owner too, read-only (no Remove/history-access controls). -->
       <div v-if="collaborators.length > 0" class="ac-existing">
         <div class="ac-existing-label">Current collaborators</div>
         <div
@@ -179,13 +185,14 @@
               <input
                 type="checkbox"
                 :checked="c.historyAccess"
-                :disabled="isLoading"
+                :disabled="isLoading || !props.isOwner"
                 @change="toggleHistoryAccess(c)"
               />
               Passport history
             </label>
           </div>
           <button
+            v-if="props.isOwner"
             type="button"
             class="ac-remove-btn"
             :disabled="isLoading"
@@ -197,7 +204,7 @@
       </div>
     </div>
 
-    <template #footer>
+    <template v-if="props.isOwner" #footer>
       <button
         class="ac-submit"
         type="button"
@@ -215,19 +222,21 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import BaseDrawer from '@/components/ui/BaseDrawer.vue'
-import { useProfile } from '~/composables/useProfile'
 import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
 
 const props = defineProps({
   show: { type: Boolean, default: false },
   passportId: { type: String, required: true },
+  // Defaults to true (today's prior behaviour) for any caller that hasn't
+  // been updated to pass the real value yet.
+  isOwner: { type: Boolean, default: true },
 })
 const emit = defineEmits(['update:show', 'added', 'removed'])
 
-const { searchUsers } = useProfile()
 const {
+  checkCollaboratorEmail,
   addCollaborator,
   inviteCollaborator,
   getCollaborators,
@@ -257,12 +266,12 @@ const PERMISSION_LABEL = {
   view_add_update_own: 'View, add & update own information',
 }
 
-const searchQuery = ref('')
-const searchResults = ref([])
-const searching = ref(false)
-let searchTimer = null
+const emailInput = ref('')
+const checking = ref(false)
+const checkResult = ref(null) // { status, email } | null — for emailInput's current value
+let checkTimer = null
 
-const selected = ref([]) // UserSearchResult[]
+const selected = ref([]) // string[] — full email addresses, never a name
 const collaborators = ref([]) // existing collaborators on this passport
 
 const isLoading = ref(false)
@@ -274,21 +283,17 @@ function isLikelyEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((value ?? '').trim())
 }
 
-// Drop already-selected + already-collaborators + the owner (self) so
-// the picker only surfaces genuinely-addable users.
-const excludedIds = computed(() => {
-  const ids = new Set()
-  for (const s of selected.value) ids.add(s.id)
-  for (const c of collaborators.value) ids.add(c.userId)
-  return ids
-})
-const visibleResults = computed(() =>
-  searchResults.value.filter((r) => !excludedIds.value.has(r.id)),
-)
+// Already selected in this batch, or already a collaborator on this
+// passport (compared by email, since that's all we ever hold now).
+function alreadyAdded(email) {
+  const normalised = email.trim().toLowerCase()
+  if (selected.value.some((e) => e.toLowerCase() === normalised)) return true
+  return collaborators.value.some((c) => c.email?.toLowerCase() === normalised)
+}
 
 function reset() {
-  searchQuery.value = ''
-  searchResults.value = []
+  emailInput.value = ''
+  checkResult.value = null
   selected.value = []
   batchRole.value = ''
   batchPermission.value = 'view'
@@ -308,38 +313,48 @@ async function loadCollaborators() {
   }
 }
 
-function onSearchInput() {
-  clearTimeout(searchTimer)
+function onEmailInput() {
+  clearTimeout(checkTimer)
   error.value = ''
-  if (searchQuery.value.trim().length < 2) {
-    searchResults.value = []
-    searching.value = false
+  checkResult.value = null
+  const value = emailInput.value.trim()
+  if (!isLikelyEmail(value)) {
+    checking.value = false
     return
   }
-  searching.value = true
-  searchTimer = setTimeout(async () => {
+  checking.value = true
+  checkTimer = setTimeout(async () => {
     try {
-      searchResults.value = await searchUsers(searchQuery.value)
-    } catch {
-      searchResults.value = []
+      const result = await checkCollaboratorEmail(props.passportId, value)
+      // Only apply it if the field still holds the email we checked - the
+      // owner may have kept typing while this was in flight.
+      if (emailInput.value.trim() === value) {
+        checkResult.value = { ...result, email: value }
+      }
+    } catch (err) {
+      if (emailInput.value.trim() === value) {
+        error.value = err?.data?.message || 'Could not check this email. Please try again.'
+      }
     } finally {
-      searching.value = false
+      checking.value = false
     }
-  }, 350)
+  }, 400)
 }
 
-function pickUser(user) {
-  if (excludedIds.value.has(user.id)) return
-  selected.value = [...selected.value, user]
-  // Keep the search open so the owner can add several people in a row.
-  // Clearing the query gives visual feedback that the pick worked and
-  // primes the field for the next search.
-  searchQuery.value = ''
-  searchResults.value = []
+function addCheckedEmail() {
+  if (!checkResult.value || checkResult.value.status !== 'found') return
+  const email = checkResult.value.email
+  if (alreadyAdded(email)) {
+    error.value = 'That email is already in your list or already a collaborator.'
+    return
+  }
+  selected.value = [...selected.value, email]
+  emailInput.value = ''
+  checkResult.value = null
 }
 
-function removeSelected(id) {
-  selected.value = selected.value.filter((u) => u.id !== id)
+function removeSelected(email) {
+  selected.value = selected.value.filter((e) => e !== email)
 }
 
 async function submitAdds() {
@@ -353,21 +368,21 @@ async function submitAdds() {
     // Fire in sequence so the backend can enforce per-request checks
     // (already-collaborator, self-add) without race conditions. Small
     // N (usually 1-5); latency is fine.
-    for (const user of selected.value) {
+    for (const email of selected.value) {
       try {
-        const response = await addCollaborator(props.passportId, user.email, {
+        const response = await addCollaborator(props.passportId, email, {
           role: batchRole.value || undefined,
           historyAccess: batchHistoryAccess.value,
           permission: batchPermission.value,
           accessDuration: batchAccessDuration.value,
           expiresAt: batchAccessDuration.value === 'specific_date' ? batchExpiresAt.value || undefined : undefined,
         })
-        added.push(response.collaborator ?? user)
-        emit('added', response.collaborator ?? user)
+        added.push(response.collaborator ?? { email })
+        emit('added', response.collaborator ?? { email })
       } catch (err) {
         const message =
           err?.data?.message || err?.message || 'Failed to add'
-        failures.push({ user, message })
+        failures.push({ email, message })
       }
     }
     if (failures.length === 0) {
@@ -379,10 +394,10 @@ async function submitAdds() {
     } else {
       error.value =
         failures.length === selected.value.length
-          ? `Couldn't add ${failures[0].user.email}: ${failures[0].message}`
+          ? `Couldn't add ${failures[0].email}: ${failures[0].message}`
           : `Added ${added.length}. ${failures.length} failed - first error: ${failures[0].message}`
       // Keep the failed ones in the chip row so the owner can retry.
-      selected.value = failures.map((f) => f.user)
+      selected.value = failures.map((f) => f.email)
     }
     await loadCollaborators()
     setTimeout(() => (success.value = ''), 4000)
@@ -392,8 +407,8 @@ async function submitAdds() {
 }
 
 async function handleInviteEmail() {
-  const targetEmail = searchQuery.value.trim()
-  if (!isLikelyEmail(targetEmail)) return
+  const targetEmail = checkResult.value?.email?.trim()
+  if (!targetEmail || !isLikelyEmail(targetEmail)) return
   error.value = ''
   success.value = ''
   inviteLoading.value = true
@@ -406,7 +421,8 @@ async function handleInviteEmail() {
       expiresAt: batchAccessDuration.value === 'specific_date' ? batchExpiresAt.value || undefined : undefined,
     })
     success.value = `Invitation sent to ${targetEmail}.`
-    searchQuery.value = ''
+    emailInput.value = ''
+    checkResult.value = null
     setTimeout(() => (success.value = ''), 4000)
   } catch (err) {
     error.value = err?.data?.message || 'Failed to send invite'
@@ -459,6 +475,16 @@ function initials(name) {
   color: #4a5868;
   font-size: 0.8438rem;
   line-height: 1.55;
+  margin: 0 0 16px;
+}
+.ac-owner-note {
+  padding: 12px 14px;
+  background: #f8f7fc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  color: #4a5868;
+  font-size: 0.8125rem;
+  line-height: 1.5;
   margin: 0 0 16px;
 }
 
@@ -566,32 +592,24 @@ function initials(name) {
   to { transform: translateY(-50%) rotate(360deg); }
 }
 
-/* results dropdown */
-.ac-results {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
+/* email check result */
+.ac-check-result {
   margin-bottom: 12px;
-  max-height: 260px;
-  overflow-y: auto;
 }
-.ac-result {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border: none;
-  background: #fff;
-  border-bottom: 1px solid #f0f2f5;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.12s;
+.ac-check-ok {
+  margin: 0 0 8px;
+  color: #008a84;
+  font-size: 0.8125rem;
+  font-weight: 600;
 }
-.ac-result:last-child { border-bottom: none }
-.ac-result:hover { background: #f2faf8 }
-.ac-result:active { background: #e5f4f2 }
+.ac-check-note {
+  padding: 12px;
+  color: #6b7089;
+  font-size: 0.8125rem;
+  background: #f8f7fc;
+  border-radius: 12px;
+  margin: 0;
+}
 .ac-avatar {
   width: 36px;
   height: 36px;
@@ -624,25 +642,6 @@ function initials(name) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-.ac-result-add {
-  color: #008a84;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 5px 10px;
-  border-radius: 8px;
-  background: #e5f4f2;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.ac-empty {
-  padding: 12px;
-  color: #6b7089;
-  font-size: 0.8125rem;
-  background: #f8f7fc;
-  border-radius: 12px;
-  margin-bottom: 12px;
 }
 
 .ac-invite-prompt {

@@ -1009,6 +1009,21 @@ import { useRoute, useRouter } from 'vue-router'
 import type { Stripe, StripeCardElement } from '@stripe/stripe-js'
 import PropertySearchInput from '~/components/property/PropertySearchInput.vue'
 
+// Every catch block in this file used to fall back to `e?.message` when
+// the backend didn't send a structured error - fine for an HTTP error
+// response (ofetch puts the real body in e.data), but when the request
+// never got a response at all (a network blip, or the Railway demo
+// backend's free-tier instance cold-starting after being asleep), ofetch's
+// own e.message is a raw dump like `[POST] "https://...": <no response>
+// Failed to fetch` - exactly what a user should never see. Real bug found
+// 3 Oct 2026 from a user report showing that literal string on the
+// payment screen. Only e.data.message (an actual structured backend
+// error) is ever shown verbatim; anything else uses the caller's own
+// plain-English fallback.
+function friendlyFetchError(e: any, fallback: string): string {
+  return e?.data?.message || fallback
+}
+
 // No page-level auth gate — guests can search, pick a passport type, and
 // see "Is this your property?" (search + confirm steps) without an
 // account. The gate now sits at confirmProperty() below, right when
@@ -1554,10 +1569,7 @@ async function confirmProperty() {
     // property/type. No fresh payment or verification needed.
     finishAndNavigate(passportId)
   } catch (e: any) {
-    verificationError.value =
-      e?.data?.message ||
-      e?.message ||
-      'Could not start verification. Please try again.'
+    verificationError.value = friendlyFetchError(e, 'Could not start verification. Please try again.')
   } finally {
     verifyLoading.value = false
   }
@@ -1621,8 +1633,7 @@ async function startPersonaKyc() {
     }${separator}redirect-uri=${encodeURIComponent(returnUrl)}`
     window.location.href = hostedWithReturn
   } catch (e: any) {
-    personaError.value =
-      e?.data?.message || e?.message || 'Verification could not start.'
+    personaError.value = friendlyFetchError(e, 'Verification could not start.')
     personaPolling.value = false
   }
 }
@@ -1660,8 +1671,7 @@ async function runPolling() {
       personaError.value =
         'We\'re still waiting for the verification result. If you\'ve finished, tap "Check now".'
     } else if (e?.message !== 'Polling aborted') {
-      personaError.value =
-        e?.data?.message || e?.message || 'Could not check status.'
+      personaError.value = friendlyFetchError(e, 'Could not check status.')
     }
   } finally {
     personaPolling.value = false
@@ -1693,8 +1703,7 @@ async function checkPersonaNow() {
       personaError.value = "We haven't received a verification result yet."
     }
   } catch (e: any) {
-    personaError.value =
-      e?.data?.message || e?.message || 'Could not check status.'
+    personaError.value = friendlyFetchError(e, 'Could not check status.')
   } finally {
     personaCheckingNow.value = false
   }
@@ -1803,10 +1812,7 @@ async function runLrSearch() {
       },
     )
   } catch (e: any) {
-    lrErrorMessage.value =
-      e?.data?.message ||
-      e?.message ||
-      "We couldn't reach HM Land Registry. Please try again."
+    lrErrorMessage.value = friendlyFetchError(e, "We couldn't reach HM Land Registry. Please try again.")
     step.value = 'lr-failed'
     return
   }
@@ -1941,10 +1947,7 @@ async function finalizeAfterVerification() {
     await activatePassport(claimPassportId.value)
     finishAndNavigate(claimPassportId.value)
   } catch (e: any) {
-    issueError.value =
-      e?.data?.message ||
-      e?.message ||
-      'Could not issue your Passport. Please try again.'
+    issueError.value = friendlyFetchError(e, 'Could not issue your Passport. Please try again.')
   } finally {
     issueLoading.value = false
   }
@@ -2011,10 +2014,7 @@ async function openPaymentStep(passportId: string) {
     await nextTick()
     await mountClaimStripe()
   } catch (e: any) {
-    paymentError.value =
-      e?.data?.message ||
-      e?.message ||
-      'Could not start payment. Please try again.'
+    paymentError.value = friendlyFetchError(e, 'Could not start payment. Please try again.')
   }
 }
 
@@ -2091,10 +2091,7 @@ async function payClaimFee() {
     }
     step.value = 'kyc-explainer'
   } catch (e: any) {
-    paymentError.value =
-      e?.data?.message ||
-      e?.message ||
-      'Could not confirm payment. Please try again.'
+    paymentError.value = friendlyFetchError(e, 'Could not confirm payment. Please try again.')
   } finally {
     paymentLoading.value = false
   }
