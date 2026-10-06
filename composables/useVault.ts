@@ -15,10 +15,16 @@ export const VAULT_CATEGORIES = [
 ]
 
 // Visibility picker icons, shared by the document-detail page and the
-// category list's visibility pills.
+// category list's visibility pills. ELIGIBLE added 2026-10-06: the backend's
+// DocumentAccessLevel has always had 4 tiers, but this app's vault UI only
+// ever offered 3 (no way to pick "include when I share" as its own tier,
+// separate from "public"), so a document set to ELIGIBLE elsewhere (e.g. one
+// of the other two frontends, which do offer it) rendered with no icon and
+// its raw enum name as the label here.
 export const VAULT_VISIBILITY_ICON: Record<string, string> = {
   PRIVATE: '/op-icons/investment/padlock.png',
   SELECTED: '/op-icons/profile/collaborators.jpeg',
+  ELIGIBLE: '/op-icons/passportview/pendingCircle.svg',
   PUBLISHED: '/op-icons/misc/globe.png',
 }
 
@@ -56,11 +62,29 @@ export const useVault = () => {
       body: opts,
     })
 
-  const setDocumentAccess = (documentId: string, accessLevel: 'PRIVATE' | 'SELECTED' | 'PUBLISHED') =>
+  const setDocumentAccess = (documentId: string, accessLevel: 'PRIVATE' | 'SELECTED' | 'ELIGIBLE' | 'PUBLISHED') =>
     $fetch(`${base}/documents/user/${documentId}/access`, {
       method: 'POST',
       headers: getHeaders(),
       body: { accessLevel },
+    })
+
+  // Grants a specific collaborator access to a SELECTED-tier document.
+  // This app's vault only ever deals in personal UserDocuments (never the
+  // QuestionAnswer evidence files the other two frontends also show under
+  // "Home records" - see the backend's mapAnswerDocs), so the :kind
+  // segment is always 'user' here.
+  const addDocumentGrant = (documentId: string, collaboratorUserId: string) =>
+    $fetch(`${base}/documents/user/${documentId}/grants`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: { collaboratorUserId },
+    })
+
+  const removeDocumentGrant = (documentId: string, collaboratorUserId: string) =>
+    $fetch(`${base}/documents/user/${documentId}/grants/${collaboratorUserId}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
     })
 
   const uploadDocument = (file: File, opts: { name?: string; category?: string; passportId?: string }) => {
@@ -79,6 +103,8 @@ export const useVault = () => {
     getDocumentDetail,
     updateDocumentMeta,
     setDocumentAccess,
+    addDocumentGrant,
+    removeDocumentGrant,
     uploadDocument,
   }
 }
