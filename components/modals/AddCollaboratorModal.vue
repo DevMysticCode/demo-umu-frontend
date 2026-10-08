@@ -3,6 +3,7 @@
     :model-value="isOpen"
     :title="stepTitle"
     :show-back-button="showBack"
+    large
     @update:model-value="onDrawerToggle"
     @back="goBack"
   >
@@ -400,7 +401,8 @@ async function ensureSectionsLoaded() {
   sectionsLoading.value = true
   try {
     const data = await getSections(props.passportId)
-    availableSections.value = (data?.sections || []).map((s) => ({ key: s.key, title: s.title }))
+    const list = Array.isArray(data) ? data : (data?.sections ?? [])
+    availableSections.value = list.map((s) => ({ key: s.key, title: s.title }))
     sectionsLoaded = true
   } catch (err) {
     if (import.meta.dev) console.warn('load sections failed', err)
@@ -659,6 +661,7 @@ function initials(name) {
 <style scoped>
 .add-collab {
   padding: 4px;
+  min-height: 420px;
 }
 .ac-lede {
   color: #4a5868;
