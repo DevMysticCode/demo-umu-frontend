@@ -12,6 +12,10 @@ export type CollaboratorAccessDuration = 'until_removed' | 'until_completion' | 
 export interface CollaboratorOpts {
   role?: string
   sectionKeys?: string[] | null
+  // Drill-down from sectionKeys ("Section details" step): { [sectionKey]:
+  // taskKey[] }. A section present here is narrowed to only those tasks; a
+  // section granted via sectionKeys but absent here keeps every task.
+  taskKeys?: Record<string, string[]> | null
   historyAccess?: boolean
   permission?: CollaboratorPermission
   accessDuration?: CollaboratorAccessDuration
