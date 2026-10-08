@@ -14,8 +14,52 @@
       </p>
 
       <template v-if="props.isOwner">
+        <!-- STEP 0: collaborators list (landing screen) -->
+        <template v-if="step === 'list'">
+          <div class="ac-list-head">
+            <p class="ac-lede ac-lede--flush">People who have access to this passport.</p>
+            <button type="button" class="ac-add-fab" aria-label="Add collaborator" @click="step = 'role'">
+              <span>+</span>
+            </button>
+          </div>
+
+          <div v-if="collaborators.length > 0" class="ac-existing ac-existing--flush">
+            <div v-for="c in collaborators" :key="c.id" class="ac-existing-row">
+              <div class="ac-avatar">
+                {{ initials(`${c.firstName ?? ''} ${c.lastName ?? ''}`.trim() || c.email) }}
+              </div>
+              <div class="ac-result-body">
+                <div class="ac-result-name">
+                  {{ [c.firstName, c.lastName].filter(Boolean).join(' ') || c.email }}
+                  <span v-if="c.role" class="ac-existing-role">· {{ c.role }}</span>
+                </div>
+                <div class="ac-result-email">{{ c.email }}</div>
+                <div class="ac-existing-meta">
+                  {{ PERMISSION_LABEL[c.permission] || PERMISSION_LABEL.view }}
+                  <template v-if="c.accessDuration === 'specific_date' && c.expiresAt">
+                    · Until {{ new Date(c.expiresAt).toLocaleDateString() }}
+                  </template>
+                  <template v-else-if="c.accessDuration === 'until_completion'"> · Until completion</template>
+                </div>
+                <label class="ac-checkbox-row ac-checkbox-row--small">
+                  <input
+                    type="checkbox"
+                    :checked="c.historyAccess"
+                    @change="toggleHistoryAccess(c)"
+                  />
+                  Passport history
+                </label>
+              </div>
+              <button type="button" class="ac-remove-btn" @click="confirmRemove(c)">
+                Remove
+              </button>
+            </div>
+          </div>
+          <p v-else class="ac-check-note">No collaborators yet - tap + to add one.</p>
+        </template>
+
         <!-- STEP 1: role + permission -->
-        <template v-if="step === 'role'">
+        <template v-else-if="step === 'role'">
           <p class="ac-lede">
             Choose the role and what this collaborator can do before picking
             who to add.
@@ -50,41 +94,6 @@
                 </label>
               </div>
             </label>
-          </div>
-
-          <div v-if="collaborators.length > 0" class="ac-existing">
-            <div class="ac-existing-label">Current collaborators</div>
-            <div v-for="c in collaborators" :key="c.id" class="ac-existing-row">
-              <div class="ac-avatar">
-                {{ initials(`${c.firstName ?? ''} ${c.lastName ?? ''}`.trim() || c.email) }}
-              </div>
-              <div class="ac-result-body">
-                <div class="ac-result-name">
-                  {{ [c.firstName, c.lastName].filter(Boolean).join(' ') || c.email }}
-                  <span v-if="c.role" class="ac-existing-role">· {{ c.role }}</span>
-                </div>
-                <div class="ac-result-email">{{ c.email }}</div>
-                <div class="ac-existing-meta">
-                  {{ PERMISSION_LABEL[c.permission] || PERMISSION_LABEL.view }}
-                  <template v-if="c.accessDuration === 'specific_date' && c.expiresAt">
-                    · Until {{ new Date(c.expiresAt).toLocaleDateString() }}
-                  </template>
-                  <template v-else-if="c.accessDuration === 'until_completion'"> · Until completion</template>
-                </div>
-                <label class="ac-checkbox-row ac-checkbox-row--small">
-                  <input
-                    type="checkbox"
-                    :checked="c.historyAccess"
-                    :disabled="!props.isOwner"
-                    @change="toggleHistoryAccess(c)"
-                  />
-                  Passport history
-                </label>
-              </div>
-              <button type="button" class="ac-remove-btn" @click="removeExisting(c.id)">
-                Remove
-              </button>
-            </div>
           </div>
         </template>
 
@@ -299,7 +308,12 @@
         <!-- STEP 7: done -->
         <template v-else-if="step === 'done'">
           <div class="ac-done">
-            <div class="ac-done-icon">✓</div>
+            <div class="ac-done-icon">
+              <svg viewBox="0 0 52 52" class="ac-done-icon-svg">
+                <circle class="ac-done-icon-circle" cx="26" cy="26" r="24" fill="none" />
+                <path class="ac-done-icon-check" fill="none" d="M14 27l8 8 16-16" />
+              </svg>
+            </div>
             <h3 class="ac-done-title">{{ doneTitle }}</h3>
             <p class="ac-done-text">{{ doneText }}</p>
           </div>
@@ -327,7 +341,7 @@
       </div>
     </div>
 
-    <template v-if="props.isOwner && step !== 'done'" #footer>
+    <template v-if="props.isOwner && step !== 'done' && step !== 'list'" #footer>
       <button class="ac-submit" type="button" :disabled="!canProceed || isLoading" @click="onPrimaryAction">
         <template v-if="isLoading">Adding…</template>
         <template v-else>{{ primaryLabel }}</template>
@@ -340,6 +354,24 @@
       </div>
     </template>
   </BaseDrawer>
+
+  <!-- Remove-collaborator confirm sheet - replaces a native confirm() popup,
+       which looks like a browser error and breaks out of the app's own UI. -->
+  <div v-if="removeTarget" class="ac-confirm-overlay" @click.self="cancelRemove">
+    <div class="ac-confirm-sheet" role="alertdialog" aria-modal="true">
+      <h3 class="ac-confirm-title">Remove collaborator?</h3>
+      <p class="ac-confirm-text">
+        {{ [removeTarget.firstName, removeTarget.lastName].filter(Boolean).join(' ') || removeTarget.email }}
+        will lose access to this passport. They'll be notified by email.
+      </p>
+      <div class="ac-confirm-actions">
+        <button type="button" class="ac-secondary" :disabled="removing" @click="cancelRemove">Cancel</button>
+        <button type="button" class="ac-confirm-remove-btn" :disabled="removing" @click="doRemove">
+          {{ removing ? 'Removing…' : 'Remove' }}
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -378,21 +410,23 @@ watch(() => props.show, (val) => {
 watch(isOpen, (val) => emit('update:show', val))
 
 // ── Wizard steps ─────────────────────────────────────────────────
-// role -> sections -> [sectionDetails] -> history -> duration -> search -> review -> done
+// list (landing: existing collaborators + "+") -> role -> sections ->
+// [sectionDetails] -> history -> duration -> search -> review -> done
 // sectionDetails only appears when sectionScope === 'selected'.
 const STEP_TITLE = {
+  list: 'Collaborators',
   role: 'Add Collaborator',
   sections: 'Select Sections',
   sectionDetails: 'Section details',
   history: 'Passport history',
   duration: 'Access duration',
   search: 'Add collaborator',
-  review: 'Review and send',
+  review: 'Review and add',
   done: 'Done',
 }
-const step = ref('role')
+const step = ref('list')
 const stepTitle = computed(() => STEP_TITLE[step.value] || 'Add Collaborator')
-const showBack = computed(() => props.isOwner && step.value !== 'role' && step.value !== 'done')
+const showBack = computed(() => props.isOwner && step.value !== 'list' && step.value !== 'done')
 
 function nextStepFrom(current) {
   switch (current) {
@@ -407,6 +441,7 @@ function nextStepFrom(current) {
 }
 function prevStepFrom(current) {
   switch (current) {
+    case 'role': return 'list'
     case 'sections': return 'role'
     case 'sectionDetails': return 'sections'
     case 'history': return sectionScope.value === 'selected' ? 'sectionDetails' : 'sections'
@@ -544,8 +579,7 @@ function alreadyAdded(email) {
   return collaborators.value.some((c) => c.email?.toLowerCase() === normalised)
 }
 
-function reset() {
-  step.value = 'role'
+function resetFields() {
   emailInput.value = ''
   checkResult.value = null
   selected.value = []
@@ -559,6 +593,11 @@ function reset() {
   selectedTaskKeysBySection.value = {}
   error.value = ''
   success.value = ''
+}
+
+function reset() {
+  resetFields()
+  step.value = 'list'
 }
 
 async function loadCollaborators() {
@@ -673,17 +712,17 @@ async function submitAdds() {
     taskKeys: sectionScope.value === 'selected' ? buildTaskKeysPayload() : null,
   }
   const failures = []
-  let addedCount = 0
-  let invitedCount = 0
+  const addedEmails = []
+  const invitedEmails = []
   try {
     for (const s of selected.value) {
       try {
         if (s.mode === 'invite') {
           await inviteCollaborator(props.passportId, s.email, opts)
-          invitedCount += 1
+          invitedEmails.push(s.email)
         } else {
           const response = await addCollaborator(props.passportId, s.email, opts)
-          addedCount += 1
+          addedEmails.push(s.email)
           emit('added', response.collaborator ?? { email: s.email })
         }
       } catch (err) {
@@ -692,15 +731,25 @@ async function submitAdds() {
       }
     }
     if (failures.length === 0) {
-      const parts = []
-      if (addedCount > 0) parts.push(`${addedCount} collaborator${addedCount === 1 ? '' : 's'} added`)
-      if (invitedCount > 0) parts.push(`${invitedCount} invitation${invitedCount === 1 ? '' : 's'} sent`)
-      doneTitle.value = addedCount > 0 && invitedCount === 0
-        ? 'Collaborator added'
-        : addedCount === 0 && invitedCount > 0
-          ? 'Invitation sent'
-          : 'Done'
-      doneText.value = parts.join(' · ') + '.'
+      const addedCount = addedEmails.length
+      const invitedCount = invitedEmails.length
+      if (addedCount === 1 && invitedCount === 0) {
+        doneTitle.value = 'Collaborator added'
+        doneText.value = `${addedEmails[0]} has been added as a collaborator and can now access the information you've shared with them on this passport.`
+      } else if (addedCount === 0 && invitedCount === 1) {
+        doneTitle.value = 'Invitation sent'
+        doneText.value = `An invitation has been sent to ${invitedEmails[0]}. They'll be added as a collaborator automatically once they sign up or accept the invitation.`
+      } else {
+        const parts = []
+        if (addedCount > 0) parts.push(`${addedCount} collaborator${addedCount === 1 ? '' : 's'} added`)
+        if (invitedCount > 0) parts.push(`${invitedCount} invitation${invitedCount === 1 ? '' : 's'} sent`)
+        doneTitle.value = addedCount > 0 && invitedCount === 0
+          ? 'Collaborators added'
+          : addedCount === 0 && invitedCount > 0
+            ? 'Invitations sent'
+            : 'Done'
+        doneText.value = parts.join(' · ') + '.'
+      }
       selected.value = []
       await loadCollaborators()
       step.value = 'done'
@@ -722,7 +771,8 @@ function finishDone() {
 }
 
 function addAnother() {
-  reset()
+  resetFields()
+  step.value = 'role'
 }
 
 async function toggleHistoryAccess(collaborator) {
@@ -737,17 +787,32 @@ async function toggleHistoryAccess(collaborator) {
   }
 }
 
-async function removeExisting(collaboratorId) {
-  if (!confirm('Remove this collaborator? They\'ll be notified by email.')) return
-  isLoading.value = true
+// In-app confirm sheet for "Remove collaborator" - a native confirm()
+// popup looks like a browser error and is inconsistent with the rest of
+// this UI (client report, 8 Oct 2026).
+const removeTarget = ref(null) // collaborator object | null
+const removing = ref(false)
+
+function confirmRemove(collaborator) {
+  removeTarget.value = collaborator
+}
+
+function cancelRemove() {
+  removeTarget.value = null
+}
+
+async function doRemove() {
+  if (!removeTarget.value) return
+  removing.value = true
   try {
-    await removeCollaborator(props.passportId, collaboratorId)
-    emit('removed', collaboratorId)
+    await removeCollaborator(props.passportId, removeTarget.value.id)
+    emit('removed', removeTarget.value.id)
+    removeTarget.value = null
     await loadCollaborators()
   } catch (err) {
     error.value = err?.data?.message || 'Failed to remove collaborator'
   } finally {
-    isLoading.value = false
+    removing.value = false
   }
 }
 
@@ -830,6 +895,9 @@ function initials(name) {
 .ac-checkbox-row input[type='checkbox'] {
   appearance: none;
   -webkit-appearance: none;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
   width: 18px;
   height: 18px;
   flex-shrink: 0;
@@ -838,7 +906,6 @@ function initials(name) {
   border-radius: 5px;
   background: #fff;
   cursor: pointer;
-  position: relative;
   transition: background 0.15s, border-color 0.15s;
 }
 .ac-checkbox-row input[type='checkbox']:checked {
@@ -847,14 +914,11 @@ function initials(name) {
 }
 .ac-checkbox-row input[type='checkbox']:checked::after {
   content: '';
-  position: absolute;
-  left: 5px;
-  top: 1px;
   width: 4px;
-  height: 9px;
+  height: 8px;
   border: solid #fff;
   border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+  transform: rotate(45deg) translate(-1px, -1px);
 }
 .ac-checkbox-row input[type='checkbox']:disabled {
   opacity: 0.5;
@@ -896,8 +960,23 @@ function initials(name) {
   background: #f2faf8;
 }
 .ac-radio-card input[type='radio'] {
-  margin-top: 2px;
-  accent-color: #00a19a;
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin: 1px 0 0;
+  border: 1.5px solid #d8d6e3;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.15s;
+}
+.ac-radio-card input[type='radio']:checked {
+  border-color: #00a19a;
+  border-width: 6px;
 }
 .ac-radio-card-body {
   display: flex;
@@ -935,6 +1014,9 @@ function initials(name) {
 .ac-section-check-row input[type='checkbox'] {
   appearance: none;
   -webkit-appearance: none;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
   width: 20px;
   height: 20px;
   flex-shrink: 0;
@@ -943,7 +1025,6 @@ function initials(name) {
   border-radius: 6px;
   background: #fff;
   cursor: pointer;
-  position: relative;
   transition: background 0.15s, border-color 0.15s;
 }
 .ac-section-check-row input[type='checkbox']:checked {
@@ -952,14 +1033,11 @@ function initials(name) {
 }
 .ac-section-check-row input[type='checkbox']:checked::after {
   content: '';
-  position: absolute;
-  left: 6px;
-  top: 2px;
   width: 5px;
-  height: 10px;
+  height: 9px;
   border: solid #fff;
   border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+  transform: rotate(45deg) translate(-1px, -1px);
 }
 
 /* section details (task drill-down) */
@@ -1032,15 +1110,47 @@ function initials(name) {
 .ac-review-row b { color: #231d45; font-weight: 700; text-align: right; }
 
 /* done */
-.ac-done { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 24px 8px 8px; }
+.ac-done { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 40px 12px 8px; }
 .ac-done-icon {
-  width: 56px; height: 56px; border-radius: 50%;
-  background: #e5f4f2; color: #00a19a;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem; font-weight: 800; margin-bottom: 14px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #e5f4f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  animation: ac-done-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.ac-done-title { font-size: 1.0625rem; font-weight: 800; color: #231d45; margin: 0 0 6px; }
-.ac-done-text { font-size: 0.8438rem; color: #6b7089; margin: 0; }
+.ac-done-icon-svg { width: 52px; height: 52px; }
+.ac-done-icon-circle {
+  stroke: #00a19a;
+  stroke-width: 3;
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: ac-done-circle 0.5s ease-out forwards;
+}
+.ac-done-icon-check {
+  stroke: #00a19a;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 36;
+  stroke-dashoffset: 36;
+  animation: ac-done-check 0.3s 0.4s ease-out forwards;
+}
+@keyframes ac-done-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes ac-done-circle {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes ac-done-check {
+  to { stroke-dashoffset: 0; }
+}
+.ac-done-title { font-size: 1.375rem; font-weight: 800; color: #231d45; margin: 0 0 10px; }
+.ac-done-text { font-size: 0.875rem; color: #6b7089; line-height: 1.55; max-width: 320px; margin: 0; }
 .ac-done-actions { display: flex; flex-direction: column; gap: 8px; }
 .ac-secondary {
   width: 100%;
@@ -1267,12 +1377,77 @@ function initials(name) {
   margin-bottom: 12px;
 }
 
+/* collaborators list (landing step) */
+.ac-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.ac-lede--flush { margin: 0; flex: 1; }
+.ac-add-fab {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: #00a19a;
+  color: #fff;
+  font-size: 1.375rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.ac-add-fab:hover { background: #008a84; }
+
+/* remove-collaborator confirm sheet */
+.ac-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 25, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1200;
+}
+.ac-confirm-sheet {
+  width: 100%;
+  max-width: 340px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 20px;
+}
+.ac-confirm-title { font-size: 1.0625rem; font-weight: 800; color: #231d45; margin: 0 0 8px; }
+.ac-confirm-text { font-size: 0.8438rem; color: #6b7089; line-height: 1.5; margin: 0 0 20px; }
+.ac-confirm-actions { display: flex; gap: 10px; }
+.ac-confirm-actions .ac-secondary { flex: 1; width: auto; margin: 0; }
+.ac-confirm-remove-btn {
+  flex: 1;
+  padding: 14px;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ac-confirm-remove-btn:hover:not(:disabled) { background: #b91c1c; }
+.ac-confirm-remove-btn:disabled,
+.ac-confirm-actions .ac-secondary:disabled { opacity: 0.6; cursor: not-allowed; }
+
 /* existing collaborators */
 .ac-existing {
   margin-top: 8px;
   padding-top: 16px;
   border-top: 1px solid #f0f2f5;
 }
+.ac-existing--flush { margin-top: 0; padding-top: 0; border-top: none; }
 .ac-existing-label {
   font-size: 0.75rem;
   font-weight: 700;

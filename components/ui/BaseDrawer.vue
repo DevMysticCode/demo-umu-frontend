@@ -310,7 +310,11 @@ const onDragEnd = () => {
    past the chrome on desktop / wider viewports. Centered via the
    overlay's flex centering above. */
 .drawer {
-  background-color: #f3f4f6;
+  /* White, not grey — the handle strip above the header used to show a
+     visible grey seam against the white header/content below it,
+     reading as two mismatched surfaces instead of one sheet (client
+     report, 8 Oct 2026). */
+  background-color: #fff;
   position: absolute;
   bottom: 0;
   width: 100%;
