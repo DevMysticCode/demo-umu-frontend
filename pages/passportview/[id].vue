@@ -644,6 +644,17 @@
       @close="publishDrawerOpen = false"
       @publish="onPublishConfirm"
       @go-to-question="onGoToChecklistItem"
+      @manage-visibility="publishDrawerOpen = false; manageVisibilityOpen = true"
+    />
+
+    <!-- Manage Visibility (client definitive handoff, 2 Oct 2026) -
+         Private/Shared/Public per section/task, separate from the whole-
+         Passport publish toggle and from this page's own existing
+         section-level Public/Private Vault toggle (untouched). -->
+    <ManageVisibilityDrawer
+      :show="manageVisibilityOpen"
+      :passport-id="String(route.params.id)"
+      @update:show="manageVisibilityOpen = $event"
     />
 
     <!-- Bottom navigation bar — keeps the passportview consistent with the
@@ -667,6 +678,7 @@ import MatchedBuyersDrawer from '~/components/passport/MatchedBuyersDrawer.vue'
 import BuyerDetailDrawer from '~/components/passport/BuyerDetailDrawer.vue'
 import BuyerActionDrawer from '~/components/passport/BuyerActionDrawer.vue'
 import PublishPassportDrawer from '~/components/passport/PublishPassportDrawer.vue'
+import ManageVisibilityDrawer from '~/components/passport/ManageVisibilityDrawer.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 
 // Guided tour — auto-runs once per browser, replays from the "?" button.
@@ -1344,6 +1356,7 @@ const groupedHistory = computed(() => {
 
 // ── Publish confirmation drawer ────────────────────────────────
 const publishDrawerOpen = ref(false)
+const manageVisibilityOpen = ref(false)
 
 async function fetchReadiness() {
   const token =
