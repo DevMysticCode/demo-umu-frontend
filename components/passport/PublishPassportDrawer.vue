@@ -127,6 +127,18 @@
             </div>
           </template>
 
+          <!-- Manage Visibility (client definitive handoff, 2 Oct 2026) -
+               finer-grained Private/Shared/Public control per section/task,
+               separate from this screen's whole-Passport publish toggle. -->
+          <button
+            type="button"
+            class="ppd-manage-visibility-link"
+            @click="$emit('manage-visibility')"
+          >
+            Manage section visibility
+            <OPIcon name="caretRight" class="w-[11px] h-[11px]" />
+          </button>
+
           <div class="ppd-cta-row">
             <button class="ppd-btn secondary" type="button" @click="$emit('close')">
               Not yet
@@ -179,6 +191,7 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'publish'): void
   (e: 'go-to-question', item: ChecklistItem): void
+  (e: 'manage-visibility'): void
 }>()
 
 // readiness is null while still loading — don't flash the "not ready" gate
@@ -249,6 +262,25 @@ const { dragStyle, onTouchStart, onTouchMove, onTouchEnd } = useSwipeToDismiss({
 .ppd-gate-item-section { display: block; font-size: 0.625rem; font-weight: 800; color: #d97706; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 1px; }
 .ppd-gate-item.done .ppd-gate-item-section { color: var(--accent-dark); }
 .ppd-gate-item svg { flex-shrink: 0; color: var(--text-faint); }
+
+.ppd-manage-visibility-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: calc(100% - 44px);
+  margin: 14px 22px 0;
+  padding: 12px;
+  background: #f8f7fc;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #231d45;
+  cursor: pointer;
+}
+.ppd-manage-visibility-link:hover { border-color: #00a19a; color: #00857f; }
 
 .ppd-cta-row { padding: 18px 22px 6px; display: flex; gap: 8px; }
 .ppd-btn { flex: 1; padding: 14px; font-family: inherit; font-size: 0.8438rem; font-weight: 800; border-radius: 12px; cursor: pointer; border: none; transition: filter 0.15s; }
