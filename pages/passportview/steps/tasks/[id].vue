@@ -56,12 +56,6 @@
           </svg>
           Help
         </button>
-        <button class="qpill primary" @click="openVideo">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="6 4 20 12 6 20 6 4" />
-          </svg>
-          Play Video
-        </button>
       </div>
 
       <div data-tour="q-points">
@@ -367,11 +361,6 @@
     @close="showHelp = false"
   />
 
-  <VideoModal
-    :show="showVideo"
-    :video-url="activeVideoUrl"
-    @close="showVideo = false"
-  />
 </template>
 
 <script setup>
@@ -396,7 +385,6 @@ import HeroSection from '@/components/HeroSection.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 import HelpDrawer from '~/components/passport-view/HelpDrawer.vue'
-import VideoModal from '~/components/passport-view/VideoModal.vue'
 import PathwayStepCard from '~/components/passport-view/PathwayStepCard.vue'
 import PathwayOutcomeCard from '~/components/passport-view/PathwayOutcomeCard.vue'
 import QuestionGuidancePanel from '~/components/passport-view/QuestionGuidancePanel.vue'
@@ -540,7 +528,7 @@ const questionTourSteps = [
   {
     selector: '[data-tour="q-help-video"]',
     title: 'Stuck on a question?',
-    body: 'Help opens plain-English guidance for the question you are on. Play Video is a short explainer for the whole section.',
+    body: 'Help opens plain-English guidance for the question you are on.',
   },
   {
     selector: '[data-tour="q-points"]',
@@ -608,7 +596,6 @@ onBeforeUnmount(() => {
 const additionalInfoAnswer = ref(null)
 
 const showHelp = ref(false)
-const showVideo = ref(false)
 
 // Use question-level content if available, fall back to step (section) level
 const activeHelpContent = computed(
@@ -617,20 +604,10 @@ const activeHelpContent = computed(
     currentStep.value?.helpContent ??
     null,
 )
-const activeVideoUrl = computed(
-  () =>
-    currentQuestion.value?.helpVideoUrl ??
-    currentStep.value?.helpVideoUrl ??
-    null,
-)
 const hasHelp = computed(() => !!activeHelpContent.value)
-const hasVideo = computed(() => !!activeVideoUrl.value)
 
 function openHelp() {
   showHelp.value = true
-}
-function openVideo() {
-  showVideo.value = true
 }
 
 const stepId = route.query.stepId

@@ -43,12 +43,6 @@
         <button class="help-btn" @click="showHelp = true">
           <OPIcon name="helpIcon" class="w-[15px] h-[15px]" />Help
         </button>
-        <button class="video-btn" @click="showVideo = true">
-          <span class="play-icon"
-            ><OPIcon name="playIcon" class="w-[15px] h-[15px]"
-          /></span>
-          Play Video
-        </button>
       </div>
 
       <HelpDrawer
@@ -56,11 +50,6 @@
         :show="showHelp"
         :content="currentStep?.helpContent ?? null"
         @close="showHelp = false"
-      />
-      <VideoModal
-        :show="showVideo"
-        :video-url="currentStep?.helpVideoUrl ?? null"
-        @close="showVideo = false"
       />
 
       <SectionProgressCard
@@ -193,14 +182,12 @@ import AppHeader from '@/components/core/AppHeader.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import HelpDrawer from '@/components/passport-view/HelpDrawer.vue'
-import VideoModal from '@/components/passport-view/VideoModal.vue'
 import { toSmartTitleCase } from '~/utils/titleCase'
 
 const route = useRoute()
 const router = useRouter()
 
 const showHelp = ref(false)
-const showVideo = ref(false)
 
 const { currentStep, steps, setCurrentStep, loadPassport } =
   usePassportRuntime()

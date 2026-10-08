@@ -70,16 +70,6 @@
           <button class="action-btn action-btn--help" @click="showHelp = true">
             <OPIcon name="helpIcon" class="w-[15px] h-[15px]" />Help
           </button>
-
-          <button
-            class="action-btn action-btn--video"
-            @click="showVideo = true"
-          >
-            <span class="action-btn-play"
-              ><OPIcon name="playIcon" class="w-[15px] h-[15px]"
-            /></span>
-            Play Video
-          </button>
         </div>
 
         <!-- Fixtures & Fittings: Included / Excluded / Offered stats + file buttons -->
@@ -562,13 +552,6 @@
       mode="buyer"
       @close="showHelp = false"
     />
-
-    <!-- Video modal (section level) -->
-    <VideoModal
-      :show="showVideo"
-      :videoUrl="section?.helpVideoUrl"
-      @close="showVideo = false"
-    />
   </div>
 </template>
 
@@ -576,7 +559,6 @@
 import AppHeader from '@/components/core/AppHeader.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import HelpDrawer from '@/components/passport-view/HelpDrawer.vue'
-import VideoModal from '@/components/passport-view/VideoModal.vue'
 import UnderReview from '@/components/passport-view/UnderReview.vue'
 
 definePageMeta({ middleware: 'auth' })
@@ -592,7 +574,6 @@ const allData = ref<any>(null)
 const loading = ref(true)
 const showFilesSheet = ref(false)
 const showHelp = ref(false)
-const showVideo = ref(false)
 
 // Lightbox
 const lightboxFile = ref<{ url: string; name: string } | null>(null)
