@@ -152,6 +152,13 @@
         </div>
       </div>
 
+      <!-- The section's Notes task isn't a real, counted question (see
+           numberedQuestions) - it has its own full-screen drawer with its
+           own open/close affordance, so the "Question N of M"
+           header/progress chrome above it is redundant and, worse, used to
+           show the wrong "Question 1" it was explicitly excluded from
+           (client bug report, 2026-10-08). -->
+      <template v-if="currentQuestionType !== 'note'">
       <div class="qheader" data-tour="q-nav">
         <div>
           <h2 class="qheader-h2">Question {{ questionNumber }}</h2>
@@ -191,6 +198,7 @@
           }"
         />
       </div>
+      </template>
 
       <!-- "What is this?" tip — kept on aqua per request.
            Suppressed for question types whose own component already
