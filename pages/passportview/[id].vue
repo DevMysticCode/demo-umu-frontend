@@ -1332,13 +1332,23 @@ function formatScopeRef(ref) {
     : Array.isArray(ref.sectionKeys)
       ? `${ref.sectionKeys.length} section${ref.sectionKeys.length === 1 ? '' : 's'}`
       : 'Entire passport'
-  return [
+  const rows = [
     { label: 'Role', value: ref.role || 'Not specified' },
     { label: 'Permission', value: SCOPE_PERMISSION_LABEL[ref.permission] || ref.permission || '—' },
     { label: 'Sections', value: sections },
+  ]
+  if (ref.taskKeys && typeof ref.taskKeys === 'object') {
+    const taskCount = Object.values(ref.taskKeys).reduce(
+      (sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0),
+      0,
+    )
+    rows.push({ label: 'Items narrowed', value: `${taskCount} item${taskCount === 1 ? '' : 's'}` })
+  }
+  rows.push(
     { label: 'Passport history', value: ref.historyAccess ? 'Can view' : 'No access' },
     { label: 'Access', value: ref.expiresAt ? `Until ${new Date(ref.expiresAt).toLocaleDateString()}` : 'Until removed' },
-  ]
+  )
+  return rows
 }
 
 function formatHistoryTime(iso) {

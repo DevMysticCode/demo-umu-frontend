@@ -125,6 +125,27 @@
           </div>
         </template>
 
+        <!-- STEP: section details (drill into tasks within each selected section) -->
+        <template v-else-if="step === 'sectionDetails'">
+          <p class="ac-lede">Choose exactly what to include in each section.</p>
+          <div v-for="sec in selectedSectionsDetail" :key="sec.key" class="ac-section-detail-block">
+            <div class="ac-section-detail-title">{{ sec.title }}</div>
+            <label
+              v-for="t in sec.tasks"
+              :key="t.key"
+              class="ac-section-check-row"
+            >
+              <input
+                type="checkbox"
+                :checked="isTaskSelected(sec.key, t.key)"
+                @change="toggleTask(sec.key, t.key)"
+              />
+              {{ t.title }}
+            </label>
+            <p v-if="sec.tasks.length === 0" class="ac-check-note">No items in this section.</p>
+          </div>
+        </template>
+
         <!-- STEP 3: passport history -->
         <template v-else-if="step === 'history'">
           <div class="ac-toggle-card">
@@ -260,6 +281,10 @@
             <span>Sections</span>
             <b>{{ sectionScope === 'entire' ? 'Entire passport' : `${selectedSectionKeys.length} selected` }}</b>
           </div>
+          <div v-if="sectionScope === 'selected'" class="ac-review-row">
+            <span>Items included</span>
+            <b>{{ totalSelectedTaskCount }} of {{ totalAvailableTaskCount }}</b>
+          </div>
           <div class="ac-review-row"><span>Passport history</span><b>{{ batchHistoryAccess ? 'Allowed' : 'Not allowed' }}</b></div>
           <div class="ac-review-row">
             <span>Access duration</span>
@@ -353,11 +378,12 @@ watch(() => props.show, (val) => {
 watch(isOpen, (val) => emit('update:show', val))
 
 // ── Wizard steps ─────────────────────────────────────────────────
-// role -> sections -> history -> duration -> search -> review -> done
-const STEP_ORDER = ['role', 'sections', 'history', 'duration', 'search', 'review']
+// role -> sections -> [sectionDetails] -> history -> duration -> search -> review -> done
+// sectionDetails only appears when sectionScope === 'selected'.
 const STEP_TITLE = {
   role: 'Add Collaborator',
   sections: 'Select Sections',
+  sectionDetails: 'Section details',
   history: 'Passport history',
   duration: 'Access duration',
   search: 'Add collaborator',
@@ -368,9 +394,32 @@ const step = ref('role')
 const stepTitle = computed(() => STEP_TITLE[step.value] || 'Add Collaborator')
 const showBack = computed(() => props.isOwner && step.value !== 'role' && step.value !== 'done')
 
+function nextStepFrom(current) {
+  switch (current) {
+    case 'role': return 'sections'
+    case 'sections': return sectionScope.value === 'selected' ? 'sectionDetails' : 'history'
+    case 'sectionDetails': return 'history'
+    case 'history': return 'duration'
+    case 'duration': return 'search'
+    case 'search': return 'review'
+    default: return null
+  }
+}
+function prevStepFrom(current) {
+  switch (current) {
+    case 'sections': return 'role'
+    case 'sectionDetails': return 'sections'
+    case 'history': return sectionScope.value === 'selected' ? 'sectionDetails' : 'sections'
+    case 'duration': return 'history'
+    case 'search': return 'duration'
+    case 'review': return 'search'
+    default: return null
+  }
+}
+
 function goBack() {
-  const idx = STEP_ORDER.indexOf(step.value)
-  if (idx > 0) step.value = STEP_ORDER[idx - 1]
+  const prev = prevStepFrom(step.value)
+  if (prev) step.value = prev
 }
 
 const PERMISSION_OPTIONS = [
@@ -391,8 +440,12 @@ const batchExpiresAt = ref('')
 const batchHistoryAccess = ref(true)
 
 const sectionScope = ref('entire') // 'entire' | 'selected'
-const availableSections = ref([]) // [{ key, title }]
+const sectionsFull = ref([]) // [{ key, title, tasks: [{ key, title }] }]
+const availableSections = computed(() => sectionsFull.value.map((s) => ({ key: s.key, title: s.title })))
 const selectedSectionKeys = ref([])
+// { [sectionKey]: taskKey[] } - which tasks within each selected section are
+// included. A section defaults to "every task" the moment it's selected.
+const selectedTaskKeysBySection = ref({})
 const sectionsLoading = ref(false)
 let sectionsLoaded = false
 
@@ -402,13 +455,69 @@ async function ensureSectionsLoaded() {
   try {
     const data = await getSections(props.passportId)
     const list = Array.isArray(data) ? data : (data?.sections ?? [])
-    availableSections.value = list.map((s) => ({ key: s.key, title: s.title }))
+    sectionsFull.value = list.map((s) => ({
+      key: s.key,
+      title: s.title,
+      tasks: (s.tasks || []).map((t) => ({ key: t.key, title: t.title })),
+    }))
     sectionsLoaded = true
   } catch (err) {
     if (import.meta.dev) console.warn('load sections failed', err)
   } finally {
     sectionsLoading.value = false
   }
+}
+
+// Keep selectedTaskKeysBySection in sync with selectedSectionKeys: a newly
+// selected section starts with every task included; a deselected section's
+// entry is dropped entirely.
+watch(selectedSectionKeys, (keys) => {
+  for (const key of keys) {
+    if (!selectedTaskKeysBySection.value[key]) {
+      const sec = sectionsFull.value.find((s) => s.key === key)
+      selectedTaskKeysBySection.value[key] = sec ? sec.tasks.map((t) => t.key) : []
+    }
+  }
+  for (const key of Object.keys(selectedTaskKeysBySection.value)) {
+    if (!keys.includes(key)) delete selectedTaskKeysBySection.value[key]
+  }
+})
+
+const selectedSectionsDetail = computed(() =>
+  selectedSectionKeys.value
+    .map((key) => sectionsFull.value.find((s) => s.key === key))
+    .filter(Boolean),
+)
+
+function isTaskSelected(sectionKey, taskKey) {
+  return (selectedTaskKeysBySection.value[sectionKey] || []).includes(taskKey)
+}
+
+function toggleTask(sectionKey, taskKey) {
+  const current = selectedTaskKeysBySection.value[sectionKey] || []
+  selectedTaskKeysBySection.value[sectionKey] = current.includes(taskKey)
+    ? current.filter((k) => k !== taskKey)
+    : [...current, taskKey]
+}
+
+const totalSelectedTaskCount = computed(() =>
+  Object.values(selectedTaskKeysBySection.value).reduce((sum, arr) => sum + arr.length, 0),
+)
+const totalAvailableTaskCount = computed(() =>
+  selectedSectionsDetail.value.reduce((sum, s) => sum + s.tasks.length, 0),
+)
+
+// Only sections where the owner narrowed the task list go in the payload -
+// a section with every task still checked keeps the "full section access"
+// default (taskKeys absent for that key), consistent with sectionKeys'
+// null-means-everything convention.
+function buildTaskKeysPayload() {
+  const result = {}
+  for (const sec of selectedSectionsDetail.value) {
+    const chosen = selectedTaskKeysBySection.value[sec.key] || []
+    if (chosen.length !== sec.tasks.length) result[sec.key] = chosen
+  }
+  return Object.keys(result).length > 0 ? result : null
 }
 
 const emailInput = ref('')
@@ -447,6 +556,7 @@ function reset() {
   batchHistoryAccess.value = true
   sectionScope.value = 'entire'
   selectedSectionKeys.value = []
+  selectedTaskKeysBySection.value = {}
   error.value = ''
   success.value = ''
 }
@@ -537,18 +647,14 @@ const primaryLabel = computed(() => {
 })
 
 async function onPrimaryAction() {
-  if (step.value === 'sections') {
-    step.value = 'history'
-    return
-  }
   if (step.value === 'review') {
     await submitAdds()
     return
   }
-  const idx = STEP_ORDER.indexOf(step.value)
-  if (idx >= 0 && idx < STEP_ORDER.length - 1) {
-    step.value = STEP_ORDER[idx + 1]
-    if (step.value === 'sections') ensureSectionsLoaded()
+  const next = nextStepFrom(step.value)
+  if (next) {
+    step.value = next
+    if (next === 'sections') ensureSectionsLoaded()
   }
 }
 
@@ -564,6 +670,7 @@ async function submitAdds() {
     accessDuration: batchAccessDuration.value,
     expiresAt: batchAccessDuration.value === 'specific_date' ? batchExpiresAt.value || undefined : undefined,
     sectionKeys: sectionScope.value === 'selected' ? selectedSectionKeys.value : null,
+    taskKeys: sectionScope.value === 'selected' ? buildTaskKeysPayload() : null,
   }
   const failures = []
   let addedCount = 0
@@ -797,6 +904,19 @@ function initials(name) {
 }
 .ac-section-check-row input {
   accent-color: #00a19a;
+}
+
+/* section details (task drill-down) */
+.ac-section-detail-block {
+  margin-bottom: 18px;
+}
+.ac-section-detail-title {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #231d45;
+  padding-bottom: 6px;
+  border-bottom: 1.5px solid #f0f2f5;
+  margin-bottom: 2px;
 }
 
 /* passport history toggle */
