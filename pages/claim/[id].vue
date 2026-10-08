@@ -940,25 +940,27 @@
       </div>
 
       <div class="cl-card cl-mb-sm">
-        <div class="cl-eyebrow cl-mb-sm">What this fee covers</div>
+        <div class="cl-section-heading cl-mb-sm">What the {{ claimPriceDisplay }} covers</div>
         <p class="cl-body" style="margin: 0">
-          Identity checks and HM Land Registry ownership lookups cost us real
-          money per property, so we ask for this one-off fee upfront -
-          {{ claimPriceReason }}. Once it's paid, we'll run those checks next.
+          {{ claimPriceExplainer }}
         </p>
       </div>
 
       <div class="cl-card cl-mb-sm">
         <div class="cl-lrf-rows">
           <div class="cl-lrf-row">
-            <span class="cl-lrf-l">Verification fee</span>
+            <span class="cl-lrf-l cl-lrf-l--bold">One-off verification fee</span>
             <span class="cl-lrf-v">{{ claimPriceDisplay }}</span>
           </div>
         </div>
+        <p class="cl-fee-reassurance">
+          No ongoing UMU fees for your Property Passport. We only pass on
+          third-party costs where they apply.
+        </p>
       </div>
 
       <div class="cl-card cl-mb-sm">
-        <div class="cl-eyebrow cl-mb-sm">Card details</div>
+        <div class="cl-section-heading cl-mb-sm">Card details</div>
         <div id="claim-stripe-card-element" class="cl-stripe-box" />
       </div>
 
@@ -1994,13 +1996,47 @@ const claimPriceDisplay = computed(() =>
     ? `£${(claimAmountPence.value / 100).toFixed(2)}`
     : '',
 )
-// The backend picks the tier — infer which one just from the amount so the
-// copy explains what's being charged without duplicating the pricing logic.
+// The backend picks the tier — infer which one just from the amount (the
+// three tiers are all distinct: £7.00 HMLR-only, £12.99 KYC-only, £19.99
+// both) so the copy explains what's being charged without duplicating the
+// pricing logic.
+const claimPriceTier = computed(() => {
+  const amount = claimAmountPence.value
+  if (amount == null) return ''
+  if (amount <= 700) return 'hmlr'
+  if (amount <= 1299) return 'kyc'
+  return 'both'
+})
+
+// The explanatory sentence under "Before we verify your ownership" (client
+// reference design, 2026-10-06).
 const claimPriceReason = computed(() => {
-  if (claimAmountPence.value == null) return ''
-  return claimAmountPence.value >= 1999
-    ? 'Identity verification (KYC) and HM Land Registry ownership check'
-    : 'HM Land Registry ownership check'
+  switch (claimPriceTier.value) {
+    case 'kyc':
+      return 'We need to confirm your identity before we can issue your Property Passport.'
+    case 'hmlr':
+      return 'We need to check ownership against HM Land Registry before we can issue your Property Passport.'
+    case 'both':
+      return 'We need to confirm your identity and check ownership against HM Land Registry before we can issue your Property Passport.'
+    default:
+      return ''
+  }
+})
+
+// The spelled-out explanation shown under "What this fee covers" - matches
+// the client's reference copy pattern ("This one-off fee covers...") for
+// all three tiers, 2026-10-06.
+const claimPriceExplainer = computed(() => {
+  switch (claimPriceTier.value) {
+    case 'kyc':
+      return "Your HM Land Registry ownership check for this property is already on file from an earlier attempt. This one-off fee covers your remaining check: identity verification (KYC). Once paid, we'll run it next."
+    case 'hmlr':
+      return "Your identity has already been verified. This one-off fee covers your remaining check: an HM Land Registry ownership check for this property. Once paid, we'll run it next."
+    case 'both':
+      return "This one-off fee covers two third-party checks: identity verification (KYC) and an HM Land Registry ownership check for this property. Once paid, we'll run both checks next."
+    default:
+      return ''
+  }
 })
 
 async function openPaymentStep(passportId: string) {
@@ -2447,6 +2483,16 @@ onBeforeUnmount(() => {
   margin-bottom: 10px;
 }
 
+/* Bold, normal-case card heading ("What the £X covers" / "Card details") -
+   client reference design, 2026-10-06. Distinct from .cl-eyebrow, whose
+   small uppercase grey label reads as a caption, not a heading. */
+.cl-section-heading {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #231d45;
+  letter-spacing: -0.1px;
+}
+
 .cl-row-list {
   display: flex;
   flex-direction: column;
@@ -2829,6 +2875,15 @@ onBeforeUnmount(() => {
   padding-bottom: 0;
 }
 .cl-lrf-l {
+  color: #94a3b8;
+}
+.cl-lrf-l--bold {
+  font-weight: 800;
+  color: #231d45;
+}
+.cl-fee-reassurance {
+  margin: 10px 0 0;
+  font-size: 0.75rem;
   color: #94a3b8;
 }
 .cl-lrf-v {
