@@ -43,14 +43,10 @@
           </div>
         </section>
 
-        <!-- Section-level Help + Video — right aligned, seller style -->
+        <!-- Section-level Help — right aligned, seller style -->
         <div class="task-help-strip">
           <button class="task-help-btn task-help-btn--help" @click="openSectionHelp">
             <OPIcon name="helpIcon" class="w-[15px] h-[15px]" />Help
-          </button>
-          <button class="task-help-btn task-help-btn--video" @click="openSectionVideo">
-            <span class="task-play-icon"><OPIcon name="playIcon" class="w-[15px] h-[15px]" /></span>
-            Play Video
           </button>
         </div>
 
@@ -377,7 +373,6 @@
     </template>
 
     <HelpDrawer :show="showHelp" :content="activeHelpContent" mode="buyer" @close="showHelp = false" />
-    <VideoModal :show="showVideo" :videoUrl="activeVideoUrl" @close="showVideo = false" />
   </div>
 </template>
 
@@ -385,7 +380,6 @@
 import AppHeader from '@/components/core/AppHeader.vue'
 import OPIcon from '~/components/ui/OPIcon.vue'
 import HelpDrawer from '@/components/passport-view/HelpDrawer.vue'
-import VideoModal from '@/components/passport-view/VideoModal.vue'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -400,9 +394,7 @@ const allData = ref<any>(null)
 const loading = ref(true)
 const activeIndex = ref(0)
 const showHelp = ref(false)
-const showVideo = ref(false)
 const activeHelpContent = ref<any>(null)
-const activeVideoUrl = ref<string | null>(null)
 
 onMounted(async () => {
   try {
@@ -873,23 +865,15 @@ function formatDate(val: any): string {
   } catch { return String(val) }
 }
 
-// ─── Help / Video ─────────────────────────────────────────────────────────
+// ─── Help ─────────────────────────────────────────────────────────────────
 
 function openHelp(q: any) {
   activeHelpContent.value = q.helpContent ?? null
   showHelp.value = true
 }
-function openVideo(q: any) {
-  activeVideoUrl.value = q.helpVideoUrl ?? null
-  showVideo.value = true
-}
 function openSectionHelp() {
   activeHelpContent.value = section.value?.helpContent ?? null
   showHelp.value = true
-}
-function openSectionVideo() {
-  activeVideoUrl.value = section.value?.helpVideoUrl ?? null
-  showVideo.value = true
 }
 
 // ─── File helpers ─────────────────────────────────────────────────────────
