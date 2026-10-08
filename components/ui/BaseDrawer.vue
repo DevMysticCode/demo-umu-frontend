@@ -74,7 +74,7 @@
 
 <script setup>
 import OPIcon from './OPIcon.vue'
-import { computed, ref, watch, onUnmounted, useId, nextTick, useAttrs } from 'vue'
+import { computed, ref, watch, onUnmounted, useId, nextTick, getCurrentInstance } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -104,7 +104,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'close', 'back'])
-const attrs = useAttrs()
+// NOT useAttrs(): 'back' is declared above in defineEmits, and Vue
+// excludes any listener for a declared emit from $attrs/useAttrs() -
+// attrs.onBack would always be undefined here, which is exactly the bug
+// this was meant to detect. vnode.props still has it regardless of the
+// emits declaration, so that's what we check instead.
+const instance = getCurrentInstance()
 
 const handleClose = () => {
   emit('update:modelValue', false)
@@ -114,12 +119,13 @@ const handleClose = () => {
 // The back chevron used to just call handleClose like the X button, which
 // meant a multi-step drawer's "back" always closed the whole thing instead
 // of returning to the previous step (client bug report, 8 Oct 2026 - Manage
-// Visibility's section drill-down). Only switch to the new "go back one
+// Visibility's section drill-down, then again on the Add Collaborator
+// wizard's Section details step). Only switch to the new "go back one
 // step" behaviour when the parent actually listens for it via @back;
 // otherwise keep closing, so every existing showBackButton usage (which
 // never wired @back) behaves exactly as before.
 const handleBackClick = () => {
-  if (attrs.onBack) {
+  if (instance?.vnode?.props?.onBack) {
     emit('back')
   } else {
     handleClose()
