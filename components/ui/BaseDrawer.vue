@@ -34,7 +34,7 @@
 
       <!-- Header -->
       <div class="drawer__header">
-        <button v-if="showBackButton" @click="handleClose" class="drawer__back">
+        <button v-if="showBackButton" @click="handleBackClick" class="drawer__back">
           <span class="drawer__back-icon" aria-hidden="true"
             ><OPIcon name="leftChevron" class="w-[15px] h-[15px]"
           /></span>
@@ -74,7 +74,7 @@
 
 <script setup>
 import OPIcon from './OPIcon.vue'
-import { computed, ref, watch, onUnmounted, useId, nextTick } from 'vue'
+import { computed, ref, watch, onUnmounted, useId, nextTick, useAttrs } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -103,11 +103,27 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue', 'close'])
+const emit = defineEmits(['update:modelValue', 'close', 'back'])
+const attrs = useAttrs()
 
 const handleClose = () => {
   emit('update:modelValue', false)
   emit('close')
+}
+
+// The back chevron used to just call handleClose like the X button, which
+// meant a multi-step drawer's "back" always closed the whole thing instead
+// of returning to the previous step (client bug report, 8 Oct 2026 - Manage
+// Visibility's section drill-down). Only switch to the new "go back one
+// step" behaviour when the parent actually listens for it via @back;
+// otherwise keep closing, so every existing showBackButton usage (which
+// never wired @back) behaves exactly as before.
+const handleBackClick = () => {
+  if (attrs.onBack) {
+    emit('back')
+  } else {
+    handleClose()
+  }
 }
 
 const lockScroll = (lock) => {
