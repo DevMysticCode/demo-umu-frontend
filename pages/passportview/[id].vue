@@ -535,60 +535,70 @@
     </div>
 
     <!-- History event/action detail drawer -->
-    <div v-if="historyDrawerOpen" class="hist-overlay" @click.self="closeHistoryDrawer">
-      <section class="hist-drawer" role="dialog" aria-modal="true">
-        <div class="hist-drawer-head">
-          <h2>{{ historyDrawerTitle }}</h2>
-          <button class="hist-drawer-close" type="button" aria-label="Close" @click="closeHistoryDrawer">×</button>
+    <BaseDrawer :model-value="historyDrawerOpen" :title="historyDrawerTitle" @update:model-value="closeHistoryDrawer">
+      <div v-if="historyDrawerLoading" class="pp-empty"><p>Loading…</p></div>
+      <template v-else-if="historyDrawerAction">
+        <p>{{ historyDrawerAction.explanation }}</p>
+        <div v-if="historyDrawerAction.suggestedSteps?.length" class="hist-steps">
+          <small>YOUR NEXT STEPS</small>
+          <label v-for="(step, i) in historyDrawerAction.suggestedSteps" :key="i">
+            <input type="checkbox" disabled />
+            {{ step }}
+          </label>
         </div>
-        <div class="hist-drawer-body">
-          <div v-if="historyDrawerLoading" class="pp-empty"><p>Loading…</p></div>
-          <template v-else-if="historyDrawerAction">
-            <p>{{ historyDrawerAction.explanation }}</p>
-            <div v-if="historyDrawerAction.suggestedSteps?.length" class="hist-steps">
-              <small>YOUR NEXT STEPS</small>
-              <label v-for="(step, i) in historyDrawerAction.suggestedSteps" :key="i">
-                <input type="checkbox" disabled />
-                {{ step }}
-              </label>
+        <div class="hist-row"><span>Status</span><b>{{ historyDrawerAction.status }}</b></div>
+        <div class="hist-row"><span>Who can see this</span><b>Private passport</b></div>
+        <button
+          v-if="historyDrawerAction.status === 'OPEN' || historyDrawerAction.status === 'REOPENED'"
+          class="hist-primary"
+          type="button"
+          @click="markActionAddressed(historyDrawerAction.id)"
+        >
+          Mark as addressed
+        </button>
+        <p class="hist-fineprint">Addressed means you've taken a step — it does not certify legal compliance.</p>
+      </template>
+      <template v-else-if="historyDrawerEvent">
+        <div class="hist-row"><span>Section</span><b>{{ formatSectionLabel(historyDrawerEvent.sectionId) }}</b></div>
+
+        <template v-if="historyDrawerEvent.eventType === 'COLLABORATOR_SCOPE_CHANGED'">
+          <div v-if="historyDrawerEvent.beforeRef !== undefined" class="hist-record">
+            <small>PREVIOUS</small>
+            <div v-for="row in formatScopeRef(historyDrawerEvent.beforeRef)" :key="row.label" class="hist-scope-row">
+              <span>{{ row.label }}</span><b>{{ row.value }}</b>
             </div>
-            <div class="hist-row"><span>Status</span><b>{{ historyDrawerAction.status }}</b></div>
-            <div class="hist-row"><span>Who can see this</span><b>Private passport</b></div>
-            <button
-              v-if="historyDrawerAction.status === 'OPEN' || historyDrawerAction.status === 'REOPENED'"
-              class="hist-primary"
-              type="button"
-              @click="markActionAddressed(historyDrawerAction.id)"
-            >
-              Mark as addressed
-            </button>
-            <p class="hist-fineprint">Addressed means you've taken a step — it does not certify legal compliance.</p>
-          </template>
-          <template v-else-if="historyDrawerEvent">
-            <div class="hist-row"><span>Section</span><b>{{ formatSectionLabel(historyDrawerEvent.sectionId) }}</b></div>
-            <div v-if="historyDrawerEvent.beforeRef !== undefined" class="hist-record">
-              <small>PREVIOUS</small>
-              <strong>{{ formatRef(historyDrawerEvent.beforeRef) }}</strong>
+          </div>
+          <div class="hist-record">
+            <small>NEW</small>
+            <div v-for="row in formatScopeRef(historyDrawerEvent.afterRef)" :key="row.label" class="hist-scope-row">
+              <span>{{ row.label }}</span><b>{{ row.value }}</b>
             </div>
-            <div class="hist-record">
-              <small>{{ historyDrawerEvent.afterRef ? 'NEW' : 'VALUE' }}</small>
-              <strong>{{ formatRef(historyDrawerEvent.afterRef) }}</strong>
-            </div>
-            <div class="hist-row"><span>Changed by</span><b>{{ eventDisplay(historyDrawerEvent).actorLabel }}</b></div>
-            <div class="hist-row"><span>Source</span><b>{{ historyDrawerEvent.sourceType || 'System' }}</b></div>
-            <div class="hist-row"><span>Who can see this</span><b>Private passport</b></div>
-            <button
-              v-if="historyDrawerEvent.linkedAction"
-              class="hist-primary"
-              type="button"
-              @click="openAction(historyDrawerEvent.linkedAction)"
-            >
-              View linked action →
-            </button>
-          </template>
-        </div>
-      </section>
-    </div>
+          </div>
+        </template>
+        <template v-else>
+          <div v-if="historyDrawerEvent.beforeRef !== undefined" class="hist-record">
+            <small>PREVIOUS</small>
+            <strong>{{ formatRef(historyDrawerEvent.beforeRef) }}</strong>
+          </div>
+          <div class="hist-record">
+            <small>{{ historyDrawerEvent.afterRef ? 'NEW' : 'VALUE' }}</small>
+            <strong>{{ formatRef(historyDrawerEvent.afterRef) }}</strong>
+          </div>
+        </template>
+
+        <div class="hist-row"><span>Changed by</span><b>{{ eventDisplay(historyDrawerEvent).actorLabel }}</b></div>
+        <div class="hist-row"><span>Source</span><b>{{ historyDrawerEvent.sourceType || 'System' }}</b></div>
+        <div class="hist-row"><span>Who can see this</span><b>Private passport</b></div>
+        <button
+          v-if="historyDrawerEvent.linkedAction"
+          class="hist-primary"
+          type="button"
+          @click="openAction(historyDrawerEvent.linkedAction)"
+        >
+          View linked action →
+        </button>
+      </template>
+    </BaseDrawer>
 
     <!-- Add Collaborator Modal -->
     <AddCollaboratorModal
@@ -644,17 +654,6 @@
       @close="publishDrawerOpen = false"
       @publish="onPublishConfirm"
       @go-to-question="onGoToChecklistItem"
-      @manage-visibility="publishDrawerOpen = false; manageVisibilityOpen = true"
-    />
-
-    <!-- Manage Visibility (client definitive handoff, 2 Oct 2026) -
-         Private/Shared/Public per section/task, separate from the whole-
-         Passport publish toggle and from this page's own existing
-         section-level Public/Private Vault toggle (untouched). -->
-    <ManageVisibilityDrawer
-      :show="manageVisibilityOpen"
-      :passport-id="String(route.params.id)"
-      @update:show="manageVisibilityOpen = $event"
     />
 
     <!-- Bottom navigation bar — keeps the passportview consistent with the
@@ -678,7 +677,7 @@ import MatchedBuyersDrawer from '~/components/passport/MatchedBuyersDrawer.vue'
 import BuyerDetailDrawer from '~/components/passport/BuyerDetailDrawer.vue'
 import BuyerActionDrawer from '~/components/passport/BuyerActionDrawer.vue'
 import PublishPassportDrawer from '~/components/passport/PublishPassportDrawer.vue'
-import ManageVisibilityDrawer from '~/components/passport/ManageVisibilityDrawer.vue'
+import BaseDrawer from '~/components/ui/BaseDrawer.vue'
 import OnboardingTour from '~/components/ui/OnboardingTour.vue'
 
 // Guided tour — auto-runs once per browser, replays from the "?" button.
@@ -1318,6 +1317,30 @@ function formatRef(ref) {
   return String(ref)
 }
 
+const SCOPE_PERMISSION_LABEL = {
+  view: 'View only',
+  view_add: 'View & add information',
+  view_add_update_own: 'View, add & update own information',
+}
+
+function formatScopeRef(ref) {
+  if (!ref || typeof ref !== 'object') {
+    return [{ label: 'Value', value: formatRef(ref) }]
+  }
+  const sections = !ref.sectionKeys
+    ? 'Entire passport'
+    : Array.isArray(ref.sectionKeys)
+      ? `${ref.sectionKeys.length} section${ref.sectionKeys.length === 1 ? '' : 's'}`
+      : 'Entire passport'
+  return [
+    { label: 'Role', value: ref.role || 'Not specified' },
+    { label: 'Permission', value: SCOPE_PERMISSION_LABEL[ref.permission] || ref.permission || '—' },
+    { label: 'Sections', value: sections },
+    { label: 'Passport history', value: ref.historyAccess ? 'Can view' : 'No access' },
+    { label: 'Access', value: ref.expiresAt ? `Until ${new Date(ref.expiresAt).toLocaleDateString()}` : 'Until removed' },
+  ]
+}
+
 function formatHistoryTime(iso) {
   if (!iso) return ''
   try {
@@ -1356,7 +1379,6 @@ const groupedHistory = computed(() => {
 
 // ── Publish confirmation drawer ────────────────────────────────
 const publishDrawerOpen = ref(false)
-const manageVisibilityOpen = ref(false)
 
 async function fetchReadiness() {
   const token =
