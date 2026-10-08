@@ -55,7 +55,7 @@
               </button>
             </div>
           </div>
-          <p v-else class="ac-check-note">No collaborators yet - tap + to add one.</p>
+          <p v-else class="ac-check-note">You haven't added any collaborators yet. Tap the + button to add one.</p>
         </template>
 
         <!-- STEP 1: role + permission -->
@@ -1056,7 +1056,7 @@ function initials(name) {
 /* passport history toggle */
 .ac-toggle-card {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   padding: 14px 16px;
   border: 1.5px solid #e5e7eb;
