@@ -4,7 +4,7 @@
       <!-- Answer Saved (transient) state -->
       <div v-if="saved" key="saved" class="qpc-row qpc-row--saved">
         <span class="qpc-badge qpc-badge--check">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+          <img src="/op-icons/rewards/pointsCheck.png" alt="" class="qpc-badge-img" />
         </span>
         <div class="qpc-saved-text">
           <div class="qpc-saved-title">SAVED!</div>
@@ -14,14 +14,12 @@
 
       <!-- Default (current question) state — icon sits beside the whole
            balance/heading/subtitle block (not just the balance line), per
-           the prototype: the badge visually spans all three lines. A flat
-           teal ring + star glyph, same visual family as StampFrame's ink
-           stamp, rather than the old illustrated gold-coin PNG (client
-           feedback, 9 Oct 2026 - "I don't know whether I like the star
-           logo"). -->
+           the prototype: the badge visually spans all three lines. The
+           app's existing glossy 3D points icon, same visual family as
+           Rewards' passportPoints.png, rather than a flat SVG glyph. -->
       <div v-else key="default" class="qpc-default">
         <span class="qpc-badge">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L13.9 8.26H20.5L15.3 12.14L17.18 18.4L12 14.52L6.82 18.4L8.7 12.14L3.5 8.26H10.1L12 2Z" /></svg>
+          <img src="/op-icons/rewards/pointsStar.png" alt="" class="qpc-badge-img" />
         </span>
         <div class="qpc-default-text">
           <div class="qpc-balance-row">
@@ -135,28 +133,24 @@ watch(
   gap: 8px;
   margin-bottom: 2px;
 }
-/* Flat teal ring + glyph — same visual family as StampFrame's ink-stamp
-   badge, so "points" and "stamps" read as one system instead of two. */
+/* Glossy 3D icon, no extra ring — the PNG already carries its own
+   coin/ring rendering, so a flat background behind it would double up. */
 .qpc-badge {
   width: 56px;
   height: 56px;
   flex-shrink: 0;
-  border-radius: 50%;
-  background: #e5f4f2;
-  border: 1.5px solid #b8e0dc;
-  color: #00817c;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.qpc-badge svg {
-  width: 26px;
-  height: 26px;
+.qpc-badge-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
-.qpc-badge--check {
-  background: #00a19a;
-  border-color: #00a19a;
-  color: #fff;
+.qpc-badge--check .qpc-badge-img {
+  width: 80%;
+  height: 80%;
 }
 .qpc-balance {
   font-size: 1.875rem;

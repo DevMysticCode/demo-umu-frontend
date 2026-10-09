@@ -14,7 +14,7 @@
         </div>
 
         <span class="scc-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L13.9 8.26H20.5L15.3 12.14L17.18 18.4L12 14.52L6.82 18.4L8.7 12.14L3.5 8.26H10.1L12 2Z" /></svg>
+          <img src="/op-icons/misc/trophy.png" alt="" class="scc-icon-img" />
         </span>
 
         <h1 class="scc-title">Congratulations!</h1>
@@ -200,25 +200,23 @@ onBeforeUnmount(() => {
   content: '✦';
 }
 
-/* Flat teal ring + glyph - same visual family as StampFrame, instead of
-   the old illustrated gold-coin PNG. */
+/* Glossy 3D trophy - a trophy reads as "section complete" more clearly
+   than a repeated star, and matches the app's existing 3D icon set. No
+   extra ring - the PNG already carries its own rendering. */
 .scc-icon {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 88px;
   height: 88px;
-  border-radius: 50%;
-  background: #e5f4f2;
-  border: 1.5px solid #b8e0dc;
-  color: #00817c;
   position: relative;
   z-index: 1;
   margin: 4px auto 18px;
 }
-.scc-icon svg {
-  width: 40px;
-  height: 40px;
+.scc-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .scc-title {
