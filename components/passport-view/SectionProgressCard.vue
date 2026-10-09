@@ -2,7 +2,9 @@
   <div>
     <div class="spc">
       <div class="spc-row">
-        <img src="/op-icons/rewards/pointsStar.png" alt="" class="spc-icon" />
+        <span class="spc-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L13.9 8.26H20.5L15.3 12.14L17.18 18.4L12 14.52L6.82 18.4L8.7 12.14L3.5 8.26H10.1L12 2Z" /></svg>
+        </span>
         <div class="spc-balance-col">
           <div class="spc-balance">{{ balance }} <em>pts</em></div>
           <p class="spc-balance-caption">Account total</p>
@@ -123,8 +125,9 @@ const sectionPointsPercent = computed(() =>
 .spc {
   margin-bottom: 12px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #0a0f2c, #131a3a);
-  color: #fff;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  color: #231d45;
   padding: 20px;
   position: relative;
   overflow: hidden;
@@ -136,7 +139,7 @@ const sectionPointsPercent = computed(() =>
   top: -30px;
   width: 160px;
   height: 160px;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.35), transparent 60%);
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.12), transparent 60%);
   pointer-events: none;
 }
 
@@ -148,12 +151,24 @@ const sectionPointsPercent = computed(() =>
   z-index: 1;
   margin-bottom: 8px;
 }
+/* Flat teal ring + glyph - same visual family as StampFrame's ink-stamp
+   badge and QuestionPointsCard's points badge, instead of the old
+   illustrated gold-coin PNG. */
 .spc-icon {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
+  width: 52px;
+  height: 52px;
   flex-shrink: 0;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+  border-radius: 50%;
+  background: #e5f4f2;
+  border: 1.5px solid #b8e0dc;
+  color: #00817c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.spc-icon svg {
+  width: 24px;
+  height: 24px;
 }
 .spc-balance-col {
   display: flex;
@@ -165,10 +180,11 @@ const sectionPointsPercent = computed(() =>
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1;
+  color: #231d45;
 }
 .spc-balance em {
   font-style: normal;
-  color: #99f6e4;
+  color: #00817c;
   font-weight: 600;
   font-size: 1rem;
   margin-left: 4px;
@@ -182,7 +198,7 @@ const sectionPointsPercent = computed(() =>
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: #94a3b8;
 }
 
 .spc-h3 {
@@ -190,7 +206,7 @@ const sectionPointsPercent = computed(() =>
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.3;
-  color: #fff;
+  color: #231d45;
   position: relative;
   z-index: 1;
 }
@@ -198,7 +214,7 @@ const sectionPointsPercent = computed(() =>
   margin: 0;
   font-size: 0.75rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: #6b7089;
   position: relative;
   z-index: 1;
 }
@@ -222,19 +238,19 @@ const sectionPointsPercent = computed(() =>
 .spc-section-points-label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.65);
+  color: #6b7089;
 }
 .spc-section-points-value {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #5eead4;
+  color: #00817c;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 .spc-section-points-bar {
   height: 6px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  background: #f0f2f5;
   overflow: hidden;
 }
 .spc-section-points-fill {
@@ -246,7 +262,7 @@ const sectionPointsPercent = computed(() =>
 
 .spc-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.12);
+  background: #f0f2f5;
   margin: 14px 0;
   position: relative;
   z-index: 1;
@@ -285,16 +301,16 @@ const sectionPointsPercent = computed(() =>
 .spc-bonus-text strong {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #fff;
+  color: #231d45;
 }
 .spc-bonus-text em {
   font-style: normal;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #5eead4;
+  color: #00817c;
 }
 .spc-chevron {
-  color: rgba(255, 255, 255, 0.4);
+  color: #c4c1d4;
   flex-shrink: 0;
 }
 
@@ -311,7 +327,7 @@ const sectionPointsPercent = computed(() =>
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: #94a3b8;
 }
 .spc-level-track {
   position: relative;
@@ -319,7 +335,7 @@ const sectionPointsPercent = computed(() =>
 .spc-level-bar {
   height: 6px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  background: #f0f2f5;
   overflow: hidden;
 }
 .spc-level-fill {
@@ -328,10 +344,8 @@ const sectionPointsPercent = computed(() =>
   background: linear-gradient(90deg, #14b8a6, #5eead4);
   transition: width 0.4s ease;
 }
-/* Gold, matching pointsStar.png and the bonus-icon star above - the
-   marker used to be a plain white text glyph with a mismatched teal
-   glow, reading as generic rather than "the same star" used everywhere
-   else points/rewards show up in this app. */
+/* Gold, matching the bonus-icon star above and the points badge at the
+   top of this card. */
 .spc-level-marker {
   position: absolute;
   top: 50%;
@@ -345,7 +359,7 @@ const sectionPointsPercent = computed(() =>
   margin: 8px 0 0;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #5eead4;
+  color: #00817c;
 }
 
 .spc-streak {

@@ -150,14 +150,6 @@
         </div>
       </div>
 
-      <!-- TEMPORARY test button — preview the PassportAchievement
-           celebration on demand without touching the database. Remove
-           this whole block once the real triggers no longer need manual
-           testing. -->
-      <button type="button" class="rw-test-simulate-btn" @click="simulateCelebration">
-        🧪 TEST: Preview stamp animation
-      </button>
-
       <div class="rw-sec-row">
         <div class="rw-sec-title">History</div>
       </div>
@@ -277,12 +269,6 @@ const earnedStamps = ref<Array<{ stampDefinitionId: string }>>([])
 const stampCatalogue = ref<StampDef[]>([])
 const loadingStamps = ref(true)
 const earnedStampIds = computed(() => new Set(earnedStamps.value.map((s) => s.stampDefinitionId)))
-
-// TEMPORARY — see the "TEST: Preview stamp animation" button in the
-// template. simulateCelebration() drives the SAME global singleton state
-// app.vue's <PassportAchievement /> is already watching, so no second
-// instance needs mounting here.
-const { simulateCelebration } = usePassportAchievement()
 
 function token() {
   return typeof window !== 'undefined' ? localStorage.getItem('token') : null
@@ -539,22 +525,6 @@ onMounted(() => {
 .rw-stamp-cell--locked { opacity: 0.4; }
 .rw-stamp-label { font-size: 0.6563rem; font-weight: 700; color: var(--navy); line-height: 1.25; }
 .rw-stamp-cell--locked .rw-stamp-label { color: var(--muted); }
-
-/* TEMPORARY - remove alongside the button in the template. Dashed amber
-   border deliberately reads as "test-only", not a real product button. */
-.rw-test-simulate-btn {
-  width: 100%;
-  margin-top: 10px;
-  padding: 12px;
-  border: 1.5px dashed #d4922a;
-  border-radius: 12px;
-  background: #fdf6ea;
-  color: #93630f;
-  font-size: 0.7813rem;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-}
 
 .rw-loading { display: flex; justify-content: center; padding: 40px 0; }
 .rw-spinner { width: 28px; height: 28px; border: 3px solid var(--line); border-top-color: var(--teal); border-radius: 50%; animation: rw-spin 0.8s linear infinite; }
