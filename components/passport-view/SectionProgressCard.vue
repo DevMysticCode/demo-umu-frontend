@@ -3,7 +3,7 @@
     <div class="spc">
       <div class="spc-row">
         <span class="spc-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L13.9 8.26H20.5L15.3 12.14L17.18 18.4L12 14.52L6.82 18.4L8.7 12.14L3.5 8.26H10.1L12 2Z" /></svg>
+          <img src="/op-icons/profile/passportPoints.png" alt="" class="spc-icon-img" />
         </span>
         <div class="spc-balance-col">
           <div class="spc-balance">{{ balance }} <em>pts</em></div>
@@ -27,9 +27,7 @@
         <div class="spc-divider" />
         <button class="spc-bonus-row" @click="$emit('finish-section')">
           <span class="spc-bonus-icon">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l2.9 6.3 6.9.8-5.1 4.8 1.4 6.8L12 17.3 5.9 20.7l1.4-6.8L2.2 9.1l6.9-.8L12 2z" />
-            </svg>
+            <img src="/op-icons/misc/trophy.png" alt="" class="spc-bonus-icon-img" />
           </span>
           <span class="spc-bonus-text">
             <strong>Finish this section</strong>
@@ -151,24 +149,21 @@ const sectionPointsPercent = computed(() =>
   z-index: 1;
   margin-bottom: 8px;
 }
-/* Flat teal ring + glyph - same visual family as StampFrame's ink-stamp
-   badge and QuestionPointsCard's points badge, instead of the old
-   illustrated gold-coin PNG. */
+/* Glossy 3D icon, same asset used for "Passport Points" on the Rewards
+   page, so the two screens read as one system. No extra ring - the PNG
+   already carries its own rendering. */
 .spc-icon {
   width: 52px;
   height: 52px;
   flex-shrink: 0;
-  border-radius: 50%;
-  background: #e5f4f2;
-  border: 1.5px solid #b8e0dc;
-  color: #00817c;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.spc-icon svg {
-  width: 24px;
-  height: 24px;
+.spc-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .spc-balance-col {
   display: flex;
@@ -282,15 +277,19 @@ const sectionPointsPercent = computed(() =>
   position: relative;
   z-index: 1;
 }
+/* Sized up from the old 28px flat glyph - glossy 3D renders lose their
+   shine/detail below ~32-36px. */
 .spc-bonus-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(251, 191, 36, 0.18);
-  color: #fbbf24;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
+}
+.spc-bonus-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .spc-bonus-text {
   flex: 1;
