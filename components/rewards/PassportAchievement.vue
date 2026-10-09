@@ -352,18 +352,17 @@ watch(
 }
 
 /* Stamp lands on the LEFT-hand page of the opened passport. Bounds
-   measured directly against passportOpenBase.png's actual pixels (not
-   eyeballed): the left page spans roughly x 12-41%, y 15.5-72% of the
-   image - this box sits centered within that, so the stamp reads as
-   properly centered on the left page rather than drifting toward the
-   spine (client report, 9 Oct 2026). */
+   measured directly against passportOpenBase.png's actual pixels: the
+   left page spans roughly x 12-41% of the image. Nudged a bit right of
+   that box's literal midpoint (client report, 9 Oct 2026 - still read
+   as too far left/toward the spine at the exact geometric center). */
 .pa-stamp-area {
   position: absolute;
   z-index: 4;
   top: 18%;
   bottom: 34%;
-  left: 15%;
-  right: 60%;
+  left: 22%;
+  right: 52%;
   display: flex;
   align-items: center;
   justify-content: center;
