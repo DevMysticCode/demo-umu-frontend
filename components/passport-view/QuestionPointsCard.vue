@@ -3,7 +3,9 @@
     <transition name="qpc-fade" mode="out-in">
       <!-- Answer Saved (transient) state -->
       <div v-if="saved" key="saved" class="qpc-row qpc-row--saved">
-        <img src="/op-icons/rewards/pointsCheck.png" alt="" class="qpc-icon qpc-icon--star" />
+        <span class="qpc-badge qpc-badge--check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+        </span>
         <div class="qpc-saved-text">
           <div class="qpc-saved-title">SAVED!</div>
           <div class="qpc-saved-pts">+{{ savedPoints }} pts</div>
@@ -12,9 +14,15 @@
 
       <!-- Default (current question) state — icon sits beside the whole
            balance/heading/subtitle block (not just the balance line), per
-           the prototype: the coin visually spans all three lines. -->
+           the prototype: the badge visually spans all three lines. A flat
+           teal ring + star glyph, same visual family as StampFrame's ink
+           stamp, rather than the old illustrated gold-coin PNG (client
+           feedback, 9 Oct 2026 - "I don't know whether I like the star
+           logo"). -->
       <div v-else key="default" class="qpc-default">
-        <img src="/op-icons/rewards/pointsStar.png" alt="" class="qpc-icon qpc-icon--star" />
+        <span class="qpc-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L13.9 8.26H20.5L15.3 12.14L17.18 18.4L12 14.52L6.82 18.4L8.7 12.14L3.5 8.26H10.1L12 2Z" /></svg>
+        </span>
         <div class="qpc-default-text">
           <div class="qpc-balance-row">
             <div class="qpc-balance">{{ balance }} <em>pts</em></div>
@@ -76,12 +84,16 @@ watch(
 .qpc {
   margin-bottom: 24px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #0a0f2c, #131a3a);
-  color: #fff;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  color: #231d45;
   padding: 20px;
   position: relative;
   overflow: hidden;
-  transition: background 0.3s ease;
+  transition: border-color 0.3s ease;
+}
+.qpc--saved {
+  border-color: #b8e0dc;
 }
 .qpc::after {
   content: '';
@@ -90,7 +102,7 @@ watch(
   top: -30px;
   width: 160px;
   height: 160px;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.35), transparent 60%);
+  background: radial-gradient(circle, rgba(0, 161, 154, 0.12), transparent 60%);
   pointer-events: none;
 }
 
@@ -123,31 +135,48 @@ watch(
   gap: 8px;
   margin-bottom: 2px;
 }
-.qpc-icon--star {
-  width: 84px;
-  height: 84px;
-  object-fit: contain;
+/* Flat teal ring + glyph — same visual family as StampFrame's ink-stamp
+   badge, so "points" and "stamps" read as one system instead of two. */
+.qpc-badge {
+  width: 56px;
+  height: 56px;
   flex-shrink: 0;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+  border-radius: 50%;
+  background: #e5f4f2;
+  border: 1.5px solid #b8e0dc;
+  color: #00817c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qpc-badge svg {
+  width: 26px;
+  height: 26px;
+}
+.qpc-badge--check {
+  background: #00a19a;
+  border-color: #00a19a;
+  color: #fff;
 }
 .qpc-balance {
   font-size: 1.875rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1;
+  color: #231d45;
 }
 .qpc-balance em {
   font-style: normal;
-  color: #99f6e4;
+  color: #00817c;
   font-weight: 600;
   font-size: 1rem;
   margin-left: 4px;
 }
 .qpc-pill {
   margin-left: auto;
-  background: rgba(20, 184, 166, 0.18);
-  color: #5eead4;
-  border: 1px solid rgba(94, 234, 212, 0.35);
+  background: #e5f4f2;
+  color: #00817c;
+  border: 1px solid #b8e0dc;
   padding: 5px 12px;
   border-radius: 999px;
   font-size: 0.8125rem;
@@ -164,11 +193,12 @@ watch(
   font-weight: 800;
   letter-spacing: -0.01em;
   line-height: 1.1;
+  color: #231d45;
 }
 .qpc-saved-pts {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #5eead4;
+  color: #00817c;
   line-height: 1.1;
 }
 
@@ -177,7 +207,7 @@ watch(
   font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.3;
-  color: #fff;
+  color: #231d45;
   position: relative;
   z-index: 1;
 }
@@ -186,14 +216,14 @@ watch(
   font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.7);
+  color: #6b7089;
   position: relative;
   z-index: 1;
 }
 
 .qpc-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.12);
+  background: #f0f2f5;
   margin: 10px 0;
   position: relative;
   z-index: 1;
@@ -204,7 +234,7 @@ watch(
   gap: 8px;
   position: relative;
   z-index: 1;
-  color: rgba(255, 255, 255, 0.5);
+  color: #94a3b8;
 }
 .qpc-before {
   font-size: 1rem;
@@ -213,14 +243,14 @@ watch(
 .qpc-after {
   font-size: 1.125rem;
   font-weight: 800;
-  color: #5eead4;
+  color: #00817c;
 }
 
 .qpc-footer {
   margin: 6px 0 0;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #5eead4;
+  color: #00817c;
   position: relative;
   z-index: 1;
 }

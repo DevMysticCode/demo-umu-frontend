@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <Transition name="pa-overlay-fade">
-      <div v-if="visible" class="pa-overlay" :style="{ background: overlayBg }" role="dialog" aria-modal="true" :aria-label="achievementTitle">
+      <div v-if="visible" class="pa-overlay" role="dialog" aria-modal="true" :aria-label="achievementTitle">
         <!-- Reduced motion: spec §17 — skip the ceremony entirely, show a
              plain accessible confirmation instead of the book/stamp visual. -->
         <div v-if="reducedMotion" class="pa-static">
@@ -12,27 +12,26 @@
         </div>
 
         <template v-else>
-          <button class="pa-skip" :class="{ 'pa-skip--dark': overlayIsDark }" type="button" aria-label="Skip" @click="skip">Skip</button>
+          <button class="pa-skip" type="button" aria-label="Skip" @click="skip">Skip</button>
 
           <div class="pa-scene">
             <div class="pa-book">
-              <!-- Real footage of the passport physically opening. Plays
-                   once; on 'ended' the element naturally holds its last
-                   frame (no need to freeze it manually) for the rest of the
-                   celebration — that held frame is the backdrop the stamp
-                   drops onto, and stays put through points and the fade-out. -->
-              <video
+              <!-- Static artwork of the open passport, with a quick CSS
+                   scale/fade entrance instead of decoding a multi-MB video
+                   on every stamp (client report, 9 Oct 2026: the video
+                   celebration "comes late" and fades to a black backdrop
+                   that didn't look good). This is the same held-open frame
+                   the old clip settled on, just not run through a video
+                   decoder to get there — the stamp lands on it exactly as
+                   before. -->
+              <img
                 v-if="phase !== 'idle'"
-                ref="openingVideoEl"
-                src="/op-icons/rewards/passportOpening.mp4"
-                class="pa-video"
-                muted
-                playsinline
-                autoplay
+                src="/op-icons/rewards/passportOpenBase.png"
+                class="pa-book-img"
+                alt=""
               />
 
-              <!-- Stamp tool drops onto the right side of the opened
-                   passport (held on the opening video's last frame),
+              <!-- Stamp tool drops onto the opened passport artwork,
                    impacts, holds, then lifts away leaving the ink
                    impression. -->
               <div
@@ -55,7 +54,7 @@
             </div>
 
             <!-- Points — plain glowing text, no card/background, so it
-                 reads as part of the same scene as the video + stamp
+                 reads as part of the same scene as the book + stamp
                  rather than a separate boxed element. -->
             <Transition name="pa-fade-up">
               <div v-if="phase === 'points' || phase === 'hold'" class="pa-points-hero">
@@ -102,88 +101,6 @@ const phase = ref<Phase>('idle')
 const stampStep = ref<StampStep>('idle')
 const reducedMotion = ref(false)
 
-const openingVideoEl = ref<HTMLVideoElement | null>(null)
-
-// The opening video isn't full-bleed (capped by .pa-scene's max-width and
-// centered), so it sits as a boxed clip on the overlay. The video's own
-// footage fades its backdrop from white to black a couple of seconds in —
-// without this, the flat white .pa-overlay behind it never follows, so the
-// clip visibly "pops" into a dark box floating on a white screen instead of
-// reading as part of the same scene.
-//
-// Fixed by live-sampling a corner pixel of the actual decoded video frame
-// every animation frame and mirroring it onto the overlay's background —
-// rather than a fixed-timing CSS transition, which would drift out of sync
-// whenever autoplay is delayed by buffering (slow connection, cold cache).
-// Reading real pixels also means this keeps matching automatically if the
-// source video is ever re-exported with different timing.
-const overlayBg = ref('#ffffff')
-// Tracks whether the sampled backdrop has gone dark, so the Skip button
-// (a dark-on-light chip, legible on the white start frame) can switch to a
-// light-on-dark treatment once the overlay follows the video to black —
-// otherwise it'd fade to near-invisible for most of the ceremony.
-const overlayIsDark = ref(false)
-let sampleCanvas: HTMLCanvasElement | null = null
-let sampleCtx: CanvasRenderingContext2D | null = null
-let sampleRafId: number | null = null
-// Guards the loop rather than relying solely on cancelAnimationFrame — a
-// direct one-shot call (see the final sample in runSequence below) can
-// still have an earlier loop iteration's frame in flight, and that stray
-// callback would otherwise keep rescheduling itself forever once its id is
-// no longer the one stopSampling() knows about.
-let sampling = false
-
-// Draws a 1x1 crop of the video's top-left corner (inset from the edge,
-// clear of the book/stamp artwork at every point in the clip) into an
-// offscreen canvas and reads that pixel back — the actual decoded backdrop
-// color, not a guess. Returns false if the video has no frame data yet.
-function sampleOnce(el: HTMLVideoElement): boolean {
-  if (el.readyState < 2 || !el.videoWidth) return false
-  if (!sampleCanvas) {
-    sampleCanvas = document.createElement('canvas')
-    sampleCanvas.width = 1
-    sampleCanvas.height = 1
-    sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true })
-  }
-  if (!sampleCtx) return false
-  try {
-    const sx = el.videoWidth * 0.03
-    const sy = el.videoHeight * 0.03
-    sampleCtx.drawImage(el, sx, sy, 2, 2, 0, 0, 1, 1)
-    const [r, g, b] = sampleCtx.getImageData(0, 0, 1, 1).data
-    overlayBg.value = `rgb(${r}, ${g}, ${b})`
-    overlayIsDark.value = 0.299 * r + 0.587 * g + 0.114 * b < 128
-    return true
-  } catch {
-    /* frame not decoded yet this tick */
-    return false
-  }
-}
-
-function sampleLoop() {
-  if (!sampling) return
-  const el = openingVideoEl.value
-  if (el) sampleOnce(el)
-  sampleRafId = requestAnimationFrame(sampleLoop)
-}
-
-function startSampling() {
-  sampling = true
-  sampleRafId = requestAnimationFrame(sampleLoop)
-}
-
-// Stops the loop and takes one last direct sample so the overlay locks in
-// the video's true final color (it holds its last frame from 'ended'
-// onward) instead of whatever partial color the loop happened to leave.
-function stopSampling() {
-  sampling = false
-  if (sampleRafId != null) {
-    cancelAnimationFrame(sampleRafId)
-    sampleRafId = null
-  }
-  if (openingVideoEl.value) sampleOnce(openingVideoEl.value)
-}
-
 // Counts up 0 -> pointsAwarded (not a running balance total — the
 // redesigned points display shows just "+N Points Earned", matching the
 // reference: no card, no balance line).
@@ -193,48 +110,17 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-// Waits for the video's 'ended' event. A fallback timer (well above either
-// clip's real ~5s length) guarantees the celebration can never get stuck
-// even if a WebView silently blocks autoplay or the file fails to decode.
-function waitForVideo(el: HTMLVideoElement | null, fallbackMs = 8000): Promise<void> {
-  return new Promise((resolve) => {
-    if (!el) {
-      resolve()
-      return
-    }
-    let settled = false
-    const finishOnce = () => {
-      if (settled) return
-      settled = true
-      el.removeEventListener('ended', finishOnce)
-      resolve()
-    }
-    el.addEventListener('ended', finishOnce, { once: true })
-    setTimeout(finishOnce, fallbackMs)
-    el.play?.().catch(() => {
-      /* autoplay attribute already asked for this - the fallback timer
-         covers a WebView that silently refuses both */
-    })
-  })
-}
-
 let cancelled = false
 
 async function runSequence() {
   cancelled = false
 
+  // Static artwork + a quick CSS scale/fade (see .pa-book-img-enter below) —
+  // replaces what used to be a multi-second video decode+playback wait.
   phase.value = 'opening'
-  await nextTick()
-  startSampling()
-  await waitForVideo(openingVideoEl.value)
-  // No need to keep sampling every frame through the rest of the
-  // stamp/points/hold phases — the video holds its last frame from here on
-  // (see comment below), so the color is already settled.
-  stopSampling()
+  await sleep(450)
   if (cancelled) return
 
-  // The opening video's element naturally holds on its final frame once
-  // 'ended' fires — that's the "stopped open" backdrop the stamp lands on.
   // This whole stamp sub-sequence totals ~2s, matching the requested
   // "hold for 2 seconds and put the stamp" pause before closing.
   phase.value = 'stamp'
@@ -277,20 +163,12 @@ function finish() {
 
 function skip() {
   cancelled = true
-  sampling = false
-  if (sampleRafId != null) {
-    cancelAnimationFrame(sampleRafId)
-    sampleRafId = null
-  }
-  openingVideoEl.value?.pause?.()
   finish()
 }
 
 function resetState() {
   phase.value = 'idle'
   stampStep.value = 'idle'
-  overlayBg.value = '#ffffff'
-  overlayIsDark.value = false
 }
 
 watch(
@@ -302,21 +180,11 @@ watch(
       if (!reducedMotion.value) runSequence()
     } else {
       cancelled = true
-      sampling = false
-      if (sampleRafId != null) {
-        cancelAnimationFrame(sampleRafId)
-        sampleRafId = null
-      }
       resetState()
     }
   },
   { immediate: true },
 )
-
-onBeforeUnmount(() => {
-  sampling = false
-  if (sampleRafId != null) cancelAnimationFrame(sampleRafId)
-})
 </script>
 
 <style scoped>
@@ -324,10 +192,10 @@ onBeforeUnmount(() => {
   position: fixed;
   inset: 0;
   z-index: 500;
-  /* Default/fallback - overridden by the inline :style binding (overlayBg),
-     which live-tracks the opening video's own backdrop color so the screen
-     darkens in step with the clip instead of staying flat white behind it. */
-  background: #ffffff;
+  /* Flat light backdrop, consistent with the rest of the app — no video
+     frame to track a fade-to-black against anymore, so this never needs
+     to change at runtime. */
+  background: #faf9f6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -358,10 +226,6 @@ onBeforeUnmount(() => {
   cursor: pointer;
   z-index: 2;
   transition: background 0.3s ease, color 0.3s ease;
-}
-.pa-skip--dark {
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
 }
 
 /* ── Reduced-motion static confirmation ── */
@@ -429,20 +293,31 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
 }
-/* No fixed aspect-ratio, no card treatment - sized by the video's own
+/* No fixed aspect-ratio, no card treatment - sized by the image's own
    intrinsic dimensions, no border-radius/shadow so it sits directly on
    the overlay's own background rather than reading as a boxed card. */
-.pa-video {
+.pa-book-img {
   width: 100%;
   height: auto;
   display: block;
+  animation: pa-book-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes pa-book-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Stamp lands on the LEFT-hand page of the opened passport (measured
-   against the opening video's actual last frame: the left page spans
-   roughly x 11-48%, y 16-82% of the frame - this box sits inset within
-   that, so the stamp reads as fully on the left page rather than
-   straddling the spine into the middle of the spread). */
+   against passportOpenBase.png: the left page spans roughly x 11-48%,
+   y 16-82% of the frame - this box sits inset within that, so the stamp
+   reads as fully on the left page rather than straddling the spine into
+   the middle of the spread). */
 .pa-stamp-area {
   position: absolute;
   z-index: 4;
