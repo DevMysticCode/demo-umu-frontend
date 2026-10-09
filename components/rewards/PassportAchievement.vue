@@ -22,13 +22,6 @@
           <div class="pa-frame">
             <button class="pa-skip" type="button" aria-label="Skip" @click="skip">Skip</button>
 
-            <!-- Confetti burst, timed with the points reveal - kept to CSS
-                 shapes/positions (no image/animation library) so the extra
-                 flourish stays light. -->
-            <div v-if="phase === 'points' || phase === 'hold'" class="pa-confetti" aria-hidden="true">
-              <span v-for="(c, i) in confetti" :key="i" class="pa-confetti-piece" :class="c.shape" :style="c.style" />
-            </div>
-
             <div class="pa-scene">
               <div class="pa-book">
                 <!-- Static artwork of the open passport, with a quick CSS
@@ -88,6 +81,7 @@
 
 <script setup lang="ts">
 import StampFrame from './StampFrame.vue'
+import { useConfetti } from '~/composables/useConfetti'
 
 interface Props {
   visible: boolean
@@ -118,23 +112,10 @@ const phase = ref<Phase>('idle')
 const stampStep = ref<StampStep>('idle')
 const reducedMotion = ref(false)
 
-// Fixed (not random-per-render) so the layout is stable/testable — a mix
-// of small rotated rounded-rect pieces and sparkle characters scattered
-// around the book, same idiom as SectionCompleteCelebration's confetti.
-const confetti = [
-  { shape: 'rect', style: 'left:4%; top:8%; background:#14b8a6; transform:rotate(-18deg);' },
-  { shape: 'rect', style: 'left:14%; top:2%; background:#a78bfa; transform:rotate(24deg);' },
-  { shape: 'spark', style: 'left:8%; top:20%; color:#00817c;' },
-  { shape: 'rect', style: 'left:2%; top:36%; background:#38bdf8; transform:rotate(10deg);' },
-  { shape: 'spark', style: 'left:20%; top:42%; color:#fbbf24;' },
-  { shape: 'rect', style: 'right:4%; top:8%; background:#38bdf8; transform:rotate(16deg);' },
-  { shape: 'rect', style: 'right:16%; top:2%; background:#fbbf24; transform:rotate(-20deg);' },
-  { shape: 'spark', style: 'right:8%; top:22%; color:#00817c;' },
-  { shape: 'rect', style: 'right:2%; top:38%; background:#a78bfa; transform:rotate(-12deg);' },
-  { shape: 'spark', style: 'right:22%; top:44%; color:#fbbf24;' },
-  { shape: 'rect', style: 'left:34%; top:0%; background:#14b8a6; transform:rotate(8deg);' },
-  { shape: 'rect', style: 'right:34%; top:0%; background:#a78bfa; transform:rotate(-8deg);' },
-]
+// Same canvas confetti shower used after onboarding and the HomeScore
+// level-up celebration, not a one-off CSS version — keeps the flourish
+// consistent across every "celebration" moment in the app.
+const { runConfetti } = useConfetti()
 
 // Counts up 0 -> pointsAwarded (not a running balance total — the
 // redesigned points display shows just "+N Points Earned", matching the
@@ -178,6 +159,7 @@ async function runSequence() {
   if (cancelled) return
 
   phase.value = 'points'
+  runConfetti()
   startPointsCountUp(0, props.pointsAwarded, 900)
   await sleep(1400)
   if (cancelled) return
@@ -274,46 +256,6 @@ watch(
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Confetti burst - fixed shapes/positions (no animation library), each
-   piece pops in with a staggered scale/fade so the points reveal feels
-   more like a moment than a plain number appearing. */
-.pa-confetti {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-.pa-confetti-piece {
-  position: absolute;
-  animation: pa-confetti-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-}
-.pa-confetti-piece:nth-child(odd) { animation-delay: 0.05s; }
-.pa-confetti-piece:nth-child(3n) { animation-delay: 0.12s; }
-.pa-confetti-piece:nth-child(4n) { animation-delay: 0.18s; }
-.pa-confetti-piece.rect {
-  width: 9px;
-  height: 15px;
-  border-radius: 3px;
-  opacity: 0.9;
-}
-.pa-confetti-piece.spark {
-  font-size: 1rem;
-  color: inherit;
-}
-.pa-confetti-piece.spark::before {
-  content: '✦';
-}
-@keyframes pa-confetti-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.4) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
 /* ── Reduced-motion static confirmation ── */
 .pa-static {
   background: #fff;
@@ -375,7 +317,11 @@ watch(
 }
 .pa-book {
   position: relative;
-  width: 100%;
+  /* Capped well below the frame's own 28rem width - at full width the
+     book read as oversized/dominating against the points text below it
+     (client report, 9 Oct 2026). */
+  width: 72%;
+  max-width: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
