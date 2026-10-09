@@ -159,7 +159,12 @@ async function runSequence() {
   if (cancelled) return
 
   phase.value = 'points'
-  runConfetti()
+  // Override the default palette - it includes #ffffff/#e2f1ea, which
+  // are nearly invisible against this overlay's light cream backdrop
+  // (client report, 9 Oct 2026: "why it looks like that" - washed-out
+  // grey dots). These are the same vivid tones used elsewhere in the app
+  // for celebration moments.
+  runConfetti({ colors: ['#00a19a', '#231d45', '#14b8a6', '#a78bfa', '#38bdf8', '#fbbf24'] })
   startPointsCountUp(0, props.pointsAwarded, 900)
   await sleep(1400)
   if (cancelled) return
