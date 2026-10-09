@@ -55,7 +55,7 @@
                   />
                   <Transition name="pa-fade">
                     <div v-if="stampStep === 'lifting' || stampStep === 'done'" class="pa-impression">
-                      <StampFrame :title="achievementTitle" :size="96" />
+                      <StampFrame :title="achievementTitle" :size="62" />
                     </div>
                   </Transition>
                 </div>
