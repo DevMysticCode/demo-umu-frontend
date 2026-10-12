@@ -9,7 +9,7 @@
 //
 // TWO checks, in order:
 //
-// 1. `umu_has_session` — a small, non-secret flag cookie (see
+// 1. `umu_has_session_mobile` — a small, non-secret flag cookie (see
 //    composables/useSessionFlag.ts), set alongside the real JWT at every
 //    login/signup and cleared at logout. Unlike localStorage, a cookie
 //    rides along with the initial request, so useCookie() can read it
@@ -40,7 +40,7 @@
 export default defineNuxtRouteMiddleware((to) => {
   if (to.query.sample) return
 
-  const sessionFlag = useCookie('umu_has_session')
+  const sessionFlag = useCookie('umu_has_session_mobile')
   if (sessionFlag.value) {
     return navigateTo('/dashboard', { replace: true })
   }
