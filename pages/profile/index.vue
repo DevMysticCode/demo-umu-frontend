@@ -503,23 +503,16 @@ const isLoggingOut = ref(false)
 const showDeleteModal = ref(false)
 const isDeletingAccount = ref(false)
 
+const { logout: authLogout } = useAuth()
+
 const logout = async () => {
   isLoggingOut.value = true
   try {
-    const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
-    if (token) {
-      await $fetch(`${config.public.apiBase}/auth/logout`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      }).catch(() => {}) // ignore network errors - still log out locally
-    }
-  } finally {
+    await authLogout()
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('token')
       localStorage.removeItem('redirectAfterLogin')
     }
-    clearSessionFlag()
+  } finally {
     showLogoutModal.value = false
     isLoggingOut.value = false
     await navigateTo('/onboarding/signin?reason=logout', { replace: true })

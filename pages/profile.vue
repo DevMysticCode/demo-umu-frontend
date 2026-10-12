@@ -214,11 +214,10 @@ const onPreferenceClick = async (item) => {
   }
 };
 
+const { logout: authLogout } = useAuth();
+
 const logout = async () => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("token");
-  }
-  clearSessionFlag();
+  await authLogout();
   await navigateTo("/onboarding/signin");
 };
 </script>
