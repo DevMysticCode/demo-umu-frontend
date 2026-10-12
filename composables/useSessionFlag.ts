@@ -16,7 +16,15 @@
 // useCookie() can throw. Reading side (middleware/guest.ts) uses
 // useCookie() instead, which is exactly where Nuxt expects it and is what
 // makes the cookie visible during SSR.
-const SESSION_FLAG_COOKIE = 'umu_has_session'
+//
+// Name is app-specific (not just "umu_has_session") because cookies are
+// scoped by HOST only, not by port - on localhost, umu-website-new (3001)
+// and umu-website-integration (3000) see this exact same cookie jar as
+// this app (3003). A shared name meant logging into one app set a flag the
+// others' guest.ts read as "already signed in" and bounced to /dashboard,
+// which then broke because that app's own JWT (a separate, per-origin
+// localStorage entry) was never actually set (client report, 12 Oct 2026).
+const SESSION_FLAG_COOKIE = 'umu_has_session_mobile'
 
 // 7 days, matching the JWT's own expiry — no point outliving the token
 // it's shadowing.
