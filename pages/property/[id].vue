@@ -1035,7 +1035,7 @@
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
-                    {{ epcDownloading ? 'Opening…' : 'Download EPC certificate' }}
+                    {{ epcDownloading ? 'Downloading…' : 'Download EPC certificate' }}
                   </button>
                 </div>
               </div>
@@ -4361,27 +4361,17 @@ const loadError = ref('')
 const showRegisterInterest = ref(false)
 const showShare = ref(false)
 
-// EPC certificate — show the official gov.uk certificate without leaving
-// the app. The backend fetches the cert's own print page from
+// EPC certificate — the backend fetches the cert's own print page from
 // find-energy-certificate.service.gov.uk (CSS + images inlined so it
-// renders faithfully) and hands back self-contained HTML.
-//
-// That HTML used to be rasterised into a PDF via html2canvas
-// (useDownloadablePdf) — client feedback: the result was misaligned,
-// because html2canvas can't faithfully reproduce gov.uk's own layout
-// (the energy-rating chart, grid spacing, etc. all came out wrong). It's
-// verified-correct HTML (screenshotted with a real browser during
-// testing), so on web we instead hand it to usePrintDocument, which opens
-// it in a same-origin popup — real browser layout, not a canvas
-// screenshot, and the user prints/Saves as PDF themselves from there
-// (still our own domain, never gov.uk). Native keeps the html2canvas path:
-// the fetch below breaks the synchronous user-gesture chain WebKit
-// requires for window.print() to fire on a native WKWebView, so
-// usePrintDocument's native branch can't be trusted here — the Filesystem
-// + Share-sheet download at least reliably produces a saved file, even if
-// not pixel-perfect.
+// renders faithfully) and hands back self-contained HTML, which is turned
+// into a real downloadable PDF via useDownloadablePdf (html2canvas) on
+// BOTH web and native. This used to branch: native got a real PDF, web
+// got a same-origin popup the user had to print/Save-as-PDF themselves —
+// client feedback: web should produce an actual downloaded PDF too, not
+// a print dialog detour. html2canvas can't pixel-perfectly reproduce
+// gov.uk's own layout (the energy-rating chart, grid spacing), but a
+// slightly-imperfect real download beats no download.
 const { downloadPdf: downloadEpcPdf } = useDownloadablePdf()
-const { printHtmlDocument } = usePrintDocument()
 const epcDownloading = ref(false)
 async function downloadEpc() {
   if (epcDownloading.value) return
@@ -4394,20 +4384,10 @@ async function downloadEpc() {
     if (res && res.ok) {
       const data = await res.json().catch(() => null)
       if (data?.html) {
-        const isNative =
-          typeof window !== 'undefined' &&
-          !!(window as any).Capacitor?.isNativePlatform?.()
-        if (isNative) {
-          const slug = (property.value?.addressLine1 || 'EPC')
-            .replace(/[^a-z0-9]+/gi, '-')
-            .replace(/^-+|-+$/g, '')
-          await downloadEpcPdf(data.html, `EPC-Certificate-${slug}.pdf`)
-        } else {
-          printHtmlDocument(
-            data.html,
-            'Pop-ups are blocked - please allow pop-ups to view the EPC certificate.',
-          )
-        }
+        const slug = (property.value?.addressLine1 || 'EPC')
+          .replace(/[^a-z0-9]+/gi, '-')
+          .replace(/^-+|-+$/g, '')
+        await downloadEpcPdf(data.html, `EPC-Certificate-${slug}.pdf`)
         return
       }
     }
@@ -4417,7 +4397,7 @@ async function downloadEpc() {
     })
   } catch {
     showToast({
-      message: 'Could not open the EPC certificate. Please try again.',
+      message: 'Could not generate the EPC certificate. Please try again.',
       duration: 3000,
     })
   } finally {
@@ -9178,6 +9158,14 @@ function formatSaleDate(dateStr: string): string {
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
+  /* Grid rows auto-size per row, so a lighter row (e.g. Land charges /
+     Broadband, with just two short lines of static text) ends up visibly
+     shorter than a row carrying a pip badge or a longer sub-line (Flood &
+     risk / Planning). A shared min-height keeps every tile the same size
+     regardless of which row it lands in. */
+  min-height: 152px;
+  display: flex;
+  flex-direction: column;
   /* Same ambient tap affordance as the HomeScore card above - these
      tiles have no hover state on a touch device either. */
   animation: ppsTileGlow 3s ease-in-out infinite;
@@ -9298,8 +9286,9 @@ function formatSaleDate(dateStr: string): string {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px;
+  gap: 16px;
+  padding: 22px 18px;
+  min-height: 108px;
   background: none;
   border: none;
   font-family: inherit;
@@ -9308,44 +9297,44 @@ function formatSaleDate(dateStr: string): string {
 }
 .pps-keepgoing-divider {
   height: 1px;
-  margin: 0 14px;
+  margin: 0 18px;
   background: #ececf2;
 }
 .pps-keepgoing-row-ic {
-  width: 64px;
-  height: 64px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   flex-shrink: 0;
 }
 .pps-keepgoing-row-ic--fan {
-  width: 76px;
-  height: 76px;
+  width: 92px;
+  height: 92px;
 }
 .pps-keepgoing-row-body {
   flex: 1;
   min-width: 0;
 }
 .pps-keepgoing-row-title {
-  font-size: 0.875rem;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: #231d45;
   letter-spacing: -0.1px;
 }
 .pps-keepgoing-row-sub {
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #6b6a82;
-  line-height: 1.4;
-  margin-top: 3px;
+  line-height: 1.45;
+  margin-top: 4px;
 }
 .pps-keepgoing-row-chev {
   flex-shrink: 0;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #e7f6f2;
   color: #00857f;
-  font-size: 1rem;
+  font-size: 1.1875rem;
   font-weight: 800;
   display: flex;
   align-items: center;

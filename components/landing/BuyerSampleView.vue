@@ -147,7 +147,7 @@
       <!-- TA6 Form Download -->
       <div class="buyer-pdf-row buyer-ta6-row">
         <div class="buyer-pdf-info">
-          <p class="buyer-pdf-title">TA6 Property Information Form</p>
+          <p class="buyer-pdf-title">Property information</p>
           <p class="buyer-pdf-sub">
             Law Society 6th edition - pre-filled with passport data
           </p>
@@ -157,14 +157,14 @@
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-          Download TA6
+          Download
         </button>
       </div>
 
       <!-- TA10 Fixtures & Fittings Form -->
       <div class="buyer-pdf-row buyer-ta10-row">
         <div class="buyer-pdf-info">
-          <p class="buyer-pdf-title">TA10 Fixtures &amp; Fittings Form</p>
+          <p class="buyer-pdf-title">Fixtures and fittings</p>
           <p class="buyer-pdf-sub">
             What stays, what goes - pre-filled from seller's passport
           </p>
@@ -174,7 +174,7 @@
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-          Download TA10
+          Download
         </button>
       </div>
 

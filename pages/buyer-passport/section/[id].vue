@@ -52,6 +52,7 @@
         <!-- Help + Video + AI buttons -->
         <div class="section-help-strip">
           <button
+            v-if="sectionAnsweredCount > 0"
             class="action-btn action-btn--ai"
             :disabled="loadingAi"
             @click="fetchAiSummary"

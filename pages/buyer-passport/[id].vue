@@ -182,7 +182,7 @@
             <div class="buyer-details-grid">
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerPropertyType" class="w-[30px] h-[30px]" />
+                  <OPIcon name="buyerPropertyType" class="w-[44px] h-[44px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Property type</p>
@@ -193,7 +193,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerTitleNumber" class="w-[30px] h-[30px]" />
+                  <OPIcon name="buyerTitleNumber" class="w-[44px] h-[44px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Title number</p>
@@ -204,7 +204,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerAreaSqft" class="w-[30px] h-[30px]" />
+                  <OPIcon name="buyerAreaSqft" class="w-[44px] h-[44px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Area sqft</p>
@@ -219,7 +219,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerEpcRating" class="w-[30px] h-[30px]" />
+                  <OPIcon name="buyerEpcRating" class="w-[44px] h-[44px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">EPC Rating</p>
@@ -230,7 +230,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerTenure" class="w-[30px] h-[30px]" />
+                  <OPIcon name="buyerTenure" class="w-[44px] h-[44px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Tenure</p>
@@ -241,7 +241,7 @@
               </div>
               <div class="buyer-detail-item">
                 <div class="buyer-detail-icon-wrap">
-                  <OPIcon name="buyerYearBuilt" class="w-[30px] h-[30px]" />
+                  <OPIcon name="buyerYearBuilt" class="w-[44px] h-[44px]" />
                 </div>
                 <div>
                   <p class="buyer-detail-label">Year Built</p>
@@ -313,7 +313,7 @@
         <!-- TA6 Form Download -->
         <div class="buyer-pdf-row buyer-ta6-row">
           <div class="buyer-pdf-info">
-            <p class="buyer-pdf-title">TA6 Property Information Form</p>
+            <p class="buyer-pdf-title">Property information</p>
             <p class="buyer-pdf-sub">
               Law Society 6th edition - pre-filled with passport data
             </p>
@@ -355,7 +355,7 @@
                 stroke-linejoin="round"
               />
             </svg>
-            {{ generatingTA6 ? 'Opening…' : 'Download TA6' }}
+            {{ generatingTA6 ? 'Opening…' : 'Download' }}
           </button>
         </div>
 
@@ -415,7 +415,7 @@
         <!-- TA10 Fixtures & Fittings Form -->
         <div class="buyer-pdf-row buyer-ta10-row">
           <div class="buyer-pdf-info">
-            <p class="buyer-pdf-title">TA10 Fixtures &amp; Fittings Form</p>
+            <p class="buyer-pdf-title">Fixtures and fittings</p>
             <p class="buyer-pdf-sub">
               What stays, what goes - pre-filled from seller's passport
             </p>
@@ -457,7 +457,7 @@
                 stroke-linejoin="round"
               />
             </svg>
-            {{ generatingTA10 ? 'Opening…' : 'Download TA10' }}
+            {{ generatingTA10 ? 'Opening…' : 'Download' }}
           </button>
         </div>
 
@@ -1827,14 +1827,9 @@ async function deleteNote(noteId: string) {
 .buyer-detail-icon-wrap {
   width: 44px;
   height: 44px;
-  border-radius: 11px;
-  background: #fff;
-  border: 1px solid #e2f1ea;
-  color: #00726c;
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 .buyer-detail-label {
   font-size: 0.625rem;

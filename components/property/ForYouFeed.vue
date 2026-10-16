@@ -408,6 +408,13 @@ async function savePostcode() {
   gap: 5px;
   flex-wrap: wrap;
   margin-bottom: 8px;
+  /* A property missing both type and tenure renders this row empty, which
+     collapses to 0 height and leaves its card shorter than a neighbour
+     that has either pill (client feedback: "1 Woodfield Road" vs
+     "3 Woodfield Road" ending up visibly different heights in the same
+     grid). Reserving the pill's own height keeps every card the same
+     size regardless of which fields a given property has. */
+  min-height: 22px;
 }
 .pill-grey {
   background: #f1f5f9;

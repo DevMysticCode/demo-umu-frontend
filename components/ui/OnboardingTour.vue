@@ -207,6 +207,14 @@ function focusStep() {
   }
   const rect = el.getBoundingClientRect()
   if (rect.top < 0 || rect.bottom > window.innerHeight) {
+    // Measure NOW, before the scroll — otherwise targetRect keeps
+    // whatever stale value it already held (the default {0,0,0,0} on the
+    // very first step, or the previous step's rect on later ones) for the
+    // full 320ms until the first deferred re-measure below fires, and the
+    // spotlight visibly locks onto the wrong element/area for that
+    // window (client feedback: the ring briefly highlighted the hero
+    // illustration instead of the progress meta row it was meant for).
+    measure()
     el.scrollIntoView({ behavior: 'smooth', block: 'center' })
     // Re-measure after the smooth scroll settles, then once more to catch
     // any layout the scroll triggered.
