@@ -117,12 +117,15 @@
           </div>
         </button>
 
-        <!-- ── Collaborators + Manage visibility + Match to Buyers, one
-             row (client History handoff, 2026-09-25; widened to a single
-             row of three on 2026-10-06 now this block has the hero's full
-             width to work with). Underlying mechanism
-             (togglePublish/PublishPassportDrawer, openMatchDrawer) is
-             unchanged; only the placement/framing moved. ── -->
+        <!-- ── Collaborators + Publish + Match to Buyers, one row (client
+             History handoff, 2026-09-25; widened to a single row of three
+             on 2026-10-06 now this block has the hero's full width to work
+             with). Button relabelled from "Manage visibility" to
+             Publish/Unpublish — client feedback: the old label didn't
+             signal that this is how you actually publish the passport.
+             Underlying mechanism (togglePublish/PublishPassportDrawer,
+             openMatchDrawer) is unchanged; only the label and
+             placement/framing moved. ── -->
         <div class="pp-action-row">
           <button
             class="pp-action-btn pp-action-outline"
@@ -138,7 +141,7 @@
             @click="onPublishClick"
           >
             <OPIcon name="published" class="w-[15px] h-[15px]" />
-            Manage visibility
+            {{ isPublished ? 'Unpublish' : 'Publish' }}
           </button>
           <button
             class="pp-action-btn pp-action-outline"
@@ -722,8 +725,8 @@ const passportTourSteps = computed(() => [
   },
   {
     selector: '.pp-action-row',
-    title: 'Match buyers or publish',
-    body: 'When you\'re ready, match to verified buyers or publish so anyone can view your verified record.',
+    title: 'Collaborators, publish, match buyers',
+    body: 'Add collaborators who can help fill this in, publish so anyone can view your verified record, or match to verified buyers directly.',
   },
   {
     selector: '.pp-subtabs',

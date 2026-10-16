@@ -262,28 +262,21 @@ onMounted(async () => {
 .vlt-category-icon {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: #f2faf8;
-  overflow: hidden;
+  /* Client feedback: these were sat in a tinted, rounded box that doesn't
+     match the brand's 3D icon set, which is always shown free-standing on
+     a transparent ground elsewhere in the app. */
+  background: none;
 }
 .vlt-category-icon img {
-  width: 30px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
   display: block;
 }
-.vlt-category-icon--property_information { background: #e8f1fd; }
-.vlt-category-icon--ownership_legal { background: #eee8fd; }
-.vlt-category-icon--energy_utilities { background: #e5f9ea; }
-.vlt-category-icon--compliance { background: #fdeee0; }
-.vlt-category-icon--improvements_maintenance { background: #e5f4f2; }
-.vlt-category-icon--appliances_warranties { background: #fdf3e0; }
-.vlt-category-icon--manuals { background: #e3edfb; }
-.vlt-category-icon--photos { background: #fbe6f3; }
 
 .vlt-category-body {
   flex: 1;

@@ -317,19 +317,17 @@ const loginError = ref('')
 const loginLoading = ref(false)
 
 const redirectAfterAuth = async () => {
-  const redirectPath = localStorage.getItem('redirectAfterLogin')
+  // Login always lands on the dashboard — client feedback, 2026-10-16:
+  // `redirectAfterLogin` was being honored here, but it's written by a
+  // dozen unrelated gated actions (claiming a property, HomeScore boost,
+  // etc.) any time a signed-out visit hits them, and never expires. A
+  // stale value from a completely unrelated earlier session would
+  // silently hijack this login and drop the user on /claim or similar
+  // instead of the dashboard. Clearing it here rather than reading it.
+  localStorage.removeItem('redirectAfterLogin')
   // replace: true — sign-in is a detour, not a page the user should ever
-  // land back on by pressing back. Without this, a guest who tapped
-  // "Claim this property", signed in, and then changed their mind would
-  // press back straight into the sign-in screen (or whatever its own
-  // guest-only redirect bounces them to next) instead of the property
-  // page they actually started from.
-  if (redirectPath) {
-    localStorage.removeItem('redirectAfterLogin')
-    await navigateTo(redirectPath, { replace: true })
-  } else {
-    await navigateTo('/dashboard', { replace: true })
-  }
+  // land back on by pressing back.
+  await navigateTo('/dashboard', { replace: true })
 }
 
 const handleLogin = async () => {

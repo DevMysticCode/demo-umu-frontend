@@ -1065,27 +1065,35 @@ function initials(name) {
 .ac-toggle-card-body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .ac-toggle-card-title { font-size: 0.8438rem; font-weight: 700; color: #231d45; }
 .ac-toggle-card-desc { font-size: 0.75rem; color: #6b7089; line-height: 1.45; }
-.ac-switch { position: relative; flex-shrink: 0; width: 42px; height: 24px; }
+.ac-switch { position: relative; flex-shrink: 0; width: 52px; height: 30px; }
 .ac-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .ac-switch-track {
-  display: block;
-  width: 42px;
-  height: 24px;
+  /* Was margin-based centering on a block span — correct on paper
+     (3px top, 3px bottom = exactly 30px with a 24px thumb), but client
+     feedback says the thumb renders off-center. Flex centering removes
+     any dependency on margin arithmetic or the parent's inline/block
+     formatting context. */
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 52px;
+  height: 30px;
+  padding: 0 3px;
   background: #d8d6e3;
   border-radius: 999px;
   transition: background 0.15s;
 }
 .ac-switch-thumb {
-  display: block;
-  width: 18px;
-  height: 18px;
-  margin: 3px;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
   background: #fff;
   border-radius: 50%;
   transition: transform 0.15s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 .ac-switch input:checked + .ac-switch-track { background: #00a19a; }
-.ac-switch input:checked + .ac-switch-track .ac-switch-thumb { transform: translateX(18px); }
+.ac-switch input:checked + .ac-switch-track .ac-switch-thumb { transform: translateX(22px); }
 
 /* review */
 .ac-review-block { margin-bottom: 6px; }
