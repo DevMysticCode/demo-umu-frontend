@@ -97,6 +97,10 @@ export default defineNuxtConfig({
         'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://api.mapbox.com', 'https://unpkg.com'],
         'style-src-attr': ["'unsafe-inline'"],
         'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:'],
+        // images.pexels.com/loremflickr.com: placeholder photos (buyer-
+        // passport sample image, marketplace category thumbnails) — a gap
+        // in the reference CSP this was ported from too, found via a full
+        // grep of actual $fetch/img usage rather than assumed (2026-10-19).
         'img-src': [
           "'self'",
           'data:',
@@ -104,7 +108,12 @@ export default defineNuxtConfig({
           'https://api.mapbox.com',
           'https://api.os.uk',
           'https://*.tile.openstreetmap.org',
+          'https://images.pexels.com',
+          'https://loremflickr.com',
         ],
+        // api.postcodes.io: the postcode/place-suggestion autocomplete
+        // used across search and onboarding — same missing-from-the-
+        // reference-CSP gap as img-src above.
         'connect-src': [
           "'self'",
           BACKEND_ORIGIN,
@@ -113,6 +122,7 @@ export default defineNuxtConfig({
           'https://events.mapbox.com',
           'https://api.os.uk',
           'https://*.tile.openstreetmap.org',
+          'https://api.postcodes.io',
         ],
         'frame-src': ["'self'", 'https://js.stripe.com', 'https://www.openstreetmap.org', BACKEND_ORIGIN],
         'worker-src': ["'self'", 'blob:'],
