@@ -1,0 +1,23 @@
+# gitleaks config — umu-mobile-webapp
+#
+# Inherits the upstream default ruleset. Minimal project-specific
+# allowlist — lockfiles and build output can contain long random-looking
+# strings that aren't secrets (hashes, integrity checksums).
+#
+# Run locally:
+#   gitleaks detect --source . --no-banner --config .gitleaks.toml
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Project-wide allowlist for known-safe matches"
+paths = [
+  '''^node_modules/''',
+  '''^\.nuxt/''',
+  '''^\.output/''',
+  '''^android/''',
+  '''^ios/''',
+  '''(?i)\.lock$''',
+  '''(?i)package-lock\.json$''',
+]

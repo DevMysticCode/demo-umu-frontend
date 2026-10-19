@@ -59,7 +59,7 @@ export function usePropertyActions(propertyId?: string) {
       wishlisted.value = data.wishlisted
       return data
     } catch (e) {
-      console.error('toggleWishlist error', e)
+      console.error('toggleWishlist error', e?.data?.message || e?.message)
       return 'error'
     } finally {
       actionLoading.value = false
@@ -81,7 +81,7 @@ export function usePropertyActions(propertyId?: string) {
       saved.value = data.saved
       return data
     } catch (e) {
-      console.error('toggleSave error', e)
+      console.error('toggleSave error', e?.data?.message || e?.message)
       return 'error'
     } finally {
       actionLoading.value = false
@@ -129,7 +129,7 @@ export function usePropertyActions(propertyId?: string) {
       })
       return true
     } catch (e) {
-      console.error('unwatchProperty error', e)
+      console.error('unwatchProperty error', e?.data?.message || e?.message)
       return false
     }
   }

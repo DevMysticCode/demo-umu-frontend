@@ -10,6 +10,9 @@
 // `npm run build:capacitor` sets this; manual builds need not touch it.
 const IS_CAPACITOR_BUILD = process.env.CAPACITOR_BUILD === 'true'
 const IS_PROD = process.env.NODE_ENV === 'production'
+// Mirrors apiBase's own fallback below so the CSP's connect-src always
+// matches whatever host the app is actually calling.
+const BACKEND_ORIGIN = process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3002'
 
 function devOnly(envValue: string | undefined, devFallback: string, name: string): string {
   if (envValue && envValue.trim()) return envValue
@@ -35,7 +38,7 @@ export default defineNuxtConfig({
   // build so Vercel can pre-render.
   ssr: !IS_CAPACITOR_BUILD,
   devtools: { enabled: false },
-  modules: ['@nuxt/ui', '@pinia/nuxt'],
+  modules: ['@nuxt/ui', '@pinia/nuxt', 'nuxt-security'],
   // Nuxt Icon's server-bundled Iconify collections (used by @nuxt/ui's
   // <Icon> component) generate a Nitro cached-event-handler that calls
   // `createRequire(import.meta.url)` against a Rollup-injected shim.
@@ -63,6 +66,69 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       failOnError: false,
+    },
+  },
+  // Baseline security headers (security review 2026-10-19) — ported from
+  // umu-website-integration's already resource-audited CSP (13/14 Oct
+  // 2026), adjusted for this app's actual third-party usage (no Google/
+  // Apple OAuth here — removed entirely, email/password + OTP only).
+  // Only takes effect on the SSR/web build (`ssr: !IS_CAPACITOR_BUILD`
+  // above): nuxt-security sets headers via Nitro middleware, which only
+  // runs when there's a real server emitting the response. The native
+  // shell in "remote" mode loads this same SSR deploy and gets the
+  // headers; "bundled" mode serves static files from disk inside the
+  // WebView with no HTTP layer to attach headers to — CSP coverage for
+  // that build mode would need a <meta http-equiv> tag instead, not
+  // attempted here (Needs confirmation whether bundled mode is still
+  // used — capacitor.config.ts's REMOTE mode is the current build).
+  // script-src keeps 'unsafe-inline' as the conservative choice, matching
+  // umu-website-integration's own documented reasoning even though this
+  // app has no inline <script> in nuxt.config.ts today — switching to a
+  // nonce+strict-dynamic policy needs a real browser click-through this
+  // environment can't do (same caveat as the app it was ported from).
+  security: {
+    headers: {
+      contentSecurityPolicy: {
+        'default-src': ["'self'"],
+        // unpkg: Leaflet is loaded at runtime (document.createElement), not
+        // bundled — see SearchDrawer.vue / property/[id].vue /
+        // property-full/[id].vue.
+        'script-src': ["'self'", "'unsafe-inline'", 'https://unpkg.com', 'https://js.stripe.com'],
+        'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://api.mapbox.com', 'https://unpkg.com'],
+        'style-src-attr': ["'unsafe-inline'"],
+        'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:'],
+        'img-src': [
+          "'self'",
+          'data:',
+          'blob:',
+          'https://api.mapbox.com',
+          'https://api.os.uk',
+          'https://*.tile.openstreetmap.org',
+        ],
+        'connect-src': [
+          "'self'",
+          BACKEND_ORIGIN,
+          'https://api.stripe.com',
+          'https://api.mapbox.com',
+          'https://events.mapbox.com',
+          'https://api.os.uk',
+          'https://*.tile.openstreetmap.org',
+        ],
+        'frame-src': ["'self'", 'https://js.stripe.com', 'https://www.openstreetmap.org', BACKEND_ORIGIN],
+        'worker-src': ["'self'", 'blob:'],
+        'object-src': ["'none'"],
+        'base-uri': ["'self'"],
+        'form-action': ["'self'"],
+        'frame-ancestors': ["'none'"],
+      },
+      crossOriginEmbedderPolicy: false,
+      xFrameOptions: 'DENY',
+      referrerPolicy: 'strict-origin-when-cross-origin',
+      permissionsPolicy: {
+        geolocation: ['self'],
+        camera: ['self'],
+        microphone: [],
+      },
     },
   },
   css: ['~/assets/css/main.css'],

@@ -126,7 +126,7 @@ export const useVerificationCode = () => {
       error.value = ''
       startCooldown(60)
     } catch (err) {
-      console.error('Failed to resend code:', err)
+      console.error('Failed to resend code:', err?.data?.message || err?.message)
     }
   }
 

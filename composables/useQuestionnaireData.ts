@@ -108,7 +108,7 @@ async function submitToBackend(
       body: JSON.stringify(payload),
     })
   } catch (err) {
-    console.error('Failed to save questionnaire:', err)
+    console.error('Failed to save questionnaire:', err?.data?.message || err?.message)
     // Non-fatal — user still proceeds to thank-you
   }
 }

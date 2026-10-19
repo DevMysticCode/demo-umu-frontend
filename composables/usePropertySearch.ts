@@ -90,7 +90,7 @@ export const usePropertySearch = () => {
       return res.items.map(enrichProperty)
     } catch (err) {
       error.value = 'Failed to search properties'
-      console.error('Search error:', err)
+      console.error('Search error:', err?.data?.message || err?.message)
       return []
     } finally {
       loading.value = false
@@ -121,7 +121,7 @@ export const usePropertySearch = () => {
       const result = await $fetch<Property>(`${base}/property/${id}`)
       return enrichProperty(result)
     } catch (err) {
-      console.error('Property fetch error:', err)
+      console.error('Property fetch error:', err?.data?.message || err?.message)
       return null
     }
   }
