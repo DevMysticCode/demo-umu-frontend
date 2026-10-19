@@ -375,6 +375,44 @@
             @open-filters="openForYouFilters"
             @postcode-saved="refetchForYou"
           />
+
+          <!-- ── Legislation & News — buyer branch ───────────────────
+               This page has an entirely separate <template v-if> tree
+               per role (buyer here, lines 38-379; seller/landlord/both
+               further down), so adding the rail to the other branch
+               alone never reached buyers at all — same markup/dataset
+               as the other copy, see its own comment for why. -->
+          <div class="dash-section" style="margin-top: 20px">
+            <div class="dash-eyebrow">Legislation &amp; news</div>
+            <div class="dash-news-rail">
+              <a
+                v-for="n in dashNewsItems"
+                :key="n.url"
+                class="dash-news-card"
+                :href="n.url"
+                target="_blank"
+                rel="noopener"
+              >
+                <div class="dash-news-img">
+                  <img :src="n.icon" alt="" loading="lazy" />
+                </div>
+                <div class="dash-news-bd">
+                  <span
+                    class="dash-news-tag"
+                    :class="`dash-news-tag--${n.tag}`"
+                    >{{ n.tagLabel }}</span
+                  >
+                  <div class="dash-news-t">{{ n.title }}</div>
+                  <span class="dash-news-more"
+                    >Read more <span>&rarr;</span></span
+                  >
+                </div>
+              </a>
+            </div>
+            <NuxtLink to="/profile/news" class="dash-news-all"
+              >See all updates ›</NuxtLink
+            >
+          </div>
         </template>
       </template>
 
