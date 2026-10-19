@@ -147,9 +147,16 @@
                   class="loc-drop-item"
                   @mousedown.prevent="addLocation(q.id, s.value)"
                 >
-                  <span class="loc-drop-ic">{{
-                    s.kind === 'postcode' ? '📮' : '🏙️'
-                  }}</span>
+                  <img
+                    class="loc-drop-ic"
+                    :src="
+                      s.kind === 'postcode'
+                        ? '/op-icons/property/locationAndMap.png'
+                        : '/op-icons/misc/addressPin.png'
+                    "
+                    alt=""
+                    loading="lazy"
+                  />
                   <span class="loc-drop-text">
                     <strong>{{ s.value }}</strong>
                     <span v-if="s.sub" class="loc-drop-sub">{{ s.sub }}</span>
@@ -558,7 +565,15 @@ const buyQuestions: Question[] = [
     type: 'chips',
     label: 'TENURE PREFERENCE',
     hint: 'Leasehold properties carry extra risk - we surface this in every listing',
-    opts: [{ v: 'Freehold' }, { v: 'Leasehold' }, { v: 'Either' }],
+    opts: [
+      { v: 'Freehold' },
+      { v: 'Share of Freehold' },
+      { v: 'Leasehold' },
+      { v: 'Commonhold' },
+      { v: 'Shared Ownership' },
+      { v: 'Flying Freehold' },
+      { v: 'Either' },
+    ],
   },
   {
     id: 'buyMustHaves',
@@ -666,7 +681,14 @@ const sellQuestions: Question[] = [
     id: 'sellTenure',
     type: 'chips',
     label: 'TENURE',
-    opts: [{ v: 'Freehold' }, { v: 'Leasehold' }],
+    opts: [
+      { v: 'Freehold' },
+      { v: 'Share of Freehold' },
+      { v: 'Leasehold' },
+      { v: 'Commonhold' },
+      { v: 'Shared Ownership' },
+      { v: 'Flying Freehold' },
+    ],
   },
   {
     id: 'sellChain',
@@ -1566,7 +1588,9 @@ onMounted(() => {
   background: var(--teal-paler);
 }
 .loc-drop-ic {
-  font-size: 0.875rem;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 .loc-drop-text {

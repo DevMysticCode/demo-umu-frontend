@@ -157,57 +157,46 @@ function formatDate(iso: string) {
   padding: 18px 0 10px;
 }
 
-/* Featured hero card */
+/* Featured hero card — was a dark purple gradient; client feedback:
+   doesn't match the rest of the app's light, profile-style cards. Now
+   uses the same light palette as this page's own "More updates" rows
+   below, just sized up as the featured card. */
 .nw-hero {
   display: block;
   padding: 20px;
   border-radius: 20px;
-  background: linear-gradient(140deg, #2d2466, #231d45 60%, #15102e);
+  background: linear-gradient(140deg, #f3fbfa 0%, #f1f9f4 100%);
+  border: 1px solid #e2f1ea;
   text-decoration: none;
   position: relative;
   overflow: hidden;
-}
-.nw-hero::after {
-  content: '';
-  position: absolute;
-  top: -40%;
-  right: -15%;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 196, 188, 0.18), transparent 65%);
 }
 .nw-hero-ic {
   width: 64px;
   height: 64px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 14px;
-  position: relative;
-  z-index: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 .nw-hero-ic-img { width: 46px; height: 46px; object-fit: contain; }
 .nw-hero-t {
   font-size: 1.3125rem;
   font-weight: 700;
-  color: #fff;
+  color: #0e2840;
   letter-spacing: -0.4px;
   line-height: 1.25;
   margin-top: 10px;
-  position: relative;
-  z-index: 1;
 }
 .nw-hero-s {
   font-size: 0.8438rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
+  color: #6b7089;
   line-height: 1.55;
   margin-top: 8px;
-  position: relative;
-  z-index: 1;
 }
 .nw-hero-foot {
   display: flex;
@@ -216,14 +205,12 @@ function formatDate(iso: string) {
   flex-wrap: wrap;
   margin-top: 16px;
   padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  position: relative;
-  z-index: 1;
+  border-top: 1px solid #e2f1ea;
 }
-.nw-src { font-size: 0.6875rem; font-weight: 700; color: rgba(255, 255, 255, 0.6); }
-.nw-dot { color: rgba(255, 255, 255, 0.35); font-size: 0.6875rem; }
-.nw-date { font-size: 0.6875rem; font-weight: 600; color: rgba(255, 255, 255, 0.6); }
-.nw-go { margin-left: auto; font-size: 0.7188rem; font-weight: 800; color: #5eead4; }
+.nw-src { font-size: 0.6875rem; font-weight: 700; color: #a8a9ad; }
+.nw-dot { color: #d4d4d8; font-size: 0.6875rem; }
+.nw-date { font-size: 0.6875rem; font-weight: 600; color: #a8a9ad; }
+.nw-go { margin-left: auto; font-size: 0.7188rem; font-weight: 800; color: #00857f; }
 
 /* Tag pill */
 .nw-tag {
@@ -235,12 +222,10 @@ function formatDate(iso: string) {
   text-transform: uppercase;
   padding: 5px 10px;
   border-radius: 100px;
-  position: relative;
-  z-index: 1;
 }
-.nw-tag--law { background: rgba(192, 73, 47, 0.25); color: #ffb3a0; }
-.nw-tag--update { background: rgba(0, 196, 188, 0.2); color: #5eead4; }
-.nw-tag--news { background: rgba(61, 99, 201, 0.25); color: #a8c0ff; }
+.nw-tag--law { background: #fbeae5; color: #992e1a; }
+.nw-tag--update { background: #f2faf8; color: #008a84; }
+.nw-tag--news { background: #e8edfb; color: #3d63c9; }
 .nw-tag--sm { position: static; }
 
 /* Row list */
