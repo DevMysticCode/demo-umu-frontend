@@ -123,6 +123,48 @@
             </div>
           </div>
 
+          <!-- ── Legislation & News — buyer branch ───────────────────
+               This page has an entirely separate <template v-if> tree
+               per role (buyer here, lines 38-379; seller/landlord/both
+               further down), so adding the rail to the other branch
+               alone never reached buyers at all. Placed here, right
+               after "Your active passport" and before "Next for you",
+               to match the seller/landlord branch's own section order
+               (client feedback: the first attempt put it last instead
+               of in the same place as the other roles) — same markup/
+               dataset as that copy, see its own comment for why. -->
+          <div class="dash-section">
+            <div class="dash-eyebrow">Legislation &amp; news</div>
+            <div class="dash-news-rail">
+              <a
+                v-for="n in dashNewsItems"
+                :key="n.url"
+                class="dash-news-card"
+                :href="n.url"
+                target="_blank"
+                rel="noopener"
+              >
+                <div class="dash-news-img">
+                  <img :src="n.icon" alt="" loading="lazy" />
+                </div>
+                <div class="dash-news-bd">
+                  <span
+                    class="dash-news-tag"
+                    :class="`dash-news-tag--${n.tag}`"
+                    >{{ n.tagLabel }}</span
+                  >
+                  <div class="dash-news-t">{{ n.title }}</div>
+                  <span class="dash-news-more"
+                    >Read more <span>&rarr;</span></span
+                  >
+                </div>
+              </a>
+            </div>
+            <NuxtLink to="/profile/news" class="dash-news-all"
+              >See all updates ›</NuxtLink
+            >
+          </div>
+
           <!-- ── Next For You ── -->
           <div v-if="buyerProfile" class="dash-section">
             <div class="dash-eyebrow">Next for you</div>
@@ -375,44 +417,6 @@
             @open-filters="openForYouFilters"
             @postcode-saved="refetchForYou"
           />
-
-          <!-- ── Legislation & News — buyer branch ───────────────────
-               This page has an entirely separate <template v-if> tree
-               per role (buyer here, lines 38-379; seller/landlord/both
-               further down), so adding the rail to the other branch
-               alone never reached buyers at all — same markup/dataset
-               as the other copy, see its own comment for why. -->
-          <div class="dash-section" style="margin-top: 20px">
-            <div class="dash-eyebrow">Legislation &amp; news</div>
-            <div class="dash-news-rail">
-              <a
-                v-for="n in dashNewsItems"
-                :key="n.url"
-                class="dash-news-card"
-                :href="n.url"
-                target="_blank"
-                rel="noopener"
-              >
-                <div class="dash-news-img">
-                  <img :src="n.icon" alt="" loading="lazy" />
-                </div>
-                <div class="dash-news-bd">
-                  <span
-                    class="dash-news-tag"
-                    :class="`dash-news-tag--${n.tag}`"
-                    >{{ n.tagLabel }}</span
-                  >
-                  <div class="dash-news-t">{{ n.title }}</div>
-                  <span class="dash-news-more"
-                    >Read more <span>&rarr;</span></span
-                  >
-                </div>
-              </a>
-            </div>
-            <NuxtLink to="/profile/news" class="dash-news-all"
-              >See all updates ›</NuxtLink
-            >
-          </div>
         </template>
       </template>
 
@@ -1003,12 +1007,19 @@ const buyerIncompleteCount = computed(() => {
   return Math.max(0, 5 - steps)
 })
 
-// Legislation & News rail (landlord + seller) — same 5-item teaser
-// slice the landlord passport page used to show, now that it's moved
-// here, plus a seller-focused equivalent. NEWS_ITEMS / SELLER_NEWS_ITEMS
-// are auto-imported from utils/landlordNews.ts / utils/sellerNews.ts.
+// Legislation & News rail (every role) — same 5-item teaser slice the
+// landlord passport page used to show, now that it's moved here, plus
+// a seller-focused equivalent. NEWS_ITEMS / SELLER_NEWS_ITEMS are
+// auto-imported from utils/landlordNews.ts / utils/sellerNews.ts.
+// Only `landlord` gets the landlord (rental-law) set — it used to be
+// everyone-but-sell's default, so buyers were shown Renters' Rights
+// Act / Section 21 / rental-bidding content that has nothing to do
+// with buying (client feedback, 2026-10-19). Buy/both/sell all get the
+// seller-focused set instead, since that content (TA6, material
+// information, leasehold reform) is what a buyer is actually reading
+// as disclosures made TO them, not landlord-tenant rental law.
 const dashNewsItems = computed(() =>
-  (role.value === 'sell' ? SELLER_NEWS_ITEMS : NEWS_ITEMS).slice(0, 5),
+  (role.value === 'landlord' ? NEWS_ITEMS : SELLER_NEWS_ITEMS).slice(0, 5),
 )
 
 // Sum of unanswered questions across every task in every section — the
