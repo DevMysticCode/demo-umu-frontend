@@ -459,7 +459,7 @@
             </div>
           </div>
 
-          <!-- ── Legislation & News (landlord + seller) ──────────────
+          <!-- ── Legislation & News (every role) ──────────────────────
                Moved here from the landlord passport's own compliance
                screen — same curated datasets (utils/landlordNews.ts /
                utils/sellerNews.ts), so this rail and the full News page
@@ -467,11 +467,14 @@
                this is a curated snapshot, not a live feed. Each card
                leads with a tag icon rather than a paragraph of summary
                text, so the rail reads as a quick scan, not a wall of
-               text - the full story is one tap away via "Read more". -->
-          <div
-            v-if="role === 'landlord' || role === 'sell'"
-            class="dash-section"
-          >
+               text - the full story is one tap away via "Read more".
+               Used to be landlord+seller only — client feedback: buyers
+               never saw this at all. There's no buyer-specific dataset
+               yet, so buy/both fall through to the same general
+               NEWS_ITEMS dashNewsItems already uses as its default for
+               any non-seller role (content is broadly buyer-relevant:
+               reform roadmaps, TA6 changes, leasehold reform). -->
+          <div class="dash-section">
             <div class="dash-eyebrow">Legislation &amp; news</div>
             <div class="dash-news-rail">
               <a
