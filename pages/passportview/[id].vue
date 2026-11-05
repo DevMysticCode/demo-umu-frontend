@@ -378,6 +378,11 @@
             <span class="pp-vault-tile-label">My private documents</span>
             <span class="pp-vault-tile-sub">Personal documents, visible only to you</span>
           </NuxtLink>
+          <NuxtLink :to="`/vault/${route.params.id}?scope=records`" class="pp-vault-tile">
+            <span class="pp-vault-tile-icon"><img src="/op-icons/misc/fileCabinet.png" alt="" loading="lazy" /></span>
+            <span class="pp-vault-tile-label">Home records</span>
+            <span class="pp-vault-tile-sub">Files you've uploaded while answering questions</span>
+          </NuxtLink>
         </div>
         <NuxtLink :to="`/vault/${route.params.id}?scope=shared`" class="pp-vault-shared-row">
           <span class="pp-vault-tile-icon"><img src="/op-icons/profile/collaborators.jpeg" alt="" loading="lazy" /></span>
@@ -3062,9 +3067,9 @@ const onRoleSwitch = (role) => {
 }
 
 /* ── Vault tab ───────────────────────────────────────────────── */
-.pp-vault-tiles { display: flex; gap: 10px; padding: 0 18px; margin-bottom: 10px; }
+.pp-vault-tiles { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 18px; margin-bottom: 10px; }
 .pp-vault-tile {
-  flex: 1;
+  flex: 1 1 calc(50% - 5px);
   display: flex;
   flex-direction: column;
   gap: 4px;

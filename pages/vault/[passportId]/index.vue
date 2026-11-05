@@ -12,10 +12,11 @@
     <div class="vlt-scope-tabs">
       <button type="button" :class="['vlt-scope-tab', scope === 'property' ? 'active' : '']" @click="scope = 'property'">Property</button>
       <button type="button" :class="['vlt-scope-tab', scope === 'private' ? 'active' : '']" @click="scope = 'private'">Private</button>
+      <button type="button" :class="['vlt-scope-tab', scope === 'records' ? 'active' : '']" @click="scope = 'records'">Records</button>
       <button type="button" :class="['vlt-scope-tab', scope === 'shared' ? 'active' : '']" @click="scope = 'shared'">Shared</button>
     </div>
 
-    <template v-if="scope !== 'shared'">
+    <template v-if="scope === 'property' || scope === 'private'">
       <h2 class="vlt-section-title">{{ scope === 'property' ? 'Property documents' : 'My private documents' }}</h2>
       <p class="vlt-section-sub">
         <template v-if="scope === 'property'">
@@ -49,6 +50,24 @@
       </div>
     </template>
 
+    <template v-else-if="scope === 'records'">
+      <h2 class="vlt-section-title">Home records</h2>
+      <p class="vlt-section-sub">
+        Files you've uploaded while answering questions in your passport - separate from documents you've deliberately added to the vault above.
+      </p>
+      <div v-if="recordsLoading" class="vlt-empty">Loading…</div>
+      <div v-else-if="homeRecords.length === 0" class="vlt-empty">No home records yet. These appear once you upload a file while answering a question.</div>
+      <div v-else class="vlt-shared-list">
+        <a v-for="d in homeRecords" :key="d.id" :href="d.fileUrl" target="_blank" rel="noopener" class="vlt-shared-row">
+          <span class="vlt-category-icon vlt-category-icon--manuals"><img src="/op-icons/misc/pdf.png" alt="" loading="lazy" /></span>
+          <span class="vlt-category-body">
+            <span class="vlt-category-name">{{ d.title }}</span>
+            <span class="vlt-category-count">{{ d.uploadedAt }}</span>
+          </span>
+        </a>
+      </div>
+    </template>
+
     <template v-else>
       <h2 class="vlt-section-title">Shared with me</h2>
       <p class="vlt-section-sub">Documents other people have shared with you.</p>
@@ -65,7 +84,7 @@
       </div>
     </template>
 
-    <button v-if="scope !== 'shared'" type="button" class="vlt-upload-btn" @click="router.push(`/vault/${passportId}/add?scope=${scope}`)">
+    <button v-if="scope === 'property' || scope === 'private'" type="button" class="vlt-upload-btn" @click="router.push(`/vault/${passportId}/add?scope=${scope}`)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14" /></svg>
       Upload document
     </button>
@@ -81,9 +100,9 @@ const route = useRoute()
 const router = useRouter()
 const passportId = route.params.passportId
 
-const { getOverview, getSharedWithMe } = useVault()
+const { getOverview, getHomeRecords, getSharedWithMe } = useVault()
 
-const scope = ref(['property', 'private', 'shared'].includes(route.query.scope) ? route.query.scope : 'property')
+const scope = ref(['property', 'private', 'records', 'shared'].includes(route.query.scope) ? route.query.scope : 'property')
 const search = ref('')
 const loading = ref(true)
 const overview = ref(null)
@@ -91,6 +110,9 @@ const addressLine = ref('this property')
 
 const sharedDocs = ref([])
 const sharedLoading = ref(false)
+
+const homeRecords = ref([])
+const recordsLoading = ref(false)
 
 const categoriesForScope = computed(() => {
   const data = scope.value === 'property' ? overview.value?.propertyDocuments : overview.value?.privateDocuments
@@ -123,6 +145,13 @@ watch(
         .then((d) => (sharedDocs.value = d))
         .catch((e) => console.error('Failed to load shared documents', e))
         .finally(() => (sharedLoading.value = false))
+    }
+    if (val === 'records' && homeRecords.value.length === 0 && !recordsLoading.value) {
+      recordsLoading.value = true
+      getHomeRecords(passportId)
+        .then((d) => (homeRecords.value = d))
+        .catch((e) => console.error('Failed to load home records', e))
+        .finally(() => (recordsLoading.value = false))
     }
   },
   { immediate: true },

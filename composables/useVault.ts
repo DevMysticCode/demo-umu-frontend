@@ -40,6 +40,18 @@ export const useVault = () => {
   const getOverview = (passportId: string) =>
     $fetch(`${base}/documents/passport/${passportId}/vault-overview`, { headers: getHeaders() })
 
+  // "Home records" (client mockup's term, also used by the other two
+  // frontends): files attached as the answer to a passport question (e.g.
+  // a certificate uploaded inside a task), as opposed to a document
+  // deliberately filed via "+ Add document". Previously this app's vault
+  // didn't surface these at all - see the addDocumentGrant comment below.
+  // Reuses the existing /vault endpoint's homeRecords; no new backend
+  // route needed.
+  const getHomeRecords = async (passportId: string) => {
+    const res: any = await $fetch(`${base}/documents/passport/${passportId}/vault`, { headers: getHeaders() })
+    return res?.homeRecords ?? []
+  }
+
   const getCategoryDocuments = (passportId: string, category: string, scope: 'property' | 'private') =>
     $fetch(`${base}/documents/passport/${passportId}/vault-category/${category}`, {
       headers: getHeaders(),
@@ -70,10 +82,9 @@ export const useVault = () => {
     })
 
   // Grants a specific collaborator access to a SELECTED-tier document.
-  // This app's vault only ever deals in personal UserDocuments (never the
-  // QuestionAnswer evidence files the other two frontends also show under
-  // "Home records" - see the backend's mapAnswerDocs), so the :kind
-  // segment is always 'user' here.
+  // Per-document sharing here only ever targets personal UserDocuments
+  // added via "+ Add document" - Home records (getHomeRecords above) are
+  // read-only in this app's vault, so the :kind segment is always 'user'.
   const addDocumentGrant = (documentId: string, collaboratorUserId: string) =>
     $fetch(`${base}/documents/user/${documentId}/grants`, {
       method: 'POST',
@@ -98,6 +109,7 @@ export const useVault = () => {
 
   return {
     getOverview,
+    getHomeRecords,
     getCategoryDocuments,
     getSharedWithMe,
     getDocumentDetail,
