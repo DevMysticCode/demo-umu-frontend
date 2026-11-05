@@ -904,8 +904,11 @@ async function fetchStreetData(pid) {
 
 async function fetchBuyerData(pid) {
   try {
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null
     const data = await $fetch(
       `${config.public.apiBase}/property/${pid}/matched-buyers`,
+      { headers: { Authorization: `Bearer ${token}` } },
     )
     matchedBuyers.value = data.buyers ?? []
     buyersTotal.value = data.total ?? 0

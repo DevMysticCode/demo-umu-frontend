@@ -5154,8 +5154,11 @@ async function fetchStreetData() {
 
 async function fetchBuyerData() {
   try {
+    const token =
+      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
     const res = await fetch(
       `${config.public.apiBase}/property/${propertyId}/matched-buyers`,
+      { headers: { Authorization: `Bearer ${token}` } },
     )
     if (res.ok) {
       const data = await res.json()
