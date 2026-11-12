@@ -75,6 +75,10 @@
         </p>
 
         <h2>05 · Who we share your information with</h2>
+        <p>
+          We use a number of third-party providers to run the service. Each acts as our data
+          processor (handling information on our instructions) except where noted.
+        </p>
         <ul>
           <li>Google Analytics: receives anonymised website usage data</li>
           <li>Mailchimp or equivalent: receives name and email if subscribed to updates</li>
@@ -84,10 +88,34 @@
             behalf</li>
           <li>Stripe: receives payment details directly (never passed through umovingu) to process
             card payments</li>
+          <li>Groq: receives passport record content and chat messages to power AI features (chat
+            assistant, passport summaries)</li>
+          <li>Resend: receives email addresses and message content to send transactional emails (OTP
+            codes, notifications)</li>
+          <li>Sentry: receives technical error reports, which may incidentally include account or
+            request details present at the time of an error, for monitoring and debugging</li>
+          <li>Mapbox and Ordnance Survey: receive postcodes/addresses entered when searching for or
+            viewing a property, to provide geocoding and address-lookup results</li>
+          <li>HM Land Registry: source of public property price and transaction data used to enrich
+            property records; this is public property data, not personal data about you</li>
+          <li>AWS (Amazon Web Services), Railway and Vercel: host our infrastructure (application
+            servers, database, file storage and the website itself) and by necessity process any
+            personal data passing through or stored in the service</li>
           <li>Legal or regulatory authorities: information required by law or court order</li>
         </ul>
 
-        <h2>06 · How long we keep your information</h2>
+        <h2>06 · International transfers</h2>
+        <p>
+          Our AWS infrastructure runs in the UK (London, eu-west-2), so data held there stays in the
+          UK. Several of the providers above — Persona, Groq, Resend, Sentry, Mapbox and Vercel — are
+          based outside the UK/EEA, principally in the United States, and may process data there as
+          part of providing their service. Where that happens, UK GDPR requires an appropriate
+          safeguard (such as the UK's International Data Transfer Addendum or Standard Contractual
+          Clauses) to be in place. We are in the process of confirming and documenting the specific
+          safeguard used with each provider; this section will be updated as that review completes.
+        </p>
+
+        <h2>07 · How long we keep your information</h2>
         <ul>
           <li>Contact form enquiries: 2 years</li>
           <li>Property Passport records: for the duration of an active account plus up to 2 years after closure</li>
@@ -99,7 +127,7 @@
             policy, not by umovingu</li>
         </ul>
 
-        <h2>07 · Your rights</h2>
+        <h2>08 · Your rights</h2>
         <p>
           Under UK GDPR, individuals may exercise rights by emailing
           <a href="mailto:hello@umovingu.io">hello@umovingu.io</a> within one month:
@@ -118,7 +146,7 @@
           <a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a> or 0303 123 1113.
         </p>
 
-        <h2>08 · Security</h2>
+        <h2>09 · Security</h2>
         <ul>
           <li>Encrypted transmission between browser and servers (HTTPS)</li>
           <li>Access controls for authorised team members only</li>
@@ -127,13 +155,13 @@
         </ul>
         <p>Data breach notification to ICO within 72 hours if likely to affect rights.</p>
 
-        <h2>09 · Links and children</h2>
+        <h2>10 · Links and children</h2>
         <p>
           External site links are not covered by this privacy policy. The service is not directed at
           children under 16. Contact the company if a child has provided information.
         </p>
 
-        <h2>10 · Contact us</h2>
+        <h2>11 · Contact us</h2>
         <p>
           Email: <a href="mailto:hello@umovingu.io">hello@umovingu.io</a><br />
           Post: umovingu Limited, 116 Yardley Road, Birmingham, B27 6LG<br />
