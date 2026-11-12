@@ -16,7 +16,7 @@
 // the user through a redirect loop.
 const SKIP_PATHS = ['/auth/login', '/auth/request-otp', '/auth/verify-otp', '/auth/register', '/auth/refresh']
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
   const original = globalThis.$fetch
   if (!original || typeof (original as any).create !== 'function') return
 
@@ -32,9 +32,19 @@ export default defineNuxtPlugin(() => {
       } catch {
         return
       }
-      const route = useRoute()
-      if (route.path.startsWith('/onboarding/signin')) return
-      navigateTo('/onboarding/signin?reason=session', { replace: true })
+
+      // onResponseError fires after the fetch's promise resolves - i.e.
+      // after an await - and Nuxt's composable context doesn't survive
+      // an async tick on the client unless explicitly re-entered. Without
+      // runWithContext, useRoute()/navigateTo() below throw "Nuxt
+      // instance unavailable", that throw is swallowed by ofetch's
+      // interceptor handling, and the redirect silently never happens -
+      // leaving a blank, logged-out-but-still-on-the-page dashboard.
+      nuxtApp.runWithContext(() => {
+        const route = useRoute()
+        if (route.path.startsWith('/onboarding/signin')) return
+        navigateTo('/onboarding/signin?reason=session', { replace: true })
+      })
     },
   })
 })
