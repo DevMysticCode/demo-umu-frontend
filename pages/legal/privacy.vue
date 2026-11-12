@@ -16,7 +16,7 @@
       <div class="lg-hero">
         <div class="lg-greeting">How we handle your data</div>
         <div class="lg-h1">Privacy Policy</div>
-        <div class="lg-meta">Last updated March 2025 · Controller: umovingu Limited · ICO ZC111880</div>
+        <div class="lg-meta">Last updated November 2026 · Controller: umovingu Limited · ICO ZC111880</div>
       </div>
 
       <div class="lg-content">
@@ -39,8 +39,17 @@
           uploaded documents, and website usage data (via cookies).
         </p>
         <p>
-          The company does not collect payment card details, health information, or government identity
-          documents at this stage.
+          Where identity verification is required (for example before unlocking certain buyer
+          features), a government-issued identity document and a selfie are collected and verified
+          through our identity verification provider, Persona. Persona captures and holds these
+          documents directly as part of their hosted verification flow — umovingu does not receive or
+          store the document images or selfie itself, only the verification outcome (a status such as
+          "approved" or "declined") and a reference ID used to check that status.
+        </p>
+        <p>
+          The company does not collect payment card details or health information. Card payments are
+          processed by Stripe; card numbers are entered directly into Stripe's own secure form and
+          never reach umovingu's servers.
         </p>
 
         <h2>03 · Our legal basis for using your information</h2>
@@ -70,6 +79,11 @@
           <li>Google Analytics: receives anonymised website usage data</li>
           <li>Mailchimp or equivalent: receives name and email if subscribed to updates</li>
           <li>OpenProperty Tech Ltd: receives property address and record data</li>
+          <li>Persona: receives name, email and, where identity verification is required, a
+            government-issued identity document and selfie, to carry out that verification on our
+            behalf</li>
+          <li>Stripe: receives payment details directly (never passed through umovingu) to process
+            card payments</li>
           <li>Legal or regulatory authorities: information required by law or court order</li>
         </ul>
 
@@ -79,6 +93,10 @@
           <li>Property Passport records: for the duration of an active account plus up to 2 years after closure</li>
           <li>Marketing preferences: until changed</li>
           <li>Analytics data: anonymised data retained per Google's standard settings (default 26 months)</li>
+          <li>Identity verification: umovingu retains only the verification outcome and reference ID
+            for as long as the account is active, plus up to 2 years after closure. The identity
+            document and selfie images themselves are held by Persona under their own retention
+            policy, not by umovingu</li>
         </ul>
 
         <h2>07 · Your rights</h2>
