@@ -56,7 +56,7 @@
                 <button class="hero-btn">
                   <OPIcon name="wishlist" class="w-[18px] h-[18px]" />
                 </button>
-                <button class="hero-btn" @click="openShareSheet">
+                <button v-if="isOwner" class="hero-btn" @click="openShareSheet">
                   <OPIcon name="share" class="w-[18px] h-[18px]" />
                 </button>
               </div>
@@ -863,9 +863,24 @@
 
           <div v-if="!shareUrl" class="share-intro">
             <p class="share-hint">
-              Generate a link that lets anyone view this passport for 3 hours -
+              Generate a link that lets anyone view this passport for a limited time -
               no login required.
             </p>
+            <p class="share-duration-label">How long should the link stay active?</p>
+            <div class="share-duration-options" role="radiogroup" aria-label="Link duration">
+              <button
+                v-for="opt in shareDurationOptions"
+                :key="opt.value"
+                type="button"
+                class="share-duration-chip"
+                :class="{ 'is-selected': shareDurationHours === opt.value }"
+                role="radio"
+                :aria-checked="shareDurationHours === opt.value"
+                @click="shareDurationHours = opt.value"
+              >
+                {{ opt.label }}
+              </button>
+            </div>
             <button
               class="share-generate-btn"
               :disabled="sharing"
@@ -881,6 +896,21 @@
               <span class="share-url-text">{{ shareUrl }}</span>
               <button class="share-copy-btn" @click="copyShareLink">
                 {{ shareCopied ? 'Copied!' : 'Copy' }}
+              </button>
+            </div>
+            <p class="share-duration-label">Regenerate with a new duration:</p>
+            <div class="share-duration-options" role="radiogroup" aria-label="Link duration">
+              <button
+                v-for="opt in shareDurationOptions"
+                :key="opt.value"
+                type="button"
+                class="share-duration-chip"
+                :class="{ 'is-selected': shareDurationHours === opt.value }"
+                role="radio"
+                :aria-checked="shareDurationHours === opt.value"
+                @click="shareDurationHours = opt.value"
+              >
+                {{ opt.label }}
               </button>
             </div>
             <button
@@ -1457,9 +1487,24 @@ function goToSection(sectionId: string) {
 }
 
 // ── Share ─────────────────────────────────────────────────────────────────
+// Fixed menu of lifetimes, matching the backend's allow-list exactly
+// (SHARE_LINK_DURATION_HOURS in umu-backend/src/passport/dto/share.dto.ts)
+// - a closed set of choices, not a free-typed number (security/launch
+// review finding #16).
+const shareDurationOptions = [
+  { value: 1, label: '1 hour' },
+  { value: 3, label: '3 hours' },
+  { value: 6, label: '6 hours' },
+  { value: 24, label: '24 hours' },
+  { value: 48, label: '48 hours' },
+  { value: 72, label: '72 hours' },
+] as const
+const shareDurationHours = ref<number>(3)
+
 function openShareSheet() {
   shareUrl.value = ''
   shareExpiry.value = ''
+  shareDurationHours.value = 3
   showShareSheet.value = true
 }
 
@@ -1470,7 +1515,11 @@ async function createShareLink() {
       typeof window !== 'undefined' ? localStorage.getItem('token') : null
     const res = await $fetch<{ url: string; expiresAt: string }>(
       `${config.public.apiBase}/passport/${passportId}/share`,
-      { method: 'POST', headers: { Authorization: `Bearer ${tok}` } },
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${tok}` },
+        body: { durationHours: shareDurationHours.value },
+      },
     )
     shareUrl.value = res.url
     shareExpiry.value = new Date(res.expiresAt).toLocaleTimeString('en-GB', {
@@ -2557,6 +2606,36 @@ async function deleteNote(noteId: string) {
   color: #555;
   margin: 0;
   line-height: 1.5;
+}
+
+.share-duration-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.share-duration-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.share-duration-chip {
+  background: #f8f7fc;
+  border: 1.5px solid #eaeaef;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #4a5868;
+  cursor: pointer;
+}
+
+.share-duration-chip.is-selected {
+  background: #00a19a;
+  border-color: #00a19a;
+  color: #fff;
 }
 
 .share-generate-btn {

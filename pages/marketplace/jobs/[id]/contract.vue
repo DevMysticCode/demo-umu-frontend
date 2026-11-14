@@ -192,7 +192,7 @@ const router = useRouter()
 const { showToast } = useAppToast()
 const {
   fetchContract,
-  uploadPhoto,
+  uploadEvidencePhoto,
   addEvidence,
   releasePayment,
   openThreadForJob,
@@ -319,7 +319,7 @@ async function onEvidencePicked(e: Event) {
   try {
     for (const f of files) {
       try {
-        const { url } = await uploadPhoto(f)
+        const { url } = await uploadEvidencePhoto(f)
         uploaded.push(url)
       } catch (err: any) {
         evidenceError.value = err?.data?.message ?? `Couldn't upload ${f.name}`
